@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BB6408170
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD1140817A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236252AbhILU3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 16:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
+        id S236482AbhILUan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 16:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236059AbhILU3u (ORCPT
+        with ESMTP id S236331AbhILUad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 16:29:50 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CA4C061574;
-        Sun, 12 Sep 2021 13:28:36 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so10509886otf.2;
-        Sun, 12 Sep 2021 13:28:36 -0700 (PDT)
+        Sun, 12 Sep 2021 16:30:33 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3F2C06175F;
+        Sun, 12 Sep 2021 13:29:18 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id t18so11411327wrb.0;
+        Sun, 12 Sep 2021 13:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AXSxIvFJqTwiufjYo/D6s+CkMzPMpGZ/GlVxsFHvRNA=;
-        b=Q2WdxlOeY/qzPh2YwGGttsdCkzkxMQWwy7h0b8hpSJHAHJdc7mJzXYZEknKviVTv2A
-         D3co9DESFaNB1suY1HUJ8JIZUWr2nYh2P6sRRjejKeWqLuoC5qsKANE1i8LsJIZDJcmq
-         HvMtSDNIfEr64W0EWW3H4yxq4VzP7eh2JT4tV+akN5Jaxcmb+tVq+6X92PJCM8c6G8vi
-         XMv7rKFO8DcfArnvi3JOSOjA+CBiS0ChiXvX6NN9hp9TmsA/CLWfsIuC0LFuKKN/DXII
-         lT5pJ/otTNTX6SZhY3rkfw7LOwyu/BijLRvQ+PTsLxTFG5KtazRVUQMtrNcSo5zVauMT
-         rzbg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OloBSLKiPPVBBxaWCX+yQgzFVba/9OcJTIhGRQSsgPI=;
+        b=Rvm0/DI3FIv9bkQCQOu/xGVU6Gu+WIhotIlEQtWCeY/yT/z633wFL3W5ZSxBHr2pvt
+         wlDjIolypnPpgAmvH6yB9BuuXTnnhQLjmilqhWjpkop3hdqm/Ylqwp2loD86/vVjYoJ1
+         LRKLhxolnoK6Qi0V1B65a1EFoxJcpqCNswvm6ayqkQlT4bMT4qWe/eTRJ5AomTxFQlKd
+         0oKMv92zN3to5WhI0WSI+vLZjJgsKZ2gIUFQVSxKb6AFl59yTgB1T6GcNCpJi8VyE6gv
+         r6Wh98s3f8CkIhFlnrJvKm+bm8DsR1ij4w+k/Pbj/W0sLqZiuBV98zBKO5fq1kZ4TM5k
+         4plw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=AXSxIvFJqTwiufjYo/D6s+CkMzPMpGZ/GlVxsFHvRNA=;
-        b=J4RBwJQ+iLqJtpkZVuQowB7Ep93lLLW7R2xYZmIbJh5Lauxmt+l6XBzzlwDMv7ZQyy
-         JMW9Mrlf0MIFBqYCxin5cKIdF4Kqj1voK+0r4UlUAXGQ1+zIU5Xi4HTESEE1GEHdmslb
-         Ie2JgVSstUZUo+JYl7eJT9VohqQeEI8OE828R0KpYjeJk0aUwPuy3vxsNnC8khyhlxWr
-         z19g01HQkFlJICD5LC9QQuQgWV8lJRlibzd92g976ljqVdPgmX9B2pBYqTsAtfMEIZzk
-         vaJkKaZwRgB+K+h0jEVBSV+mIWTtbGLhMtFwMXjHubW4rIMs3qN+4+fB6nkqRewPfw+c
-         8OvA==
-X-Gm-Message-State: AOAM530602+2mMuU1WajW9a5sUbF7qSMPIexD/GEWldaATsg3C4jrBSw
-        mTQR91NtdIR+G5gItM8ljHmv8owPOHc=
-X-Google-Smtp-Source: ABdhPJxuFvecmPM2TZMockYIjqnp4xZdl21Ekd9EkR06uk2o6zhz+UuSEZrSpVHXNCjbELp04zmBiA==
-X-Received: by 2002:a9d:4b84:: with SMTP id k4mr6669955otf.98.1631478515438;
-        Sun, 12 Sep 2021 13:28:35 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r20sm1338260oot.16.2021.09.12.13.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 13:28:35 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Helge Deller <deller@gmx.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-References: <20210912160149.2227137-1-linux@roeck-us.net>
- <20210912160149.2227137-4-linux@roeck-us.net>
- <CAHk-=wi1TBvyk7SWX+5LLYN8ZnTJMut1keQbOrKCG=nb08hdiQ@mail.gmail.com>
- <YT5b2HgrvL12Nrhx@ls3530>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 3/4] parisc: Use absolute_pointer for memcmp on fixed
- memory location
-Message-ID: <2702f518-da2f-5bca-11d3-35f5cd4316e6@roeck-us.net>
-Date:   Sun, 12 Sep 2021 13:28:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=OloBSLKiPPVBBxaWCX+yQgzFVba/9OcJTIhGRQSsgPI=;
+        b=AfGnU6vMrDO1i8oLtuOEAsvAXQvEOa4zH+Kp6TToSUK5uFQ0FoQ/QQ0EJ/+fM+m5kI
+         af5C+vqtLUgptnwRjyaVrX+gOh/trwc1PBKflZ8Vrxpm4AeqZTsfTSKv85+WTekoHDOI
+         nZ1FasaEBzkjMUeMo3AuLAS5PwDlFcGGKZv4ilBbExarPmM7U88MQbSIYYImm+Aksj3z
+         8HUsnWa9xvHva1tLDqRViSSqNNbnEkA0yNGnRoqYTTeO4YACTp2279BGAgEMtHzVRdrR
+         ZyKIIhxenic0KUatvAuNcqfnRtORJSXWFDPfJHaa4VqltuOHLYl8ufuiDEgUTKxa9Zho
+         xLFw==
+X-Gm-Message-State: AOAM531yLSvjOK4R6EjWfsqLc6mCTO0wfzBA7beVlVRryU+RmfjxFEz1
+        HE21BRcrFAYrRh9tGwNPYKM=
+X-Google-Smtp-Source: ABdhPJwIZ+xg0z95IiZtTTZi6ktU1TYrJL3slT4Y/bxwOFOYNaHJZhdbNL8AkCYOIfwpG7Z3nKbfog==
+X-Received: by 2002:adf:f185:: with SMTP id h5mr9036231wro.302.1631478557405;
+        Sun, 12 Sep 2021 13:29:17 -0700 (PDT)
+Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
+        by smtp.gmail.com with ESMTPSA id k29sm4847466wms.24.2021.09.12.13.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 13:29:17 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/6] Tegra cpuidle driver fixes and improvements for 5.16
+Date:   Sun, 12 Sep 2021 23:29:01 +0300
+Message-Id: <20210912202907.28471-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YT5b2HgrvL12Nrhx@ls3530>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/21 12:58 PM, Helge Deller wrote:
-> * Linus Torvalds <torvalds@linux-foundation.org>:
->> On Sun, Sep 12, 2021 at 9:02 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>>
->>> -       running_on_qemu = (memcmp(&PAGE0->pad0, "SeaBIOS", 8) == 0);
->>> +       running_on_qemu = (memcmp(absolute_pointer(&PAGE0->pad0), "SeaBIOS", 8) == 0);
->>
->> This seems entirely the wrong thing to do, and makes no sense. That
->> "&PAGE0->pad0" is a perfectly valid pointer, and that's not where the
->> problem is.
->>
->> The problem is "PAGE0" itself:
->>
->>      #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
->>
->> which takes that absolute offset and creates a pointer out of it.
->>
->> IOW, _that_ is what should have the "absolute_pointer()" thing, and in
->> that context the name of that macro and its use actually makes sense.
->>
->> No?
->>
->> An alternative - and possibly cleaner - approach that doesn't need
->> absolute_pointer() at all might be to just do
->>
->>          extern struct zeropage PAGE0;
->>
->> and then make that PAGE0 be defined to __PAGE_OFFSET in the parisc
->> vmlinux.lds.S file.
->>
->> Then doing things like
->>
->>          running_on_qemu = !memcmp(&PAGE0.pad0, "SeaBIOS", 8);
->>
->> would JustWork(tm).
-> 
-> Yes, this second approach seems to work nicely, although the patch
-> then gets slightly bigger.
-> Below is a tested patch.
-> I'll check it some further and apply it to the parisc tree then.
-> 
+This series adds compile-testing support to Tegra cpuidle driver and fixes
+a non-critical problem that should pop up only when power management patches
+[1] will be merged. Previously I sent out these patches separately[2][3],
+but they partially missed recent kernel release. I combined the remaining
+patches into this series and added ack from Daniel Lezcano that he gave
+to the "Check whether PMC is ready" patch [3].
 
-There are several PAGE0-> references left in the code after applying your patch.
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=261973
+[2] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=252996
+[3] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=254040
 
-$ git grep "PAGE0->"
-arch/parisc/kernel/firmware.c:  if (!PAGE0->mem_kbd.iodc_io)
-arch/parisc/kernel/firmware.c:  real32_call(PAGE0->mem_kbd.iodc_io,
-arch/parisc/kernel/firmware.c:              (unsigned long)PAGE0->mem_kbd.hpa, ENTRY_IO_CIN,
-arch/parisc/kernel/firmware.c:              PAGE0->mem_kbd.spa, __pa(PAGE0->mem_kbd.dp.layers),
-arch/parisc/kernel/smp.c:       WARN_ON(((unsigned long)(PAGE0->mem_pdc_hi) << 32
-arch/parisc/kernel/smp.c:                       | PAGE0->mem_pdc) != pdce_proc);
+Dmitry Osipenko (6):
+  soc/tegra: fuse: Add stubs needed for compile testing
+  soc/tegra: irq: Add stubs needed for compile testing
+  soc/tegra: pm: Make stubs usable for compile testing
+  clk: tegra: Add stubs needed for compile testing
+  cpuidle: tegra: Enable compile testing
+  cpuidle: tegra: Check whether PMC is ready
 
-After fixing those, I can build a parisc image and boot it in qemu (32 bit).
+ drivers/cpuidle/Kconfig.arm     |  2 +-
+ drivers/cpuidle/cpuidle-tegra.c |  3 +++
+ include/linux/clk/tegra.h       |  4 ++++
+ include/soc/tegra/fuse.h        | 31 ++++++++++++++++++++++++++-----
+ include/soc/tegra/irq.h         |  9 ++++++++-
+ include/soc/tegra/pm.h          |  2 +-
+ 6 files changed, 43 insertions(+), 8 deletions(-)
 
-Guenter
+-- 
+2.32.0
+
