@@ -2,128 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E609407E84
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B1D407E7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbhILQR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 12:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhILQRZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 12:17:25 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490D1C061574;
-        Sun, 12 Sep 2021 09:16:11 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id m11-20020a056820034b00b0028bb60b551fso2528920ooe.5;
-        Sun, 12 Sep 2021 09:16:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=962m9V5kVB1K2ya/iSo41D4jBqvuxZ4BddEpQ3+kojg=;
-        b=qM8u+hcIWzR8wMKQYhJCILmC9ZSlNy0NiWb4OY9hgIPBCZHgvM5qkKfgYvGPan/dWy
-         i5x/cft2ji93PA3JkhyD3LSkkMTIFc1uT4DGD0JuOsR6E7i+5w/QvbVTzSvWiBYtyvcb
-         ZwYQUAi0m60L2obsafgIs5DFtPB2dd11dxVqbdEuSt/wuCLZHR0w3rdAEg1ctjNwuBpV
-         FygbmW10nIEchgjXTB7XhMDbK3jxBDIHD8N01nOt0gxXTRXQC0Bkc0ayrYtjpe7vo5Lt
-         +tN2mV7Mu8coJuhIwpThaEPRcsMbFlXaxkMDf6YDj+oodAYc/UODDI+YBc3E3yvWM4cI
-         srpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=962m9V5kVB1K2ya/iSo41D4jBqvuxZ4BddEpQ3+kojg=;
-        b=iCniXSU9P38GdOq+2FxnKjSZuCFrpKRv68Dd/yVOS+t40A21B1IMZGh9QGOMRKapTS
-         XOEgPTxLZmLLd4pUAgcXp72Zm+UpVrz6xXgTydWHG7Hf0xmPhaW2piM8IwpwJAKcIxg+
-         lm9Y1WG7kWVhtaou0rDkFmnuXcioJeRHofdHRtTaWo6ODBxXFUMDCmPFQIIoiPFrXqvj
-         kbbANwgheDDbfPZ2ljH7Ctp0hmW9LYAxiDfd9TCzVjM3qJyqmeKsFUg3rA3ITZ+jXjg1
-         HLN23CDb1mET0EeOjFUbkpLNFpb9AxpEclNWLz4bTxol5kaQtilX65m39M0z5CFZoEwR
-         SVMA==
-X-Gm-Message-State: AOAM5315musOhvwSYrRhjTtx9SB2kJNjoBRMhXrq/0UcyCAeqVX8KmGV
-        qeSYoCTu9LLUHKpdSxjz5tJEXzDPEE4=
-X-Google-Smtp-Source: ABdhPJzidRP3p6tQgWcre2x9ZhW/ZGNmxMG6SrrOt4xx2vFDvzYw3xFVcpEZpIPpeYjjtBJSrwFLow==
-X-Received: by 2002:a4a:98e1:: with SMTP id b30mr6093453ooj.34.1631463370452;
-        Sun, 12 Sep 2021 09:16:10 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s8sm1202188otd.76.2021.09.12.09.16.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 09:16:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 2/4] net: i825xx: Use absolute_pointer for memcpy on fixed
- memory location
-To:     Jeroen Roovers <jer@xs4all.nl>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-alpha@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-sparse@vger.kernel.org
-References: <20210912160149.2227137-1-linux@roeck-us.net>
- <20210912160149.2227137-3-linux@roeck-us.net>
- <20210912181148.60f147c8@wim.jer>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <0d118e7b-e3cf-67df-00dc-f85b40ada682@roeck-us.net>
-Date:   Sun, 12 Sep 2021 09:16:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234663AbhILQPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 12:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233719AbhILQPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 12:15:50 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A50E6101E;
+        Sun, 12 Sep 2021 16:14:31 +0000 (UTC)
+Date:   Sun, 12 Sep 2021 17:18:02 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [PATCH v16 08/14] docs: counter: Document character device
+ interface
+Message-ID: <20210912171802.0bd97f26@jic23-huawei>
+In-Reply-To: <532bd59e88d9bc6e4d1c323744b78ce137ff5c6a.1630031207.git.vilhelm.gray@gmail.com>
+References: <cover.1630031207.git.vilhelm.gray@gmail.com>
+        <532bd59e88d9bc6e4d1c323744b78ce137ff5c6a.1630031207.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210912181148.60f147c8@wim.jer>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/21 9:11 AM, Jeroen Roovers wrote:
-> On Sun, 12 Sep 2021 09:01:47 -0700
-> Guenter Roeck <linux@roeck-us.net> wrote:
-> 
->> gcc 11.x reports the following compiler warning/error.
->>
->> drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
->>      ./arch/m68k/include/asm/string.h:72:25: error:
->>              '__builtin_memcpy' reading 6 bytes from a region of size 0
->>                      [-Werror=stringop-overread]
->>
->> Use absolute_address() to work around the problem.
-> 
-> => absolute_pointer()
-> 
+On Fri, 27 Aug 2021 12:47:52 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Oopsie. Thanks!
+> This patch adds high-level documentation about the Counter subsystem
+> character device interface.
+> 
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+One trivial suggestion inline.  This document is very good.
 
-Guenter
+Jonathan
 
->> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->>   drivers/net/ethernet/i825xx/82596.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/i825xx/82596.c
->> b/drivers/net/ethernet/i825xx/82596.c index
->> b8a40146b895..b482f6f633bd 100644 ---
->> a/drivers/net/ethernet/i825xx/82596.c +++
->> b/drivers/net/ethernet/i825xx/82596.c @@ -1144,7 +1144,7 @@ static
->> struct net_device * __init i82596_probe(void) err = -ENODEV;
->>   			goto out;
->>   		}
->> -		memcpy(eth_addr, (void *) 0xfffc1f2c,
->> ETH_ALEN);	/* YUCK! Get addr from NOVRAM */
->> +		memcpy(eth_addr, absolute_pointer(0xfffc1f2c),
->> ETH_ALEN); /* YUCK! Get addr from NOVRAM */ dev->base_addr =
->> MVME_I596_BASE; dev->irq = (unsigned) MVME16x_IRQ_I596;
->>   		goto found;
+> ---
+>  Documentation/driver-api/generic-counter.rst  | 177 ++++++++++++++----
+>  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+>  2 files changed, 137 insertions(+), 41 deletions(-)
 > 
-> 
-> Regards,
->        jer
-> 
+> diff --git a/Documentation/driver-api/generic-counter.rst b/Documentation/driver-api/generic-counter.rst
+> index f6397218aa4c..6ecb5d1942c7 100644
+> --- a/Documentation/driver-api/generic-counter.rst
+> +++ b/Documentation/driver-api/generic-counter.rst
+> @@ -223,19 +223,6 @@ whether an input line is differential or single-ended) and instead focus
+>  on the core idea of what the data and process represent (e.g. position
+>  as interpreted from quadrature encoding data).
+>  
+> -Userspace Interface
+> -===================
+> -
+> -Several sysfs attributes are generated by the Generic Counter interface,
+> -and reside under the /sys/bus/counter/devices/counterX directory, where
+> -counterX refers to the respective counter device. Please see
+> -Documentation/ABI/testing/sysfs-bus-counter for detailed
+> -information on each Generic Counter interface sysfs attribute.
+> -
+> -Through these sysfs attributes, programs and scripts may interact with
+> -the Generic Counter paradigm Counts, Signals, and Synapses of respective
+> -counter devices.
+> -
+>  Driver API
+>  ==========
+>  
+> @@ -388,16 +375,16 @@ userspace interface components::
+>                          / driver callbacks /
+>                          -------------------
+>                                  |
+> -                +---------------+
+> -                |
+> -                V
+> -        +--------------------+
+> -        | Counter sysfs      |
+> -        +--------------------+
+> -        | Translates to the  |
+> -        | standard Counter   |
+> -        | sysfs output       |
+> -        +--------------------+
+> +                +---------------+---------------+
+> +                |                               |
+> +                V                               V
+> +        +--------------------+          +---------------------+
+> +        | Counter sysfs      |          | Counter chrdev      |
+> +        +--------------------+          +---------------------+
+> +        | Translates to the  |          | Translates to the   |
+> +        | standard Counter   |          | standard Counter    |
+> +        | sysfs output       |          | character device    |
+> +        +--------------------+          +---------------------+
+>  
+>  Thereafter, data can be transferred directly between the Counter device
+>  driver and Counter userspace interface::
+> @@ -428,23 +415,30 @@ driver and Counter userspace interface::
+>                          / u64     /
+>                          ----------
+>                                  |
+> -                +---------------+
+> -                |
+> -                V
+> -        +--------------------+
+> -        | Counter sysfs      |
+> -        +--------------------+
+> -        | Translates to the  |
+> -        | standard Counter   |
+> -        | sysfs output       |
+> -        |--------------------|
+> -        | Type: const char * |
+> -        | Value: "42"        |
+> -        +--------------------+
+> -                |
+> -         ---------------
+> -        / const char * /
+> -        ---------------
+> +                +---------------+---------------+
+> +                |                               |
+> +                V                               V
+> +        +--------------------+          +---------------------+
+> +        | Counter sysfs      |          | Counter chrdev      |
+> +        +--------------------+          +---------------------+
+> +        | Translates to the  |          | Translates to the   |
+> +        | standard Counter   |          | standard Counter    |
+> +        | sysfs output       |          | character device    |
+> +        |--------------------|          |---------------------|
+> +        | Type: const char * |          | Type: u64           |
+> +        | Value: "42"        |          | Value: 42           |
+> +        +--------------------+          +---------------------+
+> +                |                               |
+> +         ---------------                 -----------------------
+> +        / const char * /                / struct counter_event /
+> +        ---------------                 -----------------------
+> +                |                               |
+> +                |                               V
+> +                |                       +-----------+
+> +                |                       | read      |
+> +                |                       +-----------+
+> +                |                       \ Count: 42 /
+> +                |                        -----------
+>                  |
+>                  V
+>          +--------------------------------------------------+
+> @@ -453,7 +447,7 @@ driver and Counter userspace interface::
+>          \ Count: "42"                                      /
+>           --------------------------------------------------
+>  
+> -There are three primary components involved:
+> +There are four primary components involved:
+>  
+>  Counter device driver
+>  ---------------------
+> @@ -473,3 +467,104 @@ and vice versa.
+>  Please refer to the ``Documentation/ABI/testing/sysfs-bus-counter`` file
+>  for a detailed breakdown of the available Generic Counter interface
+>  sysfs attributes.
+> +
+> +Counter chrdev
+> +--------------
+> +Translates counter data to the standard Counter character device; data
+
+Whilst it is clear when you read on, perhaps change "data" to "Counter
+events" here.
+
+> +is transferred via standard character device read calls, while Counter
+> +events are configured via ioctl calls.
+> +
+> +Sysfs Interface
+> +===============
+> +
+> +Several sysfs attributes are generated by the Generic Counter interface,
+> +and reside under the ``/sys/bus/counter/devices/counterX`` directory,
+> +where ``X`` is to the respective counter device id. Please see
+> +``Documentation/ABI/testing/sysfs-bus-counter`` for detailed information
+> +on each Generic Counter interface sysfs attribute.
+> +
+> +Through these sysfs attributes, programs and scripts may interact with
+> +the Generic Counter paradigm Counts, Signals, and Synapses of respective
+> +counter devices.
+> +
+> +Counter Character Device
+> +========================
+> +
+> +Counter character device nodes are created under the ``/dev`` directory
+> +as ``counterX``, where ``X`` is the respective counter device id.
+> +Defines for the standard Counter data types are exposed via the
+> +userspace ``include/uapi/linux/counter.h`` file.
+> +
+> +Counter events
+> +--------------
+> +Counter device drivers can support Counter events by utilizing the
+> +``counter_push_event`` function::
+> +
+> +        void counter_push_event(struct counter_device *const counter, const u8 event,
+> +                                const u8 channel);
+> +
+> +The event id is specified by the ``event`` parameter; the event channel
+> +id is specified by the ``channel`` parameter. When this function is
+> +called, the Counter data associated with the respective event is
+> +gathered, and a ``struct counter_event`` is generated for each datum and
+> +pushed to userspace.
+> +
+> +Counter events can be configured by users to report various Counter
+> +data of interest. This can be conceptualized as a list of Counter
+> +component read calls to perform. For example:
+> +
+> +        +------------------------+------------------------+
+> +        | COUNTER_EVENT_OVERFLOW | COUNTER_EVENT_INDEX    |
+> +        +========================+========================+
+> +        | Channel 0              | Channel 0              |
+> +        +------------------------+------------------------+
+> +        | * Count 0              | * Signal 0             |
+> +        | * Count 1              | * Signal 0 Extension 0 |
+> +        | * Signal 3             | * Extension 4          |
+> +        | * Count 4 Extension 2  +------------------------+
+> +        | * Signal 5 Extension 0 | Channel 1              |
+> +        |                        +------------------------+
+> +        |                        | * Signal 4             |
+> +        |                        | * Signal 4 Extension 0 |
+> +        |                        | * Count 7              |
+> +        +------------------------+------------------------+
+> +
+> +When ``counter_push_event(counter, COUNTER_EVENT_INDEX, 1)`` is called
+> +for example, it will go down the list for the ``COUNTER_EVENT_INDEX``
+> +event channel 1 and execute the read callbacks for Signal 4, Signal 4
+> +Extension 0, and Count 7 -- the data returned for each is pushed to a
+> +kfifo as a ``struct counter_event``, which userspace can retrieve via a
+> +standard read operation on the respective character device node.
+> +
+> +Userspace
+> +---------
+> +Userspace applications can configure Counter events via ioctl operations
+> +on the Counter character device node. There following ioctl codes are
+> +supported and provided by the ``linux/counter.h`` userspace header file:
+> +
+> +* :c:macro:`COUNTER_ADD_WATCH_IOCTL`
+> +
+> +* :c:macro:`COUNTER_ENABLE_EVENTS_IOCTL`
+> +
+> +* :c:macro:`COUNTER_DISABLE_EVENTS_IOCTL`
+> +
+> +To configure events to gather Counter data, users first populate a
+> +``struct counter_watch`` with the relevant event id, event channel id,
+> +and the information for the desired Counter component from which to
+> +read, and then pass it via the ``COUNTER_ADD_WATCH_IOCTL`` ioctl
+> +command.
+> +
+> +Note that an event can be watched without gathering Counter data by
+> +setting the ``component.type`` member equal to
+> +``COUNTER_COMPONENT_NONE``. With this configuration the Counter
+> +character device will simply populate the event timestamps for those
+> +respective ``struct counter_event`` elements and ignore the component
+> +value.
+> +
+> +The ``COUNTER_ADD_WATCH_IOCTL`` command will buffer these Counter
+> +watches. When ready, the ``COUNTER_ENABLE_EVENTS_IOCTL`` ioctl command
+> +may be used to activate these Counter watches.
+> +
+> +Userspace applications can then execute a ``read`` operation (optionally
+> +calling ``poll`` first) on the Counter character device node to retrieve
+> +``struct counter_event`` elements with the desired data.
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 1409e40e6345..fc4ccc79b1b8 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -88,6 +88,7 @@ Code  Seq#    Include File                                           Comments
+>                                                                       <http://infiniband.sourceforge.net/>
+>  0x20  all    drivers/cdrom/cm206.h
+>  0x22  all    scsi/sg.h
+> +0x3E  00-0F  linux/counter.h                                         <mailto:linux-iio@vger.kernel.org>
+>  '!'   00-1F  uapi/linux/seccomp.h
+>  '#'   00-3F                                                          IEEE 1394 Subsystem
+>                                                                       Block for the entire subsystem
 
