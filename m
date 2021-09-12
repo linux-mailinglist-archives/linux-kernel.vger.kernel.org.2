@@ -2,302 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FE5407BF7
+	by mail.lfdr.de (Postfix) with ESMTP id E2BD1407BFA
 	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 07:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhILF2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 01:28:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233171AbhILF2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 01:28:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31656610A3;
-        Sun, 12 Sep 2021 05:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631424411;
-        bh=2y2mdc5NowJsG8D9vmfWPhxUxWEAOlfcnkhHxyBZqyg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fgUdwM6cyD7t81pBaLNSohozqJ8kYG2BUrhrrBGJSqumzDWuwqNwgnXZ+qYOa2DOE
-         EhHGLaRpboljHzO5XS2KXtRwMPFD0uNrEMGB/hA1SD3Fl/VW9kh6/iNaSIGypilbFf
-         a/84YKJPiwESX7fbzkJw8LLSom2sKL9wyvqnWMwM26MSkY6JO0HahStm1yMehiZQVq
-         9DteX8kgvoLmy5WnUJbIxcExpm5MU/Lre+KVPJz+Y1FKkvNjnYCMQDXS/eNX17uine
-         UR/ZM1MxYealnpBGgc1Y5mV8GlhpXLji87OpY81NbXdDrFTKYHc5UuA74tHnb+1IbM
-         talwoGew/kcyg==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Rajaravi Krishna Katta <rkatta@habana.ai>
-Subject: [PATCH 2/2] habanalabs: create static map of f/w hwmon enums
-Date:   Sun, 12 Sep 2021 08:26:45 +0300
-Message-Id: <20210912052645.104082-2-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210912052645.104082-1-ogabbay@kernel.org>
-References: <20210912052645.104082-1-ogabbay@kernel.org>
+        id S230079AbhILFmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 01:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhILFmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 01:42:05 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1709C061574;
+        Sat, 11 Sep 2021 22:40:51 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id l11so13527421lfe.1;
+        Sat, 11 Sep 2021 22:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vWXHoLtwCXxou79TaKe+VEmeu5Pja53twjNYiYPX82U=;
+        b=nHP4t3ral8G2+UcD5kddjBNGdcd5PMlysXgfopVEpAW1/hVOWgFayNgLErYFIrJSW2
+         V7ybemKdQbeKW+P08buAjygB4VT3VhcvFavav7kxBQfna0/4sKJKXXphEYuHBE2hnDQx
+         IghQEw/fpZU2OisaBnUKfRJdwbXBzrF0bhSqZk6/X9Lw8xzzSoNibzUbsXWpR3w3vEVA
+         pDSCVvTBtf1kmVZvOVdjfK+61sMh5NYMZzirT0DthO3hu7bSGQ/ahTGIZM/M82RQJMS0
+         4qmh1/L0IDhk3hewx4PZahqoDpLxUUZQeUhZjbx3CHkBnvZWx4Ldu0bFoku1OZQs7XhL
+         FLdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vWXHoLtwCXxou79TaKe+VEmeu5Pja53twjNYiYPX82U=;
+        b=YU1y31Isj+4i55wvN3Ty9g18fVw4/RwQuzS1fQGug+5rj54P6BRo0MN4ovCZOyBTqy
+         kW5upsuKndMdyGLn3clnrWEtf61LHo8QZa+Gub4aDx1kZdPnzl9eoA4ZhDf9W1bRkh+A
+         dXK0yW49YjR5va2bFgN13wg8CiIvugmDfDIqmDEeQPYzmoecZQNY50q208N5yuoJErP/
+         HBIEWGDxPrhOYhaegpLAssVDaIPq2zq61GS3TF9/YmuOR8WGR7VyEt+g+bYECjgWpIdg
+         lqmuTe3YHBIWFvYBkuG7ybDLv6h28E8UuWJgxU383IA9hnd8p6YzciybGHKkB5UdzLO+
+         Ccyw==
+X-Gm-Message-State: AOAM530cCXYIj2ugNzxOZ0B1rYLQxdVgNywHWoh1p2aaRoC5xDpVQWB3
+        I5yHKwaHwm3J5PmgxpxFimIL1lfua9++7RjSm/Q=
+X-Google-Smtp-Source: ABdhPJzJM9Uy+IoDBYFCbz4DDsBM8QkqOqql4QoMMmqoAzjGptYJy1lSBewasP2a5kjmy9liEW9el7e1eEGQJsZyZlE=
+X-Received: by 2002:ac2:5e9c:: with SMTP id b28mr4363426lfq.405.1631425249222;
+ Sat, 11 Sep 2021 22:40:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-8-maz@kernel.org>
+ <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+ <875yv8d91b.wl-maz@kernel.org> <CAMuHMdV+ydPaXbGf1_O0S-juaPWk1gwBUOK+GeLZukZeoqtMGQ@mail.gmail.com>
+ <CANqRtoTqV8sOpL=hdxeZ03tqr+5oeMcfwz+9ERqXv+hze_6Fsw@mail.gmail.com> <874kaqdi2z.wl-maz@kernel.org>
+In-Reply-To: <874kaqdi2z.wl-maz@kernel.org>
+From:   Magnus Damm <magnus.damm@gmail.com>
+Date:   Sun, 12 Sep 2021 14:40:36 +0900
+Message-ID: <CANqRtoTa8g2sw_DoD8+34HR0mcHc_tOWt+4R9KzDT2Eu3d7TTg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajaravi Krishna Katta <rkatta@habana.ai>
+Hi Marc,
 
-Instead of using the Linux kernel HWMON enums definition when
-communicating with the firmware, use proprietary HWMON based enums
-i.e. map hwmon.h header enum to cpucp_if.h based enum while.
+On Sun, Sep 12, 2021 at 4:32 AM Marc Zyngier <maz@kernel.org> wrote:
+> On Sat, 11 Sep 2021 03:49:20 +0100,
+> Magnus Damm <magnus.damm@gmail.com> wrote:
+> > On Fri, Sep 10, 2021 at 10:19 PM Geert Uytterhoeven
+> > <geert@linux-m68k.org> wrote:
+> > > On Fri, Sep 10, 2021 at 12:23 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > On Thu, 09 Sep 2021 16:22:01 +0100,
+> > > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > >     GIC: enabling workaround for broken byte access
+> >
+> > Indeed, byte access is unsupported according to the EMEV2 documentation.
+> >
+> > The EMEV2 documentation R19UH0036EJ0600 Chapter 7 Interrupt Control on
+> > page 97 says:
+> > "Interrupt registers can be accessed via the APB bus, in 32-bit units"
+> > "For details about register functions, see ARM Generic Interrupt
+> > Controller Architecture Specification Architecture version 1.0"
+> > The file  "R19UH0036EJ0600_1Chip.pdf" is the 6th edition version
+> > published in 2010 and is not marked as confidential.
+>
+> This is as bad as it gets. Do you know if any other Renesas platform
+> is affected by the same issue?
 
-This is needed because the HWMON enums are not forcing backward
-compatibility and therefore changes can break compatibility between
-newer driver and older firmware.
+Next time we have a beer together I would be happy to show you some
+legacy interrupt controller code. =)
 
-The driver will check for CPU_BOOT_DEV_STS0_MAP_HWMON_EN bit to
-validate if f/w supports cpucp->hwmon enum mapping to support older
-firmware where this mapping won't be available.
+EMEV2 and the Emma Mobile product line came from the NEC Electronics
+side that got merged into Renesas Electronics in 2010. Historically
+NEC Electronics mainly used MIPS I've been told, and the Emma Mobile
+SoCs were one of the earlier Cortex-A9 adopters. That might have
+something to do with the rather loose interpretation of the spec.
 
-Signed-off-by: Rajaravi Krishna Katta <rkatta@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/hwmon.c        | 100 ++++++++++++++++--
- .../habanalabs/include/common/hl_boot_if.h    |   6 ++
- 2 files changed, 97 insertions(+), 9 deletions(-)
+Renesas SoCs from a similar era:
+AP4 (sh7372) AP4EVB (Cortex-A8 + INTCA/INTCS)
+R-Mobile A1 (r8a7740) Armadillo-800-EVA (Cortex-A9 + INTCA/INTCS)
+R-Car M1A (r8a7778) Bock-W (Cortex-A9 + GIC)
+R-Car H1 (r8a7779) Marzen (4 x Cortex-A9 + GIC)
+Emma Mobile EMEV2 KZM9D (2 x Cortex-A9 + GIC)
+SH-Mobile AG5 (sh73a0) KZM9G (2 x Cortex-A9 + GIC)
 
-diff --git a/drivers/misc/habanalabs/common/hwmon.c b/drivers/misc/habanalabs/common/hwmon.c
-index 6b421d76b311..8f12d99fda09 100644
---- a/drivers/misc/habanalabs/common/hwmon.c
-+++ b/drivers/misc/habanalabs/common/hwmon.c
-@@ -113,6 +113,9 @@ static int hl_read(struct device *dev, enum hwmon_sensor_types type,
- {
- 	struct hl_device *hdev = dev_get_drvdata(dev);
- 	int rc;
-+	u32 cpucp_attr;
-+	bool use_cpucp_enum = (hdev->asic_prop.fw_app_cpu_boot_dev_sts0 &
-+				CPU_BOOT_DEV_STS0_MAP_HWMON_EN) ? true : false;
- 
- 	if (!hl_device_operational(hdev, NULL))
- 		return -ENODEV;
-@@ -121,65 +124,117 @@ static int hl_read(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_temp:
- 		switch (attr) {
- 		case hwmon_temp_input:
-+			cpucp_attr = cpucp_temp_input;
-+			break;
- 		case hwmon_temp_max:
-+			cpucp_attr = cpucp_temp_max;
-+			break;
- 		case hwmon_temp_crit:
-+			cpucp_attr = cpucp_temp_crit;
-+			break;
- 		case hwmon_temp_max_hyst:
-+			cpucp_attr = cpucp_temp_max_hyst;
-+			break;
- 		case hwmon_temp_crit_hyst:
-+			cpucp_attr = cpucp_temp_crit_hyst;
-+			break;
- 		case hwmon_temp_offset:
-+			cpucp_attr = cpucp_temp_offset;
-+			break;
- 		case hwmon_temp_highest:
-+			cpucp_attr = cpucp_temp_highest;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
- 
--		rc = hl_get_temperature(hdev, channel, attr, val);
-+		if (use_cpucp_enum)
-+			rc = hl_get_temperature(hdev, channel, cpucp_attr, val);
-+		else
-+			rc = hl_get_temperature(hdev, channel, attr, val);
- 		break;
- 	case hwmon_in:
- 		switch (attr) {
- 		case hwmon_in_input:
-+			cpucp_attr = cpucp_in_input;
-+			break;
- 		case hwmon_in_min:
-+			cpucp_attr = cpucp_in_min;
-+			break;
- 		case hwmon_in_max:
-+			cpucp_attr = cpucp_in_max;
-+			break;
- 		case hwmon_in_highest:
-+			cpucp_attr = cpucp_in_highest;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
- 
--		rc = hl_get_voltage(hdev, channel, attr, val);
-+		if (use_cpucp_enum)
-+			rc = hl_get_voltage(hdev, channel, cpucp_attr, val);
-+		else
-+			rc = hl_get_voltage(hdev, channel, attr, val);
- 		break;
- 	case hwmon_curr:
- 		switch (attr) {
- 		case hwmon_curr_input:
-+			cpucp_attr = cpucp_curr_input;
-+			break;
- 		case hwmon_curr_min:
-+			cpucp_attr = cpucp_curr_min;
-+			break;
- 		case hwmon_curr_max:
-+			cpucp_attr = cpucp_curr_max;
-+			break;
- 		case hwmon_curr_highest:
-+			cpucp_attr = cpucp_curr_highest;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
- 
--		rc = hl_get_current(hdev, channel, attr, val);
-+		if (use_cpucp_enum)
-+			rc = hl_get_current(hdev, channel, cpucp_attr, val);
-+		else
-+			rc = hl_get_current(hdev, channel, attr, val);
- 		break;
- 	case hwmon_fan:
- 		switch (attr) {
- 		case hwmon_fan_input:
-+			cpucp_attr = cpucp_fan_input;
-+			break;
- 		case hwmon_fan_min:
-+			cpucp_attr = cpucp_fan_min;
-+			break;
- 		case hwmon_fan_max:
-+			cpucp_attr = cpucp_fan_max;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
--		rc = hl_get_fan_speed(hdev, channel, attr, val);
-+
-+		if (use_cpucp_enum)
-+			rc = hl_get_fan_speed(hdev, channel, cpucp_attr, val);
-+		else
-+			rc = hl_get_fan_speed(hdev, channel, attr, val);
- 		break;
- 	case hwmon_pwm:
- 		switch (attr) {
- 		case hwmon_pwm_input:
-+			cpucp_attr = cpucp_pwm_input;
-+			break;
- 		case hwmon_pwm_enable:
-+			cpucp_attr = cpucp_pwm_enable;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
--		rc = hl_get_pwm_info(hdev, channel, attr, val);
-+
-+		if (use_cpucp_enum)
-+			rc = hl_get_pwm_info(hdev, channel, cpucp_attr, val);
-+		else
-+			rc = hl_get_pwm_info(hdev, channel, attr, val);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -191,6 +246,9 @@ static int hl_write(struct device *dev, enum hwmon_sensor_types type,
- 			u32 attr, int channel, long val)
- {
- 	struct hl_device *hdev = dev_get_drvdata(dev);
-+	u32 cpucp_attr;
-+	bool use_cpucp_enum = (hdev->asic_prop.fw_app_cpu_boot_dev_sts0 &
-+				CPU_BOOT_DEV_STS0_MAP_HWMON_EN) ? true : false;
- 
- 	if (!hl_device_operational(hdev, NULL))
- 		return -ENODEV;
-@@ -199,40 +257,64 @@ static int hl_write(struct device *dev, enum hwmon_sensor_types type,
- 	case hwmon_temp:
- 		switch (attr) {
- 		case hwmon_temp_offset:
-+			cpucp_attr = cpucp_temp_offset;
-+			break;
- 		case hwmon_temp_reset_history:
-+			cpucp_attr = cpucp_temp_reset_history;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
--		hl_set_temperature(hdev, channel, attr, val);
-+
-+		if (use_cpucp_enum)
-+			hl_set_temperature(hdev, channel, cpucp_attr, val);
-+		else
-+			hl_set_temperature(hdev, channel, attr, val);
- 		break;
- 	case hwmon_pwm:
- 		switch (attr) {
- 		case hwmon_pwm_input:
-+			cpucp_attr = cpucp_pwm_input;
-+			break;
- 		case hwmon_pwm_enable:
-+			cpucp_attr = cpucp_pwm_enable;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
--		hl_set_pwm_info(hdev, channel, attr, val);
-+
-+		if (use_cpucp_enum)
-+			hl_set_pwm_info(hdev, channel, cpucp_attr, val);
-+		else
-+			hl_set_pwm_info(hdev, channel, attr, val);
- 		break;
- 	case hwmon_in:
- 		switch (attr) {
- 		case hwmon_in_reset_history:
-+			cpucp_attr = cpucp_in_reset_history;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
--		hl_set_voltage(hdev, channel, attr, val);
-+
-+		if (use_cpucp_enum)
-+			hl_set_voltage(hdev, channel, cpucp_attr, val);
-+		else
-+			hl_set_voltage(hdev, channel, attr, val);
- 		break;
- 	case hwmon_curr:
- 		switch (attr) {
- 		case hwmon_curr_reset_history:
-+			cpucp_attr = cpucp_curr_reset_history;
- 			break;
- 		default:
- 			return -EINVAL;
- 		}
--		hl_set_current(hdev, channel, attr, val);
-+
-+		if (use_cpucp_enum)
-+			hl_set_current(hdev, channel, cpucp_attr, val);
-+		else
-+			hl_set_current(hdev, channel, attr, val);
- 		break;
- 	default:
- 		return -EINVAL;
-diff --git a/drivers/misc/habanalabs/include/common/hl_boot_if.h b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-index 3099653234e4..8837925b5d85 100644
---- a/drivers/misc/habanalabs/include/common/hl_boot_if.h
-+++ b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-@@ -252,6 +252,11 @@
-  *					where a bit is set if the engine is not idle.
-  *					Initialized in: linux
-  *
-+ * CPU_BOOT_DEV_STS0_MAP_HWMON_EN
-+ *					If set, means f/w supports proprietary
-+ *					HWMON enum mapping to cpucp enums.
-+ *					Initialized in: linux
-+ *
-  * CPU_BOOT_DEV_STS0_ENABLED		Device status register enabled.
-  *					This is a main indication that the
-  *					running FW populates the device status
-@@ -287,6 +292,7 @@
- #define CPU_BOOT_DEV_STS0_FW_NIC_STAT_XPCS91_EN		(1 << 23)
- #define CPU_BOOT_DEV_STS0_FW_NIC_STAT_EXT_EN		(1 << 24)
- #define CPU_BOOT_DEV_STS0_IS_IDLE_CHECK_EN		(1 << 25)
-+#define CPU_BOOT_DEV_STS0_MAP_HWMON_EN			(1 << 26)
- #define CPU_BOOT_DEV_STS0_ENABLED			(1 << 31)
- #define CPU_BOOT_DEV_STS1_ENABLED			(1 << 31)
- 
--- 
-2.17.1
+The INTCA/INTCS interrupt controllers came from the SH architecture
+but were phased out once SMP became the norm. I've got the majority of
+the boards above hooked up for remote access if anyone wants to test
+something.
 
+> > From my basic research, "ARM Generic Interrupt Controller Architecture
+> > Specification Architecture version 1.0" is documented in ARM IHI 0048A
+> > from 2008 (Non-Confidential) which contains:
+> > "All GIC registers are 32-bit wide." and "All registers support 32-bit
+> > word access..."
+> > "In addition, the following registers support byte accesses:"
+> > "ICDIPR"
+>
+> Renamed to GICD_IPRIORITYRn in IHI0048B.
+>
+> > "ICDIPTR"
+>
+> Renamed to GICD_ITARGETRn in IHI0048B.
+>
+> See IHI0048B_b ("B.1 Alternative register names" and specifically
+> table B-1) for the translation table between GICv1 and GICv2 names.
+
+Thanks.
+
+> > So the GICv1 documentation says byte access is partially supported
+> > however EMEV2 documentation says 32-bit access is required.
+>
+> Which is definitely an integration bug. Both set of registers *must*
+> support byte accesses. This isn't optional and left to the
+> appreciation of the integrator. This breaks the programming model
+> badly, and prevents standard software from running unmodified.
+
+This reminds me that on SH we used to fix up I/O access alignment for
+certain on-chip devices by trapping. The fast path worked well and the
+special case worked but was slow.
+
+> One of the few things the GIC architecture got right is the absence of
+> locking requirements, as all the registers can be accessed
+> concurrently by multiple CPUs as long as they operate on distinct
+> interrupts. This is why the enable and pending registers have both set
+> and clear accessors, that the priority and target registers are byte
+> accessible, and that everything else happens in CPU-private registers
+> (the CPU interface).
+
+Yeah the GIC is quite nice IMO. The legacy INTC hardware often had
+separate registers for setting and clearing, however priority probably
+required read-modify-write. SMP wasn't an issue. =)
+
+> This requirement has been there from day-1. Even the good old DIC (the
+> GIC's ancestor) that was included with the 11MP-Core says: "All
+> Interrupt Distributor Registers are byte accessible.", which is more
+> than actually necessary for the GIC. See DDI 0360F for details. And
+> yes, SW written for the GIC does work on the DIC.
+
+Interesting. For some not so big reason this makes me think of Monty Python. =)
+
+> >
+> > > > +               .compatible     = "arm,pl390",
+> > > > +               .init           = gic_enable_rmw_access,
+> > > > +       },
+> >
+> > May I ask about a clarification about the EMEV2 DTS and DT binding
+> > documentation in:
+> > arch/arm/boot/dts/emev2.dts
+> > Documentation/devicetree/bindings/interrupt-controller/arm,gic.yaml
+> >
+> > On EMEV2 the DT compatible string currently seems to be the rather
+> > generic "arm,pl390". In the DT binding documentation GICv1 is listed
+> > in an example as "arm,cortex-a9-gic". Is there any reason for not
+> > using the GICv1 compatible string (and 32-bit access) for EMEV2? Just
+> > curious.
+>
+> GICv1 is an architecture specification. PL390 is an implementation of
+> GICv1. The so called "Cortex-A9 GIC" doesn't really exist. It is
+> simply the amalgamation of the CPU interface implemented by the A9
+> (with the prototype of the GICv2 virtualisation extensions) with a
+> distributor (usually a PL390, but not necessarily). All of them
+> require that the priority and target registers are byte accessible.
+
+Makes sense.
+
+> As for changing the compatibility string, I don't see the point. This
+> will break existing setups, and doesn't change the core of the
+> issue. As far as I can see, the EMEV2 DT is correct in the sense that
+> it describes the actual implementation of the GIC used.
+
+I'm all for not breaking existing setups, but EMEV2 is a pretty rare
+case. So my line of thinking was that instead of punishing all GIC
+platforms with this EMEV2-specific workaround it is completely fine
+from my side to to special case it in DT if it makes the rest of the
+code any cleaner. But it is really up to you guys.
+
+Thanks,
+
+/ magnus
