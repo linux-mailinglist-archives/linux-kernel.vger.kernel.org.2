@@ -2,151 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2BD407F79
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3897C407F7E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235626AbhILSpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 14:45:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234185AbhILSpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 14:45:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6EC36101B;
-        Sun, 12 Sep 2021 18:43:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631472230;
-        bh=myVtFVE8GdckTLIYtqfXRD/WFkXdy8a5GR9YaI+qc8Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DzfX5ryKHbaA93jjvwzGg8MUR3mw9puZ4/nZgkdqizh6CxjtKS/i0878Nz2ysK3og
-         ubLYGX8C934HU+nxP4Fw4axMt8FFw8U0l8y5wHtbwLu1cHY+q07NRhdF8PTHkEkaaa
-         zZkG3b9SzFE+lK+/iSiBiAH74z24ErCvSCUsDzuJw8uBrPEX9SFnkEBOGQrQnm+wWy
-         y80UYonc1YJ/HbNS5569VWM43aagGrCIsqi7ySG5VgFblzEBh4N8RsOFhi5fyGwPTy
-         XyDf/e5SDhEwbghMfxf1ctfpFCal6OM7VY0XqGuafLZOEYq4cineigLDmcwcPGQhfA
-         cioogxwj+yoRQ==
-Received: by pali.im (Postfix)
-        id 7E0FE87A; Sun, 12 Sep 2021 20:43:47 +0200 (CEST)
-Date:   Sun, 12 Sep 2021 20:43:47 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Marcos Mello <marcosfrm@gmail.com>, ntfs3@lists.linux.dev,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: ntfs3 mount options
-Message-ID: <20210912184347.zrb44vpc3lfyy3px@pali>
-References: <CAJZVDJAJa+j=hx2JswdvS35t9VU6TYF3uDZnzZ5hhtSzo9E-LA@mail.gmail.com>
- <CAC=eVgQKOdNbyDf2Qf=O9SnG=6nAGZ-nyuwOosf7YW5R3xbVLw@mail.gmail.com>
+        id S235521AbhILSrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 14:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234680AbhILSrY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 14:47:24 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E8BC061574;
+        Sun, 12 Sep 2021 11:46:09 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id r3so13058274ljc.4;
+        Sun, 12 Sep 2021 11:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q56JrzkcHqlDDYAqTVxBga8cYlObhzJYEpHH2EZ3m9E=;
+        b=mi1+8LsKBCHLkR+4F39hcz+K5JnpEdGR/HM34uZ3Hl6/dxkDRJqAtOUCxqKqoQKtNW
+         MCJlcjBPDy8gEU6M7MnS9mDiWzKpvjomd1LJUX8IgrfX+WCViVzHE+Zg+FZ8kiPn4E0w
+         0pSIcBAXxK91/DkkxuY85mJGgitr9u5cHttnGLo+ImJIEKicMwvRj9cc/c+Z3UJYd5Jf
+         5q4Nfjdh9ebmkUz9qF+S7Bw4UM3H06E4WJhUNOL65K9/7LE1hxyUnGeF90fvBsC7bG2a
+         fHzcimUWihOzigG5i5mR5Ip6kSMVKrBnClCi58CJyjHqTXd0/qDKyycPg6fnhsxz5MZS
+         9PbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q56JrzkcHqlDDYAqTVxBga8cYlObhzJYEpHH2EZ3m9E=;
+        b=WakH9yPLZdd47MIbV/HFsCEScNIgFp2y1GoTNhYvM476TG+Bk01hmOEXag6yo+bOs4
+         q/JHiUqc5k1lOGnEVUXdJDNklG9Cw00ENxA0SKUk3bRE2uQg7eVOM7MAv4tRXpG7XOZC
+         EptkCDOkh/ZBgLgf/VW/IWMoTWxyFWeavFahhcO6aFGHWysQWuurWbmCT+PuuXk9YSjS
+         AHceWJ7tYFfyb7g/cM7h1/mhalko95A0sUH6y22LW+YpULqnaviPc5FiIxlCDHvRXVim
+         DiYgL1R3wvixObN/BUV0BvHauHIxeIs5TUPSYVZErzuCJhEP5Zse+czKadE9Gf60ZvdX
+         onBw==
+X-Gm-Message-State: AOAM533rTeUsjL+ePo0TUDUYcxMhzDB/A8M3E5PTt6bMbdCRF9Q7vDw7
+        KvCMSUsOHKfIj19fOL+MhlXjsHTShO8=
+X-Google-Smtp-Source: ABdhPJxPTzAx2s58MURkXqHJUIV52ouK5bUuydkhvZlQyUBpIh4vJ0dRfchw8wAf+23aHJuMVgHT+g==
+X-Received: by 2002:a05:651c:1541:: with SMTP id y1mr6969424ljp.226.1631472368231;
+        Sun, 12 Sep 2021 11:46:08 -0700 (PDT)
+Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
+        by smtp.gmail.com with ESMTPSA id q5sm588570lfg.36.2021.09.12.11.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 11:46:07 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v1 0/4] Make probe() of Tegra devfreq driver completely resource-managed
+Date:   Sun, 12 Sep 2021 21:44:54 +0300
+Message-Id: <20210912184458.17995-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAC=eVgQKOdNbyDf2Qf=O9SnG=6nAGZ-nyuwOosf7YW5R3xbVLw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+This series adds new resource-managed helpers and makes Tegra devfreq
+driver to use them, improving the driver's error-handling code.
 
-On Friday 10 September 2021 15:19:16 Kari Argillander wrote:
-> 10.09.2021 14.23 Marcos Mello (marcosfrm@gmail.com) wrote:
-> > Hi, sorry email you directly, but this mailing list thing is cryptic
-> > to me.
-> 
-> I CC also lists to this so now everyone knows. Also CC couple
-> others who might be interested to talk about this.
-> 
-> > I was reading your patches cleaning up ntfs3 documentation and
-> > realized some mount options diverge from NTFS-3G. This will make
-> > udisks people unhappy.
+Dmitry Osipenko (4):
+  opp: Add more resource-managed variants of dev_pm_opp_of_add_table()
+  PM / devfreq: Add devm_devfreq_add_governor()
+  PM / devfreq: tegra30: Use resource-managed helpers
+  PM / devfreq: tegra30: Check whether clk_round_rate() returns zero
+    rate
 
-If you still have to specify which fs driver want to use (ntfs, ntfs-3g,
-ntfs3). So each software needs to be adjusted if want to start using
-different fs driver even when mount options are same. So I think there
-are no big issues that different fs driver are using different mount
-options.
+ drivers/devfreq/devfreq.c         |  26 +++++++
+ drivers/devfreq/governor.h        |   3 +
+ drivers/devfreq/tegra30-devfreq.c | 109 +++++++++++++-----------------
+ drivers/opp/of.c                  |  46 +++++++++++--
+ include/linux/pm_opp.h            |  12 ++++
+ 5 files changed, 127 insertions(+), 69 deletions(-)
 
-> This is true. They also diverge from the current NTFS driver. We have
-> talk about it a little bit and before ntfs driver can go out from kernel we
-> need to support those flags or at least some. udisk currently does only
-> support NTFS-3G and it does not support kernel ntfs driver. So nothing
-> will change.
-> 
-> I also agree that we should check mount options from ntfs-3g and maybe
-> implement them in. Maybe we can just take some mount options with
-> deprecated and print that this option is meant to use with ntfs-3g please
-> note that this is kernel ntfs3 driver or something. It would still work for
-> users. Ntfs-3g contains imo lot of unnecessary flags. Kernel community
-> would probably not want to maintain so large list of different options.
+-- 
+2.32.0
 
-Mount options which makes sense could be implemented. Just somebody
-needs to do it.
-
-> Ntfs-3g group also has acounted problems because they say that you
-> should example use "big_writes", but not everyone does and that drops
-> performance. Driver should work good way by default.
-
-I agree. Mount option which is just a hack because of some poor
-implementation should not be introduced. Instead bugs should be fixed.
-Also it applies for "performance issues" which do not change behavior of
-fs operations (i.e. read() / write() operations do same thing on raw
-disk).
-
-> And only if there
-> is really demand there should be real mount option. But like I said, maybe
-> we should add "fake" ntfs-3g options so if some user change to use ntfs3
-> it will be pretty painless.
-
-This really should not be in kernel. You can implement userspace mount
-helper which translates "legacy" ntfs-3g options into "correct" kernel
-options. /bin/mount already supports these helpers / wrappers... Just
-people do not know much about them.
-
-> > NTFS-3G options:
-> > https://github.com/tuxera/ntfs-3g/blob/edge/src/ntfs-3g.8.in
-> >
-> > UDISKS default and allowed options:
-> > https://github.com/storaged-project/udisks/blob/master/data/builtin_mount_options.conf
-> >
-> > For example, windows_names is not supported in ntfs3 and
-> > show_sys_files should probably be an alias to showmeta.
-> 
-> Imo windows_names is good option. There is so many users who just
-> want to use this with dual boot. That is why I think best option would
-> be windows_compatible or something. Then we do everything to user
-> not screw up things with disk and that when he checks disk with windows
-> everything will be ok. This option has to also select ignore_case.
-> 
-> But right now we are horry to take every mount option away what we won't
-> need. We can add options later. And this is so early that we really cannot
-> think so much how UDSIKS threats ntfs-3g. It should imo not be problem
-> for them to also support for ntfs3 with different options.
-
-This is something which needs to be handled and fixed systematically. We
-have at least 5 filesystems in kernel (bonus question, try to guess
-them :D) which support some kind/parts of "windows nt" functionality.
-And it is pain if every one fs would use different option for
-similar/same functionality.
-
-> > Also, is NTFS-3G locale= equivalent to ntfs3 nls=?
-> 
-> Pretty much. It is now called iocharset and nls will be deprecated.
-> This is work towards that every Linux kernel filesystem driver which
-> depends on this option will be same name. Ntfs-3g should also use
-> it.
-
-iocharset= is what most fs supports. Just few name this option as nls=
-and for consistency I preparing patches which adds iocharset= alias for
-all kernel filesystems. nls= (for those few fs) stay supported as legacy
-alias for iocharset=.
-
-Kari, now I'm thinking about nls= in new ntfs3 kernel driver. It is
-currently being marked as deprecated. Does it really make sense to
-introduce in new fs already deprecated option? Now when final linux
-version which introduce this driver was not released yet, we can simply
-drop (= do not introduce this option). But after release, there would be
-no easy way to remove it. Adding a new option can be done at any time
-later easily...
-
-> > Thank you a lot for all the work put into ntfs3!
-> >
-> > Marcos
