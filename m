@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7711407EBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E172407EC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234022AbhILQxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 12:53:51 -0400
-Received: from ixit.cz ([94.230.151.217]:54866 "EHLO ixit.cz"
+        id S234612AbhILQyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 12:54:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230158AbhILQxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 12:53:50 -0400
-Received: from newone.lan (ixit.cz [94.230.151.217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 3600F23B26;
-        Sun, 12 Sep 2021 18:52:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1631465553;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yC0D9CrqiJDjXzrYXSzEu64en0t0j58CW742XHzjffM=;
-        b=0AeqGYeL+Bc/2dlR5wM7YZmnsC/N7AVWUb/+kcwf++HDOwcE3FozJZswvUELL6442sh1HE
-        4lDeoXW+OEWYC+j2S9aFpNrb5Bz/LqQ5B2qU8a8cF2+ceVX7/fD5VaFu5+PG1E77HeI2Qj
-        a+AbMZ5SaoMcbNrISFJzMf46j80rj2U=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
-Subject: [PATCH] dt-bindings: arm: Fix Toradex compatible typo
-Date:   Sun, 12 Sep 2021 18:51:20 +0200
-Message-Id: <20210912165120.188490-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230113AbhILQya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 12:54:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F4A46103D;
+        Sun, 12 Sep 2021 16:53:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631465596;
+        bh=hWXd04iRoonKIYllliPipNavG0ogl8feAMJEpsYp1lg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Dl6IVrhh7WwKFWaOhzoqOwbt8G011NZ0T/ouDpKIYZkE+w8fiC3wG4/v+sd0m4Fck
+         hkVFLI/8BvwAiqtqHv/RB60UBrJcIrLIIM9t4O+MCSDR6nzgL6eWRxe3v+JzbVqWKk
+         MWUc3dsNJRLQV0aMgUF4PGt9epInExMQ2Le28h4XMzse95hWDWYNqkaVHpJ7cUKXjo
+         hGve2sPeZLhJJ3+nCnVAeBZTVKZAAqAUjlXHaQCDuTyd3rtcgJQ8TSqe6+KSK1dLmx
+         4iuJzUNu+n5yGZ4WSSYJhQ+RUO4y9rEV1z83KvDUCIrO1SMPB3M0CHB1ft6w1Rc4/l
+         EvrhuA6yJb+ig==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jgg@ziepe.ca
+Cc:     christian.koenig@amd.com, daniel.vetter@ffwll.ch,
+        galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, dledford@redhat.com,
+        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
+        hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Date:   Sun, 12 Sep 2021 19:53:07 +0300
+Message-Id: <20210912165309.98695-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes: f4d1577e9bc6 ("dt-bindings: arm: Convert Tegra board/soc bindings to json-schema")
+Hi,
+Re-sending this patch-set following the release of our user-space TPC
+compiler and runtime library.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- Documentation/devicetree/bindings/arm/tegra.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I would appreciate a review on this.
 
-diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
-index b9f75e20fef5..b2a645740ffe 100644
---- a/Documentation/devicetree/bindings/arm/tegra.yaml
-+++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -54,7 +54,7 @@ properties:
-           - const: toradex,apalis_t30
-           - const: nvidia,tegra30
-       - items:
--          - const: toradex,apalis_t30-eval-v1.1
-+          - const: toradex,apalis_t30-v1.1-eval
-           - const: toradex,apalis_t30-eval
-           - const: toradex,apalis_t30-v1.1
-           - const: toradex,apalis_t30
+Thanks,
+Oded
+
+Oded Gabbay (1):
+  habanalabs: define uAPI to export FD for DMA-BUF
+
+Tomer Tayar (1):
+  habanalabs: add support for dma-buf exporter
+
+ drivers/misc/habanalabs/Kconfig             |   1 +
+ drivers/misc/habanalabs/common/habanalabs.h |  22 +
+ drivers/misc/habanalabs/common/memory.c     | 522 +++++++++++++++++++-
+ drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
+ drivers/misc/habanalabs/goya/goya.c         |   1 +
+ include/uapi/misc/habanalabs.h              |  28 +-
+ 6 files changed, 570 insertions(+), 5 deletions(-)
+
 -- 
-2.33.0
+2.17.1
 
