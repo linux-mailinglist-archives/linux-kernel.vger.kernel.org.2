@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2117407B59
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 05:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FCE407B5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 05:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhILDB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 23:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhILDBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 23:01:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F8F610A3;
-        Sun, 12 Sep 2021 03:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631415642;
-        bh=pS9HZVlPvtn7Q5XlT8PPFoLDREqGK4O9HDm8FSSaPHI=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=ZseE5TN+4AdVYOkod9V9le8TintjIIwojHczkYeZH0PEcDEvgElQ9/la7eJKc46Gq
-         cyNQfBvmxqTrdKiJuqxzwFysdwbtEzXUJRPp2V50MREwyZVovUFf7u9Rhte3HvwAK4
-         DlY5aKEXoMsQkJwt3pPMpYMExhgEZ3YfuhCtDJW3MOLlZ1mdH0rxd6GOYUHLQjCCDT
-         DTxK+5l58OiX6Gm4CTc/PTbe0WPAtk3liQoxbuG5TOlmb1J270XvXCyUDn91z8fNm4
-         /aI85Vx7U/T04StSEey2OWheuCh9tm0W2/O7lS8ILcEmjGKRgoXbrcSIHk8lvWzirZ
-         RUjTwyrNlWvkQ==
-Received: by mail-ot1-f45.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso8208584ots.5;
-        Sat, 11 Sep 2021 20:00:42 -0700 (PDT)
-X-Gm-Message-State: AOAM531ANEGDWsOYADxBXtURqA2M6orwNbiXMupVNau5v0xiK3GQfUL5
-        9fC7bMb7wso4WmefIw8t9NSpKhN0HxPYXbBm3Jw=
-X-Google-Smtp-Source: ABdhPJz/0eZ6wzPUVUTrKtioPZwMEYnNDLoIX9jJxNXCjS/fmtAEESV3jW7ry58dQCKy6SgQoM4mkifLd2TA2Es48/A=
-X-Received: by 2002:a9d:36d:: with SMTP id 100mr4366711otv.237.1631415636724;
- Sat, 11 Sep 2021 20:00:36 -0700 (PDT)
+        id S234878AbhILDGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 23:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhILDGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 23:06:37 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCC6C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 20:05:23 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id t6so7204828edi.9
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 20:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sd5WF+pIcO5DhcoFv/B3hGgVVb1vEUiUbaxcHE8vxMU=;
+        b=B+4CSmBgsYiW+AwniIyTYkaAPXBby22GaaGzVbP5WI4XE6SNgGuAI2ywXMVO7Gt5Fp
+         8WRHCCvJNyi/cki0pJhLfppO13sT/2TPS32KMgYOhYzUAfeaohf7qBlZi4POsT/uuMzc
+         1+LkGID0kTpGpaFJpkrTxL+5kmesiZYp7HfZMTcwccrz0lKQdNn5Tm/n1rBKCl/L2Hkj
+         bBiZ1mk46IaSGEu6oT/SZ9e0xm/dcBWLca4PpzXJvcKLusqTlEpnYMBOLfyd1YDXdjly
+         y3NaPNUJ5EScxTYQhJg0sWKMEToNVOFZaUGFBnjVOlsHjSJ2P3/iOz4HI0ajEKKr/AUh
+         hxfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sd5WF+pIcO5DhcoFv/B3hGgVVb1vEUiUbaxcHE8vxMU=;
+        b=Y5cK1IAH6yYgxXCmQF7tVPh8JtnK+iVwt/3W1ZDNaxbVmLGISl8JI2NYePSIId9nWZ
+         k5ChuuWCQ9yChW1Ac1bOSas9LWv7qa1pyLdfnkN3gPGuaW+Wmyb+HkHO+5LZ0cucgWC1
+         OZ8TECkPX87W/jc1bxRed38oUBeJzFN1cyrD8WuUrKKZkOnujd4vGP08Vs8DcSg+zgC5
+         4NH7mR1zqj3if28gEUt8ROWVYCUguhr7y93ra7n156GiR7EJKWFB4UibD2Lt9sSFODv7
+         4XB7/PbDby2GwkjNIdjOJf/BSkgPl4zMqj8GiQ/8Xf5ea/VtSFnZTPsfX0bgTO5arDOo
+         FfJw==
+X-Gm-Message-State: AOAM5313WXwYN/oGDz6r10GEbA29G1hM1Htv5zQ5iMPvvYFJM62wIkgV
+        YKzt16D4WNoP0g6bl+6XgDo16knD0clTKI4Mp/Y=
+X-Google-Smtp-Source: ABdhPJw7cIZLpKPkFy1iGfM4QfhtKcxAPMVJ4l/whWicwMKSgIzLcMG1Pvd4yZ1pMGu7o5Tyb2ZOh6o0yXVTnUwfemY=
+X-Received: by 2002:aa7:d592:: with SMTP id r18mr6041634edq.172.1631415921224;
+ Sat, 11 Sep 2021 20:05:21 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:74d:0:0:0:0:0 with HTTP; Sat, 11 Sep 2021 20:00:36 -0700 (PDT)
-In-Reply-To: <51815fbe3e864a0177445b9b17d018a42d603e21.camel@gmx.de>
-References: <425df999d02a62af13da8e77dbed0f2be750cda8.camel@gmx.de> <51815fbe3e864a0177445b9b17d018a42d603e21.camel@gmx.de>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Sun, 12 Sep 2021 12:00:36 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd8ihs-DmE234edRCoCo9FVPRwiiyKGgVz+rrt0hHE=K7g@mail.gmail.com>
-Message-ID: <CAKYAXd8ihs-DmE234edRCoCo9FVPRwiiyKGgVz+rrt0hHE=K7g@mail.gmail.com>
-Subject: Re: ksmbd,transport_rdma.c: Don't include rwlock.h directly
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        CIFS <linux-cifs@vger.kernel.org>
+References: <20210912025235.3514761-1-linux@roeck-us.net>
+In-Reply-To: <20210912025235.3514761-1-linux@roeck-us.net>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Sat, 11 Sep 2021 20:05:09 -0700
+Message-ID: <CAMo8BfJ8f+4AmBD1B7J9vOp0xQbB=zRW-NyGZP6gTPTA-74OPQ@mail.gmail.com>
+Subject: Re: [PATCH] xtensa: Increase size of gcc stack frame check
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-09-12 11:23 GMT+09:00, Mike Galbraith <efault@gmx.de>:
-> typing hard.. Thag forget type [patch]
-I will apply this patch, Thanks for your patch!
+On Sat, Sep 11, 2021 at 7:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> On Sun, 2021-09-12 at 04:19 +0200, Mike Galbraith wrote:
->>
->> rwlock.h specifically asks to not be included directly.
->>
->> In fact, the proper spinlock.h include isn't needed either,
->> it comes with the huge pile that kthread.h ends up pulling
->> in, so just drop it entirely.
->>
->> Signed-off-by: Mike Galbraith <efault@gmx.de>
->> ---
->>  fs/ksmbd/transport_rdma.c |    1 -
->>  1 file changed, 1 deletion(-)
->>
->> --- a/fs/ksmbd/transport_rdma.c
->> +++ b/fs/ksmbd/transport_rdma.c
->> @@ -20,7 +20,6 @@
->>  #define SUBMOD_NAME    "smb_direct"
->>
->>  #include <linux/kthread.h>
->> -#include <linux/rwlock.h>
->>  #include <linux/list.h>
->>  #include <linux/mempool.h>
->>  #include <linux/highmem.h>
->>
+> xtensa frame size is larger than the frame size for almost all other
+> architectures. This results in more than 50 "the frame size of <n> is
+> larger than 1024 bytes" errors when trying to build xtensa:allmodconfig.
 >
+> Increase frame size for xtensa to 1536 bytes to avoid compile errors
+> due to frame size limits.
 >
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  lib/Kconfig.debug | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index ed4a31e34098..afad11e57d6b 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -346,7 +346,7 @@ config FRAME_WARN
+>         int "Warn for stack frames larger than"
+>         range 0 8192
+>         default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+> -       default 1536 if (!64BIT && PARISC)
+> +       default 1536 if (!64BIT && (PARISC || XTENSA))
+>         default 1024 if (!64BIT && !PARISC)
+
+Shouldn't that line also be changed to
+  default 1024 if (!64BIT && !(PARISC || XTENSA))
+?
+
+>         default 2048 if 64BIT
+>         help
+> --
+> 2.33.0
+>
+
+-- 
+Thanks.
+-- Max
