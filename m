@@ -2,472 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E7D407FD6
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE69407FE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236166AbhILUCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 16:02:00 -0400
-Received: from mout.gmx.net ([212.227.17.22]:51013 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236017AbhILUB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 16:01:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631476796;
-        bh=xizzdkWfxeZMBB0KGWNfW468IvZnVnkVemTYskKzzhE=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=jNGlzi/Mm+0zWpm2bzbgCBV+Cdv6eMHMoR5YzBrqqsFAE7PlhTCxkunqtBTOZWbtJ
-         He7IMeiY4msAOL29YVp2NISu+bCvYfYYwsz7eo4L4glMgZU9Fa1MRnGPAGywlh12o5
-         i41/D+bVR4kqhvqaePMTbzPkIM7OiBCKl/whRQ+c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.163.18]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N49lJ-1n7t183XIP-0102iO; Sun, 12
- Sep 2021 21:59:55 +0200
-Date:   Sun, 12 Sep 2021 21:58:16 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Subject: Re: [PATCH 3/4] parisc: Use absolute_pointer for memcmp on fixed
- memory location
-Message-ID: <YT5b2HgrvL12Nrhx@ls3530>
-References: <20210912160149.2227137-1-linux@roeck-us.net>
- <20210912160149.2227137-4-linux@roeck-us.net>
- <CAHk-=wi1TBvyk7SWX+5LLYN8ZnTJMut1keQbOrKCG=nb08hdiQ@mail.gmail.com>
+        id S236174AbhILUKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 16:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231560AbhILUKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 16:10:49 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E53C061574;
+        Sun, 12 Sep 2021 13:09:34 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id b6so11289521wrh.10;
+        Sun, 12 Sep 2021 13:09:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fiqPbDCwFmlbxuuQ8fWiazbK8+HJRDKZSDH45j5yDS4=;
+        b=THwDQW5aW0tqS6hx7IbEh4k3R6LOg61YJp4dnkYQ0rdPvyVHzJXXIOpL2+LusxvMfe
+         a4wrGLBOOr3Diq7eVvzWwFTfU9NRkOXi4vbtd8Qpke8OuPNPvFTR2y6y3CuEfRrI5oC9
+         uTm7qvw6IKca1gnycpnH/2kw1QRLZCrc8lDSyol8PKdMJ+qDBw912wpsyS9H8SF79xZ5
+         4ecuFobb7f4TheRTr7knx28d+twYQ8LzYcwQY/i/Ji6/N75JZwhhgeHtILkg7bH4aG29
+         udp1ydDMxBKGq/VR7UnS9J5xRZHrPvHiJDNbzZK3mdc3ZVE24yGr8nKj/lusGr1/KDmj
+         Fbeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fiqPbDCwFmlbxuuQ8fWiazbK8+HJRDKZSDH45j5yDS4=;
+        b=aEtnTOUR4rS5bSXcGAqX6RBTtAwUhYDs3ftbt16dajbdaPqcbTwg48/Aq3iBmgfXGl
+         4izULWrX3rVdrqW+6u1I9BWwGwkSMDUjulGkM2/myzLEaZYz1lELNoBIE7pkfIZSAdq5
+         ZdIngFiHDsL38TI4XuZDenFcMFr5gCwDenI6N9mbeqaOghiRsoe4gZcD8aXT4/X1Yd+C
+         3sANwljdrfmrlWpn5mR3uzxxhpJSZmGe91moBXOOO1ulTgBO/qbmygb4S26/ggyM5qW9
+         YLu6u/F65NBVnrjjv5qNiHU3jXeVmXLWyVPAVPgZAivV99o230Pli3nWVMVIHfeelEg6
+         SkGQ==
+X-Gm-Message-State: AOAM531Oc0P7RU00K4RNCHS4l4CH7d6gGj9IXlu95XzYRBvu6BvtHadg
+        Xb3WLM1s/ubYU/o8dGmw+nM=
+X-Google-Smtp-Source: ABdhPJx+cwbh1xTxO952gJLAARzpJGlg4ZSY4Z/pn0vStAUvtPTnJq1wrXO//SEeNwlkWFML1MlvyQ==
+X-Received: by 2002:adf:ef92:: with SMTP id d18mr8944757wro.264.1631477372674;
+        Sun, 12 Sep 2021 13:09:32 -0700 (PDT)
+Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
+        by smtp.gmail.com with ESMTPSA id v10sm5463476wrg.15.2021.09.12.13.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 13:09:32 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v11 00/34] NVIDIA Tegra power management patches for 5.16
+Date:   Sun, 12 Sep 2021 23:07:58 +0300
+Message-Id: <20210912200832.12312-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi1TBvyk7SWX+5LLYN8ZnTJMut1keQbOrKCG=nb08hdiQ@mail.gmail.com>
-X-Provags-ID: V03:K1:2VqccK54tmLD+8KuLJZPTw4oAxcDhyy51ck37qk85ZYNmY138c2
- jBP0Q3aPB0Xtn92gFJOFD4jvO5TE1u40FZJasM1hO+bVV2GSPkcIMzA4c7OBcMrJlcjfkui
- DBCHYrmiabot0HDmxtGuwswAVTumOrlRog71FWQoZdJ8Xg1IGPnhIvdZcFEUfwSKsDftZJC
- +ogZUQEE1496xMw4tq5EA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:L6nbEV6rAvY=:iEIhCch8+Uu7QJOcrP3pgj
- FAb8XJ+HCQBnNaIdlfr0dgpGOVTdfSmw45iKoD50UHJ7KhPj/PiFefUXllLeDAM882CdNfRdp
- 39YzXeaT3OZKpOid1iFiqwXktjpKGzZpNSNSQI7vOVvAiU94AawBxpY2PquG0Scxu7uSNTg+/
- 2TYb4fKNFYcEUTHQ43n7+nBn4MngW/4cUmyiw8avFACbPcssmDddNoPuINYjUPPmgNjbevWWh
- eTXO4YwuTcrT2oKWC8ezMFIxUenQ5VDA1qzIvE4luT7GSI/XRxUYagUHUJtUvLDfdM0yljcIv
- mgxDdAeINkSw2KuKxWWW9lydNVQRva0FhARL0+LuyEVPo0wwoLa+yoOdOUq8ssvInVDPn4MkD
- vaNDEHmZxla3cA3sh/h4k3Z+yjoWiK3lhFLBmw9XSgHhoN3zC99tMco0/kQhHSe8T4+KhUMKI
- vog7x9OVhQa2K2PbFl9X9uWdZkrTYFQ1JK5JYkGROU6/jIjRo2wg5XrWZmkRrTy6rxtQl36yt
- FUvapGVH31o/g1P/97LJ5T6ZPZF8Q2oge+p7jYrwZGwVNHZyQN/dE3bMgh7g8AsCYa6O1tkoY
- urr+ciDWDvyYSmljHT10NGqmhOCE7foTtGi7uajFgc3DdCiIjYnIy/55ZlEQB/wxiwE5dAxtI
- EN+vI6+KdtUBaezumbLGvCxevZszipF6oTyj5PKzXvJV/ipQWapEw86BueAXFJBC/QRCaeZaa
- MylEW5XJauRPFCONTas9PyOiTLmllNcixcdbwC/W21pjjQP/Kjad2ZQC/zQjq2OK/87cPoudQ
- vZmvzA+gsM31+K/bHW1VfoFOvHVKmJBo+d/G1YmhSJbE3s7J4NIAxEJVR5rFGlDj0NxBJUqDk
- MB4fW7/8xTjWsK4uNZVRxcJJhsyaE4UfqFtpMnAGtxx6c0i1km2tU1oDYUsBsOw9ci/a/4VKY
- 194PDDugVblUxSp51yk0PnQotVk/DRqddisQ/fUpiBiOdSXxkby6zZwpRTc4wmWklUvqH7XcK
- MTruOQtGX0DT1bT1ZrQ0sMs2kvSwWlLVWUSAZTT3RLX6cYaVBgkQt9ziPZ3R6F7Em8T6K7PHJ
- 1A1GnkXyABD2w8=
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Linus Torvalds <torvalds@linux-foundation.org>:
-> On Sun, Sep 12, 2021 at 9:02 AM Guenter Roeck <linux@roeck-us.net> wrote=
-:
-> >
-> > -       running_on_qemu =3D (memcmp(&PAGE0->pad0, "SeaBIOS", 8) =3D=3D=
- 0);
-> > +       running_on_qemu =3D (memcmp(absolute_pointer(&PAGE0->pad0), "S=
-eaBIOS", 8) =3D=3D 0);
->
-> This seems entirely the wrong thing to do, and makes no sense. That
-> "&PAGE0->pad0" is a perfectly valid pointer, and that's not where the
-> problem is.
->
-> The problem is "PAGE0" itself:
->
->     #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
->
-> which takes that absolute offset and creates a pointer out of it.
->
-> IOW, _that_ is what should have the "absolute_pointer()" thing, and in
-> that context the name of that macro and its use actually makes sense.
->
-> No?
->
-> An alternative - and possibly cleaner - approach that doesn't need
-> absolute_pointer() at all might be to just do
->
->         extern struct zeropage PAGE0;
->
-> and then make that PAGE0 be defined to __PAGE_OFFSET in the parisc
-> vmlinux.lds.S file.
->
-> Then doing things like
->
->         running_on_qemu =3D !memcmp(&PAGE0.pad0, "SeaBIOS", 8);
->
-> would JustWork(tm).
+This series adds runtime PM support to Tegra drivers and enables core
+voltage scaling for Tegra20/30 SoCs, resolving overheating troubles.
 
-Yes, this second approach seems to work nicely, although the patch
-then gets slightly bigger.
-Below is a tested patch.
-I'll check it some further and apply it to the parisc tree then.
+All patches in this series are interdependent and should go via Tegra tree.
 
-Thanks!
-Helge
+Changelog:
 
-=2D-------
+v11: - Added acks and r-b from Rob Herring, Mark Brown and Miquel Raynal
+       that were given to v8.
 
-[PATCH] Define and export PAGE0 in vmlinux.lds.S linker script
+     - Corrected order of the new memory controller reset entry in
+       device-trees and host1x DT binding patch, which was requested by
+       Rob Herring.
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+     - Switched consumer drivers to use power domain state syncing done
+       by new Tegra's common OPP-initialization helper.
 
-=2D--
+     - Made use of new devm_pm_runtime_enable() helper that was added to
+       v5.15 kernel, where appropriate.
 
-diff --git a/arch/parisc/boot/compressed/misc.c b/arch/parisc/boot/compres=
-sed/misc.c
-index 7ee49f5881d1..1b957c6bbe5c 100644
-=2D-- a/arch/parisc/boot/compressed/misc.c
-+++ b/arch/parisc/boot/compressed/misc.c
-@@ -319,7 +319,7 @@ unsigned long decompress_kernel(unsigned int started_w=
-ide,
+     - Added "fuse: Use resource-managed helpers" patch.
 
- 	/* Limit memory for bootoader to 1GB */
- 	#define ARTIFICIAL_LIMIT (1*1024*1024*1024)
--	free_mem_end_ptr =3D PAGE0->imm_max_mem;
-+	free_mem_end_ptr =3D PAGE0.imm_max_mem;
- 	if (free_mem_end_ptr > ARTIFICIAL_LIMIT)
- 		free_mem_end_ptr =3D ARTIFICIAL_LIMIT;
+     - Converted Tegra20/30 clk drivers to a proper platform drivers,
+       which was requested by Thierry Reding.
 
-diff --git a/arch/parisc/boot/compressed/vmlinux.lds.S b/arch/parisc/boot/=
-compressed/vmlinux.lds.S
-index ab7b43990857..83a1f8f67aba 100644
-=2D-- a/arch/parisc/boot/compressed/vmlinux.lds.S
-+++ b/arch/parisc/boot/compressed/vmlinux.lds.S
-@@ -14,6 +14,9 @@ ENTRY(startup)
+     - Removed clk-bulk API usage from the MMC patch, which was requested
+       by Thierry Reding.
 
- SECTIONS
- {
-+        . =3D __PAGE_OFFSET;
-+        PAGE0 =3D .;
-+
- 	/* palo loads at 0x60000 */
- 	/* loaded kernel will move to 0x10000 */
- 	. =3D 0xe0000;    /* should not overwrite palo code */
-diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page=
-.h
-index d00313d1274e..7b64c05abd0c 100644
-=2D-- a/arch/parisc/include/asm/page.h
-+++ b/arch/parisc/include/asm/page.h
-@@ -100,6 +100,9 @@ typedef struct __physmem_range {
- extern physmem_range_t pmem_ranges[];
- extern int npmem_ranges;
+     - Changed CORE power domain name to "core" in a new patch
+       "Change name of core power domain".
 
-+/* Address of PAGE0 is defined in vmlinux.lds.S */
-+extern struct zeropage PAGE0;
-+
- #endif /* !__ASSEMBLY__ */
+     - Misc small fixes for problems that I found since v8, like couple
+       typos in error code paths and restored working RPM for Tegra DRM
+       UAPI v1 that was removed in v8 by accident.
 
- /* WARNING: The definitions below must match exactly to sizeof(pte_t)
-@@ -184,8 +187,6 @@ extern int npmem_ranges;
- #include <asm-generic/getorder.h>
- #include <asm/pdc.h>
+v9-v10: Figured out remaining GENPD API changes with Ulf Hansson and
+        Viresh Kumar. The OPP-sync helper that was used in v8 isn't needed
+        anymore because GENPD API now allows consumer drivers to
+        init rpm_pstate of power domains.
 
--#define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
--
- /* DEFINITION OF THE ZERO-PAGE (PAG0) */
- /* based on work by Jason Eckhardt (jason@equator.com) */
+v8: - Added new generic dev_pm_opp_sync() helper that syncs OPP state with
+      hardware. All drivers changed to use it. This replaces GENPD attach_dev
+      callback hacks that were used in v7.
 
-diff --git a/arch/parisc/kernel/drivers.c b/arch/parisc/kernel/drivers.c
-index 776d624a7207..2e8b6e530c09 100644
-=2D-- a/arch/parisc/kernel/drivers.c
-+++ b/arch/parisc/kernel/drivers.c
-@@ -944,9 +944,9 @@ static __init void qemu_header(void)
+    - Added new patch patch "soc/tegra: regulators: Prepare for suspend"
+      that fixes dying Tegra20 SoC after enabling VENC power domain during
+      resume from suspend. It matches to what downstream kernel does on
+      suspend/resume.
 
- 	pr_info("#define PARISC_PDC_ENTRY_ORG 0x%04lx\n\n",
- #ifdef CONFIG_64BIT
--		(unsigned long)(PAGE0->mem_pdc_hi) << 32 |
-+		(unsigned long)(PAGE0.mem_pdc_hi) << 32 |
- #endif
--		(unsigned long)PAGE0->mem_pdc);
-+		(unsigned long)PAGE0.mem_pdc);
+    - After a second thought, I dropped patches which added RPM to memory
+      drivers since hardware is always-on and RPM not needed.
 
- 	pr_info("#define PARISC_PDC_CACHE_INFO");
- 	p =3D (unsigned long *) &cache_info;
-diff --git a/arch/parisc/kernel/firmware.c b/arch/parisc/kernel/firmware.c
-index 7034227dbdf3..17516de2f191 100644
-=2D-- a/arch/parisc/kernel/firmware.c
-+++ b/arch/parisc/kernel/firmware.c
-@@ -103,10 +103,10 @@ long real64_call(unsigned long function, ...);
- long real32_call(unsigned long function, ...);
+    - Replaced the "dummy host1x driver" patch with new "Disable unused
+      host1x hardware" patch, since it's a cleaner solution.
 
- #ifdef CONFIG_64BIT
--#   define MEM_PDC (unsigned long)(PAGE0->mem_pdc_hi) << 32 | PAGE0->mem_=
-pdc
-+#   define MEM_PDC (unsigned long)(PAGE0.mem_pdc_hi) << 32 | PAGE0.mem_pd=
-c
- #   define mem_pdc_call(args...) unlikely(parisc_narrow_firmware) ? real3=
-2_call(MEM_PDC, args) : real64_call(MEM_PDC, args)
- #else
--#   define MEM_PDC (unsigned long)PAGE0->mem_pdc
-+#   define MEM_PDC (unsigned long)PAGE0.mem_pdc
- #   define mem_pdc_call(args...) real32_call(MEM_PDC, args)
- #endif
+Dmitry Osipenko (34):
+  opp: Change type of dev_pm_opp_attach_genpd(names) argument
+  soc/tegra: Add devm_tegra_core_dev_init_opp_table_common()
+  soc/tegra: pmc: Disable PMC state syncing
+  soc/tegra: Don't print error message when OPPs not available
+  dt-bindings: clock: tegra-car: Document new clock sub-nodes
+  clk: tegra: Support runtime PM and power domain
+  dt-bindings: host1x: Document OPP and power domain properties
+  dt-bindings: host1x: Document Memory Client resets of Host1x, GR2D and
+    GR3D
+  gpu: host1x: Add runtime PM and OPP support
+  gpu: host1x: Add host1x_channel_stop()
+  drm/tegra: dc: Support OPP and SoC core voltage scaling
+  drm/tegra: hdmi: Add OPP support
+  drm/tegra: gr2d: Support generic power domain and runtime PM
+  drm/tegra: gr3d: Support generic power domain and runtime PM
+  drm/tegra: vic: Support system suspend
+  usb: chipidea: tegra: Add runtime PM and OPP support
+  bus: tegra-gmi: Add runtime PM and OPP support
+  pwm: tegra: Add runtime PM and OPP support
+  mmc: sdhci-tegra: Add runtime PM and OPP support
+  mtd: rawnand: tegra: Add runtime PM and OPP support
+  spi: tegra20-slink: Add OPP support
+  media: dt: bindings: tegra-vde: Convert to schema
+  media: dt: bindings: tegra-vde: Document OPP and power domain
+  media: staging: tegra-vde: Support generic power domain
+  soc/tegra: fuse: Reset hardware
+  soc/tegra: fuse: Use resource-managed helpers
+  soc/tegra: regulators: Prepare for suspend
+  soc/tegra: pmc: Change name of core power domain
+  soc/tegra: pmc: Enable core domain support for Tegra20 and Tegra30
+  ARM: tegra: Add OPP tables and power domains to Tegra20 device-trees
+  ARM: tegra: Add OPP tables and power domains to Tegra30 device-trees
+  ARM: tegra: Add Memory Client resets to Tegra20 GR2D, GR3D and Host1x
+  ARM: tegra: Add Memory Client resets to Tegra30 GR2D, GR3D and Host1x
+  ARM: tegra20/30: Disable unused host1x hardware
 
-@@ -1249,9 +1249,9 @@ int pdc_iodc_print(const unsigned char *str, unsigne=
-d count)
+ .../bindings/clock/nvidia,tegra20-car.yaml    |   37 +
+ .../display/tegra/nvidia,tegra20-host1x.txt   |   53 +
+ .../bindings/media/nvidia,tegra-vde.txt       |   64 -
+ .../bindings/media/nvidia,tegra-vde.yaml      |  119 ++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |    1 +
+ arch/arm/boot/dts/tegra20-colibri.dtsi        |    3 +-
+ arch/arm/boot/dts/tegra20-harmony.dts         |    3 +-
+ arch/arm/boot/dts/tegra20-paz00.dts           |    1 +
+ .../arm/boot/dts/tegra20-peripherals-opp.dtsi |  941 +++++++++++
+ arch/arm/boot/dts/tegra20-seaboard.dts        |    3 +-
+ arch/arm/boot/dts/tegra20-tamonten.dtsi       |    3 +-
+ arch/arm/boot/dts/tegra20-trimslice.dts       |    9 +
+ arch/arm/boot/dts/tegra20-ventana.dts         |    1 +
+ arch/arm/boot/dts/tegra20.dtsi                |  116 +-
+ .../tegra30-asus-nexus7-grouper-common.dtsi   |    1 +
+ arch/arm/boot/dts/tegra30-beaver.dts          |    1 +
+ arch/arm/boot/dts/tegra30-cardhu.dtsi         |    1 +
+ arch/arm/boot/dts/tegra30-colibri.dtsi        |   17 +-
+ arch/arm/boot/dts/tegra30-ouya.dts            |    1 +
+ .../arm/boot/dts/tegra30-peripherals-opp.dtsi | 1412 +++++++++++++++++
+ arch/arm/boot/dts/tegra30.dtsi                |  175 +-
+ drivers/bus/tegra-gmi.c                       |   52 +-
+ drivers/clk/tegra/Makefile                    |    1 +
+ drivers/clk/tegra/clk-device.c                |  222 +++
+ drivers/clk/tegra/clk-pll.c                   |    2 +-
+ drivers/clk/tegra/clk-super.c                 |    2 +-
+ drivers/clk/tegra/clk-tegra20.c               |   77 +-
+ drivers/clk/tegra/clk-tegra30.c               |  116 +-
+ drivers/clk/tegra/clk.c                       |   75 +-
+ drivers/clk/tegra/clk.h                       |    2 +
+ drivers/gpu/drm/tegra/dc.c                    |   74 +
+ drivers/gpu/drm/tegra/dc.h                    |    2 +
+ drivers/gpu/drm/tegra/gr2d.c                  |  155 +-
+ drivers/gpu/drm/tegra/gr3d.c                  |  388 ++++-
+ drivers/gpu/drm/tegra/hdmi.c                  |   16 +-
+ drivers/gpu/drm/tegra/vic.c                   |    4 +
+ drivers/gpu/host1x/channel.c                  |    8 +
+ drivers/gpu/host1x/debug.c                    |   15 +
+ drivers/gpu/host1x/dev.c                      |  151 +-
+ drivers/gpu/host1x/dev.h                      |    3 +-
+ drivers/gpu/host1x/hw/channel_hw.c            |   44 +-
+ drivers/gpu/host1x/intr.c                     |    3 -
+ drivers/gpu/host1x/syncpt.c                   |    5 +-
+ drivers/mmc/host/sdhci-tegra.c                |   82 +-
+ drivers/mtd/nand/raw/tegra_nand.c             |   55 +-
+ drivers/opp/core.c                            |    6 +-
+ drivers/pwm/pwm-tegra.c                       |   88 +-
+ drivers/soc/tegra/common.c                    |    4 +-
+ drivers/soc/tegra/fuse/fuse-tegra.c           |   51 +-
+ drivers/soc/tegra/fuse/fuse-tegra20.c         |   33 +-
+ drivers/soc/tegra/fuse/fuse.h                 |    1 +
+ drivers/soc/tegra/pmc.c                       |   19 +-
+ drivers/soc/tegra/regulators-tegra20.c        |   99 ++
+ drivers/soc/tegra/regulators-tegra30.c        |  122 ++
+ drivers/spi/spi-tegra20-slink.c               |   10 +-
+ drivers/staging/media/tegra-vde/vde.c         |   57 +-
+ drivers/usb/chipidea/ci_hdrc_tegra.c          |   53 +-
+ include/linux/host1x.h                        |    1 +
+ include/linux/pm_opp.h                        |    8 +-
+ include/soc/tegra/common.h                    |   24 +
+ 60 files changed, 4739 insertions(+), 353 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
+ create mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+ create mode 100644 drivers/clk/tegra/clk-device.c
 
- print:
-         spin_lock_irqsave(&pdc_lock, flags);
--        real32_call(PAGE0->mem_cons.iodc_io,
--                    (unsigned long)PAGE0->mem_cons.hpa, ENTRY_IO_COUT,
--                    PAGE0->mem_cons.spa, __pa(PAGE0->mem_cons.dp.layers),
-+        real32_call(PAGE0.mem_cons.iodc_io,
-+                    (unsigned long)PAGE0.mem_cons.hpa, ENTRY_IO_COUT,
-+                    PAGE0.mem_cons.spa, __pa(PAGE0.mem_cons.dp.layers),
-                     __pa(iodc_retbuf), 0, __pa(iodc_dbuf), i, 0);
-         spin_unlock_irqrestore(&pdc_lock, flags);
-
-@@ -1272,14 +1272,14 @@ int pdc_iodc_getc(void)
- 	unsigned long flags;
-
- 	/* Bail if no console input device. */
--	if (!PAGE0->mem_kbd.iodc_io)
-+	if (!PAGE0.mem_kbd.iodc_io)
- 		return 0;
-
- 	/* wait for a keyboard (rs232)-input */
- 	spin_lock_irqsave(&pdc_lock, flags);
--	real32_call(PAGE0->mem_kbd.iodc_io,
--		    (unsigned long)PAGE0->mem_kbd.hpa, ENTRY_IO_CIN,
--		    PAGE0->mem_kbd.spa, __pa(PAGE0->mem_kbd.dp.layers),
-+	real32_call(PAGE0.mem_kbd.iodc_io,
-+		    (unsigned long)PAGE0.mem_kbd.hpa, ENTRY_IO_CIN,
-+		    PAGE0.mem_kbd.spa, __pa(PAGE0.mem_kbd.dp.layers),
- 		    __pa(iodc_retbuf), 0, __pa(iodc_dbuf), 1, 0);
-
- 	ch =3D *iodc_dbuf;
-diff --git a/arch/parisc/kernel/inventory.c b/arch/parisc/kernel/inventory=
-.c
-index 7ab2f2a54400..13234c663e4b 100644
-=2D-- a/arch/parisc/kernel/inventory.c
-+++ b/arch/parisc/kernel/inventory.c
-@@ -164,7 +164,7 @@ static void __init pagezero_memconfig(void)
- 	 * should be done.
- 	 */
-
--	npages =3D (PAGE_ALIGN(PAGE0->imm_max_mem) >> PAGE_SHIFT);
-+	npages =3D (PAGE_ALIGN(PAGE0.imm_max_mem) >> PAGE_SHIFT);
- 	set_pmem_entry(pmem_ranges,0UL,npages);
- 	npmem_ranges =3D 1;
- }
-@@ -648,8 +648,8 @@ void __init do_device_inventory(void)
- 		struct resource res[3] =3D {0,};
- 		unsigned int base;
-
--		base =3D ((unsigned long long) PAGE0->pad0[2] << 32)
--			| PAGE0->pad0[3]; /* SeaBIOS stored it here */
-+		base =3D ((unsigned long long) PAGE0.pad0[2] << 32)
-+			| PAGE0.pad0[3]; /* SeaBIOS stored it here */
-
- 		res[0].name =3D "fw_cfg";
- 		res[0].start =3D base;
-diff --git a/arch/parisc/kernel/kexec.c b/arch/parisc/kernel/kexec.c
-index 5eb7f30edc1f..6b39b81a96da 100644
-=2D-- a/arch/parisc/kernel/kexec.c
-+++ b/arch/parisc/kernel/kexec.c
-@@ -96,7 +96,7 @@ void machine_kexec(struct kimage *image)
- 	*(unsigned long *)(virt + kexec_cmdline_offset) =3D arch->cmdline;
- 	*(unsigned long *)(virt + kexec_initrd_start_offset) =3D arch->initrd_st=
-art;
- 	*(unsigned long *)(virt + kexec_initrd_end_offset) =3D arch->initrd_end;
--	*(unsigned long *)(virt + kexec_free_mem_offset) =3D PAGE0->mem_free;
-+	*(unsigned long *)(virt + kexec_free_mem_offset) =3D PAGE0.mem_free;
-
- 	flush_cache_all();
- 	flush_tlb_all();
-diff --git a/arch/parisc/kernel/kexec_file.c b/arch/parisc/kernel/kexec_fi=
-le.c
-index 8c534204f0fd..619aeebc5800 100644
-=2D-- a/arch/parisc/kernel/kexec_file.c
-+++ b/arch/parisc/kernel/kexec_file.c
-@@ -61,7 +61,7 @@ static void *elf_load(struct kimage *image, char *kernel=
-_buf,
- 		kbuf.bufsz =3D kbuf.memsz =3D ALIGN(cmdline_len, 8);
- 		kbuf.buf_align =3D PAGE_SIZE;
- 		kbuf.top_down =3D false;
--		kbuf.buf_min =3D PAGE0->mem_free + PAGE_SIZE;
-+		kbuf.buf_min =3D PAGE0.mem_free + PAGE_SIZE;
- 		kbuf.buf_max =3D kernel_load_addr;
- 		kbuf.mem =3D KEXEC_BUF_MEM_UNKNOWN;
- 		ret =3D kexec_add_buffer(&kbuf);
-diff --git a/arch/parisc/kernel/pdc_cons.c b/arch/parisc/kernel/pdc_cons.c
-index 2661cdd256ae..b635294184b9 100644
-=2D-- a/arch/parisc/kernel/pdc_cons.c
-+++ b/arch/parisc/kernel/pdc_cons.c
-@@ -218,8 +218,8 @@ static void pdc_console_init_force(void)
- 	++pdc_console_initialized;
-
- 	/* If the console is duplex then copy the COUT parameters to CIN. */
--	if (PAGE0->mem_cons.cl_class =3D=3D CL_DUPLEX)
--		memcpy(&PAGE0->mem_kbd, &PAGE0->mem_cons, sizeof(PAGE0->mem_cons));
-+	if (PAGE0.mem_cons.cl_class =3D=3D CL_DUPLEX)
-+		memcpy(&PAGE0.mem_kbd, &PAGE0.mem_cons, sizeof(PAGE0.mem_cons));
-
- 	/* register the pdc console */
- 	register_console(&pdc_cons);
-diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/processor=
-.c
-index 1b6129e7d776..7872322336a5 100644
-=2D-- a/arch/parisc/kernel/processor.c
-+++ b/arch/parisc/kernel/processor.c
-@@ -234,7 +234,7 @@ void __init collect_boot_cpu_data(void)
- 	cr16_seed =3D get_cycles();
- 	add_device_randomness(&cr16_seed, sizeof(cr16_seed));
-
--	boot_cpu_data.cpu_hz =3D 100 * PAGE0->mem_10msec; /* Hz of this PARISC *=
-/
-+	boot_cpu_data.cpu_hz =3D 100 * PAGE0.mem_10msec; /* Hz of this PARISC */
-
- 	/* get CPU-Model Information... */
- #define p ((unsigned long *)&boot_cpu_data.pdc.model)
-diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
-index cceb09855e03..0168f7f83fdb 100644
-=2D-- a/arch/parisc/kernel/setup.c
-+++ b/arch/parisc/kernel/setup.c
-@@ -384,7 +384,7 @@ void __init start_parisc(void)
- 	struct pdc_coproc_cfg coproc_cfg;
-
- 	/* check QEMU/SeaBIOS marker in PAGE0 */
--	running_on_qemu =3D (memcmp(&PAGE0->pad0, "SeaBIOS", 8) =3D=3D 0);
-+	running_on_qemu =3D (memcmp(&PAGE0.pad0, "SeaBIOS", 8) =3D=3D 0);
-
- 	cpunum =3D smp_processor_id();
-
-diff --git a/arch/parisc/kernel/time.c b/arch/parisc/kernel/time.c
-index 9fb1e794831b..00283e41fc7f 100644
-=2D-- a/arch/parisc/kernel/time.c
-+++ b/arch/parisc/kernel/time.c
-@@ -237,10 +237,10 @@ void __init time_init(void)
- {
- 	unsigned long cr16_hz;
-
--	clocktick =3D (100 * PAGE0->mem_10msec) / HZ;
-+	clocktick =3D (100 * PAGE0.mem_10msec) / HZ;
- 	start_cpu_itimer();	/* get CPU 0 started */
-
--	cr16_hz =3D 100 * PAGE0->mem_10msec;  /* Hz */
-+	cr16_hz =3D 100 * PAGE0.mem_10msec;  /* Hz */
-
- 	/* register as sched_clock source */
- 	sched_clock_register(read_cr16_sched_clock, BITS_PER_LONG, cr16_hz);
-@@ -277,7 +277,7 @@ static int __init init_cr16_clocksource(void)
-
- 	/* register at clocksource framework */
- 	clocksource_register_hz(&clocksource_cr16,
--		100 * PAGE0->mem_10msec);
-+		100 * PAGE0.mem_10msec);
-
- 	return 0;
- }
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux=
-.lds.S
-index 2769eb991f58..87abee841182 100644
-=2D-- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -55,6 +55,9 @@ jiffies =3D jiffies_64;
- #endif
- SECTIONS
- {
-+        . =3D __PAGE_OFFSET;
-+        PAGE0 =3D .;
-+
- 	. =3D KERNEL_BINARY_TEXT_START;
-
- 	__init_begin =3D .;
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 3f7d6d5b56ac..733961eb25a1 100644
-=2D-- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -283,7 +283,7 @@ static void __init setup_bootmem(void)
-
- #define PDC_CONSOLE_IO_IODC_SIZE 32768
-
--	memblock_reserve(0UL, (unsigned long)(PAGE0->mem_free +
-+	memblock_reserve(0UL, (unsigned long)(PAGE0.mem_free +
- 				PDC_CONSOLE_IO_IODC_SIZE));
- 	memblock_reserve(__pa(KERNEL_BINARY_TEXT_START),
- 			(unsigned long)(_end - KERNEL_BINARY_TEXT_START));
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index e60690d38d67..9d4ccb8c75bd 100644
-=2D-- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -1542,7 +1542,7 @@ static void sba_hw_init(struct sba_device *sba_dev)
- 		**	o reprogram serial port
- 		**	o unblock console output
- 		*/
--		if (PAGE0->mem_kbd.cl_class =3D=3D CL_KEYBD) {
-+		if (PAGE0.mem_kbd.cl_class =3D=3D CL_KEYBD) {
- 			pdc_io_reset_devices();
- 		}
-
-@@ -1550,8 +1550,8 @@ static void sba_hw_init(struct sba_device *sba_dev)
-
-
- #if 0
--printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0->mem_boot.h=
-pa,
--	PAGE0->mem_boot.spa, PAGE0->mem_boot.pad, PAGE0->mem_boot.cl_class);
-+printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\n", PAGE0.mem_boot.hp=
-a,
-+	PAGE0.mem_boot.spa, PAGE0.mem_boot.pad, PAGE0.mem_boot.cl_class);
-
- 	/*
- 	** Need to deal with DMA from LAN.
-@@ -1562,8 +1562,8 @@ printk("sba_hw_init(): mem_boot 0x%x 0x%x 0x%x 0x%x\=
-n", PAGE0->mem_boot.hpa,
- 	** 	mem_boot hpa 0xf4008000 sba 0x0 pad 0x0 cl_class 0x1002
- 	** ARGH! invalid class.
- 	*/
--	if ((PAGE0->mem_boot.cl_class !=3D CL_RANDOM)
--		&& (PAGE0->mem_boot.cl_class !=3D CL_SEQU)) {
-+	if ((PAGE0.mem_boot.cl_class !=3D CL_RANDOM)
-+		&& (PAGE0.mem_boot.cl_class !=3D CL_SEQU)) {
- 			pdc_io_reset();
- 	}
- #endif
-diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon=
-.c
-index 1b451165311c..d5737d9fa8cf 100644
-=2D-- a/drivers/video/console/sticon.c
-+++ b/drivers/video/console/sticon.c
-@@ -395,7 +395,7 @@ static int __init sticonsole_init(void)
-     pr_info("sticon: Initializing STI text console.\n");
-     console_lock();
-     err =3D do_take_over_console(&sti_con, 0, MAX_NR_CONSOLES - 1,
--		PAGE0->mem_cons.cl_class !=3D CL_DUPLEX);
-+		PAGE0.mem_cons.cl_class !=3D CL_DUPLEX);
-     console_unlock();
-
-     return err;
-diff --git a/drivers/video/console/sticore.c b/drivers/video/console/stico=
-re.c
-index f869b723494f..a6a6b5503ca1 100644
-=2D-- a/drivers/video/console/sticore.c
-+++ b/drivers/video/console/sticore.c
-@@ -966,7 +966,7 @@ static int __init sticore_pa_init(struct parisc_device=
- *dev)
- 	if (!sti)
- 		sti =3D sti_try_rom_generic(hpa, hpa, NULL);
- 	if (!sti)
--		sti =3D sti_try_rom_generic(PAGE0->proc_sti, hpa, NULL);
-+		sti =3D sti_try_rom_generic(PAGE0.proc_sti, hpa, NULL);
- 	if (!sti)
- 		return 1;
+-- 
+2.32.0
 
