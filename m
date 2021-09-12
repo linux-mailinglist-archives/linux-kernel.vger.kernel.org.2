@@ -2,75 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE33E407B4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 04:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00D5407B46
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 04:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbhILCQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 22:16:10 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:34970 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhILCQJ (ORCPT
+        id S234866AbhILCDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 22:03:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230212AbhILCC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 22:16:09 -0400
-X-Greylist: delayed 1033 seconds by postgrey-1.27 at vger.kernel.org; Sat, 11 Sep 2021 22:16:09 EDT
-Date:   Sat, 11 Sep 2021 21:57:41 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
-Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
-Message-ID: <20210912015740.GJ13220@brightrain.aerifal.cx>
-References: <20210627220544.8757-1-rdunlap@infradead.org>
- <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
- <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
- <CAFr9PXn5S_3mpJBF0bNo+S1US=Z5s89rbO-OhhqGk=zqPGWXoQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFr9PXn5S_3mpJBF0bNo+S1US=Z5s89rbO-OhhqGk=zqPGWXoQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        Sat, 11 Sep 2021 22:02:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631412105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EyikGfhK6ZBuK8sEBsdOp0Sy5GjF53gp/LzsVSTkDzg=;
+        b=VMYJlNi4efuy/3BMh2V32t2FQoPltAvE4TJUtQDi2QvgtqFoGwnSY4y+zBUdtG2LRxDuMQ
+        GXiFcKY6DvYhrl9lc4UqO0Z99ziKziqivGDxoC0KtyqZ7Z+EEs4jFrnQl0JedpP32mnHKk
+        NfGtMlAhK5GSliQjrPKGv4lQAm3f3ZI=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-E9mNqRwTNl6bUTMG4nayxA-1; Sat, 11 Sep 2021 22:01:43 -0400
+X-MC-Unique: E9mNqRwTNl6bUTMG4nayxA-1
+Received: by mail-pg1-f197.google.com with SMTP id q22-20020a63e956000000b002524787adb1so4816537pgj.3
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 19:01:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=EyikGfhK6ZBuK8sEBsdOp0Sy5GjF53gp/LzsVSTkDzg=;
+        b=vDaiDD/qapetaLVv7NcYH6xc6owar+WfKDTD+uMFTjEwiV575sn5Rg4tRwiqVLH8cI
+         FV2tmUc5LGI7yhCCCjDtjgKXv663Y25R06ACueLS9BnaTUAksTLfD03FLPgy/tOenLCx
+         0xBGAqkPpn4ShZthQdqyaMeOs8Yw1hBCy35DWs+6ngSgEnpt4zuTmM/8DHakHJP/XcpL
+         /q6kS+dnq4ib05HF6M2X+J5np8h8NuSpLyQc37HBUuoPWCdQu9/86S+PT9YbNiR2Zm0Z
+         MiKYEHhllF3ceDhRWx5xrdEw6HfQhUTN/YaQFy5OFAD9ENe+xaofcb+Gr7AtDYpMOui+
+         QaFg==
+X-Gm-Message-State: AOAM533NoZja2WQZqBgFkXEQ63m7lTVAtTLCAoFob18ST7OSTFr5/gkf
+        ZJhYPqtrvho72+QvRvKPsMRBZeKopYlR/RTr0QMG+E6KrSHGKyjZugzKmIhicOtvDuk9TPLi0EA
+        w/+qR50dXd9YJ/C2b3wuxjw26
+X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr5473652pjo.243.1631412102797;
+        Sat, 11 Sep 2021 19:01:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxAVlePM7TLoSO1fdiDoUYzdCCOCSTnPzs2ThmCm3HRYLIiLQ9HcJZ5MM1XKYXTmCyGjFMryg==
+X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr5473608pjo.243.1631412102531;
+        Sat, 11 Sep 2021 19:01:42 -0700 (PDT)
+Received: from smtpclient.apple ([2600:380:4738:b4a5:7850:2b24:ea76:1118])
+        by smtp.gmail.com with ESMTPSA id h16sm2869606pfn.215.2021.09.11.19.01.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Sep 2021 19:01:42 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/1] x86: change default to spec_store_bypass_disable=prctl spectre_v2_user=prctl
+Date:   Sat, 11 Sep 2021 19:01:40 -0700
+Message-Id: <AAA2EF2C-293D-4D5B-BFA6-FF655105CD84@redhat.com>
+References: <202109111411.C3D58A18EC@keescook>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <202109111411.C3D58A18EC@keescook>
+To:     Kees Cook <keescook@chromium.org>
+X-Mailer: iPhone Mail (18G82)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 06:08:58PM +0900, Daniel Palmer wrote:
-> HI Adrian,
-> 
-> On Thu, 9 Sept 2021 at 17:25, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > There are quite a number of patches on the mailing list that need reviewing and
-> > I fear if that doesn't happen in the foreseeable future, the SH port is being
-> > kicked out which would be a pity given that we're still maintaining the port in
-> > Debian and given that there is new hardware available with the J-Core board [2].
-> 
-> This really is a poor situation. The fact that there are patches means
-> that it's not totally dead but no one ever looking at them really puts
-> people off bothering in the future.
-> I might have a go at getting OF to work on the SH4 hardware I have but
-> knowing that the patches will probably never get looked at is very
-> demotivating.
-> 
-> Can we get a new maintainer from somewhere?
 
-Hi. I see there's a situation that needs my attention here. I will
-plan to review and merge anything important/blocking that doesn't have
-problems this week.
 
-In the bigger picture, the past few weeks and even months I've been in
-a sort of "avoid burnout safety mode". :-) Probably partly on account
-of this pandemic still being a thing because people insist on being
-stupid. I'm not gone and won't be, but some things that haven't seemed
-as urgent, including kernel stuff and especially piles of email of
-mixed importance levels, have gotten pushed back to reduce stress.
-Please don't hesitate to wave a "hey this is important, come take a
-quick look!" flag at me if needed.
+> On Sep 11, 2021, at 2:13 PM, Kees Cook <keescook@chromium.org> wrote:
+>=20
+> =EF=BB=BFOn Wed, Nov 04, 2020 at 06:50:54PM -0500, Andrea Arcangeli wrote:=
 
-At the same time, I am open to the possibility of a new maintainer or
-co-maintainer if that ends up being what makes sense. Are there any
-candidates?
+>> Switch the kernel default of SSBD and STIBP to the ones with
+>> CONFIG_SECCOMP=3Dn (i.e. spec_store_bypass_disable=3Dprctl
+>> spectre_v2_user=3Dprctl) even if CONFIG_SECCOMP=3Dy.
+>=20
+> Hello x86 maintainers!
+>=20
+> I'd really like to get this landed, so I'll take this via the
+> seccomp-tree unless someone else speaks up. This keeps falling off
+> the edge of my TODO list. :)
 
-Rich
+Thanks!  You can add my
+
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+
