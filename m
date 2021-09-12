@@ -2,88 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394B6407C6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD59407C7E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhILI0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 04:26:52 -0400
-Received: from mail.codeweavers.com ([50.203.203.244]:42372 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbhILI0u (ORCPT
+        id S232821AbhILI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 04:59:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43822 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231970AbhILI7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 04:26:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=66/6NqPSrhkqph5BWOoEvjv8N+hS8IRfOIKI44IZqjw=; b=wWA3BWxW/Smiw4RQINt8mfkrq0
-        DkLrdMsHmO89LiHr/IMLslutz6bmKIYbIZPIoH6QSLvYUbA6C26WJyvfanXeotjKkXaXjfw5k2GWF
-        ANexlgrkN1YmK1bIKvjM0XjIzRjqmRfV25noVlHcu4gAg7fJwA0SDb6Sa8FAqoBnr0lI=;
-Received: from lfbn-mar-1-908-222.w90-73.abo.wanadoo.fr ([90.73.223.222] helo=[192.168.1.32])
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <rbernon@codeweavers.com>)
-        id 1mPKnq-0002FX-7Y; Sun, 12 Sep 2021 03:25:32 -0500
-Subject: Re: [PATCH] perf symbol: Look for ImageBase in PE file to compute
- .text offset
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210909192637.4139125-1-rbernon@codeweavers.com>
- <YTpuTiYzkTKbUM/l@kernel.org>
-From:   =?UTF-8?Q?R=c3=a9mi_Bernon?= <rbernon@codeweavers.com>
-Message-ID: <e8ae2882-12cd-0fe1-b5e6-da9fc286b821@codeweavers.com>
-Date:   Sun, 12 Sep 2021 10:25:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 12 Sep 2021 04:59:24 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 49BCF1FDAE;
+        Sun, 12 Sep 2021 08:58:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631437089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lEzmMcX5MudQpJHR4iJRAKNiHkE+rMRkwwxMwEwHvSk=;
+        b=F4WkTP2MjD7OPfhk/SbkQv0yfFIjBLRYjMhg40WZPVEjt68pVVHOT0b1LkuM75V6UJBIDW
+        +4NKTZuYfCe4pJa89gbHVRBHF0iCcOTnjZasw1Vu0aDZXfwJlh9OLribKkHVBgsPADU6N5
+        7Z+TzalC9gv7rINWhF0Nr3qalKCM12o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631437089;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lEzmMcX5MudQpJHR4iJRAKNiHkE+rMRkwwxMwEwHvSk=;
+        b=+WfGlchE+EO1EJ46wAZCVr/yifzi4t3ub30dQusOTFf7FLqOmGDDIKRRNyJyN8Q7x1+lb4
+        LSnGfo6IHWeITHDA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3322F132FD;
+        Sun, 12 Sep 2021 08:58:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id L7YqDCHBPWFIWAAAGKfGzw
+        (envelope-from <bp@suse.de>); Sun, 12 Sep 2021 08:58:09 +0000
+Date:   Sun, 12 Sep 2021 10:57:56 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] timers/urgent for v5.15-rc1
+Message-ID: <YT3BFM+SWiqghjKm@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <YTpuTiYzkTKbUM/l@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 10:27 PM, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Sep 09, 2021 at 09:26:36PM +0200, Remi Bernon escreveu:
->> Instead of using the file offset in the debug file.
->>
->> This fixes a regression from 00a3423492bc90be99e529a64f13fdd80a0e8c0a,
->> causing incorrect symbol resolution when debug file have been stripped
->> from non-debug sections (in which case its .text section is empty and
->> doesn't have any file position).
->>
->> The debug files could also be created with a different file alignment,
->> and have different file positions from the mmap-ed binary, or have the
->> section reordered.
->>
->> This instead looks for the file image base, using the corresponding bfd
->> *ABS* symbols. As PE symbols only have 4 bytes, it also needs to keep
->> .text section vma high bits.
-> 
-> I added a:
-> 
-> Fixes: 00a3423492bc90be ("perf symbols: Make dso__load_bfd_symbols() load PE files from debug cache only")
-> 
-> To help stable@kernel.org to pick it, its on my local tree now.
-> 
-> It would be great to get a:
-> 
-> Reviewed-by: Nicholas Fraser <nfraser@codeweavers.com>
-> 
-> Can we have it, please?
-> 
+Hi Linus,
 
-Well, Nicholas doesn't work with us anymore. I've reached them 
-separately but didn't get any answer so I'm thinking they may not be 
-interested.
+please pull a single urgent timers fix before 5.15-rc1 releases.
+
+Thx.
+
+---
+
+The following changes since commit 8596e589b787732c8346f0482919e83cc9362db1:
+
+  Merge tag 'timers-core-2021-08-30' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2021-08-30 15:31:33 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/timers_urgent_for_v5.15_rc1
+
+for you to fetch changes up to 39ff83f2f6cc5cc1458dfcea9697f96338210beb:
+
+  time: Handle negative seconds correctly in timespec64_to_ns() (2021-09-08 17:44:26 +0200)
+
+----------------------------------------------------------------
+- Handle negative second values properly when converting a timespec64 to nanoseconds.
+
+----------------------------------------------------------------
+Lukas Hannen (1):
+      time: Handle negative seconds correctly in timespec64_to_ns()
+
+ include/linux/time64.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
 -- 
-Rémi Bernon <rbernon@codeweavers.com>
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
