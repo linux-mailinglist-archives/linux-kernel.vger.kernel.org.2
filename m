@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31E3407D87
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299C1407D8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbhILNT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 09:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235178AbhILNTz (ORCPT
+        id S235385AbhILNUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 09:20:40 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:34412 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235178AbhILNUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 09:19:55 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859EAC061574;
-        Sun, 12 Sep 2021 06:18:41 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id j13so9958562edv.13;
-        Sun, 12 Sep 2021 06:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JjkuUFG8aC+b+dNRAS0GS2+3+6SH7OL6eP6H9dMuzpg=;
-        b=BiD1DLf1/KO0J+5uDPTUYwSBh2enT2UXVgZYGoTFKRywIyeDX5XQIpvnhvAgZHP5st
-         qhz3Wekn2YD6xs+28AmtEaUDMkeK7Jqy9QMk85cd0xF+bNoXh4djm644eAiIK/pNSxRi
-         0MwT4zb/xuN4r4tF4zLuYDWeYjWUDxDfjdCEGHJaGu7z+pf/Go7zRQRBkebGaxq8BjTl
-         po/wkDpWa07/rXmNVd72uodQMzucaseosATGHRjFK5XzVJ2ixVeNQM7xqjq6vrlH93Ma
-         NYzVzggZ7Px7QBiqd2RGRrVxediX6V3kqAwUOPQpW5JTV+K+E1bSYZy6nxEXEo3kZeGY
-         oh3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JjkuUFG8aC+b+dNRAS0GS2+3+6SH7OL6eP6H9dMuzpg=;
-        b=pND7wKMxWvd1YpWAmHVKLvpRGrwBo2KgN0xbJ+Wb6l/DNfWE3NGdkmEkJ/lEg2rwos
-         SufTlwP2YwsEZBzwXabRdNimnQ9TQPXV6k9wrnCwAFHLdV2aRMUd4ZFC3hcKIlEJ2NPL
-         vo5fgkFlL4aDmCNwtCpbbGiJN0/eqOZ9zLTWWG6A+q6vIE92LkoE5rxZCKDJrB1bEJ9W
-         d4V7NmnY/FtAId/zNItoikiZsxpJKfN1IZ3sxLjZtKGYWQ9dcJcFsfHEJ905eb876WbU
-         e3x7prkUCtPHTZDfou9nF/f5fQlRHdZgIFH9bYWCz1z09xaZQro5womEJpmTtAsEfDC2
-         8cmQ==
-X-Gm-Message-State: AOAM533czWgwpNcao9bd5XBafihxXVEnYtSd1VYCAo1mjvlKozUi6YwC
-        Q9tagJq4EgbBYbVw1G5e6nA=
-X-Google-Smtp-Source: ABdhPJwU34hiWxo3W+6lr2nqbitJVT+uVLKsSOEIKBVD1dGl3QZsS9x7NyNMcwCYUhOZSyIM+lZHtw==
-X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr8010126edx.239.1631452719669;
-        Sun, 12 Sep 2021 06:18:39 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id a15sm2425158edr.2.2021.09.12.06.18.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 06:18:39 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 16:18:37 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: Re: [RFC PATCH net 2/5] net: dsa: be compatible with masters which
- unregister on shutdown
-Message-ID: <20210912131837.4i6pzwgn573xutmo@skbuf>
-References: <20210912120932.993440-1-vladimir.oltean@nxp.com>
- <20210912120932.993440-3-vladimir.oltean@nxp.com>
+        Sun, 12 Sep 2021 09:20:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631452766; x=1662988766;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YQZ+zwPEYQ1QV+zKMg1yg3Va8gHNfILejX5ulgRBH3E=;
+  b=OfGXSdQfLzRQWJMdoCLsXChqLOKzjTj/jSXsREKKVBXY9AeZoZsPkJqA
+   IVMKHW2OesM5q6xQhlbBEHFGZWU6qiydttNd+w/vSjvqoFzTusx3w0Vj4
+   uV9VtifYrVlJqXvXrFML8ukLEBHvNOpnRukw28/SIW7+6/8hfNQHaEMDs
+   fXNlsVGAM+hl8ltraTbnTbcp/x5sVp54NWMs2YephcIhfq9lsHa4aVWgB
+   pfZJzXxwjbT/F9ER1HGLz+X+rxVBKC1TUUyMRw+gJ+tY9n4LBtDYigN7+
+   QL0l/EcdewX5QyuDnY0K2lZnbyWa3Ecvv+Rao3d5wIi30I85+4Zo6AWdQ
+   A==;
+X-IronPort-AV: E=Sophos;i="5.85,287,1624291200"; 
+   d="scan'208";a="283580305"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Sep 2021 21:19:25 +0800
+IronPort-SDR: E3ixQDXeHbVMl9yYxdOxQ6zd4fI2SyWxBZ68atuIDgQu8/F5EtKUO6UNFC/AYgWrxuGw5tcCdk
+ 9JCBZdvoAYPMdRbPjI9eH7tS9zh4RiTA+oVu1aSvm7XyGR+487tc799Vo4ZSGLQzy0u8OeKzMX
+ RT6DUHKEnrTPHLTU00YoHqSJkgab2uodV6ilw5/IJ0l10dsDZsU8Q+S+x6+aba7U9CyOMkrC8W
+ 3dIORvIbKKdpKKmyHKme8lAc8p/1of0WAC7ubCJ1QnkyFO2c10gEYwXWcJVre1QklUed7aDv5D
+ DaawzFNONiRFH8MwbW29f57H
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 05:54:18 -0700
+IronPort-SDR: 41ZbyaYrvyu1mrYcLg9HCBAjUUotaNvOcaQZNfxSXzs3W4gkqp+O2nbdrxDW7jPmb7LSqGxgfR
+ 4Lj6PaP/iJdbAzbllOyQCdc9VbxaDVu3mEjGdfQzruckCeHQGaA5tHnXgNaolrpC2gsF3I5Qhd
+ jZbJoOB1DuCFsHU8sqRCdrGcVXe1CLAA4EBbpV6SyjKUIoXj6q/Efppln48Ak7DXWIKGqC5D5H
+ Np94bBwCC2Ya7ph6vMXgHZdaz4bZmra1xfl3fHMGa0NfjJyRV3/MIO6IlpXUq2D5iFVYJQfjq6
+ yqI=
+WDCIronportException: Internal
+Received: from bxygm33.ad.shared ([10.225.32.116])
+  by uls-op-cesaip01.wdc.com with ESMTP; 12 Sep 2021 06:19:23 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v3 0/2] Add temperature notification support
+Date:   Sun, 12 Sep 2021 16:19:17 +0300
+Message-Id: <20210912131919.12962-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210912120932.993440-3-vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 03:09:29PM +0300, Vladimir Oltean wrote:
-> +static int b53_mmap_shutdown(struct platform_device *pdev)
-> +{
-> +	struct b53_device *dev = platform_get_drvdata(pdev);
-> +
-> +	if (dev)
-> +		b53_switch_shutdown(dev);
-> +
-> +	platform_set_drvdata(pdev, NULL);
-> +}
-> +
->  static const struct of_device_id b53_mmap_of_table[] = {
->  	{ .compatible = "brcm,bcm3384-switch" },
->  	{ .compatible = "brcm,bcm6328-switch" },
-> @@ -331,6 +343,7 @@ MODULE_DEVICE_TABLE(of, b53_mmap_of_table);
->  static struct platform_driver b53_mmap_driver = {
->  	.probe = b53_mmap_probe,
->  	.remove = b53_mmap_remove,
-> +	.shutdown = b53_mmap_shutdown,
->  	.driver = {
->  		.name = "b53-switch",
->  		.of_match_table = b53_mmap_of_table,
+v2 -> v3:
+ - Attend Bart's & Guenter's comments
 
-I forgot to enable all variants of the b53 driver, and as such, the mmap
-version fails to build (the shutdown function should return void, not int).
+v1 -> v2:
+ - Add a hw monitor device if both the platform & the device support it
+ - Remove the sysfs patch: no need to duplicate /sys/class/hwmon
 
-I will fix this when I send the v2 patch, but I will not send that now,
-as I would like to get some feedback on the approach first.
+UFS3.0 allows using the ufs device as a temperature sensor. The purpose
+of this optional feature is to provide notification to the host of the
+UFS device case temperature. It allows reading of a rough estimate
+(+-10 degrees centigrade) of the current case temperature, and setting a
+lower and upper temperature bounds, in which the device will trigger an
+applicable exception event.
+
+A previous attempt [1] tried a comprehensive approach.  Still, it was
+unsuccessful. Here is a more modest approach that introduces just the
+bare minimum to support temperature notification.
+
+Thanks,
+Avri
+
+[1] https://lore.kernel.org/lkml/1582450522-13256-1-git-send-email-avi.shchislowski@wdc.com/
+
+Avri Altman (2):
+  scsi: ufs: Probe for temperature notification support
+  scsi: ufs: Add temperature notification exception handling
+
+ drivers/scsi/ufs/Kconfig     |  10 ++
+ drivers/scsi/ufs/Makefile    |   1 +
+ drivers/scsi/ufs/ufs-hwmon.c | 193 +++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufs.h       |   8 ++
+ drivers/scsi/ufs/ufshcd.c    |  49 +++++++++
+ drivers/scsi/ufs/ufshcd.h    |  20 ++++
+ 6 files changed, 281 insertions(+)
+ create mode 100644 drivers/scsi/ufs/ufs-hwmon.c
+
+-- 
+2.17.1
+
