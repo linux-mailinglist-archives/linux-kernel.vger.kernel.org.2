@@ -2,224 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B739407CCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AB3407CD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhILKKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 06:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbhILKKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 06:10:11 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030FCC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 03:08:56 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id d21so2063191wra.12
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 03:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8QHcM8ypCvCuFTilnzg+Tu9JW8e3hCoZSCoHDwtODaU=;
-        b=kso5OHeaBYG8XBxVZ84dx+7Y+CdFrDdIrd4IhC9evWUT8k+3QlAv+fqGHP7gwfx7G2
-         hMROFhmWnRwmE6RCybA8egxBf0YLOTst1Y+Yu9lWxEqDH/eSo3xKdr4d7p+jZuyb0T4A
-         OlcaVWQihJfjn2XFvJZliFQmCDj7iLiN2wO2OeAPLvA2NswxQRuXMYTVNR+kJ5gg9zOI
-         6EMSbWPkiNLYcj7Rh0rE090lM2m+r2N1P6kaWXQ5xPJUgnWtiecAtNi48Km17nWTSDvg
-         bsej/E1FpDfutDL7/Crlcf9Uz+2XzS9wrjIhIzyf+FDLmFhtDrCwLVUgiWrOcb2ICsaa
-         yC4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8QHcM8ypCvCuFTilnzg+Tu9JW8e3hCoZSCoHDwtODaU=;
-        b=pcdj0rTjcRgyHeNjwcgGAFCiJQqpgnQaOMOJMw7E2pmOFwcGvBsd3HK1qgyIWDPt6+
-         0vZHgDfg33dPkPdY4J3Lj60Qz8v/JoBMsnqMOD85j13gPLQjzqKCstd/80KX4kBxXUxa
-         tZu4Q5NqXHUaBZdIEtXuhiapAZqW8pVPs7IyhahT3KUm7HT1q0W244oS4X+osaD8UnFx
-         dNWcaPSXof56y6M5uBNISCZgmfu694khHxCP/GKiPQEljrYqHFrFyCkyWgK2Hn176n3n
-         21WiNUqYtEArZACQqRDr+9hNVYSSXm9MUAVWD3K8cxs2cYQ9bFuZAmty2ZwlSG78QCwY
-         Mpew==
-X-Gm-Message-State: AOAM5309jxnbFRygrjeC9GXHgvgpszu5QO5kExYa95qUF/ESUeIav1kB
-        FfN/2NQ/br2v6M42TFvlTBk=
-X-Google-Smtp-Source: ABdhPJx+/kV96wVG0ZJcV+O5fvhL5mnqbo1wa033HIKqvDfjL85suFnbaukSpjRZCq+4+F8cI9iqfw==
-X-Received: by 2002:adf:fac7:: with SMTP id a7mr6814972wrs.341.1631441335501;
-        Sun, 12 Sep 2021 03:08:55 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id k18sm3716299wmi.25.2021.09.12.03.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 03:08:55 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove macro GET_EEPROM_EFUSE_PRIV
-Date:   Sun, 12 Sep 2021 12:08:36 +0200
-Message-Id: <20210912100836.4655-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S234448AbhILKPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 06:15:53 -0400
+Received: from mail-db8eur05on2068.outbound.protection.outlook.com ([40.107.20.68]:62944
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229568AbhILKPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 06:15:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IXhyTG2EmNeFFaq9Bq0K352cTcMDX1SZfD/gKX7gueKA258+Bcd7pIDWrmVTFztuvVtks/vpZZKmRxbmZrgPStL1szk1oUWX16PKDCKODX8vkC091n6WOq9Te1GYb4IkZ58kkVXV/OmDxMn3UudzLb52zRQrZX0a0dHPpTv3j4mG8f6Hc2oDsQeKui4O0jJfbDh7RKCTEzCE0H1IOwaSk1PCkKEXs6DyRtpTbDAq/zQk5FTe0VBYw409coqS/9Ety7PVK4YcA2ZKDSLpL9WY0yD2hp1bDxOTeGA4ee6EcCwJEozSjCXnFMDaXzHv0or9Yl/L7PtpenQYQ6Imd83Nng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=BX46RYN2HT1Cte5GHoZpP2nAHPkvEIebLpcWfrx3bUQ=;
+ b=kOGjsIP2wbnVoZgyxBJA8yI1nTvM7pr90f4xviJs0iESDdGjOjLOxhuCxjY4V50Krd8f/N2EOf+/v41MN+D/H9uUpHN6QggoA5cT/etBXX4fv1xvRzN/ZmTZvDHOpWEW/C1V6eOPa4Wp+coEY+kj+gz0bL+YmxgFf8j2+SD5IhWohLeXQj9+pyYiwEPfftAhMcR/fPZqMbeRQXXxNgH3BdTa2P8C5LBonnHHiZUkrQonScHgndp9aE/m02rT0gR+QFNHvgEc+9OWjD9rexbXZm8Kao0MxRWAQkwF/0WCxKEpBjK4C85/OtNKK9H3f9n6vZ/rVhJaj+6Auw/sFFrdZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BX46RYN2HT1Cte5GHoZpP2nAHPkvEIebLpcWfrx3bUQ=;
+ b=iBq5fImSuFnTlBAlEkWy9p5zHzjsVP2NNdd0gRLtKNHS2OPvLbmpdLDOQDF2pMxxmDUOeI/pKnLLPW8ANKhjSf+jzKFPKLNf9RvCbBqLBI/W0wFGUijd/zUmp+5lcJzem6UfvAmNShl+RJTcX9VnSC2jcRSQgYTW2y6m6NCTHKQ=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB4686.eurprd04.prod.outlook.com (2603:10a6:803:71::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Sun, 12 Sep
+ 2021 10:14:33 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4500.018; Sun, 12 Sep 2021
+ 10:14:33 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Sasha Levin <sashal@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH AUTOSEL 5.4 22/37] MIPS: mscc: ocelot: mark the phy-mode
+ for internal PHY ports
+Thread-Topic: [PATCH AUTOSEL 5.4 22/37] MIPS: mscc: ocelot: mark the phy-mode
+ for internal PHY ports
+Thread-Index: AQHXpdnoz9fi1RBYPEig4OnDY7Pba6ugMkEA
+Date:   Sun, 12 Sep 2021 10:14:33 +0000
+Message-ID: <20210912101432.6ego3nlw7q6h33yc@skbuf>
+References: <20210910002143.175731-1-sashal@kernel.org>
+ <20210910002143.175731-22-sashal@kernel.org>
+In-Reply-To: <20210910002143.175731-22-sashal@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 713f39ed-ed13-4a9e-6fc0-08d975d61dda
+x-ms-traffictypediagnostic: VI1PR04MB4686:
+x-microsoft-antispam-prvs: <VI1PR04MB46869CE30254BF42E2E0303DE0D89@VI1PR04MB4686.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TQrUBm4+PyqdXi7FxfELNLn7K7KUjlEJReYpFsKE4Q3AA6EuXEquaVr0wFHXJJI1GyKHFrHgzr7p2ICwG3MXjUUmGSnPL3tTEohdjZC5zU4Yt5b4OkFN34Bi50db5kDb0mQLF9Lw7nLc3I6h8KZHpw+MM7WCdQzWhM4Y/XEDTEd0+BH3BcSwjWgtK4kciFM/OEdQwYuO4+s13Mm6fg1be5FBiM93NXhIXWKhJZUvLHPiSEgsEQh7gRbYtMWxkx40nN2ELTobcmyjxRJ2HCJjVN4ththsK4TKo8W7fj2mG+NUsxG2X7faShyIC0/tM5P7VJuPh4Hrhg03irq6JcSJsR02iJW5YSbFiX+fnJgKwFHhdh313JO7YwUZLhFClSI7TEtlBudCDGCvu57+GODuJX8yUAlLm9qo9qDDYWvmsmP8/x7GM2UGLOhY3Vjw6DT4mjKrbkJ4q0tPSQ8NN5AVbwYLMnqg01LOuMd6sd45BMsJesUS+zy4j+cHge234F3JvkQUztKc9NrkYUBzIQmOuyXoEIyNNi3YR0VI63EJtxeFQRtEwWL81etx4i0Ow7mqhD1XwIik3GqqmgbfMRjWsiohtjM2N5c3CFFT/bNekSGsEyaiTsDHJSuZpR9Wqj272sDcmPu1fWSDqhddwoKeu6a8e4fqhVqO5qa6r535Vc4t3ZQiLUEaon1U2eqe1EsVxWHe5gDnFqFVRF5R0HsR32w1lpD61GYHwmFJLPmuxcX4NrDyO88k6ymFfHp7Pb6OaMeIemkeCRnGRXeHia6L7o4EbEwrrX6a6gmB774LKM0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(39860400002)(136003)(366004)(376002)(346002)(44832011)(478600001)(186003)(1076003)(2906002)(316002)(6506007)(6486002)(76116006)(66946007)(122000001)(33716001)(26005)(66476007)(66556008)(64756008)(66446008)(8936002)(4744005)(38070700005)(6512007)(9686003)(86362001)(5660300002)(4326008)(8676002)(71200400001)(38100700002)(6916009)(54906003)(966005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vv7dg/CAIWgzaJwvb6i0C1IVAN8fAFey1eBtN2EnQ7W5R6mo36QNCY2XwvWX?=
+ =?us-ascii?Q?swQUAij82wFqyjOrLFrmscUG2WhlIpDTdr4Np1XoMOpic3C61noSQ6MAYXmz?=
+ =?us-ascii?Q?7tdhreYxM3/qE3/f3J7lUzpclhciPDAiHqoF9UEckzy7bzcj6s8Om+DZ/CXU?=
+ =?us-ascii?Q?y/Zkw73CzrgOUZjIMxTcB5CtdRuyKvDf7PqXqDyb78QXdZaDW7PSnHjvNVvC?=
+ =?us-ascii?Q?hJAf4wU8NN5pa3HdssU2P5KX7aS+jc2ntsP2jGOkYxIxJtRS+OTDistk8WUO?=
+ =?us-ascii?Q?KP2tRvt2o8XctLd8+AyCEEyrkqw3d8pLsKg6KdKy4lmNNmfvu/CtzmQO+J11?=
+ =?us-ascii?Q?OYmw1S6ekQK/I3k1Iih7cybGH3lgeo0gNuA2KVsGiMY9CGpbfiKKUjrG4rfj?=
+ =?us-ascii?Q?EY2bzVHTxdrVkRh8PJ5AzCt9VlfHpivH1W4Gtzxdggr9a43tLZpOsEXk2Xuv?=
+ =?us-ascii?Q?5cFqGzqyXkNRGYa96Qfe+8vInGukuhnRz0l5OI2cNronejjLRb/VTK8XSHVg?=
+ =?us-ascii?Q?FF1S8j03Ql1qIew3K85CbpRT/DIVJQD1WgdI8sanqLLnW8tYIuiam2FyO737?=
+ =?us-ascii?Q?QUUBED76Bi8iYmxNwPb/JlC7zpS6UqWsQdcuXk0hrjI4cSjAdErXOnzO+mAT?=
+ =?us-ascii?Q?B/CYixq+pbAKsaVYaHG09hnv9bwiH/tBoHZOX/Nx5wJWkJlQugyfpkDXWFA1?=
+ =?us-ascii?Q?IHsBa5yx9fqbcnAE7xEg9oC/jikRwBXDw7A9gj1Zh99r2M5EBWLWfD39MzxL?=
+ =?us-ascii?Q?gADXcDzv3jEOtbwu91tD5+Stx+j/3yGUX1NsiOcxz7wjO7OTIa2G5zfnscx7?=
+ =?us-ascii?Q?mJEZ2OsUayAQcNTKtgImu9HOBHu+QlC1sSpXu0cR4r1UtYFxIOPi9fH92BrB?=
+ =?us-ascii?Q?4v1vK9fWV/6laNXYrsASp7CIusO9EASrZQuvaAoPWXJqCOxGG02WgNEpzg2O?=
+ =?us-ascii?Q?3Sopmytne7cuzlO1hDfdfTFWa4uEAtCUPhFAnsQY0AdL5ALaQyj8Oll8yCYn?=
+ =?us-ascii?Q?H8WzfDqMCNKPrRrvYIf0/6Sora3IpMx722rKqxMVaEn/XlK4GdtK4hfClvJh?=
+ =?us-ascii?Q?ty7/TfLGnjQ5DQ5kEHYo18402RA1lNm+x3VHmRbQ/jgJpfHfZ3TNPI9+3KgI?=
+ =?us-ascii?Q?2I+6cSXDTwNcms7nsxECZighYV2ee2lPeUJAG1d4KQf3FQbLVIQkqDDUJqR2?=
+ =?us-ascii?Q?WyrPKlpDUGcAVxFioATuvpydyMc4N7nYu+627oqqpYZb592TQe6+4/Xm07El?=
+ =?us-ascii?Q?jkG+MiNWcWwLRDmHnV7d60Gw/o3GsNtdo5gXa2Hfjp6SxDzEVhSw3ep3Ml7I?=
+ =?us-ascii?Q?1Hsqww8uZJPS0gr+xWxAOsXW?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <78E94934732A274B9854B27D454E540C@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 713f39ed-ed13-4a9e-6fc0-08d975d61dda
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2021 10:14:33.2852
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4kp0ggWfftegRTcJO5jMKC6xFlIzuBWxzHuaJHijVQERJcFYyVWznv98XYCqXPi7yOdpEoiXs6e4bJNXwRqmGQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4686
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace and remove the macro GET_EEPROM_EFUSE_PRIV to get one step
-closer to remove hal_intf.h.
+Hi Sasha,
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
-Tested on x86_64 with Inter-Tech DMG-02.
+On Thu, Sep 09, 2021 at 08:21:27PM -0400, Sasha Levin wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>=20
+> [ Upstream commit eba54cbb92d28b4f6dc1ed5f73f5187b09d82c08 ]
+>=20
+> The ocelot driver was converted to phylink, and that expects a valid
+> phy_interface_t. Without a phy-mode, of_get_phy_mode returns
+> PHY_INTERFACE_MODE_NA, which is not ideal because phylink rejects that.
+>=20
+> The ocelot driver was patched to treat PHY_INTERFACE_MODE_NA as
+> PHY_INTERFACE_MODE_INTERNAL to work with the broken DT blobs, but we
+> should fix the device trees and specify the phy-mode too.
+>=20
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
 
- drivers/staging/r8188eu/core/rtw_efuse.c        | 8 ++++----
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 4 ++--
- drivers/staging/r8188eu/hal/rtl8188e_phycfg.c   | 2 +-
- drivers/staging/r8188eu/hal/usb_halinit.c       | 6 +++---
- drivers/staging/r8188eu/include/hal_intf.h      | 2 --
- drivers/staging/r8188eu/os_dep/ioctl_linux.c    | 4 ++--
- 6 files changed, 12 insertions(+), 14 deletions(-)
+Could you please drop this patch?
 
-diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
-index 47c4d8bf5daf..0c4ea1e45842 100644
---- a/drivers/staging/r8188eu/core/rtw_efuse.c
-+++ b/drivers/staging/r8188eu/core/rtw_efuse.c
-@@ -598,7 +598,7 @@ efuse_ShadowRead1Byte(
- 		u16 Offset,
- 		u8 *Value)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(pAdapter);
-+	struct eeprom_priv *pEEPROM = &pAdapter->eeprompriv;
- 
- 	*Value = pEEPROM->efuse_eeprom_data[Offset];
- 
-@@ -611,7 +611,7 @@ efuse_ShadowRead2Byte(
- 		u16 Offset,
- 		u16 *Value)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(pAdapter);
-+	struct eeprom_priv *pEEPROM = &pAdapter->eeprompriv;
- 
- 	*Value = pEEPROM->efuse_eeprom_data[Offset];
- 	*Value |= pEEPROM->efuse_eeprom_data[Offset + 1] << 8;
-@@ -625,7 +625,7 @@ efuse_ShadowRead4Byte(
- 		u16 Offset,
- 		u32 *Value)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(pAdapter);
-+	struct eeprom_priv *pEEPROM = &pAdapter->eeprompriv;
- 
- 	*Value = pEEPROM->efuse_eeprom_data[Offset];
- 	*Value |= pEEPROM->efuse_eeprom_data[Offset + 1] << 8;
-@@ -684,7 +684,7 @@ void EFUSE_ShadowMapUpdate(
- 	u8 efuseType,
- 	bool pseudo)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(pAdapter);
-+	struct eeprom_priv *pEEPROM = &pAdapter->eeprompriv;
- 	u16 mapLen = 0;
- 
- 	rtl8188e_EFUSE_GetEfuseDefinition(pAdapter, efuseType, TYPE_EFUSE_MAP_LEN, (void *)&mapLen, pseudo);
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 5ea96a5ac630..493a7bf3c894 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1841,7 +1841,7 @@ s32 InitLLTTable(struct adapter *padapter, u8 txpktbuf_bndy)
- void
- Hal_InitPGData88E(struct adapter *padapter)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(padapter);
-+	struct eeprom_priv *pEEPROM = &padapter->eeprompriv;
- 
- 	if (!pEEPROM->bautoload_fail_flag) { /*  autoload OK. */
- 		if (!is_boot_from_eeprom(padapter)) {
-@@ -1861,7 +1861,7 @@ Hal_EfuseParseIDCode88E(
- 		u8 *hwinfo
- 	)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(padapter);
-+	struct eeprom_priv *pEEPROM = &padapter->eeprompriv;
- 	u16			EEPROMId;
- 
- 	/*  Check 0x8129 again for making sure autoload status!! */
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c b/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c
-index 94febe0edd35..521ecdbe5520 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c
-@@ -532,7 +532,7 @@ void storePwrIndexDiffRateOffset(struct adapter *Adapter, u32 RegAddr, u32 BitMa
- 
- static	int phy_BB8188E_Config_ParaFile(struct adapter *Adapter)
- {
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(Adapter);
-+	struct eeprom_priv *pEEPROM = &Adapter->eeprompriv;
- 	struct hal_data_8188e		*pHalData = GET_HAL_DATA(Adapter);
- 	int			rtStatus = _SUCCESS;
- 
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index c5347c5459d6..96db24c33603 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -1124,7 +1124,7 @@ static void Hal_EfuseParseMACAddr_8188EU(struct adapter *adapt, u8 *hwinfo, bool
- {
- 	u16 i;
- 	u8 sMacAddr[6] = {0x00, 0xE0, 0x4C, 0x81, 0x88, 0x02};
--	struct eeprom_priv *eeprom = GET_EEPROM_EFUSE_PRIV(adapt);
-+	struct eeprom_priv *eeprom = &adapt->eeprompriv;
- 
- 	if (AutoLoadFail) {
- 		for (i = 0; i < 6; i++)
-@@ -1140,7 +1140,7 @@ readAdapterInfo_8188EU(
- 		struct adapter *adapt
- 	)
- {
--	struct eeprom_priv *eeprom = GET_EEPROM_EFUSE_PRIV(adapt);
-+	struct eeprom_priv *eeprom = &adapt->eeprompriv;
- 
- 	/* parse the eeprom/efuse content */
- 	Hal_EfuseParseIDCode88E(adapt, eeprom->efuse_eeprom_data);
-@@ -1164,7 +1164,7 @@ static void _ReadPROMContent(
- 	struct adapter *Adapter
- 	)
- {
--	struct eeprom_priv *eeprom = GET_EEPROM_EFUSE_PRIV(Adapter);
-+	struct eeprom_priv *eeprom = &Adapter->eeprompriv;
- 	u8 eeValue;
- 
- 	/* check system boot selection */
-diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index c1e120593574..18e5d0c366fc 100644
---- a/drivers/staging/r8188eu/include/hal_intf.h
-+++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -172,8 +172,6 @@ struct hal_ops {
- 
- #define HARDWARE_TYPE_RTL8188EU 17
- 
--#define GET_EEPROM_EFUSE_PRIV(adapter) (&adapter->eeprompriv)
--
- #define is_boot_from_eeprom(adapter) (adapter->eeprompriv.EepromOrEfuse)
- 
- void rtl8188eu_set_hal_ops(struct adapter *padapter);
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 911bcb69d008..a990bbf3116c 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -4501,7 +4501,7 @@ static int rtw_mp_efuse_get(struct net_device *dev,
- 			union iwreq_data *wdata, char *extra)
- {
- 	struct adapter *padapter = rtw_netdev_priv(dev);
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(padapter);
-+	struct eeprom_priv *pEEPROM = &padapter->eeprompriv;
- 	struct hal_data_8188e *haldata = GET_HAL_DATA(padapter);
- 	struct efuse_hal *pEfuseHal;
- 	struct iw_point *wrqu;
-@@ -6138,7 +6138,7 @@ static int rtw_mp_QueryDrv(struct net_device *dev,
- 	struct adapter *padapter = rtw_netdev_priv(dev);
- 	char	*input = kmalloc(wrqu->data.length, GFP_KERNEL);
- 	u8 qAutoLoad = 1;
--	struct eeprom_priv *pEEPROM = GET_EEPROM_EFUSE_PRIV(padapter);
-+	struct eeprom_priv *pEEPROM = &padapter->eeprompriv;
- 
- 	if (!input)
- 		return -ENOMEM;
--- 
-2.33.0
+As discussed here, I did not bother to patch the ocelot switch driver on
+stable kernels to support the new device tree binding too:
+https://lore.kernel.org/lkml/YR6b15zKkjWFoM1X@piout.net/
 
+So backporting the device tree change would break the old driver.=
