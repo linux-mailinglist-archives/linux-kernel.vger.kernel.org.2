@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD59407C7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663A2407C7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhILI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 04:59:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43822 "EHLO
+        id S233052AbhILJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 05:03:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44192 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231970AbhILI7Y (ORCPT
+        with ESMTP id S232900AbhILJDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 04:59:24 -0400
+        Sun, 12 Sep 2021 05:03:41 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 49BCF1FDAE;
-        Sun, 12 Sep 2021 08:58:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DC0611FDAE;
+        Sun, 12 Sep 2021 09:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631437089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631437345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=lEzmMcX5MudQpJHR4iJRAKNiHkE+rMRkwwxMwEwHvSk=;
-        b=F4WkTP2MjD7OPfhk/SbkQv0yfFIjBLRYjMhg40WZPVEjt68pVVHOT0b1LkuM75V6UJBIDW
-        +4NKTZuYfCe4pJa89gbHVRBHF0iCcOTnjZasw1Vu0aDZXfwJlh9OLribKkHVBgsPADU6N5
-        7Z+TzalC9gv7rINWhF0Nr3qalKCM12o=
+        bh=QySOdgPm+HiUGJUgILMD/1/8LIC83NDqIu5nEavy49Y=;
+        b=DT0xAVSUJrujkMJv4XTyjQQTc5FCn5F+UenJRlFaOLTzqQC472B/+YwLOqMOrHo/Omd36p
+        ZjR2fWWf5ubGrr5706O8CRCCji38lSmueIdLOZVD8mMeUg4yeknSgF1pwj/nh5Fm50i4LG
+        po8vRuLYgtY2e2sJykeBcAFKT8rJv4w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631437089;
+        s=susede2_ed25519; t=1631437345;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=lEzmMcX5MudQpJHR4iJRAKNiHkE+rMRkwwxMwEwHvSk=;
-        b=+WfGlchE+EO1EJ46wAZCVr/yifzi4t3ub30dQusOTFf7FLqOmGDDIKRRNyJyN8Q7x1+lb4
-        LSnGfo6IHWeITHDA==
+        bh=QySOdgPm+HiUGJUgILMD/1/8LIC83NDqIu5nEavy49Y=;
+        b=pdUbmbyQwalEhoZXJTw8PRXMztyQJzAMZRMwpQ0xRHS4G/h/10aADs58MxCoJYZX6msp85
+        Psw8/YOyg9hCbfCw==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3322F132FD;
-        Sun, 12 Sep 2021 08:58:09 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C5512132FD;
+        Sun, 12 Sep 2021 09:02:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id L7YqDCHBPWFIWAAAGKfGzw
-        (envelope-from <bp@suse.de>); Sun, 12 Sep 2021 08:58:09 +0000
-Date:   Sun, 12 Sep 2021 10:57:56 +0200
+        id Xgu2LyHCPWECWQAAGKfGzw
+        (envelope-from <bp@suse.de>); Sun, 12 Sep 2021 09:02:25 +0000
+Date:   Sun, 12 Sep 2021 11:02:23 +0200
 From:   Borislav Petkov <bp@suse.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] timers/urgent for v5.15-rc1
-Message-ID: <YT3BFM+SWiqghjKm@zn.tnic>
+Subject: [GIT PULL] locking/urgent for v5.15-rc1
+Message-ID: <YT3CHxmA+NscNPgt@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -60,7 +60,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-please pull a single urgent timers fix before 5.15-rc1 releases.
+please pull several locking fixes which accumulated over the merge
+window.
 
 Thx.
 
@@ -72,21 +73,41 @@ The following changes since commit 8596e589b787732c8346f0482919e83cc9362db1:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/timers_urgent_for_v5.15_rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/locking_urgent_for_v5.15_rc1
 
-for you to fetch changes up to 39ff83f2f6cc5cc1458dfcea9697f96338210beb:
+for you to fetch changes up to e5480572706da1b2c2dc2c6484eab64f92b9263b:
 
-  time: Handle negative seconds correctly in timespec64_to_ns() (2021-09-08 17:44:26 +0200)
-
-----------------------------------------------------------------
-- Handle negative second values properly when converting a timespec64 to nanoseconds.
+  locking/rtmutex: Fix ww_mutex deadlock check (2021-09-09 10:31:22 +0200)
 
 ----------------------------------------------------------------
-Lukas Hannen (1):
-      time: Handle negative seconds correctly in timespec64_to_ns()
+ - Fix the futex PI requeue machinery to not return to userspace in
+inconsistent state
 
- include/linux/time64.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+- Avoid a potential null pointer dereference in the ww_mutex deadlock check
+
+- Other smaller cleanups and optimizations
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      futex: Return error code instead of assigning it without effect
+
+Mike Galbraith (1):
+      locking/rwsem: Add missing __init_rwsem() for PREEMPT_RT
+
+Peter Zijlstra (1):
+      locking/rtmutex: Fix ww_mutex deadlock check
+
+Thomas Gleixner (4):
+      futex: Prevent inconsistent state and exit race
+      futex: Clarify comment for requeue_pi_wake_futex()
+      futex: Avoid redundant task lookup
+      futex: Remove unused variable 'vpid' in futex_proxy_trylock_atomic()
+
+ include/linux/rwsem.h    |  12 +--
+ kernel/futex.c           | 190 +++++++++++++++++++++++++++--------------------
+ kernel/locking/rtmutex.c |   2 +-
+ kernel/locking/rwsem.c   |  10 ++-
+ 4 files changed, 120 insertions(+), 94 deletions(-)
 
 -- 
 Regards/Gruss,
