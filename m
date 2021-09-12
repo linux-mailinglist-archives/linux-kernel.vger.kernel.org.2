@@ -2,135 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB55407D91
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F74C407D96
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235374AbhILNWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 09:22:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47766 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235291AbhILNWc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 09:22:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631452878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yZLdvXCxnHFukhCLU/8ODaJA2GQ4KIoZzMo62K6+NmI=;
-        b=RU4Cy7HNEbqi0jQ+cHmCgzLnYJiTPzvLNNnrKjzLJ8jWYkvhgO+R5ACSA2DfGTdTLS4PnB
-        sfZU9NQhpX3zOkJLn3MxyUIB35UZ6hBkQhvrZlAHuKmqV6YSmTAV7DDUx5jamPTryFipgb
-        3jC1t3vmnAKbjiKvEunukiUyemB41g0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-o-hs5TClOaWiPWJYJ7fplQ-1; Sun, 12 Sep 2021 09:21:16 -0400
-X-MC-Unique: o-hs5TClOaWiPWJYJ7fplQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE5BD1808304;
-        Sun, 12 Sep 2021 13:21:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A8081B472;
-        Sun, 12 Sep 2021 13:21:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     dhowells@redhat.com, Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Decoupling filesystems from pages
+        id S235473AbhILN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 09:27:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235178AbhILN1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 09:27:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83949610CE;
+        Sun, 12 Sep 2021 13:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631453178;
+        bh=3SB+poM9OiAmrtr0AEtTGh2Z4fGDTi1R2K4An9Y5GF8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XIS131TskZ8az+w6BRadhLr7dsLM/8las4WZ6rfcwdEUPqkGWLi95jggdzbbnmPIS
+         JIRuPrxDg76nnH3uaic6sgDrNzteEWWKO9jptmXr98x34BK3Fs55v9XUsEh/er812i
+         HHG3Bbtp2zWGOYIBdlV0jaNyPab/DbjLOhbkcKV0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.145
+Date:   Sun, 12 Sep 2021 15:26:14 +0200
+Message-Id: <163145317415133@kroah.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1086692.1631452867.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Sun, 12 Sep 2021 14:21:07 +0100
-Message-ID: <1086693.1631452867@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johannes,
+I'm announcing the release of the 5.4.145 kernel.
 
-> Wouldn't it make more sense to decouple filesystems from "paginess",
-> as David puts it, now instead? Avoid the risk of doing it twice, avoid
-> the more questionable churn inside mm code, avoid the confusing
-> proximity to the page and its API in the long-term...
+All users of the 5.4 kernel series must upgrade.
 
-Let me seize that opening.  I've been working on doing this for network
-filesystems - at least those that want to buy in.  If you look here:
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-https://lore.kernel.org/ceph-devel/162687506932.276387.1445671889052435550=
-9.stgit@warthog.procyon.org.uk/T/#m23428c315a77d8c5206b9646bf74c8ef18d4d38=
-c
+thanks,
 
-the current state of which is here:
+greg k-h
 
-https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/=
-?h=3Dnetfs-folio-regions
+------------
 
-I've been looking at abstracting anything to do with pages out of the netf=
-s
-and putting that stuff into a helper library.  The library handles all the
-caching stuff and just presents the filesystem with requests to read
-into/write from an iov_iter.  The filesystem doesn't then see pages at all=
-.
+ Makefile                                     |    2 -
+ arch/arc/Kconfig                             |    1 
+ arch/arc/include/asm/syscalls.h              |    1 
+ arch/arc/include/uapi/asm/unistd.h           |    1 
+ arch/arc/kernel/entry.S                      |   12 ++++++
+ arch/arc/kernel/process.c                    |    7 +--
+ arch/arc/kernel/sys.c                        |    1 
+ arch/arm/kernel/Makefile                     |    6 ++-
+ arch/arm/kernel/return_address.c             |    4 --
+ arch/powerpc/boot/crt0.S                     |    3 -
+ arch/x86/events/amd/ibs.c                    |    8 ++++
+ arch/x86/events/amd/iommu.c                  |   47 +++++++++++++-----------
+ arch/x86/events/amd/power.c                  |    1 
+ arch/x86/events/intel/pt.c                   |    2 -
+ arch/x86/kernel/reboot.c                     |    3 +
+ arch/xtensa/Kconfig                          |    2 -
+ drivers/block/Kconfig                        |    4 +-
+ drivers/block/cryptoloop.c                   |    2 +
+ drivers/gpu/ipu-v3/ipu-cpmem.c               |   30 +++++++--------
+ drivers/media/usb/stkwebcam/stk-webcam.c     |    6 ++-
+ drivers/net/ethernet/cadence/macb_ptp.c      |   11 +++++
+ drivers/net/ethernet/qlogic/qed/qed_main.c   |    7 +++
+ drivers/net/ethernet/qlogic/qede/qede_main.c |    2 -
+ drivers/net/ethernet/realtek/r8169_main.c    |    1 
+ drivers/net/ethernet/xilinx/ll_temac_main.c  |    4 --
+ drivers/pci/quirks.c                         |   12 +++---
+ drivers/reset/reset-zynqmp.c                 |    3 +
+ drivers/usb/host/xhci-debugfs.c              |    6 ++-
+ drivers/usb/host/xhci-rcar.c                 |    7 +++
+ drivers/usb/host/xhci-trace.h                |    8 ++--
+ drivers/usb/host/xhci.h                      |   52 ++++++++++++++-------------
+ drivers/usb/mtu3/mtu3_gadget.c               |    6 +--
+ drivers/usb/serial/mos7720.c                 |    4 +-
+ fs/btrfs/inode.c                             |    2 -
+ fs/crypto/hooks.c                            |   44 ++++++++++++++++++++++
+ fs/ext4/inline.c                             |    6 +++
+ fs/ext4/symlink.c                            |   11 +++++
+ fs/f2fs/namei.c                              |   11 +++++
+ fs/ubifs/file.c                              |   12 +++++-
+ include/linux/fscrypt.h                      |    7 +++
+ kernel/kthread.c                             |   43 +++++++++++++++-------
+ kernel/sched/fair.c                          |    2 -
+ mm/page_alloc.c                              |    8 ++--
+ net/ipv4/icmp.c                              |   23 ++++++++++-
+ net/ipv4/igmp.c                              |    2 +
+ sound/core/pcm_lib.c                         |    2 -
+ sound/pci/hda/patch_realtek.c                |   10 +++++
+ sound/usb/quirks.c                           |    1 
+ 48 files changed, 320 insertions(+), 130 deletions(-)
 
-The motivation behind this is to make content encryption and compression
-transparent and automatically available to all participating filesystems -
-with the requirement that the data stored in the local disk cache
-(ie. fscache) is *also* encrypted.
+Alexander Tsoy (1):
+      ALSA: usb-audio: Add registration quirk for JBL Quantum 800
 
-I have content encryption working for basic read and write on afs and Jeff
-Layton is looking at how to make it work with ceph - but it's very much a =
-work
-in progress and things like truncate and mmap don't yet work with it.
+Ben Dooks (1):
+      ARM: 8918/2: only build return_address() if needed
 
-Anyway, the library, as I'm currently writing it, maintains a list of
-byte-range dirty regions on each inode, where a dirty region may span mult=
-iple
-folios and a folio may be contributory to multiple regions.  The fact that
-pages are involved is really then merely an implementation detail
+Christoph Hellwig (1):
+      cryptoloop: add a deprecation warning
 
-Content encryption/compression blocks may be any power-of-2 size, from 2 b=
-ytes
-to megabytes, and this need bear no relation to page size.  The library ca=
-lls
-the crypto hooks for each crypto block in the chunk[*] to be crypted.
+Chunfeng Yun (2):
+      usb: mtu3: use @mult for HS isoc or intr
+      usb: mtu3: fix the wrong HS mult value
 
-[*] Terminology is such fun.  I have to deal with pages, crypto blocks, ob=
-ject
-    layout blocks, I/O blocks (rsize/wsize settings), regions.
+Eric Biggers (4):
+      fscrypt: add fscrypt_symlink_getattr() for computing st_size
+      ext4: report correct st_size for encrypted symlinks
+      f2fs: report correct st_size for encrypted symlinks
+      ubifs: report correct st_size for encrypted symlinks
 
-In fact ->readpage(), ->writepage() and ->launder_page() are difficult whe=
-n I
-may be required to deal with blocks larger than the size of a page.  The p=
-age
-being poked may be in the middle of a block, so I'm endeavouring to work
-around that.  Using the regions should allow me to 'launder' an inode befo=
-re
-invalidating the pages attached to it, and the dirty region objects can ac=
-t
-instead of the dirty, writeback and fscache flags on a page.
+Esben Haabendal (1):
+      net: ll_temac: Remove left-over debug message
 
-I've been building this on top of Willy's folio patchset, and so I've paus=
-ed
-for the moment whilst I wait to see what becomes of that.  If folios doesn=
-'t
-get in or gets renamed, I have a load of reworking to do.
+Fangrui Song (1):
+      powerpc/boot: Delete unneeded .globl _zimage_start
 
-Does this sound like something you'd be interested in looking at more
-generally than just network filesystems?
+Greg Kroah-Hartman (1):
+      Linux 5.4.145
 
-David
+Harini Katakam (1):
+      net: macb: Add a NULL check on desc_ptp
+
+Hayes Wang (1):
+      Revert "r8169: avoid link-up interrupt issue on RTL8106e if user enables ASPM"
+
+Kim Phillips (2):
+      perf/x86/amd/ibs: Work around erratum #1197
+      perf/x86/amd/power: Assign pmu.module
+
+Krzysztof Hałasa (1):
+      gpu: ipu-v3: Fix i.MX IPU-v3 offset calculations for (semi)planar U/V formats
+
+Liu Jian (1):
+      igmp: Add ip_mc_list lock in ip_check_mc_rcu
+
+Marek Behún (1):
+      PCI: Call Max Payload Size-related fixup quirks early
+
+Mathias Nyman (1):
+      xhci: fix unsafe memory usage in xhci tracing
+
+Mathieu Desnoyers (1):
+      ipv4/icmp: l3mdev: Perform icmp error route lookup on source device routing table (v2)
+
+Muchun Song (1):
+      mm/page_alloc: speed up the iteration of max_order
+
+Paul Gortmaker (1):
+      x86/reboot: Limit Dell Optiplex 990 quirk to early BIOS versions
+
+Pavel Skripkin (1):
+      media: stkwebcam: fix memory leak in stk_camera_probe
+
+Peter Zijlstra (1):
+      kthread: Fix PF_KTHREAD vs to_kthread() race
+
+Qu Wenruo (1):
+      Revert "btrfs: compression: don't try to compress if we don't have enough pages"
+
+Randy Dunlap (1):
+      xtensa: fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
+
+Sai Krishna Potthuri (1):
+      reset: reset-zynqmp: Fixed the argument data type
+
+Shai Malin (2):
+      qed: Fix the VF msix vectors flow
+      qede: Fix memset corruption
+
+Suravee Suthikulpanit (1):
+      x86/events/amd/iommu: Fix invalid Perf result due to IOMMU PMC power-gating
+
+Takashi Iwai (1):
+      ALSA: hda/realtek: Workaround for conflicting SSID on ASUS ROG Strix G17
+
+Theodore Ts'o (1):
+      ext4: fix race writing to an inline_data file while its xattrs are changing
+
+Tom Rix (1):
+      USB: serial: mos7720: improve OOM-handling in read_mos_reg()
+
+Vineet Gupta (1):
+      ARC: wireup clone3 syscall
+
+Xiaoyao Li (1):
+      perf/x86/intel/pt: Fix mask of num_address_ranges
+
+Yoshihiro Shimoda (1):
+      usb: host: xhci-rcar: Don't reload firmware after the completion
+
+Zubin Mithra (1):
+      ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
 
