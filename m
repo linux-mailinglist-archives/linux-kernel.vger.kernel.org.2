@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926FB407F59
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61591407F5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhILSUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 14:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S236107AbhILSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 14:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235400AbhILSUj (ORCPT
+        with ESMTP id S235454AbhILSUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 12 Sep 2021 14:20:39 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D902C06175F;
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EC6C061760;
         Sun, 12 Sep 2021 11:19:24 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id g1so4599584lfj.12;
+Received: by mail-lj1-x234.google.com with SMTP id f2so13001591ljn.1;
         Sun, 12 Sep 2021 11:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5D7f95SWE39KyBhL6inNHwivKXCjTaPVaR7FQIt08LA=;
-        b=jDkaHcfo1sKt4zHpz6oxKoj8cIOOKYZK5hC9ygoa85k7F5/dRpHIBP0377vyIGLfUF
-         Y6HnfJjg/4N7nfs+AnolIzHpNDdrv3EyO1Xon+7L0BYuh7BGBmOa/o9W6/uqBuucU06p
-         Xj1ijM3vo/zyO15A6tipNkz+Nhz2zHQ1I1TE3t7+3HSt/s0iiYIcGZWK+xGevHOUPdBH
-         M/yKDZx/lFbetdg2Ee8lC0srV2rh3LPJ97cWKoRTQj0q7cxGYOi2b75yR0u4bdapJVmL
-         QIRV+5uMVnMBv6fcszi7/6+g35k7Ck3hb9UOcjAC5txw4oylPB5frF9RtTMUkTlSkMfX
-         121Q==
+        bh=mhtGFKsHUzTaL2MCRyNEETLxWQghXk5mgR3qIkfiMRo=;
+        b=ksHscgz7ojDYRwTbR5og8n3+wbF50rcqdWoq1MjSyV5vu71NqFoxdeGZwGBTMVe4qL
+         /8SkzahPc02IV3oNwd6cTKRPCONeXobAg85R5s7N7yjiwPWDTqVq1F9Dit/V6/lgno3b
+         usyCsdbbof2zP72dQfHeRbRrYi9dgMXcG+qNDnZSh4UU3DIr+Aeg7K0sOW9m7gi+KzFB
+         lC/UPmCADn7pHB6xMTQzj758sREslXCrMDZw/ouRcC2/d/fzU7Ea2UxSHA5pneXX3HP/
+         lcm1RaOajIfuu1eS6bSAf/8U43wqVEOC2yV8rjcM8Cxvcmo8azR435RM+6JEO0N5GJhs
+         Z+Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5D7f95SWE39KyBhL6inNHwivKXCjTaPVaR7FQIt08LA=;
-        b=fDCFlnyi1jynEWOSlQEJCchSLm6uq/Lv6pAFqwRvDZW9b9UDGKxV7PI0aDhjaxWmqT
-         +lM+pM9BX2PvXItKkP1sinYmG9XN0KE6yZG37avlevXhdDsw1eyQUhSLm/BqINdg5o+k
-         a6VkcqQUnTSkKyXlm+Sn30MxQosm8dr668EE/oDTh//OdXn31y3c8SQaaV9oWv/Oc+yz
-         KjC5K7Vr/VhScWJhw6AtDE8zSjXR7FKVY+hZvolbr9GyT0mdOP65I8XfimVWTQmWoN5C
-         FAMxZYjWLR7dholcFdn1TN7HdeFvI4KBr5LqrnmSxl3OxHk8W/8zVE6F5WJlaP50ygxQ
-         jGTA==
-X-Gm-Message-State: AOAM531XYCV/Ek/vxgx76hICNXYG8kzT0iZizejZ/yjOpBUCgi3n2Mz7
-        doq3e7HPamYGYCVKeXTQuas=
-X-Google-Smtp-Source: ABdhPJyU9lFrk+llsmvpuhNqYgLZqTjcbiYcpvzyiDzCMhLe7vamW42Kt7+hDK4Kaibxb4P/huifgw==
-X-Received: by 2002:a19:c512:: with SMTP id w18mr5907053lfe.182.1631470762516;
-        Sun, 12 Sep 2021 11:19:22 -0700 (PDT)
+        bh=mhtGFKsHUzTaL2MCRyNEETLxWQghXk5mgR3qIkfiMRo=;
+        b=IyB1ahrBRFvQoeRyHhOuYcdr53/+7lSGxPSMqdOqAwzqcEkAE87nGFJv6rFMNcuqLK
+         bo+jXIgUOgFZPROpoEJZT5sjEBBY8ED4eFOuXKxlQHXkGIfDvE8SXwcJ9elfayg8zh2y
+         sRjZ5CBRTnFgw98VSUWobPUzHE9OwQ+bWA4zkSsSPa0q2d3jfcIEXxOTIMOag/6bCfaw
+         kjIE2c41EM9ChLloNUFx9gPjQXp1fpfzfUnMVGmUqfj8TY3eqoE9c2jJGu3dzbMIUMR5
+         lCH+uX5on/yR2qmOVKwPreYs7eeqDORfXO+benmI/4d3bb3J8rTy/IOj5J7qFrimrmVy
+         TVIQ==
+X-Gm-Message-State: AOAM532UfW61mysmvInU5++kAY/HUzs3/kyiXxPUgUPMSkMiwNpATF7o
+        VNYWRfUSzhc7kZTuCfQYkg0=
+X-Google-Smtp-Source: ABdhPJxgPha0D9TVqi3cVPbyszBxSErxfU4fDAya8N1hrOOHfCGiH5IPB0f5Wk7QXWxWePJkKqIiXw==
+X-Received: by 2002:a2e:5708:: with SMTP id l8mr7240238ljb.481.1631470763309;
+        Sun, 12 Sep 2021 11:19:23 -0700 (PDT)
 Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
-        by smtp.gmail.com with ESMTPSA id a18sm664556ljd.4.2021.09.12.11.19.21
+        by smtp.gmail.com with ESMTPSA id a18sm664556ljd.4.2021.09.12.11.19.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 11:19:22 -0700 (PDT)
+        Sun, 12 Sep 2021 11:19:23 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <treding@nvidia.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,9 +57,9 @@ To:     Thierry Reding <treding@nvidia.com>,
         David Heidelberg <david@ixit.cz>
 Cc:     devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v7 5/7] ARM: tegra: Add new properties to USB PHY device-tree nodes
-Date:   Sun, 12 Sep 2021 21:17:16 +0300
-Message-Id: <20210912181718.1328-6-digetx@gmail.com>
+Subject: [PATCH v7 6/7] ARM: tegra: nexus7: Enable USB OTG mode
+Date:   Sun, 12 Sep 2021 21:17:17 +0300
+Message-Id: <20210912181718.1328-7-digetx@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210912181718.1328-1-digetx@gmail.com>
 References: <20210912181718.1328-1-digetx@gmail.com>
@@ -69,208 +69,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new properties to USB PHYs needed for enabling USB OTG mode.
+Nexus 7 has OTG-cable microUSB port, enable OTG mode. USB peripheral
+devices now can be connected to Nexus 7 using OTG adapter, switching
+USB port into host mode.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra114.dtsi | 4 ++++
- arch/arm/boot/dts/tegra124.dtsi | 6 ++++++
- arch/arm/boot/dts/tegra20.dtsi  | 6 ++++++
- arch/arm/boot/dts/tegra30.dtsi  | 6 ++++++
- 4 files changed, 22 insertions(+)
+ .../tegra30-asus-nexus7-grouper-common.dtsi   | 25 +++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/tegra114.dtsi b/arch/arm/boot/dts/tegra114.dtsi
-index fb99b3e971c3..b391c7940b8f 100644
---- a/arch/arm/boot/dts/tegra114.dtsi
-+++ b/arch/arm/boot/dts/tegra114.dtsi
-@@ -706,6 +706,7 @@ phy1: usb-phy@7d000000 {
- 		compatible = "nvidia,tegra114-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x7d000000 0x4000>,
- 		      <0x7d000000 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA114_CLK_USBD>,
- 			 <&tegra_car TEGRA114_CLK_PLL_U>,
-@@ -725,6 +726,7 @@ phy1: usb-phy@7d000000 {
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
+diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
+index 4f116c26f6ce..798ac22a50d2 100644
+--- a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
++++ b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
+@@ -941,9 +941,29 @@ power_supply: charger@6a {
+ 			interrupts = <TEGRA_GPIO(V, 1) IRQ_TYPE_EDGE_BOTH>;
+ 
+ 			summit,enable-charge-control = <SMB3XX_CHG_ENABLE_PIN_ACTIVE_LOW>;
++			summit,inok-polarity = <SMB3XX_SYSOK_INOK_ACTIVE_LOW>;
+ 			summit,enable-usb-charging;
+ 
+ 			monitored-battery = <&battery_cell>;
++
++			usb_vbus: usb-vbus {
++				regulator-name = "usb_vbus";
++				regulator-min-microvolt = <5000000>;
++				regulator-max-microvolt = <5000000>;
++				regulator-min-microamp = <750000>;
++				regulator-max-microamp = <750000>;
++
++				/*
++				 * SMB347 INOK input pin is connected to PMIC's
++				 * ACOK output, which is fixed to ACTIVE_LOW as
++				 * long as battery voltage is in a good range.
++				 *
++				 * Active INOK disables SMB347 output, so polarity
++				 * needs to be toggled when we want to get the
++				 * output.
++				 */
++				summit,needs-inok-toggle;
++			};
+ 		};
  	};
  
-@@ -744,6 +746,7 @@ phy3: usb-phy@7d008000 {
- 		compatible = "nvidia,tegra114-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x7d008000 0x4000>,
- 		      <0x7d000000 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA114_CLK_USB3>,
- 			 <&tegra_car TEGRA114_CLK_PLL_U>,
-@@ -762,6 +765,7 @@ phy3: usb-phy@7d008000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
+@@ -1017,12 +1037,13 @@ sdmmc4: mmc@78000600 {
+ 	usb@7d000000 {
+ 		compatible = "nvidia,tegra30-udc";
+ 		status = "okay";
+-		dr_mode = "peripheral";
++		dr_mode = "otg";
++		vbus-supply = <&usb_vbus>;
  	};
  
-diff --git a/arch/arm/boot/dts/tegra124.dtsi b/arch/arm/boot/dts/tegra124.dtsi
-index 8b38f123f554..ee28bb2b01ba 100644
---- a/arch/arm/boot/dts/tegra124.dtsi
-+++ b/arch/arm/boot/dts/tegra124.dtsi
-@@ -1094,6 +1094,7 @@ phy1: usb-phy@7d000000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d000000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USBD>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1113,6 +1114,7 @@ phy1: usb-phy@7d000000 {
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
- 	};
- 
-@@ -1132,6 +1134,7 @@ phy2: usb-phy@7d004000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d004000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB2>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1150,6 +1153,7 @@ phy2: usb-phy@7d004000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 1>;
- 		status = "disabled";
- 	};
- 
-@@ -1169,6 +1173,7 @@ phy3: usb-phy@7d008000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d008000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB3>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1187,6 +1192,7 @@ phy3: usb-phy@7d008000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
- 	};
- 
-diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-index f3080b05b2ba..29342712aa63 100644
---- a/arch/arm/boot/dts/tegra20.dtsi
-+++ b/arch/arm/boot/dts/tegra20.dtsi
-@@ -876,6 +876,7 @@ phy1: usb-phy@c5000000 {
- 		compatible = "nvidia,tegra20-usb-phy";
- 		reg = <0xc5000000 0x4000>,
- 		      <0xc5000000 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA20_CLK_USBD>,
- 			 <&tegra_car TEGRA20_CLK_PLL_U>,
-@@ -894,6 +895,7 @@ phy1: usb-phy@c5000000 {
- 		nvidia,xcvr-lsfslew = <1>;
- 		nvidia,xcvr-lsrslew = <1>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
- 	};
- 
-@@ -914,6 +916,7 @@ usb@c5004000 {
- 	phy2: usb-phy@c5004000 {
- 		compatible = "nvidia,tegra20-usb-phy";
- 		reg = <0xc5004000 0x4000>;
-+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "ulpi";
- 		clocks = <&tegra_car TEGRA20_CLK_USB2>,
- 			 <&tegra_car TEGRA20_CLK_PLL_U>,
-@@ -922,6 +925,7 @@ phy2: usb-phy@c5004000 {
- 		resets = <&tegra_car 58>, <&tegra_car 22>;
- 		reset-names = "usb", "utmi-pads";
- 		#phy-cells = <0>;
-+		nvidia,pmc = <&tegra_pmc 1>;
- 		status = "disabled";
- 	};
- 
-@@ -943,6 +947,7 @@ phy3: usb-phy@c5008000 {
- 		compatible = "nvidia,tegra20-usb-phy";
- 		reg = <0xc5008000 0x4000>,
- 		      <0xc5000000 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA20_CLK_USB3>,
- 			 <&tegra_car TEGRA20_CLK_PLL_U>,
-@@ -959,6 +964,7 @@ phy3: usb-phy@c5008000 {
- 		nvidia,xcvr-setup = <9>;
+ 	usb-phy@7d000000 {
+ 		status = "okay";
+-		dr_mode = "peripheral";
++		dr_mode = "otg";
+ 		nvidia,hssync-start-delay = <0>;
  		nvidia,xcvr-lsfslew = <2>;
  		nvidia,xcvr-lsrslew = <2>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
- 	};
- 
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 6fd349a9a47f..2a90b4e10834 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -1148,6 +1148,7 @@ phy1: usb-phy@7d000000 {
- 		compatible = "nvidia,tegra30-usb-phy";
- 		reg = <0x7d000000 0x4000>,
- 		      <0x7d000000 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA30_CLK_USBD>,
- 			 <&tegra_car TEGRA30_CLK_PLL_U>,
-@@ -1168,6 +1169,7 @@ phy1: usb-phy@7d000000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
- 	};
- 
-@@ -1189,6 +1191,7 @@ phy2: usb-phy@7d004000 {
- 		compatible = "nvidia,tegra30-usb-phy";
- 		reg = <0x7d004000 0x4000>,
- 		      <0x7d000000 0x4000>;
-+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA30_CLK_USB2>,
- 			 <&tegra_car TEGRA30_CLK_PLL_U>,
-@@ -1208,6 +1211,7 @@ phy2: usb-phy@7d004000 {
- 		nvidia,xcvr-hsslew = <32>;
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
-+		nvidia,pmc = <&tegra_pmc 1>;
- 		status = "disabled";
- 	};
- 
-@@ -1229,6 +1233,7 @@ phy3: usb-phy@7d008000 {
- 		compatible = "nvidia,tegra30-usb-phy";
- 		reg = <0x7d008000 0x4000>,
- 		      <0x7d000000 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA30_CLK_USB3>,
- 			 <&tegra_car TEGRA30_CLK_PLL_U>,
-@@ -1248,6 +1253,7 @@ phy3: usb-phy@7d008000 {
- 		nvidia,xcvr-hsslew = <32>;
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
- 	};
- 
 -- 
 2.32.0
 
