@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FF6407FA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A500407F97
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhILTOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 15:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235876AbhILTOs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 15:14:48 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD44C06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:13:33 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id l11so16308307lfe.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tzZRty5syTefvslqvSNH1KyI4p4ePIHehKrpq3jNHak=;
-        b=UhV7ZB03lfxtT+Ye8FzC9W6hmCQoAxoCGQimJcLY7prrx8mbKe9DIiT4SGaXesQFeB
-         bwrVZJdZaPGgx4eSKLVt3nOkqcznQcyPpP9BRmCWBP8k038tMJltDQ1VrUpAU3aNMwNA
-         gTOxiP2LUi8KOIoIT19q3qZx861ljKejcehZM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tzZRty5syTefvslqvSNH1KyI4p4ePIHehKrpq3jNHak=;
-        b=avIW/j3Q4FE3pRL/0sEI9UjjakCQKZGFs/b8QWJ2hRfkD9csm7+8LjM97i1XnxtMK8
-         9fYulubmwy0en2IFiVXd40SKN4K5Uo1nYMwxs1hur9Ub27wDUmiwf0Gv4EhtDItu8cPT
-         gl1qMnxwHe/l4yIvMoVdklrshEcq277+tYTm/C625Yvg6H7zqaSTn1dzoOKOuTlF0Mu0
-         PxGLUnR7tGPTiu7TL+fld0M4Gwyt1w+KatbmXcSDdnvL4hDqsfrshgMFNbXfA807o6zF
-         b59fYvKp0AiD8dvob5meHQX48zE6p0W6ZI97tV7GO9Zb+Ofj1J1PzWT5oY/044SC1wlq
-         15Yw==
-X-Gm-Message-State: AOAM533e9ZNyGt4zVAE8nyiZUpFAhvQeCPZVyn2eWvfjNdPmcDOdHUEu
-        e+cpYMtlgppzHFdkm+T1SyrT9mENR+rx6x6isYE=
-X-Google-Smtp-Source: ABdhPJxLdYVle4q1IHWO6sU9OYTvOJh9MYl1+KeJMxzPTvrPthnYaMD1P2uU7zF3VnSFPWS2C9+JvA==
-X-Received: by 2002:a05:6512:2345:: with SMTP id p5mr6233595lfu.340.1631474011527;
-        Sun, 12 Sep 2021 12:13:31 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id z2sm592900lfh.161.2021.09.12.12.13.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 12:13:28 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id k4so16247658lfj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:13:27 -0700 (PDT)
-X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr6351605lfv.655.1631474006987;
- Sun, 12 Sep 2021 12:13:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210912160149.2227137-1-linux@roeck-us.net> <20210912160149.2227137-5-linux@roeck-us.net>
-In-Reply-To: <20210912160149.2227137-5-linux@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 12 Sep 2021 12:13:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi1=8shingNuo1CtfJ7eDByDsmwsz750Nbxq=7q0Gs+zg@mail.gmail.com>
-Message-ID: <CAHk-=wi1=8shingNuo1CtfJ7eDByDsmwsz750Nbxq=7q0Gs+zg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] alpha: Use absolute_pointer for strcmp on fixed
- memory location
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
+        id S235878AbhILTNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 15:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229732AbhILTNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 15:13:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F1D86103D;
+        Sun, 12 Sep 2021 19:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631473916;
+        bh=VGU2+TdB4prMfLgkuaY2tvLR1iXGYB+nJkWyfFxSn+Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jfvPYU3n3xGNmiDRwTjwdfNbs3uf2xgzRDPK+UVbtTKhCIvxuvAmNAm9+nRbyyLhe
+         JwfL16h4bRhSNHa50W0AZNUB5KZDtbMBvc9Iu8qfr6qo25EhXGjknPJBnkRwH9bSRs
+         y/kVKmNA2Howot+IBPrweRpgUV2SFiK9rBbUOHABgjkhfaXzssIHNaTLBYFGwhDcIk
+         iH13pfaQJNsG1t5GN5gd5UiP1mY/p+yRsw8Y3xr3ZGYvlT0JikeAaJDZneA7mFmDZa
+         iqgpbXzJr6nzTE/jQCf7j47gnQdL047dTW8+JM397zMpcBIcE+2L3AAJzepza/SUUo
+         IUJGVpn9LMLBQ==
+Date:   Sun, 12 Sep 2021 14:15:36 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] brcmfmac: Replace zero-length array with flexible array
+ member
+Message-ID: <20210912191536.GB146608@embeddedor>
+References: <20210904092217.2848-1-len.baker@gmx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210904092217.2848-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 9:02 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> -       if (strcmp(COMMAND_LINE, "INSTALL") == 0) {
-> +       if (strcmp(absolute_pointer(COMMAND_LINE), "INSTALL") == 0) {
+On Sat, Sep 04, 2021 at 11:22:17AM +0200, Len Baker wrote:
+> There is a regular need in the kernel to provide a way to declare
+> having a dynamically sized set of trailing elements in a structure.
+> Kernel code should always use "flexible array members"[1] for these
+> cases. The older style of one-element or zero-length arrays should
+> no longer be used[2].
+> 
+> Also, make use of the struct_size() helper in devm_kzalloc().
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#zero-length-and-one-element-arrays
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Again, this feels very much like treating the symptoms, not actually
-fixing the real issue.
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-It's COMMAND_LINE itself that should have been fixed up, not that one use of it.
+I'll take this in my -next tree. :)
 
-Because the only reason you didn't get a warning from later uses is
-that 'strcmp()' is doing compiler-specific magic. You're just delaying
-the inevitable warnings about the other uses of that thing.
+Thanks, Len.
+--
+Gustavo
 
-            Linus
+> ---
+>  drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c | 2 +-
+>  include/linux/platform_data/brcmfmac.h                | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> index 2f7bc3a70c65..513c7e6421b2 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> @@ -29,7 +29,7 @@ static int brcmf_of_get_country_codes(struct device *dev,
+>  		return (count == -EINVAL) ? 0 : count;
+>  	}
+> 
+> -	cc = devm_kzalloc(dev, sizeof(*cc) + count * sizeof(*cce), GFP_KERNEL);
+> +	cc = devm_kzalloc(dev, struct_size(cc, table, count), GFP_KERNEL);
+>  	if (!cc)
+>  		return -ENOMEM;
+> 
+> diff --git a/include/linux/platform_data/brcmfmac.h b/include/linux/platform_data/brcmfmac.h
+> index 1d30bf278231..2b5676ff35be 100644
+> --- a/include/linux/platform_data/brcmfmac.h
+> +++ b/include/linux/platform_data/brcmfmac.h
+> @@ -125,7 +125,7 @@ struct brcmfmac_pd_cc_entry {
+>   */
+>  struct brcmfmac_pd_cc {
+>  	int				table_size;
+> -	struct brcmfmac_pd_cc_entry	table[0];
+> +	struct brcmfmac_pd_cc_entry	table[];
+>  };
+> 
+>  /**
+> --
+> 2.25.1
+> 
