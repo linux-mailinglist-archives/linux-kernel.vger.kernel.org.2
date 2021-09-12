@@ -2,180 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1842C407D6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3040407D7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235312AbhILNBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 09:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235262AbhILNBq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 09:01:46 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07207C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 06:00:32 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id a20so7184678ilq.7
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 06:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gbeDv78xTJt8wzzvWkHsPvwRD7D6JybFOyjYoMQggNo=;
-        b=ZR8mIygYGK+6Dt2oZxQHWyeGHJq0IJ7BzYp80PLWHqJ0TOj6DeqFVPJsrXgjEzjWjq
-         xl1HSJO8c9tCVJra3OUPPHO3gX8fzAJJj6aw8d1Dp5tniQFqRNddZ+nREZHLaK93abLn
-         TekA1j7HOL+wyH+uglMK+PBAcFj9TjUMiFCkASCzS/6heLlS7p5IKaQrZUA3cjU9oa9O
-         DUTG38JBgeowhdh6S9OTZytZcAwwusUIAVndo/U7a07HHeQR0JjNYxgPCgdyvV+ho6+Y
-         EpenVyZsNEzeyn25VAJNXpUlocfod2IszsZShaqCeVNchtKngtEVQhCR31lOdPu9IbCY
-         bK6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gbeDv78xTJt8wzzvWkHsPvwRD7D6JybFOyjYoMQggNo=;
-        b=ewyoT28fbO/NiWsiqEMEFgDfuvtWsnygfEBs+0TvpPmeeVprpAM+eC6tebyI+bABn+
-         aQqd+cT/aRltXq7HtIgrjnfWqfafkSCa8RK2qEsSjMOvbaedDticNVRNzs3oJcdVueFh
-         8gKykyma7qDQh0hrALatsklRQ2pjcTnFXu/AO8Prd7DZYlMMkOnPMzJzYCsNUDxrCXz3
-         PTApf8dpi3VkWtbWomLjLORH1PxskOPhzcvw/bV7FkxtVHhd/SBCUp9vSRzOD/VHhUQi
-         +x0mT1BSMTc2fmkEZ5g3biEK8HSAcdoaimfbq39X3xPJesy3B2iTTLwYYax1bMi5AYtm
-         gQVw==
-X-Gm-Message-State: AOAM532IcKsfRdBrCeyEdn+h77MThgwXwdV3h14W2qCyvNmqGPurIJ1m
-        6S3l4NFhd/OjxQTSq8c6+C/feFSiSWMYKg==
-X-Google-Smtp-Source: ABdhPJzguKLaiMIOpNMweZr7m0XyR2/evjL/8eyJZJp9PLsdql1Jh+J3/PlXZ3l5nn4NuAuhDB1VQw==
-X-Received: by 2002:a92:6907:: with SMTP id e7mr4637790ilc.301.1631451631106;
-        Sun, 12 Sep 2021 06:00:31 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id p7sm2767856iln.70.2021.09.12.06.00.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 06:00:30 -0700 (PDT)
-Subject: Re: io-uring: KASAN failure, presumably
-To:     Nadav Amit <nadav.amit@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8f003afd-50e4-cccb-68cb-684d08edb931@kernel.dk>
-Date:   Sun, 12 Sep 2021 07:00:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235331AbhILNMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 09:12:52 -0400
+Received: from mout.gmx.net ([212.227.17.22]:35423 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235203AbhILNMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 09:12:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631452284;
+        bh=A/5R/9lReRnqhX6VardHyEyyLao6a251fVotksIzRz4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=FHaHEneD/JHM91TlbiVBwG1FybHQieys3tZ581/oKQypH5ceh3JkG1LwdYEUL6OUw
+         6zj1G4LfYdl7CYUgq8mQYxfThp3P/JSkZuEBxw3M8hcg0ZHdfJBeXyg1egHrYH6464
+         boDX61NkPwYOm4kq+wa75mjkSLQzXO7r/gqNkrmw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MbRfl-1mvz7q2KgT-00burL; Sun, 12 Sep 2021 15:11:23 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Simon Horman <simon.horman@corigine.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        oss-drivers@corigine.com, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nfp: Prefer struct_size over open coded arithmetic
+Date:   Sun, 12 Sep 2021 15:10:57 +0200
+Message-Id: <20210912131057.2285-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xQAYY+Wh3B5HSBfIXdY8+Kf81F3qLDBWMoLrHBOCyshSYw3i/RW
+ e+K8wrfSv20BllJvs53spJa4W2SC/Mv0nkaEjszAWE1b1C0stbJ5yuK1Q0cUgoXk5rgjDaY
+ aOWPEMQIO+qHqaiWI3sIAyDp+dapwOfvBkjnxxdNny1dTg/en3+bMDOcnLlL26N738cCTal
+ 1d+67ZAZatc2kGXROTVOA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:u7CVJm1RPxk=:1VBoFGX8IlYt2jE+xxUaIL
+ ff2UltfrQLU1mqqJb7jFf35QnbmQO57kMXAJy8gR22BDvBp/yUkhfmJ+8iNAeX194eyzWW2QD
+ p8BHFY6AyLeKX425tsTzCJf99HV2pRGqpjzChBAM8aWbZ80YvAPdhkXLyqYjvin+TVNa0RjDE
+ ux17lqoxq5O4wxeaXD25fqeNG8JLwCvZQKYyzx4tTOnyZy28q7hf0aZ/sUVL4xfRMiadE6RfK
+ kRCqtMq78mOUWRcKl2fNVIPzEkLq1WPxBu9bfivYQThkGpmckjOgIkGt2JiYb1WDqgOca394K
+ AL5rKMh+ynSQfq7+bd0lOWIu+TllD2tmDn9Jaz8ndQgyVbjVp1Ciphc9piPDWSqfpNDFB1+RM
+ gHgfjNiNgbdd6qspL/UCMrn4t8NZtWUp/RvAk9BYgG0KLNgRuJB7jZkOZCxLFH1zANV+XnQPf
+ M8yKSjH3ErFBF4peSaueVxXwil3/IxBLrBdzI+KZ81rxE5pQZukSOlAbWa6MTaOTokKXWyJ10
+ sItVP+HqXOXOYXIdP8A5l9srpgHUiGu6Dsi0f3fkv62PSvEyAlcTbOZqO3ZTssut97rUIpspu
+ VG3IAxsuX2XfoeT82++CSkWAHIx6cbXK9fhz0VeQj9Q9kSSECoQZgwikkXiJ7T0bk7swReqyi
+ AEbFRePf9c1/tN3oc5SC58riSmyIfEAQ1120E/muKiOAGTQ1ZNvtnixQAaO9P1vav/GLkU8/S
+ PfWdhJDKK+Z1tv10ZFRT56wwpoc74oB3P4aJk+UKp+Few2Yfivok8fs3ChMiNNWvjE9IDR1Yz
+ Z+R6IuayR0RKmkJAdahcBWc72e/V/E2jGj6OpLEqqPquvPeWM6t6JTwdBfv2Pbuju7KVamqP8
+ Btj0H2phmuaKntjKaww8TWdu6FsKttQCJCHDbbj4iYc6FRPtSEKOmarRtzB6DAIUBibdYB/NN
+ +qQEjOPlqQdo4x/gfyLucU/3vTsoLi8yVPmf9s/bTJ64SoFzT4GG+HsOBd/u48GdPQfyfs3Tk
+ N57YioDiW8zSvlaq7bLt5TpT3XxmwicI7pMS5pDFVi2NunBbW0AUSs9k2ve6mpwitKIYgCv8Y
+ Rldt21TSBEQMd8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/21 8:34 PM, Nadav Amit wrote:
-> Hello Jens (& Pavel),
-> 
-> I hope you are having a nice weekend. I ran into a KASAN failure in io-uring
-> which I think is not "my fault".
-> 
-> The failure does not happen very infrequently, so my analysis is based on
-> reading the code. IIUC the failure, then I do not understand the code well
-> enough, as to say I do not understand how it was supposed to work. I would
-> appreciate your feedback.
-> 
-> The failure happens on my own custom kernel (do not try to correlate the line
-> numbers). The gist of the splat is:
-> 
-> [84142.034456] ==================================================================
-> [84142.035552] BUG: KASAN: use-after-free in io_req_complete_post (fs/io_uring.c:1629)
-> [84142.036473] Read of size 4 at addr ffff8881a1577e60 by task memcached/246246
-> [84142.037415]
-> [84142.037621] CPU: 0 PID: 246246 Comm: memcached Not tainted 5.13.1+ #236
-> [84142.038509] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 07/22/2020
-> [84142.040151] Call Trace:      
-> [84142.040495] dump_stack (lib/dump_stack.c:122)
-> [84142.040962] print_address_description.constprop.0 (mm/kasan/report.c:234)
-> [84142.041751] ? io_req_complete_post (fs/io_uring.c:1629)
-> [84142.042365] kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
-> [84142.042921] ? io_req_complete_post (fs/io_uring.c:1629)
-> [84142.043534] __asan_load4 (mm/kasan/generic.c:252) 
-> [84142.044008] io_req_complete_post (fs/io_uring.c:1629) 
-> [84142.044609] __io_complete_rw.isra.0 (fs/io_uring.c:2525) 
-> [84142.045264] ? lockdep_hardirqs_on_prepare (kernel/locking/lockdep.c:4123) 
-> [84142.045949] io_complete_rw (fs/io_uring.c:2532) 
-> [84142.046447] handle_userfault (fs/userfaultfd.c:778) 
-> 
-> [snip]
-> 
-> [84142.072667] Freed by task 246231:
-> [84142.073197] kasan_save_stack (mm/kasan/common.c:39)
-> [84142.073896] kasan_set_track (mm/kasan/common.c:46)
-> [84142.074421] kasan_set_free_info (mm/kasan/generic.c:359)
-> [84142.075015] __kasan_slab_free (mm/kasan/common.c:362 mm/kasan/common.c:325 mm/kasan/common.c:368)
-> [84142.075578] kmem_cache_free (mm/slub.c:1608 mm/slub.c:3168 mm/slub.c:3184)
-> [84142.076116] __io_free_req (./arch/x86/include/asm/preempt.h:80 ./include/linux/rcupdate.h:68 ./include/linux/rcupdate.h:655 ./include/linux/percpu-refcount.h:317 ./include/linux/percpu-refcount.h:338 fs/io_uring.c:1802)
-> [84142.076641] io_free_req (fs/io_uring.c:2113)
-> [84142.077110] __io_queue_sqe (fs/io_uring.c:2208 fs/io_uring.c:6533)
-> [84142.077628] io_queue_sqe (fs/io_uring.c:6568)
-> [84142.078121] io_submit_sqes (fs/io_uring.c:6730 fs/io_uring.c:6838)
-> [84142.078665] __x64_sys_io_uring_enter (fs/io_uring.c:9428 fs/io_uring.c:9369 fs/io_uring.c:9369)
-> [84142.079463] do_syscall_64 (arch/x86/entry/common.c:47)
-> [84142.079967] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:112)
-> 
-> 
-> I believe the issue is related to the handling of REQ_F_REISSUE and
-> specifically to commit 230d50d448acb ("io_uring: move reissue into regular IO
-> path"). There seems to be a race between io_write()/io_read()
-> and __io_complete_rw()/kiocb_done().
-> 
-> __io_complete_rw() sets REQ_F_REIUSSE:
-> 
->                if ((res == -EAGAIN || res == -EOPNOTSUPP) &&
->                     io_rw_should_reissue(req)) {
->                         req->flags |= REQ_F_REISSUE;
->                         return;
->                }
-> 
-> And then kiocb_done() then checks REQ_F_REISSUE and clear it:
-> 
->         if (check_reissue && req->flags & REQ_F_REISSUE) {
->                 req->flags &= ~REQ_F_REISSUE;
->                 ...
-> 
-> 
-> These two might race with io_write() for instance, which issues the I/O
-> (__io_complete_rw() and kiocb_done() might run immediately after
-> call_write_iter() is called) and then check and clear REQ_F_REISSUE.
-> 
->         if (req->file->f_op->write_iter)
->                 ret2 = call_write_iter(req->file, kiocb, iter);
->         else if (req->file->f_op->write)
->                 ret2 = loop_rw_iter(WRITE, req, iter);
->         else
->                 ret2 = -EINVAL;
-> 
->         if (req->flags & REQ_F_REISSUE) {
->                 req->flags &= ~REQ_F_REISSUE;
->                 ret2 = -EAGAIN;
->         }
-> 
-> 
-> So if call_write_iter() returns -EIOCBQUEUED, this return value can be
-> lost/ignored if kiocb_done() was called with result of -EAGAIN. Presumably,
-> other bad things might happen due to the fact both io_write() and
-> kiocb_done() see REQ_F_REISSUE set.
-> 
-> You might ask why, after enqueuing the IO for async execution, kiocb_done()
-> would be called with -EAGAIN as a result. Indeed, this might be more
-> unique to my use-case that is under development (userfaultfd might
-> return -EAGAIN if the mappings undergoing changes; presumably -EBUSY or some
-> wait-queue would be better.) Having said that, the current behavior still
-> seems valid.
-> 
-> So I do not understand the check for REQ_F_REISSUE in io_write()/io_read().
-> Shouldn't it just be removed? I do not suppose you want to do
-> bit-test-and-clear to avoid such a race.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Just a note to say that I've seen this, I'll take a deeper look at this
-tomorrow.
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kzalloc() function.
 
--- 
-Jens Axboe
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/net/ethernet/netronome/nfp/nfp_net_repr.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c b/drivers/n=
+et/ethernet/netronome/nfp/nfp_net_repr.c
+index 3b8e675087de..369f6ae700c7 100644
+=2D-- a/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_repr.c
+@@ -499,8 +499,7 @@ struct nfp_reprs *nfp_reprs_alloc(unsigned int num_rep=
+rs)
+ {
+ 	struct nfp_reprs *reprs;
+
+-	reprs =3D kzalloc(sizeof(*reprs) +
+-			num_reprs * sizeof(struct net_device *), GFP_KERNEL);
++	reprs =3D kzalloc(struct_size(reprs, reprs, num_reprs), GFP_KERNEL);
+ 	if (!reprs)
+ 		return NULL;
+ 	reprs->num_reprs =3D num_reprs;
+=2D-
+2.25.1
 
