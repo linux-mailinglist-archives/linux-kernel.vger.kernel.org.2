@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710544081A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD044081A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236396AbhILUrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 16:47:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55561 "EHLO
+        id S236334AbhILUsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 16:48:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50526 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236334AbhILUrx (ORCPT
+        by vger.kernel.org with ESMTP id S236226AbhILUsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 16:47:53 -0400
+        Sun, 12 Sep 2021 16:48:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631479598;
+        s=mimecast20190719; t=1631479608;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=w9trapGCPzLTHKk++cWbocG2cfMdgqL3mKBkfN3qm6M=;
-        b=I3Wu64I9x+vmtfK8dffwOoXVDcwOyFiSNU8plkVMq1TqAIVpO5/7bt9TQ5aQ6DB3YAtsOK
-        Ma9LXPSW23v6UpWLycEvdg6PhabWl89HFfAQbIvh8PIlpZbcYsm9zHFeQeuDP8BAUDVl2h
-        eY5/qTjhQiYn40aJ25Sfh5C3kpCCeZw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-YNmv64VuMGySbtowV4gtJQ-1; Sun, 12 Sep 2021 16:46:37 -0400
-X-MC-Unique: YNmv64VuMGySbtowV4gtJQ-1
-Received: by mail-ed1-f69.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so3836663edd.22
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 13:46:37 -0700 (PDT)
+        bh=hD5mu2L0rSn6NJ0lYDv6IN5TJCoxQGbrMjRvgkRfR3Q=;
+        b=gEW6UVr7x7XsT2S0FBvEEBx+PhxHV2ihamCJ1OcfedpZVEiRFZqJ3bDdr0A/IGOlwmRtiO
+        431ckDYBqP54KRt1uudabVfw7BBPs5VGEUYyC5ePozYrzITPT0kbzV6sKSrTMV4DyJeidP
+        vl16GZ8B+FDoPV1I3AsxjOTJYrw8zCc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-N88aZidYNxirmF0qoQ0kzQ-1; Sun, 12 Sep 2021 16:46:47 -0400
+X-MC-Unique: N88aZidYNxirmF0qoQ0kzQ-1
+Received: by mail-ed1-f71.google.com with SMTP id bf22-20020a0564021a5600b003c86b59e291so3853370edb.18
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 13:46:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=w9trapGCPzLTHKk++cWbocG2cfMdgqL3mKBkfN3qm6M=;
-        b=JakCfarA76Kz/THR2XqBmiCvS6kF0yUwxGsp4ang/5/f2FrVc7lGRohSQmx/Ad/uGP
-         7IamIN+7cByxEeNfxWgutiz5+YUigs7i2YXlexAPyMRIvFx5DYuTYGtCtt9EPAxa4DaE
-         ocMU9+oITZiHa46sjtXSInhUSvWXJywjacamJONAIqVjdpUQlM6+Et/dCT1N83s37ORh
-         M7ZcIAtS7NmYmWh77zWIZDhozDMP03ymEh8QHhBExJ7Zm7SW0xRd3CkHpjnhKrETy0Ve
-         GulPE4ZfKWIWJVcZgFS8Big2MHgpq5wXpVeCl0cR4qY6LKfWO7uRim8IECMCDwiX68Jr
-         vsBg==
-X-Gm-Message-State: AOAM530VFzoJHNdigte0X+Bd/RL33lX48M1o+lBMvBeU15p5D196B/is
-        xROeDQ0hIFtmZ+6xQQSBwAxlpsXh47sUvHnUPu2DiNTSfPitQzcwdR67h7GV/WqWwxK3qtEWDmO
-        X4PWawfWWEKY/+si2YBJBVZQo
-X-Received: by 2002:a17:906:158f:: with SMTP id k15mr9372071ejd.241.1631479596304;
-        Sun, 12 Sep 2021 13:46:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiE/BrkBwEHkrp9a9dCxLTCNaw7mGYfgbNSZjnR60diTfEEk4hPpy1B57JNKRNoTDhdDio6A==
-X-Received: by 2002:a17:906:158f:: with SMTP id k15mr9372059ejd.241.1631479596093;
-        Sun, 12 Sep 2021 13:46:36 -0700 (PDT)
+        bh=hD5mu2L0rSn6NJ0lYDv6IN5TJCoxQGbrMjRvgkRfR3Q=;
+        b=1mTfzmiZriX+XzTDkHAmdlpOfuslrpZDHAxV5epL8OE7T1noQU0vtiN5P5891itYTf
+         NBwfiKw9KUxw8Kk2aEQpFOoc3yd4ou7jC0s7FAX31hb2ltitm1Z1vuAdi8qRZ/J/CoDQ
+         2Xvbvhq40oTUJ6V37uTTL3upGw26OO2z7JDZCC2FKVGzqw2/qsZzf4f9hrJSkzkPbpAM
+         mq0zB7T4scBG5FFhbuZI7neyy9MJrsKQZXrF+G4sxTrmdSB6e4ns2V7u9h92nRbjWZau
+         0RRLMxALp6/mKIlqlXvEXkTr8RUHLQgi/R8SMbKrOC5IDza0RAg+y4JTvo2NLY2k1RHR
+         UMFw==
+X-Gm-Message-State: AOAM532o6gpxqBuH0Q/QkqK73s3kQRGxWsLoNE459FpcCAjeW7wTosZo
+        f78NpkeniFSqjb3c7gR6jDzJa3CYcLS9I8hKozH2f5yTZ5w+oL4yk8wWJS6kshANnxn64+/FOPp
+        O+cSnEvcXJDfd1Zv/iBPXwJfT
+X-Received: by 2002:a17:906:6943:: with SMTP id c3mr9063606ejs.550.1631479606136;
+        Sun, 12 Sep 2021 13:46:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxtzVDzCQCgmg9vruMxraTCQ4ulm/bOjc6O85vriXTkTUQVeFp3KT0GR74z+M9HlTCL0SdHtg==
+X-Received: by 2002:a17:906:6943:: with SMTP id c3mr9063592ejs.550.1631479605943;
+        Sun, 12 Sep 2021 13:46:45 -0700 (PDT)
 Received: from krava ([83.240.60.52])
-        by smtp.gmail.com with ESMTPSA id n18sm2458684ejg.36.2021.09.12.13.46.35
+        by smtp.gmail.com with ESMTPSA id z12sm2823128edi.44.2021.09.12.13.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 13:46:35 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 22:46:33 +0200
+        Sun, 12 Sep 2021 13:46:45 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 22:46:43 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -66,7 +66,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Riccardo Mancini <rickyman7@gmail.com>
 Subject: Re: [PATCH v11 09/24] perf record: Introduce bytes written stats to
  support --max-size option
-Message-ID: <YT5nKWqAhUVFiaEn@krava>
+Message-ID: <YT5nMzMPwy5/zXeh@krava>
 References: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
  <c5c886094b1657328c7ec030da140b329282ebb7.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
@@ -131,33 +131,30 @@ On Tue, Aug 17, 2021 at 11:23:12AM +0300, Alexey Bayduraev wrote:
 > -	rec->bytes_written += size;
 > +	if (map && map->file)
 > +		map->bytes_written += size;
-
-could we instead have bytes_written in thread data? so we don't
-need to iterate all the maps?
-
 > +	else
 > +		rec->bytes_written += size;
 >  
 >  	if (record__output_max_size_exceeded(rec) && !done) {
+
+also instead of slowing down each write with calling
+record__output_max_size_exceeded and risking the race with done,
+I think this should be called as part of trigger framework
+
+we could call this check periodically every second or such,
+we don't mind the size overhead.. IMO it's still better than
+caling this each time we write to the file
+
+jirka
+
 >  		fprintf(stderr, "[ perf record: perf size limit reached (%" PRIu64 " KB),"
 >  				" stopping session ]\n",
 > -				rec->bytes_written >> 10);
 > +				record__bytes_written(rec) >> 10);
-
-you're calling record__bytes_written twice.. could we just save the
-bytes_written from the first call and use it in the printf?
-
 >  		done = 1;
 >  	}
 >  
 > +	if (map && map->file)
 > +		return 0;
-
-please make comment why quit in here, we don't support switch-output for
-threads?
-
-jirka
-
 > +
 >  	if (switch_output_size(rec))
 >  		trigger_hit(&switch_output_trigger);
