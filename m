@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7D1407B27
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 02:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837B4407B2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 02:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhILAtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 20:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
+        id S234833AbhILAug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 20:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhILAte (ORCPT
+        with ESMTP id S234565AbhILAue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 20:49:34 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3F0C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 17:48:21 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id t2-20020a4ae9a2000000b0028c7144f106so2039174ood.6
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 17:48:21 -0700 (PDT)
+        Sat, 11 Sep 2021 20:50:34 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38FCC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 17:49:21 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so7966104otf.2
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 17:49:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VnOnqsSWD31QyEGDrq96azBZ0UWU9luvvX/xRrPvWyQ=;
-        b=IIja/gHreXaIG9rsnGbH+VslLedKuVXACi5x9CaX+rKlWTiucNMAC8nMo1RmCQbZJO
-         PxMULR3jaqPXx/Ez+ksEQyw2EAtbbPYsYybOxfWfqtbSmnpaGjZJDT6T7V+Jgcz2N0WU
-         xV1RuFwMS2yyGL5vI4vojTQgjCUuB7zsYJP3nJ95SjL6nXo1In78OXILWhYaXa6TrSAY
-         v1MFYfUgj8vWfjmfd2fSxCNJGJ+yJ24o1YUFDV7v+ERpPfoBVSSDzl4ZAlrX3zne0Xs2
-         CU7+NwGNhbkDNdR/MOJCWETf1AgMXfYjDd2UztKgGXMCUTjX3w7U8OlYUfQF4NOqV7Hp
-         juLw==
+        bh=z2Pe3b4SwlRKMgOlkS8oLjBODIJOoVQs8dZ7ECsnqGs=;
+        b=IEUKRAcm6aj0e5ichwr0mCY7Id16sNt59Bf09oaZcLhvzpshxOE7Gcrg//ObWdU46k
+         tlxjv+4ad0Lm72TzZKviMO9M1zlu/3aldi3cwyA8SSJNMNtNiPmdqHWL4DWPJBNCZqv7
+         gtXqqwFV0cRhX5cbQs9AEBgRJcSuRtL+XOgYOEQQCMluKrT3li6BLuJbIUwJ4Yk8V1/I
+         9uoNY0fjmwaCE5h0O617c4zj+g1D+3JnG7cncA3ST+EULxzqc4vODZHRYQLi6vaK9MYM
+         4/TOTGgSI8bXMZkb/zfplmt5GndmOE41HOUn0nmCPss5J5jSnror8eODfxZNEbg0Boso
+         CVZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VnOnqsSWD31QyEGDrq96azBZ0UWU9luvvX/xRrPvWyQ=;
-        b=SG0QmrDS4mvZLG6cJ+PouIM8bJrW8zsxk19wYULQrMBu9zhmYEBdOnv9x7asD6EIc2
-         frPawH5TOMGswXoHzBFG6bexgE9TFVugw8+8Q1kK/OpsaqjkuVjmq6fkb3LWV5NJS3bT
-         GlZfEtrx1KtlQKszHoChVu1TzwadCL75CFK8NzHNGOSfmG3mQe5ElUJ0jSmP2V3f20ii
-         rsGL8kM7jRjZYEGd/5F5zmk7zFncTkrjDbD8QFfIFhX9y9lesWI8a1DsVJH0MKfQ4CC5
-         lj66B7PFc/+b+AIUVS3iZYY97Rec3i5nCu6w11r5xRttD0X2sl9OopsAPn4njmkx4Hm3
-         yXbw==
-X-Gm-Message-State: AOAM532V/aK5IeGKPlFheoBQo7Q5IAdGqDRxXQ9GoWjrG0saRU2OZmPT
-        GgJXjhB/PaIctKw9o8CiWjdVYw==
-X-Google-Smtp-Source: ABdhPJzmoP5worguyCqqr4J4kkp8LNFwNxyrvv4riCinHkpcLPUPby0er4x6O7MlcgJbzJl0c0+M9g==
-X-Received: by 2002:a4a:b64b:: with SMTP id f11mr3908008ooo.18.1631407700530;
-        Sat, 11 Sep 2021 17:48:20 -0700 (PDT)
+        bh=z2Pe3b4SwlRKMgOlkS8oLjBODIJOoVQs8dZ7ECsnqGs=;
+        b=GmpqQ29BMFAyCFPG5mdDqJwBPb16XBhGvpX6TYMkvF2JH3/Q4pbczBorrlTW7YoFMt
+         V/g9Cy1PFg5dgVcfgiUY7OBUl368fu46a+WFnkX3vrdHKDmGG9BqlOB36bTBLQp7aQ7g
+         0D4M+gM604RZf9i5lvoZ01evHw3WF+8drjKK7pZnAPw5ZsCxP4MnpyyEMafschWpHquH
+         BHXWovvilaz6xV5knybrU1nJu9i+6Af28bnZVWgZaHNeuDQSMSgnt7FlcdDaIjzmDRbL
+         uR9EleAj327/QZMFPzN/gFGScTVOG0PlU5RFtPfvAdpANi5XReBgCrGzqt1BTyw041/R
+         pOXA==
+X-Gm-Message-State: AOAM533qiQSeOUuH6KMqKVVsQbPouN3zqEw3Chb3sbC1RZQRMegsx6+M
+        hYuG8gMPhsfSh4MShl0hoy3/gw==
+X-Google-Smtp-Source: ABdhPJzic/HopRBy6AIGYBq7mWJrD3YD1GMtkkTTK4sRpx11cp2GDG1fzMgrkLd69pRwpA3weRhTDw==
+X-Received: by 2002:a9d:6a4b:: with SMTP id h11mr4087878otn.5.1631407761043;
+        Sat, 11 Sep 2021 17:49:21 -0700 (PDT)
 Received: from [192.168.17.16] ([189.219.73.83])
-        by smtp.gmail.com with ESMTPSA id v4sm751961ott.72.2021.09.11.17.48.19
+        by smtp.gmail.com with ESMTPSA id m6sm767063otf.52.2021.09.11.17.49.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Sep 2021 17:48:20 -0700 (PDT)
-Subject: Re: [PATCH 5.13 00/22] 5.13.16-rc1 review
+        Sat, 11 Sep 2021 17:49:20 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/26] 5.10.64-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
         lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
         stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
         torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20210910122915.942645251@linuxfoundation.org>
+References: <20210910122916.253646001@linuxfoundation.org>
 From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <9bcd24f5-cc7b-0685-d1d8-0dbacef537f1@linaro.org>
-Date:   Sat, 11 Sep 2021 19:48:19 -0500
+Message-ID: <d345fa07-4fb4-96ed-ad23-a377ee26c9e2@linaro.org>
+Date:   Sat, 11 Sep 2021 19:49:19 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210910122915.942645251@linuxfoundation.org>
+In-Reply-To: <20210910122916.253646001@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -73,9 +73,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello!
 
-On 9/10/21 7:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.16 release.
-> There are 22 patches in this series, all will be posted as a response
+On 9/10/21 7:30 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.64 release.
+> There are 26 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -83,9 +83,9 @@ On 9/10/21 7:29 AM, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.16-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.64-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
 > and the diffstat can be found below.
 > 
 > thanks,
@@ -98,19 +98,19 @@ No regressions on arm64, arm, x86_64, and i386.
 Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 ## Build
-* kernel: 5.13.16-rc1
+* kernel: 5.10.64-rc1
 * git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.13.y
-* git commit: 7f37731955338b3af99536b085718d0ea73fdd16
-* git describe: v5.13.15-23-g7f3773195533
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13.15-23-g7f3773195533
+* git branch: linux-5.10.y
+* git commit: 750f802d275892bf81c140338d6820d725399edc
+* git describe: v5.10.63-27-g750f802d2758
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.63-27-g750f802d2758
 
-## No regressions (compared to v5.13.15)
+## No regressions (compared to v5.10.63)
 
-## No fixes (compared to v5.13.15)
+## No fixes (compared to v5.10.63)
 
 ## Test result summary
-total: 89607, pass: 74925, fail: 1092, skip: 12638, xfail: 952
+total: 85074, pass: 71767, fail: 472, skip: 11795, xfail: 1040
 
 ## Build Summary
 * arc: 10 total, 10 passed, 0 failed
@@ -127,16 +127,14 @@ total: 89607, pass: 74925, fail: 1092, skip: 12638, xfail: 952
 * s390: 18 total, 18 passed, 0 failed
 * sh: 24 total, 24 passed, 0 failed
 * sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
+* x15: 1 total, 1 passed, 0 failed
 * x86: 1 total, 1 passed, 0 failed
 * x86_64: 39 total, 39 passed, 0 failed
 
 ## Test suites summary
 * fwts
-* igt-gpu-tools
 * install-android-platform-tools-r2600
 * kselftest-android
-* kselftest-arm64
 * kselftest-bpf
 * kselftest-breakpoints
 * kselftest-capabilities
@@ -160,7 +158,6 @@ total: 89607, pass: 74925, fail: 1092, skip: 12638, xfail: 952
 * kselftest-kvm
 * kselftest-lib
 * kselftest-livepatch
-* kselftest-lkdtm
 * kselftest-membarrier
 * kselftest-memfd
 * kselftest-memory-hotplug
@@ -211,7 +208,6 @@ total: 89607, pass: 74925, fail: 1092, skip: 12638, xfail: 952
 * ltp-filecaps-tests
 * ltp-fs-tests
 * ltp-fs_bind-tests
-* ltp-fs_perms_simple-test[
 * ltp-fs_perms_simple-tests
 * ltp-fsx-tests
 * ltp-hugetlb-tests
@@ -231,6 +227,7 @@ total: 89607, pass: 74925, fail: 1092, skip: 12638, xfail: 952
 * perf
 * rcutorture
 * ssuite
+* timesync-off
 * v4l2-compliance
 
 
