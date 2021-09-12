@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663A2407C7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BC5407C81
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhILJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 05:03:42 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44192 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbhILJDl (ORCPT
+        id S233379AbhILJD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 05:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233178AbhILJD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 05:03:41 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DC0611FDAE;
-        Sun, 12 Sep 2021 09:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631437345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QySOdgPm+HiUGJUgILMD/1/8LIC83NDqIu5nEavy49Y=;
-        b=DT0xAVSUJrujkMJv4XTyjQQTc5FCn5F+UenJRlFaOLTzqQC472B/+YwLOqMOrHo/Omd36p
-        ZjR2fWWf5ubGrr5706O8CRCCji38lSmueIdLOZVD8mMeUg4yeknSgF1pwj/nh5Fm50i4LG
-        po8vRuLYgtY2e2sJykeBcAFKT8rJv4w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631437345;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QySOdgPm+HiUGJUgILMD/1/8LIC83NDqIu5nEavy49Y=;
-        b=pdUbmbyQwalEhoZXJTw8PRXMztyQJzAMZRMwpQ0xRHS4G/h/10aADs58MxCoJYZX6msp85
-        Psw8/YOyg9hCbfCw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C5512132FD;
-        Sun, 12 Sep 2021 09:02:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id Xgu2LyHCPWECWQAAGKfGzw
-        (envelope-from <bp@suse.de>); Sun, 12 Sep 2021 09:02:25 +0000
-Date:   Sun, 12 Sep 2021 11:02:23 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] locking/urgent for v5.15-rc1
-Message-ID: <YT3CHxmA+NscNPgt@zn.tnic>
+        Sun, 12 Sep 2021 05:03:58 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E80C06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 02:02:42 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id t6so7956592edi.9
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 02:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=NmNEumnJQc652jcfADfxSNH/jbHq1UnvsY/1SqNOwwR78AguAhIut3Tu82Mt1m0Y54
+         WiNqjHj74N5ljwU1n2ZTdKqkMDwnpwuKXYpa8a9cJUzzP9WoWSFWMCOHwcBiKKQqqP9F
+         vJFslZXLmuUZcltRoS5+9LFlrq94Uccv1M+lcJY2lmrm1yPU5KFuXMuj9QT8G1BfXMR0
+         dZSxbFN9uG5uSz9uuFppyiSmJmhnvLtfmKPCZYVZh2pBKr/g+s0/dHPw9JJX6hIjE5jA
+         A5gtZBobBbavirUzHUlb4xR2CjiZF/8u5NZ4FMTNsSMGuZIHB7REcyXVQu9iLF2CZP1a
+         npig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=op6g7TBtl5/H38OrUoOMUr1QJlQz5nm8MxUBU8+of4aFUVACjIGR+XHedtCoR2H1Ll
+         GfPiFJEj5xdm3wevqC1BqMwZoE+DHgyUu2zbzk427qVLgiqNoWcqDaQh9lZCzuv9zcGS
+         PTFGDlPZsHm6WYX87/7bUOfcnvQQJom2G7Yif9ilTCKNQYf7B/0exmORjgAWNlw5m/Tn
+         zIpwtCvM8F5flQ8TT6WxT4Vnzqt3AqsdUVT1LFcygCZsKpHAp3YLRUO5F9UC4uJ53DTY
+         Y1HnSeM5aQX15QpeAQijpm3CYygE8oS2UJ2u7LqfV4nGrr3OQ99mrr2HjvhUATKZ6taw
+         NVmQ==
+X-Gm-Message-State: AOAM530grUjXzPnKshRSEnFCUBzPhvdCZYkftArLFmb9m3Xdamnm6mbY
+        uBOZaKFEJC2k4fUkKuZEZDmHjh8Khrnbc84fZgU=
+X-Google-Smtp-Source: ABdhPJzXgCKMpXaaxBgwbRQiJWdjKxSgySekBYeVagWGNOFfJIXmyl1TooNwGpZIgg2XxhHupQcB/sA177nB5LLovv8=
+X-Received: by 2002:a05:6402:27d4:: with SMTP id c20mr6959462ede.332.1631437360620;
+ Sun, 12 Sep 2021 02:02:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6402:608:0:0:0:0 with HTTP; Sun, 12 Sep 2021 02:02:40
+ -0700 (PDT)
+Reply-To: mrschantelhermans@gmail.com
+From:   Mrs Chantel Hermans <peterlee5606@gmail.com>
+Date:   Sun, 12 Sep 2021 02:02:40 -0700
+Message-ID: <CAEtwm3H4jpn2yXCpBFbH4Uw6Gf7i9eEw-GOKpd136rKA_grrdQ@mail.gmail.com>
+Subject: ATTENTION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-please pull several locking fixes which accumulated over the merge
-window.
-
-Thx.
-
----
-
-The following changes since commit 8596e589b787732c8346f0482919e83cc9362db1:
-
-  Merge tag 'timers-core-2021-08-30' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2021-08-30 15:31:33 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/locking_urgent_for_v5.15_rc1
-
-for you to fetch changes up to e5480572706da1b2c2dc2c6484eab64f92b9263b:
-
-  locking/rtmutex: Fix ww_mutex deadlock check (2021-09-09 10:31:22 +0200)
-
-----------------------------------------------------------------
- - Fix the futex PI requeue machinery to not return to userspace in
-inconsistent state
-
-- Avoid a potential null pointer dereference in the ww_mutex deadlock check
-
-- Other smaller cleanups and optimizations
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      futex: Return error code instead of assigning it without effect
-
-Mike Galbraith (1):
-      locking/rwsem: Add missing __init_rwsem() for PREEMPT_RT
-
-Peter Zijlstra (1):
-      locking/rtmutex: Fix ww_mutex deadlock check
-
-Thomas Gleixner (4):
-      futex: Prevent inconsistent state and exit race
-      futex: Clarify comment for requeue_pi_wake_futex()
-      futex: Avoid redundant task lookup
-      futex: Remove unused variable 'vpid' in futex_proxy_trylock_atomic()
-
- include/linux/rwsem.h    |  12 +--
- kernel/futex.c           | 190 +++++++++++++++++++++++++++--------------------
- kernel/locking/rtmutex.c |   2 +-
- kernel/locking/rwsem.c   |  10 ++-
- 4 files changed, 120 insertions(+), 94 deletions(-)
-
 -- 
-Regards/Gruss,
-    Boris.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+
+ATTENTION
+
+
+
+You have been compensated with the sum of 6.9 million dollars in this
+United Nation the payment will be issue into ATM Visa Card,
+
+
+
+and send to you from the Santander Bank of Spain we need your
+Address,Passport and your whatsapp number.
+
+
+
+THANKS
+
+*Mrs Chantel Hermans*
