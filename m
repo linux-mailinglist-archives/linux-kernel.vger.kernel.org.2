@@ -2,82 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93031407FAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DD3407FAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhILTTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 15:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234625AbhILTTH (ORCPT
+        id S235866AbhILTXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 15:23:40 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:56906 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235382AbhILTXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 15:19:07 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0268AC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:17:53 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id o8so1356920pll.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8mt2FRZeqYimYHzEQVx7rXtxD7Yn/OjWw1OJKBJgOrk=;
-        b=eAereFvIbpprNdT0o3I8Mro8yyEKoRHVAbYc7MLj9bfdNL5h6c0NLyS/6vh/q13EkY
-         zhiDkkpx4Ol7EDmlFj+nfgHU7HRHF/I4rI8u63uQMT+Y1ClNJbYo4GBkuz1iXy8aIRmj
-         /hN4k1DzxF9W5Oa4gB2Gio0F8RMt6leq+FAKE=
+        Sun, 12 Sep 2021 15:23:39 -0400
+Received: by mail-il1-f197.google.com with SMTP id d11-20020a92d78b000000b0022c670da306so13956326iln.23
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:22:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8mt2FRZeqYimYHzEQVx7rXtxD7Yn/OjWw1OJKBJgOrk=;
-        b=oSOIOFFghMa8VhourSPTfM8+zTkJ6X0/+DEsB1cMf2SHSnKGpSJMHmJml/08moN/bH
-         fElwxrtxGij+eOvlCuGZ+ZJ3qEwyTPXpxFgNVRdhOt4+K3+brplDEiXbJw1A5p5zC7UD
-         nYo6YB9scoq9tLsI55aUs/1uM9T4qf8V5PmOV8goAT12X9jjEBPDGqwE8VuWXjJqs7ve
-         B9UQQ8+xvZw2BDA8kjTY3WVBNwHoccautwx9uLSAN/NjMrctCLjMCgBSSG2CLIXSbCHK
-         jWjqzQvFeL95n5+CByggMUrY82kJkjsOV/NmH57wwxdFOKy4rg5A86q/iBK2XUtY/5UU
-         U65g==
-X-Gm-Message-State: AOAM53186E0W3+IOwqLmU0mGdZoF0aEF4eQVl86XyS2q9pf2et6zQAAa
-        OHrBQw8p2rOq4UI4HGol0N6PeQ==
-X-Google-Smtp-Source: ABdhPJyriW74lmYvmDJGr0xLlbz7qpdNg+OqXSZV4S2BsL8NQJPNrFYN94Kgbh0TcvZsVqziaB9N/w==
-X-Received: by 2002:a17:90a:1990:: with SMTP id 16mr8927258pji.11.1631474271536;
-        Sun, 12 Sep 2021 12:17:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e19sm4674932pfd.45.2021.09.12.12.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 12:17:51 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 12:17:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Misc driver fix for 5.15-rc1
-Message-ID: <202109121213.A47D575@keescook>
-References: <YT4IvKLQHm9mfpR+@kroah.com>
- <CAHk-=wh7FYyewcJkozsjA95yj0AYvmpMDoZd0RxQ3ZbMMdXUdQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ul+YwBXMFuYLPOR8Yu9SXOMza6wNejwsN+jqp7q9+Qw=;
+        b=SkK3oGpJhjnWCBXfJfSUdRTheZLF9Z3d+MiXG8JLhC9l4bD0dLr02UNtLZQ/Eqx+DK
+         fUUi1QKGL+ohyRnRJOR6wZZdFvfQy6PN5IDyziiVUxoL/OOMxlNjV4ggpDlRjwZNXu+X
+         UdQC5y5c7p/Nv8J77xc752f9PjQ1ZagUZASdA9W3Yg4jv9hfsv7Re8U3moR+jLfFnrtd
+         Hj9IMGyJasxvl/V31rppxRM1KBUhf8yB7x3o7/eWVpX3LYpCUbIvJLGTJpaunou8t9sF
+         wPP5EHhJPmH36AGRD6aRrrc6mxwc1n2nDy29QjrRJdMNVjfYpjCqFXYTIOm2dDPZn+0B
+         Gmsg==
+X-Gm-Message-State: AOAM532YBTXnl5WTtwRqPhIeWmsbv0xZSEykiXZRrQSlbPnj/NEOJDZb
+        dLBIGy6y+5/vIT4GYUPNxu5BgX8X9xfw98KwrpMPx5wgDPAl
+X-Google-Smtp-Source: ABdhPJxlN6/JRIp1F3Rwn3/9h4uqIgzofSlSubJQDGMKz41eVKWL2jWNl39egzta5aQ7nLIuzpntcafDkMp8yFUk/aHYdbd0O5Am
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh7FYyewcJkozsjA95yj0AYvmpMDoZd0RxQ3ZbMMdXUdQ@mail.gmail.com>
+X-Received: by 2002:a92:cb12:: with SMTP id s18mr5224646ilo.32.1631474544736;
+ Sun, 12 Sep 2021 12:22:24 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 12:22:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b2fdbc05cbd144b7@google.com>
+Subject: [syzbot] INFO: task hung in cangw_pernet_exit (3)
+From:   syzbot <syzbot+c46e2a20b7d78a4e5c6a@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 12:03:35PM -0700, Linus Torvalds wrote:
-> Could we please just stop pointlessly printing out kernel version data
-> that  is already available other ways? Just do 'dmesg', or 'uname -r'
-> or whatever instead of insisting on printing out redundant
-> information?
+Hello,
 
-This was done to deal with the various mangling of reports (i.e.
-"summaries") I've been getting from CI systems that run LKDTM. It has been
-difficult to reliably extract actionable details, so instead I included
-it with the test output. And the extra details go the other way too:
-frequently folks configuring the CI have no context for why tests fail,
-and LKDTM usually has a reasonable amount of information about what
-Kconfig settings have gone missing, etc, so those hints are reported as
-well.
+syzbot found the following issue on:
 
--- 
-Kees Cook
+HEAD commit:    999569d59a0a Add linux-next specific files for 20210908
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c68851300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad035460e67a9c3
+dashboard link: https://syzkaller.appspot.com/bug?extid=c46e2a20b7d78a4e5c6a
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1653aab5300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c46e2a20b7d78a4e5c6a@syzkaller.appspotmail.com
+
+INFO: task syz-executor.1:8622 can't die for more than 143 seconds.
+task:syz-executor.1  state:D stack:25536 pid: 8622 ppid:  6556 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:4955 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6302
+ schedule+0xd3/0x270 kernel/sched/core.c:6381
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6440
+ __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+ __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
+ cangw_pernet_exit+0xe/0x20 net/can/gw.c:1244
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
+ setup_net+0x639/0xa30 net/core/net_namespace.c:349
+ copy_net_ns+0x319/0x760 net/core/net_namespace.c:470
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x445/0x920 kernel/fork.c:3127
+ __do_sys_unshare kernel/fork.c:3201 [inline]
+ __se_sys_unshare kernel/fork.c:3199 [inline]
+ __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3199
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+RSP: 002b:00007fdd1cebc188 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000040000000
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe22423e0f R14: 00007fdd1cebc300 R15: 0000000000022000
+INFO: task syz-executor.2:8795 can't die for more than 146 seconds.
+task:syz-executor.2  state:D stack:25208 pid: 8795 ppid:  6559 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:4955 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6302
+ schedule+0xd3/0x270 kernel/sched/core.c:6381
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6440
+ __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+ __mutex_lock+0xa34/0x12f0 kernel/locking/mutex.c:729
+ cangw_pernet_exit+0xe/0x20 net/can/gw.c:1244
+ ops_exit_list+0xb0/0x160 net/core/net_namespace.c:168
+ setup_net+0x639/0xa30 net/core/net_namespace.c:349
+ copy_net_ns+0x319/0x760 net/core/net_namespace.c:470
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x445/0x920 kernel/fork.c:3127
+ __do_sys_unshare kernel/fork.c:3201 [inline]
+ __se_sys_unshare kernel/fork.c:3199 [inline]
+ __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3199
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+RSP: 002b:00007f42a74e7188 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000040000000
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffe2b27af6f R14: 00007f42a74e7300 R15: 0000000000022000
+INFO: task syz-executor.5:8889 can't die for more than 148 seconds.
+task:syz-executor.5  state:R  running task     stack:25288 pid: 8889 ppid:  6557 flags:0x00004006
+Call Trace:
+INFO: task syz-executor.3:8988 can't die for more than 151 seconds.
+task:syz-executor.3  state:R  running task     stack:25760 pid: 8988 ppid:  6554 flags:0x00004006
+Call Trace:
+ context_switch kernel/sched/core.c:4955 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6302
+ preempt_schedule_irq+0x4e/0x90 kernel/sched/core.c:6702
+ irqentry_exit+0x31/0x80 kernel/entry/common.c:427
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: d5a7ae8:0000000000000000 EFLAGS: 00000046 ORIG_RAX: 0000000000000001
+RAX: dffffc0000000000 RBX: 1ffff92001ab4f58 RCX: f4d672f5b9097ca7
+RDX: ffffffff8d6e3a57 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: ffffed1003aa4390 R08: 0000000000000001 R09: ffffffff8fcfa92f
+R10: dffffc0000000000 R11: 0000000000000002 R12: ffff88801d521c80
+R13: 64a21813a00bdf00 R14: ffffed1017386541 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
