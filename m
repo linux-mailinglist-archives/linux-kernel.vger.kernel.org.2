@@ -2,113 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8813F408244
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 01:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7032408251
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 01:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236688AbhILXP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 19:15:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46848 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236622AbhILXP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 19:15:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631488451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kE+f8eZSnmxip1KphitcMWzsxYEael7Knbp5a1w+0jw=;
-        b=INwQQU6HHK4TjME1RJ9ufI59Z+b38md+xB1SsNBd4r2UMNNevlaRV4gRtxWDWzwGFsyXSo
-        KF8cS2V1wfMpN4he1ehK1SSAdbXYPDFJWsTupjOjOASoZhm9nP2FmKMyejjsxUQOjRPtzK
-        9/2TTeYJNreSsxbIqpigLmXSKrHCaM4=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-XG27dXaOP_-2yP5eTSihkw-1; Sun, 12 Sep 2021 19:14:10 -0400
-X-MC-Unique: XG27dXaOP_-2yP5eTSihkw-1
-Received: by mail-qt1-f199.google.com with SMTP id b15-20020a05622a020f00b0029e28300d94so54152543qtx.16
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 16:14:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=kE+f8eZSnmxip1KphitcMWzsxYEael7Knbp5a1w+0jw=;
-        b=OQPHcolEfTWgLB1QI0/p/Tnpywc5kR0WCVof7mgNpfjGziI1gLACpD9VRwSRw4oopQ
-         N/9fY+Mbs29hXXl0XgN95NfCSmIF52iPnDMeTB4g4khr/ib8a7PVI6odK5xO0b/qepuS
-         HRUDhFmfX0TXQBH71hMEvb1FF3VzjdPuJUF7Zgmsc31ErRMMz+ihk2PJUcdYGygwJTLP
-         ZGJ5hD7JD6J1vJfeDLOIjakfadhqJ6uxO6piJLVD09GL4MwHGZwDPZiGLBW7upi3QYv0
-         BSZRY6DaBcGQqeEzycfJOTQbZ8bdxo/bQWzqZ81271szfk3Z+fIieXWN3ohtz0ANQpxV
-         XuNw==
-X-Gm-Message-State: AOAM532M/7Ivz0kLCoBT5CXij330cFXHOhNvH08YvV+d7e+r7vqfL8+N
-        KIUPqI97v9mBV4Vwb5Tb/A5o22Jdtpo0UBHzDcguG1WY8mbamVGWUvBR9GJoRjEUpHqE9xnoyl1
-        am1vb0ycPu2KJ/1w0LurMsnDm
-X-Received: by 2002:a05:620a:89b:: with SMTP id b27mr7258508qka.429.1631488450070;
-        Sun, 12 Sep 2021 16:14:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzdVLlOYUeUXdlomx1acPMw/JaEVviENsKd4hMZAnyh1ZGDxZFLdD/vlSplLFhe2m6Uh8Q2kQ==
-X-Received: by 2002:a05:620a:89b:: with SMTP id b27mr7258485qka.429.1631488449893;
-        Sun, 12 Sep 2021 16:14:09 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id t26sm3943296qkm.0.2021.09.12.16.14.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 16:14:09 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 1/1] x86: change default to
- spec_store_bypass_disable=prctl spectre_v2_user=prctl
-To:     Kees Cook <keescook@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>
-References: <87eel8lnbe.fsf@nanos.tec.linutronix.de>
- <20201104235054.5678-1-aarcange@redhat.com>
- <202109111411.C3D58A18EC@keescook>
-Message-ID: <c0722838-06f7-da6b-138f-e0f26362f16a@redhat.com>
-Date:   Sun, 12 Sep 2021 19:14:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <202109111411.C3D58A18EC@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S236697AbhILXWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 19:22:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236546AbhILXWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 19:22:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BBDDC60FA0;
+        Sun, 12 Sep 2021 23:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631488888;
+        bh=4tPd9+jMvygWfc1poT16/de2IeCtsmrPTz2MdO/1HGc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=K42kSLAqLsrbimzcWWj+TEJJcvLzRdlbi8rhU5cKO/i++2k6nd06Th3tHhGD/qc0t
+         F4B41NbEYgDJIy6Hck29OU1TPlyEj4ckEIqRY1b9nK5ShteNaAm7fKJMgxVr3UQwGA
+         +LR0VUjpVu0K4046rEoPb4/PUB4mIPVv+12VPl5pZa9piwFIroJeeY5K4kPPV4oqT+
+         GIu3cAqYuH+CougfpPJI3wcUeGipFUW4lO5m3gUsKV0KqRN34+fzCXvV6cRJzyDbSH
+         6Pl2ZuCRjJwWoSMFzSZF05v7p585OFWcqkJlK5epxG5wN8ow3rH9X6yu0gf+oAziVx
+         jQJVAPG6q6U6Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A6DC7609ED;
+        Sun, 12 Sep 2021 23:21:28 +0000 (UTC)
+Subject: Re: [GIT PULL] perf tools changes for v5.15: 2nd batch
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210911234513.121740-1-acme@kernel.org>
+References: <20210911234513.121740-1-acme@kernel.org>
+X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210911234513.121740-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.15-2021-09-11
+X-PR-Tracked-Commit-Id: 17a99e521f67743a5d3405cba0aacd8a10f9ff7d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b5b65f1398274fd726eca87dbebd39f3e603348a
+Message-Id: <163148888862.14345.5364190323789590554.pr-tracker-bot@kernel.org>
+Date:   Sun, 12 Sep 2021 23:21:28 +0000
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/21 5:13 PM, Kees Cook wrote:
-> On Wed, Nov 04, 2020 at 06:50:54PM -0500, Andrea Arcangeli wrote:
->> Switch the kernel default of SSBD and STIBP to the ones with
->> CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
->> spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
-> Hello x86 maintainers!
->
-> I'd really like to get this landed, so I'll take this via the
-> seccomp-tree unless someone else speaks up. This keeps falling off
-> the edge of my TODO list. :)
->
-> -Kees
->
-You can add my ack too. Thanks!
+The pull request you sent on Sat, 11 Sep 2021 20:45:13 -0300:
 
-Acked-by: Waiman Long <longman@redhat.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.15-2021-09-11
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b5b65f1398274fd726eca87dbebd39f3e603348a
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
