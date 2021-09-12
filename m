@@ -2,62 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB38B408253
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 01:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985D8408257
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 01:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236739AbhILXWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 19:22:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236712AbhILXWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 19:22:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5DA44610D0;
-        Sun, 12 Sep 2021 23:21:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631488891;
-        bh=YFMAiKtyCdPCtRWRXGlGl9qtqYyD4dhaYHd74C74bZA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qHHCnCuoFQaOR3SUFWZjp+1dfTLQBHHoQysQ9qLX9BoMy69nWw4A6REdE1RYkLjGn
-         MMyE4uE85DKxfLLeFkx33/inJfPOBwWvvKySvRpwaF8oAi6whvniDMG7dMlhZANiL9
-         z5uIBegwlrO3vKTsAS8Dl/jrlDvm4sj6/QrpFBq2tm90dQbwypWneX+Eyfg3PhVc0U
-         x6Z6O8ILzEQCxVcdXQYsaoI2uHlOVcSLvwhWqR+mTYZkX4lREnKPmww262zW4/4WIE
-         nD9NUCdlBbuRDeSAIzFIv+LEDWob00yjCcdnNxTJYDOkXw/Fb87i0eRBuMOialYnP1
-         xnXlK8MiZ/yeg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 58893609ED;
-        Sun, 12 Sep 2021 23:21:31 +0000 (UTC)
-Subject: Re: [GIT PULL v2] Compiler Attributes for v5.15-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210910191734.GA8688@kernel.org>
-References: <20210910191734.GA8688@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210910191734.GA8688@kernel.org>
-X-PR-Tracked-Remote: https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.15-rc1-v2
-X-PR-Tracked-Commit-Id: b83a908498d68fafca931e1276e145b339cac5fb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c3e46874dfb9a2ef08085bb147dc371e72738673
-Message-Id: <163148889135.14345.6992457235469669107.pr-tracker-bot@kernel.org>
-Date:   Sun, 12 Sep 2021 23:21:31 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+        id S236709AbhILXdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 19:33:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41769 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236662AbhILXdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 19:33:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631489550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xzTE9yjUoCB5GMFuVGpGO3mw7g+iYVf6cDy06tcZwZI=;
+        b=HHh+KVHKruiusKwQfOxJxk015Sl96dXZgkeMKMKfYItNW9tZZbIRciI5tOshf65Io2J7w2
+        954DIVlIOZpt9yAJI+9dLaErN4Qa3bpMGg7GKtmF7I179bENDrUNFV4qVayJ4umiwFP8As
+        RhF0vcOSuYctLzifMHlzjcgR594uEvw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-Q7vI-vrFNOON44iikLMR5Q-1; Sun, 12 Sep 2021 19:32:27 -0400
+X-MC-Unique: Q7vI-vrFNOON44iikLMR5Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E60B31800D41;
+        Sun, 12 Sep 2021 23:32:25 +0000 (UTC)
+Received: from rh (vpn2-54-128.bne.redhat.com [10.64.54.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4CB375C25A;
+        Sun, 12 Sep 2021 23:32:25 +0000 (UTC)
+Received: from [::1] (helo=rh)
+        by rh with esmtps (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <dchinner@redhat.com>)
+        id 1mPYxR-0000wn-Pc; Mon, 13 Sep 2021 09:32:21 +1000
+Date:   Mon, 13 Sep 2021 09:32:19 +1000
+From:   Dave Chinner <dchinner@redhat.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@linux.intel.com
+Subject: Re: [xfs]  ab23a77687:  aim7.jobs-per-min -18.5% regression
+Message-ID: <20210912233219.GB2335@rh>
+References: <20210909142355.GA6270@xsang-OptiPlex-9020>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909142355.GA6270@xsang-OptiPlex-9020>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 10 Sep 2021 21:17:34 +0200:
+On Thu, Sep 09, 2021 at 10:23:55PM +0800, kernel test robot wrote:
+> 
+> 
+> Hi Dave Chinner,
+> 
+> we reported "[xfs]  6df693ed7b:  aim7.jobs-per-min -15.7% regression" as [1]
+> when this change is still on
+> https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git xfs-5.15-merge
+> 
+> now this change is on mainline.
+> so we report again to highlight we still observe similar performance regression
+> on mainline.
+> 
+> previously we also tried to test by turning off RWSEM_SPIN_ON_OWNER per your
+> guidance, but still observed similar regression, though we are not sure if our
+> method to turn off RWSEM_SPIN_ON_OWNER is enough. the detail result is in [2]
+> 
+> [1] https://lore.kernel.org/all/20210809064248.GB5761@xsang-OptiPlex-9020/
+> [2] https://lore.kernel.org/all/20210818085248.GA28771@xsang-OptiPlex-9020/
 
-> https://github.com/ojeda/linux.git tags/compiler-attributes-for-linus-v5.15-rc1-v2
+Did you look at the config that was generated before running the
+tests again?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c3e46874dfb9a2ef08085bb147dc371e72738673
+> #
+> # Automatically generated file; DO NOT EDIT.
+> # Linux/x86_64 5.14.0-rc4 Kernel Configuration
+> #
+....
+> CONFIG_ARCH_SUPPORTS_ATOMIC_RMW=y
+> CONFIG_MUTEX_SPIN_ON_OWNER=y
+> CONFIG_RWSEM_SPIN_ON_OWNER=y
+> CONFIG_LOCK_SPIN_ON_OWNER=y
+....
 
-Thank you!
 
+So these tests were still run with the same RWSEM_SPIN_ON_OWNER=y
+configuration, and so unsurprisingly the result was the same with
+spin contention on the directory inode rwsem.
+
+You'll save yourself (and everyone else) a lot of time by validating
+that your config changes are valid before re-running tests...
+
+Cheers,
+
+Dave.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Dave Chinner
+dchinner@redhat.com
+
