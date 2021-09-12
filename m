@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80CE407F5A
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C78A407F3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236061AbhILSU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 14:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
+        id S233916AbhILSTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 14:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235521AbhILSUk (ORCPT
+        with ESMTP id S229726AbhILSTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 14:20:40 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9834FC061764;
-        Sun, 12 Sep 2021 11:19:25 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id k4so16065967lfj.7;
-        Sun, 12 Sep 2021 11:19:25 -0700 (PDT)
+        Sun, 12 Sep 2021 14:19:37 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745A3C06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:18:23 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id a23-20020a25ae17000000b005ad73346312so2681314ybj.18
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:18:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HbaOAxGVAztZri1qSzD8HoQO2IqKS1yX08nrpK8PDQo=;
-        b=mlUhiAYWkdFy4OAZOFysry4dlA6s+NKwSq3a34DOiJVKAN1tDJnh+dclkPYkK9rMA1
-         S+IAhKeNmxgyxjrXYtPJ6vP+EJoOCwaVR8ahxP/qqxuXuTrCyaan0/s5fU1vphf5jq8Y
-         gBWASwWGJlkkEarpSvN+Y2ii0qWeT5kU8Gm+MlH+nkZr6XAW0bqAgXWjgeMs00xWFr81
-         NHQyjD0M87vU7t704E6MYEYukSJFuCU7ofktBPmVVMPUk6ru2ARzllBDqz9vXu9Sz/eL
-         7BgbWZG3zawn03iJpeHHUWV143K8iCKbirG36sJQ+7fwdLo7Wy/QSr1TUvOEQCYbj0bn
-         zckQ==
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=A5jzcEo3N8osg10m96UXC0mRrSn6XuuhJObZXmt9E+Q=;
+        b=Amted87+W6/WP0Kg6XI/m7V6R5ychIhbfTusMpYEViZUdigBJUgvOWbExI3j08g3R8
+         GDscaVh51TSLhnPo8DQcsH1oL4T1iqru9P2HtlcAzWsaumpHtNnySz1lToJp23D+Myuf
+         4BJEiKVCREKgTxQdNt+TPqshjUEXhb7wyT9tY8kRfP18l8XoxMRdgsWe5kqQCfxTHHQT
+         5+zCjsgphNpA4KN1LEYG/Scf1Ud9tWnxE+6Juk1+usX8Lap5U2ePMB8HXMHPG490RHTT
+         8Z7JMGzuKKsW1KYtuMCmepRy1y7087X4RgwV6GVL0ndSzDdZEBgO8KtK6GGpMTy8uGBs
+         8SWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HbaOAxGVAztZri1qSzD8HoQO2IqKS1yX08nrpK8PDQo=;
-        b=gstU9Fh8iNweTT7RUHJvIZNvK2/UAOH78qDsfifqw9YSVvHR9+6NhuxUnpim8PMEYN
-         DOwT/iVj8yHQyl/X/YGoy0xxZEo7oVlr2qYH6VJTLaB8jLcG95DODmYoos24ANaIhqbB
-         Nabimdyu3h0akNuvWnKh2n664E/ftR2Ys+4UJNo41dFEyEK4u5XoAlgn9yTqUwi/gkGi
-         ZA20hVEYuHjoGN/yiZlDskpQYbGB2TkAlM2Ojp49tscZIsmgkw8ZhxXJpieVNen3tgzL
-         LwHEVKprfWinOupHmKl1FloPnsiyqiawFnqwWr0WrCZMLWfOsOV7pwFkd5lt9YGQsUbF
-         5w2g==
-X-Gm-Message-State: AOAM533IXqkfjsLedKIZMcEq9TnpdNn2bre36vBl9llp90nCXfSG4Q7E
-        kb5d+u1EhgoKCaBtUYDQ49U=
-X-Google-Smtp-Source: ABdhPJyavKdv3Upf9tYo3aYR93ollOEQW3Wp+R2Ulmb+RKGYvt7RIZLxXryC2BJJf7EvpSJvWucMYA==
-X-Received: by 2002:a05:6512:1087:: with SMTP id j7mr5980123lfg.515.1631470763976;
-        Sun, 12 Sep 2021 11:19:23 -0700 (PDT)
-Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
-        by smtp.gmail.com with ESMTPSA id a18sm664556ljd.4.2021.09.12.11.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 11:19:23 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v7 7/7] arm64: tegra132: Add new properties to USB PHY device-tree node
-Date:   Sun, 12 Sep 2021 21:17:18 +0300
-Message-Id: <20210912181718.1328-8-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210912181718.1328-1-digetx@gmail.com>
-References: <20210912181718.1328-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=A5jzcEo3N8osg10m96UXC0mRrSn6XuuhJObZXmt9E+Q=;
+        b=cy4vSOK8qEmmEvtvbxvyBIxRKeCEf2NtggW7r6fsH+w7mjujKRxYmyr6v67zi9gYmu
+         /BESkavV8RTzc35DpasWkCqTWEfFese5+6pvNvjFQztAS1UtJgQOo0rctLAZWeH1j8Ll
+         MEsuKY+DciXmfRzCA8yRgZ4lRvPQkOyxfWlLKSBHoacKVOJrlWX9TdQvb/VEQZ960lyC
+         Oj/WqFbFlbTZLuyD80Z8HmE4/s1sb5WSbu3HoFRkM58dls6Rr1puJVecst6A4/BgPSET
+         JE348KelkCKz0EwS98H50CNWhlmLDqzPnpWhBnniEPvmaW0crAFHkEOameYMr0shl1Z5
+         8aag==
+X-Gm-Message-State: AOAM531lkFNr6yeBVBn+U1Vx3TZkT1QGOp4VP0M9IXGIfDB5syGk6TXF
+        EWHIfzZR740hCpBEh+qV+oGqJt0gyrT3
+X-Google-Smtp-Source: ABdhPJw+pcn8ymn8D7AhPPxq0UqlxK1KLvhUzH+nhooa4tfQoogcmF8mTgUYD4EhR9wOjrEkXzRPHqc/thu5
+X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
+ (user=mizhang job=sendgmr) by 2002:a25:c441:: with SMTP id
+ u62mr10565061ybf.12.1631470702545; Sun, 12 Sep 2021 11:18:22 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Sun, 12 Sep 2021 18:18:15 +0000
+Message-Id: <20210912181815.3899316-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH] KVM: SVM: fix missing sev_decommission in sev_receive_start
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alper Gun <alpergun@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        David Rienjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, John Allen <john.allen@amd.com>,
+        Peter Gonda <pgonda@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new properties to USB PHYs needed for enabling USB OTG mode.
+sev_decommission is needed in the error path of sev_bind_asid. The purpose
+of this function is to clear the firmware context. Missing this step may
+cause subsequent SEV launch failures.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Although missing sev_decommission issue has previously been found and was
+fixed in sev_launch_start function. It is supposed to be fixed on all
+scenarios where a firmware context needs to be freed. According to the AMD
+SEV API v0.24 Section 1.3.3:
+
+"The RECEIVE_START command is the only command other than the LAUNCH_START
+command that generates a new guest context and guest handle."
+
+The above indicates that RECEIVE_START command also requires calling
+sev_decommission if ASID binding fails after RECEIVE_START succeeds.
+
+So add the sev_decommission function in sev_receive_start.
+
+Cc: Alper Gun <alpergun@google.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: David Rienjes <rientjes@google.com>
+Cc: Marc Orr <marcorr@google.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: Peter Gonda <pgonda@google.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Vipin Sharma <vipinsh@google.com>
+
+Reviewed-by: Marc Orr <marcorr@google.com>
+Acked-by: Brijesh Singh <brijesh.singh@amd.com>
+Fixes: af43cbbf954b ("KVM: SVM: Add support for KVM_SEV_RECEIVE_START command")
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra132.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/kvm/svm/sev.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra132.dtsi b/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-index b0bcda8cc51f..5e1b9f28cc0e 100644
---- a/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra132.dtsi
-@@ -1123,6 +1123,7 @@ phy1: usb-phy@7d000000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d000000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USBD>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1142,6 +1143,7 @@ phy1: usb-phy@7d000000 {
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
- 		nvidia,has-utmi-pad-registers;
-+		nvidia,pmc = <&tegra_pmc 0>;
- 		status = "disabled";
- 	};
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 75e0b21ad07c..55d8b9c933c3 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1397,8 +1397,10 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
  
-@@ -1162,6 +1164,7 @@ phy2: usb-phy@7d004000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d004000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB2>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1180,6 +1183,7 @@ phy2: usb-phy@7d004000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 1>;
- 		status = "disabled";
- 	};
+ 	/* Bind ASID to this guest */
+ 	ret = sev_bind_asid(kvm, start.handle, error);
+-	if (ret)
++	if (ret) {
++		sev_decommission(start.handle);
+ 		goto e_free_session;
++	}
  
-@@ -1200,6 +1204,7 @@ phy3: usb-phy@7d008000 {
- 		compatible = "nvidia,tegra124-usb-phy", "nvidia,tegra30-usb-phy";
- 		reg = <0x0 0x7d008000 0x0 0x4000>,
- 		      <0x0 0x7d000000 0x0 0x4000>;
-+		interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 		phy_type = "utmi";
- 		clocks = <&tegra_car TEGRA124_CLK_USB3>,
- 			 <&tegra_car TEGRA124_CLK_PLL_U>,
-@@ -1218,6 +1223,7 @@ phy3: usb-phy@7d008000 {
- 		nvidia,hssquelch-level = <2>;
- 		nvidia,hsdiscon-level = <5>;
- 		nvidia,xcvr-hsslew = <12>;
-+		nvidia,pmc = <&tegra_pmc 2>;
- 		status = "disabled";
- 	};
- 
+ 	params.handle = start.handle;
+ 	if (copy_to_user((void __user *)(uintptr_t)argp->data,
 -- 
-2.32.0
+2.33.0.309.g3052b89438-goog
 
