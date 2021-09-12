@@ -2,136 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C40407D6D
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 14:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1842C407D6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhILNA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 09:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        id S235312AbhILNBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 09:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbhILNAy (ORCPT
+        with ESMTP id S235262AbhILNBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 09:00:54 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420F0C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 05:59:40 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id f65so6278769pfb.10
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 05:59:40 -0700 (PDT)
+        Sun, 12 Sep 2021 09:01:46 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07207C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 06:00:32 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id a20so7184678ilq.7
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 06:00:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LUjyxV8BtGhFPa51IbiHrjlhZUEm+8dMwVn2qq2CO44=;
-        b=cK2ur31iPfkXfQPbzTRryVz5JXP9qqDMwSSqgEym/7idT16odJ+izdxuVLUsxGhaCz
-         TaIbawNHSecwZaYHlfzHGxS2L0KfmU0rf0Pe3xd6pIRP+kgPC28Nkx5P6F66BzdVEdxL
-         bEG8ixtYaT0uNDKSTOxpn3ta8WvYHIGhiszSDEZF0598oTVhHyltK9lRnpD9rsJ7rTep
-         Rl7eVWGL25cMOYMc/nBhHMhBcy6Id0drToaZbdkHI4MTOlKRgy14AvKVg23/C5kCuW5J
-         WhxfS7yrvpQHjyJBO8zR2Yqk7qeOXxN9kthHA0hhkJWcEaZjFDSBU1y4jRP5PT2fo5L8
-         05fQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gbeDv78xTJt8wzzvWkHsPvwRD7D6JybFOyjYoMQggNo=;
+        b=ZR8mIygYGK+6Dt2oZxQHWyeGHJq0IJ7BzYp80PLWHqJ0TOj6DeqFVPJsrXgjEzjWjq
+         xl1HSJO8c9tCVJra3OUPPHO3gX8fzAJJj6aw8d1Dp5tniQFqRNddZ+nREZHLaK93abLn
+         TekA1j7HOL+wyH+uglMK+PBAcFj9TjUMiFCkASCzS/6heLlS7p5IKaQrZUA3cjU9oa9O
+         DUTG38JBgeowhdh6S9OTZytZcAwwusUIAVndo/U7a07HHeQR0JjNYxgPCgdyvV+ho6+Y
+         EpenVyZsNEzeyn25VAJNXpUlocfod2IszsZShaqCeVNchtKngtEVQhCR31lOdPu9IbCY
+         bK6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LUjyxV8BtGhFPa51IbiHrjlhZUEm+8dMwVn2qq2CO44=;
-        b=lOrIUInk4RZwJhpB0MIy8BjGcZIjdxDzPN4msFZDVa/MKScUtnGEpS0o1rBDPZMkV6
-         OMDpOe/8sS3xU7Fsx/LEyQeqWp5nLL2Y/ovI51X6EC+x4nXntD4pndDsZrehh/GkRrxz
-         a5tlVT7wqcLya5je5yam1vx0BGn/QHiQaR303slv9cyUgBofZSAG9qumWq+0Dp5pwEFI
-         54JId/YDvatQuDibx7/TcxHHcMGArEnTXJwV5FoS2lY61h0hmrv5vu+7XgJn5MT3LWjA
-         ynpywEOozowGenu0ANMhq4Mo3zct11+B6WGz4LuRdUpND/xswxuDmeW4w63GsNejw/Ns
-         J9ww==
-X-Gm-Message-State: AOAM532Yyrf6RKIU4HmAON6CFYUBpYkBCMDN9dP9YQP45YM063Ts726M
-        XhIPUnV5xLJjrUgTXEKwI0ncLw==
-X-Google-Smtp-Source: ABdhPJwaBc3Db4ci6LeZlY8uRCNKuMLLR/w8zQBawRb117S+4c4UYShQmCFd9a/5aUheXHBGQF4mkQ==
-X-Received: by 2002:a63:5663:: with SMTP id g35mr6523750pgm.368.1631451579735;
-        Sun, 12 Sep 2021 05:59:39 -0700 (PDT)
-Received: from localhost ([204.124.181.224])
-        by smtp.gmail.com with ESMTPSA id t10sm4617334pge.10.2021.09.12.05.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 05:59:39 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 2/2] coresight: Update comments for removing cs_etm_find_snapshot()
-Date:   Sun, 12 Sep 2021 20:57:48 +0800
-Message-Id: <20210912125748.2816606-3-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210912125748.2816606-1-leo.yan@linaro.org>
-References: <20210912125748.2816606-1-leo.yan@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gbeDv78xTJt8wzzvWkHsPvwRD7D6JybFOyjYoMQggNo=;
+        b=ewyoT28fbO/NiWsiqEMEFgDfuvtWsnygfEBs+0TvpPmeeVprpAM+eC6tebyI+bABn+
+         aQqd+cT/aRltXq7HtIgrjnfWqfafkSCa8RK2qEsSjMOvbaedDticNVRNzs3oJcdVueFh
+         8gKykyma7qDQh0hrALatsklRQ2pjcTnFXu/AO8Prd7DZYlMMkOnPMzJzYCsNUDxrCXz3
+         PTApf8dpi3VkWtbWomLjLORH1PxskOPhzcvw/bV7FkxtVHhd/SBCUp9vSRzOD/VHhUQi
+         +x0mT1BSMTc2fmkEZ5g3biEK8HSAcdoaimfbq39X3xPJesy3B2iTTLwYYax1bMi5AYtm
+         gQVw==
+X-Gm-Message-State: AOAM532IcKsfRdBrCeyEdn+h77MThgwXwdV3h14W2qCyvNmqGPurIJ1m
+        6S3l4NFhd/OjxQTSq8c6+C/feFSiSWMYKg==
+X-Google-Smtp-Source: ABdhPJzguKLaiMIOpNMweZr7m0XyR2/evjL/8eyJZJp9PLsdql1Jh+J3/PlXZ3l5nn4NuAuhDB1VQw==
+X-Received: by 2002:a92:6907:: with SMTP id e7mr4637790ilc.301.1631451631106;
+        Sun, 12 Sep 2021 06:00:31 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id p7sm2767856iln.70.2021.09.12.06.00.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Sep 2021 06:00:30 -0700 (PDT)
+Subject: Re: io-uring: KASAN failure, presumably
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8f003afd-50e4-cccb-68cb-684d08edb931@kernel.dk>
+Date:   Sun, 12 Sep 2021 07:00:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2f01c200d440 ("perf cs-etm: Remove callback cs_etm_find_snapshot()")
-has removed the function cs_etm_find_snapshot() from the perf tool in the
-user space, now CoreSight trace directly uses the perf common function
-__auxtrace_mmap__read() to calcualte the head and size for AUX trace data
-in snapshot mode.
+On 9/11/21 8:34 PM, Nadav Amit wrote:
+> Hello Jens (& Pavel),
+> 
+> I hope you are having a nice weekend. I ran into a KASAN failure in io-uring
+> which I think is not "my fault".
+> 
+> The failure does not happen very infrequently, so my analysis is based on
+> reading the code. IIUC the failure, then I do not understand the code well
+> enough, as to say I do not understand how it was supposed to work. I would
+> appreciate your feedback.
+> 
+> The failure happens on my own custom kernel (do not try to correlate the line
+> numbers). The gist of the splat is:
+> 
+> [84142.034456] ==================================================================
+> [84142.035552] BUG: KASAN: use-after-free in io_req_complete_post (fs/io_uring.c:1629)
+> [84142.036473] Read of size 4 at addr ffff8881a1577e60 by task memcached/246246
+> [84142.037415]
+> [84142.037621] CPU: 0 PID: 246246 Comm: memcached Not tainted 5.13.1+ #236
+> [84142.038509] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 07/22/2020
+> [84142.040151] Call Trace:      
+> [84142.040495] dump_stack (lib/dump_stack.c:122)
+> [84142.040962] print_address_description.constprop.0 (mm/kasan/report.c:234)
+> [84142.041751] ? io_req_complete_post (fs/io_uring.c:1629)
+> [84142.042365] kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
+> [84142.042921] ? io_req_complete_post (fs/io_uring.c:1629)
+> [84142.043534] __asan_load4 (mm/kasan/generic.c:252) 
+> [84142.044008] io_req_complete_post (fs/io_uring.c:1629) 
+> [84142.044609] __io_complete_rw.isra.0 (fs/io_uring.c:2525) 
+> [84142.045264] ? lockdep_hardirqs_on_prepare (kernel/locking/lockdep.c:4123) 
+> [84142.045949] io_complete_rw (fs/io_uring.c:2532) 
+> [84142.046447] handle_userfault (fs/userfaultfd.c:778) 
+> 
+> [snip]
+> 
+> [84142.072667] Freed by task 246231:
+> [84142.073197] kasan_save_stack (mm/kasan/common.c:39)
+> [84142.073896] kasan_set_track (mm/kasan/common.c:46)
+> [84142.074421] kasan_set_free_info (mm/kasan/generic.c:359)
+> [84142.075015] __kasan_slab_free (mm/kasan/common.c:362 mm/kasan/common.c:325 mm/kasan/common.c:368)
+> [84142.075578] kmem_cache_free (mm/slub.c:1608 mm/slub.c:3168 mm/slub.c:3184)
+> [84142.076116] __io_free_req (./arch/x86/include/asm/preempt.h:80 ./include/linux/rcupdate.h:68 ./include/linux/rcupdate.h:655 ./include/linux/percpu-refcount.h:317 ./include/linux/percpu-refcount.h:338 fs/io_uring.c:1802)
+> [84142.076641] io_free_req (fs/io_uring.c:2113)
+> [84142.077110] __io_queue_sqe (fs/io_uring.c:2208 fs/io_uring.c:6533)
+> [84142.077628] io_queue_sqe (fs/io_uring.c:6568)
+> [84142.078121] io_submit_sqes (fs/io_uring.c:6730 fs/io_uring.c:6838)
+> [84142.078665] __x64_sys_io_uring_enter (fs/io_uring.c:9428 fs/io_uring.c:9369 fs/io_uring.c:9369)
+> [84142.079463] do_syscall_64 (arch/x86/entry/common.c:47)
+> [84142.079967] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:112)
+> 
+> 
+> I believe the issue is related to the handling of REQ_F_REISSUE and
+> specifically to commit 230d50d448acb ("io_uring: move reissue into regular IO
+> path"). There seems to be a race between io_write()/io_read()
+> and __io_complete_rw()/kiocb_done().
+> 
+> __io_complete_rw() sets REQ_F_REIUSSE:
+> 
+>                if ((res == -EAGAIN || res == -EOPNOTSUPP) &&
+>                     io_rw_should_reissue(req)) {
+>                         req->flags |= REQ_F_REISSUE;
+>                         return;
+>                }
+> 
+> And then kiocb_done() then checks REQ_F_REISSUE and clear it:
+> 
+>         if (check_reissue && req->flags & REQ_F_REISSUE) {
+>                 req->flags &= ~REQ_F_REISSUE;
+>                 ...
+> 
+> 
+> These two might race with io_write() for instance, which issues the I/O
+> (__io_complete_rw() and kiocb_done() might run immediately after
+> call_write_iter() is called) and then check and clear REQ_F_REISSUE.
+> 
+>         if (req->file->f_op->write_iter)
+>                 ret2 = call_write_iter(req->file, kiocb, iter);
+>         else if (req->file->f_op->write)
+>                 ret2 = loop_rw_iter(WRITE, req, iter);
+>         else
+>                 ret2 = -EINVAL;
+> 
+>         if (req->flags & REQ_F_REISSUE) {
+>                 req->flags &= ~REQ_F_REISSUE;
+>                 ret2 = -EAGAIN;
+>         }
+> 
+> 
+> So if call_write_iter() returns -EIOCBQUEUED, this return value can be
+> lost/ignored if kiocb_done() was called with result of -EAGAIN. Presumably,
+> other bad things might happen due to the fact both io_write() and
+> kiocb_done() see REQ_F_REISSUE set.
+> 
+> You might ask why, after enqueuing the IO for async execution, kiocb_done()
+> would be called with -EAGAIN as a result. Indeed, this might be more
+> unique to my use-case that is under development (userfaultfd might
+> return -EAGAIN if the mappings undergoing changes; presumably -EBUSY or some
+> wait-queue would be better.) Having said that, the current behavior still
+> seems valid.
+> 
+> So I do not understand the check for REQ_F_REISSUE in io_write()/io_read().
+> Shouldn't it just be removed? I do not suppose you want to do
+> bit-test-and-clear to avoid such a race.
 
-This patch updates the comments in drivers to make them generic and not
-stick to any specific function from perf tool.
+Just a note to say that I've seen this, I'll take a deeper look at this
+tomorrow.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- drivers/hwtracing/coresight/coresight-etb10.c   | 5 ++---
- drivers/hwtracing/coresight/coresight-tmc-etf.c | 5 ++---
- drivers/hwtracing/coresight/coresight-tmc-etr.c | 5 ++---
- 3 files changed, 6 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-index f775cbee12b8..efa39820acec 100644
---- a/drivers/hwtracing/coresight/coresight-etb10.c
-+++ b/drivers/hwtracing/coresight/coresight-etb10.c
-@@ -557,9 +557,8 @@ static unsigned long etb_update_buffer(struct coresight_device *csdev,
- 
- 	/*
- 	 * In snapshot mode we simply increment the head by the number of byte
--	 * that were written.  User space function  cs_etm_find_snapshot() will
--	 * figure out how many bytes to get from the AUX buffer based on the
--	 * position of the head.
-+	 * that were written.  User space will figure out how many bytes to get
-+	 * from the AUX buffer based on the position of the head.
- 	 */
- 	if (buf->snapshot)
- 		handle->head += to_read;
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index cd0fb7bfba68..b416b1951d3e 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -546,9 +546,8 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
- 
- 	/*
- 	 * In snapshot mode we simply increment the head by the number of byte
--	 * that were written.  User space function  cs_etm_find_snapshot() will
--	 * figure out how many bytes to get from the AUX buffer based on the
--	 * position of the head.
-+	 * that were written.  User space will figure out how many bytes to get
-+	 * from the AUX buffer based on the position of the head.
- 	 */
- 	if (buf->snapshot)
- 		handle->head += to_read;
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-index d23c7690f29a..ce14eb83925c 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -1573,9 +1573,8 @@ tmc_update_etr_buffer(struct coresight_device *csdev,
- 
- 	/*
- 	 * In snapshot mode we simply increment the head by the number of byte
--	 * that were written.  User space function  cs_etm_find_snapshot() will
--	 * figure out how many bytes to get from the AUX buffer based on the
--	 * position of the head.
-+	 * that were written.  User space will figure out how many bytes to get
-+	 * from the AUX buffer based on the position of the head.
- 	 */
- 	if (etr_perf->snapshot)
- 		handle->head += size;
 -- 
-2.25.1
+Jens Axboe
 
