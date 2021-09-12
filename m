@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46384407C1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 09:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E94407C21
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 09:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhILHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 03:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhILHGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 03:06:52 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B55C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 00:05:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id t20so4126056pju.5
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 00:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QNpLnODXD3KMtIbZW9KjXBpb07wZf63uyRmwVpvp6IQ=;
-        b=KS9b8sBMavB5IM/KGnAEWQlq7rcYa7fBiZ5xKnoY5Mef+At1q0wBN1hS5AW3dW2KDO
-         ltQOtyijdPz/7V6QMRljKwGSuEFjsbpJMI6YxmWvpOAves6kHDJWe21DjFj3blFFVBBE
-         NcAhkl+fdkP1Ww5MHqA9WYZ/SF6fwCG5QXN8cmxHVvPgFGWRWHivy4WoHgh54LuOrNo3
-         RSwPItRUJ7XTMyUztTyG/md/pUYZ/siRmme/3DH8RLknVR7UfxtItclIvSa+P6X7KNu3
-         n9A0utp4LeyUrBdIQIBFpsm3QKkjqS5IdCUiD4LyoFRHpwUsJQsAmJDslrNJ0et7xf9T
-         SUQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QNpLnODXD3KMtIbZW9KjXBpb07wZf63uyRmwVpvp6IQ=;
-        b=L+lYL/zoBUiXNStb0jfUq32DuS6c5tto7aqCxcSgUagpiaNVK6Nlub78Otvd79gwm6
-         u++K2ETL+QpDjq5IFZVj58OM1wW3d5Cu8h75sRj9edhvlEQOuibUrJL8lF++kQ0nkxKz
-         ha7OYsy5cwVU+tXaSfx/SVC3i/PG3g5Wf6fmPYCe14fLIY6gxTh2K1GJFm0PiP/hMRPQ
-         aOKEnfbLtND2Ae6HHhvNmmN5emXBisk2qgfj+7sNjkLSEAhM5kFvlvKH5UubNVk+E8xo
-         HXAJ8tl8sCeG/0rm/p5XCkllN9ppmGv/sl02B1i1zYBdEcRW04XoG9mzlcgO4XDw4W29
-         sqfQ==
-X-Gm-Message-State: AOAM533YO96METeCWW9pX8xURue9WWYIUAlVYKxSCT26GYfEuBLt/250
-        ZAUBegmUgSkElZGAyn2Qu2pI1eLsHsoZeplnajLUbQ==
-X-Google-Smtp-Source: ABdhPJxdd84H/DsUuLXrFrUnP2cmjHGR9a4YQXIREdU5uKBdYshF8RaY9FwAu6nWcCNUpa+wHuqKzNOa3l5fx2WmBN4=
-X-Received: by 2002:a17:902:654c:b0:13a:5661:3d33 with SMTP id
- d12-20020a170902654c00b0013a56613d33mr5222572pln.40.1631430338122; Sun, 12
- Sep 2021 00:05:38 -0700 (PDT)
+        id S232306AbhILHPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 03:15:13 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:51168 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229783AbhILHPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 03:15:12 -0400
+Received: from BC-Mail-Ex32.internal.baidu.com (unknown [172.31.51.26])
+        by Forcepoint Email with ESMTPS id 8F40083A1DF70830CC91;
+        Sun, 12 Sep 2021 15:13:48 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex32.internal.baidu.com (172.31.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sun, 12 Sep 2021 15:13:48 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.12) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sun, 12 Sep 2021 15:13:47 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <robh+dt@kernel.org>,
+        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <kernel@pengutronix.de>, <festevam@gmail.com>, <linux-imx@nxp.com>,
+        <aardelean@deviqon.com>
+CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Cai Huoqing" <caihuoqing@baidu.com>
+Subject: [PATCH v4 0/3] iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+Date:   Sun, 12 Sep 2021 15:13:31 +0800
+Message-ID: <20210912071334.1745-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.32.0.windows.2
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-10-rananta@google.com>
-In-Reply-To: <20210909013818.1191270-10-rananta@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Sun, 12 Sep 2021 00:05:22 -0700
-Message-ID: <CAAeT=Fw0Z1USVpdi2iRMRq0ktTP4+VFzfy31FWV36VPOCTq6_w@mail.gmail.com>
-Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
- the vcpuid
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.31.62.12]
+X-ClientProxiedBy: BC-Mail-Ex29.internal.baidu.com (172.31.51.23) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghu and all,
+The NXP i.MX 8QuadXPlus SOC has a new ADC IP. These patches add
+driver support for this ADC
 
-On Wed, Sep 8, 2021 at 6:38 PM Raghavendra Rao Ananta
-<rananta@google.com> wrote:
->
-> At times, such as when in the interrupt handler, the guest wants
-> to get the vcpuid that it's running on. As a result, introduce
-> get_vcpuid() that returns the vcpuid of the calling vcpu. At its
-> backend, the VMM prepares a map of vcpuid and mpidr during VM
-> initialization and exports the map to the guest for it to read.
+dt-bindings: iio: adc:
+v1->v2:	*Fix some indentation issues.
+	*Mark status as okay.
+	*Change clock2 source.
+v3->v4:	*Sort header file declarations in alphabetical order.
+	*Remove explicitly cast from "void *".
+	*Make use of dev_err_probe().
+	*Add some blank lines to help readability.
 
-How about using TPIDR_EL1 to hold the vcpuid ?
-i.e. have aarch64_vcpu_setup() set the register to vcpuid and
-guest_get_vcpuid() simply return a value of the register.
-This would be a simpler solution to implement.
+iio: imx8qxp-adc:
+v1->v2:	*Squash patches 1, 2, 3, and 5 into a single patch.
+	*Add device specific prefix.
+	*Remove the brackets around individual numbers.
+	*Make use of FIELD_PREP() and FIELD_GET().
+	*Remove a lot of cache values.
+	*Replace mlock with adc->lock.
+	*Move adc->value read from isr to the completion.
+	*Set pm_runtime_disable/_put_noidle() before adc_disable.
+	*Add error handler-err_disable_reg/err_unprepare_clk.
+v2->v3:	*Add "return 0" to adc_runtime_resume()
+v3->v4:	*Sort header file declarations in alphabetical order.
+	*Remove explicitly cast from "void *".
+	*Make use of dev_err_probe().
+	*Add some blank lines to help readability.
 
-Thanks,
-Reiji
+v1 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-4-caihuoqing@baidu.com/
+v3 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210907015724.1377-1-caihuoqing@baidu.com/
+
+Cai Huoqing (3):
+  iio: imx8qxp-adc: Add binding documentation for NXP IMX8QXP ADC
+  dt-bindings: iio: adc: Add binding documentation for NXP IMX8QXP ADC
+  MAINTAINERS:  Add the driver info of the NXP IMX8QXP ADC
+
+ .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     |  88 ++++
+ MAINTAINERS                                   |   7 +
+ drivers/iio/adc/Kconfig                       |  10 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/imx8qxp-adc.c                 | 461 ++++++++++++++++++
+ 5 files changed, 567 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+ create mode 100644 drivers/iio/adc/imx8qxp-adc.c
+
+-- 
+2.25.1
+
