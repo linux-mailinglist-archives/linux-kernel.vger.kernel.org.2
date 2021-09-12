@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B37407C37
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 09:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF49407C3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 09:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhILHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 03:42:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60124 "EHLO mail.kernel.org"
+        id S232760AbhILHoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 03:44:07 -0400
+Received: from mout.web.de ([212.227.17.11]:56227 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhILHmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 03:42:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE9360F9F;
-        Sun, 12 Sep 2021 07:41:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631432471;
-        bh=dxvDMpkQ3yQxWCwxYiRfx5jSXslSR/RnQtUPyMHSRqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DisLCNZs/aBW5rj6m47JmQ1xlpByKg8xCbu4Lo92dhwwaiy1Uuoizta8w+Y8CW6x5
-         XDATZYfnXkbrHlCxZ6w33I1CO4sJZuaQ7l7DheiRfe8aw39eyGlq43DF3/pkakG0Rh
-         fYmqiLGtwEWmksMaFX3x0sjOIulgviEq8Xq9ZcZymh1UmIqS2Kb9h4vKfNrzs6TA3e
-         mM42qD5UA5YWqf5mVjADCwrutT9ttYPES6uGSBB+1yobzJCMcbiavJ45PrQbmY2P8k
-         uvH99kghj1OiQl1D9omgxtV9iJWyFBY5cQACMrG9GpFdHEMtVcCAwk9TolvhOcqj7r
-         o7E871QcS7brA==
-Date:   Sun, 12 Sep 2021 15:41:05 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Piyush Mehta <piyush.mehta@xilinx.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com, sgoud@xilinx.com,
-        michal.simek@xilinx.com
-Subject: Re: [PATCH] usb: chipidea: udc: make controller hardware endpoint
- primed
-Message-ID: <20210912074105.GA4808@Peter>
-References: <20210908084321.375662-1-piyush.mehta@xilinx.com>
+        id S229512AbhILHoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 03:44:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1631432561;
+        bh=iu4rfBlz1a1Ad4kydnOedMvxd6DfnJ3VX/NZo+UT6lk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=SCBBLquDLFa1HW7hQOsfsOFw+QXjFkTyeubAjctXYE3v95D/23rxbHzPRxvifQJBg
+         Z48nM9ccCI2mBcBmd0Zn1I5onYi2uRJ6X2dxq439pyEiTWIerz5Bj8ubboGZhHyWoC
+         qtEL9ySD2uhkjnmMpjLvERJF1Qden1SmDilPu6oQ=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from localhost.localdomain ([95.91.197.142]) by smtp.web.de
+ (mrweb102 [213.165.67.124]) with ESMTPSA (Nemesis) id
+ 0MQNiS-1mUqQH2nue-00TpMN; Sun, 12 Sep 2021 09:42:41 +0200
+Date:   Sun, 12 Sep 2021 09:42:39 +0200
+From:   Ali Akcaagac <aliakc@web.de>
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Jamie Lenehan" <lenehan@twibble.org>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Remove obsolete e-mail addresses
+Message-ID: <20210912094239.2fe068ed@web.de>
+In-Reply-To: <c9168d8e5595bdaa3a18d596f781b55e052af3fc.1631158421.git.fthain@linux-m68k.org>
+References: <c9168d8e5595bdaa3a18d596f781b55e052af3fc.1631158421.git.fthain@linux-m68k.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908084321.375662-1-piyush.mehta@xilinx.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nlw6XZfe/HexeDc3X2VRFqYszTsCV4vq3Z3fMRmD0iD0YQOt3mL
+ YSdF0QhAG5on/r4ZPdlAdv1nED67Bm35k99BrbPzav5uO+0O/YKY1dbYnJT86+MdRbSDdBb
+ WmkyDU49/S7sSsH+zGQ5K4+iA0K4OcS8KT/Y8d2Me9QyHXhk2Tk91E3wk5E6SJ60+dtoEUf
+ I8SmpW0Q6dDj5zLyciOgg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2+HdjXOPBA4=:OAE1euhrGLzglMIUHPmMUr
+ QZh9oL+dTPNmlzLatEu2K+3WO1tHn8CLXZVeO4HD+EFdXmL6SsN1GU1kb2oxG4FJzGLXueqiZ
+ tifDIf2nq0P8UxHXVAYjrNm5WovW5fpYD0ChetyLuD+sIUlofl1ab20YrKHHQM9Wq1EXJGNie
+ 4bLcK+sYAG1RyrLwa9Wj7KANzYlXeFwI0cYQTbXHMGAWFWtTXA466wszxzaKOUJvSGtECHBA7
+ iC9D7GmxqiRV6SJ1FvApkW60eKLe4+NO5E6Z9EvW7NTO4PGsji5BJx9PALvpwHkujPOSPkonQ
+ to5IkYXiWp3wdJKkKg3P5euywk7/K21Yc44YtITfYmoMqLr1BbsU5LwUm0AtEjyhP83XK9Rw+
+ uv40pIH+2V09696qIL2X5vYnzRTloUER3tam6RO94m9HBbCgA3ahleQOpRCv6UyWpatpq4WiA
+ IP93vMKQpVBt/bv9ndI3VVYHrOgPfgiwFvB1dHuwUs7FLY+pS5/MTA1v341cf6Mmv4VzLIXqx
+ gfcEacCEsMlSsMjCTq7Mq+yMqmnvqB3EHqgidHxyzCN3/GuA8Z62hbYSVsopFBgVYYirlWiI7
+ 8QzhKvEFKCburpQAZgg/M3/OaNJbicmy2ZJ2KRk3G6KOgDUSOdeQcQMUGYOZaFbDw99nSsm/Z
+ 5l09dNRTCvSypipSp3m1wkUlDeatAg6OkRaBS9JYUMqHcwy+S5Hw6cnvLbxg2IX4IAH2o0Q5+
+ yzyBt9a200WrZaj9xx0I3p0bb94FfALQ1J0gtIkKsYZaHHfYA+ON8IYVv9iXwfJ19ZKmpPV2C
+ Lo2HsUGqZEnADBpqAmGQ3F5sFbtVPKEeGwsIF7/eHuenF9+PoAKKa8ocr6nrY98mtynWIObi5
+ 1Kv2535ctlxJbPK6HA0RjOA3yIf0tY8jL0ZwyEjIxZfMEGU8PcSpn7JgBDVxs3rVTSocBkkUT
+ WOUWnN/nS52NyD16njRwqLivCvVSi6VqpfBNxZ7cf1EfNQ4bKXY7fXriAfpOl3tH0AiChTFrA
+ +MbLardzb5cU+ie3hr9ohHDn12vodncBhfoqD2XHDP6Mhd16vTp45jvIWbrbdk9BBS1CWHD95
+ 5svD5ikpWCY5B0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-09-08 14:13:21, Piyush Mehta wrote:
-> Root-cause:
-> There is an issue like endpoint is not recognized as primed, when bus
-> have more pressure and the add dTD tripwire semaphore (ATDTW bit in
-> USBCMD register) that can cause the controller to ignore a dTD that is
-> added to a primed endpoint.
-> This issue observed with the Windows10 host machine.
-> 
-> Workaround:
-> The software must implement a periodic cycle, and check for each dTD,
-> if the endpoint is primed. It can do this by reading the corresponding
-> bits in the ENDPTPRIME and ENDPTSTAT registers. If these bits are read
-> at 0, the software needs to re-prime the endpoint by writing 1 to the
-> corresponding bit in the ENDPTPRIME register.
-> 
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+Hi,
+
+sorry for not responding earlier. I've just started a new job at a
+different location and things are a bit messy right now. The patch
+looks good, considering for an old SCSI driver that probably isn't
+existing anymore :)
+
+Cheers
+
+Ali
+
+On Thu, 09 Sep 2021 13:33:41 +1000
+Finn Thain <fthain@linux-m68k.org> wrote:
+
+> These e-mail addresses bounced.
+>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 > ---
->  drivers/usb/chipidea/udc.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
-> index 8834ca6..d970f45 100644
-> --- a/drivers/usb/chipidea/udc.c
-> +++ b/drivers/usb/chipidea/udc.c
-> @@ -49,6 +49,8 @@ ctrl_endpt_in_desc = {
->  	.wMaxPacketSize  = cpu_to_le16(CTRL_PAYLOAD_MAX),
->  };
->  
-> +static int reprime_dtd(struct ci_hdrc *ci, struct ci_hw_ep *hwep,
-> +		       struct td_node *node);
->  /**
->   * hw_ep_bit: calculates the bit number
->   * @num: endpoint number
-> @@ -599,8 +601,15 @@ static int _hardware_enqueue(struct ci_hw_ep *hwep, struct ci_hw_req *hwreq)
->  
->  		prevlastnode->ptr->next = cpu_to_le32(next);
->  		wmb();
-> +
-> +		if (ci->rev == CI_REVISION_22) {
-> +			if (!hw_read(ci, OP_ENDPTSTAT, BIT(n)))
-> +				reprime_dtd(ci, hwep, prevlastnode);
-> +		}
-> +
-
-Only for version 2.2?
-
->  		if (hw_read(ci, OP_ENDPTPRIME, BIT(n)))
->  			goto done;
-> +
-
-No blank line.
-
->  		do {
->  			hw_write(ci, OP_USBCMD, USBCMD_ATDTW, USBCMD_ATDTW);
->  			tmp_stat = hw_read(ci, OP_ENDPTSTAT, BIT(n));
-> -- 
-> 2.7.4
-> 
-
--- 
-
-Thanks,
-Peter Chen
+>  MAINTAINERS | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d7b4f32875a9..690539b2705c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5138,10 +5138,8 @@ S:	Maintained
+>  F:	drivers/scsi/am53c974.c
+>
+>  DC395x SCSI driver
+> -M:	Oliver Neukum <oliver@neukum.org>
+>  M:	Ali Akcaagac <aliakc@web.de>
+>  M:	Jamie Lenehan <lenehan@twibble.org>
+> -L:	dc395x@twibble.org
+>  S:	Maintained
+>  W:	http://twibble.org/dist/dc395x/
+>  W:	http://lists.twibble.org/mailman/listinfo/dc395x/
+>
 
