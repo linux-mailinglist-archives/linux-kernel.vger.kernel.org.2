@@ -2,361 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E67C4081F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 23:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743DA4081FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 23:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhILVyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 17:54:44 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40254 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbhILVym (ORCPT
+        id S236584AbhILWAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 18:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236532AbhILWAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 17:54:42 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id E20851F42569
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>
-Subject: Re: [PATCH 09/10] spi: amd: Add support for latest platform
-References: <20210908113450.788452-1-tanureal@opensource.cirrus.com>
-        <20210908113450.788452-10-tanureal@opensource.cirrus.com>
-Date:   Sun, 12 Sep 2021 17:53:19 -0400
-In-Reply-To: <20210908113450.788452-10-tanureal@opensource.cirrus.com> (Lucas
-        Tanure's message of "Wed, 8 Sep 2021 12:34:50 +0100")
-Message-ID: <878s01ihps.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Sun, 12 Sep 2021 18:00:07 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D584BC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 14:58:52 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q3so9577712iot.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 14:58:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=KoseWHC1X1eUmhKmXE//peQwxmYp0XripPbl2Zk3A1o=;
+        b=SGN5D1E0sUeuZ31ahb3quJTGt3i+Z3NJKPntRFfm/NtywgEXfwRzhJCslf/Q4+Y5BZ
+         FGEvZ2RW4L+anl/sX4u+Ou5cYIM00BOVUkVthooZr35SfTmY8sPAS5zrH428IRFjq5Z2
+         T5vHXBx1JIMUh9iHUJ2tSXwD4tUt0LFOTJIu+KpG065wHNoBDbpdpLwbsGI2LCJhzaJD
+         QBv7eMT/7vldmyAwyK1EleM+3MPsGpIew+QUZk7s/1al5sM5u/OXnWQaFnfVJ2CwE09d
+         BAYFPRgPLcBePkgFBOnkKw/0XEhChoAbYr7Kkrosf7y9gn3/HjAV4q0pX0g8wDL8Tr2T
+         OmDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=KoseWHC1X1eUmhKmXE//peQwxmYp0XripPbl2Zk3A1o=;
+        b=pzDFRoYrwy2ribmYEzJcCVrxEgBFOvpgotBD6knGyM+3qhgt4KmS47YtHn4BUqYKmR
+         Rwx1jAzInu7Kd5vq6G0ae9flUI4DRVgij5b0uIBpzXvtkw3vykk+9A1waph6Dd098SJP
+         Nk1I0//0SxAL1x0fn8LjyGCt2eV/ppW2TV6KXPyPIamJQ6s7/WUarNH56bX+hBoCwivh
+         XpotSCuhLClKaras5hvlTWltGN23hTgrU6oPUPbQnKO0LJfOkHBRiH38qaIBJWX7ydQI
+         7TWci4YYqsWFShr9W9pfdTWvn+ZUz/ihqkxaIfUuHkuFAyVGeIYJU/zvuEq7X6o/8pAw
+         9FKw==
+X-Gm-Message-State: AOAM530dBX43LXeMj6oHtC87PrEnhKp+Q89mMtbw+Qq3NJiA2Pvv+Hv5
+        6uGqDq1XTxAQavERZsjaGELOs/Sfl//+gW8aB78=
+X-Google-Smtp-Source: ABdhPJzzP7OVVAg9GePpfLWrQAU5PBYf860Mr3KrpRNzXDbI/b9fgmJA16uFBFDEUkivexnNy4BaMI/ZsCnD28plnM4=
+X-Received: by 2002:a6b:e410:: with SMTP id u16mr6177192iog.38.1631483931337;
+ Sun, 12 Sep 2021 14:58:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:a6b:e907:0:0:0:0:0 with HTTP; Sun, 12 Sep 2021 14:58:50
+ -0700 (PDT)
+Reply-To: mstheresaheidi8@gmail.com
+From:   Ms Theresa Heidi <mstheresaheidi@gmail.com>
+Date:   Sun, 12 Sep 2021 14:58:50 -0700
+Message-ID: <CAK_gh8JNpGJDaf2YG99kBtkHbVRb6RX7O6KBw7Dsv30HtuKY9A@mail.gmail.com>
+Subject: URGENT MATTER HELP!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lucas Tanure <tanureal@opensource.cirrus.com> writes:
+Dear Beloved One,
 
-> From: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
->
-> Add support for AMDI0062 controller
+CHARITY DONATION Please read carefully, I know it is true that this
+letter may come to you as a surprise. I came across your e-mail
+contact through a private search while in need of your assistance. I
+am writing this mail to you with heavy sorrow in my heart, I have
+chose to reach you through Internet because it still remains the
+fastest medium of communication.
 
-Hi,
+My Name is Mrs. Theresa Heidi I am native France currently
+hospitalized in a private hospital here in Israel as a result of lungs
+cancer I am 62 years old and I was diagnosed of lungs cancer for about
+4 years ago, immediately after the death of my husband, who has left
+me everything he worked for. I'm with my laptop in a hospital here in
+where I have been undergoing treatment for cancer of the lungs. I have
+some funds inherited from my late husband, the sum of Two Million Five
+Hundred Thousand Dollars Only (USD$2,500,000,00).Now it's clear that
+I=E2=80=99m approaching the last-days of my life and I don't think I need t=
+his
+money anymore. My doctor made me to understand that I would not last
+for the period of one year due to Lungs cancer problem.
 
-This patch is way more complex than it needs to be, making it much
-harder to review.  A few comments inline.
+This money is still with the foreign bank and the management wrote me
+as the true owner to come forward to receive the money or rather issue
+a letter of authorization to somebody to receive it on my behalf since
+I can't come over because of my illness. Failure to act the bank may
+get fund confiscated for keeping it so long.
 
-I hope I didn't miss a newer version of this patch?
+I decided to contact you if you maybe willing and interested to help
+me withdraw this money from the foreign bank then use the funds for
+Charity works in helping the less privileged and also to fight against
+Covid-19 Pandemic in the society. I want you to handle these trust
+funds in good faith before anything happens to me. This is not a
+stolen money and there are no dangers involved is 100% risk free with
+full legal proof.
 
-> Signed-off-by: Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+I want you to take 45% of the total money for your personal used while
+55% of the money will go to charity work. I will appreciate your
+utmost trust and confidentiality in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish. I
+am very sorry if you received this letter in your spam, is due to
+recent connection error here in the country.
 
-Broken signoff chain, missing Co-developed-by tag.
-
-> ---
->  drivers/spi/spi-amd.c | 128 ++++++++++++++++++++++++++++++++++--------
->  1 file changed, 104 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
-> index 0face11740ea..788a5c42d811 100644
-> --- a/drivers/spi/spi-amd.c
-> +++ b/drivers/spi/spi-amd.c
-> @@ -2,9 +2,10 @@
->  //
->  // AMD SPI controller driver
->  //
-> -// Copyright (c) 2020, Advanced Micro Devices, Inc.
-> +// Copyright (c) 2020-2021, Advanced Micro Devices, Inc.
->  //
->  // Authors: Sanjay R Mehta <sanju.mehta@amd.com>
-> +//          Nehal Bakulchandra Shah <nehal-bakulchandra.shah@amd.com>
->  //          Lucas Tanure <tanureal@opensource.cirrus.com>
->  
->  #include <linux/acpi.h>
-> @@ -14,33 +15,48 @@
->  #include <linux/delay.h>
->  #include <linux/spi/spi.h>
->  
-> -#define AMD_SPI_CTRL0_REG	0x00
-> -#define AMD_SPI_EXEC_CMD	BIT(16)
-> -#define AMD_SPI_FIFO_CLEAR	BIT(20)
-> -#define AMD_SPI_BUSY		BIT(31)
-> +#define AMD_SPI_CTRL0_REG		0x00
-> +#define AMD_SPI_EXEC_CMD		BIT(16)
-> +#define AMD_SPI_FIFO_CLEAR		BIT(20)
-> +#define AMD_SPI_BUSY			BIT(31)
-> +#define AMD_SPI_ENABLE_REG		0x20
->  
-> -#define AMD_SPI_OPCODE_MASK	0xFF
-> +#define AMD_SPI_DUMMY_CYCL_REG		0x32
-> +#define AMD_SPI_OPCODE_REG		0x45
-> +#define AMD_SPI_CMD_TRIGGER_REG		0x47
-> +#define AMD_SPI_TRIGGER_CMD		BIT(7)
-> +#define AMD_SPI_OPCODE_MASK		0xFF
->  
-> -#define AMD_SPI_ALT_CS_REG	0x1D
-> -#define AMD_SPI_ALT_CS_MASK	0x3
-> +#define AMD_SPI_ALT_CS_REG		0x1D
-> +#define AMD_SPI_ALT_CS_MASK		GENMASK(1, 0)
->  
-> -#define AMD_SPI_FIFO_BASE	0x80
-> -#define AMD_SPI_TX_COUNT_REG	0x48
-> -#define AMD_SPI_RX_COUNT_REG	0x4B
-> -#define AMD_SPI_STATUS_REG	0x4C
-> +#define AMD_SPI_FIFO_BASE		0x80
-> +#define AMD_SPI_TX_COUNT_REG		0x48
-> +#define AMD_SPI_RX_COUNT_REG		0x4B
-> +#define AMD_SPI_STATUS_REG		0x4C
->  
-> -#define AMD_SPI_FIFO_SIZE	70
-> -#define AMD_SPI_MEM_SIZE	200
-> +#define AMD_SPI_FIFO_SIZE		70
-> +#define AMD_SPI_MEM_SIZE		200
->  
->  /* M_CMD OP codes for SPI */
-> -#define AMD_SPI_XFER_TX		1
-> -#define AMD_SPI_XFER_RX		2
-> +#define AMD_SPI_XFER_TX			1
-> +#define AMD_SPI_XFER_RX			2
-
-If you drop the indentation changes, the real diff seems to be:
-
-+#define AMD_SPI_ENABLE_REG     0x20
-
-...
-
-+#define AMD_SPI_DUMMY_CYCL_REG         0x32
-+#define AMD_SPI_OPCODE_REG             0x45
-+#define AMD_SPI_CMD_TRIGGER_REG        0x47
-+#define AMD_SPI_TRIGGER_CMD            BIT(7)
-
-...
-
--#define AMD_SPI_ALT_CS_MASK    0x3
-+#define AMD_SPI_ALT_CS_MASK    GENMASK(1, 0)
-
-Which is WAY simpler to review.  Even if it is nice to have the defines
-aligned, I suggest not doing it if the patch becomes much harder to
-review.
-
->
->  struct amd_spi {
->  	void __iomem *io_remap_addr;
->  	unsigned long io_base_addr;
->  	u32 rom_addr;
->  	struct list_head rbuf_head;
-> +	const struct amd_spi_devtype_data *devtype_data;
-> +	struct spi_device *spi_dev;
-> +	struct spi_master *master;
-> +};
-> +
-> +struct amd_spi_devtype_data {
-> +	u8 version;
-> +	int (*exec_op)(struct amd_spi *amd_spi);
-> +	void (*set_op)(struct amd_spi *amd_spi, u8 cmd_opcode);
-> +	int (*busy_wait)(struct amd_spi *amd_spi);
->  };
->  
->  struct amd_spi_read_buffer {
-> @@ -90,16 +106,26 @@ static void amd_spi_select_chip(struct amd_spi *amd_spi, u8 cs)
->  	amd_spi_setclear_reg8(amd_spi, AMD_SPI_ALT_CS_REG, cs, AMD_SPI_ALT_CS_MASK);
->  }
->  
-> +static inline void amd_spi_clear_chip(struct amd_spi *amd_spi, u8 chip_select)
-> +{
-> +	amd_spi_writereg8(amd_spi, AMD_SPI_ALT_CS_REG, chip_select & ~AMD_SPI_ALT_CS_MASK);
-> +}
-> +
->  static void amd_spi_clear_fifo_ptr(struct amd_spi *amd_spi)
->  {
->  	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG, AMD_SPI_FIFO_CLEAR, AMD_SPI_FIFO_CLEAR);
->  }
->  
-> -static void amd_spi_set_opcode(struct amd_spi *amd_spi, u8 cmd_opcode)
-> +static void amd_spi_set_opcode_v1(struct amd_spi *amd_spi, u8 cmd_opcode)
->  {
->  	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG, cmd_opcode, AMD_SPI_OPCODE_MASK);
->  }
->  
-> +static void amd_spi_set_opcode_v2(struct amd_spi *amd_spi, u8 cmd_opcode)
-> +{
-> +	amd_spi_writereg8(amd_spi, AMD_SPI_OPCODE_REG, cmd_opcode);
-> +}
-> +
-
-Instead of creating two copies of each function and having indirect
-branches, it would be way simpler to just save the version in
-amd_spi and:
-
-static void amd_spi_set_opcode(struct amd_spi *amd_spi, u8 cmd_opcode)
-{
-	switch (amd_spi->version) {
-        case AMD_SPI_V1:
-        	amd_spi_setclear_reg32(amd_spi, AMD_SPI_CTRL0_REG,
-				       cmd_opcode, AMD_SPI_OPCODE_MASK);
- 		break;
-	case AMD_SPI_V2:
-		amd_spi_writereg8(amd_spi, AMD_SPI_OPCODE_REG, cmd_opcode);
-                break;
-	default:
-        	WARN_ON(1);
-        }
-}
-
-Likewise for the other amd_spi_devtype_data hooks.
-
-It is simpler, faster (avoids the indirect branches), avoids code
-duplication, and you get the benefit of not touching the callers, which
-will eliminate several of the hunks below.
-
->  static inline void amd_spi_set_rx_count(struct amd_spi *amd_spi, u8 rx_count)
->  {
->  	amd_spi_setclear_reg8(amd_spi, AMD_SPI_RX_COUNT_REG, rx_count, 0xff);
-> @@ -110,7 +136,7 @@ static inline void amd_spi_set_tx_count(struct amd_spi *amd_spi, u8 tx_count)
->  	amd_spi_setclear_reg8(amd_spi, AMD_SPI_TX_COUNT_REG, tx_count, 0xff);
->  }
->  
-> -static int amd_spi_busy_wait(struct amd_spi *amd_spi)
-> +static int amd_spi_busy_wait_v1(struct amd_spi *amd_spi)
->  {
->  	int timeout = 100000;
->  
-> @@ -124,11 +150,11 @@ static int amd_spi_busy_wait(struct amd_spi *amd_spi)
->  	return 0;
->  }
->  
-> -static int amd_spi_execute_opcode(struct amd_spi *amd_spi)
-> +static int amd_spi_execute_opcode_v1(struct amd_spi *amd_spi)
->  {
->  	int ret;
->  
-> -	ret = amd_spi_busy_wait(amd_spi);
-> +	ret = amd_spi_busy_wait_v1(amd_spi);
->  	if (ret)
->  		return ret;
->  
-> @@ -138,6 +164,33 @@ static int amd_spi_execute_opcode(struct amd_spi *amd_spi)
->  	return 0;
->  }
->  
-> +static int amd_spi_busy_wait_v2(struct amd_spi *amd_spi)
-> +{
-> +	int timeout = 100000;
-> +
-> +	while (amd_spi_readreg32(amd_spi, AMD_SPI_STATUS_REG) & AMD_SPI_BUSY) {
-> +		usleep_range(10, 20);
-> +		if (timeout-- < 0)
-> +			return -ETIMEDOUT;
-> +	}
-> +
-> +	return 0;
-> +}
-
-This duplicates amd_spi_busy_wait_v1, except for the readreg call.  If
-you follow the suggestion above, you'll avoid all this code duplication.
-
-> +
-> +static int amd_spi_execute_opcode_v2(struct amd_spi *amd_spi)
-> +{
-> +	int ret;
-> +
-> +	ret = amd_spi_busy_wait_v2(amd_spi);
-> +	if (ret)
-> +		return ret;
-> +
-> +	amd_spi_setclear_reg8(amd_spi, AMD_SPI_CMD_TRIGGER_REG, AMD_SPI_TRIGGER_CMD,
-> +			      AMD_SPI_TRIGGER_CMD);
-> +
-> +	return 0;
-> +}
-> +
->  static int amd_spi_master_setup(struct spi_device *spi)
->  {
->  	struct amd_spi *amd_spi = spi_master_get_devdata(spi->master);
-> @@ -159,20 +212,21 @@ static void amd_spi_clear_list(struct amd_spi *amd_spi)
->  
->  static int amd_spi_transfer(struct amd_spi *amd_spi, u8 opcode, u8 tx_len, u8 rx_len, u8 fifo_pos)
->  {
-> +	const struct amd_spi_devtype_data *priv = amd_spi->devtype_data;
->  	struct amd_spi_read_buffer *rbuf;
->  	struct list_head *p;
->  	int ret, i;
->  
-> -	amd_spi_set_opcode(amd_spi, opcode);
-> +	priv->set_op(amd_spi, opcode);
->  	amd_spi_set_tx_count(amd_spi, tx_len);
->  	amd_spi_set_rx_count(amd_spi, rx_len);
->  
-> -	ret = amd_spi_execute_opcode(amd_spi);
-> +	ret = priv->exec_op(amd_spi);
->  	if (ret)
->  		return ret;
->  
->  	if (!list_empty(&amd_spi->rbuf_head)) {
-> -		ret = amd_spi_busy_wait(amd_spi);
-> +		ret = priv->busy_wait(amd_spi);
->  		if (ret)
->  			return ret;
->  		list_for_each(p, &amd_spi->rbuf_head) {
-> @@ -262,6 +316,9 @@ static int amd_spi_transfer_one_message(struct spi_controller *ctrl, struct spi_
->  	msg->status = ret;
->  	spi_finalize_current_message(ctrl);
->
-
-And the above hunk will disappear.
-
-> +	if (amd_spi->devtype_data->version)
-> +		amd_spi_clear_chip(amd_spi, msg->spi->chip_select);
-> +
-
-This should be explicit (amd_spi->devtype_data->version == AMD_SPI_V2)
-
->  	return ret;
->  }
->  
-> @@ -293,6 +350,12 @@ static int amd_spi_probe(struct platform_device *pdev)
->  	}
->  	dev_dbg(dev, "io_remap_address: %p\n", amd_spi->io_remap_addr);
->  
-> +	amd_spi->devtype_data = device_get_match_data(dev);
-> +	if (!amd_spi->devtype_data) {
-> +		err = -ENODEV;
-> +		goto err_free_master;
-> +	}
-> +
->  	/* Initialize the spi_master fields */
->  	master->bus_num = 0;
->  	master->num_chipselect = 4;
-> @@ -320,9 +383,25 @@ static int amd_spi_probe(struct platform_device *pdev)
->  	return err;
->  }
->  
-> +static const struct amd_spi_devtype_data spi_v1 = {
-> +	.exec_op	= amd_spi_execute_opcode_v1,
-> +	.set_op		= amd_spi_set_opcode_v1,
-> +	.busy_wait	= amd_spi_busy_wait_v1,
-> +};
-> +
-> +static const struct amd_spi_devtype_data spi_v2 = {
-> +	.version	= 1,
-
-This is confusing.  The structure is called _v2, but the version field
-says 1.  Please, be explicit:
-
-#define AMD_SPI_V1  1
-#define AMD_SPI_V2  2
-
-And use the constants here.
-
-Also, a nit regarding the summary line:  Surely someday there will
-be a new "latest platform". It would be more meaningful to say
-"Add support for AMDI0062" or maybe "Add support for rev2", if that makes
-sense.
-
-Thanks,
-
--- 
-Gabriel Krisman Bertazi
+Yours Beloved Sister.
+Mrs. Theresa Heidi
