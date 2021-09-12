@@ -2,187 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69274407E30
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4AC407E33
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhILP5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 11:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhILP5I (ORCPT
+        id S234290AbhILP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 11:59:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23181 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229560AbhILP7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 11:57:08 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E150C061574;
-        Sun, 12 Sep 2021 08:55:54 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id i3-20020a056830210300b0051af5666070so9863510otc.4;
-        Sun, 12 Sep 2021 08:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gkFfv9CT7s4mw1MdJMwa+I2vDXO1SHGa8wxdgOd7jr4=;
-        b=lQo8XSTR1G4SyEkWhYczm/pSxyknMAgPLMA7paj4a+TPnjGGtIb8WwZmj6VuZczKND
-         rk/0sTiLfARQ0I6raeGfR/HRVTANACWNL7oVeBvyVKrg0934/tNHvQ1WHC7/O0k+VrUR
-         OCM7ahRyvSUeWTmLHdMUcqjpfKa+6hWfSpjptom2S9EbAlzjYYmnOLKoTyAlBZbQMPjo
-         wVUCydRNiEHtVqJXajo0oHmuWOvuUKBpBadzT7bdspsj/R5F6wd1QOZ0zW4nbpSRly5v
-         KX6n9KDENqQIAjpRAMBxr8NiW8GX+8ODEmVK+RjgoBNY8YO4PflXjqEPFXXy2Aw0xRfV
-         VqJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gkFfv9CT7s4mw1MdJMwa+I2vDXO1SHGa8wxdgOd7jr4=;
-        b=iu1Y8K9Dr6eZgnVGGjsQSWmomllLvQCr+8wVDQc5NGGMhpuewgkWaTFZcaA4eANAuj
-         SSlmKAbq/wEHjR6H0WdNN8hGizKX5qX8URi+vrpEptt9harMCbKhjS3f39aeZJ11BT5N
-         Hr18wuOzMFbhb8PhpUP8kRK3RnPIm006OzzR8zV14EpS/ZkRbjO6GsB4Z2TZwBRj5BZT
-         bq89meuKP6mdlwszW5PegYt86+9+a3nH4gzuy5E9DwDUY7tvgnMfvQ4256d+x0HR70kL
-         m4FN+TVY4rJ1VDMdCWanS1Eb7oW3tH4vFmWj/cAmdgYzT+aPtD5udBErLWJXmuxK7jl4
-         ZV+A==
-X-Gm-Message-State: AOAM530QqbtKlZ0onuW35jM2HfkKvC7ztKQrlolHaMpuMNH5A8Dzf2LS
-        Aq+Z7gKrURnRfSPE7yihM4k=
-X-Google-Smtp-Source: ABdhPJy6oPJJSPa1/JijRz9TJmBp5EseRGileTXbcWAd3fHu4uWJxdVJutTEC5/ViBnLbh/P9ogwcw==
-X-Received: by 2002:a05:6830:1184:: with SMTP id u4mr6536947otq.55.1631462153806;
-        Sun, 12 Sep 2021 08:55:53 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k1sm1238724otr.43.2021.09.12.08.55.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 08:55:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3 2/2] scsi: ufs: Add temperature notification exception
- handling
-To:     Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>
-References: <20210912131919.12962-1-avri.altman@wdc.com>
- <20210912131919.12962-3-avri.altman@wdc.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <3dddb2a8-a599-2061-08e6-b4c5ca865cb9@roeck-us.net>
-Date:   Sun, 12 Sep 2021 08:55:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 12 Sep 2021 11:59:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631462308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OfkCLhQjkEJmJ1j4mWHgvbULQtNu9xPhouoVxezHb10=;
+        b=RxRmJwVjx8no58lmhL4J9ebQCCbZmwv+qlyd0c3/Q7Ppc0y9c/AcS1WRONxQX2egG5tgCx
+        NjqsqCxceGzOWEOqM46Bl0JJjqoQIX3xUKwEhvhG3UAkbaHBjERfumiLrZqz2Ay649V1bm
+        GZguV/Dd64mhZ3/Ht3Jh05gzKJvtX88=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-KJy9WGiHPBaMSXQvcAgnsw-1; Sun, 12 Sep 2021 11:58:27 -0400
+X-MC-Unique: KJy9WGiHPBaMSXQvcAgnsw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1E74824FA6;
+        Sun, 12 Sep 2021 15:58:25 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE0135D6CF;
+        Sun, 12 Sep 2021 15:58:22 +0000 (UTC)
+Message-ID: <6424b309216b276e46a66573320b3eed8209a0ed.camel@redhat.com>
+Subject: Re: [PATCH 1/4] KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Sun, 12 Sep 2021 18:58:21 +0300
+In-Reply-To: <20210910160633.451250-2-vkuznets@redhat.com>
+References: <20210910160633.451250-1-vkuznets@redhat.com>
+         <20210910160633.451250-2-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210912131919.12962-3-avri.altman@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/21 6:19 AM, Avri Altman wrote:
-> The device may notify the host of an extreme temperature by using the
-> exception event mechanism. The exception can be raised when the device’s
-> Tcase temperature is either too high or too low.
+On Fri, 2021-09-10 at 18:06 +0200, Vitaly Kuznetsov wrote:
+> When KVM runs as a nested hypervisor on top of Hyper-V it uses Enlightened
+> VMCS and enables Enlightened MSR Bitmap feature for its L1s and L2s (which
+> are actually L2s and L3s from Hyper-V's perspective). When MSR bitmap is
+> updated, KVM has to reset HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP from
+> clean fields to make Hyper-V aware of the change. For KVM's L1s, this is
+> done in vmx_disable_intercept_for_msr()/vmx_enable_intercept_for_msr().
+> MSR bitmap for L2 is build in nested_vmx_prepare_msr_bitmap() by blending
+> MSR bitmap for L1 and L1's idea of MSR bitmap for L2. KVM, however, doesn't
+> check if the resulting bitmap is different and never cleans
+> HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP in eVMCS02. This is incorrect and
+> may result in Hyper-V missing the update.
 > 
-> It is essentially up to the platform to decide what further actions need
-> to be taken. leave a placeholder for a designated vop for that.
+> The issue could've been solved by calling evmcs_touch_msr_bitmap() for
+> eVMCS02 from nested_vmx_prepare_msr_bitmap() unconditionally but doing so
+> would not give any performance benefits (compared to not using Enlightened
+> MSR Bitmap at all). 3-level nesting is also not a very common setup
+> nowadays.
 > 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
+> Don't enable 'Enlightened MSR Bitmap' feature for KVM's L2s (real L3s) for
+> now.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->   drivers/scsi/ufs/ufs-hwmon.c | 14 ++++++++++++++
->   drivers/scsi/ufs/ufs.h       |  2 ++
->   drivers/scsi/ufs/ufshcd.c    | 21 +++++++++++++++++++++
->   drivers/scsi/ufs/ufshcd.h    |  2 ++
->   4 files changed, 39 insertions(+)
+>  arch/x86/kvm/vmx/vmx.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/scsi/ufs/ufs-hwmon.c b/drivers/scsi/ufs/ufs-hwmon.c
-> index a50e83f645f4..b466b4649c21 100644
-> --- a/drivers/scsi/ufs/ufs-hwmon.c
-> +++ b/drivers/scsi/ufs/ufs-hwmon.c
-> @@ -177,3 +177,17 @@ void ufs_hwmon_remove(struct ufs_hba *hba)
->   	hba->hwmon_device = NULL;
->   	kfree(data);
->   }
-> +
-> +void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask)
-> +{
-> +	if (!hba->hwmon_device)
-> +		return;
-> +
-> +	if (ee_mask & MASK_EE_TOO_HIGH_TEMP)
-> +		hwmon_notify_event(hba->hwmon_device, hwmon_temp,
-> +				   hwmon_temp_max_alarm, 0);
-> +
-> +	if (ee_mask & MASK_EE_TOO_LOW_TEMP)
-> +		hwmon_notify_event(hba->hwmon_device, hwmon_temp,
-> +				   hwmon_temp_min_alarm, 0);
-> +}
-> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-> index 171b27be7b1d..d9bc048c2a71 100644
-> --- a/drivers/scsi/ufs/ufs.h
-> +++ b/drivers/scsi/ufs/ufs.h
-> @@ -377,6 +377,8 @@ enum {
->   	MASK_EE_PERFORMANCE_THROTTLING	= BIT(6),
->   };
->   
-> +#define MASK_EE_URGENT_TEMP (MASK_EE_TOO_HIGH_TEMP | MASK_EE_TOO_LOW_TEMP)
-> +
->   /* Background operation status */
->   enum bkops_status {
->   	BKOPS_STATUS_NO_OP               = 0x0,
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 90c2e9677435..3f4c7124b74b 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -5642,6 +5642,24 @@ static void ufshcd_bkops_exception_event_handler(struct ufs_hba *hba)
->   				__func__, err);
->   }
->   
-> +static void ufshcd_temp_exception_event_handler(struct ufs_hba *hba, u16 status)
-> +{
-> +	u32 value;
-> +
-> +	if (ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-> +				QUERY_ATTR_IDN_CASE_ROUGH_TEMP, 0, 0, &value))
-> +		return;
-> +
-> +	dev_info(hba->dev, "exception Tcase %d\n", value - 80);
-> +
-> +	ufs_hwmon_notify_event(hba, status & MASK_EE_URGENT_TEMP);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 0c2c0d5ae873..ae470afcb699 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2654,15 +2654,6 @@ int alloc_loaded_vmcs(struct loaded_vmcs *loaded_vmcs)
+>  		if (!loaded_vmcs->msr_bitmap)
+>  			goto out_vmcs;
+>  		memset(loaded_vmcs->msr_bitmap, 0xff, PAGE_SIZE);
+> -
+> -		if (IS_ENABLED(CONFIG_HYPERV) &&
+> -		    static_branch_unlikely(&enable_evmcs) &&
+> -		    (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
+> -			struct hv_enlightened_vmcs *evmcs =
+> -				(struct hv_enlightened_vmcs *)loaded_vmcs->vmcs;
+> -
+> -			evmcs->hv_enlightenments_control.msr_bitmap = 1;
+> -		}
+>  	}
+>  
+>  	memset(&loaded_vmcs->host_state, 0, sizeof(struct vmcs_host_state));
+> @@ -6861,6 +6852,19 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  	}
+>  
+>  	vmx->loaded_vmcs = &vmx->vmcs01;
 > +
 > +	/*
-> +	 * A placeholder for the platform vendors to add whatever additional
-> +	 * steps required
+> +	 * Use Hyper-V 'Enlightened MSR Bitmap' feature when KVM runs as a
+> +	 * nested (L1) hypervisor and Hyper-V in L0 supports it.
 > +	 */
-> +}
+> +	if (IS_ENABLED(CONFIG_HYPERV) && static_branch_unlikely(&enable_evmcs)
+> +	    && (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
+> +		struct hv_enlightened_vmcs *evmcs =
+> +			(struct hv_enlightened_vmcs *)vmx->loaded_vmcs->vmcs;
 > +
->   static int __ufshcd_wb_toggle(struct ufs_hba *hba, bool set, enum flag_idn idn)
->   {
->   	u8 index;
-> @@ -5821,6 +5839,9 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
->   	if (status & hba->ee_drv_mask & MASK_EE_URGENT_BKOPS)
->   		ufshcd_bkops_exception_event_handler(hba);
->   
-> +	if (status & hba->ee_drv_mask & MASK_EE_URGENT_TEMP)
-> +		ufshcd_temp_exception_event_handler(hba, status);
+> +		evmcs->hv_enlightenments_control.msr_bitmap = 1;
+> +	}
 > +
->   	ufs_debugfs_exception_event(hba, status);
->   out:
->   	ufshcd_scsi_unblock_requests(hba);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 798a408d71e5..e6abce9a8b00 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -1063,9 +1063,11 @@ static inline u8 ufshcd_wb_get_query_index(struct ufs_hba *hba)
->   #ifdef CONFIG_SCSI_UFS_HWMON
->   void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask);
->   void ufs_hwmon_remove(struct ufs_hba *hba);
-> +void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask);
->   #else
->   static inline void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask) {}
->   static inline void ufs_hwmon_remove(struct ufs_hba *hba) {}
-> +void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask) {}
+>  	cpu = get_cpu();
+>  	vmx_vcpu_load(vcpu, cpu);
+>  	vcpu->cpu = cpu;
 
-static
+Makes sense.
 
->   #endif
->   
->   #ifdef CONFIG_PM
-> 
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+
+However, just a note that it is very very confusing that KVM can use eVMCS in both ways.
+ 
+ 
+'Client': It can both run under HyperV, and thus take advantage of eVMCS when it runs its guests (with
+help of
+HyperV)
+ 
+'Server' KVM can emulate some HyperV features, and one of these is eVMCS, thus a windows guest running
+under KVM, can use KVM's eVMCS implementation to run nested guests.
+ 
+This patch fails under
+'Client', while the other patches in the series fall under the 'Server' category,
+and even more confusing, the patch 2 moves 'Client' code around, but it is intended for following patches
+3,4 which are
+for Server.
+ 
+
+Thus this patch probably should be a separate patch, just to avoid confusion.
+
+However, since this patch series is already posted, and I figured that out, and hopefully explained it here,
+no need to do anything though!
+
+
+Best regards,
+	Maxim Levitsky
+
+
 
