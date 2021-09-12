@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82557407E5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC54407E68
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236220AbhILQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 12:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        id S231171AbhILQHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 12:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbhILQDV (ORCPT
+        with ESMTP id S229560AbhILQHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 12:03:21 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515F3C0613D8;
-        Sun, 12 Sep 2021 09:02:03 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id bd1so10763730oib.5;
-        Sun, 12 Sep 2021 09:02:03 -0700 (PDT)
+        Sun, 12 Sep 2021 12:07:10 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3291DC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 09:05:56 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id s12so12630926ljg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 09:05:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k7vOSXJvuBFedGqEmsc9y4fLwgAcNpSGF+uyNF/6Rc4=;
-        b=GVTomCds0oHSZwZ+CTeT02sfHZ+uX8vQBFkmUFHVSBVMyoMK1poVF7DH8H5r1UYFRK
-         aPCLOAbhNTN0Pf73m3EnkBCGrCx8Sz8mfm4fpr03P50xQCkmjPnx6H1fMBfR8TXi2yql
-         7EpXjBZQjVBhuRLjaeIAzrOfigBrZLiN1cMRentTn0+/xh9NknH0Wl8VZJEOKW2wEAbz
-         cLq7gUjvQS/t3euFq+3g8iDOzvLSyu8Sijmu75+aIQRni0rJJTrPiWLF1zYZ7e0lMEjv
-         TCPoA1bHoUyY94AnRaVage1SFWbZ2fb2dbI3Hl/OEyUsEJ3gyUrP6RZBCknb7+wWO1mY
-         VqZQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=08mAPjyxBKrJAINcSHI5DwIe03TZTttNNN61qA9Q5BI=;
+        b=WGHGy2wTwEa24xnd0LxtlPuE1NdaZtAac70TQ59rf4FCpLXG4snXCOzj26Eq9wc+ZH
+         UMZSXdGP4oVIKywhZS0qlnqoWJBgiq3kFoRaOnLu6yCW1OjYKGSYnKbq8CF6T09LUNzG
+         bG5Qlt8g/l/0FRrCFdRHREY54BGmwMQhd+BDMp1cIDM+GZ32/dQsjKGpcpio31T6PtPl
+         Mhdu/isuIxrUBMg3L5hMWxUo1lhPHjDP0xpe50er80KHRN5LL84pMoNlommMKYVl5N4/
+         mFPnJSR3HVCa8OgAe1tpUVSQ/hMCufYdKoMUNoopOXSCLZPaujn8u78vA5lM1tX7xh5e
+         OkFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=k7vOSXJvuBFedGqEmsc9y4fLwgAcNpSGF+uyNF/6Rc4=;
-        b=WS2tJITiLSR5jdYu9qbSAHAIcbycQfiWLVmlBoryw9sa3DTwlencz1lfn3ySQawgP+
-         dyYAKCJ0kvmvZ6fTJ29EKQ08kfd8vMGO5DmfRKhB97jtSLSWzI3MkMJTFJPZlrnzU7wK
-         gUKLCrxDuLJ10A/ThiyIKHCOMonl4vBVItq+YpP9BtJ//ydHymWnSzRoJy+iXnTWAbpD
-         rSikyl7BBLUjDgM9HgUVHOXp0Sv3o7BKFVzXXotK+0Nd0eA03qlByUu0e5Ym2iaObXrz
-         kjbba8gUwkEGnJrPLMjFooyP9iRWs0j/P253O6t5f1hpV1SoBH0RVuBSyBWi5MB5Gt89
-         spWg==
-X-Gm-Message-State: AOAM531ciwSOECCpjocAT1rXbghXqrWa9loaiEjx9BVOD67Z9X7Gp7jX
-        NQXtWsR35mhzRPZiIPcW37Q=
-X-Google-Smtp-Source: ABdhPJxb1VPXMwcXDAB2MTnc8E2tBnOL9N7CU6cFnuCzUVgrOk+LibtThqzlA+vv5VXasU/DM9aWpA==
-X-Received: by 2002:a05:6808:2cd:: with SMTP id a13mr5006585oid.3.1631462522711;
-        Sun, 12 Sep 2021 09:02:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z1sm1202256ooj.25.2021.09.12.09.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 09:02:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-alpha@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-sparse@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4/4] alpha: Use absolute_pointer for strcmp on fixed memory location
-Date:   Sun, 12 Sep 2021 09:01:49 -0700
-Message-Id: <20210912160149.2227137-5-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210912160149.2227137-1-linux@roeck-us.net>
-References: <20210912160149.2227137-1-linux@roeck-us.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=08mAPjyxBKrJAINcSHI5DwIe03TZTttNNN61qA9Q5BI=;
+        b=ujvuZ5XUy1tuLA8OtOx8XHpM6oQLfhU9zz+aEsbUPlDyydxpvQAiXcP4z9i1bM5QQw
+         EiF8JGinre/AaDte/lYe75XqPb3lyaZEOiQTWqBOuI+FHpRycoOI0zw38BCPcJgcGOkW
+         8kQcb7XV/myuCdvoT4TUJ4vp0xCcHAakw2D88sfr44JVq6/Al8X8qm0RGwtR09f4iyuz
+         EGKzVVBTr0aELgukoaMD+7k7viPZgzAqrh3EMeJ/qR5k2StcI0OzMeMHIfEll2dVZUBG
+         QOUYi3sWob1ZmnQKIlQfuHqHPD3wQBUIY5DDsfRq3a8APqu1iRzN2jjwxVziXMgEUW4W
+         PkSA==
+X-Gm-Message-State: AOAM530qA8/4LZs5BqfQYt6PMMst57gSEwyfOZPNWptaBIrmoeLT+LcJ
+        dFJXxh64LQRExx4Tcr4OnmxS+lOfJWWEoA24z+oQeA==
+X-Google-Smtp-Source: ABdhPJxvhpwJG6MZq1Om4/zWjIcDhz3EmGkbn5UXz3sCnHFftIBd5W2WMMXVlu3GmhLJQ+mCrpUB1mJmVs3xf28f6G0=
+X-Received: by 2002:a05:651c:385:: with SMTP id e5mr6436000ljp.35.1631462753264;
+ Sun, 12 Sep 2021 09:05:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
+In-Reply-To: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Sun, 12 Sep 2021 09:05:41 -0700
+Message-ID: <CALvZod5vBkoJ5PpXTW7CCMD9UjMkqK2sQuxK_LXn+W8ddDP5Nw@mail.gmail.com>
+Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in do_semtimedop()
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alpha:allmodconfig fails to build with the following error
-when using gcc 11.x.
+On Sat, Sep 11, 2021 at 12:40 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>
+> Linus proposes to revert an accounting for sops objects in
+> do_semtimedop() because it's really just a temporary buffer
+> for a single semtimedop() system call.
+>
+> This object can consume up to 2 pages, syscall is sleeping one,
+> size and duration can be controlled by user, and this allocation
+> can be repeated by many thread at the same time.
+>
+> However Shakeel Butt pointed that there are much more popular objects
+> with the same life time and similar memory consumption, the accounting
+> of which was decided to be rejected for performance reasons.
+>
+> In addition, any usual task consumes much more accounted memory,
+> so 2 pages of this temporal buffer can be safely ignored.
+>
+> Link: https://patchwork.kernel.org/project/linux-fsdevel/patch/20171005222144.123797-1-shakeelb@google.com/
+>
+> Fixes: 18319498fdd4 ("memcg: enable accounting of ipc resources")
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-arch/alpha/kernel/setup.c: In function 'setup_arch':
-arch/alpha/kernel/setup.c:493:13: error:
-	'strcmp' reading 1 or more bytes from a region of size 0
+Thanks Vasily.
 
-Avoid the problem by using absolute_pointer() when providing a memory
-address to strcmp().
-
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- arch/alpha/kernel/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-index b4fbbba30aa2..aab477a76c30 100644
---- a/arch/alpha/kernel/setup.c
-+++ b/arch/alpha/kernel/setup.c
-@@ -490,7 +490,7 @@ setup_arch(char **cmdline_p)
- 	/* Hack for Jensen... since we're restricted to 8 or 16 chars for
- 	   boot flags depending on the boot mode, we need some shorthand.
- 	   This should do for installation.  */
--	if (strcmp(COMMAND_LINE, "INSTALL") == 0) {
-+	if (strcmp(absolute_pointer(COMMAND_LINE), "INSTALL") == 0) {
- 		strlcpy(command_line, "root=/dev/fd0 load_ramdisk=1", sizeof command_line);
- 	} else {
- 		strlcpy(command_line, COMMAND_LINE, sizeof command_line);
--- 
-2.33.0
-
+Acked-by: Shakeel Butt <shakeelb@google.com>
