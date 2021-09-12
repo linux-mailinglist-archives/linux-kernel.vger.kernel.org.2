@@ -2,153 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D69407CBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEFE407CC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbhILJvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 05:51:49 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36852 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhILJvj (ORCPT
+        id S233814AbhILJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 05:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233678AbhILJwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 05:51:39 -0400
-Received: by mail-io1-f70.google.com with SMTP id w7-20020a5e9707000000b005c3adb2571fso12152562ioj.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 02:50:25 -0700 (PDT)
+        Sun, 12 Sep 2021 05:52:01 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22954C061757;
+        Sun, 12 Sep 2021 02:50:47 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id n7-20020a05600c3b8700b002f8ca941d89so4452075wms.2;
+        Sun, 12 Sep 2021 02:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZfUDMjhaBW28irP63CnwhnXUauvV+ceBbmfpoRw/Bl8=;
+        b=T1/hhsyBRS2DZ/592/U9LVU+905MkddkZ7e1nzYGxk3NrFdUaONbjuCPUU+gYQAHf6
+         a1qCH3aWLd+2sKyN1+2zeYJQLYcEL/LZZwvW/b6O4juccBqfNW4nQncgbff+UwRkuXd4
+         zKp96LxjFMOVlsVhsiJDad//D8305kdp21qeIu6Sd+AbbolgW+OSAkDc9EoWo9V8a48i
+         nv9/oBTQwPlH4eCmKGCMoZTQ00ZQooVtNjRSwqL5zCep+fL3NLkM+nXrDeuo8xBKk/aH
+         l0HebZCPiIoQrqZ6ZwIOfvpcBoeuQ861jdq4/sIkzWS9K030Sj/hYNhrbd5bZXL+ZUI5
+         vzbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2IHbQLMbrH/C4KpS2kFJjGjutAVirXBAfLA6HbR4HS8=;
-        b=Jfp1WfAGsxMZRdk5PyznP0PEVCYlljjNtreDtk9uLsP0nJ7dBnIzR+gcdZefgkgVJc
-         c+iwlt/9SC+dGjZKLeSaMnR1izcLtGgOh+9RrTqaynLQtfx9utUOsWSl2rzea0uHPosU
-         zyvetm0E70Un733CjT9JyA6unGxGjhiCCSSGfpQ2LAzVrIjMDPPH77BPtR+ssCOuLQhs
-         m8mB8P3w4pIZdXNlZhwVKXLPyNfYxa+FbN+xqRXjcE3VW/0ILHiBUc9PnB+2KCsaRVKR
-         EoxcEK6fCrnLRPGVkVw8ZmQ5cduI90dBr+jaonm5n063PapJ15C+ZbT/H4F7VhAgla5e
-         cApg==
-X-Gm-Message-State: AOAM530HOJcajBhDBkRk0DRtsNrfHJhTRiWwKMq4oM6RB9Gmu22J9Kl+
-        Uzp5ZwMEsdbR66cqpbXjmvg8uBxY6Ny/jidMkeLNZBQRgygd
-X-Google-Smtp-Source: ABdhPJxXVuLyl9sF5oZmU6eBAkMuoqCIy4S0wuj7Z13sJFu7dBRKaz3ZTVXGJXqzisoRTNp8iew4Oc+lxao6hcH2zgAxO8P25WPm
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZfUDMjhaBW28irP63CnwhnXUauvV+ceBbmfpoRw/Bl8=;
+        b=jrWIMzQW1bKktTR79m60KKEL92P+UWLjUXk56AXyoF8nVpz8cKPgQ+det5pA9gKxzL
+         LKki+6WoYG8vO0ZRyKWkBvDvOfBGHJb1qOE+4D7SRJLfyJx9wqQsV3Cbw80O6FyS+65a
+         vCMKt/C5Ng55eSoCNSfwrtdOgDTWqLjLXcJUQ96WnRHzZE8gn3p1kbbW1Siz2r3R1Hog
+         +uOXBrNTH585dGCls2CdUdccTEBAbO6fcblhj5EOpoKdKTWKpyrnSmBvuH/nU4SariGw
+         uOiRaUBuJ7sCjs8gwo+cCqcO+SCIKLpvuY3HOyyqctlGB4XOMF4SFo/uv98NpgnLO9KB
+         mGOA==
+X-Gm-Message-State: AOAM530gThdTGRw0fOBNRCK/Xd7C2b/X93u6YFbRAOddMqED8Sce/VIi
+        ts4oAjQMjzKfveLkOn+UcIw=
+X-Google-Smtp-Source: ABdhPJyzMQK6uGv0+edsUnseYhz0bylpHJqwuQWPA5iwYb8Cj0rz5723JiK4lVGjA+DXjoqok7/erg==
+X-Received: by 2002:a7b:cd15:: with SMTP id f21mr1464839wmj.16.1631440245762;
+        Sun, 12 Sep 2021 02:50:45 -0700 (PDT)
+Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id n13sm3471487wmq.3.2021.09.12.02.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 02:50:45 -0700 (PDT)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [PATCH] arm64: dts: allwinner: a64: Add GPU opp table
+Date:   Sun, 12 Sep 2021 11:50:32 +0200
+Message-Id: <20210912095032.2397824-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9e0f:: with SMTP id h15mr4455362ioh.133.1631440225140;
- Sun, 12 Sep 2021 02:50:25 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 02:50:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000178a9305cbc947c4@google.com>
-Subject: [syzbot] upstream boot error: KFENCE: use-after-free in kvm_fastop_exception
-From:   syzbot <syzbot+79e3be0f27748965946b@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+GPU on A64 currently runs at default frequency, which is 297 MHz. This
+is a bit low in some cases and noticeable lag can be observed in GPU
+rendered UIs. GPU is capable to run at 432 MHz.
 
-syzbot found the following issue on:
+Add GPU OPP table.
 
-HEAD commit:    bf9f243f23e6 Merge tag '5.15-rc-ksmbd-part2' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1537eedd300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
-dashboard link: https://syzkaller.appspot.com/bug?extid=79e3be0f27748965946b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+79e3be0f27748965946b@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KFENCE: use-after-free read in kvm_fastop_exception+0xf6a/0x1058
-
-Use-after-free read at 0xffff88823bd9e020 (in kfence-#206):
- kvm_fastop_exception+0xf6a/0x1058
- d_lookup+0xd8/0x170 fs/dcache.c:2370
- lookup_dcache+0x1e/0x130 fs/namei.c:1520
- __lookup_hash+0x29/0x180 fs/namei.c:1543
- kern_path_locked+0x17e/0x320 fs/namei.c:2567
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-kfence-#206: 0xffff88823bd9e000-0xffff88823bd9efff, size=4096, cache=names_cache
-
-allocated by task 22 on cpu 1 at 51.213658s:
- getname_kernel+0x4e/0x370 fs/namei.c:226
- kern_path_locked+0x71/0x320 fs/namei.c:2558
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-freed by task 22 on cpu 1 at 51.213995s:
- putname.part.0+0xe1/0x120 fs/namei.c:270
- putname include/linux/err.h:41 [inline]
- filename_parentat fs/namei.c:2547 [inline]
- kern_path_locked+0xc2/0x320 fs/namei.c:2558
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvm_fastop_exception+0xf6a/0x1058
-Code: d3 ed e9 bf d9 6e f8 49 8d 0e 48 83 e1 f8 4c 8b 21 41 8d 0e 83 e1 07 c1 e1 03 49 d3 ec e9 15 e7 6e f8 49 8d 4d 00 48 83 e1 f8 <4c> 8b 21 41 8d 4d 00 83 e1 07 c1 e1 03 49 d3 ec e9 05 f1 6e f8 bd
-RSP: 0018:ffffc90000dcfae8 EFLAGS: 00010282
-RAX: 0000000034736376 RBX: ffff88806f127938 RCX: ffff88823bd9e020
-RDX: ffffed100de24f2e RSI: 0000000000000004 RDI: 0000000000000007
-RBP: 0000000000000004 R08: 0000000000000000 R09: ffff88806f127968
-R10: ffffed100de24f2d R11: 0000000000000000 R12: ffff88823bd9e020
-R13: ffff88823bd9e020 R14: ffff88806f127968 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823bd9e020 CR3: 0000000026259000 CR4: 0000000000350ee0
-Call Trace:
- d_lookup+0xd8/0x170 fs/dcache.c:2370
- lookup_dcache+0x1e/0x130 fs/namei.c:1520
- __lookup_hash+0x29/0x180 fs/namei.c:1543
- kern_path_locked+0x17e/0x320 fs/namei.c:2567
- handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-==================================================================
-----------------
-Code disassembly (best guess):
-   0:	d3 ed                	shr    %cl,%ebp
-   2:	e9 bf d9 6e f8       	jmpq   0xf86ed9c6
-   7:	49 8d 0e             	lea    (%r14),%rcx
-   a:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
-   e:	4c 8b 21             	mov    (%rcx),%r12
-  11:	41 8d 0e             	lea    (%r14),%ecx
-  14:	83 e1 07             	and    $0x7,%ecx
-  17:	c1 e1 03             	shl    $0x3,%ecx
-  1a:	49 d3 ec             	shr    %cl,%r12
-  1d:	e9 15 e7 6e f8       	jmpq   0xf86ee737
-  22:	49 8d 4d 00          	lea    0x0(%r13),%rcx
-  26:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
-* 2a:	4c 8b 21             	mov    (%rcx),%r12 <-- trapping instruction
-  2d:	41 8d 4d 00          	lea    0x0(%r13),%ecx
-  31:	83 e1 07             	and    $0x7,%ecx
-  34:	c1 e1 03             	shl    $0x3,%ecx
-  37:	49 d3 ec             	shr    %cl,%r12
-  3a:	e9 05 f1 6e f8       	jmpq   0xf86ef144
-  3f:	bd                   	.byte 0xbd
-
-
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 6ddb717f2f98..5ba379078500 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -102,6 +102,22 @@ de: display-engine {
+ 		status = "disabled";
+ 	};
+ 
++	gpu_opp_table: opp-table-gpu {
++		compatible = "operating-points-v2";
++
++		opp-120000000 {
++			opp-hz = /bits/ 64 <120000000>;
++		};
++
++		opp-312000000 {
++			opp-hz = /bits/ 64 <312000000>;
++		};
++
++		opp-432000000 {
++			opp-hz = /bits/ 64 <432000000>;
++		};
++	};
++
+ 	osc24M: osc24M_clk {
+ 		#clock-cells = <0>;
+ 		compatible = "fixed-clock";
+@@ -1103,6 +1119,7 @@ mali: gpu@1c40000 {
+ 			clocks = <&ccu CLK_BUS_GPU>, <&ccu CLK_GPU>;
+ 			clock-names = "bus", "core";
+ 			resets = <&ccu RST_BUS_GPU>;
++			operating-points-v2 = <&gpu_opp_table>;
+ 		};
+ 
+ 		gic: interrupt-controller@1c81000 {
+-- 
+2.33.0
+
