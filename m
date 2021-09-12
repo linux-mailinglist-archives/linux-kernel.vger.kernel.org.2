@@ -2,70 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72200407CB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D69407CBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhILJvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 05:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229643AbhILJvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 05:51:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8C76D60F38;
-        Sun, 12 Sep 2021 09:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631440206;
-        bh=OgQwrVUxS7/qdw3UscGoxmc/3kScO2tGCbAelLxxOmM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JW5mSeu5Z7KUE1fK5K7GSwXLb5ihWwrfBJLsHPpG42O4FfrS3Wp6DM1DFYoBz6C2H
-         HmBiPcQCk1GsedDK1Ly14reL61Dv15C9Fw04mybVpI5zdK4YyXTmxft5Y/7SszVbdl
-         oc24Adpg2Nk8E36Czhnj+tYfyVNBq4fXkfduT5iwUtLrh8wvno0yuEQSByaZofh8VW
-         e7RnwZV+QU+XFvDnIdKUX9WzswcLywM93o9wUF1ujVRokIBDmH80KoTjfCALmaGUTl
-         aeUhFQv5tXeUn2wPpXhs3t4wX0spfSd068XRqjUDbMXeEHM6yETk3BPNchEPUO6+gR
-         f1K2SprHGKJrw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7EEF2600E8;
-        Sun, 12 Sep 2021 09:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233241AbhILJvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 05:51:49 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36852 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhILJvj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 05:51:39 -0400
+Received: by mail-io1-f70.google.com with SMTP id w7-20020a5e9707000000b005c3adb2571fso12152562ioj.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 02:50:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2IHbQLMbrH/C4KpS2kFJjGjutAVirXBAfLA6HbR4HS8=;
+        b=Jfp1WfAGsxMZRdk5PyznP0PEVCYlljjNtreDtk9uLsP0nJ7dBnIzR+gcdZefgkgVJc
+         c+iwlt/9SC+dGjZKLeSaMnR1izcLtGgOh+9RrTqaynLQtfx9utUOsWSl2rzea0uHPosU
+         zyvetm0E70Un733CjT9JyA6unGxGjhiCCSSGfpQ2LAzVrIjMDPPH77BPtR+ssCOuLQhs
+         m8mB8P3w4pIZdXNlZhwVKXLPyNfYxa+FbN+xqRXjcE3VW/0ILHiBUc9PnB+2KCsaRVKR
+         EoxcEK6fCrnLRPGVkVw8ZmQ5cduI90dBr+jaonm5n063PapJ15C+ZbT/H4F7VhAgla5e
+         cApg==
+X-Gm-Message-State: AOAM530HOJcajBhDBkRk0DRtsNrfHJhTRiWwKMq4oM6RB9Gmu22J9Kl+
+        Uzp5ZwMEsdbR66cqpbXjmvg8uBxY6Ny/jidMkeLNZBQRgygd
+X-Google-Smtp-Source: ABdhPJxXVuLyl9sF5oZmU6eBAkMuoqCIy4S0wuj7Z13sJFu7dBRKaz3ZTVXGJXqzisoRTNp8iew4Oc+lxao6hcH2zgAxO8P25WPm
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: dsa: qca8k: fix kernel panic with legacy mdio mapping
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163144020651.29472.9873983978968397352.git-patchwork-notify@kernel.org>
-Date:   Sun, 12 Sep 2021 09:50:06 +0000
-References: <20210911155009.22251-1-ansuelsmth@gmail.com>
-In-Reply-To: <20210911155009.22251-1-ansuelsmth@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a5d:9e0f:: with SMTP id h15mr4455362ioh.133.1631440225140;
+ Sun, 12 Sep 2021 02:50:25 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 02:50:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000178a9305cbc947c4@google.com>
+Subject: [syzbot] upstream boot error: KFENCE: use-after-free in kvm_fastop_exception
+From:   syzbot <syzbot+79e3be0f27748965946b@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello,
 
-This patch was applied to netdev/net.git (refs/heads/master):
+syzbot found the following issue on:
 
-On Sat, 11 Sep 2021 17:50:09 +0200 you wrote:
-> When the mdio legacy mapping is used the mii_bus priv registered by DSA
-> refer to the dsa switch struct instead of the qca8k_priv struct and
-> causes a kernel panic. Create dedicated function when the internal
-> dedicated mdio driver is used to properly handle the 2 different
-> implementation.
-> 
-> Fixes: 759bafb8a322 ("net: dsa: qca8k: add support for internal phy and internal mdio")
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> 
-> [...]
+HEAD commit:    bf9f243f23e6 Merge tag '5.15-rc-ksmbd-part2' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1537eedd300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
+dashboard link: https://syzkaller.appspot.com/bug?extid=79e3be0f27748965946b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-Here is the summary with links:
-  - [v2] net: dsa: qca8k: fix kernel panic with legacy mdio mapping
-    https://git.kernel.org/netdev/net/c/ce062a0adbfe
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+79e3be0f27748965946b@syzkaller.appspotmail.com
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+==================================================================
+BUG: KFENCE: use-after-free read in kvm_fastop_exception+0xf6a/0x1058
+
+Use-after-free read at 0xffff88823bd9e020 (in kfence-#206):
+ kvm_fastop_exception+0xf6a/0x1058
+ d_lookup+0xd8/0x170 fs/dcache.c:2370
+ lookup_dcache+0x1e/0x130 fs/namei.c:1520
+ __lookup_hash+0x29/0x180 fs/namei.c:1543
+ kern_path_locked+0x17e/0x320 fs/namei.c:2567
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+kfence-#206: 0xffff88823bd9e000-0xffff88823bd9efff, size=4096, cache=names_cache
+
+allocated by task 22 on cpu 1 at 51.213658s:
+ getname_kernel+0x4e/0x370 fs/namei.c:226
+ kern_path_locked+0x71/0x320 fs/namei.c:2558
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+freed by task 22 on cpu 1 at 51.213995s:
+ putname.part.0+0xe1/0x120 fs/namei.c:270
+ putname include/linux/err.h:41 [inline]
+ filename_parentat fs/namei.c:2547 [inline]
+ kern_path_locked+0xc2/0x320 fs/namei.c:2558
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvm_fastop_exception+0xf6a/0x1058
+Code: d3 ed e9 bf d9 6e f8 49 8d 0e 48 83 e1 f8 4c 8b 21 41 8d 0e 83 e1 07 c1 e1 03 49 d3 ec e9 15 e7 6e f8 49 8d 4d 00 48 83 e1 f8 <4c> 8b 21 41 8d 4d 00 83 e1 07 c1 e1 03 49 d3 ec e9 05 f1 6e f8 bd
+RSP: 0018:ffffc90000dcfae8 EFLAGS: 00010282
+RAX: 0000000034736376 RBX: ffff88806f127938 RCX: ffff88823bd9e020
+RDX: ffffed100de24f2e RSI: 0000000000000004 RDI: 0000000000000007
+RBP: 0000000000000004 R08: 0000000000000000 R09: ffff88806f127968
+R10: ffffed100de24f2d R11: 0000000000000000 R12: ffff88823bd9e020
+R13: ffff88823bd9e020 R14: ffff88806f127968 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823bd9e020 CR3: 0000000026259000 CR4: 0000000000350ee0
+Call Trace:
+ d_lookup+0xd8/0x170 fs/dcache.c:2370
+ lookup_dcache+0x1e/0x130 fs/namei.c:1520
+ __lookup_hash+0x29/0x180 fs/namei.c:1543
+ kern_path_locked+0x17e/0x320 fs/namei.c:2567
+ handle_remove+0xa2/0x5fe drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+==================================================================
+----------------
+Code disassembly (best guess):
+   0:	d3 ed                	shr    %cl,%ebp
+   2:	e9 bf d9 6e f8       	jmpq   0xf86ed9c6
+   7:	49 8d 0e             	lea    (%r14),%rcx
+   a:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
+   e:	4c 8b 21             	mov    (%rcx),%r12
+  11:	41 8d 0e             	lea    (%r14),%ecx
+  14:	83 e1 07             	and    $0x7,%ecx
+  17:	c1 e1 03             	shl    $0x3,%ecx
+  1a:	49 d3 ec             	shr    %cl,%r12
+  1d:	e9 15 e7 6e f8       	jmpq   0xf86ee737
+  22:	49 8d 4d 00          	lea    0x0(%r13),%rcx
+  26:	48 83 e1 f8          	and    $0xfffffffffffffff8,%rcx
+* 2a:	4c 8b 21             	mov    (%rcx),%r12 <-- trapping instruction
+  2d:	41 8d 4d 00          	lea    0x0(%r13),%ecx
+  31:	83 e1 07             	and    $0x7,%ecx
+  34:	c1 e1 03             	shl    $0x3,%ecx
+  37:	49 d3 ec             	shr    %cl,%r12
+  3a:	e9 05 f1 6e f8       	jmpq   0xf86ef144
+  3f:	bd                   	.byte 0xbd
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
