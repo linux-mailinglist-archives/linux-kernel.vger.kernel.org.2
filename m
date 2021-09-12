@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF422407DBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 16:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF215407DBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 16:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235674AbhILOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 10:04:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhILOE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 10:04:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 687E261039;
-        Sun, 12 Sep 2021 14:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631455423;
-        bh=c5yCUw0T6FcB/bXkAOSTCJb58L+/egyiW0yK5I7dpQg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ubjGifgxhUrowPiQE1ksBU64wv5v5Mu3TgPVx+130zDKHpuNCtbxc9uhAgESyiF3p
-         XaqxRrkHZ7XEQFI/46O3gwA9r+fuTAKkmfsOapNM+A+AsDUjEJWoTeX5GZyzdDjbt6
-         QFW97koiBAbi2nTjUaYEjHnUCUb7hE7IqbQ2yuBI=
-Date:   Sun, 12 Sep 2021 16:03:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
+        id S231931AbhILONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 10:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhILONs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 10:13:48 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1981AC061574;
+        Sun, 12 Sep 2021 07:12:34 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPQDe-003UFn-PU; Sun, 12 Sep 2021 14:12:30 +0000
+Date:   Sun, 12 Sep 2021 14:12:30 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: [GIT PULL] Misc driver fix for 5.15-rc1
-Message-ID: <YT4IvKLQHm9mfpR+@kroah.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [git pull] namei fixes
+Message-ID: <YT4KzvXdKg6fJGk3@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit bf9f243f23e6623f310ba03fbb14e10ec3a61290:
+	Clearing fallout from mkdirat in io_uring series.  The fix in
+the kern_path_locked() patch plus associated cleanups.
 
-  Merge tag '5.15-rc-ksmbd-part2' of git://git.samba.org/ksmbd (2021-09-09 16:17:14 -0700)
+The following changes since commit 4b93c544e90e2b28326182d31ee008eb80e02074:
 
-are available in the Git repository at:
+  thunderbolt: test: split up test cases in tb_test_credit_alloc_all (2021-09-06 12:27:03 -0700)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.15-rc1-lkdtm
+are available in the git repository at:
 
-for you to fetch changes up to 3a3a11e6e5a2bc0595c7e36ae33c861c9e8c75b1:
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git misc.namei
 
-  lkdtm: Use init_uts_ns.name instead of macros (2021-09-10 17:09:40 +0200)
+for you to fetch changes up to ea47ab111669b187808b3080602788dec26cb9bc:
 
-----------------------------------------------------------------
-Misc driver fix for 5.15-rc1
-
-Here is a single patch for 5.15-rc1, for the lkdtm misc driver.
-
-It resolves a build issue that many people were hitting with your
-current tree, and Kees and others felt would be good to get merged
-before -rc1 comes out, to prevent them from having to constantly hit it
-as many development trees restart on -rc1, not older -rc releases.
-
-It has NOT been in linux-next, but has passed 0-day testing and looks
-"obviously correct" when reviewing it locally :)
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  putname(): IS_ERR_OR_NULL() is wrong here (2021-09-07 16:14:05 -0400)
 
 ----------------------------------------------------------------
-Kees Cook (1):
-      lkdtm: Use init_uts_ns.name instead of macros
+Al Viro (2):
+      rename __filename_parentat() to filename_parentat()
+      putname(): IS_ERR_OR_NULL() is wrong here
 
- drivers/misc/lkdtm/core.c  | 10 ++++++++++
- drivers/misc/lkdtm/lkdtm.h | 28 +++++++++++++++++-----------
- 2 files changed, 27 insertions(+), 11 deletions(-)
+Stephen Brennan (3):
+      namei: Fix use after free in kern_path_locked
+      namei: Standardize callers of filename_lookup()
+      namei: Standardize callers of filename_create()
+
+ fs/fs_parser.c |   1 -
+ fs/namei.c     | 116 ++++++++++++++++++++++++++++-----------------------------
+ 2 files changed, 58 insertions(+), 59 deletions(-)
