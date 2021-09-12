@@ -2,217 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6565F408196
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CC3408192
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhILUnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 16:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhILUnc (ORCPT
+        id S236297AbhILUj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 16:39:26 -0400
+Received: from gateway22.websitewelcome.com ([192.185.46.233]:39442 "EHLO
+        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236410AbhILUjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 16:43:32 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E11C061574;
-        Sun, 12 Sep 2021 13:42:17 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id u16so11395238wrn.5;
-        Sun, 12 Sep 2021 13:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ow1HoVLX+9HoNdnX4/sLVCN3K6sWaqzs/vefkU1HZMg=;
-        b=JeX/eVDgXgXbXR2dFxLq73meQq6/0AyQLg+gujPwrPLDbdlcO9JdnZPPwfcnx7FgxU
-         /scjLibLCTHIKgW+L230CWtTCFS6x+eyMckmZWz0YqXe/3JMXBQ4jPKphpgEB92Lzqty
-         3d6JOYtWJwRRQgAM8CV6QpGNHXXhGbpa1S2BNJLUTnwY3n/d+Zi263ew76S6fGdQzFu0
-         8Fd/otQ7l2GIXmRHRlvOJe6aB/g740Ok+Oy+dUfGvh/1LeloWI9N71jDPShjjVKGYrmS
-         ZsUhDXb7S4svOHAeGPcEHgVVIxwmvfZ1/ck7EVhNlHuMUZ/Jk4QQjZmCogzgQ7EDjK6L
-         pB+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ow1HoVLX+9HoNdnX4/sLVCN3K6sWaqzs/vefkU1HZMg=;
-        b=vLo6IoYCegHWJJ/nrEihpLQBbz/9INeE8FICbGu9BvbNfQ1XZFwWbLVbr7+HVk0PMq
-         +1t1ugNMTcPaHnymcPj8n4gtJuOfegZp0NoWu989i4+WZj71gtPpixmc9FN9AqwVOfee
-         YGh/ZJhcuxkz1suU5IYQyfSVO74Ffk3IHwpCuw8+KVKDnUhmX/J7/6NzhC/imSvQEaVi
-         77o9wOUe25MoAV8mP6dmflw0J4PhJqZcodHF0pdZWnCjVGOaM0zBEB939BSjWR71ryQM
-         eKWfZ3D3TX16Nzhxti2IKMtJcUUMqA/qxoL1jO+E+ZwaleCcLLNebAKbkpkJRnlyzihJ
-         aGCQ==
-X-Gm-Message-State: AOAM530ekU78e4SVDLguhpPMkR3nMCOaoqqbw/TSYoLSYX3RDnX+hyLX
-        vcP9OezObkpXes2M+sqIB08=
-X-Google-Smtp-Source: ABdhPJwq5N8xd+5st7VxAz0bSZqVLzUiY7NtVzeroaf5ZK1Y5gC8+0GEAaaRsY9Bt08imGhYlCt4lQ==
-X-Received: by 2002:adf:b781:: with SMTP id s1mr9027170wre.165.1631479336100;
-        Sun, 12 Sep 2021 13:42:16 -0700 (PDT)
-Received: from ubuntu.localdomain (bbcs-125-202.pub.wingo.ch. [144.2.125.202])
-        by smtp.gmail.com with ESMTPSA id z2sm5103151wma.45.2021.09.12.13.42.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 13:42:15 -0700 (PDT)
-From:   Chun-Hung Tseng <henrybear327@gmail.com>
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chun-Hung Tseng <henrybear327@gmail.com>,
-        Jim Huang <jserv@ccns.ncku.edu.tw>
-Subject: [PATCH] rcu: replace _________p1 with __UNIQUE_ID(rcu)
-Date:   Mon, 13 Sep 2021 04:41:31 +0800
-Message-Id: <20210912204131.93206-1-henrybear327@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 12 Sep 2021 16:39:23 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id B2436CF59
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 15:38:06 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id PWEomujeWHlR1PWEomKddR; Sun, 12 Sep 2021 15:38:06 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=bTvHNmRto0c3Q12aHNZXcfzC8RmgCTvLXG0gbaQDzZs=; b=fAFqb0RbOxCoSFvl4espjd21av
+        6BKxxHMhumwxxYvF9U5YBgP72ZOBqSQ/OTdemj8UD1PxU2WU1+6K7LSMDZ9SmSUGwZ2MikTf6wBgu
+        e6/yNw+EuSlEPl8YCr9RdLOg0pr39n1V55xqvIpvQKp75J9VghU4Q3xGfxXVzk0BhHvcoDcH+usbJ
+        qtGFv0dDw8I+aylk5RKvmHON6lX5EJY8ZVdGk7ZxshOyR3y7pS74+YAtiBEf7jEUYieGrtilq7qSl
+        LFfCoT1il5VxYWOQAdxkTSlrSkiGOSKoco4vv9hj3WQynZKVA0uKbHv3mZgJIAcZzq1PVwJQs4GRW
+        OLDyRstA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:57174 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mPWEo-000Mwx-5W; Sun, 12 Sep 2021 15:38:06 -0500
+Subject: Re: [Intel-wired-lan] [PATCH] ice: Prefer kcalloc over open coded
+ arithmetic
+To:     Len Baker <len.baker@gmx.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-hardening@vger.kernel.org
+References: <20210905065020.8402-1-len.baker@gmx.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <8cd5adaf-6f83-d3df-abd2-b668d29b50a1@embeddedor.com>
+Date:   Sun, 12 Sep 2021 15:41:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210905065020.8402-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mPWEo-000Mwx-5W
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:57174
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 8
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit replaced _________p1 with __UNIQUE_ID(rcu), which
-generates unique variable names during compilation. Necessary
-modifications due to the changes in the RCU macros have also been
-reflected in this commit.
 
-The same idea is used for the min/max macros (commit 589a978 and commit
-e9092d0), which aims to reduce variable shadowing issues caused by hard
-coded variable names.
 
-Signed-off-by: Jim Huang <jserv@ccns.ncku.edu.tw>
-Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
----
- include/linux/rcupdate.h | 44 +++++++++++++++++++++++-----------------
- include/linux/srcu.h     |  3 ++-
- 2 files changed, 27 insertions(+), 20 deletions(-)
+On 9/5/21 01:50, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> In this case this is not actually dynamic sizes: both sides of the
+> multiplication are constant values. However it is best to refactor this
+> anyway, just to keep the open-coded math idiom out of code.
+> 
+> So, use the purpose specific kcalloc() function instead of the argument
+> size * count in the kzalloc() function.
+> 
+> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 434d12fe2d4f..a5ab20822040 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -370,39 +370,41 @@ static inline void rcu_preempt_sleep_check(void) { }
-  * Converts @p from an __rcu pointer to a __kernel pointer.
-  * This allows an __rcu pointer to be used with xchg() and friends.
-  */
--#define unrcu_pointer(p)						\
-+#define __unrcu_pointer(p, local)					\
- ({									\
--	typeof(*p) *_________p1 = (typeof(*p) *__force)(p);		\
-+	typeof(*p) *local = (typeof(*p) *__force)(p);			\
- 	rcu_check_sparse(p, __rcu);					\
--	((typeof(*p) __force __kernel *)(_________p1)); 		\
-+	((typeof(*p) __force __kernel *)(local)); 			\
- })
-+#define unrcu_pointer(p) __unrcu_pointer(p, __UNIQUE_ID(rcu))
- 
--#define __rcu_access_pointer(p, space) \
-+#define __rcu_access_pointer(p, local, space) \
- ({ \
--	typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
-+	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(_________p1)); \
-+	((typeof(*p) __force __kernel *)(local)); \
- })
--#define __rcu_dereference_check(p, c, space) \
-+#define __rcu_dereference_check(p, local, c, space) \
- ({ \
- 	/* Dependency order vs. p above. */ \
--	typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
-+	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
- 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
- 	rcu_check_sparse(p, space); \
--	((typeof(*p) __force __kernel *)(________p1)); \
-+	((typeof(*p) __force __kernel *)(local)); \
- })
--#define __rcu_dereference_protected(p, c, space) \
-+#define __rcu_dereference_protected(p, local, c, space) \
- ({ \
- 	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
- 	rcu_check_sparse(p, space); \
- 	((typeof(*p) __force __kernel *)(p)); \
- })
--#define rcu_dereference_raw(p) \
-+#define __rcu_dereference_raw(p, local) \
- ({ \
- 	/* Dependency order vs. p above. */ \
--	typeof(p) ________p1 = READ_ONCE(p); \
--	((typeof(*p) __force __kernel *)(________p1)); \
-+	typeof(p) local = READ_ONCE(p); \
-+	((typeof(*p) __force __kernel *)(local)); \
- })
-+#define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
- 
- /**
-  * RCU_INITIALIZER() - statically initialize an RCU-protected global variable
-@@ -489,7 +491,7 @@ do {									      \
-  * when tearing down multi-linked structures after a grace period
-  * has elapsed.
-  */
--#define rcu_access_pointer(p) __rcu_access_pointer((p), __rcu)
-+#define rcu_access_pointer(p) __rcu_access_pointer((p), __UNIQUE_ID(rcu), __rcu)
- 
- /**
-  * rcu_dereference_check() - rcu_dereference with debug checking
-@@ -525,7 +527,8 @@ do {									      \
-  * annotated as __rcu.
-  */
- #define rcu_dereference_check(p, c) \
--	__rcu_dereference_check((p), (c) || rcu_read_lock_held(), __rcu)
-+	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-+				(c) || rcu_read_lock_held(), __rcu)
- 
- /**
-  * rcu_dereference_bh_check() - rcu_dereference_bh with debug checking
-@@ -540,7 +543,8 @@ do {									      \
-  * rcu_read_lock() but also rcu_read_lock_bh() into account.
-  */
- #define rcu_dereference_bh_check(p, c) \
--	__rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
-+	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-+				(c) || rcu_read_lock_bh_held(), __rcu)
- 
- /**
-  * rcu_dereference_sched_check() - rcu_dereference_sched with debug checking
-@@ -555,7 +559,8 @@ do {									      \
-  * only rcu_read_lock() but also rcu_read_lock_sched() into account.
-  */
- #define rcu_dereference_sched_check(p, c) \
--	__rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
-+	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-+				(c) || rcu_read_lock_sched_held(), \
- 				__rcu)
- 
- /*
-@@ -565,7 +570,8 @@ do {									      \
-  * The no-tracing version of rcu_dereference_raw() must not call
-  * rcu_read_lock_held().
-  */
--#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
-+#define rcu_dereference_raw_check(p) \
-+	__rcu_dereference_check((p), __UNIQUE_ID(rcu), 1, __rcu)
- 
- /**
-  * rcu_dereference_protected() - fetch RCU pointer when updates prevented
-@@ -584,7 +590,7 @@ do {									      \
-  * but very ugly failures.
-  */
- #define rcu_dereference_protected(p, c) \
--	__rcu_dereference_protected((p), (c), __rcu)
-+	__rcu_dereference_protected((p), __UNIQUE_ID(rcu), (c), __rcu)
- 
- 
- /**
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index e6011a9975af..01226e4d960a 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -117,7 +117,8 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
-  * lockdep_is_held() calls.
-  */
- #define srcu_dereference_check(p, ssp, c) \
--	__rcu_dereference_check((p), (c) || srcu_read_lock_held(ssp), __rcu)
-+	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-+				(c) || srcu_read_lock_held(ssp), __rcu)
- 
- /**
-  * srcu_dereference - fetch SRCU-protected pointer for later dereferencing
--- 
-2.25.1
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
+BTW... Len, feel free to CC me on all your patches related to KSPP work. :)
+
+Thanks
+--
+Gustavo
+
+> ---
+>  drivers/net/ethernet/intel/ice/ice_arfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/ice/ice_arfs.c b/drivers/net/ethernet/intel/ice/ice_arfs.c
+> index 88d98c9e5f91..3071b8e79499 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_arfs.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_arfs.c
+> @@ -513,7 +513,7 @@ void ice_init_arfs(struct ice_vsi *vsi)
+>  	if (!vsi || vsi->type != ICE_VSI_PF)
+>  		return;
+> 
+> -	arfs_fltr_list = kzalloc(sizeof(*arfs_fltr_list) * ICE_MAX_ARFS_LIST,
+> +	arfs_fltr_list = kcalloc(ICE_MAX_ARFS_LIST, sizeof(*arfs_fltr_list),
+>  				 GFP_KERNEL);
+>  	if (!arfs_fltr_list)
+>  		return;
+> --
+> 2.25.1
+> 
+> _______________________________________________
+> Intel-wired-lan mailing list
+> Intel-wired-lan@osuosl.org
+> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+> 
