@@ -2,128 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3B2407BEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 07:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64060407BF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 07:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhILE50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 00:57:26 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42085 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhILE50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 00:57:26 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 18C4u9aX021946;
-        Sun, 12 Sep 2021 06:56:09 +0200
-Date:   Sun, 12 Sep 2021 06:56:09 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: how many memset(,0,) calls in kernel ?
-Message-ID: <20210912045608.GB16216@1wt.eu>
-References: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
+        id S230143AbhILFST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 01:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhILFSS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 01:18:18 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE96C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 22:17:04 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id r7so8914372edd.6
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 22:17:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=joknhrwptzMt0Qa8G/pJkdX8paSHxbwa4QtgcIWTarA=;
+        b=a/limXqWwOtfT5eciR3wVVu7qSk3b/KCwoUyr21lcWQ6/FQsC5w9A58MMDTjOeXgoG
+         mt0hE7ukUAgFSdaitxxarPudvvWnja0laQVIb/3sg9gkf0PExFi05PXnGackA7SeJiqa
+         /dYis26NVQYPcmCgl4hQf01QjPeRROhADs7/dLHe5qw28U/uCXY5QqH0QpQZxvJmyG/+
+         +rqCr3KcEEnB+olXKl/Ccyl63+vJWO7NBRdaqkzpThdpVv4bi8K3Ft6cvjkr3qmqqB0y
+         QwURHCvbU6bOD0E1UA7XrwBbh+MpandHiXM5HrXVWvoWwf2B9HVBOpwpvGXdZKJZi3dd
+         ijKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=joknhrwptzMt0Qa8G/pJkdX8paSHxbwa4QtgcIWTarA=;
+        b=kOk+wjfoF0UgDUYhHjcF7KiXFL/f+LCCgXxfsXbUH9/u/NR+DXMGj0p+e8DZ8UythO
+         b/w5P1Ucn29MDVLUXOxDHppY4SuA7UzH+3PiUnNtOuGmfnqXBqa6HARSe8bl/NrMH93V
+         3PHQwbIiDEF82/Afstuj3GVfY/TLIjNM3zH8pnn7Ogv9WnYMrA7UUM3AOCzPV8HFhgIy
+         +T4pJsbtriS5YgWJRwgPqiQuEEjQqe8Le1Y933y6EY0PjRSogCOFw13cmblecjROsY+i
+         J3K0B+aJirI9SP35FJxkZRzOqibEgv2xjSmkfEDRIU8erSeecMeIsWbXTtD0s9M5dvbt
+         QiiQ==
+X-Gm-Message-State: AOAM531PtbpKE8bHRu1pgNkt61/tlbk68jZ3GFCcg+HuJ7pZit9r3zqx
+        tkiNDSXCWYl8AQx4aDoWwnvytj+xYKt19BdfJus=
+X-Google-Smtp-Source: ABdhPJzjfQMIojU+ogiBMRMLY6W8jotdYEoZevd9RyrHq7fICBUbH7Dvnc4Um3KT4W5q3nl6xU/he+SC5g068In4728=
+X-Received: by 2002:aa7:d592:: with SMTP id r18mr6422418edq.172.1631423823089;
+ Sat, 11 Sep 2021 22:17:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210912025235.3514761-1-linux@roeck-us.net> <CAMo8BfJ8f+4AmBD1B7J9vOp0xQbB=zRW-NyGZP6gTPTA-74OPQ@mail.gmail.com>
+ <49f8f332-a964-5b98-64c6-9fa5d028731a@roeck-us.net>
+In-Reply-To: <49f8f332-a964-5b98-64c6-9fa5d028731a@roeck-us.net>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Sat, 11 Sep 2021 22:16:51 -0700
+Message-ID: <CAMo8BfK0+G01bw9UQ=fgGy3fNV+69NwUcpAO3msX0+FU4zKttQ@mail.gmail.com>
+Subject: Re: [PATCH] xtensa: Increase size of gcc stack frame check
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 11:36:07PM -0400, Douglas Gilbert wrote:
-> Here is a pretty rough estimate:
-> $ find . -name '*.c' -exec fgrep "memset(" {} \; > memset_in_kern.txt
-> 
-> $ cat memset_in_kern.txt | wc -l
->     20159
-> 
-> Some of those are in comments, EXPORTs, etc, but the vast majority are
-> in code. Plus there will be memset()s in header files not counted by
-> that find. Checking in that output file I see:
-> 
-> $ grep ", 0," memset_in_kern.txt | wc -l
->     18107
-> $ grep ", 0" memset_in_kern.txt | wc -l
->     19349
-> $ grep ", 0x" memset_in_kern.txt | wc -l
->     1210
-> $ grep ", 0x01" memset_in_kern.txt | wc -l
->     3
-> $ grep ", 0x0," memset_in_kern.txt | wc -l
->     199
-> $ grep ",0," memset_in_kern.txt | wc -l
->     72
+On Sat, Sep 11, 2021 at 9:02 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 9/11/21 8:05 PM, Max Filippov wrote:
+> > On Sat, Sep 11, 2021 at 7:52 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>
+> >> xtensa frame size is larger than the frame size for almost all other
+> >> architectures. This results in more than 50 "the frame size of <n> is
+> >> larger than 1024 bytes" errors when trying to build xtensa:allmodconfig.
+> >>
+> >> Increase frame size for xtensa to 1536 bytes to avoid compile errors
+> >> due to frame size limits.
+> >>
+> >> Cc: Chris Zankel <chris@zankel.net>
+> >> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> >> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> >> ---
+> >>   lib/Kconfig.debug | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> >> index ed4a31e34098..afad11e57d6b 100644
+> >> --- a/lib/Kconfig.debug
+> >> +++ b/lib/Kconfig.debug
+> >> @@ -346,7 +346,7 @@ config FRAME_WARN
+> >>          int "Warn for stack frames larger than"
+> >>          range 0 8192
+> >>          default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+> >> -       default 1536 if (!64BIT && PARISC)
+> >> +       default 1536 if (!64BIT && (PARISC || XTENSA))
+> >>          default 1024 if (!64BIT && !PARISC)
+> >
+> > Shouldn't that line also be changed to
+> >    default 1024 if (!64BIT && !(PARISC || XTENSA))
+> > ?
+>
+> I could do that, but I tested it and it looks like the evaluation
+> is top-down, so it didn't seem necessary or useful. For example,
+> the default value is 2048 for 32-bit systems (such as arm, riscv32,
+> or i386) if GCC_PLUGIN_LATENT_ENTROPY is enabled, even though the
+> line with the default of 1024 matches as well.
 
-Note that in order to get something faster and slightly more accurate,
-you can use 'git grep':
+Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
 
-   $ git grep 'memset([^,]*,\s*0\(\|x0*\),' |wc -l
-   18822
-
-> If the BSD flavours of Unix had not given us:
->    void bzero(void *s, size_t n);
-> would the Linux kernel have something similar in common usage (e.g.
-> memzero() or mem0() ), that was less wasteful than the standard:
->    void *memset(void *s, int c, size_t n);
-> in the extremely common case where c=0 and the return value is
-> not used?
-
-What do you mean by "wasteful" here ? What are you trying to preserve,
-caracters in the source code maybe ? Because the output code is already
-adapted to the context thanks to memset() being builtin. Let's take one
-of the first instances I found that's easy to match against asm code:
-
-net/core/dev.c:
-
-  int __init netdev_boot_setup(char *str)
-  {
-        int ints[5];
-        struct ifmap map;
-
-        str = get_options(str, ARRAY_SIZE(ints), ints);
-        if (!str || !*str)
-                return 0;
-
-        /* Save settings */
-        memset(&map, 0, sizeof(map));
-        ...
-  }
-
-It gives this:
-
-  16:   e8 00 00 00 00          callq  1b <netdev_boot_setup+0x1b>
-                        17: R_X86_64_PC32       get_options-0x4
-  1b:   48 89 c6                mov    %rax,%rsi
-
-note that we're zeroing %eax below in preparation for the "return 0"
-statement:
-
-  1e:   31 c0                   xor    %eax,%eax
-
-This is the "if (!str || !*str)" :
-
-  20:   48 85 f6                test   %rsi,%rsi
-  23:   0f 84 98 00 00 00       je     c1 <netdev_boot_setup+0xc1>
-  29:   80 3e 00                cmpb   $0x0,(%rsi)
-  2c:   0f 84 8f 00 00 00       je     c1 <netdev_boot_setup+0xc1>
-
-%r12 is set to &map:
-
-  32:   4c 8d 65 d0             lea    -0x30(%rbp),%r12
-
-And this is the memset "call" itself, which reuses the zero from
-the %eax register:
-
-  36:   b9 06 00 00 00          mov    $0x6,%ecx
-  3b:   4c 89 e7                mov    %r12,%rdi
-  3e:   f3 ab                   rep stos %eax,%es:(%rdi)
-
-The last line does exactly "memset(%rdi, %eax, %ecx)". Just two bytes
-for some code that modern processors are even able to optimize.
-
-As you can see there's not much waste here in the output code, and
-in fact using any dedicated function would be larger and likely
-slower.
-
-Hoping this helps,
-Willy
+-- 
+Thanks.
+-- Max
