@@ -2,479 +2,796 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693C6407DEA
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FEE407DF9
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbhILPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 11:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
+        id S235750AbhILPei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 11:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhILPZx (ORCPT
+        with ESMTP id S229653AbhILPeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 11:25:53 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE65C061574;
-        Sun, 12 Sep 2021 08:24:38 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id b5-20020a4ac285000000b0029038344c3dso2491544ooq.8;
-        Sun, 12 Sep 2021 08:24:38 -0700 (PDT)
+        Sun, 12 Sep 2021 11:34:37 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA5DC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 08:33:23 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id r18so4572843qvy.8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 08:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qXJqR8Vkfo+Aif3Ur55LBCmo/8P1slpsU8JvFqRYZN8=;
-        b=iYwQ3xb59rArk90wAqsINLETloDFysGo89AScQybLCn/Bf8TLUqsV9A5gBWciyeTMs
-         yJJLwN8Icp0CJFFK6F4dHGf+G5XJ8V/tlaUQooSgddUmtWkghmPidplQssEGVlnYv86q
-         8tFetSfn73fuNtTKp+abGjY9MTvWsmatJr+5GDAIWe2BmcVW4tDRWFkQ6Dek/mUbZ8Qy
-         zf910fkbWS9EAwsJYZyzkBKbzT3Ev4Jrf/H1rHwWYBUxxN855KDN//zSsuP/gW1K3lpj
-         OSk1GQltBriCZoMBa1t0bpifEg4kaJq4iMIy3sTeVJC3DUFHJz8AvQPHX8BD7mD/ssGR
-         2emQ==
+        bh=9P8A7ep1PzgNda45p44KaICVYVAhPgejGEUgrbd9Q1s=;
+        b=hVGck2jmQr9qlnE+2jRC8UxfmeqN/+nvPucc0V4jXI1LVAsTnRANrfjBf+o81c9afY
+         v0GKXv64Dld/5b9MmrZatNRPgzVIshnqRgtk+EWX5D/tDgeFu3UydVwf7NC9OyZbCh9b
+         iMKLRfcoiDs8UgjluOFnQZoj3Vqmk+vGpRBwvAdKZfNavhTT0OKxkk4I4FbTSZdJH86j
+         NJfPhrhSzMH4VVFylNivNhoVntc/zbPsmEiuoHw+z/jr6VTLB9acEkKpNrdP3zUXDSJ7
+         P2S29R/gVr9Szhs8SptehBqv0Qh8mk2kQ0aXX3SXsL7fDpziFNMctlrI3VzKhUhk01I/
+         l1wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qXJqR8Vkfo+Aif3Ur55LBCmo/8P1slpsU8JvFqRYZN8=;
-        b=zGlDLbL5gbDt6am4nt38mypTyAebqxaTrodOjJDCpwQ5JXuYH0f3rT59Of+YdD/15f
-         dCRvqGpKDtohl294ao0pCLU6qKvEua/3bL37U4n2GE/f07CYQ8X+aUONKX1kPoQE0N3g
-         L5lzVeivGOxlZuQCY3FqAjNsKFsVicCtEhWxn9epVIBBu557oSFcKywzDurxrajzHcto
-         XQw3L1QW+eYe9HxG4L+1P/jLhIpjD9cd4ph+B0nFyHx2JmLPcBMHizYDGEDnzXhKiKzI
-         CUp6rFcDYpyV593Z6mijvwjpbF0jc0VNLMU1xKIEyB0pukrTtMRFYanZBKoF6YCe+S7W
-         zIBQ==
-X-Gm-Message-State: AOAM5314mRnIUKnXm2r4EyX9ftPMP4eNvaceovTwm5XzZ15HT/VXGE9M
-        Tgnq4HkKDdcS/MkW0+tEygc=
-X-Google-Smtp-Source: ABdhPJzYenFZT9PUz/F1HVsJ6hF/vFQq2GjYx55bGdjFNTr0jgKm6B7achuZD3vjLGtQfnuLClabig==
-X-Received: by 2002:a4a:c98c:: with SMTP id u12mr5955718ooq.86.1631460278017;
-        Sun, 12 Sep 2021 08:24:38 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v24sm1178233ote.66.2021.09.12.08.24.36
+        bh=9P8A7ep1PzgNda45p44KaICVYVAhPgejGEUgrbd9Q1s=;
+        b=4AgyeSZ096l4Ik5Sfs03ui2vttWsNDYd1eincrZrxnS8eYLZcNqXei0BxjvbBtQrbT
+         f0p0R5XrKyaOy9RIHhU38WubN4tJ+Iq6WIx0Av+1XJiDLRLwrozqvF9DT7PDAsliKhQl
+         jwHs84pqAwWOt6GfDP5ru72NLlsDGjVq9IWa8jUYFNcXCj3ukzlHzPWBFa9JRW1GfUXG
+         udXlQcuFKxOUZIHLR9wNus6Wk/NfYxebunCb7B69ZNA3NTKzb4QbxM84vbedaxDL4tpa
+         NBSBDKsgx4HCPB2VgF5YHr6wFFaZ2ABdm6CiHV7LXZVVwhOGBhyvVlkVrsmUlhsmLiAm
+         kWSA==
+X-Gm-Message-State: AOAM531OHD5VaQ3yl5n4ie+r/CR4gd++D6iDWITiAv9EIMnMcwxIiuT/
+        Cw2pKcTBnt9P1ERlKHYUC3eL7A==
+X-Google-Smtp-Source: ABdhPJxd2bjODm5EpKaoZpYsm6pw+RccoOLiBM/aijgQAXMmPEfs4WGOpEhhf2rb9WseBxj+tDkxuw==
+X-Received: by 2002:ad4:4671:: with SMTP id z17mr6403229qvv.62.1631460802166;
+        Sun, 12 Sep 2021 08:33:22 -0700 (PDT)
+Received: from [192.168.1.100] ([66.199.72.200])
+        by smtp.gmail.com with ESMTPSA id c67sm3361869qke.113.2021.09.12.08.33.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 08:24:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>
-References: <20210912131919.12962-1-avri.altman@wdc.com>
- <20210912131919.12962-2-avri.altman@wdc.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v3 1/2] scsi: ufs: Probe for temperature notification
- support
-Message-ID: <8abe6364-9240-bcaf-c17f-1703243170cb@roeck-us.net>
-Date:   Sun, 12 Sep 2021 08:24:35 -0700
+        Sun, 12 Sep 2021 08:33:21 -0700 (PDT)
+Subject: [PATCH v5] include: linux: Reorganize timekeeping and ktime headers
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kbuild test robot <lkp@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <b5d4536f-a096-b259-1385-3c1d32754dbf@vt.edu>
+ <095645cd-ce53-a803-cb99-522545a409b8@vt.edu> <YSJP18Z72t0X+xsp@kroah.com>
+ <1c156aca-d0ad-e7e8-2238-5c3d904d171c@vt.edu>
+Message-ID: <327f5c2f-b996-8aa1-cbbf-3354e01ee1f3@vt.edu>
+Date:   Sun, 12 Sep 2021 11:33:20 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210912131919.12962-2-avri.altman@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1c156aca-d0ad-e7e8-2238-5c3d904d171c@vt.edu>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/21 6:19 AM, Avri Altman wrote:
-> Probe the dExtendedUFSFeaturesSupport register for the device's
-> temperature notification support, and if supported, add a hw monitor
-> device.
-> 
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->   drivers/scsi/ufs/Kconfig     |  10 ++
->   drivers/scsi/ufs/Makefile    |   1 +
->   drivers/scsi/ufs/ufs-hwmon.c | 179 +++++++++++++++++++++++++++++++++++
->   drivers/scsi/ufs/ufs.h       |   6 ++
->   drivers/scsi/ufs/ufshcd.c    |  28 ++++++
->   drivers/scsi/ufs/ufshcd.h    |  18 ++++
->   6 files changed, 242 insertions(+)
->   create mode 100644 drivers/scsi/ufs/ufs-hwmon.c
-> 
-> diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
-> index 432df76e6318..b930f29fc375 100644
-> --- a/drivers/scsi/ufs/Kconfig
-> +++ b/drivers/scsi/ufs/Kconfig
-> @@ -199,3 +199,13 @@ config SCSI_UFS_FAULT_INJECTION
->   	help
->   	  Enable fault injection support in the UFS driver. This makes it easier
->   	  to test the UFS error handler and abort handler.
-> +
-> +config SCSI_UFS_HWMON
-> +	bool "UFS  Temperature Notification"
-> +	depends on SCSI_UFSHCD && HWMON
-> +	help
-> +	  This provides support for UFS hardware monitoring. If enabled,
-> +	  a hardware monitoring device will be created for the UFS device.
-> +
-> +	  If unsure, say N.
-> +
+Reorganize and separate the headers by making ktime.h take care of the 
+ktime_get() family of functions, and reserve timekeeping.h for the actual 
+timekeeping. This also helps to avoid implicit function errors and strengthens
+the header dependencies, since timekeeping.h was using ktime_to_ns(), a static 
+function defined in a header it does no include, ktime.h. Include the header 
+timekeeping.h wherever it is necessary for a successful compilation after the 
+header code reorganization.
 
-git complains about blank line at EOF.
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+Changelog:
+- v2: Add three more files that also needed a header update for x86: 
+  pps_kernel.h, posix-timers.c and hda_controller.c
+- v3: Cover build tests for other architectures than x86. To compile arm64, 
+  update arch/arm64/kvm/hypercalls.c, include/linux/stmmac.h, and 
+  drivers/rtc/class.c. No other arch/ seems to need fixes but to be on the safe
+  side compiled arm, mips, powerpc, sparc, s390, riscv and i386.
+- v4: Fix kernel test robot warnings for ia64 and x86.
+- v5: Fix kernel test robot warnings for m68k and powerpc.
+---
+ arch/arm64/kvm/hypercalls.c    |   1 +
+ arch/ia64/kernel/time.c        |   1 +
+ arch/m68k/atari/time.c         |   1 +
+ arch/m68k/hp300/time.c         |   2 +
+ arch/m68k/mac/via.c            |   1 +
+ arch/m68k/mvme16x/config.c     |   1 +
+ arch/m68k/sun3/sun3ints.c      |   1 +
+ arch/powerpc/kernel/time.c     |   1 +
+ arch/x86/kernel/rtc.c          |   1 +
+ arch/x86/kernel/tsc.c          |   1 +
+ drivers/rtc/class.c            |   1 +
+ include/linux/ktime.h          | 196 +++++++++++++++++++++++++++++++-
+ include/linux/pps_kernel.h     |   1 +
+ include/linux/sched_clock.h    |   2 +
+ include/linux/stmmac.h         |   1 +
+ include/linux/timekeeping.h    | 197 +--------------------------------
+ init/main.c                    |   1 +
+ kernel/time/ntp.c              |   1 +
+ kernel/time/posix-timers.c     |   1 +
+ kernel/time/tick-legacy.c      |   1 +
+ kernel/time/time.c             |   1 +
+ kernel/time/timekeeping.c      |   1 +
+ sound/pci/hda/hda_controller.c |   1 +
+ 23 files changed, 218 insertions(+), 198 deletions(-)
 
-> diff --git a/drivers/scsi/ufs/Makefile b/drivers/scsi/ufs/Makefile
-> index c407da9b5171..966048875b50 100644
-> --- a/drivers/scsi/ufs/Makefile
-> +++ b/drivers/scsi/ufs/Makefile
-> @@ -10,6 +10,7 @@ ufshcd-core-$(CONFIG_SCSI_UFS_BSG)	+= ufs_bsg.o
->   ufshcd-core-$(CONFIG_SCSI_UFS_CRYPTO)	+= ufshcd-crypto.o
->   ufshcd-core-$(CONFIG_SCSI_UFS_HPB)	+= ufshpb.o
->   ufshcd-core-$(CONFIG_SCSI_UFS_FAULT_INJECTION) += ufs-fault-injection.o
-> +ufshcd-core-$(CONFIG_SCSI_UFS_HWMON) += ufs-hwmon.o
->   
->   obj-$(CONFIG_SCSI_UFS_DWC_TC_PCI) += tc-dwc-g210-pci.o ufshcd-dwc.o tc-dwc-g210.o
->   obj-$(CONFIG_SCSI_UFS_DWC_TC_PLATFORM) += tc-dwc-g210-pltfrm.o ufshcd-dwc.o tc-dwc-g210.o
-> diff --git a/drivers/scsi/ufs/ufs-hwmon.c b/drivers/scsi/ufs/ufs-hwmon.c
-> new file mode 100644
-> index 000000000000..a50e83f645f4
-> --- /dev/null
-> +++ b/drivers/scsi/ufs/ufs-hwmon.c
-> @@ -0,0 +1,179 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * UFS hardware monitoring support
-> + * Copyright (c) 2021, Western Digital Corporation
-> + */
-> +
-> +#include <linux/hwmon.h>
-> +
-> +#include "ufshcd.h"
-> +
-> +struct ufs_hwmon_data {
-> +	struct ufs_hba *hba;
-> +	u8 mask;
-> +};
-> +
-> +static bool ufs_temp_enabled(struct ufs_hba *hba, u8 mask)
-> +{
-> +	u32 ee_mask;
-> +
-> +	if (ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-> +			      QUERY_ATTR_IDN_EE_CONTROL, 0, 0, &ee_mask))
-> +		return false;
-> +
-> +	return (mask & ee_mask & MASK_EE_TOO_HIGH_TEMP) ||
-> +		(mask & ee_mask & MASK_EE_TOO_LOW_TEMP);
-> +}
-> +
-> +static bool ufs_temp_valid(struct ufs_hba *hba, u8 mask,
-> +			   enum attr_idn idn, u32 value)
-> +{
-> +	return (idn == QUERY_ATTR_IDN_CASE_ROUGH_TEMP && value >= 1 &&
-> +		value <= 250 && ufs_temp_enabled(hba, mask)) ||
-> +	      (idn == QUERY_ATTR_IDN_HIGH_TEMP_BOUND && value >= 100 &&
-> +	       value <= 250) ||
-> +	      (idn == QUERY_ATTR_IDN_LOW_TEMP_BOUND && value >= 1 &&
-> +	       value <= 80);
-> +}
-> +
-The value ranges checed above suggest that the temperature is reported
-in degrees C (or maybe degrees C with an offset). The hwmon API expects
-temperatures to be reported in milli-degrees C, and I don't see a
-conversion in the actual read functions. What does the "sensors" command report ?
-
-> +static int ufs_get_temp(struct ufs_hba *hba, u8 mask, enum attr_idn idn)
-> +{
-> +	u32 value;
-> +
-> +	if (ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR, idn, 0, 0,
-> +	    &value))
-
-checkpatch states that alignment is off, and I am quite sure this fits into one
-line anyway (with the 100-column limit). There are more instances with bad alignment
-according to checkpatch.
-
-Also, ufshcd_query_attr() returns a valid Linux error code. That should be
-returned to the caller and not be replaced. More on that below.
-
-> +		return 0;
-> +
-> +	if (ufs_temp_valid(hba, mask, idn, value))
-> +		return value - 80;
-> +
-
-This again suggests that the temperature is not milli-degrees C.
-
-Is there reason to believe that this validation is necessary ?
-Note that this reports an "error" if the returned temperature value
-happens to have a value of 80. Again, more on that below.
-
-> +	return 0;
-> +}
-> +
-> +static int ufs_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-> +			   u32 attr, int channel, long *val)
-> +{
-> +	struct ufs_hwmon_data *data = dev_get_drvdata(dev);
-> +	struct ufs_hba *hba = data->hba;
-> +	u8 mask = data->mask;
-> +	int err = 0;
-> +	bool get_temp = true;
-> +
-> +	if (type != hwmon_temp)
-> +		return 0;
-> +
-> +	down(&hba->host_sem);
-> +
-> +	if (!ufshcd_is_user_access_allowed(hba)) {
-> +		up(&hba->host_sem);
-> +		return -EBUSY;
-> +	}
-> +
-> +	ufshcd_rpm_get_sync(hba);
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_enable:
-> +		*val = ufs_temp_enabled(hba, mask);
-> +		get_temp = false;
-> +
-
-This seems to be read-only, and the mask only affects the limit registers as
-far as I con see. If so, this is wrong: The mask should be used to enable
-or hide the limit attributes as needed. If the mask is 0, and if this means
-that the current temperature is not reported either, the driver should not
-instantiate at all.
-
-The "enable" attribute only makes sense if it can be used to actually enable
-or disable a specific sensor, and is not tied to limit attributes but to the
-actual sensor values.
-
-> +		break;
-> +	case hwmon_temp_max_alarm:
-> +		*val = ufs_get_temp(hba, mask, QUERY_ATTR_IDN_HIGH_TEMP_BOUND);
-> +
-> +		break;
-> +	case hwmon_temp_min_alarm:
-> +		*val = ufs_get_temp(hba, mask, QUERY_ATTR_IDN_LOW_TEMP_BOUND);
-> +
-> +		break;
-> +	case hwmon_temp_input:
-> +		*val = ufs_get_temp(hba, mask, QUERY_ATTR_IDN_CASE_ROUGH_TEMP);
-> +
-If an enable attribute exists and is 0 (disabled), this should return -ENODATA.
-In this case, that would imply that the driver should not be instantiated
-in the first place since it has nothing to report.
-
-> +		break;
-> +	default:
-> +		err = -EOPNOTSUPP;
-> +
-> +		break;
-> +	}
-> +
-> +	ufshcd_rpm_put_sync(hba);
-> +
-> +	up(&hba->host_sem);
-> +
-> +	if (get_temp && !err && *val == 0)
-> +		err = -EINVAL;
-> +
-That is an odd way of detection errors. If it was in the hwmon subsystem,
-I'd ask for the error handling to be moved into the case statements. On
-top of that, interpreting a return value of "0" as error seems wrong.
-ufs_get_temp() returns 0 if the measured temperature or the reported limit
-happens to have a value of 80, and that is perfectly valid. If ufs_get_temp()
-reports an error, it should report that as error.
-
-Also, EINVAL is "invalid argument", which I am quite sure does not apply here.
-
-> +	return err;
-> +}
-> +
-> +static umode_t ufs_hwmon_is_visible(const void *_data,
-> +				     enum hwmon_sensor_types type,
-> +				     u32 attr, int channel)
-> +{
-> +	if (type != hwmon_temp)
-> +		return 0;
-> +
-> +	switch (attr) {
-> +	case hwmon_temp_enable:
-> +	case hwmon_temp_max_alarm:
-> +	case hwmon_temp_min_alarm:
-> +	case hwmon_temp_input:
-> +		return 0444;
-> +	default:
-> +		break;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_channel_info *ufs_hwmon_info[] = {
-> +	HWMON_CHANNEL_INFO(temp, HWMON_T_ENABLE | HWMON_T_INPUT |
-> +			    HWMON_T_MIN_ALARM | HWMON_T_MAX_ALARM),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops ufs_hwmon_ops = {
-> +	.is_visible	= ufs_hwmon_is_visible,
-> +	.read		= ufs_hwmon_read,
-> +};
-> +
-> +static const struct hwmon_chip_info ufs_hwmon_hba_info = {
-> +	.ops	= &ufs_hwmon_ops,
-> +	.info	= ufs_hwmon_info,
-> +};
-> +
-> +void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask)
-> +{
-> +	struct device *dev = hba->dev;
-> +	struct ufs_hwmon_data *data;
-> +	struct device *hwmon;
-> +
-> +	data = kzalloc(sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return;
-> +
-> +	data->hba = hba;
-> +	data->mask = mask;
-> +
-> +	hwmon = hwmon_device_register_with_info(dev, "ufs",
-> +						data, &ufs_hwmon_hba_info,
-> +						NULL);
-> +	if (IS_ERR(hwmon)) {
-> +		dev_warn(dev, "Failed to instantiate hwmon device\n");
-> +		kfree(data);
-> +		return;
-> +	}
-> +
-> +	hba->hwmon_device = hwmon;
-> +}
-> +
-> +void ufs_hwmon_remove(struct ufs_hba *hba)
-> +{
-> +	struct ufs_hwmon_data *data;
-> +
-> +	if (!hba->hwmon_device)
-> +		return;
-> +
-> +	data = dev_get_drvdata(hba->hwmon_device);
-> +	hwmon_device_unregister(hba->hwmon_device);
-> +	hba->hwmon_device = NULL;
-> +	kfree(data);
-> +}
-> diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-> index 8c6b38b1b142..171b27be7b1d 100644
-> --- a/drivers/scsi/ufs/ufs.h
-> +++ b/drivers/scsi/ufs/ufs.h
-> @@ -152,6 +152,9 @@ enum attr_idn {
->   	QUERY_ATTR_IDN_PSA_STATE		= 0x15,
->   	QUERY_ATTR_IDN_PSA_DATA_SIZE		= 0x16,
->   	QUERY_ATTR_IDN_REF_CLK_GATING_WAIT_TIME	= 0x17,
-> +	QUERY_ATTR_IDN_CASE_ROUGH_TEMP          = 0x18,
-> +	QUERY_ATTR_IDN_HIGH_TEMP_BOUND          = 0x19,
-> +	QUERY_ATTR_IDN_LOW_TEMP_BOUND           = 0x1A,
->   	QUERY_ATTR_IDN_WB_FLUSH_STATUS	        = 0x1C,
->   	QUERY_ATTR_IDN_AVAIL_WB_BUFF_SIZE       = 0x1D,
->   	QUERY_ATTR_IDN_WB_BUFF_LIFE_TIME_EST    = 0x1E,
-> @@ -338,6 +341,9 @@ enum {
->   
->   /* Possible values for dExtendedUFSFeaturesSupport */
->   enum {
-> +	UFS_DEV_LOW_TEMP_NOTIF		= BIT(4),
-> +	UFS_DEV_HIGH_TEMP_NOTIF		= BIT(5),
-> +	UFS_DEV_EXT_TEMP_NOTIF		= BIT(6),
->   	UFS_DEV_HPB_SUPPORT		= BIT(7),
->   	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
->   };
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 67889d74761c..90c2e9677435 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -7469,6 +7469,31 @@ static void ufshcd_wb_probe(struct ufs_hba *hba, u8 *desc_buf)
->   	hba->caps &= ~UFSHCD_CAP_WB_EN;
->   }
->   
-> +static void ufshcd_temp_notif_probe(struct ufs_hba *hba, u8 *desc_buf)
-> +{
-> +	struct ufs_dev_info *dev_info = &hba->dev_info;
-> +	u32 ext_ufs_feature;
-> +	u8 mask = 0;
-> +
-> +	if (!(hba->caps & UFSHCD_CAP_TEMP_NOTIF) ||
-> +	    dev_info->wspecversion < 0x300)
-
-I am quite sure this fits a single line.
-
-> +		return;
-> +
-> +	ext_ufs_feature = get_unaligned_be32(desc_buf +
-> +					DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP);
-> +
-> +	if (ext_ufs_feature & UFS_DEV_LOW_TEMP_NOTIF)
-> +		mask |= MASK_EE_TOO_LOW_TEMP;
-> +
-> +	if (ext_ufs_feature & UFS_DEV_HIGH_TEMP_NOTIF)
-> +		mask |= MASK_EE_TOO_HIGH_TEMP;
-> +
-> +	if (mask) {
-> +		ufshcd_enable_ee(hba, mask);
-> +		ufs_hwmon_probe(hba, mask);
-> +	}
-> +}
-> +
->   void ufshcd_fixup_dev_quirks(struct ufs_hba *hba, struct ufs_dev_fix *fixups)
->   {
->   	struct ufs_dev_fix *f;
-> @@ -7564,6 +7589,8 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
->   
->   	ufshcd_wb_probe(hba, desc_buf);
->   
-> +	ufshcd_temp_notif_probe(hba, desc_buf);
-> +
->   	/*
->   	 * ufshcd_read_string_desc returns size of the string
->   	 * reset the error value
-> @@ -9408,6 +9435,7 @@ void ufshcd_remove(struct ufs_hba *hba)
->   {
->   	if (hba->sdev_ufs_device)
->   		ufshcd_rpm_get_sync(hba);
-> +	ufs_hwmon_remove(hba);
->   	ufs_bsg_remove(hba);
->   	ufshpb_remove(hba);
->   	ufs_sysfs_remove_nodes(hba->dev);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 4723f27a55d1..798a408d71e5 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -653,6 +653,12 @@ enum ufshcd_caps {
->   	 * in order to exit DeepSleep state.
->   	 */
->   	UFSHCD_CAP_DEEPSLEEP				= 1 << 10,
-> +
-> +	/*
-> +	 * This capability allows the host controller driver to use temperature
-> +	 * notification if it is supported by the UFS device.
-> +	 */
-> +	UFSHCD_CAP_TEMP_NOTIF				= 1 << 11,
->   };
->   
->   struct ufs_hba_variant_params {
-> @@ -789,6 +795,10 @@ struct ufs_hba {
->   	struct scsi_device *sdev_ufs_device;
->   	struct scsi_device *sdev_rpmb;
->   
-> +#ifdef CONFIG_SCSI_UFS_HWMON
-> +	struct device *hwmon_device;
-> +#endif
-> +
->   	enum ufs_dev_pwr_mode curr_dev_pwr_mode;
->   	enum uic_link_state uic_link_state;
->   	/* Desired UFS power management level during runtime PM */
-> @@ -1050,6 +1060,14 @@ static inline u8 ufshcd_wb_get_query_index(struct ufs_hba *hba)
->   	return 0;
->   }
->   
-> +#ifdef CONFIG_SCSI_UFS_HWMON
-> +void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask);
-> +void ufs_hwmon_remove(struct ufs_hba *hba);
-> +#else
-> +static inline void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask) {}
-> +static inline void ufs_hwmon_remove(struct ufs_hba *hba) {}
-> +#endif
-> +
->   #ifdef CONFIG_PM
->   extern int ufshcd_runtime_suspend(struct device *dev);
->   extern int ufshcd_runtime_resume(struct device *dev);
-> 
-
+diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+index 30da78f72b3b..41499c1d7379 100644
+--- a/arch/arm64/kvm/hypercalls.c
++++ b/arch/arm64/kvm/hypercalls.c
+@@ -3,6 +3,7 @@
+ 
+ #include <linux/arm-smccc.h>
+ #include <linux/kvm_host.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/kvm_emulate.h>
+ 
+diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
+index fa9c0ab8c6fc..85e79ff3c98e 100644
+--- a/arch/ia64/kernel/time.c
++++ b/arch/ia64/kernel/time.c
+@@ -22,6 +22,7 @@
+ #include <linux/efi.h>
+ #include <linux/timex.h>
+ #include <linux/timekeeper_internal.h>
++#include <linux/timekeeping.h>
+ #include <linux/platform_device.h>
+ #include <linux/sched/cputime.h>
+ 
+diff --git a/arch/m68k/atari/time.c b/arch/m68k/atari/time.c
+index 7e44d0e9d0f8..b09d3ff40b36 100644
+--- a/arch/m68k/atari/time.c
++++ b/arch/m68k/atari/time.c
+@@ -19,6 +19,7 @@
+ #include <linux/clocksource.h>
+ #include <linux/delay.h>
+ #include <linux/export.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/atariints.h>
+ #include <asm/machdep.h>
+diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
+index 1d1b7b3b5dd4..56c575096bcb 100644
+--- a/arch/m68k/hp300/time.c
++++ b/arch/m68k/hp300/time.c
+@@ -14,6 +14,8 @@
+ #include <linux/sched.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/interrupt.h>
++#include <linux/timekeeping.h>
++
+ #include <asm/machdep.h>
+ #include <asm/irq.h>
+ #include <asm/io.h>
+diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
+index 3d11d6219cdd..6dd8f85288e4 100644
+--- a/arch/m68k/mac/via.c
++++ b/arch/m68k/mac/via.c
+@@ -31,6 +31,7 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/irq.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/macintosh.h>
+ #include <asm/macints.h>
+diff --git a/arch/m68k/mvme16x/config.c b/arch/m68k/mvme16x/config.c
+index b59593c7cfb9..bb2ae926bb17 100644
+--- a/arch/m68k/mvme16x/config.c
++++ b/arch/m68k/mvme16x/config.c
+@@ -28,6 +28,7 @@
+ #include <linux/rtc.h>
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/bootinfo.h>
+ #include <asm/bootinfo-vme.h>
+diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
+index 41ae422119d3..3834a172be47 100644
+--- a/arch/m68k/sun3/sun3ints.c
++++ b/arch/m68k/sun3/sun3ints.c
+@@ -11,6 +11,7 @@
+ #include <linux/sched.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/interrupt.h>
++#include <linux/timekeeping.h>
+ #include <asm/segment.h>
+ #include <asm/intersil.h>
+ #include <asm/oplib.h>
+diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
+index e45ce427bffb..4b6952165a0a 100644
+--- a/arch/powerpc/kernel/time.c
++++ b/arch/powerpc/kernel/time.c
+@@ -55,6 +55,7 @@
+ #include <linux/sched/cputime.h>
+ #include <linux/sched/clock.h>
+ #include <linux/processor.h>
++#include <linux/timekeeping.h>
+ #include <asm/trace.h>
+ 
+ #include <asm/interrupt.h>
+diff --git a/arch/x86/kernel/rtc.c b/arch/x86/kernel/rtc.c
+index 586f718b8e95..98ea05cc6aeb 100644
+--- a/arch/x86/kernel/rtc.c
++++ b/arch/x86/kernel/rtc.c
+@@ -9,6 +9,7 @@
+ #include <linux/export.h>
+ #include <linux/pnp.h>
+ #include <linux/of.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/vsyscall.h>
+ #include <asm/x86_init.h>
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 2e076a459a0c..b730cb20f5fd 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -15,6 +15,7 @@
+ #include <linux/timex.h>
+ #include <linux/static_key.h>
+ #include <linux/static_call.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/hpet.h>
+ #include <asm/timer.h>
+diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+index f77bc089eb6b..1bdf1f790beb 100644
+--- a/drivers/rtc/class.c
++++ b/drivers/rtc/class.c
+@@ -16,6 +16,7 @@
+ #include <linux/kdev_t.h>
+ #include <linux/idr.h>
+ #include <linux/slab.h>
++#include <linux/timekeeping.h>
+ #include <linux/workqueue.h>
+ 
+ #include "rtc-core.h"
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index 73f20deb497d..37955d6664dd 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -229,6 +229,198 @@ static inline ktime_t ms_to_ktime(u64 ms)
+ 	return ms * NSEC_PER_MSEC;
+ }
+ 
+-# include <linux/timekeeping.h>
++/*
++ * ktime_get() family: read the current time in a multitude of ways,
++ *
++ * The default time reference is CLOCK_MONOTONIC, starting at
++ * boot time but not counting the time spent in suspend.
++ * For other references, use the functions with "real", "clocktai",
++ * "boottime" and "raw" suffixes.
++ *
++ * To get the time in a different format, use the ones wit
++ * "ns", "ts64" and "seconds" suffix.
++ *
++ * See Documentation/core-api/timekeeping.rst for more details.
++ */
+ 
+-#endif
++
++/*
++ * timespec64 based interfaces
++ */
++extern void ktime_get_raw_ts64(struct timespec64 *ts);
++extern void ktime_get_ts64(struct timespec64 *ts);
++extern void ktime_get_real_ts64(struct timespec64 *tv);
++extern void ktime_get_coarse_ts64(struct timespec64 *ts);
++extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
++
++void getboottime64(struct timespec64 *ts);
++
++/*
++ * time64_t base interfaces
++ */
++extern time64_t ktime_get_seconds(void);
++extern time64_t __ktime_get_real_seconds(void);
++extern time64_t ktime_get_real_seconds(void);
++
++/*
++ * ktime_t based interfaces
++ */
++
++enum tk_offsets {
++       TK_OFFS_REAL,
++       TK_OFFS_BOOT,
++       TK_OFFS_TAI,
++       TK_OFFS_MAX,
++};
++
++extern ktime_t ktime_get(void);
++extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
++extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
++extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
++extern ktime_t ktime_get_raw(void);
++extern u32 ktime_get_resolution_ns(void);
++
++/**
++ * ktime_get_real - get the real (wall-) time in ktime_t format
++ */
++static inline ktime_t ktime_get_real(void)
++{
++       return ktime_get_with_offset(TK_OFFS_REAL);
++}
++
++static inline ktime_t ktime_get_coarse_real(void)
++{
++       return ktime_get_coarse_with_offset(TK_OFFS_REAL);
++}
++
++/**
++ * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
++ *
++ * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
++ * time spent in suspend.
++ */
++static inline ktime_t ktime_get_boottime(void)
++{
++       return ktime_get_with_offset(TK_OFFS_BOOT);
++}
++
++static inline ktime_t ktime_get_coarse_boottime(void)
++{
++       return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
++}
++
++/**
++ * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
++ */
++static inline ktime_t ktime_get_clocktai(void)
++{
++       return ktime_get_with_offset(TK_OFFS_TAI);
++}
++
++static inline ktime_t ktime_get_coarse_clocktai(void)
++{
++       return ktime_get_coarse_with_offset(TK_OFFS_TAI);
++}
++
++static inline ktime_t ktime_get_coarse(void)
++{
++       struct timespec64 ts;
++
++       ktime_get_coarse_ts64(&ts);
++       return timespec64_to_ktime(ts);
++}
++
++static inline u64 ktime_get_coarse_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse());
++}
++
++static inline u64 ktime_get_coarse_real_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse_real());
++}
++
++static inline u64 ktime_get_coarse_boottime_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse_boottime());
++}
++
++static inline u64 ktime_get_coarse_clocktai_ns(void)
++{
++       return ktime_to_ns(ktime_get_coarse_clocktai());
++}
++
++/**
++ * ktime_mono_to_real - Convert monotonic time to clock realtime
++ */
++static inline ktime_t ktime_mono_to_real(ktime_t mono)
++{
++       return ktime_mono_to_any(mono, TK_OFFS_REAL);
++}
++
++static inline u64 ktime_get_ns(void)
++{
++       return ktime_to_ns(ktime_get());
++}
++
++static inline u64 ktime_get_real_ns(void)
++{
++       return ktime_to_ns(ktime_get_real());
++}
++
++static inline u64 ktime_get_boottime_ns(void)
++{
++       return ktime_to_ns(ktime_get_boottime());
++}
++
++static inline u64 ktime_get_clocktai_ns(void)
++{
++       return ktime_to_ns(ktime_get_clocktai());
++}
++
++static inline u64 ktime_get_raw_ns(void)
++{
++       return ktime_to_ns(ktime_get_raw());
++}
++
++extern u64 ktime_get_mono_fast_ns(void);
++extern u64 ktime_get_raw_fast_ns(void);
++extern u64 ktime_get_boot_fast_ns(void);
++extern u64 ktime_get_real_fast_ns(void);
++
++/*
++ * timespec64/time64_t interfaces utilizing the ktime based ones
++ * for API completeness, these could be implemented more efficiently
++ * if needed.
++ */
++static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_boottime());
++}
++
++static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_coarse_boottime());
++}
++
++static inline time64_t ktime_get_boottime_seconds(void)
++{
++       return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
++}
++
++static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_clocktai());
++}
++
++static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
++{
++       *ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
++}
++
++static inline time64_t ktime_get_clocktai_seconds(void)
++{
++       return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
++}
++
++#endif /* _LINUX_KTIME_H */
+diff --git a/include/linux/pps_kernel.h b/include/linux/pps_kernel.h
+index 78c8ac4951b5..24970c202ac6 100644
+--- a/include/linux/pps_kernel.h
++++ b/include/linux/pps_kernel.h
+@@ -12,6 +12,7 @@
+ #include <linux/cdev.h>
+ #include <linux/device.h>
+ #include <linux/time.h>
++#include <linux/timekeeping.h>
+ 
+ /*
+  * Global defines
+diff --git a/include/linux/sched_clock.h b/include/linux/sched_clock.h
+index 835ee87ed792..f0fa287710da 100644
+--- a/include/linux/sched_clock.h
++++ b/include/linux/sched_clock.h
+@@ -5,6 +5,8 @@
+ #ifndef LINUX_SCHED_CLOCK
+ #define LINUX_SCHED_CLOCK
+ 
++#include <linux/timekeeping.h>
++
+ #ifdef CONFIG_GENERIC_SCHED_CLOCK
+ /**
+  * struct clock_read_data - data required to read from sched_clock()
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index a6f03b36fc4f..bf235ff101d5 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -14,6 +14,7 @@
+ 
+ #include <linux/platform_device.h>
+ #include <linux/phy.h>
++#include <linux/timekeeping.h>
+ 
+ #define MTL_MAX_RX_QUEUES	8
+ #define MTL_MAX_TX_QUEUES	8
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index 78a98bdff76d..b1c54f5ff91e 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -19,201 +19,6 @@ extern void legacy_timer_tick(unsigned long ticks);
+ extern int do_settimeofday64(const struct timespec64 *ts);
+ extern int do_sys_settimeofday64(const struct timespec64 *tv,
+ 				 const struct timezone *tz);
+-
+-/*
+- * ktime_get() family: read the current time in a multitude of ways,
+- *
+- * The default time reference is CLOCK_MONOTONIC, starting at
+- * boot time but not counting the time spent in suspend.
+- * For other references, use the functions with "real", "clocktai",
+- * "boottime" and "raw" suffixes.
+- *
+- * To get the time in a different format, use the ones wit
+- * "ns", "ts64" and "seconds" suffix.
+- *
+- * See Documentation/core-api/timekeeping.rst for more details.
+- */
+-
+-
+-/*
+- * timespec64 based interfaces
+- */
+-extern void ktime_get_raw_ts64(struct timespec64 *ts);
+-extern void ktime_get_ts64(struct timespec64 *ts);
+-extern void ktime_get_real_ts64(struct timespec64 *tv);
+-extern void ktime_get_coarse_ts64(struct timespec64 *ts);
+-extern void ktime_get_coarse_real_ts64(struct timespec64 *ts);
+-
+-void getboottime64(struct timespec64 *ts);
+-
+-/*
+- * time64_t base interfaces
+- */
+-extern time64_t ktime_get_seconds(void);
+-extern time64_t __ktime_get_real_seconds(void);
+-extern time64_t ktime_get_real_seconds(void);
+-
+-/*
+- * ktime_t based interfaces
+- */
+-
+-enum tk_offsets {
+-	TK_OFFS_REAL,
+-	TK_OFFS_BOOT,
+-	TK_OFFS_TAI,
+-	TK_OFFS_MAX,
+-};
+-
+-extern ktime_t ktime_get(void);
+-extern ktime_t ktime_get_with_offset(enum tk_offsets offs);
+-extern ktime_t ktime_get_coarse_with_offset(enum tk_offsets offs);
+-extern ktime_t ktime_mono_to_any(ktime_t tmono, enum tk_offsets offs);
+-extern ktime_t ktime_get_raw(void);
+-extern u32 ktime_get_resolution_ns(void);
+-
+-/**
+- * ktime_get_real - get the real (wall-) time in ktime_t format
+- */
+-static inline ktime_t ktime_get_real(void)
+-{
+-	return ktime_get_with_offset(TK_OFFS_REAL);
+-}
+-
+-static inline ktime_t ktime_get_coarse_real(void)
+-{
+-	return ktime_get_coarse_with_offset(TK_OFFS_REAL);
+-}
+-
+-/**
+- * ktime_get_boottime - Returns monotonic time since boot in ktime_t format
+- *
+- * This is similar to CLOCK_MONTONIC/ktime_get, but also includes the
+- * time spent in suspend.
+- */
+-static inline ktime_t ktime_get_boottime(void)
+-{
+-	return ktime_get_with_offset(TK_OFFS_BOOT);
+-}
+-
+-static inline ktime_t ktime_get_coarse_boottime(void)
+-{
+-	return ktime_get_coarse_with_offset(TK_OFFS_BOOT);
+-}
+-
+-/**
+- * ktime_get_clocktai - Returns the TAI time of day in ktime_t format
+- */
+-static inline ktime_t ktime_get_clocktai(void)
+-{
+-	return ktime_get_with_offset(TK_OFFS_TAI);
+-}
+-
+-static inline ktime_t ktime_get_coarse_clocktai(void)
+-{
+-	return ktime_get_coarse_with_offset(TK_OFFS_TAI);
+-}
+-
+-static inline ktime_t ktime_get_coarse(void)
+-{
+-	struct timespec64 ts;
+-
+-	ktime_get_coarse_ts64(&ts);
+-	return timespec64_to_ktime(ts);
+-}
+-
+-static inline u64 ktime_get_coarse_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse());
+-}
+-
+-static inline u64 ktime_get_coarse_real_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse_real());
+-}
+-
+-static inline u64 ktime_get_coarse_boottime_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse_boottime());
+-}
+-
+-static inline u64 ktime_get_coarse_clocktai_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_coarse_clocktai());
+-}
+-
+-/**
+- * ktime_mono_to_real - Convert monotonic time to clock realtime
+- */
+-static inline ktime_t ktime_mono_to_real(ktime_t mono)
+-{
+-	return ktime_mono_to_any(mono, TK_OFFS_REAL);
+-}
+-
+-static inline u64 ktime_get_ns(void)
+-{
+-	return ktime_to_ns(ktime_get());
+-}
+-
+-static inline u64 ktime_get_real_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_real());
+-}
+-
+-static inline u64 ktime_get_boottime_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_boottime());
+-}
+-
+-static inline u64 ktime_get_clocktai_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_clocktai());
+-}
+-
+-static inline u64 ktime_get_raw_ns(void)
+-{
+-	return ktime_to_ns(ktime_get_raw());
+-}
+-
+-extern u64 ktime_get_mono_fast_ns(void);
+-extern u64 ktime_get_raw_fast_ns(void);
+-extern u64 ktime_get_boot_fast_ns(void);
+-extern u64 ktime_get_real_fast_ns(void);
+-
+-/*
+- * timespec64/time64_t interfaces utilizing the ktime based ones
+- * for API completeness, these could be implemented more efficiently
+- * if needed.
+- */
+-static inline void ktime_get_boottime_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_boottime());
+-}
+-
+-static inline void ktime_get_coarse_boottime_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_coarse_boottime());
+-}
+-
+-static inline time64_t ktime_get_boottime_seconds(void)
+-{
+-	return ktime_divns(ktime_get_coarse_boottime(), NSEC_PER_SEC);
+-}
+-
+-static inline void ktime_get_clocktai_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_clocktai());
+-}
+-
+-static inline void ktime_get_coarse_clocktai_ts64(struct timespec64 *ts)
+-{
+-	*ts = ktime_to_timespec64(ktime_get_coarse_clocktai());
+-}
+-
+-static inline time64_t ktime_get_clocktai_seconds(void)
+-{
+-	return ktime_divns(ktime_get_coarse_clocktai(), NSEC_PER_SEC);
+-}
+-
+ /*
+  * RTC specific
+  */
+@@ -308,4 +113,4 @@ void read_persistent_wall_and_boot_offset(struct timespec64 *wall_clock,
+ extern int update_persistent_clock64(struct timespec64 now);
+ #endif
+ 
+-#endif
++#endif /* _LINUX_TIMEKEEPING_H */
+diff --git a/init/main.c b/init/main.c
+index f5b8246e8aa1..a8db3a136d6a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -100,6 +100,7 @@
+ #include <linux/kcsan.h>
+ #include <linux/init_syscalls.h>
+ #include <linux/stackdepot.h>
++#include <linux/timekeeping.h>
+ 
+ #include <asm/io.h>
+ #include <asm/bugs.h>
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 406dccb79c2b..804f06801737 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <linux/rtc.h>
+ #include <linux/audit.h>
++#include <linux/timekeeping.h>
+ 
+ #include "ntp_internal.h"
+ #include "timekeeping_internal.h"
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index dd5697d7347b..14f82cd95d10 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -13,6 +13,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/slab.h>
+ #include <linux/time.h>
++#include <linux/timekeeping.h>
+ #include <linux/mutex.h>
+ #include <linux/sched/task.h>
+ 
+diff --git a/kernel/time/tick-legacy.c b/kernel/time/tick-legacy.c
+index af225b32f5b3..9a534f716462 100644
+--- a/kernel/time/tick-legacy.c
++++ b/kernel/time/tick-legacy.c
+@@ -7,6 +7,7 @@
+ #include <linux/irq.h>
+ #include <linux/profile.h>
+ #include <linux/timekeeper_internal.h>
++#include <linux/timekeeping.h>
+ 
+ #include "tick-internal.h"
+ 
+diff --git a/kernel/time/time.c b/kernel/time/time.c
+index 29923b20e0e4..7292ed074742 100644
+--- a/kernel/time/time.c
++++ b/kernel/time/time.c
+@@ -29,6 +29,7 @@
+ #include <linux/timex.h>
+ #include <linux/capability.h>
+ #include <linux/timekeeper_internal.h>
++#include <linux/timekeeping.h>
+ #include <linux/errno.h>
+ #include <linux/syscalls.h>
+ #include <linux/security.h>
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 8a364aa9881a..4dfee925adc8 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -22,6 +22,7 @@
+ #include <linux/pvclock_gtod.h>
+ #include <linux/compiler.h>
+ #include <linux/audit.h>
++#include <linux/timekeeping.h>
+ 
+ #include "tick-internal.h"
+ #include "ntp_internal.h"
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index ca2f2ecd1488..efbbe624d81d 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
++#include <linux/timekeeping.h>
+ 
+ #ifdef CONFIG_X86
+ /* for art-tsc conversion */
+-- 
+2.25.1
