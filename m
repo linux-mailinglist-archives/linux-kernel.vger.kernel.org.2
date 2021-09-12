@@ -2,116 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C187B407E8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743B3407E8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 18:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhILQX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 12:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhILQXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 12:23:19 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B16C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 09:22:04 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id b15so7083204ils.10
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 09:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=otoclXzkeEyh1j5woX95Y4BqIi75kMI2Nh4wsDY6AGA=;
-        b=J7A03fcq6bX5nWDXODfrfwoyuUGPjfa7chFuRo2TPD+7goaB40SBkbW4Xto5jkU4xX
-         C8H1omZlj6UlASwls0BrHY9UEfZn7NU255trKjja3Hi/JlLbuBXthlV9UD/mT2IkqHg4
-         9zvUqWbMGuXnYbnKY+xtQfQNQUQykwJG7L6t0jjaSSa0Ap7XxP8AO/DZj+UTc7Z5Fli/
-         i7o389nArRNR4GqU4ofkA8aHGlhKF+xh8Adg15p/zYQmvaBB6X/p9qOv3Ygcbn4L9FD8
-         p+zdZGAdzHexHUThpwYH5YVpL+2alakEqKGD7WPiGU6w8eSK/QVRTim47zKCCrvAn15y
-         BOdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=otoclXzkeEyh1j5woX95Y4BqIi75kMI2Nh4wsDY6AGA=;
-        b=JJwOshXAAPQDsbZiTyb2KSO17ov98jl465E9JqB/sujCa+U99ayCIHr8YBX4C7rbd7
-         s4s9+PfeqbJ1jfTfdaELkc1+qdSrgI4KNc9JbGhUS4YO9FdwOwYD8OTDKFLrr6tyffd6
-         sdCOJGchdYvujL/MycYQaFw5I9HqtXHAoINr54JuOW7u765tox4iiY5DcN5yq47uLJ9P
-         +zk2bRjFZ4OdN1TXr8R+mgr586xC4YSDZ6Cd5v8akGDcrir25Ts6VSjlnATF621sjsK6
-         wqjvCK/38szXqa0+6FffCfeqPh91MkZtqttt28kf5cBm48LvXuaJL2WmiC9X5FV/ia4m
-         3eHg==
-X-Gm-Message-State: AOAM532P5e5WaacbRAD+KVoXDXNUP6pwSn9lj0s/GTDxGzdyomOCbww/
-        dOBAKCY177+8dtmCz5LqVCrsaFzhxNuJFwWilbKolg==
-X-Google-Smtp-Source: ABdhPJxZtjAMA83btV+BO9F4/YYS/EF5aCSpX1bcziNEwxakUBREbdF/05VAQ5f5ze/rU14PN/ocF642baXn5FVE/HE=
-X-Received: by 2002:a92:870f:: with SMTP id m15mr4804880ild.2.1631463723915;
- Sun, 12 Sep 2021 09:22:03 -0700 (PDT)
+        id S232147AbhILQY0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Sep 2021 12:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229643AbhILQYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 12:24:21 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8742760F92;
+        Sun, 12 Sep 2021 16:23:02 +0000 (UTC)
+Date:   Sun, 12 Sep 2021 17:26:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        jarkko.nikula@linux.intel.com, Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v16 09/14] tools/counter: Create Counter tools
+Message-ID: <20210912172635.14cc0923@jic23-huawei>
+In-Reply-To: <7fb22281fde0874614a87b0a000b2bf27e17043e.1630031207.git.vilhelm.gray@gmail.com>
+References: <cover.1630031207.git.vilhelm.gray@gmail.com>
+        <7fb22281fde0874614a87b0a000b2bf27e17043e.1630031207.git.vilhelm.gray@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210910232249.739661-1-irogers@google.com> <YTz3YFXpJ0UT3R7z@kernel.org>
- <YTz8DL1Nuwp+XmzE@kernel.org>
-In-Reply-To: <YTz8DL1Nuwp+XmzE@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Sun, 12 Sep 2021 09:21:51 -0700
-Message-ID: <CAP-5=fVQ7Y1XUmUx74D4ipX59yWGWAi62SdybsQT6OFhhPRr_w@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Ignore Documentation dependency file
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 11:57 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Sat, Sep 11, 2021 at 03:37:20PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Sep 10, 2021 at 04:22:49PM -0700, Ian Rogers escreveu:
-> > > Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Fixes: a81df63a5df3 ("perf doc: Fix doc.dep")
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> >
-> > Thanks for the patch, but you forgot to mention _why_ we should ignore
-> > that file, I'll try to figure out.
->
-> Added this, probably anodine, but better than nothing :-)
->
+On Fri, 27 Aug 2021 12:47:53 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+
+> This creates an example Counter program under tools/counter/*
+> to exemplify the Counter character device interface.
+> 
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+
+It's great to have this example, but it very much an example rather than
+a generic tool. You may want to revisit and provide a more generic
+tool in the future.
+
+A trivial comment about using a loop inline.
+
+Jonathan
+
 > ---
-> When building directly on the checked out repository the build process
-> produces a file that should be ignored, so add it to .gitignore.
-> ---
+>  MAINTAINERS                     |  1 +
+>  tools/Makefile                  | 13 ++---
+>  tools/counter/Build             |  1 +
+>  tools/counter/Makefile          | 53 +++++++++++++++++++
+>  tools/counter/counter_example.c | 93 +++++++++++++++++++++++++++++++++
+>  5 files changed, 155 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/counter/Build
+>  create mode 100644 tools/counter/Makefile
+>  create mode 100644 tools/counter/counter_example.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f2fdd2202605..57dc9b6ff82a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4782,6 +4782,7 @@ F:	Documentation/driver-api/generic-counter.rst
+>  F:	drivers/counter/
+>  F:	include/linux/counter.h
+>  F:	include/uapi/linux/counter.h
+> +F:	tools/counter/
+>  
+>  CP2615 I2C DRIVER
+>  M:	Bence Csókás <bence98@sch.bme.hu>
+> diff --git a/tools/Makefile b/tools/Makefile
+> index 7e9d34ddd74c..5da1fde03a9a 100644
+> --- a/tools/Makefile
+> +++ b/tools/Makefile
+> @@ -12,6 +12,7 @@ help:
+>  	@echo '  acpi                   - ACPI tools'
+>  	@echo '  bpf                    - misc BPF tools'
+>  	@echo '  cgroup                 - cgroup tools'
+> +	@echo '  counter                - counter tools'
+>  	@echo '  cpupower               - a tool for all things x86 CPU power'
+>  	@echo '  debugging              - tools for debugging'
+>  	@echo '  firewire               - the userspace part of nosy, an IEEE-1394 traffic sniffer'
+> @@ -65,7 +66,7 @@ acpi: FORCE
+>  cpupower: FORCE
+>  	$(call descend,power/$@)
+>  
+> -cgroup firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
+> +cgroup counter firewire hv guest bootconfig spi usb virtio vm bpf iio gpio objtool leds wmi pci firmware debugging tracing: FORCE
+>  	$(call descend,$@)
+>  
+>  bpf/%: FORCE
+> @@ -100,7 +101,7 @@ freefall: FORCE
+>  kvm_stat: FORCE
+>  	$(call descend,kvm/$@)
+>  
+> -all: acpi cgroup cpupower gpio hv firewire liblockdep \
+> +all: acpi cgroup counter cpupower gpio hv firewire liblockdep \
+>  		perf selftests bootconfig spi turbostat usb \
+>  		virtio vm bpf x86_energy_perf_policy \
+>  		tmon freefall iio objtool kvm_stat wmi \
+> @@ -112,7 +113,7 @@ acpi_install:
+>  cpupower_install:
+>  	$(call descend,power/$(@:_install=),install)
+>  
+> -cgroup_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
+> +cgroup_install counter_install firewire_install gpio_install hv_install iio_install perf_install bootconfig_install spi_install usb_install virtio_install vm_install bpf_install objtool_install wmi_install pci_install debugging_install tracing_install:
+>  	$(call descend,$(@:_install=),install)
+>  
+>  liblockdep_install:
+> @@ -133,7 +134,7 @@ freefall_install:
+>  kvm_stat_install:
+>  	$(call descend,kvm/$(@:_install=),install)
+>  
+> -install: acpi_install cgroup_install cpupower_install gpio_install \
+> +install: acpi_install cgroup_install counter_install cpupower_install gpio_install \
+>  		hv_install firewire_install iio_install liblockdep_install \
+>  		perf_install selftests_install turbostat_install usb_install \
+>  		virtio_install vm_install bpf_install x86_energy_perf_policy_install \
+> @@ -147,7 +148,7 @@ acpi_clean:
+>  cpupower_clean:
+>  	$(call descend,power/cpupower,clean)
+>  
+> -cgroup_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
+> +cgroup_clean counter_clean hv_clean firewire_clean bootconfig_clean spi_clean usb_clean virtio_clean vm_clean wmi_clean bpf_clean iio_clean gpio_clean objtool_clean leds_clean pci_clean firmware_clean debugging_clean tracing_clean:
+>  	$(call descend,$(@:_clean=),clean)
+>  
+>  liblockdep_clean:
+> @@ -181,7 +182,7 @@ freefall_clean:
+>  build_clean:
+>  	$(call descend,build,clean)
+>  
+> -clean: acpi_clean cgroup_clean cpupower_clean hv_clean firewire_clean \
+> +clean: acpi_clean cgroup_clean counter_clean cpupower_clean hv_clean firewire_clean \
 
-Sounds good to me.
+This is far from alphabetical, though I have no idea if there is any strong convention on where
+to add new entries.
 
-Thanks,
-Ian
+>  		perf_clean selftests_clean turbostat_clean bootconfig_clean spi_clean usb_clean virtio_clean \
+>  		vm_clean bpf_clean iio_clean x86_energy_perf_policy_clean tmon_clean \
+>  		freefall_clean build_clean libbpf_clean libsubcmd_clean liblockdep_clean \
+> diff --git a/tools/counter/Build b/tools/counter/Build
+> new file mode 100644
+> index 000000000000..33f4a51d715e
+> --- /dev/null
+> +++ b/tools/counter/Build
+> @@ -0,0 +1 @@
+> +counter_example-y += counter_example.o
+> diff --git a/tools/counter/Makefile b/tools/counter/Makefile
+> new file mode 100644
+> index 000000000000..5ebc195fd9c0
+> --- /dev/null
+> +++ b/tools/counter/Makefile
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +include ../scripts/Makefile.include
+> +
+> +bindir ?= /usr/bin
+> +
+> +ifeq ($(srctree),)
+> +srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+> +srctree := $(patsubst %/,%,$(dir $(srctree)))
+> +endif
+> +
+> +# Do not use make's built-in rules
+> +# (this improves performance and avoids hard-to-debug behaviour);
+> +MAKEFLAGS += -r
+> +
+> +override CFLAGS += -O2 -Wall -g -D_GNU_SOURCE -I$(OUTPUT)include
+> +
+> +ALL_TARGETS := counter_example
+> +ALL_PROGRAMS := $(patsubst %,$(OUTPUT)%,$(ALL_TARGETS))
+> +
+> +all: $(ALL_PROGRAMS)
+> +
+> +export srctree OUTPUT CC LD CFLAGS
+> +include $(srctree)/tools/build/Makefile.include
+> +
+> +#
+> +# We need the following to be outside of kernel tree
+> +#
+> +$(OUTPUT)include/linux/counter.h: ../../include/uapi/linux/counter.h
+> +	mkdir -p $(OUTPUT)include/linux 2>&1 || true
+> +	ln -sf $(CURDIR)/../../include/uapi/linux/counter.h $@
+> +
+> +prepare: $(OUTPUT)include/linux/counter.h
+> +
+> +COUNTER_EXAMPLE := $(OUTPUT)counter_example.o
+> +$(COUNTER_EXAMPLE): prepare FORCE
+> +	$(Q)$(MAKE) $(build)=counter_example
+> +$(OUTPUT)counter_example: $(COUNTER_EXAMPLE)
+> +	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+> +
+> +clean:
+> +	rm -f $(ALL_PROGRAMS)
+> +	rm -rf $(OUTPUT)include/linux/counter.h
+> +	find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.d' -delete
+> +
+> +install: $(ALL_PROGRAMS)
+> +	install -d -m 755 $(DESTDIR)$(bindir);		\
+> +	for program in $(ALL_PROGRAMS); do		\
+> +		install $$program $(DESTDIR)$(bindir);	\
+> +	done
+> +
+> +FORCE:
+> +
+> +.PHONY: all install clean FORCE prepare
+> diff --git a/tools/counter/counter_example.c b/tools/counter/counter_example.c
+> new file mode 100644
+> index 000000000000..90d69fb9463b
+> --- /dev/null
+> +++ b/tools/counter/counter_example.c
+> @@ -0,0 +1,93 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Counter - example userspace application
+> + *
+> + * The userspace application opens /dev/counter0, configures the
+> + * COUNTER_EVENT_INDEX event channel 0 to gather Count 0 count and Count
+> + * 1 count, and prints out the data as it becomes available on the
+> + * character device node.
+> + *
+> + * Copyright (C) 2021 William Breathitt Gray
+> + */
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <linux/counter.h>
+> +#include <stdio.h>
+> +#include <string.h>
+> +#include <sys/ioctl.h>
+> +#include <unistd.h>
+> +
+> +static struct counter_watch watches[2] = {
+> +	{
+> +		/* Component data: Count 0 count */
+> +		.component.type = COUNTER_COMPONENT_COUNT,
+> +		.component.scope = COUNTER_SCOPE_COUNT,
+> +		.component.parent = 0,
+> +		/* Event type: Index */
+> +		.event = COUNTER_EVENT_INDEX,
+> +		/* Device event channel 0 */
+> +		.channel = 0,
+> +	},
+> +	{
+> +		/* Component data: Count 1 count */
+> +		.component.type = COUNTER_COMPONENT_COUNT,
+> +		.component.scope = COUNTER_SCOPE_COUNT,
+> +		.component.parent = 1,
+> +		/* Event type: Index */
+> +		.event = COUNTER_EVENT_INDEX,
+> +		/* Device event channel 0 */
+> +		.channel = 0,
+> +	},
+> +};
+> +
+> +int main(void)
+> +{
+> +	int fd;
+> +	int ret;
+> +	struct counter_event event_data[2];
+> +
+> +	fd = open("/dev/counter0", O_RDWR);
 
-> - Arnaldo
-> >
-> > > ---
-> > >  tools/perf/.gitignore | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-> > > index e555e9729758..8e0163b7ef01 100644
-> > > --- a/tools/perf/.gitignore
-> > > +++ b/tools/perf/.gitignore
-> > > @@ -39,3 +39,4 @@ pmu-events/jevents
-> > >  feature/
-> > >  fixdep
-> > >  libtraceevent-dynamic-list
-> > > +Documentation/doc.dep
-> > > --
-> > > 2.33.0.309.g3052b89438-goog
-> >
-> > --
-> >
-> > - Arnaldo
->
-> --
->
-> - Arnaldo
+You may want to make this tool more flexible at somepoint. It is
+in tools rather than Documentation after all.
+
+> +	if (fd == -1) {
+> +		perror("Unable to open /dev/counter0");
+> +		return -errno;
+> +	}
+> +
+> +	ret = ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches);
+
+Loop?
+
+> +	if (ret == -1) {
+> +		perror("Error adding watches[0]");
+> +		return -errno;
+> +	}
+> +	ret = ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + 1);
+> +	if (ret == -1) {
+> +		perror("Error adding watches[1]");
+> +		return -errno;
+> +	}
+> +	ret = ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
+> +	if (ret == -1) {
+> +		perror("Error enabling events");
+> +		return -errno;
+> +	}
+> +
+> +	for (;;) {
+> +		ret = read(fd, event_data, sizeof(event_data));
+> +		if (ret == -1) {
+> +			perror("Failed to read event data");
+> +			return 1;
+> +		}
+> +
+> +		if (ret != sizeof(event_data)) {
+> +			fprintf(stderr, "Failed to read event data\n");
+> +			return -EIO;
+> +		}
+> +
+> +		printf("Timestamp 0: %llu\tCount 0: %llu\n"
+> +		       "Error Message 0: %s\n"
+> +		       "Timestamp 1: %llu\tCount 1: %llu\n"
+> +		       "Error Message 1: %s\n",
+> +		       event_data[0].timestamp, event_data[0].value,
+> +		       strerror(event_data[0].status),
+> +		       event_data[1].timestamp, event_data[1].value,
+> +		       strerror(event_data[1].status));
+> +	}
+> +
+> +	return 0;
+> +}
+
