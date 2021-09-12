@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D574081A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD584081A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236514AbhILUrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 16:47:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49131 "EHLO
+        id S236528AbhILUrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 16:47:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20626 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236513AbhILUrW (ORCPT
+        by vger.kernel.org with ESMTP id S236526AbhILUra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 16:47:22 -0400
+        Sun, 12 Sep 2021 16:47:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631479568;
+        s=mimecast20190719; t=1631479575;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rrAMza/pUnynZmhIDTEN4QNHQg4Z+gAt6lAgc6gAyDI=;
-        b=CbH/g4xTBnArbYyCwFGGR5HybztGk9fZ/Zpa4kKF27V8vGNM/KHmuiNk1rrwCndFnlG53s
-        ijD7UhpOEaLe07eicWr1hrfjI/x6pc728ecT4iaFVHlczZx65drDRrj18VoH5ZI8RzveC1
-        oLI810Tw1egB7muaRcUyA+Rad2y+ksE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-92ORu5tHPlKzxHxfY254-w-1; Sun, 12 Sep 2021 16:46:06 -0400
-X-MC-Unique: 92ORu5tHPlKzxHxfY254-w-1
-Received: by mail-ed1-f69.google.com with SMTP id ec14-20020a0564020d4e00b003cf5630c190so3892946edb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 13:46:06 -0700 (PDT)
+        bh=wiP1xNtUHVwwciV2F+1NqLRf0YwJlesW+uA61sYdohg=;
+        b=DzyPTrSDMDzIuli0NwOsaja6U1ROoWN3bj42Mp6rKKfAo4Dux5P3eb1CekVVJYWbtpDT2C
+        +6zN1eXgAKtCkBocEecoLTq8/1F5epzmuEvd03kKWbbiv+6R/pbzoNmo7ne2NtVBZQ7A6G
+        St6gIl01o6x/zlLNiSl2JRBzsMwqYHw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-6B6pjCpdOGGJekjyLYVVdQ-1; Sun, 12 Sep 2021 16:46:14 -0400
+X-MC-Unique: 6B6pjCpdOGGJekjyLYVVdQ-1
+Received: by mail-ed1-f70.google.com with SMTP id y21-20020a056402359500b003cd0257fc7fso3859633edc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 13:46:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rrAMza/pUnynZmhIDTEN4QNHQg4Z+gAt6lAgc6gAyDI=;
-        b=5OQoxoCE6ONE8ZDbFdUc3Eaqt6hAhW2knRt9SS04CE2BM+bbdGGmPjMnKXYpyHx8M5
-         ISTLhD0VOG2PO1O6f2IpTQBdbEXNK2+UT7X4shTzxRdRUkDQc+Y3DYoSUV5c/2f2qQSm
-         yT7kKZB0jckZ1QGRkGgYQqPIDUm9kWoeHd096Y1fr6KHfAvPNv4tPopbWq3vsq5bQ8I8
-         cEMiNjlrkorbpul1xm7FnZDBjWKQIO2KiSD5F6itluVkeO7q6geCR8CYvTofQYjpI/DU
-         67hA14OSYAMX1vfznStGO8dTevRcu7BbsnyEE52X0QSjn5L9RE2WNiDjXY9wQ2+1+BoF
-         /Wlw==
-X-Gm-Message-State: AOAM530/hp3r4d07D7x749Rcb2akv9RUSsx7F4ejcQknOtDOl9Z7zo7C
-        ILk4c2zpMuIFjLJBSk/noocnSDeZbRIJxc35TXfIe3GTocox771S3yryzogsf2gIoeCvT4F5rk7
-        S64HB3gNjxyGxo9NXDHe4GcBN
-X-Received: by 2002:a17:907:7704:: with SMTP id kw4mr9261587ejc.23.1631479565654;
-        Sun, 12 Sep 2021 13:46:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxXSB3DdYTE6sKKZ0UqhPTtJ4d12lBwqzOQjSzbYs34K7+jD7eDXHjYzAm3xM6qkVDQxaZKDw==
-X-Received: by 2002:a17:907:7704:: with SMTP id kw4mr9261567ejc.23.1631479565436;
-        Sun, 12 Sep 2021 13:46:05 -0700 (PDT)
+        bh=wiP1xNtUHVwwciV2F+1NqLRf0YwJlesW+uA61sYdohg=;
+        b=LYF57EaMh78RNq+Ryj8ehOHG2YI4MzzXC89MtOMIyqUTXWCmxGH8gfPcXGMt9zfHcU
+         R/sM5R9qAVBIBIMNiN/JjUleoRMXClS4i8qGbotJ1sHaXJBscZhPhMqsyfcAXg00OAKk
+         CGWfzdlkjzmLU+kLe8KpMjQNQ9K8diWT2tNvQA+ZDKP5fvYydEKBUdGk4vo6Gu77TCuf
+         CMf5k8qAR0GRe0hVfSdLOMOXzzfF6DPvXsv0JnWoJlndLrW5/z97ZhfbPb7dqEJigHJG
+         H3ZyYb2H1OytDSSSO4d9dMbd6MUcOZTTmP1BsTNL/lJasvu4IlsaGzeGxUN3d4X2UuE4
+         +iRQ==
+X-Gm-Message-State: AOAM533P5rbnRhmkfg2AOOGoCuOAJqgWpkmZnawKbE3QxHl5dsHhyrtA
+        SAL1mmEKJigSsl1FQC6evhQhkwTAHPq3zerNjCrydJckAG5iJmcA+J4TTd/nzWPAT4Y1D5NhVwN
+        aRfXZGeVG/lSqKVkZVeUl7NpY
+X-Received: by 2002:a50:ae21:: with SMTP id c30mr9761876edd.120.1631479573236;
+        Sun, 12 Sep 2021 13:46:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1JMX99OqvTVW6HnD69wCNvNkvNxgMvW3yKcLws7JO43mXhIJuk+2VjIqdyZnhBDVksK15ww==
+X-Received: by 2002:a50:ae21:: with SMTP id c30mr9761855edd.120.1631479573060;
+        Sun, 12 Sep 2021 13:46:13 -0700 (PDT)
 Received: from krava ([83.240.60.52])
-        by smtp.gmail.com with ESMTPSA id e22sm2896144edu.35.2021.09.12.13.46.04
+        by smtp.gmail.com with ESMTPSA id p21sm2429218ejm.88.2021.09.12.13.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 13:46:05 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 22:46:03 +0200
+        Sun, 12 Sep 2021 13:46:12 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 22:46:10 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,107 +64,105 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v11 07/24] perf record: Start threads in the beginning of
- trace streaming
-Message-ID: <YT5nC8mD2RVBpj0+@krava>
+Subject: Re: [PATCH v11 08/24] perf record: Introduce data file at mmap
+ buffer object
+Message-ID: <YT5nEnJHE2Ec9eRn@krava>
 References: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
- <0b55237124aee9e348449540691320b66879be6c.1629186429.git.alexey.v.bayduraev@linux.intel.com>
+ <c7a61ee2f342aaf7d940fa8e3876eae38837ce9a.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0b55237124aee9e348449540691320b66879be6c.1629186429.git.alexey.v.bayduraev@linux.intel.com>
+In-Reply-To: <c7a61ee2f342aaf7d940fa8e3876eae38837ce9a.1629186429.git.alexey.v.bayduraev@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:23:10AM +0300, Alexey Bayduraev wrote:
-
-SNIP
-
-> +			pollfd->entries[ctlfd_pos].events = 0;
-> +		}
-> +
-> +		pollfd->entries[ctlfd_pos].revents = 0;
-> +	}
-> +	record__mmap_read_all(thread->rec, true);
-> +
-> +	err = write(thread->pipes.ack[1], &msg, sizeof(msg));
-> +	if (err == -1)
-> +		pr_err("threads[%d]: failed to notify on termination: %s",
-> +		       thread->tid, strerror(errno));
-> +
-> +	return NULL;
-> +}
-> +
->  static void record__init_features(struct record *rec)
+On Tue, Aug 17, 2021 at 11:23:11AM +0300, Alexey Bayduraev wrote:
+> Introduce data file and compressor objects into mmap object so
+> they could be used to process and store data stream from the
+> corresponding kernel data buffer. Make use of the introduced
+> per mmap file and compressor when they are initialized and
+> available.
+> 
+> Acked-by: Andi Kleen <ak@linux.intel.com>
+> Acked-by: Namhyung Kim <namhyung@gmail.com>
+> Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+> ---
+>  tools/perf/builtin-record.c |  3 +++
+>  tools/perf/util/mmap.c      | 10 ++++++++++
+>  tools/perf/util/mmap.h      |  3 +++
+>  3 files changed, 16 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index fb1c1b46dd04..eff6f8db60b2 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -197,6 +197,9 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
 >  {
->  	struct perf_session *session = rec->session;
-> @@ -1918,13 +1979,59 @@ static int record__terminate_thread(struct record_thread *thread_data)
+>  	struct perf_data_file *file = &rec->session->data->file;
 >  
->  static int record__start_threads(struct record *rec)
->  {
-> +	int t, tt, ret = 0, nr_threads = rec->nr_threads;
->  	struct record_thread *thread_data = rec->thread_data;
-> +	sigset_t full, mask;
-> +	pthread_t handle;
-> +	pthread_attr_t attrs;
+> +	if (map && map->file)
+> +		file = map->file;
 
-should we return here in case nr_threads == 1?
+I understand this change, but not sure how it's related to the changes
+below, should this be separated? also should this change be part of the
+patch where we actually set map->file?
 
 jirka
 
 > +
-> +	sigfillset(&full);
-> +	if (sigprocmask(SIG_SETMASK, &full, &mask)) {
-> +		pr_err("Failed to block signals on threads start: %s\n", strerror(errno));
+>  	if (perf_data_file__write(file, bf, size) < 0) {
+>  		pr_err("failed to write perf data, error: %m\n");
+>  		return -1;
+> diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
+> index ab7108d22428..b693b828a840 100644
+> --- a/tools/perf/util/mmap.c
+> +++ b/tools/perf/util/mmap.c
+> @@ -230,6 +230,10 @@ void mmap__munmap(struct mmap *map)
+>  {
+>  	bitmap_free(map->affinity_mask.bits);
+>  
+> +#ifndef PYTHON_PERF
+> +	zstd_fini(&map->zstd_data);
+> +#endif
+> +
+>  	perf_mmap__aio_munmap(map);
+>  	if (map->data != NULL) {
+>  		munmap(map->data, mmap__mmap_len(map));
+> @@ -291,6 +295,12 @@ int mmap__mmap(struct mmap *map, struct mmap_params *mp, int fd, int cpu)
+>  	map->core.flush = mp->flush;
+>  
+>  	map->comp_level = mp->comp_level;
+> +#ifndef PYTHON_PERF
+> +	if (zstd_init(&map->zstd_data, map->comp_level)) {
+> +		pr_debug2("failed to init mmap commpressor, error %d\n", errno);
 > +		return -1;
 > +	}
-> +
-> +	pthread_attr_init(&attrs);
-> +	pthread_attr_setdetachstate(&attrs, PTHREAD_CREATE_DETACHED);
-> +
-> +	for (t = 1; t < nr_threads; t++) {
-> +		enum thread_msg msg = THREAD_MSG__UNDEFINED;
-> +
-> +		pthread_attr_setaffinity_np(&attrs,
-> +					    MMAP_CPU_MASK_BYTES(&(thread_data[t].mask->affinity)),
-> +					    (cpu_set_t *)(thread_data[t].mask->affinity.bits));
-> +
-> +		if (pthread_create(&handle, &attrs, record__thread, &thread_data[t])) {
-> +			for (tt = 1; tt < t; tt++)
-> +				record__terminate_thread(&thread_data[t]);
-> +			pr_err("Failed to start threads: %s\n", strerror(errno));
-> +			ret = -1;
-> +			goto out_err;
-> +		}
-> +
-> +		if (read(thread_data[t].pipes.ack[0], &msg, sizeof(msg)) > 0)
-> +			pr_debug2("threads[%d]: sent %s\n", rec->thread_data[t].tid,
-> +				 thread_msg_tags[msg]);
-> +	}
-> +
-> +	if (nr_threads > 1) {
-> +		sched_setaffinity(0, MMAP_CPU_MASK_BYTES(&thread_data[0].mask->affinity),
-> +				  (cpu_set_t *)thread_data[0].mask->affinity.bits);
-> +	}
+> +#endif
 >  
->  	thread = &thread_data[0];
+>  	if (map->comp_level && !perf_mmap__aio_enabled(map)) {
+>  		map->data = mmap(NULL, mmap__mmap_len(map), PROT_READ|PROT_WRITE,
+> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
+> index 9d5f589f02ae..c4aed6e89549 100644
+> --- a/tools/perf/util/mmap.h
+> +++ b/tools/perf/util/mmap.h
+> @@ -13,6 +13,7 @@
+>  #endif
+>  #include "auxtrace.h"
+>  #include "event.h"
+> +#include "util/compress.h"
 >  
->  	pr_debug("threads[%d]: started on cpu=%d\n", thread->tid, sched_getcpu());
+>  struct aiocb;
 >  
-> -	return 0;
-> +out_err:
-> +	pthread_attr_destroy(&attrs);
-> +
-> +	if (sigprocmask(SIG_SETMASK, &mask, NULL)) {
-> +		pr_err("Failed to unblock signals on threads start: %s\n", strerror(errno));
-> +		ret = -1;
-> +	}
-> +
-> +	return ret;
->  }
+> @@ -43,6 +44,8 @@ struct mmap {
+>  	struct mmap_cpu_mask	affinity_mask;
+>  	void		*data;
+>  	int		comp_level;
+> +	struct perf_data_file *file;
+> +	struct zstd_data      zstd_data;
+>  };
 >  
->  static int record__stop_threads(struct record *rec, unsigned long *waking)
+>  struct mmap_params {
 > -- 
 > 2.19.0
 > 
