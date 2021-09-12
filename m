@@ -2,122 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF23407F6D
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF43407F72
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235205AbhILSbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 14:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhILSbq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 14:31:46 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57962C061574;
-        Sun, 12 Sep 2021 11:30:32 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id f2so13034204ljn.1;
-        Sun, 12 Sep 2021 11:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lM95oVF+57JXmaYeDU5pGJdRZwgFdYQm9niZbYhhfzc=;
-        b=pXjElKtJj0/p2kARz8MJwSWK/6sKGcHCfssPrnzkhXmjBVuBxMapJcCd3kmZGra+5t
-         SylNHqABZAkPMoUymKhOaF+tLE/x1ss2IQrywahhd5O4ebRnOc+KadX5G+HInoygcHMM
-         PsojvoVQX/XT1agnL2sfGhVxamaj9bnQuikCkzJUez7FBPMUxM/wm15thcy3QGIN/olp
-         hrFIhVHto3X9FOJBhu2kYr+A8SMwM2tFkKZnxqzK4ulJ/r1FbOpBQnp4qzUy098uQ+fL
-         oG3bUuw0K7wLonY+g1F2MolBBxSYexV0IRU7qLZVN8iVgkucNBOP32Lw+zSmD+lFRIqF
-         AQOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lM95oVF+57JXmaYeDU5pGJdRZwgFdYQm9niZbYhhfzc=;
-        b=LPFq4itlX5r3sIbsKulkrm/buouDprFn6ZAyt/d0pxFNtatwn0A24ihFosjjODqzFi
-         ewPNj3Ld67/ZxyqBmiAmubkV3oc3bJi5+8IncwX+iZDNCBFnLMc8bnQu64Xjw2lnUqPW
-         P5CX+a+a/xTZXZarhen89EQcL5u9GY4pQ+4lZRPv2ETUI+Cm9/9YA7V9CyFYGT2oBcW+
-         nhjuc82WRm0yU1TiZHrdUx9+w4GC4JO0S8OxR9Z2nH/ufnmEVXnKH7qfLmrznjwp6HDb
-         Hcf7UHkHYPSs4Rl+b2CpndtOn0Q75ji1qDIJuDcafM0lZ5THklM/z8HDaMuRFPAYPtuo
-         TOjw==
-X-Gm-Message-State: AOAM530DkE7MCe+OhbWqUEczDQBWI9bHtNmzRo2NMM4SfQxxpmvvKuMU
-        5cpBvb8SA3P4bTFFsGc2KzlPGeFX93M=
-X-Google-Smtp-Source: ABdhPJwFHHYXhazDgurXJ4nSQsCdft2zclaEk0XBhVz/7Osc5HngrazO5015vLM0c3phiuzWx8jAHg==
-X-Received: by 2002:a05:651c:1242:: with SMTP id h2mr7043661ljh.114.1631471430772;
-        Sun, 12 Sep 2021 11:30:30 -0700 (PDT)
-Received: from localhost.localdomain (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
-        by smtp.gmail.com with ESMTPSA id x192sm586750lff.154.2021.09.12.11.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 11:30:30 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v1] memory: tegra: Remove interconnect state syncing hack
-Date:   Sun, 12 Sep 2021 21:30:09 +0300
-Message-Id: <20210912183009.6400-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S235178AbhILSm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 14:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232959AbhILSm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 14:42:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9BAE56101E;
+        Sun, 12 Sep 2021 18:41:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631472071;
+        bh=uwXI0BwolZBy7OOpJeTopjZIn1eYeqmB6DQGNnXD8BA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=FrL6wcImUUGSMkUqh9fNIiTIR1z57VS02PggnhrQoWwz1bZad9Zr7SeDZIrvaCUV7
+         U62MTPPrX5cJZg2eT8f+MWhuMSVlrWphf8CL7+MCXPQP+KBkJRzUKIW3fj9cgjY+pV
+         9R98NuQ6eZ1KzWf0CmRL2BrUgPi/RMBWBtbMdYeOPPWsgJZtJ+Mv4XZq8t5dtRnv2t
+         msuB9dPRcpc6lBfFMbjHewLttZ87YkGEFAUjP/CBuBxmpqfDx2mSjuCYIEan4JFAJA
+         sRMxI/eldbPdbQFcXgAg0FGnrkteIBcsJ3E+w3HIa4VMqkWZ0kVaYYiTUzoaOymHXN
+         UbIJNbqliyBgA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88F3960A47;
+        Sun, 12 Sep 2021 18:41:11 +0000 (UTC)
+Subject: Re: [GIT PULL] smb3 client fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5ms8Tbj+Jwo6pgM--fGtOBW3vyaSkU==959G=-HtoT5EzQ@mail.gmail.com>
+References: <CAH2r5ms8Tbj+Jwo6pgM--fGtOBW3vyaSkU==959G=-HtoT5EzQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5ms8Tbj+Jwo6pgM--fGtOBW3vyaSkU==959G=-HtoT5EzQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
+X-PR-Tracked-Commit-Id: 9351590f51cdda49d0265932a37f099950998504
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8d4a0b5d0813c990637fa9f3c9bea5dab1fedb8f
+Message-Id: <163147207150.12542.3473838924458417090.pr-tracker-bot@kernel.org>
+Date:   Sun, 12 Sep 2021 18:41:11 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-State syncing works properly now, previously the sync callback was never
-invoked. Apparently it was fixed in drivers core, so let's remove the
-hack. The state won't be synced until all consumer drivers of devices
-that reference memory controller in a device-tree are probed, i.e. keeping
-bandwidth at maximum until both display and devfreq drivers are probed.
+The pull request you sent on Sat, 11 Sep 2021 12:23:54 -0500:
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/memory/tegra/mc.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
 
-diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
-index 3c5aae7abf35..6b710c204799 100644
---- a/drivers/memory/tegra/mc.c
-+++ b/drivers/memory/tegra/mc.c
-@@ -706,15 +706,6 @@ static int tegra_mc_interconnect_setup(struct tegra_mc *mc)
- 			goto remove_nodes;
- 	}
- 
--	/*
--	 * MC driver is registered too early, so early that generic driver
--	 * syncing doesn't work for the MC. But it doesn't really matter
--	 * since syncing works for the EMC drivers, hence we can sync the
--	 * MC driver by ourselves and then EMC will complete syncing of
--	 * the whole ICC state.
--	 */
--	icc_sync_state(mc->dev);
--
- 	return 0;
- 
- remove_nodes:
-@@ -835,6 +826,15 @@ static int __maybe_unused tegra_mc_resume(struct device *dev)
- 	return 0;
- }
- 
-+static void tegra_mc_sync_state(struct device *dev)
-+{
-+	struct tegra_mc *mc = dev_get_drvdata(dev);
-+
-+	/* check whether ICC provider is registered */
-+	if (mc->provider.dev == dev)
-+		icc_sync_state(dev);
-+}
-+
- static const struct dev_pm_ops tegra_mc_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(tegra_mc_suspend, tegra_mc_resume)
- };
-@@ -845,6 +845,7 @@ static struct platform_driver tegra_mc_driver = {
- 		.of_match_table = tegra_mc_of_match,
- 		.pm = &tegra_mc_pm_ops,
- 		.suppress_bind_attrs = true,
-+		.sync_state = tegra_mc_sync_state,
- 	},
- 	.prevent_deferred_probe = true,
- 	.probe = tegra_mc_probe,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8d4a0b5d0813c990637fa9f3c9bea5dab1fedb8f
+
+Thank you!
+
 -- 
-2.32.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
