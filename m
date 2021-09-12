@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A70E407C6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 10:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394B6407C6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 10:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhILIZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 04:25:23 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:36667 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231286AbhILIZW (ORCPT
+        id S233313AbhILI0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 04:26:52 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:42372 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231286AbhILI0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 04:25:22 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id A11B75C00CF;
-        Sun, 12 Sep 2021 04:24:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sun, 12 Sep 2021 04:24:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nL9jNA
-        mavBC4HbfglHRAjd/NKzEA9UpNyumbAXQQ1gw=; b=iHG/ky9Gp9WVbmqoOLQWBc
-        AnIfiwsQkFmbAEFTe30bKHa/JAee2hcoIhIIRFHKzWTRxlRrp/p/VGszypPYtPOt
-        aRJ6oz2xyNRI+d9liiGUQX+YplFKypFDU2duOWONNoqdtAMTkOUWXcwc6KgP6pX/
-        tk1vUo/9rLTPkHuH1ikCFYqCp7QJPn7r1c0y5azJ0mSMZiX3KMQBSHKOtmmk83qW
-        3b23Ww4A9osHr5L31iVkU31EOco0Xdkmkf1YZyZhw7f39QBqW66irXu5jMIcjy/y
-        bIGy8ycwP9dU2HX4gycpjxqJxg1tLcArIsKumlqKVBqeLZi8hh1cFgfY4wFZD0iQ
-        ==
-X-ME-Sender: <xms:Jrk9YTRC5FKMatjwMCuS0kENllNN9_Q_lDb-RcOUALGnxmMeBbeR4Q>
-    <xme:Jrk9YUwEkcZZnxQJqmmUxnR0KuBYb-KJYhdNr4l_E715xx_3-2zF0ngdRDnTA6PKM
-    NaNGUT26mLyHyIwJYU>
-X-ME-Received: <xmr:Jrk9YY10C6sEbY6RIB3CV0vOGSE54nHNOIVh8fuDIHBX4R8SvKqXF44rE0z6AT2CI79LnDuhk7127YTude-W7J5_OR1TvkWa5J778Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeghedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepgfekhfetgedtffejtdehgfegieegjeeujedvueetgedvtdekfeefjeehtdeh
-    vedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpthifihgssghlvgdrohhrghenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghi
-    nheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:Jrk9YTC6dhvslTPguGXYKNxZqer8l2qyi7crb-cddMxV4_Uh7fipjA>
-    <xmx:Jrk9YcgqWN1YijqO_SEo6jZDRuOxQBQ8NYXpCP23qr8SX17ktfns1A>
-    <xmx:Jrk9YXqDQNZ8VTk33mHniWBppjWFN1kkTHp4uHHz0llYL33MxttFgg>
-    <xmx:J7k9YVseRFxNj6vUo8Igp8VH09OfJ5dncp9ESgxN5XZGJOEJ44UZbg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 12 Sep 2021 04:24:03 -0400 (EDT)
-Date:   Sun, 12 Sep 2021 18:23:56 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Ali Akcaagac <aliakc@web.de>
-cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Remove obsolete e-mail addresses
-In-Reply-To: <20210912094239.2fe068ed@web.de>
-Message-ID: <ea4d6035-acf3-312a-921b-f427161ff7ee@linux-m68k.org>
-References: <c9168d8e5595bdaa3a18d596f781b55e052af3fc.1631158421.git.fthain@linux-m68k.org> <20210912094239.2fe068ed@web.de>
+        Sun, 12 Sep 2021 04:26:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=66/6NqPSrhkqph5BWOoEvjv8N+hS8IRfOIKI44IZqjw=; b=wWA3BWxW/Smiw4RQINt8mfkrq0
+        DkLrdMsHmO89LiHr/IMLslutz6bmKIYbIZPIoH6QSLvYUbA6C26WJyvfanXeotjKkXaXjfw5k2GWF
+        ANexlgrkN1YmK1bIKvjM0XjIzRjqmRfV25noVlHcu4gAg7fJwA0SDb6Sa8FAqoBnr0lI=;
+Received: from lfbn-mar-1-908-222.w90-73.abo.wanadoo.fr ([90.73.223.222] helo=[192.168.1.32])
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <rbernon@codeweavers.com>)
+        id 1mPKnq-0002FX-7Y; Sun, 12 Sep 2021 03:25:32 -0500
+Subject: Re: [PATCH] perf symbol: Look for ImageBase in PE file to compute
+ .text offset
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210909192637.4139125-1-rbernon@codeweavers.com>
+ <YTpuTiYzkTKbUM/l@kernel.org>
+From:   =?UTF-8?Q?R=c3=a9mi_Bernon?= <rbernon@codeweavers.com>
+Message-ID: <e8ae2882-12cd-0fe1-b5e6-da9fc286b821@codeweavers.com>
+Date:   Sun, 12 Sep 2021 10:25:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YTpuTiYzkTKbUM/l@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Sep 2021, Ali Akcaagac wrote:
+On 9/9/21 10:27 PM, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Sep 09, 2021 at 09:26:36PM +0200, Remi Bernon escreveu:
+>> Instead of using the file offset in the debug file.
+>>
+>> This fixes a regression from 00a3423492bc90be99e529a64f13fdd80a0e8c0a,
+>> causing incorrect symbol resolution when debug file have been stripped
+>> from non-debug sections (in which case its .text section is empty and
+>> doesn't have any file position).
+>>
+>> The debug files could also be created with a different file alignment,
+>> and have different file positions from the mmap-ed binary, or have the
+>> section reordered.
+>>
+>> This instead looks for the file image base, using the corresponding bfd
+>> *ABS* symbols. As PE symbols only have 4 bytes, it also needs to keep
+>> .text section vma high bits.
+> 
+> I added a:
+> 
+> Fixes: 00a3423492bc90be ("perf symbols: Make dso__load_bfd_symbols() load PE files from debug cache only")
+> 
+> To help stable@kernel.org to pick it, its on my local tree now.
+> 
+> It would be great to get a:
+> 
+> Reviewed-by: Nicholas Fraser <nfraser@codeweavers.com>
+> 
+> Can we have it, please?
+> 
 
-> Hi,
-> 
-> sorry for not responding earlier. I've just started a new job at a 
-> different location and things are a bit messy right now. The patch looks 
-> good, considering for an old SCSI driver that probably isn't existing 
-> anymore :)
-> 
-
-Assuming you're still doing patch review for this driver, would be 
-willing to respond to this thread?
-https://lore.kernel.org/linux-scsi/eb4f2f15-dab8-16da-4fe6-ae90638018e1@linux-m68k.org/T/#mad00ce650ac65c664ec64b98c054d16ceb7e79cb
-
-If you're not still doing patch review, perhaps the patch below is 
-incomplete (?)
-
-> On Thu, 09 Sep 2021 13:33:41 +1000
-> Finn Thain <fthain@linux-m68k.org> wrote:
-> 
-> > These e-mail addresses bounced.
-> >
-> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> > ---
-> >  MAINTAINERS | 3 ---
-> >  1 file changed, 3 deletions(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index d7b4f32875a9..690539b2705c 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5138,10 +5138,8 @@ S:	Maintained
-> >  F:	drivers/scsi/am53c974.c
-> >
-> >  DC395x SCSI driver
-> > -M:	Oliver Neukum <oliver@neukum.org>
-> >  M:	Ali Akcaagac <aliakc@web.de>
-> >  M:	Jamie Lenehan <lenehan@twibble.org>
-> > -L:	dc395x@twibble.org
-> >  S:	Maintained
-> >  W:	http://twibble.org/dist/dc395x/
-> >  W:	http://lists.twibble.org/mailman/listinfo/dc395x/
-> >
-> 
-> 
+Well, Nicholas doesn't work with us anymore. I've reached them 
+separately but didn't get any answer so I'm thinking they may not be 
+interested.
+-- 
+Rémi Bernon <rbernon@codeweavers.com>
