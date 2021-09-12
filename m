@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9DA407C2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 09:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C133A407C2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 09:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhILHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 03:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S232166AbhILHal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 03:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhILHai (ORCPT
+        with ESMTP id S230421AbhILHaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 03:30:38 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D86C061574;
-        Sun, 12 Sep 2021 00:29:24 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id t8so4374091wrq.4;
-        Sun, 12 Sep 2021 00:29:24 -0700 (PDT)
+        Sun, 12 Sep 2021 03:30:39 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8F7C061574;
+        Sun, 12 Sep 2021 00:29:25 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id t18so9467058wrb.0;
+        Sun, 12 Sep 2021 00:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CZBdcwxffYSz2RZwsY3FdiDmTR5iWVRuIsz5WG9s6e0=;
-        b=mbstrXTZ7CJiqgHTD8VzbSlUC5f6gbW37gVX8U1iiDAj/2mWI2mekhdTml88dmdD5j
-         V+rGzH+CeRwm4cC/MgzrxEm3KfMylmQAUszcB+yz9/QADmMXzczGMgAvbClBXXPezWPP
-         2KySYmMvvflXGznsO/uxHdmT/Bbv17WAtj/WGSuX00yAcCWbr+3tmc/zasDUxRzsYg1d
-         QK5I1SwNqT/Y318H0RkT/Kie+iToCUI01OZ/wffJUsMrqlD4saVwGpF8wdlXlzgdZVJM
-         fafkaoj+jqafTRhMqRb6+nOmLeTUzQWMpjid90n1YyFPNguJpT/93Hh8xTYkMWacaj3L
-         Csbw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=q4RL0sqYDQpryks2hL9tjkn/HeWDVonzaaoKuLG05Vk=;
+        b=kV0FwxCcUZPNv2Sxt7roikRo7jM6LiDDicK3Z0IAjf9ahaa9/SsZpSS8lIFmdFQajj
+         xka8kYlyccXLabLzhnOcQpIkfve3AA3L8dWk2RWcgt5adAy0pj39oLYYKbM4ik0cORKQ
+         gDo8aB3rA1Ybkd1MEzEZkvW3EEpn74O9kzlJZ7IFsEb3rdwWmHyV1f+slsZ7XL4kKLKF
+         Iqiyt6FtmRE+ceskzSZw3X7zXHetZ1wrpc/tL8ZSYHUqhuVzYn59JWOyPxMpmknxroPZ
+         2SXDjJDrbkMjDhXHJ8zYH0dDKDvNPGmXJ28LFJFjPcQ37iXo3y0E+PnaCbMsqkYsTqlk
+         9ekw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CZBdcwxffYSz2RZwsY3FdiDmTR5iWVRuIsz5WG9s6e0=;
-        b=2fYFG5ZCTrWs3o9Nq95UhSKg2LSqqaViUonQ+MPaRRMKF37e1eZnZ6lmSxqQtE7iPp
-         l8iDcZHdvotKpbz9ruBzkaeao/aQ61YRUthPWoyYNoWsw0Wtsybhl3CZQSarMDLULbZl
-         bpDx6MVzSGS0EePAOTih5jCrzj3S6OQ5I/Y90stofNECeZsPP/5M/PWtQYT6ucaB3rme
-         UZsx0eoLAB82eY6PiGB64o4qJuOeJ+kN6+dmTztNwTz7NWMvebBscwsA9DyaoFG7u0IJ
-         P6vXnWelSzLk6nObwNMfkEUlb2wOeUsm3zRCCVvoTlXLxnkXHgUAM90Uwq8BcbvgpM6O
-         OJqg==
-X-Gm-Message-State: AOAM531zFBtOHXIwIq3kAqorWkRRI95nmYCRX7QSIJOJ7pLLzrpPJNkc
-        AgBYYpnghBkN31aYtd6M7TQ=
-X-Google-Smtp-Source: ABdhPJz4nvfQiFNKXBcEJWr2d1iLp+AdlSJBArr3BW9WSAH6qQxaUTFzEymeHIWc0lqAOCiJ+EZ+Xw==
-X-Received: by 2002:a5d:4f88:: with SMTP id d8mr6382713wru.358.1631431762809;
-        Sun, 12 Sep 2021 00:29:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=q4RL0sqYDQpryks2hL9tjkn/HeWDVonzaaoKuLG05Vk=;
+        b=2a+sJbd/qCMGhSM2bHrb748j6UbkHiV4gPuFqt5WjrEaBseM4bHmHQUBz/OGUH0vuc
+         B/IHRM2RomFLTiODxWOQu8uKrnxuBo8I6gtWGAFHg9XJsBdJYuO4r3Ud+b4Rd69WrD4n
+         MOFh1KKgfzPa6eVzwEfGfJnB9lwkeXfWF2EKzkgwGQhthvxqzUYjh/Q6bud7+97+om32
+         EmbtbydHX32tWO9GpmBHXh3OB2jQyCXBC0RcRYtLe1YMQ2p8avLod3LH8vIEx5eRG3jb
+         3bMdTI699TCkuzmAP5vliZ/RyPSbkVJOCGo1x43YboIC34+jgq7IyLq+aJRwolbQiTQ5
+         viEg==
+X-Gm-Message-State: AOAM530j8XUYGb3c7wOSmnOXqEjjaHhsrCqL5ypzXPiuI8TZDjO7rHgB
+        N4AkKy9fBERbsY667OkWE9I=
+X-Google-Smtp-Source: ABdhPJyzGL9pJtzMKYuimQOy8clVHIFsJ1uTW6/YaQEONAIxa49BkFdACyZzJGio4nTTzUBvHyzDNw==
+X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr3890013wrw.14.1631431763798;
+        Sun, 12 Sep 2021 00:29:23 -0700 (PDT)
 Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id t18sm3584889wrp.97.2021.09.12.00.29.21
+        by smtp.gmail.com with ESMTPSA id t18sm3584889wrp.97.2021.09.12.00.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 00:29:22 -0700 (PDT)
+        Sun, 12 Sep 2021 00:29:23 -0700 (PDT)
 From:   Jernej Skrabec <jernej.skrabec@gmail.com>
 To:     mripard@kernel.org, wens@csie.org
 Cc:     robh+dt@kernel.org, broonie@kernel.org, lgirdwood@gmail.com,
@@ -55,34 +55,41 @@ Cc:     robh+dt@kernel.org, broonie@kernel.org, lgirdwood@gmail.com,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH 0/2] ARM: dts: sun8i: r40: Add I2S nodes
-Date:   Sun, 12 Sep 2021 09:29:12 +0200
-Message-Id: <20210912072914.398419-1-jernej.skrabec@gmail.com>
+Subject: [PATCH 1/2] dt-bindings: sound: sun4i-i2s: add Allwinner R40 I2S compatible
+Date:   Sun, 12 Sep 2021 09:29:13 +0200
+Message-Id: <20210912072914.398419-2-jernej.skrabec@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210912072914.398419-1-jernej.skrabec@gmail.com>
+References: <20210912072914.398419-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allwinner R40 has 3 I2S controllers, compatible to those in H3.
+Allwinner R40 has 3 I2S controllers, compatible to those, found in H3.
 
-Patch 1 adds R40/H3 compatible pair to DT bindings.
-Patch 2 adds I2S nodes to R40 DT.
+Add R40/H3 compatible pair to DT bindings.
 
-Please take a look.
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ .../devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml     | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Best regards,
-Jernej
-
-Jernej Skrabec (2):
-  dt-bindings: sound: sun4i-i2s: add Allwinner R40 I2S compatible
-  ARM: dts: sun8i: r40: Add I2S nodes
-
- .../sound/allwinner,sun4i-a10-i2s.yaml        |  3 ++
- arch/arm/boot/dts/sun8i-r40.dtsi              | 39 +++++++++++++++++++
- 2 files changed, 42 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+index 39b66e9ce3e3..7d48ea094c66 100644
+--- a/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/allwinner,sun4i-a10-i2s.yaml
+@@ -20,6 +20,9 @@ properties:
+       - const: allwinner,sun6i-a31-i2s
+       - const: allwinner,sun8i-a83t-i2s
+       - const: allwinner,sun8i-h3-i2s
++      - items:
++          - const: allwinner,sun8i-r40-i2s
++          - const: allwinner,sun8i-h3-i2s
+       - items:
+           - const: allwinner,sun8i-v3-i2s
+           - const: allwinner,sun8i-h3-i2s
 -- 
 2.33.0
 
