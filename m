@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF64E407C86
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A472B407CA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhILJGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 05:06:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44418 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232742AbhILJGv (ORCPT
+        id S233171AbhILJbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 05:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232845AbhILJbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 05:06:51 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8A5671FD69;
-        Sun, 12 Sep 2021 09:05:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631437536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uLTwGTmA1ofLHh00bpzXi4O/0dOGkYDWM0F2xDqoIag=;
-        b=EVZkX4VutgGnK0qKuUscrU0r0w/yTYlF0po+4kxETKOjz3X7T3bYSG6Wf0yvCmydTxhtUT
-        kWXPcG9D2OSbirZPMnQA8jISKFAc0fwA3vuFRKOa9m9KQIw3dgzxiToD6nPt/6OOgdfZyO
-        Iw/XiH1H7WP1edfDg6Pj8wb7Jyi2uZk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631437536;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uLTwGTmA1ofLHh00bpzXi4O/0dOGkYDWM0F2xDqoIag=;
-        b=KDYW4amdUrgkDEbvJQvB5764axvtk3IutUOyVSjQWZTwTueCFWHS6hbFWVltByUJD165QI
-        o4W3BnkCOnT2DeDg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 78ED9132FD;
-        Sun, 12 Sep 2021 09:05:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id D5BCHeDCPWFaWQAAGKfGzw
-        (envelope-from <bp@suse.de>); Sun, 12 Sep 2021 09:05:36 +0000
-Date:   Sun, 12 Sep 2021 11:05:34 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] sched/urgent for v5.15-rc1
-Message-ID: <YT3C3lE09Yvx2e8h@zn.tnic>
+        Sun, 12 Sep 2021 05:31:24 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9730C061574;
+        Sun, 12 Sep 2021 02:30:10 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id u15-20020a05600c19cf00b002f6445b8f55so4455113wmq.0;
+        Sun, 12 Sep 2021 02:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xgV/sn+/3Ey0N5S68WosMZFPdIOrQlkD0e3kQlwm7fo=;
+        b=JiXnFTDpTnCvLksqHy1qlCiFBeOBZRTd7ZzgK97kTCIc723ySIvIknR0ZM//uaajWV
+         /gf3897MJnYyhT1pAuTXzEcjTQO5Dfl3Pp6Ilooj2dXUikXzuNgUeLjTBpMENaUji/FZ
+         9FHYAqx6EpA19uuRGIXDD/wJYn4jS4rILQiPiBjHD6TgvvUwJVP2mIyvUm/iRusqv+I+
+         AfQoXIDh+gVORFUXnbkKYdbP3J8ssFH/De4//QuQzXUlRPu1jqJMZ6fd0L/IMwgW8usf
+         huMlU3TBG4O/h+l3/uTxHQ8U3Uh/fjyc2XXQGvALO9afdqUzgudY4KOtmOUXz4fSAa/a
+         qtZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xgV/sn+/3Ey0N5S68WosMZFPdIOrQlkD0e3kQlwm7fo=;
+        b=baRbzixU6R6Q3STZKlSRTEqkXOHFWyN1U29AQW+9dH0DT8PtufjJmydcjriRRQb7Dj
+         ohh7a+8Mkf+balNfIxUaDfLGtvlw8EjHDFXFgBHTjbkyqD2S/yLWik2zja/ZZlDOI0LY
+         eJv1ZUw2KF66iurSB78N4ha5CQy533aavHMUGSWaMuSWL7qt+2lfUwCiw39gc/JAGKin
+         F9cCzxat+IIBwTYuGhbymHsq6OBb5O15Q5KGZbKUGWCe8hIJvOXQp7dGiInyb79MkFwo
+         AUFCEu7XkkekyyOBqjGCauVn/sG5jDtF4ScKVAPx/IQirHHJE0U2fcnzIN+ashLG8wvo
+         mEIA==
+X-Gm-Message-State: AOAM532oxe7DhbyoHEqOiUFJI/6VmRv2MrhmbgTmg5K9A1d61X0qrYYn
+        xAdOKt/dVQdTpvIfXROl8OFcZYePrQ==
+X-Google-Smtp-Source: ABdhPJzzJSHXVIlGgZvIyj39aqlTuJ0L7fdisAtkVkZQ+lQ9Gvkno5MKwoGCLqDB/vx8aitngmMyJg==
+X-Received: by 2002:a1c:7e8a:: with SMTP id z132mr5860691wmc.75.1631439009364;
+        Sun, 12 Sep 2021 02:30:09 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.249.181])
+        by smtp.gmail.com with ESMTPSA id j20sm4121995wrb.5.2021.09.12.02.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 02:30:09 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 12:30:07 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Alexei Lozovsky <me@ilammy.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Lameter <cl@linux.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/7] proc/stat: Maintain monotonicity of "intr" and
+ "softirq"
+Message-ID: <YT3In8SWc2eYZ/09@localhost.localdomain>
+References: <06F4B1B0-E4DE-4380-A8E1-A5ACAD285163@ilammy.net>
+ <20210911034808.24252-1-me@ilammy.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210911034808.24252-1-me@ilammy.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, Sep 11, 2021 at 12:48:01PM +0900, Alexei Lozovsky wrote:
+> Here's a patch set that makes /proc/stat report total interrupt counts
+> as monotonically increasing values, just like individual counters for
+> interrupt types and CPUs are.
+> 
+> This is as if the sum was a shared counter that all CPUs increment
+> atomically together with their individual counters, with the sum
+> correctly and expectedly wrapping around to zero once it reaches
+> UINT_MAX.
+> 
+> I've also added some documentation bits to codify this behavior and make
+> it explicit that wrap-arounds must be expected and handled if userspace
+> wants to maintain accurate total interrupt count for whatever reasons.
 
-please pull two urgent scheduler fixes for v5.15-rc1.
-
-Thx.
-
----
-
-The following changes since commit e681dcbaa4b284454fecd09617f8b24231448446:
-
-  sched: Fix get_push_task() vs migrate_disable() (2021-08-26 19:02:00 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v5.15_rc1
-
-for you to fetch changes up to 868ad33bfa3bf39960982682ad3a0f8ebda1656e:
-
-  sched: Prevent balance_push() on remote runqueues (2021-09-09 11:27:23 +0200)
-
-----------------------------------------------------------------
-- Make sure the idle timer expires in hardirq context, on PREEMPT_RT
-
-- Make sure the run-queue balance callback is invoked only on the outgoing CPU
-
-----------------------------------------------------------------
-Sebastian Andrzej Siewior (1):
-      sched/idle: Make the idle timer expire in hard interrupt context
-
-Thomas Gleixner (1):
-      sched: Prevent balance_push() on remote runqueues
-
- kernel/sched/core.c | 6 +++---
- kernel/sched/idle.c | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+How about making everything "unsigned long" or even "u64" like NIC
+drivers do?
