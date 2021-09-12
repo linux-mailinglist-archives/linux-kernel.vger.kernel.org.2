@@ -2,193 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0837407CE6
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70913407CEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhILKkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 06:40:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48700 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229635AbhILKku (ORCPT
+        id S233337AbhILKmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 06:42:33 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50759 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233029AbhILKmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 06:40:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631443176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U9OX2dXKujvgMs86f/6Rr/Q99b81OvOF+jxSI/UOzvA=;
-        b=QWpDq6S3Nn8Ch9Fs3u8kkDuk4KwBPXaOsYwBEa0EFtU9dIJ+Hz8izJEL1ouGocj4kx5oxj
-        VgloDJilcEzWcnGuTHXkLSvG6hO9XbZd9i3Jw0qXi/tXIJVBdVL1xbqfAqEFkfTinEMZmA
-        JMweaxjCCSfMIL7N4qsF3TJGEMcG8I0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-sKp7u9X_MoKpKJn-y5GMIQ-1; Sun, 12 Sep 2021 06:39:34 -0400
-X-MC-Unique: sKp7u9X_MoKpKJn-y5GMIQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AC0C659;
-        Sun, 12 Sep 2021 10:39:33 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE4DD1B480;
-        Sun, 12 Sep 2021 10:39:29 +0000 (UTC)
-Message-ID: <fbb40bb8c12715c0aa9d6a113784f8a21603e2b3.camel@redhat.com>
-Subject: Re: [RFC PATCH 2/3] nSVM: introduce smv->nested.save to cache save
- area fields
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 12 Sep 2021 13:39:28 +0300
-In-Reply-To: <20210903102039.55422-3-eesposit@redhat.com>
-References: <20210903102039.55422-1-eesposit@redhat.com>
-         <20210903102039.55422-3-eesposit@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Sun, 12 Sep 2021 06:42:31 -0400
+Received: by mail-il1-f197.google.com with SMTP id x4-20020a92b004000000b0022b3cb3b4deso13249906ilh.17
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 03:41:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=BAjX2AkFDNKH19LZZYWbrkqCvuFRehf7ymn/cg3ceC0=;
+        b=O32d07V1EjjZj/j2p9ihg8BDOu9Q3NQJTjBhdfFbKvHzb3zfp8XNDbQL1w9T7TJStH
+         bZ8t5ipSiKJKK2xIsrVbbjsdi9NcCXFB8+01kZS0NtebSf6n14fE5kDoezcB1MQqpMle
+         eB0BWPIpEbliKntQfAF3cUsp5U0ZkS6ijiK9DOjtlMToaRk2gcAIF0P4aqZiBWdpk7w+
+         274g/7M0JYJRwMTpqABqBcl5GlWcLfYApDG3nXWoTQYsXpWUAUrzgLrqsQJq2dbpJnJP
+         Ty3bVZVdhqMnqnpy1mrYofusiQmgjc8AAkyQpW2LTM1uzRpEZUx4IZuu0tjmxEMkytZr
+         1GQg==
+X-Gm-Message-State: AOAM531wzSiHYT2srpNboFKOr4F2T0w4aWWccytrlkStyHj7pufjGj9B
+        b9kbDy+rbbfLS46/MEoTKjMC/2ib+KmVCp6CJfai1OR6R87M
+X-Google-Smtp-Source: ABdhPJxBLhkP+lsamSOdAfVRoDbugO0ApB1zr09uxqaa9wtDcudadu3O+ExWe6kaPZkPpafpA7xZJ6Q5T9kTnWKn/HZgjSXVDvw8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a05:6e02:2194:: with SMTP id j20mr4005230ila.268.1631443277088;
+ Sun, 12 Sep 2021 03:41:17 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 03:41:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000008cad05cbc9fdf2@google.com>
+Subject: [syzbot] riscv/fixes boot error: BUG: unable to handle kernel paging
+ request in corrupted
+From:   syzbot <syzbot+6dfe749a37c4895fd959@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, jmorris@namei.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        serge@hallyn.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 12:20 +0200, Emanuele Giuseppe Esposito wrote:
-> This is useful in next patch, to avoid having temporary
-> copies of vmcb12 registers and passing them manually.
+Hello,
 
-This is NOT what I had in mind, but I do like that idea very much,
-IMHO this is much better than what I had in mind!
+syzbot found the following issue on:
 
-The only thing that I would change is that I woudn't reuse 'struct vmcb_save_area'
-for the copy, as this both wastes space (minor issue), 
-and introduces a chance of someone later using non copied
-fields from it (can cause a bug later on).
+HEAD commit:    7d2a07b76933 Linux 5.14
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=150f460d300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
+dashboard link: https://syzkaller.appspot.com/bug?extid=6dfe749a37c4895fd959
+compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: riscv64
 
-I would just define a new struct for that (but keep same names
-for readability)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6dfe749a37c4895fd959@syzkaller.appspotmail.com
 
-Maybe something like 'struct vmcb_save_area_cached'?
-
-> 
-> Right now, instead of blindly copying everything,
-> we just copy EFER, CR0, CR3, CR4, DR6 and DR7. If more fields
-> will need to be added, it will be more obvious to see
-> that they must be added in copy_vmcb_save_area,
-> otherwise the checks will fail.
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 24 ++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c    |  1 +
->  arch/x86/kvm/svm/svm.h    |  3 +++
->  3 files changed, 28 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index d2fe65e2a7a4..2491c77203c7 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -194,6 +194,22 @@ static void copy_vmcb_control_area(struct vmcb_control_area *dst,
->  	dst->pause_filter_thresh  = from->pause_filter_thresh;
->  }
->  
-> +static void copy_vmcb_save_area(struct vmcb_save_area *dst,
-> +				struct vmcb_save_area *from)
-> +{
-> +	/*
-> +	 * Copy only necessary fields, as we need them
-> +	 * to avoid TOC/TOU races.
-> +	 */
-> +	dst->efer = from->efer;
-> +	dst->cr0 = from->cr0;
-> +	dst->cr3 = from->cr3;
-> +	dst->cr4 = from->cr4;
-> +
-> +	dst->dr6 = from->dr6;
-> +	dst->dr7 = from->dr7;
-> +}
-> +
->  static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
->  {
->  	/*
-> @@ -313,6 +329,12 @@ void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
->  	svm->nested.ctl.iopm_base_pa  &= ~0x0fffULL;
->  }
->  
-> +void nested_load_save_from_vmcb12(struct vcpu_svm *svm,
-> +				  struct vmcb_save_area *save)
-> +{
-> +	copy_vmcb_save_area(&svm->nested.save, save);
-> +}
-> +
->  /*
->   * Synchronize fields that are written by the processor, so that
->   * they can be copied back into the vmcb12.
-> @@ -647,6 +669,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
->  		return -EINVAL;
->  
->  	nested_load_control_from_vmcb12(svm, &vmcb12->control);
-> +	nested_load_save_from_vmcb12(svm, &vmcb12->save);
->  
->  	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
->  	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
-> @@ -1385,6 +1408,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->  
->  	svm_copy_vmrun_state(&svm->vmcb01.ptr->save, save);
->  	nested_load_control_from_vmcb12(svm, ctl);
-> +	nested_load_save_from_vmcb12(svm, save);
->  
->  	svm_switch_vmcb(svm, &svm->nested.vmcb02);
->  	nested_vmcb02_prepare_control(svm);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 69639f9624f5..169b930322ef 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4386,6 +4386,7 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
->  			vmcb12 = map.hva;
->  
->  			nested_load_control_from_vmcb12(svm, &vmcb12->control);
-> +			nested_load_save_from_vmcb12(svm, &vmcb12->save);
->  
->  			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12);
->  			kvm_vcpu_unmap(vcpu, &map, true);
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index bd0fe94c2920..6d12814cf64c 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -119,6 +119,7 @@ struct svm_nested_state {
->  
->  	/* cache for control fields of the guest */
->  	struct vmcb_control_area ctl;
-> +	struct vmcb_save_area save;
->  
->  	bool initialized;
->  };
-> @@ -484,6 +485,8 @@ int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
->  int nested_svm_exit_special(struct vcpu_svm *svm);
->  void nested_load_control_from_vmcb12(struct vcpu_svm *svm,
->  				     struct vmcb_control_area *control);
-> +void nested_load_save_from_vmcb12(struct vcpu_svm *svm,
-> +				  struct vmcb_save_area *save);
->  void nested_sync_control_from_vmcb02(struct vcpu_svm *svm);
->  void nested_vmcb02_compute_g_pat(struct vcpu_svm *svm);
->  void svm_switch_vmcb(struct vcpu_svm *svm, struct kvm_vmcb_info *target_vmcb);
-
-So besides the struct comment:
-
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-
-Best regards,
-	Maxim Levitsky
+Unable to handle kernel paging request at virtual address 0000000000400dc0
+Oops [#1]
+Modules linked in:
+CPU: 0 PID: 2973 Comm: dhcpcd-run-hook Not tainted 5.14.0-syzkaller #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : slab_alloc_node mm/slub.c:2900 [inline]
+epc : slab_alloc mm/slub.c:2967 [inline]
+epc : __kmalloc+0xce/0x388 mm/slub.c:4111
+ ra : slab_pre_alloc_hook mm/slab.h:494 [inline]
+ ra : slab_alloc_node mm/slub.c:2880 [inline]
+ ra : slab_alloc mm/slub.c:2967 [inline]
+ ra : __kmalloc+0x6e/0x388 mm/slub.c:4111
+epc : ffffffff803e3568 ra : ffffffff803e3508 sp : ffffffe00b36ba70
+ gp : ffffffff83f967d8 tp : ffffffe0081ac740 t0 : 0000000000000000
+ t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffffe00b36bb10
+ s1 : ffffffe005602500 a0 : 0000000000000000 a1 : ffffffe00b36be5c
+ a2 : 1ffffffc01035a0f a3 : 0000000000400dc0 a4 : 0000000000000001
+ a5 : ffffffff82e4b410 a6 : 0000000000f00000 a7 : ffffffff8038ca52
+ s2 : ffffffff83f96adc s3 : 0000000000400dc0 s4 : 0000000000000010
+ s5 : ffffffff807e81f8 s6 : ffffffff83f9a0d0 s7 : 0000000000000000
+ s8 : 0000000000400dc0 s9 : 0000000000000001 s10: 0000000000000000
+ s11: 0000000000000000 t3 : 2e9dd4183131c900 t4 : ffffffc7f0788989
+ t5 : ffffffc7f078898a t6 : ffffffe00b07e9c0
+status: 0000000000000120 badaddr: 0000000000400dc0 cause: 000000000000000d
+[<ffffffff803e3568>] slab_alloc_node mm/slub.c:2900 [inline]
+[<ffffffff803e3568>] slab_alloc mm/slub.c:2967 [inline]
+[<ffffffff803e3568>] __kmalloc+0xce/0x388 mm/slub.c:4111
+[<ffffffff807e81f8>] kmalloc include/linux/slab.h:596 [inline]
+[<ffffffff807e81f8>] kzalloc+0x26/0x32 include/linux/slab.h:721
+[<ffffffff807ebea4>] lsm_cred_alloc security/security.c:537 [inline]
+[<ffffffff807ebea4>] security_prepare_creds+0xde/0x106 security/security.c:1691
+[<ffffffff8007ba92>] prepare_creds+0x40e/0x5ae kernel/cred.c:293
+[<ffffffff8007d014>] copy_creds+0x62/0x908 kernel/cred.c:367
+[<ffffffff800216ba>] copy_process+0xb52/0x3a98 kernel/fork.c:1992
+[<ffffffff8002480c>] kernel_clone+0x94/0x878 kernel/fork.c:2509
+[<ffffffff80025074>] __do_sys_clone+0x84/0xac kernel/fork.c:2626
+[<ffffffff80025336>] sys_clone+0x32/0x44 kernel/fork.c:2594
+[<ffffffff80005150>] ret_from_syscall+0x0/0x2
+---[ end trace 90d68454cb946b7b ]---
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
