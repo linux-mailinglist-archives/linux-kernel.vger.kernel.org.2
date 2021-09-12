@@ -2,138 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012EE407F20
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3417407F29
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbhILSGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 14:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
+        id S233744AbhILSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 14:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhILSGC (ORCPT
+        with ESMTP id S230106AbhILSQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 14:06:02 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B0C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:04:47 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q26so11001044wrc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:04:47 -0700 (PDT)
+        Sun, 12 Sep 2021 14:16:32 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23200C06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:15:18 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id j18so9158427ioj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:15:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=30MIuYuFKdJf40vmfRkFfYIkgojb9w4Sveh8T6JqTIY=;
-        b=NQU0LrbVkBNcnuE2ohqjZ/xmUuag5caPUvJrfNXkWCF9Qwe3iXppFRcY1MiYVP46Ya
-         7HSxwcrxKGi9dNwWW6SoZwY9w+lS0XmBkK7yJz/ua85jti/89+/v4aIQ62eRhP1P6t3z
-         vwOiJ8SVBD/+MEV6rixg3AYjDGPwOLeLu3bkmKFL8szCrtL2dWsS9Nt3yRgrNe/v85Tx
-         tLGJVhIxrK0dXHPLnAqq6HRBf4kB/Td6staVXeVHw1VfWwEfMS8Q1mhleoJcUrPZqkXb
-         fO/xa1qrOVzthCYYD0S2/9oBVo+PDVilKUcKcbwkVSeQhop5a/ixNSxKSvx18A3g6RpH
-         8Y0Q==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ogHesMDpKGxf6RH9yHh1zki41VihTW9bMbJ0zX+O6Kk=;
+        b=gtldxaIdkPDYxZinnbQjuEYP4CZvPREGJaJc/qrUdPg4PSz660/r4svAolsYVeXRnF
+         J35QhDKf2UVz0TVrA6SoAKefwdcNGki5IMpW0YgSlDk5cMTjPCmNK0TjhtYsNf3WVThn
+         fHb7pnJSQTnF00ryQDPB2HacR95x1/tyGDZiVnYR6+uw8u9C8v9ERHu8sEOos7HdKeFc
+         ItFsW5T6uXtHjV34/VXCYVoolFKhbYI/0/70acX+gRxP7eAJl94KTxYY6Hxy5bqtUJRD
+         BuEi8PzSvsdeATGhCZ7ZGC083eucmD0YVNNPG4AkkqA8FHKGT7bGaewJOMLzdZMRUEyg
+         TOrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=30MIuYuFKdJf40vmfRkFfYIkgojb9w4Sveh8T6JqTIY=;
-        b=l8QQLL7WXxCDXwdwOhbVJBLNlAk9x3Q92vo0vfj2TKDXDVTxo3PKfRdaOaAPY61sId
-         Agwkk8gz+hBfYras9pxEpIlOtdUAsg7HGH72rdgNDTiZd1qR8h2yAUGpk6gta7Iu+2HU
-         1tmN1E51kEm2+Th9JlsKz9Eefp6ZrOUo0FE/QoXnvFcZTk4jO+7516ioGeeWsSY8dQ0Q
-         geX9oyWgoLZhGqtA3irMMrggzeYNjl3PuGjIX6sm88/5GBiQbnyfAxLFRS5FBVthRGdp
-         gDFc9faS7v0B05XBme5XFJzcDXrkwdAuOyIwfssUHDbM9dvf5NpOTHO2GqyowdOqcVWH
-         upeQ==
-X-Gm-Message-State: AOAM533h1FUlSdd7PlePUx7GBQiJOgVeVaO4i/QzjpvSTPgd1KlNHfCX
-        hwX+EG9abilz2/Ckip/Mo6Ra0w==
-X-Google-Smtp-Source: ABdhPJwHgNmJMorq848Kg2GjnJwUfIU+y1oJqvt87fYXadc5494OVps3HFkGWneUfBvNHJRiVFyThg==
-X-Received: by 2002:a5d:6a81:: with SMTP id s1mr3482075wru.274.1631469885977;
-        Sun, 12 Sep 2021 11:04:45 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id m29sm5337397wrb.89.2021.09.12.11.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 11:04:45 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 19:04:43 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Lukas Prediger <lumip@lumip.de>
-Cc:     axboe@kernel.dk, hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH v3] drivers/cdrom: improved ioctl for media change
- detection
-Message-ID: <YT5BO7bUMMkwNCTh@equinox>
-References: <CAA=Fs0mEprM0hErRY-kw7bOVqEw3o6X=--OixQ=_fNXdV_-QGQ@mail.gmail.com>
- <20210911174816.55538-1-lumip@lumip.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ogHesMDpKGxf6RH9yHh1zki41VihTW9bMbJ0zX+O6Kk=;
+        b=0x2ttJVJE1PJXV226GKd+762/Op5/JQrt6yGrubHRcZ1ePd084lLR4/1RqhA68Iza0
+         fOtUpX13OBOgV9ypgau0Ybz5Don9C2YuyTJyheXiVZONj88kWcwDvN1EoCJiWdr65+IQ
+         Jf54LYK5Po6sSsG85ooScCQeia/Gj1PRpFsi4aSg8h170pyjzoha0p7ZJLIxSKbovrnN
+         P0KafMsFindkLXVtLgT4iZem95HHoNr7FtkW477YGf0ESq9TX2vDcMCN+kDR22hHTBVr
+         LWH+riKn/YNR4G3ZPdMQiMWpOypDL15DpURgo7aSv/wmbG3tHOsr0lkpBrSMQNamafOb
+         9wFg==
+X-Gm-Message-State: AOAM530F8zr2GeQbckJuq3jh4jhHE+2Ms0XzyC0RlNoa2WbyAIqXFTSj
+        RsYHCZAFJqq5se9oNEIvdkcd7YzzfayjXQ==
+X-Google-Smtp-Source: ABdhPJwVoHVWarQ3EMuO/ZNQ+40wG5Udt2KNJnm42QCaNgMDIjlYSMAqMA3l/OFi/qeLxtqfyG2cxQ==
+X-Received: by 2002:a6b:e712:: with SMTP id b18mr6109092ioh.186.1631470517227;
+        Sun, 12 Sep 2021 11:15:17 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id q12sm3032138ioh.20.2021.09.12.11.15.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Sep 2021 11:15:16 -0700 (PDT)
+Subject: Re: io-uring: KASAN failure, presumably
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <859829f3-ecd0-0c01-21d4-28c17382aa52@kernel.dk>
+Date:   Sun, 12 Sep 2021 12:15:15 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911174816.55538-1-lumip@lumip.de>
+In-Reply-To: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 08:48:17PM +0300, Lukas Prediger wrote:
-> Hi Randy, Hi Phil,
+On 9/11/21 8:34 PM, Nadav Amit wrote:
+> Hello Jens (& Pavel),
 > 
-> >>
-> >> Hi Lukas,
-> >>
-> >> Just a minor nit:
-> >>
-> >> On 9/10/21 2:16 PM, Lukas Prediger wrote:
-> >> > +#define MEDIA_CHANGED_FLAG   0x1     /* Last detected media change was more \
-> >> > +                                      * recent than last_media_change set by\
-> >> > +                                      * caller.                             \
-> >> > +                                      */
-> >>
-> >> Drop the "continuation" backslashes.
-> >> They are not needed.
-> >>
-> >> thanks.
-> >> --
-> >> ~Randy
-> >>
+> I hope you are having a nice weekend. I ran into a KASAN failure in io-uring
+> which I think is not "my fault".
 > 
-> Hm, my IDE was complaining about these but I just tested building without and
-> that worked fine. No idea what that was about then..
+> The failure does not happen very infrequently, so my analysis is based on
+> reading the code. IIUC the failure, then I do not understand the code well
+> enough, as to say I do not understand how it was supposed to work. I would
+> appreciate your feedback.
 > 
-> >
-> > Dear Lukas,
-> >
-> > Happy to take these out for you and save you resubmitting.
-> > I'm very happy with patch anyway. Once I hear back from
-> > you I'll send onto Jens with my approval after one final test :-)
-> >
+> The failure happens on my own custom kernel (do not try to correlate the line
+> numbers). The gist of the splat is:
 > 
-> That would be very nice of you!
+> [84142.034456] ==================================================================
+> [84142.035552] BUG: KASAN: use-after-free in io_req_complete_post (fs/io_uring.c:1629)
+> [84142.036473] Read of size 4 at addr ffff8881a1577e60 by task memcached/246246
+> [84142.037415]
+> [84142.037621] CPU: 0 PID: 246246 Comm: memcached Not tainted 5.13.1+ #236
+> [84142.038509] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 07/22/2020
+> [84142.040151] Call Trace:      
+> [84142.040495] dump_stack (lib/dump_stack.c:122)
+> [84142.040962] print_address_description.constprop.0 (mm/kasan/report.c:234)
+> [84142.041751] ? io_req_complete_post (fs/io_uring.c:1629)
+> [84142.042365] kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
+> [84142.042921] ? io_req_complete_post (fs/io_uring.c:1629)
+> [84142.043534] __asan_load4 (mm/kasan/generic.c:252) 
+> [84142.044008] io_req_complete_post (fs/io_uring.c:1629) 
+> [84142.044609] __io_complete_rw.isra.0 (fs/io_uring.c:2525) 
+> [84142.045264] ? lockdep_hardirqs_on_prepare (kernel/locking/lockdep.c:4123) 
+> [84142.045949] io_complete_rw (fs/io_uring.c:2532) 
+> [84142.046447] handle_userfault (fs/userfaultfd.c:778) 
 > 
-> >
-> > Thanks again for the code.
-> >
+> [snip]
 > 
-> My pleasure, and thanks for the helpful feedback!
+> [84142.072667] Freed by task 246231:
+> [84142.073197] kasan_save_stack (mm/kasan/common.c:39)
+> [84142.073896] kasan_set_track (mm/kasan/common.c:46)
+> [84142.074421] kasan_set_free_info (mm/kasan/generic.c:359)
+> [84142.075015] __kasan_slab_free (mm/kasan/common.c:362 mm/kasan/common.c:325 mm/kasan/common.c:368)
+> [84142.075578] kmem_cache_free (mm/slub.c:1608 mm/slub.c:3168 mm/slub.c:3184)
+> [84142.076116] __io_free_req (./arch/x86/include/asm/preempt.h:80 ./include/linux/rcupdate.h:68 ./include/linux/rcupdate.h:655 ./include/linux/percpu-refcount.h:317 ./include/linux/percpu-refcount.h:338 fs/io_uring.c:1802)
+> [84142.076641] io_free_req (fs/io_uring.c:2113)
+> [84142.077110] __io_queue_sqe (fs/io_uring.c:2208 fs/io_uring.c:6533)
+> [84142.077628] io_queue_sqe (fs/io_uring.c:6568)
+> [84142.078121] io_submit_sqes (fs/io_uring.c:6730 fs/io_uring.c:6838)
+> [84142.078665] __x64_sys_io_uring_enter (fs/io_uring.c:9428 fs/io_uring.c:9369 fs/io_uring.c:9369)
+> [84142.079463] do_syscall_64 (arch/x86/entry/common.c:47)
+> [84142.079967] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:112)
 > 
-> >
-> > Regards,
-> > Phil
 > 
-> Best regards,
-> Lukas
+> I believe the issue is related to the handling of REQ_F_REISSUE and
+> specifically to commit 230d50d448acb ("io_uring: move reissue into regular IO
+> path"). There seems to be a race between io_write()/io_read()
+> and __io_complete_rw()/kiocb_done().
+> 
+> __io_complete_rw() sets REQ_F_REIUSSE:
+> 
+>                if ((res == -EAGAIN || res == -EOPNOTSUPP) &&
+>                     io_rw_should_reissue(req)) {
+>                         req->flags |= REQ_F_REISSUE;
+>                         return;
+>                }
+> 
+> And then kiocb_done() then checks REQ_F_REISSUE and clear it:
+> 
+>         if (check_reissue && req->flags & REQ_F_REISSUE) {
+>                 req->flags &= ~REQ_F_REISSUE;
+>                 ...
+> 
+> 
+> These two might race with io_write() for instance, which issues the I/O
+> (__io_complete_rw() and kiocb_done() might run immediately after
+> call_write_iter() is called) and then check and clear REQ_F_REISSUE.
+> 
+>         if (req->file->f_op->write_iter)
+>                 ret2 = call_write_iter(req->file, kiocb, iter);
+>         else if (req->file->f_op->write)
+>                 ret2 = loop_rw_iter(WRITE, req, iter);
+>         else
+>                 ret2 = -EINVAL;
+> 
+>         if (req->flags & REQ_F_REISSUE) {
+>                 req->flags &= ~REQ_F_REISSUE;
+>                 ret2 = -EAGAIN;
+>         }
+> 
+> 
+> So if call_write_iter() returns -EIOCBQUEUED, this return value can be
+> lost/ignored if kiocb_done() was called with result of -EAGAIN. Presumably,
+> other bad things might happen due to the fact both io_write() and
+> kiocb_done() see REQ_F_REISSUE set.
+> 
+> You might ask why, after enqueuing the IO for async execution, kiocb_done()
+> would be called with -EAGAIN as a result. Indeed, this might be more
+> unique to my use-case that is under development (userfaultfd might
+> return -EAGAIN if the mappings undergoing changes; presumably -EBUSY or some
+> wait-queue would be better.) Having said that, the current behavior still
+> seems valid.
+> 
+> So I do not understand the check for REQ_F_REISSUE in io_write()/io_read().
+> Shouldn't it just be removed? I do not suppose you want to do
+> bit-test-and-clear to avoid such a race.
 
-Dear Lukas,
+I think this is specific to your use case, but I also think that we
+should narrow the scope for this type of REQ_F_REISSUE trigger. It
+really should only happen on bdev backed regular files, where we cannot
+easily pass back congestion. For that case, the completion for this is
+called while we're in ->write_iter() for example, and hence there is no
+race here.
 
-This v3 patch does not apply to my tree, or the mainline one for that
-matter. A few problems I've noticed that are the cause of this:
+I'll ponder this a bit...
 
-Misnamed file:
-Documentation/ioctl/cdrom.rst - this file should actually be:
-Documentation/userspace-api/ioctl/cdrom.rst (and is in v2)
+-- 
+Jens Axboe
 
-Failed hunks:
-v3 fails on applying the changes to drivers/cdrom/cdrom.c as well, due
-to two hunks failing (because of different lines preceding your
-changes).
-
-It also fails to apply the second hunk to include/uapi/linux/cdrom.h,
-again due to differences in pre-existing content. Did you base this v3
-patch against a different/older tree/branch?
-
-Please advise, many thanks. As mentioned before, v2 applied perfectly
-fine for me.
-
-Regards,
-Phil
