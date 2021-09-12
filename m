@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0158E407BB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 06:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3B2407BEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 07:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhILEog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 00:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhILEoe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 00:44:34 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED91FC061574;
-        Sat, 11 Sep 2021 21:43:20 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id y8so298068pfa.7;
-        Sat, 11 Sep 2021 21:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UpJmFShhcKMhZsJCwjbQ/homwZZN8sYg1ch9QrxdkOw=;
-        b=b15+azSNqVBioVLACzDc4jZkTgv4EmhrudQEy8YNtXV0kKc9G7VP4J5nVOO1AZcVm0
-         U5+NJqMroCTQrgLNqMstKEkJig+300hvtOXYXlz76ifKl8LLGyCkBJK55KH19p9TfyAX
-         MujFux4R9n1mRUCB7wiwf2CqDlBinxzuwJfQx1X/BSe0XlXfUJP+LcUX+CvR3VHuwtLd
-         HJHLUT+DoF8Rail+lMeXJecXWK5rO6MSYCudYuczFeVwCeHeb8d3RHAGpK9aoH/rgFMI
-         b3Oe8Vy4BBsgHswGrK1XgUAQzo9qHzSs/YqHPNkSaHvt82wCPB7y5MvYQZW0udgh5OZb
-         mr6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UpJmFShhcKMhZsJCwjbQ/homwZZN8sYg1ch9QrxdkOw=;
-        b=ZJi9jKsx/prttGiacAQtfl8lbPen80LpjQ1SSHgqWGaWwNPutC1iL8OL806NwErDzI
-         9W3ZcOG9TeQlmgXyZj8T6lgNUN98fmLtenfC5RhMmosUDM2xXFghKy1ZneTP0X8M2t3L
-         D0igMepC5i+dVhcKkmVz+dBOzKe+AtdLQRZdnxcu4/n/CaZZyxSnhTjurMCvVBtv0QhA
-         A9R1GtexwugYk6YlDvNgPslVarsYl8yfm8K1nKLEjDVIInmITIl9lwq2bGH3U5f61Z1q
-         CiMx7E0j4YHpGk1uqdOfeu7Fn9S9h5o0Q6SfBbhIQ74TIE61Y3v8FBiGJk3H6d/C6n0W
-         slaw==
-X-Gm-Message-State: AOAM531mtpheuyLLYssVk+N+k8fdWZt8IgmhY1tU8wFVpmI53lutjxiX
-        GahagdqolR6bfsN8cn9JRergjv3sgF6Vfw==
-X-Google-Smtp-Source: ABdhPJwi3ouKeSbMqrcMAZBCAK9+ojVc/k0Rwab2JYSO+3EEYT+VmBQl74+Djn4y1o4vr0OMAIuTPw==
-X-Received: by 2002:a65:5086:: with SMTP id r6mr5132241pgp.65.1631421799997;
-        Sat, 11 Sep 2021 21:43:19 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id q22sm3453283pgn.67.2021.09.11.21.43.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 11 Sep 2021 21:43:19 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: io-uring: KASAN failure, presumably REQ_F_REISSUE issue
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
-Date:   Sat, 11 Sep 2021 21:43:18 -0700
-Cc:     io-uring@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <825AB372-93CE-43C0-8947-EAB819547494@gmail.com>
-References: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S229786AbhILE50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 00:57:26 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42085 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229540AbhILE50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 00:57:26 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 18C4u9aX021946;
+        Sun, 12 Sep 2021 06:56:09 +0200
+Date:   Sun, 12 Sep 2021 06:56:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Douglas Gilbert <dgilbert@interlog.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: how many memset(,0,) calls in kernel ?
+Message-ID: <20210912045608.GB16216@1wt.eu>
+References: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 11, 2021 at 11:36:07PM -0400, Douglas Gilbert wrote:
+> Here is a pretty rough estimate:
+> $ find . -name '*.c' -exec fgrep "memset(" {} \; > memset_in_kern.txt
+> 
+> $ cat memset_in_kern.txt | wc -l
+>     20159
+> 
+> Some of those are in comments, EXPORTs, etc, but the vast majority are
+> in code. Plus there will be memset()s in header files not counted by
+> that find. Checking in that output file I see:
+> 
+> $ grep ", 0," memset_in_kern.txt | wc -l
+>     18107
+> $ grep ", 0" memset_in_kern.txt | wc -l
+>     19349
+> $ grep ", 0x" memset_in_kern.txt | wc -l
+>     1210
+> $ grep ", 0x01" memset_in_kern.txt | wc -l
+>     3
+> $ grep ", 0x0," memset_in_kern.txt | wc -l
+>     199
+> $ grep ",0," memset_in_kern.txt | wc -l
+>     72
 
+Note that in order to get something faster and slightly more accurate,
+you can use 'git grep':
 
-> On Sep 11, 2021, at 7:34 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
->=20
-> Hello Jens (& Pavel),
->=20
-> I hope you are having a nice weekend. I ran into a KASAN failure in =
-io-uring
-> which I think is not "my fault".
+   $ git grep 'memset([^,]*,\s*0\(\|x0*\),' |wc -l
+   18822
 
-Small correction of myself (beside the subject):
->=20
-> I believe the issue is related to the handling of REQ_F_REISSUE and
-> specifically to commit 230d50d448acb ("io_uring: move reissue into =
-regular IO
-> path"). There seems to be a race between io_write()/io_read()
-> and __io_complete_rw()/kiocb_done().
->=20
-> __io_complete_rw() sets REQ_F_REIUSSE:
->=20
->               if ((res =3D=3D -EAGAIN || res =3D=3D -EOPNOTSUPP) &&
->                    io_rw_should_reissue(req)) {
->                        req->flags |=3D REQ_F_REISSUE;
->                        return;
->               }
+> If the BSD flavours of Unix had not given us:
+>    void bzero(void *s, size_t n);
+> would the Linux kernel have something similar in common usage (e.g.
+> memzero() or mem0() ), that was less wasteful than the standard:
+>    void *memset(void *s, int c, size_t n);
+> in the extremely common case where c=0 and the return value is
+> not used?
 
-The race only appears to be with __io_complete_rw(), not kiocb_done().
+What do you mean by "wasteful" here ? What are you trying to preserve,
+caracters in the source code maybe ? Because the output code is already
+adapted to the context thanks to memset() being builtin. Let's take one
+of the first instances I found that's easy to match against asm code:
 
+net/core/dev.c:
+
+  int __init netdev_boot_setup(char *str)
+  {
+        int ints[5];
+        struct ifmap map;
+
+        str = get_options(str, ARRAY_SIZE(ints), ints);
+        if (!str || !*str)
+                return 0;
+
+        /* Save settings */
+        memset(&map, 0, sizeof(map));
+        ...
+  }
+
+It gives this:
+
+  16:   e8 00 00 00 00          callq  1b <netdev_boot_setup+0x1b>
+                        17: R_X86_64_PC32       get_options-0x4
+  1b:   48 89 c6                mov    %rax,%rsi
+
+note that we're zeroing %eax below in preparation for the "return 0"
+statement:
+
+  1e:   31 c0                   xor    %eax,%eax
+
+This is the "if (!str || !*str)" :
+
+  20:   48 85 f6                test   %rsi,%rsi
+  23:   0f 84 98 00 00 00       je     c1 <netdev_boot_setup+0xc1>
+  29:   80 3e 00                cmpb   $0x0,(%rsi)
+  2c:   0f 84 8f 00 00 00       je     c1 <netdev_boot_setup+0xc1>
+
+%r12 is set to &map:
+
+  32:   4c 8d 65 d0             lea    -0x30(%rbp),%r12
+
+And this is the memset "call" itself, which reuses the zero from
+the %eax register:
+
+  36:   b9 06 00 00 00          mov    $0x6,%ecx
+  3b:   4c 89 e7                mov    %r12,%rdi
+  3e:   f3 ab                   rep stos %eax,%es:(%rdi)
+
+The last line does exactly "memset(%rdi, %eax, %ecx)". Just two bytes
+for some code that modern processors are even able to optimize.
+
+As you can see there's not much waste here in the output code, and
+in fact using any dedicated function would be larger and likely
+slower.
+
+Hoping this helps,
+Willy
