@@ -2,59 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3640F407FCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4A8407FD0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 21:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236080AbhILTyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 15:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232112AbhILTyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 15:54:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 087226101A;
-        Sun, 12 Sep 2021 19:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631476402;
-        bh=YtLTJQGBFk8IGQYZ750iFkkrpIqI2W8WlLiC0KUB25Y=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=uhKcjwSuO3qWO4zNzoAfchdJDkgSQoQ6fhAK5tWuav4Nd9NDMKkO7HhhhfolGfMef
-         laAekWjiR6smQXwO5p2vb/AzZ5MHU+ATo1Wgct6GFl0oU5S3TwBn6F2ktzH/o5zIrz
-         p830KT0XITfAtTv4iIeeQMe5EsApQJYVgZeheGZtWGgz6nzOJFrt+8mXi9k9N828NV
-         Y0vr5qsbLizueDDg0wS+hUcmFdHrK7YuM4G3eUTAURWXN16VsQnJ8qtKEaMZ5Jtg5x
-         pEFoWKLPbLxucFZivqNCsuTlZOui8ninG7evkqZ4g7gizA6smDgiZD/wNQBC401Yqb
-         jpbvwuhbIOeTA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E9283609ED;
-        Sun, 12 Sep 2021 19:53:21 +0000 (UTC)
-Subject: Re: [GIT pull] smp/urgent for v5.15-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <163147543117.733664.1844354962871534405.tglx@xen13>
-References: <163147543117.733664.1844354962871534405.tglx@xen13>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <163147543117.733664.1844354962871534405.tglx@xen13>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-urgent-2021-09-12
-X-PR-Tracked-Commit-Id: c9871c800f65fffed40f3df3e1eb38984f95cfcf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f306b90c69ce3994bb8046b54374a90a27f66be6
-Message-Id: <163147640189.15687.10229590781548665005.pr-tracker-bot@kernel.org>
-Date:   Sun, 12 Sep 2021 19:53:21 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        id S236110AbhILT53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 15:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236017AbhILT52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 15:57:28 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ABAC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:56:13 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id k13so16398071lfv.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0JrZ+GcsRiXZedFUkepLcXeLWeQiUelfJ9m4RLoEZFU=;
+        b=XawmD5eAfkLOxVAdIF1rhrNfsxN0xrqcFF+jMcPdY7tk1j7DB5eKFVwRl3JaxKbJZI
+         WWsUuCYVz/l9No4NyZv0MEU4GLsBgv+TMurdoY+UDl0AqC5YtbPe6zN+4Nxh4+xZ87MA
+         o2DuQ9sQS7S24/9EPeCAbJRvaV3/792icfSOw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0JrZ+GcsRiXZedFUkepLcXeLWeQiUelfJ9m4RLoEZFU=;
+        b=pYv2m5H/FAWCFT0yHhMYD589v5YdXjiQ/CcWBjGB2WsZyjyergMgYHuVfmKxyPnR5Z
+         cHtnRNnwgO3r1sMC/QBKl0I6pUq44qWzaw5aVBkvwKT/M+mbIrOkyiRoEZx4vQE1RIQl
+         MXNol7Hwm6goF2zkiuZ6osqzkutQ7VLg5LmRA0VlGrN1SYupfU7LTtD2BdqqiSPaEygV
+         IKB3csCxFdModHK400QnIu70mgyEORWgveVnUZrfkuF1wFkGOCgH3y5F2pZ1grCcO9Dt
+         6z8bE4qWPOMJ1KnF4xSdpZrF+HtQYOn5t5r/3RkzXCdM0LDitDAznzKT/dSeSslrph8j
+         Neig==
+X-Gm-Message-State: AOAM530JqfQCYkvjlpsERP6sozwKOtGt0aWitg5EU/BejPjl4d9ehEjn
+        bADqyFEg9fCW7sDh+/RayLQtDBGRplscyGT0ikM=
+X-Google-Smtp-Source: ABdhPJy9cr6fuErPDEnZCIwg0CpYQ4Qi6BD1D76UeANN8dQGjG9O0VD9snJAsdaCuzb7ogS9yOjD7A==
+X-Received: by 2002:ac2:5ca4:: with SMTP id e4mr6334176lfq.534.1631476571397;
+        Sun, 12 Sep 2021 12:56:11 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id p18sm316616lfa.148.2021.09.12.12.56.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Sep 2021 12:56:10 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id f2so13293698ljn.1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:56:10 -0700 (PDT)
+X-Received: by 2002:a05:651c:158e:: with SMTP id h14mr4047475ljq.56.1631476570533;
+ Sun, 12 Sep 2021 12:56:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <YT4IvKLQHm9mfpR+@kroah.com> <CAHk-=wh7FYyewcJkozsjA95yj0AYvmpMDoZd0RxQ3ZbMMdXUdQ@mail.gmail.com>
+ <202109121213.A47D575@keescook> <CAHk-=wiVEEzLPLTkb9U6YB-2qXpbuqP3a1q=gRx8Nkg-dpLeqw@mail.gmail.com>
+ <202109121236.4C17E6B00B@keescook>
+In-Reply-To: <202109121236.4C17E6B00B@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 12 Sep 2021 12:55:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiFvfkoFixTapvvyPMN9pq5G-+Dys2eSyBa1vzDGAO5+A@mail.gmail.com>
+Message-ID: <CAHk-=wiFvfkoFixTapvvyPMN9pq5G-+Dys2eSyBa1vzDGAO5+A@mail.gmail.com>
+Subject: Re: [GIT PULL] Misc driver fix for 5.15-rc1
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 12 Sep 2021 21:40:21 +0200 (CEST):
+On Sun, Sep 12, 2021 at 12:44 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> Right, I completely understand that. If you really want it gone, I
+> will rip it out; it'll just make it more time consuming to analyze some
+> CI reports.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-urgent-2021-09-12
+Well, I've pulled it, so it is what it is.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f306b90c69ce3994bb8046b54374a90a27f66be6
+I would ask you to try to get the CI cases fixed, and then remove the
+odd printouts from LKDTM, but it's certainly ok by me if that doesn't
+happen immediately.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+           Linus
