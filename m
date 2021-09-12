@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C78A407F3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF992407F5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 20:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbhILSTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 14:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S233606AbhILSXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 14:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhILSTh (ORCPT
+        with ESMTP id S229653AbhILSXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 14:19:37 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745A3C06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:18:23 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a23-20020a25ae17000000b005ad73346312so2681314ybj.18
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 11:18:23 -0700 (PDT)
+        Sun, 12 Sep 2021 14:23:13 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8549C061574;
+        Sun, 12 Sep 2021 11:21:58 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j1so4734015pjv.3;
+        Sun, 12 Sep 2021 11:21:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=A5jzcEo3N8osg10m96UXC0mRrSn6XuuhJObZXmt9E+Q=;
-        b=Amted87+W6/WP0Kg6XI/m7V6R5ychIhbfTusMpYEViZUdigBJUgvOWbExI3j08g3R8
-         GDscaVh51TSLhnPo8DQcsH1oL4T1iqru9P2HtlcAzWsaumpHtNnySz1lToJp23D+Myuf
-         4BJEiKVCREKgTxQdNt+TPqshjUEXhb7wyT9tY8kRfP18l8XoxMRdgsWe5kqQCfxTHHQT
-         5+zCjsgphNpA4KN1LEYG/Scf1Ud9tWnxE+6Juk1+usX8Lap5U2ePMB8HXMHPG490RHTT
-         8Z7JMGzuKKsW1KYtuMCmepRy1y7087X4RgwV6GVL0ndSzDdZEBgO8KtK6GGpMTy8uGBs
-         8SWQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=U/bs3PjkeGfYHulbf2M0xJeDzF6gbg27groVLIx4AqE=;
+        b=m/t9Q7Ur2ewBwZZQPT2N75BnjIdMGQ8nTSJi99bX/jC3psPHN7FqYu6TeyAQvf46uc
+         fKPxBwsJR4KslfxF3mUv1rQCfhLpdKddifYnsiaTmaIOxksj8bTYLVKoRNjGL6iN0NqL
+         csNQz3F1TXAL7PlpNWSYIpoQdSsjethutrl8ibWiEDCybrH6zkT4K2bTCH7lqpwmmpEc
+         w0SYBsA6tUCmocXPMs4VkgZchnxCTZDN3RovkMkVMYQW8F3cMd32Sm//SH7LO5tUBJ+s
+         14N/r4M3M3285atq+/tWsWAcNfCC4kjbJK9mZstborrOa8bLbGFHE5vfTLUXmUtW4aeG
+         9/8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=A5jzcEo3N8osg10m96UXC0mRrSn6XuuhJObZXmt9E+Q=;
-        b=cy4vSOK8qEmmEvtvbxvyBIxRKeCEf2NtggW7r6fsH+w7mjujKRxYmyr6v67zi9gYmu
-         /BESkavV8RTzc35DpasWkCqTWEfFese5+6pvNvjFQztAS1UtJgQOo0rctLAZWeH1j8Ll
-         MEsuKY+DciXmfRzCA8yRgZ4lRvPQkOyxfWlLKSBHoacKVOJrlWX9TdQvb/VEQZ960lyC
-         Oj/WqFbFlbTZLuyD80Z8HmE4/s1sb5WSbu3HoFRkM58dls6Rr1puJVecst6A4/BgPSET
-         JE348KelkCKz0EwS98H50CNWhlmLDqzPnpWhBnniEPvmaW0crAFHkEOameYMr0shl1Z5
-         8aag==
-X-Gm-Message-State: AOAM531lkFNr6yeBVBn+U1Vx3TZkT1QGOp4VP0M9IXGIfDB5syGk6TXF
-        EWHIfzZR740hCpBEh+qV+oGqJt0gyrT3
-X-Google-Smtp-Source: ABdhPJw+pcn8ymn8D7AhPPxq0UqlxK1KLvhUzH+nhooa4tfQoogcmF8mTgUYD4EhR9wOjrEkXzRPHqc/thu5
-X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a25:c441:: with SMTP id
- u62mr10565061ybf.12.1631470702545; Sun, 12 Sep 2021 11:18:22 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Sun, 12 Sep 2021 18:18:15 +0000
-Message-Id: <20210912181815.3899316-1-mizhang@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] KVM: SVM: fix missing sev_decommission in sev_receive_start
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alper Gun <alpergun@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        David Rienjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, John Allen <john.allen@amd.com>,
-        Peter Gonda <pgonda@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Mingwei Zhang <mizhang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=U/bs3PjkeGfYHulbf2M0xJeDzF6gbg27groVLIx4AqE=;
+        b=nBpNPtW5Kjbw0NrLXHlT2Bzq+A91nhKsidXbTeJUD6o2NtoOYUPiY+LnknT/jVVUhR
+         lT22L/nJ1YthyjRubZLS6sEKAZ6LbsDA4OYpo/1vnetEFNb6FjRl+AzF6s9XWDeO8ZGX
+         +E2pkQK6m6u4TznWnfJ1ROYcgmeoLwdRU7s0lwTUiw+blEJTVlSCRFti0F1zXTEkMGcz
+         7rShOX8K5IwQ/5suuCMvyPG3XZdpOiohTXiKu731lxvzuns03ulFiecVfgWrMqdVvsMi
+         9wmyvbTRIxbzKt+WLH9k/+yerEYtKFwxUS5BuznifFQznr1GWyOvMMofxY/S2A6boAJD
+         RLew==
+X-Gm-Message-State: AOAM532iofMMXnMxTxuwPtlmnh9phxwEwCDkgZEnaKpg1cQXKlGFbq7D
+        AYfL+mwS8ECXm+PIdaSAX9bSs4y3C0Zr0g==
+X-Google-Smtp-Source: ABdhPJw7kv3Fm9M50+pru6ljc1jr9D/If3Icki7HhjSweHuqf/6b+EhAJujVRCVJN2WTngfxfCeBdA==
+X-Received: by 2002:a17:90a:8c8b:: with SMTP id b11mr8627118pjo.14.1631470918049;
+        Sun, 12 Sep 2021 11:21:58 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id g2sm4625419pfr.35.2021.09.12.11.21.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 12 Sep 2021 11:21:57 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: io-uring: KASAN failure, presumably
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <859829f3-ecd0-0c01-21d4-28c17382aa52@kernel.dk>
+Date:   Sun, 12 Sep 2021 11:21:55 -0700
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C5C0EB71-B05E-4FE6-871D-900231F8454B@gmail.com>
+References: <2C3AECED-1915-4080-B143-5BA4D76FB5CD@gmail.com>
+ <859829f3-ecd0-0c01-21d4-28c17382aa52@kernel.dk>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sev_decommission is needed in the error path of sev_bind_asid. The purpose
-of this function is to clear the firmware context. Missing this step may
-cause subsequent SEV launch failures.
 
-Although missing sev_decommission issue has previously been found and was
-fixed in sev_launch_start function. It is supposed to be fixed on all
-scenarios where a firmware context needs to be freed. According to the AMD
-SEV API v0.24 Section 1.3.3:
 
-"The RECEIVE_START command is the only command other than the LAUNCH_START
-command that generates a new guest context and guest handle."
+> On Sep 12, 2021, at 11:15 AM, Jens Axboe <axboe@kernel.dk> wrote:
+>=20
+> On 9/11/21 8:34 PM, Nadav Amit wrote:
+>> Hello Jens (& Pavel),
+>>=20
+>> I hope you are having a nice weekend. I ran into a KASAN failure in =
+io-uring
+>> which I think is not "my fault".
+>>=20
+>> The failure does not happen very infrequently, so my analysis is =
+based on
+>> reading the code. IIUC the failure, then I do not understand the code =
+well
+>> enough, as to say I do not understand how it was supposed to work. I =
+would
+>> appreciate your feedback.
+>>=20
+>> The failure happens on my own custom kernel (do not try to correlate =
+the line
+>> numbers). The gist of the splat is:
+>=20
+> I think this is specific to your use case, but I also think that we
+> should narrow the scope for this type of REQ_F_REISSUE trigger. It
+> really should only happen on bdev backed regular files, where we =
+cannot
+> easily pass back congestion. For that case, the completion for this is
+> called while we're in ->write_iter() for example, and hence there is =
+no
+> race here.
+>=20
+> I'll ponder this a bit=E2=80=A6
 
-The above indicates that RECEIVE_START command also requires calling
-sev_decommission if ASID binding fails after RECEIVE_START succeeds.
+I see what you are saying. The assumption is that write_iter() is =
+setting
+REQ_F_REISSUE, which is not the case in my use-case. Perhaps EAGAIN is
+anyhow not the right return value (in my case). I am not sure any other
+=E2=80=9Cinvalid" use-case exists, but some documentation/assertion(?) =
+can help.
 
-So add the sev_decommission function in sev_receive_start.
+I changed the return error-codes and check that the issue is not
+triggered again.
 
-Cc: Alper Gun <alpergun@google.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: David Rienjes <rientjes@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: John Allen <john.allen@amd.com>
-Cc: Peter Gonda <pgonda@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Vipin Sharma <vipinsh@google.com>
-
-Reviewed-by: Marc Orr <marcorr@google.com>
-Acked-by: Brijesh Singh <brijesh.singh@amd.com>
-Fixes: af43cbbf954b ("KVM: SVM: Add support for KVM_SEV_RECEIVE_START command")
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- arch/x86/kvm/svm/sev.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 75e0b21ad07c..55d8b9c933c3 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1397,8 +1397,10 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 
- 	/* Bind ASID to this guest */
- 	ret = sev_bind_asid(kvm, start.handle, error);
--	if (ret)
-+	if (ret) {
-+		sev_decommission(start.handle);
- 		goto e_free_session;
-+	}
- 
- 	params.handle = start.handle;
- 	if (copy_to_user((void __user *)(uintptr_t)argp->data,
--- 
-2.33.0.309.g3052b89438-goog
-
+Thanks, as usual, for the quick response.=
