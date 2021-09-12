@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEFE407CC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 11:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039D5407CCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhILJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 05:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbhILJwB (ORCPT
+        id S230472AbhILKBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 06:01:40 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:42596 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhILKBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 05:52:01 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22954C061757;
-        Sun, 12 Sep 2021 02:50:47 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id n7-20020a05600c3b8700b002f8ca941d89so4452075wms.2;
-        Sun, 12 Sep 2021 02:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZfUDMjhaBW28irP63CnwhnXUauvV+ceBbmfpoRw/Bl8=;
-        b=T1/hhsyBRS2DZ/592/U9LVU+905MkddkZ7e1nzYGxk3NrFdUaONbjuCPUU+gYQAHf6
-         a1qCH3aWLd+2sKyN1+2zeYJQLYcEL/LZZwvW/b6O4juccBqfNW4nQncgbff+UwRkuXd4
-         zKp96LxjFMOVlsVhsiJDad//D8305kdp21qeIu6Sd+AbbolgW+OSAkDc9EoWo9V8a48i
-         nv9/oBTQwPlH4eCmKGCMoZTQ00ZQooVtNjRSwqL5zCep+fL3NLkM+nXrDeuo8xBKk/aH
-         l0HebZCPiIoQrqZ6ZwIOfvpcBoeuQ861jdq4/sIkzWS9K030Sj/hYNhrbd5bZXL+ZUI5
-         vzbQ==
+        Sun, 12 Sep 2021 06:01:39 -0400
+Received: by mail-il1-f199.google.com with SMTP id p10-20020a92d28a000000b0022b5f9140f7so13263817ilp.9
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 03:00:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZfUDMjhaBW28irP63CnwhnXUauvV+ceBbmfpoRw/Bl8=;
-        b=jrWIMzQW1bKktTR79m60KKEL92P+UWLjUXk56AXyoF8nVpz8cKPgQ+det5pA9gKxzL
-         LKki+6WoYG8vO0ZRyKWkBvDvOfBGHJb1qOE+4D7SRJLfyJx9wqQsV3Cbw80O6FyS+65a
-         vCMKt/C5Ng55eSoCNSfwrtdOgDTWqLjLXcJUQ96WnRHzZE8gn3p1kbbW1Siz2r3R1Hog
-         +uOXBrNTH585dGCls2CdUdccTEBAbO6fcblhj5EOpoKdKTWKpyrnSmBvuH/nU4SariGw
-         uOiRaUBuJ7sCjs8gwo+cCqcO+SCIKLpvuY3HOyyqctlGB4XOMF4SFo/uv98NpgnLO9KB
-         mGOA==
-X-Gm-Message-State: AOAM530gThdTGRw0fOBNRCK/Xd7C2b/X93u6YFbRAOddMqED8Sce/VIi
-        ts4oAjQMjzKfveLkOn+UcIw=
-X-Google-Smtp-Source: ABdhPJyzMQK6uGv0+edsUnseYhz0bylpHJqwuQWPA5iwYb8Cj0rz5723JiK4lVGjA+DXjoqok7/erg==
-X-Received: by 2002:a7b:cd15:: with SMTP id f21mr1464839wmj.16.1631440245762;
-        Sun, 12 Sep 2021 02:50:45 -0700 (PDT)
-Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id n13sm3471487wmq.3.2021.09.12.02.50.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 02:50:45 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] arm64: dts: allwinner: a64: Add GPU opp table
-Date:   Sun, 12 Sep 2021 11:50:32 +0200
-Message-Id: <20210912095032.2397824-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=37fWN0G/4HK8xmkPsdQbAX2VRqns8WP+Gio4bv9hq2M=;
+        b=59ahno1WWPZINPYy7U9lqhlB4kf/6or9ll36UeqDWzfFV7SahXywDfH2/PNrA6Fd0z
+         s8HdAnyeParTH1ovSiIwhjP3hf5vt4ox3pZtRJTXSf1Oy3Fy9hLE00K10aCHjgCfOPnV
+         7pVM09C7NrnsTrsJDw9EDqPmJ5R9Z4rcUZ0n8UuM/0qmPtCeouJPhkFXRUVcYIWJDruq
+         We2DwVoY3DReFGAgRag/VH2QlnCCiNKrncE0Bc+hYKtyBvfj2BBF8iW0rdwi3UHdy102
+         7lpDGTPmSgvMjiPT2teotkVPDM2yPz/z1Z+MyHMWq+npK67yHy+/YGm46ZEF5S9OzLQl
+         uzjw==
+X-Gm-Message-State: AOAM533p+GByyH3qlTmx99iRBKXoN1ISeSNuFZ+mCCoPQ7q/h5VJgED9
+        4F4mKDQ5t6sdIx3DZ5ArYKaWKdq1sN3dyCooasEJsm499NN5
+X-Google-Smtp-Source: ABdhPJyGovn8sIuOL2NuTQMTsh3raCZFTvD2LYAgiZNiSx1pCsKJqogmAdsMRMnv+J7iC47sQFNUedt2T97OeqILEyhiojHV3Bm2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1a8a:: with SMTP id k10mr4102082ilv.1.1631440825555;
+ Sun, 12 Sep 2021 03:00:25 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 03:00:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e123b605cbc96a09@google.com>
+Subject: [syzbot] WARNING in __static_key_slow_dec_deferred
+From:   syzbot <syzbot+3571c93ad7602c02dd81@syzkaller.appspotmail.com>
+To:     ardb@kernel.org, jbaron@akamai.com, jpoimboe@redhat.com,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPU on A64 currently runs at default frequency, which is 297 MHz. This
-is a bit low in some cases and noticeable lag can be observed in GPU
-rendered UIs. GPU is capable to run at 432 MHz.
+Hello,
 
-Add GPU OPP table.
+syzbot found the following issue on:
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+HEAD commit:    ac08b1c68d1b Merge tag 'pci-v5.15-changes' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13fb02ed300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a7be4cf759c0440a
+dashboard link: https://syzkaller.appspot.com/bug?extid=3571c93ad7602c02dd81
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14610b15300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10148bdb300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3571c93ad7602c02dd81@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+jump label: negative count!
+WARNING: CPU: 0 PID: 12137 at kernel/jump_label.c:235 static_key_slow_try_dec kernel/jump_label.c:235 [inline]
+WARNING: CPU: 0 PID: 12137 at kernel/jump_label.c:235 __static_key_slow_dec_deferred+0x15c/0x1c0 kernel/jump_label.c:286
+Modules linked in:
+CPU: 1 PID: 12137 Comm: syz-executor068 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:static_key_slow_try_dec kernel/jump_label.c:235 [inline]
+RIP: 0010:__static_key_slow_dec_deferred+0x15c/0x1c0 kernel/jump_label.c:286
+Code: 00 00 4c 89 ea 4c 89 f9 5b 41 5c 41 5d 41 5e 41 5f 5d e9 b7 7d aa ff e8 92 6e d8 ff 48 c7 c7 40 94 59 8a 31 c0 e8 c4 a2 a3 ff <0f> 0b e9 74 ff ff ff 48 c7 c1 44 c3 db 8d 80 e1 07 38 c1 0f 8c c3
+RSP: 0018:ffffc9000918f980 EFLAGS: 00010246
+RAX: 7cd782d8373e9e00 RBX: 00000000ffffffff RCX: ffff888016b49c80
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 00000000ffffffff R08: ffffffff81681fc2 R09: ffffed10173857a8
+R10: ffffed10173857a8 R11: 0000000000000000 R12: ffffffff8ddbe2b8
+R13: ffffffff8ddbe2d0 R14: ffff8880205ef601 R15: 0000000000000064
+FS:  00007f78f9b46700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004d0600 CR3: 0000000073b4f000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kvm_free_lapic+0x9f/0x170 arch/x86/kvm/lapic.c:2211
+ kvm_arch_vcpu_create+0x844/0x970 arch/x86/kvm/x86.c:10751
+ kvm_vm_ioctl_create_vcpu arch/x86/kvm/../../../virt/kvm/kvm_main.c:3592 [inline]
+ kvm_vm_ioctl+0x1400/0x2910 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4314
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445849
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f78f9b46308 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00000000004ca438 RCX: 0000000000445849
+RDX: 0000000000000000 RSI: 000000000000ae41 RDI: 0000000000000004
+RBP: 00000000004ca430 R08: 00007f78f9b46700 R09: 0000000000000000
+R10: 00007f78f9b46700 R11: 0000000000000246 R12: 00000000004ca43c
+R13: 000000000049a074 R14: 6d766b2f7665642f R15: 0000000000022000
+
+
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 6ddb717f2f98..5ba379078500 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -102,6 +102,22 @@ de: display-engine {
- 		status = "disabled";
- 	};
- 
-+	gpu_opp_table: opp-table-gpu {
-+		compatible = "operating-points-v2";
-+
-+		opp-120000000 {
-+			opp-hz = /bits/ 64 <120000000>;
-+		};
-+
-+		opp-312000000 {
-+			opp-hz = /bits/ 64 <312000000>;
-+		};
-+
-+		opp-432000000 {
-+			opp-hz = /bits/ 64 <432000000>;
-+		};
-+	};
-+
- 	osc24M: osc24M_clk {
- 		#clock-cells = <0>;
- 		compatible = "fixed-clock";
-@@ -1103,6 +1119,7 @@ mali: gpu@1c40000 {
- 			clocks = <&ccu CLK_BUS_GPU>, <&ccu CLK_GPU>;
- 			clock-names = "bus", "core";
- 			resets = <&ccu RST_BUS_GPU>;
-+			operating-points-v2 = <&gpu_opp_table>;
- 		};
- 
- 		gic: interrupt-controller@1c81000 {
--- 
-2.33.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
