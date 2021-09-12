@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C91A407EDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 19:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285D7407EE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 19:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhILRMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 13:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S234990AbhILRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 13:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhILRM3 (ORCPT
+        with ESMTP id S229597AbhILRMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 13:12:29 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E308C061574;
-        Sun, 12 Sep 2021 10:11:15 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id n27so11011342oij.0;
-        Sun, 12 Sep 2021 10:11:15 -0700 (PDT)
+        Sun, 12 Sep 2021 13:12:51 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80D6C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 10:11:36 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id j12so12754788ljg.10
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 10:11:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ckneqBV4m5yhzX0e5HXejAdr5h7UhHv/CJwouecS3hY=;
-        b=FYSREK2SOUKrMu7bpcCoi3tSkuowJ1l329hhh+v6bQclv68FQZOPPX4wq8assuOdrY
-         zYNraCjps7CTpWuU7C//dKaMuY92Ye4EW2CKMfSEMAI9lmvqNzX3fTaT9IgpZRbRw4jv
-         rnZpjqc1TtrD7iQhLSnjO7HHLl5KoiAFsRj3yCBe/q6htZWZ5EKxF08yS/Btqv+lzAoB
-         ZD5H5z1X/BdxoUIcJDoMTqc2478LYwLR7E5pYLUoeIMiHZEQyTmhNqw9hjdUBoWGIbU8
-         1rnA7bHGN0463GjwgdFRPbx0+9tzqAqTEBZyuB7qIfRFExxY0KIIknz8ugpB2PXi2g3K
-         fzew==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zWdxUP+QTdSO6Q0WwPsIuyGqKmUL6RaLcD4w+eF8cAI=;
+        b=FyfhAYhX1BLniqOU1LvoOCt2djW+wKb2RrgB1dCi9pl0dmNTkUZtOBrrXzB/tAlDwJ
+         XwfRt14MXkIKMys9rL0udOGC8H9uyA+40Sboha8SSMqoVN0rDsbHIW4DGocvjPr/1ukO
+         ivSPkXEuNecxInscs2CvndITV9Z2CzndKRkyw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ckneqBV4m5yhzX0e5HXejAdr5h7UhHv/CJwouecS3hY=;
-        b=NyUAKKujZKJk++x06UqpgvbX30pXhxOmRAo464vMu5RGHEtvko92bZ+u4/uX5Il/A9
-         ZhGiyU5ahSzwDzNIE7tHlmkUw4X7YVlJNgTC8pq8uauByO4tX0loDLivGAqWqUVkDzcT
-         wVgOmNJXMxD+TQCoQ5eMgBN6Y4S8qwwrkWhredr0rsNZkmg6n3rIqMblwC6AVeynktxg
-         sswR8Z4oGzQALpbCEEDcLWQdwGDBXbP3IKJ7ms7XHrz2Dvl6aV+fW58NsIUclsa88coL
-         3RLWbG5jL67HYsKoDV29ybKpmHwwHoK3a3OxjO9MAGQCPYzIteE/rRVJ297QlUF7uBD9
-         OYSw==
-X-Gm-Message-State: AOAM5323Hz1rZGehCnRI5L43PnDls/LZfY+A263bQriB1/ID5vrEF6C9
-        FYdKRfRMpCQhZ5Lnq2CLox+V04pidtg=
-X-Google-Smtp-Source: ABdhPJz7GTvDsTcLSgA0N48wqHnqSXJnbOo8bQ04cxkYGHpF3QQ/hCp1NQ+XUevodHyuR/nTBmGCGA==
-X-Received: by 2002:a05:6808:1911:: with SMTP id bf17mr5224847oib.91.1631466674765;
-        Sun, 12 Sep 2021 10:11:14 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.45])
-        by smtp.googlemail.com with ESMTPSA id b25sm1242960ooq.6.2021.09.12.10.11.13
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zWdxUP+QTdSO6Q0WwPsIuyGqKmUL6RaLcD4w+eF8cAI=;
+        b=2ew43gJgWYzC/iJzucTaca6hJ/KIh2TTexa0CIeBcX13D3xtthT72GFDnwFRKGZn/L
+         l3S8KBTtznmAHGQU7HmDiqMc+mZ8gOWOIidHfn4YdBeMJbhydvoHAvsw2rjonpwYaq2H
+         xE5giRa4OmICoV+AIKVV+CuSxXeHin0S3wTxwc2irKRMrm7fBeupEeTC7VXK6J4+Acmu
+         Dg0v2X9FYqCbDgbHH99xSbPj/wasBya1G1CqSnw4z3aM6pXAbkqz3vsM0m74TPvwaNDB
+         newUXBwi3ND1MZ1FnCnkTDWv2e417Pz0cFnYyVJyHnIG4wMDbQ5Z0IwRmpKbWGhoy3uB
+         EIvA==
+X-Gm-Message-State: AOAM531J0TPB0c2n8+1tTphjpOJNDsZkiJ8npHEKffZ5KbWoLAgMQiAJ
+        JG+1OD0DvIjNkyIuCI5IRVRMwY2BUlOzWJjLRFM=
+X-Google-Smtp-Source: ABdhPJzqpP7Tsp+sbbwzGCgKGdhbWq+lnJptgeapefWFfqlxET+5Yc/cGQ8z7QGKag2Y1/AQti3tgQ==
+X-Received: by 2002:a05:651c:54e:: with SMTP id q14mr7120323ljp.152.1631466694789;
+        Sun, 12 Sep 2021 10:11:34 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id a15sm682708ljb.18.2021.09.12.10.11.33
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 10:11:14 -0700 (PDT)
-Subject: Re: [PATCH] ipv6: delay fib6_sernum increase in fib6_add
-To:     zhang kai <zhangkaiheb@126.com>, davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210909083918.27008-1-zhangkaiheb@126.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <51233d97-951a-aa5c-7939-ef9db20a0f1e@gmail.com>
-Date:   Sun, 12 Sep 2021 11:11:13 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Sun, 12 Sep 2021 10:11:34 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id g1so4376484lfj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 10:11:33 -0700 (PDT)
+X-Received: by 2002:a05:6512:3d04:: with SMTP id d4mr5879343lfv.474.1631466693700;
+ Sun, 12 Sep 2021 10:11:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210909083918.27008-1-zhangkaiheb@126.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAH2r5ms8Tbj+Jwo6pgM--fGtOBW3vyaSkU==959G=-HtoT5EzQ@mail.gmail.com>
+In-Reply-To: <CAH2r5ms8Tbj+Jwo6pgM--fGtOBW3vyaSkU==959G=-HtoT5EzQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 12 Sep 2021 10:11:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whB4GpMc90JJ-Bp9iO7-q0Ci3N50EPx4D6etHnZ-eD2yw@mail.gmail.com>
+Message-ID: <CAHk-=whB4GpMc90JJ-Bp9iO7-q0Ci3N50EPx4D6etHnZ-eD2yw@mail.gmail.com>
+Subject: Re: [GIT PULL] smb3 client fixes
+To:     Steve French <smfrench@gmail.com>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/21 2:39 AM, zhang kai wrote:
-> only increase fib6_sernum in net namespace after add fib6_info
-> successfully.
-> 
-> Signed-off-by: zhang kai <zhangkaiheb@126.com>
-> ---
->  net/ipv6/ip6_fib.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
+On Sat, Sep 11, 2021 at 10:24 AM Steve French <smfrench@gmail.com> wrote:
+>
+>   git://git.samba.org/sfrench/cifs-2.6.git tags/5.15-rc-cifs-part2
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Your pull request message was a mess - you'd done some odd
+cut-and-paste with the automated output being mixed in six(!) times in
+between some of your manual edits.
 
+I tried to make a sensible merge message of it all.
 
+           Linus
