@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00D5407B46
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 04:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AD7407B4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 04:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234866AbhILCDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 22:03:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45501 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230212AbhILCC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 22:02:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631412105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EyikGfhK6ZBuK8sEBsdOp0Sy5GjF53gp/LzsVSTkDzg=;
-        b=VMYJlNi4efuy/3BMh2V32t2FQoPltAvE4TJUtQDi2QvgtqFoGwnSY4y+zBUdtG2LRxDuMQ
-        GXiFcKY6DvYhrl9lc4UqO0Z99ziKziqivGDxoC0KtyqZ7Z+EEs4jFrnQl0JedpP32mnHKk
-        NfGtMlAhK5GSliQjrPKGv4lQAm3f3ZI=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-E9mNqRwTNl6bUTMG4nayxA-1; Sat, 11 Sep 2021 22:01:43 -0400
-X-MC-Unique: E9mNqRwTNl6bUTMG4nayxA-1
-Received: by mail-pg1-f197.google.com with SMTP id q22-20020a63e956000000b002524787adb1so4816537pgj.3
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 19:01:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=EyikGfhK6ZBuK8sEBsdOp0Sy5GjF53gp/LzsVSTkDzg=;
-        b=vDaiDD/qapetaLVv7NcYH6xc6owar+WfKDTD+uMFTjEwiV575sn5Rg4tRwiqVLH8cI
-         FV2tmUc5LGI7yhCCCjDtjgKXv663Y25R06ACueLS9BnaTUAksTLfD03FLPgy/tOenLCx
-         0xBGAqkPpn4ShZthQdqyaMeOs8Yw1hBCy35DWs+6ngSgEnpt4zuTmM/8DHakHJP/XcpL
-         /q6kS+dnq4ib05HF6M2X+J5np8h8NuSpLyQc37HBUuoPWCdQu9/86S+PT9YbNiR2Zm0Z
-         MiKYEHhllF3ceDhRWx5xrdEw6HfQhUTN/YaQFy5OFAD9ENe+xaofcb+Gr7AtDYpMOui+
-         QaFg==
-X-Gm-Message-State: AOAM533NoZja2WQZqBgFkXEQ63m7lTVAtTLCAoFob18ST7OSTFr5/gkf
-        ZJhYPqtrvho72+QvRvKPsMRBZeKopYlR/RTr0QMG+E6KrSHGKyjZugzKmIhicOtvDuk9TPLi0EA
-        w/+qR50dXd9YJ/C2b3wuxjw26
-X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr5473652pjo.243.1631412102797;
-        Sat, 11 Sep 2021 19:01:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAVlePM7TLoSO1fdiDoUYzdCCOCSTnPzs2ThmCm3HRYLIiLQ9HcJZ5MM1XKYXTmCyGjFMryg==
-X-Received: by 2002:a17:90a:9291:: with SMTP id n17mr5473608pjo.243.1631412102531;
-        Sat, 11 Sep 2021 19:01:42 -0700 (PDT)
-Received: from smtpclient.apple ([2600:380:4738:b4a5:7850:2b24:ea76:1118])
-        by smtp.gmail.com with ESMTPSA id h16sm2869606pfn.215.2021.09.11.19.01.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Sep 2021 19:01:42 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
+        id S234686AbhILCUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 22:20:52 -0400
+Received: from mout.gmx.net ([212.227.15.19]:47677 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230212AbhILCUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 22:20:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631413162;
+        bh=YEjdbrUDhZg9FOnRCoqOoesT9SweAvxONdGBIklXH2g=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
+        b=IoB0YAVqKZRTOvd0xKwdnFHJV81fsA2Odld+YsLrK0wwBE6EZzDaUfSzSMlCjwMkF
+         em6bpWWQX8fgetO9YMJhgz6S/wv3NpvPKfNh8/QaB1fwi3qSce3hModNrw+gG6X4pI
+         AAlWGdmqAwqR2hQyd0csX3nbbN0ghf86IzgSoGF0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.217.102]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MWAOW-1mRueu2DcY-00Xf7i; Sun, 12
+ Sep 2021 04:19:22 +0200
+Message-ID: <425df999d02a62af13da8e77dbed0f2be750cda8.camel@gmx.de>
+Subject: ksmbd,transport_rdma.c: Don't include rwlock.h directly
+From:   Mike Galbraith <efault@gmx.de>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     Hyunchul Lee <hyc.lee@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>
+Date:   Sun, 12 Sep 2021 04:19:21 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.41.2 
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 1/1] x86: change default to spec_store_bypass_disable=prctl spectre_v2_user=prctl
-Date:   Sat, 11 Sep 2021 19:01:40 -0700
-Message-Id: <AAA2EF2C-293D-4D5B-BFA6-FF655105CD84@redhat.com>
-References: <202109111411.C3D58A18EC@keescook>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <202109111411.C3D58A18EC@keescook>
-To:     Kees Cook <keescook@chromium.org>
-X-Mailer: iPhone Mail (18G82)
+X-Provags-ID: V03:K1:JZrr8PrkidXHrZSm8bx+R30zaqYJc131TIX06AIJiFh2X0ZfTgx
+ cnbMpLkqLTGRypNUMFmqVjjEpOe+xj9moEn8rJEc/PwMCpmTeCFtfY+0HFFUzqbBGV9SMY9
+ 9FHegZmqlAWOENUkgGx2hmgQKwnChVMHIkB0v7E6ytQba6FwdEg62H/HBhT8wYHvwKyc45B
+ JNwXyqqNhc8qxEMOLNOYg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YcxXYPw/B7A=:GTcyOjIs8Y2ruAW2+/BCFP
+ nMTJX61nAXvrvBqF2LhGZuXrE8l+uBiS46QDF8R/kKyJb9mcgRIsEGhgIpfP+224vhzMoRygD
+ /2JSIZnGnxjwSwMmrEqDtyo8F5m1DK0t4PDz5W8wxJ9w3K+WYi7Nz9gJ0000ItMzaT2JV8B5l
+ npN5UHZSjgyCjQhzvjOEuzNm19BAEtVQSVL3CizMG8R91BJseOZuv/3QE6SmfPriqkhRbTwm2
+ METvkOObPj0hM4BvvHGKNPEKA2nA+ee3gTJ8AU9UuO3Sfbsbzmsy5ZtUxX5324yAP6RJF4xmy
+ qmbEK+o9RA2yTxX7xCvj4ImKLxdO/cvz8O+PYl+hI9a89W1MrvXtlRUUvT9eh5xk3pzdN9zA2
+ WiID3dIEZl6iGtjUBwid1vkMcH21W2wKKnfsk7FIQuSgyncw4E8kat6vThzjOVgTSKPUGKWpT
+ tkMv0FtektWc6cfSYe/DSngc/UeCN085HTEcReTOAbIK25ct4sArRQi0Oon2Xrt7kCEpaptVf
+ CYxO04te3Gm7IMcRVh1ctvR82AmzbjFXtYQqB+xIY+FO4xXrpRv3gwy4z+OdGKrA6Thuk7Sn3
+ GchfrBgXoZypYD0X2dokrIknPfe+7Mxx3hszKTMoouux6kGxnYPaimaG3ktAYcNgKdzHR1Pxm
+ pUDHFVj22YytWyFstHfUz7w/jzmBdoUAW8tnmbV/pVhF63D3oVeHue2cAfdHbGtiNsvJv5QW/
+ Soi1AzkUO6bzsS2H5kC8eSwB5RkEKUc7fEl2gIuomyqNXtY8FQGS3Oazhp55N2/xEhgUZmocl
+ Bkuk1xBNkf+SDIaH+BxrjV1myJcEKaxHLKlj8QVqc6JM70hTKfa/BmZ2bolE89W5WFNJnYT3I
+ 8rn9OWSLpnR1j0Ro4X9MnaQMI0hxjkJyokXVBheTcwaJBi2gOFJC5AZqUvq+5qprYM+Q/3+DR
+ AdkYMCDmEaod9BE8BuQAMBfOay1GXGXNa0ZBP6r48diQgLal44uJdyGkEEyc5NdBpbAXpFhdS
+ X10/8Gp9R8TYeVUyxmfi8WgTRxoIPlO00RRMtJgr4KKA7Me/KRzbydmFGC/l8iEdE46Fqv/IX
+ iZQAqnXTAsilu4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+rwlock.h specifically asks to not be included directly.
 
-> On Sep 11, 2021, at 2:13 PM, Kees Cook <keescook@chromium.org> wrote:
->=20
-> =EF=BB=BFOn Wed, Nov 04, 2020 at 06:50:54PM -0500, Andrea Arcangeli wrote:=
+In fact, the proper spinlock.h include isn't needed either,
+it comes with the huge pile that kthread.h ends up pulling
+in, so just drop it entirely.
 
->> Switch the kernel default of SSBD and STIBP to the ones with
->> CONFIG_SECCOMP=3Dn (i.e. spec_store_bypass_disable=3Dprctl
->> spectre_v2_user=3Dprctl) even if CONFIG_SECCOMP=3Dy.
->=20
-> Hello x86 maintainers!
->=20
-> I'd really like to get this landed, so I'll take this via the
-> seccomp-tree unless someone else speaks up. This keeps falling off
-> the edge of my TODO list. :)
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+=2D--
+ fs/ksmbd/transport_rdma.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks!  You can add my
+=2D-- a/fs/ksmbd/transport_rdma.c
++++ b/fs/ksmbd/transport_rdma.c
+@@ -20,7 +20,6 @@
+ #define SUBMOD_NAME	"smb_direct"
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+ #include <linux/kthread.h>
+-#include <linux/rwlock.h>
+ #include <linux/list.h>
+ #include <linux/mempool.h>
+ #include <linux/highmem.h>
 
