@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC574081A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8844081A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 22:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236472AbhILUrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 16:47:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20884 "EHLO
+        id S236506AbhILUrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 16:47:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33787 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236292AbhILUq7 (ORCPT
+        by vger.kernel.org with ESMTP id S236292AbhILUrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 16:46:59 -0400
+        Sun, 12 Sep 2021 16:47:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631479544;
+        s=mimecast20190719; t=1631479556;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=pzcy6zz34pSgX/5uARJvw2PlkJ2zdCgMxguaWEDx/h0=;
-        b=b8vTTWfsoWW4YtXFhqLftaPesLkNZFWU0PhyP2wRrTbEJ3bmGOdM7wKCDoKftOPgC63LV5
-        d2KLtm/ie51rwB21bT83v9f4gOl/rv9OKz/oA6MReAslJtdJ3SPokehmHGAmzxQw2uxsEv
-        N2GzgzEs+eJvv+QiGf1VrV7emH2+dK0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-W2-aQSzyM7yezL54gohL8Q-1; Sun, 12 Sep 2021 16:45:43 -0400
-X-MC-Unique: W2-aQSzyM7yezL54gohL8Q-1
-Received: by mail-ej1-f72.google.com with SMTP id g4-20020a170906520400b005e7d062772dso2808077ejm.13
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 13:45:43 -0700 (PDT)
+        bh=PjvlGSdnGG5wtWxkF3EyFLoH5h3Fuzy88PPCh+MZH4E=;
+        b=VilmpcwAY6CUb+UvkTALaoR0nb6/t+keXds9Ey5OVfC2VbtHUnREagVxZmkVHFkxUyHuT6
+        HwAA20n2+rd9RdRr19KzFQHxxAGn7FjIBhCQThaIPNRZpHCbxizl7yqDWQk7hoziCCLvON
+        N+O7zC4u3p9Z/3mfLX0d1nVAtHfzQaA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-LcPkuSeWP5iwO2sIv1pg-Q-1; Sun, 12 Sep 2021 16:45:55 -0400
+X-MC-Unique: LcPkuSeWP5iwO2sIv1pg-Q-1
+Received: by mail-ed1-f71.google.com with SMTP id g11-20020a056402090b00b003d114f9cb8aso1420286edz.20
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 13:45:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pzcy6zz34pSgX/5uARJvw2PlkJ2zdCgMxguaWEDx/h0=;
-        b=nEHfBK1gT01EDgyNJIRCrC6ZzQE3UXZph24Q8cHnengmU2i3JWY4mDzkmKLAk06Rpy
-         mWp7TMl/LK6J2gAtpi3MOwRFcnQOKuZfcytlC0CZNNW3KSGW/tikRdHqF1BebgGERNi+
-         2dXBfrX3nFe1+kCRbbYs1G3rjnHLuNqqk2VFpEGhDuy5PoHTbnWt7lrVVy9ZHkKykAcm
-         a5Ikpqy6rdqRi2yA54O58NbMoffO7PmmWJWAjoYVksnJx57iA0bFCEUhzuEQ08FfSZRj
-         VjYcdqYW78BYKG5T4aTIMgBMarko33gGjMSAF21S7AJyos+iJ69nbjTaspQ15PrnXfsw
-         hMFQ==
-X-Gm-Message-State: AOAM5317JmW+ccfcXdZ6Uit7ZRxIk+WDlOYBODFv5zdS9r48OQlqYSj0
-        l5+wwIO+PhHUpe26OfSeci88s3P/Nsm03GxlyJeuEAXZhKFvv3By3GtQVs9htaNjtrNCedwh609
-        Bkv1sIsq2cOf4yZ8m/Wiws1j3
-X-Received: by 2002:a17:906:1e0c:: with SMTP id g12mr9257689ejj.155.1631479542339;
-        Sun, 12 Sep 2021 13:45:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzwE2fjSQx7SmsCpq+n9i0NxXiTcXYfdNl37j5IKUaT08JTo/NzvTJS2aA+R2SWHsOx1UKwMQ==
-X-Received: by 2002:a17:906:1e0c:: with SMTP id g12mr9257678ejj.155.1631479542181;
-        Sun, 12 Sep 2021 13:45:42 -0700 (PDT)
+        bh=PjvlGSdnGG5wtWxkF3EyFLoH5h3Fuzy88PPCh+MZH4E=;
+        b=FGOJsh8xt7ywSNTuK3XxLEKA0A5FG9EHsqDI/zPa30oOpjmV2Yi0Ri2Jk9SSZM5++v
+         95+xxEyW68CL5LqAdTX/+N22RvYaZPWJv5gz89xdgYMyr1Gxkvlt4nfD6+ugtOtfzoMi
+         6LbBnppDc5+E9bZOgcKhFvNGRZxHqmG3iqYFKk/tWWUnXbMo6LHm2SR1XCE3aO11HE/R
+         cc9psVAbujaYQLqNDQli0iXHXjNi8/nHUhExNhOo5TZCZwB9gL6Di7jenHhi4rZcoUnz
+         +mQVx7/GeDkBzQyuzsFgtrkkpavSTbMS+S/UoUNsE09iFVGbUaX731+uKTSu6+VYzAL1
+         3MIg==
+X-Gm-Message-State: AOAM531ReilCZFFv9k+UKMKjiVl0D7O2RY5U2WsChIHZ/NxoS4VVUgdj
+        r0bPDx6aayGov7M5aM6mbJOkKwrUVSAT6gblHz16HrF2QwsslV5XeWGZncCbNWyoeKBl2HlrV7i
+        RW+jvK7oiTn3o/qSghyiQp2As
+X-Received: by 2002:a17:906:5d6:: with SMTP id t22mr9060897ejt.98.1631479554365;
+        Sun, 12 Sep 2021 13:45:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRkUhpfKHz7TL/XSnUkITtIh/OCvP4A+TUfnTz/AWpklfvoaee7/qbuAZOIsZJxhPF+hC9Sw==
+X-Received: by 2002:a17:906:5d6:: with SMTP id t22mr9060882ejt.98.1631479554232;
+        Sun, 12 Sep 2021 13:45:54 -0700 (PDT)
 Received: from krava ([83.240.60.52])
-        by smtp.gmail.com with ESMTPSA id c10sm2464549eje.37.2021.09.12.13.45.41
+        by smtp.gmail.com with ESMTPSA id r16sm2841070edt.15.2021.09.12.13.45.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 13:45:41 -0700 (PDT)
-Date:   Sun, 12 Sep 2021 22:45:40 +0200
+        Sun, 12 Sep 2021 13:45:53 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 22:45:52 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -65,7 +65,7 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
 Subject: Re: [PATCH v10 05/24] perf record: Introduce thread local variable
-Message-ID: <YT5m9LqWWpD5mPZe@krava>
+Message-ID: <YT5nAMJ9BuKZHb+2@krava>
 References: <cover.1626072008.git.alexey.v.bayduraev@linux.intel.com>
  <afa31d66f692558e0c9c06ea2f83a62ac394097f.1626072009.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
@@ -106,9 +106,6 @@ On Mon, Jul 12, 2021 at 09:46:05AM +0300, Alexey Bayduraev wrote:
 >  	struct switch_output	switch_output;
 >  	unsigned long long	samples;
 > -	struct mmap_cpu_mask	affinity_mask;
-
-please split this change from the rest
-
 >  	unsigned long		output_max_size;	/* = 0: unlimited */
 >  	int			nr_threads;
 >  	struct thread_mask	*thread_masks;
@@ -127,6 +124,11 @@ please split this change from the rest
 >  
 > -static void record__adjust_affinity(struct record *rec, struct mmap *map)
 > +static int record__adjust_affinity(struct record *rec, struct mmap *map)
+
+hm, why changing the return value if the caller does not check it?
+
+jirka
+
 >  {
 > +	int ret = 0;
 > +
@@ -150,9 +152,15 @@ please split this change from the rest
 > +		if (ret)
 > +			pr_err("threads[%d]: sched_setaffinity() call failed: %s\n",
 > +			       thread->tid, strerror(errno));
+> +		if (verbose == 2) {
+> +			pr_debug("threads[%d]: addr=", thread->tid);
+> +			mmap_cpu_mask__scnprintf(&thread->mask->affinity, "thread");
+> +			pr_debug("threads[%d]: on cpu=%d\n", thread->tid, sched_getcpu());
+> +		}
+>  	}
+> +
+> +	return ret;
+>  }
 
-same here, it's not just 'rec' to 'thread' change in here
-
-thanks,
-jirka
+SNIP
 
