@@ -2,170 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DC3407B07
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 02:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE08407B0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 02:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhILAG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Sep 2021 20:06:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44276 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232515AbhILAGZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Sep 2021 20:06:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631405112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=IT3HnjaxFEROeN2QLWVUnViJA5HfWYlX8v34IjIoBJ4=;
-        b=iwOxFI3O1eMizoFlzRjGVGhvTbFUTC1dCT7O1XJUOqIxVefC3dzYEzIpOSEVi0q/RyVkNL
-        c1Stv973Eq6RZteOWsGd0QXpiH983R2sfdgGkMb67flmv8BmrUpo27C6l992+dxorsSQxC
-        1TSBdV8qXd4WFzwHklHZ1rmlo23KKJw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-563-Zq3Xg34pMsWULz6EZIy1sw-1; Sat, 11 Sep 2021 20:05:10 -0400
-X-MC-Unique: Zq3Xg34pMsWULz6EZIy1sw-1
-Received: by mail-wm1-f70.google.com with SMTP id z18-20020a1c7e120000b02902e69f6fa2e0so2872092wmc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Sep 2021 17:05:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=IT3HnjaxFEROeN2QLWVUnViJA5HfWYlX8v34IjIoBJ4=;
-        b=ofNTULWFv+Hi2osaTWQcXEOZT14VjCX9avPLnsBRcKpIRHKFmDL3aNvNA+IEuBZpv6
-         vktE1PDyy9l/QOCPgXVlRzFF3kf44Fnl9rBzUwzagrHAwGI7VVR4T20r+vLBH/+9Nan1
-         f7RlMVkSA/23rR5Sc49iss8VN9T9p2XHt02VXNiq4bto+YW+ygCsgQgBn2fANitf0S+T
-         GzMUCbK5Me0BBIXrHwHjNMNDbGZQUYvb/5MoCNR8L0NQKsHwxXUm//QmKOLKWcvJ3H29
-         3itDBihdp5kir8tG4tM1iOqPxGuqdjZ+Bl2DDem1hBoqys9/dU9BfSwG+40gpCy/dpUN
-         3JwA==
-X-Gm-Message-State: AOAM532dpF/G9n7O4ts+AMZMqfqmwDDycpPsLZZtF1NbLe54DKGYRBli
-        27Av9Q+dWoVkcCa2g4VoDZ3jBdySREc5XoNFFwm60n87++HYBtu7CR5/pmLumJJ0xIhVO93y0Xy
-        0fHY2tvb0av+L7QTrHvjEC477
-X-Received: by 2002:a7b:cb45:: with SMTP id v5mr4300627wmj.184.1631405109598;
-        Sat, 11 Sep 2021 17:05:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJxDHhrbMVL4dF3568IhBCMK63Z2YRX3A33U25nv3obGFgziyRVxdJ4k5PO4+KjiDxM/Zjgg==
-X-Received: by 2002:a7b:cb45:: with SMTP id v5mr4300606wmj.184.1631405109371;
-        Sat, 11 Sep 2021 17:05:09 -0700 (PDT)
-Received: from redhat.com ([2.55.27.174])
-        by smtp.gmail.com with ESMTPSA id t18sm2841775wrp.97.2021.09.11.17.05.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Sep 2021 17:05:08 -0700 (PDT)
-Date:   Sat, 11 Sep 2021 20:05:04 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arseny.krasnov@kaspersky.com, caihuoqing@baidu.com,
-        elic@nvidia.com, jasowang@redhat.com, lingshan.zhu@intel.com,
-        mgurtovoy@nvidia.com, mst@redhat.com, viresh.kumar@linaro.org,
-        wsa@kernel.org, xianting.tian@linux.alibaba.com,
-        xieyongji@bytedance.com
-Subject: [GIT PULL V2] virtio,vdpa,vhost: features, fixes
-Message-ID: <20210911200504-mutt-send-email-mst@kernel.org>
+        id S233584AbhILAL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Sep 2021 20:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230435AbhILALy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Sep 2021 20:11:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D09CE61205;
+        Sun, 12 Sep 2021 00:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631405440;
+        bh=rjXQJPoGjJXG/Hc2aV6Aw8sNh7EVkz9yWcAzCNbbEjs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eXuEzLq6GWHkqS3CpXkj35rzzLmxtu2nj5NqNytbZT/1eFTIsvL4Y4RTc/JBBAv3q
+         rxBBSupQIwdCxZduZrnRITpU7VCaLA2MIi0fQOaTBaw4cnorgMbjtcqn8rXABv/LPA
+         a2XvU4N/hAd7xNdxkcmcDE/h/OP3R7/KZC7qWCLZhuGseNlzFvGfgrltPlHAndUddF
+         DkZ28vkxhg4a4AclC/WiGdgvGnuGGRlvN6/6GvyBno6TK8/StfVRE+hcC+28CYaTH4
+         UwznNCQh89sEPHMiHR4nzmK+9xQPcEGQ5DMvKuqDZGrHz6OsXPXWu9zwtPW+fJv4zO
+         69retl15t86nw==
+Received: by mail-lj1-f170.google.com with SMTP id l18so9903847lji.12;
+        Sat, 11 Sep 2021 17:10:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530HuNSpE7/FRL8aDkPtSSS4BuVCpc/TRLLm0uvW8aC44e7CSVcO
+        IYP/Q/CBuuUGzBTqnOpQfwl7XMT1sAauexXlln0=
+X-Google-Smtp-Source: ABdhPJyiHODPdJ5L+2w4cbm1L9+Glebe7aq/6/Mw/j2r8k2lENKIx6D84Fb19m9zndoBsG51bmqUM7eRWPUwrBRFmpM=
+X-Received: by 2002:a2e:9ac7:: with SMTP id p7mr4002766ljj.72.1631405439084;
+ Sat, 11 Sep 2021 17:10:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+References: <CAFnufp0eVejrDJoGE900D2U5-9qi-srVEmPOc9zHC5mSH4DgLg@mail.gmail.com>
+ <mhng-22e6331c-16e1-40cc-b431-4990fda46ecf@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-22e6331c-16e1-40cc-b431-4990fda46ecf@palmerdabbelt-glaptop>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 12 Sep 2021 08:10:27 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTJ8M5FpL4=PDnPQgrrPaLxVhsZCTO2rXqaOm6MEn=gnA@mail.gmail.com>
+Message-ID: <CAJF2gTTJ8M5FpL4=PDnPQgrrPaLxVhsZCTO2rXqaOm6MEn=gnA@mail.gmail.com>
+Subject: Re: [PATCH] riscv: use the generic string routines
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes from v1:
-	dropped vdpa bits until we are sure how they are
-	supposed to interact with recent upstream changes
+On Sat, Sep 11, 2021 at 11:49 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Thu, 05 Aug 2021 03:31:04 PDT (-0700), mcroce@linux.microsoft.com wrote:
+> > On Wed, Aug 4, 2021 at 10:40 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+> >>
+> >> On Tue, 03 Aug 2021 09:54:34 PDT (-0700), mcroce@linux.microsoft.com wrote:
+> >> > On Mon, Jul 19, 2021 at 1:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >> >>
+> >> >> From: Matteo Croce <mcroce@microsoft.com>
+> >> >>
+> >> >> Use the generic routines which handle alignment properly.
+> >> >>
+> >> >> These are the performances measured on a BeagleV machine for a
+> >> >> 32 mbyte buffer:
+> >> >>
+> >> >> memcpy:
+> >> >> original aligned:        75 Mb/s
+> >> >> original unaligned:      75 Mb/s
+> >> >> new aligned:            114 Mb/s
+> >> >> new unaligned:          107 Mb/s
+> >> >>
+> >> >> memset:
+> >> >> original aligned:       140 Mb/s
+> >> >> original unaligned:     140 Mb/s
+> >> >> new aligned:            241 Mb/s
+> >> >> new unaligned:          241 Mb/s
+> >> >>
+> >> >> TCP throughput with iperf3 gives a similar improvement as well.
+> >> >>
+> >> >> This is the binary size increase according to bloat-o-meter:
+> >> >>
+> >> >> add/remove: 0/0 grow/shrink: 4/2 up/down: 432/-36 (396)
+> >> >> Function                                     old     new   delta
+> >> >> memcpy                                        36     324    +288
+> >> >> memset                                        32     148    +116
+> >> >> strlcpy                                      116     132     +16
+> >> >> strscpy_pad                                   84      96     +12
+> >> >> strlcat                                      176     164     -12
+> >> >> memmove                                       76      52     -24
+> >> >> Total: Before=1225371, After=1225767, chg +0.03%
+> >> >>
+> >> >> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> >> >> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> >> >> ---
+> >> >
+> >> > Hi,
+> >> >
+> >> > can someone have a look at this change and share opinions?
+> >>
+> >> This LGTM.  How are the generic string routines landing?  I'm happy to
+> >> take this into my for-next, but IIUC we need the optimized generic
+> >> versions first so we don't have a performance regression falling back to
+> >> the trivial ones for a bit.  Is there a shared tag I can pull in?
+> >
+> > Hi,
+> >
+> > I see them only in linux-next by now.
+>
+> These ended up getting rejected by Linus, so I'm going to hold off on
+> this for now.  If they're really out of lib/ then I'll take the C
+> routines in arch/riscv, but either way it's an issue for the next
+> release.
+Agree, we should take the C routine in arch/riscv for common
+implementation. If any vendor what custom implementation they could
+use the alternative framework in errata for string operations.
 
-The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
+-- 
+Best Regards
+ Guo Ren
 
-  Linux 5.14 (2021-08-29 15:04:50 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus_v2
-
-for you to fetch changes up to 6105d1fe6f4c24ce8c13e2e6568b16b76e04983d:
-
-  virtio-blk: remove unneeded "likely" statements (2021-09-06 07:20:56 -0400)
-
-----------------------------------------------------------------
-virtio,vdpa,vhost: features, fixes
-
-virtio-vsock support for end of record with SEQPACKET
-vdpa: mac and mq support for ifcvf and mlx5
-vdpa: management netlink for ifcvf
-virtio-i2c, gpio dt bindings
-
-misc fixes, cleanups
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Arseny Krasnov (6):
-      virtio/vsock: rename 'EOR' to 'EOM' bit.
-      virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR' bit.
-      vhost/vsock: support MSG_EOR bit processing
-      virtio/vsock: support MSG_EOR bit processing
-      af_vsock: rename variables in receive loop
-      vsock_test: update message bounds test for MSG_EOR
-
-Cai Huoqing (2):
-      vhost scsi: Convert to SPDX identifier
-      vdpa: Make use of PFN_PHYS/PFN_UP/PFN_DOWN helper macro
-
-Eli Cohen (6):
-      vdpa/mlx5: Remove redundant header file inclusion
-      vdpa/mlx5: function prototype modifications in preparation to control VQ
-      vdpa/mlx5: Decouple virtqueue callback from struct mlx5_vdpa_virtqueue
-      vdpa/mlx5: Ensure valid indices are provided
-      vdpa/mlx5: Add support for control VQ and MAC setting
-      vdpa/mlx5: Add multiqueue support
-
-Max Gurtovoy (1):
-      virtio-blk: remove unneeded "likely" statements
-
-Viresh Kumar (5):
-      dt-bindings: virtio: Add binding for virtio devices
-      dt-bindings: i2c: Add bindings for i2c-virtio
-      dt-bindings: gpio: Add bindings for gpio-virtio
-      uapi: virtio_ids: Sync ids with specification
-      virtio: Bind virtio device to device-tree node
-
-Xianting Tian (1):
-      virtio-balloon: Use virtio_find_vqs() helper
-
-Xie Yongji (1):
-      vdpa_sim: Use iova_shift() for the size passed to alloc_iova()
-
-Zhu Lingshan (4):
-      vDPA/ifcvf: introduce get_dev_type() which returns virtio dev id
-      vDPA/ifcvf: implement management netlink framework for ifcvf
-      vDPA/ifcvf: detect and use the onboard number of queues directly
-      vDPA/ifcvf: enable multiqueue and control vq
-
- .../devicetree/bindings/gpio/gpio-virtio.yaml      |  59 +++
- .../devicetree/bindings/i2c/i2c-virtio.yaml        |  51 ++
- Documentation/devicetree/bindings/virtio/mmio.yaml |   3 +-
- .../devicetree/bindings/virtio/virtio-device.yaml  |  41 ++
- drivers/block/virtio_blk.c                         |   4 +-
- drivers/vdpa/Kconfig                               |   1 +
- drivers/vdpa/ifcvf/ifcvf_base.c                    |   8 +-
- drivers/vdpa/ifcvf/ifcvf_base.h                    |  25 +-
- drivers/vdpa/ifcvf/ifcvf_main.c                    | 224 ++++++---
- drivers/vdpa/mlx5/core/mlx5_vdpa.h                 |  26 +-
- drivers/vdpa/mlx5/core/mr.c                        |  81 +++-
- drivers/vdpa/mlx5/core/resources.c                 |  35 ++
- drivers/vdpa/mlx5/net/mlx5_vnet.c                  | 517 ++++++++++++++++++---
- drivers/vdpa/vdpa_sim/vdpa_sim.c                   |   3 +-
- drivers/vhost/scsi.c                               |  14 +-
- drivers/vhost/vdpa.c                               |  24 +-
- drivers/vhost/vsock.c                              |  28 +-
- drivers/virtio/virtio.c                            |  57 ++-
- drivers/virtio/virtio_balloon.c                    |   4 +-
- include/uapi/linux/virtio_ids.h                    |  12 +
- include/uapi/linux/virtio_vsock.h                  |   3 +-
- net/vmw_vsock/af_vsock.c                           |  10 +-
- net/vmw_vsock/virtio_transport_common.c            |  23 +-
- tools/testing/vsock/vsock_test.c                   |   8 +-
- 24 files changed, 1030 insertions(+), 231 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
- create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
- create mode 100644 Documentation/devicetree/bindings/virtio/virtio-device.yaml
-
+ML: https://lore.kernel.org/linux-csky/
