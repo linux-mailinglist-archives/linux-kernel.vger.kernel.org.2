@@ -2,175 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AAE407D8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB55407D91
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 15:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235480AbhILNVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 09:21:03 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:2175 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235322AbhILNVC (ORCPT
+        id S235374AbhILNWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 09:22:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47766 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235291AbhILNWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 09:21:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631452787; x=1662988787;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Hn5p6iAq2/R0gZg37R3x7fOlLxX9Tu08vrhiAicnY28=;
-  b=gH8aBUh3vic4RcAVoQzdfpiVIW+utcc/1XZgA8o8hrNHD8jJC/fFpXhL
-   FzBeVjeUdmNfuwY4NuRDi2NT4PrOIl2zNAUSW/DKPV/ZGiLp3iy/ZBUK0
-   T8znSH9XgVqWnZSYa+wm/CU5bfVkz2Q5RyaHgBFmjzTpJ3WlGrB/Y6+sm
-   7bJ4oMT08MVkDbRBpxVSI4BajPzhgpeFGs3k9HHBOZqxezhGxVlqaui+Q
-   9/QZiFn3L42YXy24J2tJ8HoZJvyIn/0F1zfd5hudQkawZOwg10gKyVMho
-   Jsigqdz75oUTmMc5dyCCuQ7lLJ7C1NkvdrnVmeuYbo1fcekwp3PK6A3g6
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,287,1624291200"; 
-   d="scan'208";a="291403068"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Sep 2021 21:19:46 +0800
-IronPort-SDR: rtrFTfecjN4ht4QKWIMdp0TJrmDhW41LuMJ0hzAKpltcB3HFnCysKA2sa6jiJUwvDucKZvPBy/
- 7fqpTpiN2I1vZ/HUqUeu670OzGu8yu7ZyGBwTd1HE4bczrVilk9172YuVH2lDcK2UCUiWy/B41
- r53Y+T5dDE5K0vIAnuRlLSNwGo1IH0HKjT+s8YImjRJx4p6jsVJ41zvCA48kKh5PrqlJaxqDgn
- ovIXoEwBsNQdMlEmy1WnGfRhbFOMAtvSXZt9iJfuJ56YEB8R/IN5wORTuw/bhWehm/cpr20p2F
- 7Br0DP9+354Qa9X9rivIRbfq
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 05:54:39 -0700
-IronPort-SDR: 2tdTDrCROeZ1/u+2fKcIUL7IzJ6Taw4wStN1Hm7Srh/Niu4c4ZgKl/AFpiJWpAuZ8ObQgmUtmn
- fLbZwFK8vwjdxg3TulWsMFBnsrk+jBc9/YGRW0K9qDht2GusWzPfgdwEKxRTBTXNGpP71YFf36
- 8yABCRl6R3rdCaqRCD8fawql7wIDPpfYDpQRGbIomQFNQeVLLS67z54Xuval7LRjp2MkCsrpLz
- 7pcNFyqu1N9+dX5NwtDl3vxfrqwQEgj8xMC2S7rVzWVUt2csIJsmhu3Wajc+REma3uzXnHRC5S
- 2Z0=
-WDCIronportException: Internal
-Received: from bxygm33.ad.shared ([10.225.32.116])
-  by uls-op-cesaip01.wdc.com with ESMTP; 12 Sep 2021 06:19:45 -0700
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v3 2/2] scsi: ufs: Add temperature notification exception handling
-Date:   Sun, 12 Sep 2021 16:19:19 +0300
-Message-Id: <20210912131919.12962-3-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210912131919.12962-1-avri.altman@wdc.com>
-References: <20210912131919.12962-1-avri.altman@wdc.com>
+        Sun, 12 Sep 2021 09:22:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631452878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yZLdvXCxnHFukhCLU/8ODaJA2GQ4KIoZzMo62K6+NmI=;
+        b=RU4Cy7HNEbqi0jQ+cHmCgzLnYJiTPzvLNNnrKjzLJ8jWYkvhgO+R5ACSA2DfGTdTLS4PnB
+        sfZU9NQhpX3zOkJLn3MxyUIB35UZ6hBkQhvrZlAHuKmqV6YSmTAV7DDUx5jamPTryFipgb
+        3jC1t3vmnAKbjiKvEunukiUyemB41g0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-o-hs5TClOaWiPWJYJ7fplQ-1; Sun, 12 Sep 2021 09:21:16 -0400
+X-MC-Unique: o-hs5TClOaWiPWJYJ7fplQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE5BD1808304;
+        Sun, 12 Sep 2021 13:21:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A8081B472;
+        Sun, 12 Sep 2021 13:21:07 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     dhowells@redhat.com, Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Decoupling filesystems from pages
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1086692.1631452867.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Sun, 12 Sep 2021 14:21:07 +0100
+Message-ID: <1086693.1631452867@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device may notify the host of an extreme temperature by using the
-exception event mechanism. The exception can be raised when the device’s
-Tcase temperature is either too high or too low.
+Hi Johannes,
 
-It is essentially up to the platform to decide what further actions need
-to be taken. leave a placeholder for a designated vop for that.
+> Wouldn't it make more sense to decouple filesystems from "paginess",
+> as David puts it, now instead? Avoid the risk of doing it twice, avoid
+> the more questionable churn inside mm code, avoid the confusing
+> proximity to the page and its API in the long-term...
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufs-hwmon.c | 14 ++++++++++++++
- drivers/scsi/ufs/ufs.h       |  2 ++
- drivers/scsi/ufs/ufshcd.c    | 21 +++++++++++++++++++++
- drivers/scsi/ufs/ufshcd.h    |  2 ++
- 4 files changed, 39 insertions(+)
+Let me seize that opening.  I've been working on doing this for network
+filesystems - at least those that want to buy in.  If you look here:
 
-diff --git a/drivers/scsi/ufs/ufs-hwmon.c b/drivers/scsi/ufs/ufs-hwmon.c
-index a50e83f645f4..b466b4649c21 100644
---- a/drivers/scsi/ufs/ufs-hwmon.c
-+++ b/drivers/scsi/ufs/ufs-hwmon.c
-@@ -177,3 +177,17 @@ void ufs_hwmon_remove(struct ufs_hba *hba)
- 	hba->hwmon_device = NULL;
- 	kfree(data);
- }
-+
-+void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask)
-+{
-+	if (!hba->hwmon_device)
-+		return;
-+
-+	if (ee_mask & MASK_EE_TOO_HIGH_TEMP)
-+		hwmon_notify_event(hba->hwmon_device, hwmon_temp,
-+				   hwmon_temp_max_alarm, 0);
-+
-+	if (ee_mask & MASK_EE_TOO_LOW_TEMP)
-+		hwmon_notify_event(hba->hwmon_device, hwmon_temp,
-+				   hwmon_temp_min_alarm, 0);
-+}
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index 171b27be7b1d..d9bc048c2a71 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -377,6 +377,8 @@ enum {
- 	MASK_EE_PERFORMANCE_THROTTLING	= BIT(6),
- };
- 
-+#define MASK_EE_URGENT_TEMP (MASK_EE_TOO_HIGH_TEMP | MASK_EE_TOO_LOW_TEMP)
-+
- /* Background operation status */
- enum bkops_status {
- 	BKOPS_STATUS_NO_OP               = 0x0,
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 90c2e9677435..3f4c7124b74b 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5642,6 +5642,24 @@ static void ufshcd_bkops_exception_event_handler(struct ufs_hba *hba)
- 				__func__, err);
- }
- 
-+static void ufshcd_temp_exception_event_handler(struct ufs_hba *hba, u16 status)
-+{
-+	u32 value;
-+
-+	if (ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-+				QUERY_ATTR_IDN_CASE_ROUGH_TEMP, 0, 0, &value))
-+		return;
-+
-+	dev_info(hba->dev, "exception Tcase %d\n", value - 80);
-+
-+	ufs_hwmon_notify_event(hba, status & MASK_EE_URGENT_TEMP);
-+
-+	/*
-+	 * A placeholder for the platform vendors to add whatever additional
-+	 * steps required
-+	 */
-+}
-+
- static int __ufshcd_wb_toggle(struct ufs_hba *hba, bool set, enum flag_idn idn)
- {
- 	u8 index;
-@@ -5821,6 +5839,9 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
- 	if (status & hba->ee_drv_mask & MASK_EE_URGENT_BKOPS)
- 		ufshcd_bkops_exception_event_handler(hba);
- 
-+	if (status & hba->ee_drv_mask & MASK_EE_URGENT_TEMP)
-+		ufshcd_temp_exception_event_handler(hba, status);
-+
- 	ufs_debugfs_exception_event(hba, status);
- out:
- 	ufshcd_scsi_unblock_requests(hba);
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 798a408d71e5..e6abce9a8b00 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -1063,9 +1063,11 @@ static inline u8 ufshcd_wb_get_query_index(struct ufs_hba *hba)
- #ifdef CONFIG_SCSI_UFS_HWMON
- void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask);
- void ufs_hwmon_remove(struct ufs_hba *hba);
-+void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask);
- #else
- static inline void ufs_hwmon_probe(struct ufs_hba *hba, u8 mask) {}
- static inline void ufs_hwmon_remove(struct ufs_hba *hba) {}
-+void ufs_hwmon_notify_event(struct ufs_hba *hba, u8 ee_mask) {}
- #endif
- 
- #ifdef CONFIG_PM
--- 
-2.17.1
+https://lore.kernel.org/ceph-devel/162687506932.276387.1445671889052435550=
+9.stgit@warthog.procyon.org.uk/T/#m23428c315a77d8c5206b9646bf74c8ef18d4d38=
+c
+
+the current state of which is here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/=
+?h=3Dnetfs-folio-regions
+
+I've been looking at abstracting anything to do with pages out of the netf=
+s
+and putting that stuff into a helper library.  The library handles all the
+caching stuff and just presents the filesystem with requests to read
+into/write from an iov_iter.  The filesystem doesn't then see pages at all=
+.
+
+The motivation behind this is to make content encryption and compression
+transparent and automatically available to all participating filesystems -
+with the requirement that the data stored in the local disk cache
+(ie. fscache) is *also* encrypted.
+
+I have content encryption working for basic read and write on afs and Jeff
+Layton is looking at how to make it work with ceph - but it's very much a =
+work
+in progress and things like truncate and mmap don't yet work with it.
+
+Anyway, the library, as I'm currently writing it, maintains a list of
+byte-range dirty regions on each inode, where a dirty region may span mult=
+iple
+folios and a folio may be contributory to multiple regions.  The fact that
+pages are involved is really then merely an implementation detail
+
+Content encryption/compression blocks may be any power-of-2 size, from 2 b=
+ytes
+to megabytes, and this need bear no relation to page size.  The library ca=
+lls
+the crypto hooks for each crypto block in the chunk[*] to be crypted.
+
+[*] Terminology is such fun.  I have to deal with pages, crypto blocks, ob=
+ject
+    layout blocks, I/O blocks (rsize/wsize settings), regions.
+
+In fact ->readpage(), ->writepage() and ->launder_page() are difficult whe=
+n I
+may be required to deal with blocks larger than the size of a page.  The p=
+age
+being poked may be in the middle of a block, so I'm endeavouring to work
+around that.  Using the regions should allow me to 'launder' an inode befo=
+re
+invalidating the pages attached to it, and the dirty region objects can ac=
+t
+instead of the dirty, writeback and fscache flags on a page.
+
+I've been building this on top of Willy's folio patchset, and so I've paus=
+ed
+for the moment whilst I wait to see what becomes of that.  If folios doesn=
+'t
+get in or gets renamed, I have a load of reworking to do.
+
+Does this sound like something you'd be interested in looking at more
+generally than just network filesystems?
+
+David
 
