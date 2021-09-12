@@ -2,101 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1579407E23
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C82407E37
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 17:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhILPvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 11:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhILPvJ (ORCPT
+        id S235588AbhILQA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 12:00:28 -0400
+Received: from exmail.andestech.com ([60.248.187.195]:44369 "EHLO
+        ATCSQR.andestech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235577AbhILQAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 11:51:09 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4878BC061574;
-        Sun, 12 Sep 2021 08:49:55 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id g1so4078888lfj.12;
-        Sun, 12 Sep 2021 08:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=EmaR3mw88t9sUDxC5TH9IKso00i9J8FNQ4ju9r70OL8=;
-        b=i4cmIAukr7uGSEzMdzDm9CwZ0hsI/H6HtVgnePYg3MnNYGvzCZWE1It1f97QlvZyrF
-         /iJBr/qB2UUJPrn2pOmjaNSYv465/HlrsiOyARDEAcIBz/JALJkSP8n6amFoSKUTxnts
-         bV6zRN09eJiTcHcO78o43oAwtjkokreVEV8MDL9CbSY/Foaf87za17Rlrp81C4SLQhDI
-         onYU+FSvTDsC2HYu4AQOCnlJwI11LvnkAfup2wSz2puVsPYdXrc7lstPo5hEuHrmIzzv
-         Czn7jyET3SR2P7OTyBDG5nCDNddn9KowWwtSeptacq0mUAvVvT9ak/xRAPk3jfn2aQWu
-         fDwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=EmaR3mw88t9sUDxC5TH9IKso00i9J8FNQ4ju9r70OL8=;
-        b=nceE8H/qavIz14Pcb4tpbhahYvfOn7TM9i5TiG3p/eNpSvXKtRpKVjqfJedtZnCiTL
-         I/flEMIGRueMQL+By7DEFZXAIEOb4dKrNl7PPynlgdQQrzf6hZCdiJw6rNRZ9CO34WQh
-         2lRtIPRj8XBiNU9ZnSxB+OAuNSyLGb5BaAcX2Mij2oTB/inQuSPLGraY5cAiLDdK7lO4
-         bXSN9RvmiwV3jIWeXWwU+CwOLj/Oet1pMLeX1uCoYF50E2dnZKu+AZhBlGL1Mrg9Ho0E
-         YnRn8DOQf6IAne6QW4EO5QEpARMgBQKlV5OIhMtZroO8Q0Xe73ty3T65G9kIewK3xBQI
-         7yNA==
-X-Gm-Message-State: AOAM531M4StCOWH+r3i47L5GzDCV4yfI8SkxlCnf7ZKB1rsEXxGm6TkA
-        uuX8zrMYDCNSgtppkPG8rBg=
-X-Google-Smtp-Source: ABdhPJyZghj0UBqn34NGnjP1+doKihi0Muaw4yMqq8Rw4blefC+7AD17b7xTmBpEWT3cLwCN6vvJsw==
-X-Received: by 2002:ac2:4185:: with SMTP id z5mr5901276lfh.391.1631461793597;
-        Sun, 12 Sep 2021 08:49:53 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.70])
-        by smtp.gmail.com with ESMTPSA id j1sm547304lfe.153.2021.09.12.08.49.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 08:49:53 -0700 (PDT)
-Message-ID: <c1c0d250-afa1-254e-421a-d35790688c60@gmail.com>
-Date:   Sun, 12 Sep 2021 18:49:52 +0300
+        Sun, 12 Sep 2021 12:00:22 -0400
+X-Greylist: delayed 453 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Sep 2021 12:00:21 EDT
+Received: from ATCSQR.andestech.com (localhost [127.0.0.2] (may be forged))
+        by ATCSQR.andestech.com with ESMTP id 18CFpVxs066046;
+        Sun, 12 Sep 2021 23:51:31 +0800 (GMT-8)
+        (envelope-from ycliang@andestech.com)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by ATCSQR.andestech.com with ESMTP id 18CFoth5065966;
+        Sun, 12 Sep 2021 23:50:55 +0800 (GMT-8)
+        (envelope-from ycliang@andestech.com)
+Received: from ubuntu01.andestech.com (192.168.21.16) by
+ ATCPCS16.andestech.com (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0;
+ Sun, 12 Sep 2021 23:50:57 +0800
+From:   Leo Yu-Chi Liang <ycliang@andestech.com>
+To:     <corbet@lwn.net>, <src.res@email.cn>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-doc-tw-discuss@lists.sourceforge.net>
+CC:     <ycliang@cs.nctu.edu.tw>, <ycliang@andestech.com>
+Subject: [PATCH 1/1] docs/zh_TW: Add translation for riscv/boot-image-header
+Date:   Sun, 12 Sep 2021 15:50:49 +0000
+Message-ID: <20210912155049.129774-1-ycliang@andestech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v3] media: mxl111sf: change mutex_init() location
-Content-Language: en-US
-To:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
-        sean@mess.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-References: <20210819103859.17498-1-paskripkin@gmail.com>
- <20210819104221.27122-1-paskripkin@gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20210819104221.27122-1-paskripkin@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.21.16]
+X-DNSRBL: 
+X-MAIL: ATCSQR.andestech.com 18CFpVxs066046
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 13:42, Pavel Skripkin wrote:
-> Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
-> mutex. The problem was in wrong mutex_init() location.
-> 
-> Previous mutex_init(&state->msg_lock) call was in ->init() function, but
-> dvb_usbv2_init() has this order of calls:
-> 
-> 	dvb_usbv2_init()
-> 	  dvb_usbv2_adapter_init()
-> 	    dvb_usbv2_adapter_frontend_init()
-> 	      props->frontend_attach()
-> 
-> 	  props->init()
-> 
-> Since mxl111sf_* devices call mxl111sf_ctrl_msg() in ->frontend_attach()
-> internally we need to initialize state->msg_lock before
-> frontend_attach(). To achieve it, ->probe() call added to all mxl111sf_*
-> devices, which will simply initiaize mutex.
-> 
-> Reported-and-tested-by: syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
-> Fixes: 8572211842af ("[media] mxl111sf: convert to new DVB USB")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+From: Leo Yu-Chi Liang <ycliang@cs.nctu.edu.tw>
 
-Hi, Sean!
+Add Traditional Chinese for Documentation/riscv/boot-image-header.rst
 
-Did you have a chance to review this patch? Thank you :)
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ .../zh_TW/riscv/boot-image-header.rst         | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/translations/zh_TW/riscv/boot-image-header.rst
 
+diff --git a/Documentation/translations/zh_TW/riscv/boot-image-header.rst b/Documentation/translations/zh_TW/riscv/boot-image-header.rst
+new file mode 100644
+index 000000000000..86519d3c4f3b
+--- /dev/null
++++ b/Documentation/translations/zh_TW/riscv/boot-image-header.rst
+@@ -0,0 +1,67 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_TW.rst
++
++:Original: Documentation/riscv/patch-acceptance.rst
++
++:譯者:
++
++ 梁育齊 Liang YuChi <ycliang@cs.nctu.edu.tw>
++
++=============================
++RISC-V Linux 的啟動影像檔標頭
++=============================
++
++:Author: Atish Patra <atish.patra@wdc.com>
++:Date:   20 May 2019
++
++這份文件僅描述 RISC-V Linux 啟動影像檔標頭的詳細訊息。
++
++待完成:
++    寫一份完整的啟動流程指南。
++    
++解壓縮後的 Linux 核心影像檔中會含有以下 64 位元組的標頭::
++
++        u32 code0;                /* 可執行程式碼 */
++        u32 code1;                /* 可執行程式碼 */
++        u64 text_offset;          /* 載入影像的偏移量  */
++        u64 image_size;           /* 有效影像大小，小端序 */
++        u64 flags;                /* 核心旗標，小端序 */
++        u32 version;              /* 標頭版本 */
++        u32 res1 = 0;             /* 保留 */
++        u64 res2 = 0;             /* 保留 */
++        u64 magic = 0x5643534952; /* 魔術數字，小端序，"RISCV" */
++        u32 magic2 = 0x05435352;  /* 魔術數字 2，小端序，"RSC\x05" */
++        u32 res3;                 /* 保留 PE COFF 的偏移量 */
++
++這種標頭格式是深受 ARM64 標頭的影響並且相容於 PE/COFF 標頭。
++因此，將來可以將 ARM64 和 RISC-V 標頭合併為一個通用標頭。
++
++註
++==
++- 將來，這個標頭還可用來支援 RISC-V 的 EFI 模擬實作。 
++  EFI 規範需要核心影像開頭的 PE/COFF 影像標頭，以便將其視作 EFI 應用程式來運行。
++  為了支援 EFI 模擬，code0 應替換為 "MZ" 魔術字串，res3（偏移量 0x3c）應指向 PE/COFF 標頭的其餘部分。
++
++- 版本欄位標示的是版本號
++
++        ==========  ======
++        位元 0:15   小版號
++        位元 16:31  大版號
++        ==========  ======
++
++   這樣可以保證新、舊版本間的相容性。
++   目前的版本被定義為 0.2。
++
++- 自 0.2 版後，"magic" 欄位已不適用。
++  在未來的版本中，它可能會被刪除。
++  這本來應該和 ARM64 標頭 "magic" 欄位相符，但不幸的是沒有。 
++  "magic 2" 欄位是用來替換 "magic" 的，並且與 ARM64 標頭相符。
++
++- 在目前的標頭中，旗標欄位僅只有一個欄位。
++
++        ======  ===================================================
++        位元 0  核心的位元組順序。 小端序，則為 1；大端序，則為 0。
++        ======  ===================================================
++
++- 啟動載入程式會需要核心影像檔案的大小資訊，否則啟動程序將會失敗。
+-- 
+2.25.1
 
-With regards,
-Pavel Skripkin
