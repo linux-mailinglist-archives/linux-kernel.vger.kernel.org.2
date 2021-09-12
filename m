@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B353407CE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DC3407CE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 12:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbhILKhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 06:37:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25849 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234945AbhILKhh (ORCPT
+        id S235077AbhILKiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 06:38:03 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:60463 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhILKiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 06:37:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631442983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+jtt+oEw1ZNN1QEhzO+iGOuy7I227KftkhvSAbDZ7/c=;
-        b=igpL6NC/oF/dPjTlZcJb8tXgigYbe9h2N8FLMkjoaj3f8kG/TcR1Ecx4felCBPdVtp/fzG
-        hlr1IpWjnwf65RCFPwvL9i36SpDifCx+RymI1RRcRnaC7XfPMXYrtzy49Ef4y3fkVdp0iM
-        Z5lNeP36w+fZzEKhBSBGujepnkKcCEg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-rwu6vjPmM4CHXSKAtNZ7OQ-1; Sun, 12 Sep 2021 06:36:20 -0400
-X-MC-Unique: rwu6vjPmM4CHXSKAtNZ7OQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F7F836307;
-        Sun, 12 Sep 2021 10:36:18 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5E9861B480;
-        Sun, 12 Sep 2021 10:36:12 +0000 (UTC)
-Message-ID: <fc4c9ba831c75781a4831d13fde7b3034342afc0.camel@redhat.com>
-Subject: Re: [RFC PATCH 1/3] KVM: nSVM: move nested_vmcb_check_cr3_cr4 logic
- in nested_vmcb_valid_sregs
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 12 Sep 2021 13:36:11 +0300
-In-Reply-To: <20210903102039.55422-2-eesposit@redhat.com>
-References: <20210903102039.55422-1-eesposit@redhat.com>
-         <20210903102039.55422-2-eesposit@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Sun, 12 Sep 2021 06:38:01 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1mPMqn-001CK5-Ip; Sun, 12 Sep 2021 12:36:41 +0200
+Received: from [46.183.103.8] (helo=[172.18.187.1])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1mPMqm-001cbG-TO; Sun, 12 Sep 2021 12:36:41 +0200
+Message-ID: <5aa5301e-9b01-4e96-e185-13c2d4d7b675@physik.fu-berlin.de>
+Date:   Sun, 12 Sep 2021 12:36:38 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
+Content-Language: en-US
+To:     Rich Felker <dalias@libc.org>, Daniel Palmer <daniel@0x0f.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
+References: <20210627220544.8757-1-rdunlap@infradead.org>
+ <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
+ <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
+ <CAFr9PXn5S_3mpJBF0bNo+S1US=Z5s89rbO-OhhqGk=zqPGWXoQ@mail.gmail.com>
+ <20210912015740.GJ13220@brightrain.aerifal.cx>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+In-Reply-To: <20210912015740.GJ13220@brightrain.aerifal.cx>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 46.183.103.8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 12:20 +0200, Emanuele Giuseppe Esposito wrote:
-> Inline nested_vmcb_check_cr3_cr4 as it is not called by anyone else.
-> Doing so simplifies next patches.
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 35 +++++++++++++----------------------
->  1 file changed, 13 insertions(+), 22 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index e5515477c30a..d2fe65e2a7a4 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -260,27 +260,6 @@ static bool nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
->  	return true;
->  }
->  
-> -static bool nested_vmcb_check_cr3_cr4(struct kvm_vcpu *vcpu,
-> -				      struct vmcb_save_area *save)
-> -{
-> -	/*
-> -	 * These checks are also performed by KVM_SET_SREGS,
-> -	 * except that EFER.LMA is not checked by SVM against
-> -	 * CR0.PG && EFER.LME.
-> -	 */
-> -	if ((save->efer & EFER_LME) && (save->cr0 & X86_CR0_PG)) {
-> -		if (CC(!(save->cr4 & X86_CR4_PAE)) ||
-> -		    CC(!(save->cr0 & X86_CR0_PE)) ||
-> -		    CC(kvm_vcpu_is_illegal_gpa(vcpu, save->cr3)))
-> -			return false;
-> -	}
-> -
-> -	if (CC(!kvm_is_valid_cr4(vcpu, save->cr4)))
-> -		return false;
-> -
-> -	return true;
-> -}
-> -
->  /* Common checks that apply to both L1 and L2 state.  */
->  static bool nested_vmcb_valid_sregs(struct kvm_vcpu *vcpu,
->  				    struct vmcb_save_area *save)
-> @@ -302,7 +281,19 @@ static bool nested_vmcb_valid_sregs(struct kvm_vcpu *vcpu,
->  	if (CC(!kvm_dr6_valid(save->dr6)) || CC(!kvm_dr7_valid(save->dr7)))
->  		return false;
->  
-> -	if (!nested_vmcb_check_cr3_cr4(vcpu, save))
-> +	/*
-> +	 * These checks are also performed by KVM_SET_SREGS,
-> +	 * except that EFER.LMA is not checked by SVM against
-> +	 * CR0.PG && EFER.LME.
-> +	 */
-> +	if ((save->efer & EFER_LME) && (save->cr0 & X86_CR0_PG)) {
-> +		if (CC(!(save->cr4 & X86_CR4_PAE)) ||
-> +		    CC(!(save->cr0 & X86_CR0_PE)) ||
-> +		    CC(kvm_vcpu_is_illegal_gpa(vcpu, save->cr3)))
-> +			return false;
-> +	}
-> +
-> +	if (CC(!kvm_is_valid_cr4(vcpu, save->cr4)))
->  		return false;
->  
->  	if (CC(!kvm_valid_efer(vcpu, save->efer)))
+Hi Rich!
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+On 9/12/21 03:57, Rich Felker wrote:
+> Hi. I see there's a situation that needs my attention here. I will
+> plan to review and merge anything important/blocking that doesn't have
+> problems this week.
 
-Best regards,
-	Maxim Levitsky
+I'm glad to here that you're still active. I will try to help assembling
+the list of patches. I won't be able to test them though as I'm not at
+home so I'm unable to reset the machine in case it crashes due to a bad
+kernel patch. So, basically, I just have one shot free.
+
+> In the bigger picture, the past few weeks and even months I've been in
+> a sort of "avoid burnout safety mode". :-) Probably partly on account
+> of this pandemic still being a thing because people insist on being
+> stupid. I'm not gone and won't be, but some things that haven't seemed
+> as urgent, including kernel stuff and especially piles of email of
+> mixed importance levels, have gotten pushed back to reduce stress.
+> Please don't hesitate to wave a "hey this is important, come take a
+> quick look!" flag at me if needed.
+
+We definitely need to get all those patches merged that fix warnings as Linus
+recently moved to building with -Werror by default.
+
+> At the same time, I am open to the possibility of a new maintainer or
+> co-maintainer if that ends up being what makes sense. Are there any
+> candidates?
+
+I would generally be interested to help although I'm not as knowledgeable
+when it comes to low-level kernel development.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
