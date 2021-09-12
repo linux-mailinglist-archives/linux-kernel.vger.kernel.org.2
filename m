@@ -2,110 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C55407D49
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 14:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90168407D5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 14:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbhILMim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 08:38:42 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:40157 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229635AbhILMik (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 08:38:40 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 826AB5C00B9;
-        Sun, 12 Sep 2021 08:37:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 12 Sep 2021 08:37:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ilammy.net; h=
-        content-type:mime-version:subject:from:in-reply-to:date:cc
-        :content-transfer-encoding:message-id:references:to; s=fm2; bh=X
-        wz5Vf+A/daiSKAVptpMwSmJS3Zi3DYefeKFignzdas=; b=aNvxkJvk0X4k+chHW
-        YhwaEKtCvKMNIN96mHHXrEivxpS4WkE7yTscmzNB4sAuCu14P6b7UMOLVAFx/aeF
-        nUs19uKkowsP+tvL4DRYEt+7HEu4+hcjsboGEDluSGGbgTEqLJjfGbLOgd/zIokJ
-        ngLwG+H6qzcNEYDrzeks1PZQVy37RqBnLKWlGmPpAmfR94/pD/8aESeNcZPQTywo
-        w3EqCiGvY8XCQQStocW3+FF/zvtkYEimhB5PSj6U8wuzL+aJvgZZb3gucurrhgzI
-        13DC3VDlYWIk6uc23wqn/hqnHkTjeauDqIlODswhNLLNbd4d+ML5gzwU6lIoAMJX
-        WzwAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=Xwz5Vf+A/daiSKAVptpMwSmJS3Zi3DYefeKFignzd
-        as=; b=u1a9vhZXyNLW4mTMO3RSobx3FBrHMFQGmXhjbnCpBTcR8mKQUQuwKHzOY
-        JdCPg6quVxXtM7Xuoc54gB2CnBsDBW1/vPbIBiPqY7esvXQePVFsPXNxS5k6PC43
-        BS162eYmoX0xyXBIBG7Q0ve5dVGEqoZf4ydtmANEgHfv3dH7lCwKbks83GcltCZK
-        6yxm7rRDBYj89967YZbtG5Zo+8dzt7EEVLqZf0WysOYMX+YIy48rQaHvLe4q5yaU
-        8nn40srRnXvdh7Wl8fIRASPCC8m7IrMv71r8yOPVrBpAV9tJvDmcURC7xy0rcLwy
-        yFjdusdccK1IUmZBcDcpLd5GkBHrQ==
-X-ME-Sender: <xms:hvQ9YX6dV_NsaZHVJTEHCs98rbaIoWu7rWdHao6RdkArTJL8PPtmXQ>
-    <xme:hvQ9Yc5e6w9peXKkO4QIkvDQUFLO7yufGK9D_E8XnGIRTjMwwiN4HbBBbRhogeQNJ
-    O1TZNAe3NpqqoYoEl0>
-X-ME-Received: <xmr:hvQ9YefJrD9VYUIW2HdQt1QiqaLS9Cwia9hhSOlbG1k4gVdnYaS2mtvFj5eME5s9gTPqp1EjaLq7KAjclpWKd_3SBl5bO1KxRNyZcCrZPQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeghedghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurheptggguffhjgffgffkfhfvofesthejmhdthhdtvdenucfhrhhomheptehlvgig
-    vghiucfnohiiohhvshhkhicuoehmvgesihhlrghmmhihrdhnvghtqeenucggtffrrghtth
-    gvrhhnpefhteffvdelgedtleevgfeivdetieeitdevhfekgeehfeetffejveefkeeviedv
-    feenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvg
-    esihhlrghmmhihrdhnvght
-X-ME-Proxy: <xmx:hvQ9YYLtzhGbKYlDad-8dgk9Js5f68UO0mFcjs_xvvwcfUf5q82bsg>
-    <xmx:hvQ9YbKwmWrhUT28VIQSH2XdfRNpEc0f0gTW5-tTo20iRx4Bgg_3JQ>
-    <xmx:hvQ9YRzELjnGe9ihiPYg9_BpGUONkkS2v8LAHC3v9_USL1LBLIC_1g>
-    <xmx:hvQ9YT0RiQxJrjAD7_PQztZo4XxXCZel0-s7V7-TExIV0sy_FuobeQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 12 Sep 2021 08:37:24 -0400 (EDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 0/7] proc/stat: Maintain monotonicity of "intr" and
- "softirq"
-From:   Alexei Lozovsky <me@ilammy.net>
-In-Reply-To: <YT3In8SWc2eYZ/09@localhost.localdomain>
-Date:   Sun, 12 Sep 2021 21:37:20 +0900
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Lameter <cl@linux.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <44F84890-521F-4BCA-9F48-B49D2C8A9E32@ilammy.net>
-References: <06F4B1B0-E4DE-4380-A8E1-A5ACAD285163@ilammy.net>
- <20210911034808.24252-1-me@ilammy.net>
- <YT3In8SWc2eYZ/09@localhost.localdomain>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S235267AbhILMpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 08:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235086AbhILMp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 08:45:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D4656108F
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 12:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631450655;
+        bh=AqSj4w1aRXiJqTqB8zeCUJ1BdNt03C8klCXv0sL0CwQ=;
+        h=From:To:Subject:Date:From;
+        b=SgtCmMwGSAqcsS7Ob7xUY0hm0Rj8CBaG/mrQI89i+BuF4X8fWDDn8x3goRFTWOXFg
+         OiF55++dxqBI9CAWLSH4Js7xFmLboT33wBuY/J/5PuT96bjH4Ea/gK2so0au4g6XHc
+         e1Vs3VR9mdBBPaiinPwcxtdz3/jhcp8LGNJ8l9rqFbkojetcokmJzLxEzQPiB/yHj1
+         sTEMwRhqp0rkbQ9LL1i6RVvbOaxAMensWd2P1BulyJOfeGCM5M67oR+22u9vqXppjE
+         rIzxBlpvf8Cmv81N11lhboKzaanINkLM4nsAcg8TVdFVnsQx0+ThofkUk3uYNRypo+
+         FXWOh0w2v9voA==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] habanalabs/gaudi: fix LBW RR configuration
+Date:   Sun, 12 Sep 2021 15:44:11 +0300
+Message-Id: <20210912124411.46877-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021, at 18:30, Alexey Dobriyan wrote:
-> How about making everything "unsigned long" or even "u64" like NIC
-> drivers do?
+Couple of fixes to the LBW RR configuration:
 
-I see some possible hurdles ahead:
+1. Add missing configuration of the SM RR registers in the DMA_IF.
+2. Remove HBW range that doesn't belong.
+3. Add entire gap + DBG area, from end of TPC7 to end of entire
+   DBG space.
 
-- Not all architectures have atomic operations for 64-bit values
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ .../misc/habanalabs/gaudi/gaudi_security.c    | 115 ++++++++++--------
+ 1 file changed, 67 insertions(+), 48 deletions(-)
 
-  All those "unsigned int" counters are incremented with __this_cpu_inc()
-  which tries to use atomics if possible. Though, I'm not quite sure
-  how this works for read side which does not seem to use atomic reads
-  at all. I guess, just by the virtue of properly aligned 32-bit reads
-  being atomic everywhere? If that's so, I think widening counters to
-  64 bits will come with an asterisk.
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+index cb265c00cf73..25ac87cebd45 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+@@ -8,16 +8,21 @@
+ #include "gaudiP.h"
+ #include "../include/gaudi/asic_reg/gaudi_regs.h"
+ 
+-#define GAUDI_NUMBER_OF_RR_REGS		24
+-#define GAUDI_NUMBER_OF_LBW_RANGES	12
++#define GAUDI_NUMBER_OF_LBW_RR_REGS	28
++#define GAUDI_NUMBER_OF_HBW_RR_REGS	24
++#define GAUDI_NUMBER_OF_LBW_RANGES	10
+ 
+-static u64 gaudi_rr_lbw_hit_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_lbw_hit_aw_regs[GAUDI_NUMBER_OF_LBW_RR_REGS] = {
++	mmDMA_IF_W_S_SOB_HIT_WPROT,
+ 	mmDMA_IF_W_S_DMA0_HIT_WPROT,
+ 	mmDMA_IF_W_S_DMA1_HIT_WPROT,
++	mmDMA_IF_E_S_SOB_HIT_WPROT,
+ 	mmDMA_IF_E_S_DMA0_HIT_WPROT,
+ 	mmDMA_IF_E_S_DMA1_HIT_WPROT,
++	mmDMA_IF_W_N_SOB_HIT_WPROT,
+ 	mmDMA_IF_W_N_DMA0_HIT_WPROT,
+ 	mmDMA_IF_W_N_DMA1_HIT_WPROT,
++	mmDMA_IF_E_N_SOB_HIT_WPROT,
+ 	mmDMA_IF_E_N_DMA0_HIT_WPROT,
+ 	mmDMA_IF_E_N_DMA1_HIT_WPROT,
+ 	mmSIF_RTR_0_LBW_RANGE_PROT_HIT_AW,
+@@ -38,13 +43,17 @@ static u64 gaudi_rr_lbw_hit_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_7_LBW_RANGE_PROT_HIT_AW,
+ };
+ 
+-static u64 gaudi_rr_lbw_hit_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_lbw_hit_ar_regs[GAUDI_NUMBER_OF_LBW_RR_REGS] = {
++	mmDMA_IF_W_S_SOB_HIT_RPROT,
+ 	mmDMA_IF_W_S_DMA0_HIT_RPROT,
+ 	mmDMA_IF_W_S_DMA1_HIT_RPROT,
++	mmDMA_IF_E_S_SOB_HIT_RPROT,
+ 	mmDMA_IF_E_S_DMA0_HIT_RPROT,
+ 	mmDMA_IF_E_S_DMA1_HIT_RPROT,
++	mmDMA_IF_W_N_SOB_HIT_RPROT,
+ 	mmDMA_IF_W_N_DMA0_HIT_RPROT,
+ 	mmDMA_IF_W_N_DMA1_HIT_RPROT,
++	mmDMA_IF_E_N_SOB_HIT_RPROT,
+ 	mmDMA_IF_E_N_DMA0_HIT_RPROT,
+ 	mmDMA_IF_E_N_DMA1_HIT_RPROT,
+ 	mmSIF_RTR_0_LBW_RANGE_PROT_HIT_AR,
+@@ -65,13 +74,17 @@ static u64 gaudi_rr_lbw_hit_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_7_LBW_RANGE_PROT_HIT_AR,
+ };
+ 
+-static u64 gaudi_rr_lbw_min_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_lbw_min_aw_regs[GAUDI_NUMBER_OF_LBW_RR_REGS] = {
++	mmDMA_IF_W_S_SOB_MIN_WPROT_0,
+ 	mmDMA_IF_W_S_DMA0_MIN_WPROT_0,
+ 	mmDMA_IF_W_S_DMA1_MIN_WPROT_0,
++	mmDMA_IF_E_S_SOB_MIN_WPROT_0,
+ 	mmDMA_IF_E_S_DMA0_MIN_WPROT_0,
+ 	mmDMA_IF_E_S_DMA1_MIN_WPROT_0,
++	mmDMA_IF_W_N_SOB_MIN_WPROT_0,
+ 	mmDMA_IF_W_N_DMA0_MIN_WPROT_0,
+ 	mmDMA_IF_W_N_DMA1_MIN_WPROT_0,
++	mmDMA_IF_E_N_SOB_MIN_WPROT_0,
+ 	mmDMA_IF_E_N_DMA0_MIN_WPROT_0,
+ 	mmDMA_IF_E_N_DMA1_MIN_WPROT_0,
+ 	mmSIF_RTR_0_LBW_RANGE_PROT_MIN_AW_0,
+@@ -92,13 +105,17 @@ static u64 gaudi_rr_lbw_min_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_7_LBW_RANGE_PROT_MIN_AW_0,
+ };
+ 
+-static u64 gaudi_rr_lbw_max_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_lbw_max_aw_regs[GAUDI_NUMBER_OF_LBW_RR_REGS] = {
++	mmDMA_IF_W_S_SOB_MAX_WPROT_0,
+ 	mmDMA_IF_W_S_DMA0_MAX_WPROT_0,
+ 	mmDMA_IF_W_S_DMA1_MAX_WPROT_0,
++	mmDMA_IF_E_S_SOB_MAX_WPROT_0,
+ 	mmDMA_IF_E_S_DMA0_MAX_WPROT_0,
+ 	mmDMA_IF_E_S_DMA1_MAX_WPROT_0,
++	mmDMA_IF_W_N_SOB_MAX_WPROT_0,
+ 	mmDMA_IF_W_N_DMA0_MAX_WPROT_0,
+ 	mmDMA_IF_W_N_DMA1_MAX_WPROT_0,
++	mmDMA_IF_E_N_SOB_MAX_WPROT_0,
+ 	mmDMA_IF_E_N_DMA0_MAX_WPROT_0,
+ 	mmDMA_IF_E_N_DMA1_MAX_WPROT_0,
+ 	mmSIF_RTR_0_LBW_RANGE_PROT_MAX_AW_0,
+@@ -119,13 +136,17 @@ static u64 gaudi_rr_lbw_max_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_7_LBW_RANGE_PROT_MAX_AW_0,
+ };
+ 
+-static u64 gaudi_rr_lbw_min_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_lbw_min_ar_regs[GAUDI_NUMBER_OF_LBW_RR_REGS] = {
++	mmDMA_IF_W_S_SOB_MIN_RPROT_0,
+ 	mmDMA_IF_W_S_DMA0_MIN_RPROT_0,
+ 	mmDMA_IF_W_S_DMA1_MIN_RPROT_0,
++	mmDMA_IF_E_S_SOB_MIN_RPROT_0,
+ 	mmDMA_IF_E_S_DMA0_MIN_RPROT_0,
+ 	mmDMA_IF_E_S_DMA1_MIN_RPROT_0,
++	mmDMA_IF_W_N_SOB_MIN_RPROT_0,
+ 	mmDMA_IF_W_N_DMA0_MIN_RPROT_0,
+ 	mmDMA_IF_W_N_DMA1_MIN_RPROT_0,
++	mmDMA_IF_E_N_SOB_MIN_RPROT_0,
+ 	mmDMA_IF_E_N_DMA0_MIN_RPROT_0,
+ 	mmDMA_IF_E_N_DMA1_MIN_RPROT_0,
+ 	mmSIF_RTR_0_LBW_RANGE_PROT_MIN_AR_0,
+@@ -146,13 +167,17 @@ static u64 gaudi_rr_lbw_min_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_7_LBW_RANGE_PROT_MIN_AR_0,
+ };
+ 
+-static u64 gaudi_rr_lbw_max_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_lbw_max_ar_regs[GAUDI_NUMBER_OF_LBW_RR_REGS] = {
++	mmDMA_IF_W_S_SOB_MAX_RPROT_0,
+ 	mmDMA_IF_W_S_DMA0_MAX_RPROT_0,
+ 	mmDMA_IF_W_S_DMA1_MAX_RPROT_0,
++	mmDMA_IF_E_S_SOB_MAX_RPROT_0,
+ 	mmDMA_IF_E_S_DMA0_MAX_RPROT_0,
+ 	mmDMA_IF_E_S_DMA1_MAX_RPROT_0,
++	mmDMA_IF_W_N_SOB_MAX_RPROT_0,
+ 	mmDMA_IF_W_N_DMA0_MAX_RPROT_0,
+ 	mmDMA_IF_W_N_DMA1_MAX_RPROT_0,
++	mmDMA_IF_E_N_SOB_MAX_RPROT_0,
+ 	mmDMA_IF_E_N_DMA0_MAX_RPROT_0,
+ 	mmDMA_IF_E_N_DMA1_MAX_RPROT_0,
+ 	mmSIF_RTR_0_LBW_RANGE_PROT_MAX_AR_0,
+@@ -173,7 +198,7 @@ static u64 gaudi_rr_lbw_max_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_7_LBW_RANGE_PROT_MAX_AR_0,
+ };
+ 
+-static u64 gaudi_rr_hbw_hit_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_hit_aw_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_HIT_AW,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_HIT_AW,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_HIT_AW,
+@@ -200,7 +225,7 @@ static u64 gaudi_rr_hbw_hit_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_HIT_AW
+ };
+ 
+-static u64 gaudi_rr_hbw_hit_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_hit_ar_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_HIT_AR,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_HIT_AR,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_HIT_AR,
+@@ -227,7 +252,7 @@ static u64 gaudi_rr_hbw_hit_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_HIT_AR
+ };
+ 
+-static u64 gaudi_rr_hbw_base_low_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_base_low_aw_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_BASE_LOW_AW_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_BASE_LOW_AW_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_BASE_LOW_AW_0,
+@@ -254,7 +279,7 @@ static u64 gaudi_rr_hbw_base_low_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_BASE_LOW_AW_0
+ };
+ 
+-static u64 gaudi_rr_hbw_base_high_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_base_high_aw_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_BASE_HIGH_AW_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_BASE_HIGH_AW_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_BASE_HIGH_AW_0,
+@@ -281,7 +306,7 @@ static u64 gaudi_rr_hbw_base_high_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_BASE_HIGH_AW_0
+ };
+ 
+-static u64 gaudi_rr_hbw_mask_low_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_mask_low_aw_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_MASK_LOW_AW_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_MASK_LOW_AW_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_MASK_LOW_AW_0,
+@@ -308,7 +333,7 @@ static u64 gaudi_rr_hbw_mask_low_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_MASK_LOW_AW_0
+ };
+ 
+-static u64 gaudi_rr_hbw_mask_high_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_mask_high_aw_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_MASK_HIGH_AW_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_MASK_HIGH_AW_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_MASK_HIGH_AW_0,
+@@ -335,7 +360,7 @@ static u64 gaudi_rr_hbw_mask_high_aw_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_MASK_HIGH_AW_0
+ };
+ 
+-static u64 gaudi_rr_hbw_base_low_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_base_low_ar_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_BASE_LOW_AR_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_BASE_LOW_AR_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_BASE_LOW_AR_0,
+@@ -362,7 +387,7 @@ static u64 gaudi_rr_hbw_base_low_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_BASE_LOW_AR_0
+ };
+ 
+-static u64 gaudi_rr_hbw_base_high_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_base_high_ar_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_BASE_HIGH_AR_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_BASE_HIGH_AR_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_BASE_HIGH_AR_0,
+@@ -389,7 +414,7 @@ static u64 gaudi_rr_hbw_base_high_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_BASE_HIGH_AR_0
+ };
+ 
+-static u64 gaudi_rr_hbw_mask_low_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_mask_low_ar_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_MASK_LOW_AR_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_MASK_LOW_AR_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_MASK_LOW_AR_0,
+@@ -416,7 +441,7 @@ static u64 gaudi_rr_hbw_mask_low_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
+ 	mmNIF_RTR_CTRL_7_RANGE_SEC_MASK_LOW_AR_0
+ };
+ 
+-static u64 gaudi_rr_hbw_mask_high_ar_regs[GAUDI_NUMBER_OF_RR_REGS] = {
++static u64 gaudi_rr_hbw_mask_high_ar_regs[GAUDI_NUMBER_OF_HBW_RR_REGS] = {
+ 	mmDMA_IF_W_S_DOWN_CH0_RANGE_SEC_MASK_HIGH_AR_0,
+ 	mmDMA_IF_W_S_DOWN_CH1_RANGE_SEC_MASK_HIGH_AR_0,
+ 	mmDMA_IF_E_S_DOWN_CH0_RANGE_SEC_MASK_HIGH_AR_0,
+@@ -12849,50 +12874,44 @@ static void gaudi_init_range_registers_lbw(struct hl_device *hdev)
+ 	u32 lbw_rng_end[GAUDI_NUMBER_OF_LBW_RANGES];
+ 	int i, j;
+ 
+-	lbw_rng_start[0]  = (0xFBFE0000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[0]    = (0xFBFFF000 & 0x3FFFFFF) + 1;
++	lbw_rng_start[0]  = (0xFC0E8000 & 0x3FFFFFF) - 1; /* 0x000E7FFF */
++	lbw_rng_end[0]    = (0xFC11FFFF & 0x3FFFFFF) + 1; /* 0x00120000 */
+ 
+-	lbw_rng_start[1]  = (0xFC0E8000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[1]    = (0xFC120000 & 0x3FFFFFF) + 1;
++	lbw_rng_start[1]  = (0xFC1E8000 & 0x3FFFFFF) - 1; /* 0x001E7FFF */
++	lbw_rng_end[1]    = (0xFC48FFFF & 0x3FFFFFF) + 1; /* 0x00490000 */
+ 
+-	lbw_rng_start[2]  = (0xFC1E8000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[2]    = (0xFC48FFFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[2]  = (0xFC600000 & 0x3FFFFFF) - 1; /* 0x005FFFFF */
++	lbw_rng_end[2]    = (0xFCC48FFF & 0x3FFFFFF) + 1; /* 0x00C49000 */
+ 
+-	lbw_rng_start[3]  = (0xFC600000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[3]    = (0xFCC48FFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[3]  = (0xFCC4A000 & 0x3FFFFFF) - 1; /* 0x00C49FFF */
++	lbw_rng_end[3]    = (0xFCCDFFFF & 0x3FFFFFF) + 1; /* 0x00CE0000 */
+ 
+-	lbw_rng_start[4]  = (0xFCC4A000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[4]    = (0xFCCDFFFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[4]  = (0xFCCE4000 & 0x3FFFFFF) - 1; /* 0x00CE3FFF */
++	lbw_rng_end[4]    = (0xFCD1FFFF & 0x3FFFFFF) + 1; /* 0x00D20000 */
+ 
+-	lbw_rng_start[5]  = (0xFCCE4000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[5]    = (0xFCD1FFFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[5]  = (0xFCD24000 & 0x3FFFFFF) - 1; /* 0x00D23FFF */
++	lbw_rng_end[5]    = (0xFCD5FFFF & 0x3FFFFFF) + 1; /* 0x00D60000 */
+ 
+-	lbw_rng_start[6]  = (0xFCD24000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[6]    = (0xFCD5FFFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[6]  = (0xFCD64000 & 0x3FFFFFF) - 1; /* 0x00D63FFF */
++	lbw_rng_end[6]    = (0xFCD9FFFF & 0x3FFFFFF) + 1; /* 0x00DA0000 */
+ 
+-	lbw_rng_start[7]  = (0xFCD64000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[7]    = (0xFCD9FFFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[7]  = (0xFCDA4000 & 0x3FFFFFF) - 1; /* 0x00DA3FFF */
++	lbw_rng_end[7]    = (0xFCDDFFFF & 0x3FFFFFF) + 1; /* 0x00DE0000 */
+ 
+-	lbw_rng_start[8]  = (0xFCDA4000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[8]    = (0xFCDDFFFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[8]  = (0xFCDE4000 & 0x3FFFFFF) - 1; /* 0x00DE3FFF */
++	lbw_rng_end[8]    = (0xFCE05FFF & 0x3FFFFFF) + 1; /* 0x00E06000 */
+ 
+-	lbw_rng_start[9]  = (0xFCDE4000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[9]    = (0xFCE05FFF & 0x3FFFFFF) + 1;
++	lbw_rng_start[9]  = (0xFCFC9000 & 0x3FFFFFF) - 1; /* 0x00FC8FFF */
++	lbw_rng_end[9]    = (0xFFFFFFFE & 0x3FFFFFF) + 1; /* 0x03FFFFFF */
+ 
+-	lbw_rng_start[10]  = (0xFEC43000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[10]    = (0xFEC43FFF & 0x3FFFFFF) + 1;
+-
+-	lbw_rng_start[11] = (0xFE484000 & 0x3FFFFFF) - 1;
+-	lbw_rng_end[11]   = (0xFE484FFF & 0x3FFFFFF) + 1;
+-
+-	for (i = 0 ; i < GAUDI_NUMBER_OF_RR_REGS ; i++) {
++	for (i = 0 ; i < GAUDI_NUMBER_OF_LBW_RR_REGS ; i++) {
+ 		WREG32(gaudi_rr_lbw_hit_aw_regs[i],
+ 				(1 << GAUDI_NUMBER_OF_LBW_RANGES) - 1);
+ 		WREG32(gaudi_rr_lbw_hit_ar_regs[i],
+ 				(1 << GAUDI_NUMBER_OF_LBW_RANGES) - 1);
+ 	}
+ 
+-	for (i = 0 ; i < GAUDI_NUMBER_OF_RR_REGS ; i++)
++	for (i = 0 ; i < GAUDI_NUMBER_OF_LBW_RR_REGS ; i++)
+ 		for (j = 0 ; j < GAUDI_NUMBER_OF_LBW_RANGES ; j++) {
+ 			WREG32(gaudi_rr_lbw_min_aw_regs[i] + (j << 2),
+ 							lbw_rng_start[j]);
+@@ -12939,12 +12958,12 @@ static void gaudi_init_range_registers_hbw(struct hl_device *hdev)
+ 	 * 6th range is the host
+ 	 */
+ 
+-	for (i = 0 ; i < GAUDI_NUMBER_OF_RR_REGS ; i++) {
++	for (i = 0 ; i < GAUDI_NUMBER_OF_HBW_RR_REGS ; i++) {
+ 		WREG32(gaudi_rr_hbw_hit_aw_regs[i], 0x1F);
+ 		WREG32(gaudi_rr_hbw_hit_ar_regs[i], 0x1D);
+ 	}
+ 
+-	for (i = 0 ; i < GAUDI_NUMBER_OF_RR_REGS ; i++) {
++	for (i = 0 ; i < GAUDI_NUMBER_OF_HBW_RR_REGS ; i++) {
+ 		WREG32(gaudi_rr_hbw_base_low_aw_regs[i], dram_addr_lo);
+ 		WREG32(gaudi_rr_hbw_base_low_ar_regs[i], dram_addr_lo);
+ 
+-- 
+2.17.1
 
-- We'll need to update all counters to be 64-bit.
-
-  Like, *everyone*. Every field that gets summed up needs to be 64-bit
-  (or else wrap-arounds will be incorrect). Basically every counter in
-  every irq_cpustat_t will need to become twice as wide. If that's
-  a fine price to pay for accurate, full-width counters...
-
-  Previously I thought that some of these counters even come from
-  hardware, but now that I'm reviewing them, that does not seem to be
-  the case. Thankfully.
-
-So right now I don't see why it shouldn't be doable in theory.
-I'll give it a shot, I guess, and see how it works in practice,
-at least as far as the patches go (since I can't really test on all
-architectures).
