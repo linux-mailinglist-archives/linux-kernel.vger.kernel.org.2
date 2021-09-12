@@ -2,444 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B411407CFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 13:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4EB407D08
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Sep 2021 13:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbhILLHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 07:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234976AbhILLHe (ORCPT
+        id S234621AbhILLjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 07:39:24 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:35851 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhILLjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 07:07:34 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0B0C061574;
-        Sun, 12 Sep 2021 04:06:19 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id bt14so14302847ejb.3;
-        Sun, 12 Sep 2021 04:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Tcrt2vTdi/TiU87GGXlT7ZwjrKmJjWziTIutSG17u3Q=;
-        b=PuG4RrEsh+iBG7mWLV8JXiss/ImNpiIJkvPmDF3po1nawY+3iQSJgHZU9YJEd/8ac4
-         idls7kfP8x+4t9kppYnbP9l3BQYi01mTG1ccG9/FLKA7l+gaUKqPAFcNHqIu9aUmfxrv
-         +GvIeJXOHMzpC+/AThIqCKCaAfMVvEvgf7BRv7GbTQaZoIlowwA2TTvqJFb6j4TwPVJA
-         JTLZHpRQamz3+sUn/WK3AbovBxhERQFapBhBLcn6Y2oXHLwWPLTBtzaSzJBQOC691QjR
-         gXNKSPcX0ugp+Ds8vRoVaLHLaajTMaHtJveYUti7xaBWBA5ZU8FevK4jy2HQkUVeTbRo
-         1GAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Tcrt2vTdi/TiU87GGXlT7ZwjrKmJjWziTIutSG17u3Q=;
-        b=Q8BGQ1sDUAvS/qCPbL9zvGpGDhjg3HTpJY+PpnAuRyaVTLZwNwXsHj2iEaoxzHzXKW
-         3co8nHvCBCIJbl3oO0NqHwRzCf4q2lheBiis7hRbVg9deUzFUg+0JpsQOOs35v3gMryb
-         tiDWocMmubS5BjbZYQSFdPCslwjK9NHocJxRWEU/GZW1T1sgp6jEotybh/lAGohxL8iX
-         flZ4OAPC9zRAgUBfmHG6zAiwAHepiYEK6eSqIIqx8gNnn4S6MxX0bpO3y6mKGC0lsjpt
-         YUHzH43Vfgv0qIOBbJva2kHeyTvaeXvgMK451ntkC5SEsRnzieQS7Kbv9wtuwC01sm7O
-         POuA==
-X-Gm-Message-State: AOAM533LLIoSJe4bSqZUT/foNTpCvg8pdbGQzIYpCPVRzirUEukLeijX
-        xrr1DAOhJEPsCskbftGd2Cc=
-X-Google-Smtp-Source: ABdhPJyRDYscIfZw368jy3+MJpzN5u1CmxSFzpT1bOCqrLlgvvkQPOxib/r60vIjd11ws7HS7NCppQ==
-X-Received: by 2002:a17:906:86d4:: with SMTP id j20mr6929123ejy.563.1631444778402;
-        Sun, 12 Sep 2021 04:06:18 -0700 (PDT)
-Received: from localhost.localdomain (151-22-179-94.pool.ukrtel.net. [94.179.22.151])
-        by smtp.gmail.com with ESMTPSA id qx18sm1896216ejb.75.2021.09.12.04.06.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 04:06:18 -0700 (PDT)
-From:   Denis Pauk <pauk.denis@gmail.com>
-Cc:     pauk.denis@gmail.com, Bernhard Seibold <mail@bernhard-seibold.de>,
-        =?UTF-8?q?P=C3=A4r=20Ekholm?= <pehlm@pekholm.org>,
-        to.eivind@gmail.com, "Artem S . Tashkinov" <aros@gmx.com>,
-        Vittorio Roberto Alfieri <me@rebtoor.com>,
-        Sahan Fernando <sahan.h.fernando@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] hwmon: (nct6775) Support access via Asus WMI
-Date:   Sun, 12 Sep 2021 14:05:57 +0300
-Message-Id: <20210912110557.41346-3-pauk.denis@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210912110557.41346-1-pauk.denis@gmail.com>
-References: <20210912110557.41346-1-pauk.denis@gmail.com>
+        Sun, 12 Sep 2021 07:39:23 -0400
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 18CBbsRb027075;
+        Sun, 12 Sep 2021 20:37:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 18CBbsRb027075
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1631446674;
+        bh=ly5ftrKcwPbL9gQv/TIb6sLo/0/Qxq4PSRjVpwiujBc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CCvVoM46bCnr2OfgFCYM4lotVckMydg3//aQO7NWC0e8W8gcr/k/kYYvtcLo3W8z4
+         cEn6hk5eneK0G/o3PDt9MdPttteIR4ZOyuDUgk9Q6tXSpFXGvIQaYW2Kfk3BgG6o+K
+         UQY24XvLBJfY3OHAu54Kshmm41lzRk1HrEjszNe33jSM4um90xFTpicCFHG4m0s8OJ
+         U/HM9qmE+itkfbocSmHHcNlXWIAb5ufT0g2v/ee0n8W/7t3ZlZyl7QT1j2rRoGzKwW
+         /dFBb+tGY9P/qiskHxS+X7/kmMrr1C7JYjXWl5HNNn1LUi9jEpdAWs7Fi/LxX7lUXi
+         xg2sUPdbjrxpQ==
+X-Nifty-SrcIP: [209.85.216.41]
+Received: by mail-pj1-f41.google.com with SMTP id dw14so3441197pjb.1;
+        Sun, 12 Sep 2021 04:37:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531hf9qvkfqfIQMw6Q4SJ0FkqVyIMsXwxFRnW3rZvERp0F4svfxF
+        k2CWlLg1ZbDIB7GcS4vS0saQ9PT1Hd5hN1a7XNE=
+X-Google-Smtp-Source: ABdhPJz92Xn2uVWqffIfnHnPr0bCRgZxHTz8PuzFvkLhVmspf2EoBXMPBrb0z57yTZMCHTc0wjR23kCxmuNCxCOTOC0=
+X-Received: by 2002:a17:90a:192:: with SMTP id 18mr7285146pjc.119.1631446673554;
+ Sun, 12 Sep 2021 04:37:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210901175326.568535-1-arielmarcovitch@gmail.com>
+ <CAK7LNAS2AA=0UxJudhuxmRJkWfXb2=fELc9cA6eH+cvSkOc=7Q@mail.gmail.com> <e4c0d198-0ae6-e415-51b5-0a33ff4fb82e@gmail.com>
+In-Reply-To: <e4c0d198-0ae6-e415-51b5-0a33ff4fb82e@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 12 Sep 2021 20:37:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATBzA96PneYHbdAZu8sbCvUGnbdS8ZxG_gq_t--D2oiSg@mail.gmail.com>
+Message-ID: <CAK7LNATBzA96PneYHbdAZu8sbCvUGnbdS8ZxG_gq_t--D2oiSg@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Create links to main menu items in search
+To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support accessing the NCT677x via Asus WMI functions.
+On Sun, Sep 12, 2021 at 3:18 AM Ariel Marcovitch
+<arielmarcovitch@gmail.com> wrote:
+>
+> On 10/09/2021 5:14, Masahiro Yamada wrote:
+> >On Thu, Sep 2, 2021 at 2:53 AM Ariel Marcovitch
+> ><arielmarcovitch@gmail.com> wrote:
+> >>
+> >>When one searches for a main menu item, links aren't created for it like
+> >>with the rest of the symbols.
+> >>
+> >>This happens because we trace the item until we get to the rootmenu, but
+> >>we don't include it in the path of the item. The rationale was probably
+> >>that we don't want to show the main menu in the path of all items,
+> >>because it is redundant.
+> >>
+> >>However, when an item has only the rootmenu in its path it should be
+> >>included, because this way the user can jump to its location.
+> >>
+> >>In case the item is a direct child of the rootmenu, show it in the
+> >>'Location:' section as 'Main Menu'.
+> >>
+> >>This makes the 'if (i > 0)' superfluous because each item with prompt
+> >>will have at least one menu in its path.
+> >>
+> >>Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+> >>---
+> >>scripts/kconfig/menu.c | 40 ++++++++++++++++++++++++++--------------
+> >>1 file changed, 26 insertions(+), 14 deletions(-)
+> >>
+> >>diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+> >>index 606ba8a63c24..8d7e3b07bf93 100644
+> >>--- a/scripts/kconfig/menu.c
+> >>+++ b/scripts/kconfig/menu.c
+> >>@@ -712,6 +712,7 @@ static void get_prompt_str(struct gstr *r, struct
+> property *prop,
+> >>int i, j;
+> >>struct menu *submenu[8], *menu, *location = NULL;
+> >>struct jump_key *jump = NULL;
+> >>+const char *prompt = NULL;
+> >
+> >
+> >Can you move this to the for-loop ?
+> >
+> >The initializer is unneeded.
+> >
+> >
+> >>
+> >>str_printf(r, " Prompt: %s\n", prop->text);
+> >>
+> >>@@ -735,6 +736,13 @@ static void get_prompt_str(struct gstr *r, struct
+> property *prop,
+> >>if (location == NULL && accessible)
+> >>location = menu;
+> >>}
+> >>+
+> >>+/* If we have only the root menu, show it */
+> >>+if (i == 0) {
+> >>+location = &rootmenu;
+> >>+submenu[i++] = location;
+> >>+}
+> >
+> >
+> >Instead of handling this as a special case,
+> >can we include the rootmenu all the time?
+> >
+> >We can change the for-loop condition to:
+> >
+> >for (i = 0; menu && i < 8; menu = menu->parent) {
+> Of course.
+> However, it means search entries will get a bit larger. I guess it is
+> worth it?
 
-On mainboards that support this way of accessing the chip, the driver will
-usually not work without this option since in these mainboards, ACPI will 
-mark the I/O port as used.
+I think so.
+The result is more consistent.
 
-Code uses ACPI firmware interface to commucate with sensors with ASUS
-motherboards:
-* PRIME B460-PLUS,
-* ROG CROSSHAIR VIII IMPACT,
-* ROG STRIX B550-E GAMING,
-* ROG STRIX B550-F GAMING,
-* ROG STRIX B550-F GAMING (WI-FI),
-* ROG STRIX Z490-I GAMING,
-* TUF GAMING B550M-PLUS,
-* TUF GAMING B550M-PLUS (WI-FI),
-* TUF GAMING B550-PLUS,
-* TUF GAMING X570-PLUS,
-* TUF GAMING X570-PRO (WI-FI).
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
-Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
-Co-developed-by: Bernhard Seibold <mail@bernhard-seibold.de>
-Signed-off-by: Bernhard Seibold <mail@bernhard-seibold.de>
-Tested-by: Pär Ekholm <pehlm@pekholm.org>
-Tested-by: <to.eivind@gmail.com>
-Tested-by: Artem S. Tashkinov <aros@gmx.com>
-Tested-by: Vittorio Roberto Alfieri <me@rebtoor.com>
-Tested-by: Sahan Fernando <sahan.h.fernando@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
 
----
-Changes in v3:
-  - Remove unrequired type conversions.
-  - save result of match_string before check.
 
-Changes in v2:
-  - Split changes to separate patches.
-  - Limit WMI usage by DMI_BOARD_NAME in checked ASUS motherboards.
----
- drivers/hwmon/nct6775.c | 230 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 207 insertions(+), 23 deletions(-)
+> >
+> >
+> >
+> >
+> >
+> >
+> >
+> >>if (head && location) {
+> >>jump = xmalloc(sizeof(struct jump_key));
+> >>
+> >>@@ -758,21 +766,25 @@ static void get_prompt_str(struct gstr *r, struct
+> property *prop,
+> >>list_add_tail(&jump->entries, head);
+> >>}
+> >>
+> >>-if (i > 0) {
+> >>-str_printf(r, " Location:\n");
+> >>-for (j = 4; --i >= 0; j += 2) {
+> >>-menu = submenu[i];
+> >>-if (jump && menu == location)
+> >>-jump->offset = strlen(r->s);
+> >>-str_printf(r, "%*c-> %s", j, ' ',
+> >>-menu_get_prompt(menu));
+> >>-if (menu->sym) {
+> >>-str_printf(r, " (%s [=%s])", menu->sym->name ?
+> >>-menu->sym->name : "<choice>",
+> >>-sym_get_string_value(menu->sym));
+> >>-}
+> >>-str_append(r, "\n");
+> >>+str_printf(r, " Location:\n");
+> >>+for (j = 4; --i >= 0; j += 2) {
+> >>+menu = submenu[i];
+> >>+if (jump && menu == location)
+> >>+jump->offset = strlen(r->s);
+> >>+
+> >>+/* The real rootmenu prompt is ugly */
+> >>+if (menu == &rootmenu)
+> >>+prompt = "Main Menu";
+> >
+> >Can you use "Main menu" for the consistency
+> >with scripts/kconfig/parser.y line 501?
+> >
+> Seems reasonable. Just to clarify, the prompt there is not relevant
+> for linux's Kconfig right?
+> >
+> >>+else
+> >>+prompt = menu_get_prompt(menu);
+> >
+> >
+> >I think it is better to omit '->' for the rootmenu.
+> >
+> >
+> >if (menu == &rootmenu) {
+> >prompt = "Main menu";
+> >marker = "";
+> >} else {
+> >prompt = menu_get_prompt(menu);
+> >marker = "->";
+> >}
+> >
+> >str_printf(r, "%*c%s %s", j, ' ', marker, prompt);
+> >
+> Perhaps it will be better to split to separate printfs? I think it
+> will be cleaner. It will make the extra vars unneeded as well.
 
-diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index a3adfce8dbb8..2bf9ca6e6ff9 100644
---- a/drivers/hwmon/nct6775.c
-+++ b/drivers/hwmon/nct6775.c
-@@ -55,6 +55,7 @@
- #include <linux/dmi.h>
- #include <linux/io.h>
- #include <linux/nospec.h>
-+#include <linux/wmi.h>
- #include "lm75.h"
- 
- #define USE_ALTERNATE
-@@ -132,10 +133,13 @@ MODULE_PARM_DESC(fan_debounce, "Enable debouncing for fan RPM signal");
- #define SIO_ID_MASK		0xFFF8
- 
- enum pwm_enable { off, manual, thermal_cruise, speed_cruise, sf3, sf4 };
-+enum sensor_access { access_direct, access_asuswmi };
- 
- struct nct6775_sio_data {
- 	int sioreg;
-+	int ld;
- 	enum kinds kind;
-+	enum sensor_access access;
- 
- 	/* superio_() callbacks  */
- 	void (*outb)(struct nct6775_sio_data *sio_data, int reg, int val);
-@@ -145,6 +149,84 @@ struct nct6775_sio_data {
- 	void (*exit)(struct nct6775_sio_data *sio_data);
- };
- 
-+#define ASUSWMI_MGMT2_GUID		"466747A0-70EC-11DE-8A39-0800200C9A66"
-+#define ASUSWMI_METHODID_RSIO		0x5253494F
-+#define ASUSWMI_METHODID_WSIO		0x5753494F
-+#define ASUSWMI_METHODID_RHWM		0x5248574D
-+#define ASUSWMI_METHODID_WHWM		0x5748574D
-+#define ASUSWMI_UNSUPPORTED_METHOD	0xFFFFFFFE
-+
-+static int asuswmi_evaluate_method(u32 method_id, u8 bank, u8 reg, u8 val, u32 *retval)
-+{
-+	u32 args = bank | (reg << 8) | (val << 16);
-+	struct acpi_buffer input = { (acpi_size) sizeof(args), &args };
-+	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
-+	acpi_status status;
-+	union acpi_object *obj;
-+	u32 tmp = 0;
-+
-+	status = wmi_evaluate_method(ASUSWMI_MGMT2_GUID, 0, method_id,
-+				     &input, &output);
-+
-+	if (ACPI_FAILURE(status))
-+		return -EIO;
-+
-+	obj = output.pointer;
-+	if (obj && obj->type == ACPI_TYPE_INTEGER)
-+		tmp = obj->integer.value;
-+
-+	if (retval)
-+		*retval = tmp;
-+
-+	kfree(obj);
-+
-+	if (tmp == ASUSWMI_UNSUPPORTED_METHOD)
-+		return -ENODEV;
-+	return 0;
-+}
-+
-+static inline int nct6775_asuswmi_write(u8 bank, u8 reg, u8 val)
-+{
-+	return asuswmi_evaluate_method(ASUSWMI_METHODID_WHWM, bank, reg, val, 0);
-+}
-+
-+static inline int nct6775_asuswmi_read(u8 bank, u8 reg, u8 *val)
-+{
-+	u32 tmp;
-+	int ret = asuswmi_evaluate_method(ASUSWMI_METHODID_RHWM, bank, reg, 0, &tmp);
-+	*val = tmp;
-+	return ret;
-+}
-+
-+static int superio_wmi_inb(struct nct6775_sio_data *sio_data, int reg)
-+{
-+	int tmp;
-+
-+	asuswmi_evaluate_method(ASUSWMI_METHODID_RSIO,
-+			sio_data->ld, reg, 0, &tmp);
-+	return tmp;
-+}
-+
-+static void superio_wmi_outb(struct nct6775_sio_data *sio_data, int reg, int val)
-+{
-+	asuswmi_evaluate_method(ASUSWMI_METHODID_WSIO,
-+			sio_data->ld, reg, val, 0);
-+}
-+
-+static void superio_wmi_select(struct nct6775_sio_data *sio_data, int ld)
-+{
-+	sio_data->ld = ld;
-+}
-+
-+static int superio_wmi_enter(struct nct6775_sio_data *sio_data)
-+{
-+	return 0;
-+}
-+
-+static void superio_wmi_exit(struct nct6775_sio_data *sio_data)
-+{
-+}
-+
- static void superio_outb(struct nct6775_sio_data *sio_data, int reg, int val)
- {
- 	int ioreg = sio_data->sioreg;
-@@ -1423,6 +1505,49 @@ static bool is_word_sized(struct nct6775_data *data, u16 reg)
- 	return false;
- }
- 
-+static inline void nct6775_wmi_set_bank(struct nct6775_data *data, u16 reg)
-+{
-+	u8 bank = reg >> 8;
-+
-+	data->bank = bank;
-+}
-+
-+static u16 nct6775_wmi_read_value(struct nct6775_data *data, u16 reg)
-+{
-+	int res, word_sized = is_word_sized(data, reg);
-+	u8 tmp;
-+
-+	nct6775_wmi_set_bank(data, reg);
-+
-+	nct6775_asuswmi_read(data->bank, reg, &tmp);
-+	res = (tmp & 0xff);
-+	if (word_sized) {
-+		nct6775_asuswmi_read(data->bank,
-+				(reg & 0xff) + 1, &tmp);
-+		res = (res << 8) + (tmp & 0xff);
-+	}
-+	return res;
-+}
-+
-+static int nct6775_wmi_write_value(struct nct6775_data *data, u16 reg, u16 value)
-+{
-+	int word_sized = is_word_sized(data, reg);
-+
-+	nct6775_wmi_set_bank(data, reg);
-+
-+	if (word_sized) {
-+		nct6775_asuswmi_write(data->bank, (reg & 0xff),
-+				(value >> 8) & 0xff);
-+		nct6775_asuswmi_write(data->bank, (reg & 0xff) + 1,
-+				value & 0xff);
-+	} else {
-+		nct6775_asuswmi_write(data->bank, (reg & 0xff),
-+				value);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * On older chips, only registers 0x50-0x5f are banked.
-  * On more recent chips, all registers are banked.
-@@ -3822,13 +3947,15 @@ static int nct6775_probe(struct platform_device *pdev)
- 	struct device *hwmon_dev;
- 	int num_attr_groups = 0;
- 
--	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
--	if (!res)
--		return -EBUSY;
-+	if (sio_data->access == access_direct) {
-+		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-+		if (!res)
-+			return -EBUSY;
- 
--	if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
--				 DRVNAME))
--		return -EBUSY;
-+		if (!devm_request_region(&pdev->dev, res->start, IOREGION_LENGTH,
-+					 DRVNAME))
-+			return -EBUSY;
-+	}
- 
- 	data = devm_kzalloc(&pdev->dev, sizeof(struct nct6775_data),
- 			    GFP_KERNEL);
-@@ -3837,9 +3964,17 @@ static int nct6775_probe(struct platform_device *pdev)
- 
- 	data->kind = sio_data->kind;
- 	data->sioreg = sio_data->sioreg;
--	data->addr = res->start;
--	data->read_value = nct6775_read_value;
--	data->write_value = nct6775_write_value;
-+
-+	if (sio_data->access == access_direct) {
-+		data->addr = res->start;
-+		data->read_value = nct6775_read_value;
-+		data->write_value = nct6775_write_value;
-+	} else {
-+		data->addr = 0;
-+		data->read_value = nct6775_wmi_read_value;
-+		data->write_value = nct6775_wmi_write_value;
-+	}
-+
- 	mutex_init(&data->update_lock);
- 	data->name = nct6775_device_names[data->kind];
- 	data->bank = 0xff;		/* Force initial bank selection */
-@@ -4750,6 +4885,7 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
- 	int err;
- 	int addr;
- 
-+	sio_data->access = access_direct;
- 	sio_data->sioreg = sioaddr;
- 
- 	err = sio_data->enter(sio_data);
-@@ -4844,6 +4980,22 @@ static int __init nct6775_find(int sioaddr, struct nct6775_sio_data *sio_data)
-  */
- static struct platform_device *pdev[2];
- 
-+#define NCT6775_REG_CHIPID 0x58
-+
-+static const char * const asus_wmi_boards[] = {
-+	"PRIME B460-PLUS",
-+	"ROG CROSSHAIR VIII IMPACT",
-+	"ROG STRIX B550-E GAMING",
-+	"ROG STRIX B550-F GAMING",
-+	"ROG STRIX B550-F GAMING (WI-FI)",
-+	"ROG STRIX Z490-I GAMING",
-+	"TUF GAMING B550M-PLUS",
-+	"TUF GAMING B550M-PLUS (WI-FI)",
-+	"TUF GAMING B550-PLUS",
-+	"TUF GAMING X570-PLUS",
-+	"TUF GAMING X570-PRO (WI-FI)",
-+};
-+
- static int __init sensors_nct6775_init(void)
- {
- 	int i, err;
-@@ -4852,11 +5004,30 @@ static int __init sensors_nct6775_init(void)
- 	struct resource res;
- 	struct nct6775_sio_data sio_data;
- 	int sioaddr[2] = { 0x2e, 0x4e };
-+	const char *board_vendor, *board_name;
-+	enum sensor_access access = access_direct;
-+	u8 tmp;
- 
- 	err = platform_driver_register(&nct6775_driver);
- 	if (err)
- 		return err;
- 
-+	board_vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-+	board_name = dmi_get_system_info(DMI_BOARD_NAME);
-+
-+	if (board_name && board_vendor &&
-+	    !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
-+		err = match_string(asus_wmi_boards,
-+					ARRAY_SIZE(asus_wmi_boards), board_name);
-+		if (err != -EINVAL) {
-+			/* if reading chip id via WMI succeeds, use WMI */
-+			if (!nct6775_asuswmi_read(0, NCT6775_REG_CHIPID, &tmp)) {
-+				pr_info("Using Asus WMI to access chip\n");
-+				access = access_asuswmi;
-+			}
-+		}
-+	}
-+
- 	/*
- 	 * initialize sio_data->kind and sio_data->sioreg.
- 	 *
-@@ -4877,6 +5048,17 @@ static int __init sensors_nct6775_init(void)
- 
- 		found = true;
- 
-+		/* Update access method */
-+		sio_data.access = access;
-+
-+		if (access == access_asuswmi) {
-+			sio_data.outb = superio_wmi_outb;
-+			sio_data.inb = superio_wmi_inb;
-+			sio_data.select = superio_wmi_select;
-+			sio_data.enter = superio_wmi_enter;
-+			sio_data.exit = superio_wmi_exit;
-+		}
-+
- 		pdev[i] = platform_device_alloc(DRVNAME, address);
- 		if (!pdev[i]) {
- 			err = -ENOMEM;
-@@ -4888,23 +5070,25 @@ static int __init sensors_nct6775_init(void)
- 		if (err)
- 			goto exit_device_put;
- 
--		memset(&res, 0, sizeof(res));
--		res.name = DRVNAME;
--		res.start = address + IOREGION_OFFSET;
--		res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
--		res.flags = IORESOURCE_IO;
-+		if (sio_data.access == access_direct) {
-+			memset(&res, 0, sizeof(res));
-+			res.name = DRVNAME;
-+			res.start = address + IOREGION_OFFSET;
-+			res.end = address + IOREGION_OFFSET + IOREGION_LENGTH - 1;
-+			res.flags = IORESOURCE_IO;
-+
-+			err = acpi_check_resource_conflict(&res);
-+			if (err) {
-+				platform_device_put(pdev[i]);
-+				pdev[i] = NULL;
-+				continue;
-+			}
- 
--		err = acpi_check_resource_conflict(&res);
--		if (err) {
--			platform_device_put(pdev[i]);
--			pdev[i] = NULL;
--			continue;
-+			err = platform_device_add_resources(pdev[i], &res, 1);
-+			if (err)
-+				goto exit_device_put;
- 		}
- 
--		err = platform_device_add_resources(pdev[i], &res, 1);
--		if (err)
--			goto exit_device_put;
--
- 		/* platform_device_add calls probe() */
- 		err = platform_device_add(pdev[i]);
- 		if (err)
+I am fine with it.
+
+
+> Also, the results look a bit weird... maybe we should use a different
+> marker for rootmenu, like '--' or something?
+
+
+How does it look weird?
+
+
+
+
+
+
+> >
+> >
+> >Maybe, this will make the help look cleaner.
+> >
+> >
+> >
+> >
+> >
+> >>+str_printf(r, "%*c-> %s", j, ' ', prompt);
+> >>+if (menu->sym) {
+> >>+str_printf(r, " (%s [=%s])", menu->sym->name ?
+> >>+menu->sym->name : "<choice>",
+> >>+sym_get_string_value(menu->sym));
+> >>}
+> >>+str_append(r, "\n");
+> >>}
+> >>}
+> >>
+> >>
+> >>base-commit: 087e856cfb76e9eef9a3a6e000854794f3c36e24
+> >>--
+> >>2.25.1
+> >>
+> >
+> >
+> >--
+> >Best Regards
+> >
+> >Masahiro Yamada
+> Thanks for the comments :)
+> Ariel Marcovitch
+
+
+
 -- 
-2.33.0
-
+Best Regards
+Masahiro Yamada
