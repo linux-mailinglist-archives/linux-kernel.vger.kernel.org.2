@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3946F409574
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2CC409291
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346823AbhIMOlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:41:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55970 "EHLO mail.kernel.org"
+        id S1343761AbhIMOM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242968AbhIMOfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:35:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8376661BE2;
-        Mon, 13 Sep 2021 13:53:49 +0000 (UTC)
+        id S1344577AbhIMOJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:09:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A9FA61A7E;
+        Mon, 13 Sep 2021 13:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541230;
-        bh=cgd4lvp8ET4FpQcD9aMt+wZ5XqW2kd5Gg/QmI8LlYZ0=;
+        s=korg; t=1631540477;
+        bh=ChTROQMTdR3px2p0FqSqkRNFAg611G3C3I5tBjO3qlY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xZi4KNdJ3EA1R0zP5ksJAYnVdXf+yGMcVT3jYQU1mcFHFIUgaHW+PTgTfuhVe4Lf5
-         PJPWaU6z3c71nvjiJA/6x5BLTGJWp5xAiFi54GbR669/0GPC/M4SM4BmcscMQhknYR
-         7ctIH+Rry/Js9zLh67U05haOe39BVq75UI/6kTUs=
+        b=TGj9qVeiCsrBpNhUYVBany+ex/we9Uv3lt40pCYFhd6OmRJPYRls5jw8b7GOjbGjY
+         dWfw0VKNKCKHqv+vtpTDgJ2yeYtM4o+wjjitH8lZj0891sEhauBWS0lEnIlmy3Kx4/
+         KP6l6yuRadrKN46E9+5qmKVahI5RJ9lgFi+N2sa0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 216/334] libbpf: Re-build libbpf.so when libbpf.map changes
-Date:   Mon, 13 Sep 2021 15:14:30 +0200
-Message-Id: <20210913131120.725012358@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Kevin Mitchell <kevmitch@arista.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 210/300] lkdtm: replace SCSI_DISPATCH_CMD with SCSI_QUEUE_RQ
+Date:   Mon, 13 Sep 2021 15:14:31 +0200
+Message-Id: <20210913131116.457950163@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Kevin Mitchell <kevmitch@arista.com>
 
-[ Upstream commit 61c7aa5020e98ac2fdcf07d07eec1baf2e9f0a08 ]
+[ Upstream commit d1f278da6b11585f05b2755adfc8851cbf14a1ec ]
 
-Ensure libbpf.so is re-built whenever libbpf.map is modified.  Without this,
-changes to libbpf.map are not detected and versioned symbols mismatch error
-will be reported until `make clean && make` is used, which is a suboptimal
-developer experience.
+When scsi_dispatch_cmd was moved to scsi_lib.c and made static, some
+compilers (i.e., at least gcc 8.4.0) decided to compile this
+inline. This is a problem for lkdtm.ko, which inserted a kprobe
+on this function for the SCSI_DISPATCH_CMD crashpoint.
 
-Fixes: 306b267cb3c4 ("libbpf: Verify versioned symbols")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210815070609.987780-8-andrii@kernel.org
+Move this crashpoint one function up the call chain to
+scsi_queue_rq. Though this is also a static function, it should never be
+inlined because it is assigned as a structure entry. Therefore,
+kprobe_register should always be able to find it.
+
+Fixes: 82042a2cdb55 ("scsi: move scsi_dispatch_cmd to scsi_lib.c")
+Acked-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kevin Mitchell <kevmitch@arista.com>
+Link: https://lore.kernel.org/r/20210819022940.561875-2-kevmitch@arista.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/Makefile | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/fault-injection/provoke-crashes.rst | 2 +-
+ drivers/misc/lkdtm/core.c                         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index ec14aa725bb0..74c3b73a5fbe 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -4,8 +4,9 @@
- RM ?= rm
- srctree = $(abs_srctree)
+diff --git a/Documentation/fault-injection/provoke-crashes.rst b/Documentation/fault-injection/provoke-crashes.rst
+index a20ba5d93932..18de17354206 100644
+--- a/Documentation/fault-injection/provoke-crashes.rst
++++ b/Documentation/fault-injection/provoke-crashes.rst
+@@ -29,7 +29,7 @@ recur_count
+ cpoint_name
+ 	Where in the kernel to trigger the action. It can be
+ 	one of INT_HARDWARE_ENTRY, INT_HW_IRQ_EN, INT_TASKLET_ENTRY,
+-	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_DISPATCH_CMD,
++	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_QUEUE_RQ,
+ 	IDE_CORE_CP, or DIRECT
  
-+VERSION_SCRIPT := libbpf.map
- LIBBPF_VERSION := $(shell \
--	grep -oE '^LIBBPF_([0-9.]+)' libbpf.map | \
-+	grep -oE '^LIBBPF_([0-9.]+)' $(VERSION_SCRIPT) | \
- 	sort -rV | head -n1 | cut -d'_' -f2)
- LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
- 
-@@ -110,7 +111,6 @@ SHARED_OBJDIR	:= $(OUTPUT)sharedobjs/
- STATIC_OBJDIR	:= $(OUTPUT)staticobjs/
- BPF_IN_SHARED	:= $(SHARED_OBJDIR)libbpf-in.o
- BPF_IN_STATIC	:= $(STATIC_OBJDIR)libbpf-in.o
--VERSION_SCRIPT	:= libbpf.map
- BPF_HELPER_DEFS	:= $(OUTPUT)bpf_helper_defs.h
- 
- LIB_TARGET	:= $(addprefix $(OUTPUT),$(LIB_TARGET))
-@@ -163,10 +163,10 @@ $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
- 
- $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
- 
--$(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN_SHARED)
-+$(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN_SHARED) $(VERSION_SCRIPT)
- 	$(QUIET_LINK)$(CC) $(LDFLAGS) \
- 		--shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
--		-Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -lz -o $@
-+		-Wl,--version-script=$(VERSION_SCRIPT) $< -lelf -lz -o $@
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so.$(LIBBPF_MAJOR_VERSION)
- 
-@@ -181,7 +181,7 @@ $(OUTPUT)libbpf.pc:
- 
- check: check_abi
- 
--check_abi: $(OUTPUT)libbpf.so
-+check_abi: $(OUTPUT)libbpf.so $(VERSION_SCRIPT)
- 	@if [ "$(GLOBAL_SYM_COUNT)" != "$(VERSIONED_SYM_COUNT)" ]; then	 \
- 		echo "Warning: Num of global symbols in $(BPF_IN_SHARED)"	 \
- 		     "($(GLOBAL_SYM_COUNT)) does NOT match with num of"	 \
+ cpoint_type
+diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
+index cd833011f285..4757e29b42c0 100644
+--- a/drivers/misc/lkdtm/core.c
++++ b/drivers/misc/lkdtm/core.c
+@@ -81,7 +81,7 @@ static struct crashpoint crashpoints[] = {
+ 	CRASHPOINT("FS_DEVRW",		 "ll_rw_block"),
+ 	CRASHPOINT("MEM_SWAPOUT",	 "shrink_inactive_list"),
+ 	CRASHPOINT("TIMERADD",		 "hrtimer_start"),
+-	CRASHPOINT("SCSI_DISPATCH_CMD",	 "scsi_dispatch_cmd"),
++	CRASHPOINT("SCSI_QUEUE_RQ",	 "scsi_queue_rq"),
+ 	CRASHPOINT("IDE_CORE_CP",	 "generic_ide_ioctl"),
+ #endif
+ };
 -- 
 2.30.2
 
