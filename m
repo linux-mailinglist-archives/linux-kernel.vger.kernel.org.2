@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12F2408FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD0B408D38
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240822AbhIMNrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
+        id S241418AbhIMNYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:24:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241124AbhIMNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:42:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 878316135D;
-        Mon, 13 Sep 2021 13:30:01 +0000 (UTC)
+        id S240160AbhIMNVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:21:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94535610F7;
+        Mon, 13 Sep 2021 13:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539802;
-        bh=e3e5napruXIrkiDjQDDOcdyWnCKtkl4GGRK1tVVhW7U=;
+        s=korg; t=1631539233;
+        bh=9hnF8+CnRoL2OmBCjCKNXSTd0852sHHFCZ5F952HWAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0IyovGn/HzszcWYvjVZ6Y1772681EizpRBppNDs1Cw8DBDokJrEF1361CLUt9DpTP
-         ieFFuWlx0Fn+Nj0NK1QaLbk6rg/51JL0Q5LZNCJ7SZ2HOIin/kQTu5PxstlLdmDqQs
-         92VA2Yrz61wYpyBkRF73tT1uICtVG6mXzQjepJ8g=
+        b=B2WKqIW4AGr0fs8vK0Stporzi8n+FeBb/pfcqZi+AXLSawFpQqPrn3OiK/pCT1o+k
+         LF8kPSexilm9MscMHdtr3qbkDKtAU2xhCSXnNfOldHKaQRz+MpN24Gm1cliqSyDuFe
+         WlHdVbLD/68smkTceKevAad8XTPwFaqn8dVGcPXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 165/236] lockd: Fix invalid lockowner cast after vfs_test_lock
-Date:   Mon, 13 Sep 2021 15:14:30 +0200
-Message-Id: <20210913131105.991491498@linuxfoundation.org>
+Subject: [PATCH 5.4 090/144] usb: phy: twl6030: add IRQ checks
+Date:   Mon, 13 Sep 2021 15:14:31 +0200
+Message-Id: <20210913131050.961784753@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Coddington <bcodding@redhat.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit cd2d644ddba183ec7b451b7c20d5c7cc06fcf0d7 ]
+[ Upstream commit 0881e22c06e66af0b64773c91c8868ead3d01aa1 ]
 
-After calling vfs_test_lock() the pointer to a conflicting lock can be
-returned, and that lock is not guarunteed to be owned by nlm.  In that
-case, we cannot cast it to struct nlm_lockowner.  Instead return the pid
-of that conflicting lock.
+The driver neglects to check the result of platform_get_irq()'s calls and
+blithely passes the negative error codes to request_threaded_irq() (which
+takes *unsigned* IRQ #), causing them both to fail with -EINVAL, overriding
+an original error code.  Stop calling request_threaded_irq() with the
+invalid IRQ #s.
 
-Fixes: 646d73e91b42 ("lockd: Show pid of lockd for remote locks")
-Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: c33fad0c3748 ("usb: otg: Adding twl6030-usb transceiver driver for OMAP4430")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/9507f50b-50f1-6dc4-f57c-3ed4e53a1c25@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/lockd/svclock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/phy/phy-twl6030-usb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
-index 61d3cc2283dc..498cb70c2c0d 100644
---- a/fs/lockd/svclock.c
-+++ b/fs/lockd/svclock.c
-@@ -634,7 +634,7 @@ nlmsvc_testlock(struct svc_rqst *rqstp, struct nlm_file *file,
- 	conflock->caller = "somehost";	/* FIXME */
- 	conflock->len = strlen(conflock->caller);
- 	conflock->oh.len = 0;		/* don't return OH info */
--	conflock->svid = ((struct nlm_lockowner *)lock->fl.fl_owner)->pid;
-+	conflock->svid = lock->fl.fl_pid;
- 	conflock->fl.fl_type = lock->fl.fl_type;
- 	conflock->fl.fl_start = lock->fl.fl_start;
- 	conflock->fl.fl_end = lock->fl.fl_end;
+diff --git a/drivers/usb/phy/phy-twl6030-usb.c b/drivers/usb/phy/phy-twl6030-usb.c
+index 9a7e655d5280..9337c30f0743 100644
+--- a/drivers/usb/phy/phy-twl6030-usb.c
++++ b/drivers/usb/phy/phy-twl6030-usb.c
+@@ -348,6 +348,11 @@ static int twl6030_usb_probe(struct platform_device *pdev)
+ 	twl->irq2		= platform_get_irq(pdev, 1);
+ 	twl->linkstat		= MUSB_UNKNOWN;
+ 
++	if (twl->irq1 < 0)
++		return twl->irq1;
++	if (twl->irq2 < 0)
++		return twl->irq2;
++
+ 	twl->comparator.set_vbus	= twl6030_set_vbus;
+ 	twl->comparator.start_srp	= twl6030_start_srp;
+ 
 -- 
 2.30.2
 
