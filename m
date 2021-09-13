@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952A1408D8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F55A408D90
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240974AbhIMN1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
+        id S241441AbhIMN1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:27:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240714AbhIMNYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:24:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 162FC6121F;
-        Mon, 13 Sep 2021 13:22:08 +0000 (UTC)
+        id S241026AbhIMNZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82C2261222;
+        Mon, 13 Sep 2021 13:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539329;
-        bh=e3e5napruXIrkiDjQDDOcdyWnCKtkl4GGRK1tVVhW7U=;
+        s=korg; t=1631539333;
+        bh=i+kTwWeRz7kfRiEgvV5KQKdENgGUddvRRtRuMywMqws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5viaPvAguowbCSjmjUfeSmJnBxXYn0pSM7MVAAVWUTfmVL9uFLSn8P15YtKdjUj5
-         zRUTYMauamPdAKFcPGHWP7zL5EfhLEY7YuiYh/ssjW3nyoPkgdS1oCaeMHiD1C5wGL
-         7u8tvm7aoHrt2tUvWFVlasIQjClenddiYBZBaB+I=
+        b=xsyJmpq2qO4a8NXhNMfv/PBEW/1+Sj+Iau/K+eVf5dZJzW5d3zpybbWa2EMd+0Oa0
+         myP2rAg2WDXWc487G3OqzyoqFaBzoLxuQ1WY3Yydp4Fgh4RqAxeisYsh0X0omKPMuY
+         7KL6w1OHE/p88vk5nVVGNtAR44g9NPbPASKCf6ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Benjamin Coddington <bcodding@redhat.com>,
+        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
         Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 096/144] lockd: Fix invalid lockowner cast after vfs_test_lock
-Date:   Mon, 13 Sep 2021 15:14:37 +0200
-Message-Id: <20210913131051.152078160@linuxfoundation.org>
+Subject: [PATCH 5.4 097/144] nfsd4: Fix forced-expiry locking
+Date:   Mon, 13 Sep 2021 15:14:38 +0200
+Message-Id: <20210913131051.186326934@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -40,36 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Coddington <bcodding@redhat.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-[ Upstream commit cd2d644ddba183ec7b451b7c20d5c7cc06fcf0d7 ]
+[ Upstream commit f7104cc1a9159cd0d3e8526cb638ae0301de4b61 ]
 
-After calling vfs_test_lock() the pointer to a conflicting lock can be
-returned, and that lock is not guarunteed to be owned by nlm.  In that
-case, we cannot cast it to struct nlm_lockowner.  Instead return the pid
-of that conflicting lock.
+This should use the network-namespace-wide client_lock, not the
+per-client cl_lock.
 
-Fixes: 646d73e91b42 ("lockd: Show pid of lockd for remote locks")
-Signed-off-by: Benjamin Coddington <bcodding@redhat.com>
+You shouldn't see any bugs unless you're actually using the
+forced-expiry interface introduced by 89c905beccbb.
+
+Fixes: 89c905beccbb "nfsd: allow forced expiration of NFSv4 clients"
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/lockd/svclock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfsd/nfs4state.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/lockd/svclock.c b/fs/lockd/svclock.c
-index 61d3cc2283dc..498cb70c2c0d 100644
---- a/fs/lockd/svclock.c
-+++ b/fs/lockd/svclock.c
-@@ -634,7 +634,7 @@ nlmsvc_testlock(struct svc_rqst *rqstp, struct nlm_file *file,
- 	conflock->caller = "somehost";	/* FIXME */
- 	conflock->len = strlen(conflock->caller);
- 	conflock->oh.len = 0;		/* don't return OH info */
--	conflock->svid = ((struct nlm_lockowner *)lock->fl.fl_owner)->pid;
-+	conflock->svid = lock->fl.fl_pid;
- 	conflock->fl.fl_type = lock->fl.fl_type;
- 	conflock->fl.fl_start = lock->fl.fl_start;
- 	conflock->fl.fl_end = lock->fl.fl_end;
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 8cb2f744dde6..3283cc2a4e42 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -2572,9 +2572,9 @@ static void force_expire_client(struct nfs4_client *clp)
+ 	struct nfsd_net *nn = net_generic(clp->net, nfsd_net_id);
+ 	bool already_expired;
+ 
+-	spin_lock(&clp->cl_lock);
++	spin_lock(&nn->client_lock);
+ 	clp->cl_time = 0;
+-	spin_unlock(&clp->cl_lock);
++	spin_unlock(&nn->client_lock);
+ 
+ 	wait_event(expiry_wq, atomic_read(&clp->cl_rpc_users) == 0);
+ 	spin_lock(&nn->client_lock);
 -- 
 2.30.2
 
