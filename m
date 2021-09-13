@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A44740931A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C5D40931E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245699AbhIMORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:17:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
+        id S1343865AbhIMOSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:18:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245342AbhIMOM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:12:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D3976128A;
-        Mon, 13 Sep 2021 13:42:51 +0000 (UTC)
+        id S245733AbhIMONE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:13:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C0F6128C;
+        Mon, 13 Sep 2021 13:42:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540572;
-        bh=7KjxYdm2sf3eaoK4A3mQFIs6I5AkhW9g0Cz3hnhWz30=;
+        s=korg; t=1631540575;
+        bh=XF0uZ/NJuhtO93oLxSrCmNBUZFUFZrktfskP+lMO9hw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BwM6eDMH4DiyaMXo3TX5IDCzgBJKD7BpAw8IO6k44wVEJIluG6yR4U++oStDW9f6Q
-         GTAKbh5KOQ3rP9J75vl4DmEDq9fywcdq+3FIHme9/eVO9RaLbvAUP7ycAga0KaKt86
-         G93PHgSYTwq/GsBSmKrQDDSglUOMFYkpVSyXQjNc=
+        b=h6HXxUBVZaKb1ANWkhOGqhYpjLWUmYL6WXtDjEPuV+2fKKg3uz9ScJ9T0ENOaYJfQ
+         50q74sQqmWAYVxctsFSYAvi2tTM2CLsfTudB+4+juIdjZgZNTwhg6za+FFkxctrXgK
+         xHTzA/lW9C/pB755jFjqxD/AoRnMcpB2mU0CO0TM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Sudarsana Reddy Kalluru <skalluru@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 248/300] ath6kl: wmi: fix an error code in ath6kl_wmi_sync_point()
-Date:   Mon, 13 Sep 2021 15:15:09 +0200
-Message-Id: <20210913131117.729741624@linuxfoundation.org>
+Subject: [PATCH 5.13 249/300] atlantic: Fix driver resume flow.
+Date:   Mon, 13 Sep 2021 15:15:10 +0200
+Message-Id: <20210913131117.763001058@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -40,40 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sudarsana Reddy Kalluru <skalluru@marvell.com>
 
-[ Upstream commit fd6729ec534cffbbeb3917761e6d1fe6a412d3fe ]
+[ Upstream commit 57f780f1c43362b86fd23d20bd940e2468237716 ]
 
-This error path is unlikely because of it checked for NULL and
-returned -ENOMEM earlier in the function.  But it should return
-an error code here as well if we ever do hit it because of a
-race condition or something.
+Driver crashes when restoring from the Hibernate. In the resume flow,
+driver need to clean up the older nic/vec objects and re-initialize them.
 
-Fixes: bdcd81707973 ("Add ath6kl cleaned up driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210813113438.GB30697@kili
+Fixes: 8aaa112a57c1d ("net: atlantic: refactoring pm logic")
+Signed-off-by: Sudarsana Reddy Kalluru <skalluru@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index b137e7f34397..bd1ef6334997 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -2504,8 +2504,10 @@ static int ath6kl_wmi_sync_point(struct wmi *wmi, u8 if_idx)
- 		goto free_data_skb;
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
+index 59253846e885..f26d03735619 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
+@@ -417,6 +417,9 @@ static int atl_resume_common(struct device *dev, bool deep)
+ 	pci_restore_state(pdev);
  
- 	for (index = 0; index < num_pri_streams; index++) {
--		if (WARN_ON(!data_sync_bufs[index].skb))
-+		if (WARN_ON(!data_sync_bufs[index].skb)) {
-+			ret = -ENOMEM;
- 			goto free_data_skb;
-+		}
- 
- 		ep_id = ath6kl_ac2_endpoint_id(wmi->parent_dev,
- 					       data_sync_bufs[index].
+ 	if (deep) {
++		/* Reinitialize Nic/Vecs objects */
++		aq_nic_deinit(nic, !nic->aq_hw->aq_nic_cfg->wol);
++
+ 		ret = aq_nic_init(nic);
+ 		if (ret)
+ 			goto err_exit;
 -- 
 2.30.2
 
