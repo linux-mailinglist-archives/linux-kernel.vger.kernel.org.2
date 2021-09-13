@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4ADC4095CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8262D4095EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346534AbhIMOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55970 "EHLO mail.kernel.org"
+        id S1346422AbhIMOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346870AbhIMOjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:39:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68AAC61245;
-        Mon, 13 Sep 2021 13:55:31 +0000 (UTC)
+        id S1347222AbhIMOkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:40:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96CF261D7C;
+        Mon, 13 Sep 2021 13:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541331;
-        bh=DOzj4Ygmi+FMjr4Fa28O+JHTZ8km7wUXPJlgxXwdLso=;
+        s=korg; t=1631541359;
+        bh=Ebt2wk8FtArTQwmmLB+5B6eQf6OubKgn2BFjnf5wG4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t1tfYVV7HN9tlPuTpYXX4isbMqavskUJwu/gW5jZx+EfoY6g7vz0djjmfM88d5na8
-         Xcs1weSzgpugcd3wPojvgtcWgo/ufMEDPGdX2lD/iqgTlRg6GVkfKnPXJXjLPGXgHf
-         h1edi5tTr5uOlfoBoEP8cwLTpNC8MKCqeQw9gjtg=
+        b=DmjgdyR2okUDh2kO1vV9+1HzcFLIo0dp6m3TuL0dmmyL9lj2KDecjal702ed+z8yA
+         7jjxC2QcM3G/8uYwyHlOXhCGDCY0UIe0gmT/QZrINIUn/xIWyNyvYXUvAR8z2OLlvm
+         nHWQB/7E3D0tJci+ullUoLy8/D2+A4iTXr5lZdcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 238/334] rsi: fix error code in rsi_load_9116_firmware()
-Date:   Mon, 13 Sep 2021 15:14:52 +0200
-Message-Id: <20210913131121.457768654@linuxfoundation.org>
+Subject: [PATCH 5.14 239/334] rsi: fix an error code in rsi_probe()
+Date:   Mon, 13 Sep 2021 15:14:53 +0200
+Message-Id: <20210913131121.488005119@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -42,36 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d0f8430332a16c7baa80ce2886339182c5d85f37 ]
+[ Upstream commit 9adcdf6758d7c4c9bdaf22d78eb9fcae260ed113 ]
 
-This code returns success if the kmemdup() fails, but obviously it
-should return -ENOMEM instead.
+Return -ENODEV instead of success for unsupported devices.
 
-Fixes: e5a1ecc97e5f ("rsi: add firmware loading for 9116 device")
+Fixes: 54fdb318c111 ("rsi: add new device model for 9116")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210805103746.GA26417@kili
+Link: https://lore.kernel.org/r/20210816183947.GA2119@kili
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/rsi/rsi_91x_usb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
-index 99b21a2c8386..f4a26f16f00f 100644
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -1038,8 +1038,10 @@ static int rsi_load_9116_firmware(struct rsi_hw *adapter)
+diff --git a/drivers/net/wireless/rsi/rsi_91x_usb.c b/drivers/net/wireless/rsi/rsi_91x_usb.c
+index 3fbe2a3c1455..416976f09888 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_usb.c
++++ b/drivers/net/wireless/rsi/rsi_91x_usb.c
+@@ -816,6 +816,7 @@ static int rsi_probe(struct usb_interface *pfunction,
+ 	} else {
+ 		rsi_dbg(ERR_ZONE, "%s: Unsupported RSI device id 0x%x\n",
+ 			__func__, id->idProduct);
++		status = -ENODEV;
+ 		goto err1;
  	}
  
- 	ta_firmware = kmemdup(fw_entry->data, fw_entry->size, GFP_KERNEL);
--	if (!ta_firmware)
-+	if (!ta_firmware) {
-+		status = -ENOMEM;
- 		goto fail_release_fw;
-+	}
- 	fw_p = ta_firmware;
- 	instructions_sz = fw_entry->size;
- 	rsi_dbg(INFO_ZONE, "FW Length = %d bytes\n", instructions_sz);
 -- 
 2.30.2
 
