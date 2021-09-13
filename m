@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC1A408310
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F36640834A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237938AbhIMDOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:14:30 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16192 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237919AbhIMDOV (ORCPT
+        id S238578AbhIMD7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238429AbhIMD7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:14:21 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H7BNL0xGNz1DGt0;
-        Mon, 13 Sep 2021 11:12:02 +0800 (CST)
-Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 13 Sep 2021 11:12:59 +0800
-Received: from huawei.com (10.175.100.227) by dggpeml500006.china.huawei.com
- (7.185.36.76) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 13 Sep
- 2021 11:12:59 +0800
-From:   Tang Yizhou <tangyizhou@huawei.com>
-To:     <bristot@redhat.com>, <rostedt@goodmis.org>
-CC:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <tangyizhou@huawei.com>
-Subject: [PATCH] trace: Do some cleanups for osnoise tracer
-Date:   Mon, 13 Sep 2021 11:32:06 +0800
-Message-ID: <20210913033206.23682-1-tangyizhou@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 12 Sep 2021 23:59:08 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDBDC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:57:53 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so11520063otq.7
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HyPY+ZXbFnSHwqSRftRZgDfDeMOBd9jSeFzI0yKw0YQ=;
+        b=gi7trm+NMxxcJ6PFTiy/JahmZxmrqllur5rJtXLNG9b6D4cKSkaucPJadQrO91O6SO
+         Qj8zUR0MkOq8BCWC7k4yHbiO24lU6723aLObxlL2CbKcAs5b/VhanYflYV8XCVTA/adm
+         fBnqNhsHhmFagWqps8IAFr5VruPb6D4XKnDFuzaB+ZAzUfhxPG1dYw1OLPG9a06noVZ9
+         9pCYkz/WKknUIyJHt/UQ+bnF6f4bJAkaZG3QJ7hkNbvbKy7F/lfeR+Ytjs7I2KTNisY+
+         tBMh80/AFIwXqAeddibn97L6YaHekWpwTGvOr/9G1rxMyQGBjrBeHEuaxRKx6YpAOXfy
+         wCOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=HyPY+ZXbFnSHwqSRftRZgDfDeMOBd9jSeFzI0yKw0YQ=;
+        b=FzkAdQ5FuqwenQi4my/fZRQPl2ZUgwlT6daK081YB9EnT5nY8K9bpDfwJU8D+wxHXG
+         ZDGC+0geT5T6EhxQGJx+HMzEsN2rX8ezkbGsAeKQ9QuSCPdGoETktYtQurcmo+3tQaq+
+         eEYVSx/sicLMR4+5apk4Uw40kxizyPh727LPz/SE9q6Jayr1RhNR90XECwzq+Vhq96r3
+         565lsblpkXQ6cX0MWg288Wx5ED31I1WnVauadaKscSms/DC8A4Khbb+9OQ3Y+yEa0oAf
+         TKudiO7jpsSRef6bw1+koZbRnNNbN736YkXQidFJ/gAYs/CINlYWK+TpcfUozjLPF+eF
+         jHlw==
+X-Gm-Message-State: AOAM532/RXvS0vsT4/ZKhbWIy4w04uKns6D1WpCSPmAWR3xI4k/aasX8
+        0QUsnRASU5Yrc55+uaDlUzDiRz85hB4=
+X-Google-Smtp-Source: ABdhPJy4cqFVTBTmFOR1FsURtwduN2+yE06jsoG7EwYJ9Pg0w8jSnsLz9yI3nJZctZ6lxmcOKpm5lg==
+X-Received: by 2002:a05:6830:70c:: with SMTP id y12mr8133885ots.19.1631505472315;
+        Sun, 12 Sep 2021 20:57:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e2sm1555798ooh.40.2021.09.12.20.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 20:57:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 12 Sep 2021 20:57:50 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.15-rc1
+Message-ID: <20210913035750.GA1196001@roeck-us.net>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.100.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Add 'static' and 'const' qualifier when necessary.
-2. Use DEFINE_MUTEX() to define a mutex.
+On Sun, Sep 12, 2021 at 04:58:27PM -0700, Linus Torvalds wrote:
+[ ... ]
+> 
+> And in order to get those fixes going, please go out and test this.
+> 
 
-Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
----
- kernel/trace/trace_osnoise.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Build results:
+	total: 153 pass: 143 fail: 10
+Failed builds:
+	alpha:allmodconfig (15)
+	arm:allmodconfig (1)
+	m68k:allmodconfig (47)
+	mips:allmodconfig (2)
+	parisc:allmodconfig (8)
+	riscv32:allmodconfig (1)
+	riscv:allmodconfig (1)
+	s390:allmodconfig (6)
+	sparc64:allmodconfig (1)
+	xtensa:allmodconfig (53)
+Qemu test results:
+	total: 479 pass: 478 fail: 1
+Failed tests:
+	sparc64:sun4u:nodebug:smp:virtio-pci:net,i82559er:hd
 
-diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-index ce053619f289..c1a8dc6a154e 100644
---- a/kernel/trace/trace_osnoise.c
-+++ b/kernel/trace/trace_osnoise.c
-@@ -105,7 +105,7 @@ struct osnoise_variables {
- /*
-  * Per-cpu runtime information.
-  */
--DEFINE_PER_CPU(struct osnoise_variables, per_cpu_osnoise_var);
-+static DEFINE_PER_CPU(struct osnoise_variables, per_cpu_osnoise_var);
- 
- /*
-  * this_cpu_osn_var - Return the per-cpu osnoise_variables on its relative CPU
-@@ -128,7 +128,7 @@ struct timerlat_variables {
- 	u64			count;
- };
- 
--DEFINE_PER_CPU(struct timerlat_variables, per_cpu_timerlat_var);
-+static DEFINE_PER_CPU(struct timerlat_variables, per_cpu_timerlat_var);
- 
- /*
-  * this_cpu_tmr_var - Return the per-cpu timerlat_variables on its relative CPU
-@@ -220,7 +220,7 @@ struct timerlat_sample {
- /*
-  * Protect the interface.
-  */
--struct mutex interface_lock;
-+static DEFINE_MUTEX(interface_lock);
- 
- /*
-  * Tracer data.
-@@ -1818,8 +1818,8 @@ static struct trace_min_max_param osnoise_print_stack = {
- /*
-  * osnoise/timerlat_period: min 100 us, max 1 s
-  */
--u64 timerlat_min_period = 100;
--u64 timerlat_max_period = 1000000;
-+static const u64 timerlat_min_period = 100;
-+static const u64 timerlat_max_period = 1000000;
- static struct trace_min_max_param timerlat_period = {
- 	.lock	= &interface_lock,
- 	.val	= &osnoise_data.timerlat_period,
-@@ -2087,8 +2087,6 @@ __init static int init_osnoise_tracer(void)
- {
- 	int ret;
- 
--	mutex_init(&interface_lock);
--
- 	cpumask_copy(&osnoise_cpumask, cpu_all_mask);
- 
- 	ret = register_tracer(&osnoise_tracer);
--- 
-2.17.1
+The allmodconfig build failures are mostly if not all the result of
+enabling -Werror on test builds. The individual errors are too many
+to list; the number of errors is listed in () after the build above.
+Anyone interested can find build logs at https://kerneltests.org/builders.
+I am not entirely sure what to do about that - if history teaches a
+lesson, new build failures may pile up faster than existing ones get
+fixed, but then I am aware that several fixes are queued already. We'll
+see how it goes. I'll monitor the situation until maybe -rc4 or -rc5 and
+then decide if I disable -Werror in my test builds to catch any new "real"
+problems.
 
+The qemu runtime failure bisects to commit 694a1116b405 ("virtio: Bind
+virtio device to device-tree node"), and reverting that commit fixes the
+problem.  With that patch applied, the virtio block device does not
+instantiate on sparc64. This results in a crash since that is where the
+test is trying to boot from.
+
+Good news is that I don't see any new runtime warnings.
+
+Guenter
