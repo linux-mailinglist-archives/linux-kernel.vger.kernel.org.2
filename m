@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108A44095C7
+	by mail.lfdr.de (Postfix) with ESMTP id D4D934095C9
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348050AbhIMOos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55842 "EHLO mail.kernel.org"
+        id S1348133AbhIMOow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346533AbhIMOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:39:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DC116113E;
-        Mon, 13 Sep 2021 13:55:23 +0000 (UTC)
+        id S1346602AbhIMOjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:39:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AA19619BB;
+        Mon, 13 Sep 2021 13:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541324;
-        bh=gTZ+FGzDPLRC11wr1V9rfXhxQuTN4Zfm2wOT3/awIoI=;
+        s=korg; t=1631541326;
+        bh=icCs6G7dSIZXNzyD+9XIiANb9ilH4gOFyVQhhKVcyuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gq5taA2cjsTHVq0238oAOmZMxp+EYGXlUsF0khHzsjYceoVX3LHmiX3gKnEsizcJl
-         FMy+qNDc66spqYIOMB6A5I56iuKnW1u4aE4pbWbSUOkJJEcmrAK1ah/PajhGgWHD+9
-         0hSqe882vgEb7RObtZ5fc7HBVs2HKgMEsbGLBIa4=
+        b=OwSOkjYDPSVL0dP6JBqWM9XfrZkcAgaYsGx8vRcwju2K6BukuIAuiwTCYRWDTfg83
+         vYxb4pSlTHl/90FfN4/YpLq5935MzuTB7f3ZdJIiNRWRLbh1AE9vztQpvzKSnUxsH7
+         ZOrvCXxxGJY4UD/2pkjHMBJVAHddCKQDFDVzR9NQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 253/334] ASoC: wm_adsp: Put debugfs_remove_recursive back in
-Date:   Mon, 13 Sep 2021 15:15:07 +0200
-Message-Id: <20210913131121.960933717@linuxfoundation.org>
+Subject: [PATCH 5.14 254/334] bpf: Fix possible out of bound write in narrow load handling
+Date:   Mon, 13 Sep 2021 15:15:08 +0200
+Message-Id: <20210913131121.992606892@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -41,53 +41,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Andrey Ignatov <rdna@fb.com>
 
-[ Upstream commit e6d0b92ac00b53121a35b2a1ce8d393dc9179fdf ]
+[ Upstream commit d7af7e497f0308bc97809cc48b58e8e0f13887e1 ]
 
-This patch reverts commit acbf58e53041 ("ASoC: wm_adsp: Let
-soc_cleanup_component_debugfs remove debugfs"), and adds an
-alternate solution to the issue. That patch removes the call to
-debugfs_remove_recursive, which cleans up the DSPs debugfs. The
-intention was to avoid an unbinding issue on an out of tree
-driver/platform.
+Fix a verifier bug found by smatch static checker in [0].
 
-The issue with the patch is it means the driver no longer cleans up
-its own debugfs, instead relying on ASoC to remove recurive on the
-parent debugfs node. This is conceptually rather unclean, but also it
-would prevent DSPs being added/removed independently of ASoC and soon
-we are going to be upstreaming some non-audio parts with these DSPs,
-which will require this.
+This problem has never been seen in prod to my best knowledge. Fixing it
+still seems to be a good idea since it's hard to say for sure whether
+it's possible or not to have a scenario where a combination of
+convert_ctx_access() and a narrow load would lead to an out of bound
+write.
 
-Finally, it seems the issue on the platform is a result of the
-wm_adsp2_cleanup_debugfs getting called twice. This is very likely a
-problem on the platform side and will be resolved there. But in the mean
-time make the code a little more robust to such issues, and again
-conceptually a bit nicer, but clearing the debugfs_root variable in the
-DSP structure when the debugfs is removed.
+When narrow load is handled, one or two new instructions are added to
+insn_buf array, but before it was only checked that
 
-Fixes: acbf58e53041 ("ASoC: wm_adsp: Let soc_cleanup_component_debugfs remove debugfs"
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210824101552.1119-1-ckeepax@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+	cnt >= ARRAY_SIZE(insn_buf)
+
+And it's safe to add a new instruction to insn_buf[cnt++] only once. The
+second try will lead to out of bound write. And this is what can happen
+if `shift` is set.
+
+Fix it by making sure that if the BPF_RSH instruction has to be added in
+addition to BPF_AND then there is enough space for two more instructions
+in insn_buf.
+
+The full report [0] is below:
+
+kernel/bpf/verifier.c:12304 convert_ctx_accesses() warn: offset 'cnt' incremented past end of array
+kernel/bpf/verifier.c:12311 convert_ctx_accesses() warn: offset 'cnt' incremented past end of array
+
+kernel/bpf/verifier.c
+    12282
+    12283 			insn->off = off & ~(size_default - 1);
+    12284 			insn->code = BPF_LDX | BPF_MEM | size_code;
+    12285 		}
+    12286
+    12287 		target_size = 0;
+    12288 		cnt = convert_ctx_access(type, insn, insn_buf, env->prog,
+    12289 					 &target_size);
+    12290 		if (cnt == 0 || cnt >= ARRAY_SIZE(insn_buf) ||
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Bounds check.
+
+    12291 		    (ctx_field_size && !target_size)) {
+    12292 			verbose(env, "bpf verifier is misconfigured\n");
+    12293 			return -EINVAL;
+    12294 		}
+    12295
+    12296 		if (is_narrower_load && size < target_size) {
+    12297 			u8 shift = bpf_ctx_narrow_access_offset(
+    12298 				off, size, size_default) * 8;
+    12299 			if (ctx_field_size <= 4) {
+    12300 				if (shift)
+    12301 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+                                                         ^^^^^
+increment beyond end of array
+
+    12302 									insn->dst_reg,
+    12303 									shift);
+--> 12304 				insn_buf[cnt++] = BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
+                                                 ^^^^^
+out of bounds write
+
+    12305 								(1 << size * 8) - 1);
+    12306 			} else {
+    12307 				if (shift)
+    12308 					insn_buf[cnt++] = BPF_ALU64_IMM(BPF_RSH,
+    12309 									insn->dst_reg,
+    12310 									shift);
+    12311 				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
+                                        ^^^^^^^^^^^^^^^
+Same.
+
+    12312 								(1ULL << size * 8) - 1);
+    12313 			}
+    12314 		}
+    12315
+    12316 		new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+    12317 		if (!new_prog)
+    12318 			return -ENOMEM;
+    12319
+    12320 		delta += cnt - 1;
+    12321
+    12322 		/* keep walking new program and skip insns we just inserted */
+    12323 		env->prog = new_prog;
+    12324 		insn      = new_prog->insnsi + i + delta;
+    12325 	}
+    12326
+    12327 	return 0;
+    12328 }
+
+[0] https://lore.kernel.org/bpf/20210817050843.GA21456@kili/
+
+v1->v2:
+- clarify that problem was only seen by static checker but not in prod;
+
+Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20210820163935.1902398-1-rdna@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index fe15cbc7bcaf..a4d4cbf716a1 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -747,6 +747,8 @@ static void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
- static void wm_adsp2_cleanup_debugfs(struct wm_adsp *dsp)
- {
- 	wm_adsp_debugfs_clear(dsp);
-+	debugfs_remove_recursive(dsp->debugfs_root);
-+	dsp->debugfs_root = NULL;
- }
- #else
- static inline void wm_adsp2_init_debugfs(struct wm_adsp *dsp,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 10084c0600dd..9d94ac6ff50c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12013,6 +12013,10 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 		if (is_narrower_load && size < target_size) {
+ 			u8 shift = bpf_ctx_narrow_access_offset(
+ 				off, size, size_default) * 8;
++			if (shift && cnt + 1 >= ARRAY_SIZE(insn_buf)) {
++				verbose(env, "bpf verifier narrow ctx load misconfigured\n");
++				return -EINVAL;
++			}
+ 			if (ctx_field_size <= 4) {
+ 				if (shift)
+ 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
 -- 
 2.30.2
 
