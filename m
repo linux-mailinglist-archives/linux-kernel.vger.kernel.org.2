@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67650409A20
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87B4409A21
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240743AbhIMQ5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:57:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239888AbhIMQ47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:56:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A1CC60FE6;
-        Mon, 13 Sep 2021 16:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631552143;
-        bh=uUD9BeW8jFyLzVb0L7I3RCTD4qAQLcOLZZFlOvJ6GrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OQ2w0/Elkm+1G3wLjr17l9B2+/QcO0UwFVduMARk/dIt2bTmoS2TlWAgP9Qxzhs/H
-         J+HSjxT9vUVf8XG/e7ZSCTEmCXWQoPnwVdeAh1iAEWfp8EfomkJJy+4Usub5jDVxqt
-         Z+8ktArEH3LiFcHHe9sNaMWlhtfg+cR9P4Xqv2TFxIjmrfBy8hWCPkQIOMJs+GutK0
-         IAkvz5z2Xn5xMOXmAhYKL5bn4N1fxu9fZB/UU7atC+NguZpIUdcSloYYkqDQybANSk
-         +GethoLYKDThi70fW1qF2HrLi6pMB64PlYmRj5mcJIVrwnF6G8p3bK9JU0voZ/Ofhe
-         xSEeZ2Sl0mYnw==
-Date:   Mon, 13 Sep 2021 12:55:42 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Jean Delvare <jdelvare@suse.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.14 088/252] i2c: i801: Fix handling
- SMBHSTCNT_PEC_EN
-Message-ID: <YT+CjnAnkfL3Nh0D@sashalap>
-References: <20210909114106.141462-1-sashal@kernel.org>
- <20210909114106.141462-88-sashal@kernel.org>
- <20210909151320.7bddd134@endymion>
+        id S240859AbhIMQ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:57:11 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:54288 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239888AbhIMQ5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:57:09 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id A62971D40;
+        Mon, 13 Sep 2021 19:55:51 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1631552151;
+        bh=5FGvKa6/SY7v3aG+gp0qf1IhE5WNXd9rsEH3ZXI2TfM=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=WKNmc8FsMpBC0NASRjIZvxdS9DzRFCkA6Z/h9fwLWBrJB9rlcvq/76GQEhwvlD+xN
+         eZZYciJwxLjJSgyL4/OKXzjwcNTk5ZVoP+BFZGgNeDJIX2eekQYrbw44E/wbVaWJ/A
+         rbs0trEHA+m3+xkA6z2pe7g2s2bN74capqaUm5jI=
+Received: from [192.168.211.103] (192.168.211.103) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 13 Sep 2021 19:55:51 +0300
+Message-ID: <d2636759-7809-e080-952a-b24123744eb1@paragon-software.com>
+Date:   Mon, 13 Sep 2021 19:55:50 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210909151320.7bddd134@endymion>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 0/3] fs/ntfs3: Make entry binary search faster
+Content-Language: en-US
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, Joe Perches <joe@perches.com>
+References: <20210902154050.5075-1-kari.argillander@gmail.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210902154050.5075-1-kari.argillander@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.103]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 03:13:20PM +0200, Jean Delvare wrote:
->Hi Sascha,
->
->On Thu,  9 Sep 2021 07:38:22 -0400, Sasha Levin wrote:
->> From: Heiner Kallweit <hkallweit1@gmail.com>
->>
->> [ Upstream commit a6b8bb6a813a6621c75ceacd1fa604c0229e9624 ]
->>
->> Bit SMBHSTCNT_PEC_EN is used only if software calculates the CRC and
->> uses register SMBPEC. This is not supported by the driver, it supports
->> hw-calculation of CRC only (using bit SMBAUXSTS_CRCE). The chip spec
->> states the following, therefore never set bit SMBHSTCNT_PEC_EN.
->>
->> Chapter SMBus CRC Generation and Checking
->> If the AAC bit is set in the Auxiliary Control register, the PCH
->> automatically calculates and drives CRC at the end of the transmitted
->> packet for write cycles, and will check the CRC for read cycles. It will
->> not transmit the contents of the PEC register for CRC. The PEC bit must
->> not be set in the Host Control register. If this bit is set, unspecified
->> behavior will result.
->>
->> This patch is based solely on the specification and compile-tested only,
->> because I have no PEC-capable devices.
->>
->> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->> Tested-by: Jean Delvare <jdelvare@suse.de>
->> Signed-off-by: Wolfram Sang <wsa@kernel.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  drivers/i2c/busses/i2c-i801.c | 27 +++++++++++----------------
->>  1 file changed, 11 insertions(+), 16 deletions(-)
->
->This patch fixes a theoretical problem nobody has ever complained
->about. I don't think it makes sense to backport it to stable kernel
->branches.
 
-Sure, I'll drop it. Thanks.
 
--- 
-Thanks,
-Sasha
+On 02.09.2021 18:40, Kari Argillander wrote:
+> This series will make binary search faster with removing the need of
+> allocations. We will only use stack memory. This will also make possible
+> to remove linear search completely.
+> 
+> It is good also point out that full binary search not quite fit with
+> entry search because entrys are not always same size. This why we first
+> need linear table fill algorithm. My implementation try to use the fact
+> that we should not linear fill full table before not doing any checking
+> of the entrys. It is example 50/50 change if we are in middle that entry
+> is in first half. So it is very inefficient to fill table after we are
+> middle point.
+> 
+> We could also predict how many entrys there is and use this information,
+> but I did not do that in this point. I'm more than happy to improve this
+> more if someone has ideas.
+> 
+> I have tested this with xfstests and did not see regressions. Checkpatch
+> and build tests for every patch have been done. I haven't done major
+> bench marking with this one. Idea that this is better is just my two
+> cent. Paragon has hopefully done bencmarking with old binary search
+> compared to linear search? I'm quite certain that this will win old
+> binary search algorithm because no need for allocations.
+> 
+> Thanks Joe for let me notice this improvement.
+> 
+> Kari Argillander (3):
+>   fs/ntfs3: Limit binary search table size
+>   fs/ntfs3: Make binary search to search smaller chunks in beginning
+>   fs/ntfs3: Always use binary search with entry search
+> 
+>  fs/ntfs3/index.c | 153 ++++++++++++++---------------------------------
+>  fs/ntfs3/ntfs.h  |   3 -
+>  2 files changed, 45 insertions(+), 111 deletions(-)
+> 
+> 
+> base-commit: d3624466b56dd5b1886c1dff500525b544c19c83
+> 
+
+Hi Joe, Kari!
+
+Applied, thanks!
