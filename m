@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEA540923F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333E6409240
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245242AbhIMOJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:09:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
+        id S1345067AbhIMOJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:09:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343708AbhIMOGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343710AbhIMOGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:06:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB716127B;
-        Mon, 13 Sep 2021 13:40:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B78AF61A6F;
+        Mon, 13 Sep 2021 13:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540402;
-        bh=rRx3NDe80nk8bVQz81/OKq3+2X6WDqoLCmczXwRbQBU=;
+        s=korg; t=1631540405;
+        bh=xWzOSUC3nB4FNyqD6n8KAzMIGWPa7Q6zrHX4Mng4a14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2M4INBKXC4uSdlkIz/tvQLblOKXr1OusDmx/6EYb/rZASUq5/b+C2p0Ltio6y4gi8
-         0BbgltqDbDgRXw9TPZxgK9WcScj0gbWKTiUrC+9ASuSHMN0pXtTWEttWLezzgwsGM5
-         6kBu0VKZS9D7zCMgnzONffbOwAcUGVybKiyTisG0=
+        b=LIBPSuI0fjT+GSfv1/FHgc7s3fFDpwCJd25tvQKYsWpqobz/HiU5KXF2n0iDowQf2
+         QkI1PHj2zyG0ymObIRCYdszJK5DQ5a+so0CRYCJTNNhXuOeCKD2JzANhm1rbNYpMD1
+         0m3NmfPNyElvtbU9bRzpDgyGBU4PmcbP7fpz2yw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 178/300] ASoC: rt5682: Properly turn off regulators if wrong device ID
-Date:   Mon, 13 Sep 2021 15:13:59 +0200
-Message-Id: <20210913131115.406282797@linuxfoundation.org>
+Subject: [PATCH 5.13 179/300] usb: dwc3: meson-g12a: add IRQ check
+Date:   Mon, 13 Sep 2021 15:14:00 +0200
+Message-Id: <20210913131115.445726570@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -41,82 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 772d44526e203c062171786e514373f129616278 ]
+[ Upstream commit baa2986bda3f7b2386607587a4185e3dff8f98df ]
 
-When I booted up on a board that had a slightly different codec
-stuffed on it, I got this message at bootup:
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to devm_request_threaded_irq()
+(which takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding
+an original error code. Stop calling devm_request_threaded_irq() with the
+invalid IRQ #s.
 
-  rt5682 9-001a: Device with ID register 6749 is not rt5682
-
-That's normal/expected, but what wasn't normal was the splat that I
-got after:
-
-  WARNING: CPU: 7 PID: 176 at drivers/regulator/core.c:2151 _regulator_put+0x150/0x158
-  pc : _regulator_put+0x150/0x158
-  ...
-  Call trace:
-   _regulator_put+0x150/0x158
-   regulator_bulk_free+0x48/0x70
-   devm_regulator_bulk_release+0x20/0x2c
-   release_nodes+0x1cc/0x244
-   devres_release_all+0x44/0x60
-   really_probe+0x17c/0x378
-   ...
-
-This is because the error paths don't turn off the regulator. Let's
-fix that.
-
-Fixes: 0ddce71c21f0 ("ASoC: rt5682: add rt5682 codec driver")
-Fixes: 87b42abae99d ("ASoC: rt5682: Implement remove callback")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210811081751.v2.1.I4a1d9aa5d99e05aeee15c2768db600158d76cab8@changeid
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: f90db10779ad ("usb: dwc3: meson-g12a: Add support for IRQ based OTG switching")
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/96106462-5538-0b2f-f2ab-ee56e4853912@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682-i2c.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/usb/dwc3/dwc3-meson-g12a.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 4a56a52adab5..e559b965a0a6 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -117,6 +117,13 @@ static struct snd_soc_dai_driver rt5682_dai[] = {
- 	},
- };
+diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
+index ffe301d6ea35..d0f9b7c296b0 100644
+--- a/drivers/usb/dwc3/dwc3-meson-g12a.c
++++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
+@@ -598,6 +598,8 @@ static int dwc3_meson_g12a_otg_init(struct platform_device *pdev,
+ 				   USB_R5_ID_DIG_IRQ, 0);
  
-+static void rt5682_i2c_disable_regulators(void *data)
-+{
-+	struct rt5682_priv *rt5682 = data;
-+
-+	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
-+}
-+
- static int rt5682_i2c_probe(struct i2c_client *i2c,
- 		const struct i2c_device_id *id)
- {
-@@ -157,6 +164,11 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	ret = devm_add_action_or_reset(&i2c->dev, rt5682_i2c_disable_regulators,
-+				       rt5682);
-+	if (ret)
-+		return ret;
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(rt5682->supplies),
- 				    rt5682->supplies);
- 	if (ret) {
-@@ -285,7 +297,6 @@ static int rt5682_i2c_remove(struct i2c_client *client)
- 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
- 
- 	rt5682_i2c_shutdown(client);
--	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
- 
- 	return 0;
- }
+ 		irq = platform_get_irq(pdev, 0);
++		if (irq < 0)
++			return irq;
+ 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
+ 						dwc3_meson_g12a_irq_thread,
+ 						IRQF_ONESHOT, pdev->name, priv);
 -- 
 2.30.2
 
