@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F19D409A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72406409A9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345076AbhIMRZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:25:09 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:45859 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344302AbhIMRY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:24:59 -0400
-Received: by mail-oi1-f179.google.com with SMTP id j66so2935893oih.12;
-        Mon, 13 Sep 2021 10:23:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/iVxQRQB36TAj9OZg4tC/QuKQkIXEC+nRLpJKX9NbXo=;
-        b=lmZk2Cdc81A7efq7vCFF0oDXr45tfhZeAHzuCfXDw+v3KskXBfURVxyZ4rE3vtnKie
-         D3FjSkoceW3R9SQ7hsNDBQAXn+bUVGfGJKxta7i9OEW6bp9GS+CmVj4hPMtQ2IbOIl5V
-         kZOzkW9YQQH+c1lDY5MLwjTAzlqAW4XMqx16em7oWjyCvicu9gOH+jStmlyA+9skcsZW
-         Nn+6rFy+DE+VoJiHIWt8/tzgYeBjR/0Yp5KKNBdkVBpahYBBE42qNb5u0OWWkNl8qOMW
-         WT78j/IX3Dy/y1zng4YBtOXo/ogN/FXT/l87Kk2tbZCp7C5OZsqAnxv4So13PTNoQgGr
-         ln3Q==
-X-Gm-Message-State: AOAM532QRYlDLh9XsFUFgrQgZH8PpX04EymR46IpbbDb43uG2l8fJnPZ
-        +/iHS+XA9/mv/dZEhn92oMkbMbFIyu7AY94EuX8=
-X-Google-Smtp-Source: ABdhPJz+IKuBM90R/GwmNMgEM3fziO42XrK3F65t4bfmQqdcGBaLs65Qj4VhMezhc41dGAjaBOhrxIR5kbUhGo4bqHo=
-X-Received: by 2002:aca:afcd:: with SMTP id y196mr8629968oie.71.1631553823574;
- Mon, 13 Sep 2021 10:23:43 -0700 (PDT)
+        id S238265AbhIMR0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:26:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235123AbhIMR0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 13:26:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAE5560ED8;
+        Mon, 13 Sep 2021 17:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631553938;
+        bh=vRZtqSJKoBInU3ECzYfOutpLY0p8fHJj9qP1b5Quywg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Tm0K3R4jZV+b4GK94Vi/PQliu6YS5icQl7MaPkxARWHZ9FsbR0KR7tx9aUD0TcJs2
+         wBkSI9WifQ1j99+mMrfFGrhv1Fe6N1MtLpEI1foOGUVWySA5irmzA07I60r0ctZqis
+         wPYN0WLkzNw0/YSN/7DiU8iZpE9MfhgaqAxPC2P/gqnAZGkKsgezfFKUNFpEUwl5li
+         xHQY4DtsayGJTs5/FkVpjdXjwJmw2RtQWBwie19T5pAD9ize3KJZkZqXZ8TkrTohK7
+         F/jAEcaysBDOGR4nOQxoB8pWFRuxHBTTE8gLYYAOsk2DBQUri2wPlKJx65+DCXCUtq
+         /Su+qFG1pdwXQ==
+Subject: Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
+ drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
+ prototype for function 'firmware_is_builtin'
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+References: <202109101524.pjY4q0Dy-lkp@intel.com>
+ <YTv817Srt8hoySP5@bombadil.infradead.org> <YTwLw+frJLbntgCJ@archlinux-ax161>
+ <YT90vvVi7oYH0xpb@bombadil.infradead.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <993e03a8-b07c-a8d8-8c9f-75bfbab00f0e@kernel.org>
+Date:   Mon, 13 Sep 2021 10:25:35 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210908214146.8640-1-mario.limonciello@amd.com> <20210908214146.8640-2-mario.limonciello@amd.com>
-In-Reply-To: <20210908214146.8640-2-mario.limonciello@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 13 Sep 2021 19:23:32 +0200
-Message-ID: <CAJZ5v0gip6L0cDxUJq-LsG4khmS0QW=xs5jAQr+OY6i28XBnwg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] x86/acpi: Don't add CPUs that are not online capable
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YT90vvVi7oYH0xpb@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 11:41 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> A number of systems are showing "hotplug capable" CPUs when they
-> are not really hotpluggable.  This is because the MADT has extra
-> CPU entries to support different CPUs that may be inserted into
-> the socket with different numbers of cores.
->
-> Starting with ACPI 6.3 the spec has an Online Capable bit in the
-> MADT used to determine whether or not a CPU is hotplug capable
-> when the enabled bit is not set.
->
-> Link: https://uefi.org/htmlspecs/ACPI_Spec_6_4_html/05_ACPI_Software_Programming_Model/ACPI_Software_Programming_Model.html?#local-apic-flags
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+On 9/13/2021 8:56 AM, Luis Chamberlain wrote:
+> On Fri, Sep 10, 2021 at 06:52:03PM -0700, Nathan Chancellor wrote:
+>> On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
+>>> On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
+>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
+>>>> head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
+>>>> commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
+>>>> config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
+>>>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+>>>> reproduce (this is a W=1 build):
+>>>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>          chmod +x ~/bin/make.cross
+>>>>          # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
+>>>>          git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+>>>>          git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
+>>>>          git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
+>>>>          # save the attached .config to linux build tree
+>>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
+>>>>
+>>>> If you fix the issue, kindly add following tag as appropriate
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>
+>>>> All errors (new ones prefixed by >>):
+>>>>
+>>>>>> drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
+>>>>     bool firmware_is_builtin(const struct firmware *fw)
+>>>
+>>> This is a lie though its defined on drivers/base/firmware_loader/firmware.h
+>>
+>> Unless I am missing something, you don't include the firmware_loader
+>> copy of firmware.h in builtin/main.c (only the linux one)? Isn't that
+>> the source of the warning?
+> 
+> You would think, but nope, its there:
+> 
+> #include "firmware.h"
 
-I've added the patches in this series to my queue, but given what this
-one does, I think that it's a bit risky, because it exposes the kernel
-to a new category of possible platform firmware bugs.
+I see that in drivers/base/firmware_loader/main.c but the warning is 
+complaining about drivers/base/firmware_loader/builtin/main.c, where I 
+only see
 
-For this reason, I'd rather queue it up as 5.16 material (and of
-course x86 reviewer comments are welcome).
+#include <linux/firmware.h>
 
-> ---
->  arch/x86/kernel/acpi/boot.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> Changes from v1 -> v2:
->  * Make the change only apply on ACPI 6.3 or later
-> Changes from v2 -> v3:
->  * Make acpi_support_online_capable static and only valid if CONFIG_X86_LOCAL_APIC is defined
-> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-> index e55e0c1fad8c..d915f01b582b 100644
-> --- a/arch/x86/kernel/acpi/boot.c
-> +++ b/arch/x86/kernel/acpi/boot.c
-> @@ -62,6 +62,7 @@ int acpi_fix_pin2_polarity __initdata;
->
->  #ifdef CONFIG_X86_LOCAL_APIC
->  static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
-> +static bool acpi_support_online_capable;
->  #endif
->
->  #ifdef CONFIG_X86_IO_APIC
-> @@ -138,6 +139,8 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
->
->                 pr_debug("Local APIC address 0x%08x\n", madt->address);
->         }
-> +       if (madt->header.revision >= 5)
-> +               acpi_support_online_capable = true;
->
->         default_acpi_madt_oem_check(madt->header.oem_id,
->                                     madt->header.oem_table_id);
-> @@ -239,6 +242,12 @@ acpi_parse_lapic(union acpi_subtable_headers * header, const unsigned long end)
->         if (processor->id == 0xff)
->                 return 0;
->
-> +       /* don't register processors that can not be onlined */
-> +       if (acpi_support_online_capable &&
-> +           !(processor->lapic_flags & ACPI_MADT_ENABLED) &&
-> +           !(processor->lapic_flags & ACPI_MADT_ONLINE_CAPABLE))
-> +               return 0;
-> +
->         /*
->          * We need to register disabled CPU as well to permit
->          * counting disabled CPUs. This allows us to size
-> --
-> 2.25.1
->
+Sorry for the issues with reproducing. For what it's worth, I can 
+reproduce this locally and adding
+
+#include "../firmware.h"
+
+to drivers/base/firmware_loader/builtin/main.c fixes it for me.
+
+Cheers,
+Nathan
