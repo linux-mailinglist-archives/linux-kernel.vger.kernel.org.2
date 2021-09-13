@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAFF40933B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91773409611
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345424AbhIMOTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:19:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34432 "EHLO mail.kernel.org"
+        id S1346777AbhIMOrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345013AbhIMOOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E3C561AEC;
-        Mon, 13 Sep 2021 13:43:51 +0000 (UTC)
+        id S1347643AbhIMOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D848A613AD;
+        Mon, 13 Sep 2021 13:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540632;
-        bh=uP5Z2kM83u3mmtevshYVijNUOmNub+FJJZjwrtL5Kik=;
+        s=korg; t=1631541394;
+        bh=juVvDDcx7uKX4Wmg4I3lE4WfnfHtsvvq20vFOONIH5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xYN/xImPApKlgg2f4xSemfYyS1FYz3tzaUEN4eln7JWTHFcGxzVrEPLjgGOMt45+3
-         SAg4zJxqlMfjucxgRG5z80yzw3AwwoxYkTv2yO34LNFUEU3Dbg4PYAIQFVp+bhVsIl
-         sb2NOFZ2Ahf00D63IJ1b6beoDdzT0z4lUso9XP8c=
+        b=nhol+1gRPCU1tqSzQ4RP9L7CbirHfi7uU3rjA1w6o748tZcrUbXWr9EJ0gRQoAoH/
+         dfaaIjdnFqMaYUsnIEdHUX+MtHXKP0p9LHyhvGuNYzED26FeebKucF1eUTk0f4UrP1
+         h9MaRaiZru9eilr7ciJg7EqfMyfPeUrRYka3nhqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.13 265/300] iwlwifi Add support for ax201 in Samsung Galaxy Book Flex2 Alpha
-Date:   Mon, 13 Sep 2021 15:15:26 +0200
-Message-Id: <20210913131118.294477713@linuxfoundation.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 273/334] misc/pvpanic: fix set driver data
+Date:   Mon, 13 Sep 2021 15:15:27 +0200
+Message-Id: <20210913131122.650214174@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Justin M. Forbes <jforbes@fedoraproject.org>
+From: Mihai Carabas <mihai.carabas@oracle.com>
 
-commit 2f32c147a3816d789722c0bd242a9431332ec3ed upstream.
+[ Upstream commit a99009bc4f2f0b46e6c553704fda0b67e04395f5 ]
 
-The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
-This works fine with the existing driver once it knows to claim it.
-Simple patch to add the device.
+Add again dev_set_drvdata(), but this time in devm_pvpanic_probe(), in order
+for dev_get_drvdata() to not return NULL.
 
-Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210702223155.1981510-1-jforbes@fedoraproject.org
+Fixes: 394febc9d0a6 ("misc/pvpanic: Make 'pvpanic_probe()' resource managed")
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+Link: https://lore.kernel.org/r/1629385946-4584-2-git-send-email-mihai.carabas@oracle.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/pvpanic/pvpanic.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -556,6 +556,7 @@ static const struct iwl_dev_info iwl_dev
- 	IWL_DEV_INFO(0xA0F0, 0x1652, killer1650i_2ax_cfg_qu_b0_hr_b0, NULL),
- 	IWL_DEV_INFO(0xA0F0, 0x2074, iwl_ax201_cfg_qu_hr, NULL),
- 	IWL_DEV_INFO(0xA0F0, 0x4070, iwl_ax201_cfg_qu_hr, NULL),
-+	IWL_DEV_INFO(0xA0F0, 0x6074, iwl_ax201_cfg_qu_hr, NULL),
- 	IWL_DEV_INFO(0x02F0, 0x0070, iwl_ax201_cfg_quz_hr, NULL),
- 	IWL_DEV_INFO(0x02F0, 0x0074, iwl_ax201_cfg_quz_hr, NULL),
- 	IWL_DEV_INFO(0x02F0, 0x6074, iwl_ax201_cfg_quz_hr, NULL),
+diff --git a/drivers/misc/pvpanic/pvpanic.c b/drivers/misc/pvpanic/pvpanic.c
+index 02b807c788c9..bb7aa6368538 100644
+--- a/drivers/misc/pvpanic/pvpanic.c
++++ b/drivers/misc/pvpanic/pvpanic.c
+@@ -85,6 +85,8 @@ int devm_pvpanic_probe(struct device *dev, struct pvpanic_instance *pi)
+ 	list_add(&pi->list, &pvpanic_list);
+ 	spin_unlock(&pvpanic_lock);
+ 
++	dev_set_drvdata(dev, pi);
++
+ 	return devm_add_action_or_reset(dev, pvpanic_remove, pi);
+ }
+ EXPORT_SYMBOL_GPL(devm_pvpanic_probe);
+-- 
+2.30.2
+
 
 
