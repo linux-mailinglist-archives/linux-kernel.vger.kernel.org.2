@@ -2,200 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BF4085D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BD84085E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237942AbhIMHzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:55:15 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:33486 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237775AbhIMHzG (ORCPT
+        id S237925AbhIMHzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:55:45 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:41885 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237748AbhIMHzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:55:06 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18D7VMmL004726;
-        Mon, 13 Sep 2021 15:31:22 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 13 Sep
- 2021 15:51:07 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v6 11/11] iio: adc: aspeed: Get and set trimming data.
-Date:   Mon, 13 Sep 2021 15:53:37 +0800
-Message-ID: <20210913075337.19991-12-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210913075337.19991-1-billy_tsai@aspeedtech.com>
-References: <20210913075337.19991-1-billy_tsai@aspeedtech.com>
+        Mon, 13 Sep 2021 03:55:37 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BCC0E580B19;
+        Mon, 13 Sep 2021 03:54:21 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 13 Sep 2021 03:54:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=H8iC8iHH15qxrWE5p36hpaSNhVm
+        Drj/cFBvDF2mQy2E=; b=UCfz2XtPhqhQXdFg6bLxKSpWTWtfkqIOg2guL+fXvKA
+        Wcj8/ouyHsRZ2ZHZXxWkf5xBKf6EX71bJkf/399vs4ctj0s/vD6p8TP8Zo9cKfMb
+        f8nQ9kMWaVKfaR2dBzFZQ77Yz7VSXQ59S5mqjLEslbHo9VllCnLshbv+ynNle7gU
+        5lI7nAKGcFk3gYj1IAVs+bOBKjuFm+UdM/9NrwmlLSggIMQY85+wvmsyvY99uujL
+        OVIg0EZjOko0OZthW8+bfP2kHkKZhMfGEfpJmIn38C4ntfryqB/xb99J0v8ENOyL
+        6x9/xDWbxYkqOf/PkLeTqtT1WFyZTDkCeWL/a2wE6ng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=H8iC8i
+        HH15qxrWE5p36hpaSNhVmDrj/cFBvDF2mQy2E=; b=nELtx7Ev2gebBVUNhEEN+m
+        Cf5eZIoXUV3lQ+EMzuH94Xo8HlKTUEf1mYwKaoooBH0CPzaUvEygsKgbnTAA2Tme
+        I9lKc6uP7dQOawMGp6kE0RZ5RofgBbeVyUva8j+3HAyqZxSfx1qui0km3xyxOhct
+        qgstkYSYWcQNiJFcNX8Af4EGFVrcmteFwJLud30Qn54AJw1StUl2fLymPUpyq4q/
+        TFMqaoDjUWjTQG9WgS+a7+09XD+LmaRU460/QhcXrExjRmg6G9rXlVi08urHV47x
+        Cd+zIvrQYIEeja0zJAQ3lQzjdyTwvMKd3wS8QTCqjB4Wl1wF5EKGfQecfo8k2Kdg
+        ==
+X-ME-Sender: <xms:qwM_YSb2_yyHGTFILvfkS5qEZ5gNxUFrH039nCy2LqcC94W4CjxBGw>
+    <xme:qwM_YVYOIEfRBp5oXNHGQD5K7RT7jlhmJGRxrsEzWk_M2lEsx-G-Ja-8Ahq6pjfYx
+    43GcNOII36jP8RTXkM>
+X-ME-Received: <xmr:qwM_Yc-2L9iHoeRfv2AuUXDhCod8wYzL8UCI77i4J9LNVbs1yCzQlKwig1sstlUeehRMupesSZjpxl8y44EDuyA5qbelzGeO7LzY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegiedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:qwM_YUo8RjhvzG1itXj-wb4NbexHe3mO6PZO9nrUu3St7r4v1NPFKQ>
+    <xmx:qwM_YdrrjQxCRyoocyi3XVLb1LVaZ8rWke5r3pYhH0dXc59CODjplA>
+    <xmx:qwM_YSTkMdTh6OyqL4MyRtkEwblNxGRqtOrTll-QHrlCFe96Qgvg8w>
+    <xmx:rQM_YSiHQeCrBXAszl-g_7wRnf5eToxq8Xy16SfZF1xTIf-eFYQsJA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 Sep 2021 03:54:18 -0400 (EDT)
+Date:   Mon, 13 Sep 2021 09:54:17 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
+        Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 01/22] clk: sunxi-ng: v3s: Make the ISP PLL clock public
+Message-ID: <20210913075417.ampb2jt4quftpqzj@gilmour>
+References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
+ <20210910184147.336618-2-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18D7VMmL004726
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3eyvvraksbaukjuq"
+Content-Disposition: inline
+In-Reply-To: <20210910184147.336618-2-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ADC controller has a trimming register for fine-tune the reference
-voltage. The trimming value comes from the OTP register which will be
-written during chip production. This patch will read this OTP value and
-configure it to the ADC register when the ADC controller probes and using
-dts property "aspeed,trim-data-valid" to determine whether to execute this
-flow.
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 71 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+--3eyvvraksbaukjuq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index c4112284fe07..d4d8ac07d40d 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -25,6 +25,8 @@
- #include <linux/spinlock.h>
- #include <linux/types.h>
- #include <linux/bitfield.h>
-+#include <linux/regmap.h>
-+#include <linux/mfd/syscon.h>
- 
- #include <linux/iio/iio.h>
- #include <linux/iio/driver.h>
-@@ -80,6 +82,11 @@
-  */
- #define ASPEED_ADC_DEF_SAMPLING_RATE	65000
- 
-+struct aspeed_adc_trim_locate {
-+	const unsigned int offset;
-+	const unsigned int field;
-+};
-+
- struct aspeed_adc_model_data {
- 	const char *model_name;
- 	unsigned int min_sampling_rate;	// Hz
-@@ -90,6 +97,7 @@ struct aspeed_adc_model_data {
- 	bool bat_sense_sup;
- 	u8 scaler_bit_width;
- 	unsigned int num_channels;
-+	const struct aspeed_adc_trim_locate *trim_locate;
- };
- 
- struct adc_gain {
-@@ -165,6 +173,44 @@ static const struct iio_chan_spec aspeed_adc_iio_bat_channels[] = {
- 	ASPEED_BAT_CHAN(7, 0x1E),
- };
- 
-+static int aspeed_adc_set_trim_data(struct iio_dev *indio_dev)
-+{
-+	struct device_node *syscon;
-+	struct regmap *scu;
-+	u32 scu_otp, trimming_val;
-+	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+
-+	syscon = of_find_node_by_name(NULL, "syscon");
-+	if (syscon == NULL) {
-+		dev_warn(data->dev, "Couldn't find syscon node\n");
-+		return -EOPNOTSUPP;
-+	}
-+	scu = syscon_node_to_regmap(syscon);
-+	if (IS_ERR(scu)) {
-+		dev_warn(data->dev, "Failed to get syscon regmap\n");
-+		return -EOPNOTSUPP;
-+	}
-+	if (data->model_data->trim_locate) {
-+		if (regmap_read(scu, data->model_data->trim_locate->offset,
-+				&scu_otp)) {
-+			dev_warn(data->dev,
-+				 "Failed to get adc trimming data\n");
-+			trimming_val = 0x8;
-+		} else {
-+			trimming_val =
-+				((scu_otp) &
-+				 (data->model_data->trim_locate->field)) >>
-+				__ffs(data->model_data->trim_locate->field);
-+		}
-+		dev_dbg(data->dev,
-+			"trimming val = %d, offset = %08x, fields = %08x\n",
-+			trimming_val, data->model_data->trim_locate->offset,
-+			data->model_data->trim_locate->field);
-+		writel(trimming_val, data->base + ASPEED_REG_COMPENSATION_TRIM);
-+	}
-+	return 0;
-+}
-+
- static int aspeed_adc_compensation(struct iio_dev *indio_dev)
- {
- 	struct aspeed_adc_data *data = iio_priv(indio_dev);
-@@ -514,6 +560,13 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	if (of_find_property(data->dev->of_node, "aspeed,trim-data-valid",
-+			     NULL)) {
-+		ret = aspeed_adc_set_trim_data(indio_dev);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (of_find_property(data->dev->of_node, "aspeed,battery-sensing",
- 			     NULL)) {
- 		if (data->model_data->bat_sense_sup) {
-@@ -590,6 +643,21 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static const struct aspeed_adc_trim_locate ast2500_adc_trim = {
-+	.offset = 0x154,
-+	.field = GENMASK(31, 28),
-+};
-+
-+static const struct aspeed_adc_trim_locate ast2600_adc0_trim = {
-+	.offset = 0x5d0,
-+	.field = GENMASK(3, 0),
-+};
-+
-+static const struct aspeed_adc_trim_locate ast2600_adc1_trim = {
-+	.offset = 0x5d0,
-+	.field = GENMASK(7, 4),
-+};
-+
- static const struct aspeed_adc_model_data ast2400_model_data = {
- 	.model_name = "ast2400-adc",
- 	.vref_fixed_mv = 2500,
-@@ -609,6 +677,7 @@ static const struct aspeed_adc_model_data ast2500_model_data = {
- 	.need_prescaler = true,
- 	.scaler_bit_width = 10,
- 	.num_channels = 16,
-+	.trim_locate = &ast2500_adc_trim,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
-@@ -619,6 +688,7 @@ static const struct aspeed_adc_model_data ast2600_adc0_model_data = {
- 	.bat_sense_sup = true,
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
-+	.trim_locate = &ast2600_adc0_trim,
- };
- 
- static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
-@@ -629,6 +699,7 @@ static const struct aspeed_adc_model_data ast2600_adc1_model_data = {
- 	.bat_sense_sup = true,
- 	.scaler_bit_width = 16,
- 	.num_channels = 8,
-+	.trim_locate = &ast2600_adc1_trim,
- };
- 
- static const struct of_device_id aspeed_adc_matches[] = {
--- 
-2.25.1
+On Fri, Sep 10, 2021 at 08:41:26PM +0200, Paul Kocialkowski wrote:
+> In order to reparent the CSI module clock to the ISP PLL via
+> device-tree, export the ISP PLL clock declaration in the public
+> device-tree header.
 
+You use clk_set_rate_exclusive in the ISP driver on the module clock so
+it should prevent what you're mentioning from happening.
+
+If it doesn't, then clk_set_rate_exclusive has a bug and should be
+fixed.
+
+Either way, using assigned-clock-parents is not a good solution here
+either, it only makes sure that this is the case when probe is run.
+
+> Details regarding why the CSI module clock is best parented to the ISP
+> PLL are provided in the related commit.
+
+This is relevant to this commit too and "the related commit" is far too
+blurry when you consider the entire Linux git history.
+
+Maxime
+
+--3eyvvraksbaukjuq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYT8DqQAKCRDj7w1vZxhR
+xTZvAQCBM99MGd6qVMOuUH5pAUXkNRCjmqWYffeGxv1bEMviLgEA9/VMtVKq1DGw
+cYRuC53YO5a08nIT5L/y26XC1yd/CAg=
+=3hm0
+-----END PGP SIGNATURE-----
+
+--3eyvvraksbaukjuq--
