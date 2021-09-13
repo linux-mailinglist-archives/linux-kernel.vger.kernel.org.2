@@ -2,172 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01BE40864A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B80408655
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237921AbhIMISa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:18:30 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:59111 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237874AbhIMIS1 (ORCPT
+        id S237964AbhIMITm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:19:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41282 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237966AbhIMITk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:18:27 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9631F580B75;
-        Mon, 13 Sep 2021 04:17:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 13 Sep 2021 04:17:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=LfsxPMaIAkjFAolr1YO0jdkBTkA
-        SxQKSZB3Inh4PV88=; b=Iw769SMlc9Hc8sWUZevD469xuhrgj74nKPZttihMbEE
-        DWemQ6Sl61z/n/MkQc0cyP5Vug1e+vdTkMtqM5L+M7wrgFLG34LHldBknuiRsvUo
-        edjf++/223EowstTkqYw4YcVxNog99wYqkJ8iY721wWpyRyrB78BFaulrYvSrAv4
-        zaKaGlRcDUSRx4MABs88OB2n+lDoG+DY/93QA69KG05W033W9hBK15IjSeU362pl
-        TWd+XdGDlBQuwqCAJU90SWJFtdcpnTzL5eDPkaDaKPHP9t95hsZsj52XJS7JPTkl
-        rJ90FRv0sCFRrVJe1cddLFHtx2rFX4CJcExcPqt5IWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LfsxPM
-        aIAkjFAolr1YO0jdkBTkASxQKSZB3Inh4PV88=; b=rmALdPeLVpMm48citIobyL
-        GhLS5q1khENgaWJRSOCdlbf7H3sys/oIe+h7iQkgfC8nmzeXrXG+F+mtPelrYJ5C
-        4xJyuVya+jeHrn/qNk8N9Zs8vs7Frd7DOLoLVODtPy78dLPxk5FxsTASxYXXBOBr
-        WJhRG8eVoJSBtp+DIAoRasfgjVC4bP8cFmdq4M61zE3TyygNhAdBhFHzzerZV2hf
-        rI9KoIb0AAyRJMGRBPZNf48kuV/4yScosDHQUpB5ZDjBo16Uj4RmyAipBFtC3GZN
-        gjYagHNlU2BrRg4XcPobh2yy1YX6RQWDU9GFWbnMkWZAt+VTxTnX4LVXAxviuIqg
-        ==
-X-ME-Sender: <xms:Bgk_YZxEnE51tbpKR02-UxcV3nk9DSfqKmQKFNrzI8YRQFCOTknShg>
-    <xme:Bgk_YZR6862h2-LcguWk5d269tvbhSf1PDKdj1xQH5-eBqAkE3yjO2D92x8LR3DyK
-    hCnP8sIQLR4jpDQTPM>
-X-ME-Received: <xmr:Bgk_YTWBnCCcCo06JmQaZYbv7_uj8FVafVbRIRoe12aMrJwhOP4aI6Kv4EJAVF9qOrPt_NvWQ56LTnQuE8s1P-oS4eYaM716EX91>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Bgk_YbgNeNbE305-RHthxhkztMo3uE0hjoXmUYAG5IgDDHoa3qroRw>
-    <xmx:Bgk_YbDrVJ8JhP2UsMTMve9suyFU77vne8j2bBlbbeLdXD7xWdCfJQ>
-    <xmx:Bgk_YUIWD4oc2vTdbLVzgxxdH1VOCo-RuybpFjH6ZhjRwEHnuCbw1g>
-    <xmx:Bwk_YT69NjFV11iZiB_RLJOO932JsLg98NeC2fmzzM1W2Op9Kt55Nw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Sep 2021 04:17:09 -0400 (EDT)
-Date:   Mon, 13 Sep 2021 10:17:07 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
-        Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 15/22] media: sunxi: Remove the sun6i-csi driver
- implementation
-Message-ID: <20210913081707.3pjcfuwan46pbdep@gilmour>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-16-paul.kocialkowski@bootlin.com>
+        Mon, 13 Sep 2021 04:19:40 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18D7H3eH032230;
+        Mon, 13 Sep 2021 04:17:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/QzFF3fZPcOazDgK94YUNtDPRVXwWmwYXrgzAl0cjS8=;
+ b=LZ1IatJS4Vf8fkMOpw3nPsnMsWvXi1zKOHNtdoJR3WA1JOBt6akxtAUeaFcmfSrgtfzv
+ 4NRm+1ZMgBCrY9RGl4dUX70gpcEuR/zoFChDQB/2NaF/00szr5Oq+z1uBI4QDWhfD6zc
+ P4rPwNr4fozCqJ0RGb+LWgtoO6TFVqtlItWyJVzIn+2xzExDULNQ2sA1K5ofpZpOPT8T
+ 41lEG9BrbDHup3b+CuJPl0uLd2nP2dTMKAS/okY1PdF2CEfrb2UeKEaug1ngWcpv8R0f
+ l5A1Tv0GjOGn+bmD16W5XhxbS2fbbACIEnfaoLzXVgrhfKN3kKq+UCiD6E2iiWjFNGh3 QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b19j7cd6k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 04:17:57 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18D7xD27005324;
+        Mon, 13 Sep 2021 04:17:56 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b19j7cd5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 04:17:56 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18D8DW0J022837;
+        Mon, 13 Sep 2021 08:17:53 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3b0kqj52da-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 08:17:53 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18D8HnQ554067622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Sep 2021 08:17:49 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75FA24C091;
+        Mon, 13 Sep 2021 08:17:49 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7AD8A4C0A0;
+        Mon, 13 Sep 2021 08:17:48 +0000 (GMT)
+Received: from [9.145.51.25] (unknown [9.145.51.25])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Sep 2021 08:17:48 +0000 (GMT)
+Subject: Re: [PATCH 6/9] s390/block/dasd_genhd: add error handling support for
+ add_disk()
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+        atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+        oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+        shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-7-mcgrof@kernel.org>
+From:   =?UTF-8?Q?Jan_H=c3=b6ppner?= <hoeppner@linux.ibm.com>
+Message-ID: <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
+Date:   Mon, 13 Sep 2021 10:17:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qx7qqsz6t7rnfx4y"
-Content-Disposition: inline
-In-Reply-To: <20210910184147.336618-16-paul.kocialkowski@bootlin.com>
+In-Reply-To: <20210902174105.2418771-7-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iIf5PatQK3tLGbkyIENHhS0UWFy_EX4T
+X-Proofpoint-GUID: iNtwPwv-S4pcIL1NuHAo4zaBrJP6dp5o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109120024
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/09/2021 19:41, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/s390/block/dasd_genhd.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_genhd.c
+> index fa966e0db6ca..ba07022283bc 100644
+> --- a/drivers/s390/block/dasd_genhd.c
+> +++ b/drivers/s390/block/dasd_genhd.c
+> @@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
+>  {
+>  	struct gendisk *gdp;
+>  	struct dasd_device *base;
+> -	int len;
+> +	int len, rc;
+>  
+>  	/* Make sure the minor for this device exists. */
+>  	base = block->base;
+> @@ -79,7 +79,11 @@ int dasd_gendisk_alloc(struct dasd_block *block)
+>  	dasd_add_link_to_gendisk(gdp, base);
+>  	block->gdp = gdp;
+>  	set_capacity(block->gdp, 0);
+> -	device_add_disk(&base->cdev->dev, block->gdp, NULL);
+> +
+> +	rc = device_add_disk(&base->cdev->dev, block->gdp, NULL);
+> +	if (rc)
+> +		return rc;
+> +
 
---qx7qqsz6t7rnfx4y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think, just like with some of the other changes, there is some
+cleanup required before returning. I'll prepare a patch and
+come back to you.
 
-On Fri, Sep 10, 2021 at 08:41:40PM +0200, Paul Kocialkowski wrote:
-> As described in the commit adding support for the new sun6i-csi driver,
-> a complete rewrite was necessary to support the Allwinner A31 ISP as
-> well as fix a number of issues with the current implementation.
->=20
-> Farewell and thanks for all the pixels!
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+>  	return 0;
+>  }
+>  
+> 
 
-For completeness, this is what the other commit log mentions:
-
-> While adapting the sun6i-csi driver for MIPI CSI-2 support was
-> possible, it became clear that adding support for the ISP required
-> very heavy changes to the driver which were quite hard to break down
-> into a series of subsequent changes.
-
-> The first major difficulty comes from the lack of v4l2 subdev that
-> acts a bridge, separate from the video node representing the DMA
-> engine. To support the ISP, only parts of the hardware must be
-> configured (excluding aspects related to the DMA output), which made
-> the separation a hard requirement.
-
-> Another significant difficulty was the specific dance that is required
-> to have both the ISP and CSI device be part of the same media device.
-> Because the ISP and CSI are two different hardware blocks, they have
-> two distinct drivers that will each try to register their own v4l2
-> and media devices, resulting in two distinct pipelines. When the ISP
-> is in use, we actually want the CSI driver to register with the ISP's
-> v4l2 and media devices while keeping the ability to register its own
-> when the ISP is not in use. This is done by:
-> 1. Having the CSI driver check whether the ISP is available, using
->    sun6i_csi_isp_detect();
-> 2. If not, it can register when its own async subdevs are ready, using
->    sun6i_csi_v4l2_complete();
-> 3. If so, it will register its bridge as an async subdev which will
->    be picked-up by the ISP driver (from the fwnode graph link);
-> 4. When the subdev becomes bound to the ISP's v4l2 device, we can
->    then access that device (and the associated media device) to
->    complete registration of the capture video node, using
->    sun6i_csi_isp_complete();
-> Besides the logic rework, other issues were identified and resolved:
-> - The sync mechanism for buffer flipping was based on the frame done
->   interrupt, which is too late (next frame is already being processed).
->   This lead to requiring 3 buffers to start and writing two addresses
->   when starting. Using vsync as a sync point seems to be the correct
->   approach and allows using only two buffers without tearing;
-> - Using devm_regmap_init_mmio_clk was incorrect since the reset also
->   comes into play;
-> - Some register definitions were inverted compared to their actual
->   effect (which was inherited from the Allwinner documentation and
->   code): comments were added where relevant;
-> - The deprecated v4l2_async_notifier_parse_fwnode_endpoints() helper
->   is no longer used by the driver;
-
-With that being said, NAK.
-
-Having heavy changes to a driver is completely fine, and is kind of
-expected really with such a big change. Breaking all possibility of
-bisection and throwing away years of stabilization and maintenance
-isn't.
-
-And all those small bug fixes you mention at the end are just that:
-small bug fixes that can be done on the current driver just fine too.
-
-Maxime
-
---qx7qqsz6t7rnfx4y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYT8JAwAKCRDj7w1vZxhR
-xW80AQCzT1oqLXHmMJV4J378rDLxly3+QLuNLMF+HS7LpVSZ5AEAxuTn0WIx3q7k
-rXKUJwy3GnQot8aoogsuY7kqOfSWQQk=
-=Gphx
------END PGP SIGNATURE-----
-
---qx7qqsz6t7rnfx4y--
