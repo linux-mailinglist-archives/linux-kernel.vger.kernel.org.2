@@ -2,110 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6948D409B38
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D0E409B3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238632AbhIMRv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239261AbhIMRvv (ORCPT
+        id S239289AbhIMRyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:54:19 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57600 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231684AbhIMRyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:51:51 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377D3C061574;
-        Mon, 13 Sep 2021 10:50:35 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so32184pjw.2;
-        Mon, 13 Sep 2021 10:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GXuhVb2mAgwRJ4d5JAgKMNDM1IDwp61QdPvAadqK8Do=;
-        b=YxPJcxJPOqB7IuMrPYi3hee6d8psUNevLnc8b5zSKyMPh/QH6j6uM1pwEEHFl2bH0c
-         4Nt+YQwlZBISDoy0cC8Qaa8FgTFtqbs1ajc9BgSCwutdtly6qzs4NuYa6VufizF78Jx+
-         J7cBmNXde423BBLs6dYRM9oA6vtq8eWLkfj7AiFjxZuQYjU2eDEG5YEm2RlmSUdu1edt
-         o+NzGdJcVK28vrqlyvtQtFVrTYD8c9XaNK9UZj59Ky+ms6qH9J3taiiJUBXhtGVn5lh6
-         qeSszGBEFIqWgxJah0ZN2BrQ9bNwSnWCgwLq4Dk/eup0bNu8nTAGHPS8QPLtIA28LkA8
-         1OIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=GXuhVb2mAgwRJ4d5JAgKMNDM1IDwp61QdPvAadqK8Do=;
-        b=5eWlnj0AJ8i9ia/fOKAPgf7grg1ANwrXs7v13o4aH28TGGQWb1aAL1AeRpEnTnZSQo
-         3zDoWWUDPMCvcPTw4nm91WOB0VXdx+P72WONGCAlYe/h/9ONIs3n9p+EaXkEibjjEmLy
-         fRYTrCMP/LuSlaqqMCUIolMkiPhmJuV3BlVcwVfdzVh6oUVgvrSmpJ5M6GKazEBSLHMy
-         a5SdEa9aNqEahlR43JjT3KbknOh8xqT4cHi7/hS4oEgwuC7U25sTKQL2o6hFctLx1snj
-         0UXI8LduSlyF7LTKjdMxAI7sbu69X2/WeXpgOxrfEl4ffakp4oh3RGmTj3Bm6c7F4Ix1
-         cJEw==
-X-Gm-Message-State: AOAM533RBKMsVDpFlE2alRfzIpqN7APhWIKgzmxJRprIL+TGpMWKt/HE
-        Svpz68cK4hEO1O5++IXbIbw=
-X-Google-Smtp-Source: ABdhPJxDaLvyFuEV0RRw9hCw8Y9Gd90fUgrgsbS3tY2e6TLX6/LRlFgi910RMbQO5E1jaC5MbrLr6g==
-X-Received: by 2002:a17:903:1207:b0:138:e2f9:6c98 with SMTP id l7-20020a170903120700b00138e2f96c98mr11782268plh.11.1631555434543;
-        Mon, 13 Sep 2021 10:50:34 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id e11sm1772938pfv.201.2021.09.13.10.50.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 10:50:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 07:50:32 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Li Jinlin <lijinlin3@huawei.com>
-Cc:     paolo.valente@linaro.org, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linfeilong@huawei.com, louhongxiang@huawei.com
-Subject: Re: [PATCH v2] block, bfq: fix UAF in bfq_io_set_weight_legacy()
-Message-ID: <YT+PaFSxfcJAgTs7@slm.duckdns.org>
-References: <20210910034642.2838054-1-lijinlin3@huawei.com>
+        Mon, 13 Sep 2021 13:54:17 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 74EAD1F42CE5
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel@collabora.com, krisman@collabora.com,
+        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
+        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH v3 0/6] futex2: Add wait on multiple futexes syscall
+Date:   Mon, 13 Sep 2021 14:52:43 -0300
+Message-Id: <20210913175249.81074-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910034642.2838054-1-lijinlin3@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-On Fri, Sep 10, 2021 at 11:46:42AM +0800, Li Jinlin wrote:
-> Freeing bfqg is protected by queue lock in blkcg_deactivate_policy(), 
-> but getting/using bfqg is protected by blkcg lock in
-> bfq_io_set_weight_legacy(). If bfq_io_set_weight_legacy() get bfqg
-> before freeing bfqg and use bfqg in the after, the use-after-free
-> will occur.
-> 
-> CPU0                             CPU1
-> blkcg_deactivate_policy
->   spin_lock_irq(&q->queue_lock)
->                                  bfq_io_set_weight_legacy  
->                                    spin_lock_irq(&blkcg->lock)
->                                    blkg_to_bfqg(blkg)
->                                      pd_to_bfqg(blkg->pd[pol->plid])
->                                      ^^^^^^blkg->pd[pol->plid] != NULL
->                                            bfqg != NULL
->   pol->pd_free_fn(blkg->pd[pol->plid])
->     pd_to_bfqg(blkg->pd[pol->plid])
->     bfqg_put(bfqg)
->       kfree(bfqg)
->   blkg->pd[pol->plid] = NULL
->   spin_unlock_irq(q->queue_lock);
->                                    bfq_group_set_weight(bfqg, val, 0)
->                                      bfqg->entity.new_weight
->                                      ^^^^^^trigger uaf here 
->                                    spin_unlock_irq(&blkcg->lock);
-> 
-> To fix this use-after-free, instead of holding blkcg->lock while
-> walking ->blkg_list and getting/using bfqg, RCU walk ->blkg_list and
-> hold the blkg's queue lock while getting/using bfqg.
+This patchset introduce the futex_waitv syscall. It reuses as much as
+possible of original futex code for the new operation, so the first
+commit move some stuff to futex header to make accessible for futex2.
 
-I think this is a bug in blkcg_deactivate_policy() than the other way
-around. blkgs are protected by both q and blkcg locks and holding either
-should stabilize them. The blkcg lock nests inside q lock, so I think
-blkcg_deactivate_policy() just needs to grab the matching blkcg lock before
-trying to destroy blkgs.
+* Use case
 
-Thanks.
+The use case of this syscall is to allow low level locking libraries to
+wait for multiple locks at the same time. This is specially useful for
+emulating Windows' WaitForMultipleObjects. A futex_waitv()-based solution
+has been used for some time at Proton's Wine (a compatibility layer to
+run Windows games on Linux). Compared to a solution that uses eventfd(),
+futex was able to reduce CPU utilization for games, and even increase
+frames per second for some games. This happens because eventfd doesn't
+scale very well for a huge number of read, write and poll calls compared
+to futex. Native game engines will benefit of this as well, given that
+this wait pattern is common for games.
+
+* The interface
+
+This is how the interface looks like:
+
+  futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
+              unsigned int flags, struct timespec *timo)
+
+  struct futex_waitv {
+          __u64 val;
+          __u64 uaddr;
+          __u32 flags;
+          __u32 __reserved;
+  };
+
+struct futex_waitv uses explicit padding, so we can use it in all
+architectures. The __reserved is used for the padding and should always
+be 0, but it may be repurposed in the future for some extension. If
+userspace has 32-bit pointers, it should do a explicit cast to make sure
+the upper bits are zeroed. uintptr_t does the tricky and it works for
+32/64-bit pointers.
+
+* Why u64?
+
+Although futex() supports only 32-bit long integers, while researching
+about feedback around a new futex interface, developers made some points
+for variable size support:
+
+- At Boost Libraries, futex is used as back end to implement atomic
+primitives for some architectures. It works fine for 32-bit futexes, but
+for other sizes it "must use an internal lock pool to implement waiting
+and notifying operations, which increases thread contention. For
+inter-process atomics, this means that waiting must be done using a spin
+loop, which is terribly inefficient."[1]
+
+- glibc’s rwlock implementation "uses a torn 32-bit futex read which is
+part of an atomically updated 64-bit word".[2]
+
+- Peter Oskolkov[3] pointed out that for 64-bit platforms it would be
+useful to do atomic operations in pointer values: "imagine a simple
+producer/consumer scenario, with the producer updating some shared
+memory data and waking the consumer. Storing the pointer in the futex
+makes it so that only one shared memory location needs to be accessed
+atomically".
+
+- The original proposal[4] to support 8-bit and 16-bit futexes had some
+use cases as well: "Having mutexes that are only one byte in size was
+the first reason WebKit mentioned for re-implementing futexes in a
+library" and "The C++ standard added futexes to the standard library in
+C++20 under the name atomic_wait and atomic_notify. The C++20 version
+supports this for atomic variables of any size. The more sizes we can
+support, the better the implementation can be in the standard library."
+
+ Testing
+
+Through Proton, I've tested futex_waitv() with modern games that issue
+more than 40k futex calls per second. Selftest are provided as part of this
+patchset. However, those selftests aren't really reliable in 32-bit
+platforms giving that glibc doesn't expose a way to have a 64-bit timespec 
+gettime(). In the past I implemented a gettime64() by myself as part of
+the selftest, but I'm not sure if this the best approach:
+https://lore.kernel.org/lkml/20210805190405.59110-4-andrealmeid@collabora.com/
+
+ Changelog
+
+Changes from v2:
+v2: https://lore.kernel.org/lkml/20210904231159.13292-1-andrealmeid@collabora.com/
+- Last version, I made compat and non-compat use the same code, but
+failed to remove the compat entry point. This is fixed now.
+- Add ARM support
+
+Changes from v1:
+v1: https://lore.kernel.org/lkml/20210805190405.59110-1-andrealmeid@collabora.com/
+- Tons of code and comment improvements and fixes (thanks Thomas!)
+- Changed the struct to have explicit padding (thanks Arnd!)
+- Created a kernel/futex.h
+- Splitted syscall table changes from the implementation
+- Compat and non-compat entry point now uses the same code and same
+  struct
+- Added test for timeout
+
+More info about futex2: https://lore.kernel.org/lkml/20210709001328.329716-1-andrealmeid@collabora.com/
+
+[1] https://lists.boost.org/Archives/boost/2021/05/251508.php
+
+[2]
+https://lore.kernel.org/lkml/20210603195924.361327-1-andrealmeid@collabora.com/T/#m37bfbbd6ac76c121941defd1daea774389552674
+
+[3]
+https://lore.kernel.org/lkml/CAFTs51XAr2b3DmcSM4=qeU5cNuh0mTxUbhG66U6bc63YYzkzYA@mail.gmail.com/
+
+[4]
+https://lore.kernel.org/lkml/20191204235238.10764-1-malteskarupke@web.de/
+
+André Almeida (6):
+  futex: Prepare for futex_wait_multiple()
+  futex2: Implement vectorized wait
+  futex2: wire up syscall for x86
+  futex2: wire up syscall for ARM
+  selftests: futex2: Add waitv test
+  selftests: futex2: Test futex_waitv timeout
+
+ MAINTAINERS                                   |   3 +-
+ arch/arm/tools/syscall.tbl                    |   1 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   2 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ include/linux/syscalls.h                      |   6 +
+ include/uapi/asm-generic/unistd.h             |   5 +-
+ include/uapi/linux/futex.h                    |  25 ++
+ init/Kconfig                                  |   7 +
+ kernel/Makefile                               |   1 +
+ kernel/futex.c                                | 335 +++++++++++-------
+ kernel/futex.h                                | 155 ++++++++
+ kernel/futex2.c                               | 117 ++++++
+ kernel/sys_ni.c                               |   3 +
+ .../selftests/futex/functional/.gitignore     |   1 +
+ .../selftests/futex/functional/Makefile       |   3 +-
+ .../futex/functional/futex_wait_timeout.c     |  21 +-
+ .../selftests/futex/functional/futex_waitv.c  | 158 +++++++++
+ .../testing/selftests/futex/functional/run.sh |   3 +
+ .../selftests/futex/include/futex2test.h      |  31 ++
+ 21 files changed, 744 insertions(+), 137 deletions(-)
+ create mode 100644 kernel/futex.h
+ create mode 100644 kernel/futex2.c
+ create mode 100644 tools/testing/selftests/futex/functional/futex_waitv.c
+ create mode 100644 tools/testing/selftests/futex/include/futex2test.h
 
 -- 
-tejun
+2.33.0
+
