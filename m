@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC640880E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B9B408815
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238492AbhIMJXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238367AbhIMJXC (ORCPT
+        id S238613AbhIMJYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:24:15 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:39783 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238504AbhIMJXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:23:02 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB96BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:21:46 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id g1so8208777lfj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O8RhwD434zCMehEmpGCUUM/Q3Qv+zqePWNa7zAHg+/Y=;
-        b=l4NKr4PVhAEJ/wIbdb4Vm9pEOqPqc5B2ZA6XLZfLfnLeRKPr7jIY/2IIiym3p/6YzR
-         r1UGxuo3J3mvrvy1q8IoPWWgzU6QtVQ4WjLfEPW8KS73KbmXDtFii7gMMhksyQ53zRg6
-         MVMIi5CZy/Tn0fxSjSlcVs119nNDZ3t56UUwJTgz7yhQEjkr18i+mn2vjjOJA8KJUyhc
-         6656jYrp2x1jH5BAgJzX+K+tadWkg8nKlCYn13mlPBU1XDTkGFpZL1TXrci4+awieh8Z
-         N++HTqEsqqdISWOBMJi0xYgf6X22mmB5TcivjZaTh1FCFQR9UhxB2vJkRj8n5YidLMCz
-         KfZw==
+        Mon, 13 Sep 2021 05:23:40 -0400
+Received: by mail-il1-f198.google.com with SMTP id x7-20020a920607000000b002302afca41bso8797015ilg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:22:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O8RhwD434zCMehEmpGCUUM/Q3Qv+zqePWNa7zAHg+/Y=;
-        b=wSD3wWQq6gTgdETjBxNeTKhJfJJn9LR/14chdtZ9RA1dCdyn0g5UzCkTaZOEyvDUXz
-         tVcWgLO94KjbqwmGPLnEmTc29rwF769dXknSL33ow759Cr+UGO9CUmIwfDvuNZvZY9Q1
-         JLso7b5PBwzyAe3RxGf9xvoBbbdzu7Q/xLvEgQfW92wgJjUu3Pmy5orlRx9PIyGN05Pf
-         Mh6+FJdq+y25Sq5A2P8n0kBT0KTM663MsrEHbjW9xBFjfKjM/fcofHcuABbj9TqDwhpH
-         NgMakxAD8lVSx4N3nKlwcpRzFtDwycbg6aBULzQ/Y8SqiqGsZdvxxR2HrIxkc3B5gksG
-         2x2Q==
-X-Gm-Message-State: AOAM530syYP2CtIyifSqxvDMV6HPhM7UtTs43MnpnJsfbqJ+9m/bYnxf
-        rK9TSV1HKtJ94qEDnH+e4jJ56g==
-X-Google-Smtp-Source: ABdhPJyfE1u6aIl575Xvrqj5iRCTv/Wfdrdd6R2mQyPAHS+d9E3Fz80GEIbaSFfsDAe1bCp7/epywA==
-X-Received: by 2002:ac2:4116:: with SMTP id b22mr8271697lfi.587.1631524905196;
-        Mon, 13 Sep 2021 02:21:45 -0700 (PDT)
-Received: from jade (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id u17sm910326ljk.124.2021.09.13.02.21.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 02:21:44 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 11:21:43 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     CGEL <cgel.zte@gmail.com>, Sumit Garg <sumit.garg@linaro.org>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] tee/optee/shm_pool: fix application of sizeof
- to pointer
-Message-ID: <20210913092143.GA165502@jade>
-References: <c66fd6f831571b53b741350513e36405bba6c666.1629211976.git.jing.yangyang@zte.com.cn>
- <20210902103428.bdbkybvi6he6mgy2@maple.lan>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=HFFQPLAJXYx4bvBZVVBupuysAIuBOZazsLsw7gSGXPM=;
+        b=G59daTrNa638IFnsBr/c2HTSuHse1BMQPBTdz4iZdl5K/GMNMykuMcTtYxOS2hMb4u
+         hI571ZOmBbB+pOLqIYrePYlchOUdoQ2QllyCZQtYbHAO+mgyVIGEv+03m31vd2EIJ56J
+         +tOwtfwU6zpPe3tnjtu2dnGInI7tcgv2ZPZ3EtQ0wmk1agzIWufy31EcmeaiWqWjSbpw
+         34IRZEQHm5J352m7YAwTiycpssrCCR2lJPJxs6F1GWjxc0ZEfmr/R1GhGpnmnPu6s1R2
+         HyD3DKvcTXuZmcEO8C1nJ/sLb82j8XkIMUmLuDl9IENiLbAJVvu/lmjbNxaKz4mDKGgr
+         y1gg==
+X-Gm-Message-State: AOAM532zOzP1NeSK9P/1xmqSXzeeQPd4xKQ6fzC7Bq5CrSCeAkvhx7N7
+        DeDgRxUXzNrskhAgbi8Z8XaDuUQd1sOOdMxyzgoU4uRbkzMQ
+X-Google-Smtp-Source: ABdhPJz7iVHqBJwGMWVtkrGExpiG1/xH+YHaKqOpWGtfsh6vf6jjB1BWXgH366JewGOkGwNFwNOdUNMP/62JNgA5QSGR5CPvzAXQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210902103428.bdbkybvi6he6mgy2@maple.lan>
+X-Received: by 2002:a05:6e02:1564:: with SMTP id k4mr7564234ilu.146.1631524938755;
+ Mon, 13 Sep 2021 02:22:18 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 02:22:18 -0700
+In-Reply-To: <0000000000006e9e0705bd91f762@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006ab57905cbdd002c@google.com>
+Subject: Re: [syzbot] WARNING in __percpu_ref_exit (2)
+From:   syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, coreteam@netfilter.org,
+        davem@davemloft.net, dsahern@kernel.org, fw@strlen.de,
+        hdanton@sina.com, io-uring@vger.kernel.org, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 11:34:28AM +0100, Daniel Thompson wrote:
-> On Thu, Aug 19, 2021 at 08:21:27PM -0700, CGEL wrote:
-> > From: jing yangyang <jing.yangyang@zte.com.cn>
-> > 
-> > sizeof when applied to a pointer typed expression gives the size of
-> > the pointer.
-> > 
-> > ./drivers/tee/optee/shm_pool.c:38:28-34: ERROR application of sizeof to pointer
-> > 
-> > This issue was detected with the help of Coccinelle.
-> > 
-> > Reported-by: Zeal Robot <zealci@zte.com.cn>
-> > Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
-> 
-> This should not affect code generation since both pages and *pages are
-> pointers but the change looks good to me.
-> 
-> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+syzbot suspects this issue was fixed by commit:
 
-Thanks for reviewing, I agree with your analysis. 
-I'm picking this up as a bugfix for V5.15.
+commit 43016d02cf6e46edfc4696452251d34bba0c0435
+Author: Florian Westphal <fw@strlen.de>
+Date:   Mon May 3 11:51:15 2021 +0000
 
-Cheers,
-Jens
+    netfilter: arptables: use pernet ops struct during unregister
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10acd273300000
+start commit:   c98ff1d013d2 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1c70e618af4c2e92
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145cb2b6d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157b72b1d00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: netfilter: arptables: use pernet ops struct during unregister
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
