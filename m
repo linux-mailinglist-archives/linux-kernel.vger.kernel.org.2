@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FCF409131
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC9B40912B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242710AbhIMN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:59:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46224 "EHLO mail.kernel.org"
+        id S245164AbhIMN7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:59:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343686AbhIMN4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343688AbhIMN4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:56:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A00F619E5;
-        Mon, 13 Sep 2021 13:36:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E6B061252;
+        Mon, 13 Sep 2021 13:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540167;
-        bh=Sb8lbuMfS9MD3trjtxUHze8qnCxnpnEbJ1LFxhHHmys=;
+        s=korg; t=1631540170;
+        bh=pFePtBldSYTnQ7NFMd9MKqLtrH421DrCfA14diGFJJk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZyRJVssaL3PR52v1ZVyIiotkmt3MJ8W1coYD78yQeI3MvSWbZPwsvr7EUalNTt+1
-         EeUl7rfyR4FtG02rjnLt8Ir1dmdXN+YJ4oUClUJ29DLKaImxwgL8SYJBxQyEk44W58
-         vem+Vk+00SHDt7pin0/bApRcf3Z06Tvtvf122yiY=
+        b=1LBXq+9ZHVlC4nTNGc9WvJ6iIYA1Ikf1Og3f523utlJ+VofU5qh/u8gW22eLqoZMj
+         19n3HT93D95jxCMc30F1FtHz5o7TyopEpMlY/WR5QuSrXVcd5RBiuSX8XqdJQQ9lnD
+         ZTL+aeOUzBd1Aw+gS29oI25HyZ8FyTvabG0NhT3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Fan Du <fan.du@intel.com>,
+        Wen Jin <wen.jin@intel.com>, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 079/300] crypto: rmd320 - remove rmd320 in Makefile
-Date:   Mon, 13 Sep 2021 15:12:20 +0200
-Message-Id: <20210913131112.030623766@linuxfoundation.org>
+Subject: [PATCH 5.13 080/300] EDAC/i10nm: Fix NVDIMM detection
+Date:   Mon, 13 Sep 2021 15:12:21 +0200
+Message-Id: <20210913131112.072875092@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -41,41 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-[ Upstream commit ff1469a21df5a2e981dd2f78e96e412fecb3ba59 ]
+[ Upstream commit 2294a7299f5e51667b841f63c6d69474491753fb ]
 
-Commit 93f64202926f ("crypto: rmd320 - remove RIPE-MD 320 hash algorithm")
-removes the Kconfig and code, but misses to adjust the Makefile.
+MCDDRCFG is a per-channel register and uses bit{0,1} to indicate
+the NVDIMM presence on DIMM slot{0,1}. Current i10nm_edac driver
+wrongly uses MCDDRCFG as per-DIMM register and fails to detect
+the NVDIMM.
 
-Hence, ./scripts/checkkconfigsymbols.py warns:
+Fix it by reading MCDDRCFG as per-channel register and using its
+bit{0,1} to check whether the NVDIMM is populated on DIMM slot{0,1}.
 
-CRYPTO_RMD320
-Referencing files: crypto/Makefile
-
-Remove the missing piece of this code removal.
-
-Fixes: 93f64202926f ("crypto: rmd320 - remove RIPE-MD 320 hash algorithm")
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: d4dc89d069aa ("EDAC, i10nm: Add a driver for Intel 10nm server processors")
+Reported-by: Fan Du <fan.du@intel.com>
+Tested-by: Wen Jin <wen.jin@intel.com>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210818175701.1611513-2-tony.luck@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/edac/i10nm_base.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/Makefile b/crypto/Makefile
-index 10526d4559b8..c633f15a0481 100644
---- a/crypto/Makefile
-+++ b/crypto/Makefile
-@@ -74,7 +74,6 @@ obj-$(CONFIG_CRYPTO_NULL2) += crypto_null.o
- obj-$(CONFIG_CRYPTO_MD4) += md4.o
- obj-$(CONFIG_CRYPTO_MD5) += md5.o
- obj-$(CONFIG_CRYPTO_RMD160) += rmd160.o
--obj-$(CONFIG_CRYPTO_RMD320) += rmd320.o
- obj-$(CONFIG_CRYPTO_SHA1) += sha1_generic.o
- obj-$(CONFIG_CRYPTO_SHA256) += sha256_generic.o
- obj-$(CONFIG_CRYPTO_SHA512) += sha512_generic.o
+diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
+index 37b4e875420e..1cea5d8fa434 100644
+--- a/drivers/edac/i10nm_base.c
++++ b/drivers/edac/i10nm_base.c
+@@ -26,8 +26,8 @@
+ 	pci_read_config_dword((d)->uracu, 0xd8 + (i) * 4, &(reg))
+ #define I10NM_GET_DIMMMTR(m, i, j)	\
+ 	readl((m)->mbase + 0x2080c + (i) * (m)->chan_mmio_sz + (j) * 4)
+-#define I10NM_GET_MCDDRTCFG(m, i, j)	\
+-	readl((m)->mbase + 0x20970 + (i) * (m)->chan_mmio_sz + (j) * 4)
++#define I10NM_GET_MCDDRTCFG(m, i)	\
++	readl((m)->mbase + 0x20970 + (i) * (m)->chan_mmio_sz)
+ #define I10NM_GET_MCMTR(m, i)		\
+ 	readl((m)->mbase + 0x20ef8 + (i) * (m)->chan_mmio_sz)
+ #define I10NM_GET_AMAP(m, i)		\
+@@ -185,10 +185,10 @@ static int i10nm_get_dimm_config(struct mem_ctl_info *mci,
+ 
+ 		ndimms = 0;
+ 		amap = I10NM_GET_AMAP(imc, i);
++		mcddrtcfg = I10NM_GET_MCDDRTCFG(imc, i);
+ 		for (j = 0; j < I10NM_NUM_DIMMS; j++) {
+ 			dimm = edac_get_dimm(mci, i, j, 0);
+ 			mtr = I10NM_GET_DIMMMTR(imc, i, j);
+-			mcddrtcfg = I10NM_GET_MCDDRTCFG(imc, i, j);
+ 			edac_dbg(1, "dimmmtr 0x%x mcddrtcfg 0x%x (mc%d ch%d dimm%d)\n",
+ 				 mtr, mcddrtcfg, imc->mc, i, j);
+ 
 -- 
 2.30.2
 
