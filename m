@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13D740960E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F71409333
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346372AbhIMOrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
+        id S1344389AbhIMOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:19:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345135AbhIMOlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:41:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6FB06124A;
-        Mon, 13 Sep 2021 13:56:20 +0000 (UTC)
+        id S1344794AbhIMOOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:14:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09CBF61359;
+        Mon, 13 Sep 2021 13:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541381;
-        bh=3HgTSiSenMZLALV6ean9E0Invt9sKdJ7P5fruDSHcSA=;
+        s=korg; t=1631540622;
+        bh=3BRQKf+4m4hF8xbhI2zJqChxuqd8U0J5T0pyXXtX8bc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WWOx+lVVVXpnLzxJi6CdA3PX0klx66SX3uT/UDKK5xK7TBV849bvXISsdC2L5UvG8
-         D7BNQt+hfW8p4Gr2ukezVQo2tANSrGdzIHntrv5qPhaMmtuGeF8KsGtyG/1AYsDunQ
-         +5CzmR53vvj2WOLeb8LTWb6qjZKzvn3yWM7xeUlU=
+        b=Ov9mzM8KFxjsHvdYXAfQE7PUIHB/2l/CM3nbIKqNRUp4TG10E/WxfaDujbZ18aQpf
+         ODJ6xd6s7ulJUedZkCzHZf+/LE/4dTFaAJgaBbbD6tntVrJDRh5BJi+ugMcm4M57JR
+         3au7igIc4EgL2GcjObX8ra0/6OMu3Ch/wL+ZO1no=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geetha sowjanya <gakula@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 242/334] octeontx2-af: Check capability flag while freeing ipolicer memory
+Subject: [PATCH 5.13 235/300] usb: bdc: Fix an error handling path in bdc_probe() when no suitable DMA config is available
 Date:   Mon, 13 Sep 2021 15:14:56 +0200
-Message-Id: <20210913131121.583008323@linuxfoundation.org>
+Message-Id: <20210913131117.298552800@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geetha sowjanya <gakula@marvell.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 07cccffdbdd37820ba13c645af8e74a78a266557 ]
+[ Upstream commit d2f42e09393c774ab79088d8e3afcc62b3328fc9 ]
 
-Bandwidth profiles (ipolicer structure)is implemented only on CN10K
-platform. But current code try to free the ipolicer memory without
-checking the capibility flag leading to driver crash on OCTEONTX2
-platform. This patch fixes the issue by add capability flag check.
+If no suitable DMA configuration is available, a previous 'bdc_phy_init()'
+call must be undone by a corresponding 'bdc_phy_exit()' call.
 
-Fixes: e8e095b3b3700 ("octeontx2-af: cn10k: Bandwidth profiles config support")
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Branch to the existing error handling path instead of returning
+directly.
+
+Fixes: cc29d4f67757 ("usb: bdc: Add support for USB phy")
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/udc/bdc/bdc_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index 4bfbbdf38770..c32195073e8a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -25,7 +25,7 @@ static int nix_update_mce_rule(struct rvu *rvu, u16 pcifunc,
- 			       int type, bool add);
- static int nix_setup_ipolicers(struct rvu *rvu,
- 			       struct nix_hw *nix_hw, int blkaddr);
--static void nix_ipolicer_freemem(struct nix_hw *nix_hw);
-+static void nix_ipolicer_freemem(struct rvu *rvu, struct nix_hw *nix_hw);
- static int nix_verify_bandprof(struct nix_cn10k_aq_enq_req *req,
- 			       struct nix_hw *nix_hw, u16 pcifunc);
- static int nix_free_all_bandprof(struct rvu *rvu, u16 pcifunc);
-@@ -3849,7 +3849,7 @@ static void rvu_nix_block_freemem(struct rvu *rvu, int blkaddr,
- 			kfree(txsch->schq.bmap);
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+index 0bef6b3f049b..251db57e51fa 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_core.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+@@ -560,7 +560,8 @@ static int bdc_probe(struct platform_device *pdev)
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"No suitable DMA config available, abort\n");
+-			return -ENOTSUPP;
++			ret = -ENOTSUPP;
++			goto phycleanup;
  		}
- 
--		nix_ipolicer_freemem(nix_hw);
-+		nix_ipolicer_freemem(rvu, nix_hw);
- 
- 		vlan = &nix_hw->txvlan;
- 		kfree(vlan->rsrc.bmap);
-@@ -4225,11 +4225,14 @@ static int nix_setup_ipolicers(struct rvu *rvu,
- 	return 0;
- }
- 
--static void nix_ipolicer_freemem(struct nix_hw *nix_hw)
-+static void nix_ipolicer_freemem(struct rvu *rvu, struct nix_hw *nix_hw)
- {
- 	struct nix_ipolicer *ipolicer;
- 	int layer;
- 
-+	if (!rvu->hw->cap.ipolicer)
-+		return;
-+
- 	for (layer = 0; layer < BAND_PROF_NUM_LAYERS; layer++) {
- 		ipolicer = &nix_hw->ipolicer[layer];
- 
+ 		dev_dbg(dev, "Using 32-bit address\n");
+ 	}
 -- 
 2.30.2
 
