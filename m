@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D87740922E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6110409228
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344096AbhIMOI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:08:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56004 "EHLO mail.kernel.org"
+        id S1344190AbhIMOIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:08:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344591AbhIMOFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0B9C610E7;
-        Mon, 13 Sep 2021 13:39:40 +0000 (UTC)
+        id S1344608AbhIMOFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:05:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E0361268;
+        Mon, 13 Sep 2021 13:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540381;
-        bh=50zYpnkjEY2pTp+vMAnZUQeG2tdydDrCG/kJxt09Po8=;
+        s=korg; t=1631540383;
+        bh=uA+Z2jQe7KBT4hJxNx/BhsMOfuKOHHJiobTrQm6FA7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCx10e5PUz+tYmuPYpm2TrYM4Fw+F7akIFfMNoE/p4/ed3aohmbssq7bBAr1v3P/3
-         TkrFpXZKd7R++SGKT08PL0k0sa1m1aDp9JSXCMM5zPnnzydBHu6RIG9u9mTe7kH7+J
-         h3FurMcF99q4ql9r43oIw/yMGZOFALJy063vqFLM=
+        b=U6JQT+yPy8QPtrA/b/jWsjMylATHhJf5L8Ko4Ixhuw/5KR7RErvR5o/Yxf1DslNpd
+         MOAfxBdz+I8ZLZ/jvU8IFDJ1BtqcfBtoLZ1Te9p+NadYUPqGsmj7JTN2UaUH1E6WcO
+         4WngZzNhotKjmoEbO4+EJjaE3kD9Pdov6qgugjeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
         Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 170/300] cgroup/cpuset: Miscellaneous code cleanup
-Date:   Mon, 13 Sep 2021 15:13:51 +0200
-Message-Id: <20210913131115.150290204@linuxfoundation.org>
+Subject: [PATCH 5.13 171/300] cgroup/cpuset: Fix violation of cpuset locking rule
+Date:   Mon, 13 Sep 2021 15:13:52 +0200
+Message-Id: <20210913131115.181538073@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -41,148 +41,238 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Waiman Long <longman@redhat.com>
 
-[ Upstream commit 0f3adb8a1e5f36e792598c1d77a2cfac9c90a4f9 ]
+[ Upstream commit 6ba34d3c73674e46d9e126e4f0cee79e5ef2481c ]
 
-Use more descriptive variable names for update_prstate(), remove
-unnecessary code and fix some typos. There is no functional change.
+The cpuset fields that manage partition root state do not strictly
+follow the cpuset locking rule that update to cpuset has to be done
+with both the callback_lock and cpuset_mutex held. This is now fixed
+by making sure that the locking rule is upheld.
 
+Fixes: 3881b86128d0 ("cpuset: Add an error state to cpuset.sched.partition")
+Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
 Signed-off-by: Waiman Long <longman@redhat.com>
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cgroup/cpuset.c | 40 +++++++++++++++++++---------------------
- 1 file changed, 19 insertions(+), 21 deletions(-)
+ kernel/cgroup/cpuset.c | 58 +++++++++++++++++++++++++-----------------
+ 1 file changed, 35 insertions(+), 23 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 592e9e37542f..28a784bf64b1 100644
+index 28a784bf64b1..13b5be6df4da 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1114,7 +1114,7 @@ enum subparts_cmd {
-  * cpus_allowed can be granted or an error code will be returned.
-  *
-  * For partcmd_disable, the cpuset is being transofrmed from a partition
-- * root back to a non-partition root. any CPUs in cpus_allowed that are in
-+ * root back to a non-partition root. Any CPUs in cpus_allowed that are in
-  * parent's subparts_cpus will be taken away from that cpumask and put back
-  * into parent's effective_cpus. 0 should always be returned.
-  *
-@@ -1225,7 +1225,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+@@ -1148,6 +1148,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 	struct cpuset *parent = parent_cs(cpuset);
+ 	int adding;	/* Moving cpus from effective_cpus to subparts_cpus */
+ 	int deleting;	/* Moving cpus from subparts_cpus to effective_cpus */
++	int new_prs;
+ 	bool part_error = false;	/* Partition error? */
+ 
+ 	percpu_rwsem_assert_held(&cpuset_rwsem);
+@@ -1183,6 +1184,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 	 * A cpumask update cannot make parent's effective_cpus become empty.
+ 	 */
+ 	adding = deleting = false;
++	new_prs = cpuset->partition_root_state;
+ 	if (cmd == partcmd_enable) {
+ 		cpumask_copy(tmp->addmask, cpuset->cpus_allowed);
+ 		adding = true;
+@@ -1247,11 +1249,11 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 		switch (cpuset->partition_root_state) {
+ 		case PRS_ENABLED:
+ 			if (part_error)
+-				cpuset->partition_root_state = PRS_ERROR;
++				new_prs = PRS_ERROR;
+ 			break;
+ 		case PRS_ERROR:
+ 			if (!part_error)
+-				cpuset->partition_root_state = PRS_ENABLED;
++				new_prs = PRS_ENABLED;
+ 			break;
+ 		}
  		/*
- 		 * partcmd_update w/o newmask:
- 		 *
--		 * addmask = cpus_allowed & parent->effectiveb_cpus
-+		 * addmask = cpus_allowed & parent->effective_cpus
- 		 *
- 		 * Note that parent's subparts_cpus may have been
- 		 * pre-shrunk in case there is a change in the cpu list.
-@@ -1365,12 +1365,12 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+@@ -1260,10 +1262,10 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 		part_error = (prev_prs == PRS_ERROR);
+ 	}
+ 
+-	if (!part_error && (cpuset->partition_root_state == PRS_ERROR))
++	if (!part_error && (new_prs == PRS_ERROR))
+ 		return 0;	/* Nothing need to be done */
+ 
+-	if (cpuset->partition_root_state == PRS_ERROR) {
++	if (new_prs == PRS_ERROR) {
+ 		/*
+ 		 * Remove all its cpus from parent's subparts_cpus.
+ 		 */
+@@ -1272,7 +1274,7 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 				       parent->subparts_cpus);
+ 	}
+ 
+-	if (!adding && !deleting)
++	if (!adding && !deleting && (new_prs == cpuset->partition_root_state))
+ 		return 0;
+ 
+ 	/*
+@@ -1299,6 +1301,9 @@ static int update_parent_subparts_cpumask(struct cpuset *cpuset, int cmd,
+ 	}
+ 
+ 	parent->nr_subparts_cpus = cpumask_weight(parent->subparts_cpus);
++
++	if (cpuset->partition_root_state != new_prs)
++		cpuset->partition_root_state = new_prs;
+ 	spin_unlock_irq(&callback_lock);
+ 
+ 	return cmd == partcmd_update;
+@@ -1321,6 +1326,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+ 	struct cpuset *cp;
+ 	struct cgroup_subsys_state *pos_css;
+ 	bool need_rebuild_sched_domains = false;
++	int new_prs;
+ 
+ 	rcu_read_lock();
+ 	cpuset_for_each_descendant_pre(cp, pos_css, cs) {
+@@ -1360,7 +1366,8 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+ 		 * update_tasks_cpumask() again for tasks in the parent
+ 		 * cpuset if the parent's subparts_cpus changes.
+ 		 */
+-		if ((cp != cs) && cp->partition_root_state) {
++		new_prs = cp->partition_root_state;
++		if ((cp != cs) && new_prs) {
+ 			switch (parent->partition_root_state) {
  			case PRS_DISABLED:
  				/*
- 				 * If parent is not a partition root or an
--				 * invalid partition root, clear the state
--				 * state and the CS_CPU_EXCLUSIVE flag.
-+				 * invalid partition root, clear its state
-+				 * and its CS_CPU_EXCLUSIVE flag.
+@@ -1370,7 +1377,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
  				 */
  				WARN_ON_ONCE(cp->partition_root_state
  					     != PRS_ERROR);
--				cp->partition_root_state = 0;
-+				cp->partition_root_state = PRS_DISABLED;
+-				cp->partition_root_state = PRS_DISABLED;
++				new_prs = PRS_DISABLED;
  
  				/*
  				 * clear_bit() is an atomic operation and
-@@ -1937,30 +1937,28 @@ out:
+@@ -1391,11 +1398,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+ 				/*
+ 				 * When parent is invalid, it has to be too.
+ 				 */
+-				cp->partition_root_state = PRS_ERROR;
+-				if (cp->nr_subparts_cpus) {
+-					cp->nr_subparts_cpus = 0;
+-					cpumask_clear(cp->subparts_cpus);
+-				}
++				new_prs = PRS_ERROR;
+ 				break;
+ 			}
+ 		}
+@@ -1407,8 +1410,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+ 		spin_lock_irq(&callback_lock);
  
- /*
-  * update_prstate - update partititon_root_state
-- * cs:	the cpuset to update
-- * val: 0 - disabled, 1 - enabled
-+ * cs: the cpuset to update
-+ * new_prs: new partition root state
-  *
-  * Call with cpuset_mutex held.
+ 		cpumask_copy(cp->effective_cpus, tmp->new_cpus);
+-		if (cp->nr_subparts_cpus &&
+-		   (cp->partition_root_state != PRS_ENABLED)) {
++		if (cp->nr_subparts_cpus && (new_prs != PRS_ENABLED)) {
+ 			cp->nr_subparts_cpus = 0;
+ 			cpumask_clear(cp->subparts_cpus);
+ 		} else if (cp->nr_subparts_cpus) {
+@@ -1435,6 +1437,10 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp)
+ 					= cpumask_weight(cp->subparts_cpus);
+ 			}
+ 		}
++
++		if (new_prs != cp->partition_root_state)
++			cp->partition_root_state = new_prs;
++
+ 		spin_unlock_irq(&callback_lock);
+ 
+ 		WARN_ON(!is_in_v2_mode() &&
+@@ -1944,25 +1950,25 @@ out:
   */
--static int update_prstate(struct cpuset *cs, int val)
-+static int update_prstate(struct cpuset *cs, int new_prs)
+ static int update_prstate(struct cpuset *cs, int new_prs)
  {
- 	int err;
+-	int err;
++	int err, old_prs = cs->partition_root_state;
  	struct cpuset *parent = parent_cs(cs);
--	struct tmpmasks tmp;
-+	struct tmpmasks tmpmask;
+ 	struct tmpmasks tmpmask;
  
--	if ((val != 0) && (val != 1))
--		return -EINVAL;
--	if (val == cs->partition_root_state)
-+	if (new_prs == cs->partition_root_state)
+-	if (new_prs == cs->partition_root_state)
++	if (old_prs == new_prs)
  		return 0;
  
  	/*
  	 * Cannot force a partial or invalid partition root to a full
  	 * partition root.
  	 */
--	if (val && cs->partition_root_state)
-+	if (new_prs && (cs->partition_root_state < 0))
+-	if (new_prs && (cs->partition_root_state < 0))
++	if (new_prs && (old_prs == PRS_ERROR))
  		return -EINVAL;
  
--	if (alloc_cpumasks(NULL, &tmp))
-+	if (alloc_cpumasks(NULL, &tmpmask))
+ 	if (alloc_cpumasks(NULL, &tmpmask))
  		return -ENOMEM;
  
  	err = -EINVAL;
-@@ -1978,7 +1976,7 @@ static int update_prstate(struct cpuset *cs, int val)
- 			goto out;
- 
- 		err = update_parent_subparts_cpumask(cs, partcmd_enable,
--						     NULL, &tmp);
-+						     NULL, &tmpmask);
- 		if (err) {
+-	if (!cs->partition_root_state) {
++	if (!old_prs) {
+ 		/*
+ 		 * Turning on partition root requires setting the
+ 		 * CS_CPU_EXCLUSIVE bit implicitly as well and cpus_allowed
+@@ -1981,14 +1987,12 @@ static int update_prstate(struct cpuset *cs, int new_prs)
  			update_flag(CS_CPU_EXCLUSIVE, cs, 0);
  			goto out;
-@@ -1990,18 +1988,18 @@ static int update_prstate(struct cpuset *cs, int val)
+ 		}
+-		cs->partition_root_state = PRS_ENABLED;
+ 	} else {
+ 		/*
+ 		 * Turning off partition root will clear the
  		 * CS_CPU_EXCLUSIVE bit.
  		 */
- 		if (cs->partition_root_state == PRS_ERROR) {
--			cs->partition_root_state = 0;
-+			cs->partition_root_state = PRS_DISABLED;
+-		if (cs->partition_root_state == PRS_ERROR) {
+-			cs->partition_root_state = PRS_DISABLED;
++		if (old_prs == PRS_ERROR) {
  			update_flag(CS_CPU_EXCLUSIVE, cs, 0);
  			err = 0;
  			goto out;
- 		}
- 
- 		err = update_parent_subparts_cpumask(cs, partcmd_disable,
--						     NULL, &tmp);
-+						     NULL, &tmpmask);
+@@ -1999,8 +2003,6 @@ static int update_prstate(struct cpuset *cs, int new_prs)
  		if (err)
  			goto out;
  
--		cs->partition_root_state = 0;
-+		cs->partition_root_state = PRS_DISABLED;
- 
+-		cs->partition_root_state = PRS_DISABLED;
+-
  		/* Turning off CS_CPU_EXCLUSIVE will not return error */
  		update_flag(CS_CPU_EXCLUSIVE, cs, 0);
-@@ -2015,11 +2013,11 @@ static int update_prstate(struct cpuset *cs, int val)
- 		update_tasks_cpumask(parent);
- 
- 	if (parent->child_ecpus_count)
--		update_sibling_cpumasks(parent, cs, &tmp);
-+		update_sibling_cpumasks(parent, cs, &tmpmask);
+ 	}
+@@ -2017,6 +2019,12 @@ static int update_prstate(struct cpuset *cs, int new_prs)
  
  	rebuild_sched_domains_locked();
  out:
--	free_cpumasks(NULL, &tmp);
-+	free_cpumasks(NULL, &tmpmask);
++	if (!err) {
++		spin_lock_irq(&callback_lock);
++		cs->partition_root_state = new_prs;
++		spin_unlock_irq(&callback_lock);
++	}
++
+ 	free_cpumasks(NULL, &tmpmask);
  	return err;
  }
+@@ -3080,8 +3088,10 @@ retry:
+ 	if (is_partition_root(cs) && (cpumask_empty(&new_cpus) ||
+ 	   (parent->partition_root_state == PRS_ERROR))) {
+ 		if (cs->nr_subparts_cpus) {
++			spin_lock_irq(&callback_lock);
+ 			cs->nr_subparts_cpus = 0;
+ 			cpumask_clear(cs->subparts_cpus);
++			spin_unlock_irq(&callback_lock);
+ 			compute_effective_cpumask(&new_cpus, cs, parent);
+ 		}
  
-@@ -3060,7 +3058,7 @@ retry:
- 		goto retry;
+@@ -3095,7 +3105,9 @@ retry:
+ 		     cpumask_empty(&new_cpus)) {
+ 			update_parent_subparts_cpumask(cs, partcmd_disable,
+ 						       NULL, tmp);
++			spin_lock_irq(&callback_lock);
+ 			cs->partition_root_state = PRS_ERROR;
++			spin_unlock_irq(&callback_lock);
+ 		}
+ 		cpuset_force_rebuild();
  	}
- 
--	parent =  parent_cs(cs);
-+	parent = parent_cs(cs);
- 	compute_effective_cpumask(&new_cpus, cs, parent);
- 	nodes_and(new_mems, cs->mems_allowed, parent->effective_mems);
- 
 -- 
 2.30.2
 
