@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265E64090EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77897408C21
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241074AbhIMN47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244726AbhIMNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:53:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 596C161107;
-        Mon, 13 Sep 2021 13:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540103;
-        bh=zIUtON/Uqq4kJRp4uO9Wg8c/S2FX7ZCkao2ZJwC0mG0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qzOlRFvxLojK6p4u9RzaEvblwli8Y/op+i5ZSE75lqmgBkP1fEYEdRCZzhssbSUVX
-         onQ8sBDn0qGJxN3JssG0yOOostcmOb5wB3KhUPxAS1R+Ju1t6Amavs7dEM4SfJ4Nem
-         a2whKzfw967xQmpOdtKxo8tu6QXyq6p39+MeaPNI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guillaume Gardet <guillaume.gardet@arm.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 051/300] crypto: ecc - handle unaligned input buffer in ecc_swap_digits
-Date:   Mon, 13 Sep 2021 15:11:52 +0200
-Message-Id: <20210913131111.079957249@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236493AbhIMNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:13:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34351 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229732AbhIMNNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:13:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631538718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sfyXCxXLqe/BSeVldQwsrQsccJEXRgInHP7qJo1PTlI=;
+        b=D1+gXM1n9agPOwxkoeqrSYh+a7EiFIMXRnPzEjahYb+lostuXUP7W0ERsrhAJhQnKjUNhG
+        3Rk9ybWUMojE0jBx7z/gBKlEOr+4mMOjuOceE1kixDSIpUZWYsXZJd+CqS8tUBwe7P4Ljt
+        CI//VW41AHJLEWe2/VLGgjaEK8L3BYg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-jS-xm1RWMmOS2OneCy7gfA-1; Mon, 13 Sep 2021 09:11:56 -0400
+X-MC-Unique: jS-xm1RWMmOS2OneCy7gfA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5086184A5E6;
+        Mon, 13 Sep 2021 13:11:55 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9135A6B54B;
+        Mon, 13 Sep 2021 13:11:54 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Subject: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+Date:   Mon, 13 Sep 2021 09:11:52 -0400
+Message-Id: <20210913131153.1202354-2-pbonzini@redhat.com>
+In-Reply-To: <20210913131153.1202354-1-pbonzini@redhat.com>
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mian Yousaf Kaukab <ykaukab@suse.de>
+Windows expects all pages to be in uninitialized state on startup.
+In order to implement this, we will need a ioctl that performs
+EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor:
+other possibilities, such as closing and reopening the device,
+are racy.
 
-[ Upstream commit 0469dede0eeeefe12a9a2fd76078f4a266513457 ]
+Start the implementation by pulling the EREMOVE into a separate
+function.
 
-ecdsa_set_pub_key() makes an u64 pointer at 1 byte offset of the key.
-This results in an unaligned u64 pointer. This pointer is passed to
-ecc_swap_digits() which assumes natural alignment.
-
-This causes a kernel crash on an armv7 platform:
-[    0.409022] Unhandled fault: alignment exception (0x001) at 0xc2a0a6a9
-...
-[    0.416982] PC is at ecdsa_set_pub_key+0xdc/0x120
-...
-[    0.491492] Backtrace:
-[    0.492059] [<c07c266c>] (ecdsa_set_pub_key) from [<c07c75d4>] (test_akcipher_one+0xf4/0x6c0)
-
-Handle unaligned input buffer in ecc_swap_digits() by replacing
-be64_to_cpu() to get_unaligned_be64(). Change type of in pointer to
-void to reflect it doesn’t necessarily need to be aligned.
-
-Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
-Reported-by: Guillaume Gardet <guillaume.gardet@arm.com>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-Tested-by: Stefan Berger <stefanb@linux.ibm.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- crypto/ecc.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/sgx/virt.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/crypto/ecc.h b/crypto/ecc.h
-index a006132646a4..1350e8eb6ac2 100644
---- a/crypto/ecc.h
-+++ b/crypto/ecc.h
-@@ -27,6 +27,7 @@
- #define _CRYPTO_ECC_H
- 
- #include <crypto/ecc_curve.h>
-+#include <asm/unaligned.h>
- 
- /* One digit is u64 qword. */
- #define ECC_CURVE_NIST_P192_DIGITS  3
-@@ -46,13 +47,13 @@
-  * @out:      Output array
-  * @ndigits:  Number of digits to copy
-  */
--static inline void ecc_swap_digits(const u64 *in, u64 *out, unsigned int ndigits)
-+static inline void ecc_swap_digits(const void *in, u64 *out, unsigned int ndigits)
- {
- 	const __be64 *src = (__force __be64 *)in;
- 	int i;
- 
- 	for (i = 0; i < ndigits; i++)
--		out[i] = be64_to_cpu(src[ndigits - 1 - i]);
-+		out[i] = get_unaligned_be64(&src[ndigits - 1 - i]);
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+index 64511c4a5200..59b9c13121cd 100644
+--- a/arch/x86/kernel/cpu/sgx/virt.c
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -111,7 +111,7 @@ static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
+ 	return 0;
  }
  
- /**
+-static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
++static int sgx_vepc_remove_page(struct sgx_epc_page *epc_page)
+ {
+ 	int ret;
+ 
+@@ -140,11 +140,17 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
+ 		 */
+ 		WARN_ONCE(ret != SGX_CHILD_PRESENT, EREMOVE_ERROR_MESSAGE,
+ 			  ret, ret);
+-		return ret;
+ 	}
++	return ret;
++}
+ 
+-	sgx_free_epc_page(epc_page);
++static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
++{
++	int ret = sgx_vepc_remove_page(epc_page);
++	if (ret)
++		return ret;
+ 
++	sgx_free_epc_page(epc_page);
+ 	return 0;
+ }
+ 
 -- 
-2.30.2
-
+2.27.0
 
 
