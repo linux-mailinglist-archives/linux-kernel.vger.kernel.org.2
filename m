@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF92409F78
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63BE409F84
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237575AbhIMWKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 18:10:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhIMWKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 18:10:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ECD861056;
-        Mon, 13 Sep 2021 22:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631570970;
-        bh=IePkNmKFbdLFCj1jfB5UusK9wK0C5A0MxJXpkPLT5QY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HTRoX2Pn+mJqjk3XvyOuZ0vEchdG2RGsBOvwA9zB2dI+vj0D8KH6Uig75MWVdRpcW
-         LK/kfh9t83wy6U8IKQnHRYZ9K9YoG06ZrcdnTbqGVp35VYdaqNRDl4LCx4QhghebeJ
-         zpyDiIo9ZTBmq+YYTQWqTZc9i3PPwzzgbOGyZyIDSsjD8lmREhP6z0eRum2N7OISgK
-         Ks3hwiUgaZ0Os/XUxwDzMQZbv/dqcy3u4Vc0sH/pj9zNpUeO3CfhUraeFhjdqjYQ+B
-         wHLCcTMyOvZAnA9NNVHOmKtA7iFFPIYe/FxHg3igG5GFxwmrF8vOqVFm8MdJ3QVgNp
-         HY2YDpLzumxKA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] tools: compiler-gcc.h: Guard error attribute use with __has_attribute
-Date:   Mon, 13 Sep 2021 15:09:00 -0700
-Message-Id: <20210913220900.142820-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S244619AbhIMWOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 18:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240340AbhIMWOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 18:14:16 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83749C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:13:00 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id z5so23686082ybj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=r8JwEGQo8s+AkQJZFlS7FKRW3o+KXdcj2fA2aLwwqyU=;
+        b=ew0KwmbeqApvY47CR9I8fJJVv0WPTb0qPI9BZ4MWdCbduZb63QtPTzKxyGgcNmAGB8
+         0vMjrUZuXl8X4UzrkKUX106A+ppg0yoirE6ON/fXRQX5WpjlKTllfk3MbwsEguLFit6W
+         xLeIVKtvECDEda23SVO6jChNR4tBOafh3v8GyXu5G+AK4qgitjo+WN92ICmtOsNecxxf
+         85dc3psBqJrOVDKiYzwmyqVoNaHQSI2rUTyAGR6X3NaU+oOkH3Dr81y1RKCZb7JF5Ear
+         Ky3f4tv0M/iQ0vNbS5mG7PKVZAPkrCECKpyQuPDRta5FnLmFw5WGyxIsha5NUEkP5q56
+         VIYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=r8JwEGQo8s+AkQJZFlS7FKRW3o+KXdcj2fA2aLwwqyU=;
+        b=eKD3faZ1TYUZZUeLqwZEA2X8/rrrTPe71o8QHE3dAVoFfSP2MItSHPZTVe8Ly8C/94
+         j3veZAkLJLVeHAvv4PCrD060hw8ob5BRcjFoFXheJ/jKKCAys5dWrXQJeT1l0n+yZoj4
+         FZYsAovDFvglzqDduvSIf28umhwgVSHCqwAKbsSmhUiny0VnNK+NQGlz7/+E6AXPcV+t
+         +vNhUl87elJU7jB6NJDOPzQz6tkDYkmy4+Ho7G3QeqqGJVpElHXh6FtpvnFa9pAroC/I
+         5pGULP7wD7wLmWHTT5hAy3N9P18+0mGZc49H601YKvF2JaDnlkVB+JWAmyM4aV+NFgFM
+         wIjA==
+X-Gm-Message-State: AOAM530ujL4XzmWeccmuxy2OWOWcZpzF56MR/lIr3FxR6mMDrrtFJiCN
+        ctNzi+JDsCOMeVexgYXAkKMPr88QXc+GH9V2HsM=
+X-Google-Smtp-Source: ABdhPJzVoE3cO3Upxi6faeO2wMOpubgEKssLqCnnKkw8bBbP3eJ6zroWGLUDGPFyjAb7gCwVgOdDqA4iJX0TE9An+MA=
+X-Received: by 2002:a25:ea52:: with SMTP id o18mr18981775ybe.150.1631571179580;
+ Mon, 13 Sep 2021 15:12:59 -0700 (PDT)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Reply-To: marannsilvia@gmail.com
+Sender: eliewangrawa@gmail.com
+Received: by 2002:a05:7000:4b93:0:0:0:0 with HTTP; Mon, 13 Sep 2021 15:12:59
+ -0700 (PDT)
+From:   "Mrs.m silvia michael" <marannsilvia6@gmail.com>
+Date:   Mon, 13 Sep 2021 15:12:59 -0700
+X-Google-Sender-Auth: _hudDNrZEgXqZdSW84XUPwLutW0
+Message-ID: <CAHZsEYYDLb0fTbui6BhqJ-mNjHTO9t=LkzJs__3U822SbLUefw@mail.gmail.com>
+Subject: Good day my dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building objtool with HOSTCC=clang, there are several errors along
-the lines of
+Good day my dear,
+How are you doing and your family.I am Mrs.M Silvia Michael,a sick
+widow writing from one of the America hospitals.I am suffering from a
+long time cancer of breast,my health situation is becoming worse,my
+life is no longer guaranteed hence i want to make this solemn
+donation.I want to donate my money to help the orphans, widows and
+handicap people through you because there is no more time left for me
+on this earth.I take this decision because i have no child who will
+inherit my wealth after my death.Please,i need your urgent reply so
+that i can tell you more on how you will handle my wish before i die.I
+will be waiting to hear from you immediately by God grace amen,
 
-orc_dump.c:201:28: error: unknown attribute 'error' ignored
-[-Werror,-Wunknown-attributes]
-
-This occurs after commit 4e59869aa655 ("compiler-gcc.h: drop checks for
-older GCC versions"), which removed the GCC_VERSION gating. The removed
-version check just so happened to prevent __compiletime_error() from
-being defined with clang because it pretends to be GCC 4.2.1 for
-compatibility but the error attribute was not added to clang until
-14.0.0.
-
-Commit 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h
-mutually exclusive") and commit a3f8a30f3f00 ("Compiler Attributes: use
-feature checks instead of version checks") refactored the handling of
-attributes in the main kernel to avoid situations like this but that
-refactoring has never been done for the tools directory.
-
-Refactoring is a rather large undertaking and this has never been an
-issue before so instead, just guard the definition of
-__compiletime_error() with __has_attribute() so that there are no more
-errors.
-
-Fixes: 4e59869aa655 ("compiler-gcc.h: drop checks for older GCC versions")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- tools/include/linux/compiler-gcc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/tools/include/linux/compiler-gcc.h b/tools/include/linux/compiler-gcc.h
-index 43d9a46d36f0..8816f06fc6c7 100644
---- a/tools/include/linux/compiler-gcc.h
-+++ b/tools/include/linux/compiler-gcc.h
-@@ -16,7 +16,9 @@
- # define __fallthrough __attribute__ ((fallthrough))
- #endif
- 
--#define __compiletime_error(message) __attribute__((error(message)))
-+#if __has_attribute(__error__)
-+# define __compiletime_error(message) __attribute__((error(message)))
-+#endif
- 
- /* &a[0] degrades to a pointer: a different type from an array */
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
-
-base-commit: 316346243be6df12799c0b64b788e06bad97c30b
--- 
-2.33.0
-
+yours sincerely.
+Mrs.M Silvia Michael
