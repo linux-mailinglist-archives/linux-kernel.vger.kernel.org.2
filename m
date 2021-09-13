@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CA540888A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7282C40888D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238859AbhIMJvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:51:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37399 "EHLO
+        id S238809AbhIMJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:52:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54413 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238846AbhIMJvP (ORCPT
+        by vger.kernel.org with ESMTP id S237875AbhIMJwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:51:15 -0400
+        Mon, 13 Sep 2021 05:52:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631526599;
+        s=mimecast20190719; t=1631526647;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+1bv9QcK5HvBzLB3qEFqROC0U78MN+GMph+aN6BbYd0=;
-        b=WET9P+p/6Ch3DPWLY5V7pf+dQyVmDq4TPJ4H6H2gNuJiEM+/6FyE+TxsY0Xb+5sPbaIacg
-        Ibn0kaeLhFpzSV78eACsQpMWq5AYo5AUkIiXgxvG2Gsoess1vwHgC/C/vBhDuR5XDosgr3
-        rELQzu3vYi2E3yQMZllTJw7yqsn4Ayk=
+        bh=FWYCzeGtceqA/rq/kRIZJcCWrApBFOcolNNuHNemAH8=;
+        b=EMaGuPL5SqWRRfaB/RdGMbH4mrLMXbINagBHPkKNl+T+yJC3jcjt8jWNsRbgHTQzoC4Pfz
+        +uo3zp0vg9GwdXIHPetGGvesz+9VDb28CsSyT1JFarMekGE0F6SrBUdjCHqXZlWzCCFsm0
+        e72WiqoAEKrmm+05LRdDdDRACwtw9Ok=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-mweGgRW0NlWoOHscwxk0-Q-1; Mon, 13 Sep 2021 05:49:56 -0400
-X-MC-Unique: mweGgRW0NlWoOHscwxk0-Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-259-ySxaI00DMc2dKdYIgVhaQw-1; Mon, 13 Sep 2021 05:50:44 -0400
+X-MC-Unique: ySxaI00DMc2dKdYIgVhaQw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F9B7824FA7;
-        Mon, 13 Sep 2021 09:49:54 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 277F36D984;
-        Mon, 13 Sep 2021 09:49:49 +0000 (UTC)
-Message-ID: <8cac80a9aa0bcb2a636d9ee0ac633f6215843677.camel@redhat.com>
-Subject: Re: [PATCH 4/7] KVM: X86: Remove FNAME(update_pte)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Date:   Mon, 13 Sep 2021 12:49:48 +0300
-In-Reply-To: <20210824075524.3354-5-jiangshanlai@gmail.com>
-References: <20210824075524.3354-1-jiangshanlai@gmail.com>
-         <20210824075524.3354-5-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21ED4802B9F;
+        Mon, 13 Sep 2021 09:50:40 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.195.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AEAC01972E;
+        Mon, 13 Sep 2021 09:50:33 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel builds"
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+        <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+        <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
+        <YTfkO2PdnBXQXvsm@elver.google.com>
+        <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
+        <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org>
+        <20210913093256.GA12225@amd>
+Date:   Mon, 13 Sep 2021 11:50:31 +0200
+In-Reply-To: <20210913093256.GA12225@amd> (Pavel Machek's message of "Mon, 13
+        Sep 2021 11:32:56 +0200")
+Message-ID: <87a6kgerdk.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-24 at 15:55 +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> Its solo caller is changed to use FNAME(prefetch_gpte) directly.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  arch/x86/kvm/mmu/paging_tmpl.h | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 48c7fe1b2d50..6b2e248f2f4c 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -589,14 +589,6 @@ FNAME(prefetch_gpte)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
->  	return true;
->  }
->  
-> -static void FNAME(update_pte)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
-> -			      u64 *spte, const void *pte)
-> -{
-> -	pt_element_t gpte = *(const pt_element_t *)pte;
-> -
-> -	FNAME(prefetch_gpte)(vcpu, sp, spte, gpte, false);
-> -}
-> -
->  static bool FNAME(gpte_changed)(struct kvm_vcpu *vcpu,
->  				struct guest_walker *gw, int level)
->  {
-> @@ -998,7 +990,7 @@ static void FNAME(invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa)
->  						       sizeof(pt_element_t)))
->  				break;
->  
-> -			FNAME(update_pte)(vcpu, sp, sptep, &gpte);
-> +			FNAME(prefetch_gpte)(vcpu, sp, sptep, gpte, false);
->  		}
->  
->  		if (!is_shadow_present_pte(*sptep) || !sp->unsync_children)
+* Pavel Machek:
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Do we really want developers treat warnings as errors? When the code
+> is okay but some random version of gcc dislikes it...
 
-Best regards,
-	Maxim Levitsky
+There are some warnings-as-errors which are quite reasonable, like
+-Werror=implicit-function-declaration (which we can't make the compiler
+default without cleaning up userspace first) and perhaps
+-Werror=implicit-int.  Some other warnings can be used to enforce coding
+style, and there -Werror could make sense as well (-Werror=vla and
+others).
+
+But there are also warnings which are emitted by the GCC middle-end (the
+optimizers), and turning on -Werror for those is very problematic.
+These warnings are very target-specific and also depend on compiler
+version and optimization parameters.  Unfortunately that includes the
+buffer size warnings based on function attributes (which would otherwise
+be a good fit for the kernel because it uses few external headers).
+
+GCC also lacks a facility to suppress warnings if they concern code that
+was introduced during optimization and removed again later
+(e.g. inlining, constant propagation, dead code removal).
+
+Thanks,
+Florian
 
