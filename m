@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C75E409022
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFA740902A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244805AbhIMNub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
+        id S243886AbhIMNuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:50:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242513AbhIMNql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:46:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DC7661351;
-        Mon, 13 Sep 2021 13:31:57 +0000 (UTC)
+        id S242994AbhIMNqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:46:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 623E4610CF;
+        Mon, 13 Sep 2021 13:32:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539918;
-        bh=u9mDsjAypRNOHz0EDPLzTs9k7otQqwNUEMTIFHf+clQ=;
+        s=korg; t=1631539921;
+        bh=4y0BWiAPuG5WjVF9EqcZpo9VKbgVNnrNoSR9nsvPPBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dm/4lAZUKQglTrdHx9qXRWSJ9IqiLq2lbTzc8NjQj/9OxrEYDBW0rENsET/B3fRrY
-         TDwBjxiniIl/+GK20ktr2yh0UGlJLPd1cz2BBfGgScuiwVLJYIrS1SA2g0K3qQkjje
-         /eUNly3Nq46btDv5VQcSYn9oJYm2oP5ZO7atqmaE=
+        b=gFn0AGBB69Jru05i4lAEIEDa1+qNWKPtWVTAV+NTJB6P0qoaT9/hscnJsO0s0hiI8
+         J4lJbS/q7qoP4cpBkizDB3GESb6F6QXUcWT6j0JeFwxKAJfVIUaRXP6PEdR3P83Vr6
+         BHktWJVldYZhNGdvNLpJxBaKwRC3mKwZbNKJQAj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 214/236] ipv4: fix endianness issue in inet_rtm_getroute_build_skb()
-Date:   Mon, 13 Sep 2021 15:15:19 +0200
-Message-Id: <20210913131107.649022423@linuxfoundation.org>
+        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 215/236] ASoC: rt5682: Remove unused variable in rt5682_i2c_remove()
+Date:   Mon, 13 Sep 2021 15:15:20 +0200
+Message-Id: <20210913131107.681509215@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -42,43 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 92548b0ee220e000d81c27ac9a80e0ede895a881 ]
+commit a1ea05723c27a6f77894a60038a7b2b12fcec9a7 upstream.
 
-The UDP length field should be in network order.
-This removes the following sparse error:
+In commit 772d44526e20 ("ASoC: rt5682: Properly turn off regulators if
+wrong device ID") I deleted code but forgot to delete a variable
+that's now unused. Delete it.
 
-net/ipv4/route.c:3173:27: warning: incorrect type in assignment (different base types)
-net/ipv4/route.c:3173:27:    expected restricted __be16 [usertype] len
-net/ipv4/route.c:3173:27:    got unsigned long
-
-Fixes: 404eb77ea766 ("ipv4: support sport, dport and ip_proto in RTM_GETROUTE")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Roopa Prabhu <roopa@nvidia.com>
-Cc: David Ahern <dsahern@kernel.org>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 772d44526e20 ("ASoC: rt5682: Properly turn off regulators if wrong device ID")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210813073402.1.Iaa9425cfab80f5233afa78b32d02b6dc23256eb3@changeid
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/route.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5682-i2c.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index c5d762a2be99..ce787c386793 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -3078,7 +3078,7 @@ static struct sk_buff *inet_rtm_getroute_build_skb(__be32 src, __be32 dst,
- 		udph = skb_put_zero(skb, sizeof(struct udphdr));
- 		udph->source = sport;
- 		udph->dest = dport;
--		udph->len = sizeof(struct udphdr);
-+		udph->len = htons(sizeof(struct udphdr));
- 		udph->check = 0;
- 		break;
- 	}
--- 
-2.30.2
-
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -289,8 +289,6 @@ static void rt5682_i2c_shutdown(struct i
+ 
+ static int rt5682_i2c_remove(struct i2c_client *client)
+ {
+-	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
+-
+ 	rt5682_i2c_shutdown(client);
+ 
+ 	return 0;
 
 
