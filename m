@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A634A40894A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48DD408955
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239110AbhIMKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238610AbhIMKpT (ORCPT
+        id S239134AbhIMKtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:49:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239098AbhIMKtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:45:19 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534F0C061574;
-        Mon, 13 Sep 2021 03:44:04 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id kt8so19968132ejb.13;
-        Mon, 13 Sep 2021 03:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+NnCNALJ2/5oW+pu5k0q6dGcKqbC4aKJxWqtF3jB1mU=;
-        b=nx3tcWUag5qYGc/gPGaYz3QxxKbVF13ihLPiRQ6uhOuvIrRIzma4NiJVJZG1oT+HEs
-         7TTgCkzKbIF1Xo8Cm+RZqzFN8HR7H1f9KCyUucNSd3C2lO13vHQi07DTY34jsi9s5dqV
-         DI1xo5SL63Uen6AeWiRXuOHZgR9UVjNYkmX14dr0vTLDdbGKB9o2KYho1z/KKBDFWelT
-         iwO94NvEu/gX5kdECyecNfcrOMXbx8Bvn2QRRMMPMg6RIVnDvPRYWibRZ95jqaclrNnL
-         CDCXyHCbQRuLDMg5qF9UKW9eyeZ/aIbE+NbrAIiOgRN37Hf0M7DeuaDALgyGAHqrQKdr
-         OEew==
+        Mon, 13 Sep 2021 06:49:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631530075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=jW3RSfCiVG035tkP4VV2MK7HMp8Gx524MEf00frh+Is=;
+        b=LHPBXU5uIMV3lvi85Sg2rtrloI2LH/wPCm+bHqMUfAgKL8qt0VlKPMCH76lCSfzUgQmmV1
+        8OU18Q7lfc95w/+vrJb09FyrjU3HYqxzJDIK+Nz4PjPsTL+OtaZSOb75ItgeR0ktpesB2e
+        x4A8yNUDHX0MfecAqWOH+8L3bJrxJxk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-7ZGVaP-vOWKhxT7c-mzChA-1; Mon, 13 Sep 2021 06:47:54 -0400
+X-MC-Unique: 7ZGVaP-vOWKhxT7c-mzChA-1
+Received: by mail-ej1-f70.google.com with SMTP id r21-20020a1709067055b02904be5f536463so3505143ejj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 03:47:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+NnCNALJ2/5oW+pu5k0q6dGcKqbC4aKJxWqtF3jB1mU=;
-        b=Ka/1BKuO8UuNxYbvtxQZBhVTF2rjcL0KVQsKL1tC0c4TsihKt6Pdzw6HzWsizXV0Av
-         2F9wBTFsEeNSbWarAkp2QaTUn+ZZ0YUOe6FkBNFS9nwAyI543N/6w8QB+mwhegCUGq0L
-         YCcBAAffGXmW+GF4AlKuaqplLQ9aXHqEZISceglWSZvHLFnH6oxsYZ4IkOdiQk7ATB8l
-         WUDo3v3eU23AZFH+lWN3Gek0Avw99GJAKUoqwUcZcnJyTBh1tBaYbyGx5mYIv/7xVPdV
-         xh64fUFj5tVuzQoN+tD6Q6gds3VMTB754038pNbh+FRzj1nuaiDJY3ux+poexsiLJdJz
-         yUfQ==
-X-Gm-Message-State: AOAM532YtgkFssDKtBWfaIlnOHUYG+v42HgLpRKAlr1UI8Sx3DmK4V68
-        1TAu4rqtIpaBhEzXw/E1WfTSIZqiUHs=
-X-Google-Smtp-Source: ABdhPJwbL9RssbTf10VUSEYDfwDbh+GwPcuxtpj5sQIQ716/1ZZLd2IaswFumW82iJ2c3S+zyaffqA==
-X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr11980891ejc.247.1631529842903;
-        Mon, 13 Sep 2021 03:44:02 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id l22sm1874449eds.58.2021.09.13.03.44.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=jW3RSfCiVG035tkP4VV2MK7HMp8Gx524MEf00frh+Is=;
+        b=a2cwyslQfttBhfcIvY4ejoJDhNmyg0b16upC6MkXTP6Er39Qrbccp1xH4qnOhiXBuI
+         jqqCZfTyEBXmu26ZnfJJqpKSbpJD61rZn1ns/w7piIDH3azq9bAv8qVKQlbCxaVOhk+Q
+         cS1P4NbRkOR1dEYIhXKzOiv5MvW4gPOhl51wKzAtsYQGMeOzhR+4AG03Gb9Yle9sLjXP
+         j5xBwDJmceGM4j+VJtYOY3mirAmDyrgrOe0+UcWNgJrBi3hCKMMNMZxa5yo/ce0/0f6U
+         1+bGMOB0fXT/BXcOO641zt4ii8ZP9r2Iz3KyHHy1hT5lmoVTqX3E43l2ao9XvGNZJXDD
+         zWrA==
+X-Gm-Message-State: AOAM530HT7ZQb8BsQiT6H2UZ/Ggca4iwnBSs7DXn/kfMmTlIcF1LfFF8
+        dFgzge2Q8F2qGD74RO0p9as+xCUlzqcPN1McrLs4n+++srEp8+y+CTegq63bNQq/5ekNDqlBW9h
+        A5lMypA+qVkGkt75yaWCxrR1o
+X-Received: by 2002:a17:906:269a:: with SMTP id t26mr7121203ejc.20.1631530072840;
+        Mon, 13 Sep 2021 03:47:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyUzxkOpFlkukF5bylBkxuLJ8coUNDVC3dmW/I3lxI4GHhcqqXeIdferB5ZUa/gtf5ATObe8g==
+X-Received: by 2002:a17:906:269a:: with SMTP id t26mr7121179ejc.20.1631530072612;
+        Mon, 13 Sep 2021 03:47:52 -0700 (PDT)
+Received: from redhat.com ([2a03:c5c0:207f:418b:5703:fd4e:73dd:1986])
+        by smtp.gmail.com with ESMTPSA id o15sm3258041ejj.10.2021.09.13.03.47.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 03:44:02 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 13:44:00 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, p.rosenberger@kunbus.com,
-        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Message-ID: <20210913104400.oyib42rfq5x2vc56@skbuf>
-References: <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
- <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
- <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
- <20210909225457.figd5e5o3yw76mcs@skbuf>
- <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com>
- <YTtG3NbYjUbu4jJE@lunn.ch>
- <20210910145852.4te2zjkchnajb3qw@skbuf>
- <53f2509f-b648-b33d-1542-17a2c9d69966@gmx.de>
- <20210912202913.mu3o5u2l64j7mpwe@skbuf>
- <trinity-e5b95a34-015c-451d-bbfc-83bfb0bdecad-1631529134448@3c-app-gmx-bs55>
+        Mon, 13 Sep 2021 03:47:52 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 06:47:46 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] virtio: don't fail on !of_device_is_compatible
+Message-ID: <20210913104640.85839-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <trinity-e5b95a34-015c-451d-bbfc-83bfb0bdecad-1631529134448@3c-app-gmx-bs55>
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:32:14PM +0200, Lino Sanfilippo wrote:
-> Hi,
-> 
-> > Gesendet: Sonntag, 12. September 2021 um 22:29 Uhr
-> > Von: "Vladimir Oltean" <olteanv@gmail.com>
-> > An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> > Cc: "Andrew Lunn" <andrew@lunn.ch>, "Florian Fainelli" <f.fainelli@gmail.com>, "Saravana Kannan" <saravanak@google.com>, "Rafael J. Wysocki" <rafael@kernel.org>, p.rosenberger@kunbus.com, woojung.huh@microchip.com, UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-> > Betreff: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-> >
-> > On Sun, Sep 12, 2021 at 10:19:24PM +0200, Lino Sanfilippo wrote:
-> > >
-> > > Hi,
-> > >
-> > > On 10.09.21 at 16:58, Vladimir Oltean wrote:
-> > > > On Fri, Sep 10, 2021 at 01:51:56PM +0200, Andrew Lunn wrote:
-> > > >>> It does not really scale but we also don't have that many DSA masters to
-> > > >>> support, I believe I can name them all: bcmgenet, stmmac, bcmsysport, enetc,
-> > > >>> mv643xx_eth, cpsw, macb.
-> > > >>
-> > > >> fec, mvneta, mvpp2, i210/igb.
-> > > >
-> > > > I can probably double that list only with Freescale/NXP Ethernet
-> > > > drivers, some of which are not even submitted to mainline. To name some
-> > > > mainline drivers: gianfar, dpaa-eth, dpaa2-eth, dpaa2-switch, ucc_geth.
-> > > > Also consider that DSA/switchdev drivers can also be DSA masters of
-> > > > their own, we have boards doing that too.
-> > > >
-> > > > Anyway, I've decided to at least try and accept the fact that DSA
-> > > > masters will unregister their net_device on shutdown, and attempt to do
-> > > > something sane for all DSA switches in that case.
-> > > >
-> > > > Attached are two patches (they are fairly big so I won't paste them
-> > > > inline, and I would like initial feedback before posting them to the
-> > > > list).
-> > > >
-> > > > As mentioned in those patches, the shutdown ordering guarantee is still
-> > > > very important, I still have no clue what goes on there, what we need to
-> > > > do, etc.
-> > > >
-> > >
-> > > I tested these patches with my 5.10 kernel (based on Gregs 5.10.27 stable
-> > > kernel) and while I do not see the message "unregister_netdevice: waiting
-> > > for eth0 to become free. Usage count = 2." any more the shutdown/reboot hangs, too.
-> > > After a few attempts without any error messages on the console I was able to get a
-> > >  stack trace. Something still seems to go wrong in bcm2835_spi_shutdown() (see attachment).
-> > > I have not had the time yet to investigate this further (or to test the patches
-> > >  with a newer kernel).
-> >
-> > Could you post the full kernel output? The picture you've posted is
-> > truncated and only shows a WARN_ON in rpi_firmware_transaction and is
-> > probably a symptom and not the issue (which is above and not shown).
-> >
-> 
-> Unfortunately I dont see anything in the kernel log. The console output is all I get,
-> thats why I made the photo.
+A recent change checking of_device_is_compatible on probe broke some
+powerpc/pseries setups. Apparently there virtio devices do not have a
+"compatible" property - they are matched by PCI vendor/device ids.
 
-To clarify, are you saying nothing above this line gets printed? Because
-the part of the log you've posted in the picture is pretty much
-unworkable:
+Let's just skip of_node setup but proceed with initialization like we
+did previously.
 
-[   99.375389] [<bf0dc56c>] (bcm2835_spi_shutdown [spi_bcm2835]) from [<c0863ca0>] (platform_drv_shutdown+0x2c/0x30)
+Fixes: 694a1116b405 ("virtio: Bind virtio device to device-tree node")
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
 
-How do you access the device's serial console? Use a program with a
-scrollback buffer like GNU screen or something.
+Arnd could you help review this pls? Viresh is on vacation.
+
+ drivers/virtio/virtio.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index c46cc1fbc7ae..19a70a2361b4 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -347,8 +347,13 @@ static int virtio_device_of_init(struct virtio_device *dev)
+ 	ret = snprintf(compat, sizeof(compat), "virtio,device%x", dev->id.device);
+ 	BUG_ON(ret >= sizeof(compat));
+ 
++	/*
++	 * On powerpc/pseries virtio devices are PCI devices so PCI
++	 * vendor/device ids play the role of the "compatible" property.
++	 * Simply don't init of_node in this case.
++	 */
+ 	if (!of_device_is_compatible(np, compat)) {
+-		ret = -EINVAL;
++		ret = 0;
+ 		goto out;
+ 	}
+ 
+-- 
+MST
+
