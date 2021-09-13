@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD91C409308
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DE5409600
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343561AbhIMORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37124 "EHLO mail.kernel.org"
+        id S1345128AbhIMOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244635AbhIMOOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E4F61AE4;
-        Mon, 13 Sep 2021 13:43:21 +0000 (UTC)
+        id S1347250AbhIMOk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:40:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2BF76187C;
+        Mon, 13 Sep 2021 13:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540602;
-        bh=zntWbeY0RpZNmB/tgGvQlXTtojxuBbEAuPqXm+3U/ec=;
+        s=korg; t=1631541364;
+        bh=9t8GuoK5hHe4bY+kj8WwJWralFiOKg5R9hJvMrIENWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6N/pV0qyijmf2GkGFwgpEQv4gOErOrqtyX2Nt5iK6UcZlJ2bFJqcDrgLna+gmIBE
-         zHz7Sack/FCLiW7ItcEnB1iV451gVW+fabGDIoLUUPAcqgX9LIejlXlElHLoGmEffx
-         IQFi6NDgsdKra48C899fTI6OUUvmiI5YqqikQEts=
+        b=a6olJaKGSYyh5f1Ik53p1GOiWtdquDDn058FGxLgkdQysa640Ynt8v6VBpBSUMAWC
+         jR8LjD2CG4Ge3pG30FYQZVzsq1Xgmdm2WVQ7wCuG+w8HGBPoFGA98QxCUaiJIYRPxX
+         1/Gf0eVmd9gj6gJ+C66EO97Y+Z5yzy+7aF5ThI0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Abhishek Naik <abhishek.naik@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 259/300] octeontx2-af: Fix mailbox errors in nix_rss_flowkey_cfg
-Date:   Mon, 13 Sep 2021 15:15:20 +0200
-Message-Id: <20210913131118.089481001@linuxfoundation.org>
+Subject: [PATCH 5.14 267/334] iwlwifi: skip first element in the WTAS ACPI table
+Date:   Mon, 13 Sep 2021 15:15:21 +0200
+Message-Id: <20210913131122.451091856@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
+From: Abhishek Naik <abhishek.naik@intel.com>
 
-[ Upstream commit f2e4568ec95166605c77577953b2787c7f909978 ]
+[ Upstream commit 19426d54302e199b3fd2d575f926a13af66be2b9 ]
 
-In npc_update_vf_flow_entry function the loop cursor
-'index' is being changed inside the loop causing
-the loop to spin forever. This in turn hogs the kworker
-thread forever and no other mbox message is processed
-by AF driver after that. Fix this by using
-another variable in the loop.
+By mistake we were considering the first element of the WTAS wifi
+package as part of the data we want to rid, but that element is the wifi
+package signature (always 0x07), so it should be skipped.
 
-Fixes: 55307fcb9258 ("octeontx2-af: Add mbox messages to install and delete MCAM rules")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Change the code to read the data starting from element 1 instead.
+
+Signed-off-by: Abhishek Naik <abhishek.naik@intel.com>
+Fixes: 28dd7ccdc56f ("iwlwifi: acpi: read TAS table from ACPI and send it to the FW")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210805141826.ff8148197b15.I70636c04e37b2b57a5df3ce611511f62203d27a7@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 53ee1785c931..c1a3f70063b5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -823,7 +823,7 @@ void rvu_npc_enable_bcast_entry(struct rvu *rvu, u16 pcifunc, bool enable)
- static void npc_update_vf_flow_entry(struct rvu *rvu, struct npc_mcam *mcam,
- 				     int blkaddr, u16 pcifunc, u64 rx_action)
- {
--	int actindex, index, bank;
-+	int actindex, index, bank, entry;
- 	bool enable;
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
+index 34933f133a0a..66f8d949c1e6 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
+@@ -264,7 +264,7 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
+ 		goto out_free;
+ 	}
  
- 	if (!(pcifunc & RVU_PFVF_FUNC_MASK))
-@@ -834,7 +834,7 @@ static void npc_update_vf_flow_entry(struct rvu *rvu, struct npc_mcam *mcam,
- 		if (mcam->entry2target_pffunc[index] == pcifunc) {
- 			bank = npc_get_bank(mcam, index);
- 			actindex = index;
--			index &= (mcam->banksize - 1);
-+			entry = index & (mcam->banksize - 1);
+-	enabled = !!wifi_pkg->package.elements[0].integer.value;
++	enabled = !!wifi_pkg->package.elements[1].integer.value;
  
- 			/* read vf flow entry enable status */
- 			enable = is_mcam_entry_enabled(rvu, mcam, blkaddr,
-@@ -844,7 +844,7 @@ static void npc_update_vf_flow_entry(struct rvu *rvu, struct npc_mcam *mcam,
- 					      false);
- 			/* update 'action' */
- 			rvu_write64(rvu, blkaddr,
--				    NPC_AF_MCAMEX_BANKX_ACTION(index, bank),
-+				    NPC_AF_MCAMEX_BANKX_ACTION(entry, bank),
- 				    rx_action);
- 			if (enable)
- 				npc_enable_mcam_entry(rvu, mcam, blkaddr,
+ 	if (!enabled) {
+ 		*block_list_size = -1;
+@@ -273,15 +273,15 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
+ 		goto out_free;
+ 	}
+ 
+-	if (wifi_pkg->package.elements[1].type != ACPI_TYPE_INTEGER ||
+-	    wifi_pkg->package.elements[1].integer.value >
++	if (wifi_pkg->package.elements[2].type != ACPI_TYPE_INTEGER ||
++	    wifi_pkg->package.elements[2].integer.value >
+ 	    APCI_WTAS_BLACK_LIST_MAX) {
+ 		IWL_DEBUG_RADIO(fwrt, "TAS invalid array size %llu\n",
+ 				wifi_pkg->package.elements[1].integer.value);
+ 		ret = -EINVAL;
+ 		goto out_free;
+ 	}
+-	*block_list_size = wifi_pkg->package.elements[1].integer.value;
++	*block_list_size = wifi_pkg->package.elements[2].integer.value;
+ 
+ 	IWL_DEBUG_RADIO(fwrt, "TAS array size %d\n", *block_list_size);
+ 	if (*block_list_size > APCI_WTAS_BLACK_LIST_MAX) {
+@@ -294,15 +294,15 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
+ 	for (i = 0; i < *block_list_size; i++) {
+ 		u32 country;
+ 
+-		if (wifi_pkg->package.elements[2 + i].type !=
++		if (wifi_pkg->package.elements[3 + i].type !=
+ 		    ACPI_TYPE_INTEGER) {
+ 			IWL_DEBUG_RADIO(fwrt,
+-					"TAS invalid array elem %d\n", 2 + i);
++					"TAS invalid array elem %d\n", 3 + i);
+ 			ret = -EINVAL;
+ 			goto out_free;
+ 		}
+ 
+-		country = wifi_pkg->package.elements[2 + i].integer.value;
++		country = wifi_pkg->package.elements[3 + i].integer.value;
+ 		block_list_array[i] = cpu_to_le32(country);
+ 		IWL_DEBUG_RADIO(fwrt, "TAS block list country %d\n", country);
+ 	}
 -- 
 2.30.2
 
