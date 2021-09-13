@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E120640898E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF45408990
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239466AbhIMK4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
+        id S239049AbhIMK4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239452AbhIMK4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:56:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99AEF6103B;
-        Mon, 13 Sep 2021 10:55:16 +0000 (UTC)
+        id S239441AbhIMK4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:56:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B31660F12;
+        Mon, 13 Sep 2021 10:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631530517;
-        bh=AkP0jovDemSFw2EtzAagzgwX6j/fQza8GDVZEvdK4KU=;
+        s=k20201202; t=1631530524;
+        bh=jjg6yzmoYmrgF/kupfGziCDMx2GVtuJGY7oPruMvnVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwiRISb7qm2rF6Qf3xhnl9h2vkzcF22YRJ6DEgqXM0Jmprw1wEy0RiF2IySCSWFB8
-         4feuhLfIajRQqgCnpkBoKP9VVOFLZwWfHZG+Wn6RanhDKoydLprdoKv4us5v31N6ut
-         IUO+YOGpXQDts3AqW7EgXrpLy+Bw4Dntp1RVtZsn9rRf0o5hufCTbivpRQrab/RP1r
-         03gjbq6TaakJulvNVbl7V+hyOn+4i7Jcjlypzu/TQd/i1Le8e922lkexi8WJLQIGNk
-         bv5ku+5uD7r4D1qFAFuDaDW9UI8wIXqBFAszISN3utlBIRToRYpB5+MnWzE6CpW6gA
-         k7zuQrxsr8o+w==
+        b=VrrT8olopk85eVfPt+B6eBAre8D1nMrLOz9HALE8hjM1WyJcVSwNt+Kf6t6xrnj0y
+         jv5CgAfOMv2lTIPy5fypia/YhLZ00ixv0yTwrq4qnB52NKJy0WEvD8r/28yBLArUa6
+         umHdxhSjwMzLteVcJPngl1UPpeU7GQfd+nxm/R1/ojOES7h0Hcqlswt/nOmPeQMGR5
+         ngfw5HoaafYETLg3fsNsp0+eee/FQ5X/cmb60qqR/PZF+cQ0+yL8xj1BczkK0yt/RW
+         Uia9w7RCdtQIGtSgCQdPvK6iaiHcjLLKWdqbVeBMG/uzZkzjpCYXSFFZW0gWck8CN0
+         r/ObDk9j3MdVw==
 From:   Mark Brown <broonie@kernel.org>
-To:     matthias.bgg@gmail.com, tiwai@suse.com,
-        Trevor Wu <trevor.wu@mediatek.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
         linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] ASoC: mt8195: remove unnecessary CONFIG_PM
-Date:   Mon, 13 Sep 2021 11:53:29 +0100
-Message-Id: <163152996583.45703.15399781135133859191.b4-ty@kernel.org>
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: Make use of the helper function devm_platform_ioremap_resource()
+Date:   Mon, 13 Sep 2021 11:53:32 +0100
+Message-Id: <163152996580.45703.9693182447056291147.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210902071440.6087-1-trevor.wu@mediatek.com>
-References: <20210902071440.6087-1-trevor.wu@mediatek.com>
+In-Reply-To: <20210901132742.31714-1-caihuoqing@baidu.com>
+References: <20210901132742.31714-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,16 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Sep 2021 15:14:40 +0800, Trevor Wu wrote:
-> The unnecessary conditional inclusion caused the following warning.
+On Wed, 1 Sep 2021 21:27:41 +0800, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
 > 
-> >> sound/soc/mediatek/mt8195/mt8195-afe-pcm.c:3260:32: warning: unused
-> >> variable 'mt8195_afe_pm_ops' [-Wunused-const-variable]
->    static const struct dev_pm_ops mt8195_afe_pm_ops = {
->                                   ^
->    1 warning generated.
 > 
-> [...]
 
 Applied to
 
@@ -59,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mt8195: remove unnecessary CONFIG_PM
-      commit: 2b9b42c847b83823527a497c323e74d2efced721
+[1/1] ASoC: mediatek: mt8195: Make use of the helper function devm_platform_ioremap_resource()
+      commit: c6b1b57469b4768b83e9ccc9bc3e5c2c7eb93013
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
