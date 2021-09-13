@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99291409595
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1124092A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344299AbhIMOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:42:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
+        id S242331AbhIMONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345994AbhIMOhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:37:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DE7617E2;
-        Mon, 13 Sep 2021 13:54:22 +0000 (UTC)
+        id S1345157AbhIMOKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:10:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41AFD6127C;
+        Mon, 13 Sep 2021 13:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541263;
-        bh=jRPCEKKYWg+2r3Q55PnmcsHoHzvghlYmIOUah78fWJ8=;
+        s=korg; t=1631540506;
+        bh=xbe0RSPYdKoFwBw5BLuEHqD/RHXyvym9ZB+DHR8IeS0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BnQAKBUZgo/we64lvfjUS67lawyAm/ZbYWQxpL+yi/OUwBiv4naNZ16GptjcDEeib
-         p5eLW8KjCXpGhBxrztfyXSn/4JbG6aVx1aR38hW3zbjsGGlvYdJHbGKbaNZN0SeGxo
-         Sg1j7dtNcTZYNokymxZbWTmg4l2972NkD+xKwDtE=
+        b=C2ZAsffEnU5x3JdaJbUoNaH0bS+ozwTvagk4758duAHd6mirvffEHtomvgVb3ccnH
+         rLoEH8stgbZRWnaDwhxog0P/GSry3iN2nnw6+bPkQ11zo20uec6QbaLfQTkjUtz/Ef
+         2IcHrBgLCKrsgm6nHOyvm3gnOHzUl4Wk3vyfWzDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 228/334] firmware: raspberrypi: Fix a leak in rpi_firmware_get()
+Subject: [PATCH 5.13 221/300] octeontx2-pf: Fix algorithm index in MCAM rules with RSS action
 Date:   Mon, 13 Sep 2021 15:14:42 +0200
-Message-Id: <20210913131121.126520503@linuxfoundation.org>
+Message-Id: <20210913131116.823632502@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sunil Goutham <sgoutham@marvell.com>
 
-[ Upstream commit 09cbd1df7d2615c19e40facbe31fdcb5f1ebfa96 ]
+[ Upstream commit e7938365459f3a6d4edf212f435c4ad635621450 ]
 
-The reference taken by 'of_find_device_by_node()' must be released when
-not needed anymore.
+Otherthan setting action as RSS in NPC MCAM entry, RSS flowkey
+algorithm index also needs to be set. Otherwise whatever algorithm
+is defined at flowkey index '0' will be considered by HW and pkt
+flows will be distributed as such.
 
-Add the corresponding 'put_device()' in the normal and error handling
-paths.
+Fix this by saving the flowkey index sent by admin function while
+initializing RSS and then use it when framing MCAM rules.
 
-Fixes: 4e3d60656a72 ("ARM: bcm2835: Add the Raspberry Pi firmware driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/5e17e5409b934cd08bf6f9279c73be5c1cb11cce.1628232242.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 81a4362016e7 ("octeontx2-pf: Add RSS multi group support")
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/raspberrypi.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ .../net/ethernet/marvell/octeontx2/nic/otx2_common.c  | 11 +++++++++++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_common.h  |  3 +++
+ .../net/ethernet/marvell/octeontx2/nic/otx2_flows.c   |  1 +
+ 3 files changed, 15 insertions(+)
 
-diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-index 250e01680742..4b8978b254f9 100644
---- a/drivers/firmware/raspberrypi.c
-+++ b/drivers/firmware/raspberrypi.c
-@@ -329,12 +329,18 @@ struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 871404f3b8d3..25f84ad50dba 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -266,6 +266,7 @@ unlock:
+ int otx2_set_flowkey_cfg(struct otx2_nic *pfvf)
+ {
+ 	struct otx2_rss_info *rss = &pfvf->hw.rss_info;
++	struct nix_rss_flowkey_cfg_rsp *rsp;
+ 	struct nix_rss_flowkey_cfg *req;
+ 	int err;
  
- 	fw = platform_get_drvdata(pdev);
- 	if (!fw)
--		return NULL;
-+		goto err_put_device;
+@@ -280,6 +281,16 @@ int otx2_set_flowkey_cfg(struct otx2_nic *pfvf)
+ 	req->group = DEFAULT_RSS_CONTEXT_GROUP;
  
- 	if (!kref_get_unless_zero(&fw->consumers))
--		return NULL;
-+		goto err_put_device;
+ 	err = otx2_sync_mbox_msg(&pfvf->mbox);
++	if (err)
++		goto fail;
 +
-+	put_device(&pdev->dev);
- 
- 	return fw;
++	rsp = (struct nix_rss_flowkey_cfg_rsp *)
++			otx2_mbox_get_rsp(&pfvf->mbox.mbox, 0, &req->hdr);
++	if (IS_ERR(rsp))
++		goto fail;
 +
-+err_put_device:
-+	put_device(&pdev->dev);
-+	return NULL;
++	pfvf->hw.flowkey_alg_idx = rsp->alg_idx;
++fail:
+ 	mutex_unlock(&pfvf->mbox.lock);
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(rpi_firmware_get);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 45730d0d92f2..c652c27cd345 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -195,6 +195,9 @@ struct otx2_hw {
+ 	u8			lso_udpv4_idx;
+ 	u8			lso_udpv6_idx;
  
++	/* RSS */
++	u8			flowkey_alg_idx;
++
+ 	/* MSI-X */
+ 	u8			cint_cnt; /* CQ interrupt count */
+ 	u16			npa_msixoff; /* Offset of NPA vectors */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
+index 0b4fa92ba821..81265dbf91e2 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
+@@ -682,6 +682,7 @@ static int otx2_add_flow_msg(struct otx2_nic *pfvf, struct otx2_flow *flow)
+ 		if (flow->flow_spec.flow_type & FLOW_RSS) {
+ 			req->op = NIX_RX_ACTIONOP_RSS;
+ 			req->index = flow->rss_ctx_id;
++			req->flow_key_alg = pfvf->hw.flowkey_alg_idx;
+ 		} else {
+ 			req->op = NIX_RX_ACTIONOP_UCAST;
+ 			req->index = ethtool_get_flow_spec_ring(ring_cookie);
 -- 
 2.30.2
 
