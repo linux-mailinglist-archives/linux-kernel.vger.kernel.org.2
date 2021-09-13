@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CDE4098FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17690409905
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237418AbhIMQ0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbhIMQ0l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:26:41 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AD9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:25:25 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso422319pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=taCjqdDSME7vR7lF+EW1BqEPTLTykFPbYK6SPDFQl0A=;
-        b=eh1rxFNPw+aCEFZyqDEkXAB5SU6WvscIm/FoYq+F+NbA5PM6WDQVyREPTH+Zmt42Wc
-         056LnzzjAmbFc7awWxnztYEHl6BpujZt+Bfv/k8RYN4uu0bzV6hDU3IkNbIw5Tq8MdN9
-         By38+nHsFcvmDLl+Q5uYLo+KGPTiNsy3rN/dc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=taCjqdDSME7vR7lF+EW1BqEPTLTykFPbYK6SPDFQl0A=;
-        b=cyFkFgtOuqUHVRtpV0HpA245mYIkmwf5TWxxXf/m5Ryk0BxJMGSphFYkr0TTRv7IBj
-         2wn5quQxQFOVa2nz1+JMEmZe4ouy4uQBGiG7Qb9Zj62ePEyNNtsIDyesWFluQS82Goo/
-         JSkc5VMitrOEGOjhnvtfyatIZla7zyb7JIDS5s5o0P2wkkFw1WQ5LFlxD7JQsXHCG38E
-         speqBDyUujmNA2ro4St0qOIA2ocpq7WkKfHVHpzuZRAQz6Sav5bnQBjrn+h5SJVRCaYw
-         8CDEIv95lg2U1XAgETIJK2EicNAMLiyqV3AyuwEeYAvGYoKfE5bwOrQMONrIeXpEuZac
-         uGwA==
-X-Gm-Message-State: AOAM530oDL6vM4dADsp6TbrpRJNKr9nds1JgaDDSiw6Ef0ABPdaPNUJi
-        xxiDZ5eQLzzSjiuHQNbsmljayw==
-X-Google-Smtp-Source: ABdhPJyGnb96Au30P7aC4qM0B6pg/L/NzYt1VlVh+hgL2adQWRvqsZTTS4seDlUN6x/+GDQT2LbG0g==
-X-Received: by 2002:a17:903:248f:b029:128:d5ea:18a7 with SMTP id p15-20020a170903248fb0290128d5ea18a7mr11321531plw.83.1631550324907;
-        Mon, 13 Sep 2021 09:25:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s9sm7064889pfu.129.2021.09.13.09.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:25:24 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 09:25:23 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] Makefile: drop GCC < 5
- -fno-var-tracking-assignments workaround
-Message-ID: <202109130925.A47FB0185@keescook>
-References: <20210910234047.1019925-1-ndesaulniers@google.com>
- <20210910234047.1019925-9-ndesaulniers@google.com>
+        id S237566AbhIMQ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:27:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237290AbhIMQ1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:27:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A65F86023B;
+        Mon, 13 Sep 2021 16:25:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631550358;
+        bh=k2gjCgqIRciyyDVHRUfYHy8eLkHaUsw4OJP6DmYTCeo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z350u0T1rMBl/EKHNv9LAI/QocjghKC+Qf2vJce4bbOxLjiKlU1terzrbpBQHluat
+         dg3H0bT13pXwXCI5dGNxJVnONBmm5K68MpdjT6tdGCbGHjXUlhKV+0PHofh4le4NnF
+         jFSPMEy02et4JrWKnET1rBsonSytWZflFLKdxi+4=
+Date:   Mon, 13 Sep 2021 18:25:56 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: define wowlan_stub only when
+ CONFIG_PM is enabled
+Message-ID: <YT97lJVU8cx3wxwN@kroah.com>
+References: <20210913140937.1490133-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210910234047.1019925-9-ndesaulniers@google.com>
+In-Reply-To: <20210913140937.1490133-1-hello@bryanbrattlof.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:40:45PM -0700, Nick Desaulniers wrote:
-> Now that GCC 5.1 is the minimally supported version, we can drop this
-> workaround for older versions of GCC.
+On Mon, Sep 13, 2021 at 02:10:12PM +0000, Bryan Brattlof wrote:
+> The wake-on-lan stub is needed only when the device power management
+> functionality is enabled in the kernel. Conditionally define
+> wowlan_stub to avoid potential unused object warnings.
 > 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+> ---
+>  drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> index 34da8a569709..f4a9b4b7c97e 100644
+> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> @@ -47,6 +47,7 @@ static const u32 rtw_cipher_suites[] = {
+>   * Moreover wowlan has to be enabled via a the nl80211_set_wowlan callback.
+>   * (from user space, e.g. iw phy0 wowlan enable)
+>   */
+> +#if defined(CONFIG_PM)
+>  static const struct wiphy_wowlan_support wowlan_stub = {
+>  	.flags = WIPHY_WOWLAN_ANY,
+>  	.n_patterns = 0,
+> @@ -54,6 +55,7 @@ static const struct wiphy_wowlan_support wowlan_stub = {
+>  	.pattern_min_len = 0,
+>  	.max_pkt_offset = 0,
+>  };
+> +#endif
+> 
+>  static struct ieee80211_rate rtw_rates[] = {
+>  	RATETAB_ENT(10,  0x1,   0),
+> --
+> 2.30.2
+> 
+> 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Do you get a build warning with the code as-is?
 
--- 
-Kees Cook
+Having #if in .c files is generally a bad idea, are you sure there is no
+other way to solve this?
+
+thanks,
+
+greg k-h
