@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899DD409339
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C117409351
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345231AbhIMOT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37398 "EHLO mail.kernel.org"
+        id S1345497AbhIMOTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:19:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345038AbhIMOOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB10E61AEF;
-        Mon, 13 Sep 2021 13:43:56 +0000 (UTC)
+        id S1345292AbhIMOPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:15:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8509961AEE;
+        Mon, 13 Sep 2021 13:43:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540637;
-        bh=k6QrmouAQnh3bcPZYG3BkcLiWo6qCAT+FpjzOobLcLI=;
+        s=korg; t=1631540640;
+        bh=iiF34TJGPy6Y5bvuDXIlak6BK7vm9Lv+XVhGqeWdi1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ug0usjFgj6jPL/YrJjzEUPpPZ7icSTZRz6ebSMi6t92q6uoCz+DNkKHTNwkq5fgFW
-         Ia1jtlJw2eLMO2mSWrZlbVyJJ+1NHXTu2HDSWqPbFqplI0PipWDyvoVucRiInKhS/2
-         nFQo5LaSH3iNDtUDNoN2XamPlnDiWJy1q7981eg4=
+        b=YQey4ottAYTVRE0JXwmOHo5BIwgJorla6k2SjLw65ifxhHpxekInUvIj65kjQ8PJn
+         23jh9S9rAc8l1NxlFdAeiHhJEtAgmJGH+rQ/NwE71O2xcgsbhPZ5or8/mayURM0Eg3
+         G+VpfjCAdpXyvyA2OBAQ81+kQJWPMSRNKKTinsg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.13 275/300] smb3: fix posix extensions mount option
-Date:   Mon, 13 Sep 2021 15:15:36 +0200
-Message-Id: <20210913131118.622507712@linuxfoundation.org>
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nguyen Dinh Phi <phind.uet@gmail.com>
+Subject: [PATCH 5.13 276/300] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Date:   Mon, 13 Sep 2021 15:15:37 +0200
+Message-Id: <20210913131118.663376135@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -41,44 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-commit 7321be2663da5922343cc121f1ff04924cee2e76 upstream.
+commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
 
-We were incorrectly initializing the posix extensions in the
-conversion to the new mount API.
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is waiting for the
+ops->receive_buf() to finish its work, the data race will happen.
 
-CC: <stable@vger.kernel.org> # 5.11+
-Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Suggested-by: Namjae Jeon <namjae.jeon@samsung.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+For example:
+tty_ioctl			|tty_ldisc_receive_buf
+ ->tioctsi			| ->tty_port_default_receive_buf
+				|  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
+
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and we will lost the data.
+
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
+
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/fs_context.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/tty/tty_io.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/cifs/fs_context.c
-+++ b/fs/cifs/fs_context.c
-@@ -1259,10 +1259,17 @@ static int smb3_fs_context_parse_param(s
- 			ctx->posix_paths = 1;
- 		break;
- 	case Opt_unix:
--		if (result.negated)
-+		if (result.negated) {
-+			if (ctx->linux_ext == 1)
-+				pr_warn_once("conflicting posix mount options specified\n");
- 			ctx->linux_ext = 0;
--		else
- 			ctx->no_linux_ext = 1;
-+		} else {
-+			if (ctx->no_linux_ext == 1)
-+				pr_warn_once("conflicting posix mount options specified\n");
-+			ctx->linux_ext = 1;
-+			ctx->no_linux_ext = 0;
-+		}
- 		break;
- 	case Opt_nocase:
- 		ctx->nocase = 1;
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2294,8 +2294,6 @@ static int tty_fasync(int fd, struct fil
+  *	Locking:
+  *		Called functions take tty_ldiscs_lock
+  *		current->signal->tty check is safe without locks
+- *
+- *	FIXME: may race normal receive processing
+  */
+ 
+ static int tiocsti(struct tty_struct *tty, char __user *p)
+@@ -2311,8 +2309,10 @@ static int tiocsti(struct tty_struct *tt
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
 
 
