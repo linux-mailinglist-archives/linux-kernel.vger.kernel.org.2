@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8B84092CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150B24095BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344294AbhIMOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:15:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
+        id S1344724AbhIMOoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:44:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244768AbhIMOMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:12:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E07661ACD;
-        Mon, 13 Sep 2021 13:42:32 +0000 (UTC)
+        id S1346398AbhIMOjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:39:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAA1361CF3;
+        Mon, 13 Sep 2021 13:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540552;
-        bh=lsBeOQle0FMt7DA7v9vVSvkCMTbyo2tcnMyKV6yi++U=;
+        s=korg; t=1631541314;
+        bh=avBuPA/bEjeUC+0OIxFvvbq4eDjlC48TEm/B0pyw63o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j77sY0Wr1APAFrGIDQftiBYUPO/EMKQ0gf0o4uMKHj87dTrX2SrlvdT44pIqvM7j4
-         npAhQhakipM5sZNTSzj65ZIG0TvscP4xADw25J0CB0xtcimFzUAWjokWu3blkNd04x
-         0cKEsLtsKxv3uuFEtJsq9GncjiJv9Si6cWmOx0vw=
+        b=PDHKLVdY8e/h/TjwMV+9C0tm0jkc1wC4sil/1HliFeokQ1ld39jkq1otbpNhyxzP2
+         xSsMIwL3ENpzise4VAEN7//r0nJ9gdqNG2XJeRVEFswYF/KPuMzLkqxtdkofLzrjYu
+         f59o6SDUOxaOV0/8ccx+UtY7zIXFzJVYnfmw5e7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abhishek Naik <abhishek.naik@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Lukasz Majczak <lma@semihalf.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 241/300] iwlwifi: skip first element in the WTAS ACPI table
-Date:   Mon, 13 Sep 2021 15:15:02 +0200
-Message-Id: <20210913131117.495907685@linuxfoundation.org>
+Subject: [PATCH 5.14 249/334] ASoC: Intel: Skylake: Fix module resource and format selection
+Date:   Mon, 13 Sep 2021 15:15:03 +0200
+Message-Id: <20210913131121.819277189@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhishek Naik <abhishek.naik@intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-[ Upstream commit 19426d54302e199b3fd2d575f926a13af66be2b9 ]
+[ Upstream commit e8b374b649afe756c2470e0e6668022e90bf8518 ]
 
-By mistake we were considering the first element of the WTAS wifi
-package as part of the data we want to rid, but that element is the wifi
-package signature (always 0x07), so it should be skipped.
+Module configuration may differ between its instances depending on
+resources required and input and output audio format. Available
+parameters to select from are stored in module resource and interface
+(format) lists. These come from topology, together with description of
+each of pipe's modules.
 
-Change the code to read the data starting from element 1 instead.
+Ignoring index value provided by topology and relying always on 0th
+entry leads to unexpected module behavior due to under/overbudged
+resources assigned or impropper format selection. Fix by taking entry at
+index specified by topology.
 
-Signed-off-by: Abhishek Naik <abhishek.naik@intel.com>
-Fixes: 28dd7ccdc56f ("iwlwifi: acpi: read TAS table from ACPI and send it to the FW")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210805141826.ff8148197b15.I70636c04e37b2b57a5df3ce611511f62203d27a7@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: f6fa56e22559 ("ASoC: Intel: Skylake: Parse and update module config structure")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Link: https://lore.kernel.org/r/20210818075742.1515155-5-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/acpi.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-index e31bba836c6f..dfa4047f97a0 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-@@ -243,7 +243,7 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
- 		goto out_free;
- 	}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 45b1521e6189..09037d555ec4 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -113,7 +113,7 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w,
  
--	enabled = !!wifi_pkg->package.elements[0].integer.value;
-+	enabled = !!wifi_pkg->package.elements[1].integer.value;
+ static void skl_dump_mconfig(struct skl_dev *skl, struct skl_module_cfg *mcfg)
+ {
+-	struct skl_module_iface *iface = &mcfg->module->formats[0];
++	struct skl_module_iface *iface = &mcfg->module->formats[mcfg->fmt_idx];
  
- 	if (!enabled) {
- 		*block_list_size = -1;
-@@ -252,15 +252,15 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
- 		goto out_free;
- 	}
+ 	dev_dbg(skl->dev, "Dumping config\n");
+ 	dev_dbg(skl->dev, "Input Format:\n");
+@@ -195,8 +195,8 @@ static void skl_tplg_update_params_fixup(struct skl_module_cfg *m_cfg,
+ 	struct skl_module_fmt *in_fmt, *out_fmt;
  
--	if (wifi_pkg->package.elements[1].type != ACPI_TYPE_INTEGER ||
--	    wifi_pkg->package.elements[1].integer.value >
-+	if (wifi_pkg->package.elements[2].type != ACPI_TYPE_INTEGER ||
-+	    wifi_pkg->package.elements[2].integer.value >
- 	    APCI_WTAS_BLACK_LIST_MAX) {
- 		IWL_DEBUG_RADIO(fwrt, "TAS invalid array size %llu\n",
- 				wifi_pkg->package.elements[1].integer.value);
- 		ret = -EINVAL;
- 		goto out_free;
- 	}
--	*block_list_size = wifi_pkg->package.elements[1].integer.value;
-+	*block_list_size = wifi_pkg->package.elements[2].integer.value;
+ 	/* Fixups will be applied to pin 0 only */
+-	in_fmt = &m_cfg->module->formats[0].inputs[0].fmt;
+-	out_fmt = &m_cfg->module->formats[0].outputs[0].fmt;
++	in_fmt = &m_cfg->module->formats[m_cfg->fmt_idx].inputs[0].fmt;
++	out_fmt = &m_cfg->module->formats[m_cfg->fmt_idx].outputs[0].fmt;
  
- 	IWL_DEBUG_RADIO(fwrt, "TAS array size %d\n", *block_list_size);
- 	if (*block_list_size > APCI_WTAS_BLACK_LIST_MAX) {
-@@ -273,15 +273,15 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
- 	for (i = 0; i < *block_list_size; i++) {
- 		u32 country;
+ 	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (is_fe) {
+@@ -239,9 +239,9 @@ static void skl_tplg_update_buffer_size(struct skl_dev *skl,
+ 	/* Since fixups is applied to pin 0 only, ibs, obs needs
+ 	 * change for pin 0 only
+ 	 */
+-	res = &mcfg->module->resources[0];
+-	in_fmt = &mcfg->module->formats[0].inputs[0].fmt;
+-	out_fmt = &mcfg->module->formats[0].outputs[0].fmt;
++	res = &mcfg->module->resources[mcfg->res_idx];
++	in_fmt = &mcfg->module->formats[mcfg->fmt_idx].inputs[0].fmt;
++	out_fmt = &mcfg->module->formats[mcfg->fmt_idx].outputs[0].fmt;
  
--		if (wifi_pkg->package.elements[2 + i].type !=
-+		if (wifi_pkg->package.elements[3 + i].type !=
- 		    ACPI_TYPE_INTEGER) {
- 			IWL_DEBUG_RADIO(fwrt,
--					"TAS invalid array elem %d\n", 2 + i);
-+					"TAS invalid array elem %d\n", 3 + i);
- 			ret = -EINVAL;
- 			goto out_free;
- 		}
+ 	if (mcfg->m_type == SKL_MODULE_TYPE_SRCINT)
+ 		multiplier = 5;
+@@ -1631,11 +1631,12 @@ int skl_tplg_update_pipe_params(struct device *dev,
+ 			struct skl_module_cfg *mconfig,
+ 			struct skl_pipe_params *params)
+ {
+-	struct skl_module_res *res = &mconfig->module->resources[0];
++	struct skl_module_res *res;
+ 	struct skl_dev *skl = get_skl_ctx(dev);
+ 	struct skl_module_fmt *format = NULL;
+ 	u8 cfg_idx = mconfig->pipe->cur_config_idx;
  
--		country = wifi_pkg->package.elements[2 + i].integer.value;
-+		country = wifi_pkg->package.elements[3 + i].integer.value;
- 		block_list_array[i] = cpu_to_le32(country);
- 		IWL_DEBUG_RADIO(fwrt, "TAS block list country %d\n", country);
- 	}
++	res = &mconfig->module->resources[mconfig->res_idx];
+ 	skl_tplg_fill_dma_id(mconfig, params);
+ 	mconfig->fmt_idx = mconfig->mod_cfg[cfg_idx].fmt_idx;
+ 	mconfig->res_idx = mconfig->mod_cfg[cfg_idx].res_idx;
+@@ -1644,9 +1645,9 @@ int skl_tplg_update_pipe_params(struct device *dev,
+ 		return 0;
+ 
+ 	if (params->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		format = &mconfig->module->formats[0].inputs[0].fmt;
++		format = &mconfig->module->formats[mconfig->fmt_idx].inputs[0].fmt;
+ 	else
+-		format = &mconfig->module->formats[0].outputs[0].fmt;
++		format = &mconfig->module->formats[mconfig->fmt_idx].outputs[0].fmt;
+ 
+ 	/* set the hw_params */
+ 	format->s_freq = params->s_freq;
 -- 
 2.30.2
 
