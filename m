@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2398408FF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF09408E46
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243032AbhIMNsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41644 "EHLO mail.kernel.org"
+        id S241146AbhIMNcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241193AbhIMNm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:42:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E666140F;
-        Mon, 13 Sep 2021 13:30:26 +0000 (UTC)
+        id S241448AbhIMNYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:24:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D074F61108;
+        Mon, 13 Sep 2021 13:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539827;
-        bh=dsms3c+evS3RID/JnKvL64KwUkp1O7wh9aJlk/eaKuA=;
+        s=korg; t=1631539311;
+        bh=d9tOvY4GPK1jKWMaBSPHaYQUFYgLGzNJbCmnl5KHBLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2wf8lagob0FrCdK4VdRYojB3N7Cdk60aJcg/9MSaYr8Vb6jqUW+lJqA1RFyalns1c
-         lHK7/dKIKfxzWKc3ql2WPMrWdCpHWUbDGYj6sRRtqEkfs6Ord7IEfvQsou/LgCUY2E
-         hZt4RjWzQ9SiTPeOV8RklI66tRqmTOIKfLiTOcvg=
+        b=FjBjEwobABBPBRHH46doyB/K2MG+RdrEYrTKmhc2+Nxyob74z9/DX2s48X0LLLyXX
+         tO9DAl8P4AuBTBzOjGuZ1q+qLn/efi4Y7PzgZQCdbR/fEQ7FhBDXg3wTUjbQXHpkTb
+         BgZoDfM635cOtwoInN0jLQpqm3GMD6llHf/Mc0KU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 169/236] i2c: synquacer: fix deferred probing
-Date:   Mon, 13 Sep 2021 15:14:34 +0200
-Message-Id: <20210913131106.124621548@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 094/144] usb: phy: tahvo: add IRQ check
+Date:   Mon, 13 Sep 2021 15:14:35 +0200
+Message-Id: <20210913131051.090308396@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +42,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 8d744da241b81f4211f4813b0d3c1981326fa9ca ]
+[ Upstream commit 0d45a1373e669880b8beaecc8765f44cb0241e47 ]
 
-The driver overrides the error codes returned by platform_get_irq() to
--ENODEV, so if it returns -EPROBE_DEFER, the driver will fail the probe
-permanently instead of the deferred probing. Switch to propagating the
-error codes upstream.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_threaded_irq() (which
+takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding an
+original error code.  Stop calling request_threaded_irq() with the invalid
+IRQ #s.
 
-Fixes: 0d676a6c4390 ("i2c: add support for Socionext SynQuacer I2C controller")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 9ba96ae5074c ("usb: omap1: Tahvo USB transceiver driver")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/8280d6a4-8e9a-7cfe-1aa9-db586dc9afdf@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-synquacer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/phy/phy-tahvo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-synquacer.c b/drivers/i2c/busses/i2c-synquacer.c
-index 31be1811d5e6..e4026c5416b1 100644
---- a/drivers/i2c/busses/i2c-synquacer.c
-+++ b/drivers/i2c/busses/i2c-synquacer.c
-@@ -578,7 +578,7 @@ static int synquacer_i2c_probe(struct platform_device *pdev)
+diff --git a/drivers/usb/phy/phy-tahvo.c b/drivers/usb/phy/phy-tahvo.c
+index baebb1f5a973..a3e043e3e4aa 100644
+--- a/drivers/usb/phy/phy-tahvo.c
++++ b/drivers/usb/phy/phy-tahvo.c
+@@ -393,7 +393,9 @@ static int tahvo_usb_probe(struct platform_device *pdev)
  
- 	i2c->irq = platform_get_irq(pdev, 0);
- 	if (i2c->irq < 0)
--		return -ENODEV;
-+		return i2c->irq;
+ 	dev_set_drvdata(&pdev->dev, tu);
  
- 	ret = devm_request_irq(&pdev->dev, i2c->irq, synquacer_i2c_isr,
- 			       0, dev_name(&pdev->dev), i2c);
+-	tu->irq = platform_get_irq(pdev, 0);
++	tu->irq = ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
++		return ret;
+ 	ret = request_threaded_irq(tu->irq, NULL, tahvo_usb_vbus_interrupt,
+ 				   IRQF_ONESHOT,
+ 				   "tahvo-vbus", tu);
 -- 
 2.30.2
 
