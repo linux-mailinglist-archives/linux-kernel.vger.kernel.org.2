@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C305A4094CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACE44094CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347766AbhIMOfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:35:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
+        id S1347714AbhIMOfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:35:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347022AbhIMOaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347035AbhIMOaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:30:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AB1261B7B;
-        Mon, 13 Sep 2021 13:50:53 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0C361B7F;
+        Mon, 13 Sep 2021 13:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541053;
-        bh=RgpHTXCjyFbIXMO4IbN1PHL/wSaW+/QhGP03vHOltTQ=;
+        s=korg; t=1631541056;
+        bh=neG9+V7kBLXXADzbNuhl5BYEGqzNe5F6hzZ9xdcCcdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JgZymja0DA2Q3XlV2lfbaQK2YbgHlMYLdXXr6+b+K55vdL9HS+87I8gQCyDTajhVF
-         3eHhIaC24ka0eaNYqFEujWjV6I/wQ28xti+ZzSfvf6w5Y+p50qzQ1Nkf5cmHVChp4o
-         HzmvC12KpfyJUju+o59rtRf/QYAG5H/rtEsiA7Bo=
+        b=FOQMFinH8x9I3MMBgOnMeAwvM9HJGEZ8Ot0UU6BXeQnC6stFpMz4rm6+35cEYoVEv
+         dbVLTqD7TzDu6EZwFGBJU77GhBkb4FXdmOX6q1frOXy+j6RV9/WRqsREeZZpwVhPfj
+         XqJMYInub+jElPHvC0EVmZiVVSZGJn5EuMcgqoQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 144/334] tools: Free BTF objects at various locations
-Date:   Mon, 13 Sep 2021 15:13:18 +0200
-Message-Id: <20210913131118.221779565@linuxfoundation.org>
+Subject: [PATCH 5.14 145/334] arm64: dts: renesas: hihope-rzg2-ex: Add EtherAVB internal rx delay
+Date:   Mon, 13 Sep 2021 15:13:19 +0200
+Message-Id: <20210913131118.261135018@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -40,120 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Monnet <quentin@isovalent.com>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-[ Upstream commit 369e955b3d1c12f6ec2e51a95911bb80ada55d79 ]
+[ Upstream commit c96ca5604a889a142d6b60889cc6da48498806e9 ]
 
-Make sure to call btf__free() (and not simply free(), which does not
-free all pointers stored in the struct) on pointers to struct btf
-objects retrieved at various locations.
+Hihope boards use Realtek PHY. From the very beginning it use only
+tx delays. However the phy driver commit bbc4d71d63549bcd003
+("net: phy: realtek: fix rtl8211e rx/tx delay config") introduced
+NFS mount failure. Now it needs rx delay inaddition to tx delay
+for NFS mount to work. This patch fixes NFS mount failure issue
+by adding MAC internal rx delay.
 
-These were found while updating the calls to btf__get_from_id().
-
-Fixes: 999d82cbc044 ("tools/bpf: enhance test_btf file testing to test func info")
-Fixes: 254471e57a86 ("tools/bpf: bpftool: add support for func types")
-Fixes: 7b612e291a5a ("perf tools: Synthesize PERF_RECORD_* for loaded BPF programs")
-Fixes: d56354dc4909 ("perf tools: Save bpf_prog_info and BTF of new BPF programs")
-Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
-Fixes: fa853c4b839e ("perf stat: Enable counting events for BPF programs")
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210729162028.29512-5-quentin@isovalent.com
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Fixes: bbc4d71d63549bcd ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+Link: https://lore.kernel.org/r/20210721180632.15080-1-biju.das.jz@bp.renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/prog.c                     | 5 ++++-
- tools/perf/util/bpf-event.c                  | 4 ++--
- tools/perf/util/bpf_counter.c                | 3 ++-
- tools/testing/selftests/bpf/prog_tests/btf.c | 1 +
- 4 files changed, 9 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index cc48726740ad..9d709b427665 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -781,6 +781,8 @@ prog_dump(struct bpf_prog_info *info, enum dump_mode mode,
- 		kernel_syms_destroy(&dd);
- 	}
+diff --git a/arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi
+index 202c4fc88bd5..dde3a07bc417 100644
+--- a/arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi
++++ b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi
+@@ -20,6 +20,7 @@
+ 	pinctrl-names = "default";
+ 	phy-handle = <&phy0>;
+ 	tx-internal-delay-ps = <2000>;
++	rx-internal-delay-ps = <1800>;
+ 	status = "okay";
  
-+	btf__free(btf);
-+
- 	return 0;
- }
- 
-@@ -2002,8 +2004,8 @@ static char *profile_target_name(int tgt_fd)
- 	struct bpf_prog_info_linear *info_linear;
- 	struct bpf_func_info *func_info;
- 	const struct btf_type *t;
-+	struct btf *btf = NULL;
- 	char *name = NULL;
--	struct btf *btf;
- 
- 	info_linear = bpf_program__get_prog_info_linear(
- 		tgt_fd, 1UL << BPF_PROG_INFO_FUNC_INFO);
-@@ -2027,6 +2029,7 @@ static char *profile_target_name(int tgt_fd)
- 	}
- 	name = strdup(btf__name_by_offset(btf, t->name_off));
- out:
-+	btf__free(btf);
- 	free(info_linear);
- 	return name;
- }
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index cdecda1ddd36..17a9844e4fbf 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -296,7 +296,7 @@ static int perf_event__synthesize_one_bpf_prog(struct perf_session *session,
- 
- out:
- 	free(info_linear);
--	free(btf);
-+	btf__free(btf);
- 	return err ? -1 : 0;
- }
- 
-@@ -486,7 +486,7 @@ static void perf_env__add_bpf_info(struct perf_env *env, u32 id)
- 	perf_env__fetch_btf(env, btf_id, btf);
- 
- out:
--	free(btf);
-+	btf__free(btf);
- 	close(fd);
- }
- 
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 8150e03367bb..beca55129b0b 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -64,8 +64,8 @@ static char *bpf_target_prog_name(int tgt_fd)
- 	struct bpf_prog_info_linear *info_linear;
- 	struct bpf_func_info *func_info;
- 	const struct btf_type *t;
-+	struct btf *btf = NULL;
- 	char *name = NULL;
--	struct btf *btf;
- 
- 	info_linear = bpf_program__get_prog_info_linear(
- 		tgt_fd, 1UL << BPF_PROG_INFO_FUNC_INFO);
-@@ -89,6 +89,7 @@ static char *bpf_target_prog_name(int tgt_fd)
- 	}
- 	name = strdup(btf__name_by_offset(btf, t->name_off));
- out:
-+	btf__free(btf);
- 	free(info_linear);
- 	return name;
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index 857e3f26086f..68e415f4d33c 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -4386,6 +4386,7 @@ skip:
- 	fprintf(stderr, "OK");
- 
- done:
-+	btf__free(btf);
- 	free(func_info);
- 	bpf_object__close(obj);
- }
+ 	phy0: ethernet-phy@0 {
 -- 
 2.30.2
 
