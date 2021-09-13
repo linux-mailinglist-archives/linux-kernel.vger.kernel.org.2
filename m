@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD260408D8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26E9409018
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240441AbhIMN1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:27:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37988 "EHLO mail.kernel.org"
+        id S244710AbhIMNtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240738AbhIMNYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:24:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0DF61155;
-        Mon, 13 Sep 2021 13:22:05 +0000 (UTC)
+        id S244289AbhIMNpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:45:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E76E60249;
+        Mon, 13 Sep 2021 13:31:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539326;
-        bh=R2+dmuWy9ps8BK3BYSZVBB2CONbUwAtvscysGBcHO1A=;
+        s=korg; t=1631539896;
+        bh=dD3fqUeojFwl4DrUD/xsbfGqy5wqRmYiptQoXo5SqX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=18tFQlFyWPR3npCDw/8tZCWmh02zxq/M/uXIgm1Z2cLICaUYCNPifvg33tcyCmiz3
-         V383VLzEm2TPlCIMazu0nyo5SfltZ3B9KNvJUNxBxyPVjcJJGV5aN7kLM2jOG7RBTL
-         MxDO2qKe1uBBqH9n416ZhbWcYCQmIXUoKOUmOygM=
+        b=E3joosR0ih5GpxRRIqN4rqsndJPKEh2LKQO9op0a53O+V9uvE+HNdN/TqsDeA2x5w
+         NypCbyz70dGIBOkwImsZi/nhLaqI7plA1izompvqQPOyp/Z6sQgaPp4pcWOJvNB/Ck
+         hRqP3rssNlmQLjglGZ/KbXgUb0K6zgBd5QoM3PiE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chih-Kang Chang <gary.chang@realtek.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Nadezda Lutovinova <lutovinova@ispras.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/144] mac80211: Fix insufficient headroom issue for AMSDU
-Date:   Mon, 13 Sep 2021 15:14:36 +0200
-Message-Id: <20210913131051.121229174@linuxfoundation.org>
+Subject: [PATCH 5.10 172/236] usb: gadget: mv_u3d: request_irq() after initializing UDC
+Date:   Mon, 13 Sep 2021 15:14:37 +0200
+Message-Id: <20210913131106.226238437@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chih-Kang Chang <gary.chang@realtek.com>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit f50d2ff8f016b79a2ff4acd5943a1eda40c545d4 ]
+[ Upstream commit 2af0c5ffadaf9d13eca28409d4238b4e672942d3 ]
 
-ieee80211_amsdu_realloc_pad() fails to account for extra_tx_headroom,
-the original reserved headroom might be eaten. Add the necessary
-extra_tx_headroom.
+If IRQ occurs between calling  request_irq() and  mv_u3d_eps_init(),
+then null pointer dereference occurs since u3d->eps[] wasn't
+initialized yet but used in mv_u3d_nuke().
 
-Fixes: 6e0456b54545 ("mac80211: add A-MSDU tx support")
-Signed-off-by: Chih-Kang Chang <gary.chang@realtek.com>
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Link: https://lore.kernel.org/r/20210816085128.10931-2-pkshih@realtek.com
-[fix indentation]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+The patch puts registration of the interrupt handler after
+initializing of neccesery data.
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Link: https://lore.kernel.org/r/20210818141247.4794-1-lutovinova@ispras.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/tx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/udc/mv_u3d_core.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index 538722522ffe..4dfac7a25e5a 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -3189,7 +3189,9 @@ static bool ieee80211_amsdu_prepare_head(struct ieee80211_sub_if_data *sdata,
- 	if (info->control.flags & IEEE80211_TX_CTRL_AMSDU)
- 		return true;
+diff --git a/drivers/usb/gadget/udc/mv_u3d_core.c b/drivers/usb/gadget/udc/mv_u3d_core.c
+index 5486f5a70868..0db97fecf99e 100644
+--- a/drivers/usb/gadget/udc/mv_u3d_core.c
++++ b/drivers/usb/gadget/udc/mv_u3d_core.c
+@@ -1921,14 +1921,6 @@ static int mv_u3d_probe(struct platform_device *dev)
+ 		goto err_get_irq;
+ 	}
+ 	u3d->irq = r->start;
+-	if (request_irq(u3d->irq, mv_u3d_irq,
+-		IRQF_SHARED, driver_name, u3d)) {
+-		u3d->irq = 0;
+-		dev_err(&dev->dev, "Request irq %d for u3d failed\n",
+-			u3d->irq);
+-		retval = -ENODEV;
+-		goto err_request_irq;
+-	}
  
--	if (!ieee80211_amsdu_realloc_pad(local, skb, sizeof(*amsdu_hdr)))
-+	if (!ieee80211_amsdu_realloc_pad(local, skb,
-+					 sizeof(*amsdu_hdr) +
-+					 local->hw.extra_tx_headroom))
- 		return false;
+ 	/* initialize gadget structure */
+ 	u3d->gadget.ops = &mv_u3d_ops;	/* usb_gadget_ops */
+@@ -1941,6 +1933,15 @@ static int mv_u3d_probe(struct platform_device *dev)
  
- 	data = skb_push(skb, sizeof(*amsdu_hdr));
+ 	mv_u3d_eps_init(u3d);
+ 
++	if (request_irq(u3d->irq, mv_u3d_irq,
++		IRQF_SHARED, driver_name, u3d)) {
++		u3d->irq = 0;
++		dev_err(&dev->dev, "Request irq %d for u3d failed\n",
++			u3d->irq);
++		retval = -ENODEV;
++		goto err_request_irq;
++	}
++
+ 	/* external vbus detection */
+ 	if (u3d->vbus) {
+ 		u3d->clock_gating = 1;
+@@ -1964,8 +1965,8 @@ static int mv_u3d_probe(struct platform_device *dev)
+ 
+ err_unregister:
+ 	free_irq(u3d->irq, u3d);
+-err_request_irq:
+ err_get_irq:
++err_request_irq:
+ 	kfree(u3d->status_req);
+ err_alloc_status_req:
+ 	kfree(u3d->eps);
 -- 
 2.30.2
 
