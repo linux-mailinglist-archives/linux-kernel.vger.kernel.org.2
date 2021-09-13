@@ -2,306 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F8040968B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A55409689
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346542AbhIMOxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347074AbhIMOsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:48:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ACD760F4C;
-        Mon, 13 Sep 2021 14:40:49 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 16:40:47 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     dbueso@suse.de
-Cc:     CGEL <cgel.zte@gmail.com>, jamorris@linux.microsoft.com,
-        keescook@chromium.org, ktkhai@virtuozzo.com, legion@kernel.org,
-        linux-kernel@vger.kernel.org, ran.xiaokai@zte.com.cn,
-        varad.gautam@suse.com
-Subject: Re: [PATCH V2] ipc: add set_ownership() and permissions() callbacks
- for posix mqueue sysctl
-Message-ID: <20210913144047.4v5jquhyysnnlfvh@wittgenstein>
-References: <20210824120523.s5qnzt643yvgugpv@wittgenstein>
- <20210827101206.5810-1-ran.xiaokai@zte.com.cn>
+        id S1345576AbhIMOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:52:46 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:42954 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1346066AbhIMOsE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:48:04 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 18DEhn0T003094;
+        Mon, 13 Sep 2021 17:43:49 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
+        id 76D0B63A1C; Mon, 13 Sep 2021 17:43:59 +0300 (IDT)
+From:   amirmizi6@gmail.com
+To:     Eyal.Cohen@nuvoton.com, jarkko@kernel.org, oshrialkoby85@gmail.com,
+        alexander.steffen@infineon.com, robh+dt@kernel.org,
+        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
+        eajames@linux.ibm.com, joel@jms.id.au
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
+        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
+        Amir Mizinski <amirmizi6@gmail.com>
+Subject: [PATCH v14 0/7] Add tpm i2c ptp driver
+Date:   Mon, 13 Sep 2021 17:43:44 +0300
+Message-Id: <20210913144351.101167-1-amirmizi6@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210827101206.5810-1-ran.xiaokai@zte.com.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 03:12:06AM -0700, CGEL wrote:
-> From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> 
-> When a non-root user process creates a user namespace and ipc namespace
-> with command "unshare -Ur -i", and map the root user inside
-> the user namesapce to the global owner of user namespace.
-> The newly created user namespace OWNS the ipc namespace,
-> So the root user inside the user namespace should have full access
-> rights to the ipc namespace resources and should be writable to
-> the ipc mqueue sysctls.
-> 
-> v2:
->   - update commit msg.
->   - fix the coding style issue.
-> Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> ---
+From: Amir Mizinski <amirmizi6@gmail.com>
 
-David,
+This patch set adds support for TPM devices that implement the I2C.
+Interface defined by TCG PTP specification:
+https://trustedcomputinggroup.org/wp-content/uploads/TCG_PC_Client_Platform_TPM_Profile_PTP_2.0_r1.03_v22.pdf
 
-are you happy with this too? If so I'd pick this up.
+The driver was tested on Raspberry-Pie 3, using Nuvoton NPCT75X TPM.
 
->  include/linux/ipc_namespace.h |  14 +++++
->  ipc/mq_sysctl.c               | 118 ++++++++++++++++++++++++++++++++++++------
->  ipc/mqueue.c                  |  10 +++-
->  ipc/namespace.c               |   2 +
->  4 files changed, 126 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/linux/ipc_namespace.h b/include/linux/ipc_namespace.h
-> index 05e2277..3e8e340 100644
-> --- a/include/linux/ipc_namespace.h
-> +++ b/include/linux/ipc_namespace.h
-> @@ -10,6 +10,7 @@
->  #include <linux/ns_common.h>
->  #include <linux/refcount.h>
->  #include <linux/rhashtable-types.h>
-> +#include <linux/sysctl.h>
->  
->  struct user_namespace;
->  
-> @@ -67,6 +68,11 @@ struct ipc_namespace {
->  	struct user_namespace *user_ns;
->  	struct ucounts *ucounts;
->  
-> +#ifdef CONFIG_POSIX_MQUEUE_SYSCTL
-> +	struct ctl_table_set	mq_set;
-> +	struct ctl_table_header	*sysctls;
-> +#endif
-> +
->  	struct llist_node mnt_llist;
->  
->  	struct ns_common ns;
-> @@ -155,7 +161,10 @@ static inline void put_ipc_ns(struct ipc_namespace *ns)
->  #ifdef CONFIG_POSIX_MQUEUE_SYSCTL
->  
->  struct ctl_table_header;
-> +extern struct ctl_table_header *mq_sysctl_table;
->  extern struct ctl_table_header *mq_register_sysctl_table(void);
-> +bool setup_mq_sysctls(struct ipc_namespace *ns);
-> +void retire_mq_sysctls(struct ipc_namespace *ns);
->  
->  #else /* CONFIG_POSIX_MQUEUE_SYSCTL */
->  
-> @@ -163,6 +172,11 @@ static inline struct ctl_table_header *mq_register_sysctl_table(void)
->  {
->  	return NULL;
->  }
-> +static inline bool setup_mq_sysctls(struct ipc_namespace *ns)
-> +{
-> +	return true;
-> +}
-> +static inline void retire_mq_sysctls(struct ipc_namespace *ns) { }
->  
->  #endif /* CONFIG_POSIX_MQUEUE_SYSCTL */
->  #endif
-> diff --git a/ipc/mq_sysctl.c b/ipc/mq_sysctl.c
-> index 72a92a0..8d6b8ff 100644
-> --- a/ipc/mq_sysctl.c
-> +++ b/ipc/mq_sysctl.c
-> @@ -8,6 +8,11 @@
->  #include <linux/nsproxy.h>
->  #include <linux/ipc_namespace.h>
->  #include <linux/sysctl.h>
-> +#include <linux/slab.h>
-> +#include <linux/user_namespace.h>
-> +#include <linux/capability.h>
-> +#include <linux/cred.h>
-> +#include <linux/stat.h>
->  
->  #ifdef CONFIG_PROC_SYSCTL
->  static void *get_mq(struct ctl_table *table)
-> @@ -96,25 +101,106 @@ static struct ctl_table mq_sysctls[] = {
->  	{}
->  };
->  
-> -static struct ctl_table mq_sysctl_dir[] = {
-> -	{
-> -		.procname	= "mqueue",
-> -		.mode		= 0555,
-> -		.child		= mq_sysctls,
-> -	},
-> -	{}
-> -};
-> +static int set_is_seen(struct ctl_table_set *set)
-> +{
-> +	return &current->nsproxy->ipc_ns->mq_set == set;
-> +}
->  
-> -static struct ctl_table mq_sysctl_root[] = {
-> -	{
-> -		.procname	= "fs",
-> -		.mode		= 0555,
-> -		.child		= mq_sysctl_dir,
-> -	},
-> -	{}
-> +static struct ctl_table_set *
-> +set_lookup(struct ctl_table_root *root)
-> +{
-> +	return &current->nsproxy->ipc_ns->mq_set;
-> +}
-> +
-> +static int set_permissions(struct ctl_table_header *head,
-> +				struct ctl_table *table)
-> +{
-> +	struct ipc_namespace *ipc_ns =
-> +		container_of(head->set, struct ipc_namespace, mq_set);
-> +	struct user_namespace *user_ns = ipc_ns->user_ns;
-> +	int mode;
-> +
-> +	/* Allow users with CAP_SYS_RESOURCE unrestrained access */
-> +	if (ns_capable(user_ns, CAP_SYS_RESOURCE))
-> +		mode = (table->mode & S_IRWXU) >> 6;
-> +	else {
-> +		/* Allow all others at most read-only access */
-> +		mode = table->mode & S_IROTH;
-> +	}
-> +
-> +	return (mode << 6) | (mode << 3) | mode;
-> +}
-> +
-> +static void set_ownership(struct ctl_table_header *head,
-> +				struct ctl_table *table,
-> +				kuid_t *uid, kgid_t *gid)
-> +{
-> +	struct ipc_namespace *ipc_ns =
-> +		container_of(head->set, struct ipc_namespace, mq_set);
-> +	struct user_namespace *user_ns = ipc_ns->user_ns;
-> +	kuid_t ns_root_uid;
-> +	kgid_t ns_root_gid;
-> +
-> +	ns_root_uid = make_kuid(user_ns, 0);
-> +	if (uid_valid(ns_root_uid))
-> +		*uid = ns_root_uid;
-> +
-> +	ns_root_gid = make_kgid(user_ns, 0);
-> +	if (gid_valid(ns_root_gid))
-> +		*gid = ns_root_gid;
-> +}
-> +
-> +static struct ctl_table_root mq_sysctl_root = {
-> +	.lookup = set_lookup,
-> +	.permissions = set_permissions,
-> +	.set_ownership = set_ownership,
->  };
->  
-> +bool setup_mq_sysctls(struct ipc_namespace *ns)
-> +{
-> +	struct ctl_table *tbl;
-> +
-> +	if (!mq_sysctl_table)
-> +		return false;
-> +
-> +	setup_sysctl_set(&ns->mq_set, &mq_sysctl_root, set_is_seen);
-> +	tbl = kmemdup(mq_sysctls, sizeof(mq_sysctls), GFP_KERNEL);
-> +	if (!tbl)
-> +		goto out;
-> +
-> +	ns->sysctls = __register_sysctl_table(&ns->mq_set, "fs/mqueue", tbl);
-> +	if (!ns->sysctls)
-> +		goto out1;
-> +
-> +	return true;
-> +
-> +out1:
-> +	kfree(tbl);
-> +	retire_sysctl_set(&ns->mq_set);
-> +out:
-> +	return false;
-> +}
-> +
-> +void retire_mq_sysctls(struct ipc_namespace *ns)
-> +{
-> +	struct ctl_table *tbl;
-> +
-> +	if (!ns->sysctls)
-> +		return;
-> +
-> +	tbl = ns->sysctls->ctl_table_arg;
-> +	unregister_sysctl_table(ns->sysctls);
-> +	retire_sysctl_set(&ns->mq_set);
-> +	kfree(tbl);
-> +}
-> +
->  struct ctl_table_header *mq_register_sysctl_table(void)
->  {
-> -	return register_sysctl_table(mq_sysctl_root);
-> +	static struct ctl_table empty[1];
-> +
-> +	/*
-> +	 * Register the fs/mqueue directory in the default set so that
-> +	 * registrations in the child sets work properly.
-> +	 */
-> +	return register_sysctl("fs/mqueue", empty);
->  }
-> diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-> index 4e4e611..3b68564 100644
-> --- a/ipc/mqueue.c
-> +++ b/ipc/mqueue.c
-> @@ -163,7 +163,7 @@ static void remove_notification(struct mqueue_inode_info *info);
->  
->  static struct kmem_cache *mqueue_inode_cachep;
->  
-> -static struct ctl_table_header *mq_sysctl_table;
-> +struct ctl_table_header *mq_sysctl_table;
->  
->  static inline struct mqueue_inode_info *MQUEUE_I(struct inode *inode)
->  {
-> @@ -1713,6 +1713,10 @@ static int __init init_mqueue_fs(void)
->  
->  	/* ignore failures - they are not fatal */
->  	mq_sysctl_table = mq_register_sysctl_table();
-> +	if (mq_sysctl_table && !setup_mq_sysctls(&init_ipc_ns)) {
-> +		unregister_sysctl_table(mq_sysctl_table);
-> +		mq_sysctl_table = NULL;
-> +	}
->  
->  	error = register_filesystem(&mqueue_fs_type);
->  	if (error)
-> @@ -1729,8 +1733,10 @@ static int __init init_mqueue_fs(void)
->  out_filesystem:
->  	unregister_filesystem(&mqueue_fs_type);
->  out_sysctl:
-> -	if (mq_sysctl_table)
-> +	if (mq_sysctl_table) {
-> +		retire_mq_sysctls(&init_ipc_ns);
->  		unregister_sysctl_table(mq_sysctl_table);
-> +	}
->  	kmem_cache_destroy(mqueue_inode_cachep);
->  	return error;
->  }
-> diff --git a/ipc/namespace.c b/ipc/namespace.c
-> index 7bd0766..c891cc1 100644
-> --- a/ipc/namespace.c
-> +++ b/ipc/namespace.c
-> @@ -58,6 +58,7 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
->  	err = mq_init_ns(ns);
->  	if (err)
->  		goto fail_put;
-> +	setup_mq_sysctls(ns);
->  
->  	sem_init_ns(ns);
->  	msg_init_ns(ns);
-> @@ -121,6 +122,7 @@ static void free_ipc_ns(struct ipc_namespace *ns)
->  	 * uses synchronize_rcu().
->  	 */
->  	mq_put_mnt(ns);
-> +	retire_mq_sysctls(ns);
->  	sem_exit_ns(ns);
->  	msg_exit_ns(ns);
->  	shm_exit_ns(ns);
-> -- 
-> 2.15.2
-> 
+Interrupts are not implemented yet, preparing it for the next patch.
+This patch is based on initial work by oshri Alkoby, Alexander Steffen and Christophe Ricard
+
+Changes since version 1:
+-"char:tpm:Add check_data handle to tpm_tis_phy_ops in order to check data integrity"
+        - Fixed and extended commit description.
+        - Fixed an issue regarding handling max retries.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options":
+        -Converted "tpm_tis_i2c.txt" to "tpm-tis-i2c.yaml".
+        - Renamed "tpm_tis-i2c" to "tpm-tis-i2c".
+        - Removed interrupts properties.
+-"char: tpm: add tpm_tis_i2c driver"
+        - Replaced "tpm_tis-i2c" with "tpm-tis-i2c" in "tpm_tis_i2c.c".
+Addressed comments from:
+ - Jarkko Sakkinen: https://patchwork.kernel.org/patch/11236257/
+ - Rob Herring: https://patchwork.kernel.org/patch/11236253/
+
+Changes since version 2:
+- Added 2 new commits with improvements suggested by Benoit Houyere.
+        -"Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -"Handle an exception for TPM Firmware Update mode."
+- Updated patch to latest v5.5
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options"
+        - Added "interrupts" and "crc-checksum" to properties.
+        - Updated binding description and commit info.
+-"char: tpm: add tpm_tis_i2c driver" (suggested by Benoit Houyere)
+        - Added repeat I2C frame after NACK.
+        - Checksum I2C feature activation in DTS file configuration.
+Addressed comments from:
+ - Rob Herring: https://lore.kernel.org/patchwork/patch/1161287/
+
+Changes since version 3:
+- Updated patch to latest v5.6
+- Updated commits headlines and development credit format by Jarkko Sakkinen suggestion
+-"tpm: tpm_tis: Make implementation of read16 read32 write32 optional"
+        - Updated commit description.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options"
+        - Fixed 'make dt_binding_check' errors on YAML file.
+        - Removed interrupts from required and examples since there is no use for them in current patch.
+Addressed comments from:
+ - Jarkko Sakkinen: https://lore.kernel.org/patchwork/patch/1192101/
+ - Rob Herring: https://lore.kernel.org/patchwork/patch/1192099/
+
+Changes since version 4:
+-"tpm: tpm_tis: Make implementation of read16 read32 write32 optional"
+        -Added a "Reviewed-by" tag:
+-"tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops in order to check data integrity"
+        -Fixed credit typos.
+-"tpm: tpm_tis: rewrite "tpm_tis_req_canceled()""
+        -Added fixes tag and removed changes for STM.
+-"tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Fixed typos, edited description to be clearer, and added a "Suggested-by" tag.
+-"tpm: Handle an exception for TPM Firmware Update mode."
+        -Added a "Suggested-by" tag.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C options"
+        -Fixed 'make dt_binding_check' errors.
+-"tpm: tpm_tis: add tpm_tis_i2c driver"
+        -Added tested-by tag by Eddie James.
+        -Fixed indent in Kconfig file.
+        -Fixed 'MODULE_DESCRIPTION'.
+Addressed comments from:
+ - Jarkko Sakkinen: https://patchwork.kernel.org/patch/11467645/
+                https://patchwork.kernel.org/patch/11467655/
+                https://patchwork.kernel.org/patch/11467643/
+                https://patchwork.kernel.org/patch/11467659/
+                https://patchwork.kernel.org/patch/11467651/
+ - Rob Herring: https://patchwork.kernel.org/patch/11467653/
+ - Randy Dunlap: https://patchwork.kernel.org/patch/11467651/
+ - Eddie James: https://lore.kernel.org/patchwork/patch/1192104/
+
+Changes since version 5:
+-"tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops"
+        -Updated short description and fixed long description to be more clear.
+Addressed comments from:
+ - Jarkko Sakkinen: https://lkml.org/lkml/2020/4/6/748
+
+Changes since version 6:
+-"tpm: tpm_tis: Make implementation of read16, read32 and write32 optional"
+        -Fixed short description.
+        -fixed long description proofreading issues.
+-"tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops"
+        -Fixed long description by Jarkko comments and proofreading issues.
+        -Replaced "check_data" with verify_data_integrity".
+        -New line before return statement.
+-"tpm: tpm_tis: rewrite "tpm_tis_req_canceled()"
+        -Fixed line over 80 characters.
+        -fixed long description proofreading issues.
+-" tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot"
+        -fixed long description proofreading issues.
+-"dt-bindings: tpm: Add YAML schema for TPM TIS I2C option"
+        -Replaced "tpm-tis-i2c@2e" with "tpm_tis@2e".
+        -Fixed CRC_Checksum description.
+-"tpm: tpm_tis: add tpm_tis_i2c driver"
+        -Replaced "depends on CRC_CCIT" with "select CRC_CCIT".
+        -Added tested-by tag by Joel Stanley.
+        -Fixed checkpatch.pl warnings.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1221336/
+        https://lore.kernel.org/patchwork/patch/1221337/
+        https://lore.kernel.org/patchwork/patch/1221339/
+ - Joel Stanley:
+        https://lore.kernel.org/patchwork/patch/1220543/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1221334/
+
+Changes since version 7:
+- Added a new commit with improvements suggested by Benoit Houyere.
+        -"tpm: tpm_tis: verify TPM_STS register is valid after locality request"
+-"tpm: tpm_tis: Rewrite "tpm_tis_req_canceled()""
+        -Fixed Hash for Fixes tag.
+-"tpm: Add YAML schema for TPM TIS I2C options"
+        -Added a compatible string specific to the nuvoton npct75x chip.
+-"tpm: tpm_tis: add tpm_tis_i2c driver"
+        -added a compatible string according to yaml file.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1231524/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1231526/
+
+Changes since version 8:
+- "tpm: tpm_tis: Make implementation of read16, read32 and write32 optional"
+        -Fixed a compile error conflicting CR50
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Moved commit backwards from 4/8 to 2/8 for a better flow with new data integrity check design
+- "tpm: tpm_tis: Add retry in case of protocol failure or data integrity (on I2C only) failure."
+        -Renamed from "tpm: tpm_tis: Add check_data handle to tpm_tis_phy_ops"
+        -Redesign and added a retry for additional error cases.
+- "tpm: Add YAML schema for TPM TIS I2C options"
+        -Fixed Dual-license new binding
+        -Removed "oneOf"
+        -Fixed tpm_tis@2e to tpm@2e
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1240728/
+        https://lore.kernel.org/patchwork/patch/1240736/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1240733/
+
+Changes since version 9:
+- "tpm: Make read{16, 32}() and write32() in tpm_tis_phy_ops optional"
+        -Fixed short description
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Canceled wait_for_tpm_stat() function renaming.
+        -Fixed long description
+- "tpm: Add YAML schema for TPM TIS I2C options"
+        -Added a reviewed-by tag.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1247163/
+        https://lore.kernel.org/patchwork/patch/1247164/
+ - Rob Herring:
+        https://lore.kernel.org/patchwork/patch/1247161/
+
+Changes since version 10:
+- "tpm: Make read{16, 32}() and write32() in tpm_tis_phy_ops optional"
+        -Added a Reviewed-by and Tested-by tags
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Renamed "mask_result" parameter with "stat"
+- "tpm: tpm_tis: Add retry in case of protocol failure or data integrity (on I2C only) failure."
+        -Edited long description.
+        -Modified tpm_tis_recv() to __tpm_tis_recv() and Introduced a new tpm_tis_recv() function
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1252428/
+        https://lore.kernel.org/patchwork/patch/1252422/
+        https://lore.kernel.org/patchwork/patch/1252424/
+
+Changes since version 11:
+- "tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot without last byte in exception"
+        -Added a "Reviewed-by" tag
+        -Renamed 'wait_for_tpm_stat()' function with 'tpm_tis_wait_for_stat()'
+- "tpm: tpm_tis: Add retry in case of protocol failure."
+        -Removed data integrity check and created a new commit for it.
+        -Edited short and long description.
+- "tpm: tpm_tis: Add verify_data_integrity handle to tpm_tis_phy_ops"
+        -This is a new commit.
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1258107/
+        https://lore.kernel.org/patchwork/patch/1258110/
+
+Changes since version 12:
+	
+- Moved "tpm: Add YAML schema for TPM TIS I2C options" to end of patch.
+- Removed two commits to be resubmited on later patch:
+        - "tpm: tpm_tis: Add retry in case of protocol failure."
+        - "tpm: tpm_tis: Add verify_data_integrity handle to tpm_tis_phy_ops"
+- "tpm: tpm_tis: add tpm_tis_i2c driver"
+        - Removed verify data integrity (Checksum) functuality from i2c driver.
+		- Edited Long Description.
+		- Updated header comment for tpm_tis_i2c.c
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lore.kernel.org/patchwork/patch/1263805/
+        https://lore.kernel.org/patchwork/patch/1263813/
+		
+Changes since version 13:
+	
+- Edited description of commits 1-6 by Jarkko comments.
+- "tpm: Add YAML schema for TPM TIS I2C options"
+        - Fixed YAML compilation error of missing "additionalProperties" field
+Addressed comments from:
+ - Jarkko Sakkinen:
+        https://lkml.org/lkml/2021/8/26/546
+        https://lkml.org/lkml/2021/8/26/548
+	https://lkml.org/lkml/2021/8/26/550
+	https://lkml.org/lkml/2021/8/26/551
+	https://lkml.org/lkml/2021/8/26/552
+	https://lkml.org/lkml/2021/8/26/553
+	https://lkml.org/lkml/2021/8/26/555
+ - Rob Herring:
+	https://lkml.org/lkml/2021/8/26/427
+
+Amir Mizinski (7):
+  tpm: Make read{16, 32}() and write32() in tpm_tis_phy_ops optional
+  tpm: tpm_tis: Fix expected bit handling and send all bytes in one shot
+    without last byte in exception
+  tpm: tpm_tis: Rewrite "tpm_tis_req_canceled()"
+  tpm: Handle an exception for TPM Firmware Update mode.
+  tpm: tpm_tis: verify TPM_STS register is valid after locality request
+  tpm: tpm_tis: add tpm_tis_i2c driver
+  \tpm: Add YAML schema for TPM TIS I2C options
+
+ .../bindings/security/tpm/tpm-tis-i2c.yaml         |  52 +++++
+ drivers/char/tpm/Kconfig                           |  12 ++
+ drivers/char/tpm/Makefile                          |   1 +
+ drivers/char/tpm/tpm2-cmd.c                        |   4 +
+ drivers/char/tpm/tpm_tis_core.c                    |  84 ++++----
+ drivers/char/tpm/tpm_tis_core.h                    |  38 +++-
+ drivers/char/tpm/tpm_tis_i2c.c                     | 227 +++++++++++++++++++++
+ drivers/char/tpm/tpm_tis_spi.h                     |   4 -
+ drivers/char/tpm/tpm_tis_spi_cr50.c                |   3 -
+ drivers/char/tpm/tpm_tis_spi_main.c                |  41 ----
+ include/linux/tpm.h                                |   1 +
+ 11 files changed, 367 insertions(+), 100 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+ create mode 100644 drivers/char/tpm/tpm_tis_i2c.c
+
+-- 
+2.7.4
+
