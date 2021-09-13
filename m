@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE32E40A132
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B4040A114
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349859AbhIMXCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349630AbhIMXCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:02:21 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E1CC0613DE
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:46:45 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id x2so3747365ila.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=UWVukDYpnouo2TmAsoiK3YFI/UCntBVDF8OdhEqH+sQ=;
-        b=HiInFQS0xNSg4zAtUBQLxG9MxGEXJyEeE+JV/5L3PPM35Jx9G1caztbXE+PFYoVypv
-         2VWa4rwNh4PRwpsu9IwWR420hvjt6NMEKoUD7TSepQSuccBS3B5xzK8tqWQzz2mpBeY4
-         Q4oBVPync6lhMOvAQ2rXgGbm2jvLMCbuN/QsrbQWClo/KKSxYzL6dyGnEwlqJPlpcYO7
-         VRomFoqG54/k842nMqPxIhQab85NPF3tzYStLWJ2SSokhNnExn6ctuSSsv8KZhY/T4Kx
-         1J3EPoQUvShNT9ctmMhR666BA6nehxp4hFQaGD62ejJtX0VmSkffbrKhvAaxVwdC0e7f
-         HZLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=UWVukDYpnouo2TmAsoiK3YFI/UCntBVDF8OdhEqH+sQ=;
-        b=tVjfqW/4C/TWAOAFYsI34aILTDn0lhc2nJ9yjr2//TNiJEkCvNftqPeL2QlH9kemz2
-         HhG6iEhALM9W1oolx2+f441SyDiLD5X3Yb1zXt7OcVPEuDVNDfV9AXxBqLrkSM+ZoLso
-         GpgFURl4nydSOWRzh+XFs8o9N103XtaWh5E5+tfJFJu5JZd8Hp+6+uBkulgW9pWprV1J
-         dP0h6G1t62beW3eI+bHrWLp4uZSEVXqRgC6ViTmLMihgd8wQF50Eq5RgietxZAKnUWhL
-         fwEfMTl2WBw9MT81/RepO26tprtDZ6ozKAptMg8gKvzp9ZqmFD/fNmHqJALjUa/dvyHp
-         zZTQ==
-X-Gm-Message-State: AOAM530C3cd0IufZW6IqIB9C43r7PFNX0b2mZqi6BW1sFwBMLm6Rjr0f
-        I1/K9N2fJTj5Wm6lqq1x/lfMagzgyRo09wNAqjQ=
-X-Google-Smtp-Source: ABdhPJwlGA2DWAuyIvbLXEadWQ0plML0YQVpBYTnLJvIER+zfvGK05nnpcey2YhljgaYKYvtTSQF0EeKigPdBbBa4S8=
-X-Received: by 2002:a92:6a06:: with SMTP id f6mr9905980ilc.16.1631573204484;
- Mon, 13 Sep 2021 15:46:44 -0700 (PDT)
+        id S1345689AbhIMWyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 18:54:41 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:51184 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349678AbhIMWvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 18:51:01 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=localhost.localdomain)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mPulV-0003SX-PC; Tue, 14 Sep 2021 00:49:29 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com
+Cc:     heiko@sntech.de, jay.xu@rock-chips.com, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] gpio/pinctrl-rockchip: Fixes for the recently separated gpio/pinctrl driver
+Date:   Tue, 14 Sep 2021 00:49:22 +0200
+Message-Id: <20210913224926.1260726-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Reply-To: aliuhuadams@gmail.com
-Sender: drabidibellophdemail@gmail.com
-Received: by 2002:a05:6e02:1013:0:0:0:0 with HTTP; Mon, 13 Sep 2021 15:46:44
- -0700 (PDT)
-From:   Aliuhu Adams <aliuhuadamss@gmail.com>
-Date:   Mon, 13 Sep 2021 22:46:44 +0000
-X-Google-Sender-Auth: zMHf0abLi-Jk9FY3k-sotJ65xDU
-Message-ID: <CAAX4e0yjazP5nQ6SaGBGWbwHBeMQuG7AkGXxCdWDTFHgz2Zwxw@mail.gmail.com>
-Subject: From Aliuhu Adams
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It looks like rk3288-veyron(-pinky) was the one device in my boardfarm
+I didn't test the pinctrl/gpio patches on and it seems this one uses
+some specific parts none of the other do. So when I did my v5.15-rc1
+testrun I got a surprise.
+
+Not only did the pinctrl-hogs cause a null-pointer exception but the
+device also entered a reset loop a bit later in the boot.
+
+This series addresses the issues in hopefully a nice way and should
+ideally become part of 5.15 before other people run into issues.
+
+* Patch 1 addresses the reset-loop, which is caused by a not-ideal
+  check vor v1 vs. v2 controller in the debounce code
+* Patch 2 is just a find when looking through the code
+* Patches 3+4 address the pinctrl-hogs issue by creating a deferred
+  queue where the pinctrl can temporarily store these hog settings
+  if needed and the pinctrl driver can retrieve them during probe.
+
+
+Heiko Stuebner (4):
+  gpio/rockchip: extended debounce support is only available on v2
+  gpio/rockchip: fix get_direction value handling
+  pinctrl/rockchip: add a queue for deferred pin output settings on
+    probe
+  gpio/rockchip: fetch deferred output settings on probe
+
+ drivers/gpio/gpio-rockchip.c       | 26 +++++++++++-
+ drivers/pinctrl/pinctrl-rockchip.c | 67 ++++++++++++++++++++++++++++++
+ drivers/pinctrl/pinctrl-rockchip.h | 10 +++++
+ 3 files changed, 101 insertions(+), 2 deletions(-)
+
 -- 
-From Aliuhu Adams,
+2.29.2
 
-My name is Aliuhu Adams, from Burkina Faso
-
-Please, I am contacting you for urgent assistance to help me move my
-inheritance to your country and help me to invest in your country.
-
-The amount is 14 million dollars and I want this money to be moved to your
-country urgently with me because of the fear of the killer of my parents.
-
-I shall give you more details when I hear from you.
-
-Thank you,
-
-Aliuhu Adams
