@@ -2,64 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EE3409F4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3EB409F50
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346639AbhIMVks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:40:48 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30216 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346827AbhIMVki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:40:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="244130580"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="244130580"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 14:39:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="650510625"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2021 14:39:00 -0700
-Date:   Mon, 13 Sep 2021 14:38:36 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Marcus =?iso-8859-1?Q?R=FCckert?= <mrueckert@suse.com>
-Subject: Re: [PATCH] x86/umip: Add a umip= cmdline switch
-Message-ID: <20210913213836.GA10627@ranerica-svr.sc.intel.com>
-References: <20210907200454.30458-1-bp@alien8.de>
- <20210911011459.GA11980@ranerica-svr.sc.intel.com>
- <YTx0+0pfyzHuX80L@zn.tnic>
+        id S244462AbhIMVor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238184AbhIMVoq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:44:46 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28228C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:43:30 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id g16so16865017wrb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=OmKpkwcJ/YE9wWezjvSXq5deQ9qPVPHvzIJumJjTABo=;
+        b=VJ5kK3gn4RfmIRlT7llJRz9GJuTGJVhpZHQG8Q9opCOZXKl6Vp2CZR/w7NeFB4sego
+         1jY001DRuIAB5lEf+qUB8vrnKMiK5TRMRDHkorLyPwUi487CtgxBTByIDitg2zCllPxz
+         XffGizxWw3C1Hwx6Iz1mbRdYR3Pq9/Qd8daxvijBKGGf0ikAN8AFu+WmF1E6vK227hBY
+         IdC1a/thVUsbQf/DkNJJK72mcdoeE5JQOFz3eVIz+6Oj5UQjUSg7aBWFow9vZLvaovgr
+         IxATxJCuz5Pk745ioCzmRIZKF8+DLqlmYlv7gRBhZ0mNl5p//sNnaaOr3053+S6YMPyY
+         ZIQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=OmKpkwcJ/YE9wWezjvSXq5deQ9qPVPHvzIJumJjTABo=;
+        b=uE1awcS2AMv3CXliBkNwc7febHnOaBfoM2Fm7PszZbNKNq7HgO+Z7mDlnIsrRO5zZc
+         AFwmwGXTJ9mrOJicJX22KXSgIriuTJelN//+RxqymbbtxsgJqzYpMBIY2eGWRokC0Cmq
+         GBexCIVXWaa169dMbU4Jo3ws105O6UNy5QOAAe14EoFq3GMxLyoibubR8ZuUzQqnsiGK
+         T6ebyHEG/ivVzDm3GZEgeWOv+xNKZr1x+aD450kBmr2/xsygO5toVMc/Tg09Q0YmRth5
+         0Vxq3prclHCUi4VAPLJJcaWq4vcVV9o22Lw6ivzkhR84qxj+b3RdHJxTboJspU9mdKHi
+         M7DA==
+X-Gm-Message-State: AOAM532ULvV0BUdl17sqS5xJJZUb7FCJBoHjEyOOGXVjfhidKwQOOrIM
+        QnrEA4foXPKsA5ZpDnKxAYI=
+X-Google-Smtp-Source: ABdhPJwhheyzgkqdjCX+sH1wHgX7BoKIO1IfHrtLv9BwRFZK7RXmIHgtkQwKelqGxZHg0IL4MOK0GA==
+X-Received: by 2002:a05:6000:18c2:: with SMTP id w2mr14816879wrq.282.1631569408749;
+        Mon, 13 Sep 2021 14:43:28 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id 129sm7833393wmz.26.2021.09.13.14.43.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 14:43:28 -0700 (PDT)
+Message-ID: <e23f7de1dbb02def413d721a3bf5759100380937.camel@gmail.com>
+Subject: Re: [PATCH v2 6/8] ASoC: cirrus: i2s: Prepare clock before using it
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Mon, 13 Sep 2021 23:43:27 +0200
+In-Reply-To: <20210726165124.GJ4670@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-1-nikita.shubin@maquefel.me>
+         <20210726140001.24820-7-nikita.shubin@maquefel.me>
+         <20210726165124.GJ4670@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTx0+0pfyzHuX80L@zn.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 11:20:59AM +0200, Borislav Petkov wrote:
-> On Fri, Sep 10, 2021 at 06:14:59PM -0700, Ricardo Neri wrote:
-> > If it is printing the same information again and again, wouldn't it be
-> > simpler to have a umip_pr_warn_once()?
-> 
-> If you do a once thing, you're blocking any other programs from warning,
-> output you probably wanna see.
+Hello Mark,
 
-That is right. Although, I am not sure programs you can have in
-the same machine that also want to use UMIP-protected instructions.
+On Mon, 2021-07-26 at 17:51 +0100, Mark Brown wrote:
+> On Mon, Jul 26, 2021 at 04:59:54PM +0300, Nikita Shubin wrote:
+> > From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> > 
+> > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> > to Common Clock Framework, otherwise the following is visible:
 > 
-> With the command line switch you do the same but you're at least pushing
-> the user to become active and do it first. I.e., with enabling that
-> option, the user basically says that she/he is not interested in any of
-> that output and that is ok.
-> 
-> The optimal thing would be to ratelimit it per process but that would be
-> an overkill and not really needed.
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Indeed.
+would you take the patch to a tree of yours, please?
 
-Thanks and BR,
-Ricardo
+-- 
+Alexander Sverdlin.
+
+
