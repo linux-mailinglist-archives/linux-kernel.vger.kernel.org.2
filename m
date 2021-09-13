@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6444091AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B274094D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344083AbhIMODt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        id S1347315AbhIMOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:34:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343588AbhIMOAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:00:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E43261A2E;
-        Mon, 13 Sep 2021 13:37:40 +0000 (UTC)
+        id S1345104AbhIMO3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:29:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E52361361;
+        Mon, 13 Sep 2021 13:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540260;
-        bh=W/9OyMCIBDkFYitsxHS1MSsc19iKakqmMhUb9EfZU2g=;
+        s=korg; t=1631541027;
+        bh=twOMXZktG8V7/Fr8eLHC4z84Z+gJSE45nP4rVSlH0B8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hZ4MZRiuATHFnUJvR6g9tA92ZORArlMEDxqvjztPYUxTv5BcJCaDZhVRs9xDJdbgu
-         +Y/HRMkRGy50old77Bd9MNc1EJInSaGJyF+uf1SKi6nnTuy0CJZg5o4g1K6VdrFe7X
-         rwc94vMbZ4Gt+goTtDaS2U+oox1UXWswI0RFUZsI=
+        b=ZDicVEZ1hJHAV0b5o/Ao9YDxxRLjgzHMDWQOiAxFIHRU3oTpH1YC+2Prw+Tbu2Mtm
+         Dvd+O9wUzQ58JoC92zGcK9h62uaxGClxuA89+meslJIEffTL5raJmbojn8hACe0GUe
+         UGmhvfRV4cOgYB+wUVMblq/qP7nADF9GsyxdKjjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 092/300] drm/of: free the iterator object on failure
+        stable@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 099/334] ARM: dts: everest: Add phase corrections for eMMC
 Date:   Mon, 13 Sep 2021 15:12:33 +0200
-Message-Id: <20210913131112.493720600@linuxfoundation.org>
+Message-Id: <20210913131116.721604541@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Price <steven.price@arm.com>
+From: Andrew Jeffery <andrew@aj.id.au>
 
-[ Upstream commit 6f9223a56fabc840836b49de27dc7b27642c6a32 ]
+[ Upstream commit ded3e2864c735f33ba5abbbe2d7b1c6605242f9b ]
 
-When bailing out due to the sanity check the iterator value needs to be
-freed because the early return prevents for_each_child_of_node() from
-doing the dereference itself.
+The values were determined via scope measurements.
 
-Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
-Signed-off-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210714143300.20632-1-steven.price@arm.com
+With the patch we can write and read data without issue where as booting
+the system without the patch failed at the point of mounting the rootfs.
+
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+Link: https://lore.kernel.org/r/20210712233642.3119722-1-andrew@aj.id.au
+Fixes: faffd1b2bde3 ("ARM: dts: everest: Add phase corrections for eMMC")
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_of.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-index 197c57477344..997b8827fed2 100644
---- a/drivers/gpu/drm/drm_of.c
-+++ b/drivers/gpu/drm/drm_of.c
-@@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
- 		 * configurations by passing the endpoints explicitly to
- 		 * drm_of_lvds_get_dual_link_pixel_order().
- 		 */
--		if (!current_pt || pixels_type != current_pt)
-+		if (!current_pt || pixels_type != current_pt) {
-+			of_node_put(endpoint);
- 			return -EINVAL;
-+		}
- 	}
+diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
+index aa24cac8e5be..44b03a5e2416 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
+@@ -2832,7 +2832,7 @@
  
- 	return pixels_type;
+ &emmc {
+ 	status = "okay";
+-	clk-phase-mmc-hs200 = <180>, <180>;
++	clk-phase-mmc-hs200 = <210>, <228>;
+ };
+ 
+ &fsim0 {
 -- 
 2.30.2
 
