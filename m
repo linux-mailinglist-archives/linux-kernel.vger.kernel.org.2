@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB9E4097B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9E14097D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242422AbhIMPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:45:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54776 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244469AbhIMPpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:45:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631547863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=V7twJwM4PhCAu/6IhOjA346MNvtqV4r43Qxb7zI62kA=;
-        b=eEnD/k4HMjkpYpJCOp7dztcZMqovnNEl0yMovZDGGV4Bk5LNlGFP51vsSqeoesSXH08xwk
-        QQW6zEqHJ/FjVgYcCLljZ+0V3PjNxACl0XrUrbbEYbVbE0BjAkUeuqiqV1s3hT44Def9Vn
-        SQKdDWCb0T8tuJ/kC1XX5febG+qPg/I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-1VMFl39vNV2EE0DCDLLoEA-1; Mon, 13 Sep 2021 11:44:21 -0400
-X-MC-Unique: 1VMFl39vNV2EE0DCDLLoEA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A4111006AA2;
-        Mon, 13 Sep 2021 15:44:20 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0A2C25D9CA;
-        Mon, 13 Sep 2021 15:44:17 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 17:44:15 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Dmitry V. Levin" <ldv@strace.io>, linux-api@vger.kernel.org
-Subject: [PATCH v3] io-wq: provide IO_WQ_* constants for
- IORING_REGISTER_IOWQ_MAX_WORKERS arg items
-Message-ID: <20210913154415.GA12890@asgard.redhat.com>
+        id S1344637AbhIMPvq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 11:51:46 -0400
+Received: from mga02.intel.com ([134.134.136.20]:23935 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244469AbhIMPvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:51:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="208941499"
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="208941499"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 08:49:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="469496135"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga007.fm.intel.com with ESMTP; 13 Sep 2021 08:49:44 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 13 Sep 2021 08:49:44 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 13 Sep 2021 08:49:43 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.012;
+ Mon, 13 Sep 2021 08:49:43 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "yongxin.liu@windriver.com" <yongxin.liu@windriver.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Singhai, Anjali" <anjali.singhai@intel.com>,
+        "Parikh, Neerav" <neerav.parikh@intel.com>,
+        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Subject: RE: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+ support RDMA
+Thread-Topic: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+ support RDMA
+Thread-Index: AQHXpcrK/jEhT3UrxEqhAh51dcd/n6udc5YA///U4xA=
+Date:   Mon, 13 Sep 2021 15:49:43 +0000
+Message-ID: <4bc2664ac89844a79242339f5e971335@intel.com>
+References: <20210909151223.572918-1-david.m.ertman@intel.com>
+ <YTsjDsFbBggL2X/8@unreal>
+In-Reply-To: <YTsjDsFbBggL2X/8@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The items passed in the array pointed by the arg parameter
-of IORING_REGISTER_IOWQ_MAX_WORKERS io_uring_register operation
-carry certain semantics: they refer to different io-wq worker categories;
-provide IO_WQ_* constants in the UAPI, so these categories can be referenced
-in the user space code.
+> Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+> support RDMA
+> 
+> On Thu, Sep 09, 2021 at 08:12:23AM -0700, Dave Ertman wrote:
+> > There are two cases where the current PF does not support RDMA
+> > functionality.  The first is if the NVM loaded on the device is set to
+> > not support RDMA (common_caps.rdma is false).  The second is if the
+> > kernel bonding driver has included the current PF in an active link
+> > aggregate.
+> >
+> > When the driver has determined that this PF does not support RDMA,
+> > then auxiliary devices should not be created on the auxiliary bus.
+> 
+> This part is wrong, auxiliary devices should always be created, in your case it will
+> be one eth device only without extra irdma device.
 
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Complements: 2e480058ddc21ec5 ("io-wq: provide a way to limit max number of workers")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
-v3:
- - Constants are named in accordance with the suggestion, the internal enum
-   is no longer touched, BUILD_BUG_ON checks are added.
+It is worth considering having an eth aux device/driver but is it a hard-and-fast rule?
+In this case, the RDMA-capable PCI network device spawns an auxiliary device for RDMA
+and the core driver is a network driver.
 
-v2: https://lore.kernel.org/lkml/20210913104101.GA29616@asgard.redhat.com/
- - IO_WQ_ACCT_NR is no longer exposed directly in UAPI, per Jens Axboe's
-    suggestion.
+> 
+> Your "bug" is that you mixed auxiliary bus devices with "regular" ones and created
+> eth device not as auxiliary one. This is why you are calling to auxiliary_device_init()
+> for RDMA only and fallback to non-auxiliary mode.
 
-v1: https://lore.kernel.org/lkml/20210912122411.GA27679@asgard.redhat.com/
----
- fs/io-wq.c                    | 5 +++++
- include/uapi/linux/io_uring.h | 8 +++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+It's a design choice on how you carve out function(s) off your PCI core device to be
+managed by auxiliary driver(s) and not a bug.
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 6c55362..3d21568 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -14,6 +14,7 @@
- #include <linux/rculist_nulls.h>
- #include <linux/cpu.h>
- #include <linux/tracehook.h>
-+#include <uapi/linux/io_uring.h>
- 
- #include "io-wq.h"
- 
-@@ -1287,6 +1288,10 @@ int io_wq_max_workers(struct io_wq *wq, int *new_count)
- {
- 	int i, node, prev = 0;
- 
-+	BUILD_BUG_ON((int) IO_WQ_ACCT_BOUND   != (int) IO_WQ_BOUND);
-+	BUILD_BUG_ON((int) IO_WQ_ACCT_UNBOUND != (int) IO_WQ_UNBOUND);
-+	BUILD_BUG_ON((int) IO_WQ_ACCT_NR      != 2);
-+
- 	for (i = 0; i < 2; i++) {
- 		if (new_count[i] > task_rlimit(current, RLIMIT_NPROC))
- 			new_count[i] = task_rlimit(current, RLIMIT_NPROC);
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 59ef351..b270a07 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -317,13 +317,19 @@ enum {
- 	IORING_REGISTER_IOWQ_AFF		= 17,
- 	IORING_UNREGISTER_IOWQ_AFF		= 18,
- 
--	/* set/get max number of workers */
-+	/* set/get max number of io-wq workers */
- 	IORING_REGISTER_IOWQ_MAX_WORKERS	= 19,
- 
- 	/* this goes last */
- 	IORING_REGISTER_LAST
- };
- 
-+/* io-wq worker categories */
-+enum {
-+	IO_WQ_BOUND,
-+	IO_WQ_UNBOUND,
-+};
-+
- /* deprecated, see struct io_uring_rsrc_update */
- struct io_uring_files_update {
- 	__u32 offset;
--- 
-2.1.4
-
+Shiraz
