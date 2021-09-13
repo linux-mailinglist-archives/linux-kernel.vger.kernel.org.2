@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E601E409A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B82D409A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242502AbhIMRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:20:46 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:34781 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230318AbhIMRUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:20:45 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H7YB812knz9sTs;
-        Mon, 13 Sep 2021 19:19:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8hjOcyIZKiIB; Mon, 13 Sep 2021 19:19:28 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H7YB802nHz9sTr;
-        Mon, 13 Sep 2021 19:19:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D9CE68B76E;
-        Mon, 13 Sep 2021 19:19:27 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id R5fl37EbeqzS; Mon, 13 Sep 2021 19:19:27 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.172])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E8738B763;
-        Mon, 13 Sep 2021 19:19:27 +0200 (CEST)
-Subject: Re: [PATCH RESEND v3 6/6] powerpc/signal: Use
- unsafe_copy_siginfo_to_user()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631537060.git.christophe.leroy@csgroup.eu>
- <2b179deba4fd4ec0868cdc48a0230dfa3aa5a22f.1631537060.git.christophe.leroy@csgroup.eu>
- <87h7eopixa.fsf@disp2133> <87y280o38q.fsf@disp2133>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <96d06ad9-5a9b-b8c3-3c1d-ed8837091a60@csgroup.eu>
-Date:   Mon, 13 Sep 2021 19:19:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S237754AbhIMRXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhIMRXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 13:23:10 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E9FC061574;
+        Mon, 13 Sep 2021 10:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ozDu2C9KwJDzUHmqI8L8ZS+TLMmJ1vttUQXVZymGuXw=; b=luWWEIGyIZ+r8nBZzOJgzAJsGx
+        N7oDNxgPF3OFmLGgbOPfFjf02fv1ISLc3zvjj4zwkR3ngVeDFoBg7Rkyv8mSPTvmKkXt7bSAXti/9
+        R9iY/fZEkesX3BRkVDPaUYhI5ZVJAmf9pJ9amuMKXN9I1A0qj9K6hB9CNHTxNXjZ4LiDoRa1aKw6u
+        OUGwFvrmsqa3QOnqAltvdpvADc9fuLcHfFKdTOuFM26DVcVbWUL0CHsaQPCf1HTG5zJqz5CVqQ2VF
+        UsurmMzg0xrJvEN2AiG/3SjuJJXUQG1qj45oxztVARgLk7FaNR9pDlE3SjbrPxclCpERbHXedjJr2
+        dSlpvPyQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPpe0-002eih-G4; Mon, 13 Sep 2021 17:21:24 +0000
+Date:   Mon, 13 Sep 2021 10:21:24 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
+        dm-devel@redhat.com, nbd@other.debian.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 1/8] scsi/sd: add error handling support for add_disk()
+Message-ID: <YT+IlJnSZzG0j0ON@bombadil.infradead.org>
+References: <20210830212538.148729-1-mcgrof@kernel.org>
+ <20210830212538.148729-2-mcgrof@kernel.org>
+ <YTbAYyo0+rqUZ+L0@T590>
 MIME-Version: 1.0
-In-Reply-To: <87y280o38q.fsf@disp2133>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTbAYyo0+rqUZ+L0@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 13/09/2021 à 18:21, Eric W. Biederman a écrit :
-> ebiederm@xmission.com (Eric W. Biederman) writes:
+On Tue, Sep 07, 2021 at 09:29:07AM +0800, Ming Lei wrote:
+> On Mon, Aug 30, 2021 at 02:25:31PM -0700, Luis Chamberlain wrote:
+> > We never checked for errors on add_disk() as this function
+> > returned void. Now that this is fixed, use the shiny new
+> > error handling.
+> > 
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  drivers/scsi/sd.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+> > index 610ebba0d66e..8c1273fff23e 100644
+> > --- a/drivers/scsi/sd.c
+> > +++ b/drivers/scsi/sd.c
+> > @@ -3487,7 +3487,11 @@ static int sd_probe(struct device *dev)
+> >  		pm_runtime_set_autosuspend_delay(dev,
+> >  			sdp->host->hostt->rpm_autosuspend_delay);
+> >  	}
+> > -	device_add_disk(dev, gd, NULL);
+> > +
+> > +	error = device_add_disk(dev, gd, NULL);
+> > +	if (error)
+> > +		goto out_free_index;
+> > +
 > 
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>
->>> Use unsafe_copy_siginfo_to_user() in order to do the copy
->>> within the user access block.
->>>
->>> On an mpc 8321 (book3s/32) the improvment is about 5% on a process
->>> sending a signal to itself.
+> The error handling is actually wrong, see 
 > 
-> If you can't make function calls from an unsafe macro there is another
-> way to handle this that doesn't require everything to be inline.
+> 	https://lore.kernel.org/linux-scsi/c93f3010-13c9-e07f-1458-b6b47a27057b@acm.org/T/#t
 > 
->  From a safety perspective it is probably even a better approach.
+> Maybe you can base on that patch.
 
-Yes but that's exactly what I wanted to avoid for the native ppc32 case: 
-this double hop means useless pressure on the cache. The siginfo_t 
-structure is 128 bytes large, that means 8 lines of cache on powerpc 8xx.
+Done, thanks!
 
-But maybe it is acceptable to do that only for the compat case. Let me 
-think about it, it might be quite easy.
-
-Christophe
+ Luis
