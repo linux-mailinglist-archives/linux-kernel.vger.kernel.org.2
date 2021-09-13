@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E0A408D15
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CD1408FC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240257AbhIMNXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
+        id S242643AbhIMNqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:46:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240275AbhIMNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0E2B610CB;
-        Mon, 13 Sep 2021 13:20:06 +0000 (UTC)
+        id S239090AbhIMNk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:40:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46AB46127C;
+        Mon, 13 Sep 2021 13:29:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539207;
-        bh=uuZMw6J5hMtC9lRbJ1wg88tUyZpGYzYRmpNXWwfNY5U=;
+        s=korg; t=1631539781;
+        bh=ohwEJtFRB3PaxDtINta776MDdnaHFIlz/gMmTM7tb7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pkXYYwrC7mlJbCAdHzHhhJ4jH6TUQOUnUodM9frIzXP+dJ2fb6ToeJzFQeSGTa3gH
-         WAFAGFPRVuL1/kYc7uh63Jt/EtbQlP+w2KyV1byE8aIJTSLO3hBhIdJDjadgPoIdr3
-         dIxC4kHQ5FZ3clzMy0CxmH/t0Y4wpZ4YIJ8TWRJk=
+        b=iJEOpvYP+X1Q9sme1LGBRrPpGS7LDvT+dtkbNcD+4ZRt5z5pZAl29xBkay8ZMQcIX
+         sdVwyNyu2kX6RwNdzFu3h7a1Xl5XLrfZ8ClViThq4lkjnKKsocC0zh1VcPZGaz/qnJ
+         FrTkroOpVEBfEu9q20vaer+ItINzDoptFY+sINTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 081/144] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
-Date:   Mon, 13 Sep 2021 15:14:22 +0200
-Message-Id: <20210913131050.674642493@linuxfoundation.org>
+Subject: [PATCH 5.10 158/236] PM: cpu: Make notifier chain use a raw_spinlock_t
+Date:   Mon, 13 Sep 2021 15:14:23 +0200
+Message-Id: <20210913131105.757862600@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Valentin Schneider <valentin.schneider@arm.com>
 
-[ Upstream commit 713baf3dae8f45dc8ada4ed2f5fdcbf94a5c274d ]
+[ Upstream commit b2f6662ac08d0e7c25574ce53623c71bdae9dd78 ]
 
-An earlier commit replaced using batostr to using %pMR sprintf for the
-construction of session->name. Static analysis detected that this new
-method can use a total of 21 characters (including the trailing '\0')
-so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
-buffer overflows.
+Invoking atomic_notifier_chain_notify() requires acquiring a spinlock_t,
+which can block under CONFIG_PREEMPT_RT. Notifications for members of the
+cpu_pm notification chain will be issued by the idle task, which can never
+block.
 
-Addresses-Coverity: ("Out-of-bounds write")
-Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Making *all* atomic_notifiers use a raw_spinlock is too big of a hammer, as
+only notifications issued by the idle task are problematic.
+
+Special-case cpu_pm_notifier_chain by kludging a raw_notifier and
+raw_spinlock_t together, matching the atomic_notifier behavior with a
+raw_spinlock_t.
+
+Fixes: 70d932985757 ("notifier: Fix broken error handling pattern")
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/cmtp/cmtp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/cpu_pm.c | 50 +++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 38 insertions(+), 12 deletions(-)
 
-diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
-index c32638dddbf9..f6b9dc4e408f 100644
---- a/net/bluetooth/cmtp/cmtp.h
-+++ b/net/bluetooth/cmtp/cmtp.h
-@@ -26,7 +26,7 @@
- #include <linux/types.h>
- #include <net/bluetooth/bluetooth.h>
+diff --git a/kernel/cpu_pm.c b/kernel/cpu_pm.c
+index f7e1d0eccdbc..246efc74e3f3 100644
+--- a/kernel/cpu_pm.c
++++ b/kernel/cpu_pm.c
+@@ -13,19 +13,32 @@
+ #include <linux/spinlock.h>
+ #include <linux/syscore_ops.h>
  
--#define BTNAMSIZ 18
-+#define BTNAMSIZ 21
+-static ATOMIC_NOTIFIER_HEAD(cpu_pm_notifier_chain);
++/*
++ * atomic_notifiers use a spinlock_t, which can block under PREEMPT_RT.
++ * Notifications for cpu_pm will be issued by the idle task itself, which can
++ * never block, IOW it requires using a raw_spinlock_t.
++ */
++static struct {
++	struct raw_notifier_head chain;
++	raw_spinlock_t lock;
++} cpu_pm_notifier = {
++	.chain = RAW_NOTIFIER_INIT(cpu_pm_notifier.chain),
++	.lock  = __RAW_SPIN_LOCK_UNLOCKED(cpu_pm_notifier.lock),
++};
  
- /* CMTP ioctl defines */
- #define CMTPCONNADD	_IOW('C', 200, int)
+ static int cpu_pm_notify(enum cpu_pm_event event)
+ {
+ 	int ret;
+ 
+ 	/*
+-	 * atomic_notifier_call_chain has a RCU read critical section, which
+-	 * could be disfunctional in cpu idle. Copy RCU_NONIDLE code to let
+-	 * RCU know this.
++	 * This introduces a RCU read critical section, which could be
++	 * disfunctional in cpu idle. Copy RCU_NONIDLE code to let RCU know
++	 * this.
+ 	 */
+ 	rcu_irq_enter_irqson();
+-	ret = atomic_notifier_call_chain(&cpu_pm_notifier_chain, event, NULL);
++	rcu_read_lock();
++	ret = raw_notifier_call_chain(&cpu_pm_notifier.chain, event, NULL);
++	rcu_read_unlock();
+ 	rcu_irq_exit_irqson();
+ 
+ 	return notifier_to_errno(ret);
+@@ -33,10 +46,13 @@ static int cpu_pm_notify(enum cpu_pm_event event)
+ 
+ static int cpu_pm_notify_robust(enum cpu_pm_event event_up, enum cpu_pm_event event_down)
+ {
++	unsigned long flags;
+ 	int ret;
+ 
+ 	rcu_irq_enter_irqson();
+-	ret = atomic_notifier_call_chain_robust(&cpu_pm_notifier_chain, event_up, event_down, NULL);
++	raw_spin_lock_irqsave(&cpu_pm_notifier.lock, flags);
++	ret = raw_notifier_call_chain_robust(&cpu_pm_notifier.chain, event_up, event_down, NULL);
++	raw_spin_unlock_irqrestore(&cpu_pm_notifier.lock, flags);
+ 	rcu_irq_exit_irqson();
+ 
+ 	return notifier_to_errno(ret);
+@@ -49,12 +65,17 @@ static int cpu_pm_notify_robust(enum cpu_pm_event event_up, enum cpu_pm_event ev
+  * Add a driver to a list of drivers that are notified about
+  * CPU and CPU cluster low power entry and exit.
+  *
+- * This function may sleep, and has the same return conditions as
+- * raw_notifier_chain_register.
++ * This function has the same return conditions as raw_notifier_chain_register.
+  */
+ int cpu_pm_register_notifier(struct notifier_block *nb)
+ {
+-	return atomic_notifier_chain_register(&cpu_pm_notifier_chain, nb);
++	unsigned long flags;
++	int ret;
++
++	raw_spin_lock_irqsave(&cpu_pm_notifier.lock, flags);
++	ret = raw_notifier_chain_register(&cpu_pm_notifier.chain, nb);
++	raw_spin_unlock_irqrestore(&cpu_pm_notifier.lock, flags);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(cpu_pm_register_notifier);
+ 
+@@ -64,12 +85,17 @@ EXPORT_SYMBOL_GPL(cpu_pm_register_notifier);
+  *
+  * Remove a driver from the CPU PM notifier list.
+  *
+- * This function may sleep, and has the same return conditions as
+- * raw_notifier_chain_unregister.
++ * This function has the same return conditions as raw_notifier_chain_unregister.
+  */
+ int cpu_pm_unregister_notifier(struct notifier_block *nb)
+ {
+-	return atomic_notifier_chain_unregister(&cpu_pm_notifier_chain, nb);
++	unsigned long flags;
++	int ret;
++
++	raw_spin_lock_irqsave(&cpu_pm_notifier.lock, flags);
++	ret = raw_notifier_chain_unregister(&cpu_pm_notifier.chain, nb);
++	raw_spin_unlock_irqrestore(&cpu_pm_notifier.lock, flags);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(cpu_pm_unregister_notifier);
+ 
 -- 
 2.30.2
 
