@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A836E40921E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25C9409563
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343765AbhIMOIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:08:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55994 "EHLO mail.kernel.org"
+        id S1345289AbhIMOlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:41:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344556AbhIMOFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:05:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A35761A61;
-        Mon, 13 Sep 2021 13:39:33 +0000 (UTC)
+        id S1347771AbhIMOfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6E7561875;
+        Mon, 13 Sep 2021 13:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540373;
-        bh=h2sBoiy0NXW71Ckof/h3W9x7fsiq/XEvuozD5dXP8OA=;
+        s=korg; t=1631541212;
+        bh=6Z41rXZDopB07DJs9M6asoBNIH1dGPd0C5Fjk/Qs8vg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=se9qLJIHQVKp5eNUX4qoW4pkmQWAEXLv+Alc0yZhBrBA/Z/pANbySd7jS+qLPkkF/
-         7BeoboRwPT6qifTtOelfnrCvMq9f6InzZd28mZQvZOmHPW0EyvcrlNpbtyXSQuDE2d
-         ypwLMl0vBBb3JH23K7ACSK5Vr/ZRBXVyx9D0pIS0=
+        b=jb4q99nA+tdQkEFGcXxAnT7nhfsOyKej7bOSvlrh1vcvqQJrOqiAi96XdZ2p7F3jt
+         glt7wYVAqrmIvm+y9ZYvrg5Wpbsk9Ic+CSrQPxOJHuHvFheK/JUCODCzvUMczyW6r4
+         puxoOoCKhcKoH7VqsMsQVQULkCfV0nd0XCiJwbg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 159/300] net: dsa: mt7530: remove the .port_set_mrouter implementation
+Subject: [PATCH 5.14 166/334] PCI: PM: Enable PME if it can be signaled from D3cold
 Date:   Mon, 13 Sep 2021 15:13:40 +0200
-Message-Id: <20210913131114.776127419@linuxfoundation.org>
+Message-Id: <20210913131118.949893675@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit cbbf09b5771e6e9da268bc0d2fb6e428afa787bc ]
+[ Upstream commit 0e00392a895c95c6d12d42158236c8862a2f43f2 ]
 
-DSA's idea of optimizing out multicast flooding to the CPU port leaves
-quite a few holes open, so it should be reverted.
+PME signaling is only enabled by __pci_enable_wake() if the target
+device can signal PME from the given target power state (to avoid
+pointless reconfiguration of the device), but if the hierarchy above
+the device goes into D3cold, the device itself will end up in D3cold
+too, so if it can signal PME from D3cold, it should be enabled to
+do so in __pci_enable_wake().
 
-The mt7530 driver is the only new driver which added a .port_set_mrouter
-implementation after the reorg from commit a8b659e7ff75 ("net: dsa: act
-as passthrough for bridge port flags"), so it needs to be reverted
-separately so that the other revert commit can go a bit further down the
-git history.
+[Note that if the device does not end up in D3cold and it cannot
+ signal PME from the original target power state, it will not signal
+ PME, so in that case the behavior does not change.]
 
-Fixes: 5a30833b9a16 ("net: dsa: mt7530: support MDB and bridge flag operations")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+Fixes: 5bcc2fb4e815 ("PCI PM: Simplify PCI wake-up code")
+Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Reported-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mt7530.c | 13 -------------
- 1 file changed, 13 deletions(-)
+ drivers/pci/pci.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 2b01efad1a51..647f8e5c16da 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1172,18 +1172,6 @@ mt7530_port_bridge_flags(struct dsa_switch *ds, int port,
- 	return 0;
- }
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 28bac63525b2..3f353572588d 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2495,7 +2495,14 @@ static int __pci_enable_wake(struct pci_dev *dev, pci_power_t state, bool enable
+ 	if (enable) {
+ 		int error;
  
--static int
--mt7530_port_set_mrouter(struct dsa_switch *ds, int port, bool mrouter,
--			struct netlink_ext_ack *extack)
--{
--	struct mt7530_priv *priv = ds->priv;
--
--	mt7530_rmw(priv, MT7530_MFC, UNM_FFP(BIT(port)),
--		   mrouter ? UNM_FFP(BIT(port)) : 0);
--
--	return 0;
--}
--
- static int
- mt7530_port_bridge_join(struct dsa_switch *ds, int port,
- 			struct net_device *bridge)
-@@ -2847,7 +2835,6 @@ static const struct dsa_switch_ops mt7530_switch_ops = {
- 	.port_stp_state_set	= mt7530_stp_state_set,
- 	.port_pre_bridge_flags	= mt7530_port_pre_bridge_flags,
- 	.port_bridge_flags	= mt7530_port_bridge_flags,
--	.port_set_mrouter	= mt7530_port_set_mrouter,
- 	.port_bridge_join	= mt7530_port_bridge_join,
- 	.port_bridge_leave	= mt7530_port_bridge_leave,
- 	.port_fdb_add		= mt7530_port_fdb_add,
+-		if (pci_pme_capable(dev, state))
++		/*
++		 * Enable PME signaling if the device can signal PME from
++		 * D3cold regardless of whether or not it can signal PME from
++		 * the current target state, because that will allow it to
++		 * signal PME when the hierarchy above it goes into D3cold and
++		 * the device itself ends up in D3cold as a result of that.
++		 */
++		if (pci_pme_capable(dev, state) || pci_pme_capable(dev, PCI_D3cold))
+ 			pci_pme_active(dev, true);
+ 		else
+ 			ret = 1;
 -- 
 2.30.2
 
