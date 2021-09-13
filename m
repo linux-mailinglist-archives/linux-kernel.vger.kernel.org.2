@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D01409DED
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F47409DF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241782AbhIMUJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
+        id S242237AbhIMUKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242020AbhIMUJV (ORCPT
+        with ESMTP id S236133AbhIMUKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:09:21 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D5EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:08:05 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id i13so11440031ilm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:08:05 -0700 (PDT)
+        Mon, 13 Sep 2021 16:10:41 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9167C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:09:24 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s3so19408803ljp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:09:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XFNaJHQd7ucmOFeh4z1EzSjSBaD8pbTDNp0Gcn8+tks=;
-        b=Dc/UY0z3rZUcF8AkAMmrTpBXyDBAbxa/TYXFW+SKnEqftpn9j6uo6j16XKnPb/krXs
-         tAfgjZdeQzFN1YkFCg0263HHBZFvhPiX9JxxOw5+8JX2pXS1oD+NDO9JiZOMH+rT1AFv
-         0PY3A4nsQsWgi78i5gYS94xu5t2rHjHRw/fGY=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SMsg97l00l07oCtcmcZSQu1PJBjVeWs3GkR0hZw6dIQ=;
+        b=OEVqTP7bLY9vgVkI9Xz/mX9hc+2K43vUH/Ddy/z8+OQ8i3LKL8oMHKJNOMMEmT2FQA
+         or6Ea/NN1JVc3aMwVFI57e3Y0X8YxzIE5TDaL6K3xoKXE2zuVKT71IF8nKc1zU0vjRgm
+         uLu4v+NJ8b33vdbdCxLMVLh+H13FybIBCjiAfhFwt8+dB2mmH95uS2LKiGvqFN8yuBW5
+         R13Q4LkNAbWaXt1f7pKtAh6FRgKmfXRmg5f1uk9E5yOh/AhZkoabYxEDivGEOLF0nRyL
+         DK7t6zyXUnjL2hxWx3+H8C0JWzWY10SaCafKxpTyhJ4woN/Cqi/DRWBoL5q4TWQmh8cE
+         EMJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XFNaJHQd7ucmOFeh4z1EzSjSBaD8pbTDNp0Gcn8+tks=;
-        b=ZAVqEvUAgM7BT0mqgKYot4LP55Z7GxtDJB+k2/gxB4GUoCmj1MOod7ou3q9A5xvp/a
-         D7Hf996V/K0SMTRtV8KcTp2tX9hqoG9FzZ7stF0uB73oX6iX41orSwTofczep7yNsR5Y
-         Lg/jzJac5fuS0UX4djxkUdoJmQIbJ/7tSxM9cB5gANoxQcv4tSFvo0V/QH+Ze6YSEsD6
-         VIIr2rdmjRwmQxy1qmKOYiNt5Nkyih8lRjaCW81ugC2V3fGwYdqKnW5gA2MADQgENtXR
-         jcAv7kbv0+uSoPi+kae9BHLBkv5ZHY4Gotx7lTwLYMJf/NXqYwh+0nJkRDqzICijA7Mz
-         E6dw==
-X-Gm-Message-State: AOAM5327JQRzvbOYnVp2tfST81JkKevQ7XKTBF8C8lEqCbZ184pe9NvZ
-        TVoYOw94Gy4cmJ5Tqg/wC4Gjpw==
-X-Google-Smtp-Source: ABdhPJywfY/f5S5FCa3BLwFDS/by0QdPIXSpfJV2c9oj0GlYRjjljJzFR7g9Z2pDXZiPCI6PPFXNsw==
-X-Received: by 2002:a05:6e02:2184:: with SMTP id j4mr9547637ila.30.1631563685070;
-        Mon, 13 Sep 2021 13:08:05 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s7sm5209960ioc.42.2021.09.13.13.08.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 13:08:04 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/144] 5.4.146-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <db85998f-a0b8-ff06-6c04-ace510d733f4@linuxfoundation.org>
-Date:   Mon, 13 Sep 2021 14:08:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SMsg97l00l07oCtcmcZSQu1PJBjVeWs3GkR0hZw6dIQ=;
+        b=i51iwPsXwj57EuSOkvDC2PxvEvzJa+fD2hGkXxmVAyb/l0ppmGz2aL5gV3MJJrKnLK
+         8f8+o1FD86W3PoXdOBDxcMK5b4/FlHHVqAOAD49kWe4FN1ZqAKj3Xjqniq+u76OqSNq9
+         ZQXgJpDV2m4SSfrWnlSBv+tQC520mZxPzg5HqQgr11vVxjoSikp1gdUNm0HqM8+DAbX9
+         fod7DBBFv4zPitLZWh/96heIU9vpW/938lkwK1GqbLENFP9sXC3xv5XTiAmYEq/0jfED
+         EpK1pbBzi7nhI4BZg8T4lJT2vYjSTYIiXl12mbo/GLs/CqribTlAnvR4BMsUqvBjRh3w
+         ojlA==
+X-Gm-Message-State: AOAM531Hf+BfGKojIWz9aLOHFc70Zjg+N4SepuTI4HL1OIqk/QnQ6HDJ
+        vBI3g0CBAgZlSoobTurjDlRsS8DpJveVoTIhAqOqvA==
+X-Google-Smtp-Source: ABdhPJyLyyBzBDlii/148UlbF+rM9IFcc8sAvJXelm26Rs/xwETntp1x/YIRfVq/35b9la5OaaKJh8KhhZJCRM0qVPc=
+X-Received: by 2002:a2e:9ed9:: with SMTP id h25mr11740309ljk.40.1631563762705;
+ Mon, 13 Sep 2021 13:09:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
+ <20210905124439.GA15026@xsang-OptiPlex-9020> <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
+ <20210907033000.GA88160@shbuild999.sh.intel.com> <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
+ <20210912111756.4158-1-hdanton@sina.com> <20210912132914.GA56674@shbuild999.sh.intel.com>
+ <CALvZod4VbdSux5RaQuhqbC7ENm39UbdkJF8LhYedbFwHKyJgfw@mail.gmail.com>
+ <CALvZod7Oa7q=P0gzfA3F26bHPrNz+F-d6G9qKpSiHy9g=msM_w@mail.gmail.com> <YT+ptg1Lf1kGLyUX@slm.duckdns.org>
+In-Reply-To: <YT+ptg1Lf1kGLyUX@slm.duckdns.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 13 Sep 2021 13:09:11 -0700
+Message-ID: <CALvZod7mBLbkqZJzZz=XNGTDB4mxCd6dwM40aCv6t8fWbdUJdw@mail.gmail.com>
+Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Feng Tang <feng.tang@intel.com>, Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 7:13 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.146 release.
-> There are 144 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.146-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Sep 13, 2021 at 12:42 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Mon, Sep 13, 2021 at 12:40:06PM -0700, Shakeel Butt wrote:
+> > I did one more experiment with same workload but with system_wq
+> > instead system_unbound_wq and there is clear difference in profile:
+> >
+> > With system_unbound_wq:
+> > -    4.63%     0.33%  mmap  [kernel.kallsyms]  [k] queue_work_on
+> >      4.29% queue_work_on
+> >       - __queue_work
+> >          - 3.45% wake_up_process
+> >             - try_to_wake_up
+> >                - 2.46% ttwu_queue
+> >                   - 1.66% ttwu_do_activate
+> >                      - 1.14% activate_task
+> >                         - 0.97% enqueue_task_fair
+> >                              enqueue_entity
+> >
+> > With system_wq:
+> > -    1.36%     0.06%  mmap  [kernel.kallsyms]  [k] queue_work_on
+> >      1.30% queue_work_on
+> >       - __queue_work
+> >          - 1.03% wake_up_process
+> >             - try_to_wake_up
+> >                - 0.97% ttwu_queue
+> >                     0.66% ttwu_do_activate
+> >
+> > Tejun, is this expected? i.e. queuing work on system_wq has a
+> > different performance impact than on system_unbound_wq?
+>
+> Yes, system_unbound_wq is putting the work item on the global shared
+> workqueue while the system_wq is per-cpu, so on a loaded system, overhead
+> difference showing up isn't too surprising.
+>
 
-Compiled and booted on my test system. No dmesg regressions.
+Thanks a lot for the explanation. Are there any concerns to call
+cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup) in system_wq?
+This will be called every 2 seconds, so, we can assume the updated
+tree would be small most of the time.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
+Thanks,
+Shakeel
