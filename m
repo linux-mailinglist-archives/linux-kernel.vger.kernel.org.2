@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A2540923B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D3A409522
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344884AbhIMOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54576 "EHLO mail.kernel.org"
+        id S1344277AbhIMOiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343528AbhIMOGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:06:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC156108B;
-        Mon, 13 Sep 2021 13:39:59 +0000 (UTC)
+        id S1345904AbhIMOdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:33:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9D1C6137C;
+        Mon, 13 Sep 2021 13:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540400;
-        bh=q3rCfB7IrXTS6ulzY3Nh8iMhXm8CPN7pceV1pi1BASY=;
+        s=korg; t=1631541155;
+        bh=92VlfVONk7XtZ4VLYb1V6TBE5RSZxNPQllZl6+L+/kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YjR6aRVq0lFvZyBs8VQ6PJWJQhuAFqoddztfuL2W6AktUkns5GPHDegTM1LDMY8fZ
-         psTJFcTcH4paUhL1QK7UYb+5vVqFIjLCHrH+E2SJAzYanJkPEx4BArARQeLz0PLdFE
-         GDLjblA+7ZlrUd12jgFP75+JSo/sMzSXqo6LDVzo=
+        b=WWO5yTp82I0v/41kv4OpmeU2yPkl+fk6ubsCRqBTMdHFKX2ouPFw7iFYRhalX2RNC
+         cnalVCqw+chT/da1kUMMcvMuOgxob9IwAyOrZmu8pa9CRlHvbnvLFST+CVsXKBbNkD
+         jeuNSYxB5oHtOWyASkY4DeNXGxF+u7kY1dM6KtKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 160/300] net: dsa: dont disable multicast flooding to the CPU even without an IGMP querier
-Date:   Mon, 13 Sep 2021 15:13:41 +0200
-Message-Id: <20210913131114.815116126@linuxfoundation.org>
+Subject: [PATCH 5.14 168/334] soc: qcom: smsm: Fix missed interrupts if state changes while masked
+Date:   Mon, 13 Sep 2021 15:13:42 +0200
+Message-Id: <20210913131119.021142341@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,216 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit c73c57081b3d59aa99093fbedced32ea02620cd3 ]
+[ Upstream commit e3d4571955050736bbf3eda0a9538a09d9fcfce8 ]
 
-Commit 08cc83cc7fd8 ("net: dsa: add support for BRIDGE_MROUTER
-attribute") added an option for users to turn off multicast flooding
-towards the CPU if they turn off the IGMP querier on a bridge which
-already has enslaved ports (echo 0 > /sys/class/net/br0/bridge/multicast_router).
+The SMSM driver detects interrupt edges by tracking the last state
+it has seen (and has triggered the interrupt handler for). This works
+fine, but only if the interrupt does not change state while masked.
 
-And commit a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
-simply papered over that issue, because it moved the decision to flood
-the CPU with multicast (or not) from the DSA core down to individual drivers,
-instead of taking a more radical position then.
+For example, if an interrupt is unmasked while the state is HIGH,
+the stored last_value for that interrupt might still be LOW. Then,
+when the remote processor triggers smsm_intr() we assume that nothing
+has changed, even though the state might have changed from HIGH to LOW.
 
-The truth is that disabling multicast flooding to the CPU is simply
-something we are not prepared to do now, if at all. Some reasons:
+Attempt to fix this by checking the current remote state before
+unmasking an IRQ. Use atomic operations to avoid the interrupt handler
+from interfering with the unmask function.
 
-- ICMP6 neighbor solicitation messages are unregistered multicast
-  packets as far as the bridge is concerned. So if we stop flooding
-  multicast, the outside world cannot ping the bridge device's IPv6
-  link-local address.
+This fixes modem crashes in some edge cases with the BAM-DMUX driver.
+Specifically, the BAM-DMUX interrupt handler is not called for the
+HIGH -> LOW smsm state transition if the BAM-DMUX driver is loaded
+(and therefore unmasks the interrupt) after the modem was already started:
 
-- There might be foreign interfaces bridged with our DSA switch ports
-  (sending a packet towards the host does not necessarily equal
-  termination, but maybe software forwarding). So if there is no one
-  interested in that multicast traffic in the local network stack, that
-  doesn't mean nobody is.
+qcom-q6v5-mss 4080000.remoteproc: fatal error received: a2_task.c:3188:
+  Assert FALSE failed: A2 DL PER deadlock timer expired waiting for Apps ACK
 
-- PTP over L4 (IPv4, IPv6) is multicast, but is unregistered as far as
-  the bridge is concerned. This should reach the CPU port.
-
-- The switch driver might not do FDB partitioning. And since we don't
-  even bother to do more fine-grained flood disabling (such as "disable
-  flooding _from_port_N_ towards the CPU port" as opposed to "disable
-  flooding _from_any_port_ towards the CPU port"), this breaks standalone
-  ports, or even multiple bridges where one has an IGMP querier and one
-  doesn't.
-
-Reverting the logic makes all of the above work.
-
-Fixes: a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
-Fixes: 08cc83cc7fd8 ("net: dsa: add support for BRIDGE_MROUTER attribute")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c97c4090ff72 ("soc: qcom: smsm: Add driver for Qualcomm SMSM")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/r/20210712135703.324748-2-stephan@gerhold.net
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c | 10 ----------
- drivers/net/dsa/b53/b53_priv.h   |  2 --
- drivers/net/dsa/bcm_sf2.c        |  1 -
- drivers/net/dsa/mv88e6xxx/chip.c | 18 ------------------
- include/net/dsa.h                |  2 --
- net/dsa/dsa_priv.h               |  2 --
- net/dsa/port.c                   | 11 -----------
- net/dsa/slave.c                  |  6 ------
- 8 files changed, 52 deletions(-)
+ drivers/soc/qcom/smsm.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 3ca6b394dd5f..54b273d85861 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1993,15 +1993,6 @@ int b53_br_flags(struct dsa_switch *ds, int port,
- }
- EXPORT_SYMBOL(b53_br_flags);
+diff --git a/drivers/soc/qcom/smsm.c b/drivers/soc/qcom/smsm.c
+index 1d3d5e3ec2b0..6e9a9cd28b17 100644
+--- a/drivers/soc/qcom/smsm.c
++++ b/drivers/soc/qcom/smsm.c
+@@ -109,7 +109,7 @@ struct smsm_entry {
+ 	DECLARE_BITMAP(irq_enabled, 32);
+ 	DECLARE_BITMAP(irq_rising, 32);
+ 	DECLARE_BITMAP(irq_falling, 32);
+-	u32 last_value;
++	unsigned long last_value;
  
--int b53_set_mrouter(struct dsa_switch *ds, int port, bool mrouter,
--		    struct netlink_ext_ack *extack)
--{
--	b53_port_set_mcast_flood(ds->priv, port, mrouter);
--
--	return 0;
--}
--EXPORT_SYMBOL(b53_set_mrouter);
--
- static bool b53_possible_cpu_port(struct dsa_switch *ds, int port)
- {
- 	/* Broadcom switches will accept enabling Broadcom tags on the
-@@ -2245,7 +2236,6 @@ static const struct dsa_switch_ops b53_switch_ops = {
- 	.port_bridge_leave	= b53_br_leave,
- 	.port_pre_bridge_flags	= b53_br_flags_pre,
- 	.port_bridge_flags	= b53_br_flags,
--	.port_set_mrouter	= b53_set_mrouter,
- 	.port_stp_state_set	= b53_br_set_stp_state,
- 	.port_fast_age		= b53_br_fast_age,
- 	.port_vlan_filtering	= b53_vlan_filtering,
-diff --git a/drivers/net/dsa/b53/b53_priv.h b/drivers/net/dsa/b53/b53_priv.h
-index 82700a5714c1..9bf8319342b0 100644
---- a/drivers/net/dsa/b53/b53_priv.h
-+++ b/drivers/net/dsa/b53/b53_priv.h
-@@ -328,8 +328,6 @@ int b53_br_flags_pre(struct dsa_switch *ds, int port,
- int b53_br_flags(struct dsa_switch *ds, int port,
- 		 struct switchdev_brport_flags flags,
- 		 struct netlink_ext_ack *extack);
--int b53_set_mrouter(struct dsa_switch *ds, int port, bool mrouter,
--		    struct netlink_ext_ack *extack);
- int b53_setup_devlink_resources(struct dsa_switch *ds);
- void b53_port_event(struct dsa_switch *ds, int port);
- void b53_phylink_validate(struct dsa_switch *ds, int port,
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index 3b018fcf4412..6ce9ec1283e0 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -1199,7 +1199,6 @@ static const struct dsa_switch_ops bcm_sf2_ops = {
- 	.port_pre_bridge_flags	= b53_br_flags_pre,
- 	.port_bridge_flags	= b53_br_flags,
- 	.port_stp_state_set	= b53_br_set_stp_state,
--	.port_set_mrouter	= b53_set_mrouter,
- 	.port_fast_age		= b53_br_fast_age,
- 	.port_vlan_filtering	= b53_vlan_filtering,
- 	.port_vlan_add		= b53_vlan_add,
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 272b0535d946..111a6d5985da 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -5781,23 +5781,6 @@ out:
- 	return err;
- }
+ 	u32 *remote_state;
+ 	u32 *subscription;
+@@ -204,8 +204,7 @@ static irqreturn_t smsm_intr(int irq, void *data)
+ 	u32 val;
  
--static int mv88e6xxx_port_set_mrouter(struct dsa_switch *ds, int port,
--				      bool mrouter,
--				      struct netlink_ext_ack *extack)
--{
--	struct mv88e6xxx_chip *chip = ds->priv;
--	int err;
--
--	if (!chip->info->ops->port_set_mcast_flood)
--		return -EOPNOTSUPP;
--
--	mv88e6xxx_reg_lock(chip);
--	err = chip->info->ops->port_set_mcast_flood(chip, port, mrouter);
--	mv88e6xxx_reg_unlock(chip);
--
--	return err;
--}
--
- static bool mv88e6xxx_lag_can_offload(struct dsa_switch *ds,
- 				      struct net_device *lag,
- 				      struct netdev_lag_upper_info *info)
-@@ -6099,7 +6082,6 @@ static const struct dsa_switch_ops mv88e6xxx_switch_ops = {
- 	.port_bridge_leave	= mv88e6xxx_port_bridge_leave,
- 	.port_pre_bridge_flags	= mv88e6xxx_port_pre_bridge_flags,
- 	.port_bridge_flags	= mv88e6xxx_port_bridge_flags,
--	.port_set_mrouter	= mv88e6xxx_port_set_mrouter,
- 	.port_stp_state_set	= mv88e6xxx_port_stp_state_set,
- 	.port_fast_age		= mv88e6xxx_port_fast_age,
- 	.port_vlan_filtering	= mv88e6xxx_port_vlan_filtering,
-diff --git a/include/net/dsa.h b/include/net/dsa.h
-index e1a2610a0e06..f91317d2df9d 100644
---- a/include/net/dsa.h
-+++ b/include/net/dsa.h
-@@ -643,8 +643,6 @@ struct dsa_switch_ops {
- 	int	(*port_bridge_flags)(struct dsa_switch *ds, int port,
- 				     struct switchdev_brport_flags flags,
- 				     struct netlink_ext_ack *extack);
--	int	(*port_set_mrouter)(struct dsa_switch *ds, int port, bool mrouter,
--				    struct netlink_ext_ack *extack);
+ 	val = readl(entry->remote_state);
+-	changed = val ^ entry->last_value;
+-	entry->last_value = val;
++	changed = val ^ xchg(&entry->last_value, val);
  
- 	/*
- 	 * VLAN support
-diff --git a/net/dsa/dsa_priv.h b/net/dsa/dsa_priv.h
-index 92282de54230..1bf602f30ce4 100644
---- a/net/dsa/dsa_priv.h
-+++ b/net/dsa/dsa_priv.h
-@@ -211,8 +211,6 @@ int dsa_port_pre_bridge_flags(const struct dsa_port *dp,
- int dsa_port_bridge_flags(const struct dsa_port *dp,
- 			  struct switchdev_brport_flags flags,
- 			  struct netlink_ext_ack *extack);
--int dsa_port_mrouter(struct dsa_port *dp, bool mrouter,
--		     struct netlink_ext_ack *extack);
- int dsa_port_vlan_add(struct dsa_port *dp,
- 		      const struct switchdev_obj_port_vlan *vlan,
- 		      struct netlink_ext_ack *extack);
-diff --git a/net/dsa/port.c b/net/dsa/port.c
-index fad55372e461..c3ffbd41331a 100644
---- a/net/dsa/port.c
-+++ b/net/dsa/port.c
-@@ -545,17 +545,6 @@ int dsa_port_bridge_flags(const struct dsa_port *dp,
- 	return ds->ops->port_bridge_flags(ds, dp->index, flags, extack);
- }
+ 	for_each_set_bit(i, entry->irq_enabled, 32) {
+ 		if (!(changed & BIT(i)))
+@@ -264,6 +263,12 @@ static void smsm_unmask_irq(struct irq_data *irqd)
+ 	struct qcom_smsm *smsm = entry->smsm;
+ 	u32 val;
  
--int dsa_port_mrouter(struct dsa_port *dp, bool mrouter,
--		     struct netlink_ext_ack *extack)
--{
--	struct dsa_switch *ds = dp->ds;
--
--	if (!ds->ops->port_set_mrouter)
--		return -EOPNOTSUPP;
--
--	return ds->ops->port_set_mrouter(ds, dp->index, mrouter, extack);
--}
--
- int dsa_port_mtu_change(struct dsa_port *dp, int new_mtu,
- 			bool propagate_upstream)
- {
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index d4756b920108..5882159137ea 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -311,12 +311,6 @@ static int dsa_slave_port_attr_set(struct net_device *dev,
++	/* Make sure our last cached state is up-to-date */
++	if (readl(entry->remote_state) & BIT(irq))
++		set_bit(irq, &entry->last_value);
++	else
++		clear_bit(irq, &entry->last_value);
++
+ 	set_bit(irq, entry->irq_enabled);
  
- 		ret = dsa_port_bridge_flags(dp, attr->u.brport_flags, extack);
- 		break;
--	case SWITCHDEV_ATTR_ID_BRIDGE_MROUTER:
--		if (!dsa_port_offloads_bridge(dp, attr->orig_dev))
--			return -EOPNOTSUPP;
--
--		ret = dsa_port_mrouter(dp->cpu_dp, attr->u.mrouter, extack);
--		break;
- 	default:
- 		ret = -EOPNOTSUPP;
- 		break;
+ 	if (entry->subscription) {
 -- 
 2.30.2
 
