@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0946E408B7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54997408BD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbhIMND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236893AbhIMND2 (ORCPT
+        id S240162AbhIMNGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:06:20 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33046
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238050AbhIMNDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:03:28 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD9FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:02:13 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id 22so10324651qkg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=33qyjUymJuTRSIG7q/aN8mBAjVw26SqZuT1dehv1B5Y=;
-        b=BYmQ7J7Ic9+xt0gqwsI8P3BtMa4w+XkkJjwnUm8dISc0SWByFvwp8l59bf/+wXTp8c
-         Wgr4qd5tk9j2aVn02+tPhuR4q5e8J75FaNV/0Va/hvboutS7+cFDepEByr1FYrio2dVW
-         O9UkthF5FH3nOsB+cTrghpRMlbrDDqPMaYqai/AfgqGo5ZNNgmrR5uS2tnkERckKtHJl
-         2n5rGeZ2hRv4HE5DBNhNb9Bpw6do43AqfNXr3YgHvzyHaGtI/c+gUOSZzSKGO8k+K/Ln
-         sZ+VYO/PvCyWfSKz26ZPpHn+u+Luaob9uKozdRXMUob/Dyd7X/7gyjg7dJV1CFPsYzYu
-         rY/A==
+        Mon, 13 Sep 2021 09:03:53 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C8CF440263
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631538156;
+        bh=iu9zMq7VH8HxvbrRseM1CzfWgZBkbaUNi4Cw0YJuwM0=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=ZZ96PHBT7+p7K/JIE+0jsK4hEjFGrETGJRCloLsZ6gGw86rIzioQHwHldVOpGGj6x
+         pbkPEa2rmuDq8HjVd/bjyqs4rRPOQ8juddPUsTj1iWheAYMkg8CJLDHIhjTPrdQV9m
+         t3w7yIr5AIlNwZzW+/QXEbiy2sUpKKkoxw9gJZP2XGOeudXn8+BRwC3F8UV6mJhK9x
+         ej2SiySEQUQjFIWMZjnpvK3oT55FZiGfndHoMcFy9890sCkfGdpkNbI1L1X6Wm7xEi
+         KhwrsgF6i2D9NGXz5pZWkZ7WspOUwcaRphc8NKKtGhiHJP7x9v+6MZ7oD3IvAuAyPG
+         5QDD0kRQ3Jivg==
+Received: by mail-wm1-f69.google.com with SMTP id h1-20020a05600c350100b002e751bf6733so1629098wmq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:02:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=33qyjUymJuTRSIG7q/aN8mBAjVw26SqZuT1dehv1B5Y=;
-        b=u3TLm3U6lbeVw0y2cU77UnRGBfrEtGqlZsyuG9W6uJqKtO9JF4VBlxdlgrm4494exr
-         PxsSgHhI5eW8x0gmfq+1YwQKUATUG8bG5U8Bct4rkAfjLy2vpGDqUtQJ7QQVkm9gOxGo
-         cVNKwf19+MIRKiSRQ/m3QdGnzzfSJ9mmq59uI1OKuj47Xgz+RPjctMoD1xmnOoh1x+mu
-         SQGdLhhLERcOZd85JuRs4XGO0XeBF9GiiGKPIEFHfnpdXMYsZlMTAqiJNDbjP1MCGpa9
-         zeBUjoutIOvEnwUdGDNj0GnIKVx3ZlZ4h192ReozJO5T1SBYuDiy47MAlmoX2YlEfCsJ
-         tW8g==
-X-Gm-Message-State: AOAM533ge8Il3jFilqlli5Mv3LWBIPF6BLnJwUDuJ5/ijXCW05rFZiA3
-        +fSHDeqZTY8INePcqMQVineJYdVjoYdA2w==
-X-Google-Smtp-Source: ABdhPJyLc/JnphbRb7XZZpkDJCXn/N43EWy2uSL5Z9Ww0Rxq38o6dRjRf5sjt39TWBaiwaUeDPH9dA==
-X-Received: by 2002:a05:620a:1307:: with SMTP id o7mr9644574qkj.437.1631538131520;
-        Mon, 13 Sep 2021 06:02:11 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id p14sm4083952qtq.43.2021.09.13.06.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 06:02:10 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mPlb8-00GSNe-81; Mon, 13 Sep 2021 10:02:10 -0300
-Date:   Mon, 13 Sep 2021 10:02:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     peterhuewe@gmx.de, jarkko@kernel.org,
-        Eckert.Florian@googlemail.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] tpm/tpm_i2c_infineon: Fix init endian vendor check
-Message-ID: <20210913130210.GD3544071@ziepe.ca>
-References: <20210913120521.18572-1-fe@dev.tdt.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iu9zMq7VH8HxvbrRseM1CzfWgZBkbaUNi4Cw0YJuwM0=;
+        b=08odQ2LSZ5jDBOXeMs9U+0Bz9XUU6WFy55ihdt8ZNV5Dt/jlRXmIpU6BCrFXj9SCyt
+         lA0Wwk2/pAcKpBJZCA7/ur5sG6Oc5c8b1EsHtOxiZUhIHz7oSYfm1qymWfXkYPphJP7x
+         7d4fNWyjTa0O43ahvpFPUoNSvO95CsGF5GvwN1kuKB8gCdRKbAcToMNRS2mmhN09RRzY
+         /0i/3ZDdc6L8Qif2FzpwD8vYxd4RdaJWtoKKftIJjEtFTsv4zYXncJ0LkNTVHT1sDrsE
+         syxt7Ltqw7SgJB9GBS7hvrzMWYWy26e9qeP1FMUjyq0c+qbt4r52rx6APXc43KoT/SPx
+         OhJA==
+X-Gm-Message-State: AOAM530qm/O5Mp+AagVTw4BJFavJLd/bwYzAfBkr62yU/YaFIvrFGnZI
+        Oe9q2xZwcsyAyRm2mxE+SUKHgFTDSBcrdLYk3llCqNMHmIgk3rBdKacC36is7M/VCJX7tcofWut
+        EVxOF97f0dig8zQhFJ1MUke4Ii+YmZNGuxW+V+kcM+Q==
+X-Received: by 2002:adf:ce03:: with SMTP id p3mr12573880wrn.261.1631538156529;
+        Mon, 13 Sep 2021 06:02:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyyaSKSMIX4A+QSHz2WtdORfG6b/MogxIP65fow2RNuWACKEFXZ5iZ+P8QZMy4+VzDS4hEY9Q==
+X-Received: by 2002:adf:ce03:: with SMTP id p3mr12573843wrn.261.1631538156267;
+        Mon, 13 Sep 2021 06:02:36 -0700 (PDT)
+Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id o2sm7876376wrh.13.2021.09.13.06.02.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 06:02:35 -0700 (PDT)
+Subject: Re: [PATCH 1/2] power: supply: max17042_battery: Clear status bits in
+ interrupt handler
+To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Anton Vorontsov <anton.vorontsov@linaro.org>,
+        Ramakrishna Pallala <ramakrishna.pallala@intel.com>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        stable@vger.kernel.org
+References: <20210912205402.160939-1-sebastian.krzyszkowiak@puri.sm>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <0123524d-b767-5b5b-8b14-60d8cea3c429@canonical.com>
+Date:   Mon, 13 Sep 2021 15:02:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913120521.18572-1-fe@dev.tdt.de>
+In-Reply-To: <20210912205402.160939-1-sebastian.krzyszkowiak@puri.sm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 02:05:21PM +0200, Florian Eckert wrote:
-> On my embedded system I use this tpm infineon chip via i2c bus.
-> The system is a MIPS architecture and therefore works in big endian mode.
+On 12/09/2021 22:54, Sebastian Krzyszkowiak wrote:
+> The gauge requires us to clear the status bits manually for some alerts
+> to be properly dismissed. Previously the IRQ was configured to react only
+> on falling edge, which wasn't technically correct (the ALRT line is active
+> low), but it had a happy side-effect of preventing interrupt storms
+> on uncleared alerts from happening.
 > 
-> The problem is, that the chip type is not correctly recognized,
-> because the vendor ID is wrongly aligned in the memory.
-> 
-> By declaring the vendor ID variable as a `__le32` type, the TPM chip is
-> then correctly recognized by the driver and feels then responsible.
-> 
-> The device works than as expected.
-> 
-> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
+> Fixes: 7fbf6b731bca ("power: supply: max17042: Do not enforce (incorrect) interrupt trigger type")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 > ---
-> v2:
-> * use variable type instead of le32_to_cpus function call
->  drivers/char/tpm/tpm_i2c_infineon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/power/supply/max17042_battery.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+> index 8dffae76b6a3..c53980c8432a 100644
+> --- a/drivers/power/supply/max17042_battery.c
+> +++ b/drivers/power/supply/max17042_battery.c
+> @@ -876,6 +876,9 @@ static irqreturn_t max17042_thread_handler(int id, void *dev)
+>  		max17042_set_soc_threshold(chip, 1);
+>  	}
+>  
+> +	regmap_clear_bits(chip->regmap, MAX17042_STATUS,
+> +			  0xFFFF & ~(STATUS_POR_BIT | STATUS_BST_BIT));
+> +
 
-And if you do this it need to be made sparse clean/etc
+Are you sure that this was the reason of interrupt storm? Not incorrect
+SoC value (read from register for ModelGauge m3 while not configuring
+fuel gauge model).
 
-Jason
+You should only clear bits which you are awaken for... Have in mind that
+in DT-configuration the fuel gauge is most likely broken by missing
+configuration. With alert enabled, several other config fields should be
+cleared.
+
+Best regards,
+Krzysztof
