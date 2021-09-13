@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966CF409D56
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1883409D58
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347569AbhIMTnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
+        id S243356AbhIMToG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238011AbhIMTnr (ORCPT
+        with ESMTP id S242877AbhIMToF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:43:47 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCD7C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:42:31 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so14938386otf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:42:31 -0700 (PDT)
+        Mon, 13 Sep 2021 15:44:05 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58340C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:42:49 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id v2so2644939plp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=BqyiYC70ZQUHHw9//0XYXSrAX8+tnM8/YgezErnlDrU=;
-        b=e/ksqZ8nK4LM8K7qBzx6ztRoNrqG6PH8PC4yEvjbNVYCxAkYDmbjw+IMZbNNQPvF7R
-         fAfXBrgXMcKl+IMNADZbsi5JOMxER5obm4NoKcY/o71HCmbu9xY+Fnt3rDf/PnxozAoe
-         WlqJnz4bjYXgBaQmmKDkmPlCT/C9EH8dwVNhY=
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vfK/1h9QsUFCkVSDS838FPeS8MNkiZ5ITQXUKp/fEoc=;
+        b=gnZjn1peutkcFGHrbl+EvIvj3MVzt6NF2XejDwjSLdZsr1JwRZX37aYu8hpINGLIte
+         9s2XV12tlatZGnJ16IuAY4yiVZbSJtCzOvJhH9HmdgucHqacf2hIvUoB9E8CGXg0oV+l
+         zXqOSfQWbjrN7fnRucE7bPiz/9pFiobuTyKuM+46E+vnINgrjdekPrkM1YGd8BNinsbB
+         Sp7ZaVo2mB/55o7Hih2/qHCL2sDeXRW2BFPs3eqm/ZjbFWwhWB67noPGU9CLdOGHCLsu
+         rXopYBWv666ssVHTySfRIBFWRAH2TLnjITC5U0emsfkF06g5DixShylS7dbB3WfhdKU4
+         hQ4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=BqyiYC70ZQUHHw9//0XYXSrAX8+tnM8/YgezErnlDrU=;
-        b=M9Yr0P+J/4DbRCmSeOfVRlOIMIsVxsKp0uCEoyJ6pUbciynrKAnIPd7mU6g+a8Hi0e
-         pn34vSXNKbrDIWZYbGRdgh1HwjO7IlY7+ow71uROy2JiOhaaQvnJsYvVR0xyLW/ybiEr
-         5YX3qMlPy4sawgHWSIUkx8y5sZkRGfSAmRt1CzLzzrbcne2j8XwYg3FP6h1EQO/HzicE
-         ujotU8fBbcexHs3L+0S/gd/9LG3J4cQMiH4xPaIHbc/deBeTUyTfSWkfmwejXt15wy6A
-         eNlZFcH1Zj5q95vZmmNtzpwmnUrqBUtotpbgzNmTq5SL3OP1fRgy1+6nJJ/z7GgPqk8/
-         w4hA==
-X-Gm-Message-State: AOAM533X6LtwkY9BiGyM8fDhEOQgkP6ALVi/5DALRDCzTZxKNtpHAXlX
-        fF5BISjzRTHOoWSfcSw4Tl3HC0/aP/WQYhXfVh16BUlqE/Q=
-X-Google-Smtp-Source: ABdhPJwZ8mXUoFC7htDszmiW3cET2FEd1QCjxSbxY2/mXROYf8yoBexV2QICbOCDGNL/7hR7V6ReQxz2sOFr7dvaHZ8=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr10734921otp.159.1631562150764;
- Mon, 13 Sep 2021 12:42:30 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 13 Sep 2021 12:42:30 -0700
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vfK/1h9QsUFCkVSDS838FPeS8MNkiZ5ITQXUKp/fEoc=;
+        b=MzgXX3sBMMiGKysZdELW0SzSy43XldONO7QV/ev9OuoUfDPu53Be/umke0m/uza8bJ
+         MZj7ryTMlWMwEDctVAzXP06KstVabl5Ymgv2q0E9nAmXj5+G0WD6k/yX6phrNCzoJD6w
+         w1YIpJYMM/FhtDBgv7TtrBwIlFN5VNi0uT/OGNmn3euv1QxSoR98uELm+OGgwGxqFcFL
+         eUnLu0dhmdLBaVMyQMwd99WKzaS689wWPfvauGZYFxSh50Lv09aVYBhg3xr6K1Nfd6CV
+         /TvmojF8yE4aA2TtVVh0ackFO7wMUv2zz5NcqJPUOGXiTQqbdXg1PFSWrvPOtLooTl7W
+         OzFw==
+X-Gm-Message-State: AOAM530e2LWAjDPXm3/hmFOll1M7QenBWrl4SVsiRxx5rUk9TARzeyXY
+        /5s4gG4LsT377nvmSiVqj1RPalZP66Q=
+X-Google-Smtp-Source: ABdhPJxdH+GSCsRwPAmdvdU0wBkmkttJzaWrnnoKbWQhOL8+ok29XYaQSUFzAp3Z3aYFr9gIFbu5+A==
+X-Received: by 2002:a17:90b:33c8:: with SMTP id lk8mr1255361pjb.241.1631562168700;
+        Mon, 13 Sep 2021 12:42:48 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id p5sm8003697pfp.218.2021.09.13.12.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 12:42:48 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Sep 2021 09:42:46 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Feng Tang <feng.tang@intel.com>, Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
+Message-ID: <YT+ptg1Lf1kGLyUX@slm.duckdns.org>
+References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
+ <20210905124439.GA15026@xsang-OptiPlex-9020>
+ <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
+ <20210907033000.GA88160@shbuild999.sh.intel.com>
+ <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
+ <20210912111756.4158-1-hdanton@sina.com>
+ <20210912132914.GA56674@shbuild999.sh.intel.com>
+ <CALvZod4VbdSux5RaQuhqbC7ENm39UbdkJF8LhYedbFwHKyJgfw@mail.gmail.com>
+ <CALvZod7Oa7q=P0gzfA3F26bHPrNz+F-d6G9qKpSiHy9g=msM_w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4697bec1-af58-53e4-9fd1-293bfd8754be@codeaurora.org>
-References: <1629108335-23463-1-git-send-email-deesin@codeaurora.org>
- <CAE-0n528DuP4MiAOhYY+Du+L=OZaGM5YJm=NwWia3JF7hp7sAA@mail.gmail.com> <4697bec1-af58-53e4-9fd1-293bfd8754be@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 13 Sep 2021 12:42:30 -0700
-Message-ID: <CAE-0n51XcRbY7UeU6bhrrnkvD7rboq3QZFw9Tu0xQZ6e1VyjRw@mail.gmail.com>
-Subject: Re: [PATCH V2 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
-To:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7Oa7q=P0gzfA3F26bHPrNz+F-d6G9qKpSiHy9g=msM_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-09-13 10:45:19)
->
-> On 8/17/2021 1:53 AM, Stephen Boyd wrote:
-> >> +       ret = device_init_wakeup(&pdev->dev, true);
-> > I still wonder if it's better to leave this off by default and only
-> > enable it if the kernel is using autosuspend (PM_AUTOSLEEP). Then
-> > userspace is responsible to decide if it can handle the wakeup with the
-> > screen off, reload the remoteproc, and go back to suspend if it isn't
-> > using autosuspend.
->
-> Seems like not all targets use PM_AUTOSLEEP feature, even those targets
-> may require wakeup to handle
->
-> modem crash so that important modem events are not missed. I think we
-> can keep wake up as default behavior
->
-> and let the user space disable it through sysfs if it doesn't want it as
-> wake up source.
+Hello,
 
-I don't understand. What if userspace is simple and doesn't use
-autosleep and will turn the screen on when the kernel resumes? Why do we
-expect the modem crashing and causing the screen to turn on to be a good
-user experience?
+On Mon, Sep 13, 2021 at 12:40:06PM -0700, Shakeel Butt wrote:
+> I did one more experiment with same workload but with system_wq
+> instead system_unbound_wq and there is clear difference in profile:
+> 
+> With system_unbound_wq:
+> -    4.63%     0.33%  mmap  [kernel.kallsyms]  [k] queue_work_on
+>      4.29% queue_work_on
+>       - __queue_work
+>          - 3.45% wake_up_process
+>             - try_to_wake_up
+>                - 2.46% ttwu_queue
+>                   - 1.66% ttwu_do_activate
+>                      - 1.14% activate_task
+>                         - 0.97% enqueue_task_fair
+>                              enqueue_entity
+> 
+> With system_wq:
+> -    1.36%     0.06%  mmap  [kernel.kallsyms]  [k] queue_work_on
+>      1.30% queue_work_on
+>       - __queue_work
+>          - 1.03% wake_up_process
+>             - try_to_wake_up
+>                - 0.97% ttwu_queue
+>                     0.66% ttwu_do_activate
+> 
+> Tejun, is this expected? i.e. queuing work on system_wq has a
+> different performance impact than on system_unbound_wq?
+
+Yes, system_unbound_wq is putting the work item on the global shared
+workqueue while the system_wq is per-cpu, so on a loaded system, overhead
+difference showing up isn't too surprising.
+
+Thanks.
+
+-- 
+tejun
