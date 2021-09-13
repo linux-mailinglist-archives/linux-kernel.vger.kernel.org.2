@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E928409238
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DF2409505
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344680AbhIMOJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        id S1345481AbhIMOhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:37:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344299AbhIMOEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:04:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17740613CE;
-        Mon, 13 Sep 2021 13:39:12 +0000 (UTC)
+        id S1345301AbhIMObQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:31:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6EEE61BB3;
+        Mon, 13 Sep 2021 13:51:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540353;
-        bh=a5AH1LaVXEL52OVqmReiFyNs+0ZJmKc+pEiWPGgv4wM=;
+        s=korg; t=1631541109;
+        bh=16CFAAOKxWPjXsMJMbgncOT45e9FSjHBloffI6zDXL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pyEVanpjN8TGqvwfH74RzwXXtI7pXZc8NmY50n2HeQu2QNaMMhatLoXHXUOtm171y
-         zsI9bZnPjcTd6AqBqUqt5VMABNta4u1WYnVP5HRkhx937D+QSZDT2AHzSSvex7PAAo
-         fWBeIPhuSbUwo9IQsWL83Ue4Rm/24ye28TWmnS+Y=
+        b=rEtKQShCAicNzuFYuxMcp0harL9H2f9lj/qOAMeQe1PFl/VyiTDnRNzURDQAwYojL
+         d6Pg6tNEihTEaKCsZvh9pcvUpdWum2akQgxGfLsz9VnvM/CfyuYZ6XTxxpUhH7TdKC
+         89qW6q3Rjxwt9Vny0oSJlHPTihkV2DVYsPqKi1e4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 157/300] net: ti: am65-cpsw-nuss: fix RX IRQ state after .ndo_stop()
-Date:   Mon, 13 Sep 2021 15:13:38 +0200
-Message-Id: <20210913131114.714503075@linuxfoundation.org>
+Subject: [PATCH 5.14 165/334] PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
+Date:   Mon, 13 Sep 2021 15:13:39 +0200
+Message-Id: <20210913131118.918628086@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,110 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vignesh Raghavendra <vigneshr@ti.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 47bfc4d128dedd9e828e33b70b87b591a6d59edf ]
+[ Upstream commit da9f2150684ea684a7ddd6d7f0e38b2bdf43dcd8 ]
 
-On TI K3 am64x platform the issue with RX IRQ is observed - it's become
-disabled forever after .ndo_stop(). The K3 CPSW driver manipulates RX IRQ
-by using standard Linux enable_irq()/disable_irq_nosync() API as there is
-no IRQ enable/disable options in CPSW HW itself, as result during
-.ndo_stop() following sequence happens
+It is inconsistent to return PCI_D0 from pci_target_state() instead
+of the original target state if 'wakeup' is true and the device
+cannot signal PME from D0.
 
-  phy_stop()
-  teardown TX/RX channels
-  wait for TX tdown complete
-  napi_disable(TX)
-  clean up TX channels
+This only happens when the device cannot signal PME from the original
+target state and any shallower power states (including D0) and that
+case is effectively equivalent to the one in which PME singaling is
+not supported at all.  Since the original target state is returned in
+the latter case, make the function do that in the former one too.
 
-  (a)
-
-  napi_disable(RX)
-
-At point (a) it's not possible to predict if RX IRQ was triggered or not.
-if RX IRQ was triggered then it also not possible to definitely say if RX
-NAPI was run or only scheduled and immediately canceled by
-napi_disable(RX). Actually the last case causes RX IRQ to be permanently
-disabled.
-
-Another observed issue is that RX IRQ enable counter become unbalanced if
-(gro_flush_timeout =! 0) while (napi_defer_hard_irqs == 0):
-
-Unbalanced enable for IRQ 44
-WARNING: CPU: 0 PID: 10 at ../kernel/irq/manage.c:776 __enable_irq+0x38/0x80
-__enable_irq+0x38/0x80
-enable_irq+0x54/0xb0
-am65_cpsw_nuss_rx_poll+0x2f4/0x368
-__napi_poll+0x34/0x1b8
-net_rx_action+0xe4/0x220
-_stext+0x11c/0x284
-run_ksoftirqd+0x4c/0x60
-
-To avoid above issues introduce flag indicating if RX was actually disabled
-before enabling it in am65_cpsw_nuss_rx_poll() and restore RX IRQ state in
-.ndo_open()
-
-Fixes: 4f7cce272403 ("net: ethernet: ti: am65-cpsw: add support for am64x cpsw3g")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+Fixes: 666ff6f83e1d ("PCI/PM: Avoid using device_may_wakeup() for runtime PM")
+Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Reported-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 13 +++++++++++--
- drivers/net/ethernet/ti/am65-cpsw-nuss.h |  2 ++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ drivers/pci/pci.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index fb58fc470773..e967cd1ade36 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -518,6 +518,10 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common,
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index aacf575c15cf..28bac63525b2 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2599,16 +2599,20 @@ static pci_power_t pci_target_state(struct pci_dev *dev, bool wakeup)
+ 	if (dev->current_state == PCI_D3cold)
+ 		target_state = PCI_D3cold;
+ 
+-	if (wakeup) {
++	if (wakeup && dev->pme_support) {
++		pci_power_t state = target_state;
++
+ 		/*
+ 		 * Find the deepest state from which the device can generate
+ 		 * PME#.
+ 		 */
+-		if (dev->pme_support) {
+-			while (target_state
+-			      && !(dev->pme_support & (1 << target_state)))
+-				target_state--;
+-		}
++		while (state && !(dev->pme_support & (1 << state)))
++			state--;
++
++		if (state)
++			return state;
++		else if (dev->pme_support & 1)
++			return PCI_D0;
  	}
  
- 	napi_enable(&common->napi_rx);
-+	if (common->rx_irq_disabled) {
-+		common->rx_irq_disabled = false;
-+		enable_irq(common->rx_chns.irq);
-+	}
- 
- 	dev_dbg(common->dev, "cpsw_nuss started\n");
- 	return 0;
-@@ -871,8 +875,12 @@ static int am65_cpsw_nuss_rx_poll(struct napi_struct *napi_rx, int budget)
- 
- 	dev_dbg(common->dev, "%s num_rx:%d %d\n", __func__, num_rx, budget);
- 
--	if (num_rx < budget && napi_complete_done(napi_rx, num_rx))
--		enable_irq(common->rx_chns.irq);
-+	if (num_rx < budget && napi_complete_done(napi_rx, num_rx)) {
-+		if (common->rx_irq_disabled) {
-+			common->rx_irq_disabled = false;
-+			enable_irq(common->rx_chns.irq);
-+		}
-+	}
- 
- 	return num_rx;
- }
-@@ -1090,6 +1098,7 @@ static irqreturn_t am65_cpsw_nuss_rx_irq(int irq, void *dev_id)
- {
- 	struct am65_cpsw_common *common = dev_id;
- 
-+	common->rx_irq_disabled = true;
- 	disable_irq_nosync(irq);
- 	napi_schedule(&common->napi_rx);
- 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index 5d93e346f05e..048ed10143c1 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -126,6 +126,8 @@ struct am65_cpsw_common {
- 	struct am65_cpsw_rx_chn	rx_chns;
- 	struct napi_struct	napi_rx;
- 
-+	bool			rx_irq_disabled;
-+
- 	u32			nuss_ver;
- 	u32			cpsw_ver;
- 	unsigned long		bus_freq;
+ 	return target_state;
 -- 
 2.30.2
 
