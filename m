@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBFE4099D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313B04099D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239169AbhIMQrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
+        id S239432AbhIMQrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239107AbhIMQrU (ORCPT
+        with ESMTP id S239203AbhIMQr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:47:20 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F23FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:46:04 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i25so18446095lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:46:04 -0700 (PDT)
+        Mon, 13 Sep 2021 12:47:28 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3672CC061574;
+        Mon, 13 Sep 2021 09:46:12 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id q22so9437698pfu.0;
+        Mon, 13 Sep 2021 09:46:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4AWqq8PdF0T27j1u4r8SJdSDQAmnIa798/DXEHvOpSI=;
-        b=FU+bAjJMm7Th8TwF7GGVELgB1n/Ftr6IutqHVydD9w8PX1GQcf6GzsLJOqGGh6CW0l
-         EgHYwD/xUZZOVDsGOol3BaZ8xHn83V7/OXyGzkFbGAGnI2UYFevtlAxVK0miRIcA5sma
-         7ChEqHKPnv+jjr4rq9563XtC1/WAT8qcu+Bu7KgwmwaedbS/lr08mFRMX8yVsveRl3dO
-         fkLTwlz3V17XMGEE2CT1WMP4SCJwRxX6N5cqDDMKSzUVH2QVfP4XIwCjwyqgdH3MERlO
-         vZR1EV6lwCy9I9JF6m4YNjNRIsj/BeIG+3ZUtcKRVlTuJJG9gt3JEr6a+crt5Rin8pfL
-         MU5g==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=conXI1S71dzOKN/GsCD3g+iOZCipj3z63WFVKKhrZag=;
+        b=CuVJd2NjLKuXwb15yGRvvjY3Gw9r+S46a2UWofPxgvZWhvKyou3neHa6HxpVJC9YF6
+         rn4Vw9c6zK9TVRh9UV/9XPFXFQvdqcYQsB/vAjkeYGoN8NWtY0lsmMk6eMYATgPjktJf
+         K2L/ZPRuTNfUrHK11lLkDd7Y84EKVUXDTL66NYoM1aSly6vjulAF9QccBhuEr9H+rvBE
+         5VxuAI3BYeLwP8JHmD5t0fZhNw1MImFtV6evDlp0ucmi0XPFTfbEcAZ9+/liP0StvQOz
+         sKCRKg4PStV5PJ1jIjcRIjGgr7s+jRus2RuuzN94yEuaYtN1tUkoLX57A+npTgaBugox
+         tTiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4AWqq8PdF0T27j1u4r8SJdSDQAmnIa798/DXEHvOpSI=;
-        b=fb+lrw89tZpSU1l266W5gBJIn02njl/KXedttcHUSM3FTCN4rYuEfs0SZ9vEfuHeiu
-         Ttj1llukfWakfaFod9qSwE9k03J1iFEUcRd67F8lhHmOjMY3NBQEF4N/YDv24QUTQAT0
-         J+GOTQRnPTV63vdrXOxf0LnQI8iupvPJ78mo05G+bHpyq9XjL9PlkKtNYhwYMU4akJu4
-         s/taZ/NDvUz5K+KaQi4Gxd34yPEkVHqyzENgyO+EsaFoPItzpJetWAzrkzj/mGcmLVM7
-         9HtD32K2pAr5uk/MgIFY2EiPUU86sEoIPwn6oCds06O2Nal9YXkyGPXi7k8S61n+5+Ig
-         7wEA==
-X-Gm-Message-State: AOAM533KBTFdF7FF+8Pg7AFCyKTUpcy3yM7o0Io9s74SI7U6tJBaulH2
-        xLb2dtIKYP4WYK40SoYXz74H93YknsfLZircAJhxAA==
-X-Google-Smtp-Source: ABdhPJyr2c+1gD5MNC+tqhvxKv/vc4WNHyPe6OFeOs4hvUvdmby0LD98BjnKqvYF/pKBwcggQnXp9YvzSMG63YviiFw=
-X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr9178591lfa.523.1631551562217;
- Mon, 13 Sep 2021 09:46:02 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=conXI1S71dzOKN/GsCD3g+iOZCipj3z63WFVKKhrZag=;
+        b=0f1Nm/BSPR10pLCWU5lMpTaj0ZGVUPeOPD2c+f8poEBnqhjIqqstBWMEg+mh0F7n28
+         PgMskEmXFaHXb2qKRq/4dauYwe/J0HzWq1o1YdQ4fcB4dWijGtfSJU+BhEaNuD++uryE
+         rDFX4Negb9wXqLlpPPiPfIUBHt6L9uML1juAW87RahNinmUMXFotvusfGZ01yt1Wbisl
+         JVSWKycdIz7ElYiJpQFDyw8sjuV+1TdqIMb914U9gRbpgv2e8rNX/x8X2Tin+TMMiBL5
+         5yGEkiTWEvQe1QBGb3OmKMqF1UkxnOH+HZcdmlIr1mlWxARvQRWchGaAFO03DOCXJI1K
+         iHjw==
+X-Gm-Message-State: AOAM530LSwkmn+VZLqqc97d8cqt6iFuA0br7VL4NbEkL2TM2TdLCnlnk
+        QLaDQxWvCpMFgl6YTc59b0U=
+X-Google-Smtp-Source: ABdhPJxHdQMvwexSH17nMUUBTJHUwd2zo68lbHBbS+Iya/3YAr0yqSwuXcAu/E6pjL0PV2J3eTs98w==
+X-Received: by 2002:a05:6a00:2129:b0:434:ab92:5af4 with SMTP id n9-20020a056a00212900b00434ab925af4mr427576pfj.3.1631551571479;
+        Mon, 13 Sep 2021 09:46:11 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id g3sm9250617pgf.1.2021.09.13.09.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 09:46:10 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Sep 2021 06:46:09 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: start switching sysfs attributes to expose the seq_file
+Message-ID: <YT+AUXZPFWRSFCRK@slm.duckdns.org>
+References: <20210913054121.616001-1-hch@lst.de>
 MIME-Version: 1.0
-References: <20210913163547.5156-1-will@kernel.org>
-In-Reply-To: <20210913163547.5156-1-will@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 09:45:51 -0700
-Message-ID: <CAKwvOd=gO=7MjL9bQR_+xUYCMVNVbsCGV0WCb0hK-rSiJ3kpbA@mail.gmail.com>
-Subject: Re: [PATCH] x86/uaccess: Fix 32-bit __get_user_asm_u64() when CC_HAS_ASM_GOTO_OUTPUT=y
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Bill Wendling <morbo@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913054121.616001-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 9:36 AM Will Deacon <will@kernel.org> wrote:
->
-> Commit 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
-> added an optimised version of __get_user_asm() for x86 using 'asm goto'.
->
-> Like the non-optimised code, the 32-bit implementation of 64-bit get_user()
-> expands to a pair of 32-bit accesses. Unlike the non-optimised code, the
-> _original_ pointer is incremented to copy the high word instead of loading
-> through a new pointer explicitly constructed to point at a 32-bit type.
-> Consequently, if the pointer points at a 64-bit type then we end up
-> loading the wrong data for the upper 32-bits.
->
-> This was observed as a mount() failure in Android targetting i686 after
+On Mon, Sep 13, 2021 at 07:41:08AM +0200, Christoph Hellwig wrote:
+> Hi all,
+> 
+> Al pointed out multiple times that seq_get_buf is highly dangerous as
+> it opens up the tight seq_file abstractions to buffer overflows.  The
+> last such caller now is sysfs.
+> 
+> This series allows attributes to implement a seq_show method and switch
+> the block and XFS code as users that I'm most familiar with to use
+> seq_files directly after a few preparatory cleanups.  With this series
+> "leaf" users of sysfs_ops can be converted one at at a time, after that
+> we can move the seq_get_buf into the multiplexers (e.g. kobj, device,
+> class attributes) and remove the show method in sysfs_ops and repeat the
+> process until all attributes are converted.  This will probably take a
+> fair amount of time.
 
-s/targetting/targeting/
+The whole series looks good to me. With Greg's sysfs_emit argument aside on
+which I don't have any opinion,
 
-> b0cfcdd9b967 ("d_path: make 'prepend()' fill up the buffer exactly on
-> overflow") because the call to copy_from_kernel_nofault() from
-> prepend_copy() ends up in __get_kernel_nofault() and casts the source
-> pointer to a 'u64 __user *'. An attempt to mount at "/debug_ramdisk"
-> therefore ends up failing trying to mount "/debumdismdisk".
->
-> Use the existing '__gu_ptr' source pointer to unsigned int for 32-bit
-> __get_user_asm_u64() instead of the original pointer.
->
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Bill Wendling <morbo@google.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Fixes: 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
-> Signed-off-by: Will Deacon <will@kernel.org>
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Sorry I missed this; I think -Wunused-variable would have helped here.
-Thanks for debugging+fixing.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  arch/x86/include/asm/uaccess.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-> index c9fa7be3df82..5c95d242f38d 100644
-> --- a/arch/x86/include/asm/uaccess.h
-> +++ b/arch/x86/include/asm/uaccess.h
-> @@ -301,8 +301,8 @@ do {                                                                        \
->         unsigned int __gu_low, __gu_high;                               \
->         const unsigned int __user *__gu_ptr;                            \
->         __gu_ptr = (const void __user *)(ptr);                          \
-> -       __get_user_asm(__gu_low, ptr, "l", "=r", label);                \
-> -       __get_user_asm(__gu_high, ptr+1, "l", "=r", label);             \
-> +       __get_user_asm(__gu_low, __gu_ptr, "l", "=r", label);           \
-> +       __get_user_asm(__gu_high, __gu_ptr+1, "l", "=r", label);        \
->         (x) = ((unsigned long long)__gu_high << 32) | __gu_low;         \
->  } while (0)
->  #else
-> --
-> 2.33.0.309.g3052b89438-goog
->
-
+Thanks.
 
 -- 
-Thanks,
-~Nick Desaulniers
+tejun
