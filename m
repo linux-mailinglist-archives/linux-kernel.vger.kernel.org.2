@@ -2,528 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E349A4084DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117984084DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237494AbhIMGmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:42:04 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:36446 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237465AbhIMGl6 (ORCPT
+        id S237469AbhIMGm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:42:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55628 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237364AbhIMGm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:41:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1631515243; x=1663051243;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Fk8Kj3AWoSifbTLLn3Mx5DQ4Yleut392nrclazbVz48=;
-  b=Ll+tTOR8MLJp89uw8u70Qulc0C5cBcmOo639BZ1S3ioCNPjBo38gK8Yk
-   6dITXhGgO+C83NPJaFo9MH6sBZRFYpkvcSI0UCEpdx6CkAEhwRjhBMvX8
-   dK1uEDav0Evrci+Dc91kRTH6AJJ7ILjR0k0WlbpJi/GJObXVNHzuGlFXW
-   s=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 12 Sep 2021 23:40:43 -0700
-X-QCInternal: smtphost
-Received: from nalasex01c.na.qualcomm.com ([10.47.97.35])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 23:40:42 -0700
-Received: from taozha-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
- Sun, 12 Sep 2021 23:40:39 -0700
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sm8250: Add Coresight support
-Date:   Mon, 13 Sep 2021 14:40:14 +0800
-Message-ID: <1631515214-13653-3-git-send-email-quic_taozha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
-References: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
+        Mon, 13 Sep 2021 02:42:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631515301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A7ak6bO3ZbDQcmYe8pOAt6ZN28nqsiJpqhbYVS/xAd8=;
+        b=Bi/FrQ+oSW56U5+7pve/eXIb/NYx8LSX+aUvrpNS/lSzRZ0eT0xC8N6Hj+gUHCKqhjI73H
+        M1r9lKWyVlsl2k3k/Dl7nkAqFQBGVylXhxHOZ+YF3G2qAHAfnRDHY3IAz6pDz4s3fi/WRb
+        7Acyzlt+0z1VFjqfQPRzvPy6IuO+J6c=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-Mx9AFVS6OMykHt3iXSrWMg-1; Mon, 13 Sep 2021 02:41:39 -0400
+X-MC-Unique: Mx9AFVS6OMykHt3iXSrWMg-1
+Received: by mail-wm1-f69.google.com with SMTP id f17-20020a05600c155100b002f05f30ff03so3600959wmg.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:41:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A7ak6bO3ZbDQcmYe8pOAt6ZN28nqsiJpqhbYVS/xAd8=;
+        b=F+bEnfordyW/EO/H1t5DsPBioMqiNpLUl/rpKsXSg72RuH0cZgbJEBWM8ZFsTqAVGe
+         pn0Z6cmRVBEh5h1s/0iyRBGkv/uLn9ZPFSO+pmZ+I7vf4k3KfyMfBttgmyEpNXXlgrtt
+         cZwGbLxU1z8IFwkK1JhE4x88ZLUXCuPepOQ8M4XPzu6Iofvros8K0Vhy9elJbkdcZjO9
+         4/gVItAn2PeNlQotYWn/42kwENkLkChkfQs5ZjFW1hsgNMdXGHcLmMqQ9EfhUscw4pea
+         b+JGLWkDdBJwLcUey5m0aRuwCqOQdO4yrPTWEyKWIabLmuvpxt9VHbQZq6YxDSYObp97
+         HFfA==
+X-Gm-Message-State: AOAM532xmqHted5h6T392KD5xKodsnim++2mfobJsDT+/FN/vK5XVENw
+        hezHXY5TzZpvkRZnAtuGFBDCEc+8ujG47nFhvFd53d/3ewJXBPLuRl32ULjrMK29MH+UqC+YQqp
+        l++RuC20xYGWCgTpLsqX8k9a/
+X-Received: by 2002:adf:cf05:: with SMTP id o5mr10577223wrj.270.1631515298310;
+        Sun, 12 Sep 2021 23:41:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwsD+bT8UWlKmgvA78K+/pI1lMXq4Gz36uYronKSczbZYhYO104bBjXmMrJqzweRJ9POQwkcg==
+X-Received: by 2002:adf:cf05:: with SMTP id o5mr10577212wrj.270.1631515298130;
+        Sun, 12 Sep 2021 23:41:38 -0700 (PDT)
+Received: from redhat.com ([2.55.27.174])
+        by smtp.gmail.com with ESMTPSA id z7sm8061280wre.72.2021.09.12.23.41.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 23:41:37 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 02:41:33 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: Re: [PATCH 7/9] virtio-pci: harden INTX interrupts
+Message-ID: <20210913023757-mutt-send-email-mst@kernel.org>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20210913055353.35219-8-jasowang@redhat.com>
+ <20210913022824-mutt-send-email-mst@kernel.org>
+ <CACGkMEtnmLzQDNVYnAYSsEmjjRJVDhuK6VNj56S__zU9+5-JQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEtnmLzQDNVYnAYSsEmjjRJVDhuK6VNj56S__zU9+5-JQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the basic coresight components found on Qualcomm SM8250 Soc. The
-basic coresight components include ETF, ETMs,STM and the related
-funnels.
+On Mon, Sep 13, 2021 at 02:36:54PM +0800, Jason Wang wrote:
+> On Mon, Sep 13, 2021 at 2:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 01:53:51PM +0800, Jason Wang wrote:
+> > > This patch tries to make sure the virtio interrupt handler for INTX
+> > > won't be called after a reset and before virtio_device_ready(). We
+> > > can't use IRQF_NO_AUTOEN since we're using shared interrupt
+> > > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
+> > > intx_soft_enabled variable and toggle it during in
+> > > vp_disable/enable_vectors(). The INTX interrupt handler will check
+> > > intx_soft_enabled before processing the actual interrupt.
+> > >
+> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> >
+> >
+> > Not all that excited about all the memory barriers for something
+> > that should be an extremely rare event (for most kernels -
+> > literally once per boot). Can't we do better?
+> 
+> I'm not sure, but do we need to care about the slow path (INTX)?
 
-Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 442 ++++++++++++++++++++++-
- 1 file changed, 438 insertions(+), 4 deletions(-)
+Otherwise we won't try to support this, right?
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 8ac96f8e79d4..9c8f87d80afc 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -222,11 +222,445 @@
- 		regulator-max-microvolt = <1800000>;
- 		regulator-always-on;
- 	};
--};
- 
--&adsp {
--	status = "okay";
--	firmware-name = "qcom/sm8250/adsp.mbn";
-+	stm@6002000 {
-+		compatible = "arm,coresight-stm", "arm,primecell";
-+		reg = <0 0x06002000 0 0x1000>,
-+		      <0 0x16280000 0 0x180000>;
-+		reg-names = "stm-base", "stm-stimulus-base";
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				stm_out: endpoint {
-+					remote-endpoint =
-+					  <&funnel0_in7>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6041000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06041000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				funnel0_out: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_in0>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@7 {
-+				reg = <7>;
-+				funnel0_in7: endpoint {
-+					remote-endpoint = <&stm_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6042000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06042000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				funnel2_out: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_in2>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@4 {
-+				reg = <4>;
-+				funnel2_in5: endpoint {
-+					remote-endpoint =
-+					  <&apss_merge_funnel_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@6b04000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		arm,primecell-periphid = <0x000bb908>;
-+
-+		reg = <0 0x6b04000 0 0x1000>;
-+		reg-names = "funnel-base";
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				merge_funnel_out: endpoint {
-+					remote-endpoint =
-+						<&etf_in>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@7 {
-+				reg = <7>;
-+				swao_funnel_in7: endpoint {
-+					slave-mode;
-+					remote-endpoint=
-+						<&merg_funnel_out>;
-+				};
-+			};
-+		};
-+
-+	};
-+
-+	funnel@6045000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x06045000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				merg_funnel_out: endpoint {
-+					remote-endpoint = <&swao_funnel_in7>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				merge_funnel_in0: endpoint {
-+					remote-endpoint =
-+					  <&funnel0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				merge_funnel_in2: endpoint {
-+					remote-endpoint =
-+					  <&funnel2_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etf@6b05000 {
-+		compatible = "arm,coresight-tmc", "arm,primecell";
-+		reg = <0 0x06b05000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		in-ports {
-+			port {
-+				etf_in: endpoint {
-+					remote-endpoint =
-+					  <&merge_funnel_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7040000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07040000 0 0x1000>;
-+
-+		cpu = <&CPU0>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm0_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in0>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7140000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07140000 0 0x1000>;
-+
-+		cpu = <&CPU1>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm1_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in1>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7240000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07240000 0 0x1000>;
-+
-+		cpu = <&CPU2>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm2_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in2>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7340000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07340000 0 0x1000>;
-+
-+		cpu = <&CPU3>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm3_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in3>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7440000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07440000 0 0x1000>;
-+
-+		cpu = <&CPU4>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm4_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in4>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7540000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07540000 0 0x1000>;
-+
-+		cpu = <&CPU5>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm5_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in5>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7640000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07640000 0 0x1000>;
-+
-+		cpu = <&CPU6>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm6_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in6>;
-+				};
-+			};
-+		};
-+	};
-+
-+	etm@7740000 {
-+		compatible = "arm,coresight-etm4x", "arm,primecell";
-+		reg = <0 0x07740000 0 0x1000>;
-+
-+		cpu = <&CPU7>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+		arm,coresight-loses-context-with-cpu;
-+
-+		out-ports {
-+			port {
-+				etm7_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_in7>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@7800000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x07800000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				apss_funnel_out: endpoint {
-+					remote-endpoint =
-+					  <&apss_merge_funnel_in>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				apss_funnel_in0: endpoint {
-+					remote-endpoint =
-+					  <&etm0_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				apss_funnel_in1: endpoint {
-+					remote-endpoint =
-+					  <&etm1_out>;
-+				};
-+			};
-+
-+			port@2 {
-+				reg = <2>;
-+				apss_funnel_in2: endpoint {
-+					remote-endpoint =
-+					  <&etm2_out>;
-+				};
-+			};
-+
-+			port@3 {
-+				reg = <3>;
-+				apss_funnel_in3: endpoint {
-+					remote-endpoint =
-+					  <&etm3_out>;
-+				};
-+			};
-+
-+			port@4 {
-+				reg = <4>;
-+				apss_funnel_in4: endpoint {
-+					remote-endpoint =
-+					  <&etm4_out>;
-+				};
-+			};
-+
-+			port@5 {
-+				reg = <5>;
-+				apss_funnel_in5: endpoint {
-+					remote-endpoint =
-+					  <&etm5_out>;
-+				};
-+			};
-+
-+			port@6 {
-+				reg = <6>;
-+				apss_funnel_in6: endpoint {
-+					remote-endpoint =
-+					  <&etm6_out>;
-+				};
-+			};
-+
-+			port@7 {
-+				reg = <7>;
-+				apss_funnel_in7: endpoint {
-+					remote-endpoint =
-+					  <&etm7_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	funnel@7810000 {
-+		compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
-+		reg = <0 0x07810000 0 0x1000>;
-+
-+		clocks = <&aoss_qmp>;
-+		clock-names = "apb_pclk";
-+
-+		out-ports {
-+			port {
-+				apss_merge_funnel_out: endpoint {
-+					remote-endpoint =
-+					  <&funnel2_in5>;
-+				};
-+			};
-+		};
-+
-+		in-ports {
-+			port {
-+				apss_merge_funnel_in: endpoint {
-+					remote-endpoint =
-+					  <&apss_funnel_out>;
-+				};
-+			};
-+		};
-+	};
- };
- 
- &apps_rsc {
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> (Or do you have a better approach?)
+> 
+> Thanks
+
+Don't know really, maybe rcu or whatever?
+But let's try to be much more specific - is there anything
+specific we are trying to protect against here?
+
+
+
+> >
+> > > ---
+> > >  drivers/virtio/virtio_pci_common.c | 18 ++++++++++++++++--
+> > >  drivers/virtio/virtio_pci_common.h |  1 +
+> > >  2 files changed, 17 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > > index 0b9523e6dd39..835197151dc1 100644
+> > > --- a/drivers/virtio/virtio_pci_common.c
+> > > +++ b/drivers/virtio/virtio_pci_common.c
+> > > @@ -30,8 +30,12 @@ void vp_disable_vectors(struct virtio_device *vdev)
+> > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > >       int i;
+> > >
+> > > -     if (vp_dev->intx_enabled)
+> > > +     if (vp_dev->intx_enabled) {
+> > > +             vp_dev->intx_soft_enabled = false;
+> > > +             /* ensure the vp_interrupt see this intx_soft_enabled value */
+> > > +             smp_wmb();
+> > >               synchronize_irq(vp_dev->pci_dev->irq);
+> > > +     }
+> > >
+> > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > @@ -43,8 +47,12 @@ void vp_enable_vectors(struct virtio_device *vdev)
+> > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > >       int i;
+> > >
+> > > -     if (vp_dev->intx_enabled)
+> > > +     if (vp_dev->intx_enabled) {
+> > > +             vp_dev->intx_soft_enabled = true;
+> > > +             /* ensure the vp_interrupt see this intx_soft_enabled value */
+> > > +             smp_wmb();
+> > >               return;
+> > > +     }
+> > >
+> > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > @@ -97,6 +105,12 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
+> > >       struct virtio_pci_device *vp_dev = opaque;
+> > >       u8 isr;
+> > >
+> > > +     if (!vp_dev->intx_soft_enabled)
+> > > +             return IRQ_NONE;
+> > > +
+> > > +     /* read intx_soft_enabled before read others */
+> > > +     smp_rmb();
+> > > +
+> > >       /* reading the ISR has the effect of also clearing it so it's very
+> > >        * important to save off the value. */
+> > >       isr = ioread8(vp_dev->isr);
+> > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> > > index a235ce9ff6a5..3c06e0f92ee4 100644
+> > > --- a/drivers/virtio/virtio_pci_common.h
+> > > +++ b/drivers/virtio/virtio_pci_common.h
+> > > @@ -64,6 +64,7 @@ struct virtio_pci_device {
+> > >       /* MSI-X support */
+> > >       int msix_enabled;
+> > >       int intx_enabled;
+> > > +     bool intx_soft_enabled;
+> > >       cpumask_var_t *msix_affinity_masks;
+> > >       /* Name strings for interrupts. This size should be enough,
+> > >        * and I'm too lazy to allocate each name separately. */
+> > > --
+> > > 2.25.1
+> >
 
