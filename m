@@ -2,56 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C778409C85
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBB0409C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245703AbhIMSuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:50:46 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:38868 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233322AbhIMSup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:50:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=5FAlYJR+L5K5/mBd9HnFp40bPv/czg5qf8z7Hb1WYVw=; b=PWXhzXJZ+LIy86u9GTxMu/azsa
-        Xezrgnl7esbVqQxEcugmLxSblI2wIzy7qPfIdahoI1FLLxjDJsvYnP0J/lUP6WmmjlAp0uaYOSexz
-        C5YCrYF5Un2Em1vyDbJ02+ESHozfoSRpa2qt6glrq43lx9Q48DBOMbBdzfiiYi2lJ9G8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mPr15-006RuN-Sl; Mon, 13 Sep 2021 20:49:19 +0200
-Date:   Mon, 13 Sep 2021 20:49:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev <netdev@vger.kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net] Revert "net: phy: Uniform PHY driver access"
-Message-ID: <YT+dL1R/DTVBWQ7D@lunn.ch>
-References: <20210912192805.1394305-1-vladimir.oltean@nxp.com>
- <CANr-f5wCpcPM+FbeW+x-JmZt0-WmE=b5Ys1Pa_G7p8v3nLyCcQ@mail.gmail.com>
- <20210912213855.kxoyfqdyxktax6d3@skbuf>
+        id S1344497AbhIMSyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233322AbhIMSyY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:54:24 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C62C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:53:08 -0700 (PDT)
+Received: from 250.57.4.146.static.wline.lns.sme.cust.swisscom.ch ([146.4.57.250] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mPr4g-0005CM-PL; Mon, 13 Sep 2021 20:53:02 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v2 0/8] staging: r8188eu: power management cleanup
+Date:   Mon, 13 Sep 2021 20:51:02 +0200
+Message-Id: <20210913185110.3065-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210911141521.24901-1-martin@kaiser.cx>
+References: <20210911141521.24901-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210912213855.kxoyfqdyxktax6d3@skbuf>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I am not sure why "to_phy_driver" needs cleanup. Au contraire, I think
-> the PHY library's usage of struct phy_device :: drv is what is strange
-> and potentially buggy, it is the only subsystem I know of that keeps its
-> own driver pointer rather than looking at struct device :: driver.
+Remove some unused parts of the power management code.
 
-There is one odd driver in the mix. Take a look at xilinx_gmii2rgmii.c.
+Tested with Edimax EW-7811Un V2 on an ARM32 embedded system.
 
-It probably could be done a better way, but that is what we have.
+v2:
+- rebased against today's staging-testing branch
+- fixed one patch that changed files outside of the r8188eu driver
 
-   Andrew
+Martin Kaiser (8):
+  staging: r8188eu: remove rtw_set_rpwm
+  staging: r8188eu: remove unused power state defines
+  staging: r8188eu: _free_pwrlock is empty
+  staging: r8188eu: remove unused pwrctrl definitions
+  staging: r8188eu: remove unused enum and array
+  staging: r8188eu: rtw_set_ips_deny is not used
+  staging: r8188eu: remove unused variable cpwm_tog
+  staging: r8188eu: remove unused variable b_hw_radio_off
+
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c    | 48 ---------
+ drivers/staging/r8188eu/include/rtw_pwrctrl.h | 98 -------------------
+ drivers/staging/r8188eu/os_dep/os_intfs.c     |  2 -
+ 3 files changed, 148 deletions(-)
+
+-- 
+2.20.1
+
