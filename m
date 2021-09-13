@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D14408F52
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F63408CE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241652AbhIMNly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:41:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37702 "EHLO mail.kernel.org"
+        id S237538AbhIMNWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:22:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242100AbhIMNgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:36:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC768613A9;
-        Mon, 13 Sep 2021 13:27:30 +0000 (UTC)
+        id S239126AbhIMNU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:20:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB10610CF;
+        Mon, 13 Sep 2021 13:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539651;
-        bh=YW0UZrB/ve49gjnkW0gs0wDQXwbMnRBi3A6McxDpcbI=;
+        s=korg; t=1631539159;
+        bh=NCFf8RWzGott2TRXF6zwPzRcpfyirjoi2qahamBaxn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVuEFd4a61jngVg3B19RQKgQULvUe35meEvIBAKSEvGxDiviHUYhp873iLJXej8Am
-         brnKkT6UbzXhPEBI8nb4nu1Fj1bzyX+U5V/nw/fhdzWB5Oq+IW63TFCrcM4FGGRR8j
-         xQpc8gEPQAkRClio/l0FnSfDe26P3BwEr9g/1hok=
+        b=MPYLnfLxvNWz/RYC68VXbS9Pd+8Q5l3AESTuFkcIRcue3Z8Hd/2bIEZEen0Ll6qO5
+         bSuQ9WpfNqCbN1kZp6ASmoAiR+bWZBVk057HdEl7C9H/16r3g62XY4asb1lgUGRC6k
+         AD30BsgagO1X9cm/Fm3j3r8uYGmu0ULhINM62W3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 107/236] ARM: dts: meson8b: ec100: Fix the pwm regulator supply properties
+Subject: [PATCH 5.4 031/144] m68k: emu: Fix invalid free in nfeth_cleanup()
 Date:   Mon, 13 Sep 2021 15:13:32 +0200
-Message-Id: <20210913131103.976499350@linuxfoundation.org>
+Message-Id: <20210913131048.995563789@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Moon <linux.amoon@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 72ccc373b064ae3ac0c5b5f2306069b60ca118df ]
+[ Upstream commit 761608f5cf70e8876c2f0e39ca54b516bdcb7c12 ]
 
-After enabling CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
-Changes help link VCCK and VDDEE pwm regulator to 5V regulator supply
-instead of dummy regulator.
+In the for loop all nfeth_dev array members should be freed, not only
+the first one.  Freeing only the first array member can cause
+double-free bugs and memory leaks.
 
-[    7.117140] pwm-regulator regulator-vcck: Looking up pwm-supply from device tree
-[    7.117153] pwm-regulator regulator-vcck: Looking up pwm-supply property in node /regulator-vcck failed
-[    7.117184] VCCK: supplied by regulator-dummy
-[    7.117194] regulator-dummy: could not add device link regulator.8: -ENOENT
-[    7.117266] VCCK: 860 <--> 1140 mV at 986 mV, enabled
-[    7.118498] VDDEE: will resolve supply early: pwm
-[    7.118515] pwm-regulator regulator-vddee: Looking up pwm-supply from device tree
-[    7.118526] pwm-regulator regulator-vddee: Looking up pwm-supply property in node /regulator-vddee failed
-[    7.118553] VDDEE: supplied by regulator-dummy
-[    7.118563] regulator-dummy: could not add device link regulator.9: -ENOENT
-
-Fixes: 087a1d8b4e4c ("ARM: dts: meson8b: ec100: add the VDDEE regulator")
-Fixes: 3e7db1c1b7a3 ("ARM: dts: meson8b: ec100: improve the description of the regulators")
-
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/20210705112358.3554-4-linux.amoon@gmail.com
+Fixes: 9cd7b148312f ("m68k/atari: ARAnyM - Add support for network access")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/20210705204727.10743-1-paskripkin@gmail.com
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/meson8b-ec100.dts | 4 ++--
+ arch/m68k/emu/nfeth.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/meson8b-ec100.dts b/arch/arm/boot/dts/meson8b-ec100.dts
-index ed06102a4014..c6824d26dbbf 100644
---- a/arch/arm/boot/dts/meson8b-ec100.dts
-+++ b/arch/arm/boot/dts/meson8b-ec100.dts
-@@ -153,7 +153,7 @@
- 		regulator-min-microvolt = <860000>;
- 		regulator-max-microvolt = <1140000>;
+diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
+index a4ebd2445eda..e5831cd293d0 100644
+--- a/arch/m68k/emu/nfeth.c
++++ b/arch/m68k/emu/nfeth.c
+@@ -254,8 +254,8 @@ static void __exit nfeth_cleanup(void)
  
--		vin-supply = <&vcc_5v>;
-+		pwm-supply = <&vcc_5v>;
- 
- 		pwms = <&pwm_cd 0 1148 0>;
- 		pwm-dutycycle-range = <100 0>;
-@@ -237,7 +237,7 @@
- 		regulator-min-microvolt = <860000>;
- 		regulator-max-microvolt = <1140000>;
- 
--		vin-supply = <&vcc_5v>;
-+		pwm-supply = <&vcc_5v>;
- 
- 		pwms = <&pwm_cd 1 1148 0>;
- 		pwm-dutycycle-range = <100 0>;
+ 	for (i = 0; i < MAX_UNIT; i++) {
+ 		if (nfeth_dev[i]) {
+-			unregister_netdev(nfeth_dev[0]);
+-			free_netdev(nfeth_dev[0]);
++			unregister_netdev(nfeth_dev[i]);
++			free_netdev(nfeth_dev[i]);
+ 		}
+ 	}
+ 	free_irq(nfEtherIRQ, nfeth_interrupt);
 -- 
 2.30.2
 
