@@ -2,88 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2EC40A137
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C1840A150
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350259AbhIMXDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350233AbhIMXDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:03:33 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510CAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:02:17 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id n27so24461833eja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=RJ675zc8F3Swo8C9yZyF7+m49sZmC7iizZr6Z819g9Y=;
-        b=Tkqw6AYO9ktAElB8tmv/f8wHOeJLvR9Nkpc/i1i7tB5dXQfJl1NWPF/BpeXscvSd0G
-         LC5ukv0EPBcPGQlpn7HcW0hm2PD76oYi87haTMFe2dIjlKIoRsJQNew4DNmWJ1e6w+QN
-         MDcBLpWoMsyFCT9XP8wGDAPahpusDj3s6zt5WMZwlJ3IhlOHdFB3/aL/NvQrT1rkltb0
-         gIbJzK4xlbHeFQZznVU0Wjh65hQJpe7rym3VBLJfeie7HqwkF3WXes+XfNgL03eZ8PA8
-         ZPHaPapqtVwuXP3atNZzHy+OKUshcibpoiqJ0nIzQuU0iDyAntTRkxyFHy+xZI7TAmMF
-         SoXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=RJ675zc8F3Swo8C9yZyF7+m49sZmC7iizZr6Z819g9Y=;
-        b=o9FEI0EX76aGiwH6OlEkT1d34Y5xUMjAZ3hQ5ZHgbuiUFnlvo5qfrtHNstRvreZ3LO
-         nlaOY6tkXFqVMQYMl2QlWGpfHWEcnHgLRtv0QiAdA/p4umIL6TpaxYQVmJ379eCJqWY2
-         LmMAkkUoSZzK3VSagpoU4ZDbe9sNnyYxysXprcEPkQI8LxJShw+Wa1MUh6mgOUp9GQaT
-         j457YgdmGceW4haHT3OxPpkkfvonzXZePI6QMytqQuhngFRprXOv6c6D6+grcwnBRxx3
-         NXATJxEqTgWwXdssw1ST23QPScNeejuwGPAAqfyVyf0gT+YPiO1OFgLCjkt2tdbB4BTJ
-         pX2Q==
-X-Gm-Message-State: AOAM532i36HplLBtJ9KWw6AQ4akyp4Z5nNzyO2iF0IvBymgSF6AdgPHn
-        3A4zdVcnaK245hzjOy/RsatKl/4s080=
-X-Google-Smtp-Source: ABdhPJzGUHHq7cFLnbyN1lmCQCpbLBtKo7Z9ZpGrpL6GQ29Rwb6K8OljTstq9lFTHibvK4iqnWeGGA==
-X-Received: by 2002:a17:906:c246:: with SMTP id bl6mr15259610ejb.80.1631574135341;
-        Mon, 13 Sep 2021 16:02:15 -0700 (PDT)
-Received: from peggy-InsydeH2O-EFI-BIOS ([154.72.153.216])
-        by smtp.gmail.com with ESMTPSA id x12sm3782428edd.51.2021.09.13.16.02.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 16:02:15 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 00:02:11 +0100
-From:   Tawah Peggy <tawahpeggy98@gmail.com>
-To:     Kroah-Hartman <greg@kroah.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wlan-ng: cfg80211: replace
- ieee80211_frequency_to_channel with ieee80211_freq_to_channel.
-Message-ID: <20210913230211.GA63982@peggy-InsydeH2O-EFI-BIOS>
+        id S1349055AbhIMXMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343562AbhIMXH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 19:07:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454F860FDA;
+        Mon, 13 Sep 2021 23:04:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631574270;
+        bh=Ub0V4Q81oxe1XsMj5ZBRwqtb17rpp6Rtp+hU97fNWPY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=aApPjylgGlWmT+kikqn6rIM1HuUPQ6wUfTNKfdxKvCTgmn91wlKDUOomAf+VNbPzd
+         nGMyt9a3eT8xHYcyiC/SJ6p7+Xo9mE2P6lprZyF8uihQuh7Ub5iKhhIATz3HhsBqsd
+         gfVsP/vG6g8wiolbxHhz45gK772XyumNmOnkRVjWy6K4gVOWFVefGWsBaJgqzQf002
+         8bz5QJSyZKvqP50mTyI49Q6tXJ+wRu5JUGuxUzGcIqopa6TzXqljBDUIOev3mcCSDP
+         EFC4iHOrsGpZQZCjMbmHZVXJ3mJVrXFBtBXzkcebAUPZJAKn8Dxc/KVIAQ1rbVF+cU
+         A/pjjcLJJkDHQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0E06F5C048F; Mon, 13 Sep 2021 16:04:30 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:04:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Chun-Hung Tseng <henrybear327@gmail.com>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Huang <jserv@ccns.ncku.edu.tw>
+Subject: Re: [PATCH] rcu: replace _________p1 with __UNIQUE_ID(rcu)
+Message-ID: <20210913230430.GM4156@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210912204131.93206-1-henrybear327@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210912204131.93206-1-henrybear327@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes ieee80211_frequency_to_channel(channel->center_freq)
-to ieee80211_frequency_to_channel(channel->center_freq) because the
-function name has originally been changed in a patch in other to fix a
-checkpatch error.
+On Mon, Sep 13, 2021 at 04:41:31AM +0800, Chun-Hung Tseng wrote:
+> This commit replaced _________p1 with __UNIQUE_ID(rcu), which
+> generates unique variable names during compilation. Necessary
+> modifications due to the changes in the RCU macros have also been
+> reflected in this commit.
+> 
+> The same idea is used for the min/max macros (commit 589a978 and commit
+> e9092d0), which aims to reduce variable shadowing issues caused by hard
+> coded variable names.
+> 
+> Signed-off-by: Jim Huang <jserv@ccns.ncku.edu.tw>
+> Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
 
-Signed-off-by: Tawah Peggy <tawahpeggy98@gmail.com>
----
- drivers/staging/wlan-ng/cfg80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, I will bite...
 
-diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-index 711c88c59e78..d00f1c48e1a9 100644
---- a/drivers/staging/wlan-ng/cfg80211.c
-+++ b/drivers/staging/wlan-ng/cfg80211.c
-@@ -448,7 +448,7 @@ static int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
- 
- 	/* Set the channel */
- 	if (channel) {
--		chan = ieee80211_frequency_to_channel(channel->center_freq);
-+		chan = ieee80211_freq_to_channel(channel->center_freq);
- 		result = prism2_domibset_uint32(wlandev,
- 						DIDMIB_DOT11PHY_DSSSTABLE_CURRENTCHANNEL,
- 						chan);
--- 
-2.25.1
+> ---
+>  include/linux/rcupdate.h | 44 +++++++++++++++++++++++-----------------
+>  include/linux/srcu.h     |  3 ++-
+>  2 files changed, 27 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 434d12fe2d4f..a5ab20822040 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -370,39 +370,41 @@ static inline void rcu_preempt_sleep_check(void) { }
+>   * Converts @p from an __rcu pointer to a __kernel pointer.
+>   * This allows an __rcu pointer to be used with xchg() and friends.
+>   */
+> -#define unrcu_pointer(p)						\
+> +#define __unrcu_pointer(p, local)					\
+>  ({									\
+> -	typeof(*p) *_________p1 = (typeof(*p) *__force)(p);		\
+> +	typeof(*p) *local = (typeof(*p) *__force)(p);			\
 
+Why not like this?
+
+	typeof(*p) *__UNIQUE_ID(rcu) = (typeof(*p) *__force)(p);	\
+
+Then we don't need the extra argument and the changes to the calls.
+
+So what C-preprocessor subtlety am I missing?
+
+							Thanx, Paul
+
+>  	rcu_check_sparse(p, __rcu);					\
+> -	((typeof(*p) __force __kernel *)(_________p1)); 		\
+> +	((typeof(*p) __force __kernel *)(local)); 			\
+>  })
+> +#define unrcu_pointer(p) __unrcu_pointer(p, __UNIQUE_ID(rcu))
+>  
+> -#define __rcu_access_pointer(p, space) \
+> +#define __rcu_access_pointer(p, local, space) \
+>  ({ \
+> -	typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
+> +	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+>  	rcu_check_sparse(p, space); \
+> -	((typeof(*p) __force __kernel *)(_________p1)); \
+> +	((typeof(*p) __force __kernel *)(local)); \
+>  })
+> -#define __rcu_dereference_check(p, c, space) \
+> +#define __rcu_dereference_check(p, local, c, space) \
+>  ({ \
+>  	/* Dependency order vs. p above. */ \
+> -	typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
+> +	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+>  	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
+>  	rcu_check_sparse(p, space); \
+> -	((typeof(*p) __force __kernel *)(________p1)); \
+> +	((typeof(*p) __force __kernel *)(local)); \
+>  })
+> -#define __rcu_dereference_protected(p, c, space) \
+> +#define __rcu_dereference_protected(p, local, c, space) \
+>  ({ \
+>  	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+>  	rcu_check_sparse(p, space); \
+>  	((typeof(*p) __force __kernel *)(p)); \
+>  })
+> -#define rcu_dereference_raw(p) \
+> +#define __rcu_dereference_raw(p, local) \
+>  ({ \
+>  	/* Dependency order vs. p above. */ \
+> -	typeof(p) ________p1 = READ_ONCE(p); \
+> -	((typeof(*p) __force __kernel *)(________p1)); \
+> +	typeof(p) local = READ_ONCE(p); \
+> +	((typeof(*p) __force __kernel *)(local)); \
+>  })
+> +#define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
+>  
+>  /**
+>   * RCU_INITIALIZER() - statically initialize an RCU-protected global variable
+> @@ -489,7 +491,7 @@ do {									      \
+>   * when tearing down multi-linked structures after a grace period
+>   * has elapsed.
+>   */
+> -#define rcu_access_pointer(p) __rcu_access_pointer((p), __rcu)
+> +#define rcu_access_pointer(p) __rcu_access_pointer((p), __UNIQUE_ID(rcu), __rcu)
+>  
+>  /**
+>   * rcu_dereference_check() - rcu_dereference with debug checking
+> @@ -525,7 +527,8 @@ do {									      \
+>   * annotated as __rcu.
+>   */
+>  #define rcu_dereference_check(p, c) \
+> -	__rcu_dereference_check((p), (c) || rcu_read_lock_held(), __rcu)
+> +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> +				(c) || rcu_read_lock_held(), __rcu)
+>  
+>  /**
+>   * rcu_dereference_bh_check() - rcu_dereference_bh with debug checking
+> @@ -540,7 +543,8 @@ do {									      \
+>   * rcu_read_lock() but also rcu_read_lock_bh() into account.
+>   */
+>  #define rcu_dereference_bh_check(p, c) \
+> -	__rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
+> +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> +				(c) || rcu_read_lock_bh_held(), __rcu)
+>  
+>  /**
+>   * rcu_dereference_sched_check() - rcu_dereference_sched with debug checking
+> @@ -555,7 +559,8 @@ do {									      \
+>   * only rcu_read_lock() but also rcu_read_lock_sched() into account.
+>   */
+>  #define rcu_dereference_sched_check(p, c) \
+> -	__rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
+> +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> +				(c) || rcu_read_lock_sched_held(), \
+>  				__rcu)
+>  
+>  /*
+> @@ -565,7 +570,8 @@ do {									      \
+>   * The no-tracing version of rcu_dereference_raw() must not call
+>   * rcu_read_lock_held().
+>   */
+> -#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
+> +#define rcu_dereference_raw_check(p) \
+> +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), 1, __rcu)
+>  
+>  /**
+>   * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+> @@ -584,7 +590,7 @@ do {									      \
+>   * but very ugly failures.
+>   */
+>  #define rcu_dereference_protected(p, c) \
+> -	__rcu_dereference_protected((p), (c), __rcu)
+> +	__rcu_dereference_protected((p), __UNIQUE_ID(rcu), (c), __rcu)
+>  
+>  
+>  /**
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index e6011a9975af..01226e4d960a 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -117,7 +117,8 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+>   * lockdep_is_held() calls.
+>   */
+>  #define srcu_dereference_check(p, ssp, c) \
+> -	__rcu_dereference_check((p), (c) || srcu_read_lock_held(ssp), __rcu)
+> +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> +				(c) || srcu_read_lock_held(ssp), __rcu)
+>  
+>  /**
+>   * srcu_dereference - fetch SRCU-protected pointer for later dereferencing
+> -- 
+> 2.25.1
+> 
