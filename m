@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6BD408725
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0E2408729
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238286AbhIMIiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:38:50 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47108 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238029AbhIMIiY (ORCPT
+        id S238158AbhIMIjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:39:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45673 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238823AbhIMIj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:38:24 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BD6661FFAA;
-        Mon, 13 Sep 2021 08:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631522227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 13 Sep 2021 04:39:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631522292;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UKSu3yTv+TX0tXlcSUO37sd0/aOo8J1xv19A7FZ7+Ig=;
-        b=ZMT+0AgcgH+hRJCL2ffTYbCzZn/BEVzdgyChbAJf+WYp+HMrwdkFDOqIR/wbhIEDQaJ3dS
-        VDxQV9ERlW08pJz64yBgAYXVsCo2ljnNryj8wTbreIMQM32Ehb0ZAbbPkmtK1oYCdaCbCq
-        22d+IBxpaQQO5LXBt5yF+0v5WHrDATY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8874EA3B81;
-        Mon, 13 Sep 2021 08:37:07 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 10:37:02 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        kernel@openvz.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in
- do_semtimedop()
-Message-ID: <YT8NrsaztWNDpKXk@dhcp22.suse.cz>
-References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
+        bh=Qh6P33VcH3uz2AI1w5Pma4JSyKdtq+QIbmAMwM1Yrh0=;
+        b=frUkG0cBfc2nnOVvivqWyo1ldUGFw+RxkucTUomf4+VyvPvoSW6A/WwzxPeniSPtTlHOf5
+        PhoCda0B0krFW1YCnRieZXxueBNZbFEz4L6AKz/V9TO3dQGICqmc3etfMZ45evH/fsbKHQ
+        9WEShr60NsyapfM5xzdVouPkXZ45u+M=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-Uq6gkxnwPKq5XeO_rIfUVw-1; Mon, 13 Sep 2021 04:38:08 -0400
+X-MC-Unique: Uq6gkxnwPKq5XeO_rIfUVw-1
+Received: by mail-ed1-f70.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so4528640edd.22
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:38:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Qh6P33VcH3uz2AI1w5Pma4JSyKdtq+QIbmAMwM1Yrh0=;
+        b=5FsncBhC0l3k9J5d0o0DMb5kdP/L4cc8F0VWEv5JdQ7ambU30nW4W2sgOBgHk/3dZi
+         nqbZyzfC/ZE4NwzbpL5EoDcAkrbygo49NF8mIFzVIcN4eYre2ZYZrlo3j3rdhFkz+MDm
+         yZBkavovlS6krgqv8KvwQX57Cu1liyQLIfkWsFFYghhuQYIQ9p+RQ0AFaBlUKeS0q6QG
+         v/T06IjsFZyYQ0yF2cFK6jbKx/Xl6fK2KLRYp9kpaKcBCtP4B+OOevh8DVXXMYDHpWrl
+         HMTzd4/H9iCs+rTBMm+BJe+/FPgpp/eGoG7+FI67lRXtticBNiHtL7hahaGR6MbyNMzi
+         Q8Iw==
+X-Gm-Message-State: AOAM530T6Oi4DQdvRjCPo07yBpj4fb0xYcybblBxZTPE5i1J44CA530y
+        G8lVS+E6NqPsarSoCJ18Y4e0scs5yj02vv2xhMWYvuOIz1CvgfK9XQKzIMTIBdrIyc/Az4zYOBM
+        iMRQpocX2vB+GMjbET+nrsTqO
+X-Received: by 2002:a17:906:a24d:: with SMTP id bi13mr11485263ejb.481.1631522287620;
+        Mon, 13 Sep 2021 01:38:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqFgVyTdiuwa+TbhSuN62Ka8m3x9OzJ7llnV4DCsSH4Tdr20imAxFAMYAlZSlxYh2RnwSBDg==
+X-Received: by 2002:a17:906:a24d:: with SMTP id bi13mr11485249ejb.481.1631522287465;
+        Mon, 13 Sep 2021 01:38:07 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id d10sm3553926edx.57.2021.09.13.01.38.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 01:38:07 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] platform/x86/intel: punit_ipc: Drop wrong use of
+ ACPI_PTR()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Zha Qipeng <qipeng.zha@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        kernel test robot <lkp@intel.com>
+References: <20210827145310.76239-1-andriy.shevchenko@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <80f5cda9-2855-501a-5472-7d5ab6290835@redhat.com>
+Date:   Mon, 13 Sep 2021 10:38:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
+In-Reply-To: <20210827145310.76239-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 11-09-21 10:40:08, Vasily Averin wrote:
-> Linus proposes to revert an accounting for sops objects in
-> do_semtimedop() because it's really just a temporary buffer
-> for a single semtimedop() system call.
-> 
-> This object can consume up to 2 pages, syscall is sleeping one,
-> size and duration can be controlled by user, and this allocation
-> can be repeated by many thread at the same time.
+Hi,
 
-Is there any upper bound or is it just bounded by the number of
-tasks/threads (that can be controlled by pid controller at least)?
-
-> However Shakeel Butt pointed that there are much more popular objects
-> with the same life time and similar memory consumption, the accounting
-> of which was decided to be rejected for performance reasons.
-
-Is there any measurable performance impact in this particular case?
- 
-> In addition, any usual task consumes much more accounted memory,
-> so 2 pages of this temporal buffer can be safely ignored.
+On 8/27/21 4:53 PM, Andy Shevchenko wrote:
+> ACPI_PTR() is more harmful than helpful. For example, in this case
+> if CONFIG_ACPI=n, the ID table left unused which is not what we want.
 > 
-> Link: https://patchwork.kernel.org/project/linux-fsdevel/patch/20171005222144.123797-1-shakeelb@google.com/
+> Instead of adding ifdeffery here and there, drop ACPI_PTR()
+> and unused acpi.h.
 > 
-> Fixes: 18319498fdd4 ("memcg: enable accounting of ipc resources")
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Fixes: fdca4f16f57d ("platform:x86: add Intel P-Unit mailbox IPC driver")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+I will also add this to the fixes branch, so that it gets send out
+to Linus in my next pull-request with fixes for 5.15.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
 > ---
->  ipc/sem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/platform/x86/intel/punit_ipc.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/ipc/sem.c b/ipc/sem.c
-> index f833238df1ce..6693daf4fe11 100644
-> --- a/ipc/sem.c
-> +++ b/ipc/sem.c
-> @@ -2238,7 +2238,7 @@ static long do_semtimedop(int semid, struct sembuf __user *tsops,
->  		return -EINVAL;
+> diff --git a/drivers/platform/x86/intel/punit_ipc.c b/drivers/platform/x86/intel/punit_ipc.c
+> index f58b8543f6ac..66bb39fd0ef9 100644
+> --- a/drivers/platform/x86/intel/punit_ipc.c
+> +++ b/drivers/platform/x86/intel/punit_ipc.c
+> @@ -8,7 +8,6 @@
+>   * which provide mailbox interface for power management usage.
+>   */
 >  
->  	if (nsops > SEMOPM_FAST) {
-> -		sops = kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL_ACCOUNT);
-> +		sops = kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL);
->  		if (sops == NULL)
->  			return -ENOMEM;
->  	}
-> -- 
-> 2.25.1
+> -#include <linux/acpi.h>
+>  #include <linux/bitops.h>
+>  #include <linux/delay.h>
+>  #include <linux/device.h>
+> @@ -319,7 +318,7 @@ static struct platform_driver intel_punit_ipc_driver = {
+>  	.remove = intel_punit_ipc_remove,
+>  	.driver = {
+>  		.name = "intel_punit_ipc",
+> -		.acpi_match_table = ACPI_PTR(punit_ipc_acpi_ids),
+> +		.acpi_match_table = punit_ipc_acpi_ids,
+>  	},
+>  };
+>  
+> 
 
--- 
-Michal Hocko
-SUSE Labs
