@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EBE409335
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667FA409615
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344316AbhIMOTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:19:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34374 "EHLO mail.kernel.org"
+        id S1346801AbhIMOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:47:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344991AbhIMOOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9E596140F;
-        Mon, 13 Sep 2021 13:43:46 +0000 (UTC)
+        id S1347632AbhIMOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 721C861250;
+        Mon, 13 Sep 2021 13:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540627;
-        bh=nibPKkH7s7lwEXlvCg+oa6kq6B5U/Up3QxyGtVMvwek=;
+        s=korg; t=1631541389;
+        bh=YaizDK3+8aCcaeOv0UjPwQK6/YhwKWk2h9k12AOdSCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nRAxCx7s0b8fxatIPwKGfWHR2N2Lss3szDlHZnYQLEzBgZXQR6KcFQAkMa5SVG9iy
-         qzqS4VJpMXIqJgtB1ORK649e/vutc6KRIjeB6E8dFbAro987h+0SVm0No0QELjT1UQ
-         uDmv6bI9UuYAnzLL/MSbHdNUKOmaINMaGbwvDFSU=
+        b=0WEaq/LkrVlwFT6OgVZjszVtNZ4qw4nv65YES38475F0fECTQxNSCK1NxerVGHfhF
+         HDQVytKM6SsBgyTGaOmC7Epjr+Ksy6d4Zxemy14h+HXmDMrfX2NoiWOVCS+xp36bvk
+         KOnMBOnSqluxCw8iHJO5AP/nCDj9f06e0/XbzV/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonard Crestez <leonard.crestez@nxp.com>,
-        Adriana Reus <adriana.reus@nxp.com>,
-        Sherry Sun <sherry.sun@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
+        stable@vger.kernel.org, Geetha sowjanya <gakula@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 237/300] tty: serial: fsl_lpuart: fix the wrong mapbase value
-Date:   Mon, 13 Sep 2021 15:14:58 +0200
-Message-Id: <20210913131117.362948216@linuxfoundation.org>
+Subject: [PATCH 5.14 245/334] octeontx2-af: cn10k: Use FLIT0 register instead of FLIT1
+Date:   Mon, 13 Sep 2021 15:14:59 +0200
+Message-Id: <20210913131121.684410505@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Duan <fugang.duan@nxp.com>
+From: Geetha sowjanya <gakula@marvell.com>
 
-[ Upstream commit d5c38948448abc2bb6b36dbf85a554bf4748885e ]
+[ Upstream commit 623da5ca70b70f01cd483585f5cd4c463cf2f2da ]
 
-Register offset needs to be applied on mapbase also.
-dma_tx/rx_request use the physical address of UARTDATA.
-Register offset is currently only applied to membase (the
-corresponding virtual addr) but not on mapbase.
+RVU SMMU widget stores the final translated PA at
+RVU_AF_SMMU_TLN_FLIT0<57:18> instead of FLIT1 register. This patch
+fixes the address translation logic to use the correct register.
 
-Fixes: 24b1e5f0e83c ("tty: serial: lpuart: add imx7ulp support")
-Reviewed-by: Leonard Crestez <leonard.crestez@nxp.com>
-Signed-off-by: Adriana Reus <adriana.reus@nxp.com>
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Andy Duan <fugang.duan@nxp.com>
-Link: https://lore.kernel.org/r/20210819021033.32606-1-sherry.sun@nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 893ae97214c3 ("octeontx2-af: cn10k: Support configurable LMTST regions")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/fsl_lpuart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c | 4 ++--
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h   | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 0d7ea144a4a6..1ed4e33cc8cf 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -2595,7 +2595,7 @@ static int lpuart_probe(struct platform_device *pdev)
- 		return PTR_ERR(sport->port.membase);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
+index 28dcce7d575a..dbe9149a215e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
+@@ -82,10 +82,10 @@ static int rvu_get_lmtaddr(struct rvu *rvu, u16 pcifunc,
+ 		dev_err(rvu->dev, "%s LMTLINE iova transulation failed err:%llx\n", __func__, val);
+ 		return -EIO;
+ 	}
+-	/* PA[51:12] = RVU_AF_SMMU_TLN_FLIT1[60:21]
++	/* PA[51:12] = RVU_AF_SMMU_TLN_FLIT0[57:18]
+ 	 * PA[11:0] = IOVA[11:0]
+ 	 */
+-	pa = rvu_read64(rvu, BLKADDR_RVUM, RVU_AF_SMMU_TLN_FLIT1) >> 21;
++	pa = rvu_read64(rvu, BLKADDR_RVUM, RVU_AF_SMMU_TLN_FLIT0) >> 18;
+ 	pa &= GENMASK_ULL(39, 0);
+ 	*lmt_addr = (pa << 12) | (iova  & 0xFFF);
  
- 	sport->port.membase += sdata->reg_off;
--	sport->port.mapbase = res->start;
-+	sport->port.mapbase = res->start + sdata->reg_off;
- 	sport->port.dev = &pdev->dev;
- 	sport->port.type = PORT_LPUART;
- 	sport->devtype = sdata->devtype;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+index 8b01ef6e2c99..4215841c9f86 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+@@ -53,7 +53,7 @@
+ #define RVU_AF_SMMU_TXN_REQ		    (0x6008)
+ #define RVU_AF_SMMU_ADDR_RSP_STS	    (0x6010)
+ #define RVU_AF_SMMU_ADDR_TLN		    (0x6018)
+-#define RVU_AF_SMMU_TLN_FLIT1		    (0x6030)
++#define RVU_AF_SMMU_TLN_FLIT0		    (0x6020)
+ 
+ /* Admin function's privileged PF/VF registers */
+ #define RVU_PRIV_CONST                      (0x8000000)
 -- 
 2.30.2
 
