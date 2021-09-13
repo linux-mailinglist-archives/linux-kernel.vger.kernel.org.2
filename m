@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D078B409A03
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC69409A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240576AbhIMQxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S240704AbhIMQxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239727AbhIMQxD (ORCPT
+        with ESMTP id S240657AbhIMQxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:53:03 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D13C061762;
-        Mon, 13 Sep 2021 09:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=xmhLMwi2AJDri4EtwlhDWcoIQUb7BB+muDOVcMR8vy0=; b=FtdyiSy0lblJ22JSsFNFEN1L0b
-        Kwt5G/wmNlKaP8YypWTFbbQicWo49V0vpXWicsZU+tWZz2vY0q2BcJVNAB77Ex20OVrhlaanqGrsv
-        GXmtK2DhdSHr43DUQ2GdkwFPcdZ3UMig7PIfr87L3rql+Xrxw0Pt3NVBdU3FvLJ9uWvOAgNcFURoT
-        A5ymKEx6LOVi/hyhmccIOlZuueJDhGIajglMLQIMM1wZAQH53m/c9qN0AMXxRdQIRJ41U/IPBE47Z
-        yLIk/KO0G0x9DLGCFPVaqR0PyVvc0OHPpVsKgjwrJUI6L798WFcddLaqIYM25nP2HjngygBfrQQHO
-        cQM30FJg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPpBC-002WDJ-53; Mon, 13 Sep 2021 16:51:38 +0000
-Date:   Mon, 13 Sep 2021 09:51:38 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Jan =?iso-8859-1?Q?H=F6ppner?= <hoeppner@linux.ibm.com>
-Cc:     axboe@kernel.dk, gregkh@linuxfoundation.org,
-        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
-        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
-        colin.king@canonical.com, shubhankarvk@gmail.com,
-        baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/9] s390/block/dasd_genhd: add error handling support
- for add_disk()
-Message-ID: <YT+Bmvv3yXbuBddi@bombadil.infradead.org>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
- <20210902174105.2418771-7-mcgrof@kernel.org>
- <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
- <f24da7d5-0b67-fa24-862f-0b27a2ab502c@linux.ibm.com>
+        Mon, 13 Sep 2021 12:53:38 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C2DC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:52:22 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id bq5so22429010lfb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h7Yl//dy5tlfXJpNjGw/RwytM2u2c4Gl1NK7VqTyQik=;
+        b=KNPJ8GcEHSQYCyweuG+VxPhO+NQJEAV5rGoLEtdlZyPcGARXJQ4RTZmYrXPQfJq0v+
+         JanZlPaQbOkPRxSWiNI7mgttz1ig7R1UWK98/qdxhmYcIdlNdL9m9uVRXNb+ON8CCUur
+         Vi9ROjD9c/UG3PSZEYPWnZvIs+mpSkp1gAPlYOOV1lg1vbFVacUc2xpLTvh/AmsP+JgO
+         4CrYqxGaCg/pOU8W4zn7fgOltRuocCUBGyxISE3mCIfbIKI1U3Q4O+bntohv6KwRgW+T
+         qOJmtLwKuZdVpRejUHOK+0Qj6SFpB03AyU99MOkQ/8LtIFscGQ+9aG4sMtPZh+ra5Rex
+         hqhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h7Yl//dy5tlfXJpNjGw/RwytM2u2c4Gl1NK7VqTyQik=;
+        b=rTXu8qjoXV448f1Phvk/pCnTrX398HSwdMSxTr7EdOvrVvdK184inMK2S52bwFZm5z
+         4lk7et/ROcosqCV6NmC01Yyu2OyIg+SdBBntHs9D2dSXIGubBVsbWfptAADeTCfPXUmi
+         VAm/ONEN7/XRhx5BP6DLmWhFq/bIBoqkPgvxLgwKeGlrXkYDA8Z3QgvHO47BwmCEMx7E
+         4g8zRi3ZQJZWY3y2aGtaRrIX/SqLb5RQEquiWE204DxW8bTqmTImMikWdkJYVUHGlMFY
+         hPjorcBUss+pGjduSZ3iiEOLplCfb83pNBXJFApAce7EZcKqQH1cGDGh/cJ5SpZGiYMC
+         tqCA==
+X-Gm-Message-State: AOAM531zUvk2LCMx0WDuYk6ehmKYy0PIlHthHZfMBlblaUmb6i/dAl/0
+        78JovewWb8OtGeg+vNzQ7oOLLFgbjakGgXaN2dSY/w==
+X-Google-Smtp-Source: ABdhPJzCAM1ELjBbRxjqidCSeOp6uM/bwe4+ZcMAmINHRMWKcX6tqFGPCAcCIcI3Cvdy9FWpXQH7U/5uwggj7OdIvNY=
+X-Received: by 2002:ac2:5c4b:: with SMTP id s11mr9909008lfp.368.1631551940275;
+ Mon, 13 Sep 2021 09:52:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f24da7d5-0b67-fa24-862f-0b27a2ab502c@linux.ibm.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+In-Reply-To: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Mon, 13 Sep 2021 09:51:44 -0700
+Message-ID: <CAHVum0dmTULvzD6dhr4Jzow-M1ATi-ubDkO5wQR=RQmWtt_78w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] misc_cgroup: introduce misc.events and misc_events.local
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        mkoutny@suse.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 02:19:38PM +0200, Jan Höppner wrote:
-> On 13/09/2021 10:17, Jan Höppner wrote:
-> > On 02/09/2021 19:41, Luis Chamberlain wrote:
-> >> We never checked for errors on add_disk() as this function
-> >> returned void. Now that this is fixed, use the shiny new
-> >> error handling.
-> >>
-> >> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> >> ---
-> >>  drivers/s390/block/dasd_genhd.c | 8 ++++++--
-> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_genhd.c
-> >> index fa966e0db6ca..ba07022283bc 100644
-> >> --- a/drivers/s390/block/dasd_genhd.c
-> >> +++ b/drivers/s390/block/dasd_genhd.c
-> >> @@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
-> >>  {
-> >>  	struct gendisk *gdp;
-> >>  	struct dasd_device *base;
-> >> -	int len;
-> >> +	int len, rc;
-> >>  
-> >>  	/* Make sure the minor for this device exists. */
-> >>  	base = block->base;
-> >> @@ -79,7 +79,11 @@ int dasd_gendisk_alloc(struct dasd_block *block)
-> >>  	dasd_add_link_to_gendisk(gdp, base);
-> >>  	block->gdp = gdp;
-> >>  	set_capacity(block->gdp, 0);
-> >> -	device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> >> +
-> >> +	rc = device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> >> +	if (rc)
-> >> +		return rc;
-> >> +
-> > 
-> > I think, just like with some of the other changes, there is some
-> > cleanup required before returning. I'll prepare a patch and
-> > come back to you.
-> > 
-> 
-> It's actually just one call that is required. The patch should
-> look like this:
-> 
-> diff --git a/drivers/s390/block/dasd_genhd.c b/drivers/s390/block/dasd_genhd.c
-> index fa966e0db6ca..80673dbfb1f9 100644
-> --- a/drivers/s390/block/dasd_genhd.c
-> +++ b/drivers/s390/block/dasd_genhd.c
-> @@ -33,7 +33,7 @@ int dasd_gendisk_alloc(struct dasd_block *block)
->  {
->         struct gendisk *gdp;
->         struct dasd_device *base;
-> -       int len;
-> +       int len, rc;
->  
->         /* Make sure the minor for this device exists. */
->         base = block->base;
-> @@ -79,7 +79,13 @@ int dasd_gendisk_alloc(struct dasd_block *block)
->         dasd_add_link_to_gendisk(gdp, base);
->         block->gdp = gdp;
->         set_capacity(block->gdp, 0);
-> -       device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> +
-> +       rc = device_add_disk(&base->cdev->dev, block->gdp, NULL);
-> +       if (rc) {
-> +               dasd_gendisk_free(block);
-> +               return rc;
-> +       }
+On Sun, Sep 12, 2021 at 10:01 PM brookxu <brookxu.cn@gmail.com> wrote:
+>
+> From: Chunguang Xu <brookxu@tencent.com>
+>
+> Introduce misc.events and misc.events.local to make it easier for
+
+I thought Tejun only gave go ahead for misc.events and not for
+misc.events.local.
+
+> us to understand the pressure of resources. The main idea comes
+> from mem_cgroup. Currently only the 'max' event is implemented,
+> which indicates the times the resource exceeds the limit.
+>
+
+For future emails, please provide the links to previous discussions
+like [1], [2],...
+
+> @@ -36,6 +41,8 @@ enum misc_res_type {
+>  struct misc_res {
+>         unsigned long max;
+>         atomic_long_t usage;
+> +       atomic_long_t events[MISC_CG_EVENT_TYPES];
+
+Since there is only one event type for now, my recommendation is to
+not use the array and just use a single atomic_long_t.
+
+>
+> +static const char *const misc_event_name[] = {
+> +       "max"
+> +};
 > +
 
-Thanks!
+We will not need it if you remove the array in struct misc_res.
 
-Would you like to to fold this fix into my patch and resend eventually?
-Or will you send a replacement?
-
-  Luis
+Thanks
+Vipin
