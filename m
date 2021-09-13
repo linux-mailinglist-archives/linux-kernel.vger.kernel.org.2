@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F70408A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE45408A24
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbhIMLUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:20:36 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:46743 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239485AbhIMLUf (ORCPT
+        id S239675AbhIML2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239636AbhIML2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:20:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UoCWglD_1631531956;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UoCWglD_1631531956)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Sep 2021 19:19:18 +0800
-Date:   Mon, 13 Sep 2021 19:19:16 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Yue Hu <zbestahu@163.com>
-Cc:     Yue Hu <zbestahu@gmail.com>, xiang@kernel.org, chao@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zhangwen@yulong.com
-Subject: Re: [PATCH] erofs: fix compacted_{4b_initial, 2b} when
- compacted_4b_initial > totalidx
-Message-ID: <YT8ztN/F4StUYYNS@B-P7TQMD6M-0146.local>
-References: <20210913072405.1128-1-zbestahu@gmail.com>
- <YT8QbaAEkqBw//R0@B-P7TQMD6M-0146.local>
- <20210913170016.00007580.zbestahu@gmail.com>
- <YT8VvOyXIDdyD7WI@B-P7TQMD6M-0146.local>
- <20210913185836.088e7059.zbestahu@163.com>
+        Mon, 13 Sep 2021 07:28:16 -0400
+X-Greylist: delayed 590 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Sep 2021 04:27:00 PDT
+Received: from smtp-8faf.mail.infomaniak.ch (smtp-8faf.mail.infomaniak.ch [IPv6:2001:1600:3:17::8faf])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA90FC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:27:00 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4H7P832GLXzMppGC;
+        Mon, 13 Sep 2021 13:17:07 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4H7P821s1xzlhKSC;
+        Mon, 13 Sep 2021 13:17:06 +0200 (CEST)
+Subject: Re: [PATCH] landlock: Drop "const" argument qualifier to avoid GCC
+ 4.9 warnings
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210910223613.3225685-1-keescook@chromium.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <b269cdc1-a4f0-d614-f026-dc0f7c455da0@digikod.net>
+Date:   Mon, 13 Sep 2021 13:19:19 +0200
+User-Agent: 
 MIME-Version: 1.0
+In-Reply-To: <20210910223613.3225685-1-keescook@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210913185836.088e7059.zbestahu@163.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
 
-On Mon, Sep 13, 2021 at 06:58:36PM +0800, Yue Hu wrote:
-> Hi Xiang,
+On 11/09/2021 00:36, Kees Cook wrote:
+> When building under GCC 4.9, the compiler warns about const mismatches:
 > 
-> On Mon, 13 Sep 2021 17:11:24 +0800
-> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> security/landlock/ruleset.c: In function 'insert_rule':
+> security/landlock/ruleset.c:196:34: error: passing argument 2 of 'create_rule' from incompatible pointer type [-Werror]
+>    new_rule = create_rule(object, &this->layers, this->num_layers,
+>                                   ^
+> security/landlock/ruleset.c:69:30: note: expected 'const struct landlock_layer ** const' but argument is of type 'struct landlock_layer (*)[]'
+>  static struct landlock_rule *create_rule(
+>                               ^
+> security/landlock/ruleset.c: In function 'landlock_insert_rule':
+> security/landlock/ruleset.c:240:38: error: passing argument 3 of 'insert_rule' from incompatible pointer type [-Werror]
+>   return insert_rule(ruleset, object, &layers, ARRAY_SIZE(layers));
+>                                       ^
+> security/landlock/ruleset.c:144:12: note: expected 'const struct landlock_layer ** const' but argument is of type 'struct landlock_layer (*)[1]'
+>  static int insert_rule(struct landlock_ruleset *const ruleset,
+
+I guess this is a bug in GCC 4.9 (i.e. missing automatic const upgrade).
+Couldn't we backport a fix to GCC 4.9 instead?
+
+>             ^
 > 
-> > On Mon, Sep 13, 2021 at 05:00:16PM +0800, Yue Hu wrote:
-> > > On Mon, 13 Sep 2021 16:48:45 +0800
-> > > Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> > >   
-> > > > Hi Yue,
-> > > > 
-> > > > On Mon, Sep 13, 2021 at 03:24:05PM +0800, Yue Hu wrote:  
-> > > > > From: Yue Hu <huyue2@yulong.com>
-> > > > > 
-> > > > > mkfs.erofs will treat compacted_4b_initial & compacted_2b as 0 if
-> > > > > compacted_4b_initial > totalidx, kernel should be aligned with it
-> > > > > accordingly.    
-> > > > 
-> > > > There is no difference between compacted_4b_initial or compacted_4b_end
-> > > > for compacted 4B. Since in this way totalidx for compact 2B won't larger
-> > > > than 16 (number of lclusters in a compacted 2B pack.)  
-> > > 
-> > > However, we can see compacted_2b is a big number for this case. It should
-> > > be pointless.  
-> > 
-> > Does it has some real impact?
+> Drop "const" from the function definition.
 > 
-> No real impact to correct result.
+> Cc: "Mickaël Salaün" <mic@digikod.net>
+> Cc: James Morris <jmorris@namei.org>
+> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> Cc: linux-security-module@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  security/landlock/ruleset.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> > 
-> > compacted_4b_initial is only used for the alignment use for the
-> > first compacted_2b so that each compacted_2b pack won't cross
-> > the block (page) boundary. And compacted_4b_end is for the last
-> > lclusters aren't fitted in any compacted_2b pack.
-> > 
-> > If compacted_4b_initial > totalidx, I think the whole indexes
-> > would be compacted 4B and handled in
-> > 
-> > 	if (lcn < compacted_4b_initial) {
-> > 		amortizedshift = 2;
-> > 		goto out;
-> > 	}
+> diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
+> index ec72b9262bf3..64c37af88ee7 100644
+> --- a/security/landlock/ruleset.c
+> +++ b/security/landlock/ruleset.c
+> @@ -68,7 +68,7 @@ static void build_check_rule(void)
+>  
+>  static struct landlock_rule *create_rule(
+>  		struct landlock_object *const object,
+> -		const struct landlock_layer (*const layers)[],
+> +		struct landlock_layer (*layers)[],
+
+The "const layers" is not an issue, it should not be removed.
+
+>  		const u32 num_layers,
+>  		const struct landlock_layer *const new_layer)
+>  {
+> @@ -143,7 +143,7 @@ static void build_check_ruleset(void)
+>   */
+>  static int insert_rule(struct landlock_ruleset *const ruleset,
+>  		struct landlock_object *const object,
+> -		const struct landlock_layer (*const layers)[],
+> +		struct landlock_layer (*layers)[],
+
+Same here for the second const.
+
+>  		size_t num_layers)
+>  {
+>  	struct rb_node **walker_node;
 > 
-> Yes, it is. 
-> 
-> My point is why we need compacted_2b here for this case. If it's
-> not helpful/used for next code logic, we should remove/avoid it.
-> I think that may cause some misunderstanding and consume unneeded
-> CPU resources.
-
-Okay, make sense. If the number of compacted_2b misleads, how about
-just
-
-	if ((vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B) &&
-	    compacted_4b_initial <= totalidx) {
-		compacted_2b = ...;
-	} else {
-		compacted_2b = 0;
-	}
-
-, and refine the commit message to point out the following facts for
-other folks:
-
-- compacted_4b_initial is used contain the very first lclusters in order
-  to fulfill the alignment of the first compacted_2b pack;
-
-- compacted_4b_end is used for the last lclusters which aren't fitted in
-  the previous compacted_2b packs;
-
-- if compacted_4b_initial > totalidx, the whole indexes will be compacted
-  4B and handled with compacted_4b_initial.
-
-Thanks,
-Gao Xiang
-
-> 
-> Thanks.
