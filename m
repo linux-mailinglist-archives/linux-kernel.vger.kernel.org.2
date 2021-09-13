@@ -2,79 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040CE409C98
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48985409C9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240567AbhIMSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347499AbhIMSyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:54:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E652860F24;
-        Mon, 13 Sep 2021 18:53:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631559214;
-        bh=YILugTkzyXwATz0qqlrum5V7nKWX1bT+knVxHyNOA9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=praELURUY/GLHNH2qLYD3tZceMheOY18RPQhQiMQCPjfVZpsmnneQtHS5FNI6TXH4
-         etPVoeAjdqozGMclhnHW2ljAb7IAAgVcC7aW5TIn/3K5iob65roL3Y5n6AOx+vSG+F
-         v7QKVlxfrh9lw7uS6bvfxMWsTyM4PK7I+jMxmtB/L5Vi3rgRfKIEXs9xepn6EJInGL
-         xcVuQZya4J0GO7Ve6u7kC65oHBNKUe65vf79hYmBOWkpXWr2zEoi28Fo96+XGOfuJr
-         xGzSKIhkdo5ZItryKc5xNjcZcCjIQB7KRgrmsqKvnsa7yH20asN2JMqHaKVf6B89dN
-         El52q5qXVbFPg==
-Date:   Mon, 13 Sep 2021 11:53:25 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: drivers/infiniband/hw/qib/qib_sysfs.c:413:1: error:
- static_assert expression is not an integral constant expression
-Message-ID: <YT+eJY4JoobVsKWu@archlinux-ax161>
-References: <202109112002.NZceUwiC-lkp@intel.com>
- <20210913165317.GX2505917@nvidia.com>
- <CAKwvOdnGaVb1XGwYpNK_3zAEyZ0JC1SDjC1UzzFEH=d_Mdi7Fw@mail.gmail.com>
- <20210913183813.GY2505917@nvidia.com>
+        id S240275AbhIMTBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238493AbhIMTBT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:01:19 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402AEC061574;
+        Mon, 13 Sep 2021 12:00:02 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id u15so10196549wru.6;
+        Mon, 13 Sep 2021 12:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:references:from:cc:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5+LC83RmeuTS2KS2km7Yt9Gh9qYvhReIuEz7j6bACag=;
+        b=n+7U03F0ZGURxI67egRWlNkdKMqkbLALs0cbKqkpr2YujLJz5f4WATC4Ny/nfkpJc4
+         rb3B7Bm6cZXiErlfTfNh/igwGBokuDQRrawLzrQIWNvYGdwLNz8jWEC3t5Mg1T7mK7oG
+         Evvl1wdR3uSS4aF7Z79QYdq+CKdIMe1LKkODBYrY4b6v8hcYBLz4xd/Ze/r6fVjlMnIe
+         sFaTumylx0us1eeEuQS8KRkVjKnE1Yd0ePAcDjaqCRjyr8zysRY0+Qkw3NAvvLUfr7//
+         KOLTXa3XGmYic3AIZAi4pFw1MF3dFlxzwT07ydc4y6Re3SRq0C1gqSB/42UE2FdFvkNm
+         beEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:references:from:cc:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5+LC83RmeuTS2KS2km7Yt9Gh9qYvhReIuEz7j6bACag=;
+        b=CIcDLtn/RUnii0iFAkMbEXomTmjjGmSHJAGR8gbmU4diIw5TyyPGvsUVRBj/ftc37U
+         MHR+RV3ovVQ2waBw1X8ihSUVzyPbuzJYg5R4Qjx/QeW6E2mH1d64tNkeKLUVuK+KuL0X
+         6rBmI+Hvq6zaZxFUweKa2NdrVzU8w1rKED96H6Unup+WKW7ipbRGYd2tTCEmu8nj4SEF
+         WzY6RduLKnZUCqFkP0k9Ym7sd8JHpIXOOf1PLsuX2AzM99jHCZ0628y7MXAgwxQKSxFr
+         swesKsJOnjXphLmNRzCeP+hhWEdDqAP0+tUFfHqAFhNQOx2SCbGhgVixlVLEinre+T/8
+         IuhQ==
+X-Gm-Message-State: AOAM531LRzC9hBYmm/Ozd8p41D58LNGK8SKASkPCicbBDQD5n1nQB+f4
+        s2zK4qQW8ProUXAIb/txpgXWeQWpLYM=
+X-Google-Smtp-Source: ABdhPJwNTt3XYuQF3KJKOMVSn5SpK+OQFSscwZL8ZDqdu6WDhONSg5UJtHhAJA9E7qiws8pyBxz+iA==
+X-Received: by 2002:a05:6000:1186:: with SMTP id g6mr14617821wrx.126.1631559600570;
+        Mon, 13 Sep 2021 12:00:00 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:2517:8cca:49d8:dcdc? (p200300ea8f08450025178cca49d8dcdc.dip0.t-ipconnect.de. [2003:ea:8f08:4500:2517:8cca:49d8:dcdc])
+        by smtp.googlemail.com with ESMTPSA id n7sm4225211wms.18.2021.09.13.11.59.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 12:00:00 -0700 (PDT)
+To:     Dave Jones <davej@codemonkey.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
+ <20210913141818.GA27911@codemonkey.org.uk>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: Linux 5.15-rc1
+Message-ID: <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com>
+Date:   Mon, 13 Sep 2021 20:59:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913183813.GY2505917@nvidia.com>
+In-Reply-To: <20210913141818.GA27911@codemonkey.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 03:38:13PM -0300, Jason Gunthorpe wrote:
-> On Mon, Sep 13, 2021 at 10:00:02AM -0700, Nick Desaulniers wrote:
-> 
-> > > This macro would like to know that the passed in member name has a u64
-> > > type, all the things I've come up with fail on clang - but many work
-> > > fine on gcc. Frankly I think this case is a clang bug myself..
-> > 
-> > Perhaps, though this assertion looks a bit like offsetof() to me. I
-> > wonder if that can help here?
-> 
-> The assertion would logically like to be this:
-> 
->          static_assert(typecheck(((struct qib_port *)0)->N, u64))
+On 13.09.2021 16:18, Dave Jones wrote:
+> [  186.595296] pci 0000:02:00.0: [144d:a800] type 00 class 0x010601
+> [  186.595351] pci 0000:02:00.0: reg 0x24: [mem 0xdfc10000-0xdfc11fff]
+> [  186.595361] pci 0000:02:00.0: reg 0x30: [mem 0xdfc00000-0xdfc0ffff pref]
+> [  186.595425] pci 0000:02:00.0: PME# supported from D3hot D3cold
+> [  186.735107] pci 0000:02:00.0: VPD access failed.  This is likely a firmware bug on this device.  Contact the card vendor for a firmware update
 
-This works for me with both GCC and clang, if that is acceptable to you?
-It fails if you change one of the variables to 'u32'.
+Thanks for the report! The stalls may be related to this one. Device is:
+02:00.0 SATA controller: Samsung Electronics Co Ltd XP941 PCIe SSD (rev 01)
 
-Cheers,
-Nathan
+With an older kernel you may experience the stall when accessing the vpd
+attribute of this device in sysfs.
 
-diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
-index 452e2355d24e..0a3b28142c05 100644
---- a/drivers/infiniband/hw/qib/qib_sysfs.c
-+++ b/drivers/infiniband/hw/qib/qib_sysfs.c
-@@ -403,7 +403,7 @@ static ssize_t diagc_attr_store(struct ib_device *ibdev, u32 port_num,
- }
- 
- #define QIB_DIAGC_ATTR(N)                                                      \
--	static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
-+	static_assert(__same_type(((struct qib_ibport *)0)->rvp.n_##N, u64));  \
- 	static struct qib_diagc_attr qib_diagc_attr_##N = {                    \
- 		.attr = __ATTR(N, 0664, diagc_attr_show, diagc_attr_store),    \
- 		.counter =                                                     \
+Maybe the device indicates VPD capability but doesn't actually support it.
+Could you please provide the "lspci -vv" output for this device?
+
+And could you please test with the following applied to verify the
+assumption? It disables VPD access for this device.
+
+---
+ drivers/pci/vpd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
+index 517789205..fc92e880e 100644
+--- a/drivers/pci/vpd.c
++++ b/drivers/pci/vpd.c
+@@ -540,6 +540,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LSI_LOGIC, 0x002f, quirk_blacklist_vpd);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LSI_LOGIC, 0x005d, quirk_blacklist_vpd);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LSI_LOGIC, 0x005f, quirk_blacklist_vpd);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATTANSIC, PCI_ANY_ID, quirk_blacklist_vpd);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SAMSUNG, 0xa800, quirk_blacklist_vpd);
+ /*
+  * The Amazon Annapurna Labs 0x0031 device id is reused for other non Root Port
+  * device types, so the quirk is registered for the PCI_CLASS_BRIDGE_PCI class.
+-- 
+2.33.0
+
+
+
+
+
+
