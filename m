@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C4A4095FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6174409647
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346636AbhIMOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
+        id S1347971AbhIMOuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347785AbhIMOka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:40:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 412E6630ED;
-        Mon, 13 Sep 2021 13:56:13 +0000 (UTC)
+        id S1347929AbhIMOof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:44:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 656FF63221;
+        Mon, 13 Sep 2021 13:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541373;
-        bh=ZGb9RYZACGSnH/PLr/YRLdSupo8QymnCu/qV1lT9CmI=;
+        s=korg; t=1631541478;
+        bh=PXziJmtkl+XFcSM8POICp1CVLjPKdzoifA5qF9uW2m4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=So9lZ7YSmiL1Rlksy61YKCXOpg8iuXKKc2v6W5ntLqiVTp57YSrA+5dEFvPVM0rQb
-         4vNpALxppRxq8T+kuOL4jZZiML7FenTq5Fn1ZXYKy9V5Buf1JHxtQEJwebQGSMELGy
-         n1IDLeE+OPygxd9ydLnxzahA8DU1NL8FLxZxsh7I=
+        b=F1GmrfTuqYvP++Fz8kaU54Vi9yTt52L1sOa63iCjxtmZdLLeFqDeFjBZvUTgYS+Ai
+         YsIb72PcnmzWiTMdZtBdezMgvJysAXAL5DAe7e+mebySboYUXW0lThEN7KbRvUyo42
+         9D511tZMoQO1IoSIIk2eSIxq8O2n0whOsP490bd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
+        stable@vger.kernel.org, Dmytro Linkin <dlinkin@nvidia.com>,
         Roi Dayan <roid@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 271/334] net/mlx5: E-Switch, Set vhca id valid flag when creating indir fwd group
-Date:   Mon, 13 Sep 2021 15:15:25 +0200
-Message-Id: <20210913131122.580842635@linuxfoundation.org>
+Subject: [PATCH 5.14 272/334] net/mlx5e: Use correct eswitch for stack devices with lag
+Date:   Mon, 13 Sep 2021 15:15:26 +0200
+Message-Id: <20210913131122.614610595@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -41,36 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Dickman <maord@nvidia.com>
+From: Dmytro Linkin <dlinkin@nvidia.com>
 
-[ Upstream commit ca6891f9b27db7764bba0798202b0a21d0dc909c ]
+[ Upstream commit f9d196bd632b8b79261ec3366c30ec3923ea9a02 ]
 
-When indirect forward group is created, flow is added with vhca id but
-without setting vhca id valid flag which violates the PRM.
+If link aggregation is used within stack devices driver rejects encap
+rules if PF of the VF tunnel device is down. This happens because route
+resolved for other PF and its eswitch instance is used to determine
+correct vport.
+To fix that use devcom feature to retrieve other eswitch instance if
+failed to find vport for the 1st eswitch and LAG is active.
 
-Fix by setting the missing flag, vhca id valid.
-
-Fixes: 34ca65352ddf ("net/mlx5: E-Switch, Indirect table infrastructure")
-Signed-off-by: Maor Dickman <maord@nvidia.com>
+Fixes: 10742efc20a4 ("net/mlx5e: VF tunnel TX traffic offloading")
+Signed-off-by: Dmytro Linkin <dlinkin@nvidia.com>
 Reviewed-by: Roi Dayan <roid@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c    | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
-index 3da7becc1069..425c91814b34 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
-@@ -364,6 +364,7 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
- 	dest.type = MLX5_FLOW_DESTINATION_TYPE_VPORT;
- 	dest.vport.num = e->vport;
- 	dest.vport.vhca_id = MLX5_CAP_GEN(esw->dev, vhca_id);
-+	dest.vport.flags = MLX5_FLOW_DEST_VPORT_VHCA_ID;
- 	e->fwd_rule = mlx5_add_flow_rules(e->ft, spec, &flow_act, &dest, 1);
- 	if (IS_ERR(e->fwd_rule)) {
- 		mlx5_destroy_flow_group(e->fwd_grp);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index d273758255c3..6eba574c5a36 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -1338,6 +1338,7 @@ bool mlx5e_tc_is_vf_tunnel(struct net_device *out_dev, struct net_device *route_
+ int mlx5e_tc_query_route_vport(struct net_device *out_dev, struct net_device *route_dev, u16 *vport)
+ {
+ 	struct mlx5e_priv *out_priv, *route_priv;
++	struct mlx5_devcom *devcom = NULL;
+ 	struct mlx5_core_dev *route_mdev;
+ 	struct mlx5_eswitch *esw;
+ 	u16 vhca_id;
+@@ -1349,7 +1350,24 @@ int mlx5e_tc_query_route_vport(struct net_device *out_dev, struct net_device *ro
+ 	route_mdev = route_priv->mdev;
+ 
+ 	vhca_id = MLX5_CAP_GEN(route_mdev, vhca_id);
++	if (mlx5_lag_is_active(out_priv->mdev)) {
++		/* In lag case we may get devices from different eswitch instances.
++		 * If we failed to get vport num, it means, mostly, that we on the wrong
++		 * eswitch.
++		 */
++		err = mlx5_eswitch_vhca_id_to_vport(esw, vhca_id, vport);
++		if (err != -ENOENT)
++			return err;
++
++		devcom = out_priv->mdev->priv.devcom;
++		esw = mlx5_devcom_get_peer_data(devcom, MLX5_DEVCOM_ESW_OFFLOADS);
++		if (!esw)
++			return -ENODEV;
++	}
++
+ 	err = mlx5_eswitch_vhca_id_to_vport(esw, vhca_id, vport);
++	if (devcom)
++		mlx5_devcom_release_peer_data(devcom, MLX5_DEVCOM_ESW_OFFLOADS);
+ 	return err;
+ }
+ 
 -- 
 2.30.2
 
