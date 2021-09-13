@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57364408D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C74408FC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241147AbhIMNXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
+        id S243902AbhIMNqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240635AbhIMNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 192046112D;
-        Mon, 13 Sep 2021 13:20:03 +0000 (UTC)
+        id S242778AbhIMNk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:40:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1EB4613DA;
+        Mon, 13 Sep 2021 13:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539204;
-        bh=OPddaRiK+9M+Rx4KrOe4SDXtMoeMPsr7BQV8MVDSbAA=;
+        s=korg; t=1631539779;
+        bh=6YPjIHLgP8retQoc9LwTAepczihwHZKA/omS1yLploM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bxVWZZ+gN6+WBEAssQi4m21sDgE0UBjOhIUTyb4KjvHB46qhmJdlVK7ssL38mr7Nn
-         yuR1vUwcMNQJnTB/8gVJskxUd0y9HRdhQOGBK8VOZIoNy+bOkt0rjOElqHhJfBX197
-         CpRr7jVOlrJa2FA2Wtp4w5YVpwNSMgQzM6mBjEnA=
+        b=EKXyeGjB3vl8O5Vh9IfGZoYoHknSMyw741WHQ/by6UViA+v7fQM59Wp/LR8aTzfC8
+         kpgJiG4Uyi8fgDXY2MJTetlMiPHk6NYDZ+aVKB+MF70z26K7FTlaAt5/W7nY8h2Qau
+         OfStCcwVfWi+A/Avyc513gjO6wcStjlDGjuQ53QI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?q?M=C3=A1rio=20Lopes?= <ml@simonwunderlich.de>,
-        Sven Eckelmann <sven@narfation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 080/144] debugfs: Return error during {full/open}_proxy_open() on rmmod
-Date:   Mon, 13 Sep 2021 15:14:21 +0200
-Message-Id: <20210913131050.641470610@linuxfoundation.org>
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Subject: [PATCH 5.10 157/236] Bluetooth: Move shutdown callback before flushing tx and rx queue
+Date:   Mon, 13 Sep 2021 15:14:22 +0200
+Message-Id: <20210913131105.720088593@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 112cedc8e600b668688eb809bf11817adec58ddc ]
+[ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
 
-If a kernel module gets unloaded then it printed report about a leak before
-commit 275678e7a9be ("debugfs: Check module state before warning in
-{full/open}_proxy_open()"). An additional check was added in this commit to
-avoid this printing. But it was forgotten that the function must return an
-error in this case because it was not actually opened.
+Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+are flushed or cancelled") introduced a regression that makes mtkbtsdio
+driver stops working:
+[   36.593956] Bluetooth: hci0: Firmware already downloaded
+[   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+[   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
 
-As result, the systems started to crash or to hang when a module was
-unloaded while something was trying to open a file.
+The shutdown callback depends on the result of hdev->rx_work, so we
+should call it before flushing rx_work:
+-> btmtksdio_shutdown()
+ -> mtk_hci_wmt_sync()
+  -> __hci_cmd_send()
+   -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
 
-Fixes: 275678e7a9be ("debugfs: Check module state before warning in {full/open}_proxy_open()")
-Cc: Taehee Yoo <ap420073@gmail.com>
-Reported-by: Mário Lopes <ml@simonwunderlich.de>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Link: https://lore.kernel.org/r/20210802162444.7848-1-sven@narfation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+-> btmtksdio_recv_event()
+ -> hci_recv_frame()
+  -> queue_work(hdev->workqueue, &hdev->rx_work)
+   -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+
+So move the shutdown callback before flushing TX/RX queue to resolve the
+issue.
+
+Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/debugfs/file.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/bluetooth/hci_core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 943637298f65..a32c5c7dcfd8 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -178,8 +178,10 @@ static int open_proxy_open(struct inode *inode, struct file *filp)
- 	if (!fops_get(real_fops)) {
- #ifdef CONFIG_MODULES
- 		if (real_fops->owner &&
--		    real_fops->owner->state == MODULE_STATE_GOING)
-+		    real_fops->owner->state == MODULE_STATE_GOING) {
-+			r = -ENXIO;
- 			goto out;
-+		}
- #endif
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 65d3f5409963..2f1868e426ab 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1726,6 +1726,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	hci_request_cancel_all(hdev);
+ 	hci_req_sync_lock(hdev);
  
- 		/* Huh? Module did not clean up after itself at exit? */
-@@ -313,8 +315,10 @@ static int full_proxy_open(struct inode *inode, struct file *filp)
- 	if (!fops_get(real_fops)) {
- #ifdef CONFIG_MODULES
- 		if (real_fops->owner &&
--		    real_fops->owner->state == MODULE_STATE_GOING)
-+		    real_fops->owner->state == MODULE_STATE_GOING) {
-+			r = -ENXIO;
- 			goto out;
-+		}
- #endif
- 
- 		/* Huh? Module did not cleanup after itself at exit? */
++	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
++	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
++	    test_bit(HCI_UP, &hdev->flags)) {
++		/* Execute vendor specific shutdown routine */
++		if (hdev->shutdown)
++			hdev->shutdown(hdev);
++	}
++
+ 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+ 		cancel_delayed_work_sync(&hdev->cmd_timer);
+ 		hci_req_sync_unlock(hdev);
 -- 
 2.30.2
 
