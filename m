@@ -2,91 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD93840859B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803FB40859F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237753AbhIMHtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237648AbhIMHto (ORCPT
+        id S237759AbhIMHu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:50:57 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:32323 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237648AbhIMHuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:49:44 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13231C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:48:29 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so4664864wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:48:28 -0700 (PDT)
+        Mon, 13 Sep 2021 03:50:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631519379; x=1663055379;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=VIO3bUe2Lb4JMol7G2aqRTnriEpPqAfRROxEE1KtRDY=;
+  b=cctav1zIvwN2m31/RPlAnFeFJ89REraSloHkDMpGHiSeyio7jMb0uf0R
+   8dUvvo+tpDrlkx9eUA6xe1ePCOni8NvIMDAdx8mHCI2pVQTQ2fazNi46R
+   q2KoO9wkfYiwmPoj0PHmXoI59JEBPM+2URWnLH9NXvirn+AZYo8x+Eq4m
+   9bsBVV1hphPNkMEBkiuYi/NjFx/wLT7+9MyuR8NKQOP/NxE4nn6VUApw1
+   xvD/XtXmX+6Z2GxD1elHFXz5ucuR2qjl8pAFshSTRgUv0qOzStrL7IpQU
+   K7etCQMsZUdf/lgpkMZ3NRAVXuycmfbi5gfIO0op9xcCWa+C+pnXmmbzJ
+   A==;
+X-IronPort-AV: E=Sophos;i="5.85,288,1624291200"; 
+   d="scan'208";a="184623708"
+Received: from mail-dm6nam11lp2175.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.175])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Sep 2021 15:49:38 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nib2kZBJiLaouEmIxvm/tABIHdHAkKdrMv0CmtpA1A4+NaNSVkTMoJYXDyswx41mhYMmlxuyGw1kllOmYSr2bCgD0km1A+barsGFtt+60bUwnfSjditOCFuaUBQdGl6UEG/WKTDESjziQ4arJpxtb8r80/iZW0zys4Mrk2th0ibBOoOxQ2HOAdmtPj821BUgUtikE33WD01vP+VkQU+bP+L69s8IJ3ADtH5nwemD9ZHjLghqi10CR44eCZSWektJvWzRD9aFC4OS5kxCThJS2JFGw8Oaq7vv+Ee12XWNyAkjQwivGGsPro++C9EmKTcMkDu6PAJ1+/PoQVp/S49Xcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=VIO3bUe2Lb4JMol7G2aqRTnriEpPqAfRROxEE1KtRDY=;
+ b=TIR3ExP5yu9wnwRqpmWl9pfyyYOBdt9MVUTPoebkYFgIkAZB8h4u/kKoaCOKe4NKw5LD8pg6vFa2w84ucBGrjVcy4xJXfqTM/uArM5S2b12LwCXvcwgVGu5phEj2PyXU5Vfod1ScqsYvhuAov5nGgmnzIVY1gQEjWMyzRuMYFxCiURDMFt7UljQP29jXwMuCzlLpbZOJuxcb+C5gA9e9rf8JnHxAMGohrC8yppKu8hajGU0eEB/3JlDqYzl//Ikna407QdbCUx9C9AkCppxYpodhWQHJt193ewSb70IHR3GjCysybOUGBSE6SlVRiecpCcLhmM5dKmem05AJHvz63g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H8B7xbwINRHhqxF1MMsyq3ruixWSjkWr3WYb2IwC/4w=;
-        b=jQYgRv3r1b5ziq6GAtSG41IHs7Mxmx/7NzVkqF+Ma3TW+6U1wVsPjfdvcuZxTGrmKF
-         4D/jjCMvaLg/xODS29m4xMkilg9/mqeMXeJeRcewjssgFJhyhaoJwQUD8NTkoKq2lqXy
-         lL+s7LeJ2n8Ovc541c5u43eN3OnkxwKcBoXv0sRbWT3Nsznx/pKb6jebChR8wQMew9TS
-         nEyZsuBUA4culcO22Cskdb8TWc3EWEpMYAC/eobso31kmM3x9sdgx96ZBLfZzAEgw5hG
-         N68Z7foU/H7V83U9poDMgN31e2FPUCQZefZF/5tgwIlAFyAwN2Q14mEPpK1lXrBFAlet
-         XhZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H8B7xbwINRHhqxF1MMsyq3ruixWSjkWr3WYb2IwC/4w=;
-        b=nKarU6lTJHVVHpBb47BhPl14EQQ5m9Z2fSc2gzhAu0Hsnc6XTFKS69Lv4TIvBSHTVj
-         4Yt3833OPDy+aALKD8dcFnadGetO7pq9ygKgEiTA6Dn8eUH7PMooRb8GcVPW8gImzqry
-         iyHl2y3qveXlX9CS6ybGIFr71idEEdU2dUH1FyDdfURrIdih3weNbHLcIZXRBQjCDZTV
-         InVn/DdpuClGvM/ezGKHlgLZGLekb1gJ/HH4UyJOy6G+F83bMzN7HN2zirIkMKeJq1H/
-         Myi05Q1yMr9VBtGunluBXh+eG70qvpaweJ+5K7BHvZCZICJVNjHgKBUxTZm0EFTevKK1
-         bgpQ==
-X-Gm-Message-State: AOAM532QZkzTIB262B+WCF+IFBU+CbM++6o1HQzV/dLiD3BtO9owaBhq
-        qhXXTQV7Uy6VR8UtCY7MkOruSg==
-X-Google-Smtp-Source: ABdhPJwUUH8bihHEeIDsCFA08JpJBGJPQWwFBqCrYLeBaXIPrOvtHZZIp0yGJFv+rYkUNEMD2wvFiQ==
-X-Received: by 2002:a1c:a94a:: with SMTP id s71mr5671046wme.32.1631519307550;
-        Mon, 13 Sep 2021 00:48:27 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
-        by smtp.gmail.com with ESMTPSA id m8sm6541195wms.32.2021.09.13.00.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 00:48:27 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>,
-        Dongjin Kim <tobetter@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH] arm64: dts: meson: sm1: add Ethernet PHY reset line for ODROID-C4/HC4
-Date:   Mon, 13 Sep 2021 09:48:28 +0200
-Message-Id: <163151930396.823339.15277942851578495255.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YScKYFWlYymgGw3l@anyang-linuxfactory-or-kr>
-References: <YScKYFWlYymgGw3l@anyang-linuxfactory-or-kr>
-MIME-Version: 1.0
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VIO3bUe2Lb4JMol7G2aqRTnriEpPqAfRROxEE1KtRDY=;
+ b=L0r9YCSW5pzPpmBRjavOGCwiAUcTg4xN6r4KaZLRaPTL/hoDutoUdOJUmsOrxLYmTok7oiX6u9tFCkkj6NRHz4QvyeJ8iNuz8eRT/LZIrC2Eal2zwVtIl7R0nDKETPFRcPCS3tlT9+D3AMjh+ck3A8LFmsxoQ9Vmats2xmuEkh0=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR04MB1259.namprd04.prod.outlook.com (2603:10b6:4:3d::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4500.14; Mon, 13 Sep 2021 07:49:38 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::edbe:4c5:6ee8:fc59]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::edbe:4c5:6ee8:fc59%3]) with mapi id 15.20.4500.019; Mon, 13 Sep 2021
+ 07:49:38 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>
+Subject: RE: [PATCH v3 1/2] scsi: ufs: Probe for temperature notification
+ support
+Thread-Topic: [PATCH v3 1/2] scsi: ufs: Probe for temperature notification
+ support
+Thread-Index: AQHXp9jYZSTBrQbeXkKrPDOKOpfYl6ughOOAgAD4afCAABhpAIAAAWpA
+Date:   Mon, 13 Sep 2021 07:49:38 +0000
+Message-ID: <DM6PR04MB657565612A342272B2160A72FCD99@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210912131919.12962-1-avri.altman@wdc.com>
+ <20210912131919.12962-2-avri.altman@wdc.com>
+ <8abe6364-9240-bcaf-c17f-1703243170cb@roeck-us.net>
+ <DM6PR04MB65754D1CF6B4769E6CECDB5DFCD99@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <d28e37db-44bb-75f8-d479-dcb106fe146d@roeck-us.net>
+In-Reply-To: <d28e37db-44bb-75f8-d479-dcb106fe146d@roeck-us.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: roeck-us.net; dkim=none (message not signed)
+ header.d=none;roeck-us.net; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d294255f-a861-45e7-f462-08d9768b09e2
+x-ms-traffictypediagnostic: DM5PR04MB1259:
+x-microsoft-antispam-prvs: <DM5PR04MB12599C30C4251BFDCEF1D86EFCD99@DM5PR04MB1259.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TZ4Le2pjjE5+cbsaGqT0XE9DrmgzvKBnJXBlVxMm/WfTIUdqjBbLDY1JlmYbUFGUDaLo5NNy81vAbSF68DZotmE5TxI+emOXaPjPCGId1Q+W43xLC41MrJUyrQueSit9ixOd7nHc6h/nBz5y5VfXjaCQQFqjSWByL9ozQq5Hx6gfgTaDUxAc36UoeTe12gTwWFhd3RTYuoZmCglT8Y42NbXoHlaJ4Du/1c67vW2cidnNhN8buigG+WyHRo/ZehUGteHcHFbJ6+zx9/FAP0wNT6NZZtFhcZAU2NQzkwpkyj/hEHl+wco1TcRjFlnKlCL2h8JIo3jTVeldPnV0wBzYp/dMjUJbbhFxmhwE0ZSOm60HA0GDHzZczQbA4sFL+tASnJNpXPhlXEG5Y9wYKsDxR7EHbMB3AaDMloqV7uhRFMYIQwimHb0NCLZN1HEiNpirjTdeQGlGtD78B/B/Z5lhKMiY/XJK6zZJZKy318xegDPAxDN0/tCNcyZM1GQkV+wB7FTkcFJdcHfJ+L7BrMzLLkl5cqh/veRQRXQ/VvzaxyIQnEqg1JRlKgfIdtU6uEic/WugmAbepwUmQDHsWidP+d35Tc1EW7gHubAVTVP5wFqddBjYjSd2aQwio8oxrOEfUlQwcwojeDfZZCl7I4p2Hy5nOH5tLHRo+vElJu/LCnILuOrwINEXlF8nsrOIVFK/eBSNQkPzgCuFVfbTndinGA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(366004)(136003)(26005)(186003)(7696005)(52536014)(478600001)(66446008)(66556008)(6506007)(71200400001)(66476007)(8676002)(83380400001)(38070700005)(86362001)(2906002)(64756008)(38100700002)(8936002)(76116006)(122000001)(316002)(110136005)(55016002)(9686003)(5660300002)(4744005)(66946007)(4326008)(33656002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VzYrYWQ0NkRBTHlnalJBL0Q4WXZQU3cycmNNaWo0dG1XOWtSbFdDMEdldTdR?=
+ =?utf-8?B?SzJLVWwrQk5zSEdVVHQ0cVpqdTZQVy9kTlJGUXAzL1hkejY2bTA0cTUzb3ZU?=
+ =?utf-8?B?WTlyWHQ0TGhkVWFRczY1ekp4OUJsOU1LK29OTjFYejVReERzdDRvWFVNM2k2?=
+ =?utf-8?B?SGY4L3ZtM0VIRWNsRWlFZ1d6bEVNMU5NV21CMVNoNklES2FxR1lMQkt4RDNa?=
+ =?utf-8?B?V3Y5MCtsYms2Nk9LUitaSlpIc0ZMRjhXTk1WelBDcVZhVTE3NHlMSzRTS2hx?=
+ =?utf-8?B?UUZEY3cvcVdWb2xWTTNRYWl1Rk8xRnlMcTgyLzNBbEVWdzhxcUEzSXJuUnQr?=
+ =?utf-8?B?dkdRbU1PWlNZNHBEbERYRnE4MWYxYTZEVlVzc1lIdVJzdHJYQjI2OEFPYWRa?=
+ =?utf-8?B?QkZyZGtVZUpJbG5yVE5vU3hMNDZmRVNQUmJNejF2alNRaEtTTDdoMUJoV3lL?=
+ =?utf-8?B?R0lSc0ZLd09jd3FDOU9PY01aalgyVis3VUNubUcxbUdmN1h3akNqTy8wVVcx?=
+ =?utf-8?B?U0dZUkhyWndGRU9OU1BxeXRWUFR6N05pMmJUU3FTWm4vRUF1WWFFMCtKTG9r?=
+ =?utf-8?B?YUxqejVHZWZBYUhKTTk2RmI3SzVoYWIxMGtucEdkY2JvMzZUOStheFNUZ2Ra?=
+ =?utf-8?B?Y2dQU1p4TDdxc0hTM2RhRG5tWXdjRDI4YXpYOGF5a0hpbGRBWkNKbGFvQzJt?=
+ =?utf-8?B?TEZJWXk4blZxYjkyTDd2dTYyWTZzbEpGc2dIZnBxVWd5TUxwQnA4dUtuZjNO?=
+ =?utf-8?B?TmRNN1REVDFKYU9DWjVoY0thYzhFTkphSmZIckt4QlBVTEtKTS9id3lTVzRn?=
+ =?utf-8?B?NXF5NXVlcEVqZUhkbmZtUXI1anppQmVoZlpkZFJDMHVVb3JRRjIvVjEwa0hX?=
+ =?utf-8?B?TEY3QUtLYnloaEJyZVVoRUhsNHFnNUVVUzIxU1lYaFZLZ080V0E5dkJJYVNY?=
+ =?utf-8?B?dUx4cCs3aGFmVXZpWkhmL01pMFdnTUlNc1VJVTdxNjhiNHNHQW4zKzdCd1E0?=
+ =?utf-8?B?TDRGcjZHNTVkNGV3ZERQcHNXREl0ZTZveXZKaUhtMmx0M2hzZmZnbk0rUUNV?=
+ =?utf-8?B?V3ppdVd5N2VHM1RNS3dWZEp5Y3ozcWVhY1FaYXVzdW9ZRmFPdnp6QWJOandE?=
+ =?utf-8?B?aC9EZkE1dE5CaVR2blhXZm50L3owVlZFTVozMDB2U2E0K3dmNDhZRmpXSVda?=
+ =?utf-8?B?RTRHakhQOHhaQ0twanZZc1ZLVXJZQTJHRTNhdEJ3WDFtYmNsRXZWWi9Ib1pQ?=
+ =?utf-8?B?dUNwZEFUMy8za0ExVHR5S1RqcDM0VVhoZlQ0MFJ1TDh2QVB1YmtHN2hGTE1X?=
+ =?utf-8?B?bmsyZkM5MGw0SXV1N3A4aUtMdEd4YW9YdkZaRW9ITG12NXBkM0E1NHJJeEN3?=
+ =?utf-8?B?cFZaODFPZDRjM1FKbXA3MjJ2N3llSlVvem9nMzRwU2VacnRIRkhSK0RyWkcx?=
+ =?utf-8?B?RFJKemx5RnJOcmVBN2k4djdyTk50clZ2amdkbXlHaGNrV2pqUE5MZHVPY3dK?=
+ =?utf-8?B?d09OWitmZmJCSHFvQkZEcHFNdjcxZXpOeW5EYXBOaTNUbzZGT0lZVjdjRTVS?=
+ =?utf-8?B?Mmp1aWhsQ0NFcFJxWm1hREIyc3V6M2ZWS3NVVnlkemV6eEkxZVpmODRyb2RI?=
+ =?utf-8?B?emZoQ2d2OHc1MGJQdGN2MDlrckdEdVdKU0RVYmFCNXNLMVQwcVJndVBXQlkv?=
+ =?utf-8?B?N3dCWDVJQjBvM2RzYW92QXZ6WEtnRm03R2tNcjNkbXlhZUljZmJlUmtUR3JZ?=
+ =?utf-8?Q?MEXvTW0mDHo6++bnvsChyBg7Ir/XeY06ZF9XoI/?=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d294255f-a861-45e7-f462-08d9768b09e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2021 07:49:38.6801
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hzvnG3LtPcmk3Yg/fnKOrcj8zKeErBZlgcsHERrAjW73p8kzQ1R1HgBrZgehtAd6BVQQMfsW2fuFbCZqQApONw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1259
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, 26 Aug 2021 12:28:32 +0900, Dongjin Kim wrote:
-> This patch is to fix an issue that the ethernet link doesn't come up
-> when using ip link set down/up:
->    [   11.428114] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
->    [   14.428595] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
->    [   14.428610] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
->    [   14.428974] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
->    [   14.711185] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
-> 
-> [...]
-
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
-
-[1/1] arm64: dts: meson: sm1: add Ethernet PHY reset line for ODROID-C4/HC4
-      https://git.kernel.org/amlogic/c/9d02214f8332d5dbbcce3d6c5c915e54d43a0c46
-
--- 
-Neil
+PiA+PiBUaGUgImVuYWJsZSIgYXR0cmlidXRlIG9ubHkgbWFrZXMgc2Vuc2UgaWYgaXQgY2FuIGJl
+IHVzZWQgdG8gYWN0dWFsbHkNCj4gPj4gZW5hYmxlIG9yIGRpc2FibGUgYSBzcGVjaWZpYyBzZW5z
+b3IsIGFuZCBpcyBub3QgdGllZCB0byBsaW1pdA0KPiA+PiBhdHRyaWJ1dGVzIGJ1dCB0byB0aGUg
+YWN0dWFsIHNlbnNvciB2YWx1ZXMuDQo+ID4gU2VlIGV4cGxhbmF0aW9uIGFib3ZlLg0KPiA+ICAg
+V2lsbCBtYWtlIGl0IHdyaXRhYmxlIGFzIHdlbGwuDQo+ID4NCj4gDQo+IFRoYXQgb25seSBtYWtl
+cyBzZW5zZSBpZiB0aGUgaW5mb3JtYXRpb24gaXMgcGFzc2VkIHRvIHRoZSBjaGlwLiBXaGF0IGlz
+IGdvaW5nIHRvDQo+IGhhcHBlbiBpZiB0aGUgdXNlciB3cml0ZXMgMCBpbnRvIHRoZSBhdHRyaWJ1
+dGUgPw0KV2lsbCB0dXJuIG9mZiB0aGUgdGVtcGVyYXR1cmUgZXhjZXB0aW9uIGJpdHMsIHNvIHRo
+YXQgVGNhc2UgaXMgbm8gbG9uZ2VyIHZhbGlkLA0KYW5kIHRoZSBkZXZpY2Ugd2lsbCBhbHdheXMg
+cmV0dXJuIFRjYXNlID0gMC4NCg0KPiBHdWVudGVyDQo=
