@@ -2,145 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5906409319
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88974092BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240174AbhIMORm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:17:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26294 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344684AbhIMOLw (ORCPT
+        id S1344600AbhIMOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:15:17 -0400
+Received: from mail-4317.protonmail.ch ([185.70.43.17]:61191 "EHLO
+        mail-4317.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344633AbhIMOLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:11:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631542231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lk/zZdd0Y1C1Ug1wnLlgsJMYCiBNV9mqGkl1sFTVUB0=;
-        b=CG7+UvtsnjmnK+SvXxKwlPdwb2RyVYwouNwoIppjL9tDaasF152W/3wSZNHSvOrJoeAFCi
-        vPBVnBlgBi7tuc1MOx7TYl4UKBwYaEPy3HvLz+lWY04WVDurEJk3WL/sVABg1JrByXOiG9
-        +2QkFcwsUnzlMsEJSweQlFu/0WE4d44=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-m33kouAhOOGJ8k0PRAgRDQ-1; Mon, 13 Sep 2021 10:10:30 -0400
-X-MC-Unique: m33kouAhOOGJ8k0PRAgRDQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E7901006AA2;
-        Mon, 13 Sep 2021 14:10:29 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BF52E19724;
-        Mon, 13 Sep 2021 14:10:25 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v3 7/7] KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
-Date:   Mon, 13 Sep 2021 17:09:54 +0300
-Message-Id: <20210913140954.165665-8-mlevitsk@redhat.com>
-In-Reply-To: <20210913140954.165665-1-mlevitsk@redhat.com>
-References: <20210913140954.165665-1-mlevitsk@redhat.com>
+        Mon, 13 Sep 2021 10:11:42 -0400
+Date:   Mon, 13 Sep 2021 14:10:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail; t=1631542223;
+        bh=oss/E+70MRl03TJMdN6Zz+nYBuwtt0h53qYO3R5VcFY=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=F3Mnwnp8wndAEJvgLSGbhDOzblYKVeMkvV/pCXEpTJo5WleYqSo4yJsb+mFXfmOGw
+         f3fkWSrMlfKY7cOo26q4NXQl08bt6IEX2IkbL8zYmHkHZalH9BVAcIqnvjboNr9nxr
+         LWBVnMbSBiN3su8fAT2vSUeEKG09SepOk1sWfmISN4b+7s99ngBpkCLJ92LhkeZluD
+         4AcW7caR2mShxoDU7y4TUMGLZmxBqPyAdBu/LHMRFuNLs3GWx5X6bx4SlJNfYaxs8d
+         qF4CJ0PP/DructOuu3Ur96oCShgaUl5MyvzS44Izxj0/6te9UZEtwTnFZF6rTiePHX
+         rD5x+Bu5gwunw==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH] staging: rtl8723bs: define wowlan_stub only when CONFIG_PM is enabled
+Message-ID: <20210913140937.1490133-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If L1 had invalid state on VM entry (can happen on SMM transactions
-when we enter from real mode, straight to nested guest),
+The wake-on-lan stub is needed only when the device power management
+functionality is enabled in the kernel. Conditionally define
+wowlan_stub to avoid potential unused object warnings.
 
-then after we load 'host' state from VMCS12, the state has to become
-valid again, but since we load the segment registers with
-__vmx_set_segment we weren't always updating emulation_required.
-
-Update emulation_required explicitly at end of load_vmcs12_host_state.
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
 ---
- arch/x86/kvm/vmx/nested.c | 2 ++
- arch/x86/kvm/vmx/vmx.c    | 8 ++++----
- arch/x86/kvm/vmx/vmx.h    | 1 +
- 3 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 1a05ae83dae5..f915e1ac589c 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -4319,6 +4319,8 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
- 	if (nested_vmx_load_msr(vcpu, vmcs12->vm_exit_msr_load_addr,
- 				vmcs12->vm_exit_msr_load_count))
- 		nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_MSR_FAIL);
-+
-+	to_vmx(vcpu)->emulation_required = vmx_emulation_required(vcpu);
- }
- 
- static inline u64 nested_vmx_get_vmcs01_guest_efer(struct vcpu_vmx *vmx)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c3b3c406f4f1..7f0a768050db 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1323,7 +1323,7 @@ static void vmx_vcpu_put(struct kvm_vcpu *vcpu)
- 	vmx_prepare_switch_to_host(to_vmx(vcpu));
- }
- 
--static bool emulation_required(struct kvm_vcpu *vcpu)
-+bool vmx_emulation_required(struct kvm_vcpu *vcpu)
- {
- 	return emulate_invalid_guest_state && !vmx_guest_state_valid(vcpu);
- }
-@@ -1367,7 +1367,7 @@ void vmx_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags)
- 	vmcs_writel(GUEST_RFLAGS, rflags);
- 
- 	if ((old_rflags ^ vmx->rflags) & X86_EFLAGS_VM)
--		vmx->emulation_required = emulation_required(vcpu);
-+		vmx->emulation_required = vmx_emulation_required(vcpu);
- }
- 
- u32 vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu)
-@@ -3077,7 +3077,7 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- 	}
- 
- 	/* depends on vcpu->arch.cr0 to be set to a new value */
--	vmx->emulation_required = emulation_required(vcpu);
-+	vmx->emulation_required = vmx_emulation_required(vcpu);
- }
- 
- static int vmx_get_max_tdp_level(void)
-@@ -3330,7 +3330,7 @@ static void vmx_set_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int
- {
- 	__vmx_set_segment(vcpu, var, seg);
- 
--	to_vmx(vcpu)->emulation_required = emulation_required(vcpu);
-+	to_vmx(vcpu)->emulation_required = vmx_emulation_required(vcpu);
- }
- 
- static void vmx_get_cs_db_l_bits(struct kvm_vcpu *vcpu, int *db, int *l)
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 4858c5fd95f2..3a587c51a8d1 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -359,6 +359,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu);
- void vmx_set_host_fs_gs(struct vmcs_host_state *host, u16 fs_sel, u16 gs_sel,
- 			unsigned long fs_base, unsigned long gs_base);
- int vmx_get_cpl(struct kvm_vcpu *vcpu);
-+bool vmx_emulation_required(struct kvm_vcpu *vcpu);
- unsigned long vmx_get_rflags(struct kvm_vcpu *vcpu);
- void vmx_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
- u32 vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu);
--- 
-2.26.3
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/st=
+aging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 34da8a569709..f4a9b4b7c97e 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -47,6 +47,7 @@ static const u32 rtw_cipher_suites[] =3D {
+  * Moreover wowlan has to be enabled via a the nl80211_set_wowlan callback=
+.
+  * (from user space, e.g. iw phy0 wowlan enable)
+  */
++#if defined(CONFIG_PM)
+ static const struct wiphy_wowlan_support wowlan_stub =3D {
+ =09.flags =3D WIPHY_WOWLAN_ANY,
+ =09.n_patterns =3D 0,
+@@ -54,6 +55,7 @@ static const struct wiphy_wowlan_support wowlan_stub =3D =
+{
+ =09.pattern_min_len =3D 0,
+ =09.max_pkt_offset =3D 0,
+ };
++#endif
+
+ static struct ieee80211_rate rtw_rates[] =3D {
+ =09RATETAB_ENT(10,  0x1,   0),
+--
+2.30.2
+
 
