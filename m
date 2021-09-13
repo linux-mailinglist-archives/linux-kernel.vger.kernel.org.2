@@ -2,120 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2AE40891B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E3D40891D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239153AbhIMKiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        id S239162AbhIMKiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239136AbhIMKiG (ORCPT
+        with ESMTP id S239136AbhIMKiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:38:06 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918DBC061574;
-        Mon, 13 Sep 2021 03:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5cZgY+h2VLjKmM5rPcBYeoFqyIYGYh7lJNiFwhwUejg=; b=YxO+yq6Nfw5pNJZd/1y0ZUCWiD
-        k78zpd8bvVZfIfpZ7hJXZybcBf6kxzts0xeKzu+yGsyZMVUMDwziMzmsbw2J3YOKlQWyVqCzDpH4a
-        XSzBo14adAxwPXr9cC8z/6g1AYP7p8HmU6vxwjoWjLUz0Y9W38th8T8MuBI1Tke4ye1ego6CGmdCM
-        O6/w+vxst0O1/35362z/HiWz/JuQxQVdA43OkjvigMb/wvbjmyNeVyiHfPKIqpwkmmkzyAkeOPlrv
-        M0vA0SjNlgsn59ZIGLoArrcRO6d2gVNnohzjGmPABM3teK3os4xLl8GAvajPCehEpENIkabUQ0Q9l
-        Nt4xcP8w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPjKH-002nu6-3p; Mon, 13 Sep 2021 10:36:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63601300047;
-        Mon, 13 Sep 2021 12:36:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 241292BDAF0DC; Mon, 13 Sep 2021 12:36:36 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 12:36:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
- perf_log_throttle
-Message-ID: <YT8ptOoN0age04PQ@hirez.programming.kicks-ass.net>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <20210910153839.GH4323@worktop.programming.kicks-ass.net>
- <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
- <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+        Mon, 13 Sep 2021 06:38:18 -0400
+Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EE1C061574;
+        Mon, 13 Sep 2021 03:37:00 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id PjKdmYA5MpQdWPjKem2WJ4; Mon, 13 Sep 2021 12:37:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1631529420; bh=pmZak51jVw9LOZpdrL6UGBR/GrisLVXFjv5j8CBgpT0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=eKBfUVJYPnpCPaeZyPVYGx9dqPMioL8SFANkSpv0PCSf4P1s2ZPzDBFu9/nXY6yH2
+         e0HeFmgPuvqGhF7iz/T9v9oOjld/w7xt5ORLIyIuJUZcJ3hYqhuIVbOfwSW+4Ftgs0
+         pjGcFN027doqWbZEFdPHWRkncTllRldolMmJ0Jqu1JdfyWtsKBGpXj5bO6TazHMi08
+         tdFswL1JJVic6rG9xSZ1vMXOMpwrd7LndPaBR1CiKMCGJ38XbDMfmqal9AP4AF91Xj
+         ebnl0cfxXGVjmul6dvnhBJGRyBZ4EYHgAXvTbO07ZJnDL9NyYUvx2hL2tR8dNqghNz
+         tL4GdMqAS2Fuw==
+Subject: Re: [PATCH v11 23/34] media: dt: bindings: tegra-vde: Document OPP
+ and power domain
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210912200832.12312-1-digetx@gmail.com>
+ <20210912200832.12312-24-digetx@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <03846b87-6235-4ec4-0f6b-a9a888e0452e@xs4all.nl>
+Date:   Mon, 13 Sep 2021 12:36:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210912200832.12312-24-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJGp+P1+1KIcOMgV32T3yhr923OcCL6/wUgJil5v7QWOOP0Zhj/WgNktUtF9PouVN93W6glH/2kdp/M/y5S07oUJCcQvwyLfCPTVaw2Dszv/oabbNhmQ
+ oFuzCetEg8ofIfF8vqL0fULFUZKJedzqIARGayuWOMhLOKilSixA841OJYWhqxXzn9DP1W3PYyFVJV6PnISQJighPE3R/TzqK32UcI55jHK94SWFsdMGl+QU
+ kqMyij9fqa9tL1zWDSRQYgBdCUets1Vk3aGi9/rOERQ2qwzKrz39iEhzekpGRMVkcnK2HgAOCRK5Z9Aacy4/syqYzFA3eGoLzZndlbzuyTKHMCmylRevB//V
+ WEL9ZDWYDqSOqVmqHYCm6V8SE75AjCOwMuqzmvwYLOtXsh3QAX0G8OBXkk5tVBSE7gypcE5NL4amI3wZdxOcR5cgpGrKf1lUYe9Cu1M7mrl8mwiNYjZ+w/7Q
+ zh4AWT5+UPVekYKKGrz93eD7I2xVxK8qJhfNL2y1Aup63pe1gby0163kFDAInmrnZvpSkE2POtuZD/XsXob3wbqqM2vlujy9pir71bXk97qwMeHU1U5NO/DY
+ cU8OtE/Qw7XwOQEJwE7ABkRkiSAZ3r7ihUzlVFDPGDWV4sBh7BFHv+5VmAxSIguOYRpRwhzw2a6o2IFnykdVzQ1/a4rFhNC/N2bw9HwMBd7rCzogaty1g32X
+ S2GEwXcKPHyjglR/Ya4vBRJWyD5+FenQnxroHTnOJvPwqhnFRb4549L5U3U1Nnbbvk++9Ih0bC/1C8fiFA6N4dRxGKPp33gosiXCRHHyccoNIn4GyojDiMMV
+ 1kBvYNtab/Vay9WBDCCtGLA8RB41v1Kj95/SCTXCWRNIdtPKqMwK0kjJ/p3JYdYr3c8I+2vSzElu31GZdky7VZh3MAe8sKYTc7yvp5ST0qDWlukb2bBKOMZE
+ 6Poq+10P3xEvReeU3j9hkxza2xLVGuWk2viD7LQjuLplObCr3m2HESKwdKcvjwuqo+hqVMiltl+dzW7Gj+DRSVBhe2TEPw/0TY0488IQ2LvDq45JCNiMWaL2
+ zfwqXTlEsPMwM5OVEZvLAY8uELfRzxk2n9/L7Kga7jtL06UQFbTM6bC95CbGH9z9fWEOn7b4g3tN9lYgaUgNhmRHON/s9fwB5oB2UEG/Ew6xtlI5sUwFjif3
+ PN7zHRKa3c8Ksb5pQfUdCs20Pe9xeZc1LEpkl3LAvHOUdh7dfetF5mQpaYQY8z6Ri5jgrAPMgF4cV1POl4RJCvrowJ2dgdU1cGZTXbqiB19W622pBgKcxeyM
+ WmxEFei8okYUFvM5+lHKpd5+AIIBguVKnzqNKxXY7PxhfJ8rAKuTUoDlf067hrUDr6+K51FSXFzs9L3u3opk63Ik+4BglUdrLerpdCuVJD3Eyg3SiT9kfjz2
+ 1CJ0ScmOaqygyuQnfakSFzFa1nVTyrgQ7pg35A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:24:24PM +0200, Peter Zijlstra wrote:
-
-FWIW:
-
-> I'm confused tho; where does the #DF come from? Because taking a #PF
-> from NMI should be perfectly fine.
+On 12/09/2021 22:08, Dmitry Osipenko wrote:
+> Document new OPP table and power domain properties of the video decoder
+> hardware.
 > 
-> AFAICT that callchain is something like:
-> 
-> 	NMI
-> 	  perf_event_nmi_handler()
-> 	    (part of the chain is missing here)
-> 	      perf_log_throttle()
-> 	        perf_output_begin() /* events/ring_buffer.c */
-> 		  rcu_read_lock()
-> 		    rcu_lock_acquire()
-> 		      lock_acquire()
-> 		        trace_lock_acquire() --> perf_trace_foo
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-This function also calls perf_trace_buf_alloc(), and will have
-incremented the recursion count, such that:
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-> 
-> 			  ...
-> 			    perf_callchain()
-> 			      perf_callchain_user()
-> 			        #PF (fully expected during a userspace callchain)
-> 				  (some stuff, until the first __fentry)
-> 				    perf_trace_function_call
-> 				      perf_trace_buf_alloc()
-> 				        perf_swevent_get_recursion_context()
-> 					  *BOOM*
+Regards,
 
-this one, if it wouldn't mysteriously explode, would find recursion and
-terminate, except that seems to be going side-ways.
+	Hans
 
-> Now, supposedly we then take another #PF from get_recursion_context() or
-> something, but that doesn't make sense. That should just work...
+> ---
+>  .../devicetree/bindings/media/nvidia,tegra-vde.yaml  | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> Can you figure out what's going wrong there? going with the RIP, this
-> almost looks like 'swhash->recursion' goes splat, but again that makes
-> no sense, that's a per-cpu variable.
+> diff --git a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+> index 3b6c1f031e04..0b7d4d815707 100644
+> --- a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+> +++ b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
+> @@ -68,6 +68,16 @@ properties:
+>      description:
+>        Phandle of the SRAM MMIO node.
+>  
+> +  operating-points-v2:
+> +    description:
+> +      Should contain freqs and voltages and opp-supported-hw property,
+> +      which is a bitfield indicating SoC speedo or process ID mask.
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +    description:
+> +      Phandle to the SoC core power domain.
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -104,4 +114,6 @@ examples:
+>        reset-names = "vde", "mc";
+>        resets = <&rst 61>, <&mem 13>;
+>        iommus = <&mem 15>;
+> +      operating-points-v2 = <&dvfs_opp_table>;
+> +      power-domains = <&domain>;
+>      };
 > 
-> 
+
