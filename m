@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18AB40987E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB47409880
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345780AbhIMQOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:14:46 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:34498 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235710AbhIMQOp (ORCPT
+        id S1345802AbhIMQPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:15:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52940 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhIMQPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:14:45 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210913161328euoutp01c12e67c2a6d1c58411a60f79081e46b8~kbbl6Vfld1333213332euoutp01e
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:13:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210913161328euoutp01c12e67c2a6d1c58411a60f79081e46b8~kbbl6Vfld1333213332euoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631549608;
-        bh=BODmo/i72TYAK/I18Eqv+IGEzjgXS7CIritZ3TIQpMk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=dTpTjfEnRcmr60va5s/8cTGDC+jEmGOmO5YFN2acrO+trC7cgWHxjG6qNFn4WPwJP
-         LfANZ03DL2RtkW/Ms2AJh/kkenDpyoJaBng50SlHGxzviPfcxJIxAL6NzcKoasN0vr
-         XnGb+bak7DNOw6WrVio06+ZsTvOoNwEia2/cnljo=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210913161328eucas1p1dc58c1a75741dc32d1ca5a9b425ac169~kbbloUPfD2008520085eucas1p1w;
-        Mon, 13 Sep 2021 16:13:28 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 2F.0F.42068.7A87F316; Mon, 13
-        Sep 2021 17:13:27 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210913161327eucas1p173a416725e7887f9055aa1b14f0e5431~kbblO-4e62217222172eucas1p1l;
-        Mon, 13 Sep 2021 16:13:27 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210913161327eusmtrp1deba27eec153aa6bff2a1b5712992cc9~kbblOR4Ns1032710327eusmtrp1W;
-        Mon, 13 Sep 2021 16:13:27 +0000 (GMT)
-X-AuditID: cbfec7f4-c71ff7000002a454-44-613f78a779f9
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 3A.A1.20981.7A87F316; Mon, 13
-        Sep 2021 17:13:27 +0100 (BST)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210913161327eusmtip2a70ab0989200572ebae9af6abec3c4ec~kbbkpmgef2640426404eusmtip2Y;
-        Mon, 13 Sep 2021 16:13:27 +0000 (GMT)
-Subject: Re: [PATCH] clk: samsung: exynos5433: Make use of the helper
- function devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <458402ea-8986-60fe-5d34-e8eacdd638a5@samsung.com>
-Date:   Mon, 13 Sep 2021 18:13:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        Mon, 13 Sep 2021 12:15:33 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 85FAC1FD99;
+        Mon, 13 Sep 2021 16:14:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631549656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=am3WMc1q9XARynRDUM7E3FUGoxi9LsITJzf3oeQ+Lww=;
+        b=P/4IFY9RCf3aKGlNrhp4PnGQUQUBpMMsHj0KqsHTSXt5OdpCfML/CO9aOsYMSrM2X9fQuN
+        +uG8yEn3iOcJ4wLeht3ztrh5E3yCcwpzPJm7JFM92jmUw918wl5ZBG27ouscyAT4J34f1T
+        N3cV0Ud03Kmk8mK9YOC4/ANyQFbWLa0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631549656;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=am3WMc1q9XARynRDUM7E3FUGoxi9LsITJzf3oeQ+Lww=;
+        b=Q7q10t86FU0aIasjf0FzLIFUI+diQ5WAToTZOr1nw6kx/bpWHfTpn4UjvYcHbt8+s2poj8
+        UAtG7spSEyhbPVAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A329613AAB;
+        Mon, 13 Sep 2021 16:14:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 62cXJtd4P2F6IQAAMHmgww
+        (envelope-from <jroedel@suse.de>); Mon, 13 Sep 2021 16:14:15 +0000
+Date:   Mon, 13 Sep 2021 18:14:14 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        kexec@lists.infradead.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 00/12] x86/sev: KEXEC/KDUMP support for SEV-ES guests
+Message-ID: <YT941raolZvGTVR/@suse.de>
+References: <20210913155603.28383-1-joro@8bytes.org>
+ <4e033293-b81d-1e21-6fd6-f507b6821d3c@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210907085115.4254-1-caihuoqing@baidu.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djP87rLK+wTDbbtt7FYc+8vm8X1L89Z
-        LTa+/cFksenxNVaLjz33WC0u75rDZjHj/D4mi4unXC3+XdvIYrFq1x9GBy6PL0ubmT3e32hl
-        95jV0MvmsXPWXXaPTas62Tw2L6n36NuyitHj8ya5AI4oLpuU1JzMstQifbsEroxJ/38zFzxl
-        qth8I72BcQ1TFyMnh4SAicTej9cZuxi5OIQEVjBKnL7WxwbhfGGU2HH5HiNIlZDAZ0aJxtkV
-        XYwcYB1d2zQgapYzSkzcuhCq+yOjxOL9D1lAGoQFCiW+HjzLBmKLCKhJTJk0nR2kiFngAZPE
-        rdVPwHazCRhK9B7tA9vAK2An8fnFfhaQDSwCqhIzr6aChEUFkiWm/W1ihigRlDg58wnYfE4B
-        S4lHrd1gY5gFxCVuPZkPZctLbH87hxlkl4RAO6fE6lX/2CH+dJE4N7EPyhaWeHV8C5QtI3F6
-        cg8LREMzo0TP7tvsEM4ERon7xxcwQlRZS9w594sN5DpmAU2J9bv0IUHhKHHlXBqEySdx460g
-        xA18EpO2TWeGCPNKdLQJQcxQkfi9ajo01KUkup/8Z5nAqDQLyWezkHwzC8k3sxDWLmBkWcUo
-        nlpanJueWmyUl1quV5yYW1yal66XnJ+7iRGYtk7/O/5lB+PyVx/1DjEycTAeYpTgYFYS4d32
-        xjZRiDclsbIqtSg/vqg0J7X4EKM0B4uSOG/SljXxQgLpiSWp2ampBalFMFkmDk6pBqZN13/c
-        zdBa6zaV2+fUAfH/FxlvtT1MWRx91fyk4E+2OO0oy51r2MMYWXzNLzJMyP1k+7zyAIOzn0dV
-        i/5LsTt8uz0W3F/Hc0aRPbu6qOCT6PlP+7znfGnssmEoejOj/E366a0bf4a9Xe70jPFkV37O
-        7D1bT8ml6b1IuSW392J1xI585+Lwh9y+eydIH6uN7ws1FjtpvO3NDZZ/ucJnQjuDvn+tF7B5
-        oXDSOrww4syk6+GlRjHVE196Sq9iMDp7zVR7Qnt3Q/3bXR6Jha2Xpry5Z/n2mQrHqvnagafs
-        d9T27d3uHC+n9yNZ9eqR603vLsetYm/4qXxpswir47X5b+pvs5kGWz+JLvjxQ4rrQ6ASS3FG
-        oqEWc1FxIgC43xMTygMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFIsWRmVeSWpSXmKPExsVy+t/xe7rLK+wTDVpPKlmsufeXzeL6l+es
-        Fhvf/mCy2PT4GqvFx557rBaXd81hs5hxfh+TxcVTrhb/rm1ksVi16w+jA5fHl6XNzB7vb7Sy
-        e8xq6GXz2DnrLrvHplWdbB6bl9R79G1ZxejxeZNcAEeUnk1RfmlJqkJGfnGJrVK0oYWRnqGl
-        hZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsak/7+ZC54yVWy+kd7AuIapi5GDQ0LARKJr
-        m0YXIxeHkMBSRondU9pZIOJSEvNblLoYOYFMYYk/17rYIGreM0p8etPHBpIQFiiU6Pn1mRXE
-        FhFQk5gyaTo7SBGzwAMmiSm/zrBDdPQwSrxo/MAIUsUmYCjRe7QPzOYVsJP4/GI/2DYWAVWJ
-        mVdTQcKiAskSb19/Z4IoEZQ4OfMJC4jNKWAp8ai1GyzOLKAu8WfeJWYIW1zi1pP5UHF5ie1v
-        5zBPYBSahaR9FpKWWUhaZiFpWcDIsopRJLW0ODc9t9hIrzgxt7g0L10vOT93EyMwUrcd+7ll
-        B+PKVx/1DjEycTAeYpTgYFYS4d32xjZRiDclsbIqtSg/vqg0J7X4EKMp0DsTmaVEk/OBqSKv
-        JN7QzMDU0MTM0sDU0sxYSZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQYmvzX/lPce3TXn1a7G
-        +Q2Pklad277o73f3xPm75dfW32Bf3MQUEjfpG3v5qqw1HN1Ji9xWTLh58Er2O+d1t89duTdf
-        Z/0Jlj1GXFv2S/yNDjL50LegIfm5ndhbBtlz689xcXZ3H5jWHrww+aql69EFrSlH+48u3+lz
-        +XVmiUaE68S2KRUfOHsyb1euyLC24NvKvlk+T4190TvumUXsl/8Xb71+lrVhOWeOwynL5P7K
-        aHPFzse6+z9ttI89fPEPs/S1oD+Kwdu42xae3rk0TcP07tno6d/+Fbwvc/Xb3PTskVlmVF7S
-        PKneA3qXN1mENrhslQ+wfF/0pn5raburzdcq5pnfU9sum+6TmFL466lvhhJLcUaioRZzUXEi
-        AJkSNS9dAwAA
-X-CMS-MailID: 20210913161327eucas1p173a416725e7887f9055aa1b14f0e5431
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210907085123eucas1p22c14a324393cade0c7b9cc6b1565ab84
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210907085123eucas1p22c14a324393cade0c7b9cc6b1565ab84
-References: <CGME20210907085123eucas1p22c14a324393cade0c7b9cc6b1565ab84@eucas1p2.samsung.com>
-        <20210907085115.4254-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e033293-b81d-1e21-6fd6-f507b6821d3c@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.09.2021 10:51, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+On Mon, Sep 13, 2021 at 09:02:38AM -0700, Dave Hansen wrote:
+> On 9/13/21 8:55 AM, Joerg Roedel wrote:
+> > This does not work under SEV-ES, because the hypervisor has no access
+> > to the vCPU registers and can't make modifications to them. So an
+> > SEV-ES guest needs to reset the vCPU itself and park it using the
+> > AP-reset-hold protocol. Upon wakeup the guest needs to jump to
+> > real-mode and to the reset-vector configured in the AP-Jump-Table.
+> 
+> How does this end up looking to an end user that tries to kexec() from a
+> an SEV-ES kernel?  Does it just hang?
 
-Thanks for the patch. I have applied it with summary line shortened to
-"clk: samsung: exynos5433: Make use of devm_platform_ioremap_resource()".
+Yes, the kexec will just hang. This patch-set contains code to disable
+the kexec syscalls in situations where it would not work for that
+reason.
 
--- 
+Actually with the changes to the decompressor in this patch-set the
+kexec'ed kernel could boot, but would fail to bring up all the APs.
+
 Regards,
-Sylwester
+
+	Joerg
