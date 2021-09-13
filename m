@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5685409B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD2D409B9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345697AbhIMSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
+        id S1345921AbhIMSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239852AbhIMSBX (ORCPT
+        with ESMTP id S239852AbhIMSBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:01:23 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7854BC061574;
-        Mon, 13 Sep 2021 11:00:07 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id f65so9588527pfb.10;
-        Mon, 13 Sep 2021 11:00:07 -0700 (PDT)
+        Mon, 13 Sep 2021 14:01:36 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6426C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:00:19 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id h16so22834720lfk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:00:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ar4axcEWPrCdTuBIYlAX+Qe5Dwg1m8PpYyueFWZ9yZQ=;
-        b=GIepHmM3Nv01P4syO4b4WSy429ooFrVUkQPyjIgnmHdY1mruGmkNoK85n7l69tCgC2
-         8wZcK9Ydfpxfml+gWuabiks5mVSgFNNLMneKKjw5SQMBTOsu0ZaPTg3Wsf8VyVxLyeb8
-         1i8QfuAI2iRHlyjZ+WO04g5MoDEYjIz3FU6d2NvWDjR24D4aDeoiRX+ZPeNE/TbqT42i
-         GHWNysyC6KqM1psELCXSTspqM5vngDszHHeCz10TZDvIG+XXtWRXsY/lakY1tqLdrnpd
-         MYby3tcf890GQR9I81qPLNJRxvTeLOq4n5dKY/WHHdKXnxPbqo2Bs5lh7wlTblz77Zlr
-         dXgQ==
+         :cc:content-transfer-encoding;
+        bh=iPLu6FRs6PsytvQa213g6Z9ikwL4Ay1Rx6H9mdVXAQY=;
+        b=OdpG3PcsFCgf1/KlZhYOeLEsAkkVqhp725gZbfyKUJvZImP2NoJQ4oPWzRjmms5RQY
+         AH7+AjdIFkt9sJkrDf0/3R09oGRkzogfJogqEmzUqsADzty/9i9KztZnqzXDWA1zfOdD
+         K+303eXak0Xe0qNmGBE5lelHCy3CyndWlbSMC3Mma3S7W3ntT0vGwOskKsb/I0hpaV1w
+         QF7xT+iopj/Fez7AtArDtnl5AMnwSGv3GYSzj8CpbxmHtWhAuPaafPVEnCp8LGxpQxxx
+         2nQ3i/ngFXiX5YLRTyoQznYMwWyqEdwX5jeYcYw2ymD/5W7DkrhUpH0bXEt3Y1VyrC40
+         cVHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ar4axcEWPrCdTuBIYlAX+Qe5Dwg1m8PpYyueFWZ9yZQ=;
-        b=hoRO6u5Wn89LWoC7w/g9jPqPGDIxU+NlVzUa6wZ+7c4kBYXNArhxNQYhV/sBDqj4yv
-         srzqo/buAV2Wq6CUKHdRIN3+oeVxWfOWSomnJIl11U5p1juGUbNQxm+O8QBEx7XLu9Ei
-         J1LMUWI+J/4iiWKFrgSnihnxElcTLM84eerpblLFW0vw6vxhWx6yuDsBOxky+63GFzVH
-         pRBsR6kR0+SM1+unPmcrnzXTCuQufoQH2AX5O4J0OCR+u48XCQ5aijjK3niiNNGCJ7+5
-         /AlqbZXx28LUXHNSUoHyj4ggs57C/RfdQPLXCngDGrXmm0eO9RjxUZA8JzP6u2VbBY23
-         uGFQ==
-X-Gm-Message-State: AOAM532IvUK7bhuqJCC60Tq+teXCRAQH5W8WhgRb8spflMgoK7HKOWcV
-        7jXfVURakBk7dNBKrGuitK1G9A6ZiZFUBxay6fiHCkk+
-X-Google-Smtp-Source: ABdhPJx76g7XE+cm9Cy/u2amnPaDbEnbPyH+7Gbc2SQwtfOLMuma6c2aq/b/+k8WvDgrfxEFuG/oGYFdjaJYVA++srg=
-X-Received: by 2002:a05:6a00:88b:b0:43d:e85f:e9ee with SMTP id
- q11-20020a056a00088b00b0043de85fe9eemr648919pfj.46.1631556006839; Mon, 13 Sep
- 2021 11:00:06 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iPLu6FRs6PsytvQa213g6Z9ikwL4Ay1Rx6H9mdVXAQY=;
+        b=M7JAkovL5w3izboaSESeIMpk+L5/ndH0jbk63lAqxrkbjxTSWQjRiT9K6kVS6dpG0X
+         hQJXOryR4LNRc8On1hlffS+P6+QOUPpgeA3/71EkioD25OnG2cqbj6+SHpcvBtvQFhkL
+         f8rCRbEwTzv6GSeVt0gmJiXIUz8cTdGeYHhB8dYhTe2aejMZLApMGeNYTV3BeVbd1JYR
+         HFncmQrQPCo5GZ0zLin3dxpF41ZofWVOgqVJqKk7nqCJCwc7+MFwj268fg7lr9P34tiz
+         Ve8vCne8WKwXUNqu9eYmKtQwyY+OKELfz1vESpKGab5nm0FjH4Yyuv/uV11VkHA0kENA
+         sDEw==
+X-Gm-Message-State: AOAM530AsRoIqXLANwq0vk5aYsEOAQLU1rcYaW8Ukt1UypaDzzfmHyQP
+        HNCbHg/UinBo4G/91Kzg38OaVribhECrfgJU/47SCg==
+X-Google-Smtp-Source: ABdhPJxmlvL8Pu8Cfn88+EIMxRUFWE+OT0JcP7bgKkdMfQrSFJxtO49I0aN+VgiS10qsVBM3yfQA4xXTMyGQHttomYc=
+X-Received: by 2002:ac2:4e98:: with SMTP id o24mr9884811lfr.295.1631556017864;
+ Mon, 13 Sep 2021 11:00:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910183352.3151445-1-songliubraving@fb.com>
-In-Reply-To: <20210910183352.3151445-1-songliubraving@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Sep 2021 10:59:55 -0700
-Message-ID: <CAADnVQLLYQwMh-jUa7pJH9uwAhEyVhc1gGR+cnS_s-4YTPqpTQ@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, kjain@linux.ibm.com,
-        Kernel Team <kernel-team@fb.com>
+References: <1631147036-13597-1-git-send-email-prakash.sangappa@oracle.com>
+ <CAFTs51VDUPWu=r9d=ThABc-Z6wCwTOC+jKDCq=Jk8Pfid61xyQ@mail.gmail.com>
+ <CAPNVh5dsN0LPHg6TJ_MO2XKtpTEe0n4Y6+HjwERJPSrb2J0cbg@mail.gmail.com>
+ <3591AC6D-45D2-476A-80B1-46BFA1742602@oracle.com> <CAPNVh5fMUQCa37iprcAykgkHzY5Rj8DSiwtZBU6FbnzjOv8ciw@mail.gmail.com>
+ <CAG48ez1sPjPYePmXTgtFbaj6_0yY0Z_bGw+apwO_zTV-qwftSA@mail.gmail.com>
+ <CAPNVh5fP-QnziX7NpYqKv+0Ha8-prhvTHiCbUB0jx+_P36QUGg@mail.gmail.com> <6A88B271-EC5E-46B7-8D60-A7543635FDC5@oracle.com>
+In-Reply-To: <6A88B271-EC5E-46B7-8D60-A7543635FDC5@oracle.com>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Mon, 13 Sep 2021 11:00:06 -0700
+Message-ID: <CAPNVh5fQXB7tLi=tKyabmScZge53PwzQ3kqP2ASE+3DD+eTdGg@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH 0/3] Provide fast access to thread specific data
+To:     Prakash Sangappa <prakash.sangappa@oracle.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Paul Turner <pjt@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 11:34 AM Song Liu <songliubraving@fb.com> wrote:
->
-> Changes v6 => v7:
-> 1. Improve/fix intel_pmu_snapshot_branch_stack() logic. (Peter).
->
-> Branch stack can be very useful in understanding software events. For
-> example, when a long function, e.g. sys_perf_event_open, returns an errno,
-> it is not obvious why the function failed. Branch stack could provide very
-> helpful information in this type of scenarios.
->
-> This set adds support to read branch stack with a new BPF helper
-> bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
-> It is also possible to support the same feaure for PowerPC.
+On Mon, Sep 13, 2021 at 10:36 AM Prakash Sangappa
+<prakash.sangappa@oracle.com> wrote:
 
-Applied. Thanks
+[...]
+
+> > This sounds, again, as if the kernel should be aware of the kind of
+> > items being allocated; having a more generic mechanism of allocating
+> > pinned memory for the userspace to use at its discretion would be more
+> > generally useful, I think. But how then the kernel/system should be
+> > protected from a buggy or malicious process trying to grab too much?
+> >
+> > One option would be to have a generic in-kernel mechanism for this,
+> > but expose it to the userspace via domain-specific syscalls that do
+> > the accounting you hint at. This sounds a bit like an over-engineered
+> > solution, though=E2=80=A6
+>
+>
+> What will this pinned memory be used for in your use case,
+> can you explain?
+
+For userspace scheduling, to share thread/task state information
+between the kernel and the userspace. This memory will be allocated
+per task/thread; both the kernel and the userspace will write to the
+shared memory, and these reads/writes will happen not only in the
+memory regions belonging to the "current" task/thread, but also to
+remote tasks/threads.
+
+Somewhat detailed doc/rst is here:
+https://lore.kernel.org/lkml/20210908184905.163787-5-posk@google.com/
