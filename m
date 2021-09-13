@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB4E40913E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46F8408EB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244285AbhIMOAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:00:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        id S241682AbhIMNgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244467AbhIMN5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:57:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 108C661A03;
-        Mon, 13 Sep 2021 13:36:27 +0000 (UTC)
+        id S242809AbhIMNaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:30:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 896B561350;
+        Mon, 13 Sep 2021 13:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540188;
-        bh=1VXBVvNetuXlJk82OA7vs8pw7noTjRKAtVboEjdwNn0=;
+        s=korg; t=1631539487;
+        bh=j8yzQaZ7jqYtVHIcY+Z8RyZrLQRxc7MPDvul1l9dzMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Au8i8fhRcQYu7cKgE7a/Xe2Bwh2FrgeCZT+bWbUsppGHB60tEw5T2aFB2J3Y4Bdt5
-         GpQ0HPy2rdtF7l0/gGCgWM25DmqsQ/yejzL88rnMPDoIv/oEPmibfTjOuaOMJ9jLpY
-         OIt2FlYJfi890r26ZziZ2InIRc2kgNe+JO40nagA=
+        b=PIhC+AzcKo6iAiNHDmEuCzDkOUDgEsCtgeFTmjrDJ93VNdJBj2bMmFU8r1x0IOEKv
+         4KhZc0nK0UMb8jYadSAZO6KazWMwwNHLkPgbGKVk3kfHbn1CknU1SzhwOx5jCcMnh0
+         ROrwipdtiwBfHaa7xZxVZSiw9X4P/owtrpCKgSww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
+        Yanfei Xu <yanfei.xu@windriver.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 087/300] soc: rockchip: ROCKCHIP_GRF should not default to y, unconditionally
-Date:   Mon, 13 Sep 2021 15:12:28 +0200
-Message-Id: <20210913131112.326946812@linuxfoundation.org>
+Subject: [PATCH 5.10 044/236] rcu: Fix to include first blocked task in stall warning
+Date:   Mon, 13 Sep 2021 15:12:29 +0200
+Message-Id: <20210913131101.852817750@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-[ Upstream commit 2a1c55d4762dd34a8b0f2e36fb01b7b16b60735b ]
+[ Upstream commit e6a901a44f76878ed1653626c9ff4cfc5a3f58f8 ]
 
-Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
-To fix this, restrict the automatic enabling of ROCKCHIP_GRF to
-ARCH_ROCKCHIP, and ask the user in case of compile-testing.
+The for loop in rcu_print_task_stall() always omits ts[0], which points
+to the first task blocking the stalled grace period.  This in turn fails
+to count this first task, which means that ndetected will be equal to
+zero when all CPUs have passed through their quiescent states and only
+one task is blocking the stalled grace period.  This zero value for
+ndetected will in turn result in an incorrect "All QSes seen" message:
 
-Fixes: 4c58063d4258f6be ("soc: rockchip: add driver handling grf setup")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20210208143855.418374-1-geert+renesas@glider.be
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu:    Tasks blocked on level-1 rcu_node (CPUs 12-23):
+        (detected by 15, t=6504 jiffies, g=164777, q=9011209)
+rcu: All QSes seen, last rcu_preempt kthread activity 1 (4295252379-4295252378), jiffies_till_next_fqs=1, root ->qsmask 0x2
+BUG: sleeping function called from invalid context at include/linux/uaccess.h:156
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 70613, name: msgstress04
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<ffff8000104031a4>] create_object.isra.0+0x204/0x4b0
+CPU: 15 PID: 70613 Comm: msgstress04 Kdump: loaded Not tainted
+5.12.2-yoctodev-standard #1
+Hardware name: Marvell OcteonTX CN96XX board (DT)
+Call trace:
+ dump_backtrace+0x0/0x2cc
+ show_stack+0x24/0x30
+ dump_stack+0x110/0x188
+ ___might_sleep+0x214/0x2d0
+ __might_sleep+0x7c/0xe0
+
+This commit therefore fixes the loop to include ts[0].
+
+Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
+Tested-by: Qais Yousef <qais.yousef@arm.com>
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/rockchip/Kconfig | 4 ++--
+ kernel/rcu/tree_stall.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/rockchip/Kconfig b/drivers/soc/rockchip/Kconfig
-index 2c13bf4dd5db..25eb2c1e31bb 100644
---- a/drivers/soc/rockchip/Kconfig
-+++ b/drivers/soc/rockchip/Kconfig
-@@ -6,8 +6,8 @@ if ARCH_ROCKCHIP || COMPILE_TEST
- #
- 
- config ROCKCHIP_GRF
--	bool
--	default y
-+	bool "Rockchip General Register Files support" if COMPILE_TEST
-+	default y if ARCH_ROCKCHIP
- 	help
- 	  The General Register Files are a central component providing
- 	  special additional settings registers for a lot of soc-components.
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 0435e5e716a8..cdfaa44ffd70 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -275,8 +275,8 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+ 			break;
+ 	}
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+-	for (i--; i; i--) {
+-		t = ts[i];
++	while (i) {
++		t = ts[--i];
+ 		if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
+ 			pr_cont(" P%d", t->pid);
+ 		else
 -- 
 2.30.2
 
