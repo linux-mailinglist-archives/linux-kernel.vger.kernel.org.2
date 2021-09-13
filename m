@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5824091BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737B940945F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243258AbhIMOF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:05:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50992 "EHLO mail.kernel.org"
+        id S1344435AbhIMObA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245612AbhIMOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:01:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7269761A0C;
-        Mon, 13 Sep 2021 13:38:08 +0000 (UTC)
+        id S1345668AbhIMO0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:26:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A13B6615E0;
+        Mon, 13 Sep 2021 13:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540288;
-        bh=lVDVoa1sP9R2MLoIob+fd5qtkGB87avFrZ2575JGRtQ=;
+        s=korg; t=1631540956;
+        bh=RnTGpitOVSK49PGxxzBG9ysRsU0zQvCJoT8zuvJi518=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D3eGh7BnCFctQ3Xmt913TXl33rsWjPmeVGuzAcurFxcvcmiZ2Uk0sN0NgUoo16wJo
-         Nlkg4+PW9JlUdL7z9R7Hy/bQVINlMJ0C3986zLJ9oFD+/lPrQdVPPYsZzYTXsjOESi
-         yqVn05S2Z3B2wlmld0rZAS5kn+cuWY/eUo8FYgak=
+        b=AesD8LO52uH1np/1l6deALA6zI8UjG4d2wMrcCL7amh1QYM/0SHHOtlaa6OnX/65p
+         nyTBvmofVV7f6HOKIQHP4GoMDAgIhrNGkU4Vj2X1VZaj1H/FAJ1l+YzO1x2HagVEgD
+         wzjFivlk7ccSK1bvH3/1qrLUhVBXh3F8mkLcWL0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Haiyue Wang <haiyue.wang@intel.com>,
+        Catherine Sullivan <csully@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 089/300] drm/of: free the right object
+Subject: [PATCH 5.14 096/334] gve: fix the wrong AdminQ buffer overflow check
 Date:   Mon, 13 Sep 2021 15:12:30 +0200
-Message-Id: <20210913131112.388603657@linuxfoundation.org>
+Message-Id: <20210913131116.622442421@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julia Lawall <Julia.Lawall@inria.fr>
+From: Haiyue Wang <haiyue.wang@intel.com>
 
-[ Upstream commit b557a5f8da5798d27370ed6b73e673aae33efd55 ]
+[ Upstream commit 63a9192b8fa1ea55efeba1f18fad52bb24d9bf12 ]
 
-There is no need to free a NULL value.  Instead, free the object
-that is leaking due to the iterator.
+The 'tail' pointer is also free-running count, so it needs to be masked
+as 'adminq_prod_cnt' does, to become an index value of AdminQ buffer.
 
-The semantic patch that finds this problem is as follows:
-
-// <smpl>
-@@
-expression x,e;
-identifier f;
-@@
- x = f(...);
- if (x == NULL) {
-	... when any
-	    when != x = e
-*	of_node_put(x);
-	...
- }
-// </smpl>
-
-Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210709200717.3676376-1-Julia.Lawall@inria.fr
+Fixes: 5cdad90de62c ("gve: Batch AQ commands for creating and destroying queues.")
+Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
+Reviewed-by: Catherine Sullivan <csully@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_of.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/google/gve/gve_adminq.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-index ca04c34e8251..197c57477344 100644
---- a/drivers/gpu/drm/drm_of.c
-+++ b/drivers/gpu/drm/drm_of.c
-@@ -315,7 +315,7 @@ static int drm_of_lvds_get_remote_pixels_type(
+diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
+index 5bb56b454541..f089d33dd48e 100644
+--- a/drivers/net/ethernet/google/gve/gve_adminq.c
++++ b/drivers/net/ethernet/google/gve/gve_adminq.c
+@@ -322,7 +322,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
+ 	tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
  
- 		remote_port = of_graph_get_remote_port(endpoint);
- 		if (!remote_port) {
--			of_node_put(remote_port);
-+			of_node_put(endpoint);
- 			return -EPIPE;
- 		}
+ 	// Check if next command will overflow the buffer.
+-	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
++	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
++	    (tail & priv->adminq_mask)) {
+ 		int err;
  
+ 		// Flush existing commands to make room.
+@@ -332,7 +333,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
+ 
+ 		// Retry.
+ 		tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
+-		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
++		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
++		    (tail & priv->adminq_mask)) {
+ 			// This should never happen. We just flushed the
+ 			// command queue so there should be enough space.
+ 			return -ENOMEM;
 -- 
 2.30.2
 
