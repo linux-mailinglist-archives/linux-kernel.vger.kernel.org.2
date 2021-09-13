@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16F8408EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF33409181
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242420AbhIMNgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52402 "EHLO mail.kernel.org"
+        id S245682AbhIMOBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:01:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240922AbhIMNbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:31:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA3906136F;
-        Mon, 13 Sep 2021 13:25:15 +0000 (UTC)
+        id S243252AbhIMN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:58:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9822603E7;
+        Mon, 13 Sep 2021 13:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539516;
-        bh=qSv9h2MhXk1LFCZwhzcsxLDMvn0o5+EPD4eg6bpwxHE=;
+        s=korg; t=1631540211;
+        bh=UrStQuAPaM2Cr+gc5mXEncvTddHEC76z+RhnOH6qYz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uyDr9p10v6ty8eaofzpbb0ieyD0hXyJd9FLhPZ83WtpJQTInakWY4UUe7TOxDg3Ie
-         /fmQu6fJXCxGUe8hlJAk6HkVe5INx3DL12O+jBA+vcZnCHW1R3YUyVdHcYYJFfnEgD
-         MqgISCIhNzamLZsU/VTi1+tRo5mhtLWEf6BpxWOA=
+        b=hZuOe5nd1fX76cm71rI2LIWoxN/PkY4FhhUh74d0E58B9mzST7wH1EVZ6vYCsXV2y
+         dJhXDmNadrpn7zidhf/3HzDCySIWBxzUm7FuuiGk9iWvhrUHW7lKlfe+TPS8SVASGM
+         jxW5fXlPf9//3zYyWorekfuvLgcgdsUSN6LwUf5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phong Hoang <phong.hoang.wz@renesas.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 054/236] clocksource/drivers/sh_cmt: Fix wrong setting if dont request IRQ for clock source channel
-Date:   Mon, 13 Sep 2021 15:12:39 +0200
-Message-Id: <20210913131102.189824455@linuxfoundation.org>
+Subject: [PATCH 5.13 099/300] soc: qcom: rpmhpd: Use corner in power_off
+Date:   Mon, 13 Sep 2021 15:12:40 +0200
+Message-Id: <20210913131112.727882463@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,96 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phong Hoang <phong.hoang.wz@renesas.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit be83c3b6e7b8ff22f72827a613bf6f3aa5afadbb ]
+[ Upstream commit d43b3a989bc8c06fd4bbb69a7500d180db2d68e8 ]
 
-If CMT instance has at least two channels, one channel will be used
-as a clock source and another one used as a clock event device.
-In that case, IRQ is not requested for clock source channel so
-sh_cmt_clock_event_program_verify() might work incorrectly.
-Besides, when a channel is only used for clock source, don't need to
-re-set the next match_value since it should be maximum timeout as
-it still is.
+rpmhpd_aggregate_corner() takes a corner as parameter, but in
+rpmhpd_power_off() the code requests the level of the first corner
+instead.
 
-On the other hand, due to no IRQ, total_cycles is not counted up
-when reaches compare match time (timer counter resets to zero),
-so sh_cmt_clocksource_read() returns unexpected value.
-Therefore, use 64-bit clocksoure's mask for 32-bit or 16-bit variants
-will also lead to wrong delta calculation. Hence, this mask should
-correspond to timer counter width, and above function just returns
-the raw value of timer counter register.
+In all (known) current cases the first corner has level 0, so this
+change should be a nop, but in case that there's a power domain with a
+non-zero lowest level this makes sure that rpmhpd_power_off() actually
+requests the lowest level - which is the closest to "power off" we can
+get.
 
-Fixes: bfa76bb12f23 ("clocksource: sh_cmt: Request IRQ for clock event device only")
-Fixes: 37e7742c55ba ("clocksource/drivers/sh_cmt: Fix clocksource width for 32-bit machines")
-Signed-off-by: Phong Hoang <phong.hoang.wz@renesas.com>
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210422123443.73334-1-niklas.soderlund+renesas@ragnatech.se
+While touching the code, also skip the unnecessary zero-initialization
+of "ret".
+
+Fixes: 279b7e8a62cc ("soc: qcom: rpmhpd: Add RPMh power domain driver")
+Reviewed-by: Rajendra Nayak <rnayak@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+Tested-by: Sibi Sankar <sibis@codeaurora.org>
+Link: https://lore.kernel.org/r/20210703005416.2668319-2-bjorn.andersson@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/sh_cmt.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/soc/qcom/rpmhpd.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-index 760777458a90..2acfcc966bb5 100644
---- a/drivers/clocksource/sh_cmt.c
-+++ b/drivers/clocksource/sh_cmt.c
-@@ -572,7 +572,8 @@ static int sh_cmt_start(struct sh_cmt_channel *ch, unsigned long flag)
- 	ch->flags |= flag;
- 
- 	/* setup timeout if no clockevent */
--	if ((flag == FLAG_CLOCKSOURCE) && (!(ch->flags & FLAG_CLOCKEVENT)))
-+	if (ch->cmt->num_channels == 1 &&
-+	    flag == FLAG_CLOCKSOURCE && (!(ch->flags & FLAG_CLOCKEVENT)))
- 		__sh_cmt_set_next(ch, ch->max_match_value);
-  out:
- 	raw_spin_unlock_irqrestore(&ch->lock, flags);
-@@ -608,20 +609,25 @@ static struct sh_cmt_channel *cs_to_sh_cmt(struct clocksource *cs)
- static u64 sh_cmt_clocksource_read(struct clocksource *cs)
+diff --git a/drivers/soc/qcom/rpmhpd.c b/drivers/soc/qcom/rpmhpd.c
+index bb21c4f1c0c4..90d2e5817371 100644
+--- a/drivers/soc/qcom/rpmhpd.c
++++ b/drivers/soc/qcom/rpmhpd.c
+@@ -382,12 +382,11 @@ static int rpmhpd_power_on(struct generic_pm_domain *domain)
+ static int rpmhpd_power_off(struct generic_pm_domain *domain)
  {
- 	struct sh_cmt_channel *ch = cs_to_sh_cmt(cs);
--	unsigned long flags;
- 	u32 has_wrapped;
--	u64 value;
--	u32 raw;
+ 	struct rpmhpd *pd = domain_to_rpmhpd(domain);
+-	int ret = 0;
++	int ret;
  
--	raw_spin_lock_irqsave(&ch->lock, flags);
--	value = ch->total_cycles;
--	raw = sh_cmt_get_counter(ch, &has_wrapped);
-+	if (ch->cmt->num_channels == 1) {
-+		unsigned long flags;
-+		u64 value;
-+		u32 raw;
+ 	mutex_lock(&rpmhpd_lock);
  
--	if (unlikely(has_wrapped))
--		raw += ch->match_value + 1;
--	raw_spin_unlock_irqrestore(&ch->lock, flags);
-+		raw_spin_lock_irqsave(&ch->lock, flags);
-+		value = ch->total_cycles;
-+		raw = sh_cmt_get_counter(ch, &has_wrapped);
-+
-+		if (unlikely(has_wrapped))
-+			raw += ch->match_value + 1;
-+		raw_spin_unlock_irqrestore(&ch->lock, flags);
-+
-+		return value + raw;
-+	}
+-	ret = rpmhpd_aggregate_corner(pd, pd->level[0]);
+-
++	ret = rpmhpd_aggregate_corner(pd, 0);
+ 	if (!ret)
+ 		pd->enabled = false;
  
--	return value + raw;
-+	return sh_cmt_get_counter(ch, &has_wrapped);
- }
- 
- static int sh_cmt_clocksource_enable(struct clocksource *cs)
-@@ -684,7 +690,7 @@ static int sh_cmt_register_clocksource(struct sh_cmt_channel *ch,
- 	cs->disable = sh_cmt_clocksource_disable;
- 	cs->suspend = sh_cmt_clocksource_suspend;
- 	cs->resume = sh_cmt_clocksource_resume;
--	cs->mask = CLOCKSOURCE_MASK(sizeof(u64) * 8);
-+	cs->mask = CLOCKSOURCE_MASK(ch->cmt->info->width);
- 	cs->flags = CLOCK_SOURCE_IS_CONTINUOUS;
- 
- 	dev_info(&ch->cmt->pdev->dev, "ch%u: used as clock source\n",
 -- 
 2.30.2
 
