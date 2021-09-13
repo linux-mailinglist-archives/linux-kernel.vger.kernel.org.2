@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE5D409030
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D6F408DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbhIMNum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:50:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49324 "EHLO mail.kernel.org"
+        id S241674AbhIMN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:28:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243726AbhIMNqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:46:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BFAB61130;
-        Mon, 13 Sep 2021 13:32:02 +0000 (UTC)
+        id S241873AbhIMN0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:26:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDD886124A;
+        Mon, 13 Sep 2021 13:22:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539923;
-        bh=1Tc804IjHjM3IJCMC6Sly5GFibfF3XT6xZsmlbERyGA=;
+        s=korg; t=1631539358;
+        bh=iunw2Io+LwlzTrWZu9n0ONV4qgrSwhf3yZfN3wpLAek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tLkAkl05cR1mRZlzcDr2vnOWNODwhpR/s8+UkQXLsoAoLrevPCqO7UzKQP2oYqEVa
-         4SwKzl2I5hAMx6CC+V7ePGPoajF00KgzFQgAXNx1RYbLlPaxXVuha9qjjtf0aG2mc2
-         Yygidk65pfenx2ywX4ePgKtH+VZaonELm4HjPQGk=
+        b=ARiSKB7NqPiwmxVpE6rmrdAvpNiQ6kk1P321bjvNSP7UTaac3a31QwX8AccjAUx2/
+         twsTISseFLFrE3mRDRcKcaXJ1z+67fIgYFG36pSOSO5PHKHgj/RhnSadG6L5u4lfqm
+         lzRo7UrMvrJW2DfopPgPrrHrPLIhshunt/fSCs7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.10 216/236] iwlwifi Add support for ax201 in Samsung Galaxy Book Flex2 Alpha
+        stable@vger.kernel.org, Austin Kim <austin.kim@lge.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.4 140/144] IMA: remove -Wmissing-prototypes warning
 Date:   Mon, 13 Sep 2021 15:15:21 +0200
-Message-Id: <20210913131107.712241840@linuxfoundation.org>
+Message-Id: <20210913131052.613345488@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Justin M. Forbes <jforbes@fedoraproject.org>
+From: Austin Kim <austin.kim@lge.com>
 
-commit 2f32c147a3816d789722c0bd242a9431332ec3ed upstream.
+commit a32ad90426a9c8eb3915eed26e08ce133bd9e0da upstream.
 
-The Samsung Galaxy Book Flex2 Alpha uses an ax201 with the ID a0f0/6074.
-This works fine with the existing driver once it knows to claim it.
-Simple patch to add the device.
+With W=1 build, the compiler throws warning message as below:
 
-Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210702223155.1981510-1-jforbes@fedoraproject.org
+   security/integrity/ima/ima_mok.c:24:12: warning:
+   no previous prototype for ‘ima_mok_init’ [-Wmissing-prototypes]
+       __init int ima_mok_init(void)
+
+Silence the warning by adding static keyword to ima_mok_init().
+
+Signed-off-by: Austin Kim <austin.kim@lge.com>
+Fixes: 41c89b64d718 ("IMA: create machine owner and blacklist keyrings")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c |    1 +
- 1 file changed, 1 insertion(+)
+ security/integrity/ima/ima_mok.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -646,6 +646,7 @@ static const struct iwl_dev_info iwl_dev
- 	IWL_DEV_INFO(0xA0F0, 0x1652, killer1650i_2ax_cfg_qu_b0_hr_b0, NULL),
- 	IWL_DEV_INFO(0xA0F0, 0x2074, iwl_ax201_cfg_qu_hr, NULL),
- 	IWL_DEV_INFO(0xA0F0, 0x4070, iwl_ax201_cfg_qu_hr, NULL),
-+	IWL_DEV_INFO(0xA0F0, 0x6074, iwl_ax201_cfg_qu_hr, NULL),
- 	IWL_DEV_INFO(0x02F0, 0x0070, iwl_ax201_cfg_quz_hr, NULL),
- 	IWL_DEV_INFO(0x02F0, 0x0074, iwl_ax201_cfg_quz_hr, NULL),
- 	IWL_DEV_INFO(0x02F0, 0x6074, iwl_ax201_cfg_quz_hr, NULL),
+--- a/security/integrity/ima/ima_mok.c
++++ b/security/integrity/ima/ima_mok.c
+@@ -21,7 +21,7 @@ struct key *ima_blacklist_keyring;
+ /*
+  * Allocate the IMA blacklist keyring
+  */
+-__init int ima_mok_init(void)
++static __init int ima_mok_init(void)
+ {
+ 	struct key_restriction *restriction;
+ 
 
 
