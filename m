@@ -2,105 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3955408A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D745408A57
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239723AbhIMLhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239244AbhIMLhi (ORCPT
+        id S239710AbhIMLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:37:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39983 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239699AbhIMLhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:37:38 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B3DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:36:22 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so2560485wrn.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=bSTKtlz5vNtVKimr2bFb/fQDhWY54+Y9NMMcBs2WGw4=;
-        b=n6H74Olasmc94WeVrsI2xPj0QmitddSGAzXlHY1m6h98KxPqhp/OTPLd70kpNYOTn1
-         EoLNEYyyYgzBUskSPsTKBIfsDUX0hynxclQNYEdF0kxmWeTqnRyAejt1oEXIcgWc7BFM
-         mOabxo8uY6F24qND4gxaJpafo5+rweOi8LCIYV0TtIkS6kvXaNIv91/Gjz0amReW2alA
-         PrmETMbMR25SboppWmKBj/JaLcIse2uBiK5G+d7n19QhRvd7SYagRTUii8y9/PDRJCrU
-         PltrzXQqz3uzvn42VFAyUjVoNJfo6rj/AVrq3PoeMO/BfsiCKTTLcTjGeHrLDENJGXzr
-         6Wdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=bSTKtlz5vNtVKimr2bFb/fQDhWY54+Y9NMMcBs2WGw4=;
-        b=vTexEiyUBgjFeCv/FIzt8Oi9cvj684Bji1TEHsbFJsRFtfzkgFCoSvxK8VGa9W8ujb
-         4SCyYzVNhEY0IZ5+tAg2kxWKAut9XMtvMPFCsjDqIWMdKP2LnpEp5l0CFyOc7J45LN70
-         lnXzncFL8VJJRoYkEAyv4+tZCcOnCcuBauZk34PA29BKgPvayEzay8q6EYxMicBSyoA1
-         Z1gX1gFSBEHfArnqJuqJA/M59Dzq6Gv1YFjAJqphyJoysjawTB/njt8waNzY605mtHbk
-         dwlhNvO3iq8sI6yiGDqYmSFDUKjp7/6UpljvfsZYC7v2JbXyV3wiZa2GfOA4FOIg4TkM
-         F7hA==
-X-Gm-Message-State: AOAM5325VnE5ZZ/cks0plABBiN/eIi8qEb7rpltgNJz2B/vZ0GcdnqZA
-        XWzUxEDKxYtPifeYSPxg+v9MwJzGSw==
-X-Google-Smtp-Source: ABdhPJwQ5Je8nwY9tzaKcsKe5dMu6MzJFIb8KutO7phtgxvT7cF3sx8B6Pv3NcXy6K3w8ofGZGPAn/j1Sg==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:1f19:d46:38c8:7e48])
- (user=elver job=sendgmr) by 2002:a05:600c:3203:: with SMTP id
- r3mr10555555wmp.175.1631532981131; Mon, 13 Sep 2021 04:36:21 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 13:35:43 +0200
-Message-Id: <20210913113542.2658064-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] mm: fix data race in PagePoisoned()
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, Will Deacon <will@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel test robot <oliver.sang@intel.com>
+        Mon, 13 Sep 2021 07:37:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631532967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6nlyuLZJuxFq0iuFyqPOmjSTCLcN+DKNgWmeH2OgRhI=;
+        b=LUnKL3Zod6y5niy09VJXN7J3te5onevljoOleSAcI5vN7k+5v0ZlF+esANkaGaUSwA/WNM
+        rhB3ar4hQeBJSZhVqR7D0IqpvWGqNQ1n5OI/LbPw1Egkmmcgg4dJc3E/NSQaz7QS1ny9KV
+        182kcb191X4gksPf7BSWxiV1+9zZ4AE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-hc0aqtdAPpqMXjF9tJwlDw-1; Mon, 13 Sep 2021 07:36:06 -0400
+X-MC-Unique: hc0aqtdAPpqMXjF9tJwlDw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2EB38145E5;
+        Mon, 13 Sep 2021 11:36:04 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2143C6D987;
+        Mon, 13 Sep 2021 11:36:02 +0000 (UTC)
+Message-ID: <498881b01b4a99787abdc4ec3baf59081491f401.camel@redhat.com>
+Subject: Re: [PATCH 3/4] KVM: nVMX: Track whether changes in L0 require MSR
+ bitmap for L2 to be rebuilt
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Sep 2021 14:36:01 +0300
+In-Reply-To: <87ilz52c9e.fsf@vitty.brq.redhat.com>
+References: <20210910160633.451250-1-vkuznets@redhat.com>
+         <20210910160633.451250-4-vkuznets@redhat.com>
+         <37efb41fda41317bf04c0cb805792af261894a1a.camel@redhat.com>
+         <87ilz52c9e.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PagePoisoned() accesses page->flags which can be updated concurrently:
+On Mon, 2021-09-13 at 08:57 +0200, Vitaly Kuznetsov wrote:
+> Maxim Levitsky <mlevitsk@redhat.com> writes:
+> 
+> > On Fri, 2021-09-10 at 18:06 +0200, Vitaly Kuznetsov wrote:
+> > > Introduce a flag to keep track of whether MSR bitmap for L2 needs to be
+> > > rebuilt due to changes in MSR bitmap for L1 or switching to a different
+> > > L2. This information will be used for Enlightened MSR Bitmap feature for
+> > > Hyper-V guests.
+> > > 
+> > > Note, setting msr_bitmap_changed to 'true' from set_current_vmptr() is
+> > > not really needed for Enlightened MSR Bitmap as the feature can only
+> > > be used in conjunction with Enlightened VMCS but let's keep tracking
+> > > information complete, it's cheap and in the future similar PV feature can
+> > > easily be implemented for KVM on KVM too.
+> > > 
+> > > No functional change intended.
+> > > 
+> > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > > ---
+> > >  arch/x86/kvm/vmx/nested.c | 9 ++++++++-
+> > >  arch/x86/kvm/vmx/vmx.c    | 2 ++
+> > >  arch/x86/kvm/vmx/vmx.h    | 6 ++++++
+> > >  3 files changed, 16 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > > index ccb03d69546c..42cd95611892 100644
+> > > --- a/arch/x86/kvm/vmx/nested.c
+> > > +++ b/arch/x86/kvm/vmx/nested.c
+> > > @@ -2053,10 +2053,13 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+> > >  	 * Clean fields data can't be used on VMLAUNCH and when we switch
+> > >  	 * between different L2 guests as KVM keeps a single VMCS12 per L1.
+> > >  	 */
+> > > -	if (from_launch || evmcs_gpa_changed)
+> > > +	if (from_launch || evmcs_gpa_changed) {
+> > >  		vmx->nested.hv_evmcs->hv_clean_fields &=
+> > >  			~HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
+> > >  
+> > > +		vmx->nested.msr_bitmap_changed = true;
+> > > +	}
+> > > +
+> > >  	return EVMPTRLD_SUCCEEDED;
+> > >  }
+> > >  
+> > > @@ -3240,6 +3243,8 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+> > >  	else
+> > >  		exec_controls_clearbit(vmx, CPU_BASED_USE_MSR_BITMAPS);
+> > >  
+> > > +	vmx->nested.msr_bitmap_changed = false;
+> > 
+> > Very minor nitpick: Maybe I would put this into nested_vmx_prepare_msr_bitmap,
+> > a bit closer to the action, but this is fine like this as well.
+> > 
+> 
+> I don't have a strong preference here, can move it to nested_vmx_prepare_msr_bitmap().
+> 
+> > > +
+> > >  	return true;
+> > >  }
+> > >  
+> > > @@ -5273,6 +5278,7 @@ static void set_current_vmptr(struct vcpu_vmx *vmx, gpa_t vmptr)
+> > >  		vmx->nested.need_vmcs12_to_shadow_sync = true;
+> > >  	}
+> > >  	vmx->nested.dirty_vmcs12 = true;
+> > > +	vmx->nested.msr_bitmap_changed = true;
+> > >  }
+> > >  
+> > >  /* Emulate the VMPTRLD instruction */
+> > > @@ -6393,6 +6399,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
+> > >  		goto error_guest_mode;
+> > >  
+> > >  	vmx->nested.dirty_vmcs12 = true;
+> > > +	vmx->nested.msr_bitmap_changed = true;
+> > 
+> > Is this needed? Setting the nested state should eventually trigger call to
+> > nested_vmx_handle_enlightened_vmptrld.
+> > 
+> >  
+> 
+> Strictly speaking - no (meaning that nothing is going to change if we
+> just drop this hunk). My intention was to keep tracking information
+> complete: after vmx_set_nested_state() we certainly need to re-build MSR
+> Bitmap 02 and that's what 'msr_bitmap_changed' tracks. We can replace
+> this with a comment if needed (but I'd slightly prefer to keep it -
+> unless there's a reason not to).
 
-  | BUG: KCSAN: data-race in next_uptodate_page / unlock_page
-  |
-  | write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
-  |  instrument_atomic_write           include/linux/instrumented.h:87 [inline]
-  |  clear_bit_unlock_is_negative_byte include/asm-generic/bitops/instrumented-lock.h:74 [inline]
-  |  unlock_page+0x102/0x1b0           mm/filemap.c:1465
-  |  filemap_map_pages+0x6c6/0x890     mm/filemap.c:3057
-  |  ...
-  | read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
-  |  PagePoisoned                   include/linux/page-flags.h:204 [inline]
-  |  PageReadahead                  include/linux/page-flags.h:382 [inline]
-  |  next_uptodate_page+0x456/0x830 mm/filemap.c:2975
-  |  ...
-  | CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+Makes sense. let it be like that.
 
-To avoid the compiler tearing or otherwise optimizing the access, use
-READ_ONCE() to access flags.
+Best regards,
+	Maxim Levitsky
 
-Link: https://lore.kernel.org/all/20210826144157.GA26950@xsang-OptiPlex-9020/
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- include/linux/page-flags.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index a558d67ee86f..628ab237665e 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -206,7 +206,7 @@ static __always_inline int PageCompound(struct page *page)
- #define	PAGE_POISON_PATTERN	-1l
- static inline int PagePoisoned(const struct page *page)
- {
--	return page->flags == PAGE_POISON_PATTERN;
-+	return READ_ONCE(page->flags) == PAGE_POISON_PATTERN;
- }
- 
- #ifdef CONFIG_DEBUG_VM
--- 
-2.33.0.309.g3052b89438-goog
+> 
+> > >  	ret = nested_vmx_enter_non_root_mode(vcpu, false);
+> > >  	if (ret)
+> > >  		goto error_guest_mode;
+> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > index ad33032e8588..2dbfb5d838db 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > @@ -3734,6 +3734,8 @@ static void vmx_msr_bitmap_l01_changed(struct vcpu_vmx *vmx)
+> > >  	 */
+> > >  	if (static_branch_unlikely(&enable_evmcs))
+> > >  		evmcs_touch_msr_bitmap();
+> > > +
+> > > +	vmx->nested.msr_bitmap_changed = true;
+> > >  }
+> > >  
+> > >  void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+> > > diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> > > index 4858c5fd95f2..b6596fc2943a 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.h
+> > > +++ b/arch/x86/kvm/vmx/vmx.h
+> > > @@ -148,6 +148,12 @@ struct nested_vmx {
+> > >  	bool need_vmcs12_to_shadow_sync;
+> > >  	bool dirty_vmcs12;
+> > >  
+> > > +	/*
+> > > +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
+> > > +	 * changes in MSR bitmap for L1 or switching to a different L2.
+> > > +	 */
+> > > +	bool msr_bitmap_changed;
+> > > +
+> > >  	/*
+> > >  	 * Indicates lazily loaded guest state has not yet been decached from
+> > >  	 * vmcs02.
+> > 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+
 
