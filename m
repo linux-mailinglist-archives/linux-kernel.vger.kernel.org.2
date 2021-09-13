@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C6B4091E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CF14094AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344097AbhIMOEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50930 "EHLO mail.kernel.org"
+        id S1344311AbhIMOdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:33:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343945AbhIMOBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:01:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7ED161A08;
-        Mon, 13 Sep 2021 13:37:58 +0000 (UTC)
+        id S1346827AbhIMO3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:29:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9FFF61B65;
+        Mon, 13 Sep 2021 13:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540279;
-        bh=PAW8F3iOHHpD8GOVpyUtJz0ATnzDkwQcrJyWQvFGFL8=;
+        s=korg; t=1631541034;
+        bh=iV1IrwF9bBVu1a55ckb6Dx8CMb9V/aM05Kr0IEjzFlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uNwnW6E5a88APJ7fZlVnqMiP9+cMkAQOzHQbqMDh/MgDm2lOz6Fb+k0k0C0FhTGH6
-         VTqhiS0rZlyaZ3HaVXmY7Um9YxysDrtvWB9lXms23AHunq1DSl7JNzrNIiBSoDOwhb
-         taPsIg4mMj6Ki8h7m2RyNDSYVAcxpJv69BEzB71o=
+        b=GCjtF9RRqlf88xR1CHQjp1ZkOi8sBy7WnpMgEbey+XMpWEy6SI1W3KXgrgS+HBndb
+         mwon3txA6A10vLArihixu8/wpv2ACshLdZxsQ8e7w2CNYazbodz5qCBBbUFA+m39ct
+         KJttGy65I0+xgmlZSzb/2XZrRli1ehcMzu9FlGvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 095/300] ARM: dts: aspeed-g6: Fix HVI3C function-group in pinctrl dtsi
+        stable@vger.kernel.org, Judy Hsiao <judyhsiao@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 102/334] arm64: dts: qcom: sc7180: Set adau wakeup delay to 80 ms
 Date:   Mon, 13 Sep 2021 15:12:36 +0200
-Message-Id: <20210913131112.587633027@linuxfoundation.org>
+Message-Id: <20210913131116.816151432@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dylan Hung <dylan_hung@aspeedtech.com>
+From: Judy Hsiao <judyhsiao@chromium.org>
 
-[ Upstream commit 8c295b7f3d01359ff4336fcb6e406e6ed37957d6 ]
+[ Upstream commit a8c7f3100e708d5f55692f0607ca80c5dcd21ce8 ]
 
-The HVI3C shall be a group of I3C function, not an independent function.
-Correct the function name from "HVI3C" to "I3C".
+Set audu wakeup delay to 80 ms for fixing pop noise during capture begin.
 
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Fixes: f510f04c8c83 ("ARM: dts: aspeed: Add AST2600 pinmux nodes")
-Link: https://lore.kernel.org/r/20201029062723.20798-1-dylan_hung@aspeedtech.com
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Fixes: ba5f9b5d7ff3 ("arm64: dts: qcom: sc7180: Add wakeup delay for adau codec")
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210708090810.174767-1-judyhsiao@chromium.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-index 7028e21bdd98..910eacc8ad3b 100644
---- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-@@ -208,12 +208,12 @@
- 	};
- 
- 	pinctrl_hvi3c3_default: hvi3c3_default {
--		function = "HVI3C3";
-+		function = "I3C3";
- 		groups = "HVI3C3";
- 	};
- 
- 	pinctrl_hvi3c4_default: hvi3c4_default {
--		function = "HVI3C4";
-+		function = "I3C4";
- 		groups = "HVI3C4";
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+index 6f9c07147551..a758e4d22612 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+@@ -23,7 +23,7 @@ ap_h1_spi: &spi0 {};
+ 	adau7002: audio-codec-1 {
+ 		compatible = "adi,adau7002";
+ 		IOVDD-supply = <&pp1800_l15a>;
+-		wakeup-delay-ms = <15>;
++		wakeup-delay-ms = <80>;
+ 		#sound-dai-cells = <0>;
  	};
  
 -- 
