@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68077408952
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A7C408958
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239073AbhIMKtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        id S239145AbhIMKuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:50:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234958AbhIMKtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:49:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED28760F6F;
-        Mon, 13 Sep 2021 10:47:51 +0000 (UTC)
+        id S231684AbhIMKuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:50:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21E2160F6F;
+        Mon, 13 Sep 2021 10:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631530072;
-        bh=8kcuxVPalHGvYq4SPR3oLOhdx4N7EXhYTPJfVE9hDXM=;
+        s=korg; t=1631530130;
+        bh=Wxaw+KP0V8UKDq+RA96HBy/jG1au4CAvk8EF76HP/lQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b4jNPDy/TrsTn8SwUMIut9LkHUNarVZ0zF5ZKHBcCjs2+3Tttb1QrUZEBzQqUU/+G
-         piqBCJLHqHa2ENEzDCjesLv7KpnoVOSoHvktOKU2bEPj0L0SFqas3usVw4l7BWy5QU
-         iTaDl4WmIT8ueON18RH+6LsUvOqSQA2ILOYP6szM=
-Date:   Mon, 13 Sep 2021 12:47:50 +0200
+        b=E7EYEyxcPig/i0OF1GT4Pfw7lNt0Z7laN1QVA40LZW+RVKTZmAYcSHWwcRFIZhU33
+         MErTftZr5ilwKbewpFnB6r0KdXLalAOK31N8HCoKg+ixXKGqJ87OU4Vjxqh1HKWLAD
+         3BLzvh5KLO7qSbwgNC/UjCm09CYqQa5r+tZ9f/yo=
+Date:   Mon, 13 Sep 2021 12:48:48 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     asml.silence@gmail.com, oswalpalash@gmail.com,
@@ -28,29 +28,29 @@ Cc:     asml.silence@gmail.com, oswalpalash@gmail.com,
         syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com,
         viro@zeniv.linux.org.uk, stable-commits@vger.kernel.org
 Subject: Re: Patch "io_uring: reexpand under-reexpanded iters" has been added
- to the 5.13-stable tree
-Message-ID: <YT8sVh7+Vr+fmVnC@kroah.com>
-References: <1631526315154131@kroah.com>
+ to the 5.14-stable tree
+Message-ID: <YT8skKSjmYJQ7VS2@kroah.com>
+References: <16315263357760@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1631526315154131@kroah.com>
+In-Reply-To: <16315263357760@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:45:15AM +0200, gregkh@linuxfoundation.org wrote:
+On Mon, Sep 13, 2021 at 11:45:35AM +0200, gregkh@linuxfoundation.org wrote:
 > 
 > This is a note to let you know that I've just added the patch titled
 > 
 >     io_uring: reexpand under-reexpanded iters
 > 
-> to the 5.13-stable tree which can be found at:
+> to the 5.14-stable tree which can be found at:
 >     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 > 
 > The filename of the patch is:
 >      io_uring-reexpand-under-reexpanded-iters.patch
-> and it can be found in the queue-5.13 subdirectory.
+> and it can be found in the queue-5.14 subdirectory.
 > 
 > If you, or anyone else, feels it should not be added to the stable tree,
 > please let <stable@vger.kernel.org> know about it.
@@ -108,7 +108,33 @@ On Mon, Sep 13, 2021 at 11:45:15AM +0200, gregkh@linuxfoundation.org wrote:
 >  fs/io_uring.c |    2 ++
 >  1 file changed, 2 insertions(+)
 > 
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -3324,6 +3324,7 @@ static int io_read(struct io_kiocb *req,
+>  		if (req->flags & REQ_F_NOWAIT)
+>  			goto done;
+>  		/* some cases will consume bytes even on error returns */
+> +		iov_iter_reexpand(iter, iter->count + iter->truncated);
+>  		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+>  		ret = 0;
+>  	} else if (ret == -EIOCBQUEUED) {
+> @@ -3463,6 +3464,7 @@ done:
+>  	} else {
+>  copy_iov:
+>  		/* some cases will consume bytes even on error returns */
+> +		iov_iter_reexpand(iter, iter->count + iter->truncated);
+>  		iov_iter_revert(iter, io_size - iov_iter_count(iter));
+>  		ret = io_setup_async_rw(req, iovec, inline_vecs, iter, false);
+>  		return ret ?: -EAGAIN;
+> 
+> 
+> Patches currently in stable-queue which might be from asml.silence@gmail.com are
+> 
+> queue-5.14/io_uring-limit-fixed-table-size-by-rlimit_nofile.patch
+> queue-5.14/io_uring-reexpand-under-reexpanded-iters.patch
+> queue-5.14/io_uring-fail-links-of-cancelled-timeouts.patch
+> queue-5.14/bio-fix-page-leak-bio_add_hw_page-failure.patch
 
-No, sorry, this breaks the build, now dropping.
+Also dropped from this queue.
 
-greg k-h
+
