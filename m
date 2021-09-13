@@ -2,68 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251C6408756
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAD740873B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238163AbhIMIr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbhIMIr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:47:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41EFC061574;
-        Mon, 13 Sep 2021 01:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qBEtqyBRKy0FvVPGp0L6p55j5QPlsxKY9JnLfBHA49E=; b=i0ArtbFcISHx/+zkmIgm9gt9eP
-        8DqMOV0idSMksIUuIZj/5KqUCMLiYoWJxKpzHTV7pK/VUBLpoZb7ahqlRERcFzwH31HDQaThxVl43
-        BZvPQRj5iBZqwL2T/X2KCzYFz0j/3GoScGq0++Eb02HmjkihQ2sBvXKJJXRioffdFXEOLam9/rU9X
-        ipcuTGkZWu9Dg+3jT6k5KgkNr4qzz9MPEjbkzDKNHvHZtDrNHhaBhta5KZXk82X8Vyy9+cmZ5g8BI
-        IEugeXG4i3WpSD+Vv0rkJlgg7wQBZIDAnAOJSN+yZ7Ch4D58iAdfkcRZbZYqDGE8EyForyC75s6mY
-        QB3m2e2A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPhXw-00DKDH-Aa; Mon, 13 Sep 2021 08:42:46 +0000
-Date:   Mon, 13 Sep 2021 09:42:36 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan H??ppner <hoeppner@linux.ibm.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
-        atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
-        oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
-        shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/9] s390/block/dasd_genhd: add error handling support
- for add_disk()
-Message-ID: <YT8O/NL2pEGUjYj9@infradead.org>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
- <20210902174105.2418771-7-mcgrof@kernel.org>
- <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
+        id S238063AbhIMIn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:43:59 -0400
+Received: from mga12.intel.com ([192.55.52.136]:26953 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237831AbhIMIn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:43:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="201118785"
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="201118785"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 01:42:40 -0700
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="551510733"
+Received: from einfeld-mobl.ger.corp.intel.com (HELO [10.252.46.222]) ([10.252.46.222])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 01:42:38 -0700
+Subject: Re: [PATCH v2] kernel/locking: Add context to ww_mutex_trylock.
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+References: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
+ <YTiM/zf8BuNw7wes@hirez.programming.kicks-ass.net>
+ <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com>
+ <YTnETRSy9H0CRdpc@hirez.programming.kicks-ass.net>
+ <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com>
+ <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Message-ID: <e8a7754e-23e7-0250-5718-101a56d008f0@linux.intel.com>
+Date:   Mon, 13 Sep 2021 10:42:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:17:48AM +0200, Jan H??ppner wrote:
-> I think, just like with some of the other changes, there is some
-> cleanup required before returning. I'll prepare a patch and
-> come back to you.
+Op 10-09-2021 om 17:02 schreef Peter Zijlstra:
+> On Thu, Sep 09, 2021 at 11:32:18AM +0200, Maarten Lankhorst wrote:
+>> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+>> index d456579d0952..791c28005eef 100644
+>> --- a/kernel/locking/mutex.c
+>> +++ b/kernel/locking/mutex.c
+>> @@ -736,6 +736,44 @@ __ww_mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
+>>  	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
+>>  }
+>>  
+>> +/**
+>> + * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
+>> + * @lock: mutex to lock
+>> + * @ctx: optional w/w acquire context
+>> + *
+>> + * Trylocks a mutex with the optional acquire context; no deadlock detection is
+>> + * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
+>> + *
+>> + * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
+>> + * specified, -EALREADY and -EDEADLK handling may happen in calls to ww_mutex_lock.
+>> + *
+>> + * A mutex acquired with this function must be released with ww_mutex_unlock.
+>> + */
+>> +int __sched
+>> +ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ctx)
+>> +{
+>> +	bool locked;
+>> +
+>> +	if (!ctx)
+>> +		return mutex_trylock(&ww->base);
+>> +
+>> +#ifdef CONFIG_DEBUG_MUTEXES
+>> +	DEBUG_LOCKS_WARN_ON(ww->base.magic != &ww->base);
+>> +#endif
+>> +
+>> +	preempt_disable();
+>> +	locked = __mutex_trylock(&ww->base);
+>> +
+>> +	if (locked) {
+>> +		ww_mutex_set_context_fastpath(ww, ctx);
+>> +		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ctx->dep_map, _RET_IP_);
+>> +	}
+>> +	preempt_enable();
+>> +
+>> +	return locked;
+>> +}
+>> +EXPORT_SYMBOL(ww_mutex_trylock);
+>> +
+>>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>>  void __sched
+>>  mutex_lock_nested(struct mutex *lock, unsigned int subclass)
+>> diff --git a/kernel/locking/ww_rt_mutex.c b/kernel/locking/ww_rt_mutex.c
+>> index 3f1fff7d2780..c4cb863edb4c 100644
+>> --- a/kernel/locking/ww_rt_mutex.c
+>> +++ b/kernel/locking/ww_rt_mutex.c
+>> @@ -50,6 +50,18 @@ __ww_rt_mutex_lock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx,
+>>  	return ret;
+>>  }
+>>  
+>> +int __sched
+>> +ww_mutex_trylock(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+>> +{
+>> +	int locked = rt_mutex_trylock(&lock->base);
+>> +
+>> +	if (locked && ctx)
+>> +		ww_mutex_set_context_fastpath(lock, ctx);
+>> +
+>> +	return locked;
+>> +}
+>> +EXPORT_SYMBOL(ww_mutex_trylock);
+>> +
+>>  int __sched
+>>  ww_mutex_lock(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+>>  {
+> That doesn't look right, how's this for you?
+>
+> ---
+> --- a/kernel/locking/mutex.c
+> +++ b/kernel/locking/mutex.c
+> @@ -94,6 +94,9 @@ static inline unsigned long __owner_flag
+>  	return owner & MUTEX_FLAGS;
+>  }
+>  
+> +/*
+> + * Returns: __mutex_owner(lock) on failure or NULL on success.
+> + */
+>  static inline struct task_struct *__mutex_trylock_common(struct mutex *lock, bool handoff)
+>  {
+>  	unsigned long owner, curr = (unsigned long)current;
+> @@ -736,6 +739,47 @@ __ww_mutex_lock(struct mutex *lock, unsi
+>  	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
+>  }
+>  
+> +/**
+> + * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
+> + * @ww: mutex to lock
+> + * @ww_ctx: optional w/w acquire context
+> + *
+> + * Trylocks a mutex with the optional acquire context; no deadlock detection is
+> + * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
+> + *
+> + * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
+> + * specified, -EALREADY handling may happen in calls to ww_mutex_trylock.
+> + *
+> + * A mutex acquired with this function must be released with ww_mutex_unlock.
+> + */
+> +int ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ww_ctx)
+> +{
+> +	if (!ww_ctx)
+> +		return mutex_trylock(&ww->base);
+> +
+> +	MUTEX_WARN_ON(ww->base.magic != &ww->base);
+> +
+> +	if (unlikely(ww_ctx == READ_ONCE(ww->ctx)))
+> +		return -EALREADY;
 
-If you are touching the dasd probe path anyway, can you look insto
-switching to use blk_mq_alloc_disk as well?  Right now dasd allocates
-the request_queue and gendisk separately in different stages of
-initialization, but unlike SCSI which needs to probe using just the
-request_queue I can't find a good reason for that.
+I'm not 100% sure this is a good idea, because it would make the trylock weird.
+For i915 I checked manually, because I didn't want to change the function signature. This is probably the other extreme.
+
+"if (ww_mutex_trylock())" would look correct, but actually be wrong and lead to double unlock without adjustments.
+Maybe we could make a ww_mutex_trylock_ctx_err, which would return -EALREADY or -EBUSY on failure, and 0 on success?
+We could keep ww_mutex_trylock without ctx, probably just #define as (!ww_mutex_trylock_ctx_err(lock, NULL))
+
+> +	/*
+> +	 * Reset the wounded flag after a kill. No other process can
+> +	 * race and wound us here, since they can't have a valid owner
+> +	 * pointer if we don't have any locks held.
+> +	 */
+> +	if (ww_ctx->acquired == 0)
+> +		ww_ctx->wounded = 0;
+
+Yeah I guess this needs fixing too. Not completely sure since trylock wouldn't do the whole
+ww dance, but since it's our first lock, probably best to do so regardless so other users don't trip over it.
+
+> +
+> +	if (__mutex_trylock(&ww->base)) {
+> +		ww_mutex_set_context_fastpath(ww, ww_ctx);
+> +		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ww_ctx->dep_map, _RET_IP_);
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(ww_mutex_trylock);
+> +
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  void __sched
+>  mutex_lock_nested(struct mutex *lock, unsigned int subclass)
+> --- a/kernel/locking/ww_rt_mutex.c
+> +++ b/kernel/locking/ww_rt_mutex.c
+> @@ -9,6 +9,34 @@
+>  #define WW_RT
+>  #include "rtmutex.c"
+>  
+> +int ww_mutex_trylock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx)
+> +{
+> +	struct rt_mutex *rtm = &lock->base;
+> +
+> +	if (!ww_ctx)
+> +		return rt_mutex_trylock(rtm);
+> +
+> +	if (unlikely(ww_ctx == READ_ONCE(lock->ctx)))
+> +		return -EALREADY;
+> +
+> +	/*
+> +	 * Reset the wounded flag after a kill. No other process can
+> +	 * race and wound us here, since they can't have a valid owner
+> +	 * pointer if we don't have any locks held.
+> +	 */
+> +	if (ww_ctx->acquired == 0)
+> +		ww_ctx->wounded = 0;
+> +
+> +	if (__rt_mutex_trylock(&rtm->rtmutex)) {
+> +		ww_mutex_set_context_fastpath(lock, ww_ctx);
+> +		mutex_acquire_nest(&rtm->dep_map, 0, 1, ww_ctx->dep_map, _RET_IP_);
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(ww_mutex_trylock);
+> +
+>  static int __sched
+>  __ww_rt_mutex_lock(struct ww_mutex *lock, struct ww_acquire_ctx *ww_ctx,
+>  		   unsigned int state, unsigned long ip)
+
+
