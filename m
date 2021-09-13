@@ -2,92 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E794083BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57BE4083BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234321AbhIMFQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 01:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhIMFQ0 (ORCPT
+        id S236987AbhIMFQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 01:16:40 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:57045 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231558AbhIMFQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 01:16:26 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B609CC061574;
-        Sun, 12 Sep 2021 22:15:11 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id h20so7846542ilj.13;
-        Sun, 12 Sep 2021 22:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Fym7Ho3/HB4lYkhNEdo9I/OHj12nal5b2UIn6CWREBk=;
-        b=qGn3WBtr47uclRtIV3dRAGzWNWa0BFeOnorOzw5Oz6w6Bodo4vRBRO36bij6VxDuD6
-         YqkGNEkfaBxqpJRMzH9mtvgfMSB8voc9L5MbjSIHrbEiD5jTmXUJ14lOJXmdzeumXQGt
-         BvByBr89FKobLzw275YRxYKfwWyoqyTh9PhP8grJflJKi94e++6/eLYX88VNrCrv4qbA
-         8sYHVtIavqCkaWYfR20gHcj7tpBnLfosvhXbFiMJn6tZg944SWfoeJhVf+t/pkY3ez/E
-         MwnzncticLhlM+i8We6/JWwd2onZF/JhTWVidXnsTDGo/XjNKRw+fM+HyXD4c/t7nUtW
-         YTcw==
+        Mon, 13 Sep 2021 01:16:39 -0400
+Received: by mail-io1-f69.google.com with SMTP id z71-20020a6bc94a000000b005d09bfe2668so984306iof.23
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 22:15:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Fym7Ho3/HB4lYkhNEdo9I/OHj12nal5b2UIn6CWREBk=;
-        b=JOPCwsCwN3+r+twnXkq7p+yuYeqQBiaGc+TB42/YG3b1emZA8T9cUiFc/xeeXg76YS
-         TcbfpWLfpzINbDg5h0ZRRKVsNnCQPCLbH2rI+Ib64I9MeOBWFeo1RI0kcLGkyONruuNl
-         bwpWrDQCSd1/+10qSUnUyjpIRlEelrw87//Wdio1fj/xH4T4sQiWNwx5WIPa4m4JkjsQ
-         kwHbC6En8nHnQG+rxqVJnLHbC/whWzb7VPiDVilFoiLreegzhBR3c5OHD+lwQLJQr4of
-         Rkmc/WTMiKrE3ck+csUF+aycOpe2UcUIYV4TixRy8nNDSaB9IhLEi+TjeKzj8Y28eXFS
-         cBdA==
-X-Gm-Message-State: AOAM532VYcV0G6SeroDqAx1XQJ690x+E07Q7p390zYl1ZPoXIsuHmJi+
-        hWW0XayiGQh+LjFSXLNZjly35dh0XgNieYn2SLHt8Bbg2YE=
-X-Google-Smtp-Source: ABdhPJwXcuPacVX3Si/EYs85Sy+ueqZTP34GmxqYuIVM2FfaSeF/jjBHYkni4aXXfaLv1ELoLBH3/WmEtLu4Q0KOLXc=
-X-Received: by 2002:a05:6e02:120e:: with SMTP id a14mr6603429ilq.222.1631510111123;
- Sun, 12 Sep 2021 22:15:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dTVsWZPyEZSZb6YETT9aCHK9GgOqBT0Lc4pHP3Lx6e8=;
+        b=ba3FWK3P/2robX9y+munkZDYty+kTcXd9r+fnRE7sR9+4+n/o7tRpFye6IOXFj0861
+         3tQ+d/yvpoZBnCIiuapHWVxuStPkNWAK1T0eTc1G7Av7nsmiJEWUx09+nxbP71V1ylpz
+         zjMGwm5r56C4qxWVwcHw7vce6U+AKH7a5WNKl+Ch1Y0va6sRc+lDVlkjm2lXbt3h28tx
+         vTXuqcPDYlRR2+bVyvdViIRi4B7Qopem+eyKdO7e0xeIg9Gg7rIe6GBWDu3ftmTCxznr
+         x3XmZ2p7SngthGoMnqsFXgiLH2QW/fuRluf0aMzM8ws16Q0b5+D6Fl637cN1TJQ4PdFC
+         S5eg==
+X-Gm-Message-State: AOAM531xQmBeAronVVCPKIGBpts1LCcQ7Zi9XxV0UWLhaC+tM69DNTz4
+        MmXUrzj+sFtXwHu9yt1SLn8O0j0o0C75CezFSVJB4lLCMl1x
+X-Google-Smtp-Source: ABdhPJwO7iV5Xgy+j0Lqk/9D8z0ZhHnqpHxWMiJvuG9Vcu9TbDCEif0fnrEUbAbQSchI7yx4o/iva7NqZw76Vn3WUO2k9LiIPSBi
 MIME-Version: 1.0
-From:   zhao xc <xinchao.zhao.kernelz@gmail.com>
-Date:   Mon, 13 Sep 2021 13:15:00 +0800
-Message-ID: <CAP7CzPcc40RobQfMLPkW3TXkEf1b7B7Xd_ufFBh76LKoegiqeQ@mail.gmail.com>
-Subject: 
-To:     ysato@users.sourceforge.jp
-Cc:     dalias@libc.org, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xinchao.zhao@ucas.com.cn
-Content-Type: multipart/mixed; boundary="0000000000009f21ef05cbd98c83"
+X-Received: by 2002:a02:3b58:: with SMTP id i24mr8092839jaf.144.1631510123863;
+ Sun, 12 Sep 2021 22:15:23 -0700 (PDT)
+Date:   Sun, 12 Sep 2021 22:15:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000061641905cbd98d7b@google.com>
+Subject: [syzbot] possible deadlock in rfcomm_sk_state_change
+From:   syzbot <syzbot+d7ce59b06b3eb14fd218@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, davem@davemloft.net,
+        desmondcheongzx@gmail.com, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tedd.an@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009f21ef05cbd98c83
-Content-Type: text/plain; charset="UTF-8"
+Hello,
 
-Hi maintainer:
-    This is a patch fix the unused macro definition
-Thanks!
+syzbot found the following issue on:
 
---0000000000009f21ef05cbd98c83
-Content-Type: application/octet-stream; 
-	name="0001-arch-sh-fix-the-unused-macro-definition-IP_NF_MATCH_.patch"
-Content-Disposition: attachment; 
-	filename="0001-arch-sh-fix-the-unused-macro-definition-IP_NF_MATCH_.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kti6xv5p0>
-X-Attachment-Id: f_kti6xv5p0
+HEAD commit:    a3fa7a101dcf Merge branches 'akpm' and 'akpm-hotfixes' (pa..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d61a8b300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9b60f3b657f313d
+dashboard link: https://syzkaller.appspot.com/bug?extid=d7ce59b06b3eb14fd218
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15247a7d300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a2642b300000
 
-RnJvbSA3M2YyMWY3ZTBhNDdlZTI3NmY5YTQ4NjFlNDFmNWFjNjA1NzVhNjY5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiB6aGFveGluY2hhbyA8d2FuZ2h1b0B1Y2FzLmNvbS5jbj4KRGF0
-ZTogVGh1LCA5IFNlcCAyMDIxIDAyOjMyOjU2IC0wNzAwClN1YmplY3Q6IFtQQVRDSF0gYXJjaDog
-c2g6IGZpeCB0aGUgdW51c2VkIG1hY3JvIGRlZmluaXRpb24KIElQX05GX01BVENIX0FERFJUWVBF
-LiBJUF9ORl9NQVRDSF9BRERSVFlQRSBoYXMgY2hhbmdlZCB0bwogTkVURklMVEVSX1hUX01BVENI
-X0FERFJUWVBFIGluIDIwMTEuIENPTkZJR19JUF9ORl9UQVJHRVRfTE9HIGRvZXMgbm90IGV4aXN0
-CiBpbiB0aGUga2VybmVsLgoKc2VlIHRoZSBjb21taXQgPGRlODFiYmVhMTc2NTA3Njk4ODJiYzYy
-NWQ2YjVkZjExZWU3YzRiMjQ+CgpTaWduZWQtb2ZmLWJ5OiB6aGFveGluY2hhbyA8d2FuZ2h1b0B1
-Y2FzLmNvbS5jbj4KLS0tCiBhcmNoL3NoL2NvbmZpZ3MvdGl0YW5fZGVmY29uZmlnIHwgMiArLQog
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0
-IGEvYXJjaC9zaC9jb25maWdzL3RpdGFuX2RlZmNvbmZpZyBiL2FyY2gvc2gvY29uZmlncy90aXRh
-bl9kZWZjb25maWcKaW5kZXggYmE4ODdmMTM1MWJlLi5hOGI0YTlkMzkzYmUgMTAwNjQ0Ci0tLSBh
-L2FyY2gvc2gvY29uZmlncy90aXRhbl9kZWZjb25maWcKKysrIGIvYXJjaC9zaC9jb25maWdzL3Rp
-dGFuX2RlZmNvbmZpZwpAQCAtODMsNyArODMsNyBAQCBDT05GSUdfSVBfTkZfTUFUQ0hfRUNOPW0K
-IENPTkZJR19JUF9ORl9NQVRDSF9UVEw9bQogQ09ORklHX0lQX05GX0ZJTFRFUj1tCiBDT05GSUdf
-SVBfTkZfVEFSR0VUX1JFSkVDVD1tCi1DT05GSUdfSVBfTkZfVEFSR0VUX0xPRz1tCitDT05GSUdf
-TkVURklMVEVSX1hUX1RBUkdFVF9MT0c9bQogQ09ORklHX0lQX05GX01BTkdMRT1tCiBDT05GSUdf
-SVBfTkZfVEFSR0VUX0VDTj1tCiBDT05GSUdfSVBfTkZfVEFSR0VUX1RUTD1tCi0tIAoyLjE3LjEK
-Cg==
---0000000000009f21ef05cbd98c83--
+The issue was bisected to:
+
+commit 1804fdf6e494e5e2938c65d8391690b59bcff897
+Author: Tedd Ho-Jeong An <tedd.an@intel.com>
+Date:   Thu Aug 5 00:32:19 2021 +0000
+
+    Bluetooth: btintel: Combine setting up MSFT extension
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125f4163300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=115f4163300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=165f4163300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d7ce59b06b3eb14fd218@syzkaller.appspotmail.com
+Fixes: 1804fdf6e494 ("Bluetooth: btintel: Combine setting up MSFT extension")
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.14.0-syzkaller #0 Not tainted
+------------------------------------------------------
+krfcommd/2875 is trying to acquire lock:
+ffff888012b9d120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1612 [inline]
+ffff888012b9d120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}, at: rfcomm_sk_state_change+0x63/0x300 net/bluetooth/rfcomm/sock.c:73
+
+but task is already holding lock:
+ffff88807cf12528 (&d->lock){+.+.}-{3:3}, at: __rfcomm_dlc_close+0x281/0x480 net/bluetooth/rfcomm/core.c:487
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&d->lock){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
+       __mutex_lock_common+0x1df/0x2550 kernel/locking/mutex.c:596
+       __mutex_lock kernel/locking/mutex.c:729 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:743
+       __rfcomm_dlc_close+0x281/0x480 net/bluetooth/rfcomm/core.c:487
+       rfcomm_process_dlcs+0x92/0x620 net/bluetooth/rfcomm/core.c:1844
+       rfcomm_process_sessions+0x2f6/0x3f0 net/bluetooth/rfcomm/core.c:2003
+       rfcomm_run+0x195/0x2c0 net/bluetooth/rfcomm/core.c:2086
+       kthread+0x453/0x480 kernel/kthread.c:319
+       ret_from_fork+0x1f/0x30
+
+-> #1 (rfcomm_mutex){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
+       __mutex_lock_common+0x1df/0x2550 kernel/locking/mutex.c:596
+       __mutex_lock kernel/locking/mutex.c:729 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:743
+       rfcomm_dlc_open+0x25/0x50 net/bluetooth/rfcomm/core.c:425
+       rfcomm_sock_connect+0x285/0x470 net/bluetooth/rfcomm/sock.c:413
+       __sys_connect_file net/socket.c:1896 [inline]
+       __sys_connect+0x38a/0x410 net/socket.c:1913
+       __do_sys_connect net/socket.c:1923 [inline]
+       __se_sys_connect net/socket.c:1920 [inline]
+       __x64_sys_connect+0x76/0x80 net/socket.c:1920
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3051 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+       validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3789
+       __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5015
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
+       lock_sock_nested+0xc6/0x110 net/core/sock.c:3191
+       lock_sock include/net/sock.h:1612 [inline]
+       rfcomm_sk_state_change+0x63/0x300 net/bluetooth/rfcomm/sock.c:73
+       __rfcomm_dlc_close+0x2cc/0x480 net/bluetooth/rfcomm/core.c:489
+       rfcomm_process_dlcs+0x92/0x620 net/bluetooth/rfcomm/core.c:1844
+       rfcomm_process_sessions+0x2f6/0x3f0 net/bluetooth/rfcomm/core.c:2003
+       rfcomm_run+0x195/0x2c0 net/bluetooth/rfcomm/core.c:2086
+       kthread+0x453/0x480 kernel/kthread.c:319
+       ret_from_fork+0x1f/0x30
+
+other info that might help us debug this:
+
+Chain exists of:
+  sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM --> rfcomm_mutex --> &d->lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&d->lock);
+                               lock(rfcomm_mutex);
+                               lock(&d->lock);
+  lock(sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM);
+
+ *** DEADLOCK ***
+
+2 locks held by krfcommd/2875:
+ #0: ffffffff8dac7488 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_process_sessions+0x21/0x3f0 net/bluetooth/rfcomm/core.c:1979
+ #1: ffff88807cf12528 (&d->lock){+.+.}-{3:3}, at: __rfcomm_dlc_close+0x281/0x480 net/bluetooth/rfcomm/core.c:487
+
+stack backtrace:
+CPU: 1 PID: 2875 Comm: krfcommd Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
+ check_noncircular+0x2f9/0x3b0 kernel/locking/lockdep.c:2131
+ check_prev_add kernel/locking/lockdep.c:3051 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3174 [inline]
+ validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3789
+ __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5015
+ lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5625
+ lock_sock_nested+0xc6/0x110 net/core/sock.c:3191
+ lock_sock include/net/sock.h:1612 [inline]
+ rfcomm_sk_state_change+0x63/0x300 net/bluetooth/rfcomm/sock.c:73
+ __rfcomm_dlc_close+0x2cc/0x480 net/bluetooth/rfcomm/core.c:489
+ rfcomm_process_dlcs+0x92/0x620 net/bluetooth/rfcomm/core.c:1844
+ rfcomm_process_sessions+0x2f6/0x3f0 net/bluetooth/rfcomm/core.c:2003
+ rfcomm_run+0x195/0x2c0 net/bluetooth/rfcomm/core.c:2086
+ kthread+0x453/0x480 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
