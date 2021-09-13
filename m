@@ -2,92 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113F940A113
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A75740A11A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347537AbhIMWyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 18:54:38 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:51178 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349681AbhIMWvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 18:51:01 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=localhost.localdomain)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mPulW-0003SX-Uz; Tue, 14 Sep 2021 00:49:31 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com
-Cc:     heiko@sntech.de, jay.xu@rock-chips.com, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] gpio/rockchip: fetch deferred output settings on probe
-Date:   Tue, 14 Sep 2021 00:49:26 +0200
-Message-Id: <20210913224926.1260726-5-heiko@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210913224926.1260726-1-heiko@sntech.de>
-References: <20210913224926.1260726-1-heiko@sntech.de>
+        id S1348556AbhIMW5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 18:57:01 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:53580 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349745AbhIMWxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 18:53:02 -0400
+Received: from netfilter.org (unknown [78.30.35.141])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 8C71860056;
+        Tue, 14 Sep 2021 00:49:30 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 00:50:37 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc:     netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH 1/1] netfilter: ipset: Fix oversized kvmalloc() calls
+Message-ID: <20210913225037.GA5737@salvia>
+References: <4591ee34-aa44-92d-51a8-22e8be5db20@netfilter.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4591ee34-aa44-92d-51a8-22e8be5db20@netfilter.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fetch the output settings the pinctrl driver may have created
-for pinctrl hogs and set the relevant pins as requested.
+On Mon, Sep 06, 2021 at 06:26:34PM +0200, Jozsef Kadlecsik wrote:
+> The commit 
+> 
+> commit 7661809d493b426e979f39ab512e3adf41fbcc69
+> Author: Linus Torvalds <torvalds@linux-foundation.org>
+> Date:   Wed Jul 14 09:45:49 2021 -0700
+> 
+>     mm: don't allow oversized kvmalloc() calls
+> 
+> limits the max allocatable memory via kvmalloc() to MAX_INT. Apply the
+> same limit in ipset.
 
-Fixes: 9ce9a02039de ("pinctrl/rockchip: drop the gpio related codes")
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
----
- drivers/gpio/gpio-rockchip.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/gpio/gpio-rockchip.c b/drivers/gpio/gpio-rockchip.c
-index 3335bd57761d..cf1b465db8c3 100644
---- a/drivers/gpio/gpio-rockchip.c
-+++ b/drivers/gpio/gpio-rockchip.c
-@@ -689,6 +689,7 @@ static int rockchip_gpio_probe(struct platform_device *pdev)
- 	struct device_node *pctlnp = of_get_parent(np);
- 	struct pinctrl_dev *pctldev = NULL;
- 	struct rockchip_pin_bank *bank = NULL;
-+	struct rockchip_pin_output_deferred *cfg;
- 	static int gpio;
- 	int id, ret;
- 
-@@ -716,12 +717,33 @@ static int rockchip_gpio_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Prevent clashes with a deferred output setting
-+	 * being added right at this moment.
-+	 */
-+	mutex_lock(&bank->deferred_lock);
-+
- 	ret = rockchip_gpiolib_register(bank);
- 	if (ret) {
- 		clk_disable_unprepare(bank->clk);
-+		mutex_unlock(&bank->deferred_lock);
- 		return ret;
- 	}
- 
-+	while (!list_empty(&bank->deferred_output)) {
-+		cfg = list_first_entry(&bank->deferred_output,
-+				       struct rockchip_pin_output_deferred, head);
-+		list_del(&cfg->head);
-+
-+		ret = rockchip_gpio_direction_output(&bank->gpio_chip, cfg->pin, cfg->arg);
-+		if (ret)
-+			dev_warn(dev, "setting output pin %u to %u failed\n", cfg->pin, cfg->arg);
-+
-+		kfree(cfg);
-+	}
-+
-+	mutex_unlock(&bank->deferred_lock);
-+
- 	platform_set_drvdata(pdev, bank);
- 	dev_info(dev, "probed %pOF\n", np);
- 
--- 
-2.29.2
-
+Applied, thanks Jozsef.
