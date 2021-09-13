@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D04408EED
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E346B4091A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243020AbhIMNiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
+        id S245438AbhIMODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:03:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241159AbhIMNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 004A961357;
-        Mon, 13 Sep 2021 13:25:59 +0000 (UTC)
+        id S243837AbhIMOAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F326613AB;
+        Mon, 13 Sep 2021 13:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539560;
-        bh=qOOevOLNhiAsgu3FtvK0d8BD+Yg9reJfq3YzzOlZygc=;
+        s=korg; t=1631540255;
+        bh=L5THohV6IidN9Kc/xggYUb7EwyTAIEaF9O9yKpIKOhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jZG6C6Z4GXlaGGSAs2hL1BevNJhHMyFVE/yVvXWZAfHtmAsD4Ihuxe/j13taxOU5M
-         SvhFQSji4dQcpDk23FC7c88u7OOeLGVeZg9fA6D8eb76K56ySmb7eJhsHSeXtSt+cH
-         gyFky+B4/35SGGKIQAF/H7lpxcJYNQndjIDWXFH0=
+        b=SCcG7wWidPz40YwQ/uGaXeaXtL4sjOQC4/iF2fMxxg6JH9Dy92or2SSSUWOdqGSli
+         8IVEl/zdDDK6EjCS9+NpfcFcqO1sNxDu4eZbTOEwxZXDLh2ox8DpfxG8rp5IjaI5fz
+         jV/95zLjO4Twl7lXuB87RNe2sqgPyDdryBcF8cQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khalasa@piap.pl>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Jun Miao <jun.miao@windriver.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 072/236] media: TDA1997x: enable EDID support
-Date:   Mon, 13 Sep 2021 15:12:57 +0200
-Message-Id: <20210913131102.807987235@linuxfoundation.org>
+Subject: [PATCH 5.13 117/300] Bluetooth: btusb: Fix a unspported condition to set available debug features
+Date:   Mon, 13 Sep 2021 15:12:58 +0200
+Message-Id: <20210913131113.349744024@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Hałasa <khalasa@piap.pl>
+From: Jun Miao <jun.miao@windriver.com>
 
-[ Upstream commit ea3e1c36e38810427485f06c2becc1f29e54521d ]
+[ Upstream commit 20a831f04f1526f2c3442efd3dece8630216b5d2 ]
 
-Without this patch, the TDA19971 chip's EDID is inactive.
-EDID never worked with this driver, it was all tested with HDMI signal
-sources which don't need EDID support.
+When reading the support debug features failed, there are not available
+features init. Continue to set the debug features is illogical, we should
+skip btintel_set_debug_features(), even if check it by "if (!features)".
 
-Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
-Fixes: 9ac0038db9a7 ("media: i2c: Add TDA1997x HDMI receiver driver")
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: c453b10c2b28 ("Bluetooth: btusb: Configure Intel debug feature based on available support")
+Signed-off-by: Jun Miao <jun.miao@windriver.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/bluetooth/btusb.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 89bb7e6dc7a4..9554c8348c02 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -2233,6 +2233,7 @@ static int tda1997x_core_init(struct v4l2_subdev *sd)
- 	/* get initial HDMI status */
- 	state->hdmi_status = io_read(sd, REG_HDMI_FLAGS);
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 9122f9cc97cb..ae0cf5e71584 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2912,10 +2912,11 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
+ 	/* Read the Intel supported features and if new exception formats
+ 	 * supported, need to load the additional DDC config to enable.
+ 	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
++	err = btintel_read_debug_features(hdev, &features);
++	if (!err) {
++		/* Set DDC mask for available debug features */
++		btintel_set_debug_features(hdev, &features);
++	}
  
-+	io_write(sd, REG_EDID_ENABLE, EDID_ENABLE_A_EN | EDID_ENABLE_B_EN);
- 	return 0;
- }
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version(hdev, &ver);
+@@ -3008,10 +3009,11 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
+ 	/* Read the Intel supported features and if new exception formats
+ 	 * supported, need to load the additional DDC config to enable.
+ 	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
++	err = btintel_read_debug_features(hdev, &features);
++	if (!err) {
++		/* Set DDC mask for available debug features */
++		btintel_set_debug_features(hdev, &features);
++	}
  
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version_tlv(hdev, &version);
 -- 
 2.30.2
 
