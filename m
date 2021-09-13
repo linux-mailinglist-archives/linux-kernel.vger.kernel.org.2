@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6B84089EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41464089EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239424AbhIMLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:13:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238383AbhIMLNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:13:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4253260F46;
-        Mon, 13 Sep 2021 11:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631531516;
-        bh=OYAJ6dqKcszI0F7Ps07XpeMuXLTtjPt2OWp/s1gxtVc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iNAhPNLS4Au5LtRq6PQ7W2fr7JlS//Zy/r4bbrVrUx/I4FkDcprS7mXhOBKhZO7Po
-         bLYi1s3dQm0GgV0GncGDZHp4qDVPQQ3WVeCWBl2UsHhzTM9SVeIdWQ5e/d8CuV/VGu
-         L3/FRUZpcdKmRZRPOMTeh2fuCIWZc9vr7KDt8N55tuCS5ZqIs9Qog8CzyAJP0jsXqy
-         KGX3ggosf5YKtfh6+7p35kaaS8F5Mjm3AmlkR+ZSal2qtBaBp5RQAB08GobdvlyXgD
-         UMjjkiv+Xm/O1IX0rpSG8L/am0dpu+gEuzzRWKRgg9566QB9rkq8j+ZRMw3EETT1C3
-         zDnhbY0RBD4Bg==
-Date:   Mon, 13 Sep 2021 12:11:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org, robh+dt@kernel.org,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: sound: sun4i-i2s: add Allwinner R40 I2S
- compatible
-Message-ID: <20210913111117.GB4283@sirena.org.uk>
-References: <20210912072914.398419-1-jernej.skrabec@gmail.com>
- <20210912072914.398419-2-jernej.skrabec@gmail.com>
+        id S239438AbhIMLPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238383AbhIMLPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:15:09 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83446C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:13:53 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id q22so8506975pfu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XxGGH396yqKFz9F5OWRNHSsNaRXLO9ooc/L9AlOkzKQ=;
+        b=QxWZtqYGlOGpSOGBS4dUjJX2STngIdVu9tALWqKwJ7b8hYjpl8RcdVW/0X1vzuc2Ec
+         qSqYceB2e9nKjZ5He5OFHyh+JO+gUv9h37mURskCyV0xZxneNSFG9HuGdQdFA7WZOxSF
+         0jH3StCqwyJqFDGdkbN/iG9CNYkf+d/+RBYGc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XxGGH396yqKFz9F5OWRNHSsNaRXLO9ooc/L9AlOkzKQ=;
+        b=dIL46uIFQ+jrj+HsHAkk3nc2sX9cmg8oSegbAq+Xyu9KiI5CedD2sZvnPl7DWp3CSM
+         8TImgXElvS3KXCn6lA+pZMrr1eOHnuIkOSGnwY12SPjKcjpvaR4jOA8WxJo4MxS96GLa
+         tzQKLT5pJ+ERhQ+j9MaHUJB8XIt2dsnpryFRxMSRAO7FK6ZVnY/ObQLZVwH0l2PGlUrS
+         JSetI3z8yaeJ6G3P8mBQgt1csk7faf7ZENxmoVJFw4hYnN5Uyhfduw3As5oAcfBUhrld
+         L+QJlzFe4xeZ98oxCYK64wiUf/JLpS3CuVCIEVI6TjGwirpe/qHrltHF+uKNSn0z+ZI0
+         e12g==
+X-Gm-Message-State: AOAM531BmWDBk54+N1fA5TcsD218INsZNHUqhEk8wehZ3BpLiUWyYxxj
+        xpNZb2iFT2Hkn+Pq/9nxNXXzUQ==
+X-Google-Smtp-Source: ABdhPJx4zqnR2yH4LqHuWbBCIRfqyPGQpPzE6od/re+HxwMX1sy9Fqfn351DvGCHyyNBJEhgZc5SgA==
+X-Received: by 2002:a63:e510:: with SMTP id r16mr10781699pgh.34.1631531633041;
+        Mon, 13 Sep 2021 04:13:53 -0700 (PDT)
+Received: from shiro.work (p864106-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.58.106])
+        by smtp.googlemail.com with ESMTPSA id p24sm8340153pgm.54.2021.09.13.04.13.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 04:13:52 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     jic23@kernel.org, lars@metafoo.de, jmaneyrol@invensense.com,
+        linux-iio@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH] iio: imu: inv_mpu6050: Mark acpi match table as maybe unused
+Date:   Mon, 13 Sep 2021 20:13:46 +0900
+Message-Id: <20210913111346.1957635-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Yylu36WmvOXNoKYn"
-Content-Disposition: inline
-In-Reply-To: <20210912072914.398419-2-jernej.skrabec@gmail.com>
-X-Cookie: Above all else -- sky.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When building kernels without ACPI support the table is declared
+but is not used because ACPI_PTR() turns it into a NULL.
 
---Yylu36WmvOXNoKYn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the __maybe_unused attribute to stop the compiler whining.
 
-On Sun, Sep 12, 2021 at 09:29:13AM +0200, Jernej Skrabec wrote:
-> Allwinner R40 has 3 I2S controllers, compatible to those, found in H3.
->=20
-> Add R40/H3 compatible pair to DT bindings.
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
+ drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
+index 95f16951c8f4..dbd613178f01 100644
+--- a/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
++++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
+@@ -249,7 +249,7 @@ static const struct of_device_id inv_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, inv_of_match);
+ 
+-static const struct acpi_device_id inv_acpi_match[] = {
++static const struct __maybe_unused acpi_device_id inv_acpi_match[] = {
+ 	{"INVN6500", INV_MPU6500},
+ 	{ },
+ };
+-- 
+2.33.0
 
---Yylu36WmvOXNoKYn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/MdUACgkQJNaLcl1U
-h9Cu9wf/VM+++mQxRG5zosD+5PVPxZ/AZqZuv+WaB5dknktVNI6nZJ0rCgeR9Zgf
-bmMVexYZgmNnRZe07t6gs6XUbiI+6EqJyAkEtlOQ1EpcYG99HnT50qD+3712psjt
-9/UvpRSZkiOschuvInRtGnecT0PbCizK9ExxrLayvHfQpzk6mQTtrVRX3S1uQFZk
-6BlB5/9EQmNxoVGM6bXA1mCcHp9DMEzYoVHkAy13Ci+YfxaJUJHpxHjCa7Qww61h
-Wrp2LKZQK+Y5XRJU1N0JI/ibWMc0PcVPHylkXWH6ZNB7jLZzvwcEK0I2RKw4cY8n
-bbJCpgXED2/vnIDglnysrHHfeB9HXw==
-=h6F1
------END PGP SIGNATURE-----
-
---Yylu36WmvOXNoKYn--
