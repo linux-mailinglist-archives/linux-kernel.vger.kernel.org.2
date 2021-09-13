@@ -2,244 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06401408505
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB59408507
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237502AbhIMG6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:58:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54527 "EHLO
+        id S237521AbhIMG7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:59:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56281 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237429AbhIMG6i (ORCPT
+        by vger.kernel.org with ESMTP id S237514AbhIMG7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:58:38 -0400
+        Mon, 13 Sep 2021 02:59:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631516242;
+        s=mimecast20190719; t=1631516273;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Uq9tbu3TDqgOAJs2JRYdBCy2+stYK+Aour5wYZ0uUGA=;
-        b=CYzAFp8Arz1xilEWN36TRZmhHpbFLet3O/CT1EvmXYAiRAH0SkBMWEIuZq9W96K0hUiWFm
-        Z1VtP7YLP7dxAWSRgDhLEtkNRiTU5GEeOTGvgzFyUjrA9MGhMpwQnzx6BH+sTGgKNhUw6I
-        ghzafzpEnY/ifZ+YUZIGMZyb9xBuwE8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-t7UF_ycFO1iT1Fu2aDQvOQ-1; Mon, 13 Sep 2021 02:57:18 -0400
-X-MC-Unique: t7UF_ycFO1iT1Fu2aDQvOQ-1
-Received: by mail-ej1-f72.google.com with SMTP id v12-20020a170906858c00b005f03d2ccaf5so845740ejx.14
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:57:18 -0700 (PDT)
+        bh=0jCqRhc3bcZaCNkwZY/q58ovcD1/WO6KrpN3X1X+eYI=;
+        b=IkrTD479NXQ06PrbYh028wQZiL7RxeQ0ScIegNi1Y77QHNZVzuciMI2iLbycil4B22CiKH
+        UMivIQjGrOd707a7hTGedx/Ge4g6Cl+FdnChI7ThPQsxQ9JXk29tBSYGs3X6uslF94iBj0
+        SROuNiJjnctp3DItLKCmNNCvuPrKT0s=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-85-R0KszsCEOwGFoaGV7_m6Ow-1; Mon, 13 Sep 2021 02:57:52 -0400
+X-MC-Unique: R0KszsCEOwGFoaGV7_m6Ow-1
+Received: by mail-ej1-f69.google.com with SMTP id jg32-20020a170907972000b005e801aed08aso3221379ejc.4
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:57:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Uq9tbu3TDqgOAJs2JRYdBCy2+stYK+Aour5wYZ0uUGA=;
-        b=s4MhcR/82LCA41Cpuv7ymKysiITQCVkTfZ1T3szrzW94rujVs0N4FX3fahAZA3MHpr
-         HCKSk2RZIbNlrXashQGSmb/OlltlvVzy0Zw51DjSk0E9A+iMC0q+IRgRATcdiNGpxSmX
-         pdUSx6sVNLq38G87YFfENuhMLC3YzL6d0c8sfTG7ewCtixVwKDrskRoyff/tqLos5d6g
-         yGZd4erMwZeOtWN73tSkUkeChJTMzwOCBOnvedqbeBn3jiZCKvqNSDiPRGW2zdjdmy8v
-         MnMNzy60MWPQ/KUdOyiuUXgWG88hkGLatcYUV76D6QvLrwqUXUinCjCD3ZrdO2TP3akn
-         8kGg==
-X-Gm-Message-State: AOAM532njHxaN8vNufCwLArA6JhVjTu3yvj9SL3+PGgtV8DVwpyzqzSk
-        CoKAd1J2ydtkMJBmFr2hmEa/BTcrblkE1ZqPh3iYz7np2dsb6tG6hzkGSngauxPL4pa0755fqkl
-        oGgVBZ1Aesjqs7+sT6ZuwOdlQ
-X-Received: by 2002:a17:906:b104:: with SMTP id u4mr11298286ejy.201.1631516237578;
-        Sun, 12 Sep 2021 23:57:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyf5/Gf8m1Q3nQCm+wPmq4d0HVpTy/1yuqlo2Uj3Zc2BLzZUv7WljJ+w+6qn7kZUCSD+LF40w==
-X-Received: by 2002:a17:906:b104:: with SMTP id u4mr11298276ejy.201.1631516237402;
-        Sun, 12 Sep 2021 23:57:17 -0700 (PDT)
-Received: from redhat.com ([2.55.27.174])
-        by smtp.gmail.com with ESMTPSA id lz19sm3027248ejb.40.2021.09.12.23.57.15
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0jCqRhc3bcZaCNkwZY/q58ovcD1/WO6KrpN3X1X+eYI=;
+        b=3+r9LPK+cXuJg5MBbVlxzwcn0D3SWz5ueWLUyVllwysNIPKExAymNEfsxDjPaX6FR1
+         58qHOw3vPLlUw0iPHVDRTVJLmHohp3fz/K0Na2LVvTbYtcIguwST64/93nSk34oiJc6A
+         tA2QwNDs0wXY5N7d9/r84TJLd9bi/5rPEbrBXPKKXXOBubiX+l1NI022jJi9PonlVSbx
+         18E4ZTeMN0srOjwO0FTa7NTIQXPym05mJQl1Hbelp2MyYIfaaTcIqrqlJD0aG7q9EX+O
+         8ONQ+Lv+gbfnZ9JV3Zg39Ew9gFa7aBYNI9mjq9M3EhuuelPx1xVGAPUm+en3AunlkUiB
+         jT7w==
+X-Gm-Message-State: AOAM530gs41TcRFZV+g+aSn/OEmSYRJOTtMZSItajdk1stdmZg6Fau+Z
+        9svwPhhDjViS3uP9CBBT4tAJcMZOKNKO8jxto7+ZB0/bJZqc8YhvOfFHLdr5IeTQ6Hrx8jR7+Xu
+        vkR3X2w19L1Vhy5p/9BIw+uSjd+BqI/s2w5UqTmwX62nwmXqdZX3ervYYx/vU8ECFxmjWYNmCih
+        KU
+X-Received: by 2002:a17:906:2bdb:: with SMTP id n27mr11227392ejg.86.1631516271618;
+        Sun, 12 Sep 2021 23:57:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy5mdrAjiCCyG+UIsMaHgbGCKDsyGBnp8g9M9bsnrDoBc947WLZ+oMsZuxXFEZKzCu3CpSr9Q==
+X-Received: by 2002:a17:906:2bdb:: with SMTP id n27mr11227366ejg.86.1631516271318;
+        Sun, 12 Sep 2021 23:57:51 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id z6sm2897536ejj.13.2021.09.12.23.57.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 23:57:16 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 02:57:13 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: Re: [PATCH 9/9] virtio_ring: validate used buffer length
-Message-ID: <20210913025145-mutt-send-email-mst@kernel.org>
-References: <20210913055353.35219-1-jasowang@redhat.com>
- <20210913055353.35219-10-jasowang@redhat.com>
- <20210913023428-mutt-send-email-mst@kernel.org>
- <CACGkMEsqFbnog3jktR0Ms-u75yHfo8zKO-SC66iN2fLZ185XWQ@mail.gmail.com>
+        Sun, 12 Sep 2021 23:57:50 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] KVM: nVMX: Track whether changes in L0 require MSR
+ bitmap for L2 to be rebuilt
+In-Reply-To: <37efb41fda41317bf04c0cb805792af261894a1a.camel@redhat.com>
+References: <20210910160633.451250-1-vkuznets@redhat.com>
+ <20210910160633.451250-4-vkuznets@redhat.com>
+ <37efb41fda41317bf04c0cb805792af261894a1a.camel@redhat.com>
+Date:   Mon, 13 Sep 2021 08:57:49 +0200
+Message-ID: <87ilz52c9e.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEsqFbnog3jktR0Ms-u75yHfo8zKO-SC66iN2fLZ185XWQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 02:40:09PM +0800, Jason Wang wrote:
-> On Mon, Sep 13, 2021 at 2:36 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Sep 13, 2021 at 01:53:53PM +0800, Jason Wang wrote:
-> > > This patch validate the used buffer length provided by the device
-> > > before trying to use it. This is done by record the in buffer length
-> > > in a new field in desc_state structure during virtqueue_add(), then we
-> > > can fail the virtqueue_get_buf() when we find the device is trying to
-> > > give us a used buffer length which is greater than the in buffer
-> > > length.
-> > >
-> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> >
-> > Hmm this was proposed in the past. The overhead here is
-> > not negligeable, so I'd like to know more -
-> > when is it a problem if the used len is too big?
-> 
-> One example is: https://github.com/fuzzsa/fuzzsa-bugs/blob/master/virtio_rng.md
-> 
-> And there would be more I guess.
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-That seems to suggest hwrng validation is better, and
-I think it makes sense: will fix all rng drivers in one go.
+> On Fri, 2021-09-10 at 18:06 +0200, Vitaly Kuznetsov wrote:
+>> Introduce a flag to keep track of whether MSR bitmap for L2 needs to be
+>> rebuilt due to changes in MSR bitmap for L1 or switching to a different
+>> L2. This information will be used for Enlightened MSR Bitmap feature for
+>> Hyper-V guests.
+>> 
+>> Note, setting msr_bitmap_changed to 'true' from set_current_vmptr() is
+>> not really needed for Enlightened MSR Bitmap as the feature can only
+>> be used in conjunction with Enlightened VMCS but let's keep tracking
+>> information complete, it's cheap and in the future similar PV feature can
+>> easily be implemented for KVM on KVM too.
+>> 
+>> No functional change intended.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/vmx/nested.c | 9 ++++++++-
+>>  arch/x86/kvm/vmx/vmx.c    | 2 ++
+>>  arch/x86/kvm/vmx/vmx.h    | 6 ++++++
+>>  3 files changed, 16 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index ccb03d69546c..42cd95611892 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -2053,10 +2053,13 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
+>>  	 * Clean fields data can't be used on VMLAUNCH and when we switch
+>>  	 * between different L2 guests as KVM keeps a single VMCS12 per L1.
+>>  	 */
+>> -	if (from_launch || evmcs_gpa_changed)
+>> +	if (from_launch || evmcs_gpa_changed) {
+>>  		vmx->nested.hv_evmcs->hv_clean_fields &=
+>>  			~HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
+>>  
+>> +		vmx->nested.msr_bitmap_changed = true;
+>> +	}
+>> +
+>>  	return EVMPTRLD_SUCCEEDED;
+>>  }
+>>  
+>> @@ -3240,6 +3243,8 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+>>  	else
+>>  		exec_controls_clearbit(vmx, CPU_BASED_USE_MSR_BITMAPS);
+>>  
+>> +	vmx->nested.msr_bitmap_changed = false;
+>
+> Very minor nitpick: Maybe I would put this into nested_vmx_prepare_msr_bitmap,
+> a bit closer to the action, but this is fine like this as well.
+>
 
-> > Don't the affected drivers already track the length somewhere
-> > and so can validated it without the extra cost in
-> > virtio core?
-> 
-> Probably, but this requires the changes in each device driver. And it
-> would be easily forgotten if new drivers are introduced?
-> 
-> Thanks
+I don't have a strong preference here, can move it to nested_vmx_prepare_msr_bitmap().
 
-My thinking is one just has to be aware that before enabling
-any drivers they have to be audited. We can validate
-used length but e.g. for virtio net the length is inside
-the buffer anyway.
+>> +
+>>  	return true;
+>>  }
+>>  
+>> @@ -5273,6 +5278,7 @@ static void set_current_vmptr(struct vcpu_vmx *vmx, gpa_t vmptr)
+>>  		vmx->nested.need_vmcs12_to_shadow_sync = true;
+>>  	}
+>>  	vmx->nested.dirty_vmcs12 = true;
+>> +	vmx->nested.msr_bitmap_changed = true;
+>>  }
+>>  
+>>  /* Emulate the VMPTRLD instruction */
+>> @@ -6393,6 +6399,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
+>>  		goto error_guest_mode;
+>>  
+>>  	vmx->nested.dirty_vmcs12 = true;
+>> +	vmx->nested.msr_bitmap_changed = true;
+>
+> Is this needed? Setting the nested state should eventually trigger call to
+> nested_vmx_handle_enlightened_vmptrld.
+>
+>  
 
-If we really have to, maybe use extra->len?
-And maybe have a mod param so the check can be turned off e.g.
-for benchmarking purposes.
+Strictly speaking - no (meaning that nothing is going to change if we
+just drop this hunk). My intention was to keep tracking information
+complete: after vmx_set_nested_state() we certainly need to re-build MSR
+Bitmap 02 and that's what 'msr_bitmap_changed' tracks. We can replace
+this with a comment if needed (but I'd slightly prefer to keep it -
+unless there's a reason not to).
 
+>
+>>  	ret = nested_vmx_enter_non_root_mode(vcpu, false);
+>>  	if (ret)
+>>  		goto error_guest_mode;
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index ad33032e8588..2dbfb5d838db 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -3734,6 +3734,8 @@ static void vmx_msr_bitmap_l01_changed(struct vcpu_vmx *vmx)
+>>  	 */
+>>  	if (static_branch_unlikely(&enable_evmcs))
+>>  		evmcs_touch_msr_bitmap();
+>> +
+>> +	vmx->nested.msr_bitmap_changed = true;
+>>  }
+>>  
+>>  void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+>> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+>> index 4858c5fd95f2..b6596fc2943a 100644
+>> --- a/arch/x86/kvm/vmx/vmx.h
+>> +++ b/arch/x86/kvm/vmx/vmx.h
+>> @@ -148,6 +148,12 @@ struct nested_vmx {
+>>  	bool need_vmcs12_to_shadow_sync;
+>>  	bool dirty_vmcs12;
+>>  
+>> +	/*
+>> +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
+>> +	 * changes in MSR bitmap for L1 or switching to a different L2.
+>> +	 */
+>> +	bool msr_bitmap_changed;
+>> +
+>>  	/*
+>>  	 * Indicates lazily loaded guest state has not yet been decached from
+>>  	 * vmcs02.
+>
+>
+> Best regards,
+> 	Maxim Levitsky
+>
 
-
-> >
-> > > ---
-> > >  drivers/virtio/virtio_ring.c | 23 +++++++++++++++++++++++
-> > >  1 file changed, 23 insertions(+)
-> > >
-> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > > index d2ca0a7365f8..b8374a6144f3 100644
-> > > --- a/drivers/virtio/virtio_ring.c
-> > > +++ b/drivers/virtio/virtio_ring.c
-> > > @@ -69,6 +69,7 @@
-> > >  struct vring_desc_state_split {
-> > >       void *data;                     /* Data for callback. */
-> > >       struct vring_desc *indir_desc;  /* Indirect descriptor, if any. */
-> > > +     u64 buflen;                     /* In buffer length */
-> > >  };
-> > >
-> > >  struct vring_desc_state_packed {
-> > > @@ -76,6 +77,7 @@ struct vring_desc_state_packed {
-> > >       struct vring_packed_desc *indir_desc; /* Indirect descriptor, if any. */
-> > >       u16 num;                        /* Descriptor list length. */
-> > >       u16 last;                       /* The last desc state in a list. */
-> > > +     u64 buflen;                     /* In buffer length */
-> > >  };
-> > >
-> > >  struct vring_desc_extra {
-> > > @@ -490,6 +492,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> > >       unsigned int i, n, avail, descs_used, prev, err_idx;
-> > >       int head;
-> > >       bool indirect;
-> > > +     u64 buflen = 0;
-> > >
-> > >       START_USE(vq);
-> > >
-> > > @@ -571,6 +574,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> > >                                                    VRING_DESC_F_NEXT |
-> > >                                                    VRING_DESC_F_WRITE,
-> > >                                                    indirect);
-> > > +                     buflen += sg->length;
-> > >               }
-> > >       }
-> > >       /* Last one doesn't continue. */
-> > > @@ -605,6 +609,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> > >
-> > >       /* Store token and indirect buffer state. */
-> > >       vq->split.desc_state[head].data = data;
-> > > +     vq->split.desc_state[head].buflen = buflen;
-> > >       if (indirect)
-> > >               vq->split.desc_state[head].indir_desc = desc;
-> > >       else
-> > > @@ -784,6 +789,11 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
-> > >               BAD_RING(vq, "id %u is not a head!\n", i);
-> > >               return NULL;
-> > >       }
-> > > +     if (unlikely(*len > vq->split.desc_state[i].buflen)) {
-> > > +             BAD_RING(vq, "used len %d is larger than in buflen %lld\n",
-> > > +                     *len, vq->split.desc_state[i].buflen);
-> > > +             return NULL;
-> > > +     }
-> > >
-> > >       /* detach_buf_split clears data, so grab it now. */
-> > >       ret = vq->split.desc_state[i].data;
-> > > @@ -1062,6 +1072,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
-> > >       unsigned int i, n, err_idx;
-> > >       u16 head, id;
-> > >       dma_addr_t addr;
-> > > +     u64 buflen = 0;
-> > >
-> > >       head = vq->packed.next_avail_idx;
-> > >       desc = alloc_indirect_packed(total_sg, gfp);
-> > > @@ -1089,6 +1100,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
-> > >                       desc[i].addr = cpu_to_le64(addr);
-> > >                       desc[i].len = cpu_to_le32(sg->length);
-> > >                       i++;
-> > > +                     if (n >= out_sgs)
-> > > +                             buflen += sg->length;
-> > >               }
-> > >       }
-> > >
-> > > @@ -1141,6 +1154,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
-> > >       vq->packed.desc_state[id].data = data;
-> > >       vq->packed.desc_state[id].indir_desc = desc;
-> > >       vq->packed.desc_state[id].last = id;
-> > > +     vq->packed.desc_state[id].buflen = buflen;
-> > >
-> > >       vq->num_added += 1;
-> > >
-> > > @@ -1176,6 +1190,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
-> > >       unsigned int i, n, c, descs_used, err_idx;
-> > >       __le16 head_flags, flags;
-> > >       u16 head, id, prev, curr, avail_used_flags;
-> > > +     u64 buflen = 0;
-> > >
-> > >       START_USE(vq);
-> > >
-> > > @@ -1250,6 +1265,8 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
-> > >                                       1 << VRING_PACKED_DESC_F_AVAIL |
-> > >                                       1 << VRING_PACKED_DESC_F_USED;
-> > >                       }
-> > > +                     if (n >= out_sgs)
-> > > +                             buflen += sg->length;
-> > >               }
-> > >       }
-> > >
-> > > @@ -1268,6 +1285,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
-> > >       vq->packed.desc_state[id].data = data;
-> > >       vq->packed.desc_state[id].indir_desc = ctx;
-> > >       vq->packed.desc_state[id].last = prev;
-> > > +     vq->packed.desc_state[id].buflen = buflen;
-> > >
-> > >       /*
-> > >        * A driver MUST NOT make the first descriptor in the list
-> > > @@ -1455,6 +1473,11 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
-> > >               BAD_RING(vq, "id %u is not a head!\n", id);
-> > >               return NULL;
-> > >       }
-> > > +     if (unlikely(*len > vq->packed.desc_state[id].buflen)) {
-> > > +             BAD_RING(vq, "used len %d is larger than in buflen %lld\n",
-> > > +                     *len, vq->packed.desc_state[id].buflen);
-> > > +             return NULL;
-> > > +     }
-> > >
-> > >       /* detach_buf_packed clears data, so grab it now. */
-> > >       ret = vq->packed.desc_state[id].data;
-> > > --
-> > > 2.25.1
-> >
+-- 
+Vitaly
 
