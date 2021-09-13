@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AF14096A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4952A40979A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346013AbhIMPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346443AbhIMO7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:59:18 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C70F60F36;
-        Mon, 13 Sep 2021 14:58:02 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 10:58:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tang Yizhou <tangyizhou@huawei.com>
-Cc:     <bristot@redhat.com>, <mingo@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] trace: Do some cleanups for osnoise tracer
-Message-ID: <20210913105800.77699437@oasis.local.home>
-In-Reply-To: <20210913033206.23682-1-tangyizhou@huawei.com>
-References: <20210913033206.23682-1-tangyizhou@huawei.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S240371AbhIMPlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229926AbhIMPlj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:41:39 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8D0C0258D6;
+        Mon, 13 Sep 2021 07:58:32 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id c10so10766680qko.11;
+        Mon, 13 Sep 2021 07:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PFD9mJaBzJKTsxm4rXZDM/y2enE6R8R76CfOiZbw4HU=;
+        b=qnKybz0B5oVmKPyqgPGoezg+mvumei8Ol/qbWrUBL+z62ewI9zUSkCFC3ftaPqEqcc
+         gLXcRv87aSGCie0vaSkzGAl3kQXgkC4/cMVUpMQKuDFKsBoAS1IHqTdxQysnbdczJOs9
+         Pu4STzHY57inMcRXJrQE9hKsnpZnUcw1041ZMn2SnOmiKaSW4im8jgqnPDHDkRaS2hMO
+         FCbdndbc1iePtXhGd4fN5oN1itGrF+DfjK1T8umBrN34OGUzoiXQwF4C2w00P084yeq2
+         OrUAHxHaX2SdmfZ1QcojHh7rP7jANKFxLBSi96UHn/K2atcNAZ+bcklkrFxEjvEReeXV
+         MQ/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PFD9mJaBzJKTsxm4rXZDM/y2enE6R8R76CfOiZbw4HU=;
+        b=dRiqZO1h6Xn9sSBP1ewOghEj5BnEMyRuBLkJVpYoUuXgXRzIFpVxY8z6lvIOpi+Aoz
+         yGa85U7oZfF0a+mdpg0Nhe0hdPbdVcMrmMZITLJSJJj4yn6lkaQgjTHl7WRJETwO0QXq
+         eKxLNDQ5xeQ4lZvs/yqHY58eUFfGKZ9uEuYRGSuGKn9HYnt8awaey6vBhe6a2crUAIzk
+         2/RlhNmwTqahZkF+UH7W7nEM5ckvvze+MRg0jVVv4M/TCvAUsyko1KD3cQzgsx1ZUhyU
+         gTOqeTtdgxv8mXauzlNV5WNihZVOZTyjCfzTiPU9n3ra1wNPCiUjzl8k4lC3AcifcM54
+         0e6w==
+X-Gm-Message-State: AOAM530WiDdXFDwMoCkgOkFxIWQ2zOTcFSQy8j6YTmfiSH+vRmkGBmvY
+        XOoUuHiE3A9A+qlJowPflrSd5sjRwce0Ego4Kwc=
+X-Google-Smtp-Source: ABdhPJwh26MSRjVjkR7VkLGGkQY2c6BDDe1IfCUBySjVHMeGamtvhofk0Vh4g8ftw3wylX8g4u0wJNN4bwP+UgU/wSA=
+X-Received: by 2002:a05:620a:254d:: with SMTP id s13mr16048qko.264.1631545111542;
+ Mon, 13 Sep 2021 07:58:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210910141940.2598035-1-schnelle@linux.ibm.com>
+ <20210910141940.2598035-2-schnelle@linux.ibm.com> <87wnnnl67a.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87wnnnl67a.fsf@mpe.ellerman.id.au>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Tue, 14 Sep 2021 00:58:20 +1000
+Message-ID: <CAOSf1CEQB_Fz_yF0pgs6xqJJ2Say1a2XFjOedO2mE=Qn_BgbnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] powerpc: Drop superfluous pci_dev_is_added() calls
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 11:32:06 +0800
-Tang Yizhou <tangyizhou@huawei.com> wrote:
+On Sat, Sep 11, 2021 at 9:09 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> Niklas Schnelle <schnelle@linux.ibm.com> writes:
+> > On powerpc, pci_dev_is_added() is called as part of SR-IOV fixups
+> > that are done under pcibios_add_device() which in turn is only called in
+> > pci_device_add() whih is called when a PCI device is scanned.
+>
+> Thanks for cleaning this up for us.
+>
+> > Now pci_dev_assign_added() is called in pci_bus_add_device() which is
+> > only called after scanning the device. Thus pci_dev_is_added() is always
+> > false and can be dropped.
+>
+> My only query is whether we can pin down when that changed.
+>
+> Oliver said:
+>
+>   The use of pci_dev_is_added() in arch/powerpc was because in the past
+>   pci_bus_add_device() could be called before pci_device_add(). That was
+>   fixed a while ago so It should be safe to remove those calls now.
+>
+> I trawled back through the history a bit but I can't remember/find which
+> commit changed that, Oliver can you remember?
 
-> 1. Add 'static' and 'const' qualifier when necessary.
-> 2. Use DEFINE_MUTEX() to define a mutex.
-> 
-> Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
-> ---
->  kernel/trace/trace_osnoise.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
-> index ce053619f289..c1a8dc6a154e 100644
-> --- a/kernel/trace/trace_osnoise.c
-> +++ b/kernel/trace/trace_osnoise.c
-> @@ -105,7 +105,7 @@ struct osnoise_variables {
->  /*
->   * Per-cpu runtime information.
->   */
-> -DEFINE_PER_CPU(struct osnoise_variables, per_cpu_osnoise_var);
-> +static DEFINE_PER_CPU(struct osnoise_variables, per_cpu_osnoise_var);
->  
->  /*
->   * this_cpu_osn_var - Return the per-cpu osnoise_variables on its relative CPU
-> @@ -128,7 +128,7 @@ struct timerlat_variables {
->  	u64			count;
->  };
->  
-> -DEFINE_PER_CPU(struct timerlat_variables, per_cpu_timerlat_var);
-> +static DEFINE_PER_CPU(struct timerlat_variables, per_cpu_timerlat_var);
->  
->  /*
->   * this_cpu_tmr_var - Return the per-cpu timerlat_variables on its relative CPU
-> @@ -220,7 +220,7 @@ struct timerlat_sample {
->  /*
->   * Protect the interface.
->   */
-> -struct mutex interface_lock;
-> +static DEFINE_MUTEX(interface_lock);
->  
->  /*
->   * Tracer data.
-> @@ -1818,8 +1818,8 @@ static struct trace_min_max_param osnoise_print_stack = {
->  /*
->   * osnoise/timerlat_period: min 100 us, max 1 s
->   */
-> -u64 timerlat_min_period = 100;
-> -u64 timerlat_max_period = 1000000;
-> +static const u64 timerlat_min_period = 100;
-> +static const u64 timerlat_max_period = 1000000;
+Yeah, on closer inspection that never happened. The re-ordering I was
+thinking of was when the boot-time BAR assignments were moved in
+3f068aae7a95 so they'd always occur before pci_bus_add_device() was
+called. I think I got that change mixed up with commit 30d87ef8b38d
+("powerpc/pci: Fix pcibios_setup_device() ordering") which moved some
+of what what pcibios_device_add() did into pcibios_bus_add_device() to
+harmonise the hot and coldplug paths.
 
-Can't be const because it can be modified.
+As far as I can tell the pci_dev_is_added() check has been pointless
+since the code was added in 6e628c7d33d9 ("powerpc/powernv: Reserve
+additional space for IOV BAR according to the number of total_pe").
+Even back then pci_device_add() was called first in both the normal
+and OF based PCI probing paths so there's no circumstance where that
+code would see the added flag set.
 
--- Steve
+That patch was part of the PowerNV SRIOV support series which went
+through quite a few iterations. My best guess is that check might have
+been needed in an earlier version and was just carried forward until
+it got merged. I didn't dig too deeply into the history though.
 
->  static struct trace_min_max_param timerlat_period = {
->  	.lock	= &interface_lock,
->  	.val	= &osnoise_data.timerlat_period,
-> @@ -2087,8 +2087,6 @@ __init static int init_osnoise_tracer(void)
->  {
->  	int ret;
->  
-> -	mutex_init(&interface_lock);
-> -
->  	cpumask_copy(&osnoise_cpumask, cpu_all_mask);
->  
->  	ret = register_tracer(&osnoise_tracer);
-
+Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
