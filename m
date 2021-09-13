@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620B8408C1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AA9408EE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236486AbhIMNNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:13:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37985 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235759AbhIMNNN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:13:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631538717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=fy9mvgIdV9oY9XF5VY1l7ljIvXqXbTfyzWN80Pw9vSg=;
-        b=AvOHSIdjVJRphLL6xGj63zRQbXA5DlLVXfbpGeODnC9dTvQs0px/21ZvfAZatSG5qyrxi0
-        7h9g9Ugbwya+q6Nr/roPabBZmPm2zD1juraRjsFiqlEtUplgdkMLWrzAwcmKVZqMRdeyOS
-        xsmDc62/pXu1QwY3D+tEJeGX22WD3ms=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-WbFXue24OjquLLFoG_Qw2Q-1; Mon, 13 Sep 2021 09:11:56 -0400
-X-MC-Unique: WbFXue24OjquLLFoG_Qw2Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7730710144E1;
-        Mon, 13 Sep 2021 13:11:54 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C8D4D6D01F;
-        Mon, 13 Sep 2021 13:11:53 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Subject: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all pages
-Date:   Mon, 13 Sep 2021 09:11:51 -0400
-Message-Id: <20210913131153.1202354-1-pbonzini@redhat.com>
+        id S241091AbhIMNhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:37:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242483AbhIMN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:29:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98F3661354;
+        Mon, 13 Sep 2021 13:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631539450;
+        bh=jLa9bZIjWiXqboxB1Luym7DLUd9su7iVxlQkiTZxnR4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=0kqIBWDs3UM2kCr7V6vws9D0+fZe9onfAicsvEYc5EnxjEp06ecHNXBIXYsYwzWT9
+         04qDgwSFN0aAx9AfRdNc8bVcpEhvdSq3Y5Z7w1hTYChmPmEZWbD4crtOiUwm8LRMUP
+         j5Qv+OG+jW4zVzbE9G+QvSyv/kosS2eh2wSJ4uKA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 006/236] power: supply: axp288_fuel_gauge: Report register-address on readb / writeb errors
+Date:   Mon, 13 Sep 2021 15:11:51 +0200
+Message-Id: <20210913131100.539750159@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on discussions from the previous week(end), this series implements
-a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
-file descriptor.  Other possibilities, such as closing and reopening
-the device, are racy.
+From: Hans de Goede <hdegoede@redhat.com>
 
-The patches are untested, but I am posting them because they are simple
-and so that Yang Zhong can try using them in QEMU.
+[ Upstream commit caa534c3ba40c6e8352b42cbbbca9ba481814ac8 ]
 
-Paolo
+When fuel_gauge_reg_readb()/_writeb() fails, report which register we
+were trying to read / write when the error happened.
 
-Paolo Bonzini (2):
-  x86: sgx_vepc: extract sgx_vepc_remove_page
-  x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
+Also reword the message a bit:
+- Drop the axp288 prefix, dev_err() already prints this
+- Switch from telegram / abbreviated style to a normal sentence, aligning
+  the message with those from fuel_gauge_read_*bit_word()
 
- arch/x86/include/uapi/asm/sgx.h |  2 ++
- arch/x86/kernel/cpu/sgx/virt.c  | 48 ++++++++++++++++++++++++++++++---
- 2 files changed, 47 insertions(+), 3 deletions(-)
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/power/supply/axp288_fuel_gauge.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
+index 148eb8105803..be24529157be 100644
+--- a/drivers/power/supply/axp288_fuel_gauge.c
++++ b/drivers/power/supply/axp288_fuel_gauge.c
+@@ -149,7 +149,7 @@ static int fuel_gauge_reg_readb(struct axp288_fg_info *info, int reg)
+ 	}
+ 
+ 	if (ret < 0) {
+-		dev_err(&info->pdev->dev, "axp288 reg read err:%d\n", ret);
++		dev_err(&info->pdev->dev, "Error reading reg 0x%02x err: %d\n", reg, ret);
+ 		return ret;
+ 	}
+ 
+@@ -163,7 +163,7 @@ static int fuel_gauge_reg_writeb(struct axp288_fg_info *info, int reg, u8 val)
+ 	ret = regmap_write(info->regmap, reg, (unsigned int)val);
+ 
+ 	if (ret < 0)
+-		dev_err(&info->pdev->dev, "axp288 reg write err:%d\n", ret);
++		dev_err(&info->pdev->dev, "Error writing reg 0x%02x err: %d\n", reg, ret);
+ 
+ 	return ret;
+ }
 -- 
-2.27.0
+2.30.2
+
+
 
