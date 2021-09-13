@@ -2,240 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459C840856A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE43408577
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237642AbhIMHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:35:45 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15405 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237568AbhIMHfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:35:43 -0400
-Received: from dggeml761-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H7J6P3tNyzQrl5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:30:21 +0800 (CST)
-Received: from huawei.com (10.175.127.234) by dggeml761-chm.china.huawei.com
- (10.1.199.171) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Mon, 13
- Sep 2021 15:34:25 +0800
-From:   Wenyu Liu <liuwenyu7@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <yeyunfeng@huawei.com>, <hewenliang4@huawei.com>,
-        <wuxu.wu@huawei.com>
-Subject: [PATCH] tools api fs: fix the concurrency problem for  xxx__mountpoint()
-Date:   Mon, 13 Sep 2021 03:35:53 -0400
-Message-ID: <20210913073553.3384908-1-liuwenyu7@huawei.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.234]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeml761-chm.china.huawei.com (10.1.199.171)
-X-CFilter-Loop: Reflected
+        id S237672AbhIMHjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:39:52 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23112 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237599AbhIMHjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 03:39:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="221648365"
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="221648365"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 00:38:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="506993523"
+Received: from shbuild999.sh.intel.com ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Sep 2021 00:38:30 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v2] mm/page_alloc: detect allocation forbidden by cpuset and bail out early
+Date:   Mon, 13 Sep 2021 15:38:29 +0800
+Message-Id: <1631518709-42881-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When xxx_mountpoint() first acquires the mountpoint
-path,it also fills the path into fs__entries[idx]->path
-and set fs__entries[idx]->found to be true.
+There was report that starting an Ubuntu in docker while using cpuset
+to bind it to movable nodes (a node only has movable zone, like a node
+for hotplug or a Persistent Memory  node in normal usage) will fail
+due to memory allocation failure, and then OOM is involved and many
+other innocent processes got killed. It can be reproduced with command:
+$docker run -it --rm  --cpuset-mems 4 ubuntu:latest bash -c
+"grep Mems_allowed /proc/self/status" (node 4 is a movable node)
 
-After that,every time xxx_mountpoint() is executed,the
-path is gotten directly from fs__entries[idx]->path.
+  
+  runc:[2:INIT] invoked oom-killer: gfp_mask=0x500cc2(GFP_HIGHUSER|__GFP_ACCOUNT), order=0, oom_score_adj=0
+  CPU: 8 PID: 8291 Comm: runc:[2:INIT] Tainted: G        W I E     5.8.2-0.g71b519a-default #1 openSUSE Tumbleweed (unreleased)
+  Hardware name: Dell Inc. PowerEdge R640/0PHYDR, BIOS 2.6.4 04/09/2020
+  Call Trace:
+   dump_stack+0x6b/0x88
+   dump_header+0x4a/0x1e2
+   oom_kill_process.cold+0xb/0x10
+   out_of_memory.part.0+0xaf/0x230
+   out_of_memory+0x3d/0x80
+   __alloc_pages_slowpath.constprop.0+0x954/0xa20
+   __alloc_pages_nodemask+0x2d3/0x300
+   pipe_write+0x322/0x590
+   new_sync_write+0x196/0x1b0
+   vfs_write+0x1c3/0x1f0
+   ksys_write+0xa7/0xe0
+   do_syscall_64+0x52/0xd0
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  
+  Mem-Info:
+  active_anon:392832 inactive_anon:182 isolated_anon:0
+   active_file:68130 inactive_file:151527 isolated_file:0
+   unevictable:2701 dirty:0 writeback:7
+   slab_reclaimable:51418 slab_unreclaimable:116300
+   mapped:45825 shmem:735 pagetables:2540 bounce:0
+   free:159849484 free_pcp:73 free_cma:0
+  Node 4 active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB all_unreclaimable? no
+  Node 4 Movable free:130021408kB min:9140kB low:139160kB high:269180kB reserved_highatomic:0KB active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:130023424kB managed:130023424kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:292kB local_pcp:84kB free_cma:0kB
+  lowmem_reserve[]: 0 0 0 0 0
+  Node 4 Movable: 1*4kB (M) 0*8kB 0*16kB 1*32kB (M) 0*64kB 0*128kB 1*256kB (M) 1*512kB (M) 1*1024kB (M) 0*2048kB 31743*4096kB (M) = 130021156kB
+  
+  oom-kill:constraint=CONSTRAINT_CPUSET,nodemask=(null),cpuset=docker-9976a269caec812c134fa317f27487ee36e1129beba7278a463dd53e5fb9997b.scope,mems_allowed=4,global_oom,task_memcg=/system.slice/containerd.service,task=containerd,pid=4100,uid=0
+  Out of memory: Killed process 4100 (containerd) total-vm:4077036kB, anon-rss:51184kB, file-rss:26016kB, shmem-rss:0kB, UID:0 pgtables:676kB oom_score_adj:0
+  oom_reaper: reaped process 8248 (docker), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+  oom_reaper: reaped process 2054 (node_exporter), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+  oom_reaper: reaped process 1452 (systemd-journal), now anon-rss:0kB, file-rss:8564kB, shmem-rss:4kB
+  oom_reaper: reaped process 2146 (munin-node), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+  oom_reaper: reaped process 8291 (runc:[2:INIT]), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
 
-There will be a concurrency problem:
-The fs__entries[idx]->found has been set by a thread,
-but the fs__entries[idx]->path has not been completely
-filled.
-However, another thread thinks that the mountpoint path
-has been found and read it from fs__entries[idx]->path.
 
-We found this bug when we repeatedly executed the
-"perf top" command:
-When the "perf top" command is executed, multiple
-threads are created and concurrently execute the func
-hugetlbfs_mountpoint().
+The reason is, in the case, the target cpuset nodes only have movable
+zone, while the creation of an OS in docker sometimes needs to allocate
+memory in non-movable zones (dma/dma32/normal) like GFP_HIGHUSER, and
+the cpuset limit forbids the allocation, then out-of-memory killing is
+involved even when normal nodes and movable nodes both have many free
+memory.
 
-Using memory barrier alone does not solve this problem,
-because if the current thread thinks the path is not
-found,it will still trys to find the path and fills it
-into fs__entries[idx]->path,it also will causes other
-threads that are getting fs__entries[idx]->path to read
-a wrong path.
+The OOM killer cannot help to resolve the situation as there is no
+usable memory for the request in the cpuset scope. The only reasonable
+measure to take is to fail the allocation right away and have the caller
+to deal with it. 
 
-This patch add a mutex_lock when fs__get_mountpoint(fs)
-is filling the fs->path,and uses memory barrier to ensure
-the path is completely filled before the fs->found is set.
+So add a check for cases like this in the slowpath of allocation, and
+bail out early returning NULL for the allocation.
 
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Signed-off-by: Wenyu Liu <liuwenyu7@huawei.com>
+As page allocation is one of the hottest path in kernel, this check
+will hurt all users with sane cpuset configuration, add a static branch
+check and detect the abnormal config in cpuset memory binding setup so
+that the extra check in page allocation is not paid by everyone.  
+
+[thanks to Micho Hocko and David Rientjes for suggesting not handle
+ it inside OOM code, adding cpuset check, refining comments]
+
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
- tools/lib/api/Makefile |  1 +
- tools/lib/api/fs/fs.c  | 51 +++++++++++++++++++++++++++++++++---------
- 2 files changed, 42 insertions(+), 10 deletions(-)
+Changelog:
+ 
+  v2:
+  * add a static branch detection in cpuset code to reduce
+    the overhead in allocation hotpath (Michal Hocko)
 
-diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
-index a13e9c7f1fc5..b75ba280dde9 100644
---- a/tools/lib/api/Makefile
-+++ b/tools/lib/api/Makefile
-@@ -19,6 +19,7 @@ LIBFILE = $(OUTPUT)libapi.a
- 
- CFLAGS := $(EXTRA_WARNINGS) $(EXTRA_CFLAGS)
- CFLAGS += -ggdb3 -Wall -Wextra -std=gnu99 -U_FORTIFY_SOURCE -fPIC
-+CFLAGS += -lpthread
- 
- ifeq ($(DEBUG),0)
- ifeq ($(CC_NO_CLANG), 0)
-diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-index 82f53d81a7a7..65d19de3911c 100644
---- a/tools/lib/api/fs/fs.c
-+++ b/tools/lib/api/fs/fs.c
-@@ -12,6 +12,9 @@
- #include <fcntl.h>
- #include <unistd.h>
- #include <sys/mount.h>
-+#include <pthread.h>
-+#include <asm/barrier.h>
-+#include <linux/compiler.h>
- 
- #include "fs.h"
- #include "debug-internal.h"
-@@ -92,6 +95,7 @@ struct fs {
- 	bool			 found;
- 	bool			 checked;
- 	long			 magic;
-+	pthread_mutex_t		 lock;
- };
- 
- enum {
-@@ -113,43 +117,69 @@ static struct fs fs__entries[] = {
- 		.mounts	= sysfs__fs_known_mountpoints,
- 		.magic	= SYSFS_MAGIC,
- 		.checked = false,
-+		.lock = PTHREAD_MUTEX_INITIALIZER,
- 	},
- 	[FS__PROCFS] = {
- 		.name	= "proc",
- 		.mounts	= procfs__known_mountpoints,
- 		.magic	= PROC_SUPER_MAGIC,
- 		.checked = false,
-+		.lock = PTHREAD_MUTEX_INITIALIZER,
- 	},
- 	[FS__DEBUGFS] = {
- 		.name	= "debugfs",
- 		.mounts	= debugfs__known_mountpoints,
- 		.magic	= DEBUGFS_MAGIC,
- 		.checked = false,
-+		.lock = PTHREAD_MUTEX_INITIALIZER,
- 	},
- 	[FS__TRACEFS] = {
- 		.name	= "tracefs",
- 		.mounts	= tracefs__known_mountpoints,
- 		.magic	= TRACEFS_MAGIC,
- 		.checked = false,
-+		.lock = PTHREAD_MUTEX_INITIALIZER,
- 	},
- 	[FS__HUGETLBFS] = {
- 		.name	= "hugetlbfs",
- 		.mounts = hugetlbfs__known_mountpoints,
- 		.magic	= HUGETLBFS_MAGIC,
- 		.checked = false,
-+		.lock = PTHREAD_MUTEX_INITIALIZER,
- 	},
- 	[FS__BPF_FS] = {
- 		.name	= "bpf",
- 		.mounts = bpf_fs__known_mountpoints,
- 		.magic	= BPF_FS_MAGIC,
- 		.checked = false,
-+		.lock = PTHREAD_MUTEX_INITIALIZER,
- 	},
- };
- 
-+static void fs_fill_path(struct fs *fs, const char *path, size_t len)
-+{
-+	if (len >= sizeof(fs->path))
-+		len = sizeof(fs->path) - 1;
+  v1 (since RFC):
+  * move the handling from oom code to page allocation 
+    path (Michal/David)
+
+ include/linux/cpuset.h | 15 +++++++++++++++
+ include/linux/mmzone.h | 12 ++++++++++++
+ kernel/cgroup/cpuset.c | 14 ++++++++++++++
+ mm/page_alloc.c        | 13 +++++++++++++
+ 4 files changed, 54 insertions(+)
+
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index d2b9c41..403ccf9 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -34,6 +34,8 @@
+  */
+ extern struct static_key_false cpusets_pre_enable_key;
+ extern struct static_key_false cpusets_enabled_key;
++extern struct static_key_false cpusets_insane_config_key;
 +
-+	pthread_mutex_lock(&fs->lock);
-+	if (fs->found) {
-+		pthread_mutex_unlock(&fs->lock);
-+		return;
-+	}
-+	strncpy(fs->path, path, len);
-+	fs->path[len] = '\0';
-+	/* Make sure the path is filled before fs->found is set */
-+	smp_wmb();
-+	fs->found = true;
-+	pthread_mutex_unlock(&fs->lock);
+ static inline bool cpusets_enabled(void)
+ {
+ 	return static_branch_unlikely(&cpusets_enabled_key);
+@@ -51,6 +53,19 @@ static inline void cpuset_dec(void)
+ 	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
+ }
+ 
++/*
++ * This will get enabled whenever a cpuset configuration is considered
++ * unsupportable in general. E.g. movable only node which cannot satisfy
++ * any non movable allocations (see update_nodemask). Page allocator
++ * needs to make additional checks for those configurations and this
++ * check is meant to guard those checks without any overhead for sane
++ * configurations.
++ */
++static inline bool cpusets_insane_config(void)
++{
++	return static_branch_unlikely(&cpusets_insane_config_key);
++}
++
+ extern int cpuset_init(void);
+ extern void cpuset_init_smp(void);
+ extern void cpuset_force_rebuild(void);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 6a1d79d..b69b871 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -1220,6 +1220,18 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
+ #define for_each_zone_zonelist(zone, z, zlist, highidx) \
+ 	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
+ 
++/* Whether the 'nodes' are all movable nodes */
++static inline bool movable_only_nodes(nodemask_t *nodes)
++{
++	struct zonelist *zonelist;
++	struct zoneref *z;
++
++	zonelist = &(first_online_pgdat())->node_zonelists[ZONELIST_FALLBACK];
++	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
++	return (!z->zone) ? true : false;
 +}
 +
 +
- static bool fs__read_mounts(struct fs *fs)
- {
- 	bool found = false;
- 	char type[100];
-+	char path[PATH_MAX];
- 	FILE *fp;
+ #ifdef CONFIG_SPARSEMEM
+ #include <asm/sparsemem.h>
+ #endif
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index df1ccf4..03eb40c 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -69,6 +69,13 @@
+ DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
+ DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
  
- 	fp = fopen("/proc/mounts", "r");
-@@ -158,15 +188,17 @@ static bool fs__read_mounts(struct fs *fs)
++/*
++ * There could be abnormal cpuset configurations for cpu or memory
++ * node binding, add this key to provide a quick low-cost judgement
++ * of the situation.
++ */
++DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
++
+ /* See "Frequency meter" comments, below. */
  
- 	while (!found &&
- 	       fscanf(fp, "%*s %" STR(PATH_MAX) "s %99s %*s %*d %*d\n",
--		      fs->path, type) == 2) {
-+		      path, type) == 2) {
+ struct fmeter {
+@@ -1868,6 +1875,13 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval < 0)
+ 		goto done;
  
--		if (strcmp(type, fs->name) == 0)
-+		if (strcmp(type, fs->name) == 0) {
-+			fs_fill_path(fs, path, sizeof(path) - 1);
- 			found = true;
-+		}
- 	}
- 
- 	fclose(fp);
- 	fs->checked = true;
--	return fs->found = found;
-+	return found;
- }
- 
- static int fs__valid_mount(const char *fs, long magic)
-@@ -188,8 +220,7 @@ static bool fs__check_mounts(struct fs *fs)
- 	ptr = fs->mounts;
- 	while (*ptr) {
- 		if (fs__valid_mount(*ptr, fs->magic) == 0) {
--			fs->found = true;
--			strcpy(fs->path, *ptr);
-+			fs_fill_path(fs, *ptr, strlen(*ptr));
- 			return true;
- 		}
- 		ptr++;
-@@ -227,10 +258,7 @@ static bool fs__env_override(struct fs *fs)
- 	if (!override_path)
- 		return false;
- 
--	fs->found = true;
--	fs->checked = true;
--	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
--	fs->path[sizeof(fs->path) - 1] = '\0';
-+	fs_fill_path(fs, override_path, sizeof(fs->path) - 1);
- 	return true;
- }
- 
-@@ -252,8 +280,11 @@ static const char *fs__mountpoint(int idx)
- {
- 	struct fs *fs = &fs__entries[idx];
- 
--	if (fs->found)
-+	if (READ_ONCE(fs->found)) {
-+		/* Make sure the path is filled completely */
-+		smp_rmb();
- 		return (const char *)fs->path;
++	if (movable_only_nodes(&trialcs->mems_allowed)) {
++		static_branch_enable(&cpusets_insane_config_key);
++		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
++			"Cpuset allocations might fail even with a lot of memory available.\n",
++			nodemask_pr_args(&trialcs->mems_allowed));
 +	}
++
+ 	spin_lock_irq(&callback_lock);
+ 	cs->mems_allowed = trialcs->mems_allowed;
+ 	spin_unlock_irq(&callback_lock);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c..a7e0854 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4914,6 +4914,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	if (!ac->preferred_zoneref->zone)
+ 		goto nopage;
  
- 	/* the mount point was already checked for the mount point
- 	 * but and did not exist, so return NULL to avoid scanning again.
++	/*
++	 * Check for insane configurations where the cpuset doesn't contain
++	 * any suitable zone to satisfy the request - e.g. non-movable
++	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
++	 */
++	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
++		struct zoneref *z = first_zones_zonelist(ac->zonelist,
++					ac->highest_zoneidx,
++					&cpuset_current_mems_allowed);
++		if (!z->zone)
++			goto nopage;
++	}
++
+ 	if (alloc_flags & ALLOC_KSWAPD)
+ 		wake_all_kswapds(order, gfp_mask, ac);
+ 
 -- 
-2.27.0
+2.7.4
 
