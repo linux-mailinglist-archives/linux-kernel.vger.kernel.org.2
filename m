@@ -2,111 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37FE40A19E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC83240A1A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240144AbhIMXkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
+        id S244251AbhIMXlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236079AbhIMXj7 (ORCPT
+        with ESMTP id S236079AbhIMXlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:39:59 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5404C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:38:41 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id z5so24069069ybj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:38:41 -0700 (PDT)
+        Mon, 13 Sep 2021 19:41:24 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6726C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:39:59 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id s20so16398650oiw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cI/jeOU5rLR8X7WtxXOWaAngNhFiIOuHbXY1aDDYGos=;
-        b=NMKR01fsDjOL/bSL+r00xqJRi+mMiSl6JTC0z4v6w6pafJlzwWUnP9WNprle1mMKN9
-         SqkKP2t1CC3hqLN22VyYmhvfvyeQ/qxBgsK11LfqIg5zqIVMWuOlE5MUxuoWgXZTpy75
-         iRBbB0FA/hVDjM0PJ+UlOyXWs7eZ+8A69OKeK/yvuqzJaHhr9Y6cSKKsP0w2vbJWVgEM
-         kODN4pbGHgOQvBD0z3e1EqPUFVe3dZm5XhkbS+sKKxEjVVyOeJUiOOzetIKdzPA4/wH7
-         O/R5G0yjVzvkn4sEUZGCmkl0ghblpGpJcVyQ55ahS529cEpnW5uYibER5FPC2dokxqeC
-         O4Sw==
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ihysQIdGR8w+AiS+ReWp8DK2aVapwmF1UvOCNcDhHKc=;
+        b=IRIIEViIbrzd5kpmoPo6R+Oy3FbupEZKJ6mcTM8r782MvEpzOb2C7MJtR4EBx3lXie
+         CHl/9FYY3aeP6vQqOWBveC/ddBGSnwPWxnSDNX+l8j/LyDSs0YyJA0V5kzPVq7OqGLUj
+         AEtm0/7Jp51ctNjxsGlrTzmlPOU5/8x2CSs0IpWDN90SvGP5TfTkt/g/hzR+tufLr6UW
+         yuDGmsKRIR8E1QzgPqi5oDRRANvSTE9+mxDwDs94C0lx6P9LsTFRwoTL9CrjQGlmDaN4
+         HDVImDXi1v0SNfnC3VTDuj2dkOAwgst8eQllcU1qKkyr+yCz3r7Jo2YSvd1sJU/nVriu
+         D+9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cI/jeOU5rLR8X7WtxXOWaAngNhFiIOuHbXY1aDDYGos=;
-        b=OF1sC/WuevYg6SrF8mkmGkLls7J0R9dyj5OboGzi+elebPczqqMq1CWZUbbDGR68ob
-         IfkpXWTjfLMvhryiS237YRqeWLVqybec0D5aMB3pk1ysM2FJ/tLF4e+G1fxuiin2wmPv
-         IOp+E+qkYv1xZBjlKc7Tb7qjIdqjd+6kaSD9v6ikcfVfPn5QAU1kNlomrrd4Pk0HeV1h
-         ko7qM9QJNI6KfKdeHMLydUHFVNp6WssKvDh8UkHftpuIsFT3dAZE81WKxqNIWaecCGGZ
-         XuHIyydM8BTxWfYJGIy8BJqBr0uKjvIZNbUcuAbPntFWAuWq+BzC+frX5ANeFGKWxDKA
-         wmcA==
-X-Gm-Message-State: AOAM530VYWRTTlrdP5VZwMwErz6n+8HTUuOeHsEjnE5B9Um4sQ6ISTyE
-        J8sYs4nKt3idWtW+H6oEjc55J9Xwz86CyaxXu66iXA==
-X-Google-Smtp-Source: ABdhPJzT+O8be5cYSNBVl8s3QC+2tzsAf4DvhR8OYgF/hCrLtsSWXEIW0OmXr/C1MdplAnMcBhEp35bF6USETxVCWHc=
-X-Received: by 2002:a25:ab44:: with SMTP id u62mr18518702ybi.335.1631576320503;
- Mon, 13 Sep 2021 16:38:40 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ihysQIdGR8w+AiS+ReWp8DK2aVapwmF1UvOCNcDhHKc=;
+        b=NztYH691RQ1ixvIcH4KYvCW5MgHDEPAQWcaUgGPxC1S9YcVGTdhMr7JKa8t41cs3iX
+         0Qms7HTWzTZLFIydYxGNvdqT013Gi/WaPAj7hMQ+v21np637akzCQBkyyUjHPCQIpuT1
+         KpZpGs0QWh7d4XZpMaErb9nQuFGkg7zjS2rzD+dAG9ljzA7sVGZLVtFI3+27h6Bmkds5
+         96AMf6+c8HnR25VdRHmzqrpTbHNiSSyVuafM8S2p7tCA3RDQqidP95ZiGMDNlHLgKypr
+         Z5bH75iAMe7MQ8HLFHlt0UHl4EMQAC1coj1hDvskjTkm/rY8mN0AC89ogNGZWYq+71ks
+         nIwg==
+X-Gm-Message-State: AOAM531ruQXXv0GuRMvuRCcP4SAHtQrq77/+jppK7IatfXA/vi45vDTp
+        cbuBbinNTuhKMM4ZyRm6OJrOOQ==
+X-Google-Smtp-Source: ABdhPJwV6GzMZQ+mNOpdRRBX3HLArICooddBup3dlenG8aQ6qcgGviIlOFg9Jtdit/VWiu2IZB/GZw==
+X-Received: by 2002:aca:914:: with SMTP id 20mr9750235oij.9.1631576397694;
+        Mon, 13 Sep 2021 16:39:57 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id u15sm2208500oor.34.2021.09.13.16.39.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 16:39:57 -0700 (PDT)
+Subject: Re: [RFC v2 00/13] create power sequencing subsystem
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <4a508fc1-6253-9c11-67fb-f84f17fd2719@kali.org>
+Date:   Mon, 13 Sep 2021 18:39:55 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-3-rananta@google.com>
- <20210909171755.GF5176@sirena.org.uk> <CAJHc60yJ6621=TezncgsMR+DdYxzXY1oF-QLeARwq8HowH6sVQ@mail.gmail.com>
- <20210910083011.GA4474@sirena.org.uk>
-In-Reply-To: <20210910083011.GA4474@sirena.org.uk>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 13 Sep 2021 16:38:29 -0700
-Message-ID: <CAJHc60z0kLzrA3FfQeD0RFZE-PscnDsxxqkVwzcNFcCkf_FRPw@mail.gmail.com>
-Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 1:30 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Sep 09, 2021 at 01:06:31PM -0700, Raghavendra Rao Ananta wrote:
-> > On Thu, Sep 9, 2021 at 10:18 AM Mark Brown <broonie@kernel.org> wrote:
->
-> > > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
->
-> > > Can we arrange to copy this at build time rather than having a duplicate
-> > > copy we need to keep in sync?  We have some stuff to do this for uapi
-> > > headers already.
->
-> > That's a great idea actually (I wasn't aware of it). But, probably
-> > should've mentioned it earlier, I had a hard time compiling the header
-> > as is so I modified it a little bit and made the definitions of
-> > [write|read]_sysreg_s() similar to the ones in kvm-unit-tests.
-> > I'll try my best to get the original format working and try to
-> > implement your idea if it works.
->
-> One option would be to do something like split out the bits that can be
-> shared into a separate header which can be included from both places and
-> then have the header with the unsharable bits include that.  Something
-> like sysreg.h and sysreg_defs.h for example.
 
-Hi Mark,
+On 8/29/21 8:12 AM, Dmitry Baryshkov wrote:
+> This is the second RFC on the proposed power sequencer subsystem. This
+> is a generification of the MMC pwrseq code. The subsystem tries to
+> abstract the idea of complex power-up/power-down/reset of the devices.
+>
+> To ease migration to pwrseq and to provide compatibility with older
+> device trees, while keeping drivers simple, this iteration of RFC
+> introduces pwrseq fallback support: pwrseq driver can register fallback
+> providers. If another device driver requests pwrseq instance and none
+> was declared, the pwrseq fallback code would go through the list of
+> fallback providers and if the match is found, driver would return a
+> crafted pwrseq instance. For now this mechanism is limited to the OF
+> device matching, but it can be extended further to use any combination
+> of device IDs.
+>
+> The primary set of devices that promted me to create this patchset is
+> the Qualcomm BT+WiFi family of chips. They reside on serial+platform or
+> serial + SDIO interfaces (older generations) or on serial+PCIe (newer
+> generations).  They require a set of external voltage regulators to be
+> powered on and (some of them) have separate WiFi and Bluetooth enable
+> GPIOs.
+>
+> This patchset being an RFC tries to demonstrate the approach, design and
+> usage of the pwrseq subsystem. Following issues are present in the RFC
+> at this moment but will be fixed later if the overall approach would be
+> viewed as acceptable:
+>
+>  - No documentation
+>    While the code tries to be self-documenting proper documentation
+>    would be required.
+>
+>  - Minimal device tree bindings changes
+>    There are no proper updates for the DT bindings (thus neither Rob
+>    Herring nor devicetree are included in the To/Cc lists). The dt
+>    schema changes would be a part of v1.
+>
+>  - Lack of proper PCIe integration
+>    At this moment support for PCIe is hacked up to be able to test the
+>    PCIe part of qca6390. Proper PCIe support would require automatically
+>    powering up the devices before the bus scan depending on the proper
+>    device structure in the device tree.
+>
+> Changes since RFC v1:
+>  - Provider pwrseq fallback support
+>  - Implement fallback support in pwrseq_qca.
+>  - Mmove susclk handling to pwrseq_qca.
+>  - Significantly simplify hci_qca.c changes, by dropping all legacy
+>    code. Now hci_qca uses only pwrseq calls to power up/down bluetooth
+>    parts of the chip.
+>
+I tested this here, on the Lenovo Yoga C630, after creating a patch to
+do basically the same thing as the db845c does.  One thing I noticed, if
+PWRSEQ=y and the rest are =m, there is a build error.  I suppose once
+the full set is posted and not RFC, I can send the patch for that. 
 
-Thanks again for your suggestion. As of v6 of the series, the original
-header from the kernel seems to be working as is, so there's no need
-to split it anymore.
-However, I'll plan to incorporate your suggestion as a separate
-series, if it's okay :)
+One question I have, if you don't mind, in patch 11, you add a second
+channel to qca power sequencer.  I've added that here, but in the c630's
+dts, "vreg_l23a_3p3: ldo23" is empty, so I added the same numbers in for
+the regulator, and I'm wondering how to test that it's actually working
+correctly?
 
-I was looking into this though and could only find some utilities such
-as tools/iio/, tools/spi/, and so on, which seem to create a symbolic
-link to the header present in the kernel (rather than copying). Is
-this what you were referring to?
+-- steev
 
-Regards,
-Raghavendra
