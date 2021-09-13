@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0AF4090E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38286408EE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244748AbhIMN4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:56:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40482 "EHLO mail.kernel.org"
+        id S242881AbhIMNhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:37:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245024AbhIMNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:53:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27183619E3;
-        Mon, 13 Sep 2021 13:35:01 +0000 (UTC)
+        id S242487AbhIMN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:29:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ADEA6134F;
+        Mon, 13 Sep 2021 13:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540101;
-        bh=6AkgcefdX8RMUOHmbdDoRVQalXnWARQVGajw38GXG2s=;
+        s=korg; t=1631539452;
+        bh=gHOyesAu68sPGrpUkzJYHyLALtuFHcCbITcL8Zix2Fw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ae6B4Ls/7F8RlNwwX0jX4nZILGq3coQnawOu3SMGVMKtDzPCEaH2Px+YhxdHPQaE4
-         Y/89zWRj0xBH+EQ4qgLFFTqCOhnvmyM5/FhiyD/QIfoxqwkDrdOA2z7vmg3xErlLMT
-         a5GLrOiDBWzjFRm8Jn0Cwn5VLKF9PFrMbymIdgpM=
+        b=a/Lh9/xkiSUydyHxVPfzxcrjBWrVlOPwEY0nu3eAFbx+l83PCXF9NbzTCCSFYpngR
+         QAQ0Te8GCz4q/bZLJhMI+AZq5SdzpszpBH4TCtnC5DfgJ7F7tKlJ/dQrCv0E0RlX7y
+         cYvzeS58ghP5mhiTXQ5PRPhRL/4evA6ooOvvdDpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        syzbot <syzbot+5d1bad8042a8f0e8117a@syzkaller.appspotmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
+        stable@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 050/300] crypto: x86/aes-ni - add missing error checks in XTS code
-Date:   Mon, 13 Sep 2021 15:11:51 +0200
-Message-Id: <20210913131111.040600544@linuxfoundation.org>
+Subject: [PATCH 5.10 007/236] crypto: omap-sham - clear dma flags only after omap_sham_update_dma_stop()
+Date:   Mon, 13 Sep 2021 15:11:52 +0200
+Message-Id: <20210913131100.571436939@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 821720b9f34ec54106ebf012a712ba73bbcf47c2 ]
+[ Upstream commit fe28140b3393b0ba1eb95cc109f974a7e58b26fd ]
 
-The updated XTS code fails to check the return code of skcipher_walk_virt,
-which may lead to skcipher_walk_abort() or skcipher_walk_done() being called
-while the walk argument is in an inconsistent state.
+We should not clear FLAGS_DMA_ACTIVE before omap_sham_update_dma_stop() is
+done calling dma_unmap_sg(). We already clear FLAGS_DMA_ACTIVE at the
+end of omap_sham_update_dma_stop().
 
-So check the return value after each such call, and bail on errors.
+The early clearing of FLAGS_DMA_ACTIVE is not causing issues as we do not
+need to defer anything based on FLAGS_DMA_ACTIVE currently. So this can be
+applied as clean-up.
 
-Fixes: 2481104fe98d ("crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper")
-Reported-by: Dave Hansen <dave.hansen@intel.com>
-Reported-by: syzbot <syzbot+5d1bad8042a8f0e8117a@syzkaller.appspotmail.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+Cc: Lokesh Vutla <lokeshvutla@ti.com>
+Cc: Tero Kristo <kristo@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/crypto/aesni-intel_glue.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/crypto/omap-sham.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index 2144e54a6c89..388643ca2177 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -849,6 +849,8 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
- 		return -EINVAL;
- 
- 	err = skcipher_walk_virt(&walk, req, false);
-+	if (err)
-+		return err;
- 
- 	if (unlikely(tail > 0 && walk.nbytes < walk.total)) {
- 		int blocks = DIV_ROUND_UP(req->cryptlen, AES_BLOCK_SIZE) - 2;
-@@ -862,7 +864,10 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
- 		skcipher_request_set_crypt(&subreq, req->src, req->dst,
- 					   blocks * AES_BLOCK_SIZE, req->iv);
- 		req = &subreq;
-+
- 		err = skcipher_walk_virt(&walk, req, false);
-+		if (err)
-+			return err;
- 	} else {
- 		tail = 0;
- 	}
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index 39d17ed1db2f..f6a8ae8a18c2 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -1735,7 +1735,7 @@ static void omap_sham_done_task(unsigned long data)
+ 		if (test_and_clear_bit(FLAGS_OUTPUT_READY, &dd->flags))
+ 			goto finish;
+ 	} else if (test_bit(FLAGS_DMA_READY, &dd->flags)) {
+-		if (test_and_clear_bit(FLAGS_DMA_ACTIVE, &dd->flags)) {
++		if (test_bit(FLAGS_DMA_ACTIVE, &dd->flags)) {
+ 			omap_sham_update_dma_stop(dd);
+ 			if (dd->err) {
+ 				err = dd->err;
 -- 
 2.30.2
 
