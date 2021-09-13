@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C066408D1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715C4408FDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240899AbhIMNXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
+        id S241999AbhIMNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240285AbhIMNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CB75610A2;
-        Mon, 13 Sep 2021 13:19:53 +0000 (UTC)
+        id S243176AbhIMNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:42:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D5F96140B;
+        Mon, 13 Sep 2021 13:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539194;
-        bh=yigy+Nk8kyBy+/NjNCqeL55b+Y70hewK4LGHSXEnOQk=;
+        s=korg; t=1631539810;
+        bh=KAQpmT0z2puzJF5fTnzpPyJmC3yvyfc0JnE7SLhq3hM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WG+fFoOwu21Q48zcblR3hwVbl7e84MDxmycoLzz4G+WzC3rP9oeWmmy31TV0/X1YR
-         8MhiMIjx1Uy71xx/Eiw3OV06hpwLntO0WESIJ9/BY7lgwJSlKxpRj0wkNSodWeiEc1
-         MCzy3tSlTSw7cRxWF/z5hs2Ow4oeCO83kGrAG8jY=
+        b=NCd1Zv+uMqBw3u7CEnoVEEwRZqyg2qED/QIGndeZiXCw6Qj6cDEW2p21ymbzBQ46y
+         cNPvQ9ccjswB3KOVCJEB6dclHzvnA1Htbq40t+MBkK0lEwH4BmWktXKYrfpOmwX+6K
+         MGYxNeAt0To4Ufm2n/h/6ffWBRC0mv6pligGz0X0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrej Picej <andrej.picej@norik.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Sam Protsenko <semen.protsenko@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/144] media: coda: fix frame_mem_ctrl for YUV420 and YVU420 formats
-Date:   Mon, 13 Sep 2021 15:14:00 +0200
-Message-Id: <20210913131049.940184146@linuxfoundation.org>
+Subject: [PATCH 5.10 136/236] arm64: dts: exynos: correct GIC CPU interfaces address range on Exynos7
+Date:   Mon, 13 Sep 2021 15:14:01 +0200
+Message-Id: <20210913131104.989107709@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 44693d74f5653f82cd7ca0fe730eed0f6b83306a ]
+[ Upstream commit 01c72cad790cb6cd3ccbe4c1402b6cb6c6bbffd0 ]
 
-The frame memory control register value is currently determined
-before userspace selects the final capture format and never corrected.
-Update ctx->frame_mem_ctrl in __coda_start_decoding() to fix decoding
-into YUV420 or YVU420 capture buffers.
+The GIC-400 CPU interfaces address range is defined as 0x2000-0x3FFF (by
+ARM).
 
-Reported-by: Andrej Picej <andrej.picej@norik.com>
-Fixes: 497e6b8559a6 ("media: coda: add sequence initialization work")
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: Sam Protsenko <semen.protsenko@linaro.org>
+Reported-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+Link: https://lore.kernel.org/r/20210805072110.4730-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/coda/coda-bit.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/coda/coda-bit.c b/drivers/media/platform/coda/coda-bit.c
-index 00c7bed3dd57..e6b68be09f8f 100644
---- a/drivers/media/platform/coda/coda-bit.c
-+++ b/drivers/media/platform/coda/coda-bit.c
-@@ -2023,17 +2023,25 @@ static int __coda_start_decoding(struct coda_ctx *ctx)
- 	u32 src_fourcc, dst_fourcc;
- 	int ret;
- 
-+	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT);
-+	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
-+	src_fourcc = q_data_src->fourcc;
-+	dst_fourcc = q_data_dst->fourcc;
-+
- 	if (!ctx->initialized) {
- 		ret = __coda_decoder_seq_init(ctx);
- 		if (ret < 0)
- 			return ret;
-+	} else {
-+		ctx->frame_mem_ctrl &= ~(CODA_FRAME_CHROMA_INTERLEAVE | (0x3 << 9) |
-+					 CODA9_FRAME_TILED2LINEAR);
-+		if (dst_fourcc == V4L2_PIX_FMT_NV12 || dst_fourcc == V4L2_PIX_FMT_YUYV)
-+			ctx->frame_mem_ctrl |= CODA_FRAME_CHROMA_INTERLEAVE;
-+		if (ctx->tiled_map_type == GDI_TILED_FRAME_MB_RASTER_MAP)
-+			ctx->frame_mem_ctrl |= (0x3 << 9) |
-+				((ctx->use_vdoa) ? 0 : CODA9_FRAME_TILED2LINEAR);
- 	}
- 
--	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT);
--	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
--	src_fourcc = q_data_src->fourcc;
--	dst_fourcc = q_data_dst->fourcc;
--
- 	coda_write(dev, ctx->parabuf.paddr, CODA_REG_BIT_PARA_BUF_ADDR);
- 
- 	ret = coda_alloc_framebuffers(ctx, q_data_dst, src_fourcc);
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 7599e1a00ff5..48952a556648 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -102,7 +102,7 @@
+ 			#address-cells = <0>;
+ 			interrupt-controller;
+ 			reg =	<0x11001000 0x1000>,
+-				<0x11002000 0x1000>,
++				<0x11002000 0x2000>,
+ 				<0x11004000 0x2000>,
+ 				<0x11006000 0x2000>;
+ 		};
 -- 
 2.30.2
 
