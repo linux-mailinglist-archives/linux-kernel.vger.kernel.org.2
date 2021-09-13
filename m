@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C36740944F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4503409740
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346419AbhIMOa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:30:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343748AbhIMO0A (ORCPT
+        id S242260AbhIMP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240645AbhIMP1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:26:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631543083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/m3AGrRM+x9xiDO65EqO8A6qIIRr/vuUKsxmz2wgEqc=;
-        b=gWmiHZTDtJXfgyGMlDjXv055GajxYZJdqNAM+0zuc+QDJ/Ke8Dwxd950E+RYOf9N6RWe4z
-        mIna2qIfX09kT0zGGISXsOkx2iGt8m51dVlWwmr0nu4jam7OA1X8D8jVGpsZ7JIJQxNNL3
-        Z29ePat6hCgsm3z3hgPoYWSjQR/D9qU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-c6CctcjoM6SEdBnX1fTY_Q-1; Mon, 13 Sep 2021 10:24:42 -0400
-X-MC-Unique: c6CctcjoM6SEdBnX1fTY_Q-1
-Received: by mail-ej1-f69.google.com with SMTP id bo11-20020a170906d04b00b005d477e1e41fso3740360ejb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:24:42 -0700 (PDT)
+        Mon, 13 Sep 2021 11:27:44 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8668C0FA0B4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:24:53 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id j18so12289849ioj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y4Lq9CmvVcXXhPkYqU8poyyam6g50FxqVLy0oSkOGwo=;
+        b=cr3Szu2PZkLNoOgq0/pNUQ7Fj5694Bo2qV8vrVedRjJCfzgGVXOzeEYVheg4ZPxGEv
+         3aCVgAf9I5Kz+XUoyOocmaSYPYPnbuPvwm8fGpvMCuWC0o+1E+mXMACJtVgk0uIJUU9h
+         t/yXY9ZSwWjKUjFKgM4E6NRaTZTBoBrpKixGs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/m3AGrRM+x9xiDO65EqO8A6qIIRr/vuUKsxmz2wgEqc=;
-        b=ybAiDpbpgisET9dTYNMq46PTCgEa/QEx2qRBEEr0/7zYqzykFnMVm5ovzen2c6rQJQ
-         fHCiF1h2I/IQa9svXqiCc1iYPzP0EVmaPG9MfvyCR5M9xhvKzwr+9uZiZ5vGA3dXo4Xg
-         WMN6rGNF0DtoPmBzn29QDh1OSsHMU1ScVeroxshq7B+3gV+xFXEFTtuU14FvzlQ1KdHx
-         1o5WyoNhBPZZb8nRJG1r1KpyxLDdGvuJUrQlCKFqdhqKW0C0Pj00rEMqfjQ9jPSbg2FY
-         yTC0KnuaYKjFsNVO5XDilLIVJBdzOCp91PifMMhJdvb7iO93xQdnJSAZovU+ACSCy/dC
-         Ha+g==
-X-Gm-Message-State: AOAM532MPI0vtMcZtX36LX4aCC9hdtzgMfxwKhbiQtizRyI1KUH++0pc
-        xDZAKb1BprsdjrdGekjS9xD15hODRmaPL/usHzyas1ZrbNe557feW1ERnhL50WPHCrmamKpJRqz
-        90njzE+s7HOPQLrWHNQ/VmFVh
-X-Received: by 2002:a17:906:95d7:: with SMTP id n23mr12423368ejy.479.1631543081230;
-        Mon, 13 Sep 2021 07:24:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3KI1g0FBsQQOkmYOFK11KFkgXtKpHivUh6eKIdur7U1Ajbs2LHAT6yejIQU4zPOFhZHWcRQ==
-X-Received: by 2002:a17:906:95d7:: with SMTP id n23mr12423347ejy.479.1631543081050;
-        Mon, 13 Sep 2021 07:24:41 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t19sm3549377ejb.115.2021.09.13.07.24.40
+        bh=y4Lq9CmvVcXXhPkYqU8poyyam6g50FxqVLy0oSkOGwo=;
+        b=4+6eizxhwRgWyc8BIeDfpaiNcaR1ytmEWBirY6t+a+txvk3MBmQhByjEjDJnO7QjFH
+         57t8wcugVjwo2vC8TFQ5D+yBqg64KEX/qxo9Jhjo6dT9XKaVjkSvakQKSBf+lOv+bU1a
+         cSHB3zHTVjqvWeGWFN27qyU8hjOBf9yTwCF5vSpxWFnDqBwjLkN3XBRqeeoDDY+vxzJo
+         ZZfkLp44cicS4krMr1qtzhXRcT+BA+bgjZk3k0PyUqBOIV0sBsafm8cSXannjzrZpZnD
+         PizdI+Hx7t2BlWqswlg6Ho4oP8DLDH6u6P2axZBR756GAJA3wUu6MrV1jZza2wWfsaRy
+         WUDw==
+X-Gm-Message-State: AOAM530dRXtzovZktyMO8Z3IQYFl5XgxKEWTS7MO3yCJYc0ko6MBqIgc
+        vrPfxKnCjpp7uOXPCgS+e7Hh2YG3gna0DQ==
+X-Google-Smtp-Source: ABdhPJx/eqqIB4vBAz8lHgsBf/5IFCa6nkTSnkdfc1eI2EY+xn1/EEl30qUR5S0dnd5MPZmncifOqg==
+X-Received: by 2002:a05:6638:1301:: with SMTP id r1mr10200622jad.32.1631543093348;
+        Mon, 13 Sep 2021 07:24:53 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w3sm4899283ilc.23.2021.09.13.07.24.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 07:24:40 -0700 (PDT)
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210913131153.1202354-2-pbonzini@redhat.com>
- <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
-Date:   Mon, 13 Sep 2021 16:24:39 +0200
+        Mon, 13 Sep 2021 07:24:52 -0700 (PDT)
+Subject: Re: [PATCH] media: atomisp: fix control reaches end of non-void
+ function error
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, paskripkin@gmail.com,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210910223700.32494-1-skhan@linuxfoundation.org>
+ <20210913084102.GF7203@kadam>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <7f1c09f9-49e1-718b-329c-aae9d2f69266@linuxfoundation.org>
+Date:   Mon, 13 Sep 2021 08:24:51 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
+In-Reply-To: <20210913084102.GF7203@kadam>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/21 16:05, Dave Hansen wrote:
-> On 9/13/21 6:11 AM, Paolo Bonzini wrote:
->> Windows expects all pages to be in uninitialized state on startup.
->> In order to implement this, we will need a ioctl that performs
->> EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor:
->> other possibilities, such as closing and reopening the device,
->> are racy.
+On 9/13/21 2:41 AM, Dan Carpenter wrote:
+> On Fri, Sep 10, 2021 at 04:37:00PM -0600, Shuah Khan wrote:
+>> Fix the following build error with -Werror=return-type enabled. Fix
+>> input_system_configure_channel_sensor() to return status when control
+>> reaches the end.
+>>
+>> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o
+>> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
+>> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+>>   1649 | }
+>>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 > 
-> Hi Paolo,
+> Hi Shuah,
 > 
-> How does this end up happening in the first place?
+> You're the third person to send this patch recently but it was fixed on
+> Aug 2 in staging-next in commit 05344a1d2ea7 ("media: atomisp: restore
+> missing 'return' statement").  What tree are you working against?  It
+> seems like it needs to be backported somewhere.
 > 
-> All enclave pages should start out on 'sgx_dirty_page_list' and
-> ksgxd sanitizes them with EREMOVE before making them available.  That
-> should cover EREMOVE after reboots while SGX pages are initialized,
-> including kexec().
 
-By "Windows startup" I mean even after guest reboot.  Because another 
-process could sneak in and steal your EPC pages between a close() and an 
-open(), I'd like to have a way to EREMOVE the pages while keeping them 
-assigned to the specific vEPC instance, i.e. *without* going through 
-sgx_vepc_free_page().
+I am working on Linux 5.15 - should have checked staging next though before
+sending the patch :)
 
-Thanks,
-
-Paolo
-
-> sgx_vepc_free_page() should do the same for pages that a guest not not
-> clean up properly.
-> 
-> sgx_encl_free_epc_page() does an EREMOVE after a normal enclave has used
-> a page.
-> 
-> Those are the only three cases that I can think of.  So, it sounds like
-> one of those is buggy, or there's another unexpected path out there.
-> Ultimately, I think it would be really handy if we could do this EREMOVE
-> implicitly and without any new ABI.
-> 
+thanks,
+-- Shuah
 
