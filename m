@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0080C4094A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D784091DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346491AbhIMOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:33:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
+        id S1343586AbhIMOEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:04:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345798AbhIMO3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:29:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13179615A6;
-        Mon, 13 Sep 2021 13:50:28 +0000 (UTC)
+        id S1343929AbhIMOB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:01:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BAF661A60;
+        Mon, 13 Sep 2021 13:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541029;
-        bh=IwfoSMhYYqULgo1yTTS7xIM6dxUj5lnP/bFGbafcOT0=;
+        s=korg; t=1631540274;
+        bh=GJNOncqH2W/ivQ9e4eSevRzDSsul7NmD2/lW4RAA1Mc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ECbg0ryItdlQr9KyBqIZVnr4DRe8YtnjfIy5SC8J73VbmKRNX2YX0Iey/WuJ2znEj
-         ABAq79Kla/QsqS6twH5kn2Yp20BvFCtzfWuCT4tB0foNgYS9QPzvCAvs/vOV84KHhg
-         qjoSu5cM8kuLuBxmaN5PSdrZ58Y+bBOyUOX54xZw=
+        b=A2C908+BmkW4TCBCZBgm8EQfpPkb/jdr1TUtcNEmAiXzoVvl+aU8Vf1oBsu1Xk0AS
+         D81SUJHi07GC6ynJPrL/4mT084xFHA8onfTSKjYonwr50eB0DLnoptW4ZHJ6NqiGYG
+         2xhx9J0JQXn9LGuQrOEBx0bmfncgvhwszsXKxmEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
+        stable@vger.kernel.org, Haiyue Wang <haiyue.wang@intel.com>,
+        Catherine Sullivan <csully@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 100/334] arm64: dts: renesas: r8a77995: draak: Remove bogus adv7511w properties
+Subject: [PATCH 5.13 093/300] gve: fix the wrong AdminQ buffer overflow check
 Date:   Mon, 13 Sep 2021 15:12:34 +0200
-Message-Id: <20210913131116.751876378@linuxfoundation.org>
+Message-Id: <20210913131112.525394716@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Haiyue Wang <haiyue.wang@intel.com>
 
-[ Upstream commit 4ec82a7bb3db8c6005e715c63224c32d458917a2 ]
+[ Upstream commit 63a9192b8fa1ea55efeba1f18fad52bb24d9bf12 ]
 
-The "max-clock" and "min-vrefresh" properties fail to validate with
-commit cfe34bb7a770c5d8 ("dt-bindings: drm: bridge: adi,adv7511.txt:
-convert to yaml").  Drop them, as they are parts of an out-of-tree
-workaround that is not needed upstream.
+The 'tail' pointer is also free-running count, so it needs to be masked
+as 'adminq_prod_cnt' does, to become an index value of AdminQ buffer.
 
-Fixes: bcf3003438ea4645 ("arm64: dts: renesas: r8a77995: draak: Enable HDMI display output")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Link: https://lore.kernel.org/r/975b6686bc423421b147d367fe7fb9a0db99c5af.1625134398.git.geert+renesas@glider.be
+Fixes: 5cdad90de62c ("gve: Batch AQ commands for creating and destroying queues.")
+Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
+Reviewed-by: Catherine Sullivan <csully@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/r8a77995-draak.dts | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/net/ethernet/google/gve/gve_adminq.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a77995-draak.dts b/arch/arm64/boot/dts/renesas/r8a77995-draak.dts
-index 6783c3ad0856..57784341f39d 100644
---- a/arch/arm64/boot/dts/renesas/r8a77995-draak.dts
-+++ b/arch/arm64/boot/dts/renesas/r8a77995-draak.dts
-@@ -277,10 +277,6 @@
- 		interrupt-parent = <&gpio1>;
- 		interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
+diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
+index 53864f200599..b175f2b2f5bc 100644
+--- a/drivers/net/ethernet/google/gve/gve_adminq.c
++++ b/drivers/net/ethernet/google/gve/gve_adminq.c
+@@ -233,7 +233,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
+ 	tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
  
--		/* Depends on LVDS */
--		max-clock = <135000000>;
--		min-vrefresh = <50>;
--
- 		adi,input-depth = <8>;
- 		adi,input-colorspace = "rgb";
- 		adi,input-clock = "1x";
+ 	// Check if next command will overflow the buffer.
+-	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
++	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
++	    (tail & priv->adminq_mask)) {
+ 		int err;
+ 
+ 		// Flush existing commands to make room.
+@@ -243,7 +244,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
+ 
+ 		// Retry.
+ 		tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
+-		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
++		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
++		    (tail & priv->adminq_mask)) {
+ 			// This should never happen. We just flushed the
+ 			// command queue so there should be enough space.
+ 			return -ENOMEM;
 -- 
 2.30.2
 
