@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BF74089CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F854089D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239390AbhIMLD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:03:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37368 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239199AbhIMLDy (ORCPT
+        id S239402AbhIMLE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239457AbhIMLEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:03:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631530958;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UcaAmp2UV/j1fAZf2A/geXuqR6tfxn4XXi3wYCx67uQ=;
-        b=Ks/ujoq6q4ivN5Thrg51HXQ0AIp+v0+cOqnwDpyOm7ycEwPsvtLlj4JoD3EL/h2fiODy68
-        FCC9cV4r1vJAh3J8irSBlGgljRWKPiy6UIwx+c8deTPCMDzAXL3w7IRYXkFsRT5TJLgoXh
-        QfujlFliwwkDqyjPsDf7M+SA+pv/U08=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-g2Usuf3lP1SLB6Ty05iDtw-1; Mon, 13 Sep 2021 07:02:37 -0400
-X-MC-Unique: g2Usuf3lP1SLB6Ty05iDtw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 212F41015DA2;
-        Mon, 13 Sep 2021 11:02:35 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C7BFD77F3C;
-        Mon, 13 Sep 2021 11:02:29 +0000 (UTC)
-Message-ID: <2f32727a108a626b71ab63b61cee567853ef2fdf.camel@redhat.com>
-Subject: Re: [PATCH 5/7] KVM: X86: Don't unsync pagetables when speculative
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mon, 13 Sep 2021 07:04:16 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B0BC061574;
+        Mon, 13 Sep 2021 04:03:01 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id j1so5995674pjv.3;
+        Mon, 13 Sep 2021 04:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8tTQhFrsWRNkUOBaOJA02WxHmquMo9+cmq045OwmYJU=;
+        b=gh9X42uMlMHDFUWjUxSJCtekAQOTdQa+bBZcbZz4ISIUbUhtkSmtlUJK9z07cqJsoL
+         f1vF7f6uaDfHXzgEEshszcSartet1RpGUl3CBwDHHxcdtSi7/HGmmIjlr/kaQDli2KwN
+         U+rBEGlpUUg8X9NQm28/0xcxkRJb9+sfiS3BssvRPl1DgR9zSkvay7X8ltnoqb+wjzN6
+         ynTcntFHIsWsWGFIRLhdrkxrg6RLZbyYHOT6m6tXkV+fXkwBp4pKfZJ1xYdT5x9S2wDo
+         ie9lFUijdRA8UuFqe+0MyjP5AUAITPtSaF7Mxwf8hYuANblmZ98yl2Ieymck4GIMhlTO
+         G4tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8tTQhFrsWRNkUOBaOJA02WxHmquMo9+cmq045OwmYJU=;
+        b=w1FBpvsiNqW86aeRyOrQfpA47d4g1b830QSZLsM2Ety/iZctQMGv5LnLkWiLUNZ10U
+         6sYu87MBv9jOls6EM1X2jPXMquU5URj8jXYCWQXCQ4PS8g/oNWnRzZPB4ZVFp/6ysSJX
+         foFVDRTqV78yn4FjBVoKoZRc/xT16e+bfmC0Rgsrq7UDruphtWl/0OuIb629AZt+5s3C
+         pntjPj9SWtfCF+muJGeirD06Zk/KaJBCumJ4PWf+1hwC8G0qpUD328oHE+Bihq9KnBVT
+         kTRGZddf9bf+gbq02asiOvW5gu1V2xVEnyq4UJL+iLAkzVzdqE5ezDyjFAPeNMR9ECV1
+         MehQ==
+X-Gm-Message-State: AOAM533CBhgAzG3Q926D2jbLfvyxWBYI6VULlzPCAZPMZKqNCg6CRWhX
+        n5ku402f9qadXtSxgrSHcuE=
+X-Google-Smtp-Source: ABdhPJy3i8ua/fVQObcDsf9vLhNLgbuzOgUx8Z4B+IA0ShClO9iHfm+Fa1+5MahosqjqZJ7T7aYD2g==
+X-Received: by 2002:a17:90a:ce84:: with SMTP id g4mr6604700pju.147.1631530980835;
+        Mon, 13 Sep 2021 04:03:00 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.28])
+        by smtp.gmail.com with ESMTPSA id gn11sm6480860pjb.39.2021.09.13.04.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 04:03:00 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Willy Tarreau <w@1wt.eu>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Date:   Mon, 13 Sep 2021 14:02:28 +0300
-In-Reply-To: <20210824075524.3354-6-jiangshanlai@gmail.com>
-References: <20210824075524.3354-1-jiangshanlai@gmail.com>
-         <20210824075524.3354-6-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+Subject: [PATCH] bpf: fix kmalloc bug in bpf_check
+Date:   Mon, 13 Sep 2021 19:02:46 +0800
+Message-Id: <20210913110246.2955737-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-24 at 15:55 +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> We'd better only unsync the pagetable when there just was a really
-> write fault on a level-1 pagetable.
-> 
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c          | 6 +++++-
->  arch/x86/kvm/mmu/mmu_internal.h | 3 ++-
->  arch/x86/kvm/mmu/spte.c         | 2 +-
->  3 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a165eb8713bc..e5932af6f11c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2600,7 +2600,8 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
->   * were marked unsync (or if there is no shadow page), -EPERM if the SPTE must
->   * be write-protected.
->   */
-> -int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
-> +int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync,
-> +			    bool speculative)
->  {
->  	struct kvm_mmu_page *sp;
->  	bool locked = false;
-> @@ -2626,6 +2627,9 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
->  		if (sp->unsync)
->  			continue;
->  
-> +		if (speculative)
-> +			return -EEXIST;
+Since 7661809d493b ("mm: don't allow oversized kvmalloc() calls
+") does not allow oversized kvmalloc, it triggers a kmalloc bug warning
+at bpf_check.
 
-Woudn't it be better to ensure that callers set can_unsync = false when speculating?
+Fix it by adding a sanity check in th check_btf_line.
 
-Also if I understand correctly this is not fixing a bug, but an optimization?
+Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ kernel/bpf/verifier.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Best regards,
-	Maxim Levitsky
-
-
-> +
->  		/*
->  		 * TDP MMU page faults require an additional spinlock as they
->  		 * run with mmu_lock held for read, not write, and the unsync
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 658d8d228d43..f5d8be787993 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -116,7 +116,8 @@ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
->  	       kvm_x86_ops.cpu_dirty_log_size;
->  }
->  
-> -int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync);
-> +int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync,
-> +			    bool speculative);
->  
->  void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
->  void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
-> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> index 3e97cdb13eb7..b68a580f3510 100644
-> --- a/arch/x86/kvm/mmu/spte.c
-> +++ b/arch/x86/kvm/mmu/spte.c
-> @@ -159,7 +159,7 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
->  		 * e.g. it's write-tracked (upper-level SPs) or has one or more
->  		 * shadow pages and unsync'ing pages is not allowed.
->  		 */
-> -		if (mmu_try_to_unsync_pages(vcpu, gfn, can_unsync)) {
-> +		if (mmu_try_to_unsync_pages(vcpu, gfn, can_unsync, speculative)) {
->  			pgprintk("%s: found shadow page for %llx, marking ro\n",
->  				 __func__, gfn);
->  			ret |= SET_SPTE_WRITE_PROTECTED_PT;
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 047ac4b4703b..3c5a79f78bc5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9913,6 +9913,9 @@ static int check_btf_line(struct bpf_verifier_env *env,
+ 	if (!nr_linfo)
+ 		return 0;
+ 
++	if (nr_linfo > INT_MAX/sizeof(struct bpf_line_info))
++		return -EINVAL;
++
+ 	rec_size = attr->line_info_rec_size;
+ 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
+ 	    rec_size > MAX_LINEINFO_REC_SIZE ||
+-- 
+2.25.1
 
