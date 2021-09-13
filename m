@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11069409D9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D7C409D9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347740AbhIMUCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237491AbhIMUCp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:02:45 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4CDC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:01:29 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id t19so23551472ejr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MqdzfJryu56mJ7vaVxPWyOCuaZAdQ3500WchggJMhyk=;
-        b=wFI+AudGl+mOdojLadZ26AiATdABBUYYuS2pMiWjcI/IvsQWkRK8oOm8uJKjy7iP9x
-         vlJSMFMAIaHUvNg41gCRzvmOPcf151WkLqOygB4r2JXN1OEf7r9c7L9/1t0sS6OgYUaF
-         Aas2ZICNLjPQmJ4t1oR8hN9I/w+6u+wIA5koJ63UGGBjTOPbKS8SQdwCdAOAxNpq7OLR
-         wOXHk4jtglxQzwuP/Y4hkrT3JulcxZ35xozvHKAefUgvVHgwGNsH70ZRlSxVC8tHTDHo
-         HA6dRcE3Js5TBR8y2PmNcxJ8SwVceLWxYR91Ylqt7oJYsoJY4WYGvx/lqwm4WUR6eCI0
-         2xig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MqdzfJryu56mJ7vaVxPWyOCuaZAdQ3500WchggJMhyk=;
-        b=XnJTOO8B4qGiay/ZVcM3JLPE2f0VbMJkBv4AZJuvn9hzlq+xxR7VZx89GyBwPzIaxu
-         S12HkP5lMy7cDIDLwnff5oZ7NpXAciLuUoMjVbuKLDzV+55XkzL6qBr3Yw0UZ3IaGhOC
-         YFWnd6b9ccXYpjCSSkpjVWLTd9r7PLRw7oB9Z5xrBaRPVm6IdOnbPAVVVvJAmbdB6geE
-         hyZG+0hT4MUfw5u8B6Nved3p3WWl00xFxKSvjp9Z1tZNszRQSt5uS3YZDk5/IwEQsa5B
-         cGpiDrZwBKDORUXCQA1Lb5/8RZtqiCWcEwHvavJYWDS24MfRpRSuJlm/zwH20HRPN6UH
-         MhLg==
-X-Gm-Message-State: AOAM531uId01z6kehhXMvu2V04EEVUi0459scCSTUjC6q/CTF+zdFG05
-        Bzm6sSKYMmf2fsc5WXSqgG3U9n0C70XS0ZwkTsJ9
-X-Google-Smtp-Source: ABdhPJx8J/+z8ewQ4cNgqvbrSlnYJUsTy7MjvtW4kkLwgO7QyZyFj7oK5eSo7l+0tz6aqwldYYIjcLr59nPZ34KEPf8=
-X-Received: by 2002:a17:906:686:: with SMTP id u6mr14138122ejb.569.1631563287496;
- Mon, 13 Sep 2021 13:01:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210822021315.2045-1-caihuoqing@baidu.com>
-In-Reply-To: <20210822021315.2045-1-caihuoqing@baidu.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 13 Sep 2021 16:01:16 -0400
-Message-ID: <CAHC9VhTRsMm8mJtm6uCWT8NhUUZkLy6fnb9XqTb0adsyoeqUkw@mail.gmail.com>
-Subject: Re: [PATCH] audit: Convert to SPDX identifier
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1347755AbhIMUDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:03:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347763AbhIMUDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 16:03:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD1A560E9C;
+        Mon, 13 Sep 2021 20:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631563310;
+        bh=gLNHs6CcvSnX7/miQjZSjEGPQiOP4SA5DpU0CvsJrqk=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=liajztqhepeUtWSNEfNIAqpGCdq5Rx9uhrK7Bt/4aB5DkL2QG/U1cdkUaQgNZFTm1
+         BEJRMiLsmo/Vp6PKZ3RFSUNE4uq/buNfLnpmGKxAWEuzkXNaGgzJTLsQuNi1NDLQ+U
+         EW0ci2uEGYCEYeTKJK9FnpA0p74lro6O8uRo0B7MGODoFkx+UKKBqv20AeUaZJ5ZB2
+         RE97+esnfChnY6ovKlEH/sDn9JOF2DdBXIbAgMfLaAG3VUZC+uyv1svJLFPVRUdLoh
+         I7pxT4Chp27Yv3N4qmbDiuWqnx1NabtyGwnSW1Zv16Oyrnw23RV7s5aax45oHyhiNz
+         dB3ISjuJoy0gQ==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id DFDFC27C0054;
+        Mon, 13 Sep 2021 16:01:48 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Mon, 13 Sep 2021 16:01:48 -0400
+X-ME-Sender: <xms:Kq4_Ydn_1subASKeM25h-gvtkE9kZlnJlgjPs8Z4PLym3Gz8KBQBWQ>
+    <xme:Kq4_YY0Baka-lCa4wJo3HqBHUMIWWNYZK5i46g_NbH_BK0YmWXaEsbqfJ3bGBBZQO
+    OosN_5rNfcTB1KywE8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgudegudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleff
+    gfefvdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:Kq4_YTqv4-O5-APDb3xYGotkoq2XKhW7D2f4btB1oOsJQ5N31x8y1w>
+    <xmx:Kq4_Ydkju7HeoE5G8wEUkUS299lhAJr9iFYgUgYHyiGnJ-ngITkSpw>
+    <xmx:Kq4_Yb39MkWZLlqBg9_1dwJdiy69dJ5A_RpNotX_GOGsAu89dCXWFQ>
+    <xmx:LK4_YUsPZwMKselyCht0kJT0lpB7Soju-WCKAJpkpVmCpka0DbUMLDe1X1g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0E6DCA00387; Mon, 13 Sep 2021 16:01:46 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1229-g7ca81dfce5-fm-20210908.005-g7ca81dfc
+Mime-Version: 1.0
+Message-Id: <bfeb0b12-5b95-46c9-8ea3-6a4a5bf59076@www.fastmail.com>
+In-Reply-To: <20210902105052.2842-1-jiangshanlai@gmail.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210902105052.2842-1-jiangshanlai@gmail.com>
+Date:   Mon, 13 Sep 2021 13:01:25 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Lai Jiangshan" <jiangshanlai@gmail.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Cc:     "Lai Jiangshan" <laijs@linux.alibaba.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Ben Widawsky" <ben.widawsky@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Arvind Sankar" <nivedita@alum.mit.edu>
+Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 10:14 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
->
-> use SPDX-License-Identifier instead of a verbose license text
->
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  kernel/auditsc.c | 15 +--------------
->  1 file changed, 1 insertion(+), 14 deletions(-)
->
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 8dd73a64f921..969c1613fed9 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: GPL-2.0+
 
-It appears the current recommended token is "GPL-2.0-or-later", please
-update this patch to use the preferred license identifier.
 
-* https://spdx.org/licenses
+On Thu, Sep 2, 2021, at 3:50 AM, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> There is no constrain/limition to force native_load_gs_index() to be in
+> ASM code.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 
->  /* auditsc.c -- System-call auditing support
->   * Handles all system-call specific auditing features.
->   *
-> @@ -6,20 +7,6 @@
->   * Copyright (C) 2005, 2006 IBM Corporation
->   * All Rights Reserved.
->   *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> - *
-> - * This program is distributed in the hope that it will be useful,
-> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> - * GNU General Public License for more details.
-> - *
-> - * You should have received a copy of the GNU General Public License
-> - * along with this program; if not, write to the Free Software
-> - * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-> - *
->   * Written by Rickard E. (Rik) Faith <faith@redhat.com>
->   *
->   * Many of the ideas implemented here are from Stephen C. Tweedie,
-> --
-> 2.25.1
+>  
+>  #ifdef CONFIG_X86_64
+> +
+> +/*
+> + * Reload gs selector with exception handling
+> + * selector:  new selector
+> + *
+> + * Is noinstr as it shouldn't be instrumented.
+> + */
+> +noinstr void native_load_gs_index(unsigned int selector)
+> +{
+> +	unsigned long flags;
+> +
+> +	local_irq_save(flags);
 
--- 
-paul moore
-www.paul-moore.com
+This patch would be a bit less alarming if you moved the swapgs into asm.  Also, this needs a comment explaining why skipping the swapgs back to kernel gs in the exception path is correct.
+
+> +	native_swapgs();
+> +	asm volatile(
+> +		".global asm_load_gs_index_gs_change \n"
+> +		"asm_load_gs_index_gs_change: \n"
+> +		"1: movl %0, %%gs \n"
+> +		"   swapgs \n"
+> +		"2: \n"
+> +		_ASM_EXTABLE_HANDLE(1b, 2b, ex_handler_clear_gs)
+> +		:: "r" (selector) : "memory");
+> +	alternative("", "mfence", X86_BUG_SWAPGS_FENCE);
+> +	local_irq_restore(flags);
+> +}
+> +
