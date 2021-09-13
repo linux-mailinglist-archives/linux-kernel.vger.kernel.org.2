@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86A04091BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE634094C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245435AbhIMOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:04:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50892 "EHLO mail.kernel.org"
+        id S1347336AbhIMOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245665AbhIMOB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:01:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA0F9613A0;
-        Mon, 13 Sep 2021 13:37:51 +0000 (UTC)
+        id S243542AbhIMO3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:29:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C86D661357;
+        Mon, 13 Sep 2021 13:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540272;
-        bh=7p23jURPt99O791M5Jh+2ov2+GWFBDqZuYrKXjjYaA0=;
+        s=korg; t=1631541024;
+        bh=52WVVqaIL0+/oJMob99rnCz7oYQjKhwADz2fs7IpXsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xxvlsKnb4HtBHRRRrl3pFaRGEGdCnhUvLYDNClTWG09L8gHcGzX4XvBO8I4fuK9Q3
-         R42kRmtOuMcW3kWQHbHCT8OPUm2e93xov1Z2tdASTqFaO3RPniQnWuD9vk65Lu2Oce
-         Wi/zrKWjaEOwzfPxbXBmPqbR61zQE04vcG8phJvU=
+        b=JNRlnaJ4vBq5EeEdzGzdVLGN4KIKm8S5pryzWegn+j8UD8Q4CEzJZ5o/QIhkyWYpK
+         fC3vhj6jhoCtmWWChY5oxg+R3rEmI88QNfxh7zP3usmfnRZePgywnmSEn6ImBwCxSa
+         AdZp7ONLdfs/B28W9giftqdgJKYKiT3rahaaFP2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Anand Moon <linux.amoon@gmail.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 123/300] ARM: dts: meson8b: mxq: Fix the pwm regulator supply properties
+Subject: [PATCH 5.14 130/334] ARM: dts: meson8b: ec100: Fix the pwm regulator supply properties
 Date:   Mon, 13 Sep 2021 15:13:04 +0200
-Message-Id: <20210913131113.554716214@linuxfoundation.org>
+Message-Id: <20210913131117.761140931@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,12 +44,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Anand Moon <linux.amoon@gmail.com>
 
-[ Upstream commit 632062e540becbbcb067523ec8bcadb1239d9578 ]
+[ Upstream commit 72ccc373b064ae3ac0c5b5f2306069b60ca118df ]
 
 After enabling CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
 Changes help link VCCK and VDDEE pwm regulator to 5V regulator supply
 instead of dummy regulator.
-Add missing pwm-supply for regulator-vcck regulator node.
 
 [    7.117140] pwm-regulator regulator-vcck: Looking up pwm-supply from device tree
 [    7.117153] pwm-regulator regulator-vcck: Looking up pwm-supply property in node /regulator-vcck failed
@@ -62,33 +61,33 @@ Add missing pwm-supply for regulator-vcck regulator node.
 [    7.118553] VDDEE: supplied by regulator-dummy
 [    7.118563] regulator-dummy: could not add device link regulator.9: -ENOENT
 
-Fixes: dee51cd0d2e8 ("ARM: dts: meson8b: mxq: add the VDDEE regulator")
-Fixes: d94f60e3dfa0 ("ARM: dts: meson8b: mxq: improve support for the TRONFY MXQ S805")
+Fixes: 087a1d8b4e4c ("ARM: dts: meson8b: ec100: add the VDDEE regulator")
+Fixes: 3e7db1c1b7a3 ("ARM: dts: meson8b: ec100: improve the description of the regulators")
 
 Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Link: https://lore.kernel.org/r/20210705112358.3554-3-linux.amoon@gmail.com
+Link: https://lore.kernel.org/r/20210705112358.3554-4-linux.amoon@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/meson8b-mxq.dts | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/meson8b-ec100.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/meson8b-mxq.dts b/arch/arm/boot/dts/meson8b-mxq.dts
-index f3937d55472d..7adedd3258c3 100644
---- a/arch/arm/boot/dts/meson8b-mxq.dts
-+++ b/arch/arm/boot/dts/meson8b-mxq.dts
-@@ -34,6 +34,8 @@
+diff --git a/arch/arm/boot/dts/meson8b-ec100.dts b/arch/arm/boot/dts/meson8b-ec100.dts
+index 8e48ccc6b634..7e8ddc6f1252 100644
+--- a/arch/arm/boot/dts/meson8b-ec100.dts
++++ b/arch/arm/boot/dts/meson8b-ec100.dts
+@@ -148,7 +148,7 @@
  		regulator-min-microvolt = <860000>;
  		regulator-max-microvolt = <1140000>;
  
+-		vin-supply = <&vcc_5v>;
 +		pwm-supply = <&vcc_5v>;
-+
+ 
  		pwms = <&pwm_cd 0 1148 0>;
  		pwm-dutycycle-range = <100 0>;
- 
-@@ -79,7 +81,7 @@
+@@ -232,7 +232,7 @@
  		regulator-min-microvolt = <860000>;
  		regulator-max-microvolt = <1140000>;
  
