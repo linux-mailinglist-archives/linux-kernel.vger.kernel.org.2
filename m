@@ -2,132 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1433D409F74
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F931409F75
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244597AbhIMWJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 18:09:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57176 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235948AbhIMWJs (ORCPT
+        id S245124AbhIMWJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 18:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhIMWJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 18:09:48 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631570911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIFUULZXQDg7+U+CZahOjC36byrqbcllUTVbW2ndRTI=;
-        b=oobnOPnv/ggcqFhOGebZ9ySpZq+NIwxYkAiXEFvvJdj7DfcY5kccC7NrbYxg5lMTx1LkSU
-        5l+86n9pmRp9MzWFh7kCXymBuCDafS89r5Lx+9k/YH8MUEcZIQ09fd/CKJUzpRAkiLNdKZ
-        IUgXcPDc15T40ygrnkbVCNyu3LjOAeKST8PtOgw06tAlNmITuEWza02cX6OzTN8dqhM4PT
-        2hNSLvebcAcZFsjjgjlZYjoeuvQasqGxa/hmCSWpm33ubukH00Xb9civpoaC8i7hbueUBZ
-        a0FqELq6ZY/5kT7Jm2+pHusWsWlxaC4uy9WR4aQtn93yygzvtexEJMyBOLGt7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631570911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIFUULZXQDg7+U+CZahOjC36byrqbcllUTVbW2ndRTI=;
-        b=QmsCXBvqYyPbrTlY/BjmSoIMCMv/ifqWhO3if8hnHHMFXy91oJaqHeVQFBAf1QFdzhzLmg
-        qSNxJs7/1M+mVPBw==
-To:     Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 1/4] sched/wakeup: Strengthen
- current_save_and_set_rtlock_wait_state()
-In-Reply-To: <20210909110203.767330253@infradead.org>
-References: <20210909105915.757320973@infradead.org>
- <20210909110203.767330253@infradead.org>
-Date:   Tue, 14 Sep 2021 00:08:30 +0200
-Message-ID: <871r5sf7s1.ffs@tglx>
+        Mon, 13 Sep 2021 18:09:58 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83A0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:08:41 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id i21so24264646ejd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=ncdS0KUMlVwysZycr1aFAHBiBQlBAALFdQ8u91HuEWI=;
+        b=n7q8ruAuNt/mfWwn1j5d91PBpL6sW3pIAvv0fz92PDYYC++soY+HXzOCs0usaVvCSV
+         id0Qb8XR2crdBH8Yg90uvzshJTvYgXLtq6xE4VhKuFFwgg+H468k6d4aKucNIrtY45xr
+         G8r27ndC4jJPVOP26zz/jHCpkvasTgAveQHtfqyzOVge8490r2EW8xZFOsbpGx8tCiBN
+         ED0032hB8OT0QSO/kNh4JQh6il709RlJktYu24HHk/8BqP2CZry3ThPG/qhIyHlTs0se
+         B0V4X2Wxx5K4NIHyvSasBHsKhWw4kQkklbwSAINH1htjApF9ExFyknVFffI/6nq9ai+s
+         K/eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ncdS0KUMlVwysZycr1aFAHBiBQlBAALFdQ8u91HuEWI=;
+        b=2eVRHqSH+ipBNxQ5fTJCdA+SymPymuEA92xOKVBVc0fiSIFSPdp0BfBTzlND7YG7aR
+         d/EjUv+/xaEGclESC6eTU4Ifwxsz1/3YdjVnI8sTfEXAgZhmaX/VzjxAGX/756OVV5bO
+         HVvN0isXJ/dTuXNSIl9cukEgCw6AkqyeG0BQMXZ+bJDylX/r1A+4m2CMcrBXsWtfjFrI
+         GiDyg1AMr5ANh1ggRoPwqqi64nITvWPVqUnp86YgjacFvTNWHFiYmMuA6/DLhzeSTQ7f
+         eJ85uNobWAhu3iE6wb/tH1nmVM9rqZzrkMCNEiSaBZg2Wi6VLpCxTEk6wJUZOfz3YwwF
+         Rcog==
+X-Gm-Message-State: AOAM5316Ce7CX+eX+UoA3/pUTl8LxQNRe3YtBsgnZYNZZpNpuuCDWbw9
+        8xnbHAq2LHLzItw4ftlZur+Tu4FDApg=
+X-Google-Smtp-Source: ABdhPJxa3NBLOXRhVkQbETa8rLRdWEkeVZrpJnssFU2jPCK/HbZkYKvDjtRiwefli2xslLHK/ljy2g==
+X-Received: by 2002:a17:906:d1d6:: with SMTP id bs22mr15448527ejb.554.1631570920109;
+        Mon, 13 Sep 2021 15:08:40 -0700 (PDT)
+Received: from peggy-InsydeH2O-EFI-BIOS ([154.72.153.216])
+        by smtp.gmail.com with ESMTPSA id j14sm4581929edk.7.2021.09.13.15.08.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 15:08:39 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 23:08:36 +0100
+From:   Tawah Peggy <tawahpeggy98@gmail.com>
+To:     Kroah-Hartman <greg@kroah.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3] Staging: wlan-ng: cfg80211: A better fix for: Lines
+ should not end with a '('.
+Message-ID: <20210913220836.GA3790@peggy-InsydeH2O-EFI-BIOS>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09 2021 at 12:59, Peter Zijlstra wrote:
-> While looking at current_save_and_set_rtlock_wait_state() I'm thinking
-> it really ought to use smp_store_mb(), because something like:
->
-> 	current_save_and_set_rtlock_wait_state();
-> 	for (;;) {
-> 		if (try_lock())
-> 			break;
->
-> 		raw_spin_unlock_irq(&lock->wait_lock);
-> 		schedule();
-> 		raw_spin_lock_irq(&lock->wait_lock);
->
-> 		set_current_state(TASK_RTLOCK_WAIT);
-> 	}
-> 	current_restore_rtlock_saved_state();
->
-> which is the advertised usage in the comment, is actually broken,
-> since trylock() will only need a load-acquire in general and that
-> could be re-ordered against the state store, which could lead to a
-> missed wakeup -> BAD (tm).
+This patch fixes the checkpatch error : lines should not end with a '('
+by reducing length of function name to enable the arguments be passed on a single line.
 
-I don't think so because both the state store and the wakeup are
-serialized via tsk->pi_lock.
+Signed-off-by: Tawah Peggy <tawahpeggy98@gmail.com>
+---
+ drivers/staging/wlan-ng/cfg80211.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> While there, make them consistent with the IRQ usage in
-> set_special_state().
->
-> Fixes: 5f220be21418 ("sched/wakeup: Prepare for RT sleeping spin/rwlocks")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  include/linux/sched.h |   19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
->
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -245,7 +245,8 @@ struct task_group;
->   *		if (try_lock())
->   *			break;
->   *		raw_spin_unlock_irq(&lock->wait_lock);
-> - *		schedule_rtlock();
-> + *		if (!cond)
-> + *			schedule_rtlock();
+diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
+index 7951bd63816f..711c88c59e78 100644
+--- a/drivers/staging/wlan-ng/cfg80211.c
++++ b/drivers/staging/wlan-ng/cfg80211.c
+@@ -328,8 +328,7 @@ static int prism2_scan(struct wiphy *wiphy,
+ 		(i < request->n_channels) && i < ARRAY_SIZE(prism2_channels);
+ 		i++)
+ 		msg1.channellist.data.data[i] =
+-			ieee80211_frequency_to_channel(
+-				request->channels[i]->center_freq);
++			ieee80211_freq_to_channel(request->channels[i]->center_freq);
+ 	msg1.channellist.data.len = request->n_channels;
+ 
+ 	msg1.maxchanneltime.data = 250;
+-- 
+2.25.1
 
-cond is not really relevant here.
-
->   *		raw_spin_lock_irq(&lock->wait_lock);
->   *		set_current_state(TASK_RTLOCK_WAIT);
->   *	}
-> @@ -253,22 +254,24 @@ struct task_group;
->   */
->  #define current_save_and_set_rtlock_wait_state()			\
->  	do {								\
-> -		lockdep_assert_irqs_disabled();				\
-> -		raw_spin_lock(&current->pi_lock);			\
-> +		unsigned long flags; /* may shadow */			\
-> +									\
-> +		raw_spin_lock_irqsave(&current->pi_lock, flags);	\
-
-Why? This is solely for the rtlock use case which invokes this with
-interrupts disabled. So why do we need that irqsave() overhead here?
-
->  		current->saved_state = current->__state;		\
->  		debug_rtlock_wait_set_state();				\
-> -		WRITE_ONCE(current->__state, TASK_RTLOCK_WAIT);		\
-> -		raw_spin_unlock(&current->pi_lock);			\
-> +		smp_store_mb(current->__state, TASK_RTLOCK_WAIT);	\
-
-The try_lock() does not matter at all here, really. All what matters is
-that the unlocker cannot observe the wrong state and that's fully
-serialized via tsk::pi_lock.
-
-Thanks,
-
-        tglx
