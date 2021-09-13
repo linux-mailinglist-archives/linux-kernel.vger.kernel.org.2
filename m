@@ -2,110 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD6E409E60
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E445C409E8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244965AbhIMUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
+        id S1348093AbhIMUw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243635AbhIMUuu (ORCPT
+        with ESMTP id S1348124AbhIMUwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:50:50 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546AEC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:49:34 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id w8so10571850pgf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:49:34 -0700 (PDT)
+        Mon, 13 Sep 2021 16:52:21 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097FFC06139D
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:50:15 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id e7-20020a056a0000c700b004391956f161so4008637pfj.18
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:50:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RQzEqr1T7I8/HrHx9Rq66MMtYgsgD2oLAEmtDI7OqZc=;
-        b=ReajyV3aNSWB9Ex6i0PV7gE/Sw74DD1JlmY5sIWimUGbwjzc0vlZLYKRZ8T3/GLr5i
-         Uzykzo2P9MS3votUbXRI/aPYnFWT643UyEHtQ4asGVkhXUTYzWCYkgLN3nktoiYMIroZ
-         ojr7GoUPsr1YwajKKUtVgT8sbz6g4+prdFvsF0eH4dW2mjPtRjpz3cm3F13rLgd9GRVm
-         ACh7FmwEaLkjBZ26tcrgbzmRfpS1Vx+tMVAojDj+pYvpyemNCc4on/PY6fmEu7cQPB/d
-         qO5BArNVR+MrPrk63MIfa6M8u9BzS8M3hD6OcQxaCoVcvKSDYju8uiMOspBTNjZHI8lK
-         jlUg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=mkrEw/6odZA643/v871JIfxaL0FOz/JzQ68NluiA4Io=;
+        b=XLtNNQkDg1Qerb3D2N5aZnOdnDPp8QENs62ZQuid8WKzbNA+6TiVIAiQl1UuW/h6aq
+         /VMKtSiAxACJH97dgkW/KdLGBbG3WZ6lCoCmo8rF9MX2+YMh2eu0gKX1xwGOe88fhhz1
+         ZM4Ab02NGpHVCshgdrmXD8lpQPt1piitORDRuxi3R71iT8v8k/haAv6ZuUWMaVIywjj8
+         PP2Zzi+2FA5+D1iJC9Tm944wyoo/zCq9wKHhBK1IaYnfRIAvcSEABBW/PHUlpDluJxa1
+         fSvHUotzEYmyBJ1AImSLrLj2fkhvAkHkhAiIFgS80OHzqNpJBm9e40X2oEXZOo149noS
+         axWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RQzEqr1T7I8/HrHx9Rq66MMtYgsgD2oLAEmtDI7OqZc=;
-        b=yLM9674LETb7A8UI9W6ca35BchAv2EDwq4Ewr+MrqAOTLTkrmx4MMB2M5ZnYSZ2QoB
-         speZrgLAZXr4eQEZabBprTUKqBbnAVlZerbmRvxjfxOwBLS9ERjJzs7QD15n1x+NWTuq
-         IGP8RtZM6DPn/gKb5Q/jHQL7bV+Le9BZQoZ969V1gptgPOd9uuNERIYHeZpy+iSC/n24
-         OrCFEg2kf4ijr56yGYX9X+1/uiGzzaY/RBKPlnwz6S98SIYkQem9yTaE08B6Afco8fj5
-         HSJ6Irzcps6kNJWqePOtJUSvrY/AGbAwXbGl82V6ye4vhstaKR0Z1ACHgQGWCU1/ZwuJ
-         fQ5A==
-X-Gm-Message-State: AOAM533An8d7QjpIddrJwqkEjxTlBfM3kOOC74t43v8EfZMtJKasDeo2
-        G2c9hmROgP0jMqAzO9TkKdmtuQ==
-X-Google-Smtp-Source: ABdhPJwHxjctwbqGCRw/0LuBqIOm5OxixfKTnteCD/n3TDXUgaqGwmu9s2pBs0WTHi/errQYlfpEdw==
-X-Received: by 2002:a63:790b:: with SMTP id u11mr12493490pgc.71.1631566173604;
-        Mon, 13 Sep 2021 13:49:33 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c23sm8859073pgb.74.2021.09.13.13.49.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 13:49:33 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 20:49:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH 2/7] KVM: X86: Synchronize the shadow pagetable before
- link it
-Message-ID: <YT+5WZsT4bfFSezR@google.com>
-References: <20210824075524.3354-1-jiangshanlai@gmail.com>
- <20210824075524.3354-3-jiangshanlai@gmail.com>
- <YTFhCt87vzo4xDrc@google.com>
- <0103c8b2cccea601bd3474f47d982b37e9536921.camel@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0103c8b2cccea601bd3474f47d982b37e9536921.camel@redhat.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=mkrEw/6odZA643/v871JIfxaL0FOz/JzQ68NluiA4Io=;
+        b=U0IES5J7ij1mdtAh6B+BSP5s6bnrADDjFXqtES/4fXvItGdFee19xHmanx33sWK18h
+         J/AJ6YygqHCB2hL9JZxyu1aBqmE09gv4TZtqfUrmC0e+0FtIt8sXMWu4BsAzypgZmbZG
+         NH0ei9nUthfcO/L0wJPL+HwAgik6Ms5qjRotT262uensoIHoxHWyhzP7+LEZUiX1MfdQ
+         2XGu0qh7egUtDZWzd6QWDN7iUSuS05tJOISAo+vOwfIf5WPGkSRXIuIle1/ujfQqOWc2
+         UWirvmu9YYV+JoAmh89PzvIkChAmkBLq5czEZLGbW0s9xnaVTsaEk0Pcvns0l2yZYet1
+         GSIw==
+X-Gm-Message-State: AOAM533wgQThi0IhNvBJ35bihkiGNfxnEYRubNiXc/hntql+IpitiU/j
+        Uy/hSOv2AlnW9QrJjVI9Sc0Yz++h7ZR1
+X-Google-Smtp-Source: ABdhPJzDWqLctYt6093/kuNJfWu1mc17KVffzv2+iJz2Z6Rr9xYg9In7HhVekAf5l8wOZPGVvsO6JTjoY98s
+X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
+ (user=rananta job=sendgmr) by 2002:a17:90b:3e84:: with SMTP id
+ rj4mr1550073pjb.211.1631566214540; Mon, 13 Sep 2021 13:50:14 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 20:49:30 +0000
+In-Reply-To: <20210913204930.130715-1-rananta@google.com>
+Message-Id: <20210913204930.130715-15-rananta@google.com>
+Mime-Version: 1.0
+References: <20210913204930.130715-1-rananta@google.com>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH v5 14/14] KVM: arm64: selftests: arch_timer: Support vCPU migration
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021, Maxim Levitsky wrote:
-> On Thu, 2021-09-02 at 23:40 +0000, Sean Christopherson wrote:
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 4853c033e6ce..03293cd3c7ae 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -2143,8 +2143,10 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
-> >  			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-> >  		}
-> > 
-> > -		if (sp->unsync_children)
-> > -			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
-> > +		if (sp->unsync_children) {
-> > +			kvm_make_all_cpus_request(KVM_REQ_MMU_SYNC, vcpu);
-> 
-> I don't know the KVM mmu well so I miss something here most likely,
-> but why to switch to kvm_make_all_cpus_request?
-> 
-> MMU is shared by all VCPUs, and the process of its syncing should also do
-> remote TLB flushes when needed?
-> 
-> Another thing I don't fully understand is why this patch is needed. If we
-> link an SP which has unsync children, we raise KVM_REQ_MMU_SYNC, which I
-> think means that *this* vCPU will sync the whole MMU on next guest entry,
-> including these unsync child SPs. Could you explain this?
+Since the timer stack (hardware and KVM) is per-CPU, there
+are potential chances for races to occur when the scheduler
+decides to migrate a vCPU thread to a different physical CPU.
+Hence, include an option to stress-test this part as well by
+forcing the vCPUs to migrate across physical CPUs in the
+system at a particular rate.
 
-Answering all three questions at once, the problem is that KVM links in a new SP
-that points at unsync'd SPs _before_ servicing KVM_REQ_MMU_SYNC.  While the vCPU
-is guaranteed to service KVM_REQ_MMU_SYNC before entering the guest, that doesn't
-hold true for other vCPUs.  As a result, there's a window where a different vCPU
-can consume the stale, unsync SP via the new SP.
+Originally, the bug for the fix with commit 3134cc8beb69d0d
+("KVM: arm64: vgic: Resample HW pending state on deactivation")
+was discovered using arch_timer test with vCPU migrations and
+can be easily reproduced.
+
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+---
+ .../selftests/kvm/aarch64/arch_timer.c        | 115 +++++++++++++++++-
+ 1 file changed, 114 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+index 3b6ea6a462f4..228e7ed5531c 100644
+--- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
++++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+@@ -14,6 +14,8 @@
+  *
+  * The test provides command-line options to configure the timer's
+  * period (-p), number of vCPUs (-n), and iterations per stage (-i).
++ * To stress-test the timer stack even more, an option to migrate the
++ * vCPUs across pCPUs (-m), at a particular rate, is also provided.
+  *
+  * Copyright (c) 2021, Google LLC.
+  */
+@@ -24,6 +26,8 @@
+ #include <pthread.h>
+ #include <linux/kvm.h>
+ #include <linux/sizes.h>
++#include <linux/bitmap.h>
++#include <sys/sysinfo.h>
+ 
+ #include "kvm_util.h"
+ #include "processor.h"
+@@ -36,17 +40,20 @@
+ #define NR_TEST_ITERS_DEF		5
+ #define TIMER_TEST_PERIOD_MS_DEF	10
+ #define TIMER_TEST_ERR_MARGIN_US	100
++#define TIMER_TEST_MIGRATION_FREQ_MS	2
+ 
+ struct test_args {
+ 	int nr_vcpus;
+ 	int nr_iter;
+ 	int timer_period_ms;
++	int migration_freq_ms;
+ };
+ 
+ static struct test_args test_args = {
+ 	.nr_vcpus = NR_VCPUS_DEF,
+ 	.nr_iter = NR_TEST_ITERS_DEF,
+ 	.timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
++	.migration_freq_ms = TIMER_TEST_MIGRATION_FREQ_MS,
+ };
+ 
+ #define msecs_to_usecs(msec)		((msec) * 1000LL)
+@@ -80,6 +87,9 @@ static struct test_vcpu_shared_data vcpu_shared_data[KVM_MAX_VCPUS];
+ 
+ static int vtimer_irq, ptimer_irq;
+ 
++static unsigned long *vcpu_done_map;
++static pthread_mutex_t vcpu_done_map_lock;
++
+ static void
+ guest_configure_timer_action(struct test_vcpu_shared_data *shared_data)
+ {
+@@ -215,6 +225,11 @@ static void *test_vcpu_run(void *arg)
+ 
+ 	vcpu_run(vm, vcpuid);
+ 
++	/* Currently, any exit from guest is an indication of completion */
++	pthread_mutex_lock(&vcpu_done_map_lock);
++	set_bit(vcpuid, vcpu_done_map);
++	pthread_mutex_unlock(&vcpu_done_map_lock);
++
+ 	switch (get_ucall(vm, vcpuid, &uc)) {
+ 	case UCALL_SYNC:
+ 	case UCALL_DONE:
+@@ -233,9 +248,78 @@ static void *test_vcpu_run(void *arg)
+ 	return NULL;
+ }
+ 
++static uint32_t test_get_pcpu(void)
++{
++	uint32_t pcpu;
++	unsigned int nproc_conf;
++	cpu_set_t online_cpuset;
++
++	nproc_conf = get_nprocs_conf();
++	sched_getaffinity(0, sizeof(cpu_set_t), &online_cpuset);
++
++	/* Randomly find an available pCPU to place a vCPU on */
++	do {
++		pcpu = rand() % nproc_conf;
++	} while (!CPU_ISSET(pcpu, &online_cpuset));
++
++	return pcpu;
++}
++
++static int test_migrate_vcpu(struct test_vcpu *vcpu)
++{
++	int ret;
++	cpu_set_t cpuset;
++	uint32_t new_pcpu = test_get_pcpu();
++
++	CPU_ZERO(&cpuset);
++	CPU_SET(new_pcpu, &cpuset);
++
++	pr_debug("Migrating vCPU: %u to pCPU: %u\n", vcpu->vcpuid, new_pcpu);
++
++	ret = pthread_setaffinity_np(vcpu->pt_vcpu_run,
++					sizeof(cpuset), &cpuset);
++
++	/* Allow the error where the vCPU thread is already finished */
++	TEST_ASSERT(ret == 0 || ret == ESRCH,
++			"Failed to migrate the vCPU:%u to pCPU: %u; ret: %d\n",
++			vcpu->vcpuid, new_pcpu, ret);
++
++	return ret;
++}
++
++static void *test_vcpu_migration(void *arg)
++{
++	unsigned int i, n_done;
++	bool vcpu_done;
++
++	do {
++		usleep(msecs_to_usecs(test_args.migration_freq_ms));
++
++		for (n_done = 0, i = 0; i < test_args.nr_vcpus; i++) {
++			pthread_mutex_lock(&vcpu_done_map_lock);
++			vcpu_done = test_bit(i, vcpu_done_map);
++			pthread_mutex_unlock(&vcpu_done_map_lock);
++
++			if (vcpu_done) {
++				n_done++;
++				continue;
++			}
++
++			test_migrate_vcpu(&test_vcpu[i]);
++		}
++	} while (test_args.nr_vcpus != n_done);
++
++	return NULL;
++}
++
+ static void test_run(struct kvm_vm *vm)
+ {
+ 	int i, ret;
++	pthread_t pt_vcpu_migration;
++
++	pthread_mutex_init(&vcpu_done_map_lock, NULL);
++	vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
++	TEST_ASSERT(vcpu_done_map, "Failed to allocate vcpu done bitmap\n");
+ 
+ 	for (i = 0; i < test_args.nr_vcpus; i++) {
+ 		ret = pthread_create(&test_vcpu[i].pt_vcpu_run, NULL,
+@@ -243,8 +327,23 @@ static void test_run(struct kvm_vm *vm)
+ 		TEST_ASSERT(!ret, "Failed to create vCPU-%d pthread\n", i);
+ 	}
+ 
++	/* Spawn a thread to control the vCPU migrations */
++	if (test_args.migration_freq_ms) {
++		srand(time(NULL));
++
++		ret = pthread_create(&pt_vcpu_migration, NULL,
++					test_vcpu_migration, NULL);
++		TEST_ASSERT(!ret, "Failed to create the migration pthread\n");
++	}
++
++
+ 	for (i = 0; i < test_args.nr_vcpus; i++)
+ 		pthread_join(test_vcpu[i].pt_vcpu_run, NULL);
++
++	if (test_args.migration_freq_ms)
++		pthread_join(pt_vcpu_migration, NULL);
++
++	bitmap_free(vcpu_done_map);
+ }
+ 
+ static void test_init_timer_irq(struct kvm_vm *vm)
+@@ -301,6 +400,8 @@ static void test_print_help(char *name)
+ 		NR_TEST_ITERS_DEF);
+ 	pr_info("\t-p: Periodicity (in ms) of the guest timer (default: %u)\n",
+ 		TIMER_TEST_PERIOD_MS_DEF);
++	pr_info("\t-m: Frequency (in ms) of vCPUs to migrate to different pCPU. 0 to turn off (default: %u)\n",
++		TIMER_TEST_MIGRATION_FREQ_MS);
+ 	pr_info("\t-h: print this help screen\n");
+ }
+ 
+@@ -308,7 +409,7 @@ static bool parse_args(int argc, char *argv[])
+ {
+ 	int opt;
+ 
+-	while ((opt = getopt(argc, argv, "hn:i:p:")) != -1) {
++	while ((opt = getopt(argc, argv, "hn:i:p:m:")) != -1) {
+ 		switch (opt) {
+ 		case 'n':
+ 			test_args.nr_vcpus = atoi(optarg);
+@@ -335,6 +436,13 @@ static bool parse_args(int argc, char *argv[])
+ 				goto err;
+ 			}
+ 			break;
++		case 'm':
++			test_args.migration_freq_ms = atoi(optarg);
++			if (test_args.migration_freq_ms < 0) {
++				pr_info("0 or positive value needed for -m\n");
++				goto err;
++			}
++			break;
+ 		case 'h':
+ 		default:
+ 			goto err;
+@@ -358,6 +466,11 @@ int main(int argc, char *argv[])
+ 	if (!parse_args(argc, argv))
+ 		exit(KSFT_SKIP);
+ 
++	if (test_args.migration_freq_ms && get_nprocs() < 2) {
++		print_skip("At least two physical CPUs needed for vCPU migration");
++		exit(KSFT_SKIP);
++	}
++
+ 	vm = test_vm_create();
+ 	test_run(vm);
+ 	kvm_vm_free(vm);
+-- 
+2.33.0.309.g3052b89438-goog
+
