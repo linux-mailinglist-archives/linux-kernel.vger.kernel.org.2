@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E0A4095C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B134092F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347963AbhIMOok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:44:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55800 "EHLO mail.kernel.org"
+        id S1345225AbhIMOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:16:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346229AbhIMOjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E1261CA7;
-        Mon, 13 Sep 2021 13:55:03 +0000 (UTC)
+        id S241738AbhIMOOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:14:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF79C61AE1;
+        Mon, 13 Sep 2021 13:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541304;
-        bh=vuugTzNiMwq7LAilvEM6yW1ZZMCPjEelgcrp15+4KuI=;
+        s=korg; t=1631540597;
+        bh=ZsoFKtjxaynejBnhMK7B8GZj+KDmchYI0AEwUrGLKUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ew0HfvTo+/Qc5/o8hCAglrsjrapb1WTUs3UbE3+jDLH1cCY9EjqfNzvGtdLBs2Jxo
-         zsVosR1MwxUtPRg2vAsF77rPJzpkKFwhMXSALb0hlx3E1zVt32L/Kwl8jRDdyAJM1Y
-         WFiV9ZtwNC/Q2sp67eMKw692WawIivByDc/fAY6A=
+        b=YYvMi72D6iZZoU/OUjAx1oEdEwVmUnXOwanv71k0qXLpT9snc8dh8dIShxtz95mhy
+         K+GboFBaxZ0UwTeLjsSlqoBulIecoXT436HPhQhp2L3+db3TMIA8fk3mEaM84xaZl3
+         ft+4PbDl4BxusS26Hpa2/8ETKfmM+7YyzoczAnxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 237/334] drm/exynos: g2d: fix missing unlock on error in g2d_runqueue_worker()
-Date:   Mon, 13 Sep 2021 15:14:51 +0200
-Message-Id: <20210913131121.427555149@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 231/300] i2c: mt65xx: fix IRQ check
+Date:   Mon, 13 Sep 2021 15:14:52 +0200
+Message-Id: <20210913131117.153861110@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit b74a29fac6de62f39b594e8f545b3a26db7edb5e ]
+[ Upstream commit 58fb7c643d346e2364404554f531cfa6a1a3917c ]
 
-Add the missing unlock before return from function g2d_runqueue_worker()
-in the error handling case.
+Iff platform_get_irq() returns 0, the driver's probe() method will return 0
+early (as if the method's call was successful).  Let's consider IRQ0 valid
+for simplicity -- devm_request_irq() can always override that decision...
 
-Fixes: 445d3bed75de ("drm/exynos: use pm_runtime_resume_and_get()")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Inki Dae <inki.dae@samsung.com>
+Fixes: ce38815d39ea ("I2C: mediatek: Add driver for MediaTek I2C controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Reviewed-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_g2d.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-index cab4d2c370a7..0ed665501ac4 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-@@ -897,13 +897,14 @@ static void g2d_runqueue_worker(struct work_struct *work)
- 			ret = pm_runtime_resume_and_get(g2d->dev);
- 			if (ret < 0) {
- 				dev_err(g2d->dev, "failed to enable G2D device.\n");
--				return;
-+				goto out;
- 			}
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 4e9fb6b44436..d90d80d046bd 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -1211,7 +1211,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2c->pdmabase);
  
- 			g2d_dma_start(g2d, g2d->runqueue_node);
- 		}
- 	}
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
++	if (irq < 0)
+ 		return irq;
  
-+out:
- 	mutex_unlock(&g2d->runqueue_mutex);
- }
- 
+ 	init_completion(&i2c->msg_complete);
 -- 
 2.30.2
 
