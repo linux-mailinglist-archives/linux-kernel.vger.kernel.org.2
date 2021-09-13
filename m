@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD684095C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8A04092D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347728AbhIMOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:44:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
+        id S242478AbhIMOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344647AbhIMOiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:38:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 762F761BFB;
-        Mon, 13 Sep 2021 13:54:53 +0000 (UTC)
+        id S1344335AbhIMOLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:11:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D351561AAB;
+        Mon, 13 Sep 2021 13:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541294;
-        bh=lt2d/6xG79Pm5RiHOz0sUo5GqEsJxbZVv/fJEDxiuOA=;
+        s=korg; t=1631540538;
+        bh=DFE49qTJJc7/zYUceDgjbsIiJjTFyFIexMYeqH+w0ak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D8L5GnAD5aSkZScCJvSWIvtRnRkoctXkqFhCHuG/xrAnHVenZWpfT5vlKaRt8mhC5
-         uhDU3CH+6O7JGYsxcmhh5gmomUPnqrhk+2vMQhefZL07xVlMT5rFuumqshwv4L+pf1
-         GlXRyy8HMdtk9N5HHeFc9fKNifHiJktY+L7Rc2fI=
+        b=mRkOSVy/JVIEr0IPKF3z7GOmAjemQ+O53MUVM+1lEr7yXDfJGV45O+91c6Zj2Airr
+         67mJJWvMaMaScOefdg55i/5RfF4iYIxgFd7So8ng9XGcMI6mcCPshB8uH0n0lWpIry
+         0gY2nfOFnqlwmY0dLFoWIS/tjxue4qzJctLWaXG4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 208/334] selftests/bpf: Fix test_core_autosize on big-endian machines
-Date:   Mon, 13 Sep 2021 15:14:22 +0200
-Message-Id: <20210913131120.453477361@linuxfoundation.org>
+Subject: [PATCH 5.13 202/300] clk: staging: correct reference to config IOMEM to config HAS_IOMEM
+Date:   Mon, 13 Sep 2021 15:14:23 +0200
+Message-Id: <20210913131116.194918800@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-[ Upstream commit d164dd9a5c08c16a883b3de97d13948c7be7fa4d ]
+[ Upstream commit cbfa6f33e3a685c329d78e06b0cf1dcb23c9d849 ]
 
-The "probed" part of test_core_autosize copies an integer using
-bpf_core_read() into an integer of a potentially different size.
-On big-endian machines a destination offset is required for this to
-produce a sensible result.
+Commit 0a0a66c984b3 ("clk: staging: Specify IOMEM dependency for Xilinx
+Clocking Wizard driver") introduces a dependency on the non-existing config
+IOMEM, which basically makes it impossible to include this driver into any
+build. Fortunately, ./scripts/checkkconfigsymbols.py warns:
 
-Fixes: 888d83b961f6 ("selftests/bpf: Validate libbpf's auto-sizing of LD/ST/STX instructions")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210812224814.187460-1-iii@linux.ibm.com
+IOMEM
+Referencing files: drivers/staging/clocking-wizard/Kconfig
+
+The config for IOMEM support is called HAS_IOMEM. Correct this reference to
+the intended config.
+
+Fixes: 0a0a66c984b3 ("clk: staging: Specify IOMEM dependency for Xilinx Clocking Wizard driver")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Link: https://lore.kernel.org/r/20210817105404.13146-1-lukas.bulwahn@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/progs/test_core_autosize.c  | 20 ++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/staging/clocking-wizard/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_core_autosize.c b/tools/testing/selftests/bpf/progs/test_core_autosize.c
-index 44f5aa2e8956..9a7829c5e4a7 100644
---- a/tools/testing/selftests/bpf/progs/test_core_autosize.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_autosize.c
-@@ -125,6 +125,16 @@ int handle_downsize(void *ctx)
- 	return 0;
- }
+diff --git a/drivers/staging/clocking-wizard/Kconfig b/drivers/staging/clocking-wizard/Kconfig
+index 69cf51445f08..2324b5d73788 100644
+--- a/drivers/staging/clocking-wizard/Kconfig
++++ b/drivers/staging/clocking-wizard/Kconfig
+@@ -5,6 +5,6 @@
  
-+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-+#define bpf_core_read_int bpf_core_read
-+#else
-+#define bpf_core_read_int(dst, sz, src) ({ \
-+	/* Prevent "subtraction from stack pointer prohibited" */ \
-+	volatile long __off = sizeof(*dst) - (sz); \
-+	bpf_core_read((char *)(dst) + __off, sz, src); \
-+})
-+#endif
-+
- SEC("raw_tp/sys_enter")
- int handle_probed(void *ctx)
- {
-@@ -132,23 +142,23 @@ int handle_probed(void *ctx)
- 	__u64 tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->ptr), &in->ptr);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->ptr), &in->ptr);
- 	ptr_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val1), &in->val1);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val1), &in->val1);
- 	val1_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val2), &in->val2);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val2), &in->val2);
- 	val2_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val3), &in->val3);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val3), &in->val3);
- 	val3_probed = tmp;
- 
- 	tmp = 0;
--	bpf_core_read(&tmp, bpf_core_field_size(in->val4), &in->val4);
-+	bpf_core_read_int(&tmp, bpf_core_field_size(in->val4), &in->val4);
- 	val4_probed = tmp;
- 
- 	return 0;
+ config COMMON_CLK_XLNX_CLKWZRD
+ 	tristate "Xilinx Clocking Wizard"
+-	depends on COMMON_CLK && OF && IOMEM
++	depends on COMMON_CLK && OF && HAS_IOMEM
+ 	help
+ 	  Support for the Xilinx Clocking Wizard IP core clock generator.
 -- 
 2.30.2
 
