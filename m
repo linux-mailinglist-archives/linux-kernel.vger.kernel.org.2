@@ -2,212 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0012A408736
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509C3408738
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238175AbhIMIlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:41:49 -0400
-Received: from mail-bn8nam12on2084.outbound.protection.outlook.com ([40.107.237.84]:1152
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238209AbhIMIlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:41:46 -0400
+        id S238146AbhIMImw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:42:52 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:36782 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238026AbhIMImu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:42:50 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18D6hvRe028508;
+        Mon, 13 Sep 2021 08:41:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2021-07-09;
+ bh=xWkzeFSvG/daFjc4vDYeGOftdOuuc9DPDfYbysCCRRs=;
+ b=TbQiJW/CPz3JA8Xv2aPk4ryzhZwgosB9EaJhVb6l54zutZZoe+heT+7d4gR+Cj5dWvcZ
+ ABLzaZQbOLb0mASOX1k9M5KFfMKMN10jScL/8FO1c74eIe7WtP10KlYGgQGT6jZ42405
+ 3LDSvS9B3oL9UZfg+P4FlRXeICpXX/rmvoZiW88FQS5ziFXZmOssIg83tO06n5xZGswa
+ SdbeDrKPsRR7Dl311JRrumaqJA+Nm1ocRKo7SsCBOKTvH8w3nCNoPi4eZOpM/faBRV3m
+ x1Re0Hrui6ObCCQ2a/Ltw1JXmnMaIUi+GMDWYY57mbW5KcHuz852Pgb069vJdiapHWzn Ng== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2020-01-29;
+ bh=xWkzeFSvG/daFjc4vDYeGOftdOuuc9DPDfYbysCCRRs=;
+ b=EIJ/QVuob4I3Xe7RaUX5rr0Q3pQuyEJ5yR6XHlkJHM473YKLNeaDKjlpzDQcQErAmjhf
+ nGr0UiJ8nOZVg9jwbPCjuUHAsoOvvYAddsyr6VtiJW95XivOSQlPRYUAeju1cD2CHTw7
+ DMOjWk1jN0eeyNe4WAE8R2qaUjk3ng1uWiFL2xlxdlfmseMg80c55c0qtPRfVWHvmaj8
+ Qa6642kZ085aht7Zw1cw4AGXPrnDZ6eUqVB49apXUdEeWXLWotHPYkRZpgYy/5xzAkpl
+ tqbjyQPo/f3jE+f+M0/BhGMLBSD+hx2bkQUxgnf3QDAIpyfmi7MJ1v1b9MVguDIVGVN5 wA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b1ka91qcm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Sep 2021 08:41:25 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18D8fJYI072656;
+        Mon, 13 Sep 2021 08:41:24 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
+        by userp3020.oracle.com with ESMTP id 3b167q4xqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Sep 2021 08:41:23 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QONqvvvYz3L60VtzVMcKccmxVkRMkHCJaezrSv86I6URntaVPXCxWvESOH0daM8MnUAjDCt1DZ70nLTNpnDSohl5Mnca5e+C38na26oISzZnuCfhOQNtqGo5wqBlHDkHgjnYcmCwemM/Gq13ti9B0CJvHVB5Ybmrgh5Ai2cIe7buxAhYo3S4XKtFTLDWhehFzTlW9Srrag6q5wEwf1R9THyYbXd5p/8DHsMT58jMhrIYwcbJBXw5TLdKrR4iJDNnvsLCESB0c6+Ol+vgnn6VymtcIvDccsqTNfHra862ecZX73y0OfeMlXvwz/l4uadYApPV+4qJxxpNeRa8grHCTg==
+ b=UDe8vq6X0B/VrDyNFLo03fROkgmdqz7b5uVtLBPgT0wxmEpO+9KvjSnXU08JB6z37rwK7Fb4xhzloHcqVgpZsKkPeT51/8uEa1cboqMCHxu3xpFFYA3eDDd1w3QdK2WFDV0NyjjVT4kykdbwf9Qm1xwY6mDqF2YOA/pg2qRAQM8c2MhLpL8lLhhJzxYiHW3GZ8G00JLC8UP6fQH1ZCKUaUNmCgUGSpZyKXTo7+VM/YGbpeC6CBgwdPDgHgmHjjmrgTA8Prh+BktxjMeFEaSXMlYucbLqOoxVV9GwaDzK5RZujnBecqikNHiagiCYjPH7n0CygE5qVlIInkkGjs3yCg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=lX4xB8WN3Dnc9QqYHqtWediTQWVLXAjsmkpEYi1+08o=;
- b=ndhZbK6KEHCtvK0qtcxjB1koxImSu+vtD6/TJYtTx5gqOU6k9z0nf/vJbxqOc5wsoKOgXExnAWkV0FcyUuMIILBjiu5wsqXJi2eTsvuEtvFPmAbS5ZEwNFLMXjJmbBg32I7Sx3VVGRxzdu6RYCGHrbxdIgHn77gJ/VC8oSLYsLXiDQn15hFVt80GOhPi8ep7Hn3R47Fr2Bn5jZPqTlRFr0NuUIMjrd1CxO1+G0C7lsZUzrfehFN1vH47yT8PEF7Jldm2URj6utyucrJJpr90/RsrlKV3pu4ZyXdcedmWATNMfeSePd9Gh+3z0B3xNoBL9h+kz+5Ooptff79mOXH8+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+ bh=xWkzeFSvG/daFjc4vDYeGOftdOuuc9DPDfYbysCCRRs=;
+ b=WNjLBZCkq35tiM6q+VLgknGKc7zmdFbD4C+MvhgI/hkVI239CppdFnA6m+K2is84qbXxfcqsbE+256ZmKFqItpA6X6z0W8Zm3Orkj9qTwQUjMaZcUkmJSnwzv94KVgtcGoC75YR6XMCTY29F2EstpohQ4b1sA/pJB93T3m2ihF5Y9Jnva6zo4omUrmfQKUbIQvbZQmMVFiefvL/Wq8yu7y0LJA/1kn1sKYl1AKj5k44YqUZXEQDiobxahQ1oTgdh46JiBWT02SKDrDBmNnHLVLMgkW0ugHujJGbs7vfhyQClit2KoLfYIB7QQ7XzzPvRypiFZXSQoauMgn6BAUnE8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lX4xB8WN3Dnc9QqYHqtWediTQWVLXAjsmkpEYi1+08o=;
- b=DGwSAQGrJjn0F/q+M3HdvEvbPklJALdBvdfjE2JbzWwk05N5TMBtgFn52OljRCWL8Zjd2YbuKRB2L8Sh0FIFDDhGu1+GalO/AJdJTtrc0/3w/dZdzrVm2aBP172687k23SyMgXUPluQ4pcuXRsE4DVPpQWVi9tOQr8CITwniUMo=
-Received: from BN9PR03CA0088.namprd03.prod.outlook.com (2603:10b6:408:fc::33)
- by MW4PR02MB7187.namprd02.prod.outlook.com (2603:10b6:303:78::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Mon, 13 Sep
- 2021 08:40:27 +0000
-Received: from BN1NAM02FT062.eop-nam02.prod.protection.outlook.com
- (2603:10b6:408:fc:cafe::2) by BN9PR03CA0088.outlook.office365.com
- (2603:10b6:408:fc::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16 via Frontend
- Transport; Mon, 13 Sep 2021 08:40:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT062.mail.protection.outlook.com (10.13.2.168) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 08:40:27 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 13 Sep 2021 01:40:04 -0700
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 13 Sep 2021 01:40:04 -0700
-Envelope-to: linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org,
- corbet@lwn.net,
- linux-arm-kernel@lists.infradead.org,
- arnd@arndb.de
-Received: from [172.19.2.91] (port=36668 helo=xsjjollys50.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <ronak.jain@xilinx.com>)
-        id 1mPhVU-000Cg1-E3; Mon, 13 Sep 2021 01:40:04 -0700
-From:   Ronak Jain <ronak.jain@xilinx.com>
-To:     <michal.simek@xilinx.com>, <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <rajan.vaja@xilinx.com>,
-        <corbet@lwn.net>, <linux-arm-kernel@lists.infradead.org>,
-        <arnd@arndb.de>, <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Ronak Jain <ronak.jain@xilinx.com>
-Subject: [PATCH v2 3/3] firmware: xilinx: Add sysfs support for feature config
-Date:   Mon, 13 Sep 2021 01:39:55 -0700
-Message-ID: <20210913083955.27146-4-ronak.jain@xilinx.com>
-X-Mailer: git-send-email 2.32.0.93.g670b81a
-In-Reply-To: <20210913083955.27146-1-ronak.jain@xilinx.com>
-References: <20210913083955.27146-1-ronak.jain@xilinx.com>
-MIME-Version: 1.0
+ bh=xWkzeFSvG/daFjc4vDYeGOftdOuuc9DPDfYbysCCRRs=;
+ b=El4vxRFmrmNGYSUdVIvfhPPI+vDNaLo01NDJAmMxvL8Nva65mE49+UcWUMbIP+iKnl3p11kwmtBWlT9oSCNyRkqGrr1r2QmcPWCTN/wP5n8Kyrb/+Jp+YrBIvcEm+OhXpaEvIbqwCPJ7Hd6w+pZDy8tE3E3mboZX79HrKYD6hfs=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1951.namprd10.prod.outlook.com
+ (2603:10b6:300:10a::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Mon, 13 Sep
+ 2021 08:41:21 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4500.019; Mon, 13 Sep 2021
+ 08:41:21 +0000
+Date:   Mon, 13 Sep 2021 11:41:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, paskripkin@gmail.com,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH] media: atomisp: fix control reaches end of non-void
+ function error
+Message-ID: <20210913084102.GF7203@kadam>
+References: <20210910223700.32494-1-skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
+In-Reply-To: <20210910223700.32494-1-skhan@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0004.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::16)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+Received: from kadam (62.8.83.99) by JN2P275CA0004.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17 via Frontend Transport; Mon, 13 Sep 2021 08:41:15 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6c0651cd-47de-4327-882c-08d9769222f4
-X-MS-TrafficTypeDiagnostic: MW4PR02MB7187:
-X-Microsoft-Antispam-PRVS: <MW4PR02MB7187FAC8004C0C7BEBCAB508A4D99@MW4PR02MB7187.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:923;
+X-MS-Office365-Filtering-Correlation-Id: 183d2c44-d231-4fe4-cd37-08d976924299
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1951:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB195158D45B40B83915E7EA1A8ED99@MWHPR10MB1951.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S0eGSDn+ZC7ZIzqNwt4IfZjn1K8OVAdrldHGi+MEkYRqKYkswEazK5vRfhAGqSD/IWMPVaE4diovrYhAPw6/6bJzDaTiNHctd49vc9y4yGJUdh3uhxKXTagThNvFcgco5pXM9lnyg6+VJ9flmAKnUySzG5bM7fyRTeKOI80P+MsEXzqI8Fp9JcIC4/bKbZNw7clCmtOrGdsTNqrOqk3lqxlgzqJba4x7V3LDH8XmLBpi9adfRdw2enFF6fXGYUTJNl4e1NZuBLu593ANFjzKFAAU4DlSAJFlxu3hh3RC5EOaOLEeTgOoQ8i3YzVGkm9jFDiYvarthqz75rY2ZRp42zgYW1sdkdSD0wdeVY6N7dtBfYYMyOf3eZlvRu4YTGZASq3u9yzrUxFojpXvf+90tLx651cMhc91pDNXMJYJTtVLlz/U5FBtqJ7FHbEetZFnsvIIK2LISbFOa+FWXmUQi4ekW9lXJUZMojkJsN059SVq0e8DKSup6vtUSCktN2/bl9jf65gSx3+3OSoOSqdGnJ3UOpr5hfkZ/OngYeCFabGntEJjMVdPWb/dkGBm6PISHOWnXFFTfFE4MM1cgkS6Gu6MQCKZVtBZ7ptrw+tiqDtCIrksZFBt1ubFlGWcM7VCtavRzn63a0jTM53o5rEDl5lErYTDInp33gXDlf40wGQbPobIlQsb3Yd53GsgvJmCvVey0B/E/6pfTsy2EJMDg+N+Z3o2R4+WFu0aWhn96lM=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(36756003)(4326008)(26005)(6666004)(8936002)(426003)(8676002)(5660300002)(186003)(9786002)(356005)(7636003)(44832011)(36906005)(107886003)(54906003)(83380400001)(1076003)(2906002)(70206006)(336012)(47076005)(508600001)(110136005)(7696005)(36860700001)(70586007)(2616005)(82310400003)(316002)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 08:40:27.2070
+X-Microsoft-Antispam-Message-Info: u04Te9t8mcfKYThnaPDtGOfKZfT2O733nK4ahIgVozl4bbYytZfV589W9ZyiczVxXXb1kUiRI5WE53wjBQQUeAEZORLeVJnxGgIDqjunWFF2lBLWQwkuXfYmaPIialbAaJaeCy0a98SQ0sNMFMro56d5Rz56wHb3PO6kloHiVxAzsE0OP8ec3iSfpDCyDo3WBzPKDAwhf8CHgubfx5ctGmXPBFj7h5kIPAW19NGAQVVH+ZTDEXji1OpZ7i2NBfDXj3/kZGAiKdM3xCDcIJLpuh5qAOe1fAmlhBiwdhoi3u7lu+5w5/1NHqn508/1EnCdLvGu+YD4Jc8EUD4Kt82RnnF/+OsUFC8/SzfDqmIUAxgyaq7VHUm6UVMeYac0xSe4pMcvs99nraimt2AVvpJzdqEpgIFteu/DijC/7uvZ1THwVMiAfScPP+9bilHeEa26mAwVAJNPhd0kvMHJGLd2Ng1zzOySmKrrnwQ2pl8u4F4Mwt7GsEGcTmyFJgvukmPTZBecX4TK196Q3QIsV97oYwPQBE69WvLzlY8Sj/WbAsKqGTQEoINsXwS+2iitpj4D/DOkSO1Lrz4ozBBWrXYX/dHomLGeQEbEi6EAtrNqs39nhv3Z/RkxWeblGUACthTYxQYjAVV1Q4ovUov/48qIugw3f6wL/xMscsJKdYHqjPTWLv1/Z/icizjZxL+TZcnSX5K0Tpxd2Zv95GUZyImg6Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4744005)(83380400001)(186003)(6666004)(1076003)(33716001)(2906002)(52116002)(6496006)(9576002)(33656002)(55016002)(44832011)(4326008)(86362001)(5660300002)(38100700002)(38350700002)(66556008)(956004)(66476007)(26005)(508600001)(66946007)(9686003)(8676002)(6916009)(8936002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R045U0FRd2g4dkR5MlFOZnIxbDRCR1ZjVExVWCttZWVGWEFBdysyYlRjQys4?=
+ =?utf-8?B?ZUUzREE0L2I3QUdnVWpScVBSeGYxTURtRnFUQ0FYMG5Xd2tPOVBpTGlVellK?=
+ =?utf-8?B?WHZoaGJzR3g3T1A0NlJVdUJTUTFXc2FGS3hzdmJOblh3cDNXR0NhMk9UUzRj?=
+ =?utf-8?B?amRzVStJSEtnT3QydWJkSTVROU14NTJhaVVPRkxBcC9qYVVvKzZYQXczQWx5?=
+ =?utf-8?B?TGowQTAzak83L3dHRm9hQmdKQXpic2NnYTVxcXVRZVZyU0RkU3NYZGQ3WkN6?=
+ =?utf-8?B?MXM4L2hzVHpjVlF0a1RiYS83NWhPUGxzdTdUUFdvS2VYTnJ1b28yRW1Vdk5k?=
+ =?utf-8?B?b0pReDVJQ3h6a1JmaGpmR0Y3SUYwQzd4SGc1c3h1NE1wcE8rVXdPQ0sySkJ6?=
+ =?utf-8?B?L3dWbWdJUTk0T1h0b3dNaW5SS25lVzVHZTUwaHR3TFNkRXVTOENsTTgwNW54?=
+ =?utf-8?B?M0d3R2gydHJHaXJlN1hLYkF1cDd3c292ampGOGxTSGU5ell4Z0pZRDdCTit1?=
+ =?utf-8?B?ZzFRa3Jaa05qTGliMWR1dnFaWTVaZDVxc2txckw5T1k3bi9tR3RnaVowZkdk?=
+ =?utf-8?B?YTVBUUcza0dQY2VxemF0ZmNucHY0a1JoS1VGVjZWclMyQk51ZmlpNzR1Nmh1?=
+ =?utf-8?B?UVVJQ1Z4TW8wWTdHYURIcmRWNnNyN0t4MnNRN0JUSDRYVGpLSFFnenR2bkc5?=
+ =?utf-8?B?eHRpSjFIbGhueUFDazhlMkxTamxlMk50cTQ5UERNTTlESko5KzhjUkhqM1NR?=
+ =?utf-8?B?eGVia0dBZHgyQlNMbzk3dU1aUHp5Q29YMWZ0bnRIbUMzQnJHUlhsV2JDN0o1?=
+ =?utf-8?B?c2Exd1lDRnlJYUxmZXdNQTN3d240MkdlNTkrZXlaakFlTUk1UWFyRDRCYTh5?=
+ =?utf-8?B?SWJ0OFZaOE9ETzByNzNCRklqbTlQKzNZMklqVFZUOUZzVnhhc3lEUFdSTytS?=
+ =?utf-8?B?Q0IwM3c0eVJwbmNmelkwemtKb1poOERpYmR6SFNwblJlenIxdWY0VE4venp1?=
+ =?utf-8?B?Y09XOUdKMTdkbEZyczNySlNxc3ZGVittaDZWRGdZMmdDN0Y2WjJrWGp1b3ht?=
+ =?utf-8?B?ck5hRXFOMmJGMWVncnplUWVyS2NLMHhpamQ0Y3lCNGxPcExOZ053aS9oQlhy?=
+ =?utf-8?B?aVUyL2kxVjhyaG8rVE03a0lsTjc0R3dWSW9XWkFPVmtGU29XVmROdU5ZTzhq?=
+ =?utf-8?B?T2tDNkF0UjFFOGR5WlgrelVZYTVHNmdTYUo4bVA4WTJnYnZlL2tXdGYvaEs1?=
+ =?utf-8?B?SGRQcG1xd1hSUVNNTnRKdFY2aDZ1NXFicytmZG9QVVNJLytlRk12MWxHeWl4?=
+ =?utf-8?B?a1dmMWxsay9sSFl4MjlDcmNvVzJSL2paK0c1ajZNMElDQ3EvRFc0cWxVU0hq?=
+ =?utf-8?B?c1JyaFNRK3Q1TVEwSkVEckRTTG4wZXNPZE1CbkdUWFpCTjlvblJvQk9JTHl4?=
+ =?utf-8?B?ekJKa0paSHNCbVVINEUrbkx5UGhTemVDZ0h5NnRFWkE5RXcxUEtjWm5kM0pK?=
+ =?utf-8?B?OVBWM2FwSy9pMEUwZkZ2Q2ZGbjQvajVvTHliampnZHdZc2wyNkJkK05CM21Z?=
+ =?utf-8?B?L0U2U2RHdklNMHpzUDgvNjYxR1NkSDJ3UGVoUzM4b1BiVGlzNk05SzliOW5I?=
+ =?utf-8?B?bDBXVldtNUUxck9WSTl2b3ZTdDc3TG1adjZGdk56amtmYmFKREhwcUVyMkFZ?=
+ =?utf-8?B?OFh1aEo0Z1ptN3hKUUUwRkthS0oraUQ4M05aemptL2JEWEttSlJDZmN3anht?=
+ =?utf-8?Q?AMW/PkxrAtwnorxQAMx3+lyUZAA0TzaunM6mzrf?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 183d2c44-d231-4fe4-cd37-08d976924299
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 08:41:21.4338
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c0651cd-47de-4327-882c-08d9769222f4
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT062.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR02MB7187
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O0XcftChJCZMM9c8t6HCtMdBJR1puLabYKE8jri4HUOLUw3ZL2iaeXFWCuKsJzkFaidbLG/4nEVo0GY2h/apkVWrZxguz5kWId0rYDML4Vw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1951
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10105 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109130057
+X-Proofpoint-GUID: xaQRA66o_bhY6MTWwsuwbXy4TlaJnfao
+X-Proofpoint-ORIG-GUID: xaQRA66o_bhY6MTWwsuwbXy4TlaJnfao
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for sysfs interface for runtime features configuration.
- The user can configure the features at runtime. First the user need
- to select the config id of the supported features and then the user
- can configure the parameters of the feature based on the config id.
- So far the support is added for the over temperature and external
- watchdog features.
+On Fri, Sep 10, 2021 at 04:37:00PM -0600, Shuah Khan wrote:
+> Fix the following build error with -Werror=return-type enabled. Fix
+> input_system_configure_channel_sensor() to return status when control
+> reaches the end.
+> 
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
+> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+>  1649 | }
+> 
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
----
-Changes in v2:
-- Update commit message
----
- drivers/firmware/xilinx/zynqmp.c | 71 ++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+Hi Shuah,
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index 875d13bc1a57..a1434dd368f2 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -1361,6 +1361,75 @@ static DEVICE_ATTR_RW(pggs1);
- static DEVICE_ATTR_RW(pggs2);
- static DEVICE_ATTR_RW(pggs3);
- 
-+static atomic_t feature_conf_id;
-+
-+static ssize_t feature_config_id_show(struct device *device,
-+				      struct device_attribute *attr,
-+				      char *buf)
-+{
-+	return sysfs_emit(buf, "%d\n", atomic_read(&feature_conf_id));
-+}
-+
-+static ssize_t feature_config_id_store(struct device *device,
-+				       struct device_attribute *attr,
-+				       const char *buf, size_t count)
-+{
-+	u32 config_id;
-+	int ret;
-+
-+	if (!buf)
-+		return -EINVAL;
-+
-+	ret = kstrtou32(buf, 10, &config_id);
-+	if (ret)
-+		return ret;
-+
-+	atomic_set(&feature_conf_id, config_id);
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(feature_config_id);
-+
-+static ssize_t feature_config_value_show(struct device *device,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	int ret;
-+	u32 ret_payload[PAYLOAD_ARG_CNT];
-+
-+	ret = zynqmp_pm_get_feature_config(atomic_read(&feature_conf_id),
-+					   ret_payload);
-+	if (ret)
-+		return ret;
-+
-+	return sysfs_emit(buf, "%d\n", ret_payload[1]);
-+}
-+
-+static ssize_t feature_config_value_store(struct device *device,
-+					  struct device_attribute *attr,
-+					  const char *buf, size_t count)
-+{
-+	u32 value;
-+	int ret;
-+
-+	if (!buf)
-+		return -EINVAL;
-+
-+	ret = kstrtou32(buf, 10, &value);
-+	if (ret)
-+		return ret;
-+
-+	ret = zynqmp_pm_set_feature_config(atomic_read(&feature_conf_id),
-+					   value);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(feature_config_value);
-+
- static struct attribute *zynqmp_firmware_attrs[] = {
- 	&dev_attr_ggs0.attr,
- 	&dev_attr_ggs1.attr,
-@@ -1372,6 +1441,8 @@ static struct attribute *zynqmp_firmware_attrs[] = {
- 	&dev_attr_pggs3.attr,
- 	&dev_attr_shutdown_scope.attr,
- 	&dev_attr_health_status.attr,
-+	&dev_attr_feature_config_id.attr,
-+	&dev_attr_feature_config_value.attr,
- 	NULL,
- };
- 
--- 
-2.32.0.93.g670b81a
+You're the third person to send this patch recently but it was fixed on
+Aug 2 in staging-next in commit 05344a1d2ea7 ("media: atomisp: restore
+missing 'return' statement").  What tree are you working against?  It
+seems like it needs to be backported somewhere.
+
+regards,
+dan carpenter
 
