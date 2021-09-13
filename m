@@ -2,135 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56320408606
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29BA4085EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237881AbhIMID3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:03:29 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:36196 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237812AbhIMIDN (ORCPT
+        id S237746AbhIMIAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:00:05 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16194 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237725AbhIMIAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:03:13 -0400
-Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
-        by sparta.prtnl (Postfix) with ESMTP id D7CF344A0251;
-        Mon, 13 Sep 2021 10:01:11 +0200 (CEST)
-From:   Roan van Dijk <roan@protonic.nl>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Roan van Dijk <roan@protonic.nl>
-Subject: [PATCH v2 4/4] iio: documentation: Document scd4x calibration use
-Date:   Mon, 13 Sep 2021 10:00:20 +0200
-Message-Id: <20210913080020.1265027-5-roan@protonic.nl>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210913080020.1265027-1-roan@protonic.nl>
-References: <20210913080020.1265027-1-roan@protonic.nl>
+        Mon, 13 Sep 2021 04:00:04 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H7Jk30tSGz1DGxK;
+        Mon, 13 Sep 2021 15:57:47 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 15:58:44 +0800
+Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 13 Sep
+ 2021 15:58:44 +0800
+From:   Laibin Qiu <qiulaibin@huawei.com>
+To:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
+        <hare@suse.de>, <asml.silence@gmail.com>, <bvanassche@acm.org>
+Subject: [PATCH -next] blk-mq: fix tag_get wait task can't be awakened
+Date:   Mon, 13 Sep 2021 16:12:48 +0800
+Message-ID: <20210913081248.3201596-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries from Documentation/ABI/testing/sysfs-bus-iio-scd30
-to Documentation/ABI/testing/sysfs-bus-iio. The attributes of the scd4x
-and scd30 are common.
+When multiple hctx share one tagset. The wake_batch is calculated
+during initialization by queue_depth. But when multiple hctx share one
+tagset. The queue depth assigned to each user may be smaller than
+wakup_batch. This may cause the waiting queue to fail to wakup and leads
+to Hang.
 
-Remove Documentation/ABI/testing/sysfs-bus-iio-scd30.
+Fix this by recalculating wake_batch when inc or dec active_queues.
 
-Signed-off-by: Roan van Dijk <roan@protonic.nl>
+Fixes: 0d2602ca30e41 ("blk-mq: improve support for shared tags maps")
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
 ---
- Documentation/ABI/testing/sysfs-bus-iio       | 35 +++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-iio-scd30 | 34 ------------------
- 2 files changed, 35 insertions(+), 34 deletions(-)
- delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+ block/blk-mq-tag.c      | 44 +++++++++++++++++++++++++++++++++++++++--
+ include/linux/sbitmap.h |  8 ++++++++
+ lib/sbitmap.c           |  3 ++-
+ 3 files changed, 52 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index 6ad47a67521c..56492c564f72 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1957,3 +1957,38 @@ Description:
- 		Specify the percent for light sensor relative to the channel
- 		absolute value that a data field should change before an event
- 		is generated. Units are a percentage of the prior reading.
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 86f87346232a..d02f5ac0004c 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -16,6 +16,27 @@
+ #include "blk-mq-sched.h"
+ #include "blk-mq-tag.h"
+ 
++static void bt_update_wake_batch(struct sbitmap_queue *bt, unsigned int users)
++{
++	unsigned int depth;
 +
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
-+Date:		June 2020
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Contaminants build-up in the measurement chamber or optical
-+		elements deterioration leads to sensor drift.
++	depth = max((bt->sb.depth + users - 1) / users, 4U);
++	sbitmap_queue_update_wake_batch(bt, depth);
++}
 +
-+		One can compensate for sensor drift by using automatic self
-+		calibration procedure (asc).
++/*
++ * Recalculate wakeup batch when tag is shared by hctx.
++ */
++static void blk_mq_update_wake_batch(struct sbitmap_queue *bitmap_tags,
++		struct sbitmap_queue *breserved_tags, unsigned int users)
++{
++	if (!users)
++		return;
 +
-+		Writing 1 or 0 to this attribute will respectively activate or
-+		deactivate asc.
++	bt_update_wake_batch(bitmap_tags, users);
++	bt_update_wake_batch(breserved_tags, users);
++}
 +
-+		Upon reading current asc status is returned.
+ /*
+  * If a previously inactive queue goes active, bump the active user count.
+  * We need to do this before try to allocate driver tag, then even if fail
+@@ -24,17 +45,29 @@
+  */
+ bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
+ {
++	unsigned int users;
 +
-+What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
-+Date:		June 2020
-+KernelVersion:	5.8
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Contaminants build-up in the measurement chamber or optical
-+		elements deterioration leads to sensor drift.
+ 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+ 		struct request_queue *q = hctx->queue;
+ 		struct blk_mq_tag_set *set = q->tag_set;
+ 
+ 		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags) &&
+-		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
++		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags)) {
+ 			atomic_inc(&set->active_queues_shared_sbitmap);
 +
-+		One can compensate for sensor drift by using forced
-+		recalibration (frc). This is useful in case there's known
-+		co2 reference available nearby the sensor.
++			users = atomic_read(&set->active_queues_shared_sbitmap);
++			blk_mq_update_wake_batch(&set->__bitmap_tags,
++					&set->__breserved_tags, users);
++		}
+ 	} else {
+ 		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state) &&
+-		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
++		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state)) {
+ 			atomic_inc(&hctx->tags->active_queues);
 +
-+		Picking value from the range [400 1 2000] and writing it to the
-+		sensor will set frc.
++			users = atomic_read(&hctx->tags->active_queues);
++			blk_mq_update_wake_batch(&hctx->tags->__bitmap_tags,
++					&hctx->tags->__breserved_tags, users);
++		}
+ 	}
+ 
+ 	return true;
+@@ -59,16 +92,23 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
+ 	struct blk_mq_tags *tags = hctx->tags;
+ 	struct request_queue *q = hctx->queue;
+ 	struct blk_mq_tag_set *set = q->tag_set;
++	unsigned int users;
+ 
+ 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
+ 		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_ACTIVE,
+ 					&q->queue_flags))
+ 			return;
+ 		atomic_dec(&set->active_queues_shared_sbitmap);
++		users = atomic_read(&set->active_queues_shared_sbitmap);
++		blk_mq_update_wake_batch(&set->__bitmap_tags,
++				&set->__breserved_tags, users);
+ 	} else {
+ 		if (!test_and_clear_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
+ 			return;
+ 		atomic_dec(&tags->active_queues);
++		users = atomic_read(&tags->active_queues);
++		blk_mq_update_wake_batch(&tags->__bitmap_tags,
++				&tags->__breserved_tags, users);
+ 	}
+ 
+ 	blk_mq_tag_wakeup_all(tags, false);
+diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
+index 2713e689ad66..d49e4f054bfe 100644
+--- a/include/linux/sbitmap.h
++++ b/include/linux/sbitmap.h
+@@ -406,6 +406,14 @@ static inline void sbitmap_queue_free(struct sbitmap_queue *sbq)
+ 	sbitmap_free(&sbq->sb);
+ }
+ 
++/**
++ * sbitmap_queue_update_wake_batch() - Recalucate wake batch.
++ * @sbq: Bitmap queue.
++ * @depth: New number of queue depth.
++ */
++void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
++				     unsigned int depth);
 +
-+		Upon reading current frc value is returned. Note that after
-+		power cycling default value (i.e 400) is returned even though
-+		internally sensor had recalibrated itself.
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-scd30 b/Documentation/ABI/testing/sysfs-bus-iio-scd30
-deleted file mode 100644
-index b9712f390bec..000000000000
---- a/Documentation/ABI/testing/sysfs-bus-iio-scd30
-+++ /dev/null
-@@ -1,34 +0,0 @@
--What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
--Date:		June 2020
--KernelVersion:	5.8
--Contact:	linux-iio@vger.kernel.org
--Description:
--		Contaminants build-up in the measurement chamber or optical
--		elements deterioration leads to sensor drift.
--
--		One can compensate for sensor drift by using automatic self
--		calibration procedure (asc).
--
--		Writing 1 or 0 to this attribute will respectively activate or
--		deactivate asc.
--
--		Upon reading current asc status is returned.
--
--What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
--Date:		June 2020
--KernelVersion:	5.8
--Contact:	linux-iio@vger.kernel.org
--Description:
--		Contaminants build-up in the measurement chamber or optical
--		elements deterioration leads to sensor drift.
--
--		One can compensate for sensor drift by using forced
--		recalibration (frc). This is useful in case there's known
--		co2 reference available nearby the sensor.
--
--		Picking value from the range [400 1 2000] and writing it to the
--		sensor will set frc.
--
--		Upon reading current frc value is returned. Note that after
--		power cycling default value (i.e 400) is returned even though
--		internally sensor had recalibrated itself.
+ /**
+  * sbitmap_queue_resize() - Resize a &struct sbitmap_queue.
+  * @sbq: Bitmap queue to resize.
+diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+index b25db9be938a..bbe1d663763f 100644
+--- a/lib/sbitmap.c
++++ b/lib/sbitmap.c
+@@ -457,7 +457,7 @@ int sbitmap_queue_init_node(struct sbitmap_queue *sbq, unsigned int depth,
+ }
+ EXPORT_SYMBOL_GPL(sbitmap_queue_init_node);
+ 
+-static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
++void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
+ 					    unsigned int depth)
+ {
+ 	unsigned int wake_batch = sbq_calc_wake_batch(sbq, depth);
+@@ -475,6 +475,7 @@ static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
+ 			atomic_set(&sbq->ws[i].wait_cnt, 1);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(sbitmap_queue_update_wake_batch);
+ 
+ void sbitmap_queue_resize(struct sbitmap_queue *sbq, unsigned int depth)
+ {
 -- 
-2.30.2
+2.22.0
 
