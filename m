@@ -2,276 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24BB409A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C0F409A9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241712AbhIMRXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240913AbhIMRXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:23:16 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E025FC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:21:59 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id u16so15865601wrn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qrzTc/1zoYYYGD7G7LJ59jCYQOmSJ3iceMMpSlQqQiA=;
-        b=hT0mhz+Zvp3enG3kIlyNKe7Pc6CrBCXJG2KsFsBH7q2E6R2L2B0PQi3PIdknvdFocY
-         fVDesyoCuyuzHbgFaJjKsPGKOPSCg0TPX5CGEcYMZ9CzUrT1Jvy7luyfuQUqnRui3671
-         RVV9M7FkQGZjdLUuU0wh6C+rmTA0MzLfVbC/l6MTJ1X8stAV0UTw+n59jY9FbPhgRfza
-         LXRrUIeG1OJ0yFy1mSdXo85wpg/B5mWiVsUlJ1rxyvngHlB6zp+oRRPIbJBxoEnuhsoT
-         Z0Lzl3yH1Syk7IDthwa/F+vr3fB+9VbSiIX+sIqxC/bXQEyHUnbAu7IYD2TBJRERF+cw
-         zPiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qrzTc/1zoYYYGD7G7LJ59jCYQOmSJ3iceMMpSlQqQiA=;
-        b=GsVOAyJdMMSxV69EI/yiFy0AfIuwdnaSg/qRwNmnqroWx+IeaEq5F9WpedAYWSKvXo
-         MrwO3O9fVKxvoO9bJlr0D6tBRiYWqD+aFCNhDIRagpWndsRbS+MAFxwMvoIiFXgVvlYs
-         lVHCePLZbRL0ScYxyBMO9SlDWDRXjGcmToAUv8cplPSsDegHhwejk80WOJqSBbfHyujs
-         5Z4Hpe/TaTthKyRwHVfn73iA4iBGZpMUmJSSnCMph9nmIUI5tET40tU2KK9dCfWmDMIz
-         NoeIVhBVu0JymLaYv3veE8wMHDXvrxG6x+zoOPg7YMPTYukQco5cFN4JBcwgX09DLaM0
-         a3hQ==
-X-Gm-Message-State: AOAM531afo7aDY2wVCJ0akKRIg3sKIzbrA5CwER635nvFdpw/wPoXDqX
-        AKWzB17LhMW34DH3PdIdpKU=
-X-Google-Smtp-Source: ABdhPJxjz+O3ZFSrqcGDTtlgKhXzBClcWM+vqoE/AfEAO11MukJmqzep7AYV+x6J9r/6tJ1odVNIbg==
-X-Received: by 2002:adf:ec81:: with SMTP id z1mr13644572wrn.181.1631553718521;
-        Mon, 13 Sep 2021 10:21:58 -0700 (PDT)
-Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id x11sm7555633wmk.21.2021.09.13.10.21.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 10:21:58 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, saravanak@google.com,
-        megous@megous.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] drm/sun4i: dw-hdmi: Fix HDMI PHY clock setup
-Date:   Mon, 13 Sep 2021 19:21:54 +0200
-Message-Id: <20210913172154.2686-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S1344983AbhIMRZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:25:06 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:40758 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244624AbhIMRYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 13:24:36 -0400
+Received: from g550jk.localnet (ip-213-127-63-121.ip.prioritytelecom.net [213.127.63.121])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 80BE5CB143;
+        Mon, 13 Sep 2021 17:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1631553798; bh=P7YQBLqM1FKYNMlzZbHNW7UioCxjAprhTAD1I+29b00=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=udSXMj1qcTeaReyUQWRkKY7Upe+Zzbq7Q1r+4FRzC96ypP79XeJf7c3pRVzH+T3wm
+         omCGREirKpjvJSOZiq67n4XC6Pr9MWW5LTSMo8+gtVolY8k86Ury49pOgAXgzuNpo4
+         emZ/zI4rKzrqALkWIgesYr/kJ2v7boOn/HT9ssJ8=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH v3 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
+Date:   Mon, 13 Sep 2021 19:23:18 +0200
+Message-ID: <6673399.dA2BYh7nEs@g550jk>
+In-Reply-To: <20210828172315.55742-2-konrad.dybcio@somainline.org>
+References: <20210828172315.55742-1-konrad.dybcio@somainline.org> <20210828172315.55742-2-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent rework, which made HDMI PHY driver a platform device, inadvertely
-reversed clock setup order. HW is very touchy about it. Proper way is to
-handle controllers resets and clocks first and HDMI PHYs second.
+Hi Konrad,
 
-Currently, without this fix, first mode set completely fails (nothing on
-HDMI monitor) on H3 era PHYs. On H6, it still somehow work.
+based on other reviews on the mailing list/IRC I have some comments here
 
-Move HDMI PHY reset & clocks handling to sun8i_hdmi_phy_init() which
-will assure that code is executed after controllers reset & clocks are
-handled. Additionally, add sun8i_hdmi_phy_deinit() which will deinit
-them at controllers driver unload.
+On Samstag, 28. August 2021 19:23:14 CEST Konrad Dybcio wrote:
+> This adds pincontrol driver for tlmm block found in SM6350 SoC
+> 
+> This patch is based on downstream copyleft code.
+> 
+> Reviewed-by: AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@somainline.org> Signed-off-by: Konrad Dybcio
+> <konrad.dybcio@somainline.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> Changes since v2:
+> - Trim the forgotten-about comments
+> - Add Bjorn's r-b
+> 
+>  drivers/pinctrl/qcom/Kconfig          |    9 +
+>  drivers/pinctrl/qcom/Makefile         |    1 +
+>  drivers/pinctrl/qcom/pinctrl-sm6350.c | 1593 +++++++++++++++++++++++++
+>  3 files changed, 1603 insertions(+)
+>  create mode 100644 drivers/pinctrl/qcom/pinctrl-sm6350.c
+> 
+[SNIP]
+>
+> +DECLARE_MSM_GPIO_PINS(128);
+> +DECLARE_MSM_GPIO_PINS(129);
+> +DECLARE_MSM_GPIO_PINS(130);
+> +DECLARE_MSM_GPIO_PINS(131);
+> +DECLARE_MSM_GPIO_PINS(132);
+> +DECLARE_MSM_GPIO_PINS(133);
+> +DECLARE_MSM_GPIO_PINS(134);
+> +DECLARE_MSM_GPIO_PINS(135);
+> +DECLARE_MSM_GPIO_PINS(136);
+> +DECLARE_MSM_GPIO_PINS(137);
+> +DECLARE_MSM_GPIO_PINS(138);
+> +DECLARE_MSM_GPIO_PINS(139);
+> +DECLARE_MSM_GPIO_PINS(140);
+> +DECLARE_MSM_GPIO_PINS(141);
+> +DECLARE_MSM_GPIO_PINS(142);
+> +DECLARE_MSM_GPIO_PINS(143);
+> +DECLARE_MSM_GPIO_PINS(144);
+> +DECLARE_MSM_GPIO_PINS(145);
+> +DECLARE_MSM_GPIO_PINS(146);
+> +DECLARE_MSM_GPIO_PINS(147);
+> +DECLARE_MSM_GPIO_PINS(148);
+> +DECLARE_MSM_GPIO_PINS(149);
+> +DECLARE_MSM_GPIO_PINS(150);
+> +DECLARE_MSM_GPIO_PINS(151);
+> +DECLARE_MSM_GPIO_PINS(152);
+> +DECLARE_MSM_GPIO_PINS(153);
+> +DECLARE_MSM_GPIO_PINS(154);
+> +DECLARE_MSM_GPIO_PINS(155);
+> +
+> +static const unsigned int sdc1_rclk_pins[] = { 156 };
+> +static const unsigned int sdc1_clk_pins[] = { 157 };
+> +static const unsigned int sdc1_cmd_pins[] = { 158 };
+> +static const unsigned int sdc1_data_pins[] = { 159 };
+> +static const unsigned int sdc2_clk_pins[] = { 160 };
+> +static const unsigned int sdc2_cmd_pins[] = { 161 };
+> +static const unsigned int sdc2_data_pins[] = { 162 };
+> +static const unsigned int ufs_reset_pins[] = { 163 };
 
-Tested on A64, H3, H6 and R40.
+All these numbers don't match anymore after moving ufs_reset to 156
 
-Fixes: 9bf3797796f5 ("drm/sun4i: dw-hdmi: Make HDMI PHY into a platform device")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  |  7 +-
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  4 +-
- drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 97 ++++++++++++++------------
- 3 files changed, 61 insertions(+), 47 deletions(-)
+(ref: https://lore.kernel.org/lkml/YNTYvKYDWFxUcb+Y@yoga/ )
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-index f75fb157f2ff..5fa5407ac583 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -216,11 +216,13 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
- 		goto err_disable_clk_tmds;
- 	}
- 
-+	ret = sun8i_hdmi_phy_init(hdmi->phy);
-+	if (ret)
-+		return ret;
-+
- 	drm_encoder_helper_add(encoder, &sun8i_dw_hdmi_encoder_helper_funcs);
- 	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
- 
--	sun8i_hdmi_phy_init(hdmi->phy);
--
- 	plat_data->mode_valid = hdmi->quirks->mode_valid;
- 	plat_data->use_drm_infoframe = hdmi->quirks->use_drm_infoframe;
- 	sun8i_hdmi_phy_set_ops(hdmi->phy, plat_data);
-@@ -262,6 +264,7 @@ static void sun8i_dw_hdmi_unbind(struct device *dev, struct device *master,
- 	struct sun8i_dw_hdmi *hdmi = dev_get_drvdata(dev);
- 
- 	dw_hdmi_unbind(hdmi->hdmi);
-+	sun8i_hdmi_phy_deinit(hdmi->phy);
- 	clk_disable_unprepare(hdmi->clk_tmds);
- 	reset_control_assert(hdmi->rst_ctrl);
- 	gpiod_set_value(hdmi->ddc_en, 0);
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-index 74f6ed0e2570..bffe1b9cd3dc 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-@@ -169,6 +169,7 @@ struct sun8i_hdmi_phy {
- 	struct clk			*clk_phy;
- 	struct clk			*clk_pll0;
- 	struct clk			*clk_pll1;
-+	struct device			*dev;
- 	unsigned int			rcal;
- 	struct regmap			*regs;
- 	struct reset_control		*rst_phy;
-@@ -205,7 +206,8 @@ encoder_to_sun8i_dw_hdmi(struct drm_encoder *encoder)
- 
- int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
- 
--void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-+int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-+void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy);
- void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
- 			    struct dw_hdmi_plat_data *plat_data);
- 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-index c9239708d398..78b152973957 100644
---- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-@@ -506,9 +506,60 @@ static void sun8i_hdmi_phy_init_h3(struct sun8i_hdmi_phy *phy)
- 	phy->rcal = (val & SUN8I_HDMI_PHY_ANA_STS_RCAL_MASK) >> 2;
- }
- 
--void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
-+int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
- {
-+	int ret;
-+
-+	ret = reset_control_deassert(phy->rst_phy);
-+	if (ret) {
-+		dev_err(phy->dev, "Cannot deassert phy reset control: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(phy->clk_bus);
-+	if (ret) {
-+		dev_err(phy->dev, "Cannot enable bus clock: %d\n", ret);
-+		goto err_deassert_rst_phy;
-+	}
-+
-+	ret = clk_prepare_enable(phy->clk_mod);
-+	if (ret) {
-+		dev_err(phy->dev, "Cannot enable mod clock: %d\n", ret);
-+		goto err_disable_clk_bus;
-+	}
-+
-+	if (phy->variant->has_phy_clk) {
-+		ret = sun8i_phy_clk_create(phy, phy->dev,
-+					   phy->variant->has_second_pll);
-+		if (ret) {
-+			dev_err(phy->dev, "Couldn't create the PHY clock\n");
-+			goto err_disable_clk_mod;
-+		}
-+
-+		clk_prepare_enable(phy->clk_phy);
-+	}
-+
- 	phy->variant->phy_init(phy);
-+
-+	return 0;
-+
-+err_disable_clk_mod:
-+	clk_disable_unprepare(phy->clk_mod);
-+err_disable_clk_bus:
-+	clk_disable_unprepare(phy->clk_bus);
-+err_deassert_rst_phy:
-+	reset_control_assert(phy->rst_phy);
-+
-+	return ret;
-+}
-+
-+void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy)
-+{
-+	clk_disable_unprepare(phy->clk_mod);
-+	clk_disable_unprepare(phy->clk_bus);
-+	clk_disable_unprepare(phy->clk_phy);
-+
-+	reset_control_assert(phy->rst_phy);
- }
- 
- void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
-@@ -638,6 +689,7 @@ static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	phy->variant = (struct sun8i_hdmi_phy_variant *)match->data;
-+	phy->dev = dev;
- 
- 	ret = of_address_to_resource(node, 0, &res);
- 	if (ret) {
-@@ -696,47 +748,10 @@ static int sun8i_hdmi_phy_probe(struct platform_device *pdev)
- 		goto err_put_clk_pll1;
- 	}
- 
--	ret = reset_control_deassert(phy->rst_phy);
--	if (ret) {
--		dev_err(dev, "Cannot deassert phy reset control: %d\n", ret);
--		goto err_put_rst_phy;
--	}
--
--	ret = clk_prepare_enable(phy->clk_bus);
--	if (ret) {
--		dev_err(dev, "Cannot enable bus clock: %d\n", ret);
--		goto err_deassert_rst_phy;
--	}
--
--	ret = clk_prepare_enable(phy->clk_mod);
--	if (ret) {
--		dev_err(dev, "Cannot enable mod clock: %d\n", ret);
--		goto err_disable_clk_bus;
--	}
--
--	if (phy->variant->has_phy_clk) {
--		ret = sun8i_phy_clk_create(phy, dev,
--					   phy->variant->has_second_pll);
--		if (ret) {
--			dev_err(dev, "Couldn't create the PHY clock\n");
--			goto err_disable_clk_mod;
--		}
--
--		clk_prepare_enable(phy->clk_phy);
--	}
--
- 	platform_set_drvdata(pdev, phy);
- 
- 	return 0;
- 
--err_disable_clk_mod:
--	clk_disable_unprepare(phy->clk_mod);
--err_disable_clk_bus:
--	clk_disable_unprepare(phy->clk_bus);
--err_deassert_rst_phy:
--	reset_control_assert(phy->rst_phy);
--err_put_rst_phy:
--	reset_control_put(phy->rst_phy);
- err_put_clk_pll1:
- 	clk_put(phy->clk_pll1);
- err_put_clk_pll0:
-@@ -753,12 +768,6 @@ static int sun8i_hdmi_phy_remove(struct platform_device *pdev)
- {
- 	struct sun8i_hdmi_phy *phy = platform_get_drvdata(pdev);
- 
--	clk_disable_unprepare(phy->clk_mod);
--	clk_disable_unprepare(phy->clk_bus);
--	clk_disable_unprepare(phy->clk_phy);
--
--	reset_control_assert(phy->rst_phy);
--
- 	reset_control_put(phy->rst_phy);
- 
- 	clk_put(phy->clk_pll0);
--- 
-2.33.0
+> +
+> +enum sm6350_functions {
+> +	msm_mux_adsp_ext,
+> +	msm_mux_agera_pll,
+> +	msm_mux_atest_char,
+> +	msm_mux_atest_char0,
+> +	msm_mux_atest_char1,
+> +	msm_mux_atest_char2,
+> +	msm_mux_atest_char3,
+> +	msm_mux_atest_tsens,
+> +	msm_mux_atest_tsens2,
+> +	msm_mux_atest_usb1,
+> +	msm_mux_atest_usb10,
+> +	msm_mux_atest_usb11,
+> +	msm_mux_atest_usb12,
+> +	msm_mux_atest_usb13,
+> +	msm_mux_atest_usb2,
+> +	msm_mux_atest_usb20,
+> +	msm_mux_atest_usb21,
+> +	msm_mux_atest_usb22,
+> +	msm_mux_atest_usb23,
+
+Bjorn mentioned to merge all the atest_usb* functions into a single one.
+
+> +	msm_mux_audio_ref,
+> +	msm_mux_btfm_slimbus,
+> +	msm_mux_cam_mclk0,
+> +	msm_mux_cam_mclk1,
+> +	msm_mux_cam_mclk2,
+> +	msm_mux_cam_mclk3,
+> +	msm_mux_cam_mclk4,
+> +	msm_mux_cci_async,
+> +	msm_mux_cci_i2c,
+> +	msm_mux_cci_timer0,
+> +	msm_mux_cci_timer1,
+> +	msm_mux_cci_timer2,
+> +	msm_mux_cci_timer3,
+> +	msm_mux_cci_timer4,
+> +	msm_mux_cri_trng,
+> +	msm_mux_dbg_out,
+> +	msm_mux_ddr_bist,
+> +	msm_mux_ddr_pxi0,
+> +	msm_mux_ddr_pxi1,
+> +	msm_mux_ddr_pxi2,
+> +	msm_mux_ddr_pxi3,
+> +	msm_mux_dp_hot,
+> +	msm_mux_edp_lcd,
+> +	msm_mux_gcc_gp1,
+> +	msm_mux_gcc_gp2,
+> +	msm_mux_gcc_gp3,
+> +	msm_mux_gp_pdm0,
+> +	msm_mux_gp_pdm1,
+> +	msm_mux_gp_pdm2,
+> +	msm_mux_gpio,
+> +	msm_mux_gps_tx,
+> +	msm_mux_ibi_i3c,
+> +	msm_mux_jitter_bist,
+> +	msm_mux_ldo_en,
+> +	msm_mux_ldo_update,
+> +	msm_mux_lpass_ext,
+> +	msm_mux_m_voc,
+> +	msm_mux_mclk,
+> +	msm_mux_mdp_vsync,
+> +	msm_mux_mdp_vsync0,
+> +	msm_mux_mdp_vsync1,
+> +	msm_mux_mdp_vsync2,
+> +	msm_mux_mdp_vsync3,
+> +	msm_mux_mi2s_0,
+> +	msm_mux_mi2s_1,
+> +	msm_mux_mi2s_2,
+> +	msm_mux_mss_lte,
+> +	msm_mux_nav_gpio,
+> +	msm_mux_nav_pps,
+> +	msm_mux_pa_indicator,
+> +	msm_mux_pcie0_clk,
+> +	msm_mux_phase_flag0,
+> +	msm_mux_phase_flag1,
+> +	msm_mux_phase_flag10,
+> +	msm_mux_phase_flag11,
+> +	msm_mux_phase_flag12,
+> +	msm_mux_phase_flag13,
+> +	msm_mux_phase_flag14,
+> +	msm_mux_phase_flag15,
+> +	msm_mux_phase_flag16,
+> +	msm_mux_phase_flag17,
+> +	msm_mux_phase_flag18,
+> +	msm_mux_phase_flag19,
+> +	msm_mux_phase_flag2,
+> +	msm_mux_phase_flag20,
+> +	msm_mux_phase_flag21,
+> +	msm_mux_phase_flag22,
+> +	msm_mux_phase_flag23,
+> +	msm_mux_phase_flag24,
+> +	msm_mux_phase_flag25,
+> +	msm_mux_phase_flag26,
+> +	msm_mux_phase_flag27,
+> +	msm_mux_phase_flag28,
+> +	msm_mux_phase_flag29,
+> +	msm_mux_phase_flag3,
+> +	msm_mux_phase_flag30,
+> +	msm_mux_phase_flag31,
+> +	msm_mux_phase_flag4,
+> +	msm_mux_phase_flag5,
+> +	msm_mux_phase_flag6,
+> +	msm_mux_phase_flag7,
+> +	msm_mux_phase_flag8,
+> +	msm_mux_phase_flag9,
+
+.. and all the phase_flag* ones.
+
+> +	msm_mux_pll_bist,
+> +	msm_mux_pll_bypassnl,
+> +	msm_mux_pll_reset,
+> +	msm_mux_prng_rosc,
+> +	msm_mux_qdss_cti,
+> +	msm_mux_qdss_gpio,
+> +	msm_mux_qdss_gpio0,
+> +	msm_mux_qdss_gpio1,
+> +	msm_mux_qdss_gpio10,
+> +	msm_mux_qdss_gpio11,
+> +	msm_mux_qdss_gpio12,
+> +	msm_mux_qdss_gpio13,
+> +	msm_mux_qdss_gpio14,
+> +	msm_mux_qdss_gpio15,
+> +	msm_mux_qdss_gpio2,
+> +	msm_mux_qdss_gpio3,
+> +	msm_mux_qdss_gpio4,
+> +	msm_mux_qdss_gpio5,
+> +	msm_mux_qdss_gpio6,
+> +	msm_mux_qdss_gpio7,
+> +	msm_mux_qdss_gpio8,
+> +	msm_mux_qdss_gpio9,
+> +	msm_mux_qlink0_enable,
+> +	msm_mux_qlink0_request,
+> +	msm_mux_qlink0_wmss,
+> +	msm_mux_qlink1_enable,
+> +	msm_mux_qlink1_request,
+> +	msm_mux_qlink1_wmss,
+> +	msm_mux_qup00,
+> +	msm_mux_qup01,
+> +	msm_mux_qup02,
+> +	msm_mux_qup10,
+> +	msm_mux_qup11,
+> +	msm_mux_qup12,
+> +	msm_mux_qup13_f1,
+> +	msm_mux_qup13_f2,
+> +	msm_mux_qup14,
+> +	msm_mux_rffe0_clk,
+> +	msm_mux_rffe0_data,
+> +	msm_mux_rffe1_clk,
+> +	msm_mux_rffe1_data,
+> +	msm_mux_rffe2_clk,
+> +	msm_mux_rffe2_data,
+> +	msm_mux_rffe3_clk,
+> +	msm_mux_rffe3_data,
+> +	msm_mux_rffe4_clk,
+> +	msm_mux_rffe4_data,
+> +	msm_mux_sd_write,
+> +	msm_mux_sdc1_tb,
+> +	msm_mux_sdc2_tb,
+> +	msm_mux_sp_cmu,
+> +	msm_mux_tgu_ch0,
+> +	msm_mux_tgu_ch1,
+> +	msm_mux_tgu_ch2,
+> +	msm_mux_tgu_ch3,
+> +	msm_mux_tsense_pwm1,
+> +	msm_mux_tsense_pwm2,
+> +	msm_mux_uim1_clk,
+> +	msm_mux_uim1_data,
+> +	msm_mux_uim1_present,
+> +	msm_mux_uim1_reset,
+
+maybe even uim1_* into uim1?
+
+> +	msm_mux_uim2_clk,
+> +	msm_mux_uim2_data,
+> +	msm_mux_uim2_present,
+> +	msm_mux_uim2_reset,
+
+.. and uim2?
+
+> +	msm_mux_usb_phy,
+> +	msm_mux_vfr_1,
+> +	msm_mux_vsense_trigger,
+> +	msm_mux_wlan1_adc0,
+> +	msm_mux_wlan1_adc1,
+> +	msm_mux_wlan2_adc0,
+> +	msm_mux_wlan2_adc1,
+> +	msm_mux__,
+> +};
+> +
+>
+[SNIP]
+>
+> +
+> +static const struct msm_pinctrl_soc_data sm6350_pinctrl = {
+> +	.pins = sm6350_pins,
+> +	.npins = ARRAY_SIZE(sm6350_pins),
+> +	.functions = sm6350_functions,
+> +	.nfunctions = ARRAY_SIZE(sm6350_functions),
+> +	.groups = sm6350_groups,
+> +	.ngroups = ARRAY_SIZE(sm6350_groups),
+> +	.ngpios = 157,
+> +	.wakeirq_map = sm6350_pdc_map,
+> +	.nwakeirq_map = ARRAY_SIZE(sm6350_pdc_map),
+> +	.wakeirq_dual_edge_errata = true,
+> +};
+> +
+> +static int sm6350_pinctrl_probe(struct platform_device *pdev)
+> +{
+> +	return msm_pinctrl_probe(pdev, &sm6350_pinctrl);
+> +}
+> +
+> +static const struct of_device_id sm6350_pinctrl_of_match[] = {
+> +	{ .compatible = "qcom,sm6350-tlmm", },
+> +	{ },
+
+No need for a trailing comma here ;)
+
+> +};
+> +
+> +static struct platform_driver sm6350_pinctrl_driver = {
+> +	.driver = {
+> +		.name = "sm6350-pinctrl",
+> +		.of_match_table = sm6350_pinctrl_of_match,
+> +	},
+> +	.probe = sm6350_pinctrl_probe,
+> +	.remove = msm_pinctrl_remove,
+> +};
+> +
+> +static int __init sm6350_pinctrl_init(void)
+> +{
+> +	return platform_driver_register(&sm6350_pinctrl_driver);
+> +}
+> +arch_initcall(sm6350_pinctrl_init);
+> +
+> +static void __exit sm6350_pinctrl_exit(void)
+> +{
+> +	platform_driver_unregister(&sm6350_pinctrl_driver);
+> +}
+> +module_exit(sm6350_pinctrl_exit);
+> +
+> +MODULE_DESCRIPTION("QTI sm6350 pinctrl driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_DEVICE_TABLE(of, sm6350_pinctrl_of_match);
+
+Some/most(?) newer drivers also use the name tlmm instead of pinctrl in the 
+function names and in the .name of the driver.
+
+Regards,
+Luca
+
 
