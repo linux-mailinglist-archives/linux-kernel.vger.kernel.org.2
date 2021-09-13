@@ -2,184 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3014089C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BF74089CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239384AbhIMLCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:02:52 -0400
-Received: from mout.gmx.net ([212.227.17.21]:50721 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239199AbhIMLCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:02:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631530880;
-        bh=eIrDTDkLPLTBW/OcC8PfuBR6yO+OBkLQE9VB9awYepM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Ax96FlymwFLUehBPWfR+PSxLnv14Blz0tb1Y/R71C/MyDzgQN5ZAZYLxZVPInqshc
-         qU5ZXil34LbRBOi+o2Bw6Qeht3eNSGR773vcFX1WFOvOx7tdEAZwadTe0aIc7I7jHY
-         MVFzcucv18GKxKPf473r6lZcCRgWNtUmhRbwCtQQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [46.223.119.124] ([46.223.119.124]) by web-mail.gmx.net
- (3c-app-gmx-bs55.server.lan [172.19.170.139]) (via HTTP); Mon, 13 Sep 2021
- 13:01:20 +0200
+        id S239390AbhIMLD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:03:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37368 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239199AbhIMLDy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:03:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631530958;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UcaAmp2UV/j1fAZf2A/geXuqR6tfxn4XXi3wYCx67uQ=;
+        b=Ks/ujoq6q4ivN5Thrg51HXQ0AIp+v0+cOqnwDpyOm7ycEwPsvtLlj4JoD3EL/h2fiODy68
+        FCC9cV4r1vJAh3J8irSBlGgljRWKPiy6UIwx+c8deTPCMDzAXL3w7IRYXkFsRT5TJLgoXh
+        QfujlFliwwkDqyjPsDf7M+SA+pv/U08=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-g2Usuf3lP1SLB6Ty05iDtw-1; Mon, 13 Sep 2021 07:02:37 -0400
+X-MC-Unique: g2Usuf3lP1SLB6Ty05iDtw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 212F41015DA2;
+        Mon, 13 Sep 2021 11:02:35 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C7BFD77F3C;
+        Mon, 13 Sep 2021 11:02:29 +0000 (UTC)
+Message-ID: <2f32727a108a626b71ab63b61cee567853ef2fdf.camel@redhat.com>
+Subject: Re: [PATCH 5/7] KVM: X86: Don't unsync pagetables when speculative
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Date:   Mon, 13 Sep 2021 14:02:28 +0300
+In-Reply-To: <20210824075524.3354-6-jiangshanlai@gmail.com>
+References: <20210824075524.3354-1-jiangshanlai@gmail.com>
+         <20210824075524.3354-6-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Message-ID: <trinity-6fefc142-df4d-47af-b2bd-84c8212e5b1c-1631530880741@3c-app-gmx-bs55>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, p.rosenberger@kunbus.com,
-        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Aw: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 13 Sep 2021 13:01:20 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210913104400.oyib42rfq5x2vc56@skbuf>
-References: <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
- <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
- <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
- <20210909225457.figd5e5o3yw76mcs@skbuf>
- <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com> <YTtG3NbYjUbu4jJE@lunn.ch>
- <20210910145852.4te2zjkchnajb3qw@skbuf>
- <53f2509f-b648-b33d-1542-17a2c9d69966@gmx.de>
- <20210912202913.mu3o5u2l64j7mpwe@skbuf>
- <trinity-e5b95a34-015c-451d-bbfc-83bfb0bdecad-1631529134448@3c-app-gmx-bs55>
- <20210913104400.oyib42rfq5x2vc56@skbuf>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:iHqwnknc+/nK4ZdMIEpsKSBGr11E6sx9g/rX5WpEh2NjIqIeWmNUCNu58tsVnoEavMmTP
- dqMf3MNmPLD1LLIDngNxsABl3IISsGl4QxKmoPnYZCH35A76RQ4crnE4RMr1oFfOQmD691WJW1yF
- nF2fSn7f9HQQ0xQvmktxmJ0yqjkvvK1hO4mjWgIEuc59x72ngr3tDHMvCE+9IQiVtqYQUZc4E57F
- cbD0HzOvsasJV4AWIsm7NanRnxgIHIH9XwwdX4NuzzgVCuVzBEjVrzZBva3oJeCI3qm2vPmpFLol
- xA=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:x0t9OFEPTCY=:DezfFcSw/K7QJf2k7pGXpe
- Lbh5qXNK+rYUCoipxnFsV/fgsgqCCDVfeqlarKhIMIkFtyHQZWs4xB0fBqurDT7SKNO0lkoa1
- Kz0YHBri/ygYqVRjJUFIK3fUUu+Lec+AqVNnqvphCxVGpycOiH49tLtGt1dp/sGOJ7+3MZ8up
- eeMQJ7mFyVULnT7YfqIw2nndm3/9q80tMHs5c/IW88FQjBIm5URxQmlqCwogwTweiE/ZWsmEE
- F4CR0xDKgiNzn2JO7FhKgB+CwYoAhx04nu+EJztSz/qidMk9RLgTTJImDPkkgT8rtOPp3YkGw
- IadmhbD+WNllpKPibFl65Gn5yo/fAv5L+tj9ClZxNPy/7ejE6mcxPJuKWAhuJilfTgA+e6OS4
- V7iLq31zDN7y6zdMU1G33ivPDVZuG+oXguL7yOLPHJS4RWE610s5Xfr6Dw10jevgJB1QPW33m
- z88855p6aWioEYA/ZXvBk5o7mq2VaTXqrp3kItrrOtiAbHtKkFlj+P7yFUm09QcakHpKoLleN
- rCStxJP5GPQHBLE85mMZ4xPR5Fv0zH3d3/rkZpNZpEk14F8ezeKFXdbTDKUiMumQXPdUOJcNy
- A37AfMjpJUyVqtvwWs5QFdeFpvmKG+RqCLUBzonlquHkddko4EH50VM8Xngmh6xpXBYshQPcb
- jsZs3I3iSDbnaoRtCLb99PBat19JpLCV2qg5ht612j7S/Q+U+59sXW6HMuiPj+sqbYXlMx1lX
- GeHwrIMm2Aaog8ENCGh8LcNPk/lFeL5T2JPHf/L2WgmMNZOrptxueNzdL9rGvr67+od+Hl+ft
- BcnQD6L
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-08-24 at 15:55 +0800, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> We'd better only unsync the pagetable when there just was a really
+> write fault on a level-1 pagetable.
+> 
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c          | 6 +++++-
+>  arch/x86/kvm/mmu/mmu_internal.h | 3 ++-
+>  arch/x86/kvm/mmu/spte.c         | 2 +-
+>  3 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index a165eb8713bc..e5932af6f11c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2600,7 +2600,8 @@ static void kvm_unsync_page(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+>   * were marked unsync (or if there is no shadow page), -EPERM if the SPTE must
+>   * be write-protected.
+>   */
+> -int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+> +int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync,
+> +			    bool speculative)
+>  {
+>  	struct kvm_mmu_page *sp;
+>  	bool locked = false;
+> @@ -2626,6 +2627,9 @@ int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync)
+>  		if (sp->unsync)
+>  			continue;
+>  
+> +		if (speculative)
+> +			return -EEXIST;
+
+Woudn't it be better to ensure that callers set can_unsync = false when speculating?
+
+Also if I understand correctly this is not fixing a bug, but an optimization?
+
+Best regards,
+	Maxim Levitsky
 
 
-> Gesendet: Montag, 13. September 2021 um 12:44 Uhr
-> Von: "Vladimir Oltean" <olteanv@gmail.com>
-> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> Cc: "Andrew Lunn" <andrew@lunn.ch>, "Florian Fainelli" <f.fainelli@gmail=
-.com>, "Saravana Kannan" <saravanak@google.com>, "Rafael J. Wysocki" <rafa=
-el@kernel.org>, p.rosenberger@kunbus.com, woojung.huh@microchip.com, UNGLi=
-nuxDriver@microchip.com, vivien.didelot@gmail.com, davem@davemloft.net, ku=
-ba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-> Betreff: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
->
-> On Mon, Sep 13, 2021 at 12:32:14PM +0200, Lino Sanfilippo wrote:
-> > Hi,
-> >
-> > > Gesendet: Sonntag, 12. September 2021 um 22:29 Uhr
-> > > Von: "Vladimir Oltean" <olteanv@gmail.com>
-> > > An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> > > Cc: "Andrew Lunn" <andrew@lunn.ch>, "Florian Fainelli" <f.fainelli@g=
-mail.com>, "Saravana Kannan" <saravanak@google.com>, "Rafael J. Wysocki" <=
-rafael@kernel.org>, p.rosenberger@kunbus.com, woojung.huh@microchip.com, U=
-NGLinuxDriver@microchip.com, vivien.didelot@gmail.com, davem@davemloft.net=
-, kuba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-> > > Betreff: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-> > >
-> > > On Sun, Sep 12, 2021 at 10:19:24PM +0200, Lino Sanfilippo wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On 10.09.21 at 16:58, Vladimir Oltean wrote:
-> > > > > On Fri, Sep 10, 2021 at 01:51:56PM +0200, Andrew Lunn wrote:
-> > > > >>> It does not really scale but we also don't have that many DSA =
-masters to
-> > > > >>> support, I believe I can name them all: bcmgenet, stmmac, bcms=
-ysport, enetc,
-> > > > >>> mv643xx_eth, cpsw, macb.
-> > > > >>
-> > > > >> fec, mvneta, mvpp2, i210/igb.
-> > > > >
-> > > > > I can probably double that list only with Freescale/NXP Ethernet
-> > > > > drivers, some of which are not even submitted to mainline. To na=
-me some
-> > > > > mainline drivers: gianfar, dpaa-eth, dpaa2-eth, dpaa2-switch, uc=
-c_geth.
-> > > > > Also consider that DSA/switchdev drivers can also be DSA masters=
- of
-> > > > > their own, we have boards doing that too.
-> > > > >
-> > > > > Anyway, I've decided to at least try and accept the fact that DS=
-A
-> > > > > masters will unregister their net_device on shutdown, and attemp=
-t to do
-> > > > > something sane for all DSA switches in that case.
-> > > > >
-> > > > > Attached are two patches (they are fairly big so I won't paste t=
-hem
-> > > > > inline, and I would like initial feedback before posting them to=
- the
-> > > > > list).
-> > > > >
-> > > > > As mentioned in those patches, the shutdown ordering guarantee i=
-s still
-> > > > > very important, I still have no clue what goes on there, what we=
- need to
-> > > > > do, etc.
-> > > > >
-> > > >
-> > > > I tested these patches with my 5.10 kernel (based on Gregs 5.10.27=
- stable
-> > > > kernel) and while I do not see the message "unregister_netdevice: =
-waiting
-> > > > for eth0 to become free. Usage count =3D 2." any more the shutdown=
-/reboot hangs, too.
-> > > > After a few attempts without any error messages on the console I w=
-as able to get a
-> > > >  stack trace. Something still seems to go wrong in bcm2835_spi_shu=
-tdown() (see attachment).
-> > > > I have not had the time yet to investigate this further (or to tes=
-t the patches
-> > > >  with a newer kernel).
-> > >
-> > > Could you post the full kernel output? The picture you've posted is
-> > > truncated and only shows a WARN_ON in rpi_firmware_transaction and i=
-s
-> > > probably a symptom and not the issue (which is above and not shown).
-> > >
-> >
-> > Unfortunately I dont see anything in the kernel log. The console outpu=
-t is all I get,
-> > thats why I made the photo.
->
-> To clarify, are you saying nothing above this line gets printed? Because
-> the part of the log you've posted in the picture is pretty much
-> unworkable:
->
-> [   99.375389] [<bf0dc56c>] (bcm2835_spi_shutdown [spi_bcm2835]) from [<=
-c0863ca0>] (platform_drv_shutdown+0x2c/0x30)
->
-> How do you access the device's serial console? Use a program with a
-> scrollback buffer like GNU screen or something.
->
-
-Ah no, this is not over a serial console. This is what I see via hdmi. I d=
-o not have a working serial connection yet.
-Sorry I know this trace part is not very useful, I will try to get a full =
-dump.
+> +
+>  		/*
+>  		 * TDP MMU page faults require an additional spinlock as they
+>  		 * run with mmu_lock held for read, not write, and the unsync
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index 658d8d228d43..f5d8be787993 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -116,7 +116,8 @@ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
+>  	       kvm_x86_ops.cpu_dirty_log_size;
+>  }
+>  
+> -int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync);
+> +int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync,
+> +			    bool speculative);
+>  
+>  void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
+>  void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
+> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+> index 3e97cdb13eb7..b68a580f3510 100644
+> --- a/arch/x86/kvm/mmu/spte.c
+> +++ b/arch/x86/kvm/mmu/spte.c
+> @@ -159,7 +159,7 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
+>  		 * e.g. it's write-tracked (upper-level SPs) or has one or more
+>  		 * shadow pages and unsync'ing pages is not allowed.
+>  		 */
+> -		if (mmu_try_to_unsync_pages(vcpu, gfn, can_unsync)) {
+> +		if (mmu_try_to_unsync_pages(vcpu, gfn, can_unsync, speculative)) {
+>  			pgprintk("%s: found shadow page for %llx, marking ro\n",
+>  				 __func__, gfn);
+>  			ret |= SET_SPTE_WRITE_PROTECTED_PT;
 
 
