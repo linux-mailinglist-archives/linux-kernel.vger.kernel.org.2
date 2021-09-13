@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C2340831A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A9F40831E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238392AbhIMDWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:22:51 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47051 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238372AbhIMDWt (ORCPT
+        id S238457AbhIMDX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238439AbhIMDXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:22:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Uo6s7Rx_1631503290;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Uo6s7Rx_1631503290)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Sep 2021 11:21:31 +0800
-Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
- perf_log_throttle
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <20210910153839.GH4323@worktop.programming.kicks-ass.net>
- <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
-Message-ID: <7aa8133d-a9e4-f0ae-7c98-4a38f0ca25d9@linux.alibaba.com>
-Date:   Mon, 13 Sep 2021 11:21:30 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        Sun, 12 Sep 2021 23:23:23 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D38C061760;
+        Sun, 12 Sep 2021 20:22:08 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso5452146pjb.3;
+        Sun, 12 Sep 2021 20:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9Tt81VnxLpAm/FYmLBBYEcWxdp6PQAJapzbAtKFP83Q=;
+        b=U2cM+uBnIL+ZzCX0wv8EJOuEtF4RGrmnmZHdALaw4MAD7eS5RBc5STm6peLFa6kFGn
+         82PICzQ4unfMz06LklP/3xP3ZdCJybvcXXnKld3Q7avVdru/vtLyN3j/hRQmBWuw+2b8
+         Yo31s6Wws8kZ+tyYYkZMveyGQpqUqcGidRHJs36L2YCnjQuDzwdbc0MkBftXK0YneeQa
+         l3Z2XOTd2SKdjwZOkt6lkqstPTGtM0MEPLCisn0+/5tLCinx5L1aRaMjM0pHR47rMaHu
+         +RT+DhvIjuWkJni17Nynz+lqr1GOFyWVtjnFasap6flvVof+gAq3G+/LqWUjLw+ERz/a
+         L8Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9Tt81VnxLpAm/FYmLBBYEcWxdp6PQAJapzbAtKFP83Q=;
+        b=CNVJgC9vZkx8irtH02Ryp8Idyn+gq32GIEzMPaVuUUjFhUcrCtbErlxqCV3uH2orOa
+         YWsHutPzsZRDyk4th3RaW+/REoXwnQJWS8ZBJeqWiKRDaOBkyrpfw6CI2/Jt7FEt7WAz
+         CIxFRMTDuWrvBvuyzITMH0QrOM/2LI3GKMJuKSQvfN3GvK9BFlXA+j9xfokwMBcw3OwZ
+         ozBbzCWzOIiKB0IBIvOKE/aEBZ+ROag848dYP2h4t/7EkCjFhAOT4qY4LMI+x3pwT0sP
+         /zw8fUwRpjFLBPIgHt+/LOdSigUc7/3ithzTmO9J9WzZyakXaCO1ik8yMdRpN28ksohx
+         dzTA==
+X-Gm-Message-State: AOAM533yEDdcer3/6CRzZEsPm8Qqe/1Iy3EftynPX+4ThQzvIpQuPxR7
+        sa8A48dmY3KZamOa8JEq1cFbcaaa5WJ2ce/NQg==
+X-Google-Smtp-Source: ABdhPJwxSMPVZUnjLNxAIY0G6MWPtgHEnPCLvtssaFuWq7w8AOw3yMlo5pe3E3LGxIXLPewbjrPgbcnPMOcC69hiQT4=
+X-Received: by 2002:a17:902:7b84:b0:13b:90a7:e270 with SMTP id
+ w4-20020a1709027b8400b0013b90a7e270mr3992866pll.21.1631503328145; Sun, 12 Sep
+ 2021 20:22:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
+ <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk> <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+ <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
+ <CACkBjsaGTkxsrBW+HNsgR0Pj7kbbrK-F5E4hp3CJJjYf3ASimQ@mail.gmail.com>
+ <ce4db530-3e7c-1a90-f271-42d471b098ed@gmail.com> <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
+ <9b5d8c00-0191-895b-0556-2f8167ab52bd@kernel.dk>
+In-Reply-To: <9b5d8c00-0191-895b-0556-2f8167ab52bd@kernel.dk>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 13 Sep 2021 11:21:57 +0800
+Message-ID: <CACkBjsYGnmLfCV2bNb45WhBiC-DqAvWjP1rb_6fxVZe5hqzOCw@mail.gmail.com>
+Subject: Re: INFO: task hung in io_uring_cancel_generic
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Jens Axboe <axboe@kernel.dk> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8810:50=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 9/12/21 8:26 PM, Hao Sun wrote:
+> > Hi
+> >
+> > Healer found a C reproducer for this crash ("INFO: task hung in
+> > io_ring_exit_work").
+> >
+> > HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
+>
+> Does this reproduce on 5.15-rc1? We had a few hang cases fixed for io-wq
+> since that commit 6 days ago.
 
+Just tried it. No, it did not crash the kernel on 5.15-rc1.
+Following log was printed repeatedly:
+[  647.478557][ T6807]  loop0: p1 p2 < > p3 p4
+[  647.478922][ T6807] loop0: p1 size 11290111 extends beyond EOD, truncate=
+d
+[  647.481111][ T6807] loop0: p3 size 1914664839 extends beyond EOD, trunca=
+ted
+[  647.482512][ T6807] loop0: p4 size 3389030400 extends beyond EOD, trunca=
+ted
 
-On 2021/9/13 上午11:00, 王贇 wrote:
-> 
-> 
-> On 2021/9/10 下午11:38, Peter Zijlstra wrote:
->> On Thu, Sep 09, 2021 at 11:13:21AM +0800, 王贇 wrote:
->>> When running with ftrace function enabled, we observed panic
->>> as below:
->>>
->>>   traps: PANIC: double fault, error_code: 0x0
->>>   [snip]
->>>   RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
->>>   [snip]
->>>   Call Trace:
->>>    <NMI>
->>>    perf_trace_buf_alloc+0x26/0xd0
->>>    perf_ftrace_function_call+0x18f/0x2e0
->>>    kernelmode_fixup_or_oops+0x5/0x120
->>>    __bad_area_nosemaphore+0x1b8/0x280
->>>    do_user_addr_fault+0x410/0x920
->>>    exc_page_fault+0x92/0x300
->>>    asm_exc_page_fault+0x1e/0x30
->>>   RIP: 0010:__get_user_nocheck_8+0x6/0x13
->>>    perf_callchain_user+0x266/0x2f0
->>>    get_perf_callchain+0x194/0x210
->>>    perf_callchain+0xa3/0xc0
->>>    perf_prepare_sample+0xa5/0xa60
->>>    perf_event_output_forward+0x7b/0x1b0
->>>    __perf_event_overflow+0x67/0x120
->>>    perf_swevent_overflow+0xcb/0x110
->>>    perf_swevent_event+0xb0/0xf0
->>>    perf_tp_event+0x292/0x410
->>>    perf_trace_run_bpf_submit+0x87/0xc0
->>>    perf_trace_lock_acquire+0x12b/0x170
->>>    lock_acquire+0x1bf/0x2e0
->>>    perf_output_begin+0x70/0x4b0
->>>    perf_log_throttle+0xe2/0x1a0
->>>    perf_event_nmi_handler+0x30/0x50
->>>    nmi_handle+0xba/0x2a0
->>>    default_do_nmi+0x45/0xf0
->>>    exc_nmi+0x155/0x170
->>>    end_repeat_nmi+0x16/0x55
->>
->> kernel/events/Makefile has:
->>
->> ifdef CONFIG_FUNCTION_TRACER
->> CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
->> endif
->>
->> Which, afaict, should avoid the above, no?
-> 
-> I'm afraid it's not working for this case, the
-> start point of tracing is at lock_acquire() which
-> is not from 'kernel/events/core', the following PF
-> related function are also not from 'core', prevent
-> ftrace on 'core' can't prevent this from happen...
+It seems that this crash was fixed. Sorry for the dup report.
 
-By a second thinking, I think you're right about the
-way it should be fixed, since disabling ftrace on
-'arch/x86/mm/fault.c' could also fix the problem.
-
-Will send a formal patch later :-)
-
-Regards,
-Michael Wang
-
-> 
-> Regards,
-> Michael Wang
-> 
->>
+>
+> --
+> Jens Axboe
+>
