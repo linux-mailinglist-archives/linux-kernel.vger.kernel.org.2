@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F506408F00
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34910408C9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243223AbhIMNiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34448 "EHLO mail.kernel.org"
+        id S240270AbhIMNUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:20:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242352AbhIMNdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:33:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFCED6139F;
-        Mon, 13 Sep 2021 13:26:17 +0000 (UTC)
+        id S239450AbhIMNTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:19:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE530610CE;
+        Mon, 13 Sep 2021 13:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539578;
-        bh=W/9OyMCIBDkFYitsxHS1MSsc19iKakqmMhUb9EfZU2g=;
+        s=korg; t=1631539049;
+        bh=uUIWVZz5XUg/rEj4UYTgGO8eQs3sAcwNHViLVpRV0QA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gU/7yhzsrome14+7UkNI9ljI2mpa2rDZRqe9KJ2sGCqmeG76TDxZ4GlZ22DNkTL1z
-         St3oUrnT7xfPB1bOBhlD+9tLUq4g1cpbVXoVJiXD0YNAmor+PKuykuFhlsd2MRB7uO
-         0Kf6Hw9G9DaZoXm3Lp2w13JR8p7+p3yGT4yyMQF4=
+        b=tEvHID81TH4elvWsxCui7YKewn+9ZN5cD1VVLd5Is73dz2LiHB3alVsrcRGTDSUlC
+         JTgHat1Bj7Dgl4NBxgEjGuoWA49DBJ8FKDpeztjatvfs/YmKrGgDUrPwlybtN3t64K
+         OU/dNJERu/9YoMvLT4NHHwbpiwANTgOy9XPLKby8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 079/236] drm/of: free the iterator object on failure
-Date:   Mon, 13 Sep 2021 15:13:04 +0200
-Message-Id: <20210913131103.044419599@linuxfoundation.org>
+Subject: [PATCH 5.4 004/144] sched/deadline: Fix reset_on_fork reporting of DL tasks
+Date:   Mon, 13 Sep 2021 15:13:05 +0200
+Message-Id: <20210913131048.118188162@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Price <steven.price@arm.com>
+From: Quentin Perret <qperret@google.com>
 
-[ Upstream commit 6f9223a56fabc840836b49de27dc7b27642c6a32 ]
+[ Upstream commit f95091536f78971b269ec321b057b8d630b0ad8a ]
 
-When bailing out due to the sanity check the iterator value needs to be
-freed because the early return prevents for_each_child_of_node() from
-doing the dereference itself.
+It is possible for sched_getattr() to incorrectly report the state of
+the reset_on_fork flag when called on a deadline task.
 
-Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
-Signed-off-by: Steven Price <steven.price@arm.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210714143300.20632-1-steven.price@arm.com
+Indeed, if the flag was set on a deadline task using sched_setattr()
+with flags (SCHED_FLAG_RESET_ON_FORK | SCHED_FLAG_KEEP_PARAMS), then
+p->sched_reset_on_fork will be set, but __setscheduler() will bail out
+early, which means that the dl_se->flags will not get updated by
+__setscheduler_params()->__setparam_dl(). Consequently, if
+sched_getattr() is then called on the task, __getparam_dl() will
+override kattr.sched_flags with the now out-of-date copy in dl_se->flags
+and report the stale value to userspace.
+
+To fix this, make sure to only copy the flags that are relevant to
+sched_deadline to and from the dl_se->flags field.
+
+Signed-off-by: Quentin Perret <qperret@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210727101103.2729607-2-qperret@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_of.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/sched/deadline.c | 7 ++++---
+ kernel/sched/sched.h    | 2 ++
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-index 197c57477344..997b8827fed2 100644
---- a/drivers/gpu/drm/drm_of.c
-+++ b/drivers/gpu/drm/drm_of.c
-@@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
- 		 * configurations by passing the endpoints explicitly to
- 		 * drm_of_lvds_get_dual_link_pixel_order().
- 		 */
--		if (!current_pt || pixels_type != current_pt)
-+		if (!current_pt || pixels_type != current_pt) {
-+			of_node_put(endpoint);
- 			return -EINVAL;
-+		}
- 	}
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 3cf776d5bce8..7ab0b80cb12d 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2622,7 +2622,7 @@ void __setparam_dl(struct task_struct *p, const struct sched_attr *attr)
+ 	dl_se->dl_runtime = attr->sched_runtime;
+ 	dl_se->dl_deadline = attr->sched_deadline;
+ 	dl_se->dl_period = attr->sched_period ?: dl_se->dl_deadline;
+-	dl_se->flags = attr->sched_flags;
++	dl_se->flags = attr->sched_flags & SCHED_DL_FLAGS;
+ 	dl_se->dl_bw = to_ratio(dl_se->dl_period, dl_se->dl_runtime);
+ 	dl_se->dl_density = to_ratio(dl_se->dl_deadline, dl_se->dl_runtime);
+ }
+@@ -2635,7 +2635,8 @@ void __getparam_dl(struct task_struct *p, struct sched_attr *attr)
+ 	attr->sched_runtime = dl_se->dl_runtime;
+ 	attr->sched_deadline = dl_se->dl_deadline;
+ 	attr->sched_period = dl_se->dl_period;
+-	attr->sched_flags = dl_se->flags;
++	attr->sched_flags &= ~SCHED_DL_FLAGS;
++	attr->sched_flags |= dl_se->flags;
+ }
  
- 	return pixels_type;
+ /*
+@@ -2710,7 +2711,7 @@ bool dl_param_changed(struct task_struct *p, const struct sched_attr *attr)
+ 	if (dl_se->dl_runtime != attr->sched_runtime ||
+ 	    dl_se->dl_deadline != attr->sched_deadline ||
+ 	    dl_se->dl_period != attr->sched_period ||
+-	    dl_se->flags != attr->sched_flags)
++	    dl_se->flags != (attr->sched_flags & SCHED_DL_FLAGS))
+ 		return true;
+ 
+ 	return false;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 4e490e3db2f8..fe755c1a0af9 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -209,6 +209,8 @@ static inline int task_has_dl_policy(struct task_struct *p)
+  */
+ #define SCHED_FLAG_SUGOV	0x10000000
+ 
++#define SCHED_DL_FLAGS (SCHED_FLAG_RECLAIM | SCHED_FLAG_DL_OVERRUN | SCHED_FLAG_SUGOV)
++
+ static inline bool dl_entity_is_special(struct sched_dl_entity *dl_se)
+ {
+ #ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 -- 
 2.30.2
 
