@@ -2,89 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8062D409B0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A798409B15
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244543AbhIMRkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:40:43 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:44140 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240913AbhIMRj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:39:56 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2572C1A039A;
-        Mon, 13 Sep 2021 19:38:39 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 168711A010C;
-        Mon, 13 Sep 2021 19:38:39 +0200 (CEST)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 3E7AB20363;
-        Mon, 13 Sep 2021 19:38:38 +0200 (CEST)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [RFC 19/19] arm64: defconfig: Add necessary configs for icc+devfreq on i.MX8MQ
-Date:   Mon, 13 Sep 2021 20:38:14 +0300
-Message-Id: <1631554694-9599-20-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
-References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1345997AbhIMRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:41:13 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:59631 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346251AbhIMRlE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 13:41:04 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id B1470100008;
+        Mon, 13 Sep 2021 17:39:46 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        linux-i3c@lists.infradead.org, linux-hardening@vger.kernel.org,
+        Nicolas Pitre <npitre@baylibre.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: Prefer kcalloc over open coded arithmetic
+Date:   Mon, 13 Sep 2021 19:39:44 +0200
+Message-Id: <163155475974.409020.13481298120131222771.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210912155135.7541-1-len.baker@gmx.com>
+References: <20210912155135.7541-1-len.baker@gmx.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compile in the interconnect and devfreq drivers for the i.MX8MQ.
-Also compile in the powersave devfreq governor.
+On Sun, 12 Sep 2021 17:51:35 +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> [...]
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- arch/arm64/configs/defconfig | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Applied, thanks!
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 3bf6f8a86aae..b06f1b01714d 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1063,8 +1063,9 @@ CONFIG_ARCH_TEGRA_186_SOC=y
- CONFIG_ARCH_TEGRA_194_SOC=y
- CONFIG_ARCH_TEGRA_234_SOC=y
- CONFIG_TI_SCI_PM_DOMAINS=y
--CONFIG_ARM_IMX_BUS_DEVFREQ=m
--CONFIG_ARM_IMX8M_DDRC_DEVFREQ=m
-+CONFIG_DEVFREQ_GOV_POWERSAVE=y
-+CONFIG_ARM_IMX_BUS_DEVFREQ=y
-+CONFIG_ARM_IMX8M_DDRC_DEVFREQ=y
- CONFIG_EXTCON_PTN5150=m
- CONFIG_EXTCON_USB_GPIO=y
- CONFIG_EXTCON_USBC_CROS_EC=y
-@@ -1156,8 +1157,8 @@ CONFIG_SLIM_QCOM_CTRL=m
- CONFIG_SLIM_QCOM_NGD_CTRL=m
- CONFIG_MUX_MMIO=y
- CONFIG_INTERCONNECT=y
--CONFIG_INTERCONNECT_IMX=m
--CONFIG_INTERCONNECT_IMX8MQ=m
-+CONFIG_INTERCONNECT_IMX=y
-+CONFIG_INTERCONNECT_IMX8MQ=y
- CONFIG_INTERCONNECT_QCOM=y
- CONFIG_INTERCONNECT_QCOM_MSM8916=m
- CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+[1/1] i3c/master/mipi-i3c-hci: Prefer kcalloc over open coded arithmetic
+      commit: 41a0430dd5ca65afdecf10fb0b8b56966a1c5d04
+
+Best regards,
 -- 
-2.31.1
-
+Alexandre Belloni <alexandre.belloni@bootlin.com>
