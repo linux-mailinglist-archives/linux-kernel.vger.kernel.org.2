@@ -2,216 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1D24082B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 03:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B3D4082BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 03:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236876AbhIMBs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 21:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbhIMBs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 21:48:56 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17606C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 18:47:42 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id u18so7975834pgf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 18:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6ia1rwkP7uni5EhSwEMElqDqJu3qS6ynG7Vl5G0lrbo=;
-        b=P1DRIcSurUCIjiP6Q9AtmvajYnippfHZ1wkvycOPGt8mG9hZKngCZqqrZz3TtwpJk8
-         CgCOKy8LVDByGzXaXBVYNpGVCMMr/+ygFhoDdmDNv8G36cDACR9SDW/JRwkE8r5DKYWZ
-         H3CweNwM74GreiykYDKJyocPCH2D5tP9xbWdb/Tbuv4Pvb3gTaepsv3xl1yHpaWCIVKS
-         Rq8xXyeBnZO01k6Pr4yoQ1zVzqMwUDOJg3n58760NGKMOdpDgTukaviyHUg3Ux1Ovo6B
-         UE5i0XIr5E9Hd66LXKidpSh20FuBhCN+C0aIYxvvgYiJYprIzvUWSfNDcwIkrPAgF+Xw
-         ReaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6ia1rwkP7uni5EhSwEMElqDqJu3qS6ynG7Vl5G0lrbo=;
-        b=zAq1p3OoBq1DZDKKGXrz7MBL5MrYsH3u/UsD7iZOGK3IOyy9HEyUNRDMOFchM11dNl
-         bOl76XTl9PSAWIEvnG4lw2Nmcosx5UuDYZCQz/O6PNDYUMwcVRW0N8CBLmViu0HcKfVB
-         Jrzl2j50IteGy2tDXGUcxPISbPPQdv5O/ZIeK4gmi+ubvcb+uiqCfkBVsws4BxFf0M42
-         KeWwximQOVwxxZi3p7rgi2dswoViw3iVS3t4D0upcL7FL+y4NaZtC9NLJe021kHayNOw
-         unG+7YALvlD79lA7dAbIO5eRGIcPR6CEcDFRKog/IhbbKzJRnyFSXaZ5NcXq7ctU2bCV
-         9atQ==
-X-Gm-Message-State: AOAM530ksB7ej3VtV9rSdn5Srt8tdzQH6MhIcxqO/FRKzxu8+kjBDMAH
-        ax1iPzKNoh4REZublAYdRp3r2QVCTSHr00rmWgvJ/g==
-X-Google-Smtp-Source: ABdhPJyTY2JSBN0lqQBo5XyHgEgkgSE7yJpM1s1aWEjcQ18j5CXTAnK5c4f0v1Na4oyenYzA4ErB/LXZ30rc0VWz1LA=
-X-Received: by 2002:a65:6398:: with SMTP id h24mr8810743pgv.367.1631497661309;
- Sun, 12 Sep 2021 18:47:41 -0700 (PDT)
+        id S236909AbhIMBzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 21:55:21 -0400
+Received: from mga11.intel.com ([192.55.52.93]:32466 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236903AbhIMBzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 21:55:20 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="218360122"
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="218360122"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 18:54:04 -0700
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="542841373"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.2.86]) ([10.238.2.86])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 18:54:02 -0700
+Subject: Re: [PATCH v2 1/2] perf annotate: Fix fused instr logic for assembly
+ functions
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, kim.phillips@amd.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210911043854.8373-1-ravi.bangoria@amd.com>
+ <YTz9nfyXOSXDdpSE@kernel.org>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <211bb79d-80ff-e9b6-1851-1aaed987301d@linux.intel.com>
+Date:   Mon, 13 Sep 2021 09:54:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <cover.1631121222.git.greentime.hu@sifive.com>
-In-Reply-To: <cover.1631121222.git.greentime.hu@sifive.com>
-From:   Vincent Chen <vincent.chen@sifive.com>
-Date:   Mon, 13 Sep 2021 09:47:30 +0800
-Message-ID: <CABvJ_xjiD0Vf1SqR2vtLDpmvY79wmG=yyyFU=M8JjuEWs0n_Pw@mail.gmail.com>
-Subject: Re: [RFC PATCH v8 00/21] riscv: Add vector ISA support
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTz9nfyXOSXDdpSE@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Arnaldo, Ravi
 
-The associated Glibc vector patches could be found here
-https://sourceware.org/pipermail/libc-alpha/2021-September/130897.html
+On 9/12/2021 3:03 AM, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Sep 11, 2021 at 10:08:53AM +0530, Ravi Bangoria escreveu:
+>> Some x86 microarchitectures fuse a subset of cmp/test/ALU instructions
+>> with branch instructions, and thus perf annotate highlight such valid
+>> pairs as fused.
+> 
+> Jin, are you ok with this? Can I have your reviewed-by?
+> 
+> - Arnaldo
+>   
+
+Oh, my original patch could only handle the case like:
+
+cmp xxx
+je  aaa
+
+But it didn't consider Ravi's case something like:
+
+cmp xxx
+cmp yyy
+je  aaa
+je  bbb
+
+Thanks for Ravi fixing this issue! Backward searching is probably a better solution.
+
+Frankly I can't reproduce Ravi's case, but for my test suite, Ravi's patch works as well.
+
+Reviewed-by: Jin Yao <yao.jin@linux.intel.com>
+
 Thanks
+Jin Yao
 
-On Thu, Sep 9, 2021 at 1:45 AM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> This patchset is implemented based on vector 1.0-rc1 spec to add vector
-> support in riscv Linux kernel. To make this happen, we defined a new
-> structure __riscv_v_state to save the vector related registers. It is used
-> for both kernel space and user space.
->
->  - In kernel space, the datap pointer in __riscv_v_state will be allocated
->    dynamically to save vector registers.
->  - In user space,
->         - In signal handler of user space, datap will point to the address
->           of the __riscv_v_state data structure to save vector
->           registers in stack. We also create a __reserved[] array for
->           future extensions.
->         - In ptrace, the data will be put in ubuf in which we use
->           riscv_vr_get()/riscv_vr_set() to get or set the
->           __riscv_v_state data structure from/to it, datap pointer
->           would be zeroed and vector registers will be copied to the
->           address right after the __riscv_v_state structure in ubuf.
->
-> This patchset also adds support for kernel mode vector, kernel XOR
-> implementation with vector ISA and includes several bug fixes and code
-> refinement.
->
-> This patchset is rebased to v5.14 and it is tested by running several
-> vector programs simultaneously. It also can get the correct ucontext_t in
-> signal handler and restore correct context after sigreturn. It is also
-> tested with ptrace() syscall to use PTRACE_GETREGSET/PTRACE_SETREGSET to
-> get/set the vector registers. I have tested vlen=128 and vlen=256 cases in
-> qemu-system-riscv64 provided by Frank Chang.
->
-> We have sent patches to glibc mailing list for ifunc support and sigcontext
-> changes. We will send patches for vector support to glibc mailing list
-> recently.
->
->  [1] https://github.com/riscv/riscv-v-spec/blob/master/v-spec.adoc
->
-> ---
-> Changelog V8
->  - Rebase to v5.14
->  - Refine struct __riscv_v_state with struct __riscv_ctx_hdr
->  - Refine has_vector into a static key
->  - Defined __reserved space in struct sigcontext for vector and future extensions
->
-> Changelog V7
->  - Add support for kernel mode vector
->  - Add vector extension XOR implementation
->  - Optimize task switch codes of vector
->  - Allocate space for vector registers in start_thread()
->  - Fix an illegal instruction exception when accessing vlenb
->  - Optimize vector registers initialization
->  - Initialize vector registers with proper vsetvli then it can work normally
->  - Refine ptrace porting due to generic API changed
->  - Code clean up
->
-> Changelog V6
->  - Replace vle.v/vse.v instructions with vle8.v/vse8.v based on 0.9 spec
->  - Add comments based on mailinglist feedback
->  - Fix rv32 build error
->
-> Changelog V5
->  - Using regset_size() correctly in generic ptrace
->  - Fix the ptrace porting
->  - Fix compile warning
->
-> Changelog V4
->  - Support dynamic vlen
->  - Fix bugs: lazy save/resotre, not saving vtype
->  - Update VS bit offset based on latest vector spec
->  - Add new vector csr based on latest vector spec
->  - Code refine and removed unused macros
->
-> Changelog V3
->  - Rebase linux-5.6-rc3 and tested with qemu
->  - Seperate patches with Anup's advice
->  - Give out a ABI puzzle with unlimited vlen
->
-> Changelog V2
->  - Fixup typo "vecotr, fstate_save->vstate_save".
->  - Fixup wrong saved registers' length in vector.S.
->  - Seperate unrelated patches from this one.
->
-> Greentime Hu (15):
->   riscv: Add new csr defines related to vector extension
->   riscv: Add has_vector/riscv_vsize to save vector features.
->   riscv: Add vector struct and assembler definitions
->   riscv: Add task switch support for vector
->   riscv: Add ptrace vector support
->   riscv: Add sigcontext save/restore for vector
->   riscv: Add support for kernel mode vector
->   riscv: Use CSR_STATUS to replace sstatus in vector.S
->   riscv: Add vector extension XOR implementation
->   riscv: Initialize vector registers with proper vsetvli then it can
->     work normally
->   riscv: Optimize vector registers initialization
->   riscv: Fix an illegal instruction exception when accessing vlenb
->     without enable vector first
->   riscv: Allocate space for vector registers in start_thread()
->   riscv: Optimize task switch codes of vector
->   riscv: Turn has_vector into a static key if VECTOR=y
->
-> Guo Ren (5):
->   riscv: Separate patch for cflags and aflags
->   riscv: Rename __switch_to_aux -> fpu
->   riscv: Extending cpufeature.c to detect V-extension
->   riscv: Add vector feature to compile
->   riscv: Reset vector register
->
-> Vincent Chen (1):
->   riscv: signal: Report signal frame size to userspace via auxv
->
->  arch/riscv/Kconfig                       |   9 ++
->  arch/riscv/Makefile                      |  19 ++-
->  arch/riscv/include/asm/csr.h             |  16 ++-
->  arch/riscv/include/asm/elf.h             |  41 +++---
->  arch/riscv/include/asm/processor.h       |   3 +
->  arch/riscv/include/asm/switch_to.h       |  71 +++++++++-
->  arch/riscv/include/asm/vector.h          |  16 +++
->  arch/riscv/include/asm/xor.h             |  74 ++++++++++
->  arch/riscv/include/uapi/asm/auxvec.h     |   1 +
->  arch/riscv/include/uapi/asm/hwcap.h      |   1 +
->  arch/riscv/include/uapi/asm/ptrace.h     |  25 ++++
->  arch/riscv/include/uapi/asm/sigcontext.h |  24 ++++
->  arch/riscv/kernel/Makefile               |   7 +
->  arch/riscv/kernel/asm-offsets.c          |   8 ++
->  arch/riscv/kernel/cpufeature.c           |  16 +++
->  arch/riscv/kernel/entry.S                |   6 +-
->  arch/riscv/kernel/head.S                 |  22 ++-
->  arch/riscv/kernel/kernel_mode_vector.c   | 158 +++++++++++++++++++++
->  arch/riscv/kernel/process.c              |  49 +++++++
->  arch/riscv/kernel/ptrace.c               |  71 ++++++++++
->  arch/riscv/kernel/setup.c                |   4 +
->  arch/riscv/kernel/signal.c               | 172 ++++++++++++++++++++++-
->  arch/riscv/kernel/vector.S               |  81 +++++++++++
->  arch/riscv/lib/Makefile                  |   1 +
->  arch/riscv/lib/xor.S                     |  81 +++++++++++
->  include/uapi/linux/elf.h                 |   1 +
->  26 files changed, 941 insertions(+), 36 deletions(-)
->  create mode 100644 arch/riscv/include/asm/vector.h
->  create mode 100644 arch/riscv/include/asm/xor.h
->  create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
->  create mode 100644 arch/riscv/kernel/vector.S
->  create mode 100644 arch/riscv/lib/xor.S
->
-> --
-> 2.31.1
->
+>> When annotated with source, perf uses struct disasm_line to contain
+>> either source or instruction line from objdump output. Usually, a C
+>> statement generates multiple instructions which include such
+>> cmp/test/ALU + branch instruction pairs. But in case of assembly
+>> function, each individual assembly source line generate one
+>> instruction. Perf annotate instruction fusion logic assumes previous
+>> disasm_line as previous instruction line, which is wrong because,
+>> for assembly function, previous disasm_line contains source line.
+>> And thus perf fails to highlight valid fused instruction pairs for
+>> assembly functions.
+>>
+>> Fix it by searching backward until we find an instruction line and
+>> consider that disasm_line as fused with current branch instruction.
+>>
+>> Before:
+>>           │    cmpq    %rcx, RIP+8(%rsp)
+>>      0.00 │      cmp    %rcx,0x88(%rsp)
+>>           │    je      .Lerror_bad_iret      <--- Source line
+>>      0.14 │   ┌──je     b4                   <--- Instruction line
+>>           │   │movl    %ecx, %eax
+>>
+>> After:
+>>           │    cmpq    %rcx, RIP+8(%rsp)
+>>      0.00 │   ┌──cmp    %rcx,0x88(%rsp)
+>>           │   │je      .Lerror_bad_iret
+>>      0.14 │   ├──je     b4
+>>           │   │movl    %ecx, %eax
+>>
+>> Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
+>> ---
+>>   tools/perf/ui/browser.c           | 33 ++++++++++++++++++++++---------
+>>   tools/perf/ui/browser.h           |  2 +-
+>>   tools/perf/ui/browsers/annotate.c | 24 +++++++++++++++-------
+>>   3 files changed, 42 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/tools/perf/ui/browser.c b/tools/perf/ui/browser.c
+>> index 781afe42e90e..fa5bd5c20e96 100644
+>> --- a/tools/perf/ui/browser.c
+>> +++ b/tools/perf/ui/browser.c
+>> @@ -757,25 +757,40 @@ void __ui_browser__line_arrow(struct ui_browser *browser, unsigned int column,
+>>   }
+>>   
+>>   void ui_browser__mark_fused(struct ui_browser *browser, unsigned int column,
+>> -			    unsigned int row, bool arrow_down)
+>> +			    unsigned int row, int diff, bool arrow_down)
+>>   {
+>> -	unsigned int end_row;
+>> +	int end_row;
+>>   
+>> -	if (row >= browser->top_idx)
+>> -		end_row = row - browser->top_idx;
+>> -	else
+>> +	if (diff <= 0)
+>>   		return;
+>>   
+>>   	SLsmg_set_char_set(1);
+>>   
+>>   	if (arrow_down) {
+>> +		if (row + diff <= browser->top_idx)
+>> +			return;
+>> +
+>> +		end_row = row + diff - browser->top_idx;
+>>   		ui_browser__gotorc(browser, end_row, column - 1);
+>> -		SLsmg_write_char(SLSMG_ULCORN_CHAR);
+>> -		ui_browser__gotorc(browser, end_row, column);
+>> -		SLsmg_draw_hline(2);
+>> -		ui_browser__gotorc(browser, end_row + 1, column - 1);
+>>   		SLsmg_write_char(SLSMG_LTEE_CHAR);
+>> +
+>> +		while (--end_row >= 0 && end_row > (int)(row - browser->top_idx)) {
+>> +			ui_browser__gotorc(browser, end_row, column - 1);
+>> +			SLsmg_draw_vline(1);
+>> +		}
+>> +
+>> +		end_row = (int)(row - browser->top_idx);
+>> +		if (end_row >= 0) {
+>> +			ui_browser__gotorc(browser, end_row, column - 1);
+>> +			SLsmg_write_char(SLSMG_ULCORN_CHAR);
+>> +			ui_browser__gotorc(browser, end_row, column);
+>> +			SLsmg_draw_hline(2);
+>> +		}
+>>   	} else {
+>> +		if (row < browser->top_idx)
+>> +			return;
+>> +
+>> +		end_row = row - browser->top_idx;
+>>   		ui_browser__gotorc(browser, end_row, column - 1);
+>>   		SLsmg_write_char(SLSMG_LTEE_CHAR);
+>>   		ui_browser__gotorc(browser, end_row, column);
+>> diff --git a/tools/perf/ui/browser.h b/tools/perf/ui/browser.h
+>> index 3678eb88f119..510ce4554050 100644
+>> --- a/tools/perf/ui/browser.h
+>> +++ b/tools/perf/ui/browser.h
+>> @@ -51,7 +51,7 @@ void ui_browser__write_graph(struct ui_browser *browser, int graph);
+>>   void __ui_browser__line_arrow(struct ui_browser *browser, unsigned int column,
+>>   			      u64 start, u64 end);
+>>   void ui_browser__mark_fused(struct ui_browser *browser, unsigned int column,
+>> -			    unsigned int row, bool arrow_down);
+>> +			    unsigned int row, int diff, bool arrow_down);
+>>   void __ui_browser__show_title(struct ui_browser *browser, const char *title);
+>>   void ui_browser__show_title(struct ui_browser *browser, const char *title);
+>>   int ui_browser__show(struct ui_browser *browser, const char *title,
+>> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+>> index ef4da4295bf7..e81c2493efdf 100644
+>> --- a/tools/perf/ui/browsers/annotate.c
+>> +++ b/tools/perf/ui/browsers/annotate.c
+>> @@ -125,13 +125,20 @@ static void annotate_browser__write(struct ui_browser *browser, void *entry, int
+>>   		ab->selection = al;
+>>   }
+>>   
+>> -static bool is_fused(struct annotate_browser *ab, struct disasm_line *cursor)
+>> +static int is_fused(struct annotate_browser *ab, struct disasm_line *cursor)
+>>   {
+>>   	struct disasm_line *pos = list_prev_entry(cursor, al.node);
+>>   	const char *name;
+>> +	int diff = 1;
+>> +
+>> +	while (pos && pos->al.offset == -1) {
+>> +		pos = list_prev_entry(pos, al.node);
+>> +		if (!ab->opts->hide_src_code)
+>> +			diff++;
+>> +	}
+>>   
+>>   	if (!pos)
+>> -		return false;
+>> +		return 0;
+>>   
+>>   	if (ins__is_lock(&pos->ins))
+>>   		name = pos->ops.locked.ins.name;
+>> @@ -139,9 +146,11 @@ static bool is_fused(struct annotate_browser *ab, struct disasm_line *cursor)
+>>   		name = pos->ins.name;
+>>   
+>>   	if (!name || !cursor->ins.name)
+>> -		return false;
+>> +		return 0;
+>>   
+>> -	return ins__is_fused(ab->arch, name, cursor->ins.name);
+>> +	if (ins__is_fused(ab->arch, name, cursor->ins.name))
+>> +		return diff;
+>> +	return 0;
+>>   }
+>>   
+>>   static void annotate_browser__draw_current_jump(struct ui_browser *browser)
+>> @@ -155,6 +164,7 @@ static void annotate_browser__draw_current_jump(struct ui_browser *browser)
+>>   	struct annotation *notes = symbol__annotation(sym);
+>>   	u8 pcnt_width = annotation__pcnt_width(notes);
+>>   	int width;
+>> +	int diff = 0;
+>>   
+>>   	/* PLT symbols contain external offsets */
+>>   	if (strstr(sym->name, "@plt"))
+>> @@ -205,11 +215,11 @@ static void annotate_browser__draw_current_jump(struct ui_browser *browser)
+>>   				 pcnt_width + 2 + notes->widths.addr + width,
+>>   				 from, to);
+>>   
+>> -	if (is_fused(ab, cursor)) {
+>> +	diff = is_fused(ab, cursor);
+>> +	if (diff > 0) {
+>>   		ui_browser__mark_fused(browser,
+>>   				       pcnt_width + 3 + notes->widths.addr + width,
+>> -				       from - 1,
+>> -				       to > from);
+>> +				       from - diff, diff, to > from);
+>>   	}
+>>   }
+>>   
+>> -- 
+>> 2.27.0
+> 
