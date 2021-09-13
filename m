@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4939408F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD23408C8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241209AbhIMNkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:40:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58356 "EHLO mail.kernel.org"
+        id S240271AbhIMNUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:20:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242952AbhIMNeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:34:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20F006112E;
-        Mon, 13 Sep 2021 13:26:43 +0000 (UTC)
+        id S238378AbhIMNST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:18:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F8CD6103B;
+        Mon, 13 Sep 2021 13:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539604;
-        bh=4DutDj9hN4gttP18V8HRGBUfQkSoEQqNshQuGKuopj8=;
+        s=korg; t=1631539023;
+        bh=5RQoPvDgGfLZAQ/8yfoPzU6wW/Z5WH6feRmCOJAAJeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J4yjExlKy/oird5j6MXeAdGRQJYK0mZpG2jpbgVsquRi7TTDxAa3OYYnvE1B4eLiL
-         KAt7j9g/9/0tauHpcX8AXqnuDDpOaSWgg/pgmTo1ea1iJ4TjZ55eqbbyI0rJCflp/V
-         fAQIRPSfnZI/mfW1yfiAVqd/2pp3eEzZpyFOBjos=
+        b=z9yNPSK6OmBuwPrNX+6DYHPZBYVZt6JHASHs4siUolX3oE2ug0fsQxoeUfSI8/Geb
+         VobIeP+RJQTjDkwDeZlXWZWVzFFWfjJAg/SJjcYQBFjQC2sCwep0/YHRv8Kl1yIOze
+         gQ7sDeo6GjuXVmDvX4Rn6Pwa+gujV0vfszVfMXCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 088/236] firmware: fix theoretical UAF race with firmware cache and resume
-Date:   Mon, 13 Sep 2021 15:13:13 +0200
-Message-Id: <20210913131103.340490604@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 013/144] udf: Fix iocharset=utf8 mount option
+Date:   Mon, 13 Sep 2021 15:13:14 +0200
+Message-Id: <20210913131048.410715831@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,115 +40,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 3ecc8cb7c092b2f50e21d2aaaae35b8221ee7214 ]
+[ Upstream commit b645333443712d2613e4e863f81090d5dc509657 ]
 
-This race was discovered when I carefully analyzed the code to locate
-another firmware-related UAF issue. It can be triggered only when the
-firmware load operation is executed during suspend. This possibility is
-almost impossible because there are few firmware load and suspend actions
-in the actual environment.
+Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
+it is required to use utf8 mount option.
 
-		CPU0			CPU1
-__device_uncache_fw_images():		assign_fw():
-					fw_cache_piggyback_on_request()
-					<----- P0
-	spin_lock(&fwc->name_lock);
-	...
-	list_del(&fce->list);
-	spin_unlock(&fwc->name_lock);
+Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
+option.
 
-	uncache_firmware(fce->name);
-					<----- P1
-					kref_get(&fw_priv->ref);
+If UTF-8 as iocharset is used then s_nls_map is set to NULL. So simplify
+code around, remove UDF_FLAG_NLS_MAP and UDF_FLAG_UTF8 flags as to
+distinguish between UTF-8 and non-UTF-8 it is needed just to check if
+s_nls_map set to NULL or not.
 
-If CPU1 is interrupted at position P0, the new 'fce' has been added to the
-list fwc->fw_names by the fw_cache_piggyback_on_request(). In this case,
-CPU0 executes __device_uncache_fw_images() and will be able to see it when
-it traverses list fwc->fw_names. Before CPU1 executes kref_get() at P1, if
-CPU0 further executes uncache_firmware(), the count of fw_priv->ref may
-decrease to 0, causing fw_priv to be released in advance.
-
-Move kref_get() to the lock protection range of fwc->name_lock to fix it.
-
-Fixes: ac39b3ea73aa ("firmware loader: let caching firmware piggyback on loading firmware")
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210719064531.3733-2-thunder.leizhen@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210808162453.1653-4-pali@kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/firmware_loader/main.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ fs/udf/super.c   | 50 ++++++++++++++++++------------------------------
+ fs/udf/udf_sb.h  |  2 --
+ fs/udf/unicode.c |  4 ++--
+ 3 files changed, 21 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-index a529235e6bfe..f41e4e4993d3 100644
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -164,7 +164,7 @@ static inline int fw_state_wait(struct fw_priv *fw_priv)
- 	return __fw_state_wait_common(fw_priv, MAX_SCHEDULE_TIMEOUT);
- }
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index a1efcf0593cb..5663bae95700 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -343,10 +343,10 @@ static int udf_show_options(struct seq_file *seq, struct dentry *root)
+ 		seq_printf(seq, ",lastblock=%u", sbi->s_last_block);
+ 	if (sbi->s_anchor != 0)
+ 		seq_printf(seq, ",anchor=%u", sbi->s_anchor);
+-	if (UDF_QUERY_FLAG(sb, UDF_FLAG_UTF8))
+-		seq_puts(seq, ",utf8");
+-	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP) && sbi->s_nls_map)
++	if (sbi->s_nls_map)
+ 		seq_printf(seq, ",iocharset=%s", sbi->s_nls_map->charset);
++	else
++		seq_puts(seq, ",iocharset=utf8");
  
--static int fw_cache_piggyback_on_request(const char *name);
-+static void fw_cache_piggyback_on_request(struct fw_priv *fw_priv);
- 
- static struct fw_priv *__allocate_fw_priv(const char *fw_name,
- 					  struct firmware_cache *fwc,
-@@ -705,10 +705,8 @@ int assign_fw(struct firmware *fw, struct device *device)
- 	 * on request firmware.
- 	 */
- 	if (!(fw_priv->opt_flags & FW_OPT_NOCACHE) &&
--	    fw_priv->fwc->state == FW_LOADER_START_CACHE) {
--		if (fw_cache_piggyback_on_request(fw_priv->fw_name))
--			kref_get(&fw_priv->ref);
--	}
-+	    fw_priv->fwc->state == FW_LOADER_START_CACHE)
-+		fw_cache_piggyback_on_request(fw_priv);
- 
- 	/* pass the pages buffer to driver at the last minute */
- 	fw_set_page_data(fw_priv, fw);
-@@ -1257,11 +1255,11 @@ static int __fw_entry_found(const char *name)
  	return 0;
  }
+@@ -551,19 +551,24 @@ static int udf_parse_options(char *options, struct udf_options *uopt,
+ 			/* Ignored (never implemented properly) */
+ 			break;
+ 		case Opt_utf8:
+-			uopt->flags |= (1 << UDF_FLAG_UTF8);
++			if (!remount) {
++				unload_nls(uopt->nls_map);
++				uopt->nls_map = NULL;
++			}
+ 			break;
+ 		case Opt_iocharset:
+ 			if (!remount) {
+-				if (uopt->nls_map)
+-					unload_nls(uopt->nls_map);
+-				/*
+-				 * load_nls() failure is handled later in
+-				 * udf_fill_super() after all options are
+-				 * parsed.
+-				 */
++				unload_nls(uopt->nls_map);
++				uopt->nls_map = NULL;
++			}
++			/* When nls_map is not loaded then UTF-8 is used */
++			if (!remount && strcmp(args[0].from, "utf8") != 0) {
+ 				uopt->nls_map = load_nls(args[0].from);
+-				uopt->flags |= (1 << UDF_FLAG_NLS_MAP);
++				if (!uopt->nls_map) {
++					pr_err("iocharset %s not found\n",
++						args[0].from);
++					return 0;
++				}
+ 			}
+ 			break;
+ 		case Opt_uforget:
+@@ -2152,21 +2157,6 @@ static int udf_fill_super(struct super_block *sb, void *options, int silent)
+ 	if (!udf_parse_options((char *)options, &uopt, false))
+ 		goto parse_options_failure;
  
--static int fw_cache_piggyback_on_request(const char *name)
-+static void fw_cache_piggyback_on_request(struct fw_priv *fw_priv)
- {
--	struct firmware_cache *fwc = &fw_cache;
-+	const char *name = fw_priv->fw_name;
-+	struct firmware_cache *fwc = fw_priv->fwc;
- 	struct fw_cache_entry *fce;
--	int ret = 0;
+-	if (uopt.flags & (1 << UDF_FLAG_UTF8) &&
+-	    uopt.flags & (1 << UDF_FLAG_NLS_MAP)) {
+-		udf_err(sb, "utf8 cannot be combined with iocharset\n");
+-		goto parse_options_failure;
+-	}
+-	if ((uopt.flags & (1 << UDF_FLAG_NLS_MAP)) && !uopt.nls_map) {
+-		uopt.nls_map = load_nls_default();
+-		if (!uopt.nls_map)
+-			uopt.flags &= ~(1 << UDF_FLAG_NLS_MAP);
+-		else
+-			udf_debug("Using default NLS map\n");
+-	}
+-	if (!(uopt.flags & (1 << UDF_FLAG_NLS_MAP)))
+-		uopt.flags |= (1 << UDF_FLAG_UTF8);
+-
+ 	fileset.logicalBlockNum = 0xFFFFFFFF;
+ 	fileset.partitionReferenceNum = 0xFFFF;
  
- 	spin_lock(&fwc->name_lock);
- 	if (__fw_entry_found(name))
-@@ -1269,13 +1267,12 @@ static int fw_cache_piggyback_on_request(const char *name)
+@@ -2321,8 +2311,7 @@ static int udf_fill_super(struct super_block *sb, void *options, int silent)
+ error_out:
+ 	iput(sbi->s_vat_inode);
+ parse_options_failure:
+-	if (uopt.nls_map)
+-		unload_nls(uopt.nls_map);
++	unload_nls(uopt.nls_map);
+ 	if (lvid_open)
+ 		udf_close_lvid(sb);
+ 	brelse(sbi->s_lvid_bh);
+@@ -2372,8 +2361,7 @@ static void udf_put_super(struct super_block *sb)
+ 	sbi = UDF_SB(sb);
  
- 	fce = alloc_fw_cache_entry(name);
- 	if (fce) {
--		ret = 1;
- 		list_add(&fce->list, &fwc->fw_names);
-+		kref_get(&fw_priv->ref);
- 		pr_debug("%s: fw: %s\n", __func__, name);
+ 	iput(sbi->s_vat_inode);
+-	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
+-		unload_nls(sbi->s_nls_map);
++	unload_nls(sbi->s_nls_map);
+ 	if (!sb_rdonly(sb))
+ 		udf_close_lvid(sb);
+ 	brelse(sbi->s_lvid_bh);
+diff --git a/fs/udf/udf_sb.h b/fs/udf/udf_sb.h
+index 3d83be54c474..8eace7a633d3 100644
+--- a/fs/udf/udf_sb.h
++++ b/fs/udf/udf_sb.h
+@@ -20,8 +20,6 @@
+ #define UDF_FLAG_UNDELETE		6
+ #define UDF_FLAG_UNHIDE			7
+ #define UDF_FLAG_VARCONV		8
+-#define UDF_FLAG_NLS_MAP		9
+-#define UDF_FLAG_UTF8			10
+ #define UDF_FLAG_UID_FORGET     11    /* save -1 for uid to disk */
+ #define UDF_FLAG_GID_FORGET     12
+ #define UDF_FLAG_UID_SET	13
+diff --git a/fs/udf/unicode.c b/fs/udf/unicode.c
+index 5fcfa96463eb..622569007b53 100644
+--- a/fs/udf/unicode.c
++++ b/fs/udf/unicode.c
+@@ -177,7 +177,7 @@ static int udf_name_from_CS0(struct super_block *sb,
+ 		return 0;
  	}
- found:
- 	spin_unlock(&fwc->name_lock);
--	return ret;
- }
  
- static void free_fw_cache_entry(struct fw_cache_entry *fce)
-@@ -1506,9 +1503,8 @@ static inline void unregister_fw_pm_ops(void)
- 	unregister_pm_notifier(&fw_cache.pm_notify);
- }
- #else
--static int fw_cache_piggyback_on_request(const char *name)
-+static void fw_cache_piggyback_on_request(struct fw_priv *fw_priv)
- {
--	return 0;
- }
- static inline int register_fw_pm_ops(void)
- {
+-	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
++	if (UDF_SB(sb)->s_nls_map)
+ 		conv_f = UDF_SB(sb)->s_nls_map->uni2char;
+ 	else
+ 		conv_f = NULL;
+@@ -285,7 +285,7 @@ static int udf_name_to_CS0(struct super_block *sb,
+ 	if (ocu_max_len <= 0)
+ 		return 0;
+ 
+-	if (UDF_QUERY_FLAG(sb, UDF_FLAG_NLS_MAP))
++	if (UDF_SB(sb)->s_nls_map)
+ 		conv_f = UDF_SB(sb)->s_nls_map->char2uni;
+ 	else
+ 		conv_f = NULL;
 -- 
 2.30.2
 
