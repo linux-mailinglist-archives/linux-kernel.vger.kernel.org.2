@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82092409BF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259F9409C02
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347054AbhIMSPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240519AbhIMSPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:15:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC071C061760;
-        Mon, 13 Sep 2021 11:13:54 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id v19so4277501pjh.2;
-        Mon, 13 Sep 2021 11:13:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=/4uPDarz24UXr+YAssPYAyN6mqLcg35XkTUPvLLsvp0=;
-        b=XMNZQEWHrFBKVsHmCmGO/UxEfbCSmwWA9iUwJhtYL1pTOc/zzjAo6PQxhv4LSwRZkU
-         UwNLtLWPwFNT5VfcHlrLcFwKTg0AhLmiS7QKO3qu5KFECDujR7yK8ZkAVLvELx95tMBC
-         ZXOhJGvtKVUTWJwotNsGLlQgKZKNub6Djkz0aIWImAQN9dxpqtLY4/fdOA/VwLNWhb6Q
-         wc7UX+1pkpGhZBALZ8rpRPzx9GS30fwZXFJVvp5Y2xD4VFvFhoKT/NN/fmHlEyuc0zBp
-         rtWdUIeWmMX70dkh3izYt8PAbO0sAPMPvTiIyVS9u70n8mttu9/Y8KhmgRN+Nh+dImPh
-         MHcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=/4uPDarz24UXr+YAssPYAyN6mqLcg35XkTUPvLLsvp0=;
-        b=Tr6XN4uWJEPAordcUDgow/qqV221S5KPOLfXLXcjpnsq4gX4V+WQqeyvCX8YzayA1W
-         n7mu1Jh9/ynSgd/g9ez5I5MZE15xk0OrfvQyNOmShGdwG6+x/AXBHiH/gql/9NJBkdVo
-         kvUlQmA5WQyq71ajqWX+oX+zjYpVHbcerGDWLuU2paVu/9IkI26K+vOb02MnSjoLUh41
-         xw1uXn6uRqosHLO/tf7oWextEkg3hTVH2rtwvzbp0JEcmRWxEttkkwaxRAsU/utkqObZ
-         hzzAQQRt0OwzJ8Bec5zN3BvnS1Bg64oU/120O+TBaqZ194wFReR8UxplCD93zkI5wi9l
-         iSjw==
-X-Gm-Message-State: AOAM530/McoT11o/gd92B2X8WH8lOo1pKRSCRbb3s/NcrwiALo4don0u
-        OSi3t+45HkNtVRWelsOlMzo=
-X-Google-Smtp-Source: ABdhPJxkGd/xHVVkFK3JF6IYWybKCcwx2lG1h5ABdghsXUE6MZsE73b43XMe50eIPlqr/RNFx/TjWA==
-X-Received: by 2002:a17:90b:e0d:: with SMTP id ge13mr815719pjb.53.1631556834257;
-        Mon, 13 Sep 2021 11:13:54 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id p5sm7896845pfp.218.2021.09.13.11.13.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 11:13:53 -0700 (PDT)
-Message-ID: <1f1f5f42-a066-e9d9-d76c-df2e5891c6a9@gmail.com>
-Date:   Mon, 13 Sep 2021 11:13:51 -0700
+        id S239537AbhIMSW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:22:27 -0400
+Received: from ixit.cz ([94.230.151.217]:41004 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232400AbhIMSW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:22:26 -0400
+Received: from newone.lan (ixit.cz [94.230.151.217])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id BFAA823B26;
+        Mon, 13 Sep 2021 20:21:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1631557268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vfoDdisrRD0gEyWuDlQo2+5u5Uz5hrHU5rLfPkwcZ+A=;
+        b=hAAQpNkpgVGWu8leM4f1c2J8JvErhx9NQN0Jim6pgrqEB47aI+AySu0LOAxHN/BybwDEyv
+        6zFo3/6MtaiNiv1rVPmr6kMH9vfgV8JEWTFwd8fmcE6V/MBO8/EbixltYVL8yL5nLpGXd2
+        4r4y6V2m6egJfYiMeV8wZe/f0NBVJ5I=
+From:   David Heidelberg <david@ixit.cz>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Subject: [PATCH] dt-bindings: iio: magnetometer: asahi-kasei,ak8975 add vid reg
+Date:   Mon, 13 Sep 2021 20:19:49 +0200
+Message-Id: <20210913181949.83179-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 5.14 000/334] 5.14.4-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210913131113.390368911@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Driver and device-tree also use vid-supply regulator.
 
+Fixes: 7e000fbff7a0 ("dt-bindings: iio: magnetometer: ak8975: convert format to yaml, add maintainer")
 
-On 9/13/2021 6:10 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.4 release.
-> There are 334 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../bindings/iio/magnetometer/asahi-kasei,ak8975.yaml        | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+diff --git a/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml b/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
+index a0a1ffe017df..49e851ff206e 100644
+--- a/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
++++ b/Documentation/devicetree/bindings/iio/magnetometer/asahi-kasei,ak8975.yaml
+@@ -43,6 +43,11 @@ properties:
+       an optional regulator that needs to be on to provide VDD power to
+       the sensor.
+ 
++  vid-supply:
++    description: |
++      an optional regulator that needs to be on to provide VID power to
++      the sensor.
++
+   mount-matrix:
+     description: an optional 3x3 mounting rotation matrix.
+ 
 -- 
-Florian
+2.33.0
 
