@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B20D409A3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B67409A41
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241237AbhIMRBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239262AbhIMRBb (ORCPT
+        id S241495AbhIMRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:02:46 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:37416 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238966AbhIMRCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:01:31 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77A2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:00:15 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id j12so18490686ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QrGAcwwTUwAfpY/24fWLxW114H7zq5jNLexfHma71jY=;
-        b=mHAp4peCIYAwNG5WNuKgb3pHkoOfCgtS1Yiu+1wpKhX5XhhvReydT9+OXRhmkBWTVt
-         Ue/G6xc2TPg0aRNhhexVlIDCBI1s9BxJ9GN8GuRjRfdr5WqNT0mBbZVLTprD4aVrECxm
-         RvtGqmfK8DbTM6d/EU9EFSB+gtN37H84ocYYCsUNXY9gSEzR5Q2q33Gw3d9WNURu36dY
-         dfdYnVf6O4c6eWtUYg02qPBEUAUMsne4IQQQl3NkLdn4uAMDpfq26547HRtDEsbJF1Ag
-         /nmszn7VajgH9HHZhUKZ98eirDph23GHXV2Bgiau2c6j+pacusJ2syJlheoQnEux+20c
-         Hqog==
+        Mon, 13 Sep 2021 13:02:45 -0400
+Received: by mail-lf1-f42.google.com with SMTP id i4so5371323lfv.4;
+        Mon, 13 Sep 2021 10:01:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QrGAcwwTUwAfpY/24fWLxW114H7zq5jNLexfHma71jY=;
-        b=yYcP9HjwVAhyiGC+TGLx9FPMfpeNL0QhclLWnnrlUp3ZBLqNdVNEA4AE1KlR1ussmZ
-         6u1rgIdWQXzk1B/z4fnsiGXg6NGql5Msa4qVPNv1oK11xIC7SIpxwURVLz3PeA90rtMk
-         bJ7snKsO8oo6VBWsp5iA20uDCf2H5e+7ZQA5OUKdjugqKCIMSABbPjV6sgjcxBs4Tm4j
-         1X/ljgK9004u15RiU9Xqk04ITWSnwiNwUfszoq6H+x5hjDTd76uRTSXXWukraK0YZ+NM
-         m4FarJFjPf1YCfPra7NOefgbROttqymnmE8pVey5dXzRhuZ8p83j0yJUbCOhXa4eAJxI
-         wVwA==
-X-Gm-Message-State: AOAM532j6d+TzZRxazS5V0hTyERUtiwpSJKn2g3hf95MO7kJ5SbavFXj
-        2FMSVBhZt8fQo4asIZxUYfFjDwGH/mJCTWj41mpqnj6HLuLrYA==
-X-Google-Smtp-Source: ABdhPJzoiNYIDIZade21ErQ+cWwkQb5QbnppgTRQJiF/5A71DI6icZ4c9Fh8syGhQUQvbgecet9vm7FdrolvNg/ovAc=
-X-Received: by 2002:a2e:99da:: with SMTP id l26mr10864789ljj.339.1631552413892;
- Mon, 13 Sep 2021 10:00:13 -0700 (PDT)
+        bh=d+e1KGdaTcArSitzpQ5kAkfchGna7Wslk+nX3KrALFo=;
+        b=ki+ASjI1vAiV/VUCJ+3cKhQGgQdXL3Uk3DnvzxPIQjherERLDuAHdKA3UsaM97Fp4Q
+         A0EN3/Xv74aWwXG3PKzHm+6p+NuhOBDJYFTEFxGjYMqfEbn6hbj50Pli3MgKfxVNByOJ
+         KWm8rNM1lWBa8QV+glINd3OURpt/cvho623WLsfzC3qeJugXx0DCcP4HUY+GzYp+wbwf
+         NffSaeq1F+1P8fNX4BgZbld3ZuEec/g+aFVjRlYW70uZOKDKlruW6yJ2HvUcfpZ49IFq
+         2ACnVVzzOxy7WLQ9KdajWfPWrp052nfdX95QZ5UENUq6/DUWlkzlNe0HKIFTZ4nCK3lY
+         aRFQ==
+X-Gm-Message-State: AOAM531jy+D7Dm9/nKzbsGUu9aTxYjq5yNcaZf6LmGL7q+TC4d7GJYcD
+        LCvUuqRkR7kYQvE5pfOvQjgzuot6LSNoqQ==
+X-Google-Smtp-Source: ABdhPJwkTIRR0cDCPKbF2wqWn3ZUKN+3HxROqq4XRGtjmqDM38T0f/Gwj0bF5puD1mheNeEBXenWlg==
+X-Received: by 2002:a05:6512:118b:: with SMTP id g11mr9474546lfr.205.1631552487726;
+        Mon, 13 Sep 2021 10:01:27 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id d19sm380605lfa.252.2021.09.13.10.01.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 10:01:27 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id i4so5371198lfv.4;
+        Mon, 13 Sep 2021 10:01:27 -0700 (PDT)
+X-Received: by 2002:a05:6512:3d94:: with SMTP id k20mr9560866lfv.633.1631552486991;
+ Mon, 13 Sep 2021 10:01:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <202109112002.NZceUwiC-lkp@intel.com> <20210913165317.GX2505917@nvidia.com>
-In-Reply-To: <20210913165317.GX2505917@nvidia.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 10:00:02 -0700
-Message-ID: <CAKwvOdnGaVb1XGwYpNK_3zAEyZ0JC1SDjC1UzzFEH=d_Mdi7Fw@mail.gmail.com>
-Subject: Re: drivers/infiniband/hw/qib/qib_sysfs.c:413:1: error: static_assert
- expression is not an integral constant expression
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
+References: <20210831174822.83870-1-pedro@terraco.de> <8e7ff5a2-0629-228f-c9d5-35d39bf92ce2@xs4all.nl>
+In-Reply-To: <8e7ff5a2-0629-228f-c9d5-35d39bf92ce2@xs4all.nl>
+From:   Pedro Terra Delboni <pedro@terraco.de>
+Date:   Mon, 13 Sep 2021 14:01:15 -0300
+X-Gmail-Original-Message-ID: <CAHKDPP9J9Y1O2LDp1MYFtbuLGBcYcbJ2v9mP-H41e3zE0feFPw@mail.gmail.com>
+Message-ID: <CAHKDPP9J9Y1O2LDp1MYFtbuLGBcYcbJ2v9mP-H41e3zE0feFPw@mail.gmail.com>
+Subject: Re: [PATCH v7] media: vimc: Enable set resolution at the scaler src pad
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Gabriela Bittencourt <gabrielabittencourt00@gmail.com>,
+        Gabriel Francisco Mandaji <gfmandaji@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 9:53 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+Hello Hans,
+
+On Mon, Sep 13, 2021 at 5:28 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
 >
-> On Sat, Sep 11, 2021 at 08:17:08PM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   926de8c4326c14fcf35f1de142019043597a4fac
-> > commit: 84f969e1c48ed3825986e91a0786e363d57f69d1 IB/qib: Fix null pointer subtraction compiler warning
-> > date:   3 days ago
-> > config: x86_64-randconfig-a014-20210911 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=84f969e1c48ed3825986e91a0786e363d57f69d1
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout 84f969e1c48ed3825986e91a0786e363d57f69d1
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=x86_64 SHELL=/bin/bash
+> Hi Pedro,
+>
+> Your 'From' email is Pedro Terra <pedro@terraco.de>, but...
+>
+> On 31/08/2021 19:48, Pedro Terra wrote:
+> > Modify the scaler subdevice to accept setting the resolution of the source
+> > pad (previously the source resolution would always be 3 times the sink for
+> > both dimensions). Now any resolution can be set at src (even smaller ones)
+> > and the sink video will be scaled to match it.
 > >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
+> > Test example: With the vimc module up (using the default vimc topology)
+> > media-ctl -d platform:vimc -V '"Sensor A":0[fmt:SBGGR8_1X8/640x480]'
+> > media-ctl -d platform:vimc -V '"Debayer A":0[fmt:SBGGR8_1X8/640x480]'
+> > media-ctl -d platform:vimc -V '"Scaler":0[fmt:RGB888_1X24/640x480]'
+> > media-ctl -d platform:vimc -V '"Scaler":0[crop:(100,50)/400x150]'
+> > media-ctl -d platform:vimc -V '"Scaler":1[fmt:RGB888_1X24/300x700]'
+> > v4l2-ctl -z platform:vimc -d "RGB/YUV Capture" -v width=300,height=700
+> > v4l2-ctl -z platform:vimc -d "Raw Capture 0" -v pixelformat=BA81
+> > v4l2-ctl --stream-mmap --stream-count=10 -z platform:vimc -d "RGB/YUV Capture" \
+> >       -stream-to=test.raw
 > >
-> > All errors (new ones prefixed by >>):
+> > The result will be a cropped stream that can be checked with the command
+> > ffplay -loglevel warning -v info -f rawvideo -pixel_format rgb24 \
+> >       -video_size "300x700" test.raw
 > >
-> > >> drivers/infiniband/hw/qib/qib_sysfs.c:413:1: error: static_assert expression is not an integral constant expression
-> >    QIB_DIAGC_ATTR(rc_resends);
-> >    ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> >    drivers/infiniband/hw/qib/qib_sysfs.c:406:16: note: expanded from macro 'QIB_DIAGC_ATTR'
-> >            static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
-> >            ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
-> >    #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-> >                                     ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >    include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
-> >    #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-> >                                                           ^~~~
-> >    drivers/infiniband/hw/qib/qib_sysfs.c:413:1: note: cannot access field of null pointer
-> >    drivers/infiniband/hw/qib/qib_sysfs.c:406:43: note: expanded from macro 'QIB_DIAGC_ATTR'
-> >            static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
-> >                                                     ^
-> >    drivers/infiniband/hw/qib/qib_sysfs.c:414:1: error: static_assert expression is not an integral constant expression
-> >    QIB_DIAGC_ATTR(seq_naks);
-> >    ^~~~~~~~~~~~~~~~~~~~~~~~
+> > Co-developed-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
+> > Signed-off-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
+> > Co-developed-by: Gabriel Francisco Mandaji <gfmandaji@gmail.com>
+> > Signed-off-by: Gabriel Francisco Mandaji <gfmandaji@gmail.com>
+> > Signed-off-by: Pedro "pirate" Terra <pirate@terraco.de>
 >
-> Nick/Nathan
+> ... that differs from what is used in this Signed-off-by.
 >
-> Clang is being a real PITA here - do you know of a solution?
-
-Hi Jason,
-Thanks for wrestling with this.  We filed a quick thread last week to
-track this:
-https://github.com/ClangBuiltLinux/linux/issues/1452
-With conferences this and next week, and -Werror fallout, there's a
-lot of fire right now and not a lot of time to triage.
-
-I guess I'm curious, what is the intent of what this code is trying to
-do, and can this be replaced with BUILD_BUG_ON?
-
+> checkpatch.pl complains about that.
 >
-> This macro would like to know that the passed in member name has a u64
-> type, all the things I've come up with fail on clang - but many work
-> fine on gcc. Frankly I think this case is a clang bug myself..
+> Which of the two should I use? I can fix it myself in the pull request,
+> but I need to know which one I should use.
+I would like to stay with pedro@terraco.de.
+>
+> For future patches, please use consistent email addresses.
+I will, sorry for the trouble.
+>
+> Regards,
+>
+>         Hans
 
-Perhaps, though this assertion looks a bit like offsetof() to me. I
-wonder if that can help here?
--- 
-Thanks,
-~Nick Desaulniers
+Thank you very much,
+Pedro
