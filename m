@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132A0408D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DF9408CFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241043AbhIMNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:22:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
+        id S238574AbhIMNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:22:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240572AbhIMNVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240573AbhIMNVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:21:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2174610D2;
-        Mon, 13 Sep 2021 13:19:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4340A61106;
+        Mon, 13 Sep 2021 13:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539173;
-        bh=JaMMFRZ4MAB1YyJtid1lGEEjS6zt4whJ24Z4pq2nfx0=;
+        s=korg; t=1631539175;
+        bh=TveYUje6fNS3nR0Ug2zzbwvgiGmngjujV3jASCzfHlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0AWGNCz5Ehb4LPQteufIfruloFw68o4BPmj11spBW271qEGE960tA7aztZnQWigG3
-         tlxla6bFU/Eig5ruBu8otYcaiaa4X5WbLyEU3zVdRLK0VQKl78sBkLn6OQ9WkVITRC
-         SG1UxgiVJU/+aH59wdqKwlXXvyCa0HS+AutF3F6M=
+        b=WRudvZQfEjo470M2hOI6aYhgPwH8wKpjAtJCBNbbJN50I5qdsC98kyN3299PGpeS3
+         hqkRLyN4XWaor3DOriYBMkp2tSMG/+CDh76qAGtHW1bLHJTixI7hj+NcYgS8C6Jwjs
+         ZlzYvjo1ZZSh6TTQeDbvr2gse2Ue/L/jU22BeOnk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 069/144] net/mlx5e: Prohibit inner indir TIRs in IPoIB
-Date:   Mon, 13 Sep 2021 15:14:10 +0200
-Message-Id: <20210913131050.271607285@linuxfoundation.org>
+        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 070/144] cgroup/cpuset: Fix a partition bug with hotplug
+Date:   Mon, 13 Sep 2021 15:14:11 +0200
+Message-Id: <20210913131050.308709681@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -40,150 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@nvidia.com>
+From: Waiman Long <longman@redhat.com>
 
-[ Upstream commit 9c43f3865c2a03be104f1c1d5e9129c2a2bdba88 ]
+[ Upstream commit 15d428e6fe77fffc3f4fff923336036f5496ef17 ]
 
-TIR's rx_hash_field_selector_inner can be enabled only when
-tunneled_offload_en = 1. tunneled_offload_en is filled according to the
-tunneled_offload_en field in struct mlx5e_params, which is false in the
-IPoIB profile. On the other hand, the IPoIB profile passes inner_ttc =
-true to mlx5e_create_indirect_tirs, which potentially allows the latter
-function to attempt to create inner indirect TIRs without having
-tunneled_offload_en set.
+In cpuset_hotplug_workfn(), the detection of whether the cpu list
+has been changed is done by comparing the effective cpus of the top
+cpuset with the cpu_active_mask. However, in the rare case that just
+all the CPUs in the subparts_cpus are offlined, the detection fails
+and the partition states are not updated correctly. Fix it by forcing
+the cpus_updated flag to true in this particular case.
 
-This commit prohibits this behavior by passing inner_ttc = false to
-mlx5e_create_indirect_tirs. The latter function won't attempt to create
-inner indirect TIRs.
-
-As inner indirect TIRs are not created in the IPoIB profile (this commit
-blocks it explicitly, and even before they would have failed to be
-created), the call to mlx5e_create_inner_ttc_table in
-mlx5i_create_flow_steering is a no-op and can be removed.
-
-Fixes: 46dc933cee82 ("net/mlx5e: Provide explicit directive if to create inner indirect tirs")
-Fixes: 458821c72bd0 ("net/mlx5e: IPoIB, Add inner TTC table to IPoIB flow steering")
-Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
+Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/en/fs.h    |  6 ------
- .../net/ethernet/mellanox/mlx5/core/en_fs.c    | 10 +++++-----
- .../ethernet/mellanox/mlx5/core/ipoib/ipoib.c  | 18 ++----------------
- 3 files changed, 7 insertions(+), 27 deletions(-)
+ kernel/cgroup/cpuset.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs.h b/drivers/net/ethernet/mellanox/mlx5/core/en/fs.h
-index d48292ccda29..9239d767443f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs.h
-@@ -234,18 +234,12 @@ struct ttc_params {
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index bab6a934862e..badfa8f15359 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3166,6 +3166,13 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+ 	cpus_updated = !cpumask_equal(top_cpuset.effective_cpus, &new_cpus);
+ 	mems_updated = !nodes_equal(top_cpuset.effective_mems, new_mems);
  
- void mlx5e_set_ttc_basic_params(struct mlx5e_priv *priv, struct ttc_params *ttc_params);
- void mlx5e_set_ttc_ft_params(struct ttc_params *ttc_params);
--void mlx5e_set_inner_ttc_ft_params(struct ttc_params *ttc_params);
- 
- int mlx5e_create_ttc_table(struct mlx5e_priv *priv, struct ttc_params *params,
- 			   struct mlx5e_ttc_table *ttc);
- void mlx5e_destroy_ttc_table(struct mlx5e_priv *priv,
- 			     struct mlx5e_ttc_table *ttc);
- 
--int mlx5e_create_inner_ttc_table(struct mlx5e_priv *priv, struct ttc_params *params,
--				 struct mlx5e_ttc_table *ttc);
--void mlx5e_destroy_inner_ttc_table(struct mlx5e_priv *priv,
--				   struct mlx5e_ttc_table *ttc);
--
- void mlx5e_destroy_flow_table(struct mlx5e_flow_table *ft);
- 
- void mlx5e_enable_cvlan_filter(struct mlx5e_priv *priv);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-index c4ac7a9968d1..c3b9278486a1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs.c
-@@ -1123,7 +1123,7 @@ void mlx5e_set_ttc_basic_params(struct mlx5e_priv *priv,
- 	ttc_params->inner_ttc = &priv->fs.inner_ttc;
- }
- 
--void mlx5e_set_inner_ttc_ft_params(struct ttc_params *ttc_params)
-+static void mlx5e_set_inner_ttc_ft_params(struct ttc_params *ttc_params)
- {
- 	struct mlx5_flow_table_attr *ft_attr = &ttc_params->ft_attr;
- 
-@@ -1142,8 +1142,8 @@ void mlx5e_set_ttc_ft_params(struct ttc_params *ttc_params)
- 	ft_attr->prio = MLX5E_NIC_PRIO;
- }
- 
--int mlx5e_create_inner_ttc_table(struct mlx5e_priv *priv, struct ttc_params *params,
--				 struct mlx5e_ttc_table *ttc)
-+static int mlx5e_create_inner_ttc_table(struct mlx5e_priv *priv, struct ttc_params *params,
-+					struct mlx5e_ttc_table *ttc)
- {
- 	struct mlx5e_flow_table *ft = &ttc->ft;
- 	int err;
-@@ -1173,8 +1173,8 @@ err:
- 	return err;
- }
- 
--void mlx5e_destroy_inner_ttc_table(struct mlx5e_priv *priv,
--				   struct mlx5e_ttc_table *ttc)
-+static void mlx5e_destroy_inner_ttc_table(struct mlx5e_priv *priv,
-+					  struct mlx5e_ttc_table *ttc)
- {
- 	if (!mlx5e_tunnel_inner_ft_supported(priv->mdev))
- 		return;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-index 0fed2419623d..1f3d12faa2a5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c
-@@ -319,17 +319,6 @@ static int mlx5i_create_flow_steering(struct mlx5e_priv *priv)
- 	}
- 
- 	mlx5e_set_ttc_basic_params(priv, &ttc_params);
--	mlx5e_set_inner_ttc_ft_params(&ttc_params);
--	for (tt = 0; tt < MLX5E_NUM_INDIR_TIRS; tt++)
--		ttc_params.indir_tirn[tt] = priv->inner_indir_tir[tt].tirn;
--
--	err = mlx5e_create_inner_ttc_table(priv, &ttc_params, &priv->fs.inner_ttc);
--	if (err) {
--		netdev_err(priv->netdev, "Failed to create inner ttc table, err=%d\n",
--			   err);
--		goto err_destroy_arfs_tables;
--	}
--
- 	mlx5e_set_ttc_ft_params(&ttc_params);
- 	for (tt = 0; tt < MLX5E_NUM_INDIR_TIRS; tt++)
- 		ttc_params.indir_tirn[tt] = priv->indir_tir[tt].tirn;
-@@ -338,13 +327,11 @@ static int mlx5i_create_flow_steering(struct mlx5e_priv *priv)
- 	if (err) {
- 		netdev_err(priv->netdev, "Failed to create ttc table, err=%d\n",
- 			   err);
--		goto err_destroy_inner_ttc_table;
-+		goto err_destroy_arfs_tables;
- 	}
- 
- 	return 0;
- 
--err_destroy_inner_ttc_table:
--	mlx5e_destroy_inner_ttc_table(priv, &priv->fs.inner_ttc);
- err_destroy_arfs_tables:
- 	mlx5e_arfs_destroy_tables(priv);
- 
-@@ -354,7 +341,6 @@ err_destroy_arfs_tables:
- static void mlx5i_destroy_flow_steering(struct mlx5e_priv *priv)
- {
- 	mlx5e_destroy_ttc_table(priv, &priv->fs.ttc);
--	mlx5e_destroy_inner_ttc_table(priv, &priv->fs.inner_ttc);
- 	mlx5e_arfs_destroy_tables(priv);
- }
- 
-@@ -379,7 +365,7 @@ static int mlx5i_init_rx(struct mlx5e_priv *priv)
- 	if (err)
- 		goto err_destroy_indirect_rqts;
- 
--	err = mlx5e_create_indirect_tirs(priv, true);
-+	err = mlx5e_create_indirect_tirs(priv, false);
- 	if (err)
- 		goto err_destroy_direct_rqts;
- 
++	/*
++	 * In the rare case that hotplug removes all the cpus in subparts_cpus,
++	 * we assumed that cpus are updated.
++	 */
++	if (!cpus_updated && top_cpuset.nr_subparts_cpus)
++		cpus_updated = true;
++
+ 	/* synchronize cpus_allowed to cpu_active_mask */
+ 	if (cpus_updated) {
+ 		spin_lock_irq(&callback_lock);
 -- 
 2.30.2
 
