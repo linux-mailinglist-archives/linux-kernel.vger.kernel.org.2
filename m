@@ -2,228 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163AA408930
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EDB40893E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239176AbhIMKjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239033AbhIMKjK (ORCPT
+        id S239023AbhIMKm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:42:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:54240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238823AbhIMKmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:39:10 -0400
-Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8310C061574;
-        Mon, 13 Sep 2021 03:37:52 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id PjLTmYAZ2pQdWPjLUm2WW1; Mon, 13 Sep 2021 12:37:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1631529472; bh=HwcwZOckR6uo2ELf6S9P6ET08CoHQZG30MzfynjPP1Y=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=MCo+PzmKRi0SRrGtOM416IzQJO6AITQ9txiJczYZUT2j1PLalRU5sK8brIPH68/BR
-         B3lcGsKHyhVPUUqtDzn17BIpuZKLYersfu6bK+ej4ovGjl5ezSmiN7ZRhCy46TAkJV
-         RKkBNmtqCBhL/53Xyhi6PBCAAw2Nx/ZNiPdnyCLll9Zce0gKMhDyxm4ktoP3m04jbC
-         03y6FOJQJwSWHwtax2zsZOz/Vft7XxEbjTc5n23eR13MHr7YH7kNrbK76lhbF8QW3p
-         9Xm4EWH0dpVZE6WlSc6DMQmOibPuklbGJ+jHvg+newaIYoFnFcJLSPOqfxVEnhkG9A
-         lvwHvL3X9CS1Q==
-Subject: Re: [PATCH v11 24/34] media: staging: tegra-vde: Support generic
- power domain
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210912200832.12312-1-digetx@gmail.com>
- <20210912200832.12312-25-digetx@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <77d205ef-469d-cfa3-f742-b009b2b05992@xs4all.nl>
-Date:   Mon, 13 Sep 2021 12:37:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 13 Sep 2021 06:42:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631529669;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ryXldKXp5w2qrYfIRmnB0eY0iF5R48B4/QR1QYkEKSY=;
+        b=X2h+lMHsHwCg3NMLXqSVSzG69JXaSUh7Zjgp5jlq5SBK5xOE1t+5tkTsS8OdOZ560L6prk
+        jQuk0WUdVNlAxqYTuWKPw9ezyabNsDcOtmt7W99xLsJ72u7jshf9brj7l0jd5Ax6IQcycL
+        g16b8E8Tn/1FEDCCY+99Rtxum9Fez0I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-iyDlqZ8AMlGLjVZRSDBeBA-1; Mon, 13 Sep 2021 06:41:08 -0400
+X-MC-Unique: iyDlqZ8AMlGLjVZRSDBeBA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A43C480292A;
+        Mon, 13 Sep 2021 10:41:06 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CB9311036B24;
+        Mon, 13 Sep 2021 10:41:04 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 12:41:01 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Dmitry V. Levin" <ldv@strace.io>, linux-api@vger.kernel.org
+Subject: [PATCH v2] io-wq: expose IO_WQ_ACCT_* enumeration items to UAPI
+Message-ID: <20210913104101.GA29616@asgard.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210912200832.12312-25-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfC0UR8EPsGu9scFXo/XyGQ+zclz4oYZK7ebAu7LkFSvn1ZSZql+X7aMfNk2HSIv/6FmtrmYKiCEiTasQtOArrwJIB9K/cvmo41OrNVaccz9t4pz4xFSP
- j4RW9XR1UXUNkZjiB50fmOTEVHWZQEEL0LCboGmfgPr5tPA1jHo+Fuobmb+0K/MLvwhlRfiHLXPOigMyMug4DAUy9DCMyYAMmHUGJHv08xsy7IjWw38ZjMxo
- aw3wUIyWLem1d/zZmaf0LubaeQEZUwSFtGIFmi2F++I5O/GnY6GkKzmSCgXAmFtLzjbSwYUQcEkSadgl1N7ZZVdyjkKvJJ0aYYeoMQSEFJa2Ep+OIUZDntf6
- P0TpfOPh+oHT4OaPgd5wX0Ui1jmXaNQKW7aiar3zaCLkiYfmnX+F0vULqbIoZ6Ijdo2bKxDHce1DUd2BDXddvwEDjjcvmwNJfaoskXKVJRBqdLmaxUjUx/V/
- 09sbugSxdQhoVzwFzLT3DKHkZy+ewtdafWnzzxHv+4stixNxPyyAI2h9as2uXoPgPxclbWBSsYP7l1szZCwtKGYT00s5EQOcBeWGELKehjEPZU7UIzo4bx5t
- XspkFLAEM2gYpZFyIvFS0wY3UCtb68z5Upk6evtPpZgIKEGtBIR0GgSrn7PajKK7ZSa59x+FBQCKHR7D/w+1WFcdtzWbiWZOPpgBrSmqc5/wwoyS/xNwqSXF
- BHINYcJu8Lxzm6X6B3Wp4XpYRHwQpR9JFJbMR3ymDzApxAEXHL9uemBkl0o1h+BGgsC5F6aokDy9tX4L8IDLFBHNYT2Pwvd9HUCEeoNPS5jx3YXabGxXfyrQ
- 3lGRLo/HkRWNr7PLHtJZ77cSpQDrR1R8NmTfiJxEgg6UzcAvgVLxfI1g38BX4vUe9ce3WZipyz82IsYvAd0E8qEeYNBf9cQqiSeduAEs0J8jFmDQMF/bnM8z
- oWi6YfJ+OqDe8iZ4iXmiBCynBsD9Pj/M4Dr61pK7Za58Lls8qeutMD/e4s56bLQcns/C35b1daKF009MnInB6c47cKlaoofOh8sc48nwDtnjAt+BGY6mbExF
- IL2eHWyz5KtrWh9bHowFYh63JcVKotwFmpQvQS5tfc/TOmUHpsuFEof+PXhXy3lLgluHHHaxnVE4rlKDqdQrJ7o8l2UjrEt9sudgUNRzDBKqKaIFDZUhe1R9
- Vhd0WP8g6IGkYe28njn8Mx/bA9RWRZFruTXvFVTegHNR4Ei/fa7tFwYD0ocofy0eAHQz5WooS/WLrsh/CJH+pSHt5I98Ogi2Ahridm3lxQF/JsQi+G8N54Cd
- hQtFam3Yh78FeXR5vuY6rDO4iey1wjaobPOJepuclTuligKEfwZaFmsF1+QE5Dg/h7h6wtbe1VhmaUAmLnObMknumKX2VDfPdRJIBlr8yRolNNpw2M8qIZi9
- 0DND+x88qIRDteuXO11Vz6gw6Zo8nTyoyKWBuw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2021 22:08, Dmitry Osipenko wrote:
-> Currently driver supports legacy power domain API, this patch adds generic
-> power domain support. This allows us to utilize a modern GENPD API for
-> newer device-trees.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+These are used to index elements in the argument
+of IORING_REGISTER_IOWQ_MAX_WORKERS io_uring_register command,
+so they are to be exposed in UAPI.
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Complements: 2e480058ddc21ec5 ("io-wq: provide a way to limit max number of workers")
+Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+---
+v2:
+ - IO_WQ_ACCT_NR is no longer exposed directly in UAPI, per Jens Axboe's
+   suggestion.
 
-Regards,
+v1: https://lore.kernel.org/lkml/20210912122411.GA27679@asgard.redhat.com/
+---
+ fs/io-wq.c                    | 5 ++---
+ include/uapi/linux/io_uring.h | 8 ++++++++
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-	Hans
-
-> ---
->  drivers/staging/media/tegra-vde/vde.c | 57 +++++++++++++++++++++------
->  1 file changed, 46 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
-> index ed4c1250b303..bb3079a2c0b5 100644
-> --- a/drivers/staging/media/tegra-vde/vde.c
-> +++ b/drivers/staging/media/tegra-vde/vde.c
-> @@ -20,6 +20,7 @@
->  #include <linux/slab.h>
->  #include <linux/uaccess.h>
->  
-> +#include <soc/tegra/common.h>
->  #include <soc/tegra/pmc.h>
->  
->  #include "uapi.h"
-> @@ -920,13 +921,17 @@ static __maybe_unused int tegra_vde_runtime_suspend(struct device *dev)
->  	struct tegra_vde *vde = dev_get_drvdata(dev);
->  	int err;
->  
-> -	err = tegra_powergate_power_off(TEGRA_POWERGATE_VDEC);
-> -	if (err) {
-> -		dev_err(dev, "Failed to power down HW: %d\n", err);
-> -		return err;
-> +	if (!dev->pm_domain) {
-> +		err = tegra_powergate_power_off(TEGRA_POWERGATE_VDEC);
-> +		if (err) {
-> +			dev_err(dev, "Failed to power down HW: %d\n", err);
-> +			return err;
-> +		}
->  	}
->  
->  	clk_disable_unprepare(vde->clk);
-> +	reset_control_release(vde->rst);
-> +	reset_control_release(vde->rst_mc);
->  
->  	return 0;
->  }
-> @@ -936,14 +941,41 @@ static __maybe_unused int tegra_vde_runtime_resume(struct device *dev)
->  	struct tegra_vde *vde = dev_get_drvdata(dev);
->  	int err;
->  
-> -	err = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_VDEC,
-> -						vde->clk, vde->rst);
-> +	err = reset_control_acquire(vde->rst_mc);
->  	if (err) {
-> -		dev_err(dev, "Failed to power up HW : %d\n", err);
-> +		dev_err(dev, "Failed to acquire mc reset: %d\n", err);
->  		return err;
->  	}
->  
-> +	err = reset_control_acquire(vde->rst);
-> +	if (err) {
-> +		dev_err(dev, "Failed to acquire reset: %d\n", err);
-> +		goto release_mc_reset;
-> +	}
-> +
-> +	if (!dev->pm_domain) {
-> +		err = tegra_powergate_sequence_power_up(TEGRA_POWERGATE_VDEC,
-> +							vde->clk, vde->rst);
-> +		if (err) {
-> +			dev_err(dev, "Failed to power up HW : %d\n", err);
-> +			goto release_reset;
-> +		}
-> +	}
-> +
-> +	err = clk_prepare_enable(vde->clk);
-> +	if (err) {
-> +		dev_err(dev, "Failed to enable clock: %d\n", err);
-> +		goto release_reset;
-> +	}
-> +
->  	return 0;
-> +
-> +release_reset:
-> +	reset_control_release(vde->rst);
-> +release_mc_reset:
-> +	reset_control_release(vde->rst_mc);
-> +
-> +	return err;
->  }
->  
->  static int tegra_vde_probe(struct platform_device *pdev)
-> @@ -1001,14 +1033,14 @@ static int tegra_vde_probe(struct platform_device *pdev)
->  		return err;
->  	}
->  
-> -	vde->rst = devm_reset_control_get(dev, NULL);
-> +	vde->rst = devm_reset_control_get_exclusive_released(dev, NULL);
->  	if (IS_ERR(vde->rst)) {
->  		err = PTR_ERR(vde->rst);
->  		dev_err(dev, "Could not get VDE reset %d\n", err);
->  		return err;
->  	}
->  
-> -	vde->rst_mc = devm_reset_control_get_optional(dev, "mc");
-> +	vde->rst_mc = devm_reset_control_get_optional_exclusive_released(dev, "mc");
->  	if (IS_ERR(vde->rst_mc)) {
->  		err = PTR_ERR(vde->rst_mc);
->  		dev_err(dev, "Could not get MC reset %d\n", err);
-> @@ -1066,6 +1098,10 @@ static int tegra_vde_probe(struct platform_device *pdev)
->  	pm_runtime_use_autosuspend(dev);
->  	pm_runtime_set_autosuspend_delay(dev, 300);
->  
-> +	err = devm_tegra_core_dev_init_opp_table_common(dev);
-> +	if (err)
-> +		goto err_pm_runtime;
-> +
->  	/*
->  	 * VDE partition may be left ON after bootloader, hence let's
->  	 * power-cycle it in order to put hardware into a predictable lower
-> @@ -1133,8 +1169,7 @@ static void tegra_vde_shutdown(struct platform_device *pdev)
->  	 * On some devices bootloader isn't ready to a power-gated VDE on
->  	 * a warm-reboot, machine will hang in that case.
->  	 */
-> -	if (pm_runtime_status_suspended(&pdev->dev))
-> -		tegra_vde_runtime_resume(&pdev->dev);
-> +	pm_runtime_get_sync(&pdev->dev);
->  }
->  
->  static __maybe_unused int tegra_vde_pm_suspend(struct device *dev)
-> 
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 6c55362..eb5162d 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -14,6 +14,7 @@
+ #include <linux/rculist_nulls.h>
+ #include <linux/cpu.h>
+ #include <linux/tracehook.h>
++#include <uapi/linux/io_uring.h>
+ 
+ #include "io-wq.h"
+ 
+@@ -78,9 +79,7 @@ struct io_wqe_acct {
+ };
+ 
+ enum {
+-	IO_WQ_ACCT_BOUND,
+-	IO_WQ_ACCT_UNBOUND,
+-	IO_WQ_ACCT_NR,
++	IO_WQ_ACCT_NR = __IO_WQ_ACCT_MAX
+ };
+ 
+ /*
+diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+index 59ef351..dae1841 100644
+--- a/include/uapi/linux/io_uring.h
++++ b/include/uapi/linux/io_uring.h
+@@ -324,6 +324,14 @@ enum {
+ 	IORING_REGISTER_LAST
+ };
+ 
++/* io-wq worker limit categories */
++enum {
++	IO_WQ_ACCT_BOUND,
++	IO_WQ_ACCT_UNBOUND,
++
++	__IO_WQ_ACCT_MAX /* Non-UAPI */
++};
++
+ /* deprecated, see struct io_uring_rsrc_update */
+ struct io_uring_files_update {
+ 	__u32 offset;
+-- 
+2.1.4
 
