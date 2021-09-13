@@ -2,161 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DF1409CC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1289B409CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240944AbhIMTRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:17:51 -0400
-Received: from mail-dm6nam10on2079.outbound.protection.outlook.com ([40.107.93.79]:47936
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S241749AbhIMTSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:18:06 -0400
+Received: from mail-oln040093003001.outbound.protection.outlook.com ([40.93.3.1]:65387
+        "EHLO na01-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229460AbhIMTRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:17:48 -0400
+        id S241279AbhIMTSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:18:01 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KRSnnkA2dq/WoBApQyejSoIz14PqS9Cj61J/Ci7etGk83ui/bDro1A7OGoYpYNyzrWe8Xdhc5EYSZZFQd+w9NrLMkicu6jVxvvUtJD/5q8oMmrbyecH3wMRUlRzNBB++/hHY1of8BxhtQIl6Fefzg/MjdV2D9x3tPaTaTPaaEBrYPitGNKGZLRrmejbowkOJeKsGYJ68TBfjVcG71gi/uhouK+hMxmkrcnV5NIyFY2AKGTpGFaLV88PSae0SAU3t9Mq4e21JrFtHKgC5gqhBzApIs+sTlOj5txYfxCTf4AzAiRmeGrBJ5D7ox8eKx6xZGWmSvvgvIiDEXWpnOkPoBg==
+ b=WET3TtL54wFjgcykQAvuAOqyllOQoeDt81yy5r1a7G3BLMaTh+rMAkJkVKC75sG+wTawIJefwdF9V0Cevcuo/IZ5tPPLmFxBUCRCTFNsdKr42ck0M/eQNvnPpwAd2VUMMjvZ+RaxBO9ki8IPZcmk9JXscU/gD+LLOn3K08H4iHH3k8GGYzx2niRTrei45F80kqN3k9VXQkLO4pf1cLxv8N9J49KX3AI6sUU4oGBxUOBdJVehnnXjotZ/tbJyrqQ83jOW1VZ9FtfopQvAmRGDGjLG4DcdGb81eLWOaoUwPbaHlDA6NOD69boJ3sRi+iM845/JjnUlxmqlreQJxsEhkA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=mw/RNQvz08IfbBHjmKASGPdKuUW7zBnQI9U/319UL6s=;
- b=N4OyRFQb+YidzkoCvDYL/RKEGkD0mb7TLpo/nG0BS+gF9DtYMl6qK+O4+SvsKYXQog3a3/S1BWMf6O1tZr4xVYgIIe0Wivcc8mQThyGYEREMDUfwlTdV6oZEMi4tZggPn5vyy2MR082YfQ4+ZczhxzRxmXb1ntjC8EwnYzTe8lTUeq0k0hd8KzVe5A3IpJzAnMkVBUonYLae1E3bakgnr/9rIje8/H8kW36Ff5n25mFbsHHixkAbrft74Jj5ZvmP0RuPfxu847ywRoJvBLA7Q5GMByUA1TCsGSSmG81pV1ppydJUzlaNCGgYK6px/AnTP4zXAQXQmtveflrwVRpy8g==
+ bh=bQ3RvS2aQN4nDp80tUtUVkIgDLLScePWzhACAybFYqU=;
+ b=A2QPLDQ9wh620CUrR0RZsZRqEw25637xO7P093zEQ7JtVyP8G7Z0YIbKCF4z37SAozKcvMrWXq5cQ4zi4Pxe0e4uCwFe8EoTfcEkjYKJtMm0Y2wco/iQV7XPcs3Ss186Pe5zaxecNIG7P6HBjCYm3Rs+u49jgLeYNTJnPDrzgfwkEi6b7zleS6C/2OkNiSgX3Y34gDkEKh3OFjQZfmdsIstdLeYrCwbos3N+sovCtTbgH4VbeI/d6/1VDXZ51Y5pYTt3fMK8KP6MY6HJ4wrAFXjoptajTEyMZ7vZl7J6z0t0u6My+nSYu6nUWrqQAnzRC+lZXhVb3q2FTDUePfw5Yw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mw/RNQvz08IfbBHjmKASGPdKuUW7zBnQI9U/319UL6s=;
- b=TeSHIHsdj5fKGgzxLOntdTKI02+IkFdFsWIMiEsQeficu65BrYQv34qNIakex0nJimXzSWN5NCxK5tSP47IyM3Z3UukFAa3r1iazF1TET/GJf/aBmUxA6gjgoExx9s8NiRHl1h9axhOyIk6j3931AzzT+h5cA8e+rhYO4C+mMMm5PROowHZFbpNbNiP8g5RaIjpnHIAPrUs5UmuQmPpt7eC0Ff+3R92qIDeLnpNKtdsms7NBekKUl8ZIHLOY7l48qmdlSKAgsbaam9j1sFrP08nHZ71YpQV7eGIQes31mgFpI2OAiaIJZhYeBWW3FtZUFzQES1EmE+uf+9CttG4z+Q==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5505.namprd12.prod.outlook.com (2603:10b6:208:1ce::7) with
+ bh=bQ3RvS2aQN4nDp80tUtUVkIgDLLScePWzhACAybFYqU=;
+ b=JhVlXrhjesNc4qmqbNdnbYQbB6Sa6J7dybZf4lM0q7eep9tvpqiY9mwXS8dOdiw71yjdP0ZcXqLrsDZMik9p35U/c4XkcSsm+cdxfsUjMjG5ev146dEebkTcxL6vDQgzisOt4NL2bWRRJSc0QoATrLDxkoxhFeea+F7jynz9lPs=
+Received: from MW4PR21MB2002.namprd21.prod.outlook.com (2603:10b6:303:68::18)
+ by MW2PR2101MB0972.namprd21.prod.outlook.com (2603:10b6:302:4::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Mon, 13 Sep
- 2021 19:16:31 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4500.019; Mon, 13 Sep 2021
- 19:16:31 +0000
-Date:   Mon, 13 Sep 2021 16:16:29 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: drivers/infiniband/hw/qib/qib_sysfs.c:413:1: error:
- static_assert expression is not an integral constant expression
-Message-ID: <20210913191629.GC4065468@nvidia.com>
-References: <202109112002.NZceUwiC-lkp@intel.com>
- <20210913165317.GX2505917@nvidia.com>
- <CAKwvOdnGaVb1XGwYpNK_3zAEyZ0JC1SDjC1UzzFEH=d_Mdi7Fw@mail.gmail.com>
- <20210913183813.GY2505917@nvidia.com>
- <YT+eJY4JoobVsKWu@archlinux-ax161>
- <20210913190246.GA4065468@nvidia.com>
- <0158604c-8777-51c8-2cb5-b7f016335786@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0158604c-8777-51c8-2cb5-b7f016335786@kernel.org>
-X-ClientProxiedBy: MN2PR18CA0013.namprd18.prod.outlook.com
- (2603:10b6:208:23c::18) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.6; Mon, 13 Sep
+ 2021 19:16:43 +0000
+Received: from MW4PR21MB2002.namprd21.prod.outlook.com
+ ([fe80::b134:7809:fcff:8c8b]) by MW4PR21MB2002.namprd21.prod.outlook.com
+ ([fe80::b134:7809:fcff:8c8b%4]) with mapi id 15.20.4523.011; Mon, 13 Sep 2021
+ 19:16:42 +0000
+From:   Sunil Muthuswamy <sunilmut@microsoft.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Michael Kelley <mikelley@microsoft.com>,
+        Boqun Feng <Boqun.Feng@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?iso-8859-2?Q?=22Krzysztof_Wilczy=F1ski=22?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH 2/2] PCI: hv: Support for Hyper-V vPCI for
+ ARM64
+Thread-Topic: [EXTERNAL] Re: [PATCH 2/2] PCI: hv: Support for Hyper-V vPCI for
+ ARM64
+Thread-Index: AdeoxTZsllWVtNf9RIGrn88zMhJayQADLhwAAABIXAA=
+Date:   Mon, 13 Sep 2021 19:16:42 +0000
+Message-ID: <MW4PR21MB20020111382C98ADACFF4F36C0D99@MW4PR21MB2002.namprd21.prod.outlook.com>
+References: <MW4PR21MB2002654EE498023C6F2E40B5C0D99@MW4PR21MB2002.namprd21.prod.outlook.com>
+ <87zgsgb8ob.wl-maz@kernel.org>
+In-Reply-To: <87zgsgb8ob.wl-maz@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6aa91127-eb24-4935-61af-08d976eb056b
+x-ms-traffictypediagnostic: MW2PR2101MB0972:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB09729A1B7F45E7310128CE15C0D99@MW2PR2101MB0972.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3EVUQEGiUWkp/ksKtxxZIOIThjAIjnJElvq0MmihH3gDokzrjMYmq+y2l9kgmkpcGn4hYoObrelXEk9ZfPTp0JsEgMwhD0YuQ0A0zy6XIVK81UvT9QROmUzTo55DoJXiRcXJ+jDGo0gyGUP/I5TG5G2J30somrR1ZQ1kIG/PgSwBPWv9PbloKM2Q+6qIrloALYQNhoB/Pj13cTFbCcniLshL0leSsgKZvpo8A8i44qR77/Z5RoftdjDVT9WMj0pYcuic/KOBhPOMUy/WWu4hmwDS5y5tHwQCpzBNfTMbPcZKos3y+Y1Hl78z4s8cGttbVqr4oriOhbpwmf5ZRBSDuKzydu8WTlhHp0RUwYc7mrWXdguKK8Teg137v3vIW4LoNxABqJPk4R9XGaGWZp/Q/6zlixxNiwKB6pc/ADjCPEqWts2XvYwK2VAsA2zlDXoHILxXvhET5dZ6Pbz8GzDH8mXSvmP55WCNsK5mDCUF8DjnUQehvgYvWL8MSpxxg+Ct37zYfp7VEIA8BPaKn4lTTFexINrBzvecEkcJYzxbePHDPEVLATMI8QvcRfMwAmIg7msXs3TDDNaWYS4hK47j2adcrY483RlF+ziix9zpXey2ATlNcS/cPaPltuoptk5KJV/XAYZwdJxImT9DhmvnIX0C9CNKr0Rd7xcOW30GPFUS/wX077ioy/qmmde/cusrh7eF6Qc+LhPFvMwL/NRUvg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB2002.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(38100700002)(4744005)(2906002)(55016002)(71200400001)(33656002)(76116006)(53546011)(66556008)(8990500004)(54906003)(5660300002)(316002)(6916009)(7696005)(10290500003)(38070700005)(86362001)(508600001)(66446008)(82950400001)(8676002)(6506007)(186003)(82960400001)(64756008)(52536014)(66946007)(9686003)(4326008)(122000001)(66476007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?tvgAB27Xqin/TIjOhvs7BkOps4rQePJZAnWH2le8kBzfMEkYjxx4zSLcKX?=
+ =?iso-8859-2?Q?+YXbEs4mAo5PE6FelK5k3b1rGvDg2Xty1ztOFknGXsHhvPvOrCrz8U/5gi?=
+ =?iso-8859-2?Q?sZvd1VutU7xMa8kpZm33fcgSBAfETbglVuQq/xkic+l/Q9fh+jJ/FBoIdh?=
+ =?iso-8859-2?Q?CbNc16CNfdFTD7qh7dBi1KCHN+mSv2HVa41WWP4+yw4yPtnT4H8C2t4IXx?=
+ =?iso-8859-2?Q?mY2F0mQyGRPG2c/eWXWCNl/7F7aE+6CpzbmpCM7XOxQGvqsgBzN6m90xhb?=
+ =?iso-8859-2?Q?RhD0Bri68aUujA0dv6WQu6Ee4PH7c3EGMAKwj2CPY31Y/M8bsLnmeFKb32?=
+ =?iso-8859-2?Q?aW7/hT7o+l4PwFcyt0dG7v7LjHWRMXVtHT5wRmLq48v8Hk4w1wqT0jilSf?=
+ =?iso-8859-2?Q?oqa0Zmkbuo3az9Knatl81ZYRXa9ayctdBeQk/5Lot36UaML/jYBlAo3Pyi?=
+ =?iso-8859-2?Q?emfDrqMjZbtdbx4sQk4gjPlKJNYISSqVogK3C3yJCk7Eg62KH2wRtuOLL6?=
+ =?iso-8859-2?Q?IFD8djrIlFQPFHrSCuImTPR0+DWp+P5wJjfb+1a5TbfZlEhdbfmgQorth/?=
+ =?iso-8859-2?Q?h9dsZR8Z/VzAy5hTHKpfLdGuz2u7vQC4cIBBDH9/Myhe3Kn8Lf9PkHbgwg?=
+ =?iso-8859-2?Q?gtsuGJdCdHSRvwfUDt284uVo+VbYWfQRJdbbMdFl5EWtGh1GCJ0MgOA8QL?=
+ =?iso-8859-2?Q?CMyQ3vwVEeawFSVUeim6oLwyiYBOpZUXXdvijuHWzyjgrduD2dZT3Qwvhl?=
+ =?iso-8859-2?Q?ZMM7QYIyB3tsa7Yu9fn5K4nxyxyDg9osaDu4Z7zeTLF+rxxL1zHZZQEhTi?=
+ =?iso-8859-2?Q?wL6DoO3s1u9dPPRlqoROnk+z+unQWDpENIg8i0bw5EPzXwxo2sOn6mzR1N?=
+ =?iso-8859-2?Q?aQaGp6pADZV8TXmVdTqzTvImaqlih8Ol4Y4a/Z4e+feIkXhCL6k8HQBJ/1?=
+ =?iso-8859-2?Q?qPpndZjahhd5uq/4dNiM09wfnDRWUmyNukT88whbbfUccJg+uvCykhrlEw?=
+ =?iso-8859-2?Q?gIUDan4az6M0OBVuHK+wqT9CZyGSn5zgvUKPJCg92OOJvazDMPT/1+KQHD?=
+ =?iso-8859-2?Q?2bEU1RqkcB7mvOr6lD7UB0jCl5hYUw+kiNl1YI6U74GLf2yO3PKAuoh8N5?=
+ =?iso-8859-2?Q?KHnxHX/dVuneQSxpOY/v47/kQiFC8okwvZpdfMsbl8+IySZv2dfTUEoiJw?=
+ =?iso-8859-2?Q?9TrnjlcSnNl95cUXdTmYCCFg+izWT5onx8NoH35dFl1DHyhiEImBkbARTz?=
+ =?iso-8859-2?Q?Un9KPYVRB8wG0cIYRJ5fi3Lomh4cWC3cVGby7uHxPw7FJtgknENJVQ6rD7?=
+ =?iso-8859-2?Q?fMGaYGR1T+EwF+gnxSpD4jq7qCaBgxp2TbzdU+CP7ut3Xsr33T/cHtYa5j?=
+ =?iso-8859-2?Q?i5Rz9a/TxRhCxoVe4sN8BXO4QkwQ2h/HlAsXCjiAWu4cf/xAac1h/tzFko?=
+ =?iso-8859-2?Q?+VvfVeIIE8Mf8mZf?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR18CA0013.namprd18.prod.outlook.com (2603:10b6:208:23c::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 19:16:30 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mPrRN-00H7Tc-UV; Mon, 13 Sep 2021 16:16:29 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 429e86ec-89ca-476e-c399-08d976eafe2a
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5505:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB55056101FC7F1D62AD9D545AC2D99@BL0PR12MB5505.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dC9r8XwDVgeH3uk8SNW3Em5Kfm1CJMhWtLEkpOHuc2oV8Cc4IXfpGhFylnfJuxVZyPd9BGTUHMm+rVvxTxeUU/3yVFHxv2ITPt9ICpQUMMNjrmdWDVxhXZwQ6ip+J3J1mvCCw68Ov0BNbVFP7I1sX7UxcQcgyytR1S+cng0AvKxhdnfYa3qt8cxBcw1r4NvLNbSUkCtN9DFLsJF2JIoGWIbntUtidpZXH87/YgN99R2CQKV/B1kCgHLCCWwsak7lr+2C5Xg2Fv7UXaW/mv+W6tVtEzgYLM+w7/PXxliz+/KSTnsmkP9D7z/e/T21eDa3qwxba/YFG569f2UrldIh7NhQihJdLHL8avxFmTxO6f6P99tQ9Fa4A9nBSxPO5K2R8YpwUh+J89Hy9HZG84RwB9aNEi+GBgRhh2EjQIYP+iLy+7PAvrTa52K6VnjsHR/KIihrNSBPkvqeGdbGLQRL4W5wLPA70SyTjbwVCoM9dkWuJ65ANCSmopl4JQntn5DfmTQetj5hWHD9na6v3plu8LuY9wooNq+CVlHUvLK7YtLVB8npF1RGGvYr6KZgLtGcFtToTZvGA1pzx36O1xQ3iWbKuQZZ7x3q1Jrs21qkR8HXRGT2ystWAoJXFW40xmHavCbX/II9ka2K1s0i0ucAaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(39860400002)(396003)(346002)(38100700002)(53546011)(2906002)(1076003)(66556008)(8676002)(83380400001)(66476007)(26005)(2616005)(316002)(54906003)(86362001)(5660300002)(6916009)(186003)(33656002)(9786002)(478600001)(426003)(9746002)(66946007)(36756003)(8936002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M4xuLCcPJsV2f0hj4/D/assDBGfc9nKaLYOCzsSUVwVK7f2wI5+NRlPe4JHh?=
- =?us-ascii?Q?Oh61N1i37s2kOVgBTCshQyoa1KjcqawUuZ56l/cM+Jsn440JvBvOc+4tgBaf?=
- =?us-ascii?Q?VfzC1Q74oUAL32iAIlQYvGY2zxJkK0RQMTTJ9oxI3xGfYg5kNt2CCJM352Cs?=
- =?us-ascii?Q?CzpCqX2uQR3N+16j4TanosBqYeyN1OlModvA09b4eB5A5wLH26AcqK/yeOgy?=
- =?us-ascii?Q?1/yi/VDv2WYDth6097gj1KigrVBgag/SyA7iV6n50SnJVpE9JLX0MhKOxX2D?=
- =?us-ascii?Q?JwKH0XW1fiVhtrGmflDJYt4wdi82YTJKEZfbhk3ZpTMsZmEnDl2SFp0PrC36?=
- =?us-ascii?Q?f1aOYc0AT4iT/E8pEBGmSsDmIIC7QLNK/Oqm6vVQfj4AwBlSWKfnjM3act5o?=
- =?us-ascii?Q?Cigcwfz0W6Gl43Wt4spL6cI8FhVIYronDPuccWGl3FCv0c8dLbSg9RXVDC/s?=
- =?us-ascii?Q?vnjlTn+g7g6ZkwE54Fn37fo41c4yonVaPEspNFV+Fa6VmCmZ7DVOdxRX4ZR1?=
- =?us-ascii?Q?usdBm6ree3OeN5poVLJgZT2m7Z208OTZtkf9IHmxxDgrJrPfC71gO+Q9s5rG?=
- =?us-ascii?Q?BJkimZIVpudGqZVVJ+LhQJF4GTY5oyer70NG7f7ippmOC8k/+uE69n5bmlVY?=
- =?us-ascii?Q?PlUYx1uE/JIZF2BltGEYMXIhNFDn5UHgPHB9WriJtFfSkmrpckZCFRv2nWbm?=
- =?us-ascii?Q?sekQTKXZQmCXnzHJ6vTHH9m06zMw23sM+aDUoAAOVP0UMhuSQxJMCdLTSGYG?=
- =?us-ascii?Q?6+pyaQKKKj+usX32AVWDPnVC7Vhl8DgPjXiWSpNgDqJ5yenIHU9RIMtosYuR?=
- =?us-ascii?Q?/IJ1etDbmOj3TsnB2VE8hXkggOgKhfVo6Fm6T7elYwgbi7ZHYrN305dXbm0v?=
- =?us-ascii?Q?bxzMYqBm3GFTzjdQPyRUJEbaWB88a/0/ZXDaySIi27PpkLF5jmHuRca6dYdl?=
- =?us-ascii?Q?ldmKie/2XzRg7sF/kRuYMCZ9XfepbJbLW3o1uUtD11uooaU7FS7DHx6wcBbL?=
- =?us-ascii?Q?aWA2bavrD76JEuTP9jQ1MiwaVQXDYzZ2vJmBZfswiLRUCwW2PNSd4TaN21JM?=
- =?us-ascii?Q?EmlmZoBo0QRXgFris0DAr2z6Okb3Kk8ZIROP4IppU/VydqRJWl69NIeFgND0?=
- =?us-ascii?Q?5sUuZYMY1nmQPkrK2Xw9zTyaX48Diw807IERY0UQ8BeRkLCN1XuL/4hLsnow?=
- =?us-ascii?Q?8wJqJ6lx72IKFznTDFThYXvTeF97vQgBIcdGEUwKIsVYPgf4h1iEua6pruGv?=
- =?us-ascii?Q?mTt2v6u+1F69Ld2InfyQRauiZDjE9sDngHVzYYEl+hAc95khksrRxYpTKMaB?=
- =?us-ascii?Q?Io1HLrVIdifHX00LrMPpPsgB?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 429e86ec-89ca-476e-c399-08d976eafe2a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 19:16:30.9460
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB2002.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6aa91127-eb24-4935-61af-08d976eb056b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2021 19:16:42.8617
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: beJZbKw/LbGYn1506DzIyJlUH62hcWjy/f45HAW6cmmGsAdQNRpYaXaOytNlPDqX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5505
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g7mXhI5Xny2eIL96Zx9D7yq2yM0PEWWuK8lyWJlOgLXgxN4ptm8X9K2ogV7CeoF2qe5Q62RLcxALDBqpaYxkr6VJUFFkE+WDwX5NlwaC1kc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0972
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:13:45PM -0700, Nathan Chancellor wrote:
-> On 9/13/2021 12:02 PM, Jason Gunthorpe wrote:
-> > On Mon, Sep 13, 2021 at 11:53:25AM -0700, Nathan Chancellor wrote:
-> > > On Mon, Sep 13, 2021 at 03:38:13PM -0300, Jason Gunthorpe wrote:
-> > > > On Mon, Sep 13, 2021 at 10:00:02AM -0700, Nick Desaulniers wrote:
-> > > > 
-> > > > > > This macro would like to know that the passed in member name has a u64
-> > > > > > type, all the things I've come up with fail on clang - but many work
-> > > > > > fine on gcc. Frankly I think this case is a clang bug myself..
-> > > > > 
-> > > > > Perhaps, though this assertion looks a bit like offsetof() to me. I
-> > > > > wonder if that can help here?
-> > > > 
-> > > > The assertion would logically like to be this:
-> > > > 
-> > > >           static_assert(typecheck(((struct qib_port *)0)->N, u64))
-> > > 
-> > > This works for me with both GCC and clang, if that is acceptable to you?
-> > > It fails if you change one of the variables to 'u32'.
-> > 
-> > Yes, thanks. Can't say I've even heard of __same_type before :\ would
-> > be nice if this was in typecheck.h along with the other variations of
-> > the same idea. Presumably it is a little bit different from those
-> > somehow?
-> 
-> Good question... commit d2c123c27db8 ("module_param: add __same_type
-> convenience wrapper for __builtin_types_compatible_p") introduced it so that
-> it could be used in commit fddd52012295 ("module_param: allow 'bool'
-> module_params to be bool, not just int."); I am guessing that typecheck()
-> could not be used in those cases. Perhaps all instances of typecheck() could
-> be converted to __same_type()?
-> 
-> Do you want me to send a formal patch for that diff?
+On Monday, September 13, 2021 12:03 PM,
+Marc Zyngier <maz@kernel.org> wrote:
 
-I think it is a reasonable thing to do if it works, but I do wonder if
-they are not quite the same thing considering qualifiers/etc
+> > This patch adds support for Hyper-V vPCI by adding a PCI MSI
+> > IRQ domain specific to Hyper-V that is based on SPIs. The IRQ
+> > domain parents itself to the arch GIC IRQ domain for basic
+> > vector management.
+>=20
+> Given that we literally spent *weeks* discussing this, I would have
+> appreciated if you had Cc'd me directly instead as a basic courtesy
+> rather than me spotting it on the list.
+>
+I agree and please accept my sincere apologies. It was not intentional (
+I just grabbed the list from get_maintainers and didn't pay further
+attention to it). I definitely appreciated all of your comments and feedbac=
+k
+on the other discussion.
 
-$ git grep typecheck | wc -l
-120
-$ #git grep __same_type | wc -l
-39
+Thanks for your feedback. I will respond back to you, but I did wanted to
+get this one out.
 
-I would delete __same_type if typecheck can be functionally identical
-otherwise I'd say this should all be in typecheck.h and the functional
-difference clearly documented..
-
-Jason
- 
+- Sunil
