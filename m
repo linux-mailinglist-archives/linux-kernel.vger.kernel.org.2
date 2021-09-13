@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F2F408F43
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9642408F4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242904AbhIMNlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60032 "EHLO mail.kernel.org"
+        id S242961AbhIMNlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:41:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243280AbhIMNfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:35:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D456E6113B;
-        Mon, 13 Sep 2021 13:27:14 +0000 (UTC)
+        id S243292AbhIMNfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:35:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8834361151;
+        Mon, 13 Sep 2021 13:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539635;
-        bh=6/nUNLV6uq2S6wGpXS5nMzjp8J1lMFzCHjONzA59AyE=;
+        s=korg; t=1631539638;
+        bh=40GgfemtsnmcKgr6vVRvSPiq06fZNRjZCrItBHowMAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y+4owsLUPanEH/1IYwdDpwdDAg+JLsAx0BHqnqw0p1m+ptsCB6BYvINftbKg9JeiS
-         Fkbb4B2gg9siBQbMAvxOtaJtpRTOEgSu/1OpqjHLLNqQ0eHaVejfj+BCOx20lMX8D2
-         xol4fKe9HeqhPWvg174M0fALz5ic8RMmEFkYQIRQ=
+        b=AB/ThmBHxC5doTnoon5c4NDqqoNL6CuQEq3teAJQCqHb6S+OGW8FVgtczOZ8FTf9B
+         MPtAosQzpD3bKhQf/OBkxvIXo2bh/5COeiqJJHFt9qWtVLXMW9mQX7PZ2bZEAe3EvL
+         gDrN1nZhPdoEViWOtxsqNB3oXPDmcs0I3mFHE2/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Fan Du <fan.du@intel.com>,
+        Wen Jin <wen.jin@intel.com>, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 067/236] spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
-Date:   Mon, 13 Sep 2021 15:12:52 +0200
-Message-Id: <20210913131102.639110781@linuxfoundation.org>
+Subject: [PATCH 5.10 068/236] EDAC/i10nm: Fix NVDIMM detection
+Date:   Mon, 13 Sep 2021 15:12:53 +0200
+Message-Id: <20210913131102.671493565@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -41,66 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-[ Upstream commit 26cfc0dbe43aae60dc03af27077775244f26c167 ]
+[ Upstream commit 2294a7299f5e51667b841f63c6d69474491753fb ]
 
-The function wait_for_completion_interruptible_timeout will return
--ERESTARTSYS immediately when receiving SIGKILL signal which is sent
-by "jffs2_gcd_mtd" during umounting jffs2. This will break the SPI memory
-operation because the data transmitting may begin before the command or
-address transmitting completes. Use wait_for_completion_timeout to prevent
-the process from being interruptible.
+MCDDRCFG is a per-channel register and uses bit{0,1} to indicate
+the NVDIMM presence on DIMM slot{0,1}. Current i10nm_edac driver
+wrongly uses MCDDRCFG as per-DIMM register and fails to detect
+the NVDIMM.
 
-Fixes: 67dca5e580f1 ("spi: spi-mem: Add support for Zynq QSPI controller")
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-Link: https://lore.kernel.org/r/20210826005930.20572-1-quanyang.wang@windriver.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fix it by reading MCDDRCFG as per-channel register and using its
+bit{0,1} to check whether the NVDIMM is populated on DIMM slot{0,1}.
+
+Fixes: d4dc89d069aa ("EDAC, i10nm: Add a driver for Intel 10nm server processors")
+Reported-by: Fan Du <fan.du@intel.com>
+Tested-by: Wen Jin <wen.jin@intel.com>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20210818175701.1611513-2-tony.luck@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-zynq-qspi.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/edac/i10nm_base.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-index 68193db8b2e3..b635835729d6 100644
---- a/drivers/spi/spi-zynq-qspi.c
-+++ b/drivers/spi/spi-zynq-qspi.c
-@@ -545,7 +545,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
- 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
- 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
- 				ZYNQ_QSPI_IXR_RXTX_MASK);
--		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-+		if (!wait_for_completion_timeout(&xqspi->data_completion,
- 							       msecs_to_jiffies(1000)))
- 			err = -ETIMEDOUT;
- 	}
-@@ -563,7 +563,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
- 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
- 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
- 				ZYNQ_QSPI_IXR_RXTX_MASK);
--		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-+		if (!wait_for_completion_timeout(&xqspi->data_completion,
- 							       msecs_to_jiffies(1000)))
- 			err = -ETIMEDOUT;
- 	}
-@@ -579,7 +579,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
- 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
- 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
- 				ZYNQ_QSPI_IXR_RXTX_MASK);
--		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-+		if (!wait_for_completion_timeout(&xqspi->data_completion,
- 							       msecs_to_jiffies(1000)))
- 			err = -ETIMEDOUT;
+diff --git a/drivers/edac/i10nm_base.c b/drivers/edac/i10nm_base.c
+index 4912a7b88380..3a7362f968c9 100644
+--- a/drivers/edac/i10nm_base.c
++++ b/drivers/edac/i10nm_base.c
+@@ -26,8 +26,8 @@
+ 	pci_read_config_dword((d)->uracu, 0xd8 + (i) * 4, &(reg))
+ #define I10NM_GET_DIMMMTR(m, i, j)	\
+ 	readl((m)->mbase + 0x2080c + (i) * 0x4000 + (j) * 4)
+-#define I10NM_GET_MCDDRTCFG(m, i, j)	\
+-	readl((m)->mbase + 0x20970 + (i) * 0x4000 + (j) * 4)
++#define I10NM_GET_MCDDRTCFG(m, i)	\
++	readl((m)->mbase + 0x20970 + (i) * 0x4000)
+ #define I10NM_GET_MCMTR(m, i)		\
+ 	readl((m)->mbase + 0x20ef8 + (i) * 0x4000)
  
-@@ -603,7 +603,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
- 		zynq_qspi_write_op(xqspi, ZYNQ_QSPI_FIFO_DEPTH, true);
- 		zynq_qspi_write(xqspi, ZYNQ_QSPI_IEN_OFFSET,
- 				ZYNQ_QSPI_IXR_RXTX_MASK);
--		if (!wait_for_completion_interruptible_timeout(&xqspi->data_completion,
-+		if (!wait_for_completion_timeout(&xqspi->data_completion,
- 							       msecs_to_jiffies(1000)))
- 			err = -ETIMEDOUT;
- 	}
+@@ -170,10 +170,10 @@ static int i10nm_get_dimm_config(struct mem_ctl_info *mci)
+ 			continue;
+ 
+ 		ndimms = 0;
++		mcddrtcfg = I10NM_GET_MCDDRTCFG(imc, i);
+ 		for (j = 0; j < I10NM_NUM_DIMMS; j++) {
+ 			dimm = edac_get_dimm(mci, i, j, 0);
+ 			mtr = I10NM_GET_DIMMMTR(imc, i, j);
+-			mcddrtcfg = I10NM_GET_MCDDRTCFG(imc, i, j);
+ 			edac_dbg(1, "dimmmtr 0x%x mcddrtcfg 0x%x (mc%d ch%d dimm%d)\n",
+ 				 mtr, mcddrtcfg, imc->mc, i, j);
+ 
 -- 
 2.30.2
 
