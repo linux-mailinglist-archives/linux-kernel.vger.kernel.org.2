@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62782409B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE3A409B30
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243869AbhIMRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:47:10 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43612 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243171AbhIMRrJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:47:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631555153; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FQM7/pY/WutvtlfFfc4iVulvOrjxzsE4ffU8N8bZXx0=; b=BR0gjG/FtyTBHaThuUSBDpBAPuz5SESOzswTf3qWOm5L5yoVTRnvXTQiCa4nMFZbar09RRMm
- IhvyDhhYlB1l9h7DP+7qToGWX/R71ii3+nmLydhIZLldzkIZi8gSD0ZZAHE6Oo4UxC2tpMOj
- bQQQ86XBn6Daerg87yYC+A1nF94=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 613f8e37648642cc1c5dd7b7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 17:45:27
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BEE1BC4338F; Mon, 13 Sep 2021 17:45:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.3] (unknown [122.163.130.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DBB54C4361B;
-        Mon, 13 Sep 2021 17:45:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DBB54C4361B
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH V2 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P
- IRQ
-To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
-        clew@codeaurora.org, sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-References: <1629108335-23463-1-git-send-email-deesin@codeaurora.org>
- <CAE-0n528DuP4MiAOhYY+Du+L=OZaGM5YJm=NwWia3JF7hp7sAA@mail.gmail.com>
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-Message-ID: <4697bec1-af58-53e4-9fd1-293bfd8754be@codeaurora.org>
-Date:   Mon, 13 Sep 2021 23:15:19 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <CAE-0n528DuP4MiAOhYY+Du+L=OZaGM5YJm=NwWia3JF7hp7sAA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S243695AbhIMRvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:51:16 -0400
+Received: from mga07.intel.com ([134.134.136.100]:64157 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229937AbhIMRvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 13:51:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="285446847"
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="285446847"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 10:49:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="432659202"
+Received: from bspteam04.iind.intel.com ([10.106.46.142])
+  by orsmga006.jf.intel.com with ESMTP; 13 Sep 2021 10:49:56 -0700
+From:   shruthi.sanil@intel.com
+To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
+Subject: [PATCH v7 0/2] Add the driver for Intel Keem Bay SoC timer block
+Date:   Mon, 13 Sep 2021 23:19:53 +0530
+Message-Id: <20210913174955.32330-1-shruthi.sanil@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Shruthi Sanil <shruthi.sanil@intel.com>
 
-On 8/17/2021 1:53 AM, Stephen Boyd wrote:
-> Quoting Deepak Kumar Singh (2021-08-16 03:05:35)
->> Remote susbsystems notify fatal crash throught smp2p interrupt.
->> When modem/wifi crashes it can cause soc to come out of low power state
->> and may not allow again to enter in low power state until crash is handled.
->>
->> Mark smp2p interrupt wakeup capable so that interrupt handler is executed
->> and remote susbsystem crash can be handled in system  resume path.
->>
->> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
->> ---
->>   drivers/soc/qcom/smp2p.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
->> index 2df4883..646848b 100644
->> --- a/drivers/soc/qcom/smp2p.c
->> +++ b/drivers/soc/qcom/smp2p.c
->> @@ -18,6 +18,7 @@
->>   #include <linux/soc/qcom/smem.h>
->>   #include <linux/soc/qcom/smem_state.h>
->>   #include <linux/spinlock.h>
->> +#include <linux/pm_wakeirq.h>
-> Please sort alphabetically by include name, 'p' before 's'.
->
->>   /*
->>    * The Shared Memory Point to Point (SMP2P) protocol facilitates communication
->> @@ -538,9 +539,20 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
->>                  goto unwind_interfaces;
->>          }
->>
->> +       /* Setup smp2p interrupt as wakeup source */
-> This comment is bad. Please don't reiterate what the code is doing.
-> Instead, write something like
->
-> 	/*
-> 	 * Treat remoteproc crashes as wakeups by default so we handle
-> 	 * them sooner rather than along with the next wakeup (e.g.
-> 	 * power button). This avoids leaving the system in a shallower
-> 	 * suspend power state if a remoteproc crashes during suspend,
-> 	 * but requires userspace to actively suspend the device after
-> 	 * handling the crash, or CONFIG_PM_AUTOSLEEP to be true.
-> 	 */
->
->> +       ret = device_init_wakeup(&pdev->dev, true);
-> I still wonder if it's better to leave this off by default and only
-> enable it if the kernel is using autosuspend (PM_AUTOSLEEP). Then
-> userspace is responsible to decide if it can handle the wakeup with the
-> screen off, reload the remoteproc, and go back to suspend if it isn't
-> using autosuspend.
+The timer block supports 1 64-bit free running counter
+and 8 32-bit general purpose timers.
 
-Seems like not all targets use PM_AUTOSLEEP feature, even those targets 
-may require wakeup to handle
+Patch 1 holds the device tree binding documentation.
+Patch 2 holds the device driver.
 
-modem crash so that important modem events are not missed. I think we 
-can keep wake up as default behavior
+This driver is tested on the Keem Bay evaluation module board.
 
-and let the user space disable it through sysfs if it doesn't want it as 
-wake up source.
+Changes since v6:
+- Removed the unused compatible string from the mfd device node
+  to fix the error thrown by the make dt-binding command.
 
->> +       if (ret)
->> +               goto unwind_interfaces;
->> +
+Changes since v5:
+- Created a MFD device for the common configuration register
+  in the device tree bindings.
+- Updated the timer driver with the MFD framework to access the
+  common configuration register.
+
+Changes since v4:
+- Updated the description in the device tree bindings.
+- Updated the unit address of all the timers and counter
+  in the device tree binding.
+
+Changes since v3:
+- Update in KConfig file to support COMPILE_TEST for Keem Bay timer.
+- Update in device tree bindings to remove status field.
+- Update in device tree bindings to remove 64-bit address space for
+  the child nodes by using non-empty ranges.
+
+Changes since v2:
+- Add multi timer support.
+- Update in the device tree binding to support multi timers.
+- Code optimization.
+
+Changes since v1:
+- Add support for KEEMBAY_TIMER to get selected through Kconfig.platforms.
+- Add CLOCK_EVT_FEAT_DYNIRQ as part of clockevent feature.
+- Avoid overlapping reg regions across 2 device nodes.
+- Simplify 2 device nodes as 1 because both are from same IP block.
+- Adapt the driver code according to the new simplified devicetree.
+
+Shruthi Sanil (2):
+  dt-bindings: timer: Add bindings for Intel Keem Bay SoC Timer
+  clocksource: Add Intel Keem Bay timer support
+
+ .../bindings/timer/intel,keembay-timer.yaml   | 172 ++++++++++++
+ MAINTAINERS                                   |   5 +
+ drivers/clocksource/Kconfig                   |  11 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/timer-keembay.c           | 252 ++++++++++++++++++
+ 5 files changed, 441 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+ create mode 100644 drivers/clocksource/timer-keembay.c
+
+
+base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+-- 
+2.17.1
+
