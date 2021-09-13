@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC34409E09
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F189B409E10
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243330AbhIMURv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        id S243349AbhIMUUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240606AbhIMURu (ORCPT
+        with ESMTP id S241893AbhIMUUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:17:50 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013DDC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:16:34 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id w4so19424582ljh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:16:33 -0700 (PDT)
+        Mon, 13 Sep 2021 16:20:52 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A070C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:19:35 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id g1so12164873lfj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E9BTZz7P4136Vx17+j4gvrYMgr1v/N8zIGjbUFEwypk=;
-        b=pGWIil2q/K8JwjJfMEfl6tF1g4EZC68ukMYbPMY9ZEi/H4fw12ekTh5g5zL8JoOfiA
-         Itg7hB6e6NdOVVs+dDnBzvn4o8dMKsckPAz/60KVdfGqmyoJ6QK8O8XSMvy02fnPUUi2
-         tsqShyEUivl97LS4GtdmCzPBQvRoxEzITeFeGmQ07b7Myd1YXOWHnqGKSRpzQDXfoH5m
-         LLj38yKo45ErdqEUPpgk0TQF92aWtsPcpLfPj2OV0Nnhf0o3TeKcPyFt1sGjjSy6KFeb
-         kU12tBInuUNGU8jbKIRPJeIPDrk8HkuQK3GBrf+7mC354xOIiieTE6E/g36NpPpze6sn
-         +weQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=CXSocbKNp6y3NvY9ucG6LeYMMUtoHNp3xudt7bwh/1Q=;
+        b=hHHikTXfU8Wue4ZV784uppdPdR3PGSRYgA+dRwFuQsv5NUgjrUvcp7xhm9sPNrg92M
+         9zJYagf8ZGwRYFe006/XWTjn6QvxLiyl1iFW27+apSpFOwT+u2dIKjkEqj12ForzoqmA
+         70bq+dVkidI2MW+ST2M6+k2aJGwFqcIJPle5l0t4JI7kiiBDyKp27tWb/zAMD8/Y2Z2E
+         fLdG+RkFqVEfNirmC5Fd/H012ZtXeel0foeHTRbiC2PiNfBNM91jQsmxDZeQip19tE00
+         PtvMoGFIIl0NPLgcjs1D+9hrY3F+HyHbe2F4BlaMlKzR6jDXULdRMhNic+7j9ZS7Zn/j
+         925Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E9BTZz7P4136Vx17+j4gvrYMgr1v/N8zIGjbUFEwypk=;
-        b=yoLhV0wd8qYLYvB4uAYSpB2fmH2UegRdZdhHgTxgw78Q6B7WR/ujEtI0zX57VGSRxT
-         wWiBD9BjFTqR9LC6EAU6oi+DB7WTY6ZuJcBro6xgxkCwrIlWo9l0Y2h2PK1FE4fvn+O3
-         xAwfccmKjB+zCFwA5lFZ016v5oGrpMPFMBY18Oc+IS27JzlhjXmqnQrcVQQPV2TzLEhc
-         1/Bky0Q7rRqO3EnD+AUo9UEr4c17gGXAD1C4hcbnb7wZiUPpxNZGnLdox7VpApAby3vK
-         Z2cHU5HkLxycfdp+vw2UNydtMrtoOV8KKo1S1z/7k3MA9zYgQzW7hXTSWCeQdusUlgof
-         VCig==
-X-Gm-Message-State: AOAM530D7CTUmnjM2E2xn9G+9XSw5NhohDFZFW7cY5CQrIQ9uGfHP0pS
-        hdF5ns5kVdHac/aksgJqkm4eH/sALyGZOLqcHATFeg==
-X-Google-Smtp-Source: ABdhPJwvsVZpZ3HbrlIBen+eVm+S/CxUB3A7WkDio3CDFl0jd61TWcY9H6BM6He7NM1BKpo08LZiDObdovWMLxdbvOw=
-X-Received: by 2002:a2e:4e09:: with SMTP id c9mr11984681ljb.62.1631564192079;
- Mon, 13 Sep 2021 13:16:32 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=CXSocbKNp6y3NvY9ucG6LeYMMUtoHNp3xudt7bwh/1Q=;
+        b=3Q7i8Lyztb9DhVUHYxW6NxsEYJaJTXu7E8ZNOF0jbJ4Fxu821/ME6+Ai03uccvJBJp
+         epMObbqPY3agFN+UvQGrnKdGO1XWy51EsNl5hAI3LHBjBNuwK30dKJ9LkG1qFP7RYH3K
+         NSRyr/iOc4eS3/Yygz4ECPJIwHyHqupTpIsWsJRWBTxdUVHUt5jgOC74a5y+zI3Fdh12
+         tUuVEqH3p5BeD/f16rsLxZCJhxSoHtZyA+fSGsyN6S67ZD8EGvzALoq5FK32ar6faMZg
+         ui42nGmJJRlgw22FMmJxk/l3J6gXWCnDnSc+b0dpztaqB3sqtnPPH4UO1XiwcN3p1a5g
+         m1yg==
+X-Gm-Message-State: AOAM530EOj2ArNSd7w5MvAwmUcovZD0N1y8gPJG8m3Nn6kXRYH8YQpVx
+        CB/ppw7n9FBQn/jb8ZxjtBE=
+X-Google-Smtp-Source: ABdhPJw2gtipt1LbN8AtinXFoNwwvQvSHFl4+GZJtAW/PskfzxJJVjD0TzOYzlyBmv0ru1D4r0zztw==
+X-Received: by 2002:ac2:4c45:: with SMTP id o5mr7323698lfk.620.1631564373884;
+        Mon, 13 Sep 2021 13:19:33 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.49])
+        by smtp.gmail.com with ESMTPSA id b15sm1099519ljj.16.2021.09.13.13.19.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 13:19:33 -0700 (PDT)
+Message-ID: <384860bb-c56d-a5db-2a31-ac659d89f490@gmail.com>
+Date:   Mon, 13 Sep 2021 23:19:32 +0300
 MIME-Version: 1.0
-References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
- <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
- <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
- <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
- <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
- <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com> <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
-In-Reply-To: <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 13:16:21 -0700
-Message-ID: <CAKwvOdkf3B41RRe8FDkw1H-0hBt1_PhZtZxBZ5pj0pyh7vDLmA@mail.gmail.com>
-Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v4 17/18] staging: r8188eu: Shorten calls chain of
+ rtw_read8/16/32()
+Content-Language: en-US
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+References: <20210913181002.16651-1-fmdefrancesco@gmail.com>
+ <20210913181002.16651-18-fmdefrancesco@gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <20210913181002.16651-18-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:10 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Sep 13, 2021 at 1:02 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Ha! I pulled+rebased and this code disappeared...I thought I had
-> > rebased on the wrong branch or committed work to master accidentally.
-> > Patch to stable-only inbound.
->
-> Side note: for stable, can you look into using _Generic() instead of
-> __builtin_choose_expression() with typeof, or some
-> __builtin_types_compatible_p() magic?
->
-> Yes, yes, we use __builtin_choose_expression() elsewhere, but we've
-> started using _Generic(), and it's really the more natural model - in
-> addition to being the standard C one.
->
-> Of course, there may be some reason why _Generic() doesn't work, but
-> it _is_ the natural fit for any "for type X, do Y" kind of thing.
->
-> No?
+On 9/13/21 21:10, Fabio M. De Francesco wrote:
+> Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+> For this purpose unify the three usb_read8/16/32 into the new
+> usb_read(); make the latter parameterizable with 'size'; embed most of
+> the code of usbctrl_vendorreq() into usb_read() and use in it the new
+> usb_control_msg_recv() API of USB Core.
+> 
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+> 
+> v3->v4:
+> 	Make some changes according to a first review of Greg
+> 	Kroah-Hartman; remove unnecessary while loop and a couple of
+> 	'if' test; handle the errors returned by usb_control_msg_recv()
+> v2->v3:
+> 	No changes.
+> v1->v2:
+> 	No changes.
+> 
 
-Man, c'mon, I just got the __builtin_choose_expression() working! It's
-not...too bad...ish. (Besides, I'd actually have to learn how to use
-_Generic...I've never quite gotten anything I've written trying to use
-it to actually compile).
+Hi, maintainers and reviewers!
 
-Do we have access to _Generic in GCC 4.9?
--- 
-Thanks,
-~Nick Desaulniers
+We have just noticed, that 17 and 18 patches in this series contain 
+logic error, so, please, don't waste time reviewing them.
+
+v5 will be posted soon :)
+
+
+With regards,
+Pavel Skripkin
