@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D433409373
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A6A409367
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346218AbhIMOVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:21:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37126 "EHLO mail.kernel.org"
+        id S1345033AbhIMOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343581AbhIMORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343617AbhIMORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:17:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2296147F;
-        Mon, 13 Sep 2021 13:44:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03BD161505;
+        Mon, 13 Sep 2021 13:44:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540695;
-        bh=/g+trBMoQm5LAjyoHsSB+HdF4wGta3FusR7hgMEIbGE=;
+        s=korg; t=1631540698;
+        bh=BKAMv4qCwoIHZLJss/UEAte4OVck1eTxLt8vzO6ndA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RtTs4o7ZUKbPLdHec/3ck4PfZYihrNHUf+LD6QcMKgYXdVkrBOUFH0REWf3Cmxj1P
-         vFDri31mLFtU/qKHJhqGgGqyPNgXmgcSpq7lWlbZ6Irbvnhf6zM/19OJM5lP+eAhYh
-         6TVACyCbHRw2fsQ24H149oiXd9VXvL9Z022133vE=
+        b=aSi/i23c6BXMQdihftrNFFjBdMLcesL59Wu5oF3fbg4mmO9u+0DOH1URRJo/6AUql
+         OaUphVNmxiggAg/62y5plDiUFjA3H74aMKp+ORigM8fh4uZhFW08SXSbImCtCmouv1
+         qZCbS4afgiyZp0FDVOvbOYzKVtjIbycAscQLSzBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 5.13 297/300] fbmem: dont allow too huge resolutions
-Date:   Mon, 13 Sep 2021 15:15:58 +0200
-Message-Id: <20210913131119.388860528@linuxfoundation.org>
+        stable@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Subject: [PATCH 5.13 298/300] RDMA/mlx5: Fix number of allocated XLT entries
+Date:   Mon, 13 Sep 2021 15:15:59 +0200
+Message-Id: <20210913131119.433584265@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -43,56 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-commit 8c28051cdcbe9dfcec6bd0a4709d67a09df6edae upstream.
+commit 9660dcbe0d9186976917c94bce4e69dbd8d7a974 upstream.
 
-syzbot is reporting page fault at vga16fb_fillrect() [1], for
-vga16fb_check_var() is failing to detect multiplication overflow.
+In commit 8010d74b9965b ("RDMA/mlx5: Split the WR setup out of
+mlx5_ib_update_xlt()") the allocation logic was split out of
+mlx5_ib_update_xlt() and the logic was changed to enable better OOM
+handling. Sadly this change introduced a miscalculation of the number of
+entries that were actually allocated when under memory pressure where it
+can actually become 0 which on s390 lets dma_map_single() fail.
 
-  if (vxres * vyres > maxmem) {
-    vyres = maxmem / vxres;
-    if (vyres < yres)
-      return -ENOMEM;
-  }
+It can also lead to corruption of the free pages list when the wrong
+number of entries is used in the calculation of sg->length which is used
+as argument for free_pages().
 
-Since no module would accept too huge resolutions where multiplication
-overflow happens, let's reject in the common path.
+Fix this by using the allocation size instead of misusing get_order(size).
 
-Link: https://syzkaller.appspot.com/bug?extid=04168c8063cfdde1db5e [1]
-Reported-by: syzbot <syzbot+04168c8063cfdde1db5e@syzkaller.appspotmail.com>
-Debugged-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/185175d6-227a-7b55-433d-b070929b262c@i-love.sakura.ne.jp
+Fixes: 8010d74b9965 ("RDMA/mlx5: Split the WR setup out of mlx5_ib_update_xlt()")
+Link: https://lore.kernel.org/r/20210908081849.7948-1-schnelle@linux.ibm.com
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/core/fbmem.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/infiniband/hw/mlx5/mr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -962,6 +962,7 @@ fb_set_var(struct fb_info *info, struct
- 	struct fb_var_screeninfo old_var;
- 	struct fb_videomode mode;
- 	struct fb_event event;
-+	u32 unused;
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1022,7 +1022,7 @@ static void *mlx5_ib_alloc_xlt(size_t *n
  
- 	if (var->activate & FB_ACTIVATE_INV_MODE) {
- 		struct fb_videomode mode1, mode2;
-@@ -1008,6 +1009,11 @@ fb_set_var(struct fb_info *info, struct
- 	if (var->xres < 8 || var->yres < 8)
- 		return -EINVAL;
- 
-+	/* Too huge resolution causes multiplication overflow. */
-+	if (check_mul_overflow(var->xres, var->yres, &unused) ||
-+	    check_mul_overflow(var->xres_virtual, var->yres_virtual, &unused))
-+		return -EINVAL;
-+
- 	ret = info->fbops->fb_check_var(var, info);
- 
- 	if (ret)
+ 	if (size > MLX5_SPARE_UMR_CHUNK) {
+ 		size = MLX5_SPARE_UMR_CHUNK;
+-		*nents = get_order(size) / ent_size;
++		*nents = size / ent_size;
+ 		res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
+ 					       get_order(size));
+ 		if (res)
 
 
