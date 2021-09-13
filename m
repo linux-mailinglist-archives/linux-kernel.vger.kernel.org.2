@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77897408C21
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8247C408EE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236493AbhIMNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:13:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34351 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229732AbhIMNNO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:13:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631538718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sfyXCxXLqe/BSeVldQwsrQsccJEXRgInHP7qJo1PTlI=;
-        b=D1+gXM1n9agPOwxkoeqrSYh+a7EiFIMXRnPzEjahYb+lostuXUP7W0ERsrhAJhQnKjUNhG
-        3Rk9ybWUMojE0jBx7z/gBKlEOr+4mMOjuOceE1kixDSIpUZWYsXZJd+CqS8tUBwe7P4Ljt
-        CI//VW41AHJLEWe2/VLGgjaEK8L3BYg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-jS-xm1RWMmOS2OneCy7gfA-1; Mon, 13 Sep 2021 09:11:56 -0400
-X-MC-Unique: jS-xm1RWMmOS2OneCy7gfA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5086184A5E6;
-        Mon, 13 Sep 2021 13:11:55 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9135A6B54B;
-        Mon, 13 Sep 2021 13:11:54 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Subject: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-Date:   Mon, 13 Sep 2021 09:11:52 -0400
-Message-Id: <20210913131153.1202354-2-pbonzini@redhat.com>
-In-Reply-To: <20210913131153.1202354-1-pbonzini@redhat.com>
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
+        id S242154AbhIMNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:37:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242491AbhIMN3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:29:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF6061284;
+        Mon, 13 Sep 2021 13:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631539455;
+        bh=Rv7ILUMFH64cH54p58y+FiTuguKAxD+AM160WatMc3k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Qlxz8TxShS571kftfrIvCRFTxJTiohawbMjoRF4XQGubiMAzpoasgH7mh5lQfkop4
+         EWwa8Obv027pmSI+3drIrqtEUxsrOEHOwOBBi/t0U+iGi5zEX5tBODUvngfbifrLSn
+         SvrLI5ZqPTARUDbaZf3TsOQD3jaJjLTOEglNzHwM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Bruno Goncalves <bgoncalv@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 008/236] sched/deadline: Fix missing clock update in migrate_task_rq_dl()
+Date:   Mon, 13 Sep 2021 15:11:53 +0200
+Message-Id: <20210913131100.604595827@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Windows expects all pages to be in uninitialized state on startup.
-In order to implement this, we will need a ioctl that performs
-EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor:
-other possibilities, such as closing and reopening the device,
-are racy.
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-Start the implementation by pulling the EREMOVE into a separate
-function.
+[ Upstream commit b4da13aa28d4fd0071247b7b41c579ee8a86c81a ]
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+A missing clock update is causing the following warning:
+
+rq->clock_update_flags < RQCF_ACT_SKIP
+WARNING: CPU: 112 PID: 2041 at kernel/sched/sched.h:1453
+sub_running_bw.isra.0+0x190/0x1a0
+...
+CPU: 112 PID: 2041 Comm: sugov:112 Tainted: G W 5.14.0-rc1 #1
+Hardware name: WIWYNN Mt.Jade Server System
+B81.030Z1.0007/Mt.Jade Motherboard, BIOS 1.6.20210526 (SCP:
+1.06.20210526) 2021/05/26
+...
+Call trace:
+  sub_running_bw.isra.0+0x190/0x1a0
+  migrate_task_rq_dl+0xf8/0x1e0
+  set_task_cpu+0xa8/0x1f0
+  try_to_wake_up+0x150/0x3d4
+  wake_up_q+0x64/0xc0
+  __up_write+0xd0/0x1c0
+  up_write+0x4c/0x2b0
+  cppc_set_perf+0x120/0x2d0
+  cppc_cpufreq_set_target+0xe0/0x1a4 [cppc_cpufreq]
+  __cpufreq_driver_target+0x74/0x140
+  sugov_work+0x64/0x80
+  kthread_worker_fn+0xe0/0x230
+  kthread+0x138/0x140
+  ret_from_fork+0x10/0x18
+
+The task causing this is the `cppc_fie` DL task introduced by
+commit 1eb5dde674f5 ("cpufreq: CPPC: Add support for frequency
+invariance").
+
+With CONFIG_ACPI_CPPC_CPUFREQ_FIE=y and schedutil cpufreq governor on
+slow-switching system (like on this Ampere Altra WIWYNN Mt. Jade Arm
+Server):
+
+DL task `curr=sugov:112` lets `p=cppc_fie` migrate and since the latter
+is in `non_contending` state, migrate_task_rq_dl() calls
+
+  sub_running_bw()->__sub_running_bw()->cpufreq_update_util()->
+  rq_clock()->assert_clock_updated()
+
+on p.
+
+Fix this by updating the clock for a non_contending task in
+migrate_task_rq_dl() before calling sub_running_bw().
+
+Reported-by: Bruno Goncalves <bgoncalv@redhat.com>
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
+Link: https://lore.kernel.org/r/20210804135925.3734605-1-dietmar.eggemann@arm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/sgx/virt.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ kernel/sched/deadline.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 64511c4a5200..59b9c13121cd 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -111,7 +111,7 @@ static int sgx_vepc_mmap(struct file *file, struct vm_area_struct *vma)
- 	return 0;
- }
- 
--static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-+static int sgx_vepc_remove_page(struct sgx_epc_page *epc_page)
- {
- 	int ret;
- 
-@@ -140,11 +140,17 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 		 */
- 		WARN_ONCE(ret != SGX_CHILD_PRESENT, EREMOVE_ERROR_MESSAGE,
- 			  ret, ret);
--		return ret;
- 	}
-+	return ret;
-+}
- 
--	sgx_free_epc_page(epc_page);
-+static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
-+{
-+	int ret = sgx_vepc_remove_page(epc_page);
-+	if (ret)
-+		return ret;
- 
-+	sgx_free_epc_page(epc_page);
- 	return 0;
- }
- 
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 82c76196a9d2..a3ae00c348a8 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1735,6 +1735,7 @@ static void migrate_task_rq_dl(struct task_struct *p, int new_cpu __maybe_unused
+ 	 */
+ 	raw_spin_lock(&rq->lock);
+ 	if (p->dl.dl_non_contending) {
++		update_rq_clock(rq);
+ 		sub_running_bw(&p->dl, &rq->dl);
+ 		p->dl.dl_non_contending = 0;
+ 		/*
 -- 
-2.27.0
+2.30.2
+
 
 
