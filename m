@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9311C40931B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFD34092D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244731AbhIMORu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:17:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59698 "EHLO mail.kernel.org"
+        id S1345045AbhIMOPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:15:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344290AbhIMOLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:11:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F1A161ABD;
-        Mon, 13 Sep 2021 13:42:22 +0000 (UTC)
+        id S245096AbhIMOMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:12:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7027861356;
+        Mon, 13 Sep 2021 13:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540543;
-        bh=W02HmIHpe4fzJ7zjhUqqj7bG4CUN2Dv7LhZEKUdEY1U=;
+        s=korg; t=1631540570;
+        bh=/Q+nGGbuRQCEf4nJ+zVUPSAiTbJskpr6+hRJit8n4qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hIQRQiv+dAJlW17PJFu5nEhe0oURZAHkH3Cv5ExLhc3MT+X6qQ9TUv+jg6fZKdeV3
-         84ahcAz4O0jADRHnAMLNxGUBlFGsD4nA4NlZ7s0OP9ZezdbmWguY3lo06U5jUSRzMj
-         BhV4VIuVuBYEBYadKn2OM1DFGosaypcTCuvq8R1A=
+        b=JA4oeoUjmotapt86OySrARgIfXfT+nGcrLHEEQA6m04EI0zPMHLqaFo704qbl1d1f
+         EoOhcnwSpA6XUnNq7WOLaVWCS28QLbhqAoyRWuo4kHvmg9pw8WHl6EB1zbZOAwWQuR
+         nopVGKl07+1UlvwJJs/7IbD8AAX86dItV8ZIQyq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Len Baker <len.baker@gmx.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 229/300] bpf: Fix possible out of bound write in narrow load handling
-Date:   Mon, 13 Sep 2021 15:14:50 +0200
-Message-Id: <20210913131117.085088434@linuxfoundation.org>
+Subject: [PATCH 5.13 230/300] CIFS: Fix a potencially linear read overflow
+Date:   Mon, 13 Sep 2021 15:14:51 +0200
+Message-Id: <20210913131117.117431895@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -41,127 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Ignatov <rdna@fb.com>
+From: Len Baker <len.baker@gmx.com>
 
-[ Upstream commit d7af7e497f0308bc97809cc48b58e8e0f13887e1 ]
+[ Upstream commit f980d055a0f858d73d9467bb0b570721bbfcdfb8 ]
 
-Fix a verifier bug found by smatch static checker in [0].
+strlcpy() reads the entire source buffer first. This read may exceed the
+destination size limit. This is both inefficient and can lead to linear
+read overflows if a source string is not NUL-terminated.
 
-This problem has never been seen in prod to my best knowledge. Fixing it
-still seems to be a good idea since it's hard to say for sure whether
-it's possible or not to have a scenario where a combination of
-convert_ctx_access() and a narrow load would lead to an out of bound
-write.
+Also, the strnlen() call does not avoid the read overflow in the strlcpy
+function when a not NUL-terminated string is passed.
 
-When narrow load is handled, one or two new instructions are added to
-insn_buf array, but before it was only checked that
+So, replace this block by a call to kstrndup() that avoids this type of
+overflow and does the same.
 
-	cnt >= ARRAY_SIZE(insn_buf)
-
-And it's safe to add a new instruction to insn_buf[cnt++] only once. The
-second try will lead to out of bound write. And this is what can happen
-if `shift` is set.
-
-Fix it by making sure that if the BPF_RSH instruction has to be added in
-addition to BPF_AND then there is enough space for two more instructions
-in insn_buf.
-
-The full report [0] is below:
-
-kernel/bpf/verifier.c:12304 convert_ctx_accesses() warn: offset 'cnt' incremented past end of array
-kernel/bpf/verifier.c:12311 convert_ctx_accesses() warn: offset 'cnt' incremented past end of array
-
-kernel/bpf/verifier.c
-    12282
-    12283 			insn->off = off & ~(size_default - 1);
-    12284 			insn->code = BPF_LDX | BPF_MEM | size_code;
-    12285 		}
-    12286
-    12287 		target_size = 0;
-    12288 		cnt = convert_ctx_access(type, insn, insn_buf, env->prog,
-    12289 					 &target_size);
-    12290 		if (cnt == 0 || cnt >= ARRAY_SIZE(insn_buf) ||
-                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Bounds check.
-
-    12291 		    (ctx_field_size && !target_size)) {
-    12292 			verbose(env, "bpf verifier is misconfigured\n");
-    12293 			return -EINVAL;
-    12294 		}
-    12295
-    12296 		if (is_narrower_load && size < target_size) {
-    12297 			u8 shift = bpf_ctx_narrow_access_offset(
-    12298 				off, size, size_default) * 8;
-    12299 			if (ctx_field_size <= 4) {
-    12300 				if (shift)
-    12301 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
-                                                         ^^^^^
-increment beyond end of array
-
-    12302 									insn->dst_reg,
-    12303 									shift);
---> 12304 				insn_buf[cnt++] = BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
-                                                 ^^^^^
-out of bounds write
-
-    12305 								(1 << size * 8) - 1);
-    12306 			} else {
-    12307 				if (shift)
-    12308 					insn_buf[cnt++] = BPF_ALU64_IMM(BPF_RSH,
-    12309 									insn->dst_reg,
-    12310 									shift);
-    12311 				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
-                                        ^^^^^^^^^^^^^^^
-Same.
-
-    12312 								(1ULL << size * 8) - 1);
-    12313 			}
-    12314 		}
-    12315
-    12316 		new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-    12317 		if (!new_prog)
-    12318 			return -ENOMEM;
-    12319
-    12320 		delta += cnt - 1;
-    12321
-    12322 		/* keep walking new program and skip insns we just inserted */
-    12323 		env->prog = new_prog;
-    12324 		insn      = new_prog->insnsi + i + delta;
-    12325 	}
-    12326
-    12327 	return 0;
-    12328 }
-
-[0] https://lore.kernel.org/bpf/20210817050843.GA21456@kili/
-
-v1->v2:
-- clarify that problem was only seen by static checker but not in prod;
-
-Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210820163935.1902398-1-rdna@fb.com
+Fixes: 066ce6899484d ("cifs: rename cifs_strlcpy_to_host and make it use new functions")
+Signed-off-by: Len Baker <len.baker@gmx.com>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/cifs/cifs_unicode.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c07126558bb7..d810f9e0ed9d 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11982,6 +11982,10 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 		if (is_narrower_load && size < target_size) {
- 			u8 shift = bpf_ctx_narrow_access_offset(
- 				off, size, size_default) * 8;
-+			if (shift && cnt + 1 >= ARRAY_SIZE(insn_buf)) {
-+				verbose(env, "bpf verifier narrow ctx load misconfigured\n");
-+				return -EINVAL;
-+			}
- 			if (ctx_field_size <= 4) {
- 				if (shift)
- 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+diff --git a/fs/cifs/cifs_unicode.c b/fs/cifs/cifs_unicode.c
+index 9bd03a231032..171ad8b42107 100644
+--- a/fs/cifs/cifs_unicode.c
++++ b/fs/cifs/cifs_unicode.c
+@@ -358,14 +358,9 @@ cifs_strndup_from_utf16(const char *src, const int maxlen,
+ 		if (!dst)
+ 			return NULL;
+ 		cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
+-			       NO_MAP_UNI_RSVD);
++				NO_MAP_UNI_RSVD);
+ 	} else {
+-		len = strnlen(src, maxlen);
+-		len++;
+-		dst = kmalloc(len, GFP_KERNEL);
+-		if (!dst)
+-			return NULL;
+-		strlcpy(dst, src, len);
++		dst = kstrndup(src, maxlen, GFP_KERNEL);
+ 	}
+ 
+ 	return dst;
 -- 
 2.30.2
 
