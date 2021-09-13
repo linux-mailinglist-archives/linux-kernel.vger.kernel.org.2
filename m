@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7C1409284
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F03940954E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244858AbhIMOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:11:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59698 "EHLO mail.kernel.org"
+        id S245487AbhIMOkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343527AbhIMOIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:08:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C0F661A8A;
-        Mon, 13 Sep 2021 13:40:45 +0000 (UTC)
+        id S1347646AbhIMOfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:35:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF876617E1;
+        Mon, 13 Sep 2021 13:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540445;
-        bh=+jozNEgeDozdsFYBZqGwW+s/aqVLJxgjBKEITXl2c5A=;
+        s=korg; t=1631541202;
+        bh=uuZMw6J5hMtC9lRbJ1wg88tUyZpGYzYRmpNXWwfNY5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VvNCUAjn/Y/0WtVeRDhcOlXJeeBI8Xvsl9E55Np2RuB772Af1hvtIlCd8QrnxvXR/
-         TqVu6NNNd5rNV+MSB6A2SNgCEu8WlUTeI2h0f2wcaoLKi+e0aL1AqNsZllQmCProTE
-         UiHSfHruv9yZXwPUr8GjHWzIfohX4UQkwHaDIBMo=
+        b=eMy+CLYRY02v+Q2mEES1YlHnHe+TM6+5KPzoLbCsOIyztj5nJcMDsr5yppzoop5sq
+         GjbJlAl4eG6LGC4OvckQA+4x/gG8nyVYeN1opjaKWy2wzZk0E7lEaEncpTXfgtTpd1
+         DFxowW/lDr+5TmWPJ0L1eKbOEO49U6ldjxxMD5Ug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 164/300] drm/msm/mdp4: refactor HW revision detection into read_mdp_hw_revision
-Date:   Mon, 13 Sep 2021 15:13:45 +0200
-Message-Id: <20210913131114.950525662@linuxfoundation.org>
+Subject: [PATCH 5.14 172/334] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
+Date:   Mon, 13 Sep 2021 15:13:46 +0200
+Message-Id: <20210913131119.167547268@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 4d319afe666b0fc9a9855ba9bdf9ae3710ecf431 ]
+[ Upstream commit 713baf3dae8f45dc8ada4ed2f5fdcbf94a5c274d ]
 
-Inspired by MDP5 code.
-Also use DRM_DEV_INFO for MDP version as MDP5 does.
+An earlier commit replaced using batostr to using %pMR sprintf for the
+construction of session->name. Static analysis detected that this new
+method can use a total of 21 characters (including the trailing '\0')
+so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
+buffer overflows.
 
-Cosmetic change: uint32_t -> u32 - checkpatch suggestion.
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210705231641.315804-1-david@ixit.cz
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 27 ++++++++++++++++--------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ net/bluetooth/cmtp/cmtp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-index 4a5b518288b0..3a7a01d801aa 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-@@ -19,20 +19,13 @@ static int mdp4_hw_init(struct msm_kms *kms)
- {
- 	struct mdp4_kms *mdp4_kms = to_mdp4_kms(to_mdp_kms(kms));
- 	struct drm_device *dev = mdp4_kms->dev;
--	uint32_t version, major, minor, dmap_cfg, vg_cfg;
-+	u32 major, minor, dmap_cfg, vg_cfg;
- 	unsigned long clk;
- 	int ret = 0;
+diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
+index c32638dddbf9..f6b9dc4e408f 100644
+--- a/net/bluetooth/cmtp/cmtp.h
++++ b/net/bluetooth/cmtp/cmtp.h
+@@ -26,7 +26,7 @@
+ #include <linux/types.h>
+ #include <net/bluetooth/bluetooth.h>
  
- 	pm_runtime_get_sync(dev->dev);
+-#define BTNAMSIZ 18
++#define BTNAMSIZ 21
  
--	mdp4_enable(mdp4_kms);
--	version = mdp4_read(mdp4_kms, REG_MDP4_VERSION);
--	mdp4_disable(mdp4_kms);
--
--	major = FIELD(version, MDP4_VERSION_MAJOR);
--	minor = FIELD(version, MDP4_VERSION_MINOR);
--
--	DBG("found MDP4 version v%d.%d", major, minor);
-+	read_mdp_hw_revision(mdp4_kms, &major, &minor);
- 
- 	if (major != 4) {
- 		DRM_DEV_ERROR(dev->dev, "unexpected MDP version: v%d.%d\n",
-@@ -411,6 +404,22 @@ fail:
- 	return ret;
- }
- 
-+static void read_mdp_hw_revision(struct mdp4_kms *mdp4_kms,
-+				 u32 *major, u32 *minor)
-+{
-+	struct drm_device *dev = mdp4_kms->dev;
-+	u32 version;
-+
-+	mdp4_enable(mdp4_kms);
-+	version = mdp4_read(mdp4_kms, REG_MDP4_VERSION);
-+	mdp4_disable(mdp4_kms);
-+
-+	*major = FIELD(version, MDP4_VERSION_MAJOR);
-+	*minor = FIELD(version, MDP4_VERSION_MINOR);
-+
-+	DRM_DEV_INFO(dev->dev, "MDP4 version v%d.%d", *major, *minor);
-+}
-+
- struct msm_kms *mdp4_kms_init(struct drm_device *dev)
- {
- 	struct platform_device *pdev = to_platform_device(dev->dev);
+ /* CMTP ioctl defines */
+ #define CMTPCONNADD	_IOW('C', 200, int)
 -- 
 2.30.2
 
