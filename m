@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0F4092FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAE5409608
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344581AbhIMOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:16:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37126 "EHLO mail.kernel.org"
+        id S1346068AbhIMOrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243944AbhIMOOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7880B6140D;
-        Mon, 13 Sep 2021 13:43:19 +0000 (UTC)
+        id S1347242AbhIMOkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:40:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 377F861C45;
+        Mon, 13 Sep 2021 13:56:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540600;
-        bh=bF1kSNWdgEWd+b9+KRnjYqdWrfx+deOW6qC9Jl1vvxE=;
+        s=korg; t=1631541361;
+        bh=ew6QFRbpjf61wu36p4LAqhVfJLhKx4rYLGyQkXg1Dp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PMHzi/Sx9fGQfyTPIcOAN2eMhyc1BbmFTxiV02O2MHoHTLynmDvB5JhHvz6ejkPAk
-         gFzmrkZRS9j96f/xo6XBNhJvEpDzOQ4i/HgSz5G0t/XMw/PBShgxNt+hcEUvS25g3b
-         c8OZp4fhZESnnu7DaHfttYjddAHINgjSyDEEIQ8U=
+        b=cxUfefeWmzszz+S1qCO965nsudNy2mq1XQ+i5NDRum1mT7vVyXbRBQ4JVOI+tFWhw
+         fYpxX69+urRsbeVUZJ3kc0zNh9of1QqsSkRmi8y0dUwWpbmoVJWLQrdzz56usePzzo
+         yrNgSwaVGFM86f9uPEZvt5p01zRzTv0lS8L8bn7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 258/300] octeontx2-af: Fix loop in free and unmap counter
-Date:   Mon, 13 Sep 2021 15:15:19 +0200
-Message-Id: <20210913131118.057330178@linuxfoundation.org>
+Subject: [PATCH 5.14 266/334] ASoC: wcd9335: Disable irq on slave ports in the remove function
+Date:   Mon, 13 Sep 2021 15:15:20 +0200
+Message-Id: <20210913131122.413637871@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraya Sundeep <sbhatta@marvell.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 6537e96d743b89294b397b4865c6c061abae31b0 ]
+[ Upstream commit d3efd26af2e044ff2b48d38bb871630282d77e60 ]
 
-When the given counter does not belong to the entry
-then code ends up in infinite loop because the loop
-cursor, entry is not getting updated further. This
-patch fixes that by updating entry for every iteration.
+The probe calls 'wcd9335_setup_irqs()' to enable interrupts on all slave
+ports.
+This must be undone in the remove function.
 
-Fixes: a958dd59f9ce ("octeontx2-af: Map or unmap NPC MCAM entry and counter")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Add a 'wcd9335_teardown_irqs()' function that undoes 'wcd9335_setup_irqs()'
+function, and call it from the remove function.
+
+Fixes: 20aedafdf492 ("ASoC: wcd9335: add support to wcd9335 codec")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-Id: <8f761244d79bd4c098af8a482be9121d3a486d1b.1629091028.git.christophe.jaillet@wanadoo.fr>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wcd9335.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 0bc4529691ec..53ee1785c931 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -2567,10 +2567,11 @@ int rvu_mbox_handler_npc_mcam_unmap_counter(struct rvu *rvu,
- 		index = find_next_bit(mcam->bmap, mcam->bmap_entries, entry);
- 		if (index >= mcam->bmap_entries)
- 			break;
-+		entry = index + 1;
-+
- 		if (mcam->entry2cntr_map[index] != req->cntr)
- 			continue;
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index 47fe68edea3a..d885ced34f60 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -4076,6 +4076,16 @@ static int wcd9335_setup_irqs(struct wcd9335_codec *wcd)
+ 	return ret;
+ }
  
--		entry = index + 1;
- 		npc_unmap_mcam_entry_and_cntr(rvu, mcam, blkaddr,
- 					      index, req->cntr);
- 	}
++static void wcd9335_teardown_irqs(struct wcd9335_codec *wcd)
++{
++	int i;
++
++	/* disable interrupts on all slave ports */
++	for (i = 0; i < WCD9335_SLIM_NUM_PORT_REG; i++)
++		regmap_write(wcd->if_regmap, WCD9335_SLIM_PGD_PORT_INT_EN0 + i,
++			     0x00);
++}
++
+ static void wcd9335_cdc_sido_ccl_enable(struct wcd9335_codec *wcd,
+ 					bool ccl_flag)
+ {
+@@ -4878,6 +4888,7 @@ static void wcd9335_codec_remove(struct snd_soc_component *comp)
+ 	struct wcd9335_codec *wcd = dev_get_drvdata(comp->dev);
+ 
+ 	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
++	wcd9335_teardown_irqs(wcd);
+ }
+ 
+ static int wcd9335_codec_set_sysclk(struct snd_soc_component *comp,
 -- 
 2.30.2
 
