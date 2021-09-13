@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C7F408AE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68767408AE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239964AbhIMMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:20:13 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:33655 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235252AbhIMMUD (ORCPT
+        id S239927AbhIMMUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:20:02 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46758 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235252AbhIMMUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:20:03 -0400
-Received: by mail-ot1-f54.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso13029519otu.0;
-        Mon, 13 Sep 2021 05:18:48 -0700 (PDT)
+        Mon, 13 Sep 2021 08:20:01 -0400
+Received: by mail-ot1-f43.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso12952734otr.13;
+        Mon, 13 Sep 2021 05:18:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=QviKwU9E32B1NHqI9WCd3jJH00Se8iBU33oRL7KYCVI=;
-        b=uD5aI70wKFIo5u3oCSNrT0ro8QIbw6yPaTbLeHsio9FOXxmsGQZsKRQ/mN0NTz/lXy
-         FdJbEQRdh0qF3jzxHNQhh8EtbS/x904W5kktBUtTUL7NKoGbSG0q3skMg4AZGgGWhlux
-         OjJ5OKghD50Kf1gAmW6FNsqtHIMf2IwZwxuKrabk9oLG1ifH5dJdAZnCbpp/H1tjYJew
-         uEvzILNFfewpUbkzHrMdt98ruOZoW6mLvYNBlORb2vlooUOX8Vb/Ch4houls3WOsJ5s0
-         1jihxcXBtb+cZX2O94PI1UiWYbyaIgLWA2CvIV0mJMRztZbC32rARufXH8hjD27f7QiA
-         qsVQ==
-X-Gm-Message-State: AOAM532JgVoT1mhFB1NEuW2Zin97ANrs/PHkAosTm1ccJJbIimlhMfos
-        5pmC9WUQlutsHGFd/5F/zCb6DaJ8nw==
-X-Google-Smtp-Source: ABdhPJzMsElTnZR96Stl0Jidt4vyTF4mY6gkVe/sRFOau/+qhl1NPc8J930JqDDSM8aDFfgq6rLrHQ==
-X-Received: by 2002:a9d:7cd7:: with SMTP id r23mr9250801otn.165.1631535527526;
-        Mon, 13 Sep 2021 05:18:47 -0700 (PDT)
+        bh=yAANwLMWDLEO6I7ZRYD4RFaA1eZZfYg/uLblDuOz8Iw=;
+        b=8OUPKotk8mlwlgzQ1SzI5dyOsPrCpUtirWXrHRJvIdOQdClNSe+2sWKeQ1S+mdZSHd
+         s3lmiwBMJF7SoYflkd9X7C/7vuXWS/uKzmXro3WnQnCXZn6pdnfEWm/RwZaB8EvUffAZ
+         1tF8BE5BeYD0zyX07AL/WK5YOn9VaunrN35JsjhguwKfou2a1zwfUiXXUx6DJeTSBlIu
+         GmapSAJe4DTm2oNvVFYUxL6nGfxz1I88CztJLl3ICNJO69S2EB6+37jNHb8eHC4RMUeT
+         gIQfC8aff/JvJGEcV/IIFdcqaY162Rr1AjNRCigFIXcw4c62fF8JTYohP6+V1US8IIHo
+         /u6Q==
+X-Gm-Message-State: AOAM533+MjEujcVSQv0Mph0znagcMuVUwRh0J4zZGgU1lTLBwLN8eivY
+        XtMePgUtQ6MZ3UWksxszCA==
+X-Google-Smtp-Source: ABdhPJzYnMEYkbxkurS4PpZO/QSrg41SFbZti1sBP50QH1OMY0W6b4aKzKiENjcLtUjXkbrnVoCMkg==
+X-Received: by 2002:a9d:36d:: with SMTP id 100mr9346988otv.237.1631535525388;
+        Mon, 13 Sep 2021 05:18:45 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k8sm1791521oom.20.2021.09.13.05.18.45
+        by smtp.gmail.com with ESMTPSA id h3sm1800959otu.7.2021.09.13.05.18.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:18:46 -0700 (PDT)
-Received: (nullmailer pid 444719 invoked by uid 1000);
+        Mon, 13 Sep 2021 05:18:44 -0700 (PDT)
+Received: (nullmailer pid 444714 invoked by uid 1000);
         Mon, 13 Sep 2021 12:18:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-Cc:     andrew@aj.id.au, linux-aspeed@lists.ozlabs.org, joel@jms.id.au,
-        osk@google.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
-        yulei.sh@bytedance.com, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org
-In-Reply-To: <20210913060231.15619-2-chiawei_wang@aspeedtech.com>
-References: <20210913060231.15619-1-chiawei_wang@aspeedtech.com> <20210913060231.15619-2-chiawei_wang@aspeedtech.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: mfd: aspeed-lpc: Convert to YAML schema
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     devicetree@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <anup.patel@wdc.com>, linux-doc@vger.kernel.org,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org, Ard Biesheuvel <ardb@kernel.org>,
+        linux-perf-users@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>
+In-Reply-To: <20210910192757.2309100-7-atish.patra@wdc.com>
+References: <20210910192757.2309100-1-atish.patra@wdc.com> <20210910192757.2309100-7-atish.patra@wdc.com>
+Subject: Re: [v3 06/10] dt-binding: pmu: Add RISC-V PMU DT bindings
 Date:   Mon, 13 Sep 2021 07:18:43 -0500
-Message-Id: <1631535523.196891.444718.nullmailer@robh.at.kernel.org>
+Message-Id: <1631535523.169353.444713.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 14:02:28 +0800, Chia-Wei Wang wrote:
-> Convert the bindings of Aspeed LPC from text file into YAML schema.
+On Fri, 10 Sep 2021 12:27:53 -0700, Atish Patra wrote:
+> This patch adds the DT bindings for RISC-V PMU driver. It also defines
+> the interrupt related properties to allow counter overflow interrupt.
 > 
-> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 > ---
->  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 157 ---------------
->  .../devicetree/bindings/mfd/aspeed-lpc.yaml   | 187 ++++++++++++++++++
->  2 files changed, 187 insertions(+), 157 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
+>  .../devicetree/bindings/perf/riscv,pmu.yaml   | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/perf/riscv,pmu.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -70,14 +78,17 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dts:30.35-36.15: Warning (unique_unit_address): /example-0/lpc@1e789000/lpc-ctrl@80: duplicate unit-address (also used in node /example-0/lpc@1e789000/lpc-snoop@80)
-Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dt.yaml:0:0: /example-0/lpc@1e789000/lpc-ctrl@80: failed to match any schema with compatible: ['aspeed,ast2600-lpc-ctrl']
-Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dt.yaml:0:0: /example-0/lpc@1e789000/reset-controller@98: failed to match any schema with compatible: ['aspeed,ast2600-lpc-reset']
-Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dt.yaml:0:0: /example-0/lpc@1e789000/lpc-snoop@80: failed to match any schema with compatible: ['aspeed,ast2600-lpc-snoop']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/perf/riscv,pmu.yaml: 'optional' is not one of ['$id', '$schema', 'title', 'description', 'examples', 'required', 'allOf', 'anyOf', 'oneOf', 'definitions', '$defs', 'additionalProperties', 'dependencies', 'patternProperties', 'properties', 'if', 'then', 'else', 'unevaluatedProperties', 'deprecated', 'maintainers', 'select']
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+./Documentation/devicetree/bindings/perf/riscv,pmu.yaml: $id: relative path/filename doesn't match actual path or filename
+	expected: http://devicetree.org/schemas/perf/riscv,pmu.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/perf/riscv,pmu.yaml: ignoring, error in schema: 
+warning: no schema found in file: ./Documentation/devicetree/bindings/perf/riscv,pmu.yaml
+Documentation/devicetree/bindings/perf/riscv,pmu.example.dt.yaml:0:0: /example-0/pmu: failed to match any schema with compatible: ['riscv,pmu']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1527193
+See https://patchwork.ozlabs.org/patch/1526606
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
