@@ -2,210 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AFC409C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4D3409C38
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239946AbhIMS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:28:53 -0400
-Received: from mail-eastus2namln2015.outbound.protection.outlook.com ([40.93.3.15]:46616
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240167AbhIMS2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:28:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dmK+JWPO0dnZVTC5qcNiGi4Ayu6RyU+8ki7aQNCOnsfJzMBK6E7VOyGizQgffwyRsbHArg2AqJHeCccsUBpvAJN3XgxU6NWQyMFrLToRKW2cWrVNl5/bEvdR33+JOn4idvBJ8mI+iYOBwkYKZ50mb4DAKVOwWIPKzqRK4KITbQjrOExMWjXssQAgO4Lba/KUh054ZLnHrS5Mm10LYSOb+0Jskt0iHg7nBWrCaYTGH3WoXcgLEtnaxw7X0jnd8mXH1jGH0tu2xMK3a1wfr+e5mWnTKtz6L8w45HeImFsrCGQtLx7AIr1xS+av3z8MBmOR7vOYdaO16kBOeErVwDqvQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=TM5leLNmnmw/Hp8H9EfabCaP0N4tM62Zh7h84dlHb6g=;
- b=Av9hhaet32SGq6REpGbygwAbKCa3x6C2GNGftkhy2yPgrySgcQex4lmv9onEsxEmYRF4yrWdoHVix9jxyQewM4GKVB0HRNJPWpkOkCBs8mcss1WQ5Q5ZSHIa7Sb4wkp3SnFxeBnt0Mev4FrbZFZpuzjCYoq61eXnVqUoO7WyWBXJViuAaOeoib7i7rND4LrdnU1h0nffpNTzSpzgJZyLPOf27NoIZOKWsJtkzfQKq3YJ24GqVQsrsU7nAHqcZ64pQzgk5wad4KX/Oc+OyI1ETjDQeNmhphIfDT63/EF5ziakNmG8mcch2NpHvEord9uLRbnL3VvSVBGVheF+gmITYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TM5leLNmnmw/Hp8H9EfabCaP0N4tM62Zh7h84dlHb6g=;
- b=eGP7tIU0Bi7r+jdD015dNZopdZ4z8qcM2CizQYLyFnYeZJvJk/LVxiGOtLK+Z3oriuUeaGAm7deSV2/g6QEeioi6FvOVZZEPyOoyiPI0dE2BBS6YcD/PXflQdi12V/AhzXzTD5DtTjHL9pIvsd74LrkDkAgBkcMDHFMKPcqQDcY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
- (2603:10b6:207:37::26) by MN2PR21MB1501.namprd21.prod.outlook.com
- (2603:10b6:208:1f6::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.2; Mon, 13 Sep
- 2021 18:27:27 +0000
-Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
- ([fe80::35fa:e8c:d9:39c3]) by BL0PR2101MB1092.namprd21.prod.outlook.com
- ([fe80::35fa:e8c:d9:39c3%7]) with mapi id 15.20.4544.004; Mon, 13 Sep 2021
- 18:27:27 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     drawat.floss@gmail.com, haiyangz@microsoft.com, airlied@linux.ie,
-        daniel@ffwll.ch, tzimmermann@suse.de,
-        dri-devel@lists.freedesktop.org
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dexuan Cui <decui@microsoft.com>
-Subject: [PATCH] drm/hyperv: Fix double mouse pointers
-Date:   Mon, 13 Sep 2021 11:26:45 -0700
-Message-Id: <20210913182645.17075-1-decui@microsoft.com>
+        id S240180AbhIMSbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239877AbhIMSbj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:31:39 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34094C061574;
+        Mon, 13 Sep 2021 11:30:23 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 7C1FA1F42465
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com
+Subject: [PATCH v4 00/10] VP9 codec V4L2 control interface
+Date:   Mon, 13 Sep 2021 20:30:03 +0200
+Message-Id: <20210913183013.19616-1-andrzej.p@collabora.com>
 X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: MWHPR1401CA0010.namprd14.prod.outlook.com
- (2603:10b6:301:4b::20) To BL0PR2101MB1092.namprd21.prod.outlook.com
- (2603:10b6:207:37::26)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:9:822d:5dff:feb8:fa01) by MWHPR1401CA0010.namprd14.prod.outlook.com (2603:10b6:301:4b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 18:27:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 920b8603-62b2-4992-c149-08d976e4237d
-X-MS-TrafficTypeDiagnostic: MN2PR21MB1501:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR21MB1501BA82CE26A6FF30ADDBE3BFD99@MN2PR21MB1501.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 80hNAOIZPL94KAkU6OwyoyWXUmtAkkyExonloV9DnyZVNFD4s0Ho/VMO8Wa1e8F12PoX/NZHxdBAhvFQPd5O27+Yb7WR3KmKe7Iambeqofez5M1nBxs17xcE2IjNWmqXGpvzDOX+J80MrZlhtzue6loYJ3OiBJBAxuOBgJG72jDIYH2xhwxXUskxb6z6wqUIEoGfJsLFqgXIDeETtq/0GL/MVmvhrgWO+QnHEbKazPAN0dfwMafwXQHuwGHRuzZVnS8hOYtz9XozBPaaDW4aBIyB7S4z/vaGl0HsmtnYTwR7UW4JCxzL/twjFJucJMPIHTKbQFwK1HgE0XvPcQdA/t/yhYInXf3ihH5F9wnIEnhsTBWqz8cQyHabGe+pRjEp48PtBY5QnNnuO3MTHCV7EIsH+XmKmRj6Vo3AYHwxt5hCI4v2ql6ebhj4fm4EXS8urOYgpCKTkyhPjpFTb2DBdJEQh89TDmv2C3LI0OF49rHxT/odKARHX1/GVFP875ldVljZhKWFY028smlDKbhSLU013+amLx/hhb6Coiwh/it8ULtbpr9z7M3L5Pc2H293EHpuRyFfRPOvfcVVXW5NI067CFnTwkUY5BJxPDuP+rMwOa/GS2VRb39gJomqcoHaXtzqAMQu9Z6Hb6rbZuCpgg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(8676002)(6486002)(2616005)(107886003)(66556008)(5660300002)(186003)(508600001)(66946007)(6666004)(316002)(10290500003)(82960400001)(38100700002)(36756003)(52116002)(86362001)(2906002)(7696005)(66476007)(8936002)(82950400001)(1076003)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?84tk34Xp1xxlO76GAgd9e8cA2Wp3n/F+US1RuwX4YBHmT3CeTaVYMO/jlcLG?=
- =?us-ascii?Q?by3ncTmklVviUMPBfKO4FCVkrDz8DU4iMGYdvJ435PztVKGqQallhJuPyJL+?=
- =?us-ascii?Q?I82FTdfAhaRugrKY/INQvVAjjIysLvM6DkiA3KV1Ct5y7pG5jaRQ2GFwfd0i?=
- =?us-ascii?Q?Le6lZpS0csl9K1G7RU3xWcIHmpb8S7pDMStvguY32Mpv0UxMfoGqomBSBkc5?=
- =?us-ascii?Q?mjoBtVK3bpMmdEkW81vCul6cViYRkxVOdahhoMnm4HLDgMlnoHm3kaRiz1cF?=
- =?us-ascii?Q?xUao3PunCgIJPMZiWIE+giGAUYfgmO00jXGN3MwSomElKA158aZArlQ+qmTs?=
- =?us-ascii?Q?K7mYImVxlrlN82Hia3qdDfptDfxY0cESvcbzQa0qE1BV7Zz8Y0ztPwWm2b2C?=
- =?us-ascii?Q?6PkE/8Dq+E0+Oeltjn2u+eZuxrxbScmzMB6qRuIg5iIO7dA7eAOV69t8m5jL?=
- =?us-ascii?Q?i53XimzSZxUDMDnVlMrpU6Fv+Ck9jBTPWEiB4BdjlTUq1BIWGjA3lRnfoSc+?=
- =?us-ascii?Q?SQvMi8AjhQTOSdXTF7SJuHNaFI0ArHNq7Wi9eZKOJ358aRp+LL8GEmh7ZeFk?=
- =?us-ascii?Q?0XFk2FUr2kOjdmMgtuZcGcBnJDoMUtzeA7Bi9XaUVB/mB7ZRZ25PHj/8+/rs?=
- =?us-ascii?Q?IRPbc0LBC6jqBRyBcG80mLMarjiuu3fyW5Ws2Ps+uSh813X7UFE19HFrxfBn?=
- =?us-ascii?Q?5qPTPy7e9RBhYjWbWO76FYOsAYdXHwSKe8V0ZmVpXo4jCirOVslXkjfRz8xL?=
- =?us-ascii?Q?G3muk5MEjuvEd07AK4hoZ+UY3U9fhGSleLes0ERAL0HfdOR85w2e1fTL0jM2?=
- =?us-ascii?Q?TsmFG6LplY1eZ60qlr89TIhURD3tEXQHY5y0emClbbAYrWlFlXGCZy3s84Na?=
- =?us-ascii?Q?4r4H5SK8f9S0leXmzoNCts1SbDWZ5QcaNzlETont3HsJgJee5HIcASpc6g8Q?=
- =?us-ascii?Q?sjBxj8qKYs4jtltUoUMQqBgKEa53QGzSF06yTubQZrok4e90YvPbUrD2WGgY?=
- =?us-ascii?Q?TZuMMrP6YdXdiO4mJoMWAczj9m67870n7tHjq0oF1a28jhpSqqB5CP3gtGon?=
- =?us-ascii?Q?tZcrUv9dA6gy2Te713R3TxD4fQ+qFv9UhBoqDBf4x65FTKfdgJWDlC7f15G/?=
- =?us-ascii?Q?+TWZKgHERoru8sj0BBtqNVzV7sVRtOyrIa/78nrXZvA3LNhMXhrq2s0Kq8Ih?=
- =?us-ascii?Q?hPMce27mP5+Jny+Tnof7BG5d2C8WGbKZ4ZllpbitEUFQn+DvqE72Blu167Qy?=
- =?us-ascii?Q?oeCmmdzds2CWi0dCAymZ/kDctR/tnfjj2qWg2ahjM1imiMR9mNO6z+dbdkrU?=
- =?us-ascii?Q?0h2gJjyOtpt5sGtUd+N9NMs7n9NGGC/kwWSR4zCa3J+5ttdjmkRsuru/Vool?=
- =?us-ascii?Q?OBSVzVuNtrEDV/z7L6lmpkK0FX4q?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 920b8603-62b2-4992-c149-08d976e4237d
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 18:27:27.4957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hCuXEs4duunh695PcMCaDVAFhHBgHK+8SyxL2O825Xx5VFvSKAnef648VBj+a1tmJSZKWZVX8957Gu+Bb5FoWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1501
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like Hyper-V supports a hardware cursor feature. It is not used
-by Linux VM, but the Hyper-V host still draws a point as an extra mouse
-pointer, which is unwanted, especially when Xorg is running.
+Dear all,
 
-The hyperv_fb driver uses synthvid_send_ptr() to hide the unwanted pointer.
-When the hyperv_drm driver was developed, the function synthvid_send_ptr()
-was not copied from the hyperv_fb driver. Fix the issue by adding the
-function into hyperv_drm.
+This patch series adds VP9 codec V4L2 control interface and two drivers
+using the new controls. It is a follow-up of previous v3 series [1].
 
-Fixes: 76c56a5affeb ("drm/hyperv: Add DRM driver for hyperv synthetic video device")
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Cc: Deepak Rawat <drawat.floss@gmail.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
----
- drivers/gpu/drm/hyperv/hyperv_drm.h         |  1 +
- drivers/gpu/drm/hyperv/hyperv_drm_modeset.c |  1 +
- drivers/gpu/drm/hyperv/hyperv_drm_proto.c   | 39 ++++++++++++++++++++-
- 3 files changed, 40 insertions(+), 1 deletion(-)
+In this new iteration, we've implemented VP9 hardware decoding on two devices:
+Rockchip VDEC and Hantro G2, and tested on RK3399, i.MX8MQ and i.MX8MP.
+The i.MX8M driver needs proper power domains support, though, which is a
+subject of a different effort, but in all 3 cases we were able to run the
+drivers.
 
-diff --git a/drivers/gpu/drm/hyperv/hyperv_drm.h b/drivers/gpu/drm/hyperv/hyperv_drm.h
-index 886add4f9cd0..27bfd27c05be 100644
---- a/drivers/gpu/drm/hyperv/hyperv_drm.h
-+++ b/drivers/gpu/drm/hyperv/hyperv_drm.h
-@@ -46,6 +46,7 @@ int hyperv_mode_config_init(struct hyperv_drm_device *hv);
- int hyperv_update_vram_location(struct hv_device *hdev, phys_addr_t vram_pp);
- int hyperv_update_situation(struct hv_device *hdev, u8 active, u32 bpp,
- 			    u32 w, u32 h, u32 pitch);
-+int hyperv_send_ptr(struct hv_device *hdev);
- int hyperv_update_dirt(struct hv_device *hdev, struct drm_rect *rect);
- int hyperv_connect_vsp(struct hv_device *hdev);
- 
-diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-index 3aaee4730ec6..e21c82cf3326 100644
---- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-+++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
-@@ -101,6 +101,7 @@ static void hyperv_pipe_enable(struct drm_simple_display_pipe *pipe,
- 	struct hyperv_drm_device *hv = to_hv(pipe->crtc.dev);
- 	struct drm_shadow_plane_state *shadow_plane_state = to_drm_shadow_plane_state(plane_state);
- 
-+	hyperv_send_ptr(hv->hdev);
- 	hyperv_update_situation(hv->hdev, 1,  hv->screen_depth,
- 				crtc_state->mode.hdisplay,
- 				crtc_state->mode.vdisplay,
-diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_proto.c b/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
-index 6d4bdccfbd1a..1ea7a0432320 100644
---- a/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
-+++ b/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
-@@ -299,6 +299,40 @@ int hyperv_update_situation(struct hv_device *hdev, u8 active, u32 bpp,
- 	return 0;
- }
- 
-+/* Send mouse pointer info to host */
-+int hyperv_send_ptr(struct hv_device *hdev)
-+{
-+	struct synthvid_msg msg;
-+
-+	memset(&msg, 0, sizeof(struct synthvid_msg));
-+	msg.vid_hdr.type = SYNTHVID_POINTER_POSITION;
-+	msg.vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
-+		sizeof(struct synthvid_pointer_position);
-+	msg.ptr_pos.is_visible = 1;
-+	msg.ptr_pos.video_output = 0;
-+	msg.ptr_pos.image_x = 0;
-+	msg.ptr_pos.image_y = 0;
-+	hyperv_sendpacket(hdev, &msg);
-+
-+	memset(&msg, 0, sizeof(struct synthvid_msg));
-+	msg.vid_hdr.type = SYNTHVID_POINTER_SHAPE;
-+	msg.vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
-+		sizeof(struct synthvid_pointer_shape);
-+	msg.ptr_shape.part_idx = SYNTHVID_CURSOR_COMPLETE;
-+	msg.ptr_shape.is_argb = 1;
-+	msg.ptr_shape.width = 1;
-+	msg.ptr_shape.height = 1;
-+	msg.ptr_shape.hot_x = 0;
-+	msg.ptr_shape.hot_y = 0;
-+	msg.ptr_shape.data[0] = 0;
-+	msg.ptr_shape.data[1] = 1;
-+	msg.ptr_shape.data[2] = 1;
-+	msg.ptr_shape.data[3] = 1;
-+	hyperv_sendpacket(hdev, &msg);
-+
-+	return 0;
-+}
-+
- int hyperv_update_dirt(struct hv_device *hdev, struct drm_rect *rect)
- {
- 	struct hyperv_drm_device *hv = hv_get_drvdata(hdev);
-@@ -392,8 +426,11 @@ static void hyperv_receive_sub(struct hv_device *hdev)
- 		return;
- 	}
- 
--	if (msg->vid_hdr.type == SYNTHVID_FEATURE_CHANGE)
-+	if (msg->vid_hdr.type == SYNTHVID_FEATURE_CHANGE) {
- 		hv->dirt_needed = msg->feature_chg.is_dirt_needed;
-+		if (hv->dirt_needed)
-+			hyperv_send_ptr(hv->hdev);
-+	}
- }
- 
- static void hyperv_receive(void *ctx)
+GStreamer support is also available, the needed changes have been submitted
+by Daniel Almeida [2]. This MR is ready to be merged, and just needs the
+VP9 V4L2 controls to be merged and released.
+
+Both rkvdec and hantro drivers are passing a significant number of VP9 tests
+using Fluster[3]. There are still a few tests that are not passing, due to
+dynamic frame resize (not yet supported by V4L2) and small size videos
+(due to IP block limitations).
+
+The series adds the VP9 codec V4L2 control API as uAPI, so it aims at being
+merged without passing through staging, as agreed[4]. The ABI has been checked
+for padding and verified to contain no holes.
+
+[1] https://www.spinics.net/lists/arm-kernel/msg913433.html
+[2] https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/merge_requests/2144
+[3] https://github.com/fluendo/fluster
+[4] https://lore.kernel.org/linux-media/b8f83c93-67fd-09f5-9314-15746cbfdc61@xs4all.nl/
+
+Changes related to v3:
+
+Apply suggestions from Jernej's review (thanks, Jernej):
+- renamed a control and two structs:
+	V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR_PROBS =>
+		V4L2_CTRL_TYPE_VP9_COMPRESSED_HDR
+	v4l2_ctrl_vp9_compressed_hdr_probs =>
+		v4l2_ctrl_vp9_compressed_hdr
+	v4l2_vp9_mv_compressed_hdr_probs => v4l2_vp9_mv_probs
+- moved tx_mode to v4l2_ctrl_vp9_compressed_hdr
+- fixed enum v4l2_vp9_ref_frame_sign_bias values (which are used to test a bitfield)
+- explicitly assigned values to all other vp9 enums
+
+Apply suggestion from Nicolas's review (thanks, Nicolas):
+- explicitly stated that the v4l2_ctrl_vp9_compressed_hdr control is optional
+and implemented only by drivers which need it
+
+Changes related to the RFC v2:
+
+- added another driver including a postprocessor to de-tile
+        codec-specific tiling
+- reworked uAPI structs layout to follow VP8 style
+- changed validation of loop filter params
+- changed validation of segmentation params
+- changed validation of VP9 frame params
+- removed level lookup array from loop filter struct
+        (can be computed by drivers)
+- renamed some enum values to match the spec more closely
+- V4L2 VP9 library changed the 'eob' member of
+        'struct v4l2_vp9_frame_symbol_counts' so that it is an array
+        of pointers instead of an array of pointers to arrays
+        (IPs such as g2 creatively pass parts of the 'eob' counts in
+        the 'coeff' counts)
+- factored out several repeated portions of code
+- minor nitpicks and cleanups
+
+The series depends on the YUV tiled format support prepared by Ezequiel:
+https://www.spinics.net/lists/linux-media/msg197047.html
+
+Rebased onto latest media_tree.
+
+
+Andrzej Pietrasiewicz (4):
+  media: uapi: Add VP9 stateless decoder controls
+  media: Add VP9 v4l2 library
+  media: hantro: Prepare for other G2 codecs
+  media: hantro: Support VP9 on the G2 core
+
+Boris Brezillon (1):
+  media: rkvdec: Add the VP9 backend
+
+Ezequiel Garcia (5):
+  hantro: postproc: Fix motion vector space size
+  hantro: postproc: Introduce struct hantro_postproc_ops
+  hantro: Simplify postprocessor
+  hantro: Add quirk for NV12/NV12_4L4 capture format
+  media: hantro: Support NV12 on the G2 core
+
+ .../userspace-api/media/v4l/biblio.rst        |   10 +
+ .../media/v4l/ext-ctrls-codec-stateless.rst   |  545 +++++
+ .../media/v4l/pixfmt-compressed.rst           |   15 +
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |    8 +
+ .../media/v4l/vidioc-queryctrl.rst            |   12 +
+ .../media/videodev2.h.rst.exceptions          |    2 +
+ drivers/media/v4l2-core/Kconfig               |    4 +
+ drivers/media/v4l2-core/Makefile              |    1 +
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |  180 ++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |    8 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ drivers/media/v4l2-core/v4l2-vp9.c            | 1850 +++++++++++++++++
+ drivers/staging/media/hantro/Kconfig          |    1 +
+ drivers/staging/media/hantro/Makefile         |    7 +-
+ drivers/staging/media/hantro/hantro.h         |   40 +-
+ drivers/staging/media/hantro/hantro_drv.c     |   18 +-
+ drivers/staging/media/hantro/hantro_g2.c      |   27 +
+ .../staging/media/hantro/hantro_g2_hevc_dec.c |   31 -
+ drivers/staging/media/hantro/hantro_g2_regs.h |  104 +
+ .../staging/media/hantro/hantro_g2_vp9_dec.c  |  978 +++++++++
+ drivers/staging/media/hantro/hantro_hw.h      |   83 +-
+ .../staging/media/hantro/hantro_postproc.c    |   79 +-
+ drivers/staging/media/hantro/hantro_v4l2.c    |   20 +
+ drivers/staging/media/hantro/hantro_vp9.c     |  240 +++
+ drivers/staging/media/hantro/hantro_vp9.h     |  103 +
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   |   38 +-
+ .../staging/media/hantro/rockchip_vpu_hw.c    |    7 +-
+ .../staging/media/hantro/sama5d4_vdec_hw.c    |    3 +-
+ drivers/staging/media/rkvdec/Kconfig          |    1 +
+ drivers/staging/media/rkvdec/Makefile         |    2 +-
+ drivers/staging/media/rkvdec/rkvdec-vp9.c     | 1078 ++++++++++
+ drivers/staging/media/rkvdec/rkvdec.c         |   52 +-
+ drivers/staging/media/rkvdec/rkvdec.h         |   12 +-
+ include/media/v4l2-ctrls.h                    |    4 +
+ include/media/v4l2-vp9.h                      |  182 ++
+ include/uapi/linux/v4l2-controls.h            |  437 ++++
+ include/uapi/linux/videodev2.h                |    6 +
+ 37 files changed, 6118 insertions(+), 71 deletions(-)
+ create mode 100644 drivers/media/v4l2-core/v4l2-vp9.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2.c
+ create mode 100644 drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+ create mode 100644 drivers/staging/media/hantro/hantro_vp9.c
+ create mode 100644 drivers/staging/media/hantro/hantro_vp9.h
+ create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
+ create mode 100644 include/media/v4l2-vp9.h
+
+
+base-commit: ee49938e86dab00e884fd2675d5004999dc467c7
 -- 
-2.25.1
+2.17.1
 
