@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC6F409CEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7D2409CF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242213AbhIMT1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:27:00 -0400
-Received: from mga05.intel.com ([192.55.52.43]:35927 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240725AbhIMT0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:26:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="307329127"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="307329127"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 12:25:36 -0700
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="609185389"
-Received: from holdensm-mobl.amr.corp.intel.com (HELO [10.212.147.16]) ([10.212.147.16])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 12:25:35 -0700
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210913131153.1202354-2-pbonzini@redhat.com>
- <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
- <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
- <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
- <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
- <480cf917-7301-4227-e1c4-728b52537f46@intel.com>
- <2b595588-eb98-6d30-dc50-794fc396bf7e@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fa8e8573-d907-11b0-60e1-f31e050beb64@intel.com>
-Date:   Mon, 13 Sep 2021 12:25:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242327AbhIMT3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:29:35 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40686 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241848AbhIMT3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:29:34 -0400
+Received: by mail-ot1-f54.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so14871688otq.7;
+        Mon, 13 Sep 2021 12:28:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g+Q2qhVPQ7t2dWkHiAQZbqwf5gFYdZacySJXFNnEnrg=;
+        b=hgcU/39cL8nasIheHfvohl3WR5g0ZzrhE3GpyQgX3ixzyp7u1uyQtnmPxdFpCtGjro
+         DbpYcyPDQGVULJFJ1xlSvsY9Bv46Gffp9LNncaq4kKqC7p88R3iYQ/1Mb2kmbhk4RApo
+         /Cfy0EXsweiIkPEZvaomujgVxgoi+ZCGNUt7TG7EuGh5zgc5gKiLrXMxyvLXhi4YJrpk
+         hNunzb14Vi+6vMJ8JJxrxBNFyn0S4PzwD5Plpt/8wZzLzrOvtHPo34/fxfQubS0Nj8ZX
+         0mQVbQP8Vp4nSL4dLdRZAFD2sa83+PunJZvwgazxcaZ4WdjT8ydnmOs1Ey++kffol4KQ
+         hhAQ==
+X-Gm-Message-State: AOAM531OQkTpb4hlNuQY5R9VYtA10GeCLL5sLC6gbPhW6EwA8AmxPctB
+        IePf6Hf3/hKEaOZJy1pUOw==
+X-Google-Smtp-Source: ABdhPJxPkAR3Bxh1Ev21crujx07CiRZnZvdkVQ7u2FyfOauoqvueRDEfAPRY/2dg38mxF7DLleoA3g==
+X-Received: by 2002:a05:6830:31a5:: with SMTP id q5mr11038625ots.253.1631561298042;
+        Mon, 13 Sep 2021 12:28:18 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id m24sm1907838oie.50.2021.09.13.12.28.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 12:28:17 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>
+Cc:     Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: [PATCH v2 0/8] Arm boards syscon 'unit_address_format' clean-ups
+Date:   Mon, 13 Sep 2021 14:28:08 -0500
+Message-Id: <20210913192816.1225025-1-robh@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <2b595588-eb98-6d30-dc50-794fc396bf7e@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 11:35 AM, Paolo Bonzini wrote:
->>> Apart from reclaiming, /dev/sgx_vepc might disappear between the first
->>> open() and subsequent ones.
->>
->> Aside from it being rm'd, I don't think that's possible.
->>
-> 
-> Being rm'd would be a possibility in principle, and it would be ugly for
-> it to cause issues on running VMs.  Also I'd like for it to be able to
-> pass /dev/sgx_vepc in via a file descriptor, and run QEMU in a chroot or
-> a mount namespace.  Alternatively, with seccomp it may be possible to
-> sandbox a running QEMU process in such a way that open() is forbidden at
-> runtime (all hotplug is done via file descriptor passing); it is not yet
-> possible, but it is a goal.
+This series addresses the last of the dtc 'unit_address_format'
+warnings in the tree.
 
-OK, so maybe another way of saying this:
+The remaining issue was dealing with the node names on 2 bindings for
+Arm Ltd boards syscon child nodes: register-bit-led and Versatile ICST.
+Both of these used an offset property for register address rather than
+'reg' which is the preference nowadays. With a 'reg' property, then we
+can have a proper node name and unit-address. This series adds support
+for using 'reg' instead and updates the node names and unit-addresses.
 
-For bare-metal SGX on real hardware, the hardware provides guarantees
-SGX state at reboot.  For instance, all pages start out uninitialized.
-The vepc driver provides a similar guarantee today for freshly-opened
-vepc instances.
+The dts file changes have inter-dependencies, but the clock and led
+changes can go via each subsystem.
 
-But, vepc users have a problem: they might want to run an OS that
-expects to be booted with clean, fully uninitialized SGX state, just as
-it would be on bare-metal.  Right now, the only way to get that is to
-create a new vepc instance.  That might not be possible in all
-configurations, like if the permission to open(/dev/sgx_vepc) has been
-lost since the VM was first booted.
+Rob
 
-Windows has these expectations about booting with fully uninitialized
-state.  There are also a number of environments where QEMU is sandboxed
-or drops permissions in a way that prevent free and open access to
-/dev/sgx_vepc.
 
-So good so far?
+Rob Herring (8):
+  dt-bindings: leds: Convert register-bit-led binding to DT schema
+  dt-bindings: leds: register-bit-led: Use 'reg' instead of 'offset'
+  leds: syscon: Support 'reg' in addition to 'offset' for register
+    address
+  dt-bindings: clock: arm,syscon-icst: Use 'reg' instead of 'vco-offset'
+    for VCO register address
+  clk: versatile: clk-icst: Support 'reg' in addition to 'vco-offset'
+    for register address
+  ARM: dts: arm: Update register-bit-led nodes 'reg' and node names
+  ARM: dts: arm: Update ICST clock nodes 'reg' and node names
+  kbuild: Enable dtc 'unit_address_format' warning by default
+
+ .../bindings/clock/arm,syscon-icst.yaml       |  5 +
+ .../bindings/leds/register-bit-led.txt        | 94 ------------------
+ .../bindings/leds/register-bit-led.yaml       | 95 +++++++++++++++++++
+ arch/arm/boot/dts/arm-realview-eb.dtsi        | 42 +++++---
+ arch/arm/boot/dts/arm-realview-pb1176.dts     | 42 +++++---
+ arch/arm/boot/dts/arm-realview-pb11mp.dts     | 48 +++++++---
+ arch/arm/boot/dts/arm-realview-pbx.dtsi       | 42 +++++---
+ arch/arm/boot/dts/integrator.dtsi             | 23 +++--
+ arch/arm/boot/dts/integratorap-im-pd1.dts     |  9 +-
+ arch/arm/boot/dts/integratorap.dts            | 15 ++-
+ arch/arm/boot/dts/integratorcp.dts            |  9 +-
+ arch/arm/boot/dts/mps2.dtsi                   | 10 +-
+ arch/arm/boot/dts/versatile-ab-ib2.dts        |  6 +-
+ arch/arm/boot/dts/versatile-ab.dts            | 27 ++++--
+ arch/arm64/boot/dts/arm/juno-motherboard.dtsi | 27 ++++--
+ drivers/clk/versatile/clk-icst.c              |  3 +-
+ drivers/leds/leds-syscon.c                    |  3 +-
+ scripts/Makefile.lib                          |  1 -
+ 18 files changed, 316 insertions(+), 185 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/leds/register-bit-led.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/register-bit-led.yaml
+
+-- 
+2.30.2
 
