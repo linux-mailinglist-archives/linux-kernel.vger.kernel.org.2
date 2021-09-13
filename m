@@ -2,142 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81F04099CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBFE4099D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239013AbhIMQrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        id S239169AbhIMQrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238597AbhIMQqz (ORCPT
+        with ESMTP id S239107AbhIMQrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:46:55 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAF2C061766;
-        Mon, 13 Sep 2021 09:45:29 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 140so3707469wma.0;
-        Mon, 13 Sep 2021 09:45:29 -0700 (PDT)
+        Mon, 13 Sep 2021 12:47:20 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F23FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:46:04 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i25so18446095lfg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:46:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NRUDddrOhBz7wPs7n2BWvnbLp1YtX5LqNskb7F4KopQ=;
-        b=qFBeR2rM6nK0p+XpJivHd1bcEa+ejelC7XjFg19hOQar2ANlq1ixbE9a53f0CwFGLG
-         kHJL4AXR+xO4OQJRWtdfLI/Fe21gORMp+Zi3D/LdYj17oqSfK3pBkZqYDI9dCslz9AZb
-         wsx8rnKbOgqq/h6kE/xr1UtfdwV3b2FW1v/bknFFhgVEKwDVxhdEDvyJ9/41LVLHFAcs
-         64Q/3wtuuYaQ6taOaVuQdhhfAurRA2X5nLT7zgDnvduTAwXlrH2kuW+Wjtmfy6awcuzy
-         oh0LsD3l0K77Esv+WACeamGiM0GsOzVkNi533mxVIT6U74VWwz1yEWA+it3WboMkqjxB
-         vpoA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4AWqq8PdF0T27j1u4r8SJdSDQAmnIa798/DXEHvOpSI=;
+        b=FU+bAjJMm7Th8TwF7GGVELgB1n/Ftr6IutqHVydD9w8PX1GQcf6GzsLJOqGGh6CW0l
+         EgHYwD/xUZZOVDsGOol3BaZ8xHn83V7/OXyGzkFbGAGnI2UYFevtlAxVK0miRIcA5sma
+         7ChEqHKPnv+jjr4rq9563XtC1/WAT8qcu+Bu7KgwmwaedbS/lr08mFRMX8yVsveRl3dO
+         fkLTwlz3V17XMGEE2CT1WMP4SCJwRxX6N5cqDDMKSzUVH2QVfP4XIwCjwyqgdH3MERlO
+         vZR1EV6lwCy9I9JF6m4YNjNRIsj/BeIG+3ZUtcKRVlTuJJG9gt3JEr6a+crt5Rin8pfL
+         MU5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NRUDddrOhBz7wPs7n2BWvnbLp1YtX5LqNskb7F4KopQ=;
-        b=Q9YaSAopXPZM3WfWrTTLmI1RvyPfEKxJasBSKH919r3VLIfFMGGqSIaXxkY1DF1fKK
-         NfrDdEXpq7HeBqCBsGoLgwhvyTRE+tiPJvytM0uLigkEHs5g4gf7CESJh7+Tij0swYS+
-         5nhXjdp4AWn2Sx8YR6N1J29wQa9NiAOJT3/If8uNzSjw85t2asDqXJkP7kW/a5Vgu6s7
-         H3HzmnW916xMHoMd9yJWtanNx+9RGcq2hU0J/ZqC+JymKCqmk7kIbGVMyvsT1qH94IF3
-         DQMK3UloyCIHMQ7dGVu4rxwMFZ6bbfsLu2LiA8KPNEiLeZlom5cprxcusJPSHbXynV5b
-         ry3Q==
-X-Gm-Message-State: AOAM532Wd3szcBi3BR26B4WZyCIOJSSgDn6S7rPeTNd5PYHuEElfyJje
-        wIIxowaQfZn8uVRgqYAmWCgYs5qfTIR+Ng==
-X-Google-Smtp-Source: ABdhPJwMsRQivrMwh0jTuYOf8q9vjWRDUMG7XrcnLQOMocmgrRpASUrsAc0U3/yZdeqvuEzTaOXy2g==
-X-Received: by 2002:a1c:210a:: with SMTP id h10mr1457033wmh.165.1631551527754;
-        Mon, 13 Sep 2021 09:45:27 -0700 (PDT)
-Received: from localhost.localdomain ([147.235.73.50])
-        by smtp.googlemail.com with ESMTPSA id v10sm8091338wrg.15.2021.09.13.09.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:45:27 -0700 (PDT)
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-To:     masahiroy@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ariel Marcovitch <arielmarcovitch@gmail.com>
-Subject: [PATCH v2] kconfig: Create links to main menu items in search
-Date:   Mon, 13 Sep 2021 19:45:14 +0300
-Message-Id: <20210913164514.437972-1-arielmarcovitch@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4AWqq8PdF0T27j1u4r8SJdSDQAmnIa798/DXEHvOpSI=;
+        b=fb+lrw89tZpSU1l266W5gBJIn02njl/KXedttcHUSM3FTCN4rYuEfs0SZ9vEfuHeiu
+         Ttj1llukfWakfaFod9qSwE9k03J1iFEUcRd67F8lhHmOjMY3NBQEF4N/YDv24QUTQAT0
+         J+GOTQRnPTV63vdrXOxf0LnQI8iupvPJ78mo05G+bHpyq9XjL9PlkKtNYhwYMU4akJu4
+         s/taZ/NDvUz5K+KaQi4Gxd34yPEkVHqyzENgyO+EsaFoPItzpJetWAzrkzj/mGcmLVM7
+         9HtD32K2pAr5uk/MgIFY2EiPUU86sEoIPwn6oCds06O2Nal9YXkyGPXi7k8S61n+5+Ig
+         7wEA==
+X-Gm-Message-State: AOAM533KBTFdF7FF+8Pg7AFCyKTUpcy3yM7o0Io9s74SI7U6tJBaulH2
+        xLb2dtIKYP4WYK40SoYXz74H93YknsfLZircAJhxAA==
+X-Google-Smtp-Source: ABdhPJyr2c+1gD5MNC+tqhvxKv/vc4WNHyPe6OFeOs4hvUvdmby0LD98BjnKqvYF/pKBwcggQnXp9YvzSMG63YviiFw=
+X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr9178591lfa.523.1631551562217;
+ Mon, 13 Sep 2021 09:46:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913163547.5156-1-will@kernel.org>
+In-Reply-To: <20210913163547.5156-1-will@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 13 Sep 2021 09:45:51 -0700
+Message-ID: <CAKwvOd=gO=7MjL9bQR_+xUYCMVNVbsCGV0WCb0hK-rSiJ3kpbA@mail.gmail.com>
+Subject: Re: [PATCH] x86/uaccess: Fix 32-bit __get_user_asm_u64() when CC_HAS_ASM_GOTO_OUTPUT=y
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Bill Wendling <morbo@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When one searches for a main menu item, links aren't created for it like
-with the rest of the symbols.
+On Mon, Sep 13, 2021 at 9:36 AM Will Deacon <will@kernel.org> wrote:
+>
+> Commit 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
+> added an optimised version of __get_user_asm() for x86 using 'asm goto'.
+>
+> Like the non-optimised code, the 32-bit implementation of 64-bit get_user()
+> expands to a pair of 32-bit accesses. Unlike the non-optimised code, the
+> _original_ pointer is incremented to copy the high word instead of loading
+> through a new pointer explicitly constructed to point at a 32-bit type.
+> Consequently, if the pointer points at a 64-bit type then we end up
+> loading the wrong data for the upper 32-bits.
+>
+> This was observed as a mount() failure in Android targetting i686 after
 
-This happens because we trace the item until we get to the rootmenu, but
-we don't include it in the path of the item. The rationale was probably
-that we don't want to show the main menu in the path of all items,
-because it is redundant.
+s/targetting/targeting/
 
-However, when an item has only the rootmenu in its path it should be
-included, because this way the user can jump to its location.
+> b0cfcdd9b967 ("d_path: make 'prepend()' fill up the buffer exactly on
+> overflow") because the call to copy_from_kernel_nofault() from
+> prepend_copy() ends up in __get_kernel_nofault() and casts the source
+> pointer to a 'u64 __user *'. An attempt to mount at "/debug_ramdisk"
+> therefore ends up failing trying to mount "/debumdismdisk".
+>
+> Use the existing '__gu_ptr' source pointer to unsigned int for 32-bit
+> __get_user_asm_u64() instead of the original pointer.
+>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Bill Wendling <morbo@google.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Fixes: 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
+> Signed-off-by: Will Deacon <will@kernel.org>
 
-Add a 'Main menu' entry in the 'Location:' section for the kconfig
-items.
+Sorry I missed this; I think -Wunused-variable would have helped here.
+Thanks for debugging+fixing.
 
-This makes the 'if (i > 0)' superfluous because each item with prompt
-will have at least one menu in its path.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
----
- scripts/kconfig/menu.c | 33 ++++++++++++++++++---------------
- 1 file changed, 18 insertions(+), 15 deletions(-)
+> ---
+>  arch/x86/include/asm/uaccess.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+> index c9fa7be3df82..5c95d242f38d 100644
+> --- a/arch/x86/include/asm/uaccess.h
+> +++ b/arch/x86/include/asm/uaccess.h
+> @@ -301,8 +301,8 @@ do {                                                                        \
+>         unsigned int __gu_low, __gu_high;                               \
+>         const unsigned int __user *__gu_ptr;                            \
+>         __gu_ptr = (const void __user *)(ptr);                          \
+> -       __get_user_asm(__gu_low, ptr, "l", "=r", label);                \
+> -       __get_user_asm(__gu_high, ptr+1, "l", "=r", label);             \
+> +       __get_user_asm(__gu_low, __gu_ptr, "l", "=r", label);           \
+> +       __get_user_asm(__gu_high, __gu_ptr+1, "l", "=r", label);        \
+>         (x) = ((unsigned long long)__gu_high << 32) | __gu_low;         \
+>  } while (0)
+>  #else
+> --
+> 2.33.0.309.g3052b89438-goog
+>
 
-diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
-index 606ba8a63c24..3d6f7cba8846 100644
---- a/scripts/kconfig/menu.c
-+++ b/scripts/kconfig/menu.c
-@@ -728,7 +728,7 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
- 		get_dep_str(r, prop->visible.expr, "  Visible if: ");
- 
- 	menu = prop->menu->parent;
--	for (i = 0; menu != &rootmenu && i < 8; menu = menu->parent) {
-+	for (i = 0; menu && i < 8; menu = menu->parent) {
- 		bool accessible = menu_is_visible(menu);
- 
- 		submenu[i++] = menu;
-@@ -758,21 +758,24 @@ static void get_prompt_str(struct gstr *r, struct property *prop,
- 		list_add_tail(&jump->entries, head);
- 	}
- 
--	if (i > 0) {
--		str_printf(r, "  Location:\n");
--		for (j = 4; --i >= 0; j += 2) {
--			menu = submenu[i];
--			if (jump && menu == location)
--				jump->offset = strlen(r->s);
--			str_printf(r, "%*c-> %s", j, ' ',
--				   menu_get_prompt(menu));
--			if (menu->sym) {
--				str_printf(r, " (%s [=%s])", menu->sym->name ?
--					menu->sym->name : "<choice>",
--					sym_get_string_value(menu->sym));
--			}
--			str_append(r, "\n");
-+	str_printf(r, "  Location:\n");
-+	for (j = 4; --i >= 0; j += 2) {
-+		menu = submenu[i];
-+		if (jump && menu == location)
-+			jump->offset = strlen(r->s);
-+
-+		if (menu == &rootmenu)
-+			/* The real rootmenu prompt is ugly */
-+			str_printf(r, "%*cMain menu", j, ' ');
-+		else
-+			str_printf(r, "%*c-> %s", j, ' ', menu_get_prompt(menu));
-+
-+		if (menu->sym) {
-+			str_printf(r, " (%s [=%s])", menu->sym->name ?
-+				menu->sym->name : "<choice>",
-+				sym_get_string_value(menu->sym));
- 		}
-+		str_append(r, "\n");
- 	}
- }
- 
 
-base-commit: a9086b878b7fd65894eb8cb1fa395dd469970566
 -- 
-2.25.1
-
+Thanks,
+~Nick Desaulniers
