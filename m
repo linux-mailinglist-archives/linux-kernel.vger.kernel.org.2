@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634A0409D69
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CFE409D73
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347597AbhIMTuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        id S1344141AbhIMTwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240911AbhIMTul (ORCPT
+        with ESMTP id S240595AbhIMTwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:50:41 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F778C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:49:25 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso14928172otr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:49:25 -0700 (PDT)
+        Mon, 13 Sep 2021 15:52:36 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CDAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:51:20 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id x10-20020a056830408a00b004f26cead745so14961522ott.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to;
-        bh=yw1b9fZ1lnCtG8cegvzmoiB8uewJHdwQglsWdbmU568=;
-        b=oEi+EQkTL3cI5BWuIOLe986IYt7QuXhKHrWvB2PKhVGBwtcewfViIp+vKPLd5Jh8Ga
-         +SQebu6ypyjpH7bVj9+T7Y+zTjLLpfdff0Gg278iQWfJvD5izP55iv4Q3ODx1PMWuD7r
-         aw8u/G3gjbhXzPyaBPtLRqpJD2AUwiWN1C07M=
+        bh=7y5Kp92MxlMIM/1uVfkHDfbY3sPUaGnffDNVZpUsrD8=;
+        b=Zodc0o0JSl2wPuA2Y12NHWaoDY6QABXb137QrHTXqY11BK/0mIsSmDtqRM4Zm7UmRG
+         NDS8f4Q5f7Sc3gTutg/hC+SubqhccAhKu6HsGcUna0XluSh0IyQOT9ytmBIL+CvFukJv
+         wuSKCsLqUBP1ML9pxEFAKZPdUExJgd3OvfLFI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to;
-        bh=yw1b9fZ1lnCtG8cegvzmoiB8uewJHdwQglsWdbmU568=;
-        b=pdkhig4pWVGoykB1pZViKdfuOGnUuY7d6JWI4Q1xQSyyBSXQYqktP6vuXiMn+QaJw0
-         leDUsUkECR7v8fHnexRF+EO6WO+0/Ksch8OaIlV7ZAP3Q/p37FvFzwTy9FqnQFLJHrmV
-         Ns+B15EaoaqdFZVdlVhHWULWzgVPfRa7ihH2v6jRDbphUXqU2DtznkryRlj8HiHiR3Fq
-         v7V0Jqt+fKokYQw5K2421eClaVHlSCavKqSCnOR9E7PEcGP8p168ikk0Tu3mEnR+/Wdf
-         6cE0uWCvxjUEDjHjk9Pgli0oeqFe8/uX4Z3h7AWUbOmFtxPCqO00H/hNFWkspaFDeTbL
-         mJqw==
-X-Gm-Message-State: AOAM531qH2r50cj6XhvWk681ikgfEK7hnUUB8SuboDaTsxzFz7xQaJWg
-        8huq0VkjdiDf0MzvZLHBzvbL6qO1NZntR1Je9QmE2w==
-X-Google-Smtp-Source: ABdhPJz3o79dJM5zC1pjJ+LQMjOTyr1vev2/NGN4jY/c2ZfYnAk+xuiWK8/sXZPYqgI/zUyQOWM/DC8C0/FJ2jSbiDw=
-X-Received: by 2002:a05:6830:18c7:: with SMTP id v7mr11183152ote.126.1631562564916;
- Mon, 13 Sep 2021 12:49:24 -0700 (PDT)
+        bh=7y5Kp92MxlMIM/1uVfkHDfbY3sPUaGnffDNVZpUsrD8=;
+        b=iGBlJed8iQPHFRIOqYxSZnXhakO7w7GUD1hl+ycCnY3XQiLv9hQ1luRy6jcTH/SGS9
+         nnxP3GAWk0TERfcmXBPwLLfFN1mBDUrpu5Xf6636/wx8X5wv3u7+654oXXkMVOUth51E
+         MuSIjxMml7fpEVKNlqqLqiyuCQAkil8AoBT7ynSdLGahR0QNwjEUXI2qFJF3AXkbbUwc
+         8QvtX7cPgP6nFjf1KqhEtsMpGnbPR5Z9heum282x+4G4akFvofULxRtBSMft2jq0NIk4
+         N6RYkCH2Zs6mORou7EmVjn95fVwiXVXaqBGxaCSIZpzEwNgyP8/KIU0LOM1sMDQMIFat
+         vFgw==
+X-Gm-Message-State: AOAM531k7R50ELHZbHs19lK/nl7GF+iU+YaVLBzbko40suc5mCXeePFK
+        k3ttd8WKiNze2BAHuEPzhSf1dKZ+hJSzuRSH9dwONg==
+X-Google-Smtp-Source: ABdhPJy8cOper52GzW4GbJAI4BPyVQYu27nMzrhL6XZsTO4p+Lv1yS1UiO9YJYTrQ5nwZM9IcOtzIoPX1a3xvmpfAnI=
+X-Received: by 2002:a05:6830:18c7:: with SMTP id v7mr11189838ote.126.1631562679479;
+ Mon, 13 Sep 2021 12:51:19 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 13 Sep 2021 12:49:24 -0700
+ HTTPREST; Mon, 13 Sep 2021 12:51:19 -0700
 MIME-Version: 1.0
-In-Reply-To: <1631539062-28577-3-git-send-email-srivasam@codeaurora.org>
-References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org> <1631539062-28577-3-git-send-email-srivasam@codeaurora.org>
+In-Reply-To: <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org> <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Mon, 13 Sep 2021 12:49:24 -0700
-Message-ID: <CAE-0n50i9rm6fcuyjCCPXjtxTyXwAiRVx91dXT4BDpbGA-tKjg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ASoC: qcom: SC7280: Add machine driver
+Date:   Mon, 13 Sep 2021 12:51:19 -0700
+Message-ID: <CAE-0n50=ABP+fs1U3JjiqMSKphfxFsZBqQQYwVH2o_iOE1Wu_g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
 To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
         agross@kernel.org, alsa-devel@alsa-project.org,
         bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
@@ -65,77 +66,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2021-09-13 06:17:42)
-> diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+Quoting Srinivasa Rao Mandadapu (2021-09-13 06:17:41)
+> diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
 > new file mode 100644
-> index 0000000..906910c
+> index 0000000..e0d705f
 > --- /dev/null
-> +++ b/sound/soc/qcom/sc7280.c
-> @@ -0,0 +1,343 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +//
-> +// Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-> +//
-> +// sc7280.c -- ALSA SoC Machine driver for sc7280
+> +++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> @@ -0,0 +1,169 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/google,sc7280-herobrine.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <sound/core.h>
-> +#include <sound/jack.h>
-> +#include <sound/pcm.h>
-> +#include <sound/soc.h>
-> +#include <uapi/linux/input-event-codes.h>
+> +title: Google SC7280-Herobrine ASoC sound card driver
+> +
+> +maintainers:
+> +  - Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> +  - Judy Hsiao <judyhsiao@chromium.org>
+> +
+> +description:
+> +  This binding describes the SC7280 sound card which uses LPASS for audio.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - google,sc7280-herobrine
+> +
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source.
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: User specified audio sound card name
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^dai-link@[0-9a-f]$":
+> +    description:
+> +      Each subnode represents a dai link. Subnodes of each dai links would be
+> +      cpu/codec dais.
+> +
+> +    type: object
+> +
+> +    properties:
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name.
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        maxItems: 1
+> +
+> +      reg:
+> +        maxItems: 1
+> +        description: dai link address.
+> +
+> +      cpu:
+> +        description: Holds subnode which indicates cpu dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
 
-Looks like the include should be <linux/input.h> instead. I see that
-practically no other code in the kernel is including the uapi header as
-it's for userspace, not kernel. The uapi header is included in input.h
-though so it's not actually all that different.
+Shouldn't sound-dai be required?
 
 > +
-> +#include <dt-bindings/sound/sc7180-lpass.h>
-> +#include <dt-bindings/sound/qcom,q6afe.h>
-> +
-> +#include "../codecs/wcd938x.h"
-> +#include "common.h"
-> +#include "lpass.h"
-> +
-[...]
-> +static int sc7280_snd_platform_probe(struct platform_device *pdev)
-> +{
-> +       struct snd_soc_card *card;
-> +       struct sc7280_snd_data *data;
-> +       struct device *dev = &pdev->dev;
-> +       struct snd_soc_dai_link *link;
-> +       int ret, i;
-> +
-> +       /* Allocate the private data */
+> +      codec:
+> +        description: Holds subnode which indicates codec dai.
+> +        type: object
+> +        properties:
+> +          sound-dai: true
 
-This comment is worthless.
+Shouldn't sound-dai be required? I don't know but maybe also additional
+properties is false for this node too?
 
-> +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +       if (!data)
-> +               return -ENOMEM;
 > +
-> +       card = &data->card;
-> +       snd_soc_card_set_drvdata(card, data);
-> +
-> +       card->owner = THIS_MODULE;
-> +       card->driver_name = "SC7280";
-> +       card->dev = dev;
-> +
-> +       ret = qcom_snd_parse_of(card);
-> +       if (ret)
-> +               return ret;
-> +
-> +       for_each_card_prelinks(card, i, link) {
-> +               link->init = sc7280_init;
-> +               link->ops = &sc7280_ops;
-> +       }
-Nitpick: Newline here.
+> +    required:
+> +      - link-name
+> +      - cpu
+> +      - codec
 
-> +       return devm_snd_soc_register_card(dev, card);
-> +}
+Should 'reg' be required?
+
 > +
+> +    additionalProperties: false
