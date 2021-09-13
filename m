@@ -2,93 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9464C40854C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64829408550
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237600AbhIMH0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237535AbhIMH0L (ORCPT
+        id S237613AbhIMH1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:27:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58019 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235185AbhIMH1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:26:11 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A8CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:24:56 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h3so8619311pgb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rne45CFHVF3Ed+57mqPI4S8t0BZnsiIJa5Mce5cnMFs=;
-        b=I0LVTvJN3u3LWC1FrrPIH1QhzeKn39Yh9Z96gRmixJ15fAXrUJMXNtI+W/YWdVtxeY
-         9VDd2Kfd3QsQcwl1OAkNh+YARxq3iINnSVB3LK/DRiEnmMWgMPTGQMe1GM7wm2XPRqsE
-         scpbov5JJEzBge1BaTGNUEkbhGxAo99oa5h0z8/drxKk7Le+uE09iL9JhzABQre+oMdF
-         w/L4axgqjsQ7bqsgTuQQQpWDcjrwVkWQwSedgzDnJsuy97Dydbui5aM6zQuY/jG5TsSu
-         0nnf2JmMW5NbXCzr603ZVH7j4uOg2N/XRIQyS1DUIBl8ze8V58s8EcBJLF3+g/Rwi41Z
-         vstg==
+        Mon, 13 Sep 2021 03:27:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631517950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ycK/tCqEmqie6iTs/9nBScnQKNEMyPZZHddjJC00ddA=;
+        b=Nszw7igIwXv8MotuBMueU66EOUPlva4uMv3IcRYJ2G9/yRhvVsSyJkSnrAP7RpEZNhlU8w
+        aIf6WBOIV2tRBpzROoGKFFUCg9T5OWGI6NILnIA0epoHFync+H98pxXHgENi5PoHormZ8q
+        3CGDVi7rAIhQ6YCpiqJVKDtcnZ6KK7o=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-t1TCgV5XNG6fv4gWfdEW3g-1; Mon, 13 Sep 2021 03:25:49 -0400
+X-MC-Unique: t1TCgV5XNG6fv4gWfdEW3g-1
+Received: by mail-ed1-f71.google.com with SMTP id y17-20020a50e611000000b003d051004603so3788025edm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:25:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rne45CFHVF3Ed+57mqPI4S8t0BZnsiIJa5Mce5cnMFs=;
-        b=8HREVQKVoPJpdL7FH6XZjTVu7lI/9m57Kgz55MGdwIp7dPoyYITqP0PKmzea2lZ843
-         erZ+qFUucUyiZRjgg6P0vL/bLzT8IKm8RPr1MIR2FWvjUlqybKipOlKVPkN0ieFP0Xzh
-         T8F8G4n3W06Ii7SauwfmqMwshTHz0ajJG6RJhwd5yF+M7LJL/demJ7wh7exsDg/z8n1U
-         dGp0ck47rqOQbblWC9DMJMYwkHhHF+jFjVkotBOPDuJUqM7eaHkout5NCyFT19Z/n2j7
-         NY1c6G3oxmL1ZMJIUe3Epr792iHfVk5GGdBxKiuisf8mXkB30WRJu2SbOsMWjAOphzBa
-         WYlQ==
-X-Gm-Message-State: AOAM532vzHorq3FjMqv4WBHQYtY+iifcnJ4mLTmEjEXBLCmZ6OzisIU9
-        NmxrgbzBFS1VSG5vlbMn4dk=
-X-Google-Smtp-Source: ABdhPJz3kPSM1iVUOv123Y56zIId76DGu9yYy2/Q5GwwNmIPqpUoV376MCwV7pvmNJQoe5h9wCF0tw==
-X-Received: by 2002:a62:e302:0:b0:3f2:628b:3103 with SMTP id g2-20020a62e302000000b003f2628b3103mr9843177pfh.39.1631517896240;
-        Mon, 13 Sep 2021 00:24:56 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id u12sm5687365pjx.31.2021.09.13.00.24.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ycK/tCqEmqie6iTs/9nBScnQKNEMyPZZHddjJC00ddA=;
+        b=GIN+JgyUEsZUmTiPbTMl8/U3InB3QEasa9EXrJDw7GGs1cB4JsReTtJgPpdlnbswBL
+         HPl8TKbvCZ/bzDYm1wP5CDvDMb1PhkobXa7jqxgTO8hnpw1IH6BfbBz1gtPd2ON7/WhD
+         pH9ng34oD3DF2cNqmWiMjxyLbiWZQ+0zi2EqnP2wLJyoiNttxv7+bmlj7gaaAO1Cz8SG
+         keQNOzIdsjhpGWtmTJMkab/JENtotMDkNfP6ab6DU2p+lSGM415Zq4DctKCCs2BIoaHe
+         Q375MXWXbCaoGCkOl9Rl3SoXxJAL2GUPZJnYo/v3KoFwrdVoEmMzNqP74vZMwjY6eKpp
+         qh9Q==
+X-Gm-Message-State: AOAM531+/HRYw67OknmVAXTXR7baN11cxBkGJMBrg3XMV+uhrVz1xgYq
+        ztEcZV1ppWjnUou6AXwk+bePBIxOlKKp7RbY5XKArm/JdesY+cCO04WVyHa7AkkJUzuG1FsaYQG
+        EjGhLHQeaQBBhC1uGTLm1abv2
+X-Received: by 2002:a50:d4dc:: with SMTP id e28mr11571605edj.106.1631517948190;
+        Mon, 13 Sep 2021 00:25:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxNxTQ2vLqD78w1qZ/yyGrwNlAgo4kC8ZoLROpW9R1ep9CmZ5X0HutmNcr1ZAX/1oPEj6kYKw==
+X-Received: by 2002:a50:d4dc:: with SMTP id e28mr11571587edj.106.1631517947927;
+        Mon, 13 Sep 2021 00:25:47 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id m10sm2962374ejx.76.2021.09.13.00.25.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 00:24:55 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     xiang@kernel.org, chao@kernel.org
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zhangwen@yulong.com, zbestahu@163.com
-Subject: [PATCH] erofs: fix compacted_{4b_initial, 2b} when compacted_4b_initial > totalidx
-Date:   Mon, 13 Sep 2021 15:24:05 +0800
-Message-Id: <20210913072405.1128-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        Mon, 13 Sep 2021 00:25:47 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 09:25:45 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
+ the vcpuid
+Message-ID: <20210913072545.vmmlejgg6jtsz4pm@gator.home>
+References: <20210909013818.1191270-1-rananta@google.com>
+ <20210909013818.1191270-10-rananta@google.com>
+ <20210909075643.fhngqu6tqrpe33gl@gator>
+ <CAJHc60wRkUyKEdY0ok0uC7r=P0FME+Lb7oapz+AKbjaNDhFHyA@mail.gmail.com>
+ <20210910081001.4gljsvmcovvoylwt@gator>
+ <CAJHc60yhg7oYiJpHJK27M7=qo0CMOX+Qj9+q-ZHgTVhWr_76aA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJHc60yhg7oYiJpHJK27M7=qo0CMOX+Qj9+q-ZHgTVhWr_76aA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On Fri, Sep 10, 2021 at 11:03:58AM -0700, Raghavendra Rao Ananta wrote:
+> On Fri, Sep 10, 2021 at 1:10 AM Andrew Jones <drjones@redhat.com> wrote:
+> >
+> > On Thu, Sep 09, 2021 at 10:10:56AM -0700, Raghavendra Rao Ananta wrote:
+> > > On Thu, Sep 9, 2021 at 12:56 AM Andrew Jones <drjones@redhat.com> wrote:
+> > > >
+> > > > On Thu, Sep 09, 2021 at 01:38:09AM +0000, Raghavendra Rao Ananta wrote:
+> > ...
+> > > > > +     for (i = 0; i < KVM_MAX_VCPUS; i++) {
+> > > > > +             vcpuid = vcpuid_map[i].vcpuid;
+> > > > > +             GUEST_ASSERT_1(vcpuid != VM_VCPUID_MAP_INVAL, mpidr);
+> > > >
+> > > > We don't want this assert if it's possible to have sparse maps, which
+> > > > it probably isn't ever going to be, but...
+> > > >
+> > > If you look at the way the array is arranged, the element with
+> > > VM_VCPUID_MAP_INVAL acts as a sentinel for us and all the proper
+> > > elements would lie before this. So, I don't think we'd have a sparse
+> > > array here.
+> >
+> > If we switch to my suggestion of adding map entries at vcpu-add time and
+> > removing them at vcpu-rm time, then the array may become sparse depending
+> > on the order of removals.
+> >
+> Oh, I get it now. But like you mentioned, we add entries to the map
+> while the vCPUs are getting added and then sync_global_to_guest()
+> later. This seems like a lot of maintainance, unless I'm interpreting
+> it wrong or not seeing an advantage.
 
-mkfs.erofs will treat compacted_4b_initial & compacted_2b as 0 if
-compacted_4b_initial > totalidx, kernel should be aligned with it
-accordingly.
+The advantage is that you don't need to create all vcpus before calling
+the map init function. While it's true that we'll still require a call
+after adding all vcpus if we want to export the map to the guest, i.e.
+sync_global_to_guest, we'll never have to worry about the map being
+out of synch wrt vcpus on the host side, and there's no need to call
+sync_global_to_guest at all when the test needs the map, but the guest
+doesn't need to access it.
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- fs/erofs/zmap.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> I like your idea of coming up an arch-independent interface, however.
+> So I modified it similar to the familiar ucall interface that we have
+> and does everything in one shot to avoid any confusion:
 
-diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-index 9fb98d8..4f941b6 100644
---- a/fs/erofs/zmap.c
-+++ b/fs/erofs/zmap.c
-@@ -369,7 +369,10 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
- 	if (compacted_4b_initial == 32 / 4)
- 		compacted_4b_initial = 0;
- 
--	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
-+	if (compacted_4b_initial > totalidx) {
-+		compacted_4b_initial = 0;
-+		compacted_2b = 0;
-+	} else if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
- 		compacted_2b = rounddown(totalidx - compacted_4b_initial, 16);
- 	else
- 		compacted_2b = 0;
--- 
-1.9.1
+Right, ucall_init does call sync_global_to_guest, but it's the only
+lib function so far. Everything else exported to the guest must be
+done explicitly.
+
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h
+> b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 010b59b13917..0e87cb0c980b 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -400,4 +400,24 @@ uint64_t get_ucall(struct kvm_vm *vm, uint32_t
+> vcpu_id, struct ucall *uc);
+>  int vm_get_stats_fd(struct kvm_vm *vm);
+>  int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid);
+> 
+> +#define VM_CPUID_MAP_INVAL -1
+> +
+> +struct vm_cpuid_map {
+> +       uint64_t hw_cpuid;
+> +       int vcpuid;
+> +};
+> +
+> +/*
+> + * Create a vcpuid:hw_cpuid map and export it to the guest
+> + *
+> + * Input Args:
+> + *   vm - KVM VM.
+> + *
+> + * Output Args: None
+> + *
+> + * Must be called after all the vCPUs are added to the VM
+> + */
+> +void vm_cpuid_map_init(struct kvm_vm *vm);
+> +int guest_get_vcpuid(void);
+> +
+>  #endif /* SELFTEST_KVM_UTIL_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> index db64ee206064..e796bb3984a6 100644
+> --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> @@ -16,6 +16,8 @@
+> 
+>  static vm_vaddr_t exception_handlers;
+> 
+> +static struct vm_cpuid_map cpuid_map[KVM_MAX_VCPUS];
+> +
+>  static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
+>  {
+>         return (v + vm->page_size) & ~(vm->page_size - 1);
+> @@ -426,3 +428,42 @@ void vm_install_exception_handler(struct kvm_vm
+> *vm, int vector,
+>         assert(vector < VECTOR_NUM);
+>         handlers->exception_handlers[vector][0] = handler;
+>  }
+> +
+> +void vm_cpuid_map_init(struct kvm_vm *vm)
+> +{
+> +       int i = 0;
+> +       struct vcpu *vcpu;
+> +       struct vm_cpuid_map *map;
+> +
+> +       TEST_ASSERT(!list_empty(&vm->vcpus), "vCPUs must have been created\n");
+> +
+> +       list_for_each_entry(vcpu, &vm->vcpus, list) {
+> +               map = &cpuid_map[i++];
+> +               map->vcpuid = vcpu->id;
+> +               get_reg(vm, vcpu->id,
+> KVM_ARM64_SYS_REG(SYS_MPIDR_EL1), &map->hw_cpuid);
+> +               map->hw_cpuid &= MPIDR_HWID_BITMASK;
+> +       }
+> +
+> +       if (i < KVM_MAX_VCPUS)
+> +               cpuid_map[i].vcpuid = VM_CPUID_MAP_INVAL;
+> +
+> +       sync_global_to_guest(vm, cpuid_map);
+> +}
+> +
+> +int guest_get_vcpuid(void)
+> +{
+> +       int i, vcpuid;
+> +       uint64_t mpidr = read_sysreg(mpidr_el1) & MPIDR_HWID_BITMASK;
+> +
+> +       for (i = 0; i < KVM_MAX_VCPUS; i++) {
+> +               vcpuid = cpuid_map[i].vcpuid;
+> +
+> +               /* Was this vCPU added to the VM after the map was
+> initialized? */
+> +               GUEST_ASSERT_1(vcpuid != VM_CPUID_MAP_INVAL, mpidr);
+> +
+> +               if (mpidr == cpuid_map[i].hw_cpuid)
+> +                       return vcpuid;
+> +       }
+> +
+> +       /* We should not be reaching here */
+> +       GUEST_ASSERT_1(0, mpidr);
+> +       return -1;
+> +}
+> 
+> This would ensure that we don't have a sparse array and can use the
+> last non-vCPU element as a sentinal node.
+> If you still feel preparing the map as and when the vCPUs are created
+> makes more sense, I can go for it.
+
+Yup, I think that's still my preference. We don't really need a
+sentinel node for such a small array. We can just do
+
+static struct vm_cpuid_map cpuid_map[KVM_MAX_VCPUS] = { [0 ... KVM_MAX_VCPUS - 1] = VM_CPUID_MAP_INVAL };
+
+to ensure all invalid nodes are invalid. After a full loop
+if we didn't find a valid entry, then we assert, which easily
+supports a sparse array.
+
+Also, please don't forget that guest_get_vcpuid() can be common for all
+architectures. We just need an arch-specific call for get_hw_cpuid().
+
+Thanks,
+drew
+
+> 
+> Regards,
+> Raghavendra
+> > Thanks,
+> > drew
+> >
+> 
 
