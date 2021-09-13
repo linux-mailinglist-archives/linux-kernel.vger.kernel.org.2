@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA37409CB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16135409CB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241700AbhIMTNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241533AbhIMTNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:13:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D703D60F26;
-        Mon, 13 Sep 2021 19:11:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631560312;
-        bh=iULRhj5KLnHd/+v+YrzdE0hblCEvh1be8oqNRSVk52c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E4fqUJvqzNqHZOkl8c6BmFNOrE3VCwbQZyFs7KQSf0v2QcNrx5ZudrITqPrwjk9ib
-         ExMksEMAcHfJIgSXL1PXqaOlgYgLp+BUJkzRbTKCU47s1cA1NigIfPRjfXGdYwuRe4
-         duwW08ngj7PS/u0IQyLh/JBpYgKCeTzYQvbCn50/9hC6mNqybjvEd5xNID8qfP1AKv
-         1hpGLYTmHow9gJhVTFVUF7aSDA7Lf+27WZPajze9k3HVVXyPn709VTUpo28Od6tty6
-         pBN0a81CaFsc07iVUCiTkvodtQPFuZueBQSsABOLx1gOE9UtNO5hxTXZXp6LEyDjjV
-         eh7RnjAfTrC2w==
-From:   Oded Gabbay <ogabbay@kernel.org>
+        id S241484AbhIMTOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237034AbhIMTOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:14:02 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B129C061574;
+        Mon, 13 Sep 2021 12:12:46 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id bg1so6484912plb.13;
+        Mon, 13 Sep 2021 12:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=MLRdoHEqkoihV/XPsuabbjyyNtIvAzqyI0OO1lOyXWM=;
+        b=U0y6z31+Tjzxqeh8FqL2QijuIgnq6oOyO2/10p9CtuwJPKhHLSzKzb05rFVAeay+5q
+         WSFU/FSgWr6vbaeI5+QIkqB6UHNupoZmIihYAOd2AqZ16sWLwvhLYBXimfMzslfHh8/L
+         PIi+Et32B+SNCilyEq5tTRc5fvi3YPO4k1CTGgz/HZdotlBA7vXoTi8ioZmJKCr7J8uG
+         5pc+SsEv/e7yr559/Jkt/Wt49/tVfzzU1sCJA8vdiWNQE0WX4Lr0EpQcHbO9StmPwU/f
+         Aj7XmYYW6CYDhoNO279XKnY3Air2PCi+oG7NqeWSk1OFW4+oQIl/x2q7o+7KwXLzed92
+         QxTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=MLRdoHEqkoihV/XPsuabbjyyNtIvAzqyI0OO1lOyXWM=;
+        b=LHvhrjpf4d+H8HwToFe/nprQsU1qt808l5TvbogjsVf53RoYv4QMqIMFBUP7A3Tmw3
+         z2EY76ObVZMofqX8pQplVn8kPp7AEmZ1U7fFdlxKM5k9PSJgRK93UEyBKMw/aZ0dmsOk
+         VQED5VFM1rSS1D3KUR9HzJtUQXTMzB/IoQRsZeYiKsa6Sa964lMqngUI9rQRNMkESdkT
+         Y1k94GgXAfJDLUxOF/S4Dmkm3O1FgU4K5BVTebWxhAx9BcX9UtAZyrxqodvoXN95O7ME
+         PbrF19ChU9k7S+Rl6nGvh0u2YXbZ1hV1IM7esqaJor4MF3u8LC7IfZKs54xv+p6JcY2S
+         lG3w==
+X-Gm-Message-State: AOAM5332IeYWCS0bLN3trlTWPm7vR6OthyLh7DZX5+iv0z7OKP3cmq03
+        ZD1HGfbDtyFH7AzNDFVymRWPZjJyt5nLN+6bYAE=
+X-Google-Smtp-Source: ABdhPJzrlPyT88OWTIwqVCuPkS+ELCxQqXHB8XW4dSf6tnmje1/y8da6JkCp6v1cBZcP3sxFgVKtRQ==
+X-Received: by 2002:a17:90a:1915:: with SMTP id 21mr1237158pjg.24.1631560365455;
+        Mon, 13 Sep 2021 12:12:45 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id h5sm7851101pfr.134.2021.09.13.12.12.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 12:12:44 -0700 (PDT)
+Message-ID: <613fa2ac.1c69fb81.869d2.65a2@mx.google.com>
+Date:   Mon, 13 Sep 2021 12:12:44 -0700 (PDT)
+X-Google-Original-Date: Mon, 13 Sep 2021 19:12:43 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/334] 5.14.4-rc1 review
 To:     linux-kernel@vger.kernel.org
-Cc:     farah kassabri <fkassabri@habana.ai>
-Subject: [PATCH 2/2] habanalabs: fix wait offset handling
-Date:   Mon, 13 Sep 2021 22:11:46 +0300
-Message-Id: <20210913191146.92956-2-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210913191146.92956-1-ogabbay@kernel.org>
-References: <20210913191146.92956-1-ogabbay@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: farah kassabri <fkassabri@habana.ai>
+On Mon, 13 Sep 2021 15:10:54 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.4 release.
+> There are 334 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Add handling for case where the user doesn't set wait offset,
-and keeps it as 0. In such a case the driver will decrement one
-from this zero value which will cause the code to wait for
-wrong number of signals.
-
-The solution is to treat this case as in legacy wait cs,
-and wait for the next signal.
-
-Signed-off-by: farah kassabri <fkassabri@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/hw_queue.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
-index 76b7de8f1406..0743319b10c7 100644
---- a/drivers/misc/habanalabs/common/hw_queue.c
-+++ b/drivers/misc/habanalabs/common/hw_queue.c
-@@ -437,6 +437,7 @@ void hl_hw_queue_encaps_sig_set_sob_info(struct hl_device *hdev,
- 			struct hl_cs_compl *cs_cmpl)
- {
- 	struct hl_cs_encaps_sig_handle *handle = cs->encaps_sig_hdl;
-+	u32 offset = 0;
- 
- 	cs_cmpl->hw_sob = handle->hw_sob;
- 
-@@ -446,9 +447,13 @@ void hl_hw_queue_encaps_sig_set_sob_info(struct hl_device *hdev,
- 	 * set offset 1 for example he mean to wait only for the first
- 	 * signal only, which will be pre_sob_val, and if he set offset 2
- 	 * then the value required is (pre_sob_val + 1) and so on...
-+	 * if user set wait offset to 0, then treat it as legacy wait cs,
-+	 * wait for the next signal.
- 	 */
--	cs_cmpl->sob_val = handle->pre_sob_val +
--			(job->encaps_sig_wait_offset - 1);
-+	if (job->encaps_sig_wait_offset)
-+		offset = job->encaps_sig_wait_offset - 1;
-+
-+	cs_cmpl->sob_val = handle->pre_sob_val + offset;
- }
- 
- static int init_wait_cs(struct hl_device *hdev, struct hl_cs *cs,
--- 
-2.17.1
+5.14.4-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
