@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A9F40831E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DED408321
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238457AbhIMDX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        id S238528AbhIMDaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238439AbhIMDXX (ORCPT
+        with ESMTP id S238149AbhIMDaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:23:23 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D38C061760;
-        Sun, 12 Sep 2021 20:22:08 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso5452146pjb.3;
-        Sun, 12 Sep 2021 20:22:08 -0700 (PDT)
+        Sun, 12 Sep 2021 23:30:08 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5394AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:28:53 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id w6so4899112pll.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:28:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9Tt81VnxLpAm/FYmLBBYEcWxdp6PQAJapzbAtKFP83Q=;
-        b=U2cM+uBnIL+ZzCX0wv8EJOuEtF4RGrmnmZHdALaw4MAD7eS5RBc5STm6peLFa6kFGn
-         82PICzQ4unfMz06LklP/3xP3ZdCJybvcXXnKld3Q7avVdru/vtLyN3j/hRQmBWuw+2b8
-         Yo31s6Wws8kZ+tyYYkZMveyGQpqUqcGidRHJs36L2YCnjQuDzwdbc0MkBftXK0YneeQa
-         l3Z2XOTd2SKdjwZOkt6lkqstPTGtM0MEPLCisn0+/5tLCinx5L1aRaMjM0pHR47rMaHu
-         +RT+DhvIjuWkJni17Nynz+lqr1GOFyWVtjnFasap6flvVof+gAq3G+/LqWUjLw+ERz/a
-         L8Og==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaLP9/Z6E8hGCsnN+XYIzHXxBH+JFCDzB2O8P56kFfE=;
+        b=BQZcl6bNx8LPE+OAJCLA4QskR1C2LECgDxwxyBN04BdZphnw+W63sqtmMoNTllDH8R
+         CIV8g5NqHmsZjD2SCgOx9TDXiOw3OX0VHItrNUfzJimWctTNggMNA0JqJqVFuMVs0HE+
+         IIUQmCdVK1BtRWEr150k4iSKj/wN5cIuN99L37niKkFk/vjBl8eEs9ZnidlfQSpuxNJi
+         YqmFOFjruy1oS2LldgEF3+0406zydnlwsrsmOTz1q0INLZzNz8+CzraD3j0YgaO5zS9c
+         O4v5rMZjvsFRs3ZUQj9Qi20vcEw4RB9Zu0ANKaLfqgkEn6SbcS+uud09d6H4QQ9C2StY
+         Y2PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9Tt81VnxLpAm/FYmLBBYEcWxdp6PQAJapzbAtKFP83Q=;
-        b=CNVJgC9vZkx8irtH02Ryp8Idyn+gq32GIEzMPaVuUUjFhUcrCtbErlxqCV3uH2orOa
-         YWsHutPzsZRDyk4th3RaW+/REoXwnQJWS8ZBJeqWiKRDaOBkyrpfw6CI2/Jt7FEt7WAz
-         CIxFRMTDuWrvBvuyzITMH0QrOM/2LI3GKMJuKSQvfN3GvK9BFlXA+j9xfokwMBcw3OwZ
-         ozBbzCWzOIiKB0IBIvOKE/aEBZ+ROag848dYP2h4t/7EkCjFhAOT4qY4LMI+x3pwT0sP
-         /zw8fUwRpjFLBPIgHt+/LOdSigUc7/3ithzTmO9J9WzZyakXaCO1ik8yMdRpN28ksohx
-         dzTA==
-X-Gm-Message-State: AOAM533yEDdcer3/6CRzZEsPm8Qqe/1Iy3EftynPX+4ThQzvIpQuPxR7
-        sa8A48dmY3KZamOa8JEq1cFbcaaa5WJ2ce/NQg==
-X-Google-Smtp-Source: ABdhPJwxSMPVZUnjLNxAIY0G6MWPtgHEnPCLvtssaFuWq7w8AOw3yMlo5pe3E3LGxIXLPewbjrPgbcnPMOcC69hiQT4=
-X-Received: by 2002:a17:902:7b84:b0:13b:90a7:e270 with SMTP id
- w4-20020a1709027b8400b0013b90a7e270mr3992866pll.21.1631503328145; Sun, 12 Sep
- 2021 20:22:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VaLP9/Z6E8hGCsnN+XYIzHXxBH+JFCDzB2O8P56kFfE=;
+        b=fGckuf1wVoOYy3vhv6uWh+2q9EUyGKa8YqzBEl6575CFTUD5RB2ffsTgLdJcKnu4AJ
+         +jpxI8f2TwQ1BzUr3iY8su4/BikOh6grFcAfYS15rjd3OYs3fRk4fxJlHKdWoFFjCsEZ
+         Ux45cSXrstP5oUk1me1g6iWqqyBzM97s9qZ2Bx+CIYJpOdffY86fhXpsqjMHh+58tiXT
+         Cu48vUK+hKLkTVKxUmKdi3t3Npd4Or28A1so2274/H/q9c0BlD+0pdnl8D5V6946cWYm
+         wM9eNKS3IaztmPtDqc/IaADLsYlqoJolfBfQANGbwD1bRrkDy0lT3A0IogCpXz2hzU/e
+         GvQQ==
+X-Gm-Message-State: AOAM533z0OC2mu14JSNs1RmLXzHc/ZiA+nLgcNGZsiLeBW2/dRnxR/y3
+        qZDzmbcYj2YMSDNi+Pohn98=
+X-Google-Smtp-Source: ABdhPJySEVGIRCkDttLukctbkE1aDdlLMoKUfMSgVLYhOag7G3RrdaCehiT9n1kXzsg0msLfdBeoGA==
+X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr10528214pjb.71.1631503732761;
+        Sun, 12 Sep 2021 20:28:52 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id m12sm665109pjv.29.2021.09.12.20.28.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 20:28:52 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [RESEND PATCH v3 0/3] Add module build support for timer driver
+Date:   Mon, 13 Sep 2021 11:28:31 +0800
+Message-Id: <20210913032834.147237-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
- <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk> <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
- <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
- <CACkBjsaGTkxsrBW+HNsgR0Pj7kbbrK-F5E4hp3CJJjYf3ASimQ@mail.gmail.com>
- <ce4db530-3e7c-1a90-f271-42d471b098ed@gmail.com> <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
- <9b5d8c00-0191-895b-0556-2f8167ab52bd@kernel.dk>
-In-Reply-To: <9b5d8c00-0191-895b-0556-2f8167ab52bd@kernel.dk>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 13 Sep 2021 11:21:57 +0800
-Message-ID: <CACkBjsYGnmLfCV2bNb45WhBiC-DqAvWjP1rb_6fxVZe5hqzOCw@mail.gmail.com>
-Subject: Re: INFO: task hung in io_uring_cancel_generic
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Jens Axboe <axboe@kernel.dk> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8810:50=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 9/12/21 8:26 PM, Hao Sun wrote:
-> > Hi
-> >
-> > Healer found a C reproducer for this crash ("INFO: task hung in
-> > io_ring_exit_work").
-> >
-> > HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
->
-> Does this reproduce on 5.15-rc1? We had a few hang cases fixed for io-wq
-> since that commit 6 days ago.
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Just tried it. No, it did not crash the kernel on 5.15-rc1.
-Following log was printed repeatedly:
-[  647.478557][ T6807]  loop0: p1 p2 < > p3 p4
-[  647.478922][ T6807] loop0: p1 size 11290111 extends beyond EOD, truncate=
-d
-[  647.481111][ T6807] loop0: p3 size 1914664839 extends beyond EOD, trunca=
-ted
-[  647.482512][ T6807] loop0: p4 size 3389030400 extends beyond EOD, trunca=
-ted
+This patchset was based on the previous one [1], and add a
+boilerplate macro for module build purpose according to comments
+from Thomas Gleixner on the patch [2].
 
-It seems that this crash was fixed. Sorry for the dup report.
+Also switch sprd timer driver to use the help macro to support
+module build.
 
->
-> --
-> Jens Axboe
->
+* Changes from v2:
+- Define one macro TIMER_PLATFORM_DECLEAR() to replace the three ones in the v2;
+- Use builtin_platform_driver() to replace module_platform_driver() to make sure
+  unloading timer modules not supported;
+- Add more description to explain that unloading is not supported.
+
+* Changes from v1:
+- Removed TIMER_OF_DECLARE() from timer-sprd.c, and removed ifdef;
+- Rebased on v5.14-rc1.
+
+[1] https://lkml.org/lkml/2020/3/24/72
+[2] https://www.spinics.net/lists/arm-kernel/msg826631.html
+
+Chunyan Zhang (2):
+  clocksource/drivers/timer-of: Add a boilerplate macro for timer module
+    driver
+  clocksource/drivers/sprd: Add module support to Unisoc timer
+
+Saravana Kannan (1):
+  drivers/clocksource/timer-of: Remove __init markings
+
+ drivers/clocksource/Kconfig      |  2 +-
+ drivers/clocksource/timer-of.c   | 30 ++++++++++++++++++++++--------
+ drivers/clocksource/timer-of.h   | 19 +++++++++++++++++--
+ drivers/clocksource/timer-sprd.c | 18 +++++++++++++-----
+ 4 files changed, 53 insertions(+), 16 deletions(-)
+
+-- 
+2.25.1
+
