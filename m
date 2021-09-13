@@ -2,132 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E51409EA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC03409EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244801AbhIMU5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240999AbhIMU5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:57:03 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BBAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:55:47 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so15207074otq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xlOUwRVv/SaM1ZoZrctrKFCQwOAIgRDrG+ihv2UpfRE=;
-        b=hYpUq2fYnjWl98QExTA1Lcm3pKldkQlsz03K4Ceni+OVd4yS3nuQbH84FXn9mymrvU
-         FHRAjNULnrb8zqGIaQf3IZLCJr1mdoFuMD8T8azOCroNQE2U0Z7jCawqQPmCMsajotSH
-         o9p4ellOkdxtgZIeg0x3L9x1+ZZ6Dwtoj/LrA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xlOUwRVv/SaM1ZoZrctrKFCQwOAIgRDrG+ihv2UpfRE=;
-        b=awub2N6MbTQI8YTgFNCFxFF6hqwowqlQp9bQsxXv7MYds0UYMHMhjFvw3V359s3N8J
-         5R6BHwUABeim8sASjAQh3y9opjTm4whWJhMX3TtVib906EMQHzwuOSRAwjbH7BwKsOMr
-         T9rZEk4RobpuhyZzd5Zfp+oazVgpNjmGX5DKtbCoZIeBJx4tPi/Py6F0kKCQXCKAi3TJ
-         npJsgBP30o4MZQME+zOMOpdVYv4R4Vel4wtjnmnHGd662KY7ZO3CEd3qcMPfB70jlleF
-         CTGYVVGW13o52o+CIqzjZTPjbeZf+GHDiJ2GeFNg+q6OlzxFgdlJkJ726+FX0CnrI+4I
-         RA0Q==
-X-Gm-Message-State: AOAM532BRHnCG4JgNbUUHfT1d53NhTCtuXcNEcx5N9z6xeRn9h+x4SMq
-        CXF76iHtR5MzDAdgXOI4y/0ysw==
-X-Google-Smtp-Source: ABdhPJxX6VLJs0ZE/xnRItZvUlnzABjm694fEoRvXc78iBIISqm0Sa0k2us+ag+7HT07CwsTKbCfmQ==
-X-Received: by 2002:a05:6830:818:: with SMTP id r24mr11477370ots.2.1631566547004;
-        Mon, 13 Sep 2021 13:55:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z1sm2139510ooj.25.2021.09.13.13.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 13:55:46 -0700 (PDT)
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
- <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
- <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
- <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
-Date:   Mon, 13 Sep 2021 14:55:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S245027AbhIMU5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240811AbhIMU52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 16:57:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BD306112D;
+        Mon, 13 Sep 2021 20:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631566572;
+        bh=u21F0Qc3W5xKzemF6XyCuLp0711VZEltghW2Zp/TzdM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f5xip+4uLk4XmoJ0loYaWM3ZvFn8qidx0SGsGoeSetL276JRq6TWW4RSS4ylDNa/H
+         127uDkDzo6f2g2G7YWaOdkcuYvzcSMGhN38cMucRjA2Gu0HOtJ4yXzAEQdzh1jU9NA
+         vPGXIsmgwc6sEdsAHfeLEtldgQSLsveFCpwj2fFKUqO+sjQfGsceSFwi00W8zHv7oY
+         yH98jkHuqlcEHEkVsHWsETBH0Lk3UArcgVCgsiDHsI60cdbIRZRoL3gX+6ibaT7T0k
+         c45bzI8nsM1TaIDb9YWaUiBdAwOpasglWftnXginlQJWZ9DmZ05v4Cjigjlq4Sy/RA
+         bTTNxUDF56vmw==
+Received: by mail-ej1-f41.google.com with SMTP id t19so23834034ejr.8;
+        Mon, 13 Sep 2021 13:56:12 -0700 (PDT)
+X-Gm-Message-State: AOAM530vKFStB8757H7UJl3FY1pH5dlE3cpjLz0HPPo/avnw8G1KWrME
+        PsZqzkfbC9D9LVk3c4MJ0tKEzqjkYY1NEd0ERg==
+X-Google-Smtp-Source: ABdhPJxFNgqvcHf/mkvu2z/C3ttLRf+0xoy1kOg9AJ9EbIy/9D7CdlQfST9RTtZNOyeiSK7GBLZzjvJXBt2b2tTdmuM=
+X-Received: by 2002:a17:906:7250:: with SMTP id n16mr14644054ejk.147.1631566570779;
+ Mon, 13 Sep 2021 13:56:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
+ <20210827171534.62380-4-mark.kettenis@xs4all.nl> <YS6dWI4wwg7XkuNA@robh.at.kernel.org>
+ <561431b178447575@bloch.sibelius.xs4all.nl> <8735q9d02q.wl-maz@kernel.org>
+In-Reply-To: <8735q9d02q.wl-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 13 Sep 2021 15:55:59 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJYhrJxGCdUM8Fz50KN-AEARYzvfi3CcmyCVTkr8VCkjQ@mail.gmail.com>
+Message-ID: <CAL_JsqJYhrJxGCdUM8Fz50KN-AEARYzvfi3CcmyCVTkr8VCkjQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] dt-bindings: pci: Add DT bindings for apple,pcie
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        devicetree@vger.kernel.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/21 3:24 PM, Brendan Higgins wrote:
-> On Wed, Sep 8, 2021 at 10:16 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 9/8/21 11:05 AM, Arnd Bergmann wrote:
->>> On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>> On 9/7/21 5:14 PM, Linus Torvalds wrote:
->>>>> The KUNIT macros create all these individually reasonably small
->>>>> initialized structures on stack, and when you have more than a small
->>>>> handful of them the KUNIT infrastructure just makes the stack space
->>>>> explode. Sometimes the compiler will be able to re-use the stack
->>>>> slots, but it seems to be an iffy proposition to depend on it - it
->>>>> seems to be a combination of luck and various config options.
->>>>>
->>>>
->>>> I have been concerned about these macros creeping in for a while.
->>>> I will take a closer look and work with Brendan to come with a plan
->>>> to address it.
->>>
->>> I've previously sent patches to turn off the structleak plugin for
->>> any kunit test file to work around this, but only a few of those patches
->>> got merged and new files have been added since. It would
->>> definitely help to come up with a proper fix, but my structleak-disable
->>> hack should be sufficient as a quick fix.
->>>
->>
->> Looks like these are RFC patches and the discussion went cold. Let's pick
->> this back up and we can make progress.
->>
->> https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
-> 
-> I can try to get the patch reapplying and send it out (I just figured
-> that Arnd or Kees would want to send it out :-)  since it was your
-> idea).
-> 
+msi-On Sun, Sep 12, 2021 at 3:13 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Wed, 01 Sep 2021 12:29:22 +0100,
+> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> >
+> > > Date: Tue, 31 Aug 2021 16:21:28 -0500
+> > > From: Rob Herring <robh@kernel.org>
+> > >
+> > > On Fri, Aug 27, 2021 at 07:15:28PM +0200, Mark Kettenis wrote:
+> > > > From: Mark Kettenis <kettenis@openbsd.org>
+> > > >
+> > > > The Apple PCIe host controller is a PCIe host controller with
+> > > > multiple root ports present in Apple ARM SoC platforms, including
+> > > > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > > >
+> > > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > > > ---
+> > > >  .../devicetree/bindings/pci/apple,pcie.yaml   | 165 ++++++++++++++++++
+> > > >  MAINTAINERS                                   |   1 +
+> > > >  2 files changed, 166 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..97a126db935a
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > > @@ -0,0 +1,165 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: Apple PCIe host controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Mark Kettenis <kettenis@openbsd.org>
+> > > > +
+> > > > +description: |
+> > > > +  The Apple PCIe host controller is a PCIe host controller with
+> > > > +  multiple root ports present in Apple ARM SoC platforms, including
+> > > > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > > > +  The controller incorporates Synopsys DesigWare PCIe logic to
+> > > > +  implements its root ports.  But the ATU found on most DesignWare
+> > > > +  PCIe host bridges is absent.
+> > > > +
+> > > > +  All root ports share a single ECAM space, but separate GPIOs are
+> > > > +  used to take the PCI devices on those ports out of reset.  Therefore
+> > > > +  the standard "reset-gpios" and "max-link-speed" properties appear on
+> > > > +  the child nodes that represent the PCI bridges that correspond to
+> > > > +  the individual root ports.
+> > > > +
+> > > > +  MSIs are handled by the PCIe controller and translated into regular
+> > > > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
+> > > > +  distributed over the root ports as the OS sees fit by programming
+> > > > +  the PCIe controller's port registers.
+> > > > +
+> > > > +allOf:
+> > > > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > > > +  - $ref: ../interrupt-controller/msi-controller.yaml#
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    items:
+> > > > +      - const: apple,t8103-pcie
+> > > > +      - const: apple,pcie
+> > > > +
+> > > > +  reg:
+> > > > +    minItems: 3
+> > > > +    maxItems: 5
+> > > > +
+> > > > +  reg-names:
+> > > > +    minItems: 3
+> > > > +    maxItems: 5
+> > > > +    items:
+> > > > +      - const: config
+> > > > +      - const: rc
+> > > > +      - const: port0
+> > > > +      - const: port1
+> > > > +      - const: port2
+> > > > +
+> > > > +  ranges:
+> > > > +    minItems: 2
+> > > > +    maxItems: 2
+> > > > +
+> > > > +  interrupts:
+> > > > +    description:
+> > > > +      Interrupt specifiers, one for each root port.
+> > > > +    minItems: 1
+> > > > +    maxItems: 3
+> > > > +
+> > > > +  msi-parent: true
+> > >
+> > > I still think this should be dropped as it is meaningless with
+> > > 'msi-controller' present.
+> >
+> > Hmm.  As far as I can tell all current arm64 device trees that
+> > describe hardware with an MSI controller integrated on the PCI host
+> > bridge have both the 'msi-controller' and 'msi-parent' properties.
+> > See arch/arm64/boot/dts/marvell/aramada-37xx.dtsi and
+> > arch/arm64/boot/dts/xilinx/zynqmp.dtsi.
 
-Brendan,
+Humm, maybe it is the DWC based bindings and driver that are wrong
+here. All the ones with an 'msi' interrupt (i.e. the DWC built-in MSI
+controller) have neither 'msi-parent' nor 'msi-controller' property.
 
-Would you like to send me the fix with Suggested-by for Arnd or Kees?
+> > The current OpenBSD code will fail to map the MSIs if 'msi-parent'
+> > isn't there, although Linux seems to fall back on an MSI domain that's
+> > directly attached to the host bridge if the 'msi-parent' property is
+> > missing.  I think it makes sense to be explicit here, but if both you
+> > and Marc think it shouldn't be there, I probably can change the
+> > OpenBSD to do a similar fallback.
+>
+> I think this matches the behaviour we have for interrupt-controller vs
+> interrupt-parent. I fail to see why msi-controller/msi-parent should
+> behave differently. And since there is an established OS that actually
+> requires this, I don't see how we can today make it illegal.
 
-thanks,
--- Shuah
+Which behavior exactly? An interrupt-controller node with
+interrupt-parent pointing to itself? That makes little sense. As far
+as finding the parent, the behavior for interrupts is if
+'interrupt-controller' is found in a parent node, then that is the
+interrupt parent unless 'interrupt-parent' is found. That is the same
+behavior I'm suggesting here.
+
+But yes, if this is already needed, then we need to keep it. However,
+then my concern is other platforms working on OpenBSD if Linux allows
+something that OpenBSD does not.
+
+Rob
