@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1254088B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379524088B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238886AbhIMKDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:03:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:59950 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238444AbhIMKDs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:03:48 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 25E301C0BA4; Mon, 13 Sep 2021 12:02:31 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 12:02:30 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
- builds"
-Message-ID: <20210913100230.GB11752@amd>
-References: <20210907183843.33028-1-ndesaulniers@google.com>
- <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
- <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
- <YTfkO2PdnBXQXvsm@elver.google.com>
- <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
- <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org>
- <20210913093256.GA12225@amd>
- <YT8d5a6ZVW7JlsRl@kroah.com>
+        id S238881AbhIMKGP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 06:06:15 -0400
+Received: from mx1.emlix.com ([136.243.223.33]:51888 "EHLO mx1.emlix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238939AbhIMKE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:04:26 -0400
+Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id EC0E25FA7A;
+        Mon, 13 Sep 2021 12:02:58 +0200 (CEST)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] workqueue: annotate alloc_workqueue() as printf
+Date:   Mon, 13 Sep 2021 12:02:56 +0200
+Message-ID: <2947630.YJcLE3A3dI@mobilepool36.emlix.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="St7VIuEGZ6dlpu13"
-Content-Disposition: inline
-In-Reply-To: <YT8d5a6ZVW7JlsRl@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This also enables checking of allows alloc_ordered_workqueue().
 
---St7VIuEGZ6dlpu13
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+---
+ include/linux/workqueue.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Hi!
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 2ebef6b1a3d6..49e93f5b46ad 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -399,9 +399,9 @@ extern struct workqueue_struct *system_freezable_power_efficient_wq;
+  * RETURNS:
+  * Pointer to the allocated workqueue on success, %NULL on failure.
+  */
+-struct workqueue_struct *alloc_workqueue(const char *fmt,
+-					 unsigned int flags,
+-					 int max_active, ...);
++__printf(1, 4) struct workqueue_struct *alloc_workqueue(const char *fmt,
++							unsigned int flags,
++							int max_active, ...);
+ 
+ /**
+  * alloc_ordered_workqueue - allocate an ordered workqueue
+-- 
+2.33.0
 
-> > Do we really want developers treat warnings as errors? When the code
-> > is okay but some random version of gcc dislikes it...
-> >=20
-> > Plus, there's question of stable. We already get ton of churn there
-> > ("this fixes random warning"). WERROR will only encourage that...
->=20
-> I will not be backporting this patch to older stable kernels, but I
-> _want_ to see stable builds build with no warnings.  When we add
-> warnings, they are almost always things we need to fix up properly.
 
-Well, everyone _wants_ to see clean builds... unless the price is too
-high.
+-- 
+Rolf Eike Beer, emlix GmbH, https://www.emlix.com
+Fon +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 Göttingen, Germany
+Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
+Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
 
-> Over time, I have worked to reduce the number of build warnings in older
-> stable kernels.  For newer versions of gcc, sometimes that is
-> impossible, but we are close...
+emlix - smart embedded open source
 
-You clearly can't backport this patch, but for 5.16-stable, you'll
-have it in, and now warnings are same as errors... and I don't believe
-that's good idea for stable.
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---St7VIuEGZ6dlpu13
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmE/IbYACgkQMOfwapXb+vKcjQCgsx/nkYPj+Zfb6WZVMcX1mNgO
-QQcAn0SIZwPJI7cQj6g6p75gp2KIo6FC
-=iJmG
------END PGP SIGNATURE-----
-
---St7VIuEGZ6dlpu13--
