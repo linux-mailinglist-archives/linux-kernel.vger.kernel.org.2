@@ -2,315 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F55409C2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AFC409C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239137AbhIMS2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:28:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347266AbhIMS2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:28:05 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DF95608FB;
-        Mon, 13 Sep 2021 18:26:49 +0000 (UTC)
-Received: from [198.52.44.129] (helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mPqeg-00AYPD-Ht; Mon, 13 Sep 2021 19:26:10 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Hector Martin <marcan@marcan.st>,
-        Robin Murphy <Robin.Murphy@arm.com>, kernel-team@android.com
-Subject: [PATCH v3 10/10] PCI: apple: Configure RID to SID mapper on device addition
-Date:   Mon, 13 Sep 2021 19:25:50 +0100
-Message-Id: <20210913182550.264165-11-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210913182550.264165-1-maz@kernel.org>
-References: <20210913182550.264165-1-maz@kernel.org>
+        id S239946AbhIMS2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:28:53 -0400
+Received: from mail-eastus2namln2015.outbound.protection.outlook.com ([40.93.3.15]:46616
+        "EHLO na01-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240167AbhIMS2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:28:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dmK+JWPO0dnZVTC5qcNiGi4Ayu6RyU+8ki7aQNCOnsfJzMBK6E7VOyGizQgffwyRsbHArg2AqJHeCccsUBpvAJN3XgxU6NWQyMFrLToRKW2cWrVNl5/bEvdR33+JOn4idvBJ8mI+iYOBwkYKZ50mb4DAKVOwWIPKzqRK4KITbQjrOExMWjXssQAgO4Lba/KUh054ZLnHrS5Mm10LYSOb+0Jskt0iHg7nBWrCaYTGH3WoXcgLEtnaxw7X0jnd8mXH1jGH0tu2xMK3a1wfr+e5mWnTKtz6L8w45HeImFsrCGQtLx7AIr1xS+av3z8MBmOR7vOYdaO16kBOeErVwDqvQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=TM5leLNmnmw/Hp8H9EfabCaP0N4tM62Zh7h84dlHb6g=;
+ b=Av9hhaet32SGq6REpGbygwAbKCa3x6C2GNGftkhy2yPgrySgcQex4lmv9onEsxEmYRF4yrWdoHVix9jxyQewM4GKVB0HRNJPWpkOkCBs8mcss1WQ5Q5ZSHIa7Sb4wkp3SnFxeBnt0Mev4FrbZFZpuzjCYoq61eXnVqUoO7WyWBXJViuAaOeoib7i7rND4LrdnU1h0nffpNTzSpzgJZyLPOf27NoIZOKWsJtkzfQKq3YJ24GqVQsrsU7nAHqcZ64pQzgk5wad4KX/Oc+OyI1ETjDQeNmhphIfDT63/EF5ziakNmG8mcch2NpHvEord9uLRbnL3VvSVBGVheF+gmITYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TM5leLNmnmw/Hp8H9EfabCaP0N4tM62Zh7h84dlHb6g=;
+ b=eGP7tIU0Bi7r+jdD015dNZopdZ4z8qcM2CizQYLyFnYeZJvJk/LVxiGOtLK+Z3oriuUeaGAm7deSV2/g6QEeioi6FvOVZZEPyOoyiPI0dE2BBS6YcD/PXflQdi12V/AhzXzTD5DtTjHL9pIvsd74LrkDkAgBkcMDHFMKPcqQDcY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:37::26) by MN2PR21MB1501.namprd21.prod.outlook.com
+ (2603:10b6:208:1f6::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.2; Mon, 13 Sep
+ 2021 18:27:27 +0000
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::35fa:e8c:d9:39c3]) by BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::35fa:e8c:d9:39c3%7]) with mapi id 15.20.4544.004; Mon, 13 Sep 2021
+ 18:27:27 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     drawat.floss@gmail.com, haiyangz@microsoft.com, airlied@linux.ie,
+        daniel@ffwll.ch, tzimmermann@suse.de,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH] drm/hyperv: Fix double mouse pointers
+Date:   Mon, 13 Sep 2021 11:26:45 -0700
+Message-Id: <20210913182645.17075-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: MWHPR1401CA0010.namprd14.prod.outlook.com
+ (2603:10b6:301:4b::20) To BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:37::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 198.52.44.129
-X-SA-Exim-Rcpt-To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, sven@svenpeter.dev, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:9:822d:5dff:feb8:fa01) by MWHPR1401CA0010.namprd14.prod.outlook.com (2603:10b6:301:4b::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 18:27:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 920b8603-62b2-4992-c149-08d976e4237d
+X-MS-TrafficTypeDiagnostic: MN2PR21MB1501:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR21MB1501BA82CE26A6FF30ADDBE3BFD99@MN2PR21MB1501.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 80hNAOIZPL94KAkU6OwyoyWXUmtAkkyExonloV9DnyZVNFD4s0Ho/VMO8Wa1e8F12PoX/NZHxdBAhvFQPd5O27+Yb7WR3KmKe7Iambeqofez5M1nBxs17xcE2IjNWmqXGpvzDOX+J80MrZlhtzue6loYJ3OiBJBAxuOBgJG72jDIYH2xhwxXUskxb6z6wqUIEoGfJsLFqgXIDeETtq/0GL/MVmvhrgWO+QnHEbKazPAN0dfwMafwXQHuwGHRuzZVnS8hOYtz9XozBPaaDW4aBIyB7S4z/vaGl0HsmtnYTwR7UW4JCxzL/twjFJucJMPIHTKbQFwK1HgE0XvPcQdA/t/yhYInXf3ihH5F9wnIEnhsTBWqz8cQyHabGe+pRjEp48PtBY5QnNnuO3MTHCV7EIsH+XmKmRj6Vo3AYHwxt5hCI4v2ql6ebhj4fm4EXS8urOYgpCKTkyhPjpFTb2DBdJEQh89TDmv2C3LI0OF49rHxT/odKARHX1/GVFP875ldVljZhKWFY028smlDKbhSLU013+amLx/hhb6Coiwh/it8ULtbpr9z7M3L5Pc2H293EHpuRyFfRPOvfcVVXW5NI067CFnTwkUY5BJxPDuP+rMwOa/GS2VRb39gJomqcoHaXtzqAMQu9Z6Hb6rbZuCpgg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(8676002)(6486002)(2616005)(107886003)(66556008)(5660300002)(186003)(508600001)(66946007)(6666004)(316002)(10290500003)(82960400001)(38100700002)(36756003)(52116002)(86362001)(2906002)(7696005)(66476007)(8936002)(82950400001)(1076003)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?84tk34Xp1xxlO76GAgd9e8cA2Wp3n/F+US1RuwX4YBHmT3CeTaVYMO/jlcLG?=
+ =?us-ascii?Q?by3ncTmklVviUMPBfKO4FCVkrDz8DU4iMGYdvJ435PztVKGqQallhJuPyJL+?=
+ =?us-ascii?Q?I82FTdfAhaRugrKY/INQvVAjjIysLvM6DkiA3KV1Ct5y7pG5jaRQ2GFwfd0i?=
+ =?us-ascii?Q?Le6lZpS0csl9K1G7RU3xWcIHmpb8S7pDMStvguY32Mpv0UxMfoGqomBSBkc5?=
+ =?us-ascii?Q?mjoBtVK3bpMmdEkW81vCul6cViYRkxVOdahhoMnm4HLDgMlnoHm3kaRiz1cF?=
+ =?us-ascii?Q?xUao3PunCgIJPMZiWIE+giGAUYfgmO00jXGN3MwSomElKA158aZArlQ+qmTs?=
+ =?us-ascii?Q?K7mYImVxlrlN82Hia3qdDfptDfxY0cESvcbzQa0qE1BV7Zz8Y0ztPwWm2b2C?=
+ =?us-ascii?Q?6PkE/8Dq+E0+Oeltjn2u+eZuxrxbScmzMB6qRuIg5iIO7dA7eAOV69t8m5jL?=
+ =?us-ascii?Q?i53XimzSZxUDMDnVlMrpU6Fv+Ck9jBTPWEiB4BdjlTUq1BIWGjA3lRnfoSc+?=
+ =?us-ascii?Q?SQvMi8AjhQTOSdXTF7SJuHNaFI0ArHNq7Wi9eZKOJ358aRp+LL8GEmh7ZeFk?=
+ =?us-ascii?Q?0XFk2FUr2kOjdmMgtuZcGcBnJDoMUtzeA7Bi9XaUVB/mB7ZRZ25PHj/8+/rs?=
+ =?us-ascii?Q?IRPbc0LBC6jqBRyBcG80mLMarjiuu3fyW5Ws2Ps+uSh813X7UFE19HFrxfBn?=
+ =?us-ascii?Q?5qPTPy7e9RBhYjWbWO76FYOsAYdXHwSKe8V0ZmVpXo4jCirOVslXkjfRz8xL?=
+ =?us-ascii?Q?G3muk5MEjuvEd07AK4hoZ+UY3U9fhGSleLes0ERAL0HfdOR85w2e1fTL0jM2?=
+ =?us-ascii?Q?TsmFG6LplY1eZ60qlr89TIhURD3tEXQHY5y0emClbbAYrWlFlXGCZy3s84Na?=
+ =?us-ascii?Q?4r4H5SK8f9S0leXmzoNCts1SbDWZ5QcaNzlETont3HsJgJee5HIcASpc6g8Q?=
+ =?us-ascii?Q?sjBxj8qKYs4jtltUoUMQqBgKEa53QGzSF06yTubQZrok4e90YvPbUrD2WGgY?=
+ =?us-ascii?Q?TZuMMrP6YdXdiO4mJoMWAczj9m67870n7tHjq0oF1a28jhpSqqB5CP3gtGon?=
+ =?us-ascii?Q?tZcrUv9dA6gy2Te713R3TxD4fQ+qFv9UhBoqDBf4x65FTKfdgJWDlC7f15G/?=
+ =?us-ascii?Q?+TWZKgHERoru8sj0BBtqNVzV7sVRtOyrIa/78nrXZvA3LNhMXhrq2s0Kq8Ih?=
+ =?us-ascii?Q?hPMce27mP5+Jny+Tnof7BG5d2C8WGbKZ4ZllpbitEUFQn+DvqE72Blu167Qy?=
+ =?us-ascii?Q?oeCmmdzds2CWi0dCAymZ/kDctR/tnfjj2qWg2ahjM1imiMR9mNO6z+dbdkrU?=
+ =?us-ascii?Q?0h2gJjyOtpt5sGtUd+N9NMs7n9NGGC/kwWSR4zCa3J+5ttdjmkRsuru/Vool?=
+ =?us-ascii?Q?OBSVzVuNtrEDV/z7L6lmpkK0FX4q?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 920b8603-62b2-4992-c149-08d976e4237d
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 18:27:27.4957
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hCuXEs4duunh695PcMCaDVAFhHBgHK+8SyxL2O825Xx5VFvSKAnef648VBj+a1tmJSZKWZVX8957Gu+Bb5FoWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1501
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Apple PCIe controller doesn't directly feed the endpoint's
-Requester ID to the IOMMU (DART), but instead maps RIDs onto
-Stream IDs (SIDs). The DART and the PCIe controller must thus
-agree on the SIDs that are used for translation (by using
-the 'iommu-map' property).
+It looks like Hyper-V supports a hardware cursor feature. It is not used
+by Linux VM, but the Hyper-V host still draws a point as an extra mouse
+pointer, which is unwanted, especially when Xorg is running.
 
-For this purpose, parse the 'iommu-map' property each time a
-device gets added, and use the resulting translation to configure
-the PCIe RID-to-SID mapper. Similarily, remove the translation
-if/when the device gets removed.
+The hyperv_fb driver uses synthvid_send_ptr() to hide the unwanted pointer.
+When the hyperv_drm driver was developed, the function synthvid_send_ptr()
+was not copied from the hyperv_fb driver. Fix the issue by adding the
+function into hyperv_drm.
 
-This is all driven from a bus notifier which gets registered at
-probe time. Hopefully this is the only PCI controller driver
-in the whole system.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Fixes: 76c56a5affeb ("drm/hyperv: Add DRM driver for hyperv synthetic video device")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Cc: Deepak Rawat <drawat.floss@gmail.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
 ---
- drivers/pci/controller/pcie-apple.c | 158 +++++++++++++++++++++++++++-
- 1 file changed, 156 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/hyperv/hyperv_drm.h         |  1 +
+ drivers/gpu/drm/hyperv/hyperv_drm_modeset.c |  1 +
+ drivers/gpu/drm/hyperv/hyperv_drm_proto.c   | 39 ++++++++++++++++++++-
+ 3 files changed, 40 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-index 76344223245d..68d71eabe708 100644
---- a/drivers/pci/controller/pcie-apple.c
-+++ b/drivers/pci/controller/pcie-apple.c
-@@ -23,8 +23,10 @@
- #include <linux/iopoll.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
-+#include <linux/list.h>
- #include <linux/module.h>
- #include <linux/msi.h>
-+#include <linux/notifier.h>
- #include <linux/of_irq.h>
- #include <linux/pci-ecam.h>
+diff --git a/drivers/gpu/drm/hyperv/hyperv_drm.h b/drivers/gpu/drm/hyperv/hyperv_drm.h
+index 886add4f9cd0..27bfd27c05be 100644
+--- a/drivers/gpu/drm/hyperv/hyperv_drm.h
++++ b/drivers/gpu/drm/hyperv/hyperv_drm.h
+@@ -46,6 +46,7 @@ int hyperv_mode_config_init(struct hyperv_drm_device *hv);
+ int hyperv_update_vram_location(struct hv_device *hdev, phys_addr_t vram_pp);
+ int hyperv_update_situation(struct hv_device *hdev, u8 active, u32 bpp,
+ 			    u32 w, u32 h, u32 pitch);
++int hyperv_send_ptr(struct hv_device *hdev);
+ int hyperv_update_dirt(struct hv_device *hdev, struct drm_rect *rect);
+ int hyperv_connect_vsp(struct hv_device *hdev);
  
-@@ -116,6 +118,8 @@
- #define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
- #define PORT_PREFMEM_ENABLE		0x00994
+diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+index 3aaee4730ec6..e21c82cf3326 100644
+--- a/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
++++ b/drivers/gpu/drm/hyperv/hyperv_drm_modeset.c
+@@ -101,6 +101,7 @@ static void hyperv_pipe_enable(struct drm_simple_display_pipe *pipe,
+ 	struct hyperv_drm_device *hv = to_hv(pipe->crtc.dev);
+ 	struct drm_shadow_plane_state *shadow_plane_state = to_drm_shadow_plane_state(plane_state);
  
-+#define MAX_RID2SID			64
-+
- /*
-  * The doorbell address is set to 0xfffff000, which by convention
-  * matches what MacOS does, and it is possible to use any other
-@@ -131,6 +135,7 @@ struct apple_pcie {
- 	void __iomem            *base;
- 	struct irq_domain	*domain;
- 	unsigned long		*bitmap;
-+	struct list_head	ports;
- 	struct completion	event;
- 	struct irq_fwspec	fwspec;
- 	u32			nvecs;
-@@ -141,6 +146,8 @@ struct apple_pcie_port {
- 	struct device_node	*np;
- 	void __iomem		*base;
- 	struct irq_domain	*domain;
-+	struct list_head	entry;
-+	DECLARE_BITMAP(		sid_map, MAX_RID2SID);
- 	int			idx;
- };
- 
-@@ -488,6 +495,14 @@ static int apple_pcie_setup_refclk(struct apple_pcie *pcie,
++	hyperv_send_ptr(hv->hdev);
+ 	hyperv_update_situation(hv->hdev, 1,  hv->screen_depth,
+ 				crtc_state->mode.hdisplay,
+ 				crtc_state->mode.vdisplay,
+diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_proto.c b/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
+index 6d4bdccfbd1a..1ea7a0432320 100644
+--- a/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
++++ b/drivers/gpu/drm/hyperv/hyperv_drm_proto.c
+@@ -299,6 +299,40 @@ int hyperv_update_situation(struct hv_device *hdev, u8 active, u32 bpp,
  	return 0;
  }
  
-+static void apple_pcie_rid2sid_write(struct apple_pcie_port *port,
-+				     int idx, u32 val)
++/* Send mouse pointer info to host */
++int hyperv_send_ptr(struct hv_device *hdev)
 +{
-+	writel_relaxed(val, port->base + PORT_RID2SID(idx));
-+	/* Read back to ensure completion of the write */
-+	(void)readl_relaxed(port->base + PORT_RID2SID(idx));
-+}
++	struct synthvid_msg msg;
 +
- static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 				 struct device_node *np)
- {
-@@ -495,7 +510,7 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 	struct apple_pcie_port *port;
- 	struct gpio_desc *reset;
- 	u32 stat, idx;
--	int ret;
-+	int ret, i;
- 
- 	reset = gpiod_get_from_of_node(np, "reset-gpios", 0,
- 				       GPIOD_OUT_LOW, "#PERST");
-@@ -542,6 +557,11 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 	if (ret)
- 		return ret;
- 
-+	/* Reset all RID/SID mappings */
-+	for (i = 0; i < MAX_RID2SID; i++)
-+		apple_pcie_rid2sid_write(port, i, 0);
++	memset(&msg, 0, sizeof(struct synthvid_msg));
++	msg.vid_hdr.type = SYNTHVID_POINTER_POSITION;
++	msg.vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
++		sizeof(struct synthvid_pointer_position);
++	msg.ptr_pos.is_visible = 1;
++	msg.ptr_pos.video_output = 0;
++	msg.ptr_pos.image_x = 0;
++	msg.ptr_pos.image_y = 0;
++	hyperv_sendpacket(hdev, &msg);
 +
-+	list_add_tail(&port->entry, &pcie->ports);
- 	init_completion(&pcie->event);
- 
- 	ret = apple_pcie_port_register_irqs(port);
-@@ -604,6 +624,122 @@ static int apple_msi_init(struct apple_pcie *pcie)
- 	return 0;
- }
- 
-+static struct apple_pcie_port *apple_pcie_get_port(struct pci_dev *pdev)
-+{
-+	struct pci_config_window *cfg = pdev->sysdata;
-+	struct apple_pcie *pcie = cfg->priv;
-+	struct pci_dev *port_pdev = pdev;
-+	struct apple_pcie_port *port;
-+
-+	/* Find the root port this device is on */
-+	while (!pci_is_root_bus(port_pdev->bus))
-+		port_pdev = pci_upstream_bridge(port_pdev);
-+
-+	/* If finding the port itself, nothing to do */
-+	if (pdev == port_pdev)
-+		return NULL;
-+
-+	list_for_each_entry(port, &pcie->ports, entry) {
-+		if (port->idx == PCI_SLOT(port_pdev->devfn))
-+			return port;
-+	}
-+
-+	return NULL;
-+}
-+
-+static int apple_pcie_add_device(struct pci_dev *pdev)
-+{
-+	struct apple_pcie_port *port;
-+	int sid_idx, err;
-+	u32 rid, sid;
-+
-+	port = apple_pcie_get_port(pdev);
-+	if (!port)
-+		return 0;
-+
-+	dev_dbg(&pdev->dev, "added to bus %s, index %d\n",
-+		pci_name(pdev->bus->self), port->idx);
-+
-+	rid = PCI_DEVID(pdev->bus->number, pdev->devfn);
-+	err = of_map_id(port->pcie->dev->of_node, rid, "iommu-map",
-+			"iommu-map-mask", NULL, &sid);
-+	if (err)
-+		return err;
-+
-+	mutex_lock(&port->pcie->lock);
-+	sid_idx = bitmap_find_free_region(port->sid_map, MAX_RID2SID, 0);
-+	mutex_unlock(&port->pcie->lock);
-+
-+	if (sid_idx < 0)
-+		return -ENOSPC;
-+
-+	apple_pcie_rid2sid_write(port, sid_idx,
-+				 PORT_RID2SID_VALID |
-+				 (sid << PORT_RID2SID_SID_SHIFT) | rid);
-+
-+	dev_dbg(&pdev->dev, "mapping RID%x to SID%x (index %d)\n",
-+		rid, sid, sid_idx);
-+	return 0;
-+}
-+
-+static void apple_pcie_release_device(struct pci_dev *pdev)
-+{
-+	struct apple_pcie_port *port;
-+	u32 rid;
-+	int idx;
-+
-+	port = apple_pcie_get_port(pdev);
-+	if (!port)
-+		return;
-+
-+	rid = PCI_DEVID(pdev->bus->number, pdev->devfn);
-+
-+	mutex_lock(&port->pcie->lock);
-+
-+	for_each_set_bit(idx, port->sid_map, MAX_RID2SID) {
-+		u32 val;
-+
-+		val = readl_relaxed(port->base + PORT_RID2SID(idx));
-+		if ((val & 0xffff) == rid) {
-+			apple_pcie_rid2sid_write(port, idx, 0);
-+			bitmap_release_region(port->sid_map, idx, 0);
-+			dev_dbg(&pdev->dev, "Released %x (%d)\n", val, idx);
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&port->pcie->lock);
-+}
-+
-+static int apple_pcie_bus_notifier(struct notifier_block *nb,
-+				   unsigned long action,
-+				   void *data)
-+{
-+	struct device *dev = data;
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+
-+	/*
-+	 * This is a bit ugly. We assume that if we get notified for
-+	 * any PCI device, we must be in charge for it, and that there
-+	 * is no other PCI controller in the whole system. It probably
-+	 * holds for now, but for how long?
-+	 */
-+	switch (action) {
-+	case BUS_NOTIFY_ADD_DEVICE:
-+		apple_pcie_add_device(pdev);
-+		break;
-+	case BUS_NOTIFY_DEL_DEVICE:
-+		apple_pcie_release_device(pdev);
-+		break;
-+	}
++	memset(&msg, 0, sizeof(struct synthvid_msg));
++	msg.vid_hdr.type = SYNTHVID_POINTER_SHAPE;
++	msg.vid_hdr.size = sizeof(struct synthvid_msg_hdr) +
++		sizeof(struct synthvid_pointer_shape);
++	msg.ptr_shape.part_idx = SYNTHVID_CURSOR_COMPLETE;
++	msg.ptr_shape.is_argb = 1;
++	msg.ptr_shape.width = 1;
++	msg.ptr_shape.height = 1;
++	msg.ptr_shape.hot_x = 0;
++	msg.ptr_shape.hot_y = 0;
++	msg.ptr_shape.data[0] = 0;
++	msg.ptr_shape.data[1] = 1;
++	msg.ptr_shape.data[2] = 1;
++	msg.ptr_shape.data[3] = 1;
++	hyperv_sendpacket(hdev, &msg);
 +
 +	return 0;
 +}
 +
-+static struct notifier_block apple_pcie_nb = {
-+	.notifier_call = apple_pcie_bus_notifier,
-+};
-+
- static int apple_pcie_init(struct pci_config_window *cfg)
+ int hyperv_update_dirt(struct hv_device *hdev, struct drm_rect *rect)
  {
- 	struct device *dev = cfg->parent;
-@@ -625,6 +761,9 @@ static int apple_pcie_init(struct pci_config_window *cfg)
- 	if (IS_ERR(pcie->base))
- 		return -ENODEV;
+ 	struct hyperv_drm_device *hv = hv_get_drvdata(hdev);
+@@ -392,8 +426,11 @@ static void hyperv_receive_sub(struct hv_device *hdev)
+ 		return;
+ 	}
  
-+	cfg->priv = pcie;
-+	INIT_LIST_HEAD(&pcie->ports);
-+
- 	for_each_child_of_node(dev->of_node, of_port) {
- 		ret = apple_pcie_setup_port(pcie, of_port);
- 		if (ret) {
-@@ -636,6 +775,21 @@ static int apple_pcie_init(struct pci_config_window *cfg)
- 	return apple_msi_init(pcie);
+-	if (msg->vid_hdr.type == SYNTHVID_FEATURE_CHANGE)
++	if (msg->vid_hdr.type == SYNTHVID_FEATURE_CHANGE) {
+ 		hv->dirt_needed = msg->feature_chg.is_dirt_needed;
++		if (hv->dirt_needed)
++			hyperv_send_ptr(hv->hdev);
++	}
  }
  
-+static int apple_pcie_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = bus_register_notifier(&pci_bus_type, &apple_pcie_nb);
-+	if (ret)
-+		return ret;
-+
-+	ret = pci_host_common_probe(pdev);
-+	if (ret)
-+		bus_unregister_notifier(&pci_bus_type, &apple_pcie_nb);
-+
-+	return ret;
-+}
-+
- static const struct pci_ecam_ops apple_pcie_cfg_ecam_ops = {
- 	.init		= apple_pcie_init,
- 	.pci_ops	= {
-@@ -652,7 +806,7 @@ static const struct of_device_id apple_pcie_of_match[] = {
- MODULE_DEVICE_TABLE(of, apple_pcie_of_match);
- 
- static struct platform_driver apple_pcie_driver = {
--	.probe	= pci_host_common_probe,
-+	.probe	= apple_pcie_probe,
- 	.driver	= {
- 		.name			= "pcie-apple",
- 		.of_match_table		= apple_pcie_of_match,
+ static void hyperv_receive(void *ctx)
 -- 
-2.30.2
+2.25.1
 
