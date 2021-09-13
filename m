@@ -2,254 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA0140860C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DBD40860F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237786AbhIMIFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:05:51 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:37778 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237722AbhIMIFr (ORCPT
+        id S237808AbhIMIGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237722AbhIMIGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:05:47 -0400
-Received: by mail-io1-f70.google.com with SMTP id e68-20020a6bb547000000b005d06de54ab7so2863471iof.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:04:32 -0700 (PDT)
+        Mon, 13 Sep 2021 04:06:22 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A80C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:05:07 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id u16so13207200wrn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RXY1tPoSEl+8M4X5lxSarpt4hpv0pzy83yCKr/zoENA=;
+        b=rNr+O/67esY0hgWf0Yp7SJb5ajXLS1aQHjGismtobxw0LiOLBEVEoJRv5cEIfZYgDQ
+         6h3WJ6pJU/LRWfyvBVRDh6kwM+0INwPbDiCVGz/y5UZMzuve7jAR36220/VugQRGD1nr
+         ta5WennfAkM39TwlyoZNRoBFtRZpkNbHxUtIUdCqRFWaDGF/tApqq3TE1uYKc+p9ot7G
+         0AZr5MM+/74kX+WRU7sCoqNWWLJ7NuaPycXiQOSweuwEMwqlW4y6OXa3aBV71jKHSm0k
+         TxNxptBp+ZbYwtPLELx8bd12b3u39FPvRltoMjB4M+tRtqMFFrI5Z1fG9+bZQx17hhB0
+         Kywg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=PjwXxTwlsEf2JX6e7/eNYgkSX09JO8xcTqxRo9lighc=;
-        b=Xn7lzD4BRupr1TVLyTCn/1ryTNEkGmkMDg2XezjrXefp0ZmOIqyM4C+wZgXpq9rDxk
-         a15vqUHTDJFrt0C/Fh40Kl72xM7r5WScdtGk0+En2v3SJ835yleAk45jaeNETygGSa05
-         gYyWZp4+F2OqCKo23MbuhBMtI8oKH+JE5H69ub1bALulQT77Ag+u6HBX6zZ4RZxiGYTJ
-         d5XtU6NwQy+pwqu/oYA7qe1QOOABzCJjzMZDDKkIorb89ql/e8YdligWYSSZA7Gt4U91
-         jG00mK132xjRVA1CE3w6uNngwdzS4+Ng0fRjwFVgsulanpoI0vSxVAqsz+7HWJZFsQw4
-         /Hpg==
-X-Gm-Message-State: AOAM532qNWagUDcx0bUVeHCmC9bcmbABJECTxMJFgYUkh8UNpoW5+B07
-        OK6t/Bvd7yeUP4CTUZMTt1fPaSc9/u2IIx8h2qhf/Tr9XvYl
-X-Google-Smtp-Source: ABdhPJxk/RaDiv0svCfqTaljcJw1liNNEy6x4BPZK+g0g545XlGcP0Wi2MSKVftDZIc4Ile4osYs6Kc3MZBxlVecCZmJIP23TA+4
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RXY1tPoSEl+8M4X5lxSarpt4hpv0pzy83yCKr/zoENA=;
+        b=ofUh0Xqc69WoMqgDY0x6h+i8m7DD4SiU3JRXJvdhvtCl6bR2iAm+wRvftn7JJ8m1WF
+         7NDkfyfax7hoS+hyP83abI6ecD0eomy6VAp+AjhGVXO/JUzHBALu8YC/0reElmf89pOa
+         VbSqs1ssjyd/B4GkDdB/Fw+/YMXz3nIMMXoIsMdM1BKYikUAuv7dG8kk9kRX76oZu62x
+         lq3Ex83foZQqzJGkQ0HNftesXfDZ9GihHRJS1MV5hvVszGz+/cAwBGFN8SxrIT9kx20p
+         ZCK1pWEEbTuyVrN1qEq9jg1KQFqLlfyhGM2RmbV7C7LGXILVq68JR5hShxQFoqpeCQs7
+         C+jA==
+X-Gm-Message-State: AOAM532h/7I4pi5fRRV6mqxjYufT4SaCK8rB+bUll1nyIgr+P9O/UVpL
+        qiqv/Uzc3lWJ3wbxnGGe4T64Hg==
+X-Google-Smtp-Source: ABdhPJyLCvPRKQ03gErPB5bBmXZHp2i4sRtxA8fP3GXkRBSqQAEjYgMydM9st3NvlemeyZCZpyLwyw==
+X-Received: by 2002:a5d:63d2:: with SMTP id c18mr10689307wrw.311.1631520305736;
+        Mon, 13 Sep 2021 01:05:05 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
+        by smtp.gmail.com with ESMTPSA id a10sm6770449wrd.51.2021.09.13.01.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 01:05:05 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
+Date:   Mon, 13 Sep 2021 10:05:04 +0200
+Message-Id: <20210913080504.832521-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:6904:: with SMTP id e4mr7164478ilc.311.1631520272300;
- Mon, 13 Sep 2021 01:04:32 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 01:04:32 -0700
-In-Reply-To: <0000000000004fe6b105cb84cf1e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000463eb205cbdbea58@google.com>
-Subject: Re: [syzbot] memory leak in create_io_worker
-From:   syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>
-To:     Qiang.Zhang@windriver.com, asml.silence@gmail.com, axboe@kernel.dk,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+The memory at the end of the controller only accepts 32bit read/write
+accesses, but the arm64 memcpy_to/fromio implementation only uses 64bit
+(which will be split into two 32bit access) and 8bit leading to incomplete
+copies to/from this memory when the buffer is not multiple of 8bytes.
 
-HEAD commit:    f306b90c69ce Merge tag 'smp-urgent-2021-09-12' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14bc2715300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bb1c2ff5ae428ca6
-dashboard link: https://syzkaller.appspot.com/bug?extid=65454c239241d3d647da
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171d8963300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b9ccdd300000
+Add a local copy using writel/readl accesses to make sure we use the right
+memory access width.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65454c239241d3d647da@syzkaller.appspotmail.com
+The switch to memcpy_to/fromio was done because of 285133040e6c
+("arm64: Import latest memcpy()/memmove() implementation"), but using memcpy
+worked before since it mainly used 32bit memory acceses.
 
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.120s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Fixes: 103a5348c22c ("mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk")
+Reported-by: Christian Hewitt <christianshewitt@gmail.com>
+Suggested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/mmc/host/meson-gx-mmc.c | 49 +++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 14 deletions(-)
 
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.180s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.230s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.290s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.340s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.400s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.450s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811953fa80 (size 192):
-  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.500s)
-  hex dump (first 32 bytes):
-    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
-    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
-    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
-    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
-    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
-    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
-    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
-    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
-    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
-    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
-    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+index 3f28eb4d17fe..08c0ff0bfa8b 100644
+--- a/drivers/mmc/host/meson-gx-mmc.c
++++ b/drivers/mmc/host/meson-gx-mmc.c
+@@ -746,7 +746,7 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
+ 	writel(start, host->regs + SD_EMMC_START);
+ }
+ 
+-/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
++/* local sg copy for dram_access_quirk */
+ static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
+ 				  size_t buflen, bool to_buffer)
+ {
+@@ -764,21 +764,34 @@ static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data
+ 	sg_miter_start(&miter, sgl, nents, sg_flags);
+ 
+ 	while ((offset < buflen) && sg_miter_next(&miter)) {
+-		unsigned int len;
++		unsigned int buf_offset = 0;
++		unsigned int len, left;
++		u32 *buf = miter.addr;
++
++		if (((unsigned long int)miter.addr % 4))
++			dev_err(host->dev, "non word aligned sg");
+ 
+ 		len = min(miter.length, buflen - offset);
+ 
+-		/* When dram_access_quirk, the bounce buffer is a iomem mapping */
+-		if (host->dram_access_quirk) {
+-			if (to_buffer)
+-				memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
+-			else
+-				memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
++		if ((len % 4))
++			dev_err(host->dev, "non word multiple sg");
++
++		left = len;
++
++		if (to_buffer) {
++			do {
++				writel(*buf++, host->bounce_iomem_buf + offset + buf_offset);
++
++				buf_offset += 4;
++				left -= 4;
++			} while (left);
+ 		} else {
+-			if (to_buffer)
+-				memcpy(host->bounce_buf + offset, miter.addr, len);
+-			else
+-				memcpy(miter.addr, host->bounce_buf + offset, len);
++			do {
++				*buf++ = readl(host->bounce_iomem_buf + offset + buf_offset);
++
++				buf_offset += 4;
++				left -= 4;
++			} while (left);
+ 		}
+ 
+ 		offset += len;
+@@ -830,7 +843,11 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
+ 		if (data->flags & MMC_DATA_WRITE) {
+ 			cmd_cfg |= CMD_CFG_DATA_WR;
+ 			WARN_ON(xfer_bytes > host->bounce_buf_size);
+-			meson_mmc_copy_buffer(host, data, xfer_bytes, true);
++			if (host->dram_access_quirk)
++				meson_mmc_copy_buffer(host, data, xfer_bytes, true);
++			else
++				sg_copy_to_buffer(data->sg, data->sg_len,
++						  host->bounce_buf, xfer_bytes);
+ 			dma_wmb();
+ 		}
+ 
+@@ -999,7 +1016,11 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
+ 	if (meson_mmc_bounce_buf_read(data)) {
+ 		xfer_bytes = data->blksz * data->blocks;
+ 		WARN_ON(xfer_bytes > host->bounce_buf_size);
+-		meson_mmc_copy_buffer(host, data, xfer_bytes, false);
++		if (host->dram_access_quirk)
++			meson_mmc_copy_buffer(host, data, xfer_bytes, false);
++		else
++			sg_copy_from_buffer(data->sg, data->sg_len,
++					    host->bounce_buf, xfer_bytes);
+ 	}
+ 
+ 	next_cmd = meson_mmc_get_next_command(cmd);
+-- 
+2.25.1
 
