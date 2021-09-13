@@ -2,226 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386454096B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F5A4096B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346659AbhIMPGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
+        id S244760AbhIMPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243199AbhIMPGB (ORCPT
+        with ESMTP id S1346719AbhIMPGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:06:01 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7666C0A893D;
-        Mon, 13 Sep 2021 06:38:18 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id p2so14084591oif.1;
-        Mon, 13 Sep 2021 06:38:18 -0700 (PDT)
+        Mon, 13 Sep 2021 11:06:09 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D83C014DB0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:39:20 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ho42so21137162ejc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:39:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+A1PzhLE74Yrhc1O3usAzGVIUOozgkbbtbY+3Jj7aq0=;
-        b=Kfk4WHVTxvJDzCU/g7sFltp5ZTejJF+ZqnqLWtduIYpUdHSJjWiouiG3Uis5RJHXVT
-         8mbS881DwXU7XcvJihf9nIhGx5Gu1xrwPxcY3QRDt0A+QVOh3RiW4eyE1WCXTLjFwDIz
-         x8o8haSW7/Ytrp/HtRqYATwVZeucP2CFQzL/fU95RhMIGmGjNsuJ9nFIccw3sAQkKOFS
-         BmsbhG5r7W3Kp+zk2GZeFx2u1GCAPDPpCsA90yXEgdK+phVPgIdNSFGI2BNm0EYRp0a7
-         0HVrYQ68vhgrx3y+Uy4+ETvKUmUyUQRKUfFLU5nHjqezelTR1vjJXE38kqkmYNcVvHsr
-         z01Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xNtQ1ARmV5D+fRgpV2FNt+0W8ArnaPaQlO7L2peESTE=;
+        b=RvxWi5/tXCdLO7VqGQL3V9uryQuY7gHxKhcjKavKZ+Pyj1nKnLSEfRBRLyR+ho1P0j
+         j6xAGprbt/YeW3sGKbdIpwmUKQHm61eevNX4ipY0UX4wjWp8v4NjQ+22NbcqHk36RLhI
+         3xQQCWOZXwX3NkC5qEjbocVVwy9t5nKA5bhdfzWZPjusJtsV2CMSySLZH52EQj8B6mwe
+         OY3ii4BH9Djyyvl/gLNkzpDwvgGhXTc5M2F3hU0Rt3WOZKnKe2H/fziX1D+UeRsK0Mit
+         cdLToHwhiaiFEfjIgYxjhnqHNGJZN/FACz8VPKp8qDyCBGilgjBRHt6MhKc7yMAO3Bmc
+         36Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+A1PzhLE74Yrhc1O3usAzGVIUOozgkbbtbY+3Jj7aq0=;
-        b=TTcmgjJjmG4clnTK7UmBlxQ4502foTi7o0av070h6tbSZiW9L0qXPMEHciX6srjuLk
-         Uex6zzz2NXL4lVZae1Frg8Nb+xn5CwaNerxio6NPpfgaA2hR2lNkw5UnY6I1AUUCJDMm
-         XaapLrB81jHnt1IIfPhmF4DzFHKDsoYrQQMKSDH3QFN6b73BNdP2LrEmW2NliYz8rn1+
-         dPHjMThoOi3yAevPNEoFxNDwk6od7nD6FPx7ahWKFEqFojZHqCsI4EK14jwkWeExh5nf
-         I5Ts9JeYMJMJvHLKHs7dTwXTBYzyWrxldHKosV/LodwpSF6wrwijN/anHDt/GWVAUIi7
-         05+w==
-X-Gm-Message-State: AOAM5319gC1C0rSsFklqHfcjdultD32+h7hLH59Zf+7hM+8WZ8gYDGHr
-        68hIhR9R5VyM9rwqiNgGgb82VbVLDzBjUcWNfg==
-X-Google-Smtp-Source: ABdhPJy5rGtbHvHSEHFoArM2w+Ui69oLC2M+l3QGHrBxg0R3q8AlcvYS1p1U2h5yD9kNDLcff/O1zQaHDfQYNTpHHuA=
-X-Received: by 2002:aca:6008:: with SMTP id u8mr8009784oib.127.1631540297900;
- Mon, 13 Sep 2021 06:38:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xNtQ1ARmV5D+fRgpV2FNt+0W8ArnaPaQlO7L2peESTE=;
+        b=JrNzk/BzJ4DbWUb97U/XneHHk9FhzjpsVRyKWqHYmZPDOY0W5zA77uILk2+w1xsM7Y
+         CibChYWidaEkOnNEJDX3K45xsskm28bCdUoM9eRWzuxodm9l69rcOC9VUyTodzuetJIF
+         2rlLHNRhvu6vkUMdyKoAVV5u/oQAlYPEu5vHp7nngzxNyIVl0AvRMdf6ORs9KxkBHbh8
+         Eo9CTzwTvjn6ot5w4PwZM8vNZwoSnz3x4bEyMYctzVF1l4S9LhCz/Z+IsuHpGffcC67Y
+         h4xVqr0pmmjDPoMAbhhk606Fvdx+5LBe47zShVksEGZzUB4EewVOhnKQwSxxKgf+u4F+
+         ow9Q==
+X-Gm-Message-State: AOAM532zufmTAiR0GjKHE5HyCamsEpQnkhVz6l0w3OuopPtql/DYXCZ0
+        OTF5JHr1XT7VG/TFI2IyE/1c2WvupV4=
+X-Google-Smtp-Source: ABdhPJyht4ntrEK4VNA0hVeDb0PzwJk+HkwTNDL1GhPLqBX2U+F/hHPKuTs7dFjpfVLAv4oOVw5GOg==
+X-Received: by 2002:a17:906:318c:: with SMTP id 12mr12950913ejy.28.1631540359147;
+        Mon, 13 Sep 2021 06:39:19 -0700 (PDT)
+Received: from agape.jhs ([5.171.73.21])
+        by smtp.gmail.com with ESMTPSA id dj8sm2818163edb.53.2021.09.13.06.39.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 06:39:18 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 15:39:16 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: protect sleepq_len access by
+ sleep_q.lock
+Message-ID: <20210913133915.GA1414@agape.jhs>
+References: <20210913130346.2390-1-fabioaiuto83@gmail.com>
+ <d6d6c6bf-b787-aac9-4767-4bf54c5437ac@redhat.com>
 MIME-Version: 1.0
-References: <20210912120932.993440-1-vladimir.oltean@nxp.com> <20210912120932.993440-6-vladimir.oltean@nxp.com>
-In-Reply-To: <20210912120932.993440-6-vladimir.oltean@nxp.com>
-From:   George McCollister <george.mccollister@gmail.com>
-Date:   Mon, 13 Sep 2021 08:38:05 -0500
-Message-ID: <CAFSKS=NjFM6FhaUntjZ30dbU50JYnNpjrZj2KL=HAgbxk+yyuQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net 5/5] net: dsa: xrs700x: be compatible with masters
- which unregister on shutdown
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6d6c6bf-b787-aac9-4767-4bf54c5437ac@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 7:09 AM Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
->
-> Since commit 2f1e8ea726e9 ("net: dsa: link interfaces with the DSA
-> master to get rid of lockdep warnings"), DSA gained a requirement which
-> it did not fulfill, which is to unlink itself from the DSA master at
-> shutdown time.
->
-> Since the Arrow SpeedChips XRS700x driver was introduced after the bad
-> commit, it has never worked with DSA masters which decide to unregister
-> their net_device on shutdown, effectively hanging the reboot process.
-> To fix that, we need to call dsa_switch_shutdown.
->
-> These devices can be connected by I2C or by MDIO, and if I search for
-> I2C or MDIO bus drivers that implement their ->shutdown by redirecting
-> it to ->remove I don't see any, however this does not mean it would not
-> be possible. To be compatible with that pattern, it is necessary to
-> implement an "if this then not that" scheme, to avoid ->remove and
-> ->shutdown from being called both for the same struct device.
->
-> Fixes: ee00b24f32eb ("net: dsa: add Arrow SpeedChips XRS700x driver")
-> Link: https://lore.kernel.org/netdev/20210909095324.12978-1-LinoSanfilippo@gmx.de/
-> Reported-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  drivers/net/dsa/xrs700x/xrs700x.c      |  6 ++++++
->  drivers/net/dsa/xrs700x/xrs700x.h      |  1 +
->  drivers/net/dsa/xrs700x/xrs700x_i2c.c  | 18 ++++++++++++++++++
->  drivers/net/dsa/xrs700x/xrs700x_mdio.c | 18 ++++++++++++++++++
->  4 files changed, 43 insertions(+)
->
-> diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
-> index 130abb0f1438..469420941054 100644
-> --- a/drivers/net/dsa/xrs700x/xrs700x.c
-> +++ b/drivers/net/dsa/xrs700x/xrs700x.c
-> @@ -822,6 +822,12 @@ void xrs700x_switch_remove(struct xrs700x *priv)
->  }
->  EXPORT_SYMBOL(xrs700x_switch_remove);
->
-> +void xrs700x_switch_shutdown(struct xrs700x *priv)
-> +{
-> +       dsa_switch_shutdown(priv->ds);
-> +}
-> +EXPORT_SYMBOL(xrs700x_switch_shutdown);
-> +
->  MODULE_AUTHOR("George McCollister <george.mccollister@gmail.com>");
->  MODULE_DESCRIPTION("Arrow SpeedChips XRS700x DSA driver");
->  MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/net/dsa/xrs700x/xrs700x.h b/drivers/net/dsa/xrs700x/xrs700x.h
-> index ff62cf61b091..4d58257471d2 100644
-> --- a/drivers/net/dsa/xrs700x/xrs700x.h
-> +++ b/drivers/net/dsa/xrs700x/xrs700x.h
-> @@ -40,3 +40,4 @@ struct xrs700x {
->  struct xrs700x *xrs700x_switch_alloc(struct device *base, void *devpriv);
->  int xrs700x_switch_register(struct xrs700x *priv);
->  void xrs700x_switch_remove(struct xrs700x *priv);
-> +void xrs700x_switch_shutdown(struct xrs700x *priv);
-> diff --git a/drivers/net/dsa/xrs700x/xrs700x_i2c.c b/drivers/net/dsa/xrs700x/xrs700x_i2c.c
-> index 489d9385b4f0..6deae388a0d6 100644
-> --- a/drivers/net/dsa/xrs700x/xrs700x_i2c.c
-> +++ b/drivers/net/dsa/xrs700x/xrs700x_i2c.c
-> @@ -109,11 +109,28 @@ static int xrs700x_i2c_remove(struct i2c_client *i2c)
->  {
->         struct xrs700x *priv = i2c_get_clientdata(i2c);
->
-> +       if (!priv)
-> +               return 0;
-> +
->         xrs700x_switch_remove(priv);
->
-> +       i2c_set_clientdata(i2c, NULL);
-> +
->         return 0;
->  }
->
-> +static void xrs700x_i2c_shutdown(struct i2c_client *i2c)
-> +{
-> +       struct xrs700x *priv = i2c_get_clientdata(i2c);
-> +
-> +       if (!priv)
-> +               return;
-> +
-> +       xrs700x_switch_shutdown(priv);
-> +
-> +       i2c_set_clientdata(i2c, NULL);
-> +}
-> +
->  static const struct i2c_device_id xrs700x_i2c_id[] = {
->         { "xrs700x-switch", 0 },
->         {},
-> @@ -137,6 +154,7 @@ static struct i2c_driver xrs700x_i2c_driver = {
->         },
->         .probe  = xrs700x_i2c_probe,
->         .remove = xrs700x_i2c_remove,
-> +       .shutdown = xrs700x_i2c_shutdown,
->         .id_table = xrs700x_i2c_id,
->  };
->
-> diff --git a/drivers/net/dsa/xrs700x/xrs700x_mdio.c b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-> index 44f58bee04a4..d01cf1073d49 100644
-> --- a/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-> +++ b/drivers/net/dsa/xrs700x/xrs700x_mdio.c
-> @@ -136,7 +136,24 @@ static void xrs700x_mdio_remove(struct mdio_device *mdiodev)
->  {
->         struct xrs700x *priv = dev_get_drvdata(&mdiodev->dev);
->
-> +       if (!priv)
-> +               return;
-> +
->         xrs700x_switch_remove(priv);
-> +
-> +       dev_set_drvdata(&mdiodev->dev, NULL);
-> +}
-> +
-> +static void xrs700x_mdio_shutdown(struct mdio_device *mdiodev)
-> +{
-> +       struct xrs700x *priv = dev_get_drvdata(&mdiodev->dev);
-> +
-> +       if (!priv)
-> +               return;
-> +
-> +       xrs700x_switch_shutdown(priv);
-> +
-> +       dev_set_drvdata(&mdiodev->dev, NULL);
->  }
->
->  static const struct of_device_id __maybe_unused xrs700x_mdio_dt_ids[] = {
-> @@ -155,6 +172,7 @@ static struct mdio_driver xrs700x_mdio_driver = {
->         },
->         .probe  = xrs700x_mdio_probe,
->         .remove = xrs700x_mdio_remove,
-> +       .shutdown = xrs700x_mdio_shutdown,
->  };
->
->  mdio_module_driver(xrs700x_mdio_driver);
-> --
-> 2.25.1
->
+Hello Hans,
 
-Looks good to me.
-Assuming we do Reviewed-by for RFCs:
-Reviewed-by: George McCollister <george.mccollister@gmail.com>
+On Mon, Sep 13, 2021 at 03:24:44PM +0200, Hans de Goede wrote:
+> Hi Fabio,
+> 
+ 
+> > Note that sleep_q.lock is already taken inside
+> > rtw_free_xmitframe_queue so we just wrap sleepq_len
+> > access.
+> > 
+> > Moved pxmitpriv->lock after sleep_q.lock release to
+> > avoid locks nesting.
+
+> >  	rtw_free_xmitframe_queue(pxmitpriv, &psta->sleep_q);
+> > +	spin_lock_bh(&psta->sleep_q.lock);
+> 
+> AFAICT this needs to be above the rtw_free_xmitframe_queue() ?
+
+as I wrote on the changelog, the sleep_q.lock is already
+taken inside rtw_free_xmitframe_queue. If I put the
+sleep_q.lock above that function a soft lock occurs when
+I disconnect.
+
+So I put it just below rtw_free_xmitframe_queue.
+
+Things works fine this way.
+
+Please tell me if there's a best way to do it.
+
+> 
+> Regards,
+> 
+> Hans
+
+thank you,
+
+fabio
