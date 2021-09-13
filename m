@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FF040919E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EEE40919B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244896AbhIMOC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:02:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44092 "EHLO mail.kernel.org"
+        id S244982AbhIMOCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343706AbhIMN7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62EB2613A7;
-        Mon, 13 Sep 2021 13:37:23 +0000 (UTC)
+        id S1343801AbhIMN7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:59:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE02F613AC;
+        Mon, 13 Sep 2021 13:37:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540243;
-        bh=pLAPbPviZiRS8pmnWmm1gDYEsm7lgwqAVHmflSZM65w=;
+        s=korg; t=1631540246;
+        bh=0eVmFigmvePfK0NtKm7EzbzuJ3ya/9SnuQww5F3AvfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BPwjak8eFRFHHneYw/W7M9YcZMKtuByk0KXY+3Uzp0KdEuWYcNY7XoBhk+X3KKnnl
-         6vdqH/S1jP9Zimx4bfOJooQI3uh6l/1iIweI1No95ZU9kuju6dq70ifTPDLyKG4LUz
-         xWlatgglQviTaYwCP/MbP8TTZMRqKt1Tneb8s8fc=
+        b=QlLaGsRzTgRqVKY+GH59tzs5nUoSk4FkqDQFB04gKRfO/XDRh8WfTk5IZZlCzbXhR
+         HHhplN/WTS1dMNUzgLAcf3bLZE43TzF0PaKtNffEiWU4hWV8IM/HG5OPYcFkyr2Zbb
+         uc3XTXcOY2Ea3VJiF9AP3JWQn+GkdCrldWw/kods=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 112/300] media: rockchip/rga: use pm_runtime_resume_and_get()
-Date:   Mon, 13 Sep 2021 15:12:53 +0200
-Message-Id: <20210913131113.168334697@linuxfoundation.org>
+Subject: [PATCH 5.13 113/300] media: rockchip/rga: fix error handling in probe
+Date:   Mon, 13 Sep 2021 15:12:54 +0200
+Message-Id: <20210913131113.206669149@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -40,54 +42,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 0314339a0a49f4a128b61e5e1a0af1df6e64a186 ]
+[ Upstream commit e58430e1d4fd01b74475d2fbe2e25b5817b729a9 ]
 
-Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-added pm_runtime_resume_and_get() in order to automatically handle
-dev->power.usage_count decrement on errors.
+There are a few bugs in this code.  1)  No checks for whether
+dma_alloc_attrs() or __get_free_pages() failed.  2)  If
+video_register_device() fails it doesn't clean up the dma attrs or the
+free pages.  3)  The video_device_release() function frees "vfd" which
+leads to a use after free on the next line.  The call to
+video_unregister_device() is not required so I have just removed that.
 
-Use the new API, in order to cleanup the error check logic.
-
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Fixes: f7e7b48e6d79 ("[media] rockchip/rga: v4l2 m2m support")
+Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rockchip/rga/rga-buf.c | 3 +--
- drivers/media/platform/rockchip/rga/rga.c     | 4 +++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/media/platform/rockchip/rga/rga.c | 27 ++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/rockchip/rga/rga-buf.c b/drivers/media/platform/rockchip/rga/rga-buf.c
-index bf9a75b75083..81508ed5abf3 100644
---- a/drivers/media/platform/rockchip/rga/rga-buf.c
-+++ b/drivers/media/platform/rockchip/rga/rga-buf.c
-@@ -79,9 +79,8 @@ static int rga_buf_start_streaming(struct vb2_queue *q, unsigned int count)
- 	struct rockchip_rga *rga = ctx->rga;
- 	int ret;
- 
--	ret = pm_runtime_get_sync(rga->dev);
-+	ret = pm_runtime_resume_and_get(rga->dev);
- 	if (ret < 0) {
--		pm_runtime_put_noidle(rga->dev);
- 		rga_buf_return_buffers(q, VB2_BUF_STATE_QUEUED);
- 		return ret;
- 	}
 diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
-index 9d122429706e..bf3fd71ec3af 100644
+index bf3fd71ec3af..6759091b15e0 100644
 --- a/drivers/media/platform/rockchip/rga/rga.c
 +++ b/drivers/media/platform/rockchip/rga/rga.c
-@@ -866,7 +866,9 @@ static int rga_probe(struct platform_device *pdev)
- 		goto unreg_video_dev;
+@@ -863,12 +863,12 @@ static int rga_probe(struct platform_device *pdev)
+ 	if (IS_ERR(rga->m2m_dev)) {
+ 		v4l2_err(&rga->v4l2_dev, "Failed to init mem2mem device\n");
+ 		ret = PTR_ERR(rga->m2m_dev);
+-		goto unreg_video_dev;
++		goto rel_vdev;
  	}
  
--	pm_runtime_get_sync(rga->dev);
-+	ret = pm_runtime_resume_and_get(rga->dev);
-+	if (ret < 0)
-+		goto unreg_video_dev;
+ 	ret = pm_runtime_resume_and_get(rga->dev);
+ 	if (ret < 0)
+-		goto unreg_video_dev;
++		goto rel_vdev;
  
  	rga->version.major = (rga_read(rga, RGA_VERSION_INFO) >> 24) & 0xFF;
  	rga->version.minor = (rga_read(rga, RGA_VERSION_INFO) >> 20) & 0x0F;
+@@ -882,11 +882,23 @@ static int rga_probe(struct platform_device *pdev)
+ 	rga->cmdbuf_virt = dma_alloc_attrs(rga->dev, RGA_CMDBUF_SIZE,
+ 					   &rga->cmdbuf_phy, GFP_KERNEL,
+ 					   DMA_ATTR_WRITE_COMBINE);
++	if (!rga->cmdbuf_virt) {
++		ret = -ENOMEM;
++		goto rel_vdev;
++	}
+ 
+ 	rga->src_mmu_pages =
+ 		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
++	if (!rga->src_mmu_pages) {
++		ret = -ENOMEM;
++		goto free_dma;
++	}
+ 	rga->dst_mmu_pages =
+ 		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
++	if (rga->dst_mmu_pages) {
++		ret = -ENOMEM;
++		goto free_src_pages;
++	}
+ 
+ 	def_frame.stride = (def_frame.width * def_frame.fmt->depth) >> 3;
+ 	def_frame.size = def_frame.stride * def_frame.height;
+@@ -894,7 +906,7 @@ static int rga_probe(struct platform_device *pdev)
+ 	ret = video_register_device(vfd, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
+ 		v4l2_err(&rga->v4l2_dev, "Failed to register video device\n");
+-		goto rel_vdev;
++		goto free_dst_pages;
+ 	}
+ 
+ 	v4l2_info(&rga->v4l2_dev, "Registered %s as /dev/%s\n",
+@@ -902,10 +914,15 @@ static int rga_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++free_dst_pages:
++	free_pages((unsigned long)rga->dst_mmu_pages, 3);
++free_src_pages:
++	free_pages((unsigned long)rga->src_mmu_pages, 3);
++free_dma:
++	dma_free_attrs(rga->dev, RGA_CMDBUF_SIZE, rga->cmdbuf_virt,
++		       rga->cmdbuf_phy, DMA_ATTR_WRITE_COMBINE);
+ rel_vdev:
+ 	video_device_release(vfd);
+-unreg_video_dev:
+-	video_unregister_device(rga->vfd);
+ unreg_v4l2_dev:
+ 	v4l2_device_unregister(&rga->v4l2_dev);
+ err_put_clk:
 -- 
 2.30.2
 
