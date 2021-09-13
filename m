@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68410408890
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6B0408897
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238447AbhIMJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234476AbhIMJx7 (ORCPT
+        id S238688AbhIMJ4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:56:46 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59484 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238444AbhIMJ4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:53:59 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB37C061574;
-        Mon, 13 Sep 2021 02:52:43 -0700 (PDT)
-Received: from cap.home.8bytes.org (p549ada98.dip0.t-ipconnect.de [84.154.218.152])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id D045A7F;
-        Mon, 13 Sep 2021 11:52:40 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        hpa@zytor.com, jroedel@suse.de, Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, joro@8bytes.org,
-        stable@vger.kernel.org
-Subject: [PATCH] x86/64/mm: Map all kernel memory into trampoline_pgd
-Date:   Mon, 13 Sep 2021 11:52:36 +0200
-Message-Id: <20210913095236.24937-1-joro@8bytes.org>
-X-Mailer: git-send-email 2.33.0
+        Mon, 13 Sep 2021 05:56:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7D3BA1C0BA6; Mon, 13 Sep 2021 11:55:25 +0200 (CEST)
+Date:   Mon, 13 Sep 2021 11:55:24 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Joseph Hwang <josephsih@chromium.org>
+Cc:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com, pali@kernel.org, josephsih@google.com,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        kernel test robot <lkp@intel.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] Bluetooth: btandroid: Support Android Bluetooth
+ Quality Report
+Message-ID: <20210913095524.GD12225@amd>
+References: <20210913152801.v3.1.I17f57656757b83a1c0fb4b78525d8aca581725db@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="eheScQNz3K90DVRs"
+Content-Disposition: inline
+In-Reply-To: <20210913152801.v3.1.I17f57656757b83a1c0fb4b78525d8aca581725db@changeid>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
 
-The trampoline_pgd only maps the 0xfffffff000000000-0xffffffffffffffff
-range of kernel memory (with 4-level paging). This range contains the
-kernels text+data+bss mappings and the module mapping space, but not the
-direct mapping and the vmalloc area.
+--eheScQNz3K90DVRs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is enough to get an application processors out of real-mode, but
-for code that switches back to real-mode the trampoline_pgd is missing
-important parts of the address space. For example, consider this code
-from arch/x86/kernel/reboot.c, function machine_real_restart() for a
-64-bit kernel:
+Hi!
 
-	#ifdef CONFIG_X86_32
-		load_cr3(initial_page_table);
-	#else
-		write_cr3(real_mode_header->trampoline_pgd);
+> +config BT_HCIBTANDROID
+> +	tristate
 
-		/* Exiting long mode will fail if CR4.PCIDE is set. */
-		if (boot_cpu_has(X86_FEATURE_PCID))
-			cr4_clear_bits(X86_CR4_PCIDE);
-	#endif
+Calling it btquality (or something) would be better.
 
-		/* Jump to the identity-mapped low memory code */
-	#ifdef CONFIG_X86_32
-		asm volatile("jmpl *%0" : :
-			     "rm" (real_mode_header->machine_real_restart_asm),
-			     "a" (type));
-	#else
-		asm volatile("ljmpl *%0" : :
-			     "m" (real_mode_header->machine_real_restart_asm),
-			     "D" (type));
-	#endif
+> index 000000000000..fffacc8d67cc
+> --- /dev/null
+> +++ b/drivers/bluetooth/btandroid.c
 
-The code switches to the trampoline_pgd, which unmaps the direct mapping
-and also the kernel stack. The call to cr4_clear_bits() will find no
-stack and crash the machine. The real_mode_header pointer below points
-into the direct mapping, and dereferencing it also causes a crash.
+Same here.
+								Pavel
+							=09
+--=20
+http://www.livejournal.com/~pavelmachek
 
-The reason this does not crash always is only that kernel mappings are
-global and the CR3 switch does not flush those mappings. But if theses
-mappings are not in the TLB already, the above code will crash before it
-can jump to the real-mode stub.
+--eheScQNz3K90DVRs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Extend the trampoline_pgd to contain all kernel mappings to prevent
-these crashes and to make code which runs on this page-table more
-robust.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/realmode/init.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+iEYEARECAAYFAmE/IAwACgkQMOfwapXb+vJ7kACfbhiTe/JytoG9II5Zf9wEAd5t
+a1IAnAqEJ75IBBJHGR63YAcM+ZqecJb/
+=soHg
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-index 31b5856010cb..7a08c96cb42a 100644
---- a/arch/x86/realmode/init.c
-+++ b/arch/x86/realmode/init.c
-@@ -72,6 +72,7 @@ static void __init setup_real_mode(void)
- #ifdef CONFIG_X86_64
- 	u64 *trampoline_pgd;
- 	u64 efer;
-+	int i;
- #endif
- 
- 	base = (unsigned char *)real_mode_header;
-@@ -128,8 +129,17 @@ static void __init setup_real_mode(void)
- 	trampoline_header->flags = 0;
- 
- 	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
-+
-+	/*
-+	 * Map all of kernel memory into the trampoline PGD so that it includes
-+	 * the direct mapping and vmalloc space. This is needed to keep the
-+	 * stack and real_mode_header mapped when switching to this page table.
-+	 */
-+	for (i = pgd_index(__PAGE_OFFSET); i < PTRS_PER_PGD; i++)
-+		trampoline_pgd[i] = init_top_pgt[i].pgd;
-+
-+	/* Map the real mode stub as virtual == physical */
- 	trampoline_pgd[0] = trampoline_pgd_entry.pgd;
--	trampoline_pgd[511] = init_top_pgt[511].pgd;
- #endif
- 
- 	sme_sev_setup_real_mode(trampoline_header);
--- 
-2.33.0
-
+--eheScQNz3K90DVRs--
