@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB3D409005
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23AC40900C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243071AbhIMNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:48:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43056 "EHLO mail.kernel.org"
+        id S244145AbhIMNtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:49:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242817AbhIMNoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:44:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 828476147F;
-        Mon, 13 Sep 2021 13:31:04 +0000 (UTC)
+        id S243610AbhIMNok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:44:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F347161502;
+        Mon, 13 Sep 2021 13:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539865;
-        bh=serSkYcvWgyoriQ4hhuKJQuWvX6zkIPe6u50z9O8mJk=;
+        s=korg; t=1631539867;
+        bh=lnBHHFRuLJzQHrYQ4bLpSlqqObR463nOfp12ypBvfNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z1O8HkM7O+2Okqqd/PwQcS8yptypzHfSBdUDC0yEbWosllGUAZdy1xApnEAEdi37B
-         k6Mv105ycKkEsqTJRhgbOnb+pQ2hvy3DdpoF2ctRpSS/OlloJbad56AK/II/KXfDXY
-         U49NyPtD2JFgvXDsz/4LPGRB2t9pcimsvG+NjGC0=
+        b=ctL4YRYYzjD3vOSV46pkGRaR+67h+Fcnp4FbsBJmmYRldbAL4TgQbrOWEeZXhewHa
+         ceaRkc/B5vbFMwBvOHR5p582/6eDx15smJ1X6truMy1iVlwCEAaqZAqZ4cLHMqpRqg
+         0154Cfv+D2Nm6mZZPFBZdrh73Yom8ywWIScXdyog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Qii Wang <qii.wang@mediatek.com>,
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+        George Cherian <george.cherian@marvell.com>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 191/236] i2c: mt65xx: fix IRQ check
-Date:   Mon, 13 Sep 2021 15:14:56 +0200
-Message-Id: <20210913131106.880229952@linuxfoundation.org>
+Subject: [PATCH 5.10 192/236] i2c: xlp9xx: fix main IRQ check
+Date:   Mon, 13 Sep 2021 15:14:57 +0200
+Message-Id: <20210913131106.918247647@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -42,34 +42,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 58fb7c643d346e2364404554f531cfa6a1a3917c ]
+[ Upstream commit 661e8a88e8317eb9ffe69c69d6cb4876370fe7e2 ]
 
-Iff platform_get_irq() returns 0, the driver's probe() method will return 0
-early (as if the method's call was successful).  Let's consider IRQ0 valid
-for simplicity -- devm_request_irq() can always override that decision...
+Iff platform_get_irq() returns 0 for the main IRQ, the driver's probe()
+method will return 0 early (as if the method's call was successful).
+Let's consider IRQ0 valid for simplicity -- devm_request_irq() can always
+override that decision...
 
-Fixes: ce38815d39ea ("I2C: mediatek: Add driver for MediaTek I2C controller")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Reviewed-by: Qii Wang <qii.wang@mediatek.com>
+Fixes: 2bbd681ba2b ("i2c: xlp9xx: Driver for Netlogic XLP9XX/5XX I2C controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Reviewed-by: George Cherian <george.cherian@marvell.com>
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ drivers/i2c/busses/i2c-xlp9xx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index dcde71ae6341..1a5f1ccd1d2f 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -1207,7 +1207,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2c->pdmabase);
+diff --git a/drivers/i2c/busses/i2c-xlp9xx.c b/drivers/i2c/busses/i2c-xlp9xx.c
+index f2241cedf5d3..6d24dc385522 100644
+--- a/drivers/i2c/busses/i2c-xlp9xx.c
++++ b/drivers/i2c/busses/i2c-xlp9xx.c
+@@ -517,7 +517,7 @@ static int xlp9xx_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->base);
  
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0)
-+	if (irq < 0)
- 		return irq;
- 
- 	init_completion(&i2c->msg_complete);
+ 	priv->irq = platform_get_irq(pdev, 0);
+-	if (priv->irq <= 0)
++	if (priv->irq < 0)
+ 		return priv->irq;
+ 	/* SMBAlert irq */
+ 	priv->alert_data.irq = platform_get_irq(pdev, 1);
 -- 
 2.30.2
 
