@@ -2,174 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DBD40860F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FF5408612
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237808AbhIMIGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237722AbhIMIGW (ORCPT
+        id S237845AbhIMIGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:06:40 -0400
+Received: from mail-vs1-f47.google.com ([209.85.217.47]:37610 "EHLO
+        mail-vs1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237797AbhIMIGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:06:22 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A80C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:05:07 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id u16so13207200wrn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:05:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RXY1tPoSEl+8M4X5lxSarpt4hpv0pzy83yCKr/zoENA=;
-        b=rNr+O/67esY0hgWf0Yp7SJb5ajXLS1aQHjGismtobxw0LiOLBEVEoJRv5cEIfZYgDQ
-         6h3WJ6pJU/LRWfyvBVRDh6kwM+0INwPbDiCVGz/y5UZMzuve7jAR36220/VugQRGD1nr
-         ta5WennfAkM39TwlyoZNRoBFtRZpkNbHxUtIUdCqRFWaDGF/tApqq3TE1uYKc+p9ot7G
-         0AZr5MM+/74kX+WRU7sCoqNWWLJ7NuaPycXiQOSweuwEMwqlW4y6OXa3aBV71jKHSm0k
-         TxNxptBp+ZbYwtPLELx8bd12b3u39FPvRltoMjB4M+tRtqMFFrI5Z1fG9+bZQx17hhB0
-         Kywg==
+        Mon, 13 Sep 2021 04:06:38 -0400
+Received: by mail-vs1-f47.google.com with SMTP id i23so7629360vsj.4;
+        Mon, 13 Sep 2021 01:05:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RXY1tPoSEl+8M4X5lxSarpt4hpv0pzy83yCKr/zoENA=;
-        b=ofUh0Xqc69WoMqgDY0x6h+i8m7DD4SiU3JRXJvdhvtCl6bR2iAm+wRvftn7JJ8m1WF
-         7NDkfyfax7hoS+hyP83abI6ecD0eomy6VAp+AjhGVXO/JUzHBALu8YC/0reElmf89pOa
-         VbSqs1ssjyd/B4GkDdB/Fw+/YMXz3nIMMXoIsMdM1BKYikUAuv7dG8kk9kRX76oZu62x
-         lq3Ex83foZQqzJGkQ0HNftesXfDZ9GihHRJS1MV5hvVszGz+/cAwBGFN8SxrIT9kx20p
-         ZCK1pWEEbTuyVrN1qEq9jg1KQFqLlfyhGM2RmbV7C7LGXILVq68JR5hShxQFoqpeCQs7
-         C+jA==
-X-Gm-Message-State: AOAM532h/7I4pi5fRRV6mqxjYufT4SaCK8rB+bUll1nyIgr+P9O/UVpL
-        qiqv/Uzc3lWJ3wbxnGGe4T64Hg==
-X-Google-Smtp-Source: ABdhPJyLCvPRKQ03gErPB5bBmXZHp2i4sRtxA8fP3GXkRBSqQAEjYgMydM9st3NvlemeyZCZpyLwyw==
-X-Received: by 2002:a5d:63d2:: with SMTP id c18mr10689307wrw.311.1631520305736;
-        Mon, 13 Sep 2021 01:05:05 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
-        by smtp.gmail.com with ESMTPSA id a10sm6770449wrd.51.2021.09.13.01.05.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 01:05:05 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
-Date:   Mon, 13 Sep 2021 10:05:04 +0200
-Message-Id: <20210913080504.832521-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hIy/WF41WnhInRxQvOeLA91NgtT/ad5oPS0o2VKCwNg=;
+        b=H1wPdid9exSg992pPXhiMALn/wP/WluGxrpodaX1dXaLk5agS9mbY2yNT/LkDIvVP/
+         UZq0eLqXKW7eiJTLtNyHs2ag19/bQH+yVAxbR29EcWipIPoPzZG9ElYun+7fXCnXnwX5
+         IGPlyOI1hteTd1Pdfrzj0zi1d8CVrpkEIIcydKhybo/8re/g1YBa1SZegn9cDo3pcGb6
+         AVzZZFG749rmuw0sgd3vELdS7+mOoNgCQA0dPXnvsC6y1CtZEhCnYgi235Wka8tiOG7a
+         VEgvxC3ecjIHdzth723jUqYenqYkfyv1FM9ow6wP+cSm5Yn66Sb0ZpZfy1gQyjdErZxb
+         Rsqg==
+X-Gm-Message-State: AOAM530VG9N7DxeRHM1vO5J8LwqJ9TG+eb6JgvYQbfSapGTk4gsb3BEi
+        pWWWWr86mWYNoTuhl4l6qTo2eWsii/w249BGYUiJYdoi7/w=
+X-Google-Smtp-Source: ABdhPJy5qS7cAHC3Wj9WuuKOmYXH4sq8/3ktX7gWNSl8zk/qKzaCAAZqM9h3ouNfCut0fUdqY/dAAiCGCBBDbPtKIvo=
+X-Received: by 2002:a05:6102:3112:: with SMTP id e18mr2487715vsh.50.1631520322815;
+ Mon, 13 Sep 2021 01:05:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-8-maz@kernel.org>
+ <CAMuHMdV+Ev47K5NO8XHsanSq5YRMCHn2gWAQyV-q2LpJVy9HiQ@mail.gmail.com>
+ <875yv8d91b.wl-maz@kernel.org> <CAMuHMdV+ydPaXbGf1_O0S-juaPWk1gwBUOK+GeLZukZeoqtMGQ@mail.gmail.com>
+ <CANqRtoTqV8sOpL=hdxeZ03tqr+5oeMcfwz+9ERqXv+hze_6Fsw@mail.gmail.com>
+ <874kaqdi2z.wl-maz@kernel.org> <CANqRtoTa8g2sw_DoD8+34HR0mcHc_tOWt+4R9KzDT2Eu3d7TTg@mail.gmail.com>
+In-Reply-To: <CANqRtoTa8g2sw_DoD8+34HR0mcHc_tOWt+4R9KzDT2Eu3d7TTg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 13 Sep 2021 10:05:11 +0200
+Message-ID: <CAMuHMdX3Vf8Mxuz3=Aoi1hwMS7BtyYCH178QvVS-GAHDpeMvxg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/17] irqchip/gic: Atomically update affinity
+To:     Magnus Damm <magnus.damm@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Android Kernel Team <kernel-team@android.com>,
+        stable <stable@vger.kernel.org>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory at the end of the controller only accepts 32bit read/write
-accesses, but the arm64 memcpy_to/fromio implementation only uses 64bit
-(which will be split into two 32bit access) and 8bit leading to incomplete
-copies to/from this memory when the buffer is not multiple of 8bytes.
+Hi Magnus,
 
-Add a local copy using writel/readl accesses to make sure we use the right
-memory access width.
+On Sun, Sep 12, 2021 at 7:40 AM Magnus Damm <magnus.damm@gmail.com> wrote:
+> On Sun, Sep 12, 2021 at 4:32 AM Marc Zyngier <maz@kernel.org> wrote:
+> > On Sat, 11 Sep 2021 03:49:20 +0100,
+> > Magnus Damm <magnus.damm@gmail.com> wrote:
+> > > On Fri, Sep 10, 2021 at 10:19 PM Geert Uytterhoeven
+> > > <geert@linux-m68k.org> wrote:
+> > > > On Fri, Sep 10, 2021 at 12:23 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > On Thu, 09 Sep 2021 16:22:01 +0100,
+> > > > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > >     GIC: enabling workaround for broken byte access
+> > >
+> > > Indeed, byte access is unsupported according to the EMEV2 documentation.
+> > >
+> > > The EMEV2 documentation R19UH0036EJ0600 Chapter 7 Interrupt Control on
+> > > page 97 says:
+> > > "Interrupt registers can be accessed via the APB bus, in 32-bit units"
+> > > "For details about register functions, see ARM Generic Interrupt
+> > > Controller Architecture Specification Architecture version 1.0"
+> > > The file  "R19UH0036EJ0600_1Chip.pdf" is the 6th edition version
+> > > published in 2010 and is not marked as confidential.
+> >
+> > This is as bad as it gets. Do you know if any other Renesas platform
+> > is affected by the same issue?
+>
+> Next time we have a beer together I would be happy to show you some
+> legacy interrupt controller code. =)
+>
+> EMEV2 and the Emma Mobile product line came from the NEC Electronics
+> side that got merged into Renesas Electronics in 2010. Historically
+> NEC Electronics mainly used MIPS I've been told, and the Emma Mobile
+> SoCs were one of the earlier Cortex-A9 adopters. That might have
+> something to do with the rather loose interpretation of the spec.
 
-The switch to memcpy_to/fromio was done because of 285133040e6c
-("arm64: Import latest memcpy()/memmove() implementation"), but using memcpy
-worked before since it mainly used 32bit memory acceses.
+Indeed.  I used to work on products using EMMA1 and EMMA2, and they
+were MIPS-based (vr4120A for EMMA2, IIRC).  Later variants (EMMA2H
+and EMMA3?) did include a small ARM core for standby control.
 
-Fixes: 103a5348c22c ("mmc: meson-gx: use memcpy_to/fromio for dram-access-quirk")
-Reported-by: Christian Hewitt <christianshewitt@gmail.com>
-Suggested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/mmc/host/meson-gx-mmc.c | 49 +++++++++++++++++++++++----------
- 1 file changed, 35 insertions(+), 14 deletions(-)
+> Renesas SoCs from a similar era:
+> AP4 (sh7372) AP4EVB (Cortex-A8 + INTCA/INTCS)
 
-diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
-index 3f28eb4d17fe..08c0ff0bfa8b 100644
---- a/drivers/mmc/host/meson-gx-mmc.c
-+++ b/drivers/mmc/host/meson-gx-mmc.c
-@@ -746,7 +746,7 @@ static void meson_mmc_desc_chain_transfer(struct mmc_host *mmc, u32 cmd_cfg)
- 	writel(start, host->regs + SD_EMMC_START);
- }
- 
--/* local sg copy to buffer version with _to/fromio usage for dram_access_quirk */
-+/* local sg copy for dram_access_quirk */
- static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data,
- 				  size_t buflen, bool to_buffer)
- {
-@@ -764,21 +764,34 @@ static void meson_mmc_copy_buffer(struct meson_host *host, struct mmc_data *data
- 	sg_miter_start(&miter, sgl, nents, sg_flags);
- 
- 	while ((offset < buflen) && sg_miter_next(&miter)) {
--		unsigned int len;
-+		unsigned int buf_offset = 0;
-+		unsigned int len, left;
-+		u32 *buf = miter.addr;
-+
-+		if (((unsigned long int)miter.addr % 4))
-+			dev_err(host->dev, "non word aligned sg");
- 
- 		len = min(miter.length, buflen - offset);
- 
--		/* When dram_access_quirk, the bounce buffer is a iomem mapping */
--		if (host->dram_access_quirk) {
--			if (to_buffer)
--				memcpy_toio(host->bounce_iomem_buf + offset, miter.addr, len);
--			else
--				memcpy_fromio(miter.addr, host->bounce_iomem_buf + offset, len);
-+		if ((len % 4))
-+			dev_err(host->dev, "non word multiple sg");
-+
-+		left = len;
-+
-+		if (to_buffer) {
-+			do {
-+				writel(*buf++, host->bounce_iomem_buf + offset + buf_offset);
-+
-+				buf_offset += 4;
-+				left -= 4;
-+			} while (left);
- 		} else {
--			if (to_buffer)
--				memcpy(host->bounce_buf + offset, miter.addr, len);
--			else
--				memcpy(miter.addr, host->bounce_buf + offset, len);
-+			do {
-+				*buf++ = readl(host->bounce_iomem_buf + offset + buf_offset);
-+
-+				buf_offset += 4;
-+				left -= 4;
-+			} while (left);
- 		}
- 
- 		offset += len;
-@@ -830,7 +843,11 @@ static void meson_mmc_start_cmd(struct mmc_host *mmc, struct mmc_command *cmd)
- 		if (data->flags & MMC_DATA_WRITE) {
- 			cmd_cfg |= CMD_CFG_DATA_WR;
- 			WARN_ON(xfer_bytes > host->bounce_buf_size);
--			meson_mmc_copy_buffer(host, data, xfer_bytes, true);
-+			if (host->dram_access_quirk)
-+				meson_mmc_copy_buffer(host, data, xfer_bytes, true);
-+			else
-+				sg_copy_to_buffer(data->sg, data->sg_len,
-+						  host->bounce_buf, xfer_bytes);
- 			dma_wmb();
- 		}
- 
-@@ -999,7 +1016,11 @@ static irqreturn_t meson_mmc_irq_thread(int irq, void *dev_id)
- 	if (meson_mmc_bounce_buf_read(data)) {
- 		xfer_bytes = data->blksz * data->blocks;
- 		WARN_ON(xfer_bytes > host->bounce_buf_size);
--		meson_mmc_copy_buffer(host, data, xfer_bytes, false);
-+		if (host->dram_access_quirk)
-+			meson_mmc_copy_buffer(host, data, xfer_bytes, false);
-+		else
-+			sg_copy_from_buffer(data->sg, data->sg_len,
-+					    host->bounce_buf, xfer_bytes);
- 	}
- 
- 	next_cmd = meson_mmc_get_next_command(cmd);
+This is no longer supported upstream (and not affected, as no GIC).
+
+> R-Mobile A1 (r8a7740) Armadillo-800-EVA (Cortex-A9 + INTCA/INTCS)
+
+R-Mobile A1 has GIC (PL390), too, and is not affected.
+
+> R-Car M1A (r8a7778) Bock-W (Cortex-A9 + GIC)
+> R-Car H1 (r8a7779) Marzen (4 x Cortex-A9 + GIC)
+> Emma Mobile EMEV2 KZM9D (2 x Cortex-A9 + GIC)
+> SH-Mobile AG5 (sh73a0) KZM9G (2 x Cortex-A9 + GIC)
+
+All of these (except for EMEV2) are fine, too.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
