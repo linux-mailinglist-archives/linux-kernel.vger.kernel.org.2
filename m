@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE93140A1A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138FB40A197
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244147AbhIMXnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:43:14 -0400
-Received: from mail.i8u.org ([75.148.87.25]:49875 "EHLO chris.i8u.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236079AbhIMXnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:43:12 -0400
-X-Greylist: delayed 545 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 19:43:12 EDT
-Received: by chris.i8u.org (Postfix, from userid 1000)
-        id DDF6916C958B; Mon, 13 Sep 2021 16:32:39 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by chris.i8u.org (Postfix) with ESMTP id DD63E16C92D2;
-        Mon, 13 Sep 2021 16:32:39 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 16:32:39 -0700 (PDT)
-From:   Hisashi T Fujinaka <htodd@twofifty.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Dave Jones <davej@codemonkey.org.uk>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        todd.fujinaka@intel.com
-Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
-In-Reply-To: <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com>
-Message-ID: <b4b543d4-c0c5-3c56-46b7-e17ec579edcc@twofifty.com>
-References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com> <20210913141818.GA27911@codemonkey.org.uk> <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com> <20210913201519.GA15726@codemonkey.org.uk> <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
- <20210913203234.GA6762@codemonkey.org.uk> <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+        id S244861AbhIMXfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243754AbhIMXfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 19:35:15 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A59C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:33:36 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id ib9-20020a0562141c8900b003671c3a1243so58901406qvb.21
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=0Y0FJaNZSCUHBQ+fPBNDuJMCC4vLwAceS4k6e2oEzTI=;
+        b=rhfks4k8tFJpfDygh87cLnVtYjz8ukOMJzU+cQgjOrQK9p2isZjg59tGhZxAKa9n0g
+         cC/Cfh594aAVQKc9izkjZvaaKvIOb9WBzU7JWJvUgq1WQB7VuiOghxgfCHCLhPF573mZ
+         caK21nI63Tn2iLqq+YEuYTmOyr0go55vFWTuDq22JwHuFZtp2UlXlNjGC+HE2FF1gCHR
+         aqH8g5N+AHhhEUuBCF6dtiR6GdMgb0y4G9F3DsYCVx9CcSMycbOlUkeXPAr5vI9HaPt/
+         WTfFTHHhsfh+Fo9H5zkI+vJeLN0EBBegNfMUCktXaSlKfbl991tkMXrcl59Ha2a74Na3
+         IX1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=0Y0FJaNZSCUHBQ+fPBNDuJMCC4vLwAceS4k6e2oEzTI=;
+        b=ajQQ51IgVlvbrLHoaxPTUbxo1mKVHapuSsQ45UKFlFBo+Bt7PyamTQRJuFdVj7hhVO
+         dy+XT4cmmBK1DOUPzvyB7rf1zsH1Cje9mnvE/pMgMoDkKkNePRz32SkEebodiRAmcfrt
+         eudnaMPKTqnFiN6zelUgu/nW47xpj1DOk6xZRfZAv7irkbDpITAi/47sIlGVq0+E1ztT
+         xpo7KQ7OelHvsmvriRZYE8OBz8Iuu7/Te2a0oIqBAq+Octk88Iyprpg1a4KhR1HMa5vE
+         TMBmv2O+iUUfB1i1iCdGkLqQ/zZolpllSA9VlOL8QIRlQXcQ8VtQcoEaUSVmglP66Oga
+         s2HQ==
+X-Gm-Message-State: AOAM531ZkV4DkMuo7+I/K27fK9fiIVXStCaJ7umP+D2z4tQaPRIJlFNE
+        zr10+rxLz2evUrEUuNbJhLsOiq4=
+X-Google-Smtp-Source: ABdhPJz4t0kfCW661zPkNNWFwGXWI60FRYqxzfLLamJIfQAaOBYVdS+vsk1fwUxFneDMXhDda0fVcZY=
+X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:200:f533:d5d5:c2b4:c981])
+ (user=pcc job=sendgmr) by 2002:ad4:4aa8:: with SMTP id i8mr2255539qvx.59.1631576015445;
+ Mon, 13 Sep 2021 16:33:35 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:33:24 -0700
+Message-Id: <20210913233325.23263-1-pcc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH] checkpatch.pl: use correct gitroot when running from
+ non-top-level dir
+From:   Peter Collingbourne <pcc@google.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Peter Collingbourne <pcc@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021, Heiner Kallweit wrote:
+My workflow usually requires running checkpatch.pl from a subdirectory
+of the kernel source tree. This works for the most part, but the script
+will be unable to find the .git directory and will therefore refuse to
+run any git commands (so, e.g. commit ID verification will fail). Fix
+it by prepending $root to $gitroot when a root is set.
 
-> On 13.09.2021 22:32, Dave Jones wrote:
->
-> + Jesse and Tony as Intel NIC maintainers
->
->> On Mon, Sep 13, 2021 at 10:22:57PM +0200, Heiner Kallweit wrote:
->>
->> >> This didn't help I'm afraid :(
->> >> It changed the VPD warning, but that's about it...
->> >>
->> >> [  184.235496] pci 0000:02:00.0: calling  quirk_blacklist_vpd+0x0/0x22 @ 1
->> >> [  184.235499] pci 0000:02:00.0: [Firmware Bug]: disabling VPD access (can't determine size of non-standard VPD format)
->> >> [  184.235501] pci 0000:02:00.0: quirk_blacklist_vpd+0x0/0x22 took 0 usecs
->> >>
->> > With this patch there's no VPD access to this device any longer. So this can't be
->> > the root cause. Do you have any other PCI device that has VPD capability?
->> > -> Capabilities: [...] Vital Product Data
->>
->>
->> 01:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
->>         Subsystem: Device 1dcf:030a
->> 	...
->> 	        Capabilities: [e0] Vital Product Data
->>                 Unknown small resource type 06, will not decode more.
->>
->
-> When searching I found the same symptom of invalid VPD data for 82599EB.
-> Do these adapters have non-VPD data in VPD address space? Or is the actual
-> VPD data at another offset than 0? I know that few Chelsio devices have
-> such a non-standard VPD structure.
->
->>
->> I'll add that to the quirk list and see if that helps.
->>
->> 	Dave
->>
-> Heiner
+This also requires fixing one root directory assumption in a git
+invocation.
 
-Sorry to reply from my personal account. If I did it from my work
-account I'd be top-posting because of Outlook and that goes over like a
-lead balloon.
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Link: https://linux-review.googlesource.com/id/I33dc5f38e2bfcd95c8ea59933bba5305cce50404
+---
+ scripts/checkpatch.pl | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Anyway, can you send us a dump of your eeprom using ethtool -e? You can
-either send it via a bug on e1000.sourceforge.net or try sending it to
-todd.fujinaka@intel.com
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index c27d2312cfc3..171c5993efb4 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -434,6 +434,8 @@ if ($tree) {
+ 		print "Must be run from the top-level dir. of a kernel tree\n";
+ 		exit(2);
+ 	}
++
++	$gitroot = "$root/$gitroot";
+ }
+ 
+ my $emitted_corrupt = 0;
+@@ -1131,7 +1133,7 @@ sub seed_camelcase_includes {
+ 	}
+ 
+ 	if (-e "$gitroot") {
+-		$files = `${git_command} ls-files "include/*.h"`;
++		$files = `${git_command} ls-files "$root/include/*.h"`;
+ 		@include_files = split('\n', $files);
+ 	}
+ 
+-- 
+2.33.0.309.g3052b89438-goog
 
-The other thing is I'm wondering is what the subvendor device ID you
-have is referring to because it's not in the pci database. Some ODMs
-like getting creative with what they put in the NVM.
-
-Todd Fujinaka (todd.fujinaka@intel.com)
