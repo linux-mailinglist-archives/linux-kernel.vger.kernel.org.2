@@ -2,128 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04DEE4098CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E5B409902
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhIMQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhIMQUZ (ORCPT
+        id S237473AbhIMQ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:27:01 -0400
+Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:44051 "EHLO
+        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229795AbhIMQ1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:20:25 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75048C061574;
-        Mon, 13 Sep 2021 09:19:09 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id bd1so14744560oib.5;
-        Mon, 13 Sep 2021 09:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N/xWzsBvqbn7jaeScL3f3s2ZA+9ZXt9gbvH0hh2wYqs=;
-        b=RQ7hh2BPtVQZCJRpUOs9J8RxaFes0UR5KxWnf1sYxhufmrjNmW2didexyDITFZdsxC
-         Kvghcihb327Yic4NNqHkQyNXtCmj8oSYQhjONbUbocrdgBxlGaKHrDE5SWd4I9YquUc0
-         WenkrxhySOFXNmrd8Vj7BM+jehzX+H40j5ioqeaw34F5FPyARB7L7HgurPoa2CG7WlsO
-         qWkbVVfRUgGmnC1CnbVCLRTFiXOdiEjVccsieju0hDofc4gktQJjl2/U6F6d67tMQIFb
-         VmOZiXxeB7i1a7f4y02oiA0OLralUSa22zrW8QKQwjJqzvioMuAh1Q3NIeq6ChX1Nsvz
-         +reg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=N/xWzsBvqbn7jaeScL3f3s2ZA+9ZXt9gbvH0hh2wYqs=;
-        b=sUyg+G81/4GvJvpfuIU0fK/mpEp8VWOOQf0GTLFXbiYTrjqjV0zpCVMxxNo9D3fkMa
-         4i+hyJJwKM+dvcYBLvcJqumGEdK5d5vPhRdtxbpRXoKXhRguinZSWtglZvVXd5FjnWPi
-         Ft0TsJ+5XqMXu2QogeC+uXFiPSxkZYr0BVgNQNp0PF+lmpUqvhunzl5BRbeiueiL/bEE
-         Ky+JonKaklUgNDsjHL3L7gDEW6LkAH22R5CsXZljz13Kfc+Ig+yCAKKqfaWRwqaAneaA
-         SHLyxsbbuxXtjwlkQvinanl/MjmsJQiM0kB+X52HvCTcS2U42U7737dW6wKVLomA6p76
-         iorQ==
-X-Gm-Message-State: AOAM531IBGM6VVoy6LdlVGSd8E5vFTFlW0K2A0wsn+Yd+yHyhsx4TJA1
-        cSMMrgHO9GeJ82bCKe8px68=
-X-Google-Smtp-Source: ABdhPJy8IIqfMvGEvR4RTQ17OcjoZehc+ZdejnMHeNu4ua85Usp8hsBvX6aPh4XYk6wkuD65e3OEKA==
-X-Received: by 2002:a05:6808:3a3:: with SMTP id n3mr8437749oie.41.1631549948824;
-        Mon, 13 Sep 2021 09:19:08 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w12sm1789648oie.41.2021.09.13.09.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:19:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 13 Sep 2021 09:19:07 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH V3 5/5] virtio: Bind virtio device to device-tree node
-Message-ID: <20210913161907.GA176753@roeck-us.net>
-References: <cover.1627273794.git.viresh.kumar@linaro.org>
- <454a58f998b0d16847d72a97b32192829fab2c8c.1627273794.git.viresh.kumar@linaro.org>
- <20210913144905.GA1267554@roeck-us.net>
+        Mon, 13 Sep 2021 12:27:00 -0400
+X-Greylist: delayed 368 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 12:26:59 EDT
+Received: from mxplan5.mail.ovh.net (unknown [10.109.146.44])
+        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 26866BDC1B10;
+        Mon, 13 Sep 2021 18:19:33 +0200 (CEST)
+Received: from kaod.org (37.59.142.103) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 13 Sep
+ 2021 18:19:33 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-103G005f9cd1f28-1563-4076-a263-cc79d3707ab1,
+                    B58C78742DCB5DC23679A7A9E2785397667D7E18) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 82.64.250.170
+Subject: Re: [PATCH AUTOSEL 5.14 38/99] KVM: PPC: Book3S HV: XICS: Fix mapping
+ of passthrough interrupts
+To:     Sasha Levin <sashal@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        <kvm-ppc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>
+References: <20210910001558.173296-1-sashal@kernel.org>
+ <20210910001558.173296-38-sashal@kernel.org>
+ <27739836-bad2-6b3f-7f40-e84663fbbf24@kaod.org> <YTy+xUtEEpln2Sq4@sashalap>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <90cd638d-62d2-8c98-cce0-4c71feee8671@kaod.org>
+Date:   Mon, 13 Sep 2021 18:19:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913144905.GA1267554@roeck-us.net>
+In-Reply-To: <YTy+xUtEEpln2Sq4@sashalap>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.59.142.103]
+X-ClientProxiedBy: DAG2EX2.mxp5.local (172.16.2.12) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: c78f8b93-1b94-4716-88b6-cfd8e4a89938
+X-Ovh-Tracer-Id: 8796937449597471526
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgleeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeetfeejteefhfeuveethfduffeftdelvdeghfelhfeljeehheeuieevudeggefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheptghlgheskhgrohgurdhorhhgpdhrtghpthhtohepshgrshhhrghlsehkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 07:49:07AM -0700, Guenter Roeck wrote:
-> On Mon, Jul 26, 2021 at 10:21:45AM +0530, Viresh Kumar wrote:
-> > Bind the virtio devices with their of_node. This will help users of the
-> > virtio devices to mention their dependencies on the device in the DT
-> > itself. Like GPIO pin users can use the phandle of the device node, or
-> > the node may contain more subnodes to add i2c or spi eeproms and other
-> > users.
-> > 
-> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On 9/11/21 4:35 PM, Sasha Levin wrote:
+> On Fri, Sep 10, 2021 at 07:48:18AM +0200, Cédric Le Goater wrote:
+>> On 9/10/21 2:14 AM, Sasha Levin wrote:
+>>> From: Cédric Le Goater <clg@kaod.org>
+>>>
+>>> [ Upstream commit 1753081f2d445f9157550692fcc4221cd3ff0958 ]
+>>>
+>>> PCI MSIs now live in an MSI domain but the underlying calls, which
+>>> will EOI the interrupt in real mode, need an HW IRQ number mapped in
+>>> the XICS IRQ domain. Grab it there.
+>>>
+>>> Signed-off-by: Cédric Le Goater <clg@kaod.org>
+>>> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+>>> Link: https://lore.kernel.org/r/20210701132750.1475580-31-clg@kaod.org
+>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>
+>>
+>> Why are we backporting this patch in stable trees ?
+>>
+>> It should be fine but to compile, we need a partial backport of commit
+>> 51be9e51a800 ("KVM: PPC: Book3S HV: XIVE: Fix mapping of passthrough
+>> interrupts") which exports irq_get_default_host().
 > 
-> This patch causes a boot failure on sparc64: The virtio device no longer
-> instantiates. Reverting this patch fixes the problem. Bisect log attached.
-> 
+> Or, I can drop it if it makes no sense?
 
-In case it matters: The problem is here:
+Yes I would. 
 
-+       if (!of_device_is_compatible(np, compat)) {
-+               ret = -EINVAL;
-+               goto out;
-+       }
+It makes sense only with the full patchset, the one reworking PCI MSI 
+support in the PPC pSeries and PowerNV platforms.
 
-Guenter
+Thanks,
 
-> Guenter
-> 
-> ---
-> # bad: [6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f] Linux 5.15-rc1
-> # good: [926de8c4326c14fcf35f1de142019043597a4fac] Merge tag 'acpi-5.15-rc1-3' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-> git bisect start 'HEAD' '926de8c4326c'
-> # good: [8177a5c96229ff24da1e362789e359b68b4f34f5] Merge tag 'libata-5.15-2021-09-11' of git://git.kernel.dk/linux-block
-> git bisect good 8177a5c96229ff24da1e362789e359b68b4f34f5
-> # bad: [78e709522d2c012cb0daad2e668506637bffb7c2] Merge tag 'for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost
-> git bisect bad 78e709522d2c012cb0daad2e668506637bffb7c2
-> # bad: [7bc7f61897b66bef78bb5952e3d1e9f3aaf9ccca] Documentation: Add documentation for VDUSE
-> git bisect bad 7bc7f61897b66bef78bb5952e3d1e9f3aaf9ccca
-> # bad: [41116599a0731f4cd451e9d191d879ab45e31945] virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR' bit.
-> git bisect bad 41116599a0731f4cd451e9d191d879ab45e31945
-> # good: [5262912ef3cfc5e518892c3d67fb36412cb813e2] vdpa/mlx5: Add support for control VQ and MAC setting
-> git bisect good 5262912ef3cfc5e518892c3d67fb36412cb813e2
-> # good: [7f815fce08d563006e43d1b7d2f9a0a4f3b832f3] dt-bindings: i2c: Add bindings for i2c-virtio
-> git bisect good 7f815fce08d563006e43d1b7d2f9a0a4f3b832f3
-> # good: [d5a8680dfab0547a4ecd708b1fe9de48598a6757] uapi: virtio_ids: Sync ids with specification
-> git bisect good d5a8680dfab0547a4ecd708b1fe9de48598a6757
-> # bad: [9af8f1061646e8e22b66413bedf7b3e2ab3d69e5] virtio/vsock: rename 'EOR' to 'EOM' bit.
-> git bisect bad 9af8f1061646e8e22b66413bedf7b3e2ab3d69e5
-> # bad: [694a1116b405d887c893525a6766b390989c8606] virtio: Bind virtio device to device-tree node
-> git bisect bad 694a1116b405d887c893525a6766b390989c8606
-> # first bad commit: [694a1116b405d887c893525a6766b390989c8606] virtio: Bind virtio device to device-tree node
+C.
