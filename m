@@ -2,251 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64829408550
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDFD408554
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237613AbhIMH1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:27:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58019 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235185AbhIMH1G (ORCPT
+        id S237628AbhIMH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237561AbhIMH2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:27:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631517950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ycK/tCqEmqie6iTs/9nBScnQKNEMyPZZHddjJC00ddA=;
-        b=Nszw7igIwXv8MotuBMueU66EOUPlva4uMv3IcRYJ2G9/yRhvVsSyJkSnrAP7RpEZNhlU8w
-        aIf6WBOIV2tRBpzROoGKFFUCg9T5OWGI6NILnIA0epoHFync+H98pxXHgENi5PoHormZ8q
-        3CGDVi7rAIhQ6YCpiqJVKDtcnZ6KK7o=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-t1TCgV5XNG6fv4gWfdEW3g-1; Mon, 13 Sep 2021 03:25:49 -0400
-X-MC-Unique: t1TCgV5XNG6fv4gWfdEW3g-1
-Received: by mail-ed1-f71.google.com with SMTP id y17-20020a50e611000000b003d051004603so3788025edm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:25:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ycK/tCqEmqie6iTs/9nBScnQKNEMyPZZHddjJC00ddA=;
-        b=GIN+JgyUEsZUmTiPbTMl8/U3InB3QEasa9EXrJDw7GGs1cB4JsReTtJgPpdlnbswBL
-         HPl8TKbvCZ/bzDYm1wP5CDvDMb1PhkobXa7jqxgTO8hnpw1IH6BfbBz1gtPd2ON7/WhD
-         pH9ng34oD3DF2cNqmWiMjxyLbiWZQ+0zi2EqnP2wLJyoiNttxv7+bmlj7gaaAO1Cz8SG
-         keQNOzIdsjhpGWtmTJMkab/JENtotMDkNfP6ab6DU2p+lSGM415Zq4DctKCCs2BIoaHe
-         Q375MXWXbCaoGCkOl9Rl3SoXxJAL2GUPZJnYo/v3KoFwrdVoEmMzNqP74vZMwjY6eKpp
-         qh9Q==
-X-Gm-Message-State: AOAM531+/HRYw67OknmVAXTXR7baN11cxBkGJMBrg3XMV+uhrVz1xgYq
-        ztEcZV1ppWjnUou6AXwk+bePBIxOlKKp7RbY5XKArm/JdesY+cCO04WVyHa7AkkJUzuG1FsaYQG
-        EjGhLHQeaQBBhC1uGTLm1abv2
-X-Received: by 2002:a50:d4dc:: with SMTP id e28mr11571605edj.106.1631517948190;
-        Mon, 13 Sep 2021 00:25:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNxTQ2vLqD78w1qZ/yyGrwNlAgo4kC8ZoLROpW9R1ep9CmZ5X0HutmNcr1ZAX/1oPEj6kYKw==
-X-Received: by 2002:a50:d4dc:: with SMTP id e28mr11571587edj.106.1631517947927;
-        Mon, 13 Sep 2021 00:25:47 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id m10sm2962374ejx.76.2021.09.13.00.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 00:25:47 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 09:25:45 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v4 09/18] KVM: arm64: selftests: Add guest support to get
- the vcpuid
-Message-ID: <20210913072545.vmmlejgg6jtsz4pm@gator.home>
-References: <20210909013818.1191270-1-rananta@google.com>
- <20210909013818.1191270-10-rananta@google.com>
- <20210909075643.fhngqu6tqrpe33gl@gator>
- <CAJHc60wRkUyKEdY0ok0uC7r=P0FME+Lb7oapz+AKbjaNDhFHyA@mail.gmail.com>
- <20210910081001.4gljsvmcovvoylwt@gator>
- <CAJHc60yhg7oYiJpHJK27M7=qo0CMOX+Qj9+q-ZHgTVhWr_76aA@mail.gmail.com>
+        Mon, 13 Sep 2021 03:28:06 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB449C061574;
+        Mon, 13 Sep 2021 00:26:50 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 31A49C6050; Mon, 13 Sep 2021 08:26:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1631518009; bh=qS2vbOcvUK+v/bTcb/OiamyjIe5gw+PCQXTQRWWRAo0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VpAx3H7NmEOsBiTVBzp91UvXgVzpEHGMrlCGx4wG9KZR2juVXyZHxaWoXiLNPfcgL
+         xkt2qHm+7qQmMVyKGD1mA5gKN6xZehIWik4IGk5cCiW9Kj7ZvZaUriLxPu698cEHTy
+         BGekNkFVue1KS7V0/hfiW6PG05+YiKcCt9/SYR7+XIXXv2YP67csQ6pwc0d95Fnink
+         LtXUugTPV4c0Edy3QN9MNtMToOJXIp9IWHnX7tTVMzOTxf3pyQsq6GLWYjpzdAuCn4
+         QkCYSH5YqiE1ZHdtjvZZLr4dvQSIWEbJemBOHTZQmtRWawGXbG33BDHTYg23UJkhga
+         esAfHTmhct9yw==
+Date:   Mon, 13 Sep 2021 08:26:49 +0100
+From:   Sean Young <sean@mess.org>
+To:     =?iso-8859-1?Q?Joaqu=EDn_Alberto_Calder=F3n?= Pozo 
+        <kini_calderon@hotmail.com>
+Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: linux-image-5.10.0-8-amd64: Hauppauge WinTV-HVR1110 DVB-T/Hybrid
+ bug 125 ms polling on ir-kbd-i2c.ko bad DEFAULT_POLLING_INTERVAL
+Message-ID: <20210913072649.GB2393@gofer.mess.org>
+References: <CH2PR04MB6679933D6BEE6C51BE6BEF9889D89@CH2PR04MB6679.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAJHc60yhg7oYiJpHJK27M7=qo0CMOX+Qj9+q-ZHgTVhWr_76aA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CH2PR04MB6679933D6BEE6C51BE6BEF9889D89@CH2PR04MB6679.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 11:03:58AM -0700, Raghavendra Rao Ananta wrote:
-> On Fri, Sep 10, 2021 at 1:10 AM Andrew Jones <drjones@redhat.com> wrote:
-> >
-> > On Thu, Sep 09, 2021 at 10:10:56AM -0700, Raghavendra Rao Ananta wrote:
-> > > On Thu, Sep 9, 2021 at 12:56 AM Andrew Jones <drjones@redhat.com> wrote:
-> > > >
-> > > > On Thu, Sep 09, 2021 at 01:38:09AM +0000, Raghavendra Rao Ananta wrote:
-> > ...
-> > > > > +     for (i = 0; i < KVM_MAX_VCPUS; i++) {
-> > > > > +             vcpuid = vcpuid_map[i].vcpuid;
-> > > > > +             GUEST_ASSERT_1(vcpuid != VM_VCPUID_MAP_INVAL, mpidr);
-> > > >
-> > > > We don't want this assert if it's possible to have sparse maps, which
-> > > > it probably isn't ever going to be, but...
-> > > >
-> > > If you look at the way the array is arranged, the element with
-> > > VM_VCPUID_MAP_INVAL acts as a sentinel for us and all the proper
-> > > elements would lie before this. So, I don't think we'd have a sparse
-> > > array here.
-> >
-> > If we switch to my suggestion of adding map entries at vcpu-add time and
-> > removing them at vcpu-rm time, then the array may become sparse depending
-> > on the order of removals.
-> >
-> Oh, I get it now. But like you mentioned, we add entries to the map
-> while the vCPUs are getting added and then sync_global_to_guest()
-> later. This seems like a lot of maintainance, unless I'm interpreting
-> it wrong or not seeing an advantage.
+On Sun, Sep 12, 2021 at 10:15:31PM +0000, Joaquín Alberto Calderón Pozo wrote:
+> Mantainers of the ir-kbd-i2c, althought I sent it to the debian bug report team, I consider to sent you also this patch (if it's the right way) to solve this bug.
+> 
+> Thanks
+> 
+> Package: src:linux
+> X-Debbugs-Cc: kini_calderon@hotmail.com
+> Version: 5.10.46-4
+> Severity: important
+> Tags: patch
+> 
+> Although I have a very old pci (not express) Hauppauge WinTV-HVR1110 DVB-T/Hybrid TV card with a remote control, I am still using it because has fully support and functionallity and it's hardware capable of play DVB-T HD streams.
+> 
+> It has a very strange behaviour:
+> 
+> -One is it has a slow response when I push a key, has a delay, and sometimes even no key response, nothing happens, as if never push a key.
+> -Other is when you hold a key, it start to begin the repeat key (characters like numerical) appears in the test app (kwrite) then, has a pause, stops to write characters, and begin the sequence again, writes some sequence, then stops... and so on. Even I noticed the repeat speed is a bit slow, compared to a keyboard key hold on.
+> 
+> So... I began to investigates the causes and after two weeks of research, searchs on the web, I found the module affected and a solution.
+> 
+> The module affected is ir-kbd-i2c.ko, this remote (rc5 protocol) uses this module as uinput (devinput) device, in resume as like an attatched keyboard. Resulting investigation in get noticed that this remote with rc5 protocol has 8hz of time frame when receiving the air gap code (rc5 procotol timing).
+> 
+> Investigating the sources files in the kernel sources for try and fall, re-compiling the modules, get me to get noticed that the polling ir remote interval is 100ms which is 5hz, forcing this value to 125ms, re-compiling the module causes the remote to work normally as expecte, the response is like a real keyboard and the repeat sequence not only as speedy as a normal keyboard, but also hasn't got a pause in repetition. In resume, the problem is solved.
+> 
+> Here is the patch:
+> 
+> --- ir-kbd-i2c.original.c       2021-09-08 23:45:23.723210301 +0200
+> +++ ir-kbd-i2c.hauppauge.patched.c      2021-09-10 03:55:28.003529072 +0200
+> @@ -742,7 +742,7 @@
+>                 return -ENOMEM;
+> 
+>         ir->c = client;
+> -       ir->polling_interval = DEFAULT_POLLING_INTERVAL;
+> +       ir->polling_interval = 125;
+>         i2c_set_clientdata(client, ir);
+> 
+>         switch(addr) {
+> 
+> I am a experienced user, but not an experienced developer, also in editing/submitting bugs, I don't know if this is the right way to solve this, If the rest of brand remotes are affected for my solution, but for me, solved my problem in this particular case.
+> 
+> I don't know where the value DEFAULT_POLLING_INTERVAL is get stablished or a way when detect a Hauppauge WinTV-HVR1110 DVB-T/Hybrid TV card to stablish 125ms instead of 100ms. As I said, I'm not an expert but experienced user.
 
-The advantage is that you don't need to create all vcpus before calling
-the map init function. While it's true that we'll still require a call
-after adding all vcpus if we want to export the map to the guest, i.e.
-sync_global_to_guest, we'll never have to worry about the map being
-out of synch wrt vcpus on the host side, and there's no need to call
-sync_global_to_guest at all when the test needs the map, but the guest
-doesn't need to access it.
+This change looks right to me, but it needs some changes:
 
-> I like your idea of coming up an arch-independent interface, however.
-> So I modified it similar to the familiar ucall interface that we have
-> and does everything in one shot to avoid any confusion:
+ - The change needs to be made Hauppauge/Zilog specific by adding a line
+   under the "case 0x71:" line below which sets the polling interval to 125.
+ - The patch should be against current media kernel, not 5.10
+ - Follow https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+ - Add "Cc: stable@vger.kernel.org" and the patch will trickle down into 
+   5.10.
 
-Right, ucall_init does call sync_global_to_guest, but it's the only
-lib function so far. Everything else exported to the guest must be
-done explicitly.
+Thanks
+
+Sean
 
 > 
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h
-> b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 010b59b13917..0e87cb0c980b 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -400,4 +400,24 @@ uint64_t get_ucall(struct kvm_vm *vm, uint32_t
-> vcpu_id, struct ucall *uc);
->  int vm_get_stats_fd(struct kvm_vm *vm);
->  int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid);
+> I don't know if this is the right package to post this bug. Thanks.
 > 
-> +#define VM_CPUID_MAP_INVAL -1
-> +
-> +struct vm_cpuid_map {
-> +       uint64_t hw_cpuid;
-> +       int vcpuid;
-> +};
-> +
-> +/*
-> + * Create a vcpuid:hw_cpuid map and export it to the guest
-> + *
-> + * Input Args:
-> + *   vm - KVM VM.
-> + *
-> + * Output Args: None
-> + *
-> + * Must be called after all the vCPUs are added to the VM
-> + */
-> +void vm_cpuid_map_init(struct kvm_vm *vm);
-> +int guest_get_vcpuid(void);
-> +
->  #endif /* SELFTEST_KVM_UTIL_H */
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> index db64ee206064..e796bb3984a6 100644
-> --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> @@ -16,6 +16,8 @@
-> 
->  static vm_vaddr_t exception_handlers;
-> 
-> +static struct vm_cpuid_map cpuid_map[KVM_MAX_VCPUS];
-> +
->  static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
->  {
->         return (v + vm->page_size) & ~(vm->page_size - 1);
-> @@ -426,3 +428,42 @@ void vm_install_exception_handler(struct kvm_vm
-> *vm, int vector,
->         assert(vector < VECTOR_NUM);
->         handlers->exception_handlers[vector][0] = handler;
->  }
-> +
-> +void vm_cpuid_map_init(struct kvm_vm *vm)
-> +{
-> +       int i = 0;
-> +       struct vcpu *vcpu;
-> +       struct vm_cpuid_map *map;
-> +
-> +       TEST_ASSERT(!list_empty(&vm->vcpus), "vCPUs must have been created\n");
-> +
-> +       list_for_each_entry(vcpu, &vm->vcpus, list) {
-> +               map = &cpuid_map[i++];
-> +               map->vcpuid = vcpu->id;
-> +               get_reg(vm, vcpu->id,
-> KVM_ARM64_SYS_REG(SYS_MPIDR_EL1), &map->hw_cpuid);
-> +               map->hw_cpuid &= MPIDR_HWID_BITMASK;
-> +       }
-> +
-> +       if (i < KVM_MAX_VCPUS)
-> +               cpuid_map[i].vcpuid = VM_CPUID_MAP_INVAL;
-> +
-> +       sync_global_to_guest(vm, cpuid_map);
-> +}
-> +
-> +int guest_get_vcpuid(void)
-> +{
-> +       int i, vcpuid;
-> +       uint64_t mpidr = read_sysreg(mpidr_el1) & MPIDR_HWID_BITMASK;
-> +
-> +       for (i = 0; i < KVM_MAX_VCPUS; i++) {
-> +               vcpuid = cpuid_map[i].vcpuid;
-> +
-> +               /* Was this vCPU added to the VM after the map was
-> initialized? */
-> +               GUEST_ASSERT_1(vcpuid != VM_CPUID_MAP_INVAL, mpidr);
-> +
-> +               if (mpidr == cpuid_map[i].hw_cpuid)
-> +                       return vcpuid;
-> +       }
-> +
-> +       /* We should not be reaching here */
-> +       GUEST_ASSERT_1(0, mpidr);
-> +       return -1;
-> +}
-> 
-> This would ensure that we don't have a sparse array and can use the
-> last non-vCPU element as a sentinal node.
-> If you still feel preparing the map as and when the vCPUs are created
-> makes more sense, I can go for it.
 
-Yup, I think that's still my preference. We don't really need a
-sentinel node for such a small array. We can just do
-
-static struct vm_cpuid_map cpuid_map[KVM_MAX_VCPUS] = { [0 ... KVM_MAX_VCPUS - 1] = VM_CPUID_MAP_INVAL };
-
-to ensure all invalid nodes are invalid. After a full loop
-if we didn't find a valid entry, then we assert, which easily
-supports a sparse array.
-
-Also, please don't forget that guest_get_vcpuid() can be common for all
-architectures. We just need an arch-specific call for get_hw_cpuid().
-
-Thanks,
-drew
-
-> 
-> Regards,
-> Raghavendra
-> > Thanks,
-> > drew
-> >
-> 
+> --- ir-kbd-i2c.original.c	2021-09-08 23:45:23.723210301 +0200
+> +++ ir-kbd-i2c.hauppauge.patched.c	2021-09-10 03:55:28.003529072 +0200
+> @@ -742,7 +742,7 @@
+>  		return -ENOMEM;
+>  
+>  	ir->c = client;
+> -	ir->polling_interval = DEFAULT_POLLING_INTERVAL;
+> +	ir->polling_interval = 125;
+>  	i2c_set_clientdata(client, ir);
+>  
+>  	switch(addr) {
 
