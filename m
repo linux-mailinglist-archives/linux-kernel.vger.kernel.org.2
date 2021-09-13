@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2131440882D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FF4408831
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238563AbhIMJ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238281AbhIMJ2m (ORCPT
+        id S238627AbhIMJ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:29:26 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:51070 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238597AbhIMJ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:28:42 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A306CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:27:26 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id h18-20020ad446f2000000b0037a7b48ba05so5079571qvw.19
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:27:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=PQ67016JCuw0wmarW+Gg6xUxvTIMgb10aFiL+BvYQI4=;
-        b=bACp10SPODm3tDvhvo4Dpkkwxdi+nk3xl0oBbvKpjfDsvICAiChx+zcS9d7A90g5LD
-         Wg1NwP9jYoyxMyLeJD8YwUv66tlgLefn1PrZay80RMlVUfvymfq6SMRP8zydDwetSBmr
-         gzR+Bilb8ibQ7TCNUIjrCV1Ye7ncqX5AHxtJEawfL4suKxdXw2H9kdVymNcqo6RO8IVj
-         EBhQaHVbnrqNk9N5Db43Ph5cs7a89CMFphm/qcjy2J5iH2Fjg9BJXwTZsoProH6plkYz
-         Ty7oXWBZ3IyFMMnXIlCq3kiuFAPF3Wgr245VEEmhgrj5PLgRChR89TJqBoPAr3Xwd7lc
-         6G3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=PQ67016JCuw0wmarW+Gg6xUxvTIMgb10aFiL+BvYQI4=;
-        b=xc2TK1CZMbtRhqgqziGAtSy9kdZdJZAsCMUdQLaHwd+DgJwZCay13i4MqUtNdbaD/t
-         Gi6ldO+eWIAYslI6fedkDXImvCwoCkm1oGQ3axEpWjfKykO4vHkg8kJw/4ykLQ0cISoS
-         +/1aBztYKo2dzBePzhCJVEhm2pu+AIbagkjtf43bXoWzbQqfUc+xsfjkee/xmb1+ziWG
-         s5xU0StPlgv98yUcZpBKKSOmlG00ZQu3/JuZfs3INS/9HOr0nXStSfJLxxO/N9WjfX84
-         BRX5Aswab3vQsbp78K6rHRSZ8q/D5wkIpcwhbjwr7VCvfWs7hJw8dTHpDeR+4lDIyHp3
-         j/3g==
-X-Gm-Message-State: AOAM5300f1W6/mNsAxBFKtkKi251Fj2+UXae1ESigffXoIXgbsMdXo6H
-        eEHncbyKbTLlxomMxapAChBszOjxQYVJYg==
-X-Google-Smtp-Source: ABdhPJxMQ6XY9sfo57rAG/cK/FlLZ1uUwMeQq7Jr4fgisRGXbfJn0QmMjkHPRA1fD82P8E7cIRdhZ79f6/6VoA==
-X-Received: from akailash.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1e6])
- (user=akailash job=sendgmr) by 2002:ad4:57a7:: with SMTP id
- g7mr9762449qvx.42.1631525245649; Mon, 13 Sep 2021 02:27:25 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 09:26:42 +0000
-Message-Id: <20210913092642.3237796-1-akailash@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] dm-verity: skip verity_handle_error on I/O errors
-From:   Akilesh Kailash <akailash@google.com>
-Cc:     akailash@google.com, samitolvanen@google.com,
-        kernel-team@android.com, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Mon, 13 Sep 2021 05:29:25 -0400
+X-UUID: ce9b042b918847c99cb990bb1516e57c-20210913
+X-UUID: ce9b042b918847c99cb990bb1516e57c-20210913
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <seiya.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1269922654; Mon, 13 Sep 2021 17:28:04 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 13 Sep 2021 17:28:02 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 13 Sep 2021 17:28:02 +0800
+From:   Seiya Wang <seiya.wang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>
+Subject: [PATCH] arm64: dts: mt8183: support coresight-cpu-debug for mt8183
+Date:   Mon, 13 Sep 2021 17:27:36 +0800
+Message-ID: <20210913092736.19207-1-seiya.wang@mediatek.com>
+X-Mailer: git-send-email 2.14.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there is an I/O error and FEC correction fails, return
-an error instead of calling verity_handle_error().
+Add coresight-cpu-debug nodes to mt8183 for dumping
+EDPRSR, EDPCSR, EDCIDSR, EDVIDSR
+while kernel panic happens
 
-Suggested-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Akilesh Kailash <akailash@google.com>
+Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
 ---
-This was discussed in [1] by Sami Tolvanen but was
-never implemented.
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 64 ++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-[1] https://lore.kernel.org/dm-devel/b004e7c7-f795-77ed-19b9-983785780e92@gmail.com/T/#mec4df1ba3f3cb63846875fb2bfc1f8b3100f31f1
-
- drivers/md/dm-verity-target.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-index 22a5ac82446a..a6f7c452ee80 100644
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -475,6 +475,7 @@ static int verity_verify_io(struct dm_verity_io *io)
- 	struct bvec_iter start;
- 	unsigned b;
- 	struct crypto_wait wait;
-+	struct bio *bio = dm_bio_from_per_bio_data(io, v->ti->per_io_data_size);
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 409cf827970c..3ad4dd47518a 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -367,6 +367,70 @@
+ 			reg = <0 0x0c530a80 0 0x50>;
+ 		};
  
- 	for (b = 0; b < io->n_blocks; b++) {
- 		int r;
-@@ -529,9 +530,17 @@ static int verity_verify_io(struct dm_verity_io *io)
- 		else if (verity_fec_decode(v, io, DM_VERITY_BLOCK_TYPE_DATA,
- 					   cur_block, NULL, &start) == 0)
- 			continue;
--		else if (verity_handle_err(v, DM_VERITY_BLOCK_TYPE_DATA,
-+		else {
-+			if (bio->bi_status) {
-+				/*
-+				 * Error correction failed; Just return error
-+				 */
-+				return -EIO;
-+			}
-+			if (verity_handle_err(v, DM_VERITY_BLOCK_TYPE_DATA,
- 					   cur_block))
--			return -EIO;
-+				return -EIO;
-+		}
- 	}
- 
- 	return 0;
++		cpu_debug0: cpu-debug@d410000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xd410000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu0>;
++		};
++
++		cpu_debug1: cpu-debug@d510000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xd510000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu1>;
++		};
++
++		cpu_debug2: cpu-debug@d610000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xd610000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu2>;
++		};
++
++		cpu_debug3: cpu-debug@d710000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xd710000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu3>;
++		};
++
++		cpu_debug4: cpu-debug@d810000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xd810000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu4>;
++		};
++
++		cpu_debug5: cpu-debug@d910000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xd910000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu5>;
++		};
++
++		cpu_debug6: cpu-debug@da10000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xda10000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu6>;
++		};
++
++		cpu_debug7: cpu-debug@db10000 {
++			compatible = "arm,coresight-cpu-debug","arm,primecell";
++			reg = <0x0 0xdb10000 0x0 0x1000>;
++			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
++			clock-names = "apb_pclk";
++			cpu = <&cpu7>;
++		};
++
+ 		topckgen: syscon@10000000 {
+ 			compatible = "mediatek,mt8183-topckgen", "syscon";
+ 			reg = <0 0x10000000 0 0x1000>;
 -- 
-2.33.0.309.g3052b89438-goog
+2.14.1
 
