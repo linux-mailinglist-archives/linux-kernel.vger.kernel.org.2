@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BE1409D3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D929409D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242469AbhIMTjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240113AbhIMTjw (ORCPT
+        id S242721AbhIMTkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:40:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56418 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242232AbhIMTkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:39:52 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A81EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:38:36 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d21so8702386wra.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=c6DbKWeeuhyIQk/sjR5gJ2Num3qwAgw1fKp51/8HpbY=;
-        b=Q8+5Fs8fNNTZntiKDFNbaSpGrjYmQD7GVzFqb6ch5BoIw0spXXKGxehoszaG80RNTz
-         hhMxqj6D0QZjaYR8f0LhVvzVtczxcldm0lWur3fRndY8bKFt1MnHVZ0jWe/mDr6IgS4C
-         yJAOnWfyT1nEnMDfvyNesKRTBjovnmyfKEtnD5IQKVDvLyCnHqKOqjMHeYqZXBEkYwk0
-         cYTYAY63t8JchWXbwcTZ7yTkgTN+OVX1QpXvoyNV18YTZsulKtZ55x8vO11aSDK6TU51
-         W4yCZTjPKDTVZpgk8xgydcxFOs34xXCgEar0pFlwnlTKhcWL6PXum3lVGetE4opx2I0g
-         /1YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=c6DbKWeeuhyIQk/sjR5gJ2Num3qwAgw1fKp51/8HpbY=;
-        b=U1Z+bkFRBjACOURBVWtRhWVbinKjXhg/mAHPNzG+AE1Nda1D20cYRSvtW4mjbEQAW1
-         YEUoSSgB8hzGSnjc5A06J5cFv0Rh/5hci8Nika6w3u+G1j4Dsj/6D6m/aQCGXEA3y6I9
-         lQ0M13FZQ/DvUzgfepbynwJbk9dRi7fPLGZAj32D+Cz/U46YB2Q0cr2C3iCKk+X4ZFbg
-         oPVL1LgfF6Wzh73kvfUkud/jGA4Nb2/IGJCoiGhpE8xTu+LGXQCAxC7fr/HD6jpWu/yo
-         lfwWEluaGgpO3XWMKBzaQ7vyYLcDCfFSgdG75a53TiNKMJ8QfKBwcP3xSXHrx0cAOI1R
-         mipw==
-X-Gm-Message-State: AOAM533Aumm5CK9HeygmC5lsaSR+B+Mj7Z1g0TmXFmJ+V1faXHeJnUBO
-        ydvwBVzcOSli7OxYWGIrzKs=
-X-Google-Smtp-Source: ABdhPJyeNb/QodalatxHQ8M39Shvt3YxxNv1ndi5rl5f7lljsUhavpCTCWIs/1+XcvvnU0ACRJxvRA==
-X-Received: by 2002:a5d:4591:: with SMTP id p17mr14483338wrq.59.1631561914937;
-        Mon, 13 Sep 2021 12:38:34 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::1db2? ([2a02:8108:96c0:3b88::1db2])
-        by smtp.gmail.com with ESMTPSA id n26sm5745365wmi.43.2021.09.13.12.38.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 12:38:34 -0700 (PDT)
-Message-ID: <1feb008a-d13b-6b27-5e1f-e56fed37cd3e@gmail.com>
-Date:   Mon, 13 Sep 2021 21:38:33 +0200
+        Mon, 13 Sep 2021 15:40:37 -0400
+Date:   Mon, 13 Sep 2021 19:39:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631561956;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rvh2aNpgEjB+qu7KHhTSh9RhV+DtQghdR7Dqdgn8iro=;
+        b=Wb4pCdaXnoVFQJmX6yFFyGFj0zfx/pPVX5I0WXPQKm9YMz6K0YLirTgSaKFh9bbZWUvbIZ
+        9kp64vETORNl5TyIHrhZwRaNgp0l//Qu5F3DfBiFlMrsSLj3xWOUNVP5IEOL4BByH0fBsS
+        nP3FAky3MHeQ1Ma/3BYvFkFMX4aIMAD6zuLsC4XcASPFFpH18ZqP7fO/NtgnmiyTN8ccg6
+        ISx0Vn1zxJkkooCfEUKZLkSM4ka9aGzUvmrFZdTcHUi1DSBYAqH7LMoz51mDEZP7KgQYuY
+        uoiWkrcLgNJWHshOgIyx6RYiGROv3i+ioH7C/oYv2W9EF5wHQFsblBNGKEUmJA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631561956;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rvh2aNpgEjB+qu7KHhTSh9RhV+DtQghdR7Dqdgn8iro=;
+        b=Pmjfga+ORFACfiuF44o4SvFBmUCIua6xtt3qQLvurCyeevswa1AbdplYw+VfudbGlV+RDO
+        OIYJwHhiYVVbeTBw==
+From:   "tip-bot2 for H. Peter Anvin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/asm: Avoid adding register pressure for the init
+ case in static_cpu_has()
+Cc:     "H. Peter Anvin (Intel)" <hpa@zytor.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210910195910.2542662-4-hpa@zytor.com>
+References: <20210910195910.2542662-4-hpa@zytor.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v2 3/8] staging: r8188eu: _free_pwrlock is empty
-Content-Language: en-US
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210911141521.24901-1-martin@kaiser.cx>
- <20210913185110.3065-1-martin@kaiser.cx>
- <20210913185110.3065-4-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20210913185110.3065-4-martin@kaiser.cx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <163156195512.25758.5915554914005716758.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+The following commit has been merged into the x86/cpu branch of tip:
 
-On 9/13/21 20:51, Martin Kaiser wrote:
-> -void rtw_free_pwrctrl_priv(struct adapter *adapter)
-> -{
-> -	struct pwrctrl_priv *pwrctrlpriv = &adapter->pwrctrlpriv;
-> -
-> -	_free_pwrlock(&pwrctrlpriv->lock);
-> -
-> -}
+Commit-ID:     0507503671f9b1c867e889cbec0f43abf904f23c
+Gitweb:        https://git.kernel.org/tip/0507503671f9b1c867e889cbec0f43abf904f23c
+Author:        H. Peter Anvin <hpa@zytor.com>
+AuthorDate:    Fri, 10 Sep 2021 12:59:10 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 13 Sep 2021 19:48:21 +02:00
 
-the prototype of rtw_free_pwrctrl_priv can also be removed
-from rtw_pwrctrl.h,
+x86/asm: Avoid adding register pressure for the init case in static_cpu_has()
 
-Thanks,
-Michael
+gcc will sometimes manifest the address of boot_cpu_data in a register
+as part of constant propagation. When multiple static_cpu_has() are used
+this may foul the mainline code with a register load which will only be
+used on the fallback path, which is unused after initialization.
+
+Explicitly force gcc to use immediate (rip-relative) addressing for
+the fallback path, thus removing any possible register use from
+static_cpu_has().
+
+While making changes, modernize the code to use
+.pushsection...popsection instead of .section...previous.
+
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210910195910.2542662-4-hpa@zytor.com
+---
+ arch/x86/include/asm/cpufeature.h | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 16a51e7..1261842 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -173,20 +173,25 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
+  * means that the boot_cpu_has() variant is already fast enough for the
+  * majority of cases and you should stick to using it as it is generally
+  * only two instructions: a RIP-relative MOV and a TEST.
++ *
++ * Do not use an "m" constraint for [cap_byte] here: gcc doesn't know
++ * that this is only used on a fallback path and will sometimes cause
++ * it to manifest the address of boot_cpu_data in a register, fouling
++ * the mainline (post-initialization) code.
+  */
+ static __always_inline bool _static_cpu_has(u16 bit)
+ {
+ 	asm_volatile_goto(
+ 		ALTERNATIVE_TERNARY("jmp 6f", %P[feature], "", "jmp %l[t_no]")
+-		".section .altinstr_aux,\"ax\"\n"
++		".pushsection .altinstr_aux,\"ax\"\n"
+ 		"6:\n"
+-		" testb %[bitnum],%[cap_byte]\n"
++		" testb %[bitnum]," _ASM_RIP(%P[cap_byte]) "\n"
+ 		" jnz %l[t_yes]\n"
+ 		" jmp %l[t_no]\n"
+-		".previous\n"
++		".popsection\n"
+ 		 : : [feature]  "i" (bit),
+ 		     [bitnum]   "i" (1 << (bit & 7)),
+-		     [cap_byte] "m" (((const char *)boot_cpu_data.x86_capability)[bit >> 3])
++		     [cap_byte] "i" (&((const char *)boot_cpu_data.x86_capability)[bit >> 3])
+ 		 : : t_yes, t_no);
+ t_yes:
+ 	return true;
