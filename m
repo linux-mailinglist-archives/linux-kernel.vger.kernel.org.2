@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F59D40920E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFC84094D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244353AbhIMOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:07:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50896 "EHLO mail.kernel.org"
+        id S1347864AbhIMOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:35:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343793AbhIMODa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:03:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C77261A53;
-        Mon, 13 Sep 2021 13:38:42 +0000 (UTC)
+        id S1347124AbhIMOaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E28561BA0;
+        Mon, 13 Sep 2021 13:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540322;
-        bh=Ny8wVJn4A9i6ipl3UIAXM88BcEFMhX2inpmHcX3ehGo=;
+        s=korg; t=1631541077;
+        bh=4AeE5WfbLORWsAT3jU2iIbCpPd29hPNC6tCN5hoShQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Ki+eZu9m/gzBh7RNS+dNSRPCdhuFzt6HcJTUMGg9u6HfWD46KeeKet9GDr8a9JBi
-         AEkcBQvM2G0uheEa/nqlTs/mP9COD1VhuJxub/hCoNTmsfojj31XwrU2PlPg1Nx+E3
-         aGxFIBmnssbvgE/iTSvHhWyegeWXHehJuX4UbLqI=
+        b=VobcXAynRRICMppPpxPgdjlyAhwOVNHAPCz2m6LO+kVCQ+GaV+ytKdUGgW7fKWpOO
+         x7+QVb2gf0yWtrq3gxKqm1QLP8uL+gSykJ1k1m2tNWsJxxrubJ8fYVXLfQuNpz2uHn
+         kYwFueAh6MkTKRRrUr7A5q3KZARFdt8U6rWMarkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 145/300] media: em28xx-input: fix refcount bug in em28xx_usb_disconnect
-Date:   Mon, 13 Sep 2021 15:13:26 +0200
-Message-Id: <20210913131114.298951027@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 153/334] i2c: highlander: add IRQ check
+Date:   Mon, 13 Sep 2021 15:13:27 +0200
+Message-Id: <20210913131118.528041651@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 6fa54bc713c262e1cfbc5613377ef52280d7311f ]
+[ Upstream commit f16a3bb69aa6baabf8f0aca982c8cf21e2a4f6bc ]
 
-If em28xx_ir_init fails, it would decrease the refcount of dev. However,
-in the em28xx_ir_fini, when ir is NULL, it goes to ref_put and decrease
-the refcount of dev. This will lead to a refcount bug.
+The driver is written as if platform_get_irq() returns 0 on errors (while
+actually it returns a negative error code), blithely passing these error
+codes to request_irq() (which takes *unsigned* IRQ #) -- which fails with
+-EINVAL. Add the necessary error check to the pre-existing *if* statement
+forcing the driver into the polling mode...
 
-Fix this bug by removing the kref_put in the error handling code
-of em28xx_ir_init.
-
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 7 at lib/refcount.c:28 refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
-Modules linked in:
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0 #3
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:refcount_warn_saturate+0x18e/0x1a0 lib/refcount.c:28
-Call Trace:
-  kref_put.constprop.0+0x60/0x85 include/linux/kref.h:69
-  em28xx_usb_disconnect.cold+0xd7/0xdc drivers/media/usb/em28xx/em28xx-cards.c:4150
-  usb_unbind_interface+0xbf/0x3a0 drivers/usb/core/driver.c:458
-  __device_release_driver drivers/base/dd.c:1201 [inline]
-  device_release_driver_internal+0x22a/0x230 drivers/base/dd.c:1232
-  bus_remove_device+0x108/0x160 drivers/base/bus.c:529
-  device_del+0x1fe/0x510 drivers/base/core.c:3540
-  usb_disable_device+0xd1/0x1d0 drivers/usb/core/message.c:1419
-  usb_disconnect+0x109/0x330 drivers/usb/core/hub.c:2221
-  hub_port_connect drivers/usb/core/hub.c:5151 [inline]
-  hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
-  port_event drivers/usb/core/hub.c:5586 [inline]
-  hub_event+0xf81/0x1d40 drivers/usb/core/hub.c:5668
-  process_one_work+0x2c9/0x610 kernel/workqueue.c:2276
-  process_scheduled_works kernel/workqueue.c:2338 [inline]
-  worker_thread+0x333/0x5b0 kernel/workqueue.c:2424
-  kthread+0x188/0x1d0 kernel/kthread.c:319
-  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Fixes: ac5688637144 ("media: em28xx: Fix possible memory leak of em28xx struct")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 4ad48e6ab18c ("i2c: Renesas Highlander FPGA SMBus support")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/em28xx/em28xx-input.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/i2c/busses/i2c-highlander.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/em28xx/em28xx-input.c b/drivers/media/usb/em28xx/em28xx-input.c
-index 59529cbf9cd0..0b6d77c3bec8 100644
---- a/drivers/media/usb/em28xx/em28xx-input.c
-+++ b/drivers/media/usb/em28xx/em28xx-input.c
-@@ -842,7 +842,6 @@ error:
- 	kfree(ir);
- ref_put:
- 	em28xx_shutdown_buttons(dev);
--	kref_put(&dev->ref, em28xx_free_device);
- 	return err;
- }
+diff --git a/drivers/i2c/busses/i2c-highlander.c b/drivers/i2c/busses/i2c-highlander.c
+index 803dad70e2a7..a2add128d084 100644
+--- a/drivers/i2c/busses/i2c-highlander.c
++++ b/drivers/i2c/busses/i2c-highlander.c
+@@ -379,7 +379,7 @@ static int highlander_i2c_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, dev);
  
+ 	dev->irq = platform_get_irq(pdev, 0);
+-	if (iic_force_poll)
++	if (dev->irq < 0 || iic_force_poll)
+ 		dev->irq = 0;
+ 
+ 	if (dev->irq) {
 -- 
 2.30.2
 
