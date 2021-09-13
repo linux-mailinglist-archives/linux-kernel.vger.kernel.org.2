@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA371408F9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071A4408F9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243799AbhIMNo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:44:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        id S243873AbhIMNpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:45:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243773AbhIMNkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243776AbhIMNkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:40:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64BEB613D0;
-        Mon, 13 Sep 2021 13:29:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 756BF614C8;
+        Mon, 13 Sep 2021 13:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539743;
-        bh=4P/Xn1DnjqKP9xd6VekwHbpURR/81v4zgEN7zMUvHJg=;
+        s=korg; t=1631539746;
+        bh=deuDyUC7ukFY9Dx4K5QWJ5oIG8ywpuqET6D2sF01QNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sMW1PWFGbe42FaF/S+KRdhppPX4O6LIHVHrCvp/EDSlnfeldSgWlgC6VJfN8VBWH
-         oaMXzFFtF0hd1Q0fYKi0EU7jh248yT+nSSPY/V01xwlYkpm/TTsq/+e7BChlSpuNq0
-         T/WanhyLez/70PSjewwXEdZmF0TsczHaJJPEKVmE=
+        b=ErbGmJX5aqbQh0p+MCIpJpTH/a0LsBbBT4Evg1LGNpdD3YpeIIX9VZ1KTG7/Mrh0M
+         M93Cz9srA1t/AFPZJhyPLN0fFzx66LeD1cpbkVNmQgr05u8BpZri6Z/wEaKKthU4zK
+         UdxAMk82lku+7zYpNJnhW5xZ9Aqozqm0E22HSf+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jairaj Arava <jairaj.arava@intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 144/236] net/mlx5: Fix unpublish devlink parameters
-Date:   Mon, 13 Sep 2021 15:14:09 +0200
-Message-Id: <20210913131105.263321966@linuxfoundation.org>
+Subject: [PATCH 5.10 145/236] ASoC: rt5682: Implement remove callback
+Date:   Mon, 13 Sep 2021 15:14:10 +0200
+Message-Id: <20210913131105.300916075@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -42,34 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Stephen Boyd <swboyd@chromium.org>
 
-[ Upstream commit 6f35723864b42ec9e9bb95a503449633395c4975 ]
+[ Upstream commit 87b42abae99d3d851aec64cd4d0f7def8113950e ]
 
-Cleanup routine missed to unpublish the parameters. Add it.
+Let's implement a remove callback for this driver that's similar to the
+shutdown hook, but also disables the regulators before they're put by
+devm code.
 
-Fixes: e890acd5ff18 ("net/mlx5: Add devlink flow_steering_mode parameter")
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Jairaj Arava <jairaj.arava@intel.com>
+Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Cc: Shuming Fan <shumingf@realtek.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210508075151.1626903-2-swboyd@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/devlink.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5682-i2c.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-index 2c7f2eff1e17..4cba110f6ef8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -450,6 +450,7 @@ params_reg_err:
- void mlx5_devlink_unregister(struct devlink *devlink)
- {
- 	mlx5_devlink_traps_unregister(devlink);
-+	devlink_params_unpublish(devlink);
- 	devlink_params_unregister(devlink, mlx5_devlink_params,
- 				  ARRAY_SIZE(mlx5_devlink_params));
- 	devlink_unregister(devlink);
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index 547445d1e3c6..e2b4b10e679a 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -275,6 +275,16 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
+ 	rt5682_reset(rt5682);
+ }
+ 
++static int rt5682_i2c_remove(struct i2c_client *client)
++{
++	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
++
++	rt5682_i2c_shutdown(client);
++	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
++
++	return 0;
++}
++
+ static const struct of_device_id rt5682_of_match[] = {
+ 	{.compatible = "realtek,rt5682i"},
+ 	{},
+@@ -301,6 +311,7 @@ static struct i2c_driver rt5682_i2c_driver = {
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 	},
+ 	.probe = rt5682_i2c_probe,
++	.remove = rt5682_i2c_remove,
+ 	.shutdown = rt5682_i2c_shutdown,
+ 	.id_table = rt5682_i2c_id,
+ };
 -- 
 2.30.2
 
