@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081B340859D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A2B408598
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237755AbhIMHuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237764AbhIMHtR (ORCPT
+        id S237727AbhIMHti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:49:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22342 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237648AbhIMHth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:49:17 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE3EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:47:59 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mPgh3-00024a-5u; Mon, 13 Sep 2021 09:47:57 +0200
-Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
- as module
-To:     Andreas Rammhold <andreas@rammhold.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210730012822.3460913-1-andreas@rammhold.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <0d42a11a-0117-49a9-d2c9-bc6cc405235d@pengutronix.de>
-Date:   Mon, 13 Sep 2021 09:47:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 13 Sep 2021 03:49:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631519301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nrizPStM5aPH6a9Nmw29A6+HoANkslKgHKSEkcGjEPo=;
+        b=gt1Y3PhEURe9CFQxPN5nuvAfqs+Ptx3Ijr3tTuRg5dQrYI1aUr8oYpriJM4zM+fhN9jUrP
+        MmAdPK70udaoC2EKxx3U9eBN+jfefga+JbiYweK0XXpzR+8emqlWMlUk4cnTAelEUkPgia
+        fMGtXWDDKon7ioi6JkYU78G8jwaFRq4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-293-O9_HYxlsMV629CanFIlUIQ-1; Mon, 13 Sep 2021 03:48:18 -0400
+X-MC-Unique: O9_HYxlsMV629CanFIlUIQ-1
+Received: by mail-ej1-f71.google.com with SMTP id z15-20020a170906074f00b005ef9f1d0e97so1258818ejb.19
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:48:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nrizPStM5aPH6a9Nmw29A6+HoANkslKgHKSEkcGjEPo=;
+        b=ieNLOne97rAyr4vCQAtG1z1RiFjRh76HD54ktH6H8BA+1SPN6kK95oy14RGXH1tz7w
+         KB2t65KG8S1df+1ECz9t2mVATPxmUGM/2bL+JtSA3e6WPRPCLUb+Jd9zC/XqZzk8wj09
+         VPNNu1WFbHobQImt/XEXuU+VlnE9texxjGfGpmn/fS07Oa63a7AzqMee/m9zZylc8o0H
+         jFGYWjQ4UVvboY/fEXu+EWdQvscmWxwlHw2wZmhuYYBHtp3I1VsnBOIluJmmI8yoNu5p
+         2gNURuu8Rz/lThTkPjkce2e27A/Pb/zbff3RO+pab8BFkFqv32oNlZkGs2yMhkCaeoeQ
+         D7lg==
+X-Gm-Message-State: AOAM533yuuAFEqD5TQykOC+aCMJrOcZOVbOFtltwi5zJaLvrAgUnKNuC
+        MnYyciFcI96E9YYeLCvtDGMU0LKmhKyyIyhbPwaMFPI/8ijNb/336NWDs0a+nyT2FdPo5LaRSM6
+        cV2C5TKXRoxQnwLBovrIeSmV8
+X-Received: by 2002:a05:6402:16d9:: with SMTP id r25mr11613598edx.80.1631519297317;
+        Mon, 13 Sep 2021 00:48:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCKZ460Np11G93N0Bxj4RX0YX4bkeIKy3pFhRlRU3HvI91URWCRXpEXfwEj1UrFxr8qNG1Dw==
+X-Received: by 2002:a05:6402:16d9:: with SMTP id r25mr11613586edx.80.1631519297176;
+        Mon, 13 Sep 2021 00:48:17 -0700 (PDT)
+Received: from steredhat (host-79-51-2-59.retail.telecomitalia.it. [79.51.2.59])
+        by smtp.gmail.com with ESMTPSA id qx18sm3022048ejb.75.2021.09.13.00.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 00:48:16 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 09:48:14 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, david.kaplan@amd.com, konrad.wilk@oracle.com,
+        f.hetzelt@tu-berlin.de, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/9] virtio-blk: validate num_queues during probe
+Message-ID: <20210913074814.wcrrisaomlhvtmo5@steredhat>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20210913055353.35219-2-jasowang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210730012822.3460913-1-andreas@rammhold.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210913055353.35219-2-jasowang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear trusted key maintainers,
+On Mon, Sep 13, 2021 at 01:53:45PM +0800, Jason Wang wrote:
+>If an untrusted device neogitates BLK_F_MQ but advertises a zero
+>num_queues, the driver may end up trying to allocating zero size
+>buffers where ZERO_SIZE_PTR is returned which may pass the checking
+>against the NULL. This will lead unexpected results.
+>
+>Fixing this by using single queue if num_queues is zero.
+>
+>Cc: Paolo Bonzini <pbonzini@redhat.com>
+>Cc: Stefan Hajnoczi <stefanha@redhat.com>
+>Signed-off-by: Jason Wang <jasowang@redhat.com>
+>---
+> drivers/block/virtio_blk.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+>index e574fbf5e6df..f130d12df4b9 100644
+>--- a/drivers/block/virtio_blk.c
+>+++ b/drivers/block/virtio_blk.c
+>@@ -498,7 +498,8 @@ static int init_vq(struct virtio_blk *vblk)
+> 	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_MQ,
+> 				   struct virtio_blk_config, num_queues,
+> 				   &num_vqs);
+>-	if (err)
+>+	/* We need at least on virtqueue */
 
-On 30.07.21 03:28, Andreas Rammhold wrote:
-> Before this commit the kernel could end up with no trusted key sources
-> even though both of the currently supported backends (TPM and TEE) were
-> compiled as modules. This manifested in the trusted key type not being
-> registered at all.
-> 
-> When checking if a CONFIG_… preprocessor variable is defined we only
-> test for the builtin (=y) case and not the module (=m) case. By using
-> the IS_REACHABLE() macro we do test for both cases.
-> 
-> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
-> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Does anyone intend to pick this up?
+s/on/one/
 
-Cheers,
-Ahmad
+The rest LGTM.
 
+Stefano
 
+>+	if (err || !num_vqs)
+> 		num_vqs = 1;
+>
+> 	num_vqs = min_t(unsigned int, nr_cpu_ids, num_vqs);
+>-- 
+>2.25.1
+>
+>_______________________________________________
+>Virtualization mailing list
+>Virtualization@lists.linux-foundation.org
+>https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+>
 
-> 
-> ---
-> 
-> v3:
-> * Fixed patch formatting
-> 
-> v2:
-> * Fixed commit message
-> * Switched from IS_DEFINED() to IS_REACHABLE()
-> 
->  security/keys/trusted-keys/trusted_core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> index d5c891d8d353..5b35f1b87644 100644
-> --- a/security/keys/trusted-keys/trusted_core.c
-> +++ b/security/keys/trusted-keys/trusted_core.c
-> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
->  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
->  
->  static const struct trusted_key_source trusted_key_sources[] = {
-> -#if defined(CONFIG_TCG_TPM)
-> +#if IS_REACHABLE(CONFIG_TCG_TPM)
->  	{ "tpm", &trusted_key_tpm_ops },
->  #endif
-> -#if defined(CONFIG_TEE)
-> +#if IS_REACHABLE(CONFIG_TEE)
->  	{ "tee", &trusted_key_tee_ops },
->  #endif
->  };
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
