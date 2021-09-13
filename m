@@ -2,68 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D896408644
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C13C408637
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhIMISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237754AbhIMISF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:18:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFF3C061574;
-        Mon, 13 Sep 2021 01:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vzoOqKPucIos1Sa6XxmINYvmyxF9IjulKwV36eq9XkU=; b=MgqJaJOYvmlMOGDQrMTf64S+/6
-        7pOb4qgrUHfLtBACgJsMep6CF2oEzV7fQuCI1CQ3RZn2aqsGBfANr0JI40xlG7knCVknIxtAX0Wlj
-        bKz9q163K3k4NtiE55i2fTzGfMjhuWMZ8DzQn0KlrTuQs7yA54YFTVrxZ0/c9R2bBAzY0E3VW1V/J
-        RXjSF/HZPnJgx05BHlmXz/1fzVV/kekc33WeUFqQHoto5crYiS7is5Aw9oaoluIYFNapO/3ueRf/v
-        ASZPMApJ0JoLDIpnLcocm22Gy+hPq1YMOWhV+XCT3YfPF62xJh9mzDC0uCy2iPAQYhivAzW2v6qIi
-        7p4SuK0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPh6H-00DId2-PP; Mon, 13 Sep 2021 08:14:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ABD86300093;
-        Mon, 13 Sep 2021 10:13:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 944072BD296B8; Mon, 13 Sep 2021 10:13:54 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 10:13:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     cgel.zte@gmail.com
-Cc:     yzaikin@google.com, liu.hailong6@zte.com.cn, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, mcgrof@kernel.org,
-        keescook@chromium.org, pjt@google.com, yang.yang29@zte.com.cn,
-        joshdon@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Zeal Robot <zealci@zte.com.cm>
-Subject: Re: [PATCH] sched: Add a new version sysctl to control child runs
- first
-Message-ID: <YT8IQioxUARMus9w@hirez.programming.kicks-ass.net>
-References: <20210912041222.59480-1-yang.yang29@zte.com.cn>
+        id S237885AbhIMIP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:15:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:54822 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237869AbhIMIPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:15:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 652EF31B;
+        Mon, 13 Sep 2021 01:14:39 -0700 (PDT)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 820D93F5A1;
+        Mon, 13 Sep 2021 01:14:37 -0700 (PDT)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     vincenzo.frascino@arm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 0/5] arm64: ARMv8.7-A: MTE: Add asymm mode support
+Date:   Mon, 13 Sep 2021 09:14:19 +0100
+Message-Id: <20210913081424.48613-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210912041222.59480-1-yang.yang29@zte.com.cn>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 04:12:23AM +0000, cgel.zte@gmail.com wrote:
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> 
-> The old version sysctl has some problems. First, it allows set value
-> bigger than 1, which is unnecessary. Second, it didn't follow the
-> rule of capabilities. Thirdly, it didn't use static key. This new
-> version fixes all the problems.
+This series implements the asymmetric mode support for ARMv8.7-A Memory
+Tagging Extension (MTE), which is a debugging feature that allows to
+detect with the help of the architecture the C and C++ programmatic
+memory errors like buffer overflow, use-after-free, use-after-return, etc.
 
-Does any of that actually matter?
+MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+(Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+subset of its address space that is multiple of a 16 bytes granule. MTE
+is based on a lock-key mechanism where the lock is the tag associated to
+the physical memory and the key is the tag associated to the virtual
+address.
+
+When MTE is enabled and tags are set for ranges of address space of a task,
+the PE will compare the tag related to the physical memory with the tag
+related to the virtual address (tag check operation). Access to the memory
+is granted only if the two tags match. In case of mismatch the PE will raise
+an exception.
+
+When asymmetric mode is present, the CPU triggers a fault on a tag mismatch
+during a load operation and asynchronously updates a register when a tag
+mismatch is detected during a store operation.
+
+The series is based on linux-v5.15-rc1.
+
+To simplify the testing a tree with the new patches on top has been made
+available at [1].
+
+[1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v1.asymm
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Vincenzo Frascino (5):
+  kasan: Remove duplicate of kasan_flag_async
+  arm64: mte: Bitfield definitions for Asymm MTE
+  arm64: mte: CPU feature detection for Asymm MTE
+  arm64: mte: Add asymmetric mode support
+  kasan: Extend KASAN mode kernel parameter
+
+ Documentation/dev-tools/kasan.rst  | 10 ++++++++--
+ arch/arm64/include/asm/memory.h    |  1 +
+ arch/arm64/include/asm/mte-kasan.h |  5 +++++
+ arch/arm64/include/asm/sysreg.h    |  3 +++
+ arch/arm64/kernel/cpufeature.c     | 10 ++++++++++
+ arch/arm64/kernel/mte.c            | 26 ++++++++++++++++++++++++++
+ arch/arm64/tools/cpucaps           |  1 +
+ mm/kasan/hw_tags.c                 | 27 ++++++++++++++++++++++-----
+ mm/kasan/kasan.h                   |  7 +++++--
+ 9 files changed, 81 insertions(+), 9 deletions(-)
+
+-- 
+2.33.0
+
