@@ -2,126 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F71C40831C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C9D408317
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238432AbhIMDXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S238330AbhIMDWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238420AbhIMDXS (ORCPT
+        with ESMTP id S238302AbhIMDV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:23:18 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81217C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:22:03 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so5561474pjw.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:22:03 -0700 (PDT)
+        Sun, 12 Sep 2021 23:21:58 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E0EC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:20:43 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id m21-20020a17090a859500b00197688449c4so5490994pjn.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:20:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NJfd+Dl6LyVyy7WHaPVunJ2WQBOC5w96NLDZ1F2YTMU=;
-        b=KmkXDaGXiNAV5S+8g9ac3wLbeYoy+IMJcexHOAVPtxdk27ksFOOClYU2Ou/enfSoWD
-         kRjjyJTxA2B+X+G9TXX7nN1EOjToVKLBOYR5HKG1MiU3/hlFJFpoBf9vP7Ga87HTvrZi
-         mmMk3Ma4N+103XjMsbzRh8cqhmzKnEK+MQU01ALDB1kX3hCj3KjzbR8dokd9F3xO4woZ
-         cME5u9ygNGE4fJjJYanq18iDf9D3dVcpHCojJAEEsq8sqkIwIZjOSU24SgQb/QXSUlHw
-         gqtw7qpyqrrMx29BaCpq29ymgit7itjOG4wjLKe6960m9RB+pQBRQHKuo3XB5Mheyn7q
-         FcZA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KvjAfdMGc0TGSBNCXXOfp9eTXnGD+BLjalLtFXGEwNg=;
+        b=zx8MdaVaJTKEFi84nLllBeqnvpDCbryk+86ryq3PeVdGciZQWuXWApYXiZU+vpHIua
+         4auBFBrjVwFvfynotWMrYvCspi63M69XDBef877mrk4+8OX/ntCV/JZN7yMXbd1lQcSj
+         2QN/X0ooJEBsiOHmYMdEb+S8RG7uHOeQvWUSfB/EW18hyl5CDU3Y1hd2ZUPw/r0Cs19W
+         AUYsQEleNJD/cn9YDg2w9BSKlnwCdokq2s1nyG1F9ivTvEduL+z/fWjwRIBTmbJikgC0
+         nSxOEDj+SmfWeqMfmNbCsARvbCx40bqZmt4l+7COh5M7LH3amMGxAPNE0zDgnTAnWtVI
+         dFew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NJfd+Dl6LyVyy7WHaPVunJ2WQBOC5w96NLDZ1F2YTMU=;
-        b=SihUqmlDKzY6qwrAwM6BgpXBXjoHSVb89fsJ9PwdcF8ZcjtbUEf7jro0duMyp2QCse
-         ruDoDChCXl/hT70MGUjSs6YNxoV+1VnwpGrWnOpfTokiQeOVHjou9MNG3FlA0lRex31n
-         vXWdCAQcCfRSBQfyCxrPKRo2KSO8sb2ONUwPhEI3M5AZYxsJFW8rIgjMmMl5Oa3EXQfn
-         ivr8G87qoKsoGviMEOobwUJLlOwHkeE/tDFWwQuSQAaleku3OZ5uPHUOL8KdjQiMBuo3
-         VXD1sOVVJxeb3RjVgTbyVVNBDR2sNMnzthor+KvMSnR3OWYYN7oig9e7Ttj4Bd7s1rk8
-         SPJA==
-X-Gm-Message-State: AOAM530HMwInJiXdJrAfQQmwLa5EjpyiIJ0nkE45sM8soXaLhw2K4Kel
-        shd3DLXMi7mRbi3uQWj6yxkIcx/Y/DIWk4OB
-X-Google-Smtp-Source: ABdhPJz/LJrGEeFqHQou6i5SysEv2s1GOhEKWvZxYRCQiM1Pw2xt2H16CF7bw3hKs6fgqyMiHnKaxg==
-X-Received: by 2002:a17:90a:1d4c:: with SMTP id u12mr10217220pju.95.1631503321038;
-        Sun, 12 Sep 2021 20:22:01 -0700 (PDT)
-Received: from 64-217.. ([103.97.201.33])
-        by smtp.gmail.com with ESMTPSA id k127sm5042950pfd.1.2021.09.12.20.21.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 20:22:00 -0700 (PDT)
-From:   Li Feng <fengli@smartx.com>
-To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Li Feng <fengli@smartx.com>
-Subject: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
-Date:   Mon, 13 Sep 2021 11:20:03 +0800
-Message-Id: <20210913032003.2836583-1-fengli@smartx.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KvjAfdMGc0TGSBNCXXOfp9eTXnGD+BLjalLtFXGEwNg=;
+        b=xonc6xWobcLi868WMdakcn8sPB/tJTlDYeBfB+kUi5WvL50lLpFTWZBtjee45vpX66
+         NM92UEwmrbrNAPzbBPMK/rK8aUr6HS9FH3mlb+YvEvfPKogfB8hxR/42w30LOtABLI25
+         JNlJxpH+7eXcI7ELaAvsdxw9SyBtyEpru5r5FM+dAP0IHNgGOCbc/3nF2taeFk2uZq6X
+         h9K4SgGHaxlDvimtL9p4K5T0FynW6hfSSY9xhcPgoexKTLsXWiS5OG7S9PK6ANiH2fnZ
+         0lGSH8o/blegvGUbsJkTP92nKKBPProhTERxrgHkWpZhN/aZuu5UhtcU+P9Lc3g5vSKI
+         5UqA==
+X-Gm-Message-State: AOAM530T2jQMrn+gA0z0eVlIpJh7oEZT8pvClmoCeLDUJxd8Vs+Q/V6Z
+        MTGXA68bWHLXpMEXybz50AP2w2Bq98fMZ37pNo/syg==
+X-Google-Smtp-Source: ABdhPJyET22o17lmmxiiSRxXCkLqDeZtEMmzWp6jy7ieUEooxpxIyKFfqHWzCk1uF11g59TtExSO/xhSnOIX4JcQI8c=
+X-Received: by 2002:a17:90b:4a90:: with SMTP id lp16mr10644077pjb.5.1631503242721;
+ Sun, 12 Sep 2021 20:20:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913024534.26161-1-tangyizhou@huawei.com>
+In-Reply-To: <20210913024534.26161-1-tangyizhou@huawei.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 13 Sep 2021 11:20:06 +0800
+Message-ID: <CAMZfGtU5o0Fr6ERRsTubqHCMaW=jYxhf+EvbWzVcvD=dmJ51_A@mail.gmail.com>
+Subject: Re: [PATCH] mm/memory_hotplug: Add static qualifier for online_policy_to_str
+To:     Tang Yizhou <tangyizhou@huawei.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the running RAID1/RAID10 need to be set with the fail_fast flag,
-we have to remove each device from RAID and re-add it again with the
---fail_fast flag.
+On Mon, Sep 13, 2021 at 10:26 AM Tang Yizhou <tangyizhou@huawei.com> wrote:
+>
+> online_policy_to_str is only used in memory_hotplug.c and should be
+> defined as static.
+>
+> Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
 
-Export the fail_fast flag to the userspace to support the read and
-write.
+LGTM.
 
-Signed-off-by: Li Feng <fengli@smartx.com>
----
- drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index ae8fe54ea358..ce63972a4555 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const char *buf, size_t len)
- static struct rdev_sysfs_entry rdev_ppl_size =
- __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
- 
-+static ssize_t
-+fail_fast_show(struct md_rdev *rdev, char *page)
-+{
-+	return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags));
-+}
-+
-+static ssize_t
-+fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
-+{
-+	int ret;
-+	bool bit;
-+
-+	ret = kstrtobool(buf, &bit);
-+	if (ret)
-+		return ret;
-+
-+	if (test_bit(FailFast, &rdev->flags) && !bit) {
-+		clear_bit(FailFast, &rdev->flags);
-+		md_update_sb(rdev->mddev, 1);
-+	} else if (!test_bit(FailFast, &rdev->flags) && bit) {
-+		set_bit(FailFast, &rdev->flags);
-+		md_update_sb(rdev->mddev, 1);
-+	}
-+	return len;
-+}
-+
-+static struct rdev_sysfs_entry rdev_fail_fast =
-+__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
-+
- static struct attribute *rdev_default_attrs[] = {
- 	&rdev_state.attr,
- 	&rdev_errors.attr,
-@@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] = {
- 	&rdev_unack_bad_blocks.attr,
- 	&rdev_ppl_sector.attr,
- 	&rdev_ppl_size.attr,
-+	&rdev_fail_fast.attr,
- 	NULL,
- };
- static ssize_t
--- 
-2.31.1
-
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
