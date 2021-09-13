@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FB7408FEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C26D408FAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243509AbhIMNsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:48:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44480 "EHLO mail.kernel.org"
+        id S242911AbhIMNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238030AbhIMNmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:42:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D917461407;
-        Mon, 13 Sep 2021 13:30:23 +0000 (UTC)
+        id S243006AbhIMNjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:39:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFB246108B;
+        Mon, 13 Sep 2021 13:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539824;
-        bh=78ojPiQPyowEygpwF1GjuFOvhHMCaKV6fWIha8VPLXU=;
+        s=korg; t=1631539736;
+        bh=Een1Y7zEbf8CwDcSUiMBFXt2z8N+XtYrWh68+U90V7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2QbPrqpVYN+Ay3qJccBMsq+gjTcxh+3pXO447Dem6j8N5G0o6nRUh7A7mwpOsLGW3
-         XeSzuJF2LSLr2hQhjZbW+HNwQFbLr2vGV48QV5ER+MRHD1QR+UgL0IfGg9NxZdns+M
-         IalLQKW4Hnw1kuA2XG6l2/zbNLBPpc/qNs/9olX4=
+        b=MDsw5/C7f0yeO+JA3D2ysDJC5TfcRckBVLXuUH3ncanMg3z5rCodH19V3uDTY8ljL
+         q00VWgp6rQA66T/8rdjKDAiacYqNATAQNG4dbx3Qu8RCZddpO03kVrnpJPqpZNtOoo
+         urlD8i/scRRgVXtB5SSE7XuMQLcq05y5wUDuP/tU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jose Blanquicet <josebl@microsoft.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 132/236] selftests/bpf: Fix bpf-iter-tcp4 test to print correctly the dest IP
-Date:   Mon, 13 Sep 2021 15:13:57 +0200
-Message-Id: <20210913131104.852555981@linuxfoundation.org>
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 133/236] drm/msm/mdp4: refactor HW revision detection into read_mdp_hw_revision
+Date:   Mon, 13 Sep 2021 15:13:58 +0200
+Message-Id: <20210913131104.888041873@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -40,36 +41,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jose Blanquicet <josebl@microsoft.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit 277b134057036df8c657079ca92c3e5e7d10aeaf ]
+[ Upstream commit 4d319afe666b0fc9a9855ba9bdf9ae3710ecf431 ]
 
-Currently, this test is incorrectly printing the destination port in
-place of the destination IP.
+Inspired by MDP5 code.
+Also use DRM_DEV_INFO for MDP version as MDP5 does.
 
-Fixes: 2767c97765cb ("selftests/bpf: Implement sample tcp/tcp6 bpf_iter programs")
-Signed-off-by: Jose Blanquicet <josebl@microsoft.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210805164044.527903-1-josebl@microsoft.com
+Cosmetic change: uint32_t -> u32 - checkpatch suggestion.
+
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210705231641.315804-1-david@ixit.cz
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 27 ++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-index 54380c5e1069..aa96b604b2b3 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-@@ -122,7 +122,7 @@ static int dump_tcp_sock(struct seq_file *seq, struct tcp_sock *tp,
- 	}
+diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+index 2f75e3905202..b73af9ddcf72 100644
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -19,20 +19,13 @@ static int mdp4_hw_init(struct msm_kms *kms)
+ {
+ 	struct mdp4_kms *mdp4_kms = to_mdp4_kms(to_mdp_kms(kms));
+ 	struct drm_device *dev = mdp4_kms->dev;
+-	uint32_t version, major, minor, dmap_cfg, vg_cfg;
++	u32 major, minor, dmap_cfg, vg_cfg;
+ 	unsigned long clk;
+ 	int ret = 0;
  
- 	BPF_SEQ_PRINTF(seq, "%4d: %08X:%04X %08X:%04X ",
--		       seq_num, src, srcp, destp, destp);
-+		       seq_num, src, srcp, dest, destp);
- 	BPF_SEQ_PRINTF(seq, "%02X %08X:%08X %02X:%08lX %08X %5u %8d %lu %d ",
- 		       state,
- 		       tp->write_seq - tp->snd_una, rx_queue,
+ 	pm_runtime_get_sync(dev->dev);
+ 
+-	mdp4_enable(mdp4_kms);
+-	version = mdp4_read(mdp4_kms, REG_MDP4_VERSION);
+-	mdp4_disable(mdp4_kms);
+-
+-	major = FIELD(version, MDP4_VERSION_MAJOR);
+-	minor = FIELD(version, MDP4_VERSION_MINOR);
+-
+-	DBG("found MDP4 version v%d.%d", major, minor);
++	read_mdp_hw_revision(mdp4_kms, &major, &minor);
+ 
+ 	if (major != 4) {
+ 		DRM_DEV_ERROR(dev->dev, "unexpected MDP version: v%d.%d\n",
+@@ -409,6 +402,22 @@ fail:
+ 	return ret;
+ }
+ 
++static void read_mdp_hw_revision(struct mdp4_kms *mdp4_kms,
++				 u32 *major, u32 *minor)
++{
++	struct drm_device *dev = mdp4_kms->dev;
++	u32 version;
++
++	mdp4_enable(mdp4_kms);
++	version = mdp4_read(mdp4_kms, REG_MDP4_VERSION);
++	mdp4_disable(mdp4_kms);
++
++	*major = FIELD(version, MDP4_VERSION_MAJOR);
++	*minor = FIELD(version, MDP4_VERSION_MINOR);
++
++	DRM_DEV_INFO(dev->dev, "MDP4 version v%d.%d", *major, *minor);
++}
++
+ struct msm_kms *mdp4_kms_init(struct drm_device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev->dev);
 -- 
 2.30.2
 
