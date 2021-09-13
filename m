@@ -2,239 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0176409EFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D38E409EFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348270AbhIMVQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
+        id S1348308AbhIMVRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243974AbhIMVQr (ORCPT
+        with ESMTP id S1348256AbhIMVQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:16:47 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238DDC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:15:30 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id p15so19721659ljn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:15:30 -0700 (PDT)
+        Mon, 13 Sep 2021 17:16:50 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C540C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:15:34 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id f2so19715424ljn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P16xsLWbwQxe220Z4rwJsq23660+15ni17aSZ3/vc3I=;
-        b=kyTzBOI0lUWx8RjQq9y9GMf2JLuY2hRCg+W5fd2ShqNbBwuz/PYtR8N94fxSnpqp4n
-         xtuW4cAd0CWOJRrLzwtl+l+nSPxI16dUkkB4jWRe7eSg3Ngi/VSkzP7CHbxh1mPzMTQ+
-         AW0uzKsRjAd5qHQCEbjnnC+W5ERketPeDuNJ/HF2vdJsGIzccDUgWv9lTiCs/EhghWep
-         j0osFUdFHvnVv+0IfXdFh1oS0ZBJylVuyKdNBS7bs2XpTlKosQQ/Uap8lDFGLZt+L+1r
-         UgvG/0+kyxpiyhGdj1ffnEjwMIDsIhXdknY25DXC7OiUmV9vT5ZKz2TSgl0jWSRXIDip
-         EGaA==
+        bh=KsP30ov9xl9zhULjcWutgVa5WGmRNrz9j2ugExJGuYo=;
+        b=mygUPtbJXKFBf25Ytt4weIVj36Yui1nGLTd+cq+lXbA73j0/0gxaMT0z1qklKDwZjP
+         oYzbIV8uJoXpVLqWOm88+JSCNtqV5oJK1ekAwjAFKDkYP2JMkh38dpX8b729gelnHLCM
+         4SLlGe56m3hX+Trb53z9qVBgR0utshgzVDurHqGX35l9QYyRHVZ4owOVp9qrVetiNWAH
+         pynFZ5/s5LpdhpR6CWHyBac4qRy9kt1zN5ZHmylBp8QQfwqrhjs8KvmsdTDHTSHvSc74
+         zOsfV7AcfseUdFrfEaskaPe6x85pgcP3h2+G/UI382g+ahpXXdnlQghyJXOzrP7ZNEhA
+         GV5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P16xsLWbwQxe220Z4rwJsq23660+15ni17aSZ3/vc3I=;
-        b=jF/DiDAp2vrIr0O1I9iIeCq5higX8n6yjZecFHWHKb+pS8SiABVqnFM0p9ACfo8K8A
-         zlazWkiONLI70eFWhxsp1gocqMBgSrTLyakD4e0jcbb9flQx1g6hKU63xzK0A84ZPvJB
-         akxbsRi5YKkSTn1md3tZZM6wfVmWgjJmrXk/eOjvC13YBNj106Xvl4pDYpML9skr3123
-         4DeN20/lxlWtOKnRDffv9UHY5ncx6iCUCc5IaoEs1B6ECKIbGVm0iGiybdhc6YuiXVuX
-         lx7DQBKki6+/JpRXMxMXuOwNHMjH4S7MlwuVdMTo7L2RwCNnnkiYoKM5PraKyVIsWKT0
-         84TA==
-X-Gm-Message-State: AOAM5336rttp9NpS9K4L9Co6TgW42u67OE4IFZ5XZKbNgyPWLxmCVZB8
-        4MQcOPDGXhCgtRm+aAZpC/E4mfLIMCPgYHVKK7LbRg==
-X-Google-Smtp-Source: ABdhPJxBeim+Aq+3aYz0czeNi0g88QjAclIlwCC5o8oHubQk4ytYhAxHHEgYLQcvVDhJZ5Cetgxol/W3k3xO8b6EqVU=
-X-Received: by 2002:a2e:b894:: with SMTP id r20mr12841263ljp.238.1631567728231;
- Mon, 13 Sep 2021 14:15:28 -0700 (PDT)
+        bh=KsP30ov9xl9zhULjcWutgVa5WGmRNrz9j2ugExJGuYo=;
+        b=aT3L4AwGJ/wdxd1kTaEDVE1z1Fzo31bNKVwDchXqpOfXCZp018cW0jNy43ccTf/Fd8
+         FEr72wfawI761S2o8zf1rvgqn219ysT0WhU8lz7pvXrUFVOZder+sRLeVDjyx2vYkCui
+         ZO1x4TxCZod3mYsYtWiv/NVV0zifIW0UI+HkkZL4TvjmY3aZlOlzuEF/yrmoIZEg0hyD
+         5qubFMeol4XxMFbjjo6qCQ8OjF715JrbKDDLQLDLqD1c2XGpK1uMDjh8FXfl/bZC6Vqp
+         l2zICEPXtUn7usNRV8I7+oaEZDlX+Ejoz98yfp/xFC0e5A88Z2lD5qSKv8aPKoQM21NO
+         v+uA==
+X-Gm-Message-State: AOAM531ak3m/1UYFVgKUbuMrqmVZoT/nuXhbbOrd61n2VtvRFk5di3kt
+        f8BfgUdKb6ELaLZHkUHuzjC2CZJNvKTbn5d0u/ZeoQ==
+X-Google-Smtp-Source: ABdhPJzo28mpD6c9vf+D6J9UtP0Lt3zndpgJfN3ZNLmyoo3VdiTr5GeG8q0j15d63LccbyV8mZDyilBazCACdxixi/Y=
+X-Received: by 2002:a2e:b551:: with SMTP id a17mr12026583ljn.128.1631567732248;
+ Mon, 13 Sep 2021 14:15:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210910164210.2282716-1-dualli@chromium.org> <20210910164210.2282716-2-dualli@chromium.org>
-In-Reply-To: <20210910164210.2282716-2-dualli@chromium.org>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Mon, 13 Sep 2021 14:15:16 -0700
-Message-ID: <CAHRSSEwB8vhNTyY+4z+29B97=FfEo=TSS0C-j-ZUFnOrZTcb0Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] binder: fix freeze race
-To:     Li Li <dualli@chromium.org>
-Cc:     dualli@google.com, gregkh@linuxfoundation.org,
-        christian@brauner.io, arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com, hridya@google.com,
-        surenb@google.com, joel@joelfernandes.org, kernel-team@android.com
+References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
+ <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
+ <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
+ <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
+ <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
+ <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
+ <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
+ <CAKwvOdkf3B41RRe8FDkw1H-0hBt1_PhZtZxBZ5pj0pyh7vDLmA@mail.gmail.com>
+ <CAHk-=wjP2ijctPt2Hw3DagSZ-KgdRsO6zWTTKQNnSk0MajtJgA@mail.gmail.com>
+ <CAKwvOd=ZG8sf1ZOkuidX_49VGkQE+BJDa19_vR4gh2FNQ2F_9Q@mail.gmail.com> <CAKwvOdkz4e3HdNKFvOdDDWVijB7AKaeP14_vAEbxWXD1AviVhA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkz4e3HdNKFvOdDDWVijB7AKaeP14_vAEbxWXD1AviVhA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 13 Sep 2021 14:15:21 -0700
+Message-ID: <CAKwvOdmtX8Y8eWESYj4W-H-KF7cZx6w1NbSjoSPt5x5U9ezQUQ@mail.gmail.com>
+Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Baokun Li <libaokun1@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 9:42 AM Li Li <dualli@chromium.org> wrote:
+On Mon, Sep 13, 2021 at 2:13 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> From: Li Li <dualli@google.com>
+> On Mon, Sep 13, 2021 at 1:50 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 1:42 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Mon, Sep 13, 2021 at 1:16 PM Nick Desaulniers
+> > > <ndesaulniers@google.com> wrote:
+> > > >
+> > > > Do we have access to _Generic in GCC 4.9?
+> > >
+> > > We've ended up using it unconditionally since last year, so yes.
+> >
+> > Sorry, grepping would have taken < 1s. I'm very lazy.
+> > http://threevirtues.com/
+> >
+> > >
+> > > In fact, the compiler version tests got removed when we raised the gcc
+> > > version requirement to 4.9 in commit 6ec4476ac825 ("Raise gcc version
+> > > requirement to 4.9"):
+> > >
+> > >    "In particular, raising the minimum to 4.9 means that we can now just
+> > >     assume _Generic() exists, which is likely the much better replacement
+> > >     for a lot of very convoluted built-time magic with conditionals on
+> > >     sizeof and/or __builtin_choose_expr() with same_type() etc"
+> > >
+> > > but we haven't used it much since.
+> > >
+> > > The "seqprop" code for picking the right lock for seqlock is perhaps
+> > > the main example, and staring at that code will make you go blind, so
+> > > look away.
+> >
+> > Looking at my patch:
+> > https://lore.kernel.org/stable/20210913203201.1844253-1-ndesaulniers@google.com/
+> > I don't think _Generic helps us in the case of dispatching based on
+> > the result of is_signed_type() (the operands could undergo type
+> > promotion, so we'd need lots of cases that are more concisely covered
+> > by is_signed_type()). It could replace the nested checks in div_64
+> > with nested _Generics, I think. Not sure it's a huge win for
+> > readability.  Maybe cut the number of expansions of the parameters in
+> > half though. Let me give it a try just to see what it looks like.
 >
-> Currently cgroup freezer is used to freeze the application threads, and
-> BINDER_FREEZE is used to freeze the corresponding binder interface.
-> There's already a mechanism in ioctl(BINDER_FREEZE) to wait for any
-> existing transactions to drain out before actually freezing the binder
-> interface.
->
-> But freezing an app requires 2 steps, freezing the binder interface with
-> ioctl(BINDER_FREEZE) and then freezing the application main threads with
-> cgroupfs. This is not an atomic operation. The following race issue
-> might happen.
->
-> 1) Binder interface is frozen by ioctl(BINDER_FREEZE);
-> 2) Main thread A initiates a new sync binder transaction to process B;
-> 3) Main thread A is frozen by "echo 1 > cgroup.freeze";
-> 4) The response from process B reaches the frozen thread, which will
-> unexpectedly fail.
->
-> This patch provides a mechanism to check if there's any new pending
-> transaction happening between ioctl(BINDER_FREEZE) and freezing the
-> main thread. If there's any, the main thread freezing operation can
-> be rolled back to finish the pending transaction.
->
-> Furthermore, the response might reach the binder driver before the
-> rollback actually happens. That will still cause failed transaction.
->
-> As the other process doesn't wait for another response of the response,
-> the response transaction failure can be fixed by treating the response
-> transaction like an oneway/async one, allowing it to reach the frozen
-> thread. And it will be consumed when the thread gets unfrozen later.
->
-> NOTE: This patch reuses the existing definition of struct
-> binder_frozen_status_info but expands the bit assignments of __u32
-> member sync_recv.
->
-> To ensure backward compatibility, bit 0 of sync_recv still indicates
-> there's an outstanding sync binder transaction. This patch adds new
-> information to bit 1 of sync_recv, indicating the binder transaction
-> happens exactly when there's a race.
->
-> If an existing userspace app runs on a new kernel, a sync binder call
-> will set bit 0 of sync_recv so ioctl(BINDER_GET_FROZEN_INFO) still
-> return the expected value (true). The app just doesn't check bit 1
-> intentionally so it doesn't have the ability to tell if there's a race.
-> This behavior is aligned with what happens on an old kernel which
-> doesn't set bit 1 at all.
->
-> A new userspace app can 1) check bit 0 to know if there's a sync binder
-> transaction happened when being frozen - same as before; and 2) check
-> bit 1 to know if that sync binder transaction happened exactly when
-> there's a race - a new information for rollback decision.
->
-> Fixes: 432ff1e91694 ("binder: BINDER_FREEZE ioctl")
-> Test: stress test with apps being frozen and initiating binder calls at
-> the same time, confirmed the pending transactions succeeded.
-> Signed-off-by: Li Li <dualli@google.com>
+> Is this more readable? Same line count.  I'm not sure if there's such
+> a thing as "fallthrough" between the "cases" of _Generic to minimize
+> duplication, or whether this could be factored further.  Needs lots
+> more () around macro param use and tab'ed out line endings...
 
-Acked-by: Todd Kjos <tkjos@google.com>
+Sorry wrong diff:
+diff --git a/include/linux/math64.h b/include/linux/math64.h
+index bc9c12c168d0..8fc4d56a45b9 100644
+--- a/include/linux/math64.h
++++ b/include/linux/math64.h
+@@ -162,18 +162,18 @@ static inline s64 div_s64(s64 dividend, s32 divisor)
+                div_u64(dividend, divisor));            \
+ })
 
-> ---
->  drivers/android/binder.c            | 35 ++++++++++++++++++++++++-----
->  drivers/android/binder_internal.h   |  2 ++
->  include/uapi/linux/android/binder.h |  7 ++++++
->  3 files changed, 38 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index d9030cb6b1e4..1a68c2f590cf 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -3038,9 +3038,8 @@ static void binder_transaction(struct binder_proc *proc,
->         if (reply) {
->                 binder_enqueue_thread_work(thread, tcomplete);
->                 binder_inner_proc_lock(target_proc);
-> -               if (target_thread->is_dead || target_proc->is_frozen) {
-> -                       return_error = target_thread->is_dead ?
-> -                               BR_DEAD_REPLY : BR_FROZEN_REPLY;
-> +               if (target_thread->is_dead) {
-> +                       return_error = BR_DEAD_REPLY;
->                         binder_inner_proc_unlock(target_proc);
->                         goto err_dead_proc_or_thread;
->                 }
-> @@ -4648,6 +4647,22 @@ static int binder_ioctl_get_node_debug_info(struct binder_proc *proc,
->         return 0;
->  }
->
-> +static bool binder_txns_pending_ilocked(struct binder_proc *proc)
-> +{
-> +       struct rb_node *n;
-> +       struct binder_thread *thread;
-> +
-> +       if (proc->outstanding_txns > 0)
-> +               return true;
-> +
-> +       for (n = rb_first(&proc->threads); n; n = rb_next(n)) {
-> +               thread = rb_entry(n, struct binder_thread, rb_node);
-> +               if (thread->transaction_stack)
-> +                       return true;
-> +       }
-> +       return false;
-> +}
-> +
->  static int binder_ioctl_freeze(struct binder_freeze_info *info,
->                                struct binder_proc *target_proc)
->  {
-> @@ -4679,8 +4694,13 @@ static int binder_ioctl_freeze(struct binder_freeze_info *info,
->                         (!target_proc->outstanding_txns),
->                         msecs_to_jiffies(info->timeout_ms));
->
-> -       if (!ret && target_proc->outstanding_txns)
-> -               ret = -EAGAIN;
-> +       /* Check pending transactions that wait for reply */
-> +       if (ret >= 0) {
-> +               binder_inner_proc_lock(target_proc);
-> +               if (binder_txns_pending_ilocked(target_proc))
-> +                       ret = -EAGAIN;
-> +               binder_inner_proc_unlock(target_proc);
-> +       }
->
->         if (ret < 0) {
->                 binder_inner_proc_lock(target_proc);
-> @@ -4696,6 +4716,7 @@ static int binder_ioctl_get_freezer_info(
->  {
->         struct binder_proc *target_proc;
->         bool found = false;
-> +       __u32 txns_pending;
->
->         info->sync_recv = 0;
->         info->async_recv = 0;
-> @@ -4705,7 +4726,9 @@ static int binder_ioctl_get_freezer_info(
->                 if (target_proc->pid == info->pid) {
->                         found = true;
->                         binder_inner_proc_lock(target_proc);
-> -                       info->sync_recv |= target_proc->sync_recv;
-> +                       txns_pending = binder_txns_pending_ilocked(target_proc);
-> +                       info->sync_recv |= target_proc->sync_recv |
-> +                                       (txns_pending << 1);
->                         info->async_recv |= target_proc->async_recv;
->                         binder_inner_proc_unlock(target_proc);
->                 }
-> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-> index 810c0b84d3f8..402c4d4362a8 100644
-> --- a/drivers/android/binder_internal.h
-> +++ b/drivers/android/binder_internal.h
-> @@ -378,6 +378,8 @@ struct binder_ref {
->   *                        binder transactions
->   *                        (protected by @inner_lock)
->   * @sync_recv:            process received sync transactions since last frozen
-> + *                        bit 0: received sync transaction after being frozen
-> + *                        bit 1: new pending sync transaction during freezing
->   *                        (protected by @inner_lock)
->   * @async_recv:           process received async transactions since last frozen
->   *                        (protected by @inner_lock)
-> diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/android/binder.h
-> index 20e435fe657a..3246f2c74696 100644
-> --- a/include/uapi/linux/android/binder.h
-> +++ b/include/uapi/linux/android/binder.h
-> @@ -225,7 +225,14 @@ struct binder_freeze_info {
->
->  struct binder_frozen_status_info {
->         __u32            pid;
-> +
-> +       /* process received sync transactions since last frozen
-> +        * bit 0: received sync transaction after being frozen
-> +        * bit 1: new pending sync transaction during freezing
-> +        */
->         __u32            sync_recv;
-> +
-> +       /* process received async transactions since last frozen */
->         __u32            async_recv;
->  };
->
-> --
-> 2.33.0.309.g3052b89438-goog
->
++#define __div_64(dividend, divisor) _Generic((divisor),        \
++  s64: div64_x64(dividend, divisor),   \
++  u64: div64_x64(dividend, divisor),   \
++  default: div_x64(dividend, divisor))
++
+ #define div_64(dividend, divisor) ({
+         \
+        BUILD_BUG_ON_MSG(sizeof(dividend) > sizeof(u64),
+         \
+                         "128b div unsupported");
+         \
+-       __builtin_choose_expr(
+         \
+-               __builtin_types_compatible_p(typeof(dividend), s64) ||
+         \
+-               __builtin_types_compatible_p(typeof(dividend), u64),
+         \
+-               __builtin_choose_expr(
+         \
+-                       __builtin_types_compatible_p(typeof(divisor),
+s64) ||   \
+-                       __builtin_types_compatible_p(typeof(divisor),
+u64),     \
+-                       div64_x64(dividend, divisor),
+         \
+-                       div_x64(dividend, divisor)),
+         \
+-               dividend / divisor);
+         \
++       _Generic((dividend),    \
++               s64: __div_64(dividend, divisor),       \
++               u64: __div_64(dividend, divisor),       \
++               default: dividend / divisor);   \
+ })
+-- 
+Thanks,
+~Nick Desaulniers
