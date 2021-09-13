@@ -2,770 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F7F4088F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39814088F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239050AbhIMKZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:25:33 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:45272 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239032AbhIMKZc (ORCPT
+        id S239084AbhIMK0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239065AbhIMK0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:25:32 -0400
-X-UUID: cec53fb7e8214e51b29ed19f69695e19-20210913
-X-UUID: cec53fb7e8214e51b29ed19f69695e19-20210913
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2109271444; Mon, 13 Sep 2021 18:24:13 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 13 Sep 2021 18:24:12 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 13 Sep
- 2021 18:24:12 +0800
-Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 13 Sep 2021 18:24:12 +0800
-Message-ID: <4d703c5f7cf27ddc8b9886b111ffeeba0c4aa08b.camel@mediatek.com>
-Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8195: add machine driver with
- mt6359, rt1011 and rt5682
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        Mon, 13 Sep 2021 06:26:01 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7277BC061574;
+        Mon, 13 Sep 2021 03:24:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=aTrEWPTgm+dIL/hGTC+DhKVRcNbUKDY/ngJtAI2gUPw=; b=HLuLa0Js2fe4rdc8ZDDfvF3dq3
+        1VKI/tNmJlHv93Ku/PQwXaw/scNiXiGteqOOakxoEiSnqI507iMpxRkxPjmqmWNKynVHnJcQuNlTt
+        qZgvtwSqjmHTYEin8jK1epP74aoQ4abDhWTBn7Jj3JHn9AnHNE5xGwv/7OI9rC02qUN8baaP5kl3W
+        XbbaBsiRuTQbtbVaukpArL3JX5grPuFD2wWG2v2Q53cMjt/OfnZG+SQIbSsjGLaeAa8apMn5qgF+9
+        hYQpZ/0Y0uCBCkGgy4gOwAVjWueS2qCHbQKWOK3rSsFh/27VNf4O//wPN2uSLGu5DUHv8y23ZBV3y
+        3PPm7KsA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPj8U-002nk6-08; Mon, 13 Sep 2021 10:24:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BCE9E300047;
+        Mon, 13 Sep 2021 12:24:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9842E2098BD0E; Mon, 13 Sep 2021 12:24:24 +0200 (CEST)
+Date:   Mon, 13 Sep 2021 12:24:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
         <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <aaronyu@google.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 13 Sep 2021 18:24:12 +0800
-In-Reply-To: <10fc49fa-9791-0225-365d-e3074680596c@linux.intel.com>
-References: <20210910104405.11420-1-trevor.wu@mediatek.com>
-         <20210910104405.11420-2-trevor.wu@mediatek.com>
-         <10fc49fa-9791-0225-365d-e3074680596c@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
+ perf_log_throttle
+Message-ID: <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-10 at 11:47 -0500, Pierre-Louis Bossart wrote:
-> > +static int mt8195_rt5682_etdm_hw_params(struct snd_pcm_substream
-> > *substream,
-> > +					struct snd_pcm_hw_params
-> > *params)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_soc_card *card = rtd->card;
-> > +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> > +	unsigned int rate = params_rate(params);
-> > +	unsigned int mclk_fs_ratio = 128;
-> > +	unsigned int mclk_fs = rate * mclk_fs_ratio;
-> > +	int bitwidth;
-> > +	int ret;
-> > +
-> > +	bitwidth = snd_pcm_format_width(params_format(params));
-> > +	if (bitwidth < 0) {
-> > +		dev_err(card->dev, "invalid bit width: %d\n",
-> > bitwidth);
-> > +		return bitwidth;
-> > +	}
-> > +
-> > +	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x00, 0x0, 0x2,
-> > bitwidth);
-> > +	if (ret) {
-> > +		dev_err(card->dev, "failed to set tdm slot\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = snd_soc_dai_set_pll(codec_dai, RT5682_PLL1,
-> > +				  RT5682_PLL1_S_BCLK1,
-> > +				  params_rate(params) * 64,
-> > +				  params_rate(params) * 512);
-> > +	if (ret) {
-> > +		dev_err(card->dev, "failed to set pll\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = snd_soc_dai_set_sysclk(codec_dai,
-> > +				     RT5682_SCLK_S_PLL1,
-> > +				     params_rate(params) * 512,
-> > +				     SND_SOC_CLOCK_IN);
-> > +	if (ret) {
-> > +		dev_err(card->dev, "failed to set sysclk\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_fs,
-> > SND_SOC_CLOCK_OUT);
-> 
-> If you are using params_rate(params) x factor, then it'd be more
-> consistent to use:
-> 
-> return snd_soc_dai_set_sysclk(cpu_dai, 0, params_rate(params) * 128,
-> SND_SOC_CLOCK_OUT);
+On Mon, Sep 13, 2021 at 11:00:47AM +0800, 王贇 wrote:
 > 
 > 
-
-OK, I will modify it in v2.
-
-> > +static int mt8195_mt6359_mtkaif_calibration(struct
-> > snd_soc_pcm_runtime *rtd)
-> > +{
-> > +	struct snd_soc_component *cmpnt_afe =
-> > +		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
-> > +	struct snd_soc_component *cmpnt_codec =
-> > +		asoc_rtd_to_codec(rtd, 0)->component;
-> > +	struct mtk_base_afe *afe =
-> > snd_soc_component_get_drvdata(cmpnt_afe);
-> > +	struct mt8195_afe_private *afe_priv = afe->platform_priv;
-> > +	struct mtkaif_param *param = &afe_priv->mtkaif_params;
-> > +	int phase;
-> > +	unsigned int monitor;
-> > +	int mtkaif_calibration_num_phase;
-> > +	int test_done_1, test_done_2, test_done_3;
-> > +	int cycle_1, cycle_2, cycle_3;
-> > +	int prev_cycle_1, prev_cycle_2, prev_cycle_3;
-> > +	int chosen_phase_1, chosen_phase_2, chosen_phase_3;
-> > +	int counter;
-> > +	bool mtkaif_calibration_ok;
-> > +	int mtkaif_chosen_phase[MT8195_MTKAIF_MISO_NUM];
-> > +	int mtkaif_phase_cycle[MT8195_MTKAIF_MISO_NUM];
-> > +	int i;
-> 
-> reverse x-mas style with longer declarations first?
-> 
-
-OK. I will reorder the variables and move the lognger declaration to
-the top.
-
-> > +
-> > +	dev_info(afe->dev, "%s(), start\n", __func__);
-> 
-> dev_dbg
-> 
-OK.
-
-> > +
-> > +	param->mtkaif_calibration_ok = false;
-> > +	for (i = 0; i < MT8195_MTKAIF_MISO_NUM; i++) {
-> > +		param->mtkaif_chosen_phase[i] = -1;
-> > +		param->mtkaif_phase_cycle[i] = 0;
-> > +		mtkaif_chosen_phase[i] = -1;
-> > +		mtkaif_phase_cycle[i] = 0;
-> > +	}
-> > +
-> > +	if (IS_ERR(afe_priv->topckgen)) {
-> > +		dev_info(afe->dev, "%s() Cannot find topckgen
-> > controller\n",
-> > +			 __func__);
-> > +		return 0;
-> 
-> is this not an error? Why not dev_err() and return -EINVAL or
-> something?
-> 
-
-Should I still return an error, even if the caller didn't check it?
-
-Based on my understanding, the calibration function is used to make the
-signal more stable. 
-Most of the time, mtkaif still works, even though the calibration
-fails.
-I guess that's why the caller(I refered to the implementation of
-mt8192.) didn't check the return value of calibration function.
-
-
-> > +	}
-> > +
-> > +	pm_runtime_get_sync(afe->dev);
-> 
-> test if this worked?
-> 
-
-Yes, if I didn't add pm_runtime_get_sync here, the calibration failed.
-
-> > +	mt6359_mtkaif_calibration_enable(cmpnt_codec);
-> > +
-> > +	/* set test type to synchronizer pulse */
-> > +	regmap_update_bits(afe_priv->topckgen,
-> > +			   CKSYS_AUD_TOP_CFG, 0xffff, 0x4);
-> > +	mtkaif_calibration_num_phase = 42;	/* mt6359: 0 ~ 42 */
-> > +	mtkaif_calibration_ok = true;
-> > +
-> > +	for (phase = 0;
-> > +	     phase <= mtkaif_calibration_num_phase &&
-> > mtkaif_calibration_ok;
-> > +	     phase++) {
-> > +		mt6359_set_mtkaif_calibration_phase(cmpnt_codec,
-> > +						    phase, phase,
-> > phase);
-> > +
-> > +		regmap_update_bits(afe_priv->topckgen,
-> > +				   CKSYS_AUD_TOP_CFG, 0x1, 0x1);
-> > +
-> > +		test_done_1 = 0;
-> > +		test_done_2 = 0;
-> > +		test_done_3 = 0;
-> > +		cycle_1 = -1;
-> > +		cycle_2 = -1;
-> > +		cycle_3 = -1;
-> > +		counter = 0;
-> > +		while (!(test_done_1 & test_done_2 & test_done_3)) {
-> > +			regmap_read(afe_priv->topckgen,
-> > +				    CKSYS_AUD_TOP_MON, &monitor);
-> > +			test_done_1 = (monitor >> 28) & 0x1;
-> > +			test_done_2 = (monitor >> 29) & 0x1;
-> > +			test_done_3 = (monitor >> 30) & 0x1;
-> > +			if (test_done_1 == 1)
-> > +				cycle_1 = monitor & 0xf;
-> > +
-> > +			if (test_done_2 == 1)
-> > +				cycle_2 = (monitor >> 4) & 0xf;
-> > +
-> > +			if (test_done_3 == 1)
-> > +				cycle_3 = (monitor >> 8) & 0xf;
-> > +
-> > +			/* handle if never test done */
-> > +			if (++counter > 10000) {
-> > +				dev_info(afe->dev, "%s(), test fail,
-> > cycle_1 %d, cycle_2 %d, cycle_3 %d, monitor 0x%x\n",
-> > +					 __func__,
-> > +					 cycle_1, cycle_2, cycle_3,
-> > monitor);
-> > +				mtkaif_calibration_ok = false;
-> > +				break;
-> > +			}
-> > +		}
-> > +
-> > +		if (phase == 0) {
-> > +			prev_cycle_1 = cycle_1;
-> > +			prev_cycle_2 = cycle_2;
-> > +			prev_cycle_3 = cycle_3;
-> > +		}
-> > +
-> > +		if (cycle_1 != prev_cycle_1 &&
-> > +		    mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] < 0) {
-> > +			mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] =
-> > phase - 1;
-> > +			mtkaif_phase_cycle[MT8195_MTKAIF_MISO_0] =
-> > prev_cycle_1;
-> > +		}
-> > +
-> > +		if (cycle_2 != prev_cycle_2 &&
-> > +		    mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] < 0) {
-> > +			mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] =
-> > phase - 1;
-> > +			mtkaif_phase_cycle[MT8195_MTKAIF_MISO_1] =
-> > prev_cycle_2;
-> > +		}
-> > +
-> > +		if (cycle_3 != prev_cycle_3 &&
-> > +		    mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] < 0) {
-> > +			mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] =
-> > phase - 1;
-> > +			mtkaif_phase_cycle[MT8195_MTKAIF_MISO_2] =
-> > prev_cycle_3;
-> > +		}
-> > +
-> > +		regmap_update_bits(afe_priv->topckgen,
-> > +				   CKSYS_AUD_TOP_CFG, 0x1, 0x0);
-> > +
-> > +		if (mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] >= 0 &&
-> > +		    mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] >= 0 &&
-> > +		    mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] >= 0)
-> > +			break;
-> > +	}
-> > +
-> > +	if (mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] < 0) {
-> > +		mtkaif_calibration_ok = false;
-> > +		chosen_phase_1 = 0;
-> > +	} else {
-> > +		chosen_phase_1 =
-> > mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0];
-> > +	}
-> > +
-> > +	if (mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] < 0) {
-> > +		mtkaif_calibration_ok = false;
-> > +		chosen_phase_2 = 0;
-> > +	} else {
-> > +		chosen_phase_2 =
-> > mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1];
-> > +	}
-> > +
-> > +	if (mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] < 0) {
-> > +		mtkaif_calibration_ok = false;
-> > +		chosen_phase_3 = 0;
-> > +	} else {
-> > +		chosen_phase_3 =
-> > mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2];
-> > +	}
-> > +
-> > +	mt6359_set_mtkaif_calibration_phase(cmpnt_codec,
-> > +					    chosen_phase_1,
-> > +					    chosen_phase_2,
-> > +					    chosen_phase_3);
-> > +
-> > +	mt6359_mtkaif_calibration_disable(cmpnt_codec);
-> > +	pm_runtime_put(afe->dev);
-> > +
-> > +	param->mtkaif_calibration_ok = mtkaif_calibration_ok;
-> > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_0] =
-> > chosen_phase_1;
-> > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_1] =
-> > chosen_phase_2;
-> > +	param->mtkaif_chosen_phase[MT8195_MTKAIF_MISO_2] =
-> > chosen_phase_3;
-> > +	for (i = 0; i < MT8195_MTKAIF_MISO_NUM; i++)
-> > +		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
-> > +
-> > +	dev_info(afe->dev, "%s(), end, calibration ok %d\n",
-> > +		 __func__, param->mtkaif_calibration_ok);
-> 
-> dev_dbg?
-> 
-
-Because we don't regard calibration failure as an error, it is a hint
-to show the calibration result.
-I prefer to keep dev_info here.
-Is it OK?
-
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int mt8195_hdmitx_dptx_startup(struct snd_pcm_substream
-> > *substream)
-> > +{
-> > +	static const unsigned int rates[] = {
-> > +		48000
-> > +	};
-> > +	static const unsigned int channels[] = {
-> > +		2, 4, 6, 8
-> > +	};
-> > +	static const struct snd_pcm_hw_constraint_list
-> > constraints_rates = {
-> > +		.count = ARRAY_SIZE(rates),
-> > +		.list  = rates,
-> > +		.mask = 0,
-> > +	};
-> > +	static const struct snd_pcm_hw_constraint_list
-> > constraints_channels = {
-> > +		.count = ARRAY_SIZE(channels),
-> > +		.list  = channels,
-> > +		.mask = 0,
-> > +	};
-> 
-> you use the same const tables several times, move to a higher scope
-> and
-> reuse?
-> 
-
-There is little difference in channels between these startup ops.
-
-> > +	struct snd_soc_pcm_runtime *rtd =
-> > asoc_substream_to_rtd(substream);
-> > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > +	int ret;
-> > +
-> > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
-> > +					 SNDRV_PCM_HW_PARAM_RATE,
-> > +					 &constraints_rates);
-> > +	if (ret < 0) {
-> > +		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
-> > +					 SNDRV_PCM_HW_PARAM_CHANNELS,
-> > +					 &constraints_channels);
-> > +	if (ret < 0) {
-> > +		dev_err(rtd->dev, "hw_constraint_list channel
-> > failed\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct snd_soc_ops mt8195_hdmitx_dptx_playback_ops =
-> > {
-> > +	.startup = mt8195_hdmitx_dptx_startup,
-> > +};
-> > +
-> > +static int mt8195_dptx_hw_params(struct snd_pcm_substream
-> > *substream,
-> > +				 struct snd_pcm_hw_params *params)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +	unsigned int rate = params_rate(params);
-> > +	unsigned int mclk_fs_ratio = 256;
-> > +	unsigned int mclk_fs = rate * mclk_fs_ratio;
-> > +
-> > +	return snd_soc_dai_set_sysclk(cpu_dai, 0, mclk_fs,
-> > +				      SND_SOC_CLOCK_OUT);
-> 
-> return snd_soc_dai_set_sysclk(cpu_dai, 0, params_rate(params) * 256,
-> SND_SOC_CLOCK_OUT);
-> ?
-> 
-> 
-OK, I will modify it in v2.
-
-> > +static int mt8195_dptx_codec_init(struct snd_soc_pcm_runtime *rtd)
-> > +{
-> > +	struct mt8195_mt6359_rt1011_rt5682_priv *priv =
-> > +		snd_soc_card_get_drvdata(rtd->card);
-> > +	struct snd_soc_component *cmpnt_codec =
-> > +		asoc_rtd_to_codec(rtd, 0)->component;
-> > +	int ret = 0;
-> 
-> unnecessary init
-
-OK. 
-> 
-> > +	ret = snd_soc_card_jack_new(rtd->card, "DP Jack",
-> > SND_JACK_LINEOUT,
-> > +				    &priv->dp_jack, NULL, 0);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return snd_soc_component_set_jack(cmpnt_codec, &priv->dp_jack,
-> > NULL);
-> > +}
-> > +
-> > +static int mt8195_hdmi_codec_init(struct snd_soc_pcm_runtime *rtd)
-> > +{
-> > +	struct mt8195_mt6359_rt1011_rt5682_priv *priv =
-> > +		snd_soc_card_get_drvdata(rtd->card);
-> > +	struct snd_soc_component *cmpnt_codec =
-> > +		asoc_rtd_to_codec(rtd, 0)->component;
-> > +	int ret = 0;
-> 
-> unnecessary init
-> 
-OK.
-
-> > +	ret = snd_soc_card_jack_new(rtd->card, "HDMI Jack",
-> > SND_JACK_LINEOUT,
-> > +				    &priv->hdmi_jack, NULL, 0);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return snd_soc_component_set_jack(cmpnt_codec, &priv-
-> > >hdmi_jack, NULL);
-> > +}
-> > +
-> > +static int mt8195_hdmitx_dptx_hw_params_fixup(struct
-> > snd_soc_pcm_runtime *rtd,
-> > +					      struct snd_pcm_hw_params
-> > *params)
-> > +
-> 
-> spurious line?
-> 
-
-Thanks, I didn't notice the line.
-> > +{
-> > +	/* fix BE i2s format to 32bit, clean param mask first */
-> > +	snd_mask_reset_range(hw_param_mask(params,
-> > SNDRV_PCM_HW_PARAM_FORMAT),
-> > +			     0, (__force unsigned
-> > int)SNDRV_PCM_FORMAT_LAST);
-> > +
-> > +	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int mt8195_playback_startup(struct snd_pcm_substream
-> > *substream)
-> > +{
-> > +	static const unsigned int rates[] = {
-> > +		48000
-> > +	};
-> > +	static const unsigned int channels[] = {
-> > +		2
-> > +	};
-> > +	static const struct snd_pcm_hw_constraint_list
-> > constraints_rates = {
-> > +		.count = ARRAY_SIZE(rates),
-> > +		.list  = rates,
-> > +		.mask = 0,
-> > +	};
-> > +	static const struct snd_pcm_hw_constraint_list
-> > constraints_channels = {
-> > +		.count = ARRAY_SIZE(channels),
-> > +		.list  = channels,
-> > +		.mask = 0,
-> > +	};
-> 
-> actually now I realize it's only the number of channels that
-> differs...
-> 
-> > +
-> > +	struct snd_soc_pcm_runtime *rtd =
-> > asoc_substream_to_rtd(substream);
-> > +	struct snd_pcm_runtime *runtime = substream->runtime;
-> > +	int ret;
-> > +
-> > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
-> > +					 SNDRV_PCM_HW_PARAM_RATE,
-> > +					 &constraints_rates);
-> > +	if (ret < 0) {
-> > +		dev_err(rtd->dev, "hw_constraint_list rate failed\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = snd_pcm_hw_constraint_list(runtime, 0,
-> > +					 SNDRV_PCM_HW_PARAM_CHANNELS,
-> > +					 &constraints_channels);
-> > +	if (ret < 0) {
-> > +		dev_err(rtd->dev, "hw_constraint_list channel
-> > failed\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +static struct snd_soc_dai_link
-> > mt8195_mt6359_rt1011_rt5682_dai_links[] = {
-> > +	/* FE */
-> > +	[DAI_LINK_DL2_FE] = {
-> > +		.name = "DL2_FE",
-> > +		.stream_name = "DL2 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +		},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +		.ops = &mt8195_playback_ops,
-> > +		SND_SOC_DAILINK_REG(DL2_FE),
-> > +	},
-> > +	[DAI_LINK_DL3_FE] = {
-> > +		.name = "DL3_FE",
-> > +		.stream_name = "DL3 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +		},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +		.ops = &mt8195_playback_ops,
-> > +		SND_SOC_DAILINK_REG(DL3_FE),
-> > +	},
-> > +	[DAI_LINK_DL6_FE] = {
-> > +		.name = "DL6_FE",
-> > +		.stream_name = "DL6 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +		},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +		.ops = &mt8195_playback_ops,
-> > +		SND_SOC_DAILINK_REG(DL6_FE),
-> > +	},
-> > +	[DAI_LINK_DL7_FE] = {
-> > +		.name = "DL7_FE",
-> > +		.stream_name = "DL7 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_PRE,
-> > +			SND_SOC_DPCM_TRIGGER_PRE,
-> > +		},
-> 
-> this is interesting, is it intentional that the trigger order is
-> different from all FEs?
-
-DL7, UL1 and UL6 connect to the specific HWs separately.
-In such path, FE is required to enabled before BE because of the HW
-design.
-> 
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> 
-> also no .ops?
-> 
-
-.ops is used to add constraints for the capability, but now the
-interface is not used. That's why no .ops is assigned here.
-
-> > +		SND_SOC_DAILINK_REG(DL7_FE),
-> > +	},
-> > +	[DAI_LINK_DL8_FE] = {
-> > +		.name = "DL8_FE",
-> > +		.stream_name = "DL8 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +		},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +		.ops = &mt8195_playback_ops,
-> > +		SND_SOC_DAILINK_REG(DL8_FE),
-> > +	},
-> > +	[DAI_LINK_DL10_FE] = {
-> > +		.name = "DL10_FE",
-> > +		.stream_name = "DL10 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +		},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +		.ops = &mt8195_hdmitx_dptx_playback_ops,
-> > +		SND_SOC_DAILINK_REG(DL10_FE),
-> > +	},
-> > +	[DAI_LINK_DL11_FE] = {
-> > +		.name = "DL11_FE",
-> > +		.stream_name = "DL11 Playback",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +			SND_SOC_DPCM_TRIGGER_POST,
-> > +		},
-> > +		.dynamic = 1,
-> > +		.dpcm_playback = 1,
-> > +		.ops = &mt8195_playback_ops,
-> > +		SND_SOC_DAILINK_REG(DL11_FE),
-> > +	},
-> > +	[DAI_LINK_UL1_FE] = {
-> > +		.name = "UL1_FE",
-> > +		.stream_name = "UL1 Capture",
-> > +		.trigger = {
-> > +			SND_SOC_DPCM_TRIGGER_PRE,
-> > +			SND_SOC_DPCM_TRIGGER_PRE,
-> 
-> and again here, why PRE and no ops?
-> 
-> > +static int mt8195_mt6359_rt1011_rt5682_dev_probe(struct
-> > platform_device *pdev)
-> > +{
-> > +	struct snd_soc_card *card =
-> > &mt8195_mt6359_rt1011_rt5682_soc_card;
-> > +	struct device_node *platform_node;
-> > +	struct snd_soc_dai_link *dai_link;
-> > +	struct mt8195_mt6359_rt1011_rt5682_priv *priv = NULL;
-> 
-> initialization is not necessary
-> 
-OK.
-
-> > +	int ret, i;
-> > +
-> > +	card->dev = &pdev->dev;
-> > +
-> > +	platform_node = of_parse_phandle(pdev->dev.of_node,
-> > +					 "mediatek,platform", 0);
-> > +	if (!platform_node) {
-> > +		dev_dbg(&pdev->dev, "Property 'platform' missing or
-> > invalid\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	for_each_card_prelinks(card, i, dai_link) {
-> > +		if (!dai_link->platforms->name)
-> > +			dai_link->platforms->of_node = platform_node;
-> > +
-> > +		if (strcmp(dai_link->name, "DPTX_BE") == 0) {
-> > +			dai_link->codecs->of_node =
-> > +				of_parse_phandle(pdev->dev.of_node,
-> > +						 "mediatek,dptx-codec", 
-> > 0);
-> > +			if (!dai_link->codecs->of_node) {
-> > +				dev_dbg(&pdev->dev, "No property 'dptx-
-> > codec'\n");
-> > +			} else {
-> > +				dai_link->codecs->name = NULL;
-> > +				dai_link->codecs->dai_name = "i2s-
-> > hifi";
-> > +				dai_link->init =
-> > mt8195_dptx_codec_init;
-> > +			}
-> > +		}
-> > +
-> > +		if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
-> > +			dai_link->codecs->of_node =
-> > +				of_parse_phandle(pdev->dev.of_node,
-> > +						 "mediatek,hdmi-codec", 
-> > 0);
-> > +			if (!dai_link->codecs->of_node) {
-> > +				dev_dbg(&pdev->dev, "No property 'hdmi-
-> > codec'\n");
-> > +			} else {
-> > +				dai_link->codecs->name = NULL;
-> > +				dai_link->codecs->dai_name = "i2s-
-> > hifi";
-> > +				dai_link->init =
-> > mt8195_hdmi_codec_init;
-> > +			}
-> > +		}
-> > +	}
-> > +
-> > +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> > +	if (!priv)
-> > +		return -ENOMEM;
-> > +
-> > +	snd_soc_card_set_drvdata(card, priv);
-> > +
-> > +	ret = devm_snd_soc_register_card(&pdev->dev, card);
-> > +	if (ret)
-> > +		dev_err(&pdev->dev, "%s snd_soc_register_card fail
-> > %d\n",
-> > +			__func__, ret);
-> > +	return ret;
-> > +}
-> > +
-> > +#ifdef CONFIG_OF
-> > +static const struct of_device_id
-> > mt8195_mt6359_rt1011_rt5682_dt_match[] = {
-> > +	{.compatible = "mediatek,mt8195_mt6359_rt1011_rt5682",},
-> > +	{}
-> > +};
-> > +#endif
-> > +
-> > +static const struct dev_pm_ops mt8195_mt6359_rt1011_rt5682_pm_ops
-> > = {
-> > +	.poweroff = snd_soc_poweroff,
-> > +	.restore = snd_soc_resume,
-> > +};
-> > +
-> > +static struct platform_driver mt8195_mt6359_rt1011_rt5682_driver =
-> > {
-> > +	.driver = {
-> > +		.name = "mt8195_mt6359_rt1011_rt5682",
-> > +#ifdef CONFIG_OF
-> > +		.of_match_table = mt8195_mt6359_rt1011_rt5682_dt_match,
-> > +#endif
-> > +		.pm = &mt8195_mt6359_rt1011_rt5682_pm_ops,
-> > +	},
-> > +	.probe = mt8195_mt6359_rt1011_rt5682_dev_probe,
-> > +};
-> > +
-> > +module_platform_driver(mt8195_mt6359_rt1011_rt5682_driver);
-> > +
-> > +/* Module information */
-> > +MODULE_DESCRIPTION("MT8195-MT6359-RT1011-RT5682 ALSA SoC machine
-> > driver");
-> > +MODULE_AUTHOR("Trevor Wu <trevor.wu@mediatek.com>");
-> > +MODULE_LICENSE("GPL v2");
-> 
-> "GPL" is enough
-> 
-
-I see many projects use GPL v2 here, and all mediatek projects use GPL
-v2, too.
-I'm not sure which one is better.
-Do I need to modify this?
-
-
-Thanks,
-Trevor
-
-> > +MODULE_ALIAS("mt8195_mt6359_rt1011_rt5682 soc card");
+> On 2021/9/10 下午11:38, Peter Zijlstra wrote:
+> > On Thu, Sep 09, 2021 at 11:13:21AM +0800, 王贇 wrote:
+> >> When running with ftrace function enabled, we observed panic
+> >> as below:
+> >>
+> >>   traps: PANIC: double fault, error_code: 0x0
+> >>   [snip]
+> >>   RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+> >>   [snip]
+> >>   Call Trace:
+> >>    <NMI>
+> >>    perf_trace_buf_alloc+0x26/0xd0
+> >>    perf_ftrace_function_call+0x18f/0x2e0
+> >>    kernelmode_fixup_or_oops+0x5/0x120
+> >>    __bad_area_nosemaphore+0x1b8/0x280
+> >>    do_user_addr_fault+0x410/0x920
+> >>    exc_page_fault+0x92/0x300
+> >>    asm_exc_page_fault+0x1e/0x30
+> >>   RIP: 0010:__get_user_nocheck_8+0x6/0x13
+> >>    perf_callchain_user+0x266/0x2f0
+> >>    get_perf_callchain+0x194/0x210
+> >>    perf_callchain+0xa3/0xc0
+> >>    perf_prepare_sample+0xa5/0xa60
+> >>    perf_event_output_forward+0x7b/0x1b0
+> >>    __perf_event_overflow+0x67/0x120
+> >>    perf_swevent_overflow+0xcb/0x110
+> >>    perf_swevent_event+0xb0/0xf0
+> >>    perf_tp_event+0x292/0x410
+> >>    perf_trace_run_bpf_submit+0x87/0xc0
+> >>    perf_trace_lock_acquire+0x12b/0x170
+> >>    lock_acquire+0x1bf/0x2e0
+> >>    perf_output_begin+0x70/0x4b0
+> >>    perf_log_throttle+0xe2/0x1a0
+> >>    perf_event_nmi_handler+0x30/0x50
+> >>    nmi_handle+0xba/0x2a0
+> >>    default_do_nmi+0x45/0xf0
+> >>    exc_nmi+0x155/0x170
+> >>    end_repeat_nmi+0x16/0x55
 > > 
+> > kernel/events/Makefile has:
+> > 
+> > ifdef CONFIG_FUNCTION_TRACER
+> > CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+> > endif
+> > 
+> > Which, afaict, should avoid the above, no?
+> 
+> I'm afraid it's not working for this case, the
+> start point of tracing is at lock_acquire() which
+> is not from 'kernel/events/core', the following PF
+> related function are also not from 'core', prevent
+> ftrace on 'core' can't prevent this from happen...
+
+I'm confused tho; where does the #DF come from? Because taking a #PF
+from NMI should be perfectly fine.
+
+AFAICT that callchain is something like:
+
+	NMI
+	  perf_event_nmi_handler()
+	    (part of the chain is missing here)
+	      perf_log_throttle()
+	        perf_output_begin() /* events/ring_buffer.c */
+		  rcu_read_lock()
+		    rcu_lock_acquire()
+		      lock_acquire()
+		        trace_lock_acquire() --> perf_trace_foo
+
+			  ...
+			    perf_callchain()
+			      perf_callchain_user()
+			        #PF (fully expected during a userspace callchain)
+				  (some stuff, until the first __fentry)
+				    perf_trace_function_call
+				      perf_trace_buf_alloc()
+				        perf_swevent_get_recursion_context()
+					  *BOOM*
+
+Now, supposedly we then take another #PF from get_recursion_context() or
+something, but that doesn't make sense. That should just work...
+
+Can you figure out what's going wrong there? going with the RIP, this
+almost looks like 'swhash->recursion' goes splat, but again that makes
+no sense, that's a per-cpu variable.
+
 
