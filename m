@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4503409740
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9BD4094C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242260AbhIMP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240645AbhIMP1o (ORCPT
+        id S1345217AbhIMOeE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 10:34:04 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:43419 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243853AbhIMO2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:27:44 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8668C0FA0B4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:24:53 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id j18so12289849ioj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:24:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y4Lq9CmvVcXXhPkYqU8poyyam6g50FxqVLy0oSkOGwo=;
-        b=cr3Szu2PZkLNoOgq0/pNUQ7Fj5694Bo2qV8vrVedRjJCfzgGVXOzeEYVheg4ZPxGEv
-         3aCVgAf9I5Kz+XUoyOocmaSYPYPnbuPvwm8fGpvMCuWC0o+1E+mXMACJtVgk0uIJUU9h
-         t/yXY9ZSwWjKUjFKgM4E6NRaTZTBoBrpKixGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y4Lq9CmvVcXXhPkYqU8poyyam6g50FxqVLy0oSkOGwo=;
-        b=4+6eizxhwRgWyc8BIeDfpaiNcaR1ytmEWBirY6t+a+txvk3MBmQhByjEjDJnO7QjFH
-         57t8wcugVjwo2vC8TFQ5D+yBqg64KEX/qxo9Jhjo6dT9XKaVjkSvakQKSBf+lOv+bU1a
-         cSHB3zHTVjqvWeGWFN27qyU8hjOBf9yTwCF5vSpxWFnDqBwjLkN3XBRqeeoDDY+vxzJo
-         ZZfkLp44cicS4krMr1qtzhXRcT+BA+bgjZk3k0PyUqBOIV0sBsafm8cSXannjzrZpZnD
-         PizdI+Hx7t2BlWqswlg6Ho4oP8DLDH6u6P2axZBR756GAJA3wUu6MrV1jZza2wWfsaRy
-         WUDw==
-X-Gm-Message-State: AOAM530dRXtzovZktyMO8Z3IQYFl5XgxKEWTS7MO3yCJYc0ko6MBqIgc
-        vrPfxKnCjpp7uOXPCgS+e7Hh2YG3gna0DQ==
-X-Google-Smtp-Source: ABdhPJx/eqqIB4vBAz8lHgsBf/5IFCa6nkTSnkdfc1eI2EY+xn1/EEl30qUR5S0dnd5MPZmncifOqg==
-X-Received: by 2002:a05:6638:1301:: with SMTP id r1mr10200622jad.32.1631543093348;
-        Mon, 13 Sep 2021 07:24:53 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w3sm4899283ilc.23.2021.09.13.07.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 07:24:52 -0700 (PDT)
-Subject: Re: [PATCH] media: atomisp: fix control reaches end of non-void
- function error
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, paskripkin@gmail.com,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210910223700.32494-1-skhan@linuxfoundation.org>
- <20210913084102.GF7203@kadam>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7f1c09f9-49e1-718b-329c-aae9d2f69266@linuxfoundation.org>
-Date:   Mon, 13 Sep 2021 08:24:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210913084102.GF7203@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 13 Sep 2021 10:28:44 -0400
+Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
+        by mail.holtmann.org (Postfix) with ESMTPSA id BB12ACED1E;
+        Mon, 13 Sep 2021 16:27:22 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [PATCH v9] Bluetooth: btusb: Add support using different nvm for
+ variant WCN6855 controller
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1631513399-22826-1-git-send-email-zijuhu@codeaurora.org>
+Date:   Mon, 13 Sep 2021 16:27:22 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rocky Liao <rjliao@codeaurora.org>, tjiang@codeaurora.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <2A714E81-3DF7-44D9-87B4-1D915CB3155D@holtmann.org>
+References: <1631513399-22826-1-git-send-email-zijuhu@codeaurora.org>
+To:     Zijun Hu <zijuhu@codeaurora.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 2:41 AM, Dan Carpenter wrote:
-> On Fri, Sep 10, 2021 at 04:37:00PM -0600, Shuah Khan wrote:
->> Fix the following build error with -Werror=return-type enabled. Fix
->> input_system_configure_channel_sensor() to return status when control
->> reaches the end.
->>
->> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o
->> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
->> drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
->>   1649 | }
->>
->> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> 
-> Hi Shuah,
-> 
-> You're the third person to send this patch recently but it was fixed on
-> Aug 2 in staging-next in commit 05344a1d2ea7 ("media: atomisp: restore
-> missing 'return' statement").  What tree are you working against?  It
-> seems like it needs to be backported somewhere.
-> 
+Hi Zijun,
 
-I am working on Linux 5.15 - should have checked staging next though before
-sending the patch :)
+> the RF performance of wcn6855 soc chip from different foundries will be
+> difference, so we should use different nvm to configure them.
+> 
+> Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+> ---
+> drivers/bluetooth/btusb.c | 51 +++++++++++++++++++++++++++++++++++------------
+> 1 file changed, 38 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 928cbfa4c42d..7b23cfd131f6 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+> #define QCA_DFU_TIMEOUT		3000
+> #define QCA_FLAG_MULTI_NVM      0x80
+> 
+> +#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
+> +#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
+> +
+> struct qca_version {
+> 	__le32	rom_version;
+> 	__le32	patch_version;
+> @@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
+> 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+> 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+> 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
+> +	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+> };
+> 
+> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+> @@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+> 	return err;
+> }
+> 
+> +static void btusb_generate_qca_nvm_name(char *fwname,
+> +					size_t max_size,
+> +					struct qca_version *ver,
+> +					char *variant)
+> +{
+> +	char *sep = (strlen(variant) == 0) ? "" : "_";
+> +	u16 board_id = le16_to_cpu(ver->board_id);
+> +	u32 rom_version = le32_to_cpu(ver->rom_version);
+> +
+> +	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> +		/* if boardid equal 0, use default nvm without suffix */
+> +		if (board_id == 0x0) {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
+> +				rom_version, sep, variant);
+> +		} else {
+> +			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
+> +				rom_version, sep, variant, board_id);
+> +		}
+> +	} else {
+> +		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
+> +			rom_version);
+> +	}
+> +
+> +}
+> +
 
-thanks,
--- Shuah
+you have not addressed a single comment from Matthias.
+
+> static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+> 				    struct qca_version *ver,
+> 				    const struct qca_device_info *info)
+> @@ -3354,19 +3383,15 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+> 	char fwname[64];
+> 	int err;
+> 
+> -	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+> -		/* if boardid equal 0, use default nvm without surfix */
+> -		if (le16_to_cpu(ver->board_id) == 0x0) {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -				 le32_to_cpu(ver->rom_version));
+> -		} else {
+> -			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+> -				le32_to_cpu(ver->rom_version),
+> -				le16_to_cpu(ver->board_id));
+> -		}
+> -	} else {
+> -		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+> -			 le32_to_cpu(ver->rom_version));
+> +	switch (ver->ram_version) {
+> +	case WCN6855_2_0_RAM_VERSION_GF:
+> +	case WCN6855_2_1_RAM_VERSION_GF:
+> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
+> +		break;
+> +
+> +	default:
+> +			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
+> +		break;
+
+And this indentation is still wrong. I have lost track how many times I mentioned it. I am not going to mention it anymore and I will not review this patch until review comments are actually addressed. It is a blind disrespect towards the maintainers and reviewers.
+
+Regards
+
+Marcel
 
