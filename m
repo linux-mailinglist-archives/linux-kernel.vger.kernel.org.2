@@ -2,176 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4EA409ECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DD3409ED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343759AbhIMVGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345918AbhIMVGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:06:33 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEE0C061768
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:05:17 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v5so16379682edc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=373m7inPGNTCDOiEZsbke1WmzoymEFvAttGADuwHDDA=;
-        b=dZApan+/iH4NW1oyIBh56hyWC0xvVWqlTSK28qynQC4TgDjgqY/p3DDGCieGAdnE+I
-         0aAGZTbnqRM5fK3TAuLjdF7NMMeCiV0kCAfGdpzcWIOkp6sGMVlUrfxYCH3SD3gyogJC
-         4YUBZARL2myz4qpAuMZTGYV2rnkRZ9K57xrX/1azGmh55BtgXM4p6fR98t3Lj/TtI5og
-         R/GBhjg5GXvtd+GgOVsER1+uWOFoeaerYmB9DSE925/Yk+BqT4PYFMFnKhDH3tmHZ5eB
-         xUYs9eTg/9uBmvVggoWXp8e0Cnzsirc3guy7n646rKKVwHb6iHMN/jX2KPg7JseQr8+1
-         ToQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=373m7inPGNTCDOiEZsbke1WmzoymEFvAttGADuwHDDA=;
-        b=TISNHl38r4lRjvARKOvlB6OLwnhZHnI+fqyXumwyKoAzqQIZfuDTjarRWie4UaSg03
-         jLrOOm4+IqAkM/rbzWEwjMqk4mMxha9miwRSntiUSJzvZCLRVLOSO1P6T+k8NSrI7Fvm
-         NHKoGZwYXOV3tWaFHhN+CjPeshY7XoMZsJXQAMVon22asVLNlTCH86qUS7FDHun/glCu
-         frh+5IvTg6Ip22OBOnv0qZ2UoK2eAfcn2P4nQCvtvzOTKhf6rdVhA9VVAi3C16XZii3C
-         HU4H+sZba62OH67fQHJIjMauvpbjaHKSvFnBU0FjZ5jFSvia5OotmjrtpJX1Y+5PzL4V
-         3S0w==
-X-Gm-Message-State: AOAM5312B61S1eH5agY0l/rtadIKTyjBW454gLdv94E6OhTLaDHFNxlU
-        wgfZ+rq3PKJpIyAttqzxL42htrDvNzLlUtM9C43D
-X-Google-Smtp-Source: ABdhPJyhjptYpi0mwh96yMlLzxckfq2tRXqkGTb/ZQJf0dLr8KeUC8PkrIaOITSWhjWsL1Ai+gNDn5oE1rgV2wDOPdI=
-X-Received: by 2002:a05:6402:2810:: with SMTP id h16mr14507917ede.293.1631567115278;
- Mon, 13 Sep 2021 14:05:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913140229.24797-1-omosnace@redhat.com>
-In-Reply-To: <20210913140229.24797-1-omosnace@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 13 Sep 2021 17:05:04 -0400
-Message-ID: <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
-Subject: Re: [PATCH v4] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Dan Williams <dan.j.williams@intel.com>
+        id S232511AbhIMVH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:07:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231976AbhIMVH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:07:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F06860698;
+        Mon, 13 Sep 2021 21:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631567169;
+        bh=WHMsQg43LJV/PJPmoR45EGXsHwrBzbGcrTUUq7+QIko=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QhKEJQSZqQOBUPe7mrFobpvYGKu4U9GlGuYK1KGijlUeJh2kxyCufhTx1V9om34Xr
+         Eb1TxEScN7BudefEeBbimqLJIkHmBUuu7LhyIkfDYb9GANRy2ZCWaIyBspF2SZ0kL5
+         liTQeEV4IzJwGT/YMdyeaKZDIeYxMpv4Sj3ZKLEVm0mt3o72YNdjRSkWU+x1C1xJh2
+         ljMz6ctwuGdIsz8AXW2fJIR6Y5wK+qVoez4rBeaWFJ/d3phKhpNaCZafht5NkjqRPz
+         xMMKD+ipEZxL7476tNPWxlwqmf+IW0jMYy5iP96dF8Iqo/AAaCKBHwviYGi90qVyL1
+         S5aq1FwhZRl0Q==
+Message-ID: <dd7fbcaafad3259a307f1a2d8a72127e7bcc0630.camel@kernel.org>
+Subject: Re: [PATCH v14 1/7] tpm: Make read{16, 32}() and write32() in
+ tpm_tis_phy_ops optional
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     amirmizi6@gmail.com, Eyal.Cohen@nuvoton.com,
+        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
+        robh+dt@kernel.org, mark.rutland@arm.com, peterhuewe@gmx.de,
+        jgg@ziepe.ca, arnd@arndb.de, gregkh@linuxfoundation.org,
+        benoit.houyere@st.com, eajames@linux.ibm.com, joel@jms.id.au
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
+        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
+Date:   Tue, 14 Sep 2021 00:06:07 +0300
+In-Reply-To: <20210913144351.101167-2-amirmizi6@gmail.com>
+References: <20210913144351.101167-1-amirmizi6@gmail.com>
+         <20210913144351.101167-2-amirmizi6@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> lockdown") added an implementation of the locked_down LSM hook to
-> SELinux, with the aim to restrict which domains are allowed to perform
-> operations that would breach lockdown.
->
-> However, in several places the security_locked_down() hook is called in
-> situations where the current task isn't doing any action that would
-> directly breach lockdown, leading to SELinux checks that are basically
-> bogus.
->
-> To fix this, add an explicit struct cred pointer argument to
-> security_lockdown() and define NULL as a special value to pass instead
-> of current_cred() in such situations. LSMs that take the subject
-> credentials into account can then fall back to some default or ignore
-> such calls altogether. In the SELinux lockdown hook implementation, use
-> SECINITSID_KERNEL in case the cred argument is NULL.
->
-> Most of the callers are updated to pass current_cred() as the cred
-> pointer, thus maintaining the same behavior. The following callers are
-> modified to pass NULL as the cred pointer instead:
-> 1. arch/powerpc/xmon/xmon.c
->      Seems to be some interactive debugging facility. It appears that
->      the lockdown hook is called from interrupt context here, so it
->      should be more appropriate to request a global lockdown decision.
-> 2. fs/tracefs/inode.c:tracefs_create_file()
->      Here the call is used to prevent creating new tracefs entries when
->      the kernel is locked down. Assumes that locking down is one-way -
->      i.e. if the hook returns non-zero once, it will never return zero
->      again, thus no point in creating these files. Also, the hook is
->      often called by a module's init function when it is loaded by
->      userspace, where it doesn't make much sense to do a check against
->      the current task's creds, since the task itself doesn't actually
->      use the tracing functionality (i.e. doesn't breach lockdown), just
->      indirectly makes some new tracepoints available to whoever is
->      authorized to use them.
-> 3. net/xfrm/xfrm_user.c:copy_to_user_*()
->      Here a cryptographic secret is redacted based on the value returned
->      from the hook. There are two possible actions that may lead here:
->      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
->         task context is relevant, since the dumped data is sent back to
->         the current task.
->      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
->         dumped SA is broadcasted to tasks subscribed to XFRM events -
->         here the current task context is not relevant as it doesn't
->         represent the tasks that could potentially see the secret.
->      It doesn't seem worth it to try to keep using the current task's
->      context in the a) case, since the eventual data leak can be
->      circumvented anyway via b), plus there is no way for the task to
->      indicate that it doesn't care about the actual key value, so the
->      check could generate a lot of "false alert" denials with SELinux.
->      Thus, let's pass NULL instead of current_cred() here faute de
->      mieux.
->
-> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
-> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> Acked-by: Dan Williams <dan.j.williams@intel.com>         [cxl]
-> Acked-by: Steffen Klassert <steffen.klassert@secunet.com> [xfrm]
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->
-> v4:
-> - rebase on top of TODO
-> - fix rebase conflicts:
->   * drivers/cxl/pci.c
->     - trivial: the lockdown reason was corrected in mainline
->   * kernel/bpf/helpers.c, kernel/trace/bpf_trace.c
->     - trivial: LOCKDOWN_BPF_READ was renamed to LOCKDOWN_BPF_READ_KERNEL
->       in mainline
->   * kernel/power/hibernate.c
->     - trivial: !secretmem_active() was added to the condition in
->       hibernation_available()
-> - cover new security_locked_down() call in kernel/bpf/helpers.c
->   (LOCKDOWN_BPF_WRITE_USER in BPF_FUNC_probe_write_user case)
->
-> v3: https://lore.kernel.org/lkml/20210616085118.1141101-1-omosnace@redhat.com/
-> - add the cred argument to security_locked_down() and adapt all callers
-> - keep using current_cred() in BPF, as the hook calls have been shifted
->   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
->   buggy SELinux lockdown permission checks"))
-> - in SELinux, don't ignore hook calls where cred == NULL, but use
->   SECINITSID_KERNEL as the subject instead
-> - update explanations in the commit message
->
-> v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
-> - change to a single hook based on suggestions by Casey Schaufler
->
-> v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
+On Mon, 2021-09-13 at 17:43 +0300, amirmizi6@gmail.com wrote:
+> From: Amir Mizinski <amirmizi6@gmail.com>
+>=20
+> Only tpm_tis can use memory-mapped I/O, which is truly mapped into the
+> kernel's memory space. Therefore, using ioread16/ioread32/iowrite32 turns
+> into a straightforward pointer dereference.
+> Some drivers, such as tpm_tis_spi, require more complicated operations to
+> read more than one byte at a time and, as a result, will revert to
+> read_bytes/write_bytes.
+> Therefore, re-implement tpm_tis_{read, write}_{16, 32}, so that they chec=
+k
+> if implementations for {read, write}_{16, 32} in tpm_tis_phys_ops  exist;
+> if they do not exist, then revert to {read, write}_bytes().
+>  static int tpm_tis_spi_probe(struct spi_device *dev)
 
-The changes between v3 and v4 all seem sane to me, but I'm going to
-let this sit for a few days in hopes that we can collect a few more
-Reviewed-bys and ACKs.  If I don't see any objections I'll merge it
-mid-week(ish) into selinux/stable-5.15 and plan on sending it to Linus
-after it goes through a build/test cycle.
+This is otherwise good but lacks explanation why this makes sense, other th=
+an
+somewhat obvious benefit of having less calbacks, which BTW should be state=
+d
+explicitly in the commit message too.
 
--- 
-paul moore
-www.paul-moore.com
+You must answer what is your by doing this change, e.g. what you are unable
+to do, if the callbacks are removed (just an example).
+
+I get the change, but motivation to do it needs to be there.
+
+/Jarkko
+
