@@ -2,196 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16004408510
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EEC408513
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237528AbhIMHDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:03:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57209 "EHLO
+        id S237536AbhIMHET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:04:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22635 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237454AbhIMHDn (ORCPT
+        by vger.kernel.org with ESMTP id S237535AbhIMHEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:03:43 -0400
+        Mon, 13 Sep 2021 03:04:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631516547;
+        s=mimecast20190719; t=1631516573;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=B3xga+XtM9D0cLew21idW0fKhvufHgnjYqMJYJQKJQA=;
-        b=Ap/SQD2qgzd4RNCeK/Tan/YMup51mBHXgZrFVIolbvWXj+40X0rrlQxewC5Qugr24FcdLN
-        cTk3DwyFmSIy+AtJBQEsxCLlOWzXMz8J+UOaAt8LUkqoiFiHCd7BaOrXwGUVgdxKB16qcx
-        1C8NnYbT4khwEEiVXk7HGEw104xFWCA=
+        bh=DmQmip+5IO9siRqxDMXPdeE7VXRN9aesxsgPai5q4c8=;
+        b=ZKjdKPdmqjP65apqnZO+Ne1aRia3c2Ot5EYeyqp/6tzVfyq4j7I+VCiSxFy9oi3o6X5RxW
+        TuTlhT5HWblX1Q0j+RUjeTuh2aqRMT9bOrC0wRmbv264W2dT5HHMSO626cHwaeOnS6KJdf
+        KBuYE442NXneEY5fFE1Bj+D8QDhQNBo=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-121-OyVxqedSNyuzExXjvFxEJA-1; Mon, 13 Sep 2021 03:02:26 -0400
-X-MC-Unique: OyVxqedSNyuzExXjvFxEJA-1
-Received: by mail-wr1-f71.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so2111440wrq.18
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:02:26 -0700 (PDT)
+ us-mta-97-8GDhAogtOuqacgZJAgyhvQ-1; Mon, 13 Sep 2021 03:02:49 -0400
+X-MC-Unique: 8GDhAogtOuqacgZJAgyhvQ-1
+Received: by mail-wr1-f71.google.com with SMTP id u30-20020adfa19e000000b00159aba4fe42so2305631wru.9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:02:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B3xga+XtM9D0cLew21idW0fKhvufHgnjYqMJYJQKJQA=;
-        b=pqrdn2zDD2hL5fOvvW0dOiv+8ppL7+l9lRb9Ji9z7qnxK2o4ckLKdXItNxvOykxMyI
-         dinVAiYoX5zcvpqJFGMtiVppLeJ71zXMQurU7384lwzoJR+LQY/+0TbhGNepSnkRS6Mo
-         mLL8ypzJT2xftVNapEuIUZO1YcSyEWeAYTOJfSKRtMbenQf7cO44+RXeZm/3lpKU9hXy
-         mOi6tV8bqWdtMt+wOwviHsDizuz6TKRzceWct6r10mvGLJZGnB6PnU81QeW6Lq9FtZNG
-         SUPBL2nhpHqj1NGtpEuxlPWzZq1T7BG0Bqcb+1SxFgIFXV5Ifj6b6DqBL/g9yspmDBTP
-         LjmA==
-X-Gm-Message-State: AOAM5303EYXLEOzwTNpUcNrA+ldugwDin82CVTop+aBni7V/2g6TKa7q
-        71E3juDWEwf+Ra2CFkmoO5loR+MA8KMhhRz2rBDmwfDgv9snEVuncMoN9n8+3BnKRITHlBFS/tK
-        6WmwvehOrfkGFf8eeZ8QzUemN
-X-Received: by 2002:a1c:2547:: with SMTP id l68mr9485136wml.23.1631516545539;
-        Mon, 13 Sep 2021 00:02:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxD55TVvlDtRtqgJCBRla+/PTUug5ntfDs6eJ/eUl/ouRdkIPoitUu0G630NOp5JJrqUko78w==
-X-Received: by 2002:a1c:2547:: with SMTP id l68mr9485113wml.23.1631516545307;
-        Mon, 13 Sep 2021 00:02:25 -0700 (PDT)
-Received: from redhat.com ([2.55.27.174])
-        by smtp.gmail.com with ESMTPSA id v20sm6613465wra.73.2021.09.13.00.02.23
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=DmQmip+5IO9siRqxDMXPdeE7VXRN9aesxsgPai5q4c8=;
+        b=MfLkERNZRCwRnDqhFLdTFQgBNcr73HrE48AUWe9RpQOEeC23DmS3/rrqA9yzc7jSbo
+         xrLW5dwNFadftKXIg4WOqQ+GibNyYWRuFrJS1z8UHnZOBIpqHd6VtlONgI/YzBAA60GR
+         zUgQzE4O5FMnK9rFKUYixMIl6hZEIO6KYd0Tikm8shFUASmCdsr402kgTWwVfOl1yeVN
+         msOSqJjpFZSi4QbBdQx/1yK4UblEh2TAduamhHYFd1HSRWwxI3w7vJ6PPm89LxdcZWPE
+         2ayehGxOwdXPt6y9n/WrwfxZspSN+etCXPNx4dXhcfdXFyZBLNkHmAFcIwC/iNIGGeMN
+         dYZg==
+X-Gm-Message-State: AOAM531i/0QAkqkRvd3nsWBsIuIS8EH8ZgUPG+vDI1HQUjn1Ag4oNf7c
+        BmscQKpwAMUEXVgj+0s6LGFUkDBbhqYqBcf7nnE2K3qpSuIFAGPZnmw2ngnaIfyear5cNiicIWL
+        BWEW1txccBhJNYMp4d3L5C9/fM3uOeh3XUgPiMlhiDgKCCShWC9sLzPWPPMpR7SvAZzertB5bTS
+        SK
+X-Received: by 2002:a1c:ac07:: with SMTP id v7mr9398207wme.160.1631516568584;
+        Mon, 13 Sep 2021 00:02:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyytOfLrNJ/fWUKhedt0MGFoZXpWHC40WzlmnUyObEMReSAOJa9m8EX9faxmiXT98S3Xpy/Ug==
+X-Received: by 2002:a1c:ac07:: with SMTP id v7mr9398166wme.160.1631516568237;
+        Mon, 13 Sep 2021 00:02:48 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p13sm6402656wro.8.2021.09.13.00.02.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 00:02:24 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 03:02:21 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: Re: [PATCH 7/9] virtio-pci: harden INTX interrupts
-Message-ID: <20210913030134-mutt-send-email-mst@kernel.org>
-References: <20210913055353.35219-1-jasowang@redhat.com>
- <20210913055353.35219-8-jasowang@redhat.com>
- <20210913022824-mutt-send-email-mst@kernel.org>
- <CACGkMEtnmLzQDNVYnAYSsEmjjRJVDhuK6VNj56S__zU9+5-JQQ@mail.gmail.com>
- <20210913023757-mutt-send-email-mst@kernel.org>
- <CACGkMEskmq7azAP6QiNz=_nXaU6vbtr975wk3kr9H6pOGs-ZuQ@mail.gmail.com>
+        Mon, 13 Sep 2021 00:02:47 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86: Query vcpu->vcpu_idx directly and drop
+ its accessor
+In-Reply-To: <20210910183220.2397812-2-seanjc@google.com>
+References: <20210910183220.2397812-1-seanjc@google.com>
+ <20210910183220.2397812-2-seanjc@google.com>
+Date:   Mon, 13 Sep 2021 09:02:46 +0200
+Message-ID: <87fsu92c15.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEskmq7azAP6QiNz=_nXaU6vbtr975wk3kr9H6pOGs-ZuQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 02:45:38PM +0800, Jason Wang wrote:
-> On Mon, Sep 13, 2021 at 2:41 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Sep 13, 2021 at 02:36:54PM +0800, Jason Wang wrote:
-> > > On Mon, Sep 13, 2021 at 2:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Mon, Sep 13, 2021 at 01:53:51PM +0800, Jason Wang wrote:
-> > > > > This patch tries to make sure the virtio interrupt handler for INTX
-> > > > > won't be called after a reset and before virtio_device_ready(). We
-> > > > > can't use IRQF_NO_AUTOEN since we're using shared interrupt
-> > > > > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
-> > > > > intx_soft_enabled variable and toggle it during in
-> > > > > vp_disable/enable_vectors(). The INTX interrupt handler will check
-> > > > > intx_soft_enabled before processing the actual interrupt.
-> > > > >
-> > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > >
-> > > >
-> > > > Not all that excited about all the memory barriers for something
-> > > > that should be an extremely rare event (for most kernels -
-> > > > literally once per boot). Can't we do better?
-> > >
-> > > I'm not sure, but do we need to care about the slow path (INTX)?
-> >
-> > Otherwise we won't try to support this, right?
-> 
-> Sorry, what I meant is "do we need to care about the performance of
-> the slow path".
-> 
-> >
-> > > (Or do you have a better approach?)
-> > >
-> > > Thanks
-> >
-> > Don't know really, maybe rcu or whatever?
-> 
-> I am sure it's worth it to bother since it's the slow path.
-> 
-> > But let's try to be much more specific - is there anything
-> > specific we are trying to protect against here?
-> 
-> The unexpected calling of the vring or config interrupt handler. (The
-> same as MSI-X, e.g the untrusted device can send irq at any time).
-> 
-> Thanks
+Sean Christopherson <seanjc@google.com> writes:
 
-And so, does this do more than crash the guest?  Hypervisors
-already can do that ...
+> Read vcpu->vcpu_idx directly instead of bouncing through the one-line
+> wrapper, kvm_vcpu_get_idx(), and drop the wrapper.  The wrapper is a
+> remnant of the original implementation and serves no purpose; remove it
+> before it gains more users.
+>
+> Back when kvm_vcpu_get_idx() was added by commit 497d72d80a78 ("KVM: Add
+> kvm_vcpu_get_idx to get vcpu index in kvm->vcpus"), the implementation
+> was more than just a simple wrapper as vcpu->vcpu_idx did not exist and
+> retrieving the index meant walking over the vCPU array to find the given
+> vCPU.
+>
+> When vcpu_idx was introduced by commit 8750e72a79dd ("KVM: remember
+> position in kvm->vcpus array"), the helper was left behind, likely to
+> avoid extra thrash (but even then there were only two users, the original
+> arm usage having been removed at some point in the past).
+>
+> No functional change intended.
+>
+> Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/hyperv.c    | 7 +++----
+>  arch/x86/kvm/hyperv.h    | 2 +-
+>  include/linux/kvm_host.h | 5 -----
+>  3 files changed, 4 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index fe4a02715266..04dbc001f4fc 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -939,7 +939,7 @@ static int kvm_hv_vcpu_init(struct kvm_vcpu *vcpu)
+>  	for (i = 0; i < ARRAY_SIZE(hv_vcpu->stimer); i++)
+>  		stimer_init(&hv_vcpu->stimer[i], i);
+>  
+> -	hv_vcpu->vp_index = kvm_vcpu_get_idx(vcpu);
+> +	hv_vcpu->vp_index = vcpu->vcpu_idx;
+>  
+>  	return 0;
+>  }
+> @@ -1444,7 +1444,6 @@ static int kvm_hv_set_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data, bool host)
+>  	switch (msr) {
+>  	case HV_X64_MSR_VP_INDEX: {
+>  		struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
+> -		int vcpu_idx = kvm_vcpu_get_idx(vcpu);
+>  		u32 new_vp_index = (u32)data;
+>  
+>  		if (!host || new_vp_index >= KVM_MAX_VCPUS)
+> @@ -1459,9 +1458,9 @@ static int kvm_hv_set_msr(struct kvm_vcpu *vcpu, u32 msr, u64 data, bool host)
+>  		 * VP index is changing, adjust num_mismatched_vp_indexes if
+>  		 * it now matches or no longer matches vcpu_idx.
+>  		 */
+> -		if (hv_vcpu->vp_index == vcpu_idx)
+> +		if (hv_vcpu->vp_index == vcpu->vcpu_idx)
+>  			atomic_inc(&hv->num_mismatched_vp_indexes);
+> -		else if (new_vp_index == vcpu_idx)
+> +		else if (new_vp_index == vcpu->vcpu_idx)
+>  			atomic_dec(&hv->num_mismatched_vp_indexes);
+>  
+>  		hv_vcpu->vp_index = new_vp_index;
+> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+> index 730da8537d05..ed1c4e546d04 100644
+> --- a/arch/x86/kvm/hyperv.h
+> +++ b/arch/x86/kvm/hyperv.h
+> @@ -83,7 +83,7 @@ static inline u32 kvm_hv_get_vpindex(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+>  
+> -	return hv_vcpu ? hv_vcpu->vp_index : kvm_vcpu_get_idx(vcpu);
+> +	return hv_vcpu ? hv_vcpu->vp_index : vcpu->vcpu_idx;
+>  }
+>  
+>  int kvm_hv_set_msr_common(struct kvm_vcpu *vcpu, u32 msr, u64 data, bool host);
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index e4d712e9f760..31071ad821e2 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -721,11 +721,6 @@ static inline struct kvm_vcpu *kvm_get_vcpu_by_id(struct kvm *kvm, int id)
+>  	return NULL;
+>  }
+>  
+> -static inline int kvm_vcpu_get_idx(struct kvm_vcpu *vcpu)
+> -{
+> -	return vcpu->vcpu_idx;
+> -}
+> -
+>  #define kvm_for_each_memslot(memslot, slots)				\
+>  	for (memslot = &slots->memslots[0];				\
+>  	     memslot < slots->memslots + slots->used_slots; memslot++)	\
 
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-> >
-> >
-> >
-> > > >
-> > > > > ---
-> > > > >  drivers/virtio/virtio_pci_common.c | 18 ++++++++++++++++--
-> > > > >  drivers/virtio/virtio_pci_common.h |  1 +
-> > > > >  2 files changed, 17 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > > > > index 0b9523e6dd39..835197151dc1 100644
-> > > > > --- a/drivers/virtio/virtio_pci_common.c
-> > > > > +++ b/drivers/virtio/virtio_pci_common.c
-> > > > > @@ -30,8 +30,12 @@ void vp_disable_vectors(struct virtio_device *vdev)
-> > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > > > >       int i;
-> > > > >
-> > > > > -     if (vp_dev->intx_enabled)
-> > > > > +     if (vp_dev->intx_enabled) {
-> > > > > +             vp_dev->intx_soft_enabled = false;
-> > > > > +             /* ensure the vp_interrupt see this intx_soft_enabled value */
-> > > > > +             smp_wmb();
-> > > > >               synchronize_irq(vp_dev->pci_dev->irq);
-> > > > > +     }
-> > > > >
-> > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> > > > >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > > > > @@ -43,8 +47,12 @@ void vp_enable_vectors(struct virtio_device *vdev)
-> > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > > > >       int i;
-> > > > >
-> > > > > -     if (vp_dev->intx_enabled)
-> > > > > +     if (vp_dev->intx_enabled) {
-> > > > > +             vp_dev->intx_soft_enabled = true;
-> > > > > +             /* ensure the vp_interrupt see this intx_soft_enabled value */
-> > > > > +             smp_wmb();
-> > > > >               return;
-> > > > > +     }
-> > > > >
-> > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> > > > >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > > > > @@ -97,6 +105,12 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
-> > > > >       struct virtio_pci_device *vp_dev = opaque;
-> > > > >       u8 isr;
-> > > > >
-> > > > > +     if (!vp_dev->intx_soft_enabled)
-> > > > > +             return IRQ_NONE;
-> > > > > +
-> > > > > +     /* read intx_soft_enabled before read others */
-> > > > > +     smp_rmb();
-> > > > > +
-> > > > >       /* reading the ISR has the effect of also clearing it so it's very
-> > > > >        * important to save off the value. */
-> > > > >       isr = ioread8(vp_dev->isr);
-> > > > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-> > > > > index a235ce9ff6a5..3c06e0f92ee4 100644
-> > > > > --- a/drivers/virtio/virtio_pci_common.h
-> > > > > +++ b/drivers/virtio/virtio_pci_common.h
-> > > > > @@ -64,6 +64,7 @@ struct virtio_pci_device {
-> > > > >       /* MSI-X support */
-> > > > >       int msix_enabled;
-> > > > >       int intx_enabled;
-> > > > > +     bool intx_soft_enabled;
-> > > > >       cpumask_var_t *msix_affinity_masks;
-> > > > >       /* Name strings for interrupts. This size should be enough,
-> > > > >        * and I'm too lazy to allocate each name separately. */
-> > > > > --
-> > > > > 2.25.1
-> > > >
-> >
+-- 
+Vitaly
 
