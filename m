@@ -2,127 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD63408488
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8873540848C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237241AbhIMGOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237333AbhIMGOM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:14:12 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166C2C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=sqr8wYM7BeNj0Y/QdcRcYmKG3RoaNCFM/D2ySX9lLbs=; b=P/zwUPdqSEY48+fdIAlnQbP+qj
-        cgVcT5824TqEHcX0N8OgLjuu/0oSaFjdgDqU1q/jt92m+ZYZzZG1uGzqLsh4cmVzftVzsAudRZVRt
-        ruCicNWlehNB7v8JoWU01AFL2P3PndFTsCTkaCI29zYkAe+SWPDPqqXMCxdfahHIz0g9Gv6yv6yW8
-        lOE+Clk4AWZwzHgEK60HWHzI8twflo+0E6nXK9a7CdRpSmvWB382SJNpYHqEcDmcHThYlswCu39Mn
-        UN7vMR0D5qgoQxRhWB5W+mHYuyvVs+b0EBm+hn1qt06WbfF1615bb6w8LD30BfyUS2WYuABM2Z5Pv
-        OI5IP9Eg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPfD4-000Pu0-DO; Mon, 13 Sep 2021 06:12:54 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Subject: [PATCH] um: registers: rename function names to avoid conflicts and build problems
-Date:   Sun, 12 Sep 2021 23:12:52 -0700
-Message-Id: <20210913061252.15582-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S237256AbhIMGRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:17:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:37667 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237174AbhIMGRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 02:17:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631513758; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=pREX3LGwYAggCgYEPmLhKYdIv1mP8IQUL0WMH1SUxdA=; b=wLMsUZ3UShA1TC05KHGw6gSEM1w+5NzGCxyEe60NY43Mg4DjQo8w3VI7tUVJjBH+tpnSBfh7
+ JpNC6f7v7QO6xULA9TBZyE3AYU/vniAO4t50bnPyeTpMdODRVoGmZeNCafqgn5ICWaFbW9A3
+ i6kRZUzVBec0bRbGUrFR8TpydUU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 613eec9dd914b051822d1fd4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 06:15:57
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A0E48C43460; Mon, 13 Sep 2021 06:15:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.12] (unknown [59.89.228.88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEDFAC4338F;
+        Mon, 13 Sep 2021 06:15:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CEDFAC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
+ <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
+ <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
+ <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
+ <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
+ <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
+ <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
+ <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org>
+ <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
+ <YTgeIuwumPoR9ZTE@ripper>
+ <CAF6AEGt2f16=WWpKgGiWw1OJLrWMSunzrm853H+mGxPQuf2Xug@mail.gmail.com>
+ <de162479-c4cb-e8b7-6044-e7ccd3cf29f6@linaro.org>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <b385ee2c-fd3c-86e7-c0a5-c3d5bfc59a17@codeaurora.org>
+Date:   Mon, 13 Sep 2021 11:45:50 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <de162479-c4cb-e8b7-6044-e7ccd3cf29f6@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function names init_registers() and restore_registers() are used
-in several net/ethernet/ and gpu/drm/ drivers for other purposes (not
-calls to UML functions), so rename them.
+On 9/10/2021 11:04 PM, Caleb Connolly wrote:
+> 
+> 
+> On 10/09/2021 18:18, Rob Clark wrote:
+>> On Tue, Sep 7, 2021 at 7:20 PM Bjorn Andersson
+>> <bjorn.andersson@linaro.org> wrote:
+>>>
+>>> On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
+>>>
+>>>> On 8/9/2021 9:48 PM, Caleb Connolly wrote:
+>>>>>
+>>>>>
+>>>>> On 09/08/2021 17:12, Rob Clark wrote:
+>>>>>> On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
+>>>>>> <akhilpo@codeaurora.org> wrote:
+>>> [..]
+>>>>>>> I am a bit confused. We don't define a power domain for gpu in dt,
+>>>>>>> correct? Then what exactly set_opp do here? Do you think this 
+>>>>>>> usleep is
+>>>>>>> what is helping here somehow to mask the issue?
+>>>>> The power domains (for cx and gx) are defined in the GMU DT, the 
+>>>>> OPPs in
+>>>>> the GPU DT. For the sake of simplicity I'll refer to the lowest
+>>>>> frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
+>>>>> the "min" state, and the highest frequency (710000000) and OPP level
+>>>>> (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are 
+>>>>> defined in
+>>>>> sdm845.dtsi under the gpu node.
+>>>>>
+>>>>> The new devfreq behaviour unmasks what I think is a driver bug, it
+>>>>> inadvertently puts much more strain on the GPU regulators than they
+>>>>> usually get. With the new behaviour the GPU jumps from it's min 
+>>>>> state to
+>>>>> the max state and back again extremely rapidly under workloads as 
+>>>>> small
+>>>>> as refreshing UI. Where previously the GPU would rarely if ever go 
+>>>>> above
+>>>>> 342MHz when interacting with the device, it now jumps between min and
+>>>>> max many times per second.
+>>>>>
+>>>>> If my understanding is correct, the current implementation of the GMU
+>>>>> set freq is the following:
+>>>>>    - Get OPP for frequency to set
+>>>>>    - Push the frequency to the GMU - immediately updating the core 
+>>>>> clock
+>>>>>    - Call dev_pm_opp_set_opp() which triggers a notify chain, this 
+>>>>> winds
+>>>>> up somewhere in power management code and causes the gx regulator 
+>>>>> level
+>>>>> to be updated
+>>>>
+>>>> Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing 
+>>>> else. We
+>>>> were using a different api earlier which got deprecated -
+>>>> dev_pm_opp_set_bw().
+>>>>
+>>>
+>>> On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
+>>> I'm lucky I managed to hit a few keys before it crashes, so I spent a
+>>> few hours looking into this as well...
+>>>
+>>> As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
+>>> The opp-level is just there for show and isn't used by anything, at
+>>> least not on 845.
+>>>
+>>> Further more, I'm missing something in my tree, so the interconnect
+>>> doesn't hit sync_state, and as such we're not actually scaling the
+>>> buses. So the problem is not that Linux doesn't turn on the buses in
+>>> time.
+>>>
+>>> So I suspect that the "AHB bus error" isn't saying that we turned off
+>>> the bus, but rather that the GPU becomes unstable or something of that
+>>> sort.
+>>>
+>>>
+>>> Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
+>>> Aquarium for 20 minutes without a problem. I then switched the gpu
+>>> devfreq governor to "userspace" and ran the following:
+>>>
+>>> while true; do
+>>>    echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+>>>    echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
+>>> done
+>>>
+>>> It took 19 iterations of this loop to crash the GPU.
+>>
+>> I assume you still had aquarium running, to keep the gpu awake while
+>> you ran that loop?
+>>
+>> Fwiw, I modified this slightly to match sc7180's min/max gpu freq and
+>> could not trigger any issue.. interestingly sc7180 has a lower min
+>> freq (180) and higher max freq (800) so it was toggling over a wider
+>> freq range.  I also tried on a device that  had the higher 825MHz opp
+>> (since I noticed that was the only opp that used
+>> RPMH_REGULATOR_LEVEL_TURBO_L1 and wanted to rule that out), but could
+>> not reproduce.
+>>
+>> I guess a630 (sdm845) should have higher power draw (it is 2x # of
+>> shader cores and 2x GMEM size, but lower max freq).. the question is,
+>> is this the reason we see this on sdm845 and not sc7180?  Or is there
+>> some other difference.  On the gpu side of this, they are both closely
+>> related (ie. the same "sub-generation" of a6xx, same gmu fw, etc)..
+>> I'm less sure about the other parts (icc, rpmh, etc)
+> 
+> My guess would be power draw, nobody has mentioned this yet but I've 
+> realised that the vdd_gfx rail is powered by a buck converter, which 
+> could explain a lot of the symptoms.
+> 
+> Buck converters depend on high frequency switching and inductors to 
+> work, this inherently leads to some lag time when changing voltages, and 
+> also means that the behaviour of the regulator is defined in part by how 
+> much current is being drawn. Wikipedia has a pretty good explanation: 
+> https://en.wikipedia.org/wiki/Buck_converter
+> 
+> At the best of times these regulators have a known voltage ripple, when 
+> under load and when rapidly switching voltages this will get a lot worse.
+> 
+> Someone with an oscilloscope and schematics could probe the rail and 
+> probably see exactly what's going on when the GPU crashes. Because of 
+> the lag time in the regulator changing voltage, it might be 
+> undershooting whilst the GPU is trying to clock up and draw more current 
+> - causing instability and crashes.
 
-This fixes multiple build errors.
+Both of you are correct. The GPU is very similar including the GMU (we 
+have same fw for both), except the GBIF block. As far as I am aware, the 
+non-gpu blocks within SoC should be similar except the configs.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
----
- arch/um/include/shared/registers.h |    4 ++--
- arch/um/os-Linux/registers.c       |    4 ++--
- arch/um/os-Linux/start_up.c        |    2 +-
- arch/x86/um/syscalls_64.c          |    3 ++-
- 4 files changed, 7 insertions(+), 6 deletions(-)
+And yes, for these sort of issues where we suspect a power issue, gx 
+rail should be probed for droops using a very high resolution 
+oscilloscopes (these droops might last less than 1us).
 
---- lnx-515-rc1.orig/arch/um/include/shared/registers.h
-+++ lnx-515-rc1/arch/um/include/shared/registers.h
-@@ -16,8 +16,8 @@ extern int restore_fp_registers(int pid,
- extern int save_fpx_registers(int pid, unsigned long *fp_regs);
- extern int restore_fpx_registers(int pid, unsigned long *fp_regs);
- extern int save_registers(int pid, struct uml_pt_regs *regs);
--extern int restore_registers(int pid, struct uml_pt_regs *regs);
--extern int init_registers(int pid);
-+extern int restore_pid_registers(int pid, struct uml_pt_regs *regs);
-+extern int init_pid_registers(int pid);
- extern void get_safe_registers(unsigned long *regs, unsigned long *fp_regs);
- extern unsigned long get_thread_reg(int reg, jmp_buf *buf);
- extern int get_fp_registers(int pid, unsigned long *regs);
---- lnx-515-rc1.orig/arch/um/os-Linux/registers.c
-+++ lnx-515-rc1/arch/um/os-Linux/registers.c
-@@ -21,7 +21,7 @@ int save_registers(int pid, struct uml_p
- 	return 0;
- }
- 
--int restore_registers(int pid, struct uml_pt_regs *regs)
-+int restore_pid_registers(int pid, struct uml_pt_regs *regs)
- {
- 	int err;
- 
-@@ -36,7 +36,7 @@ int restore_registers(int pid, struct um
- static unsigned long exec_regs[MAX_REG_NR];
- static unsigned long exec_fp_regs[FP_SIZE];
- 
--int init_registers(int pid)
-+int init_pid_registers(int pid)
- {
- 	int err;
- 
---- lnx-515-rc1.orig/arch/um/os-Linux/start_up.c
-+++ lnx-515-rc1/arch/um/os-Linux/start_up.c
-@@ -368,7 +368,7 @@ void __init os_early_checks(void)
- 	check_tmpexec();
- 
- 	pid = start_ptraced_child();
--	if (init_registers(pid))
-+	if (init_pid_registers(pid))
- 		fatal("Failed to initialize default registers");
- 	stop_ptraced_child(pid, 1, 1);
- }
---- lnx-515-rc1.orig/arch/x86/um/syscalls_64.c
-+++ lnx-515-rc1/arch/x86/um/syscalls_64.c
-@@ -11,6 +11,7 @@
- #include <linux/uaccess.h>
- #include <asm/prctl.h> /* XXX This should get the constants from libc */
- #include <os.h>
-+#include <registers.h>
- 
- long arch_prctl(struct task_struct *task, int option,
- 		unsigned long __user *arg2)
-@@ -35,7 +36,7 @@ long arch_prctl(struct task_struct *task
- 	switch (option) {
- 	case ARCH_SET_FS:
- 	case ARCH_SET_GS:
--		ret = restore_registers(pid, &current->thread.regs.regs);
-+		ret = restore_pid_registers(pid, &current->thread.regs.regs);
- 		if (ret)
- 			return ret;
- 		break;
+I am aware of only Dragonboard that is still alive from QC perspective. 
+Can someone report this issue to DB support team as it is fairly easy to 
+reproduce?
+
+-Akhil.
+
+>>
+>> BR,
+>> -R
+>>
+>>> So the problem doesn't seem to be Rob's change, it's just that prior to
+>>> it the chance to hitting it is way lower. Question is still what it is
+>>> that we're triggering.
+>>>
+>>> Regards,
+>>> Bjorn
+> 
+
