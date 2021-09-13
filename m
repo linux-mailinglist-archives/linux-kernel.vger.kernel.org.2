@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF24D4090C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0FB4090C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343547AbhIMNzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:55:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21164 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242516AbhIMNwS (ORCPT
+        id S243905AbhIMNzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:55:32 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:40337 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244553AbhIMNxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:52:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631541061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aBjIIvcb5dunWtRsVviIpL9DBOBpPMCvEHR7NyeCpew=;
-        b=R0ZsdT0X/e6yWi8hCQWcVjAFz8l2CrvK3wqJ78Tb71MEtKPNYNW0OAMVEMcMH3fgG83O2j
-        0knf+w5c5WdnZQHMcc1QZlQRIimVR9PEAshGtaPm6WVqDr5L/YfoI17EMBbKFiOwb7fNDw
-        eOKhxJJqrQgrg7iKv3SINShLIRQ52Qw=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-SQnitZwrMSCZ5aSgZsu2IA-1; Mon, 13 Sep 2021 09:50:42 -0400
-X-MC-Unique: SQnitZwrMSCZ5aSgZsu2IA-1
-Received: by mail-yb1-f199.google.com with SMTP id v66-20020a25abc8000000b0059ef57c3386so13044845ybi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:50:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aBjIIvcb5dunWtRsVviIpL9DBOBpPMCvEHR7NyeCpew=;
-        b=DsnW4cvtA6xpIgt4s0DkHMO05+dSqRhM6TTgI3OsHhnsVgLCyXRvhSB6V7Usrbkbfr
-         LvMx59peZQERA66c+7ypvxBfKNC7AhP4n5HFXDPfLo1ZJWusRRlbKqYdqrE5zZ4jPP4p
-         f2MYTwXrw44ZmmzZx9os5CF2sElZgVNoHgBLd/m+x3HdEdrI+Wp0SauLhL2wdEw4LlXe
-         tsmn+D81u3a3y+mRuh7n+W0v8wHjrYMp/g8Ek0hrGyAREzl7eozs1GIgUWxWwKFUBNuv
-         AefIZpsJ07r/pb57xoeBwQyVYPYiyYuV2ToVzvSGxTLX030Agb37A466P+tUNQUd+yWb
-         whzw==
-X-Gm-Message-State: AOAM5331XhlxsyOMrh7UCZN+vNJlEBs1MiM2536q0ftGZQgVg3yxvw05
-        Azeamo8NyZy1E/b4hGbJOPb/9qZxhSKg6fsoZXZGDEOjjMc/8GqQVO8Dp5c9BOnfuKd+zBrVl0I
-        n2y3BR4SYVhcwhN+0XtuwAfStWZuOMeKQXUpaPjxy
-X-Received: by 2002:a25:6913:: with SMTP id e19mr15482530ybc.25.1631541032785;
-        Mon, 13 Sep 2021 06:50:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxaynW83umBqEPokVSSibnO6NtuWoQhuE0RyA2lBp5gkMZ2HjvBKRYnpKQf1MqN054h1RGdfDAUtNC2myJBoIU=
-X-Received: by 2002:a25:6913:: with SMTP id e19mr15482493ybc.25.1631541032487;
- Mon, 13 Sep 2021 06:50:32 -0700 (PDT)
+        Mon, 13 Sep 2021 09:53:00 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MBUZr-1mCtG53Tmp-00CveN for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021
+ 15:51:42 +0200
+Received: by mail-wm1-f46.google.com with SMTP id 196-20020a1c04cd000000b002fa489ffe1fso7035323wme.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:51:42 -0700 (PDT)
+X-Gm-Message-State: AOAM532ayd+HqLywpRQ9YyBoUcRbBdbm6VdTYJULrweLog9q6QCEaO5R
+        vu9L/AaUIodMGb2EOqW2c6ON3df8MSeURUE9zbM=
+X-Google-Smtp-Source: ABdhPJxdXwJ/q0NvYGhCmKITlhCmrj72X71DkFBLVmOSPolza9CFfWNG5FqWwHIu1iWFObsqtN4fNwgoD4+6N+66mTs=
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr11490099wmc.98.1631541102470;
+ Mon, 13 Sep 2021 06:51:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210912122234.GA22469@asgard.redhat.com> <CAFqZXNtmN9827MQ0aX7ZcUia5amXuZWppb-9-ySxVP0QBy=O8Q@mail.gmail.com>
- <20210913102316.GA30886@asgard.redhat.com>
-In-Reply-To: <20210913102316.GA30886@asgard.redhat.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Mon, 13 Sep 2021 15:50:21 +0200
-Message-ID: <CAFqZXNsp84kFLDfJfdu5fboB8vMm85FU7BDDjpiqeiJ2WSjWAg@mail.gmail.com>
-Subject: Re: [PATCH v2] include/uapi/linux/xfrm.h: Fix XFRM_MSG_MAPPING ABI breakage
-To:     Eugene Syromiatnikov <esyr@redhat.com>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Antony Antony <antony.antony@secunet.com>,
-        Christian Langrock <christian.langrock@secunet.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        "Dmitry V. Levin" <ldv@strace.io>,
-        Linux API <linux-api@vger.kernel.org>
+References: <202109040635.GB2sRCvY-lkp@intel.com> <6f0aad67-7c3e-95c5-e4b4-d563e180c6ee@infradead.org>
+ <CAMuHMdWaoXOxC=wqUfC-9UTN+0QedGLqvZCr3rJjYmM2K9SZHQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWaoXOxC=wqUfC-9UTN+0QedGLqvZCr3rJjYmM2K9SZHQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 13 Sep 2021 15:51:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3mMH8s3tzeUhO4Z22-YYzRv5mExj=yY9hBwkGoMriSpg@mail.gmail.com>
+Message-ID: <CAK8P3a3mMH8s3tzeUhO4Z22-YYzRv5mExj=yY9hBwkGoMriSpg@mail.gmail.com>
+Subject: Re: sound/isa/es1688/es1688_lib.c:384:79: error: 'DMA_AUTOINIT' undeclared
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:PNzAlKO/LQdqwQz5qUgxrxu+tf5VywjKZWfFFvGWO4iWWoLsL4N
+ OMJox3Il0hn1E+brm33GixSN/TC4jlJtU6/RkFNJWohSCq21COi0P0giZP3awTFRd/PN3HS
+ Yg2pt7QroJarhFcAbFFTdwiDZyE0vPh9BIbOc9ASREmQV6It96cEU6mNPFBld1TtIG+5f2K
+ uN4lhfEmjHD67Dce7YY8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fPeMtRJNRD8=:uXl6z47X7MZUrP5PYym59L
+ xybJ0FIG4PM16oAsWbNXFc9+1mGehNrvf0BiHFPnSyptYtff4FaxBvw908JeUP1rUgKH1PcnD
+ PeUM5hGfh3bGLA8GwsK5oRgahXej/9famptY0YCR04+C30QOScBMtH2K2PTJGt8ic6IiX2hPs
+ HakBntRJk1gEbrQyj/Kj6h82Yj3lNOyYRH0pUjKigxeFQNdBazouOSHB2KUjOi2WtwuastvKV
+ pQEV/SvLcmNM1q6Kf62QAhEZWzEJzrB3BJM+h+AYaL0SO1cxVe3u5zqQ7LNSmbkQW6/EjF70f
+ WJ9ISUKDWrGaxOjM/kEUe5EJgN6z3HeRlfrFjm3FOvmYJQ8yxFmfQMsPIibl192qUvX5Fd8bk
+ 3OS4PIo85T1UEI8Q1jZ+39US18uZ0rv1YEiQBLeKXpPzayAp1aqJva74nOZ/wpGz4daCF17fV
+ CKL4TskaR5rAO83E+nOOxGZOWtRlQbAUXH2H3hfh0nee7PjeNVCdzl3CZQL+0MfdNvuj8sksf
+ wqQwQtzBKTRpxJpOhHhHug1TAzBT0O6WFdN2UYbHMEd29I8VTiuOz/GWS2220Uzc5tKpDGXg2
+ sYY+EwZSZJW3UlGcDwqXM1LHObRp5dajFuhAuX4CiTG/Trr8Om96QIohFrUH12YpeVTUyz2To
+ UQJpGSu+oNjDvEeZQhsINMyqqbTLS4FnoPFaoBkW6OJia6rnMdKNbElBeuHlAIguDbz3ScYfj
+ 61j+2ZkibjqnLp2ZILUJ4/Q6adv5coe4BCnJ8k9utzSAn2aOvORO9pq3cxHrzF3UxQ9BAOY+L
+ 1ShyK7+VPm7nv9ORxTuc8mdhEdOufb7D2sSI+jqD6y4boXoH6AcD0LJ4hfYcSHb+eBATRiKf2
+ dNRwWSz2Da4fdhGCWMBg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:23 PM Eugene Syromiatnikov <esyr@redhat.com> wro=
-te:
-> On Mon, Sep 13, 2021 at 09:16:39AM +0200, Ondrej Mosnacek wrote:
-> > Perhaps it would be a good idea to put a comment here to make it less
-> > likely that this repeats in the future. Something like:
-> >
-> > /* IMPORTANT: Only insert new entries right above this line, otherwise
-> > you break ABI! */
+On Mon, Sep 13, 2021 at 9:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Well, this statement is true for (almost) every UAPI-exposed enum, and
-> netlink is vast and relies on enums heavily.  I think it is already
-> mentioned somewhere in the documentation, and in the end it falls on the
-> shoulders of the maintainers=E2=80=94to pay additional attention to UAPI =
-changes.
+> > CONFIG_ISA_DMA_API=y
+> > but CONFIG_ISA is not set.
+> > (Yes, this is ColdFire.)
+> >
+> > menuconfig SND_ISA
+> >         bool "ISA sound devices"
+> >         depends on ISA || COMPILE_TEST
+> >         depends on ISA_DMA_API
+> >         default y
+> >
+> > I suppose that we could drop the "|| COMPILE_TEST" part.
+>
+> Or "... || (COMPILE_TEST && !M68K)"?
 
-Ok, fair enough.
+I think both approaches still fail for Q40 and AMIGA_PCMCIA,
+which also set CONFIG_ISA, but still don't provide that
+symbol.
 
---=20
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+AFAICT, we instead need
 
+          depends on ISA_DMA_API && !M68K
+
+The COMPILE_TEST can stay then, though it would
+not be a huge loss to remove that.
+
+       Arnd
