@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351D440953C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC8C40952A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346575AbhIMOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:39:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
+        id S1345320AbhIMOi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:38:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345912AbhIMOdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:33:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 352A8613A2;
-        Mon, 13 Sep 2021 13:52:37 +0000 (UTC)
+        id S1346558AbhIMOdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:33:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C516C617E5;
+        Mon, 13 Sep 2021 13:52:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541157;
-        bh=ucCniVMdD/6vjqJxMo7Q7CKY1eBkbk88HSe1uWIrn5o=;
+        s=korg; t=1631541160;
+        bh=gv5N2Mev9qyZpg7l6F+Ly/x459Xf+FFA9ha7rJSKSC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IXHvNBFIl0hMygysOdDSnrL6C7dtWPOCezqrgBXzAX6GHudlqxVItUr6JKvUg9zdQ
-         Gf8IyPwyIVzE8KjsIl+E2zZVJLynXMuPMLKEmxZhSWvQ1piz9v0zZdc6cwNzc7v5wT
-         IACl4K8kkZNsiGccD23rDYNWIZZ8L3hXcMJVzKyk=
+        b=lXQ7bMDFghC3AypnBptx+g8Z7d36YQMyJC7vUkWJ38qxkPVxXMvNli8YBmSQPVbJL
+         RmdVF6b7C4lldDJUmQTpMsfllQFOk9WI8HAnICQGU06ma0m0/+i4FmIFfUqog5tJdM
+         k6nHxe9Vc1Zl+HrFy89IIK3cqul6SuURXi5M/SRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
+        stable@vger.kernel.org,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 186/334] drm/msm/dp: update is_connected status base on sink count at dp_pm_resume()
-Date:   Mon, 13 Sep 2021 15:14:00 +0200
-Message-Id: <20210913131119.644873443@linuxfoundation.org>
+Subject: [PATCH 5.14 187/334] drm/msm/dpu: make dpu_hw_ctl_clear_all_blendstages clear necessary LMs
+Date:   Mon, 13 Sep 2021 15:14:01 +0200
+Message-Id: <20210913131119.678694194@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -42,78 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuogee Hsieh <khsieh@codeaurora.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit e8a767e04dbc7b201cb17ab99dca723a3488b6d4 ]
+[ Upstream commit a41cdb693595ae1904dd793fc15d6954f4295e27 ]
 
-Currently at dp_pm_resume() is_connected state is decided base on hpd connection
-status only. This will put is_connected in wrongly "true" state at the scenario
-that dongle attached to DUT but without hmdi cable connecting to it. Fix this
-problem by adding read sink count from dongle and decided is_connected state base
-on both sink count and hpd connection status.
+dpu_hw_ctl_clear_all_blendstages() clears settings for the few first LMs
+instead of mixers actually used for the CTL. Change it to clear
+necessary data, using provided mixer ids.
 
-Changes in v2:
--- remove dp_get_sink_count() cand call drm_dp_read_sink_count()
-
-Changes in v3:
--- delete status local variable from dp_pm_resume()
-
-Changes in v4:
--- delete un necessary comment at dp_pm_resume()
-
-Fixes: d9aa6571b28ba ("drm/msm/dp: check sink_count before update is_connected status")
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-Link: https://lore.kernel.org/r/1628092261-32346-1-git-send-email-khsieh@codeaurora.org
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210704230519.4081467-1-dmitry.baryshkov@linaro.org
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dp/dp_display.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 867388a399ad..8aca93309c1c 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -1286,7 +1286,7 @@ static int dp_pm_resume(struct device *dev)
- 	struct platform_device *pdev = to_platform_device(dev);
- 	struct msm_dp *dp_display = platform_get_drvdata(pdev);
- 	struct dp_display_private *dp;
--	u32 status;
-+	int sink_count = 0;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+index f8a74f6cdc4c..64740ddb983e 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+@@ -345,10 +345,12 @@ static void dpu_hw_ctl_clear_all_blendstages(struct dpu_hw_ctl *ctx)
+ 	int i;
  
- 	dp = container_of(dp_display, struct dp_display_private, dp_display);
- 
-@@ -1300,14 +1300,25 @@ static int dp_pm_resume(struct device *dev)
- 
- 	dp_catalog_ctrl_hpd_config(dp->catalog);
- 
--	status = dp_catalog_link_is_connected(dp->catalog);
-+	/*
-+	 * set sink to normal operation mode -- D0
-+	 * before dpcd read
-+	 */
-+	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+ 	for (i = 0; i < ctx->mixer_count; i++) {
+-		DPU_REG_WRITE(c, CTL_LAYER(LM_0 + i), 0);
+-		DPU_REG_WRITE(c, CTL_LAYER_EXT(LM_0 + i), 0);
+-		DPU_REG_WRITE(c, CTL_LAYER_EXT2(LM_0 + i), 0);
+-		DPU_REG_WRITE(c, CTL_LAYER_EXT3(LM_0 + i), 0);
++		enum dpu_lm mixer_id = ctx->mixer_hw_caps[i].id;
 +
-+	if (dp_catalog_link_is_connected(dp->catalog)) {
-+		sink_count = drm_dp_read_sink_count(dp->aux);
-+		if (sink_count < 0)
-+			sink_count = 0;
-+	}
++		DPU_REG_WRITE(c, CTL_LAYER(mixer_id), 0);
++		DPU_REG_WRITE(c, CTL_LAYER_EXT(mixer_id), 0);
++		DPU_REG_WRITE(c, CTL_LAYER_EXT2(mixer_id), 0);
++		DPU_REG_WRITE(c, CTL_LAYER_EXT3(mixer_id), 0);
+ 	}
  
-+	dp->link->sink_count = sink_count;
- 	/*
- 	 * can not declared display is connected unless
- 	 * HDMI cable is plugged in and sink_count of
- 	 * dongle become 1
- 	 */
--	if (status && dp->link->sink_count)
-+	if (dp->link->sink_count)
- 		dp->dp_display.is_connected = true;
- 	else
- 		dp->dp_display.is_connected = false;
+ 	DPU_REG_WRITE(c, CTL_FETCH_PIPE_ACTIVE, 0);
 -- 
 2.30.2
 
