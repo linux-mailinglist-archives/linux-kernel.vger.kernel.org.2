@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0824092AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D240640959D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344168AbhIMOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:14:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
+        id S1345483AbhIMOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344062AbhIMOLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:11:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01A8361A8E;
-        Mon, 13 Sep 2021 13:42:02 +0000 (UTC)
+        id S1344253AbhIMOiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:38:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA31E6112E;
+        Mon, 13 Sep 2021 13:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540523;
-        bh=d69G92w1gNBSlc7SiIYfUlecn3jjswFDR4nFNoQwg3c=;
+        s=korg; t=1631541283;
+        bh=ZJe7jnB1GWaJqSwLnCr04Nl2/MgqFHUp/pe6OZWi7sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hhNOM5+ok0oIi90kpq8iSuSTSD07/4CYeoH+pwFEUmCjbGrOexiYhjiGb2DMfthoO
-         C9o/9lfDpiEAmuh63riFbeRtdIcXWMuIU3CzlnugN68uJ9MLguhbwCTQ9zstUxVEe2
-         MYth4yLipRMbI+iWUw/qg8yzZ+r2YQWcdxYb6GLE=
+        b=nUh3Ff1XMbGor8AiYdb/ueCqEoi/zkcPHIUojx2a+mbVGCCgHK07ShTrclOY3Tja3
+         02v3cX7Xzi3EJuvBqM/F987vtXhsPoljNdOWHkT4RKh9EXCcHMKig8wY2kax7Zn7Vl
+         PAK4SoGaJAqD9vJo13TcsnMNwCg5ewGotOY+xYrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 227/300] mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
-Date:   Mon, 13 Sep 2021 15:14:48 +0200
-Message-Id: <20210913131117.020657771@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 235/334] i2c: hix5hd2: fix IRQ check
+Date:   Mon, 13 Sep 2021 15:14:49 +0200
+Message-Id: <20210913131121.362071914@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit c3ff0189d3bc9c03845fe37472c140f0fefd0c79 ]
+[ Upstream commit f9b459c2ba5edfe247e86b45ad5dea8da542f3ea ]
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+Iff platform_get_irq() returns 0, the driver's probe() method will return 0
+early (as if the method's call was successful).  Let's consider IRQ0 valid
+for simplicity -- devm_request_irq() can always override that decision...
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
-
-For dw_mmc, this is probably not currently an issue but is still good to
-fix though.
-
-Fixes: 3fc7eaef44db ("mmc: dw_mmc: Add external dma interface support")
-Cc: Shawn Lin <shawn.lin@rock-chips.com>
-Cc: Jaehoon Chung <jh80.chung@samsung.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081644.19353-2-tony@atomide.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 15ef27756b23 ("i2c: hix5hd2: add i2c controller driver")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/dw_mmc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/i2c/busses/i2c-hix5hd2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-index c3229d8c7041..33cb70aa02aa 100644
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -782,6 +782,7 @@ static int dw_mci_edmac_start_dma(struct dw_mci *host,
- 	int ret = 0;
+diff --git a/drivers/i2c/busses/i2c-hix5hd2.c b/drivers/i2c/busses/i2c-hix5hd2.c
+index aa00ba8bcb70..61ae58f57047 100644
+--- a/drivers/i2c/busses/i2c-hix5hd2.c
++++ b/drivers/i2c/busses/i2c-hix5hd2.c
+@@ -413,7 +413,7 @@ static int hix5hd2_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->regs);
  
- 	/* Set external dma config: burst size, burst width */
-+	memset(&cfg, 0, sizeof(cfg));
- 	cfg.dst_addr = host->phy_regs + fifo_offset;
- 	cfg.src_addr = cfg.dst_addr;
- 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
++	if (irq < 0)
+ 		return irq;
+ 
+ 	priv->clk = devm_clk_get(&pdev->dev, NULL);
 -- 
 2.30.2
 
