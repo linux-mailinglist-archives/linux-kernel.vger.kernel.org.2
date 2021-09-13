@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C200F40A195
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE93140A1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242840AbhIMX3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:29:44 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:40522 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240144AbhIMX3l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:29:41 -0400
-Received: by mail-io1-f69.google.com with SMTP id i26-20020a5e851a000000b005bb55343e9bso15014098ioj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:28:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zoiyz9yumUb2OwDpSUzdanvEqwi+zK0yBV9E9brBk3c=;
-        b=TODSWLxAT23eySrHUKCEZ+xJI12+8dLiUR6WEuJyqFEb6M49haFexZABz+o6Jqkb3p
-         lnJ3+myWsIukA22RnV+tH1EJVTvc14LbDZJsxPmJSX57SgTukVi0wEFx8A02tgw5ZhKU
-         2ERz7HfEH973W48lH/16PbmwC39MFUDs3rFGLitwObrKLiI0kWXgSUJNFxvxlYHRZhwm
-         UNdCYoQdjr9uzJQVJLOZiXBl1tyghkraEEivmz+q0d3vu2GogPxfvgfD5WTDJUhKMxKt
-         vSUUaQvqVPsM56Jj8pTv6k+Gyw1ax+09+vKwhnffPpLHuj4E9VSN9dcf4bSJ8ZzRtnjV
-         tOSA==
-X-Gm-Message-State: AOAM5332I2ozEtoaXjDodmXA6CGkmwfM12DjTab/ez/qUnAXz6SmcBPO
-        /jzUyZ6owODeBTkuQJUuCVdyt1IBxFYCP1nyri7hKWzSQoPb
-X-Google-Smtp-Source: ABdhPJxq8rbwHAG7zj/ETr+Yck5PBsq65xMiCa044uwkatUumATKS1ZpToFPv45jns8Qhr7aUYOjfD52RGCgkvDjpsqprS85LWog
+        id S244147AbhIMXnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:43:14 -0400
+Received: from mail.i8u.org ([75.148.87.25]:49875 "EHLO chris.i8u.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236079AbhIMXnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 19:43:12 -0400
+X-Greylist: delayed 545 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 19:43:12 EDT
+Received: by chris.i8u.org (Postfix, from userid 1000)
+        id DDF6916C958B; Mon, 13 Sep 2021 16:32:39 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by chris.i8u.org (Postfix) with ESMTP id DD63E16C92D2;
+        Mon, 13 Sep 2021 16:32:39 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:32:39 -0700 (PDT)
+From:   Hisashi T Fujinaka <htodd@twofifty.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Dave Jones <davej@codemonkey.org.uk>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        todd.fujinaka@intel.com
+Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
+In-Reply-To: <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com>
+Message-ID: <b4b543d4-c0c5-3c56-46b7-e17ec579edcc@twofifty.com>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com> <20210913141818.GA27911@codemonkey.org.uk> <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com> <20210913201519.GA15726@codemonkey.org.uk> <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
+ <20210913203234.GA6762@codemonkey.org.uk> <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b0d1:: with SMTP id w17mr11996507jah.46.1631575704786;
- Mon, 13 Sep 2021 16:28:24 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 16:28:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ee28405cbe8d287@google.com>
-Subject: [syzbot] memory leak in blk_iolatency_init
-From:   syzbot <syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 13 Sep 2021, Heiner Kallweit wrote:
 
-syzbot found the following issue on:
+> On 13.09.2021 22:32, Dave Jones wrote:
+>
+> + Jesse and Tony as Intel NIC maintainers
+>
+>> On Mon, Sep 13, 2021 at 10:22:57PM +0200, Heiner Kallweit wrote:
+>>
+>> >> This didn't help I'm afraid :(
+>> >> It changed the VPD warning, but that's about it...
+>> >>
+>> >> [  184.235496] pci 0000:02:00.0: calling  quirk_blacklist_vpd+0x0/0x22 @ 1
+>> >> [  184.235499] pci 0000:02:00.0: [Firmware Bug]: disabling VPD access (can't determine size of non-standard VPD format)
+>> >> [  184.235501] pci 0000:02:00.0: quirk_blacklist_vpd+0x0/0x22 took 0 usecs
+>> >>
+>> > With this patch there's no VPD access to this device any longer. So this can't be
+>> > the root cause. Do you have any other PCI device that has VPD capability?
+>> > -> Capabilities: [...] Vital Product Data
+>>
+>>
+>> 01:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
+>>         Subsystem: Device 1dcf:030a
+>> 	...
+>> 	        Capabilities: [e0] Vital Product Data
+>>                 Unknown small resource type 06, will not decode more.
+>>
+>
+> When searching I found the same symptom of invalid VPD data for 82599EB.
+> Do these adapters have non-VPD data in VPD address space? Or is the actual
+> VPD data at another offset than 0? I know that few Chelsio devices have
+> such a non-standard VPD structure.
+>
+>>
+>> I'll add that to the quirk list and see if that helps.
+>>
+>> 	Dave
+>>
+> Heiner
 
-HEAD commit:    a3fa7a101dcf Merge branches 'akpm' and 'akpm-hotfixes' (pa..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b4a5b3300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9ee3a4c022ccbbca
-dashboard link: https://syzkaller.appspot.com/bug?extid=01321b15cc98e6bf96d6
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148c170b300000
+Sorry to reply from my personal account. If I did it from my work
+account I'd be top-posting because of Outlook and that goes over like a
+lead balloon.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
+Anyway, can you send us a dump of your eeprom using ethtool -e? You can
+either send it via a bug on e1000.sourceforge.net or try sending it to
+todd.fujinaka@intel.com
 
-2021/09/09 22:14:31 executed programs: 444
-BUG: memory leak
-unreferenced object 0xffff888129acdb80 (size 96):
-  comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
-  hex dump (first 32 bytes):
-    20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
-    [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
-    [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
-    [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
-    [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
-    [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
-    [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
-    [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
-    [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
-    [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
-    [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
-    [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
-    [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+The other thing is I'm wondering is what the subvendor device ID you
+have is referring to because it's not in the pci database. Some ODMs
+like getting creative with what they put in the NVM.
 
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Todd Fujinaka (todd.fujinaka@intel.com)
