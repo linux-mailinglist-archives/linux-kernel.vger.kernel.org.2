@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6914098F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159544098FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237362AbhIMQZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
+        id S237403AbhIMQ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236983AbhIMQZr (ORCPT
+        with ESMTP id S229732AbhIMQ0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:25:47 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B969C061760;
-        Mon, 13 Sep 2021 09:24:31 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id h3so9945135pgb.7;
-        Mon, 13 Sep 2021 09:24:31 -0700 (PDT)
+        Mon, 13 Sep 2021 12:26:19 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B03C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:25:03 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso421572pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7iNVw3gDtbqcmJuxqzAp5MJgiBGuJVVVMEOeEc9LwQI=;
-        b=KMn3oOOQ7z+gZHnSi7tKwT8HQswrmQXWn3lkFw+yHY0rKS9MNHhd4wHGCJKSgBUW+n
-         T9tyboH4kQf5n8hqLQ+QVZjkSSb3UmHmDfhwVZGsusChykPhGMmDVApFEBhgyaEKxcqF
-         nQx/BCeW80UOUgD50aLnXPiX4V3x1A3k2VOFzTxgJQqUhtnAXDX5LCWind7N0Ph7r5JS
-         YIiLJlvawJQq8N+/L4ad49VBtsL/uFJZK9EarxpeaZCD8dgARJnrDmUwzUoTfpYQ/chd
-         wHvBmuxhJWuabByUsiQ+4Bj5XEDk3RaSHUx98oQLvBABSE9710epxsKIwebP8rwgN8I+
-         YMNQ==
+        bh=zuPUItXSPj0PAMYdwf9A90s2GvyBeXQIkWyfA3MX9Lw=;
+        b=U6fT/FIGLJV6UN6XFl+2eeN+TRUZp/d9f4Gg2Zbqy3odIfJdjZOTqd46CvX/KDp3HJ
+         l9NcuwruLjOciU4rNSPnw25+GPJ2jd8CxB3ex/8zoq8XYFzXRSWfYXGrhbuRogDihdNJ
+         bkKEWOmUymMUjtmwdyOwrATS0g2Sa/NwvqMgk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7iNVw3gDtbqcmJuxqzAp5MJgiBGuJVVVMEOeEc9LwQI=;
-        b=UWbRY3N6UULWw2HpJkRVP03vsudtg+/KudBZcHXgENc+qQJ+TRXKv3N7PkBp39KDh9
-         24XFc0pyV3umAC3Tuw6P+OjoWMUFshSHqIgLpTu4/j2ZTKBQDU1xaF9GbS6Mia/Now6X
-         NcSdPMqg2Q9G2+ML3lcgyNJ1/EOkImeGz2StWvUxhS71g+JSozEa0mJDh8TFLu5dNMgt
-         yCuNpVEfqrR4awdeh2K35iuiDHTsGt0HEjBPy5TBNkoRL2ZxEMJ/eGcpan9H/nYANjTf
-         oDcnEQek6Y7ht6rX9Xqa6VxDeEv12JEVPuXo4QMrqrN3b15dZdnjamSnsxHJ24V8+mfv
-         Mqjw==
-X-Gm-Message-State: AOAM531WEOUqI1Bo8lRwkz2PpqLvN1hKZYo0vYyXw4I/Wf7l3BBwRqZp
-        vm8nDvibEVel6UyOZpozDMk=
-X-Google-Smtp-Source: ABdhPJwcRXRk6qz0DRNFCw//xgAu2bkBeEvp9KWsb6qS7ho6P+WnajXyZjSblVMrpMHi4+apDU5iag==
-X-Received: by 2002:a65:648b:: with SMTP id e11mr11675333pgv.138.1631550270967;
-        Mon, 13 Sep 2021 09:24:30 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id g8sm7169782pfv.51.2021.09.13.09.24.29
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zuPUItXSPj0PAMYdwf9A90s2GvyBeXQIkWyfA3MX9Lw=;
+        b=DV4PvPPLW7pRDg8KG3ZbpJnxnkqy5V1Sp2LbCMBgZ2WWoz0BL1LDOq5q4Jj/dVquNw
+         XLrDjK7cgsuUkWyUcfZAeaazejrJNl7wu6iWRAEwWtTyN2xbXmV/dYRFOrOcit6rZWPU
+         TQ/kwQkEmobG3mB6TmeYMMa0AvhzQb0itti30shwXyhu3W6c4FsITnXssIQKGKePUuc1
+         NLOHwxHHNNk9MalTMaYiIt6SZl70OZOHpR4lgybA2mdXe6NWofciW+7txFfNgOefUG8V
+         3zcS90edY8KRJewEjhk0Q/O/p3cSLlW4GCpKMf/vKPGN0yVw55EAA/HELw9gDtleix0J
+         udhA==
+X-Gm-Message-State: AOAM533TCVaIY+vcNwVwHFS6gtllNEU+LZf53K4YHK+PG3dwedVj9jFH
+        Jis5V88KRSOcuX/y73iVi595Qw==
+X-Google-Smtp-Source: ABdhPJwL9ixBG8I68USpTyltJTZ5dkFKkNfUYvRlELRdAaw67LR4GDId05Pp5su+VZlRqT4yZ5cSdQ==
+X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr426324pjh.176.1631550303604;
+        Mon, 13 Sep 2021 09:25:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d10sm7621291pfq.205.2021.09.13.09.25.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:24:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 06:24:28 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "taoyi.ty" <escape@linux.alibaba.com>,
-        Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        shanpeic@linux.alibaba.com
-Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
-Message-ID: <YT97PAm6kaecvXLX@slm.duckdns.org>
-References: <cover.1631102579.git.escape@linux.alibaba.com>
- <YTiugxO0cDge47x6@kroah.com>
- <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
- <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
- <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
+        Mon, 13 Sep 2021 09:25:02 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 09:25:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 07/10] arm64: remove GCC version check for
+ ARCH_SUPPORTS_INT128
+Message-ID: <202109130925.3B30E9E1@keescook>
+References: <20210910234047.1019925-1-ndesaulniers@google.com>
+ <20210910234047.1019925-8-ndesaulniers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
+In-Reply-To: <20210910234047.1019925-8-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, Sep 13, 2021 at 04:20:59PM +0200, Christian Brauner wrote:
-> Afaict, there is currently now way to prevent the deletion of empty
-> cgroups, especially newly created ones. So for example, if I have a
-> cgroup manager that prunes the cgroup tree whenever they detect empty
-> cgroups they can delete cgroups that were pre-allocated. This is
-> something we have run into before.
-
-systemd doesn't mess with cgroups behind a delegation point.
-
-> A related problem is a crashed or killed container manager 
-> (segfault, sigkill, etc.). It might not have had the chance to cleanup
-> cgroups it allocated for the container. If the container manager is
-> restarted it can't reuse the existing cgroup it found because it has no
-> way of guaranteeing whether in between the time it crashed and got
-> restarted another program has just created a cgroup with the same name.
-> We usually solve this by just creating another cgroup with an index
-> appended until we we find an unallocated one setting an arbitrary cut
-> off point until we require manual intervention by the user (e.g. 1000).
+On Fri, Sep 10, 2021 at 04:40:44PM -0700, Nick Desaulniers wrote:
+> Now that GCC 5.1 is the minimally supported compiler version, this
+> Kconfig check is no longer necessary.
 > 
-> Right now iirc, one can rmdir() an empty cgroup while someone still
-> holds a file descriptor open for it. This can lead to situation where a
-> cgroup got created but before moving into the cgroup (via clone3() or
-> write()) someone else has deleted it. What would already be helpful is
-> if one had a way to prevent the deletion of cgroups when someone still
-> has an open reference to it. This would allow a pool of cgroups to be
-> created that can't simply be deleted.
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-The above are problems common for any entity managing cgroup hierarchy.
-Beyond the permission and delegation based access control, cgroup doesn't
-have a mechanism to grant exclusive managerial operations to a specific
-application. It's the userspace's responsibility to coordinate these
-operations like in most other kernel interfaces.
-
-Thanks.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
-tejun
+Kees Cook
