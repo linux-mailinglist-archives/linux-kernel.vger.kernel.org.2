@@ -2,144 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5694094C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDEF409699
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347572AbhIMOeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S1346113AbhIMOyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346933AbhIMO36 (ORCPT
+        with ESMTP id S1346764AbhIMOtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:29:58 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2183C0613AC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:28:13 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id b200so12014906iof.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:28:13 -0700 (PDT)
+        Mon, 13 Sep 2021 10:49:07 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B20C028BA3;
+        Mon, 13 Sep 2021 06:31:33 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id c22so12997860edn.12;
+        Mon, 13 Sep 2021 06:31:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3vN9Wyfdy3B+3jKSNNbQuDbmy9ISudB6NcF4MytTblk=;
-        b=jpzDoGuP/wSXHe0WqEmzabSx+dvjhnyfFogYYYQGZH68NdgavhywOFPo2DLzfABvCC
-         /5FdzQWSrf7JrHRTEbfOrguym7OQZSOjDpTT2WDVBMSQkPqlxKm4DBNqo+lNWu/f+q5K
-         o6RoAmj0iMNOlNWIvktciFnbS93hEgBE6GTkYZpxPTfdJbRN5K1cwfKjEIH1FkhnuatC
-         mBZlqLEmfZvx0KLxzjcWUM3ZgvReF3iueVkrC38BcPVTlUS58WHmq/Nwd9+lV/IXQPmi
-         fYDEJXLbGFoMeY3smdmCHxFmzS1sBHjpSUFSJxA2WjHkjxrz9uiuHDtLR3zuMay8ffag
-         PHzQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Hugz/+OONUxuIBhoIuTQLQDjY595cqMrn5yj0K0lzM=;
+        b=cR8wuHYosPSDj/uz3fuTLgksvjvk1j8FNRACyVsbGIySnNK7/+iV3qiKlleBUvIyuW
+         QMcJGoao9TxQ0hZrcBwjAv0Scc+RA6IyK+fda8+/IpGogmboTd5ykH12mGHdWpvKQ+7v
+         Gl5ORap11bejGGFuCZxlAPGItJ5Gy0h4l2owY+CRMKvrnVPL0WCaoEh5MYp3FPIxhezJ
+         liOFdzY5s2EK5Z4xDooyxpIsTyFGRMT+Pu1SWaMVRIZLUit2X7YcIskokK5GgK+wtP4u
+         oOALSyOTK7t6zOqLX8UakUGcrkPKlbVjx8lioL1/4lr4AAk1DZ5kD7LNUtXf7pMvy9qE
+         w5Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3vN9Wyfdy3B+3jKSNNbQuDbmy9ISudB6NcF4MytTblk=;
-        b=zBfoVD5/Ld6XPu0c/3rpCiZQUciDIl5422FwAG+uZ7Hif/rMb07+Y/UZBzpMOcakpC
-         199bGmr5sw+Rwbph0tHeFXyocCn+9YCQS9CkTjpjlrbKy0AnXNTDBnobGeaeQA88MS1q
-         nh1DLfAsEiJhjvYNDZfwm67L1zQ3XhUKb3uJfoFtjxIe7e4oNhf3hdh9qIgfIWktCliV
-         5EVT4eo5DOVKXDsaFoqt2Qiyjo9ShVDhbRkmXlf1CInZbFWkZG2T+5mkHPK/oGN7KITL
-         mEG7Scyii/ED92Xa7ltJ2eJPn21Zb7Buxvy+TvHlT6h+l3OzihSiBpFcs39Wahg6GM6r
-         0zQQ==
-X-Gm-Message-State: AOAM530p2MhcZCC2/QFcnY1F68RPNL8sWqYWcTQHPPBOSQp2QjIop1Ic
-        04cAhdy0glA5bfQUPgbFOmcwhXrri7VUMA==
-X-Google-Smtp-Source: ABdhPJwlpCCBm0jBOd/op8tvfj2w7pmggym/wUZlWOPKQS65wEUgcW89MfQfiXFqMNCFeZqsH+q/pQ==
-X-Received: by 2002:a5e:a913:: with SMTP id c19mr8795732iod.31.1631539693066;
-        Mon, 13 Sep 2021 06:28:13 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id n2sm4701205ile.86.2021.09.13.06.28.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 06:28:12 -0700 (PDT)
-Subject: Re: [PATCH v2] io-wq: expose IO_WQ_ACCT_* enumeration items to UAPI
-To:     Eugene Syromiatnikov <esyr@redhat.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Dmitry V. Levin" <ldv@strace.io>, linux-api@vger.kernel.org
-References: <20210913104101.GA29616@asgard.redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <872209f5-d11c-1b80-6146-5646206e22cb@kernel.dk>
-Date:   Mon, 13 Sep 2021 07:28:11 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Hugz/+OONUxuIBhoIuTQLQDjY595cqMrn5yj0K0lzM=;
+        b=inKmxvMXNR1hXxwhC879rZxtNXtfNDp0sFOUSroX46NiY8DkYP6uyBt5XaWQppkUeZ
+         /0h9bntTdWNtVOOR57/x4qKge7btDGVyggI+xN+XHwU1EMP2EmjxL3U1AgfYcG+owWeq
+         osJfAen+JHyxVffAoRq5kUT6b2wJRdtqaDpp90aAFYtuiEMJ+lTlCM+eYqeIDvAu/HqX
+         DkwgXm4aYz8ISWJr6zYUjzpK2itmalgeIYtGSGDBQ06mxm1OIkb53tQibFZUvnc4KCS1
+         7n8YNdFrMR+/1fjdIA6bsk5pUUiqtlIUa38uDaTb6cVDFIYGSubNTvM9n8SPw9wY9yfx
+         PEGQ==
+X-Gm-Message-State: AOAM531W6YjL/YeGlJN0ijYmCVUGPoWDTy0UCk0uo5O0HdBqbql+BfRz
+        LRPty+X/rHnj9k+U4B2zu3k=
+X-Google-Smtp-Source: ABdhPJxc8GQPCQx5zgnEkg+JeF6ykMUDFH6iyZOsu/L92kgCejBT/hWMx52SSd15euMtpiLvG9zRIg==
+X-Received: by 2002:aa7:d1d3:: with SMTP id g19mr6012882edp.103.1631539892404;
+        Mon, 13 Sep 2021 06:31:32 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id v13sm3458353ejh.62.2021.09.13.06.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 06:31:32 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:31:30 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: Re: [RFC PATCH net 2/5] net: dsa: be compatible with masters which
+ unregister on shutdown
+Message-ID: <20210913133130.ohk4co56v4mtljyk@skbuf>
+References: <20210912120932.993440-1-vladimir.oltean@nxp.com>
+ <20210912120932.993440-3-vladimir.oltean@nxp.com>
+ <20210912131837.4i6pzwgn573xutmo@skbuf>
+ <YT9QwOA2DxaXNsfw@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20210913104101.GA29616@asgard.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YT9QwOA2DxaXNsfw@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 4:41 AM, Eugene Syromiatnikov wrote:
-> These are used to index elements in the argument
-> of IORING_REGISTER_IOWQ_MAX_WORKERS io_uring_register command,
-> so they are to be exposed in UAPI.
+On Mon, Sep 13, 2021 at 03:23:12PM +0200, Andrew Lunn wrote:
+> > I will fix this when I send the v2 patch, but I will not send that now,
+> > as I would like to get some feedback on the approach first.
 > 
-> Complements: 2e480058ddc21ec5 ("io-wq: provide a way to limit max number of workers")
-> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
-> ---
-> v2:
->  - IO_WQ_ACCT_NR is no longer exposed directly in UAPI, per Jens Axboe's
->    suggestion.
+> It would of been nice to have less boilerplate code, but the basic
+> idea seems O.K.
 > 
-> v1: https://lore.kernel.org/lkml/20210912122411.GA27679@asgard.redhat.com/
-> ---
->  fs/io-wq.c                    | 5 ++---
->  include/uapi/linux/io_uring.h | 8 ++++++++
->  2 files changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/io-wq.c b/fs/io-wq.c
-> index 6c55362..eb5162d 100644
-> --- a/fs/io-wq.c
-> +++ b/fs/io-wq.c
-> @@ -14,6 +14,7 @@
->  #include <linux/rculist_nulls.h>
->  #include <linux/cpu.h>
->  #include <linux/tracehook.h>
-> +#include <uapi/linux/io_uring.h>
->  
->  #include "io-wq.h"
->  
-> @@ -78,9 +79,7 @@ struct io_wqe_acct {
->  };
->  
->  enum {
-> -	IO_WQ_ACCT_BOUND,
-> -	IO_WQ_ACCT_UNBOUND,
-> -	IO_WQ_ACCT_NR,
-> +	IO_WQ_ACCT_NR = __IO_WQ_ACCT_MAX
->  };
->  
->  /*
-> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> index 59ef351..dae1841 100644
-> --- a/include/uapi/linux/io_uring.h
-> +++ b/include/uapi/linux/io_uring.h
-> @@ -324,6 +324,14 @@ enum {
->  	IORING_REGISTER_LAST
->  };
->  
-> +/* io-wq worker limit categories */
-> +enum {
-> +	IO_WQ_ACCT_BOUND,
-> +	IO_WQ_ACCT_UNBOUND,
-> +
-> +	__IO_WQ_ACCT_MAX /* Non-UAPI */
-> +};
+> Have you tested it with a D in DSA system?
 
-This is really the same thing as before, just the names have changed.
-What I suggested was keeping the enum in io_uring, then just adding
+To various degrees.
 
-enum {
-	IO_WQ_BOUND,
-	IO_WQ_UNBOUND,
-};
+I cannot easily patch DSA masters to just implement ->shutdown as
+->remove so as to reproduce Lino's case with the Raspberry Pi, but I did
+perform basic regression-testing on:
 
-to uapi header. The ACCT stuff is io-wq specific too, that kind of naming
-shouldn't be propagated to userspace.
+- the Bluebox 3 board with the 2x SJA1110 switches in a "real" DSA multi
+  switch tree setup, with dpaa2-eth as the master and drivers/spi/spi-sc18is602.c
+  as the SPI controller
 
-A BUILD_BUG_ON() could be added for them being different, but honestly
-I don't think that's worth it.
+- the weird board with disjoint DSA trees comprised of 2x SJA1105
+  switches hanging off of the internal Felix/Ocelot switch of the
+  LS1028A which in itself has the fsl-enetc driver as its master. Here I
+  could test the fsl-enetc driver with and without the ->shutdown method.
+  I also tested with and without dspi_shutdown so as to walk through
+  both the sja1105's shutdown and remove methods.
 
--- 
-Jens Axboe
+- the Turris MOX board where I did not notice any issues during
+  regression testing. The only new message is that the link of the DSA
+  interfaces goes down, this is because the net devices are actually
+  unregistered on shutdown.
 
+It would be possible to have less boilerplate code, by implementing the
+DSA shutdown procedure as dsa_unregister_switch itself.
+
+For buses where the ->remove and ->shutdown have the same prototype
+(they both return void), like PCI, the code added is minimal (although
+we still need to add the "if this then not that" scheme, to avoid the
+function body getting executed twice). For the other buses, there would
+still need to be a separate shutdown method, which calls the remove
+method. Although in principle, this also has functional consequences
+which I am not sure whether I like or not. To walk the full-blown unbind
+code path or to do a shutdown with the minimal necessities?
