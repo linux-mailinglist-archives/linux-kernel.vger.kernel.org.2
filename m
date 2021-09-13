@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53F8408E7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362AE408E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243079AbhIMNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:34:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
+        id S240946AbhIMNcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:32:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241069AbhIMN24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:28:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8E046108B;
-        Mon, 13 Sep 2021 13:23:51 +0000 (UTC)
+        id S240674AbhIMN3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:29:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 709576127B;
+        Mon, 13 Sep 2021 13:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539432;
-        bh=c4O0i1G9vQwlfugXB5GKGILv3p/pg/WFfWyrERkDfDs=;
+        s=korg; t=1631539435;
+        bh=dCwvtV49uRlu0sfiwKDmU8FD5EBcViotkz1lNaPHZCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LpVHBlBqfEOH6uzSb+SrP9Xpn3Gs//g/iFKa73XcS6QVOStVWJgd+0yjGv3L1mffD
-         Cl13HBKhAjTHeTQJJOITaBPIbEmc4qvjhmEIaiIfrYPc6uI566y1w6iogrU5YPYy8u
-         ijXvaky83qzZJ0NELPa5Hqa62OgeihA1XJbKVU7I=
+        b=AqfWxTqCEQXBxz+ZF/PzIYlxirlFwj3o+NWbwqi+uII3JszaoNgG1AMXxbNkZSHBj
+         p5SFI1RKJqDHcxQWLqjdVThl4jW+YSeJtnCIBRyAbrCFNo4H3oYGgAl9KNCcTUjqd7
+         qUGFxciOtZESUH0H5OlCVGVvFE9wB2kTyWuB41gQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        stable@vger.kernel.org,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
         Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 022/236] power: supply: smb347-charger: Add missing pin control activation
-Date:   Mon, 13 Sep 2021 15:12:07 +0200
-Message-Id: <20210913131101.094706368@linuxfoundation.org>
+Subject: [PATCH 5.10 023/236] power: supply: max17042_battery: fix typo in MAx17042_TOFF
+Date:   Mon, 13 Sep 2021 15:12:08 +0200
+Message-Id: <20210913131101.126744874@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -40,53 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 
-[ Upstream commit efe2175478d5237949e33c84d9a722fc084b218c ]
+[ Upstream commit ed0d0a0506025f06061325cedae1bbebd081620a ]
 
-Pin control needs to be activated by setting the enable bit, otherwise
-hardware rejects all pin changes. Previously this stayed unnoticed on
-Nexus 7 because pin control was enabled by default after rebooting from
-downstream kernel, which uses driver that enables the bit and charger
-registers are non-volatile until power supply (battery) is disconnected.
-Configure the pin control enable bit. This fixes the potentially
-never-enabled charging on devices that use pin control.
-
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/smb347-charger.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/power/supply/max17042_battery.c | 2 +-
+ include/linux/power/max17042_battery.h  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
-index 8cfbd8d6b478..912e2184f918 100644
---- a/drivers/power/supply/smb347-charger.c
-+++ b/drivers/power/supply/smb347-charger.c
-@@ -56,6 +56,7 @@
- #define CFG_PIN_EN_CTRL_ACTIVE_LOW		0x60
- #define CFG_PIN_EN_APSD_IRQ			BIT(1)
- #define CFG_PIN_EN_CHARGER_ERROR		BIT(2)
-+#define CFG_PIN_EN_CTRL				BIT(4)
- #define CFG_THERM				0x07
- #define CFG_THERM_SOFT_HOT_COMPENSATION_MASK	0x03
- #define CFG_THERM_SOFT_HOT_COMPENSATION_SHIFT	0
-@@ -725,6 +726,15 @@ static int smb347_hw_init(struct smb347_charger *smb)
- 	if (ret < 0)
- 		goto fail;
+diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+index 794caf03658d..48d3985eaa8a 100644
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -738,7 +738,7 @@ static inline void max17042_override_por_values(struct max17042_chip *chip)
+ 	struct max17042_config_data *config = chip->pdata->config_data;
  
-+	/* Activate pin control, making it writable. */
-+	switch (smb->enable_control) {
-+	case SMB3XX_CHG_ENABLE_PIN_ACTIVE_LOW:
-+	case SMB3XX_CHG_ENABLE_PIN_ACTIVE_HIGH:
-+		ret = regmap_set_bits(smb->regmap, CFG_PIN, CFG_PIN_EN_CTRL);
-+		if (ret < 0)
-+			goto fail;
-+	}
-+
- 	/*
- 	 * Make the charging functionality controllable by a write to the
- 	 * command register unless pin control is specified in the platform
+ 	max17042_override_por(map, MAX17042_TGAIN, config->tgain);
+-	max17042_override_por(map, MAx17042_TOFF, config->toff);
++	max17042_override_por(map, MAX17042_TOFF, config->toff);
+ 	max17042_override_por(map, MAX17042_CGAIN, config->cgain);
+ 	max17042_override_por(map, MAX17042_COFF, config->coff);
+ 
+diff --git a/include/linux/power/max17042_battery.h b/include/linux/power/max17042_battery.h
+index d55c746ac56e..e00ad1cfb1f1 100644
+--- a/include/linux/power/max17042_battery.h
++++ b/include/linux/power/max17042_battery.h
+@@ -69,7 +69,7 @@ enum max17042_register {
+ 	MAX17042_RelaxCFG	= 0x2A,
+ 	MAX17042_MiscCFG	= 0x2B,
+ 	MAX17042_TGAIN		= 0x2C,
+-	MAx17042_TOFF		= 0x2D,
++	MAX17042_TOFF		= 0x2D,
+ 	MAX17042_CGAIN		= 0x2E,
+ 	MAX17042_COFF		= 0x2F,
+ 
 -- 
 2.30.2
 
