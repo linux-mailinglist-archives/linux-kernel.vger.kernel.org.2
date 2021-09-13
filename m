@@ -2,103 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452774088CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA354088DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238937AbhIMKLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:11:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59978 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238155AbhIMKLn (ORCPT
+        id S238989AbhIMKUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:20:34 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3770 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238977AbhIMKU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:11:43 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 129D621C86;
-        Mon, 13 Sep 2021 10:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631527827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AiRkX0WmNs9gJZTMmdh3igwoaOgGldencFjuU/XzQXk=;
-        b=M61ke4OyiDAoRXUd/MfdBGLxA4SX0zHRwS1SjPCxfp063hQwZJ7OSV6psRSojdguit9QyG
-        iHP4GtWWQ++oWv9UpWiB9r2qPGdaulPhnclxsoTsM5mu6uSwe/7KD/SQKy4eyi8aZO04SP
-        yEC2qXYXa3JX5nS6ebbH9gUVva5zRAc=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7E09DA3B84;
-        Mon, 13 Sep 2021 10:10:26 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 12:10:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
- of dying tasks
-Message-ID: <YT8jkaA+bUB4aP2p@dhcp22.suse.cz>
-References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
- <8b98d44a-aeb2-5f5f-2545-ac2bd0c7049b@virtuozzo.com>
- <YT8OTozT3FN9P2k7@dhcp22.suse.cz>
- <b4b1e66e-e6e6-84e9-46a1-060ed412dd56@virtuozzo.com>
+        Mon, 13 Sep 2021 06:20:28 -0400
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H7MpV6kygz67Wrl;
+        Mon, 13 Sep 2021 18:16:50 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 12:19:08 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 11:19:06 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bvanassche@acm.org>, <hare@suse.de>, <hch@lst.de>,
+        <chenxiang66@hisilicon.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v2] scsi: Delete scsi_{get,free}_host_dev()
+Date:   Mon, 13 Sep 2021 18:14:07 +0800
+Message-ID: <1631528047-30150-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4b1e66e-e6e6-84e9-46a1-060ed412dd56@virtuozzo.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-09-21 12:37:56, Vasily Averin wrote:
-> On 9/13/21 11:39 AM, Michal Hocko wrote:
-> > On Mon 13-09-21 10:51:37, Vasily Averin wrote:
-> >> On 9/10/21 3:39 PM, Vasily Averin wrote:
-> >>> The kernel currently allows dying tasks to exceed the memcg limits.
-> >>> The allocation is expected to be the last one and the occupied memory
-> >>> will be freed soon.
-> >>> This is not always true because it can be part of the huge vmalloc
-> >>> allocation. Allowed once, they will repeat over and over again.
-> >>
-> >>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >>> index 389b5766e74f..67195fcfbddf 100644
-> >>> --- a/mm/memcontrol.c
-> >>> +++ b/mm/memcontrol.c
-> >>> @@ -2622,15 +2625,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> >>>  	if (gfp_mask & __GFP_ATOMIC)
-> >>>  		goto force;
-> >>>  
-> >>> -	/*
-> >>> -	 * Unlike in global OOM situations, memcg is not in a physical
-> >>> -	 * memory shortage.  Allow dying and OOM-killed tasks to
-> >>> -	 * bypass the last charges so that they can exit quickly and
-> >>> -	 * free their memory.
-> >>> -	 */
-> >>> -	if (unlikely(should_force_charge()))
-> >>> -		goto force;
-> >>> -
-> >>
-> >> Should we keep current behaviour for (current->flags & PF_EXITING) case perhaps?
-> > 
-> > Why?
-> 
-> On this stage task really dies and mostly releases taken resources.
-> It can allocate though, and this allocation can reach memcg limit due to the activity
-> of parallel memcg threads.
-> 
-> Noting bad should happen if we reject this allocation,
-> because the same thing can happen in non-memcg case too.
-> However I doubt misuse is possible here and we have possibility to allow graceful shutdown here.
-> 
-> In other words: we are not obliged to allow such allocations, but we CAN do it because
-> we hope that it is safe and cannot be misused.
+Since commit 0653c358d2dc ("scsi: Drop gdth driver"), functions
+scsi_{get,free}_host_dev() no longer have any in-tree users, so delete
+them.
 
-This is a lot of hoping that has turned out to be a bad strategy in the
-existing code.  So let's stop hoping and if we are shown that an
-exit path really benefits from a special treatment then we can add it
-with a good reasoning rathat than "we hope it's gonna be ok".
+Signed-off-by: John Garry <john.garry@huawei.com>
+Nacked-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+---
+An alt agenda of this patch is to get clarification on whether this API
+should be used for Hannes' reserved commands series.
+
+Originally the recommendation was to use it, but now it seems to be to
+not use it:
+https://lore.kernel.org/linux-scsi/55918d68-7385-0153-0bd9-d822d3ce4c21@suse.de/
+
+Changes since v1:
+- Add more tags
+
+diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+index fe22191522a3..0d0381df25f7 100644
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -1902,60 +1902,3 @@ void scsi_forget_host(struct Scsi_Host *shost)
+ 	spin_unlock_irqrestore(shost->host_lock, flags);
+ }
+ 
+-/**
+- * scsi_get_host_dev - Create a scsi_device that points to the host adapter itself
+- * @shost: Host that needs a scsi_device
+- *
+- * Lock status: None assumed.
+- *
+- * Returns:     The scsi_device or NULL
+- *
+- * Notes:
+- *	Attach a single scsi_device to the Scsi_Host - this should
+- *	be made to look like a "pseudo-device" that points to the
+- *	HA itself.
+- *
+- *	Note - this device is not accessible from any high-level
+- *	drivers (including generics), which is probably not
+- *	optimal.  We can add hooks later to attach.
+- */
+-struct scsi_device *scsi_get_host_dev(struct Scsi_Host *shost)
+-{
+-	struct scsi_device *sdev = NULL;
+-	struct scsi_target *starget;
+-
+-	mutex_lock(&shost->scan_mutex);
+-	if (!scsi_host_scan_allowed(shost))
+-		goto out;
+-	starget = scsi_alloc_target(&shost->shost_gendev, 0, shost->this_id);
+-	if (!starget)
+-		goto out;
+-
+-	sdev = scsi_alloc_sdev(starget, 0, NULL);
+-	if (sdev)
+-		sdev->borken = 0;
+-	else
+-		scsi_target_reap(starget);
+-	put_device(&starget->dev);
+- out:
+-	mutex_unlock(&shost->scan_mutex);
+-	return sdev;
+-}
+-EXPORT_SYMBOL(scsi_get_host_dev);
+-
+-/**
+- * scsi_free_host_dev - Free a scsi_device that points to the host adapter itself
+- * @sdev: Host device to be freed
+- *
+- * Lock status: None assumed.
+- *
+- * Returns:     Nothing
+- */
+-void scsi_free_host_dev(struct scsi_device *sdev)
+-{
+-	BUG_ON(sdev->id != sdev->host->this_id);
+-
+-	__scsi_remove_device(sdev);
+-}
+-EXPORT_SYMBOL(scsi_free_host_dev);
+-
+diff --git a/include/scsi/scsi_host.h b/include/scsi/scsi_host.h
+index 75363707b73f..bc9c45ced145 100644
+--- a/include/scsi/scsi_host.h
++++ b/include/scsi/scsi_host.h
+@@ -797,16 +797,6 @@ void scsi_host_busy_iter(struct Scsi_Host *,
+ 
+ struct class_container;
+ 
+-/*
+- * These two functions are used to allocate and free a pseudo device
+- * which will connect to the host adapter itself rather than any
+- * physical device.  You must deallocate when you are done with the
+- * thing.  This physical pseudo-device isn't real and won't be available
+- * from any high-level drivers.
+- */
+-extern void scsi_free_host_dev(struct scsi_device *);
+-extern struct scsi_device *scsi_get_host_dev(struct Scsi_Host *);
+-
+ /*
+  * DIF defines the exchange of protection information between
+  * initiator and SBC block device.
 -- 
-Michal Hocko
-SUSE Labs
+2.26.2
+
