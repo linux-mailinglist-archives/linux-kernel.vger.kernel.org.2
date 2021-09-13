@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856CE408E01
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBBB408D49
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242409AbhIMNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:30:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35056 "EHLO mail.kernel.org"
+        id S240748AbhIMNYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:24:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240150AbhIMNT4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:19:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 360056113B;
-        Mon, 13 Sep 2021 13:18:02 +0000 (UTC)
+        id S240213AbhIMNUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:20:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4CDF6112D;
+        Mon, 13 Sep 2021 13:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539082;
-        bh=ubLnOvhDD9HBiRyDL6wXMzREZ3bw2QB2Sm1N1wWnrIk=;
+        s=korg; t=1631539085;
+        bh=lYhlJUiZeJ71eAsBUsEU418h4Qd1oNkRZB8M5J6fuKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wtFdzsRfJ6MG4y+HUtM2nQjcQ9tvWve+8NgQzl5smeJUY9RkTy2n8F/u6vcjMBPbM
-         7cM6GRJ21Q7WHmg8U7dPsXzQ05e2ybV8DxrFe0ju2KIup1n04+YCut+KLf8ShyRtxr
-         BsLBfaxRW721b25T2vRm/ijvY6HbooEVEJMNRa50=
+        b=LmiKOw6sO5WAlp/th4hJwKGS0O6e+UDoFKJEq6qd/1p9xuHDJLj9+bF6nmysqx59k
+         V6QoV7ZMzaAzzaa8GVz38YmQXNrA3S9Lk6/JQZSIwqymsb8+ldYJu7OeCz6tiOUn7T
+         kByXkIMqb2jDu+2xvx+AQmwQms7m+qXOEt1wD1os=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org, Hongbo Li <herberthbli@tencent.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 035/144] genirq/timings: Fix error return code in irq_timings_test_irqs()
-Date:   Mon, 13 Sep 2021 15:13:36 +0200
-Message-Id: <20210913131049.126722025@linuxfoundation.org>
+Subject: [PATCH 5.4 036/144] lib/mpi: use kcalloc in mpi_resize
+Date:   Mon, 13 Sep 2021 15:13:37 +0200
+Message-Id: <20210913131049.158310508@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -41,42 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Hongbo Li <herberthbli@tencent.com>
 
-[ Upstream commit 290fdc4b7ef14e33d0e30058042b0e9bfd02b89b ]
+[ Upstream commit b6f756726e4dfe75be1883f6a0202dcecdc801ab ]
 
-Return a negative error code from the error handling case instead of 0, as
-done elsewhere in this function.
+We should set the additional space to 0 in mpi_resize().
+So use kcalloc() instead of kmalloc_array().
 
-Fixes: f52da98d900e ("genirq/timings: Add selftest for irqs circular buffer")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210811093333.2376-1-thunder.leizhen@huawei.com
+In lib/mpi/ec.c:
+/****************
+ * Resize the array of A to NLIMBS. the additional space is cleared
+ * (set to 0) [done by m_realloc()]
+ */
+int mpi_resize(MPI a, unsigned nlimbs)
+
+Like the comment of kernel's mpi_resize() said, the additional space
+need to be set to 0, but when a->d is not NULL, it does not set.
+
+The kernel's mpi lib is from libgcrypt, the mpi resize in libgcrypt
+is _gcry_mpi_resize() which set the additional space to 0.
+
+This bug may cause mpi api which use mpi_resize() get wrong result
+under the condition of using the additional space without initiation.
+If this condition is not met, the bug would not be triggered.
+Currently in kernel, rsa, sm2 and dh use mpi lib, and they works well,
+so the bug is not triggered in these cases.
+
+add_points_edwards() use the additional space directly, so it will
+get a wrong result.
+
+Fixes: cdec9cb5167a ("crypto: GnuPG based MPI lib - source files (part 1)")
+Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/irq/timings.c | 2 ++
- 1 file changed, 2 insertions(+)
+ lib/mpi/mpiutil.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/irq/timings.c b/kernel/irq/timings.c
-index b5985da80acf..7ccc8edce46d 100644
---- a/kernel/irq/timings.c
-+++ b/kernel/irq/timings.c
-@@ -799,12 +799,14 @@ static int __init irq_timings_test_irqs(struct timings_intervals *ti)
+diff --git a/lib/mpi/mpiutil.c b/lib/mpi/mpiutil.c
+index 20ed0f766787..00825028cc84 100644
+--- a/lib/mpi/mpiutil.c
++++ b/lib/mpi/mpiutil.c
+@@ -91,7 +91,7 @@ int mpi_resize(MPI a, unsigned nlimbs)
+ 		return 0;	/* no need to do it */
  
- 		__irq_timings_store(irq, irqs, ti->intervals[i]);
- 		if (irqs->circ_timings[i & IRQ_TIMINGS_MASK] != index) {
-+			ret = -EBADSLT;
- 			pr_err("Failed to store in the circular buffer\n");
- 			goto out;
- 		}
- 	}
- 
- 	if (irqs->count != ti->count) {
-+		ret = -ERANGE;
- 		pr_err("Count differs\n");
- 		goto out;
- 	}
+ 	if (a->d) {
+-		p = kmalloc_array(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
++		p = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
+ 		if (!p)
+ 			return -ENOMEM;
+ 		memcpy(p, a->d, a->alloced * sizeof(mpi_limb_t));
 -- 
 2.30.2
 
