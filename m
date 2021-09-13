@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A663408C9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04677408F46
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240485AbhIMNUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34854 "EHLO mail.kernel.org"
+        id S242141AbhIMNle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239447AbhIMNTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26459610CC;
-        Mon, 13 Sep 2021 13:17:25 +0000 (UTC)
+        id S242089AbhIMNgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 433DF610A5;
+        Mon, 13 Sep 2021 13:27:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539046;
-        bh=t69di5wsk9zap04vJghr7ora4FQh2E8rzBla83neAiU=;
+        s=korg; t=1631539648;
+        bh=RKonlF0nt2qu42Z4Pv0XKU0K3Dwufrhsz5t3hILBXmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ZkBL2UM7EaqbtxIdL/gyYGGOhY8aN1TY6q2iDbM/ABJWhyCGWPYRkQKk9i6eTuoO
-         0hq6pCv+7YAddPghOSRFJUGYGp11KOiI9NO+7uF+QgvUWIr6thL7BdcBZZLYU5gZnb
-         ar032Ew3LFRjP62JfnCRJYXsZE05R53a2M7VKgH0=
+        b=x/dGG7gmhvlG6bBPbo+I5+rvjkxVVSP+JX7t80spicNk0k5LCql3O6l8ckq8E2CVa
+         ehoWnPSaNuw6qeZaqfY8ccLqMEV7RYRynj2VgGEtlkWI4gFQFRoXZiN4j8hGBtLB2E
+         q+nstELREaCzzTXbFRNIhmhtJfdxeIgq6TliEoxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Andrej Picej <andrej.picej@norik.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 021/144] libata: fix ata_host_start()
-Date:   Mon, 13 Sep 2021 15:13:22 +0200
-Message-Id: <20210913131048.664739711@linuxfoundation.org>
+Subject: [PATCH 5.10 098/236] media: coda: fix frame_mem_ctrl for YUV420 and YVU420 formats
+Date:   Mon, 13 Sep 2021 15:13:23 +0200
+Message-Id: <20210913131103.684780778@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit 355a8031dc174450ccad2a61c513ad7222d87a97 ]
+[ Upstream commit 44693d74f5653f82cd7ca0fe730eed0f6b83306a ]
 
-The loop on entry of ata_host_start() may not initialize host->ops to a
-non NULL value. The test on the host_stop field of host->ops must then
-be preceded by a check that host->ops is not NULL.
+The frame memory control register value is currently determined
+before userspace selects the final capture format and never corrected.
+Update ctx->frame_mem_ctrl in __coda_start_decoding() to fix decoding
+into YUV420 or YVU420 capture buffers.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Link: https://lore.kernel.org/r/20210816014456.2191776-3-damien.lemoal@wdc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reported-by: Andrej Picej <andrej.picej@norik.com>
+Fixes: 497e6b8559a6 ("media: coda: add sequence initialization work")
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/coda/coda-bit.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index f67b3fb33d57..7788af0ca109 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -6394,7 +6394,7 @@ int ata_host_start(struct ata_host *host)
- 			have_stop = 1;
+diff --git a/drivers/media/platform/coda/coda-bit.c b/drivers/media/platform/coda/coda-bit.c
+index bf75927bac4e..159c9de85788 100644
+--- a/drivers/media/platform/coda/coda-bit.c
++++ b/drivers/media/platform/coda/coda-bit.c
+@@ -2031,17 +2031,25 @@ static int __coda_start_decoding(struct coda_ctx *ctx)
+ 	u32 src_fourcc, dst_fourcc;
+ 	int ret;
+ 
++	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT);
++	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
++	src_fourcc = q_data_src->fourcc;
++	dst_fourcc = q_data_dst->fourcc;
++
+ 	if (!ctx->initialized) {
+ 		ret = __coda_decoder_seq_init(ctx);
+ 		if (ret < 0)
+ 			return ret;
++	} else {
++		ctx->frame_mem_ctrl &= ~(CODA_FRAME_CHROMA_INTERLEAVE | (0x3 << 9) |
++					 CODA9_FRAME_TILED2LINEAR);
++		if (dst_fourcc == V4L2_PIX_FMT_NV12 || dst_fourcc == V4L2_PIX_FMT_YUYV)
++			ctx->frame_mem_ctrl |= CODA_FRAME_CHROMA_INTERLEAVE;
++		if (ctx->tiled_map_type == GDI_TILED_FRAME_MB_RASTER_MAP)
++			ctx->frame_mem_ctrl |= (0x3 << 9) |
++				((ctx->use_vdoa) ? 0 : CODA9_FRAME_TILED2LINEAR);
  	}
  
--	if (host->ops->host_stop)
-+	if (host->ops && host->ops->host_stop)
- 		have_stop = 1;
+-	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT);
+-	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
+-	src_fourcc = q_data_src->fourcc;
+-	dst_fourcc = q_data_dst->fourcc;
+-
+ 	coda_write(dev, ctx->parabuf.paddr, CODA_REG_BIT_PARA_BUF_ADDR);
  
- 	if (have_stop) {
+ 	ret = coda_alloc_framebuffers(ctx, q_data_dst, src_fourcc);
 -- 
 2.30.2
 
