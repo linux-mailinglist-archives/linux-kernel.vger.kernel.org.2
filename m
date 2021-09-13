@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E19B409EA3
+	by mail.lfdr.de (Postfix) with ESMTP id A763C409EA4
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244403AbhIMUzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240598AbhIMUzs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:55:48 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0564FC061574;
-        Mon, 13 Sep 2021 13:54:32 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so15228561otf.2;
-        Mon, 13 Sep 2021 13:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JhNwW9vKPdT/8xW2t5CnBHG5KTMvD7rZ1Q1VcJJES5U=;
-        b=aAOcyW/3Q9/QTeYM94UGTMXq1FcYtUCn9FBGI/MFltxTl2PypT1ZbgcRQ4YQIVKebb
-         zS7Z/qtGWxSwj5qgOopRIkw8uk4FKG1m7tUlDIvZ3QSAWAP9wN99VlQBqVrJ2CLk4cnb
-         UAmZ+FvUa2Q4WTfR75zsoa+8QF1O1vS2O5DX9iEaJ3gHy3MuhHV+Nd3xHQmWKBWw37Sb
-         4VpVcqk4aWmh30ccQLwFVA07TJNFdfE3sGr9UkFDPfZ7SPjGnBHGa9dqqufo5l07QQtJ
-         fhua5lg0l4Yp/b5E5TOFFbEVbvLGvZeoBHlG9uR/NYBzB8qeSqznxG9VM3EwYs/wiTcI
-         4b6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JhNwW9vKPdT/8xW2t5CnBHG5KTMvD7rZ1Q1VcJJES5U=;
-        b=EYxj4CV/MBpbA9cqHguVJTYPid941jw2khMB2KO/NYYaps1j9EYdt4Px1jM5YdCEvJ
-         exqf6/REhzw/6GrUUs+eY9AmjRPJOAyWTK1EPW+ufJEHUcEKKfksM87y80BJxLxsfwqo
-         NHRj2Rr4NSy0chI9Iivuw2Bi+UVW16rYAZHLNNO1q3aBLCkSVBfrrzyMHeCvBwXtm9ha
-         mXChFji32hP8E0ywdXVyJaNJ1EhUixl4nCI4xjZfSB/f9KdSM0Id8I6vDe3ZJ1UIbFDD
-         omLHrksw715TGneOoX2YAYC4s3mUDhLLD+a46P1a9ZBuVR9uaVm/ynjPTQdZTtndxbXR
-         u3+g==
-X-Gm-Message-State: AOAM530C+Vm65ODcOxeFfx7dcadAgxP4l8UjeGXLoJkYvj4JOdjhosdD
-        8wYFBS7BDAjG/gjCbqb/OF0=
-X-Google-Smtp-Source: ABdhPJxcJ1N6icl5s1a4lizrnA9pq1ecVtoE+OOOH7RyC3quPK4yUX9d7HkImt0eOEyoBSbMVE/nDA==
-X-Received: by 2002:a9d:798c:: with SMTP id h12mr11406547otm.215.1631566471411;
-        Mon, 13 Sep 2021 13:54:31 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id be5sm1960153oib.10.2021.09.13.13.54.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 13:54:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 13 Sep 2021 13:54:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Jason Wang <jasowang@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] virtio: don't fail on !of_device_is_compatible
-Message-ID: <20210913205429.GA1085962@roeck-us.net>
-References: <20210913104640.85839-1-mst@redhat.com>
- <20210913162308-mutt-send-email-mst@kernel.org>
+        id S244604AbhIMUz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240598AbhIMUzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 16:55:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A9E060F38;
+        Mon, 13 Sep 2021 20:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631566476;
+        bh=7L/OWAO6BBlfagMy79zsuNYBLLG3xgrbcgKW6Hv1xI8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=rTmhVuZEryO4b6nAFbM2j0Y+fpPjuBAnsuBWQSLTJy2HvZCp5g0gtsbc6rr9nZGZY
+         NB5yCW14K1MhARAk9GBo2g28JnVcWLUbcWNNzN8GU8uGW9xpbTx7zlZSjIq+BTF4K4
+         Swl147x3L5jeFXmm36e/MdXHlz1bjDPTABEXeCGbua/uldJAXcT6yWYjimvafyZBVJ
+         KclzL6D66SpyEmbj21obt9chK504MofCESbbiBVGZMuzEX6fdBI6glfBxi5y5j6FG+
+         GQ1hbdJuB7SiH3q7EndmHdZjacQ+Psv5SNM7EA6uNqm4JhxxoOhqXHSNYzdUEorQ6h
+         LOK4KNDJ/74kA==
+Date:   Mon, 13 Sep 2021 13:54:35 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Jan Beulich <jbeulich@suse.com>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 12/12] swiotlb-xen: this is PV-only on x86
+In-Reply-To: <543b446b-0143-ad32-99ed-d7a6f79381e8@suse.com>
+Message-ID: <alpine.DEB.2.21.2109131350150.10523@sstabellini-ThinkPad-T480s>
+References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com> <004feaef-f3bb-e4bb-fb10-f205a9f69f28@suse.com> <YThiyxG0d2tmCtb+@infradead.org> <alpine.DEB.2.21.2109101636470.10523@sstabellini-ThinkPad-T480s> <543b446b-0143-ad32-99ed-d7a6f79381e8@suse.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913162308-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 04:23:57PM -0400, Michael S. Tsirkin wrote:
-> On Mon, Sep 13, 2021 at 06:47:52AM -0400, Michael S. Tsirkin wrote:
-> > A recent change checking of_device_is_compatible on probe broke some
-> > powerpc/pseries setups. Apparently there virtio devices do not have a
-> > "compatible" property - they are matched by PCI vendor/device ids.
+On Mon, 13 Sep 2021, Jan Beulich wrote:
+> On 11.09.2021 01:48, Stefano Stabellini wrote:
+> > On Wed, 8 Sep 2021, Christoph Hellwig wrote:
+> >> On Tue, Sep 07, 2021 at 02:13:21PM +0200, Jan Beulich wrote:
+> >>> The code is unreachable for HVM or PVH, and it also makes little sense
+> >>> in auto-translated environments. On Arm, with
+> >>> xen_{create,destroy}_contiguous_region() both being stubs, I have a hard
+> >>> time seeing what good the Xen specific variant does - the generic one
+> >>> ought to be fine for all purposes there. Still Arm code explicitly
+> >>> references symbols here, so the code will continue to be included there.
+> >>
+> >> Can the Xen/arm folks look into that?  Getting ARM out of using
+> >> swiotlb-xen would be a huge step forward cleaning up some DMA APIs.
 > > 
-> > Let's just skip of_node setup but proceed with initialization like we
-> > did previously.
+> > On ARM swiotlb-xen is used for a different purpose compared to x86.
 > > 
-> > Fixes: 694a1116b405 ("virtio: Bind virtio device to device-tree node")
-> > Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Viresh Kumar <viresh.kumar@linaro.org>
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > ---
+> > Many ARM SoCs still don't have an IOMMU covering all DMA-mastering
+> > devices (e.g. Raspberry Pi 4). As a consequence we map Dom0 1:1 (guest
+> > physical == physical address).
+> > 
+> > Now if it was just for Dom0, thanks to the 1:1 mapping, we wouldn't need
+> > swiotlb-xen. But when we start using PV drivers to share the network or
+> > disk between Dom0 and DomU we are going to get DomU pages mapped in
+> > Dom0, we call them "foreign pages".  They are not mapped 1:1. It can
+> > happen that one of these foreign pages are used for DMA operations
+> > (e.g. related to the NIC). swiotlb-xen is used to detect these
+> > situations and translate the guest physical address to physical address
+> > of foreign pages appropriately.
 > 
-> 
-> Guenter could you take a look at this patch pls? Does it help?
-> 
-> 
-I confirmed that this patch fixes the problem. I replied in that thread.
+> Hmm, you say "translate", which isn't my understanding of swiotlb's
+> purpose. As per my understanding swiotlb instead double buffers data
+> such that is becomes accessible, or suitably arranges underlying
+> machine addresses. The latter part is clearly a PV-only thing, unused
+> by Arm as can be seen by there not being any use of XENMEM_exchange.
+> So it must be the former part that you're talking about, but that's
+> also the purpose of the non-Xen swiotlb code. If only for my own
+> education and understanding, could you point me at the difference
+> between swiotlb-xen and generic swiotlb which addresses this specific
+> aspect of Arm behavior?
 
-Thanks,
-Guenter
-
-> 
-> > Arnd could you help review this pls? Viresh is on vacation.
-> > 
-> >  drivers/virtio/virtio.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> > index c46cc1fbc7ae..19a70a2361b4 100644
-> > --- a/drivers/virtio/virtio.c
-> > +++ b/drivers/virtio/virtio.c
-> > @@ -347,8 +347,13 @@ static int virtio_device_of_init(struct virtio_device *dev)
-> >  	ret = snprintf(compat, sizeof(compat), "virtio,device%x", dev->id.device);
-> >  	BUG_ON(ret >= sizeof(compat));
-> >  
-> > +	/*
-> > +	 * On powerpc/pseries virtio devices are PCI devices so PCI
-> > +	 * vendor/device ids play the role of the "compatible" property.
-> > +	 * Simply don't init of_node in this case.
-> > +	 */
-> >  	if (!of_device_is_compatible(np, compat)) {
-> > -		ret = -EINVAL;
-> > +		ret = 0;
-> >  		goto out;
-> >  	}
-> >  
-> > -- 
-> > MST
-> 
+If you look at xen_swiotlb_map_page, you'll see the call to
+xen_phys_to_dma which eventually calls arch/arm/xen/p2m.c:__pfn_to_mfn.
+If everything goes well and we only need to do translation we'll "goto
+done". Otherwise, we'll fall back on a swiotlb buffer with
+swiotlb_tbl_map_single, the result of which also needs to be translated,
+see the second call to xen_phys_to_dma.
