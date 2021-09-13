@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BFC4096D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC11409264
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345346AbhIMPN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242611AbhIMPNu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:13:50 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271F7C0C7017
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:03:05 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id s32so8128685qtc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YEvIyYeLDXUpTcJZWMj983nbdS1DgqFIWLgNvEi4/Kc=;
-        b=UBFJb/UNvdtTIVCvaiSXEdqImCOifx2UsDbPJuKsWTYonXF9HcLGUZQpwlWpd+7Ah2
-         LbjHtrrJg6a3J/R57I6PCgelupBiAhdh/JpCa31goTnJMpfL2+kE5rf73AP7w2x/KFwH
-         lgy5G1OARWI5FY3AhcpvUpoSg58EALyljbwxgI+weoQOylI3a6qU5fnvQzSscdZ7ziPS
-         9tE3acRsny/FIP0kFA0yJ3G5wg2p1OIeF+jufoAYCIsI3iGfGP1kN/lmBrlPC8qdy9DU
-         CaFmTTWKf/xb3P9MijywkcnPoO/gLMAVIG5zTXYDBhiDQpCIgsHACL54WyeeTrlNyxrQ
-         E5iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YEvIyYeLDXUpTcJZWMj983nbdS1DgqFIWLgNvEi4/Kc=;
-        b=e0vMYQMQJ2Nvt4wbcNu6+gAHYJaAVcG83izEr43IHYZKY0PyihNHIcGegNmelh1kUo
-         w+5JkFy/s0ZSRmc8bzA4N7qwHD3nN6JP6JvTip+Al/+zMId1ZP7AQRYS7VkIq4iwtfIY
-         CEubTGCqFp8cWMGPBrsuVWOge+6W/gZYI96+lDYc7bmlRxbitw4eaKJ0bjAuMedSaA3n
-         Ap3uO3OE0bpSPh3u3QHWNW459qXH6NDKsBsHVULASPPbKwsYJagzr9gbhYC8HjhZLvkb
-         oVWHmj+XpkvI9nAk33gV8mG+3qSzATzEiHeytlG1K+lzlEKn33LxzhQ10kEwvqec0c3x
-         BimA==
-X-Gm-Message-State: AOAM531k7MQdwdCyIRuEvluvDpjIoAFPIwWKzzu9pROZTGz2A0gYn89p
-        UA3EG0bUHXpKNI0SNvDOQ8369Q==
-X-Google-Smtp-Source: ABdhPJwFd7EsMjZS09jyOS0QyiyESxT3hnj2v4ushFACgvIZP/sy5MgREfrUl8X2Mx5iMEb9dSRjVg==
-X-Received: by 2002:ac8:5f86:: with SMTP id j6mr9320639qta.11.1631541784302;
-        Mon, 13 Sep 2021 07:03:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id b15sm5219812qka.107.2021.09.13.07.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 07:03:03 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mPmY2-00GTN6-Sz; Mon, 13 Sep 2021 11:03:02 -0300
-Date:   Mon, 13 Sep 2021 11:03:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     peterhuewe@gmx.de, jarkko@kernel.org,
-        Eckert.Florian@googlemail.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] tpm/tpm_i2c_infineon: Fix init endian vendor check
-Message-ID: <20210913140302.GE3544071@ziepe.ca>
-References: <20210913120521.18572-1-fe@dev.tdt.de>
- <20210913130210.GD3544071@ziepe.ca>
- <690f5a5f846c4ef966713b4970d07737@dev.tdt.de>
+        id S1344150AbhIMOLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:11:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55873 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344737AbhIMOHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:07:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="201859198"
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="201859198"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 07:06:00 -0700
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="551655993"
+Received: from holdensm-mobl.amr.corp.intel.com (HELO [10.212.147.16]) ([10.212.147.16])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 07:06:00 -0700
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210913131153.1202354-2-pbonzini@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
+Date:   Mon, 13 Sep 2021 07:05:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <690f5a5f846c4ef966713b4970d07737@dev.tdt.de>
+In-Reply-To: <20210913131153.1202354-2-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 03:46:48PM +0200, Florian Eckert wrote:
-> Hello Jason,
-> 
-> > > The device works than as expected.
-> > > 
-> > > Signed-off-by: Florian Eckert <fe@dev.tdt.de>
-> > > v2:
-> > > * use variable type instead of le32_to_cpus function call
-> > >  drivers/char/tpm/tpm_i2c_infineon.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > And if you do this it need to be made sparse clean/etc
-> 
-> Sorry for the stupid question, but what exactly do you mean?
+On 9/13/21 6:11 AM, Paolo Bonzini wrote:
+> Windows expects all pages to be in uninitialized state on startup.
+> In order to implement this, we will need a ioctl that performs
+> EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor:
+> other possibilities, such as closing and reopening the device,
+> are racy.
 
-There is a tool called sparse that checks the endia notations and
-verfies correctness
+Hi Paolo,
 
-It will complain if you do
+How does this end up happening in the first place?
 
-__le32 x
+All enclave pages should start out on 'sgx_dirty_page_list' and
+ksgxd sanitizes them with EREMOVE before making them available.  That
+should cover EREMOVE after reboots while SGX pages are initialized,
+including kexec().
 
-x = le32tocpu(x)
+sgx_vepc_free_page() should do the same for pages that a guest not not
+clean up properly.
 
-you neeed another variable to store the cpu version
+sgx_encl_free_epc_page() does an EREMOVE after a normal enclave has used
+a page.
 
-Jason 
+Those are the only three cases that I can think of.  So, it sounds like
+one of those is buggy, or there's another unexpected path out there.
+Ultimately, I think it would be really handy if we could do this EREMOVE
+implicitly and without any new ABI.
