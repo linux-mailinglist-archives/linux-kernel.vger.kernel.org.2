@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CC6409CB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA37409CB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241664AbhIMTNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:13:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39372 "EHLO mail.kernel.org"
+        id S241700AbhIMTNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241529AbhIMTNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:13:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79D2C60C40;
-        Mon, 13 Sep 2021 19:11:50 +0000 (UTC)
+        id S241533AbhIMTNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:13:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D703D60F26;
+        Mon, 13 Sep 2021 19:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631560311;
-        bh=fGJW8cKB6KxYOgmGCwco1CVxr5lwPCVcEaYhwvaGZV8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LCDiG/bdolhP9aoaoH2EEAYFPWRWAEP409P74fmvwyARbjM6ozclMrlTDjmlb59qu
-         LVfSVzA6MxLEIHXmPKdqMUFGAKkYWb2L9vDBv7F0SS6kHMeogI60RTqWqpS1etIDSu
-         kd3qzBJQ10SQRSH3WjC19NnedcoYibxWeaK1q/XI/FqUrXaZiuvKVbPzqkJSy06wRk
-         Syl+bHevd8iC4BqrxrQ4R7GQKhvCsw67oCXr6PX97WfowCutpSObADiWd6qj1wAcrK
-         Z1mkMltpdhbn/QBt4Yoo5hH5HyHtz0tmwlMsozcFz4yHCchtGXHzLFaAqBo1BFmJ3C
-         L2i2fJqPrSjwA==
+        s=k20201202; t=1631560312;
+        bh=iULRhj5KLnHd/+v+YrzdE0hblCEvh1be8oqNRSVk52c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=E4fqUJvqzNqHZOkl8c6BmFNOrE3VCwbQZyFs7KQSf0v2QcNrx5ZudrITqPrwjk9ib
+         ExMksEMAcHfJIgSXL1PXqaOlgYgLp+BUJkzRbTKCU47s1cA1NigIfPRjfXGdYwuRe4
+         duwW08ngj7PS/u0IQyLh/JBpYgKCeTzYQvbCn50/9hC6mNqybjvEd5xNID8qfP1AKv
+         1hpGLYTmHow9gJhVTFVUF7aSDA7Lf+27WZPajze9k3HVVXyPn709VTUpo28Od6tty6
+         pBN0a81CaFsc07iVUCiTkvodtQPFuZueBQSsABOLx1gOE9UtNO5hxTXZXp6LEyDjjV
+         eh7RnjAfTrC2w==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 1/2] habanalabs: rate limit multi CS completion errors
-Date:   Mon, 13 Sep 2021 22:11:45 +0300
-Message-Id: <20210913191146.92956-1-ogabbay@kernel.org>
+Cc:     farah kassabri <fkassabri@habana.ai>
+Subject: [PATCH 2/2] habanalabs: fix wait offset handling
+Date:   Mon, 13 Sep 2021 22:11:46 +0300
+Message-Id: <20210913191146.92956-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210913191146.92956-1-ogabbay@kernel.org>
+References: <20210913191146.92956-1-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: farah kassabri <fkassabri@habana.ai>
 
-As user can send wrong arguments to multi CS API, we rate limit
-the amount of errors dumped to dmesg, in addition we change the
-severity to warning.
+Add handling for case where the user doesn't set wait offset,
+and keeps it as 0. In such a case the driver will decrement one
+from this zero value which will cause the code to wait for
+wrong number of signals.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
+The solution is to treat this case as in legacy wait cs,
+and wait for the next signal.
+
+Signed-off-by: farah kassabri <fkassabri@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/command_submission.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/common/hw_queue.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index 5b7de857fbc1..a4ed91ed991d 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -2630,7 +2630,8 @@ static int hl_multi_cs_wait_ioctl(struct hl_fpriv *hpriv, void *data)
- 		 * completed after the poll function.
- 		 */
- 		if (!mcs_data.completion_bitmap) {
--			dev_err(hdev->dev, "Multi-CS got completion on wait but no CS completed\n");
-+			dev_warn_ratelimited(hdev->dev,
-+				"Multi-CS got completion on wait but no CS completed\n");
- 			rc = -EFAULT;
- 		}
- 	}
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index 76b7de8f1406..0743319b10c7 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -437,6 +437,7 @@ void hl_hw_queue_encaps_sig_set_sob_info(struct hl_device *hdev,
+ 			struct hl_cs_compl *cs_cmpl)
+ {
+ 	struct hl_cs_encaps_sig_handle *handle = cs->encaps_sig_hdl;
++	u32 offset = 0;
+ 
+ 	cs_cmpl->hw_sob = handle->hw_sob;
+ 
+@@ -446,9 +447,13 @@ void hl_hw_queue_encaps_sig_set_sob_info(struct hl_device *hdev,
+ 	 * set offset 1 for example he mean to wait only for the first
+ 	 * signal only, which will be pre_sob_val, and if he set offset 2
+ 	 * then the value required is (pre_sob_val + 1) and so on...
++	 * if user set wait offset to 0, then treat it as legacy wait cs,
++	 * wait for the next signal.
+ 	 */
+-	cs_cmpl->sob_val = handle->pre_sob_val +
+-			(job->encaps_sig_wait_offset - 1);
++	if (job->encaps_sig_wait_offset)
++		offset = job->encaps_sig_wait_offset - 1;
++
++	cs_cmpl->sob_val = handle->pre_sob_val + offset;
+ }
+ 
+ static int init_wait_cs(struct hl_device *hdev, struct hl_cs *cs,
 -- 
 2.17.1
 
