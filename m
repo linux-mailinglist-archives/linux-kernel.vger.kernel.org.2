@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F57D4099E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F084099F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbhIMQt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:49:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238219AbhIMQt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:49:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C657760F26;
-        Mon, 13 Sep 2021 16:48:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631551691;
-        bh=dgZoCqLRf7yYWTZPvAE8JfsdZ8bcTrri+VeUGd3Iql0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J7krykSzHQ2oEYzswpeqbkf6gI29sZwJe/8kAJPOfbPnLkn2PamRUl9wC/DzveXLP
-         GhNrMiSeoscNezVWufm1PfIf8FfSYdsQikMUOe1jDqDOpG6rjReQ8BpZBEEcjwAZhn
-         gYlWxk+2izBA93AwNrdz5EcHCLNkjkcVnjHpe4eM=
-Date:   Mon, 13 Sep 2021 18:48:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] x86/uaccess: Fix 32-bit __get_user_asm_u64() when
- CC_HAS_ASM_GOTO_OUTPUT=y
-Message-ID: <YT+AyR2JHh02Q0B1@kroah.com>
-References: <20210913163547.5156-1-will@kernel.org>
+        id S239377AbhIMQvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:51:10 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:54208 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238219AbhIMQvJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:51:09 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 53B381D40;
+        Mon, 13 Sep 2021 19:49:52 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1631551792;
+        bh=QZCRnWQdSHor/Ryg4X8KggMjh3St8DKV+rc3R8trBA4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=WqfsCsTqMjbyHD8t0J8VAvE9do5+UH2ejGWlKYi9q03mf70M5QRP9s123m/aA2dAO
+         UN/E983ZwBmfxYE9VQw6SlvS1yQ3BXv7VjrjERpShXtpYVLRLextEveYeLKlcmxZ3O
+         tQUG7SLzPK+x3bPj8Wd4qTkS05Coqo09XExv2RUM=
+Received: from [192.168.211.103] (192.168.211.103) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 13 Sep 2021 19:49:51 +0300
+Message-ID: <472ecb1c-578d-137a-9ec1-182642dac037@paragon-software.com>
+Date:   Mon, 13 Sep 2021 19:49:51 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913163547.5156-1-will@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH][next] fs/ntfs3: Remove redundant initialization of
+ variable err
+Content-Language: en-US
+To:     Colin King <colin.king@canonical.com>, <ntfs3@lists.linux.dev>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210903132458.14342-1-colin.king@canonical.com>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210903132458.14342-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.103]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 05:35:47PM +0100, Will Deacon wrote:
-> Commit 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
-> added an optimised version of __get_user_asm() for x86 using 'asm goto'.
+
+
+On 03.09.2021 16:24, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Like the non-optimised code, the 32-bit implementation of 64-bit get_user()
-> expands to a pair of 32-bit accesses. Unlike the non-optimised code, the
-> _original_ pointer is incremented to copy the high word instead of loading
-> through a new pointer explicitly constructed to point at a 32-bit type.
-> Consequently, if the pointer points at a 64-bit type then we end up
-> loading the wrong data for the upper 32-bits.
+> The variable err is being initialized with a value that is never read, it
+> is being updated later on. The assignment is redundant and can be removed.
 > 
-> This was observed as a mount() failure in Android targetting i686 after
-> b0cfcdd9b967 ("d_path: make 'prepend()' fill up the buffer exactly on
-> overflow") because the call to copy_from_kernel_nofault() from
-> prepend_copy() ends up in __get_kernel_nofault() and casts the source
-> pointer to a 'u64 __user *'. An attempt to mount at "/debug_ramdisk"
-> therefore ends up failing trying to mount "/debumdismdisk".
-> 
-> Use the existing '__gu_ptr' source pointer to unsigned int for 32-bit
-> __get_user_asm_u64() instead of the original pointer.
-> 
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Bill Wendling <morbo@google.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Fixes: 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
-> Signed-off-by: Will Deacon <will@kernel.org>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  arch/x86/include/asm/uaccess.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  fs/ntfs3/index.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-> index c9fa7be3df82..5c95d242f38d 100644
-> --- a/arch/x86/include/asm/uaccess.h
-> +++ b/arch/x86/include/asm/uaccess.h
-> @@ -301,8 +301,8 @@ do {									\
->  	unsigned int __gu_low, __gu_high;				\
->  	const unsigned int __user *__gu_ptr;				\
->  	__gu_ptr = (const void __user *)(ptr);				\
-> -	__get_user_asm(__gu_low, ptr, "l", "=r", label);		\
-> -	__get_user_asm(__gu_high, ptr+1, "l", "=r", label);		\
-> +	__get_user_asm(__gu_low, __gu_ptr, "l", "=r", label);		\
-> +	__get_user_asm(__gu_high, __gu_ptr+1, "l", "=r", label);	\
->  	(x) = ((unsigned long long)__gu_high << 32) | __gu_low;		\
->  } while (0)
->  #else
-> -- 
-> 2.33.0.309.g3052b89438-goog
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> index 0daca9adc54c..b1175542d854 100644
+> --- a/fs/ntfs3/index.c
+> +++ b/fs/ntfs3/index.c
+> @@ -1401,7 +1401,7 @@ int indx_find_raw(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  static int indx_create_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  				CLST *vbn)
+>  {
+> -	int err = -ENOMEM;
+> +	int err;
+>  	struct ntfs_sb_info *sbi = ni->mi.sbi;
+>  	struct ATTRIB *bitmap;
+>  	struct ATTRIB *alloc;
 > 
 
-Tested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Colin, thanks for the patch - applied it.
 
-Thanks for finding and fixing this!
-
-greg k-h
+Best regards.
