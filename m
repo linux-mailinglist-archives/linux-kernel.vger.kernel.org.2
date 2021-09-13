@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1587F408AF5
+	by mail.lfdr.de (Postfix) with ESMTP id 61EE5408AF6
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239968AbhIMMWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:22:12 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:38856 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239954AbhIMMWH (ORCPT
+        id S239980AbhIMMWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239960AbhIMMWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 08:22:07 -0400
-Received: by mail-oi1-f177.google.com with SMTP id bd1so13741686oib.5;
-        Mon, 13 Sep 2021 05:20:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6LkH8BDThjwDkIUVEv4G7HiQl/Op2m1UQzXKeVLvZVY=;
-        b=ma69WOLkKY3N/lvfdKwQt+0BdJu/LcwtM/OlgQ4/XX++Id9tDEqc+1iWd+4WFdmUm4
-         V8azZRY6GziVJ/fw+dDqt6NPsbMZHidNfurtxDoB/RbY00jH/ZIlD82gj+xIs7ULW1qL
-         1DTTYsjssn1UONNlCdpoXy/TDB5+tZNv308+iNxlBiHWMM9JpVPexWvHtxTfvY9ylueq
-         h8kfQJR7149stKgtllG1ojjx5zSnpG1csBNATS+kS3nsnq2BhHqTJizwyXkv2JUPojjL
-         vgILFqxI6z4oNDK1ddR+Yc7SEJ0yV5dtnY49VH5NdJmAYALb4TYg7FW+K7m3acS3rG3z
-         goYw==
-X-Gm-Message-State: AOAM532ScLd47GzjMmkCi0tScxMUgxTyAjI2nyqiDi2KrRZjorqBUIxs
-        cEJQOR6FEx0JG4lXCxio3DpXySooOtYWoGHSYZabRmdf
-X-Google-Smtp-Source: ABdhPJx/9hiTq1jXolVCkmhHWNiQy0NxIAlRexLuKACbIOgNqoBUilaDDEqAUxmlsrQtCOTDiFmH1XeeM81nR7ywEYk=
-X-Received: by 2002:aca:afcd:: with SMTP id y196mr7489386oie.71.1631535651501;
- Mon, 13 Sep 2021 05:20:51 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A52C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:20:51 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631535649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=va9U/DHN0OpTdBgoqRQ22J4VTELc5Rpzm1TiWJW6QJY=;
+        b=DcpoVEnTVTkyr3ydMA/99Dppf/CBEwZOguQbtlQqe6eOay3r+IHA7kCAGZVgyXKJEefptF
+        m0T9SLUs3ABhRfnOJ+g7GLnHRfurZLe7a7IwVEgf5dvoU6yhSSMDRqpkQOQu5nyH+54X1/
+        fX+xdkpbPhPbXtcdbtc1KgwIeZ+nEPcI9lqLuEbOhnSOywM3vzwL9wZs39hmWAo6vWRBUf
+        cKPUO6VF58pshpJdhvqrGA8vnLZiXlloaMIBmcq5mIY//frmglWtBN4aUbHti6RjXgfbot
+        gfRUS0TbmtIUi7Eh0xiVdv1ZK2p84Qp0Jp22/oIHiVe2BgbYpWsnvGEiAacCtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631535649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=va9U/DHN0OpTdBgoqRQ22J4VTELc5Rpzm1TiWJW6QJY=;
+        b=OjrtKrYvObEoH9DQb8bUfurrCAGOFSdORchdpbpnvXY2iSFyDcrsViYYUf3f5R9SosV6/o
+        y1dGv68bMwAjjOAw==
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     peterz@infradead.org, mingo@kernel.org, rostedt@goodmis.org,
+        longman@redhat.com, bigeasy@linutronix.de, boqun.feng@gmail.com,
+        dave@stgolabs.net, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 2/2] locking/rwbase_rt: Lockless reader waking up a writer
+In-Reply-To: <20210901222825.6313-3-dave@stgolabs.net>
+References: <20210901222825.6313-1-dave@stgolabs.net>
+ <20210901222825.6313-3-dave@stgolabs.net>
+Date:   Mon, 13 Sep 2021 14:20:49 +0200
+Message-ID: <87ilz4fyzi.ffs@tglx>
 MIME-Version: 1.0
-References: <20210909120116.150912-1-sashal@kernel.org> <20210909120116.150912-24-sashal@kernel.org>
- <20210910074535.GA454@amd> <YTy/etsK39d/+Zhh@sashalap>
-In-Reply-To: <YTy/etsK39d/+Zhh@sashalap>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 13 Sep 2021 14:20:35 +0200
-Message-ID: <CAJZ5v0hze08S1ORK7Pwa3N5TBX5Jj=jeKqye=wv7dpzDArss3Q@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.4 24/35] ACPICA: iASL: Fix for WPBT table with
- no command-line arguments
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Bob Moore <robert.moore@intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 4:38 PM Sasha Levin <sashal@kernel.org> wrote:
->
-> On Fri, Sep 10, 2021 at 09:45:36AM +0200, Pavel Machek wrote:
-> >Hi!
-> >
-> >> Handle the case where the Command-line Arguments table field
-> >> does not exist.
-> >>
-> >> ACPICA commit d6487164497fda170a1b1453c5d58f2be7c873d6
-> >
-> >I'm not sure what is going on here, but adding unused definition will
-> >not make any difference for 4.4 users, so we don't need this in
-> >-stable...?
->
-> Ugh, dropped, thanks!
->
-> I wonder what this patch actually does upstream.
+On Wed, Sep 01 2021 at 15:28, Davidlohr Bueso wrote:
+> diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+> index 4ba15088e640..3444bc709973 100644
+> --- a/kernel/locking/rwbase_rt.c
+> +++ b/kernel/locking/rwbase_rt.c
+> @@ -141,6 +141,7 @@ static void __sched __rwbase_read_unlock(struct rwbase_rt *rwb,
+>  {
+>  	struct rt_mutex_base *rtm = &rwb->rtmutex;
+>  	struct task_struct *owner;
+> +	DEFINE_WAKE_Q(wake_q);
+>  
+>  	raw_spin_lock_irq(&rtm->wait_lock);
+>  	/*
+> @@ -151,9 +152,10 @@ static void __sched __rwbase_read_unlock(struct rwbase_rt *rwb,
+>  	 */
+>  	owner = rt_mutex_owner(rtm);
+>  	if (owner)
+> -		wake_up_state(owner, state);
+> +		wake_q_add(&wake_q, owner);
 
-There are AML compiler changes in it, but the compiler is not included
-into the Linux kernel.
+That's broken for rw_locks. See commit 456cfbc65cd072f4f53936ee5a37eb1447a7d3ba.
+
+Thanks,
+
+        tglx
