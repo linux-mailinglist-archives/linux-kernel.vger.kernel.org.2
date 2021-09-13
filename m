@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FA9408FBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0697F408FD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242619AbhIMNqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:46:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
+        id S242104AbhIMNrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:47:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241737AbhIMNkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:40:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3412E613DB;
-        Mon, 13 Sep 2021 13:29:23 +0000 (UTC)
+        id S242650AbhIMNmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:42:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6909B61354;
+        Mon, 13 Sep 2021 13:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539763;
-        bh=VnAj9P3cej2pcKGGmXvcafGjL0xi4tKmJhucbnaHBqE=;
+        s=korg; t=1631539792;
+        bh=n1fzEh8BglQyvMQT+P5Pol8uCH4i0Nhg/xP7DY9oYuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KX4KlwWzpOF6z/m1yvbj5/Ze/q+3Oiye6MjOI0OArOeNyRD7QykQXUXIjgjbcZtlQ
-         advp2NwY6U9VG4Bf2WuWoiGUQXxuUjzXVqyXgUuIvY0oEHJMKpXxglZjGi/QCJRMS1
-         zLfrcYcQq8eFOPpx3vqhJa/5/am7K+ntIVz4yTnI=
+        b=W3+P0QH3liXIgXHxCjsTPpORiZ9SCanefXfSi2GzcsbfySOZJvbwxDQtYZ5tyQX2T
+         BOs45eZyl8ZZC1bpV+d/Kgtyk2Tf5Ha3HdeaDrk/kKn+MckvCWAdPw7csnksZSUDsI
+         7VGgemjfBQ/vXDMDigxwQUUPA7lQrCfD1XSEeFIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        stable@vger.kernel.org,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 134/236] drm/msm/mdp4: move HW revision detection to earlier phase
-Date:   Mon, 13 Sep 2021 15:13:59 +0200
-Message-Id: <20210913131104.919333814@linuxfoundation.org>
+Subject: [PATCH 5.10 135/236] drm/msm/dpu: make dpu_hw_ctl_clear_all_blendstages clear necessary LMs
+Date:   Mon, 13 Sep 2021 15:14:00 +0200
+Message-Id: <20210913131104.957159343@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -41,115 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit 4af4fc92939dc811ef291c0673946555aa4fb71f ]
+[ Upstream commit a41cdb693595ae1904dd793fc15d6954f4295e27 ]
 
-Fixes if condition, which never worked inside mdp4_kms_init, since
-HW detection has been done later in mdp4_hw_init.
+dpu_hw_ctl_clear_all_blendstages() clears settings for the few first LMs
+instead of mixers actually used for the CTL. Change it to clear
+necessary data, using provided mixer ids.
 
-Fixes: eb2b47bb9a03 ("drm/msm/mdp4: only use lut_clk on mdp4.2+")
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210705231641.315804-2-david@ixit.cz
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20210704230519.4081467-1-dmitry.baryshkov@linaro.org
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 45 ++++++++++++------------
- 1 file changed, 22 insertions(+), 23 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-index b73af9ddcf72..c1c152e39918 100644
---- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-+++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
-@@ -19,23 +19,12 @@ static int mdp4_hw_init(struct msm_kms *kms)
- {
- 	struct mdp4_kms *mdp4_kms = to_mdp4_kms(to_mdp_kms(kms));
- 	struct drm_device *dev = mdp4_kms->dev;
--	u32 major, minor, dmap_cfg, vg_cfg;
-+	u32 dmap_cfg, vg_cfg;
- 	unsigned long clk;
- 	int ret = 0;
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+index 758c355b4fd8..f8c7100a8acb 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+@@ -340,10 +340,12 @@ static void dpu_hw_ctl_clear_all_blendstages(struct dpu_hw_ctl *ctx)
+ 	int i;
  
- 	pm_runtime_get_sync(dev->dev);
- 
--	read_mdp_hw_revision(mdp4_kms, &major, &minor);
--
--	if (major != 4) {
--		DRM_DEV_ERROR(dev->dev, "unexpected MDP version: v%d.%d\n",
--				major, minor);
--		ret = -ENXIO;
--		goto out;
--	}
--
--	mdp4_kms->rev = minor;
--
- 	if (mdp4_kms->rev > 1) {
- 		mdp4_write(mdp4_kms, REG_MDP4_CS_CONTROLLER0, 0x0707ffff);
- 		mdp4_write(mdp4_kms, REG_MDP4_CS_CONTROLLER1, 0x03073f3f);
-@@ -81,7 +70,6 @@ static int mdp4_hw_init(struct msm_kms *kms)
- 	if (mdp4_kms->rev > 1)
- 		mdp4_write(mdp4_kms, REG_MDP4_RESET_STATUS, 1);
- 
--out:
- 	pm_runtime_put_sync(dev->dev);
- 
- 	return ret;
-@@ -426,6 +414,7 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev)
- 	struct msm_kms *kms = NULL;
- 	struct msm_gem_address_space *aspace;
- 	int irq, ret;
-+	u32 major, minor;
- 
- 	mdp4_kms = kzalloc(sizeof(*mdp4_kms), GFP_KERNEL);
- 	if (!mdp4_kms) {
-@@ -482,15 +471,6 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev)
- 	if (IS_ERR(mdp4_kms->pclk))
- 		mdp4_kms->pclk = NULL;
- 
--	if (mdp4_kms->rev >= 2) {
--		mdp4_kms->lut_clk = devm_clk_get(&pdev->dev, "lut_clk");
--		if (IS_ERR(mdp4_kms->lut_clk)) {
--			DRM_DEV_ERROR(dev->dev, "failed to get lut_clk\n");
--			ret = PTR_ERR(mdp4_kms->lut_clk);
--			goto fail;
--		}
--	}
--
- 	mdp4_kms->axi_clk = devm_clk_get(&pdev->dev, "bus_clk");
- 	if (IS_ERR(mdp4_kms->axi_clk)) {
- 		DRM_DEV_ERROR(dev->dev, "failed to get axi_clk\n");
-@@ -499,8 +479,27 @@ struct msm_kms *mdp4_kms_init(struct drm_device *dev)
+ 	for (i = 0; i < ctx->mixer_count; i++) {
+-		DPU_REG_WRITE(c, CTL_LAYER(LM_0 + i), 0);
+-		DPU_REG_WRITE(c, CTL_LAYER_EXT(LM_0 + i), 0);
+-		DPU_REG_WRITE(c, CTL_LAYER_EXT2(LM_0 + i), 0);
+-		DPU_REG_WRITE(c, CTL_LAYER_EXT3(LM_0 + i), 0);
++		enum dpu_lm mixer_id = ctx->mixer_hw_caps[i].id;
++
++		DPU_REG_WRITE(c, CTL_LAYER(mixer_id), 0);
++		DPU_REG_WRITE(c, CTL_LAYER_EXT(mixer_id), 0);
++		DPU_REG_WRITE(c, CTL_LAYER_EXT2(mixer_id), 0);
++		DPU_REG_WRITE(c, CTL_LAYER_EXT3(mixer_id), 0);
  	}
+ }
  
- 	clk_set_rate(mdp4_kms->clk, config->max_clk);
--	if (mdp4_kms->lut_clk)
-+
-+	read_mdp_hw_revision(mdp4_kms, &major, &minor);
-+
-+	if (major != 4) {
-+		DRM_DEV_ERROR(dev->dev, "unexpected MDP version: v%d.%d\n",
-+			      major, minor);
-+		ret = -ENXIO;
-+		goto fail;
-+	}
-+
-+	mdp4_kms->rev = minor;
-+
-+	if (mdp4_kms->rev >= 2) {
-+		mdp4_kms->lut_clk = devm_clk_get(&pdev->dev, "lut_clk");
-+		if (IS_ERR(mdp4_kms->lut_clk)) {
-+			DRM_DEV_ERROR(dev->dev, "failed to get lut_clk\n");
-+			ret = PTR_ERR(mdp4_kms->lut_clk);
-+			goto fail;
-+		}
- 		clk_set_rate(mdp4_kms->lut_clk, config->max_clk);
-+	}
- 
- 	pm_runtime_enable(dev->dev);
- 	mdp4_kms->rpm_enabled = true;
 -- 
 2.30.2
 
