@@ -2,126 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15216409990
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2294F409994
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238130AbhIMQmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhIMQmg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:42:36 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55202C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:41:20 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id r3so18436050ljc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:41:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LEgn/zBUCAYLpfQi4V6xIhWmiywfHNfRtMEnwO6kR+c=;
-        b=syDyX7vgd0a0s0H8E39DhdZAxxIacRGmImxZXPDkqrsFtuRdtZ01nc7oe6QkiK7+kF
-         9AO+KH8UbGbL3V7FT3Ua1GNtC+Oqfy81iaYdeZQda2WHE9WE91MM+TrlUUljGjPFP/iy
-         OfKPLyTPMSMJLH7KkBvSf4QmVWSfWCE7LkZjGqHuzLJpD99IzLkzz1tC7wNRkkBNr1fs
-         iVZm2d807al1PKNfLkShegkP7FCmW34W1Cor9RwrItg3Udt3yPx7WptLAaU4a9qjRcgy
-         I3ZMgZzVBY5nwcfJPFVB+fDMteiMcdiKm4g32qySvuthLfEensi7DTOmc+1ReI8Tuc+2
-         CbRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LEgn/zBUCAYLpfQi4V6xIhWmiywfHNfRtMEnwO6kR+c=;
-        b=syW/fvLCxEmcjAq7jU2LQ8hj6QeiC6u73qO2vxGQvZ2b9QJ4fVPG9WXfP9NUmwDywn
-         mg3yEbvYx79JtzkiFmB9FM4Fu27sHGY1c/FcXWB8oUmRd++CR4upxw+yycy+ahLtu5rC
-         SoepbNKn9UAabyjVz6sBRrFTV7tnz1Lwl3WOfSqf9W3Z/5YrdQsnh4I7bHBQrb7jTavH
-         lz1mfIp8gQ2sJ0rVgIA7+hNzg0ls6donNoNxC7d6WT8nsc3EHWTldRKpRmOL405pZI2g
-         4rJ+ppFxVe21QZSakarXwln0Q8+vfvuOTR9dUjuGzGaSqxX1pqFfXgGUCno5IyUOFxgV
-         jwFw==
-X-Gm-Message-State: AOAM531rtydX5DxYZ/2YlgByqdvRoER41avOAHErV0N+3WlNMwxSpa1Y
-        h5rbx3ee7Y3uqNelop0z8jxnBnPmD7zayAIGiYsrbQ==
-X-Google-Smtp-Source: ABdhPJw1F3Ec/Nrf+cKOsxps+U6oWgomqVmy/xP75QvywM17PB0ypAtnETT5CAR4/ekwkaBNqOPOHa0pLsjdau9tK+E=
-X-Received: by 2002:a2e:9ed9:: with SMTP id h25mr11034279ljk.40.1631551278401;
- Mon, 13 Sep 2021 09:41:18 -0700 (PDT)
+        id S238328AbhIMQoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:44:03 -0400
+Received: from mail-dm6nam10on2075.outbound.protection.outlook.com ([40.107.93.75]:28033
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233005AbhIMQoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:44:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QwwKtUHAfiZS+pu55/j6zepd2dC18A8dnZBha5iB/eAmBzSQOdU8jtaD5MWvBg8FcdC7HGQKyTvnf6QuFYSa5A22tD/yoozXgwuSeFFb74um3R+VIAoYvxwJbl5aUHDG7pKmzh6qsj6oCej+a9jAbThfSmbgU8u2p2e1Q+nWSQLVQw3+zdHJHFxvAEaGBXPINzPU0FhCdSlcj1P7NGKjtXmeSmVvEByUSn+zkNbarW6F+3DkiMuWC4+vMEBO70VJPvl/yKx1YsH/yjPbgk3fxE4BlhTz6Wr/LODqytg9vpCmM1hzY3Oy+jD7liYdBICsx34uNzrD8PuNUuruZyyBcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=Y24GIzHycxe8CiX91vmuqVr/0cXOQ3faa/wvaD8XkpQ=;
+ b=gxz8qH0dxA0OxM5iwfVb2+yqyAQ2pJLjYnrMqniia9oQLVFcwhkzsrK9bZ9iDtfex72RI3zATzTdQ+IqEoJ7QxK+Oz3sQqzVeqRR439Ufnw3BHXKHjxyVGKgDvIj1cIPyp3ird2OK6ZndQ4pOb2WCm90r5WGvKYaqbdsE69af74XXe1J8zgSM9/Q43JHJWj8wYN35s++EgE6Uctxs4L60AxN2UVay04ImQbk7Yx6HBx3Kofgh9B3S0Oha0GY3478X15xN5WrAdyUYOm8uaDwAWH+4xRwoqaisSXpSw57yXMHNW6b6ZQB6s+d8kSZ+xihy9i82pSlEDRRvNYcs6zqKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y24GIzHycxe8CiX91vmuqVr/0cXOQ3faa/wvaD8XkpQ=;
+ b=nb3xkboUBC7WxeITQSVyldq+RoWAJ2npkGeL2MQ8MUPx64qHAjn3FkJczcEsnBj3Gl8HLye93NfWgPaptNvInC9iwgDpNZrpRx21YDYtZu6JM7w53BosYRQrODU1U+eVzG+YJqiHgjuVHGoY2q0WaQq0YktM/oHfaLr9UBJuaaUpnf6hkbe+iXtwJAwHRFbxGErkXqERXnzZZncjO1JiqkA87aEuGdvPRydvqbctqBYjtS8o2pZiAgdVDKYVLxeyTTGfQdT1AM/28XBQe8k5P3naOThdZ/T6lt5LOuE3E4zkrKwvs8I/uMvOT5ig/x3f6c9aKewxladXtzyhloYd+w==
+Received: from DM5PR21CA0022.namprd21.prod.outlook.com (2603:10b6:3:ac::32) by
+ BYAPR12MB2663.namprd12.prod.outlook.com (2603:10b6:a03:72::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4478.20; Mon, 13 Sep 2021 16:42:43 +0000
+Received: from DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:ac:cafe::ef) by DM5PR21CA0022.outlook.office365.com
+ (2603:10b6:3:ac::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.1 via Frontend
+ Transport; Mon, 13 Sep 2021 16:42:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT032.mail.protection.outlook.com (10.13.173.93) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 16:42:43 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 13 Sep
+ 2021 09:42:42 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 13 Sep
+ 2021 16:42:42 +0000
+Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Mon, 13 Sep 2021 16:42:38 +0000
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <kuninori.morimoto.gx@renesas.com>
+CC:     <sharadg@nvidia.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH v2 00/13] Extend AHUB audio support for Tegra210 and later
+Date:   Mon, 13 Sep 2021 22:12:08 +0530
+Message-ID: <1631551342-25469-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210902215504.dSSfDKJZu%akpm@linux-foundation.org>
- <20210905124439.GA15026@xsang-OptiPlex-9020> <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
- <20210907033000.GA88160@shbuild999.sh.intel.com> <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
- <20210912111756.4158-1-hdanton@sina.com> <20210912132914.GA56674@shbuild999.sh.intel.com>
-In-Reply-To: <20210912132914.GA56674@shbuild999.sh.intel.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 13 Sep 2021 09:41:06 -0700
-Message-ID: <CALvZod4VbdSux5RaQuhqbC7ENm39UbdkJF8LhYedbFwHKyJgfw@mail.gmail.com>
-Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2ec0df9e-0139-43b5-61dc-08d976d58244
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2663:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB2663D989D838F68D5264A847A7D99@BYAPR12MB2663.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JRWORCnXtULT4Uiv+jSnxbLnvKMoMa3YDNHVpjqYfEvF6W1hCSP37r9gXDtzbM6VMRtfHPRyYFJFX3xX94ZvuWEFzu0QEHfSYRSXGPnmmNVWA+dW0nUgm517fdJbMNfdIxRbynoKVoZhibZXKRlRY84Mb0fFk/7l+ut13KtPu5iXuHNURnrZJAVQFScTNsj1xvLG2p2yY11jOiZVDPHTWb+7PEPMkXwbDPRrzE4CbgX36mlaYWDKHq60w8ITErfrDF9R4aEFDK8EPawze1Lz6pVzTnw++flZJ1GMbfSEy3J87zCKJ2hRGs04vNCm29UTVm4iu24Yzzkjpku8qTkl57yPVwqtqxrgEGt1w+hB1EMYvyCDsDD7irlw+Y/YxUpRhDGyhQ9t3bV9zEdrmLooYHMCMTruTKvyWgKG3DEs9MyI23bWuQ2KlKRFxf4cjpk72AQ3Qn/Nvj3Iy7C/keVEU/G6y+nzDy74o/VUhZy32splO5dUfpwhi8mxojtHQHWORZ+SrxYv80gbY+RCocUrp8EzDbCMrhA1mLCZgHpNtCYYA5Se2gx5S7Npapf3M/FbPDxIBKF1npuva53S4v9LU1NIpCpqVkV5mpxsxkFRS+0QdVL0mEH3MWYf+gllWtyI0NKwTyrInOfBWVksJu7hKUBCC4pylwJsJRJ+df0R8YCEmjSh6/vXR3qsrxiIaVBaA+A/KqTIDgRfvoqNr9y4kAmetvhL5q3TMRgJx9piDEdkwSKjMgrivxx7KM3jE5f8CfvLXQ4KGsCqVZA5YlhwLKU7IZDAQHf7JBKSSkexeCXoBVNbGJPMu7XtmMsBwQ1eseezy0zgFwdPUp9fpQopNQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(356005)(82310400003)(8676002)(70586007)(508600001)(107886003)(6666004)(86362001)(5660300002)(47076005)(316002)(110136005)(26005)(7696005)(2906002)(336012)(36860700001)(966005)(426003)(54906003)(36756003)(2616005)(921005)(186003)(83380400001)(7636003)(7416002)(70206006)(4326008)(8936002)(21314003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 16:42:43.4027
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ec0df9e-0139-43b5-61dc-08d976d58244
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2663
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 6:29 AM Feng Tang <feng.tang@intel.com> wrote:
->
-> On Sun, Sep 12, 2021 at 07:17:56PM +0800, Hillf Danton wrote:
-> [...]
-> > > +// if (!(__this_cpu_inc_return(stats_flush_threshold) % MEMCG_CHARGE_BATCH))
-> > > +   if (!(__this_cpu_inc_return(stats_flush_threshold) % 128))
-> > >             queue_work(system_unbound_wq, &stats_flush_work);
-> > >  }
-> >
-> > Hi Feng,
-> >
-> > Would you please check if it helps fix the regression to avoid queuing a
-> > queued work by adding and checking an atomic counter.
->
-> Hi Hillf,
->
-> I just tested your patch, and it didn't recover the regression, but
-> just reduced it from -14% to around -13%, similar to the patch
-> increasing the batch charge number.
->
+Earlier as part of series [0], support for ADMAIF and I/O modules (such
+as I2S, DMIC and DSPK) was added. This series aims at exposing some of
+the AHUB internal modules (listed below), which can be used for audio
+pre or post processing.
 
-Thanks Hillf for taking a look and Feng for running the test.
+  * SFC (Sampling Frequency Converter)
+  * MVC (Master Volume Control)
+  * AMX (Audio Multiplexer)
+  * ADX (Audio Demultiplexer)
+  * Mixer
 
-This shows that parallel calls to queue_work() is not the issue (there
-is already a test and set at the start of queue_work()) but the actual
-work done by queue_work() is costly for this code path.
+These modules can be plugged into audio paths and relevant processing
+can be done. The MUX routes are extended to allow add or remove above
+modules in the path via mixer controls. This is similar to how specific
+ADMAIF channels are connected to relevant I/O module instances at the
+moment.
 
-I wrote a simple anon page fault nohuge c program, profiled it and it
-seems like queue_work() is significant enough.
+Some of these modules can alter PCM parameters. Consider example of
+resampler (44.1 -> 48 kHz) in the path.
 
-   - 51.00% do_anonymous_page
-      + 16.68% alloc_pages_vma
-        11.61% _raw_spin_lock
-      + 10.26% mem_cgroup_charge
-      - 5.25% lru_cache_add_inactive_or_unevictable
-         - 4.48% __pagevec_lru_add
-            - 3.71% __pagevec_lru_add_fn
-               - 1.74% __mod_lruvec_state
-                  - 1.60% __mod_memcg_lruvec_state
-                     - 1.35% queue_work_on
-                        - __queue_work
-                           - 0.93% wake_up_process
-                              - try_to_wake_up
-                                 - 0.82% ttwu_queue
-                                      0.61% ttwu_do_activate
-      - 2.97% page_add_new_anon_rmap
-         - 2.68% __mod_lruvec_page_state
-            - 2.48% __mod_memcg_lruvec_state
-               - 1.67% queue_work_on
-                  - 1.53% __queue_work
-                     - 1.25% wake_up_process
-                        - try_to_wake_up
-                           - 0.94% ttwu_queue
-                              + 0.70% ttwu_do_activate
-                 0.61% cgroup_rstat_updated
-        2.10% rcu_read_unlock_strict
-        1.40% cgroup_throttle_swaprate
+  aplay(44.1 kHz) -> ADMAIF -> SFC -> (48 kHz) I2S -> (48kHz) Codec
 
-However when I switch the batch size to 128, it goes away.
+The modules following SFC should be using converted sample rate and DAIs
+need to be configured accordingly. The audio-graph driver provides a
+mechanism to fixup the new parameters which can be specified in DT for a
+given DAI. Then core uses these new values via fixup callback and then
+pass it to respective DAIs hw_param() callback. The "convert-rate",
+described in [1], property can be used when there is rate conversion in
+the audio path. Similarly "convert-channels" can be used when there is
+channel conversion in the path. There is no "convert-xxx" property for
+sample size conversions. It can be added if necessary.
 
-Feng, do you see any change with 128 batch size for aim7 benchmark?
+[0] https://www.lkml.org/lkml/2020/7/21/1357
+[1] Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+
+
+Changelog
+=========
+
+v1 -> v2
+--------
+ * Put comments for soft reset application in the drivers.
+ * Split out mute/volume control logic in put() calls of MVC driver and
+   use separate callbacks for the respective kcontrols.
+ * Update kcontrol put() callback in MVC driver to return 1 whenever
+   there is change. Similar change is done in other drivers too.
+ * Use name-prefix.yaml reference for the driver documentation now.
+ * Add sound-name-prefix pattern for MIXER driver and use prefix
+   accordingly in DT.
+
+Sameer Pujar (13):
+  ASoC: soc-pcm: Don't reconnect an already active BE
+  ASoC: simple-card-utils: Increase maximum DAI links limit to 512
+  ASoC: audio-graph: Fixup CPU endpoint hw_params in a BE<->BE link
+  ASoC: dt-bindings: tegra: Few more Tegra210 AHUB modules
+  ASoC: tegra: Add routes for few AHUB modules
+  ASoC: tegra: Add Tegra210 based MVC driver
+  ASoC: tegra: Add Tegra210 based SFC driver
+  ASoC: tegra: Add Tegra210 based AMX driver
+  ASoC: tegra: Add Tegra210 based ADX driver
+  ASoC: tegra: Add Tegra210 based Mixer driver
+  arm64: defconfig: Enable few Tegra210 based AHUB drivers
+  arm64: tegra: Add few AHUB devices for Tegra210 and later
+  arm64: tegra: Extend APE audio support on Jetson platforms
+
+ .../bindings/sound/nvidia,tegra210-adx.yaml        |   76 +
+ .../bindings/sound/nvidia,tegra210-ahub.yaml       |   20 +
+ .../bindings/sound/nvidia,tegra210-amx.yaml        |   76 +
+ .../bindings/sound/nvidia,tegra210-mixer.yaml      |   74 +
+ .../bindings/sound/nvidia,tegra210-mvc.yaml        |   76 +
+ .../bindings/sound/nvidia,tegra210-sfc.yaml        |   73 +
+ arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts | 1554 ++++++++-
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           |  120 +
+ arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts | 1493 +++++++-
+ .../arm64/boot/dts/nvidia/tegra194-p3509-0000.dtsi | 1520 ++++++++-
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |  116 +
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts |  876 +++++
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts |  876 +++++
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           |   77 +
+ arch/arm64/configs/defconfig                       |    5 +
+ include/sound/simple_card_utils.h                  |    2 +-
+ sound/soc/generic/audio-graph-card.c               |    4 +-
+ sound/soc/soc-pcm.c                                |    4 +
+ sound/soc/tegra/Kconfig                            |   48 +
+ sound/soc/tegra/Makefile                           |   10 +
+ sound/soc/tegra/tegra210_adx.c                     |  531 +++
+ sound/soc/tegra/tegra210_adx.h                     |   72 +
+ sound/soc/tegra/tegra210_ahub.c                    |  511 ++-
+ sound/soc/tegra/tegra210_amx.c                     |  600 ++++
+ sound/soc/tegra/tegra210_amx.h                     |   93 +
+ sound/soc/tegra/tegra210_mixer.c                   |  674 ++++
+ sound/soc/tegra/tegra210_mixer.h                   |  100 +
+ sound/soc/tegra/tegra210_mvc.c                     |  645 ++++
+ sound/soc/tegra/tegra210_mvc.h                     |  117 +
+ sound/soc/tegra/tegra210_sfc.c                     | 3549 ++++++++++++++++++++
+ sound/soc/tegra/tegra210_sfc.h                     |   78 +
+ 31 files changed, 13647 insertions(+), 423 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-adx.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-amx.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mixer.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mvc.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-sfc.yaml
+ create mode 100644 sound/soc/tegra/tegra210_adx.c
+ create mode 100644 sound/soc/tegra/tegra210_adx.h
+ create mode 100644 sound/soc/tegra/tegra210_amx.c
+ create mode 100644 sound/soc/tegra/tegra210_amx.h
+ create mode 100644 sound/soc/tegra/tegra210_mixer.c
+ create mode 100644 sound/soc/tegra/tegra210_mixer.h
+ create mode 100644 sound/soc/tegra/tegra210_mvc.c
+ create mode 100644 sound/soc/tegra/tegra210_mvc.h
+ create mode 100644 sound/soc/tegra/tegra210_sfc.c
+ create mode 100644 sound/soc/tegra/tegra210_sfc.h
+
+-- 
+2.7.4
+
