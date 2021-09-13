@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B67409A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D237409A3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241495AbhIMRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:02:46 -0400
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:37416 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238966AbhIMRCp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:02:45 -0400
-Received: by mail-lf1-f42.google.com with SMTP id i4so5371323lfv.4;
-        Mon, 13 Sep 2021 10:01:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d+e1KGdaTcArSitzpQ5kAkfchGna7Wslk+nX3KrALFo=;
-        b=ki+ASjI1vAiV/VUCJ+3cKhQGgQdXL3Uk3DnvzxPIQjherERLDuAHdKA3UsaM97Fp4Q
-         A0EN3/Xv74aWwXG3PKzHm+6p+NuhOBDJYFTEFxGjYMqfEbn6hbj50Pli3MgKfxVNByOJ
-         KWm8rNM1lWBa8QV+glINd3OURpt/cvho623WLsfzC3qeJugXx0DCcP4HUY+GzYp+wbwf
-         NffSaeq1F+1P8fNX4BgZbld3ZuEec/g+aFVjRlYW70uZOKDKlruW6yJ2HvUcfpZ49IFq
-         2ACnVVzzOxy7WLQ9KdajWfPWrp052nfdX95QZ5UENUq6/DUWlkzlNe0HKIFTZ4nCK3lY
-         aRFQ==
-X-Gm-Message-State: AOAM531jy+D7Dm9/nKzbsGUu9aTxYjq5yNcaZf6LmGL7q+TC4d7GJYcD
-        LCvUuqRkR7kYQvE5pfOvQjgzuot6LSNoqQ==
-X-Google-Smtp-Source: ABdhPJwkTIRR0cDCPKbF2wqWn3ZUKN+3HxROqq4XRGtjmqDM38T0f/Gwj0bF5puD1mheNeEBXenWlg==
-X-Received: by 2002:a05:6512:118b:: with SMTP id g11mr9474546lfr.205.1631552487726;
-        Mon, 13 Sep 2021 10:01:27 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id d19sm380605lfa.252.2021.09.13.10.01.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 10:01:27 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id i4so5371198lfv.4;
-        Mon, 13 Sep 2021 10:01:27 -0700 (PDT)
-X-Received: by 2002:a05:6512:3d94:: with SMTP id k20mr9560866lfv.633.1631552486991;
- Mon, 13 Sep 2021 10:01:26 -0700 (PDT)
+        id S241318AbhIMRCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:02:38 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:40023 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239262AbhIMRCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 13:02:37 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H7XnC6dT6z9sTs;
+        Mon, 13 Sep 2021 19:01:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hAPUdYAfKEbK; Mon, 13 Sep 2021 19:01:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H7XnC5qdqz9sTr;
+        Mon, 13 Sep 2021 19:01:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B4FB38B76E;
+        Mon, 13 Sep 2021 19:01:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id J5CWsERj56uu; Mon, 13 Sep 2021 19:01:19 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.172])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 24FAC8B763;
+        Mon, 13 Sep 2021 19:01:19 +0200 (CEST)
+Subject: Re: [PATCH RESEND v3 4/6] signal: Add unsafe_copy_siginfo_to_user32()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631537060.git.christophe.leroy@csgroup.eu>
+ <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631537060.git.christophe.leroy@csgroup.eu>
+ <87r1dspj2c.fsf@disp2133>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <cf6e3669-1644-9611-6acc-781f46dd4f9e@csgroup.eu>
+Date:   Mon, 13 Sep 2021 19:01:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210831174822.83870-1-pedro@terraco.de> <8e7ff5a2-0629-228f-c9d5-35d39bf92ce2@xs4all.nl>
-In-Reply-To: <8e7ff5a2-0629-228f-c9d5-35d39bf92ce2@xs4all.nl>
-From:   Pedro Terra Delboni <pedro@terraco.de>
-Date:   Mon, 13 Sep 2021 14:01:15 -0300
-X-Gmail-Original-Message-ID: <CAHKDPP9J9Y1O2LDp1MYFtbuLGBcYcbJ2v9mP-H41e3zE0feFPw@mail.gmail.com>
-Message-ID: <CAHKDPP9J9Y1O2LDp1MYFtbuLGBcYcbJ2v9mP-H41e3zE0feFPw@mail.gmail.com>
-Subject: Re: [PATCH v7] media: vimc: Enable set resolution at the scaler src pad
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gabriela Bittencourt <gabrielabittencourt00@gmail.com>,
-        Gabriel Francisco Mandaji <gfmandaji@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87r1dspj2c.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hans,
 
-On Mon, Sep 13, 2021 at 5:28 AM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> Hi Pedro,
->
-> Your 'From' email is Pedro Terra <pedro@terraco.de>, but...
->
-> On 31/08/2021 19:48, Pedro Terra wrote:
-> > Modify the scaler subdevice to accept setting the resolution of the source
-> > pad (previously the source resolution would always be 3 times the sink for
-> > both dimensions). Now any resolution can be set at src (even smaller ones)
-> > and the sink video will be scaled to match it.
-> >
-> > Test example: With the vimc module up (using the default vimc topology)
-> > media-ctl -d platform:vimc -V '"Sensor A":0[fmt:SBGGR8_1X8/640x480]'
-> > media-ctl -d platform:vimc -V '"Debayer A":0[fmt:SBGGR8_1X8/640x480]'
-> > media-ctl -d platform:vimc -V '"Scaler":0[fmt:RGB888_1X24/640x480]'
-> > media-ctl -d platform:vimc -V '"Scaler":0[crop:(100,50)/400x150]'
-> > media-ctl -d platform:vimc -V '"Scaler":1[fmt:RGB888_1X24/300x700]'
-> > v4l2-ctl -z platform:vimc -d "RGB/YUV Capture" -v width=300,height=700
-> > v4l2-ctl -z platform:vimc -d "Raw Capture 0" -v pixelformat=BA81
-> > v4l2-ctl --stream-mmap --stream-count=10 -z platform:vimc -d "RGB/YUV Capture" \
-> >       -stream-to=test.raw
-> >
-> > The result will be a cropped stream that can be checked with the command
-> > ffplay -loglevel warning -v info -f rawvideo -pixel_format rgb24 \
-> >       -video_size "300x700" test.raw
-> >
-> > Co-developed-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
-> > Signed-off-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
-> > Co-developed-by: Gabriel Francisco Mandaji <gfmandaji@gmail.com>
-> > Signed-off-by: Gabriel Francisco Mandaji <gfmandaji@gmail.com>
-> > Signed-off-by: Pedro "pirate" Terra <pirate@terraco.de>
->
-> ... that differs from what is used in this Signed-off-by.
->
-> checkpatch.pl complains about that.
->
-> Which of the two should I use? I can fix it myself in the pull request,
-> but I need to know which one I should use.
-I would like to stay with pedro@terraco.de.
->
-> For future patches, please use consistent email addresses.
-I will, sorry for the trouble.
->
-> Regards,
->
->         Hans
 
-Thank you very much,
-Pedro
+Le 13/09/2021 à 17:54, Eric W. Biederman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> 
+>> In the same spirit as commit fb05121fd6a2 ("signal: Add
+>> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+>> copy_siginfo_to_user32() in order to use it within user access blocks.
+>>
+>> To do so, we need inline version of copy_siginfo_to_external32() as we
+>> don't want any function call inside user access blocks.
+> 
+> I don't understand.  What is wrong with?
+> 
+> #define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
+> 	struct compat_siginfo __user *__ucs_to = to;			\
+> 	const struct kernel_siginfo *__ucs_from = from;			\
+> 	struct compat_siginfo __ucs_new;				\
+> 									\
+> 	copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
+> 	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
+> 			    sizeof(struct compat_siginfo), label);	\
+> } while (0)
+
+As far as I understood, it is forbidden to call functions within user 
+access blocks.
+
+On powerpc it doesn't matter (yet), but as far as I understand x86 as a 
+tool called "objtool" to enforce that.
+
+
+> 
+> Your replacement of "memset(to, 0, sizeof(*to))" with
+> "struct compat_siginfo __ucs_new = {0}".  is actively unsafe as the
+> compiler is free not to initialize any holes in the structure to 0 in
+> the later case.
+
+Ah ? I didn't know that.
+Maybe we can make as exception for memset(). Or we can hard-code a 
+zeroizing loop.
+
+> 
+> Is there something about the unsafe macros that I am not aware of that
+> makes it improper to actually call C functions?  Is that a requirement
+> for the instructions that change the user space access behavior?
+
+See see 
+https://lore.kernel.org/lkml/20190318155142.025214872@infradead.org/T/ ?
+
+> 
+>  From the looks of this change all that you are doing is making it so
+> that all of copy_siginfo_to_external32 is being inlined.  If that is not
+> a hard requirement of the instructions it seems like the wrong thing to
+> do here. copy_siginfo_to_external32 has not failures so it does not need
+> to be inlined so you can jump to the label.
+
+Yes that's what I did, make sure everything is inlined. Or maybe I 
+misunderstood something ?
+
+Christophe
