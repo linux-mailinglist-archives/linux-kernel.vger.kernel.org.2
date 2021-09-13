@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D0B4098EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441C74098EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237194AbhIMQYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:24:35 -0400
-Received: from mail-pg1-f176.google.com ([209.85.215.176]:41957 "EHLO
-        mail-pg1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237568AbhIMQY0 (ORCPT
+        id S237170AbhIMQZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234182AbhIMQZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:24:26 -0400
-Received: by mail-pg1-f176.google.com with SMTP id k24so9930074pgh.8;
-        Mon, 13 Sep 2021 09:23:10 -0700 (PDT)
+        Mon, 13 Sep 2021 12:25:03 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB274C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:23:47 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so422615pjq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:23:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2/RkgLMSeLMdfX+PInPfTpRLPSRgorj3I7Mh0Kf9swA=;
+        b=JmPq/ZgLDL/FyAXQlzN3Pxt/6RHQBe1O37S+nQ61rkmBypwaNCBZrelrqFzD38G68y
+         ayLL6KmmBeXGuHjWhRWlBTWLjOa1UNjPI0bNb+dmgGb0u2BkXyd5S68cDztZayVOnRQr
+         NZSmhj83kn4QL3EQNMIVRoRdS0yiL5duqY1Q8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VyKSUuGuAhaAEJAAqdwsNaH9f4jcl2f+j/dwqt4uh+Y=;
-        b=48x3i+jeL0B421Y1pbitg/mfdF+0jz3cqzehGbmJmVWoSgvh/Jt0IBgZB6DGCFVuyH
-         WL+9mDRWkiOLigfLp64VPnHIvuDpeIx1iwoDrOncQT57gM0zkZbcGUt9NWwdlPJpXv3u
-         8RFOOtnUxyaYdCRjpdtu2K670KB5Ap4HE5QFaEDLLViMTA6jxTdBrinS7hv7uFwKUYqj
-         ZLQZKWi/fIzBXzob6/ReWGm/IvkfzMjlEcejpYEKFgeSLVIwVISQ27Vv5FrEl30n3WC2
-         0a3NzZfomTU0Tc3POrRkQQcAit0TomTfFsKFbc1xpPCBXJbPODooVkAu548kWEy/Uvsp
-         pz9w==
-X-Gm-Message-State: AOAM533cdzmuryDBpu0a6pYLMwZqevPss8OhLCZp72B1yzXns7GtsJPK
-        mtZNIoIZvDKTtmgv11zgtws=
-X-Google-Smtp-Source: ABdhPJx+xtnUOS/GKE+9xgTfNQZgTm5KSMdRDY+q2GX+O2hihbxxUn3l2ARDDG3gDVQeEaynkmlJ9g==
-X-Received: by 2002:a63:561a:: with SMTP id k26mr11854841pgb.144.1631550189638;
-        Mon, 13 Sep 2021 09:23:09 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:6765:113f:d2d7:def9])
-        by smtp.gmail.com with ESMTPSA id t9sm7681143pfq.185.2021.09.13.09.23.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 09:23:08 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] scsi: ufs: ufs-exynos: implement exynos isr
-To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
-References: <cover.1631519695.git.kwmad.kim@samsung.com>
- <CGME20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce@epcas2p2.samsung.com>
- <746e059782953fca6c21945297151d2bb73d3370.1631519695.git.kwmad.kim@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <baf17040-70e8-d850-30cd-74944e41285d@acm.org>
-Date:   Mon, 13 Sep 2021 09:23:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2/RkgLMSeLMdfX+PInPfTpRLPSRgorj3I7Mh0Kf9swA=;
+        b=L0CJMat8LIoTxMjwuUIHMmZbK5ct99Nj6k/4ZgHeONZJPuuQ/W1GK8TyR00paLNj5m
+         kH59G3g5SXmlZO0QzgsrZ0tFOJyLt0hx1pHj93dTIqvOCx7+Gd+8gzv0CI99+R113osG
+         c8YwYxdbRhfj/mMUpNgF1JQuvPbfr+I2Tpklt7kMZhgLQn7FPMB+RxifzGx8lVbC3sbt
+         wBtPDj++MKntDUZgCT9SyO1az2mN0c86/t7J7MpJPAO6J9eVxjJ98qqEmBkSqX36MZ8N
+         uY1diGiPBFENXv2KfeH4qgGluRTfPaStUj1XVMpHVaEojC1hBdtqH0MEYe2fM2Axpga2
+         QPHw==
+X-Gm-Message-State: AOAM5305FWAVr2s7sUjyZGfWlIoLQRm1VI4W/R7qsC1LFWpGF9LrHj5u
+        OCbq7gsZUQUF8HKE1rsT1LavsA==
+X-Google-Smtp-Source: ABdhPJw2iVAwBpkklvDVrdBl1O3eT09j5TQwikncidkQDt4RPNA+MefgACjymKzY8c/7zuWh9A9MQA==
+X-Received: by 2002:a17:90b:f08:: with SMTP id br8mr301973pjb.119.1631550227353;
+        Mon, 13 Sep 2021 09:23:47 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d3sm7597340pjc.49.2021.09.13.09.23.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 09:23:46 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 09:23:45 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 05/10] riscv: remove Kconfig check for GCC version for
+ ARCH_RV64I
+Message-ID: <202109130923.E294BFD5C@keescook>
+References: <20210910234047.1019925-1-ndesaulniers@google.com>
+ <20210910234047.1019925-6-ndesaulniers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <746e059782953fca6c21945297151d2bb73d3370.1631519695.git.kwmad.kim@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910234047.1019925-6-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 12:55 AM, Kiwoong Kim wrote:
-> This patch is to raise recovery in some abnormal
-> conditions using an vendor specific interrupt
-> for some cases, such as a situation that some
-> contexts of a pending request in the host isn't
-> the same with those of its corresponding UPIUs
-> if they should have been the same exactly.
+On Fri, Sep 10, 2021 at 04:40:42PM -0700, Nick Desaulniers wrote:
+> The minimum supported version of GCC is now 5.1. The check wasn't
+> correct as written anyways since GCC_VERSION is 0 when CC=clang.
 > 
-> The representative case is shown like below.
-> In the case, a broken UTRD entry, for internal
-> coherent problem or whatever, that had smaller value
-> of PRDT length than expected was transferred to the host.
-> So, the host raised an interrupt of transfer complete
-> even if device didn't finish its data transfer because
-> the host sees a fetched version of UTRD to determine
-> if data tranfer is over or not. Then the application level
-> seemed to recogize this as a sort of corruption and this
-> symptom led to boot failure.
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: linux-riscv@lists.infradead.org
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-How can a UTRD entry be broken? Does that perhaps indicate memory
-corruption at the host side? Working around host-side memory
-corruption in a driver seems wrong to me. I think the root cause
-of the memory corruption should be fixed.
+Yeah, good catch for Clang too.
 
-> +static irqreturn_t exynos_ufs_isr(struct ufs_hba *hba)
-> +{
-> +	struct exynos_ufs *ufs = ufshcd_get_variant(hba);
-> +	u32 status;
-> +	unsigned long flags;
-> +
-> +	if (!hba->priv) return IRQ_HANDLED;
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Please verify patches with checkpatch before posting these on the
-linux-scsi mailing list. The above if-statement does not follow the
-Linux kernel coding style.
-
-> +	if (status & RX_UPIU_HIT_ERROR) {
-> +		pr_err("%s: status: 0x%08x\n", __func__, status);
-> +		hba->force_reset = true;
-> +		hba->force_requeue = true;
-> +		scsi_schedule_eh(hba->host);
-> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> +		return IRQ_HANDLED;
-> +	}
-> +	return IRQ_NONE;
-> +}
-
-So the above code unlocks the host_lock depending on whether or not
-status & RX_UPIU_HIT_ERROR is true? Yikes ...
-
-Additionally, in the above code I found the following pattern:
-
-	unsigned long flags;
-	[ ... ]
-	spin_unlock_irqrestore(hba->host->host_lock, flags);
-
-Such code is ALWAYS wrong. The value of the 'flags' argument passed to
-spin_unlock_irqrestore() must come from spin_lock_irqsave().
-
-Bart.
+-- 
+Kees Cook
