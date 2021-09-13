@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA927408CAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB96A408C97
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240555AbhIMNU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:20:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34832 "EHLO mail.kernel.org"
+        id S240361AbhIMNU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239178AbhIMNTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239318AbhIMNTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20355610A3;
-        Mon, 13 Sep 2021 13:17:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99189610A8;
+        Mon, 13 Sep 2021 13:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539028;
-        bh=F8pgq0rgX3r7YNCNfkeIUvLn/+DTlaB66BwtqOvDdd8=;
+        s=korg; t=1631539031;
+        bh=qpjiSVmAa/GUpIbdu/bOfFsVIDF2f69PRQ7Vm/j8hNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BNMivdEbiLn0Cr7NZcWbqgWeqosKloFn/te1C6kVTszt3K41OTTRhGCeep6NC0sAA
-         tvtT6285GhVbGT8M0CoZqcD5Ff5zyAf5OvKPKMJzghfOXNF9BLLqeZps2qb7nFf65b
-         PDfscAsrR52DWJ6xQR5g2+xz0hjUbPDUmOVx4Beo=
+        b=vRMUbtW+ho4zaw8rtRXSsclOPI8gpKIVZCNKexTBhWb5XAp2bUADzfUJ4W+JNBe/u
+         XwWF5otpgfUhL0aIO0LEUPw2oY+xDxbDUFjMlS2bptVvAXB0IKzq/6KV+05m2jx7q2
+         GEk8yfzkt9wxj+pjRAkkcmgEvuSUk4RynCj18NvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/144] bcache: add proper error unwinding in bcache_device_init
-Date:   Mon, 13 Sep 2021 15:13:16 +0200
-Message-Id: <20210913131048.474512431@linuxfoundation.org>
+        stable@vger.kernel.org, Ruozhu Li <liruozhu@huawei.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 016/144] nvme-tcp: dont update queue count when failing to set io queues
+Date:   Mon, 13 Sep 2021 15:13:17 +0200
+Message-Id: <20210913131048.503950627@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -40,67 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Ruozhu Li <liruozhu@huawei.com>
 
-[ Upstream commit 224b0683228c5f332f9cee615d85e75e9a347170 ]
+[ Upstream commit 664227fde63844d69e9ec9e90a8a7801e6ff072d ]
 
-Except for the IDA none of the allocations in bcache_device_init is
-unwound on error, fix that.
+We update ctrl->queue_count and schedule another reconnect when io queue
+count is zero.But we will never try to create any io queue in next reco-
+nnection, because ctrl->queue_count already set to zero.We will end up
+having an admin-only session in Live state, which is exactly what we try
+to avoid in the original patch.
+Update ctrl->queue_count after queue_count zero checking to fix it.
 
+Signed-off-by: Ruozhu Li <liruozhu@huawei.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Coly Li <colyli@suse.de>
-Link: https://lore.kernel.org/r/20210809064028.1198327-7-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/bcache/super.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/nvme/host/tcp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index b0d569032dd4..efdf6ce0443e 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -839,20 +839,20 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
- 	n = BITS_TO_LONGS(d->nr_stripes) * sizeof(unsigned long);
- 	d->full_dirty_stripes = kvzalloc(n, GFP_KERNEL);
- 	if (!d->full_dirty_stripes)
--		return -ENOMEM;
-+		goto out_free_stripe_sectors_dirty;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 718152adc625..f6427a10a990 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1649,13 +1649,13 @@ static int nvme_tcp_alloc_io_queues(struct nvme_ctrl *ctrl)
+ 	if (ret)
+ 		return ret;
  
- 	idx = ida_simple_get(&bcache_device_idx, 0,
- 				BCACHE_DEVICE_IDX_MAX, GFP_KERNEL);
- 	if (idx < 0)
--		return idx;
-+		goto out_free_full_dirty_stripes;
+-	ctrl->queue_count = nr_io_queues + 1;
+-	if (ctrl->queue_count < 2) {
++	if (nr_io_queues == 0) {
+ 		dev_err(ctrl->device,
+ 			"unable to set any I/O queues\n");
+ 		return -ENOMEM;
+ 	}
  
- 	if (bioset_init(&d->bio_split, 4, offsetof(struct bbio, bio),
- 			BIOSET_NEED_BVECS|BIOSET_NEED_RESCUER))
--		goto err;
-+		goto out_ida_remove;
++	ctrl->queue_count = nr_io_queues + 1;
+ 	dev_info(ctrl->device,
+ 		"creating %d I/O queues.\n", nr_io_queues);
  
- 	d->disk = alloc_disk(BCACHE_MINORS);
- 	if (!d->disk)
--		goto err;
-+		goto out_bioset_exit;
- 
- 	set_capacity(d->disk, sectors);
- 	snprintf(d->disk->disk_name, DISK_NAME_LEN, "bcache%i", idx);
-@@ -887,8 +887,14 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
- 
- 	return 0;
- 
--err:
-+out_bioset_exit:
-+	bioset_exit(&d->bio_split);
-+out_ida_remove:
- 	ida_simple_remove(&bcache_device_idx, idx);
-+out_free_full_dirty_stripes:
-+	kvfree(d->full_dirty_stripes);
-+out_free_stripe_sectors_dirty:
-+	kvfree(d->stripe_sectors_dirty);
- 	return -ENOMEM;
- 
- }
 -- 
 2.30.2
 
