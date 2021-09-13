@@ -2,202 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34E040895F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B97408965
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239181AbhIMKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:51:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27037 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239154AbhIMKu7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:50:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631530183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XIkgYA/tUP+Z8mJsrZ5/GLNDfbE7/vREkH/o/B1LNvQ=;
-        b=J3H26rRvoFBK64tvBVUc98goQNh6MQsL2S3QabmclMgSYLPVci79dNgVe8aw2Hy8bXlWfs
-        NLvnNqAEpTjwyb3+T3IVsqdS/0rFvEFaDDg3CEMH7dsqoyeMVlw4WkN1WJqMeFQB9TFuk6
-        PikAsOxdGedG2zaBHwia/QvGyjMFvl0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-HO8QdsRVOeCEDTc052-LzQ-1; Mon, 13 Sep 2021 06:49:40 -0400
-X-MC-Unique: HO8QdsRVOeCEDTc052-LzQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECE4D19253C3;
-        Mon, 13 Sep 2021 10:49:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81B0310074EF;
-        Mon, 13 Sep 2021 10:49:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-        Markus Suvanto <markus.suvanto@gmail.com>,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] afs: Fixes for 3rd party-induced data corruption
+        id S238857AbhIMKww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:52:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238690AbhIMKwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:52:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF84960F12;
+        Mon, 13 Sep 2021 10:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631530295;
+        bh=IhPIOl/NMzmrDUdQKEmqfIrz63UGwWOSS7/ZZTB+y0Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GlRcHrWvyTlfET/uSqrfMr4HviMxaajNjqPm7yNSwGqV3rPiaepZNfvg6vJv0YJJF
+         JZ6N8P/cODT+bI7R7rdqlhe/hratbkSowmt56+vYba/WMgbTXjWDDCO6iVfYGeqtUW
+         395/rvJ8KL756rVGr1g6tD7ADX4qcz2iqFxRYkPk=
+Date:   Mon, 13 Sep 2021 12:51:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
+ builds"
+Message-ID: <YT8tNfXkbFmGtYbe@kroah.com>
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+ <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+ <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
+ <YTfkO2PdnBXQXvsm@elver.google.com>
+ <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
+ <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org>
+ <20210913093256.GA12225@amd>
+ <YT8d5a6ZVW7JlsRl@kroah.com>
+ <20210913100230.GB11752@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1161816.1631530077.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-From:   David Howells <dhowells@redhat.com>
-Date:   Mon, 13 Sep 2021 11:49:36 +0100
-Message-ID: <1161899.1631530176@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913100230.GB11752@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 13, 2021 at 12:02:30PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > > Do we really want developers treat warnings as errors? When the code
+> > > is okay but some random version of gcc dislikes it...
+> > > 
+> > > Plus, there's question of stable. We already get ton of churn there
+> > > ("this fixes random warning"). WERROR will only encourage that...
+> > 
+> > I will not be backporting this patch to older stable kernels, but I
+> > _want_ to see stable builds build with no warnings.  When we add
+> > warnings, they are almost always things we need to fix up properly.
+> 
+> Well, everyone _wants_ to see clean builds... unless the price is too
+> high.
+> 
+> > Over time, I have worked to reduce the number of build warnings in older
+> > stable kernels.  For newer versions of gcc, sometimes that is
+> > impossible, but we are close...
+> 
+> You clearly can't backport this patch, but for 5.16-stable, you'll
+> have it in, and now warnings are same as errors... and I don't believe
+> that's good idea for stable.
 
-Hi Linus,
+I do, it will force us to keep these trees clean over time.
 
-Here are some fixes for AFS that can cause data corruption due to
-interaction with another client modifying data cached locally[1].
+And it will be in 5.15, not 5.16 :)
 
- (1) When d_revalidating a dentry, don't look at the inode to which it
-     points.  Only check the directory to which the dentry belongs.  This
-     was confusing things and causing the silly-rename cleanup code to
-     remove the file now at the dentry of a file that got deleted.
+Worst case, we disable it in 4 years when gcc 15 or so generates so
+many errors we can't resolve them in this old kernel.
 
- (2) Fix mmap data coherency.  When a callback break is received that
-     relates to a file that we have cached, the data content may have been
-     changed (there are other reasons, such as the user's rights having
-     been changed).  However, we're checking it lazily, only on entry to
-     the kernel, which doesn't happen if we have a writeable shared mapped
-     page on that file.
+thanks,
 
-     We make the kernel keep track of mmapped files and clear all PTEs
-     mapping to that file as soon as the callback comes in by calling
-     unmap_mapping_pages() (we don't necessarily want to zap the
-     pagecache).  This causes the kernel to be reentered when userspace
-     tries to access the mmapped address range again - and at that point w=
-e
-     can query the server and, if we need to, zap the page cache.
-
-     Ideally, I would check each file at the point of notification, but
-     that involves poking the server[*] - which is holding an exclusive
-     lock on the vnode it is changing, waiting for all the clients it
-     notified to reply.  This could then deadlock against the server.
-     Further, invalidating the pagecache might call ->launder_page(), whic=
-h
-     would try to write to the file, which would definitely deadlock.  (AF=
-S
-     doesn't lease file access).
-
-     [*] Checking to see if the file content has changed is a matter of
-     	 comparing the current data version number, but we have to ask the
-     	 server for that.  We also need to get a new callback promise and
-     	 we need to poke the server for that too.
-
- (3) Add some more points at which the inode is validated, since we're
-     doing it lazily, notably in ->read_iter() and ->page_mkwrite(), but
-     also when performing some directory operations.
-
-     Ideally, checking in ->read_iter() would be done in some derivation o=
-f
-     filemap_read().  If we're going to call the server to read the file,
-     then we get the file status fetch as part of that.
-
- (4) The above is now causing us to make a lot more calls to afs_validate(=
-)
-     to check the inode - and afs_validate() takes the RCU read lock each
-     time to make a quick check (ie. afs_check_validity()).  This is
-     entirely for the purpose of checking cb_s_break to see if the server
-     we're using reinitialised its list of callbacks - however this isn't =
-a
-     very common event, so most of the time we're taking this needlessly.
-
-     Add a new cell-wide counter to count the number of reinitialisations
-     done by any server and check that - and only if that changes, take th=
-e
-     RCU read lock and check the server list (the server list may change,
-     but the cell a file is part of won't).
-
- (5) Don't update vnode->cb_s_break and ->cb_v_break inside the validity
-     checking loop.  The cb_lock is done with read_seqretry, so we might g=
-o
-     round the loop a second time after resetting those values - and that
-     could cause someone else checking validity to miss something (I
-     think).
-
-Also included are patches for fixes for some bugs encountered whilst
-debugging this.
-
- (6) Fix a leak of afs_read objects and fix a leak of keys hidden by that.
-
- (7) Fix a leak of pages that couldn't be added to extend a writeback.
-
- (8) Fix the maintenance of i_blocks when i_size is changed by a local
-     write or a local dir edit[**].
-
-     [**] Would you prefer this patch separately to the other patches?
-
-David
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D214217 [1]
-Link: https://lore.kernel.org/r/163111665183.283156.17200205573146438918.s=
-tgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/163113612442.352844.11162345591911691150.s=
-tgit@warthog.procyon.org.uk/ # i_blocks patch
----
-
-The following changes since commit b91db6a0b52e019b6bdabea3f1dbe36d85c7e52=
-c:
-
-  Merge tag 'for-5.15/io_uring-vfs-2021-08-30' of git://git.kernel.dk/linu=
-x-block (2021-08-30 19:39:59 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/afs-fixes-20210913
-
-for you to fetch changes up to 9d37e1cab2a9d2cee2737973fa455e6f89eee46a:
-
-  afs: Fix updating of i_blocks on file/dir extension (2021-09-13 09:14:21=
- +0100)
-
-----------------------------------------------------------------
-AFS fixes
-
-----------------------------------------------------------------
-David Howells (8):
-      afs: Fix missing put on afs_read objects and missing get on the key =
-therein
-      afs: Fix page leak
-      afs: Add missing vnode validation checks
-      afs: Fix incorrect triggering of sillyrename on 3rd-party invalidati=
-on
-      afs: Fix mmap coherency vs 3rd-party changes
-      afs: Try to avoid taking RCU read lock when checking vnode validity
-      afs: Fix corruption in reads at fpos 2G-4G from an OpenAFS server
-      afs: Fix updating of i_blocks on file/dir extension
-
- fs/afs/callback.c          | 44 ++++++++++++++++++++-
- fs/afs/cell.c              |  2 +
- fs/afs/dir.c               | 57 +++++++++------------------
- fs/afs/dir_edit.c          |  4 +-
- fs/afs/file.c              | 86 ++++++++++++++++++++++++++++++++++++++--
- fs/afs/fs_probe.c          |  8 +++-
- fs/afs/fsclient.c          | 31 +++++++++------
- fs/afs/inode.c             | 98 ++++++++++++++++++++---------------------=
------
- fs/afs/internal.h          | 21 ++++++++++
- fs/afs/protocol_afs.h      | 15 +++++++
- fs/afs/protocol_yfs.h      |  6 +++
- fs/afs/rotate.c            |  1 +
- fs/afs/server.c            |  2 +
- fs/afs/super.c             |  1 +
- fs/afs/write.c             | 29 +++++++++++---
- include/trace/events/afs.h |  8 +++-
- mm/memory.c                |  1 +
- 17 files changed, 294 insertions(+), 120 deletions(-)
- create mode 100644 fs/afs/protocol_afs.h
-
+greg k-h
