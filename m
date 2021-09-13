@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6029A408CCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D77D408CCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240803AbhIMNVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:21:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
+        id S240866AbhIMNVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240354AbhIMNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240356AbhIMNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:20:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 323BF60724;
-        Mon, 13 Sep 2021 13:18:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA3BD60F23;
+        Mon, 13 Sep 2021 13:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539119;
-        bh=UO0f66ZVfx4umBUMe1TbHGW7Eyus0SHop3q2Y/7rM2Y=;
+        s=korg; t=1631539123;
+        bh=QlaMXaMRG+4kSqbA/r2yAL3RAmk/iIhRCJraJNbA25A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqlebcFC9siaH7l2w/qCCdBtTqwIHf+FOCHdlfN/ZEkjvg0KxyLe7uMXyW9FjrmR9
-         BC74zOcB//JZ4Br5NUDeyW4sCCWxLUJhIYeS0ZvetOLxkQi0CHldpN1WJ3c/wK0LgF
-         ZcLCLRjJ3qc78oyEM7Ptj9MdW1ItTcWOWlCIW81Y=
+        b=lXqNMA70FHwVwsdeeYb9Lw6o4jUoAmhXZenTJikNXq5WYR3KtoNNObyFaBtlprhWf
+         99Cy5Q8siQLbRTFxPbqu3UwrRMHnxJzeu0+kMHuw/UAGWGc9ybQjDcOw3hJQtQiU2C
+         9EzMi3q6x9pDNm6FetKweZWa/feX1/c8lxzzOLJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 048/144] soc: rockchip: ROCKCHIP_GRF should not default to y, unconditionally
-Date:   Mon, 13 Sep 2021 15:13:49 +0200
-Message-Id: <20210913131049.549252957@linuxfoundation.org>
+Subject: [PATCH 5.4 049/144] media: cxd2880-spi: Fix an error handling path
+Date:   Mon, 13 Sep 2021 15:13:50 +0200
+Message-Id: <20210913131049.582451499@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -41,38 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 2a1c55d4762dd34a8b0f2e36fb01b7b16b60735b ]
+[ Upstream commit dcb0145821017e929a733e2271c85c6f82b9c9f8 ]
 
-Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
-To fix this, restrict the automatic enabling of ROCKCHIP_GRF to
-ARCH_ROCKCHIP, and ask the user in case of compile-testing.
+If an error occurs after a successful 'regulator_enable()' call,
+'regulator_disable()' must be called.
 
-Fixes: 4c58063d4258f6be ("soc: rockchip: add driver handling grf setup")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20210208143855.418374-1-geert+renesas@glider.be
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fix the error handling path of the probe accordingly.
+
+Fixes: cb496cd472af ("media: cxd2880-spi: Add optional vcc regulator")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/rockchip/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/spi/cxd2880-spi.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/rockchip/Kconfig b/drivers/soc/rockchip/Kconfig
-index b71b73bf5fc5..785990720479 100644
---- a/drivers/soc/rockchip/Kconfig
-+++ b/drivers/soc/rockchip/Kconfig
-@@ -6,8 +6,8 @@ if ARCH_ROCKCHIP || COMPILE_TEST
- #
+diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
+index 4077217777f9..93194f03764d 100644
+--- a/drivers/media/spi/cxd2880-spi.c
++++ b/drivers/media/spi/cxd2880-spi.c
+@@ -524,13 +524,13 @@ cxd2880_spi_probe(struct spi_device *spi)
+ 	if (IS_ERR(dvb_spi->vcc_supply)) {
+ 		if (PTR_ERR(dvb_spi->vcc_supply) == -EPROBE_DEFER) {
+ 			ret = -EPROBE_DEFER;
+-			goto fail_adapter;
++			goto fail_regulator;
+ 		}
+ 		dvb_spi->vcc_supply = NULL;
+ 	} else {
+ 		ret = regulator_enable(dvb_spi->vcc_supply);
+ 		if (ret)
+-			goto fail_adapter;
++			goto fail_regulator;
+ 	}
  
- config ROCKCHIP_GRF
--	bool
--	default y
-+	bool "Rockchip General Register Files support" if COMPILE_TEST
-+	default y if ARCH_ROCKCHIP
- 	help
- 	  The General Register Files are a central component providing
- 	  special additional settings registers for a lot of soc-components.
+ 	dvb_spi->spi = spi;
+@@ -618,6 +618,9 @@ fail_frontend:
+ fail_attach:
+ 	dvb_unregister_adapter(&dvb_spi->adapter);
+ fail_adapter:
++	if (!dvb_spi->vcc_supply)
++		regulator_disable(dvb_spi->vcc_supply);
++fail_regulator:
+ 	kfree(dvb_spi);
+ 	return ret;
+ }
 -- 
 2.30.2
 
