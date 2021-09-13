@@ -2,118 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E87409E13
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5599409E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243443AbhIMUWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
+        id S243499AbhIMUYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhIMUWe (ORCPT
+        with ESMTP id S230404AbhIMUYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:22:34 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E741C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:21:18 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id h9so23748328ejs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:21:18 -0700 (PDT)
+        Mon, 13 Sep 2021 16:24:24 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E649C061574;
+        Mon, 13 Sep 2021 13:23:07 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id u16so16575499wrn.5;
+        Mon, 13 Sep 2021 13:23:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=i7VPJJGwD8dMYsU/ulXHVANMhme4/Y39FNXOn3qat2k=;
-        b=ZjTDU2wSEPtUUEHD7HNE0P+chKuFTXnPuI6bz347eHNqvNunN1Fzh3rThwsOd/CFlH
-         uBsw+OgQCUQYRzPfvZ5AXLA1zJtGcsixzBP+OsmTyPTRKb6fwZddopaQnTjo1pCgSwRI
-         7DDx6406I1y6aEsfd0bdx0kgncjWLaNkNiT8V85wXSuWTph/pNFNIKgWkvpTPuIoQruD
-         7Uwz+PMOkkufjrKpiqD1kBc3y9pi/cF6S7CMSNb+vp+Cro+2CunWANxS57Gg71LBotVZ
-         xuTkO0ZzC/wetyAiB2qZomsjP0n3kwtjlhLBklsnwpMu7KeisMQ5fYkufFiNLTbfKSfg
-         rB8g==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=X9M+5nYuImwwgN6RwjS7S9PGt5x+r/IWNh8zaeo7AdI=;
+        b=L3XpBLsRGf4JZoGcAu4TNPUFa3aWJlW1bHxM8NVF9OmqPLo4pNXnOKEuCn9ozYnY1Z
+         AfVC3m3fvaGAsmrlMadyklLtBjqyoGPh3GwQkinR+3bFjsAWmyTOfMAKMg0U+skEkYCg
+         mFqhDOb2+eXj0ozdFScOE7DsBvyn25fZZ8yCS7D8qBOnbf28GxigupsblBH5/AWxlc0Y
+         bfqUyEoIx14wajpWrd2zeXeHW+uPCvnSEsNKExOPzpkMT1X0VHeyRyXR0gbxMbS/Q8/+
+         Q1HgXRvm43DrQB1sZ7Rlhj110Yof3VQOCuaqpFq8RCSxrTLcrKh5veLVKuyGz7tvZkBz
+         ljaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=i7VPJJGwD8dMYsU/ulXHVANMhme4/Y39FNXOn3qat2k=;
-        b=SUWf5LNXWT2TQM24NY+psN0pSA8c6WSqCH4pdnyhgM1X9lS/waWs5kXtjLkIARkPW5
-         sgjdpuoB9+5QVJp42i1B7QtUWpyssNpqVAdqxTmqNjhJjqnbhV9DHz7IwAKV/YOwUsSs
-         +QBVNQ6YzPMZXk3Lt92U3Y8zBItqsmWE1iFgZWl373yF4h3kQOLiu627w9MGzn7N2VTF
-         62GQQ42dtFJUCAm+ZJuH/G71dmMckDQ0cef75OSQfydWVvTTYJmsA5tkyCeUzLfmBkdW
-         qqKVhZ01HPG1zQbHvEU9f0jicGSp0cJRbMbMYAeI6gxCSgUMmpfUStXSXROdafDHRMbM
-         QIVA==
-X-Gm-Message-State: AOAM5301z4C1z8whmNvRwJ2fBIYn4D+4OFGxnXU825k74Ip7WXN28rD/
-        lbOqiYsIZ0s0KyUet6n7rk7poBOLJnGpslAhi4M=
-X-Google-Smtp-Source: ABdhPJxiRO972Vm8mdcqogkDeZZjLYS4DmEO+UURM8xSNHWWXkD+mgpYBlCrjLka81aV3WltJllEAO8s4zhWOaA0C7o=
-X-Received: by 2002:a17:906:90c9:: with SMTP id v9mr12186037ejw.356.1631564476722;
- Mon, 13 Sep 2021 13:21:16 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X9M+5nYuImwwgN6RwjS7S9PGt5x+r/IWNh8zaeo7AdI=;
+        b=ii6YmKnE2mGUzqWQRfcYeshFwEuWMm4QxbNsaBmloVJOPeDF/A7sKqVdm1KndH0pOP
+         KhiGogCo51mqNlYlwymhZ8tGgHzsGuruaT3enYVOWqQZjzNtjzzS/Mh4RYIePm7cXLNh
+         DpYNfhcAlN3T0VjejRMpGCn/YmpfjlN36Akt819WlAAkcMWyFf1hhoS1QWIrYEEMbGkT
+         3S5u2Xpezjq5EaIQPEJpuqyFS3JGbRHtbxxJA1Yqu0ZdIOQpjDRCgbFfIyF4QD5tYuMC
+         /rLOvSHcdabBSkNm9Wv3IM1Bq53y++99c5cEGwIIkusy1VKHkzDE7tEKID+igWtYySD6
+         WbxQ==
+X-Gm-Message-State: AOAM5331PZOfeexjbsuOop3BNeuT1WBhiDFyx+qIbzti7LLehicxX8kJ
+        yKeYBxpt36U/AzdJNe03UF+fFVtqMhM=
+X-Google-Smtp-Source: ABdhPJwCRz81L4W7m/M+7yElATtk3nRpta3wj6aJMlAD9n+0hUHPH6w5dgWt84Vrkik9Xu7le/024w==
+X-Received: by 2002:adf:e8c7:: with SMTP id k7mr9587420wrn.47.1631564585953;
+        Mon, 13 Sep 2021 13:23:05 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:2517:8cca:49d8:dcdc? (p200300ea8f08450025178cca49d8dcdc.dip0.t-ipconnect.de. [2003:ea:8f08:4500:2517:8cca:49d8:dcdc])
+        by smtp.googlemail.com with ESMTPSA id z7sm10453978wre.72.2021.09.13.13.23.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 13:23:05 -0700 (PDT)
+Subject: Re: Linux 5.15-rc1
+To:     Dave Jones <davej@codemonkey.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
+ <20210913141818.GA27911@codemonkey.org.uk>
+ <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com>
+ <20210913201519.GA15726@codemonkey.org.uk>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
+Date:   Mon, 13 Sep 2021 22:22:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Reply-To: bouchetb@yandex.com
-Sender: shirley.perez.fosgate2015@gmail.com
-Received: by 2002:a17:906:17d7:0:0:0:0 with HTTP; Mon, 13 Sep 2021 13:21:15
- -0700 (PDT)
-From:   Bryan Bouchet <bryanbouchet0@gmail.com>
-Date:   Mon, 13 Sep 2021 21:21:15 +0100
-X-Google-Sender-Auth: pWiPzy03okKl4ulJmQM5nhiz4tQ
-Message-ID: <CABitoyqc+0oYsK_3p+pcUOC=ecA9C3SuDcc+QRqpYsgBnk=Uog@mail.gmail.com>
-Subject: PLEASE RESPOND VERY URGENTLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210913201519.GA15726@codemonkey.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On 13.09.2021 22:15, Dave Jones wrote:
+> On Mon, Sep 13, 2021 at 08:59:49PM +0200, Heiner Kallweit wrote:
+>  > On 13.09.2021 16:18, Dave Jones wrote:
+>  > > [  186.595296] pci 0000:02:00.0: [144d:a800] type 00 class 0x010601
+>  > > [  186.595351] pci 0000:02:00.0: reg 0x24: [mem 0xdfc10000-0xdfc11fff]
+>  > > [  186.595361] pci 0000:02:00.0: reg 0x30: [mem 0xdfc00000-0xdfc0ffff pref]
+>  > > [  186.595425] pci 0000:02:00.0: PME# supported from D3hot D3cold
+>  > > [  186.735107] pci 0000:02:00.0: VPD access failed.  This is likely a firmware bug on this device.  Contact the card vendor for a firmware update
+>  > 
+>  > Thanks for the report! The stalls may be related to this one. Device is:
+>  > 02:00.0 SATA controller: Samsung Electronics Co Ltd XP941 PCIe SSD (rev 01)
+>  > 
+>  > With an older kernel you may experience the stall when accessing the vpd
+>  > attribute of this device in sysfs.
+>  > 
+>  > Maybe the device indicates VPD capability but doesn't actually support it.
+>  > Could you please provide the "lspci -vv" output for this device?
+> 
+> 02:00.0 SATA controller: Samsung Electronics Co Ltd XP941 PCIe SSD (rev 01) (prog-if 01 [AHCI 1.0])
+>         Subsystem: Samsung Electronics Co Ltd XP941 PCIe SSD
+>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>         Latency: 0, Cache Line Size: 64 bytes
+>         Interrupt: pin A routed to IRQ 16
+>         Region 5: Memory at dfc10000 (32-bit, non-prefetchable) [size=8K]
+>         Expansion ROM at dfc00000 [disabled] [size=64K]
+>         Capabilities: [40] Power Management version 3
+>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA PME(D0-,D1-,D2-,D3hot+,D3cold+)
+>                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+>         Capabilities: [70] Express (v2) Endpoint, MSI 00
+>                 DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s unlimited, L1 unlimited
+>                         ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset+ SlotPowerLimit 25.000W
+>                 DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
+>                         RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+ FLReset-
+>                         MaxPayload 128 bytes, MaxReadReq 512 bytes
+>                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr+ TransPend-
+>                 LnkCap: Port #0, Speed 5GT/s, Width x4, ASPM L0s L1, Exit Latency L0s <4us, L1 <64us
+>                         ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
+>                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+>                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+>                 LnkSta: Speed 5GT/s (ok), Width x2 (downgraded)
+>                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+>                 DevCap2: Completion Timeout: Not Supported, TimeoutDis+ NROPrPrP- LTR+
+>                          10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
+>                          EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
+>                          FRS- TPHComp- ExtTPHComp-
+>                          AtomicOpsCap: 32bit- 64bit- 128bitCAS-
+>                 DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR+ OBFF Disabled,
+>                          AtomicOpsCtl: ReqEn-
+>                 LnkCap2: Supported Link Speeds: 2.5-5GT/s, Crosslink- Retimer- 2Retimers- DRS-
+>                 LnkCtl2: Target Link Speed: 5GT/s, EnterCompliance- SpeedDis-
+>                          Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
+>                          Compliance De-emphasis: -6dB
+>                 LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete- EqualizationPhase1-
+>                          EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
+>                          Retimer- 2Retimers- CrosslinkRes: unsupported
+>         Capabilities: [d0] Vital Product Data
+>                 Not readable
+>         Capabilities: [100 v2] Advanced Error Reporting
+>                 UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+>                 UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+>                 UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+>                 CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
+>                 CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
+>                 AERCap: First Error Pointer: 00, ECRCGenCap+ ECRCGenEn- ECRCChkCap+ ECRCChkEn-
+>                         MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
+>                 HeaderLog: 00000000 00000000 00000000 00000000
+>         Capabilities: [140 v1] Device Serial Number 00-00-00-00-00-00-00-00
+>         Capabilities: [150 v1] Power Budgeting <?>
+>         Capabilities: [160 v1] Latency Tolerance Reporting
+>                 Max snoop latency: 71680ns
+>                 Max no snoop latency: 71680ns
+>         Kernel driver in use: ahci
+> 
+> 
+>  > And could you please test with the following applied to verify the
+>  > assumption? It disables VPD access for this device.
+>  > 
+>  > ---
+>  >  drivers/pci/vpd.c | 1 +
+>  >  1 file changed, 1 insertion(+)
+>  > 
+>  > diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
+>  > index 517789205..fc92e880e 100644
+>  > --- a/drivers/pci/vpd.c
+>  > +++ b/drivers/pci/vpd.c
+>  > @@ -540,6 +540,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LSI_LOGIC, 0x002f, quirk_blacklist_vpd);
+>  >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LSI_LOGIC, 0x005d, quirk_blacklist_vpd);
+>  >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_LSI_LOGIC, 0x005f, quirk_blacklist_vpd);
+>  >  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATTANSIC, PCI_ANY_ID, quirk_blacklist_vpd);
+>  > +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SAMSUNG, 0xa800, quirk_blacklist_vpd);
+>  >  /*
+>  >   * The Amazon Annapurna Labs 0x0031 device id is reused for other non Root Port
+>  >   * device types, so the quirk is registered for the PCI_CLASS_BRIDGE_PCI class.
+> 
+> 
+> This didn't help I'm afraid :(
+> It changed the VPD warning, but that's about it...
+> 
+> [  184.235496] pci 0000:02:00.0: calling  quirk_blacklist_vpd+0x0/0x22 @ 1
+> [  184.235499] pci 0000:02:00.0: [Firmware Bug]: disabling VPD access (can't determine size of non-standard VPD format)                                                                                           
+> [  184.235501] pci 0000:02:00.0: quirk_blacklist_vpd+0x0/0x22 took 0 usecs
+> 
+With this patch there's no VPD access to this device any longer. So this can't be
+the root cause. Do you have any other PCI device that has VPD capability?
+-> Capabilities: [...] Vital Product Data
 
-With due respect, i have decided to contact you on a business
-transaction that will be beneficial to both of us. At the bank last
-account and auditing evaluation, my staffs came across an old account
-which was being maintained by a foreign client who we learn was among
-the deceased passengers of motor accident on November.2003, the
-deceased was unable to run this account since his death. The account
-has remained dormant without the knowledge of his family since it
-wasput in a safe deposit account in the bank for future investment by
-the client.
-
-
-Since his demise, even the members of his family haven't applied for
-claims over this fund and it has been in the safe deposit account
-until i discovered that it cannot be claimed since our client is a
-foreign national and we are sure that he has no next of kin here to
-file claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to be done;
-I decided to seek ways through which to transfer this money out of the
-bank and out of the country too.
-
-The total amount in the account is (18.6 million) with my positions as
-a staff of this bank, i am handicapped because i cannot operate
-foreign accounts and cannot lay benefice claim over this money. The
-client was a foreign national and you will only be asked to act as his
-next of kin and i will supply you with all the necessary information
-and bank data to assist you in being able to transfer this money to
-any bank of your choice where this money could be transferred into.
-
-The total sum will be shared as follows: 50% for me, 50% for you, and
-expenses incidental occur during the transfer will be incur by both of
-us. The transfer is risk free on both sides hence you are going to
-follow my instruction till the fund transfer to your account. Since I
-work in this bank that is why you should be confident in the success
-of this transaction because you will be updated with information=E2=80=99s =
-as
-at when desired.
-
-I will wish you to keep this transaction secret and confidential as I
-am hoping to retire with my share of this money at the end of
-transaction which will be when this money is safety in your account. I
-will then come over to your country for sharing according to the
-previously agreed percentages. You might even have to advise me on
-possibilities of investment in your country or elsewhere of our
-choice. May god help you to help me to a restive retirement?
-
-(1) Your full name..............
-(2) Your age:................
-(3) Sex:.....................
-(4) Your telephone number:.................
-(5) Your occupation:.....................
-(6) Your country:.....................
-
-Yours sincerely,
-Dr Bryan Bouchet
+> 
+> 	Dave
+> 
+Heiner
