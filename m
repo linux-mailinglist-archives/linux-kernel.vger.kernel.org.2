@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EFC40917A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8F1408F45
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245595AbhIMOBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46320 "EHLO mail.kernel.org"
+        id S240134AbhIMNl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244976AbhIMN6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B719610A5;
-        Mon, 13 Sep 2021 13:37:02 +0000 (UTC)
+        id S242005AbhIMNgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D13C61373;
+        Mon, 13 Sep 2021 13:27:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540223;
-        bh=hlZCErq6/PJuwsCPLLzVeydPlwvbHm2q8eaWhHa1HEQ=;
+        s=korg; t=1631539645;
+        bh=Dj0oXM8LCAxqhjKn3UcUE+1OU4mFu/cC0JVlL2RvwQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vnl1QGUXm1bb4AVKyZS5AxIp6ZnD3PB+NaJ+G2muyFgCn2txkZSM2KLRqCvF7u1on
-         Ng5eaLMQIHiw30c+lHo/jiERXGoGXhg2n28g7uuayjA7qrmeIHYDwzv8HaBGB+QRw2
-         a56oKgafeu3/Y8lcpsw5I3ULWKZSn1WJ17V7oWNU=
+        b=QfVl2burSAA43WNdZKm8fVkmJjl0Bxbu3BYv7T2WhkSKasSZgKptodD/QIfEDFNsm
+         2Hitxj9xHRVm6Dx3HoryedkkO1QMYUhzqjA4Kp7y/Ar/V0atomcGwtajX2dCfxBb9w
+         nMTLYoFPxA0W3pq/N688vfM2j9UgR6M9NS/VbP8c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
+        stable@vger.kernel.org, Sumanth Kamatala <skamatala@juniper.net>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 104/300] firmware: fix theoretical UAF race with firmware cache and resume
-Date:   Mon, 13 Sep 2021 15:12:45 +0200
-Message-Id: <20210913131112.887440329@linuxfoundation.org>
+Subject: [PATCH 5.10 061/236] x86/mce: Defer processing of early errors
+Date:   Mon, 13 Sep 2021 15:12:46 +0200
+Message-Id: <20210913131102.444635157@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,115 +40,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Borislav Petkov <bp@alien8.de>
 
-[ Upstream commit 3ecc8cb7c092b2f50e21d2aaaae35b8221ee7214 ]
+[ Upstream commit 3bff147b187d5dfccfca1ee231b0761a89f1eff5 ]
 
-This race was discovered when I carefully analyzed the code to locate
-another firmware-related UAF issue. It can be triggered only when the
-firmware load operation is executed during suspend. This possibility is
-almost impossible because there are few firmware load and suspend actions
-in the actual environment.
+When a fatal machine check results in a system reset, Linux does not
+clear the error(s) from machine check bank(s) - hardware preserves the
+machine check banks across a warm reset.
 
-		CPU0			CPU1
-__device_uncache_fw_images():		assign_fw():
-					fw_cache_piggyback_on_request()
-					<----- P0
-	spin_lock(&fwc->name_lock);
-	...
-	list_del(&fce->list);
-	spin_unlock(&fwc->name_lock);
+During initialization of the kernel after the reboot, Linux reads, logs,
+and clears all machine check banks.
 
-	uncache_firmware(fce->name);
-					<----- P1
-					kref_get(&fw_priv->ref);
+But there is a problem. In:
 
-If CPU1 is interrupted at position P0, the new 'fce' has been added to the
-list fwc->fw_names by the fw_cache_piggyback_on_request(). In this case,
-CPU0 executes __device_uncache_fw_images() and will be able to see it when
-it traverses list fwc->fw_names. Before CPU1 executes kref_get() at P1, if
-CPU0 further executes uncache_firmware(), the count of fw_priv->ref may
-decrease to 0, causing fw_priv to be released in advance.
+  5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
 
-Move kref_get() to the lock protection range of fwc->name_lock to fix it.
+the call to mce_register_decode_chain() moved later in the boot
+sequence. This means that /dev/mcelog doesn't see those early error
+logs.
 
-Fixes: ac39b3ea73aa ("firmware loader: let caching firmware piggyback on loading firmware")
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210719064531.3733-2-thunder.leizhen@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This was partially fixed by:
+
+  cd9c57cad3fe ("x86/MCE: Dump MCE to dmesg if no consumers")
+
+which made sure that the logs were not lost completely by printing
+to the console. But parsing console logs is error prone. Users of
+/dev/mcelog should expect to find any early errors logged to standard
+places.
+
+Add a new flag MCP_QUEUE_LOG to machine_check_poll() to be used in early
+machine check initialization to indicate that any errors found should
+just be queued to genpool. When mcheck_late_init() is called it will
+call mce_schedule_work() to actually log and flush any errors queued in
+the genpool.
+
+ [ Based on an original patch, commit message by and completely
+   productized by Tony Luck. ]
+
+Fixes: 5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
+Reported-by: Sumanth Kamatala <skamatala@juniper.net>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210824003129.GA1642753@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/firmware_loader/main.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ arch/x86/include/asm/mce.h     |  1 +
+ arch/x86/kernel/cpu/mce/core.c | 11 ++++++++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-index 68c549d71230..bdbedc6660a8 100644
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -165,7 +165,7 @@ static inline int fw_state_wait(struct fw_priv *fw_priv)
- 	return __fw_state_wait_common(fw_priv, MAX_SCHEDULE_TIMEOUT);
- }
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index fc25c88c7ff2..9b5ff423e939 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -259,6 +259,7 @@ enum mcp_flags {
+ 	MCP_TIMESTAMP	= BIT(0),	/* log time stamp */
+ 	MCP_UC		= BIT(1),	/* log uncorrected errors */
+ 	MCP_DONTLOG	= BIT(2),	/* only clear, don't log */
++	MCP_QUEUE_LOG	= BIT(3),	/* only queue to genpool */
+ };
+ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b);
  
--static int fw_cache_piggyback_on_request(const char *name);
-+static void fw_cache_piggyback_on_request(struct fw_priv *fw_priv);
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index b7a27589dfa0..056d0367864e 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -817,7 +817,10 @@ log_it:
+ 		if (mca_cfg.dont_log_ce && !mce_usable_address(&m))
+ 			goto clear_it;
  
- static struct fw_priv *__allocate_fw_priv(const char *fw_name,
- 					  struct firmware_cache *fwc,
-@@ -707,10 +707,8 @@ int assign_fw(struct firmware *fw, struct device *device)
- 	 * on request firmware.
+-		mce_log(&m);
++		if (flags & MCP_QUEUE_LOG)
++			mce_gen_pool_add(&m);
++		else
++			mce_log(&m);
+ 
+ clear_it:
+ 		/*
+@@ -1628,10 +1631,12 @@ static void __mcheck_cpu_init_generic(void)
+ 		m_fl = MCP_DONTLOG;
+ 
+ 	/*
+-	 * Log the machine checks left over from the previous reset.
++	 * Log the machine checks left over from the previous reset. Log them
++	 * only, do not start processing them. That will happen in mcheck_late_init()
++	 * when all consumers have been registered on the notifier chain.
  	 */
- 	if (!(fw_priv->opt_flags & FW_OPT_NOCACHE) &&
--	    fw_priv->fwc->state == FW_LOADER_START_CACHE) {
--		if (fw_cache_piggyback_on_request(fw_priv->fw_name))
--			kref_get(&fw_priv->ref);
--	}
-+	    fw_priv->fwc->state == FW_LOADER_START_CACHE)
-+		fw_cache_piggyback_on_request(fw_priv);
+ 	bitmap_fill(all_banks, MAX_NR_BANKS);
+-	machine_check_poll(MCP_UC | m_fl, &all_banks);
++	machine_check_poll(MCP_UC | MCP_QUEUE_LOG | m_fl, &all_banks);
  
- 	/* pass the pages buffer to driver at the last minute */
- 	fw_set_page_data(fw_priv, fw);
-@@ -1259,11 +1257,11 @@ static int __fw_entry_found(const char *name)
- 	return 0;
- }
+ 	cr4_set_bits(X86_CR4_MCE);
  
--static int fw_cache_piggyback_on_request(const char *name)
-+static void fw_cache_piggyback_on_request(struct fw_priv *fw_priv)
- {
--	struct firmware_cache *fwc = &fw_cache;
-+	const char *name = fw_priv->fw_name;
-+	struct firmware_cache *fwc = fw_priv->fwc;
- 	struct fw_cache_entry *fce;
--	int ret = 0;
- 
- 	spin_lock(&fwc->name_lock);
- 	if (__fw_entry_found(name))
-@@ -1271,13 +1269,12 @@ static int fw_cache_piggyback_on_request(const char *name)
- 
- 	fce = alloc_fw_cache_entry(name);
- 	if (fce) {
--		ret = 1;
- 		list_add(&fce->list, &fwc->fw_names);
-+		kref_get(&fw_priv->ref);
- 		pr_debug("%s: fw: %s\n", __func__, name);
- 	}
- found:
- 	spin_unlock(&fwc->name_lock);
--	return ret;
- }
- 
- static void free_fw_cache_entry(struct fw_cache_entry *fce)
-@@ -1508,9 +1505,8 @@ static inline void unregister_fw_pm_ops(void)
- 	unregister_pm_notifier(&fw_cache.pm_notify);
- }
- #else
--static int fw_cache_piggyback_on_request(const char *name)
-+static void fw_cache_piggyback_on_request(struct fw_priv *fw_priv)
- {
--	return 0;
- }
- static inline int register_fw_pm_ops(void)
- {
 -- 
 2.30.2
 
