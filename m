@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A5C4090E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CABA408E69
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343677AbhIMN4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:56:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S241026AbhIMNdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:33:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242393AbhIMNxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:53:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6E9A6112E;
-        Mon, 13 Sep 2021 13:35:07 +0000 (UTC)
+        id S242192AbhIMN1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:27:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D0E61263;
+        Mon, 13 Sep 2021 13:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540108;
-        bh=uN5CR+OJnxeovHmH8+k1UfXVk3zkafDXS4D4RHTAj18=;
+        s=korg; t=1631539398;
+        bh=ohGDI1JxsPbCYZG/zalE3wIOE61oV2iX/8ohfb05En4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mFpkrJMvbM6HnxWdblyBCvKwt2UjCY9ax9E+miVJ/iyrJK53X+gXhKhcYi8qrzQYc
-         aFeNN6xe5C4uTmLqTq1NHQanWYC46mQZA6p4v6PB7rDXWIA3H7qxC5ye0vS6ePQLpB
-         nfN0Z6oCu2jb4MnGKj3wBRtxDC837PFaqy7inYTs=
+        b=OvEOJLCuyqw0dlcKzpBuIrh9l++hhfPBwjvtkvqebTgvKpuiw5VEGDPVxlKdIXnqi
+         eBBogqP7JthZh5BJjycrXpaknENu8guDVI+sOBewLX8Aeknzu/MTeec77juO2dughk
+         7NGoZJyjy/dCSEnv5qs4a+tix/GtUZkwgXSTAa6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rick Yiu <rickyiu@google.com>,
-        Quentin Perret <qperret@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Kim Phillips <kim.phillips@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 053/300] sched: Fix UCLAMP_FLAG_IDLE setting
-Date:   Mon, 13 Sep 2021 15:11:54 +0200
-Message-Id: <20210913131111.150048708@linuxfoundation.org>
+Subject: [PATCH 5.10 010/236] EDAC/mce_amd: Do not load edac_mce_amd module on guests
+Date:   Mon, 13 Sep 2021 15:11:55 +0200
+Message-Id: <20210913131100.681626576@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 
-[ Upstream commit ca4984a7dd863f3e1c0df775ae3e744bff24c303 ]
+[ Upstream commit 767f4b620edadac579c9b8b6660761d4285fa6f9 ]
 
-The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
-uclamp active task (that is, when buckets.tasks reaches 0 for all
-buckets) to maintain the last uclamp.max and prevent blocked util from
-suddenly becoming visible.
+Hypervisors likely do not expose the SMCA feature to the guest and
+loading this module leads to false warnings. This module should not be
+loaded in guests to begin with, but people tend to do so, especially
+when testing kernels in VMs. And then they complain about those false
+warnings.
 
-However, there is an asymmetry in how the flag is set and cleared which
-can lead to having the flag set whilst there are active tasks on the rq.
-Specifically, the flag is cleared in the uclamp_rq_inc() path, which is
-called at enqueue time, but set in uclamp_rq_dec_id() which is called
-both when dequeueing a task _and_ in the update_uclamp_active() path. As
-a result, when both uclamp_rq_{dec,ind}_id() are called from
-update_uclamp_active(), the flag ends up being set but not cleared,
-hence leaving the runqueue in a broken state.
+Do the practical thing and do not load this module when running as a
+guest to avoid all that complaining.
 
-Fix this by clearing the flag in update_uclamp_active() as well.
+ [ bp: Rewrite commit message. ]
 
-Fixes: e496187da710 ("sched/uclamp: Enforce last task's UCLAMP_MAX")
-Reported-by: Rick Yiu <rickyiu@google.com>
-Signed-off-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Link: https://lore.kernel.org/r/20210805102154.590709-2-qperret@google.com
+Suggested-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Tested-by: Kim Phillips <kim.phillips@amd.com>
+Link: https://lkml.kernel.org/r/20210628172740.245689-1-Smita.KoralahalliChannabasappa@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/edac/mce_amd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 15b4d2fb6be3..1e9672d609f7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1281,6 +1281,23 @@ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
- 		uclamp_rq_dec_id(rq, p, clamp_id);
- }
+diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
+index 6c474fbef32a..b6d4ae84a9a5 100644
+--- a/drivers/edac/mce_amd.c
++++ b/drivers/edac/mce_amd.c
+@@ -1176,6 +1176,9 @@ static int __init mce_amd_init(void)
+ 	    c->x86_vendor != X86_VENDOR_HYGON)
+ 		return -ENODEV;
  
-+static inline void uclamp_rq_reinc_id(struct rq *rq, struct task_struct *p,
-+				      enum uclamp_id clamp_id)
-+{
-+	if (!p->uclamp[clamp_id].active)
-+		return;
++	if (cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
++		return -ENODEV;
 +
-+	uclamp_rq_dec_id(rq, p, clamp_id);
-+	uclamp_rq_inc_id(rq, p, clamp_id);
-+
-+	/*
-+	 * Make sure to clear the idle flag if we've transiently reached 0
-+	 * active tasks on rq.
-+	 */
-+	if (clamp_id == UCLAMP_MAX && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
-+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
-+}
-+
- static inline void
- uclamp_update_active(struct task_struct *p)
- {
-@@ -1304,12 +1321,8 @@ uclamp_update_active(struct task_struct *p)
- 	 * affecting a valid clamp bucket, the next time it's enqueued,
- 	 * it will already see the updated clamp bucket value.
- 	 */
--	for_each_clamp_id(clamp_id) {
--		if (p->uclamp[clamp_id].active) {
--			uclamp_rq_dec_id(rq, p, clamp_id);
--			uclamp_rq_inc_id(rq, p, clamp_id);
--		}
--	}
-+	for_each_clamp_id(clamp_id)
-+		uclamp_rq_reinc_id(rq, p, clamp_id);
- 
- 	task_rq_unlock(rq, p, &rf);
- }
+ 	if (boot_cpu_has(X86_FEATURE_SMCA)) {
+ 		xec_mask = 0x3f;
+ 		goto out;
 -- 
 2.30.2
 
