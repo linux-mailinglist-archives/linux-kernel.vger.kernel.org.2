@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873FD409603
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B49A409604
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345412AbhIMOrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:47:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
+        id S1346894AbhIMOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:47:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347254AbhIMOk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347260AbhIMOk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:40:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0B47630EA;
-        Mon, 13 Sep 2021 13:56:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43136630EC;
+        Mon, 13 Sep 2021 13:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541366;
-        bh=sch4oCML0TRqmxt/bRyToxXlabMK2Dc/Jbh0VLScjzo=;
+        s=korg; t=1631541368;
+        bh=E/4e5cDsBv25x9Gdn3jZTWAWC4/mGWRHdHrBZx9arLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TODrpH4Wk+EhyShXgGYSGs+u883znR83Ow+vKz5/PbPqKSXlQpx/S89scqAobvETx
-         rbQWjSyDphRfTD0YA8ygvCK0iO5UCPrPsID1A2x07k5UMKqCqG7LgFpCfKch0QI6FJ
-         nsGIgqZbAdzER22McrFhQPayO5FASQPG/Yc60aGI=
+        b=WuuizEBnitWCktb3IizL+vT+4r0Me1QQ3qom2xp+Dq2l0zlCpyyMG3/wuxPCR6Ggw
+         JEk6ATfymVLbfDDVJkkHsvJH6fMVo6JkBN6MKIyNJdG/ma0/Wvj/xy3y6tokGT3shO
+         fomtYIz3P99mR/RNMj87ddHeSdkmrBnZ6v+xZ2Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dima Chumak <dchumak@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 268/334] net/mlx5: Lag, fix multipath lag activation
-Date:   Mon, 13 Sep 2021 15:15:22 +0200
-Message-Id: <20210913131122.481574140@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Subject: [PATCH 5.14 269/334] net/mlx5: Remove all auxiliary devices at the unregister event
+Date:   Mon, 13 Sep 2021 15:15:23 +0200
+Message-Id: <20210913131122.512055592@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -41,83 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dima Chumak <dchumak@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 2f8b6161cca5fb34b0065e2eac8bb2b61b7bfe87 ]
+[ Upstream commit 8e7e2e8ed0e251138926838b7933f8eb6dd56b12 ]
 
-When handling FIB_EVENT_ENTRY_REPLACE event for a new multipath route,
-lag activation can be missed if a stale (struct lag_mp)->mfi pointer
-exists, which was associated with an older multipath route that had been
-removed.
+The call to mlx5_unregister_device() means that mlx5_core driver is
+removed. In such scenario, we need to disregard all other flags like
+attach/detach and forcibly remove all auxiliary devices.
 
-Normally, when a route is removed, it triggers mlx5_lag_fib_event(),
-which handles FIB_EVENT_ENTRY_DEL and clears mfi pointer. But, if
-mlx5_lag_check_prereq() condition isn't met, for example when eswitch is
-in legacy mode, the fib event is skipped and mfi pointer becomes stale.
-
-Fix by resetting mfi pointer to NULL in mlx5_deactivate_lag().
-
-Fixes: 8a66e4585979 ("net/mlx5: Change ownership model for lag")
-Signed-off-by: Dima Chumak <dchumak@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+Fixes: a5ae8fc9058e ("net/mlx5e: Don't create devices during unload flow")
+Tested-and-Reported-by: Yicong Yang <yangyicong@hisilicon.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/lag.c    | 1 +
- drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c | 8 ++++++++
- drivers/net/ethernet/mellanox/mlx5/core/lag_mp.h | 2 ++
- 3 files changed, 11 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-index 5c043c5cc403..40ef60f562b4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-@@ -277,6 +277,7 @@ static int mlx5_deactivate_lag(struct mlx5_lag *ldev)
- 	int err;
- 
- 	ldev->flags &= ~MLX5_LAG_MODE_FLAGS;
-+	mlx5_lag_mp_reset(ldev);
- 
- 	MLX5_SET(destroy_lag_in, in, opcode, MLX5_CMD_OP_DESTROY_LAG);
- 	err = mlx5_cmd_exec_in(dev0, destroy_lag, in);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-index c4bf8b679541..516bfc2bd797 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-@@ -302,6 +302,14 @@ static int mlx5_lag_fib_event(struct notifier_block *nb,
- 	return NOTIFY_DONE;
- }
- 
-+void mlx5_lag_mp_reset(struct mlx5_lag *ldev)
-+{
-+	/* Clear mfi, as it might become stale when a route delete event
-+	 * has been missed, see mlx5_lag_fib_route_event().
-+	 */
-+	ldev->lag_mp.mfi = NULL;
-+}
-+
- int mlx5_lag_mp_init(struct mlx5_lag *ldev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/dev.c b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
+index def2156e50ee..20bb37266254 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/dev.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
+@@ -397,7 +397,7 @@ int mlx5_register_device(struct mlx5_core_dev *dev)
+ void mlx5_unregister_device(struct mlx5_core_dev *dev)
  {
- 	struct lag_mp *mp = &ldev->lag_mp;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.h b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.h
-index 258ac7b2964e..729c839397a8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.h
-@@ -21,11 +21,13 @@ struct lag_mp {
- 
- #ifdef CONFIG_MLX5_ESWITCH
- 
-+void mlx5_lag_mp_reset(struct mlx5_lag *ldev);
- int mlx5_lag_mp_init(struct mlx5_lag *ldev);
- void mlx5_lag_mp_cleanup(struct mlx5_lag *ldev);
- 
- #else /* CONFIG_MLX5_ESWITCH */
- 
-+static inline void mlx5_lag_mp_reset(struct mlx5_lag *ldev) {};
- static inline int mlx5_lag_mp_init(struct mlx5_lag *ldev) { return 0; }
- static inline void mlx5_lag_mp_cleanup(struct mlx5_lag *ldev) {}
- 
+ 	mutex_lock(&mlx5_intf_mutex);
+-	dev->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV;
++	dev->priv.flags = MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV;
+ 	mlx5_rescan_drivers_locked(dev);
+ 	mutex_unlock(&mlx5_intf_mutex);
+ }
 -- 
 2.30.2
 
