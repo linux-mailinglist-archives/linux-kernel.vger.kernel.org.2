@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3488A409DF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2953E409DF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242658AbhIMULm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S242793AbhIMUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236133AbhIMULe (ORCPT
+        with ESMTP id S236133AbhIMUL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:11:34 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D17C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:10:18 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id v2so2691634plp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:10:18 -0700 (PDT)
+        Mon, 13 Sep 2021 16:11:59 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE512C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:10:42 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id l11so23616464lfe.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FZZEMatov1ywQnlAFEuJS6XYFerKWwr4EqDpdXQaYcY=;
-        b=Ygg3+TCcneorxzC43CXi9+QyVczta/m/dbbyX3FF4p4pFOnwBjsvFsPD0MCpK+rS+8
-         MtRQIToFoyvhTo9TAdj9NRx8XGnX1qIKNQ4Ql6K8TG9kJRiQamhZGJn5p8PMfGtW+Dqw
-         0CeQzz/5MYNPtsGK3b2RP9vz+zAuUppw6n4ob2yrSE0jOHmfr0Y/suOcCdB8kJFxJ4FH
-         J+mFbropaOv/dta3lHwW1ogpb1SUc4GfQK261qmDht/Q3rs2u46pWH+EwNSntxm1nclD
-         vklzSZYYi5/FIVa9m8NXWF7XLbikHgRT2kMp1UfuZv5VUbIgEMe/gnApk+nJFDFPiCJ8
-         I4kw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=146IDoLHsnlYB84TPDL7kqzW39fi+lkR3958WvJksNU=;
+        b=gyRS8gjhHVDEJW3sWIFVBpPRc2KEVEPHvvR30CLnqsK+D0Cdnc2iMmALs9/mMesYTx
+         DWIkQLMkgDI0IL1b4WvgD65bkxCoJcXYobVOE4MVrZsCt0d4JU3u0ngT8fARn6axUyBf
+         W1N+PxcICKOZsZfThMM7E97Qm8F9LSOpst2ww=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=FZZEMatov1ywQnlAFEuJS6XYFerKWwr4EqDpdXQaYcY=;
-        b=gZvMABUaUT4O5kEqHHJj8cMlid1IiVwuK+pW1KXb59/FsLumTezvcXl9CQhtoyw+64
-         FpCVee6gEkCno59N5T9h2PdXoIQg7O/z/E0DkpGQdbqyQ5B7ntSIkZSUWDFwZLP5ZsiW
-         JngcgltFS4sm/762iCHMfQ+Tb86jX7xgTKLWvjpx8wbLwBohHWJH4oHWzpFDcO8j1QEA
-         ZPxRMO0sMVs8kHbGikoskLNgV7Em0/3lyGpTYrf9NDJp87YM38girFB1lvCEpKG2bU7A
-         7NQ27uLjZN3kGoDpvrgx1ksAB3HHP9O6msFpdNu008roYHWHxBJNsqm6OZLV3+8U8qCB
-         qihA==
-X-Gm-Message-State: AOAM531fPf1usCJ4MrcQpO4E5mzanP/xdOpVpu8GkbQtQJt3tvcj1rbi
-        baM/GuXsX0dUItUY0dBg/Xw=
-X-Google-Smtp-Source: ABdhPJx4vPt3BujS6XT0VkIhVx8lcxyx2fXBRc0yjYsLsD9r5Z+HcPsVMJ5W9tQZKVB6D5yB5hQIGQ==
-X-Received: by 2002:a17:90b:3ec6:: with SMTP id rm6mr370730pjb.68.1631563817871;
-        Mon, 13 Sep 2021 13:10:17 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id c21sm7912657pfd.200.2021.09.13.13.10.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 13:10:17 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 10:10:16 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Feng Tang <feng.tang@intel.com>, Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [memcg] 45208c9105: aim7.jobs-per-min -14.0% regression
-Message-ID: <YT+wKFZg0OS0YFrF@slm.duckdns.org>
-References: <20210905124439.GA15026@xsang-OptiPlex-9020>
- <CALvZod77aP7qdwc5FkaZJf4FikeD0NwSuoJB4N94Uf0yqZFQpQ@mail.gmail.com>
- <20210907033000.GA88160@shbuild999.sh.intel.com>
- <CALvZod6M_sySPM1KaWzb=tkLxXJksVDrSheckXaiBpMC3cNeqw@mail.gmail.com>
- <20210912111756.4158-1-hdanton@sina.com>
- <20210912132914.GA56674@shbuild999.sh.intel.com>
- <CALvZod4VbdSux5RaQuhqbC7ENm39UbdkJF8LhYedbFwHKyJgfw@mail.gmail.com>
- <CALvZod7Oa7q=P0gzfA3F26bHPrNz+F-d6G9qKpSiHy9g=msM_w@mail.gmail.com>
- <YT+ptg1Lf1kGLyUX@slm.duckdns.org>
- <CALvZod7mBLbkqZJzZz=XNGTDB4mxCd6dwM40aCv6t8fWbdUJdw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=146IDoLHsnlYB84TPDL7kqzW39fi+lkR3958WvJksNU=;
+        b=2DWZbYuyuCVSc4eLzARXHor+B93wKBSF/0ySh21OFPijcBcITuGRofEfFB1VPycQtg
+         LUe7KpGHS/8u02TNtc+mChmueBUg+0OVnMWqhBBR1rO1se2dzK7m4pefbgDNBh3eNtnY
+         hBfN2ZIJ2Y0qUcfvD94iMq1flFPGVMigEorgFqOJfNRTAprxCk5kwz54rc7rsoPurv6B
+         cM2uuzwFpnYKcGt1WLDqgyMAfc5FNQL4R8lrFEkkz1Vs7bmU3O3N1pvG9ismYxqdQm3K
+         h3NkLN42rdVozPXgFfKjg8qBC1DegPzL6dBqDyoICE+sDYap2oGnu2YhfhbkCG8gQd7A
+         H4yA==
+X-Gm-Message-State: AOAM531HzzaDbGENvmngmD3ed0AdbuLN14YbMYX8wqVZdtki4uUf19m6
+        Q99FWXEFZBHlOTc94mHgGmc1xJJvb42oqmq6rS0=
+X-Google-Smtp-Source: ABdhPJwSD8TNabFV0c9HoIUGBYhm/o8ebkQOrWC1BT2Z2yYAHrwfxYyRSW8rkNhgvmRINg7Q+OtUYw==
+X-Received: by 2002:a05:6512:3b94:: with SMTP id g20mr10439356lfv.409.1631563840524;
+        Mon, 13 Sep 2021 13:10:40 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id p5sm918272lft.302.2021.09.13.13.10.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 13:10:39 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id s3so19414833ljp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:10:38 -0700 (PDT)
+X-Received: by 2002:a2e:1542:: with SMTP id 2mr12239121ljv.249.1631563837811;
+ Mon, 13 Sep 2021 13:10:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7mBLbkqZJzZz=XNGTDB4mxCd6dwM40aCv6t8fWbdUJdw@mail.gmail.com>
+References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
+ <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
+ <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
+ <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
+ <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com> <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
+In-Reply-To: <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 13 Sep 2021 13:10:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
+Message-ID: <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
+Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Baokun Li <libaokun1@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 01:09:11PM -0700, Shakeel Butt wrote:
-> Thanks a lot for the explanation. Are there any concerns to call
-> cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup) in system_wq?
-> This will be called every 2 seconds, so, we can assume the updated
-> tree would be small most of the time.
+On Mon, Sep 13, 2021 at 1:02 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Ha! I pulled+rebased and this code disappeared...I thought I had
+> rebased on the wrong branch or committed work to master accidentally.
+> Patch to stable-only inbound.
 
-I can't think of a reason why this would be problematic.
+Side note: for stable, can you look into using _Generic() instead of
+__builtin_choose_expression() with typeof, or some
+__builtin_types_compatible_p() magic?
 
-Thanks.
+Yes, yes, we use __builtin_choose_expression() elsewhere, but we've
+started using _Generic(), and it's really the more natural model - in
+addition to being the standard C one.
 
--- 
-tejun
+Of course, there may be some reason why _Generic() doesn't work, but
+it _is_ the natural fit for any "for type X, do Y" kind of thing.
+
+No?
+
+          Linus
