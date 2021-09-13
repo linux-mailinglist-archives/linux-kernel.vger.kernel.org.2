@@ -2,90 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA3E4085A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F42154085A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237780AbhIMHvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237706AbhIMHvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:51:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A64A760F6F;
-        Mon, 13 Sep 2021 07:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631519438;
-        bh=cMvOsxQPkcCU0L+gMR/WQdHx7koCqFk64UEN1RNQ10Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BSc6E9qPLljN/NdJaC7wotlLnn7oUna8vhWmx2sXA0NozUXoNxQrXnjvMpjAds5uY
-         QRCrzZNrfEPRpxs5RmJTAnc0lTWpBHCTOy8GL8Vrun9cWr/nEeEKolE/QPBnDM4a4h
-         dAfhQDckYF8XinNpYbmw8i2eUC/FlsjydiKSKumk=
-Date:   Mon, 13 Sep 2021 09:50:35 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     giovanni.cabiddu@intel.com, stable-commits@vger.kernel.org
-Subject: Re: Patch "crypto: qat - do not export adf_iov_putmsg()" has been
- added to the 4.4-stable tree
-Message-ID: <YT8Cy2W0UBLrbTyj@kroah.com>
-References: <20210913032306.946F4600D4@mail.kernel.org>
+        id S237782AbhIMHwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:52:23 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:47674 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237653AbhIMHwW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 03:52:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631519466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pr9NsquezdntMofNXZDBaoS0vQXjzZVpzsSAdnW8nHY=;
+        b=GPS4mIjkpNXl2cG8KJDawjNSxuffZVT7yIp9I5CqV/6onw/+CuTxV0uI/MIh0MJl8Epq+M
+        67AKkeCTesiQ3xUyMN1URHtM6e6uM7GB+qEW83GqUXRlnxCaSNx5jzrKZRcmnqnr0g1TaR
+        4k5QPNLV5hR+lJ6sMalLVYp7LktJpyo=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2170.outbound.protection.outlook.com [104.47.17.170])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-16-tUFgrveFND-f5Uh5aIyxrg-2; Mon, 13 Sep 2021 09:51:05 +0200
+X-MC-Unique: tUFgrveFND-f5Uh5aIyxrg-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k1bb3SPEaSiGZXT90apSKba+yGZHwzQ3H6XtkXaaRYppbCwlOxn+TFQCHjYTgtBNsDYdqEBDluIXP3PjRzNFYhw4gbURqaJi+MKfVD1b5m1pyFrcL04hZxB6dRk9m2r33zQxRbLGQr8W7HFeD0xlV6qO2fjux82If7Urybzm18k0CCIkn2eFYaeApPDY+qv2OLifinUrW/tpxYvuvU8EAFYss7zBTvy6lUmNieoBBgDTC3ifu7gmrBBAgz4BFyqP3Xn0FXXwKW2Wyibmb+DrdqzR1xgK/l2X1adfii6+Rz6f2eboa4Ckc05Gi/whzOUzwXAlfhMuM6UKffawLDSDZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=pr9NsquezdntMofNXZDBaoS0vQXjzZVpzsSAdnW8nHY=;
+ b=VyzSpuFavPXiofaPaQTAm2I0AYATwVHcfIk024mlV44lOH3iOiz5gOAUE2KZCRYF/tljyI7aF7vXmWdzdq+v5z83Bzw+4B75wVKNNaq9bo8dCmQ6swez/UGJeklZFMsorKHHHcIVh6hI1eve1fXhS1b7QScK9XM4p6lWOHT/E4ZiCV70kQQVpp+oAKYb01V6tkwwBmoxdzgs8U4+xzzGVFjtbogiSFL7juDyGUFrJQFG7Qrx+1e2s0tNvwjcD8JUjPnYBgQlCVEqA5AfzRuAEzd3GKzC6GaD0S4uAKFfDnSZ6vJvmQlK70sl2ypIC9pJivu3t0lwpaflIMAy1BuDlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB7150.eurprd04.prod.outlook.com (2603:10a6:800:12a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Mon, 13 Sep
+ 2021 07:51:03 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.018; Mon, 13 Sep 2021
+ 07:51:02 +0000
+Subject: Re: [PATCH 12/12] swiotlb-xen: this is PV-only on x86
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Christoph Hellwig <hch@infradead.org>
+References: <588b3e6d-2682-160c-468e-44ca4867a570@suse.com>
+ <004feaef-f3bb-e4bb-fb10-f205a9f69f28@suse.com>
+ <YThiyxG0d2tmCtb+@infradead.org>
+ <alpine.DEB.2.21.2109101636470.10523@sstabellini-ThinkPad-T480s>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <ea90d3d7-22c7-604f-d0c8-f83c2a58554d@suse.com>
+Date:   Mon, 13 Sep 2021 09:51:01 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <alpine.DEB.2.21.2109101636470.10523@sstabellini-ThinkPad-T480s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0071.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:49::10) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913032306.946F4600D4@mail.kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by FR0P281CA0071.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:49::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.9 via Frontend Transport; Mon, 13 Sep 2021 07:51:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 762ff284-8c96-4fae-4f5b-08d9768b3be9
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7150:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB715048CF70F9DBDFEEAD9649B3D99@VI1PR04MB7150.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b+2yabJw7c8ZF+8rLpJfPrxAoSQW7hCpXduq8D3xkfHTG0kS0Vg+W4DxWdjKx8PlAX0CrsQAvk/GJSPwFlik8jJxDsQkfdyEOXZfJuEKEpF2t3ZQyqO05K3T07mxCHDYvUbcvwPjnnUUAOwRXr75mx0tJcw3DLxowPCtAsUJPPFaowoDvv4ORzybh/6jMXCpUcPA9A9pGtANJednsfKm1twYJA4teXDlj0Iaa9XLacmE41e5TUj9b0cy/jiqFUqurZwro71NMBUluRVSgY9weUsgD09YjWQKOAs/T57ioDuQ2zVGnQUGtxDGixWrHn7vSx9mMjN9YtGXDIJXiLLrbF12GJhbgSv3TbIZCnsiMiO1v/RjZm5veFcgT4a4gD4+xAl8zpLMa3MT6n9i3kxzGKyWQBM5jqTT+hhwzA50korrfeRYVABPGplqWUvp0OBLzpOfIAUS2mtzLI8jfpjmhULnPrxB0SKe5C0WZyhO+lRk6Jesc4aPXff5bmKk53fFLr1euJ8i0ooSc1xu0LMkJuBvOT8q+M3jVzTNYyluI4NG10OCuTnO74WjfILuAFCrjO3ZYks1u/Ud5nMXbqXIHIU1kRT90qPSnREWI57/Ty59+xUElq8PB6f6XDA3WKlskce0GvoYpS23II+Ud+YbLGy6RI4FnNWBKASaCaIM3KDmwKA9OXWXE3DgmzEVc/sLmfE/g6XO/eiYusRSUQtePEaoZUw9XIfU619+RB2V1ouNauPm534S5w45rxVoRstE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(39860400002)(376002)(396003)(8676002)(6916009)(66476007)(31696002)(86362001)(66556008)(186003)(38100700002)(478600001)(83380400001)(16576012)(36756003)(2616005)(316002)(26005)(53546011)(31686004)(8936002)(4326008)(54906003)(5660300002)(2906002)(66946007)(956004)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rno4YldhTnFxd0RpV2E3TDNqSnlDMWFEMitlb1dYQUdyVHp2elRhVzRSeEZM?=
+ =?utf-8?B?ejNMa2E5d085UGNwVDVIVDdrN1VzdStndWlzZ0lBOVc0enRBWlZFcndaQTNJ?=
+ =?utf-8?B?NFd4VzFNSHFocmd4YVZlYjg1NWZJbjNRVnZYVE9DbUVIVVBFK0hvZlBQYytr?=
+ =?utf-8?B?Vjh0UDV0MDNnNCtHeXBkVFZURUtBVkFSMXROK0lJb2dpTlVhclFMeUxBREw5?=
+ =?utf-8?B?QUlVekJ4bnYxMzNJNHZka00vUjVjYzM5QVAvVlJSOFNOUWh0dGFmMWw1ZzZo?=
+ =?utf-8?B?ZURiemhleVJFZ24vWDhpTTVmbzNuejhDK3BFdVdaTzkyNDQySzNBallQdTMr?=
+ =?utf-8?B?N0dxTFVjS205bnBxYTFSeW1VV3owV01JY1NOTE8xV2dBMkhKeGtEeWdOSUNF?=
+ =?utf-8?B?Y3grYVRScXVNcFZYbHhwSFhrOS81MERJODA1alRsVHhVOStoNGhRcGlmdVh3?=
+ =?utf-8?B?NDRqWlZLanplS1B4aGRZb2ZIZ0tSS3NzZEp3R2h6aDNDam52OUNlUDlUM0tp?=
+ =?utf-8?B?WXAyNTh1Ulpwa0s1RjBHb0ozOUJiLzZVcE1KOXFqc3hSN2dQR3UreU00QWNY?=
+ =?utf-8?B?bGpxeGJ4UWU1MzlsK0dIWE45Y3JFc3RROGpLbTI4UGVmb1h1SEFvdUZxd3k4?=
+ =?utf-8?B?TEJscTFNNzB4Q05YdjNZNE81OXo4UituWUtON0kzVVd5MHpYSUZJSVUxcXdo?=
+ =?utf-8?B?MnQ0anpWSGY4dnYwYk91YlJ2VVNlZmdCQm9nMFJPSThROVF0NmpMalFNejB4?=
+ =?utf-8?B?SE50SmhacE9WRENYSFVQMFBPUjVHV1dVQ3NXNkVDNWdRamxWVlRyNVIvVHBX?=
+ =?utf-8?B?T0E5TzJLaGZ1NjA3NWg0SElMRHA0Yy9NdWE3TWJqSkpudm8vOUgvbnd5dGEr?=
+ =?utf-8?B?emYzb1FHYWc4M3VBZUNkL0JacGtOVm9va1B5QWo2emg2WkgveE1ndTFsQ2l1?=
+ =?utf-8?B?M0FSTGJROVd5Y0xydFJQQlQzUFVVQ1hRQll2dGoyckFzYk5NVXkwTnJxakFI?=
+ =?utf-8?B?VFJ1and0eWhlK1owNUZ2UEwva1QyMGRnVWRjbzFWdzdBcjlXWHFLWktWaGdV?=
+ =?utf-8?B?MTZBcG45S1ZTU0p5SEMza3R6QVhFclBQOXV5NnVpOWl4QXRYV2VxTiswY1lq?=
+ =?utf-8?B?RlNRdURHSzdWSjZIYittTTFRUGFpSVV0MWxYOXJQeFZKTnBzQURaRlh1NDNj?=
+ =?utf-8?B?MThGeXFCemtBOEMrUjEyVlhNdjR5T0ZiUTBzWnJ1bCszNVFzV0FuT0Zrb2p2?=
+ =?utf-8?B?b2kvSjZaS2Q1aFFoRUo1SnRxbi9WTW5ablowWVFzZ3JzeG1JR1pJZFNybUFT?=
+ =?utf-8?B?RUdqZnBkM2Nrb3kxTEJTYURETFFUbzQzaGU5bzJoMVQxeDNjWjh6TmkxL3Ur?=
+ =?utf-8?B?OG5Yd0JZTTNCM1BpbHNkdm5QZkRtemRCOXE1TytCUllsM3ozMU43S1R1dVJ3?=
+ =?utf-8?B?dDJpQ0MzdlFSeFNpNzRVK1hrK1dTTEJFdVYybFc5RjFVRUVOWEpDNjFrbmla?=
+ =?utf-8?B?R3RSRzF2MXdhSnBvMFRRUVVTS1BZR0tULzZxSjlvSGp1c1E0L1FVRGZJcUNz?=
+ =?utf-8?B?TjJZTkRvcS83ak9xVmo4dmMyTGx4d1hDYXdubjNpdGZCb0orZWFZcEdlZ0VF?=
+ =?utf-8?B?RmErYkF6ZGR6V3plS1MwSzNmWCtsWjFrZHIzUXlkZWtQbGFPSE9YUXBTRFB5?=
+ =?utf-8?B?MXVhb3V5OEowNXFqaFJkMWtvaXJMMlkwYnpWZE05K0grd1d2dURrUlNxQkQ1?=
+ =?utf-8?Q?3IAHzROaXVsaqw1M9hZ7yKSOzskEBd30wJc6e8E?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 762ff284-8c96-4fae-4f5b-08d9768b3be9
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 07:51:02.8362
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M95ReYbmDRFLD9uHvKcfF6HUVD4FKx1m0TyUAS1zPv5row9eF3rfID8qrUFRe7yEoNJtUInFFbi64SL76l7Gig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7150
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 11:23:05PM -0400, Sasha Levin wrote:
-> This is a note to let you know that I've just added the patch titled
+On 11.09.2021 01:48, Stefano Stabellini wrote:
+> On Wed, 8 Sep 2021, Christoph Hellwig wrote:
+>> On Tue, Sep 07, 2021 at 02:13:21PM +0200, Jan Beulich wrote:
+>>> The code is unreachable for HVM or PVH, and it also makes little sense
+>>> in auto-translated environments. On Arm, with
+>>> xen_{create,destroy}_contiguous_region() both being stubs, I have a hard
+>>> time seeing what good the Xen specific variant does - the generic one
+>>> ought to be fine for all purposes there. Still Arm code explicitly
+>>> references symbols here, so the code will continue to be included there.
+>>
+>> Can the Xen/arm folks look into that?  Getting ARM out of using
+>> swiotlb-xen would be a huge step forward cleaning up some DMA APIs.
 > 
->     crypto: qat - do not export adf_iov_putmsg()
+> On ARM swiotlb-xen is used for a different purpose compared to x86.
 > 
-> to the 4.4-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> Many ARM SoCs still don't have an IOMMU covering all DMA-mastering
+> devices (e.g. Raspberry Pi 4). As a consequence we map Dom0 1:1 (guest
+> physical == physical address).
 > 
-> The filename of the patch is:
->      crypto-qat-do-not-export-adf_iov_putmsg.patch
-> and it can be found in the queue-4.4 subdirectory.
-> 
-> If you, or anyone else, feels it should not be added to the stable tree,
-> please let <stable@vger.kernel.org> know about it.
-> 
-> 
-> 
-> commit 5f8033f94420950b5fc4b91dd2154c00fc88d44e
-> Author: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> Date:   Thu Aug 12 21:21:28 2021 +0100
-> 
->     crypto: qat - do not export adf_iov_putmsg()
->     
->     [ Upstream commit 645ae0af1840199086c33e4f841892ebee73f615 ]
->     
->     The function adf_iov_putmsg() is only used inside the intel_qat module
->     therefore should not be exported.
->     Remove EXPORT_SYMBOL for the function adf_iov_putmsg().
->     
->     Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
->     Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
->     Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
->     Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
-> diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-> index 711706819b05..f071aba32a28 100644
-> --- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-> +++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-> @@ -254,7 +254,6 @@ int adf_iov_putmsg(struct adf_accel_dev *accel_dev, u32 msg, u8 vf_nr)
->  
->  	return ret;
->  }
-> -EXPORT_SYMBOL_GPL(adf_iov_putmsg);
->  
->  void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
->  {
+> Now if it was just for Dom0, thanks to the 1:1 mapping, we wouldn't need
+> swiotlb-xen. But when we start using PV drivers to share the network or
+> disk between Dom0 and DomU we are going to get DomU pages mapped in
+> Dom0, we call them "foreign pages".  They are not mapped 1:1. It can
+> happen that one of these foreign pages are used for DMA operations
+> (e.g. related to the NIC). swiotlb-xen is used to detect these
+> situations and translate the guest physical address to physical address
+> of foreign pages appropriately.
 
-This breaks the build on the 4.4.y stable queue, so I am dropping it
-from there.
+Thinking about this some more - if Dom0 is 1:1 mapped, why don't you
+map foreign pages 1:1 as well then?
 
-thanks,
+>>> Instead of making PCI_XEN's "select" conditional, simply drop it -
+>>> SWIOTLB_XEN will be available unconditionally in the PV case anyway, and
+>>> is - as explained above - dead code in non-PV environments.
+>>>
+>>> This in turn allows dropping the stubs for
+>>> xen_{create,destroy}_contiguous_region(), the former of which was broken
+>>> anyway - it failed to set the DMA handle output.
+>>
+>> Looks good:
+>>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
 
-greg k-h
+Thanks for this and the other reviews.
+
+Jan
+
