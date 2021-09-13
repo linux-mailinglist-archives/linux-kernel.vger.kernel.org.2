@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785BF40A198
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37FE40A19E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236109AbhIMXgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        id S240144AbhIMXkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235007AbhIMXf7 (ORCPT
+        with ESMTP id S236079AbhIMXj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:35:59 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5744CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:34:43 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id q17-20020a25b591000000b005a07d27bbdaso15064076ybj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:34:43 -0700 (PDT)
+        Mon, 13 Sep 2021 19:39:59 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5404C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:38:41 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z5so24069069ybj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=p2PhjhfGHPzRMVxAEYNgD/aavMWF7FNo4YbH8kVjAfs=;
-        b=a3xaUwu2+vU/jm2XnXWRIje3mB6RH0kDujiREtfR7BZYAjcbrrdLzL/gpgriXOlXH8
-         kENATyILFr904Ps620RkMdlNQ6LHIKA9wS5UEjc+p9xt7MX5zSpdmg5wdbEaZ1SWPoQZ
-         BvX0G4TaDrNljvn+oW+RcGcmwegOLqQVjIPle3sybqZmwOnIXBiV7P+mq0lZP8VdasaP
-         OrgCQtZJxlonFb0M9iE1jWIo/dXGPUVdoVdDRZWeLggd2rIpjHY55O1xWCOPxpiBBfU5
-         9hnervHnmMX242Ap3M94WkOEfk4J4MGNBUUYqac2ce+CUx4mthn68WH0RpbUqny8aKAW
-         ndyQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cI/jeOU5rLR8X7WtxXOWaAngNhFiIOuHbXY1aDDYGos=;
+        b=NMKR01fsDjOL/bSL+r00xqJRi+mMiSl6JTC0z4v6w6pafJlzwWUnP9WNprle1mMKN9
+         SqkKP2t1CC3hqLN22VyYmhvfvyeQ/qxBgsK11LfqIg5zqIVMWuOlE5MUxuoWgXZTpy75
+         iRBbB0FA/hVDjM0PJ+UlOyXWs7eZ+8A69OKeK/yvuqzJaHhr9Y6cSKKsP0w2vbJWVgEM
+         kODN4pbGHgOQvBD0z3e1EqPUFVe3dZm5XhkbS+sKKxEjVVyOeJUiOOzetIKdzPA4/wH7
+         O/R5G0yjVzvkn4sEUZGCmkl0ghblpGpJcVyQ55ahS529cEpnW5uYibER5FPC2dokxqeC
+         O4Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=p2PhjhfGHPzRMVxAEYNgD/aavMWF7FNo4YbH8kVjAfs=;
-        b=txIpCzKhA7Z24flUjAlcD9Svz1my7/H/OWTm9bZafsshHcsfjnIogIXIJxBLQl/krO
-         7KA81vxre+QqE/kwBQUhnY3+vXZHOCEQQaW+WZA9PsjG5QvCyghsGYoEzUlwnEVD3Q7V
-         NjIZS12F63sFDTLMND12k+ZRMD+jxuMajOyX1Phc34T5Wc3I6CjrB1poBR9mLMZCeMal
-         LoJSdl5mqN/bQfaOGF//hzmpzjaSTmZay8Awa5GjTNC3zEX8fwZZbz/ckrScHfGyPrs4
-         WFiAlqeiy812rRWy1rngaSDIoKJYPHfsocO41ha05SrGtz82SKuCGeEUjALwYu0AKHkx
-         Fj1A==
-X-Gm-Message-State: AOAM531iielYMIlga5qqx0BjoHl9C+gB4dztF9L5kEF3n03LgY7nrk7D
-        7DWaiXFfydYNF3BrLc81vdEBrWs=
-X-Google-Smtp-Source: ABdhPJyDXoqlRGNoT1dnab3DsU6YHiEHLSvVDhKKv2IKHWRwwunxEwlpROdDdlIP8tUPO4YF7jxw1lE=
-X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:200:f533:d5d5:c2b4:c981])
- (user=pcc job=sendgmr) by 2002:a25:bc91:: with SMTP id e17mr18515191ybk.218.1631576082609;
- Mon, 13 Sep 2021 16:34:42 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 16:34:35 -0700
-Message-Id: <20210913233435.24585-1-pcc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] get_maintainer.pl: support running from non-top-level dir
-From:   Peter Collingbourne <pcc@google.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Peter Collingbourne <pcc@google.com>, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cI/jeOU5rLR8X7WtxXOWaAngNhFiIOuHbXY1aDDYGos=;
+        b=OF1sC/WuevYg6SrF8mkmGkLls7J0R9dyj5OboGzi+elebPczqqMq1CWZUbbDGR68ob
+         IfkpXWTjfLMvhryiS237YRqeWLVqybec0D5aMB3pk1ysM2FJ/tLF4e+G1fxuiin2wmPv
+         IOp+E+qkYv1xZBjlKc7Tb7qjIdqjd+6kaSD9v6ikcfVfPn5QAU1kNlomrrd4Pk0HeV1h
+         ko7qM9QJNI6KfKdeHMLydUHFVNp6WssKvDh8UkHftpuIsFT3dAZE81WKxqNIWaecCGGZ
+         XuHIyydM8BTxWfYJGIy8BJqBr0uKjvIZNbUcuAbPntFWAuWq+BzC+frX5ANeFGKWxDKA
+         wmcA==
+X-Gm-Message-State: AOAM530VYWRTTlrdP5VZwMwErz6n+8HTUuOeHsEjnE5B9Um4sQ6ISTyE
+        J8sYs4nKt3idWtW+H6oEjc55J9Xwz86CyaxXu66iXA==
+X-Google-Smtp-Source: ABdhPJzT+O8be5cYSNBVl8s3QC+2tzsAf4DvhR8OYgF/hCrLtsSWXEIW0OmXr/C1MdplAnMcBhEp35bF6USETxVCWHc=
+X-Received: by 2002:a25:ab44:: with SMTP id u62mr18518702ybi.335.1631576320503;
+ Mon, 13 Sep 2021 16:38:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210909013818.1191270-1-rananta@google.com> <20210909013818.1191270-3-rananta@google.com>
+ <20210909171755.GF5176@sirena.org.uk> <CAJHc60yJ6621=TezncgsMR+DdYxzXY1oF-QLeARwq8HowH6sVQ@mail.gmail.com>
+ <20210910083011.GA4474@sirena.org.uk>
+In-Reply-To: <20210910083011.GA4474@sirena.org.uk>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 13 Sep 2021 16:38:29 -0700
+Message-ID: <CAJHc60z0kLzrA3FfQeD0RFZE-PscnDsxxqkVwzcNFcCkf_FRPw@mail.gmail.com>
+Subject: Re: [PATCH v4 02/18] KVM: arm64: selftests: Add sysreg.h
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My workflow usually involves running scripts from a subdirectory of the
-kernel source tree. This fails with get_maintainer.pl because it assumes
-that it runs from the top level. Fix this assumption by setting $lk_path
-appropriately based on a check of $0 similar to what is in checkpatch.pl.
+On Fri, Sep 10, 2021 at 1:30 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Sep 09, 2021 at 01:06:31PM -0700, Raghavendra Rao Ananta wrote:
+> > On Thu, Sep 9, 2021 at 10:18 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > >  create mode 100644 tools/testing/selftests/kvm/include/aarch64/sysreg.h
+>
+> > > Can we arrange to copy this at build time rather than having a duplicate
+> > > copy we need to keep in sync?  We have some stuff to do this for uapi
+> > > headers already.
+>
+> > That's a great idea actually (I wasn't aware of it). But, probably
+> > should've mentioned it earlier, I had a hard time compiling the header
+> > as is so I modified it a little bit and made the definitions of
+> > [write|read]_sysreg_s() similar to the ones in kvm-unit-tests.
+> > I'll try my best to get the original format working and try to
+> > implement your idea if it works.
+>
+> One option would be to do something like split out the bits that can be
+> shared into a separate header which can be included from both places and
+> then have the header with the unsharable bits include that.  Something
+> like sysreg.h and sysreg_defs.h for example.
 
-This also requires fixing the VCS available checks to also check $lk_path.
+Hi Mark,
 
-Signed-off-by: Peter Collingbourne <pcc@google.com>
-Link: https://linux-review.googlesource.com/id/I1ceda4106b3f90d8608fc7911079d2eda1c1a0c6
----
- scripts/get_maintainer.pl | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Thanks again for your suggestion. As of v6 of the series, the original
+header from the kernel seems to be working as is, so there's no need
+to split it anymore.
+However, I'll plan to incorporate your suggestion as a separate
+series, if it's okay :)
 
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index 2075db0c08b8..47474cb85ea7 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -114,7 +114,7 @@ my %VCS_cmds;
- 
- my %VCS_cmds_git = (
-     "execute_cmd" => \&git_execute_cmd,
--    "available" => '(which("git") ne "") && (-e ".git")',
-+    "available" => '(which("git") ne "") && (-e "${lk_path}.git")',
-     "find_signers_cmd" =>
- 	"git log --no-color --follow --since=\$email_git_since " .
- 	    '--numstat --no-merges ' .
-@@ -154,7 +154,7 @@ my %VCS_cmds_git = (
- 
- my %VCS_cmds_hg = (
-     "execute_cmd" => \&hg_execute_cmd,
--    "available" => '(which("hg") ne "") && (-d ".hg")',
-+    "available" => '(which("hg") ne "") && (-d "${lk_path}.hg")',
-     "find_signers_cmd" =>
- 	"hg log --date=\$email_hg_since " .
- 	    "--template='HgCommit: {node}\\n" .
-@@ -333,6 +333,10 @@ if ($email &&
-     die "$P: Please select at least 1 email option\n";
- }
- 
-+if ($0 =~ m@(.*)/scripts/[^/]*$@ && top_of_kernel_tree($1)) {
-+    $lk_path = "$1/";
-+}
-+
- if ($tree && !top_of_kernel_tree($lk_path)) {
-     die "$P: The current directory does not appear to be "
- 	. "a linux kernel source tree.\n";
--- 
-2.33.0.309.g3052b89438-goog
+I was looking into this though and could only find some utilities such
+as tools/iio/, tools/spi/, and so on, which seem to create a symbolic
+link to the header present in the kernel (rather than copying). Is
+this what you were referring to?
 
+Regards,
+Raghavendra
