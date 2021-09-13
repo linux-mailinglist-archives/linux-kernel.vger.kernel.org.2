@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E9C408C9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D66408F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240428AbhIMNUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34836 "EHLO mail.kernel.org"
+        id S243748AbhIMNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:40:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236017AbhIMNTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19AD7610A5;
-        Mon, 13 Sep 2021 13:17:12 +0000 (UTC)
+        id S243069AbhIMNex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:34:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 593796124F;
+        Mon, 13 Sep 2021 13:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539033;
-        bh=gFpyd9f1axHKpXgw46ZEkMf+JSr+smxLSKk0Bfgu7CE=;
+        s=korg; t=1631539622;
+        bh=+KgFxSgNdFkMVgeqQhxhH1KWHyahO0U7bjcVk1OwuGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LXh0c5LofTa2mLpPsT4OYzguZxTjGjmiI2o9f8Tp+qiokACkuRLhExaC9MzrkWkao
-         MB8gTuN6G2ZN8wAhhSWgzrXlJm0FMU5JReglbDIRQI9Ycl5RUSRxfRpE5S0kggODyZ
-         JxVdpvKPO69NWc1YH/4BHcOxfHDpXYycF+XtQBW0=
+        b=GSJ5yH+2UTsYTGXenrEyPet7Xzbw3uXeGsWo7cuqByWNFQ8FOKpK14di/S1ObIeQ/
+         STNphiHDEHBeBkY7oTzjI+sCgqPhmlPv+cqh/DKYtIKbtVX8IM7O8SVdDn6yT7Ak7f
+         DbuZW/c4QjsCnztyDGGB4Yv8g4aAMKIg+v89tya0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ruozhu Li <liruozhu@huawei.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 017/144] nvme-rdma: dont update queue count when failing to set io queues
-Date:   Mon, 13 Sep 2021 15:13:18 +0200
-Message-Id: <20210913131048.537304519@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 094/236] media: go7007: fix memory leak in go7007_usb_probe
+Date:   Mon, 13 Sep 2021 15:13:19 +0200
+Message-Id: <20210913131103.555056633@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ruozhu Li <liruozhu@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 85032874f80ba17bf187de1d14d9603bf3f582b8 ]
+[ Upstream commit 47d94dad8e64b2fc1d8f66ce7acf714f9462c60f ]
 
-We update ctrl->queue_count and schedule another reconnect when io queue
-count is zero.But we will never try to create any io queue in next reco-
-nnection, because ctrl->queue_count already set to zero.We will end up
-having an admin-only session in Live state, which is exactly what we try
-to avoid in the original patch.
-Update ctrl->queue_count after queue_count zero checking to fix it.
+In commit 137641287eb4 ("go7007: add sanity checking for endpoints")
+endpoint sanity check was introduced, but if check fails it simply
+returns with leaked pointers.
 
-Signed-off-by: Ruozhu Li <liruozhu@huawei.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Cutted log from my local syzbot instance:
+
+BUG: memory leak
+unreferenced object 0xffff8880209f0000 (size 8192):
+  comm "kworker/0:4", pid 4916, jiffies 4295263583 (age 29.310s)
+  hex dump (first 32 bytes):
+    30 b0 27 22 80 88 ff ff 75 73 62 2d 64 75 6d 6d  0.'"....usb-dumm
+    79 5f 68 63 64 2e 33 2d 31 00 00 00 00 00 00 00  y_hcd.3-1.......
+  backtrace:
+    [<ffffffff860ca856>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff860ca856>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff860ca856>] go7007_alloc+0x46/0xb40 drivers/media/usb/go7007/go7007-driver.c:696
+    [<ffffffff860de74e>] go7007_usb_probe+0x13e/0x2200 drivers/media/usb/go7007/go7007-usb.c:1114
+    [<ffffffff854a5f74>] usb_probe_interface+0x314/0x7f0 drivers/usb/core/driver.c:396
+    [<ffffffff845a7151>] really_probe+0x291/0xf60 drivers/base/dd.c:576
+
+BUG: memory leak
+unreferenced object 0xffff88801e2f2800 (size 512):
+  comm "kworker/0:4", pid 4916, jiffies 4295263583 (age 29.310s)
+  hex dump (first 32 bytes):
+    00 87 40 8a ff ff ff ff 00 00 00 00 00 00 00 00  ..@.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff860de794>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff860de794>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff860de794>] go7007_usb_probe+0x184/0x2200 drivers/media/usb/go7007/go7007-usb.c:1118
+    [<ffffffff854a5f74>] usb_probe_interface+0x314/0x7f0 drivers/usb/core/driver.c:396
+    [<ffffffff845a7151>] really_probe+0x291/0xf60 drivers/base/dd.c:576
+
+Fixes: 137641287eb4 ("go7007: add sanity checking for endpoints")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/go7007/go7007-usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index b8c0f75bfb7b..dcc3d2393605 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -665,13 +665,13 @@ static int nvme_rdma_alloc_io_queues(struct nvme_rdma_ctrl *ctrl)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
+index dbf0455d5d50..eeb85981e02b 100644
+--- a/drivers/media/usb/go7007/go7007-usb.c
++++ b/drivers/media/usb/go7007/go7007-usb.c
+@@ -1134,7 +1134,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
  
--	ctrl->ctrl.queue_count = nr_io_queues + 1;
--	if (ctrl->ctrl.queue_count < 2) {
-+	if (nr_io_queues == 0) {
- 		dev_err(ctrl->ctrl.device,
- 			"unable to set any I/O queues\n");
- 		return -ENOMEM;
- 	}
+ 	ep = usb->usbdev->ep_in[4];
+ 	if (!ep)
+-		return -ENODEV;
++		goto allocfail;
  
-+	ctrl->ctrl.queue_count = nr_io_queues + 1;
- 	dev_info(ctrl->ctrl.device,
- 		"creating %d I/O queues.\n", nr_io_queues);
- 
+ 	/* Allocate the URB and buffer for receiving incoming interrupts */
+ 	usb->intr_urb = usb_alloc_urb(0, GFP_KERNEL);
 -- 
 2.30.2
 
