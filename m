@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DD4408497
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABE840848E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237272AbhIMGVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        id S237301AbhIMGR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhIMGVk (ORCPT
+        with ESMTP id S237174AbhIMGRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:21:40 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADEDC061574;
-        Sun, 12 Sep 2021 23:20:25 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id y17so7799521pfl.13;
-        Sun, 12 Sep 2021 23:20:25 -0700 (PDT)
+        Mon, 13 Sep 2021 02:17:55 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E351CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:16:39 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id c4so3567552pls.6
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=MJZFP5k7d2O2P1gl9RWPWTU9kiXtHQ6xmLwf4B4cHAc=;
-        b=dWO6Vr1w1z/Y5cyRncMP28ZhnmG8SNYRD+5cWts5t4zwKh+N3m5+jrl3Nqe6zSSis4
-         KzqgKP429efnM2caaT8XS5hcH+Qo2YTKOFY37Ekz4Srvh3zR9upLXsdmuSv8Nx7X/jaF
-         LPuXdbJCfMU3bZLzvRey5coKIwDIwFJ3ckoMP1tPkvWupHPJCxe0Yo2mbq7gYPpzBm39
-         OQ56iT5SZmv+9r9+McdQDiBYeqQoy8dwrtCmdPofIsttfueDHztzIybGexrlfil4OY6c
-         M3iyl+uXNr55VAy+KRZFUZjsvBEj/ddtMOVgibtdAXn0KXMl43nalsHDBzrNQn6CYoQp
-         TiFw==
+        bh=MPbZhr4pvoljkI8sWZNbbYfKkKnwfyYYBYn2vSRal1E=;
+        b=HCB8mRjwTiuZAmyRLVxRuv2CpBOeoVeU7grCujXTHkd7zQyRPsc2ZIsUybYZvaYutJ
+         UIWr3QjxOuSJJFkowZehCUAAH6A+RsEPBM9bA/NJ6uo0zB6OvWwW6Z5NtmGnDUHPY2Yc
+         EI3FUP9wsCGxNjL0RUr2rZfK6odRiNHy6FzE4PuuHFKQiTxJE9BBbXNZPzeLxX3u4eXk
+         3r+qVsYjbOsTXOkRba+obC7ys4uvAujFbbghlMwW6/A232SIXmpY4MWqIi1twdf9a3R3
+         np3SjqMiwMRopmdhyQlLXNQNOGi/9LfrjGvIDVgZhnbLEngg2dMTT1IOb+4ePRLRFTbD
+         t08w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MJZFP5k7d2O2P1gl9RWPWTU9kiXtHQ6xmLwf4B4cHAc=;
-        b=niEBYWDpGauQmFeHKtxuWjBrcek9WNq6q/J7Xt05RBZYdI1OW9WSWo47ZrucQK1g9B
-         fBNIuizFO32DiPngeGDuwrAkWQB55Qh48HaXV8LwTAS1veWVbodY3NzSNjvRRfFQVnAs
-         k/hWdM9xAZr0HgF1/ihSQ7VR1ZGDKKwg3S/2wRIIQQ+ys0mLkh0TSSZsIgkI41kxH11N
-         1XeVmgaM/POJDxt8eR6YV0CTYZX4PsrItF3IBhj2aU/l+Sa0tRFSSJz3BNmINAr/cCkx
-         DcrMZwLFt7M+FRKqfxNiINBSqjUc1EJwAIahDEhjFhcaIvfgG8b+AMDsrLPvKULFyYVS
-         E02A==
-X-Gm-Message-State: AOAM532vRxzZg11e7/JS2WS0tTTcGLb6zgYVa625mjNTld2MNAweMZ0k
-        qDtEdGzqsaArwDX/YOdoNGA=
-X-Google-Smtp-Source: ABdhPJxydawtyrw408aHRADdQSSQtY4CoMrjVipz31NpqSnTyslm+Mek54wUlS+h5hosr6C61V6U/w==
-X-Received: by 2002:a63:7d04:: with SMTP id y4mr9854031pgc.131.1631514025291;
-        Sun, 12 Sep 2021 23:20:25 -0700 (PDT)
-Received: from localhost.localdomain ([111.207.172.18])
-        by smtp.gmail.com with ESMTPSA id f6sm5701659pfa.110.2021.09.12.23.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 23:20:24 -0700 (PDT)
-From:   zhaoxiao <long870912@gmail.com>
-To:     thierry.reding@gmail.com, lee.jones@linaro.org
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        zhaoxiao <long870912@gmail.com>
-Subject: [PATCH] pwm: visconti: Simplify using devm_pwmchip_add()
-Date:   Mon, 13 Sep 2021 14:15:53 +0800
-Message-Id: <20210913061553.21450-1-long870912@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=MPbZhr4pvoljkI8sWZNbbYfKkKnwfyYYBYn2vSRal1E=;
+        b=IYGVfKh/54UBAnWajnclNRuNQLXnVfQB1RiOUD1qKFlOewyF6p1iVJBncuzQ+5IhEZ
+         qbneYdpbkBR+dZSymmlkAj97QTsoVazAE1HBVG2JC0nHeyx6k1TvkyflcM9shTo8gsUs
+         o/A//IAOU5XGsafkOmx/2OqnX2fWdDa1GVAojPSuZcgmTWCup0DRbFiUEW3uODYB+hF/
+         emmEhh8p2Qfd7IUVj7eKv6Vaad7ipTV2qDP0Ct7Olnf5F2PXJLVRYuCI854Zn0XhKuCl
+         U52HVs9aRCdOYFZ+j3yBwXIsbZu+qE4L2dCglYp3mLrhDoY6cR0LXi964ECvtoJFJwk1
+         hY2g==
+X-Gm-Message-State: AOAM530p2GRTHegc+wvBURKHZPtWZ/Psr85kmiaqvqId0ok7t44JN77w
+        h5e0lmDHMdCqfIqL6FsCHeSTgPQz4Bmb54VguJo=
+X-Google-Smtp-Source: ABdhPJx3xM7TpPIgTWmUzMJkLLc7bJcYc3M7DpLIjIxGe4yLGUJmxn1oEB8lXhfgpbmhZP1vyHrrbJNDqejVdngJrl4=
+X-Received: by 2002:a17:903:4049:b0:13b:99ea:8899 with SMTP id
+ n9-20020a170903404900b0013b99ea8899mr1765928pla.84.1631513799285; Sun, 12 Sep
+ 2021 23:16:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a10:a754:0:0:0:0 with HTTP; Sun, 12 Sep 2021 23:16:38
+ -0700 (PDT)
+Reply-To: michaelrachid7@gmail.com
+From:   Michael Rachid <whoknowsladyjay@gmail.com>
+Date:   Mon, 13 Sep 2021 07:16:38 +0100
+Message-ID: <CAMhEkO5DvCm0jtB3KdB9H9Q8O+CSrP-SyWp6jFKmmJbyzBXgZQ@mail.gmail.com>
+Subject: =?UTF-8?B?UHJvcG9zYWwv0J/RgNC10LTQu9C+0LbQtdC90LjQtSBQcmVkbG96aGVuaXll?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows to drop the platform_driver's remove function. This is the
-only user of driver data so this can go away, too.
-
-Signed-off-by: zhaoxiao <long870912@gmail.com>
----
- drivers/pwm/pwm-visconti.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
-
-diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
-index af4e37d3e3a6..927c4cbb1daf 100644
---- a/drivers/pwm/pwm-visconti.c
-+++ b/drivers/pwm/pwm-visconti.c
-@@ -144,28 +144,17 @@ static int visconti_pwm_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
- 
--	platform_set_drvdata(pdev, priv);
--
- 	priv->chip.dev = dev;
- 	priv->chip.ops = &visconti_pwm_ops;
- 	priv->chip.npwm = 4;
- 
--	ret = pwmchip_add(&priv->chip);
-+	ret = devm_pwmchip_add(&pdev->dev, &priv->chip);
- 	if (ret < 0)
- 		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
- 
- 	return 0;
- }
- 
--static int visconti_pwm_remove(struct platform_device *pdev)
--{
--	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
--
--	pwmchip_remove(&priv->chip);
--
--	return 0;
--}
--
- static const struct of_device_id visconti_pwm_of_match[] = {
- 	{ .compatible = "toshiba,visconti-pwm", },
- 	{ }
-@@ -178,7 +167,6 @@ static struct platform_driver visconti_pwm_driver = {
- 		.of_match_table = visconti_pwm_of_match,
- 	},
- 	.probe = visconti_pwm_probe,
--	.remove = visconti_pwm_remove,
- };
- module_platform_driver(visconti_pwm_driver);
- 
--- 
-2.20.1
-
+0JTQvtGA0L7Qs9C+0Lkg0LTRgNGD0LMsDQoNCtCvINC/0LjRiNGDLCDRh9GC0L7QsdGLINC/0YDQ
+vtC40L3RhNC+0YDQvNC40YDQvtCy0LDRgtGMINCy0LDRgSDQviDQutC+0LzQvNC10YDRh9C10YHQ
+utC+0Lwg0L/RgNC10LTQu9C+0LbQtdC90LjQuCwg0LrQvtGC0L7RgNC+0LUNCtGPINGF0L7RgtC1
+0Lsg0LHRiyDQvtCx0YHRg9C00LjRgtGMINGBINCy0LDQvNC4Lg0K0KDQtdGH0Ywg0LjQtNC10YIg
+0L4g0L/Rj9GC0LjQtNC10YHRj9GC0Lgg0LzQuNC70LvQuNC+0L3QsNGFINC00L7Qu9C70LDRgNC+
+0LIuINCR0YPQtNGM0YLQtSDRg9Cy0LXRgNC10L3Riywg0YfRgtC+INCy0YHQtQ0K0LfQsNC60L7Q
+vdC90L4g0Lgg0LHQtdC30L7Qv9Cw0YHQvdC+Lg0K0J/QvtC20LDQu9GD0LnRgdGC0LAsINGD0LrQ
+sNC20LjRgtC1INGB0LLQvtC5INC40L3RgtC10YDQtdGBLg0KDQrQnNCw0LnQutC7INCg0LDRiNC4
+0LQuDQoNCkRvcm9nb3kgZHJ1ZywNCg0KWUEgcGlzaHUsIGNodG9ieSBwcm9pbmZvcm1pcm92YXQn
+IHZhcyBvIGtvbW1lcmNoZXNrb20gcHJlZGxvemhlbmlpLA0Ka290b3JveWUgeWEga2hvdGVsIGJ5
+IG9ic3VkaXQnIHMgdmFtaS4NClJlY2gnIGlkZXQgbyBweWF0aWRlc3lhdGkgbWlsbGlvbmFraCBk
+b2xsYXJvdi4gQnVkJ3RlIHV2ZXJlbnksIGNodG8NCnZzZSB6YWtvbm5vIGkgYmV6b3Bhc25vLg0K
+UG96aGFsdXlzdGEsIHVrYXpoaXRlIHN2b3kgaW50ZXJlcy4NCg0KTWF5a2wgUmFzaGlkLg0KDQoN
+Cg0KRGVhciBmcmllbmQsDQoNCkkgd3JpdGUgdG8gaW5mb3JtIHlvdSBhYm91dCBhIGJ1c2luZXNz
+IHByb3Bvc2FsIEkgaGF2ZSB3aGljaCBJIHdvdWxkDQpsaWtlIHRvIGhhbmRsZSB3aXRoIHlvdS4N
+CkZpZnR5IG1pbGxpb24gZG9sbGFycyBpcyBpbnZvbHZlZC4gQmUgcmVzdCBhc3N1cmVkIHRoYXQg
+ZXZlcnl0aGluZyBpcw0KbGVnYWwgYW5kIHJpc2sgZnJlZS4NCktpbmRseSBpbmRpY2F0ZSB5b3Vy
+IGludGVyZXN0Lg0KDQpNaWNoYWVsIFJhY2hpZC4NCg==
