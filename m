@@ -2,292 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FADE408917
+	by mail.lfdr.de (Postfix) with ESMTP id 74B5B408916
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239127AbhIMKhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235123AbhIMKht (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:37:49 -0400
-Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F63CC061574;
-        Mon, 13 Sep 2021 03:36:31 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id PjK4mY9mDpQdWPjK6m2WBC; Mon, 13 Sep 2021 12:36:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1631529389; bh=ts0p47VDy1RuNtn8qktl3hYi7SGUCH+xhpXXyzEAqtw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=uT8KXGzgjksultoKLa6we++Z5zQLHWwzxQ1lEaWts3V+Qt0LNNuLFKu25NrWVtuZo
-         1LjgM6hHryuY3vq86+RddrMjTRLIOGkgo4SfsdiOrUr48cKtu+vNfkx0MjBiwNcpfO
-         x6kplKvSIXRoXxHHPc0inP48WEZxdSkXCSqJm8OA8GgCSgu+LIvqbVnp4QM5ZYTn7J
-         6MU68wd2j4SMjAOYTSWc5DvNC5MeX1A8pf+1CWNkki8e9D88yU+UdZUnskF6jcxZTb
-         x7hQZjC3/LvQLv9qw4W/mb7PL04dcOPrwcCuvqA4xG8KRGj+HQy9zMnX4rlqCMTzEn
-         tPbVQ1sl7yM4Q==
-Subject: Re: [PATCH v11 22/34] media: dt: bindings: tegra-vde: Convert to
- schema
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20210912200832.12312-1-digetx@gmail.com>
- <20210912200832.12312-23-digetx@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <0feef7a8-932e-0190-1043-bba7912f9599@xs4all.nl>
-Date:   Mon, 13 Sep 2021 12:36:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239139AbhIMKhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:37:55 -0400
+Received: from mail-bn8nam12on2044.outbound.protection.outlook.com ([40.107.237.44]:46849
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238959AbhIMKhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:37:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ah0TQNMVIChbIOp9GbWOPdW07r/9c6truCQmhPaQnzor0tiabeiRJCfAarqO/73tkXhxpH657/FXydWO13wcbN3/0aYcRP1vtj1/KLN0vp1dc2hLXJ2bOek9kva89NkaycAWC43WfUsfjrIkqvPIG+iVvZumWzFUngQKW+xYI1E4ToPT415XXROSCgJMDqS4P08Y2sScgf0DCATPZ4GQ/MwWIP/han4sxPUTOkSNfwLDpk6sAQpbI0bVsk55ij2Qo5GPevt9CpJxqNEBL1xdSE7cjJVN+zmR/LmQUIYqY5fZvH3FAo6NRgIQcIwtMiwfPISd6QeRSc2+gKy0IDmPjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=M21p+p15ZE47DBexq1YIPq0OSyCWPoDH4USJf7wQZJ4=;
+ b=GJWKlTwudS/8FCS3gqm/3jNT3+nVg+A2JJjyMf3RYsuQTjToxA/lHhObkF8mYSKj/waZSNh4ufOaiicopN9G7khwRwSXj6pNl+9OvjGMvTo72obIhnJrvXr6UobyjkO+QY4oeQB7C3e1dwE4VOCGhJhckAllw3WF7m0PxUXNCeRHSCoTod2zp1EWhakoo1u2EpX4/FJQycWmI1Dx1zICNCq4fR6MglLCUdgh5RdnJLlogNzoiXJUFKTAET2C431XKbLpTkwoxCp33WY+qyENUqLFvuVLyL09Q6PWtxxjGMJEl7XP9zaXjDmmPuvH1AThAFYs/Hz+iYqk2GtkfjNiaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M21p+p15ZE47DBexq1YIPq0OSyCWPoDH4USJf7wQZJ4=;
+ b=jNBP09EWqyT5wn/J/pS2jqJBJnEKyKc0yHFn/WZJWE02W849athvCnamZqnZCSBzqbh4diyPICY8nrCel1m7Nli9m6OTvCfeunw5WE3OaUcTw2CLE22QtsYjjU9U4HVZr3IeDGwhRmc6WWIqE2yJXyeoeaj0hdUKxvubZFbLexc=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=silabs.com;
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
+ by SA0PR11MB4685.namprd11.prod.outlook.com (2603:10b6:806:9e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Mon, 13 Sep
+ 2021 10:36:32 +0000
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::7050:a0a:415:2ccd]) by SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::7050:a0a:415:2ccd%7]) with mapi id 15.20.4500.017; Mon, 13 Sep 2021
+ 10:36:32 +0000
+From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH v2 03/33] staging: wfx: ignore PS when STA/AP share same channel
+Date:   Mon, 13 Sep 2021 12:36:25 +0200
+Message-ID: <2757254.9bAbmTgjDO@pc-42>
+Organization: Silicon Labs
+In-Reply-To: <20210913093328.GG7203@kadam>
+References: <20210913083045.1881321-1-Jerome.Pouiller@silabs.com> <20210913083045.1881321-4-Jerome.Pouiller@silabs.com> <20210913093328.GG7203@kadam>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-ClientProxiedBy: PAZP264CA0071.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:1fd::6) To SN6PR11MB2718.namprd11.prod.outlook.com
+ (2603:10b6:805:63::18)
 MIME-Version: 1.0
-In-Reply-To: <20210912200832.12312-23-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBdOdOXcUGbOy8OWfAC0zxt/5ZR1EjxHBJ5gYl1f4tGuUDl47qC7VjDg1mAM1PInADc627yzwRlN776HivHd3rTukcU69b8xPC7ACa9E2OCKz91uYxVL
- 3pdE4kFomOEJlyK5XDfxdXtkeeBC6mOcEhqdqQwH4Zws8gqXIk0y1SM6A/xR4dq6DXJT7ktzTegdDG2vf69Bf1Inc0nSWgZcbClZjXwBh/6PUzQQyvzHLfsA
- MRCg1hz61XV+l3VOAjxTdsKpAIGBo5kKouuEEKeKcN1jvS8Y8nT2StkOml2QcAp89m6Wk/ljTRQJt50Pf/R0Xpa6GKRLtA+x9Yq2QyyozRGaEmdryuHf2IDp
- Q6SW4rvA5uBRNutfkivCZXigSZU5qHJ5kw750tkFQIIHV4Q1Hgy7BxRlCWLDxS8PfBn9Lp7H+asKVWAphKn3QHcek/YltS/ABCs0FsZ/YxLaK0+MXtijtE8N
- 7IoOEhoYPPSuxCJVYRY2UIX6BUYkHxG05T8QxzP2/1OIQgwJfCAP+XbzTGzEjP6pVMvZubLc12lsVJWCTiZdTLStuvHC7VjW/9q0/DSNdZjEcJSwFcQ+5dyU
- 0eKCP9Dh5LYZT7DIAVFey8OVjpZ9uaftPAxLqk1JoPg7m9mI9PoDMKZdyopexXSAEkA+hIx7xrEvoftuPWB7pcPk0PvijwpFW0auOy3J3kPh/369Sb87TZNZ
- aPAjyWc0MbC3Mh70ruxm3cUiNK/HT/bmjvtwWG3dOkjR32K9siusAxDnRz9cS4EDVOuoyYuZ13/BO7ElqRAuOx5q0R3emXQu2tGq4Lm3cJIySdIAPOeQHKlC
- Pt/2uJZ1rD/V8hREozP5HWMpb/VDmz2UKrzSUl/oM93MrtwwA5OReojHDK/jBj047YRvvi048iAM+C77MmGajROkXVOkz5zTgmTdgFpLyczCfSLozwWsOB8/
- /WmY+e3vD4ivhhMDYTMT1pKxMCf5o0J9NBATSWpd+8gyniN4r86bss3nC+zossl+DEmHbl9DW37wvlJaoD0uAuclOEZkulWi/mTtMePBwtj9f2qDzfpZ1kJ1
- GMs/9dNnpONv9MRYquVtr/jvyP+/QyoAuPUWqaA14jfh9yQKudX8GRbJ7H3I9R9OnMQUMzEV8DF73tiZK/ez+BpOXxl4QyeKAgjItyGL2Mgf5aO2W51MBFUA
- vcBqz+fImYuWTCXG/ganwWyK78mkW/C/g6Kw1BNFDg8+AQek3w9LKWRqiiYlFGaouizKDG4jvgu0tfNQQRQWEAI27rJZnQmS9XbIySYi3JeHzJsYHbI/eq12
- HB9rl2aipViGOkt0q/AYjTyawB5Sw+66uJO0J7XD9CgnHeRUD9T11P5quyCclU6iI5roRQOJt9rwOjTWp5qC2bm5CYZMtQ4P/nzrPZDQSkLzGV+KgPC0vZzo
- 2tBxqWDknYbfj2P6g7YMu8cpLcqf0WxFjGnH8w==
+Received: from pc-42.localnet (37.71.187.125) by PAZP264CA0071.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1fd::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 10:36:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: da87b3b0-5648-4bde-43d9-08d976a25a4c
+X-MS-TrafficTypeDiagnostic: SA0PR11MB4685:
+X-Microsoft-Antispam-PRVS: <SA0PR11MB46859E8D05DD31F2C53ECB9293D99@SA0PR11MB4685.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BBej33PNhZr6FJ3Nkywc+LEGemMeYdxTt/jj8N525w5677TR+VfGIwnHeykWgCM44s4Y4MkvaAlRmQQ2orGIwnJRHqFsPhf2HZGiD8M6AwDzv1DqBPHtAIcEyhwXg2CQhMYW6bhWWfcjUn8T5f8Rk/oUMS/LuAWM6TzX/3D6H8DYj6HkbbBXItf1hitXzFFmtwUlNoc1b+nzV2lilmIMWK527UIwGgEA6RcdADDpPPYVLN3Q086lYJI2A8ycOEOZKujQqe/U2VfN5nVYrm30Nsdtr2jPtNIAWv/MZC5IdNToqYqXjL7IlSXIPbEu3ySJlqYXhmBr/0Ef3FgxzOcp7W2tIbvClVITI+elgdAmDtB3QVrZFcoSP4EmLWguTzrIXYoiQlPIX3yeBS3jdBCISJpGhW0EnBKty+xChkWZL9++ULjQ4akzi6Nes4JIUAiJJJKekozsPOx5vOM7XgLcmOvVllTrC1rtmz33JXYVaLdEx3QktaR+F8fnKoXnzd4SujfEqn5ZMRdNlouPVN/aZNvYNGR8/YNvSAj/gFlBD2l0rYUcbWzgeyGTgmF3553zW0EAmx0x3aA9Xklt6Cke7OnfhMk4mp8GJ6vodnCp7uGHvbjiFbudNyI9oys1DQYxoQ0hvTqsulV5ZwbCRlgocKXXHfUuN1787vexrlWJ8wWD92+Aa7iFQ+tb1XbrZ0+1UTZr5RDdn8B6ajWU0t9FIEq9d5sej/CZ2TmwcGTPve4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39850400004)(396003)(136003)(366004)(376002)(6916009)(478600001)(6486002)(5660300002)(38100700002)(83380400001)(8936002)(956004)(86362001)(38350700002)(186003)(33716001)(52116002)(6506007)(36916002)(66476007)(6666004)(8676002)(316002)(4326008)(66556008)(2906002)(9686003)(26005)(6512007)(54906003)(66946007)(39026012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?KHz4qdXlhAWT+OhmBD5LeCxNJqKt/A/JGcUHW/X2IrIsofPj+yQjlpLaOW?=
+ =?iso-8859-1?Q?4mPfugXC1QJGaKmyVQWid9hsnaPEyNVLWJKgF0P4fcNGDSnXdAp5MbRllA?=
+ =?iso-8859-1?Q?UfAb/sTfdEmmdEPGxeINQ2uAWQ1J9SuHtvmsHyWs39sqryUcKrbwKzKpW3?=
+ =?iso-8859-1?Q?F81DhW41TehHKHXcR4K4ClxnsvHUvvPYrDfi3Xm9X8Ygtx6vl3HRY6nH7A?=
+ =?iso-8859-1?Q?0sVHLh4BqAdojpT/q+oUJqCJ2Rd5nuKTnN89kXNiGfJD7BvdomCTisfHW9?=
+ =?iso-8859-1?Q?x7ONmthnbk0QVtWbRiCauEVc9kigq2Sa5WuQZ5DJ9lZWSiAY+o/XiwrpYO?=
+ =?iso-8859-1?Q?uGU12e1NJgYlRUy4cz5n0dMkNgBB1gcyfjxHBmvWzWp8pOB5fv5eA8JBMp?=
+ =?iso-8859-1?Q?Xd6BC9Fm5qV3Kl67lGsIVAaojmpucZz/QMOCj2PlUZmCGoGpAxKaRgiGj4?=
+ =?iso-8859-1?Q?MGSKIsO8ZR470pFD8aVfcpJXYa823IjakDE054cZBG1bT01a6Y9MTx+m2V?=
+ =?iso-8859-1?Q?WK+rC+FW48aGZS60GfvUGEnYKBY7UKUz86+6dWnsM3JrC3dn0FD4Q0Z+Dq?=
+ =?iso-8859-1?Q?jui75Z11o5dQU7+GSW3Xrqhk6i2ERy7ZtuRcxkwVoIr1kyEgpj918Fstx9?=
+ =?iso-8859-1?Q?4DUwYsCiaQzG/V9phW9LbHkk2+uZYNtdSQI/DN6Gpey++TUriZRxzDUAru?=
+ =?iso-8859-1?Q?tlH9RAhYD1bDD5lg6JZK8U6FMCzDsuJ7eeFdIPi3X0PzZMvJQSfTAl5ngG?=
+ =?iso-8859-1?Q?oJgYGc4tA2Pus273zFaqdxvFMPHeV/a3NAJhaFfHionlzZSQhy9bHisb0W?=
+ =?iso-8859-1?Q?DTrakltyWRXz4fnnbwBeH0/8wKlibnM7uzH5+3NPn0ci9dUlH3+gDNlVis?=
+ =?iso-8859-1?Q?qSe/TcsWDs9ra1CQ7T3ALEaCe1VZ1OFD/4R18AXCZ/cc/xWv3Hl7xRW8nL?=
+ =?iso-8859-1?Q?7NeSoYE2rqBU5DTpJ1tQZcnRCIT1irfxQnXiSGB1saheVNMfydcXlbJoIT?=
+ =?iso-8859-1?Q?Hxzd4Y+Sinm3o5WWkTQOb4lt3cbkMj2y8T3VISqek0+MaOCzK4skOcGx/J?=
+ =?iso-8859-1?Q?ezNVHBTJ+qqcr7wN9z0FY2ffRRJTfxkEb3DL2GA0Fex3ahFcweogvXDd4y?=
+ =?iso-8859-1?Q?M1fLN90mbz95+LgGsgDJhHbhQQhiBQUQ2Cyx1irAkYOoRlsYBfiTQZNxTn?=
+ =?iso-8859-1?Q?dsU0L2xYvhC9hVOIswa2SGWxHXwGlGHH5jbgL4X1YCrc5A8/AwoT/j4W/G?=
+ =?iso-8859-1?Q?NLhk0mVSYiw7e/GwrMsqcn8yMe/l36EMLSVJWm2i4N/G4LjgW2dGycTwcT?=
+ =?iso-8859-1?Q?C0VM0/CQErB7urJWDsmHfqFfv5OQYbwhqgy9zuyPVL1BkRsFQI/9GKwhsb?=
+ =?iso-8859-1?Q?KTqZUDSYNh?=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da87b3b0-5648-4bde-43d9-08d976a25a4c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 10:36:32.2582
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uHwi1bAGAiloftgSpG2P5JqMKUIV1+KU24dUDvdV5SenYhxNx2CnmQn476DcId6UWm6lg3xebowRq6UWmtq7ag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4685
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2021 22:08, Dmitry Osipenko wrote:
-> Convert NVIDIA Tegra video decoder binding to schema.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On Monday 13 September 2021 11:33:28 CEST Dan Carpenter wrote:
+> On Mon, Sep 13, 2021 at 10:30:15AM +0200, Jerome Pouiller wrote:
+> > diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
+> > index 5de9ccf02285..aff0559653bf 100644
+> > --- a/drivers/staging/wfx/sta.c
+> > +++ b/drivers/staging/wfx/sta.c
+> > @@ -154,18 +154,26 @@ static int wfx_get_ps_timeout(struct wfx_vif *wvi=
+f, bool *enable_ps)
+> >               chan0 =3D wdev_to_wvif(wvif->wdev, 0)->vif->bss_conf.chan=
+def.chan;
+> >       if (wdev_to_wvif(wvif->wdev, 1))
+> >               chan1 =3D wdev_to_wvif(wvif->wdev, 1)->vif->bss_conf.chan=
+def.chan;
+> > -     if (chan0 && chan1 && chan0->hw_value !=3D chan1->hw_value &&
+> > -         wvif->vif->type !=3D NL80211_IFTYPE_AP) {
+> > -             // It is necessary to enable powersave if channels
+> > -             // are different.
+> > -             if (enable_ps)
+> > -                     *enable_ps =3D true;
+> > -             if (wvif->wdev->force_ps_timeout > -1)
+> > -                     return wvif->wdev->force_ps_timeout;
+> > -             else if (wfx_api_older_than(wvif->wdev, 3, 2))
+> > -                     return 0;
+> > -             else
+> > -                     return 30;
+> > +     if (chan0 && chan1 && wvif->vif->type !=3D NL80211_IFTYPE_AP) {
+> > +             if (chan0->hw_value =3D=3D chan1->hw_value) {
+> > +                     // It is useless to enable PS if channels are the=
+ same.
+> > +                     if (enable_ps)
+> > +                             *enable_ps =3D false;
+> > +                     if (wvif->vif->bss_conf.assoc && wvif->vif->bss_c=
+onf.ps)
+> > +                             dev_info(wvif->wdev->dev, "ignoring reque=
+sted PS mode");
+> > +                     return -1;
+>=20
+> I can't be happy about this -1 return or how it's handled in the caller.
+> There is already a -1 return so it's not really a new bug, though...
 
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+I see what you mean. However,  I remember it is easy to break things
+here and I don't want to change that in a rush. So, I would prefer to
+solve that in a further PR.
 
-Regards,
+--=20
+J=E9r=F4me Pouiller
 
-	Hans
-
-> ---
->  .../bindings/media/nvidia,tegra-vde.txt       |  64 -----------
->  .../bindings/media/nvidia,tegra-vde.yaml      | 107 ++++++++++++++++++
->  2 files changed, 107 insertions(+), 64 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
->  create mode 100644 Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
-> deleted file mode 100644
-> index 602169b8aa19..000000000000
-> --- a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.txt
-> +++ /dev/null
-> @@ -1,64 +0,0 @@
-> -NVIDIA Tegra Video Decoder Engine
-> -
-> -Required properties:
-> -- compatible : Must contain one of the following values:
-> -   - "nvidia,tegra20-vde"
-> -   - "nvidia,tegra30-vde"
-> -   - "nvidia,tegra114-vde"
-> -   - "nvidia,tegra124-vde"
-> -   - "nvidia,tegra132-vde"
-> -- reg : Must contain an entry for each entry in reg-names.
-> -- reg-names : Must include the following entries:
-> -  - sxe
-> -  - bsev
-> -  - mbe
-> -  - ppe
-> -  - mce
-> -  - tfe
-> -  - ppb
-> -  - vdma
-> -  - frameid
-> -- iram : Must contain phandle to the mmio-sram device node that represents
-> -         IRAM region used by VDE.
-> -- interrupts : Must contain an entry for each entry in interrupt-names.
-> -- interrupt-names : Must include the following entries:
-> -  - sync-token
-> -  - bsev
-> -  - sxe
-> -- clocks : Must include the following entries:
-> -  - vde
-> -- resets : Must contain an entry for each entry in reset-names.
-> -- reset-names : Should include the following entries:
-> -  - vde
-> -
-> -Optional properties:
-> -- resets : Must contain an entry for each entry in reset-names.
-> -- reset-names : Must include the following entries:
-> -  - mc
-> -- iommus: Must contain phandle to the IOMMU device node.
-> -
-> -Example:
-> -
-> -video-codec@6001a000 {
-> -	compatible = "nvidia,tegra20-vde";
-> -	reg = <0x6001a000 0x1000 /* Syntax Engine */
-> -	       0x6001b000 0x1000 /* Video Bitstream Engine */
-> -	       0x6001c000  0x100 /* Macroblock Engine */
-> -	       0x6001c200  0x100 /* Post-processing Engine */
-> -	       0x6001c400  0x100 /* Motion Compensation Engine */
-> -	       0x6001c600  0x100 /* Transform Engine */
-> -	       0x6001c800  0x100 /* Pixel prediction block */
-> -	       0x6001ca00  0x100 /* Video DMA */
-> -	       0x6001d800  0x300 /* Video frame controls */>;
-> -	reg-names = "sxe", "bsev", "mbe", "ppe", "mce",
-> -		    "tfe", "ppb", "vdma", "frameid";
-> -	iram = <&vde_pool>; /* IRAM region */
-> -	interrupts = <GIC_SPI  9 IRQ_TYPE_LEVEL_HIGH>, /* Sync token interrupt */
-> -		     <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>, /* BSE-V interrupt */
-> -		     <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>; /* SXE interrupt */
-> -	interrupt-names = "sync-token", "bsev", "sxe";
-> -	clocks = <&tegra_car TEGRA20_CLK_VDE>;
-> -	reset-names = "vde", "mc";
-> -	resets = <&tegra_car 61>, <&mc TEGRA20_MC_RESET_VDE>;
-> -	iommus = <&mc TEGRA_SWGROUP_VDE>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
-> new file mode 100644
-> index 000000000000..3b6c1f031e04
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/nvidia,tegra-vde.yaml
-> @@ -0,0 +1,107 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/nvidia,tegra-vde.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVIDIA Tegra Video Decoder Engine
-> +
-> +maintainers:
-> +  - Dmitry Osipenko <digetx@gmail.com>
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Thierry Reding <thierry.reding@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - nvidia,tegra132-vde
-> +              - nvidia,tegra124-vde
-> +              - nvidia,tegra114-vde
-> +              - nvidia,tegra30-vde
-> +          - enum:
-> +              - nvidia,tegra20-vde
-> +      - items:
-> +          - const: nvidia,tegra20-vde
-> +
-> +  reg:
-> +    maxItems: 9
-> +
-> +  reg-names:
-> +    items:
-> +      - const: sxe
-> +      - const: bsev
-> +      - const: mbe
-> +      - const: ppe
-> +      - const: mce
-> +      - const: tfe
-> +      - const: ppb
-> +      - const: vdma
-> +      - const: frameid
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 2
-> +
-> +  reset-names:
-> +    items:
-> +      - const: vde
-> +      - const: mc
-> +
-> +  interrupts:
-> +    maxItems: 3
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: sync-token
-> +      - const: bsev
-> +      - const: sxe
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  iram:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle of the SRAM MMIO node.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - resets
-> +  - reset-names
-> +  - interrupts
-> +  - interrupt-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    video-codec@6001a000 {
-> +      compatible = "nvidia,tegra20-vde";
-> +      reg = <0x6001a000 0x1000>, /* Syntax Engine */
-> +            <0x6001b000 0x1000>, /* Video Bitstream Engine */
-> +            <0x6001c000  0x100>, /* Macroblock Engine */
-> +            <0x6001c200  0x100>, /* Post-processing Engine */
-> +            <0x6001c400  0x100>, /* Motion Compensation Engine */
-> +            <0x6001c600  0x100>, /* Transform Engine */
-> +            <0x6001c800  0x100>, /* Pixel prediction block */
-> +            <0x6001ca00  0x100>, /* Video DMA */
-> +            <0x6001d800  0x300>; /* Video frame controls */
-> +      reg-names = "sxe", "bsev", "mbe", "ppe", "mce",
-> +                  "tfe", "ppb", "vdma", "frameid";
-> +      iram = <&iram>; /* IRAM MMIO region */
-> +      interrupts = <0  9 4>, /* Sync token */
-> +                   <0 10 4>, /* BSE-V */
-> +                   <0 12 4>; /* SXE */
-> +      interrupt-names = "sync-token", "bsev", "sxe";
-> +      clocks = <&clk 61>;
-> +      reset-names = "vde", "mc";
-> +      resets = <&rst 61>, <&mem 13>;
-> +      iommus = <&mem 15>;
-> +    };
-> 
 
