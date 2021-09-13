@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B251B409BE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C6E409BE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346811AbhIMSML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S238833AbhIMSM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346612AbhIMSMK (ORCPT
+        with ESMTP id S1346154AbhIMSMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:12:10 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8E0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:10:53 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id jg16so22965924ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:10:53 -0700 (PDT)
+        Mon, 13 Sep 2021 14:12:24 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CC1C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:11:07 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id h9so23016414ejs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:11:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=x+ffBmRs10V3xZhc5aJ3cOyIQMISqlnJH6NtMMm7ANY=;
-        b=e8FyZbxWOrJyQXhLg6i16bI73rovpH3nMctSGGDlhMmJ7ysQ+7UX9i7/OnFSGfauTr
-         jv+sGAhXKco+kyjlKpFjJzELtHu4Y5qd+YM6hNbTwebKrP9tMgaVnuK/86PDc/i6F60o
-         /JVU45MtTqtgsSHaIDfRhiUkn6Y/EJf66mx6MYdYOVsN23pOOIlae5d/+nSqHr5sv8tB
-         nVL0f9r0vkg6+mFu53vqqbBe6JuFcgl3hQX2bXUzEeoHB7YB0XzMUjQWDhhSWa21N+XS
-         SPO3vAyvEs7YmyJQGz2WEeeVx6itqFZ4byhAHmtKcx1q442BEux8Xk2Cd0blsTudYASS
-         +uOQ==
+        bh=LnBTGNu7QgkLzhoHA3MEph2XIWh5Mopj9gFJxhRbNc8=;
+        b=DO5m5HEzOans/qXDbfUqJgF0GH3yjlEBUg5e0fIiTqOjsjWojUBLJnHwE8oxPfVMSP
+         DiWCyiKalHHXD9x3ak/Y/sHZMBjF+PZrRvqr01ryzJCwyIozw3v0DWOd0dz07JaX03Mj
+         8nPMcg1OkpzgiZ98+njyl69CB8F8FNGxhYqD7iL0hyamJjWxtH2NXwcj2KcFBrHQ17dC
+         +XAWoepU9imWQ7nYP9N8SwHXoOPbicZvVTZ2rEI8mpJ7LrUz8MmW5eQhrllBc43HwptO
+         PJixWDZvQQ6jK6zX3BTjDMuAYJamFPf7reYLohxzS3jbKlv8D/rPA+v5MuMcioKuWFX6
+         UR6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=x+ffBmRs10V3xZhc5aJ3cOyIQMISqlnJH6NtMMm7ANY=;
-        b=XddFF3sn1rPruc//ZILfjhfoKjsAowOInKsmcYnsmzCOz7HSQ7ch+Nq+mY4LMZnbjC
-         A5gUHdluXBWww0wtTNHp/HJNe6TNzQJ4z4AAozRyoZWXRGO8ooQpS4znKK9/nzC+AzO3
-         t/upkB8HsEKiMfgrI+q8JuVF2c+luQczJy4XHynxHdncfOvzjNiepFB6vngQdQcULZx5
-         3Zbccmr+4aI6874GxhTxywL7zWhfC5jk0wNUJL1ULcj264EfUXZVgLqkQg4pcZoPHOB+
-         1PilqYD69Lx+uJiYsJFiIstaIEtSWeDBGiqDwC1N/v44I3F5//2EGaB6ps2YbkPT447v
-         ruBw==
-X-Gm-Message-State: AOAM531upqEyGxHP6uhRa+9XxtbStOx6p1kaSn57DI8SEVtHW3nLPLIL
-        OQeyjpHLWQKT2wE7S7TShJc=
-X-Google-Smtp-Source: ABdhPJyW0awvA3qK275I2eU3JdfKd1u6BL0AIMimAbmhgHQOjyyqHFPF11EKZPkNhKL0SUKDCrNJiw==
-X-Received: by 2002:a17:907:2717:: with SMTP id w23mr14207566ejk.283.1631556652409;
-        Mon, 13 Sep 2021 11:10:52 -0700 (PDT)
+        bh=LnBTGNu7QgkLzhoHA3MEph2XIWh5Mopj9gFJxhRbNc8=;
+        b=Py/SWnAiqIR6rVQ7MD7eZvOg8mS+H8/6FgGehrJlS05is73lwMNX/ICXenSG1ob5aR
+         tSi/aOB3ZLzzyrUeYcbAarJpsxNUfhdHYrIPXlYSr8qQbxM2+KG9+fuMsMidJLxh+Bhf
+         8HnCvWLeuLA4c0OwvL5rkfZfO6D5oNdly851FtC4/UEOwmGwcC7EEgxKg3Ak70Kg0JKR
+         QS/FNMzTHvvZvxgkioZ9Wpvvqe1cQojaZNzhb0HBTjhp7eIiHEvr8qo7tZNHZNf/UZ4p
+         dgxG1PcptgAxn+NpBZ8wZRIIdg7qjDgTNjW50HbkVMDdaT+wddOqngRM7goj3SXSZ5+B
+         aLAg==
+X-Gm-Message-State: AOAM531XUEpHnxbOpqlRS0ZQsFPPIr7MyN53Fh0Se5zY8urU4MYnPoko
+        rtSjX70JUnmfdGOD1Xv7kGI=
+X-Google-Smtp-Source: ABdhPJz4lD3m9FRvj2USkXgZ7+CUhdH53dqy3M2x4APxCBIlEnjjSIo96RVVkc57LVZZtN7whmKTfg==
+X-Received: by 2002:a17:907:1de0:: with SMTP id og32mr14085655ejc.348.1631556665998;
+        Mon, 13 Sep 2021 11:11:05 -0700 (PDT)
 Received: from localhost.localdomain.it (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
-        by smtp.gmail.com with ESMTPSA id d25sm4258999edt.33.2021.09.13.11.10.51
+        by smtp.gmail.com with ESMTPSA id d25sm4258999edt.33.2021.09.13.11.11.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 11:10:52 -0700 (PDT)
+        Mon, 13 Sep 2021 11:11:05 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
@@ -56,9 +56,9 @@ To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Michael Straube <straube.linux@gmail.com>
 Cc:     Pavel Skripkin <paskripkin@gmail.com>,
         "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v4 05/18] staging: r8188eu: remove the helpers of usb_write8
-Date:   Mon, 13 Sep 2021 20:09:49 +0200
-Message-Id: <20210913181002.16651-6-fmdefrancesco@gmail.com>
+Subject: [PATCH v4 06/18] staging: r8188eu: remove the helpers of usb_write16()
+Date:   Mon, 13 Sep 2021 20:09:50 +0200
+Message-Id: <20210913181002.16651-7-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913181002.16651-1-fmdefrancesco@gmail.com>
 References: <20210913181002.16651-1-fmdefrancesco@gmail.com>
@@ -70,12 +70,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-Remove the unnecessary _rtw_write8() and usb_write8() and embed their
-code into the caller (i.e., rtw_write8()).
+Remove the unnecessary _rtw_write16() and usb_write16() and embed their
+code into the caller (i.e., rtw_write16()).
 
-_rtw_write8() is a mere redefinition of rtw_write8() and it is unneeded.
-usb_write8() was the only functions assigned to the (*_usb_write8) pointer,
-so we can simply remove it and make a direct call.
+_rtw_write16() is a mere redefinition of rtw_write16() and it is unneeded.
+usb_write16() was the only functions assigned to the (*_usb_write16)
+pointer, so we can simply remove it and make a direct call.
 
 This patch is in preparation for the _io_ops structure removal.
 
@@ -91,90 +91,90 @@ v2->v3:
 v1->v2:
         No changes.
 
- drivers/staging/r8188eu/core/rtw_io.c       | 15 ---------------
+ drivers/staging/r8188eu/core/rtw_io.c       | 14 --------------
  drivers/staging/r8188eu/hal/usb_ops_linux.c | 10 +++++++---
  drivers/staging/r8188eu/include/rtw_io.h    |  4 +---
- 3 files changed, 8 insertions(+), 21 deletions(-)
+ 3 files changed, 8 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/core/rtw_io.c b/drivers/staging/r8188eu/core/rtw_io.c
-index cb24500cbc6e..69ab6e24a4b7 100644
+index 69ab6e24a4b7..7547e25d870b 100644
 --- a/drivers/staging/r8188eu/core/rtw_io.c
 +++ b/drivers/staging/r8188eu/core/rtw_io.c
-@@ -34,21 +34,6 @@ jackson@realtek.com.tw
+@@ -34,20 +34,6 @@ jackson@realtek.com.tw
  #define rtw_cpu_to_le16(val)		cpu_to_le16(val)
  #define rtw_cpu_to_le32(val)		cpu_to_le32(val)
  
--int _rtw_write8(struct adapter *adapter, u32 addr, u8 val)
+-int _rtw_write16(struct adapter *adapter, u32 addr, u16 val)
 -{
 -	struct io_priv *pio_priv = &adapter->iopriv;
 -	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
--	int (*_write8)(struct intf_hdl *pintfhdl, u32 addr, u8 val);
+-	int (*_write16)(struct intf_hdl *pintfhdl, u32 addr, u16 val);
 -	int ret;
 -
--	_write8 = pintfhdl->io_ops._write8;
+-	_write16 = pintfhdl->io_ops._write16;
 -
--	ret = _write8(pintfhdl, addr, val);
+-	ret = _write16(pintfhdl, addr, val);
 -
 -
 -	return RTW_STATUS_CODE(ret);
 -}
--
- int _rtw_write16(struct adapter *adapter, u32 addr, u16 val)
+ int _rtw_write32(struct adapter *adapter, u32 addr, u32 val)
  {
  	struct io_priv *pio_priv = &adapter->iopriv;
 diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-index 39fd9994787d..69e64863a5d1 100644
+index 69e64863a5d1..128cdb178abc 100644
 --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
 +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-@@ -133,11 +133,16 @@ u32 rtw_read32(struct adapter *adapter, u32 addr)
- 	return le32_to_cpu(data);
+@@ -145,12 +145,17 @@ int rtw_write8(struct adapter *adapter, u32 addr, u8 val)
+ 	return RTW_STATUS_CODE(ret);
  }
  
--static int usb_write8(struct intf_hdl *pintfhdl, u32 addr, u8 val)
-+int rtw_write8(struct adapter *adapter, u32 addr, u8 val)
+-static int usb_write16(struct intf_hdl *pintfhdl, u32 addr, u16 val)
++int rtw_write16(struct adapter *adapter, u32 addr, u16 val)
  {
 +	struct io_priv *pio_priv = &adapter->iopriv;
 +	struct intf_hdl *pintfhdl = &pio_priv->intf;
  	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	__le32 data = cpu_to_le32(val & 0x0000ffff);
 +	int ret;
-+
-+	ret = usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, REALTEK_USB_VENQT_WRITE);
  
--	return usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, REALTEK_USB_VENQT_WRITE);
+-	return usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_WRITE);
++	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_WRITE);
++
 +	return RTW_STATUS_CODE(ret);
  }
  
- static int usb_write16(struct intf_hdl *pintfhdl, u32 addr, u16 val)
-@@ -545,7 +550,6 @@ void rtl8188eu_set_intf_ops(struct _io_ops	*pops)
+ static int usb_write32(struct intf_hdl *pintfhdl, u32 addr, u32 val)
+@@ -550,7 +555,6 @@ void rtl8188eu_set_intf_ops(struct _io_ops	*pops)
  
  	memset((u8 *)pops, 0, sizeof(struct _io_ops));
  	pops->_read_port = &usb_read_port;
--	pops->_write8 = &usb_write8;
- 	pops->_write16 = &usb_write16;
+-	pops->_write16 = &usb_write16;
  	pops->_write32 = &usb_write32;
  	pops->_writeN = &usb_writeN;
+ 	pops->_write_port = &usb_write_port;
 diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
-index c53d9c8bd9a7..3b229027f094 100644
+index 3b229027f094..0cb1f626a549 100644
 --- a/drivers/staging/r8188eu/include/rtw_io.h
 +++ b/drivers/staging/r8188eu/include/rtw_io.h
-@@ -252,7 +252,7 @@ void _rtw_read_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
- void _rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+@@ -253,7 +253,7 @@ void _rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
  void _rtw_read_port_cancel(struct adapter *adapter);
  
--int _rtw_write8(struct adapter *adapter, u32 addr, u8 val);
-+int rtw_write8(struct adapter *adapter, u32 addr, u8 val);
- int _rtw_write16(struct adapter *adapter, u32 addr, u16 val);
+ int rtw_write8(struct adapter *adapter, u32 addr, u8 val);
+-int _rtw_write16(struct adapter *adapter, u32 addr, u16 val);
++int rtw_write16(struct adapter *adapter, u32 addr, u16 val);
  int _rtw_write32(struct adapter *adapter, u32 addr, u32 val);
  int _rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata);
+ 
 @@ -271,8 +271,6 @@ void _rtw_write_port_cancel(struct adapter *adapter);
  	_rtw_read_port((adapter), (addr), (cnt), (mem))
  #define rtw_read_port_cancel(adapter) _rtw_read_port_cancel((adapter))
  
--#define  rtw_write8(adapter, addr, val)					\
--	_rtw_write8((adapter), (addr), (val))
- #define  rtw_write16(adapter, addr, val)				\
- 	_rtw_write16((adapter), (addr), (val))
+-#define  rtw_write16(adapter, addr, val)				\
+-	_rtw_write16((adapter), (addr), (val))
  #define  rtw_write32(adapter, addr, val)				\
+ 	_rtw_write32((adapter), (addr), (val))
+ #define  rtw_writeN(adapter, addr, length, data)			\
 -- 
 2.33.0
 
