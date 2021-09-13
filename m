@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD26B40931C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8D5409316
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240159AbhIMORy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59700 "EHLO mail.kernel.org"
+        id S243234AbhIMORi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:17:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344284AbhIMOLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:11:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05D5661ABC;
-        Mon, 13 Sep 2021 13:42:24 +0000 (UTC)
+        id S1344262AbhIMOLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:11:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D57561ABE;
+        Mon, 13 Sep 2021 13:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540545;
-        bh=woE2grbPg3WPqA9HTL1cQBCX9cOnQFmfArs0J8oXWQU=;
+        s=korg; t=1631540547;
+        bh=1b4fiQW4iHip8NCQtY7EijYtiIGCgeHDYDcgrGIcoJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yA1I1rcvnPfqcDDv2uKCuSFsKtkzpwTRqQ1OhofATM7dr64rYUqHniOL97JXjMp4Y
-         3uAfhrXr7kSQm/MUy7U2xu6gRvA2qKlw5IpgXMdIlVkEFvnSB9KhJMHCwWN/qhH5tH
-         Vl2XU0zfCgcyitTNcglPZ75a3I/Q2kV9groVIiM8=
+        b=2otH/eLIrZuxRExuzRLEcBErQ64Wwa948ZQd/LTkKSF1RvHELRG5Utydb/WEDVTKU
+         fD5hsW9vMa4OWe0Mr5CnK3d9TFBXg4N0jt2zPTdJFHvRg7+O5Qy322nrbb6LOaTHKl
+         vdUvx2ciDVSwbk4mps9NSarto33VJhbesgH7Cfhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 238/300] ASoC: wcd9335: Fix a double irq free in the remove function
-Date:   Mon, 13 Sep 2021 15:14:59 +0200
-Message-Id: <20210913131117.395159098@linuxfoundation.org>
+Subject: [PATCH 5.13 239/300] ASoC: wcd9335: Fix a memory leak in the error handling path of the probe function
+Date:   Mon, 13 Sep 2021 15:15:00 +0200
+Message-Id: <20210913131117.429373896@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -43,43 +43,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 7a6a723e98aa45f393e6add18f7309dfffa1b0e2 ]
+[ Upstream commit fc6fc81caa63900cef9ebb8b2e365c3ed5a9effb ]
 
-There is no point in calling 'free_irq()' explicitly for
-'WCD9335_IRQ_SLIMBUS' in the remove function.
+If 'wcd9335_setup_irqs()' fails, me must release the memory allocated in
+'wcd_clsh_ctrl_alloc()', as already done in the remove function.
 
-The irqs are requested in 'wcd9335_setup_irqs()' using a resource managed
-function (i.e. 'devm_request_threaded_irq()').
-'wcd9335_setup_irqs()' requests all what is defined in the 'wcd9335_irqs'
-structure.
-This structure has only one entry for 'WCD9335_IRQ_SLIMBUS'.
-
-So 'devm_request...irq()' + explicit 'free_irq()' would lead to a double
-free.
-
-Remove the unneeded 'free_irq()' from the remove function.
+Add an error handling path and the missing 'wcd_clsh_ctrl_free()' call.
 
 Fixes: 20aedafdf492 ("ASoC: wcd9335: add support to wcd9335 codec")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-Id: <0614d63bc00edd7e81dd367504128f3d84f72efa.1629091028.git.christophe.jaillet@wanadoo.fr>
+Message-Id: <6dc12372f09fabb70bf05941dbe6a1382dc93e43.1629091028.git.christophe.jaillet@wanadoo.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/wcd9335.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 86c92e03ea5d..933f59e4e56f 100644
+index 933f59e4e56f..47fe68edea3a 100644
 --- a/sound/soc/codecs/wcd9335.c
 +++ b/sound/soc/codecs/wcd9335.c
-@@ -4869,7 +4869,6 @@ static void wcd9335_codec_remove(struct snd_soc_component *comp)
- 	struct wcd9335_codec *wcd = dev_get_drvdata(comp->dev);
+@@ -4844,6 +4844,7 @@ static void wcd9335_codec_init(struct snd_soc_component *component)
+ static int wcd9335_codec_probe(struct snd_soc_component *component)
+ {
+ 	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++	int ret;
+ 	int i;
  
- 	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
--	free_irq(regmap_irq_get_virq(wcd->irq_data, WCD9335_IRQ_SLIMBUS), wcd);
+ 	snd_soc_component_init_regmap(component, wcd->regmap);
+@@ -4861,7 +4862,15 @@ static int wcd9335_codec_probe(struct snd_soc_component *component)
+ 	for (i = 0; i < NUM_CODEC_DAIS; i++)
+ 		INIT_LIST_HEAD(&wcd->dai[i].slim_ch_list);
+ 
+-	return wcd9335_setup_irqs(wcd);
++	ret = wcd9335_setup_irqs(wcd);
++	if (ret)
++		goto free_clsh_ctrl;
++
++	return 0;
++
++free_clsh_ctrl:
++	wcd_clsh_ctrl_free(wcd->clsh_ctrl);
++	return ret;
  }
  
- static int wcd9335_codec_set_sysclk(struct snd_soc_component *comp,
+ static void wcd9335_codec_remove(struct snd_soc_component *comp)
 -- 
 2.30.2
 
