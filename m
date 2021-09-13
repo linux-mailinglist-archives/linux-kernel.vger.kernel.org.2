@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4947C40879E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50B240879D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238284AbhIMIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:55:13 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:62893 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237801AbhIMIzL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S238244AbhIMIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 13 Sep 2021 04:55:11 -0400
-Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 5001B40003;
-        Mon, 13 Sep 2021 08:53:52 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 10:53:51 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
-        Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 01/22] clk: sunxi-ng: v3s: Make the ISP PLL clock public
-Message-ID: <YT8RnzVqLebtPMD+@aptenodytes>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-2-paul.kocialkowski@bootlin.com>
- <20210913075417.ampb2jt4quftpqzj@gilmour>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238056AbhIMIzK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:55:10 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25F9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:53:54 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id i28so15908917ljm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=imgEyPKZJXioT57QZIHImgBbmP2LjKkzFSDJsibRDbM=;
+        b=W3//mO4U0arv7k3GzUpxuFvSj/T1dE2G/juXNoXU64WStMm/nJbuLq4tlA09ibpfRt
+         dS4parGDdOYYoFMju+cyiqRGdsC9swTucDccpKoBom5qv0wsQcc8HEN8uLqlBD2OWaCw
+         z4WJS4ofb+BZkJIfe1ur5V21YSGdb5novN/s66tkmejNS8E73v1zRyhz5Mz4Mts3KtxK
+         L2cUD2Bi80Ota8p9Cy3hSLn5rcB55ADKpm6Nh9Xx8vp6+1yKcLmECWFOSok5U6Wz11cP
+         XtUWxwPdpaoM7L9HYNWqVAQnu1Yx5+7RxutXjkGG4IEEn12hSrhlE2jukgrNfMFg1rhp
+         e6Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=imgEyPKZJXioT57QZIHImgBbmP2LjKkzFSDJsibRDbM=;
+        b=mImlCO4caxH14e+BnMH3F4ypEB6vwCF/Xg3HDKeZ3sdbGgXFVKjQsKFSmZhQHcWfs4
+         6DrMXL7+S7NyyUSb3V9e1AqlXnmmEgvkBLJbC2SYSe+lWIvcN9jtkl2IuV/LTjJ4MN/X
+         VV2igOLWF/iOsu1pLmXtpDA7ecVs39eWALu/vbCIHhbq4tVmTUVWweHiMaZX82d8QZtq
+         Il7XBlX1H2gS0XpvAtm+RPqoXJ8bZmsvh7chBS4gcm/PRAuQ1elZw5BSRaKZd4Wnfwwi
+         JjMzfiSOu/EvRnd5vWdIS7ylScLrNNuvL5wxmqMzKVw6eax5V97w1VuXsAvC7PIB08oo
+         8ohQ==
+X-Gm-Message-State: AOAM531saCvaqUTfwChLqKgmmeD9GwgICBDhvy8JMstYV/bEV5KwL5pb
+        rW/dr6LVdpzP5SDUj0eMbStTfMbi3Q6/fV0ZOKs=
+X-Google-Smtp-Source: ABdhPJyZ5eY3ILPcazBD6wEqKx/Wz4F5QrqGH8/3fcfZ+JlNZh/vH91/OCNYVDSiCu5KbJxpKWwHxIyRv8IReZ7FcrA=
+X-Received: by 2002:a2e:9c51:: with SMTP id t17mr9712055ljj.478.1631523233208;
+ Mon, 13 Sep 2021 01:53:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jDKl5hLx33khB+zy"
-Content-Disposition: inline
-In-Reply-To: <20210913075417.ampb2jt4quftpqzj@gilmour>
+Sender: mrssuzaramalingwan2@gmail.com
+Received: by 2002:a05:6512:3458:0:0:0:0 with HTTP; Mon, 13 Sep 2021 01:53:52
+ -0700 (PDT)
+From:   Mrs bill Sma chantal <mrsbillsamchantal01@gmail.com>
+Date:   Mon, 13 Sep 2021 01:53:52 -0700
+X-Google-Sender-Auth: iJZcv8jKF4MMSsTWJtsru4HqbDw
+Message-ID: <CAGa6i3jxQPeV65ijn8+cqz5P+Fn1Qym2wOrFOzm3O76M4skj+g@mail.gmail.com>
+Subject: compensation
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hello....
 
---jDKl5hLx33khB+zy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You have been compensated with the sum of 6.1 million dollars in this
+united nation the payment will be issue into atm visa  card and send
+to you from the santander bank we need your address and your
+Whatsapp number
 
-Hi,
+Thanks my
 
-On Mon 13 Sep 21, 09:54, Maxime Ripard wrote:
-> On Fri, Sep 10, 2021 at 08:41:26PM +0200, Paul Kocialkowski wrote:
-> > In order to reparent the CSI module clock to the ISP PLL via
-> > device-tree, export the ISP PLL clock declaration in the public
-> > device-tree header.
->=20
-> You use clk_set_rate_exclusive in the ISP driver on the module clock so
-> it should prevent what you're mentioning from happening.
-
-It does, but then it breaks display support entirely (because the DRM
-driver doesn't use clk_set_rate_exclusive).
-
-The bottomline is that using the same PLL for both display and camera
-easily results in conflicts.
-
-> If it doesn't, then clk_set_rate_exclusive has a bug and should be
-> fixed.
->=20
-> Either way, using assigned-clock-parents is not a good solution here
-> either, it only makes sure that this is the case when probe is run.
-
-I'm not sure what could provide better guarantees. There is a clock
-parenting API (in the clock framework) which may, but this implies
-providing the parent clock to the driver which seems way out of line
-since this is a platform-specific matter that should certainly not
-be handled by the driver.
-
-I also tried hardcoding the reparenting bit in the CCU driver, but
-this felt less clean than doing it in device-tree.
-
-What do you think?
-
-> > Details regarding why the CSI module clock is best parented to the ISP
-> > PLL are provided in the related commit.
->=20
-> This is relevant to this commit too and "the related commit" is far too
-> blurry when you consider the entire Linux git history.
-
-Fair enough!
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---jDKl5hLx33khB+zy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmE/EZ8ACgkQ3cLmz3+f
-v9GAXgf/WonaK8RTTtsz/x2Qh5N5DUQf8yAr5T68Jmx1Vo0uTy0bCi81Er1mcels
-4i6fI+7VeDZT5eopMWHisHVtgCj0u9mACqHgNnH6izOCei7WU1I9NANeIqDDZeow
-QVK16HSwIMpe5Be5UTu/tloyf8WGxcmEXTLyAhYSW3wynlegWFx7qe0GpSby7SCW
-moBvtsHEQ9k3FlvvRtwnZEuUWuBFf5eWN/o0dHy69BL92MYCA0D4lDg0phCrZzru
-ru41/xE+7fKLDTcOUCoVoKQX4Sh23iymP7dzk+YDbXjN8httuTe0HjZiC89sMDX/
-NMsXWS3qM/Owy4KyJP7K4dfSLylwQQ==
-=Rhfu
------END PGP SIGNATURE-----
-
---jDKl5hLx33khB+zy--
+Mrs bill Sma chantal
