@@ -2,77 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38202409EE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F831409EEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244837AbhIMVN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49264 "EHLO mail.kernel.org"
+        id S1345918AbhIMVO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:14:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243266AbhIMVNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:13:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5CC960FC1;
-        Mon, 13 Sep 2021 21:12:38 +0000 (UTC)
+        id S242414AbhIMVOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:14:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F77F61106;
+        Mon, 13 Sep 2021 21:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631567559;
-        bh=esNWxy/m7Hw30qpJ3+NqaN8g/JzsKU9VYxDHqak6ei8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=LeoNwpF2nERjyFxzq0TGmq/582irwWYVxgFG/ACwahMUXi4D5zU/GI0J2FITNlmLf
-         U7zPMhaFvZWz+nUdFnUvV5RdS6S16mV87UA01WaSm3HaDiUdioAUxbr5mlgYru90si
-         vy3XAqNZxtNJM2XoY/ScXZrzezUI485800cxz9JDh2s0Ug0jydLHCd0UFT3hgDZSQ1
-         xe7lw/uwWls4X5Y53rfhkhEnf0u7c2v/Z9ZAOfmgxP/u6LGXwhJKXNMemBqyB48+mt
-         MQUS72SCFuzmVxQG7RNF5Uj4bYasMPFp3L31cvhBDkEKKl6+hx0RdsVFmLo5HpS9qQ
-         8Wjbp9w9tvTIA==
-Message-ID: <fdf41507948023b600ef7febfd27951d8435a7dd.camel@kernel.org>
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Date:   Tue, 14 Sep 2021 00:12:36 +0300
-In-Reply-To: <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
-         <20210913131153.1202354-2-pbonzini@redhat.com>
-         <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
-         <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
-         <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        s=k20201202; t=1631567619;
+        bh=6bBOSpmFHVH8Qs5P5gI5GuYG8hzXlKUcmyfIz3ggF4M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cQTLUA+kYUvv9TQe+NNR/OOuVCFwTEaAwdXuY6aHKIsxLZEjtAmWrO/wdanYs7TXq
+         nlY9tjv01obSerK+moN8oELVwwhz3AUnkgdK7TsHqesHWrKMtlQKCww8bjNeWDrQ6I
+         IzX7J5d2sqGrrT/fHRMCdKWzg4RXj5M0TOfBktNzRP2CDvJniZUgwz4Rn7dVxW7UVT
+         eM7qRcqg78u5Dnf5D2iu1zFuP+/jFsmBo22jD15I10E3wUluR8efhL2iYiZyZKCxE8
+         bZG+0SlZwNo2QFfqV2Ga6CtR6JJc992YefucB8I2c/QmjNIqCvxzjVxEZGF+74V0IN
+         OT/c04qQYnhIw==
+Received: by mail-ed1-f41.google.com with SMTP id g21so16417897edw.4;
+        Mon, 13 Sep 2021 14:13:39 -0700 (PDT)
+X-Gm-Message-State: AOAM530iMoq6p8YS19eizFVteQ+G8P8Vjcqvbm8EiCNIHbK2LHvHbDF0
+        NLsDf2WsW4Ufi6JnOGJTZvdaLlqyty3eRvRN5A==
+X-Google-Smtp-Source: ABdhPJxExeUYnleL/+IK4R/5Pn8HabNWrlLTO7fUPwuPP9b8R3AcBQdO/+rIVlFnLtyg4UBqHHrY9cYhA6v3htBeiHQ=
+X-Received: by 2002:aa7:ca45:: with SMTP id j5mr4084233edt.6.1631567617603;
+ Mon, 13 Sep 2021 14:13:37 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210913182550.264165-1-maz@kernel.org> <20210913182550.264165-3-maz@kernel.org>
+In-Reply-To: <20210913182550.264165-3-maz@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 13 Sep 2021 16:13:26 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+OuYfuNM4pNL7aZ4tTHGTXzYcH1W-8xi=eEe2zOoq6nw@mail.gmail.com>
+Message-ID: <CAL_Jsq+OuYfuNM4pNL7aZ4tTHGTXzYcH1W-8xi=eEe2zOoq6nw@mail.gmail.com>
+Subject: Re: [PATCH v3 02/10] of/irq: Allow matching of an interrupt-map local
+ to an interrupt controller
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 07:55 -0700, Dave Hansen wrote:
-> On 9/13/21 7:24 AM, Paolo Bonzini wrote:
-> > > How does this end up happening in the first place?
-> > >=20
-> > > All enclave pages should start out on 'sgx_dirty_page_list' and
-> > > ksgxd sanitizes them with EREMOVE before making them available.  That
-> > > should cover EREMOVE after reboots while SGX pages are initialized,
-> > > including kexec().
-> >=20
-> > By "Windows startup" I mean even after guest reboot.  Because another
-> > process could sneak in and steal your EPC pages between a close() and a=
-n
-> > open(), I'd like to have a way to EREMOVE the pages while keeping them
-> > assigned to the specific vEPC instance, i.e. *without* going through
-> > sgx_vepc_free_page().
->=20
-> Oh, so you want fresh EPC state for the guest, but you're concerned that
-> the previous guest might have left them in a bad state.  The current
-> method of getting a new vepc instance (which guarantees fresh state) has
-> some other downsides.
->=20
-> Can't another process steal pages via sgxd and reclaim at any time?
-> What's the extra concern here about going through a close()/open()
-> cycle?  Performance?
+On Mon, Sep 13, 2021 at 1:26 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> of_irq_parse_raw() has a baked assumption that if a node has an
+> interrupt-controller property, it cannot possibly also have an
+> interrupt-map property (the latter being ignored).
+>
+> This seems to be an odd behaviour, and there are no reason why
 
-sgxd does not steal anything from vepc regions.
+s/are/is/
 
-They are not part of the reclaiming process.
+> we should avoid supporting this use case. This is specially
+> useful when a PCI root port acts as an interrupt controller for
+> PCI endpoints, such as this:
+>
+> pcie0: pcie@690000000 {
+>         [...]
+>         port00: pci@0,0 {
+>                 device_type = "pci";
+>                 [...]
+>                 #address-cells = <3>;
+>
+>                 interrupt-controller;
+>                 #interrupt-cells = <1>;
+>
+>                 interrupt-map-mask = <0 0 0 7>;
+>                 interrupt-map = <0 0 0 1 &port00 0 0 0 0>,
+>                                 <0 0 0 2 &port00 0 0 0 1>,
+>                                 <0 0 0 3 &port00 0 0 0 2>,
+>                                 <0 0 0 4 &port00 0 0 0 3>;
+>         };
+> };
+>
+> Handle it by detecting that we have an interrupt-map early in the
+> parsing, and special case the situation where the phandle in the
+> interrupt map refers to the current node (which is the interesting
+> case here).
+>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/of/irq.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
 
-/Jarkko
+Reviewed-by: Rob Herring <robh@kernel.org>
