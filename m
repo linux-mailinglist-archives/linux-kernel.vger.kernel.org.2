@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5FA409734
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D26B409686
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhIMPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345672AbhIMPYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:24:18 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7A4C03D413
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:20:06 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id g16so15012149wrb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 07:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O8wS1+sNPRvLr9/odqtW8j5vtaz640FsxM1Sy4aZraE=;
-        b=zUBlJhHnIxCu1VQebaWtOTcojpoxcqf8Qil1UfYKUm269Nj4QGsIrqfFUPEKCgOCvj
-         YKKwj5PXov8glQvMvfwiPlTQNBAZLjHvRykWxxcjPO+B5LeEAXV+CF0JniLntM/XXp8a
-         qDzd0LGSnT4rhQzdHvVuwFOuGZpcZzmTjO6WUUZxcoeWqBZISAJJWDCnGtsOQ77xjPXW
-         ZXpqOEBrve0eO1b6ZI6o4HS1umsI28TXB36MBOhTaeJf1AeCxmV4kFX7cLi4pJ3+lT53
-         T4wUAXA5CIFSIOG6wgxMaDZWw7Nj0s2NeYAxCQE+G2uQw4CQYGQmLfacwmFFkYLCObIm
-         C39Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O8wS1+sNPRvLr9/odqtW8j5vtaz640FsxM1Sy4aZraE=;
-        b=YcbmDctTw0cIjD719uW9ZSgpfC8pH8r7lx1C0wWEDDNQbQ7aTGU5lw3cR6HXzNNuV3
-         k7bxtdiC5eUaIHt0+vlGl0NW7cZ7YN2MtaiqZn1PWKUJBrT9Bw7zNDv5F48Mpml+RdUJ
-         LEyZVsBxL+U4CxLC+VcHSYhj/Zv9cLKg/+s3s7CVJ50x4d/vyYLNdtDXajeTkVz67pNy
-         zRP/YZTbD8+2KnsCXRIamhaZnm/g1ZEu9HTj6m4pdMcij9WGEYRY1PvuOhO+JLgtmvvH
-         V4CCG6g6epZy1nQFHKgBvPsJlukXSF0IFR6+GAC9q+Cfl6O/nFbd3q8fBRZhIvFLYzxL
-         N3DA==
-X-Gm-Message-State: AOAM532I+8W/QcZ16J6g2TcSktbcLs5u0f+GCQCgblV/qduOO0mcsj6a
-        OUMkAyLGye3wrzxzpVQ3XDOZ0+wtDMmFdQ==
-X-Google-Smtp-Source: ABdhPJzMHe5HCthXhhGzcU/HUaYAkZHU7J7+wRvuKVdeLuGClMUEH72WUtiPwg/TRe6z7s0Aap1rbg==
-X-Received: by 2002:adf:916f:: with SMTP id j102mr12802317wrj.422.1631542805025;
-        Mon, 13 Sep 2021 07:20:05 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id b16sm7688776wrp.82.2021.09.13.07.20.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 07:20:04 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] nvmem: add ONIE nvmem cells parser
-To:     John Thomson <lists@johnthomson.fastmail.com.au>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Robert Marko <robert.marko@sartura.hr>
-References: <20210608190327.22071-1-vadym.kochan@plvision.eu>
- <20210608190327.22071-4-vadym.kochan@plvision.eu>
- <b54325f156eaaa6535667a1a7fb695c7688d2db4.camel@pengutronix.de>
- <vrcxh2wnnrl7a7.fsf@plvision.eu>
- <7d1a7607-15fc-4dd6-9317-c6161c4984db@www.fastmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <ceaf0e29-2306-37af-f170-281d7c097fad@linaro.org>
-Date:   Mon, 13 Sep 2021 15:20:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1347954AbhIMOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346615AbhIMOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:47:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F22EF604D1;
+        Mon, 13 Sep 2021 14:21:01 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 16:20:59 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     "taoyi.ty" <escape@linux.alibaba.com>,
+        Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+Message-ID: <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTiugxO0cDge47x6@kroah.com>
+ <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
+ <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
 MIME-Version: 1.0
-In-Reply-To: <7d1a7607-15fc-4dd6-9317-c6161c4984db@www.fastmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/09/2021 22:06, John Thomson wrote:
-> Hi Vadym,
+On Fri, Sep 10, 2021 at 06:49:27AM -1000, Tejun Heo wrote:
+> Hello,
 > 
-> On Wed, 8 Sep 2021, at 09:56, Vadym Kochan wrote:
->>
->> Hi Jan,
->>
->> Jan Lübbe <jlu@pengutronix.de> writes:
-> …
->>
->>> I think it would be useful to have a way to express this setup for systems with
->>> many interfaces, but am unsure of where this should be described. Maybe a "mac-
->>> address-offset" property in the generic ethernet controller binding?
->>>
->>> Regards,
->>> Jan
->>
->> May be something like eth_address_provider should be introduced in
->> net/ethernet/ ?
->>
->> This provider can provide something like eth_provider_address_next() which
->> will consider "mac-address-num" (or other specific fields).
->>
+> On Fri, Sep 10, 2021 at 10:11:53AM +0800, taoyi.ty wrote:
+> > The scenario is the function computing of the public
+> > cloud. Each instance of function computing will be
+> > allocated about 0.1 core cpu and 100M memory. On
+> > a high-end server, for example, 104 cores and 384G,
+> > it is normal to create hundreds of containers at the
+> > same time if burst of requests comes.
 > 
-> A patch series proposed the devicetree property
-> mac-address-increment, but it did not get support at the time:
-
-Please have a look at some recent nvmem patches 
-https://lkml.org/lkml/2021/9/8/270 that adds support for vendor specific 
-post-processing of nvmem-cells.
-
-Am hoping that increment usecase (along with other variants) should also 
-be dealt in similar way.
-
-
---srini
-> of_net: add mac-address-increment support
-> https://lore.kernel.org/all/20200920095724.8251-4-ansuelsmth@gmail.com/
-> dt-bindings: net: Document use of mac-address-increment
-> https://lore.kernel.org/all/20200920095724.8251-5-ansuelsmth@gmail.com/
+> This type of use case isn't something cgroup is good at, at least not
+> currently. The problem is that trying to scale management operations like
+> creating and destroying cgroups has implications on how each controller is
+> implemented - we want the hot paths which get used while cgroups are running
+> actively to be as efficient and scalable as possible even if that requires a
+> lot of extra preparation and lazy cleanup operations. We don't really want
+> to push for cgroup creation / destruction efficiency at the cost of hot path
+> overhead.
 > 
-
-
-
-> Cheers,
+> This has implications for use cases like you describe. Even if the kernel
+> pre-prepare cgroups to low latency for cgroup creation, it means that the
+> system would be doing a *lot* of managerial extra work creating and
+> destroying cgroups constantly for not much actual work.
 > 
+> Usually, the right solution for this sort of situations is pooling cgroups
+> from the userspace which usually has a lot better insight into which cgroups
+> can be recycled and can also adjust the cgroup hierarchy to better fit the
+> use case (e.g. some rapid-cycling cgroups can benefit from higher-level
+> resource configurations).
+
+I had the same reaction and I wanted to do something like this before,
+i.e. maintain a pool of pre-allocated cgroups in userspace. But there
+were some problems.
+
+Afaict, there is currently now way to prevent the deletion of empty
+cgroups, especially newly created ones. So for example, if I have a
+cgroup manager that prunes the cgroup tree whenever they detect empty
+cgroups they can delete cgroups that were pre-allocated. This is
+something we have run into before.
+
+A related problem is a crashed or killed container manager 
+(segfault, sigkill, etc.). It might not have had the chance to cleanup
+cgroups it allocated for the container. If the container manager is
+restarted it can't reuse the existing cgroup it found because it has no
+way of guaranteeing whether in between the time it crashed and got
+restarted another program has just created a cgroup with the same name.
+We usually solve this by just creating another cgroup with an index
+appended until we we find an unallocated one setting an arbitrary cut
+off point until we require manual intervention by the user (e.g. 1000).
+
+Right now iirc, one can rmdir() an empty cgroup while someone still
+holds a file descriptor open for it. This can lead to situation where a
+cgroup got created but before moving into the cgroup (via clone3() or
+write()) someone else has deleted it. What would already be helpful is
+if one had a way to prevent the deletion of cgroups when someone still
+has an open reference to it. This would allow a pool of cgroups to be
+created that can't simply be deleted.
+
+Christian
