@@ -2,158 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3569740898F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0F740895C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238690AbhIMK4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:56:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50876 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239296AbhIMK4k (ORCPT
+        id S239174AbhIMKuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:50:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19033 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239169AbhIMKug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:56:40 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id A7AB41FFCE;
-        Mon, 13 Sep 2021 10:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631530522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V1UGM9JLTi4/yHsh8pdylCNFEn0IEPb6s7+Trsqo/UA=;
-        b=exLocUfD64t8HpX7hoYhSAtzG0u1WHBku4YnVDStTcJJ9WDBF6FG7HHpdl5z8GvPbJuFbJ
-        +w2i7+TST/X8vrdm47iBmGkuT7HZA1nOJQjt1yOLFcnPKY2zb8aaRAfnEO5bS5skR2pRrA
-        9p158A0kh7iTmexl7FkWO7DNJW+nkDI=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 6DB52A3B84;
-        Mon, 13 Sep 2021 10:55:22 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 12:55:21 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
- of dying tasks
-Message-ID: <YT8uGUMQ7K+/0gyA@dhcp22.suse.cz>
-References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
- <YT8RjxShvfEVe4YU@dhcp22.suse.cz>
- <7af26106-388c-6f99-e018-669a8f0cf9b5@virtuozzo.com>
+        Mon, 13 Sep 2021 06:50:36 -0400
+Received: from dggeml763-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7NRF0wh4zbmSm;
+        Mon, 13 Sep 2021 18:45:13 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggeml763-chm.china.huawei.com (10.1.199.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 18:49:17 +0800
+From:   Peng Liu <liupeng256@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <liupeng256@huawei.com>
+Subject: [PATCH] mm/mmap.c: fix a data race of mm->total_vm
+Date:   Mon, 13 Sep 2021 10:55:50 +0000
+Message-ID: <20210913105550.1569419-1-liupeng256@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7af26106-388c-6f99-e018-669a8f0cf9b5@virtuozzo.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml763-chm.china.huawei.com (10.1.199.173)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-09-21 13:35:00, Vasily Averin wrote:
-> On 9/13/21 11:53 AM, Michal Hocko wrote:
-> > On Fri 10-09-21 15:39:28, Vasily Averin wrote:
-> >> The kernel currently allows dying tasks to exceed the memcg limits.
-> >> The allocation is expected to be the last one and the occupied memory
-> >> will be freed soon.
-> >> This is not always true because it can be part of the huge vmalloc
-> >> allocation. Allowed once, they will repeat over and over again.
-> >> Moreover lifetime of the allocated object can differ from
-> >> In addition the lifetime of the dying task.
-> >> Multiple such allocations running concurrently can not only overuse
-> >> the memcg limit, but can lead to a global out of memory and,
-> >> in the worst case, cause the host to panic.
-> >>
-> >> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> >> ---
-> >>  mm/memcontrol.c | 23 +++++------------------
-> >>  1 file changed, 5 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index 389b5766e74f..67195fcfbddf 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -1834,6 +1834,9 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
-> >>  		return OOM_ASYNC;
-> >>  	}
-> >>  
-> >> +	if (should_force_charge())
-> >> +		return OOM_SKIPPED;
-> > 
-> > mem_cgroup_out_of_memory already check for the bypass, now you are
-> > duplicating that check with a different answer to the caller. This is
-> > really messy. One of the two has to go away.
-> 
-> In this case mem_cgroup_out_of_memory() takes locks and mutexes but doing nothing
-> useful and its success causes try_charge_memcg() to repeat the loop unnecessarily.
-> 
-> I cannot change mem_cgroup_out_of_memory internals, because it is used in other places too.The check inside mem_cgroup_out_of_memory is required because situation can be changed after
-> check added into mem_cgroup_oom().
-> 
-> Though I got your argument, and will think how to improve the patch.
-> Anyway we'll need to do something with name of should_force_charge() function
-> that will NOT lead to forced charge.
+Variable mm->total_vm could be accessed concurrently during mmaping
+and system accounting as noticed by KCSAN,
 
-Here is what I would do.
+BUG: KCSAN: data-race in __acct_update_integrals / mmap_region
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 702a81dfe72d..58269721d438 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2588,6 +2588,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	struct page_counter *counter;
- 	enum oom_status oom_status;
- 	unsigned long nr_reclaimed;
-+	bool passed_oom = false;
- 	bool may_swap = true;
- 	bool drained = false;
- 	unsigned long pflags;
-@@ -2622,15 +2623,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_ATOMIC)
- 		goto force;
- 
--	/*
--	 * Unlike in global OOM situations, memcg is not in a physical
--	 * memory shortage.  Allow dying and OOM-killed tasks to
--	 * bypass the last charges so that they can exit quickly and
--	 * free their memory.
--	 */
--	if (unlikely(should_force_charge()))
--		goto force;
--
- 	/*
- 	 * Prevent unbounded recursion when reclaim operations need to
- 	 * allocate memory. This might exceed the limits temporarily,
-@@ -2688,8 +2680,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
- 		goto nomem;
- 
--	if (fatal_signal_pending(current))
--		goto force;
-+	/* Avoid endless loop for tasks bypassed by the oom killer */
-+	if (passed_oom && should_force_charge())
-+		goto nomem;
- 
- 	/*
- 	 * keep retrying as long as the memcg oom killer is able to make
-@@ -2698,14 +2691,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+read-write to 0xffffa40267bd14c8 of 8 bytes by task 15609 on cpu 3:
+ mmap_region+0x6dc/0x1400
+ do_mmap+0x794/0xca0
+ vm_mmap_pgoff+0xdf/0x150
+ ksys_mmap_pgoff+0xe1/0x380
+ do_syscall_64+0x37/0x50
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+read to 0xffffa40267bd14c8 of 8 bytes by interrupt on cpu 2:
+ __acct_update_integrals+0x187/0x1d0
+ acct_account_cputime+0x3c/0x40
+ update_process_times+0x5c/0x150
+ tick_sched_timer+0x184/0x210
+ __run_hrtimer+0x119/0x3b0
+ hrtimer_interrupt+0x350/0xaa0
+ __sysvec_apic_timer_interrupt+0x7b/0x220
+ asm_call_irq_on_stack+0x12/0x20
+ sysvec_apic_timer_interrupt+0x4d/0x80
+ asm_sysvec_apic_timer_interrupt+0x12/0x20
+ smp_call_function_single+0x192/0x2b0
+ perf_install_in_context+0x29b/0x4a0
+ __se_sys_perf_event_open+0x1a98/0x2550
+ __x64_sys_perf_event_open+0x63/0x70
+ do_syscall_64+0x37/0x50
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 2 PID: 15610 Comm: syz-executor.3 Not tainted 5.10.0+ #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+Ubuntu-1.8.2-1ubuntu1 04/01/2014
+
+In vm_stat_account which called by mmap_region, increase total_vm,
+and __acct_update_integrals may read total_vm at the same time.
+This will cause a data race which lead to undefined behaviour. To
+avoid potential bad read/write, volatile property and barrier are
+both used to avoid undefined behaviour.
+
+Signed-off-by: Peng Liu <liupeng256@huawei.com>
+---
+ kernel/tsacct.c | 2 +-
+ mm/mmap.c       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/tsacct.c b/kernel/tsacct.c
+index 257ffb993ea2..f00de83d0246 100644
+--- a/kernel/tsacct.c
++++ b/kernel/tsacct.c
+@@ -137,7 +137,7 @@ static void __acct_update_integrals(struct task_struct *tsk,
+ 	 * the rest of the math is done in xacct_add_tsk.
  	 */
- 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
- 		       get_order(nr_pages * PAGE_SIZE));
--	switch (oom_status) {
--	case OOM_SUCCESS:
-+	if (oom_status == OOM_SUCCESS) {
-+		passed_oom = true;
- 		nr_retries = MAX_RECLAIM_RETRIES;
- 		goto retry;
--	case OOM_FAILED:
--		goto force;
--	default:
--		goto nomem;
- 	}
- nomem:
- 	if (!(gfp_mask & __GFP_NOFAIL))
+ 	tsk->acct_rss_mem1 += delta * get_mm_rss(tsk->mm) >> 10;
+-	tsk->acct_vm_mem1 += delta * tsk->mm->total_vm >> 10;
++	tsk->acct_vm_mem1 += delta * READ_ONCE(tsk->mm->total_vm) >> 10;
+ }
+ 
+ /**
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 181a113b545d..5f9bcfa29835 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3356,7 +3356,7 @@ bool may_expand_vm(struct mm_struct *mm, vm_flags_t flags, unsigned long npages)
+ 
+ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
+ {
+-	mm->total_vm += npages;
++	WRITE_ONCE(mm->total_vm, READ_ONCE(mm->total_vm)+npages);
+ 
+ 	if (is_exec_mapping(flags))
+ 		mm->exec_vm += npages;
 -- 
-Michal Hocko
-SUSE Labs
+2.18.0.huawei.25
+
