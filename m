@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBBE409BAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40C8409BB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346477AbhIMSF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S1346290AbhIMSHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbhIMSF0 (ORCPT
+        with ESMTP id S235056AbhIMSHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:05:26 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B223C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:04:10 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id j13so15636372edv.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:04:10 -0700 (PDT)
+        Mon, 13 Sep 2021 14:07:13 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32A8C061574;
+        Mon, 13 Sep 2021 11:05:57 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so49103pjc.3;
+        Mon, 13 Sep 2021 11:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Fsbje8F1pW32+ZfIecam+8RLNkt/s56842lLWFPAzCM=;
-        b=HNss1m/u0RI3QLd5LOqVZMUI9jjmGGFLt4SasEnP5iJZhvd/RiLARyjcnVr0KAX8Uh
-         FQHoMSO5vmFtInXUSXPT7VNCHow0pRTaMkQ6zE11OYejfyKUdjyi6E8qIgNZkcbvkNwa
-         /vP40jQ5DCPuPI+cahzbz12Ftu+d87IkBVTRhGxXbDGMEyjVuKrNxBMklbgSy2aa4jf6
-         cC48rX2cWmx7zPky9MtBVVNH4sK5Q2zpzsSOt1CECY2Ox2SPVv+YAMRQmP7OEtL1TcJ6
-         IvLO0RCy9p5jkqTCte2EmHqO/89KOzbgtU+LkO5oznfhXA2f3PDHuc9gdYNrRe1BMz7V
-         UDMw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lTZVobgM/3IcweDVBRrPU9HP9E4rGk6Uc/SK3CeJgbs=;
+        b=hz+MNqFoGnCqooN4pC0ZNqbr8/ZDMZ29FkRELhIRuC5hKGL9L9J9cPYqbJJJ9EeVlD
+         uieVwHvuZtCzWv2i9+5nUuSYWc6YHpCTvW/uCVKVWanM3bGO9clHLlZDJTRQdh+vStXT
+         JebR147UMte2xKNSG766+KWPqjmormL7wvrfV4Oo6q7tYf9OBdp3Q9Sgyp+cXVXKPhd2
+         LZbVzW+nhGFJ8DywljsBashi5kxWlbVV3SrTxrThfU+pfx9HknFRDPUv/2nBqsbfr0kF
+         mIB2JcID3JCKEdZYv1v67prapGM5itGUbWpzNfCUP+Gqx5xyBuRbv2pPH1Nx8ieaI2kr
+         VBnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Fsbje8F1pW32+ZfIecam+8RLNkt/s56842lLWFPAzCM=;
-        b=Y639vLHiipq07SwX28vXeRxyBo/iEC6p+2YnRKRhEKMUpJw2eQXhk8NJksI4rtwKIx
-         LZiUkBdmLgYNuQ8Ncni+q2u/gpiOZo9FUu6Zl8F3aikoopYj0tt7oIYnbwo6Pp/jCOG4
-         bSoYJwjZpy9JXQpCfKOKp02axc+dHxjPZ0C/qEnUKF1sKddlSKlEiQEPKP/S1FCOaoik
-         Y+osZrGTCv8+bcYBf++AwmT7NISg25V/H3qND+LwnIvau8uBD5ZBaxzoFzRbgVP76lP1
-         VqxiLK3l+UQmV13he3sIauL6Zjq+qwCe6e7/dGa67evqEEqDPKyMnlBMHiaDrG+CzmIa
-         vLDg==
-X-Gm-Message-State: AOAM531jObGSj52VllJRyxPp9sVezmJ4ZTKwN0Y2y0DjEIEoNZXa0LD8
-        VCpHxIDkPcSocEBy3Hg6dnDcPPnlZ6w=
-X-Google-Smtp-Source: ABdhPJwh3gUaWqXnBfz6oU/a6c6RejP73s+t1COiPJbISRd5pf2H6CMFqg5YAw+I6tECyrOAEYZufg==
-X-Received: by 2002:a05:6402:455:: with SMTP id p21mr14404637edw.309.1631556248923;
-        Mon, 13 Sep 2021 11:04:08 -0700 (PDT)
-Received: from peggy-InsydeH2O-EFI-BIOS ([154.72.153.216])
-        by smtp.gmail.com with ESMTPSA id h13sm4265502edr.4.2021.09.13.11.04.07
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lTZVobgM/3IcweDVBRrPU9HP9E4rGk6Uc/SK3CeJgbs=;
+        b=o+L+HeTT+4nDG++RZe2DkiGASmrOV4JgHtpG+TzpPcF9lQYZf3wWHtCMJ7WteUPdaa
+         cOaawNpa6t3sqS42UMvJAKlc2OzPeMyWpWaq1fRkqFSFahnPKCbTk4ukLqAMw3MssUBk
+         molGsGdILJwrR9a8jNxUR9jW89ZxThxGF6uZ+fdMRbckt05e5DOGcwt/EL3lbM+sck/T
+         /UfjMtjrEjDgOcaPtu7dZosKLh5b2Db9ZIlHkGCM+5A5f+Zl/5AQueGslPkq/asOnOhr
+         c5K8wiR1rAPIUYd6zUf9CI5LRNUtFePT/6t6rDQOEhb4slppwtePbAAdjNpWRCEvf7ms
+         gNag==
+X-Gm-Message-State: AOAM532AuTmUNGTmZtcAPt0Fj8kx0VcvoDgbPfMHy8umnKFC+04AvNoa
+        t63Gq6ksCWWjMCUm8YJoTA8=
+X-Google-Smtp-Source: ABdhPJwyUpLIfNUMvoWs8sNgwzlqizBHfnN+mQ+oZCTgPHX/7QjouVw56wymPnKahxjrFxQSQ7uEuQ==
+X-Received: by 2002:a17:902:8494:b0:13b:9365:6f12 with SMTP id c20-20020a170902849400b0013b93656f12mr6143553plo.19.1631556357279;
+        Mon, 13 Sep 2021 11:05:57 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id ch19sm7823993pjb.33.2021.09.13.11.05.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 11:04:08 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 19:04:04 +0100
-From:   Tawah Peggy <tawahpeggy98@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kroah-Hartman <greg@kroah.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] Staging:wlan-ng:cfg80211: A better fix for: Lines should
- end with a '('
-Message-ID: <20210913180404.GA325222@peggy-InsydeH2O-EFI-BIOS>
+        Mon, 13 Sep 2021 11:05:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Sep 2021 08:05:55 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Juri Lelli <juri.lelli@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] cgroup: Fix incorrect warning from
+ cgroup_apply_control_disable()
+Message-ID: <YT+TA6ItnF9xM3cR@slm.duckdns.org>
+References: <20210910024256.7615-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210910024256.7615-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<greg@kroah.com>
-Cc: linux-kernel@vger.kernel.org
-Bcc: 
-Subject: [PATCH v2] Staging: wlan-ng: cfg80211: A better fix for: Lines should
- not end with a '('.
-Reply-To: 
+Hello,
 
-This patch fixes the checkpatch error : lines should not end with a '('
-by reducing length of function name to enable the arguments be passed on a single line.
+On Thu, Sep 09, 2021 at 10:42:55PM -0400, Waiman Long wrote:
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 881ce1470beb..e31bca9fcd46 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -3140,7 +3140,16 @@ static void cgroup_apply_control_disable(struct cgroup *cgrp)
+>  			if (!css)
+>  				continue;
+>  
+> -			WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt));
+> +			/*
+> +			 * A kill_css() might have been called previously, but
+> +			 * the css may still linger for a while before being
+> +			 * removed. Skip it in this case.
+> +			 */
+> +			if (percpu_ref_is_dying(&css->refcnt)) {
+> +				WARN_ON_ONCE(css->parent &&
+> +					cgroup_ss_mask(dsct) & (1 << ss->id));
+> +				continue;
+> +			}
 
-Signed-off-by: Tawah Peggy <tawahpeggy98@gmail.com>
----
- drivers/staging/wlan-ng/cfg80211.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This warning did help me catch some gnarly bugs. Any chance we can keep it
+for normal cases and elide it just for remounting?
 
-diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-index 7951bd63816f..711c88c59e78 100644
---- a/drivers/staging/wlan-ng/cfg80211.c
-+++ b/drivers/staging/wlan-ng/cfg80211.c
-@@ -328,8 +328,7 @@ static int prism2_scan(struct wiphy *wiphy,
- 		(i < request->n_channels) && i < ARRAY_SIZE(prism2_channels);
- 		i++)
- 		msg1.channellist.data.data[i] =
--			ieee80211_frequency_to_channel(
--				request->channels[i]->center_freq);
-+			ieee80211_freq_to_channel(request->channels[i]->center_freq);
- 	msg1.channellist.data.len = request->n_channels;
- 
- 	msg1.maxchanneltime.data = 250;
+Thanks.
+
 -- 
-2.25.1
-
+tejun
