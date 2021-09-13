@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14E6408F92
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACCA408D36
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242871AbhIMNoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35540 "EHLO mail.kernel.org"
+        id S240537AbhIMNYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242703AbhIMNiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:38:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CAD161213;
-        Mon, 13 Sep 2021 13:28:35 +0000 (UTC)
+        id S238525AbhIMNUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:20:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D69361214;
+        Mon, 13 Sep 2021 13:19:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539716;
-        bh=xb/Pge8v09bI3SITd6QYLr980DugO1ewJVg5DuwfpyQ=;
+        s=korg; t=1631539144;
+        bh=lyD0njKJ/aLyKDW2Y7S+vq8Ec95r1GDDF8sSuW+r5gU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQ/vajCZMteGjyMW3wR4z/BOeV38Uz4Dps1mI/mkQHlr6cYykBe+XVz59emqRsJEu
-         YNmNPyjikziY1AKoqA5MP6zVQFqgCZbecX5T2YjSWO+/wD/5LVvLCRWBhhvxWhXovq
-         immlyxPsBgqRTsk87eYvZJ8wVYBBgXRkvjGFoxAA=
+        b=nH+N6kpzyP+eAN/rzJz02LmK4tGiXQXwBScTp5ya6/NTmM56IzGFigY7uGRVT2Ut8
+         XuVpZXIjrxJxAlfUCNqKi3V+gFUADLHNhekE37vcxqMaSr6t75oOMN0/igdVO8hfTV
+         LC91A+Q9P+a/pZQ47AlxelgD+Jmt/x02pzbNWYZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, CCJ Yeh <CCj.Yeh@mediatek.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 131/236] PM: EM: Increase energy calculation precision
-Date:   Mon, 13 Sep 2021 15:13:56 +0200
-Message-Id: <20210913131104.821241430@linuxfoundation.org>
+Subject: [PATCH 5.4 056/144] media: dvb-usb: fix uninit-value in vp702x_read_mac_addr
+Date:   Mon, 13 Sep 2021 15:13:57 +0200
+Message-Id: <20210913131049.843704032@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,150 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukasz Luba <lukasz.luba@arm.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit 7fcc17d0cb12938d2b3507973a6f93fc9ed2c7a1 ]
+[ Upstream commit 797c061ad715a9a1480eb73f44b6939fbe3209ed ]
 
-The Energy Model (EM) provides useful information about device power in
-each performance state to other subsystems like: Energy Aware Scheduler
-(EAS). The energy calculation in EAS does arithmetic operation based on
-the EM em_cpu_energy(). Current implementation of that function uses
-em_perf_state::cost as a pre-computed cost coefficient equal to:
-cost = power * max_frequency / frequency.
-The 'power' is expressed in milli-Watts (or in abstract scale).
+If vp702x_usb_in_op fails, the mac address is not initialized.
+And vp702x_read_mac_addr does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-There are corner cases when the EAS energy calculation for two Performance
-Domains (PDs) return the same value. The EAS compares these values to
-choose smaller one. It might happen that this values are equal due to
-rounding error. In such scenario, we need better resolution, e.g. 1000
-times better. To provide this possibility increase the resolution in the
-em_perf_state::cost for 64-bit architectures. The cost of increasing
-resolution on 32-bit is pretty high (64-bit division) and is not justified
-since there are no new 32bit big.LITTLE EAS systems expected which would
-benefit from this higher resolution.
+Fix this by handling the failure of vp702x_usb_in_op.
 
-This patch allows to avoid the rounding to milli-Watt errors, which might
-occur in EAS energy estimation for each PD. The rounding error is common
-for small tasks which have small utilization value.
-
-There are two places in the code where it makes a difference:
-1. In the find_energy_efficient_cpu() where we are searching for
-best_delta. We might suffer there when two PDs return the same result,
-like in the example below.
-
-Scenario:
-Low utilized system e.g. ~200 sum_util for PD0 and ~220 for PD1. There
-are quite a few small tasks ~10-15 util. These tasks would suffer for
-the rounding error. These utilization values are typical when running games
-on Android. One of our partners has reported 5..10mA less battery drain
-when running with increased resolution.
-
-Some details:
-We have two PDs: PD0 (big) and PD1 (little)
-Let's compare w/o patch set ('old') and w/ patch set ('new')
-We are comparing energy w/ task and w/o task placed in the PDs
-
-a) 'old' w/o patch set, PD0
-task_util = 13
-cost = 480
-sum_util_w/o_task = 215
-sum_util_w_task = 228
-scale_cpu = 1024
-energy_w/o_task = 480 * 215 / 1024 = 100.78 => 100
-energy_w_task = 480 * 228 / 1024 = 106.87 => 106
-energy_diff = 106 - 100 = 6
-(this is equal to 'old' PD1's energy_diff in 'c)')
-
-b) 'new' w/ patch set, PD0
-task_util = 13
-cost = 480 * 1000 = 480000
-sum_util_w/o_task = 215
-sum_util_w_task = 228
-energy_w/o_task = 480000 * 215 / 1024 = 100781
-energy_w_task = 480000 * 228 / 1024  = 106875
-energy_diff = 106875 - 100781 = 6094
-(this is not equal to 'new' PD1's energy_diff in 'd)')
-
-c) 'old' w/o patch set, PD1
-task_util = 13
-cost = 160
-sum_util_w/o_task = 283
-sum_util_w_task = 293
-scale_cpu = 355
-energy_w/o_task = 160 * 283 / 355 = 127.55 => 127
-energy_w_task = 160 * 296 / 355 = 133.41 => 133
-energy_diff = 133 - 127 = 6
-(this is equal to 'old' PD0's energy_diff in 'a)')
-
-d) 'new' w/ patch set, PD1
-task_util = 13
-cost = 160 * 1000 = 160000
-sum_util_w/o_task = 283
-sum_util_w_task = 293
-scale_cpu = 355
-energy_w/o_task = 160000 * 283 / 355 = 127549
-energy_w_task = 160000 * 296 / 355 =   133408
-energy_diff = 133408 - 127549 = 5859
-(this is not equal to 'new' PD0's energy_diff in 'b)')
-
-2. Difference in the 6% energy margin filter at the end of
-find_energy_efficient_cpu(). With this patch the margin comparison also
-has better resolution, so it's possible to have better task placement
-thanks to that.
-
-Fixes: 27871f7a8a341ef ("PM: Introduce an Energy Model management framework")
-Reported-by: CCJ Yeh <CCj.Yeh@mediatek.com>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/energy_model.h | 16 ++++++++++++++++
- kernel/power/energy_model.c  |  4 +++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/vp702x.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b67a51c574b9..5f04a2b35e80 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -51,6 +51,22 @@ struct em_perf_domain {
- #ifdef CONFIG_ENERGY_MODEL
- #define EM_MAX_POWER 0xFFFF
+diff --git a/drivers/media/usb/dvb-usb/vp702x.c b/drivers/media/usb/dvb-usb/vp702x.c
+index 381b5c898a07..b7ee972455e5 100644
+--- a/drivers/media/usb/dvb-usb/vp702x.c
++++ b/drivers/media/usb/dvb-usb/vp702x.c
+@@ -291,16 +291,22 @@ static int vp702x_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ static int vp702x_read_mac_addr(struct dvb_usb_device *d,u8 mac[6])
+ {
+ 	u8 i, *buf;
++	int ret;
+ 	struct vp702x_device_state *st = d->priv;
  
-+/*
-+ * Increase resolution of energy estimation calculations for 64-bit
-+ * architectures. The extra resolution improves decision made by EAS for the
-+ * task placement when two Performance Domains might provide similar energy
-+ * estimation values (w/o better resolution the values could be equal).
-+ *
-+ * We increase resolution only if we have enough bits to allow this increased
-+ * resolution (i.e. 64-bit). The costs for increasing resolution when 32-bit
-+ * are pretty high and the returns do not justify the increased costs.
-+ */
-+#ifdef CONFIG_64BIT
-+#define em_scale_power(p) ((p) * 1000)
-+#else
-+#define em_scale_power(p) (p)
-+#endif
-+
- struct em_data_callback {
- 	/**
- 	 * active_power() - Provide power at the next performance state of
-diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index 994ca8353543..be381eb6116a 100644
---- a/kernel/power/energy_model.c
-+++ b/kernel/power/energy_model.c
-@@ -157,7 +157,9 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
- 	/* Compute the cost of each performance state. */
- 	fmax = (u64) table[nr_states - 1].frequency;
- 	for (i = 0; i < nr_states; i++) {
--		table[i].cost = div64_u64(fmax * table[i].power,
-+		unsigned long power_res = em_scale_power(table[i].power);
-+
-+		table[i].cost = div64_u64(fmax * power_res,
- 					  table[i].frequency);
- 	}
+ 	mutex_lock(&st->buf_mutex);
+ 	buf = st->buf;
+-	for (i = 6; i < 12; i++)
+-		vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1, &buf[i - 6], 1);
++	for (i = 6; i < 12; i++) {
++		ret = vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1,
++				       &buf[i - 6], 1);
++		if (ret < 0)
++			goto err;
++	}
  
+ 	memcpy(mac, buf, 6);
++err:
+ 	mutex_unlock(&st->buf_mutex);
+-	return 0;
++	return ret;
+ }
+ 
+ static int vp702x_frontend_attach(struct dvb_usb_adapter *adap)
 -- 
 2.30.2
 
