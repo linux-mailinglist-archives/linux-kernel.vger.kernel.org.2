@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C45408A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F95E408A85
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239770AbhIMLyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
+        id S239721AbhIMLwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239689AbhIMLyb (ORCPT
+        with ESMTP id S236326AbhIMLwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:54:31 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F76C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:53:14 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id z94so7747360ede.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:53:14 -0700 (PDT)
+        Mon, 13 Sep 2021 07:52:40 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBC7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:51:24 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h16so20497115lfk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wk43vu3DaZ0x+6xNSgwWNKeuIQVozOPsr0UzZd9OM+o=;
-        b=Xo9ZE5tctYbOg+YLyaELtc3SqnplUlV6M/Kj4X8ZB2cF+Pkrt/huGxxiVyBSslmUvR
-         gUj+5FjNw+E6akwPSHOPZtUfKuVomWx6F7222HRNwRasxVny9cJXRflDWdk+dQysgEJk
-         B+X21GPh0sJ1fLXKZWQ7YAzMIR/0QV71c2hln2WAQhwQBGE1PZV9ph0hS3Uegn3dB6s7
-         MK8H4o9isG+RboNwDMFkMqQi9s8c7xUOZQZILQ1OhS4dkqcJaUYaATCN8nkXTWncc6Xq
-         ChzK+3f7DRgBjohNn9ktRwnkPEOoJVLS2pQusJupfUe3uUvw0hQJxdo5rbIeDMus6FGu
-         DR0Q==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vcxL95DIl7E0Surm2fYVh0FLQdkw8xdl/2I8gB6Ck0A=;
+        b=F/FAqgSC2yHhGt81eMsu5irZzsSG7lnTScaJlLQars0vcimQ5j+chCBZ/sqyDjOVaw
+         zszBu+9roSDnBN6pLYP9I9oePiq0cMyRp8H4tQOYuzrHPrLmUFng3Qz3sElUBeK3X4AH
+         4WS1j8hhHZyjGQMijZ25Y0LF9sNe21zcaq2Ic=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wk43vu3DaZ0x+6xNSgwWNKeuIQVozOPsr0UzZd9OM+o=;
-        b=Bh4Yo+KcAc8ffvIdH4vz0huqiKWDmhJwBm2Brz4pd3hIG4FYRtH7vyjcQzfagK0lD4
-         4gZjlX169AOKCfY0BAlArdB32FmQkCIc2CuybmuG3WEwBX/Cmo2YZQSpO3sIqF8Db8Us
-         jmMVUfb92NpD8ej5OmylUTlHz5P3+/ercawKYTFE38w/CoaLLV2XCbjIPgIk5/uQUiul
-         ZEFYn/U1yZKeLhCVnQICeHjZUyzlKvQS64mP4ivqrwQERKoQE3yHdVGshRTR+KPoKzzI
-         dkxYU9fAxSK9TvTQDIaYw/UafyhZFjrtWChdO9Xz0ubHAlwVHFbMMm/IyCE9QiJOjrLC
-         +nKQ==
-X-Gm-Message-State: AOAM533e+NrBXZphUP4DO656ECvVRj2O6PObHkw7T/5yJfrkLpyKCSae
-        O+Jvdhwde3O+GQo58gR9RVFiM1/GfjMEWQ==
-X-Google-Smtp-Source: ABdhPJylyJOHufTZedKyIFBiHP1791WeAYIRddqKMbf4UIMmhGLgs6h/SdFHYJ40N6Qnj7h15+h49A==
-X-Received: by 2002:a05:6402:54:: with SMTP id f20mr13158827edu.382.1631533993271;
-        Mon, 13 Sep 2021 04:53:13 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id m15sm3349014ejx.73.2021.09.13.04.53.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 04:53:12 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: gyro: adis16080: use devm_iio_device_register() in probe
-Date:   Mon, 13 Sep 2021 14:53:08 +0300
-Message-Id: <20210913115308.301877-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vcxL95DIl7E0Surm2fYVh0FLQdkw8xdl/2I8gB6Ck0A=;
+        b=kPBoeKZMsPi8uBT/Nx0yVyIOI/t/K6rHxLc5x1elgdT4L5CbKlhK2jEM/jOy+UclGd
+         pj+7PrCdzGTZYivHbQ8O3RUnGXYySXabMFrr0eCXLksLj5LbJ2LxDziKGxEJshtSMUwv
+         5HkvjYX8TVqaH11e0EXiL9WN3ghDKPeJU3JCLt8Ot5y8asnhvZCylP4e+vGLpd2Zo9ws
+         8CJZaO7hiFfgLYYMNsw8lJrrmHJpAkLllzzlUJCN2l2aoVFyvccFIeNfDXhkbe6k4BJG
+         rJniALRb+kURnUOnDgpgboQ2/dWC2nRlAN5HYI+Eu9F9aEbhVpohm+9kpu3Z4j1PRSvu
+         bFKw==
+X-Gm-Message-State: AOAM532M6Jb4vYMBriCe4iYauyhujafeBLDbK4zEkiD7jF9OWBEePnC1
+        1YEKxx1rV+PjRYTaKVpZtpi+6If1BTLNSEemVaGvHY28GJQ=
+X-Google-Smtp-Source: ABdhPJzQUy1rsa2nwHauTUnzipk89JG7Ch4EPsaNLW/0YP4N/Py2u4+AEqdTBjHV7GUlDd2hGYO0QrK02PPjy89yJfM=
+X-Received: by 2002:a05:6512:118e:: with SMTP id g14mr8493571lfr.661.1631533883167;
+ Mon, 13 Sep 2021 04:51:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210627220544.8757-1-rdunlap@infradead.org> <2bae95d0-0932-847c-c105-a333e9956dff@infradead.org>
+ <f63694aa-85b3-0238-5228-eb35a52bf360@physik.fu-berlin.de>
+ <CAFr9PXn5S_3mpJBF0bNo+S1US=Z5s89rbO-OhhqGk=zqPGWXoQ@mail.gmail.com> <20210912015740.GJ13220@brightrain.aerifal.cx>
+In-Reply-To: <20210912015740.GJ13220@brightrain.aerifal.cx>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 13 Sep 2021 20:53:42 +0900
+Message-ID: <CAFr9PXk_w_+4mec1OfQLzsYHta2P4rEFGwsJJv+LSQo+hzKGeg@mail.gmail.com>
+Subject: Re: [PATCH 0/3 v2] sh: fixes for various build and kconfig warnings
+To:     Rich Felker <dalias@libc.org>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>, j-core@j-core.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is nothing else that needs to be done for this driver. The remove
-hook calls only the iio_device_unregister() hook.
+Hi Rich,
 
-So this driver can use devm_iio_device_register() directly.
+On Sun, 12 Sept 2021 at 10:57, Rich Felker <dalias@libc.org> wrote:
+>
+> On Thu, Sep 09, 2021 at 06:08:58PM +0900, Daniel Palmer wrote:
+> Hi. I see there's a situation that needs my attention here. I will
+> plan to review and merge anything important/blocking that doesn't have
+> problems this week.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/gyro/adis16080.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+Great. If you want to have it tested on real hardware please let me know.
+I have an ecovec24 (SH4A) board connected to CI so I can easily build
+and boot test.
 
-diff --git a/drivers/iio/gyro/adis16080.c b/drivers/iio/gyro/adis16080.c
-index e2f4d943e220..acef59d822b1 100644
---- a/drivers/iio/gyro/adis16080.c
-+++ b/drivers/iio/gyro/adis16080.c
-@@ -195,8 +195,6 @@ static int adis16080_probe(struct spi_device *spi)
- 	if (!indio_dev)
- 		return -ENOMEM;
- 	st = iio_priv(indio_dev);
--	/* this is only used for removal purposes */
--	spi_set_drvdata(spi, indio_dev);
- 
- 	mutex_init(&st->lock);
- 
-@@ -210,13 +208,7 @@ static int adis16080_probe(struct spi_device *spi)
- 	indio_dev->info = &adis16080_info;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 
--	return iio_device_register(indio_dev);
--}
--
--static int adis16080_remove(struct spi_device *spi)
--{
--	iio_device_unregister(spi_get_drvdata(spi));
--	return 0;
-+	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
- static const struct spi_device_id adis16080_ids[] = {
-@@ -231,7 +223,6 @@ static struct spi_driver adis16080_driver = {
- 		.name = "adis16080",
- 	},
- 	.probe = adis16080_probe,
--	.remove = adis16080_remove,
- 	.id_table = adis16080_ids,
- };
- module_spi_driver(adis16080_driver);
--- 
-2.31.1
+> At the same time, I am open to the possibility of a new maintainer or
+> co-maintainer if that ends up being what makes sense. Are there any
+> candidates?
 
+I think the problem is that while there are hobbyists out there the
+number of people that are still familiar with how the SuperH stuff
+works is pretty low.
+I don't have the debug dongles etc anymore so if some treewide change
+breaks everything then I don't know how I'd debug it.
+Maybe we could add a few people that still have working hardware as
+reviewers so they see patches and build test them for you?
+
+Cheers,
+
+Daniel
