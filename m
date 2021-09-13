@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FE7409F1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7374409F24
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244291AbhIMVbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230080AbhIMVbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01E18610FB;
-        Mon, 13 Sep 2021 21:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631568621;
-        bh=kDnxC/ku/qO2YWO25lHgWh/UEfoJ7cygr+a1l7tUC3M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VG7wvsOWUJeXM+FMs0FH3+zOqmH2owxzqpPcu3YDANFOnCP0VbRPqEIP7hbPmgxR2
-         gXA88kVtMvEDQp2Wq3i53HT5FPfYY0sQxDMbbLweb/XOQOdW7pON2ZaSKLyoOWRwe3
-         2NcGOGQaiTH6ttTuSViiC0aRsCsprYdlNXjV4mF22b8xslz9/7njo0TnbHF3GrN5f3
-         Z5ftw0XCnBbCOEuQejvNVTreFcRoNgu7TY+xy+Cm550RFXxezpoUo4uwy8jOl+umX8
-         B3wLfVX/6tDhfGgNYy0i/9QrUg+GwvUpyu1cjXivP3o1TyWIt94PKB4YWJkDFm58C3
-         yaXWj4r5QVavQ==
-Received: by mail-ej1-f44.google.com with SMTP id t19so24005287ejr.8;
-        Mon, 13 Sep 2021 14:30:20 -0700 (PDT)
-X-Gm-Message-State: AOAM533mzDRtI93FSs6flVEIws9fhBU3AP9bGrx7k2Pf0W47anuGHX88
-        HB3px84FUdTeqjs4q0lhjzi9FpbQDhGcaMtJAw==
-X-Google-Smtp-Source: ABdhPJwdYd6a5ti400oMtW47AX0MdBsmzprmsa0Cq36bJ4SwNp/qbAWDuiT9TlqObJ7jFtSCUgGwBouL6RRe3fuMhM8=
-X-Received: by 2002:a17:907:33ce:: with SMTP id zk14mr1304192ejb.84.1631568619636;
- Mon, 13 Sep 2021 14:30:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913182550.264165-1-maz@kernel.org> <20210913182550.264165-4-maz@kernel.org>
-In-Reply-To: <20210913182550.264165-4-maz@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 13 Sep 2021 16:30:07 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLtypMS8xquP_QjZcgQSOjWjOT82H9KNkE-gyqMJSgEUA@mail.gmail.com>
-Message-ID: <CAL_JsqLtypMS8xquP_QjZcgQSOjWjOT82H9KNkE-gyqMJSgEUA@mail.gmail.com>
-Subject: Re: [PATCH v3 03/10] PCI: of: Allow matching of an interrupt-map
- local to a pci device
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Hector Martin <marcan@marcan.st>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S244056AbhIMVdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:33:15 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:45021 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhIMVdN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:33:13 -0400
+Received: by mail-ot1-f52.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so15360969otg.11;
+        Mon, 13 Sep 2021 14:31:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=XnVyvRrK1owG70oj9OBKMWq8slrlkz/+5/c6V4H3/gU=;
+        b=cQzqn0nrz8Ex6wCYYLFrpqRIgJzx6+90Sm1L5gVtZ9PZFXP2Jo/a7DrZMsqor/EkqE
+         8Uf/7T7qMcqMNCXrqYVXf0TDxbHOR99DQ6U5fSEQZOeI6uPBPb9XeH3m3VH+Mvzgbp73
+         wcw4ovpwHjSSfqA5HlTA1uzurYLBoOFKNY1RkFRyggz/I1smTFbbB/fl+YJWN8lxKljn
+         ryeGINJbaGczveq83MU28Sz6PlVsSvZjFhyQXPhQLfgUwgODalJU3mDbfPjY8yTnfRMg
+         tdOcFm8xWHzReYNU+EENlzvCQ++SLnIHaVDtRujUedwgp90DcCchD3/k0EyzhLAe+yAS
+         SVOw==
+X-Gm-Message-State: AOAM530WFxN86DZ60D8yGhA9ejM9MjsaMUblB+D3kFWx8ueIsV+Qv3oE
+        +9Tab95gzc6bNW0Cq1bYhw==
+X-Google-Smtp-Source: ABdhPJyCDct3Ef1sAiH5at31Q3Pw/8cEU7uq1EmCixfb3ChclnbVNePBX4QBllaF2VGBKlennTyL3g==
+X-Received: by 2002:a9d:5a89:: with SMTP id w9mr11641935oth.91.1631568716465;
+        Mon, 13 Sep 2021 14:31:56 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 67sm2142358ota.70.2021.09.13.14.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 14:31:55 -0700 (PDT)
+Received: (nullmailer pid 1412997 invoked by uid 1000);
+        Mon, 13 Sep 2021 21:31:54 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     plai@codeaurora.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, broonie@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, judyhsiao@chromium.org,
+        swboyd@chromium.org, lgirdwood@gmail.com, perex@perex.cz,
+        rohitkr@codeaurora.org
+In-Reply-To: <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org> <1631539062-28577-2-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
+Date:   Mon, 13 Sep 2021 16:31:54 -0500
+Message-Id: <1631568714.639730.1412996.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:26 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> Just as we now allow an interrupt map to be parsed when part
-> of an interrupt controller, there is no reason to ignore an
-> interrupt map that would be part of a pci device node such as
-> a root port since we already allow interrupt specifiers.
->
-> This allows the device itself to use the interrupt map for
-> for its own purpose.
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Mon, 13 Sep 2021 18:47:41 +0530, Srinivasa Rao Mandadapu wrote:
+> Add devicetree bindings documentation file for sc7280 sound card
+> registration.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 > ---
->  drivers/pci/of.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> index d84381ce82b5..443cebb0622e 100644
-> --- a/drivers/pci/of.c
-> +++ b/drivers/pci/of.c
-> @@ -423,7 +423,7 @@ static int devm_of_pci_get_host_bridge_resources(struct device *dev,
->   */
->  static int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *out_irq)
->  {
-> -       struct device_node *dn, *ppnode;
-> +       struct device_node *dn, *ppnode = NULL;
->         struct pci_dev *ppdev;
->         __be32 laddr[3];
->         u8 pin;
-> @@ -452,8 +452,14 @@ static int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *
->         if (pin == 0)
->                 return -ENODEV;
->
-> +       /* Local interrupt-map in the device node? Use it! */
-> +       if (dn && of_get_property(dn, "interrupt-map", NULL)) {
+>  .../bindings/sound/google,sc7280-herobrine.yaml    | 169 +++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+> 
 
-No need to check 'dn' is not NULL.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Otherwise,
+yamllint warnings/errors:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
-> +               pin = pci_swizzle_interrupt_pin(pdev, pin);
-> +               ppnode = dn;
-> +       }
-> +
->         /* Now we walk up the PCI tree */
-> -       for (;;) {
-> +       while (!ppnode) {
->                 /* Get the pci_dev of our parent */
->                 ppdev = pdev->bus->self;
->
-> --
-> 2.30.2
->
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1527380
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
