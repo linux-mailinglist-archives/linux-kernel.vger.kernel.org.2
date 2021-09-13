@@ -2,307 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D69640862E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA0140860C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237982AbhIMINb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:13:31 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:15388 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237930AbhIMINN (ORCPT
+        id S237786AbhIMIFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:05:51 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:37778 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237722AbhIMIFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:13:13 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210913081156epoutp0165e6d31db80f8f0f9304a3028160e11a~kU3KI62Hd1432614326epoutp01h
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 08:11:56 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210913081156epoutp0165e6d31db80f8f0f9304a3028160e11a~kU3KI62Hd1432614326epoutp01h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631520716;
-        bh=swn3c0mDNJ/0hlD7Do34gPFEkYMDRPAATDWWj2Pi0sc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:In-Reply-To:References:From;
-        b=K9uTRG+3Z5Lt98nKtKeYTioJnmTIxZg8UqM+3V3g9nx+56j2JzsPUI2qR6nYtG/+Y
-         pzdfRwV9SnxCyO9+Dnm+Jk14PWNJI7agRC7GklI23VnfzSIoh/2Tl7YbiCwDOvoEwl
-         KZ4XdHoE8zzPGG4OVd19LBuOGpsfD26SUjGkHkzg=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210913081155epcas2p18d703a2887b2f6211a5a913f6325c751~kU3JjJjoa0434804348epcas2p1M;
-        Mon, 13 Sep 2021 08:11:55 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4H7K2K6W12z4x9Px; Mon, 13 Sep
-        2021 08:11:53 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DD.AC.09472.8C70F316; Mon, 13 Sep 2021 17:11:52 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce~kU3GHqJtB0641906419epcas2p2p;
-        Mon, 13 Sep 2021 08:11:52 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210913081152epsmtrp1ea874e3c703c9ee8bcef2e0ff1377e2e~kU3GG30sr1354313543epsmtrp1K;
-        Mon, 13 Sep 2021 08:11:52 +0000 (GMT)
-X-AuditID: b6c32a48-d75ff70000002500-fd-613f07c85b0a
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C0.DE.08750.7C70F316; Mon, 13 Sep 2021 17:11:52 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210913081151epsmtip17921edbefd78aeeede98be637d1dedc1~kU3F8Z8Qr0411604116epsmtip1x;
-        Mon, 13 Sep 2021 08:11:51 +0000 (GMT)
-From:   Kiwoong Kim <kwmad.kim@samsung.com>
-To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
-Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
-Subject: [PATCH v2 3/3] scsi: ufs: ufs-exynos: implement exynos isr
-Date:   Mon, 13 Sep 2021 16:55:55 +0900
-Message-Id: <746e059782953fca6c21945297151d2bb73d3370.1631519695.git.kwmad.kim@samsung.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1631519695.git.kwmad.kim@samsung.com>
-In-Reply-To: <cover.1631519695.git.kwmad.kim@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmhe4JdvtEg3071S1OPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxdekzVotP65exWqxe/IDFYtGNbUwWN7ccZbG4vGsOm0X39R1sFsuP/2Oy
-        6Lp7g9Fi6b+3LA58Hpf7epk8Fu95yeQxYdEBRo/v6zvYPD4+vcXi0bdlFaPH501yHu0HupkC
-        OKJybDJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOADldS
-        KEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFBgaFugVJ+YWl+al6yXn51oZGhgYmQJV
-        JuRkLDney1Qw36Ri3tLnrA2Mk7S6GDk5JARMJLYfeMXSxcjFISSwg1Hi6vRPTBDOJ0aJrwsf
-        sUI4nxkl/n59zgbT8vnxO6jELkaJJxNXM0M4PxglNny5xQJSxSagKfH05lQmEFtEYB+TxNFd
-        6SA2s4C6xK4JJ8DiwgLOEvfbuoBsDg4WAVWJaT2aIGFegWiJTfOmsEIsk5O4ea6TGcTmFLCU
-        uP8XohXB5gKqmcohsf/xLSaIBheJRadeMELYwhKvjm9hh7ClJF72t0HZ9RL7pjawQjT3MEo8
-        3fcPqsFYYtazdkaQg5iBHli/Sx/ElBBQljgC8RazAJ9Ex+G/7BBhXomONiGIRmWJX5MmQw2R
-        lJh58w7UJg+J9X1vGSHBA7Tp7KFGxgmM8rMQFixgZFzFKJZaUJybnlpsVGCCHHubGMGpVMtj
-        B+Pstx/0DjEycTAeYpTgYFYS4d32xjZRiDclsbIqtSg/vqg0J7X4EKMpMBwnMkuJJucDk3le
-        SbyhqZGZmYGlqYWpmZGFkjjv+deWiUIC6YklqdmpqQWpRTB9TBycUg1MQmI/Miuqi1+dsAzj
-        VtJ7my1hXqP165bymp21zxZu4uZk1vYRDbZ0/OzI6vDq14/At9MjDtgF3tPTPSFmK/TBsObd
-        7Ba+bV+ueuusbs1t+bRwa0r7/ndCfx6wXLYJf7DIY0mmzBqWyadjl75TjVx86tbdLU8Znu9p
-        K8q6orxCZEIjv+HrVeYdW25XrnoanB38een7wrRJembNUtNvfZHWetwmdVeqc96T5iS7JQyG
-        kkV3pqetlzxcZMW0fdrThNV5R+RPBjXWlyzQ/r9JlkHFQ+z1i4+z9op1Km66+ohlSo/Nplpr
-        faEluhuyV1xar5X8LX+Fh4nnoS95Jobs3/aIKUm9veZlsWFNkZ/Bar8GJZbijERDLeai4kQA
-        B1N9nS4EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrALMWRmVeSWpSXmKPExsWy7bCSnO4JdvtEg65+RouTT9awWTyYt43N
-        4uXPq2wWBx92slh8XfqM1eLT+mWsFqsXP2CxWHRjG5PFzS1HWSwu75rDZtF9fQebxfLj/5gs
-        uu7eYLRY+u8tiwOfx+W+XiaPxXteMnlMWHSA0eP7+g42j49Pb7F49G1ZxejxeZOcR/uBbqYA
-        jigum5TUnMyy1CJ9uwSujCXHe5kK5ptUzFv6nLWBcZJWFyMnh4SAicTnx+9YQWwhgR2MElf/
-        S0HEJSVO7HzOCGELS9xvOQJUwwVU841R4tnHF8wgCTYBTYmnN6cygSREBM4xSUy9vJQJJMEs
-        oC6xa8IJMFtYwFniflsXkM3BwSKgKjGtRxMkzCsQLbFp3hRWiAVyEjfPdYLN5BSwlLj/F6JV
-        SMBCon/zJkZc4hMYBRYwMqxilEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/dxAiOBC2tHYx7
-        Vn3QO8TIxMF4iFGCg1lJhHfbG9tEId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5ak
-        ZqemFqQWwWSZODilGpiY1AtY9/nZ3Gr5WMaXcvj3N/383OBtt2ffvMZ/Jjiyj+MoF9eTA7dL
-        49qTLt+JjeYJ6FeY+VG3aMnKnjMeF+Jilx7q8178my/7z9dqNwmnhSe7vp6fwSzwpLt0e1cU
-        93we36SpymlK+4PZw7tOCLLZFtz13mn9IbpoYe20oNnNroE2+/56zpUJ4BRUN737V8Pdbsez
-        irdlQcv8Pa7I7LWRtH0iK9V7cc6GX7cfpa2fL+Gs2jjBJOywy5wX2XcWip9covH6jbB3+4rp
-        czi1orcxTKr6d1HwyMqSskZ5m/Q/uY8YpqSYLPA/dpdr+iLr3CtvXU5vtOPMTdNdGFg4v/nr
-        bYuNi6TucrCzp0yozlRiKc5INNRiLipOBACl7xX+8wIAAA==
-X-CMS-MailID: 20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce
-References: <cover.1631519695.git.kwmad.kim@samsung.com>
-        <CGME20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce@epcas2p2.samsung.com>
+        Mon, 13 Sep 2021 04:05:47 -0400
+Received: by mail-io1-f70.google.com with SMTP id e68-20020a6bb547000000b005d06de54ab7so2863471iof.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:04:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=PjwXxTwlsEf2JX6e7/eNYgkSX09JO8xcTqxRo9lighc=;
+        b=Xn7lzD4BRupr1TVLyTCn/1ryTNEkGmkMDg2XezjrXefp0ZmOIqyM4C+wZgXpq9rDxk
+         a15vqUHTDJFrt0C/Fh40Kl72xM7r5WScdtGk0+En2v3SJ835yleAk45jaeNETygGSa05
+         gYyWZp4+F2OqCKo23MbuhBMtI8oKH+JE5H69ub1bALulQT77Ag+u6HBX6zZ4RZxiGYTJ
+         d5XtU6NwQy+pwqu/oYA7qe1QOOABzCJjzMZDDKkIorb89ql/e8YdligWYSSZA7Gt4U91
+         jG00mK132xjRVA1CE3w6uNngwdzS4+Ng0fRjwFVgsulanpoI0vSxVAqsz+7HWJZFsQw4
+         /Hpg==
+X-Gm-Message-State: AOAM532qNWagUDcx0bUVeHCmC9bcmbABJECTxMJFgYUkh8UNpoW5+B07
+        OK6t/Bvd7yeUP4CTUZMTt1fPaSc9/u2IIx8h2qhf/Tr9XvYl
+X-Google-Smtp-Source: ABdhPJxk/RaDiv0svCfqTaljcJw1liNNEy6x4BPZK+g0g545XlGcP0Wi2MSKVftDZIc4Ile4osYs6Kc3MZBxlVecCZmJIP23TA+4
+MIME-Version: 1.0
+X-Received: by 2002:a92:6904:: with SMTP id e4mr7164478ilc.311.1631520272300;
+ Mon, 13 Sep 2021 01:04:32 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 01:04:32 -0700
+In-Reply-To: <0000000000004fe6b105cb84cf1e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000463eb205cbdbea58@google.com>
+Subject: Re: [syzbot] memory leak in create_io_worker
+From:   syzbot <syzbot+65454c239241d3d647da@syzkaller.appspotmail.com>
+To:     Qiang.Zhang@windriver.com, asml.silence@gmail.com, axboe@kernel.dk,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to raise recovery in some abnormal
-conditions using an vendor specific interrupt
-for some cases, such as a situation that some
-contexts of a pending request in the host isn't
-the same with those of its corresponding UPIUs
-if they should have been the same exactly.
+syzbot has found a reproducer for the following issue on:
 
-The representative case is shown like below.
-In the case, a broken UTRD entry, for internal
-coherent problem or whatever, that had smaller value
-of PRDT length than expected was transferred to the host.
-So, the host raised an interrupt of transfer complete
-even if device didn't finish its data transfer because
-the host sees a fetched version of UTRD to determine
-if data tranfer is over or not. Then the application level
-seemed to recogize this as a sort of corruption and this
-symptom led to boot failure.
+HEAD commit:    f306b90c69ce Merge tag 'smp-urgent-2021-09-12' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14bc2715300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb1c2ff5ae428ca6
+dashboard link: https://syzkaller.appspot.com/bug?extid=65454c239241d3d647da
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171d8963300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b9ccdd300000
 
-[5:   init:    1] init: Failed to copy /avb into /metadata/gsi/dsu/avb/: No such file or directory
-[5:   init:    1] init: [libfs_mgr]Created logical partition system on device /dev/block/dm-0
-[4:   init:    1] init: [libfs_mgr]Created logical partition vendor on device /dev/block/dm-1
-[4:   init:    1] init: [libfs_avb]total vbmeta size mismatch: 13504 (expected: 15616)
-[4:   init:    1] init: [libfs_avb]VerifyVbmetaImages failed
-[4:   init:    1] init: Failed to open AvbHandle: No such file or directory
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+65454c239241d3d647da@syzkaller.appspotmail.com
 
-If the issued command would be write, it could be a
-disaster because some parts of its entire data chunk
-may be not written or more than the chunk may be written.
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.120s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Using the VENDOR_SPECIFIC_IS.RX_UPIU_HIT_ERROR, the host
-can detect the abnormal condition right when an
-DATA IN for offset bigger than expected for the broken value
-(i.e. PRDT length in this case) is received, do something for
-recovery and system will keep going safe.
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.180s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
----
- drivers/scsi/ufs/ufs-exynos.c | 84 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 72 insertions(+), 12 deletions(-)
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.230s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-diff --git a/drivers/scsi/ufs/ufs-exynos.c b/drivers/scsi/ufs/ufs-exynos.c
-index a14dd8c..b0c8843 100644
---- a/drivers/scsi/ufs/ufs-exynos.c
-+++ b/drivers/scsi/ufs/ufs-exynos.c
-@@ -21,6 +21,7 @@
- #include "unipro.h"
- 
- #include "ufs-exynos.h"
-+#include "../scsi_transport_api.h"
- 
- /*
-  * Exynos's Vendor specific registers for UFSHCI
-@@ -31,6 +32,8 @@
- #define HCI_RXPRDT_ENTRY_SIZE	0x04
- #define HCI_1US_TO_CNT_VAL	0x0C
- #define CNT_VAL_1US_MASK	0x3FF
-+#define VENDOR_SPECIFIC_IS	0x38
-+#define VENDOR_SPECIFIC_IE	0x3C
- #define HCI_UTRL_NEXUS_TYPE	0x40
- #define HCI_UTMRL_NEXUS_TYPE	0x44
- #define HCI_SW_RST		0x50
-@@ -74,6 +77,18 @@
- 				 UIC_TRANSPORT_NO_CONNECTION_RX |\
- 				 UIC_TRANSPORT_BAD_TC)
- 
-+enum exynos_ufs_vs_interrupt {
-+	/*
-+	 * This occurs when information of a pending request isn't
-+	 * the same with incoming UPIU for the request. For example,
-+	 * if UFS driver rings with task tag #1, subsequential UPIUs
-+	 * for this must have one as the value of task tag. But if
-+	 * it's corrutped until the host receives it or incoming UPIUs
-+	 * has an unexpected value for task tag, this raises.
-+	 */
-+	RX_UPIU_HIT_ERROR	= 1 << 19,
-+};
-+
- enum {
- 	UNIPRO_L1_5 = 0,/* PHY Adapter */
- 	UNIPRO_L2,	/* Data Link */
-@@ -996,6 +1011,10 @@ static int exynos_ufs_init(struct ufs_hba *hba)
- 		goto out;
- 	exynos_ufs_specify_phy_time_attr(ufs);
- 	exynos_ufs_config_smu(ufs);
-+
-+	/* enable vendor interrupts */
-+	hci_writel(ufs, VENDOR_SPECIFIC_IE, RX_UPIU_HIT_ERROR);
-+
- 	return 0;
- 
- phy_off:
-@@ -1005,26 +1024,34 @@ static int exynos_ufs_init(struct ufs_hba *hba)
- 	return ret;
- }
- 
--static int exynos_ufs_host_reset(struct ufs_hba *hba)
-+static int exynos_ufs_host_reset(struct exynos_ufs *ufs)
- {
--	struct exynos_ufs *ufs = ufshcd_get_variant(hba);
- 	unsigned long timeout = jiffies + msecs_to_jiffies(1);
--	u32 val;
--	int ret = 0;
--
--	exynos_ufs_disable_auto_ctrl_hcc_save(ufs, &val);
- 
-+	/* host reset */
- 	hci_writel(ufs, UFS_SW_RST_MASK, HCI_SW_RST);
--
- 	do {
- 		if (!(hci_readl(ufs, HCI_SW_RST) & UFS_SW_RST_MASK))
--			goto out;
-+			return 0;
-+		cpu_relax();
- 	} while (time_before(jiffies, timeout));
- 
--	dev_err(hba->dev, "timeout host sw-reset\n");
--	ret = -ETIMEDOUT;
-+	pr_err("timeout host sw-reset\n");
-+	return -ETIMEDOUT;
-+}
-+
-+static int exynos_ufs_host_init(struct ufs_hba *hba)
-+{
-+	struct exynos_ufs *ufs = ufshcd_get_variant(hba);
-+	u32 val;
-+	int ret;
-+
-+	exynos_ufs_disable_auto_ctrl_hcc_save(ufs, &val);
-+
-+	ret = exynos_ufs_host_reset(ufs);
-+	if (ret)
-+		return ret;
- 
--out:
- 	exynos_ufs_auto_ctrl_hcc_restore(ufs, &val);
- 	return ret;
- }
-@@ -1110,7 +1137,7 @@ static int exynos_ufs_hce_enable_notify(struct ufs_hba *hba,
- 
- 	switch (status) {
- 	case PRE_CHANGE:
--		ret = exynos_ufs_host_reset(hba);
-+		ret = exynos_ufs_host_init(hba);
- 		if (ret)
- 			return ret;
- 		exynos_ufs_dev_hw_reset(hba);
-@@ -1198,6 +1225,38 @@ static int exynos_ufs_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 	return 0;
- }
- 
-+static irqreturn_t exynos_ufs_isr(struct ufs_hba *hba)
-+{
-+	struct exynos_ufs *ufs = ufshcd_get_variant(hba);
-+	u32 status;
-+	unsigned long flags;
-+
-+	if (!hba->priv) return IRQ_HANDLED;
-+	status = hci_readl(ufs, VENDOR_SPECIFIC_IS);
-+	hci_writel(ufs, status, VENDOR_SPECIFIC_IS);
-+	/*
-+	 * If host doesn't guarantee integrity of UTP transmission,
-+	 * it needs to be reset immediately to make it unable to
-+	 * proceed requests. Because w/o this, if UTP functions
-+	 * in host doesn't work properly for such system power margins,
-+	 * DATA IN from broken devices or whatever in the real world,
-+	 * some unexpected events could happen, such as transferring
-+	 * a broken DATA IN to a device. It could be various types of
-+	 * problems on the level of file system. In this case, I think
-+	 * blocking the host's functionality is the best strategy.
-+	 * Perhaps, if its root cause is temporary, system could recover.
-+	 */
-+	if (status & RX_UPIU_HIT_ERROR) {
-+		pr_err("%s: status: 0x%08x\n", __func__, status);
-+		hba->force_reset = true;
-+		hba->force_requeue = true;
-+		scsi_schedule_eh(hba->host);
-+		spin_unlock_irqrestore(hba->host->host_lock, flags);
-+		return IRQ_HANDLED;
-+	}
-+	return IRQ_NONE;
-+}
-+
- static struct ufs_hba_variant_ops ufs_hba_exynos_ops = {
- 	.name				= "exynos_ufs",
- 	.init				= exynos_ufs_init,
-@@ -1209,6 +1268,7 @@ static struct ufs_hba_variant_ops ufs_hba_exynos_ops = {
- 	.hibern8_notify			= exynos_ufs_hibern8_notify,
- 	.suspend			= exynos_ufs_suspend,
- 	.resume				= exynos_ufs_resume,
-+	.intr				= exynos_ufs_isr,
- };
- 
- static int exynos_ufs_probe(struct platform_device *pdev)
--- 
-2.7.4
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.290s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.340s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.400s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.450s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+BUG: memory leak
+unreferenced object 0xffff88811953fa80 (size 192):
+  comm "syz-executor248", pid 6847, jiffies 4294979550 (age 31.500s)
+  hex dump (first 32 bytes):
+    01 00 00 00 08 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8162fbb1>] kmalloc_node include/linux/slab.h:609 [inline]
+    [<ffffffff8162fbb1>] kzalloc_node include/linux/slab.h:732 [inline]
+    [<ffffffff8162fbb1>] create_io_worker+0x41/0x1f0 fs/io-wq.c:741
+    [<ffffffff81630067>] io_wqe_create_worker fs/io-wq.c:267 [inline]
+    [<ffffffff81630067>] io_wqe_enqueue+0x217/0x3a0 fs/io-wq.c:873
+    [<ffffffff8161e3a4>] io_queue_async_work+0xc4/0x200 fs/io_uring.c:1473
+    [<ffffffff8162944c>] __io_queue_sqe+0x34c/0x510 fs/io_uring.c:6940
+    [<ffffffff8162a6e6>] io_queue_sqe fs/io_uring.c:6958 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqe fs/io_uring.c:7134 [inline]
+    [<ffffffff8162a6e6>] io_submit_sqes+0xc36/0x2ec0 fs/io_uring.c:7240
+    [<ffffffff8162cf6f>] __do_sys_io_uring_enter+0x5ff/0xf80 fs/io_uring.c:9882
+    [<ffffffff843faa25>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843faa25>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
 
