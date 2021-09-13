@@ -2,111 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9601408C12
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A4B408C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236796AbhIMNJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:09:23 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33228
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237538AbhIMNHi (ORCPT
+        id S240103AbhIMNOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:14:06 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9036 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhIMNNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:07:38 -0400
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B3FC240269
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:06:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631538381;
-        bh=snqO+zpJPkBw6zZQNVMY27Q3942wUhbd/kP+elYWU54=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=hQTpWxCeeh5J29mXlTU3P8KIYs/Hl90OezAM8s30s93yiVe0+i7uVXmrV0haJHKIz
-         niPM2FuT7LZSrdhJMo6v0DdQgB9Ml1Prs9kYI5OUzfZDSLRSDBDGMuEORHr8lv6N2O
-         3R9gPnvH1GfUienuOA2ruqI5cl2MHmB55roRg9EQbgl3+tIhbu2lXoeJMXILmTGu12
-         P57LI5/Y4uXmHNn/mOIuzZ11zyE7RdESRXlhHbH1yyctQ808PYDt2D/ZlP0zafJCst
-         aHQEWex8YA1KxxgmJJCYfNDRNSydTmmcdPPbIR8okYFwHMIu2sJ2ObJvRnE1YjgTmq
-         70umV3SuuPwKg==
-Received: by mail-wm1-f69.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so4895629wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:06:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=snqO+zpJPkBw6zZQNVMY27Q3942wUhbd/kP+elYWU54=;
-        b=Njj8nA0SehIlg0AtXAjhV6AZtfl5wVaSuC37B4duCiGH3KT94vX0HsarPgBnR2SX1/
-         UD9lfaAbkDUao1FZzOS4kOKkBbl0eMgQeaBbkSbETiw63U43NLcEGFC3Xo6vTOKImQzs
-         gZKO+WfMl8y8yIQUnDNzSjB3QA3N+CdgGScKZSZF0mP9j9rbYaWTdiFN8oW6ql9+pUsZ
-         DjrNMhnqFxJUrWeggWy4bjId7AruzYmlp+YxUNYqzuxjci+TVgHwuTfKi2VQKaJAJ8bd
-         m8KRZaeEYcJJ6NxIxpzNPnzQuYa1oDg8VyqA/MFeN4YaqiRi+UpsX88kIX+fFsjPOu/r
-         S/qw==
-X-Gm-Message-State: AOAM533/OrspQog9Zsw8Dnz9LrRHc3tNHTc8yubQXrW9COR5mJjlFWpV
-        R8En4HoTMoD1UHaIPn2KBIpr7VU3NdwzJLmwLuPYCs1+hG/4fFEX9ObY1PFAgoFTjfZpDAUZmbc
-        LSEuQqvLTUdg49XLZfFlfP3ludvXzd4T9iVbuQWaBaQ==
-X-Received: by 2002:adf:e684:: with SMTP id r4mr5333340wrm.229.1631538381348;
-        Mon, 13 Sep 2021 06:06:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyZCAKv3LrA50Rb+by2GgKgOyXFwxTRdJSEvJrd5FXZ6CkqcBwZDGtn7VCCfAd3pQp2D81heQ==
-X-Received: by 2002:adf:e684:: with SMTP id r4mr5333323wrm.229.1631538381171;
-        Mon, 13 Sep 2021 06:06:21 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id q19sm2279358wmq.29.2021.09.13.06.05.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 06:06:00 -0700 (PDT)
-Subject: Re: [PATCH 2/2] power: supply: max17042_battery: Prevent int
- underflow in set_soc_threshold
-To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Anton Vorontsov <anton.vorontsov@linaro.org>,
-        Ramakrishna Pallala <ramakrishna.pallala@intel.com>,
-        Dirk Brandewie <dirk.brandewie@gmail.com>,
-        stable@vger.kernel.org
-References: <20210912205402.160939-1-sebastian.krzyszkowiak@puri.sm>
- <20210912205402.160939-2-sebastian.krzyszkowiak@puri.sm>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <82021f13-f535-1535-4af9-80bef81fbde5@canonical.com>
-Date:   Mon, 13 Sep 2021 15:05:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 13 Sep 2021 09:13:50 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7Rh16cmSzW2C0;
+        Mon, 13 Sep 2021 21:11:29 +0800 (CST)
+Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 21:12:28 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 21:12:27 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>
+Subject: [PATCH net 0/6]  net: hns3: add some fixes for -net
+Date:   Mon, 13 Sep 2021 21:08:19 +0800
+Message-ID: <20210913130825.27025-1-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210912205402.160939-2-sebastian.krzyszkowiak@puri.sm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2021 22:54, Sebastian Krzyszkowiak wrote:
-> Fixes: e5f3872d2044 ("max17042: Add support for signalling change in SOC")
+This series adds some fixes for the HNS3 ethernet driver.
 
-You need commit and bug description.
+Jiaran Zhang (2):
+  net: hns3: fix the exception when query imp info
+  net: hns3: fix the timing issue of VF clearing interrupt sources
 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-> ---
->  drivers/power/supply/max17042_battery.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
-> index c53980c8432a..caf83b4d622f 100644
-> --- a/drivers/power/supply/max17042_battery.c
-> +++ b/drivers/power/supply/max17042_battery.c
-> @@ -857,7 +857,8 @@ static void max17042_set_soc_threshold(struct max17042_chip *chip, u16 off)
->  	regmap_read(map, MAX17042_RepSOC, &soc);
->  	soc >>= 8;
->  	soc_tr = (soc + off) << 8;
-> -	soc_tr |= (soc - off);
-> +	if (off < soc)
-> +		soc_tr |= soc - off;
->  	regmap_write(map, MAX17042_SALRT_Th, soc_tr);
->  }
->  
-> 
+Yufeng Mo (3):
+  net: hns3: pad the short tunnel frame before sending to hardware
+  net: hns3: change affinity_mask to numa node range
+  net: hns3: disable mac in flr process
 
+Yunsheng Lin (1):
+  net: hns3: add option to turn off page pool feature
 
-Best regards,
-Krzysztof
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 14 +++++++++++---
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     |  4 ++++
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 19 +++++++++++--------
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  6 +++---
+ 4 files changed, 29 insertions(+), 14 deletions(-)
+
+-- 
+2.33.0
+
