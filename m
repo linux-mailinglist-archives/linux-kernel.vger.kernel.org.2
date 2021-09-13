@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EC7409093
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD29408E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243811AbhIMNxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:53:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243566AbhIMNsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:48:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 587A861555;
-        Mon, 13 Sep 2021 13:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539977;
-        bh=jGWAl/K8bG2tdjP2RrtegwZ+kT089noGrVOSSSF+j2k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JXlUurOE2GoshneTojvYrgnOXmjDRSskft6UBuE5JEUvJ/tlhiQYr6e7k57OP7W5M
-         wSom4+dEDpEdD3pkAUdqtm478519d3Ci/v0AURafPY3VS4GJkuEs4HVYSf8IavzHbt
-         yAzbkW+AnPWU/0nISHgpA36RMexbP/twM0K0T2b8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.10 236/236] clk: kirkwood: Fix a clocking boot regression
-Date:   Mon, 13 Sep 2021 15:15:41 +0200
-Message-Id: <20210913131108.374013974@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S242992AbhIMNeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:34:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32640 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233598AbhIMNT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:19:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631539090; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=CvVrCMtwoEwiaui0m7l95Lo4pyEzFXOcStMuEqPMqJo=; b=NgzZR9/X52qxsPTvFXuD+RBSCceuzinWIpx8t/jlpSeECv3JzQuZ5hHt/Q5/tzA/weIJEmOc
+ WipQXbnyHtPTMvlDuhIZVAydNYc9GL2n6JU+doXbqAVdOyfwvaEeaiXlzV+rwuuSd/wnUBY5
+ 6DYbRHqvf7basEYSzae4hPzl2P8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 613f4f87648642cc1c069680 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 13:17:59
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25457C43618; Mon, 13 Sep 2021 13:17:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1E5CDC4338F;
+        Mon, 13 Sep 2021 13:17:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 1E5CDC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v2 0/2] Machine driver to support LPASS SC7280 sound card registration
+Date:   Mon, 13 Sep 2021 18:47:40 +0530
+Message-Id: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+This patch set is to add support for SC7280 sound card registration and
+to add dt-bindings documentation file.
 
-commit aaedb9e00e5400220a8871180d23a83e67f29f63 upstream.
+These patches depends on the dt-bindings header patch
+  -- https://patchwork.kernel.org/project/alsa-devel/list/?series=543829
 
-Since a few kernel releases the Pogoplug 4 has crashed like this
-during boot:
+Srinivasa Rao Mandadapu (2):
+  ASoC: google: dt-bindings: Add sc7280-herobrine machine bindings
+  ASoC: qcom: SC7280: Add machine driver
+Chnages Since V1:
+    -- Indentation changes and typo.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000002
-(...)
-[<c04116ec>] (strlen) from [<c00ead80>] (kstrdup+0x1c/0x4c)
-[<c00ead80>] (kstrdup) from [<c04591d8>] (__clk_register+0x44/0x37c)
-[<c04591d8>] (__clk_register) from [<c04595ec>] (clk_hw_register+0x20/0x44)
-[<c04595ec>] (clk_hw_register) from [<c045bfa8>] (__clk_hw_register_mux+0x198/0x1e4)
-[<c045bfa8>] (__clk_hw_register_mux) from [<c045c050>] (clk_register_mux_table+0x5c/0x6c)
-[<c045c050>] (clk_register_mux_table) from [<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0+0x13c/0x1ac)
-[<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0) from [<c0aceae0>] (of_clk_init+0x12c/0x214)
-[<c0aceae0>] (of_clk_init) from [<c0ab576c>] (time_init+0x20/0x2c)
-[<c0ab576c>] (time_init) from [<c0ab3d18>] (start_kernel+0x3dc/0x56c)
-[<c0ab3d18>] (start_kernel) from [<00000000>] (0x0)
-Code: e3130020 1afffffb e12fff1e c08a1078 (e5d03000)
+ .../bindings/sound/google,sc7280-herobrine.yaml    | 169 ++++++++++
+ sound/soc/qcom/Kconfig                             |  12 +
+ sound/soc/qcom/Makefile                            |   2 +
+ sound/soc/qcom/sc7280.c                            | 343 +++++++++++++++++++++
+ 4 files changed, 526 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+ create mode 100644 sound/soc/qcom/sc7280.c
 
-This is because the "powersave" mux clock 0 was provided in an unterminated
-array, which is required by the loop in the driver:
-
-        /* Count, allocate, and register clock muxes */
-        for (n = 0; desc[n].name;)
-                n++;
-
-Here n will go out of bounds and then call clk_register_mux() on random
-memory contents after the mux clock.
-
-Fix this by terminating the array with a blank entry.
-
-Fixes: 105299381d87 ("cpufreq: kirkwood: use the powersave multiplexer")
-Cc: stable@vger.kernel.org
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210814235514.403426-1-linus.walleij@linaro.org
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/clk/mvebu/kirkwood.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/clk/mvebu/kirkwood.c
-+++ b/drivers/clk/mvebu/kirkwood.c
-@@ -265,6 +265,7 @@ static const char *powersave_parents[] =
- static const struct clk_muxing_soc_desc kirkwood_mux_desc[] __initconst = {
- 	{ "powersave", powersave_parents, ARRAY_SIZE(powersave_parents),
- 		11, 1, 0 },
-+	{ }
- };
- 
- static struct clk *clk_muxing_get_src(
-
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
