@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61E0408EF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBE9408EFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242524AbhIMNi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33598 "EHLO mail.kernel.org"
+        id S241433AbhIMNia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:38:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241583AbhIMNdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:33:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D129A6137C;
-        Mon, 13 Sep 2021 13:26:09 +0000 (UTC)
+        id S242093AbhIMNdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:33:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC9361374;
+        Mon, 13 Sep 2021 13:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539570;
-        bh=lVDVoa1sP9R2MLoIob+fd5qtkGB87avFrZ2575JGRtQ=;
+        s=korg; t=1631539572;
+        bh=mc+rpcB+SnSAVcNchxUQ3vLDWSMWjRNrb9TlqMYCSXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YvPd4k+3FJxz6/WnF3v0hfpUaY7LSC/mSaNvudQsONJIqF+4hyzNervknrh1ukqcz
-         c7RA2zbDP0ee4WEyxD3ClTUsdBLW3bytq6nZWbFWk0rnmYctXNKKRlwbVhAtwz4zPp
-         /jtm8JmtXoZB2rjql2Tma7+5aDeZTfXKgFbLM5WQ=
+        b=pGo4vmAIEtR5XIciRIqdz/nBqxx9+6Pv82PrzEclogAURDXF/v5EmrDAS3uQt4afm
+         oBCu64X2sYKx4BjQP0roSbH29kCADf2s1aUhma6K34H7Wz8c3pGrngI4xM+THql8cV
+         AHu9upqFNVvIRfsM/M0yNJGR34Zvbgt0u0YxpGiM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julia Lawall <Julia.Lawall@inria.fr>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 076/236] drm/of: free the right object
-Date:   Mon, 13 Sep 2021 15:13:01 +0200
-Message-Id: <20210913131102.949560582@linuxfoundation.org>
+Subject: [PATCH 5.10 077/236] bpf: Fix a typo of reuseport map in bpf.h.
+Date:   Mon, 13 Sep 2021 15:13:02 +0200
+Message-Id: <20210913131102.980438416@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -40,51 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julia Lawall <Julia.Lawall@inria.fr>
+From: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 
-[ Upstream commit b557a5f8da5798d27370ed6b73e673aae33efd55 ]
+[ Upstream commit f170acda7ffaf0473d06e1e17c12cd9fd63904f5 ]
 
-There is no need to free a NULL value.  Instead, free the object
-that is leaking due to the iterator.
+Fix s/BPF_MAP_TYPE_REUSEPORT_ARRAY/BPF_MAP_TYPE_REUSEPORT_SOCKARRAY/ typo
+in bpf.h.
 
-The semantic patch that finds this problem is as follows:
-
-// <smpl>
-@@
-expression x,e;
-identifier f;
-@@
- x = f(...);
- if (x == NULL) {
-	... when any
-	    when != x = e
-*	of_node_put(x);
-	...
- }
-// </smpl>
-
-Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210709200717.3676376-1-Julia.Lawall@inria.fr
+Fixes: 2dbb9b9e6df6 ("bpf: Introduce BPF_PROG_TYPE_SK_REUSEPORT")
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20210714124317.67526-1-kuniyu@amazon.co.jp
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_of.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/bpf.h       | 2 +-
+ tools/include/uapi/linux/bpf.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-index ca04c34e8251..197c57477344 100644
---- a/drivers/gpu/drm/drm_of.c
-+++ b/drivers/gpu/drm/drm_of.c
-@@ -315,7 +315,7 @@ static int drm_of_lvds_get_remote_pixels_type(
- 
- 		remote_port = of_graph_get_remote_port(endpoint);
- 		if (!remote_port) {
--			of_node_put(remote_port);
-+			of_node_put(endpoint);
- 			return -EPIPE;
- 		}
- 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 556216dc9703..762bf87c26a3 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2450,7 +2450,7 @@ union bpf_attr {
+  * long bpf_sk_select_reuseport(struct sk_reuseport_md *reuse, struct bpf_map *map, void *key, u64 flags)
+  *	Description
+  *		Select a **SO_REUSEPORT** socket from a
+- *		**BPF_MAP_TYPE_REUSEPORT_ARRAY** *map*.
++ *		**BPF_MAP_TYPE_REUSEPORT_SOCKARRAY** *map*.
+  *		It checks the selected socket is matching the incoming
+  *		request in the socket buffer.
+  *	Return
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 556216dc9703..762bf87c26a3 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2450,7 +2450,7 @@ union bpf_attr {
+  * long bpf_sk_select_reuseport(struct sk_reuseport_md *reuse, struct bpf_map *map, void *key, u64 flags)
+  *	Description
+  *		Select a **SO_REUSEPORT** socket from a
+- *		**BPF_MAP_TYPE_REUSEPORT_ARRAY** *map*.
++ *		**BPF_MAP_TYPE_REUSEPORT_SOCKARRAY** *map*.
+  *		It checks the selected socket is matching the incoming
+  *		request in the socket buffer.
+  *	Return
 -- 
 2.30.2
 
