@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5398A408D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D94C408D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240774AbhIMNYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:24:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35276 "EHLO mail.kernel.org"
+        id S240879AbhIMNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:24:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238030AbhIMNUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240218AbhIMNUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:20:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66AC461130;
-        Mon, 13 Sep 2021 13:18:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D294E61209;
+        Mon, 13 Sep 2021 13:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539087;
-        bh=4v2UbulIYnQNEuh8CVSloQontl7peJ3y0T4SSUMw0NE=;
+        s=korg; t=1631539090;
+        bh=vYkEmQkVzBAw2u0eg/jWlmdGtkG7V9/xJyR0+VuOTEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CKcMW6VLDg3quUNQcuK/fFCvb22gFhwUEdOfVbzjhWvF3A7RWcg+0BljDlOY2hF8M
-         CUv6KJ2y0a9mHWUIcp+sJvRbEkj0WHWw9S/jN4ZbnIiwgbTwAgzo6nFJdXZi5oRWdP
-         Wiys+R12ztcIslDNkC/sYYeHLMV8bcE2Xv5Pi7J0=
+        b=0Wig4hXeL+7cLaR+i115w5MADD7ldtC1anxal5Kv7x02bzmnHJ9fGqamfcr6YWZQ5
+         3v1PZbasdAavzCOe/OZp0MJ7NcvdVekLgPkpKVO1LE4SNQ4/ubOZnmayabYzXaEZku
+         WnE85cRHfafVAdwivKTw9IuJG/rFoNxEXZ71dhuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phong Hoang <phong.hoang.wz@renesas.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/144] clocksource/drivers/sh_cmt: Fix wrong setting if dont request IRQ for clock source channel
-Date:   Mon, 13 Sep 2021 15:13:38 +0200
-Message-Id: <20210913131049.190228378@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com,
+        Christoph Hellwig <hch@lst.de>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 038/144] block: nbd: add sanity check for first_minor
+Date:   Mon, 13 Sep 2021 15:13:39 +0200
+Message-Id: <20210913131049.222584305@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -42,96 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phong Hoang <phong.hoang.wz@renesas.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit be83c3b6e7b8ff22f72827a613bf6f3aa5afadbb ]
+[ Upstream commit b1a811633f7321cf1ae2bb76a66805b7720e44c9 ]
 
-If CMT instance has at least two channels, one channel will be used
-as a clock source and another one used as a clock event device.
-In that case, IRQ is not requested for clock source channel so
-sh_cmt_clock_event_program_verify() might work incorrectly.
-Besides, when a channel is only used for clock source, don't need to
-re-set the next match_value since it should be maximum timeout as
-it still is.
+Syzbot hit WARNING in internal_create_group(). The problem was in
+too big disk->first_minor.
 
-On the other hand, due to no IRQ, total_cycles is not counted up
-when reaches compare match time (timer counter resets to zero),
-so sh_cmt_clocksource_read() returns unexpected value.
-Therefore, use 64-bit clocksoure's mask for 32-bit or 16-bit variants
-will also lead to wrong delta calculation. Hence, this mask should
-correspond to timer counter width, and above function just returns
-the raw value of timer counter register.
+disk->first_minor is initialized by value, which comes from userspace
+and there wasn't any sanity checks about value correctness. It can cause
+duplicate creation of sysfs files/links, because disk->first_minor will
+be passed to MKDEV() which causes truncation to byte. Since maximum
+minor value is 0xff, let's check if first_minor is correct minor number.
 
-Fixes: bfa76bb12f23 ("clocksource: sh_cmt: Request IRQ for clock event device only")
-Fixes: 37e7742c55ba ("clocksource/drivers/sh_cmt: Fix clocksource width for 32-bit machines")
-Signed-off-by: Phong Hoang <phong.hoang.wz@renesas.com>
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210422123443.73334-1-niklas.soderlund+renesas@ragnatech.se
+NOTE: the root case of the reported warning was in wrong error handling
+in register_disk(), but we can avoid passing knowingly wrong values to
+sysfs API, because sysfs error messages can confuse users. For example:
+user passed 1048576 as index, but sysfs complains about duplicate
+creation of /dev/block/43:0. It's not obvious how 1048576 becomes 0.
+Log and reproducer for above example can be found on syzkaller bug
+report page.
+
+Link: https://syzkaller.appspot.com/bug?id=03c2ae9146416edf811958d5fd7acfab75b143d1
+Fixes: b0d9111a2d53 ("nbd: use an idr to keep track of nbd devices")
+Reported-by: syzbot+9937dc42271cd87d4b98@syzkaller.appspotmail.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/sh_cmt.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/block/nbd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-index ef773db080e9..a0570213170d 100644
---- a/drivers/clocksource/sh_cmt.c
-+++ b/drivers/clocksource/sh_cmt.c
-@@ -568,7 +568,8 @@ static int sh_cmt_start(struct sh_cmt_channel *ch, unsigned long flag)
- 	ch->flags |= flag;
- 
- 	/* setup timeout if no clockevent */
--	if ((flag == FLAG_CLOCKSOURCE) && (!(ch->flags & FLAG_CLOCKEVENT)))
-+	if (ch->cmt->num_channels == 1 &&
-+	    flag == FLAG_CLOCKSOURCE && (!(ch->flags & FLAG_CLOCKEVENT)))
- 		__sh_cmt_set_next(ch, ch->max_match_value);
-  out:
- 	raw_spin_unlock_irqrestore(&ch->lock, flags);
-@@ -604,20 +605,25 @@ static struct sh_cmt_channel *cs_to_sh_cmt(struct clocksource *cs)
- static u64 sh_cmt_clocksource_read(struct clocksource *cs)
- {
- 	struct sh_cmt_channel *ch = cs_to_sh_cmt(cs);
--	unsigned long flags;
- 	u32 has_wrapped;
--	u64 value;
--	u32 raw;
- 
--	raw_spin_lock_irqsave(&ch->lock, flags);
--	value = ch->total_cycles;
--	raw = sh_cmt_get_counter(ch, &has_wrapped);
-+	if (ch->cmt->num_channels == 1) {
-+		unsigned long flags;
-+		u64 value;
-+		u32 raw;
- 
--	if (unlikely(has_wrapped))
--		raw += ch->match_value + 1;
--	raw_spin_unlock_irqrestore(&ch->lock, flags);
-+		raw_spin_lock_irqsave(&ch->lock, flags);
-+		value = ch->total_cycles;
-+		raw = sh_cmt_get_counter(ch, &has_wrapped);
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 25e81b1a59a5..bc3ab98855cf 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1744,7 +1744,17 @@ static int nbd_dev_add(int index)
+ 	refcount_set(&nbd->refs, 1);
+ 	INIT_LIST_HEAD(&nbd->list);
+ 	disk->major = NBD_MAJOR;
 +
-+		if (unlikely(has_wrapped))
-+			raw += ch->match_value + 1;
-+		raw_spin_unlock_irqrestore(&ch->lock, flags);
-+
-+		return value + raw;
++	/* Too big first_minor can cause duplicate creation of
++	 * sysfs files/links, since first_minor will be truncated to
++	 * byte in __device_add_disk().
++	 */
+ 	disk->first_minor = index << part_shift;
++	if (disk->first_minor > 0xff) {
++		err = -EINVAL;
++		goto out_free_idr;
 +	}
- 
--	return value + raw;
-+	return sh_cmt_get_counter(ch, &has_wrapped);
- }
- 
- static int sh_cmt_clocksource_enable(struct clocksource *cs)
-@@ -680,7 +686,7 @@ static int sh_cmt_register_clocksource(struct sh_cmt_channel *ch,
- 	cs->disable = sh_cmt_clocksource_disable;
- 	cs->suspend = sh_cmt_clocksource_suspend;
- 	cs->resume = sh_cmt_clocksource_resume;
--	cs->mask = CLOCKSOURCE_MASK(sizeof(u64) * 8);
-+	cs->mask = CLOCKSOURCE_MASK(ch->cmt->info->width);
- 	cs->flags = CLOCK_SOURCE_IS_CONTINUOUS;
- 
- 	dev_info(&ch->cmt->pdev->dev, "ch%u: used as clock source\n",
++
+ 	disk->fops = &nbd_fops;
+ 	disk->private_data = nbd;
+ 	sprintf(disk->disk_name, "nbd%d", index);
 -- 
 2.30.2
 
