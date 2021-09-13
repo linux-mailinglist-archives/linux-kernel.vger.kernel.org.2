@@ -2,60 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D2440917D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8AC409188
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344024AbhIMOBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:01:45 -0400
-Received: from comms.puri.sm ([159.203.221.185]:39698 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244297AbhIMN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:58:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id B193AE129D;
-        Mon, 13 Sep 2021 06:57:36 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2oo_MLnj5QPx; Mon, 13 Sep 2021 06:57:36 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     robh@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        festevam@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v1 4/6] arm64: dts: imx8mq-librem5: delay the startup of the SDIO
-Date:   Mon, 13 Sep 2021 15:57:04 +0200
-Message-Id: <20210913135706.309685-5-martin.kepplinger@puri.sm>
-In-Reply-To: <20210913135706.309685-1-martin.kepplinger@puri.sm>
-References: <20210913135706.309685-1-martin.kepplinger@puri.sm>
+        id S244380AbhIMOCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:02:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58060 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245106AbhIMN7I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:59:08 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EC9A61FD84;
+        Mon, 13 Sep 2021 13:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631541468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=hH7Iy2pE2qXXycVl+pdgp/YjaWw0chbvKCaG1nR6wMw=;
+        b=rskVLjWzWO+SQgKM7whOVKZMJUU4eAWiaaJMkUHgZ4o7XtDWNqJkR0Wr4hdo3PNSaEbKzB
+        Exa6amYfD+QDBiQhuM+DEZysqjzQngjO3Q3MK8s9iFamZnSgC1AeJZJ+unDND6ZpNFUZSC
+        o24T08ZH8M+lcBm0flqCa3TxOm58Cks=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B52D13AB2;
+        Mon, 13 Sep 2021 13:57:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ucX7ANxYP2FMUwAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 13 Sep 2021 13:57:48 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 0/2] kvm: fix KVM_MAX_VCPU_ID handling
+Date:   Mon, 13 Sep 2021 15:57:42 +0200
+Message-Id: <20210913135745.13944-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angus Ainslie <angus@akkea.ca>
+Revert commit 76b4f357d0e7d8f6f00 which was based on wrong reasoning
+and rename KVM_MAX_VCPU_ID to KVM_MAX_VCPU_IDS in order to avoid the
+same issue in future.
 
-The redpine wifi card takes some time to wake up. Wait for it.
+Juergen Gross (2):
+  x86/kvm: revert commit 76b4f357d0e7d8f6f00
+  kvm: rename KVM_MAX_VCPU_ID to KVM_MAX_VCPU_IDS
 
-Signed-off-by: Angus Ainslie <angus@akkea.ca>
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/virt/kvm/devices/xics.rst            | 2 +-
+ Documentation/virt/kvm/devices/xive.rst            | 2 +-
+ arch/mips/kvm/mips.c                               | 2 +-
+ arch/powerpc/include/asm/kvm_book3s.h              | 2 +-
+ arch/powerpc/include/asm/kvm_host.h                | 4 ++--
+ arch/powerpc/kvm/book3s_xive.c                     | 2 +-
+ arch/powerpc/kvm/powerpc.c                         | 2 +-
+ arch/x86/include/asm/kvm_host.h                    | 2 +-
+ arch/x86/kvm/ioapic.c                              | 2 +-
+ arch/x86/kvm/ioapic.h                              | 4 ++--
+ arch/x86/kvm/x86.c                                 | 2 +-
+ include/linux/kvm_host.h                           | 4 ++--
+ tools/testing/selftests/kvm/kvm_create_max_vcpus.c | 2 +-
+ virt/kvm/kvm_main.c                                | 2 +-
+ 14 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index b5562c8f9a3c..e5fdb50557f2 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -1213,6 +1213,7 @@ &usdhc2 {
- 	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
- 	bus-width = <4>;
- 	vmmc-supply = <&reg_wifi_3v3>;
-+	post-power-on-delay-ms = <1000>;
- 	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
- 	disable-wp;
- 	cap-sdio-irq;
 -- 
-2.30.2
+2.26.2
 
