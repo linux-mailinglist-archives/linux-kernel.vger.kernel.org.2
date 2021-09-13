@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217F2408621
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D5740861E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237870AbhIMIMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S237848AbhIMIMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237869AbhIMIMq (ORCPT
+        with ESMTP id S234684AbhIMIMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:12:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA851C061760;
-        Mon, 13 Sep 2021 01:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zj9bDVh8bECevuh3HQ4f7aL+kfMosy058ZyQYs/papg=; b=lcO2BiA5Fd8VL1xe9MvMXEHx0w
-        rkHg+B7zS01dliDC40Yb8MlXRuOACJ36VL/2WIDM5863mBT3TcGl3uCANsjvCrk7HRNcRTcGA+XBn
-        v0dWdjYT9r8dc1typAVrUTzDL5PmPHtwjP8rWP3ojKpQvQW40qsI8mLL6ka/d47QChXc/AQORHlqA
-        D1S7byoUL3xy5fUc16UxdWU2I2YUYnXRMOVg7A0Y2CE8fl7z1K/zsOj+mpoXC9GDDIcjFqtNUV/GK
-        kWadPBi0BW8I2cgnAjAIVg4K5KxEIh7dYtdZQ3VBh9FBVEsCQtQMYQiGQi4HHlM19c2rKdBJOVmaP
-        ulVwuDNg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPh3Y-002mSL-PU; Mon, 13 Sep 2021 08:11:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F81530003A;
-        Mon, 13 Sep 2021 10:11:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A02B72BD296B7; Mon, 13 Sep 2021 10:11:10 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 10:11:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     acme@kernel.org, linux-perf-users@vger.kernel.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, yhs@fb.com
-Subject: Re: possible deadlock in __perf_event_task_sched_out
-Message-ID: <YT8HngbIcqA4Tfac@hirez.programming.kicks-ass.net>
-References: <CACkBjsYnr4_uucVqvBpfDAgcnQqA6oneD1mHYe-TcLtDxuUs2A@mail.gmail.com>
+        Mon, 13 Sep 2021 04:12:37 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C18C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:11:22 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so5975368pjc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvOYThHcl3IfPpkGUW857bIF0MtnLJVLT78BX5LtdSs=;
+        b=mzbsaSwXhT/fbT1xHXk+vafkJGAVrLz47A4XMz6XAqRRwDiQnia13wokwBoTDb/MAk
+         MdCa1FSt3tWDCDOarbYXNhBT4eQdpC6CjMfQNsMNZ5hUECb73H5SnO6Ln4HF5bj6uEiw
+         k0uUPkEG3fz3i/kswTTW8PhGLVIIXHT4xByHe4uPa7GVnPQ4EqEOtBc/N83nGYSJhbkM
+         smY7p2dyeGpb+jP3z1KNNjLzt4zvPJiiLtcBgJLQh+ORWUOu5QOBoOCUGBuLijr2i2iv
+         pfXG0Fb96KUpuVPcP1EGQOZLWID0iFegp1KoViYhVXDGT2PE+DOpeLE6hHxgZWyeLO2o
+         Og3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvOYThHcl3IfPpkGUW857bIF0MtnLJVLT78BX5LtdSs=;
+        b=HZWIvMqviEM69PotkohiUSvNzTmI51VgnI6/3iCjgPxUZAi0x7uKDjE4oi6yr00Qnr
+         Q1ODLOWs213qaMdttiVcWCyUh4NJkHOv8E4dAI/V1jC8gtguwEvK/aFEYqV+YrWg12hZ
+         Tk8MhOLX4Pdy46/oGPTQoqiWzGzzy64dzYk0V4hmKA73eZ8LKZvTmZtZEJGwegDH3h5O
+         SBFqaI5Ini+tv/wgIfPwfaxqWoFVY7pyopr6B1O1sEcsFew4kEHEZh9qhnA9mC5XVlAE
+         5VLhwdo4gcddvehzWWV2X7NF8IY8+/o9Kcsj8bwGp0dCvGaAvVxr4nLl7KCFtEyoaH9R
+         zu5g==
+X-Gm-Message-State: AOAM531U+Sc//207RBXP4JXIziaPeYJqchA4wjVAqGJFSPi7bdkwqvZJ
+        vh2KdSuun4CF38ctGSgWPIU=
+X-Google-Smtp-Source: ABdhPJw8M6sWJAmOoBx1yoKXaLZ6TakzpoBOgxlMYLSNouLejcEG3YQ+7RNHtvp8whdxzi02euWD5A==
+X-Received: by 2002:a17:902:a60d:b0:13b:7dad:9a5 with SMTP id u13-20020a170902a60d00b0013b7dad09a5mr8570771plq.41.1631520681903;
+        Mon, 13 Sep 2021 01:11:21 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id 77sm6104322pfz.118.2021.09.13.01.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 01:11:21 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: xu.xin16@zte.com.cn
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        xu xin <xu.xin16@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] mm/folio-compat: fix potential NULL pointer access 
+Date:   Mon, 13 Sep 2021 08:11:13 +0000
+Message-Id: <20210913081113.79975-1-xu.xin16@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACkBjsYnr4_uucVqvBpfDAgcnQqA6oneD1mHYe-TcLtDxuUs2A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:39:10AM +0800, Hao Sun wrote:
-> Hello,
-> 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
-> 
-> HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1Gy99NMo9JxZF6dHPdxnnb91n_jPJUQnA/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvAtJd6kfg-p/view?usp=sharing
-> 
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
+From: xu xin <xu.xin16@zte.com.cn>
 
-This reads like a very badly configured VM, in part because the console
-output is partial. That first Call trace: is ex_handler_wrmsr_unsafe,
-but it is truncated, also the pr_warn_once() went missing.
+The pointer 'folio' might be NULL, but the structure it points to is accessed.
+Accordingly, we add a check of NULL pointer by 'if (!folio)'.
+Secondly, there is no need to check if folio is pointer or value with 'xa_is_value(folio)' 
+because folio is alwayse pointer.
 
-Please take more care in configuring your VM before sending out more
-bogus messages like this.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+---
+ mm/folio-compat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/folio-compat.c b/mm/folio-compat.c
+index 5b6ae1da314e..a1b60310c7ba 100644
+--- a/mm/folio-compat.c
++++ b/mm/folio-compat.c
+@@ -123,7 +123,9 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+ 	struct folio *folio;
+ 
+ 	folio = __filemap_get_folio(mapping, index, fgp_flags, gfp);
+-	if ((fgp_flags & FGP_HEAD) || !folio || xa_is_value(folio))
++	if (!folio)
++		return NULL;
++	if ((fgp_flags & FGP_HEAD))
+ 		return &folio->page;
+ 	return folio_file_page(folio, index);
+ }
+-- 
+2.25.1
+
