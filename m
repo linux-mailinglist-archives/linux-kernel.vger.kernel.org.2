@@ -2,86 +2,594 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33C2409F49
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628E7409F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343754AbhIMVjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        id S244803AbhIMVjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244116AbhIMVjg (ORCPT
+        with ESMTP id S1348218AbhIMVju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:39:36 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C374C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:38:20 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id a15so14116117iot.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:38:20 -0700 (PDT)
+        Mon, 13 Sep 2021 17:39:50 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05924C061768
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:38:33 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k23-20020a17090a591700b001976d2db364so1097980pji.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:38:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oTXg4OkxA4gYmaLOUALhExrv2s3LoqS8/onFwK1MnZ8=;
-        b=e3VfJk7ASvcBdgvYNAlNBeXh3UUudj7i1P+E2WM/PGgBYfWK72BaoDbXkGBeDE+W1W
-         s/kzZmdY5oaQhZAY2YxG3wtGsNfnvmO3jfYqHzo+xjW7gy90Yi4AJNUTTLdYSOwy92UW
-         HTAAZNoGrpzoHJ9ThsSQif8yTNpgcZ/hXBOs8=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K3pRvqoHALtlLKewZdVuFvMKkn+IBW3js8Sgxb5DrSI=;
+        b=K9WqgEdMpVnIEvSRYHdN2/Sx3rKVRikgiznQBvESGUmQ67qnK1pzJ/S4aw2QT+WwB7
+         CSjNCeZqthV+6Gu0kY4IvlAB3YSop18ycMgyu2YaHM/Sc0zg6DWJD6cFM8FAoHZICM3z
+         oW/tUp5dVPtgv/ILSxNi0bVQpFGkzgGldlGVN7w3s3VsBqWukUQkuAI14s3OVPk1H5+P
+         yxN5Fs1LY2oV8Z1EqE29ugm4l4Z0FuK8K5Rrm0o4ESRQhlfJEAgkFn+wYug2MGqmhDuP
+         Iewc9CbYOQSG4M3QoSQXNTtj0eiGQEykmq6H956uHdIATl1q/MI+50+OS4UuMfL4LO2E
+         p4ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oTXg4OkxA4gYmaLOUALhExrv2s3LoqS8/onFwK1MnZ8=;
-        b=vIk4nog6op4wcnf1V7RXRAffaP60eT6d5Dy5RsqF8+SmBei2N5pOWweb0MhZ8yO4TE
-         pzYpmNCPaEOibpnN6flNhT3FToc/+CjPBmJjCgs2QYGgp5Lz8xsrglzDweXZENtPzNbo
-         KGsReERc9xPy8mu00S1r03Jc22B1X5qQ2F0gNSCrqsi7UK4hT1w0EaBUy6ShAgfrfdBh
-         vZDljnalUH4NR9XGIwWuBIs+ueC8sTyByTJpwEAmDks3JK8eOfTQ+IpbdrMeTLUcp6hH
-         ivmftL/ONGHO6MsCCfJvrSTIaqK5JkHoMDkAUbzqYJQ1Dc0AkrYF7Gj8MV/B7rX/9e6v
-         NY0w==
-X-Gm-Message-State: AOAM531CKQeJlEtPPPmTI2oiGMOQdifpMHx1t1y1+Gmj6iMAfzojEwen
-        dI6se+T+lKC6FOOTBGew6NSoJoGEuv/6pg==
-X-Google-Smtp-Source: ABdhPJy8BrMue4x+XT0pZHOHQZO337bPZMcYgGm/cSIq8lSP7QtRR7b6PP0lb+8rAbRiOKpDF1afYA==
-X-Received: by 2002:a6b:ec0b:: with SMTP id c11mr10783184ioh.207.1631569099708;
-        Mon, 13 Sep 2021 14:38:19 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id m11sm5562511ilc.2.2021.09.13.14.38.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 14:38:19 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id i13so11687963ilm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:38:19 -0700 (PDT)
-X-Received: by 2002:a92:da0c:: with SMTP id z12mr9421434ilm.120.1631569099034;
- Mon, 13 Sep 2021 14:38:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K3pRvqoHALtlLKewZdVuFvMKkn+IBW3js8Sgxb5DrSI=;
+        b=x+sAFvUh3ldHxEa2JlHU7YYEdiEnedY/NcIj7SyhA8iXz2MqENppzNwd9IueIczxtu
+         tG+AtMxYrCHxpjLcPEvQYztdij7eSYtAFnOk2lAKhJjRb3LLZ4wB7+o/2FlkpqXWxxDR
+         +9nkCVrerjAFczDqAFipsPn2g+i0WjG1deXcnwpkcdio4PGcFHFRcm1RkkLDT2zES79j
+         NToEOPjs53Enxr5+80Ww74bdyWFq1c9tmVjQPCvBlDNw06BrFxrYR7wL/j6UJqPAvTCD
+         DLpXt+gmXj7TIVQMBMMYgFcqrecF/SXFTc7Ig1UkRxygn2UkxmuMV8jrlQONq3gYKITB
+         tYMA==
+X-Gm-Message-State: AOAM530F30iC24CSb7df2Wie1/oph0D90RFtON8UFETWAmpDvkh/i/W5
+        7e2W2kXrtu01Q90jg77g8ARaDw==
+X-Google-Smtp-Source: ABdhPJw1upzASoALqJ+Q4Wg86AgiCqk+uVylwLga2zXm7kLTmsS0p0hGAAb3ZFHV4vHK0jmp5Y2aEg==
+X-Received: by 2002:a17:90b:23d1:: with SMTP id md17mr1744819pjb.105.1631569112255;
+        Mon, 13 Sep 2021 14:38:32 -0700 (PDT)
+Received: from google.com (150.12.83.34.bc.googleusercontent.com. [34.83.12.150])
+        by smtp.gmail.com with ESMTPSA id s200sm8072853pfs.89.2021.09.13.14.38.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 14:38:31 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 14:38:28 -0700
+From:   Ricardo Koller <ricarkol@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 11/14] KVM: arm64: selftests: Add basic GICv3 support
+Message-ID: <YT/E1JIJWBy5AXAp@google.com>
+References: <20210913204930.130715-1-rananta@google.com>
+ <20210913204930.130715-12-rananta@google.com>
 MIME-Version: 1.0
-References: <1631530735-19811-1-git-send-email-rnayak@codeaurora.org>
-In-Reply-To: <1631530735-19811-1-git-send-email-rnayak@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 13 Sep 2021 14:38:07 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Va55WWbBebieNsuS8LE1XBkPAmCT5BMR1nXtBn+EY0EQ@mail.gmail.com>
-Message-ID: <CAD=FV=Va55WWbBebieNsuS8LE1XBkPAmCT5BMR1nXtBn+EY0EQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7280-idp: Add vcc-supply for qfprom
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913204930.130715-12-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Sep 13, 2021 at 4:00 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
-> Add vcc-supply for the IDP boards that was missed when the
-> qfprom device tree properties were added for the sc7280 SoC.
->
-> Fixes: c1b2189a19cf ("arm64: dts: qcom: sc7280: Add qfprom node")
-> Reported-by: satya priya <skakit@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+On Mon, Sep 13, 2021 at 08:49:27PM +0000, Raghavendra Rao Ananta wrote:
+> Add basic support for ARM Generic Interrupt Controller v3.
+> The support provides guests to setup interrupts.
+> 
+> The work is inspired from kvm-unit-tests and the kernel's
+> GIC driver (drivers/irqchip/irq-gic-v3.c).
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Andrew Jones <drjones@redhat.com>
 > ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
+>  tools/testing/selftests/kvm/Makefile          |   2 +-
+>  .../selftests/kvm/include/aarch64/gic.h       |  21 ++
+>  tools/testing/selftests/kvm/lib/aarch64/gic.c |  95 +++++++
+>  .../selftests/kvm/lib/aarch64/gic_private.h   |  21 ++
+>  .../selftests/kvm/lib/aarch64/gic_v3.c        | 240 ++++++++++++++++++
+>  .../selftests/kvm/lib/aarch64/gic_v3.h        |  70 +++++
+>  6 files changed, 448 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/gic.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 61f0d376af99..5476a8ddef60 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -35,7 +35,7 @@ endif
+>  
+>  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c
+> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+>  
+>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/gic.h b/tools/testing/selftests/kvm/include/aarch64/gic.h
+> new file mode 100644
+> index 000000000000..85dd1e53048e
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/gic.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) specific defines
+> + */
+> +
+> +#ifndef SELFTEST_KVM_GIC_H
+> +#define SELFTEST_KVM_GIC_H
+> +
+> +enum gic_type {
+> +	GIC_V3,
+> +	GIC_TYPE_MAX,
+> +};
+> +
+> +void gic_init(enum gic_type type, unsigned int nr_cpus,
+> +		void *dist_base, void *redist_base);
+> +void gic_irq_enable(unsigned int intid);
+> +void gic_irq_disable(unsigned int intid);
+> +unsigned int gic_get_and_ack_irq(void);
+> +void gic_set_eoi(unsigned int intid);
+> +
+> +#endif /* SELFTEST_KVM_GIC_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic.c b/tools/testing/selftests/kvm/lib/aarch64/gic.c
+> new file mode 100644
+> index 000000000000..fff4fc27504d
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) support
+> + */
+> +
+> +#include <errno.h>
+> +#include <linux/bits.h>
+> +#include <linux/sizes.h>
+> +
+> +#include "kvm_util.h"
+> +
+> +#include <gic.h>
+> +#include "gic_private.h"
+> +#include "processor.h"
+> +#include "spinlock.h"
+> +
+> +static const struct gic_common_ops *gic_common_ops;
+> +static struct spinlock gic_lock;
+> +
+> +static void gic_cpu_init(unsigned int cpu, void *redist_base)
+> +{
+> +	gic_common_ops->gic_cpu_init(cpu, redist_base);
+> +}
+> +
+> +static void
+> +gic_dist_init(enum gic_type type, unsigned int nr_cpus, void *dist_base)
+> +{
+> +	const struct gic_common_ops *gic_ops = NULL;
+> +
+> +	spin_lock(&gic_lock);
+> +
+> +	/* Distributor initialization is needed only once per VM */
+> +	if (gic_common_ops) {
+> +		spin_unlock(&gic_lock);
+> +		return;
+> +	}
+> +
+> +	if (type == GIC_V3)
+> +		gic_ops = &gicv3_ops;
+> +
+> +	GUEST_ASSERT(gic_ops);
+> +
+> +	gic_ops->gic_init(nr_cpus, dist_base);
+> +	gic_common_ops = gic_ops;
+> +
+> +	/* Make sure that the initialized data is visible to all the vCPUs */
+> +	dsb(sy);
+> +
+> +	spin_unlock(&gic_lock);
+> +}
+> +
+> +void gic_init(enum gic_type type, unsigned int nr_cpus,
+> +		void *dist_base, void *redist_base)
+> +{
+> +	uint32_t cpu = guest_get_vcpuid();
+> +
+> +	GUEST_ASSERT(type < GIC_TYPE_MAX);
+> +	GUEST_ASSERT(dist_base);
+> +	GUEST_ASSERT(redist_base);
+> +	GUEST_ASSERT(nr_cpus);
+> +
+> +	gic_dist_init(type, nr_cpus, dist_base);
+> +	gic_cpu_init(cpu, redist_base);
+> +}
+> +
+> +void gic_irq_enable(unsigned int intid)
+> +{
+> +	GUEST_ASSERT(gic_common_ops);
+> +	gic_common_ops->gic_irq_enable(intid);
+> +}
+> +
+> +void gic_irq_disable(unsigned int intid)
+> +{
+> +	GUEST_ASSERT(gic_common_ops);
+> +	gic_common_ops->gic_irq_disable(intid);
+> +}
+> +
+> +unsigned int gic_get_and_ack_irq(void)
+> +{
+> +	uint64_t irqstat;
+> +	unsigned int intid;
+> +
+> +	GUEST_ASSERT(gic_common_ops);
+> +
+> +	irqstat = gic_common_ops->gic_read_iar();
+> +	intid = irqstat & GENMASK(23, 0);
+> +
+> +	return intid;
+> +}
+> +
+> +void gic_set_eoi(unsigned int intid)
+> +{
+> +	GUEST_ASSERT(gic_common_ops);
+> +	gic_common_ops->gic_write_eoir(intid);
+> +}
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic_private.h b/tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+> new file mode 100644
+> index 000000000000..d81d739433dc
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) private defines that's only
+> + * shared among the GIC library code.
+> + */
+> +
+> +#ifndef SELFTEST_KVM_GIC_PRIVATE_H
+> +#define SELFTEST_KVM_GIC_PRIVATE_H
+> +
+> +struct gic_common_ops {
+> +	void (*gic_init)(unsigned int nr_cpus, void *dist_base);
+> +	void (*gic_cpu_init)(unsigned int cpu, void *redist_base);
+> +	void (*gic_irq_enable)(unsigned int intid);
+> +	void (*gic_irq_disable)(unsigned int intid);
+> +	uint64_t (*gic_read_iar)(void);
+> +	void (*gic_write_eoir)(uint32_t irq);
+> +};
+> +
+> +extern const struct gic_common_ops gicv3_ops;
+> +
+> +#endif /* SELFTEST_KVM_GIC_PRIVATE_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic_v3.c b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+> new file mode 100644
+> index 000000000000..973742285b9f
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+> @@ -0,0 +1,240 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) v3 support
+> + */
+> +
+> +#include <linux/sizes.h>
+> +
+> +#include "kvm_util.h"
+> +#include "processor.h"
+> +#include "delay.h"
+> +
+> +#include "gic_v3.h"
+> +#include "gic_private.h"
+> +
+> +struct gicv3_data {
+> +	void *dist_base;
+> +	void *redist_base[GICV3_MAX_CPUS];
+> +	unsigned int nr_cpus;
+> +	unsigned int nr_spis;
+> +};
+> +
+> +#define sgi_base_from_redist(redist_base) (redist_base + SZ_64K)
+> +
+> +enum gicv3_intid_range {
+> +	SGI_RANGE,
+> +	PPI_RANGE,
+> +	SPI_RANGE,
+> +	INVALID_RANGE,
+> +};
+> +
+> +static struct gicv3_data gicv3_data;
+> +
+> +static void gicv3_gicd_wait_for_rwp(void)
+> +{
+> +	unsigned int count = 100000; /* 1s */
+> +
+> +	while (readl(gicv3_data.dist_base + GICD_CTLR) & GICD_CTLR_RWP) {
+> +		GUEST_ASSERT(count--);
+> +		udelay(10);
+> +	}
+> +}
+> +
+> +static void gicv3_gicr_wait_for_rwp(void *redist_base)
+> +{
+> +	unsigned int count = 100000; /* 1s */
+> +
+> +	while (readl(redist_base + GICR_CTLR) & GICR_CTLR_RWP) {
+> +		GUEST_ASSERT(count--);
+> +		udelay(10);
+> +	}
+> +}
+> +
+> +static enum gicv3_intid_range get_intid_range(unsigned int intid)
+> +{
+> +	switch (intid) {
+> +	case 0 ... 15:
+> +		return SGI_RANGE;
+> +	case 16 ... 31:
+> +		return PPI_RANGE;
+> +	case 32 ... 1019:
+> +		return SPI_RANGE;
+> +	}
+> +
+> +	/* We should not be reaching here */
+> +	GUEST_ASSERT(0);
+> +
+> +	return INVALID_RANGE;
+> +}
+> +
+> +static uint64_t gicv3_read_iar(void)
+> +{
+> +	uint64_t irqstat = read_sysreg_s(SYS_ICC_IAR1_EL1);
+> +
+> +	dsb(sy);
+> +	return irqstat;
+> +}
+> +
+> +static void gicv3_write_eoir(uint32_t irq)
+> +{
+> +	write_sysreg_s(SYS_ICC_EOIR1_EL1, irq);
+> +	isb();
+> +}
+> +
+> +static void
+> +gicv3_config_irq(unsigned int intid, unsigned int offset)
+> +{
+> +	uint32_t cpu = guest_get_vcpuid();
+> +	uint32_t mask = 1 << (intid % 32);
+> +	enum gicv3_intid_range intid_range = get_intid_range(intid);
+> +	void *reg;
+> +
+> +	/* We care about 'cpu' only for SGIs or PPIs */
+> +	if (intid_range == SGI_RANGE || intid_range == PPI_RANGE) {
+> +		GUEST_ASSERT(cpu < gicv3_data.nr_cpus);
+> +
+> +		reg = sgi_base_from_redist(gicv3_data.redist_base[cpu]) +
+> +			offset;
+> +		writel(mask, reg);
+> +		gicv3_gicr_wait_for_rwp(gicv3_data.redist_base[cpu]);
+> +	} else if (intid_range == SPI_RANGE) {
+> +		reg = gicv3_data.dist_base + offset + (intid / 32) * 4;
+> +		writel(mask, reg);
+> +		gicv3_gicd_wait_for_rwp();
+> +	} else {
+> +		GUEST_ASSERT(0);
+> +	}
+> +}
+> +
+> +static void gicv3_irq_enable(unsigned int intid)
+> +{
+> +	gicv3_config_irq(intid, GICD_ISENABLER);
+> +}
+> +
+> +static void gicv3_irq_disable(unsigned int intid)
+> +{
+> +	gicv3_config_irq(intid, GICD_ICENABLER);
+> +}
+> +
+> +static void gicv3_enable_redist(void *redist_base)
+> +{
+> +	uint32_t val = readl(redist_base + GICR_WAKER);
+> +	unsigned int count = 100000; /* 1s */
+> +
+> +	val &= ~GICR_WAKER_ProcessorSleep;
+> +	writel(val, redist_base + GICR_WAKER);
+> +
+> +	/* Wait until the processor is 'active' */
+> +	while (readl(redist_base + GICR_WAKER) & GICR_WAKER_ChildrenAsleep) {
+> +		GUEST_ASSERT(count--);
+> +		udelay(10);
+> +	}
+> +}
+> +
+> +static inline void *gicr_base_gpa_cpu(void *redist_base, uint32_t cpu)
+> +{
+> +	/* Align all the redistributors sequentially */
+> +	return redist_base + cpu * SZ_64K * 2;
+> +}
+> +
+> +static void gicv3_cpu_init(unsigned int cpu, void *redist_base)
+> +{
+> +	void *sgi_base;
+> +	unsigned int i;
+> +	void *redist_base_cpu;
+> +
+> +	GUEST_ASSERT(cpu < gicv3_data.nr_cpus);
+> +
+> +	redist_base_cpu = gicr_base_gpa_cpu(redist_base, cpu);
+> +	sgi_base = sgi_base_from_redist(redist_base_cpu);
+> +
+> +	gicv3_enable_redist(redist_base_cpu);
+> +
+> +	/*
+> +	 * Mark all the SGI and PPI interrupts as non-secure Group-1.
+> +	 * Also, deactivate and disable them.
+> +	 */
+> +	writel(~0, sgi_base + GICR_IGROUPR0);
+> +	writel(~0, sgi_base + GICR_ICACTIVER0);
+> +	writel(~0, sgi_base + GICR_ICENABLER0);
+> +
+> +	/* Set a default priority for all the SGIs and PPIs */
+> +	for (i = 0; i < 32; i += 4)
+> +		writel(GICD_INT_DEF_PRI_X4,
+> +				sgi_base + GICR_IPRIORITYR0 + i);
+> +
+> +	gicv3_gicr_wait_for_rwp(redist_base_cpu);
+> +
+> +	/* Enable the GIC system register (ICC_*) access */
+> +	write_sysreg_s(SYS_ICC_SRE_EL1,
+> +			read_sysreg_s(SYS_ICC_SRE_EL1) | ICC_SRE_EL1_SRE);
+> +
+> +	/* Set a default priority threshold */
+> +	write_sysreg_s(SYS_ICC_PMR_EL1, ICC_PMR_DEF_PRIO);
+> +
+> +	/* Enable non-secure Group-1 interrupts */
+> +	write_sysreg_s(SYS_ICC_GRPEN1_EL1, ICC_IGRPEN1_EL1_ENABLE);
+> +
+> +	gicv3_data.redist_base[cpu] = redist_base_cpu;
+> +}
+> +
+> +static void gicv3_dist_init(void)
+> +{
+> +	void *dist_base = gicv3_data.dist_base;
+> +	unsigned int i;
+> +
+> +	/* Disable the distributor until we set things up */
+> +	writel(0, dist_base + GICD_CTLR);
+> +	gicv3_gicd_wait_for_rwp();
+> +
+> +	/*
+> +	 * Mark all the SPI interrupts as non-secure Group-1.
+> +	 * Also, deactivate and disable them.
+> +	 */
+> +	for (i = 32; i < gicv3_data.nr_spis; i += 32) {
+> +		writel(~0, dist_base + GICD_IGROUPR + i / 8);
+> +		writel(~0, dist_base + GICD_ICACTIVER + i / 8);
+> +		writel(~0, dist_base + GICD_ICENABLER + i / 8);
+> +	}
+> +
+> +	/* Set a default priority for all the SPIs */
+> +	for (i = 32; i < gicv3_data.nr_spis; i += 4)
+> +		writel(GICD_INT_DEF_PRI_X4,
+> +				dist_base + GICD_IPRIORITYR + i);
+> +
+> +	/* Wait for the settings to sync-in */
+> +	gicv3_gicd_wait_for_rwp();
+> +
+> +	/* Finally, enable the distributor globally with ARE */
+> +	writel(GICD_CTLR_ARE_NS | GICD_CTLR_ENABLE_G1A |
+> +			GICD_CTLR_ENABLE_G1, dist_base + GICD_CTLR);
+> +	gicv3_gicd_wait_for_rwp();
+> +}
+> +
+> +static void gicv3_init(unsigned int nr_cpus, void *dist_base)
+> +{
+> +	GUEST_ASSERT(nr_cpus <= GICV3_MAX_CPUS);
+> +
+> +	gicv3_data.nr_cpus = nr_cpus;
+> +	gicv3_data.dist_base = dist_base;
+> +	gicv3_data.nr_spis = GICD_TYPER_SPIS(
+> +				readl(gicv3_data.dist_base + GICD_TYPER));
+> +	if (gicv3_data.nr_spis > 1020)
+> +		gicv3_data.nr_spis = 1020;
+> +
+> +	/*
+> +	 * Initialize only the distributor for now.
+> +	 * The redistributor and CPU interfaces are initialized
+> +	 * later for every PE.
+> +	 */
+> +	gicv3_dist_init();
+> +}
+> +
+> +const struct gic_common_ops gicv3_ops = {
+> +	.gic_init = gicv3_init,
+> +	.gic_cpu_init = gicv3_cpu_init,
+> +	.gic_irq_enable = gicv3_irq_enable,
+> +	.gic_irq_disable = gicv3_irq_disable,
+> +	.gic_read_iar = gicv3_read_iar,
+> +	.gic_write_eoir = gicv3_write_eoir,
+> +};
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic_v3.h b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> new file mode 100644
+> index 000000000000..b51536d469a6
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> @@ -0,0 +1,70 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) v3 specific defines
+> + */
+> +
+> +#ifndef SELFTEST_KVM_GICV3_H
+> +#define SELFTEST_KVM_GICV3_H
+> +
+> +#include <asm/sysreg.h>
+> +
+> +/*
+> + * Distributor registers
+> + */
+> +#define GICD_CTLR			0x0000
+> +#define GICD_TYPER			0x0004
+> +#define GICD_IGROUPR			0x0080
+> +#define GICD_ISENABLER			0x0100
+> +#define GICD_ICENABLER			0x0180
+> +#define GICD_ICACTIVER			0x0380
+> +#define GICD_IPRIORITYR			0x0400
+> +
+> +/*
+> + * The assumption is that the guest runs in a non-secure mode.
+> + * The following bits of GICD_CTLR are defined accordingly.
+> + */
+> +#define GICD_CTLR_RWP			(1U << 31)
+> +#define GICD_CTLR_nASSGIreq		(1U << 8)
+> +#define GICD_CTLR_ARE_NS		(1U << 4)
+> +#define GICD_CTLR_ENABLE_G1A		(1U << 1)
+> +#define GICD_CTLR_ENABLE_G1		(1U << 0)
+> +
+> +#define GICD_TYPER_SPIS(typer)		((((typer) & 0x1f) + 1) * 32)
+> +#define GICD_INT_DEF_PRI_X4		0xa0a0a0a0
+> +
+> +/*
+> + * Redistributor registers
+> + */
+> +#define GICR_CTLR			0x000
+> +#define GICR_WAKER			0x014
+> +
+> +#define GICR_CTLR_RWP			(1U << 3)
+> +
+> +#define GICR_WAKER_ProcessorSleep	(1U << 1)
+> +#define GICR_WAKER_ChildrenAsleep	(1U << 2)
+> +
+> +/*
+> + * Redistributor registers, offsets from SGI base
+> + */
+> +#define GICR_IGROUPR0			GICD_IGROUPR
+> +#define GICR_ISENABLER0			GICD_ISENABLER
+> +#define GICR_ICENABLER0			GICD_ICENABLER
+> +#define GICR_ICACTIVER0			GICD_ICACTIVER
+> +#define GICR_IPRIORITYR0		GICD_IPRIORITYR
+> +
+> +/* CPU interface registers */
+> +#define SYS_ICC_PMR_EL1			sys_reg(3, 0, 4, 6, 0)
+> +#define SYS_ICC_IAR1_EL1		sys_reg(3, 0, 12, 12, 0)
+> +#define SYS_ICC_EOIR1_EL1		sys_reg(3, 0, 12, 12, 1)
+> +#define SYS_ICC_SRE_EL1			sys_reg(3, 0, 12, 12, 5)
+> +#define SYS_ICC_GRPEN1_EL1		sys_reg(3, 0, 12, 12, 7)
+> +
+> +#define ICC_PMR_DEF_PRIO		0xf0
+> +
+> +#define ICC_SRE_EL1_SRE			(1U << 0)
+> +
+> +#define ICC_IGRPEN1_EL1_ENABLE		(1U << 0)
+> +
+> +#define GICV3_MAX_CPUS			512
+> +
+> +#endif /* SELFTEST_KVM_GICV3_H */
+> -- 
+> 2.33.0.309.g3052b89438-goog
+>
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Ricardo Koller <ricarkol@google.com>
