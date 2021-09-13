@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D0B408AD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F79408ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239901AbhIMMQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239875AbhIMMQ0 (ORCPT
+        id S239920AbhIMMRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:17:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36940 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237090AbhIMMRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:16:26 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA66C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:15:10 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s3so16886518ljp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=ocjfqkGjIFXlK+lwa67KppjCOU7sAwRlJNFgx/7lMkU=;
-        b=SPWq9xzvSzNzNTJ1MesiL1KOedXOmUZUQZKe4L50FJIXqiuFzOTa/Vz9tluHfBqJ6n
-         OHsWwodna1Dlw9Ay4Etxznayh9hszsN0gBzyI0vEq6W/1mnrkxejKt694G5BA5Pu6TOL
-         83sRg7VastZ/RqKiQFOf3fF37b1bYBStCEfsEVs7GNZt1yy0Rzc9VkhQ8FCIXWVdKXH+
-         HsK/uAULRr69fh4eJpxKFneDZm0PuI7WM2GSbXDkgySr/nl30UYL9FaGJ+kpZHhp8n23
-         BLOKuhsCRKwIzJy6fals2ARFugS/r0o5SLk5/wp3bFC+kqJhEE655VCrQi8e00MrFEI8
-         KRVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=ocjfqkGjIFXlK+lwa67KppjCOU7sAwRlJNFgx/7lMkU=;
-        b=NIzjLOUPVOWbsJlningRSBiG9UhpCqZ/7SGOxklxacIemWtIrjw05EM0W9IGWexaz3
-         3i0i+xaPxDY6ptNSWrC0hs4dQCIcAahGxp9bbKJ7emvvgUNJYKiKaU9mBeS+vilX1vbm
-         B5Ht6VriCEZua7+f6l88bYFU15Eqd4btSM5MSSiOzd9E6ScU3IfUmJOHVHKQfWnmVyVG
-         tg6OVQFh4raJtdaN48aqGGx6oRCEoKmnGUuJdpc16Sf6+KFHOhVXIjVNTRpcde8yUYjZ
-         njlxiQsX+m4cGtIgfdksBwhSICw9zsAvSadHQ7PjJmzPteXcBFQRHEY598fBkmdnqnJl
-         khJA==
-X-Gm-Message-State: AOAM53281bTrj0zp5HhcCpgP2ytRv8ZcqTrnURtuW+U7F7xJKFrOYYdp
-        eyRQo2YXPNPzSjZlY3NR71y09LUMQzeXRA8IK6U=
-X-Google-Smtp-Source: ABdhPJwhZ9eQcjMRutAaIMIBv2vfZeQ5YmBD9U2M0BbpvSxzV1hHXWBYyi2Y4TFQGEMx8JCWRal1CPcDCUhXpCuPv8Y=
-X-Received: by 2002:a2e:9ac7:: with SMTP id p7mr10064662ljj.72.1631535309246;
- Mon, 13 Sep 2021 05:15:09 -0700 (PDT)
+        Mon, 13 Sep 2021 08:17:19 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18DBV4hl032581;
+        Mon, 13 Sep 2021 08:15:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xlP+LwjYIwYnUxPeclWKOSgT6kSEuo++vPIF3XqB458=;
+ b=rrcn7jniYYZy39eRPyK6ld2RF6RXYYjp3m+EZpc22eHesKoWk23L4BoKxA4SQksWcGYE
+ Ar3unj5JZoMMsrGiYs1LKP1+NQuF8aJpFikukfssEF6yPnDdCGEysxjpOdeh7uZsTMZP
+ z/h/aoohVEO6w+GHghbFPMV2nJhjxpxwhWzA48ChHYB9o3BIW0GY35sYCvfWpvR5AmdE
+ 8oyIwBHBPBPvqEI7LQ06K1ADfEp7RdWWXFVFrzo6D73mrc33lIuhIeYP7NYGWWSW+IQQ
+ DLYOJwE6yyx8q1JuL9LVhJUBAEZDLt69tEOFR/zNkS9kEIG42K97UTkEAaR0L5IWh7vf 9w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b23hvvd79-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 08:15:19 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18DBQ7Fb030676;
+        Mon, 13 Sep 2021 08:15:18 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b23hvvd5v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 08:15:17 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18DCE4d8002394;
+        Mon, 13 Sep 2021 12:15:15 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3b0m38yay8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 12:15:15 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18DCFB3s45351186
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Sep 2021 12:15:11 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 636D711C0D5;
+        Mon, 13 Sep 2021 12:15:11 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BFBA11C0B2;
+        Mon, 13 Sep 2021 12:15:10 +0000 (GMT)
+Received: from [9.145.51.25] (unknown [9.145.51.25])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Sep 2021 12:15:10 +0000 (GMT)
+Subject: Re: [PATCH 6/9] s390/block/dasd_genhd: add error handling support for
+ add_disk()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+        atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+        oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+        shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-7-mcgrof@kernel.org>
+ <d6140e40-a472-e732-9893-99e1839b717e@linux.ibm.com>
+ <YT8O/NL2pEGUjYj9@infradead.org>
+From:   =?UTF-8?Q?Jan_H=c3=b6ppner?= <hoeppner@linux.ibm.com>
+Message-ID: <93bfc4ce-62f1-e21c-5dca-82029b2fc388@linux.ibm.com>
+Date:   Mon, 13 Sep 2021 14:15:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Sender: hannahdavid7658@gmail.com
-Received: by 2002:a05:6520:4081:b029:11f:53c:6776 with HTTP; Mon, 13 Sep 2021
- 05:15:08 -0700 (PDT)
-From:   Candice Marie Benbow <candicemariebenbow85@gmail.com>
-Date:   Mon, 13 Sep 2021 12:15:08 +0000
-X-Google-Sender-Auth: yV-MchGT9fHXn4rfmM3CLP8wtMY
-Message-ID: <CAJaq1wLhFEG1dAUJYM0ZPqz4jXR0b_=PZhR1hiFGTc7h2xxMxg@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YT8O/NL2pEGUjYj9@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: i1DhJLKl-4vLh41BXihH3RVurh7Dcq6N
+X-Proofpoint-GUID: CgRXnBXQrEZYnagyiSXSmcuMePxFid_y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109130048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- Hello My Dear,
+On 13/09/2021 10:42, Christoph Hellwig wrote:
+> On Mon, Sep 13, 2021 at 10:17:48AM +0200, Jan H??ppner wrote:
+>> I think, just like with some of the other changes, there is some
+>> cleanup required before returning. I'll prepare a patch and
+>> come back to you.
+> 
+> If you are touching the dasd probe path anyway, can you look insto
+> switching to use blk_mq_alloc_disk as well?  Right now dasd allocates
+> the request_queue and gendisk separately in different stages of
+> initialization, but unlike SCSI which needs to probe using just the
+> request_queue I can't find a good reason for that.
+> 
 
-It is my pleasure to communicate with you, I know that this message
-will be a surprise to you my name is Mrs.Candice Marie Benbow, I am
-diagnosed with ovarian cancer which my doctor have confirmed that I
-have only some weeks to live so I have decided you handover the sum
-of($12,000.000 Million Dollar) through I decided handover the money in
-my account to you for help of the orphanage homes and the needy once
+Thanks for the hint. We'll be working on it separately though, as
+it seems to require a bit more effort from a first glance.
+We'll send a separate patch (or patchset) soon.
 
-Please   kindly reply me here as soon as possible to enable me give
-you more information but before handing over my bank to you please
-assure me that you will only take 40%  of the money and share the rest
-to the poor orphanage home and the needy once, thank you am waiting to
-hear from you
-
-Mrs Candice Marie Benbow.
+regards,
+Jan
