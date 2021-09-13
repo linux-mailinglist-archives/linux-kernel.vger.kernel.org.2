@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2AF408CF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ACF408D0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239369AbhIMNW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:22:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35312 "EHLO mail.kernel.org"
+        id S240830AbhIMNXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240225AbhIMNVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BCCB60698;
-        Mon, 13 Sep 2021 13:19:43 +0000 (UTC)
+        id S237166AbhIMNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:21:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E38386108B;
+        Mon, 13 Sep 2021 13:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539183;
-        bh=rQ5Yeo5GhD0p/1MIRkcd1uTdmIxanIN8V3aTziqonDk=;
+        s=korg; t=1631539186;
+        bh=AUAOhTPFuebkOjhrDueU01s6CvNvMJpixVeNc8usw/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hUExuFdKCVEfNYrcPKv8BHRLwcCfbvFhQQ9WzYKrShe0N2ZLn83toFwHA7KZ+2Kw8
-         UZa0opvuzCzhgNfMzzv8yH1iXxvht2ZOGX45YLXbscddikr0X4TavoBlwMejN8oRf2
-         ZmQr7k+elpQ+m9eWTr6D+8pEDx56DBQKXbyMo8Eg=
+        b=cFdEiktFPIccLnLZkd8ROdw68nE/kdQy9BTaiR7501UNWlARPsF8qEjdgUMmWrvMv
+         cokKVhHmRMSyYaKDOkdFenb4XNcgsOra/c1rt0VEa9Ox2xAfbepYdOpvCLLQxDAeVQ
+         qF64kdfq8S1ElqinbWYby8RisqCRZKra686vEMKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
         Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 073/144] leds: lt3593: Put fwnode in any case during ->probe()
-Date:   Mon, 13 Sep 2021 15:14:14 +0200
-Message-Id: <20210913131050.404769959@linuxfoundation.org>
+Subject: [PATCH 5.4 074/144] leds: trigger: audio: Add an activate callback to ensure the initial brightness is set
+Date:   Mon, 13 Sep 2021 15:14:15 +0200
+Message-Id: <20210913131050.437095698@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -40,39 +41,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 7e1baaaa2407a642ea19b58e214fab9a69cda1d7 ]
+[ Upstream commit 64f67b5240db79eceb0bd57dae8e591fd3103ba0 ]
 
-device_get_next_child_node() bumps a reference counting of a returned variable.
-We have to balance it whenever we return to the caller.
+Some 2-in-1s with a detachable (USB) keyboard(dock) have mute-LEDs in
+the speaker- and/or mic-mute keys on the keyboard.
 
-Fixes: 8cd7d6daba93 ("leds: lt3593: Add device tree probing glue")
-Cc: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Examples of this are the Lenovo Thinkpad10 tablet (with its USB kbd-dock)
+and the HP x2 10 series.
+
+The detachable nature of these keyboards means that the keyboard and
+thus the mute LEDs may show up after the user (or userspace restoring
+old mixer settings) has muted the speaker and/or mic.
+
+Current LED-class devices with a default_trigger of "audio-mute" or
+"audio-micmute" initialize the brightness member of led_classdev with
+ledtrig_audio_get() before registering the LED.
+
+This makes the software state after attaching the keyboard match the
+actual audio mute state, e.g. cat /sys/class/leds/foo/brightness will
+show the right value.
+
+But before this commit nothing was actually calling the led_classdev's
+brightness_set[_blocking] callback so the value returned by
+ledtrig_audio_get() was never actually being sent to the hw, leading
+to the mute LEDs staying in their default power-on state, after
+attaching the keyboard, even if ledtrig_audio_get() returned a different
+state.
+
+This could be fixed by having the individual LED drivers call
+brightness_set[_blocking] themselves after registering the LED,
+but this really is something which should be done by a led-trigger
+activate callback.
+
+Add an activate callback for this, fixing the issue of the
+mute LEDs being out of sync after (re)attaching the keyboard.
+
+Cc: Takashi Iwai <tiwai@suse.de>
+Fixes: faa2541f5b1a ("leds: trigger: Introduce audio mute LED trigger")
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Pavel Machek <pavel@ucw.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/leds-lt3593.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/leds/trigger/ledtrig-audio.c | 37 ++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/leds/leds-lt3593.c b/drivers/leds/leds-lt3593.c
-index c94995f0daa2..03ae33093ce6 100644
---- a/drivers/leds/leds-lt3593.c
-+++ b/drivers/leds/leds-lt3593.c
-@@ -103,10 +103,9 @@ static int lt3593_led_probe(struct platform_device *pdev)
- 	init_data.default_label = ":";
+diff --git a/drivers/leds/trigger/ledtrig-audio.c b/drivers/leds/trigger/ledtrig-audio.c
+index f76621e88482..c6b437e6369b 100644
+--- a/drivers/leds/trigger/ledtrig-audio.c
++++ b/drivers/leds/trigger/ledtrig-audio.c
+@@ -6,10 +6,33 @@
+ #include <linux/kernel.h>
+ #include <linux/leds.h>
+ #include <linux/module.h>
++#include "../leds.h"
  
- 	ret = devm_led_classdev_register_ext(dev, &led_data->cdev, &init_data);
--	if (ret < 0) {
--		fwnode_handle_put(child);
-+	fwnode_handle_put(child);
-+	if (ret < 0)
- 		return ret;
--	}
+-static struct led_trigger *ledtrig_audio[NUM_AUDIO_LEDS];
+ static enum led_brightness audio_state[NUM_AUDIO_LEDS];
  
- 	led_data->cdev.dev->of_node = dev->of_node;
- 	platform_set_drvdata(pdev, led_data);
++static int ledtrig_audio_mute_activate(struct led_classdev *led_cdev)
++{
++	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MUTE]);
++	return 0;
++}
++
++static int ledtrig_audio_micmute_activate(struct led_classdev *led_cdev)
++{
++	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MICMUTE]);
++	return 0;
++}
++
++static struct led_trigger ledtrig_audio[NUM_AUDIO_LEDS] = {
++	[LED_AUDIO_MUTE] = {
++		.name     = "audio-mute",
++		.activate = ledtrig_audio_mute_activate,
++	},
++	[LED_AUDIO_MICMUTE] = {
++		.name     = "audio-micmute",
++		.activate = ledtrig_audio_micmute_activate,
++	},
++};
++
+ enum led_brightness ledtrig_audio_get(enum led_audio type)
+ {
+ 	return audio_state[type];
+@@ -19,24 +42,22 @@ EXPORT_SYMBOL_GPL(ledtrig_audio_get);
+ void ledtrig_audio_set(enum led_audio type, enum led_brightness state)
+ {
+ 	audio_state[type] = state;
+-	led_trigger_event(ledtrig_audio[type], state);
++	led_trigger_event(&ledtrig_audio[type], state);
+ }
+ EXPORT_SYMBOL_GPL(ledtrig_audio_set);
+ 
+ static int __init ledtrig_audio_init(void)
+ {
+-	led_trigger_register_simple("audio-mute",
+-				    &ledtrig_audio[LED_AUDIO_MUTE]);
+-	led_trigger_register_simple("audio-micmute",
+-				    &ledtrig_audio[LED_AUDIO_MICMUTE]);
++	led_trigger_register(&ledtrig_audio[LED_AUDIO_MUTE]);
++	led_trigger_register(&ledtrig_audio[LED_AUDIO_MICMUTE]);
+ 	return 0;
+ }
+ module_init(ledtrig_audio_init);
+ 
+ static void __exit ledtrig_audio_exit(void)
+ {
+-	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MUTE]);
+-	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MICMUTE]);
++	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MUTE]);
++	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MICMUTE]);
+ }
+ module_exit(ledtrig_audio_exit);
+ 
 -- 
 2.30.2
 
