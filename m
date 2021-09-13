@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D818540863E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1B540863F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbhIMIQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:16:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:54896 "EHLO foss.arm.com"
+        id S237914AbhIMIQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:16:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:54914 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237952AbhIMIQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:16:03 -0400
+        id S237987AbhIMIQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:16:05 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3BE0101E;
-        Mon, 13 Sep 2021 01:14:47 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 090D11042;
+        Mon, 13 Sep 2021 01:14:50 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E76F3F5A1;
-        Mon, 13 Sep 2021 01:14:45 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 24CC53F5A1;
+        Mon, 13 Sep 2021 01:14:48 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kasan-dev@googlegroups.com
@@ -32,9 +32,9 @@ Cc:     vincenzo.frascino@arm.com,
         Branislav Rankov <Branislav.Rankov@arm.com>,
         Andrey Konovalov <andreyknvl@gmail.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 4/5] arm64: mte: Add asymmetric mode support
-Date:   Mon, 13 Sep 2021 09:14:23 +0100
-Message-Id: <20210913081424.48613-5-vincenzo.frascino@arm.com>
+Subject: [PATCH 5/5] kasan: Extend KASAN mode kernel parameter
+Date:   Mon, 13 Sep 2021 09:14:24 +0100
+Message-Id: <20210913081424.48613-6-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913081424.48613-1-vincenzo.frascino@arm.com>
 References: <20210913081424.48613-1-vincenzo.frascino@arm.com>
@@ -44,98 +44,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MTE provides an asymmetric mode for detecting tag exceptions. In
-particular, when such a mode is present, the CPU triggers a fault
-on a tag mismatch during a load operation and asynchronously updates
-a register when a tag mismatch is detected during a store operation.
+Architectures supported by KASAN_HW_TAGS can provide an asymmetric mode
+of execution. On an MTE enabled arm64 hw for example this can be
+identified with the asymmetric tagging mode of execution. In particular,
+when such a mode is present, the CPU triggers a fault on a tag mismatch
+during a load operation and asynchronously updates a register when a tag
+mismatch is detected during a store operation.
 
-Add support for MTE asymmetric mode.
+Extend the KASAN HW execution mode kernel command line parameter to
+support asymmetric mode.
 
-Note: If the CPU does not support MTE asymmetric mode the kernel falls
-back on synchronous mode which is the default for kasan=on.
-
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
 Cc: Andrey Konovalov <andreyknvl@gmail.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/include/asm/memory.h    |  1 +
- arch/arm64/include/asm/mte-kasan.h |  5 +++++
- arch/arm64/kernel/mte.c            | 26 ++++++++++++++++++++++++++
- 3 files changed, 32 insertions(+)
+ Documentation/dev-tools/kasan.rst | 10 ++++++++--
+ mm/kasan/hw_tags.c                | 27 ++++++++++++++++++++++-----
+ mm/kasan/kasan.h                  |  5 +++++
+ 3 files changed, 35 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index f1745a843414..1b9a1e242612 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -243,6 +243,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
- #ifdef CONFIG_KASAN_HW_TAGS
- #define arch_enable_tagging_sync()		mte_enable_kernel_sync()
- #define arch_enable_tagging_async()		mte_enable_kernel_async()
-+#define arch_enable_tagging_asymm()		mte_enable_kernel_asymm()
- #define arch_force_async_tag_fault()		mte_check_tfsr_exit()
- #define arch_get_random_tag()			mte_get_random_tag()
- #define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
-diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
-index 22420e1f8c03..478b9bcf69ad 100644
---- a/arch/arm64/include/asm/mte-kasan.h
-+++ b/arch/arm64/include/asm/mte-kasan.h
-@@ -130,6 +130,7 @@ static inline void mte_set_mem_tag_range(void *addr, size_t size, u8 tag,
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index 21dc03bc10a4..7f43e603bfbe 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -194,14 +194,20 @@ additional boot parameters that allow disabling KASAN or controlling features:
  
- void mte_enable_kernel_sync(void);
- void mte_enable_kernel_async(void);
-+void mte_enable_kernel_asymm(void);
+ - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
  
- #else /* CONFIG_ARM64_MTE */
+-- ``kasan.mode=sync`` or ``=async`` controls whether KASAN is configured in
+-  synchronous or asynchronous mode of execution (default: ``sync``).
++- ``kasan.mode=sync``, ``=async`` or ``=asymm`` controls whether KASAN
++  is configured in synchronous, asynchronous or asymmetric mode of
++  execution (default: ``sync``).
+   Synchronous mode: a bad access is detected immediately when a tag
+   check fault occurs.
+   Asynchronous mode: a bad access detection is delayed. When a tag check
+   fault occurs, the information is stored in hardware (in the TFSR_EL1
+   register for arm64). The kernel periodically checks the hardware and
+   only reports tag faults during these checks.
++  Asymmetric mode: a bad access is detected immediately when a tag
++  check fault occurs during a load operation and its detection is
++  delayed during a store operation. For the store operations the kernel
++  periodically checks the hardware and only reports tag faults during
++  these checks.
  
-@@ -161,6 +162,10 @@ static inline void mte_enable_kernel_async(void)
+ - ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
+   traces collection (default: ``on``).
+diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+index 05d1e9460e2e..87eb7aa13918 100644
+--- a/mm/kasan/hw_tags.c
++++ b/mm/kasan/hw_tags.c
+@@ -29,6 +29,7 @@ enum kasan_arg_mode {
+ 	KASAN_ARG_MODE_DEFAULT,
+ 	KASAN_ARG_MODE_SYNC,
+ 	KASAN_ARG_MODE_ASYNC,
++	KASAN_ARG_MODE_ASYMM,
+ };
+ 
+ enum kasan_arg_stacktrace {
+@@ -49,6 +50,10 @@ EXPORT_SYMBOL(kasan_flag_enabled);
+ bool kasan_flag_async __ro_after_init;
+ EXPORT_SYMBOL_GPL(kasan_flag_async);
+ 
++/* Whether the asymmetric mode is enabled. */
++bool kasan_flag_asymm __ro_after_init;
++EXPORT_SYMBOL_GPL(kasan_flag_asymm);
++
+ /* Whether to collect alloc/free stack traces. */
+ DEFINE_STATIC_KEY_FALSE(kasan_flag_stacktrace);
+ 
+@@ -69,7 +74,7 @@ static int __init early_kasan_flag(char *arg)
+ }
+ early_param("kasan", early_kasan_flag);
+ 
+-/* kasan.mode=sync/async */
++/* kasan.mode=sync/async/asymm */
+ static int __init early_kasan_mode(char *arg)
  {
- }
+ 	if (!arg)
+@@ -79,6 +84,8 @@ static int __init early_kasan_mode(char *arg)
+ 		kasan_arg_mode = KASAN_ARG_MODE_SYNC;
+ 	else if (!strcmp(arg, "async"))
+ 		kasan_arg_mode = KASAN_ARG_MODE_ASYNC;
++	else if (!strcmp(arg, "asymm"))
++		kasan_arg_mode = KASAN_ARG_MODE_ASYMM;
+ 	else
+ 		return -EINVAL;
  
-+static inline void mte_enable_kernel_asymm(void)
-+{
-+}
-+
- #endif /* CONFIG_ARM64_MTE */
+@@ -116,11 +123,13 @@ void kasan_init_hw_tags_cpu(void)
+ 		return;
  
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 9d314a3bad3b..ef5484ecb2da 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -137,6 +137,32 @@ void mte_enable_kernel_async(void)
- 	if (!system_uses_mte_async_mode())
- 		static_branch_enable(&mte_async_mode);
+ 	/*
+-	 * Enable async mode only when explicitly requested through
+-	 * the command line.
++	 * Enable async or asymm modes only when explicitly requested
++	 * through the command line.
+ 	 */
+ 	if (kasan_arg_mode == KASAN_ARG_MODE_ASYNC)
+ 		hw_enable_tagging_async();
++	else if (kasan_arg_mode == KASAN_ARG_MODE_ASYMM)
++		hw_enable_tagging_asymm();
+ 	else
+ 		hw_enable_tagging_sync();
  }
-+
-+void mte_enable_kernel_asymm(void)
-+{
-+	if (cpus_have_cap(ARM64_MTE_ASYMM)) {
-+		__mte_enable_kernel("asymmetric", SCTLR_ELx_TCF_ASYMM);
-+
+@@ -143,16 +152,24 @@ void __init kasan_init_hw_tags(void)
+ 	case KASAN_ARG_MODE_DEFAULT:
+ 		/*
+ 		 * Default to sync mode.
+-		 * Do nothing, kasan_flag_async keeps its default value.
++		 * Do nothing, kasan_flag_async and kasan_flag_asymm keep
++		 * their default values.
+ 		 */
+ 		break;
+ 	case KASAN_ARG_MODE_SYNC:
+-		/* Do nothing, kasan_flag_async keeps its default value. */
 +		/*
-+		 * MTE asymm mode behaves as async mode for store
-+		 * operations. The mode is set system wide by the
-+		 * first PE that executes this function.
-+		 *
-+		 * Note: If in future KASAN acquires a runtime switching
-+		 * mode in between sync and async, this strategy needs
-+		 * to be reviewed.
++		 * Do nothing, kasan_flag_async and kasan_flag_asymm keep
++		 * their default values.
 +		 */
-+		if (!system_uses_mte_async_mode())
-+			static_branch_enable(&mte_async_mode);
-+	} else {
-+		/*
-+		 * If the CPU does not support MTE asymmetric mode the
-+		 * kernel falls back on synchronous mode which is the
-+		 * default for kasan=on.
-+		 */
-+		mte_enable_kernel_sync();
-+	}
-+}
+ 		break;
+ 	case KASAN_ARG_MODE_ASYNC:
+ 		/* Async mode enabled. */
+ 		kasan_flag_async = true;
+ 		break;
++	case KASAN_ARG_MODE_ASYMM:
++		/* Asymm mode enabled. */
++		kasan_flag_asymm = true;
++		break;
+ 	}
+ 
+ 	switch (kasan_arg_stacktrace) {
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 3639e7c8bb98..a8be62058d32 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -287,6 +287,9 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ #ifndef arch_enable_tagging_async
+ #define arch_enable_tagging_async()
  #endif
++#ifndef arch_enable_tagging_asymm
++#define arch_enable_tagging_asymm()
++#endif
+ #ifndef arch_force_async_tag_fault
+ #define arch_force_async_tag_fault()
+ #endif
+@@ -302,6 +305,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
  
- #ifdef CONFIG_KASAN_HW_TAGS
+ #define hw_enable_tagging_sync()		arch_enable_tagging_sync()
+ #define hw_enable_tagging_async()		arch_enable_tagging_async()
++#define hw_enable_tagging_asymm()		arch_enable_tagging_asymm()
+ #define hw_force_async_tag_fault()		arch_force_async_tag_fault()
+ #define hw_get_random_tag()			arch_get_random_tag()
+ #define hw_get_mem_tag(addr)			arch_get_mem_tag(addr)
+@@ -312,6 +316,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ 
+ #define hw_enable_tagging_sync()
+ #define hw_enable_tagging_async()
++#define hw_enable_tagging_asymm()
+ 
+ #endif /* CONFIG_KASAN_HW_TAGS */
+ 
 -- 
 2.33.0
 
