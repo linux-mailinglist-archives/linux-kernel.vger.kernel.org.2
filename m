@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C105408A03
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76C9408A08
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239501AbhIMLVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        id S239528AbhIMLV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239479AbhIMLVo (ORCPT
+        with ESMTP id S238997AbhIMLV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:21:44 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF366C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:20:26 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso6204471pjq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:20:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yLjr+ON7k0bwQgm5TdMvQnLT7Btp738r3GnFnWQAfuc=;
-        b=cZ8lEfRdEpXS7gjJQd8xampwtoq03dUQUeniIUOe9cENQG1e5TRxsOUjxFokQXyX1Y
-         K9HyyWhTo7MVFrQKMXf1/3d9HMiRaBYf0nrX4wscKEpV6aJnG5nzVhXEQJvWBF6ge+9v
-         jLMLIb5+Ee6q+lpnBVOzfzXBDrRQ2YxGXib98tIuVQYbYQGUHJ2Z4gPrq+a4eX4ZrU09
-         xc8DP5DTLjDFSVc7lftmhcJp6TJWrqyNAZTmJYPCH8Lgpi7/z82T5cDz/i0VkHtEsLq9
-         gzgOo++caroFWo68txHxHmjoUia4xq62n7MteqxfofIrSNPGdHbCJOpF2od6wPmqcr/V
-         tfQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yLjr+ON7k0bwQgm5TdMvQnLT7Btp738r3GnFnWQAfuc=;
-        b=XXaWVxZVA0zbA11Lx386Kg7r49TVTF9vbiRp5lcq3TNSuBiDidigcGY/Cq9Q18AHFv
-         paLGEQHDT0uzvM2PBkyvfuWd/OAFJQP8APP6+phWhUiWFfn8e3T4WcclG5WRJHpnCYVd
-         QOFkgTnDpC0OHR2BgK4cjL5fj1N4FF3u9Vb4X1nbh/OMknAVbQV8sDVBJb4JEDUVDOH3
-         tr6Z3sHwnjiSDspEvc1zBLzgVOOb+2Wnfht/PDMbSSUn+ZBgQJtN088mXKseuu5IxvaQ
-         OXIpuIH5lAuXBB0POuakowYMdz3rOCZ/Wu47thXtQ8MpwAfaKl8ULnDi5A92SdKkXTLb
-         V6+A==
-X-Gm-Message-State: AOAM533tOkPoKi8yo+L3Y4FpwJ9YBWiJS/5pez8ZWeWzy9t7HV3MmfUO
-        DZH/EQIn8dYH0ioL/1pZBsZR
-X-Google-Smtp-Source: ABdhPJz/Loi9cSCUl6C0Ef1+euUAbXj01k2QPiOb4FmVndB7/grfYcjsH6Hrv1QQmicoBd+qXAs5Rw==
-X-Received: by 2002:a17:902:bd42:b0:138:d3ca:c387 with SMTP id b2-20020a170902bd4200b00138d3cac387mr10047479plx.51.1631532026231;
-        Mon, 13 Sep 2021 04:20:26 -0700 (PDT)
-Received: from localhost ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id x10sm1758671pjv.57.2021.09.13.04.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 04:20:25 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     bcrl@kvack.org, viro@zeniv.linux.org.uk, tglx@linutronix.de,
-        axboe@kernel.dk
-Cc:     linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] aio: Fix incorrect usage of eventfd_signal_allowed()
-Date:   Mon, 13 Sep 2021 19:19:28 +0800
-Message-Id: <20210913111928.98-1-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 13 Sep 2021 07:21:57 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A23C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9pGUQNlOf21affJQQWLYGjo1GPP/2Oe6DkEkHwwWLEA=; b=QovnLdj9HF14SVXlGgP5XfeZw1
+        nd4ihRhDM5j72h5GilByaslQJOQlbDKiNly8CFoWd6qrKPGHiGNswGIxmIUaYffEd2x/SoTOFdrx+
+        VgB3rT1Cs4OLWDNhwz4DETkn4/akgCmdvPGWvEh8q6+JcaPSoB+di9MI1b5cZ46qgROuBTL92bTrK
+        QbQcLhsieDBtI6sSj1sVgCPlDBbWAREVZ58AcqCRtC4bKxtTiikDonSZ4vl2RhLWBjUZ8Rmsvb5P1
+        1QIB/IRu6sB9nSiIvXULUTXOYNIxG10atJ3+gNkxzGHBXj96gf6X88Dwfl17Y4xNIU05eWF3chuIM
+        s8Z2GKjA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPk0n-002oMY-Vg; Mon, 13 Sep 2021 11:20:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A95F1300093;
+        Mon, 13 Sep 2021 13:20:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9817E207C3400; Mon, 13 Sep 2021 13:20:32 +0200 (CEST)
+Date:   Mon, 13 Sep 2021 13:20:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] locking: Remove rt_rwlock_is_contended()
+Message-ID: <YT80AB8/G59QBSVq@hirez.programming.kicks-ass.net>
+References: <20210906143004.2259141-1-bigeasy@linutronix.de>
+ <20210907100944.7qu3frjuuty3oi3d@linutronix.de>
+ <20210907103458.l2iyvjps5bjwnzng@linutronix.de>
+ <20210910161614.GJ4323@worktop.programming.kicks-ass.net>
+ <20210910163704.ykotcrvbt6yaqron@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910163704.ykotcrvbt6yaqron@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should defer eventfd_signal() to the workqueue when
-eventfd_signal_allowed() return false rather than return
-true.
+On Fri, Sep 10, 2021 at 06:37:04PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-09-10 18:16:14 [+0200], Peter Zijlstra wrote:
+> > On Tue, Sep 07, 2021 at 12:34:58PM +0200, Sebastian Andrzej Siewior wrote:
 
-Fixes: b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
----
- fs/aio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Yes. I got arguments against it after sleeping :)
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 51b08ab01dff..8822e3ed4566 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -1695,7 +1695,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
- 		list_del(&iocb->ki_list);
- 		iocb->ki_res.res = mangle_poll(mask);
- 		req->done = true;
--		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
-+		if (iocb->ki_eventfd && !eventfd_signal_allowed()) {
- 			iocb = NULL;
- 			INIT_WORK(&req->work, aio_poll_put_work);
- 			schedule_work(&req->work);
--- 
-2.11.0
+Sleep is magical :-)
 
+> > AFAICT the _is_contended() can still use useful even with preemption,
+> > the typicla use case is a long lock-holder deciding to drop the lock in
+> > order to let someone else in. That still works with preemptible locks,
+> > no?
+> 
+> Sure. We can do that. Then we should look into:
+> - fixing rwsem_is_contended() for the writer. The writer always observes
+>   true even with no waiter around.
+
+Right, that function does look somewhat dodgy. I'm thinking the current
+function returns true if there's more than a single reader present (or a
+writer) present, which is not the same.
+
+I suppose it shoud return something like:
+
+  for a writer: rt_mutex_is_contended(&rwb->rtmutex);
+  for a reader: rt_mutex_is_locked(&rwb->rtmutex);
+
+However, given the below arguments,,,
+
+> - checking the top waiter list vs priority of the lock owner/current. If
+>   the current lock owner has the highest priority then the unlock+lock
+>   is probably pointless as he regains the lock.
+>   For the spin_lock() case, if the owner is SCHED_OTHER and the waiter
+>   is SCHED_OTHER then unlock+lock will give the lock to the previous
+>   owner due to rt_mutex_steal() working in his favour. Unless there is a
+>   preemption.
+
+That is a good argument against all this; I had not considered that.
+
+> - reader checking for contention is probably pointless. It works with a
+>   pending writer and one reader since a second reader will hold-off the
+>   writer from acquiring the lock. Also if the reader does unlock+lock
+>   then writer might not be quick enough.
+
+Should be fixable with a handoff, but yeah.
+
+OK, I suppose the safe and easy option is to never report contention as
+per your latest patch, and if/when someone complains about it, they can
+sort through these issues :-)
