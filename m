@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F12409F0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84331409F19
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244232AbhIMVXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
+        id S243740AbhIMVah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhIMVXK (ORCPT
+        with ESMTP id S230080AbhIMVae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:23:10 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC832C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:21:53 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id 5so6722845plo.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:21:53 -0700 (PDT)
+        Mon, 13 Sep 2021 17:30:34 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC24C061574;
+        Mon, 13 Sep 2021 14:29:17 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id t8so11760326wrq.4;
+        Mon, 13 Sep 2021 14:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fWNyNuWnfBEyX//B3PcmZaO6uYna7uC+39up3Pmvm+8=;
-        b=VNbYPScpWdu/+9kJQYujI627m1cbPd5AK0q3W7rUtsjD+wQqf5uxTRUPkyNLcI+vsQ
-         95ls9st99bgw1HEG0Lg2EnQtls8De5iWrAA1e8dA6kh+GcSy+cQi+FQaCdfsLKjo25sM
-         vlVpDN7nfXWECP+z3ri6WMc3A2iYS3cqkW6Gppp2HlyhbcyOJVCH8kRBKwlxialjStqK
-         9CR9Oo1Bmn654iRbxkf5vE6oPSYOMxNOKwU8ABELek1ptfDV3XlL6eDmnWRy3x8yD2ch
-         2471SYHeslbj40c3FpwZTJgvANBUZxfrTM5K+vimM47ItTxkgOkK3Qd736c7HNwuu2vy
-         gVWQ==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Yrsaonh+fwfWkOFuk4W3hgRjDE4kKeMZ2nofn8EWuSk=;
+        b=SPGV9nVcIjEcTcr8v7qcpAvmEAiBFUPKnWxxFaMRIYkr0kub9plmt6BO6OkWC8pOBa
+         dojnryqUBfk9bUKqoALqoBJqQFLL9L+OLfsaD16DBTlQrARpZI/O926EaobYOffFo4P0
+         EEf0giGkJBDI5g/eGzq/fgTb3oR3CRFRBrCFVYJEOBmSQ2CCD/w4K1pa87FT7SBQ4IuG
+         x8uOPi32YWicYR18NNTfXTjp+V3jorUuA3G7g2g022u32dUQm4gLaURw0WEb6Uan6WoI
+         D7+QVEmijL/SSYVM8OiQdgyaHSC8Ntpz2jAojKPtYnJ59BahdFPA+w3p5nzVIBHuJzXl
+         pR7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fWNyNuWnfBEyX//B3PcmZaO6uYna7uC+39up3Pmvm+8=;
-        b=Zoq0XRyLF8J7ircNLDGkOjD1Hn+NeskmmauhbJthrcDbOgmTb+UYjm1ZRNo4AhTjKg
-         nXHhip8bgVbQq4Ps3R3NYS7jnUSFyJnDqLFQkia6rldHsy2nF4EabbfjoB/Y2mLp80zj
-         IcIUUVCqZNGHh8Wy2EwIe50gAFXq0BUORJqGRnP77Vp+8/8KchedFqRsqqwjnlAIquSO
-         uekL6KGTrZG+Kaed6ibirjqjyc7R9+YxEF3KzDg1PvAfzD847EtM5jCNe9FImmi06ITq
-         94UTMVdaGx7W6I2QIc9caznJ/kxiDdMcMDbwJLL185T1QYl/cosRJZj5u4ya1LZdQc3g
-         dM8A==
-X-Gm-Message-State: AOAM532X4TGy8B5fuBORiQLUfo5sQrYQODy8EIU3k1igl5MXvalsqH6m
-        dECPiSmZBObbCq7NslmN0as7Ww==
-X-Google-Smtp-Source: ABdhPJwvIW9IiYxlpkcbkQt8tmAgik541eS8PeQM06VAFcAI9aAjBD1MujGdRq9Puie33WX2z1QICg==
-X-Received: by 2002:a17:902:a710:b029:12b:9b9f:c461 with SMTP id w16-20020a170902a710b029012b9b9fc461mr12262098plq.59.1631568113182;
-        Mon, 13 Sep 2021 14:21:53 -0700 (PDT)
-Received: from google.com (150.12.83.34.bc.googleusercontent.com. [34.83.12.150])
-        by smtp.gmail.com with ESMTPSA id h4sm9572790pgn.6.2021.09.13.14.21.52
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Yrsaonh+fwfWkOFuk4W3hgRjDE4kKeMZ2nofn8EWuSk=;
+        b=Vht3pNOgIuuWodgNmC+Hwey/bk2C2K/ekAMfaCu3aRw/LALUs7zwiHU4tEx7c1TWCb
+         qSA8tkcOwJoT+HNzNIGSQGHfh5E8Bw1zn9Khi437VvhOJpzUxKM+Jb9v/AdnxyvggtMh
+         6EXPqsjcpKDd009bIjx3o/29i0zyx/slgc/NwVDGkG/UagyvKOC8Bm28pzW/GoT0cuRQ
+         hC4qQbBn8MJcBKfry9aha5SzR/CiIJongg2NEQKqqY8Md6eGJdPoIJkO5lSL8q4p/yGE
+         ms4xYJ37OSiXVWYU8RDo8DM9IHfrbtipxzEshuLjvubU3SBftmrId5N5M4hEfUifo/V6
+         2/6Q==
+X-Gm-Message-State: AOAM531fs507gZV/zTAE5NNGCvcYXkElT4CtzJE/dkUOb0Ok+9TQsmjV
+        XJ7yrrffVD2tZdFkk5R9hjY=
+X-Google-Smtp-Source: ABdhPJxj1AOOH9kEnMpO0hupTfBuOX9H7isKcF0BtPmJh/z4MmxTBDyiBWspaTNgPrON6MBXyKHnhw==
+X-Received: by 2002:adf:fb8d:: with SMTP id a13mr14877270wrr.164.1631568555840;
+        Mon, 13 Sep 2021 14:29:15 -0700 (PDT)
+Received: from [192.168.1.21] ([195.245.16.219])
+        by smtp.gmail.com with ESMTPSA id v20sm5736wmh.22.2021.09.13.14.29.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 14:21:52 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 14:21:49 -0700
-From:   Ricardo Koller <ricarkol@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v5 09/14] KVM: arm64: selftests: Add guest support to get
- the vcpuid
-Message-ID: <YT/A7YcsxxaBZTCn@google.com>
-References: <20210913204930.130715-1-rananta@google.com>
- <20210913204930.130715-10-rananta@google.com>
+        Mon, 13 Sep 2021 14:29:15 -0700 (PDT)
+Message-ID: <2cd73e19fde5a9dee6a962f9994b4dd5ea4d21be.camel@gmail.com>
+Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Sep 2021 23:29:14 +0200
+In-Reply-To: <YM60mjew2mqMAMRO@google.com>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+         <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+         <YMfQR8iM9be5Qg8+@google.com>
+         <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
+         <YM60mjew2mqMAMRO@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913204930.130715-10-rananta@google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 08:49:25PM +0000, Raghavendra Rao Ananta wrote:
-> At times, such as when in the interrupt handler, the guest wants
-> to get the vcpuid that it's running on to pull the per-cpu private
-> data. As a result, introduce guest_get_vcpuid() that returns the
-> vcpuid of the calling vcpu. The interface is architecture
-> independent, but defined only for arm64 as of now.
-> 
-> Suggested-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  tools/testing/selftests/kvm/include/kvm_util.h      | 2 ++
->  tools/testing/selftests/kvm/lib/aarch64/processor.c | 6 ++++++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 010b59b13917..5770751a5735 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -400,4 +400,6 @@ uint64_t get_ucall(struct kvm_vm *vm, uint32_t vcpu_id, struct ucall *uc);
->  int vm_get_stats_fd(struct kvm_vm *vm);
->  int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid);
->  
-> +int guest_get_vcpuid(void);
-> +
->  #endif /* SELFTEST_KVM_UTIL_H */
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> index db64ee206064..f1255f44dad0 100644
-> --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-> @@ -277,6 +277,7 @@ void aarch64_vcpu_setup(struct kvm_vm *vm, int vcpuid, struct kvm_vcpu_init *ini
->  	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TCR_EL1), tcr_el1);
->  	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_MAIR_EL1), DEFAULT_MAIR_EL1);
->  	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TTBR0_EL1), vm->pgd);
-> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TPIDR_EL1), vcpuid);
->  }
->  
->  void vcpu_dump(FILE *stream, struct kvm_vm *vm, uint32_t vcpuid, uint8_t indent)
-> @@ -426,3 +427,8 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
->  	assert(vector < VECTOR_NUM);
->  	handlers->exception_handlers[vector][0] = handler;
->  }
-> +
-> +int guest_get_vcpuid(void)
-> +{
-> +	return read_sysreg(tpidr_el1);
-> +}
-> -- 
-> 2.33.0.309.g3052b89438-goog
->
+Hello Dmitry,
 
-Very nice!
+On Sat, 2021-06-19 at 20:23 -0700, Dmitry Torokhov wrote:
+> > On Mon, 2021-06-14 at 14:55 -0700, Dmitry Torokhov wrote:
+> > > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> > > > to Common Clock Framework.
+> > > 
+> > > Can this be merged standalone?
+> > 
+> > In principle, yes, but I thought it would be easier if the patches
+> > would go via the same path as CCF conversion.
+> 
+> OK, in this case:
+> 
+> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Reviewed-by: Ricardo Koller <ricarkol@google.com>
+our initial attempt to find a maintainer for the whole series
+didn't work out. Would you take this single patch, please?
+Three others were already taken into respective subsystems
+and I'll ping the rest of maintainers individually...
+
+-- 
+Alexander Sverdlin.
+
+
