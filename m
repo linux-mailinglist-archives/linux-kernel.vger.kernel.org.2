@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C249409DA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553DD409DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347775AbhIMUEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
+        id S241594AbhIMUHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347763AbhIMUEB (ORCPT
+        with ESMTP id S242902AbhIMUHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:04:01 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8DBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:02:44 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id s10so23528323lfr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:02:44 -0700 (PDT)
+        Mon, 13 Sep 2021 16:07:48 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A92C0613A8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:06:10 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso15019149otp.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:06:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gVlem88uR6+O3AEpNn6Yh2wjkDnIsvdG9SBuzHecDPY=;
-        b=UtwnzoxIKMk4tOfMxxm4CpllD0ShmrKrKQSd8xl/r5+Nf6ZLZtS9/OyvibeXeJRjJm
-         qJb8asXWsxkH8rMGhQmFiAc9zt9A20ouuq77sfZCOcwEBRY3tnwTv8gByYQCor/Quz48
-         og1G2y8Pl9wxe7Gr4qj+V+3W1nEqAaqVtcdiHmee1cHKUsJcv7M1ZOYmo851M7WyJjxB
-         s2cwUJHvcdnzka3/e/fwcF8RA8HvXllV2N/rj5OSMWm+RkgRLLf9Vx78zmfKw/WSWc7j
-         E1acsbtB9KLKrBrScCWd2Unh4K44M/5o+4GJsvBA1ZhCB35t9GyhLHgeM4zk+YAM2EGy
-         Bj6A==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=8JlT5JO0f8nryHiaEll8oiHPpQCulxYXgviYtcuhVxo=;
+        b=kQK19oR/tRPgDwwinGrctqV/cjYE/BHCVlg9i1sPNtvaHnhPTv6PufYg07FCpwujoz
+         NPHcty65gIJY/rRoQASOYq4YAXjCzO8ruiwMNV9kLIGZIFClyOyZiPPiOchUbudJeN9e
+         yM2gf18ELsJwMfLsUTHPc0WMwjAOJoTjBK2zk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gVlem88uR6+O3AEpNn6Yh2wjkDnIsvdG9SBuzHecDPY=;
-        b=ohv+Lbf26h88n1ZoDkngL15xjGVMC9rn8IPtswrnvXYgzw+vCiqzGIwj2DBr+PGWIr
-         mnY5Al7kw3T83WJKsTGlSg9oSd6uc6/etrt5dUYyAefa6phyRL6gcBUcR1qkv1pTNTuu
-         umBYEXShdzpYYNSLVsFhgZy03WTK3EY20AgiV2vS8R6c2LZmRFh1aMeFTpvAQF5P6lI3
-         GPdsIlMEuszFQXjZjsRR9K28VWHRBW1KwLbyB8Nr62J+NVehEL59aFbUSQ3inUJF7T5j
-         JymBHVRlsZhvDnFnhuqALrh/0QrQFmcI7QXVKY0VE4/ijajB7gTPLzo5/WbrEwgCRyQt
-         dWvA==
-X-Gm-Message-State: AOAM531QfotECHV1HDsererxjN6d/q4nlTsdEdoV/JR8Qe5e0BWhJ6W7
-        4wvnoz39s1G8wXnDBGH+73wGmDQQyg/bPKtlgpq2RQ==
-X-Google-Smtp-Source: ABdhPJybQilluIHG6i+P60qv7XmPd0cdDddL5AUg5XZKqBiVfw8k7+1hrq7lipQL53Lr2BDFIjLWKWvU6iKbwY7roOA=
-X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr9744729lfa.523.1631563363038;
- Mon, 13 Sep 2021 13:02:43 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=8JlT5JO0f8nryHiaEll8oiHPpQCulxYXgviYtcuhVxo=;
+        b=hlBaO5VfZ8Lx0QICdJifirVdSijfK1mtY9bLRI7R7GUuEsV3fVsWlZssrnTVf8atQF
+         JZKVTCSg1Zp0UPoPF4Z9zk950+ATzmhNXleXklDKgwXqDDthXNDy5m0FsgpZuqZ3jHKB
+         69uwZlq5h9yGFFror8qvNkcpheChuUkxRk6BNeIf8EYtnI1CPoynQdHs1fw73Z11552R
+         IqOezZoxvYx08k/BzvMqVjuKd8N7f3Qs8Ps9mxHlMKqL6YDY0vAAXK0txZQgH80ZCPE4
+         0aogUSG9x46vBnCUybydvnX70QoBM6E+SHFNeziaNLB4g3xqNgIj+ktV19zlaXQwWE1w
+         vjig==
+X-Gm-Message-State: AOAM530VLPzSndgVZvcyvFlDuwmZj9KzdEqqr993iRNfBP2rMoyWqsbe
+        PW9onRBagqEeiA2gzuntCpU9Z+mucu3p3EAmfkcjFA==
+X-Google-Smtp-Source: ABdhPJxgxKme3xoUGCx5xyhrZPhc+XqJ9apKSj199UxcUSc8rkyCSP5ymrGxutXE0sY+CvdylfwFOBKRbqVanKrarNw=
+X-Received: by 2002:a05:6830:719:: with SMTP id y25mr11195587ots.77.1631563569866;
+ Mon, 13 Sep 2021 13:06:09 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 13 Sep 2021 13:06:09 -0700
 MIME-Version: 1.0
-References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
- <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
- <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
- <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com> <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
-In-Reply-To: <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 13:02:32 -0700
-Message-ID: <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
-Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
-To:     sedat.dilek@gmail.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
-        Kees Cook <keescook@chromium.org>
+In-Reply-To: <1631223065-12607-1-git-send-email-khsieh@codeaurora.org>
+References: <1631223065-12607-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 13 Sep 2021 13:06:09 -0700
+Message-ID: <CAE-0n50P2OR9CPku3qq7+xR56fpg2Y7JDinikkY+uX6y9XtcRA@mail.gmail.com>
+Subject: Re: [PATCH v3] phy: qcom-qmp: add support for display port voltage
+ and pre-emphasis swing
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, p.zabel@pengutronix.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:57 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+Quoting Kuogee Hsieh (2021-09-09 14:31:05)
+> @@ -3757,16 +3796,14 @@ static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
 >
-> On Mon, Sep 13, 2021 at 9:53 PM 'Nick Desaulniers' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > On Mon, Sep 13, 2021 at 11:39 AM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > There's an issue with my alternative approach
-> > > (https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863)
-> > > with declaring the local variable z in div_64() since either operand
-> > > could be 64b, which result in an unwanted truncation if the dividend
-> > > is 32b (or less, and divisor is 64b). I think (what I realized this
-> > > weekend) is that we might be able to replace the `if` with
-> > > `__builtin_choose_expr`, then have that whole expression be the final
-> > > statement and thus the "return value" of the statement expression.
-> >
-> > Christ...that...works? Though, did Linus just merge my patches for gcc 5.1?
-> >
->
-> "Merge branch 'gcc-min-version-5.1' (make gcc-5.1 the minimum version)"
+>  static void qcom_qmp_v4_phy_configure_dp_tx(struct qmp_phy *qphy)
+>  {
+> -       /* Program default values before writing proper values */
+> -       writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> -       writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+> -
+> -       writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> -       writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> -
+> -       qcom_qmp_phy_configure_dp_swing(qphy,
+> +       if (__qcom_qmp_phy_configure_dp_swing(qphy,
+>                         QSERDES_V4_TX_TX_DRV_LVL,
+> -                       QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> +                       QSERDES_V4_TX_TX_EMP_POST1_LVL,
+> +                       (const u8 *)qmp_dp_v4_voltage_swing_hbr_rbr,
 
-Ha! I pulled+rebased and this code disappeared...I thought I had
-rebased on the wrong branch or committed work to master accidentally.
-Patch to stable-only inbound.
--- 
-Thanks,
-~Nick Desaulniers
+Surely we can pass a 2d-array to a function in C? We know the size of
+the array is always a 4x4 so we could enforce that in the type so the
+compiler complains if we try to pass something else.
+
+> +                       (const u8 *)qmp_dp_v4_pre_emphasis_hbr_rbr,
+> +                       (const u8 *)qmp_dp_v4_voltage_swing_hbr3_hbr2,
+> +                       (const u8 *)qmp_dp_v4_pre_emphasis_hbr3_hbr2) < 0)
+> +               return;
+
+It's void and this is the end of the function. Why is there an if
+condition and a return?
+
+>  }
+>
+>  static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
