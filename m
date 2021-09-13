@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EF540903F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7361D40903C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244218AbhIMNvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51790 "EHLO mail.kernel.org"
+        id S243270AbhIMNu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243763AbhIMNqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243923AbhIMNqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:46:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8ACF61106;
-        Mon, 13 Sep 2021 13:32:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DA2161390;
+        Mon, 13 Sep 2021 13:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539931;
-        bh=yBc1wclPR/UdRH6JD6duKhVPAwdbfGo3C9tGUoOn6h8=;
+        s=korg; t=1631539933;
+        bh=E2gaqacbnSvjmZv8/VuoSdvRIMm9/gn2oFPg9AuhrBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oo6qMn8+M2OqTp4yGctPsap0Tkqgbs83GuGjKeET+T0WrpcrasMemPsGdZu3jukIh
-         CaVl693EC8gj+tTE4RBpgHnHAU9MT33zrn2mw+tBuSBUhZRUOQy8NUAlgX8L8W36DG
-         h3CVb9XfFHDkk4sbqQpbr7IaAcyN7ipQ7Zc62X1Q=
+        b=QLufXUFtFFjBMezgPSV3IAtSY3gpSAa7W0W3tudBw/izQstvGpHGzt3HNxdkKBJsq
+         SgYv9fF/yWNbBkQYUKnCde7cG11jSFyn6bu70RCyz9AYziBLZkpgu3U/uqmzf/aIwh
+         IS96kHrW+WPcpXxuSig7snTxn5KhvcPPUnRUrfzk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 219/236] io_uring: IORING_OP_WRITE needs hash_reg_file set
-Date:   Mon, 13 Sep 2021 15:15:24 +0200
-Message-Id: <20210913131107.813773529@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 220/236] bio: fix page leak bio_add_hw_page failure
+Date:   Mon, 13 Sep 2021 15:15:25 +0200
+Message-Id: <20210913131107.845268278@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -38,35 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit 7b3188e7ed54102a5dcc73d07727f41fb528f7c8 upstream.
+commit d9cf3bd531844ffbfe94b16e417037a16efc988d upstream.
 
-During some testing, it became evident that using IORING_OP_WRITE doesn't
-hash buffered writes like the other writes commands do. That's simply
-an oversight, and can cause performance regressions when doing buffered
-writes with this command.
+__bio_iov_append_get_pages() doesn't put not appended pages on
+bio_add_hw_page() failure, so potentially leaking them, fix it. Also, do
+the same for __bio_iov_iter_get_pages(), even though it looks like it
+can't be triggered by userspace in this case.
 
-Correct that and add the flag, so that buffered writes are correctly
-hashed when using the non-iovec based write command.
-
-Cc: stable@vger.kernel.org
-Fixes: 3a6820f2bb8a ("io_uring: add non-vectored read/write commands")
+Fixes: 0512a75b98f8 ("block: Introduce REQ_OP_ZONE_APPEND")
+Cc: stable@vger.kernel.org # 5.8+
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/1edfa6a2ffd66d55e6345a477df5387d2c1415d0.1626653825.git.asml.silence@gmail.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |    1 +
- 1 file changed, 1 insertion(+)
+ block/bio.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -889,6 +889,7 @@ static const struct io_op_def io_op_defs
- 	},
- 	[IORING_OP_WRITE] = {
- 		.needs_file		= 1,
-+		.hash_reg_file		= 1,
- 		.unbound_nonreg_file	= 1,
- 		.pollout		= 1,
- 		.async_size		= sizeof(struct io_async_rw),
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -978,6 +978,14 @@ static int __bio_iov_bvec_add_pages(stru
+ 	return 0;
+ }
+ 
++static void bio_put_pages(struct page **pages, size_t size, size_t off)
++{
++	size_t i, nr = DIV_ROUND_UP(size + (off & ~PAGE_MASK), PAGE_SIZE);
++
++	for (i = 0; i < nr; i++)
++		put_page(pages[i]);
++}
++
+ #define PAGE_PTRS_PER_BVEC     (sizeof(struct bio_vec) / sizeof(struct page *))
+ 
+ /**
+@@ -1022,8 +1030,10 @@ static int __bio_iov_iter_get_pages(stru
+ 			if (same_page)
+ 				put_page(page);
+ 		} else {
+-			if (WARN_ON_ONCE(bio_full(bio, len)))
+-                                return -EINVAL;
++			if (WARN_ON_ONCE(bio_full(bio, len))) {
++				bio_put_pages(pages + i, left, offset);
++				return -EINVAL;
++			}
+ 			__bio_add_page(bio, page, len, offset);
+ 		}
+ 		offset = 0;
+@@ -1068,6 +1078,7 @@ static int __bio_iov_append_get_pages(st
+ 		len = min_t(size_t, PAGE_SIZE - offset, left);
+ 		if (bio_add_hw_page(q, bio, page, len, offset,
+ 				max_append_sectors, &same_page) != len) {
++			bio_put_pages(pages + i, left, offset);
+ 			ret = -EINVAL;
+ 			break;
+ 		}
 
 
