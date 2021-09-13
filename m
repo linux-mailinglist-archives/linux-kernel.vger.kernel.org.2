@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1D1409C5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0AB409C5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347216AbhIMSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:36:45 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:51929 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241450AbhIMSgn (ORCPT
+        id S1347286AbhIMShR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:37:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39806 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241450AbhIMShO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:36:43 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 452b42da;
-        Mon, 13 Sep 2021 20:35:23 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 20:35:23 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, alyssa@rosenzweig.io,
-        kettenis@openbsd.org, tglx@linutronix.de, robh+dt@kernel.org,
-        marcan@marcan.st, bhelgaas@google.com, nsaenz@kernel.org,
-        jim2101024@gmail.com, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        daire.mcnamara@microchip.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org
-In-Reply-To: <871r5tcwhp.wl-maz@kernel.org> (message from Marc Zyngier on Sun,
-        12 Sep 2021 22:30:42 +0100)
-Subject: Re: [PATCH v4 4/4] arm64: apple: Add PCIe node
-References: <20210827171534.62380-1-mark.kettenis@xs4all.nl>
-        <20210827171534.62380-5-mark.kettenis@xs4all.nl> <871r5tcwhp.wl-maz@kernel.org>
-Message-ID: <5614581066cc67fa@bloch.sibelius.xs4all.nl>
+        Mon, 13 Sep 2021 14:37:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631558158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ScHcN8dLaumVNUqatliuYwE9cKX9b+BGBYhfk+zY8Jg=;
+        b=S5Jgwrtm7QywN3E7+kXSxyxHIXCed/iPUUYoN90TkSkE52Ze+NXRjRyR8sCNo0O7jDb0z1
+        qGFcx5jn2JstM+eAPTKjXLUgY9lWu+Dg0qY+wokuIVhQziL6xvgtkdTJ+ox8Zw8r/Sn844
+        BPXcYXgJobXbIwdfqqD8NHLCRAYOnqU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398--UDtBZbrO_qDOIn4cNKg8A-1; Mon, 13 Sep 2021 14:35:57 -0400
+X-MC-Unique: -UDtBZbrO_qDOIn4cNKg8A-1
+Received: by mail-ed1-f70.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so5354541edd.22
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:35:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ScHcN8dLaumVNUqatliuYwE9cKX9b+BGBYhfk+zY8Jg=;
+        b=Ke6GqlF86VZEm0+93EANW3jbHQ6bfHC/eOW4ADNM4Fg/ANxsZAdiLyeFYK7NmfC+RD
+         LjHsc7vSAj95oRUzTMNjBDSo6eVa5FKVKPBxgAmwOL1XGuHER0XzESM4HW3ipHkTHms5
+         684c8L0Igq8orksS29n+mXmxbNZM5UaiJYsvIq0KbTlnXHK2D5uN+TsQjhN8PC62GWR2
+         LAE5UHbyHfSwC413ZWHcetUX9DdnK59LVz6MjW0oKWjcauXX7sCcYeWUK/GgiRpA2aV8
+         Jl5a2hbnLUHpnE/2oznN8JswwGXl8muWRLkw8FavnSkSAdQwJsRX4FWGkN3jqJvTKwFp
+         SMSg==
+X-Gm-Message-State: AOAM531n1L+HKeN8D4sd4ZBvgVPU3NsxUmbvG9eE48rrCK6jUHBVbVgt
+        2AJxiX6eAmJdytdlUuW1Jfhrj1gswf8LfAz2vovMwIl0dGhScliWGk0anQPJewBz4f+F7Z/nj9t
+        FQT2LAJ87jBUqqcQPYbp84vIL
+X-Received: by 2002:a05:6402:186:: with SMTP id r6mr14397453edv.37.1631558155169;
+        Mon, 13 Sep 2021 11:35:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfyw0ATWgIXoWJXFVBnp8QaQsJtvhjjjhWFxN1Vg7ZJVpr0Wea9ho+vNOhg2FYNgJBj/GnFg==
+X-Received: by 2002:a05:6402:186:: with SMTP id r6mr14397426edv.37.1631558154925;
+        Mon, 13 Sep 2021 11:35:54 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b5sm3861308ejq.56.2021.09.13.11.35.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 11:35:54 -0700 (PDT)
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210913131153.1202354-2-pbonzini@redhat.com>
+ <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
+ <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
+ <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
+ <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
+ <480cf917-7301-4227-e1c4-728b52537f46@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2b595588-eb98-6d30-dc50-794fc396bf7e@redhat.com>
+Date:   Mon, 13 Sep 2021 20:35:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <480cf917-7301-4227-e1c4-728b52537f46@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Sun, 12 Sep 2021 22:30:42 +0100
-> From: Marc Zyngier <maz@kernel.org>
-
-Hi Marc,
-
-> On Fri, 27 Aug 2021 18:15:29 +0100,
-> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> > 
-> > From: Mark Kettenis <kettenis@openbsd.org>
-> > 
-> > Add node corresponding to the apcie,t8103 node in the
-> > Apple device tree for the Mac mini (M1, 2020).
-> > 
-> > Clock references and DART (IOMMU) references are left out at the
-> > moment and will be added once the appropriate bindings have been
-> > settled upon.
-> > 
-> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > ---
-> >  arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
-> >  1 file changed, 63 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> > index 503a76fc30e6..6e4677bdef44 100644
-> > --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> > +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> > @@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
-> >  				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
-> >  				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
-> >  		};
-> > +
-> > +		pcie0: pcie@690000000 {
-> > +			compatible = "apple,t8103-pcie", "apple,pcie";
-> > +			device_type = "pci";
-> > +
-> > +			reg = <0x6 0x90000000 0x0 0x1000000>,
-> > +			      <0x6 0x80000000 0x0 0x4000>,
+On 13/09/21 17:29, Dave Hansen wrote:
+> On 9/13/21 8:14 AM, Paolo Bonzini wrote:
+>> On 13/09/21 16:55, Dave Hansen wrote:
+>>>> By "Windows startup" I mean even after guest reboot.  Because another
+>>>> process could sneak in and steal your EPC pages between a close() and an
+>>>> open(), I'd like to have a way to EREMOVE the pages while keeping them
+>>>> assigned to the specific vEPC instance, i.e.*without*  going through
+>>>> sgx_vepc_free_page().
+>>> Oh, so you want fresh EPC state for the guest, but you're concerned that
+>>> the previous guest might have left them in a bad state.  The current
+>>> method of getting a new vepc instance (which guarantees fresh state) has
+>>> some other downsides.
+>>>
+>>> Can't another process steal pages via sgxd and reclaim at any time?
+>>
+>> vEPC pages never call sgx_mark_page_reclaimable, don't they?
 > 
-> Only exposing 16kB for the 'rc' crashes the Linux driver as it tries
-> to configure the port ref-clock configurations, which live much
-> higher:
+> Oh, I was just looking that they were on the SGX LRU.  You might be right.
+> But, we certainly don't want the fact that they are unreclaimable today
+> to be part of the ABI.  It's more of a bug than a feature.
+
+Sure, that's fine.
+
+>>> What's the extra concern here about going through a close()/open()
+>>> cycle?  Performance?
+>>
+>> Apart from reclaiming, /dev/sgx_vepc might disappear between the first
+>> open() and subsequent ones.
 > 
-> #define CORE_LANE_CFG(port)		(0x84000 + 0x4000 * (port))
+> Aside from it being rm'd, I don't think that's possible.
 > 
-> Previous versions of the binding had this region as 1MB, which made
-> things work.
 
-Oops.  When I formalized the binding, I looked at the Apple DT and
-used the sizes from there.  And didn't notice that this wasn't
-sufficient since U-Boot doesn't actually use the size of the region to
-create a mapping like an actual OS would do.  It is somewhat unclear
-how big the regions really are, but as marcan noted at some point in
-the past the sizes in the Apple DT seem to be somewhat inconsistent so
-religiously following what is done there may not make sense.  So I'll
-fix this in v5 (also in the example in the DT binding).
+Being rm'd would be a possibility in principle, and it would be ugly for 
+it to cause issues on running VMs.  Also I'd like for it to be able to 
+pass /dev/sgx_vepc in via a file descriptor, and run QEMU in a chroot or 
+a mount namespace.  Alternatively, with seccomp it may be possible to 
+sandbox a running QEMU process in such a way that open() is forbidden at 
+runtime (all hotplug is done via file descriptor passing); it is not yet 
+possible, but it is a goal.
 
-Corellium uses 1MB, which makes more sense unless we break up the
-block into multiple ranges.
+Paolo
 
-> > +			      <0x6 0x81000000 0x0 0x8000>,
-> > +			      <0x6 0x82000000 0x0 0x8000>,
-> > +			      <0x6 0x83000000 0x0 0x8000>;
-> 
-> These used to be 16kB, and are now twice as much. Didn't cause any
-> issue with the Linux driver, but I wonder what trigger either change.
-
-0x8000 is what the Apple DT uses.
-
-Since we don't have authorative documentation for the chip we have to
-make some guesses here.  I suspect we should try to keep the sizes as
-small as possible while sticking to sizes of 2^n?  Then it probably
-makes sense to use 0x4000 for these ranges.
-
-Cheers,
-
-Mark
