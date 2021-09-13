@@ -2,270 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EF34091B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1BB4094A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242580AbhIMOD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46224 "EHLO mail.kernel.org"
+        id S1345199AbhIMOdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343586AbhIMOAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:00:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4051461A3D;
-        Mon, 13 Sep 2021 13:37:42 +0000 (UTC)
+        id S1346413AbhIMO2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:28:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3041561B93;
+        Mon, 13 Sep 2021 13:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540262;
-        bh=AZ0/MzUWNrc4mK6u9alJw5JjXypQq2kK/ska27I9Lz0=;
+        s=korg; t=1631541014;
+        bh=xS9WL+Fre7/1R/6UqIqDuJp4qna4GDASzkCwcd8Scb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EWQG3SVGEkAnU07dZ+O3eMsF7NdiK8b6T8Hnp7aFns2RvylqtNRo+G0923HZT6GDc
-         Q2ep/7DYCzFeRBTOegCab7O1yWX0NBbsFPSs7HNjPouCPNwCVaifDhd4bw8ozuyjGq
-         J4yjpB+j8/Bp/j9yy80Wb5mZJaOfVt0gtv+JQP1E=
+        b=kNrb6o22RRoXFeLOETsD63knNNGxrqJzCTIdIef73JgUrLlsEVhaoLBuU4Ajad+ye
+         5l/MT9cJZrbA8sYgQjDUBKy50jlcEbcwlF9kULPuWJ7TGN50dwN6wB9myw8AnnXXCS
+         pxhOXnHehPmhRn9T/XoQDiiRkotjiKwpGEV07IC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 119/300] drm/amdgpu/acp: Make PM domain really work
+        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 126/334] tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
 Date:   Mon, 13 Sep 2021 15:13:00 +0200
-Message-Id: <20210913131113.421223603@linuxfoundation.org>
+Message-Id: <20210913131117.627037049@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Martin KaFai Lau <kafai@fb.com>
 
-[ Upstream commit aff890288de2d818e4f83ec40c9315e2d735df07 ]
+[ Upstream commit 525e2f9fd0229eb10cb460a9e6d978257f24804e ]
 
-Devices created by mfd_add_hotplug_devices() don't really increase the
-index of its name, so get_mfd_cell_dev() cannot find any device, hence a
-NULL dev is passed to pm_genpd_add_device():
-[   56.974926] (NULL device *): amdgpu: device acp_audio_dma.0.auto added t=
-o pm domain
-[   56.974933] (NULL device *): amdgpu: Failed to add dev to genpd
-[   56.974941] [drm:amdgpu_device_ip_init [amdgpu]] *ERROR* hw_init of IP b=
-lock <acp_ip> failed -22
-[   56.975810] amdgpu 0000:00:01.0: amdgpu: amdgpu_device_ip_init failed
-[   56.975839] amdgpu 0000:00:01.0: amdgpu: Fatal error during GPU init
-[   56.977136] ------------[ cut here ]------------
-[   56.977143] kernel BUG at mm/slub.c:4206!
-[   56.977158] invalid opcode: 0000 [#1] SMP NOPTI
-[   56.977167] CPU: 1 PID: 1648 Comm: modprobe Not tainted 5.12.0-051200rc8=
--generic #202104182230
-[   56.977175] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M.=
-/FM2A68M-HD+, BIOS P5.20 02/13/2019
-[   56.977180] RIP: 0010:kfree+0x3bf/0x410
-[   56.977195] Code: 89 e7 48 d3 e2 f7 da e8 5f 0d 02 00 80 e7 02 75 3e 44 =
-89 ee 4c 89 e7 e8 ef 5f fd ff e9 fa fe ff ff 49 8b 44 24 08 a8 01 75 b7 <0f=
-> 0b 4c 8b 4d b0 48 8b 4d a8 48 89 da 4c 89 e6 41 b8 01 00 00 00
-[   56.977202] RSP: 0018:ffffa48640ff79f0 EFLAGS: 00010246
-[   56.977210] RAX: 0000000000000000 RBX: ffff9286127d5608 RCX: 00000000000=
-00000
-[   56.977215] RDX: 0000000000000000 RSI: ffffffffc099d0fb RDI: ffff9286127=
-d5608
-[   56.977220] RBP: ffffa48640ff7a48 R08: 0000000000000001 R09: 00000000000=
-00001
-[   56.977224] R10: 0000000000000000 R11: ffff9286087d8458 R12: fffff3ae044=
-9f540
-[   56.977229] R13: 0000000000000000 R14: dead000000000122 R15: dead0000000=
-00100
-[   56.977234] FS:  00007f9de5929540(0000) GS:ffff928612e80000(0000) knlGS:=
-0000000000000000
-[   56.977240] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   56.977245] CR2: 00007f697dd97160 CR3: 00000001110f0000 CR4: 00000000001=
-506e0
-[   56.977251] Call Trace:
-[   56.977261]  amdgpu_dm_encoder_destroy+0x1b/0x30 [amdgpu]
-[   56.978056]  drm_mode_config_cleanup+0x4f/0x2e0 [drm]
-[   56.978147]  ? kfree+0x3dd/0x410
-[   56.978157]  ? drm_managed_release+0xc8/0x100 [drm]
-[   56.978232]  drm_mode_config_init_release+0xe/0x10 [drm]
-[   56.978311]  drm_managed_release+0x9d/0x100 [drm]
-[   56.978388]  devm_drm_dev_init_release+0x4d/0x70 [drm]
-[   56.978450]  devm_action_release+0x15/0x20
-[   56.978459]  release_nodes+0x77/0xc0
-[   56.978469]  devres_release_all+0x3f/0x50
-[   56.978477]  really_probe+0x245/0x460
-[   56.978485]  driver_probe_device+0xe9/0x160
-[   56.978492]  device_driver_attach+0xab/0xb0
-[   56.978499]  __driver_attach+0x8f/0x150
-[   56.978506]  ? device_driver_attach+0xb0/0xb0
-[   56.978513]  bus_for_each_dev+0x7e/0xc0
-[   56.978521]  driver_attach+0x1e/0x20
-[   56.978528]  bus_add_driver+0x135/0x1f0
-[   56.978534]  driver_register+0x91/0xf0
-[   56.978540]  __pci_register_driver+0x54/0x60
-[   56.978549]  amdgpu_init+0x77/0x1000 [amdgpu]
-[   56.979246]  ? 0xffffffffc0dbc000
-[   56.979254]  do_one_initcall+0x48/0x1d0
-[   56.979265]  ? kmem_cache_alloc_trace+0x120/0x230
-[   56.979274]  ? do_init_module+0x28/0x280
-[   56.979282]  do_init_module+0x62/0x280
-[   56.979288]  load_module+0x71c/0x7a0
-[   56.979296]  __do_sys_finit_module+0xc2/0x120
-[   56.979305]  __x64_sys_finit_module+0x1a/0x20
-[   56.979311]  do_syscall_64+0x38/0x90
-[   56.979319]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   56.979328] RIP: 0033:0x7f9de54f989d
-[   56.979335] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 =
-89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48=
-> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 f5 0c 00 f7 d8 64 89 01 48
-[   56.979342] RSP: 002b:00007ffe3c395a28 EFLAGS: 00000246 ORIG_RAX: 000000=
-0000000139
-[   56.979350] RAX: ffffffffffffffda RBX: 0000560df3ef4330 RCX: 00007f9de54=
-f989d
-[   56.979355] RDX: 0000000000000000 RSI: 0000560df3a07358 RDI: 00000000000=
-0000f
-[   56.979360] RBP: 0000000000040000 R08: 0000000000000000 R09: 00000000000=
-00000
-[   56.979365] R10: 000000000000000f R11: 0000000000000246 R12: 0000560df3a=
-07358
-[   56.979369] R13: 0000000000000000 R14: 0000560df3ef4460 R15: 0000560df3e=
-f4330
-[   56.979377] Modules linked in: amdgpu(+) iommu_v2 gpu_sched drm_ttm_help=
-er ttm drm_kms_helper cec rc_core i2c_algo_bit fb_sys_fops syscopyarea sysf=
-illrect sysimgblt nft_counter xt_tcpudp ipt_REJECT nf_reject_ipv4 xt_conntr=
-ack iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_m=
-angle iptable_raw iptable_security ip_set nf_tables libcrc32c nfnetlink ip6=
-_tables iptable_filter bpfilter input_leds binfmt_misc edac_mce_amd kvm_amd=
- ccp kvm snd_hda_codec_realtek snd_hda_codec_generic crct10dif_pclmul snd_h=
-da_codec_hdmi ledtrig_audio ghash_clmulni_intel aesni_intel snd_hda_intel s=
-nd_intel_dspcfg snd_seq_midi crypto_simd snd_intel_sdw_acpi cryptd snd_hda_=
-codec snd_seq_midi_event snd_rawmidi snd_hda_core snd_hwdep snd_seq fam15h_=
-power k10temp snd_pcm snd_seq_device snd_timer snd mac_hid soundcore sch_fq=
-_codel nct6775 hwmon_vid drm ip_tables x_tables autofs4 dm_mirror dm_region=
-_hash dm_log hid_generic usbhid hid uas usb_storage r8169 crc32_pclmul real=
-tek ahci xhci_pci i2c_piix4
-[   56.979521]  xhci_pci_renesas libahci video
-[   56.979541] ---[ end trace cb8f6a346f18da7b ]---
+st->bucket stores the current bucket number.
+st->offset stores the offset within this bucket that is the sk to be
+seq_show().  Thus, st->offset only makes sense within the same
+st->bucket.
 
-Instead of finding MFD hotplugged device by its name, simply iterate
-over the child devices to avoid the issue.
+These two variables are an optimization for the common no-lseek case.
+When resuming the seq_file iteration (i.e. seq_start()),
+tcp_seek_last_pos() tries to continue from the st->offset
+at bucket st->bucket.
 
-Squash in unused variable removal (Alex)
+However, it is possible that the bucket pointed by st->bucket
+has changed and st->offset may end up skipping the whole st->bucket
+without finding a sk.  In this case, tcp_seek_last_pos() currently
+continues to satisfy the offset condition in the next (and incorrect)
+bucket.  Instead, regardless of the offset value, the first sk of the
+next bucket should be returned.  Thus, "bucket == st->bucket" check is
+added to tcp_seek_last_pos().
 
-BugLink: https://bugs.launchpad.net/bugs/1920674
-Fixes: 25030321ba28 ("drm/amd: add pm domain for ACP IP sub blocks")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+The chance of hitting this is small and the issue is a decade old,
+so targeting for the next tree.
+
+Fixes: a8b690f98baf ("tcp: Fix slowness in read /proc/net/tcp")
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210701200541.1033917-1-kafai@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c | 54 ++++++++++++-------------
- 1 file changed, 26 insertions(+), 28 deletions(-)
+ net/ipv4/tcp_ipv4.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c b/drivers/gpu/drm/amd/=
-amdgpu/amdgpu_acp.c
-index b8655ff73a65..cc9c9f8b23b2 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
-@@ -160,17 +160,28 @@ static int acp_poweron(struct generic_pm_domain *genp=
-d)
- 	return 0;
- }
-=20
--static struct device *get_mfd_cell_dev(const char *device_name, int r)
-+static int acp_genpd_add_device(struct device *dev, void *data)
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index a692626c19e4..db07c05736b2 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2451,6 +2451,7 @@ static void *tcp_get_idx(struct seq_file *seq, loff_t pos)
+ static void *tcp_seek_last_pos(struct seq_file *seq)
  {
--	char auto_dev_name[25];
--	struct device *dev;
-+	struct generic_pm_domain *gpd =3D data;
-+	int ret;
-=20
--	snprintf(auto_dev_name, sizeof(auto_dev_name),
--		 "%s.%d.auto", device_name, r);
--	dev =3D bus_find_device_by_name(&platform_bus_type, NULL, auto_dev_name);
--	dev_info(dev, "device %s added to pm domain\n", auto_dev_name);
-+	ret =3D pm_genpd_add_device(gpd, dev);
-+	if (ret)
-+		dev_err(dev, "Failed to add dev to genpd %d\n", ret);
-=20
--	return dev;
-+	return ret;
-+}
-+
-+static int acp_genpd_remove_device(struct device *dev, void *data)
-+{
-+	int ret;
-+
-+	ret =3D pm_genpd_remove_device(dev);
-+	if (ret)
-+		dev_err(dev, "Failed to remove dev from genpd %d\n", ret);
-+
-+	/* Continue to remove */
-+	return 0;
- }
-=20
- /**
-@@ -181,11 +192,10 @@ static struct device *get_mfd_cell_dev(const char *de=
-vice_name, int r)
-  */
- static int acp_hw_init(void *handle)
- {
--	int r, i;
-+	int r;
- 	uint64_t acp_base;
- 	u32 val =3D 0;
- 	u32 count =3D 0;
--	struct device *dev;
- 	struct i2s_platform_data *i2s_pdata =3D NULL;
-=20
- 	struct amdgpu_device *adev =3D (struct amdgpu_device *)handle;
-@@ -341,15 +351,10 @@ static int acp_hw_init(void *handle)
- 	if (r)
- 		goto failure;
-=20
--	for (i =3D 0; i < ACP_DEVS ; i++) {
--		dev =3D get_mfd_cell_dev(adev->acp.acp_cell[i].name, i);
--		r =3D pm_genpd_add_device(&adev->acp.acp_genpd->gpd, dev);
--		if (r) {
--			dev_err(dev, "Failed to add dev to genpd\n");
--			goto failure;
--		}
--	}
--
-+	r =3D device_for_each_child(adev->acp.parent, &adev->acp.acp_genpd->gpd,
-+				  acp_genpd_add_device);
-+	if (r)
-+		goto failure;
-=20
- 	/* Assert Soft reset of ACP */
- 	val =3D cgs_read_register(adev->acp.cgs_device, mmACP_SOFT_RESET);
-@@ -410,10 +415,8 @@ failure:
-  */
- static int acp_hw_fini(void *handle)
- {
--	int i, ret;
- 	u32 val =3D 0;
- 	u32 count =3D 0;
--	struct device *dev;
- 	struct amdgpu_device *adev =3D (struct amdgpu_device *)handle;
-=20
- 	/* return early if no ACP */
-@@ -458,13 +461,8 @@ static int acp_hw_fini(void *handle)
- 		udelay(100);
+ 	struct tcp_iter_state *st = seq->private;
++	int bucket = st->bucket;
+ 	int offset = st->offset;
+ 	int orig_num = st->num;
+ 	void *rc = NULL;
+@@ -2461,7 +2462,7 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
+ 			break;
+ 		st->state = TCP_SEQ_STATE_LISTENING;
+ 		rc = listening_get_next(seq, NULL);
+-		while (offset-- && rc)
++		while (offset-- && rc && bucket == st->bucket)
+ 			rc = listening_get_next(seq, rc);
+ 		if (rc)
+ 			break;
+@@ -2472,7 +2473,7 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
+ 		if (st->bucket > tcp_hashinfo.ehash_mask)
+ 			break;
+ 		rc = established_get_first(seq);
+-		while (offset-- && rc)
++		while (offset-- && rc && bucket == st->bucket)
+ 			rc = established_get_next(seq, rc);
  	}
-=20
--	for (i =3D 0; i < ACP_DEVS ; i++) {
--		dev =3D get_mfd_cell_dev(adev->acp.acp_cell[i].name, i);
--		ret =3D pm_genpd_remove_device(dev);
--		/* If removal fails, dont giveup and try rest */
--		if (ret)
--			dev_err(dev, "remove dev from genpd failed\n");
--	}
-+	device_for_each_child(adev->acp.parent, NULL,
-+			      acp_genpd_remove_device);
-=20
- 	mfd_remove_devices(adev->acp.parent);
- 	kfree(adev->acp.acp_res);
---=20
+ 
+-- 
 2.30.2
 
 
