@@ -2,159 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BF64085E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759194085EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237750AbhIMH4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:56:20 -0400
-Received: from mail-vk1-f177.google.com ([209.85.221.177]:37819 "EHLO
-        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237739AbhIMH4S (ORCPT
+        id S237787AbhIMIAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237775AbhIMIAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:56:18 -0400
-Received: by mail-vk1-f177.google.com with SMTP id s125so1696059vkd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:55:03 -0700 (PDT)
+        Mon, 13 Sep 2021 04:00:37 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDE3C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:59:21 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q11so13163569wrr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Slbdck4Oox3BuAWU/xoGeuvQr4K3e0JpfLAX1oLndyY=;
+        b=TV5CbZddrBKX78P7nI2kjJ2q2ioIuhK43xq0rydDNWRPh1Rjbr2WHKlwq6gpB//woi
+         HGSjYbGL4u3wwBMN2D8J4FFbWmDrwi0sryOQHhTqydUZ9xfGnEOfUPOzUz+9hgLr/rUV
+         WnemKQBkXLQQYpTkrMFJztckAXbVlCiJqjxFCnuCBzLvPZ/rmhZKCbPme+B6b6iC06G7
+         LSTuoNj9RD/+UuNvZB3B+oYC5XzcsipRnf7awdmBPsvyZ5fcAzA18T0Q4PZSgF/XoY3g
+         jEVnXVce+uX0XXPSGN2ahWgPsBIS6AJGn7X4tLfJlRvQKTz7yZOlsj5lNGQEidDvH6mE
+         iqCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=saD28hGtMTLmTiCahERWSJjPX528ArL0ordR/X4GN/g=;
-        b=LGSA//QXb/ZTrZ2H5iV0qQfWW8cxN1sxttApJb9xe3up4agPevhLqmq2eo+P91KACi
-         mWcYBGf/39zb0tnYZY7X90TtI6KdkO/AjJRFLBHxeSEC5T++HM4qaP4LShktfxS7+UKV
-         LRFbYKp3C+ztt77NXtwpniequONcr0GqhQDmrnk1e/bkcYHruinx3yok5a9TySbnZBZX
-         Yd/jwBCtmlCF/5R6mN+pWmG7k9kzdb+l9uqG4cQqnB0JfrcOT9NIELH9Z9T3cLsFN++Y
-         BpQTxKyOrtJSkl7MLcO71BwXxW1L7JNQ41PvkPa+jwZlwmuGkBGO7cYp5xSshfM7h7eZ
-         xG7A==
-X-Gm-Message-State: AOAM532hweC8g5jxQZCR/KEqjBRozn7qwvKUYRPyoy2Eir5HBK+mzc8s
-        0+9X5yjbRy2VY4bRS9tpRN5SqFSn0HG6EG51Mmg=
-X-Google-Smtp-Source: ABdhPJy2mTWfhMjUWI4Odi5dy4b8HirYVm5wPy66IKBkh+oBZIvkRXf0PHSRn/te3BKJx1N9xSyj9hg09AqwZfY7v/Q=
-X-Received: by 2002:a1f:5e14:: with SMTP id s20mr969361vkb.7.1631519702896;
- Mon, 13 Sep 2021 00:55:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Slbdck4Oox3BuAWU/xoGeuvQr4K3e0JpfLAX1oLndyY=;
+        b=tEEWRRCBklVeg7JxcjTDi9zBFAOsPS4q34kwHDYhy+hRTz/sAi7+UNuazPsP+QCpOn
+         YE2k4do8hwwa1PIqlOK7EObXMFGg3iRjIZHG+s/vOLrEP8cNuc0vyxdrIf/4pCXzO8Vj
+         LGbFDuHCXWTipCPuvXNr9nu/+1b10+fJNdNmCrc2rArsqUKh3azr16BS176vIR/cDCXS
+         8yhZrH9wgzbQAcqC1qelA+TYy+e5SXfuANUPiUMwYIypBmmi8HVEDkl1+f0oYQmbv7UW
+         WpwS1ajmauOI5GZdI4xTK7REH5H6EGY4LyKo4SSXoKuWdkNe9Tx6oEohL1AqYwjiL2Gs
+         ECzg==
+X-Gm-Message-State: AOAM530KXA+Y1qGZTJjb8FpaHqrb3VNB6KpHZN91yPvWlLgE+3762uo4
+        qxFo2PT4DyjEJqZhjFTOhyp4MCE7hXPhuRZS
+X-Google-Smtp-Source: ABdhPJzLylWQRDNBgfIjIiWs6WzrTIDLfdTUHuZk9A1smafDzalNo2zuhd1U5ya8RC0ug93NkAUJAA==
+X-Received: by 2002:adf:aacb:: with SMTP id i11mr11103227wrc.296.1631519959679;
+        Mon, 13 Sep 2021 00:59:19 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:9ebe:26f1:5acc:c894? ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
+        by smtp.gmail.com with ESMTPSA id y24sm6989408wma.9.2021.09.13.00.59.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 00:59:18 -0700 (PDT)
+Subject: Re: [PATCH] drm/meson: Make use of the helper function
+ devm_platform_ioremap_resourcexxx()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210831135644.4576-1-caihuoqing@baidu.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <58b26fbf-b491-3290-0192-f10d2d8df092@baylibre.com>
+Date:   Mon, 13 Sep 2021 09:59:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <202109040635.GB2sRCvY-lkp@intel.com> <6f0aad67-7c3e-95c5-e4b4-d563e180c6ee@infradead.org>
-In-Reply-To: <6f0aad67-7c3e-95c5-e4b4-d563e180c6ee@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Sep 2021 09:54:51 +0200
-Message-ID: <CAMuHMdWaoXOxC=wqUfC-9UTN+0QedGLqvZCr3rJjYmM2K9SZHQ@mail.gmail.com>
-Subject: Re: sound/isa/es1688/es1688_lib.c:384:79: error: 'DMA_AUTOINIT' undeclared
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210831135644.4576-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+On 31/08/2021 15:56, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately
+> 
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/gpu/drm/meson/meson_drv.c     | 3 +--
+>  drivers/gpu/drm/meson/meson_dw_hdmi.c | 4 +---
+>  2 files changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+> index bc0d60df04ae..7f41a33592c8 100644
+> --- a/drivers/gpu/drm/meson/meson_drv.c
+> +++ b/drivers/gpu/drm/meson/meson_drv.c
+> @@ -206,8 +206,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
+>  	priv->compat = match->compat;
+>  	priv->afbcd.ops = match->afbcd_ops;
+>  
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "vpu");
+> -	regs = devm_ioremap_resource(dev, res);
+> +	regs = devm_platform_ioremap_resource_byname(pdev, "vpu");
+>  	if (IS_ERR(regs)) {
+>  		ret = PTR_ERR(regs);
+>  		goto free_drm;
+> diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> index 2ed87cfdd735..0afbd1e70bfc 100644
+> --- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> +++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+> @@ -978,7 +978,6 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>  	struct dw_hdmi_plat_data *dw_plat_data;
+>  	struct drm_bridge *next_bridge;
+>  	struct drm_encoder *encoder;
+> -	struct resource *res;
+>  	int irq;
+>  	int ret;
+>  
+> @@ -1042,8 +1041,7 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+>  		return PTR_ERR(meson_dw_hdmi->hdmitx_phy);
+>  	}
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	meson_dw_hdmi->hdmitx = devm_ioremap_resource(dev, res);
+> +	meson_dw_hdmi->hdmitx = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(meson_dw_hdmi->hdmitx))
+>  		return PTR_ERR(meson_dw_hdmi->hdmitx);
+>  
+> 
 
-On Sat, Sep 11, 2021 at 4:32 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 9/3/21 3:56 PM, kernel test robot wrote:
-> > First bad commit (maybe != root cause):
->
-> Any ideas about these build errors?
->
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   7cca308cfdc0725363ac5943dca9dcd49cc1d2d5
-> > commit: db87db65c1059f3be04506d122f8ec9b2fa3b05e m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
-> > date:   12 days ago
-> > config: m68k-buildonly-randconfig-r001-20210904 (attached as .config)
-> > compiler: m68k-linux-gcc (GCC) 11.2.0
-> > reproduce (this is a W=1 build):
-> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >          chmod +x ~/bin/make.cross
-> >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=db87db65c1059f3be04506d122f8ec9b2fa3b05e
-> >          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >          git fetch --no-tags linus master
-> >          git checkout db87db65c1059f3be04506d122f8ec9b2fa3b05e
-> >          # save the attached .config to linux build tree
-> >          mkdir build_dir
-> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=m68k SHELL=/bin/bash sound/isa/es1688/ sound/isa/sb/ sound/isa/wss/
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >     sound/isa/es1688/es1688_lib.c: In function 'snd_es1688_playback_prepare':
-> >>> sound/isa/es1688/es1688_lib.c:384:79: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >       384 |         snd_dma_program(chip->dma8, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-> >           |                                                                               ^~~~~~~~~~~~
-> >     sound/isa/es1688/es1688_lib.c:384:79: note: each undeclared identifier is reported only once for each function it appears in
-> >     sound/isa/es1688/es1688_lib.c: In function 'snd_es1688_capture_prepare':
-> >     sound/isa/es1688/es1688_lib.c:441:78: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >       441 |         snd_dma_program(chip->dma8, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-> >           |                                                                              ^~~~~~~~~~~~
-> > --
-> >     sound/isa/sb/sb16_main.c: In function 'snd_sb16_playback_prepare':
-> >>> sound/isa/sb/sb16_main.c:253:72: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >       253 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-> >           |                                                                        ^~~~~~~~~~~~
-> >     sound/isa/sb/sb16_main.c:253:72: note: each undeclared identifier is reported only once for each function it appears in
-> >     sound/isa/sb/sb16_main.c: In function 'snd_sb16_capture_prepare':
-> >     sound/isa/sb/sb16_main.c:322:71: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >       322 |         snd_dma_program(dma, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-> >           |                                                                       ^~~~~~~~~~~~
-> > --
-> >     sound/isa/sb/sb8_main.c: In function 'snd_sb8_playback_prepare':
-> >>> sound/isa/sb/sb8_main.c:188:48: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >       188 |                         size, DMA_MODE_WRITE | DMA_AUTOINIT);
-> >           |                                                ^~~~~~~~~~~~
-> >     sound/isa/sb/sb8_main.c:188:48: note: each undeclared identifier is reported only once for each function it appears in
-> >     sound/isa/sb/sb8_main.c: In function 'snd_sb8_capture_prepare':
-> >     sound/isa/sb/sb8_main.c:313:47: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >       313 |                         size, DMA_MODE_READ | DMA_AUTOINIT);
-> >           |                                               ^~~~~~~~~~~~
-> > --
-> >     sound/isa/wss/wss_lib.c: In function 'snd_wss_playback_prepare':
-> >>> sound/isa/wss/wss_lib.c:1004:79: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >      1004 |         snd_dma_program(chip->dma1, runtime->dma_addr, size, DMA_MODE_WRITE | DMA_AUTOINIT);
-> >           |                                                                               ^~~~~~~~~~~~
-> >     sound/isa/wss/wss_lib.c:1004:79: note: each undeclared identifier is reported only once for each function it appears in
-> >     sound/isa/wss/wss_lib.c: In function 'snd_wss_capture_prepare':
-> >     sound/isa/wss/wss_lib.c:1039:78: error: 'DMA_AUTOINIT' undeclared (first use in this function)
-> >      1039 |         snd_dma_program(chip->dma2, runtime->dma_addr, size, DMA_MODE_READ | DMA_AUTOINIT);
-> >           |                                                                              ^~~~~~~~~~~~
->
-> Only a few arches define DMA_AUTOINIT:
->
-> $ grep -w DMA_AUTOINIT arch/*/include/asm/dma*.h
-> arch/alpha/include/asm/dma.h:#define DMA_AUTOINIT       0x10
-> arch/arm/include/asm/dma.h:#define DMA_AUTOINIT  0x10
-> arch/mips/include/asm/dma.h:#define DMA_AUTOINIT        0x10
-> arch/parisc/include/asm/dma.h:#define DMA_AUTOINIT      0x10
-> arch/powerpc/include/asm/dma.h:#define DMA_AUTOINIT             0x10
-> arch/sh/include/asm/dma.h:#define DMA_AUTOINIT          0x10
-> arch/x86/include/asm/dma.h:#define DMA_AUTOINIT         0x10
+Applied to drm-misc-next
 
-So only m68k and sparc lack them?
-Of course their dma_set_mode() implementations just ignore that
-mode (and many more, for the rudimentary sparc version).
-
-> CONFIG_ISA_DMA_API=y
-> but CONFIG_ISA is not set.
-> (Yes, this is ColdFire.)
->
-> menuconfig SND_ISA
->         bool "ISA sound devices"
->         depends on ISA || COMPILE_TEST
->         depends on ISA_DMA_API
->         default y
->
-> I suppose that we could drop the "|| COMPILE_TEST" part.
-
-Or "... || (COMPILE_TEST && !M68K)"?
-
-Sparc doesn't define ISA_DMA_API, so it doesn't suffer.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Neil
