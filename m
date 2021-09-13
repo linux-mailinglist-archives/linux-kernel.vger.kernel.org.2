@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F854089D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8CB4089D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239402AbhIMLE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239457AbhIMLEQ (ORCPT
+        id S239412AbhIMLFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:05:31 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:56600
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239171AbhIMLFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:04:16 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B0BC061574;
-        Mon, 13 Sep 2021 04:03:01 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id j1so5995674pjv.3;
-        Mon, 13 Sep 2021 04:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8tTQhFrsWRNkUOBaOJA02WxHmquMo9+cmq045OwmYJU=;
-        b=gh9X42uMlMHDFUWjUxSJCtekAQOTdQa+bBZcbZz4ISIUbUhtkSmtlUJK9z07cqJsoL
-         f1vF7f6uaDfHXzgEEshszcSartet1RpGUl3CBwDHHxcdtSi7/HGmmIjlr/kaQDli2KwN
-         U+rBEGlpUUg8X9NQm28/0xcxkRJb9+sfiS3BssvRPl1DgR9zSkvay7X8ltnoqb+wjzN6
-         ynTcntFHIsWsWGFIRLhdrkxrg6RLZbyYHOT6m6tXkV+fXkwBp4pKfZJ1xYdT5x9S2wDo
-         ie9lFUijdRA8UuFqe+0MyjP5AUAITPtSaF7Mxwf8hYuANblmZ98yl2Ieymck4GIMhlTO
-         G4tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8tTQhFrsWRNkUOBaOJA02WxHmquMo9+cmq045OwmYJU=;
-        b=w1FBpvsiNqW86aeRyOrQfpA47d4g1b830QSZLsM2Ety/iZctQMGv5LnLkWiLUNZ10U
-         6sYu87MBv9jOls6EM1X2jPXMquU5URj8jXYCWQXCQ4PS8g/oNWnRzZPB4ZVFp/6ysSJX
-         foFVDRTqV78yn4FjBVoKoZRc/xT16e+bfmC0Rgsrq7UDruphtWl/0OuIb629AZt+5s3C
-         pntjPj9SWtfCF+muJGeirD06Zk/KaJBCumJ4PWf+1hwC8G0qpUD328oHE+Bihq9KnBVT
-         kTRGZddf9bf+gbq02asiOvW5gu1V2xVEnyq4UJL+iLAkzVzdqE5ezDyjFAPeNMR9ECV1
-         MehQ==
-X-Gm-Message-State: AOAM533CBhgAzG3Q926D2jbLfvyxWBYI6VULlzPCAZPMZKqNCg6CRWhX
-        n5ku402f9qadXtSxgrSHcuE=
-X-Google-Smtp-Source: ABdhPJy3i8ua/fVQObcDsf9vLhNLgbuzOgUx8Z4B+IA0ShClO9iHfm+Fa1+5MahosqjqZJ7T7aYD2g==
-X-Received: by 2002:a17:90a:ce84:: with SMTP id g4mr6604700pju.147.1631530980835;
-        Mon, 13 Sep 2021 04:03:00 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.28])
-        by smtp.gmail.com with ESMTPSA id gn11sm6480860pjb.39.2021.09.13.04.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 04:03:00 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Willy Tarreau <w@1wt.eu>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: fix kmalloc bug in bpf_check
-Date:   Mon, 13 Sep 2021 19:02:46 +0800
-Message-Id: <20210913110246.2955737-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 13 Sep 2021 07:05:30 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 405923F0FD;
+        Mon, 13 Sep 2021 11:04:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631531046;
+        bh=Yp56eiOhuJUOUSqsC9RhQCuTloHI269gSNPewoOCijQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=s5+mrK//ZMln/SBpO/yONeaqyQoZZmMgw/0GOGHg2oaTT9P7YGwD0gJn7JA3cMAQ1
+         cLj796ZUvSysl6jCFRT/v8sQAYrcc1AQxdPR+067rB7erjFTs7/3NeQRN/wa3F4vF8
+         bnA8rpo8GrwNaSYixNUbmeVzZUGnDcdCFPeYqzvHDy+sdhOjclUHLG99Kot1pS7ixJ
+         2wqH2qy/9/EuWCzNQtK+9oIJiGPkgUq7cKjxmejX1mov6O/KUr+JlHQa4wiD4TUMEL
+         28y6buim+az8LVka27XCz1fqg1JW/y4AkOY0Y7i9osNXauMFesyuIP3HZJIMrHBYVs
+         guztRDCSpEf9Q==
+Subject: Re: NAK: [PATCH][next] media: pvrusb2: add newline between two
+ statements
+To:     Hans Verkuil <hverkuil@xs4all.nl>, Mike Isely <isely@pobox.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210902220112.55824-1-colin.king@canonical.com>
+ <52c324ad-2467-9edc-c386-bc5a086cecbc@canonical.com>
+ <82d125bd-9d16-803d-754b-48aa79fde06c@xs4all.nl>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <8b4c86dd-a7d5-ce0d-3ba6-03eba28c0288@canonical.com>
+Date:   Mon, 13 Sep 2021 12:04:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <82d125bd-9d16-803d-754b-48aa79fde06c@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 7661809d493b ("mm: don't allow oversized kvmalloc() calls
-") does not allow oversized kvmalloc, it triggers a kmalloc bug warning
-at bpf_check.
+On 13/09/2021 12:00, Hans Verkuil wrote:
+> On 03/09/2021 00:02, Colin Ian King wrote:
+>> On 02/09/2021 23:01, Colin King wrote:
+>>> From: Colin Ian King <colin.king@canonical.com>
+>>>
+>>> There are two statements on the same line, add a newline to clean
+>>> this up.
+>>>
+>>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>>> ---
+>>>  drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+>>> index d38dee1792e4..ca00b7fe1e7f 100644
+>>> --- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+>>> +++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+>>> @@ -1727,7 +1727,8 @@ int pvr2_hdw_set_streaming(struct pvr2_hdw *hdw,int enable_flag)
+>>>  				   enable_flag ? "enable" : "disable");
+>>>  		}
+>>>  		pvr2_hdw_state_sched(hdw);
+>>> -	} while (0); LOCK_GIVE(hdw->big_lock);
+>>> +	} while (0);
+>>> +	LOCK_GIVE(hdw->big_lock);
+>>>  	if ((ret = pvr2_hdw_wait(hdw,0)) < 0) return ret;
+>>>  	if (enable_flag) {
+>>>  		while ((st = hdw->master_state) != PVR2_STATE_RUN) {
+>>>
+>>
+>> ignore, V2 being sent in a moment.
+> 
+> I haven't seen a V2 yet... In any case, I've rejected this patch in patchwork.
 
-Fix it by adding a sanity check in th check_btf_line.
+After looking at all the unconventional code style issues I chose not to
+clean this up.
 
-Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- kernel/bpf/verifier.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 047ac4b4703b..3c5a79f78bc5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9913,6 +9913,9 @@ static int check_btf_line(struct bpf_verifier_env *env,
- 	if (!nr_linfo)
- 		return 0;
- 
-+	if (nr_linfo > INT_MAX/sizeof(struct bpf_line_info))
-+		return -EINVAL;
-+
- 	rec_size = attr->line_info_rec_size;
- 	if (rec_size < MIN_BPF_LINEINFO_SIZE ||
- 	    rec_size > MAX_LINEINFO_REC_SIZE ||
--- 
-2.25.1
+> 
+> Regards,
+> 
+> 	Hans
+> 
 
