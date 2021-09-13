@@ -2,112 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392F5409DFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D6E409E42
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242965AbhIMUNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236133AbhIMUND (ORCPT
+        id S244575AbhIMUin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:38:43 -0400
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:45884 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244538AbhIMUih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:13:03 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890C2C061574;
-        Mon, 13 Sep 2021 13:11:47 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so296030wmc.0;
-        Mon, 13 Sep 2021 13:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5BdvwOG+6brlU0D3bu5VRlz5Ma1oo1EfgyPoxcREHNc=;
-        b=jGM8xa4HqxA+zZC0bigHTjuqCcKJKPBdcnFPqYh1kHFwzxK3fsARm20pxL5svSVN2l
-         QekatSTLP7x8gm5MlOTLvOD7SGaLP2lI2moov5QWqhxHTPzxuRbKcYai7beOhq5RKnB1
-         /fFYnAjImgP5pEni4mt8MGp7HgAY8UMfWsDPTDaNRd4ligJ2yZge7Z6jJyZ37xMMGJV4
-         if9xQ2H3ycs1K4OWL8jVxztt98iyARqfC7zQ1jUQgt4+L3YUNdQeeLhPDrjTzj4DVe6h
-         xfIN69KvYB9HHAz3lBddaql33YQxVOpRhUS5H0YCrIii6kNNzvQruozPK6+HziIXKY3F
-         i2dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5BdvwOG+6brlU0D3bu5VRlz5Ma1oo1EfgyPoxcREHNc=;
-        b=fTUrP99KCZG+GSE9y/Sm58Ia3Rki7/J9zu6o/fSq5rB2tx2qzt+DPZEhGKeB0XnPOK
-         SNQq2bYqxbvtrIZld+tbyAr5qsigxbn59mBR8imFjri9qt8yYyyNz/mndUa8vBq+c626
-         3MDrZMHbhgtLWBYaOF96fu+Dmmfkaef+c/jYfvXtDqGNgJEqcjhfnyYnnSG8r95qAKO0
-         9vbyyrtBeeXskFUF4T0F6KI4hKB1IWmqGyC+FB1uVseViRXDtCrYQdBvIR11KvOWk4CZ
-         D9GgwG750YI1VPRG9uWZHEaw1uUE1hc1lE0oUHA5QpGn0yEV4aElk7ieytGjUZnaqspU
-         reig==
-X-Gm-Message-State: AOAM530UE38bABzwG+isJC0c3s02Hu/ah0aOhoPcaAm//pmNsa6AwUEy
-        ugf1T5RY/PXgkLn7Q/9nxpHXLHJOh1A=
-X-Google-Smtp-Source: ABdhPJyfL+Qa/AyO0DgPs0WE2+9vF/u3M6AHwH6B3hUjkw9D5g7625IYJ9tGqMX0N04QenjxZMLdNg==
-X-Received: by 2002:a1c:7e12:: with SMTP id z18mr13327752wmc.60.1631563905920;
-        Mon, 13 Sep 2021 13:11:45 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f08:4500:2517:8cca:49d8:dcdc? (p200300ea8f08450025178cca49d8dcdc.dip0.t-ipconnect.de. [2003:ea:8f08:4500:2517:8cca:49d8:dcdc])
-        by smtp.googlemail.com with ESMTPSA id s10sm8451247wrg.42.2021.09.13.13.11.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 13:11:45 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
- <20210913141818.GA27911@codemonkey.org.uk>
- <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com>
- <CAHk-=wgUJe9rsM5kbmq7jLZc2E6N6XhYaeW9-zJgWaDC-wDiuw@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: Linux 5.15-rc1
-Message-ID: <18e101d9-f94c-1122-1436-dc3069429710@gmail.com>
-Date:   Mon, 13 Sep 2021 22:11:36 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 13 Sep 2021 16:38:37 -0400
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 18DK20PC021207;
+        Mon, 13 Sep 2021 16:12:52 -0400
+Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
+        by pbmsgap02.intersil.com with ESMTP id 3b0pmh0skk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 13 Sep 2021 16:12:51 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2242.4; Mon, 13 Sep 2021 16:12:49 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Mon, 13 Sep 2021 16:12:48 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net 1/3] ptp: ptp_clockmatrix: Remove idtcm_enable_tod_sync()
+Date:   Mon, 13 Sep 2021 16:12:32 -0400
+Message-ID: <1631563954-6700-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgUJe9rsM5kbmq7jLZc2E6N6XhYaeW9-zJgWaDC-wDiuw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: m19rQYdHsL1hRJ1ySNAa3Zd_pp4hxV-l
+X-Proofpoint-ORIG-GUID: m19rQYdHsL1hRJ1ySNAa3Zd_pp4hxV-l
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-13_09:2021-09-09,2021-09-13 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 spamscore=0 adultscore=0 bulkscore=0
+ phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109130120
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.2021 21:51, Linus Torvalds wrote:
-> On Mon, Sep 13, 2021 at 12:00 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>
->> With an older kernel you may experience the stall when accessing the vpd
->> attribute of this device in sysfs.
-> 
-> Honestly, that old behavior seems to be the *much* better behavior.
-> 
-> A synchronous stall at boot time is truly annoying, and a pain to deal
-> with (and debug).
-> 
-> That pci_vpd_read() function is clearly NOT designed to deal with
-> boot-time callers in the first place, so I think that commit is simply
-> wrong.
-> 
-> And yes, I see that "128ms timeout". If it was _one_ timeout, that
-> would be one thing,. But it looks like it's repeated over and over.
-> 
-No. The timeout is not the issue, otherwise you would see the message
-"VPD access failed.."  over and over again. The issue here seems to be
-that this call in PCI config space access to adress
-vpd->cap + PCI_VPD_ADDR stalls.
+From: Min Li <min.li.xe@renesas.com>
 
-In a first place this seems to be due to a buggy device. We'll know
-for sure once Dave checks with the test patch applied. To deal with
-such buggy devices we have the VPD blacklist quirk.
+Not need since TCS firmware file will configure it properlly.
 
-Secondly you could blame the PCI subsystem for not detecting stalled
-access to a buggy device. However I don't know the PCIe spec good
-enough to really comment on this.
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ drivers/ptp/ptp_clockmatrix.c | 229 +-----------------------------------------
+ 1 file changed, 2 insertions(+), 227 deletions(-)
 
-> Not acceptable at boot time. Not at all.
-> 
-> Bjorn. Please revert. Or I can do it.
-> 
->             Linus
-> 
-Heiner
+diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+index fa63695..9b1c6b2 100644
+--- a/drivers/ptp/ptp_clockmatrix.c
++++ b/drivers/ptp/ptp_clockmatrix.c
+@@ -353,8 +353,8 @@ static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
+ 		apll &= SYS_APLL_LOSS_LOCK_LIVE_MASK;
+ 		dpll &= DPLL_SYS_STATE_MASK;
+ 
+-		if (apll == SYS_APLL_LOSS_LOCK_LIVE_LOCKED &&
+-		    dpll == DPLL_STATE_LOCKED) {
++		if (apll == SYS_APLL_LOSS_LOCK_LIVE_LOCKED
++		    && dpll == DPLL_STATE_LOCKED) {
+ 			return 0;
+ 		} else if (dpll == DPLL_STATE_FREERUN ||
+ 			   dpll == DPLL_STATE_HOLDOVER ||
+@@ -1675,222 +1675,6 @@ static int idtcm_enable(struct ptp_clock_info *ptp,
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static int _enable_pll_tod_sync(struct idtcm *idtcm,
+-				u8 pll,
+-				u8 sync_src,
+-				u8 qn,
+-				u8 qn_plus_1)
+-{
+-	int err;
+-	u8 val;
+-	u16 dpll;
+-	u16 out0 = 0, out1 = 0;
+-
+-	if (qn == 0 && qn_plus_1 == 0)
+-		return 0;
+-
+-	switch (pll) {
+-	case 0:
+-		dpll = DPLL_0;
+-		if (qn)
+-			out0 = OUTPUT_0;
+-		if (qn_plus_1)
+-			out1 = OUTPUT_1;
+-		break;
+-	case 1:
+-		dpll = DPLL_1;
+-		if (qn)
+-			out0 = OUTPUT_2;
+-		if (qn_plus_1)
+-			out1 = OUTPUT_3;
+-		break;
+-	case 2:
+-		dpll = DPLL_2;
+-		if (qn)
+-			out0 = OUTPUT_4;
+-		if (qn_plus_1)
+-			out1 = OUTPUT_5;
+-		break;
+-	case 3:
+-		dpll = DPLL_3;
+-		if (qn)
+-			out0 = OUTPUT_6;
+-		if (qn_plus_1)
+-			out1 = OUTPUT_7;
+-		break;
+-	case 4:
+-		dpll = DPLL_4;
+-		if (qn)
+-			out0 = OUTPUT_8;
+-		break;
+-	case 5:
+-		dpll = DPLL_5;
+-		if (qn)
+-			out0 = OUTPUT_9;
+-		if (qn_plus_1)
+-			out1 = OUTPUT_8;
+-		break;
+-	case 6:
+-		dpll = DPLL_6;
+-		if (qn)
+-			out0 = OUTPUT_10;
+-		if (qn_plus_1)
+-			out1 = OUTPUT_11;
+-		break;
+-	case 7:
+-		dpll = DPLL_7;
+-		if (qn)
+-			out0 = OUTPUT_11;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	/*
+-	 * Enable OUTPUT OUT_SYNC.
+-	 */
+-	if (out0) {
+-		err = idtcm_read(idtcm, out0, OUT_CTRL_1, &val, sizeof(val));
+-		if (err)
+-			return err;
+-
+-		val &= ~OUT_SYNC_DISABLE;
+-
+-		err = idtcm_write(idtcm, out0, OUT_CTRL_1, &val, sizeof(val));
+-		if (err)
+-			return err;
+-	}
+-
+-	if (out1) {
+-		err = idtcm_read(idtcm, out1, OUT_CTRL_1, &val, sizeof(val));
+-		if (err)
+-			return err;
+-
+-		val &= ~OUT_SYNC_DISABLE;
+-
+-		err = idtcm_write(idtcm, out1, OUT_CTRL_1, &val, sizeof(val));
+-		if (err)
+-			return err;
+-	}
+-
+-	/* enable dpll sync tod pps, must be set before dpll_mode */
+-	err = idtcm_read(idtcm, dpll, DPLL_TOD_SYNC_CFG, &val, sizeof(val));
+-	if (err)
+-		return err;
+-
+-	val &= ~(TOD_SYNC_SOURCE_MASK << TOD_SYNC_SOURCE_SHIFT);
+-	val |= (sync_src << TOD_SYNC_SOURCE_SHIFT);
+-	val |= TOD_SYNC_EN;
+-
+-	return idtcm_write(idtcm, dpll, DPLL_TOD_SYNC_CFG, &val, sizeof(val));
+-}
+-
+-static int idtcm_enable_tod_sync(struct idtcm_channel *channel)
+-{
+-	struct idtcm *idtcm = channel->idtcm;
+-	u8 pll;
+-	u8 sync_src;
+-	u8 qn;
+-	u8 qn_plus_1;
+-	u8 cfg;
+-	int err = 0;
+-	u16 output_mask = channel->output_mask;
+-	u8 out8_mux = 0;
+-	u8 out11_mux = 0;
+-	u8 temp;
+-
+-	/*
+-	 * set tod_out_sync_enable to 0.
+-	 */
+-	err = idtcm_read(idtcm, channel->tod_n, TOD_CFG, &cfg, sizeof(cfg));
+-	if (err)
+-		return err;
+-
+-	cfg &= ~TOD_OUT_SYNC_ENABLE;
+-
+-	err = idtcm_write(idtcm, channel->tod_n, TOD_CFG, &cfg, sizeof(cfg));
+-	if (err)
+-		return err;
+-
+-	switch (channel->tod_n) {
+-	case TOD_0:
+-		sync_src = 0;
+-		break;
+-	case TOD_1:
+-		sync_src = 1;
+-		break;
+-	case TOD_2:
+-		sync_src = 2;
+-		break;
+-	case TOD_3:
+-		sync_src = 3;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	err = idtcm_read(idtcm, 0, HW_Q8_CTRL_SPARE, &temp, sizeof(temp));
+-	if (err)
+-		return err;
+-
+-	if ((temp & Q9_TO_Q8_FANOUT_AND_CLOCK_SYNC_ENABLE_MASK) ==
+-	    Q9_TO_Q8_FANOUT_AND_CLOCK_SYNC_ENABLE_MASK)
+-		out8_mux = 1;
+-
+-	err = idtcm_read(idtcm, 0, HW_Q11_CTRL_SPARE, &temp, sizeof(temp));
+-	if (err)
+-		return err;
+-
+-	if ((temp & Q10_TO_Q11_FANOUT_AND_CLOCK_SYNC_ENABLE_MASK) ==
+-	    Q10_TO_Q11_FANOUT_AND_CLOCK_SYNC_ENABLE_MASK)
+-		out11_mux = 1;
+-
+-	for (pll = 0; pll < 8; pll++) {
+-		qn = 0;
+-		qn_plus_1 = 0;
+-
+-		if (pll < 4) {
+-			/* First 4 pll has 2 outputs */
+-			qn = output_mask & 0x1;
+-			output_mask = output_mask >> 1;
+-			qn_plus_1 = output_mask & 0x1;
+-			output_mask = output_mask >> 1;
+-		} else if (pll == 4) {
+-			if (out8_mux == 0) {
+-				qn = output_mask & 0x1;
+-				output_mask = output_mask >> 1;
+-			}
+-		} else if (pll == 5) {
+-			if (out8_mux) {
+-				qn_plus_1 = output_mask & 0x1;
+-				output_mask = output_mask >> 1;
+-			}
+-			qn = output_mask & 0x1;
+-			output_mask = output_mask >> 1;
+-		} else if (pll == 6) {
+-			qn = output_mask & 0x1;
+-			output_mask = output_mask >> 1;
+-			if (out11_mux) {
+-				qn_plus_1 = output_mask & 0x1;
+-				output_mask = output_mask >> 1;
+-			}
+-		} else if (pll == 7) {
+-			if (out11_mux == 0) {
+-				qn = output_mask & 0x1;
+-				output_mask = output_mask >> 1;
+-			}
+-		}
+-
+-		if (qn != 0 || qn_plus_1 != 0)
+-			err = _enable_pll_tod_sync(idtcm, pll, sync_src, qn,
+-					       qn_plus_1);
+-		if (err)
+-			return err;
+-	}
+-
+-	return err;
+-}
+-
+ static int idtcm_enable_tod(struct idtcm_channel *channel)
+ {
+ 	struct idtcm *idtcm = channel->idtcm;
+@@ -2101,15 +1885,6 @@ static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
+ 	snprintf(channel->caps.name, sizeof(channel->caps.name),
+ 		 "IDT CM TOD%u", index);
+ 
+-	if (!idtcm->deprecated) {
+-		err = idtcm_enable_tod_sync(channel);
+-		if (err) {
+-			dev_err(&idtcm->client->dev,
+-				"Failed at line %d in %s!", __LINE__, __func__);
+-			return err;
+-		}
+-	}
+-
+ 	/* Sync pll mode with hardware */
+ 	err = idtcm_get_pll_mode(channel, &channel->pll_mode);
+ 	if (err) {
+-- 
+2.7.4
+
