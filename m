@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830CF409063
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53935408DBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244162AbhIMNwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:52:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51840 "EHLO mail.kernel.org"
+        id S240780AbhIMN27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:28:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243604AbhIMNsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:48:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86915615A3;
-        Mon, 13 Sep 2021 13:32:59 +0000 (UTC)
+        id S242095AbhIMN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:26:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B034610CC;
+        Mon, 13 Sep 2021 13:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539980;
-        bh=YGuuKEorXXXCOtl6ApTDFfVYenI2YK5ibSFWqQGCn/c=;
+        s=korg; t=1631539383;
+        bh=SfBues2A5Xcjg1xXDUXbodvUKEhsfSGLQY6Kb55kDF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q+1K5GJZlr2BLIOjxStZ2cKxr+a2V8dUGSdLmdz6B7bzN5l1lP/JERexAit5ZWo1S
-         KU0Mh0WMzadPWggHaZVOHHIkxuCgcaB8fhvLjbG7aPLfvUth0cdLCUEj1TxuzLLwaY
-         CZjGjCEoy5+Z/KY08/i10v0PTmi3yYrqVVRcAdHg=
+        b=tvATMF4z7oJrMk7MOb1yYwTRBiZJgsgKKQ098wgcWRlHQL72Phj7rvB1wCY1knqst
+         NUCaBrITqnstOREiEr5mUglw77csT3wmpKDGh5QkCCaJrHeMZmWYa++GLgXcBwfIh/
+         WY6osUqw1hXshB2QtfBJPD4EfbBA6BcfBk1igBzc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Wei Wang <weiwan@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 207/236] ipv6: make exception cache less predictible
-Date:   Mon, 13 Sep 2021 15:15:12 +0200
-Message-Id: <20210913131107.420156415@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nguyen Dinh Phi <phind.uet@gmail.com>
+Subject: [PATCH 5.4 132/144] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Date:   Mon, 13 Sep 2021 15:15:13 +0200
+Message-Id: <20210913131052.342465555@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit a00df2caffed3883c341d5685f830434312e4a43 ]
+commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
 
-Even after commit 4785305c05b2 ("ipv6: use siphash in rt6_exception_hash()"),
-an attacker can still use brute force to learn some secrets from a victim
-linux host.
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is waiting for the
+ops->receive_buf() to finish its work, the data race will happen.
 
-One way to defeat these attacks is to make the max depth of the hash
-table bucket a random value.
+For example:
+tty_ioctl			|tty_ldisc_receive_buf
+ ->tioctsi			| ->tty_port_default_receive_buf
+				|  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
 
-Before this patch, each bucket of the hash table used to store exceptions
-could contain 6 items under attack.
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and we will lost the data.
 
-After the patch, each bucket would contains a random number of items,
-between 6 and 10. The attacker can no longer infer secrets.
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
 
-This is slightly increasing memory size used by the hash table,
-we do not expect this to be a problem.
-
-Following patch is dealing with the same issue in IPv4.
-
-Fixes: 35732d01fe31 ("ipv6: introduce a hash table to store dst cache")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Wei Wang <weiwan@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/route.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/tty/tty_io.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index bcf4fae83a9b..168a7b4d957a 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -1655,6 +1655,7 @@ static int rt6_insert_exception(struct rt6_info *nrt,
- 	struct in6_addr *src_key = NULL;
- 	struct rt6_exception *rt6_ex;
- 	struct fib6_nh *nh = res->nh;
-+	int max_depth;
- 	int err = 0;
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2176,8 +2176,6 @@ static int tty_fasync(int fd, struct fil
+  *	Locking:
+  *		Called functions take tty_ldiscs_lock
+  *		current->signal->tty check is safe without locks
+- *
+- *	FIXME: may race normal receive processing
+  */
  
- 	spin_lock_bh(&rt6_exception_lock);
-@@ -1709,7 +1710,9 @@ static int rt6_insert_exception(struct rt6_info *nrt,
- 	bucket->depth++;
- 	net->ipv6.rt6_stats->fib_rt_cache++;
- 
--	if (bucket->depth > FIB6_MAX_DEPTH)
-+	/* Randomize max depth to avoid some side channels attacks. */
-+	max_depth = FIB6_MAX_DEPTH + prandom_u32_max(FIB6_MAX_DEPTH);
-+	while (bucket->depth > max_depth)
- 		rt6_exception_remove_oldest(bucket);
- 
- out:
--- 
-2.30.2
-
+ static int tiocsti(struct tty_struct *tty, char __user *p)
+@@ -2193,8 +2191,10 @@ static int tiocsti(struct tty_struct *tt
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
 
 
