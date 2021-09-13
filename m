@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711B0408DDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9A5408DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240039AbhIMNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
+        id S242828AbhIMNaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241817AbhIMNZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241153AbhIMNZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:25:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4669D61250;
-        Mon, 13 Sep 2021 13:22:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 176236112E;
+        Mon, 13 Sep 2021 13:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539350;
-        bh=xWJqruAQpL/DITz+cAmlG02JbUIUnhYwr2khHa7iXiw=;
+        s=korg; t=1631539353;
+        bh=yArJWrVgo40PMQ03AcyoPAZmuGj2RjvY5scvWn8TIBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AZMY8VPh39SShNRabL9aTsi19L3UNsJg5qIeAAnmj6Kf2xAI95VMNoIQ5iq3buS6m
-         u9GTRUNYIP7XBKnDP72aXDqFUMXJX/GvVgCarKsZOoOOc5cMGlJtEUmFj1AA/JasAd
-         7m5EgGgAA2gAiH63IHYze72SHZ3F5dRBdXbEoXxY=
+        b=a30yU5PnTTz0c+otsL9v/cnfZpmK6aYDLJqQdKHYKSYwsYuCY7MPBt0kpwdqJx4He
+         RTQ6xKcbWwkvBZVZzGrDgsBQKACbIqEvr1z+grqL0e8dsTSfDos7ak7ZAcjP2tedZe
+         k9CkN4p7o1/y1aoXipq8FWoxTinSucsie/Qd9V7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 137/144] KVM: nVMX: Unconditionally clear nested.pi_pending on nested VM-Enter
-Date:   Mon, 13 Sep 2021 15:15:18 +0200
-Message-Id: <20210913131052.515585573@linuxfoundation.org>
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 138/144] fuse: truncate pagecache on atomic_o_trunc
+Date:   Mon, 13 Sep 2021 15:15:19 +0200
+Message-Id: <20210913131052.546705808@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -40,60 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-commit f7782bb8d818d8f47c26b22079db10599922787a upstream.
+commit 76224355db7570cbe6b6f75c8929a1558828dd55 upstream.
 
-Clear nested.pi_pending on nested VM-Enter even if L2 will run without
-posted interrupts enabled.  If nested.pi_pending is left set from a
-previous L2, vmx_complete_nested_posted_interrupt() will pick up the
-stale flag and exit to userspace with an "internal emulation error" due
-the new L2 not having a valid nested.pi_desc.
+fuse_finish_open() will be called with FUSE_NOWRITE in case of atomic
+O_TRUNC.  This can deadlock with fuse_wait_on_page_writeback() in
+fuse_launder_page() triggered by invalidate_inode_pages2().
 
-Arguably, vmx_complete_nested_posted_interrupt() should first check for
-posted interrupts being enabled, but it's also completely reasonable that
-KVM wouldn't screw up a fundamental flag.  Not to mention that the mere
-existence of nested.pi_pending is a long-standing bug as KVM shouldn't
-move the posted interrupt out of the IRR until it's actually processed,
-e.g. KVM effectively drops an interrupt when it performs a nested VM-Exit
-with a "pending" posted interrupt.  Fixing the mess is a future problem.
+Fix by replacing invalidate_inode_pages2() in fuse_finish_open() with a
+truncate_pagecache() call.  This makes sense regardless of FOPEN_KEEP_CACHE
+or fc->writeback cache, so do it unconditionally.
 
-Prior to vmx_complete_nested_posted_interrupt() interpreting a null PI
-descriptor as an error, this was a benign bug as the null PI descriptor
-effectively served as a check on PI not being enabled.  Even then, the
-new flow did not become problematic until KVM started checking the result
-of kvm_check_nested_events().
-
-Fixes: 705699a13994 ("KVM: nVMX: Enable nested posted interrupt processing")
-Fixes: 966eefb89657 ("KVM: nVMX: Disable vmcs02 posted interrupts if vmcs12 PID isn't mappable")
-Fixes: 47d3530f86c0 ("KVM: x86: Exit to userspace when kvm_check_nested_events fails")
-Cc: stable@vger.kernel.org
-Cc: Jim Mattson <jmattson@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210810144526.2662272-1-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reported-by: Xie Yongji <xieyongji@bytedance.com>
+Reported-and-tested-by: syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
+Fixes: e4648309b85a ("fuse: truncate pending writes on O_TRUNC")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/vmx/nested.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ fs/fuse/file.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2057,12 +2057,11 @@ static void prepare_vmcs02_early(struct
- 			 ~PIN_BASED_VMX_PREEMPTION_TIMER);
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -193,12 +193,11 @@ void fuse_finish_open(struct inode *inod
+ 	struct fuse_file *ff = file->private_data;
+ 	struct fuse_conn *fc = get_fuse_conn(inode);
  
- 	/* Posted interrupts setting is only taken from vmcs12.  */
--	if (nested_cpu_has_posted_intr(vmcs12)) {
-+	vmx->nested.pi_pending = false;
-+	if (nested_cpu_has_posted_intr(vmcs12))
- 		vmx->nested.posted_intr_nv = vmcs12->posted_intr_nv;
--		vmx->nested.pi_pending = false;
--	} else {
-+	else
- 		exec_control &= ~PIN_BASED_POSTED_INTR;
--	}
- 	pin_controls_set(vmx, exec_control);
+-	if (!(ff->open_flags & FOPEN_KEEP_CACHE))
+-		invalidate_inode_pages2(inode->i_mapping);
+ 	if (ff->open_flags & FOPEN_STREAM)
+ 		stream_open(inode, file);
+ 	else if (ff->open_flags & FOPEN_NONSEEKABLE)
+ 		nonseekable_open(inode, file);
++
+ 	if (fc->atomic_o_trunc && (file->f_flags & O_TRUNC)) {
+ 		struct fuse_inode *fi = get_fuse_inode(inode);
  
- 	/*
+@@ -206,10 +205,14 @@ void fuse_finish_open(struct inode *inod
+ 		fi->attr_version = atomic64_inc_return(&fc->attr_version);
+ 		i_size_write(inode, 0);
+ 		spin_unlock(&fi->lock);
++		truncate_pagecache(inode, 0);
+ 		fuse_invalidate_attr(inode);
+ 		if (fc->writeback_cache)
+ 			file_update_time(file);
++	} else if (!(ff->open_flags & FOPEN_KEEP_CACHE)) {
++		invalidate_inode_pages2(inode->i_mapping);
+ 	}
++
+ 	if ((file->f_mode & FMODE_WRITE) && fc->writeback_cache)
+ 		fuse_link_write_file(file);
+ }
 
 
