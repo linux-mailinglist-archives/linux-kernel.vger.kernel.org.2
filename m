@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0970340927C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A836E40921E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343671AbhIMOL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59950 "EHLO mail.kernel.org"
+        id S1343765AbhIMOIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:08:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344133AbhIMOIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:08:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 990D261AA2;
-        Mon, 13 Sep 2021 13:40:54 +0000 (UTC)
+        id S1344556AbhIMOFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:05:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A35761A61;
+        Mon, 13 Sep 2021 13:39:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540455;
-        bh=UvVF3j4X+xXETbok8u/4s1MDRHDWjHsC09kHp45zvuU=;
+        s=korg; t=1631540373;
+        bh=h2sBoiy0NXW71Ckof/h3W9x7fsiq/XEvuozD5dXP8OA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Idrxu0jRin2zNhi6ZT8Q/26wk+TMbxcSvZKbVHm7SNbU7Tj/LPWNlu4f9d4/kVEGx
-         6aCjeD8UZSdl+x/CGu3xXlrOSd7TxTxiExSRQgfkd6mpWA1uD3SRSND0Y0fJhBiWn1
-         7KjCRVaWTy1xZ7Gh+86M9R6AW2U5YjMDYHFUyylA=
+        b=se9qLJIHQVKp5eNUX4qoW4pkmQWAEXLv+Alc0yZhBrBA/Z/pANbySd7jS+qLPkkF/
+         7BeoboRwPT6qifTtOelfnrCvMq9f6InzZd28mZQvZOmHPW0EyvcrlNpbtyXSQuDE2d
+         ypwLMl0vBBb3JH23K7ACSK5Vr/ZRBXVyx9D0pIS0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 158/300] net: dsa: stop syncing the bridge mcast_router attribute at join time
-Date:   Mon, 13 Sep 2021 15:13:39 +0200
-Message-Id: <20210913131114.745013188@linuxfoundation.org>
+Subject: [PATCH 5.13 159/300] net: dsa: mt7530: remove the .port_set_mrouter implementation
+Date:   Mon, 13 Sep 2021 15:13:40 +0200
+Message-Id: <20210913131114.776127419@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -43,81 +42,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 7df4e7449489d82cee6813dccbb4ae4f3f26ef7b ]
+[ Upstream commit cbbf09b5771e6e9da268bc0d2fb6e428afa787bc ]
 
-Qingfang points out that when a bridge with the default settings is
-created and a port joins it:
+DSA's idea of optimizing out multicast flooding to the CPU port leaves
+quite a few holes open, so it should be reverted.
 
-ip link add br0 type bridge
-ip link set swp0 master br0
+The mt7530 driver is the only new driver which added a .port_set_mrouter
+implementation after the reorg from commit a8b659e7ff75 ("net: dsa: act
+as passthrough for bridge port flags"), so it needs to be reverted
+separately so that the other revert commit can go a bit further down the
+git history.
 
-DSA calls br_multicast_router() on the bridge to see if the br0 device
-is a multicast router port, and if it is, it enables multicast flooding
-to the CPU port, otherwise it disables it.
-
-If we look through the multicast_router_show() sysfs or at the
-IFLA_BR_MCAST_ROUTER netlink attribute, we see that the default mrouter
-attribute for the bridge device is "1" (MDB_RTR_TYPE_TEMP_QUERY).
-
-However, br_multicast_router() will return "0" (MDB_RTR_TYPE_DISABLED),
-because an mrouter port in the MDB_RTR_TYPE_TEMP_QUERY state may not be
-actually _active_ until it receives an actual IGMP query. So, the
-br_multicast_router() function should really have been called
-br_multicast_router_active() perhaps.
-
-When/if an IGMP query is received, the bridge device will transition via
-br_multicast_mark_router() into the active state until the
-ip4_mc_router_timer expires after an multicast_querier_interval.
-
-Of course, this does not happen if the bridge is created with an
-mcast_router attribute of "2" (MDB_RTR_TYPE_PERM).
-
-The point is that in lack of any IGMP query messages, and in the default
-bridge configuration, unregistered multicast packets will not be able to
-reach the CPU port through flooding, and this breaks many use cases
-(most obviously, IPv6 ND, with its ICMP6 neighbor solicitation multicast
-messages).
-
-Leave the multicast flooding setting towards the CPU port down to a driver
-level decision.
-
-Fixes: 010e269f91be ("net: dsa: sync up switchdev objects and port attributes when joining the bridge")
-Reported-by: DENG Qingfang <dqfext@gmail.com>
+Fixes: 5a30833b9a16 ("net: dsa: mt7530: support MDB and bridge flag operations")
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/port.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/net/dsa/mt7530.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/net/dsa/port.c b/net/dsa/port.c
-index 6379d66a6bb3..fad55372e461 100644
---- a/net/dsa/port.c
-+++ b/net/dsa/port.c
-@@ -186,10 +186,6 @@ static int dsa_port_switchdev_sync(struct dsa_port *dp,
- 	if (err && err != -EOPNOTSUPP)
- 		return err;
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 2b01efad1a51..647f8e5c16da 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1172,18 +1172,6 @@ mt7530_port_bridge_flags(struct dsa_switch *ds, int port,
+ 	return 0;
+ }
  
--	err = dsa_port_mrouter(dp->cpu_dp, br_multicast_router(br), extack);
--	if (err && err != -EOPNOTSUPP)
--		return err;
+-static int
+-mt7530_port_set_mrouter(struct dsa_switch *ds, int port, bool mrouter,
+-			struct netlink_ext_ack *extack)
+-{
+-	struct mt7530_priv *priv = ds->priv;
 -
- 	err = dsa_port_ageing_time(dp, br_get_ageing_time(br));
- 	if (err && err != -EOPNOTSUPP)
- 		return err;
-@@ -235,12 +231,6 @@ static void dsa_port_switchdev_unsync(struct dsa_port *dp)
- 
- 	/* VLAN filtering is handled by dsa_switch_bridge_leave */
- 
--	/* Some drivers treat the notification for having a local multicast
--	 * router by allowing multicast to be flooded to the CPU, so we should
--	 * allow this in standalone mode too.
--	 */
--	dsa_port_mrouter(dp->cpu_dp, true, NULL);
+-	mt7530_rmw(priv, MT7530_MFC, UNM_FFP(BIT(port)),
+-		   mrouter ? UNM_FFP(BIT(port)) : 0);
 -
- 	/* Ageing time may be global to the switch chip, so don't change it
- 	 * here because we have no good reason (or value) to change it to.
- 	 */
+-	return 0;
+-}
+-
+ static int
+ mt7530_port_bridge_join(struct dsa_switch *ds, int port,
+ 			struct net_device *bridge)
+@@ -2847,7 +2835,6 @@ static const struct dsa_switch_ops mt7530_switch_ops = {
+ 	.port_stp_state_set	= mt7530_stp_state_set,
+ 	.port_pre_bridge_flags	= mt7530_port_pre_bridge_flags,
+ 	.port_bridge_flags	= mt7530_port_bridge_flags,
+-	.port_set_mrouter	= mt7530_port_set_mrouter,
+ 	.port_bridge_join	= mt7530_port_bridge_join,
+ 	.port_bridge_leave	= mt7530_port_bridge_leave,
+ 	.port_fdb_add		= mt7530_port_fdb_add,
 -- 
 2.30.2
 
