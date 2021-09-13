@@ -2,203 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 205F1409EA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E51409EA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244946AbhIMU4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:56:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28852 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244023AbhIMU4L (ORCPT
+        id S244801AbhIMU5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240999AbhIMU5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:56:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631566494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=L1oBX38tP7V16rD8wHDMXdOSupyTUB5kAz0woWzUIcY=;
-        b=bCm8dgWFcF5UzgKiVfnQmIYxZIHMpfIQgj5ZzphF8g4xjXVzMHy+KTLjAQaFiM2Q+in778
-        5nBiuL4tbR0XzJ35Of1Fc3mxxXY95lnS5/3xXX8pTJ2jnnYVYgNXrN4skP+G4ZWdozUXNV
-        4cT87CPUKORE+sd1G9N9dLyBHOKAVGs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-DnfBfRK3NC-LNp9lpBeq1w-1; Mon, 13 Sep 2021 16:54:51 -0400
-X-MC-Unique: DnfBfRK3NC-LNp9lpBeq1w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 410DC801B3D;
-        Mon, 13 Sep 2021 20:54:50 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.40.192.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0683A1002388;
-        Mon, 13 Sep 2021 20:54:48 +0000 (UTC)
-From:   Denys Vlasenko <dvlasenk@redhat.com>
-To:     Andy Lutomirski <luto@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Denys Vlasenko <dvlasenk@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/entry: move ptregs->rsp and IF fixups to asm, remove do_SYSENTER_32()
-Date:   Mon, 13 Sep 2021 22:54:46 +0200
-Message-Id: <20210913205446.10342-1-dvlasenk@redhat.com>
+        Mon, 13 Sep 2021 16:57:03 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BBAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:55:47 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so15207074otq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xlOUwRVv/SaM1ZoZrctrKFCQwOAIgRDrG+ihv2UpfRE=;
+        b=hYpUq2fYnjWl98QExTA1Lcm3pKldkQlsz03K4Ceni+OVd4yS3nuQbH84FXn9mymrvU
+         FHRAjNULnrb8zqGIaQf3IZLCJr1mdoFuMD8T8azOCroNQE2U0Z7jCawqQPmCMsajotSH
+         o9p4ellOkdxtgZIeg0x3L9x1+ZZ6Dwtoj/LrA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xlOUwRVv/SaM1ZoZrctrKFCQwOAIgRDrG+ihv2UpfRE=;
+        b=awub2N6MbTQI8YTgFNCFxFF6hqwowqlQp9bQsxXv7MYds0UYMHMhjFvw3V359s3N8J
+         5R6BHwUABeim8sASjAQh3y9opjTm4whWJhMX3TtVib906EMQHzwuOSRAwjbH7BwKsOMr
+         T9rZEk4RobpuhyZzd5Zfp+oazVgpNjmGX5DKtbCoZIeBJx4tPi/Py6F0kKCQXCKAi3TJ
+         npJsgBP30o4MZQME+zOMOpdVYv4R4Vel4wtjnmnHGd662KY7ZO3CEd3qcMPfB70jlleF
+         CTGYVVGW13o52o+CIqzjZTPjbeZf+GHDiJ2GeFNg+q6OlzxFgdlJkJ726+FX0CnrI+4I
+         RA0Q==
+X-Gm-Message-State: AOAM532BRHnCG4JgNbUUHfT1d53NhTCtuXcNEcx5N9z6xeRn9h+x4SMq
+        CXF76iHtR5MzDAdgXOI4y/0ysw==
+X-Google-Smtp-Source: ABdhPJxX6VLJs0ZE/xnRItZvUlnzABjm694fEoRvXc78iBIISqm0Sa0k2us+ag+7HT07CwsTKbCfmQ==
+X-Received: by 2002:a05:6830:818:: with SMTP id r24mr11477370ots.2.1631566547004;
+        Mon, 13 Sep 2021 13:55:47 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id z1sm2139510ooj.25.2021.09.13.13.55.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 13:55:46 -0700 (PDT)
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+ <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+ <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+ <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
+Date:   Mon, 13 Sep 2021 14:55:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This removes two loads, one store, and one level of function calls
-from both 32- and 64-bit SYSENTER32 code paths:
+On 9/8/21 3:24 PM, Brendan Higgins wrote:
+> On Wed, Sep 8, 2021 at 10:16 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 9/8/21 11:05 AM, Arnd Bergmann wrote:
+>>> On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>> On 9/7/21 5:14 PM, Linus Torvalds wrote:
+>>>>> The KUNIT macros create all these individually reasonably small
+>>>>> initialized structures on stack, and when you have more than a small
+>>>>> handful of them the KUNIT infrastructure just makes the stack space
+>>>>> explode. Sometimes the compiler will be able to re-use the stack
+>>>>> slots, but it seems to be an iffy proposition to depend on it - it
+>>>>> seems to be a combination of luck and various config options.
+>>>>>
+>>>>
+>>>> I have been concerned about these macros creeping in for a while.
+>>>> I will take a closer look and work with Brendan to come with a plan
+>>>> to address it.
+>>>
+>>> I've previously sent patches to turn off the structleak plugin for
+>>> any kunit test file to work around this, but only a few of those patches
+>>> got merged and new files have been added since. It would
+>>> definitely help to come up with a proper fix, but my structleak-disable
+>>> hack should be sufficient as a quick fix.
+>>>
+>>
+>> Looks like these are RFC patches and the discussion went cold. Let's pick
+>> this back up and we can make progress.
+>>
+>> https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
+> 
+> I can try to get the patch reapplying and send it out (I just figured
+> that Arnd or Kees would want to send it out :-)  since it was your
+> idea).
+> 
 
-do_SYSENTER_32() does two fixups:
+Brendan,
 
-    /* SYSENTER loses RSP, but the vDSO saved it in RBP. */
-    regs->sp = regs->bp;
-but we can just do this when we form regs->sp on the stack in the first place.
+Would you like to send me the fix with Suggested-by for Arnd or Kees?
 
-    /* SYSENTER clobbers EFLAGS.IF.  Assume it was set in usermode. */
-    regs->flags |= X86_EFLAGS_IF;
-but we already load regs->flags in asm code and peek at its bits in order
-to clear TF et al. We can set IF and update regs->flags right there,
-avoiding loading it again.
-
-With this changed, do_SYSENTER_32() does not do anything except calling
-do_fast_syscall_32(), so get rid of it.
-
-While at it, tweak some outdated comments.
-
-Signed-off-by: Denys Vlasenko <dvlasenk@redhat.com>
----
- arch/x86/entry/common.c          | 12 ------------
- arch/x86/entry/entry_32.S        | 13 +++++++++----
- arch/x86/entry/entry_64_compat.S | 19 ++++++++++++-------
- 3 files changed, 21 insertions(+), 23 deletions(-)
-
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 6c2826417b33..7639b0fc7e8a 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -233,18 +233,6 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 		(regs->flags & (X86_EFLAGS_RF | X86_EFLAGS_TF | X86_EFLAGS_VM)) == 0;
- #endif
- }
--
--/* Returns 0 to return using IRET or 1 to return using SYSEXIT/SYSRETL. */
--__visible noinstr long do_SYSENTER_32(struct pt_regs *regs)
--{
--	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
--	regs->sp = regs->bp;
--
--	/* SYSENTER clobbers EFLAGS.IF.  Assume it was set in usermode. */
--	regs->flags |= X86_EFLAGS_IF;
--
--	return do_fast_syscall_32(regs);
--}
- #endif
- 
- SYSCALL_DEFINE0(ni_syscall)
-diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index ccb9d32768f3..e14b13e9c3e1 100644
---- a/arch/x86/entry/entry_32.S
-+++ b/arch/x86/entry/entry_32.S
-@@ -837,7 +837,8 @@ SYM_FUNC_START(entry_SYSENTER_32)
- 
- .Lsysenter_past_esp:
- 	pushl	$__USER_DS		/* pt_regs->ss */
--	pushl	$0			/* pt_regs->sp (placeholder) */
-+	/* SYSENTER loses RSP, but the vDSO saved it in EBP. */
-+	pushl	%ebp			/* pt_regs->sp */
- 	pushfl				/* pt_regs->flags (except IF = 0) */
- 	pushl	$__USER_CS		/* pt_regs->cs */
- 	pushl	$0			/* pt_regs->ip = 0 (placeholder) */
-@@ -845,7 +846,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
- 	SAVE_ALL pt_regs_ax=$-ENOSYS	/* save rest, stack already switched */
- 
- 	/*
--	 * SYSENTER doesn't filter flags, so we need to clear NT, AC
-+	 * SYSENTER filters only IF and VM, so we need to clear NT, AC
- 	 * and TF ourselves.  To save a few cycles, we can check whether
- 	 * either was set instead of doing an unconditional popfq.
- 	 * This needs to happen before enabling interrupts so that
-@@ -863,12 +864,16 @@ SYM_FUNC_START(entry_SYSENTER_32)
- 	 * we're keeping that code behind a branch which will predict as
- 	 * not-taken and therefore its instructions won't be fetched.
- 	 */
--	testl	$X86_EFLAGS_NT|X86_EFLAGS_AC|X86_EFLAGS_TF, PT_EFLAGS(%esp)
-+	movl	PT_EFLAGS(%esp), %eax
-+	testl	$X86_EFLAGS_NT|X86_EFLAGS_AC|X86_EFLAGS_TF, %eax
- 	jnz	.Lsysenter_fix_flags
- .Lsysenter_flags_fixed:
-+	/* SYSENTER cleared IF.  Assume it was set in usermode. */
-+	orl	$X86_EFLAGS_IF, %eax
-+	movl	%eax, PT_EFLAGS(%esp)
- 
- 	movl	%esp, %eax
--	call	do_SYSENTER_32
-+	call	do_fast_syscall_32
- 	testl	%eax, %eax
- 	jz	.Lsyscall_32_done
- 
-diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 0051cf5c792d..71a9bc09b14d 100644
---- a/arch/x86/entry/entry_64_compat.S
-+++ b/arch/x86/entry/entry_64_compat.S
-@@ -59,13 +59,14 @@ SYM_CODE_START(entry_SYSENTER_compat)
- 
- 	/* Construct struct pt_regs on stack */
- 	pushq	$__USER32_DS		/* pt_regs->ss */
--	pushq	$0			/* pt_regs->sp = 0 (placeholder) */
-+	/* SYSENTER loses RSP, but the vDSO saved it in RBP. */
-+	pushq	%rbp			/* pt_regs->sp */
- 
- 	/*
- 	 * Push flags.  This is nasty.  First, interrupts are currently
--	 * off, but we need pt_regs->flags to have IF set.  Second, if TS
-+	 * off, but we need pt_regs->flags to have IF set.  Second, if TF
- 	 * was set in usermode, it's still set, and we're singlestepping
--	 * through this code.  do_SYSENTER_32() will fix up IF.
-+	 * through this code.  We fix up IF before do_fast_syscall_32().
- 	 */
- 	pushfq				/* pt_regs->flags (except IF = 0) */
- 	pushq	$__USER32_CS		/* pt_regs->cs */
-@@ -113,7 +114,7 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
- 	cld
- 
- 	/*
--	 * SYSENTER doesn't filter flags, so we need to clear NT and AC
-+	 * SYSENTER filters only IF and VM, so we need to clear NT and AC
- 	 * ourselves.  To save a few cycles, we can check whether
- 	 * either was set instead of doing an unconditional popfq.
- 	 * This needs to happen before enabling interrupts so that
-@@ -131,12 +132,16 @@ SYM_INNER_LABEL(entry_SYSENTER_compat_after_hwframe, SYM_L_GLOBAL)
- 	 * we're keeping that code behind a branch which will predict as
- 	 * not-taken and therefore its instructions won't be fetched.
- 	 */
--	testl	$X86_EFLAGS_NT|X86_EFLAGS_AC|X86_EFLAGS_TF, EFLAGS(%rsp)
-+	movl	EFLAGS(%rsp), %edi
-+	testl	$X86_EFLAGS_NT|X86_EFLAGS_AC|X86_EFLAGS_TF, %edi
- 	jnz	.Lsysenter_fix_flags
- .Lsysenter_flags_fixed:
-+	/* SYSENTER cleared IF.  Assume it was set in usermode. */
-+	orl	$X86_EFLAGS_IF, %edi
-+	movl	%edi, EFLAGS(%rsp)
- 
- 	movq	%rsp, %rdi
--	call	do_SYSENTER_32
-+	call	do_fast_syscall_32
- 	/* XEN PV guests always use IRET path */
- 	ALTERNATIVE "testl %eax, %eax; jz swapgs_restore_regs_and_return_to_usermode", \
- 		    "jmp swapgs_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
-@@ -189,7 +194,7 @@ SYM_CODE_END(entry_SYSENTER_compat)
-  * eax  system call number
-  * ecx  return address
-  * ebx  arg1
-- * ebp  arg2	(note: not saved in the stack frame, should not be touched)
-+ * ebp  arg2
-  * edx  arg3
-  * esi  arg4
-  * edi  arg5
--- 
-2.30.0
-
+thanks,
+-- Shuah
