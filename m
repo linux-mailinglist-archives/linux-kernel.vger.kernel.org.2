@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20622409EE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A678409EE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243491AbhIMVLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:11:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231976AbhIMVLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:11:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDF4860FC1;
-        Mon, 13 Sep 2021 21:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631567428;
-        bh=5bdCCTygd91fQIytnh4lqUemAO4kuKMYzwmLEv44tvo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=tnmGMWWIiXSL0/IB+sPHdGhSQuNbkRoSnCJGahZa3iFVZJFEJpMHLPK3OFRSkQC/K
-         HxX0QBKiXkc3H6BAI+y+HO4sgUEibLLRYFl0eLVMMaF7gOcinA0rSYBzDxvAMk6C1h
-         2o96dGLi5r7Tw/bKMJPM9/PXQhwKCAU0/OBmXJ6O0VpXvpW5e4FTubyYxattb+n6O5
-         F2xj1KzsZM6xvP6cRAdiB+wWbtzSGck7rxgZT7Qtcq9WAzzvFSezTrLXQo3TlDJKXM
-         isoY/Y8vBRNkHwyB8NfK0gbo/vfMsd5sTzdCD6LjW5k9PU2UYhEd0tmilFAH4Lm6cY
-         gNw/YYH+TpKXA==
-Message-ID: <5659e538b806c64cd738b13d89663890034447d0.camel@kernel.org>
-Subject: Re: [PATCH v14 2/7] tpm: tpm_tis: Fix expected bit handling and
- send all bytes in one shot without last byte in exception
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     amirmizi6@gmail.com, Eyal.Cohen@nuvoton.com,
-        oshrialkoby85@gmail.com, alexander.steffen@infineon.com,
-        robh+dt@kernel.org, mark.rutland@arm.com, peterhuewe@gmx.de,
-        jgg@ziepe.ca, arnd@arndb.de, gregkh@linuxfoundation.org,
-        benoit.houyere@st.com, eajames@linux.ibm.com, joel@jms.id.au
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
-Date:   Tue, 14 Sep 2021 00:10:26 +0300
-In-Reply-To: <20210913144351.101167-3-amirmizi6@gmail.com>
-References: <20210913144351.101167-1-amirmizi6@gmail.com>
-         <20210913144351.101167-3-amirmizi6@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S244161AbhIMVNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243266AbhIMVNM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:13:12 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478DCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:11:56 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id v2so2796725plp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XlbYYs1xpz35Iv85qYFjd2jgM/KVGCtGbcbWYfPgCP4=;
+        b=rDor+CBYfNx9Srb9QxGYupt6qFScu9pnfYePIyjV+REzi8u/TLSom19+QJI+GEYZGS
+         IK3c+VRyjTMO4Gpfzq5MJdHp55oLiukyf1EoYJTZ/JQYxNZ5WpBzPiANszDPEGQzXQHX
+         uMPW6UC5k83YmImCyVEXRQr4NtxjysuwJsMg5xP7+EVxfjAg5ssfhetNp4yWET/v5XX+
+         uPyQwgmoyKuppK+a/t3bCcTQDfe/x3x9ilGCtpSz0ZpGIQBooEBlYDwSwlrdl6ng9k42
+         JJfACUYOxL/Xgv6L5//YEXw+uNxExk6Ckbd17k/3OCK0KEycQjd6Fm4+EuFknWWCuRoc
+         EgXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XlbYYs1xpz35Iv85qYFjd2jgM/KVGCtGbcbWYfPgCP4=;
+        b=Qlza1rfF7Zu5QDazlVmbVikn9lIn42Ony9t3IO6DX80BUlp98bRZJDpFLG++PlueEb
+         IxtSLeoZgbBV4/mWdPWj1CopTd6kMCg6dXzzw6WW6VI5wCEU97rOQ8yktwrbxuv4ncuP
+         uOICg2mrRIozV84eECWajpGbPMKIyrzL+mhekUcj0+ElpeWuKZR5dkM6aVjNhJJ+ZRQ5
+         eqj40KHv54zx4xRuluIzyrlEaRAov+k9QGHvvMTB9CsPTJmS9QRILzhlDlR7iogoBcEG
+         hSFA6NAYgOJ1yGktgalwKbziF0GAdE/IF2kb28YdpMD7nupVGUG/Zz3W9n7o69GwWWI0
+         /VAw==
+X-Gm-Message-State: AOAM531xJlBxJ1L+WJ7gqxxFQadBD2IXPtfJcB4/gjcUYeEGwDNvQmzY
+        F97l8tsTE5aP4NiXob3JQbdPoA==
+X-Google-Smtp-Source: ABdhPJyDPbwAccoS6lshuqcQMWi6uDYAndD0nTMcsAQem30TsztdgQMDMlrNMjsvJBIKqI3xqCNkMg==
+X-Received: by 2002:a17:90a:db17:: with SMTP id g23mr1541721pjv.193.1631567515587;
+        Mon, 13 Sep 2021 14:11:55 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id gw21sm7499946pjb.36.2021.09.13.14.11.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 14:11:55 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 21:11:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        jarkko@kernel.org, dave.hansen@linux.intel.com,
+        yang.zhong@intel.com
+Subject: Re: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
+Message-ID: <YT++l/gSpx3FPMKL@google.com>
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210913131153.1202354-3-pbonzini@redhat.com>
+ <50287173-0afb-36f4-058e-0960fb4017a7@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50287173-0afb-36f4-058e-0960fb4017a7@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 17:43 +0300, amirmizi6@gmail.com wrote:
-> From: Amir Mizinski <amirmizi6@gmail.com>
->=20
-> Detected an incorrect implementation of the send command.
-> Currently, the driver polls the TPM_STS.stsValid field until TRUE; then i=
-t
-> reads TPM_STS register again to verify only that TPM_STS.expect field is
-> FALSE (i.e., it ignores TPM_STS.stsValid).
-> Since TPM_STS.stsValid represents the TPM_STS.expect validity, both field=
-s
-> fields should be checked in the same TPM_STS register read value.
->=20
-> This fix modifies the signature of 'wait_for_tpm_stat()', adding an
-> additional "mask_result" parameter to its call and renaming it to
-> 'tpm_tis_wait_for_stat()' for better alignment with other naming.
-> 'tpm_tis_wait_for_stat()' is now polling the TPM_STS with a mask and wait=
-s
-> for the value in mask_result. The fix adds the ability to check if certai=
-n
-> TPM_STS bits have been cleared.
+On Mon, Sep 13, 2021, Dave Hansen wrote:
+> On 9/13/21 6:11 AM, Paolo Bonzini wrote:
+> > +static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
+> > +{
+> > +	struct sgx_epc_page *entry;
+> > +	unsigned long index;
+> > +	long failures = 0;
+> > +
+> > +	xa_for_each(&vepc->page_array, index, entry)
+> > +		if (sgx_vepc_remove_page(entry))
+> > +			failures++;
+> > +
+> > +	/*
+> > +	 * Return the number of pages that failed to be removed, so
+> > +	 * userspace knows that there are still SECS pages lying
+> > +	 * around.
+> > +	 */
+> > +	return failures;
+> > +}
+> 
+> I'm not sure the retry logic should be in userspace.  Also, is this
+> strictly limited to SECS pages?  It could also happen if there were
+> enclaves running that used the page.  Granted, userspace can probably
+> stop all the vcpus, but the *interface* doesn't prevent it being called
+> like that.
 
-Use imprative form, e.g. "Modify the signature...".
+The general rule for KVM is that so long as userspace abuse of running vCPUs (or
+other concurrent operations) doesn't put the kernel/platform at risk, it's
+userspace's responsibility to not screw up.  The main argument being that there
+are myriad ways the VMM can DoS the guest without having to abuse an ioctl().
 
->=20
-> This change is also aligned to verifying the CRC on I2C TPM. The CRC
-> verification should be done after the TPM_STS.expect field is cleared
-> (TPM received all expected command bytes and set the calculated CRC value
-> in the register).
+> What else can userspace do but:
+> 
+> 	ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
+> 	if (ret)
+> 		ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
+> 	if (ret)
+> 		printf("uh oh\n");
+> 
+> We already have existing code to gather up the pages that couldn't be
+> EREMOVE'd and selectively EREMOVE them again.  Why not reuse that code
+> here?  If there is 100GB of EPC, it's gotta be painful to run through
+> the ->page_array twice when once plus a small list iteration will do.
 
-What does it mean when you "align to verifying"?
+My argument against handling this fully in the kernel is that to handle a vNUMA
+setup with multiple vEPC sections, the ioctl() would need to a take a set of file
+descriptors to handle the case where an SECS is pinned by a child page in a
+diferent vEPC.  It would also require an extra list_head per page (or dynamic
+allocations), as the list_head in sgx_epc_page will (likely, eventually) be needed
+to handle EPC OOM.  In the teardown case, sgx_epc_page.list can be used because
+the pages are taken off the active/allocated list as part of teardown.
 
-> In addition, the send command was changed to comply with
-> TCG_DesignPrinciples_TPM2p0Driver_vp24_pubrev.pdf as follows:
-> - send all command bytes in one loop
-> - remove special handling of the last byte
->=20
-> Suggested-by: Benoit Houyere <benoit.houyere@st.com>
-> Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
+Neither issue is the end of the world, but IMO it's not worth burning the memory
+and taking on extra complexity in the kernel for a relatively rare operation that's
+slow as dirt anyways.
 
-
-I don't think the rename is important enough to be done, and it
-definitely should not be melded into another patch.
-
-/Jarkko
-
+> Which reminds me...  Do we need a cond_resched() in there or anything?
+> That loop could theoretically get really, really long.
