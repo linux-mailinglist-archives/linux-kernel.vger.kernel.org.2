@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6385408F21
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A993C408C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243854AbhIMNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58362 "EHLO mail.kernel.org"
+        id S240455AbhIMNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:20:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242965AbhIMNeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:34:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9A166124E;
-        Mon, 13 Sep 2021 13:26:46 +0000 (UTC)
+        id S239292AbhIMNTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:19:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BE616108B;
+        Mon, 13 Sep 2021 13:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539607;
-        bh=UWLst1ZD29Mx8vPX0iFVK4aWJ6bg+0Pylzekdndx0jQ=;
+        s=korg; t=1631539026;
+        bh=x0C9rt2yVYfvMsFtVlMyMEYTBQEpGjCvQ2g3nY873dQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/Lea1nEEp/KN/OB//J2oejKsk8J+vtFWQIPjPi06QRyKZcqMVJ/aPIOwSahla3mq
-         1pz01HAzvzTFPdHFRQb31wNDXZJW96R+Zg1UCXNfXzenHNxzKc5HjVZsa50yqYoSdg
-         vrzxxBh9TtYy//28Qq96pg5y1tlM3+5XAdRRXslU=
+        b=Ic7egVEHCGDTAqCEKytdQo4qHa96jfJzEpKh3NPq9UankMcfrEmBIwAtHRnwo8sbm
+         rvGHMgP9/ebSum/iTWDuH43TEzT+LzwBGL+Mvxtq6NnoL7f1neYmemcbomAJWS1V8S
+         KhKTQefxGUTLD35p7RHvMC2Vht04Mdyrd2gv/NrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/236] driver core: Fix error return code in really_probe()
-Date:   Mon, 13 Sep 2021 15:13:14 +0200
-Message-Id: <20210913131103.380126270@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 014/144] isofs: joliet: Fix iocharset=utf8 mount option
+Date:   Mon, 13 Sep 2021 15:13:15 +0200
+Message-Id: <20210913131048.443329086@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +40,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit f04948dea236b000da09c466a7ec931ecd8d7867 ]
+[ Upstream commit 28ce50f8d96ec9035f60c9348294ea26b94db944 ]
 
-In the case of error handling, the error code returned by the subfunction
-should be propagated instead of 0.
+Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
+it is required to use utf8 mount option.
 
-Fixes: 1901fb2604fb ("Driver core: fix "driver" symlink timing")
-Fixes: 23b6904442d0 ("driver core: add dev_groups to all drivers")
-Fixes: 8fd456ec0cf0 ("driver core: Add state_synced sysfs file for devices that support it")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210707074301.2722-1-thunder.leizhen@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
+option.
+
+If UTF-8 as iocharset is used then s_nls_iocharset is set to NULL. So
+simplify code around, remove s_utf8 field as to distinguish between UTF-8
+and non-UTF-8 it is needed just to check if s_nls_iocharset is set to NULL
+or not.
+
+Link: https://lore.kernel.org/r/20210808162453.1653-5-pali@kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/dd.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ fs/isofs/inode.c  | 27 +++++++++++++--------------
+ fs/isofs/isofs.h  |  1 -
+ fs/isofs/joliet.c |  4 +---
+ 3 files changed, 14 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 85bb8742f090..81ad4f867f02 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -543,7 +543,8 @@ re_probe:
- 			goto probe_failed;
- 	}
+diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
+index 62c0462dc89f..bf30f6ce8dd1 100644
+--- a/fs/isofs/inode.c
++++ b/fs/isofs/inode.c
+@@ -155,7 +155,6 @@ struct iso9660_options{
+ 	unsigned int overriderockperm:1;
+ 	unsigned int uid_set:1;
+ 	unsigned int gid_set:1;
+-	unsigned int utf8:1;
+ 	unsigned char map;
+ 	unsigned char check;
+ 	unsigned int blocksize;
+@@ -355,7 +354,6 @@ static int parse_options(char *options, struct iso9660_options *popt)
+ 	popt->gid = GLOBAL_ROOT_GID;
+ 	popt->uid = GLOBAL_ROOT_UID;
+ 	popt->iocharset = NULL;
+-	popt->utf8 = 0;
+ 	popt->overriderockperm = 0;
+ 	popt->session=-1;
+ 	popt->sbsector=-1;
+@@ -388,10 +386,13 @@ static int parse_options(char *options, struct iso9660_options *popt)
+ 		case Opt_cruft:
+ 			popt->cruft = 1;
+ 			break;
++#ifdef CONFIG_JOLIET
+ 		case Opt_utf8:
+-			popt->utf8 = 1;
++			kfree(popt->iocharset);
++			popt->iocharset = kstrdup("utf8", GFP_KERNEL);
++			if (!popt->iocharset)
++				return 0;
+ 			break;
+-#ifdef CONFIG_JOLIET
+ 		case Opt_iocharset:
+ 			kfree(popt->iocharset);
+ 			popt->iocharset = match_strdup(&args[0]);
+@@ -494,7 +495,6 @@ static int isofs_show_options(struct seq_file *m, struct dentry *root)
+ 	if (sbi->s_nocompress)		seq_puts(m, ",nocompress");
+ 	if (sbi->s_overriderockperm)	seq_puts(m, ",overriderockperm");
+ 	if (sbi->s_showassoc)		seq_puts(m, ",showassoc");
+-	if (sbi->s_utf8)		seq_puts(m, ",utf8");
  
--	if (driver_sysfs_add(dev)) {
-+	ret = driver_sysfs_add(dev);
-+	if (ret) {
- 		pr_err("%s: driver_sysfs_add(%s) failed\n",
- 		       __func__, dev_name(dev));
- 		goto probe_failed;
-@@ -565,15 +566,18 @@ re_probe:
- 			goto probe_failed;
- 	}
+ 	if (sbi->s_check)		seq_printf(m, ",check=%c", sbi->s_check);
+ 	if (sbi->s_mapping)		seq_printf(m, ",map=%c", sbi->s_mapping);
+@@ -517,9 +517,10 @@ static int isofs_show_options(struct seq_file *m, struct dentry *root)
+ 		seq_printf(m, ",fmode=%o", sbi->s_fmode);
  
--	if (device_add_groups(dev, drv->dev_groups)) {
-+	ret = device_add_groups(dev, drv->dev_groups);
-+	if (ret) {
- 		dev_err(dev, "device_add_groups() failed\n");
- 		goto dev_groups_failed;
- 	}
+ #ifdef CONFIG_JOLIET
+-	if (sbi->s_nls_iocharset &&
+-	    strcmp(sbi->s_nls_iocharset->charset, CONFIG_NLS_DEFAULT) != 0)
++	if (sbi->s_nls_iocharset)
+ 		seq_printf(m, ",iocharset=%s", sbi->s_nls_iocharset->charset);
++	else
++		seq_puts(m, ",iocharset=utf8");
+ #endif
+ 	return 0;
+ }
+@@ -867,14 +868,13 @@ root_found:
+ 	sbi->s_nls_iocharset = NULL;
  
--	if (dev_has_sync_state(dev) &&
--	    device_create_file(dev, &dev_attr_state_synced)) {
--		dev_err(dev, "state_synced sysfs add failed\n");
--		goto dev_sysfs_state_synced_failed;
-+	if (dev_has_sync_state(dev)) {
-+		ret = device_create_file(dev, &dev_attr_state_synced);
-+		if (ret) {
-+			dev_err(dev, "state_synced sysfs add failed\n");
-+			goto dev_sysfs_state_synced_failed;
-+		}
+ #ifdef CONFIG_JOLIET
+-	if (joliet_level && opt.utf8 == 0) {
++	if (joliet_level) {
+ 		char *p = opt.iocharset ? opt.iocharset : CONFIG_NLS_DEFAULT;
+-		sbi->s_nls_iocharset = load_nls(p);
+-		if (! sbi->s_nls_iocharset) {
+-			/* Fail only if explicit charset specified */
+-			if (opt.iocharset)
++		if (strcmp(p, "utf8") != 0) {
++			sbi->s_nls_iocharset = opt.iocharset ?
++				load_nls(opt.iocharset) : load_nls_default();
++			if (!sbi->s_nls_iocharset)
+ 				goto out_freesbi;
+-			sbi->s_nls_iocharset = load_nls_default();
+ 		}
  	}
+ #endif
+@@ -890,7 +890,6 @@ root_found:
+ 	sbi->s_gid = opt.gid;
+ 	sbi->s_uid_set = opt.uid_set;
+ 	sbi->s_gid_set = opt.gid_set;
+-	sbi->s_utf8 = opt.utf8;
+ 	sbi->s_nocompress = opt.nocompress;
+ 	sbi->s_overriderockperm = opt.overriderockperm;
+ 	/*
+diff --git a/fs/isofs/isofs.h b/fs/isofs/isofs.h
+index 055ec6c586f7..dcdc191ed183 100644
+--- a/fs/isofs/isofs.h
++++ b/fs/isofs/isofs.h
+@@ -44,7 +44,6 @@ struct isofs_sb_info {
+ 	unsigned char s_session;
+ 	unsigned int  s_high_sierra:1;
+ 	unsigned int  s_rock:2;
+-	unsigned int  s_utf8:1;
+ 	unsigned int  s_cruft:1; /* Broken disks with high byte of length
+ 				  * containing junk */
+ 	unsigned int  s_nocompress:1;
+diff --git a/fs/isofs/joliet.c b/fs/isofs/joliet.c
+index be8b6a9d0b92..c0f04a1e7f69 100644
+--- a/fs/isofs/joliet.c
++++ b/fs/isofs/joliet.c
+@@ -41,14 +41,12 @@ uni16_to_x8(unsigned char *ascii, __be16 *uni, int len, struct nls_table *nls)
+ int
+ get_joliet_filename(struct iso_directory_record * de, unsigned char *outname, struct inode * inode)
+ {
+-	unsigned char utf8;
+ 	struct nls_table *nls;
+ 	unsigned char len = 0;
  
- 	if (test_remove) {
+-	utf8 = ISOFS_SB(inode->i_sb)->s_utf8;
+ 	nls = ISOFS_SB(inode->i_sb)->s_nls_iocharset;
+ 
+-	if (utf8) {
++	if (!nls) {
+ 		len = utf16s_to_utf8s((const wchar_t *) de->name,
+ 				de->name_len[0] >> 1, UTF16_BIG_ENDIAN,
+ 				outname, PAGE_SIZE);
 -- 
 2.30.2
 
