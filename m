@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7730D409848
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22A340984C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346030AbhIMQE4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 12:04:56 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43962 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346501AbhIMQE3 (ORCPT
+        id S1345776AbhIMQFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:05:03 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41590 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346838AbhIMQEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:04:29 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-270-naWZEAVdMh-RMZ74W2aCvQ-1; Mon, 13 Sep 2021 17:03:12 +0100
-X-MC-Unique: naWZEAVdMh-RMZ74W2aCvQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 13 Sep 2021 17:03:09 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 13 Sep 2021 17:03:09 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Willy Tarreau' <w@1wt.eu>, Douglas Gilbert <dgilbert@interlog.com>
-CC:     LKML <linux-kernel@vger.kernel.org>
-Subject: RE: how many memset(,0,) calls in kernel ?
-Thread-Topic: how many memset(,0,) calls in kernel ?
-Thread-Index: AQHXp5KEgy5ggGKXu0iAcdzvqjgoc6uiIXMA
-Date:   Mon, 13 Sep 2021 16:03:09 +0000
-Message-ID: <88976a40175c491fb5e3349f6686ad67@AcuMS.aculab.com>
-References: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
- <20210912045608.GB16216@1wt.eu>
-In-Reply-To: <20210912045608.GB16216@1wt.eu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 13 Sep 2021 12:04:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 569D221FBB;
+        Mon, 13 Sep 2021 16:03:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631549005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JBqyG3a4suDnnnaA3ac7IWCsPb+90G8GQiU5+rkKCIk=;
+        b=Ar3weKnx1+I8P1sh4HMmXS1uBLW+4wBr79SZPuSNdxNbWyG6TrhJTYLZEnSJgq0NqujFjS
+        UpTXLMx5gTJoyaZ6AmGW3tIHIVRtAHPWclKKhf/RrIpw2jV/W6gPULbm3loP8H8BG8r5ub
+        sLeI775kCQa2bjboI/pOrxkYgvd/jqs=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BE9EFA3B8E;
+        Mon, 13 Sep 2021 16:03:24 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 18:03:24 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     yongw.pur@gmail.com
+Cc:     tj@kernel.org, peterz@infradead.org, wang.yong12@zte.com.cn,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, yang.yang29@zte.com.cn
+Subject: Re: [PATCH v1] vmpressure: wake up work only when there is
+ registration event
+Message-ID: <YT92TBIMAakm9s33@dhcp22.suse.cz>
+References: <1631548441-2784-1-git-send-email-wang.yong12@zte.com.cn>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631548441-2784-1-git-send-email-wang.yong12@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->   36:   b9 06 00 00 00          mov    $0x6,%ecx
->   3b:   4c 89 e7                mov    %r12,%rdi
->   3e:   f3 ab                   rep stos %eax,%es:(%rdi)
+On Mon 13-09-21 08:54:01, yongw.pur@gmail.com wrote:
+> From: wangyong <wang.yong12@zte.com.cn>
 > 
-> The last line does exactly "memset(%rdi, %eax, %ecx)". Just two bytes
-> for some code that modern processors are even able to optimize.
+> Use the global variable num_events to record the number of vmpressure
+> events registered by the system, and wake up work only when there is
+> registration event.
+> Usually, the vmpressure event is not registered in the system, this patch
+> can avoid waking up work and doing nothing.
 
-Hmmm I'd bet that 6 stores will be faster on ~everything.
-'modern' processors do better than some older ones [1], but 6
-writes isn't enough to get into the really fast paths.
-So you'll still take a few cycles of setup.
+How much of an improvement does this bring?
 
-[1] P4 netburst had a ~40 clock setup for any 'rep' operation.
+> Refer to Michal Hocko's suggestion:
+> https://lore.kernel.org/linux-mm/YR%2FNRJEhPKRQ1r22@dhcp22.suse.cz/
 
-	David
+let me also point out that we do have means to implement conditional
+branches with a zero overhead. Have a look at static branches.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> Tested-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: wangyong <wang.yong12@zte.com.cn>
+> ---
+>  mm/vmpressure.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+> index 76518e4..dfac76b 100644
+> --- a/mm/vmpressure.c
+> +++ b/mm/vmpressure.c
+> @@ -67,6 +67,11 @@ static const unsigned int vmpressure_level_critical = 95;
+>   */
+>  static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
+>  
+> +/*
+> + * Count the number of vmpressure events registered in the system.
+> + */
+> +static atomic_t num_events = ATOMIC_INIT(0);
+> +
+>  static struct vmpressure *work_to_vmpressure(struct work_struct *work)
+>  {
+>  	return container_of(work, struct vmpressure, work);
+> @@ -277,7 +282,7 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+>  		vmpr->tree_reclaimed += reclaimed;
+>  		spin_unlock(&vmpr->sr_lock);
+>  
+> -		if (scanned < vmpressure_win)
+> +		if (scanned < vmpressure_win || atomic_read(&num_events) == 0)
+>  			return;
+>  		schedule_work(&vmpr->work);
+>  	} else {
 
+This is a very odd place to put the check on. It is past locks being
+held and schedule_work on it's own is unlikely to provide a big
+overhead. I would have expected to implement the check at the very
+beginning of vmpressure()
+
+-- 
+Michal Hocko
+SUSE Labs
