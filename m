@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8896F409000
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E80D408F1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242886AbhIMNsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241915AbhIMNoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:44:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB37C61439;
-        Mon, 13 Sep 2021 13:30:59 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 15:30:57 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/13] sysfs: add ->seq_show support to sysfs_ops
-Message-ID: <20210913133057.jecjno7uswlvfdu2@wittgenstein>
-References: <20210913054121.616001-1-hch@lst.de>
- <20210913054121.616001-8-hch@lst.de>
+        id S243774AbhIMNkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:40:02 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:47565 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242988AbhIMNeo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:34:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631540008; x=1663076008;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pGp6s8OXSV13dUq3hfMuAIW/HNTvZVlyt23W1OpT7yo=;
+  b=NUetyUEx0JUtBW5EqoJkH0BFFVHksDn49NflRlaPy41byL40uovyZ5Td
+   jkklnxncPEIOsOADZaefNv62etEAz92rG48y+S+1qoiWKMHaBkQiMuBHY
+   ih7rxwGvZpx150IUa47WwBHLg4ZCaqMdETDHUts7VvV9adJFwFDqLzW+g
+   T3YDziIVOk4X4dhExpOlARhuUU2ROUEsm9cXZDNJ4n7ES7f/yN2i747Eh
+   5HMTiIZuqndqIS3XvFpt+CZUekn42begDrqOXll91kStp8wc6maTOzOim
+   ZmTiyFzqkN9E3C9w9w5+FHCsfWXlRIvPplo67+CYuPLfIg1Qf6Y5pmWsH
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,290,1624291200"; 
+   d="scan'208";a="291474599"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Sep 2021 21:33:25 +0800
+IronPort-SDR: UgFTwvG7eCnjZZi2UvMbOvFgL1UUNfGyi5lHekcA5Onmzjq+jMDdFw7FJhO0W0R6fSDEeb/s55
+ wB8fXRyBo+EdIZKPqoLyc+iDjLOHfFFYWmr92n/54OY5GbVehh1vHcycehEmMVMWeg72mBe/X3
+ DU6FnZpltkPPcTfcd6Lb8ibk+xQRpGy89L91lkCOOnOrFpOWM29PteQGrxLzsyIIctZzA+eKXp
+ 6VYl2rFs4zb+PWlGI/jiDP7rzp4RQdtthABcMMvgzwFPUmqF64yKl2kjtoFzdil2eEI2zTyp3G
+ zayqnLJFhgoCkfbGjmlJTVYC
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 06:08:16 -0700
+IronPort-SDR: J9P/tHWteB5xzEXTLb4/izfiWw7nZKWqyy7qJA9Ku2ZTYM5pJriYCU0O92k2ZgSfU8OsI9Gorv
+ VqQ+kdZsQ+z8CUtt/XdPC8FxxwMEPSA1A9bgbckiitxjP3i09jcsy7YgfY8iYrge7RrIC41Xwe
+ N+OlbJY6JuPsPyDTrd0+wEFl0s1L3Ewzsq5rUSNnH+d4abZ7NufiqXgQDDEteZqOkSObbOkn7V
+ wzQBm5Hn2lfPpG2DuQBediOaUGt7hVcRF4rb97G2hfGm0/+kvtEGMt09/s3ZGOOkje7xYrznRt
+ cdc=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com (HELO BXYGM33.ad.shared) ([10.0.231.247])
+  by uls-op-cesaip01.wdc.com with ESMTP; 13 Sep 2021 06:33:23 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v4 0/2] Add temperature notification support
+Date:   Mon, 13 Sep 2021 16:33:01 +0300
+Message-Id: <20210913133303.10154-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210913054121.616001-8-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 07:41:15AM +0200, Christoph Hellwig wrote:
-> Allow attributes to directly use the seq_file method instead of
-> carving out a buffer that can easily lead to buffer overflows.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
+v3 -> v4:
+ - Attend Guenter's comments
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+v2 -> v3:
+ - Attend Bart's & Guenter's comments
 
->  fs/sysfs/file.c       | 19 ++++++++++++++-----
->  include/linux/sysfs.h |  9 +++++++--
->  2 files changed, 21 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> index 42dcf96881b68..12e0bfe40a2b4 100644
-> --- a/fs/sysfs/file.c
-> +++ b/fs/sysfs/file.c
-> @@ -45,6 +45,9 @@ static int sysfs_kf_seq_show(struct seq_file *sf, void *v)
->  	ssize_t count;
->  	char *buf;
->  
-> +	if (ops->seq_show)
-> +		return ops->seq_show(kobj, of->kn->priv, sf);
-> +
->  	if (WARN_ON_ONCE(!ops->show))
->  		return -EINVAL;
->  
-> @@ -268,6 +271,10 @@ int sysfs_add_file_mode_ns(struct kernfs_node *parent,
->  		return -EINVAL;
->  
->  	if (mode & SYSFS_PREALLOC) {
-> +		if (WARN(sysfs_ops->seq_show, KERN_ERR
-> +				"seq_show not supported on prealloc file: %s\n",
-> +				kobject_name(kobj)))
-> +			return -EINVAL;
->  		if (sysfs_ops->show && sysfs_ops->store)
->  			ops = &sysfs_prealloc_kfops_rw;
->  		else if (sysfs_ops->show)
-> @@ -275,12 +282,14 @@ int sysfs_add_file_mode_ns(struct kernfs_node *parent,
->  		else if (sysfs_ops->store)
->  			ops = &sysfs_prealloc_kfops_wo;
->  	} else {
-> -		if (sysfs_ops->show && sysfs_ops->store)
-> -			ops = &sysfs_file_kfops_rw;
-> -		else if (sysfs_ops->show)
-> -			ops = &sysfs_file_kfops_ro;
-> -		else if (sysfs_ops->store)
-> +		if (sysfs_ops->seq_show || sysfs_ops->show) {
-> +			if (sysfs_ops->store)
-> +				ops = &sysfs_file_kfops_rw;
-> +			else
-> +				ops = &sysfs_file_kfops_ro;
-> +		} else if (sysfs_ops->store) {
->  			ops = &sysfs_file_kfops_wo;
-> +		}
->  	}
->  
->  	if (!ops)
-> diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
-> index e3f1e8ac1f85b..e1ab4da716730 100644
-> --- a/include/linux/sysfs.h
-> +++ b/include/linux/sysfs.h
-> @@ -236,8 +236,13 @@ struct bin_attribute bin_attr_##_name = __BIN_ATTR_WO(_name, _size)
->  struct bin_attribute bin_attr_##_name = __BIN_ATTR_RW(_name, _size)
->  
->  struct sysfs_ops {
-> -	ssize_t	(*show)(struct kobject *, struct attribute *, char *);
-> -	ssize_t	(*store)(struct kobject *, struct attribute *, const char *, size_t);
-> +	int	(*seq_show)(struct kobject *kobj, struct attribute *attr,
-> +			struct seq_file *sf);
-> +	ssize_t	(*store)(struct kobject *kobj, struct attribute *attr,
-> +			const char *buf, size_t size);
-> +
-> +	/* deprecated except for preallocated attributes: */
-> +	ssize_t	(*show)(struct kobject *kob, struct attribute *attr, char *buf);
->  };
->  
->  #ifdef CONFIG_SYSFS
-> -- 
-> 2.30.2
-> 
+v1 -> v2:
+ - Add a hw monitor device if both the platform & the device support it
+ - Remove the sysfs patch: no need to duplicate /sys/class/hwmon
+
+UFS3.0 allows using the ufs device as a temperature sensor. The purpose
+of this optional feature is to provide notification to the host of the
+UFS device case temperature. It allows reading of a rough estimate
+(+-10 degrees centigrade) of the current case temperature, and setting a
+lower and upper temperature bounds, in which the device will trigger an
+applicable exception event.
+
+A previous attempt [1] tried a comprehensive approach.  Still, it was
+unsuccessful. Here is a more modest approach that introduces just the
+bare minimum to support temperature notification.
+
+Thanks,
+Avri
+
+[1] https://lore.kernel.org/lkml/1582450522-13256-1-git-send-email-avi.shchislowski@wdc.com/
+
+Avri Altman (2):
+  scsi: ufs: Probe for temperature notification support
+  scsi: ufs: Add temperature notification exception handling
+
+ drivers/scsi/ufs/Kconfig     |   9 ++
+ drivers/scsi/ufs/Makefile    |   1 +
+ drivers/scsi/ufs/ufs-hwmon.c | 206 +++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufs.h       |   7 ++
+ drivers/scsi/ufs/ufshcd.c    |  47 ++++++++
+ drivers/scsi/ufs/ufshcd.h    |  20 ++++
+ 6 files changed, 290 insertions(+)
+ create mode 100644 drivers/scsi/ufs/ufs-hwmon.c
+
+-- 
+2.17.1
+
