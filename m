@@ -2,141 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB9C409B24
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795FB409B29
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhIMRoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        id S243704AbhIMRqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243612AbhIMRoJ (ORCPT
+        with ESMTP id S243171AbhIMRqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:44:09 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA85C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:42:53 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id h9so22843382ejs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:42:53 -0700 (PDT)
+        Mon, 13 Sep 2021 13:46:35 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C51C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:45:19 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id w19so15083868oik.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/fXusuKKh/e5rHl3WvKLT7/eIYqq9n/M32FO5AEfQZ4=;
-        b=Bb8jIWZyUA2JnH1dNvqA8PhazKDoFToI8m/EWHAoOqKLNqV8zTPjzKX6vSeXFJuKyf
-         tIz9q+4BcBJIZrm/Iu+TQqerdjnjQiXXxiZVROuzlUAiYHdpJ05Qtsggzr+XxSztzHDf
-         1zrSjLLUXzKthlfdL5NA8jPU2NHbiFKkxBxww=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c/DHXuk14m7uILgZ2IPqdDPLEotN8dRdqkDvOEyQCIE=;
+        b=kGHN3BZBgbL/EpS9EsDMxfUClo2vojFYB38hm94QfXt0JFqHf9K50zlmvAqHKodM1w
+         BNAs+BZvwhJ1E/B5HNVHDITzwAr7HgZDym1TfmkKfn/UW7BP1wcG/9FdMTJiLvhALaZ1
+         KDrzfzYbktz+2ws3q0Z6rCfG/yEx3b/vyZU5bDv6Tpj19HrJM1D0nPZliQR1hKZm37Au
+         Cg9sj8N0f0y8KnMv5uKGbtWw8ubNAfFvvWtn4IIq/3Fcs0/uwpcJLngoB0bZeNSkzZbX
+         6KfCywtu9M5jBWVw3NFhWc+jnCkTHy4W6VnxL5pJwcDYPkN5KDfqaVp4/ECOJdJJWczi
+         CsQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/fXusuKKh/e5rHl3WvKLT7/eIYqq9n/M32FO5AEfQZ4=;
-        b=ujHGsBJMbGc74r5Djy5rvVzQpi5ZaxCsAAl6SKor2hkJqZHgEoglV9VXup+qSQCgCX
-         YnQ4zql3kqZIvfnzqi44V7reAQ9ToGtf4RIBDccqxKXDm4ONzqEgF+HjcsvjcT1P9orj
-         M40Q5YmY8eh+xW3EOOxFdKlXg7o28sY2BL0cdZWrbfegzfUmh8rwQsD09UdPat0AAluI
-         b7K27NZiz0PVsMzVTGTZv26N8/HjSz4FRks7xe4HuaHN2OnbWCad+TJPATGQDbVYt+HG
-         PxW64cv461fXRMAmMTS4u4rPdvOowm/gRXYCieNJENWT5/kRCmWh4hRJ1syp+t+4oOHC
-         v1/A==
-X-Gm-Message-State: AOAM531vKX0qkcKF8AdndOu7K8l6QDVZs1VWq8I2ptyDV8Y/pVBFfKfc
-        2tk6EWAmhovwpTVi2seXYpJOrgmjBWcYx70Z99w=
-X-Google-Smtp-Source: ABdhPJxYVrnfq1JZ/AmAsEH3xHWa8INWTPIbCaZ8+jdzB4kH3xIP4pD5hqcgKr6fCoysQiHkABUFeQ==
-X-Received: by 2002:a17:906:308d:: with SMTP id 13mr13844423ejv.570.1631554972056;
-        Mon, 13 Sep 2021 10:42:52 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id w13sm4541704ede.24.2021.09.13.10.42.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 10:42:51 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id kt8so22768133ejb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:42:51 -0700 (PDT)
-X-Received: by 2002:a2e:1542:: with SMTP id 2mr11735241ljv.249.1631554960750;
- Mon, 13 Sep 2021 10:42:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c/DHXuk14m7uILgZ2IPqdDPLEotN8dRdqkDvOEyQCIE=;
+        b=McjuraMNaqgVJGo5cMbLxfcg/44pTO4ZK0/YQBigD8ODRQbiJIhjmQJvyMvAZPio0Q
+         YMTz9ES+awJzu7Z/aXmoFkMNn+a1nQY7UH9tl51N0rBNkuVpOaKvbCOYWMWjucvcenhZ
+         V6xFpTWV/W8TVn9QqMJsh0SIi7ECe8MinByi33YaAJLSviZRe5vIF/cUNikQJAWmMjR4
+         PH92g/YdxMyu39rXCVXEfrMUlL/V+VopbYCp9N4Oz6KStGcnpK2XtQu/vkrfbw19A5rK
+         lpJW/JV2R6e82xuOaWsNqnwIIPoS0aWcJyzy3jtyDdZjQlTYT9dD6TJwSemZXyRN2mw5
+         DLdQ==
+X-Gm-Message-State: AOAM531mdvDg+SFMExBygAKfp75gp+CGC8nD37bJqZqITfOegvesV9YT
+        +3PXCeamrkee88EQPPRdE63iwA==
+X-Google-Smtp-Source: ABdhPJxzcr7SOgHFPzSbXiyMjEFzKm+8xwwEQ1Bqb2+srqPRJEvsk1oY2zd6XNv+3+eoe/7rg+0yrA==
+X-Received: by 2002:a05:6808:bc2:: with SMTP id o2mr9015755oik.73.1631555118953;
+        Mon, 13 Sep 2021 10:45:18 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m25sm2063620otp.41.2021.09.13.10.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 10:45:18 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 12:45:16 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     linux-arm-msm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, bartosz.dudziak@snejp.pl,
+        Andy Gross <agross@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/8] pinctrl: qcom: msm8226: fill in more functions
+Message-ID: <YT+OLEldZ0ZGGWvV@builder.lan>
+References: <20210911232707.259615-1-luca@z3ntu.xyz>
+ <20210911232707.259615-2-luca@z3ntu.xyz>
 MIME-Version: 1.0
-References: <20210907183843.33028-1-ndesaulniers@google.com>
- <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
- <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
- <YTfkO2PdnBXQXvsm@elver.google.com> <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
- <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org> <20210913093256.GA12225@amd>
- <87a6kgerdk.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <87a6kgerdk.fsf@oldenburg.str.redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 13 Sep 2021 10:42:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj7M1_BXG2MXLv4OhjzjV-opy=5fE7+vafW5fHOyDrg+w@mail.gmail.com>
-Message-ID: <CAHk-=wj7M1_BXG2MXLv4OhjzjV-opy=5fE7+vafW5fHOyDrg+w@mail.gmail.com>
-Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel builds"
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Randy Dunlap <rdunlap@infradead.org>,
-        Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210911232707.259615-2-luca@z3ntu.xyz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 2:50 AM Florian Weimer <fweimer@redhat.com> wrote:
->
-> But there are also warnings which are emitted by the GCC middle-end (the
-> optimizers), and turning on -Werror for those is very problematic.
+On Sat 11 Sep 18:26 CDT 2021, Luca Weiss wrote:
 
-People say that, but let's face it, that's simply not true.
+> Add the functions for QUP4 (spi, uart, uim & i2c), sdc3 and audio_pcm as
+> derived from the downstream gpiomux configuration.
+> 
+> Also sort the functions alphabetically, while we're at it.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 
-There are real problematic warnings, and we just turn those warnings
-off. People who want the self-flagellation can enable them with W=1
-(or bigger values), and spend their life fighting stupid random
-compiler warnings that have tons of false positives.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-But the fact is, I've required a warning-free build on x86-64 for
-anything I notice for the last several years by now, and it really
-hasn't been a problem.
+Regards,
+Bjorn
 
-What _has_ been a problem is that (a) build bots don't care about and
-(b) the configs I don't personally test (other non-x86-64
-architectures stand out, but there's certainly been other
-configuration issues too).
-
-But "bogus compiler warnings" is very much *not* in that list of problems.
-
-I've looked at a lot of the warnings that are now errors, and while a
-number of them have made me go "So why didn't we see that on x86-64?"
-not one of them has actually made me go "-Werror was wrong".
-
-Because EVERY single one I've seen has been for something that should
-have been fixed. Presumably long long ago, but the warning it
-generated had been ignored.
-
-So stop with the "some warnings just happen" crap. Outside of actual
-compiler bugs, and truly stupid warnings (that we turn off), that's
-simply not true.
-
-And yes, those compiler bugs happen. The new warning already found one
-issue with current gcc trunk (non-released). So right now the count is
-"lots of valid warnings, and one compiler bug that was found _thanks_
-to me enabling -Werror".
-
-Yes, we have issues with having to work around older compiler bugs.
-Those aren't going away, and yes, -Werror may well mean that
-non-x86-64 people now have to deal with them.
-
-And yes, this is painful. I'm very much aware of that. But we just
-need to do it. Because the warnings don't go away on their own, and
-not making them fatal clearly just means that they'll stay around
-forever.
-
-           Linus
+> ---
+>  drivers/pinctrl/qcom/pinctrl-msm8226.c | 74 ++++++++++++++++++--------
+>  1 file changed, 52 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm8226.c b/drivers/pinctrl/qcom/pinctrl-msm8226.c
+> index 98779e62e951..fca0645e8008 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm8226.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm8226.c
+> @@ -338,26 +338,32 @@ static const unsigned int sdc2_data_pins[] = { 122 };
+>   * the pingroup table below.
+>   */
+>  enum msm8226_functions {
+> -	MSM_MUX_gpio,
+> -	MSM_MUX_cci_i2c0,
+> +	MSM_MUX_audio_pcm,
+>  	MSM_MUX_blsp_i2c1,
+>  	MSM_MUX_blsp_i2c2,
+>  	MSM_MUX_blsp_i2c3,
+> +	MSM_MUX_blsp_i2c4,
+>  	MSM_MUX_blsp_i2c5,
+>  	MSM_MUX_blsp_spi1,
+>  	MSM_MUX_blsp_spi2,
+>  	MSM_MUX_blsp_spi3,
+> +	MSM_MUX_blsp_spi4,
+>  	MSM_MUX_blsp_spi5,
+>  	MSM_MUX_blsp_uart1,
+>  	MSM_MUX_blsp_uart2,
+>  	MSM_MUX_blsp_uart3,
+> +	MSM_MUX_blsp_uart4,
+>  	MSM_MUX_blsp_uart5,
+>  	MSM_MUX_blsp_uim1,
+>  	MSM_MUX_blsp_uim2,
+>  	MSM_MUX_blsp_uim3,
+> +	MSM_MUX_blsp_uim4,
+>  	MSM_MUX_blsp_uim5,
+>  	MSM_MUX_cam_mclk0,
+>  	MSM_MUX_cam_mclk1,
+> +	MSM_MUX_cci_i2c0,
+> +	MSM_MUX_gpio,
+> +	MSM_MUX_sdc3,
+>  	MSM_MUX_wlan,
+>  	MSM_MUX_NA,
+>  };
+> @@ -382,6 +388,10 @@ static const char * const gpio_groups[] = {
+>  	"gpio111", "gpio112", "gpio113", "gpio114", "gpio115", "gpio116",
+>  };
+>  
+> +static const char * const audio_pcm_groups[] = {
+> +	"gpio63", "gpio64", "gpio65", "gpio66"
+> +};
+> +
+>  static const char * const blsp_uart1_groups[] = {
+>  	"gpio0", "gpio1", "gpio2", "gpio3"
+>  };
+> @@ -412,6 +422,16 @@ static const char * const blsp_spi3_groups[] = {
+>  	"gpio8", "gpio9", "gpio10", "gpio11"
+>  };
+>  
+> +static const char * const blsp_uart4_groups[] = {
+> +	"gpio12", "gpio13", "gpio14", "gpio15"
+> +};
+> +
+> +static const char * const blsp_uim4_groups[] = { "gpio12", "gpio13" };
+> +static const char * const blsp_i2c4_groups[] = { "gpio14", "gpio15" };
+> +static const char * const blsp_spi4_groups[] = {
+> +	"gpio12", "gpio13", "gpio14", "gpio15"
+> +};
+> +
+>  static const char * const blsp_uart5_groups[] = {
+>  	"gpio16", "gpio17", "gpio18", "gpio19"
+>  };
+> @@ -427,31 +447,41 @@ static const char * const cci_i2c0_groups[] = { "gpio29", "gpio30" };
+>  static const char * const cam_mclk0_groups[] = { "gpio26" };
+>  static const char * const cam_mclk1_groups[] = { "gpio27" };
+>  
+> +static const char * const sdc3_groups[] = {
+> +	"gpio39", "gpio40", "gpio41", "gpio42", "gpio43", "gpio44"
+> +};
+> +
+>  static const char * const wlan_groups[] = {
+>  	"gpio40", "gpio41", "gpio42", "gpio43", "gpio44"
+>  };
+>  
+>  static const struct msm_function msm8226_functions[] = {
+> -	FUNCTION(gpio),
+> -	FUNCTION(cci_i2c0),
+> -	FUNCTION(blsp_uim1),
+> -	FUNCTION(blsp_uim2),
+> -	FUNCTION(blsp_uim3),
+> -	FUNCTION(blsp_uim5),
+> +	FUNCTION(audio_pcm),
+>  	FUNCTION(blsp_i2c1),
+>  	FUNCTION(blsp_i2c2),
+>  	FUNCTION(blsp_i2c3),
+> +	FUNCTION(blsp_i2c4),
+>  	FUNCTION(blsp_i2c5),
+>  	FUNCTION(blsp_spi1),
+>  	FUNCTION(blsp_spi2),
+>  	FUNCTION(blsp_spi3),
+> +	FUNCTION(blsp_spi4),
+>  	FUNCTION(blsp_spi5),
+>  	FUNCTION(blsp_uart1),
+>  	FUNCTION(blsp_uart2),
+>  	FUNCTION(blsp_uart3),
+> +	FUNCTION(blsp_uart4),
+>  	FUNCTION(blsp_uart5),
+> +	FUNCTION(blsp_uim1),
+> +	FUNCTION(blsp_uim2),
+> +	FUNCTION(blsp_uim3),
+> +	FUNCTION(blsp_uim4),
+> +	FUNCTION(blsp_uim5),
+>  	FUNCTION(cam_mclk0),
+>  	FUNCTION(cam_mclk1),
+> +	FUNCTION(cci_i2c0),
+> +	FUNCTION(gpio),
+> +	FUNCTION(sdc3),
+>  	FUNCTION(wlan),
+>  };
+>  
+> @@ -468,10 +498,10 @@ static const struct msm_pingroup msm8226_groups[] = {
+>  	PINGROUP(9,   blsp_spi3, blsp_uart3, blsp_uim3, NA, NA, NA, NA),
+>  	PINGROUP(10,  blsp_spi3, blsp_uart3, blsp_i2c3, NA, NA, NA, NA),
+>  	PINGROUP(11,  blsp_spi3, blsp_uart3, blsp_i2c3, NA, NA, NA, NA),
+> -	PINGROUP(12,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(13,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(14,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(15,  NA, NA, NA, NA, NA, NA, NA),
+> +	PINGROUP(12,  blsp_spi4, blsp_uart4, blsp_uim4, NA, NA, NA, NA),
+> +	PINGROUP(13,  blsp_spi4, blsp_uart4, blsp_uim4, NA, NA, NA, NA),
+> +	PINGROUP(14,  blsp_spi4, blsp_uart4, blsp_i2c4, NA, NA, NA, NA),
+> +	PINGROUP(15,  blsp_spi4, blsp_uart4, blsp_i2c4, NA, NA, NA, NA),
+>  	PINGROUP(16,  blsp_spi5, blsp_uart5, blsp_uim5, NA, NA, NA, NA),
+>  	PINGROUP(17,  blsp_spi5, blsp_uart5, blsp_uim5, NA, NA, NA, NA),
+>  	PINGROUP(18,  blsp_spi5, blsp_uart5, blsp_i2c5, NA, NA, NA, NA),
+> @@ -495,12 +525,12 @@ static const struct msm_pingroup msm8226_groups[] = {
+>  	PINGROUP(36,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(37,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(38,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(39,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(40,  wlan, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(41,  wlan, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(42,  wlan, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(43,  wlan, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(44,  wlan, NA, NA, NA, NA, NA, NA),
+> +	PINGROUP(39,  NA, sdc3, NA, NA, NA, NA, NA),
+> +	PINGROUP(40,  wlan, sdc3, NA, NA, NA, NA, NA),
+> +	PINGROUP(41,  wlan, sdc3, NA, NA, NA, NA, NA),
+> +	PINGROUP(42,  wlan, sdc3, NA, NA, NA, NA, NA),
+> +	PINGROUP(43,  wlan, sdc3, NA, NA, NA, NA, NA),
+> +	PINGROUP(44,  wlan, sdc3, NA, NA, NA, NA, NA),
+>  	PINGROUP(45,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(46,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(47,  NA, NA, NA, NA, NA, NA, NA),
+> @@ -519,10 +549,10 @@ static const struct msm_pingroup msm8226_groups[] = {
+>  	PINGROUP(60,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(61,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(62,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(63,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(64,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(65,  NA, NA, NA, NA, NA, NA, NA),
+> -	PINGROUP(66,  NA, NA, NA, NA, NA, NA, NA),
+> +	PINGROUP(63,  audio_pcm, NA, NA, NA, NA, NA, NA),
+> +	PINGROUP(64,  audio_pcm, NA, NA, NA, NA, NA, NA),
+> +	PINGROUP(65,  audio_pcm, NA, NA, NA, NA, NA, NA),
+> +	PINGROUP(66,  audio_pcm, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(67,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(68,  NA, NA, NA, NA, NA, NA, NA),
+>  	PINGROUP(69,  NA, NA, NA, NA, NA, NA, NA),
+> -- 
+> 2.33.0
+> 
