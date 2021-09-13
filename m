@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249C5408EAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A63409128
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240609AbhIMNgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:36:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48112 "EHLO mail.kernel.org"
+        id S245012AbhIMN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:58:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241951AbhIMNbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:31:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A384461130;
-        Mon, 13 Sep 2021 13:25:20 +0000 (UTC)
+        id S1343610AbhIMNzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:55:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ABB6613AD;
+        Mon, 13 Sep 2021 13:35:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539521;
-        bh=ruzdFOpugTE4tvFpaPEodh/V+m9xP7BGuEwvcoe+7SA=;
+        s=korg; t=1631540155;
+        bh=xqA451Gq5eHVww4O97l3wIjinDAwalyeCfv3LaE39KA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LQ/msgsBGWygsN5/VOOjvr2F/hlg+FD+x3sDVILVDbGcJoBfZwPxmdZ50jELR77Fn
-         5kO3ghjbnWjzBe0Vpu69XteoRqjhEIBrQvs5qynN6qReTZXzuSODSU+R8nQXb1xmZ7
-         9i/hnglRFinQNGozXAeuZmGS1GapX29jZOquUBqE=
+        b=a4eohUnwLQYUsGSQlKFOsq08EaHf226Ipg0zZZz5DrWhIyIF9XPOyoJAxcDI7pCZu
+         C+IrHkqM/L2nKebJRhLnEFqH7F6H6kAyjLOqDdetPtjX5ZaAKgrI8d198JhZDtzHo/
+         C+UOTZQD7SH1/ypxMUCjCIHv0CfArQWYX5vUYLWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 029/236] crypto: qat - handle both source of interrupt in VF ISR
-Date:   Mon, 13 Sep 2021 15:12:14 +0200
-Message-Id: <20210913131101.337516651@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 074/300] blk-crypto: fix check for too-large dun_bytes
+Date:   Mon, 13 Sep 2021 15:12:15 +0200
+Message-Id: <20210913131111.852007008@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit 0a73c762e1eee33a5e5dc0e3488f1b7cd17249b3 ]
+[ Upstream commit cc40b7225151f611ef837f6403cfaeadc7af214a ]
 
-The top half of the VF drivers handled only a source at the time.
-If an interrupt for PF2VF and bundle occurred at the same time, the ISR
-scheduled only the bottom half for PF2VF.
-This patch fixes the VF top half so that if both sources of interrupt
-trigger at the same time, both bottom halves are scheduled.
+dun_bytes needs to be less than or equal to the IV size of the
+encryption mode, not just less than or equal to BLK_CRYPTO_MAX_IV_SIZE.
 
-This patch is based on earlier work done by Conor McLoughlin.
+Currently this doesn't matter since blk_crypto_init_key() is never
+actually passed invalid values, but we might as well fix this.
 
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
-Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: a892c8d52c02 ("block: Inline encryption support for blk-mq")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20210825055918.51975-1-ebiggers@kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_vf_isr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ block/blk-crypto.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_vf_isr.c b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-index 31a36288623a..024401ec9d1a 100644
---- a/drivers/crypto/qat/qat_common/adf_vf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-@@ -159,6 +159,7 @@ static irqreturn_t adf_isr(int irq, void *privdata)
- 	struct adf_bar *pmisc =
- 			&GET_BARS(accel_dev)[hw_data->get_misc_bar_id(hw_data)];
- 	void __iomem *pmisc_bar_addr = pmisc->virt_addr;
-+	bool handled = false;
- 	u32 v_int;
+diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+index c5bdaafffa29..103c2e2d50d6 100644
+--- a/block/blk-crypto.c
++++ b/block/blk-crypto.c
+@@ -332,7 +332,7 @@ int blk_crypto_init_key(struct blk_crypto_key *blk_key, const u8 *raw_key,
+ 	if (mode->keysize == 0)
+ 		return -EINVAL;
  
- 	/* Read VF INT source CSR to determine the source of VF interrupt */
-@@ -171,7 +172,7 @@ static irqreturn_t adf_isr(int irq, void *privdata)
+-	if (dun_bytes == 0 || dun_bytes > BLK_CRYPTO_MAX_IV_SIZE)
++	if (dun_bytes == 0 || dun_bytes > mode->ivsize)
+ 		return -EINVAL;
  
- 		/* Schedule tasklet to handle interrupt BH */
- 		tasklet_hi_schedule(&accel_dev->vf.pf2vf_bh_tasklet);
--		return IRQ_HANDLED;
-+		handled = true;
- 	}
- 
- 	/* Check bundle interrupt */
-@@ -183,10 +184,10 @@ static irqreturn_t adf_isr(int irq, void *privdata)
- 		WRITE_CSR_INT_FLAG_AND_COL(bank->csr_addr, bank->bank_number,
- 					   0);
- 		tasklet_hi_schedule(&bank->resp_handler);
--		return IRQ_HANDLED;
-+		handled = true;
- 	}
- 
--	return IRQ_NONE;
-+	return handled ? IRQ_HANDLED : IRQ_NONE;
- }
- 
- static int adf_request_msi_irq(struct adf_accel_dev *accel_dev)
+ 	if (!is_power_of_2(data_unit_size))
 -- 
 2.30.2
 
