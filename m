@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8128A409EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42366409EF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348122AbhIMVQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243974AbhIMVQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:16:15 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F6AC061574;
-        Mon, 13 Sep 2021 14:14:59 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id m21-20020a17090a859500b00197688449c4so1085680pjn.0;
-        Mon, 13 Sep 2021 14:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=cTJGsnmU8yvelUHgpPgOpFMhebEW0Np4c1cofoJEIuo=;
-        b=S25A87kJoQJQmPTpwvevtIExxObpISsSCAXbjemiB7i7N0TBqxcQTTAZCzsX2nENLN
-         CIZeNXdsqTQ0WL+VYrE7glXJoqE6UQdHXX965AisAN+dE1pgJlYImNnLEotuXWo8iZC+
-         ogBi4fJiVj0V1HEjSQyEaKLON9uT5msC9MDTKAl14M3BJ6ZSkXwZfJB3yv8Ntn3XM+DK
-         bf8Y/ANVjcygEMXGBY5j2diAkjpzRo6v3U4z+NStLh4mPmLHczQDJX8G4LW1hixKglJ+
-         kwXMd5CV3pE6vg3AyLGaJEcx+ZdqVmyVXORH0hQEeOS71miQ8HYEQW6C8YTOfuBBwGgZ
-         EoWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=cTJGsnmU8yvelUHgpPgOpFMhebEW0Np4c1cofoJEIuo=;
-        b=10ioYA60ZS3dvO0AYqrN/wIAoEV7UHZvCgNT+svoD4OJZYhLQpsLJ8xzu75jIh8DwC
-         bTxpLbOsehGETm9tr9cc5NRynyYgO4esnyZTN4WttWrAcVIsGyLsNf22WsBl/gJ2n6+5
-         lcXPygb6SUJEIsXiFGTtcR6Kj7xZWdmIvqQJn9rqzueL1j75NQ33fOhLjZVbVy4okHFH
-         QE7UygxjP6V+P+Pmb9CH3JTNZW9MM9KWKUSqsBP60YzpmHAScfQWe97sjkM0WfElBwH4
-         LuZFzGwoIGOq3TSzdEWerUKNrSCP4gCGx8RX5Ui/Fmwr/7+4TXhR6eElU6N92z2Uiuey
-         P3fQ==
-X-Gm-Message-State: AOAM530V1p+UaKqfw8cNxZXHnsRhbkrTcw194JKZMi+k1FMmQo/CNkXU
-        4FeydYjZkjYjP31anB2NYq23KDBO+rYdFosesTI=
-X-Google-Smtp-Source: ABdhPJyxMaVXs3yIgyckriOJc9qI+r12Idlpn8haNlwpaBxLgYiCjNL1NuQvHk2+6fYa1gNP0D9qcw==
-X-Received: by 2002:a17:90b:4a8a:: with SMTP id lp10mr1580764pjb.216.1631567698522;
-        Mon, 13 Sep 2021 14:14:58 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id y3sm7548069pjg.7.2021.09.13.14.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 14:14:58 -0700 (PDT)
-Message-ID: <613fbf52.1c69fb81.1a3eb.5d54@mx.google.com>
-Date:   Mon, 13 Sep 2021 14:14:58 -0700 (PDT)
-X-Google-Original-Date: Mon, 13 Sep 2021 21:14:56 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-Subject: RE: [PATCH 5.13 000/300] 5.13.17-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        id S1348244AbhIMVQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:16:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243974AbhIMVQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:16:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2421460EE5;
+        Mon, 13 Sep 2021 21:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631567717;
+        bh=LBL36NH+MerZ8AMiXfz7v99JfYsvflRoDEGxoPCaerA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=gV5WXBLWnqgqJfVQEUiH4zM3eA5sCnH4r3nZTh++AKUj/toiuABtDOgcr8/0jBi7T
+         VQh8+TnibR0+R6CgbJK7qlsC0f9S01IUI+zqcr6KrxD9W7USCXLGaicKm/PKusrVch
+         728ztGqR0tlmYvR80gD0ZIYjMb9n7ER07UtjUdsVqMaPWu6w+RN+Uk2WkGN0ZZOSae
+         TrJqBGaAAJbahruVsawhLEIB6DN6cpnp254jz/um0Y6LQR+x7jCXuadEhcTo04ngq+
+         V0C/YEvCUoFMUnMQy74CZuFhG9wFJUTI6lrRjPjC0254OF3hv8RuGM3uhchnRgPhw3
+         pCjW4PNJHb6vg==
+Message-ID: <8714f53383b5972da51824ae9ded23b94fa04d4d.camel@kernel.org>
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Date:   Tue, 14 Sep 2021 00:15:15 +0300
+In-Reply-To: <2b595588-eb98-6d30-dc50-794fc396bf7e@redhat.com>
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+         <20210913131153.1202354-2-pbonzini@redhat.com>
+         <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
+         <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
+         <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
+         <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
+         <480cf917-7301-4227-e1c4-728b52537f46@intel.com>
+         <2b595588-eb98-6d30-dc50-794fc396bf7e@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 15:11:01 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.13.17 release.
-> There are 300 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.17-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, 2021-09-13 at 20:35 +0200, Paolo Bonzini wrote:
+> On 13/09/21 17:29, Dave Hansen wrote:
+> > On 9/13/21 8:14 AM, Paolo Bonzini wrote:
+> > > On 13/09/21 16:55, Dave Hansen wrote:
+> > > > > By "Windows startup" I mean even after guest reboot.  Because ano=
+ther
+> > > > > process could sneak in and steal your EPC pages between a close()=
+ and an
+> > > > > open(), I'd like to have a way to EREMOVE the pages while keeping=
+ them
+> > > > > assigned to the specific vEPC instance, i.e.*without*  going thro=
+ugh
+> > > > > sgx_vepc_free_page().
+> > > > Oh, so you want fresh EPC state for the guest, but you're concerned=
+ that
+> > > > the previous guest might have left them in a bad state.  The curren=
+t
+> > > > method of getting a new vepc instance (which guarantees fresh state=
+) has
+> > > > some other downsides.
+> > > >=20
+> > > > Can't another process steal pages via sgxd and reclaim at any time?
+> > >=20
+> > > vEPC pages never call sgx_mark_page_reclaimable, don't they?
+> >=20
+> > Oh, I was just looking that they were on the SGX LRU.  You might be rig=
+ht.
+> > But, we certainly don't want the fact that they are unreclaimable today
+> > to be part of the ABI.  It's more of a bug than a feature.
+>=20
+> Sure, that's fine.
+>=20
+> > > > What's the extra concern here about going through a close()/open()
+> > > > cycle?  Performance?
+> > >=20
+> > > Apart from reclaiming, /dev/sgx_vepc might disappear between the firs=
+t
+> > > open() and subsequent ones.
+> >=20
+> > Aside from it being rm'd, I don't think that's possible.
+> >=20
+>=20
+> Being rm'd would be a possibility in principle, and it would be ugly for=
+=20
+> it to cause issues on running VMs.  Also I'd like for it to be able to=
+=20
+> pass /dev/sgx_vepc in via a file descriptor, and run QEMU in a chroot or=
+=20
+> a mount namespace.  Alternatively, with seccomp it may be possible to=20
+> sandbox a running QEMU process in such a way that open() is forbidden at=
+=20
+> runtime (all hotplug is done via file descriptor passing); it is not yet=
+=20
+> possible, but it is a goal.
 
-5.13.17-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+AFAIK, as long you have open files for a device, they work
+as expected.
 
+/Jarkko
