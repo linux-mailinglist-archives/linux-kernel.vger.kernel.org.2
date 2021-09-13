@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2231409EBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C968A409ED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245393AbhIMVCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231573AbhIMVCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:02:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B254A610CE;
-        Mon, 13 Sep 2021 21:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631566851;
-        bh=rFY2PWPC5wCDPh+eox6ipiA6Zlzg4L9SwzJYI1oxCog=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Wj7Hf/o1pby3OBYSjqKkO7+Mt5zqskFYo/tau6Z9R3y5Ld1q4u4K7xBEcmovOoqTf
-         sEO8r32cWqCpp3u1qNI7VBv7YRz8rjfCsiwMYwnDUpkCw1oCfrrCr6acHDDymFJxjr
-         f3B8FrQiYrj2MRkGR8d0lsN+C9x/vasekFwEdMnqmL05iKz5ymv2xVN/Qs7/470G14
-         FqENyR0VoFloQEkuhYg0r+FUIcMPbZ7K7RiOG3kSsJIjfW+5e3hkLwPoA50C8f/1ZD
-         PoiPd09bf+9j8VAGPGg3IAzlraC3i5wzxuuEklz+KwZmMKMfYS9/slx0Xt5kUpDl5z
-         BHYV2WUfTaojg==
-Message-ID: <60c3081434f324a84a565e55a1817510618faf64.camel@kernel.org>
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Date:   Tue, 14 Sep 2021 00:00:48 +0300
-In-Reply-To: <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
-         <20210913131153.1202354-2-pbonzini@redhat.com>
-         <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
-         <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S243173AbhIMVJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:09:56 -0400
+Received: from hosting.gsystem.sk ([212.5.213.30]:56728 "EHLO
+        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231976AbhIMVJz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:09:55 -0400
+X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 17:09:55 EDT
+Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by hosting.gsystem.sk (Postfix) with ESMTPSA id E799F7A0214;
+        Mon, 13 Sep 2021 23:01:35 +0200 (CEST)
+From:   Ondrej Zary <linux@zary.sk>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] usb-storage: Add quirk for ScanLogic SL11R-IDE older than 2.6c
+Date:   Mon, 13 Sep 2021 23:01:06 +0200
+Message-Id: <20210913210106.12717-1-linux@zary.sk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 16:24 +0200, Paolo Bonzini wrote:
-> On 13/09/21 16:05, Dave Hansen wrote:
-> > On 9/13/21 6:11 AM, Paolo Bonzini wrote:
-> > > Windows expects all pages to be in uninitialized state on startup.
-> > > In order to implement this, we will need a ioctl that performs
-> > > EREMOVE on all pages mapped by a /dev/sgx_vepc file descriptor:
-> > > other possibilities, such as closing and reopening the device,
-> > > are racy.
-> >=20
-> > Hi Paolo,
-> >=20
-> > How does this end up happening in the first place?
-> >=20
-> > All enclave pages should start out on 'sgx_dirty_page_list' and
-> > ksgxd sanitizes them with EREMOVE before making them available.  That
-> > should cover EREMOVE after reboots while SGX pages are initialized,
-> > including kexec().
->=20
-> By "Windows startup" I mean even after guest reboot.  Because another=20
-> process could sneak in and steal your EPC pages between a close() and an=
-=20
-> open(), I'd like to have a way to EREMOVE the pages while keeping them=
-=20
-> assigned to the specific vEPC instance, i.e. *without* going through=20
-> sgx_vepc_free_page().
+ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
+broken tag handling, preventing the device from working at all:
+usb 1-1: new full-speed USB device number 2 using uhci_hcd
+usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
+usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
+usb 1-1: Product: USB Device
+usb 1-1: Manufacturer: USB Device
+usb-storage 1-1:1.0: USB Mass Storage device detected
+scsi host2: usb-storage 1-1:1.0
+usbcore: registered new interface driver usb-storage
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+usb 1-1: reset full-speed USB device number 2 using uhci_hcd
 
-Isn't "other process in and steal your EPC pages" more like sysadmin
-problem, rather than software?
+Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
 
-I'm lacking of understanding what would be the collateral damage in
-the end.
+2.6c is the only firmware that claims Linux compatibility.
+The firmware can be upgraded using ezotgdbg utility:
+https://github.com/asciilifeform/ezotgdbg
 
-/Jarkko
+Signed-off-by: Ondrej Zary <linux@zary.sk>
+---
+ drivers/usb/storage/unusual_devs.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
+index efa972be2ee3..c6b3fcf90180 100644
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x2210,
+ 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
+ 
+ /*
+- * Reported by Ondrej Zary <linux@rainbow-software.org>
++ * Reported by Ondrej Zary <linux@zary.sk>
+  * The device reports one sector more and breaks when that sector is accessed
++ * Firmwares older than 2.6c (the latest one and the only that claims Linux
++ * support) have also broken tag handling
+  */
++UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
++		"ScanLogic",
++		"SL11R-IDE",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
+ UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
+ 		"ScanLogic",
+ 		"SL11R-IDE",
+-- 
+Ondrej Zary
+
