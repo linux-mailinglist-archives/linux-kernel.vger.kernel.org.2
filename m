@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01CD4082F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 04:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10363408301
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 04:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236996AbhIMCwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 22:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236965AbhIMCwL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 22:52:11 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA17BC06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 19:50:56 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id a15so10197943iot.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 19:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ThbAI+5YxnpFJqe1M2jD1J1Y+Fa7E6ZmvkAniQmhAF4=;
-        b=orpszyoX6g9Oi0URBnBo3drRbJgLY5TFQZyavsbeJFe0o41NI6vmBtSAMpTwS2fSOA
-         GYcj2Vzy7kQvMSB0j3X0rBdlGnsHW1e9KhEOW6hMMnJKSOrHh87AFrcL4EBcOPfzLLZp
-         Wwf1tHH49RSWxd6i9jU4b0LG/eYU7v7VwxY64Rcsj73dSWl59IOJS1obI2RIla5wKEkW
-         xyFNi3E/jWbOuRE/3hYA5bakI4GSnXXeyQjMglm8Kk2TwrzG6R2h+/haytE2PqXR6JI1
-         6cW6tZaHPPLqg6vpXOSAX+dYZ/oR81W/rwDyY/0PLpkb95PN+KqW/Nv6w/NKHfePrlBL
-         ePDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ThbAI+5YxnpFJqe1M2jD1J1Y+Fa7E6ZmvkAniQmhAF4=;
-        b=RDWKJ+jfXA0ZWQpk3Klf4Zo3xsQOPrq5l9t6OkFepud4C8qw1GKntSBHPpkgYoWNFV
-         H/q/0ZFvTiC97k1QRij+b3kv4l0nk01XGk0yfyUAS/6ezZat8lnAzXOeigXT/OkRull4
-         KmpjeLLGWMO9ihtsZRqG/6hel/FzZIvFdgwm9IsPlP+iwIVD/RQKMho3y/H7m+DjRO/w
-         vWaWyh5QeHSgO3Qv1iEFBMVffevAhZeaU4FB/oUfCpC0AmxekjlyCylB7jw7XjaYXWup
-         3Qvi7jO0F5LM0SwsqmBP1cwULpJt3NtyK6d4jn/gAC8NDJ+7wzKfRqbZ2vA2tt7JrtP0
-         7L1g==
-X-Gm-Message-State: AOAM533ZEGXi913CaXLhGR3tivTq0UxbiDgfPzkhEQyl3FKjoM60ZKyd
-        b35KYy5TJsf58JRB9zzCrnmTBGA7735/xA==
-X-Google-Smtp-Source: ABdhPJxs4WWwYVZefB5LmjszWdfcnUu77zRi+S4z4+69IvnpCKCE45e2adAOhZdMHUkfk6RkKW45qg==
-X-Received: by 2002:a5d:9247:: with SMTP id e7mr7280591iol.161.1631501456083;
-        Sun, 12 Sep 2021 19:50:56 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a16sm3958547ili.64.2021.09.12.19.50.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 19:50:55 -0700 (PDT)
-Subject: Re: INFO: task hung in io_uring_cancel_generic
-To:     Hao Sun <sunhao.th@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
- <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk>
- <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
- <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
- <CACkBjsaGTkxsrBW+HNsgR0Pj7kbbrK-F5E4hp3CJJjYf3ASimQ@mail.gmail.com>
- <ce4db530-3e7c-1a90-f271-42d471b098ed@gmail.com>
- <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <9b5d8c00-0191-895b-0556-2f8167ab52bd@kernel.dk>
-Date:   Sun, 12 Sep 2021 20:50:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237006AbhIMC7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 22:59:42 -0400
+Received: from mga07.intel.com ([134.134.136.100]:4880 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236935AbhIMC7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 22:59:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="285251508"
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="285251508"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 19:58:25 -0700
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="542861653"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.238.1.222]) ([10.238.1.222])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 19:58:22 -0700
+Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, pbonzini@redhat.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210525051204.1480610-1-tao3.xu@intel.com>
+ <YQRkBI9RFf6lbifZ@google.com>
+ <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
+ <YQgTPakbT+kCwMLP@google.com>
+ <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
+ <YTD4l7L0CKMCQwd5@google.com> <YTD9kIIzAz34Ieeu@google.com>
+ <118cd1b9-1b50-3173-05b8-4293412ca78c@intel.com>
+ <YTpZeVZb5tsscAmv@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <b6f2acf8-eef4-9483-1937-191209bcef9f@intel.com>
+Date:   Mon, 13 Sep 2021 10:58:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YTpZeVZb5tsscAmv@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/21 8:26 PM, Hao Sun wrote:
-> Hi
+On 9/10/2021 2:59 AM, Sean Christopherson wrote:
+> On Tue, Sep 07, 2021, Xiaoyao Li wrote:
+>> On 9/3/2021 12:36 AM, Sean Christopherson wrote:
+>>> On Thu, Sep 02, 2021, Sean Christopherson wrote:
+>>>> On Tue, Aug 03, 2021, Xiaoyao Li wrote:
+>>>>> On 8/2/2021 11:46 PM, Sean Christopherson wrote:
+>>>>>>>>> @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+>>>>>>>>>      	return 0;
+>>>>>>>>>      }
+>>>>>>>>> +static int handle_notify(struct kvm_vcpu *vcpu)
+>>>>>>>>> +{
+>>>>>>>>> +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
+>>>>>>>>> +
+>>>>>>>>> +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
+>>>>>>>>
+>>>>>>>> What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
+>>>>>>>
+>>>>>>> It means whether the VM context is corrupted and not valid in the VMCS.
+>>>>>>
+>>>>>> Well that's a bit terrifying.  Under what conditions can the VM context become
+>>>>>> corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
+>>>>>> then KVM needs to be ultra conservative as a false positive could be fatal to a
+>>>>>> guest.
+>>>>>>
+>>>>>
+>>>>> Short answer is no case will set the VM_CONTEXT_INVALID bit.
+>>>>
+>>>> But something must set it, otherwise it wouldn't exist.
+>>
+>> For existing Intel silicon, no case will set it. Maybe in the future new
+>> case will set it.
+>>
+>>> The condition(s) under
+>>>> which it can be set matters because it affects how KVM should respond.  E.g. if
+>>>> the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
+>>>> it as a shutdown and reset the VMCS.
+>>>
+>>> Oh, and "shutdown" would be relative to the VMCS, i.e. if L2 triggers a NOTIFY
+>>> exit with VM_CONTEXT_INVALID then KVM shouldn't kill the entire VM.  The least
+>>> awful option would probably be to synthesize a shutdown VM-Exit to L1.  That
+>>> won't communicate to L1 that vmcs12 state is stale/bogus, but I don't see any way
+>>> to handle that via an existing VM-Exit reason :-/
+>>>
+>>>> But if VM_CONTEXT_INVALID can occur if and only if there's a hardware/ucode
+>>>> issue, then we can do:
+>>>>
+>>>> 	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
+>>>> 		return -EIO;
+>>>>
+>>>> Either way, to enable this by default we need some form of documentation that
+>>>> describes what conditions lead to VM_CONTEXT_INVALID.
+>>
+>> I still don't know why the conditions lead to it matters. I think the
+>> consensus is that once VM_CONTEXT_INVALID happens, the vcpu can no longer
+>> run.
 > 
-> Healer found a C reproducer for this crash ("INFO: task hung in
-> io_ring_exit_work").
+> Yes, and no longer being able to run the vCPU is precisely the problem.  The
+> condition(s) matters because if there's a possibility, however small, that enabling
+> NOTIFY_WINDOW can kill a well-behaved guest then it absolutely cannot be enabled by
+> default.
+
+For now, no condition will set it. For future, I believe it will be set 
+only for some fatal case. However, we cannot guarantee no silicon bug to 
+break a well-behaved the guest. Maybe let's make it opt-in?
+
+>> Either KVM_BUG_ON() or a specific EXIT to userspace should be OK?
 > 
-> HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
+> Not if the VM_CONTEXT_INVALID happens while L2 is running.  If software can trigger
+> VM_CONTEXT_INVALID at will, then killing the VM would open up the door to a
+> malicious L2 killing L1 (which would be rather ironic since this is an anti-DoS
+> feature).  IIUC, VM_CONTEXT_INVALID only means the current VMCS is garbage, thus
+> an occurence while L2 is active means that vmcs02 is junk, but L1's state in vmcs01,
+> vmcs12, etc... is still valid.
+> 
 
-Does this reproduce on 5.15-rc1? We had a few hang cases fixed for io-wq
-since that commit 6 days ago.
-
--- 
-Jens Axboe
-
+Maybe we can kill the L2 when VM_CONTEXT_INVALID happens in L2.
