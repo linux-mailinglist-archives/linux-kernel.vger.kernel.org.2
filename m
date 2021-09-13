@@ -2,253 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35377408B53
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C818D408B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234625AbhIMMuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:50:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43607 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232959AbhIMMuG (ORCPT
+        id S235510AbhIMMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:51:25 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:55959 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234945AbhIMMvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:50:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631537330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+YPq9DDWXh7H6lgKwZD0yJILIrB9KSPkJ+jCnMfKqo=;
-        b=Jg+jvl+g+hIhEvSTSMC//KsyJS3abCLEh20UG1r7y8ApX9daqr4yC0rWmfbInJn6P3VIYi
-        pOlZozSBz05yG721sYr9rVuQJivqOuo3WQKOQWlf69ASFg1UchdfIRTKVR71YlU2G3C+Y/
-        FQHX5vAndfkLFtU56goDsj+dRNIJYZI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-TOBjEXgPOyqmxifnKxjksg-1; Mon, 13 Sep 2021 08:48:49 -0400
-X-MC-Unique: TOBjEXgPOyqmxifnKxjksg-1
-Received: by mail-ej1-f71.google.com with SMTP id k23-20020a170906055700b005e8a5cb6925so3635309eja.9
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:48:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/+YPq9DDWXh7H6lgKwZD0yJILIrB9KSPkJ+jCnMfKqo=;
-        b=xkfbRay/vJYTodXDkAwNdCY3VRJb8z7QrBlYb+AhE1aJI0o/oSfK3XAM4LsiO+teGr
-         4ITC9wPoxcpK5IJR01Xgq0Uf3jHMREN7JRLtN5Afd4anjnvKRLzYsej6AIVJOI4lrzQu
-         7n+QJE6qW/ntwaUppUXbqYaf86ccm3uk7AHhfVBsMgFjmsxD2zHcmPlqhAbWpt6T7zh1
-         mrvazwLIJSCRmCXp51nKb5brMHzGiFMOiduPpo4bCP9LwfJU+PZvX1QCTZiPbOR4kdVk
-         Pqj0rzJKigKBRr6TLQ+5pRlysiUSaN91/sOBvi+4CJwkj5kvoMkKmFlLDEurh7k+rmDY
-         Ji5w==
-X-Gm-Message-State: AOAM533htx2hg0ld7mtufXycYu/lCEvHh5ysqu+xECn9JAsZJAq7k1RA
-        NZIuS2QWiOF3tRuS1/aPvdsHX4GRL5Mmd83Bt3seVGPD/GMSJ9oVVC/Ye7cv82lvoTpsXZzMuLh
-        du9o2JrXy46LMYMkT1dWGU4rQ//7sWN/poHBnw1pzPce5rpXoDbALBMfqI7H6gA0JFf3F+nJlOo
-        uI
-X-Received: by 2002:a05:6402:229c:: with SMTP id cw28mr9684661edb.356.1631537327576;
-        Mon, 13 Sep 2021 05:48:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhcNXLU3ZDliCJFsc3cNNGslwjvbStH/s2UTqrQi41ZJLQVO9a8+kG4ie15sqA/r0xEucQ+w==
-X-Received: by 2002:a05:6402:229c:: with SMTP id cw28mr9684626edb.356.1631537327216;
-        Mon, 13 Sep 2021 05:48:47 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id q19sm3913862edc.74.2021.09.13.05.48.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 05:48:46 -0700 (PDT)
-Subject: Re: [PATCH] Process tablet mode events on Dell Inspiron 2n1
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Troy Rollo <linux2021@troy.rollo.name>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210909033502.1994749-1-linux2021@troy.rollo.name>
- <776ba42d-1d87-81e9-ed36-3ef860869d93@redhat.com>
- <20210913124448.jnkpbya2eyq2mcqb@pali>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <063cf992-0f78-1d6e-cb4b-2545b4b740d5@redhat.com>
-Date:   Mon, 13 Sep 2021 14:48:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 13 Sep 2021 08:51:23 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 53C05320089C;
+        Mon, 13 Sep 2021 08:50:07 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 13 Sep 2021 08:50:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; bh=+ThLjayzZvSuiYey9xMndGiL316IC
+        WP/XAzfhhK/XQ4=; b=QST6alfCdjmOCJeMGPiFrbgPY5XjwFUFGqt7uplIpJaKM
+        eOo5VPdGZNeqchyNdUioX5D59OJCHQqjuJCpn2yZfUjxMNzZqYGD7oXSBKnRlcjE
+        +/gBKlFfB7clEc1X4X896LpSW/ZoR4FZo6+ZIEP9esVsj2Qq+gb+T8IoxBfdT04P
+        X2jATdlr+XyVZ8O8jnV7F7Uc7jsdp2zzPvBBMDH10d1WtW/EkERxHxOB0wKokST/
+        9ONDWkrRpMjK6EHU8xe6DkOtmwcq6+WkrTki4K8XG8VLVZR6wlzcA7pA6vhnFAL7
+        gDgFNGUrdNlU1rCoW3NxnbG8NlC5AxEv/yKdGmB9g==
+X-ME-Sender: <xms:_Ug_YVjbwJME2flgxQg8EG093FJAH83V1xzhn76vfmBOLlFvuaxKmA>
+    <xme:_Ug_YaCQRPtXrpy7VzQWGhl_XYYb_YlsubjGJ1vSMh2vP8xTq-Sbre4U-GEjRxBEv
+    wVz2QKMwT043A>
+X-ME-Received: <xmr:_Ug_YVGsAaE2InIUPwj3dgND8IpwphXc8FmKrBTuYzv_3DfKuvzMB8Pxefk6zQndbuDuZmQsp9s_wWWOogPMwsLD7lvsSISN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfggtggusehgtderredttdejnecuhfhrohhmpeforghrvghkucfo
+    rghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvhhish
+    hisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeeklefhveej
+    teeghfeiteevtddtueffieehgfelgfevffejveeuffdvgeffgeevkeenucffohhmrghinh
+    epghhithhhuhgsuhhsvghrtghonhhtvghnthdrtghomhdpkhgvrhhnvghlrdhorhhgnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhmrg
+    hrvghksehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomh
+X-ME-Proxy: <xmx:_Ug_YaSQFmzELwJQ2aSVEWDx7qZEoBEyqr_jL6D1ADJBgxCRc7i0eA>
+    <xmx:_Ug_YSyyAhfr6QgEpqJxG_ocJvrppdZHVEYD8tMGUqArflpMLv12tw>
+    <xmx:_Ug_YQ4BsCHyuxb-pgCDS-0OxvAT3jIcCHPKuiVIxyMb8_SUuo5KAQ>
+    <xmx:_kg_Ycs6Dm-J7IrZ6PdbMG6iQzxNcuEsMbjYTyjRniYXwvkgwF4JyQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 Sep 2021 08:50:04 -0400 (EDT)
+Date:   Mon, 13 Sep 2021 14:50:00 +0200
+From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        xen-devel <xen-devel@lists.xenproject.org>
+Subject: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading related?)
+Message-ID: <YT9I+Xs9wOPVCIVd@mail-itl>
 MIME-Version: 1.0
-In-Reply-To: <20210913124448.jnkpbya2eyq2mcqb@pali>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5CWEI5nLGyVosQus"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+
+--5CWEI5nLGyVosQus
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 13 Sep 2021 14:50:00 +0200
+From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
+To: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	xen-devel <xen-devel@lists.xenproject.org>
+Subject: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading related?)
+
 Hi,
 
-On 9/13/21 2:44 PM, Pali Rohár wrote:
-> On Monday 13 September 2021 14:40:28 Hans de Goede wrote:
->> Hi,
->>
->> Overall this patch looks good, I have 2 remarks:
->>
->> 1. Your commit message needs some work, the first line (Subject) should
->> briefly describe the change with a subsystem prefix, so something like this:
->>
->> platform/x86: dell-wmi: Add SW_TABLET_MODE support for Dell Inspiron 2in1
->>
->> And then an empty line followed by a "body" with a bit more detailed description.
->>
->> And last but not least you need to add a Signed-off-by line like this:
->>
->> Singed-off-by: Troy Rollo <linux2021@troy.rollo.name>
->>
->> Which indicates that you authored the patch and are submitting it under
->> the standard kernel license, see:
->> https://elinux.org/Developer_Certificate_Of_Origin
->>
->> 2. Also have 1 remark about the code, see below.
->>
->>
->> On 9/9/21 5:35 AM, Troy Rollo wrote:
->>> ---
->>>  drivers/platform/x86/dell/dell-wmi-base.c | 36 ++++++++++++++++-------
->>>  1 file changed, 26 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/platform/x86/dell/dell-wmi-base.c b/drivers/platform/x86/dell/dell-wmi-base.c
->>> index 089c125e18f7..474ca05055ab 100644
->>> --- a/drivers/platform/x86/dell/dell-wmi-base.c
->>> +++ b/drivers/platform/x86/dell/dell-wmi-base.c
->>> @@ -309,6 +309,9 @@ static const struct key_entry dell_wmi_keymap_type_0010[] = {
->>>   * Keymap for WMI events of type 0x0011
->>>   */
->>>  static const struct key_entry dell_wmi_keymap_type_0011[] = {
->>> +	/* Reflex keyboard switch on 2n1 devices */
->>> +	{ KE_VSW,    0xe070, { .sw  = { SW_TABLET_MODE } } },
->>> +
->>
->> By adding this here, any device loading the dell-wmi driver will now advertise
->> that it supports SW_TABLET_MODE reporting, even when it does not. This will
->> cause e.g. GNOME40 to disable accelerometer based rotation since when
->> SW_TABLET_MODE=0 is being reported then GNOME40 assumes it is running on a
->> 2in1 in laptop mode and thus disable auto-rotation (and also the on-screen-kbd).
->>
->> So advertising a non functional (always reporting 0) SW_TABLET_MODE switch
->> is harmful and this change will do this.
-> 
-> Good catch. This code needs some rework as based on above gnome
-> behavior, this change breaks support for all existing older Dell
-> laptops.
-> 
-> It it problem only with SW_TABLET_MODE? Or with any KE_VSW?
+Since 5.13, the Xen (PV) dom0 crashes on boot, before even printing the
+kernel version.
+Test environment:
+ - Xen 4.14.2
+ - AMD Ryzen 5 4500U (reported also on AMD Ryzen 7 4750U)
+ - Linux 5.13.13, confirmed also on 5.14
 
-It is a problem for any KE_SW / KE_VSW since unlike keys/buttons which
-are always unpressed by default and don't cause userspace to do anything
-until a press is reported, switches have a meaning in both their
-0 and 1 state, so merely reporting the presence of a switch can cause
-userspace to change behavior.
+The crash happens only if the initramfs has earlycpio with microcode.
+I don't have a serial console, but I've got a photo with crash message
+(from Xen, Linux doesn't managed to print anything):
+https://user-images.githubusercontent.com/726704/133084966-5038f37e-001b-46=
+88-9f90-83d09be3dc2d.jpg
 
-Note I'm not aware of any SW other then SW_TABLET_MODE actually causing
-issues, but in theory this is an issue with any SW because of the reason
-which I just gave.
+Transcription of some of it:
 
-Regards,
+    mapping kernel into physical memory
+    about to get started
+    (XEN) Pagetable walk from ffffffff82810888:
+    (XEN)  L4[0x1ff] =3D 0000000332815067 0000000000002815
+    (XEN)  L3[0x1fe] =3D 0000000332816067 0000000000002816
+    (XEN)  L2[0x014] =3D 0000000334018067 0000000000004018
+    (XEN)  L1[0x010] =3D 0000000332810067 0000000000002810
+    (XEN) domain_crash_sync called from entry.S: fault at ffff82d04033e790 =
+x86_64/entry.S#domain_crash_page_fault
+    (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
+    (XEN) ----[ Xen-4.14.2  x86_64  debug=3Dn  Not tainted ]----
+    (XEN) CPU:    0
+    (XEN) RIP:    e033:[<0000000000000000>]
 
-Hans
+I've bisected it down to the commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
 
+    x86/setup: Consolidate early memory reservations
 
-> 
->> Since you already have special handling for the tablet-mode WMI events,
->> it would be better to use a separate input-device which just reports
->> SW_TABLET_MODE and which gets dynamically created upon receiving the
->> first 0x0011 0xe070 event. See the
->> drivers/platform/x86/intel/vbtn.c
->> drivers/platform/x86/intel/hid.c
->>
->> Drivers for an example of 2 drivers already doing this.
->>
->> Regards,
->>
->> Hans
->>
->>
->>
->>>  	/* Battery unplugged */
->>>  	{ KE_IGNORE, 0xfff0, { KEY_RESERVED } },
->>>  
->>> @@ -344,17 +347,19 @@ static const struct key_entry dell_wmi_keymap_type_0012[] = {
->>>  	{ KE_IGNORE, 0xe035, { KEY_RESERVED } },
->>>  };
->>>  
->>> -static void dell_wmi_process_key(struct wmi_device *wdev, int type, int code)
->>> +static int dell_wmi_process_key(struct wmi_device *wdev, int type, int code, u16 *buffer, int remaining)
->>>  {
->>>  	struct dell_wmi_priv *priv = dev_get_drvdata(&wdev->dev);
->>>  	const struct key_entry *key;
->>> +	int used = 0;
->>> +	int value = 1;
->>>  
->>>  	key = sparse_keymap_entry_from_scancode(priv->input_dev,
->>>  						(type << 16) | code);
->>>  	if (!key) {
->>>  		pr_info("Unknown key with type 0x%04x and code 0x%04x pressed\n",
->>>  			type, code);
->>> -		return;
->>> +		return 0;
->>>  	}
->>>  
->>>  	pr_debug("Key with type 0x%04x and code 0x%04x pressed\n", type, code);
->>> @@ -363,16 +368,22 @@ static void dell_wmi_process_key(struct wmi_device *wdev, int type, int code)
->>>  	if ((key->keycode == KEY_BRIGHTNESSUP ||
->>>  	     key->keycode == KEY_BRIGHTNESSDOWN) &&
->>>  	    acpi_video_handles_brightness_key_presses())
->>> -		return;
->>> +		return 0;
->>>  
->>>  	if (type == 0x0000 && code == 0xe025 && !wmi_requires_smbios_request)
->>> -		return;
->>> +		return 0;
->>>  
->>> -	if (key->keycode == KEY_KBDILLUMTOGGLE)
->>> +	if (key->keycode == KEY_KBDILLUMTOGGLE) {
->>>  		dell_laptop_call_notifier(
->>>  			DELL_LAPTOP_KBD_BACKLIGHT_BRIGHTNESS_CHANGED, NULL);
->>> +	} else if (type == 0x0011 && code == 0xe070 && remaining > 0) {
->>> +		value = !buffer[0];
->>> +		used = 1;
->>> +	}
->>> +
->>> +	sparse_keymap_report_entry(priv->input_dev, key, value, true);
->>>  
->>> -	sparse_keymap_report_entry(priv->input_dev, key, 1, true);
->>> +	return used;
->>>  }
->>>  
->>>  static void dell_wmi_notify(struct wmi_device *wdev,
->>> @@ -430,21 +441,26 @@ static void dell_wmi_notify(struct wmi_device *wdev,
->>>  		case 0x0000: /* One key pressed or event occurred */
->>>  			if (len > 2)
->>>  				dell_wmi_process_key(wdev, buffer_entry[1],
->>> -						     buffer_entry[2]);
->>> +						     buffer_entry[2],
->>> +						     buffer_entry + 3,
->>> +						     len - 3);
->>>  			/* Extended data is currently ignored */
->>>  			break;
->>>  		case 0x0010: /* Sequence of keys pressed */
->>>  		case 0x0011: /* Sequence of events occurred */
->>>  			for (i = 2; i < len; ++i)
->>> -				dell_wmi_process_key(wdev, buffer_entry[1],
->>> -						     buffer_entry[i]);
->>> +				i += dell_wmi_process_key(wdev, buffer_entry[1],
->>> +							  buffer_entry[i],
->>> +							  buffer_entry + i,
->>> +							  len - i - 1);
->>>  			break;
->>>  		case 0x0012:
->>>  			if ((len > 4) && dell_privacy_process_event(buffer_entry[1], buffer_entry[3],
->>>  								    buffer_entry[4]))
->>>  				/* dell_privacy_process_event has handled the event */;
->>>  			else if (len > 2)
->>> -				dell_wmi_process_key(wdev, buffer_entry[1], buffer_entry[2]);
->>> +				dell_wmi_process_key(wdev, buffer_entry[1], buffer_entry[2],
->>> +						     buffer_entry + 3, len - 3);
->>>  			break;
->>>  		default: /* Unknown event */
->>>  			pr_info("Unknown WMI event type 0x%x\n",
->>>
->>
-> 
+    The early reservations of memory areas used by the firmware, bootloader,
+    kernel text and data are spread over setup_arch(). Moreover, some of th=
+em
+    happen *after* memblock allocations, e.g trim_platform_memory_ranges() =
+and
+    trim_low_memory_range() are called after reserve_real_mode() that alloc=
+ates
+    memory.
 
+    There was no corruption of these memory regions because memblock always
+    allocates memory either from the end of memory (in top-down mode) or ab=
+ove
+    the kernel image (in bottom-up mode). However, the bottom up mode is go=
+ing
+    to be updated to span the entire memory [1] to avoid limitations caused=
+ by
+    KASLR.
+
+    Consolidate early memory reservations in a dedicated function to improve
+    robustness against future changes. Having the early reservations in one
+    place also makes it clearer what memory must be reserved before memblock
+    allocations are allowed.
+
+    Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+    Signed-off-by: Borislav Petkov <bp@suse.de>
+    Reviewed-by: Baoquan He <bhe@redhat.com>
+    Acked-by: Borislav Petkov <bp@suse.de>
+    Acked-by: David Hildenbrand <david@redhat.com>
+    Link: [1] https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb=
+=2Ecom
+    Link: https://lkml.kernel.org/r/20210302100406.22059-2-rppt@kernel.org
+
+Since this seems to affect Xen boot only, I'm copying xen-devel too.
+
+Any ideas?
+
+--=20
+Best Regards,
+Marek Marczykowski-G=C3=B3recki
+Invisible Things Lab
+
+--5CWEI5nLGyVosQus
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmE/SPgACgkQ24/THMrX
+1yyKTAf/RFLXnOX6sQx74ErcNKHowyeAVTrcIbactKB5dIcODunG+9eHXFR/HSk/
+7ywnpCcFHZCjha5xx+ShTaskQ89yDEiE9jLIFwR7sQKxucRXoCcAAkJufYYxRbbQ
+qYHUrOFFXeNFtEc73mZrbfqguc3y8Xm6BYBdzcHcgVk+bZCD5BY8A+A0FdKbm0rM
+1E+AfbfIdN5avDDxBgy3xa+DVF1ksmZwZ4tbKDizZ2azkK+WMgPL6h+Hk718OA86
+9TAXsPlotdMBsYFcFDvXBkKDQYN42+y/A6DOFmasUTsGw0xFroU/YpfarKnWq9OZ
+w7lWKDBmRMV8wH25LAIXltai+6G1tA==
+=GguL
+-----END PGP SIGNATURE-----
+
+--5CWEI5nLGyVosQus--
