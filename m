@@ -2,86 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A37408587
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B859A40858B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237696AbhIMHpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237599AbhIMHph (ORCPT
+        id S237723AbhIMHpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:45:53 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:45969 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237599AbhIMHpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:45:37 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC81AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:44:21 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 9so12906020edx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nsUPD2aQ6KskTShRBgvWOAzAZZRbHuwoC4E0wgxFpbM=;
-        b=ShKeBeYpI29nTz2skjKW6jlYy5FmIP2axzdMqB880N2t9zwls5YhdmZPADfKoAm2rk
-         2c9BKAyPDKDH146xpYy/D9h8hdgVgLReOtfWrs8lZTSSzef7Vb3UKawEeagOn5g8NGqE
-         6KYg6bAxCmBKVvs/KovQCLx8Ao92LokLzOHpoZWhQDBAkShXZLKgvVmEYil8HKCo4GnF
-         QJKY2dsd8NdCB30Mh3HxNMM08XBrcNl5Kcri2sgi74K+mpLGj8JBbVw/G48RdK3BB+8X
-         rWUtSvPZUlqO5HpWN40EUC9+/1h3hvkfMQHha0ioD6w2SHK3rgglvEO7BBZib6mtmV1A
-         IJJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nsUPD2aQ6KskTShRBgvWOAzAZZRbHuwoC4E0wgxFpbM=;
-        b=DLOaIeasd/hLcrAAcSbA/ASnMyeR1cokMETMJmmgvrqst1PXy5wDyyJU7iqcXY7Nsl
-         +FxfWZFgEwKg+2Pme2PC44CtEHrUGYPmNZfivU0uiemEAuijKKAt0C8hG4lRfjLddCJP
-         v58Cxb7ho+Js/GLQGKz8Gx9+7A0Anvbz7JDinjUvUv9nDGOA9kUKAHW+xDlsEOxA4ph9
-         P9hKhjxa8Ed0RXuCA0WEIDPWFd8hwmFoabOsH8j1RLL/ssCxBNGRPdow9jaxw2u0GEaT
-         wnZnm+U1gmHzf8sahzYX/MG75yn3Rc+vzmjaQD49DZdAkYnOEC6yQWJ0ldUgdOhDH9gd
-         xq5Q==
-X-Gm-Message-State: AOAM531GoeIejS1c77eCMdtOOvV0klYUzjQ6DtwKX3Mm7N4jGOMPMD0j
-        XgH+/DUG/hO4r5WbcmQ7oUq8hQ==
-X-Google-Smtp-Source: ABdhPJyrvCAQ37PtfCLNc+t7oamLP6EmStT6aXFN3UhAOhGxL8/D8dFcVJKShybnHLXUKcDeID+mXQ==
-X-Received: by 2002:aa7:df8d:: with SMTP id b13mr11793713edy.393.1631519060310;
-        Mon, 13 Sep 2021 00:44:20 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
-        by smtp.gmail.com with ESMTPSA id y13sm1543856ejl.125.2021.09.13.00.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 00:44:19 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] soc: amlogic: canvas: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Mon, 13 Sep 2021 09:44:20 +0200
-Message-Id: <163151904951.817859.10640218800664816407.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210908071544.603-1-caihuoqing@baidu.com>
-References: <20210908071544.603-1-caihuoqing@baidu.com>
+        Mon, 13 Sep 2021 03:45:51 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 6AD0F100018;
+        Mon, 13 Sep 2021 07:44:23 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 09:44:22 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 09/22] ARM: dts: sun8i: v3s: Add nodes for MIPI CSI-2
+ support
+Message-ID: <YT8BVo61qL1jq/er@aptenodytes>
+References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
+ <20210910184147.336618-10-paul.kocialkowski@bootlin.com>
+ <483288cb-d9fa-4581-7986-d15c4aa27769@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QZVQzP+VTAJydr5U"
+Content-Disposition: inline
+In-Reply-To: <483288cb-d9fa-4581-7986-d15c4aa27769@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, 8 Sep 2021 15:15:42 +0800, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+--QZVQzP+VTAJydr5U
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/drivers)
+Hi Samuel,
 
-[1/2] soc: amlogic: canvas: Make use of the helper function devm_platform_ioremap_resource()
-      https://git.kernel.org/amlogic/c/97a4a24087ce354ce0318449e6bd9e660f5c573b
-[2/2] soc: amlogic: meson-clk-measure: Make use of the helper function devm_platform_ioremap_resource()
-      https://git.kernel.org/amlogic/c/d54dbe9f0ec05935e10d6a38d81e54e2ec8b8a68
+On Fri 10 Sep 21, 21:32, Samuel Holland wrote:
+> On 9/10/21 1:41 PM, Paul Kocialkowski wrote:
+> > MIPI CSI-2 is supported on the V3s with an A31-based MIPI CSI-2 bridge
+> > controller. The controller uses a separate D-PHY, which is the same
+> > that is otherwise used for MIPI DSI, but used in Rx mode.
+> >=20
+> > On the V3s, the CSI0 controller is dedicated to MIPI CSI-2 as it does
+> > not have access to any parallel interface pins.
+> >=20
+> > Add all the necessary nodes (CSI0, MIPI CSI-2 bridge and D-PHY) to
+> > support the MIPI CSI-2 interface.
+> >=20
+> > Note that a fwnode graph link is created between CSI0 and MIPI CSI-2
+> > even when no sensor is connected. This will result in a probe failure
+> > for the controller as long as no sensor is connected but this is fine
+> > since no other interface is available.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  arch/arm/boot/dts/sun8i-v3s.dtsi | 72 ++++++++++++++++++++++++++++++++
+> >  1 file changed, 72 insertions(+)
+> >=20
+> > diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i=
+-v3s.dtsi
+> > index a77b63362a1d..ec7fa6459547 100644
+> > --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
+> > +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+> > @@ -612,6 +612,34 @@ spi0: spi@1c68000 {
+> >  			#size-cells =3D <0>;
+> >  		};
+> > =20
+> > +		csi0: camera@1cb0000 {
+> > +			compatible =3D "allwinner,sun8i-v3s-csi";
+> > +			reg =3D <0x01cb0000 0x1000>;
+> > +			interrupts =3D <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+> > +			clocks =3D <&ccu CLK_BUS_CSI>,
+> > +				 <&ccu CLK_CSI1_SCLK>,
+> > +				 <&ccu CLK_DRAM_CSI>;
+> > +			clock-names =3D "bus", "mod", "ram";
+> > +			resets =3D <&ccu RST_BUS_CSI>;
+> > +			status =3D "disabled";
+> > +
+> > +			assigned-clocks =3D <&ccu CLK_CSI1_SCLK>;
+> > +			assigned-clock-parents =3D <&ccu CLK_PLL_ISP>;
+> > +
+> > +			ports {
+> > +				#address-cells =3D <1>;
+> > +				#size-cells =3D <0>;
+> > +
+> > +				port@1 {
+> > +					reg =3D <1>;
+> > +
+> > +					csi0_in_mipi_csi2: endpoint {
+> > +						remote-endpoint =3D <&mipi_csi2_out_csi0>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +
+> >  		csi1: camera@1cb4000 {
+> >  			compatible =3D "allwinner,sun8i-v3s-csi";
+> >  			reg =3D <0x01cb4000 0x3000>;
+>=20
+> All of the new nodes should be added above this one, to maintain unit
+> address order.
 
--- 
-Neil
+Good catch, this was an overlook on my side.
+
+Thanks,
+
+Paul
+
+> Regards,
+> Samuel
+>=20
+> > @@ -637,5 +665,49 @@ gic: interrupt-controller@1c81000 {
+> >  			#interrupt-cells =3D <3>;
+> >  			interrupts =3D <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_=
+HIGH)>;
+> >  		};
+> > +
+> > +		mipi_csi2: csi@1cb1000 {
+> > +			compatible =3D "allwinner,sun8i-v3s-mipi-csi2",
+> > +				     "allwinner,sun6i-a31-mipi-csi2";
+> > +			reg =3D <0x01cb1000 0x1000>;
+> > +			interrupts =3D <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
+> > +			clocks =3D <&ccu CLK_BUS_CSI>,
+> > +				 <&ccu CLK_CSI1_SCLK>;
+> > +			clock-names =3D "bus", "mod";
+> > +			resets =3D <&ccu RST_BUS_CSI>;
+> > +			status =3D "disabled";
+> > +
+> > +			phys =3D <&dphy>;
+> > +			phy-names =3D "dphy";
+> > +
+> > +			ports {
+> > +				#address-cells =3D <1>;
+> > +				#size-cells =3D <0>;
+> > +
+> > +				mipi_csi2_in: port@0 {
+> > +					reg =3D <0>;
+> > +				};
+> > +
+> > +				mipi_csi2_out: port@1 {
+> > +					reg =3D <1>;
+> > +
+> > +					mipi_csi2_out_csi0: endpoint {
+> > +						remote-endpoint =3D <&csi0_in_mipi_csi2>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +
+> > +		dphy: d-phy@1cb2000 {
+> > +			compatible =3D "allwinner,sun6i-a31-mipi-dphy";
+> > +			reg =3D <0x01cb2000 0x1000>;
+> > +			clocks =3D <&ccu CLK_BUS_CSI>,
+> > +				 <&ccu CLK_MIPI_CSI>;
+> > +			clock-names =3D "bus", "mod";
+> > +			resets =3D <&ccu RST_BUS_CSI>;
+> > +			allwinner,direction =3D "rx";
+> > +			status =3D "disabled";
+> > +			#phy-cells =3D <0>;
+> > +		};
+> >  	};
+> >  };
+> >=20
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--QZVQzP+VTAJydr5U
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmE/AVYACgkQ3cLmz3+f
+v9EFwAgAlLhO92v/X6G6gs1EKL/Ve3k5WVgSYDcp38cxhVkn9TYIx+u97xSfyDLC
+P5PABn2O8tERf6e7U1NBmqr64vSzvziaRmeLo6co6sdLEJuNvk4wrp3/9U7+dp/Q
+9Pp/tPxadAO4SKID7BW5UKTEzWqzGlsGJf/6p83oKzwWtBCTBXTfK0PjkmESPFy8
+kTX1gqi9/Pe0oiWH0PRZJIZzPYDP8PpRNPQNxhPlXivuSnDLFwNAhaSXrMvqOnl2
+/Y+tpSRPXTKGPqjIAzRn3G2fTveiHMw0fTLwVgcZqqNIK4dACeQLJYNdSxjTMORZ
+J1xWZQdStHkESCp9DRxlxV8TLbiItg==
+=95oz
+-----END PGP SIGNATURE-----
+
+--QZVQzP+VTAJydr5U--
