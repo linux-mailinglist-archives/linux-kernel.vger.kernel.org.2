@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066B74096DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746054096DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242501AbhIMPQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:16:14 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:52986 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347011AbhIMPP2 (ORCPT
+        id S241333AbhIMPQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:16:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34233 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347109AbhIMPPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:15:28 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id BA40D1D17;
-        Mon, 13 Sep 2021 18:14:06 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1631546046;
-        bh=JyO+R0eWKCW9UDCCeZfpjO7DE9L4mgM9xZntgOqdjYw=;
-        h=Date:Subject:From:To:References:CC:In-Reply-To;
-        b=pV6BVazsNGy5DfX5JEwi5pnn7v/uAs7wXAjgI7r2lbxROziTJ1AS5BXXdTcUIEJbA
-         imYSAo3MOtdNjYvMhgjE/oatykw14poLngTTJ21kdJ2nbYjxmOeL49MLYpeUux02S1
-         z0l3gIroLA9B6nsKBSzgDdGLI4EMmMFVUh+1IXaA=
-Received: from [192.168.211.103] (192.168.211.103) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 13 Sep 2021 18:14:06 +0300
-Message-ID: <cc783784-15b8-c631-b7b3-9c0ea9f74028@paragon-software.com>
-Date:   Mon, 13 Sep 2021 18:14:05 +0300
+        Mon, 13 Sep 2021 11:15:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631546054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qLiPuLulR0KEA9PC+ni4AmJzEqtKLqvlUOW8UTnUXUA=;
+        b=dN1KSImK0M0OznSJAoSlWg7h1mQL5wkVy0lnLjD7ISBawg92ch2yW0vryI2YS4vvIjXIxh
+        sX+EWw/erV6X6vj3WF5GS03gHzPOlzZPkKmno2QW5nwg2vaK+YPaKBUE2ZAuHHljeOBGov
+        XgSrRWoDjkgJtp5mEV8Jt6ddijxtw7Q=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-nZ3Bk7MZMpWvMPfgbbqGjA-1; Mon, 13 Sep 2021 11:14:11 -0400
+X-MC-Unique: nZ3Bk7MZMpWvMPfgbbqGjA-1
+Received: by mail-ej1-f70.google.com with SMTP id s11-20020a170906060b00b005be824f15daso3832685ejb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 08:14:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qLiPuLulR0KEA9PC+ni4AmJzEqtKLqvlUOW8UTnUXUA=;
+        b=Q2wYcQv7zfyTngMR3laIwy2gpsaAwLq2EVhSBAG+3YSEpbYiNpKnIZUAmhD3+BF04N
+         IsL5Wxvo0+tWM841hslENoS1v/lF9s9PXfr+ZYZAC7vsTXi8HZXrE1yX2ec2ouOPOeX7
+         VejBIhkoBy2bAa3udmG8uiWZxiYtwVRPOjJUD2OfRUTk0JqK3CC4G+FsTPs6Ns497wkw
+         ABnIXRwyFy1lzDlxdU9rOvALPfMlg8ifQmbZIulfznGz3wcuj7QUL/MCoJ+X322rt4Tv
+         7wAl2T0+c+ahU6di2H6JUTyhKfQR9X5Iche0ZcWiXfP5u7zZpVWqgjlvPna5f8RboyJH
+         XsEg==
+X-Gm-Message-State: AOAM533e/6jIp13a0tXZGa+eLRoeyO3MefLPgEYqFvxVabEwJQzC+xNG
+        FrxjGjYQRbC6p/hLtxZhiyL4dWX5Zr4GXiAc/pa53knbgMRwmis573G5MZaqBfq0AhJA7aPCF1v
+        Rsr7//oZgqlGVKk58q/hevW7e
+X-Received: by 2002:a05:6402:26c4:: with SMTP id x4mr10020106edd.95.1631546050204;
+        Mon, 13 Sep 2021 08:14:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXlKwyLGX/MszHYats7cUI5Peb1wU+RRlbm432xsjeZYS7I2KrziDTrcT1CMh7Kk82MNf3XA==
+X-Received: by 2002:a05:6402:26c4:: with SMTP id x4mr10020087edd.95.1631546050016;
+        Mon, 13 Sep 2021 08:14:10 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id eg14sm4193586edb.64.2021.09.13.08.14.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 08:14:09 -0700 (PDT)
+To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210913131153.1202354-2-pbonzini@redhat.com>
+ <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
+ <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
+ <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+Message-ID: <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
+Date:   Mon, 13 Sep 2021 17:14:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: [PATCH 2/3] fs/ntfs3: Change max hardlinks limit to 4000
+In-Reply-To: <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-References: <a08b0948-80e2-13b4-ea22-d722384e054b@paragon-software.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-In-Reply-To: <a08b0948-80e2-13b4-ea22-d722384e054b@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.103]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xfstest generic/041 works with 3003, so we need to raise limit.
+On 13/09/21 16:55, Dave Hansen wrote:
+>> By "Windows startup" I mean even after guest reboot.  Because another
+>> process could sneak in and steal your EPC pages between a close() and an
+>> open(), I'd like to have a way to EREMOVE the pages while keeping them
+>> assigned to the specific vEPC instance, i.e.*without*  going through
+>> sgx_vepc_free_page().
+> Oh, so you want fresh EPC state for the guest, but you're concerned that
+> the previous guest might have left them in a bad state.  The current
+> method of getting a new vepc instance (which guarantees fresh state) has
+> some other downsides.
+> 
+> Can't another process steal pages via sgxd and reclaim at any time?
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/ntfs.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+vEPC pages never call sgx_mark_page_reclaimable, don't they?
 
-diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
-index 6bb3e595263b..6c604204d77b 100644
---- a/fs/ntfs3/ntfs.h
-+++ b/fs/ntfs3/ntfs.h
-@@ -20,9 +20,11 @@
- 
- #define NTFS_NAME_LEN 255
- 
--/* ntfs.sys used 500 maximum links on-disk struct allows up to 0xffff. */
--#define NTFS_LINK_MAX 0x400
--//#define NTFS_LINK_MAX 0xffff
-+/*
-+ * ntfs.sys used 500 maximum links on-disk struct allows up to 0xffff.
-+ * xfstest generic/041 creates 3003 hardlinks.
-+ */
-+#define NTFS_LINK_MAX 4000
- 
- /*
-  * Activate to use 64 bit clusters instead of 32 bits in ntfs.sys.
--- 
-2.33.0
+> What's the extra concern here about going through a close()/open()
+> cycle?  Performance?
+
+Apart from reclaiming, /dev/sgx_vepc might disappear between the first 
+open() and subsequent ones.
+
+Paolo
 
