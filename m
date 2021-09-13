@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233D44085F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAC3408608
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237821AbhIMIBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:01:40 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:48185 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237775AbhIMIB2 (ORCPT
+        id S237868AbhIMIDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:03:34 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:36160 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237818AbhIMIDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:01:28 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D68ED580BA6;
-        Mon, 13 Sep 2021 04:00:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 13 Sep 2021 04:00:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=5KctZymCVDfBbbqZeIg1vSzdvRQ
-        cUgB6DsYANohsJVA=; b=mXWyWuAp48xiZDzrTAc2Ci/voVfMr7DycEpE6nHqN+7
-        SyskAgtRGUO8uVeQ0uS3oSEsbzfgkDVEdNmrYxm87McNyl/qKn779f8fJka3sVDe
-        QMuW8OG8L7qqPy+WJvB1bKMAIrvnuJkh1XYFzVw3A8cTEVl9lknGUBBTmPLaCPX/
-        SG/c6CVKUaiN0OU8CnCkRoo4KnH7lkbm4vYPz6wkt6YxcKgrn0PgHrFlUgMCg8li
-        wKyWbNW1rlSLW9REhH3ij/wkEOHQvu64FF3dfu2wHbRzUMZwLEs6zTezfguM2uOM
-        XfuN9yVMBlqCEzJDz1sz1SsfH/XsHHc1kh5ApiiEr/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=5KctZy
-        mCVDfBbbqZeIg1vSzdvRQcUgB6DsYANohsJVA=; b=ZV2H732J1iScZT6gd2qLJd
-        K7MUyXL8qOcss7510l55l7uPTwO4+AFPtKt2sRV0fFAEV741ylaKp1D1yC7lJ5Pb
-        xx6cj+oYyerS3svLfFF5UDMq6QphpFoGpOMUe8ew66Ut8mAabf/Vy/uwOCGcN2Ew
-        kdLP2qvawkDp/sT3zhNwsshm/l9QJzfKmq1bTBvUPYratAq/k/wncjT77MgU8oFb
-        4+tg/0aJCUv77jFkWeYEk/zoCcJ+gAzm4hqEbPHBwTN7GUoruYdXoT0tAJKiGp0v
-        5L8zIf2LpmgCh2O+G9nD75AfDcC9fyClmb2HFdsh7Z6ySCxL1Hl+BtRz9ZGgTJWg
-        ==
-X-ME-Sender: <xms:CgU_YdHVc2uZZS6ApachfUIYHUEWPXTNLf-c8E2xyThpaT823nR_qw>
-    <xme:CgU_YSXsDXWShgxT9v4CuT6IZ8M9alySpM6BUOkOcDL1kuD-JExiQ08AEIpwqO5Gr
-    2gIBtJCwmI3znqzwZQ>
-X-ME-Received: <xmr:CgU_YfIhkxjOoO9wQ_0GBFuw9h_BCkIYtgaqkjkJ8656SxbMPpzElHOj0L8Q9qouBVM2oUi8BJ3fuahSg7OWmb7AkvvjbrRirbr9>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegiedguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:CgU_YTFMIBNInP6m7pR-wQMuI11dsD0UVSr2MuRh5CAiHSqwHQc5Xw>
-    <xmx:CgU_YTU7pCBouPuWRkvt6X6GPYwCpCIOi_Cu5Zj0LLag8fSC4gKdFA>
-    <xmx:CgU_YeNv4X7zgFTu5QOOh9soN3DJkY5HwLxERuGaXyiKBaskv5U0aA>
-    <xmx:DAU_YaOr_cXyZCSyz5X8pgt0Gs5uIcvPvKW7vWF7tbUUI1eYITVeaQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Sep 2021 04:00:10 -0400 (EDT)
-Date:   Mon, 13 Sep 2021 10:00:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
-        Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 03/22] dt-bindings: sun6i-a31-mipi-dphy: Add optional
- direction property
-Message-ID: <20210913080008.2rxa22ifisuu3dwn@gilmour>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-4-paul.kocialkowski@bootlin.com>
+        Mon, 13 Sep 2021 04:03:14 -0400
+Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
+        by sparta.prtnl (Postfix) with ESMTP id 8923E44A024D;
+        Mon, 13 Sep 2021 10:01:11 +0200 (CEST)
+From:   Roan van Dijk <roan@protonic.nl>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Roan van Dijk <roan@protonic.nl>
+Subject: [PATCH v2 0/4] iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+Date:   Mon, 13 Sep 2021 10:00:16 +0200
+Message-Id: <20210913080020.1265027-1-roan@protonic.nl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="plwlvxpmeueswtsh"
-Content-Disposition: inline
-In-Reply-To: <20210910184147.336618-4-paul.kocialkowski@bootlin.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for the Sensirion SCD4x sensor.
 
---plwlvxpmeueswtsh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The driver supports continuous reads of temperature, relative humdity and CO2
+concentration. There is an interval of 5 seconds between readings. During
+this interval the drivers checks if the sensor has new data available.
 
-On Fri, Sep 10, 2021 at 08:41:28PM +0200, Paul Kocialkowski wrote:
-> The Allwinner A31 MIPI D-PHY block supports both tx and rx directions,
-> although each instance of the block is meant to be used in one
-> direction only. There will typically be one instance for MIPI DSI and
-> one for MIPI CSI-2 (it seems unlikely to ever see a shared instance).
->=20
-> Describe the direction with a new allwinner,direction property.
-> For backwards compatibility, the property is optional and tx mode
-> should be assumed by default.
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  .../bindings/phy/allwinner,sun6i-a31-mipi-dphy.yaml  | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/phy/allwinner,sun6i-a31-mi=
-pi-dphy.yaml b/Documentation/devicetree/bindings/phy/allwinner,sun6i-a31-mi=
-pi-dphy.yaml
-> index d0b541a461f3..303bbaf3b915 100644
-> --- a/Documentation/devicetree/bindings/phy/allwinner,sun6i-a31-mipi-dphy=
-=2Eyaml
-> +++ b/Documentation/devicetree/bindings/phy/allwinner,sun6i-a31-mipi-dphy=
-=2Eyaml
-> @@ -37,6 +37,18 @@ properties:
->    resets:
->      maxItems: 1
-> =20
-> +  allwinner,direction:
-> +    $ref: '/schemas/types.yaml#/definitions/string'
-> +    description: |
-> +      Direction of the D-PHY:
-> +      - "rx" for receiving (e.g. when used with MIPI CSI-2);
-> +      - "tx" for transmitting (e.g. when used with MIPI DSI).
-> +
-> +      When the property is missing, "tx" direction is assumed.
+The driver is based on the scd30 driver. However, The scd4x has become too
+different to just expand the scd30 driver. I made a new driver instead of
+expanding the scd30 driver. I hope I made the right choice by doing so?
 
-You can provide this using default
+Changes since v2:
+scd4x.c:
+  - Change boolean operations
+  - Document scope of lock
+  - Remove device *dev from struct
+  - Add goto block for errror handling
+  - Add function to read value per channel in read_raw
+  - Fix bug with lock in error paths
+  - Remove conversion of humidity and temperature values
+  - Add scale and offset to temperature channel
+  - Add scale to humidity channel
+  - Move memset out of locked section
+  - Remove unused irq functions
+  - Move device register at end of probe function
+Documentation:
+  - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
+  - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
 
-> +    oneOf:
-> +      - const: tx
-> +      - const: rx
-> +
+Changes since v1:
+dt-bindings:
+  - Separated compatible string for each sensor type
+scd4x.c:
+  - Changed probe, resume and suspend functions to static
+  - Added SIMPLE_DEV_PM_OPS function call for power management
+    operations.
 
-enum?
+Roan van Dijk (4):
+  dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
+  MAINTAINERS: Add myself as maintainer of the scd4x driver
+  drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+  iio: documentation: Document scd4x calibration use
 
-Maxime
+ Documentation/ABI/testing/sysfs-bus-iio       |  35 +
+ Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
+ .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
+ MAINTAINERS                                   |   6 +
+ drivers/iio/chemical/Kconfig                  |  13 +
+ drivers/iio/chemical/Makefile                 |   1 +
+ drivers/iio/chemical/scd4x.c                  | 682 ++++++++++++++++++
+ 7 files changed, 783 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+ create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+ create mode 100644 drivers/iio/chemical/scd4x.c
 
---plwlvxpmeueswtsh
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.30.2
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYT8FCAAKCRDj7w1vZxhR
-xTNDAQCPDHJy9LqbeRURRvet4O2w4sY/pZRkFMEFBTWRcJx96wEAwyE5qCAE+Raj
-2amKab2gQdIlMNDalPPxP/cPci2YlwY=
-=fgQq
------END PGP SIGNATURE-----
-
---plwlvxpmeueswtsh--
