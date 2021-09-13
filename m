@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202EA409265
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9105409550
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344240AbhIMOLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57882 "EHLO mail.kernel.org"
+        id S243595AbhIMOkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344081AbhIMOIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:08:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC52613D5;
-        Mon, 13 Sep 2021 13:40:52 +0000 (UTC)
+        id S1347676AbhIMOfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:35:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B685A61BA2;
+        Mon, 13 Sep 2021 13:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540452;
-        bh=sZs57kvddvRBJOtTFUeDBapVneoMoyyRPRCbbpMy0vQ=;
+        s=korg; t=1631541207;
+        bh=jWJSZgnHg1H0qn8zl+kjEvTJyEEpJtGBEPnU7Dl477Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4AQXl0sJDTo+He1jtnMwA20Uiz8LOu6z9RMJb3Wouf8fJ/lO5BV82Ah4y/N6GovC
-         diPw7Iw5kI7T7FkbmNNJ8G3mEomoDYFLXLHrOcDXPr0PTCZSTrurJ7HL78UunHY8FQ
-         2Ng3g62GTuuiTRdpULVAONt5EIEX1TDxkmhXmpGE=
+        b=FKtJbizIbbyXctzpM2Ew8zixQdb4yTaWef6LCo0f9OaR/9jdtDM7KCl+h7jjUGrnY
+         HiiqMA21dU9j2ukL1vOBkFjr0PDmH5jW5j95Htn7eiSZTuUeu5JQpldXUYQ4ggScvA
+         pIjq58yBXB+eu/VncSWbGQNXPl1nEOV5haXebOMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 167/300] drm/msm/dpu: make dpu_hw_ctl_clear_all_blendstages clear necessary LMs
+Subject: [PATCH 5.14 174/334] arm64: dts: qcom: sm8350: fix IPA interconnects
 Date:   Mon, 13 Sep 2021 15:13:48 +0200
-Message-Id: <20210913131115.056008601@linuxfoundation.org>
+Message-Id: <20210913131119.231888782@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit a41cdb693595ae1904dd793fc15d6954f4295e27 ]
+[ Upstream commit 84173ca359787abd720d150d3d0d7edabf9db46c ]
 
-dpu_hw_ctl_clear_all_blendstages() clears settings for the few first LMs
-instead of mixers actually used for the CTL. Change it to clear
-necessary data, using provided mixer ids.
+There should only be two interconnects defined for IPA on the
+QUalcomm SM8350 SoC.  The names should also match those specified by
+the IPA Device Tree binding.
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210704230519.4081467-1-dmitry.baryshkov@linaro.org
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: f11d3e7da32e ("arm64: dts: qcom: sm8350: add IPA information")
+Signed-off-by: Alex Elder <elder@linaro.org>
+Link: https://lore.kernel.org/r/20210804210214.1891755-5-elder@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8350.dtsi | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-index 2d4645e01ebf..e01135b7a404 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-@@ -345,10 +345,12 @@ static void dpu_hw_ctl_clear_all_blendstages(struct dpu_hw_ctl *ctx)
- 	int i;
+diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+index 0d16392bb976..dbc174d424e2 100644
+--- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+@@ -666,12 +666,10 @@
+ 			clocks = <&rpmhcc RPMH_IPA_CLK>;
+ 			clock-names = "core";
  
- 	for (i = 0; i < ctx->mixer_count; i++) {
--		DPU_REG_WRITE(c, CTL_LAYER(LM_0 + i), 0);
--		DPU_REG_WRITE(c, CTL_LAYER_EXT(LM_0 + i), 0);
--		DPU_REG_WRITE(c, CTL_LAYER_EXT2(LM_0 + i), 0);
--		DPU_REG_WRITE(c, CTL_LAYER_EXT3(LM_0 + i), 0);
-+		enum dpu_lm mixer_id = ctx->mixer_hw_caps[i].id;
-+
-+		DPU_REG_WRITE(c, CTL_LAYER(mixer_id), 0);
-+		DPU_REG_WRITE(c, CTL_LAYER_EXT(mixer_id), 0);
-+		DPU_REG_WRITE(c, CTL_LAYER_EXT2(mixer_id), 0);
-+		DPU_REG_WRITE(c, CTL_LAYER_EXT3(mixer_id), 0);
- 	}
+-			interconnects = <&aggre2_noc MASTER_IPA &gem_noc SLAVE_LLCC>,
+-					<&mc_virt MASTER_LLCC &mc_virt SLAVE_EBI1>,
++			interconnects = <&aggre2_noc MASTER_IPA &mc_virt SLAVE_EBI1>,
+ 					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_IPA_CFG>;
+-			interconnect-names = "ipa_to_llcc",
+-					     "llcc_to_ebi1",
+-					     "appss_to_ipa";
++			interconnect-names = "memory",
++					     "config";
  
- 	DPU_REG_WRITE(c, CTL_FETCH_PIPE_ACTIVE, 0);
+ 			qcom,smem-states = <&ipa_smp2p_out 0>,
+ 					   <&ipa_smp2p_out 1>;
 -- 
 2.30.2
 
