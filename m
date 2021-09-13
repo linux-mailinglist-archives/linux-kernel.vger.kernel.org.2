@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A938A408AD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C7F408AE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239910AbhIMMQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:16:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40354 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237106AbhIMMQo (ORCPT
+        id S239964AbhIMMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:20:13 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:33655 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235252AbhIMMUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:16:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631535328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y2p5SDD6IORI+fInxe4LBTCv8TDK2jhwukd7jpIldoU=;
-        b=H3z+jgX3Y6D2RDkKriqjEnnBV3g+KfTjaMgRrwaXE/eUzPKpGx/jJSyCAZHVEElHv8Wd3x
-        tNUoIjyL0NVRqiyElUXxwEeycoCirkgEH+21smqAlVxbVbKxEDtlXIKjz2jy9Chna2fOUh
-        isbbbKFMd5bbS9Ws0w4DhxVCgKq0pbM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-AU5bb8LDPDWmdzh4FriIwQ-1; Mon, 13 Sep 2021 08:15:27 -0400
-X-MC-Unique: AU5bb8LDPDWmdzh4FriIwQ-1
-Received: by mail-wm1-f72.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so4849127wmj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:15:27 -0700 (PDT)
+        Mon, 13 Sep 2021 08:20:03 -0400
+Received: by mail-ot1-f54.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso13029519otu.0;
+        Mon, 13 Sep 2021 05:18:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=y2p5SDD6IORI+fInxe4LBTCv8TDK2jhwukd7jpIldoU=;
-        b=eh1qtInrCfBm4Phurg3cOlXP+51+phWOAoqniCjLPP3TGkiZdrlmRGXRzJnfSB1kyx
-         tYW6gPHNZIQIb1mjnUE563iVMhxUVmKB9a/AM3paAwXLrRXy3wQwa8IR8uOeEI+srofb
-         Tb2i6Tcep3ySVMPvg4Nf5OzRkmV53OuoYeCHX14Vs0qxte9z5h98HdG8f6pLPeR7zQoq
-         rDF8EpvPvWvPFgpIS9+biNbyD0J3JZyE0lgP8zWpNB/kSnvONV8pCrcYHvx2weiy/Ugm
-         O8/oC3ZKBJR9bDnUruPWzPfK/EW8O0NjWeZQ7W2LvBlW5yQLz6aRv785OQG2MhqlmuUy
-         MFkg==
-X-Gm-Message-State: AOAM532LEF7EYs6zZ/sXCWf+TgGeVJ430YIS2PxsPWSfy1WZRv9c0tYa
-        oogH/Dwtf0xYTQ7OkUuqVZCupCrRpVutDsr2NIs3L591geFABPXSHkO4u7GnLy9G6qnEphyu2VI
-        dTfuYkTrRgnrrZGLYSF8JbDfOR+TbJVz8vz8oj7PagdNuaHD4758QWqswDtauFWOVwYn8aPLB
-X-Received: by 2002:adf:eb89:: with SMTP id t9mr12555017wrn.66.1631535326648;
-        Mon, 13 Sep 2021 05:15:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCxFO6DKktrj8lKNb1+U4fp7k8BOq4Ntk4gLy+hpqYduDMn4fqB/UjPSNSs1Kk2rNklNZzRg==
-X-Received: by 2002:adf:eb89:: with SMTP id t9mr12554979wrn.66.1631535326400;
-        Mon, 13 Sep 2021 05:15:26 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6576.dip0.t-ipconnect.de. [91.12.101.118])
-        by smtp.gmail.com with ESMTPSA id m3sm9583281wrg.45.2021.09.13.05.15.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 05:15:26 -0700 (PDT)
-Subject: Re: [PATCH v2] mm/page_isolation: don't putback unisolated page
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     jhubbard@nvidia.com, vbabka@suse.cz, iamjoonsoo.kim@lge.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210913115021.27597-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <6a096a23-83b8-139d-b2dd-87ea3e405050@redhat.com>
-Date:   Mon, 13 Sep 2021 14:15:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210913115021.27597-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=QviKwU9E32B1NHqI9WCd3jJH00Se8iBU33oRL7KYCVI=;
+        b=uD5aI70wKFIo5u3oCSNrT0ro8QIbw6yPaTbLeHsio9FOXxmsGQZsKRQ/mN0NTz/lXy
+         FdJbEQRdh0qF3jzxHNQhh8EtbS/x904W5kktBUtTUL7NKoGbSG0q3skMg4AZGgGWhlux
+         OjJ5OKghD50Kf1gAmW6FNsqtHIMf2IwZwxuKrabk9oLG1ifH5dJdAZnCbpp/H1tjYJew
+         uEvzILNFfewpUbkzHrMdt98ruOZoW6mLvYNBlORb2vlooUOX8Vb/Ch4houls3WOsJ5s0
+         1jihxcXBtb+cZX2O94PI1UiWYbyaIgLWA2CvIV0mJMRztZbC32rARufXH8hjD27f7QiA
+         qsVQ==
+X-Gm-Message-State: AOAM532JgVoT1mhFB1NEuW2Zin97ANrs/PHkAosTm1ccJJbIimlhMfos
+        5pmC9WUQlutsHGFd/5F/zCb6DaJ8nw==
+X-Google-Smtp-Source: ABdhPJzMsElTnZR96Stl0Jidt4vyTF4mY6gkVe/sRFOau/+qhl1NPc8J930JqDDSM8aDFfgq6rLrHQ==
+X-Received: by 2002:a9d:7cd7:: with SMTP id r23mr9250801otn.165.1631535527526;
+        Mon, 13 Sep 2021 05:18:47 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k8sm1791521oom.20.2021.09.13.05.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 05:18:46 -0700 (PDT)
+Received: (nullmailer pid 444719 invoked by uid 1000);
+        Mon, 13 Sep 2021 12:18:43 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+Cc:     andrew@aj.id.au, linux-aspeed@lists.ozlabs.org, joel@jms.id.au,
+        osk@google.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
+        yulei.sh@bytedance.com, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org
+In-Reply-To: <20210913060231.15619-2-chiawei_wang@aspeedtech.com>
+References: <20210913060231.15619-1-chiawei_wang@aspeedtech.com> <20210913060231.15619-2-chiawei_wang@aspeedtech.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: mfd: aspeed-lpc: Convert to YAML schema
+Date:   Mon, 13 Sep 2021 07:18:43 -0500
+Message-Id: <1631535523.196891.444718.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.09.21 13:50, Miaohe Lin wrote:
-> If __isolate_free_page() failed, due to zone watermark check, the page is
-> still on the free list. But this page will be put back to free list again
-> via __putback_isolated_page() now. This may trigger page->flags checks in
-> __free_one_page() if PageReported is set. Or we will corrupt the free list
-> because list_add() will be called for pages already on another list.
+On Mon, 13 Sep 2021 14:02:28 +0800, Chia-Wei Wang wrote:
+> Convert the bindings of Aspeed LPC from text file into YAML schema.
 > 
-> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
 > ---
-> v1->v2:
->    Add VM_WARN_ON to catch unexpected isolating failure.
-> ---
->   mm/page_isolation.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> index f93cc63d8fa1..f67c4c70f17f 100644
-> --- a/mm/page_isolation.c
-> +++ b/mm/page_isolation.c
-> @@ -94,8 +94,13 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
->   			buddy = page + (buddy_pfn - pfn);
->   
->   			if (!is_migrate_isolate_page(buddy)) {
-> -				__isolate_free_page(page, order);
-> -				isolated_page = true;
-> +				isolated_page = !!__isolate_free_page(page, order);
-> +				/*
-> +				 * Isolating a free page in an isolated pageblock
-> +				 * is expected to always work as watermarks don't
-> +				 * apply here.
-> +				 */
-> +				VM_WARN_ON(!isolated_page);
-
-
-Didn't we discuss that this can never happen?
-
-In that case, the patch description+subject needs updating and the 
-"Fixes" line would be wrong.
-
->   			}
->   		}
->   	}
+>  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 157 ---------------
+>  .../devicetree/bindings/mfd/aspeed-lpc.yaml   | 187 ++++++++++++++++++
+>  2 files changed, 187 insertions(+), 157 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
 > 
 
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
--- 
-Thanks,
+yamllint warnings/errors:
 
-David / dhildenb
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dts:30.35-36.15: Warning (unique_unit_address): /example-0/lpc@1e789000/lpc-ctrl@80: duplicate unit-address (also used in node /example-0/lpc@1e789000/lpc-snoop@80)
+Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dt.yaml:0:0: /example-0/lpc@1e789000/lpc-ctrl@80: failed to match any schema with compatible: ['aspeed,ast2600-lpc-ctrl']
+Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dt.yaml:0:0: /example-0/lpc@1e789000/reset-controller@98: failed to match any schema with compatible: ['aspeed,ast2600-lpc-reset']
+Documentation/devicetree/bindings/mfd/aspeed-lpc.example.dt.yaml:0:0: /example-0/lpc@1e789000/lpc-snoop@80: failed to match any schema with compatible: ['aspeed,ast2600-lpc-snoop']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1527193
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
