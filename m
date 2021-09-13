@@ -2,107 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE3440852D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ACA408532
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237583AbhIMHRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:17:38 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55857 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237572AbhIMHRh (ORCPT
+        id S237605AbhIMHSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:18:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20938 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237572AbhIMHSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:17:37 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id F40E15C0097;
-        Mon, 13 Sep 2021 03:16:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 13 Sep 2021 03:16:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=3Drb7itOQtyw+8s9nG9D2KLbtAr
-        Lqp9QKHVCPoN3x3A=; b=mYAG2WcF6g3Yv7iRc7KceuWZ19gRlxvRKeZgvSSyeID
-        ixcN5YsrrTD+VtTtPdqb3Bbbu2N2AWFvQM8Oz1PyPdixl3X2qpnTKL06A/tbUazV
-        VrKboC92L4TG2EuEhLZWLduOclvRb2UCUEEVcR9fQwMlBTK93MxskZ135ALo1sDo
-        m6MAaPX3zIEeCn3+7zcfq9O3arLxjtucHQwwztVeJxyXNNqNIZDpvnOzzo6r7rQD
-        4APljjdZWK5Oo3tK/48L4eGFKL3Pa3tAcuxXqltNr6AMTPYNQsKIZPyKZMJjwGlh
-        BZV3401Mz4MILWv1wNamD3gPo0KsNoKv8lbH1ZPm6cA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3Drb7i
-        tOQtyw+8s9nG9D2KLbtArLqp9QKHVCPoN3x3A=; b=Ucg5mGrJhezteg3puAz0dG
-        hQZq7wK7gP1GCFBBznu1HopA7bPziLir1FhWysl4pJRpfX9ZKAB3VWdgW85hN0x/
-        OwAmlKIDtJYZAawK1OagfmQ0G54SC6dCgF2T0XSMjOThA6Ys1ehSE4MMYIdkW3QY
-        FAxG7z+4cyKpM4GmlCjqlHuMeseH47RWc3WDLNogxH0z8yjADMaCuSChY1BdzL7q
-        QhRD+pypdkJVDa3YeJDgE9+L63XynGjE8OU2LUCaRg+WZGBo3ZOJNtaWLPdp0loE
-        vpZYoP6C5xww/qXNX7NJxqSSVU+75oX42nSDOoJFJLQq4emRNYuPtvYHK0LVqU4g
-        ==
-X-ME-Sender: <xms:w_o-Yd2T3CHYzWblX8iyWy91BMnnTbump3-8aMaMi1eI62ZCk-Hb_w>
-    <xme:w_o-YUGfddWEMzaVcrcmwNa4qiQEwSVBdfSjGwxPz0TAnnUSHc8Dg_rV3uvn6oo3z
-    buP5BhhCqkxIQFH4Nk>
-X-ME-Received: <xmr:w_o-Yd6MdbU94rsMSV6Kc6zwAjjdsiQT54MXO3nzz4y1TaXsvgjnKzW8CEHgeJ-kqyQiTBd0VO0kZhM3MpCN89yl9HRbyDVBX9aY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegiedgudduiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:w_o-Ya3aJ4WUWBZzb8IDr8gVmnORINowJBFGcF-oXAvPM60-rVBMBg>
-    <xmx:w_o-YQFOL1pcttYo2bSC_b410zWT2A4qibl1IORsWJvl2-20YYyItg>
-    <xmx:w_o-Yb-4Cy7MIlxSvEXx8css486FPG5Cy2ZCN0upCgZJKewKkfJ8RA>
-    <xmx:xPo-YeZoOUpvltYs1EpCmZBzjDZjr3RsugB5FfEXVMENSaUIb53NxA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Sep 2021 03:16:19 -0400 (EDT)
-Date:   Mon, 13 Sep 2021 09:16:17 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     wens@csie.org, robh+dt@kernel.org, broonie@kernel.org,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] ARM: dts: sun8i: r40: Add I2S nodes
-Message-ID: <20210913071617.i6lkibxh4ylnfkem@gilmour>
-References: <20210912072914.398419-1-jernej.skrabec@gmail.com>
+        Mon, 13 Sep 2021 03:18:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631517413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3sfiq9gd+F6JH8oSBvW0EmNYJfq7/aiWJpxsGuGmiIY=;
+        b=i3xzIC4VpiHPzKtMBBI51tkkxi9eCXf694hc9ddyiChTMS8M/tlzwE5RtMmnEIvxdQuwYQ
+        LDRmLdG3ktPLdAwd18GM/hnFUqJxHmBNE+thXINK1U9zN0/qv/gMY3MEsEAR9llPz4CLjF
+        cXW+T6N6VPs2tGG16bR4+jjWrZEo9Jg=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-mJH-AaFzONes0YPj73etXA-1; Mon, 13 Sep 2021 03:16:51 -0400
+X-MC-Unique: mJH-AaFzONes0YPj73etXA-1
+Received: by mail-yb1-f197.google.com with SMTP id 124-20020a251182000000b005a027223ed9so11765915ybr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:16:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3sfiq9gd+F6JH8oSBvW0EmNYJfq7/aiWJpxsGuGmiIY=;
+        b=KzFuKFPJttpbDDpe89geyrq1E/RlW4MGfUEhgynG6fo3Zo+/3j1d3Er/25QJYPSJ8r
+         ceYaRtgHni/ihS39poR/uZLSgD8PYMMgyz+2CIDD0Kss4daZJFv660yw+LOJzZ6y4gSI
+         t9duyuSEP7E79ggqmgYZ7MEI2DVX5rjmB8Dfx5fMigjmMLOBlMuzTqTRYBAKfs4Hsy5H
+         IyrHRzdcefVxGxk9zPt28s+XJwkBBtQdHonmi76tJaIsY4HLtISWPBREq6J9KLNPp3Oh
+         HE8AN/scFenCQ9n+tCr0fbEHSBOOP8+eHps6fj8OHTksGLdM2dTY0joYTvU1DpOYqVCF
+         ofYg==
+X-Gm-Message-State: AOAM530WTl0MkfhymX8INeLtjwDtRGQnbH/LaTf3TdOQOE81r67diAbH
+        E0PiBHZWcYOYVtZdLGpBxmf01CxJhpA/0FU67Rtw9ENLUb8z4E4gIogSUooJu/BHDCne9UKCDFn
+        IWkfN1SnGxG0PuMFWDsxl6cKyf3tEvF/eOF75MgD4
+X-Received: by 2002:a25:83:: with SMTP id 125mr13609794yba.467.1631517411148;
+        Mon, 13 Sep 2021 00:16:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7kJQ1PXFrM1GJmwLzxTDCzAnCF4sbmb32hyfGmjO6KYJLAN17PxbqC5KZnDcXxN+lY9MSOWE9m1W7pZXWyqo=
+X-Received: by 2002:a25:83:: with SMTP id 125mr13609777yba.467.1631517410913;
+ Mon, 13 Sep 2021 00:16:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zkuatqnldjiqikz5"
-Content-Disposition: inline
-In-Reply-To: <20210912072914.398419-1-jernej.skrabec@gmail.com>
+References: <20210912122234.GA22469@asgard.redhat.com>
+In-Reply-To: <20210912122234.GA22469@asgard.redhat.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Mon, 13 Sep 2021 09:16:39 +0200
+Message-ID: <CAFqZXNtmN9827MQ0aX7ZcUia5amXuZWppb-9-ySxVP0QBy=O8Q@mail.gmail.com>
+Subject: Re: [PATCH v2] include/uapi/linux/xfrm.h: Fix XFRM_MSG_MAPPING ABI breakage
+To:     Eugene Syromiatnikov <esyr@redhat.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Antony Antony <antony.antony@secunet.com>,
+        Christian Langrock <christian.langrock@secunet.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        "Dmitry V. Levin" <ldv@strace.io>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---zkuatqnldjiqikz5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, Sep 12, 2021 at 2:23 PM Eugene Syromiatnikov <esyr@redhat.com> wrote:
+> Commit 2d151d39073a ("xfrm: Add possibility to set the default to block
+> if we have no policy") broke ABI by changing the value of the XFRM_MSG_MAPPING
+> enum item, thus also evading the build-time check
+> in security/selinux/nlmsgtab.c:selinux_nlmsg_lookup for presence of proper
+> security permission checks in nlmsg_xfrm_perms.  Fix it by placing
+> XFRM_MSG_SETDEFAULT/XFRM_MSG_GETDEFAULT to the end of the enum, right before
+> __XFRM_MSG_MAX, and updating the nlmsg_xfrm_perms accordingly.
+>
+> Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
+> References: https://lore.kernel.org/netdev/20210901151402.GA2557@altlinux.org/
+> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+> ---
+> v2:
+>  - Updated SELinux nlmsg_xfrm_perms permissions table and selinux_nlmsg_lookup
+>    build-time check accordingly.
+>
+> v1: https://lore.kernel.org/lkml/20210901153407.GA20446@asgard.redhat.com/
+> ---
+>  include/uapi/linux/xfrm.h   | 6 +++---
+>  security/selinux/nlmsgtab.c | 4 +++-
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
+> index b96c1ea..26f456b1 100644
+> --- a/include/uapi/linux/xfrm.h
+> +++ b/include/uapi/linux/xfrm.h
+> @@ -213,13 +213,13 @@ enum {
+>         XFRM_MSG_GETSPDINFO,
+>  #define XFRM_MSG_GETSPDINFO XFRM_MSG_GETSPDINFO
+>
+> +       XFRM_MSG_MAPPING,
+> +#define XFRM_MSG_MAPPING XFRM_MSG_MAPPING
+> +
+>         XFRM_MSG_SETDEFAULT,
+>  #define XFRM_MSG_SETDEFAULT XFRM_MSG_SETDEFAULT
+>         XFRM_MSG_GETDEFAULT,
+>  #define XFRM_MSG_GETDEFAULT XFRM_MSG_GETDEFAULT
+> -
+> -       XFRM_MSG_MAPPING,
+> -#define XFRM_MSG_MAPPING XFRM_MSG_MAPPING
 
-On Sun, Sep 12, 2021 at 09:29:12AM +0200, Jernej Skrabec wrote:
-> Allwinner R40 has 3 I2S controllers, compatible to those in H3.
->=20
-> Patch 1 adds R40/H3 compatible pair to DT bindings.
-> Patch 2 adds I2S nodes to R40 DT.
->=20
-> Please take a look.
->=20
-> Best regards,
-> Jernej
+Perhaps it would be a good idea to put a comment here to make it less
+likely that this repeats in the future. Something like:
 
-Applied, thanks
-Maxime
+/* IMPORTANT: Only insert new entries right above this line, otherwise
+you break ABI! */
 
---zkuatqnldjiqikz5
-Content-Type: application/pgp-signature; name="signature.asc"
+>         __XFRM_MSG_MAX
+>  };
+>  #define XFRM_MSG_MAX (__XFRM_MSG_MAX - 1)
+> diff --git a/security/selinux/nlmsgtab.c b/security/selinux/nlmsgtab.c
+> index d59276f..94ea2a8 100644
+> --- a/security/selinux/nlmsgtab.c
+> +++ b/security/selinux/nlmsgtab.c
+> @@ -126,6 +126,8 @@ static const struct nlmsg_perm nlmsg_xfrm_perms[] =
+>         { XFRM_MSG_NEWSPDINFO,  NETLINK_XFRM_SOCKET__NLMSG_WRITE },
+>         { XFRM_MSG_GETSPDINFO,  NETLINK_XFRM_SOCKET__NLMSG_READ  },
+>         { XFRM_MSG_MAPPING,     NETLINK_XFRM_SOCKET__NLMSG_READ  },
+> +       { XFRM_MSG_SETDEFAULT,  NETLINK_XFRM_SOCKET__NLMSG_WRITE },
+> +       { XFRM_MSG_GETDEFAULT,  NETLINK_XFRM_SOCKET__NLMSG_READ  },
+>  };
+>
+>  static const struct nlmsg_perm nlmsg_audit_perms[] =
+> @@ -189,7 +191,7 @@ int selinux_nlmsg_lookup(u16 sclass, u16 nlmsg_type, u32 *perm)
+>                  * structures at the top of this file with the new mappings
+>                  * before updating the BUILD_BUG_ON() macro!
+>                  */
+> -               BUILD_BUG_ON(XFRM_MSG_MAX != XFRM_MSG_MAPPING);
+> +               BUILD_BUG_ON(XFRM_MSG_MAX != XFRM_MSG_GETDEFAULT);
+>                 err = nlmsg_perm(nlmsg_type, perm, nlmsg_xfrm_perms,
+>                                  sizeof(nlmsg_xfrm_perms));
+>                 break;
+> --
+> 2.1.4
+>
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYT76wQAKCRDj7w1vZxhR
-xZsJAQDeEDPcZDmfMJalBcC7nUafBRgdZvuSCYixP+VuD4aS0AEAzQFuhhZPW67l
-kpEcVV3B0CGdnUzkW5jo2Zlfq6bSeAo=
-=6FwN
------END PGP SIGNATURE-----
+-- 
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
---zkuatqnldjiqikz5--
