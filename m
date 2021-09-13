@@ -2,145 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18408408324
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9191408328
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238554AbhIMDaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238546AbhIMDaV (ORCPT
+        id S238561AbhIMDcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:32:13 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46771 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238149AbhIMDcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:30:21 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0842EC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:29:07 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id w6so4899367pll.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ubwM/hTdEgGfFCUcCRbbcDqNawhF1Okjw+bs9APn7lE=;
-        b=Lq4862xo0SvQr+QRGsOeUVti9aZZIX9w2fRww5XKJ40EUPkdMKJGdWjXECN0cX5PUg
-         KcEHl7atktRdg+2xbKEBqNZs6lMu5+lNnaaF+NU0IUqJhuMj3xk/Go5x8OuvmhXu1rFP
-         axEwEIyw6jV67znkQm+Ta6Ob27tzXcOniaJwQIivPYPTZnw5qGzoM7XG+Qr4CMj9QoYG
-         b/O5a4XyuulpMV1vJ/ngxx1cz7Zb6bvy4iBdB8fOFA7RrSIOiMaLEpwn+TqeVZomIXaz
-         8ChnYYR9+0pWM1f3+8aQwAe1YNUWKoFIZvc7j1/IWM40S7JtgI22qKm/UyR7ZfI9JuIT
-         5oFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ubwM/hTdEgGfFCUcCRbbcDqNawhF1Okjw+bs9APn7lE=;
-        b=vdlqucuRVG3KzFXBdjj/7FgABByBz0F0M7uOMK0eORKTszoOVti1eUNN0m4bMgLNDn
-         Z4ukiVb2E586zX4BVAKMK4ZGc8bF6FLAvtili8z9WY00Dyw1JqIy5tCJQDXDA6nLD8eQ
-         i0Zro/paIfqxV6jAbH8MeWIya1Qu6vdVQSJOL56QJu9woXzmiGhWHdyNkj/Gfty88ar/
-         jQOl85sz3spMnSjyiQ0vCtuYjnETg0TMisK4BOlZiFDMF4PeGfHuGzdB4w4LO48zwSqX
-         WouQ3Pp/xefM8mDKFbu7GUguqnrtrmAcIMUMXdF2WnFgJBBBCws3GHBi2mtEQZ+N8qx5
-         cNWA==
-X-Gm-Message-State: AOAM533lx3VgeEkQQA+oOP6kiDYdvMgYPX0+eDhWGCsmfIoLDHtQTWhF
-        3W1TEzLWqd1RurWBW6/glY8=
-X-Google-Smtp-Source: ABdhPJwHtaVLBcr5/nQPAtIutxR7nACkTETUKYH1cIDq1WpG6dQtuBh9SF4mOP2K4/FJpcdnXh3jRQ==
-X-Received: by 2002:a17:90a:130f:: with SMTP id h15mr10640735pja.183.1631503746555;
-        Sun, 12 Sep 2021 20:29:06 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id m12sm665109pjv.29.2021.09.12.20.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 20:29:06 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH v3 3/3] clocksource/drivers/sprd: Add module support to Unisoc timer
-Date:   Mon, 13 Sep 2021 11:28:34 +0800
-Message-Id: <20210913032834.147237-4-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210913032834.147237-1-zhang.lyra@gmail.com>
-References: <20210913032834.147237-1-zhang.lyra@gmail.com>
+        Sun, 12 Sep 2021 23:32:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Uo74YxF_1631503852;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Uo74YxF_1631503852)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 13 Sep 2021 11:30:53 +0800
+Subject: [PATCH] perf: fix panic by disable ftrace on fault.c
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+Message-ID: <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+Date:   Mon, 13 Sep 2021 11:30:52 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+When running with ftrace function enabled, we observed panic
+as below:
 
-Timers still have devices created for them. So, when compiling a timer
-driver as a module, implement it as a normal platform device driver.
+  traps: PANIC: double fault, error_code: 0x0
+  [snip]
+  RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+  [snip]
+  Call Trace:
+   <NMI>
+   perf_trace_buf_alloc+0x26/0xd0
+   perf_ftrace_function_call+0x18f/0x2e0
+   kernelmode_fixup_or_oops+0x5/0x120
+   __bad_area_nosemaphore+0x1b8/0x280
+   do_user_addr_fault+0x410/0x920
+   exc_page_fault+0x92/0x300
+   asm_exc_page_fault+0x1e/0x30
+  RIP: 0010:__get_user_nocheck_8+0x6/0x13
+   perf_callchain_user+0x266/0x2f0
+   get_perf_callchain+0x194/0x210
+   perf_callchain+0xa3/0xc0
+   perf_prepare_sample+0xa5/0xa60
+   perf_event_output_forward+0x7b/0x1b0
+   __perf_event_overflow+0x67/0x120
+   perf_swevent_overflow+0xcb/0x110
+   perf_swevent_event+0xb0/0xf0
+   perf_tp_event+0x292/0x410
+   perf_trace_run_bpf_submit+0x87/0xc0
+   perf_trace_lock_acquire+0x12b/0x170
+   lock_acquire+0x1bf/0x2e0
+   perf_output_begin+0x70/0x4b0
+   perf_log_throttle+0xe2/0x1a0
+   perf_event_nmi_handler+0x30/0x50
+   nmi_handle+0xba/0x2a0
+   default_do_nmi+0x45/0xf0
+   exc_nmi+0x155/0x170
+   end_repeat_nmi+0x16/0x55
 
-Original-by: Baolin Wang <baolin.wang7@gmail.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+According to the trace we know the story is like this, the NMI
+triggered perf IRQ throttling and call perf_log_throttle(),
+which triggered the swevent overflow, and the overflow process
+do perf_callchain_user() which triggered a user PF, and the PF
+process triggered perf ftrace which finally lead into a suspected
+stack overflow.
+
+This patch disable ftrace on fault.c, which help to avoid the panic.
+
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
 ---
- drivers/clocksource/Kconfig      |  2 +-
- drivers/clocksource/timer-sprd.c | 18 +++++++++++++-----
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ arch/x86/mm/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 0f5e3983951a..901f54cebe92 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -462,7 +462,7 @@ config MTK_TIMER
- 	  Support for Mediatek timer driver.
- 
- config SPRD_TIMER
--	bool "Spreadtrum timer driver" if EXPERT
-+	tristate "Spreadtrum timer driver" if EXPERT
- 	depends on HAS_IOMEM
- 	depends on (ARCH_SPRD || COMPILE_TEST)
- 	default ARCH_SPRD
-diff --git a/drivers/clocksource/timer-sprd.c b/drivers/clocksource/timer-sprd.c
-index 430cb99d8d79..b29c48ef3ba5 100644
---- a/drivers/clocksource/timer-sprd.c
-+++ b/drivers/clocksource/timer-sprd.c
-@@ -5,6 +5,8 @@
- 
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include "timer-of.h"
- 
-@@ -141,7 +143,7 @@ static struct timer_of to = {
- 	},
- };
- 
--static int __init sprd_timer_init(struct device_node *np)
-+static int sprd_timer_init(struct device_node *np)
- {
- 	int ret;
- 
-@@ -190,7 +192,7 @@ static struct clocksource suspend_clocksource = {
- 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS | CLOCK_SOURCE_SUSPEND_NONSTOP,
- };
- 
--static int __init sprd_suspend_timer_init(struct device_node *np)
-+static int sprd_suspend_timer_init(struct device_node *np)
- {
- 	int ret;
- 
-@@ -204,6 +206,12 @@ static int __init sprd_suspend_timer_init(struct device_node *np)
- 	return 0;
- }
- 
--TIMER_OF_DECLARE(sc9860_timer, "sprd,sc9860-timer", sprd_timer_init);
--TIMER_OF_DECLARE(sc9860_persistent_timer, "sprd,sc9860-suspend-timer",
--		 sprd_suspend_timer_init);
-+static const struct of_device_id sc9860_timer_match_table[] = {
-+	{ .compatible = "sprd,sc9860-timer",
-+		.data = sprd_timer_init },
-+	{ .compatible = "sprd,sc9860-suspend-timer",
-+		.data = sprd_suspend_timer_init },
-+	{},
-+};
-+TIMER_PLATFORM_DECLEAR("Unisoc broadcast timer module", sc9860_timer,
-+		       sc9860_timer_match_table);
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index 5864219..1dbdca5 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -1,5 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Kernel does not boot with instrumentation of tlb.c and mem_encrypt*.c
++
++# Disable ftrace to avoid stack overflow.
++CFLAGS_REMOVE_fault.o = $(CC_FLAGS_FTRACE)
++
+ KCOV_INSTRUMENT_tlb.o			:= n
+ KCOV_INSTRUMENT_mem_encrypt.o		:= n
+ KCOV_INSTRUMENT_mem_encrypt_identity.o	:= n
 -- 
-2.25.1
+1.8.3.1
 
