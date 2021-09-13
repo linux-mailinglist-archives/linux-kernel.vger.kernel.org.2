@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4401F40982A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDC940982E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244891AbhIMQBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhIMQBI (ORCPT
+        id S1344503AbhIMQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:02:52 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:8352 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1343744AbhIMQCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:01:08 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE84C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 08:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KaliKYYkNMqrhjKwpWKqxXm8VgZh11hwlXmN3oD3zZk=; b=SY0xVqk7mI72ydm3mgM8JYkEqJ
-        m4o4HwcN5IWtxcW0tjrqFWgZDfENT2mJTaih2bwiLEgJvu+OfSF+VBrgU57c/KNKKZy7oR0ylDfLC
-        eIO92nHgGmseg6OqOK549uP4e6BPwPps1+8zw9XB0FS/G4x6hiJt2MQu968Wa1jvEg4eJMqlw2lvw
-        pH5mEbUrvqGls9G4XZul084lWAHpV1YxYmmPZY4Ec9gwhpCrRg+k5G6xDzcPztusUZQ5HSclTQzI6
-        KAb0R1ZAa2FeYp5y3pUSRCze1KX1hdJiDsiJUK8o0Q+3+v+xpQSQ9D+mQD9nv9h2JjrYAO41WVQOp
-        1eXsbBRg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPoN4-002GLi-Au; Mon, 13 Sep 2021 15:59:50 +0000
-Date:   Mon, 13 Sep 2021 08:59:50 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Philip Li <philip.li@intel.com>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [kbuild-all] Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
- drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
- prototype for function 'firmware_is_builtin'
-Message-ID: <YT91dprXpGy+ywBu@bombadil.infradead.org>
-References: <202109101524.pjY4q0Dy-lkp@intel.com>
- <YTv817Srt8hoySP5@bombadil.infradead.org>
- <20210911012853.GA834679@pl-dbox>
+        Mon, 13 Sep 2021 12:02:46 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18DAEA6M014550;
+        Mon, 13 Sep 2021 11:01:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=kxwr+fQrkMMf3nLnZDBqxMSorZNZnlyvVvt6IleDk5M=;
+ b=LlJM/JLIdInDxTP5XBtCbco5xiMepz7PSSmlx0XbGMtAFjg9lVYOY5r5ged4uEkrgJDz
+ VNwjujb2t1qz5YsYLjFxDfp6nefkosY1+Mbc7nq0vUFSP0VuLpJX+IfZV5wxoFBzsXwR
+ BYDT218rWB67MmyPwIATEgzk0gVwCHX/Bt1vRcehXQ3hDZVJuBcR/PC4FkRn/uJHoezQ
+ sEs2x3Gj7Bb7DZ0M0C4kPVU+FotiT9OfZPI0ENnCHj/ZrmJu77oBnDqkJIMwV/5RZrQv
+ feYJYpu9cVTq0pXmFTLCw/WOFu3EQoMQ3sRvdiy2okNJMA5nZ4YVkScTl4OM5UUmF9Yf XA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 3b1n5drxkd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 13 Sep 2021 11:01:19 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Mon, 13 Sep
+ 2021 17:01:17 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Mon, 13 Sep 2021 17:01:17 +0100
+Received: from simont-vb.lan?044ad.cirrus.com (unknown [198.90.238.152])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3D0482A9;
+        Mon, 13 Sep 2021 16:01:17 +0000 (UTC)
+From:   Simon Trimmer <simont@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Simon Trimmer <simont@opensource.cirrus.com>
+Subject: [PATCH 00/16] add driver to support firmware loading on Cirrus Logic DSPs
+Date:   Mon, 13 Sep 2021 17:00:41 +0100
+Message-ID: <20210913160057.103842-1-simont@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911012853.GA834679@pl-dbox>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: cFiMMI10d2CKHvOl6ZcBIY-_fScsUAlG
+X-Proofpoint-ORIG-GUID: cFiMMI10d2CKHvOl6ZcBIY-_fScsUAlG
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 09:28:53AM +0800, Philip Li wrote:
-> On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
-> > On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
-> > > head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
-> > > commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
-> > > config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
-> > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
-> > >         git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-> > >         git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
-> > >         git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All errors (new ones prefixed by >>):
-> > > 
-> > > >> drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
-> > >    bool firmware_is_builtin(const struct firmware *fw)
-> > 
-> > This is a lie though its defined on drivers/base/firmware_loader/firmware.h
-> > 
-> > >         ^
-> > >    drivers/base/firmware_loader/builtin/main.c:36:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> > >    bool firmware_is_builtin(const struct firmware *fw)
-> > >    ^
-> > >    static 
-> > >    1 error generated.
-> > 
-> > I get these odd errors:
-> > 
-> > Compiler will be installed in /home/mcgrof/0day
-> hi Luis, would you mind to download the make.cross tool again to give a try, it
-> was updated recently to use latest clang instead of this 12.0.0?
+This series of patches gradually separates the ASoC specific wm_adsp
+code from that required to manage firmware in Cirrus Logic DSPs.
 
-I had clang+llvm-12.0.0-cross-hexagon-unknown-linux-musl and this was
-used already. Is there a more recent one? Just in case I rm -rf'd it
-and tried again with the latest make.cross.
+The series starts with renaming, progresses to splitting the
+functionality before finally moving the independent functionality into
+drivers/firmware so that it can be used by both the existing ASoC
+wm_adsp and new non-audio parts.
 
-  Luis
+Charles Keepax (3):
+  ASoC: wm_adsp: Move check for control existence
+  ASoC: wm_adsp: Switch to using wm_coeff_read_ctrl for compressed
+    buffers
+  ASoC: wm_adsp: Move sys_config_size to wm_adsp
+
+Simon Trimmer (13):
+  ASoC: wm_adsp: Remove use of snd_ctl_elem_type_t
+  ASoC: wm_adsp: Cancel ongoing work when removing controls
+  ASoC: wm_adsp: Rename generic DSP support
+  ASoC: wm_adsp: Introduce cs_dsp logging macros
+  ASoC: wm_adsp: Separate some ASoC and generic functions
+  ASoC: wm_adsp: Split DSP power operations into helper functions
+  ASoC: wm_adsp: Separate generic cs_dsp_coeff_ctl handling
+  ASoC: wm_adsp: Move check of dsp->running to better place
+  ASoC: wm_adsp: Pass firmware names as parameters when starting DSP
+    core
+  ASoC: wm_adsp: move firmware loading to client
+  ASoC: wm_adsp: Split out struct cs_dsp from struct wm_adsp
+  ASoC: wm_adsp: Separate wm_adsp specifics in cs_dsp_client_ops
+  firmware: cs_dsp: add driver to support firmware loading on Cirrus
+    Logic DSPs
+
+ MAINTAINERS                                   |   11 +
+ drivers/firmware/Kconfig                      |    1 +
+ drivers/firmware/Makefile                     |    1 +
+ drivers/firmware/cirrus/Kconfig               |    5 +
+ drivers/firmware/cirrus/Makefile              |    3 +
+ drivers/firmware/cirrus/cs_dsp.c              | 3109 ++++++++++++++++
+ include/linux/firmware/cirrus/cs_dsp.h        |  242 ++
+ .../linux/firmware/cirrus}/wmfw.h             |    8 +-
+ sound/soc/codecs/Kconfig                      |    1 +
+ sound/soc/codecs/cs47l15.c                    |   22 +-
+ sound/soc/codecs/cs47l24.c                    |   20 +-
+ sound/soc/codecs/cs47l35.c                    |   24 +-
+ sound/soc/codecs/cs47l85.c                    |   32 +-
+ sound/soc/codecs/cs47l90.c                    |   34 +-
+ sound/soc/codecs/cs47l92.c                    |   20 +-
+ sound/soc/codecs/madera.c                     |   18 +-
+ sound/soc/codecs/wm2200.c                     |   30 +-
+ sound/soc/codecs/wm5102.c                     |   16 +-
+ sound/soc/codecs/wm5110.c                     |   24 +-
+ sound/soc/codecs/wm_adsp.c                    | 3188 ++---------------
+ sound/soc/codecs/wm_adsp.h                    |  105 +-
+ 21 files changed, 3794 insertions(+), 3120 deletions(-)
+ create mode 100644 drivers/firmware/cirrus/Kconfig
+ create mode 100644 drivers/firmware/cirrus/Makefile
+ create mode 100644 drivers/firmware/cirrus/cs_dsp.c
+ create mode 100644 include/linux/firmware/cirrus/cs_dsp.h
+ rename {sound/soc/codecs => include/linux/firmware/cirrus}/wmfw.h (91%)
+
+-- 
+2.33.0
+
