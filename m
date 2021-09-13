@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4F1408E4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB95408E68
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242254AbhIMNcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:32:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
+        id S238630AbhIMNdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:33:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242158AbhIMN1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:27:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5632B610A3;
-        Mon, 13 Sep 2021 13:23:07 +0000 (UTC)
+        id S242170AbhIMN1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:27:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF36461247;
+        Mon, 13 Sep 2021 13:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539387;
-        bh=sQsT2xjt5o3JvCbwXYvr6OWVauUhVa/ErGSIHWQDgvQ=;
+        s=korg; t=1631539390;
+        bh=GcRdpxCbhQM1LFLuEiN/IJzFuauGp4BaPUK7J/TDJ70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nvC46eAJsYKcEUuLpbwB265TOSnlO8YweMBvlBtSfeY/xWo0lfCnlAZfgk4iPtd6u
-         IRprV+/CIwEGnESQzN7JqW35u/PVg8biUAbrYhOO89lijDHRXoUJAEro6wuC3pgzWD
-         GORMcTf4HGhEI/zmmPn8yqKY8Hc200T1hyKkH01E=
+        b=R3YsVWv+or3m5MLON/w6nkgjLScKHYqbIQRRNoAakC0WcfL3Qzd6LBHDRW2FyatWH
+         dBLJmsnztFW6SZBdKZMPHc66yuUDWIvJMRmxqCGVQ/wT4tK/wT0Oh9yX9QoUZMfaf8
+         xMLvlXAxYBuWXE0k20y8+A2LsnaWgMcRPnuFVdCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Terry Bowman <Terry.Bowman@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: [PATCH 5.4 134/144] x86/resctrl: Fix a maybe-uninitialized build warning treated as error
-Date:   Mon, 13 Sep 2021 15:15:15 +0200
-Message-Id: <20210913131052.417258062@linuxfoundation.org>
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        =?UTF-8?q?Christian=20Borntr=C3=A4ger?= <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: [PATCH 5.4 135/144] KVM: s390: index kvm->arch.idle_mask by vcpu_idx
+Date:   Mon, 13 Sep 2021 15:15:16 +0200
+Message-Id: <20210913131052.449148261@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -41,64 +40,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Babu Moger <babu.moger@amd.com>
+From: Halil Pasic <pasic@linux.ibm.com>
 
-commit 527f721478bce3f49b513a733bacd19d6f34b08c upstream.
+commit a3e03bc1368c1bc16e19b001fc96dc7430573cc8 upstream.
 
-The recent commit
+While in practice vcpu->vcpu_idx ==  vcpu->vcp_id is often true, it may
+not always be, and we must not rely on this. Reason is that KVM decides
+the vcpu_idx, userspace decides the vcpu_id, thus the two might not
+match.
 
-  064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+Currently kvm->arch.idle_mask is indexed by vcpu_id, which implies
+that code like
+for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
+                vcpu = kvm_get_vcpu(kvm, vcpu_id);
+		do_stuff(vcpu);
+}
+is not legit. Reason is that kvm_get_vcpu expects an vcpu_idx, not an
+vcpu_id.  The trouble is, we do actually use kvm->arch.idle_mask like
+this. To fix this problem we have two options. Either use
+kvm_get_vcpu_by_id(vcpu_id), which would loop to find the right vcpu_id,
+or switch to indexing via vcpu_idx. The latter is preferable for obvious
+reasons.
 
-caused a RHEL build failure with an uninitialized variable warning
-treated as an error because it removed the default case snippet.
+Let us make switch from indexing kvm->arch.idle_mask by vcpu_id to
+indexing it by vcpu_idx.  To keep gisa_int.kicked_mask indexed by the
+same index as idle_mask lets make the same change for it as well.
 
-The RHEL Makefile uses '-Werror=maybe-uninitialized' to force possibly
-uninitialized variable warnings to be treated as errors. This is also
-reported by smatch via the 0day robot.
-
-The error from the RHEL build is:
-
-  arch/x86/kernel/cpu/resctrl/monitor.c: In function ‘__mon_event_count’:
-  arch/x86/kernel/cpu/resctrl/monitor.c:261:12: error: ‘m’ may be used
-  uninitialized in this function [-Werror=maybe-uninitialized]
-    m->chunks += chunks;
-              ^~
-
-The upstream Makefile does not build using '-Werror=maybe-uninitialized'.
-So, the problem is not seen there. Fix the problem by putting back the
-default case snippet.
-
- [ bp: note that there's nothing wrong with the code and other compilers
-   do not trigger this warning - this is being done just so the RHEL compiler
-   is happy. ]
-
-Fixes: 064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
-Reported-by: Terry Bowman <Terry.Bowman@amd.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu
+Fixes: 1ee0bc559dc3 ("KVM: s390: get rid of local_int array")
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Reviewed-by: Christian Bornträger <borntraeger@de.ibm.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: <stable@vger.kernel.org> # 3.15+
+Link: https://lore.kernel.org/r/20210827125429.1912577-1-pasic@linux.ibm.com
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/cpu/resctrl/monitor.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/s390/include/asm/kvm_host.h |    1 +
+ arch/s390/kvm/interrupt.c        |   12 ++++++------
+ arch/s390/kvm/kvm-s390.c         |    2 +-
+ arch/s390/kvm/kvm-s390.h         |    2 +-
+ 4 files changed, 9 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -242,6 +242,12 @@ static u64 __mon_event_count(u32 rmid, s
- 	case QOS_L3_MBM_LOCAL_EVENT_ID:
- 		m = &rr->d->mbm_local[rmid];
- 		break;
-+	default:
-+		/*
-+		 * Code would never reach here because an invalid
-+		 * event id would fail the __rmid_read.
-+		 */
-+		return RMID_VAL_ERROR;
+--- a/arch/s390/include/asm/kvm_host.h
++++ b/arch/s390/include/asm/kvm_host.h
+@@ -873,6 +873,7 @@ struct kvm_arch{
+ 	atomic64_t cmma_dirty_pages;
+ 	/* subset of available cpu features enabled by user space */
+ 	DECLARE_BITMAP(cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
++	/* indexed by vcpu_idx */
+ 	DECLARE_BITMAP(idle_mask, KVM_MAX_VCPUS);
+ 	struct kvm_s390_gisa_interrupt gisa_int;
+ };
+--- a/arch/s390/kvm/interrupt.c
++++ b/arch/s390/kvm/interrupt.c
+@@ -408,13 +408,13 @@ static unsigned long deliverable_irqs(st
+ static void __set_cpu_idle(struct kvm_vcpu *vcpu)
+ {
+ 	kvm_s390_set_cpuflags(vcpu, CPUSTAT_WAIT);
+-	set_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
++	set_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
+ }
+ 
+ static void __unset_cpu_idle(struct kvm_vcpu *vcpu)
+ {
+ 	kvm_s390_clear_cpuflags(vcpu, CPUSTAT_WAIT);
+-	clear_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
++	clear_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
+ }
+ 
+ static void __reset_intercept_indicators(struct kvm_vcpu *vcpu)
+@@ -2984,18 +2984,18 @@ int kvm_s390_get_irq_state(struct kvm_vc
+ 
+ static void __airqs_kick_single_vcpu(struct kvm *kvm, u8 deliverable_mask)
+ {
+-	int vcpu_id, online_vcpus = atomic_read(&kvm->online_vcpus);
++	int vcpu_idx, online_vcpus = atomic_read(&kvm->online_vcpus);
+ 	struct kvm_s390_gisa_interrupt *gi = &kvm->arch.gisa_int;
+ 	struct kvm_vcpu *vcpu;
+ 
+-	for_each_set_bit(vcpu_id, kvm->arch.idle_mask, online_vcpus) {
+-		vcpu = kvm_get_vcpu(kvm, vcpu_id);
++	for_each_set_bit(vcpu_idx, kvm->arch.idle_mask, online_vcpus) {
++		vcpu = kvm_get_vcpu(kvm, vcpu_idx);
+ 		if (psw_ioint_disabled(vcpu))
+ 			continue;
+ 		deliverable_mask &= (u8)(vcpu->arch.sie_block->gcr[6] >> 24);
+ 		if (deliverable_mask) {
+ 			/* lately kicked but not yet running */
+-			if (test_and_set_bit(vcpu_id, gi->kicked_mask))
++			if (test_and_set_bit(vcpu_idx, gi->kicked_mask))
+ 				return;
+ 			kvm_s390_vcpu_wakeup(vcpu);
+ 			return;
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -3726,7 +3726,7 @@ static int vcpu_pre_run(struct kvm_vcpu
+ 		kvm_s390_patch_guest_per_regs(vcpu);
  	}
  
- 	if (rr->first) {
+-	clear_bit(vcpu->vcpu_id, vcpu->kvm->arch.gisa_int.kicked_mask);
++	clear_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.gisa_int.kicked_mask);
+ 
+ 	vcpu->arch.sie_block->icptcode = 0;
+ 	cpuflags = atomic_read(&vcpu->arch.sie_block->cpuflags);
+--- a/arch/s390/kvm/kvm-s390.h
++++ b/arch/s390/kvm/kvm-s390.h
+@@ -67,7 +67,7 @@ static inline int is_vcpu_stopped(struct
+ 
+ static inline int is_vcpu_idle(struct kvm_vcpu *vcpu)
+ {
+-	return test_bit(vcpu->vcpu_id, vcpu->kvm->arch.idle_mask);
++	return test_bit(kvm_vcpu_get_idx(vcpu), vcpu->kvm->arch.idle_mask);
+ }
+ 
+ static inline int kvm_is_ucontrol(struct kvm *kvm)
 
 
