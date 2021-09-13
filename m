@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C075409BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045CB409BA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234018AbhIMSDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
+        id S1346258AbhIMSEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346241AbhIMSDY (ORCPT
+        with ESMTP id S1346246AbhIMSDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:03:24 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0984EC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:02:06 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v5so15653068edc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:02:05 -0700 (PDT)
+        Mon, 13 Sep 2021 14:03:49 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32077C0613D8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:02:28 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id u18so10242140pgf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5Qkth7woyLAVIJdWp+l8uz/eF+3cl4KMIagT6yeHJcs=;
-        b=MinFidCnrduDGXC5mBb+NPraRLlqsfI93t+fXxh+y6N8rd5/K0E9dCbG3uPEvo/082
-         MDOc7fv4v0jfyxuOs9yWH30VaV0kdU9/QcwetUalRgD7YtKHUgfUIp4ELNAnI4PO/Shz
-         vgOHB26JzTKIjDYug0X3DNXr7p5e+9K4NmnWQ3qwUh9fEbN8U3ltnImWJLhyAjF0GsXI
-         ABvaPbIDdzjjmrwD+q9yppJRrKEPKbiAPnSsJdDPdiUfsEHYznF5piBISZ6sciRh/itM
-         0xvUbYt5pDNCROZxNUh9WvisFk8JHQ/iP0P0D4wv8v+utv2BR2uLaO7fHhZ41OwCAy8k
-         B5Wg==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cYi40BkhVJV1s9UwCAK3qxpR0NPFRGQvgiD+V+l72EI=;
+        b=DK2QdqG7X/jo8MfX6deH5O283TNqMeHOgykZvBWPfzHG/gw76BT6V+Y9s98hsSQL3r
+         ZS5Z0vLgEamLVCfOFY9Aey4EPtaU0cGVMqincoNRQWgGtPWhUAbzV8QJOMfJsw7X0NNH
+         U0f5RH47k7UbiQDrlXtmn90vI5u8vnjXer5UlqPhOESh8nAEWrYDuGsqOXVGSMITk8Rd
+         TGOalCq33sDquYxkVmTwbVkJJzdPxMmVr8pMFvRCyGBTvtsKuUOUOOtXp1QuBpSy/Rm0
+         azPiElKSWKwyt5vJYEZAbipgNlYpeWe9cxH0P54MUm1VyacgM3/lb8/62RHNe5Ynw1nu
+         rGqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Qkth7woyLAVIJdWp+l8uz/eF+3cl4KMIagT6yeHJcs=;
-        b=0uUsRje86YbDpf3dVBnV7iRuZb9+SJScaBAVc14zS7P+E0EQ7/suIZ1QqZYnApDXFa
-         lMO42jBpg0+f0cKw46aNcg4Mkdz2zM/uOhBvIxZDp0W10svT9rw85BofwEzJ1PHpsIxM
-         wtp8eLrfMXVJpbMQCFieYfQux+yAqK/kjQ74KaBL69DcZ0KoqKw75Lz+Y+viOF30rANg
-         b/g7tqrucHXoZ4jWFG4LaADLWnXsuWe/RsTpuTyysJ+VLiIWjIIwO+2hknmL84AC+FEV
-         r5VVCvZg4h6vQip+w1+KIh34ooEVBMdB+LwkBwYOC7ShUfqRdRfc4sJSZaJqVt9xLva+
-         0WBA==
-X-Gm-Message-State: AOAM530tiv/4j0u5gHF2241oXNnU3mQZcXr3GNY1FiKrWNGDfkiy0eNO
-        Ut4oHbmnKr64rK63hExIIOhKitGAB6ywFYuwBdudHQ==
-X-Google-Smtp-Source: ABdhPJyLWma6j5HJ2oNefPP9FqgeO0QHxx6F012Rn57fMjXDf02G3TY8321grWfexwEtUaVC7ICAvi0xc2L12iQcFa8=
-X-Received: by 2002:a05:6402:2695:: with SMTP id w21mr14486313edd.182.1631556124338;
- Mon, 13 Sep 2021 11:02:04 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=cYi40BkhVJV1s9UwCAK3qxpR0NPFRGQvgiD+V+l72EI=;
+        b=3m/jNvw8NQAIplV/xhgEGxRc/Lad2AVSVUdZ7mPnTud4g6Epi+KKS+b5vzqrwdNmF3
+         VcOmyDi+kwZLwnuLG/4ap/fni/9BfwpEneBkyKfxkF3A7Z2qBt5gyb7H1V/4VOwtmmyp
+         GGJ5JnRDteIpMd8lxo4k7A4WSnd9wGoyGYJqFp6jXzhA5nRYdgw08cAEzyjhNX2ZGLv4
+         052GURVt7WhJ7tDbmkPhczvDJMYJcoZgR37opknCHTvLzfuTfnvMcEfLKcJQ+QD9QgRq
+         Wl77ZUdcZDU4JaS8DWTIsSkoYZmrgjitbIkc3gyIvWOlnFXNgflgpjtmq1PPYlQQ+Sr0
+         nXBA==
+X-Gm-Message-State: AOAM5300tdbV0JBaP+GcF+z3BQZthJHMaYpzJnQFF4z5YGR3PnFEizCf
+        clb1rfqzb5+EGOi3KKZHk+A=
+X-Google-Smtp-Source: ABdhPJwa2AwNce+2oet4bU2Lr50vJJ0m7h9o2hu3CxK78LBxeFgC5tnEjy0g3QoHxE6VsgwISzoMnw==
+X-Received: by 2002:a63:1259:: with SMTP id 25mr12268930pgs.48.1631556147639;
+        Mon, 13 Sep 2021 11:02:27 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id r2sm9321578pgn.8.2021.09.13.11.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 11:02:26 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Sep 2021 08:02:24 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Subject: Re: [PATCH v2 6/6] workqueue, kasan: avoid alloc_pages() when
+ recording stack
+Message-ID: <YT+SMKI1SW3FOACn@slm.duckdns.org>
+References: <20210913112609.2651084-1-elver@google.com>
+ <20210913112609.2651084-7-elver@google.com>
+ <YT+EStsWldSp76HX@slm.duckdns.org>
+ <CANpmjNPA9qW8i=gHvrdMRag0kOrOJR-zCZe6tpucOB4XN8dfWQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210913131109.253835823@linuxfoundation.org>
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 13 Sep 2021 23:31:52 +0530
-Message-ID: <CA+G9fYuhgknV+hEpeyEN8xCEbY_dspFsTU=-XpH4vKEMqMiRmg@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/300] 5.13.17-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPA9qW8i=gHvrdMRag0kOrOJR-zCZe6tpucOB4XN8dfWQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sept 2021 at 19:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.13.17 release.
-> There are 300 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.17-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon, Sep 13, 2021 at 07:58:39PM +0200, Marco Elver wrote:
+> > Please feel free to route with the rest of series or if you want me to take
+> > these through the wq tree, please let me know.
+> 
+> Usually KASAN & stackdepot patches go via the -mm tree. I hope the
+> 1-line change to workqueue won't conflict with other changes pending
+> in the wq tree. Unless you or Andrew tells us otherwise, I assume
+> these will at some point appear in -mm.
 
+That part is really unlikely to cause conflicts and -mm sits on top of all
+other trees anyway, so it should be completely fine.
 
-arm clang-10, clang-11, clang-12 and clang-13 builds failed.
-on 5.14 and 5.13 on following configs,
-  - footbridge_defconfig
-  - mini2440_defconfig
-  - s3c2410_defconfig
+Thanks.
 
-This was already reported on the mailing list.
-
-ERROR: modpost: "__mulodi4" [drivers/block/nbd.ko] undefined! #1438
-https://github.com/ClangBuiltLinux/linux/issues/1438
-
-[PATCH 00/10] raise minimum GCC version to 5.1
-https://lore.kernel.org/lkml/20210910234047.1019925-1-ndesaulniers@google.com/
-
-linux-next: build failure while building Linus' tree
-https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
-
-Full build log,
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1585407346#L1111
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+tejun
