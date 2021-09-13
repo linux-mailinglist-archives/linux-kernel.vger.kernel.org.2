@@ -2,446 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57DA4097F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4EF40981C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241230AbhIMP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:56:17 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:56008 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231407AbhIMP4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:56:14 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:60820)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mPoIK-00BaeR-Fi; Mon, 13 Sep 2021 09:54:56 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:45470 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mPoII-004igE-Vg; Mon, 13 Sep 2021 09:54:56 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631537060.git.christophe.leroy@csgroup.eu>
-        <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631537060.git.christophe.leroy@csgroup.eu>
-Date:   Mon, 13 Sep 2021 10:54:35 -0500
-In-Reply-To: <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631537060.git.christophe.leroy@csgroup.eu>
-        (Christophe Leroy's message of "Mon, 13 Sep 2021 17:19:08 +0200")
-Message-ID: <87r1dspj2c.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S241887AbhIMP5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:57:38 -0400
+Received: from 8bytes.org ([81.169.241.247]:56748 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229627AbhIMP5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:57:34 -0400
+Received: from cap.home.8bytes.org (p549ad441.dip0.t-ipconnect.de [84.154.212.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 290F3247;
+        Mon, 13 Sep 2021 17:56:16 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
+        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joerg Roedel <joro@8bytes.org>, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v2 00/12] x86/sev: KEXEC/KDUMP support for SEV-ES guests
+Date:   Mon, 13 Sep 2021 17:55:51 +0200
+Message-Id: <20210913155603.28383-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mPoII-004igE-Vg;;;mid=<87r1dspj2c.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/oQU6ydp2sSUdMT2UjfVzHvAEgbZdCyJ0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMGappySubj_01,XMGappySubj_02,
-        XMSubLong,XM_B_SpammyTLD,XM_B_SpammyWords autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4990]
-        *  1.0 XMGappySubj_02 Gappier still
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  1.0 XM_B_SpammyTLD Contains uncommon/spammy TLD
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Christophe Leroy <christophe.leroy@csgroup.eu>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 858 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.4 (0.4%), b_tie_ro: 2.3 (0.3%), parse: 1.11
-        (0.1%), extract_message_metadata: 12 (1.4%), get_uri_detail_list: 4.6
-        (0.5%), tests_pri_-1000: 9 (1.0%), tests_pri_-950: 1.03 (0.1%),
-        tests_pri_-900: 0.85 (0.1%), tests_pri_-90: 142 (16.6%), check_bayes:
-        140 (16.3%), b_tokenize: 17 (1.9%), b_tok_get_all: 10 (1.1%),
-        b_comp_prob: 2.0 (0.2%), b_tok_touch_all: 108 (12.6%), b_finish: 0.71
-        (0.1%), tests_pri_0: 676 (78.8%), check_dkim_signature: 0.55 (0.1%),
-        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 0.79 (0.1%), tests_pri_10:
-        1.70 (0.2%), tests_pri_500: 7 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH RESEND v3 4/6] signal: Add unsafe_copy_siginfo_to_user32()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+From: Joerg Roedel <jroedel@suse.de>
 
-> In the same spirit as commit fb05121fd6a2 ("signal: Add
-> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
-> copy_siginfo_to_user32() in order to use it within user access blocks.
->
-> To do so, we need inline version of copy_siginfo_to_external32() as we
-> don't want any function call inside user access blocks.
+Hi,
 
-I don't understand.  What is wrong with?
+here are changes to enable kexec/kdump in SEV-ES guests. The biggest
+problem for supporting kexec/kdump under SEV-ES is to find a way to
+hand the non-boot CPUs (APs) from one kernel to another.
 
-#define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
-	struct compat_siginfo __user *__ucs_to = to;			\
-	const struct kernel_siginfo *__ucs_from = from;			\
-	struct compat_siginfo __ucs_new;				\
-									\
-	copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
-	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
-			    sizeof(struct compat_siginfo), label);	\
-} while (0)
+Without SEV-ES the first kernel parks the CPUs in a HLT loop until
+they get reset by the kexec'ed kernel via an INIT-SIPI-SIPI sequence.
+For virtual machines the CPU reset is emulated by the hypervisor,
+which sets the vCPU registers back to reset state.
 
-Your replacement of "memset(to, 0, sizeof(*to))" with
-"struct compat_siginfo __ucs_new = {0}".  is actively unsafe as the
-compiler is free not to initialize any holes in the structure to 0 in
-the later case.
+This does not work under SEV-ES, because the hypervisor has no access
+to the vCPU registers and can't make modifications to them. So an
+SEV-ES guest needs to reset the vCPU itself and park it using the
+AP-reset-hold protocol. Upon wakeup the guest needs to jump to
+real-mode and to the reset-vector configured in the AP-Jump-Table.
 
-Is there something about the unsafe macros that I am not aware of that
-makes it improper to actually call C functions?  Is that a requirement
-for the instructions that change the user space access behavior?
+The code to do this is the main part of this patch-set. It works by
+placing code on the AP Jump-Table page itself to park the vCPU and for
+jumping to the reset vector upon wakeup. The code on the AP Jump Table
+runs in 16-bit protected mode with segment base set to the beginning
+of the page. The AP Jump-Table is usually not within the first 1MB of
+memory, so the code can't run in real-mode.
 
-From the looks of this change all that you are doing is making it so
-that all of copy_siginfo_to_external32 is being inlined.  If that is not
-a hard requirement of the instructions it seems like the wrong thing to
-do here. copy_siginfo_to_external32 has not failures so it does not need
-to be inlined so you can jump to the label.
+The AP Jump-Table is the best place to put the parking code, because
+the memory is owned, but read-only by the firmware and writeable by
+the OS. Only the first 4 bytes are used for the reset-vector, leaving
+the rest of the page for code/data/stack to park a vCPU. The code
+can't be in kernel memory because by the time the vCPU wakes up the
+memory will be owned by the new kernel, which might have overwritten it
+already.
 
-Eric
+The other patches add initial GHCB Version 2 protocol support, because
+kexec/kdump need the MSR-based (without a GHCB) AP-reset-hold VMGEXIT,
+which is a GHCB protocol version 2 feature.
 
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  include/linux/compat.h |  83 +++++++++++++++++++++++++++++-
->  include/linux/signal.h |  58 +++++++++++++++++++++
->  kernel/signal.c        | 114 +----------------------------------------
->  3 files changed, 141 insertions(+), 114 deletions(-)
->
-> diff --git a/include/linux/compat.h b/include/linux/compat.h
-> index 8e0598c7d1d1..68823f4b86ee 100644
-> --- a/include/linux/compat.h
-> +++ b/include/linux/compat.h
-> @@ -412,6 +412,19 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
->  #ifndef copy_siginfo_to_user32
->  #define copy_siginfo_to_user32 __copy_siginfo_to_user32
->  #endif
-> +
-> +#ifdef CONFIG_COMPAT
-> +#define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
-> +	struct compat_siginfo __user *__ucs_to = to;			\
-> +	const struct kernel_siginfo *__ucs_from = from;			\
-> +	struct compat_siginfo __ucs_new = {0};				\
-> +									\
-> +	__copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
-> +	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
-> +			    sizeof(struct compat_siginfo), label);	\
-> +} while (0)
-> +#endif
-> +
->  int get_compat_sigevent(struct sigevent *event,
->  		const struct compat_sigevent __user *u_event);
->  
-> @@ -992,15 +1005,81 @@ static inline bool in_compat_syscall(void) { return false; }
->   * appropriately converted them already.
->   */
->  #ifndef compat_ptr
-> -static inline void __user *compat_ptr(compat_uptr_t uptr)
-> +static __always_inline void __user *compat_ptr(compat_uptr_t uptr)
->  {
->  	return (void __user *)(unsigned long)uptr;
->  }
->  #endif
->  
-> -static inline compat_uptr_t ptr_to_compat(void __user *uptr)
-> +static __always_inline compat_uptr_t ptr_to_compat(void __user *uptr)
->  {
->  	return (u32)(unsigned long)uptr;
->  }
->  
-> +static __always_inline void
-> +__copy_siginfo_to_external32(struct compat_siginfo *to,
-> +			     const struct kernel_siginfo *from)
-> +{
-> +	to->si_signo = from->si_signo;
-> +	to->si_errno = from->si_errno;
-> +	to->si_code  = from->si_code;
-> +	switch(__siginfo_layout(from->si_signo, from->si_code)) {
-> +	case SIL_KILL:
-> +		to->si_pid = from->si_pid;
-> +		to->si_uid = from->si_uid;
-> +		break;
-> +	case SIL_TIMER:
-> +		to->si_tid     = from->si_tid;
-> +		to->si_overrun = from->si_overrun;
-> +		to->si_int     = from->si_int;
-> +		break;
-> +	case SIL_POLL:
-> +		to->si_band = from->si_band;
-> +		to->si_fd   = from->si_fd;
-> +		break;
-> +	case SIL_FAULT:
-> +		to->si_addr = ptr_to_compat(from->si_addr);
-> +		break;
-> +	case SIL_FAULT_TRAPNO:
-> +		to->si_addr = ptr_to_compat(from->si_addr);
-> +		to->si_trapno = from->si_trapno;
-> +		break;
-> +	case SIL_FAULT_MCEERR:
-> +		to->si_addr = ptr_to_compat(from->si_addr);
-> +		to->si_addr_lsb = from->si_addr_lsb;
-> +		break;
-> +	case SIL_FAULT_BNDERR:
-> +		to->si_addr = ptr_to_compat(from->si_addr);
-> +		to->si_lower = ptr_to_compat(from->si_lower);
-> +		to->si_upper = ptr_to_compat(from->si_upper);
-> +		break;
-> +	case SIL_FAULT_PKUERR:
-> +		to->si_addr = ptr_to_compat(from->si_addr);
-> +		to->si_pkey = from->si_pkey;
-> +		break;
-> +	case SIL_FAULT_PERF_EVENT:
-> +		to->si_addr = ptr_to_compat(from->si_addr);
-> +		to->si_perf_data = from->si_perf_data;
-> +		to->si_perf_type = from->si_perf_type;
-> +		break;
-> +	case SIL_CHLD:
-> +		to->si_pid = from->si_pid;
-> +		to->si_uid = from->si_uid;
-> +		to->si_status = from->si_status;
-> +		to->si_utime = from->si_utime;
-> +		to->si_stime = from->si_stime;
-> +		break;
-> +	case SIL_RT:
-> +		to->si_pid = from->si_pid;
-> +		to->si_uid = from->si_uid;
-> +		to->si_int = from->si_int;
-> +		break;
-> +	case SIL_SYS:
-> +		to->si_call_addr = ptr_to_compat(from->si_call_addr);
-> +		to->si_syscall   = from->si_syscall;
-> +		to->si_arch      = from->si_arch;
-> +		break;
-> +	}
-> +}
-> +
->  #endif /* _LINUX_COMPAT_H */
-> diff --git a/include/linux/signal.h b/include/linux/signal.h
-> index 70ea7e741427..637260bc193d 100644
-> --- a/include/linux/signal.h
-> +++ b/include/linux/signal.h
-> @@ -65,6 +65,64 @@ enum siginfo_layout {
->  	SIL_SYS,
->  };
->  
-> +static const struct {
-> +	unsigned char limit, layout;
-> +} sig_sicodes[] = {
-> +	[SIGILL]  = { NSIGILL,  SIL_FAULT },
-> +	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
-> +	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
-> +	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
-> +	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
-> +#if defined(SIGEMT)
-> +	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
-> +#endif
-> +	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
-> +	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
-> +	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
-> +};
-> +
-> +static __always_inline enum
-> +siginfo_layout __siginfo_layout(unsigned sig, int si_code)
-> +{
-> +	enum siginfo_layout layout = SIL_KILL;
-> +
-> +	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
-> +		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
-> +		    (si_code <= sig_sicodes[sig].limit)) {
-> +			layout = sig_sicodes[sig].layout;
-> +			/* Handle the exceptions */
-> +			if ((sig == SIGBUS) &&
-> +			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
-> +				layout = SIL_FAULT_MCEERR;
-> +			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
-> +				layout = SIL_FAULT_BNDERR;
-> +#ifdef SEGV_PKUERR
-> +			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
-> +				layout = SIL_FAULT_PKUERR;
-> +#endif
-> +			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
-> +				layout = SIL_FAULT_PERF_EVENT;
-> +			else if (IS_ENABLED(CONFIG_SPARC) &&
-> +				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
-> +				layout = SIL_FAULT_TRAPNO;
-> +			else if (IS_ENABLED(CONFIG_ALPHA) &&
-> +				 ((sig == SIGFPE) ||
-> +				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
-> +				layout = SIL_FAULT_TRAPNO;
-> +		}
-> +		else if (si_code <= NSIGPOLL)
-> +			layout = SIL_POLL;
-> +	} else {
-> +		if (si_code == SI_TIMER)
-> +			layout = SIL_TIMER;
-> +		else if (si_code == SI_SIGIO)
-> +			layout = SIL_POLL;
-> +		else if (si_code < 0)
-> +			layout = SIL_RT;
-> +	}
-> +	return layout;
-> +}
-> +
->  enum siginfo_layout siginfo_layout(unsigned sig, int si_code);
->  
->  /*
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 23f168730b7e..0d402bdb174e 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -3249,22 +3249,6 @@ COMPAT_SYSCALL_DEFINE2(rt_sigpending, compat_sigset_t __user *, uset,
->  }
->  #endif
->  
-> -static const struct {
-> -	unsigned char limit, layout;
-> -} sig_sicodes[] = {
-> -	[SIGILL]  = { NSIGILL,  SIL_FAULT },
-> -	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
-> -	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
-> -	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
-> -	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
-> -#if defined(SIGEMT)
-> -	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
-> -#endif
-> -	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
-> -	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
-> -	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
-> -};
-> -
->  static bool known_siginfo_layout(unsigned sig, int si_code)
->  {
->  	if (si_code == SI_KERNEL)
-> @@ -3286,42 +3270,7 @@ static bool known_siginfo_layout(unsigned sig, int si_code)
->  
->  enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
->  {
-> -	enum siginfo_layout layout = SIL_KILL;
-> -	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
-> -		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
-> -		    (si_code <= sig_sicodes[sig].limit)) {
-> -			layout = sig_sicodes[sig].layout;
-> -			/* Handle the exceptions */
-> -			if ((sig == SIGBUS) &&
-> -			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
-> -				layout = SIL_FAULT_MCEERR;
-> -			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
-> -				layout = SIL_FAULT_BNDERR;
-> -#ifdef SEGV_PKUERR
-> -			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
-> -				layout = SIL_FAULT_PKUERR;
-> -#endif
-> -			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
-> -				layout = SIL_FAULT_PERF_EVENT;
-> -			else if (IS_ENABLED(CONFIG_SPARC) &&
-> -				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
-> -				layout = SIL_FAULT_TRAPNO;
-> -			else if (IS_ENABLED(CONFIG_ALPHA) &&
-> -				 ((sig == SIGFPE) ||
-> -				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
-> -				layout = SIL_FAULT_TRAPNO;
-> -		}
-> -		else if (si_code <= NSIGPOLL)
-> -			layout = SIL_POLL;
-> -	} else {
-> -		if (si_code == SI_TIMER)
-> -			layout = SIL_TIMER;
-> -		else if (si_code == SI_SIGIO)
-> -			layout = SIL_POLL;
-> -		else if (si_code < 0)
-> -			layout = SIL_RT;
-> -	}
-> -	return layout;
-> +	return __siginfo_layout(sig, si_code);
->  }
->  
->  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
-> @@ -3389,66 +3338,7 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
->  {
->  	memset(to, 0, sizeof(*to));
->  
-> -	to->si_signo = from->si_signo;
-> -	to->si_errno = from->si_errno;
-> -	to->si_code  = from->si_code;
-> -	switch(siginfo_layout(from->si_signo, from->si_code)) {
-> -	case SIL_KILL:
-> -		to->si_pid = from->si_pid;
-> -		to->si_uid = from->si_uid;
-> -		break;
-> -	case SIL_TIMER:
-> -		to->si_tid     = from->si_tid;
-> -		to->si_overrun = from->si_overrun;
-> -		to->si_int     = from->si_int;
-> -		break;
-> -	case SIL_POLL:
-> -		to->si_band = from->si_band;
-> -		to->si_fd   = from->si_fd;
-> -		break;
-> -	case SIL_FAULT:
-> -		to->si_addr = ptr_to_compat(from->si_addr);
-> -		break;
-> -	case SIL_FAULT_TRAPNO:
-> -		to->si_addr = ptr_to_compat(from->si_addr);
-> -		to->si_trapno = from->si_trapno;
-> -		break;
-> -	case SIL_FAULT_MCEERR:
-> -		to->si_addr = ptr_to_compat(from->si_addr);
-> -		to->si_addr_lsb = from->si_addr_lsb;
-> -		break;
-> -	case SIL_FAULT_BNDERR:
-> -		to->si_addr = ptr_to_compat(from->si_addr);
-> -		to->si_lower = ptr_to_compat(from->si_lower);
-> -		to->si_upper = ptr_to_compat(from->si_upper);
-> -		break;
-> -	case SIL_FAULT_PKUERR:
-> -		to->si_addr = ptr_to_compat(from->si_addr);
-> -		to->si_pkey = from->si_pkey;
-> -		break;
-> -	case SIL_FAULT_PERF_EVENT:
-> -		to->si_addr = ptr_to_compat(from->si_addr);
-> -		to->si_perf_data = from->si_perf_data;
-> -		to->si_perf_type = from->si_perf_type;
-> -		break;
-> -	case SIL_CHLD:
-> -		to->si_pid = from->si_pid;
-> -		to->si_uid = from->si_uid;
-> -		to->si_status = from->si_status;
-> -		to->si_utime = from->si_utime;
-> -		to->si_stime = from->si_stime;
-> -		break;
-> -	case SIL_RT:
-> -		to->si_pid = from->si_pid;
-> -		to->si_uid = from->si_uid;
-> -		to->si_int = from->si_int;
-> -		break;
-> -	case SIL_SYS:
-> -		to->si_call_addr = ptr_to_compat(from->si_call_addr);
-> -		to->si_syscall   = from->si_syscall;
-> -		to->si_arch      = from->si_arch;
-> -		break;
-> -	}
-> +	__copy_siginfo_to_external32(to, from);
->  }
->  
->  int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+The kexec'ed kernel is also entered via the decompressor and needs
+MMIO support there, so this patch-set also adds MMIO #VC support to
+the decompressor and support for handling CLFLUSH instructions.
+
+Finally there is also code to disable kexec/kdump support at runtime
+when the environment does not support it (e.g. no GHCB protocol
+version 2 support or AP Jump Table over 4GB).
+
+The diffstat looks big, but most of it is moving code for MMIO #VC
+support around to make it available to the decompressor.
+
+These patches need a fix I sent out earlier today to work reliably:
+
+	https://lore.kernel.org/lkml/20210913095236.24937-1-joro@8bytes.org/
+
+Please review.
+
+Thanks,
+
+	Joerg
+
+Changes v1->v2:
+
+	- Rebased to v5.15-rc1
+
+	- Fixed occasional triple-faults when parking APs, see
+	  separate fix
+
+Joerg Roedel (12):
+  kexec: Allow architecture code to opt-out at runtime
+  x86/kexec/64: Forbid kexec when running as an SEV-ES guest
+  x86/sev: Save and print negotiated GHCB protocol version
+  x86/sev: Do not hardcode GHCB protocol version
+  x86/sev: Use GHCB protocol version 2 if supported
+  x86/sev: Cache AP Jump Table Address
+  x86/sev: Setup code to park APs in the AP Jump Table
+  x86/sev: Park APs on AP Jump Table with GHCB protocol version 2
+  x86/sev: Use AP Jump Table blob to stop CPU
+  x86/sev: Add MMIO handling support to boot/compressed/ code
+  x86/sev: Handle CLFLUSH MMIO events
+  x86/sev: Support kexec under SEV-ES with AP Jump Table blob
+
+ arch/x86/boot/compressed/sev.c          |  56 +-
+ arch/x86/include/asm/realmode.h         |   5 +
+ arch/x86/include/asm/sev-ap-jumptable.h |  25 +
+ arch/x86/include/asm/sev.h              |  13 +-
+ arch/x86/kernel/machine_kexec_64.c      |  12 +
+ arch/x86/kernel/process.c               |   8 +
+ arch/x86/kernel/sev-shared.c            | 333 +++++++++-
+ arch/x86/kernel/sev.c                   | 494 ++++++---------
+ arch/x86/lib/insn-eval-shared.c         | 805 ++++++++++++++++++++++++
+ arch/x86/lib/insn-eval.c                | 802 +----------------------
+ arch/x86/realmode/Makefile              |   9 +-
+ arch/x86/realmode/rm/Makefile           |  11 +-
+ arch/x86/realmode/rm/header.S           |   3 +
+ arch/x86/realmode/rm/sev_ap_park.S      |  89 +++
+ arch/x86/realmode/rmpiggy.S             |   6 +
+ arch/x86/realmode/sev/Makefile          |  41 ++
+ arch/x86/realmode/sev/ap_jump_table.S   | 130 ++++
+ arch/x86/realmode/sev/ap_jump_table.lds |  24 +
+ include/linux/kexec.h                   |   1 +
+ kernel/kexec.c                          |  14 +
+ kernel/kexec_file.c                     |   9 +
+ 21 files changed, 1764 insertions(+), 1126 deletions(-)
+ create mode 100644 arch/x86/include/asm/sev-ap-jumptable.h
+ create mode 100644 arch/x86/lib/insn-eval-shared.c
+ create mode 100644 arch/x86/realmode/rm/sev_ap_park.S
+ create mode 100644 arch/x86/realmode/sev/Makefile
+ create mode 100644 arch/x86/realmode/sev/ap_jump_table.S
+ create mode 100644 arch/x86/realmode/sev/ap_jump_table.lds
+
+
+base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+-- 
+2.33.0
+
