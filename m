@@ -2,64 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B527D408485
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50AD408483
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237309AbhIMGL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237278AbhIMGLz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237279AbhIMGLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 13 Sep 2021 02:11:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4ACC061574;
-        Sun, 12 Sep 2021 23:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j1VgGedRt8a4TmNVCvWVMlPcZTUQAnlRvRfqbP/+who=; b=ruoSvBX84tnVZP0o0bJ5gmjMdk
-        +yixEKGgS8N7b6NbVaozUFCoEFOn1LxoteRtbeMdEYMY/Euz8fGK2miAcDK/gnt9KeVfPw1/jYr19
-        gWQeeJFBVF+lSyI9gGIaZ4w3JnPSMTBVuyMF5tkFz0dVv/ch+A4w33urGALJI2iEjJ/UrF9iPlJ/r
-        3FaoRSUILI0HN9iD6pVYBTTo38Y6C0zwGJN1QXksF0kmoP2xkdEOhrfF3nm148Mgdfm562zRmrPAM
-        4gz8WeQo7q5ZqpHfeCs9U2YY5m8jru4QuZTSWnWmNebWVxbHFTHrPMcrsRqcOlVgXIRiZZ4YerZFD
-        SC/pd/5A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPfA7-00DDpH-IK; Mon, 13 Sep 2021 06:09:58 +0000
-Date:   Mon, 13 Sep 2021 07:09:51 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>
-Subject: Re: [PATCH] blk-mq: export blk_mq_submit_bio symbol
-Message-ID: <YT7rL4PhovDOHfHO@infradead.org>
-References: <20210909053653.144360-1-kumarpraveen@linux.microsoft.com>
- <7e80b65b-51a4-3ca1-da43-e87612b8ca5f@nvidia.com>
- <f7add831-ecf0-6599-158b-cd2f15543da5@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7add831-ecf0-6599-158b-cd2f15543da5@linux.microsoft.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Received: from m43-7.mailgun.net ([69.72.43.7]:56042 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237184AbhIMGLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 02:11:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631513439; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=X0lqQRbWV8fWiShZFkmLGQXY4Cdbj1ipT5h/wddHdkw=; b=pQ1Z3QssjBppfEr0KBehrzy/7GFmCtX/tzuJ+vfzESeKbu1N2KOosvFON6fO1ju6Lo5uOpmq
+ Kh7STswk7CB2Y7BBS91pjMf+srbirr9HuO3Ot9CzYDB3jTaNYzKZKpfWdbQJNlLqVEZ+Shby
+ AYONs0tpxlUMZk0cFLmgDlg2JPQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 613eeb3e648642cc1cc3d5b3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 06:10:06
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 59DFBC4360C; Mon, 13 Sep 2021 06:10:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C88DAC4338F;
+        Mon, 13 Sep 2021 06:10:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C88DAC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v9] Bluetooth: btusb: Add support using different nvm for variant WCN6855 controller
+Date:   Mon, 13 Sep 2021 14:09:59 +0800
+Message-Id: <1631513399-22826-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 09:54:54AM +0530, Praveen Kumar wrote:
-> >> +EXPORT_SYMBOL_GPL(blk_mq_submit_bio);
-> >>
-> > 
-> > Where is the code that used this API ?
-> > 
-> 
-> Thanks Chaitanya for your response. Please check my response to Christoph.
-> That should give overall understanding of the use-case.
+the RF performance of wcn6855 soc chip from different foundries will be
+difference, so we should use different nvm to configure them.
 
-Which really doesn't matter, while you keep ingoring the relevant
-question.  If you code is not upstream or at least actively being
-submitted upstream your questions have no relevance whatsoever.
-If you do not undertand that basic fact your are in the wrong place
-here.
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+ drivers/bluetooth/btusb.c | 51 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 38 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 928cbfa4c42d..7b23cfd131f6 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+ #define QCA_DFU_TIMEOUT		3000
+ #define QCA_FLAG_MULTI_NVM      0x80
+ 
++#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
++#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
++
+ struct qca_version {
+ 	__le32	rom_version;
+ 	__le32	patch_version;
+@@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
+ 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+ 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+ 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
++	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+ };
+ 
+ static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+@@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+ 	return err;
+ }
+ 
++static void btusb_generate_qca_nvm_name(char *fwname,
++					size_t max_size,
++					struct qca_version *ver,
++					char *variant)
++{
++	char *sep = (strlen(variant) == 0) ? "" : "_";
++	u16 board_id = le16_to_cpu(ver->board_id);
++	u32 rom_version = le32_to_cpu(ver->rom_version);
++
++	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
++		/* if boardid equal 0, use default nvm without suffix */
++		if (board_id == 0x0) {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
++				rom_version, sep, variant);
++		} else {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
++				rom_version, sep, variant, board_id);
++		}
++	} else {
++		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
++			rom_version);
++	}
++
++}
++
+ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 				    struct qca_version *ver,
+ 				    const struct qca_device_info *info)
+@@ -3354,19 +3383,15 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 	char fwname[64];
+ 	int err;
+ 
+-	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		/* if boardid equal 0, use default nvm without surfix */
+-		if (le16_to_cpu(ver->board_id) == 0x0) {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-				 le32_to_cpu(ver->rom_version));
+-		} else {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-				le32_to_cpu(ver->rom_version),
+-				le16_to_cpu(ver->board_id));
+-		}
+-	} else {
+-		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-			 le32_to_cpu(ver->rom_version));
++	switch (ver->ram_version) {
++	case WCN6855_2_0_RAM_VERSION_GF:
++	case WCN6855_2_1_RAM_VERSION_GF:
++			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
++		break;
++
++	default:
++			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
++		break;
+ 	}
+ 
+ 	err = request_firmware(&fw, fwname, &hdev->dev);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+
