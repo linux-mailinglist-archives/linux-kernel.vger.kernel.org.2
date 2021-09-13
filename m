@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F622408D67
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECACB408D2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241810AbhIMNZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:25:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
+        id S241229AbhIMNXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:23:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240568AbhIMNWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:22:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EB70610FB;
-        Mon, 13 Sep 2021 13:20:50 +0000 (UTC)
+        id S240431AbhIMNU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:20:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B494E610E7;
+        Mon, 13 Sep 2021 13:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539251;
-        bh=L0iDPYPJdQtg7AfD7sF0dmodvIZiD58yrkNwbjz6rcE=;
+        s=korg; t=1631539165;
+        bh=I0wYY4ttfS3dnJn5UM3ZkfaJayMzLgJRSj4gCb3aB5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gr82kIpy7wsGqHheBv7GVxOoiSzdZtYgLs3h8KlzndMd8Crdp5fhGK3TrKN3klTG8
-         h2fofh3fRJRFKmGODLOgGWw/txYgYyx/kH+2D8E/c9Wq4DBP1fJxTm/FTiWt9Cmmk9
-         5BTKhmh8CdLnHOF1DkU2aUWpM3fxWS3yU5DqxKqQ=
+        b=n6Pu4AB1UhTorSsqAxr3nGvrnKdbGcYwo/L66XvZg3a1wVyiFe9NCLyDDG0d5x8fH
+         jK2jNUkfmlqP8mZemrVPIoTTJ/3bJOsWbpqhWqUOMUtwiqxT8/zS/zTHFTnLS0HjfK
+         BzcakMu6b1x4YN7jvZKdxJJhUEu/v2dfyu/IvlOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Sean Young <sean@mess.org>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 057/144] media: dvb-usb: Fix error handling in dvb_usb_i2c_init
-Date:   Mon, 13 Sep 2021 15:13:58 +0200
-Message-Id: <20210913131049.875546702@linuxfoundation.org>
+Subject: [PATCH 5.4 058/144] media: go7007: remove redundant initialization
+Date:   Mon, 13 Sep 2021 15:13:59 +0200
+Message-Id: <20210913131049.907169044@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -41,73 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 131ae388b88e3daf4cb0721ed4b4cb8bfc201465 ]
+[ Upstream commit 6f5885a7750545973bf1a942d2f0f129aef0aa06 ]
 
-In dvb_usb_i2c_init, if i2c_add_adapter fails, it only prints an error
-message, and then continues to set DVB_USB_STATE_I2C. This affects the
-logic of dvb_usb_i2c_exit, which leads to that, the deletion of i2c_adap
-even if the i2c_add_adapter fails.
+In go7007_alloc() kzalloc() is used for struct go7007
+allocation. It means that there is no need in zeroing
+any members, because kzalloc will take care of it.
 
-Fix this by returning at the failure of i2c_add_adapter and then move
-dvb_usb_i2c_exit out of the error handling code of dvb_usb_i2c_init.
+Removing these reduntant initialization steps increases
+execution speed a lot:
 
-Fixes: 13a79f14ab28 ("media: dvb-usb: Fix memory leak at error in dvb_usb_device_init()")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
+	Before:
+		+ 86.802 us   |    go7007_alloc();
+	After:
+		+ 29.595 us   |    go7007_alloc();
+
+Fixes: 866b8695d67e8 ("Staging: add the go7007 video driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dvb-usb-i2c.c  | 9 +++++++--
- drivers/media/usb/dvb-usb/dvb-usb-init.c | 2 +-
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ drivers/media/usb/go7007/go7007-driver.c | 26 ------------------------
+ 1 file changed, 26 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-i2c.c b/drivers/media/usb/dvb-usb/dvb-usb-i2c.c
-index 2e07106f4680..bc4b2abdde1a 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-i2c.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-i2c.c
-@@ -17,7 +17,8 @@ int dvb_usb_i2c_init(struct dvb_usb_device *d)
+diff --git a/drivers/media/usb/go7007/go7007-driver.c b/drivers/media/usb/go7007/go7007-driver.c
+index 153a0c3e3da6..b9302d77d6c8 100644
+--- a/drivers/media/usb/go7007/go7007-driver.c
++++ b/drivers/media/usb/go7007/go7007-driver.c
+@@ -691,49 +691,23 @@ struct go7007 *go7007_alloc(const struct go7007_board_info *board,
+ 						struct device *dev)
+ {
+ 	struct go7007 *go;
+-	int i;
  
- 	if (d->props.i2c_algo == NULL) {
- 		err("no i2c algorithm specified");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err;
- 	}
+ 	go = kzalloc(sizeof(struct go7007), GFP_KERNEL);
+ 	if (go == NULL)
+ 		return NULL;
+ 	go->dev = dev;
+ 	go->board_info = board;
+-	go->board_id = 0;
+ 	go->tuner_type = -1;
+-	go->channel_number = 0;
+-	go->name[0] = 0;
+ 	mutex_init(&go->hw_lock);
+ 	init_waitqueue_head(&go->frame_waitq);
+ 	spin_lock_init(&go->spinlock);
+ 	go->status = STATUS_INIT;
+-	memset(&go->i2c_adapter, 0, sizeof(go->i2c_adapter));
+-	go->i2c_adapter_online = 0;
+-	go->interrupt_available = 0;
+ 	init_waitqueue_head(&go->interrupt_waitq);
+-	go->input = 0;
+ 	go7007_update_board(go);
+-	go->encoder_h_halve = 0;
+-	go->encoder_v_halve = 0;
+-	go->encoder_subsample = 0;
+ 	go->format = V4L2_PIX_FMT_MJPEG;
+ 	go->bitrate = 1500000;
+ 	go->fps_scale = 1;
+-	go->pali = 0;
+ 	go->aspect_ratio = GO7007_RATIO_1_1;
+-	go->gop_size = 0;
+-	go->ipb = 0;
+-	go->closed_gop = 0;
+-	go->repeat_seqhead = 0;
+-	go->seq_header_enable = 0;
+-	go->gop_header_enable = 0;
+-	go->dvd_mode = 0;
+-	go->interlace_coding = 0;
+-	for (i = 0; i < 4; ++i)
+-		go->modet[i].enable = 0;
+-	for (i = 0; i < 1624; ++i)
+-		go->modet_map[i] = 0;
+-	go->audio_deliver = NULL;
+-	go->audio_enabled = 0;
  
- 	strscpy(d->i2c_adap.name, d->desc->name, sizeof(d->i2c_adap.name));
-@@ -27,11 +28,15 @@ int dvb_usb_i2c_init(struct dvb_usb_device *d)
- 
- 	i2c_set_adapdata(&d->i2c_adap, d);
- 
--	if ((ret = i2c_add_adapter(&d->i2c_adap)) < 0)
-+	ret = i2c_add_adapter(&d->i2c_adap);
-+	if (ret < 0) {
- 		err("could not add i2c adapter");
-+		goto err;
-+	}
- 
- 	d->state |= DVB_USB_STATE_I2C;
- 
-+err:
- 	return ret;
+ 	return go;
  }
- 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-index f57c4627624f..e7720ff11d3d 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-@@ -194,8 +194,8 @@ static int dvb_usb_init(struct dvb_usb_device *d, short *adapter_nums)
- 
- err_adapter_init:
- 	dvb_usb_adapter_exit(d);
--err_i2c_init:
- 	dvb_usb_i2c_exit(d);
-+err_i2c_init:
- 	if (d->priv && d->props.priv_destroy)
- 		d->props.priv_destroy(d);
- err_priv_init:
 -- 
 2.30.2
 
