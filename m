@@ -2,140 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFABA40857B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C9B40857E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237699AbhIMHl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237626AbhIMHlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:41:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0397060F6D;
-        Mon, 13 Sep 2021 07:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631518810;
-        bh=6oO17ePJ66tf1qaogSIGXkG0PK94ZVE5plfXUvejXFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P/bTzWA9lNX+zvL8XRMjlTXue2aGxwiwQFASjcc9FtHrF/p0B7SqxzpJ8YSTcnkyZ
-         og9b3mVFydqRp76P7H3bQ767tGD4gf27RIuxMlvRLvFtCJAq84lu3XFwakNCsiOIFt
-         S3yVPqofCIll/rMtdsNe3qBYnyQLb3FY5QWsuZP9emB9EnDzeD8cpXF7r6Z62zCvQB
-         T9JRMNLLh5OH7E/XEX7O432np+gGylPFXb5ORmbFd4uW6iVPsTFkbp/GekpY59NkcO
-         132PyugDZotD4hxCbQlUyG+6O9YDARtqAsdx6jZfLa2xnvgp+9yx6avwekoGkLtVBp
-         S1K3RALQk3/jA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mPgZI-0001Zh-8u; Mon, 13 Sep 2021 09:39:57 +0200
-Date:   Mon, 13 Sep 2021 09:39:56 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, fujita.tomonori@lab.ntt.co.jp,
-        axboe@kernel.dk, martin.petersen@oracle.com, hch@lst.de,
-        gregkh@linuxfoundation.org, wanghaibin.wang@huawei.com
-Subject: Re: [PATCH v2] scsi: bsg: Fix device unregistration
-Message-ID: <YT8ATD51tBc7Ohmt@hovoldconsulting.com>
-References: <20210911105306.1511-1-yuzenghui@huawei.com>
+        id S237682AbhIMHmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237653AbhIMHlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 03:41:47 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D191C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:40:31 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id r128-20020a1c4486000000b003065f0bc631so1519076wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=n04uv+5XZibLMvnKtKrfRDH3+weTdkw09nbWu1hNmlc=;
+        b=wsgAb4G/K5UxMew/W56NQo+1LNvjCkVxwU1V0ZhcSZ+rvNxwJSWx4m1pz6x4hGrQxK
+         Gyj7rBJSe28d6HN8IxzDHci3Xyl9W9zQg6izgeR41kn42D7y+3iloWNqLIft86cNRauT
+         wIVfLtr3XhvdN7VOnIxFzDg07AqfI4lUq8oGoZfuKlzYAeN7WzP3mlu32SPLAGcza3oN
+         ogKOXBq2JI4PBXgIexfUrNK8nxaDjAZTXbB1CDT6hE6z70klluLir6OH/m9OlcCmpq5+
+         8jgudv8U8/6DUmNfh17UpEFfsa0Bb5YXRe9Wxqy8I41Xyw4e69vMDF0Y7numKAg7Bp6k
+         ycUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=n04uv+5XZibLMvnKtKrfRDH3+weTdkw09nbWu1hNmlc=;
+        b=sJYQ+eSXXjqXsVcPrw2HcEUMncQeXEfNUGPoyMjRdn0agTT65VCe5wZXQKd9yY+mOP
+         MS8+aq19E2DtUu46GISw7XAfscDXZu7JCyX5Hm3CfatqGkTU08wjHJjdFmKRtAmSN6Ja
+         FpVQPmZfKKTWn5Bu5CkingfyMG4nFUdE8GMVQJKytzhE+3y3bxeoWZ3CY2/PbjBPa9yn
+         LSdiSIZjW/8F2RvjZgGyLehZPgh39tgn6QbPwgpq65VmJgnvSIcwBLtXNN77BPUV8p8g
+         HmPiMfols/+MBu8xO0sxgOoR8B2KsJoGT8sWAQbe1r8XpEphkQJb0aHlHipqfTO2swIi
+         0POg==
+X-Gm-Message-State: AOAM531nXcBNDwgddmN7AQCDzXxfdndc2EC5x0IpRpErb3/80OjuSOdv
+        l2Vm8HVJ3+j8E6OY+vj47ywY7g==
+X-Google-Smtp-Source: ABdhPJzouOaDRn0i2zebwvu9kOCOJAUKxzokE2T0UQsD8Z69uqJJWRN+U39Khmzjr07F+SzXqNlopg==
+X-Received: by 2002:a05:600c:1550:: with SMTP id f16mr9970372wmg.111.1631518829984;
+        Mon, 13 Sep 2021 00:40:29 -0700 (PDT)
+Received: from localhost.localdomain ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
+        by smtp.gmail.com with ESMTPSA id y1sm6315828wmq.43.2021.09.13.00.40.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 00:40:29 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     linux-amlogic@lists.infradead.org,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>
+Subject: Re: [PATCH] soc: amlogic: meson-gx-socinfo: Add S905Y2 ID for Radxa Zero
+Date:   Mon, 13 Sep 2021 09:40:30 +0200
+Message-Id: <163151878415.815936.12618295918725996638.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210820012718.10761-1-christianshewitt@gmail.com>
+References: <20210820012718.10761-1-christianshewitt@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911105306.1511-1-yuzenghui@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 06:53:06PM +0800, Zenghui Yu wrote:
-> We use device_initialize() to take refcount for the device but forget to
-> put_device() on device teardown, which ends up leaking private data of the
-> driver core, dev_name(), etc. This is reported by kmemleak at boot time if
-> we compile kernel with DEBUG_TEST_DRIVER_REMOVE.
-> 
-> Note that adding the missing put_device() is _not_ sufficient to fix device
-> unregistration. As we don't provide the .release() method for device, which
-> turned out to be typically wrong and will be complained loudly by the
-> driver core.
-> 
-> Fix both of them.
-> 
-> Fixes: ead09dd3aed5 ("scsi: bsg: Simplify device registration")
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
-> * From v1 [1]:
->   - As pointed out by Johan, fix UAF and double-free on error path ...
+Hi,
 
-Looks good now:
+On Fri, 20 Aug 2021 01:27:18 +0000, Christian Hewitt wrote:
+> Add the SOC ID for the S905Y2 used in the Radxa Zero. Before/After:
+> 
+> [    0.321650] soc soc0: Amlogic Meson G12A (Unknown) Revision 28:b (30:2) Detected
+> [    0.318533] soc soc0: Amlogic Meson G12A (S905Y2) Revision 28:b (30:2) Detected
 
-Reviewed-by: Johan Hovold <johan@kernel.org>
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
 
->   - ... so I didn't collect Christoph and Greg's R-b tags (but thanks
->     for reviewing)
-> 
-> [1] https://lore.kernel.org/r/20210909034608.1435-1-yuzenghui@huawei.com
-> 
->  block/bsg.c | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/block/bsg.c b/block/bsg.c
-> index 351095193788..882f56bff14f 100644
-> --- a/block/bsg.c
-> +++ b/block/bsg.c
-> @@ -165,13 +165,20 @@ static const struct file_operations bsg_fops = {
->  	.llseek		=	default_llseek,
->  };
->  
-> +static void bsg_device_release(struct device *dev)
-> +{
-> +	struct bsg_device *bd = container_of(dev, struct bsg_device, device);
-> +
-> +	ida_simple_remove(&bsg_minor_ida, MINOR(bd->device.devt));
-> +	kfree(bd);
-> +}
-> +
->  void bsg_unregister_queue(struct bsg_device *bd)
->  {
->  	if (bd->queue->kobj.sd)
->  		sysfs_remove_link(&bd->queue->kobj, "bsg");
->  	cdev_device_del(&bd->cdev, &bd->device);
-> -	ida_simple_remove(&bsg_minor_ida, MINOR(bd->device.devt));
-> -	kfree(bd);
-> +	put_device(&bd->device);
->  }
->  EXPORT_SYMBOL_GPL(bsg_unregister_queue);
->  
-> @@ -193,11 +200,13 @@ struct bsg_device *bsg_register_queue(struct request_queue *q,
->  	if (ret < 0) {
->  		if (ret == -ENOSPC)
->  			dev_err(parent, "bsg: too many bsg devices\n");
-> -		goto out_kfree;
-> +		kfree(bd);
-> +		return ERR_PTR(ret);
->  	}
->  	bd->device.devt = MKDEV(bsg_major, ret);
->  	bd->device.class = bsg_class;
->  	bd->device.parent = parent;
-> +	bd->device.release = bsg_device_release;
->  	dev_set_name(&bd->device, "%s", name);
->  	device_initialize(&bd->device);
->  
-> @@ -205,7 +214,7 @@ struct bsg_device *bsg_register_queue(struct request_queue *q,
->  	bd->cdev.owner = THIS_MODULE;
->  	ret = cdev_device_add(&bd->cdev, &bd->device);
->  	if (ret)
-> -		goto out_ida_remove;
-> +		goto out_put_device;
->  
->  	if (q->kobj.sd) {
->  		ret = sysfs_create_link(&q->kobj, &bd->device.kobj, "bsg");
-> @@ -217,10 +226,8 @@ struct bsg_device *bsg_register_queue(struct request_queue *q,
->  
->  out_device_del:
->  	cdev_device_del(&bd->cdev, &bd->device);
-> -out_ida_remove:
-> -	ida_simple_remove(&bsg_minor_ida, MINOR(bd->device.devt));
-> -out_kfree:
-> -	kfree(bd);
-> +out_put_device:
-> +	put_device(&bd->device);
->  	return ERR_PTR(ret);
->  }
->  EXPORT_SYMBOL_GPL(bsg_register_queue);
+[1/1] soc: amlogic: meson-gx-socinfo: Add S905Y2 ID for Radxa Zero
+      https://git.kernel.org/amlogic/c/ca8d1fda5b7d2f81ba9c5649462a7c0b64ae9dcd
+
+-- 
+Neil
