@@ -2,137 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667D3408423
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBC9408426
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237157AbhIMFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 01:54:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50850 "EHLO
+        id S237110AbhIMFzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 01:55:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53079 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237076AbhIMFyx (ORCPT
+        by vger.kernel.org with ESMTP id S230390AbhIMFza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 01:54:53 -0400
+        Mon, 13 Sep 2021 01:55:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631512417;
+        s=mimecast20190719; t=1631512455;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lmIEdzAE8KtfMvdI7Vd3u1eV+5W/XqJ3cF9Jvl0CpQM=;
-        b=hba9LN/K8sGgLov/lZRQ6l3oSQ+7L+pv5G+v2J8/Z0HMbT3DYz02f4jX5DU7by81SqSv1U
-        eDyW2pgFe0A3K52vJB8EBdW5sR3IskS8SyW57BuFogt3KmtOeA9Tcb7AMcYJFmk9kG1yZF
-        Z7hLO+6Vc2vi5HLduNMSzDXAvW8+cpw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-oYMmTyqINfyJ3FfQmaYp_A-1; Mon, 13 Sep 2021 01:53:36 -0400
-X-MC-Unique: oYMmTyqINfyJ3FfQmaYp_A-1
-Received: by mail-wm1-f69.google.com with SMTP id x125-20020a1c3183000000b002e73f079eefso3575717wmx.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 22:53:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lmIEdzAE8KtfMvdI7Vd3u1eV+5W/XqJ3cF9Jvl0CpQM=;
-        b=ChzcHxEnPsePsZ+3dGjr92q6tXKJw81drC0HS/eaWC5hftli1NYeVj/B1XDz1dIi9G
-         vylKtXpA9zRtgPtz32XuS+nLsOpKIaQoz7LMU5HGvQ1byyi1YPgtZEz2aThWN5fUHXfq
-         c2YL70gKscUcV0L0sJ9tUF4wFGZR/QXTbGuVGGCG/vR1F/5vzCXMEJAd38ACRD5z67YO
-         Ctop8AyCDCaF/H6j+Ylu2lHzpHHXg9G2ZYn8xIzyHUYSLAt2X1oz034i9O5INS2vbTfg
-         agcXNCSjcHcnRpnXBLd+/78jRnGERVXCyAafw1q0iT2kIro5ecvxgrzB2oyqaOuO9sAt
-         MXCw==
-X-Gm-Message-State: AOAM533uP2BdZ4EnXDtL4WygOH08b9B54k5xGnBVXksGCt7qtPWM3EuD
-        n7q713R1BPXZBqWBaXdvij1P8xb170ORKd/qRCWYcO/19x/p1mElwQ4HLqL5gspCO48cjQXtkHJ
-        FIGi3NiJGS0l5QoT2QsYb6heq
-X-Received: by 2002:a7b:c4d2:: with SMTP id g18mr9470572wmk.135.1631512415168;
-        Sun, 12 Sep 2021 22:53:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTQJ4DZD+V1695amUyGJ/+8H3ZLTdwwSERHH6LaZYj9FQdGTZerMCI+h0RgKu+afW5N87HtQ==
-X-Received: by 2002:a7b:c4d2:: with SMTP id g18mr9470536wmk.135.1631512414954;
-        Sun, 12 Sep 2021 22:53:34 -0700 (PDT)
-Received: from redhat.com ([2.55.27.174])
-        by smtp.gmail.com with ESMTPSA id k29sm5687574wms.24.2021.09.12.22.53.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 22:53:33 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 01:53:27 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-Message-ID: <20210913013815-mutt-send-email-mst@kernel.org>
-References: <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
- <20210829112105-mutt-send-email-mst@kernel.org>
- <09b340dd-c8a8-689c-4dad-4fe0e36d39ae@linux.intel.com>
- <20210829181635-mutt-send-email-mst@kernel.org>
- <3a88a255-a528-b00a-912b-e71198d5f58f@linux.intel.com>
- <20210830163723-mutt-send-email-mst@kernel.org>
- <69fc30f4-e3e2-add7-ec13-4db3b9cc0cbd@linux.intel.com>
- <20210910054044-mutt-send-email-mst@kernel.org>
- <f672dc1c-5280-7bbc-7a56-7c7aab31725c@linux.intel.com>
- <20210911195006-mutt-send-email-mst@kernel.org>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AqQeD+f+oItxNYfqqoj5btjWDgTgn+kqnSoqgYIP1to=;
+        b=Mi4UijeapYXfwmjlBVAl4Qo7ygKWwpjNyzJ7+x2ApSQKglZWWrqVxAX43/9uidMr4v3wSI
+        UQ3+wkDicFxlmAjJq3tM72sCiDWBBn87UyBx1Ap9yn7CJO/+YQgko2orxHGuwelJSAnlxz
+        Giju0juquV/mjLpRvPMJnsRRcRlzNyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-8XlGAqqHPTq6Fk8PecF34A-1; Mon, 13 Sep 2021 01:54:12 -0400
+X-MC-Unique: 8XlGAqqHPTq6Fk8PecF34A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC23C81431D;
+        Mon, 13 Sep 2021 05:54:10 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-146.pek2.redhat.com [10.72.13.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CD7615C25A;
+        Mon, 13 Sep 2021 05:53:58 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
+        david.kaplan@amd.com, konrad.wilk@oracle.com
+Subject: [PATCH 0/9] More virtio hardening
+Date:   Mon, 13 Sep 2021 13:53:44 +0800
+Message-Id: <20210913055353.35219-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911195006-mutt-send-email-mst@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 07:54:43PM -0400, Michael S. Tsirkin wrote:
-> On Fri, Sep 10, 2021 at 09:34:45AM -0700, Andi Kleen wrote:
-> > > > that's why
-> > > > an extra level of defense of ioremap opt-in is useful.
-> > > OK even assuming this, why is pci_iomap opt-in useful?
-> > > That never happens before probe - there's simply no pci_device then.
-> > 
-> > 
-> > Hmm, yes that's true. I guess we can make it default to opt-in for
-> > pci_iomap.
-> > 
-> > It only really matters for device less ioremaps.
-> 
-> OK. And same thing for other things with device, such as
-> devm_platform_ioremap_resource.
-> If we agree on all that, this will basically remove virtio
-> changes from the picture ;)
+Hi All:
 
+This series treis to do more hardening for virito.
 
-Something else that was pointed out to me:
+patch 1 validates the num_queues for virio-blk device.
+patch 2-4 validates max_nr_ports for virito-console device.
+patch 5-7 harden virtio-pci interrupts to make sure no exepcted
+interrupt handler is tiggered. If this makes sense we can do similar
+things in other transport drivers.
+patch 8-9 validate used ring length.
 
-         fs->window_kaddr = devm_memremap_pages(&vdev->dev, pgmap);
-         if (IS_ERR(fs->window_kaddr))
-                 return PTR_ERR(fs->window_kaddr);
+Smoking test on blk/net with packed=on/off and iommu_platform=on/off.
 
+Please review.
 
-looks like if we forget to set the shared flag then it will
-corrupt the DAX data?
+Thanks
 
+Jason Wang (9):
+  virtio-blk: validate num_queues during probe
+  virtio: add doc for validate() method
+  virtio-console: switch to use .validate()
+  virtio_console: validate max_nr_ports before trying to use it
+  virtio_config: introduce a new ready method
+  virtio_pci: harden MSI-X interrupts
+  virtio-pci: harden INTX interrupts
+  virtio_ring: fix typos in vring_desc_extra
+  virtio_ring: validate used buffer length
 
-> -- 
-> MST
-> 
+ drivers/block/virtio_blk.c         |  3 +-
+ drivers/char/virtio_console.c      | 51 +++++++++++++++++++++---------
+ drivers/virtio/virtio_pci_common.c | 43 +++++++++++++++++++++----
+ drivers/virtio/virtio_pci_common.h |  7 ++--
+ drivers/virtio/virtio_pci_legacy.c |  5 +--
+ drivers/virtio/virtio_pci_modern.c |  6 ++--
+ drivers/virtio/virtio_ring.c       | 27 ++++++++++++++--
+ include/linux/virtio.h             |  1 +
+ include/linux/virtio_config.h      |  6 ++++
+ 9 files changed, 118 insertions(+), 31 deletions(-)
+
+-- 
+2.25.1
 
