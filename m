@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E8E409288
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BAD409532
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245212AbhIMOMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:12:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
+        id S1345916AbhIMOit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:38:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343697AbhIMOGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:06:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB5A661279;
-        Mon, 13 Sep 2021 13:40:06 +0000 (UTC)
+        id S245530AbhIMOdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:33:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EF63617E4;
+        Mon, 13 Sep 2021 13:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540407;
-        bh=b9YNcmCliiO5LuW1S8Qk0bHedHDC6m3En6NGtRIFRVw=;
+        s=korg; t=1631541162;
+        bh=f316Yi7/EmBmSSNkSKmfbr4k1mdcqHh+T2SLfR4BwK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1t05Yz4vQ0igmk8hCa2Cf4KqJ+Kdr/yv1cD9kiuyilivQYV1vp7fmKCAXfrOrswpA
-         ZNZnOCUq1Xx+cacXRJAZt1IqzcN1Y3OFS7WggdwL5ecG6s/w3VBdmSiqbirT6mp9GY
-         YQDFWQGUU/W+/XZZPYgmVyH4J3Iy11BHd6zjkdok=
+        b=CkGOWRfTdhH2bEMJ/IBJ1qDoQo+kFMuJqNaa7RwQTN40PccCFogcxj5v/h1YzYSiF
+         l4PgYfQS561Qy1qf5C1nCNat8bebQw/aM8L0O7ol5PACFZiUfh48smseKd8AHcErUK
+         JmZvfOet2BiUkvUc2zYN5ioGa7cEAI3tM2tE2z3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        stable@vger.kernel.org, Sam Protsenko <semen.protsenko@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 180/300] usb: dwc3: qcom: add IRQ check
-Date:   Mon, 13 Sep 2021 15:14:01 +0200
-Message-Id: <20210913131115.478252231@linuxfoundation.org>
+Subject: [PATCH 5.14 188/334] arm64: dts: exynos: correct GIC CPU interfaces address range on Exynos7
+Date:   Mon, 13 Sep 2021 15:14:02 +0200
+Message-Id: <20210913131119.710934086@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 175006956740f70ca23394c58f8d7804776741bd ]
+[ Upstream commit 01c72cad790cb6cd3ccbe4c1402b6cb6c6bbffd0 ]
 
-In dwc3_qcom_acpi_register_core(), the driver neglects to check the result
-of platform_get_irq()'s call and blithely assigns the negative error codes
-to the allocated child device's IRQ resource and then passing this resource
-to platform_device_add_resources() and later causing dwc3_otg_get_irq() to
-fail anyway.  Stop calling platform_device_add_resources() with the invalid
-IRQ #s, so that there's less complexity in the IRQ error checking.
+The GIC-400 CPU interfaces address range is defined as 0x2000-0x3FFF (by
+ARM).
 
-Fixes: 2bc02355f8ba ("usb: dwc3: qcom: Add support for booting with ACPI")
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/45fec3da-1679-5bfe-5d74-219ca3fb28e7@omp.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Sam Protsenko <semen.protsenko@linaro.org>
+Reported-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+Link: https://lore.kernel.org/r/20210805072110.4730-1-krzysztof.kozlowski@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-qcom.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index 49e6ca94486d..cfbb96f6627e 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -614,6 +614,10 @@ static int dwc3_qcom_acpi_register_core(struct platform_device *pdev)
- 		qcom->acpi_pdata->dwc3_core_base_size;
- 
- 	irq = platform_get_irq(pdev_irq, 0);
-+	if (irq < 0) {
-+		ret = irq;
-+		goto out;
-+	}
- 	child_res[1].flags = IORESOURCE_IRQ;
- 	child_res[1].start = child_res[1].end = irq;
- 
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 10244e59d56d..56a0bb7eb0e6 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -102,7 +102,7 @@
+ 			#address-cells = <0>;
+ 			interrupt-controller;
+ 			reg =	<0x11001000 0x1000>,
+-				<0x11002000 0x1000>,
++				<0x11002000 0x2000>,
+ 				<0x11004000 0x2000>,
+ 				<0x11006000 0x2000>;
+ 		};
 -- 
 2.30.2
 
