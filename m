@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D72B409753
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007D640975E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343939AbhIMPbP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 11:31:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:25284 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245001AbhIMPap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:30:45 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-59-s7kT8NiFNp-vigLzY9tt5Q-1; Mon, 13 Sep 2021 16:29:28 +0100
-X-MC-Unique: s7kT8NiFNp-vigLzY9tt5Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 13 Sep 2021 16:29:25 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 13 Sep 2021 16:29:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: RE: [git pull] iov_iter fixes
-Thread-Topic: [git pull] iov_iter fixes
-Thread-Index: AQHXpe6WnyOXE2m/lE6WyXaZJtHW8KuiGVDA
-Date:   Mon, 13 Sep 2021 15:29:25 +0000
-Message-ID: <e898f440ee01490cb2c4503241a1f7aa@AcuMS.aculab.com>
-References: <YTmL/plKyujwhoaR@zeniv-ca.linux.org.uk>
- <CAHk-=wiacKV4Gh-MYjteU0LwNBSGpWrK-Ov25HdqB1ewinrFPg@mail.gmail.com>
- <5971af96-78b7-8304-3e25-00dc2da3c538@kernel.dk>
- <ebc6cc5e-dd43-6370-b462-228e142beacb@kernel.dk>
- <CAHk-=whoMLW-WP=8DikhfE4xAu_Tw9jDNkdab4RGEWWMagzW8Q@mail.gmail.com>
- <ebb7b323-2ae9-9981-cdfd-f0f460be43b3@kernel.dk>
- <CAHk-=wi2fJ1XrgkfSYgn9atCzmJZ8J3HO5wnPO0Fvh5rQx9mmA@mail.gmail.com>
- <88f83037-0842-faba-b68f-1d4574fb45cb@kernel.dk>
- <YTrHYYEQslQzvnWW@zeniv-ca.linux.org.uk>
-In-Reply-To: <YTrHYYEQslQzvnWW@zeniv-ca.linux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S244785AbhIMPer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:34:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241887AbhIMPem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:34:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C236F6103B;
+        Mon, 13 Sep 2021 15:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631547206;
+        bh=BVrxRWHKyUrGv+35tc6x5b7RGSJFUHhIxAEhdcNdIKs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FakgeYfeGaCUOVDhuplPOuxzkueMRigaWZPbFMdFaWzXE1bGfIIOH1Mm6EF0NCgJX
+         Iluf7pmOjapb/XnI4+xibPLH3PNTzPQtwjQ1G+hkJcJfOmoWXgsYh9StzqKB3c5B0l
+         Z58aIJ3VTZ8ov0dWfyQjkfnEQ0+E5nZoZ68DRIznchEDUSgnv9OjoUdbDRw5mZzfLD
+         zYi7sK5wyxfa4wT+OBkNYTjBRRZVXRPio/dHjMwWBat9Aer4OgGDt55PZngQ0+SPUf
+         IfaLvfbRcezowcvk0kZoz1CaRIS40SwyTYzT6x0TImW6ksMk4RdDCn3AQARF/azmqn
+         gddnu7nozISGw==
+Date:   Mon, 13 Sep 2021 16:32:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     tiwai@suse.com, matthias.bgg@gmail.com,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH v2] ASoC: mediatek: common: handle NULL case in
+ suspend/resume function
+Message-ID: <20210913153246.GI4283@sirena.org.uk>
+References: <20210910092613.30188-1-trevor.wu@mediatek.com>
+ <20210910102358.GC4474@sirena.org.uk>
+ <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PWfwoUCx3AFJRUBq"
+Content-Disposition: inline
+In-Reply-To: <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
+X-Cookie: Above all else -- sky.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@ftp.linux.org.uk>
-> Sent: 10 September 2021 03:48
-> 
-> On Thu, Sep 09, 2021 at 07:35:13PM -0600, Jens Axboe wrote:
-> 
-> > Yep ok I follow you now. And yes, if we get a partial one but one that
-> > has more consumed than what was returned, that would not work well. I'm
-> > guessing that a) we've never seen that, or b) we always end up with
-> > either correctly advanced OR fully advanced, and the fully advanced case
-> > would then just return 0 next time and we'd just get a short IO back to
-> > userspace.
-> >
-> > The safer way here would likely be to import the iovec again. We're
-> > still in the context of the original submission, and the sqe hasn't been
-> > consumed in the ring yet, so that can be done safely.
-> 
-> ... until you end up with something assuming that you've got the same
-> iovec from userland the second time around.
-> 
-> IOW, generally it's a bad idea to do that kind of re-imports.
 
+--PWfwoUCx3AFJRUBq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-IIRC the canonical 'import' code is something like:
+On Mon, Sep 13, 2021 at 01:55:38PM +0800, Trevor Wu wrote:
+> On Fri, 2021-09-10 at 11:23 +0100, Mark Brown wrote:
 
-	struct iov iov[8], *cache = iov;
-	struct iter;
+> > It seems like it'd be better to just allocate the buffer at probe
+> > time
+> > and fail in case we can't get it, I'd be surprised if there's many
+> > platforms using this hardware that don't also end up suspending and
+> > resuming.
 
-	iov_iter_import(&iter, ... , &cache, 8);
+> Thanks for your suggestion.
+> I agree it's better to allocate the memory at probe time.
+> I think we can still keep the implementation in the suspend/resume
+> function as a fallback solution if user doesn't allocate the memory in
+> probe function.
 
-	result = ....
+If you can't allocate it at probe time you should probably just fail the
+probe.
 
-	if (cache != iov)
-		kfree(cache);
+> In the new mediatek SOCs, regcache has been used to handle register
+> backup.
+> Do I need to add the buffer allocation on probe function to the
+> platform in which mtk_afe_suspend and mtk_afe_resume are used?
 
-	return result;
+I think you should have separate implementations if you have both regmap
+and non-regmap versions of this.
 
-The iov[] and 'cache' are always allocated on stack with 'iter'.
+--PWfwoUCx3AFJRUBq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Now processing the 'iter' advances iter->iov.
-So to reset you need the start point - which is either 'cache' or 'iov[]'.
-The outer caller (typically) has this information.
-But the inner functions don't.
+-----BEGIN PGP SIGNATURE-----
 
-Move both 'iov[]' and 'cache' into struct iter and they become
-available to all the code.
-It would also simplify the currently horrid boilerplate code
-that is replicated for every user.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/bx4ACgkQJNaLcl1U
+h9Arhgf/YT4zF+AifPO22fnvUWMW7ps029xRsDBaUGwyRl4XFu6O90vmI7jjaogy
+2fFfMzXc8EoOGWfhZhrhZqkIogzIol1wDrEnHtWLDpdnWBOgejqTG6jh3hbIU4EI
+PRKbvL3qTXlzfhz23Qb+BjG4SQaDbVfRbb+e+nE4Om9qw5b199MIDht8Mye8KMgE
+Wqt+y6alWGPcl/1RsdRJ8pVWASpQyYmwwbaHnVtGEarrdVOZzmiEL2offMAwiW4G
+NDRcFOJcCrpu5eECoF2RM5XeRwzwJ8CxIvKMtlbhbniPDRyBPaLZ2zPGEUfInaoe
+8lGIdpFSBHHvIq1QE7w6VAoqpmER4g==
+=eZc7
+-----END PGP SIGNATURE-----
 
-You might need a 'offset in current iter->iov[]' but nothing else.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+--PWfwoUCx3AFJRUBq--
