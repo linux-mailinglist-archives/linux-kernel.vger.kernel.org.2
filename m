@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F73408EF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451BF408EEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243160AbhIMNiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:38:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32892 "EHLO mail.kernel.org"
+        id S242936AbhIMNh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242657AbhIMNcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:32:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7623461371;
-        Mon, 13 Sep 2021 13:25:46 +0000 (UTC)
+        id S240870AbhIMNch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:32:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E0661361;
+        Mon, 13 Sep 2021 13:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539547;
-        bh=K4uaTHapmH3U6xH9ucIb0nunIP0v4qwcdxnoKEqCHMg=;
+        s=korg; t=1631539549;
+        bh=pRz0pcGrk0bI5tVenX8gEj6hCVq03V+Zw6XBu62Nmks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E8ISyucbLqiHBB5kgERP4fcuUu+MmlAe0wqD5bYdqb+PuFViQHkHX1jk8G2HfNXt9
-         TLule9q87E4C+optiVPvkjMhQKvq6P6NBbGngcsWB9pczH9KuwAlS6vmaXLaY2c7TJ
-         hzHZ9pUXYZO47Aq4JsHL72PgGQ0C9z06C/e9M/TU=
+        b=oz1pd9G4f64fTeLrH7x0EEaAy8HIb0T5KH90Dn3nLsC+L7g7y5hxB6GxxpmcDUveu
+         MGEpldcOKzJmfB8cGVcGfYMqgVimj5tNWVH5/jY66ROup5eOtRx7ixdV+rTpXzzEIj
+         w4ReEaSSEDAA+Mpu0XiVvVfzW+HW/1ZDdLmILBJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stian Skjelstad <stian.skjelstad@gmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 034/236] udf_get_extendedattr() had no boundary checks.
-Date:   Mon, 13 Sep 2021 15:12:19 +0200
-Message-Id: <20210913131101.500259577@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 035/236] s390/kasan: fix large PMD pages address alignment check
+Date:   Mon, 13 Sep 2021 15:12:20 +0200
+Message-Id: <20210913131101.539613035@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -40,50 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stian Skjelstad <stian.skjelstad@gmail.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-[ Upstream commit 58bc6d1be2f3b0ceecb6027dfa17513ec6aa2abb ]
+[ Upstream commit ddd63c85ef67ea9ea7282ad35eafb6568047126e ]
 
-When parsing the ExtendedAttr data, malicous or corrupt attribute length
-could cause kernel hangs and buffer overruns in some special cases.
+It is currently possible to initialize a large PMD page when
+the address is not aligned on page boundary.
 
-Link: https://lore.kernel.org/r/20210822093332.25234-1-stian.skjelstad@gmail.com
-Signed-off-by: Stian Skjelstad <stian.skjelstad@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/udf/misc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/s390/mm/kasan_init.c | 41 +++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
 
-diff --git a/fs/udf/misc.c b/fs/udf/misc.c
-index eab94527340d..1614d308d0f0 100644
---- a/fs/udf/misc.c
-+++ b/fs/udf/misc.c
-@@ -173,13 +173,22 @@ struct genericFormat *udf_get_extendedattr(struct inode *inode, uint32_t type,
- 		else
- 			offset = le32_to_cpu(eahd->appAttrLocation);
- 
--		while (offset < iinfo->i_lenEAttr) {
-+		while (offset + sizeof(*gaf) < iinfo->i_lenEAttr) {
-+			uint32_t attrLength;
-+
- 			gaf = (struct genericFormat *)&ea[offset];
-+			attrLength = le32_to_cpu(gaf->attrLength);
-+
-+			/* Detect undersized elements and buffer overflows */
-+			if ((attrLength < sizeof(*gaf)) ||
-+			    (attrLength > (iinfo->i_lenEAttr - offset)))
-+				break;
-+
- 			if (le32_to_cpu(gaf->attrType) == type &&
- 					gaf->attrSubtype == subtype)
- 				return gaf;
- 			else
--				offset += le32_to_cpu(gaf->attrLength);
-+				offset += attrLength;
- 		}
+diff --git a/arch/s390/mm/kasan_init.c b/arch/s390/mm/kasan_init.c
+index 5646b39c728a..e9a9b7b616bc 100644
+--- a/arch/s390/mm/kasan_init.c
++++ b/arch/s390/mm/kasan_init.c
+@@ -108,6 +108,9 @@ static void __init kasan_early_vmemmap_populate(unsigned long address,
+ 		sgt_prot &= ~_SEGMENT_ENTRY_NOEXEC;
  	}
  
++	/*
++	 * The first 1MB of 1:1 mapping is mapped with 4KB pages
++	 */
+ 	while (address < end) {
+ 		pg_dir = pgd_offset_k(address);
+ 		if (pgd_none(*pg_dir)) {
+@@ -165,30 +168,26 @@ static void __init kasan_early_vmemmap_populate(unsigned long address,
+ 
+ 		pm_dir = pmd_offset(pu_dir, address);
+ 		if (pmd_none(*pm_dir)) {
+-			if (mode == POPULATE_ZERO_SHADOW &&
+-			    IS_ALIGNED(address, PMD_SIZE) &&
++			if (IS_ALIGNED(address, PMD_SIZE) &&
+ 			    end - address >= PMD_SIZE) {
+-				pmd_populate(&init_mm, pm_dir,
+-						kasan_early_shadow_pte);
+-				address = (address + PMD_SIZE) & PMD_MASK;
+-				continue;
+-			}
+-			/* the first megabyte of 1:1 is mapped with 4k pages */
+-			if (has_edat && address && end - address >= PMD_SIZE &&
+-			    mode != POPULATE_ZERO_SHADOW) {
+-				void *page;
+-
+-				if (mode == POPULATE_ONE2ONE) {
+-					page = (void *)address;
+-				} else {
+-					page = kasan_early_alloc_segment();
+-					memset(page, 0, _SEGMENT_SIZE);
++				if (mode == POPULATE_ZERO_SHADOW) {
++					pmd_populate(&init_mm, pm_dir, kasan_early_shadow_pte);
++					address = (address + PMD_SIZE) & PMD_MASK;
++					continue;
++				} else if (has_edat && address) {
++					void *page;
++
++					if (mode == POPULATE_ONE2ONE) {
++						page = (void *)address;
++					} else {
++						page = kasan_early_alloc_segment();
++						memset(page, 0, _SEGMENT_SIZE);
++					}
++					pmd_val(*pm_dir) = __pa(page) | sgt_prot;
++					address = (address + PMD_SIZE) & PMD_MASK;
++					continue;
+ 				}
+-				pmd_val(*pm_dir) = __pa(page) | sgt_prot;
+-				address = (address + PMD_SIZE) & PMD_MASK;
+-				continue;
+ 			}
+-
+ 			pt_dir = kasan_early_pte_alloc();
+ 			pmd_populate(&init_mm, pm_dir, pt_dir);
+ 		} else if (pmd_large(*pm_dir)) {
 -- 
 2.30.2
 
