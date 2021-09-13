@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738CA409AAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517C1409AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242416AbhIMR3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:29:25 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:44030 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbhIMR3O (ORCPT
+        id S242588AbhIMRcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233121AbhIMRcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:29:14 -0400
-Received: by mail-oi1-f170.google.com with SMTP id w19so15013707oik.10;
-        Mon, 13 Sep 2021 10:27:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zdKSajtGE1WLdR1EN0XVNqkFzr63oghr/1GUZ5MQ9jU=;
-        b=WdhH25xgQSSCgQVurnR6FYISzqPuxlYoLOQu2CIZe0zrBk3oeZOJbfaZfbs9xf1hXH
-         4+d24q4BjZgyNE/GW38zPYh0Fj0Yh+HB6XNHr0u/g6E85Ks6FXKAxJ2ANVATcd8l4Kgg
-         PEXUoV/4mrqAWqZq1p7oTBg9TfHtu/lndcMAojv0Jenz97L+fCQam7x4R7n6vsmYYVnN
-         RcY1qdZNfOK4tDr4MMWCM7RAx9HL12EdSXMQJ46du3zyUlzi8TAc1jhq2PdNzqPJSOow
-         63VV7In36LdsWzST7NQXHm/a5+cpIftnFgY1qQXg/nmhttotkVZ2SOo0Ufrev9x7clWp
-         PPpw==
-X-Gm-Message-State: AOAM533eHz5c1bWdHIz2VhJPY2CMOsJbAPhu9NzecH5DmLbmtDpGbVrA
-        8EowRij85PQWSJ++NCM6Pvnwwn8zXBk51Sq/W48=
-X-Google-Smtp-Source: ABdhPJwCVw3Fu91YqcoFNhErZVn6L/bKGxexNKukCG+Ecu6T8MRCWnvEdZbFs2c3COaeJ2K53Y+eExfkfXZmYKYMfbQ=
-X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr8277763ois.69.1631554077926;
- Mon, 13 Sep 2021 10:27:57 -0700 (PDT)
+        Mon, 13 Sep 2021 13:32:09 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C51C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:30:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=y7Foc9Z7zhR5fwxXcBPgaj9Izqeozx1ChyyFKB+hvA4=; b=bQwzXOt1EPnT7L+7hZ3kSnk9Wg
+        FYTLZZCR0UO04mpQTpd4K/2McQ92OoRmC4DRopgUlIiKSzy+F73bl1cNGyLAEX8IOccIlkO0oyXXm
+        rCYjul66IPPR0utl334hShV5/BS/sAxs0iwDIyl/KejCrddfK883uf7BP7P7zr1ulFEnVu7eaMZZ9
+        c9UdTl9l7qXdtxpA+fbLCwME2EbollArLPW0n+OyVnl8s+yoWKP3MF9yhos9cKVsGNU6RHCiDkY7j
+        aXKGM3iTXUfx+ZYH/Nzv/AF+ord/D9n1Yo5yYaSUX6uSbsJ2B3uXW2cgkeS9Qmh4XOdIMkQAa4SCF
+        EGh2E52g==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPpn9-002hlb-9P; Mon, 13 Sep 2021 17:30:51 +0000
+Date:   Mon, 13 Sep 2021 10:30:51 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
+ drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
+ prototype for function 'firmware_is_builtin'
+Message-ID: <YT+Ky1+cXrqesI6G@bombadil.infradead.org>
+References: <202109101524.pjY4q0Dy-lkp@intel.com>
+ <YTv817Srt8hoySP5@bombadil.infradead.org>
+ <YTwLw+frJLbntgCJ@archlinux-ax161>
+ <YT90vvVi7oYH0xpb@bombadil.infradead.org>
+ <993e03a8-b07c-a8d8-8c9f-75bfbab00f0e@kernel.org>
 MIME-Version: 1.0
-References: <20210912185029.5704-1-dsmythies@telus.net>
-In-Reply-To: <20210912185029.5704-1-dsmythies@telus.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 13 Sep 2021 19:27:47 +0200
-Message-ID: <CAJZ5v0g-fVO8_DGYtSF7e-VYc2Qzu60Ak0VK_f4x-V7dbO=+Eg@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: Override parameters if HWP
- forced by BIOS
-To:     Doug Smythies <doug.smythies@gmail.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <993e03a8-b07c-a8d8-8c9f-75bfbab00f0e@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 8:51 PM Doug Smythies <doug.smythies@gmail.com> wrote:
->
-> If HWP has been already been enabled by BIOS, it may be
-> necessary to override some kernel command line parameters.
-> Once it has been enabled it requires a reset to be disabled.
->
-> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-> Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> ---
->  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++--------
->  1 file changed, 14 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> index 1097f826ad70..8c176b7dae41 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -3205,11 +3205,15 @@ static int __init intel_pstate_init(void)
->         if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
->                 return -ENODEV;
->
-> -       if (no_load)
-> -               return -ENODEV;
-> -
->         id = x86_match_cpu(hwp_support_ids);
->         if (id) {
-> +               bool hwp_forced = intel_pstate_hwp_is_enabled();
-> +
-> +               if (hwp_forced)
-> +                       pr_info("HWP enabled by BIOS\n");
-> +               else if (no_load)
-> +                       return -ENODEV;
-> +
->                 copy_cpu_funcs(&core_funcs);
->                 /*
->                  * Avoid enabling HWP for processors without EPP support,
-> @@ -3219,8 +3223,7 @@ static int __init intel_pstate_init(void)
->                  * If HWP is enabled already, though, there is no choice but to
->                  * deal with it.
->                  */
-> -               if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
-> -                   intel_pstate_hwp_is_enabled()) {
-> +               if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) || hwp_forced) {
->                         hwp_active++;
->                         hwp_mode_bdw = id->driver_data;
->                         intel_pstate.attr = hwp_cpufreq_attrs;
-> @@ -3235,7 +3238,11 @@ static int __init intel_pstate_init(void)
->
->                         goto hwp_cpu_matched;
->                 }
-> +               pr_info("HWP not enabled\n");
->         } else {
-> +               if (no_load)
-> +                       return -ENODEV;
-> +
->                 id = x86_match_cpu(intel_pstate_cpu_ids);
->                 if (!id) {
->                         pr_info("CPU model not supported\n");
-> @@ -3314,10 +3321,9 @@ static int __init intel_pstate_setup(char *str)
->         else if (!strcmp(str, "passive"))
->                 default_driver = &intel_cpufreq;
->
-> -       if (!strcmp(str, "no_hwp")) {
-> -               pr_info("HWP disabled\n");
-> +       if (!strcmp(str, "no_hwp"))
->                 no_hwp = 1;
-> -       }
-> +
->         if (!strcmp(str, "force"))
->                 force_load = 1;
->         if (!strcmp(str, "hwp_only"))
-> --
+On Mon, Sep 13, 2021 at 10:25:35AM -0700, Nathan Chancellor wrote:
+> On 9/13/2021 8:56 AM, Luis Chamberlain wrote:
+> > On Fri, Sep 10, 2021 at 06:52:03PM -0700, Nathan Chancellor wrote:
+> > > On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
+> > > > On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
+> > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
+> > > > > head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
+> > > > > commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
+> > > > > config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
+> > > > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+> > > > > reproduce (this is a W=1 build):
+> > > > >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > > >          chmod +x ~/bin/make.cross
+> > > > >          # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
+> > > > >          git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+> > > > >          git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
+> > > > >          git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
+> > > > >          # save the attached .config to linux build tree
+> > > > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
+> > > > > 
+> > > > > If you fix the issue, kindly add following tag as appropriate
+> > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > > 
+> > > > > All errors (new ones prefixed by >>):
+> > > > > 
+> > > > > > > drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
+> > > > >     bool firmware_is_builtin(const struct firmware *fw)
+> > > > 
+> > > > This is a lie though its defined on drivers/base/firmware_loader/firmware.h
+> > > 
+> > > Unless I am missing something, you don't include the firmware_loader
+> > > copy of firmware.h in builtin/main.c (only the linux one)? Isn't that
+> > > the source of the warning?
+> > 
+> > You would think, but nope, its there:
+> > 
+> > #include "firmware.h"
+> 
+> I see that in drivers/base/firmware_loader/main.c but the warning is
+> complaining about drivers/base/firmware_loader/builtin/main.c, where I only
+> see
+> 
+> #include <linux/firmware.h>
+> 
+> Sorry for the issues with reproducing. For what it's worth, I can reproduce
+> this locally and adding
+> 
+> #include "../firmware.h"
+> 
+> to drivers/base/firmware_loader/builtin/main.c fixes it for me.
 
-Applied as 5.15-rc material, thanks!
+Got it, thanks! I've ammended this change.
+
+ Luis
