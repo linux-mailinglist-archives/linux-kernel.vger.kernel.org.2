@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C424A409635
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0F5409634
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347679AbhIMOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58816 "EHLO mail.kernel.org"
+        id S1347632AbhIMOtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:49:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346336AbhIMOmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346429AbhIMOmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:42:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40B6460FE6;
-        Mon, 13 Sep 2021 13:56:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE73360FC0;
+        Mon, 13 Sep 2021 13:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541401;
-        bh=/yp63S3bqh83r8b63gOEtaYlTzPQuqGwjd1TBe9WnB8=;
+        s=korg; t=1631541404;
+        bh=ADpUUaGWT4rDmZtP+JGSTn9crAueMULCxVt0q+bOqj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N5VV7yRCQJV/4ocJDCi6XhRaVE9TsnBb+Rt6C1tizXYn6y7HDZXeLfDQVdEqazW81
-         dgffEmTX++sFXOFskq/Eu1SRCOibGR8ijWVu+Vg8rRyKxuGERpDhCFJ+BxvPMVUk97
-         OZfHO8JbwPYHHfKVwHbaJOLBbJnj/Yvdyk/LrRjg=
+        b=ZQN/i7mJ0JD1vUVQ0QEyGTnscLpqxvPFQsEDes1yRXOAg4erQ4+T+oX8vAzOUCQxu
+         JP0gIl6iBz0KaznETPXuByKnetAY+rXQl91uJmUTmjvlbHFvDwlWKQzS6iui/q4qLr
+         5Ji9hmsIbsykWY+iSi4QUbuZ+GxG4zQtltnnclM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Wei Wang <weiwan@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Ahern <dsahern@kernel.org>,
+        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
         "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 284/334] ipv6: make exception cache less predictible
-Date:   Mon, 13 Sep 2021 15:15:38 +0200
-Message-Id: <20210913131123.026532625@linuxfoundation.org>
+Subject: [PATCH 5.14 285/334] ipv4: make exception cache less predictible
+Date:   Mon, 13 Sep 2021 15:15:39 +0200
+Message-Id: <20210913131123.057726452@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -45,11 +44,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit a00df2caffed3883c341d5685f830434312e4a43 ]
+[ Upstream commit 67d6d681e15b578c1725bad8ad079e05d1c48a8e ]
 
-Even after commit 4785305c05b2 ("ipv6: use siphash in rt6_exception_hash()"),
-an attacker can still use brute force to learn some secrets from a victim
-linux host.
+Even after commit 6457378fe796 ("ipv4: use siphash instead of Jenkins in
+fnhe_hashfun()"), an attacker can still use brute force to learn
+some secrets from a victim linux host.
 
 One way to defeat these attacks is to make the max depth of the hash
 table bucket a random value.
@@ -61,45 +60,107 @@ After the patch, each bucket would contains a random number of items,
 between 6 and 10. The attacker can no longer infer secrets.
 
 This is slightly increasing memory size used by the hash table,
-we do not expect this to be a problem.
+by 50% in average, we do not expect this to be a problem.
 
-Following patch is dealing with the same issue in IPv4.
+This patch is more complex than the prior one (IPv6 equivalent),
+because IPv4 was reusing the oldest entry.
+Since we need to be able to evict more than one entry per
+update_or_create_fnhe() call, I had to replace
+fnhe_oldest() with fnhe_remove_oldest().
 
-Fixes: 35732d01fe31 ("ipv6: introduce a hash table to store dst cache")
+Also note that we will queue extra kfree_rcu() calls under stress,
+which hopefully wont be a too big issue.
+
+Fixes: 4895c771c7f0 ("ipv4: Add FIB nexthop exceptions.")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Wei Wang <weiwan@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Reviewed-by: David Ahern <dsahern@kernel.org>
+Tested-by: David Ahern <dsahern@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/route.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/ipv4/route.c | 46 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 16 deletions(-)
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index c5e8ecb96426..603340302101 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -1657,6 +1657,7 @@ static int rt6_insert_exception(struct rt6_info *nrt,
- 	struct in6_addr *src_key = NULL;
- 	struct rt6_exception *rt6_ex;
- 	struct fib6_nh *nh = res->nh;
-+	int max_depth;
- 	int err = 0;
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index a6f20ee35335..225714b5efc0 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -586,18 +586,25 @@ static void fnhe_flush_routes(struct fib_nh_exception *fnhe)
+ 	}
+ }
  
- 	spin_lock_bh(&rt6_exception_lock);
-@@ -1711,7 +1712,9 @@ static int rt6_insert_exception(struct rt6_info *nrt,
- 	bucket->depth++;
- 	net->ipv6.rt6_stats->fib_rt_cache++;
+-static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
++static void fnhe_remove_oldest(struct fnhe_hash_bucket *hash)
+ {
+-	struct fib_nh_exception *fnhe, *oldest;
++	struct fib_nh_exception __rcu **fnhe_p, **oldest_p;
++	struct fib_nh_exception *fnhe, *oldest = NULL;
  
--	if (bucket->depth > FIB6_MAX_DEPTH)
-+	/* Randomize max depth to avoid some side channels attacks. */
-+	max_depth = FIB6_MAX_DEPTH + prandom_u32_max(FIB6_MAX_DEPTH);
-+	while (bucket->depth > max_depth)
- 		rt6_exception_remove_oldest(bucket);
+-	oldest = rcu_dereference(hash->chain);
+-	for (fnhe = rcu_dereference(oldest->fnhe_next); fnhe;
+-	     fnhe = rcu_dereference(fnhe->fnhe_next)) {
+-		if (time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp))
++	for (fnhe_p = &hash->chain; ; fnhe_p = &fnhe->fnhe_next) {
++		fnhe = rcu_dereference_protected(*fnhe_p,
++						 lockdep_is_held(&fnhe_lock));
++		if (!fnhe)
++			break;
++		if (!oldest ||
++		    time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp)) {
+ 			oldest = fnhe;
++			oldest_p = fnhe_p;
++		}
+ 	}
+ 	fnhe_flush_routes(oldest);
+-	return oldest;
++	*oldest_p = oldest->fnhe_next;
++	kfree_rcu(oldest, rcu);
+ }
  
- out:
+ static u32 fnhe_hashfun(__be32 daddr)
+@@ -676,16 +683,21 @@ static void update_or_create_fnhe(struct fib_nh_common *nhc, __be32 daddr,
+ 		if (rt)
+ 			fill_route_from_fnhe(rt, fnhe);
+ 	} else {
+-		if (depth > FNHE_RECLAIM_DEPTH)
+-			fnhe = fnhe_oldest(hash);
+-		else {
+-			fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
+-			if (!fnhe)
+-				goto out_unlock;
+-
+-			fnhe->fnhe_next = hash->chain;
+-			rcu_assign_pointer(hash->chain, fnhe);
++		/* Randomize max depth to avoid some side channels attacks. */
++		int max_depth = FNHE_RECLAIM_DEPTH +
++				prandom_u32_max(FNHE_RECLAIM_DEPTH);
++
++		while (depth > max_depth) {
++			fnhe_remove_oldest(hash);
++			depth--;
+ 		}
++
++		fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
++		if (!fnhe)
++			goto out_unlock;
++
++		fnhe->fnhe_next = hash->chain;
++
+ 		fnhe->fnhe_genid = genid;
+ 		fnhe->fnhe_daddr = daddr;
+ 		fnhe->fnhe_gw = gw;
+@@ -693,6 +705,8 @@ static void update_or_create_fnhe(struct fib_nh_common *nhc, __be32 daddr,
+ 		fnhe->fnhe_mtu_locked = lock;
+ 		fnhe->fnhe_expires = max(1UL, expires);
+ 
++		rcu_assign_pointer(hash->chain, fnhe);
++
+ 		/* Exception created; mark the cached routes for the nexthop
+ 		 * stale, so anyone caching it rechecks if this exception
+ 		 * applies to them.
 -- 
 2.30.2
 
