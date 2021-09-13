@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A5140954A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51C2409521
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347581AbhIMOk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51902 "EHLO mail.kernel.org"
+        id S1344036AbhIMOiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:38:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346311AbhIMOco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:32:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 091CD6138E;
-        Mon, 13 Sep 2021 13:52:27 +0000 (UTC)
+        id S1345773AbhIMOdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:33:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C1CF61BD0;
+        Mon, 13 Sep 2021 13:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541148;
-        bh=Ldj1SLwndHIjnKF0qvU9F06ohzlde54h5E1UUZ80w8U=;
+        s=korg; t=1631541150;
+        bh=+jozNEgeDozdsFYBZqGwW+s/aqVLJxgjBKEITXl2c5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0wUKJvihdQ10jirBuIlMFY5KO136gxE7+Kzud+EODOahp3094b+6eRb6s01BIWk+8
-         /Kdvi0PiEtoE7/VFSiR9SJppdb7ggpR1AHLIIOzjFcsbkbT9WdG2Vr1btWsHofpE3Y
-         m450cGomaRiFLUYmm11Ccr+ZNX/k6S2QKuvCEpec=
+        b=TDw7hquoKxdZnpc8xhixyNdpqFRXK+o7cH08Ynxg9niv1DBTbbFii0QHHgSUJ0Xbo
+         T82JaBL/8mQ0odOHjhfqr5oVgUddQYWM+itkoVI3mQkBM2XoQo6p7BB+Y0+jEAK7f6
+         VoflBsdRh9gfFDMGvkzycJcU1ZL8vhqCGsyN+/No=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Li <liwei391@huawei.com>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 183/334] drm/msm: Fix error return code in msm_drm_init()
-Date:   Mon, 13 Sep 2021 15:13:57 +0200
-Message-Id: <20210913131119.533213401@linuxfoundation.org>
+Subject: [PATCH 5.14 184/334] drm/msm/mdp4: refactor HW revision detection into read_mdp_hw_revision
+Date:   Mon, 13 Sep 2021 15:13:58 +0200
+Message-Id: <20210913131119.566794132@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -43,37 +41,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit bfddcfe155a2fe448fee0169c5cbc82c7fa73491 ]
+[ Upstream commit 4d319afe666b0fc9a9855ba9bdf9ae3710ecf431 ]
 
-When it fail to create crtc_event kthread, it just jump to err_msm_uninit,
-while the 'ret' is not updated. So assign the return code before that.
+Inspired by MDP5 code.
+Also use DRM_DEV_INFO for MDP version as MDP5 does.
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Link: https://lore.kernel.org/r/20210705134302.315813-1-liwei391@huawei.com
+Cosmetic change: uint32_t -> u32 - checkpatch suggestion.
+
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210705231641.315804-1-david@ixit.cz
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 27 ++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 9b8fa2ad0d84..729ab68d0203 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -539,6 +539,7 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- 		if (IS_ERR(priv->event_thread[i].worker)) {
- 			ret = PTR_ERR(priv->event_thread[i].worker);
- 			DRM_DEV_ERROR(dev, "failed to create crtc_event kthread\n");
-+			ret = PTR_ERR(priv->event_thread[i].worker);
- 			goto err_msm_uninit;
- 		}
+diff --git a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+index 4a5b518288b0..3a7a01d801aa 100644
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -19,20 +19,13 @@ static int mdp4_hw_init(struct msm_kms *kms)
+ {
+ 	struct mdp4_kms *mdp4_kms = to_mdp4_kms(to_mdp_kms(kms));
+ 	struct drm_device *dev = mdp4_kms->dev;
+-	uint32_t version, major, minor, dmap_cfg, vg_cfg;
++	u32 major, minor, dmap_cfg, vg_cfg;
+ 	unsigned long clk;
+ 	int ret = 0;
  
+ 	pm_runtime_get_sync(dev->dev);
+ 
+-	mdp4_enable(mdp4_kms);
+-	version = mdp4_read(mdp4_kms, REG_MDP4_VERSION);
+-	mdp4_disable(mdp4_kms);
+-
+-	major = FIELD(version, MDP4_VERSION_MAJOR);
+-	minor = FIELD(version, MDP4_VERSION_MINOR);
+-
+-	DBG("found MDP4 version v%d.%d", major, minor);
++	read_mdp_hw_revision(mdp4_kms, &major, &minor);
+ 
+ 	if (major != 4) {
+ 		DRM_DEV_ERROR(dev->dev, "unexpected MDP version: v%d.%d\n",
+@@ -411,6 +404,22 @@ fail:
+ 	return ret;
+ }
+ 
++static void read_mdp_hw_revision(struct mdp4_kms *mdp4_kms,
++				 u32 *major, u32 *minor)
++{
++	struct drm_device *dev = mdp4_kms->dev;
++	u32 version;
++
++	mdp4_enable(mdp4_kms);
++	version = mdp4_read(mdp4_kms, REG_MDP4_VERSION);
++	mdp4_disable(mdp4_kms);
++
++	*major = FIELD(version, MDP4_VERSION_MAJOR);
++	*minor = FIELD(version, MDP4_VERSION_MINOR);
++
++	DRM_DEV_INFO(dev->dev, "MDP4 version v%d.%d", *major, *minor);
++}
++
+ struct msm_kms *mdp4_kms_init(struct drm_device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev->dev);
 -- 
 2.30.2
 
