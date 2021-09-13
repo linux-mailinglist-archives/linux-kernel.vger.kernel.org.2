@@ -2,238 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7906F4088DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C323A4088E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238971AbhIMKTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238366AbhIMKTx (ORCPT
+        id S238991AbhIMKYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:24:06 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:42472 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S238338AbhIMKYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:19:53 -0400
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D43C061574;
-        Mon, 13 Sep 2021 03:18:37 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id Pj2mmXzqZpQdWPj2nm2Rwq; Mon, 13 Sep 2021 12:18:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1631528314; bh=U9rwsvsk+lp1ng7UE9A2xr54tmhMcS057yaNCbWEa40=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=fBhH8XcwzE1a7BcGacoQ5jo9TyL8TLMUbry9hn/tLem44Y3wNi1EUYfjHpeEIRbpn
-         LYQqCp0wT/A/ysO6PJUkGuKmuVC/hNanIf0vuEz2MGmn22LvxJL4Q1RL9+Xqhz+yxK
-         m0mQpqUg2ChT1pf3WA5rqbxGEBI3poHsWJnMpuuWM2b3Le3Lbx+wNhodqgWyhd6e/1
-         hsNwt0ISHDSsKGKDeXn3RJnt8DeVImMpHr4vTJHBYGoQHbae0Tirl1Dgwu7FNG+Qpy
-         eyQTSw/+AHPNRaILs/Kz3cMlf6g5EMU36l0kG0gf705/6VSjirZWsI3K7RQg6VlWPq
-         CvNXp7DDVIe6Q==
-Subject: Re: [PATCH v3] media: vivid: drop FB dependency with new
- VIDEO_VIVID_FB
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Michael Tretter <m.tretter@pengutronix.de>
-References: <f73a55a64521093e535efb5c0a64348f8c825005.1630682380.git.guillaume.tucker@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <9086d131-06c8-c91c-4658-9e94afeccbc4@xs4all.nl>
-Date:   Mon, 13 Sep 2021 12:18:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 13 Sep 2021 06:24:04 -0400
+X-UUID: 90fd258676584bdda1299b3b33fb0763-20210913
+X-UUID: 90fd258676584bdda1299b3b33fb0763-20210913
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1739889716; Mon, 13 Sep 2021 18:22:45 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 13 Sep 2021 18:22:44 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 13 Sep 2021 18:22:44 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Subject: [v5 1/5] dt-bindings: power: Add MT8195 power domains
+Date:   Mon, 13 Sep 2021 18:22:28 +0800
+Message-ID: <20210913102232.26344-2-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210913102232.26344-1-chun-jie.chen@mediatek.com>
+References: <20210913102232.26344-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <f73a55a64521093e535efb5c0a64348f8c825005.1630682380.git.guillaume.tucker@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNIp5t7UFrGyoJi5d+FMPSgAkVCO+VNbuI99RSj2LJb4WlgOcZE4Pydr4l4+PVfbhehqJJuOumQNUpsDrF6uKCHsscWKldhhO+fgu9E+BHU8y2LMGoP0
- sgtwP7xsWX17FbYEmReheksihPpFkN+8XoEA5eOB0dIcvH+4kw24zjW+ReXS/a5AZ7BHyvEgwrcfzwehUy7+Wz15PuChPF6WmME89YpWBCsk84uDUsAp3G5P
- F5Ygj6w2cX3kLOENRDY3Tuc46jl/NcSVFCHv3zrk9iVXicGAdxEQE6ATFIwdgsV6AL+hBpWc+QbnrVd+WnPlWksffkyWvGFgpEVO6UFo9l0+Bdwiwsbt33OI
- UNOtn73L/PdqdQixZM165D3aBNgfYBNWfpvcs9Vu9P/LMhSDQT7zGkHZo3nREgbsnmWhKgSCococqkITDoLe5cI7xVWOIOSgGNmM28fsObk+rALE1kyZKgjE
- ZReh7MzSYHABhPRm
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guillaume,
+Add power domains dt-bindings for MT8195.
 
-On 03/09/2021 17:24, Guillaume Tucker wrote:
-> Drop the vivid dependency on CONFIG_FB by introducing a new
-> CONFIG_VIDEO_VIVID_FB option which depends on CONFIG_FB instead and
-> selects the generic CFB options when enabled.  Compile out parts of
-> the code that make use of the framebuffer API when not enabled.  This
-> is particularly useful as CONFIG_FB is not selected by
-> CONFIG_DRM_FBDEV_EMULATION any more.
+Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+no change
+---
+ .../power/mediatek,power-controller.yaml      |  2 +
+ include/dt-bindings/power/mt8195-power.h      | 46 +++++++++++++++++++
+ 2 files changed, 48 insertions(+)
+ create mode 100644 include/dt-bindings/power/mt8195-power.h
 
-As reported by the kernel test robot, this will fail if CONFIG_FB=m but
-CONFIG_VIDEO_VIVID=y.
-
-So this needs a bit more work.
-
-Regards,
-
-	Hans
-
-> 
-> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-> ---
-> 
-> Notes:
->     Changes in v3:
->     * use CONFIG_VIDEO_VIVID_FB instead of CONFIG_FB
->     * select CFB options to fix linkage issue
->     
->     Changes in v2:
->     * fix Makefile conditional for when CONFIG_FB=m
->     * compile-out bit 16 (framebuffer) when no CONFIG_FB
-> 
->  drivers/media/test-drivers/vivid/Kconfig       | 16 ++++++++++++----
->  drivers/media/test-drivers/vivid/Makefile      |  5 ++++-
->  drivers/media/test-drivers/vivid/vivid-core.c  |  9 +++++++++
->  drivers/media/test-drivers/vivid/vivid-ctrls.c |  4 ++++
->  4 files changed, 29 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
-> index c3abde2986b2..7cadaefea010 100644
-> --- a/drivers/media/test-drivers/vivid/Kconfig
-> +++ b/drivers/media/test-drivers/vivid/Kconfig
-> @@ -1,13 +1,10 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  config VIDEO_VIVID
->  	tristate "Virtual Video Test Driver"
-> -	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
-> +	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
->  	depends on HAS_DMA
->  	select FONT_SUPPORT
->  	select FONT_8x16
-> -	select FB_CFB_FILLRECT
-> -	select FB_CFB_COPYAREA
-> -	select FB_CFB_IMAGEBLIT
->  	select VIDEOBUF2_VMALLOC
->  	select VIDEOBUF2_DMA_CONTIG
->  	select VIDEO_V4L2_TPG
-> @@ -41,3 +38,14 @@ config VIDEO_VIVID_MAX_DEVS
->  	help
->  	  This allows you to specify the maximum number of devices supported
->  	  by the vivid driver.
-> +
-> +config VIDEO_VIVID_FB
-> +	bool "Enable framebuffer for testing overlays"
-> +	depends on VIDEO_VIVID
-> +	depends on FB
-> +	select FB_CFB_FILLRECT
-> +	select FB_CFB_COPYAREA
-> +	select FB_CFB_IMAGEBLIT
-> +	default y
-> +	help
-> +	  Enable vivid framebuffer support for testing overlays.
-> diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
-> index b12ad0152a3e..b48bd13239f5 100644
-> --- a/drivers/media/test-drivers/vivid/Makefile
-> +++ b/drivers/media/test-drivers/vivid/Makefile
-> @@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
->  		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
->  		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
->  		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
-> -		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
-> +		vivid-meta-cap.o vivid-meta-out.o \
->  		vivid-kthread-touch.o vivid-touch-cap.o
->  ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
->    vivid-objs += vivid-cec.o
->  endif
-> +ifeq ($(CONFIG_VIDEO_VIVID_FB),y)
-> +  vivid-objs += vivid-osd.o
-> +endif
->  
->  obj-$(CONFIG_VIDEO_VIVID) += vivid.o
-> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-> index 87f27c7524ec..3e785c6ce5dd 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-core.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
-> @@ -126,7 +126,9 @@ MODULE_PARM_DESC(node_types, " node types, default is 0xe1d3d. Bitmask with the
->  			     "\t\t    bit 8: Video Output node\n"
->  			     "\t\t    bit 10-11: VBI Output node: 0 = none, 1 = raw vbi, 2 = sliced vbi, 3 = both\n"
->  			     "\t\t    bit 12: Radio Transmitter node\n"
-> +#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
->  			     "\t\t    bit 16: Framebuffer for testing overlays\n"
-> +#endif
->  			     "\t\t    bit 17: Metadata Capture node\n"
->  			     "\t\t    bit 18: Metadata Output node\n"
->  			     "\t\t    bit 19: Touch Capture node\n");
-> @@ -1031,9 +1033,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
->  	/* do we have a modulator? */
->  	*has_modulator = dev->has_radio_tx;
->  
-> +#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
->  	if (dev->has_vid_cap)
->  		/* do we have a framebuffer for overlay testing? */
->  		dev->has_fb = node_type & 0x10000;
-> +#endif
->  
->  	/* can we do crop/compose/scaling while capturing? */
->  	if (no_error_inj && *ccs_cap == -1)
-> @@ -1365,6 +1369,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
->  			return ret;
->  	}
->  
-> +#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
->  	if (dev->has_fb) {
->  		/* Create framebuffer for testing capture/output overlay */
->  		ret = vivid_fb_init(dev);
-> @@ -1373,6 +1378,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
->  		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
->  			  dev->fb_info.node);
->  	}
-> +#endif
-> +
->  	return 0;
->  }
->  
-> @@ -2079,12 +2086,14 @@ static int vivid_remove(struct platform_device *pdev)
->  				video_device_node_name(&dev->radio_tx_dev));
->  			video_unregister_device(&dev->radio_tx_dev);
->  		}
-> +#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
->  		if (dev->has_fb) {
->  			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
->  				dev->fb_info.node);
->  			unregister_framebuffer(&dev->fb_info);
->  			vivid_fb_release_buffers(dev);
->  		}
-> +#endif
->  		if (dev->has_meta_cap) {
->  			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
->  				  video_device_node_name(&dev->meta_cap_dev));
-> diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-> index 8dc50fe22972..6cfd4808b38c 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
-> @@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
->  
->  /* Framebuffer Controls */
->  
-> +#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
->  static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
->  {
->  	struct vivid_dev *dev = container_of(ctrl->handler,
-> @@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
->  	.name = "Clear Framebuffer",
->  	.type = V4L2_CTRL_TYPE_BUTTON,
->  };
-> +#endif /* IS_ENABLED(CONFIG_VIDEO_VIVID_FB) */
->  
->  
->  /* Video User Controls */
-> @@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
->  	    (dev->has_vbi_cap && dev->has_vbi_out))
->  		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
->  
-> +#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
->  	if (dev->has_fb)
->  		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
-> +#endif
->  
->  	if (dev->has_radio_rx) {
->  		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
-> 
+diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+index f234a756c193..d6ebd77d28a7 100644
+--- a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
++++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+@@ -27,6 +27,7 @@ properties:
+       - mediatek,mt8173-power-controller
+       - mediatek,mt8183-power-controller
+       - mediatek,mt8192-power-controller
++      - mediatek,mt8195-power-controller
+ 
+   '#power-domain-cells':
+     const: 1
+@@ -64,6 +65,7 @@ patternProperties:
+               "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
+               "include/dt-bindings/power/mt8183-power.h" - for MT8183 type power domain.
+               "include/dt-bindings/power/mt8192-power.h" - for MT8192 type power domain.
++              "include/dt-bindings/power/mt8195-power.h" - for MT8195 type power domain.
+         maxItems: 1
+ 
+       clocks:
+diff --git a/include/dt-bindings/power/mt8195-power.h b/include/dt-bindings/power/mt8195-power.h
+new file mode 100644
+index 000000000000..b20ca4b3e3a8
+--- /dev/null
++++ b/include/dt-bindings/power/mt8195-power.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
++/*
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
++ */
++
++#ifndef _DT_BINDINGS_POWER_MT8195_POWER_H
++#define _DT_BINDINGS_POWER_MT8195_POWER_H
++
++#define MT8195_POWER_DOMAIN_PCIE_MAC_P0		0
++#define MT8195_POWER_DOMAIN_PCIE_MAC_P1		1
++#define MT8195_POWER_DOMAIN_PCIE_PHY		2
++#define MT8195_POWER_DOMAIN_SSUSB_PCIE_PHY	3
++#define MT8195_POWER_DOMAIN_CSI_RX_TOP		4
++#define MT8195_POWER_DOMAIN_ETHER		5
++#define MT8195_POWER_DOMAIN_ADSP		6
++#define MT8195_POWER_DOMAIN_AUDIO		7
++#define MT8195_POWER_DOMAIN_MFG0		8
++#define MT8195_POWER_DOMAIN_MFG1		9
++#define MT8195_POWER_DOMAIN_MFG2		10
++#define MT8195_POWER_DOMAIN_MFG3		11
++#define MT8195_POWER_DOMAIN_MFG4		12
++#define MT8195_POWER_DOMAIN_MFG5		13
++#define MT8195_POWER_DOMAIN_MFG6		14
++#define MT8195_POWER_DOMAIN_VPPSYS0		15
++#define MT8195_POWER_DOMAIN_VDOSYS0		16
++#define MT8195_POWER_DOMAIN_VPPSYS1		17
++#define MT8195_POWER_DOMAIN_VDOSYS1		18
++#define MT8195_POWER_DOMAIN_DP_TX		19
++#define MT8195_POWER_DOMAIN_EPD_TX		20
++#define MT8195_POWER_DOMAIN_HDMI_TX		21
++#define MT8195_POWER_DOMAIN_WPESYS		22
++#define MT8195_POWER_DOMAIN_VDEC0		23
++#define MT8195_POWER_DOMAIN_VDEC1		24
++#define MT8195_POWER_DOMAIN_VDEC2		25
++#define MT8195_POWER_DOMAIN_VENC		26
++#define MT8195_POWER_DOMAIN_VENC_CORE1		27
++#define MT8195_POWER_DOMAIN_IMG			28
++#define MT8195_POWER_DOMAIN_DIP			29
++#define MT8195_POWER_DOMAIN_IPE			30
++#define MT8195_POWER_DOMAIN_CAM			31
++#define MT8195_POWER_DOMAIN_CAM_RAWA		32
++#define MT8195_POWER_DOMAIN_CAM_RAWB		33
++#define MT8195_POWER_DOMAIN_CAM_MRAW		34
++
++#endif /* _DT_BINDINGS_POWER_MT8195_POWER_H */
+-- 
+2.18.0
 
