@@ -2,216 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF3D40887C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3129408880
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238825AbhIMJrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:47:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46596 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238805AbhIMJrD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:47:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631526347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XWe98zeJD7s9qLcq/i/RsJ8if8FlWjyR2b/zkGoJBbI=;
-        b=i0a5VJgz0EmkLs61QfrH8mkKoffzSoWrpU5h71H9ZT+KPCSprQFOupRvw29FGDJ/Ts5C4H
-        CuQix6C7XDEJxoc83BKwkL5X0Wxi2EpclhPNjK0CLAdwoW8mNVXfkiHaUF2AkbsTjQ2YX3
-        g5sZrAbygW7h0WJ1x6ictMpsKUlE5Xo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-1wJ0t6yAMseT1jGLmrmlsA-1; Mon, 13 Sep 2021 05:45:46 -0400
-X-MC-Unique: 1wJ0t6yAMseT1jGLmrmlsA-1
-Received: by mail-ed1-f71.google.com with SMTP id c7-20020a05640227c700b003d27f41f1d4so343685ede.16
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:45:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XWe98zeJD7s9qLcq/i/RsJ8if8FlWjyR2b/zkGoJBbI=;
-        b=dQRFBGzfzTHCehWtrPpCfPt640feiC9k1475fVzhx+/e5eo1HUQ4FRwfx9XJY1ZYFQ
-         ubuAGmDFCzO667UQhaZUhyVkqX1aBar6Mjj4j332B8JwM5/JN0YoPiFwFRw2cSlJEVW2
-         fzCpM1gr7nwDGddw9+/oPifJ9DI+/r+5Yw9Ul73WIlrIkOJdZSnSzTCxhwDaJ2fr8SD9
-         LnPmnZ6N0PDHFmciETgY07C8iZTbFHNQVwKAPwGUz//Ay3u8WjXaWRrBKtYsT4HjrIH6
-         52Doz8eiWEA+4BmDdHfmkMYsMzLJjlFwaIG3AtPcAPHmGnf5B+uYljUiLHfPxMd6d5eK
-         5hSA==
-X-Gm-Message-State: AOAM533Ft53jqL6teGQn2Hf/GIoJEyAlAHA5qBA8SE3FJA+JeLwGllCx
-        p8aDIgR65HcWX4XZYHW+RtANjGDo5CxIulO89/o9p1VkrJMXm+3k7UDUEumhadwK0hKSVxbxDvB
-        48i9cL77jnaCMWUGsWiN0/WN9
-X-Received: by 2002:a17:906:36d6:: with SMTP id b22mr11416324ejc.387.1631526345043;
-        Mon, 13 Sep 2021 02:45:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvMXi0jvSRqI7rhgMLRLOVsHiODoTK7Ac8qaJOeVYG3W2Chw606SsKje3cckY4USX/iMLdRQ==
-X-Received: by 2002:a17:906:36d6:: with SMTP id b22mr11416304ejc.387.1631526344832;
-        Mon, 13 Sep 2021 02:45:44 -0700 (PDT)
-Received: from redhat.com ([2a03:c5c0:207f:418b:5703:fd4e:73dd:1986])
-        by smtp.gmail.com with ESMTPSA id c5sm3653619edx.81.2021.09.13.02.45.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 02:45:44 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 05:45:37 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        Bill Mills <bill.mills@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH V3 5/5] virtio: Bind virtio device to device-tree node
-Message-ID: <20210913053816-mutt-send-email-mst@kernel.org>
-References: <cover.1627273794.git.viresh.kumar@linaro.org>
- <454a58f998b0d16847d72a97b32192829fab2c8c.1627273794.git.viresh.kumar@linaro.org>
- <d5f87715-5a3e-1e85-68ba-3e4d35163c68@ozlabs.ru>
+        id S238840AbhIMJrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:47:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238829AbhIMJrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 05:47:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 476E06101B;
+        Mon, 13 Sep 2021 09:46:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631526375;
+        bh=dMPPuDRHM65WeGIQqOCXIclpyoW2nZck2KjQpwVUN4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cQqEUn16KT7WkEYmxHTy7B/eQWAeqGW5pAdU1YJIUxrX73wrEYkzkd4/XsBk45dv9
+         /3eEy3clln58uY1J7VfuI9PI0a9DJvOzZWrZQDm8kQ2pllOlM2+dP8lQknujg57Z3U
+         5gR0k1VUfhh663AUccm/9zIEpVca5vegVlIrLA3s=
+Date:   Mon, 13 Sep 2021 11:46:13 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
+ builds"
+Message-ID: <YT8d5a6ZVW7JlsRl@kroah.com>
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+ <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+ <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
+ <YTfkO2PdnBXQXvsm@elver.google.com>
+ <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
+ <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org>
+ <20210913093256.GA12225@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d5f87715-5a3e-1e85-68ba-3e4d35163c68@ozlabs.ru>
+In-Reply-To: <20210913093256.GA12225@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 07:19:17PM +1000, Alexey Kardashevskiy wrote:
+On Mon, Sep 13, 2021 at 11:32:56AM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> 
-> On 26/07/2021 14:51, Viresh Kumar wrote:
-> > Bind the virtio devices with their of_node. This will help users of the
-> > virtio devices to mention their dependencies on the device in the DT
-> > itself. Like GPIO pin users can use the phandle of the device node, or
-> > the node may contain more subnodes to add i2c or spi eeproms and other
-> > users.
+> > >>  config WERROR
+> > >>         bool "Compile the kernel with warnings as errors"
+> > >>-       default y
+> > >>+       default COMPILE_TEST
+> > >
+> > >That seems reasonable. It very much is about build-testing.
 > > 
-> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  drivers/virtio/virtio.c | 57 ++++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 54 insertions(+), 3 deletions(-)
+> > That and 2 more things IMO:
 > > 
-> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> > index 4b15c00c0a0a..d001e84a5b23 100644
-> > --- a/drivers/virtio/virtio.c
-> > +++ b/drivers/virtio/virtio.c
-> > @@ -4,6 +4,7 @@
-> >  #include <linux/virtio_config.h>
-> >  #include <linux/module.h>
-> >  #include <linux/idr.h>
-> > +#include <linux/of.h>
-> >  #include <uapi/linux/virtio_ids.h>
-> >  
-> >  /* Unique numbering for virtio devices. */
-> > @@ -292,6 +293,9 @@ static int virtio_dev_remove(struct device *_d)
-> >  
-> >  	/* Acknowledge the device's existence again. */
-> >  	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
-> > +
-> > +	of_node_put(dev->dev.of_node);
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > @@ -319,6 +323,43 @@ void unregister_virtio_driver(struct virtio_driver *driver)
-> >  }
-> >  EXPORT_SYMBOL_GPL(unregister_virtio_driver);
-> >  
-> > +static int virtio_device_of_init(struct virtio_device *dev)
-> > +{
-> > +	struct device_node *np, *pnode = dev_of_node(dev->dev.parent);
-> > +	char compat[] = "virtio,XXXXXXXX"; /* Reserve enough space 32-bit id */
-> > +	int ret, count;
-> > +
-> > +	if (!pnode)
-> > +		return 0;
-> > +
-> > +	count = of_get_available_child_count(pnode);
-> > +	if (!count)
-> > +		return 0;
-> > +
-> > +	/* There can be only 1 child node */
-> > +	if (WARN_ON(count > 1))
-> > +		return -EINVAL;
-> > +
-> > +	np = of_get_next_available_child(pnode, NULL);
-> > +	if (WARN_ON(!np))
-> > +		return -ENODEV;
-> > +
-> > +	BUG_ON(snprintf(compat, sizeof(compat), "virtio,%x", dev->id.device) >=
-> > +	       sizeof(compat));
-> > +
-> > +	if (!of_device_is_compatible(np, compat)) {
-> 
-> 
-> This broke powerpc/pseries as there these virtio devices are PCI so
-> there is no "compat" - PCI vendor id/device ids play role of "compat".
-> Thanks,
-
-Hmm now that you say this I wonder why do we bother
-with this check, too. When can this be invoked for something
-that is not a virtio device? And is it enough to just
-skip of_node initialization then?
-
-
-> 
-> 
-> 
-> > +		ret = -EINVAL;
-
-
-So basically ret = 0 above?
-
-
-> > +		goto out;
-> > +	}
-> > +
-> > +	dev->dev.of_node = np;
-> > +	return 0;
-> > +
-> > +out:
-> > +	of_node_put(np);
-> > +	return ret;
-> > +}
-> > +
-> >  /**
-> >   * register_virtio_device - register virtio device
-> >   * @dev        : virtio device to be registered
-> > @@ -343,6 +384,10 @@ int register_virtio_device(struct virtio_device *dev)
-> >  	dev->index = err;
-> >  	dev_set_name(&dev->dev, "virtio%u", dev->index);
-> >  
-> > +	err = virtio_device_of_init(dev);
-> > +	if (err)
-> > +		goto out_ida_remove;
-> > +
-> >  	spin_lock_init(&dev->config_lock);
-> >  	dev->config_enabled = false;
-> >  	dev->config_change_pending = false;
-> > @@ -362,10 +407,16 @@ int register_virtio_device(struct virtio_device *dev)
-> >  	 */
-> >  	err = device_add(&dev->dev);
-> >  	if (err)
-> > -		ida_simple_remove(&virtio_index_ida, dev->index);
-> > +		goto out_of_node_put;
-> > +
-> > +	return 0;
-> > +
-> > +out_of_node_put:
-> > +	of_node_put(dev->dev.of_node);
-> > +out_ida_remove:
-> > +	ida_simple_remove(&virtio_index_ida, dev->index);
-> >  out:
-> > -	if (err)
-> > -		virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
-> > +	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
-> >  	return err;
-> >  }
-> >  EXPORT_SYMBOL_GPL(register_virtio_device);
+> > a. having developers be responsible for build warnings, not just
+> >    build errors
 > > 
+> > b. having maintainers merge them more like they are build errors
+> >    and not just some warnings that can be overlooked.
+> > 
+> > I don't see enough of a. or b.  :(
 > 
-> -- 
-> Alexey
+> Do we really want developers treat warnings as errors? When the code
+> is okay but some random version of gcc dislikes it...
+> 
+> Plus, there's question of stable. We already get ton of churn there
+> ("this fixes random warning"). WERROR will only encourage that...
 
+I will not be backporting this patch to older stable kernels, but I
+_want_ to see stable builds build with no warnings.  When we add
+warnings, they are almost always things we need to fix up properly.
+
+Over time, I have worked to reduce the number of build warnings in older
+stable kernels.  For newer versions of gcc, sometimes that is
+impossible, but we are close...
+
+thanks,
+
+greg k-h
