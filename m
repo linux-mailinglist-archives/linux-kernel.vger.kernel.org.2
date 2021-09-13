@@ -2,131 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0E2408729
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74D840872D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238158AbhIMIjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:39:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45673 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238823AbhIMIj2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631522292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qh6P33VcH3uz2AI1w5Pma4JSyKdtq+QIbmAMwM1Yrh0=;
-        b=frUkG0cBfc2nnOVvivqWyo1ldUGFw+RxkucTUomf4+VyvPvoSW6A/WwzxPeniSPtTlHOf5
-        PhoCda0B0krFW1YCnRieZXxueBNZbFEz4L6AKz/V9TO3dQGICqmc3etfMZ45evH/fsbKHQ
-        9WEShr60NsyapfM5xzdVouPkXZ45u+M=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-Uq6gkxnwPKq5XeO_rIfUVw-1; Mon, 13 Sep 2021 04:38:08 -0400
-X-MC-Unique: Uq6gkxnwPKq5XeO_rIfUVw-1
-Received: by mail-ed1-f70.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so4528640edd.22
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 01:38:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qh6P33VcH3uz2AI1w5Pma4JSyKdtq+QIbmAMwM1Yrh0=;
-        b=5FsncBhC0l3k9J5d0o0DMb5kdP/L4cc8F0VWEv5JdQ7ambU30nW4W2sgOBgHk/3dZi
-         nqbZyzfC/ZE4NwzbpL5EoDcAkrbygo49NF8mIFzVIcN4eYre2ZYZrlo3j3rdhFkz+MDm
-         yZBkavovlS6krgqv8KvwQX57Cu1liyQLIfkWsFFYghhuQYIQ9p+RQ0AFaBlUKeS0q6QG
-         v/T06IjsFZyYQ0yF2cFK6jbKx/Xl6fK2KLRYp9kpaKcBCtP4B+OOevh8DVXXMYDHpWrl
-         HMTzd4/H9iCs+rTBMm+BJe+/FPgpp/eGoG7+FI67lRXtticBNiHtL7hahaGR6MbyNMzi
-         Q8Iw==
-X-Gm-Message-State: AOAM530T6Oi4DQdvRjCPo07yBpj4fb0xYcybblBxZTPE5i1J44CA530y
-        G8lVS+E6NqPsarSoCJ18Y4e0scs5yj02vv2xhMWYvuOIz1CvgfK9XQKzIMTIBdrIyc/Az4zYOBM
-        iMRQpocX2vB+GMjbET+nrsTqO
-X-Received: by 2002:a17:906:a24d:: with SMTP id bi13mr11485263ejb.481.1631522287620;
-        Mon, 13 Sep 2021 01:38:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqFgVyTdiuwa+TbhSuN62Ka8m3x9OzJ7llnV4DCsSH4Tdr20imAxFAMYAlZSlxYh2RnwSBDg==
-X-Received: by 2002:a17:906:a24d:: with SMTP id bi13mr11485249ejb.481.1631522287465;
-        Mon, 13 Sep 2021 01:38:07 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id d10sm3553926edx.57.2021.09.13.01.38.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 01:38:07 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] platform/x86/intel: punit_ipc: Drop wrong use of
- ACPI_PTR()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Zha Qipeng <qipeng.zha@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-References: <20210827145310.76239-1-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <80f5cda9-2855-501a-5472-7d5ab6290835@redhat.com>
-Date:   Mon, 13 Sep 2021 10:38:06 +0200
+        id S238080AbhIMIk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:40:57 -0400
+Received: from mail-dm6nam10on2054.outbound.protection.outlook.com ([40.107.93.54]:25152
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237999AbhIMIk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:40:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C0Rft2LDLJMnfmTCT9E2lE6gE6izAkP6usxe7dWIbaOJJ4McAx9pCHztazoR0jOuX57eBrPAW9xPbx/I4HRDzt3Cgt29HvEn+1b2ME3JZyrkczce6/fsaEDHDZBs8D2dsZ8rXV4sZHGP7WZusQFYG26CXT9svp3hawb3jwCGeSPtXK0eYERiqU9zMtClRv1Nl+a6tRz4nMn1gnNm7uXxWFL0/wac5TSZK56srlL1hqnTeQBP0H6RZjWt+HUCLN+OVSKHIGZaysKD1qq6tkzDsIxG14YXqD/YBlsyqVn6h9gregbqKCwCIA91LtiV1gxXrS1RRRNH1hCdZgr6LGElUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=CihCD67Ajr4HWh1jNQN1AMCSm5+tlr/T4q1X30ELoh0=;
+ b=c3Thcf0NjN6z9wZAm8GlgtESMaxZLbNo5AKlGbpM6/TJJc/s1Bg9Q4hq7oV7Je/FQtRF8MdO4kmMMiayZfswTvovN6m0lX79Ech2ie/bTGqhO9soOPKY/+ujaKmWoHxQCIzEdeJ7Xk6vhbPOY5Iee8Hl2oICqAv9fOMxWoEPSAiSP0sAD/9iPzCTSNOdx53znj7P3seEArhfDCiklNBLW+UaWUGrFHKRv3EMl3zLyPgrvfsv+mXPq2KIp5OHmcmqKh+sEi/hhpHjPBOF/nj1TVF7VpjBlvnUqZeWK7LOTxWkgCDG3Pfz9q3pACrKHFJvo7nW9MX7cL1/t2Q2bWeMxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CihCD67Ajr4HWh1jNQN1AMCSm5+tlr/T4q1X30ELoh0=;
+ b=XTCqVn4eaDOCCgQL3uQjKWQHif6CwLAUAPsXSByNcckCoUru1++km3UvWDyiRZHsgMK1Q4hFhkwCdRD+lw2kl6+A8GZHxEIsqme0tK0h/khgYSwe4Cr/zpCW7NGbZJb07TIpBRqRHLqm9LMFc71MwhhdI7d+KQXxkIIruFpON2Q=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3950.namprd12.prod.outlook.com (2603:10b6:208:16d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Mon, 13 Sep
+ 2021 08:39:39 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4500.018; Mon, 13 Sep 2021
+ 08:39:39 +0000
+Subject: Re: [PATCH 1/2] drm/amdgpu: Clarify that TMZ unsupported message is
+ due to hardware
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20210913083411.11215-1-pmenzel@molgen.mpg.de>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e9e4e529-b3af-2862-eb38-8e5415108ba4@amd.com>
+Date:   Mon, 13 Sep 2021 10:39:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210827145310.76239-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+ Thunderbird/78.13.0
+In-Reply-To: <20210913083411.11215-1-pmenzel@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR05CA0086.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::26) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+Received: from [192.168.178.21] (91.14.161.181) by AM0PR05CA0086.eurprd05.prod.outlook.com (2603:10a6:208:136::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 08:39:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 72e57981-0da9-4a53-4134-08d9769205e5
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3950:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB39504F5CBB17C3B7D68D497083D99@MN2PR12MB3950.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R9p5bBWoOdbjYtB2Yw+gY+NnllyFh4ARDJi/dzCdM++fz23A/kFxvwQis5jLSRbzVXdEHoJkfhkxTj1Cw1HbtYwk/z7pan0t+QOAC1CoWTjXaikeCxTFW9OTZHsC620j80ytspY5PU1pxkWNwdGBVxw1LdD/19jxWMU/Rr0LGzE4SPClwR04qoSkbIXxr0OmZu+HvuprbjvxbdEjCplhCejsDtaBHUWOZQo2rSMWQpQLmE7BniSN61mzFD5DHwH+37PUTiusyF6kL6xrlWRrfN9RIOoUlKBRBkDcvkqFYrM1OUa10ivWyXLk7dKfaRNTrU9JT3TQunFjm7d6ZfrhZTF+xl7bnH/pMR3FnpRlBP25jtIWRykDnsNLAfiMLysr8nSm5xYTLi5lr67V3yxf6UDomqsIeK3iFP1RpIMO8p2xj0+e+QeRYw9yobdE0yH84WtWYqXHN/QXpttFY2YNI1KKcgbknxGwMWzPlhzzpVLGe1ZoEjoBqopai8g2srGWfLe/cbI1Hc6FVpQ6XynmHReQTl8TKCWDvA822igKtE39tXppIqnW5/UFYxgMS5BicP270fKJWTF+e1WeytCPztzCnAV67DeutYFVaW01Gichu7q615MQFaq/Zojg4mIrS1Ovj8NSQN4Khvdu8Z66x5pv17KoduQMaS3X8W1H/ReeC1XSFmmBvnMJosPkIOovKtaTa9xdLYHIqlCIYSijNBEBhqSd4zk9eVEDb5yd2Zun7VHWyRRoyd2UrEXtk+P9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(396003)(346002)(83380400001)(15650500001)(38100700002)(16576012)(66556008)(6666004)(31696002)(478600001)(26005)(66476007)(8676002)(110136005)(956004)(316002)(2906002)(4326008)(186003)(86362001)(6486002)(8936002)(31686004)(66946007)(5660300002)(2616005)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bW82bnl4dVoyZFdXVnV1b0pGZVBoRlZtbzFHMXJ6LzFOMXJwd2lsMDNkT2dS?=
+ =?utf-8?B?SEdpQzFDT3NYVTVKcTc0L0owR1JIWHd3MEFoY0RsaHVRQ1F2SExmUjlvcm5I?=
+ =?utf-8?B?VU9NbUR1dkhxbVMxK1F2NDhOSDllc3ozSTJMd3V5OU8xQ2VFd0plaTNSRHVP?=
+ =?utf-8?B?QWdLV1pRN3BDempUZWhzWFZuUmZuK1htYXVMVVJTU3dtVkNGMDJ6ZEZ1bWJv?=
+ =?utf-8?B?RDIrMDZrakpmYmZ6c1FLa3Zkam14Wm5hS2ZKcUVoYTNLeTh5UVJIZmpORnFU?=
+ =?utf-8?B?cXR5TjFGbG5IU1RpQkVkZkJlK2VqL2dxKyt0bzhBMjdaVFRpV0dUcVVDWFFZ?=
+ =?utf-8?B?eXlOaVQ2eGt5QkRDTkliMStqRHpiSVNCQ2t3M3RJeTF0R3F1QmJJQlhwTC9r?=
+ =?utf-8?B?WXdwTUdnQVRiUXFtZW9iOStETDJXek1wdHNjaDIvc3lIRXlWUzRqYi9Kc0pY?=
+ =?utf-8?B?T1BIMjBwb3JLWWdOUHZ0UUpDZDZJVGhsMlFxc1FTMUFVeVU2R0txMDNPVlo4?=
+ =?utf-8?B?NU5KYTZ3MThQQ0dxTGxreGIwbzFaQVRKc0VwZ1lmbDVIa0ZQa0t5S0xlL2oz?=
+ =?utf-8?B?Q0liK0thL09RbVdDL3NMS1ROWWQxaWtSSFpzZWF4NVRZNHlpbHVZd0pMTnpY?=
+ =?utf-8?B?Z3JKaWtiMlhtcW9TVDhnNElVODc3TElzdzdaZGlaYWRtWnFUbUE2RllHL3g3?=
+ =?utf-8?B?NTdDWUtzT2Y4bm44S0xQTWpqZHBjN3QwVXFLK3IzUHVjamdVcmZkcTFjMVNI?=
+ =?utf-8?B?d0g4UWJRNGV1bkVpR3FkZkJxM3ptUEI0anZwejZtc2M1eXZlVEZZNFE2d2FK?=
+ =?utf-8?B?Z0ZpWlpHQkg5Y1BmVllHNGhZMnR3YmtXdjRBMDBYYnExaWJ1akp5R2FpZFk0?=
+ =?utf-8?B?Q2JDTEtkaURINEo1OXlxaklxNkpKR0dMK0xCTSsyWXZ3K3Fwb1E0Q0VhRjBE?=
+ =?utf-8?B?NjJFYWZtNnRpRDZZZFczb2VJNy9YUmJZc0ZYMTdCM29WckFFTVVxYnpLYkZk?=
+ =?utf-8?B?aERQdjU4a2FiY3QvK2xDbHZickMrZ3NZUXF5K3VQSk1pdWhLdjRVNnU0WnZU?=
+ =?utf-8?B?UW10UHNtbzZEeE93SUswOGtnaVdkTHpjelVSdG9VcWIySG9nb2s5Nm1mN1FJ?=
+ =?utf-8?B?RlUya2hqUTN6QURBazlBaklqd2V4bEwrYnVSK1FmeTZSNTZhTmJkY0ZrMUlk?=
+ =?utf-8?B?RkZmamo5VGFvTXBPc3lCald1eVhpT1VMMWxJRVVEMnlpbHYzV2l1Z21NTTBN?=
+ =?utf-8?B?TUZDZTV5ZE13SVZlV0VPSEo5TXE4MFZRRWRpOFlUc1ZaUXlpYk5xWjVjMHV2?=
+ =?utf-8?B?UUZMSkwzbkJMd1VDWG10c3RNOG4rU2QrUkE3dWYvTDNKbENMdHBYVkJFS1RQ?=
+ =?utf-8?B?SUtYem9FSUN1bVJFM2pmaUh3dHhSNW1Ld2VwZk1PTUNZZ2RraHV6dWY2eHYz?=
+ =?utf-8?B?OVRjTkw5TEV5RXlNZGpNZVl6OE9qZitkZlVzeDI5TGk3TWdqNkRPeUFyMGVR?=
+ =?utf-8?B?ZUszU2xHamNoTE9YWmE0N01lWHJlOHl6WmFnWHYzN2YxaksyaUVrcWh5cEUz?=
+ =?utf-8?B?cWtVVVc2SFhEYnYrYkFwSGxRODdNeElkUjZ3U2NBdlVLRXlGL0E3cEVaUTVX?=
+ =?utf-8?B?NUhQUHlnZVllcnZvcVpXWmRMK3RjSVdZYy92eXZreUVNU2pIajFFbjhYaHhJ?=
+ =?utf-8?B?dEpXcDIvV29kR1pnSmYyaWtDU3NaaElKRUtrdWg2TnpXQXBuV0hMNXgzTjA0?=
+ =?utf-8?Q?1xF7OewvsonINhGo1Kl3Exb+by/r32QV5o0301Y?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72e57981-0da9-4a53-4134-08d9769205e5
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 08:39:38.8097
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L7kiBcJPDxXflfQVM+Wuni1vYY6zvTUFFi7dW9LreUYzQZkuoDGV6Zt7UfSG8Gq8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3950
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Am 13.09.21 um 10:34 schrieb Paul Menzel:
+> The warning
+>
+>      amdgpu 0000:05:00.0: amdgpu: Trusted Memory Zone (TMZ) feature not supported
+>
+> leaves the reader wondering, if anything can be done about it. As it’s
+> unsupported in the hardware, and nothing can be done about, mention that
+> in the log message.
+>
+>      amdgpu 0000:05:00.0: amdgpu: Trusted Memory Zone (TMZ) feature not supported by hardware
 
-On 8/27/21 4:53 PM, Andy Shevchenko wrote:
-> ACPI_PTR() is more harmful than helpful. For example, in this case
-> if CONFIG_ACPI=n, the ID table left unused which is not what we want.
-> 
-> Instead of adding ifdeffery here and there, drop ACPI_PTR()
-> and unused acpi.h.
-> 
-> Fixes: fdca4f16f57d ("platform:x86: add Intel P-Unit mailbox IPC driver")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+I think we should just completely remove the message instead.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+Christian.
 
-I will also add this to the fixes branch, so that it gets send out
-to Linus in my next pull-request with fixes for 5.15.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
+>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
 > ---
->  drivers/platform/x86/intel/punit_ipc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/punit_ipc.c b/drivers/platform/x86/intel/punit_ipc.c
-> index f58b8543f6ac..66bb39fd0ef9 100644
-> --- a/drivers/platform/x86/intel/punit_ipc.c
-> +++ b/drivers/platform/x86/intel/punit_ipc.c
-> @@ -8,7 +8,6 @@
->   * which provide mailbox interface for power management usage.
->   */
->  
-> -#include <linux/acpi.h>
->  #include <linux/bitops.h>
->  #include <linux/delay.h>
->  #include <linux/device.h>
-> @@ -319,7 +318,7 @@ static struct platform_driver intel_punit_ipc_driver = {
->  	.remove = intel_punit_ipc_remove,
->  	.driver = {
->  		.name = "intel_punit_ipc",
-> -		.acpi_match_table = ACPI_PTR(punit_ipc_acpi_ids),
-> +		.acpi_match_table = punit_ipc_acpi_ids,
->  	},
->  };
->  
-> 
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
+> index c7797eac83c3..c4c56c57b0c0 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c
+> @@ -599,7 +599,7 @@ void amdgpu_gmc_tmz_set(struct amdgpu_device *adev)
+>   	default:
+>   		adev->gmc.tmz_enabled = false;
+>   		dev_warn(adev->dev,
+> -			 "Trusted Memory Zone (TMZ) feature not supported\n");
+> +			 "Trusted Memory Zone (TMZ) feature not supported by hardware\n");
+>   		break;
+>   	}
+>   }
 
