@@ -2,102 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D35409E9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A14409EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243400AbhIMUzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:55:17 -0400
-Received: from mout.gmx.net ([212.227.15.18]:55017 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244584AbhIMUzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:55:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631566431;
-        bh=8LyRUmRax3hCQti0YfuqbJX2nczTd/Squcie9S85a+8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=g7nFy/z0PY4tvbyJWJLup+J0g1wGQ8/DMV5IbHxxDkgGzguTsNoUbl+UbsY4zdqGl
-         6rtV3oO2qWPQ7CzTj/g7KwjrFsw1Jjjs8mkV9hTy1K8vdDAGeAp3qNRMbtkXGIpz1Z
-         wRKg6q8i33JE5mOKh/tZaKkbT3dT71P0mh7fF/d0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [46.223.119.124] ([46.223.119.124]) by web-mail.gmx.net
- (3c-app-gmx-bs69.server.lan [172.19.170.214]) (via HTTP); Mon, 13 Sep 2021
- 22:53:50 +0200
+        id S244205AbhIMUzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:55:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60673 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244428AbhIMUzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 16:55:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631566456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hlpZvCk21PRwAK2AssPWCacRS5dlgslqLeUme/k+iMw=;
+        b=H5JxGe5OArwC+am0XfDj6N1MhPEX3j5vgkyObmX35eK1dUvEVqpLzvPAWlpdrk/X7hin3p
+        jp7VNtX386HgdB69vd+m8W00VGTrSOdBKPlP024iDHkP6/1HNq6hckNr8oef0GxojdiCBj
+        OVPaXgnWmKI8sXb4VveITz5uLK/jZPw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-PLhFaAltNGiBiegZEPOs1w-1; Mon, 13 Sep 2021 16:54:15 -0400
+X-MC-Unique: PLhFaAltNGiBiegZEPOs1w-1
+Received: by mail-wr1-f69.google.com with SMTP id r15-20020adfce8f000000b0015df1098ccbso1855296wrn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:54:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hlpZvCk21PRwAK2AssPWCacRS5dlgslqLeUme/k+iMw=;
+        b=xn/we5xcHuDKHlwMPTG4JsI0YuuDgoYL7lSzJnwPPzIsLNUxXXA28KpxOh6j/v1/nN
+         67tBoFxlsDmKqLclAcFX4cqSbqxWRMk2nEbbIZ99PUMBcHdfnIgxnciD9VYsazRP11Th
+         83kUZu+aoh0fMWafGoP8l5IN0A1WH9u/daU9t9vPe9OkNUShZK1rc9ibP0uW8Y3Ib5vo
+         8I1mb9byu9aAv87PWettr3uNlUF7D5clHf8CiTDU+/+OtdQng7nj9UcrMJYPnYnZO1/q
+         qA4bjveQNKgInQs3k/FXwdNjMtf+PiTW0y8IlJg0V43yB8dx4W6eUznghyx4Re5hjre9
+         ZnKw==
+X-Gm-Message-State: AOAM532qwN9WXDrhAs6UfPSXXDfzFfyl91sGJ0HNtfgimU+JzZJTBMie
+        rAagc5b1sZa9AxClVFXsSX3blk6kPkse1iJMYDtL3p1rKU01Zk0nnMI8gx7XCGm5Lc6tb/y3XfJ
+        Kn6PAdCMcH8VNujEvZ+/p+2CJ
+X-Received: by 2002:a5d:63d2:: with SMTP id c18mr14416343wrw.311.1631566453986;
+        Mon, 13 Sep 2021 13:54:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzMajhI/hXKe/GPHfRteHnAZwNKo0kHbqRkuPGx3w3DgULJMMHKTbVpiprC8l4Y+VQZSXapTQ==
+X-Received: by 2002:a5d:63d2:: with SMTP id c18mr14416326wrw.311.1631566453828;
+        Mon, 13 Sep 2021 13:54:13 -0700 (PDT)
+Received: from redhat.com ([2.55.151.134])
+        by smtp.gmail.com with ESMTPSA id w1sm7747752wmc.19.2021.09.13.13.54.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 13:54:13 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:54:08 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        pbonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: Re: [PATCH 6/9] virtio_pci: harden MSI-X interrupts
+Message-ID: <20210913164934-mutt-send-email-mst@kernel.org>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20210913055353.35219-7-jasowang@redhat.com>
+ <20210913015711-mutt-send-email-mst@kernel.org>
+ <CACGkMEva2j57tG=-QYG7NdgEV28i-gpBReRR+UX7YwrHzRWydw@mail.gmail.com>
+ <20210913022257-mutt-send-email-mst@kernel.org>
+ <CACGkMEsWJq0SMMfTBdoOxVa1_=k9nZkrRu2wYZo7WO-01p_sgQ@mail.gmail.com>
+ <20210913023626-mutt-send-email-mst@kernel.org>
+ <20210913024153-mutt-send-email-mst@kernel.org>
+ <CACGkMEu+HPBTV81EHOc6zWP7tTgTf4nDaXViUeejmT-Bhp0PEA@mail.gmail.com>
+ <87bl4wfeq1.ffs@tglx>
 MIME-Version: 1.0
-Message-ID: <trinity-27f56ffd-504a-4c34-9cda-0953ccc459a3-1631566430623@3c-app-gmx-bs69>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, p.rosenberger@kunbus.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Aw: Re: [PATCH] tpm: fix potential NULL pointer access in
- tpm_del_char_device()
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 13 Sep 2021 22:53:50 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <204a438b6db54060d03689389d6663b0d4ca815d.camel@kernel.org>
-References: <20210910180451.19314-1-LinoSanfilippo@gmx.de>
- <204a438b6db54060d03689389d6663b0d4ca815d.camel@kernel.org>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:mRkR/BryvYpdOREPVnSkv4q0GMCGed0FmfaW+Ko5NshPxZKEfu7va6u5xiYPB+DIck60l
- aOczt6/VhN5Jfg+sGpER8I+Hfqz+XmNyIa5AY8MSk1UfOo8UPaM6k6a/BS9HliCW0rmRWGE40Gv4
- BkKGFAdup4fQyXsMaGZRGWIQv5zlc3OidRSIREpuCmjPZYXUR/6BBwb+2UU2zwGN7W4nvbK5/YYJ
- 4qQyjuEetyu9FChhkyF5TlZKansz2utakOO8YjkbrHhS3y9mN1vzuZ6lsOBogWaMMvY+ywsvkFc+
- O0=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uYuHfN1JriI=:DtBZSOURbchsaDSgWzW7Ft
- ZZm2cxBJMVEcr3QvMPfDI4v/RcUvDnLYOfBN7a51Bcoc0HgJNHTZlf8KVYoPcn/hFFDCqmfBP
- I3Lpd0YPn20QvyhQdJ79OqozjJspVp0oEbWYKJHGgp8NurvSn4sJqdTl6clcrsRbigpOBJtP3
- j0ForO/Y5/hQRiz24DNFT5x/0mHuAdPfBwx2l0pki92pf4FNfTxA7LoUxgwBXQNaqWt55tUg0
- RHk1w+03EVofwjKTD/xaZMVYsz91RmCfvsZnn3gNVV1gG5fG7eZcwX6Mg2/xHFUiR4CdPrAnh
- 3r0eHecwbsowgUxVbX99fx40t2+cNkxPLpcLvA6bs/F0PQVcoXnK+9J2UloCS3VoBz770RXjb
- SMgghoWUcIyNT2QgKjcffVr0IGBDDFURdtkWq2A/qVL3PzkOw4FUu3dad+/pvrYBlPMknP39Q
- zt0trDwTJ2YltPwVUEIuMBYcS1KRHNDrPtYNYnAo2Kg4PL0A0OLlhvaTnL4bfsS7JYleLBkDj
- Fg0DBU+zNjUtdi6uNh6qqAx28xNvy8EB5nIykIAEzZK3zsu0TI9PFfDPsW2eD1JnrnS2nCC29
- j8LdpEtvQ1LHCi+JXH/xYtbNg9zuRMpO2R8i+9g6TRrOOZi9PsDDsaFwVZyJWCdRixhB6FYrX
- wkPS0/xq7ipPgWfP8VdYNaJhtnr5iC/UGH+Krt3eUBtaFdHl1IjdR48xx0ceoCJsmtYcsHhi1
- 9ZXGbvq2bcz3mk7Miom/eOT7nGWgMKf9OKD5gcsASiMlT5QwHEcA/eWduF6X6PZJBxYowvPKl
- yYPKKiv
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87bl4wfeq1.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi,
-
-> Gesendet: Montag, 13. September 2021 um 22:25 Uhr
-> Von: "Jarkko Sakkinen" <jarkko@kernel.org>
-> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>, peterhuewe@gmx.de, jgg@zi=
-epe.ca
-> Cc: p.rosenberger@kunbus.com, linux-integrity@vger.kernel.org, linux-ker=
-nel@vger.kernel.org, stable@vger.kernel.org
-> Betreff: Re: [PATCH] tpm: fix potential NULL pointer access in tpm_del_c=
-har_device()
->
-> On Fri, 2021-09-10 at 20:04 +0200, Lino Sanfilippo wrote:
-> > In tpm_del_char_device() make sure that chip->ops is still valid.
-> > This check is needed since in case of a system shutdown
-> > tpm_class_shutdown() has already been called and set chip->ops to NULL=
-.
-> > This leads to a NULL pointer access as soon as tpm_del_char_device()
-> > tries to access chip->ops in case of TPM 2.
+On Mon, Sep 13, 2021 at 09:38:30PM +0200, Thomas Gleixner wrote:
+> On Mon, Sep 13 2021 at 15:07, Jason Wang wrote:
+> > On Mon, Sep 13, 2021 at 2:50 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >> > But doen't "irq is disabled" basically mean "we told the hypervisor
+> >> > to disable the irq"?  What extractly prevents hypervisor from
+> >> > sending the irq even if guest thinks it disabled it?
+> >>
+> >> More generally, can't we for example blow away the
+> >> indir_desc array that we use to keep the ctx pointers?
+> >> Won't that be enough?
 > >
-> > Fixes: dcbeab1946454 ("tpm: fix crash in tpm_tis deinitialization")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> > ---
->
-> Have you been able to reproduce this in some environment?
->
-> /Jarkko
->
->
+> > I'm not sure how it is related to the indirect descriptor but an
+> > example is that all the current driver will assume:
+> >
+> > 1) the interrupt won't be raised before virtio_device_ready()
+> > 2) the interrupt won't be raised after reset()
+> 
+> If that assumption exists, then you better keep the interrupt line
+> disabled until virtio_device_ready() has completed
 
-Yes, this bug is reproducable on my system that is running a 5.10 raspberr=
-y kernel.
-I use a SLB 9670 which is connected via SPI.
+started not completed. device is allowed to send
+config interrupts right after DRIVER_OK status is set by
+virtio_device_ready.
 
-Regards,
-Lino
+> and disable it again
+> before reset() is invoked. That's a question of general robustness and
+> not really a question of trusted hypervisors and encrypted guests.
+
+We can do this for some MSIX interrupts, sure. Not for shared interrupts though.
+
+> >> > > > > > > +void vp_disable_vectors(struct virtio_device *vdev)
+> >> > > > > > >  {
+> >> > > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> >> > > > > > >       int i;
+> >> > > > > > > @@ -34,7 +34,20 @@ void vp_synchronize_vectors(struct virtio_device *vdev)
+> >> > > > > > >               synchronize_irq(vp_dev->pci_dev->irq);
+> 
+> Don't you want the same change for non-MSI interrupts?
+
+
+We can't disable them - these are shared.
+
+> Thanks,
+> 
+>         tglx
+
