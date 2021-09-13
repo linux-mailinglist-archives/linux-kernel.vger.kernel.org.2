@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F01B4097D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6E14097F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245661AbhIMPwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:52:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38106 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhIMPwA (ORCPT
+        id S241303AbhIMPyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:54:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39104 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242379AbhIMPyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:52:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B579C21F34;
-        Mon, 13 Sep 2021 15:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631548242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 13 Sep 2021 11:54:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631548371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+eyk10XtROXLts0BsM53ESJTU6x6wdPA46RKx5foHiI=;
-        b=A81Fjnx62iAN1magonQFZvuCwH43fJ6m1MZXiPGdtAXyKPi+1GiHzXFeZNAHC1iyxZMi3o
-        ROCuVtdmZtxJUqa+Ak7iAOsqG2PGcL7+PkYPknJ/uK91C8HW55+04zl0GvoAZ9g59HtbRu
-        wF9UdRKedIC5xaqcC2Gi1UM0o7OIZ0w=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        bh=k3ULkNN3/XfJylBmZ/HItDZv9Uxt7R1OIeLedwQKthY=;
+        b=FZfQ1oyD/b3hC6+lwxGn39v+0rIeulei50qYdJlz4s5269IwLvxqIDB3sQ7iY/EQKGSr68
+        V1RSEPBIx0E625v6uDqmOsv2tUX9YWd2e48gFARzKLfhAl1ymeDYr3rca3FpOGeprvngux
+        m1JUEl3FRC9NHpvtjCexr7z79P+ERxk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-gMqss-F0MWCA1O6CT3YIWg-1; Mon, 13 Sep 2021 11:52:49 -0400
+X-MC-Unique: gMqss-F0MWCA1O6CT3YIWg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4045DA3B94;
-        Mon, 13 Sep 2021 15:50:42 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 17:50:41 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Hillf Danton <hdanton@sina.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 0/8] hugetlb: add demote/split page functionality
-Message-ID: <YT9zUaPofENSMQHg@dhcp22.suse.cz>
-References: <efcf6049-6110-d516-b21f-41bb8775f042@suse.cz>
- <2d826470-d345-0196-1359-b79ed08dfc66@oracle.com>
- <b3b334ea-0e6f-ced9-e444-df4ec49455a0@suse.cz>
- <02a1a50f-4e7c-4eb7-519c-35b26ec2c6af@oracle.com>
- <20210907085001.3773-1-hdanton@sina.com>
- <6c42bed7-d4dd-e5eb-5a74-24cf64bf52d3@oracle.com>
- <YTn196em42sDsXs+@dhcp22.suse.cz>
- <71f855ac-ff61-1eed-454f-909c0e4210b2@suse.cz>
- <YTsVT74kAgpAD17s@dhcp22.suse.cz>
- <2519e0f8-98ee-6bad-3895-ac733635e5b0@oracle.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BE0C1006AA0;
+        Mon, 13 Sep 2021 15:52:48 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 45D8A5C1D1;
+        Mon, 13 Sep 2021 15:52:45 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 17:52:43 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Dmitry V. Levin" <ldv@strace.io>,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2] io-wq: expose IO_WQ_ACCT_* enumeration items to UAPI
+Message-ID: <20210913155243.GA23359@asgard.redhat.com>
+References: <20210913104101.GA29616@asgard.redhat.com>
+ <872209f5-d11c-1b80-6146-5646206e22cb@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2519e0f8-98ee-6bad-3895-ac733635e5b0@oracle.com>
+In-Reply-To: <872209f5-d11c-1b80-6146-5646206e22cb@kernel.dk>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 10-09-21 17:11:05, Mike Kravetz wrote:
-[...]
-> @@ -5064,8 +5068,18 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask)
->  	if (did_some_progress > 0 &&
->  			should_compact_retry(ac, order, alloc_flags,
->  				compact_result, &compact_priority,
-> -				&compaction_retries))
-> +				&compaction_retries)) {
-> +		/*
-> +		 * In one pathological case, pages can be stolen immediately
-> +		 * after reclaimed.  It looks like we are making progress, and
-> +		 * compaction_retries is not incremented.  This could cause
-> +		 * an indefinite number of retries.  Cap the number of retries
-> +		 * for costly orders.
-> +		 */
-> +		if (max_tries && tries > max_tries)
-> +			goto nopage;
->  		goto retry;
-> +	}
+On Mon, Sep 13, 2021 at 07:28:11AM -0600, Jens Axboe wrote:
+> This is really the same thing as before, just the names have changed.
+> What I suggested was keeping the enum in io_uring, then just adding
+> 
+> enum {
+> 	IO_WQ_BOUND,
+> 	IO_WQ_UNBOUND,
+> };
+> 
+> to uapi header. The ACCT stuff is io-wq specific too, that kind of naming
+> shouldn't be propagated to userspace.
 
-I do not think this is a good approach. We do not want to play with
-retries numbers. If we want to go with a minimal change for now then the
-compaction feedback mechanism should track the number of reclaimed pages
-to satisfy watermarks and if that grows beyond reasonable (proportionaly
-to the request size) then simply give up rather than keep trying again
-and again.
+My apologies, I've overlooked the fact that the proposed names
+are different.  Updated and resent[1].
 
--- 
-Michal Hocko
-SUSE Labs
+[1] https://lore.kernel.org/lkml/20210913154415.GA12890@asgard.redhat.com/
+
+> A BUILD_BUG_ON() could be added for them being different, but honestly
+> I don't think that's worth it.
+
