@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45DB408F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EC840913A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241539AbhIMNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:39:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48044 "EHLO mail.kernel.org"
+        id S243868AbhIMN76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242560AbhIMN3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:29:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AE26135A;
-        Mon, 13 Sep 2021 13:24:25 +0000 (UTC)
+        id S1343698AbhIMN4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:56:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E749261980;
+        Mon, 13 Sep 2021 13:36:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539466;
-        bh=uqjeZGyb5HvQ4WsF8XnBLIxH5SlKp0TIzo0oxRYz/rs=;
+        s=korg; t=1631540172;
+        bh=B6CnmDKNiz/YeE4W4DuU3Bd7xg2Uamg9jbmgauASUws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fSyiZWP8AmEJwts4MEmW7oCBfU0eWprNELFjBBh3ErCh/1ensxu2j8CFY7SI7wdCY
-         wwQTU2fahYa2Dflfg20Z2QMK38tJGHTjORmxaIzUD65f4AKOqCW1P6uZXbe1dNR1+n
-         wQ5bVve0fvTou5O2yIkwf3xVwaFgfv05sqSAyV7c=
+        b=HFUv6UsJKVyqqjZIrOokl/rd6+MJ0C0r3HL/0EryNvhpZlArOH54XDDKHTwzZwp9n
+         cFzov9eXSs6YZA/9/edN8PAeLvJ8b7GWucDdnz82j8r5mo42w+1NzkMoXLvkpYwt1u
+         5ADRaIKmzLsw0N8FtOFq4uUNawvidAU6byUzrgc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Steven Price <steven.price@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/236] s390/pci: fix misleading rc in clp_set_pci_fn()
-Date:   Mon, 13 Sep 2021 15:12:21 +0200
-Message-Id: <20210913131101.571436744@linuxfoundation.org>
+Subject: [PATCH 5.13 081/300] drm/panfrost: Fix missing clk_disable_unprepare() on error in panfrost_clk_init()
+Date:   Mon, 13 Sep 2021 15:12:22 +0200
+Message-Id: <20210913131112.109245217@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,128 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <schnelle@linux.ibm.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit f7addcdd527a6dddfebe20c358b87bdb95624612 ]
+[ Upstream commit f42498705965bd4b026953c1892c686d8b1138e4 ]
 
-Currently clp_set_pci_fn() always returns 0 as long as the CLP request
-itself succeeds even if the operation itself returns a response code
-other than CLP_RC_OK or CLP_RC_SETPCIFN_ALRDY. This is highly misleading
-because calling code assumes that a zero rc means that the operation was
-successful.
+Fix the missing clk_disable_unprepare() before return
+from panfrost_clk_init() in the error handling case.
 
-Fix this by returning the response code or cc on failure with the
-exception of the special handling for CLP_RC_SETPCIFN_ALRDY. Also let's
-not assume that the returned function handle for CLP_RC_SETPCIFN_ALRDY
-is 0, we don't need it anyway.
-
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: b681af0bc1cc ("drm: panfrost: add optional bus_clock")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Reviewed-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210608143856.4154766-1-weiyongjun1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/pci/pci.c     |  7 ++++---
- arch/s390/pci/pci_clp.c | 33 ++++++++++++++++-----------------
- 2 files changed, 20 insertions(+), 20 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index ca1a105e3b5d..0ddb1fe353dc 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -659,9 +659,10 @@ int zpci_enable_device(struct zpci_dev *zdev)
- {
- 	int rc;
- 
--	rc = clp_enable_fh(zdev, ZPCI_NR_DMA_SPACES);
--	if (rc)
-+	if (clp_enable_fh(zdev, ZPCI_NR_DMA_SPACES)) {
-+		rc = -EIO;
- 		goto out;
-+	}
- 
- 	rc = zpci_dma_init_device(zdev);
- 	if (rc)
-@@ -684,7 +685,7 @@ int zpci_disable_device(struct zpci_dev *zdev)
- 	 * The zPCI function may already be disabled by the platform, this is
- 	 * detected in clp_disable_fh() which becomes a no-op.
- 	 */
--	return clp_disable_fh(zdev);
-+	return clp_disable_fh(zdev) ? -EIO : 0;
- }
- EXPORT_SYMBOL_GPL(zpci_disable_device);
- 
-diff --git a/arch/s390/pci/pci_clp.c b/arch/s390/pci/pci_clp.c
-index d3331596ddbe..0a0e8b8293be 100644
---- a/arch/s390/pci/pci_clp.c
-+++ b/arch/s390/pci/pci_clp.c
-@@ -213,15 +213,19 @@ out:
- }
- 
- static int clp_refresh_fh(u32 fid);
--/*
-- * Enable/Disable a given PCI function and update its function handle if
-- * necessary
-+/**
-+ * clp_set_pci_fn() - Execute a command on a PCI function
-+ * @zdev: Function that will be affected
-+ * @nr_dma_as: DMA address space number
-+ * @command: The command code to execute
-+ *
-+ * Returns: 0 on success, < 0 for Linux errors (e.g. -ENOMEM), and
-+ * > 0 for non-success platform responses
-  */
- static int clp_set_pci_fn(struct zpci_dev *zdev, u8 nr_dma_as, u8 command)
- {
- 	struct clp_req_rsp_set_pci *rrb;
- 	int rc, retries = 100;
--	u32 fid = zdev->fid;
- 
- 	rrb = clp_alloc_block(GFP_KERNEL);
- 	if (!rrb)
-@@ -245,17 +249,16 @@ static int clp_set_pci_fn(struct zpci_dev *zdev, u8 nr_dma_as, u8 command)
- 		}
- 	} while (rrb->response.hdr.rsp == CLP_RC_SETPCIFN_BUSY);
- 
--	if (rc || rrb->response.hdr.rsp != CLP_RC_OK) {
--		zpci_err("Set PCI FN:\n");
--		zpci_err_clp(rrb->response.hdr.rsp, rc);
--	}
--
- 	if (!rc && rrb->response.hdr.rsp == CLP_RC_OK) {
- 		zdev->fh = rrb->response.fh;
--	} else if (!rc && rrb->response.hdr.rsp == CLP_RC_SETPCIFN_ALRDY &&
--			rrb->response.fh == 0) {
-+	} else if (!rc && rrb->response.hdr.rsp == CLP_RC_SETPCIFN_ALRDY) {
- 		/* Function is already in desired state - update handle */
--		rc = clp_refresh_fh(fid);
-+		rc = clp_refresh_fh(zdev->fid);
-+	} else {
-+		zpci_err("Set PCI FN:\n");
-+		zpci_err_clp(rrb->response.hdr.rsp, rc);
-+		if (!rc)
-+			rc = rrb->response.hdr.rsp;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+index fbcf5edbe367..9275cd0b2793 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_device.c
++++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+@@ -54,7 +54,8 @@ static int panfrost_clk_init(struct panfrost_device *pfdev)
+ 	if (IS_ERR(pfdev->bus_clock)) {
+ 		dev_err(pfdev->dev, "get bus_clock failed %ld\n",
+ 			PTR_ERR(pfdev->bus_clock));
+-		return PTR_ERR(pfdev->bus_clock);
++		err = PTR_ERR(pfdev->bus_clock);
++		goto disable_clock;
  	}
- 	clp_free_block(rrb);
- 	return rc;
-@@ -301,17 +304,13 @@ int clp_enable_fh(struct zpci_dev *zdev, u8 nr_dma_as)
  
- 	rc = clp_set_pci_fn(zdev, nr_dma_as, CLP_SET_ENABLE_PCI_FN);
- 	zpci_dbg(3, "ena fid:%x, fh:%x, rc:%d\n", zdev->fid, zdev->fh, rc);
--	if (rc)
--		goto out;
--
--	if (zpci_use_mio(zdev)) {
-+	if (!rc && zpci_use_mio(zdev)) {
- 		rc = clp_set_pci_fn(zdev, nr_dma_as, CLP_SET_ENABLE_MIO);
- 		zpci_dbg(3, "ena mio fid:%x, fh:%x, rc:%d\n",
- 				zdev->fid, zdev->fh, rc);
- 		if (rc)
- 			clp_disable_fh(zdev);
- 	}
--out:
- 	return rc;
- }
- 
+ 	if (pfdev->bus_clock) {
 -- 
 2.30.2
 
