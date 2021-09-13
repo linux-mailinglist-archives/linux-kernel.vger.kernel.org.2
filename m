@@ -2,90 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAEA408A30
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709AF408A3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239295AbhIMLaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239238AbhIMLai (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:30:38 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDCBC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:29:22 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so6237206pjq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hfoENClijP5gdD7xuDkNBoWdUfMDgkyOc6qJ1KAohPY=;
-        b=oL+KovyrKNkgVbEbUGhoxjNyuI9WEEKCZaHmtKaUZti3DYBGsD74ZfLqoCwDyw+6sZ
-         fwKowR+Wq2IUjOJ6eUuWLrnNSbpu1AN011zm/U9jAlQwgOffXn6iVFzCi5JYkzIA8AM3
-         SVYedHa4qsl9UIxjpHFNGtK0F0/AQAh5ObYkU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hfoENClijP5gdD7xuDkNBoWdUfMDgkyOc6qJ1KAohPY=;
-        b=zpAFYvVOvKscvapFzukqP6eRXWs6wVGZUB9b9d3HaTJbctY567FPVUZOV5pTgRzraT
-         RWDYtWlENXnDg5FN8lpEgLtvXlKkZT5T/dlrQMSdHVWwAYCcmkBYX4A3m3PFrWwQGB+8
-         jnHMuEFMmuM/J8zD2+qc4jclFFN4c9YOZO6v8OdZnfwvZfnwHUK7zQv4Izsny+sTIWcv
-         atzOHTitLQupSGFBLvfpU1b0WMkvO6rC1uUvkOeje9/CLXlTGqS8clyOrUQpLL6kpZH/
-         SzsnvIQ2niomor//lM7eFaJIkcKej20wb53or11gZpH8VeYPd4BfxobvWnaZ7+y0NiCP
-         pvLQ==
-X-Gm-Message-State: AOAM531vWlc+Dd6h4hGNiGmNZ3jqjbrnUHSX6Vm1N8zxnbmBkbpgGqni
-        IkvUIzWrXN/+h/VJVwzpOyuIAmlVOM7WSA==
-X-Google-Smtp-Source: ABdhPJzT/5yaxY/5ENcuHbT99u6Tv7Ca3HYaaLWiHKmqVJiUmD6xN/KRcpkRjXjl6mHAoqlTnrv7kQ==
-X-Received: by 2002:a17:90a:1982:: with SMTP id 2mr12341017pji.112.1631532562068;
-        Mon, 13 Sep 2021 04:29:22 -0700 (PDT)
-Received: from shiro.work (p864106-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.58.106])
-        by smtp.googlemail.com with ESMTPSA id z8sm6650000pfa.113.2021.09.13.04.29.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 04:29:21 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     jic23@kernel.org, lars@metafoo.de, jmaneyrol@invensense.com,
-        linux-iio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2] iio: imu: inv_mpu6050: Mark acpi match table as maybe unused
-Date:   Mon, 13 Sep 2021 20:29:13 +0900
-Message-Id: <20210913112913.2148026-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.33.0
+        id S239615AbhIMLbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:31:14 -0400
+Received: from mail-dm6nam08on2067.outbound.protection.outlook.com ([40.107.102.67]:44416
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239598AbhIMLbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:31:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P01SVEDUpSf19/sBbEUJyQ1FbMGna2cZw4PySFLfvEbWVyYy1FnoC5GB1NKzC2UDqVb9SfBAr96KA90KW0WM82XkdUzaeW36eUTEvz90llrcA6xcmXr65kLLW4oMd4EHDTBJskC1RtG1MUDHSdhsJYShMwqzPjzF3f8yHtm6yzjYUhG+VszqmGx4CihoWDAIJhuYf06L6yY8UaOjzwvqELRggehPEszXX1xAwzDw+KYkbwVxHQZwX7Io6/tLuEO7r+n4ob0ukTjGEYDsLbC1WfE9d/tvL0zTB5NqpUowX6h2tAQ+frGqFJpyPPGlTqkyBwTXzDZunKIyg8MAIktLUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=huu3d78C9ehv5mPFwpRJb1QTF7HYkTOxJryv2LOni1s=;
+ b=LhpVg+2argcO6h9AlXtIAUmt0o/kqzeS4V1UvnZn8VQurLvD2UuhvUqS/eXxm5xriQ0ma07ap0D9+IBN/jXHcjY2GRv88YKdJpcLjlB57T/jNI9x8fgaHz/JE/BJR+f1YBtgTbhDiphply07x/MoqRxbGmkqhgF3Z4mhqrYpQ3uPyD6oWSFZvWOw3cifXVL7CawveQ8R92QRNl0QBagIXLhSvs1YxcH3ZM+M/R891i1u4scCYkfhePLID6Co7EyYyxEc5fAuiDmZivlBdZbmJVYM9J8qVTw2M4qLncOM3iYc82pO14jNQAlk+Z+7E5nN/Zzi5zCbp7su+90qPpUKiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=huu3d78C9ehv5mPFwpRJb1QTF7HYkTOxJryv2LOni1s=;
+ b=5bohTtEsMvv5yStbvtgWLr3gxZeok7cSF3UzdlH1PipxwD86o87dxKb0/0l46uQ3wws84HMtUH2JqLEPsS9N7viyfBIFnA2JZ/Px6jAHyOhBcmRr5l6ltWpKBVogDMjVIWvXB1+fyW3+A8zqRHrAGX1+lWWZg88uwmk93Hyece8=
+Received: from DM3PR08CA0020.namprd08.prod.outlook.com (2603:10b6:0:52::30) by
+ BYAPR12MB4984.namprd12.prod.outlook.com (2603:10b6:a03:105::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Mon, 13 Sep
+ 2021 11:29:53 +0000
+Received: from DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:0:52:cafe::5a) by DM3PR08CA0020.outlook.office365.com
+ (2603:10b6:0:52::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
+ Transport; Mon, 13 Sep 2021 11:29:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=pass action=none
+ header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT039.mail.protection.outlook.com (10.13.172.83) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 11:29:53 +0000
+Received: from hr-amd (10.180.168.240) by SATLEXMB04.amd.com (10.181.40.145)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 13 Sep
+ 2021 06:29:49 -0500
+Date:   Mon, 13 Sep 2021 19:29:45 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+CC:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH 13/19] cpupower: add the function to check amd-pstate
+ enabled
+Message-ID: <20210913112945.GE3731830@hr-amd>
+References: <20210908150001.3702552-1-ray.huang@amd.com>
+ <20210908150001.3702552-14-ray.huang@amd.com>
+ <50412248-179d-3548-aeb0-d912a14a152f@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <50412248-179d-3548-aeb0-d912a14a152f@linuxfoundation.org>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87bd1362-60cf-4119-8eda-08d976a9ce4b
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4984:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB4984B6371C03FF73665249FAECD99@BYAPR12MB4984.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xies/+w4Bl2/IolIgBL76ADv/kR1iwTrOZs0b1bU3LnVBn1EAVfOF2mTt6PhVfx2o35Cw2TLx2u30RIb/s6Eqa/rnkI8lnh3b6/x33vxvFBEsfXH+qxy+3/qcVMz+1k2hOETFjC/3PJWpDKSJrj8bWVxFS4mRAV6/UarYHWCkL/qwKMjjCj9OcZyDfGdu6yZyhmf5pef259dks85H2DpSEDyTfXfVSgllIgE5p3UhLAPWREEAzfVXM/NaicY8qujDpejoTZFZfbwE9LCbHyWa7mi7UQQGwReJxuXbalQXr3FqgQvLvKXbbN08EC9VpVRIGoKK6QmxJ87HtZ4jU4xg74YG+MzRZZQZESvDRCs4/pSVYYMv9KwWgr60gHiEeh554uZqsS2TszqjyvluONrQnXfftVRpTpFKm2ASxSSZlwQul4X5jMNKMyOwd1x8VJCE645pcJDaqGF8zcVTsUXrA0YJHg1S4+POIpFmETDLC1gCCaLxB6z96b/TqJSiWg+RFKWBSiixXta4OkugD5KxXg/7ahLVXugEBt4Wb4KziFPbWrntT2o9faxe2WXt7Kw7TQo7ovG/r5rk51lkQVk5OdNP2qiUde9MQKcA6Fbr9Wki0IGpqSyYzPcbHo7w+ifMFFUVa+OBU3+81zrna+iY066Ky+WzSy++xKcCMFSHdOePUgwG8+eIUplbU6Iwd8QAVq6O1Vz682iUwwh6tF3uYbfNywiQUG7px6hSCkuXjk=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(396003)(346002)(46966006)(36840700001)(47076005)(81166007)(8936002)(356005)(55016002)(36860700001)(86362001)(478600001)(426003)(82740400003)(70586007)(186003)(70206006)(336012)(4326008)(33656002)(9686003)(53546011)(316002)(6666004)(6916009)(26005)(16526019)(82310400003)(33716001)(2906002)(8676002)(1076003)(54906003)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 11:29:53.1255
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87bd1362-60cf-4119-8eda-08d976a9ce4b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT039.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4984
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building kernels without ACPI support the table is declared
-but is not used because ACPI_PTR() turns it into a NULL.
+On Fri, Sep 10, 2021 at 06:16:21AM +0800, Shuah Khan wrote:
+> On 9/8/21 8:59 AM, Huang Rui wrote:
+> > Introduce the cpupower_amd_pstate_enabled() to check whether the kernel
+> > mode enables amd-pstate.
+> > 
+> 
+> What does "kernel mode" mean? Are you referring to kernel vs.
+> firmware mode?
 
-Add the __maybe_unused attribute to stop the compiler whining.
+I am referring kernel. In fact, the proccessor which supports the AMD
+P-States also supports the legacy ACPI P-States as well. So this API is to
+check whether the kernel driver is using amd-pstate or acpi-cpufreq.
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
-Ignore the first version. I'm an idiot and generated a patch,
-check that it worked, noticed it didn't, fixed it up and then
-forgot to regenerate the patch before sending it.
+I would have explained this, sorry to make you confused, I will explain the
+details in the commit log at V2.
 
- drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Ray
 
-diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
-index 95f16951c8f4..3ef17e3f50e2 100644
---- a/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
-+++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
-@@ -249,7 +249,7 @@ static const struct of_device_id inv_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, inv_of_match);
- 
--static const struct acpi_device_id inv_acpi_match[] = {
-+static const struct acpi_device_id __maybe_unused inv_acpi_match[] = {
- 	{"INVN6500", INV_MPU6500},
- 	{ },
- };
--- 
-2.33.0
-
+> 
+> > Signed-off-by: Huang Rui <ray.huang@amd.com>
+> > ---
+> >   tools/power/cpupower/utils/helpers/helpers.h |  5 +++++
+> >   tools/power/cpupower/utils/helpers/misc.c    | 20 ++++++++++++++++++++
+> >   2 files changed, 25 insertions(+)
+> > 
+> > diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
+> > index b4813efdfb00..eb43c14d1728 100644
+> > --- a/tools/power/cpupower/utils/helpers/helpers.h
+> > +++ b/tools/power/cpupower/utils/helpers/helpers.h
+> > @@ -136,6 +136,11 @@ extern int decode_pstates(unsigned int cpu, int boost_states,
+> >   
+> >   extern int cpufreq_has_boost_support(unsigned int cpu, int *support,
+> >   				     int *active, int * states);
+> > +
+> > +/* AMD PSTATE enabling **************************/
+> > +
+> > +extern unsigned long cpupower_amd_pstate_enabled(unsigned int cpu);
+> > +
+> >   /*
+> >    * CPUID functions returning a single datum
+> >    */
+> > diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
+> > index fc6e34511721..07d80775fb68 100644
+> > --- a/tools/power/cpupower/utils/helpers/misc.c
+> > +++ b/tools/power/cpupower/utils/helpers/misc.c
+> > @@ -83,6 +83,26 @@ int cpupower_intel_set_perf_bias(unsigned int cpu, unsigned int val)
+> >   	return 0;
+> >   }
+> >   
+> > +unsigned long cpupower_amd_pstate_enabled(unsigned int cpu)
+> > +{
+> > +	char linebuf[MAX_LINE_LEN];
+> > +	char path[SYSFS_PATH_MAX];
+> > +	unsigned long val;
+> > +	char *endp;
+> > +
+> > +	snprintf(path, sizeof(path),
+> > +		 PATH_TO_CPU "cpu%u/cpufreq/is_amd_pstate_enabled", cpu);
+> > +
+> > +	if (cpupower_read_sysfs(path, linebuf, MAX_LINE_LEN) == 0)
+> > +		return 0;
+> > +
+> > +	val = strtoul(linebuf, &endp, 0);
+> > +	if (endp == linebuf || errno == ERANGE)
+> > +		return 0;
+> > +
+> > +	return val;
+> > +}
+> > +
+> >   #endif /* #if defined(__i386__) || defined(__x86_64__) */
+> >   
+> >   /* get_cpustate
+> > 
+> 
