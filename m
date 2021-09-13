@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3024092CE
+	by mail.lfdr.de (Postfix) with ESMTP id 8279C4092CF
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344923AbhIMOPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:15:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59950 "EHLO mail.kernel.org"
+        id S1344942AbhIMOPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:15:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245021AbhIMOMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245082AbhIMOMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:12:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFAD861ABB;
-        Mon, 13 Sep 2021 13:42:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E05F61ABA;
+        Mon, 13 Sep 2021 13:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540555;
-        bh=E/4e5cDsBv25x9Gdn3jZTWAWC4/mGWRHdHrBZx9arLM=;
+        s=korg; t=1631540557;
+        bh=f0jqccH4u31D1hQ9soH6LUANBvUjxwkJJZdHnqN0E98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TymegticgO2M3CWW5kOECrvFQhLF805ENq7AafaYXCLQ1w4V9lq7vgzvD4TIMNbES
-         nrxM4YCcNg/jCeFm633kJ/sIBfMRwbCGFKuo2uumYWajkvfNgWBcZuv/yA4Djv9HdH
-         Z8tbtNd+t/oH/qo2kqwDch+kDsqHYEvcXNjONUI8=
+        b=tIWwwaIvFkmkhE3+sTqZ0Ph5sAH2Cd25tDMUeDNhPXp9mAwcbtenAcxttzvgeA3ph
+         6dNJZB5dOq+HPPOntdUSoQOYWNlJEdzO6UshkagRt3+CrGuL78FTtJ9vj2q77avzcF
+         uU6dbgiMT2qc2OGApKd8lqkTILJLQ6DSay3YSzEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        stable@vger.kernel.org, Roi Dayan <roid@nvidia.com>,
+        Paul Blakey <paulb@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Yicong Yang <yangyicong@hisilicon.com>
-Subject: [PATCH 5.13 242/300] net/mlx5: Remove all auxiliary devices at the unregister event
-Date:   Mon, 13 Sep 2021 15:15:03 +0200
-Message-Id: <20210913131117.528948802@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 243/300] net/mlx5e: Fix possible use-after-free deleting fdb rule
+Date:   Mon, 13 Sep 2021 15:15:04 +0200
+Message-Id: <20210913131117.561306333@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -41,36 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Roi Dayan <roid@nvidia.com>
 
-[ Upstream commit 8e7e2e8ed0e251138926838b7933f8eb6dd56b12 ]
+[ Upstream commit 9a5f9cc794e17cf6ed2a5bb215d2e8b6832db444 ]
 
-The call to mlx5_unregister_device() means that mlx5_core driver is
-removed. In such scenario, we need to disregard all other flags like
-attach/detach and forcibly remove all auxiliary devices.
+After neigh-update-add failure we are still with a slow path rule but
+the driver always assume the rule is an fdb rule.
+Fix neigh-update-del by checking slow path tc flag on the flow.
+Also fix neigh-update-add for when neigh-update-del fails the same.
 
-Fixes: a5ae8fc9058e ("net/mlx5e: Don't create devices during unload flow")
-Tested-and-Reported-by: Yicong Yang <yangyicong@hisilicon.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Fixes: 5dbe906ff1d5 ("net/mlx5e: Use a slow path rule instead if vxlan neighbour isn't available")
+Signed-off-by: Roi Dayan <roid@nvidia.com>
+Reviewed-by: Paul Blakey <paulb@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/dev.c b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-index def2156e50ee..20bb37266254 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-@@ -397,7 +397,7 @@ int mlx5_register_device(struct mlx5_core_dev *dev)
- void mlx5_unregister_device(struct mlx5_core_dev *dev)
- {
- 	mutex_lock(&mlx5_intf_mutex);
--	dev->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV;
-+	dev->priv.flags = MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV;
- 	mlx5_rescan_drivers_locked(dev);
- 	mutex_unlock(&mlx5_intf_mutex);
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+index 490131e06efb..aa4dc7d624f8 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun_encap.c
+@@ -143,7 +143,7 @@ void mlx5e_tc_encap_flows_add(struct mlx5e_priv *priv,
+ 	mlx5e_rep_queue_neigh_stats_work(priv);
+ 
+ 	list_for_each_entry(flow, flow_list, tmp_list) {
+-		if (!mlx5e_is_offloaded_flow(flow))
++		if (!mlx5e_is_offloaded_flow(flow) || !flow_flag_test(flow, SLOW))
+ 			continue;
+ 		attr = flow->attr;
+ 		esw_attr = attr->esw_attr;
+@@ -184,7 +184,7 @@ void mlx5e_tc_encap_flows_del(struct mlx5e_priv *priv,
+ 	int err;
+ 
+ 	list_for_each_entry(flow, flow_list, tmp_list) {
+-		if (!mlx5e_is_offloaded_flow(flow))
++		if (!mlx5e_is_offloaded_flow(flow) || flow_flag_test(flow, SLOW))
+ 			continue;
+ 		attr = flow->attr;
+ 		esw_attr = attr->esw_attr;
 -- 
 2.30.2
 
