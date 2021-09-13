@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630FD408D43
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77831408D3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhIMNYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:24:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34854 "EHLO mail.kernel.org"
+        id S241573AbhIMNYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:24:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240226AbhIMNUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240228AbhIMNUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 09:20:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 371C361107;
-        Mon, 13 Sep 2021 13:18:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D50556112E;
+        Mon, 13 Sep 2021 13:18:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539095;
-        bh=lTcWL6k9v8Y1UvkuwcRBbvwnQaH85q3/wR3KiDcyRdA=;
+        s=korg; t=1631539098;
+        bh=6WR/PA9doHS9lRfGDEn/9vjBBD+HOGYCtRs8PzhaRh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xT8JkZ4WmPWJUKSSpjv68Ujko/eEhPdaC7vtSqz9i68mOhUT/xO2Aecu4jHJS+o75
-         A9gyE2QMaQR5gVT/yhC9L+s8zHr+CYhTm7AP3S0a4w4QWjvzhuAglibExnpt7bCvF0
-         fMAxYQT4geM+YzmAbWHj4Cg+4BC1jqcv44aFicc0=
+        b=zZ6xsjVIfIXDjfIQTvt0vqWtj3UMM6xdpBJRZ+q6wB6SbuFyNxq5K/V2yXfAvvv2T
+         x6KDp/aJaPTHMFh5t+Wc3bzidxIVkObbQe+sS0TI8VgI0GE1+CYsyvWno0NZp1Vr1h
+         RRq8PE+MPYl5tMj0aPhWt/qEfai49TBkhyepF0vQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
+        stable@vger.kernel.org, Chen-Yu Tsai <wenst@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/144] certs: Trigger creation of RSA module signing key if its not an RSA key
-Date:   Mon, 13 Sep 2021 15:13:41 +0200
-Message-Id: <20210913131049.286580985@linuxfoundation.org>
+Subject: [PATCH 5.4 041/144] regulator: vctrl: Use locked regulator_get_voltage in probe path
+Date:   Mon, 13 Sep 2021 15:13:42 +0200
+Message-Id: <20210913131049.319371559@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -42,53 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
 
-[ Upstream commit ea35e0d5df6c92fa2e124bb1b91d09b2240715ba ]
+[ Upstream commit 98e47570ba985f2310586c80409238200fa3170f ]
 
-Address a kbuild issue where a developer created an ECDSA key for signing
-kernel modules and then builds an older version of the kernel, when bi-
-secting the kernel for example, that does not support ECDSA keys.
+In commit e9153311491d ("regulator: vctrl-regulator: Avoid deadlock getting
+and setting the voltage"), all calls to get/set the voltage of the
+control regulator were switched to unlocked versions to avoid deadlocks.
+However, the call in the probe path is done without regulator locks
+held. In this case the locked version should be used.
 
-If openssl is installed, trigger the creation of an RSA module signing
-key if it is not an RSA key.
+Switch back to the locked regulator_get_voltage() in the probe path to
+avoid any mishaps.
 
-Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
-Cc: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Fixes: e9153311491d ("regulator: vctrl-regulator: Avoid deadlock getting and setting the voltage")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Link: https://lore.kernel.org/r/20210825033704.3307263-2-wenst@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- certs/Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/regulator/vctrl-regulator.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/certs/Makefile b/certs/Makefile
-index f4b90bad8690..2baef6fba029 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -46,11 +46,19 @@ endif
- redirect_openssl	= 2>&1
- quiet_redirect_openssl	= 2>&1
- silent_redirect_openssl = 2>/dev/null
-+openssl_available       = $(shell openssl help 2>/dev/null && echo yes)
+diff --git a/drivers/regulator/vctrl-regulator.c b/drivers/regulator/vctrl-regulator.c
+index cbadb1c99679..93d33201ffe0 100644
+--- a/drivers/regulator/vctrl-regulator.c
++++ b/drivers/regulator/vctrl-regulator.c
+@@ -490,7 +490,8 @@ static int vctrl_probe(struct platform_device *pdev)
+ 		if (ret)
+ 			return ret;
  
- # We do it this way rather than having a boolean option for enabling an
- # external private key, because 'make randconfig' might enable such a
- # boolean option and we unfortunately can't make it depend on !RANDCONFIG.
- ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
-+
-+ifeq ($(openssl_available),yes)
-+X509TEXT=$(shell openssl x509 -in "certs/signing_key.pem" -text 2>/dev/null)
-+
-+$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
-+endif
-+
- $(obj)/signing_key.pem: $(obj)/x509.genkey
- 	@$(kecho) "###"
- 	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
+-		ctrl_uV = regulator_get_voltage_rdev(vctrl->ctrl_reg->rdev);
++		/* Use locked consumer API when not in regulator framework */
++		ctrl_uV = regulator_get_voltage(vctrl->ctrl_reg);
+ 		if (ctrl_uV < 0) {
+ 			dev_err(&pdev->dev, "failed to get control voltage\n");
+ 			return ctrl_uV;
 -- 
 2.30.2
 
