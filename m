@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9504096C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE7E4091B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344122AbhIMPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346512AbhIMPJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:09:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3D3C05BD39;
-        Mon, 13 Sep 2021 06:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2o21f40djM5aANch+hnWzvwqswYsNlXu0JdbF+Uae8M=; b=mWd0MfFrYPorMZMCayG9Lpi5bE
-        rLijC/+hxixhFynqqbncqSv+QEA9/PlikAsaBRJ8mQO98jTSBPQms5OVQpg2r+5hXWC1TA4C0YCuD
-        C3s5oO6mRfl6yAfjOJVy+5pKQmUsvDvQ+7q/DrRyPEpG1ouTZ2xZ3dBDP1oTzcR+BD46BffJLZspd
-        J8iHJ0PJVJL6GqE+BsKKB6uW4xgVOsRWdzCpB01AuEkTZJKTBhSupoIt9e7jhsBkgc17jAoOPAkrq
-        ckJpxG6xVkNbtcLr643bS48LpVGZqB4G6JOrYZpZbDr/SiWYYcFcAq2kxbpMVigDWQn+EWgCwxsxV
-        +e3UiqbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPmES-00DXOQ-6Z; Mon, 13 Sep 2021 13:43:14 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F13369862C3; Mon, 13 Sep 2021 15:42:45 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 15:42:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     yzaikin@google.com, liu.hailong6@zte.com.cn, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, mcgrof@kernel.org,
-        keescook@chromium.org, pjt@google.com, yang.yang29@zte.com.cn,
-        joshdon@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Zeal Robot <zealci@zte.com.cm>
-Subject: Re: [PATCH] sched: Add a new version sysctl to control child runs
- first
-Message-ID: <20210913134245.GD4323@worktop.programming.kicks-ass.net>
-References: <20210912041222.59480-1-yang.yang29@zte.com.cn>
- <YT8IQioxUARMus9w@hirez.programming.kicks-ass.net>
- <613f37fc.1c69fb81.9092.a4f5@mx.google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <613f37fc.1c69fb81.9092.a4f5@mx.google.com>
+        id S245605AbhIMOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:04:01 -0400
+Received: from comms.puri.sm ([159.203.221.185]:39980 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343735AbhIMOBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:01:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id E0720E129E;
+        Mon, 13 Sep 2021 06:57:39 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id looLM0Jr5CNu; Mon, 13 Sep 2021 06:57:39 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     robh@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        kernel@puri.sm, Angus Ainslie <angus@akkea.ca>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v1 5/6] arm64: dts: imx8mq-librem5: add power sequencing for M.2 cards
+Date:   Mon, 13 Sep 2021 15:57:05 +0200
+Message-Id: <20210913135706.309685-6-martin.kepplinger@puri.sm>
+In-Reply-To: <20210913135706.309685-1-martin.kepplinger@puri.sm>
+References: <20210913135706.309685-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:37:31AM +0000, CGEL wrote:
-> On Mon, Sep 13, 2021 at 10:13:54AM +0200, Peter Zijlstra wrote:
-> > On Sun, Sep 12, 2021 at 04:12:23AM +0000, cgel.zte@gmail.com wrote:
-> > > From: Yang Yang <yang.yang29@zte.com.cn>
-> > > 
-> > > The old version sysctl has some problems. First, it allows set value
-> > > bigger than 1, which is unnecessary. Second, it didn't follow the
-> > > rule of capabilities. Thirdly, it didn't use static key. This new
-> > > version fixes all the problems.
-> > 
-> > Does any of that actually matter?
-> 
-> For the first problem, I think the reason why sysctl_schedstats() only
-> accepts 0 or 1, is suitbale for sysctl_child_runs_first(). Since
-> task_fork_fair() only need sysctl_sched_child_runs_first to be
-> zero or non-zero.
+From: Angus Ainslie <angus@akkea.ca>
 
-This could potentially break people that already write a larger value in
-it -- by accident or otherwise.
+Some wifi cards need reset asserted until after the power supplies
+have been enabled.
 
-> For the second problem, I remember there is a rule: try to
-> administration system through capilities but not depends on
-> root identity. Just like sysctl_schedstats() or other
-> sysctl_xx().
+So wire up the W_DISABLE signal for the SDIO port (WIFI_REG_ON net) and
+the BT_REG_ON net to use it for power sequencing.
 
-It seems entirely daft to me; those files are already 644, if root opens
-the file and passes it along, it gets to keep the pieces.
+Signed-off-by: Angus Ainslie <angus@akkea.ca>
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+ .../boot/dts/freescale/imx8mq-librem5.dtsi    | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-> For the thirdly problem, sysctl_child_runs_first maynot changes
-> often, but may accessed often, like static_key delayacct_key
-> controlled by sysctl_delayacct().
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
+index e5fdb50557f2..65c86fbbd6d1 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
+@@ -199,6 +199,14 @@ simple-audio-card,codec {
+ 		};
+ 	};
+ 
++	usdhc2_pwrseq: pwrseq {
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_bt>, <&pinctrl_wifi_disable>;
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio3 25 GPIO_ACTIVE_HIGH>,
++			      <&gpio4 29 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	bm818_codec: sound-wwan-codec {
+ 		compatible = "broadmobi,bm818", "option,gtm601";
+ 		#sound-dai-cells = <0>;
+@@ -313,6 +321,13 @@ MX8MQ_IOMUXC_NAND_DQS_GPIO3_IO14	0x83
+ 		>;
+ 	};
+ 
++	pinctrl_bt: btgrp {
++		fsl,pins = <
++			/* BT_REG_ON */
++			MX8MQ_IOMUXC_SAI5_MCLK_GPIO3_IO25	0x83
++		>;
++	};
++
+ 	pinctrl_charger_in: chargeringrp {
+ 		fsl,pins = <
+ 			/* CHRG_INT */
+@@ -644,6 +659,13 @@ MX8MQ_IOMUXC_SD2_RESET_B_USDHC2_RESET_B 0xc1
+ 		>;
+ 	};
+ 
++	pinctrl_wifi_disable: wifidisablegrp {
++		fsl,pins = <
++			/* WIFI_REG_ON */
++			MX8MQ_IOMUXC_SAI3_RXC_GPIO4_IO29	0x83
++		>;
++	};
++
+ 	pinctrl_wifi_pwr: wifipwrgrp {
+ 		fsl,pins = <
+ 			/* WIFI3V3_EN */
+@@ -1213,6 +1235,7 @@ &usdhc2 {
+ 	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+ 	bus-width = <4>;
+ 	vmmc-supply = <&reg_wifi_3v3>;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
+ 	post-power-on-delay-ms = <1000>;
+ 	cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
+ 	disable-wp;
+-- 
+2.30.2
 
-Can you actually show it makes a performance difference in a fork
-micro-bench? Given the amount of gunk fork() already does, I don't think
-it'll matter one way or the other, and in that case, simpler is better.
