@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84331409F19
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FE7409F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243740AbhIMVah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhIMVae (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:30:34 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC24C061574;
-        Mon, 13 Sep 2021 14:29:17 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t8so11760326wrq.4;
-        Mon, 13 Sep 2021 14:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Yrsaonh+fwfWkOFuk4W3hgRjDE4kKeMZ2nofn8EWuSk=;
-        b=SPGV9nVcIjEcTcr8v7qcpAvmEAiBFUPKnWxxFaMRIYkr0kub9plmt6BO6OkWC8pOBa
-         dojnryqUBfk9bUKqoALqoBJqQFLL9L+OLfsaD16DBTlQrARpZI/O926EaobYOffFo4P0
-         EEf0giGkJBDI5g/eGzq/fgTb3oR3CRFRBrCFVYJEOBmSQ2CCD/w4K1pa87FT7SBQ4IuG
-         x8uOPi32YWicYR18NNTfXTjp+V3jorUuA3G7g2g022u32dUQm4gLaURw0WEb6Uan6WoI
-         D7+QVEmijL/SSYVM8OiQdgyaHSC8Ntpz2jAojKPtYnJ59BahdFPA+w3p5nzVIBHuJzXl
-         pR7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Yrsaonh+fwfWkOFuk4W3hgRjDE4kKeMZ2nofn8EWuSk=;
-        b=Vht3pNOgIuuWodgNmC+Hwey/bk2C2K/ekAMfaCu3aRw/LALUs7zwiHU4tEx7c1TWCb
-         qSA8tkcOwJoT+HNzNIGSQGHfh5E8Bw1zn9Khi437VvhOJpzUxKM+Jb9v/AdnxyvggtMh
-         6EXPqsjcpKDd009bIjx3o/29i0zyx/slgc/NwVDGkG/UagyvKOC8Bm28pzW/GoT0cuRQ
-         hC4qQbBn8MJcBKfry9aha5SzR/CiIJongg2NEQKqqY8Md6eGJdPoIJkO5lSL8q4p/yGE
-         ms4xYJ37OSiXVWYU8RDo8DM9IHfrbtipxzEshuLjvubU3SBftmrId5N5M4hEfUifo/V6
-         2/6Q==
-X-Gm-Message-State: AOAM531fs507gZV/zTAE5NNGCvcYXkElT4CtzJE/dkUOb0Ok+9TQsmjV
-        XJ7yrrffVD2tZdFkk5R9hjY=
-X-Google-Smtp-Source: ABdhPJxj1AOOH9kEnMpO0hupTfBuOX9H7isKcF0BtPmJh/z4MmxTBDyiBWspaTNgPrON6MBXyKHnhw==
-X-Received: by 2002:adf:fb8d:: with SMTP id a13mr14877270wrr.164.1631568555840;
-        Mon, 13 Sep 2021 14:29:15 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.16.219])
-        by smtp.gmail.com with ESMTPSA id v20sm5736wmh.22.2021.09.13.14.29.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 14:29:15 -0700 (PDT)
-Message-ID: <2cd73e19fde5a9dee6a962f9994b4dd5ea4d21be.camel@gmail.com>
-Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Sep 2021 23:29:14 +0200
-In-Reply-To: <YM60mjew2mqMAMRO@google.com>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
-         <20210613233041.128961-4-alexander.sverdlin@gmail.com>
-         <YMfQR8iM9be5Qg8+@google.com>
-         <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
-         <YM60mjew2mqMAMRO@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S244291AbhIMVbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhIMVbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:31:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01E18610FB;
+        Mon, 13 Sep 2021 21:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631568621;
+        bh=kDnxC/ku/qO2YWO25lHgWh/UEfoJ7cygr+a1l7tUC3M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VG7wvsOWUJeXM+FMs0FH3+zOqmH2owxzqpPcu3YDANFOnCP0VbRPqEIP7hbPmgxR2
+         gXA88kVtMvEDQp2Wq3i53HT5FPfYY0sQxDMbbLweb/XOQOdW7pON2ZaSKLyoOWRwe3
+         2NcGOGQaiTH6ttTuSViiC0aRsCsprYdlNXjV4mF22b8xslz9/7njo0TnbHF3GrN5f3
+         Z5ftw0XCnBbCOEuQejvNVTreFcRoNgu7TY+xy+Cm550RFXxezpoUo4uwy8jOl+umX8
+         B3wLfVX/6tDhfGgNYy0i/9QrUg+GwvUpyu1cjXivP3o1TyWIt94PKB4YWJkDFm58C3
+         yaXWj4r5QVavQ==
+Received: by mail-ej1-f44.google.com with SMTP id t19so24005287ejr.8;
+        Mon, 13 Sep 2021 14:30:20 -0700 (PDT)
+X-Gm-Message-State: AOAM533mzDRtI93FSs6flVEIws9fhBU3AP9bGrx7k2Pf0W47anuGHX88
+        HB3px84FUdTeqjs4q0lhjzi9FpbQDhGcaMtJAw==
+X-Google-Smtp-Source: ABdhPJwdYd6a5ti400oMtW47AX0MdBsmzprmsa0Cq36bJ4SwNp/qbAWDuiT9TlqObJ7jFtSCUgGwBouL6RRe3fuMhM8=
+X-Received: by 2002:a17:907:33ce:: with SMTP id zk14mr1304192ejb.84.1631568619636;
+ Mon, 13 Sep 2021 14:30:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210913182550.264165-1-maz@kernel.org> <20210913182550.264165-4-maz@kernel.org>
+In-Reply-To: <20210913182550.264165-4-maz@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 13 Sep 2021 16:30:07 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLtypMS8xquP_QjZcgQSOjWjOT82H9KNkE-gyqMJSgEUA@mail.gmail.com>
+Message-ID: <CAL_JsqLtypMS8xquP_QjZcgQSOjWjOT82H9KNkE-gyqMJSgEUA@mail.gmail.com>
+Subject: Re: [PATCH v3 03/10] PCI: of: Allow matching of an interrupt-map
+ local to a pci device
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry,
+On Mon, Sep 13, 2021 at 1:26 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Just as we now allow an interrupt map to be parsed when part
+> of an interrupt controller, there is no reason to ignore an
+> interrupt map that would be part of a pci device node such as
+> a root port since we already allow interrupt specifiers.
+>
+> This allows the device itself to use the interrupt map for
+> for its own purpose.
+>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/pci/of.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index d84381ce82b5..443cebb0622e 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -423,7 +423,7 @@ static int devm_of_pci_get_host_bridge_resources(struct device *dev,
+>   */
+>  static int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *out_irq)
+>  {
+> -       struct device_node *dn, *ppnode;
+> +       struct device_node *dn, *ppnode = NULL;
+>         struct pci_dev *ppdev;
+>         __be32 laddr[3];
+>         u8 pin;
+> @@ -452,8 +452,14 @@ static int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *
+>         if (pin == 0)
+>                 return -ENODEV;
+>
+> +       /* Local interrupt-map in the device node? Use it! */
+> +       if (dn && of_get_property(dn, "interrupt-map", NULL)) {
 
-On Sat, 2021-06-19 at 20:23 -0700, Dmitry Torokhov wrote:
-> > On Mon, 2021-06-14 at 14:55 -0700, Dmitry Torokhov wrote:
-> > > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> > > > to Common Clock Framework.
-> > > 
-> > > Can this be merged standalone?
-> > 
-> > In principle, yes, but I thought it would be easier if the patches
-> > would go via the same path as CCF conversion.
-> 
-> OK, in this case:
-> 
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+No need to check 'dn' is not NULL.
 
-our initial attempt to find a maintainer for the whole series
-didn't work out. Would you take this single patch, please?
-Three others were already taken into respective subsystems
-and I'll ping the rest of maintainers individually...
+Otherwise,
 
--- 
-Alexander Sverdlin.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-
+> +               pin = pci_swizzle_interrupt_pin(pdev, pin);
+> +               ppnode = dn;
+> +       }
+> +
+>         /* Now we walk up the PCI tree */
+> -       for (;;) {
+> +       while (!ppnode) {
+>                 /* Get the pci_dev of our parent */
+>                 ppdev = pdev->bus->self;
+>
+> --
+> 2.30.2
+>
