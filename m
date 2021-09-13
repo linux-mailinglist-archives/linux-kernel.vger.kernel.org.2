@@ -2,192 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9D3408A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D51F408A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239670AbhIMLfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:35:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239504AbhIMLfV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:35:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631532846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pC86/tdCjsTEO9k3s80UA5iBYjkl8q26l2+GsC2jp0o=;
-        b=QaPT19q6YXE8hfnSqMoKIb5IcPIEg1rH+/5C7rARRnxlh++srCf702bFAk+W64z9KRlgpU
-        4AtFFmg0t9zRj2hsEwTV4V18gmfLPv+x5tjBJ1Q9VH5fSrBWRkBe7r9KF3wm2hhAaaxBvd
-        MJXDHgrxc8SrAAxTvUAT2IIw8oEyRTU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-DC818uQJMWaMnvRzT_rLRA-1; Mon, 13 Sep 2021 07:34:03 -0400
-X-MC-Unique: DC818uQJMWaMnvRzT_rLRA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E658280196C;
-        Mon, 13 Sep 2021 11:34:01 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D4C760BE5;
-        Mon, 13 Sep 2021 11:33:59 +0000 (UTC)
-Message-ID: <8c9b9040ba27ba0961678cb228199fc41bdcbc74.camel@redhat.com>
-Subject: Re: [PATCH 1/4] KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Sep 2021 14:33:58 +0300
-In-Reply-To: <87lf412cgi.fsf@vitty.brq.redhat.com>
-References: <20210910160633.451250-1-vkuznets@redhat.com>
-         <20210910160633.451250-2-vkuznets@redhat.com>
-         <6424b309216b276e46a66573320b3eed8209a0ed.camel@redhat.com>
-         <87lf412cgi.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S239679AbhIMLfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:35:48 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52976 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239498AbhIMLfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:35:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="219772103"
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="219772103"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 04:34:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
+   d="scan'208";a="507254149"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Sep 2021 04:34:23 -0700
+Date:   Mon, 13 Sep 2021 19:34:23 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/page_alloc: detect allocation forbidden by cpuset
+ and bail out early
+Message-ID: <20210913113423.GC56674@shbuild999.sh.intel.com>
+References: <1631518709-42881-1-git-send-email-feng.tang@intel.com>
+ <YT8WygPhuORJC6Pn@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YT8WygPhuORJC6Pn@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 08:53 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
-> 
-> > On Fri, 2021-09-10 at 18:06 +0200, Vitaly Kuznetsov wrote:
-> > > When KVM runs as a nested hypervisor on top of Hyper-V it uses Enlightened
-> > > VMCS and enables Enlightened MSR Bitmap feature for its L1s and L2s (which
-> > > are actually L2s and L3s from Hyper-V's perspective). When MSR bitmap is
-> > > updated, KVM has to reset HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP from
-> > > clean fields to make Hyper-V aware of the change. For KVM's L1s, this is
-> > > done in vmx_disable_intercept_for_msr()/vmx_enable_intercept_for_msr().
-> > > MSR bitmap for L2 is build in nested_vmx_prepare_msr_bitmap() by blending
-> > > MSR bitmap for L1 and L1's idea of MSR bitmap for L2. KVM, however, doesn't
-> > > check if the resulting bitmap is different and never cleans
-> > > HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP in eVMCS02. This is incorrect and
-> > > may result in Hyper-V missing the update.
-> > > 
-> > > The issue could've been solved by calling evmcs_touch_msr_bitmap() for
-> > > eVMCS02 from nested_vmx_prepare_msr_bitmap() unconditionally but doing so
-> > > would not give any performance benefits (compared to not using Enlightened
-> > > MSR Bitmap at all). 3-level nesting is also not a very common setup
-> > > nowadays.
-> > > 
-> > > Don't enable 'Enlightened MSR Bitmap' feature for KVM's L2s (real L3s) for
-> > > now.
-> > > 
-> > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > > ---
-> > >  arch/x86/kvm/vmx/vmx.c | 22 +++++++++++++---------
-> > >  1 file changed, 13 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > > index 0c2c0d5ae873..ae470afcb699 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.c
-> > > +++ b/arch/x86/kvm/vmx/vmx.c
-> > > @@ -2654,15 +2654,6 @@ int alloc_loaded_vmcs(struct loaded_vmcs *loaded_vmcs)
-> > >  		if (!loaded_vmcs->msr_bitmap)
-> > >  			goto out_vmcs;
-> > >  		memset(loaded_vmcs->msr_bitmap, 0xff, PAGE_SIZE);
-> > > -
-> > > -		if (IS_ENABLED(CONFIG_HYPERV) &&
-> > > -		    static_branch_unlikely(&enable_evmcs) &&
-> > > -		    (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
-> > > -			struct hv_enlightened_vmcs *evmcs =
-> > > -				(struct hv_enlightened_vmcs *)loaded_vmcs->vmcs;
-> > > -
-> > > -			evmcs->hv_enlightenments_control.msr_bitmap = 1;
-> > > -		}
-> > >  	}
-> > >  
-> > >  	memset(&loaded_vmcs->host_state, 0, sizeof(struct vmcs_host_state));
-> > > @@ -6861,6 +6852,19 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
-> > >  	}
-> > >  
-> > >  	vmx->loaded_vmcs = &vmx->vmcs01;
-> > > +
-> > > +	/*
-> > > +	 * Use Hyper-V 'Enlightened MSR Bitmap' feature when KVM runs as a
-> > > +	 * nested (L1) hypervisor and Hyper-V in L0 supports it.
-> > > +	 */
-> > > +	if (IS_ENABLED(CONFIG_HYPERV) && static_branch_unlikely(&enable_evmcs)
-> > > +	    && (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
-> > > +		struct hv_enlightened_vmcs *evmcs =
-> > > +			(struct hv_enlightened_vmcs *)vmx->loaded_vmcs->vmcs;
-> > > +
-> > > +		evmcs->hv_enlightenments_control.msr_bitmap = 1;
-> > > +	}
-> > > +
-> > >  	cpu = get_cpu();
-> > >  	vmx_vcpu_load(vcpu, cpu);
-> > >  	vcpu->cpu = cpu;
-> > 
-> > Makes sense.
-> > 
-> > Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > 
-> > 
-> > However, just a note that it is very very confusing that KVM can use eVMCS in both ways.
+On Mon, Sep 13, 2021 at 11:15:54AM +0200, Michal Hocko wrote:
+[...] 
+> > +/*
+> > + * This will get enabled whenever a cpuset configuration is considered
+> > + * unsupportable in general. E.g. movable only node which cannot satisfy
+> > + * any non movable allocations (see update_nodemask). Page allocator
+> > + * needs to make additional checks for those configurations and this
+> > + * check is meant to guard those checks without any overhead for sane
+> > + * configurations.
+> > + */
+> > +static inline bool cpusets_insane_config(void)
+> > +{
+> > +	return static_branch_unlikely(&cpusets_insane_config_key);
+> > +}
+> > +
+> >  extern int cpuset_init(void);
+> >  extern void cpuset_init_smp(void);
+> >  extern void cpuset_force_rebuild(void);
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index 6a1d79d..b69b871 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -1220,6 +1220,18 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
+> >  #define for_each_zone_zonelist(zone, z, zlist, highidx) \
+> >  	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
 > >  
+> > +/* Whether the 'nodes' are all movable nodes */
+> > +static inline bool movable_only_nodes(nodemask_t *nodes)
+> > +{
+> > +	struct zonelist *zonelist;
+> > +	struct zoneref *z;
+> > +
+> > +	zonelist = &(first_online_pgdat())->node_zonelists[ZONELIST_FALLBACK];
+> 
+> This will work but it just begs a question why you haven't chosen a node
+> from the given nodemask. So I believe it would be easier to read if you
+> did
+> 	zonelist = NODE_DATA(first_node(nodes))->node_zonelists[ZONELIST_FALLBACK]
+
+This was also my first try to get the 'zonelist', but from the
+update_nodemask(), the nodemask could be NULL.
+
+	/*
+	 * An empty mems_allowed is ok iff there are no tasks in the cpuset.
+	 * Since nodelist_parse() fails on an empty mask, we special case
+	 * that parsing.  The validate_change() call ensures that cpusets
+	 * with tasks have memory.
+	 */
+	if (!*buf) {
+		nodes_clear(trialcs->mems_allowed);
+	
+> > +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
+> > +	return (!z->zone) ? true : false;
+> > +}
+> > +
+> > +
+> >  #ifdef CONFIG_SPARSEMEM
+> >  #include <asm/sparsemem.h>
+> >  #endif
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index df1ccf4..03eb40c 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -69,6 +69,13 @@
+> >  DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
+> >  DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
 > >  
-> > 'Client': It can both run under HyperV, and thus take advantage of eVMCS when it runs its guests (with
-> > help of
-> > HyperV)
+> > +/*
+> > + * There could be abnormal cpuset configurations for cpu or memory
+> > + * node binding, add this key to provide a quick low-cost judgement
+> > + * of the situation.
+> > + */
+> > +DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
+> > +
+> >  /* See "Frequency meter" comments, below. */
 > >  
-> > 'Server' KVM can emulate some HyperV features, and one of these is eVMCS, thus a windows guest running
-> > under KVM, can use KVM's eVMCS implementation to run nested guests.
+> >  struct fmeter {
+> > @@ -1868,6 +1875,13 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
+> >  	if (retval < 0)
+> >  		goto done;
 > >  
-> > This patch fails under
-> > 'Client', while the other patches in the series fall under the 'Server' category,
-> > and even more confusing, the patch 2 moves 'Client' code around, but it is intended for following patches
-> > 3,4 which are
-> > for Server.
+> > +	if (movable_only_nodes(&trialcs->mems_allowed)) {
+> 
+> You can skip the check if cpusets_insane_config(). The question is
+> whether you want to report all potential users or only the first one.
+
+Yes, I missed that, will add this check
+
+> > +		static_branch_enable(&cpusets_insane_config_key);
+> > +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
+> > +			"Cpuset allocations might fail even with a lot of memory available.\n",
+> > +			nodemask_pr_args(&trialcs->mems_allowed));
+> > +	}
+> > +
+> >  	spin_lock_irq(&callback_lock);
+> >  	cs->mems_allowed = trialcs->mems_allowed;
+> >  	spin_unlock_irq(&callback_lock);
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index b37435c..a7e0854 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -4914,6 +4914,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+> >  	if (!ac->preferred_zoneref->zone)
+> >  		goto nopage;
 > >  
+> > +	/*
+> > +	 * Check for insane configurations where the cpuset doesn't contain
+> > +	 * any suitable zone to satisfy the request - e.g. non-movable
+> > +	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
+> > +	 */
+> > +	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
+> > +		struct zoneref *z = first_zones_zonelist(ac->zonelist,
+> > +					ac->highest_zoneidx,
+> > +					&cpuset_current_mems_allowed);
+> > +		if (!z->zone)
+> > +			goto nopage;
+> > +	}
+> > +
+> >  	if (alloc_flags & ALLOC_KSWAPD)
+> >  		wake_all_kswapds(order, gfp_mask, ac);
 > 
-> All this is confusing indeed, KVM-on-Hyper-V and Hyper-V-on-KVM are two
-> different beasts but it's not always clear from patch subject. I was
-> thinking about adding this to patch prexes:
-> 
-> "KVM: VMX: KVM-on-Hyper-V: ... " 
-> "KVM: nVMX: Hyper-V-on-KVM ..."
+> The rest looks sensible to me.
 
-Makes sense!
-> 
-> or something similar.
-> 
-> > Thus this patch probably should be a separate patch, just to avoid confusion.
-> > 
-> 
-> This patch is a weird one. We actually fix
-> 
-> Hyper-V-on-KVM-on-Hyper-V case.
-> 
-> Don't get confused! :-)
+Thanks for the review!
 
-Ah right! 
+- Feng
 
-This reminds me of these double windows with an air gap in between two glass layers :-)
-
-
-Best regards,
-	Maxim Levitsky
-
-> 
-> 
-> > However, since this patch series is already posted, and I figured that out, and hopefully explained it here,
-> > no need to do anything though!
-> > 
-> > 
-> > Best regards,
-> > 	Maxim Levitsky
-> > 
-> > 
-> > 
-
-
+> -- 
+> Michal Hocko
+> SUSE Labs
