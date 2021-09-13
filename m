@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E41464089EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E274089F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239438AbhIMLPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238383AbhIMLPJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:15:09 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83446C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:13:53 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id q22so8506975pfu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XxGGH396yqKFz9F5OWRNHSsNaRXLO9ooc/L9AlOkzKQ=;
-        b=QxWZtqYGlOGpSOGBS4dUjJX2STngIdVu9tALWqKwJ7b8hYjpl8RcdVW/0X1vzuc2Ec
-         qSqYceB2e9nKjZ5He5OFHyh+JO+gUv9h37mURskCyV0xZxneNSFG9HuGdQdFA7WZOxSF
-         0jH3StCqwyJqFDGdkbN/iG9CNYkf+d/+RBYGc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XxGGH396yqKFz9F5OWRNHSsNaRXLO9ooc/L9AlOkzKQ=;
-        b=dIL46uIFQ+jrj+HsHAkk3nc2sX9cmg8oSegbAq+Xyu9KiI5CedD2sZvnPl7DWp3CSM
-         8TImgXElvS3KXCn6lA+pZMrr1eOHnuIkOSGnwY12SPjKcjpvaR4jOA8WxJo4MxS96GLa
-         tzQKLT5pJ+ERhQ+j9MaHUJB8XIt2dsnpryFRxMSRAO7FK6ZVnY/ObQLZVwH0l2PGlUrS
-         JSetI3z8yaeJ6G3P8mBQgt1csk7faf7ZENxmoVJFw4hYnN5Uyhfduw3As5oAcfBUhrld
-         L+QJlzFe4xeZ98oxCYK64wiUf/JLpS3CuVCIEVI6TjGwirpe/qHrltHF+uKNSn0z+ZI0
-         e12g==
-X-Gm-Message-State: AOAM531BmWDBk54+N1fA5TcsD218INsZNHUqhEk8wehZ3BpLiUWyYxxj
-        xpNZb2iFT2Hkn+Pq/9nxNXXzUQ==
-X-Google-Smtp-Source: ABdhPJx4zqnR2yH4LqHuWbBCIRfqyPGQpPzE6od/re+HxwMX1sy9Fqfn351DvGCHyyNBJEhgZc5SgA==
-X-Received: by 2002:a63:e510:: with SMTP id r16mr10781699pgh.34.1631531633041;
-        Mon, 13 Sep 2021 04:13:53 -0700 (PDT)
-Received: from shiro.work (p864106-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.58.106])
-        by smtp.googlemail.com with ESMTPSA id p24sm8340153pgm.54.2021.09.13.04.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 04:13:52 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     jic23@kernel.org, lars@metafoo.de, jmaneyrol@invensense.com,
-        linux-iio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] iio: imu: inv_mpu6050: Mark acpi match table as maybe unused
-Date:   Mon, 13 Sep 2021 20:13:46 +0900
-Message-Id: <20210913111346.1957635-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.33.0
+        id S239453AbhIMLRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:17:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238383AbhIMLRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:17:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 331EA60FE6;
+        Mon, 13 Sep 2021 11:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631531782;
+        bh=qDvyzG5B8T87OO6jWx6mYyzzJfXqo41rVzeixXA4jxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RG1Xgv1/z0zk563zxpXWXjzgAP9T41EeA9lG3F2m1XBySI1TJsfWcRfalKk+joEZ8
+         H8aDNHRJqMVVurKR0g2MP43iZfbnG6u0rOz+xxYApAlAvqFe+YUhX2DB92DoSx3qo7
+         gHZSN7P1D3P5BgRGD4+/uQpc85eazsXOPRTmJW0SNLO0JBLKiz4QNioQhqqd805H5I
+         iZO2gqMpC9MiNZNypfgYGtN5IAqNTGqzFI4A5SCxpu0pVGbG0z3KREIvwpEYIyxZoq
+         zR+YkaXNgXBZC7jIhdm/Z08hg7EUJ3MnJ/PLwbhzEHUjYV0KgDFIv9PnqHvll+BSsV
+         7fyKUL09b8mrA==
+Date:   Mon, 13 Sep 2021 14:16:19 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Tao Liu <thomas.liu@ucloud.cn>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com,
+        shayd@nvidia.com, avihaih@nvidia.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.liu@ucloud.com
+Subject: Re: [PATCH] RDMA/cma: Fix listener leak in rdma_cma_listen_on_all()
+ failure
+Message-ID: <YT8zA8GaFgjzwSUK@unreal>
+References: <20210913093344.17230-1-thomas.liu@ucloud.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913093344.17230-1-thomas.liu@ucloud.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building kernels without ACPI support the table is declared
-but is not used because ACPI_PTR() turns it into a NULL.
+On Mon, Sep 13, 2021 at 05:33:44PM +0800, Tao Liu wrote:
+> rdma_cma_listen_on_all() just destroy listener which lead to an error,
+> but not including those already added in listen_list. Then cm state
+> fallbacks to RDMA_CM_ADDR_BOUND.
+> 
+> When user destroys id, the listeners will not be destroyed, and
+> process stucks.
+> 
+>  task:rping state:D stack:   0 pid:19605 ppid: 47036 flags:0x00000084
+>  Call Trace:
+>   __schedule+0x29a/0x780
+>   ? free_unref_page_commit+0x9b/0x110
+>   schedule+0x3c/0xa0
+>   schedule_timeout+0x215/0x2b0
+>   ? __flush_work+0x19e/0x1e0
+>   wait_for_completion+0x8d/0xf0
+>   _destroy_id+0x144/0x210 [rdma_cm]
+>   ucma_close_id+0x2b/0x40 [rdma_ucm]
+>   __destroy_id+0x93/0x2c0 [rdma_ucm]
+>   ? __xa_erase+0x4a/0xa0
+>   ucma_destroy_id+0x9a/0x120 [rdma_ucm]
+>   ucma_write+0xb8/0x130 [rdma_ucm]
+>   vfs_write+0xb4/0x250
+>   ksys_write+0xb5/0xd0
+>   ? syscall_trace_enter.isra.19+0x123/0x190
+>   do_syscall_64+0x33/0x40
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
+> Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> ---
+>  drivers/infiniband/core/cma.c | 22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
+> 
 
-Add the __maybe_unused attribute to stop the compiler whining.
-
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c b/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
-index 95f16951c8f4..dbd613178f01 100644
---- a/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
-+++ b/drivers/iio/imu/inv_mpu6050/inv_mpu_i2c.c
-@@ -249,7 +249,7 @@ static const struct of_device_id inv_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, inv_of_match);
- 
--static const struct acpi_device_id inv_acpi_match[] = {
-+static const struct __maybe_unused acpi_device_id inv_acpi_match[] = {
- 	{"INVN6500", INV_MPU6500},
- 	{ },
- };
--- 
-2.33.0
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
