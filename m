@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82031409645
+	by mail.lfdr.de (Postfix) with ESMTP id CC774409646
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347314AbhIMOtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:49:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58814 "EHLO mail.kernel.org"
+        id S1347379AbhIMOtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:49:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347635AbhIMOoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347640AbhIMOoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:44:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12DEB63218;
-        Mon, 13 Sep 2021 13:57:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73CEF61252;
+        Mon, 13 Sep 2021 13:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541453;
-        bh=13A01LPjfB4eZPKnfQC7GBgeot9w4T5Qi5wyGWRiV/4=;
+        s=korg; t=1631541456;
+        bh=ltTlM8kQwC23/C31xh8uLeBVKUew/GJt+6ftzXrcJLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tz+d404ZeSfU2CWtbSOyxOK055Lf0wKiKPwIDBrSKpCBFnHk5UimzAA/qwaqtgvR7
-         vGx319CT1a9Bv+HIC7hi0vNlu+ypvRoLomaLtx8D/h0Swn0Fa1fLzR4cTSuyZWSZ6I
-         vpKNNALQpAmWYc0FlCfcVYTqGtFcJj2VWbWf7y+I=
+        b=WY7TXF/Bf9HyYnqEKSESSwJonrZPl+96kGGMyktdRisIoxVCAJSo7ze0Ur2SEuady
+         l8AkWoZ3TsGmznDd7yArsdJsDCwBbJxEwSPWjuPXfzwkpFJecvVsRYOUzfmVogaRKf
+         J+qgltIHXSK7O80QBtZ2y6jvJnnqxqXQGrYm6l8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 302/334] io_uring: io_uring_complete() trace should take an integer
-Date:   Mon, 13 Sep 2021 15:15:56 +0200
-Message-Id: <20210913131123.628995207@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.14 303/334] io_uring: fail links of cancelled timeouts
+Date:   Mon, 13 Sep 2021 15:15:57 +0200
+Message-Id: <20210913131123.665211460@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -38,56 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit 2fc2a7a62eb58650e71b4550cf6fa6cc0a75b2d2 upstream.
+commit 2ae2eb9dde18979b40629dd413b9adbd6c894cdf upstream.
 
-It currently takes a long, and while that's normally OK, the io_uring
-limit is an int. Internally in io_uring it's an int, but sometimes it's
-passed as a long. That can yield confusing results where a completions
-seems to generate a huge result:
-
-ou-sqp-1297-1298    [001] ...1   788.056371: io_uring_complete: ring 000000000e98e046, user_data 0x0, result 4294967171, cflags 0
-
-which is due to -ECANCELED being stored in an unsigned, and then passed
-in as a long. Using the right int type, the trace looks correct:
-
-iou-sqp-338-339     [002] ...1    15.633098: io_uring_complete: ring 00000000e0ac60cf, user_data 0x0, result -125, cflags 0
+When we cancel a timeout we should mark it with REQ_F_FAIL, so
+linked requests are cancelled as well, but not queued for further
+execution.
 
 Cc: stable@vger.kernel.org
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/fff625b44eeced3a5cae79f60e6acf3fbdf8f990.1631192135.git.asml.silence@gmail.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/trace/events/io_uring.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/io_uring.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/include/trace/events/io_uring.h
-+++ b/include/trace/events/io_uring.h
-@@ -295,14 +295,14 @@ TRACE_EVENT(io_uring_fail_link,
-  */
- TRACE_EVENT(io_uring_complete,
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1329,6 +1329,8 @@ static void io_kill_timeout(struct io_ki
+ 	struct io_timeout_data *io = req->async_data;
  
--	TP_PROTO(void *ctx, u64 user_data, long res, unsigned cflags),
-+	TP_PROTO(void *ctx, u64 user_data, int res, unsigned cflags),
- 
- 	TP_ARGS(ctx, user_data, res, cflags),
- 
- 	TP_STRUCT__entry (
- 		__field(  void *,	ctx		)
- 		__field(  u64,		user_data	)
--		__field(  long,		res		)
-+		__field(  int,		res		)
- 		__field(  unsigned,	cflags		)
- 	),
- 
-@@ -313,7 +313,7 @@ TRACE_EVENT(io_uring_complete,
- 		__entry->cflags		= cflags;
- 	),
- 
--	TP_printk("ring %p, user_data 0x%llx, result %ld, cflags %x",
-+	TP_printk("ring %p, user_data 0x%llx, result %d, cflags %x",
- 			  __entry->ctx, (unsigned long long)__entry->user_data,
- 			  __entry->res, __entry->cflags)
- );
+ 	if (hrtimer_try_to_cancel(&io->timer) != -1) {
++		if (status)
++			req_set_fail(req);
+ 		atomic_set(&req->ctx->cq_timeouts,
+ 			atomic_read(&req->ctx->cq_timeouts) + 1);
+ 		list_del_init(&req->timeout.list);
 
 
