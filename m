@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76067408F10
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7204090E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243372AbhIMNj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:39:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46826 "EHLO mail.kernel.org"
+        id S244440AbhIMN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:56:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242431AbhIMN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 213706127C;
-        Mon, 13 Sep 2021 13:24:01 +0000 (UTC)
+        id S244226AbhIMNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:53:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6F31619E0;
+        Mon, 13 Sep 2021 13:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539442;
-        bh=Ot+28yzud98tBNnOiqNPW6YBHnIqP50O9qr9lr6+dQs=;
+        s=korg; t=1631540094;
+        bh=kcinne14G5IndLRIRNUaom7LEpancf9khhgZghhw1YY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ORik520NMJMx2VwHYbegxDdE7QwE6On3LCQhfs9tc+zYmN/vZh+SqChKK12EOkEi9
-         Tr50qOBO1t2WAC+KeSW/ZCapJ+t5b4zi5546eD7KJcbPrNPat8uHCzQPcU9bhmUF7S
-         nlxfpXoJJ+GnUlXwidhZw4A5XOBK1MuHdqm4gS5Y=
+        b=Rz4/aALaQRdppdNB07n5UZHtjRdlgftgbHWZqfRvQEFQ45CP4CvlE4NnZWz2IN/nl
+         VHQ+1xpgHJ2k0O2Yw/rSgtJlyER9m9+gO85F5Orl6Oax9MbOx9MdwJbyjCsSGM2j8N
+         Yb9grrugtH5QFYKOyC17O/fsM20cyf4b/QTsD0oc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Subject: [PATCH 5.10 003/236] regulator: tps65910: Silence deferred probe error
-Date:   Mon, 13 Sep 2021 15:11:48 +0200
-Message-Id: <20210913131100.434781737@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 048/300] power: supply: cw2015: use dev_err_probe to allow deferred probe
+Date:   Mon, 13 Sep 2021 15:11:49 +0200
+Message-Id: <20210913131110.963350093@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Peter Robinson <pbrobinson@gmail.com>
 
-[ Upstream commit e301df76472cc929fa62d923bc3892931f7ad71d ]
+[ Upstream commit ad1abe476995d97bfe7546ea91bb4f3dcdfbf3ab ]
 
-The TPS65910 regulator now gets a deferred probe until supply regulator is
-registered. Silence noisy error message about the deferred probe.
+Deal with deferred probe using dev_err_probe so the error is handled
+and avoid logging lots probe defer information like the following:
 
-Reported-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20210705201211.16082-1-digetx@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[    9.125121] cw2015 4-0062: Failed to register power supply
+[    9.211131] cw2015 4-0062: Failed to register power supply
+
+Fixes: b4c7715c10c1 ("power: supply: add CellWise cw2015 fuel gauge driver")
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/tps65910-regulator.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/power/supply/cw2015_battery.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/tps65910-regulator.c b/drivers/regulator/tps65910-regulator.c
-index 1d5b0a1b86f7..06cbe60c990f 100644
---- a/drivers/regulator/tps65910-regulator.c
-+++ b/drivers/regulator/tps65910-regulator.c
-@@ -1211,12 +1211,10 @@ static int tps65910_probe(struct platform_device *pdev)
+diff --git a/drivers/power/supply/cw2015_battery.c b/drivers/power/supply/cw2015_battery.c
+index d110597746b0..091868e9e9e8 100644
+--- a/drivers/power/supply/cw2015_battery.c
++++ b/drivers/power/supply/cw2015_battery.c
+@@ -679,7 +679,9 @@ static int cw_bat_probe(struct i2c_client *client)
+ 						    &cw2015_bat_desc,
+ 						    &psy_cfg);
+ 	if (IS_ERR(cw_bat->rk_bat)) {
+-		dev_err(cw_bat->dev, "Failed to register power supply\n");
++		/* try again if this happens */
++		dev_err_probe(&client->dev, PTR_ERR(cw_bat->rk_bat),
++			"Failed to register power supply\n");
+ 		return PTR_ERR(cw_bat->rk_bat);
+ 	}
  
- 		rdev = devm_regulator_register(&pdev->dev, &pmic->desc[i],
- 					       &config);
--		if (IS_ERR(rdev)) {
--			dev_err(tps65910->dev,
--				"failed to register %s regulator\n",
--				pdev->name);
--			return PTR_ERR(rdev);
--		}
-+		if (IS_ERR(rdev))
-+			return dev_err_probe(tps65910->dev, PTR_ERR(rdev),
-+					     "failed to register %s regulator\n",
-+					     pdev->name);
- 
- 		/* Save regulator for cleanup */
- 		pmic->rdev[i] = rdev;
 -- 
 2.30.2
 
