@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABB4408B20
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE69408B21
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238835AbhIMMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238652AbhIMMhc (ORCPT
+        id S238712AbhIMMik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:38:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19966 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236325AbhIMMii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:37:32 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E99BC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:36:16 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id r4so20173475ybp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8/7I4pp3bCeX5QtDeGFLNRIAdhczuRGJY+RZHqPbZaY=;
-        b=v4RvoaeIBbVIdxvY8xRQ4WL4/b7BIh5z4yAdugyL3U40o0OAox8l/o86/wCLeuSVLY
-         SkFl2x/4cP7fQHUKJB8Lum7jMTkL+sdW7a2alYIYIXzR0hK+km75ixtIK6FVRwCa1zwb
-         Mrpaa3nC7c3HRCbgxOJjL40Sl+/Caliwzv1Lmb4FnJx2C+rIF1+zpzyjAIqHeHAO4cOz
-         ew07jy2l/SUzCzjyxoGsRJVgwl7J9IxvHXVdwboZxIMKtsj/QHOe0G2/54yqlAI76mpi
-         PdjYXZpimIImuJDxV+h7gP1v/xG11paG1BAUkn6RKxGfoc8sshK0JokDrcZIpsXsUphJ
-         RCFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8/7I4pp3bCeX5QtDeGFLNRIAdhczuRGJY+RZHqPbZaY=;
-        b=febO4q1abe7bJQfrp1Idv6DmtYH5gKVGn0TpXvTYDGJxzvoY1a+aE9uS6rXWyGAJId
-         oLarlPBMkqX1XAeYO4dFgYhc0PPIi8kGHO722CZYwp3/r72DvHJnDvGtPUMhX7PnZlrW
-         KFab1YOccCbzLF/AYQ1T2krxOMfSBNGiXWSsWYwGWQE3DVPTD5NW60oeCm2F95McYUhn
-         GfWcrjcLYn332hE/mkVZx5LFqvBKgMjttwQZOst8ryHKaVEB+8LnpeboUJxqsz8grJuA
-         N4eEJHiQlxHFs2eAn9xuCII/pQ90Nks4RJqfaSyEsLyoB+ipWj2PScRC/ENX0FGIFXP9
-         69rQ==
-X-Gm-Message-State: AOAM533FbGV8AvitrzTrvssv5+8fsUXnP4E9R2gyLi5Ir69BQY+yXR4g
-        69n9XqIuoxmNE7avuHP/waVQkZRETaUxhl257vavuw==
-X-Google-Smtp-Source: ABdhPJwxn1AKm92da/Waw57h9E+5bL6agaUKuU1Ri+g26ebKDO6jncg+nkjCj8CjiBlxY7UbSLfr+ulCb6LaiDBmvtI=
-X-Received: by 2002:a25:388c:: with SMTP id f134mr15710121yba.209.1631536575709;
- Mon, 13 Sep 2021 05:36:15 -0700 (PDT)
+        Mon, 13 Sep 2021 08:38:38 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7Qqx0JDkzbmTx;
+        Mon, 13 Sep 2021 20:33:17 +0800 (CST)
+Received: from [10.174.177.76] (10.174.177.76) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 13 Sep 2021 20:37:21 +0800
+Subject: Re: [PATCH v2] mm/page_isolation: don't putback unisolated page
+To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
+CC:     <jhubbard@nvidia.com>, <vbabka@suse.cz>, <iamjoonsoo.kim@lge.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210913115021.27597-1-linmiaohe@huawei.com>
+ <6a096a23-83b8-139d-b2dd-87ea3e405050@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <bcba5a70-369b-ce8a-ca83-968ab3c14969@huawei.com>
+Date:   Mon, 13 Sep 2021 20:37:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210828121007.14865-1-jbx6244@gmail.com>
-In-Reply-To: <20210828121007.14865-1-jbx6244@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 13 Sep 2021 14:36:04 +0200
-Message-ID: <CAMpxmJWncsMtjsjZY7c5aOtvf0+gxgui=yu27acouO1XjaGq7Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: add gpio-line-names to rockchip,gpio-bank.yaml
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6a096a23-83b8-139d-b2dd-87ea3e405050@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.76]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 2:10 PM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> Some people and companies may want to add more description
-> to there gpio pins. Add a gpio-line-names property to the
-> rockchip,gpio-bank.yaml file to reduce the notifications
-> from the existing mainline DT.
->
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> index 0d62c28fb..d4e42c2b9 100644
-> --- a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
-> @@ -29,6 +29,8 @@ properties:
->
->    gpio-controller: true
->
-> +  gpio-line-names: true
-> +
->    "#gpio-cells":
->      const: 2
->
-> --
-> 2.20.1
->
+On 2021/9/13 20:15, David Hildenbrand wrote:
+> On 13.09.21 13:50, Miaohe Lin wrote:
+>> If __isolate_free_page() failed, due to zone watermark check, the page is
+>> still on the free list. But this page will be put back to free list again
+>> via __putback_isolated_page() now. This may trigger page->flags checks in
+>> __free_one_page() if PageReported is set. Or we will corrupt the free list
+>> because list_add() will be called for pages already on another list.
+>>
+>> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>> v1->v2:
+>>    Add VM_WARN_ON to catch unexpected isolating failure.
+>> ---
+>>   mm/page_isolation.c | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>> index f93cc63d8fa1..f67c4c70f17f 100644
+>> --- a/mm/page_isolation.c
+>> +++ b/mm/page_isolation.c
+>> @@ -94,8 +94,13 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>               buddy = page + (buddy_pfn - pfn);
+>>                 if (!is_migrate_isolate_page(buddy)) {
+>> -                __isolate_free_page(page, order);
+>> -                isolated_page = true;
+>> +                isolated_page = !!__isolate_free_page(page, order);
+>> +                /*
+>> +                 * Isolating a free page in an isolated pageblock
+>> +                 * is expected to always work as watermarks don't
+>> +                 * apply here.
+>> +                 */
+>> +                VM_WARN_ON(!isolated_page);
+> 
+> 
+> Didn't we discuss that this can never happen?
+> 
+> In that case, the patch description+subject needs updating and the "Fixes" line would be wrong.
+> 
 
-Applied, thanks!
+I thought this might need a Fixes tag... Will change all of these. Many thanks.
 
-Bart
+>>               }
+>>           }
+>>       }
+>>
+> 
+> 
+
