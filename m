@@ -2,129 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0364087A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6633D4087B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238326AbhIMI6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:58:53 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9422 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238275AbhIMI6v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:58:51 -0400
-Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H7Kxx3wWLz8ySk;
-        Mon, 13 Sep 2021 16:53:09 +0800 (CST)
-Received: from dggeme759-chm.china.huawei.com (10.3.19.105) by
- dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 13 Sep 2021 16:57:34 +0800
-Received: from dggeme759-chm.china.huawei.com ([10.8.81.151]) by
- dggeme759-chm.china.huawei.com ([10.8.81.151]) with mapi id 15.01.2308.008;
- Mon, 13 Sep 2021 16:57:34 +0800
-From:   weizhenliang <weizhenliang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "tangbin@cmss.chinamobile.com" <tangbin@cmss.chinamobile.com>,
-        "zhangshengju@cmss.chinamobile.com" 
-        <zhangshengju@cmss.chinamobile.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nixiaoming <nixiaoming@huawei.com>,
-        "Xiaoqian (xiaoqian, RTOS FAE)" <xiaoqian9@huawei.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSB0b29scy92bS9wYWdlX293bmVyX3NvcnQuYzogY291?=
- =?gb2312?Q?nt_and_sort_by_mem?=
-Thread-Topic: [PATCH] tools/vm/page_owner_sort.c: count and sort by mem
-Thread-Index: AQHXpfB+f0OYJ3BhKEyklvTUrbLdJKue5dEAgALIGWA=
-Date:   Mon, 13 Sep 2021 08:57:33 +0000
-Message-ID: <7912a2a7dc5544509d96541dad2dde06@huawei.com>
-References: <1631243023-47849-1-git-send-email-weizhenliang@huawei.com>
- <20210911152520.45d6e3ed690b652a4d49a1c0@linux-foundation.org>
-In-Reply-To: <20210911152520.45d6e3ed690b652a4d49a1c0@linux-foundation.org>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.101.97]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S238370AbhIMJAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:00:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236022AbhIMJAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 05:00:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F414461029;
+        Mon, 13 Sep 2021 08:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631523556;
+        bh=CwfHxitG9wk52V601afoOOoBW02DjRN5SudCah4N5Uc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t+GO5J1bNRJgY7k+CL+jaxFuXEHPHGwmbTU/cTgaE7Ik0XfWZUgKXtPEuyfNRogcH
+         YUMVsz7iHJV0hHFNXCgeaWJbt8o65LNt2RLEVbEDhjLC3vWjF8R0laBnmFS/UCMBJM
+         nGx2YL5udEKiH7eNa2J4FgP29EeoWWUT5PAxR+vWW8lcOog/HB4Y38Po6rWZDttq+2
+         YXqN0WHt749l0I8/JAIXxJmOOTMXP8qv8ICVemxpTS/Y52J822nTh8A5MiwgyXn2QA
+         4jY+8C2tdqi7ZxQtHtgUcX3QnBVofTDrzAUBhEI1FutV6L5nYq3LFn2BsoHCsNFcSL
+         RX/RpR3JRMDxQ==
+Date:   Mon, 13 Sep 2021 10:59:10 +0200
+From:   Robert Richter <rric@kernel.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Joe Perches <joe@perches.com>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] EDAC/mc: Prefer strscpy or scnprintf over strcpy, sprintf
+ and snprintf
+Message-ID: <YT8S3poKyd5Nr5cK@rric.localdomain>
+References: <20210903150539.7282-1-len.baker@gmx.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903150539.7282-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAxMiBTZXAgMjAyMSBBbmRyZXcgTW9ydG9uIHdyb3RlOg0KDQo+T24gRnJpLCAxMCBT
-ZXAgMjAyMSAxMTowMzo0MyArMDgwMCBaaGVubGlhbmcgV2VpIDx3ZWl6aGVubGlhbmdAaHVhd2Vp
-LmNvbT4gd3JvdGU6DQo+DQo+PiBXaGVuIHZpZXdpbmcgcGFnZSBvd25lciBpbmZvcm1hdGlvbiwg
-d2UgbWF5IGJlIG1vcmUgY29uY2VybmVkIGFib3V0IA0KPj4gdGhlIHRvdGFsIG1lbW9yeSB0aGFu
-IHRoZSBudW1iZXIgb2Ygc3RhY2sgb2NjdXJyZW5jZXMuIFRoZXJlZm9yZSwgdGhlIA0KPj4gZm9s
-bG93aW5nIGFkanVzdG1lbnRzIGFyZSBtYWRlOg0KPj4gMS4gQWRkZWQgdGhlIHN0YXRpc3RpY3Mg
-b24gdGhlIHRvdGFsIG51bWJlciBvZiBwYWdlcy4NCj4+IDIuIEFkZGVkIHRoZSBvcHRpb25hbCBw
-YXJhbWV0ZXIgIi1tIiB0byBjb25maWd1cmUgdGhlIHByb2dyYW0gdG8gc29ydCBieQ0KPj4gICAg
-bWVtb3J5ICh0b3RhbCBwYWdlcykuDQo+PiANCj4NCj5XaHkgZG9lcyBpdCBhZGQgcmVnZXhwIG1h
-dGNoaW5nIHRvIGFkZF9saXN0KCk/ICBQcmVzdW1hYmx5IHRoaXMgaXMgc29tZSANCj5lbmhhbmNl
-bWVudCB0byB0aGUgdXNlciBpbnRlcmZhY2Ugd2hpY2ggSSBjYW5ub3Qgc2VlIGRvY3VtZW50ZWQg
-aW4gdGhlIA0KPmNoYW5nZWxvZyBvciB0aGUgY29kZSBjb21tZW50cywNCj4NCj5DYW4gd2UgcGxl
-YXNlIGFkZC9tYWludGFpbiBhIGZ1bGwgZGVzY3JpcHRpb24gb2YgdGhlIHVzZXIgaW50ZXJmYWNl
-IGluLCBJIGd1ZXNzLCBEb2N1bWVudGF0aW9uL3ZtL3BhZ2Vfb3duZXIucnN0Pw0KDQpUaGFua3Mg
-Zm9yIHJldmlld2luZywgSSBkaWQgb21pdCB0aGUgZG9jdW1lbnRhdGlvbiBwYXJ0LCBJIHdpbGwg
-aW1wcm92ZSBnaXQgbXNnIGFuZCBwYWdlX293bmVyLnJzdCBsYXRlci4NCg0KVGhlIGdlbmVyYWwg
-b3V0cHV0IG9mIHBhZ2Vfb3duZXIgaXMgYXMgZm9sbG93czoNCg0KCQlQYWdlIGFsbG9jYXRlZCB2
-aWEgb3JkZXIgWFhYLCAuLi4NCgkJUEZOIFhYWCAuLi4NCgkJIC8vIERldGFpbGVkIHN0YWNrDQoN
-CgkJUGFnZSBhbGxvY2F0ZWQgdmlhIG9yZGVyIFhYWCwgLi4uDQoJCVBGTiBYWFggLi4uDQoJCSAv
-LyBEZXRhaWxlZCBzdGFjaw0KDQpUaGUgb3JpZ2luYWwgcGFnZV9vd25lcl9zb3J0IHRvb2wgaWdu
-b3JlcyBQRk4gcm93cywgcHV0cyB0aGUgcmVtYWluaW5nIHJvd3MgaW4gYnVmLCBjb3VudHMgdGhl
-IHRpbWVzIG9mIGJ1ZiwgYW5kIGZpbmFsbHkgc29ydHMgdGhlbSBhY2NvcmRpbmcgdG8gdGhlIHRp
-bWVzLg0KR2VuZXJhbCBvdXRwdXQ6DQoNCgkJWFhYIHRpbWVzOg0KCQlQYWdlIGFsbG9jYXRlZCB2
-aWEgb3JkZXIgWFhYLCAuLi4NCgkJIC8vIERldGFpbGVkIHN0YWNrDQoNCk5vdywgd2UgdXNlIHJl
-Z2V4cCB0byBleHRyYWN0IHRoZSBwYWdlIG9yZGVyIHZhbHVlIGZyb20gdGhlIGJ1ZiwgYW5kIGNv
-dW50IHRoZSB0b3RhbCBwYWdlcyBmb3IgdGhlIGJ1Zi4NCkdlbmVyYWwgb3V0cHV0Og0KDQoJCVhY
-WCB0aW1lcywgWFhYIHBhZ2VzOg0KCQlQYWdlIGFsbG9jYXRlZCB2aWEgb3JkZXIgWFhYLCAuLi4N
-CgkJIC8vIERldGFpbGVkIHN0YWNrDQoNCkJ5IGRlZmF1bHQsIGl0IGlzIHN0aWxsIHNvcnRlZCBi
-eSB0aGUgdGltZXMgb2YgYnVmOyBJZiB3ZSB3YW50IHRvIHNvcnQgYnkgdGhlIHBhZ2VzIG51bXMg
-b2YgYnVmLCB1c2UgdGhlIG5ldyAtbSBwYXJhbWV0ZXIuDQoNCj4+IEBAIC01OSwxMiArNjUsNTAg
-QEAgc3RhdGljIGludCBjb21wYXJlX251bShjb25zdCB2b2lkICpwMSwgY29uc3Qgdm9pZCAqcDIp
-DQo+PiAgCXJldHVybiBsMi0+bnVtIC0gbDEtPm51bTsNCj4+ICB9DQo+PiAgDQo+PiArc3RhdGlj
-IGludCBjb21wYXJlX3BhZ2VfbnVtKGNvbnN0IHZvaWQgKnAxLCBjb25zdCB2b2lkICpwMikgew0K
-Pj4gKwljb25zdCBzdHJ1Y3QgYmxvY2tfbGlzdCAqbDEgPSBwMSwgKmwyID0gcDI7DQo+PiArDQo+
-PiArCXJldHVybiBsMi0+cGFnZV9udW0gLSBsMS0+cGFnZV9udW07IH0NCj4+ICsNCj4+ICtzdGF0
-aWMgaW50IGdldF9wYWdlX251bShjaGFyICpidWYpDQo+PiArew0KPj4gKwlpbnQgZXJyLCB2YWxf
-bGVuLCBvcmRlcl92YWw7DQo+PiArCWNoYXIgb3JkZXJfc3RyWzRdID0gezB9Ow0KPj4gKwljaGFy
-ICplbmRwdHI7DQo+PiArCXJlZ21hdGNoX3QgcG1hdGNoWzJdOw0KPj4gKw0KPj4gKwllcnIgPSBy
-ZWdleGVjKCZvcmRlcl9wYXR0ZXJuLCBidWYsIDIsIHBtYXRjaCwgUkVHX05PVEJPTCk7DQo+PiAr
-CWlmIChlcnIgIT0gMCB8fCBwbWF0Y2hbMV0ucm1fc28gPT0gLTEpIHsNCj4+ICsJCXByaW50Zigi
-bm8gb3JkZXIgcGF0dGVybiBpbiAlc1xuIiwgYnVmKTsNCj4NCj5TaG91bGRuJ3QgZXJyb3IgbWVz
-c2FnZXMgbm9ybWFsbHkgYmUgZGlyZWN0ZWQgdG8gc3RkZXJyPyAgV2UgYXJlbid0IHZlcnkgY29u
-c2lzdGVudCBhYm91dCB0aGlzIGJ1dCBpdCB3YXMgdGhlIGFjY2VwdGVkIHRoaW5nIHRvIGRvIDIw
-LTMwIHllYXJzIGFnbywgbG9sLg0KDQpPbiB0aGlzIHBvaW50LCBpdCBkb2VzIG5vdCBhZmZlY3Qg
-dGhlIHVzZSBvZiB0aGUgdG9vbC4gUGVyc29uYWxseSwgSSBwcmVmZXIgdG8gcmV0YWluIHRoZSBv
-cmlnaW5hbCBjb2Rpbmcgc3R5bGUgb2YgdGhlIHRvb2wuIElzIHRoaXMgb2s/IGxvbA0KDQo+PiAr
-CQlyZXR1cm4gMDsNCj4+ICsJfQ0KPj4gKwl2YWxfbGVuID0gcG1hdGNoWzFdLnJtX2VvIC0gcG1h
-dGNoWzFdLnJtX3NvOw0KPj4gKwlpZiAodmFsX2xlbiA+IDIpIC8qIG1heF9vcmRlciBzaG91bGQg
-bm90IGV4Y2VlZCAyIGRpZ2l0cyAqLw0KPj4gKwkJZ290byB3cm9uZ19vcmRlcjsNCj4+ICsNCj4+
-ICsJbWVtY3B5KG9yZGVyX3N0ciwgYnVmICsgcG1hdGNoWzFdLnJtX3NvLCB2YWxfbGVuKTsNCj4+
-ICsNCj4+ICsJZXJybm8gPSAwOw0KPj4gKwlvcmRlcl92YWwgPSBzdHJ0b2wob3JkZXJfc3RyLCAm
-ZW5kcHRyLCAxMCk7DQo+PiArCWlmIChlcnJubyAhPSAwIHx8IGVuZHB0ciA9PSBvcmRlcl9zdHIg
-fHwgKmVuZHB0ciAhPSAnXDAnKQ0KPj4gKwkJZ290byB3cm9uZ19vcmRlcjsNCj4+ICsNCj4+ICsJ
-cmV0dXJuIDEgPDwgb3JkZXJfdmFsOw0KPj4gKw0KPj4gK3dyb25nX29yZGVyOg0KPj4gKwlwcmlu
-dGYoIndyb25nIG9yZGVyIGluIGZvbGxvdyBidWY6XG4lc1xuIiwgYnVmKTsNCj4+ICsJcmV0dXJu
-IDA7DQo+PiArfQ0KPj4gKw0KPj4gIHN0YXRpYyB2b2lkIGFkZF9saXN0KGNoYXIgKmJ1ZiwgaW50
-IGxlbikgIHsNCj4+ICAJaWYgKGxpc3Rfc2l6ZSAhPSAwICYmDQo+PiAgCSAgICBsZW4gPT0gbGlz
-dFtsaXN0X3NpemUtMV0ubGVuICYmDQo+PiAgCSAgICBtZW1jbXAoYnVmLCBsaXN0W2xpc3Rfc2l6
-ZS0xXS50eHQsIGxlbikgPT0gMCkgew0KPj4gIAkJbGlzdFtsaXN0X3NpemUtMV0ubnVtKys7DQo+
-PiArCQlsaXN0W2xpc3Rfc2l6ZS0xXS5wYWdlX251bSArPSBnZXRfcGFnZV9udW0oYnVmKTsNCj4+
-ICAJCXJldHVybjsNCj4+ICAJfQ0KPj4gIAlpZiAobGlzdF9zaXplID09IG1heF9zaXplKSB7DQo+
-PiBAQCAtNzQsNiArMTE4LDcgQEAgc3RhdGljIHZvaWQgYWRkX2xpc3QoY2hhciAqYnVmLCBpbnQg
-bGVuKQ0KPj4gIAlsaXN0W2xpc3Rfc2l6ZV0udHh0ID0gbWFsbG9jKGxlbisxKTsNCj4+ICAJbGlz
-dFtsaXN0X3NpemVdLmxlbiA9IGxlbjsNCj4+ICAJbGlzdFtsaXN0X3NpemVdLm51bSA9IDE7DQo+
-PiArCWxpc3RbbGlzdF9zaXplXS5wYWdlX251bSA9IGdldF9wYWdlX251bShidWYpOw0KPj4gIAlt
-ZW1jcHkobGlzdFtsaXN0X3NpemVdLnR4dCwgYnVmLCBsZW4pOw0KPj4gIAlsaXN0W2xpc3Rfc2l6
-ZV0udHh0W2xlbl0gPSAwOw0KPj4gIAlsaXN0X3NpemUrKzsNCj4+IEBAIC04NSw2ICsxMzAsMTMg
-QEAgc3RhdGljIHZvaWQgYWRkX2xpc3QoY2hhciAqYnVmLCBpbnQgbGVuKQ0KPj4gIA0KPj4gICNk
-ZWZpbmUgQlVGX1NJWkUJKDEyOCAqIDEwMjQpDQo+PiAgDQo+PiArc3RhdGljIHZvaWQgdXNhZ2Uo
-dm9pZCkNCj4+ICt7DQo+PiArCXByaW50ZigiVXNhZ2U6IC4vcGFnZV9vd25lcl9zb3J0IFstbV0g
-PGlucHV0PiA8b3V0cHV0PlxuIg0KPj4gKwkJIi1tCVNvcnQgYnkgdG90YWwgbWVtb3J5LiBJZiBu
-b3Qgc2V0IHRoaXMgb3B0aW9uLCBzb3J0IGJ5IHRpbWVzXG4iDQo+DQo+cy9JZiBub3Qgc2V0IHRo
-aXMgb3B0aW9uL0lmIHRoaXMgb3B0aW9uIGlzIHVuc2V0Lw0KDQpPa2F5LCB0aGFuayB5b3UsIEkg
-d2lsbCBhZGp1c3QgdGhlIFVzYWdlIGRlc2NyaXB0aW9uIGxhdGVyDQoNCkFuZCBhbnkgb3RoZXIg
-c3VnZ2VzdGlvbnMgYWJvdXQgdGhlIHBhdGNoPw0KDQpXZWkuDQo=
+Len,
+
+On 03.09.21 17:05:39, Len Baker wrote:
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. The safe replacement is strscpy() [1].
+> 
+> However, to simplify and clarify the code, to concatenate labels use
+> the scnprintf() function. This way it is not necessary to check the
+> return value of strscpy (-E2BIG if the parameter count is 0 or the src
+> was truncated) since the scnprintf returns always the number of chars
+> written into the buffer. This function returns always a nul-terminated
+> string even if it needs to be truncated.
+> 
+> The main reason behind this patch is to remove all the strcpy() uses
+> from the kernel with the purpose to clean up the proliferation of
+> str*cpy() functions. Later on, the next step will be remove all the
+> strcpy implementations [2].
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
+> [2] https://github.com/KSPP/linux/issues/88
+> 
+> Co-developed-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+
+this patch looks good to me. I made some changes on top of it to
+further ease pointer arithmetic and also fix remaining
+sprintf/snprintf() users as it makes sense to have them all in a
+single change. See below. Boris, please apply.
+
+Thanks,
+
+-Robert
+
+From 01a3c62a533e71984dfff7189e247b3e848f1449 Mon Sep 17 00:00:00 2001
+From: Len Baker <len.baker@gmx.com>
+Date: Fri, 3 Sep 2021 17:05:39 +0200
+Subject: [PATCH] EDAC/mc: Prefer strscpy or scnprintf over strcpy, sprintf
+ and snprintf
+
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
+[1][2]
+
+However, to simplify and clarify the code, to concatenate labels use
+the scnprintf() function. This way it is not necessary to check the
+return value of strscpy (-E2BIG if the parameter count is 0 or the src
+was truncated) since the scnprintf returns always the number of chars
+written into the buffer. This function returns always a nul-terminated
+string even if it needs to be truncated.
+
+While at it, fix all other broken string generation code that wrongly
+interprets snprintf()'s return code or just uses sprintf(), implement
+that using scnprintf() here too. Drop breaks in loops around
+scnprintf() as it is safe now to loop. Moreover, the check is
+needless: For the case when the buffer is exhausted, len never gets
+zero because scnprintf() takes the full buffer length as input
+parameter, but excludes the trailing '\0' in its return code and thus,
+1 is the minimum len.
+
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
+[2] https://github.com/KSPP/linux/issues/88
+
+ [ rric: Replace snprintf() with scnprintf(), rework sprintf() user,
+   drop breaks in loops around scnprintf(), introduce 'end' pointer to
+   reduce pointer arithmetic, use prefix pattern for e->location,
+   adjust subject and description ]
+
+Co-developed-by: Joe Perches <joe@perches.com>
+Signed-off-by: Joe Perches <joe@perches.com>
+Signed-off-by: Len Baker <len.baker@gmx.com>
+Signed-off-by: Robert Richter <rrichter@amd.com>
+---
+ drivers/edac/edac_mc.c | 42 ++++++++++++++++++------------------------
+ 1 file changed, 18 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
+index 2c5975674723..9f82ca295353 100644
+--- a/drivers/edac/edac_mc.c
++++ b/drivers/edac/edac_mc.c
+@@ -66,14 +66,12 @@ unsigned int edac_dimm_info_location(struct dimm_info *dimm, char *buf,
+ 	char *p = buf;
+ 
+ 	for (i = 0; i < mci->n_layers; i++) {
+-		n = snprintf(p, len, "%s %d ",
++		n = scnprintf(p, len, "%s %d ",
+ 			      edac_layer_name[mci->layers[i].type],
+ 			      dimm->location[i]);
+ 		p += n;
+ 		len -= n;
+ 		count += n;
+-		if (!len)
+-			break;
+ 	}
+ 
+ 	return count;
+@@ -341,19 +339,16 @@ static int edac_mc_alloc_dimms(struct mem_ctl_info *mci)
+ 		 */
+ 		len = sizeof(dimm->label);
+ 		p = dimm->label;
+-		n = snprintf(p, len, "mc#%u", mci->mc_idx);
++		n = scnprintf(p, len, "mc#%u", mci->mc_idx);
+ 		p += n;
+ 		len -= n;
+ 		for (layer = 0; layer < mci->n_layers; layer++) {
+-			n = snprintf(p, len, "%s#%u",
+-				     edac_layer_name[mci->layers[layer].type],
+-				     pos[layer]);
++			n = scnprintf(p, len, "%s#%u",
++				      edac_layer_name[mci->layers[layer].type],
++				      pos[layer]);
+ 			p += n;
+ 			len -= n;
+ 			dimm->location[layer] = pos[layer];
+-
+-			if (len <= 0)
+-				break;
+ 		}
+ 
+ 		/* Link it to the csrows old API data */
+@@ -1027,12 +1022,13 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+ 			  const char *other_detail)
+ {
+ 	struct dimm_info *dimm;
+-	char *p;
++	char *p, *end;
+ 	int row = -1, chan = -1;
+ 	int pos[EDAC_MAX_LAYERS] = { top_layer, mid_layer, low_layer };
+ 	int i, n_labels = 0;
+ 	struct edac_raw_error_desc *e = &mci->error_desc;
+ 	bool any_memory = true;
++	const char *prefix;
+ 
+ 	edac_dbg(3, "MC%d\n", mci->mc_idx);
+ 
+@@ -1087,6 +1083,8 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+ 	 */
+ 	p = e->label;
+ 	*p = '\0';
++	end = p + sizeof(e->label);
++	prefix = "";
+ 
+ 	mci_for_each_dimm(mci, dimm) {
+ 		if (top_layer >= 0 && top_layer != dimm->location[0])
+@@ -1114,12 +1112,8 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+ 			p = e->label;
+ 			*p = '\0';
+ 		} else {
+-			if (p != e->label) {
+-				strcpy(p, OTHER_LABEL);
+-				p += strlen(OTHER_LABEL);
+-			}
+-			strcpy(p, dimm->label);
+-			p += strlen(p);
++			p += scnprintf(p, end - p, "%s%s", prefix, dimm->label);
++			prefix = OTHER_LABEL;
+ 		}
+ 
+ 		/*
+@@ -1141,25 +1135,25 @@ void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+ 	}
+ 
+ 	if (any_memory)
+-		strcpy(e->label, "any memory");
++		strscpy(e->label, "any memory", sizeof(e->label));
+ 	else if (!*e->label)
+-		strcpy(e->label, "unknown memory");
++		strscpy(e->label, "unknown memory", sizeof(e->label));
+ 
+ 	edac_inc_csrow(e, row, chan);
+ 
+ 	/* Fill the RAM location data */
+ 	p = e->location;
++	end = p + sizeof(e->location);
++	prefix = "";
+ 
+ 	for (i = 0; i < mci->n_layers; i++) {
+ 		if (pos[i] < 0)
+ 			continue;
+ 
+-		p += sprintf(p, "%s:%d ",
+-			     edac_layer_name[mci->layers[i].type],
+-			     pos[i]);
++		p += scnprintf(p, end - p, "%s%s:%d", prefix,
++			       edac_layer_name[mci->layers[i].type], pos[i]);
++		prefix = " ";
+ 	}
+-	if (p > e->location)
+-		*(p - 1) = '\0';
+ 
+ 	edac_raw_mc_handle_error(e);
+ }
+-- 
+2.30.2
+
