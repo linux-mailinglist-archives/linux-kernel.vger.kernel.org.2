@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ED1409BA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D36E409BA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346106AbhIMSCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
+        id S1346168AbhIMSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345955AbhIMSCS (ORCPT
+        with ESMTP id S1346198AbhIMSCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:02:18 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0004BC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:01:02 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id f21so4130325plb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:01:02 -0700 (PDT)
+        Mon, 13 Sep 2021 14:02:34 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6ADC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:01:18 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id d6so9268683vsr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rQ0g6XucybidUQ32/zOjQbHjv/JiyzGbAkIREo++RIA=;
-        b=kRhVWV7Y8vznKIlC6QEoW/HdLY+lVkKAFP4div/K+WTBqlIl5xjTyYfDQVGL7F7VKv
-         9eWpX8e8rel3vBVCADsnzHsqlDfqICyvzm/OxhIERfxo9vCgKjbq5h72SFdhOTL2k8BS
-         nNTJjDjEXE7hlWI3JcpKW5WjTNwcMCjr8i9uPQBq5Bs2qZsGT8ZWu+dYne/Uzdwqmb5N
-         HWGxr3LMifEKPQX/KZiXGK1reU9t1twBld2Z9qUfaLBDRHjKErbjy30f7OV83kH80dfA
-         2Otmw8uX0ug3WIGbU/oKo8cxQDAsGlbRPBIN1mV3kJzMlRajUY06Ms9LE1BQSB6Slu1m
-         qeWg==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=wCisvlKWb1zXJ/3Z2KU187/4U2TtQ84I590BSmhZRjw=;
+        b=pYE3gKubI6OtPDcc1fuIrX4snqO15XNP3wRxaHlwjGHArLPCeU/Cx1hsm30tylzYLE
+         qmjk3/pzbXQfSbEZ0mo6ksdTGZnYTV/Q2kxvVrQinxjp3vaB/f7byjFqcwaU3eovwIYr
+         z3anJHABEw0YePZEilCi3kn4SXKk/M4nw5qzAAHmvKPRUMj3hjlAZOCauVdup14XSzLN
+         WmDF+yfp7W2q/GWEB2ZeieB0m40TOXs1+BusG6rJYykSBxGR34ahkDSaHL2lid7O1Onn
+         Gk8mbn6TbcrMc22OVhdDRC/LSQqGlWbHQML+ZjOZFsUaNk8RZKzhBLNQhsPM0qmSPOf0
+         XXJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rQ0g6XucybidUQ32/zOjQbHjv/JiyzGbAkIREo++RIA=;
-        b=1vFQvr6vU7hPnK4plTLGD4ZGSeGJsl3dHwfvLCxNz03YZSIvp5ysUKa5l9rQT7/Te0
-         j/P23Qoa6hW/1zCyBVu3nWnl6J5HGFl4U2gyDN3Y9llKZahzMalZWL7nTXHCyonmPCNy
-         KALk2G5g857eh/Ncb9cHOmWFztN10FuVxVBiVr0CSBY1crwjI5Zbql2FhdNwvhEc757g
-         BLQXGdprMQPc8eocbpg9Eu7ziotXQqDXWNr4HniAz/arBMiAQoZ7Zomn0P4VkIzPEzf5
-         +ARstHXmVD97OIhl8Nm6xgG6CUN9vvXg2XaO+5k5k43UpKa4dwueoFAUNNzWm2PAXd43
-         iKmw==
-X-Gm-Message-State: AOAM532+xdds5LMl3Gu5iTHKf9ulPj4rlqaDEi+Q9JBIpJKRDzdvc0AI
-        Ge4WowGpuleTrV6IK4Rhg5I=
-X-Google-Smtp-Source: ABdhPJxYakF3Jd+j4zlidTOHP1ciG7+3ECSNFP7wQqgCNVqX1VgE5/0582YlrCbMUlhKxB0Xzb8dsw==
-X-Received: by 2002:a17:90a:2e82:: with SMTP id r2mr748614pjd.151.1631556062441;
-        Mon, 13 Sep 2021 11:01:02 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id ch19sm7816708pjb.33.2021.09.13.11.01.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 11:01:01 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 08:01:00 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Zhang Qiao <zhangqiao22@huawei.com>
-Cc:     mingo@redhat.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Subject: Re: [PATCH v2] kernel/sched: Fix sched_fork() access an invalid
- sched_task_group
-Message-ID: <YT+R3EnFgs78Vyvh@slm.duckdns.org>
-References: <20210911075054.6358-1-zhangqiao22@huawei.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=wCisvlKWb1zXJ/3Z2KU187/4U2TtQ84I590BSmhZRjw=;
+        b=71oUVRNMfhE7jLa33f/6z4CBR2QJtIQuXc+l+4WTszYYy6BTpt0ChIzrnW4E2p/Tc9
+         kehGjBQLXqo/RwToSQmaNl2PJg/sq+7s2Yp7oOP9MrfF9cLzq+VIw4SlmNB4uOqRlzn9
+         YNgINixaTLXu0CdNWoQiJQ/X+3ZpqBmPHVn9eHDr/ZMcvYsRAnOsue4Q48Vn4DrsB/bQ
+         xytV6ffoyTNtlDvF9hYiGF098EU6x+5xaXribVMsLGA++70MRbLlAJkKV9OMBeS2Cdna
+         p9m+NMfPYCIYtrVT+ezFahWxAe0KB4LH1oCwm+8yGF8PprQ5w3DzBdV9zZDfA+KelQID
+         SSIQ==
+X-Gm-Message-State: AOAM533JN2HAdXkx2pdsAx2WDW6u9IZOD7AnYvJiGOEsUfFOsWIWXwSQ
+        Nj/GhWT3tsD418OO/h7ihhaP4fM0MukX0DKZ9dc=
+X-Google-Smtp-Source: ABdhPJw/PjbHCtTfNiio+7X7Me9z9HmWj395u/NZAzk3iIPwVYqLfFOQocl82V/Oq5fMA+VlrogZ4TN8cRwt5aTRtVM=
+X-Received: by 2002:a67:ce07:: with SMTP id s7mr6022439vsl.46.1631556077596;
+ Mon, 13 Sep 2021 11:01:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911075054.6358-1-zhangqiao22@huawei.com>
+Received: by 2002:a67:24c7:0:0:0:0:0 with HTTP; Mon, 13 Sep 2021 11:01:16
+ -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uchenna <robertandersonhappy9@gmail.com>
+Date:   Mon, 13 Sep 2021 11:01:16 -0700
+Message-ID: <CAJ63Umikwt_ywZMRNRBuGwKG2MSVWGd-ciiqeN6HGsGtJspc_A@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Sat, Sep 11, 2021 at 03:50:54PM +0800, Zhang Qiao wrote:
-> Between cgroup_can_fork() and cgroup_post_fork(), the cgroup
-> membership is fixed and thus sched_task_group can't change. So
-> call sched_fork() after cgroup_can_fork() and update the child's
-> sched_task_group before it is used.
-
-The part being fixed looks correct to me but it's difficult to for me to
-assess whether the whole relocation of the sched_fork() hook doesn't change
-anything else. Besides, even if we decide to relocate the sched_fork hook, I
-think it'd be better to separate the two changes - one is a relatively safe
-bug fix, the other is a code reorganization with possibly subtle side
-effects. So, I think it'd be better to produce a patch which just fixes the
-bug even if that ends up introducing another function in the flow.
-
-Thanks.
-
--- 
-tejun
+0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
+ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
+stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
+stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGC0YDQsNC9
+0LfQsNC60YbQuNGOINGBINC/0L7QvNC+0YnRjNGOINC90L7QstC+0LPQvg0K0L/QsNGA0YLQvdC1
+0YDQsCDQuNC3INCS0LXQvdC10YHRg9GN0LvRiywg0Lgg0YLQtdC/0LXRgNGMINGB0YDQtdC00YHR
+gtCy0LAg0LHRi9C70Lgg0L/QtdGA0LXQstC10LTQtdC90Ysg0LIg0JLQtdC90LXRgdGD0Y3Qu9GD
+DQrQvdCwINCx0LDQvdC60L7QstGB0LrQuNC5INGB0YfQtdGCINC90L7QstC+0LPQviDQv9Cw0YDR
+gtC90LXRgNCwLg0KDQrQnNC10LbQtNGDINGC0LXQvCwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C1
+0L3RgdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQ
+sNGA0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLR
+i9GB0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/R
+gNC+0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQ
+vtGH0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQ
+tdC90Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YHQ
+tNC10LvQutC4INCx0LXQtyDQutCw0LrQuNGFLdC70LjQsdC+INC/0YDQvtCx0LvQtdC8LCDQuCDQ
+uNC80LXQvdC90L4g0L/QvtGN0YLQvtC80YMg0Y8g0YDQtdGI0LjQuw0K0LrQvtC80L/QtdC90YHQ
+uNGA0L7QstCw0YLRjCDQstCw0Lwg0YHRg9C80LzRgyDQsiDRgNCw0LfQvNC10YDQtSAzNTAgMDAw
+LDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDRh9GC0L7QsdGLINCy0YsNCtGA0LDQt9C00LXQ
+u9C40LvQuCDRgdC+INC80L3QvtC5INGA0LDQtNC+0YHRgtGMLg0KDQrQryDRgdC+0LLQtdGC0YPR
+jiDQstCw0Lwg0L7QsdGA0LDRgtC40YLRjNGB0Y8g0Log0LzQvtC10LzRgyDRgdC10LrRgNC10YLQ
+sNGA0Y4g0LfQsCDQsdCw0L3QutC+0LzQsNGC0L3QvtC5INC60LDRgNGC0L7QuSDQvdCwDQozNTAg
+MDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDQutC+0YLQvtGA0YPRjiDRjyDQvtGB0YLQsNCy
+0LjQuyDQtNC70Y8g0LLQsNGBLiDQodCy0Y/QttC40YLQtdGB0Ywg0YEg0L3QuNC8DQrRgdC10LnR
+h9Cw0YEg0LHQtdC3INC/0YDQvtC80LXQtNC70LXQvdC40Y8uDQoNCtCd0LDQt9Cy0LDQvdC40LU6
+INCx0YDQtdC90LTQuCDRgdC+0LvQvtC80L7QvQ0KDQrQn9C+0YfRgtCwOiBzb2xvbW9uYnJhbmR5
+Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3QviDQv9C+0LTRgtCy0LXR
+gNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y46
+DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19fX19fX19fX19fX19fX19f
+DQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCi0LLQvtGP
+INGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K0KLQstC+0Lkg0LLQvtC3
+0YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDRgNC+0LQg0LfQ
+sNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDQvdC+0LzQtdGAINC8
+0L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19fX19fX19fX19fX19fX19f
+Xw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC10YHQu9C4INCy0Ysg0L3Q
+tSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQuNC90YTQvtGA0LzQsNGG
+0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDRgNGC0YMg0LHQsNC90LrQ
+vtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC70LbQtdC9INCx0YvRgtGM
+INGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/0YDQvtGB0LjRgtC1INC1
+0LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw0L3QutC+0LzQsNGC0LAg
+0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Qu9C70LDRgNC+0LIg0KHQ
+qNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQu9GPINCy0LDRgS4NCg0K
+0KEg0L3QsNC40LvRg9GH0YjQuNC80Lgg0L/QvtC20LXQu9Cw0L3QuNGP0LzQuCwNCg0K0JMt0L0g
+0YPRh9C10L3QvdCwINC40LvQvtCx0LgNCg==
