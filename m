@@ -2,264 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90371409DDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C249409DA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347998AbhIMUGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:06:42 -0400
-Received: from mga03.intel.com ([134.134.136.65]:19216 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347866AbhIMUFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:05:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="221830808"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="221830808"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 13:04:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="469643943"
-Received: from sohilbuildbox.sc.intel.com (HELO localhost.localdomain) ([172.25.110.4])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Sep 2021 13:04:33 -0700
-From:   Sohil Mehta <sohil.mehta@intel.com>
-To:     x86@kernel.org
-Cc:     Sohil Mehta <sohil.mehta@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy E Witt <randy.e.witt@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Ramesh Thomas <ramesh.thomas@intel.com>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [RFC PATCH 13/13] selftests/x86: Add basic tests for User IPI
-Date:   Mon, 13 Sep 2021 13:01:32 -0700
-Message-Id: <20210913200132.3396598-14-sohil.mehta@intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913200132.3396598-1-sohil.mehta@intel.com>
-References: <20210913200132.3396598-1-sohil.mehta@intel.com>
+        id S1347775AbhIMUEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347763AbhIMUEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 16:04:01 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8DBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:02:44 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id s10so23528323lfr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gVlem88uR6+O3AEpNn6Yh2wjkDnIsvdG9SBuzHecDPY=;
+        b=UtwnzoxIKMk4tOfMxxm4CpllD0ShmrKrKQSd8xl/r5+Nf6ZLZtS9/OyvibeXeJRjJm
+         qJb8asXWsxkH8rMGhQmFiAc9zt9A20ouuq77sfZCOcwEBRY3tnwTv8gByYQCor/Quz48
+         og1G2y8Pl9wxe7Gr4qj+V+3W1nEqAaqVtcdiHmee1cHKUsJcv7M1ZOYmo851M7WyJjxB
+         s2cwUJHvcdnzka3/e/fwcF8RA8HvXllV2N/rj5OSMWm+RkgRLLf9Vx78zmfKw/WSWc7j
+         E1acsbtB9KLKrBrScCWd2Unh4K44M/5o+4GJsvBA1ZhCB35t9GyhLHgeM4zk+YAM2EGy
+         Bj6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gVlem88uR6+O3AEpNn6Yh2wjkDnIsvdG9SBuzHecDPY=;
+        b=ohv+Lbf26h88n1ZoDkngL15xjGVMC9rn8IPtswrnvXYgzw+vCiqzGIwj2DBr+PGWIr
+         mnY5Al7kw3T83WJKsTGlSg9oSd6uc6/etrt5dUYyAefa6phyRL6gcBUcR1qkv1pTNTuu
+         umBYEXShdzpYYNSLVsFhgZy03WTK3EY20AgiV2vS8R6c2LZmRFh1aMeFTpvAQF5P6lI3
+         GPdsIlMEuszFQXjZjsRR9K28VWHRBW1KwLbyB8Nr62J+NVehEL59aFbUSQ3inUJF7T5j
+         JymBHVRlsZhvDnFnhuqALrh/0QrQFmcI7QXVKY0VE4/ijajB7gTPLzo5/WbrEwgCRyQt
+         dWvA==
+X-Gm-Message-State: AOAM531QfotECHV1HDsererxjN6d/q4nlTsdEdoV/JR8Qe5e0BWhJ6W7
+        4wvnoz39s1G8wXnDBGH+73wGmDQQyg/bPKtlgpq2RQ==
+X-Google-Smtp-Source: ABdhPJybQilluIHG6i+P60qv7XmPd0cdDddL5AUg5XZKqBiVfw8k7+1hrq7lipQL53Lr2BDFIjLWKWvU6iKbwY7roOA=
+X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr9744729lfa.523.1631563363038;
+ Mon, 13 Sep 2021 13:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
+ <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
+ <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
+ <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com> <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
+In-Reply-To: <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 13 Sep 2021 13:02:32 -0700
+Message-ID: <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
+Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
+To:     sedat.dilek@gmail.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Baokun Li <libaokun1@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include 2 basic tests for receiving a User IPI:
-1. Receiver is spinning in userspace.
-2. Receiver is blocked in the kernel.
+On Mon, Sep 13, 2021 at 12:57 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Mon, Sep 13, 2021 at 9:53 PM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 11:39 AM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > There's an issue with my alternative approach
+> > > (https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863)
+> > > with declaring the local variable z in div_64() since either operand
+> > > could be 64b, which result in an unwanted truncation if the dividend
+> > > is 32b (or less, and divisor is 64b). I think (what I realized this
+> > > weekend) is that we might be able to replace the `if` with
+> > > `__builtin_choose_expr`, then have that whole expression be the final
+> > > statement and thus the "return value" of the statement expression.
+> >
+> > Christ...that...works? Though, did Linus just merge my patches for gcc 5.1?
+> >
+>
+> "Merge branch 'gcc-min-version-5.1' (make gcc-5.1 the minimum version)"
 
-The selftests need gcc with 'muintr' support to compile.
-
-GCC 11 (recently released) has support for this.
-
-Signed-off-by: Sohil Mehta <sohil.mehta@intel.com>
----
- tools/testing/selftests/x86/Makefile |  10 ++
- tools/testing/selftests/x86/uintr.c  | 147 +++++++++++++++++++++++++++
- 2 files changed, 157 insertions(+)
- create mode 100644 tools/testing/selftests/x86/uintr.c
-
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index b4142cd1c5c2..38588221b09e 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -9,6 +9,7 @@ UNAME_M := $(shell uname -m)
- CAN_BUILD_I386 := $(shell ./check_cc.sh $(CC) trivial_32bit_program.c -m32)
- CAN_BUILD_X86_64 := $(shell ./check_cc.sh $(CC) trivial_64bit_program.c)
- CAN_BUILD_WITH_NOPIE := $(shell ./check_cc.sh $(CC) trivial_program.c -no-pie)
-+CAN_BUILD_UINTR := $(shell ./check_cc.sh $(CC) trivial_64bit_program.c -muintr)
- 
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
- 			check_initial_reg_state sigreturn iopl ioperm \
-@@ -19,6 +20,11 @@ TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			vdso_restorer
- TARGETS_C_64BIT_ONLY := fsgsbase sysret_rip syscall_numbering \
- 			corrupt_xstate_header
-+
-+ifeq ($(CAN_BUILD_UINTR),1)
-+TARGETS_C_64BIT_ONLY := $(TARGETS_C_64BIT_ONLY) uintr
-+endif
-+
- # Some selftests require 32bit support enabled also on 64bit systems
- TARGETS_C_32BIT_NEEDED := ldt_gdt ptrace_syscall
- 
-@@ -41,6 +47,10 @@ ifeq ($(CAN_BUILD_WITH_NOPIE),1)
- CFLAGS += -no-pie
- endif
- 
-+ifeq ($(CAN_BUILD_UINTR),1)
-+CFLAGS += -muintr
-+endif
-+
- define gen-target-rule-32
- $(1) $(1)_32: $(OUTPUT)/$(1)_32
- .PHONY: $(1) $(1)_32
-diff --git a/tools/testing/selftests/x86/uintr.c b/tools/testing/selftests/x86/uintr.c
-new file mode 100644
-index 000000000000..61a53526f2fa
---- /dev/null
-+++ b/tools/testing/selftests/x86/uintr.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2020, Intel Corporation.
-+ *
-+ * Sohil Mehta <sohil.mehta@intel.com>
-+ */
-+#define _GNU_SOURCE
-+#include <syscall.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <x86gprintrin.h>
-+#include <pthread.h>
-+#include <stdlib.h>
-+
-+#ifndef __x86_64__
-+# error This test is 64-bit only
-+#endif
-+
-+#ifndef __NR_uintr_register_handler
-+#define __NR_uintr_register_handler	449
-+#define __NR_uintr_unregister_handler	450
-+#define __NR_uintr_create_fd		451
-+#define __NR_uintr_register_sender	452
-+#define __NR_uintr_unregister_sender	453
-+#define __NR_uintr_wait			454
-+#endif
-+
-+#define uintr_register_handler(handler, flags)	syscall(__NR_uintr_register_handler, handler, flags)
-+#define uintr_unregister_handler(flags)		syscall(__NR_uintr_unregister_handler, flags)
-+#define uintr_create_fd(vector, flags)		syscall(__NR_uintr_create_fd, vector, flags)
-+#define uintr_register_sender(fd, flags)	syscall(__NR_uintr_register_sender, fd, flags)
-+#define uintr_unregister_sender(fd, flags)	syscall(__NR_uintr_unregister_sender, fd, flags)
-+#define uintr_wait(flags)			syscall(__NR_uintr_wait, flags)
-+
-+unsigned long uintr_received;
-+unsigned int uintr_fd;
-+
-+void __attribute__((interrupt))__attribute__((target("general-regs-only", "inline-all-stringops")))
-+uintr_handler(struct __uintr_frame *ui_frame,
-+	      unsigned long long vector)
-+{
-+	uintr_received = 1;
-+}
-+
-+void receiver_setup_interrupt(void)
-+{
-+	int vector = 0;
-+	int ret;
-+
-+	/* Register interrupt handler */
-+	if (uintr_register_handler(uintr_handler, 0)) {
-+		printf("[FAIL]\tInterrupt handler register error\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Create uintr_fd */
-+	ret = uintr_create_fd(vector, 0);
-+	if (ret < 0) {
-+		printf("[FAIL]\tInterrupt vector registration error\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	uintr_fd = ret;
-+}
-+
-+void *sender_thread(void *arg)
-+{
-+	long sleep_usec = (long)arg;
-+	int uipi_index;
-+
-+	uipi_index = uintr_register_sender(uintr_fd, 0);
-+	if (uipi_index < 0) {
-+		printf("[FAIL]\tSender register error\n");
-+		return NULL;
-+	}
-+
-+	/* Sleep before sending IPI to allow the receiver to block in the kernel */
-+	if (sleep_usec)
-+		usleep(sleep_usec);
-+
-+	printf("\tother thread: sending IPI\n");
-+	_senduipi(uipi_index);
-+
-+	uintr_unregister_sender(uintr_fd, 0);
-+
-+	return NULL;
-+}
-+
-+static inline void cpu_relax(void)
-+{
-+	asm volatile("rep; nop" ::: "memory");
-+}
-+
-+void test_base_ipi(void)
-+{
-+	pthread_t pt;
-+
-+	uintr_received = 0;
-+	if (pthread_create(&pt, NULL, &sender_thread, NULL)) {
-+		printf("[FAIL]\tError creating sender thread\n");
-+		return;
-+	}
-+
-+	printf("[RUN]\tSpin in userspace (waiting for interrupts)\n");
-+	// Keep spinning until interrupt received
-+	while (!uintr_received)
-+		cpu_relax();
-+
-+	printf("[OK]\tUser interrupt received\n");
-+}
-+
-+void test_blocking_ipi(void)
-+{
-+	pthread_t pt;
-+	long sleep_usec;
-+
-+	uintr_received = 0;
-+	sleep_usec = 1000;
-+	if (pthread_create(&pt, NULL, &sender_thread, (void *)sleep_usec)) {
-+		printf("[FAIL]\tError creating sender thread\n");
-+		return;
-+	}
-+
-+	printf("[RUN]\tBlock in the kernel (waiting for interrupts)\n");
-+	uintr_wait(0);
-+	if (uintr_received)
-+		printf("[OK]\tUser interrupt received\n");
-+	else
-+		printf("[FAIL]\tUser interrupt not received\n");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	receiver_setup_interrupt();
-+
-+	/* Enable interrupts */
-+	_stui();
-+
-+	test_base_ipi();
-+
-+	test_blocking_ipi();
-+
-+	close(uintr_fd);
-+	uintr_unregister_handler(0);
-+
-+	exit(EXIT_SUCCESS);
-+}
+Ha! I pulled+rebased and this code disappeared...I thought I had
+rebased on the wrong branch or committed work to master accidentally.
+Patch to stable-only inbound.
 -- 
-2.33.0
-
+Thanks,
+~Nick Desaulniers
