@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4FC409D3A
+	by mail.lfdr.de (Postfix) with ESMTP id 76BE1409D3B
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242085AbhIMTjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        id S242469AbhIMTjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240113AbhIMTjt (ORCPT
+        with ESMTP id S240113AbhIMTjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:39:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA87DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:38:33 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631561911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SNljKPD0Xskmz5pElU9tRhA+/eVrlrzmSfYWjyc0pwQ=;
-        b=Lz1rdiVRdsnnIyZTt9O+PdsZkBcUkriRCVvIxzoSwUtP9AB2zCB7wQXlSkaVmzyDa+efCP
-        97t3aMTfIUSBC7VBmRsp4QJTwzZVlb0mCyhPmsoW9b/WQUdg1PafWop8XM0W5RbaHPm59a
-        cy6vFLF1A3DOpN3OXWY0MEwA0oJVy4cqR7mD11os6qQzwVoqdCjvr4aemI+WH2lcUEY3+N
-        tHFOoPn1z5s/aiN8Kho5XLlhNETZu5DQsR/V2EnkkoXBNcgN/SLkHgD5WhFCg44Kk9Vku1
-        3DDT6heVg1SqMuCAHsAARCZHzaVObvXVGn1Kob2PNC5diFkuXd7PTA9L+O3Nyw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631561911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SNljKPD0Xskmz5pElU9tRhA+/eVrlrzmSfYWjyc0pwQ=;
-        b=SufMvqF2KSz3fVI4AXwUx2qxp8cvjJJKuP2MMttHEgnS9lz4/mi1ozW/1Ac0UnCZ0bFSGS
-        oDsaHyPxIjRIFLBw==
-To:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        pbonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>
-Subject: Re: [PATCH 6/9] virtio_pci: harden MSI-X interrupts
-In-Reply-To: <CACGkMEu+HPBTV81EHOc6zWP7tTgTf4nDaXViUeejmT-Bhp0PEA@mail.gmail.com>
-References: <20210913055353.35219-1-jasowang@redhat.com>
- <20210913055353.35219-7-jasowang@redhat.com>
- <20210913015711-mutt-send-email-mst@kernel.org>
- <CACGkMEva2j57tG=-QYG7NdgEV28i-gpBReRR+UX7YwrHzRWydw@mail.gmail.com>
- <20210913022257-mutt-send-email-mst@kernel.org>
- <CACGkMEsWJq0SMMfTBdoOxVa1_=k9nZkrRu2wYZo7WO-01p_sgQ@mail.gmail.com>
- <20210913023626-mutt-send-email-mst@kernel.org>
- <20210913024153-mutt-send-email-mst@kernel.org>
- <CACGkMEu+HPBTV81EHOc6zWP7tTgTf4nDaXViUeejmT-Bhp0PEA@mail.gmail.com>
-Date:   Mon, 13 Sep 2021 21:38:30 +0200
-Message-ID: <87bl4wfeq1.ffs@tglx>
+        Mon, 13 Sep 2021 15:39:52 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A81EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:38:36 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id d21so8702386wra.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=c6DbKWeeuhyIQk/sjR5gJ2Num3qwAgw1fKp51/8HpbY=;
+        b=Q8+5Fs8fNNTZntiKDFNbaSpGrjYmQD7GVzFqb6ch5BoIw0spXXKGxehoszaG80RNTz
+         hhMxqj6D0QZjaYR8f0LhVvzVtczxcldm0lWur3fRndY8bKFt1MnHVZ0jWe/mDr6IgS4C
+         yJAOnWfyT1nEnMDfvyNesKRTBjovnmyfKEtnD5IQKVDvLyCnHqKOqjMHeYqZXBEkYwk0
+         cYTYAY63t8JchWXbwcTZ7yTkgTN+OVX1QpXvoyNV18YTZsulKtZ55x8vO11aSDK6TU51
+         W4yCZTjPKDTVZpgk8xgydcxFOs34xXCgEar0pFlwnlTKhcWL6PXum3lVGetE4opx2I0g
+         /1YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=c6DbKWeeuhyIQk/sjR5gJ2Num3qwAgw1fKp51/8HpbY=;
+        b=U1Z+bkFRBjACOURBVWtRhWVbinKjXhg/mAHPNzG+AE1Nda1D20cYRSvtW4mjbEQAW1
+         YEUoSSgB8hzGSnjc5A06J5cFv0Rh/5hci8Nika6w3u+G1j4Dsj/6D6m/aQCGXEA3y6I9
+         lQ0M13FZQ/DvUzgfepbynwJbk9dRi7fPLGZAj32D+Cz/U46YB2Q0cr2C3iCKk+X4ZFbg
+         oPVL1LgfF6Wzh73kvfUkud/jGA4Nb2/IGJCoiGhpE8xTu+LGXQCAxC7fr/HD6jpWu/yo
+         lfwWEluaGgpO3XWMKBzaQ7vyYLcDCfFSgdG75a53TiNKMJ8QfKBwcP3xSXHrx0cAOI1R
+         mipw==
+X-Gm-Message-State: AOAM533Aumm5CK9HeygmC5lsaSR+B+Mj7Z1g0TmXFmJ+V1faXHeJnUBO
+        ydvwBVzcOSli7OxYWGIrzKs=
+X-Google-Smtp-Source: ABdhPJyeNb/QodalatxHQ8M39Shvt3YxxNv1ndi5rl5f7lljsUhavpCTCWIs/1+XcvvnU0ACRJxvRA==
+X-Received: by 2002:a5d:4591:: with SMTP id p17mr14483338wrq.59.1631561914937;
+        Mon, 13 Sep 2021 12:38:34 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::1db2? ([2a02:8108:96c0:3b88::1db2])
+        by smtp.gmail.com with ESMTPSA id n26sm5745365wmi.43.2021.09.13.12.38.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 12:38:34 -0700 (PDT)
+Message-ID: <1feb008a-d13b-6b27-5e1f-e56fed37cd3e@gmail.com>
+Date:   Mon, 13 Sep 2021 21:38:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v2 3/8] staging: r8188eu: _free_pwrlock is empty
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210911141521.24901-1-martin@kaiser.cx>
+ <20210913185110.3065-1-martin@kaiser.cx>
+ <20210913185110.3065-4-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20210913185110.3065-4-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13 2021 at 15:07, Jason Wang wrote:
-> On Mon, Sep 13, 2021 at 2:50 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->> > But doen't "irq is disabled" basically mean "we told the hypervisor
->> > to disable the irq"?  What extractly prevents hypervisor from
->> > sending the irq even if guest thinks it disabled it?
->>
->> More generally, can't we for example blow away the
->> indir_desc array that we use to keep the ctx pointers?
->> Won't that be enough?
->
-> I'm not sure how it is related to the indirect descriptor but an
-> example is that all the current driver will assume:
->
-> 1) the interrupt won't be raised before virtio_device_ready()
-> 2) the interrupt won't be raised after reset()
+Hi Martin,
 
-If that assumption exists, then you better keep the interrupt line
-disabled until virtio_device_ready() has completed and disable it again
-before reset() is invoked. That's a question of general robustness and
-not really a question of trusted hypervisors and encrypted guests.
+On 9/13/21 20:51, Martin Kaiser wrote:
+> -void rtw_free_pwrctrl_priv(struct adapter *adapter)
+> -{
+> -	struct pwrctrl_priv *pwrctrlpriv = &adapter->pwrctrlpriv;
+> -
+> -	_free_pwrlock(&pwrctrlpriv->lock);
+> -
+> -}
 
->> > > > > > > +void vp_disable_vectors(struct virtio_device *vdev)
->> > > > > > >  {
->> > > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
->> > > > > > >       int i;
->> > > > > > > @@ -34,7 +34,20 @@ void vp_synchronize_vectors(struct virtio_device *vdev)
->> > > > > > >               synchronize_irq(vp_dev->pci_dev->irq);
-
-Don't you want the same change for non-MSI interrupts?
+the prototype of rtw_free_pwrctrl_priv can also be removed
+from rtw_pwrctrl.h,
 
 Thanks,
-
-        tglx
+Michael
