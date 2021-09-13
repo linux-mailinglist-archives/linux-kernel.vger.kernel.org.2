@@ -2,224 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134EC408650
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5699408659
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237946AbhIMIT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:19:29 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:49859 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234575AbhIMIT1 (ORCPT
+        id S237906AbhIMIWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:22:10 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25474 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237867AbhIMIWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:19:27 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 75DDC580B92;
-        Mon, 13 Sep 2021 04:18:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 13 Sep 2021 04:18:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Q/fC65yGDoBYl/ELDK8wk321UEy
-        fRbfkHgYZ5KDCjxY=; b=e0eGQYPcf6km0clE+c4JZyfbBuHvc+/sI1gzIK2u/O+
-        oyZTNIa3xl+5C/GvUyEh/oKL8LjwsZoKb3oAAp9NZrFpwg55aDD0MxVYMSU4+EPB
-        fiUBphzo66ihLjuucm3kLUENH+2DC8Hg6R287Q10/2OvgQa4KYkCBdfdQT+O6wCl
-        8rFtPo5onnUfuPgmfLXlYbtFz/kZyxfHK2zs/Gu2DrFwRdb5ZRHnm/plEpDwno0c
-        Fkk608VBqgulakZELGkMiaugPBfMQT7lnT0yanBtEGesDkrbxq4UcHCmFZEuv79a
-        9j30jDlg/FoMmQdDPSk+WN2sWXmexwQFnQZU347f1fQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Q/fC65
-        yGDoBYl/ELDK8wk321UEyfRbfkHgYZ5KDCjxY=; b=bhkwBWZhT9SOr4FP+7+/Vg
-        ikaOhf2LCqXTfz9gfQiAHhQOZXNgH3JUYMf/Pi4iixbEDDrr2hQaa3MTAWyUxt6e
-        AJdke3UAPKYbiHalULWw5LILqHzlNHsvAWW7zN4INRb8GY0boDcyydAnhAw2gkNx
-        QTHbFw78lrHXPWKL9xQSX+J2aFPfJW/4TdhDujdo0b9UARvpiEhmB6Bpaa7mkTM0
-        KWlqPONTWGMBhDNDSFtCCbx3Kjm0iK6yPBCq/cDQXp513KjV7KAMi/TmetNQrWvT
-        V+KBrKlZpS2CGuyF+uExuXhuKHbFfQYAp3kpq3glQt8rKjZ0wD1ecbS1rFWbqJdA
-        ==
-X-ME-Sender: <xms:QQk_YZApqI9u_gMm4YDL7mszIB5KWw_Z4h0zfxjaB7WiMy-xWwDieA>
-    <xme:QQk_YXgup7juhc-JRaIbSUh2h9h_wzb2hHzToWX8M2q81lqfqBf9FH1MEatpw2FGc
-    WuB8DUasBH7h5BqQ6Q>
-X-ME-Received: <xmr:QQk_YUnx7rDXyXiV2Fz5SiXioOzanNKHqUwGHGo1_KkeBKYFATROuCvGQGmYK-DbfuwUx5rqGJdaZh0Gei3fjD9Bg7nO2rVIpaN4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepffetteevieejteeuhfffgeektefghfeileehhedtuddutefhhfejtddvtddu
-    ledvnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdr
-    thgvtghh
-X-ME-Proxy: <xmx:QQk_YTy-swT6w_J21NltbLyuzhxusHfhdfA2bef4dBeq5i5i3Bc_3A>
-    <xmx:QQk_YeSrBSF8VsmAdhJvMUcFGeFzxJmzeeeFdxxGhDGeDsXKyvc8Ew>
-    <xmx:QQk_YWak79bYYtVayOBteIWq7L_TPxmD6VE9Zxx7dpvxDzDN4Tp73w>
-    <xmx:Qwk_YfLk3cKWbpX1j1vfj3mwE681eu_9kOMCs64CnG1imQ8CKP1JIA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Sep 2021 04:18:09 -0400 (EDT)
-Date:   Mon, 13 Sep 2021 10:18:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
-        Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 17/22] dt-bindings: media: Add Allwinner A31 ISP bindings
- documentation
-Message-ID: <20210913081808.esgqvz4eeatp4hkp@gilmour>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-18-paul.kocialkowski@bootlin.com>
+        Mon, 13 Sep 2021 04:22:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631521254; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=VTesdtiKPdW2NXskIxoPYKcZQR5S7va81TqV59+vlWA=; b=bz1HCsjjcXttho9BYcOizogIr0yp6HTjzW1c6zwWkLS18ULCfn7x0eCmRQLwNHzHxvqqvjSZ
+ FaCWggowXjMTUDvtXhAf7HGRJHuk6GtiPO/EH8E0BL21zvTgMdvn4dg3WhCwMh83qoPrJJbP
+ SFBI7qdy6azfRCxYM+WHArVmGnI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 613f09e2bd9e12ebc5fd6add (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 08:20:50
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5DF99C4338F; Mon, 13 Sep 2021 08:20:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [10.242.137.170] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC8CEC4360C;
+        Mon, 13 Sep 2021 08:20:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DC8CEC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 1/2] ASoC: google: dt-bindings: Add sc7280-herobrine
+ machine bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        srinivas.kandagatla@linaro.org, linux-kernel@vger.kernel.org,
+        broonie@kernel.org, alsa-devel@alsa-project.org,
+        robh+dt@kernel.org, bgoswami@codeaurora.org,
+        devicetree@vger.kernel.org, tiwai@suse.com, judyhsiao@chromium.org,
+        lgirdwood@gmail.com, perex@perex.cz, swboyd@chromium.org,
+        plai@codeaurora.org
+References: <1631124057-17155-1-git-send-email-srivasam@codeaurora.org>
+ <1631124057-17155-2-git-send-email-srivasam@codeaurora.org>
+ <1631190773.288819.200339.nullmailer@robh.at.kernel.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <f683c69a-58bb-15ba-8db5-6eaea6e1a062@codeaurora.org>
+Date:   Mon, 13 Sep 2021 13:50:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="menbmu3mm5gvaxqx"
-Content-Disposition: inline
-In-Reply-To: <20210910184147.336618-18-paul.kocialkowski@bootlin.com>
+In-Reply-To: <1631190773.288819.200339.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for info Rob!!!.
 
---menbmu3mm5gvaxqx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This error is due to missing dependency 
+patch.(https://patchwork.kernel.org/project/alsa-devel/list/?series=543829)
 
-On Fri, Sep 10, 2021 at 08:41:42PM +0200, Paul Kocialkowski wrote:
-> This introduces YAML bindings documentation for the Allwinner A31 Image
-> Signal Processor (ISP).
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  .../media/allwinner,sun6i-a31-csi.yaml        |   2 +-
->  .../media/allwinner,sun6i-a31-isp.yaml        | 111 ++++++++++++++++++
->  2 files changed, 112 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun=
-6i-a31-isp.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-=
-csi.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.=
-yaml
-> index f4a686b77a38..c60f6b5403fa 100644
-> --- a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
-> +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.yaml
-> @@ -1,4 +1,4 @@
-> -# SPDX-License-Identifier: GPL-2.0
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->  %YAML 1.2
->  ---
->  $id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-csi.yaml#
-> diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-=
-isp.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-isp.=
-yaml
-> new file mode 100644
-> index 000000000000..a0f82f150e90
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-isp.yaml
-> @@ -0,0 +1,111 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-isp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Allwinner A31 Image Signal Processor Driver (ISP) Device Tree Bin=
-dings
-> +
-> +maintainers:
-> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - allwinner,sun6i-a31-isp
-> +      - allwinner,sun8i-v3s-isp
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Bus Clock
-> +      - description: Module Clock
-> +      - description: DRAM Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: bus
-> +      - const: mod
-> +      - const: ram
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        description: CSI0 input port
-> +
-> +        properties:
-> +          reg:
-> +            const: 0
-> +
-> +          endpoint:
-> +            $ref: video-interfaces.yaml#
-> +            unevaluatedProperties: false
-> +
-> +        additionalProperties: false
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        description: CSI1 input port
-> +
-> +        properties:
-> +          reg:
-> +            const: 0
-> +
-> +          endpoint:
-> +            $ref: video-interfaces.yaml#
-> +            unevaluatedProperties: false
-> +
-> +        additionalProperties: false
+Could You Please check with the above patch applied?
 
-port@0 and port@1 required?
 
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - resets
+On 9/9/2021 6:02 PM, Rob Herring wrote:
+> On Wed, 08 Sep 2021 23:30:56 +0530, Srinivasa Rao Mandadapu wrote:
+>> Add devicetree bindings documentation file for sc7280 sound card
+>> registration.
+>>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> ---
+>>   .../bindings/sound/google,sc7280-herobrine.yaml    | 169 +++++++++++++++++++++
+>>   1 file changed, 169 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+>>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> Error: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dts:46.24-25 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:379: Documentation/devicetree/bindings/sound/google,sc7280-herobrine.example.dt.yaml] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:1438: dt_binding_check] Error 2
+>
+> doc reference errors (make refcheckdocs):
+>
+> See https://patchwork.ozlabs.org/patch/1525980
+>
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit.
+>
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-ports required?
-
-Maxime
-
---menbmu3mm5gvaxqx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYT8JQAAKCRDj7w1vZxhR
-xZNAAP46Yko6Ls0D9aw1lxu7i05pPd3ZqX3GT6b9KfjUV53/eAEA3V+K3VWujOkc
-i9uv/M1/MIUThJ7WBSs2tuSEBCcS9AM=
-=2NXq
------END PGP SIGNATURE-----
-
---menbmu3mm5gvaxqx--
