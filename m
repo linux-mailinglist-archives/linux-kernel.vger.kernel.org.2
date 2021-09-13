@@ -2,100 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746054096DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0EB4096E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241333AbhIMPQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:16:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34233 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347109AbhIMPPa (ORCPT
+        id S1345622AbhIMPQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:16:48 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:35113 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345156AbhIMPQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:15:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631546054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLiPuLulR0KEA9PC+ni4AmJzEqtKLqvlUOW8UTnUXUA=;
-        b=dN1KSImK0M0OznSJAoSlWg7h1mQL5wkVy0lnLjD7ISBawg92ch2yW0vryI2YS4vvIjXIxh
-        sX+EWw/erV6X6vj3WF5GS03gHzPOlzZPkKmno2QW5nwg2vaK+YPaKBUE2ZAuHHljeOBGov
-        XgSrRWoDjkgJtp5mEV8Jt6ddijxtw7Q=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-nZ3Bk7MZMpWvMPfgbbqGjA-1; Mon, 13 Sep 2021 11:14:11 -0400
-X-MC-Unique: nZ3Bk7MZMpWvMPfgbbqGjA-1
-Received: by mail-ej1-f70.google.com with SMTP id s11-20020a170906060b00b005be824f15daso3832685ejb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 08:14:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qLiPuLulR0KEA9PC+ni4AmJzEqtKLqvlUOW8UTnUXUA=;
-        b=Q2wYcQv7zfyTngMR3laIwy2gpsaAwLq2EVhSBAG+3YSEpbYiNpKnIZUAmhD3+BF04N
-         IsL5Wxvo0+tWM841hslENoS1v/lF9s9PXfr+ZYZAC7vsTXi8HZXrE1yX2ec2ouOPOeX7
-         VejBIhkoBy2bAa3udmG8uiWZxiYtwVRPOjJUD2OfRUTk0JqK3CC4G+FsTPs6Ns497wkw
-         ABnIXRwyFy1lzDlxdU9rOvALPfMlg8ifQmbZIulfznGz3wcuj7QUL/MCoJ+X322rt4Tv
-         7wAl2T0+c+ahU6di2H6JUTyhKfQR9X5Iche0ZcWiXfP5u7zZpVWqgjlvPna5f8RboyJH
-         XsEg==
-X-Gm-Message-State: AOAM533e/6jIp13a0tXZGa+eLRoeyO3MefLPgEYqFvxVabEwJQzC+xNG
-        FrxjGjYQRbC6p/hLtxZhiyL4dWX5Zr4GXiAc/pa53knbgMRwmis573G5MZaqBfq0AhJA7aPCF1v
-        Rsr7//oZgqlGVKk58q/hevW7e
-X-Received: by 2002:a05:6402:26c4:: with SMTP id x4mr10020106edd.95.1631546050204;
-        Mon, 13 Sep 2021 08:14:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXlKwyLGX/MszHYats7cUI5Peb1wU+RRlbm432xsjeZYS7I2KrziDTrcT1CMh7Kk82MNf3XA==
-X-Received: by 2002:a05:6402:26c4:: with SMTP id x4mr10020087edd.95.1631546050016;
-        Mon, 13 Sep 2021 08:14:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id eg14sm4193586edb.64.2021.09.13.08.14.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 08:14:09 -0700 (PDT)
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210913131153.1202354-2-pbonzini@redhat.com>
- <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
- <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
- <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-Message-ID: <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
-Date:   Mon, 13 Sep 2021 17:14:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 13 Sep 2021 11:16:26 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 2EE9382267;
+        Mon, 13 Sep 2021 18:15:09 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1631546109;
+        bh=qhCjmOje5rh/9BrafeyLg4wrzMX0Zjf+J27NTAXGeJg=;
+        h=Date:Subject:From:To:References:CC:In-Reply-To;
+        b=pg3+Y5ndb6yo8bJy22KFLgUePq0SKElLpazTW2uSrSLwp/NS1lAQ3j/l47RVokQ35
+         66TVZdg2/0jSBs7Bmq2LOwjK2BV8mn9O4VcNFa164w/koQdSF/p6mVZoSum1LjmOrz
+         dd+hTwmx/W1YtH1f3ZDidGp3PTkQL+4iZfe3QAJQ=
+Received: from [192.168.211.103] (192.168.211.103) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 13 Sep 2021 18:15:08 +0300
+Message-ID: <26f40163-4197-2532-0937-074f06c1847b@paragon-software.com>
+Date:   Mon, 13 Sep 2021 18:15:08 +0300
 MIME-Version: 1.0
-In-Reply-To: <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: [PATCH 3/3] fs/ntfs3: Add sync flag to ntfs_sb_write_run and
+ al_update
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <ntfs3@lists.linux.dev>
+References: <a08b0948-80e2-13b4-ea22-d722384e054b@paragon-software.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+In-Reply-To: <a08b0948-80e2-13b4-ea22-d722384e054b@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.103]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/21 16:55, Dave Hansen wrote:
->> By "Windows startup" I mean even after guest reboot.  Because another
->> process could sneak in and steal your EPC pages between a close() and an
->> open(), I'd like to have a way to EREMOVE the pages while keeping them
->> assigned to the specific vEPC instance, i.e.*without*  going through
->> sgx_vepc_free_page().
-> Oh, so you want fresh EPC state for the guest, but you're concerned that
-> the previous guest might have left them in a bad state.  The current
-> method of getting a new vepc instance (which guarantees fresh state) has
-> some other downsides.
-> 
-> Can't another process steal pages via sgxd and reclaim at any time?
+This allows to wait only when it's requested.
+It speeds up creation of hardlinks.
 
-vEPC pages never call sgx_mark_page_reclaimable, don't they?
+Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+---
+ fs/ntfs3/attrib.c   | 2 +-
+ fs/ntfs3/attrlist.c | 6 +++---
+ fs/ntfs3/frecord.c  | 2 +-
+ fs/ntfs3/fslog.c    | 8 ++++----
+ fs/ntfs3/fsntfs.c   | 8 ++++----
+ fs/ntfs3/inode.c    | 2 +-
+ fs/ntfs3/ntfs_fs.h  | 4 ++--
+ fs/ntfs3/xattr.c    | 2 +-
+ 8 files changed, 17 insertions(+), 17 deletions(-)
 
-> What's the extra concern here about going through a close()/open()
-> cycle?  Performance?
-
-Apart from reclaiming, /dev/sgx_vepc might disappear between the first 
-open() and subsequent ones.
-
-Paolo
+diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
+index b1055b284c60..0ae51a360899 100644
+--- a/fs/ntfs3/attrib.c
++++ b/fs/ntfs3/attrib.c
+@@ -291,7 +291,7 @@ int attr_make_nonresident(struct ntfs_inode *ni, struct ATTRIB *attr,
+ 		if (!rsize) {
+ 			/* Empty resident -> Non empty nonresident. */
+ 		} else if (!is_data) {
+-			err = ntfs_sb_write_run(sbi, run, 0, data, rsize);
++			err = ntfs_sb_write_run(sbi, run, 0, data, rsize, 0);
+ 			if (err)
+ 				goto out2;
+ 		} else if (!page) {
+diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
+index fa32399eb517..e41443cb3d63 100644
+--- a/fs/ntfs3/attrlist.c
++++ b/fs/ntfs3/attrlist.c
+@@ -336,7 +336,7 @@ int al_add_le(struct ntfs_inode *ni, enum ATTR_TYPE type, const __le16 *name,
+ 
+ 	if (attr && attr->non_res) {
+ 		err = ntfs_sb_write_run(ni->mi.sbi, &al->run, 0, al->le,
+-					al->size);
++					al->size, 0);
+ 		if (err)
+ 			return err;
+ 		al->dirty = false;
+@@ -423,7 +423,7 @@ bool al_delete_le(struct ntfs_inode *ni, enum ATTR_TYPE type, CLST vcn,
+ 	return true;
+ }
+ 
+-int al_update(struct ntfs_inode *ni)
++int al_update(struct ntfs_inode *ni, int sync)
+ {
+ 	int err;
+ 	struct ATTRIB *attr;
+@@ -445,7 +445,7 @@ int al_update(struct ntfs_inode *ni)
+ 		memcpy(resident_data(attr), al->le, al->size);
+ 	} else {
+ 		err = ntfs_sb_write_run(ni->mi.sbi, &al->run, 0, al->le,
+-					al->size);
++					al->size, sync);
+ 		if (err)
+ 			goto out;
+ 
+diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+index 834cb361f61f..5910f6c179b8 100644
+--- a/fs/ntfs3/frecord.c
++++ b/fs/ntfs3/frecord.c
+@@ -3212,7 +3212,7 @@ int ni_write_inode(struct inode *inode, int sync, const char *hint)
+ 					goto out;
+ 			}
+ 
+-			err = al_update(ni);
++			err = al_update(ni, sync);
+ 			if (err)
+ 				goto out;
+ 		}
+diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
+index b5853aed0e25..88c07da08fd5 100644
+--- a/fs/ntfs3/fslog.c
++++ b/fs/ntfs3/fslog.c
+@@ -2219,7 +2219,7 @@ static int last_log_lsn(struct ntfs_log *log)
+ 
+ 			err = ntfs_sb_write_run(log->ni->mi.sbi,
+ 						&log->ni->file.run, off, page,
+-						log->page_size);
++						log->page_size, 0);
+ 
+ 			if (err)
+ 				goto out;
+@@ -3710,7 +3710,7 @@ static int do_action(struct ntfs_log *log, struct OPEN_ATTR_ENRTY *oe,
+ 
+ 	if (a_dirty) {
+ 		attr = oa->attr;
+-		err = ntfs_sb_write_run(sbi, oa->run1, vbo, buffer_le, bytes);
++		err = ntfs_sb_write_run(sbi, oa->run1, vbo, buffer_le, bytes, 0);
+ 		if (err)
+ 			goto out;
+ 	}
+@@ -5152,10 +5152,10 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
+ 
+ 	ntfs_fix_pre_write(&rh->rhdr, log->page_size);
+ 
+-	err = ntfs_sb_write_run(sbi, &ni->file.run, 0, rh, log->page_size);
++	err = ntfs_sb_write_run(sbi, &ni->file.run, 0, rh, log->page_size, 0);
+ 	if (!err)
+ 		err = ntfs_sb_write_run(sbi, &log->ni->file.run, log->page_size,
+-					rh, log->page_size);
++					rh, log->page_size, 0);
+ 
+ 	kfree(rh);
+ 	if (err)
+diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
+index 91e3743e1442..c89a0f5c5ad4 100644
+--- a/fs/ntfs3/fsntfs.c
++++ b/fs/ntfs3/fsntfs.c
+@@ -1080,7 +1080,7 @@ int ntfs_sb_write(struct super_block *sb, u64 lbo, size_t bytes,
+ }
+ 
+ int ntfs_sb_write_run(struct ntfs_sb_info *sbi, const struct runs_tree *run,
+-		      u64 vbo, const void *buf, size_t bytes)
++		      u64 vbo, const void *buf, size_t bytes, int sync)
+ {
+ 	struct super_block *sb = sbi->sb;
+ 	u8 cluster_bits = sbi->cluster_bits;
+@@ -1100,7 +1100,7 @@ int ntfs_sb_write_run(struct ntfs_sb_info *sbi, const struct runs_tree *run,
+ 
+ 	for (;;) {
+ 		u32 op = len < bytes ? len : bytes;
+-		int err = ntfs_sb_write(sb, lbo, op, buf, 0);
++		int err = ntfs_sb_write(sb, lbo, op, buf, sync);
+ 
+ 		if (err)
+ 			return err;
+@@ -2175,7 +2175,7 @@ int ntfs_insert_security(struct ntfs_sb_info *sbi,
+ 
+ 	/* Write main SDS bucket. */
+ 	err = ntfs_sb_write_run(sbi, &ni->file.run, sbi->security.next_off,
+-				d_security, aligned_sec_size);
++				d_security, aligned_sec_size, 0);
+ 
+ 	if (err)
+ 		goto out;
+@@ -2193,7 +2193,7 @@ int ntfs_insert_security(struct ntfs_sb_info *sbi,
+ 
+ 	/* Write copy SDS bucket. */
+ 	err = ntfs_sb_write_run(sbi, &ni->file.run, mirr_off, d_security,
+-				aligned_sec_size);
++				aligned_sec_size, 0);
+ 	if (err)
+ 		goto out;
+ 
+diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+index 9f740fd301b2..e719036a7cea 100644
+--- a/fs/ntfs3/inode.c
++++ b/fs/ntfs3/inode.c
+@@ -1586,7 +1586,7 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+ 
+ 	/* Write non resident data. */
+ 	if (nsize) {
+-		err = ntfs_sb_write_run(sbi, &ni->file.run, 0, rp, nsize);
++		err = ntfs_sb_write_run(sbi, &ni->file.run, 0, rp, nsize, 0);
+ 		if (err)
+ 			goto out7;
+ 	}
+diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
+index 372cda697dd4..b030548faba2 100644
+--- a/fs/ntfs3/ntfs_fs.h
++++ b/fs/ntfs3/ntfs_fs.h
+@@ -434,7 +434,7 @@ bool al_remove_le(struct ntfs_inode *ni, struct ATTR_LIST_ENTRY *le);
+ bool al_delete_le(struct ntfs_inode *ni, enum ATTR_TYPE type, CLST vcn,
+ 		  const __le16 *name, size_t name_len,
+ 		  const struct MFT_REF *ref);
+-int al_update(struct ntfs_inode *ni);
++int al_update(struct ntfs_inode *ni, int sync);
+ static inline size_t al_aligned(size_t size)
+ {
+ 	return (size + 1023) & ~(size_t)1023;
+@@ -575,7 +575,7 @@ int ntfs_sb_read(struct super_block *sb, u64 lbo, size_t bytes, void *buffer);
+ int ntfs_sb_write(struct super_block *sb, u64 lbo, size_t bytes,
+ 		  const void *buffer, int wait);
+ int ntfs_sb_write_run(struct ntfs_sb_info *sbi, const struct runs_tree *run,
+-		      u64 vbo, const void *buf, size_t bytes);
++		      u64 vbo, const void *buf, size_t bytes, int sync);
+ struct buffer_head *ntfs_bread_run(struct ntfs_sb_info *sbi,
+ 				   const struct runs_tree *run, u64 vbo);
+ int ntfs_read_run_nb(struct ntfs_sb_info *sbi, const struct runs_tree *run,
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 6f88cb77a17f..310743976d2c 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -444,7 +444,7 @@ static noinline int ntfs_set_ea(struct inode *inode, const char *name,
+ 		/* Delete xattr, ATTR_EA */
+ 		ni_remove_attr_le(ni, attr, mi, le);
+ 	} else if (attr->non_res) {
+-		err = ntfs_sb_write_run(sbi, &ea_run, 0, ea_all, size);
++		err = ntfs_sb_write_run(sbi, &ea_run, 0, ea_all, size, 0);
+ 		if (err)
+ 			goto out;
+ 	} else {
+-- 
+2.33.0
 
