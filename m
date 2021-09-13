@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61EB409B9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19246409BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346139AbhIMSBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:01:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345961AbhIMSBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:01:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C7C560F3A;
-        Mon, 13 Sep 2021 18:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631556022;
-        bh=DYDrQ8asXy8E6ShLKQ8yhrI2cPvVW4y0r3KhwB7+5Ww=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eCeCAfmBHwqjlMj/QhfHamnuGx5cSzG51yvIe+FIijNu6X+9gXf/9cnmAzVVtyyxL
-         q2Y0Kr0wxOF4/72rWthAHmPdu6IjurW3fFdopOty8VninXwQJy8ZiAIfU8wvkwaSUq
-         G/6qZER6UT+4/URf8L956foWL/fLT8WC/8vdsbFcaRl8LDPg1B5mrfK1SJyzNL8pw4
-         pXJfLuKgNEOSmj1moGi9XSlRCoq+SYBG1hlmY3VQ3BvZBdKhPV16gXCy39fQPijV9v
-         ZlAWkDwG3WemwJN+YvgvkxE8Pjf9fDnELQ99l4R53L25Rg7lOTZZT6GM5gbuf7V7+b
-         3/7YsEOqE2vyA==
-Date:   Mon, 13 Sep 2021 11:00:10 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        philip.li@intel.com, alexei.starovoitov@gmail.com,
-        andrii@kernel.org
-Subject: Re: [dborkman:pr/bpf-cgrp 2/4] include/linux/cgroup-defs.h:771:70:
- warning: unused parameter 'skcd'
-Message-ID: <YT+RqrkQAOVhbkWu@archlinux-ax161>
-References: <202109110835.fBYQcLIG-lkp@intel.com>
- <89bba45c-d15c-88b7-0e32-9280cd4e4990@iogearbox.net>
+        id S1346046AbhIMSCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345976AbhIMSCD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:02:03 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10275C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:00:47 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id g8so15638794edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DHniLUit0TO1fpRb8u2zaQ03tSwIk8vmaFLMCJHl5Cc=;
+        b=KvMorzevM9iFkGuwdH3TXkYjG6oxzPm7EjhikWixq8iOmn27OImseEWW7A+gVnZM2y
+         n+Br/+bPNqoZABjxljng1+EwPC5UMUTURMHtVON/cqbjPFISAeLuxa36A7tuCWuNAD8I
+         XwUUhXeudKpJBAFwiIv8Ln6Zc1zqbvXfMQ2XTJEDHJAMdHZzNY8CvCz+ZlN/FWTKJCu3
+         eoV9gUZuOUhyv/2NCcLURxTL76FFVvrE0H8cclCQmcAIwqSQliS6gMnWOi4isuj/r3wW
+         DUnGPGy80YKuKlIy2McojLu1vtII2+7iud88cqdx98Hc7n462orClCSViNb+4u0HQOuJ
+         C4+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DHniLUit0TO1fpRb8u2zaQ03tSwIk8vmaFLMCJHl5Cc=;
+        b=Vy9/3RZyRoeISRTuNYOlH3V6TsGxvyAxoVue6mYF7R1atfBj0mlot+/UyzydjUcKpM
+         tmF4031m5FfrzZQ+kXLaalQllG2HUVcN7Hcn2UTkTfBxP1sjn1TyAR9VAIH9ZTVoiiDC
+         djd6dIzAQlw9bRQWMJcMvjRreliHAjSvVx3g+rVBlRPX2b3V+zygasv9kZevTuQhDpCV
+         /Wt7EFOwKv06yEnze86YtrVINx5kuoAFrshE+MAs5yLPPXtM36AdNF0xSnwjvb71z3oM
+         Nv84T1rm0dzPzP6XRx1Fm0zYQQ1T+eQSyOa2FgjiW890dcXnJ07ake1bFnhz9Z1Sc9fE
+         1Ttw==
+X-Gm-Message-State: AOAM532rHlluqMTsNcNchhAZUKWxee7vBN4yXANd8AzTyW8J1KJ7TgIJ
+        D3Qb6brYn0RZ8KRShNqCQQgfOySj30BfbyiXfVPSZA==
+X-Google-Smtp-Source: ABdhPJx5nH/HEHzRtp0MK/myEqTSYmPy/C9zI1z8EKFCO0HlLcLly/dbEMpI49W1i/rpeDNRIm0lxgKtGl6BbYvX7C8=
+X-Received: by 2002:aa7:c617:: with SMTP id h23mr13036515edq.357.1631556045428;
+ Mon, 13 Sep 2021 11:00:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89bba45c-d15c-88b7-0e32-9280cd4e4990@iogearbox.net>
+References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 13 Sep 2021 23:30:32 +0530
+Message-ID: <CA+G9fYsPUuJFiY92VEqvdMYMA9rNFXAftZNsHka0QZSJngh1sQ@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/334] 5.14.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, 13 Sept 2021 at 19:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.14.4 release.
+> There are 334 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.4-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Mon, Sep 13, 2021 at 05:19:26PM +0200, Daniel Borkmann wrote:
-> [ +Philip ]
-> 
-> On 9/11/21 2:38 AM, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git pr/bpf-cgrp
-> > head:   5a6e78baee7515884b93a90c5d03db601bc9063a
-> > commit: f36377d0c40cce0cdeaff50031c268bc640d94f0 [2/4] bpf, cgroups: Fix cgroup v2 fallback on v1/v2 mixed mode
-> > config: i386-randconfig-r032-20210910 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
-> > reproduce (this is a W=1 build):
-> >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >          chmod +x ~/bin/make.cross
-> >          # https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/commit/?id=f36377d0c40cce0cdeaff50031c268bc640d94f0
-> >          git remote add dborkman https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git
-> >          git fetch --no-tags dborkman pr/bpf-cgrp
-> >          git checkout f36377d0c40cce0cdeaff50031c268bc640d94f0
-> >          # save the attached .config to linux build tree
-> >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=i386
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All warnings (new ones prefixed by >>):
-> 
-> Not sure how useful these warnings below are given it is quite conventional in the kernel
-> to have some static inline helper which e.g. look:
-> 
-> static inline int bla(struct foo *bar)
-> {
-> #ifdef CONFIG_<XYZ>
->         return ... /// do something with bar
-> #else
->         return 0;
-> #endif
-> }
-> 
-> I presume consensus here is to ignore these given also the gazillion other cases in the
-> kernel tree. In other words, goal on -Wunused-parameter for kernel would be to really
-> only catch cases where a parameter is indeed in all cases unused and should be removed
-> from the signature.
+FYI,
 
-Unfortunately, it looks like you are getting bit by a tangential issue
-here:
+arm clang-10, clang-11, clang-12 and clang-13 builds failed.
+due to this commit on 5.14 and 5.13 on following configs,
+  - footbridge_defconfig
+  - mini2440_defconfig
+  - s3c2410_defconfig
 
-https://lore.kernel.org/r/YSQE2f5teuvKLkON@Ryzen-9-3900X.localdomain/
+This was already reported on the mailing list.
 
-The full include log:
+ERROR: modpost: "__mulodi4" [drivers/block/nbd.ko] undefined! #1438
+https://github.com/ClangBuiltLinux/linux/issues/1438
 
-In file included from drivers/gpu/drm/i915/display/intel_dpll.c:7:
-In file included from drivers/gpu/drm/i915/display/intel_de.h:9:
-In file included from ./drivers/gpu/drm/i915/i915_drv.h:39:
-In file included from ./include/linux/i2c.h:18:
-In file included from ./include/linux/regulator/consumer.h:35:
-In file included from ./include/linux/suspend.h:5:
-In file included from ./include/linux/swap.h:9:
-In file included from ./include/linux/memcontrol.h:13:
-In file included from ./include/linux/cgroup.h:28:
-In file included from ./include/linux/cgroup-defs.h:22:
-In file included from ./include/linux/bpf-cgroup.h:5:
-./include/linux/bpf.h:770:61: warning: unused parameter 'prog' [-Wunused-parameter]
-static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
-                                                            ^
-./include/linux/bpf.h:771:32: warning: unused parameter 'tr' [-Wunused-parameter]
-                                           struct bpf_trampoline *tr)
-                                                                  ^
-...
+[PATCH 00/10] raise minimum GCC version to 5.1
+https://lore.kernel.org/lkml/20210910234047.1019925-1-ndesaulniers@google.com/
 
-The fixes are here:
+linux-next: build failure while building Linus' tree
+https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
 
-https://lore.kernel.org/r/20210824022640.2170859-1-nathan@kernel.org/
-https://lore.kernel.org/r/20210824232237.2085342-1-nathan@kernel.org/
+Full build log,
+https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1585407346#L1111
 
-I will push to get these fixes accepted as quickly as possible.
 
-Philip, would it be possible for you guys to avoid sending reports for
-i386 configurations that contain any of the following three
-configurations for the time being?
-
-CONFIG_MCRUSOE=y
-CONFIG_MEFFICEON=y
-CONFIG_MCYRIXIII=y
-
-They are resulting in a lot of false positives, as I have linked above.
-
-Cheers,
-Nathan
+--
+Linaro LKFT
+https://lkft.linaro.org
