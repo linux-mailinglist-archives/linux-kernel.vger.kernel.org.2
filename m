@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B4940960D
+	by mail.lfdr.de (Postfix) with ESMTP id C13D740960E
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347001AbhIMOrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57712 "EHLO mail.kernel.org"
+        id S1346372AbhIMOrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347015AbhIMOlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:41:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36F5F617E6;
-        Mon, 13 Sep 2021 13:56:18 +0000 (UTC)
+        id S1345135AbhIMOlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:41:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6FB06124A;
+        Mon, 13 Sep 2021 13:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541378;
-        bh=43DmkAoCMLVUXBo3lIa6WD2QcU0t1QfzGVWKCHf/C6Y=;
+        s=korg; t=1631541381;
+        bh=3HgTSiSenMZLALV6ean9E0Invt9sKdJ7P5fruDSHcSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=owfqwySOqWW9jnIVJRroXDqSVtbHADxl8NvktAQebmnSClnF1T83VzzqRRbl4L5WM
-         zYoHx/1CThYvXvgvhj3ixie47YGAtbXUcf0HRA9BFf6ERN0iU0ha61LmWRDI7DPdpU
-         hnAlXbyqcAFaciRw+8ifxEhPSQpSl8pzPW9gUSmU=
+        b=WWOx+lVVVXpnLzxJi6CdA3PX0klx66SX3uT/UDKK5xK7TBV849bvXISsdC2L5UvG8
+         D7BNQt+hfW8p4Gr2ukezVQo2tANSrGdzIHntrv5qPhaMmtuGeF8KsGtyG/1AYsDunQ
+         +5CzmR53vvj2WOLeb8LTWb6qjZKzvn3yWM7xeUlU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Naveen Mamindlapalli <naveenm@marvell.com>,
+        stable@vger.kernel.org, Geetha sowjanya <gakula@marvell.com>,
         Sunil Goutham <sgoutham@marvell.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 241/334] octeontx2-pf: send correct vlan priority mask to npc_install_flow_req
-Date:   Mon, 13 Sep 2021 15:14:55 +0200
-Message-Id: <20210913131121.550699453@linuxfoundation.org>
+Subject: [PATCH 5.14 242/334] octeontx2-af: Check capability flag while freeing ipolicer memory
+Date:   Mon, 13 Sep 2021 15:14:56 +0200
+Message-Id: <20210913131121.583008323@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
 References: <20210913131113.390368911@linuxfoundation.org>
@@ -41,37 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naveen Mamindlapalli <naveenm@marvell.com>
+From: Geetha sowjanya <gakula@marvell.com>
 
-[ Upstream commit 10df5a13ac6785b409ad749c4b10d4b220cc7e71 ]
+[ Upstream commit 07cccffdbdd37820ba13c645af8e74a78a266557 ]
 
-This patch corrects the erroneous vlan priority mask field that was
-send to npc_install_flow_req.
+Bandwidth profiles (ipolicer structure)is implemented only on CN10K
+platform. But current code try to free the ipolicer memory without
+checking the capibility flag leading to driver crash on OCTEONTX2
+platform. This patch fixes the issue by add capability flag check.
 
-Fixes: 1d4d9e42c240 ("octeontx2-pf: Add tc flower hardware offload on ingress traffic")
-Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
+Fixes: e8e095b3b3700 ("octeontx2-af: cn10k: Bandwidth profiles config support")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
 Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 972b202b9884..32d5c623fdfa 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -485,8 +485,8 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 				   match.key->vlan_priority << 13;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+index 4bfbbdf38770..c32195073e8a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+@@ -25,7 +25,7 @@ static int nix_update_mce_rule(struct rvu *rvu, u16 pcifunc,
+ 			       int type, bool add);
+ static int nix_setup_ipolicers(struct rvu *rvu,
+ 			       struct nix_hw *nix_hw, int blkaddr);
+-static void nix_ipolicer_freemem(struct nix_hw *nix_hw);
++static void nix_ipolicer_freemem(struct rvu *rvu, struct nix_hw *nix_hw);
+ static int nix_verify_bandprof(struct nix_cn10k_aq_enq_req *req,
+ 			       struct nix_hw *nix_hw, u16 pcifunc);
+ static int nix_free_all_bandprof(struct rvu *rvu, u16 pcifunc);
+@@ -3849,7 +3849,7 @@ static void rvu_nix_block_freemem(struct rvu *rvu, int blkaddr,
+ 			kfree(txsch->schq.bmap);
+ 		}
  
- 			vlan_tci_mask = match.mask->vlan_id |
--					match.key->vlan_dei << 12 |
--					match.key->vlan_priority << 13;
-+					match.mask->vlan_dei << 12 |
-+					match.mask->vlan_priority << 13;
+-		nix_ipolicer_freemem(nix_hw);
++		nix_ipolicer_freemem(rvu, nix_hw);
  
- 			flow_spec->vlan_tci = htons(vlan_tci);
- 			flow_mask->vlan_tci = htons(vlan_tci_mask);
+ 		vlan = &nix_hw->txvlan;
+ 		kfree(vlan->rsrc.bmap);
+@@ -4225,11 +4225,14 @@ static int nix_setup_ipolicers(struct rvu *rvu,
+ 	return 0;
+ }
+ 
+-static void nix_ipolicer_freemem(struct nix_hw *nix_hw)
++static void nix_ipolicer_freemem(struct rvu *rvu, struct nix_hw *nix_hw)
+ {
+ 	struct nix_ipolicer *ipolicer;
+ 	int layer;
+ 
++	if (!rvu->hw->cap.ipolicer)
++		return;
++
+ 	for (layer = 0; layer < BAND_PROF_NUM_LAYERS; layer++) {
+ 		ipolicer = &nix_hw->ipolicer[layer];
+ 
 -- 
 2.30.2
 
