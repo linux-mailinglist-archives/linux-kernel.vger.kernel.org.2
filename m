@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF45408990
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E79B408992
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239049AbhIMK4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:56:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52472 "EHLO mail.kernel.org"
+        id S239300AbhIMK44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239441AbhIMK4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:56:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B31660F12;
-        Mon, 13 Sep 2021 10:55:24 +0000 (UTC)
+        id S238934AbhIMK4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:56:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1C961051;
+        Mon, 13 Sep 2021 10:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631530524;
-        bh=jjg6yzmoYmrgF/kupfGziCDMx2GVtuJGY7oPruMvnVk=;
+        s=k20201202; t=1631530529;
+        bh=kGs+OZXsbrIogk6381WUNP6EKwqGTAnYr3RIhU3WhAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VrrT8olopk85eVfPt+B6eBAre8D1nMrLOz9HALE8hjM1WyJcVSwNt+Kf6t6xrnj0y
-         jv5CgAfOMv2lTIPy5fypia/YhLZ00ixv0yTwrq4qnB52NKJy0WEvD8r/28yBLArUa6
-         umHdxhSjwMzLteVcJPngl1UPpeU7GQfd+nxm/R1/ojOES7h0Hcqlswt/nOmPeQMGR5
-         ngfw5HoaafYETLg3fsNsp0+eee/FQ5X/cmb60qqR/PZF+cQ0+yL8xj1BczkK0yt/RW
-         Uia9w7RCdtQIGtSgCQdPvK6iaiHcjLLKWdqbVeBMG/uzZkzjpCYXSFFZW0gWck8CN0
-         r/ObDk9j3MdVw==
+        b=hDXyV3lIQc9EqHpNl20CDXwNBLMZImqhYXbqEmGkZMps+z+IpwxuijXlIyIk89VRN
+         EV+dmoyy1eFCrNoZIWXNsDmdmT7jUYrA/klAUrM0aqA6CSGNiMF/XkXRxGqDqdsLyc
+         xyXF1JIHbq+hcSd8z9FHrl9bH9KiSiWPS3YHVsJELy7EO1cns2uTeHT3CqADZgB0x4
+         XMEar/d/bThNBNx39gGXiMXaE61TzyWoGaT+zN08ziyJyWS00PLjc1ja1dVIHnAKEw
+         NNgj5uJjcYsEjE4ntf5tH4toXhq1yHs2nvxG/JS7/74FUUVo5LUZD6NgLDzEXMP3G7
+         kGnMVkmoweHgA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Mon, 13 Sep 2021 11:53:32 +0100
-Message-Id: <163152996580.45703.9693182447056291147.b4-ty@kernel.org>
+To:     gearhead <ys3al35l@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH] ASoC: pcm5102a: increase rate from 192k to 384k
+Date:   Mon, 13 Sep 2021 11:53:34 +0100
+Message-Id: <163152996585.45703.8666875215162171211.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210901132742.31714-1-caihuoqing@baidu.com>
-References: <20210901132742.31714-1-caihuoqing@baidu.com>
+In-Reply-To: <20210907210130.116769-1-ys3al35l@gmail.com>
+References: <20210907210130.116769-1-ys3al35l@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,10 +41,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sep 2021 21:27:41 +0800, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+On Tue, 7 Sep 2021 16:01:25 -0500, gearhead wrote:
+> the pcm5102a is capable of 384k, but the current code limits it to 192k.
+> This commit extends to 384k
 > 
 > 
 
@@ -58,8 +53,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8195: Make use of the helper function devm_platform_ioremap_resource()
-      commit: c6b1b57469b4768b83e9ccc9bc3e5c2c7eb93013
+[1/1] ASoC: pcm5102a: increase rate from 192k to 384k
+      commit: 0beeb330300f082e8b6849a9f83d34efa2578edd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
