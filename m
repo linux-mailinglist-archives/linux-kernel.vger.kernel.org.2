@@ -2,268 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581C34087FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F59408806
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238296AbhIMJRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:17:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47750 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238002AbhIMJRM (ORCPT
+        id S238360AbhIMJUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236022AbhIMJUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:17:12 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C689021EF8;
-        Mon, 13 Sep 2021 09:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631524555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7j2IQeXEFHSo/X0Y8lW6RryJXyvGXf9ANntxTqON5Dg=;
-        b=b6zIAugpmst/ZUrISLQASo52Ng8Pi4YNbo3izXgtBwdqxGOzSFVfuFv1mhaYWTWPzJpgpU
-        +0K+7rdGPEORimg8BHy951hf5ctYkkKLkvYfgk1bPwO3AfjYRMds7F9uy1dH+l8Rd/wsw/
-        6ZYpSG1OBNwsw7OfF3WgEpirnaaLRqs=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D7863A3B9E;
-        Mon, 13 Sep 2021 09:15:54 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 11:15:54 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm/page_alloc: detect allocation forbidden by cpuset
- and bail out early
-Message-ID: <YT8WygPhuORJC6Pn@dhcp22.suse.cz>
-References: <1631518709-42881-1-git-send-email-feng.tang@intel.com>
+        Mon, 13 Sep 2021 05:20:40 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4F4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:19:24 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id k17so5406681pls.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=/KLMhu/ohKTdcErkhutjcvNbaBuyL81b9h2OgPrIAGs=;
+        b=0nRXlrxU0h72/63M9Z//j1oUioUEAaM+i5ApthV6Y6lkH/EExd7NOO9yr4vV4wgDNy
+         bPRLPTKfpDYsCESaZiV2ZnTya9oO/cvVWeYUWVWCDWsqN4hgD6OhUU/+7nWrCeQACVrj
+         Ng9tOjvqGrzA7ezlFKTNwqvCGL9I7gYNe6l7oGdArV3/eMLtbXxGC+8j1o1poMN3JBjm
+         uSomnaR+AeYmB3bnxhpAvi9nuZ7FVpjatWQ9DdigYpQHkh1YOAzCo0x6jo1vcFUn1WFa
+         xsMcSqIckKjfo3/7e6i8S6BIeDrXis8u9S6H1ZGWzHGN/RgTRu8Oa9fTXdCfIzfaw8/w
+         1Dyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=/KLMhu/ohKTdcErkhutjcvNbaBuyL81b9h2OgPrIAGs=;
+        b=FXzayUxmKYVtObw42Jt6cA4HN9ena4ZSbjSa+SjJQ6UEYZooHw9vy1nJitc+KkTRGD
+         YuqqJB7JZHaOJ6LVu1ZB9Q0N1KBFuaI1D63IGwnubdKwR4oXa7bxJ9/u+h49fgJgcqW3
+         97cBCdBq6OoBUgnXke9cvoGJ07DCJwdtNe2EpRI3A0VeEQeCBe9YtlF7FNLVd8n1i3iw
+         cUY9lt8wICwsf/5J7euC3sKjifeuCYFbdH0uQoBwVR91tyT/8a/SKKGvuzd9+0TlQOav
+         dgALLPvZPvNCmNAz0tv5pgWiaY76aFGLCLQqHpG3csEvtKTY/bqtJH/VVxYIv/CxjaJk
+         L6aQ==
+X-Gm-Message-State: AOAM531SyOaeY45J9OBegeI3FTaNNrzY8Lje3lqqELVPMgceRkTySkVw
+        2D4K0EtnSxe117hny7kSHD+r0A==
+X-Google-Smtp-Source: ABdhPJyY3G84sKYfeqnJEQmI31QLTRG3fjL7QKVWFJ//gBCJGS4TbYjUbyn/1EcTU7tcRuRvFNJWLw==
+X-Received: by 2002:a17:90b:3ecd:: with SMTP id rm13mr12074738pjb.4.1631524764063;
+        Mon, 13 Sep 2021 02:19:24 -0700 (PDT)
+Received: from [192.168.10.23] (124-171-108-209.dyn.iinet.net.au. [124.171.108.209])
+        by smtp.gmail.com with ESMTPSA id m1sm6457153pfc.30.2021.09.13.02.19.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 02:19:23 -0700 (PDT)
+Message-ID: <d5f87715-5a3e-1e85-68ba-3e4d35163c68@ozlabs.ru>
+Date:   Mon, 13 Sep 2021 19:19:17 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631518709-42881-1-git-send-email-feng.tang@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:92.0) Gecko/20100101
+ Thunderbird/92.0
+Subject: Re: [PATCH V3 5/5] virtio: Bind virtio device to device-tree node
+Content-Language: en-US
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        Bill Mills <bill.mills@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <cover.1627273794.git.viresh.kumar@linaro.org>
+ <454a58f998b0d16847d72a97b32192829fab2c8c.1627273794.git.viresh.kumar@linaro.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <454a58f998b0d16847d72a97b32192829fab2c8c.1627273794.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-09-21 15:38:29, Feng Tang wrote:
-> There was report that starting an Ubuntu in docker while using cpuset
-> to bind it to movable nodes (a node only has movable zone, like a node
-> for hotplug or a Persistent Memory  node in normal usage) will fail
-> due to memory allocation failure, and then OOM is involved and many
-> other innocent processes got killed. It can be reproduced with command:
-> $docker run -it --rm  --cpuset-mems 4 ubuntu:latest bash -c
-> "grep Mems_allowed /proc/self/status" (node 4 is a movable node)
+
+
+On 26/07/2021 14:51, Viresh Kumar wrote:
+> Bind the virtio devices with their of_node. This will help users of the
+> virtio devices to mention their dependencies on the device in the DT
+> itself. Like GPIO pin users can use the phandle of the device node, or
+> the node may contain more subnodes to add i2c or spi eeproms and other
+> users.
 > 
->   
->   runc:[2:INIT] invoked oom-killer: gfp_mask=0x500cc2(GFP_HIGHUSER|__GFP_ACCOUNT), order=0, oom_score_adj=0
->   CPU: 8 PID: 8291 Comm: runc:[2:INIT] Tainted: G        W I E     5.8.2-0.g71b519a-default #1 openSUSE Tumbleweed (unreleased)
->   Hardware name: Dell Inc. PowerEdge R640/0PHYDR, BIOS 2.6.4 04/09/2020
->   Call Trace:
->    dump_stack+0x6b/0x88
->    dump_header+0x4a/0x1e2
->    oom_kill_process.cold+0xb/0x10
->    out_of_memory.part.0+0xaf/0x230
->    out_of_memory+0x3d/0x80
->    __alloc_pages_slowpath.constprop.0+0x954/0xa20
->    __alloc_pages_nodemask+0x2d3/0x300
->    pipe_write+0x322/0x590
->    new_sync_write+0x196/0x1b0
->    vfs_write+0x1c3/0x1f0
->    ksys_write+0xa7/0xe0
->    do_syscall_64+0x52/0xd0
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   
->   Mem-Info:
->   active_anon:392832 inactive_anon:182 isolated_anon:0
->    active_file:68130 inactive_file:151527 isolated_file:0
->    unevictable:2701 dirty:0 writeback:7
->    slab_reclaimable:51418 slab_unreclaimable:116300
->    mapped:45825 shmem:735 pagetables:2540 bounce:0
->    free:159849484 free_pcp:73 free_cma:0
->   Node 4 active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB all_unreclaimable? no
->   Node 4 Movable free:130021408kB min:9140kB low:139160kB high:269180kB reserved_highatomic:0KB active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:130023424kB managed:130023424kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:292kB local_pcp:84kB free_cma:0kB
->   lowmem_reserve[]: 0 0 0 0 0
->   Node 4 Movable: 1*4kB (M) 0*8kB 0*16kB 1*32kB (M) 0*64kB 0*128kB 1*256kB (M) 1*512kB (M) 1*1024kB (M) 0*2048kB 31743*4096kB (M) = 130021156kB
->   
->   oom-kill:constraint=CONSTRAINT_CPUSET,nodemask=(null),cpuset=docker-9976a269caec812c134fa317f27487ee36e1129beba7278a463dd53e5fb9997b.scope,mems_allowed=4,global_oom,task_memcg=/system.slice/containerd.service,task=containerd,pid=4100,uid=0
->   Out of memory: Killed process 4100 (containerd) total-vm:4077036kB, anon-rss:51184kB, file-rss:26016kB, shmem-rss:0kB, UID:0 pgtables:676kB oom_score_adj:0
->   oom_reaper: reaped process 8248 (docker), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
->   oom_reaper: reaped process 2054 (node_exporter), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
->   oom_reaper: reaped process 1452 (systemd-journal), now anon-rss:0kB, file-rss:8564kB, shmem-rss:4kB
->   oom_reaper: reaped process 2146 (munin-node), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
->   oom_reaper: reaped process 8291 (runc:[2:INIT]), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-> 
-> 
-> The reason is, in the case, the target cpuset nodes only have movable
-> zone, while the creation of an OS in docker sometimes needs to allocate
-> memory in non-movable zones (dma/dma32/normal) like GFP_HIGHUSER, and
-> the cpuset limit forbids the allocation, then out-of-memory killing is
-> involved even when normal nodes and movable nodes both have many free
-> memory.
-> 
-> The OOM killer cannot help to resolve the situation as there is no
-> usable memory for the request in the cpuset scope. The only reasonable
-> measure to take is to fail the allocation right away and have the caller
-> to deal with it. 
-> 
-> So add a check for cases like this in the slowpath of allocation, and
-> bail out early returning NULL for the allocation.
-> 
-> As page allocation is one of the hottest path in kernel, this check
-> will hurt all users with sane cpuset configuration, add a static branch
-> check and detect the abnormal config in cpuset memory binding setup so
-> that the extra check in page allocation is not paid by everyone.  
-> 
-> [thanks to Micho Hocko and David Rientjes for suggesting not handle
->  it inside OOM code, adding cpuset check, refining comments]
-> 
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
-> Changelog:
+>  drivers/virtio/virtio.c | 57 ++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 54 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 4b15c00c0a0a..d001e84a5b23 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/virtio_config.h>
+>  #include <linux/module.h>
+>  #include <linux/idr.h>
+> +#include <linux/of.h>
+>  #include <uapi/linux/virtio_ids.h>
 >  
->   v2:
->   * add a static branch detection in cpuset code to reduce
->     the overhead in allocation hotpath (Michal Hocko)
-> 
->   v1 (since RFC):
->   * move the handling from oom code to page allocation 
->     path (Michal/David)
-> 
->  include/linux/cpuset.h | 15 +++++++++++++++
->  include/linux/mmzone.h | 12 ++++++++++++
->  kernel/cgroup/cpuset.c | 14 ++++++++++++++
->  mm/page_alloc.c        | 13 +++++++++++++
->  4 files changed, 54 insertions(+)
-> 
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index d2b9c41..403ccf9 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -34,6 +34,8 @@
->   */
->  extern struct static_key_false cpusets_pre_enable_key;
->  extern struct static_key_false cpusets_enabled_key;
-> +extern struct static_key_false cpusets_insane_config_key;
+>  /* Unique numbering for virtio devices. */
+> @@ -292,6 +293,9 @@ static int virtio_dev_remove(struct device *_d)
+>  
+>  	/* Acknowledge the device's existence again. */
+>  	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
 > +
->  static inline bool cpusets_enabled(void)
->  {
->  	return static_branch_unlikely(&cpusets_enabled_key);
-> @@ -51,6 +53,19 @@ static inline void cpuset_dec(void)
->  	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
+> +	of_node_put(dev->dev.of_node);
+> +
+>  	return 0;
 >  }
 >  
-> +/*
-> + * This will get enabled whenever a cpuset configuration is considered
-> + * unsupportable in general. E.g. movable only node which cannot satisfy
-> + * any non movable allocations (see update_nodemask). Page allocator
-> + * needs to make additional checks for those configurations and this
-> + * check is meant to guard those checks without any overhead for sane
-> + * configurations.
-> + */
-> +static inline bool cpusets_insane_config(void)
+> @@ -319,6 +323,43 @@ void unregister_virtio_driver(struct virtio_driver *driver)
+>  }
+>  EXPORT_SYMBOL_GPL(unregister_virtio_driver);
+>  
+> +static int virtio_device_of_init(struct virtio_device *dev)
 > +{
-> +	return static_branch_unlikely(&cpusets_insane_config_key);
-> +}
+> +	struct device_node *np, *pnode = dev_of_node(dev->dev.parent);
+> +	char compat[] = "virtio,XXXXXXXX"; /* Reserve enough space 32-bit id */
+> +	int ret, count;
 > +
->  extern int cpuset_init(void);
->  extern void cpuset_init_smp(void);
->  extern void cpuset_force_rebuild(void);
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 6a1d79d..b69b871 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1220,6 +1220,18 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
->  #define for_each_zone_zonelist(zone, z, zlist, highidx) \
->  	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
->  
-> +/* Whether the 'nodes' are all movable nodes */
-> +static inline bool movable_only_nodes(nodemask_t *nodes)
-> +{
-> +	struct zonelist *zonelist;
-> +	struct zoneref *z;
+> +	if (!pnode)
+> +		return 0;
 > +
-> +	zonelist = &(first_online_pgdat())->node_zonelists[ZONELIST_FALLBACK];
+> +	count = of_get_available_child_count(pnode);
+> +	if (!count)
+> +		return 0;
+> +
+> +	/* There can be only 1 child node */
+> +	if (WARN_ON(count > 1))
+> +		return -EINVAL;
+> +
+> +	np = of_get_next_available_child(pnode, NULL);
+> +	if (WARN_ON(!np))
+> +		return -ENODEV;
+> +
+> +	BUG_ON(snprintf(compat, sizeof(compat), "virtio,%x", dev->id.device) >=
+> +	       sizeof(compat));
+> +
+> +	if (!of_device_is_compatible(np, compat)) {
 
-This will work but it just begs a question why you haven't chosen a node
-from the given nodemask. So I believe it would be easier to read if you
-did
-	zonelist = NODE_DATA(first_node(nodes))->node_zonelists[ZONELIST_FALLBACK]
 
-> +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-> +	return (!z->zone) ? true : false;
-> +}
-> +
-> +
->  #ifdef CONFIG_SPARSEMEM
->  #include <asm/sparsemem.h>
->  #endif
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index df1ccf4..03eb40c 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -69,6 +69,13 @@
->  DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
->  DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
->  
-> +/*
-> + * There could be abnormal cpuset configurations for cpu or memory
-> + * node binding, add this key to provide a quick low-cost judgement
-> + * of the situation.
-> + */
-> +DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
-> +
->  /* See "Frequency meter" comments, below. */
->  
->  struct fmeter {
-> @@ -1868,6 +1875,13 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
->  	if (retval < 0)
->  		goto done;
->  
-> +	if (movable_only_nodes(&trialcs->mems_allowed)) {
+This broke powerpc/pseries as there these virtio devices are PCI so
+there is no "compat" - PCI vendor id/device ids play role of "compat".
+Thanks,
 
-You can skip the check if cpusets_insane_config(). The question is
-whether you want to report all potential users or only the first one.
 
-> +		static_branch_enable(&cpusets_insane_config_key);
-> +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
-> +			"Cpuset allocations might fail even with a lot of memory available.\n",
-> +			nodemask_pr_args(&trialcs->mems_allowed));
+
+
+> +		ret = -EINVAL;
+> +		goto out;
 > +	}
 > +
->  	spin_lock_irq(&callback_lock);
->  	cs->mems_allowed = trialcs->mems_allowed;
->  	spin_unlock_irq(&callback_lock);
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c..a7e0854 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4914,6 +4914,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->  	if (!ac->preferred_zoneref->zone)
->  		goto nopage;
->  
-> +	/*
-> +	 * Check for insane configurations where the cpuset doesn't contain
-> +	 * any suitable zone to satisfy the request - e.g. non-movable
-> +	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
-> +	 */
-> +	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
-> +		struct zoneref *z = first_zones_zonelist(ac->zonelist,
-> +					ac->highest_zoneidx,
-> +					&cpuset_current_mems_allowed);
-> +		if (!z->zone)
-> +			goto nopage;
-> +	}
+> +	dev->dev.of_node = np;
+> +	return 0;
 > +
->  	if (alloc_flags & ALLOC_KSWAPD)
->  		wake_all_kswapds(order, gfp_mask, ac);
+> +out:
+> +	of_node_put(np);
+> +	return ret;
+> +}
+> +
+>  /**
+>   * register_virtio_device - register virtio device
+>   * @dev        : virtio device to be registered
+> @@ -343,6 +384,10 @@ int register_virtio_device(struct virtio_device *dev)
+>  	dev->index = err;
+>  	dev_set_name(&dev->dev, "virtio%u", dev->index);
+>  
+> +	err = virtio_device_of_init(dev);
+> +	if (err)
+> +		goto out_ida_remove;
+> +
+>  	spin_lock_init(&dev->config_lock);
+>  	dev->config_enabled = false;
+>  	dev->config_change_pending = false;
+> @@ -362,10 +407,16 @@ int register_virtio_device(struct virtio_device *dev)
+>  	 */
+>  	err = device_add(&dev->dev);
+>  	if (err)
+> -		ida_simple_remove(&virtio_index_ida, dev->index);
+> +		goto out_of_node_put;
+> +
+> +	return 0;
+> +
+> +out_of_node_put:
+> +	of_node_put(dev->dev.of_node);
+> +out_ida_remove:
+> +	ida_simple_remove(&virtio_index_ida, dev->index);
+>  out:
+> -	if (err)
+> -		virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
+> +	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
+>  	return err;
+>  }
+>  EXPORT_SYMBOL_GPL(register_virtio_device);
+> 
 
-The rest looks sensible to me.
 -- 
-Michal Hocko
-SUSE Labs
+Alexey
