@@ -2,93 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3EB409F50
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF09409F53
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244462AbhIMVor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
+        id S1346827AbhIMVpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238184AbhIMVoq (ORCPT
+        with ESMTP id S238184AbhIMVpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:44:46 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28228C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:43:30 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id g16so16865017wrb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:43:30 -0700 (PDT)
+        Mon, 13 Sep 2021 17:45:11 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C13C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:43:55 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id f65so10125390pfb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:43:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=OmKpkwcJ/YE9wWezjvSXq5deQ9qPVPHvzIJumJjTABo=;
-        b=VJ5kK3gn4RfmIRlT7llJRz9GJuTGJVhpZHQG8Q9opCOZXKl6Vp2CZR/w7NeFB4sego
-         1jY001DRuIAB5lEf+qUB8vrnKMiK5TRMRDHkorLyPwUi487CtgxBTByIDitg2zCllPxz
-         XffGizxWw3C1Hwx6Iz1mbRdYR3Pq9/Qd8daxvijBKGGf0ikAN8AFu+WmF1E6vK227hBY
-         IdC1a/thVUsbQf/DkNJJK72mcdoeE5JQOFz3eVIz+6Oj5UQjUSg7aBWFow9vZLvaovgr
-         IxATxJCuz5Pk745ioCzmRIZKF8+DLqlmYlv7gRBhZ0mNl5p//sNnaaOr3053+S6YMPyY
-         ZIQg==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sG2eyH9Bgb1L/y1jzf6CQp6ymvgMkzFT8CFUJyXDBcQ=;
+        b=TWS+2rX8IxtjrkxvQtcSH/ADskq5QVzTpyXa/gp84aAP+wRjMIAzVdqhgRvPzuL4mo
+         ChskmWITqBwQR4TyWlFo7HszU3Tk/JmS55gCwXHHKOJ1FARnRAHMIJwTLcvr3agz6NMS
+         XtT+97h0KqDF2lHmoQ9/AfAAqJ6Lk0q9ywzmHxHD/uRQdXVAAWVwHgCdsCRK7klJ9Er3
+         XOGXQq1QSDafboUYWUSM8EHRLgHYORG2Mrw7xS4IFqpOCsi/U3PvonrnEe+0i7wIBB0i
+         gIqkd49tlbo/10Xd4fShNYZ0ZGaM7NXx0v+hBiPlkMdeF6rd+IHT0FHevBm1eqxhjAC2
+         1UGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=OmKpkwcJ/YE9wWezjvSXq5deQ9qPVPHvzIJumJjTABo=;
-        b=uE1awcS2AMv3CXliBkNwc7febHnOaBfoM2Fm7PszZbNKNq7HgO+Z7mDlnIsrRO5zZc
-         AFwmwGXTJ9mrOJicJX22KXSgIriuTJelN//+RxqymbbtxsgJqzYpMBIY2eGWRokC0Cmq
-         GBexCIVXWaa169dMbU4Jo3ws105O6UNy5QOAAe14EoFq3GMxLyoibubR8ZuUzQqnsiGK
-         T6ebyHEG/ivVzDm3GZEgeWOv+xNKZr1x+aD450kBmr2/xsygO5toVMc/Tg09Q0YmRth5
-         0Vxq3prclHCUi4VAPLJJcaWq4vcVV9o22Lw6ivzkhR84qxj+b3RdHJxTboJspU9mdKHi
-         M7DA==
-X-Gm-Message-State: AOAM532ULvV0BUdl17sqS5xJJZUb7FCJBoHjEyOOGXVjfhidKwQOOrIM
-        QnrEA4foXPKsA5ZpDnKxAYI=
-X-Google-Smtp-Source: ABdhPJwhheyzgkqdjCX+sH1wHgX7BoKIO1IfHrtLv9BwRFZK7RXmIHgtkQwKelqGxZHg0IL4MOK0GA==
-X-Received: by 2002:a05:6000:18c2:: with SMTP id w2mr14816879wrq.282.1631569408749;
-        Mon, 13 Sep 2021 14:43:28 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.16.219])
-        by smtp.gmail.com with ESMTPSA id 129sm7833393wmz.26.2021.09.13.14.43.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sG2eyH9Bgb1L/y1jzf6CQp6ymvgMkzFT8CFUJyXDBcQ=;
+        b=aumu6nppGQV8YStvST90pAy9OOZBlhdCRwx9LXPr+EgQcxNHwYGohJ353rB/t+zpby
+         rBxDJAJnsQScMCGK+9QIi4Q8uR/H7TCwNr3gOaNETow9/AFT4RbeBdLSxe117dNzPAao
+         G/3RyuihPF9AeNIPTW0WO86HtHMbKZNyk6LZO2WvhZ6T65chx7NWpMITAID4/pm5b0F2
+         o7jCUqUMpLGCokFcYkIoYEkHjcort1VhwqSRnFkIGleq0LPTwmNb0Kfld1hDalygkCb+
+         DbjUEkoS2Y6aonhV6RH4uOaiSw2tQm+lYL/1+cKfkSq7DqAHt5tyOTZmZC9wzXOK2vXZ
+         9gug==
+X-Gm-Message-State: AOAM5303+cZfBfHhAJqvnox6aAyXl6kFstdDo6t/nMIj2GTQxHICheg7
+        9V6WTghJoC/RTFqi1CMyRKRoNg==
+X-Google-Smtp-Source: ABdhPJwgblB3hOcn7bN2z+YFe7ozcUxqKzo3wlKfTkc5oVOZHVQhtOLvuw4PrXPWus8czkAZNPgAWg==
+X-Received: by 2002:aa7:8387:0:b029:395:a683:a0e6 with SMTP id u7-20020aa783870000b0290395a683a0e6mr1441934pfm.12.1631569434793;
+        Mon, 13 Sep 2021 14:43:54 -0700 (PDT)
+Received: from google.com (150.12.83.34.bc.googleusercontent.com. [34.83.12.150])
+        by smtp.gmail.com with ESMTPSA id u15sm8384455pfl.14.2021.09.13.14.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 14:43:28 -0700 (PDT)
-Message-ID: <e23f7de1dbb02def413d721a3bf5759100380937.camel@gmail.com>
-Subject: Re: [PATCH v2 6/8] ASoC: cirrus: i2s: Prepare clock before using it
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 13 Sep 2021 23:43:27 +0200
-In-Reply-To: <20210726165124.GJ4670@sirena.org.uk>
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
-         <20210726140001.24820-1-nikita.shubin@maquefel.me>
-         <20210726140001.24820-7-nikita.shubin@maquefel.me>
-         <20210726165124.GJ4670@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        Mon, 13 Sep 2021 14:43:54 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 14:43:50 -0700
+From:   Ricardo Koller <ricarkol@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 04/14] KVM: arm64: selftests: Introduce
+ ARM64_SYS_KVM_REG
+Message-ID: <YT/GFj9GVv6ZD8I5@google.com>
+References: <20210913204930.130715-1-rananta@google.com>
+ <20210913204930.130715-5-rananta@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913204930.130715-5-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mark,
-
-On Mon, 2021-07-26 at 17:51 +0100, Mark Brown wrote:
-> On Mon, Jul 26, 2021 at 04:59:54PM +0300, Nikita Shubin wrote:
-> > From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> > 
-> > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> > to Common Clock Framework, otherwise the following is visible:
+On Mon, Sep 13, 2021 at 08:49:20PM +0000, Raghavendra Rao Ananta wrote:
+> With the inclusion of sysreg.h, that brings in system register
+> encodings, it would be redundant to re-define register encodings
+> again in processor.h to use it with ARM64_SYS_REG for the KVM
+> functions such as set_reg() or get_reg(). Hence, add helper macro,
+> ARM64_SYS_KVM_REG, that converts SYS_* definitions in sysreg.h
+> into ARM64_SYS_REG definitions.
 > 
-> Acked-by: Mark Brown <broonie@kernel.org>
+> Also replace all the users of ARM64_SYS_REG, relying on
+> the encodings created in processor.h, with ARM64_SYS_KVM_REG and
+> remove the definitions.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  .../selftests/kvm/aarch64/debug-exceptions.c  |  2 +-
+>  .../selftests/kvm/aarch64/psci_cpu_on_test.c  |  2 +-
+>  .../selftests/kvm/include/aarch64/processor.h | 20 ++++++++++---------
+>  .../selftests/kvm/lib/aarch64/processor.c     | 16 +++++++--------
+>  4 files changed, 21 insertions(+), 19 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/aarch64/debug-exceptions.c b/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
+> index 11fd23e21cb4..ea189d83abf7 100644
+> --- a/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
+> +++ b/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
+> @@ -190,7 +190,7 @@ static int debug_version(struct kvm_vm *vm)
+>  {
+>  	uint64_t id_aa64dfr0;
+>  
+> -	get_reg(vm, VCPU_ID, ARM64_SYS_REG(ID_AA64DFR0_EL1), &id_aa64dfr0);
+> +	get_reg(vm, VCPU_ID, KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &id_aa64dfr0);
+>  	return id_aa64dfr0 & 0xf;
+>  }
+>  
+> diff --git a/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c b/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c
+> index 018c269990e1..4c5f6814030f 100644
+> --- a/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c
+> +++ b/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c
+> @@ -91,7 +91,7 @@ int main(void)
+>  	init.features[0] |= (1 << KVM_ARM_VCPU_POWER_OFF);
+>  	aarch64_vcpu_add_default(vm, VCPU_ID_TARGET, &init, guest_main);
+>  
+> -	get_reg(vm, VCPU_ID_TARGET, ARM64_SYS_REG(MPIDR_EL1), &target_mpidr);
+> +	get_reg(vm, VCPU_ID_TARGET, KVM_ARM64_SYS_REG(SYS_MPIDR_EL1), &target_mpidr);
+>  	vcpu_args_set(vm, VCPU_ID_SOURCE, 1, target_mpidr & MPIDR_HWID_BITMASK);
+>  	vcpu_run(vm, VCPU_ID_SOURCE);
+>  
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> index 7989e832cafb..93797783abad 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
+> @@ -16,15 +16,17 @@
+>  #define ARM64_CORE_REG(x) (KVM_REG_ARM64 | KVM_REG_SIZE_U64 | \
+>  			   KVM_REG_ARM_CORE | KVM_REG_ARM_CORE_REG(x))
+>  
+> -#define CPACR_EL1               3, 0,  1, 0, 2
+> -#define TCR_EL1                 3, 0,  2, 0, 2
+> -#define MAIR_EL1                3, 0, 10, 2, 0
+> -#define MPIDR_EL1               3, 0,  0, 0, 5
+> -#define TTBR0_EL1               3, 0,  2, 0, 0
+> -#define SCTLR_EL1               3, 0,  1, 0, 0
+> -#define VBAR_EL1                3, 0, 12, 0, 0
+> -
+> -#define ID_AA64DFR0_EL1         3, 0,  0, 5, 0
+> +/*
+> + * KVM_ARM64_SYS_REG(sys_reg_id): Helper macro to convert
+> + * SYS_* register definitions in asm/sysreg.h to use in KVM
+> + * calls such as get_reg() and set_reg().
+> + */
+> +#define KVM_ARM64_SYS_REG(sys_reg_id)			\
+> +	ARM64_SYS_REG(sys_reg_Op0(sys_reg_id),		\
+> +			sys_reg_Op1(sys_reg_id),	\
+> +			sys_reg_CRn(sys_reg_id),	\
+> +			sys_reg_CRm(sys_reg_id),	\
+> +			sys_reg_Op2(sys_reg_id))
+>  
+>  /*
+>   * Default MAIR
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> index 632b74d6b3ca..db64ee206064 100644
+> --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> @@ -232,10 +232,10 @@ void aarch64_vcpu_setup(struct kvm_vm *vm, int vcpuid, struct kvm_vcpu_init *ini
+>  	 * Enable FP/ASIMD to avoid trapping when accessing Q0-Q15
+>  	 * registers, which the variable argument list macros do.
+>  	 */
+> -	set_reg(vm, vcpuid, ARM64_SYS_REG(CPACR_EL1), 3 << 20);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_CPACR_EL1), 3 << 20);
+>  
+> -	get_reg(vm, vcpuid, ARM64_SYS_REG(SCTLR_EL1), &sctlr_el1);
+> -	get_reg(vm, vcpuid, ARM64_SYS_REG(TCR_EL1), &tcr_el1);
+> +	get_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_SCTLR_EL1), &sctlr_el1);
+> +	get_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TCR_EL1), &tcr_el1);
+>  
+>  	switch (vm->mode) {
+>  	case VM_MODE_P52V48_4K:
+> @@ -273,10 +273,10 @@ void aarch64_vcpu_setup(struct kvm_vm *vm, int vcpuid, struct kvm_vcpu_init *ini
+>  	tcr_el1 |= (1 << 8) | (1 << 10) | (3 << 12);
+>  	tcr_el1 |= (64 - vm->va_bits) /* T0SZ */;
+>  
+> -	set_reg(vm, vcpuid, ARM64_SYS_REG(SCTLR_EL1), sctlr_el1);
+> -	set_reg(vm, vcpuid, ARM64_SYS_REG(TCR_EL1), tcr_el1);
+> -	set_reg(vm, vcpuid, ARM64_SYS_REG(MAIR_EL1), DEFAULT_MAIR_EL1);
+> -	set_reg(vm, vcpuid, ARM64_SYS_REG(TTBR0_EL1), vm->pgd);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_SCTLR_EL1), sctlr_el1);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TCR_EL1), tcr_el1);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_MAIR_EL1), DEFAULT_MAIR_EL1);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TTBR0_EL1), vm->pgd);
+>  }
+>  
+>  void vcpu_dump(FILE *stream, struct kvm_vm *vm, uint32_t vcpuid, uint8_t indent)
+> @@ -362,7 +362,7 @@ void vcpu_init_descriptor_tables(struct kvm_vm *vm, uint32_t vcpuid)
+>  {
+>  	extern char vectors;
+>  
+> -	set_reg(vm, vcpuid, ARM64_SYS_REG(VBAR_EL1), (uint64_t)&vectors);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_VBAR_EL1), (uint64_t)&vectors);
+>  }
+>  
+>  void route_exception(struct ex_regs *regs, int vector)
+> -- 
+> 2.33.0.309.g3052b89438-goog
+> 
 
-would you take the patch to a tree of yours, please?
-
--- 
-Alexander Sverdlin.
-
-
+Reviewed-by: Ricardo Koller <ricarkol@google.com>
