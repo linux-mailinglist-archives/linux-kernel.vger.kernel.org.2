@@ -2,288 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E223D4082C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 04:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E5F4082CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 04:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236923AbhIMCPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 22:15:54 -0400
-Received: from mail-mw2nam10on2046.outbound.protection.outlook.com ([40.107.94.46]:7988
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236907AbhIMCPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 22:15:53 -0400
+        id S236919AbhIMC0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 22:26:53 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58966 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235364AbhIMC0w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Sep 2021 22:26:52 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18D0CsWf000911;
+        Sun, 12 Sep 2021 19:25:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CWEAc6HghwcICLCDOy1f2HBIJFDL9JLDqn6bZJT33Bc=;
+ b=Pu/njGtrN+72evX0fYxcM5ZjUe16LsW/9w/Jef3z+IzI7eNgd4u8/jYPqG21QSAySvpL
+ wwNqPOb65ghiQQWHQ7NeDI3LOI7IjI4x1AWdtsEnzlS2TDfzfpPr4J0o6O6ego1vHBfx
+ ZZwSCz8J2s+esoWUXSXXSU0p/Y0L8AzhBp4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3b0syx6y76-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 12 Sep 2021 19:25:15 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.14; Sun, 12 Sep 2021 19:25:14 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O0fPXDeqiNAoLWesulRG86m28ULkS3NGMcz+dVn6ET6LTiZXvWPEFd269q4278rDjhJNoWPqC6GuXRi/z0iXyogIF0w0jnIdMcX7ocDnRDyv4Gm9fVl3G+cKKM3x/6cN4LRVeew2QoONBg2AFh6qtyknS1dzXvyDe5y3Xe7QJnNE5+8KO/wPoaoR/Ys2kotG4+NtP8cVN8oqvfhIhjY85DFql1fDsV+BGIie/kfmkB/c5s+LT7Hmx1j6swY3kzLnJt/x4DUVXUj/DIncZifoUDiAHdsHpXU6LL4LnyaV9lbqSUI+70OebpRVbu+5nPSNMZk72w3f4nUbzboNizuJDw==
+ b=Zwnw5xOICJIA7s48hmyxddPHJz58/adWZjEkya9jWtk7JHb9hxmIj+cTIQfVmIafQRR3LU9iqnOXv9cv0Vol55WLk8QkgDuogR0czZ8gnOOJz3Y4S0nZDQ2tDDb6ikg0dYGaYA4tOQzRKn+OSA5KHAAHzm/s7ujUtvi/v3OynH9ate+YBbCD7w2h8R0elN/VrN8GUbxuh/p1TWTiRsYwiTCYe/PQe9I44acE/OMB9S5LRevAg2hj1pMePq3JqWEgBWFU5Gu7nGaIfn/xcgE2Yprz3u1kNpln+KfdNP8imR4/D9AOzGb/FEu/GNJk8EqGkrj8I2Bpi8BSE/9R5SP0Sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=2P+b1YQyLOTeiAO8k5z3O1PoTvodRz3acpTN/YgXwE0=;
- b=iLepLgLYWN65sw4oa7RhZw+MXkJS3BBs8/Ajg94ATg3l7PQAXkLd8TxAniWL+9qZufUUWGpIGKSS8L0kXyblj1Eh67FdMrZ+LzLQZswzJG15o5Z3YMxmwv64Knjt1Gdgo1mwX/5Ci1I8l2B9ggfOYT/cJUxPrAG7V977acho9NNQJRIw/AkH4vnfewgQ7Pa4TfgSeQd+Hd23w/UJD+03mk93/kM9aZeIYlS/dEkhlz1QAZEunv9Jt7/mSP5k5321Uhgltv4Kzxb/pCxv+s5gqe36HGyqRoXRtS0e+HVoRMPJ+cGkOXF95zU4GZVKmMfVdzUWjsYtUU0LS7R3+mejNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2P+b1YQyLOTeiAO8k5z3O1PoTvodRz3acpTN/YgXwE0=;
- b=Ip3TVfWOHAxxiIJOfxPAHgM5CB1am5S7Ap6okrLPPvnyp2A5ELIhjZJ9cEAZN2PNPI3qtPrzx4MPKoDcT+hrL9pegCKjLznBrU8ZVa6EUPqKQsUOP3ituKDoiduQLQMWGxfR2KfLQFvzh5uX+dnbZkIEEFpMgyFFko+L6p2EHjs=
-Received: from MW4PR03CA0253.namprd03.prod.outlook.com (2603:10b6:303:b4::18)
- by MN2PR12MB3582.namprd12.prod.outlook.com (2603:10b6:208:cd::12) with
+ bh=CWEAc6HghwcICLCDOy1f2HBIJFDL9JLDqn6bZJT33Bc=;
+ b=NkqFeAmta7dg4K/4n/Q/7q16tqXSmAoO/iL6sakK7wl4Ot7Sks5FGeUaY1WAx5cHXaQlBSYTjIwhV+duWr4sjOYG9hXAb2emsBLZxlG7s5KFqNtlZ6Zwd8MCJJ/mBX9STcrbA4ajL8ZGfMM/5Lk3y/ws8QyQyqm+XtuV34CqXbWDtXmfInPxXYnqC2BV7TEj9uIGR8P6uCoigtM4r4jLtdFy/DsSf548x7UBz7EuOYdvV95SwgIjQiualSANcjLXX3JzpI/vkqD7PRpbHja8FKGMhhPnopxZoUM+NGqIbvtTF3BVhSUiXUo7DRsXOsyF/6IIYwXLvF4KB8HD+DQucA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3760.namprd15.prod.outlook.com (2603:10b6:806:84::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Mon, 13 Sep
- 2021 02:14:35 +0000
-Received: from CO1NAM11FT032.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b4:cafe::14) by MW4PR03CA0253.outlook.office365.com
- (2603:10b6:303:b4::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
- Transport; Mon, 13 Sep 2021 02:14:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT032.mail.protection.outlook.com (10.13.174.218) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 02:14:35 +0000
-Received: from mukjoshi-dev.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sun, 12 Sep
- 2021 21:14:33 -0500
-From:   Mukul Joshi <mukul.joshi@amd.com>
-To:     <linux-edac@vger.kernel.org>, <x86@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>, <mingo@redhat.com>,
-        <mchehab@kernel.org>, <yazen.ghannam@amd.com>,
-        <amd-gfx@lists.freedesktop.org>, Mukul Joshi <mukul.joshi@amd.com>
-Subject: [PATCHv2 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
-Date:   Sun, 12 Sep 2021 22:13:11 -0400
-Message-ID: <20210913021311.12896-2-mukul.joshi@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210913021311.12896-1-mukul.joshi@amd.com>
-References: <20210511152538.148084-2-nchatrad@amd.com>
- <20210913021311.12896-1-mukul.joshi@amd.com>
+ 2021 02:25:07 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::51ef:4b41:5aea:3f75%6]) with mapi id 15.20.4500.018; Mon, 13 Sep 2021
+ 02:25:07 +0000
+Subject: Re: [PATCH -next v2] bpf: Add oversize check before call kvcalloc()
+To:     Bixuan Cui <cuibixuan@huawei.com>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
+References: <20210911005557.45518-1-cuibixuan@huawei.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <39ffe740-0092-61ee-5af7-8de41b5700c0@fb.com>
+Date:   Sun, 12 Sep 2021 19:25:02 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <20210911005557.45518-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0183.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::8) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+Received: from [IPv6:2620:10d:c085:21d6::1021] (2620:10d:c090:400::5:941f) by MW4PR03CA0183.namprd03.prod.outlook.com (2603:10b6:303:b8::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16 via Frontend Transport; Mon, 13 Sep 2021 02:25:05 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ab88d86f-6c52-4056-2e7a-08d9765c3b4f
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3582:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB358229D611F24B15342B3735EED99@MN2PR12MB3582.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Office365-Filtering-Correlation-Id: fc3c3190-7ec0-4a59-e277-08d9765db3c7
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3760:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3760D275B4C97833E781CA6DD3D99@SA0PR15MB3760.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kimhcA9F/cNbw0zPmAlwspTP/0FJZUvgHejZmJwpdvx9+g26mHhKC5D41cHwvg2B05nyvvS0ISn8nf1O4bltfH8oY3W4nlBxh9QlctzqrnrAAgbCcF3eBxLTQBtNuwgM2lLsC5+/QJSITCFkXlPDC+QYcvUin7CqbQEWKdK8pdBnqZd6nMWFg0NC1YIEya4GqJc/NktdR0EU1QuhJLtLf0r7GoU01TO/W8yRR7wyFY3cvNoueAbhHm7ziKMYDeQrhfkTpHWrq7GpYf2VQ8VU4syRjX5Ize61QUANPdBjEjat7kd1K17uFI48XZlnD2Zj/6Yr2un3hAiP1S/ExZWU2V2Br+9o/9/0viMgWbjmSQYco4cTFsNQqC9ddkbZVOEbhEym4bZ9IN/7GECDL/8lmCxvSsWkGgUqPLnJWk16C0Dh5REUyQWl1eJEkYEUah0EtmaR8QkSNPRuaccXmdf+/fTuavMB1dWoFyEMQEBjoKjkZFdSkZsvKV2C8tIId7qMiWAsNjXFkWCofu5VIOhvCb+eMPU05+N5ENJ3Cs0J8wBOGt9wC7JECJY0AFgmgb29LNHLUeLOhyJGRcBkixD3cgi/FSsLnXImEOaUKzsLUV58ysuKXritItYL5lJW0sbUGBhAtq3HGuYGYIKKkmTJqZk//WIJJ33JXa07Bu0jHCKNAWw8xwIdyp2oal2N8ziMj6HuAq0QpaMXWdrkpzeCqCwISKnphBLOuexK5lpo3AdvgfO3lDkqKXYCE0jAAgUrtpfCcA4sjKmLZ6XgyClvuhjP0FR6Pa2EEkCl0NVPJ4AGit72xHFq0JEVxDXqm+e8
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(186003)(1076003)(47076005)(356005)(81166007)(16526019)(44832011)(110136005)(70206006)(83380400001)(86362001)(36756003)(966005)(316002)(8936002)(5660300002)(2616005)(8676002)(54906003)(2906002)(336012)(4326008)(6666004)(82310400003)(36860700001)(26005)(7696005)(508600001)(70586007)(426003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 02:14:35.2070
+X-Microsoft-Antispam-Message-Info: f7ajL/hX6CmLXuu/OGhzEijn8DxxYS9SCxrrapCM4CoN5+Kqz8zHWrJB5yBr0xBSnPj+1fhka0qujn9e3FARzzW9Cl/NzCpX+VKLgVepDopAYhjg44HohsMnln6Dudv7GfbTE/Hf8TVsFYfHFQeLx6rlsOtiuzd2KyYEvRvL6A9fqUsz7yuZ+oRfDZcbwTke5fJyfrtxMFWZiEOeI/iRt/2E7kepKWBMiIM0vCXzKvLSmQ+nn7glrP4Ds9bF6Soc32xtkYYYzfPKiwIRYriKOtr1ZbdGeOIcvVrKn+di9j3CNYj8N5G6cCXgDDaIcxGrNoWMMM8ZuUrXqM9ZNIaKxWqsyHg+hbvby9E5xcgWr1zPrHj8N05M4Khd+1Kbak/bfGl2bC7NGXZ8WjFIe47du+XcNkTvWsshPdyJIc3RrDEOGNcJlZkpR7vTn+CgZZInWiokARnNYm7zArOyhO/09VdOSvYRnoZVCFU1tugupElF+IrRCE53h2VgEhzP8N1v5YD5Sq4a6S7tP5m/mXYg6pwA3gWFa+73iOhd7wTNjm4RWZu+t1WDrtH7ejj+naSs2OYKwz3HzADEYUFmmbRixvbwR3QL8KngpZ1v3164O/pzR16nM5+JO9a36yvEyF65Lg5/siGjESfmHWzl8KVtyvT5pRtM88jKn2HubacoemCB/Bag4pZA7PJnwa9t05vB6QOf/EDLtqHBGS+Qp2CsaiXGaB/BL+TwHw5yUMrX/a0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(39860400002)(346002)(136003)(186003)(2616005)(6666004)(66946007)(36756003)(2906002)(53546011)(4326008)(5660300002)(52116002)(478600001)(83380400001)(45080400002)(8936002)(8676002)(86362001)(6486002)(31696002)(66556008)(66476007)(31686004)(38100700002)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eW9yd3dnVXRUbXN6SzlkSzFPaEErcGdRYkF4dy9yZCtaWXh3YmhNUzVueHBN?=
+ =?utf-8?B?WWN2R3REbzFWa05TTjVmMUtxc203aXp3Vkp6SGhoZGJ2U3gyK1RVU2IxeVFU?=
+ =?utf-8?B?SExaMklDc1NTRGhUMS90b3FBeFFtaURVNlQ2THBmTm93eTMvZzd6a0ZpU1JO?=
+ =?utf-8?B?eXVOcjlic1BNb2ViblQ1NHRqYktVSStCRmxENzZIWi82c2ErS0p1cG9jV01p?=
+ =?utf-8?B?aVVKUVhPeTc1b0tNV2ZmQWJqT0RKVnZYWENNVXRibTF5b2twQVEwZkJFZlRT?=
+ =?utf-8?B?ZFIxMjdDYW12WVQ1M0xwbUNPL2hXbjJtM0dLUnl5UzRpd0ZJR0NsQk8rQkxM?=
+ =?utf-8?B?VFVCSkxmOGQ3NHVHdjFIc0szSjJCNVp6aDBIRU9Fb0JiNk9Idld0MkZUWkY0?=
+ =?utf-8?B?SHpsNlZya0dWR3J6WlBrNnFmWE9FTEgrZXhHOEhhR0F6dndMOEJaWkZKM2RF?=
+ =?utf-8?B?aUZHWm9id3AvU3BWMjk3cmFrU0VTY1lPOUJzbHkwWTJVTytINWFOU3UyQjll?=
+ =?utf-8?B?OXNnSnFod05ScnM0VmkycXVFc2FuS1ozM2V3NFZpVU1nMXl4dnp1S1BmZ1Ni?=
+ =?utf-8?B?KzZFbVZtaVZjUnAreC9NZUVxZzdYOExzZnpxbThMR092SEJPMXIreitxeFR2?=
+ =?utf-8?B?ak54RGNZcDRDRFZ2MGdYTkZHSEU1bFIrd2R2QkdpNDBYb3J5WXFDMUd3MGFL?=
+ =?utf-8?B?TGRMcFY5d2JIaXY2OU5tajcvcVV2clZlbDFUMExFbzNCRHhqM25jckp4RWhO?=
+ =?utf-8?B?VTA1VzB6RXMrU2k5NDJZVmJFbmpjUzR3WkpFR0IrNG9VWEJPZmtUUHlFSU15?=
+ =?utf-8?B?OFdPOXhHbjlGOUhYa1E1ckY5NVY2anphQzQ2NVdjVGJrcTZkcUF0QVpwWWJ5?=
+ =?utf-8?B?REZXZmhqVEk5NndpcnM5SzFLR2RsdEJFTkhYWWhBeWRZM3pBM0M5c2pOYVBC?=
+ =?utf-8?B?NDMydHlXTXR6VkkwSmVxZlNuTGFOZEFYODN1dkNneUN6alFXRThmUThDblNq?=
+ =?utf-8?B?Y3BpSUVZNVVtdHhNR0ROR2ZnWWlPKy9yanNoRTg4SnFZa2dhSDBXVndwdlVi?=
+ =?utf-8?B?Rzdad1U3QnNnZzB6aStkVGhoa2tiaDYySldpS20vVm8yMEhYVmlDaFplaW5q?=
+ =?utf-8?B?OHNRdGNsMlFMZnA0VFlXTHR2MjdlYUlkYTJFVE8yaVJ4UHgzUzFkQUk0LzZH?=
+ =?utf-8?B?ekd1NlFIMlo0ZWVlNC9qVlVhMENGdW9hWWRIUkJMdC9QMkNkbUpmVlk2eGJw?=
+ =?utf-8?B?Rnk5ZVNkREo2VW9HVEh1L0ltK25Ec1VDTm1DMHhGVVpBeGhQdnllekpwVC8z?=
+ =?utf-8?B?SVp6eHB6WTg2YjdoSkJaS2d3cStFQWQ3WGN5RWdhM3hZNWd2NlM4NjFZUDAy?=
+ =?utf-8?B?SFAveU1sR0tCMk50VkpwVFhvc0NhVDNLQ2xyczdZdFE2bFBPRXVKUnBtcGVp?=
+ =?utf-8?B?dEFCQUZ3UXBjQm94QmFYSm9pdngzSUVraE9DZ3huYTZJYUprOEJQTy9iU1pk?=
+ =?utf-8?B?ZzdUNzNBcmlTbk9sU3lTQ3pTOWJVNmt1SFJGOUFLZVJLaHNJUStJdWxwd2Yy?=
+ =?utf-8?B?SVZZSUlFVTdNc1N4dllHOU9IK3NPVHo5MVowaDllUHZSUGRmNmw0VEphTmdm?=
+ =?utf-8?B?aXI2R0NUQ0MvMi9IeXJ1QkFlc21XekZXUEtnZnczeXdVWVlvd0pGQkRpUGZa?=
+ =?utf-8?B?RjgwbDNnSE9OSEFYNGtJVDhKeCt5aTNleHVGT3ZPS2xaZGtXK25uWlhqNlBD?=
+ =?utf-8?B?S1FzeGVNMGxNd3E4VGpjYjFXaUVCUW9HOCtaNTI3YWtXY3g0aUMxaStJUlVS?=
+ =?utf-8?B?NlFqcnRHdnJ0UVFGcE9pUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc3c3190-7ec0-4a59-e277-08d9765db3c7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 02:25:07.1142
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab88d86f-6c52-4056-2e7a-08d9765c3b4f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT032.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3582
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 82pDvQPA3yQ34tUB5yjO0GhJHrwUC0wKc54ol61hqgYBUJ+qk5YbsINeOwDowrtB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3760
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: a9OpBy05VQHUdZm8PSZxYPOz2N9JNjJD
+X-Proofpoint-GUID: a9OpBy05VQHUdZm8PSZxYPOz2N9JNjJD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-12_10,2021-09-09_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 phishscore=0 mlxlogscore=737 spamscore=0
+ lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109130015
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aldebaran, GPU driver will handle bad page retirement
-even though UMC is host managed. As a result, register a
-bad page retirement handler on the mce notifier chain to
-retire bad pages on Aldebaran.
 
-v1->v2:
-- Use smca_get_bank_type() to determine MCA bank.
-- Envelope the changes under #ifdef CONFIG_X86_MCE_AMD.
-- Use MCE_PRIORITY_UC instead of MCE_PRIO_ACCEL as we are
-  only handling uncorrectable errors.
-- Use macros to determine UMC instance and channel instance
-  where the uncorrectable error occured.
-- Update the headline.
 
-Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
-Link: https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.com/
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 142 ++++++++++++++++++++++++
- 1 file changed, 142 insertions(+)
+On 9/10/21 5:55 PM, Bixuan Cui wrote:
+> Commit 7661809d493b ("mm: don't allow oversized kvmalloc() calls") add the
+> oversize check. When the allocation is larger than what kmalloc() supports,
+> the following warning triggered:
+> 
+> WARNING: CPU: 0 PID: 8408 at mm/util.c:597 kvmalloc_node+0x108/0x110 mm/util.c:597
+> Modules linked in:
+> CPU: 0 PID: 8408 Comm: syz-executor221 Not tainted 5.14.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:kvmalloc_node+0x108/0x110 mm/util.c:597
+> Call Trace:
+>   kvmalloc include/linux/mm.h:806 [inline]
+>   kvmalloc_array include/linux/mm.h:824 [inline]
+>   kvcalloc include/linux/mm.h:829 [inline]
+>   check_btf_line kernel/bpf/verifier.c:9925 [inline]
+>   check_btf_info kernel/bpf/verifier.c:10049 [inline]
+>   bpf_check+0xd634/0x150d0 kernel/bpf/verifier.c:13759
+>   bpf_prog_load kernel/bpf/syscall.c:2301 [inline]
+>   __sys_bpf+0x11181/0x126e0 kernel/bpf/syscall.c:4587
+>   __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+>   __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4689
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index b5332db4d287..35cfcc71ff94 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -35,7 +35,11 @@
- #include "amdgpu_xgmi.h"
- #include "ivsrcid/nbio/irqsrcs_nbif_7_4.h"
- #include "atom.h"
-+#ifdef CONFIG_X86_MCE_AMD
-+#include <asm/mce.h>
- 
-+static bool notifier_registered;
-+#endif
- static const char *RAS_FS_NAME = "ras";
- 
- const char *ras_error_string[] = {
-@@ -86,6 +90,9 @@ static bool amdgpu_ras_check_bad_page_unlock(struct amdgpu_ras *con,
- 				uint64_t addr);
- static bool amdgpu_ras_check_bad_page(struct amdgpu_device *adev,
- 				uint64_t addr);
-+#ifdef CONFIG_X86_MCE_AMD
-+static void amdgpu_register_bad_pages_mca_notifier(void);
-+#endif
- 
- void amdgpu_ras_set_error_query_ready(struct amdgpu_device *adev, bool ready)
- {
-@@ -2018,6 +2025,11 @@ int amdgpu_ras_recovery_init(struct amdgpu_device *adev)
- 			adev->smu.ppt_funcs->send_hbm_bad_pages_num(&adev->smu, con->eeprom_control.ras_num_recs);
- 	}
- 
-+#ifdef CONFIG_X86_MCE_AMD
-+	if ((adev->asic_type == CHIP_ALDEBARAN) &&
-+	    (adev->gmc.xgmi.connected_to_cpu))
-+		amdgpu_register_bad_pages_mca_notifier();
-+#endif
- 	return 0;
- 
- free:
-@@ -2511,3 +2523,133 @@ void amdgpu_release_ras_context(struct amdgpu_device *adev)
- 		kfree(con);
- 	}
- }
-+
-+#ifdef CONFIG_X86_MCE_AMD
-+static struct amdgpu_device *find_adev(uint32_t node_id)
-+{
-+	struct amdgpu_gpu_instance *gpu_instance;
-+	int i;
-+	struct amdgpu_device *adev = NULL;
-+
-+	mutex_lock(&mgpu_info.mutex);
-+
-+	for (i = 0; i < mgpu_info.num_gpu; i++) {
-+		gpu_instance = &(mgpu_info.gpu_ins[i]);
-+		adev = gpu_instance->adev;
-+
-+		if (adev->gmc.xgmi.connected_to_cpu &&
-+		    adev->gmc.xgmi.physical_node_id == node_id)
-+			break;
-+		adev = NULL;
-+	}
-+
-+	mutex_unlock(&mgpu_info.mutex);
-+
-+	return adev;
-+}
-+
-+#define GET_MCA_IPID_GPUID(m)	(((m) >> 44) & 0xF)
-+#define GET_UMC_INST(m)		(((m) >> 21) & 0x7)
-+#define GET_CHAN_INDEX(m)	((((m) >> 12) & 0x3) | (((m) >> 18) & 0x4))
-+#define GPU_ID_OFFSET		8
-+
-+static int amdgpu_bad_page_notifier(struct notifier_block *nb,
-+				    unsigned long val, void *data)
-+{
-+	struct mce *m = (struct mce *)data;
-+	struct amdgpu_device *adev = NULL;
-+	uint32_t gpu_id = 0;
-+	uint32_t umc_inst = 0;
-+	uint32_t ch_inst, channel_index = 0;
-+	struct ras_err_data err_data = {0, 0, 0, NULL};
-+	struct eeprom_table_record err_rec;
-+	uint64_t retired_page;
-+
-+	/*
-+	 * If the error was generated in UMC_V2, which belongs to GPU UMCs,
-+	 * and error occurred in DramECC (Extended error code = 0) then only
-+	 * process the error, else bail out.
-+	 */
-+	if (!m || !((smca_get_bank_type(m->bank) == SMCA_UMC_V2) &&
-+		    (XEC(m->status, 0x1f) == 0x0)))
-+		return NOTIFY_DONE;
-+
-+	/*
-+	 * GPU Id is offset by GPU_ID_OFFSET in MCA_IPID_UMC register.
-+	 */
-+	gpu_id = GET_MCA_IPID_GPUID(m->ipid) - GPU_ID_OFFSET;
-+
-+	adev = find_adev(gpu_id);
-+	if (!adev) {
-+		dev_warn(adev->dev, "%s: Unable to find adev for gpu_id: %d\n",
-+				     __func__, gpu_id);
-+		return NOTIFY_DONE;
-+	}
-+
-+	/*
-+	 * If it is correctable error, return.
-+	 */
-+	if (mce_is_correctable(m)) {
-+		return NOTIFY_OK;
-+	}
-+
-+	/*
-+	 * If it is uncorrectable error, then find out UMC instance and
-+	 * channel index.
-+	 */
-+	umc_inst = GET_UMC_INST(m->ipid);
-+	ch_inst = GET_CHAN_INDEX(m->ipid);
-+
-+	dev_info(adev->dev, "Uncorrectable error detected in UMC inst: %d, chan_idx: %d",
-+			     umc_inst, ch_inst);
-+
-+	memset(&err_rec, 0x0, sizeof(struct eeprom_table_record));
-+
-+	/*
-+	 * Translate UMC channel address to Physical address
-+	 */
-+	channel_index =
-+		adev->umc.channel_idx_tbl[umc_inst * adev->umc.channel_inst_num
-+					  + ch_inst];
-+
-+	retired_page = ADDR_OF_8KB_BLOCK(m->addr) |
-+			ADDR_OF_256B_BLOCK(channel_index) |
-+			OFFSET_IN_256B_BLOCK(m->addr);
-+
-+	err_rec.address = m->addr;
-+	err_rec.retired_page = retired_page >> AMDGPU_GPU_PAGE_SHIFT;
-+	err_rec.ts = (uint64_t)ktime_get_real_seconds();
-+	err_rec.err_type = AMDGPU_RAS_EEPROM_ERR_NON_RECOVERABLE;
-+	err_rec.cu = 0;
-+	err_rec.mem_channel = channel_index;
-+	err_rec.mcumc_id = umc_inst;
-+
-+	err_data.err_addr = &err_rec;
-+	err_data.err_addr_cnt = 1;
-+
-+	if (amdgpu_bad_page_threshold != 0) {
-+		amdgpu_ras_add_bad_pages(adev, err_data.err_addr,
-+						err_data.err_addr_cnt);
-+		amdgpu_ras_save_bad_pages(adev);
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block amdgpu_bad_page_nb = {
-+	.notifier_call  = amdgpu_bad_page_notifier,
-+	.priority       = MCE_PRIO_UC,
-+};
-+
-+static void amdgpu_register_bad_pages_mca_notifier(void)
-+{
-+	/*
-+	 * Register the x86 notifier only once
-+	 * with MCE subsystem.
-+	 */
-+	if (notifier_registered == false) {
-+		mce_register_decode_chain(&amdgpu_bad_page_nb);
-+		notifier_registered = true;
-+	}
-+}
-+#endif
--- 
-2.17.1
-
+Acked-by: Yonghong Song <yhs@fb.com>
