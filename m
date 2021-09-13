@@ -2,103 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052BF408959
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34E040895F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239155AbhIMKu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239098AbhIMKuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:50:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8023B60F6F;
-        Mon, 13 Sep 2021 10:49:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631530150;
-        bh=mR1pVV2kOMI80Ja7yzXvmNiM7iNo0TC3CDna+Eb+WW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=whffSoOuEHQv+u4VNzKHW5BcvMrgy5hCzCn6P4DZFqfaXn2ImQuMedBArVOO3O5KI
-         To52PolxSa5r7tu7ub+XcIhaGvegyOQ9CX0WLS5CqwyreEaftLtsf/q2lAZsSO3kAu
-         3whEoYyG+bygYrNXLMQhkmU34eLWgYU/mTKyNGQs=
-Date:   Mon, 13 Sep 2021 12:49:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     asml.silence@gmail.com, axboe@kernel.dk,
-        stable-commits@vger.kernel.org
-Subject: Re: Patch "io_uring: fail links of cancelled timeouts" has been
- added to the 5.13-stable tree
-Message-ID: <YT8so5i420vp4LRZ@kroah.com>
-References: <163152631411232@kroah.com>
+        id S239181AbhIMKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:51:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239154AbhIMKu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:50:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631530183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XIkgYA/tUP+Z8mJsrZ5/GLNDfbE7/vREkH/o/B1LNvQ=;
+        b=J3H26rRvoFBK64tvBVUc98goQNh6MQsL2S3QabmclMgSYLPVci79dNgVe8aw2Hy8bXlWfs
+        NLvnNqAEpTjwyb3+T3IVsqdS/0rFvEFaDDg3CEMH7dsqoyeMVlw4WkN1WJqMeFQB9TFuk6
+        PikAsOxdGedG2zaBHwia/QvGyjMFvl0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-HO8QdsRVOeCEDTc052-LzQ-1; Mon, 13 Sep 2021 06:49:40 -0400
+X-MC-Unique: HO8QdsRVOeCEDTc052-LzQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECE4D19253C3;
+        Mon, 13 Sep 2021 10:49:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 81B0310074EF;
+        Mon, 13 Sep 2021 10:49:37 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
+        Markus Suvanto <markus.suvanto@gmail.com>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] afs: Fixes for 3rd party-induced data corruption
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163152631411232@kroah.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1161816.1631530077.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+From:   David Howells <dhowells@redhat.com>
+Date:   Mon, 13 Sep 2021 11:49:36 +0100
+Message-ID: <1161899.1631530176@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:45:14AM +0200, gregkh@linuxfoundation.org wrote:
-> 
-> This is a note to let you know that I've just added the patch titled
-> 
->     io_uring: fail links of cancelled timeouts
-> 
-> to the 5.13-stable tree which can be found at:
->     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-> 
-> The filename of the patch is:
->      io_uring-fail-links-of-cancelled-timeouts.patch
-> and it can be found in the queue-5.13 subdirectory.
-> 
-> If you, or anyone else, feels it should not be added to the stable tree,
-> please let <stable@vger.kernel.org> know about it.
-> 
-> 
-> >From 2ae2eb9dde18979b40629dd413b9adbd6c894cdf Mon Sep 17 00:00:00 2001
-> From: Pavel Begunkov <asml.silence@gmail.com>
-> Date: Thu, 9 Sep 2021 13:56:27 +0100
-> Subject: io_uring: fail links of cancelled timeouts
-> 
-> From: Pavel Begunkov <asml.silence@gmail.com>
-> 
-> commit 2ae2eb9dde18979b40629dd413b9adbd6c894cdf upstream.
-> 
-> When we cancel a timeout we should mark it with REQ_F_FAIL, so
-> linked requests are cancelled as well, but not queued for further
-> execution.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> Link: https://lore.kernel.org/r/fff625b44eeced3a5cae79f60e6acf3fbdf8f990.1631192135.git.asml.silence@gmail.com
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  fs/io_uring.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -1307,6 +1307,8 @@ static void io_kill_timeout(struct io_ki
->  	struct io_timeout_data *io = req->async_data;
->  
->  	if (hrtimer_try_to_cancel(&io->timer) != -1) {
-> +		if (status)
-> +			req_set_fail(req);
->  		atomic_set(&req->ctx->cq_timeouts,
->  			atomic_read(&req->ctx->cq_timeouts) + 1);
->  		list_del_init(&req->timeout.list);
-> 
-> 
-> Patches currently in stable-queue which might be from asml.silence@gmail.com are
-> 
-> queue-5.13/io_uring-limit-fixed-table-size-by-rlimit_nofile.patch
-> queue-5.13/io_uring-reexpand-under-reexpanded-iters.patch
-> queue-5.13/io_uring-fail-links-of-cancelled-timeouts.patch
-> queue-5.13/bio-fix-page-leak-bio_add_hw_page-failure.patch
-> queue-5.13/io_uring-refactor-io_submit_flush_completions.patch
 
-Breaks the build on 5.13.y so dropping it from there.
+Hi Linus,
 
-thanks,
+Here are some fixes for AFS that can cause data corruption due to
+interaction with another client modifying data cached locally[1].
 
-greg k-h
+ (1) When d_revalidating a dentry, don't look at the inode to which it
+     points.  Only check the directory to which the dentry belongs.  This
+     was confusing things and causing the silly-rename cleanup code to
+     remove the file now at the dentry of a file that got deleted.
+
+ (2) Fix mmap data coherency.  When a callback break is received that
+     relates to a file that we have cached, the data content may have been
+     changed (there are other reasons, such as the user's rights having
+     been changed).  However, we're checking it lazily, only on entry to
+     the kernel, which doesn't happen if we have a writeable shared mapped
+     page on that file.
+
+     We make the kernel keep track of mmapped files and clear all PTEs
+     mapping to that file as soon as the callback comes in by calling
+     unmap_mapping_pages() (we don't necessarily want to zap the
+     pagecache).  This causes the kernel to be reentered when userspace
+     tries to access the mmapped address range again - and at that point w=
+e
+     can query the server and, if we need to, zap the page cache.
+
+     Ideally, I would check each file at the point of notification, but
+     that involves poking the server[*] - which is holding an exclusive
+     lock on the vnode it is changing, waiting for all the clients it
+     notified to reply.  This could then deadlock against the server.
+     Further, invalidating the pagecache might call ->launder_page(), whic=
+h
+     would try to write to the file, which would definitely deadlock.  (AF=
+S
+     doesn't lease file access).
+
+     [*] Checking to see if the file content has changed is a matter of
+     	 comparing the current data version number, but we have to ask the
+     	 server for that.  We also need to get a new callback promise and
+     	 we need to poke the server for that too.
+
+ (3) Add some more points at which the inode is validated, since we're
+     doing it lazily, notably in ->read_iter() and ->page_mkwrite(), but
+     also when performing some directory operations.
+
+     Ideally, checking in ->read_iter() would be done in some derivation o=
+f
+     filemap_read().  If we're going to call the server to read the file,
+     then we get the file status fetch as part of that.
+
+ (4) The above is now causing us to make a lot more calls to afs_validate(=
+)
+     to check the inode - and afs_validate() takes the RCU read lock each
+     time to make a quick check (ie. afs_check_validity()).  This is
+     entirely for the purpose of checking cb_s_break to see if the server
+     we're using reinitialised its list of callbacks - however this isn't =
+a
+     very common event, so most of the time we're taking this needlessly.
+
+     Add a new cell-wide counter to count the number of reinitialisations
+     done by any server and check that - and only if that changes, take th=
+e
+     RCU read lock and check the server list (the server list may change,
+     but the cell a file is part of won't).
+
+ (5) Don't update vnode->cb_s_break and ->cb_v_break inside the validity
+     checking loop.  The cb_lock is done with read_seqretry, so we might g=
+o
+     round the loop a second time after resetting those values - and that
+     could cause someone else checking validity to miss something (I
+     think).
+
+Also included are patches for fixes for some bugs encountered whilst
+debugging this.
+
+ (6) Fix a leak of afs_read objects and fix a leak of keys hidden by that.
+
+ (7) Fix a leak of pages that couldn't be added to extend a writeback.
+
+ (8) Fix the maintenance of i_blocks when i_size is changed by a local
+     write or a local dir edit[**].
+
+     [**] Would you prefer this patch separately to the other patches?
+
+David
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D214217 [1]
+Link: https://lore.kernel.org/r/163111665183.283156.17200205573146438918.s=
+tgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/163113612442.352844.11162345591911691150.s=
+tgit@warthog.procyon.org.uk/ # i_blocks patch
+---
+
+The following changes since commit b91db6a0b52e019b6bdabea3f1dbe36d85c7e52=
+c:
+
+  Merge tag 'for-5.15/io_uring-vfs-2021-08-30' of git://git.kernel.dk/linu=
+x-block (2021-08-30 19:39:59 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fixes-20210913
+
+for you to fetch changes up to 9d37e1cab2a9d2cee2737973fa455e6f89eee46a:
+
+  afs: Fix updating of i_blocks on file/dir extension (2021-09-13 09:14:21=
+ +0100)
+
+----------------------------------------------------------------
+AFS fixes
+
+----------------------------------------------------------------
+David Howells (8):
+      afs: Fix missing put on afs_read objects and missing get on the key =
+therein
+      afs: Fix page leak
+      afs: Add missing vnode validation checks
+      afs: Fix incorrect triggering of sillyrename on 3rd-party invalidati=
+on
+      afs: Fix mmap coherency vs 3rd-party changes
+      afs: Try to avoid taking RCU read lock when checking vnode validity
+      afs: Fix corruption in reads at fpos 2G-4G from an OpenAFS server
+      afs: Fix updating of i_blocks on file/dir extension
+
+ fs/afs/callback.c          | 44 ++++++++++++++++++++-
+ fs/afs/cell.c              |  2 +
+ fs/afs/dir.c               | 57 +++++++++------------------
+ fs/afs/dir_edit.c          |  4 +-
+ fs/afs/file.c              | 86 ++++++++++++++++++++++++++++++++++++++--
+ fs/afs/fs_probe.c          |  8 +++-
+ fs/afs/fsclient.c          | 31 +++++++++------
+ fs/afs/inode.c             | 98 ++++++++++++++++++++---------------------=
+-----
+ fs/afs/internal.h          | 21 ++++++++++
+ fs/afs/protocol_afs.h      | 15 +++++++
+ fs/afs/protocol_yfs.h      |  6 +++
+ fs/afs/rotate.c            |  1 +
+ fs/afs/server.c            |  2 +
+ fs/afs/super.c             |  1 +
+ fs/afs/write.c             | 29 +++++++++++---
+ include/trace/events/afs.h |  8 +++-
+ mm/memory.c                |  1 +
+ 17 files changed, 294 insertions(+), 120 deletions(-)
+ create mode 100644 fs/afs/protocol_afs.h
+
