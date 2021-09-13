@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE45408A24
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C105408A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239675AbhIML2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
+        id S239501AbhIMLVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239636AbhIML2Q (ORCPT
+        with ESMTP id S239479AbhIMLVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:28:16 -0400
-X-Greylist: delayed 590 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Sep 2021 04:27:00 PDT
-Received: from smtp-8faf.mail.infomaniak.ch (smtp-8faf.mail.infomaniak.ch [IPv6:2001:1600:3:17::8faf])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA90FC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:27:00 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4H7P832GLXzMppGC;
-        Mon, 13 Sep 2021 13:17:07 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4H7P821s1xzlhKSC;
-        Mon, 13 Sep 2021 13:17:06 +0200 (CEST)
-Subject: Re: [PATCH] landlock: Drop "const" argument qualifier to avoid GCC
- 4.9 warnings
-To:     Kees Cook <keescook@chromium.org>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210910223613.3225685-1-keescook@chromium.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <b269cdc1-a4f0-d614-f026-dc0f7c455da0@digikod.net>
-Date:   Mon, 13 Sep 2021 13:19:19 +0200
-User-Agent: 
+        Mon, 13 Sep 2021 07:21:44 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF366C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:20:26 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso6204471pjq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yLjr+ON7k0bwQgm5TdMvQnLT7Btp738r3GnFnWQAfuc=;
+        b=cZ8lEfRdEpXS7gjJQd8xampwtoq03dUQUeniIUOe9cENQG1e5TRxsOUjxFokQXyX1Y
+         K9HyyWhTo7MVFrQKMXf1/3d9HMiRaBYf0nrX4wscKEpV6aJnG5nzVhXEQJvWBF6ge+9v
+         jLMLIb5+Ee6q+lpnBVOzfzXBDrRQ2YxGXib98tIuVQYbYQGUHJ2Z4gPrq+a4eX4ZrU09
+         xc8DP5DTLjDFSVc7lftmhcJp6TJWrqyNAZTmJYPCH8Lgpi7/z82T5cDz/i0VkHtEsLq9
+         gzgOo++caroFWo68txHxHmjoUia4xq62n7MteqxfofIrSNPGdHbCJOpF2od6wPmqcr/V
+         tfQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yLjr+ON7k0bwQgm5TdMvQnLT7Btp738r3GnFnWQAfuc=;
+        b=XXaWVxZVA0zbA11Lx386Kg7r49TVTF9vbiRp5lcq3TNSuBiDidigcGY/Cq9Q18AHFv
+         paLGEQHDT0uzvM2PBkyvfuWd/OAFJQP8APP6+phWhUiWFfn8e3T4WcclG5WRJHpnCYVd
+         QOFkgTnDpC0OHR2BgK4cjL5fj1N4FF3u9Vb4X1nbh/OMknAVbQV8sDVBJb4JEDUVDOH3
+         tr6Z3sHwnjiSDspEvc1zBLzgVOOb+2Wnfht/PDMbSSUn+ZBgQJtN088mXKseuu5IxvaQ
+         OXIpuIH5lAuXBB0POuakowYMdz3rOCZ/Wu47thXtQ8MpwAfaKl8ULnDi5A92SdKkXTLb
+         V6+A==
+X-Gm-Message-State: AOAM533tOkPoKi8yo+L3Y4FpwJ9YBWiJS/5pez8ZWeWzy9t7HV3MmfUO
+        DZH/EQIn8dYH0ioL/1pZBsZR
+X-Google-Smtp-Source: ABdhPJz/Loi9cSCUl6C0Ef1+euUAbXj01k2QPiOb4FmVndB7/grfYcjsH6Hrv1QQmicoBd+qXAs5Rw==
+X-Received: by 2002:a17:902:bd42:b0:138:d3ca:c387 with SMTP id b2-20020a170902bd4200b00138d3cac387mr10047479plx.51.1631532026231;
+        Mon, 13 Sep 2021 04:20:26 -0700 (PDT)
+Received: from localhost ([139.177.225.255])
+        by smtp.gmail.com with ESMTPSA id x10sm1758671pjv.57.2021.09.13.04.20.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 04:20:25 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     bcrl@kvack.org, viro@zeniv.linux.org.uk, tglx@linutronix.de,
+        axboe@kernel.dk
+Cc:     linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] aio: Fix incorrect usage of eventfd_signal_allowed()
+Date:   Mon, 13 Sep 2021 19:19:28 +0800
+Message-Id: <20210913111928.98-1-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210910223613.3225685-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We should defer eventfd_signal() to the workqueue when
+eventfd_signal_allowed() return false rather than return
+true.
 
-On 11/09/2021 00:36, Kees Cook wrote:
-> When building under GCC 4.9, the compiler warns about const mismatches:
-> 
-> security/landlock/ruleset.c: In function 'insert_rule':
-> security/landlock/ruleset.c:196:34: error: passing argument 2 of 'create_rule' from incompatible pointer type [-Werror]
->    new_rule = create_rule(object, &this->layers, this->num_layers,
->                                   ^
-> security/landlock/ruleset.c:69:30: note: expected 'const struct landlock_layer ** const' but argument is of type 'struct landlock_layer (*)[]'
->  static struct landlock_rule *create_rule(
->                               ^
-> security/landlock/ruleset.c: In function 'landlock_insert_rule':
-> security/landlock/ruleset.c:240:38: error: passing argument 3 of 'insert_rule' from incompatible pointer type [-Werror]
->   return insert_rule(ruleset, object, &layers, ARRAY_SIZE(layers));
->                                       ^
-> security/landlock/ruleset.c:144:12: note: expected 'const struct landlock_layer ** const' but argument is of type 'struct landlock_layer (*)[1]'
->  static int insert_rule(struct landlock_ruleset *const ruleset,
+Fixes: b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+---
+ fs/aio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I guess this is a bug in GCC 4.9 (i.e. missing automatic const upgrade).
-Couldn't we backport a fix to GCC 4.9 instead?
+diff --git a/fs/aio.c b/fs/aio.c
+index 51b08ab01dff..8822e3ed4566 100644
+--- a/fs/aio.c
++++ b/fs/aio.c
+@@ -1695,7 +1695,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
+ 		list_del(&iocb->ki_list);
+ 		iocb->ki_res.res = mangle_poll(mask);
+ 		req->done = true;
+-		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
++		if (iocb->ki_eventfd && !eventfd_signal_allowed()) {
+ 			iocb = NULL;
+ 			INIT_WORK(&req->work, aio_poll_put_work);
+ 			schedule_work(&req->work);
+-- 
+2.11.0
 
->             ^
-> 
-> Drop "const" from the function definition.
-> 
-> Cc: "Mickaël Salaün" <mic@digikod.net>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: linux-security-module@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  security/landlock/ruleset.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
-> index ec72b9262bf3..64c37af88ee7 100644
-> --- a/security/landlock/ruleset.c
-> +++ b/security/landlock/ruleset.c
-> @@ -68,7 +68,7 @@ static void build_check_rule(void)
->  
->  static struct landlock_rule *create_rule(
->  		struct landlock_object *const object,
-> -		const struct landlock_layer (*const layers)[],
-> +		struct landlock_layer (*layers)[],
-
-The "const layers" is not an issue, it should not be removed.
-
->  		const u32 num_layers,
->  		const struct landlock_layer *const new_layer)
->  {
-> @@ -143,7 +143,7 @@ static void build_check_ruleset(void)
->   */
->  static int insert_rule(struct landlock_ruleset *const ruleset,
->  		struct landlock_object *const object,
-> -		const struct landlock_layer (*const layers)[],
-> +		struct landlock_layer (*layers)[],
-
-Same here for the second const.
-
->  		size_t num_layers)
->  {
->  	struct rb_node **walker_node;
-> 
