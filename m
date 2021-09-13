@@ -2,196 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5F54084FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C98940850C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237488AbhIMGyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:54:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48718 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229634AbhIMGyu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:54:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631516015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FeM9VbeOZW6Q8YpmpSes2OU2n8QPVYH3Vzvp3bUiPm4=;
-        b=J0AUo7kQWOlYTlgzK2LMft8DymVSmeHO5EMLlbeWuOTkKsmkayb6vKcrg8PDI0KSEwVqBz
-        a/LPNzFBJwS4zdvz3r+cPJuh9R6hhFdFPFMIzuFm9x533G0oBUSp1Gd5sBQIclAYMcuxdy
-        hX96npikPJi/GND7nCxl8/b9BiCHrwo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-574-Mted3mf_NSSGHXEDkgxxrg-1; Mon, 13 Sep 2021 02:53:33 -0400
-X-MC-Unique: Mted3mf_NSSGHXEDkgxxrg-1
-Received: by mail-ed1-f69.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so4405866edb.21
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:53:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=FeM9VbeOZW6Q8YpmpSes2OU2n8QPVYH3Vzvp3bUiPm4=;
-        b=rfLP1IUCXOwQLxzrYYBDhD435ctjhhsghfSD8qeNxRj0AtYJEkVsHLvipZkme9Tfca
-         dky+7Gp2c+781Budtnvnyzto7KTXivURZUSz7vedRTYUXq1c7aTWj8SlGZQZ80aHKn3u
-         ypu6N61V1qCN87lea+qmtxsYUwCaqEFqKIZz1cdcrFoUTz+pLNmR6Pl9gO3PJQWYSQ5m
-         m8XdOAtW2jgcebRlDnUO8QD+MnWUt6jV23rJXWnk5PJ+x2afUVfwecv+kIs1ZucQS4nm
-         eDshZkdI6zQlsn7/YOO3yllhsLw3rZeNwqvmPmn6A/RrSBNDDVbXw8Vsp3THDWcNTRrO
-         3KRA==
-X-Gm-Message-State: AOAM532DNa1DpMctbIrk8yyMxvFcx8A1fqKUV3bPpml9oVWlOQWOFgtO
-        UEZWkobYL2PL1DcT64G3sKqvXEvV+W63diNNi1APzEHPyNTaTd/3F3Ib1I+loN3ozvIhxDHjCM6
-        a0rWck+BjeVst6/pXjVsVDLQB3ffhl8kzMjUpt0gtv0UiiYDmgaB7Wr5appKUhaxqU2Qmqm1P+L
-        6m
-X-Received: by 2002:aa7:c3cb:: with SMTP id l11mr11609231edr.310.1631516012357;
-        Sun, 12 Sep 2021 23:53:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxUGigNc+sq3gVdCwC4TFvas+vjbm9v+f5pAbfSRWMoSLIan1K0j0zN3DtoLbuM+ZVuamppSw==
-X-Received: by 2002:aa7:c3cb:: with SMTP id l11mr11609214edr.310.1631516012101;
-        Sun, 12 Sep 2021 23:53:32 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id eg14sm3418082edb.64.2021.09.12.23.53.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 23:53:31 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] KVM: nVMX: Don't use Enlightened MSR Bitmap for L3
-In-Reply-To: <6424b309216b276e46a66573320b3eed8209a0ed.camel@redhat.com>
-References: <20210910160633.451250-1-vkuznets@redhat.com>
- <20210910160633.451250-2-vkuznets@redhat.com>
- <6424b309216b276e46a66573320b3eed8209a0ed.camel@redhat.com>
-Date:   Mon, 13 Sep 2021 08:53:33 +0200
-Message-ID: <87lf412cgi.fsf@vitty.brq.redhat.com>
+        id S237514AbhIMHCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:02:10 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:52864 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237454AbhIMHCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 03:02:08 -0400
+X-Greylist: delayed 356 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 03:02:07 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 9052A2019C;
+        Mon, 13 Sep 2021 08:54:55 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id opzlf57cRu9C; Mon, 13 Sep 2021 08:54:54 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id B6A202057E;
+        Mon, 13 Sep 2021 08:54:54 +0200 (CEST)
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout2.secunet.com (Postfix) with ESMTP id B0A6E80004A;
+        Mon, 13 Sep 2021 08:54:54 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 13 Sep 2021 08:54:54 +0200
+Received: from moon.secunet.de (172.18.26.121) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Mon, 13 Sep
+ 2021 08:54:53 +0200
+Date:   Mon, 13 Sep 2021 08:54:46 +0200
+From:   Antony Antony <antony.antony@secunet.com>
+To:     Eugene Syromiatnikov <esyr@redhat.com>
+CC:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Antony Antony <antony.antony@secunet.com>,
+        Christian Langrock <christian.langrock@secunet.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        <selinux@vger.kernel.org>, Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        "Eric Paris" <eparis@parisplace.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, "Dmitry V. Levin" <ldv@strace.io>,
+        <linux-api@vger.kernel.org>
+Subject: Re: [PATCH v2] include/uapi/linux/xfrm.h: Fix XFRM_MSG_MAPPING ABI
+ breakage
+Message-ID: <20210913065446.GA2611@moon.secunet.de>
+Reply-To: <antony.antony@secunet.com>
+References: <20210912122234.GA22469@asgard.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210912122234.GA22469@asgard.redhat.com>
+Organization: secunet
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+Thanks!
 
-> On Fri, 2021-09-10 at 18:06 +0200, Vitaly Kuznetsov wrote:
->> When KVM runs as a nested hypervisor on top of Hyper-V it uses Enlightened
->> VMCS and enables Enlightened MSR Bitmap feature for its L1s and L2s (which
->> are actually L2s and L3s from Hyper-V's perspective). When MSR bitmap is
->> updated, KVM has to reset HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP from
->> clean fields to make Hyper-V aware of the change. For KVM's L1s, this is
->> done in vmx_disable_intercept_for_msr()/vmx_enable_intercept_for_msr().
->> MSR bitmap for L2 is build in nested_vmx_prepare_msr_bitmap() by blending
->> MSR bitmap for L1 and L1's idea of MSR bitmap for L2. KVM, however, doesn't
->> check if the resulting bitmap is different and never cleans
->> HV_VMX_ENLIGHTENED_CLEAN_FIELD_MSR_BITMAP in eVMCS02. This is incorrect and
->> may result in Hyper-V missing the update.
->> 
->> The issue could've been solved by calling evmcs_touch_msr_bitmap() for
->> eVMCS02 from nested_vmx_prepare_msr_bitmap() unconditionally but doing so
->> would not give any performance benefits (compared to not using Enlightened
->> MSR Bitmap at all). 3-level nesting is also not a very common setup
->> nowadays.
->> 
->> Don't enable 'Enlightened MSR Bitmap' feature for KVM's L2s (real L3s) for
->> now.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/kvm/vmx/vmx.c | 22 +++++++++++++---------
->>  1 file changed, 13 insertions(+), 9 deletions(-)
->> 
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index 0c2c0d5ae873..ae470afcb699 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -2654,15 +2654,6 @@ int alloc_loaded_vmcs(struct loaded_vmcs *loaded_vmcs)
->>  		if (!loaded_vmcs->msr_bitmap)
->>  			goto out_vmcs;
->>  		memset(loaded_vmcs->msr_bitmap, 0xff, PAGE_SIZE);
->> -
->> -		if (IS_ENABLED(CONFIG_HYPERV) &&
->> -		    static_branch_unlikely(&enable_evmcs) &&
->> -		    (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
->> -			struct hv_enlightened_vmcs *evmcs =
->> -				(struct hv_enlightened_vmcs *)loaded_vmcs->vmcs;
->> -
->> -			evmcs->hv_enlightenments_control.msr_bitmap = 1;
->> -		}
->>  	}
->>  
->>  	memset(&loaded_vmcs->host_state, 0, sizeof(struct vmcs_host_state));
->> @@ -6861,6 +6852,19 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->>  	}
->>  
->>  	vmx->loaded_vmcs = &vmx->vmcs01;
->> +
->> +	/*
->> +	 * Use Hyper-V 'Enlightened MSR Bitmap' feature when KVM runs as a
->> +	 * nested (L1) hypervisor and Hyper-V in L0 supports it.
->> +	 */
->> +	if (IS_ENABLED(CONFIG_HYPERV) && static_branch_unlikely(&enable_evmcs)
->> +	    && (ms_hyperv.nested_features & HV_X64_NESTED_MSR_BITMAP)) {
->> +		struct hv_enlightened_vmcs *evmcs =
->> +			(struct hv_enlightened_vmcs *)vmx->loaded_vmcs->vmcs;
->> +
->> +		evmcs->hv_enlightenments_control.msr_bitmap = 1;
->> +	}
->> +
->>  	cpu = get_cpu();
->>  	vmx_vcpu_load(vcpu, cpu);
->>  	vcpu->cpu = cpu;
->
-> Makes sense.
->
-> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
->
->
-> However, just a note that it is very very confusing that KVM can use eVMCS in both ways.
+Acked-by: Antony Antony <antony.antony@secunet.com>
+
+-antony
+
+On Sun, Sep 12, 2021 at 14:22:34 +0200, Eugene Syromiatnikov wrote:
+> Commit 2d151d39073a ("xfrm: Add possibility to set the default to block
+> if we have no policy") broke ABI by changing the value of the XFRM_MSG_MAPPING
+> enum item, thus also evading the build-time check
+> in security/selinux/nlmsgtab.c:selinux_nlmsg_lookup for presence of proper
+> security permission checks in nlmsg_xfrm_perms.  Fix it by placing
+> XFRM_MSG_SETDEFAULT/XFRM_MSG_GETDEFAULT to the end of the enum, right before
+> __XFRM_MSG_MAX, and updating the nlmsg_xfrm_perms accordingly.
+> 
+> Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
+> References: https://lore.kernel.org/netdev/20210901151402.GA2557@altlinux.org/
+> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+> ---
+> v2:
+>  - Updated SELinux nlmsg_xfrm_perms permissions table and selinux_nlmsg_lookup
+>    build-time check accordingly.
+> 
+> v1: https://lore.kernel.org/lkml/20210901153407.GA20446@asgard.redhat.com/
+> ---
+>  include/uapi/linux/xfrm.h   | 6 +++---
+>  security/selinux/nlmsgtab.c | 4 +++-
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
+> index b96c1ea..26f456b1 100644
+> --- a/include/uapi/linux/xfrm.h
+> +++ b/include/uapi/linux/xfrm.h
+> @@ -213,13 +213,13 @@ enum {
+>  	XFRM_MSG_GETSPDINFO,
+>  #define XFRM_MSG_GETSPDINFO XFRM_MSG_GETSPDINFO
 >  
+> +	XFRM_MSG_MAPPING,
+> +#define XFRM_MSG_MAPPING XFRM_MSG_MAPPING
+> +
+>  	XFRM_MSG_SETDEFAULT,
+>  #define XFRM_MSG_SETDEFAULT XFRM_MSG_SETDEFAULT
+>  	XFRM_MSG_GETDEFAULT,
+>  #define XFRM_MSG_GETDEFAULT XFRM_MSG_GETDEFAULT
+> -
+> -	XFRM_MSG_MAPPING,
+> -#define XFRM_MSG_MAPPING XFRM_MSG_MAPPING
+>  	__XFRM_MSG_MAX
+>  };
+>  #define XFRM_MSG_MAX (__XFRM_MSG_MAX - 1)
+> diff --git a/security/selinux/nlmsgtab.c b/security/selinux/nlmsgtab.c
+> index d59276f..94ea2a8 100644
+> --- a/security/selinux/nlmsgtab.c
+> +++ b/security/selinux/nlmsgtab.c
+> @@ -126,6 +126,8 @@ static const struct nlmsg_perm nlmsg_xfrm_perms[] =
+>  	{ XFRM_MSG_NEWSPDINFO,	NETLINK_XFRM_SOCKET__NLMSG_WRITE },
+>  	{ XFRM_MSG_GETSPDINFO,	NETLINK_XFRM_SOCKET__NLMSG_READ  },
+>  	{ XFRM_MSG_MAPPING,	NETLINK_XFRM_SOCKET__NLMSG_READ  },
+> +	{ XFRM_MSG_SETDEFAULT,	NETLINK_XFRM_SOCKET__NLMSG_WRITE },
+> +	{ XFRM_MSG_GETDEFAULT,	NETLINK_XFRM_SOCKET__NLMSG_READ  },
+>  };
 >  
-> 'Client': It can both run under HyperV, and thus take advantage of eVMCS when it runs its guests (with
-> help of
-> HyperV)
->  
-> 'Server' KVM can emulate some HyperV features, and one of these is eVMCS, thus a windows guest running
-> under KVM, can use KVM's eVMCS implementation to run nested guests.
->  
-> This patch fails under
-> 'Client', while the other patches in the series fall under the 'Server' category,
-> and even more confusing, the patch 2 moves 'Client' code around, but it is intended for following patches
-> 3,4 which are
-> for Server.
->  
-
-All this is confusing indeed, KVM-on-Hyper-V and Hyper-V-on-KVM are two
-different beasts but it's not always clear from patch subject. I was
-thinking about adding this to patch prexes:
-
-"KVM: VMX: KVM-on-Hyper-V: ... " 
-"KVM: nVMX: Hyper-V-on-KVM ..."
-
-or something similar.
-
->
-> Thus this patch probably should be a separate patch, just to avoid confusion.
->
-
-This patch is a weird one. We actually fix
-
-Hyper-V-on-KVM-on-Hyper-V case.
-
-Don't get confused! :-)
-
-
-> However, since this patch series is already posted, and I figured that out, and hopefully explained it here,
-> no need to do anything though!
->
->
-> Best regards,
-> 	Maxim Levitsky
->
->
->
-
--- 
-Vitaly
-
+>  static const struct nlmsg_perm nlmsg_audit_perms[] =
+> @@ -189,7 +191,7 @@ int selinux_nlmsg_lookup(u16 sclass, u16 nlmsg_type, u32 *perm)
+>  		 * structures at the top of this file with the new mappings
+>  		 * before updating the BUILD_BUG_ON() macro!
+>  		 */
+> -		BUILD_BUG_ON(XFRM_MSG_MAX != XFRM_MSG_MAPPING);
+> +		BUILD_BUG_ON(XFRM_MSG_MAX != XFRM_MSG_GETDEFAULT);
+>  		err = nlmsg_perm(nlmsg_type, perm, nlmsg_xfrm_perms,
+>  				 sizeof(nlmsg_xfrm_perms));
+>  		break;
+> -- 
+> 2.1.4
+> 
