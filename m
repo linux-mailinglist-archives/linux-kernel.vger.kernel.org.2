@@ -2,207 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11814409C4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC1F409C44
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347337AbhIMScR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:32:17 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58540 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344946AbhIMSbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:31:49 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id DE5E91F42D23
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev
-Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Subject: [PATCH v4 10/10] media: hantro: Support NV12 on the G2 core
-Date:   Mon, 13 Sep 2021 20:30:13 +0200
-Message-Id: <20210913183013.19616-11-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210913183013.19616-1-andrzej.p@collabora.com>
-References: <20210913183013.19616-1-andrzej.p@collabora.com>
+        id S1347108AbhIMSbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:31:52 -0400
+Received: from mail-dm3nam07on2074.outbound.protection.outlook.com ([40.107.95.74]:1370
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240285AbhIMSbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:31:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KJCcltXUmwginzE2R9C/PnTeIF4ZVcwWVxbCQVKfUqvVZa0q8uupiSU4UtS9cwWa3pKg1A+z/nmkG6MbGfVsA61aAkNkLwxqLJZLv6NuoXROO7EyPaJ6O0Zmo29yhu37RKeVdZB2RwESxQw/0fg4DZon8RLV5Or/LT8KavuYYxFDL1f0utw3A/43EEd66w+oAVEuWHdd1f1K2dYGxA6fPP46qJspF9n//oswAnO8oF7TKIIlX5J5SvSn7vZ7ijbh8O5+s9UC8uGFzeky1bd6CAQZ/B1sg5bMJ5M68HmkukQykFKO66ScLC/PnbzWqMTT0RPXYT+R5TVtcW3zKBOdkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=9e7sHDV4GfMfz9CUg16rSxvRiyBz/ff/vLEx5wxcILs=;
+ b=kvJePJeGsdVwHYn2U6er09AZV7P+qNxQNo1DSuCqElphH+I3p1ML6wcMOwm6Hb3NRfflQkx9kx4gk05ieAna3FYPv6dFBRj36HzJ4u1uDf+4KSH9sagiYoEIFDBYSECz8NIh7dFu6hgeRh0Bs6qG6NGbabux/mGFeW0JsrtNsCy/5A/k8RRhUL/+Wa0KCUd5wpRkhRsVzKRwM8N3kj8JHrTdgZa64ZJ7BaGvzDIQPwf0Z4zLkeI0Glx1aqhyXPzOY1fwTkAUAVicJVXRq7pvQxGTzqdFWrowQKnN27qTLgj0jmzXzZuASz+JPFFY2agVhHwmEAPEq+igXWooYg6pGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9e7sHDV4GfMfz9CUg16rSxvRiyBz/ff/vLEx5wxcILs=;
+ b=REsv6J9QGP2uphSTpUOXIzQbOYMpfqgnuXRzY+MPvqrvrrBF3qBmnxu/jpXMBrap1ZrnAp/2bbPc9gJ6MUFpJ5Zr3RQWNbitZFtb7TaWb3eMSuWNTOLvFg2uewfKNGzsBfGMTBNJplk6zORmnvQkN9BMzXXwbzwsJgARsp+XQG4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4510.namprd12.prod.outlook.com (2603:10b6:806:94::8)
+ by SA0PR12MB4384.namprd12.prod.outlook.com (2603:10b6:806:9f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15; Mon, 13 Sep
+ 2021 18:30:23 +0000
+Received: from SA0PR12MB4510.namprd12.prod.outlook.com
+ ([fe80::f909:b733:33ff:e3b1]) by SA0PR12MB4510.namprd12.prod.outlook.com
+ ([fe80::f909:b733:33ff:e3b1%4]) with mapi id 15.20.4500.019; Mon, 13 Sep 2021
+ 18:30:23 +0000
+Subject: Re: [PATCH v3 2/2] x86/acpi: Don't add CPUs that are not online
+ capable
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+References: <20210908214146.8640-1-mario.limonciello@amd.com>
+ <20210908214146.8640-2-mario.limonciello@amd.com>
+ <CAJZ5v0gip6L0cDxUJq-LsG4khmS0QW=xs5jAQr+OY6i28XBnwg@mail.gmail.com>
+From:   "Limonciello, Mario" <mario.limonciello@amd.com>
+Message-ID: <c0af820a-9732-e67d-4697-4233783f3781@amd.com>
+Date:   Mon, 13 Sep 2021 13:30:21 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <CAJZ5v0gip6L0cDxUJq-LsG4khmS0QW=xs5jAQr+OY6i28XBnwg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR10CA0017.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::22) To SA0PR12MB4510.namprd12.prod.outlook.com
+ (2603:10b6:806:94::8)
+MIME-Version: 1.0
+Received: from [10.236.176.207] (165.204.77.1) by SA9PR10CA0017.namprd10.prod.outlook.com (2603:10b6:806:a7::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Mon, 13 Sep 2021 18:30:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1261423b-70a3-4b49-4361-08d976e48c94
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4384:
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4384A21094BBEEE59E5759CEE2D99@SA0PR12MB4384.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xESRXkLQFElsB5spcRcMzs0iwQXIUrthUrsLPFtqRwMfVQtlQ8iPpIxshYxp0ZOC8/HwiE8D29ZqnEwk0TH9hGOu5l/3vmlVDO3U4KKZq6uYS/mEQooVmSvtS9hVkEE1q/yjAwLyuxctxR1w0OmOZqQFh9p3/Kl9qerTpCsGORcgcJ6clXEsw3nfVq2ym3J2ptgmoIJyLJelY5mPNPe7NxYoHEHZlt7n3EH9VU4W9GXLTLaoHOQ1RX/XFrwOZdSyJSak1yFqXxzGDNMTTffPJeRcQEa25lOVIo7qwmVceZHSr+FXj2hihVuXjJNI2fz+3TVagBYe6BSwRSCaU+bnr0bNAC847aPArzqHwOyIzfmmumGR76CTDArsoxJoJXWqbakwAmqhSNGWx40ZK8yu4WZgkkwWzlXel82AqSxAlg4714+0gI+ydcoi88lXmFr4tq4bdvcNiwUMypR7l+/gr2kPkWBhn4i40AH5vu32+Yy3hYZKu5xii3AFC5HNJZaNxbQYnotCc5y6T9hAXLnL/LTgRTGLeKEJVnQDv7ewa6aJLMOLTI3E4C3ZTte+qpBBo7f/s68ylW0oL4+lupdCXX2olbHiPgETzD2qbzn+6MzYMHHcohw4OjSBhBxiximLTyJx+FB/X6qE9neV3JrAYlNf3fOSFNUKunSr8w0bmB8oa5NHXpATwfdP17/z0QxP6QS4bnuk94nLPQXS9pMCgT9GQew4vSR3JbKyBkQGHNBdHpgx9igaD1Uk8C9fhtSUUDvkZDrU6ZNHMxJOqB9EdjjDvOVPRYy1V1HQO8FWsjL9bhVIn1hXgxhmB2KhwaJj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4510.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(346002)(39860400002)(7416002)(4326008)(8936002)(956004)(8676002)(83380400001)(31696002)(478600001)(53546011)(31686004)(66946007)(2616005)(36756003)(6486002)(966005)(110136005)(26005)(38100700002)(316002)(2906002)(86362001)(45080400002)(54906003)(5660300002)(66476007)(16576012)(66556008)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0hzNWYvRFdmQlZud0Zaa0l0N0loNVVFaHo5SXVBOXk4c3NnWmFRZ0RobFZ2?=
+ =?utf-8?B?VldmUUVZT2xzc0JJdmd6amw0OUFhUWlDVzZXR21TZm9aUG55M0xzcXJxMzNV?=
+ =?utf-8?B?TnU4RFlzY0pESDd0MjhkU1VjS2IvdnFxc3NwSysrWmRvWit2TEpxNUM5SEtq?=
+ =?utf-8?B?cWRUd1hobmI0Tjl1azFibEhzTTh3cEw0WGZyL3VYSUxWWC95RTVDaFJ2amg1?=
+ =?utf-8?B?QnMyVGpBTDNRbTQ4MU9QTkhIdUttOW5TUHNIeFhOZ0w2UVdQQm8wZ3o2ekx1?=
+ =?utf-8?B?WG8vcEp4TExyUHByenpWa0VLSWk0TUpINTU0aGV3T3FrMXN5dWc1YmYvcFZ6?=
+ =?utf-8?B?RExIQVBUNUFDeDJBdytBdjViZkxCYVJnaDZjenFQZzd4bWsrUU1LVmlsU3Ev?=
+ =?utf-8?B?aFRwRkRaRjlxMFE2cE92NGJvcTNSRk8zNGdwYi9NYUZoSXpFNUJ5a2dhZDZr?=
+ =?utf-8?B?TlIyR3NmcXZ3ell1dHB0U1NwMXhwZGNjV2J1aWw0c3JWSmJjRTk4em5jWGFT?=
+ =?utf-8?B?U1V6eGNXOUhYNDRoVUVCOFRtblNCKzBlbWZFUEpkNURENERhN0ZCbnhMbGM5?=
+ =?utf-8?B?UUpiQnVRSVJ0K280Z0FFSDl0YVlMRDZDd1R1a2lsWVFpdHpTTENibktBNXh5?=
+ =?utf-8?B?bHExVGtrODBPK2dIenFWaGNSUjVTejBxRlF5andSWC9BRlI1TFJqMlgyTXV2?=
+ =?utf-8?B?QUh2eDRXWXo5SXBkazlpYVhvazNMV2NaU1dZRXFXVm5YMjhjd1ZHVzVOQXdX?=
+ =?utf-8?B?RzdZWlNkMzNJcCs3MjhUMUg2ZTdCWkRlWmk0bUVqWGpWd0NGam1NbkM2Z2l5?=
+ =?utf-8?B?NjdPZFJITzBvRGJXVnoyazJ3d3pLU05NYnBDSDhlYXNmZkhVaWIrMnc1OGx1?=
+ =?utf-8?B?NEl2U0RvL3UzN2lmTTQ3MU5nbkZ0UDR6WXR6S3BDZTZZbi81MjFPZm0wNjln?=
+ =?utf-8?B?UVU2dXNkd0hoL05rZEFNdSthTG1PVm9Kbnh1cWdIcnY0SmZLR2dYV3IxWDVG?=
+ =?utf-8?B?TGlaZFU3M1V1b1VlNjNPRFZLNi9UYW1OZWRjNUx6ZGpDMWkwY21VbUlUTUNs?=
+ =?utf-8?B?dWdpamZ2dVZhMFBuQTJLZHJneTBkVXExZHI2UzYyeXlZdUNNV05hK3d3TVox?=
+ =?utf-8?B?eGYrWWUza3NRT1AyclpvemdvZDMyaHlxQ3I0Zjc1RWMwUDhlMWM5NGUxcC9k?=
+ =?utf-8?B?WElBTzF5ZkF3VmgxK2hIK0ZLTm11clQ1MElWd2tpK0k3N0poQldmS0ppQ24w?=
+ =?utf-8?B?Y0t6N2x1S2ZOR0FFeFMwbkNuaThiNHFDQ3ZFZDlINDQ5WkJDeUhzdlY1RWdP?=
+ =?utf-8?B?N0wzOG5HaVRRdXdWWWVPNmlJVkpDd0R5a2pwejdPTUZ1THk5T1lYM24xRTNJ?=
+ =?utf-8?B?Tkthd0NFZ2gyZ01EeDRPNXZHeGlHM2ZwK0t1WVdDRkxnWlRZK0o0RkVMOFMz?=
+ =?utf-8?B?cFZKVHZmRVNDRUNlM09JVVFjSE8rYldUTk5ERkxyL2VyTm5MUTQ5dGQrRzdF?=
+ =?utf-8?B?KzJOL2haMDlob1VCSnpGeWg1Yy80NGRyRTJXaDEvVEsxeUsxc2JEZ091M0Rp?=
+ =?utf-8?B?MWVnaE1zSnc5QlBVK0pWdm1wWEJYdm1oWE84R1NMRzVUZUdRSVZHTjVaMC8x?=
+ =?utf-8?B?M0M2TUk0UldGSGx3SWNmSGh2Tmo3TGExcENTaU1sQTlydWRJU3Z1OFQ4R0x5?=
+ =?utf-8?B?a2R6OEFuSDVlaFNaalFGSU43NW45WmcrYUxDYkhuUW1jU1ZRY0MvZ2xKQXlM?=
+ =?utf-8?Q?/69BMTjD6haIAWu3pG8tWZ+thNp85uLxNNFpVSb?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1261423b-70a3-4b49-4361-08d976e48c94
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4510.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2021 18:30:23.3769
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U3GLwiIbMPnZLLNtEhXriv0yMzmwuEIdmrzRpSJrZaMQiZikydjwWlvmrentngO2WozBI0WoGe/TfrAvI5gQCQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4384
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ezequiel Garcia <ezequiel@collabora.com>
+On 9/13/2021 12:23, Rafael J. Wysocki wrote:
+> On Wed, Sep 8, 2021 at 11:41 PM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+>>
+>> A number of systems are showing "hotplug capable" CPUs when they
+>> are not really hotpluggable.  This is because the MADT has extra
+>> CPU entries to support different CPUs that may be inserted into
+>> the socket with different numbers of cores.
+>>
+>> Starting with ACPI 6.3 the spec has an Online Capable bit in the
+>> MADT used to determine whether or not a CPU is hotplug capable
+>> when the enabled bit is not set.
+>>
+>> Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fuefi.org%2Fhtmlspecs%2FACPI_Spec_6_4_html%2F05_ACPI_Software_Programming_Model%2FACPI_Software_Programming_Model.html%3F%23local-apic-flags&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7C081016240ab94e72822d08d976db3d0a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637671506287828485%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=0vIs%2BDryYFVrtT1DvhU6Ke1BDJe%2BsIhbxPu94NeXRBo%3D&amp;reserved=0
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> 
+> I've added the patches in this series to my queue, but given what this
+> one does, I think that it's a bit risky, because it exposes the kernel
+> to a new category of possible platform firmware bugs.
+> 
 
-The G2 decoder block produces NV12 4x4 tiled format (NV12_4L4).
-Enable the G2 post-processor block, in order to produce regular NV12.
+Sounds good, appreciate the diligence.
 
-The logic in hantro_postproc.c is leveraged to take care of allocating
-the extra buffers and configure the post-processor, which is
-significantly simpler than the one on the G1.
-
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- .../staging/media/hantro/hantro_g2_vp9_dec.c  |  6 ++--
- drivers/staging/media/hantro/hantro_hw.h      |  1 +
- .../staging/media/hantro/hantro_postproc.c    | 31 +++++++++++++++++++
- drivers/staging/media/hantro/imx8m_vpu_hw.c   | 11 +++++++
- 4 files changed, 46 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-index 49b5f304b6b4..754a32e41bf5 100644
---- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-@@ -152,7 +152,7 @@ static void config_output(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
- 	hantro_reg_write(ctx->dev, &g2_output_format, 0);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&dst->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, G2_ADDR_DST, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -191,7 +191,7 @@ static void config_ref(struct hantro_ctx *ctx,
- 	hantro_reg_write(ctx->dev, &ref_reg->hor_scale, (refw << 14) / dst->vp9.width);
- 	hantro_reg_write(ctx->dev, &ref_reg->ver_scale, (refh << 14) / dst->vp9.height);
- 
--	luma_addr = vb2_dma_contig_plane_dma_addr(&buf->base.vb.vb2_buf, 0);
-+	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
- 	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
- 
- 	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-@@ -236,7 +236,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
- 	config_ref(ctx, dst, &ref_regs[1], dec_params, dec_params->golden_frame_ts);
- 	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
- 
--	mv_addr = vb2_dma_contig_plane_dma_addr(&mv_ref->base.vb.vb2_buf, 0) +
-+	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
- 		  mv_offset(ctx, dec_params);
- 	hantro_write_addr(ctx->dev, G2_REG_DMV_REF(0), mv_addr);
- 
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 2961d399fd60..3d4a5dc1e6d5 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -274,6 +274,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
- extern const struct hantro_variant sama5d4_vdec_variant;
- 
- extern const struct hantro_postproc_ops hantro_g1_postproc_ops;
-+extern const struct hantro_postproc_ops hantro_g2_postproc_ops;
- 
- extern const u32 hantro_vp8_dec_mc_filter[8][6];
- 
-diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
-index 4549aec08feb..bc94bf46d218 100644
---- a/drivers/staging/media/hantro/hantro_postproc.c
-+++ b/drivers/staging/media/hantro/hantro_postproc.c
-@@ -11,6 +11,7 @@
- #include "hantro.h"
- #include "hantro_hw.h"
- #include "hantro_g1_regs.h"
-+#include "hantro_g2_regs.h"
- 
- #define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
- { \
-@@ -99,6 +100,21 @@ static void hantro_postproc_g1_enable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE(vpu, display_width, ctx->dst_fmt.width);
- }
- 
-+static void hantro_postproc_g2_enable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	struct vb2_v4l2_buffer *dst_buf;
-+	size_t chroma_offset = ctx->dst_fmt.width * ctx->dst_fmt.height;
-+	dma_addr_t dst_dma;
-+
-+	dst_buf = hantro_get_dst_buf(ctx);
-+	dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0);
-+
-+	hantro_write_addr(vpu, G2_RASTER_SCAN, dst_dma);
-+	hantro_write_addr(vpu, G2_RASTER_SCAN_CHR, dst_dma + chroma_offset);
-+	hantro_reg_write(vpu, &g2_out_rs_e, 1);
-+}
-+
- void hantro_postproc_free(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -127,6 +143,9 @@ int hantro_postproc_alloc(struct hantro_ctx *ctx)
- 	if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_H264_SLICE)
- 		buf_size += hantro_h264_mv_size(ctx->dst_fmt.width,
- 						ctx->dst_fmt.height);
-+	else if (ctx->vpu_src_fmt->fourcc == V4L2_PIX_FMT_VP9_FRAME)
-+		buf_size += hantro_vp9_mv_size(ctx->dst_fmt.width,
-+					       ctx->dst_fmt.height);
- 
- 	for (i = 0; i < num_buffers; ++i) {
- 		struct hantro_aux_buf *priv = &ctx->postproc.dec_q[i];
-@@ -152,6 +171,13 @@ static void hantro_postproc_g1_disable(struct hantro_ctx *ctx)
- 	HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
- }
- 
-+static void hantro_postproc_g2_disable(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+
-+	hantro_reg_write(vpu, &g2_out_rs_e, 0);
-+}
-+
- void hantro_postproc_disable(struct hantro_ctx *ctx)
- {
- 	struct hantro_dev *vpu = ctx->dev;
-@@ -172,3 +198,8 @@ const struct hantro_postproc_ops hantro_g1_postproc_ops = {
- 	.enable = hantro_postproc_g1_enable,
- 	.disable = hantro_postproc_g1_disable,
- };
-+
-+const struct hantro_postproc_ops hantro_g2_postproc_ops = {
-+	.enable = hantro_postproc_g2_enable,
-+	.disable = hantro_postproc_g2_disable,
-+};
-diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-index 455a107ffb02..1a43f6fceef9 100644
---- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-+++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-@@ -132,6 +132,14 @@ static const struct hantro_fmt imx8m_vpu_dec_fmts[] = {
- 	},
- };
- 
-+static const struct hantro_fmt imx8m_vpu_g2_postproc_fmts[] = {
-+	{
-+		.fourcc = V4L2_PIX_FMT_NV12,
-+		.codec_mode = HANTRO_MODE_NONE,
-+		.postprocessed = true,
-+	},
-+};
-+
- static const struct hantro_fmt imx8m_vpu_g2_dec_fmts[] = {
- 	{
- 		.fourcc = V4L2_PIX_FMT_NV12_4L4,
-@@ -301,6 +309,9 @@ const struct hantro_variant imx8mq_vpu_g2_variant = {
- 	.dec_offset = 0x0,
- 	.dec_fmts = imx8m_vpu_g2_dec_fmts,
- 	.num_dec_fmts = ARRAY_SIZE(imx8m_vpu_g2_dec_fmts),
-+	.postproc_fmts = imx8m_vpu_g2_postproc_fmts,
-+	.num_postproc_fmts = ARRAY_SIZE(imx8m_vpu_g2_postproc_fmts),
-+	.postproc_ops = &hantro_g2_postproc_ops,
- 	.codec = HANTRO_HEVC_DECODER | HANTRO_VP9_DECODER,
- 	.codec_ops = imx8mq_vpu_g2_codec_ops,
- 	.init = imx8mq_vpu_hw_init,
--- 
-2.17.1
+> For this reason, I'd rather queue it up as 5.16 material (and of
+> course x86 reviewer comments are welcome).
+> 
+>> ---
+>>   arch/x86/kernel/acpi/boot.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> Changes from v1 -> v2:
+>>   * Make the change only apply on ACPI 6.3 or later
+>> Changes from v2 -> v3:
+>>   * Make acpi_support_online_capable static and only valid if CONFIG_X86_LOCAL_APIC is defined
+>> diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+>> index e55e0c1fad8c..d915f01b582b 100644
+>> --- a/arch/x86/kernel/acpi/boot.c
+>> +++ b/arch/x86/kernel/acpi/boot.c
+>> @@ -62,6 +62,7 @@ int acpi_fix_pin2_polarity __initdata;
+>>
+>>   #ifdef CONFIG_X86_LOCAL_APIC
+>>   static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
+>> +static bool acpi_support_online_capable;
+>>   #endif
+>>
+>>   #ifdef CONFIG_X86_IO_APIC
+>> @@ -138,6 +139,8 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
+>>
+>>                  pr_debug("Local APIC address 0x%08x\n", madt->address);
+>>          }
+>> +       if (madt->header.revision >= 5)
+>> +               acpi_support_online_capable = true;
+>>
+>>          default_acpi_madt_oem_check(madt->header.oem_id,
+>>                                      madt->header.oem_table_id);
+>> @@ -239,6 +242,12 @@ acpi_parse_lapic(union acpi_subtable_headers * header, const unsigned long end)
+>>          if (processor->id == 0xff)
+>>                  return 0;
+>>
+>> +       /* don't register processors that can not be onlined */
+>> +       if (acpi_support_online_capable &&
+>> +           !(processor->lapic_flags & ACPI_MADT_ENABLED) &&
+>> +           !(processor->lapic_flags & ACPI_MADT_ONLINE_CAPABLE))
+>> +               return 0;
+>> +
+>>          /*
+>>           * We need to register disabled CPU as well to permit
+>>           * counting disabled CPUs. This allows us to size
+>> --
+>> 2.25.1
+>>
 
