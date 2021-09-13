@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C58A409B49
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEF6409B40
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbhIMRzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:55:10 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57702 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245074AbhIMRyr (ORCPT
+        id S239549AbhIMRyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240741AbhIMRya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:54:47 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id AF3991F42D02
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel@collabora.com, krisman@collabora.com,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        mtk.manpages@gmail.com, Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH v3 6/6] selftests: futex2: Test futex_waitv timeout
-Date:   Mon, 13 Sep 2021 14:52:49 -0300
-Message-Id: <20210913175249.81074-7-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913175249.81074-1-andrealmeid@collabora.com>
-References: <20210913175249.81074-1-andrealmeid@collabora.com>
+        Mon, 13 Sep 2021 13:54:30 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CCBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:53:14 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mi6-20020a17090b4b4600b00199280a31cbso436030pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kXZtHcVNaM7mdaUxUJBAXKCjuJ3E0tetF3TAL3wdUUo=;
+        b=Xs18WTwxXQS7iQJjubYakIrgstlm0398vyhA3uqhygdFTqMPF5w2fcl9SDAL3x6y5T
+         p3ROiewN0tQ+eWfvoIyrVU7G6EMbt5w2c9zQcnDP8j/5/CGhguJ0gJdkBoZnSulcITiv
+         Q/vWi/Mp6zaDDks4UlEQXN/GSbiaPoOlgM4pdsFD7W02CYH8Go33Rh2lMEvOz++fCLX1
+         6ALj/DzVYcenjZs0xKNyuRvneh98F2NxB09XI8uvpvmfRF4ESXEtjg0h5ibRkIT+A/iZ
+         JnymNDOHu95hpDsmHAEilGbJQLGDT3Dwi670u31lCp9fs8ytFfpRLjiRKYOcAVSueTfO
+         HQTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kXZtHcVNaM7mdaUxUJBAXKCjuJ3E0tetF3TAL3wdUUo=;
+        b=w5UEgpl569WSWScwEdoRHBJ/c0zCACNFvu9FtM2niq9pj9SsrmSYstH1AWT1+8SZ9m
+         y8/NdzjthktJgad3G5kClws1df9RUv2P+AW40fpKCKwPDRnU85+G5d4cp+QiVDLuObMu
+         ZSg0vEjSbkdm1zjUPl4pf2RZPNwrPHAhttmDUWxNffGsAvgnz7sDiWdjHnzEcVdIowW5
+         roZm4J1V109Q2ZC/ogPKFQdYBpLcZzjtcxoxl/3PL3/ZtU3BuKGi3VHrs0U36BT93GPL
+         jPoeG8rXdsZBamFXKL0vamSdKkeMMlE7bFBLW+H38pd4KPwn4Wk1xwxJIW6M0WnBlJ6f
+         IyYg==
+X-Gm-Message-State: AOAM530j0eFp2dZZSir0OQN8g9BsCI3CvOTyxJ4H7P0H375ord7cioKq
+        GoSNPNyQzWAQG/sb7HktmRSix7sf1sk=
+X-Google-Smtp-Source: ABdhPJwmR6Bf6ozUOtFrgMtzXtElYodZ2ttS/KQzBkD8k3oOCEdCh9pkimdpe+J8+33UVOnxE7FJyw==
+X-Received: by 2002:a17:90a:2dc6:: with SMTP id q6mr739892pjm.200.1631555593362;
+        Mon, 13 Sep 2021 10:53:13 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id h16sm1736143pjt.30.2021.09.13.10.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 10:53:12 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Sep 2021 07:53:11 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Rolf Eike Beer <eb@emlix.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] workqueue: annotate alloc_workqueue() as printf
+Message-ID: <YT+QBwXiQGxkRqXZ@slm.duckdns.org>
+References: <2947630.YJcLE3A3dI@mobilepool36.emlix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2947630.YJcLE3A3dI@mobilepool36.emlix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test if the futex_waitv timeout is working as expected, using the
-supported clockid options.
+On Mon, Sep 13, 2021 at 12:02:56PM +0200, Rolf Eike Beer wrote:
+> This also enables checking of allows alloc_ordered_workqueue().
+> 
+> Signed-off-by: Rolf Eike Beer <eb@emlix.com>
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- .../futex/functional/futex_wait_timeout.c     | 21 ++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Applied to wq/for-5.16.
 
-diff --git a/tools/testing/selftests/futex/functional/futex_wait_timeout.c b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
-index 1f8f6daaf1e7..4cdada0fcb81 100644
---- a/tools/testing/selftests/futex/functional/futex_wait_timeout.c
-+++ b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
-@@ -17,6 +17,7 @@
- 
- #include <pthread.h>
- #include "futextest.h"
-+#include "futex2test.h"
- #include "logging.h"
- 
- #define TEST_NAME "futex-wait-timeout"
-@@ -96,6 +97,12 @@ int main(int argc, char *argv[])
- 	struct timespec to;
- 	pthread_t thread;
- 	int c;
-+	struct futex_waitv waitv = {
-+			.uaddr = (uintptr_t)&f1,
-+			.val = f1,
-+			.flags = FUTEX_32,
-+			.__reserved = 0
-+		};
- 
- 	while ((c = getopt(argc, argv, "cht:v:")) != -1) {
- 		switch (c) {
-@@ -118,7 +125,7 @@ int main(int argc, char *argv[])
- 	}
- 
- 	ksft_print_header();
--	ksft_set_plan(7);
-+	ksft_set_plan(9);
- 	ksft_print_msg("%s: Block on a futex and wait for timeout\n",
- 	       basename(argv[0]));
- 	ksft_print_msg("\tArguments: timeout=%ldns\n", timeout_ns);
-@@ -175,6 +182,18 @@ int main(int argc, char *argv[])
- 	res = futex_lock_pi(&futex_pi, NULL, 0, FUTEX_CLOCK_REALTIME);
- 	test_timeout(res, &ret, "futex_lock_pi invalid timeout flag", ENOSYS);
- 
-+	/* futex_waitv with CLOCK_MONOTONIC */
-+	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
-+		return RET_FAIL;
-+	res = futex_waitv(&waitv, 1, 0, &to);
-+	test_timeout(res, &ret, "futex_waitv monotonic", ETIMEDOUT);
-+
-+	/* futex_waitv with CLOCK_REALTIME */
-+	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
-+		return RET_FAIL;
-+	res = futex_waitv(&waitv, 1, FUTEX_CLOCK_REALTIME, &to);
-+	test_timeout(res, &ret, "futex_waitv realtime", ETIMEDOUT);
-+
- 	ksft_print_cnts();
- 	return ret;
- }
+> +__printf(1, 4) struct workqueue_struct *alloc_workqueue(const char *fmt,
+> +							unsigned int flags,
+> +							int max_active, ...);
+
+I broke the line after the return type while applying.
+
+Thanks.
+
 -- 
-2.33.0
-
+tejun
