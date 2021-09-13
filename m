@@ -2,211 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DA14098F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6914098F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbhIMQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:25:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230003AbhIMQZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:25:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3764960187;
-        Mon, 13 Sep 2021 16:24:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631550259;
-        bh=ZloGfUPXytANvlaKt3xSoVJdmW8KkuOWTrFZ8tSaPrk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fWE3eDe04xw3JgAI9uSGK5QBQ9nU8MlumTnbKJUffkUxLxaqHt+Q1bh8gb3tS4oUE
-         exJVS7zh+lvwdUnm/F/XukCZeFPxJDZ6bqslfrnhwcKMGlvOObRtScEL/Qg/PMYP6E
-         o/abTCmrBnzZ2l7k5Me5NKa3bhCSA2HiGZ7U0/Cc=
-Date:   Mon, 13 Sep 2021 18:24:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: os_dep: remove unused function
- rtw_android_priv_cmd
-Message-ID: <YT97MRziXoUFhvXh@kroah.com>
-References: <YT413EaBXqIqMttS@user>
+        id S237362AbhIMQZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236983AbhIMQZr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:25:47 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B969C061760;
+        Mon, 13 Sep 2021 09:24:31 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id h3so9945135pgb.7;
+        Mon, 13 Sep 2021 09:24:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7iNVw3gDtbqcmJuxqzAp5MJgiBGuJVVVMEOeEc9LwQI=;
+        b=KMn3oOOQ7z+gZHnSi7tKwT8HQswrmQXWn3lkFw+yHY0rKS9MNHhd4wHGCJKSgBUW+n
+         T9tyboH4kQf5n8hqLQ+QVZjkSSb3UmHmDfhwVZGsusChykPhGMmDVApFEBhgyaEKxcqF
+         nQx/BCeW80UOUgD50aLnXPiX4V3x1A3k2VOFzTxgJQqUhtnAXDX5LCWind7N0Ph7r5JS
+         YIiLJlvawJQq8N+/L4ad49VBtsL/uFJZK9EarxpeaZCD8dgARJnrDmUwzUoTfpYQ/chd
+         wHvBmuxhJWuabByUsiQ+4Bj5XEDk3RaSHUx98oQLvBABSE9710epxsKIwebP8rwgN8I+
+         YMNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7iNVw3gDtbqcmJuxqzAp5MJgiBGuJVVVMEOeEc9LwQI=;
+        b=UWbRY3N6UULWw2HpJkRVP03vsudtg+/KudBZcHXgENc+qQJ+TRXKv3N7PkBp39KDh9
+         24XFc0pyV3umAC3Tuw6P+OjoWMUFshSHqIgLpTu4/j2ZTKBQDU1xaF9GbS6Mia/Now6X
+         NcSdPMqg2Q9G2+ML3lcgyNJ1/EOkImeGz2StWvUxhS71g+JSozEa0mJDh8TFLu5dNMgt
+         yCuNpVEfqrR4awdeh2K35iuiDHTsGt0HEjBPy5TBNkoRL2ZxEMJ/eGcpan9H/nYANjTf
+         oDcnEQek6Y7ht6rX9Xqa6VxDeEv12JEVPuXo4QMrqrN3b15dZdnjamSnsxHJ24V8+mfv
+         Mqjw==
+X-Gm-Message-State: AOAM531WEOUqI1Bo8lRwkz2PpqLvN1hKZYo0vYyXw4I/Wf7l3BBwRqZp
+        vm8nDvibEVel6UyOZpozDMk=
+X-Google-Smtp-Source: ABdhPJwcRXRk6qz0DRNFCw//xgAu2bkBeEvp9KWsb6qS7ho6P+WnajXyZjSblVMrpMHi4+apDU5iag==
+X-Received: by 2002:a65:648b:: with SMTP id e11mr11675333pgv.138.1631550270967;
+        Mon, 13 Sep 2021 09:24:30 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id g8sm7169782pfv.51.2021.09.13.09.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 09:24:30 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 13 Sep 2021 06:24:28 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "taoyi.ty" <escape@linux.alibaba.com>,
+        Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        shanpeic@linux.alibaba.com
+Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
+Message-ID: <YT97PAm6kaecvXLX@slm.duckdns.org>
+References: <cover.1631102579.git.escape@linux.alibaba.com>
+ <YTiugxO0cDge47x6@kroah.com>
+ <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
+ <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
+ <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YT413EaBXqIqMttS@user>
+In-Reply-To: <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 10:46:12PM +0530, Saurav Girepunje wrote:
-> Remove unused function rtw_android_priv_cmd.
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->  drivers/staging/r8188eu/include/rtw_android.h |   1 -
->  drivers/staging/r8188eu/os_dep/rtw_android.c  | 138 ------------------
->  2 files changed, 139 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/include/rtw_android.h b/drivers/staging/r8188eu/include/rtw_android.h
-> index f60cf1c82984..86e3ac5f7955 100644
-> --- a/drivers/staging/r8188eu/include/rtw_android.h
-> +++ b/drivers/staging/r8188eu/include/rtw_android.h
-> @@ -42,6 +42,5 @@ enum ANDROID_WIFI_CMD {
->  };
-> 
->  int rtw_android_cmdstr_to_num(char *cmdstr);
-> -int rtw_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd);
-> 
->  #endif /* __RTW_ANDROID_H__ */
-> diff --git a/drivers/staging/r8188eu/os_dep/rtw_android.c b/drivers/staging/r8188eu/os_dep/rtw_android.c
-> index 010d529c8982..bd76177d60f9 100644
-> --- a/drivers/staging/r8188eu/os_dep/rtw_android.c
-> +++ b/drivers/staging/r8188eu/os_dep/rtw_android.c
-> @@ -133,141 +133,3 @@ static int rtw_android_set_block(struct net_device *net, char *command,
->  	return 0;
->  }
-> 
-> -int rtw_android_priv_cmd(struct net_device *net, struct ifreq *ifr, int cmd)
-> -{
-> -	int ret = 0;
-> -	char *command = NULL;
-> -	int cmd_num;
-> -	int bytes_written = 0;
-> -	struct android_wifi_priv_cmd priv_cmd;
-> -
-> -	if (!ifr->ifr_data) {
-> -		ret = -EINVAL;
-> -		goto exit;
-> -	}
-> -	if (copy_from_user(&priv_cmd, ifr->ifr_data,
-> -			   sizeof(struct android_wifi_priv_cmd))) {
-> -		ret = -EFAULT;
-> -		goto exit;
-> -	}
-> -	command = kmalloc(priv_cmd.total_len, GFP_KERNEL);
-> -	if (!command) {
-> -		DBG_88E("%s: failed to allocate memory\n", __func__);
-> -		ret = -ENOMEM;
-> -		goto exit;
-> -	}
-> -	if (!access_ok(priv_cmd.buf, priv_cmd.total_len)) {
-> -		DBG_88E("%s: failed to access memory\n", __func__);
-> -		ret = -EFAULT;
-> -		goto exit;
-> -	}
-> -	if (copy_from_user(command, (char __user *)priv_cmd.buf,
-> -			   priv_cmd.total_len)) {
-> -		ret = -EFAULT;
-> -		goto exit;
-> -	}
-> -	DBG_88E("%s: Android private cmd \"%s\" on %s\n",
-> -		__func__, command, ifr->ifr_name);
-> -	cmd_num = rtw_android_cmdstr_to_num(command);
-> -	switch (cmd_num) {
-> -	case ANDROID_WIFI_CMD_START:
-> -		goto response;
-> -	case ANDROID_WIFI_CMD_SETFWPATH:
-> -		goto response;
-> -	}
-> -	if (!g_wifi_on) {
-> -		DBG_88E("%s: Ignore private cmd \"%s\" - iface %s is down\n",
-> -			__func__, command, ifr->ifr_name);
-> -		ret = 0;
-> -		goto exit;
-> -	}
-> -	switch (cmd_num) {
-> -	case ANDROID_WIFI_CMD_STOP:
-> -		break;
-> -	case ANDROID_WIFI_CMD_SCAN_ACTIVE:
-> -		break;
-> -	case ANDROID_WIFI_CMD_SCAN_PASSIVE:
-> -		break;
-> -	case ANDROID_WIFI_CMD_RSSI:
-> -		bytes_written = rtw_android_get_rssi(net, command,
-> -						     priv_cmd.total_len);
-> -		break;
-> -	case ANDROID_WIFI_CMD_LINKSPEED:
-> -		bytes_written = rtw_android_get_link_speed(net, command,
-> -							   priv_cmd.total_len);
-> -		break;
-> -	case ANDROID_WIFI_CMD_MACADDR:
-> -		bytes_written = rtw_android_get_macaddr(net, command,
-> -							priv_cmd.total_len);
-> -		break;
-> -	case ANDROID_WIFI_CMD_BLOCK:
-> -		bytes_written = rtw_android_set_block(net, command,
-> -						      priv_cmd.total_len);
-> -		break;
-> -	case ANDROID_WIFI_CMD_RXFILTER_START:
-> -		break;
-> -	case ANDROID_WIFI_CMD_RXFILTER_STOP:
-> -		break;
-> -	case ANDROID_WIFI_CMD_RXFILTER_ADD:
-> -		break;
-> -	case ANDROID_WIFI_CMD_RXFILTER_REMOVE:
-> -		break;
-> -	case ANDROID_WIFI_CMD_BTCOEXSCAN_START:
-> -		/* TBD: BTCOEXSCAN-START */
-> -		break;
-> -	case ANDROID_WIFI_CMD_BTCOEXSCAN_STOP:
-> -		/* TBD: BTCOEXSCAN-STOP */
-> -		break;
-> -	case ANDROID_WIFI_CMD_BTCOEXMODE:
-> -		break;
-> -	case ANDROID_WIFI_CMD_SETSUSPENDOPT:
-> -		break;
-> -	case ANDROID_WIFI_CMD_SETBAND:
-> -		break;
-> -	case ANDROID_WIFI_CMD_GETBAND:
-> -		break;
-> -	case ANDROID_WIFI_CMD_COUNTRY:
-> -		bytes_written = android_set_cntry(net, command,
-> -						  priv_cmd.total_len);
-> -		break;
-> -	case ANDROID_WIFI_CMD_P2P_DEV_ADDR:
-> -		bytes_written = android_get_p2p_addr(net, command,
-> -						     priv_cmd.total_len);
-> -		break;
-> -	case ANDROID_WIFI_CMD_P2P_SET_NOA:
-> -		break;
-> -	case ANDROID_WIFI_CMD_P2P_GET_NOA:
-> -		break;
-> -	case ANDROID_WIFI_CMD_P2P_SET_PS:
-> -		break;
-> -	default:
-> -		DBG_88E("Unknown PRIVATE command %s - ignored\n", command);
-> -		snprintf(command, 3, "OK");
-> -		bytes_written = strlen("OK");
-> -	}
-> -
-> -response:
-> -	if (bytes_written >= 0) {
-> -		if ((bytes_written == 0) && (priv_cmd.total_len > 0))
-> -			command[0] = '\0';
-> -		if (bytes_written >= priv_cmd.total_len) {
-> -			DBG_88E("%s: bytes_written = %d\n", __func__,
-> -				bytes_written);
-> -			bytes_written = priv_cmd.total_len;
-> -		} else {
-> -			bytes_written++;
-> -		}
-> -		priv_cmd.used_len = bytes_written;
-> -		if (copy_to_user((char __user *)priv_cmd.buf, command,
-> -				 bytes_written)) {
-> -			DBG_88E("%s: failed to copy data to user buffer\n",
-> -				__func__);
-> -			ret = -EFAULT;
-> -		}
-> -	} else {
-> -		ret = bytes_written;
-> -	}
-> -exit:
-> -	kfree(command);
-> -	return ret;
-> -}
-> --
-> 2.32.0
-> 
-> 
+Hello,
 
-Does not apply to my tree :(
+On Mon, Sep 13, 2021 at 04:20:59PM +0200, Christian Brauner wrote:
+> Afaict, there is currently now way to prevent the deletion of empty
+> cgroups, especially newly created ones. So for example, if I have a
+> cgroup manager that prunes the cgroup tree whenever they detect empty
+> cgroups they can delete cgroups that were pre-allocated. This is
+> something we have run into before.
+
+systemd doesn't mess with cgroups behind a delegation point.
+
+> A related problem is a crashed or killed container manager 
+> (segfault, sigkill, etc.). It might not have had the chance to cleanup
+> cgroups it allocated for the container. If the container manager is
+> restarted it can't reuse the existing cgroup it found because it has no
+> way of guaranteeing whether in between the time it crashed and got
+> restarted another program has just created a cgroup with the same name.
+> We usually solve this by just creating another cgroup with an index
+> appended until we we find an unallocated one setting an arbitrary cut
+> off point until we require manual intervention by the user (e.g. 1000).
+> 
+> Right now iirc, one can rmdir() an empty cgroup while someone still
+> holds a file descriptor open for it. This can lead to situation where a
+> cgroup got created but before moving into the cgroup (via clone3() or
+> write()) someone else has deleted it. What would already be helpful is
+> if one had a way to prevent the deletion of cgroups when someone still
+> has an open reference to it. This would allow a pool of cgroups to be
+> created that can't simply be deleted.
+
+The above are problems common for any entity managing cgroup hierarchy.
+Beyond the permission and delegation based access control, cgroup doesn't
+have a mechanism to grant exclusive managerial operations to a specific
+application. It's the userspace's responsibility to coordinate these
+operations like in most other kernel interfaces.
+
+Thanks.
+
+-- 
+tejun
