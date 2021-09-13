@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F60E4094A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6444091AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346463AbhIMOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:33:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
+        id S1344083AbhIMODt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346330AbhIMO2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:28:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B66461B70;
-        Mon, 13 Sep 2021 13:50:09 +0000 (UTC)
+        id S1343588AbhIMOAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:00:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E43261A2E;
+        Mon, 13 Sep 2021 13:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541009;
-        bh=ZWIIygt6OLnN6pPagT7UAokfR3gPaxdASyS2aHG8V5w=;
+        s=korg; t=1631540260;
+        bh=W/9OyMCIBDkFYitsxHS1MSsc19iKakqmMhUb9EfZU2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WGX07KgOk2LPMrobLKQ/r0OgJw/G8PUPXDDmacTH4Ki6uvN6LabM4Ug/iN4iplUQg
-         RYdeAANXiP6Ggt1pahdYEl3kYKJt+O4v3apE+/mjh7+bmb5PS0ju+T2c/HrmHViQ1Q
-         ZvhDD9HRkT6IeQ3n9tpnc9FFxnmGUZT9XusKY9/Y=
+        b=hZ4MZRiuATHFnUJvR6g9tA92ZORArlMEDxqvjztPYUxTv5BcJCaDZhVRs9xDJdbgu
+         +Y/HRMkRGy50old77Bd9MNc1EJInSaGJyF+uf1SKi6nnTuy0CJZg5o4g1K6VdrFe7X
+         rwc94vMbZ4Gt+goTtDaS2U+oox1UXWswI0RFUZsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dylan Hung <dylan_hung@aspeedtech.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 098/334] ARM: dts: aspeed-g6: Fix HVI3C function-group in pinctrl dtsi
-Date:   Mon, 13 Sep 2021 15:12:32 +0200
-Message-Id: <20210913131116.691226197@linuxfoundation.org>
+        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 092/300] drm/of: free the iterator object on failure
+Date:   Mon, 13 Sep 2021 15:12:33 +0200
+Message-Id: <20210913131112.493720600@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dylan Hung <dylan_hung@aspeedtech.com>
+From: Steven Price <steven.price@arm.com>
 
-[ Upstream commit 8c295b7f3d01359ff4336fcb6e406e6ed37957d6 ]
+[ Upstream commit 6f9223a56fabc840836b49de27dc7b27642c6a32 ]
 
-The HVI3C shall be a group of I3C function, not an independent function.
-Correct the function name from "HVI3C" to "I3C".
+When bailing out due to the sanity check the iterator value needs to be
+freed because the early return prevents for_each_child_of_node() from
+doing the dereference itself.
 
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Fixes: f510f04c8c83 ("ARM: dts: aspeed: Add AST2600 pinmux nodes")
-Link: https://lore.kernel.org/r/20201029062723.20798-1-dylan_hung@aspeedtech.com
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Fixes: 6529007522de ("drm: of: Add drm_of_lvds_get_dual_link_pixel_order")
+Signed-off-by: Steven Price <steven.price@arm.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210714143300.20632-1-steven.price@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_of.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-index 7e90d713f5e5..6dde51c2aed3 100644
---- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-@@ -208,12 +208,12 @@
- 	};
+diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
+index 197c57477344..997b8827fed2 100644
+--- a/drivers/gpu/drm/drm_of.c
++++ b/drivers/gpu/drm/drm_of.c
+@@ -331,8 +331,10 @@ static int drm_of_lvds_get_remote_pixels_type(
+ 		 * configurations by passing the endpoints explicitly to
+ 		 * drm_of_lvds_get_dual_link_pixel_order().
+ 		 */
+-		if (!current_pt || pixels_type != current_pt)
++		if (!current_pt || pixels_type != current_pt) {
++			of_node_put(endpoint);
+ 			return -EINVAL;
++		}
+ 	}
  
- 	pinctrl_hvi3c3_default: hvi3c3_default {
--		function = "HVI3C3";
-+		function = "I3C3";
- 		groups = "HVI3C3";
- 	};
- 
- 	pinctrl_hvi3c4_default: hvi3c4_default {
--		function = "HVI3C4";
-+		function = "I3C4";
- 		groups = "HVI3C4";
- 	};
- 
+ 	return pixels_type;
 -- 
 2.30.2
 
