@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F5A4096B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC36A4096BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244760AbhIMPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        id S1346296AbhIMPH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346719AbhIMPGJ (ORCPT
+        with ESMTP id S1345240AbhIMPHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:06:09 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D83C014DB0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:39:20 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id ho42so21137162ejc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:39:20 -0700 (PDT)
+        Mon, 13 Sep 2021 11:07:51 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A9AC00877D
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:43:09 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id n2so21304716lfk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xNtQ1ARmV5D+fRgpV2FNt+0W8ArnaPaQlO7L2peESTE=;
-        b=RvxWi5/tXCdLO7VqGQL3V9uryQuY7gHxKhcjKavKZ+Pyj1nKnLSEfRBRLyR+ho1P0j
-         j6xAGprbt/YeW3sGKbdIpwmUKQHm61eevNX4ipY0UX4wjWp8v4NjQ+22NbcqHk36RLhI
-         3xQQCWOZXwX3NkC5qEjbocVVwy9t5nKA5bhdfzWZPjusJtsV2CMSySLZH52EQj8B6mwe
-         OY3ii4BH9Djyyvl/gLNkzpDwvgGhXTc5M2F3hU0Rt3WOZKnKe2H/fziX1D+UeRsK0Mit
-         cdLToHwhiaiFEfjIgYxjhnqHNGJZN/FACz8VPKp8qDyCBGilgjBRHt6MhKc7yMAO3Bmc
-         36Qw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tQAMjy8VRvJI6lW4tYB0PDHpx0tw8jGULSmN/FaNG+g=;
+        b=Bbb/S9bUWOBSsQ3pUMTVPvPM3mELyvG1d1Lp39NxhVgmVk+79l6sqgb6LzWCOb4L0G
+         4xOUKFakiyAC6nrltsn+MB6bUBos4WlUB0nm7FHkp2RF21NdRLUEm4sunjTSdshoRv4K
+         eNLAmdHSnHkdwraYqYyvKCPiIaApFzA0oCxB65b4ONd9T/nu22W+N71E6gYzBiva34CW
+         IgswZYwE132B2XWdZPaLFJFxywQZsw2cZ4gmU7fM6bSCADjsWz2QqrQNXrytfyNxu0Ed
+         QWM6q7ZowPchznXUFAyvgGnmTOZr9Qu57dB5+Rp0N50r+t46TxzQtEkrBzX3RfDkuaUN
+         gsXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xNtQ1ARmV5D+fRgpV2FNt+0W8ArnaPaQlO7L2peESTE=;
-        b=JrNzk/BzJ4DbWUb97U/XneHHk9FhzjpsVRyKWqHYmZPDOY0W5zA77uILk2+w1xsM7Y
-         CibChYWidaEkOnNEJDX3K45xsskm28bCdUoM9eRWzuxodm9l69rcOC9VUyTodzuetJIF
-         2rlLHNRhvu6vkUMdyKoAVV5u/oQAlYPEu5vHp7nngzxNyIVl0AvRMdf6ORs9KxkBHbh8
-         Eo9CTzwTvjn6ot5w4PwZM8vNZwoSnz3x4bEyMYctzVF1l4S9LhCz/Z+IsuHpGffcC67Y
-         h4xVqr0pmmjDPoMAbhhk606Fvdx+5LBe47zShVksEGZzUB4EewVOhnKQwSxxKgf+u4F+
-         ow9Q==
-X-Gm-Message-State: AOAM532zufmTAiR0GjKHE5HyCamsEpQnkhVz6l0w3OuopPtql/DYXCZ0
-        OTF5JHr1XT7VG/TFI2IyE/1c2WvupV4=
-X-Google-Smtp-Source: ABdhPJyht4ntrEK4VNA0hVeDb0PzwJk+HkwTNDL1GhPLqBX2U+F/hHPKuTs7dFjpfVLAv4oOVw5GOg==
-X-Received: by 2002:a17:906:318c:: with SMTP id 12mr12950913ejy.28.1631540359147;
-        Mon, 13 Sep 2021 06:39:19 -0700 (PDT)
-Received: from agape.jhs ([5.171.73.21])
-        by smtp.gmail.com with ESMTPSA id dj8sm2818163edb.53.2021.09.13.06.39.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 06:39:18 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 15:39:16 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: protect sleepq_len access by
- sleep_q.lock
-Message-ID: <20210913133915.GA1414@agape.jhs>
-References: <20210913130346.2390-1-fabioaiuto83@gmail.com>
- <d6d6c6bf-b787-aac9-4767-4bf54c5437ac@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tQAMjy8VRvJI6lW4tYB0PDHpx0tw8jGULSmN/FaNG+g=;
+        b=lWttdGI1ZerG8YkHSiOsfRgEu3TiWs9pJt54UWix8NqCBIi+uyw4Ee/+AEANMYLzpq
+         uqL89mbfBtxxTF6bh3aYWs3DXgHwxGLbn7MGz9aOgBE4mgbsFaipw7/pt3IX5v3vilga
+         B4hZr/S0B9wBfoR5ShxTR6sRWU736ebZV+56c43ed2DlZeM4OHtshKVf+fY4xipnO/2g
+         rZ5gMHLAUYhsr8s9QPr6lLcnRwrxvZagpqx9SSv3XHDXeeB6nK+1rh1dBvmIjvGVVrGi
+         zFIZ6s5fd+WFKhjE82FoUD2R6N7Ujf+yv/otifzp7RFZ/OvevuJ2R2cRY84+5QFSYdcQ
+         sRBA==
+X-Gm-Message-State: AOAM532hk1P9tP12xasdugcBvCEMUIVKsAe63jjvWuT0ZgB5E0L1u55j
+        dShvPnFV1jeZqRLzspSCN9+WXPJ5BEkIDtuKDGcuoQ==
+X-Google-Smtp-Source: ABdhPJy07GBvfOdosgOPOaGQzsGX2CjzdZ3iQjt2WHHbgd+CW+rDXGN21SD5O2GYnEG/e8C/opszahQX3cMDMdCSpjk=
+X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr8847405lff.184.1631540588087;
+ Mon, 13 Sep 2021 06:43:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6d6c6bf-b787-aac9-4767-4bf54c5437ac@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210829131305.534417-1-dmitry.baryshkov@linaro.org>
+ <20210829131305.534417-2-dmitry.baryshkov@linaro.org> <CAPDyKFp9CM+x505URK=hcO0QFqcZrpqzQ6uJQ=ZLR6uq-_d5Ew@mail.gmail.com>
+ <a0f8766a-7810-0ca5-229a-a40f73041dd9@linaro.org>
+In-Reply-To: <a0f8766a-7810-0ca5-229a-a40f73041dd9@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 13 Sep 2021 15:42:31 +0200
+Message-ID: <CAPDyKFrfEQr0czXeNeJbKSfP0toKuowwOX7yb89c723BORRqCA@mail.gmail.com>
+Subject: Re: [RFC v2 01/13] power: add power sequencer subsystem
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Hans,
+[...]
 
-On Mon, Sep 13, 2021 at 03:24:44PM +0200, Hans de Goede wrote:
-> Hi Fabio,
-> 
- 
-> > Note that sleep_q.lock is already taken inside
-> > rtw_free_xmitframe_queue so we just wrap sleepq_len
-> > access.
-> > 
-> > Moved pxmitpriv->lock after sleep_q.lock release to
-> > avoid locks nesting.
+> >> +
+> >> +struct pwrseq *of_pwrseq_xlate_onecell(void *data, struct of_phandle_args *args)
+> >> +{
+> >> +       struct pwrseq_onecell_data *pwrseq_data = data;
+> >> +       unsigned int idx;
+> >> +
+> >> +       if (args->args_count != 1)
+> >> +               return ERR_PTR(-EINVAL);
+> >> +
+> >> +       idx = args->args[0];
+> >> +       if (idx >= pwrseq_data->num) {
+> >> +               pr_err("%s: invalid index %u\n", __func__, idx);
+> >> +               return ERR_PTR(-EINVAL);
+> >> +       }
+> >
+> > In many cases it's reasonable to leave room for future extensions, so
+> > that a provider could serve with more than one power-sequencer. I
+> > guess that is what you intend to do here, right?
+> >
+> > In my opinion, I don't think what would happen, especially since a
+> > power-sequence is something that should be specific to one particular
+> > device (a Qcom WiFi/Blutooth chip, for example).
+> >
+> > That said, I suggest limiting this to a 1:1 mapping between the device
+> > node and power-sequencer. I think that should simplify the code a bit.
+>
+> In fact the WiFi/BT example itself provides a non 1:1 mapping. In my
+> current design the power sequencer provides two instances (one for WiFi,
+> one for BT). This allows us to move the knowledge about "enable" pins to
+> the pwrseq. Once the QCA BT driver acquires and powers up the pwrseq,
+> the BT part is ready. No need to toggle any additional pins. Once the
+> WiFi pwrseq is powered up, the WiFi part is present on the bus and
+> ready, without any additional pin toggling.
 
-> >  	rtw_free_xmitframe_queue(pxmitpriv, &psta->sleep_q);
-> > +	spin_lock_bh(&psta->sleep_q.lock);
-> 
-> AFAICT this needs to be above the rtw_free_xmitframe_queue() ?
+Aha, that seems reasonable.
 
-as I wrote on the changelog, the sleep_q.lock is already
-taken inside rtw_free_xmitframe_queue. If I put the
-sleep_q.lock above that function a soft lock occurs when
-I disconnect.
+>
+> I can move onecell support to the separate patch if you think this might
+> simplify the code review.
 
-So I put it just below rtw_free_xmitframe_queue.
+It doesn't matter, both options work for me.
 
-Things works fine this way.
+[...]
 
-Please tell me if there's a best way to do it.
-
-> 
-> Regards,
-> 
-> Hans
-
-thank you,
-
-fabio
+Kind regards
+Uffe
