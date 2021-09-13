@@ -2,172 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C818D408B57
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795A7408B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235510AbhIMMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:51:25 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:55959 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234945AbhIMMvX (ORCPT
+        id S235929AbhIMMwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235840AbhIMMwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:51:23 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 53C05320089C;
-        Mon, 13 Sep 2021 08:50:07 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 13 Sep 2021 08:50:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; bh=+ThLjayzZvSuiYey9xMndGiL316IC
-        WP/XAzfhhK/XQ4=; b=QST6alfCdjmOCJeMGPiFrbgPY5XjwFUFGqt7uplIpJaKM
-        eOo5VPdGZNeqchyNdUioX5D59OJCHQqjuJCpn2yZfUjxMNzZqYGD7oXSBKnRlcjE
-        +/gBKlFfB7clEc1X4X896LpSW/ZoR4FZo6+ZIEP9esVsj2Qq+gb+T8IoxBfdT04P
-        X2jATdlr+XyVZ8O8jnV7F7Uc7jsdp2zzPvBBMDH10d1WtW/EkERxHxOB0wKokST/
-        9ONDWkrRpMjK6EHU8xe6DkOtmwcq6+WkrTki4K8XG8VLVZR6wlzcA7pA6vhnFAL7
-        gDgFNGUrdNlU1rCoW3NxnbG8NlC5AxEv/yKdGmB9g==
-X-ME-Sender: <xms:_Ug_YVjbwJME2flgxQg8EG093FJAH83V1xzhn76vfmBOLlFvuaxKmA>
-    <xme:_Ug_YaCQRPtXrpy7VzQWGhl_XYYb_YlsubjGJ1vSMh2vP8xTq-Sbre4U-GEjRxBEv
-    wVz2QKMwT043A>
-X-ME-Received: <xmr:_Ug_YVGsAaE2InIUPwj3dgND8IpwphXc8FmKrBTuYzv_3DfKuvzMB8Pxefk6zQndbuDuZmQsp9s_wWWOogPMwsLD7lvsSISN>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfggtggusehgtderredttdejnecuhfhrohhmpeforghrvghkucfo
-    rghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvhhish
-    hisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpeeklefhveej
-    teeghfeiteevtddtueffieehgfelgfevffejveeuffdvgeffgeevkeenucffohhmrghinh
-    epghhithhhuhgsuhhsvghrtghonhhtvghnthdrtghomhdpkhgvrhhnvghlrdhorhhgnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhmrg
-    hrvghksehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomh
-X-ME-Proxy: <xmx:_Ug_YaSQFmzELwJQ2aSVEWDx7qZEoBEyqr_jL6D1ADJBgxCRc7i0eA>
-    <xmx:_Ug_YSyyAhfr6QgEpqJxG_ocJvrppdZHVEYD8tMGUqArflpMLv12tw>
-    <xmx:_Ug_YQ4BsCHyuxb-pgCDS-0OxvAT3jIcCHPKuiVIxyMb8_SUuo5KAQ>
-    <xmx:_kg_Ycs6Dm-J7IrZ6PdbMG6iQzxNcuEsMbjYTyjRniYXwvkgwF4JyQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Sep 2021 08:50:04 -0400 (EDT)
-Date:   Mon, 13 Sep 2021 14:50:00 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>
-Subject: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading related?)
-Message-ID: <YT9I+Xs9wOPVCIVd@mail-itl>
+        Mon, 13 Sep 2021 08:52:37 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF52C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:51:21 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x6so14494365wrv.13
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wwDbi/F1yzMdGSzPisZP/TR90sy0EJXO0nvDjAz0B6Y=;
+        b=g54zQBkc0ygeJjGKY66WSYgOIek2MabARkvMCD1ydHRDdOGI/mNWhtuw+gDwTIko3u
+         cpwhkBQVQTdXSbP7AbFq5czpikXB753YMjlYptR3gO1OBxWUCCP7YmJhDFVDYMEl6q4n
+         Fb1ympWZ/lpRtSW3VeLnQanKpUmB+bWAo3kBrUbA9qkLo4Uv9+cBFemBYpBpqK1trrC1
+         oq/U6gTRy08r9KpatwSWdunihSZ4AjjLfG6qDIp8NZxFiYDET/Mt0vw4d3r/Jm+A44zT
+         s1Hd5JH4Bx2peeDA6Par1SxtEyx85JkR9mmtoofiAXWxPMir6cdYHsudVZ9Bf42RgAO+
+         AXGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wwDbi/F1yzMdGSzPisZP/TR90sy0EJXO0nvDjAz0B6Y=;
+        b=KnfykfTmBPlVlAe9C1NaqNsw6CTouc36A54UpehTdUWZhAE4sutEOX/WAGZ6zjwKFz
+         HrEcv2+j5a5VjJVRGtP99JkHStfJKzmg62USgvrf1Lui6j28DcJxhVU/KMLFdvTyUYl0
+         XxQYBa6c0xym+sT9OWTysyjJ9JDn6rLRyxT6+RuHm+Do7IJ3i0vf7IvMemrxU/e7RF6F
+         1VAV1wrLawRAXYvLQn/PkLMe84Uk47Yxe2qyhQ30TX5BcAC47UrgguPIQlj+sF/A/57a
+         TM3iXXpl0incts18iWEYXD5DGD5u0+WnaQBKZX8I0XYb9npmPFLYUH0AK1fBH+DYKH3R
+         adBQ==
+X-Gm-Message-State: AOAM533uGzJn1e4srJRsXfnqN+pTyyXQEPdsaa0oAjHxtYGQF1PMPb7z
+        pUCI3W0Bf0K3iRPHlxiDtHBhQ4JKecbe
+X-Google-Smtp-Source: ABdhPJxFg1Ha29Hbrj6P2UIpbQU+Lx2FIHYuJ78y+Zmnk3GykAhjnp18N9z3JGThly10GgNq25I4KA==
+X-Received: by 2002:a5d:6b07:: with SMTP id v7mr8901817wrw.250.1631537479663;
+        Mon, 13 Sep 2021 05:51:19 -0700 (PDT)
+Received: from alex-ThinkPad-E480.. ([2a02:810b:f40:4200:cd7c:5225:d3bf:f045])
+        by smtp.googlemail.com with ESMTPSA id x21sm7145287wmc.14.2021.09.13.05.51.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 05:51:19 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andy.yan@rock-chips.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] drm/rockchip: add DRM_BRIDGE_ATTACH_NO_CONNECTOR flag to drm_bridge_attach
+Date:   Mon, 13 Sep 2021 14:51:08 +0200
+Message-Id: <20210913125108.195704-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5CWEI5nLGyVosQus"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit a25b988ff83f ("drm/bridge: Extend bridge API to disable connector creation")
+added DRM_BRIDGE_ATTACH_NO_CONNECTOR bridge flag and all bridges handle
+this flag in some way since then.
+Newly added bridge drivers must no longer contain the connector creation and
+will fail probing if this flag isn't set.
 
---5CWEI5nLGyVosQus
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 13 Sep 2021 14:50:00 +0200
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	xen-devel <xen-devel@lists.xenproject.org>
-Subject: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading related?)
+In order to be able to connect to those newly added bridges as well,
+make use of drm_bridge_connector API and have the connector initialized
+by the display controller.
 
-Hi,
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_lvds.c | 29 ++++++++++++++++--------
+ drivers/gpu/drm/rockchip/rockchip_rgb.c  | 26 ++++++++++++++++++++-
+ 2 files changed, 45 insertions(+), 10 deletions(-)
 
-Since 5.13, the Xen (PV) dom0 crashes on boot, before even printing the
-kernel version.
-Test environment:
- - Xen 4.14.2
- - AMD Ryzen 5 4500U (reported also on AMD Ryzen 7 4750U)
- - Linux 5.13.13, confirmed also on 5.14
+diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+index 551653940e39..e3953c72fbdb 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
++++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
+@@ -19,6 +19,7 @@
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
++#include <drm/drm_bridge_connector.h>
+ #include <drm/drm_dp_helper.h>
+ #include <drm/drm_of.h>
+ #include <drm/drm_panel.h>
+@@ -612,9 +613,9 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
+ 	}
+ 
+ 	drm_encoder_helper_add(encoder, lvds->soc_data->helper_funcs);
++	connector = &lvds->connector;
+ 
+ 	if (lvds->panel) {
+-		connector = &lvds->connector;
+ 		connector->dpms = DRM_MODE_DPMS_OFF;
+ 		ret = drm_connector_init(drm_dev, connector,
+ 					 &rockchip_lvds_connector_funcs,
+@@ -627,17 +628,27 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
+ 
+ 		drm_connector_helper_add(connector,
+ 					 &rockchip_lvds_connector_helper_funcs);
+-
+-		ret = drm_connector_attach_encoder(connector, encoder);
+-		if (ret < 0) {
+-			DRM_DEV_ERROR(drm_dev->dev,
+-				      "failed to attach encoder: %d\n", ret);
+-			goto err_free_connector;
+-		}
+ 	} else {
+-		ret = drm_bridge_attach(encoder, lvds->bridge, NULL, 0);
++		ret = drm_bridge_attach(encoder, lvds->bridge, NULL,
++					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 		if (ret)
+ 			goto err_free_encoder;
++
++		connector = drm_bridge_connector_init(lvds->drm_dev, encoder);
++		if (IS_ERR(connector)) {
++			DRM_DEV_ERROR(drm_dev->dev,
++				      "failed to initialize bridge connector: %pe\n",
++				      connector);
++			ret = PTR_ERR(connector);
++			goto err_free_encoder;
++		}
++	}
++
++	ret = drm_connector_attach_encoder(connector, encoder);
++	if (ret < 0) {
++		DRM_DEV_ERROR(drm_dev->dev,
++			      "failed to attach encoder: %d\n", ret);
++		goto err_free_connector;
+ 	}
+ 
+ 	pm_runtime_enable(dev);
+diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+index d691d9bef8e7..09be9678f2bd 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
++++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
+@@ -10,6 +10,7 @@
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
++#include <drm/drm_bridge_connector.h>
+ #include <drm/drm_dp_helper.h>
+ #include <drm/drm_of.h>
+ #include <drm/drm_panel.h>
+@@ -27,6 +28,7 @@ struct rockchip_rgb {
+ 	struct drm_device *drm_dev;
+ 	struct drm_bridge *bridge;
+ 	struct drm_encoder encoder;
++	struct drm_connector connector;
+ 	int output_mode;
+ };
+ 
+@@ -80,6 +82,7 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+ 	int ret = 0, child_count = 0;
+ 	struct drm_panel *panel;
+ 	struct drm_bridge *bridge;
++	struct drm_connector *connector;
+ 
+ 	rgb = devm_kzalloc(dev, sizeof(*rgb), GFP_KERNEL);
+ 	if (!rgb)
+@@ -142,12 +145,32 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
+ 
+ 	rgb->bridge = bridge;
+ 
+-	ret = drm_bridge_attach(encoder, rgb->bridge, NULL, 0);
++	ret = drm_bridge_attach(encoder, rgb->bridge, NULL,
++				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 	if (ret)
+ 		goto err_free_encoder;
+ 
++	connector = &rgb->connector;
++	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
++	if (IS_ERR(connector)) {
++		DRM_DEV_ERROR(drm_dev->dev,
++			      "failed to initialize bridge connector: %pe\n",
++			      connector);
++		ret = PTR_ERR(connector);
++		goto err_free_encoder;
++	}
++
++	ret = drm_connector_attach_encoder(connector, encoder);
++	if (ret < 0) {
++		DRM_DEV_ERROR(drm_dev->dev,
++			      "failed to attach encoder: %d\n", ret);
++		goto err_free_connector;
++	}
++
+ 	return rgb;
+ 
++err_free_connector:
++	drm_connector_cleanup(connector);
+ err_free_encoder:
+ 	drm_encoder_cleanup(encoder);
+ 	return ERR_PTR(ret);
+@@ -157,6 +180,7 @@ EXPORT_SYMBOL_GPL(rockchip_rgb_init);
+ void rockchip_rgb_fini(struct rockchip_rgb *rgb)
+ {
+ 	drm_panel_bridge_remove(rgb->bridge);
++	drm_connector_cleanup(&rgb->connector);
+ 	drm_encoder_cleanup(&rgb->encoder);
+ }
+ EXPORT_SYMBOL_GPL(rockchip_rgb_fini);
 
-The crash happens only if the initramfs has earlycpio with microcode.
-I don't have a serial console, but I've got a photo with crash message
-(from Xen, Linux doesn't managed to print anything):
-https://user-images.githubusercontent.com/726704/133084966-5038f37e-001b-46=
-88-9f90-83d09be3dc2d.jpg
+base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+-- 
+2.30.2
 
-Transcription of some of it:
-
-    mapping kernel into physical memory
-    about to get started
-    (XEN) Pagetable walk from ffffffff82810888:
-    (XEN)  L4[0x1ff] =3D 0000000332815067 0000000000002815
-    (XEN)  L3[0x1fe] =3D 0000000332816067 0000000000002816
-    (XEN)  L2[0x014] =3D 0000000334018067 0000000000004018
-    (XEN)  L1[0x010] =3D 0000000332810067 0000000000002810
-    (XEN) domain_crash_sync called from entry.S: fault at ffff82d04033e790 =
-x86_64/entry.S#domain_crash_page_fault
-    (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
-    (XEN) ----[ Xen-4.14.2  x86_64  debug=3Dn  Not tainted ]----
-    (XEN) CPU:    0
-    (XEN) RIP:    e033:[<0000000000000000>]
-
-I've bisected it down to the commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
-
-    x86/setup: Consolidate early memory reservations
-
-    The early reservations of memory areas used by the firmware, bootloader,
-    kernel text and data are spread over setup_arch(). Moreover, some of th=
-em
-    happen *after* memblock allocations, e.g trim_platform_memory_ranges() =
-and
-    trim_low_memory_range() are called after reserve_real_mode() that alloc=
-ates
-    memory.
-
-    There was no corruption of these memory regions because memblock always
-    allocates memory either from the end of memory (in top-down mode) or ab=
-ove
-    the kernel image (in bottom-up mode). However, the bottom up mode is go=
-ing
-    to be updated to span the entire memory [1] to avoid limitations caused=
- by
-    KASLR.
-
-    Consolidate early memory reservations in a dedicated function to improve
-    robustness against future changes. Having the early reservations in one
-    place also makes it clearer what memory must be reserved before memblock
-    allocations are allowed.
-
-    Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-    Signed-off-by: Borislav Petkov <bp@suse.de>
-    Reviewed-by: Baoquan He <bhe@redhat.com>
-    Acked-by: Borislav Petkov <bp@suse.de>
-    Acked-by: David Hildenbrand <david@redhat.com>
-    Link: [1] https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb=
-=2Ecom
-    Link: https://lkml.kernel.org/r/20210302100406.22059-2-rppt@kernel.org
-
-Since this seems to affect Xen boot only, I'm copying xen-devel too.
-
-Any ideas?
-
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-
---5CWEI5nLGyVosQus
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmE/SPgACgkQ24/THMrX
-1yyKTAf/RFLXnOX6sQx74ErcNKHowyeAVTrcIbactKB5dIcODunG+9eHXFR/HSk/
-7ywnpCcFHZCjha5xx+ShTaskQ89yDEiE9jLIFwR7sQKxucRXoCcAAkJufYYxRbbQ
-qYHUrOFFXeNFtEc73mZrbfqguc3y8Xm6BYBdzcHcgVk+bZCD5BY8A+A0FdKbm0rM
-1E+AfbfIdN5avDDxBgy3xa+DVF1ksmZwZ4tbKDizZ2azkK+WMgPL6h+Hk718OA86
-9TAXsPlotdMBsYFcFDvXBkKDQYN42+y/A6DOFmasUTsGw0xFroU/YpfarKnWq9OZ
-w7lWKDBmRMV8wH25LAIXltai+6G1tA==
-=GguL
------END PGP SIGNATURE-----
-
---5CWEI5nLGyVosQus--
