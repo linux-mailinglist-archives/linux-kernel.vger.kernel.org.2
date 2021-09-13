@@ -2,180 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B801409E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E87409E13
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243399AbhIMUVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        id S243443AbhIMUWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241893AbhIMUVP (ORCPT
+        with ESMTP id S230404AbhIMUWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:21:15 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183DBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:19:59 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 9so16173694edx.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:19:59 -0700 (PDT)
+        Mon, 13 Sep 2021 16:22:34 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E741C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:21:18 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id h9so23748328ejs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=a6cDeTvVM/zwuAekpHf0unWAPapurIVQ8FF1NNOdAUw=;
-        b=sPoy/dS3wFFuiTrUc9FWgn/a+pIInQwVXZDUCfZrt/nRsTJSJfnLpiJFPHkKzvCIZa
-         onPHm/+SGfI/11cIX+N2K9iKl91Vi85K4823RHjOhsYOkZZyT3r6LdVvAawfjW0/6P/J
-         w4pHIjRmSZM+YNvsPxXp2uLEyC2dd8RGeM76t8PCUtHc8Yasb0UmofvVR+zBMcdlxmaI
-         J2ad6YZ75zK8lAgn3Z6Ih3+1lkkw4FegxETcJK1D1L/UqzVkv4CrlRt9iYmEJ8eQ8qhm
-         xdw5u+QtkptWiw98qira3GEy0clqaidZpTCCe3DbuypPXA+jq81x//wgHNCGcDAPUqnO
-         0ZqQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=i7VPJJGwD8dMYsU/ulXHVANMhme4/Y39FNXOn3qat2k=;
+        b=ZjTDU2wSEPtUUEHD7HNE0P+chKuFTXnPuI6bz347eHNqvNunN1Fzh3rThwsOd/CFlH
+         uBsw+OgQCUQYRzPfvZ5AXLA1zJtGcsixzBP+OsmTyPTRKb6fwZddopaQnTjo1pCgSwRI
+         7DDx6406I1y6aEsfd0bdx0kgncjWLaNkNiT8V85wXSuWTph/pNFNIKgWkvpTPuIoQruD
+         7Uwz+PMOkkufjrKpiqD1kBc3y9pi/cF6S7CMSNb+vp+Cro+2CunWANxS57Gg71LBotVZ
+         xuTkO0ZzC/wetyAiB2qZomsjP0n3kwtjlhLBklsnwpMu7KeisMQ5fYkufFiNLTbfKSfg
+         rB8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=a6cDeTvVM/zwuAekpHf0unWAPapurIVQ8FF1NNOdAUw=;
-        b=xKMhY1427uGWECQCUJ1OwPkteyXh7EqLL+hPXcFa+frfNgwIhMNevOFUu3AARu4kcW
-         lCdx4pgvnJ+rYTSou2GLAQN5XPi401mYlzgqIz3Cxyb3qc5HtgKHXVP49JtW8ORRg8WS
-         m7xUzONzk9jX3KETac9WJwE0dRzClFXz/cqEtpbVRB+55ZGUMluL9MbCcbCnbgVWxdNu
-         cNYDdsECu4/0/Yi/1qGBXlCHnDkYDYX0/mI2zi77+j7iD5TZN/ujL1UzV7SDSgn8IS2T
-         ZTRGQjapan21fwqTw873zO/fpH3DphxQlAxDcbaodkKQwHzR3/5KFkGX2BHZR6e2ACQP
-         mZPw==
-X-Gm-Message-State: AOAM533Ocj/bEKdRRRevM3eaXNgbzRW+2bTaGOYpU7CaD2gUs4a2lz19
-        3q0d1n0ivOAYhbprS54BoxZNY1xOvIxkiMq5rVPY
-X-Google-Smtp-Source: ABdhPJzXztdoaWcmdR79de3Ty/sKwyB2qHD8EM1jfTUpK2BcaoJb8HBR6a7zJmM2CQIaTVZDUNOG8hONRx/ACwD7zds=
-X-Received: by 2002:aa7:dd4e:: with SMTP id o14mr14707466edw.104.1631564397579;
- Mon, 13 Sep 2021 13:19:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=i7VPJJGwD8dMYsU/ulXHVANMhme4/Y39FNXOn3qat2k=;
+        b=SUWf5LNXWT2TQM24NY+psN0pSA8c6WSqCH4pdnyhgM1X9lS/waWs5kXtjLkIARkPW5
+         sgjdpuoB9+5QVJp42i1B7QtUWpyssNpqVAdqxTmqNjhJjqnbhV9DHz7IwAKV/YOwUsSs
+         +QBVNQ6YzPMZXk3Lt92U3Y8zBItqsmWE1iFgZWl373yF4h3kQOLiu627w9MGzn7N2VTF
+         62GQQ42dtFJUCAm+ZJuH/G71dmMckDQ0cef75OSQfydWVvTTYJmsA5tkyCeUzLfmBkdW
+         qqKVhZ01HPG1zQbHvEU9f0jicGSp0cJRbMbMYAeI6gxCSgUMmpfUStXSXROdafDHRMbM
+         QIVA==
+X-Gm-Message-State: AOAM5301z4C1z8whmNvRwJ2fBIYn4D+4OFGxnXU825k74Ip7WXN28rD/
+        lbOqiYsIZ0s0KyUet6n7rk7poBOLJnGpslAhi4M=
+X-Google-Smtp-Source: ABdhPJxiRO972Vm8mdcqogkDeZZjLYS4DmEO+UURM8xSNHWWXkD+mgpYBlCrjLka81aV3WltJllEAO8s4zhWOaA0C7o=
+X-Received: by 2002:a17:906:90c9:: with SMTP id v9mr12186037ejw.356.1631564476722;
+ Mon, 13 Sep 2021 13:21:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
- <CAHC9VhS4Q8U6ZVPoSaVuDawMLS6VOtwZZVNMT1QeFAJUeQHj-Q@mail.gmail.com>
- <2057e2ab-b303-8ec6-9c43-2c2614591925@csgroup.eu> <CAHC9VhRV06YHwy5cAAiRvOPUGQ9s1LkOdacMAJVzwykD8B_sgA@mail.gmail.com>
- <MRZP264MB29885BAAB4F2D486BB33D201EDD39@MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM>
-In-Reply-To: <MRZP264MB29885BAAB4F2D486BB33D201EDD39@MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 13 Sep 2021 16:19:46 -0400
-Message-ID: <CAHC9VhSDP4M8_3pr2FpTdG08Q+agovtsRshpG8e+SHCe+hY_vQ@mail.gmail.com>
-Subject: Re: [PATCH] audit: Fix build failure by renaming struct node to
- struct audit_node
-To:     LEROY Christophe <christophe.leroy@csgroup.eu>
-Cc:     Eric Paris <eparis@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-audit@redhat.com" <linux-audit@redhat.com>
+Reply-To: bouchetb@yandex.com
+Sender: shirley.perez.fosgate2015@gmail.com
+Received: by 2002:a17:906:17d7:0:0:0:0 with HTTP; Mon, 13 Sep 2021 13:21:15
+ -0700 (PDT)
+From:   Bryan Bouchet <bryanbouchet0@gmail.com>
+Date:   Mon, 13 Sep 2021 21:21:15 +0100
+X-Google-Sender-Auth: pWiPzy03okKl4ulJmQM5nhiz4tQ
+Message-ID: <CABitoyqc+0oYsK_3p+pcUOC=ecA9C3SuDcc+QRqpYsgBnk=Uog@mail.gmail.com>
+Subject: PLEASE RESPOND VERY URGENTLY
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 11:45 AM LEROY Christophe
-<christophe.leroy@csgroup.eu> wrote:
-> > -----Message d'origine-----
-> > De : Paul Moore <paul@paul-moore.com>
-> > On Mon, Sep 6, 2021 at 2:41 AM LEROY Christophe
-> > <christophe.leroy@csgroup.eu> wrote:
-> > > Le 03/09/2021 =C3=A0 19:06, Paul Moore a =C3=A9crit :
-> > > > On Fri, Sep 3, 2021 at 11:48 AM Christophe Leroy
-> > > > <christophe.leroy@csgroup.eu> wrote:
-> > > >>
-> > > >> struct node defined in kernel/audit_tree.c conflicts with struct
-> > > >> node defined in include/linux/node.h
-> > > >>
-> > > >>            CC      kernel/audit_tree.o
-> > > >>          kernel/audit_tree.c:33:9: error: redefinition of 'struct =
-node'
-> > > >>             33 |  struct node {
-> > > >>                |         ^~~~
-> > > >>          In file included from ./include/linux/cpu.h:17,
-> > > >>                           from ./include/linux/static_call.h:102,
-> > > >>                           from ./arch/powerpc/include/asm/machdep.=
-h:10,
-> > > >>                           from ./arch/powerpc/include/asm/archrand=
-om.h:7,
-> > > >>                           from ./include/linux/random.h:121,
-> > > >>                           from ./include/linux/net.h:18,
-> > > >>                           from ./include/linux/skbuff.h:26,
-> > > >>                           from kernel/audit.h:11,
-> > > >>                           from kernel/audit_tree.c:2:
-> > > >>          ./include/linux/node.h:84:8: note: originally defined her=
-e
-> > > >>             84 | struct node {
-> > > >>                |        ^~~~
-> > > >>          make[2]: *** [kernel/audit_tree.o] Error 1
-> > > >>
-> > > >> Rename it audit_node.
-> > > >>
-> > > >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > >> ---
-> > > >>   kernel/audit_tree.c | 20 ++++++++++----------
-> > > >>   1 file changed, 10 insertions(+), 10 deletions(-)
-> > > >
-> > > > That's interesting, I wonder why we didn't see this prior?  Also as
-> > > > an aside, there are evidently a good handful of symbols named
-> > > > "node".  In fact I don't see this now in the audit/stable-5.15 or
-> > > > Linus' tree as of a right now, both using an allyesconfig:
-> > > >
-> > > > % git show-ref HEAD
-> > > > a9c9a6f741cdaa2fa9ba24a790db8d07295761e3 refs/remotes/linus/HEAD %
-> > > > touch kernel/audit_tree.c % make C=3D1 kernel/
-> > > >   CALL    scripts/checksyscalls.sh
-> > > >   CALL    scripts/atomic/check-atomics.sh
-> > > >   DESCEND objtool
-> > > >   CHK     kernel/kheaders_data.tar.xz
-> > > >   CC      kernel/audit_tree.o
-> > > >   CHECK   kernel/audit_tree.c
-> > > >   AR      kernel/built-in.a
-> > > >
-> > > > What tree and config are you using where you see this error?
-> > > > Looking at your error, I'm guessing this is limited to ppc builds,
-> > > > and if I look at the arch/powerpc/include/asm/machdep.h file in
-> > > > Linus tree I don't see a static_call.h include so I'm guessing this
-> > > > is a -next tree for ppc?  Something else?
-> > > >
-> > > > Without knowing the context, is adding the static_call.h include in
-> > > > arch/powerpc/include/asm/machdep.h intentional or simply a bit of
-> > > > include file creep?
-> > >
-> > > struct machdep_calls in asm/machdep.h is full of function pointers an=
-d
-> > > I'm working on converting that to static_calls
-> > > (https://patchwork.ozlabs.org/project/linuxppc-dev/list/?series=3D260=
-878
-> > > &state=3D*)
-> > >
-> > > So yes, adding static_call.h in asm/machdep.h is intentional and the
-> > > issue was detected by CI build test
-> > > (http://kisskb.ellerman.id.au/kisskb/buildresult/14628100/)
-> > >
-> > > I submitted this change to you because for me it make sense to not
-> > > re-use globably defined struct names in local C files, and anybody ma=
-y
-> > > encounter the problem as soon as linux/node.h gets included directly
-> > > or indirectly. But if you prefer I guess the fix may be merged throug=
-h
-> > > powerpc tree as part of this series.
-> >
-> > Yes, this patch should go in via the audit tree, and while I don't have=
- an
-> > objection to the patch, whenever I see a patch to fix an issue that is =
-not visible in
-> > Linus' tree or the audit tree it raises some questions.  I usually hope=
- to see those
-> > questions answered proactively in the cover letter and/or patch descrip=
-tion but
-> > that wasn't the case here so you get to play a game of 20 questions.
-> >
-> > Speaking of which, I don't recall seeing an answer to the "where do the=
-se
-> > include file changes live?" question, is is the ppc -next tree, or are =
-they still
-> > unmerged and just on the ppc list?
->
-> It is still an RFC in the ppc list.
+Dear Friend,
 
-I just merged this into audit/next but I rewrote chunks of the subject
-line and commit description as the build failure isn't yet "real" as
-the offending patch is still just a RFC.  Hopefully be merging this
-patch into audit/next now we'll prevent future problems if/when the
-other patch is merged.
+With due respect, i have decided to contact you on a business
+transaction that will be beneficial to both of us. At the bank last
+account and auditing evaluation, my staffs came across an old account
+which was being maintained by a foreign client who we learn was among
+the deceased passengers of motor accident on November.2003, the
+deceased was unable to run this account since his death. The account
+has remained dormant without the knowledge of his family since it
+wasput in a safe deposit account in the bank for future investment by
+the client.
 
---=20
-paul moore
-www.paul-moore.com
+
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until i discovered that it cannot be claimed since our client is a
+foreign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be done;
+I decided to seek ways through which to transfer this money out of the
+bank and out of the country too.
+
+The total amount in the account is (18.6 million) with my positions as
+a staff of this bank, i am handicapped because i cannot operate
+foreign accounts and cannot lay benefice claim over this money. The
+client was a foreign national and you will only be asked to act as his
+next of kin and i will supply you with all the necessary information
+and bank data to assist you in being able to transfer this money to
+any bank of your choice where this money could be transferred into.
+
+The total sum will be shared as follows: 50% for me, 50% for you, and
+expenses incidental occur during the transfer will be incur by both of
+us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund transfer to your account. Since I
+work in this bank that is why you should be confident in the success
+of this transaction because you will be updated with information=E2=80=99s =
+as
+at when desired.
+
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction which will be when this money is safety in your account. I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May god help you to help me to a restive retirement?
+
+(1) Your full name..............
+(2) Your age:................
+(3) Sex:.....................
+(4) Your telephone number:.................
+(5) Your occupation:.....................
+(6) Your country:.....................
+
+Yours sincerely,
+Dr Bryan Bouchet
