@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63222409163
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455FD409193
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343702AbhIMOBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:01:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49604 "EHLO mail.kernel.org"
+        id S244040AbhIMOCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243657AbhIMN6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:58:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8571E61A04;
-        Mon, 13 Sep 2021 13:36:48 +0000 (UTC)
+        id S1343527AbhIMN7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6104261216;
+        Mon, 13 Sep 2021 13:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540209;
-        bh=+iPTouEDmJhKRWwleYbkUV+xxnNwxn1IiTN6FaGfRDQ=;
+        s=korg; t=1631540234;
+        bh=zW8GrptFPcaB9WLr+B78v6VFxeYlbB/8xsKBjDUUeGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gnC/KcKtCrq3I1l/+NyAUMxO5PQEh9XOsi1aqM1MgDyNLikJtSNT6VUEDs2R4/56L
-         9ZxlOGOylV00c4DhzcUwG0LzPT58jSTypXJvQKabCl009kCDbFjVNiU3zkqlel2elq
-         112ROQrJwPHUYIf/2Y61OGqKcWBYMVPHK+poIXmY=
+        b=BowP3P2ZMguqHkwiadOlEQOjel3vtUNQVH1uFgTcmrlyL4qQj1Wh4bW8OcceDjVIx
+         zGt1TIlFP8C0FWmamLfsCLyE3AdQj2UUSOChpIl0vGkQrhC3GSOQWSJfa2/9b0A+hC
+         n/k55SI2j2bMFJwP/wQJwsUCQHGMwRQcL3XbO0zU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        stable@vger.kernel.org, He Fengqing <hefengqing@huawei.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 090/300] bpf: Fix a typo of reuseport map in bpf.h.
-Date:   Mon, 13 Sep 2021 15:12:31 +0200
-Message-Id: <20210913131112.429963929@linuxfoundation.org>
+Subject: [PATCH 5.13 091/300] bpf: Fix potential memleak and UAF in the verifier.
+Date:   Mon, 13 Sep 2021 15:12:32 +0200
+Message-Id: <20210913131112.463268895@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -42,51 +41,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+From: He Fengqing <hefengqing@huawei.com>
 
-[ Upstream commit f170acda7ffaf0473d06e1e17c12cd9fd63904f5 ]
+[ Upstream commit 75f0fc7b48ad45a2e5736bcf8de26c8872fe8695 ]
 
-Fix s/BPF_MAP_TYPE_REUSEPORT_ARRAY/BPF_MAP_TYPE_REUSEPORT_SOCKARRAY/ typo
-in bpf.h.
+In bpf_patch_insn_data(), we first use the bpf_patch_insn_single() to
+insert new instructions, then use adjust_insn_aux_data() to adjust
+insn_aux_data. If the old env->prog have no enough room for new inserted
+instructions, we use bpf_prog_realloc to construct new_prog and free the
+old env->prog.
 
-Fixes: 2dbb9b9e6df6 ("bpf: Introduce BPF_PROG_TYPE_SK_REUSEPORT")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+There have two errors here. First, if adjust_insn_aux_data() return
+ENOMEM, we should free the new_prog. Second, if adjust_insn_aux_data()
+return ENOMEM, bpf_patch_insn_data() will return NULL, and env->prog has
+been freed in bpf_prog_realloc, but we will use it in bpf_check().
+
+So in this patch, we make the adjust_insn_aux_data() never fails. In
+bpf_patch_insn_data(), we first pre-malloc memory for the new
+insn_aux_data, then call bpf_patch_insn_single() to insert new
+instructions, at last call adjust_insn_aux_data() to adjust
+insn_aux_data.
+
+Fixes: 8041902dae52 ("bpf: adjust insn_aux_data when patching insns")
+Signed-off-by: He Fengqing <hefengqing@huawei.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20210714124317.67526-1-kuniyu@amazon.co.jp
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20210714101815.164322-1-hefengqing@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/bpf.h       | 2 +-
- tools/include/uapi/linux/bpf.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ec6d85a81744..353f06cf210e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3222,7 +3222,7 @@ union bpf_attr {
-  * long bpf_sk_select_reuseport(struct sk_reuseport_md *reuse, struct bpf_map *map, void *key, u64 flags)
-  *	Description
-  *		Select a **SO_REUSEPORT** socket from a
-- *		**BPF_MAP_TYPE_REUSEPORT_ARRAY** *map*.
-+ *		**BPF_MAP_TYPE_REUSEPORT_SOCKARRAY** *map*.
-  *		It checks the selected socket is matching the incoming
-  *		request in the socket buffer.
-  *	Return
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index ec6d85a81744..353f06cf210e 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3222,7 +3222,7 @@ union bpf_attr {
-  * long bpf_sk_select_reuseport(struct sk_reuseport_md *reuse, struct bpf_map *map, void *key, u64 flags)
-  *	Description
-  *		Select a **SO_REUSEPORT** socket from a
-- *		**BPF_MAP_TYPE_REUSEPORT_ARRAY** *map*.
-+ *		**BPF_MAP_TYPE_REUSEPORT_SOCKARRAY** *map*.
-  *		It checks the selected socket is matching the incoming
-  *		request in the socket buffer.
-  *	Return
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6b58fd978b70..c07126558bb7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11383,10 +11383,11 @@ static void convert_pseudo_ld_imm64(struct bpf_verifier_env *env)
+  * insni[off, off + cnt).  Adjust corresponding insn_aux_data by copying
+  * [0, off) and [off, end) to new locations, so the patched range stays zero
+  */
+-static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+-				struct bpf_prog *new_prog, u32 off, u32 cnt)
++static void adjust_insn_aux_data(struct bpf_verifier_env *env,
++				 struct bpf_insn_aux_data *new_data,
++				 struct bpf_prog *new_prog, u32 off, u32 cnt)
+ {
+-	struct bpf_insn_aux_data *new_data, *old_data = env->insn_aux_data;
++	struct bpf_insn_aux_data *old_data = env->insn_aux_data;
+ 	struct bpf_insn *insn = new_prog->insnsi;
+ 	u32 old_seen = old_data[off].seen;
+ 	u32 prog_len;
+@@ -11399,12 +11400,9 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+ 	old_data[off].zext_dst = insn_has_def32(env, insn + off + cnt - 1);
+ 
+ 	if (cnt == 1)
+-		return 0;
++		return;
+ 	prog_len = new_prog->len;
+-	new_data = vzalloc(array_size(prog_len,
+-				      sizeof(struct bpf_insn_aux_data)));
+-	if (!new_data)
+-		return -ENOMEM;
++
+ 	memcpy(new_data, old_data, sizeof(struct bpf_insn_aux_data) * off);
+ 	memcpy(new_data + off + cnt - 1, old_data + off,
+ 	       sizeof(struct bpf_insn_aux_data) * (prog_len - off - cnt + 1));
+@@ -11415,7 +11413,6 @@ static int adjust_insn_aux_data(struct bpf_verifier_env *env,
+ 	}
+ 	env->insn_aux_data = new_data;
+ 	vfree(old_data);
+-	return 0;
+ }
+ 
+ static void adjust_subprog_starts(struct bpf_verifier_env *env, u32 off, u32 len)
+@@ -11450,6 +11447,14 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+ 					    const struct bpf_insn *patch, u32 len)
+ {
+ 	struct bpf_prog *new_prog;
++	struct bpf_insn_aux_data *new_data = NULL;
++
++	if (len > 1) {
++		new_data = vzalloc(array_size(env->prog->len + len - 1,
++					      sizeof(struct bpf_insn_aux_data)));
++		if (!new_data)
++			return NULL;
++	}
+ 
+ 	new_prog = bpf_patch_insn_single(env->prog, off, patch, len);
+ 	if (IS_ERR(new_prog)) {
+@@ -11457,10 +11462,10 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
+ 			verbose(env,
+ 				"insn %d cannot be patched due to 16-bit range\n",
+ 				env->insn_aux_data[off].orig_idx);
++		vfree(new_data);
+ 		return NULL;
+ 	}
+-	if (adjust_insn_aux_data(env, new_prog, off, len))
+-		return NULL;
++	adjust_insn_aux_data(env, new_data, new_prog, off, len);
+ 	adjust_subprog_starts(env, off, len);
+ 	adjust_poke_descs(new_prog, off, len);
+ 	return new_prog;
 -- 
 2.30.2
 
