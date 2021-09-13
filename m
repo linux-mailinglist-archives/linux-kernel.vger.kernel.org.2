@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A755409692
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B33409382
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347172AbhIMOxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:53:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39254 "EHLO mail.kernel.org"
+        id S1344805AbhIMOVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346099AbhIMOrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:47:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 535EE6323E;
-        Mon, 13 Sep 2021 13:59:14 +0000 (UTC)
+        id S1344166AbhIMOSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:18:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE5661AFF;
+        Mon, 13 Sep 2021 13:45:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541554;
-        bh=JGtyvFusl+H8klQABYldTExrZ9rGErbrO7in6R3WAmI=;
+        s=korg; t=1631540718;
+        bh=jGWAl/K8bG2tdjP2RrtegwZ+kT089noGrVOSSSF+j2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yAxLZrehvsygXfFi9ilrm81q7glF/44/gl6ju2IUO0JNcOHjeDHK8FB0kP7XvNvgB
-         CJJi4CMdnRntJdy517zg6wiJsQ4ppviVjvD+hcb1llNIlXIkyFk3UuAGFE6fy0RBe0
-         FJ9/eyIuFvhy7FXT9m/79FQWt5qPqtmW+vK76PrY=
+        b=bHz2hl7Z26SYZnigoTg7dGAT3Scw4Gb+DtOU5zenFOvOT7CJ5YT3kfiMLe5Z8v8y9
+         Ev/tpm9jgsNFEOU/cbsONUPuNkWX4xpJOHcykFJ2gn6RvDlG26rj/8BiNE8Js9X/ig
+         RPQkTD1ObZKwGOCARtqWwDQ/dQqAFhn4ukSQCIoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoli Feng <xifeng@redhat.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.14 306/334] cifs: Do not leak EDEADLK to dgetents64 for STATUS_USER_SESSION_DELETED
-Date:   Mon, 13 Sep 2021 15:16:00 +0200
-Message-Id: <20210913131123.762721637@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 5.13 300/300] clk: kirkwood: Fix a clocking boot regression
+Date:   Mon, 13 Sep 2021 15:16:01 +0200
+Message-Id: <20210913131119.494917020@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +43,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-commit 3998f0b8bc49ec784990971dc1f16bf367b19078 upstream.
+commit aaedb9e00e5400220a8871180d23a83e67f29f63 upstream.
 
-RHBZ: 1994393
+Since a few kernel releases the Pogoplug 4 has crashed like this
+during boot:
 
-If we hit a STATUS_USER_SESSION_DELETED for the Create part in the
-Create/QueryDirectory compound that starts a directory scan
-we will leak EDEADLK back to userspace and surprise glibc and the application.
+Unable to handle kernel NULL pointer dereference at virtual address 00000002
+(...)
+[<c04116ec>] (strlen) from [<c00ead80>] (kstrdup+0x1c/0x4c)
+[<c00ead80>] (kstrdup) from [<c04591d8>] (__clk_register+0x44/0x37c)
+[<c04591d8>] (__clk_register) from [<c04595ec>] (clk_hw_register+0x20/0x44)
+[<c04595ec>] (clk_hw_register) from [<c045bfa8>] (__clk_hw_register_mux+0x198/0x1e4)
+[<c045bfa8>] (__clk_hw_register_mux) from [<c045c050>] (clk_register_mux_table+0x5c/0x6c)
+[<c045c050>] (clk_register_mux_table) from [<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0+0x13c/0x1ac)
+[<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0) from [<c0aceae0>] (of_clk_init+0x12c/0x214)
+[<c0aceae0>] (of_clk_init) from [<c0ab576c>] (time_init+0x20/0x2c)
+[<c0ab576c>] (time_init) from [<c0ab3d18>] (start_kernel+0x3dc/0x56c)
+[<c0ab3d18>] (start_kernel) from [<00000000>] (0x0)
+Code: e3130020 1afffffb e12fff1e c08a1078 (e5d03000)
 
-Pick this up initiate_cifs_search() and retry a small number of tries before we
-return an error to userspace.
+This is because the "powersave" mux clock 0 was provided in an unterminated
+array, which is required by the loop in the driver:
 
+        /* Count, allocate, and register clock muxes */
+        for (n = 0; desc[n].name;)
+                n++;
+
+Here n will go out of bounds and then call clk_register_mux() on random
+memory contents after the mux clock.
+
+Fix this by terminating the array with a blank entry.
+
+Fixes: 105299381d87 ("cpufreq: kirkwood: use the powersave multiplexer")
 Cc: stable@vger.kernel.org
-Reported-by: Xiaoli Feng <xifeng@redhat.com>
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210814235514.403426-1-linus.walleij@linaro.org
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/readdir.c |   23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ drivers/clk/mvebu/kirkwood.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/cifs/readdir.c
-+++ b/fs/cifs/readdir.c
-@@ -369,7 +369,7 @@ int get_symlink_reparse_path(char *full_
-  */
+--- a/drivers/clk/mvebu/kirkwood.c
++++ b/drivers/clk/mvebu/kirkwood.c
+@@ -265,6 +265,7 @@ static const char *powersave_parents[] =
+ static const struct clk_muxing_soc_desc kirkwood_mux_desc[] __initconst = {
+ 	{ "powersave", powersave_parents, ARRAY_SIZE(powersave_parents),
+ 		11, 1, 0 },
++	{ }
+ };
  
- static int
--initiate_cifs_search(const unsigned int xid, struct file *file,
-+_initiate_cifs_search(const unsigned int xid, struct file *file,
- 		     const char *full_path)
- {
- 	__u16 search_flags;
-@@ -451,6 +451,27 @@ error_exit:
- 	return rc;
- }
- 
-+static int
-+initiate_cifs_search(const unsigned int xid, struct file *file,
-+		     const char *full_path)
-+{
-+	int rc, retry_count = 0;
-+
-+	do {
-+		rc = _initiate_cifs_search(xid, file, full_path);
-+		/*
-+		 * If we don't have enough credits to start reading the
-+		 * directory just try again after short wait.
-+		 */
-+		if (rc != -EDEADLK)
-+			break;
-+
-+		usleep_range(512, 2048);
-+	} while (retry_count++ < 5);
-+
-+	return rc;
-+}
-+
- /* return length of unicode string in bytes */
- static int cifs_unicode_bytelen(const char *str)
- {
+ static struct clk *clk_muxing_get_src(
 
 
