@@ -2,142 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463F8409759
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F8040968B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344044AbhIMPc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245403AbhIMPco (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:32:44 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98964C120D49;
-        Mon, 13 Sep 2021 07:37:05 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id n27so14356404oij.0;
-        Mon, 13 Sep 2021 07:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jPneWkdJJ/yC2zoSfmCm8kIHoNWifAPRW5x1OCcNU6g=;
-        b=BbwbDPBrhOXA/sOMKhWIz6rm4L4v3eguY72PBETM7s8cprasKUlY6xXHNR+i5wurHV
-         HkbG8HWSs+0xtx3FcGDSqKwSFxOxRihfrlhTHsMRGO7YDmfbyLCOQ8+Q0XQ0DSt5gfyi
-         DDfHK9ILuf6L8AHj/AzcGfDXsLeNj7BSRQXU9gKNdKiz9DCQevSYBc4jrXX3+cqt8BnO
-         cMfMk1FNB5eLwvFDEpVfeU+PMd3wvTlliJapGwP3I+sgl/TAmL9zPLIpG9pp8gBQ8SpX
-         7dJDNFGrZdRbQyAMdlYbxBIqjkoOMjqNjSqA0dsV/2u4tXYfb8WvvU42eu0dRZHFkvpD
-         mSng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jPneWkdJJ/yC2zoSfmCm8kIHoNWifAPRW5x1OCcNU6g=;
-        b=hRklGJ/yUhUg39GoUOmTtpaypqqCdI2lNhtZ9TGixWuApqSSF1+GKJ7lyOaamn2UJ7
-         fm8MwZRIErCHlbGvj/tUUASFj8pCwGNuI427RxAT4wbiahPktrw9WBTPNyeOjEU0eYvR
-         XjDQlC6XivjsVUnkQzEu5XkK+b0v7dVpcuKIsUUWUpyTFfnErZRkmYQW1wjLtFYN/3+7
-         Q8dVO5fx2XKGGgbkdx6KIuVvHaXDvETglfe2YaSYXtSsSFCplQrtHpWQilORTYQXPaZW
-         BsC4Tudeox1UXE7y7kxvwqFEGAlFmt14dCsk8WovHa6euSr2++VeLYaM62gnFOEHIfPm
-         CI8Q==
-X-Gm-Message-State: AOAM5300GJBmrm7U0BBgkhtWV1srPQc6JhaY05shoBD8C5SG1Ogb9bx5
-        uPtstDrPuujJIGZRjx4Y9qK2eWqGyWo=
-X-Google-Smtp-Source: ABdhPJzLvPuR+YB+ZDrU3ATCDeUAPO1GNcb3YP3Jy5cn9yjdwAWUz9DKjtj5LE0Xdgmb2PTOoX946Q==
-X-Received: by 2002:a05:6808:10c8:: with SMTP id s8mr8210876ois.6.1631543824718;
-        Mon, 13 Sep 2021 07:37:04 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k23sm1899911ood.12.2021.09.13.07.37.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 07:37:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [RFC][PATCH] watchdog: rti-wdt: Provide set_timeout handler to
- make existing userspace happy
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tero Kristo <t-kristo@ti.com>,
-        "Su, Bao Cheng (RC-CN DF FA R&D)" <baocheng.su@siemens.com>
-References: <4d82b8ce-bc34-e4b2-c5fe-9e883b0db59d@siemens.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <a454fd16-b49d-b803-6bcd-c245e059d3d8@roeck-us.net>
-Date:   Mon, 13 Sep 2021 07:37:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1346542AbhIMOxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347074AbhIMOsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:48:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ACD760F4C;
+        Mon, 13 Sep 2021 14:40:49 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 16:40:47 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     dbueso@suse.de
+Cc:     CGEL <cgel.zte@gmail.com>, jamorris@linux.microsoft.com,
+        keescook@chromium.org, ktkhai@virtuozzo.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, ran.xiaokai@zte.com.cn,
+        varad.gautam@suse.com
+Subject: Re: [PATCH V2] ipc: add set_ownership() and permissions() callbacks
+ for posix mqueue sysctl
+Message-ID: <20210913144047.4v5jquhyysnnlfvh@wittgenstein>
+References: <20210824120523.s5qnzt643yvgugpv@wittgenstein>
+ <20210827101206.5810-1-ran.xiaokai@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <4d82b8ce-bc34-e4b2-c5fe-9e883b0db59d@siemens.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210827101206.5810-1-ran.xiaokai@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 4:41 AM, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
+On Fri, Aug 27, 2021 at 03:12:06AM -0700, CGEL wrote:
+> From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
 > 
-> Prominent userspace - systemd - cannot handle watchdogs without
-> WDIOF_SETTIMEOUT, even if it was configured to the same time as the
-> driver selected or was used by firmware to start the watchdog. To avoid
-> failing in this case, implement a handler that only fails if a deviating
-> set_timeout is requested.
+> When a non-root user process creates a user namespace and ipc namespace
+> with command "unshare -Ur -i", and map the root user inside
+> the user namesapce to the global owner of user namespace.
+> The newly created user namespace OWNS the ipc namespace,
+> So the root user inside the user namespace should have full access
+> rights to the ipc namespace resources and should be writable to
+> the ipc mqueue sysctls.
 > 
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-
-NACK. This is a userspace problem. The ABI clearly states that
-WDIOF_SETTIMEOUT is optional, and userspace must not depend on it.
-We can not start making kernel changes just to make broken userspace
-code happy. systemd should be fixed instead.
-
-Guenter
-
+> v2:
+>   - update commit msg.
+>   - fix the coding style issue.
+> Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
 > ---
+
+David,
+
+are you happy with this too? If so I'd pick this up.
+
+>  include/linux/ipc_namespace.h |  14 +++++
+>  ipc/mq_sysctl.c               | 118 ++++++++++++++++++++++++++++++++++++------
+>  ipc/mqueue.c                  |  10 +++-
+>  ipc/namespace.c               |   2 +
+>  4 files changed, 126 insertions(+), 18 deletions(-)
 > 
-> See also https://github.com/systemd/systemd/issues/20683
-> 
->   drivers/watchdog/rti_wdt.c | 17 ++++++++++++++++-
->   1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-> index 359302f71f7e..365255b15a0d 100644
-> --- a/drivers/watchdog/rti_wdt.c
-> +++ b/drivers/watchdog/rti_wdt.c
-> @@ -173,13 +173,27 @@ static unsigned int rti_wdt_get_timeleft_ms(struct watchdog_device *wdd)
->   	return timer_counter;
->   }
->   
-> +static int rti_wdt_set_timeout(struct watchdog_device *wdd,
-> +			       unsigned int timeout)
-> +{
-> +	/*
-> +	 * Updating the timeout after start is actually not supported, but
-> +	 * let's ignore requests for the already configured value. Helps
-> +	 * existing userspace such as systemd.
-> +	 */
-> +	if (timeout != heartbeat)
-> +		return -EOPNOTSUPP;
+> diff --git a/include/linux/ipc_namespace.h b/include/linux/ipc_namespace.h
+> index 05e2277..3e8e340 100644
+> --- a/include/linux/ipc_namespace.h
+> +++ b/include/linux/ipc_namespace.h
+> @@ -10,6 +10,7 @@
+>  #include <linux/ns_common.h>
+>  #include <linux/refcount.h>
+>  #include <linux/rhashtable-types.h>
+> +#include <linux/sysctl.h>
+>  
+>  struct user_namespace;
+>  
+> @@ -67,6 +68,11 @@ struct ipc_namespace {
+>  	struct user_namespace *user_ns;
+>  	struct ucounts *ucounts;
+>  
+> +#ifdef CONFIG_POSIX_MQUEUE_SYSCTL
+> +	struct ctl_table_set	mq_set;
+> +	struct ctl_table_header	*sysctls;
+> +#endif
 > +
-> +	return 0;
+>  	struct llist_node mnt_llist;
+>  
+>  	struct ns_common ns;
+> @@ -155,7 +161,10 @@ static inline void put_ipc_ns(struct ipc_namespace *ns)
+>  #ifdef CONFIG_POSIX_MQUEUE_SYSCTL
+>  
+>  struct ctl_table_header;
+> +extern struct ctl_table_header *mq_sysctl_table;
+>  extern struct ctl_table_header *mq_register_sysctl_table(void);
+> +bool setup_mq_sysctls(struct ipc_namespace *ns);
+> +void retire_mq_sysctls(struct ipc_namespace *ns);
+>  
+>  #else /* CONFIG_POSIX_MQUEUE_SYSCTL */
+>  
+> @@ -163,6 +172,11 @@ static inline struct ctl_table_header *mq_register_sysctl_table(void)
+>  {
+>  	return NULL;
+>  }
+> +static inline bool setup_mq_sysctls(struct ipc_namespace *ns)
+> +{
+> +	return true;
+> +}
+> +static inline void retire_mq_sysctls(struct ipc_namespace *ns) { }
+>  
+>  #endif /* CONFIG_POSIX_MQUEUE_SYSCTL */
+>  #endif
+> diff --git a/ipc/mq_sysctl.c b/ipc/mq_sysctl.c
+> index 72a92a0..8d6b8ff 100644
+> --- a/ipc/mq_sysctl.c
+> +++ b/ipc/mq_sysctl.c
+> @@ -8,6 +8,11 @@
+>  #include <linux/nsproxy.h>
+>  #include <linux/ipc_namespace.h>
+>  #include <linux/sysctl.h>
+> +#include <linux/slab.h>
+> +#include <linux/user_namespace.h>
+> +#include <linux/capability.h>
+> +#include <linux/cred.h>
+> +#include <linux/stat.h>
+>  
+>  #ifdef CONFIG_PROC_SYSCTL
+>  static void *get_mq(struct ctl_table *table)
+> @@ -96,25 +101,106 @@ static struct ctl_table mq_sysctls[] = {
+>  	{}
+>  };
+>  
+> -static struct ctl_table mq_sysctl_dir[] = {
+> -	{
+> -		.procname	= "mqueue",
+> -		.mode		= 0555,
+> -		.child		= mq_sysctls,
+> -	},
+> -	{}
+> -};
+> +static int set_is_seen(struct ctl_table_set *set)
+> +{
+> +	return &current->nsproxy->ipc_ns->mq_set == set;
+> +}
+>  
+> -static struct ctl_table mq_sysctl_root[] = {
+> -	{
+> -		.procname	= "fs",
+> -		.mode		= 0555,
+> -		.child		= mq_sysctl_dir,
+> -	},
+> -	{}
+> +static struct ctl_table_set *
+> +set_lookup(struct ctl_table_root *root)
+> +{
+> +	return &current->nsproxy->ipc_ns->mq_set;
 > +}
 > +
->   static unsigned int rti_wdt_get_timeleft(struct watchdog_device *wdd)
->   {
->   	return rti_wdt_get_timeleft_ms(wdd) / 1000;
->   }
->   
->   static const struct watchdog_info rti_wdt_info = {
-> -	.options = WDIOF_KEEPALIVEPING,
-> +	.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT,
->   	.identity = "K3 RTI Watchdog",
->   };
->   
-> @@ -187,6 +201,7 @@ static const struct watchdog_ops rti_wdt_ops = {
->   	.owner		= THIS_MODULE,
->   	.start		= rti_wdt_start,
->   	.ping		= rti_wdt_ping,
-> +	.set_timeout	= rti_wdt_set_timeout,
->   	.get_timeleft	= rti_wdt_get_timeleft,
->   };
->   
+> +static int set_permissions(struct ctl_table_header *head,
+> +				struct ctl_table *table)
+> +{
+> +	struct ipc_namespace *ipc_ns =
+> +		container_of(head->set, struct ipc_namespace, mq_set);
+> +	struct user_namespace *user_ns = ipc_ns->user_ns;
+> +	int mode;
+> +
+> +	/* Allow users with CAP_SYS_RESOURCE unrestrained access */
+> +	if (ns_capable(user_ns, CAP_SYS_RESOURCE))
+> +		mode = (table->mode & S_IRWXU) >> 6;
+> +	else {
+> +		/* Allow all others at most read-only access */
+> +		mode = table->mode & S_IROTH;
+> +	}
+> +
+> +	return (mode << 6) | (mode << 3) | mode;
+> +}
+> +
+> +static void set_ownership(struct ctl_table_header *head,
+> +				struct ctl_table *table,
+> +				kuid_t *uid, kgid_t *gid)
+> +{
+> +	struct ipc_namespace *ipc_ns =
+> +		container_of(head->set, struct ipc_namespace, mq_set);
+> +	struct user_namespace *user_ns = ipc_ns->user_ns;
+> +	kuid_t ns_root_uid;
+> +	kgid_t ns_root_gid;
+> +
+> +	ns_root_uid = make_kuid(user_ns, 0);
+> +	if (uid_valid(ns_root_uid))
+> +		*uid = ns_root_uid;
+> +
+> +	ns_root_gid = make_kgid(user_ns, 0);
+> +	if (gid_valid(ns_root_gid))
+> +		*gid = ns_root_gid;
+> +}
+> +
+> +static struct ctl_table_root mq_sysctl_root = {
+> +	.lookup = set_lookup,
+> +	.permissions = set_permissions,
+> +	.set_ownership = set_ownership,
+>  };
+>  
+> +bool setup_mq_sysctls(struct ipc_namespace *ns)
+> +{
+> +	struct ctl_table *tbl;
+> +
+> +	if (!mq_sysctl_table)
+> +		return false;
+> +
+> +	setup_sysctl_set(&ns->mq_set, &mq_sysctl_root, set_is_seen);
+> +	tbl = kmemdup(mq_sysctls, sizeof(mq_sysctls), GFP_KERNEL);
+> +	if (!tbl)
+> +		goto out;
+> +
+> +	ns->sysctls = __register_sysctl_table(&ns->mq_set, "fs/mqueue", tbl);
+> +	if (!ns->sysctls)
+> +		goto out1;
+> +
+> +	return true;
+> +
+> +out1:
+> +	kfree(tbl);
+> +	retire_sysctl_set(&ns->mq_set);
+> +out:
+> +	return false;
+> +}
+> +
+> +void retire_mq_sysctls(struct ipc_namespace *ns)
+> +{
+> +	struct ctl_table *tbl;
+> +
+> +	if (!ns->sysctls)
+> +		return;
+> +
+> +	tbl = ns->sysctls->ctl_table_arg;
+> +	unregister_sysctl_table(ns->sysctls);
+> +	retire_sysctl_set(&ns->mq_set);
+> +	kfree(tbl);
+> +}
+> +
+>  struct ctl_table_header *mq_register_sysctl_table(void)
+>  {
+> -	return register_sysctl_table(mq_sysctl_root);
+> +	static struct ctl_table empty[1];
+> +
+> +	/*
+> +	 * Register the fs/mqueue directory in the default set so that
+> +	 * registrations in the child sets work properly.
+> +	 */
+> +	return register_sysctl("fs/mqueue", empty);
+>  }
+> diff --git a/ipc/mqueue.c b/ipc/mqueue.c
+> index 4e4e611..3b68564 100644
+> --- a/ipc/mqueue.c
+> +++ b/ipc/mqueue.c
+> @@ -163,7 +163,7 @@ static void remove_notification(struct mqueue_inode_info *info);
+>  
+>  static struct kmem_cache *mqueue_inode_cachep;
+>  
+> -static struct ctl_table_header *mq_sysctl_table;
+> +struct ctl_table_header *mq_sysctl_table;
+>  
+>  static inline struct mqueue_inode_info *MQUEUE_I(struct inode *inode)
+>  {
+> @@ -1713,6 +1713,10 @@ static int __init init_mqueue_fs(void)
+>  
+>  	/* ignore failures - they are not fatal */
+>  	mq_sysctl_table = mq_register_sysctl_table();
+> +	if (mq_sysctl_table && !setup_mq_sysctls(&init_ipc_ns)) {
+> +		unregister_sysctl_table(mq_sysctl_table);
+> +		mq_sysctl_table = NULL;
+> +	}
+>  
+>  	error = register_filesystem(&mqueue_fs_type);
+>  	if (error)
+> @@ -1729,8 +1733,10 @@ static int __init init_mqueue_fs(void)
+>  out_filesystem:
+>  	unregister_filesystem(&mqueue_fs_type);
+>  out_sysctl:
+> -	if (mq_sysctl_table)
+> +	if (mq_sysctl_table) {
+> +		retire_mq_sysctls(&init_ipc_ns);
+>  		unregister_sysctl_table(mq_sysctl_table);
+> +	}
+>  	kmem_cache_destroy(mqueue_inode_cachep);
+>  	return error;
+>  }
+> diff --git a/ipc/namespace.c b/ipc/namespace.c
+> index 7bd0766..c891cc1 100644
+> --- a/ipc/namespace.c
+> +++ b/ipc/namespace.c
+> @@ -58,6 +58,7 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
+>  	err = mq_init_ns(ns);
+>  	if (err)
+>  		goto fail_put;
+> +	setup_mq_sysctls(ns);
+>  
+>  	sem_init_ns(ns);
+>  	msg_init_ns(ns);
+> @@ -121,6 +122,7 @@ static void free_ipc_ns(struct ipc_namespace *ns)
+>  	 * uses synchronize_rcu().
+>  	 */
+>  	mq_put_mnt(ns);
+> +	retire_mq_sysctls(ns);
+>  	sem_exit_ns(ns);
+>  	msg_exit_ns(ns);
+>  	shm_exit_ns(ns);
+> -- 
+> 2.15.2
 > 
-
