@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA1E408FED
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DB4408FAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243462AbhIMNr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41194 "EHLO mail.kernel.org"
+        id S241854AbhIMNpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242962AbhIMNmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2101B6142A;
-        Mon, 13 Sep 2021 13:30:20 +0000 (UTC)
+        id S243229AbhIMNjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:39:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A1C6127B;
+        Mon, 13 Sep 2021 13:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539821;
-        bh=f1zQrSy7+nxWJFjmB0J4pAKu+qqdkGMgHpBP4qEm290=;
+        s=korg; t=1631539738;
+        bh=UHnM0abFLM3GYy1xujHHxOcpr7Sy645WE1ZG2tBFY/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Acp7fMRLmIDqndS6HvMyXFuD7k3GVfFoMhwFH+1X/DdtlE5tXt3nC1l4d69W2ZyMO
-         faGcPX0s81++6bGNn1cjeOLamt9Wbo0VRYt3TePR8IUwceZrWIWWa45jRmzwwti4IO
-         Ug+UFiaGGcsJPe8AU/7cdB3G7hmvQxWkMg5+MHGM=
+        b=Mxh1Hj1BpiFKlTns2gsG71Qn2VqFXMdKwfU+XJJnzi8KgshrB32KyHBnLyp/HKg4G
+         WT/9NwSLRY8Xo8I4kqcqRyG1vpviiyTVvq5/RQ92KHGNg/K9XmH0/pSVuvG+Z5YiLg
+         eE8QOG+mVRCTTmyQiABzVzpsaIHNgP0qyL43jE68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 141/236] Bluetooth: fix repeated calls to sco_sock_kill
-Date:   Mon, 13 Sep 2021 15:14:06 +0200
-Message-Id: <20210913131105.153700268@linuxfoundation.org>
+Subject: [PATCH 5.10 142/236] drm/msm/dsi: Fix some reference counted resource leaks
+Date:   Mon, 13 Sep 2021 15:14:07 +0200
+Message-Id: <20210913131105.191677845@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -41,84 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59 ]
+[ Upstream commit 6977cc89c87506ff17e6c05f0e37f46752256e82 ]
 
-In commit 4e1a720d0312 ("Bluetooth: avoid killing an already killed
-socket"), a check was added to sco_sock_kill to skip killing a socket
-if the SOCK_DEAD flag was set.
+'of_find_device_by_node()' takes a reference that must be released when
+not needed anymore.
+This is expected to be done in 'dsi_destroy()'.
 
-This was done after a trace for a use-after-free bug showed that the
-same sock pointer was being killed twice.
+However, there are 2 issues in 'dsi_get_phy()'.
 
-Unfortunately, this check prevents sco_sock_kill from running on any
-socket. sco_sock_kill kills a socket only if it's zapped and orphaned,
-however sock_orphan announces that the socket is dead before detaching
-it. i.e., orphaned sockets have the SOCK_DEAD flag set.
+First, if 'of_find_device_by_node()' succeeds but 'platform_get_drvdata()'
+returns NULL, 'msm_dsi->phy_dev' will still be NULL, and the reference
+won't be released in 'dsi_destroy()'.
 
-To fix this, we remove the check for SOCK_DEAD, and avoid repeated
-calls to sco_sock_kill by removing incorrect calls in:
+Secondly, as 'of_find_device_by_node()' already takes a reference, there is
+no need for an additional 'get_device()'.
 
-1. sco_sock_timeout. The socket should not be killed on timeout as
-further processing is expected to be done. For example,
-sco_sock_connect sets the timer then waits for the socket to be
-connected or for an error to be returned.
+Move the assignment to 'msm_dsi->phy_dev' a few lines above and remove the
+unneeded 'get_device()' to solve both issues.
 
-2. sco_conn_del. This function should clean up resources for the
-connection, but the socket itself should be cleaned up in
-sco_sock_release.
-
-3. sco_sock_close. Calls to sco_sock_close in sco_sock_cleanup_listen
-and sco_sock_release are followed by sco_sock_kill. Hence the
-duplicated call should be removed.
-
-Fixes: 4e1a720d0312 ("Bluetooth: avoid killing an already killed socket")
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Fixes: ec31abf6684e ("drm/msm/dsi: Separate PHY to another platform device")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/f15bc57648a00e7c99f943903468a04639d50596.1628241097.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/sco.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/gpu/drm/msm/dsi/dsi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 8ae8af33ae91..600b1832e1dd 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -85,7 +85,6 @@ static void sco_sock_timeout(struct timer_list *t)
- 	sk->sk_state_change(sk);
- 	bh_unlock_sock(sk);
- 
--	sco_sock_kill(sk);
- 	sock_put(sk);
- }
- 
-@@ -177,7 +176,6 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
- 		sco_sock_clear_timer(sk);
- 		sco_chan_del(sk, err);
- 		bh_unlock_sock(sk);
--		sco_sock_kill(sk);
- 		sock_put(sk);
+diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+index 627048851d99..7e364b9c9f9e 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi.c
++++ b/drivers/gpu/drm/msm/dsi/dsi.c
+@@ -26,8 +26,10 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
  	}
  
-@@ -394,8 +392,7 @@ static void sco_sock_cleanup_listen(struct sock *parent)
-  */
- static void sco_sock_kill(struct sock *sk)
- {
--	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket ||
--	    sock_flag(sk, SOCK_DEAD))
-+	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
- 		return;
+ 	phy_pdev = of_find_device_by_node(phy_node);
+-	if (phy_pdev)
++	if (phy_pdev) {
+ 		msm_dsi->phy = platform_get_drvdata(phy_pdev);
++		msm_dsi->phy_dev = &phy_pdev->dev;
++	}
  
- 	BT_DBG("sk %p state %d", sk, sk->sk_state);
-@@ -447,7 +444,6 @@ static void sco_sock_close(struct sock *sk)
- 	lock_sock(sk);
- 	__sco_sock_close(sk);
- 	release_sock(sk);
--	sco_sock_kill(sk);
+ 	of_node_put(phy_node);
+ 
+@@ -36,8 +38,6 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
+ 		return -EPROBE_DEFER;
+ 	}
+ 
+-	msm_dsi->phy_dev = get_device(&phy_pdev->dev);
+-
+ 	return 0;
  }
  
- static void sco_skb_put_cmsg(struct sk_buff *skb, struct msghdr *msg,
 -- 
 2.30.2
 
