@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66138408987
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C75408989
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239430AbhIMK40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:56:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52144 "EHLO mail.kernel.org"
+        id S239329AbhIMK4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239305AbhIMK4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:56:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E90861004;
-        Mon, 13 Sep 2021 10:55:03 +0000 (UTC)
+        id S239325AbhIMK41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:56:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81DE161056;
+        Mon, 13 Sep 2021 10:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631530504;
-        bh=adzHkMe7QmqPw8mLlHRzTAcZPu5KFFN4TF0NE5fBBzI=;
+        s=k20201202; t=1631530512;
+        bh=/acizGQpjVbb5W1sMXX4iA7exId4RJz4UuLDmCHSWzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j8Ntwz91WlimLio4nImgaFi/iKuvbcXXcsfwl/+3mdXBR6WtISZlRBF9WYxKnj0PI
-         iqihBxsZWawgUnhmJp8KLd9knRR7kL3jJy06N8qwYplhfmPn+EbVqdJhCg3E8Ye58L
-         aTRTMIXtz6so53Of6/XP/YQdO1lAcn17qHE3GvS7MSzqb9L2wvrMdIZixEcUU+nmdF
-         MAM+tKWA644giBPOl2YJa+QTVyndPvljFoHMIlBNeswnlDF76gUz1XoFZGUVIMRSrH
-         Yyn8Z6VMncU42MfgtJ0tLf8j51eul68NtespESTVcRVltD3yrBIqHKCqmflY4KxxwK
-         K3AWl5v1bW4Gw==
+        b=F6TvK4B4I+8fhHkwCXw2nwKMzALK/t98a7hcdi3nBHhqo2rAU+fopM70wRIFncoEz
+         EDb6uxC2Ln6u7zoDo5bMmvBiSyEsV/krsHSylK1WrC3QlvZ/EOJ5IKtYCnNp0m+ybC
+         vwZBkFBItqnRxsBeICBVHsVDpmetRPSm7JqUZLwCYZMeMpVE85iAKVQo7pmS1mN5o0
+         bwe+0WWOqbV8A7CIwbNvzhPt3ciCXn4W+K95uxO2fMLNLy+EX5t2lDbLZ+T1mmPa4e
+         wujxw70KU/CXuIZpF2L1gBcDUAY5bVDucCcEryAhZBwNxeL/9DjYkMLx/pq5sbeS+X
+         aeXqlBbq77g8g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        linux-arm-kernel@lists.infradead.org,
-        Colin King <colin.king@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
-        linux-mediatek@lists.infradead.org
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: Fix unused initialization of pointer etdm_data
-Date:   Mon, 13 Sep 2021 11:53:24 +0100
-Message-Id: <163152996585.45703.6144242874194833843.b4-ty@kernel.org>
+To:     ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.com>,
+        =?UTF-8?q?P=EF=BF=BD=EF=BF=BD=EF=BF=BDter=20Ujfalusi?= 
+        <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH] ASoC: ti: rename CONFIG_SND_SOC_DM365_VOICE_CODEC_MODULE
+Date:   Mon, 13 Sep 2021 11:53:27 +0100
+Message-Id: <163152996582.45703.13424902578308324245.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210903114928.11743-1-colin.king@canonical.com>
-References: <20210903114928.11743-1-colin.king@canonical.com>
+In-Reply-To: <20210901164009.1546967-1-masahiroy@kernel.org>
+References: <20210901164009.1546967-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,13 +44,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Sep 2021 12:49:28 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Thu, 2 Sep 2021 01:40:09 +0900, Masahiro Yamada wrote:
+> Kconfig generates include/generated/autoconf.h to make CONFIG options
+> available to the pre-processor. Symbols with the value 'm' are suffixed
+> with '_MODULE'
 > 
-> The pointer etdm_data is being inintialized with a value that is never
-> read, it is later being re-assigned a new value. Remove the redundant
-> initialization.
-> 
+> Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
+> but CONFIG_FOO_MODULE=y also results in the same define.
 > 
 > [...]
 
@@ -62,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8195: Fix unused initialization of pointer etdm_data
-      commit: d67bbdda25c4156da079312a3594a41770123abd
+[1/1] ASoC: ti: rename CONFIG_SND_SOC_DM365_VOICE_CODEC_MODULE
+      commit: 0f3dd4e09addc00d5b87761793b08927e7903181
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
