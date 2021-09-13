@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A9140A10D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 00:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B368E40A12D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350068AbhIMWxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 18:53:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:49593 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349654AbhIMWtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 18:49:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209040429"
-X-IronPort-AV: E=Sophos;i="5.85,291,1624345200"; 
-   d="scan'208";a="209040429"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 15:43:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,291,1624345200"; 
-   d="scan'208";a="469688805"
-Received: from srishtim-mobl1.amr.corp.intel.com (HELO [10.212.166.48]) ([10.212.166.48])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 15:43:43 -0700
-Subject: Re: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        jarkko@kernel.org, dave.hansen@linux.intel.com,
-        yang.zhong@intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210913131153.1202354-3-pbonzini@redhat.com>
- <50287173-0afb-36f4-058e-0960fb4017a7@intel.com>
- <YT++l/gSpx3FPMKL@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <88faf121-c731-b99b-13aa-692ccc8c3a98@intel.com>
-Date:   Mon, 13 Sep 2021 15:43:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1350181AbhIMXCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350151AbhIMXCU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 19:02:20 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36243C0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:43:59 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id f2so20050730ljn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cpOEkgKG8NafgrWoZalakoEK1VhyBmhF7Y/WtmLd/Lg=;
+        b=T5ELGMKQh/WTx6sFdvyr0FHHuaTzqk52ilOVadQrpui/HzUYzquSvX4ZbfGu94G3ge
+         nTEseFMW7FCznEBsag51bLSvS5+rwLatAhdo2epXzKSYAv1LBYfLW4jhKFE1wE8Xggnq
+         x0+1JZCwFtYYnL5he5N81fDIOPUxyItcGBT7RTnNl6evtY6UcBXTbwpMNnk8XEX9wIsb
+         VXbjw6BTsQ9+N7sSC05xu2N514AN5PSgkoKHnhixAkED0kyG4ZvLwwVuSfk+3ASxkLjf
+         YBUY/v3PPji3ut12qv1D+otpTo2ks05MRpyRc8do6MkN6pM4YQRtJ0PdX3WreEjad2bC
+         9OWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cpOEkgKG8NafgrWoZalakoEK1VhyBmhF7Y/WtmLd/Lg=;
+        b=6170fytgol+fkJGzuigDfUKpDmKF/HdrwDaKWjLGqpHZzPboWuVYElCvdgyZ4wJYOM
+         sZBzKc7EGsrZGxfzj7qAIXU6yYG+uCvIZrkJE26KH5TAMtVb6OiX7J5axtsarFGn+DLP
+         wL2Fu0ZHDKHHBpT+ZS7kYBn+F7urjyoTBNY0rwqb/FvswFBbvnIn4dW+FECcI1UfPDXV
+         2n6C/XoOYOCu6bmTxZBjnCojlYBfoWsGCG/4sSE/FQb/kWtQZ1/OUF83ml+eKsqJ1eCK
+         T0QJ5aUgM4fYSw+yf8KzTA5uNdRYsFoNSL1LE0rkRAevkyYKO/sq9zmJLH9caVTvCgKG
+         R1Ag==
+X-Gm-Message-State: AOAM533ii0FnxvLRgQ6Kn0CwEGrUUuNiZ7ijSKEgSEN+OGpHl1jKen1A
+        RMsXEK/GdemvLH7WMzNo9/KdF2fE3WFwBo1oGo5rbw==
+X-Google-Smtp-Source: ABdhPJzKO2FsVC4sg0vOItOJgZVIRszPr8OShfpu41ntSTwrHG41b5nNLLseS13wtPNoOwMAasLh+8NmvMAfmhBqi60=
+X-Received: by 2002:a2e:b5b9:: with SMTP id f25mr12459004ljn.145.1631573037580;
+ Mon, 13 Sep 2021 15:43:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YT++l/gSpx3FPMKL@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210908162617.104962-1-andre.przywara@arm.com>
+In-Reply-To: <20210908162617.104962-1-andre.przywara@arm.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 14 Sep 2021 00:43:46 +0200
+Message-ID: <CACRpkda7Ztt8xv1b0UBt1dNZNW-042hdrA5wwFhZVSjDohGBow@mail.gmail.com>
+Subject: Re: [PATCH] ARM: decompressor: Avoid UNPREDICTABLE NOP encoding
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Adam Lackorzynski <adam@l4re.org>,
+        Peter Maydell <peter.maydell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 2:11 PM, Sean Christopherson wrote:
-> My argument against handling this fully in the kernel is that to handle a vNUMA
-> setup with multiple vEPC sections, the ioctl() would need to a take a set of file
-> descriptors to handle the case where an SECS is pinned by a child page in a
-> diferent vEPC.
+On Wed, Sep 8, 2021 at 6:26 PM Andre Przywara <andre.przywara@arm.com> wrote:
 
-Bah, I'm always forgetting about the multiple vepc fd's case.
+> In the decompressor's head.S we need to start with an instruction that
+> is some kind of NOP, but also mimics as the PE/COFF header, when the
+> kernel is linked as an UEFI application. The clever solution here is
+> "tstne r0, #0x4d000", which in the worst case just clobbers the
+> condition flags, and bears the magic "MZ" signature in the lowest 16 bits.
+>
+> However the encoding used (0x13105a4d) is actually not valid, since bits
+> [15:12] are supposed to be 0 (written as "(0)" in the ARM ARM).
+> Violating this is UNPREDICTABLE, and *can* trigger an UNDEFINED
+> exception. Common Cortex cores seem to ignore those bits, but QEMU
+> chooses to trap, so the code goes fishing because of a missing exception
+> handler at this point. We are just saved by the fact that commonly (with
+> -kernel or when running from U-Boot) the "Z" bit is set, so the
+> instruction is never executed. See [0] for more details.
+>
+> To make things more robust and avoid UNPREDICTABLE behaviour in the
+> kernel code, lets replace this with a "two-instruction NOP":
+> The first instruction is an exclusive OR, the effect of which the second
+> instruction reverts. This does not leave any trace, neither in a
+> register nor in the condition flags. Also it's a perfectly valid
+> encoding. Kudos to Peter Maydell for coming up with this gem.
+>
+> [0] https://lore.kernel.org/qemu-devel/YTPIdbUCmwagL5%2FD@os.inf.tu-dresden.de/T/
+>
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Reported-by: Adam Lackorzynski <adam@l4re.org>
+> Suggested-by: Peter Maydell <peter.maydell@linaro.org>
 
-I completely agree that there's no sane way to do this with a per-vepc
-ioctl() when the EREMOVE failures can originate from other vepc instances.
+Looks like a correct and clever solution to me!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-The only other possible thing would be keep an mm_list for vepc
-instances and have this ioctl() (or another interface) blast them all.
-But that's going to be a heck of a lot more complicated than this is.
-
-OK... you two are wearing me down on this one.
-
-Let's just get this all documented in the changelogs, especially the
-retry behavior.
+Yours,
+Linus Walleij
