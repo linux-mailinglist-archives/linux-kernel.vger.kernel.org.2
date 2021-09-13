@@ -2,190 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D745408A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5F8408A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239710AbhIMLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:37:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39983 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239699AbhIMLhX (ORCPT
+        id S239791AbhIMLi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239783AbhIMLit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:37:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631532967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6nlyuLZJuxFq0iuFyqPOmjSTCLcN+DKNgWmeH2OgRhI=;
-        b=LUnKL3Zod6y5niy09VJXN7J3te5onevljoOleSAcI5vN7k+5v0ZlF+esANkaGaUSwA/WNM
-        rhB3ar4hQeBJSZhVqR7D0IqpvWGqNQ1n5OI/LbPw1Egkmmcgg4dJc3E/NSQaz7QS1ny9KV
-        182kcb191X4gksPf7BSWxiV1+9zZ4AE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-hc0aqtdAPpqMXjF9tJwlDw-1; Mon, 13 Sep 2021 07:36:06 -0400
-X-MC-Unique: hc0aqtdAPpqMXjF9tJwlDw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2EB38145E5;
-        Mon, 13 Sep 2021 11:36:04 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2143C6D987;
-        Mon, 13 Sep 2021 11:36:02 +0000 (UTC)
-Message-ID: <498881b01b4a99787abdc4ec3baf59081491f401.camel@redhat.com>
-Subject: Re: [PATCH 3/4] KVM: nVMX: Track whether changes in L0 require MSR
- bitmap for L2 to be rebuilt
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Sep 2021 14:36:01 +0300
-In-Reply-To: <87ilz52c9e.fsf@vitty.brq.redhat.com>
-References: <20210910160633.451250-1-vkuznets@redhat.com>
-         <20210910160633.451250-4-vkuznets@redhat.com>
-         <37efb41fda41317bf04c0cb805792af261894a1a.camel@redhat.com>
-         <87ilz52c9e.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 13 Sep 2021 07:38:49 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30D2C061574;
+        Mon, 13 Sep 2021 04:37:33 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id f65so8512822pfb.10;
+        Mon, 13 Sep 2021 04:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:to:cc:subject:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QBkvZtRuthYO+WkN5dTUd+gbBpCcqBYymSu9tcHbcUg=;
+        b=JgEmhVoT07+/jpj9Hw8XTtF7PaQg78QzX6zNtz/av0Pye/os/Oop7lo99/y8wP3Jyj
+         gWe4Gh6c+AU0BSkAeBGYKfJM+on+F85RSTeMLJj2X0NgjlaNW59Y6QzIQzFBjS3+Gryj
+         XOVp82ALeta68ZHn8T6sw93BkiO5yAS7cmSTAfM/GvQPsMDPevpT21BIlMwGRwo5m9OU
+         fmbcxhXpeqWw+dgm8DWLuFHo7nDK6tosO9UUOhQYk/kyNKn3+h9emnC1da80pDOPN64k
+         7tCICxtg12M5RLo7DuHsNCaBtKzLsW0YToYtjT+t8Ci0tCMtLkQf5xM8S3XbWj8mp7Mg
+         wmCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QBkvZtRuthYO+WkN5dTUd+gbBpCcqBYymSu9tcHbcUg=;
+        b=SWdzqW4D6lZrwEfWNmSNdi/7oYOPNOcymHRiVFnOzky3pRewNtcH1WAplBeF4D7FUT
+         SlcrzwkRXHCbcqQSEfbKhRqzYH1Sr1n4UiVJ9nAxi2fyN9nkW7nY6erbFsmIIZfvEmCj
+         d/LIbPToTurSWMHk9UTHRdMfIsYhFxShf729RMm9kAdsS/7N3kjR7fs263LQ6QQE2GMq
+         pk4YHQYiLlivo5QczT0XRO3TCzav3XRWqfsm3EcnXoI0ZPchdExiB4sfgmv50YxWlr9c
+         4OOeMYdyngExaL8D+yB5tvgfPSuQnB50QP4BFFJYJqe6e02iaa+mWaIMtFTgZaxG2kIc
+         qykw==
+X-Gm-Message-State: AOAM533I/HJOqj0EKuh2OtKhjNgNFAa1eiWYvgNv/oA4ts2yEoQEa62a
+        I9abctGiAEiGhX0fe0Sleco=
+X-Google-Smtp-Source: ABdhPJznt26Z8rp9Ii/ANoIlwxfTk4jSzPtD+DI7HGBndU3Hzz3KpSJbKm3N4/ayXkxrYx4b2GGBKg==
+X-Received: by 2002:a63:e04a:: with SMTP id n10mr10621845pgj.381.1631533053480;
+        Mon, 13 Sep 2021 04:37:33 -0700 (PDT)
+Received: from localhost ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e15sm4055388pjl.11.2021.09.13.04.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 04:37:32 -0700 (PDT)
+Message-ID: <613f37fc.1c69fb81.9092.a4f5@mx.google.com>
+X-Google-Original-Message-ID: <20210913113731.GA83262@cgel.zte@gmail.com>
+Date:   Mon, 13 Sep 2021 11:37:31 +0000
+From:   CGEL <cgel.zte@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     yzaikin@google.com, liu.hailong6@zte.com.cn, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, mcgrof@kernel.org,
+        keescook@chromium.org, pjt@google.com, yang.yang29@zte.com.cn,
+        joshdon@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Zeal Robot <zealci@zte.com.cm>
+Subject: Re: [PATCH] sched: Add a new version sysctl to control child runs
+ first
+References: <20210912041222.59480-1-yang.yang29@zte.com.cn>
+ <YT8IQioxUARMus9w@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YT8IQioxUARMus9w@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 08:57 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
+On Mon, Sep 13, 2021 at 10:13:54AM +0200, Peter Zijlstra wrote:
+> On Sun, Sep 12, 2021 at 04:12:23AM +0000, cgel.zte@gmail.com wrote:
+> > From: Yang Yang <yang.yang29@zte.com.cn>
+> > 
+> > The old version sysctl has some problems. First, it allows set value
+> > bigger than 1, which is unnecessary. Second, it didn't follow the
+> > rule of capabilities. Thirdly, it didn't use static key. This new
+> > version fixes all the problems.
 > 
-> > On Fri, 2021-09-10 at 18:06 +0200, Vitaly Kuznetsov wrote:
-> > > Introduce a flag to keep track of whether MSR bitmap for L2 needs to be
-> > > rebuilt due to changes in MSR bitmap for L1 or switching to a different
-> > > L2. This information will be used for Enlightened MSR Bitmap feature for
-> > > Hyper-V guests.
-> > > 
-> > > Note, setting msr_bitmap_changed to 'true' from set_current_vmptr() is
-> > > not really needed for Enlightened MSR Bitmap as the feature can only
-> > > be used in conjunction with Enlightened VMCS but let's keep tracking
-> > > information complete, it's cheap and in the future similar PV feature can
-> > > easily be implemented for KVM on KVM too.
-> > > 
-> > > No functional change intended.
-> > > 
-> > > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > > ---
-> > >  arch/x86/kvm/vmx/nested.c | 9 ++++++++-
-> > >  arch/x86/kvm/vmx/vmx.c    | 2 ++
-> > >  arch/x86/kvm/vmx/vmx.h    | 6 ++++++
-> > >  3 files changed, 16 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > > index ccb03d69546c..42cd95611892 100644
-> > > --- a/arch/x86/kvm/vmx/nested.c
-> > > +++ b/arch/x86/kvm/vmx/nested.c
-> > > @@ -2053,10 +2053,13 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
-> > >  	 * Clean fields data can't be used on VMLAUNCH and when we switch
-> > >  	 * between different L2 guests as KVM keeps a single VMCS12 per L1.
-> > >  	 */
-> > > -	if (from_launch || evmcs_gpa_changed)
-> > > +	if (from_launch || evmcs_gpa_changed) {
-> > >  		vmx->nested.hv_evmcs->hv_clean_fields &=
-> > >  			~HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
-> > >  
-> > > +		vmx->nested.msr_bitmap_changed = true;
-> > > +	}
-> > > +
-> > >  	return EVMPTRLD_SUCCEEDED;
-> > >  }
-> > >  
-> > > @@ -3240,6 +3243,8 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
-> > >  	else
-> > >  		exec_controls_clearbit(vmx, CPU_BASED_USE_MSR_BITMAPS);
-> > >  
-> > > +	vmx->nested.msr_bitmap_changed = false;
-> > 
-> > Very minor nitpick: Maybe I would put this into nested_vmx_prepare_msr_bitmap,
-> > a bit closer to the action, but this is fine like this as well.
-> > 
-> 
-> I don't have a strong preference here, can move it to nested_vmx_prepare_msr_bitmap().
-> 
-> > > +
-> > >  	return true;
-> > >  }
-> > >  
-> > > @@ -5273,6 +5278,7 @@ static void set_current_vmptr(struct vcpu_vmx *vmx, gpa_t vmptr)
-> > >  		vmx->nested.need_vmcs12_to_shadow_sync = true;
-> > >  	}
-> > >  	vmx->nested.dirty_vmcs12 = true;
-> > > +	vmx->nested.msr_bitmap_changed = true;
-> > >  }
-> > >  
-> > >  /* Emulate the VMPTRLD instruction */
-> > > @@ -6393,6 +6399,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
-> > >  		goto error_guest_mode;
-> > >  
-> > >  	vmx->nested.dirty_vmcs12 = true;
-> > > +	vmx->nested.msr_bitmap_changed = true;
-> > 
-> > Is this needed? Setting the nested state should eventually trigger call to
-> > nested_vmx_handle_enlightened_vmptrld.
-> > 
-> >  
-> 
-> Strictly speaking - no (meaning that nothing is going to change if we
-> just drop this hunk). My intention was to keep tracking information
-> complete: after vmx_set_nested_state() we certainly need to re-build MSR
-> Bitmap 02 and that's what 'msr_bitmap_changed' tracks. We can replace
-> this with a comment if needed (but I'd slightly prefer to keep it -
-> unless there's a reason not to).
+> Does any of that actually matter?
 
-Makes sense. let it be like that.
+For the first problem, I think the reason why sysctl_schedstats() only
+accepts 0 or 1, is suitbale for sysctl_child_runs_first(). Since
+task_fork_fair() only need sysctl_sched_child_runs_first to be
+zero or non-zero.
 
-Best regards,
-	Maxim Levitsky
+For the second problem, I remember there is a rule: try to
+administration system through capilities but not depends on
+root identity. Just like sysctl_schedstats() or other
+sysctl_xx().
 
+For the thirdly problem, sysctl_child_runs_first maynot changes
+often, but may accessed often, like static_key delayacct_key
+controlled by sysctl_delayacct().
 
-> 
-> > >  	ret = nested_vmx_enter_non_root_mode(vcpu, false);
-> > >  	if (ret)
-> > >  		goto error_guest_mode;
-> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > > index ad33032e8588..2dbfb5d838db 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.c
-> > > +++ b/arch/x86/kvm/vmx/vmx.c
-> > > @@ -3734,6 +3734,8 @@ static void vmx_msr_bitmap_l01_changed(struct vcpu_vmx *vmx)
-> > >  	 */
-> > >  	if (static_branch_unlikely(&enable_evmcs))
-> > >  		evmcs_touch_msr_bitmap();
-> > > +
-> > > +	vmx->nested.msr_bitmap_changed = true;
-> > >  }
-> > >  
-> > >  void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
-> > > diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> > > index 4858c5fd95f2..b6596fc2943a 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.h
-> > > +++ b/arch/x86/kvm/vmx/vmx.h
-> > > @@ -148,6 +148,12 @@ struct nested_vmx {
-> > >  	bool need_vmcs12_to_shadow_sync;
-> > >  	bool dirty_vmcs12;
-> > >  
-> > > +	/*
-> > > +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
-> > > +	 * changes in MSR bitmap for L1 or switching to a different L2.
-> > > +	 */
-> > > +	bool msr_bitmap_changed;
-> > > +
-> > >  	/*
-> > >  	 * Indicates lazily loaded guest state has not yet been decached from
-> > >  	 * vmcs02.
-> > 
-> > Best regards,
-> > 	Maxim Levitsky
-> > 
-
-
+Thanks!
