@@ -2,143 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C69409D7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6913409D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242096AbhIMT4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:56:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238899AbhIMT4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:56:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E67F60F9F;
-        Mon, 13 Sep 2021 19:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631562903;
-        bh=vGKfjjDfDec9WldA+5DUvMQ59cJ2thvElgtPVGGM9NE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n7usgVzHe0tZiqiMRhF/hiWcc/+CpnnW35nfQWkeSFRK47MKQiee9+w6vyAJLQffj
-         UDgArdj+jSYVOJV99+p9J2O2RMn4vOFEyGXSQZ1tq2wg+6ZsG7rcL2zKXfDeYJeSan
-         kU3DsDbfHogmSd8sWgvY7PLGOrMdpE5D+e9hEnhjuiIAvK1qim1UONQFSeVaM4ndRN
-         kE9PW4eVajxPONBtlMROyurHVBgQNOSyNtPgiZNbSIph5mN+6m/iiG87X6euqSWPRP
-         Fms3p6WmSLk6lJghKsCqPQKV0cQLdft9Hi551InMyvjxN/onabLSl8e8gagwJUINX3
-         BElb5g8DzgTDA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4E9DC4038F; Mon, 13 Sep 2021 16:55:00 -0300 (-03)
-Date:   Mon, 13 Sep 2021 16:55:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script: Fix ip display when type != attr->type
-Message-ID: <YT+slLB++HpvtZ3w@kernel.org>
-References: <20210911133053.15682-1-adrian.hunter@intel.com>
- <a961928d-41a5-6dce-75e1-25ae260f3e12@linux.intel.com>
+        id S1347664AbhIMT7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242202AbhIMT66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:58:58 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EF7C061574;
+        Mon, 13 Sep 2021 12:57:42 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id i13so11406148ilm.4;
+        Mon, 13 Sep 2021 12:57:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=TWTMVvhvJotwJPk/ze26bZ/qP+vFniaofcsTjFnegRQ=;
+        b=C39pM3/I8tOoAoI7Wu65UGq1fOtrlr0vE4t+ukOt6bYdNi5dPCXqr6X+Zb8O69IwfU
+         x25yCGUAwf8TJdmGPJ8YViTEbCVawWcjq5skN9JR/kuJW1bfv0HQqzOdisiitLZwJEgI
+         ZnJ4x6p8KnDuHZ2D97B0ESOA3q0fLVrO75bhx+cY0S9bP5ZSboc3oWtEOXFo2lp7qVqt
+         alBTz95njw8gAfu4ncrxm97wVs+t8lC66ekuXJvLKpcnIzBlDh7Gf4nDf/xCAcL6+GEx
+         V7zSGqKeUaYw9BgeDEL1+OOCiUkLqI0KCW78SxVPo0VodZnw0zG+UCLVbm1MQlBclE0u
+         JGwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=TWTMVvhvJotwJPk/ze26bZ/qP+vFniaofcsTjFnegRQ=;
+        b=7tTPCMY5fPUiy9MuNGtOFwLr7Eqj/U3iA2z5KltK6fWXkbGcccPLRFjdN6ZSDHpr6n
+         DdivJtWP/xbmqu86d5puUBB84c4lDe5OeK3XyHyGJZVlYloKZSCGePyUMo/58J0pE6yU
+         4MfUm7PRJXRrzI3rx6edIUiddEJ3xyzAkn//lH1rUs9pSm0Xt1LJXBCZAwOHFoF+YIUL
+         ex6xrrZZXMNMZbBFKeQ0rr/8+49cdmWzJlCg1N/lxTU893xtTy4yuXI9NKlX32Fr2asT
+         v6y8iPZEfk+3gFYA7PVdMfv4cXDhcYHkfJyI5pfPxQwVtjE2KWSYgSfWKT0PP/i6Q+cG
+         spiw==
+X-Gm-Message-State: AOAM532AEbs20paF9fHAFl9yBKk5UVmT702DSD+Pfc6hm3TSXBt6M2Rd
+        VpqEbEm0MaLaK6+yPwggMsKgrK2qtkQEgzueDT38pHDQ/ZA5lA==
+X-Google-Smtp-Source: ABdhPJzL27/IrLITeAiH3QjKzG0xNJZMD4qIf1Tae+nJvnnBP8sLSlfrVVRK4Sc9el0HDm0TLgyCOenB3utZWShOxJk=
+X-Received: by 2002:a05:6e02:ee1:: with SMTP id j1mr9357308ilk.61.1631563061774;
+ Mon, 13 Sep 2021 12:57:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a961928d-41a5-6dce-75e1-25ae260f3e12@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
+ <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
+ <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
+ <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
+In-Reply-To: <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 13 Sep 2021 21:57:05 +0200
+Message-ID: <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
+Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Baokun Li <libaokun1@huawei.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 13, 2021 at 11:13:56AM -0400, Liang, Kan escreveu:
-> 
-> 
-> On 9/11/2021 9:30 AM, Adrian Hunter wrote:
-> > set_print_ip_opts() was not being called when type != attr->type
-> > because there is not a one-to-one relationship between output types
-> > and attr->type. That resulted in ip not printing.
-> > 
-> > The attr_type() function is removed, and the match of attr->type to
-> > output type is corrected.
-> > 
-> > Example on ADL using taskset to select an atom cpu:
-> > 
-> >   # perf record -e cpu_atom/cpu-cycles/ taskset 0x1000 uname
-> >   Linux
-> >   [ perf record: Woken up 1 times to write data ]
-> >   [ perf record: Captured and wrote 0.003 MB perf.data (7 samples) ]
-> > 
-> >   Before:
-> > 
-> >    # perf script | head
-> >           taskset   428 [-01] 10394.179041:          1 cpu_atom/cpu-cycles/:
-> >           taskset   428 [-01] 10394.179043:          1 cpu_atom/cpu-cycles/:
-> >           taskset   428 [-01] 10394.179044:         11 cpu_atom/cpu-cycles/:
-> >           taskset   428 [-01] 10394.179045:        407 cpu_atom/cpu-cycles/:
-> >           taskset   428 [-01] 10394.179046:      16789 cpu_atom/cpu-cycles/:
-> >           taskset   428 [-01] 10394.179052:     676300 cpu_atom/cpu-cycles/:
-> >             uname   428 [-01] 10394.179278:    4079859 cpu_atom/cpu-cycles/:
-> > 
-> >   After:
-> > 
-> >    # perf script | head
-> >           taskset   428 10394.179041:          1 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-> >           taskset   428 10394.179043:          1 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-> >           taskset   428 10394.179044:         11 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-> >           taskset   428 10394.179045:        407 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-> >           taskset   428 10394.179046:      16789 cpu_atom/cpu-cycles/:  ffffffff95a0bb97 __intel_pmu_enable_all.constprop.48+0x47 ([kernel.kallsyms])
-> >           taskset   428 10394.179052:     676300 cpu_atom/cpu-cycles/:      7f829ef73800 cfree+0x0 (/lib/libc-2.32.so)
-> >             uname   428 10394.179278:    4079859 cpu_atom/cpu-cycles/:  ffffffff95bae912 vma_interval_tree_remove+0x1f2 ([kernel.kallsyms])
-> > 
-> > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> > ---
-> >   tools/perf/builtin-script.c | 24 +++++++++++++-----------
-> >   1 file changed, 13 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> > index 0e824f7d8b19..6211d0b84b7a 100644
-> > --- a/tools/perf/builtin-script.c
-> > +++ b/tools/perf/builtin-script.c
-> > @@ -368,16 +368,6 @@ static inline int output_type(unsigned int type)
-> >   	return OUTPUT_TYPE_OTHER;
-> >   }
-> > -static inline unsigned int attr_type(unsigned int type)
-> > -{
-> > -	switch (type) {
-> > -	case OUTPUT_TYPE_SYNTH:
-> > -		return PERF_TYPE_SYNTH;
-> > -	default:
-> > -		return type;
-> > -	}
-> > -}
-> > -
-> >   static bool output_set_by_user(void)
-> >   {
-> >   	int j;
-> > @@ -556,6 +546,18 @@ static void set_print_ip_opts(struct perf_event_attr *attr)
-> >   		output[type].print_ip_opts |= EVSEL__PRINT_SRCLINE;
-> >   }
-> > +static struct evsel *find_first_output_type(struct evlist *evlist,
-> > +					    unsigned int type)
-> > +{
-> > +	struct evsel *evsel;
-> > +
-> > +	evlist__for_each_entry(evlist, evsel) {
-> > +		if (output_type(evsel->core.attr.type) == (int)type)
-> > +			return evsel;
-> > +	}
-> > +	return NULL;
-> > +}
-> > +
-> >   /*
-> >    * verify all user requested events exist and the samples
-> >    * have the expected data
-> > @@ -567,7 +569,7 @@ static int perf_session__check_output_opt(struct perf_session *session)
-> >   	struct evsel *evsel;
-> >   	for (j = 0; j < OUTPUT_TYPE_MAX; ++j) {
-> > -		evsel = perf_session__find_first_evtype(session, attr_type(j));
-> 
-> I think the only consumer of perf_session__find_first_evtype() will only be
-> in session.c. Seems we can further clean up the function and make it static.
-> Other than that, the patch looks good to me.
-> 
->   Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+On Mon, Sep 13, 2021 at 9:53 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Mon, Sep 13, 2021 at 11:39 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 10:58 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, Sep 13, 2021 at 09:52:33PM +0530, Naresh Kamboju wrote:
+> > > > [PATCH 00/10] raise minimum GCC version to 5.1
+> > > > https://lore.kernel.org/lkml/20210910234047.1019925-1-ndesaulniers@google.com/
+> > >
+> > > Has anyone submitted a fix for this upstream yet?  I can't seem to find
+> > > one :(
+> >
+> > That lore link has a series to address this, though that's maybe
+> > something we don't want to backport to stable.
+> >
+> > I thought about this all weekend; I think I might be able to work
+> > around the one concern I had with my other approach, using
+> > __builtin_choose_expr().
+> >
+> > There's an issue with my alternative approach
+> > (https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863)
+> > with declaring the local variable z in div_64() since either operand
+> > could be 64b, which result in an unwanted truncation if the dividend
+> > is 32b (or less, and divisor is 64b). I think (what I realized this
+> > weekend) is that we might be able to replace the `if` with
+> > `__builtin_choose_expr`, then have that whole expression be the final
+> > statement and thus the "return value" of the statement expression.
+>
+> Christ...that...works? Though, did Linus just merge my patches for gcc 5.1?
+>
 
-Thanks, applied.
+"Merge branch 'gcc-min-version-5.1' (make gcc-5.1 the minimum version)"
 
-- Arnaldo
+- Sedat -
 
+https://git.kernel.org/linus/316346243be6df12799c0b64b788e06bad97c30b
+
+> Anyways, I'll send something like this for stable:
+> ---
+>
+> diff --git a/include/linux/math64.h b/include/linux/math64.h
+> index 2928f03d6d46..e9ab8c25f8d3 100644
+> --- a/include/linux/math64.h
+> +++ b/include/linux/math64.h
+> @@ -11,6 +11,9 @@
+>
+>  #define div64_long(x, y) div64_s64((x), (y))
+>  #define div64_ul(x, y)   div64_u64((x), (y))
+> +#ifndef is_signed_type
+> +#define is_signed_type(type)       (((type)(-1)) < (type)1)
+> +#endif
+>
+>  /**
+>   * div_u64_rem - unsigned 64bit divide with 32bit divisor with remainder
+> @@ -112,6 +115,15 @@ extern s64 div64_s64(s64 dividend, s64 divisor);
+>
+>  #endif /* BITS_PER_LONG */
+>
+> +#define div64_x64(dividend, divisor) ({                        \
+> +       BUILD_BUG_ON_MSG(sizeof(dividend) < sizeof(u64),\
+> +                        "prefer div_x64");             \
+> +       __builtin_choose_expr(                          \
+> +               is_signed_type(typeof(dividend)),       \
+> +               div64_s64(dividend, divisor),           \
+> +               div64_u64(dividend, divisor));          \
+> +})
+> +
+>  /**
+>   * div_u64 - unsigned 64bit divide with 32bit divisor
+>   * @dividend: unsigned 64bit dividend
+> @@ -142,6 +154,28 @@ static inline s64 div_s64(s64 dividend, s32 divisor)
+>  }
+>  #endif
+>
+> +#define div_x64(dividend, divisor) ({                  \
+> +       BUILD_BUG_ON_MSG(sizeof(dividend) > sizeof(u32),\
+> +                        "prefer div64_x64");           \
+> +       __builtin_choose_expr(                          \
+> +               is_signed_type(typeof(dividend)),       \
+> +               div_s64(dividend, divisor),             \
+> +               div_u64(dividend, divisor));            \
+> +})
+> +
+> +// TODO: what if divisor is 128b?
+> +#define div_64(dividend, divisor) ({
+>          \
+> +       __builtin_choose_expr(
+>          \
+> +               __builtin_types_compatible_p(typeof(dividend), s64) ||
+>          \
+> +               __builtin_types_compatible_p(typeof(dividend), u64),
+>          \
+> +               __builtin_choose_expr(
+>          \
+> +                       __builtin_types_compatible_p(typeof(divisor),
+> s64) ||   \
+> +                       __builtin_types_compatible_p(typeof(divisor),
+> u64),     \
+> +                       div64_x64(dividend, divisor),
+>          \
+> +                       div_x64(dividend, divisor)),
+>          \
+> +               dividend / divisor);
+>          \
+> +})
+> +
+>  u32 iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder);
+>
+>  #ifndef mul_u32_u32
+> ---
+> --
+> Thanks,
+> ~Nick Desaulniers
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew%40mail.gmail.com.
