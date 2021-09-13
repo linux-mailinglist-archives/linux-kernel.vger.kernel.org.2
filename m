@@ -2,183 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0570B409D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A06E409D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240640AbhIMTcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239505AbhIMTcW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:32:22 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7667BC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:31:06 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id f21so4302971plb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t8tfRr4pDfwNBQ7+2uutj5zJKW753YHlsVVOI6R4V1g=;
-        b=SsiOFCJ61FtdyEwlHuuUPngVYXdsKbEzdCt0gPMgprmMChpMxdMnX02ut+TP+jS5wY
-         jMF3dwWGOVCP+DRWrobbuKP5oamplIR5xnKsq4GAs1bZHSQn1SCTUGhsUlqSXuqU+qzG
-         c1i/CiVL0T34mL+WEqkCKmAgiL17FLGPaBmunrrcqcoSSfrbATEIZzjqfAeYtiEKiuyy
-         8Ycy3Ep3pkfNBZ3QG08EcilnQpmqjotvFGWcvrR3rjL8S3KYFwqGdVK878yfoRwo0lYa
-         ELWeakQGKAVw29XZfobwozmMZBsZgACMCPc3lCLLQlpK1ITY1wH4ekjAFicLvfFbcUBm
-         md4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t8tfRr4pDfwNBQ7+2uutj5zJKW753YHlsVVOI6R4V1g=;
-        b=44y4n2z1BfIQngW+sfxQgSSCOtFpW2vOa892ICboFk+7spioEPY8yfv5aB3GinlCtI
-         NbNN4s7HBV/YW0aZ4YipziXPMBnRKXs4XZyU9AvGsDXUQom3lgtAXX1FvYWAbWaxkWAu
-         MUi//dw0m/I9a+SJmpf4fMVF7cqjT/04OwPDKkF4se2evaYqrxzJCZrFqLwXvINtPAKL
-         AHbUpYbhEmaol4UvWD1WlHZRn0aLgANX5XFGzBjvoxfFYfW45xFcQJPuhk+XHLSSLgYh
-         WTcLFwxClDfgp1X0xM9n+axSNdH0nx+XU0nk41dCG7JlMH7rHYh/4tAYBK+OQFQpcEEH
-         EzEA==
-X-Gm-Message-State: AOAM532kXleG51TdRto25WrpEKW08pukBU1LgKm/px0Lw4s2l7YoFHRC
-        aqjGJGZ9eWRdyyhwTc4RqsGcuHLQ5jcZlA==
-X-Google-Smtp-Source: ABdhPJxuwSI85i/xe46Nka94nE+DuxtOTejLTQJx8lZFP9sntveoLX/giHUgMr8cZ4l4bQo/v65q3g==
-X-Received: by 2002:a17:903:2c2:b029:101:9c88:d928 with SMTP id s2-20020a17090302c2b02901019c88d928mr11767178plk.62.1631561465400;
-        Mon, 13 Sep 2021 12:31:05 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:7b92:14a1:4f7c:6560])
-        by smtp.gmail.com with ESMTPSA id j17sm8126169pfn.148.2021.09.13.12.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 12:31:04 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 12:30:58 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "bleung@chromium.org" <bleung@chromium.org>,
-        "badhri@google.com" <badhri@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
-Message-ID: <YT+m8jr8Ehe3R55G@google.com>
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-3-pmalani@chromium.org>
- <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
- <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+        id S241386AbhIMTep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:34:45 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61836 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235290AbhIMTen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:34:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="208874723"
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="208874723"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 12:33:27 -0700
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="609187491"
+Received: from holdensm-mobl.amr.corp.intel.com (HELO [10.212.147.16]) ([10.212.147.16])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 12:33:26 -0700
+Subject: Re: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210913131153.1202354-3-pbonzini@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <50287173-0afb-36f4-058e-0960fb4017a7@intel.com>
+Date:   Mon, 13 Sep 2021 12:33:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EwOD/L4uVEvwhlPZ"
-Content-Disposition: inline
-In-Reply-To: <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <20210913131153.1202354-3-pbonzini@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/13/21 6:11 AM, Paolo Bonzini wrote:
+> +static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
+> +{
+> +	struct sgx_epc_page *entry;
+> +	unsigned long index;
+> +	long failures = 0;
+> +
+> +	xa_for_each(&vepc->page_array, index, entry)
+> +		if (sgx_vepc_remove_page(entry))
+> +			failures++;
+> +
+> +	/*
+> +	 * Return the number of pages that failed to be removed, so
+> +	 * userspace knows that there are still SECS pages lying
+> +	 * around.
+> +	 */
+> +	return failures;
+> +}
 
---EwOD/L4uVEvwhlPZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not sure the retry logic should be in userspace.  Also, is this
+strictly limited to SECS pages?  It could also happen if there were
+enclaves running that used the page.  Granted, userspace can probably
+stop all the vcpus, but the *interface* doesn't prevent it being called
+like that.
 
-Hi Adam and Heikki,
+What else can userspace do but:
 
-On Mon, Sep 13, 2021 at 03:15:46PM +0000, Adam Thomson wrote:
-> On 13 September 2021 14:30, Heikki Krogerus wrote:
-> >
-> > My plan is to register a separate power supply for each PDO. So for
-> > every source PDO and every sink PDO a port has in its capabilities,
-> > you'll have a separate power supply registered, and the same for the
-> > partner when it's connected. With every connection there should always
-> > be one active (online) source psy and active sink psy (if the port is
-> > source, one of the port's source psys will be active and the partner
-> > will have the active sink psy, or vise versa - depending on the role).
-> >
-> > Each PDO represents a "Power Supply" so to me that approach just
-> > makes the most sense. It will require a bit of work in kernel, however
-> > in user space it should mean that we only have a single new attribute
-> > file for the power supplies named "pdo" that returns a single PDO.
-> >
-> > Let me know if you guys see any obvious problems with the idea.
-> > Otherwise, that is how we really need to do this. That will make
-> > things much more clear in user space. I have a feeling it will make
-> > things easier in kernel as well in the long run.
-> >
-> > Adding Adam and Guenter. It would be good if you guys could comment
-> > the idea as well.
->=20
-> Hi Heikki,
->=20
-> Thanks for CCing me. My two pence worth is that I always envisaged the PSY
-> representation as being 1 PSY for 1 power source. I consider this in a
-> similar manner to the Regulator framework, where 1 regulator can support =
-a range
-> of voltages and currents, but this is covered by 1 regulator instance as =
-it's
-> just a single output. For USB-PD we have a number of options for voltage/=
-current
-> combos, including PPS which is even lower granularity, but it's still onl=
-y one
-> port. I get the feeling that having PSY instances for each and every PDO =
-might
-> be a little confusing and these will never be concurrent.
->=20
-> However, I'd be keen to understand further and see what restrictions/issu=
-es are
-> currently present as I probably don't have a complete view of this right =
-now. I
-> wouldn't want to dismiss something out of turn, especially when you obvio=
-usly
-> have good reason to suggest such an approach.
+	ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
+	if (ret)
+		ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
+	if (ret)
+		printf("uh oh\n");
 
-I thought of one more potential downside to one-psy-per-pdo:
+We already have existing code to gather up the pages that couldn't be
+EREMOVE'd and selectively EREMOVE them again.  Why not reuse that code
+here?  If there is 100GB of EPC, it's gotta be painful to run through
+the ->page_array twice when once plus a small list iteration will do.
 
-Remember that a source or sink's Capabilities may dynamically change without
-a port disconnect, and this could make one-psy-per-pdo much more chatty with
-power supply deletions and re-registrations on load balancing events.
-
-At basically any time, a power source may send a new SRC_CAP to the sink wh=
-ich
-adjusts, deletes, or adds to the list of PDOs, without the connection state
-machine registering a disconnect.
-
-In a real world case, I have a charger in my kitchen that has 2 USB-C ports
-and supports a total of 30W output. When one device is plugged in:
-5V 3A, 9V 3A, 15V 2A
-However, when two devices are plugged in, each sees:
-5V 3A
-
-The load balancing event would result in two power supply deletions, whereas
-if it were a single psy per power supply (incorporating the list of PDO cho=
-ices)
-it would just be a single PROP_CHANGED event.
-
-It seems cleaner to me to have deletions and additions only possible when t=
-he
-thing is unplugged or plugged.
-
-Thanks,
-Benson
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---EwOD/L4uVEvwhlPZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYT+m8gAKCRBzbaomhzOw
-wtH2APoDV1gSfN+pPGCY8Vu2eranOxsb9iPXHEdCwBTAw09zaQEAsWkCmW/nU+5k
-DKM6H/4JTFwKE559RgzaBiVpAFgzaAo=
-=etoe
------END PGP SIGNATURE-----
-
---EwOD/L4uVEvwhlPZ--
+Which reminds me...  Do we need a cond_resched() in there or anything?
+That loop could theoretically get really, really long.
