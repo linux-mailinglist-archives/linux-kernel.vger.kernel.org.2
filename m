@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6287840910F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53F8408E7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244660AbhIMN6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
+        id S243079AbhIMNey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:34:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244824AbhIMNzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:55:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81FB46124A;
-        Mon, 13 Sep 2021 13:35:33 +0000 (UTC)
+        id S241069AbhIMN24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:28:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8E046108B;
+        Mon, 13 Sep 2021 13:23:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540134;
-        bh=E6Ko0Dh8PQIrm2t1fWvgN2n4AudnrxF/bkAePU23Rgw=;
+        s=korg; t=1631539432;
+        bh=c4O0i1G9vQwlfugXB5GKGILv3p/pg/WFfWyrERkDfDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=opbsK47FLiGj7uc/9trZ8yw/X/qlm15rFikLSDXdEQuDGPX543Bxq++akRk2xIJQ+
-         thn4lUIcsrr4HxvoJH0+zYcU2zQtTAQZ4loZ0cOU7PnFQQ5O0exZuAr9axCvhig1Al
-         HqU823plZBLarevORxiNy4CV5siEs3x+DsSu6EzM=
+        b=LpVHBlBqfEOH6uzSb+SrP9Xpn3Gs//g/iFKa73XcS6QVOStVWJgd+0yjGv3L1mffD
+         Cl13HBKhAjTHeTQJJOITaBPIbEmc4qvjhmEIaiIfrYPc6uI566y1w6iogrU5YPYy8u
+         ijXvaky83qzZJ0NELPa5Hqa62OgeihA1XJbKVU7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Peter <sven@svenpeter.dev>,
-        Hector Martin <marcan@marcan.st>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 066/300] irqchip/apple-aic: Fix irq_disable from within irq handlers
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 022/236] power: supply: smb347-charger: Add missing pin control activation
 Date:   Mon, 13 Sep 2021 15:12:07 +0200
-Message-Id: <20210913131111.595522253@linuxfoundation.org>
+Message-Id: <20210913131101.094706368@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Peter <sven@svenpeter.dev>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 60a1cd10b222e004f860d14651e80089c77e8e6b ]
+[ Upstream commit efe2175478d5237949e33c84d9a722fc084b218c ]
 
-When disable_irq_nosync for an interrupt is called from within its
-interrupt handler, this interrupt is only marked as disabled with the
-intention to mask it when it triggers again.
-The AIC hardware however automatically masks the interrupt when it is read.
-aic_irq_eoi then unmasks it again if it's not disabled *and* not masked.
-This results in a state mismatch between the hardware state and the
-state kept in irq_data: The hardware interrupt is masked but
-IRQD_IRQ_MASKED is not set. Any further calls to unmask_irq will directly
-return and the interrupt can never be enabled again.
+Pin control needs to be activated by setting the enable bit, otherwise
+hardware rejects all pin changes. Previously this stayed unnoticed on
+Nexus 7 because pin control was enabled by default after rebooting from
+downstream kernel, which uses driver that enables the bit and charger
+registers are non-volatile until power supply (battery) is disconnected.
+Configure the pin control enable bit. This fixes the potentially
+never-enabled charging on devices that use pin control.
 
-Fix this by keeping the hardware and irq_data state in sync by unmasking in
-aic_irq_eoi if and only if the irq_data state also assumes the interrupt to
-be unmasked.
-
-Fixes: 76cde2639411 ("irqchip/apple-aic: Add support for the Apple Interrupt Controller")
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
-Acked-by: Hector Martin <marcan@marcan.st>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210812100942.17206-1-sven@svenpeter.dev
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-apple-aic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/smb347-charger.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/irqchip/irq-apple-aic.c b/drivers/irqchip/irq-apple-aic.c
-index c179e27062fd..151aab408fa6 100644
---- a/drivers/irqchip/irq-apple-aic.c
-+++ b/drivers/irqchip/irq-apple-aic.c
-@@ -225,7 +225,7 @@ static void aic_irq_eoi(struct irq_data *d)
- 	 * Reading the interrupt reason automatically acknowledges and masks
- 	 * the IRQ, so we just unmask it here if needed.
- 	 */
--	if (!irqd_irq_disabled(d) && !irqd_irq_masked(d))
-+	if (!irqd_irq_masked(d))
- 		aic_irq_unmask(d);
- }
+diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
+index 8cfbd8d6b478..912e2184f918 100644
+--- a/drivers/power/supply/smb347-charger.c
++++ b/drivers/power/supply/smb347-charger.c
+@@ -56,6 +56,7 @@
+ #define CFG_PIN_EN_CTRL_ACTIVE_LOW		0x60
+ #define CFG_PIN_EN_APSD_IRQ			BIT(1)
+ #define CFG_PIN_EN_CHARGER_ERROR		BIT(2)
++#define CFG_PIN_EN_CTRL				BIT(4)
+ #define CFG_THERM				0x07
+ #define CFG_THERM_SOFT_HOT_COMPENSATION_MASK	0x03
+ #define CFG_THERM_SOFT_HOT_COMPENSATION_SHIFT	0
+@@ -725,6 +726,15 @@ static int smb347_hw_init(struct smb347_charger *smb)
+ 	if (ret < 0)
+ 		goto fail;
  
++	/* Activate pin control, making it writable. */
++	switch (smb->enable_control) {
++	case SMB3XX_CHG_ENABLE_PIN_ACTIVE_LOW:
++	case SMB3XX_CHG_ENABLE_PIN_ACTIVE_HIGH:
++		ret = regmap_set_bits(smb->regmap, CFG_PIN, CFG_PIN_EN_CTRL);
++		if (ret < 0)
++			goto fail;
++	}
++
+ 	/*
+ 	 * Make the charging functionality controllable by a write to the
+ 	 * command register unless pin control is specified in the platform
 -- 
 2.30.2
 
