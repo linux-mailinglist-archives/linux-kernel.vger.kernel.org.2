@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433B2408D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86055408FD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241249AbhIMNXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37736 "EHLO mail.kernel.org"
+        id S243026AbhIMNrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240787AbhIMNVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20698610D1;
-        Mon, 13 Sep 2021 13:20:19 +0000 (UTC)
+        id S243168AbhIMNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:42:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E988F6140A;
+        Mon, 13 Sep 2021 13:29:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539220;
-        bh=hz+FCjRyrHYKNnCaXFg+Cr7J/8r92pasC0qfYDzeeVw=;
+        s=korg; t=1631539797;
+        bh=hhogL4zU8gQLQND8wGSuGABv5pVKNw0UCU4ZuCVRets=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zt2KgZRW8rx445MLAdTnwylxBES2h4loafJN8pXPf9EDI7aBo4gOHYO6orqLT/iZj
-         yvpBXM1LpuRFkMsmRsWfHdP+V7c/h0QOi6eJCuhYgkEzN66KIChGP+hFfxIIo/wHFK
-         sYiKKL1fBA6Cig+b50Vq+CiMn5y0rrEILM+fJ6tU=
+        b=eFDAEn6RmqifpMjfXHZCSqjNE+YcYmVwM6TzC5YZzhK4YCPjQMCtEh1ECBz8Z6ewH
+         T+6z3UaB2VFyqoQHeEgnjegl+f3KgMHaKBkVyyjpiIGH19wJuHSTFmuq2EZXS/wKxb
+         fBKW2fCfsbkdm6rgSUUU7IZ9N8ecgzK7SR8/XuKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 086/144] Bluetooth: fix repeated calls to sco_sock_kill
-Date:   Mon, 13 Sep 2021 15:14:27 +0200
-Message-Id: <20210913131050.833305156@linuxfoundation.org>
+Subject: [PATCH 5.10 163/236] locking/lockdep: Mark local_lock_t
+Date:   Mon, 13 Sep 2021 15:14:28 +0200
+Message-Id: <20210913131105.926705272@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +40,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59 ]
+[ Upstream commit dfd5e3f5fe27bda91d5cc028c86ffbb7a0614489 ]
 
-In commit 4e1a720d0312 ("Bluetooth: avoid killing an already killed
-socket"), a check was added to sco_sock_kill to skip killing a socket
-if the SOCK_DEAD flag was set.
+The local_lock_t's are special, because they cannot form IRQ
+inversions, make sure we can tell them apart from the rest of the
+locks.
 
-This was done after a trace for a use-after-free bug showed that the
-same sock pointer was being killed twice.
-
-Unfortunately, this check prevents sco_sock_kill from running on any
-socket. sco_sock_kill kills a socket only if it's zapped and orphaned,
-however sock_orphan announces that the socket is dead before detaching
-it. i.e., orphaned sockets have the SOCK_DEAD flag set.
-
-To fix this, we remove the check for SOCK_DEAD, and avoid repeated
-calls to sco_sock_kill by removing incorrect calls in:
-
-1. sco_sock_timeout. The socket should not be killed on timeout as
-further processing is expected to be done. For example,
-sco_sock_connect sets the timer then waits for the socket to be
-connected or for an error to be returned.
-
-2. sco_conn_del. This function should clean up resources for the
-connection, but the socket itself should be cleaned up in
-sco_sock_release.
-
-3. sco_sock_close. Calls to sco_sock_close in sco_sock_cleanup_listen
-and sco_sock_release are followed by sco_sock_kill. Hence the
-duplicated call should be removed.
-
-Fixes: 4e1a720d0312 ("Bluetooth: avoid killing an already killed socket")
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/sco.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ include/linux/local_lock_internal.h |  5 ++++-
+ include/linux/lockdep.h             | 15 ++++++++++++---
+ include/linux/lockdep_types.h       | 18 ++++++++++++++----
+ kernel/locking/lockdep.c            | 16 +++++++++-------
+ 4 files changed, 39 insertions(+), 15 deletions(-)
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 335264706aae..1b7540cb8e5c 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -84,7 +84,6 @@ static void sco_sock_timeout(struct timer_list *t)
- 	sk->sk_state_change(sk);
- 	bh_unlock_sock(sk);
- 
--	sco_sock_kill(sk);
- 	sock_put(sk);
- }
- 
-@@ -176,7 +175,6 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
- 		sco_sock_clear_timer(sk);
- 		sco_chan_del(sk, err);
- 		bh_unlock_sock(sk);
--		sco_sock_kill(sk);
- 		sock_put(sk);
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index 4a8795b21d77..ded90b097e6e 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -18,6 +18,7 @@ typedef struct {
+ 	.dep_map = {					\
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_CONFIG,	\
++		.lock_type = LD_LOCK_PERCPU,			\
  	}
+ #else
+ # define LL_DEP_MAP_INIT(lockname)
+@@ -30,7 +31,9 @@ do {								\
+ 	static struct lock_class_key __key;			\
+ 								\
+ 	debug_check_no_locks_freed((void *)lock, sizeof(*lock));\
+-	lockdep_init_map_wait(&(lock)->dep_map, #lock, &__key, 0, LD_WAIT_CONFIG);\
++	lockdep_init_map_type(&(lock)->dep_map, #lock, &__key, 0, \
++			      LD_WAIT_CONFIG, LD_WAIT_INV,	\
++			      LD_LOCK_PERCPU);			\
+ } while (0)
  
-@@ -393,8 +391,7 @@ static void sco_sock_cleanup_listen(struct sock *parent)
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index f5594879175a..20b6797babe2 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -185,12 +185,19 @@ extern void lockdep_unregister_key(struct lock_class_key *key);
+  * to lockdep:
   */
- static void sco_sock_kill(struct sock *sk)
+ 
+-extern void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
+-	struct lock_class_key *key, int subclass, short inner, short outer);
++extern void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
++	struct lock_class_key *key, int subclass, u8 inner, u8 outer, u8 lock_type);
++
++static inline void
++lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
++		       struct lock_class_key *key, int subclass, u8 inner, u8 outer)
++{
++	lockdep_init_map_type(lock, name, key, subclass, inner, LD_WAIT_INV, LD_LOCK_NORMAL);
++}
+ 
+ static inline void
+ lockdep_init_map_wait(struct lockdep_map *lock, const char *name,
+-		      struct lock_class_key *key, int subclass, short inner)
++		      struct lock_class_key *key, int subclass, u8 inner)
  {
--	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket ||
--	    sock_flag(sk, SOCK_DEAD))
-+	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
- 		return;
- 
- 	BT_DBG("sk %p state %d", sk, sk->sk_state);
-@@ -446,7 +443,6 @@ static void sco_sock_close(struct sock *sk)
- 	lock_sock(sk);
- 	__sco_sock_close(sk);
- 	release_sock(sk);
--	sco_sock_kill(sk);
+ 	lockdep_init_map_waits(lock, name, key, subclass, inner, LD_WAIT_INV);
  }
+@@ -340,6 +347,8 @@ static inline void lockdep_set_selftest_task(struct task_struct *task)
+ # define lock_set_class(l, n, k, s, i)		do { } while (0)
+ # define lock_set_subclass(l, s, i)		do { } while (0)
+ # define lockdep_init()				do { } while (0)
++# define lockdep_init_map_type(lock, name, key, sub, inner, outer, type) \
++		do { (void)(name); (void)(key); } while (0)
+ # define lockdep_init_map_waits(lock, name, key, sub, inner, outer) \
+ 		do { (void)(name); (void)(key); } while (0)
+ # define lockdep_init_map_wait(lock, name, key, sub, inner) \
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index 9a1fd49df17f..2ec9ff5a7fff 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -30,6 +30,12 @@ enum lockdep_wait_type {
+ 	LD_WAIT_MAX,		/* must be last */
+ };
  
- static void sco_sock_init(struct sock *sk, struct sock *parent)
++enum lockdep_lock_type {
++	LD_LOCK_NORMAL = 0,	/* normal, catch all */
++	LD_LOCK_PERCPU,		/* percpu */
++	LD_LOCK_MAX,
++};
++
+ #ifdef CONFIG_LOCKDEP
+ 
+ /*
+@@ -119,8 +125,10 @@ struct lock_class {
+ 	int				name_version;
+ 	const char			*name;
+ 
+-	short				wait_type_inner;
+-	short				wait_type_outer;
++	u8				wait_type_inner;
++	u8				wait_type_outer;
++	u8				lock_type;
++	/* u8				hole; */
+ 
+ #ifdef CONFIG_LOCK_STAT
+ 	unsigned long			contention_point[LOCKSTAT_POINTS];
+@@ -169,8 +177,10 @@ struct lockdep_map {
+ 	struct lock_class_key		*key;
+ 	struct lock_class		*class_cache[NR_LOCKDEP_CACHING_CLASSES];
+ 	const char			*name;
+-	short				wait_type_outer; /* can be taken in this context */
+-	short				wait_type_inner; /* presents this context */
++	u8				wait_type_outer; /* can be taken in this context */
++	u8				wait_type_inner; /* presents this context */
++	u8				lock_type;
++	/* u8				hole; */
+ #ifdef CONFIG_LOCK_STAT
+ 	int				cpu;
+ 	unsigned long			ip;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 8ae9d7abebc0..5184f6896815 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -1293,6 +1293,7 @@ register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+ 	class->name_version = count_matching_names(class);
+ 	class->wait_type_inner = lock->wait_type_inner;
+ 	class->wait_type_outer = lock->wait_type_outer;
++	class->lock_type = lock->lock_type;
+ 	/*
+ 	 * We use RCU's safe list-add method to make
+ 	 * parallel walking of the hash-list safe:
+@@ -4621,9 +4622,9 @@ print_lock_invalid_wait_context(struct task_struct *curr,
+  */
+ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ {
+-	short next_inner = hlock_class(next)->wait_type_inner;
+-	short next_outer = hlock_class(next)->wait_type_outer;
+-	short curr_inner;
++	u8 next_inner = hlock_class(next)->wait_type_inner;
++	u8 next_outer = hlock_class(next)->wait_type_outer;
++	u8 curr_inner;
+ 	int depth;
+ 
+ 	if (!next_inner || next->trylock)
+@@ -4646,7 +4647,7 @@ static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+ 
+ 	for (; depth < curr->lockdep_depth; depth++) {
+ 		struct held_lock *prev = curr->held_locks + depth;
+-		short prev_inner = hlock_class(prev)->wait_type_inner;
++		u8 prev_inner = hlock_class(prev)->wait_type_inner;
+ 
+ 		if (prev_inner) {
+ 			/*
+@@ -4695,9 +4696,9 @@ static inline int check_wait_context(struct task_struct *curr,
+ /*
+  * Initialize a lock instance's lock-class mapping info:
+  */
+-void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
++void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
+ 			    struct lock_class_key *key, int subclass,
+-			    short inner, short outer)
++			    u8 inner, u8 outer, u8 lock_type)
+ {
+ 	int i;
+ 
+@@ -4720,6 +4721,7 @@ void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
+ 
+ 	lock->wait_type_outer = outer;
+ 	lock->wait_type_inner = inner;
++	lock->lock_type = lock_type;
+ 
+ 	/*
+ 	 * No key, no joy, we need to hash something.
+@@ -4754,7 +4756,7 @@ void lockdep_init_map_waits(struct lockdep_map *lock, const char *name,
+ 		raw_local_irq_restore(flags);
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(lockdep_init_map_waits);
++EXPORT_SYMBOL_GPL(lockdep_init_map_type);
+ 
+ struct lock_class_key __lockdep_no_validate__;
+ EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
 -- 
 2.30.2
 
