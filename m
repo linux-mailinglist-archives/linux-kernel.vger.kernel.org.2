@@ -2,267 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B14C40A183
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E1940A180
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348913AbhIMXUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349898AbhIMXTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:19:42 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53668C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:15:35 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id v33-20020a634821000000b002530e4cca7bso8254265pga.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:15:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=OJUJ/G3zC1b4Z9o1W9flPqwMXALLxJZOAldSdB+trN4=;
-        b=Le1IOiRtvK2Q/4M/7226GBYQtY0tnIK5LDNEsHLRvV7iw/bMF7cBqowLWqL9GraMmk
-         Fy2pC7yJEHlLuJia5/DLVz+yoOewI7bDGgmaeXQjVgqAR7W0A0zJlnbspSR46P08iHLx
-         XbvzOq90zNqHPwqFLvP0NDtD8ha5YLUIsOQh25ORixCcmGrcPFceySOBj3AyeNB8Jlre
-         fgBfvDtKPXd93pbGduuQ2J4psKOQ/s1v91v0UWeOj6zob40BppjdTWMwZz1PI8CkBLBJ
-         TPvuyPnVVpiAHCoIjw/ik7Vj/vBhiHMn9JFK3VKzmRYHdEjAR5r/3uyN97V+pNcEVRcs
-         MoVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=OJUJ/G3zC1b4Z9o1W9flPqwMXALLxJZOAldSdB+trN4=;
-        b=nG+j83qpi3X6XYtfi2yeteB8bGoZ6ILHDzttpKsQwLT/Xlq+zzGRhDqeEWWMe9x9Av
-         mIcjJLb4t0UStALafKneRqz7/qnpQb1Jbg6RbtWUTPv1xGV5hftb+xR6pQVEXd56bXa1
-         cpEgqNQQgdWRr+fYgGe7cE/VWhTnmNVRCJn2NIWwVUYqjrCU9sPdPCfNHo8/h0SsCo8W
-         Kub37by8ugad3kgaJdYe8N0JICVWAHSwpEfzxHqxvodP/Jog+T+qbtTEEAHG16AoDCBc
-         X8MJWBqrVtdeKMRiurdQk9T8owxSK9+Gsxla+Kvh+CwIPmPu1fbAikb6PA80/c8MN2+6
-         Kmqw==
-X-Gm-Message-State: AOAM532KfZCFak5lPd9NpWr2ucM/htaS9h596kH0oS/WIuDx0TaNWnGO
-        KR8cL1Wv0UwSHLOqAZ+pMgjquEzQ0ZIB
-X-Google-Smtp-Source: ABdhPJy+Arr+wnotNqM71ot546+ByLL4wIE3Zf+sQHT/w7oYp419OyZPkt8xubUH6mX3RNS3NSgMuhMutMg6
-X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
- (user=rananta job=sendgmr) by 2002:a17:902:d2c8:b0:13a:54b2:81c9 with SMTP id
- n8-20020a170902d2c800b0013a54b281c9mr12315470plc.21.1631574934788; Mon, 13
- Sep 2021 16:15:34 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 23:15:29 +0000
-Message-Id: <20210913231529.164325-1-rananta@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH v6 00/14] KVM: arm64: selftests: Introduce arch_timer selftest
-From:   Raghavendra Rao Ananta <rananta@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Raghavendra Rao Anata <rananta@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S245727AbhIMXUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:20:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349901AbhIMXTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 19:19:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EBDF61029;
+        Mon, 13 Sep 2021 23:17:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631575071;
+        bh=oJ/EkLBJ+9/labFTxJRLkG60NJuV4l0r9r0IVCBzc+g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PCc0RGpOEioYx+lAIGzyIx08Ls/q7Nu4OEIbhTchgXBUKAg8qiinxy54RfofWHgAg
+         y4Y6vjDqlTXDQmLnk9C+RNqOKD0xZs1AdO/GY8jxxRXfaBKetVmPeddSgHEGZXGjaG
+         KDNZQOPDrsLVFZ0dQAzvs6vYnubksdjZ7q2bHTrNOVxbPdDyhHvNQsM9pEekOxU6IA
+         M8zTyE21AzCHOTZl9vynm/G7u17M79zVeQxWe9UzUeijodIrWFsoCpXBvGmhomR1BW
+         q2n1HzESQqzhAM0SE3gRnKF8JOzERhmWbIYnZlnq2fVPjl6mxBSp5fTW/v1njw/0r7
+         +Wc7Or7QtnrSA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 540F55C048F; Mon, 13 Sep 2021 16:17:51 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:17:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Chun-Hung Tseng <henrybear327@gmail.com>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Huang <jserv@ccns.ncku.edu.tw>
+Subject: Re: [PATCH] rcu: replace _________p1 with __UNIQUE_ID(rcu)
+Message-ID: <20210913231751.GA2495405@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210912204131.93206-1-henrybear327@gmail.com>
+ <20210913230430.GM4156@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913230430.GM4156@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 13, 2021 at 04:04:30PM -0700, Paul E. McKenney wrote:
+> On Mon, Sep 13, 2021 at 04:41:31AM +0800, Chun-Hung Tseng wrote:
+> > This commit replaced _________p1 with __UNIQUE_ID(rcu), which
+> > generates unique variable names during compilation. Necessary
+> > modifications due to the changes in the RCU macros have also been
+> > reflected in this commit.
+> > 
+> > The same idea is used for the min/max macros (commit 589a978 and commit
+> > e9092d0), which aims to reduce variable shadowing issues caused by hard
+> > coded variable names.
+> > 
+> > Signed-off-by: Jim Huang <jserv@ccns.ncku.edu.tw>
+> > Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
+> 
+> OK, I will bite...
+> 
+> > ---
+> >  include/linux/rcupdate.h | 44 +++++++++++++++++++++++-----------------
+> >  include/linux/srcu.h     |  3 ++-
+> >  2 files changed, 27 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > index 434d12fe2d4f..a5ab20822040 100644
+> > --- a/include/linux/rcupdate.h
+> > +++ b/include/linux/rcupdate.h
+> > @@ -370,39 +370,41 @@ static inline void rcu_preempt_sleep_check(void) { }
+> >   * Converts @p from an __rcu pointer to a __kernel pointer.
+> >   * This allows an __rcu pointer to be used with xchg() and friends.
+> >   */
+> > -#define unrcu_pointer(p)						\
+> > +#define __unrcu_pointer(p, local)					\
+> >  ({									\
+> > -	typeof(*p) *_________p1 = (typeof(*p) *__force)(p);		\
+> > +	typeof(*p) *local = (typeof(*p) *__force)(p);			\
+> 
+> Why not like this?
+> 
+> 	typeof(*p) *__UNIQUE_ID(rcu) = (typeof(*p) *__force)(p);	\
+> 
+> Then we don't need the extra argument and the changes to the calls.
+> 
+> So what C-preprocessor subtlety am I missing?
 
-The patch series adds a KVM selftest to validate the behavior of
-ARM's generic timer (patch-13). The test programs the timer IRQs
-periodically, and for each interrupt, it validates the behaviour
-against the architecture specifications. The test further provides
-a command-line interface to configure the number of vCPUs, the
-period of the timer, and the number of iterations that the test
-has to run for.
+Never mind!!!  My suggested approach would generate a unique name at
+every use, except on non-gcc/non-clang compilers, which would obviously
+not do what we want.
 
-Patch-14 adds an option to randomly migrate the vCPUs to different
-physical CPUs across the system. The bug for the fix provided by
-Marc with commit 3134cc8beb69d0d ("KVM: arm64: vgic: Resample HW
-pending state on deactivation") was discovered using arch_timer
-test with vCPU migrations.
+							Thanx, Paul
 
-Since the test heavily depends on interrupts, patch-12 adds a host
-library to setup ARM Generic Interrupt Controller v3 (GICv3). This
-includes creating a vGIC device, setting up distributor and
-redistributor attributes, and mapping the guest physical addresses.
-Symmetrical to this, patch-11 adds a guest library to talk to the vGIC,
-which includes initializing the controller, enabling/disabling the
-interrupts, and so on.
-
-The following patches are utility patches that the above ones make use
-of:
-Patch-1 adds readl/writel support for guests to access MMIO space.
-
-Patch-2 imports arch/arm64/include/asm/sysreg.h into
-tools/arch/arm64/include/asm/ to make use of the register encodings
-and read/write definitions.
-
-Patch-3 is not directly related to the test, but makes
-aarch64/debug-exceptions.c use the read/write definitions from the
-imported sysreg.h and remove the existing definitions of read_sysreg()
-and write_sysreg().
-
-Patch-4 introduces ARM64_SYS_KVM_REG, that helps convert the SYS_*
-register encodings in sysreg.h to be acceptable by get_reg() and set_reg().
-It further replaces the users of ARM64_SYS_REG to use the new macro.
-
-Patch-5 adds the support for cpu_relax().
-
-Patch-6 adds basic arch_timer framework.
-
-Patch-7 adds udelay() support for the guests to utilize.
-
-Patch-8 adds local_irq_enable() and local_irq_disable() for the guests
-to enable/disable interrupts.
-
-Patch-9 adds the support to get the vcpuid for the guests. This allows
-them to access any cpu-centric private data in the upcoming patches.
-
-Patch-10 adds a light-weight support for spinlocks for the guests to
-use.
-
-The patch series, specifically the library support, is derived from the
-kvm-unit-tests and the kernel itself.
-
-Regards,
-Raghavendra
-
-v5 -> v6:
-
-- Corrected the syntax for write_sysreg_s in gic_v3.c (11/14) so that
-  the file can be compiled with the unmodified
-  arch/arm64/include/asm/sysreg.h that's imported into tools/.
-
-v4 -> v5:
-
-Addressed the comments by Andrew, Oliver, and Reiji (Thanks, again):
-- Squashed patches 17/18 and 18/18 into 3/18 and 14/18, respectively.
-- Dropped patches to keep track kvm_utils of nr_vcpus (12/18) and
-  vm_get_mode() (13/18) as they were no longer needed.
-- Instead of creating the a map, exporting the vcpuid to the guest
-  is done by using the TPIDR_EL1 register.
-- Just to be on the safer side, gic.c's gic_dist_init() explicitly
-  checks if gic_ops is NULL.
-- Move sysreg.h from within selftests to tool/arch/arm64/include/asm/.
-- Rename ARM64_SYS_KVM_REG to KVM_ARM64_SYS_REG to improve readability.
-- Use the GIC regions' sizes from asm/kvm.h instead of re-defining it
-  in the vgic host support.
-- Get the timer IRQ numbers via timer's device attributes
-  (KVM_ARM_VCPU_TIMER_IRQ_PTIMER, KVM_ARM_VCPU_TIMER_IRQ_VTIMER) instead
-  of depending on default numbers to be safe.
-- Add check to see if the vCPU migrations are in fact enabled, before
-  looking for at least two online physical CPUs for the test.
-- Add missing blank lines in the arch_timer test.
-
-v3 -> v4:
-
-Addressed the comments by Andrew, Oliver, and Ricardo (Thank you):
-- Reimplemented get_vcpuid() by exporting a map of vcpuid:mpidr to the
-  guest.
-- Import sysreg.h from arch/arm64/include/asm/sysreg.h to get the system
-  register encodings and its read/write support. As a result, delete the
-  existing definitions in processor.h.
-- Introduce ARM64_SYS_KVM_REG that converts SYS_* register definitions
-  from sysreg.h into the encodings accepted by get_reg() and set_reg().
-- Hence, remove the existing encodings of system registers (CPACR_EL1,
-  TCR_EL1, and friends) and replace all the its consumers throughout
-  the selftests with ARM64_SYS_KVM_REG.
-- Keep track of number of vCPUs in 'struct kvm_vm'.
-- Add a helper method to get the KVM VM's mode.
-- Modify the vGIC host function vgic_v3_setup to make use of the above
-  two helper methods, which prevents it from accepting nr_vcpus as
-  an argument.
-- Move the definition of REDIST_REGION_ATTR_ADDR from lib/aarch64/vgic.c
-  to include/aarch64/vgic.h.
-- Make the selftest, vgic_init.c, use the definition of REDIST_REGION_ATTR_ADDR
-  from include/aarch64/vgic.h.
-- Turn ON vCPU migration by default (-m 2).
-- Add pr_debug() to log vCPU migrations. Helpful for diagnosis.
-- Change TEST_ASSERT(false,...) to TEST_FAIL() in the base arch_timer
-  test.
-- Include linux/types.h for __force definitions.
-- Change the type of 'val' to 'int' in spin_lock() to match the lock
-  value type.
-- Fix typos in code files and comments.
-
-v2 -> v3:
-
-- Addressed the comments from Ricardo regarding moving the vGIC host
-  support for selftests to its own library.
-- Added an option (-m) to migrate the guest vCPUs to physical CPUs
-  in the system.
-
-v1 -> v2:
-
-Addressed comments from Zenghui in include/aarch64/arch_timer.h:
-- Correct the header description
-- Remove unnecessary inclusion of linux/sizes.h
-- Re-arrange CTL_ defines in ascending order
-- Remove inappropriate 'return' from timer_set_* functions, which
-  returns 'void'.
-
-v1: https://lore.kernel.org/kvmarm/20210813211211.2983293-1-rananta@google.com/
-v2: https://lore.kernel.org/kvmarm/20210818184311.517295-1-rananta@google.com/
-v3: https://lore.kernel.org/kvmarm/20210901211412.4171835-1-rananta@google.com/
-v4: https://lore.kernel.org/kvmarm/20210909013818.1191270-1-rananta@google.com/
-v5: https://lore.kernel.org/kvmarm/20210913204930.130715-1-rananta@google.com/
-
-Raghavendra Rao Ananta (14):
-  KVM: arm64: selftests: Add MMIO readl/writel support
-  tools: arm64: Import sysreg.h
-  KVM: arm64: selftests: Use read/write definitions from sysreg.h
-  KVM: arm64: selftests: Introduce ARM64_SYS_KVM_REG
-  KVM: arm64: selftests: Add support for cpu_relax
-  KVM: arm64: selftests: Add basic support for arch_timers
-  KVM: arm64: selftests: Add basic support to generate delays
-  KVM: arm64: selftests: Add support to disable and enable local IRQs
-  KVM: arm64: selftests: Add guest support to get the vcpuid
-  KVM: arm64: selftests: Add light-weight spinlock support
-  KVM: arm64: selftests: Add basic GICv3 support
-  KVM: arm64: selftests: Add host support for vGIC
-  KVM: arm64: selftests: Add arch_timer test
-  KVM: arm64: selftests: arch_timer: Support vCPU migration
-
- tools/arch/arm64/include/asm/sysreg.h         | 1296 +++++++++++++++++
- tools/testing/selftests/kvm/.gitignore        |    1 +
- tools/testing/selftests/kvm/Makefile          |    3 +-
- .../selftests/kvm/aarch64/arch_timer.c        |  479 ++++++
- .../selftests/kvm/aarch64/debug-exceptions.c  |   30 +-
- .../selftests/kvm/aarch64/psci_cpu_on_test.c  |    2 +-
- .../testing/selftests/kvm/aarch64/vgic_init.c |    3 +-
- .../kvm/include/aarch64/arch_timer.h          |  142 ++
- .../selftests/kvm/include/aarch64/delay.h     |   25 +
- .../selftests/kvm/include/aarch64/gic.h       |   21 +
- .../selftests/kvm/include/aarch64/processor.h |   88 +-
- .../selftests/kvm/include/aarch64/spinlock.h  |   13 +
- .../selftests/kvm/include/aarch64/vgic.h      |   20 +
- .../testing/selftests/kvm/include/kvm_util.h  |    2 +
- tools/testing/selftests/kvm/lib/aarch64/gic.c |   95 ++
- .../selftests/kvm/lib/aarch64/gic_private.h   |   21 +
- .../selftests/kvm/lib/aarch64/gic_v3.c        |  240 +++
- .../selftests/kvm/lib/aarch64/gic_v3.h        |   70 +
- .../selftests/kvm/lib/aarch64/processor.c     |   22 +-
- .../selftests/kvm/lib/aarch64/spinlock.c      |   27 +
- .../testing/selftests/kvm/lib/aarch64/vgic.c  |   70 +
- 21 files changed, 2624 insertions(+), 46 deletions(-)
- create mode 100644 tools/arch/arm64/include/asm/sysreg.h
- create mode 100644 tools/testing/selftests/kvm/aarch64/arch_timer.c
- create mode 100644 tools/testing/selftests/kvm/include/aarch64/arch_timer.h
- create mode 100644 tools/testing/selftests/kvm/include/aarch64/delay.h
- create mode 100644 tools/testing/selftests/kvm/include/aarch64/gic.h
- create mode 100644 tools/testing/selftests/kvm/include/aarch64/spinlock.h
- create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
- create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic.c
- create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_private.h
- create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
- create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
- create mode 100644 tools/testing/selftests/kvm/lib/aarch64/spinlock.c
- create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
-
--- 
-2.33.0.309.g3052b89438-goog
-
+> >  	rcu_check_sparse(p, __rcu);					\
+> > -	((typeof(*p) __force __kernel *)(_________p1)); 		\
+> > +	((typeof(*p) __force __kernel *)(local)); 			\
+> >  })
+> > +#define unrcu_pointer(p) __unrcu_pointer(p, __UNIQUE_ID(rcu))
+> >  
+> > -#define __rcu_access_pointer(p, space) \
+> > +#define __rcu_access_pointer(p, local, space) \
+> >  ({ \
+> > -	typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
+> > +	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+> >  	rcu_check_sparse(p, space); \
+> > -	((typeof(*p) __force __kernel *)(_________p1)); \
+> > +	((typeof(*p) __force __kernel *)(local)); \
+> >  })
+> > -#define __rcu_dereference_check(p, c, space) \
+> > +#define __rcu_dereference_check(p, local, c, space) \
+> >  ({ \
+> >  	/* Dependency order vs. p above. */ \
+> > -	typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
+> > +	typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+> >  	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
+> >  	rcu_check_sparse(p, space); \
+> > -	((typeof(*p) __force __kernel *)(________p1)); \
+> > +	((typeof(*p) __force __kernel *)(local)); \
+> >  })
+> > -#define __rcu_dereference_protected(p, c, space) \
+> > +#define __rcu_dereference_protected(p, local, c, space) \
+> >  ({ \
+> >  	RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
+> >  	rcu_check_sparse(p, space); \
+> >  	((typeof(*p) __force __kernel *)(p)); \
+> >  })
+> > -#define rcu_dereference_raw(p) \
+> > +#define __rcu_dereference_raw(p, local) \
+> >  ({ \
+> >  	/* Dependency order vs. p above. */ \
+> > -	typeof(p) ________p1 = READ_ONCE(p); \
+> > -	((typeof(*p) __force __kernel *)(________p1)); \
+> > +	typeof(p) local = READ_ONCE(p); \
+> > +	((typeof(*p) __force __kernel *)(local)); \
+> >  })
+> > +#define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
+> >  
+> >  /**
+> >   * RCU_INITIALIZER() - statically initialize an RCU-protected global variable
+> > @@ -489,7 +491,7 @@ do {									      \
+> >   * when tearing down multi-linked structures after a grace period
+> >   * has elapsed.
+> >   */
+> > -#define rcu_access_pointer(p) __rcu_access_pointer((p), __rcu)
+> > +#define rcu_access_pointer(p) __rcu_access_pointer((p), __UNIQUE_ID(rcu), __rcu)
+> >  
+> >  /**
+> >   * rcu_dereference_check() - rcu_dereference with debug checking
+> > @@ -525,7 +527,8 @@ do {									      \
+> >   * annotated as __rcu.
+> >   */
+> >  #define rcu_dereference_check(p, c) \
+> > -	__rcu_dereference_check((p), (c) || rcu_read_lock_held(), __rcu)
+> > +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> > +				(c) || rcu_read_lock_held(), __rcu)
+> >  
+> >  /**
+> >   * rcu_dereference_bh_check() - rcu_dereference_bh with debug checking
+> > @@ -540,7 +543,8 @@ do {									      \
+> >   * rcu_read_lock() but also rcu_read_lock_bh() into account.
+> >   */
+> >  #define rcu_dereference_bh_check(p, c) \
+> > -	__rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
+> > +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> > +				(c) || rcu_read_lock_bh_held(), __rcu)
+> >  
+> >  /**
+> >   * rcu_dereference_sched_check() - rcu_dereference_sched with debug checking
+> > @@ -555,7 +559,8 @@ do {									      \
+> >   * only rcu_read_lock() but also rcu_read_lock_sched() into account.
+> >   */
+> >  #define rcu_dereference_sched_check(p, c) \
+> > -	__rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
+> > +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> > +				(c) || rcu_read_lock_sched_held(), \
+> >  				__rcu)
+> >  
+> >  /*
+> > @@ -565,7 +570,8 @@ do {									      \
+> >   * The no-tracing version of rcu_dereference_raw() must not call
+> >   * rcu_read_lock_held().
+> >   */
+> > -#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
+> > +#define rcu_dereference_raw_check(p) \
+> > +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), 1, __rcu)
+> >  
+> >  /**
+> >   * rcu_dereference_protected() - fetch RCU pointer when updates prevented
+> > @@ -584,7 +590,7 @@ do {									      \
+> >   * but very ugly failures.
+> >   */
+> >  #define rcu_dereference_protected(p, c) \
+> > -	__rcu_dereference_protected((p), (c), __rcu)
+> > +	__rcu_dereference_protected((p), __UNIQUE_ID(rcu), (c), __rcu)
+> >  
+> >  
+> >  /**
+> > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> > index e6011a9975af..01226e4d960a 100644
+> > --- a/include/linux/srcu.h
+> > +++ b/include/linux/srcu.h
+> > @@ -117,7 +117,8 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
+> >   * lockdep_is_held() calls.
+> >   */
+> >  #define srcu_dereference_check(p, ssp, c) \
+> > -	__rcu_dereference_check((p), (c) || srcu_read_lock_held(ssp), __rcu)
+> > +	__rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+> > +				(c) || srcu_read_lock_held(ssp), __rcu)
+> >  
+> >  /**
+> >   * srcu_dereference - fetch SRCU-protected pointer for later dereferencing
+> > -- 
+> > 2.25.1
+> > 
