@@ -2,160 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4039A408503
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7AF4084EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbhIMG56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:57:58 -0400
-Received: from esa2.hc448-60.eu.iphmx.com ([207.54.71.102]:49099 "EHLO
-        esa2.hc448-60.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237453AbhIMG54 (ORCPT
+        id S237455AbhIMGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:51:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36302 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229634AbhIMGvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:57:56 -0400
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 02:57:56 EDT
-X-IronPort-AV: E=Sophos;i="5.85,288,1624312800"; 
-   d="scan'208";a="1743557"
-Received: from mail-he1eur01lp2053.outbound.protection.outlook.com (HELO EUR01-HE1-obe.outbound.protection.outlook.com) ([104.47.0.53])
-  by ob1.hc448-60.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 08:49:29 +0200
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ne5FYBwddqX6N5enycIWa0E46qgMzg1kg5ikIynqPw8F1s33noRvV6S5SFJ20B9Q18pmg7wVA8MFQPBBU1HFNoR8YqSARvRDLBvXGO9ebvffFUf8UYPrw1V7r7d1lrZiWtqxGSO9IgHTkOaz2bD7F6/F7u1Bb5qg6s9iAnZM3wT/8JUH84blgcTnhgmtLGY0psY54bB4kAiuFCQXASoZajWgk96yhZb9fPuXlaDH4/2ROytkSHWdHXiwGONbRc0CAP+jDd+xZ/UgV+DSZIuhEpyDJBdhj2QhKm1A5nXyjEcoTZ9ekCVmCfp0h7q0frrK8HsVQDWIgHKluwm1m/h0ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=SMXuRA3Y77bS48bBEw4O2xmJUoWZ07n3QpCyaVgJTc8=;
- b=JEw7qFGznK+ucqCJpuEfMBmB6I2dNyHQnhxoPgMz/zmpyZ5suOCMbxyPZ0P/bT9gCM4lPcDO1JoucN+QSd2vgnFUamVRELotxTLAmwcq+c3vFoKG8IU61O3xXvyFWfZMxhUZ76RLruQ24kBP3Y4VRzzeXC028xc+mwwB+2wGuDqL0eP94LYe0niVZt0bNOgnrsud+oKGQQEKh3tnfPZHkBRg1FSxxKhaJQ8payoKzddu3HhToLgPxwAmdyFODWYFhq7sI8swheQVCXcc+NbkCZr+y8uzfy+pjan4S8WXg15zCKofaWaului604MBskszsOuXY0fstLIOc28yNV0www==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=opensource.tttech-industrial.com; dmarc=pass action=none
- header.from=opensource.tttech-industrial.com; dkim=pass
- header.d=opensource.tttech-industrial.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tttech365.onmicrosoft.com; s=selector1-tttech365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SMXuRA3Y77bS48bBEw4O2xmJUoWZ07n3QpCyaVgJTc8=;
- b=Rlz2/EjnfCAUWflG/82hUpacX55rWCxLREe9mu0K0s7Fu90c6ulFvnXY/2ooSor1M2F8xjvP/B+769z7pW8zfn81d+Wd8Fqmb1paMzih9msymrjLbsBsPFOW2N2sDogkGLJXMJ1yYQNgpUiONxBG++YsMFZ/LNUhZ9qPEcuDN38=
-Received: from AM0PR01MB5410.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:115::22) by AM0PR01MB4546.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:eb::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Mon, 13 Sep
- 2021 06:49:28 +0000
-Received: from AM0PR01MB5410.eurprd01.prod.exchangelabs.com
- ([fe80::807e:987c:688c:62be]) by AM0PR01MB5410.eurprd01.prod.exchangelabs.com
- ([fe80::807e:987c:688c:62be%7]) with mapi id 15.20.4500.018; Mon, 13 Sep 2021
- 06:49:28 +0000
-From:   OPENSOURCE Lukas Hannen 
-        <lukas.hannen@opensource.tttech-industrial.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        "EMC: linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RESEND PATCH] time: changed timespec64_to_ns to avoid underrun
-Thread-Topic: [RESEND PATCH] time: changed timespec64_to_ns to avoid underrun
-Thread-Index: AdemSfFfOqTnASerSE+/zqTNEdMoJwAXMZ6AAG/7fKA=
-Date:   Mon, 13 Sep 2021 06:49:27 +0000
-Message-ID: <AM0PR01MB5410AD1A0E31405EF63B3DF3EED99@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
-References: <AM0PR01MB54100B19D6ED5FDE764FA516EED69@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
- <87fsucc4yy.ffs@tglx>
-In-Reply-To: <87fsucc4yy.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_ActionId=59b33203-ad07-41b8-9f5b-0e1f6440f15f;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_ContentBits=0;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_Enabled=true;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_Method=Privileged;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_Name=Public;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_SetDate=2021-09-13T06:35:30Z;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_SiteId=5638dc0c-ffa2-418f-8078-70f739ff781f;
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=opensource.tttech-industrial.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ace04023-9ebf-4f1c-ff9e-08d97682a1b3
-x-ms-traffictypediagnostic: AM0PR01MB4546:
-x-ld-processed: 5638dc0c-ffa2-418f-8078-70f739ff781f,ExtAddr
-x-microsoft-antispam-prvs: <AM0PR01MB45461B76AEB9EFE56A2A462DEED99@AM0PR01MB4546.eurprd01.prod.exchangelabs.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0Ofp/5/BGGjrZcnBBbFDtdOSKieESjjzPFKrboI8NrqvfPc/4SyOn4M5kWcyI4qBX45Q0KRHRY2MSj7yEaKgnX31S+85uS7c8biJBxheXjoHDMAwlxNXpWjjn16sgxJg98O06iLuRw8qG+1R24+ov6lIVTR/xB9ZwxOVMj4VmFvrIe6V9e8VSNiiigZvDMZcnNKnUXfGkmaUoIxNFyFW/aAkF75bsOwHScNGIJj9OlIWxGkIa3bLxpkojMlDcM7kWlA9Qren8lZbfLv6S3RH+IV7FAXsET2xWsRt3x92smtHlk35rVzxAh9wSnMjRoIEcQ1NM46P3AOvRqh4dQSfFvcnBoBlZdTgzQk6G4RC7I+Y/vZdYufAt04simr0r16j42YuCGiRgXmCglP0GgJG4i9oU2QDwUuLv0aF+TiABwuXYiZgN0xJccddbZjwBUnoEvN+16cgjh8vpiMaCP3oevdw/rEP18bmGWoBk7JdlaIOzLLysKf3jXS7XSmdyPm8v8Cyfbr0FshsJAgVi7V2rehjt3BW9wf9DEfmcLi7tHN9FiYt2Gt9H2t/795+zvTA0q1RSLFwCYjmEFWQ9mo1vcpQCaxJlEnBpSHUdDp7bCQRiOp2izlCJK7kHkDIeJik3/13IRa/WsxPbAPiphIaZIwPp/4fJDGXSod/89b6apMmh3WzmigBkS4oxLBt3vpxKpML1BYGZdwDFfEcbd0ALA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR01MB5410.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38070700005)(76116006)(86362001)(66556008)(64756008)(66476007)(66946007)(66446008)(6506007)(8936002)(7696005)(186003)(9686003)(8676002)(83380400001)(110136005)(508600001)(122000001)(33656002)(71200400001)(38100700002)(2906002)(55016002)(5660300002)(52536014)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vYQ6i24EVuKMuCAPooI/PzI4MKUhuM8M2Us1tyDg4jcMU9a0oTOAi4+1MOlr?=
- =?us-ascii?Q?VK+xEwnGB+9MLE9I2rDrS8MdRBgtSU57pxCa8jFn6sxU22oVdKzC5rChTm9Q?=
- =?us-ascii?Q?XJPntsnnL2XZzlob4LcQY2qLce89XOahhXNlSX6X2mInyMJY2iLDgAmunVvs?=
- =?us-ascii?Q?mRvtj8XsG2ubSOnGTPwoIAF3O2Bru1K3rnBzz2AlpJp7MZDpdhH97GxSsTLi?=
- =?us-ascii?Q?WklU7rfogUCWqqxZ+/l01cpHst5uY10XB0RAl1/Xc6DHacKDXR8X2EFaAcTW?=
- =?us-ascii?Q?jj0Ws13zJL3vJ226loNAiIms5CvlbR7fU09tirICZDXcx05OQxS1rmsKXWWu?=
- =?us-ascii?Q?t9rClegzCbXelri1vFt6AgG4fvB8Wlh9oZMyKgcSrcK3u+utediWiDgs8q0m?=
- =?us-ascii?Q?Z2ZNs8r9axJkhGJbfHSfZWrq2MtlU+wmJH4jUZwCHFBiSd4fFUgOUR1PYYSe?=
- =?us-ascii?Q?i+L24nAXe4DOyifDFOpcHZ4f5IQmkK6YRuEwoyIht14RaepDBSTEwgyDixgv?=
- =?us-ascii?Q?g+stb26CZnnwmSqDQj5lyZHLnFc+pXsRtCQkopcRWixsUg0NTLT3f2d0TOxF?=
- =?us-ascii?Q?gOgNpZIuFKNRNtIyP7VfGLU/F0co36GdL7JlWyNsbONexyOov1ntJOA106nH?=
- =?us-ascii?Q?MZOqowGkJnbxhJgSRk8LRKHFaN6WbR9/QrfTH0K+FWRQgYrCdirA2YORKwtq?=
- =?us-ascii?Q?KjtB3dmqqxNpz2Gx/bQrraLDoPLlGrbD1LtuHUhWpTAP7DHx/w4zNpy7LTxu?=
- =?us-ascii?Q?gUshILmCeJhLEwq2cdu4QuSBoadVy6ELNJANQUDSXqtTefcKdSmmua1S6AyH?=
- =?us-ascii?Q?/FyXRjuJs/bxIHthTRs/5fMQdZcRwXaUrX2PPZJ9gK3afCWHNUEmnzupN9N6?=
- =?us-ascii?Q?G38Aznjami1an4ikC9zhYMsYG4q6mHSdXSllAoI14LUCTj76twl9tH8jFQis?=
- =?us-ascii?Q?+53PAeoYpAsdq1XCwfVUlNYhsepYkvP07MeBAilJZalhVvLryf7k0HfgLh9k?=
- =?us-ascii?Q?7G7g7l1T178tU5EOOai9YztBmfiXDjpORl+afLFvjT7mZ+xRyQJqBNw8//m6?=
- =?us-ascii?Q?48Iq3Qgb1F8zrZQzg3bUYO/aOA2RJjb25FAAukddL4UTdKkEXtKyLb0G9X0D?=
- =?us-ascii?Q?e0bF1y7UiTGDQ/i9KiHivNLbFxDGBhISKkIDZVJBB/tjYm2HoclvUV4gIWWS?=
- =?us-ascii?Q?OUxKITAqHYOA9wozd7lGn2BgmqzL/XOHNkFbKz9otfY25jdxmhOLSxjftfjZ?=
- =?us-ascii?Q?cVCgluO+zbyG66PG3wxrfkFKVUt0G1NUSxhk0YhMvNhC9lTBO0DLi5gGTi89?=
- =?us-ascii?Q?TDlHppu4Xf3FC26vn6fK9CNURDileYgl5prGqESw2+ooz3QFL9gu+oCpM/kE?=
- =?us-ascii?Q?Ji5uJEUyaFPcRbGnsf95tndWR/t/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 13 Sep 2021 02:51:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631515818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MyDTqnCM7+1l/i+LYvpu8caLxbFrAy8F0rFuYAKYUbQ=;
+        b=ewLaVgqkCsmxnpNhraBISUYDsz31gofyO4lA86WPrIP7pmfp7J5H3AwwM7eG+b8MqCQIvu
+        7gd/35KMdYRVGkzf2KjSVYylS58WZmszROFYJ+9XhxzVqwRunDawadcKj+FjKyc1LQWuz/
+        DwlNUgHr6YjehUIDGzE3LPBg6b+iNcc=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-38rNJAy3NkOrbK_qBlv_Bg-1; Mon, 13 Sep 2021 02:50:17 -0400
+X-MC-Unique: 38rNJAy3NkOrbK_qBlv_Bg-1
+Received: by mail-wm1-f72.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so3603658wmj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:50:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MyDTqnCM7+1l/i+LYvpu8caLxbFrAy8F0rFuYAKYUbQ=;
+        b=EjvEgcYd9/ej1nw7hAZb9QnPFFcppZAx2qQyZIcG357y1XjH1MHdUvbhNDWfq4pkaG
+         sk8QOhKPOVzEblXnTD1zdccUaL/MIBvr+5cWPATYfl/0G/CyNZi91XScKS9n6fBPkA0B
+         2by/NXuI5yx/VPp4Nq5083bc5On8klI8Ktl9wjIfUOoW9mZmtyhqrlqp76W92Kz5vPcS
+         gvuqFCrMqJw0icFUOxnBDIjlFuiDpEA6EZ0qHwTStXFZvGPR5kAZ/VxfGJUjBWBww16u
+         cplrcuhUEdYMA8VyN1qYDVRgERECs4p7TQcqbtPnXUnJ5cojNrye2kWQxlrUxsjt100Z
+         2QoQ==
+X-Gm-Message-State: AOAM530Pi8ir+WTBWGOlz3S64xBq0S/FtvQZ6K73VA+cUoOZdCfHbOXw
+        sVA1tIcDhRqoFZ9FMz/7UE8AhWn+m1sAYcGlusv/W1ZtwD8d/MkFPBh8SGYm4pTpvxMWFzOK1Qj
+        N42MWckHos7l8Mg/lb1jwXhv3
+X-Received: by 2002:adf:fe82:: with SMTP id l2mr5774803wrr.268.1631515816388;
+        Sun, 12 Sep 2021 23:50:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcfkgu3ConcE2PukWR2cAEy3AU4MhrJ9eakHtv6dPbV1CFh1HXDoihq8fVIZUBqRBUMAYQfw==
+X-Received: by 2002:adf:fe82:: with SMTP id l2mr5774770wrr.268.1631515816044;
+        Sun, 12 Sep 2021 23:50:16 -0700 (PDT)
+Received: from redhat.com ([2.55.27.174])
+        by smtp.gmail.com with ESMTPSA id h8sm5857613wmb.35.2021.09.12.23.50.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 23:50:15 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 02:50:08 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        pbonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: Re: [PATCH 6/9] virtio_pci: harden MSI-X interrupts
+Message-ID: <20210913024153-mutt-send-email-mst@kernel.org>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20210913055353.35219-7-jasowang@redhat.com>
+ <20210913015711-mutt-send-email-mst@kernel.org>
+ <CACGkMEva2j57tG=-QYG7NdgEV28i-gpBReRR+UX7YwrHzRWydw@mail.gmail.com>
+ <20210913022257-mutt-send-email-mst@kernel.org>
+ <CACGkMEsWJq0SMMfTBdoOxVa1_=k9nZkrRu2wYZo7WO-01p_sgQ@mail.gmail.com>
+ <20210913023626-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: opensource.tttech-industrial.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR01MB5410.eurprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ace04023-9ebf-4f1c-ff9e-08d97682a1b3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2021 06:49:27.9080
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5638dc0c-ffa2-418f-8078-70f739ff781f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z85U4L+TWIRbXYDiyK5f63mobhGGFYgw2eCsWXhkCRRd2P4ufywcfiL+PeKNWbbFnEPAdXF5xt12wGIK+qRGr8kX+znf6fiuhN1nrYgo/EH9gxVF3k/6bdnLk5qI6lzg6i1qlZ1aA6lSybn0pl8LpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR01MB4546
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913023626-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Lukas,
+On Mon, Sep 13, 2021 at 02:37:42AM -0400, Michael S. Tsirkin wrote:
+> On Mon, Sep 13, 2021 at 02:34:01PM +0800, Jason Wang wrote:
+> > On Mon, Sep 13, 2021 at 2:28 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Mon, Sep 13, 2021 at 02:08:02PM +0800, Jason Wang wrote:
+> > > > On Mon, Sep 13, 2021 at 2:04 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Mon, Sep 13, 2021 at 01:53:50PM +0800, Jason Wang wrote:
+> > > > > > We used to synchronize pending MSI-X irq handlers via
+> > > > > > synchronize_irq(), this may not work for the untrusted device which
+> > > > > > may keep sending interrupts after reset which may lead unexpected
+> > > > > > results. Similarly, we should not enable MSI-X interrupt until the
+> > > > > > device is ready. So this patch fixes those two issues by:
+> > > > > >
+> > > > > > 1) switching to use disable_irq() to prevent the virtio interrupt
+> > > > > >    handlers to be called after the device is reset.
+> > > > > > 2) using IRQF_NO_AUTOEN and enable the MSI-X irq during .ready()
+> > > > > >
+> > > > > > This can make sure the virtio interrupt handler won't be called before
+> > > > > > virtio_device_ready() and after reset.
+> > > > > >
+> > > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > > >
+> > > > > I don't get the threat model here. Isn't disabling irqs done by the
+> > > > > hypervisor anyway? Is there a reason to trust disable_irq but not
+> > > > > device reset?
+> > > >
+> > > > My understanding is that e.g in the case of SEV/TDX we don't trust the
+> > > > hypervisor. So the hypervisor can keep sending interrupts even if the
+> > > > device is reset. The guest can only trust its own software interrupt
+> > > > management logic to avoid call virtio callback in this case.
+> > > >
+> > > > Thanks
+> > >
+> > > Hmm but I don't see how do these patches do this.
+> > > They call disable_irq but can't the hypervisor keep
+> > > sending interrupts after disable_irq, too?
+> > 
+> > Yes, but since the irq is disabled, the vring or config callback won't
+> > be called in this case.
+> > 
+> > Thanks
+> 
+> But doen't "irq is disabled" basically mean "we told the hypervisor
+> to disable the irq"?  What extractly prevents hypervisor from
+> sending the irq even if guest thinks it disabled it?
 
-> why you are resending this patch?
+More generally, can't we for example blow away the
+indir_desc array that we use to keep the ctx pointers?
+Won't that be enough?
 
-(also ad 2,3 and 4: ) unfortunately our company mail system never showed me
-your replies to my original mail.
 
-> 1) The only change you did is adding a prefix to the subject line
->   Changed patches even if the change is just in the subject line or the
->   changelog want a version number.
+And looking at all this closely, I suspect it is wise to just completely
+disable hotplug/unplug for encrypted guests. Or maybe it's already
+the case?
 
-I was unsure if the Subject line was considered part of the patch, and noti=
-ced
-the errors in the subject line on my own, and thus thought my previous mail
-got ignored because I had messed up the subject line.
 
->   But what's worse:
->
-> 2) You ignored any other review comment I gave here:
+> > >
+> > >
+> > >
+> > > > >
+> > > > > Cc a bunch more people ...
+> > > > >
+> > > > >
+> > > > > > ---
+> > > > > >  drivers/virtio/virtio_pci_common.c | 27 +++++++++++++++++++++------
+> > > > > >  drivers/virtio/virtio_pci_common.h |  6 ++++--
+> > > > > >  drivers/virtio/virtio_pci_legacy.c |  5 +++--
+> > > > > >  drivers/virtio/virtio_pci_modern.c |  6 ++++--
+> > > > > >  4 files changed, 32 insertions(+), 12 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > > > > > index b35bb2d57f62..0b9523e6dd39 100644
+> > > > > > --- a/drivers/virtio/virtio_pci_common.c
+> > > > > > +++ b/drivers/virtio/virtio_pci_common.c
+> > > > > > @@ -24,8 +24,8 @@ MODULE_PARM_DESC(force_legacy,
+> > > > > >                "Force legacy mode for transitional virtio 1 devices");
+> > > > > >  #endif
+> > > > > >
+> > > > > > -/* wait for pending irq handlers */
+> > > > > > -void vp_synchronize_vectors(struct virtio_device *vdev)
+> > > > > > +/* disable irq handlers */
+> > > > > > +void vp_disable_vectors(struct virtio_device *vdev)
+> > > > > >  {
+> > > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > >       int i;
+> > > > > > @@ -34,7 +34,20 @@ void vp_synchronize_vectors(struct virtio_device *vdev)
+> > > > > >               synchronize_irq(vp_dev->pci_dev->irq);
+> > > > > >
+> > > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > > -             synchronize_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > > +             disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > > +}
+> > > > > > +
+> > > > > > +/* enable irq handlers */
+> > > > > > +void vp_enable_vectors(struct virtio_device *vdev)
+> > > > > > +{
+> > > > > > +     struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > > +     int i;
+> > > > > > +
+> > > > > > +     if (vp_dev->intx_enabled)
+> > > > > > +             return;
+> > > > > > +
+> > > > > > +     for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > > +             enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > >  }
+> > > > > >
+> > > > > >  /* the notify function used when creating a virt queue */
+> > > > > > @@ -141,7 +154,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+> > > > > >       snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
+> > > > > >                "%s-config", name);
+> > > > > >       err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
+> > > > > > -                       vp_config_changed, 0, vp_dev->msix_names[v],
+> > > > > > +                       vp_config_changed, IRQF_NO_AUTOEN,
+> > > > > > +                       vp_dev->msix_names[v],
+> > > > > >                         vp_dev);
+> > > > > >       if (err)
+> > > > > >               goto error;
+> > > > > > @@ -160,7 +174,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+> > > > > >               snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
+> > > > > >                        "%s-virtqueues", name);
+> > > > > >               err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
+> > > > > > -                               vp_vring_interrupt, 0, vp_dev->msix_names[v],
+> > > > > > +                               vp_vring_interrupt, IRQF_NO_AUTOEN,
+> > > > > > +                               vp_dev->msix_names[v],
+> > > > > >                                 vp_dev);
+> > > > > >               if (err)
+> > > > > >                       goto error;
+> > > > > > @@ -337,7 +352,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
+> > > > > >                        "%s-%s",
+> > > > > >                        dev_name(&vp_dev->vdev.dev), names[i]);
+> > > > > >               err = request_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec),
+> > > > > > -                               vring_interrupt, 0,
+> > > > > > +                               vring_interrupt, IRQF_NO_AUTOEN,
+> > > > > >                                 vp_dev->msix_names[msix_vec],
+> > > > > >                                 vqs[i]);
+> > > > > >               if (err)
+> > > > > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> > > > > > index beec047a8f8d..a235ce9ff6a5 100644
+> > > > > > --- a/drivers/virtio/virtio_pci_common.h
+> > > > > > +++ b/drivers/virtio/virtio_pci_common.h
+> > > > > > @@ -102,8 +102,10 @@ static struct virtio_pci_device *to_vp_device(struct virtio_device *vdev)
+> > > > > >       return container_of(vdev, struct virtio_pci_device, vdev);
+> > > > > >  }
+> > > > > >
+> > > > > > -/* wait for pending irq handlers */
+> > > > > > -void vp_synchronize_vectors(struct virtio_device *vdev);
+> > > > > > +/* disable irq handlers */
+> > > > > > +void vp_disable_vectors(struct virtio_device *vdev);
+> > > > > > +/* enable irq handlers */
+> > > > > > +void vp_enable_vectors(struct virtio_device *vdev);
+> > > > > >  /* the notify function used when creating a virt queue */
+> > > > > >  bool vp_notify(struct virtqueue *vq);
+> > > > > >  /* the config->del_vqs() implementation */
+> > > > > > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+> > > > > > index d62e9835aeec..bdf6bc667ab5 100644
+> > > > > > --- a/drivers/virtio/virtio_pci_legacy.c
+> > > > > > +++ b/drivers/virtio/virtio_pci_legacy.c
+> > > > > > @@ -97,8 +97,8 @@ static void vp_reset(struct virtio_device *vdev)
+> > > > > >       /* Flush out the status write, and flush in device writes,
+> > > > > >        * including MSi-X interrupts, if any. */
+> > > > > >       ioread8(vp_dev->ioaddr + VIRTIO_PCI_STATUS);
+> > > > > > -     /* Flush pending VQ/configuration callbacks. */
+> > > > > > -     vp_synchronize_vectors(vdev);
+> > > > > > +     /* Disable VQ/configuration callbacks. */
+> > > > > > +     vp_disable_vectors(vdev);
+> > > > > >  }
+> > > > > >
+> > > > > >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+> > > > > > @@ -194,6 +194,7 @@ static void del_vq(struct virtio_pci_vq_info *info)
+> > > > > >  }
+> > > > > >
+> > > > > >  static const struct virtio_config_ops virtio_pci_config_ops = {
+> > > > > > +     .ready          = vp_enable_vectors,
+> > > > > >       .get            = vp_get,
+> > > > > >       .set            = vp_set,
+> > > > > >       .get_status     = vp_get_status,
+> > > > > > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> > > > > > index 30654d3a0b41..acf0f6b6381d 100644
+> > > > > > --- a/drivers/virtio/virtio_pci_modern.c
+> > > > > > +++ b/drivers/virtio/virtio_pci_modern.c
+> > > > > > @@ -172,8 +172,8 @@ static void vp_reset(struct virtio_device *vdev)
+> > > > > >        */
+> > > > > >       while (vp_modern_get_status(mdev))
+> > > > > >               msleep(1);
+> > > > > > -     /* Flush pending VQ/configuration callbacks. */
+> > > > > > -     vp_synchronize_vectors(vdev);
+> > > > > > +     /* Disable VQ/configuration callbacks. */
+> > > > > > +     vp_disable_vectors(vdev);
+> > > > > >  }
+> > > > > >
+> > > > > >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+> > > > > > @@ -380,6 +380,7 @@ static bool vp_get_shm_region(struct virtio_device *vdev,
+> > > > > >  }
+> > > > > >
+> > > > > >  static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+> > > > > > +     .ready          = vp_enable_vectors,
+> > > > > >       .get            = NULL,
+> > > > > >       .set            = NULL,
+> > > > > >       .generation     = vp_generation,
+> > > > > > @@ -397,6 +398,7 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+> > > > > >  };
+> > > > > >
+> > > > > >  static const struct virtio_config_ops virtio_pci_config_ops = {
+> > > > > > +     .ready          = vp_enable_vectors,
+> > > > > >       .get            = vp_get,
+> > > > > >       .set            = vp_set,
+> > > > > >       .generation     = vp_generation,
+> > > > > > --
+> > > > > > 2.25.1
+> > > > >
+> > >
 
-I greatly appreciate your help in regards to commenting style and content.
-I am obviously entirely new to this community.
-
-> So what exactly are you trying to achieve by "resending" a patch which st=
-ill
-> does not apply and still has a non-sensical subject line and changelog?
-
-You were right in assuming that the format of the patch was messed up by
-our company mail, I am as infuriated about that as you are and will try to
-change this situation asap.
-
-The other mishaps (like the wrong use of the RESEND tag, failing to check
-if the changes were already applied to your tree etc. ) were caused by me
-being a young and inexperienced contributor.
-
-> Thanks,
-
-Thank _You_ for not immediately ignoring me forever,
-
-Lukas Hannen
-
-Public
