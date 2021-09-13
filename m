@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A15E4095D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB50A4092E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346011AbhIMOpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:45:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56448 "EHLO mail.kernel.org"
+        id S1344319AbhIMOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:16:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347000AbhIMOkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:40:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8AC561BF9;
-        Mon, 13 Sep 2021 13:55:43 +0000 (UTC)
+        id S241402AbhIMONS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:13:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F86461354;
+        Mon, 13 Sep 2021 13:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541344;
-        bh=E080KnkcT6EvMHaaLGSmtuIvM6PZcJ0ayg+8hQXC2Tg=;
+        s=korg; t=1631540587;
+        bh=1SzleJ2zTAGKhV/CRYpfEc03b9xHuP+Ub5N/JYZLyXI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iRawgtFZ2zxlOueeDZxmwddVi5+v46tobyg8PyUZs0YPFoDsVOkHheV+hMJ8398zS
-         AAqy7y2AcUI3+s21VnYiWAcGnOFlFVsfkEO0GWDiXN3ix/Ki8cL/4/jsYjM5C01x7v
-         sxCsQaLBug2pW3UKoHPE8a7c1l9GqgI0yO04v8HE=
+        b=JNR2pr3Fg/QrENcbuel35xM1g5epBzw/KRenzjQZn6yErvaL4uUfWVMFtIwjRPOjj
+         rF+HzcAENf+fUH6AN1a1re5yPvvwLBiHePQ3Aj/rNuIgQFhKfjfedplzboZMjjZC1E
+         R6AvDMjyVSn5FqMeL4PsMLBdZQ5ScrfBkr58G/pI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Evgeny Novikov <novikov@ispras.ru>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 260/334] usb: ehci-orion: Handle errors of clk_prepare_enable() in probe
-Date:   Mon, 13 Sep 2021 15:15:14 +0200
-Message-Id: <20210913131122.194355012@linuxfoundation.org>
+Subject: [PATCH 5.13 254/300] net: qrtr: make checks in qrtr_endpoint_post() stricter
+Date:   Mon, 13 Sep 2021 15:15:15 +0200
+Message-Id: <20210913131117.930610395@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 4720f1bf4ee4a784d9ece05420ba33c9222a3004 ]
+[ Upstream commit aaa8e4922c887ff47ad66ef918193682bccc1905 ]
 
-ehci_orion_drv_probe() did not account for possible errors of
-clk_prepare_enable() that in particular could cause invocation of
-clk_disable_unprepare() on clocks that were not prepared/enabled yet,
-e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
-there were several patches fixing different issues with clocks in this
-driver, they did not solve this problem.
+These checks are still not strict enough.  The main problem is that if
+"cb->type == QRTR_TYPE_NEW_SERVER" is true then "len - hdrlen" is
+guaranteed to be 4 but we need to be at least 16 bytes.  In fact, we
+can reject everything smaller than sizeof(*pkt) which is 20 bytes.
 
-Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
-to avoid calls of clk_disable_unprepare() without previous successful
-invocation of clk_prepare_enable().
+Also I don't like the ALIGN(size, 4).  It's better to just insist that
+data is needs to be aligned at the start.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Link: https://lore.kernel.org/r/20210825170902.11234-1-novikov@ispras.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 0baa99ee353c ("net: qrtr: Allow non-immediate node routing")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-orion.c | 8 ++++++--
+ net/qrtr/qrtr.c | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
-index a319b1df3011..3626758b3e2a 100644
---- a/drivers/usb/host/ehci-orion.c
-+++ b/drivers/usb/host/ehci-orion.c
-@@ -264,8 +264,11 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
- 	 * the clock does not exists.
- 	 */
- 	priv->clk = devm_clk_get(&pdev->dev, NULL);
--	if (!IS_ERR(priv->clk))
--		clk_prepare_enable(priv->clk);
-+	if (!IS_ERR(priv->clk)) {
-+		err = clk_prepare_enable(priv->clk);
-+		if (err)
-+			goto err_put_hcd;
-+	}
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index 52b7f6490d24..2e732ea2b82f 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -493,7 +493,7 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+ 		goto err;
+ 	}
  
- 	priv->phy = devm_phy_optional_get(&pdev->dev, "usb");
- 	if (IS_ERR(priv->phy)) {
-@@ -311,6 +314,7 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
- err_dis_clk:
- 	if (!IS_ERR(priv->clk))
- 		clk_disable_unprepare(priv->clk);
-+err_put_hcd:
- 	usb_put_hcd(hcd);
- err:
- 	dev_err(&pdev->dev, "init %s fail, %d\n",
+-	if (!size || len != ALIGN(size, 4) + hdrlen)
++	if (!size || size & 3 || len != size + hdrlen)
+ 		goto err;
+ 
+ 	if (cb->dst_port != QRTR_PORT_CTRL && cb->type != QRTR_TYPE_DATA &&
+@@ -506,8 +506,12 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+ 
+ 	if (cb->type == QRTR_TYPE_NEW_SERVER) {
+ 		/* Remote node endpoint can bridge other distant nodes */
+-		const struct qrtr_ctrl_pkt *pkt = data + hdrlen;
++		const struct qrtr_ctrl_pkt *pkt;
+ 
++		if (size < sizeof(*pkt))
++			goto err;
++
++		pkt = data + hdrlen;
+ 		qrtr_node_assign(node, le32_to_cpu(pkt->server.node));
+ 	}
+ 
 -- 
 2.30.2
 
