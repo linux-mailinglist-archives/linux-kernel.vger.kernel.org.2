@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412AE409696
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9D140944E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347354AbhIMOx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:53:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346721AbhIMOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:47:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF8960C51;
-        Mon, 13 Sep 2021 14:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631543026;
-        bh=Z6j0LTCb/0Fx5pxLfWQP2iaIBaU+rx32o1y6TgwxBf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MU3y9lQuvncRuxjepqLqkpJUzPPrYF1sGflnKzj/heuTwTgCN2oNNAs23fggxVkTI
-         SAJJTyaiBjgQRaDV37IIVo3TBX6/pRgLJBSRVK+p6AZE8/p0AZ0ClN/l2wERwsr08e
-         ZK+t0tQObmMvi3NvViHiwLgD/7Hn6EBQdRpGn+P+w2fQyfNrVuAsSDhjSpJhHlKvEh
-         VRnEwO+o3S7UB09yT9HlUXq94DNsRj+WtZyJ6fdb9gHLV2FBqziv4gzSvKSwLGoGed
-         XR4Lx9PEzHDqaq7/WoM+A7Oqtzy39yurrcScsemlk7ouYCJQqPgTcuvTy2Agqiu4eG
-         IIVYWobHBYlIA==
-Date:   Mon, 13 Sep 2021 15:23:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        sharadg@nvidia.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/13] ASoC: tegra: Add Tegra210 based MVC driver
-Message-ID: <20210913142307.GF4283@sirena.org.uk>
-References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
- <1630056839-6562-7-git-send-email-spujar@nvidia.com>
- <20210903181326.GP4932@sirena.org.uk>
- <29c785d0-cc70-7cce-c205-77059c11e0e1@nvidia.com>
+        id S1347026AbhIMOaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:30:08 -0400
+Received: from ipmail04.adl3.internode.on.net ([150.101.137.10]:61919 "EHLO
+        ipmail04.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245713AbhIMOZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:25:49 -0400
+X-SMTP-MATCH: 1
+IronPort-Data: =?us-ascii?q?A9a23=3AYgtL4KDyMLv7RxVW/xfhw5YqxClBgxIJ4kV8j?=
+ =?us-ascii?q?S/XYbTApGwq0jYFy2oYWm2GO6qPYTajeNB1b9vi80JV6sXTnNc1HFFurC02R?=
+ =?us-ascii?q?CwT8sTOD4zEfkr8bnyYIMDORRo+4s9GN9TpIZFvRBcwhD/0YuC79yUUOYJk5?=
+ =?us-ascii?q?1bE5V2t1hlZHWeIdQ944f5ds75h6mJXqYDR7zOl4bsekuWHULOX82cc3lE8s?=
+ =?us-ascii?q?8pvnChSUMHa41v0iLCficdj5zcyn1FNZH4WyDrYw3HQGuG4FcbiLwrPIS3Qw?=
+ =?us-ascii?q?4/Xw/stIovNfrcXnKEIaueLbU7U0yMQCvXk2EMYzsAx+v9T2P40YF1LiyiT2?=
+ =?us-ascii?q?dV40s5NnZ22VQozOKrAlaIaVV9eHj0W0ahuoeCWfibh4ZTCp6HBWyC0mKU0V?=
+ =?us-ascii?q?hBe0Zcj0uJ2B3xesP8VMjYAajidiO+shrG2UO9hgoIkNsaDFJNP5FljwCvfA?=
+ =?us-ascii?q?PJgRorMK5gmT/cwMCwY35keW6yHPoxINHw1N06oXvGGAX9PYLpWoQtiriOvG?=
+ =?us-ascii?q?9GAlG+omA=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AqIhr/qnmbSRFQb4VRrmRXqFNuUPpDfI53D?=
+ =?us-ascii?q?Abv31ZSRFFG/FwWfrOoB1p73DJYVEqKRQdcLG7Scu9qBznn6KdjbNwAV7AZm?=
+ =?us-ascii?q?TbUQmTR72KhLGKqwEIcBeOldK1u50PT0EzMrHNMWQ=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2CsBACqXj9h/+hf03ZagQkJgVCBHlg?=
+ =?us-ascii?q?GgXyFM5ELnCOBaAsBTwECBAEBhANwgkUBJTcGDgECBBUBAQYBAQEBAQYEgSS?=
+ =?us-ascii?q?FdYZsFUEYEA0CJgJsCAEBgm2DB60BgTEaAmWEaoMqgWOBECqONYFVRIEVJww?=
+ =?us-ascii?q?Dh1xngkqCZASILjETTIElCHCgDF2LApFyLQeDLoExBgudCAYULINmkhIDAZE?=
+ =?us-ascii?q?JhnmRQaUxgX4zGi6DL1COf28BCY0wNGgCBgsBAQMJhUEBHggTiXgBAQ?=
+Received: from unknown (HELO localhost) ([118.211.95.232])
+  by ipmail04.adl3.internode.on.net with ESMTP; 13 Sep 2021 23:54:18 +0930
+Message-ID: <000ef85f-9326-706e-007b-4549901797d7@internode.on.net>
+Date:   Mon, 13 Sep 2021 23:54:15 +0930
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
-Content-Disposition: inline
-In-Reply-To: <29c785d0-cc70-7cce-c205-77059c11e0e1@nvidia.com>
-X-Cookie: Above all else -- sky.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Content-Language: en-US
+To:     x86@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+From:   Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: Cross-comilation from amd64 to i686 - issue with
+ /usr/src/linux/arch/x86/boot/tools/build
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---i3lJ51RuaGWuFYNw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi, I had a problem when doing a Linux kernel cross compile from amd64 
+to i386/i686 a few days ago which I solved quickly, but wonder if the 
+issue points to a problem:
 
-On Mon, Sep 13, 2021 at 10:32:32AM +0530, Sameer Pujar wrote:
-> On 9/3/2021 11:43 PM, Mark Brown wrote:
+/usr/src/linux/arch/x86/boot/tools/build had (apparently) been compiled 
+over a year earlier when I was running under amd64 without multilib 
+support, when I installed the i386/i686 gcc-11 under amd64, and 
+attempted to cross-compile the kernel for i386, I received an error 
+about bzImage:
 
-> > > +	err |= regmap_update_bits(mvc->regmap, TEGRA210_MVC_SWITCH,
-> > > +			TEGRA210_MVC_VOLUME_SWITCH_MASK,
-> > > +			TEGRA210_MVC_VOLUME_SWITCH_TRIGGER);
-> > > +
-> > > +end:
-> > > +	pm_runtime_put(cmpnt->dev);
-> > > +	return err;
-> > > +}
+BUILD   arch/x86/boot/bzImage
+make[5]: *** [arch/x86/boot/Makefile:84: arch/x86/boot/bzImage] Error 139
+make[5]: *** Deleting file 'arch/x86/boot/bzImage'
+make[4]: *** [arch/x86/Makefile:273: bzImage] Error 2
 
-> > _put() should return 0 if there's no change or 1 for a change.
 
-> So this means, no need to return any error value and just return 0 in such
-> cases?
+Once I removed the old /usr/src/linux/arch/x86/boot/tools/build binary 
+and re-ran the kernel build, a new "build" binary was built and the 
+kernel build process succeeded and the built kernels ran fine on my 
+i386/i686 system.
 
-If there's an error you should return that instead.
+I'm not sure if running a cross-compile from amd64 to i386 for the first
+time or in fact any update of the host CC or cross-compiler CC should 
+have triggered a recompilation of /usr/src/linux/arch/x86/boot/tools/build.c
 
---i3lJ51RuaGWuFYNw
-Content-Type: application/pgp-signature; name="signature.asc"
+Kernel build command for the cross-compilation was:
 
------BEGIN PGP SIGNATURE-----
+make ARCH=i386 CROSS_COMPILE=i686-linux-gnu- CC=i686-linux-gnu-gcc-11 
+-j6 menuconfig bindeb-pkg
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/XsoACgkQJNaLcl1U
-h9Aeywf+L19DUp0pquR8XpAdjcB8vCJFQ8bpY19O2MoHi1ytdVvLaesU9Hd+lPBc
-hvbcsNlfBqDuH2EGjUqPFkRKDevu6YiF+UsAYldN6011XNMjbyo5GtPnLSQbtFY0
-55lL43iJ4KqIZDIYwgdoz5f/kEDfuhAFP1GUvo31JnSRRqcsooD/0YWnKx3rOmvF
-EA3QmaFxjp46zpSp+U92iKEMDi3rkJNpqgBiL/vpQRgLQ4xov5nBxzMHx+AmH/hl
-89lvssVBxEV6+waoi1STpaAdHR5ynuhBctdoBh0UgEGg1T+l477TFZ/dCHFQd5OF
-zHcyS9EQ2akuFsPlpZA9FqtaxNTN+w==
-=rm21
------END PGP SIGNATURE-----
+Arthur.
 
---i3lJ51RuaGWuFYNw--
+
