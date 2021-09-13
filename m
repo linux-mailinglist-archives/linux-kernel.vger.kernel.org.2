@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D9E40901B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FD9408D82
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244092AbhIMNtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49324 "EHLO mail.kernel.org"
+        id S240708AbhIMN0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242396AbhIMNnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:43:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA35961359;
-        Mon, 13 Sep 2021 13:30:36 +0000 (UTC)
+        id S241053AbhIMNWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:22:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA1D8610A2;
+        Mon, 13 Sep 2021 13:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539837;
-        bh=DOzj4Ygmi+FMjr4Fa28O+JHTZ8km7wUXPJlgxXwdLso=;
+        s=korg; t=1631539267;
+        bh=lZD0BniTpdl9jlOZ+3+3blHwVlCTYyDX9P6LDRMFOEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OxyeMHmHeAcJ1e/QpK5E4SW3gDgaUNq3i713e6ruhJWthKZXjuD4unV/pm2tdBI5f
-         ktJW49EL61ifm4f6QmJ19n2eyO6kVquBZqpdXratqaWQ8RdqXHPHpfTzc1FiDZFtNx
-         TWdRHKJEe4KD+7LnE+FneuWDS55noRd/IqaOaoWg=
+        b=snClxe8AvTSYCVdn03xorEApA9zdQi63tAsthBxq3DqUvpfkGJn7Or5iyMuIYbkHM
+         E8BPBetjD+iSts76XAmDLr45JqYMomcRn9/U4Fxa1oqPztHz1sFptbOfIF9UHh3SFl
+         v3aTOBT0jJDtpfYSgKDsiwe1ByAdTbmxcBTaeY0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Lukasz Majczak <lma@semihalf.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 181/236] rsi: fix error code in rsi_load_9116_firmware()
+Subject: [PATCH 5.4 105/144] ASoC: Intel: Skylake: Leave data as is when invoking TLV IPCs
 Date:   Mon, 13 Sep 2021 15:14:46 +0200
-Message-Id: <20210913131106.531069188@linuxfoundation.org>
+Message-Id: <20210913131051.453818594@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-[ Upstream commit d0f8430332a16c7baa80ce2886339182c5d85f37 ]
+[ Upstream commit 126b3422adc80f29d2129db7f61e0113a8a526c6 ]
 
-This code returns success if the kmemdup() fails, but obviously it
-should return -ENOMEM instead.
+Advancing pointer initially fixed issue for some users but caused
+regression for others. Leave data as it to make it easier for end users
+to adjust their topology files if needed.
 
-Fixes: e5a1ecc97e5f ("rsi: add firmware loading for 9116 device")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210805103746.GA26417@kili
+Fixes: a8cd7066f042 ("ASoC: Intel: Skylake: Strip T and L from TLV IPCs")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Tested-by: Lukasz Majczak <lma@semihalf.com>
+Link: https://lore.kernel.org/r/20210818075742.1515155-3-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/rsi/rsi_91x_hal.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
-index 99b21a2c8386..f4a26f16f00f 100644
---- a/drivers/net/wireless/rsi/rsi_91x_hal.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
-@@ -1038,8 +1038,10 @@ static int rsi_load_9116_firmware(struct rsi_hw *adapter)
- 	}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 1940b17f27ef..104c73eb9769 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1463,12 +1463,6 @@ static int skl_tplg_tlv_control_set(struct snd_kcontrol *kcontrol,
+ 	struct skl_dev *skl = get_skl_ctx(w->dapm->dev);
  
- 	ta_firmware = kmemdup(fw_entry->data, fw_entry->size, GFP_KERNEL);
--	if (!ta_firmware)
-+	if (!ta_firmware) {
-+		status = -ENOMEM;
- 		goto fail_release_fw;
-+	}
- 	fw_p = ta_firmware;
- 	instructions_sz = fw_entry->size;
- 	rsi_dbg(INFO_ZONE, "FW Length = %d bytes\n", instructions_sz);
+ 	if (ac->params) {
+-		/*
+-		 * Widget data is expected to be stripped of T and L
+-		 */
+-		size -= 2 * sizeof(unsigned int);
+-		data += 2;
+-
+ 		if (size > ac->max)
+ 			return -EINVAL;
+ 		ac->size = size;
 -- 
 2.30.2
 
