@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F71409333
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360B4409632
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344389AbhIMOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:19:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
+        id S1347517AbhIMOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:49:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344794AbhIMOOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09CBF61359;
-        Mon, 13 Sep 2021 13:43:41 +0000 (UTC)
+        id S1346499AbhIMOmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:42:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FDA761A10;
+        Mon, 13 Sep 2021 13:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540622;
-        bh=3BRQKf+4m4hF8xbhI2zJqChxuqd8U0J5T0pyXXtX8bc=;
+        s=korg; t=1631541383;
+        bh=Jy7Q7Blf6tB2CjW2U9cPUJWfvPp+fLiGIafG/3WybSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ov9mzM8KFxjsHvdYXAfQE7PUIHB/2l/CM3nbIKqNRUp4TG10E/WxfaDujbZ18aQpf
-         ODJ6xd6s7ulJUedZkCzHZf+/LE/4dTFaAJgaBbbD6tntVrJDRh5BJi+ugMcm4M57JR
-         3au7igIc4EgL2GcjObX8ra0/6OMu3Ch/wL+ZO1no=
+        b=1KcC1I4UenpvIuJpW9sL/W9T4yXaNrfgT3w0K0GKA2n+Co78rUL74F036AEi/dlcp
+         r1Ap0398uWIk0ejHTbx2T3tEak24lrE16nq5BO7j/L7E+KcYGvWgMjQieJnngIs3y5
+         84qxkfYG6iJUPzbSOuEmBbgW6pXY/BMy58lknLUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 235/300] usb: bdc: Fix an error handling path in bdc_probe() when no suitable DMA config is available
-Date:   Mon, 13 Sep 2021 15:14:56 +0200
-Message-Id: <20210913131117.298552800@linuxfoundation.org>
+Subject: [PATCH 5.14 243/334] octeontx2-pf: Dont install VLAN offload rule if netdev is down
+Date:   Mon, 13 Sep 2021 15:14:57 +0200
+Message-Id: <20210913131121.622934113@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sunil Goutham <sgoutham@marvell.com>
 
-[ Upstream commit d2f42e09393c774ab79088d8e3afcc62b3328fc9 ]
+[ Upstream commit 05209e3570e452cdaa644e8398a8875b6a91051d ]
 
-If no suitable DMA configuration is available, a previous 'bdc_phy_init()'
-call must be undone by a corresponding 'bdc_phy_exit()' call.
+Whenever user changes interface MAC address both default DMAC based
+MCAM rule and VLAN offload (for strip) rules are updated with new
+MAC address. To update or install VLAN offload rule PF driver needs
+interface's receive channel info, which is retrieved from admin
+function at the time of NIXLF initialization.
 
-Branch to the existing error handling path instead of returning
-directly.
+If user changes MAC address before interface is UP, VLAN offload rule
+installation will fail and throw error as receive channel is not valid.
+To avoid this, skip VLAN offload rule installation if netdev is not UP.
+This rule will anyway be reinslatted as part of open() call.
 
-Fixes: cc29d4f67757 ("usb: bdc: Add support for USB phy")
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: fd9d7859db6c ("octeontx2-pf: Implement ingress/egress VLAN offload")
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/bdc/bdc_core.c | 3 ++-
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
-index 0bef6b3f049b..251db57e51fa 100644
---- a/drivers/usb/gadget/udc/bdc/bdc_core.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
-@@ -560,7 +560,8 @@ static int bdc_probe(struct platform_device *pdev)
- 		if (ret) {
- 			dev_err(dev,
- 				"No suitable DMA config available, abort\n");
--			return -ENOTSUPP;
-+			ret = -ENOTSUPP;
-+			goto phycleanup;
- 		}
- 		dev_dbg(dev, "Using 32-bit address\n");
- 	}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 70fcc1fd962f..692099793005 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -208,7 +208,8 @@ int otx2_set_mac_address(struct net_device *netdev, void *p)
+ 	if (!otx2_hw_set_mac_addr(pfvf, addr->sa_data)) {
+ 		memcpy(netdev->dev_addr, addr->sa_data, netdev->addr_len);
+ 		/* update dmac field in vlan offload rule */
+-		if (pfvf->flags & OTX2_FLAG_RX_VLAN_SUPPORT)
++		if (netif_running(netdev) &&
++		    pfvf->flags & OTX2_FLAG_RX_VLAN_SUPPORT)
+ 			otx2_install_rxvlan_offload_flow(pfvf);
+ 		/* update dmac address in ntuple and DMAC filter list */
+ 		if (pfvf->flags & OTX2_FLAG_DMACFLTR_SUPPORT)
 -- 
 2.30.2
 
