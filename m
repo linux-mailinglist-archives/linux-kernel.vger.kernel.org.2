@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A83408980
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621DE408983
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239371AbhIMK4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:56:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51634 "EHLO mail.kernel.org"
+        id S239308AbhIMK4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:56:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239324AbhIMKzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:55:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43B4661029;
-        Mon, 13 Sep 2021 10:54:36 +0000 (UTC)
+        id S239367AbhIMK4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:56:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CD861004;
+        Mon, 13 Sep 2021 10:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631530476;
-        bh=Q5absrfI8fHZmSEfHakac+PXQAsMu32YZoq5qrmLeys=;
+        s=k20201202; t=1631530486;
+        bh=7l+vYectJVc2pcNJ1xmipSlZuJEZCOZ/t0TzVWfHOpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UDOepgP+ODy7eZvGNENXCoQwDdGg6kheBSQPfhONr0B0b7QTw5Qz4Ocft1Ar4LYa4
-         ROySD8uvn36VtEpTpVBh6gH26ysvWys/SpMQNAPfEOiS2xvd2QCX9hwjunkr1kPZEw
-         HG0mS9A1jMwvwHhpQJGSptOLIL4hwAFGc6P4NA6el5Wr3no488LG+EQvM/597F9sV+
-         LoL5zpNAaYzBlxPJJCWcVP6l0OPGyYbC9AAGDdCEw5wakWFjf5NUSXhLx9DuofLLh5
-         UrfmBvTkepN0EO5YuQ90Fd+Zo5mfE0Jx1BE2CSNADe4QLlmSYNzeStZjnJfCzOPdfK
-         GKUlC/DkInPwg==
+        b=kNOWPfSdeU4ol4rp4iIs1sStfO5f1aba6ThiI63sJDvw8W6/7tKCot+ftABjHK4H4
+         jxD+gIqQYBRvf2Pto3xU5Uv71cPnjg4F7RRUpaMjBHzeye8rKjtr0mXXQsLv8KwOhY
+         LhaAIdpg7Wsp4eZJobeR8gOAQs5UkrYkAoOnDoY0Va7oBPWYVq2nMiLuxKO8Q+JKpj
+         xaB0Cc5/caUQOLLelK523pe+pxzD+QEpoycUagWpPN6jAxB1VKWGWN7TJlshE8CmF2
+         ACulhOe9EiLjp7DAEbkCOnuX9bfGK3LbB+1ZeAHwTCpDb20vIlZsJwz64VUl+kF8Jg
+         yYnMtMIV9GgGw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Gu Shengxian <gushengxian@yulong.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        open list <linux-kernel@vger.kernel.org>, tiwai@suse.de,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ASoC: amd: acp: declare and add prefix to 'bt_uart_enable' symbol
-Date:   Mon, 13 Sep 2021 11:53:15 +0100
-Message-Id: <163152996585.45703.10982811041582304324.b4-ty@kernel.org>
+To:     robh+dt@kernel.org, lgirdwood@gmail.com, thierry.reding@gmail.com,
+        Sameer Pujar <spujar@nvidia.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        jonathanh@nvidia.com, alsa-devel@alsa-project.org,
+        jbrunet@baylibre.com, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, stephan@gerhold.net
+Subject: Re: [PATCH v3 0/3] Convert name-prefix doc to json-schema
+Date:   Mon, 13 Sep 2021 11:53:18 +0100
+Message-Id: <163152996585.45703.9035282827838850495.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210907184216.33067-1-pierre-louis.bossart@linux.intel.com>
-References: <20210907184216.33067-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1630686919-19495-1-git-send-email-spujar@nvidia.com>
+References: <1630686919-19495-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,14 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sep 2021 13:42:14 -0500, Pierre-Louis Bossart wrote:
-> Sparse reports the following warning:
+On Fri, 3 Sep 2021 22:05:16 +0530, Sameer Pujar wrote:
+> Following are the changes:
+>   - Add json-schema for 'sound-name-prefix' documentation under
+>     'name-perfix.yaml'
+>   - Use schema references wherever needed.
+>   - Remove txt based doc
 > 
-> sound/soc/amd/acp-pcm-dma.c:39:6: error: symbol 'bt_uart_enable' was
-> not declared. Should it be static?
-> 
-> It's not very good practice to export such symbols that can easily
-> conflict, add the acp_ prefix and add declaration in header file.
 > 
 > [...]
 
@@ -64,8 +59,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: declare and add prefix to 'bt_uart_enable' symbol
-      commit: 198433023ef962b71f3d4274ca7a4c8f04e7ace1
+[1/3] ASoC: Add json-schema documentation for sound-name-prefix
+      commit: 7f826da8e924bae7dd56b99e3760514017ca51a3
+[2/3] ASoC: Use schema reference for sound-name-prefix
+      commit: 82d3ec1d89fa2750fdc74e2f29c6c7ff673a2768
+[3/3] ASoC: Remove name-prefix.txt
+      commit: 955cc3488e6d407bac3883be630cabbead0892f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
