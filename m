@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD28408C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37840408C0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240063AbhIMNJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        id S239552AbhIMNIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240550AbhIMNIZ (ORCPT
+        with ESMTP id S240286AbhIMNGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:08:25 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FE4C0613E2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:04:25 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id c21so6427232edj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:04:25 -0700 (PDT)
+        Mon, 13 Sep 2021 09:06:25 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006A4C0613A7;
+        Mon, 13 Sep 2021 06:04:05 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id j12so17154350ljg.10;
+        Mon, 13 Sep 2021 06:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V69rkmBV3GQTLfHYSfkRm46ouFvvTB8dc9rFkPdH+N4=;
-        b=hzIISs98X3O28GPVPgGG3S2iQKBJ1TSBHBqC277SM2ipl/ou8I+hafduL8CJBBp+zH
-         2tmw5+S6LnaHgspzzI8GgtNkir2isdn99yVcEsI+Fd3t5sYySPtMI2h5Te+FFFKmIJrQ
-         2t9PUO+KGKJsXPnCGXOxH0JmE/k+P7cfzkQHkC4MQuf/HKVE8UCg+a3KgmeOOIQNB52O
-         dYeHbzf4UfmH/2PShMW/CfpNZEkxXwJElGs2E0XW05ImA1xOi6dmkZVJKUPpRDJMqe1p
-         plIn3j+qGvpEo3a8sq5EuVaJ53i5ks1b43N3ecwyBzPA5Wd2VlVkLxJiYq5CUF9MvQVA
-         ORwA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fdVszoPfkP5+3xSMJWK4c78cuwygZKo1iummJFR4SMM=;
+        b=De1hyk8IpuJO89EwScfFDxWniZuOIgBoXs0Bcv6cEYm3jhfjDgZaJgCFA7desNyLbG
+         oWFZp8n6NyIoVyW5ayBL85G4bcz6CP2VORAT3Ayewt9VD6rXnyEXeG2aE99Lwxitnuwb
+         HpVUNFipkD8WsoGaSXZ0VelVuRPxYFZrob3RjqR21C8HkPVWChFj/IWVeMAgtaxEHWYn
+         rVpqZ8MJ2PsdbRDgMO7L3/WOZZLNkGep9UISsqLuLUd4EXLyzy9KKjb5vsqOm6PQfOaF
+         +lXyy06VKaxWRZEPi2yje+Cya9nYLxK6bMGMziDQKxT6tcNyEgeQ6UpYEndJzxFa3Dz2
+         kohA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V69rkmBV3GQTLfHYSfkRm46ouFvvTB8dc9rFkPdH+N4=;
-        b=Kf6x0c5viOcC0GnWDC8Kg4dz0C4l7vvGVl3tG9CuDfNC048iYf1iHIuGE1aBjqARGm
-         nAnnDeNUU7k+5TR44ecIH+uICdDLnmnA5V9Zwp7n7EtOtkzuc2njr6bpG3WTLiILtWcz
-         IsP0H3hJuF6WuV9vXl7gp1ejO6YyR2aizreNZvipTlIuayor7s3YenvMq8ECo7WBteOg
-         uFEGrnAvNDvM6+XhR8ab8PDw87NgUZjjJXZ8rDXvlgDHXrmKoBFGy0L6o3Pw4TptUGAT
-         rmbkLyTEvNWnpEpONKb5RgnZzzJijbLZyQFJ4/VsAdaB3fQgCa5QppL+tn5XGubvrHkM
-         E+ng==
-X-Gm-Message-State: AOAM53108PJjZkUArW6muSCl/S1TOGhBkHL5yfPjx1biO0GVdEu+7PTt
-        3f/1nQXCFRuwl+ZLD99XtIE=
-X-Google-Smtp-Source: ABdhPJxcVQQ0dSffVIoSF53GEszp5OQOx8RTomDzzVpofor24GI78fPOuE+UX9tEGTlMIVr1z0fXow==
-X-Received: by 2002:a05:6402:5215:: with SMTP id s21mr13172804edd.236.1631538264036;
-        Mon, 13 Sep 2021 06:04:24 -0700 (PDT)
-Received: from agape ([5.171.73.21])
-        by smtp.gmail.com with ESMTPSA id by26sm1922554edb.69.2021.09.13.06.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 06:04:23 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH] staging: rtl8723bs: protect sleepq_len access by sleep_q.lock
-Date:   Mon, 13 Sep 2021 15:03:46 +0200
-Message-Id: <20210913130346.2390-1-fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fdVszoPfkP5+3xSMJWK4c78cuwygZKo1iummJFR4SMM=;
+        b=Fv/VzmKuG8w+/6FyRPaDDqR4SBgttVCN1CIONPQnlK6GgkQPDHF0YwILOiBIj9IH4t
+         mw3UiHKjgIuPRzSk0sjKSS5sPc83+trOdPYrdNxRONEi69MjEeNjDAzi/nxOlXpNVow1
+         aotvQN1tEP5maQWjFCy44kaocR52RC9RvClXCL42ImGqE4bypGXrjt3l6vAZX6zc7iVK
+         m9ss3GYjYDyeQRRqjx27PGbA2LsQJNFQ3JV6fSyVh94mUaS3gvqkW63wJqFx5Ti6socO
+         Eb1z28hjvdPq3BDIk7Sw+Tmzz8ouekZyoorIdsuT7lFevXmdjtd8T8/DFOXR01fFbmAO
+         EVHA==
+X-Gm-Message-State: AOAM531dzfJq+YN06cOmW7ivWCiphz6GH714BIw/9+yE8GneljsTDyhR
+        /prsPOWv/tXOXyIY9E+zjFLCR9nWbDHr92gJdvU=
+X-Google-Smtp-Source: ABdhPJyapPwIOJ4iZsGjLhObcjcAMnBA6vJhfLb+R+mSJyhunzcosVW1T1D7lBEFop7FvtY38jGSHd5TbbyPOOZNxCo=
+X-Received: by 2002:a2e:9942:: with SMTP id r2mr10574876ljj.92.1631538241665;
+ Mon, 13 Sep 2021 06:04:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210818070209.1540451-1-michal.vokac@ysoft.com> <20210818070209.1540451-2-michal.vokac@ysoft.com>
+In-Reply-To: <20210818070209.1540451-2-michal.vokac@ysoft.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 13 Sep 2021 10:03:50 -0300
+Message-ID: <CAOMZO5DUYrVZ0F_ZF66jtCkgTAM5YsqDvxaQJHGeTc-+4c2Yrw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: imx6dl-yapp4: Remove the unused white LED channel
+To:     =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-protect sleepq_len access by sleep_q.lock and move
-pxmitpriv->lock after sleep_q.lock release.
+On Wed, Aug 18, 2021 at 4:02 AM Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.=
+com> wrote:
+>
+> Since the reg property was added to each channel node in commit
+> b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property to the lp5562
+> channel node") it is possible to skip unused channels.
+>
+> Remove the actually unused white LED channel.
+>
+> Signed-off-by: Michal Vok=C3=A1=C4=8D <michal.vokac@ysoft.com>
 
-This fixes and completes a lockdep warning silencing
-done in a prevoius commit where accesses to sleep_q
-related fields were protected by sleep_q.lock instead
-of pxmitpriv->lock.
-
-Note that sleep_q.lock is already taken inside
-rtw_free_xmitframe_queue so we just wrap sleepq_len
-access.
-
-Moved pxmitpriv->lock after sleep_q.lock release to
-avoid locks nesting.
-
-Fixes: 78a1614a81f0 ("staging: rtl8723bs: remove possible deadlock when disconnect")
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Tested-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-index bf090f3b1db6..c98918e02afe 100644
---- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-@@ -294,10 +294,12 @@ u32 rtw_free_stainfo(struct adapter *padapter, struct sta_info *psta)
- 
- 	/* list_del_init(&psta->wakeup_list); */
- 
--	spin_lock_bh(&pxmitpriv->lock);
--
- 	rtw_free_xmitframe_queue(pxmitpriv, &psta->sleep_q);
-+	spin_lock_bh(&psta->sleep_q.lock);
- 	psta->sleepq_len = 0;
-+	spin_unlock_bh(&psta->sleep_q.lock);
-+
-+	spin_lock_bh(&pxmitpriv->lock);
- 
- 	/* vo */
- 	/* spin_lock_bh(&(pxmitpriv->vo_pending.lock)); */
--- 
-2.20.1
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
