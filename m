@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B261F409129
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE326409184
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245041AbhIMN65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:58:57 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:41949 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S243988AbhIMN4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:56:18 -0400
-Received: (qmail 120803 invoked by uid 1000); 13 Sep 2021 09:54:59 -0400
-Date:   Mon, 13 Sep 2021 09:54:59 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
-        a.darwish@linutronix.de, johan@kernel.org,
-        linux-kernel@vger.kernel.org, oneukum@suse.com
-Subject: Re: INFO: task hung in hub_port_init
-Message-ID: <20210913135459.GA120302@rowland.harvard.edu>
-References: <CACkBjsYQxQxGQwb3YS4obVWH3EODzqky5=nM3ADP7+13hBYgAA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACkBjsYQxQxGQwb3YS4obVWH3EODzqky5=nM3ADP7+13hBYgAA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S245311AbhIMOB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:01:58 -0400
+Received: from comms.puri.sm ([159.203.221.185]:39610 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243728AbhIMN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:58:44 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 062D2E0FDD;
+        Mon, 13 Sep 2021 06:57:25 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 6djZ9Dce4JhH; Mon, 13 Sep 2021 06:57:24 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     robh@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        kernel@puri.sm, Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v1 0/6] arm64: dts: imx8mq-librem5: wifi updates and minor fixes
+Date:   Mon, 13 Sep 2021 15:57:00 +0200
+Message-Id: <20210913135706.309685-1-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:13:15AM +0800, Hao Sun wrote:
-> Hello,
-> 
-> When using Healer to fuzz the Linux kernel, the following crash was triggered.
-> 
-> HEAD commit: ac08b1c68d1b Merge tag 'pci-v5.15-changes'
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1ZeDIMe-DoY3fB32j2p5ifgpq-Lc5N74I/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1qrJUXD8ZIeAkg-xojzDpp04v9MtQ8RR6/view?usp=sharing
-> Syzlang reproducer:
-> https://drive.google.com/file/d/1tZe8VmXfxoPqlNpzpGOd-e5WCSWgbkxB/view?usp=sharing
-> Similar report:
-> https://groups.google.com/g/syzkaller-bugs/c/zX55CUzjBOY/m/uf91r0XqAgAJ
-> 
-> Sorry, I don't have a C reproducer for this crash but have a Syzlang
-> reproducer. Also, hope the symbolized report can help.
-> Here are the instructions on how to execute Syzlang prog:
-> https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md
-> 
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
+hi,
 
-There's not much hope of finding the cause of a problem like this 
-without seeing the kernel log.
+In order to maintain support the Librem 5 phone, this updates the
+DT description. It's mainly wifi additions.
 
-Alan Stern
+thanks a lot,
+
+                           martin
+
+Angus Ainslie (3):
+  arm64: dts: imx8mq-librem5: delay the startup of the SDIO
+  arm64: dts: imx8mq-librem5: add power sequencing for M.2 cards
+  arm64: dts: imx8mq-librem5: Limit the max sdio frequency
+
+Guido Günther (1):
+  arm64: dts: imx8mq-librem5: wire up the wifi regulator
+
+Martin Kepplinger (1):
+  arm64: dts: imx8mq-librem5: add reset gpio to mantix panel description
+
+Sebastian Krzyszkowiak (1):
+  arm64: dts: imx8mq-librem5: Fix led_r and led_g pinctrl assignments
+
+ .../boot/dts/freescale/imx8mq-librem5.dtsi    | 43 ++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 2 deletions(-)
+
+-- 
+2.30.2
+
