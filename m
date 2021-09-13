@@ -2,128 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4894C408473
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA3340845B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237426AbhIMGFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:05:46 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:56752 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237248AbhIMGFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:05:40 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E92751A28B5;
-        Mon, 13 Sep 2021 08:04:23 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 86CE71A28AD;
-        Mon, 13 Sep 2021 08:04:23 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 331D5183AD29;
-        Mon, 13 Sep 2021 14:04:22 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, bhelgaas@google.com,
-        lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH v2 5/5] PCI: imx6: Add the compliance tests mode support
-Date:   Mon, 13 Sep 2021 13:41:10 +0800
-Message-Id: <1631511670-30164-6-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631511670-30164-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1631511670-30164-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S237111AbhIMGE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:04:29 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:24557 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237102AbhIMGE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 02:04:26 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 18D5ggQb094964;
+        Mon, 13 Sep 2021 13:42:42 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 13 Sep
+ 2021 14:02:26 +0800
+From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+To:     <joel@jms.id.au>, <andrew@aj.id.au>, <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+CC:     <osk@google.com>, <yulei.sh@bytedance.com>
+Subject: [PATCH v4 0/4] arm: aspeed: Add UART routing support
+Date:   Mon, 13 Sep 2021 14:02:27 +0800
+Message-ID: <20210913060231.15619-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 18D5ggQb094964
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refer to the system board signal Quality of PCIe archiecture PHY test
-specification. Signal quality tests(for example: jitters,  differential
-eye opening and so on ) can be executed with devices in the
-polling.compliance state.
+Add UART routing driver and the device tree nodes.
 
-To let the device support polling.compliance stat, the clocks and powers
-shouldn't be turned off when the probe of device driver is failed.
+v4:
+ - Convert aspeed-lpc bindings to YAML schema to resolve dependecy issues
 
-Based on CLB(Compliance Load Board) Test Fixture and so on test
-equipments, the PHY link would be down during the compliance tests.
-Refer to this scenario, add the i.MX PCIe compliance tests mode enable
-support, and keep the clocks and powers on, and finish the driver probe
-without error return.
+v3:
+ - Add individual bindings in YAML
+ - Add support for AST24xx (AST25xx shares the same design)
+ - Add more explanation for the sysfs ABI
 
-Use the "pci_imx6.compliance=1" in kernel command line to enable the
-compliance tests mode.
+v2:
+ - Add dt-bindings
+ - Add ABI documents for the exported sysfs interface
+ - Revise driver implementation suggested by Joel
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 32 ++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+Chia-Wei Wang (4):
+  dt-bindings: mfd: aspeed-lpc: Convert to YAML schema
+  dt-bindings: aspeed: Add UART routing controller
+  soc: aspeed: Add UART routing support
+  ARM: dts: aspeed: Add uart routing to device tree
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index ab292d9cd528..39b6fe93f5e5 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -143,6 +143,10 @@ struct imx6_pcie {
- #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
- #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
- 
-+static bool imx6_pcie_cmp_mode;
-+module_param_named(compliance, imx6_pcie_cmp_mode, bool, 0644);
-+MODULE_PARM_DESC(compliance, "i.MX PCIe compliance test mode (1=compliance test mode enabled)");
-+
- static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
- {
- 	struct dw_pcie *pci = imx6_pcie->pci;
-@@ -812,10 +816,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
- 	 * started in Gen2 mode, there is a possibility the devices on the
- 	 * bus will not be detected at all.  This happens with PCIe switches.
- 	 */
--	tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
--	tmp &= ~PCI_EXP_LNKCAP_SLS;
--	tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
--	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	if (!imx6_pcie_cmp_mode) {
-+		tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-+		tmp &= ~PCI_EXP_LNKCAP_SLS;
-+		tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
-+		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	}
- 
- 	/* Start LTSSM. */
- 	imx6_pcie_ltssm_enable(dev);
-@@ -876,9 +882,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
- 		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0),
- 		dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG1));
- 	imx6_pcie_reset_phy(imx6_pcie);
--	imx6_pcie_clk_disable(imx6_pcie);
--	if (imx6_pcie->vpcie && regulator_is_enabled(imx6_pcie->vpcie) > 0)
--		regulator_disable(imx6_pcie->vpcie);
-+	if (!imx6_pcie_cmp_mode) {
-+		imx6_pcie_clk_disable(imx6_pcie);
-+		if (imx6_pcie->vpcie
-+		    && regulator_is_enabled(imx6_pcie->vpcie) > 0)
-+			regulator_disable(imx6_pcie->vpcie);
-+	}
- 	return ret;
- }
- 
-@@ -1183,8 +1192,15 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = dw_pcie_host_init(&pci->pp);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (imx6_pcie_cmp_mode) {
-+			dev_info(dev, "Driver loaded with compliance test mode enabled.\n");
-+			ret = 0;
-+		} else {
-+			dev_err(dev, "Unable to add pcie port.\n");
-+		}
- 		return ret;
-+	}
- 
- 	if (pci_msi_enabled()) {
- 		u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_MSI);
+ .../testing/sysfs-driver-aspeed-uart-routing  |  15 +
+ .../devicetree/bindings/mfd/aspeed-lpc.txt    | 157 -----
+ .../devicetree/bindings/mfd/aspeed-lpc.yaml   | 191 ++++++
+ .../bindings/soc/aspeed/uart-routing.yaml     |  70 ++
+ arch/arm/boot/dts/aspeed-g4.dtsi              |   6 +
+ arch/arm/boot/dts/aspeed-g5.dtsi              |   6 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |   6 +
+ drivers/soc/aspeed/Kconfig                    |  10 +
+ drivers/soc/aspeed/Makefile                   |   9 +-
+ drivers/soc/aspeed/aspeed-uart-routing.c      | 603 ++++++++++++++++++
+ 10 files changed, 912 insertions(+), 161 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing
+ delete mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/aspeed-lpc.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/aspeed/uart-routing.yaml
+ create mode 100644 drivers/soc/aspeed/aspeed-uart-routing.c
+
 -- 
-2.25.1
+2.17.1
 
