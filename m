@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D26B409686
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412AE409696
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347954AbhIMOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34744 "EHLO mail.kernel.org"
+        id S1347354AbhIMOx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:53:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346615AbhIMOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346721AbhIMOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:47:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F22EF604D1;
-        Mon, 13 Sep 2021 14:21:01 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 16:20:59 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "taoyi.ty" <escape@linux.alibaba.com>,
-        Greg KH <gregkh@linuxfoundation.org>, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, mcgrof@kernel.org, keescook@chromium.org,
-        yzaikin@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        shanpeic@linux.alibaba.com
-Subject: Re: [RFC PATCH 0/2] support cgroup pool in v1
-Message-ID: <20210913142059.qbypd4vfq6wdzqfw@wittgenstein>
-References: <cover.1631102579.git.escape@linux.alibaba.com>
- <YTiugxO0cDge47x6@kroah.com>
- <a0c67d71-8045-d8b6-40c2-39f2603ec7c1@linux.alibaba.com>
- <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BF8960C51;
+        Mon, 13 Sep 2021 14:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631543026;
+        bh=Z6j0LTCb/0Fx5pxLfWQP2iaIBaU+rx32o1y6TgwxBf8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MU3y9lQuvncRuxjepqLqkpJUzPPrYF1sGflnKzj/heuTwTgCN2oNNAs23fggxVkTI
+         SAJJTyaiBjgQRaDV37IIVo3TBX6/pRgLJBSRVK+p6AZE8/p0AZ0ClN/l2wERwsr08e
+         ZK+t0tQObmMvi3NvViHiwLgD/7Hn6EBQdRpGn+P+w2fQyfNrVuAsSDhjSpJhHlKvEh
+         VRnEwO+o3S7UB09yT9HlUXq94DNsRj+WtZyJ6fdb9gHLV2FBqziv4gzSvKSwLGoGed
+         XR4Lx9PEzHDqaq7/WoM+A7Oqtzy39yurrcScsemlk7ouYCJQqPgTcuvTy2Agqiu4eG
+         IIVYWobHBYlIA==
+Date:   Mon, 13 Sep 2021 15:23:07 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
+        sharadg@nvidia.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 06/13] ASoC: tegra: Add Tegra210 based MVC driver
+Message-ID: <20210913142307.GF4283@sirena.org.uk>
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-7-git-send-email-spujar@nvidia.com>
+ <20210903181326.GP4932@sirena.org.uk>
+ <29c785d0-cc70-7cce-c205-77059c11e0e1@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
 Content-Disposition: inline
-In-Reply-To: <YTuMl+cC6FyA/Hsv@slm.duckdns.org>
+In-Reply-To: <29c785d0-cc70-7cce-c205-77059c11e0e1@nvidia.com>
+X-Cookie: Above all else -- sky.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 06:49:27AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Fri, Sep 10, 2021 at 10:11:53AM +0800, taoyi.ty wrote:
-> > The scenario is the function computing of the public
-> > cloud. Each instance of function computing will be
-> > allocated about 0.1 core cpu and 100M memory. On
-> > a high-end server, for example, 104 cores and 384G,
-> > it is normal to create hundreds of containers at the
-> > same time if burst of requests comes.
-> 
-> This type of use case isn't something cgroup is good at, at least not
-> currently. The problem is that trying to scale management operations like
-> creating and destroying cgroups has implications on how each controller is
-> implemented - we want the hot paths which get used while cgroups are running
-> actively to be as efficient and scalable as possible even if that requires a
-> lot of extra preparation and lazy cleanup operations. We don't really want
-> to push for cgroup creation / destruction efficiency at the cost of hot path
-> overhead.
-> 
-> This has implications for use cases like you describe. Even if the kernel
-> pre-prepare cgroups to low latency for cgroup creation, it means that the
-> system would be doing a *lot* of managerial extra work creating and
-> destroying cgroups constantly for not much actual work.
-> 
-> Usually, the right solution for this sort of situations is pooling cgroups
-> from the userspace which usually has a lot better insight into which cgroups
-> can be recycled and can also adjust the cgroup hierarchy to better fit the
-> use case (e.g. some rapid-cycling cgroups can benefit from higher-level
-> resource configurations).
 
-I had the same reaction and I wanted to do something like this before,
-i.e. maintain a pool of pre-allocated cgroups in userspace. But there
-were some problems.
+--i3lJ51RuaGWuFYNw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Afaict, there is currently now way to prevent the deletion of empty
-cgroups, especially newly created ones. So for example, if I have a
-cgroup manager that prunes the cgroup tree whenever they detect empty
-cgroups they can delete cgroups that were pre-allocated. This is
-something we have run into before.
+On Mon, Sep 13, 2021 at 10:32:32AM +0530, Sameer Pujar wrote:
+> On 9/3/2021 11:43 PM, Mark Brown wrote:
 
-A related problem is a crashed or killed container manager 
-(segfault, sigkill, etc.). It might not have had the chance to cleanup
-cgroups it allocated for the container. If the container manager is
-restarted it can't reuse the existing cgroup it found because it has no
-way of guaranteeing whether in between the time it crashed and got
-restarted another program has just created a cgroup with the same name.
-We usually solve this by just creating another cgroup with an index
-appended until we we find an unallocated one setting an arbitrary cut
-off point until we require manual intervention by the user (e.g. 1000).
+> > > +	err |= regmap_update_bits(mvc->regmap, TEGRA210_MVC_SWITCH,
+> > > +			TEGRA210_MVC_VOLUME_SWITCH_MASK,
+> > > +			TEGRA210_MVC_VOLUME_SWITCH_TRIGGER);
+> > > +
+> > > +end:
+> > > +	pm_runtime_put(cmpnt->dev);
+> > > +	return err;
+> > > +}
 
-Right now iirc, one can rmdir() an empty cgroup while someone still
-holds a file descriptor open for it. This can lead to situation where a
-cgroup got created but before moving into the cgroup (via clone3() or
-write()) someone else has deleted it. What would already be helpful is
-if one had a way to prevent the deletion of cgroups when someone still
-has an open reference to it. This would allow a pool of cgroups to be
-created that can't simply be deleted.
+> > _put() should return 0 if there's no change or 1 for a change.
 
-Christian
+> So this means, no need to return any error value and just return 0 in such
+> cases?
+
+If there's an error you should return that instead.
+
+--i3lJ51RuaGWuFYNw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE/XsoACgkQJNaLcl1U
+h9Aeywf+L19DUp0pquR8XpAdjcB8vCJFQ8bpY19O2MoHi1ytdVvLaesU9Hd+lPBc
+hvbcsNlfBqDuH2EGjUqPFkRKDevu6YiF+UsAYldN6011XNMjbyo5GtPnLSQbtFY0
+55lL43iJ4KqIZDIYwgdoz5f/kEDfuhAFP1GUvo31JnSRRqcsooD/0YWnKx3rOmvF
+EA3QmaFxjp46zpSp+U92iKEMDi3rkJNpqgBiL/vpQRgLQ4xov5nBxzMHx+AmH/hl
+89lvssVBxEV6+waoi1STpaAdHR5ynuhBctdoBh0UgEGg1T+l477TFZ/dCHFQd5OF
+zHcyS9EQ2akuFsPlpZA9FqtaxNTN+w==
+=rm21
+-----END PGP SIGNATURE-----
+
+--i3lJ51RuaGWuFYNw--
