@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B3940886A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12A4408879
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 11:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238763AbhIMJji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 05:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238749AbhIMJjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 05:39:37 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C71C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:38:20 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id n7-20020a05600c3b8700b002f8ca941d89so6114752wms.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 02:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GgdGwtNZAbTBYuLX1/1vRJaXhwTs+Iu+RSqf/65W9qI=;
-        b=iUDhQQW0GwwEZyLSrD/MdTQAwu0lwZP8K9T2F4I4/CZdhgjMplIXUxAATPchIzVnRU
-         WOIMc12KJK7jY0mVzP7F20hbpwPJRi+WFETkBv+Y02d64GXFDMCsh1pRLiDc+pW159rF
-         I/8MKdcHuDAnKzcauVZULM+HrMFVqgLkEc/5pUDxBEhPXUGE4CoP6HFID9WGFxVIjIUF
-         JcqBLhtmP9B/4jUaJ1V0f1ETYXnl2AkyhGnhoErpEFJDDPz7XNRbDLvO86DlV8PXKwED
-         3Y+GhatOSf2bXqNlyF3lHI4aLGXxsYjyNf8PBS/EGJcLaN8LDadqjB69Ogp8uTE+7oiD
-         92rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GgdGwtNZAbTBYuLX1/1vRJaXhwTs+Iu+RSqf/65W9qI=;
-        b=FVWD4jgkiSuhPrnc4PyGM5gZNQgsKzGQ3hMnBqpHxtoXTWnODUwa0sHL3LwrydLyoE
-         qMcN766zVjo/2F0Wq1q6MdQ9vswdqE+pZHfD4N5N5Dr6tGCfCUXdGTfQVsg5ND0mqH/i
-         NSaOcKd6LbU2y6DQZilZCiRpuXpr/nGB4RO0uaSypAqWzM+KvjXgIPtSOjKNtvFePf0O
-         aEYfPN+iOI7ERnMjVgg/fIWSCNkar+BN7FAI+ZYrRFQgJYp84ZdowPBbtPTWpHDg2+LZ
-         Hw1AfGwSxAZEj5/xVHOm/6ne+658T/C3FMxFB36jbiESz7IktOY0jwHue9B9Fd52eXq1
-         pIwQ==
-X-Gm-Message-State: AOAM531JJ0btxRQTUA/Q3kAKum8d7VAnA3b1ShNwhyaF4J5FGsJYWNZs
-        Fk+le5+JUYfNk3P6z4ZlGd7x3P25e+Sxit2uMNCrMA==
-X-Google-Smtp-Source: ABdhPJyW9K4gP2TJxkjRNTy5yov3L17WhGLT+BYWYSz7chVK5eZMsnjTqAs6t07eU237vsAJ5I1XI6GeJmQoYyhUhwc=
-X-Received: by 2002:a05:600c:2046:: with SMTP id p6mr10484211wmg.88.1631525899229;
- Mon, 13 Sep 2021 02:38:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <46a9dbf2-9748-330a-963e-57e615a15440@gmail.com>
- <20210701085117.19018-1-rocco.yue@mediatek.com> <62c9f5b7-84bd-d809-4e33-39fed7a9d780@gmail.com>
- <CAKD1Yr2aijPe_aq+SRm-xv0ZPoz_gKjYrEX97R1NJyYpSnv4zg@mail.gmail.com>
- <6a8f0e91-225a-e2a8-3745-12ff1710a8df@gmail.com> <CAO42Z2w-N6A4DmubhQsg6WbaApG+7sy2SVRRxMXtaLrTKYyieQ@mail.gmail.com>
-In-Reply-To: <CAO42Z2w-N6A4DmubhQsg6WbaApG+7sy2SVRRxMXtaLrTKYyieQ@mail.gmail.com>
-From:   Lorenzo Colitti <lorenzo@google.com>
-Date:   Mon, 13 Sep 2021 18:38:06 +0900
-Message-ID: <CAKD1Yr2jZbJE11JVJkkfE-D8-qpiE4AKi87sfdCh7zAMJ-tiEQ@mail.gmail.com>
-Subject: Re: [PATCH] net: ipv6: don't generate link-local address in any addr_gen_mode
-To:     Mark Smith <markzzzsmith@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Rocco Yue <rocco.yue@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        rocco.yue@gmail.com, chao.song@mediatek.com,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        =?UTF-8?B?Wmh1b2xpYW5nIFpoYW5nICjlvKDljZPkuq4p?= 
-        <zhuoliang.zhang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S238810AbhIMJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 05:46:20 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:53790 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238757AbhIMJqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 05:46:18 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowAA3PyuDHT9hqz9gAA--.49159S2;
+        Mon, 13 Sep 2021 17:44:35 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH 3/6 RESEND] x86/microcode/amd: Potentially delete invalid pointer
+Date:   Mon, 13 Sep 2021 09:44:33 +0000
+Message-Id: <1631526273-2257451-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowAA3PyuDHT9hqz9gAA--.49159S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZryxtr4UtFWrCrWfJrWkWFg_yoWDtwb_Wa
+        4rt348ur4fAFy2vwsFyw48Gas3Zwn5tFZ5tryxta4rt343KFs8Aa12ga1YgFy3WrZYqFZ5
+        Arn5CF4UG3s3ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
+        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
+        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4fMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUeLvtDUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:47 AM Mark Smith <markzzzsmith@gmail.com> wrote:
-> This is all going in the wrong direction. Link-local addresses are not
-> optional on an interface, all IPv6 enabled interfaces are required to
-> have one:
+Directly use __list_del() to remove 'p->plist' might be unsafe,
+as we can see from the __list_del_entry_valid() of 'lib/list_debug.c'
+that p->plist->prev or p->plist->next may be the LIST_POISON,
+or p->list is not a valid double list.
+In that case, __list_del() will be corruption.
+Therefore, we suggest that __list_del_entry_valid()
+should be added in front of the __list_del() in free_cache.
 
-The original patch did indeed disable the generation of the link-local
-address, but that patch was rejected. It sounds like the right
-approach here is to provide two new addressing modes:
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ arch/x86/kernel/cpu/microcode/amd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-IN6_ADDR_GEN_MODE_RANDOM_LL_TOKEN
-IN6_ADDR_GEN_MODE_STABLE_PRIVACY_LL_TOKEN
+diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
+index 3d4a483..e589cff 100644
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -626,6 +626,8 @@ static void free_cache(void)
+ 	struct ucode_patch *p, *tmp;
+ 
+ 	list_for_each_entry_safe(p, tmp, &microcode_cache, plist) {
++		if (!__list_del_entry_valid(&p->plist))
++			continue;
+ 		__list_del(p->plist.prev, p->plist.next);
+ 		kfree(p->data);
+ 		kfree(p);
+-- 
+2.7.4
 
-which would form the link-local address from the token passed in via
-IFLA_INET6_TOKEN, but would form non-link-local addresses (e.g.,
-global addresses) via the specified means (either random or stable
-privacy). I haven't looked at how to do that yet though.
