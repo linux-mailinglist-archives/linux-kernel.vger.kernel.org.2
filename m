@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B49408F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19B94091A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243489AbhIMNjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:39:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58362 "EHLO mail.kernel.org"
+        id S245080AbhIMODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:03:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240909AbhIMNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C45B6137D;
-        Mon, 13 Sep 2021 13:25:57 +0000 (UTC)
+        id S244961AbhIMOAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3DAF61A2A;
+        Mon, 13 Sep 2021 13:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539557;
-        bh=XiDtveJprzscL9tlffUBoV5vcZn/VTSikhdAvGKho7Q=;
+        s=korg; t=1631540253;
+        bh=9X9on+uGZfhnLn2z3QlG2aGGzuULxqblXnl/Et2unIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gACi336WTz3yNnwZdfItVNz+O7JfyIsG0g7ibNsJBNsChyC9XeNP9tsp8DaW5dy5a
-         WI3fIxOwsQorLShTRfBl4d2uaS/+YoJgL4Ilrn1yiShoaOc87bIe8mXrIW9aAFONAj
-         wcoqbMzhjBGiCDQhsWzrOdZy36scB0AXsWASJN1E=
+        b=qwCHdT0N+EicQIKrmKnGe4Q4S+Pv7H/aXGbrPURQrTiMhSjEoc8/6WGP/WYfR/Yfk
+         Uv/xc0mTmXmCXNLS3TydGM9sqp0n9YMCyTufL+P4O5JsHp5v4xjJhUlrnoE1bd+vCd
+         ehrdeN4fBtmrju7D7Oh6uCJFWbxxXtTP31CMvuLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 071/236] ASoC: mediatek: mt8183: Fix Unbalanced pm_runtime_enable in mt8183_afe_pcm_dev_probe
-Date:   Mon, 13 Sep 2021 15:12:56 +0200
-Message-Id: <20210913131102.774008372@linuxfoundation.org>
+Subject: [PATCH 5.13 116/300] Bluetooth: sco: prevent information leak in sco_conn_defer_accept()
+Date:   Mon, 13 Sep 2021 15:12:57 +0200
+Message-Id: <20210913131113.309272297@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,156 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 19f479c37f76e926a6c0bec974a4d09826e32fc6 ]
+[ Upstream commit 59da0b38bc2ea570ede23a3332ecb3e7574ce6b2 ]
 
-Add missing pm_runtime_disable() when probe error out. It could
-avoid pm_runtime implementation complains when removing and probing
-again the driver.
+Smatch complains that some of these struct members are not initialized
+leading to a stack information disclosure:
 
-Fixes:a94aec035a122 ("ASoC: mediatek: mt8183: add platform driver")
+    net/bluetooth/sco.c:778 sco_conn_defer_accept() warn:
+    check that 'cp.retrans_effort' doesn't leak information
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20210618141104.105047-3-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This seems like a valid warning.  I've added a default case to fix
+this issue.
+
+Fixes: 2f69a82acf6f ("Bluetooth: Use voice setting in deferred SCO connection request")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 43 ++++++++++++++--------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+ net/bluetooth/sco.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index c4a598cbbdaa..14e77df06b01 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -1119,25 +1119,26 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	afe->regmap = syscon_node_to_regmap(dev->parent->of_node);
- 	if (IS_ERR(afe->regmap)) {
- 		dev_err(dev, "could not get regmap from parent\n");
--		return PTR_ERR(afe->regmap);
-+		ret = PTR_ERR(afe->regmap);
-+		goto err_pm_disable;
- 	}
- 	ret = regmap_attach_dev(dev, afe->regmap, &mt8183_afe_regmap_config);
- 	if (ret) {
- 		dev_warn(dev, "regmap_attach_dev fail, ret %d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	rstc = devm_reset_control_get(dev, "audiosys");
- 	if (IS_ERR(rstc)) {
- 		ret = PTR_ERR(rstc);
- 		dev_err(dev, "could not get audiosys reset:%d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	ret = reset_control_reset(rstc);
- 	if (ret) {
- 		dev_err(dev, "failed to trigger audio reset:%d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	/* enable clock for regcache get default value from hw */
-@@ -1147,7 +1148,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	ret = regmap_reinit_cache(afe->regmap, &mt8183_afe_regmap_config);
- 	if (ret) {
- 		dev_err(dev, "regmap_reinit_cache fail, ret %d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	pm_runtime_put_sync(&pdev->dev);
-@@ -1160,8 +1161,10 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	afe->memif_size = MT8183_MEMIF_NUM;
- 	afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
- 				  GFP_KERNEL);
--	if (!afe->memif)
--		return -ENOMEM;
-+	if (!afe->memif) {
-+		ret = -ENOMEM;
-+		goto err_pm_disable;
-+	}
- 
- 	for (i = 0; i < afe->memif_size; i++) {
- 		afe->memif[i].data = &memif_data[i];
-@@ -1178,22 +1181,26 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	afe->irqs_size = MT8183_IRQ_NUM;
- 	afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
- 				 GFP_KERNEL);
--	if (!afe->irqs)
--		return -ENOMEM;
-+	if (!afe->irqs) {
-+		ret = -ENOMEM;
-+		goto err_pm_disable;
-+	}
- 
- 	for (i = 0; i < afe->irqs_size; i++)
- 		afe->irqs[i].irq_data = &irq_data[i];
- 
- 	/* request irq */
- 	irq_id = platform_get_irq(pdev, 0);
--	if (irq_id < 0)
--		return irq_id;
-+	if (irq_id < 0) {
-+		ret = irq_id;
-+		goto err_pm_disable;
-+	}
- 
- 	ret = devm_request_irq(dev, irq_id, mt8183_afe_irq_handler,
- 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
- 	if (ret) {
- 		dev_err(dev, "could not request_irq for asys-isr\n");
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	/* init sub_dais */
-@@ -1204,7 +1211,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 		if (ret) {
- 			dev_warn(afe->dev, "dai register i %d fail, ret %d\n",
- 				 i, ret);
--			return ret;
-+			goto err_pm_disable;
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 3bd41563f118..a7b4555f312f 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -773,6 +773,11 @@ static void sco_conn_defer_accept(struct hci_conn *conn, u16 setting)
+ 			cp.max_latency = cpu_to_le16(0xffff);
+ 			cp.retrans_effort = 0xff;
+ 			break;
++		default:
++			/* use CVSD settings as fallback */
++			cp.max_latency = cpu_to_le16(0xffff);
++			cp.retrans_effort = 0xff;
++			break;
  		}
- 	}
  
-@@ -1213,7 +1220,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 	if (ret) {
- 		dev_warn(afe->dev, "mtk_afe_combine_sub_dai fail, ret %d\n",
- 			 ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	afe->mtk_afe_hardware = &mt8183_afe_hardware;
-@@ -1229,7 +1236,7 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 					      NULL, 0);
- 	if (ret) {
- 		dev_warn(dev, "err_platform\n");
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	ret = devm_snd_soc_register_component(afe->dev,
-@@ -1238,10 +1245,14 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
- 					      afe->num_dai_drivers);
- 	if (ret) {
- 		dev_warn(dev, "err_dai_component\n");
--		return ret;
-+		goto err_pm_disable;
- 	}
- 
- 	return ret;
-+
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
-+	return ret;
- }
- 
- static int mt8183_afe_pcm_dev_remove(struct platform_device *pdev)
+ 		hci_send_cmd(hdev, HCI_OP_ACCEPT_SYNC_CONN_REQ,
 -- 
 2.30.2
 
