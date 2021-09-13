@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87ABA40876F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3D140877D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238407AbhIMItk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:49:40 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:35348 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238270AbhIMIta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:49:30 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DCB33202A2E;
-        Mon, 13 Sep 2021 10:48:13 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CFBB5202A17;
-        Mon, 13 Sep 2021 10:48:13 +0200 (CEST)
-Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 4A91D202EC;
-        Mon, 13 Sep 2021 10:48:13 +0200 (CEST)
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH 10/10] dt-bindings: serial: fsl-lpuart: Add i.MX8DXL compatible
-Date:   Mon, 13 Sep 2021 11:47:54 +0300
-Message-Id: <1631522874-19862-11-git-send-email-abel.vesa@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1631522874-19862-1-git-send-email-abel.vesa@nxp.com>
-References: <1631522874-19862-1-git-send-email-abel.vesa@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S238441AbhIMIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:50:26 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:36770 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238516AbhIMIuE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:50:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UoBPA7m_1631522925;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UoBPA7m_1631522925)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 13 Sep 2021 16:48:47 +0800
+Date:   Mon, 13 Sep 2021 16:48:45 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com,
+        zhangwen@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] erofs: fix compacted_{4b_initial, 2b} when
+ compacted_4b_initial > totalidx
+Message-ID: <YT8QbaAEkqBw//R0@B-P7TQMD6M-0146.local>
+References: <20210913072405.1128-1-zbestahu@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210913072405.1128-1-zbestahu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
----
- Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Hi Yue,
 
-diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-index a90c971b4f1f..d84bb33f3b4c 100644
---- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-+++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-@@ -22,6 +22,7 @@ properties:
-           - fsl,imx7ulp-lpuart
-           - fsl,imx8qm-lpuart
-       - items:
-+          - const: fsl,imx8dxl-lpuart
-           - const: fsl,imx8qxp-lpuart
-           - const: fsl,imx7ulp-lpuart
- 
--- 
-2.31.1
+On Mon, Sep 13, 2021 at 03:24:05PM +0800, Yue Hu wrote:
+> From: Yue Hu <huyue2@yulong.com>
+> 
+> mkfs.erofs will treat compacted_4b_initial & compacted_2b as 0 if
+> compacted_4b_initial > totalidx, kernel should be aligned with it
+> accordingly.
 
+There is no difference between compacted_4b_initial or compacted_4b_end
+for compacted 4B. Since in this way totalidx for compact 2B won't larger
+than 16 (number of lclusters in a compacted 2B pack.)
+
+So it can be handled in either compacted_4b_initial or compacted_4b_end
+cases, because there are all compacted 4B.
+
+Thanks,
+Gao Xiang
+
+> 
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
+> ---
+>  fs/erofs/zmap.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> index 9fb98d8..4f941b6 100644
+> --- a/fs/erofs/zmap.c
+> +++ b/fs/erofs/zmap.c
+> @@ -369,7 +369,10 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+>  	if (compacted_4b_initial == 32 / 4)
+>  		compacted_4b_initial = 0;
+>  
+> -	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
+> +	if (compacted_4b_initial > totalidx) {
+> +		compacted_4b_initial = 0;
+> +		compacted_2b = 0;
+> +	} else if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
+>  		compacted_2b = rounddown(totalidx - compacted_4b_initial, 16);
+>  	else
+>  		compacted_2b = 0;
+> -- 
+> 1.9.1
