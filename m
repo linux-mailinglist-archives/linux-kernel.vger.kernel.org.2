@@ -2,218 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795A7408B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6326C408B65
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbhIMMwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235840AbhIMMwh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:52:37 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF52C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:51:21 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x6so14494365wrv.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wwDbi/F1yzMdGSzPisZP/TR90sy0EJXO0nvDjAz0B6Y=;
-        b=g54zQBkc0ygeJjGKY66WSYgOIek2MabARkvMCD1ydHRDdOGI/mNWhtuw+gDwTIko3u
-         cpwhkBQVQTdXSbP7AbFq5czpikXB753YMjlYptR3gO1OBxWUCCP7YmJhDFVDYMEl6q4n
-         Fb1ympWZ/lpRtSW3VeLnQanKpUmB+bWAo3kBrUbA9qkLo4Uv9+cBFemBYpBpqK1trrC1
-         oq/U6gTRy08r9KpatwSWdunihSZ4AjjLfG6qDIp8NZxFiYDET/Mt0vw4d3r/Jm+A44zT
-         s1Hd5JH4Bx2peeDA6Par1SxtEyx85JkR9mmtoofiAXWxPMir6cdYHsudVZ9Bf42RgAO+
-         AXGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wwDbi/F1yzMdGSzPisZP/TR90sy0EJXO0nvDjAz0B6Y=;
-        b=KnfykfTmBPlVlAe9C1NaqNsw6CTouc36A54UpehTdUWZhAE4sutEOX/WAGZ6zjwKFz
-         HrEcv2+j5a5VjJVRGtP99JkHStfJKzmg62USgvrf1Lui6j28DcJxhVU/KMLFdvTyUYl0
-         XxQYBa6c0xym+sT9OWTysyjJ9JDn6rLRyxT6+RuHm+Do7IJ3i0vf7IvMemrxU/e7RF6F
-         1VAV1wrLawRAXYvLQn/PkLMe84Uk47Yxe2qyhQ30TX5BcAC47UrgguPIQlj+sF/A/57a
-         TM3iXXpl0incts18iWEYXD5DGD5u0+WnaQBKZX8I0XYb9npmPFLYUH0AK1fBH+DYKH3R
-         adBQ==
-X-Gm-Message-State: AOAM533uGzJn1e4srJRsXfnqN+pTyyXQEPdsaa0oAjHxtYGQF1PMPb7z
-        pUCI3W0Bf0K3iRPHlxiDtHBhQ4JKecbe
-X-Google-Smtp-Source: ABdhPJxFg1Ha29Hbrj6P2UIpbQU+Lx2FIHYuJ78y+Zmnk3GykAhjnp18N9z3JGThly10GgNq25I4KA==
-X-Received: by 2002:a5d:6b07:: with SMTP id v7mr8901817wrw.250.1631537479663;
-        Mon, 13 Sep 2021 05:51:19 -0700 (PDT)
-Received: from alex-ThinkPad-E480.. ([2a02:810b:f40:4200:cd7c:5225:d3bf:f045])
-        by smtp.googlemail.com with ESMTPSA id x21sm7145287wmc.14.2021.09.13.05.51.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 05:51:19 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Andy Yan <andy.yan@rock-chips.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH] drm/rockchip: add DRM_BRIDGE_ATTACH_NO_CONNECTOR flag to drm_bridge_attach
-Date:   Mon, 13 Sep 2021 14:51:08 +0200
-Message-Id: <20210913125108.195704-1-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S230196AbhIMM5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:57:48 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:43093 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229613AbhIMM5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 08:57:42 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H7RLd5DS7z9sXR;
+        Mon, 13 Sep 2021 14:56:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YYUJJ5Ef138P; Mon, 13 Sep 2021 14:56:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H7RLd43xsz9sXP;
+        Mon, 13 Sep 2021 14:56:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 763978B82A;
+        Mon, 13 Sep 2021 14:56:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id CKQBBqCCYRzK; Mon, 13 Sep 2021 14:56:25 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.107])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 52A128B829;
+        Mon, 13 Sep 2021 14:56:25 +0200 (CEST)
+Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
+ <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
+ <87mtoux1hi.fsf@disp2133> <2715792c-eb10-eeb8-3d49-24486abe953b@csgroup.eu>
+ <877dfrrkxo.fsf@disp2133> <7caf5127-36fc-7c77-00f1-7be82d6f26e0@csgroup.eu>
+ <87o88zqf3k.fsf@disp2133>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <672b16d1-6825-16a3-8270-33f638d42997@csgroup.eu>
+Date:   Mon, 13 Sep 2021 14:56:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <87o88zqf3k.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a25b988ff83f ("drm/bridge: Extend bridge API to disable connector creation")
-added DRM_BRIDGE_ATTACH_NO_CONNECTOR bridge flag and all bridges handle
-this flag in some way since then.
-Newly added bridge drivers must no longer contain the connector creation and
-will fail probing if this flag isn't set.
 
-In order to be able to connect to those newly added bridges as well,
-make use of drm_bridge_connector API and have the connector initialized
-by the display controller.
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- drivers/gpu/drm/rockchip/rockchip_lvds.c | 29 ++++++++++++++++--------
- drivers/gpu/drm/rockchip/rockchip_rgb.c  | 26 ++++++++++++++++++++-
- 2 files changed, 45 insertions(+), 10 deletions(-)
+Le 11/09/2021 à 17:58, Eric W. Biederman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> 
+>> On 9/8/21 6:17 PM, Eric W. Biederman wrote:
+>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>>
+>>>> Le 02/09/2021 à 20:43, Eric W. Biederman a écrit :
+>>>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>>>>
+>>>>>> In the same spirit as commit fb05121fd6a2 ("signal: Add
+>>>>>> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+>>>>>> copy_siginfo_to_user() in order to use it within user access blocks.
+>>>>>>
+>>>>>> For that, also add an 'unsafe' version of clear_user().
+>>>>>
+>>>>> Looking at your use cases you need the 32bit compat version of this
+>>>>> as well.
+>>>>>
+>>>>> The 32bit compat version is too complicated to become a macro, so I
+>>>>> don't think you can make this work correctly for the 32bit compat case.
+>>>>
+>>>> When looking into patch 5/5 that you nacked, I think you missed the fact that we
+>>>> keep using copy_siginfo_to_user32() as it for the 32 bit compat case.
+>>>
+>>> I did.  My mistake.
+>>>
+>>> However that mistake was so easy I think it mirrors the comments others
+>>> have made that this looks like a maintenance hazard.
+>>>
+>>> Is improving the performance of 32bit kernels interesting?
+>>
+>> Yes it is, and that's what this series do.
+>>
+>>> Is improving the performance of 32bit compat support interesting?
+>>
+>> For me this is a corner case, so I left it aside for now.
+>>
+>>>
+>>> If performance one or either of those cases is interesting it looks like
+>>> we already have copy_siginfo_to_external32 the factor you would need
+>>> to build unsafe_copy_siginfo_to_user32.
+>>
+>> I'm not sure I understand your saying here. What do you expect me to
+>> do with copy_siginfo_to_external32() ?
+> 
+> Implement unsafe_copy_siginfo_to_user32.
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-index 551653940e39..e3953c72fbdb 100644
---- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-@@ -19,6 +19,7 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_of.h>
- #include <drm/drm_panel.h>
-@@ -612,9 +613,9 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
- 	}
- 
- 	drm_encoder_helper_add(encoder, lvds->soc_data->helper_funcs);
-+	connector = &lvds->connector;
- 
- 	if (lvds->panel) {
--		connector = &lvds->connector;
- 		connector->dpms = DRM_MODE_DPMS_OFF;
- 		ret = drm_connector_init(drm_dev, connector,
- 					 &rockchip_lvds_connector_funcs,
-@@ -627,17 +628,27 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
- 
- 		drm_connector_helper_add(connector,
- 					 &rockchip_lvds_connector_helper_funcs);
--
--		ret = drm_connector_attach_encoder(connector, encoder);
--		if (ret < 0) {
--			DRM_DEV_ERROR(drm_dev->dev,
--				      "failed to attach encoder: %d\n", ret);
--			goto err_free_connector;
--		}
- 	} else {
--		ret = drm_bridge_attach(encoder, lvds->bridge, NULL, 0);
-+		ret = drm_bridge_attach(encoder, lvds->bridge, NULL,
-+					DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 		if (ret)
- 			goto err_free_encoder;
-+
-+		connector = drm_bridge_connector_init(lvds->drm_dev, encoder);
-+		if (IS_ERR(connector)) {
-+			DRM_DEV_ERROR(drm_dev->dev,
-+				      "failed to initialize bridge connector: %pe\n",
-+				      connector);
-+			ret = PTR_ERR(connector);
-+			goto err_free_encoder;
-+		}
-+	}
-+
-+	ret = drm_connector_attach_encoder(connector, encoder);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(drm_dev->dev,
-+			      "failed to attach encoder: %d\n", ret);
-+		goto err_free_connector;
- 	}
- 
- 	pm_runtime_enable(dev);
-diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-index d691d9bef8e7..09be9678f2bd 100644
---- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-@@ -10,6 +10,7 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_dp_helper.h>
- #include <drm/drm_of.h>
- #include <drm/drm_panel.h>
-@@ -27,6 +28,7 @@ struct rockchip_rgb {
- 	struct drm_device *drm_dev;
- 	struct drm_bridge *bridge;
- 	struct drm_encoder encoder;
-+	struct drm_connector connector;
- 	int output_mode;
- };
- 
-@@ -80,6 +82,7 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 	int ret = 0, child_count = 0;
- 	struct drm_panel *panel;
- 	struct drm_bridge *bridge;
-+	struct drm_connector *connector;
- 
- 	rgb = devm_kzalloc(dev, sizeof(*rgb), GFP_KERNEL);
- 	if (!rgb)
-@@ -142,12 +145,32 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 
- 	rgb->bridge = bridge;
- 
--	ret = drm_bridge_attach(encoder, rgb->bridge, NULL, 0);
-+	ret = drm_bridge_attach(encoder, rgb->bridge, NULL,
-+				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 	if (ret)
- 		goto err_free_encoder;
- 
-+	connector = &rgb->connector;
-+	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
-+	if (IS_ERR(connector)) {
-+		DRM_DEV_ERROR(drm_dev->dev,
-+			      "failed to initialize bridge connector: %pe\n",
-+			      connector);
-+		ret = PTR_ERR(connector);
-+		goto err_free_encoder;
-+	}
-+
-+	ret = drm_connector_attach_encoder(connector, encoder);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(drm_dev->dev,
-+			      "failed to attach encoder: %d\n", ret);
-+		goto err_free_connector;
-+	}
-+
- 	return rgb;
- 
-+err_free_connector:
-+	drm_connector_cleanup(connector);
- err_free_encoder:
- 	drm_encoder_cleanup(encoder);
- 	return ERR_PTR(ret);
-@@ -157,6 +180,7 @@ EXPORT_SYMBOL_GPL(rockchip_rgb_init);
- void rockchip_rgb_fini(struct rockchip_rgb *rgb)
- {
- 	drm_panel_bridge_remove(rgb->bridge);
-+	drm_connector_cleanup(&rgb->connector);
- 	drm_encoder_cleanup(&rgb->encoder);
- }
- EXPORT_SYMBOL_GPL(rockchip_rgb_fini);
+Ok, initialy I thought it would be a too big job but finaly that's not 
+so big.
 
-base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
--- 
-2.30.2
 
+> 
+>> copy_siginfo_to_user32() is for compat only.
+>>
+>> Native 32 bits powerpc use copy_siginfo_to_user()
+> 
+> What you implemented doubles the number of test cases necessary to
+> compile test the 32bit ppc signal code, and makes the code noticeably
+> harder to follow.
+
+Yes and no.
+
+We already have a different copy_siginfo_to_user() for compat and for 
+native, why would anything be doubled ?
+
+I agree it makes the code harder to follow though
+
+> 
+> Having a unsafe_copy_to_siginfo_to_user32 at least would allow the
+> number of test cases to remain the same as the current code.
+
+Not sure I follow you here, but regardless I have sent a v3 which 
+tentatively implements copy_siginfo_to_user32() for the compat case.
+
+> 
+>>> So I am not going to say impossible but please make something
+>>> maintainable.  I unified all of the compat 32bit siginfo logic because
+>>> it simply did not get enough love and attention when it was implemented
+>>> per architecture.
+>>
+>> Yes, and ? I didn't do any modification to the compat case, so what
+>> you did remains.
+> 
+> You undid the unification between the 32bit code and the 32bit compat
+> code.
+> 
+>>> In general I think that concern applies to this case as well.  We really
+>>> need an implementation that shares as much burden as possible with other
+>>> architectures.
+>>
+>> I think yes, that's the reason why I made a generic
+>> unsafe_copy_siginfo_to_user() and didn't make a powerpc dedicated
+>> change.
+>>
+>> Once this is merged any other architecture can use
+>> unsafe_copy_siginfo_to_user().
+>>
+>> Did I miss something ?
+> 
+> Not dealing with the compat case and making the code signal stack frame
+> code noticeably more complicated.
+> 
+> If this optimization profitably applies to other architectures we need
+> to figure out how to implement unsafe_copy_siginfo_to_user32 or risk
+> making them all much worse to maintain.
+> 
+
+
+
+Ok, let's see what you think about v3.
+
+Thanks for you feedback
+Christophe
