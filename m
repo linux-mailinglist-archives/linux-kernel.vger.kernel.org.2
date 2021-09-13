@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558D34088C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452774088CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238980AbhIMKIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:08:02 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:55353 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238965AbhIMKH6 (ORCPT
+        id S238937AbhIMKLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:11:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59978 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238155AbhIMKLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:07:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631527603; x=1663063603;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ugfxFKb5skliMN99vpU9+w+62Hn+8o39JeEtRKHHXbw=;
-  b=V3gysUEc1AV/Tc3Bjg1UMeeqRYAbMV92okYh5RfhX/tPBr2a9RXukzgQ
-   PewWj2X8jngsyih+lFFa/g7qKHnx/wcYTHA59z6AeMAAWioix9X4WPOk0
-   05iKXfR0hhURbU4sRoDHDrMtp4FBepRdWeylsk+WuqaUqSknBdYsGG8Am
-   LvJfz7MCxQ9KZAaEmm7CKrydwlj+mKMxqJ/NzWD4jiybSEVL4rAi3ZAeL
-   8FX82sZtqIVLQZ9W23aaMghBjtz+W31nbjYDPR2bG0Xvx7UR0apr2cbqB
-   NEyjmnJc2C5XvMM/ALCLdXT4eOGRoJTRCXYOMUAFl6o91srkVStP5a5q7
-   A==;
-IronPort-SDR: coCM3j+jIc2nvhoVSF9r50HqBsHWaQOAEqVfSdU0hFdXGURWTjXQQ4/RT1UqUY5dy2zP5c4aWk
- ylpyoaP3WT5tdZU+HcS7DNcdxI/n2eHwFHWgkjHiuWYPkLPi0TjMc7n4TRKQHkmYlw+2wFMN4I
- 2smAGg77WJjcNmLuv8CTvrJrqX9pMmFf37C2QoQBBl1mE8A9CSgR9WZIsdfFR6uwsYKcxQyLBj
- geoA5KRcx6gm/KNTYu1Q7Pk5SdS4Fm7YDkfAn46kRKuRfSSFO8+CyNsSDRR7AqG03LcGAJ3foh
- t/4yxFvY1tKWtBCCU7OF+1MR
-X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
-   d="scan'208";a="131593959"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Sep 2021 03:06:41 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 13 Sep 2021 03:06:41 -0700
-Received: from [10.171.246.60] (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Mon, 13 Sep 2021 03:06:39 -0700
-Subject: Re: [PATCH] clk: at91: check pmc node status before registering
- syscore ops
-To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210913082633.110168-1-clement.leger@bootlin.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <531a3155-42a8-d31b-a611-80c1c56a93e3@microchip.com>
-Date:   Mon, 13 Sep 2021 12:06:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 13 Sep 2021 06:11:43 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 129D621C86;
+        Mon, 13 Sep 2021 10:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631527827; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AiRkX0WmNs9gJZTMmdh3igwoaOgGldencFjuU/XzQXk=;
+        b=M61ke4OyiDAoRXUd/MfdBGLxA4SX0zHRwS1SjPCxfp063hQwZJ7OSV6psRSojdguit9QyG
+        iHP4GtWWQ++oWv9UpWiB9r2qPGdaulPhnclxsoTsM5mu6uSwe/7KD/SQKy4eyi8aZO04SP
+        yEC2qXYXa3JX5nS6ebbH9gUVva5zRAc=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 7E09DA3B84;
+        Mon, 13 Sep 2021 10:10:26 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 12:10:25 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
+ of dying tasks
+Message-ID: <YT8jkaA+bUB4aP2p@dhcp22.suse.cz>
+References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
+ <8b98d44a-aeb2-5f5f-2545-ac2bd0c7049b@virtuozzo.com>
+ <YT8OTozT3FN9P2k7@dhcp22.suse.cz>
+ <b4b1e66e-e6e6-84e9-46a1-060ed412dd56@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210913082633.110168-1-clement.leger@bootlin.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4b1e66e-e6e6-84e9-46a1-060ed412dd56@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2021 at 10:26, Clément Léger wrote:
-> Currently, at91 pmc driver always register the syscore_ops whatever
-> the status of the pmc node that has been found. When set as secure
-> and disabled, the pmc should not be accessed or this will generate
-> abort exceptions.
-> To avoid this, add a check on node availability before registering
-> the syscore operations.
+On Mon 13-09-21 12:37:56, Vasily Averin wrote:
+> On 9/13/21 11:39 AM, Michal Hocko wrote:
+> > On Mon 13-09-21 10:51:37, Vasily Averin wrote:
+> >> On 9/10/21 3:39 PM, Vasily Averin wrote:
+> >>> The kernel currently allows dying tasks to exceed the memcg limits.
+> >>> The allocation is expected to be the last one and the occupied memory
+> >>> will be freed soon.
+> >>> This is not always true because it can be part of the huge vmalloc
+> >>> allocation. Allowed once, they will repeat over and over again.
+> >>
+> >>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >>> index 389b5766e74f..67195fcfbddf 100644
+> >>> --- a/mm/memcontrol.c
+> >>> +++ b/mm/memcontrol.c
+> >>> @@ -2622,15 +2625,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> >>>  	if (gfp_mask & __GFP_ATOMIC)
+> >>>  		goto force;
+> >>>  
+> >>> -	/*
+> >>> -	 * Unlike in global OOM situations, memcg is not in a physical
+> >>> -	 * memory shortage.  Allow dying and OOM-killed tasks to
+> >>> -	 * bypass the last charges so that they can exit quickly and
+> >>> -	 * free their memory.
+> >>> -	 */
+> >>> -	if (unlikely(should_force_charge()))
+> >>> -		goto force;
+> >>> -
+> >>
+> >> Should we keep current behaviour for (current->flags & PF_EXITING) case perhaps?
+> > 
+> > Why?
 > 
-> Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-
-Yes, indeed,
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-
-Thanks, best regards,
-   Nicolas
-
-> ---
->   drivers/clk/at91/pmc.c | 5 +++++
->   1 file changed, 5 insertions(+)
+> On this stage task really dies and mostly releases taken resources.
+> It can allocate though, and this allocation can reach memcg limit due to the activity
+> of parallel memcg threads.
 > 
-> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-> index 20ee9dccee78..b40035b011d0 100644
-> --- a/drivers/clk/at91/pmc.c
-> +++ b/drivers/clk/at91/pmc.c
-> @@ -267,6 +267,11 @@ static int __init pmc_register_ops(void)
->          if (!np)
->                  return -ENODEV;
+> Noting bad should happen if we reject this allocation,
+> because the same thing can happen in non-memcg case too.
+> However I doubt misuse is possible here and we have possibility to allow graceful shutdown here.
 > 
-> +       if (!of_device_is_available(np)) {
-> +               of_node_put(np);
-> +               return -ENODEV;
-> +       }
-> +
->          pmcreg = device_node_to_regmap(np);
->          of_node_put(np);
->          if (IS_ERR(pmcreg))
-> --
-> 2.33.0
-> 
+> In other words: we are not obliged to allow such allocations, but we CAN do it because
+> we hope that it is safe and cannot be misused.
 
-
+This is a lot of hoping that has turned out to be a bad strategy in the
+existing code.  So let's stop hoping and if we are shown that an
+exit path really benefits from a special treatment then we can add it
+with a good reasoning rathat than "we hope it's gonna be ok".
 -- 
-Nicolas Ferre
+Michal Hocko
+SUSE Labs
