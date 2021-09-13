@@ -2,179 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F09CF409D7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48576409D7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347622AbhIMTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240745AbhIMTyr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:54:47 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA5CC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:53:30 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id c8so23518550lfi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 12:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuIV1pMgtSTFHYB/MlE6n0ObQf+QrwwyHfpeOlhLGV4=;
-        b=KtLYMNSMN0Y5c8c4r4J0ZLqCJXsRLL29VR5uX/2Yu4BVj5zwY2hNGlKuYA+6nTpKM1
-         ivocdJ+TW1l885Sq1gNrjIVMJ8HXJuAGqEkh92ycGBDRf1c2rfkZRpvYFsy3oAxFDGUW
-         qaxOOWivMUORLVhuNZz2TQd6lccTVM0cm2bUF0QCL00suayRvj14i4d67X8frC65ox1j
-         m4MFscHPBjjXUEqDTQ356k+5sssUHbTvpg7sBwdXEvNlH8GkYqhFp8bud6Yi44KxE8hi
-         48knGdoWzMrFo1fqqE/HDdhaxB9RXcCee9xpP7vflu05cgMvZkTEo0YYwmoB7vRUkjGt
-         G8zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuIV1pMgtSTFHYB/MlE6n0ObQf+QrwwyHfpeOlhLGV4=;
-        b=Dfl9sjCjPlTegACvvxFUJJ+Jza+Y31S7bAzJuSa7ABaNn2+typlAZI0KRhSg/s89wG
-         sxWe3+hqPWqFTYSDl5do0BRfmDFXBdyyTwGO//EzOgmQpvjYxOpi/eqJGhAW3oczAhzb
-         wYb2ODxxdSXW4WZXDsJt3dsAwQVVhsvVjRiPkaLbGRf8YT+Kpi8k4ldE0PHboHjl7NyG
-         C5XhJL1FVpEtD9jVfmgThC1eiepSxWNKkwUuxwgBCPjFwU9KrfiEWgW/we0nnhYxJXE8
-         SaRNyWlWwxrmuxRRanQxkO6kKGmAflB/awsFvma7p0E+1mdWyvEtaoLK6YvbBNtQ5XUw
-         ZdrQ==
-X-Gm-Message-State: AOAM531JgE7ehljX+OwkgXCVu/U7NGlA1v9+7Pqx70PDZYpaRRNz0G2S
-        eVEzlelfvI7kzrJbi/E1QA6KWL6tW7oE8lLoTmeo7g==
-X-Google-Smtp-Source: ABdhPJxUVIrSRPA+S6grlctRP94ZAZIBKy5defr5w6yBJRo3gzNh1hyZtfPLM5hyf7YELNj1ADse+/Ttsx8GxAJU0Tc=
-X-Received: by 2002:ac2:4c46:: with SMTP id o6mr10039958lfk.240.1631562809064;
- Mon, 13 Sep 2021 12:53:29 -0700 (PDT)
+        id S1347647AbhIMTyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:54:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347625AbhIMTyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:54:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA966610F9;
+        Mon, 13 Sep 2021 19:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631562815;
+        bh=gja3Lq8kJyo0jFxR+Lk017Y+M1k5exr3M+MtPxjCvPM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oeCBVhTnmsUkwtZb5jl1TrqeQ4Q4/S1Wz/03BQq2hCy34Nkr51d5nVRkEY22pM1jg
+         XqdwhpwcFuo48DVKP+avNqreyakJw0QF2bHiPMoTzqT5BWi8ejGs1+gkN82UeyQVCz
+         EuTTDz8tWOdqQoijUAQHqlVvLEm/4w3yE9wiJ6/qexYijhUOBu4GaLhOPRQ0IWQNgV
+         3jx+6sLv2kYrhXggLjdpAWuuJCA+LOyFlv67Iy2ngck/ErFJhX6zT9K4mQHDecrrWz
+         G6fD2KbJwtZjxapeYB1/xHvsKfnxPOHqt+f41UAmko6xV8i3msu+mHGA0k/FMo9nc3
+         k9WSd7JgbYDcw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 280E84038F; Mon, 13 Sep 2021 16:53:31 -0300 (-03)
+Date:   Mon, 13 Sep 2021 16:53:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     Ravi Bangoria <ravi.bangoria@amd.com>, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, kim.phillips@amd.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf annotate: Fix fused instr logic for assembly
+ functions
+Message-ID: <YT+sOxJeEplSm2pl@kernel.org>
+References: <20210911043854.8373-1-ravi.bangoria@amd.com>
+ <YTz9nfyXOSXDdpSE@kernel.org>
+ <211bb79d-80ff-e9b6-1851-1aaed987301d@linux.intel.com>
 MIME-Version: 1.0
-References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
- <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
- <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
-In-Reply-To: <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 12:53:17 -0700
-Message-ID: <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
-Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <211bb79d-80ff-e9b6-1851-1aaed987301d@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:39 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Mon, Sep 13, 2021 at 10:58 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Sep 13, 2021 at 09:52:33PM +0530, Naresh Kamboju wrote:
-> > > [PATCH 00/10] raise minimum GCC version to 5.1
-> > > https://lore.kernel.org/lkml/20210910234047.1019925-1-ndesaulniers@google.com/
-> >
-> > Has anyone submitted a fix for this upstream yet?  I can't seem to find
-> > one :(
->
-> That lore link has a series to address this, though that's maybe
-> something we don't want to backport to stable.
->
-> I thought about this all weekend; I think I might be able to work
-> around the one concern I had with my other approach, using
-> __builtin_choose_expr().
->
-> There's an issue with my alternative approach
-> (https://gist.github.com/nickdesaulniers/2479818f4983bbf2d688cebbab435863)
-> with declaring the local variable z in div_64() since either operand
-> could be 64b, which result in an unwanted truncation if the dividend
-> is 32b (or less, and divisor is 64b). I think (what I realized this
-> weekend) is that we might be able to replace the `if` with
-> `__builtin_choose_expr`, then have that whole expression be the final
-> statement and thus the "return value" of the statement expression.
+Em Mon, Sep 13, 2021 at 09:54:00AM +0800, Jin, Yao escreveu:
+> Hi Arnaldo, Ravi
+> 
+> On 9/12/2021 3:03 AM, Arnaldo Carvalho de Melo wrote:
+> > Em Sat, Sep 11, 2021 at 10:08:53AM +0530, Ravi Bangoria escreveu:
+> > > Some x86 microarchitectures fuse a subset of cmp/test/ALU instructions
+> > > with branch instructions, and thus perf annotate highlight such valid
+> > > pairs as fused.
+> > 
+> > Jin, are you ok with this? Can I have your reviewed-by?
+> > 
+> > - Arnaldo
+> 
+> Oh, my original patch could only handle the case like:
+> 
+> cmp xxx
+> je  aaa
+> 
+> But it didn't consider Ravi's case something like:
+> 
+> cmp xxx
+> cmp yyy
+> je  aaa
+> je  bbb
+> 
+> Thanks for Ravi fixing this issue! Backward searching is probably a better solution.
+> 
+> Frankly I can't reproduce Ravi's case, but for my test suite, Ravi's patch works as well.
+> 
+> Reviewed-by: Jin Yao <yao.jin@linux.intel.com>
 
-Christ...that...works? Though, did Linus just merge my patches for gcc 5.1?
+Thanks, applied.
 
-Anyways, I'll send something like this for stable:
----
+- Arnaldo
 
-diff --git a/include/linux/math64.h b/include/linux/math64.h
-index 2928f03d6d46..e9ab8c25f8d3 100644
---- a/include/linux/math64.h
-+++ b/include/linux/math64.h
-@@ -11,6 +11,9 @@
-
- #define div64_long(x, y) div64_s64((x), (y))
- #define div64_ul(x, y)   div64_u64((x), (y))
-+#ifndef is_signed_type
-+#define is_signed_type(type)       (((type)(-1)) < (type)1)
-+#endif
-
- /**
-  * div_u64_rem - unsigned 64bit divide with 32bit divisor with remainder
-@@ -112,6 +115,15 @@ extern s64 div64_s64(s64 dividend, s64 divisor);
-
- #endif /* BITS_PER_LONG */
-
-+#define div64_x64(dividend, divisor) ({                        \
-+       BUILD_BUG_ON_MSG(sizeof(dividend) < sizeof(u64),\
-+                        "prefer div_x64");             \
-+       __builtin_choose_expr(                          \
-+               is_signed_type(typeof(dividend)),       \
-+               div64_s64(dividend, divisor),           \
-+               div64_u64(dividend, divisor));          \
-+})
-+
- /**
-  * div_u64 - unsigned 64bit divide with 32bit divisor
-  * @dividend: unsigned 64bit dividend
-@@ -142,6 +154,28 @@ static inline s64 div_s64(s64 dividend, s32 divisor)
- }
- #endif
-
-+#define div_x64(dividend, divisor) ({                  \
-+       BUILD_BUG_ON_MSG(sizeof(dividend) > sizeof(u32),\
-+                        "prefer div64_x64");           \
-+       __builtin_choose_expr(                          \
-+               is_signed_type(typeof(dividend)),       \
-+               div_s64(dividend, divisor),             \
-+               div_u64(dividend, divisor));            \
-+})
-+
-+// TODO: what if divisor is 128b?
-+#define div_64(dividend, divisor) ({
-         \
-+       __builtin_choose_expr(
-         \
-+               __builtin_types_compatible_p(typeof(dividend), s64) ||
-         \
-+               __builtin_types_compatible_p(typeof(dividend), u64),
-         \
-+               __builtin_choose_expr(
-         \
-+                       __builtin_types_compatible_p(typeof(divisor),
-s64) ||   \
-+                       __builtin_types_compatible_p(typeof(divisor),
-u64),     \
-+                       div64_x64(dividend, divisor),
-         \
-+                       div_x64(dividend, divisor)),
-         \
-+               dividend / divisor);
-         \
-+})
-+
- u32 iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder);
-
- #ifndef mul_u32_u32
----
--- 
-Thanks,
-~Nick Desaulniers
