@@ -2,106 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D656408544
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9464C40854C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237573AbhIMHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:22:13 -0400
-Received: from mail-vk1-f170.google.com ([209.85.221.170]:41667 "EHLO
-        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbhIMHWM (ORCPT
+        id S237600AbhIMH0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237535AbhIMH0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:22:12 -0400
-Received: by mail-vk1-f170.google.com with SMTP id g18so3022024vkq.8;
-        Mon, 13 Sep 2021 00:20:56 -0700 (PDT)
+        Mon, 13 Sep 2021 03:26:11 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A8CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:24:56 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id h3so8619311pgb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:24:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rne45CFHVF3Ed+57mqPI4S8t0BZnsiIJa5Mce5cnMFs=;
+        b=I0LVTvJN3u3LWC1FrrPIH1QhzeKn39Yh9Z96gRmixJ15fAXrUJMXNtI+W/YWdVtxeY
+         9VDd2Kfd3QsQcwl1OAkNh+YARxq3iINnSVB3LK/DRiEnmMWgMPTGQMe1GM7wm2XPRqsE
+         scpbov5JJEzBge1BaTGNUEkbhGxAo99oa5h0z8/drxKk7Le+uE09iL9JhzABQre+oMdF
+         w/L4axgqjsQ7bqsgTuQQQpWDcjrwVkWQwSedgzDnJsuy97Dydbui5aM6zQuY/jG5TsSu
+         0nnf2JmMW5NbXCzr603ZVH7j4uOg2N/XRIQyS1DUIBl8ze8V58s8EcBJLF3+g/Rwi41Z
+         vstg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sa0Gb92rSOdfFNnzmGv1L64+0DeNzZyeNwu+ustj1Gw=;
-        b=l2u0kJmXnwSYSPFodqVJy8qLwbQNkks+UCVlLclOKZsTBOX++P8pkwhPdWGVgCV5xV
-         DbCu3F1eB3YsvBKT5CzUzJYTW776TsRpf4Uni7U+i6j6eHtOmRQjKT6D4xWz6GKapt3/
-         btrzDS9d2tNzvRwnR1EzDd0Q29SZ1vC7wzUXBNMeh2pnOZjodDmXLHo4H/9nyyFbSbvc
-         qsWGJJ3R39qE/VLeugPKqCC7oSGEuMBblgH14Qn+yr8dn7N0vxrRDpiXiwgVGajyVMtQ
-         rcUp5fr0bHKiZmXxsr+dzUvbLxPDxNE7hCnh9akJZ5xME2RBYuYGJZdqVZloPTo9DS4k
-         8CeA==
-X-Gm-Message-State: AOAM5339C7Bas42b6kQjFwBBD3IeljP99GTRfrOd2VYK0XAkHKJMppn4
-        rSNVqWFYMa0T6pEDhyY151pWSiApdrPPru8oG5yk0/uaVOk=
-X-Google-Smtp-Source: ABdhPJwl+0wsm0ZjKRzSjXaJRF2ZV+LHRgbqlKU8XOItXXa12ME5I8OiXI/D00E9eSbOP18LxIEUKpUUVo6V097P61o=
-X-Received: by 2002:a05:6122:21ab:: with SMTP id j43mr3447373vkd.19.1631517655938;
- Mon, 13 Sep 2021 00:20:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rne45CFHVF3Ed+57mqPI4S8t0BZnsiIJa5Mce5cnMFs=;
+        b=8HREVQKVoPJpdL7FH6XZjTVu7lI/9m57Kgz55MGdwIp7dPoyYITqP0PKmzea2lZ843
+         erZ+qFUucUyiZRjgg6P0vL/bLzT8IKm8RPr1MIR2FWvjUlqybKipOlKVPkN0ieFP0Xzh
+         T8F8G4n3W06Ii7SauwfmqMwshTHz0ajJG6RJhwd5yF+M7LJL/demJ7wh7exsDg/z8n1U
+         dGp0ck47rqOQbblWC9DMJMYwkHhHF+jFjVkotBOPDuJUqM7eaHkout5NCyFT19Z/n2j7
+         NY1c6G3oxmL1ZMJIUe3Epr792iHfVk5GGdBxKiuisf8mXkB30WRJu2SbOsMWjAOphzBa
+         WYlQ==
+X-Gm-Message-State: AOAM532vzHorq3FjMqv4WBHQYtY+iifcnJ4mLTmEjEXBLCmZ6OzisIU9
+        NmxrgbzBFS1VSG5vlbMn4dk=
+X-Google-Smtp-Source: ABdhPJz3kPSM1iVUOv123Y56zIId76DGu9yYy2/Q5GwwNmIPqpUoV376MCwV7pvmNJQoe5h9wCF0tw==
+X-Received: by 2002:a62:e302:0:b0:3f2:628b:3103 with SMTP id g2-20020a62e302000000b003f2628b3103mr9843177pfh.39.1631517896240;
+        Mon, 13 Sep 2021 00:24:56 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id u12sm5687365pjx.31.2021.09.13.00.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 00:24:55 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     xiang@kernel.org, chao@kernel.org
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zhangwen@yulong.com, zbestahu@163.com
+Subject: [PATCH] erofs: fix compacted_{4b_initial, 2b} when compacted_4b_initial > totalidx
+Date:   Mon, 13 Sep 2021 15:24:05 +0800
+Message-Id: <20210913072405.1128-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-References: <20210913070906.1941147-1-geert@linux-m68k.org>
-In-Reply-To: <20210913070906.1941147-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Sep 2021 09:20:44 +0200
-Message-ID: <CAMuHMdWHDOC2WedHfgYh2nwijEsqnb3+LXgHwST29TaLugiTdA@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.15-rc1
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Wenpeng Liang <liangwenpeng@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 9:10 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.15-rc1[1] compared to v5.14[2].
->
-> Summarized:
->   - build errors: +62/-12
+From: Yue Hu <huyue2@yulong.com>
 
->   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1859' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
->   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1866' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
+mkfs.erofs will treat compacted_4b_initial & compacted_2b as 0 if
+compacted_4b_initial > totalidx, kernel should be aligned with it
+accordingly.
 
-Actual error in drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ fs/erofs/zmap.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-arm64-gcc5.4/arm64-allmodconfig
-arm64-gcc8/arm64-allmodconfig
-
->   + error: modpost: "__aeabi_ldivmod" [drivers/block/nbd.ko] undefined!:  => N/A
->   + error: nbd.c: undefined reference to `__aeabi_ldivmod':  => .text+0x246c), .text+0x2334)
-
-arm-gcc4.9/imote2_defconfig
-arm-gcc4.9/ep93xx_defconfig
-arm-gcc4.9/colibri_pxa270_defconfig
-arm-gcc4.9/ezx_defconfig
-arm-gcc4.9/mini2440_defconfig
-arm-gcc4.9/trizeps4_defconfig
-
->   + error: modpost: "__divdi3" [drivers/block/nbd.ko] undefined!:  => N/A
->   + error: nbd.c: undefined reference to `__divdi3':  => .text+0x24a0), .text+0x2458)
-
-powerpc-gcc4.9/corenet32_smp_defconfig
-powerpc-gcc4.9/mpc85xx_defconfig
-powerpc-gcc4.9/ppc6xx_defconfig
-mips-gcc4.9/malta_defconfig
-arm-gcc4.9/iop32x_defconfig
-arm-gcc4.9/s3c2410_defconfig
-arm-gcc4.9/badge4_defconfig
-arm-gcc4.9/footbridge_defconfig
-arm-gcc4.9/jornada720_defconfig
-arm-gcc4.9/lpd270_defconfig
-
-The others are fallout of -Werror.  Still, it would be good to get them
-fixed, too.
-
->   - build warnings: +6/-267
-
-Amazing, we still have new build warnings ;-)
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f/ (all 182 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7d2a07b769330c34b4deabeed939325c77a7ec2f/ (all 182 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+index 9fb98d8..4f941b6 100644
+--- a/fs/erofs/zmap.c
++++ b/fs/erofs/zmap.c
+@@ -369,7 +369,10 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+ 	if (compacted_4b_initial == 32 / 4)
+ 		compacted_4b_initial = 0;
+ 
+-	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
++	if (compacted_4b_initial > totalidx) {
++		compacted_4b_initial = 0;
++		compacted_2b = 0;
++	} else if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
+ 		compacted_2b = rounddown(totalidx - compacted_4b_initial, 16);
+ 	else
+ 		compacted_2b = 0;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.9.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
