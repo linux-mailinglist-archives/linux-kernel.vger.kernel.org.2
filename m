@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9666940A191
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C200F40A195
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242062AbhIMXZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240144AbhIMXZI (ORCPT
+        id S242840AbhIMX3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:29:44 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:40522 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240144AbhIMX3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:25:08 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA46C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:23:51 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id a4so24513459lfg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bq011lt5dgdAQr/ZuHdy0F7gQGrCf2JBCgapEFXHuqM=;
-        b=B5LAKq0e9Lnd5npvhdHcFrbSooQRxBJX1Mid0sG0F3Y8SpqoLVt1M/6eaaJxNPhc6n
-         INFlj/Tt1MoyRllidkDtLVM+x6eN87fZX6VP5txNWI92MLfBYCgGHOf3RwiK7p0Kx4Ag
-         82m683k6K6uDE2tGwFS+1G0xYpeTnVV6tnskfN1LZcU4NLKxpmgMLVzbhJ1gET8kLl+a
-         OecFijs+X1BqnYIeWbaSM059NUhSXkWGEmuCHcOTdTBXQyrqcbV27hzBFV3toN+J7u3h
-         Lj1bSuh+muSl1kUSArFWPu9/nKBp518gZrtFshFffdP3E/AtaEduBFN6MqOcpxzu2YAJ
-         kghA==
+        Mon, 13 Sep 2021 19:29:41 -0400
+Received: by mail-io1-f69.google.com with SMTP id i26-20020a5e851a000000b005bb55343e9bso15014098ioj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:28:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bq011lt5dgdAQr/ZuHdy0F7gQGrCf2JBCgapEFXHuqM=;
-        b=A01kzsI6Hc6IJ9SwyNeeEePs+SFQnI5dyUm+w8EL2UHpXjj8rvRKFZuRd/RS2Epm7a
-         6uIEk+JQLI4zY8+EXW3i/TOgPt43FWd/vPdmYYWovyNEEeFM+xRhlQhOWoORSrlW48dd
-         c+/8oA73KNdEb0o9khIWVV0bq99ou3qmP2qauyhQ0lwz7EW6LVm5OGoeaURbFnwSVVKi
-         DrqrFhRkVQyHQT5zFohsq3JjvrcA7cxbxkcn52AdCG2tbbNVR/kLhO0kKbOv3XorrvoM
-         ch2ePo1rxW7CvftViz7y1l/fLXsHkUKyZyeT/12uieicTADHvS3UMn1yFRN1ubMnS6Cc
-         sXqQ==
-X-Gm-Message-State: AOAM533rsrNKom1Le7xVXYZNsmh4l0fvHiF+qSuYj5PI4eZz8jbHhu80
-        1xZGjA9eR1qVDeUIikexU/skRXA3lH178qDrUTBb6Q==
-X-Google-Smtp-Source: ABdhPJyRu0132dCsRG8tz1y1crskr9yuGZHfzZNvZ99ClzfCUoixYndoyN2Uj8tpYCdhjmynt9+8gjPGFMCEmh/PV6w=
-X-Received: by 2002:a05:6512:1114:: with SMTP id l20mr11222779lfg.550.1631575429882;
- Mon, 13 Sep 2021 16:23:49 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zoiyz9yumUb2OwDpSUzdanvEqwi+zK0yBV9E9brBk3c=;
+        b=TODSWLxAT23eySrHUKCEZ+xJI12+8dLiUR6WEuJyqFEb6M49haFexZABz+o6Jqkb3p
+         lnJ3+myWsIukA22RnV+tH1EJVTvc14LbDZJsxPmJSX57SgTukVi0wEFx8A02tgw5ZhKU
+         2ERz7HfEH973W48lH/16PbmwC39MFUDs3rFGLitwObrKLiI0kWXgSUJNFxvxlYHRZhwm
+         UNdCYoQdjr9uzJQVJLOZiXBl1tyghkraEEivmz+q0d3vu2GogPxfvgfD5WTDJUhKMxKt
+         vSUUaQvqVPsM56Jj8pTv6k+Gyw1ax+09+vKwhnffPpLHuj4E9VSN9dcf4bSJ8ZzRtnjV
+         tOSA==
+X-Gm-Message-State: AOAM5332I2ozEtoaXjDodmXA6CGkmwfM12DjTab/ez/qUnAXz6SmcBPO
+        /jzUyZ6owODeBTkuQJUuCVdyt1IBxFYCP1nyri7hKWzSQoPb
+X-Google-Smtp-Source: ABdhPJxq8rbwHAG7zj/ETr+Yck5PBsq65xMiCa044uwkatUumATKS1ZpToFPv45jns8Qhr7aUYOjfD52RGCgkvDjpsqprS85LWog
 MIME-Version: 1.0
-References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
- <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
- <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
- <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
- <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
- <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
- <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
- <CAKwvOdkf3B41RRe8FDkw1H-0hBt1_PhZtZxBZ5pj0pyh7vDLmA@mail.gmail.com>
- <CAHk-=wjP2ijctPt2Hw3DagSZ-KgdRsO6zWTTKQNnSk0MajtJgA@mail.gmail.com>
- <CAKwvOd=ZG8sf1ZOkuidX_49VGkQE+BJDa19_vR4gh2FNQ2F_9Q@mail.gmail.com>
- <CAKwvOdkz4e3HdNKFvOdDDWVijB7AKaeP14_vAEbxWXD1AviVhA@mail.gmail.com>
- <CAKwvOdmtX8Y8eWESYj4W-H-KF7cZx6w1NbSjoSPt5x5U9ezQUQ@mail.gmail.com> <CAHk-=whjhJgk7hD-ftUy-8+9cenhMDHqaNKXOyeNVoMxZRD-_A@mail.gmail.com>
-In-Reply-To: <CAHk-=whjhJgk7hD-ftUy-8+9cenhMDHqaNKXOyeNVoMxZRD-_A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 16:23:38 -0700
-Message-ID: <CAKwvOdnFRhKDZ3XuePSGsuxhOpuS5RmZ1u+MeN=PRPPKSS3wFg@mail.gmail.com>
-Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
-        Kees Cook <keescook@chromium.org>
+X-Received: by 2002:a02:b0d1:: with SMTP id w17mr11996507jah.46.1631575704786;
+ Mon, 13 Sep 2021 16:28:24 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 16:28:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004ee28405cbe8d287@google.com>
+Subject: [syzbot] memory leak in blk_iolatency_init
+From:   syzbot <syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 4:00 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Sep 13, 2021 at 2:15 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Sorry wrong diff:
->
-> Well, this second diff was seriously whitespace-damaged and hard to
-> read, but while it seems to be the same number of lines, it sure looks
-> a lot more readable in this format.
->
-> Except I think that
->
->                 default: dividend / divisor);
->
-> should really have parentheses around both of those macro arguments.
->
-> That's a preexisting problem, but it should be fixed while at it.
+Hello,
 
-Ok, I'll send a revised v2 based on _Generic; Rasmus can help review
-when he's awake.
+syzbot found the following issue on:
 
-> I'm also not sure why that (again, preexisting) BUILD_BUG_ON_MSG()
-> only checks the size of the dividend, not the divisor. Very strange.
-> But probably not worth worrying about.
+HEAD commit:    a3fa7a101dcf Merge branches 'akpm' and 'akpm-hotfixes' (pa..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b4a5b3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9ee3a4c022ccbbca
+dashboard link: https://syzkaller.appspot.com/bug?extid=01321b15cc98e6bf96d6
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148c170b300000
 
-I sent a not-yet-applied diff of my not-yet-applied diff.  I was
-playing with this last week, and IIRC we had divisors that were less
-than 32b being promoted to int. But I'll test it some more.
--- 
-Thanks,
-~Nick Desaulniers
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
+
+2021/09/09 22:14:31 executed programs: 444
+BUG: memory leak
+unreferenced object 0xffff888129acdb80 (size 96):
+  comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
+  hex dump (first 32 bytes):
+    20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
+    [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
+    [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
+    [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
+    [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
+    [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
+    [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
+    [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
+    [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
+    [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
+    [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
+    [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
+    [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
