@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CB440A170
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E6F40A16C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350627AbhIMXNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S1350583AbhIMXNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 19:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349604AbhIMXL6 (ORCPT
+        with ESMTP id S1349405AbhIMXL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:11:58 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B88C0613DF
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:10:11 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id i3-20020aa79083000000b003efb4fd360dso7086988pfa.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:10:11 -0700 (PDT)
+        Mon, 13 Sep 2021 19:11:57 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D5EC0613E1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:10:13 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id y134-20020a25dc8c000000b0059f0301df0fso14883924ybe.21
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=zsGTJXgW5L8fK7Rb/PnuJ4Hti/6f1rC6mavZcKXDQkg=;
-        b=J5fPugN6vsUupQn2H9Qf1HeTHlH8cTqhAw78PkFuMo1x4Pyf1tbdFH3gSnapH2V7Tb
-         yHK/MwMxXIji3ej7q2PDy97dW5OGt+VjfpL/sZecCfZ5k0W+uDdIYhPmi/Ms+tp5rULm
-         C2apJxCBwVvPZTyO8O78eDXzVjzqINN7PfEUk754/kgeb68/5kJghrBk3HghzlFSfAfk
-         o+BZCF3N/9CAgdWLW1qyC2phd4PcebFj2dsew8w8uar+lGkKhZNE1gS+w7G5BXdrwbKH
-         zbpR5BgED738mVr4+csxM/QdPaq1eRgMzEecAjyjx9yG8tp+UY4/JT/JFExA8WCKGssI
-         BlyA==
+        bh=VREX88yx9xWzleHW1ZEh6k892sL/xPpdGpps/n5mOO0=;
+        b=iK83yniVjgitiMsPKE4heQ6oT5rN4oNwgLzQoyg5AZbIqAYzYHhPvLBF3Z3crr9r15
+         9U+ZxVXK13YUTjJZJ4Yz5pii/pFm/7uIvC8pAu63Tn+8Vu0GIJwOSYuDaEpBkNcskqWf
+         fs9FJCplOKxOdfrEDqL2+nU1gOritaqPDtimBWNEaypbZDTErBxFjkHWtO1D2rylDVfo
+         3TOQq1XxOgSnD5Q6IfRthoDnW4h1H4/ngV0eT6/oJdj1/g1nKuOocfqESB9G6HVtqQWS
+         2Nd3LR006dsHJuBkVl7PKAQ1+7BFeF7935GxPhrgHW9uyt/R8Pqt+Svp/fX8KXAPFU65
+         /oBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=zsGTJXgW5L8fK7Rb/PnuJ4Hti/6f1rC6mavZcKXDQkg=;
-        b=H2eukZlcIpgAq+IaICYJCqtjYAvbgX8A41kHDQ5FTpqt13OWFexXcptE7ONTRx8Brz
-         ZO7TmNyGJcjYV7caZxDGhncO5T9pY9fqGP3c6X1CMUm1ijX2rKoM6O2phNf0P/zcrk36
-         +kAthFSyMQWQZ6SIpXUsvqwkLqeZThlVLinNoS/7h9+gVn8D1gqx0WFek5V5YU4YmbZ7
-         I6z+1RzFtZk0i5wTFUf5SIMQve+PTXC78PdVQfmxLAF3j9aWmWwVG0Vg6y4NKQswvTld
-         Y6ARTon40iPRtKlPQaNEr94RUaZqhJHoiP4lSnvWTG9fK/0Rf31Tg6kBmS07sKHmq9O+
-         JO7w==
-X-Gm-Message-State: AOAM531/qEaZ6iLjFi4r1PoY5yoDe7bso0I1fgkWhNvaenT0S8eAZkNt
-        /erExAr4v34kEwRXSCyiaJiUyH1JMfD4
-X-Google-Smtp-Source: ABdhPJyaddiiPnuaUgOvGlBvBJQfxs6e92o1ccgM4oy+BqdSvLtyC+2KXICrdphNjiJnujNiqiShpfiEZI/5
+        bh=VREX88yx9xWzleHW1ZEh6k892sL/xPpdGpps/n5mOO0=;
+        b=DtSuSMSicvs83orhx+2Gt8upzNFlSWN1I8LeVljD1bkWOSVU32YnPGpBkc7wGsQnNz
+         7tvqRPZRVtAQ+8uGyfpxnTFiwKvhg50dVArstBNee+oH1tm/iqTy+i0vXmpS6WY4vSZB
+         xSHdeyUZW1g6+3YuL07LQQRaHRAMzH+Ikq+yPf+11QaWQjo5H+w8KOsX7jzOKjsFo4cL
+         FyNNkoH9TyEReVOlT5nZSd81Lr7QeQ1B+5At/E5S9O/WgtItgK4UxU8g90ao5yUu+Fbc
+         BQD4pOOh1EnZ+jeAi52vrX1EpjCjSwekrvD5QpnedjEIciqJLSbHAbB9knGGRLPlDbCR
+         y8fQ==
+X-Gm-Message-State: AOAM530i6uYo+4tPEV2murRAqD9ncO05R6j/tKOLFh+4v77l9ddnWo7I
+        grdhTMCfTuHA+jXaItWvOYzBwnDymGXY
+X-Google-Smtp-Source: ABdhPJwOabcG17jAMTLXvpXjFejZRIOwG/0IcuiiiLvmT7OSJIRiMZN1Y4+nazea7PBvNbx2r7WJPaFvDsgB
 X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
- (user=rananta job=sendgmr) by 2002:a65:52cd:: with SMTP id
- z13mr13056425pgp.405.1631574610889; Mon, 13 Sep 2021 16:10:10 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 23:09:45 +0000
+ (user=rananta job=sendgmr) by 2002:a25:44d:: with SMTP id 74mr20148426ybe.54.1631574613117;
+ Mon, 13 Sep 2021 16:10:13 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 23:09:46 +0000
 In-Reply-To: <20210913230955.156323-1-rananta@google.com>
-Message-Id: <20210913230955.156323-5-rananta@google.com>
+Message-Id: <20210913230955.156323-6-rananta@google.com>
 Mime-Version: 1.0
 References: <20210913230955.156323-1-rananta@google.com>
 X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH v6 04/14] KVM: arm64: selftests: Introduce ARM64_SYS_KVM_REG
+Subject: [PATCH v6 05/14] KVM: arm64: selftests: Add support for cpu_relax
 From:   Raghavendra Rao Ananta <rananta@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Andrew Jones <drjones@redhat.com>,
@@ -72,125 +72,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the inclusion of sysreg.h, that brings in system register
-encodings, it would be redundant to re-define register encodings
-again in processor.h to use it with ARM64_SYS_REG for the KVM
-functions such as set_reg() or get_reg(). Hence, add helper macro,
-ARM64_SYS_KVM_REG, that converts SYS_* definitions in sysreg.h
-into ARM64_SYS_REG definitions.
+Implement the guest helper routine, cpu_relax(), to yield
+the processor to other tasks.
 
-Also replace all the users of ARM64_SYS_REG, relying on
-the encodings created in processor.h, with ARM64_SYS_KVM_REG and
-remove the definitions.
+The function was derived from
+arch/arm64/include/asm/vdso/processor.h.
 
 Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-Reviewed-by: Ricardo Koller <ricarkol@google.com>
+Reviewed-by: Oliver Upton <oupton@google.com>
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 ---
- .../selftests/kvm/aarch64/debug-exceptions.c  |  2 +-
- .../selftests/kvm/aarch64/psci_cpu_on_test.c  |  2 +-
- .../selftests/kvm/include/aarch64/processor.h | 20 ++++++++++---------
- .../selftests/kvm/lib/aarch64/processor.c     | 16 +++++++--------
- 4 files changed, 21 insertions(+), 19 deletions(-)
+ tools/testing/selftests/kvm/include/aarch64/processor.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/aarch64/debug-exceptions.c b/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
-index 11fd23e21cb4..ea189d83abf7 100644
---- a/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
-+++ b/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
-@@ -190,7 +190,7 @@ static int debug_version(struct kvm_vm *vm)
- {
- 	uint64_t id_aa64dfr0;
- 
--	get_reg(vm, VCPU_ID, ARM64_SYS_REG(ID_AA64DFR0_EL1), &id_aa64dfr0);
-+	get_reg(vm, VCPU_ID, KVM_ARM64_SYS_REG(SYS_ID_AA64DFR0_EL1), &id_aa64dfr0);
- 	return id_aa64dfr0 & 0xf;
- }
- 
-diff --git a/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c b/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c
-index 018c269990e1..4c5f6814030f 100644
---- a/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c
-+++ b/tools/testing/selftests/kvm/aarch64/psci_cpu_on_test.c
-@@ -91,7 +91,7 @@ int main(void)
- 	init.features[0] |= (1 << KVM_ARM_VCPU_POWER_OFF);
- 	aarch64_vcpu_add_default(vm, VCPU_ID_TARGET, &init, guest_main);
- 
--	get_reg(vm, VCPU_ID_TARGET, ARM64_SYS_REG(MPIDR_EL1), &target_mpidr);
-+	get_reg(vm, VCPU_ID_TARGET, KVM_ARM64_SYS_REG(SYS_MPIDR_EL1), &target_mpidr);
- 	vcpu_args_set(vm, VCPU_ID_SOURCE, 1, target_mpidr & MPIDR_HWID_BITMASK);
- 	vcpu_run(vm, VCPU_ID_SOURCE);
- 
 diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-index 7989e832cafb..93797783abad 100644
+index 93797783abad..265054c24481 100644
 --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
 +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-@@ -16,15 +16,17 @@
- #define ARM64_CORE_REG(x) (KVM_REG_ARM64 | KVM_REG_SIZE_U64 | \
- 			   KVM_REG_ARM_CORE | KVM_REG_ARM_CORE_REG(x))
+@@ -122,6 +122,11 @@ void vm_install_exception_handler(struct kvm_vm *vm,
+ void vm_install_sync_handler(struct kvm_vm *vm,
+ 		int vector, int ec, handler_fn handler);
  
--#define CPACR_EL1               3, 0,  1, 0, 2
--#define TCR_EL1                 3, 0,  2, 0, 2
--#define MAIR_EL1                3, 0, 10, 2, 0
--#define MPIDR_EL1               3, 0,  0, 0, 5
--#define TTBR0_EL1               3, 0,  2, 0, 0
--#define SCTLR_EL1               3, 0,  1, 0, 0
--#define VBAR_EL1                3, 0, 12, 0, 0
--
--#define ID_AA64DFR0_EL1         3, 0,  0, 5, 0
-+/*
-+ * KVM_ARM64_SYS_REG(sys_reg_id): Helper macro to convert
-+ * SYS_* register definitions in asm/sysreg.h to use in KVM
-+ * calls such as get_reg() and set_reg().
-+ */
-+#define KVM_ARM64_SYS_REG(sys_reg_id)			\
-+	ARM64_SYS_REG(sys_reg_Op0(sys_reg_id),		\
-+			sys_reg_Op1(sys_reg_id),	\
-+			sys_reg_CRn(sys_reg_id),	\
-+			sys_reg_CRm(sys_reg_id),	\
-+			sys_reg_Op2(sys_reg_id))
- 
- /*
-  * Default MAIR
-diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-index 632b74d6b3ca..db64ee206064 100644
---- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-+++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-@@ -232,10 +232,10 @@ void aarch64_vcpu_setup(struct kvm_vm *vm, int vcpuid, struct kvm_vcpu_init *ini
- 	 * Enable FP/ASIMD to avoid trapping when accessing Q0-Q15
- 	 * registers, which the variable argument list macros do.
- 	 */
--	set_reg(vm, vcpuid, ARM64_SYS_REG(CPACR_EL1), 3 << 20);
-+	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_CPACR_EL1), 3 << 20);
- 
--	get_reg(vm, vcpuid, ARM64_SYS_REG(SCTLR_EL1), &sctlr_el1);
--	get_reg(vm, vcpuid, ARM64_SYS_REG(TCR_EL1), &tcr_el1);
-+	get_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_SCTLR_EL1), &sctlr_el1);
-+	get_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TCR_EL1), &tcr_el1);
- 
- 	switch (vm->mode) {
- 	case VM_MODE_P52V48_4K:
-@@ -273,10 +273,10 @@ void aarch64_vcpu_setup(struct kvm_vm *vm, int vcpuid, struct kvm_vcpu_init *ini
- 	tcr_el1 |= (1 << 8) | (1 << 10) | (3 << 12);
- 	tcr_el1 |= (64 - vm->va_bits) /* T0SZ */;
- 
--	set_reg(vm, vcpuid, ARM64_SYS_REG(SCTLR_EL1), sctlr_el1);
--	set_reg(vm, vcpuid, ARM64_SYS_REG(TCR_EL1), tcr_el1);
--	set_reg(vm, vcpuid, ARM64_SYS_REG(MAIR_EL1), DEFAULT_MAIR_EL1);
--	set_reg(vm, vcpuid, ARM64_SYS_REG(TTBR0_EL1), vm->pgd);
-+	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_SCTLR_EL1), sctlr_el1);
-+	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TCR_EL1), tcr_el1);
-+	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_MAIR_EL1), DEFAULT_MAIR_EL1);
-+	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TTBR0_EL1), vm->pgd);
- }
- 
- void vcpu_dump(FILE *stream, struct kvm_vm *vm, uint32_t vcpuid, uint8_t indent)
-@@ -362,7 +362,7 @@ void vcpu_init_descriptor_tables(struct kvm_vm *vm, uint32_t vcpuid)
- {
- 	extern char vectors;
- 
--	set_reg(vm, vcpuid, ARM64_SYS_REG(VBAR_EL1), (uint64_t)&vectors);
-+	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_VBAR_EL1), (uint64_t)&vectors);
- }
- 
- void route_exception(struct ex_regs *regs, int vector)
++static inline void cpu_relax(void)
++{
++	asm volatile("yield" ::: "memory");
++}
++
+ #define isb()		asm volatile("isb" : : : "memory")
+ #define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
+ #define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
 -- 
 2.33.0.309.g3052b89438-goog
 
