@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897624095FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC3D4092F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346986AbhIMOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:46:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58814 "EHLO mail.kernel.org"
+        id S242879AbhIMOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:16:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347165AbhIMOkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:40:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EFDB61C12;
-        Mon, 13 Sep 2021 13:55:51 +0000 (UTC)
+        id S1344141AbhIMOOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:14:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 546DA61AD2;
+        Mon, 13 Sep 2021 13:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541351;
-        bh=tmmCDylaI1qZyT367Nptda99x/Xu6nm+2NrS9Hh4+ag=;
+        s=korg; t=1631540594;
+        bh=FltRV8KHzsOVrWpAWAy6a7ugXJ2SGONGtUiGl0BMM4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ey53o6nbO/xU7QLIiQf7TCJNHb7b5/JELy7QekCYw/6IVIjMbrdcRmrXc2/F7IDW6
-         +AQbqeq8Z9tv3rCWftSNrncrNWrTXSwyFigt/zowjFvkC+r94YHpS23rGCwz6i34G/
-         izouwoN1Vz0f7bdeUt/TY7Go/WbFLOLsC6fCvYuA=
+        b=m6hfJRb7G0hd2aXbN8G6gBGUSblezg2CMWINJXawXwFbifsp4F+xEU+yUq4nWdD2c
+         XubVxYf9Jc0Y9eUbRQlfgZWiypSIFNUD9wCyCRUIHugpsNNcE/BX68uTI75pIoHNvT
+         /BOxzA1GVvLP8a47AoM4MX6BMUNJOsoeqvWDzm7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonard Crestez <leonard.crestez@nxp.com>,
-        Adriana Reus <adriana.reus@nxp.com>,
-        Sherry Sun <sherry.sun@nxp.com>,
-        Andy Duan <fugang.duan@nxp.com>,
+        stable@vger.kernel.org,
+        Michael Heimpold <michael.heimpold@in-tech.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 263/334] tty: serial: fsl_lpuart: fix the wrong mapbase value
-Date:   Mon, 13 Sep 2021 15:15:17 +0200
-Message-Id: <20210913131122.304054656@linuxfoundation.org>
+Subject: [PATCH 5.13 257/300] net: qualcomm: fix QCA7000 checksum handling
+Date:   Mon, 13 Sep 2021 15:15:18 +0200
+Message-Id: <20210913131118.025473694@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Duan <fugang.duan@nxp.com>
+From: Stefan Wahren <stefan.wahren@i2se.com>
 
-[ Upstream commit d5c38948448abc2bb6b36dbf85a554bf4748885e ]
+[ Upstream commit 429205da6c834447a57279af128bdd56ccd5225e ]
 
-Register offset needs to be applied on mapbase also.
-dma_tx/rx_request use the physical address of UARTDATA.
-Register offset is currently only applied to membase (the
-corresponding virtual addr) but not on mapbase.
+Based on tests the QCA7000 doesn't support checksum offloading. So assume
+ip_summed is CHECKSUM_NONE and let the kernel take care of the checksum
+handling. This fixes data transfer issues in noisy environments.
 
-Fixes: 24b1e5f0e83c ("tty: serial: lpuart: add imx7ulp support")
-Reviewed-by: Leonard Crestez <leonard.crestez@nxp.com>
-Signed-off-by: Adriana Reus <adriana.reus@nxp.com>
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Andy Duan <fugang.duan@nxp.com>
-Link: https://lore.kernel.org/r/20210819021033.32606-1-sherry.sun@nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Michael Heimpold <michael.heimpold@in-tech.com>
+Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA7000")
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/fsl_lpuart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qualcomm/qca_spi.c  | 2 +-
+ drivers/net/ethernet/qualcomm/qca_uart.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index f0e5da77ed6d..460e428b7592 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -2611,7 +2611,7 @@ static int lpuart_probe(struct platform_device *pdev)
- 		return PTR_ERR(sport->port.membase);
- 
- 	sport->port.membase += sdata->reg_off;
--	sport->port.mapbase = res->start;
-+	sport->port.mapbase = res->start + sdata->reg_off;
- 	sport->port.dev = &pdev->dev;
- 	sport->port.type = PORT_LPUART;
- 	sport->devtype = sdata->devtype;
+diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
+index ab9b02574a15..38018f024823 100644
+--- a/drivers/net/ethernet/qualcomm/qca_spi.c
++++ b/drivers/net/ethernet/qualcomm/qca_spi.c
+@@ -434,7 +434,7 @@ qcaspi_receive(struct qcaspi *qca)
+ 				skb_put(qca->rx_skb, retcode);
+ 				qca->rx_skb->protocol = eth_type_trans(
+ 					qca->rx_skb, qca->rx_skb->dev);
+-				qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
++				skb_checksum_none_assert(qca->rx_skb);
+ 				netif_rx_ni(qca->rx_skb);
+ 				qca->rx_skb = netdev_alloc_skb_ip_align(net_dev,
+ 					net_dev->mtu + VLAN_ETH_HLEN);
+diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethernet/qualcomm/qca_uart.c
+index bcdeca7b3366..ce3f7ce31adc 100644
+--- a/drivers/net/ethernet/qualcomm/qca_uart.c
++++ b/drivers/net/ethernet/qualcomm/qca_uart.c
+@@ -107,7 +107,7 @@ qca_tty_receive(struct serdev_device *serdev, const unsigned char *data,
+ 			skb_put(qca->rx_skb, retcode);
+ 			qca->rx_skb->protocol = eth_type_trans(
+ 						qca->rx_skb, qca->rx_skb->dev);
+-			qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
++			skb_checksum_none_assert(qca->rx_skb);
+ 			netif_rx_ni(qca->rx_skb);
+ 			qca->rx_skb = netdev_alloc_skb_ip_align(netdev,
+ 								netdev->mtu +
 -- 
 2.30.2
 
