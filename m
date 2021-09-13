@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56544408E55
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41A3408E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240738AbhIMNdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
+        id S240604AbhIMNcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:32:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241365AbhIMNYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:24:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F057360724;
-        Mon, 13 Sep 2021 13:21:45 +0000 (UTC)
+        id S241415AbhIMNYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:24:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E738610D1;
+        Mon, 13 Sep 2021 13:21:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539306;
-        bh=cHZumzlrM6+tZYz5z+PpTZySAuJUyF2i/7mgvc4lVKY=;
+        s=korg; t=1631539309;
+        bh=jvto1BW8c4m+rCzIAmrjQpwTrZWMq1rifNIwG7vScDY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yf0ntNjXZjBcx00BTH2SRRSL2+hLPNirSqy1dpN/GgSKFgwByMtWz32ttChMFiif3
-         sFzVQmurETmR9VAll9bVM5Oh1DJoMlIQ2AHYgWpjFqWDmigyxqGGk72cuVdA4eY6qZ
-         4IGzqnPgGjnhdFGPaFneLz6hR6ND0Mod/kfn1j00=
+        b=ST/bcLXouIBpzZSUBstbNkx+xeyBT0Hb7zNGcT0f4IZ2eZMtBb9xzqnUwP8qZR/jr
+         Tr5tqJa8o4MiI06chxCvaY1NQRTKhTte046VZaPPngVagyfN7xQVeaFx/4REfSWqfz
+         Etsl8MKs6XEkZ4EdJLziNrxNOEwuZiRC4L4Shjas=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
+        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 119/144] bcma: Fix memory leak for internally-handled cores
-Date:   Mon, 13 Sep 2021 15:15:00 +0200
-Message-Id: <20210913131051.906335372@linuxfoundation.org>
+Subject: [PATCH 5.4 120/144] brcmfmac: pcie: fix oops on failure to resume and reprobe
+Date:   Mon, 13 Sep 2021 15:15:01 +0200
+Message-Id: <20210913131051.937311398@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 References: <20210913131047.974309396@linuxfoundation.org>
@@ -40,63 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit b63aed3ff195130fef12e0af590f4838cf0201d8 ]
+[ Upstream commit d745ca4f2c4ae9f1bd8cf7d8ac6e22d739bffd19 ]
 
-kmemleak reported that dev_name() of internally-handled cores were leaked
-on driver unbinding. Let's use device_initialize() to take refcounts for
-them and put_device() to properly free the related stuff.
+When resuming from suspend, brcmf_pcie_pm_leave_D3 will first attempt a
+hot resume and then fall back to removing the PCI device and then
+reprobing. If this probe fails, the kernel will oops, because brcmf_err,
+which is called to report the failure will dereference the stale bus
+pointer. Open code and use the default bus-less brcmf_err to avoid this.
 
-While looking at it, there's another potential issue for those which should
-be *registered* into driver core. If device_register() failed, we put
-device once and freed bcma_device structures. In bcma_unregister_cores(),
-they're treated as unregistered and we hit both UAF and double-free. That
-smells not good and has also been fixed now.
-
-Fixes: ab54bc8460b5 ("bcma: fill core details for every device")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Fixes: 8602e62441ab ("brcmfmac: pass bus to the __brcmf_err() in pcie.c")
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210727025232.663-2-yuzenghui@huawei.com
+Link: https://lore.kernel.org/r/20210817063521.22450-1-a.fatoum@pengutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bcma/main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
-index 6535614a7dc1..1df2b5801c3b 100644
---- a/drivers/bcma/main.c
-+++ b/drivers/bcma/main.c
-@@ -236,6 +236,7 @@ EXPORT_SYMBOL(bcma_core_irq);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index bda042138e96..e6001f0a81a3 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -2073,7 +2073,7 @@ cleanup:
  
- void bcma_prepare_core(struct bcma_bus *bus, struct bcma_device *core)
- {
-+	device_initialize(&core->dev);
- 	core->dev.release = bcma_release_core_dev;
- 	core->dev.bus = &bcma_bus_type;
- 	dev_set_name(&core->dev, "bcma%d:%d", bus->num, core->core_index);
-@@ -277,11 +278,10 @@ static void bcma_register_core(struct bcma_bus *bus, struct bcma_device *core)
- {
- 	int err;
+ 	err = brcmf_pcie_probe(pdev, NULL);
+ 	if (err)
+-		brcmf_err(bus, "probe after resume failed, err=%d\n", err);
++		__brcmf_err(NULL, __func__, "probe after resume failed, err=%d\n", err);
  
--	err = device_register(&core->dev);
-+	err = device_add(&core->dev);
- 	if (err) {
- 		bcma_err(bus, "Could not register dev for core 0x%03X\n",
- 			 core->id.id);
--		put_device(&core->dev);
- 		return;
- 	}
- 	core->dev_registered = true;
-@@ -372,7 +372,7 @@ void bcma_unregister_cores(struct bcma_bus *bus)
- 	/* Now noone uses internally-handled cores, we can free them */
- 	list_for_each_entry_safe(core, tmp, &bus->cores, list) {
- 		list_del(&core->list);
--		kfree(core);
-+		put_device(&core->dev);
- 	}
+ 	return err;
  }
- 
 -- 
 2.30.2
 
