@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9E14097D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F01B4097D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344637AbhIMPvq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 11:51:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:23935 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244469AbhIMPvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:51:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="208941499"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="208941499"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 08:49:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="469496135"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Sep 2021 08:49:44 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 13 Sep 2021 08:49:44 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 13 Sep 2021 08:49:43 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.012;
- Mon, 13 Sep 2021 08:49:43 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        "Ertman, David M" <david.m.ertman@intel.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "yongxin.liu@windriver.com" <yongxin.liu@windriver.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Singhai, Anjali" <anjali.singhai@intel.com>,
-        "Parikh, Neerav" <neerav.parikh@intel.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Subject: RE: [PATCH RESEND net] ice: Correctly deal with PFs that do not
- support RDMA
-Thread-Topic: [PATCH RESEND net] ice: Correctly deal with PFs that do not
- support RDMA
-Thread-Index: AQHXpcrK/jEhT3UrxEqhAh51dcd/n6udc5YA///U4xA=
-Date:   Mon, 13 Sep 2021 15:49:43 +0000
-Message-ID: <4bc2664ac89844a79242339f5e971335@intel.com>
-References: <20210909151223.572918-1-david.m.ertman@intel.com>
- <YTsjDsFbBggL2X/8@unreal>
-In-Reply-To: <YTsjDsFbBggL2X/8@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S245661AbhIMPwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:52:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38106 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhIMPwA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:52:00 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B579C21F34;
+        Mon, 13 Sep 2021 15:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631548242; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+eyk10XtROXLts0BsM53ESJTU6x6wdPA46RKx5foHiI=;
+        b=A81Fjnx62iAN1magonQFZvuCwH43fJ6m1MZXiPGdtAXyKPi+1GiHzXFeZNAHC1iyxZMi3o
+        ROCuVtdmZtxJUqa+Ak7iAOsqG2PGcL7+PkYPknJ/uK91C8HW55+04zl0GvoAZ9g59HtbRu
+        wF9UdRKedIC5xaqcC2Gi1UM0o7OIZ0w=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4045DA3B94;
+        Mon, 13 Sep 2021 15:50:42 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 17:50:41 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Hillf Danton <hdanton@sina.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 0/8] hugetlb: add demote/split page functionality
+Message-ID: <YT9zUaPofENSMQHg@dhcp22.suse.cz>
+References: <efcf6049-6110-d516-b21f-41bb8775f042@suse.cz>
+ <2d826470-d345-0196-1359-b79ed08dfc66@oracle.com>
+ <b3b334ea-0e6f-ced9-e444-df4ec49455a0@suse.cz>
+ <02a1a50f-4e7c-4eb7-519c-35b26ec2c6af@oracle.com>
+ <20210907085001.3773-1-hdanton@sina.com>
+ <6c42bed7-d4dd-e5eb-5a74-24cf64bf52d3@oracle.com>
+ <YTn196em42sDsXs+@dhcp22.suse.cz>
+ <71f855ac-ff61-1eed-454f-909c0e4210b2@suse.cz>
+ <YTsVT74kAgpAD17s@dhcp22.suse.cz>
+ <2519e0f8-98ee-6bad-3895-ac733635e5b0@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2519e0f8-98ee-6bad-3895-ac733635e5b0@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
-> support RDMA
-> 
-> On Thu, Sep 09, 2021 at 08:12:23AM -0700, Dave Ertman wrote:
-> > There are two cases where the current PF does not support RDMA
-> > functionality.  The first is if the NVM loaded on the device is set to
-> > not support RDMA (common_caps.rdma is false).  The second is if the
-> > kernel bonding driver has included the current PF in an active link
-> > aggregate.
-> >
-> > When the driver has determined that this PF does not support RDMA,
-> > then auxiliary devices should not be created on the auxiliary bus.
-> 
-> This part is wrong, auxiliary devices should always be created, in your case it will
-> be one eth device only without extra irdma device.
+On Fri 10-09-21 17:11:05, Mike Kravetz wrote:
+[...]
+> @@ -5064,8 +5068,18 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask)
+>  	if (did_some_progress > 0 &&
+>  			should_compact_retry(ac, order, alloc_flags,
+>  				compact_result, &compact_priority,
+> -				&compaction_retries))
+> +				&compaction_retries)) {
+> +		/*
+> +		 * In one pathological case, pages can be stolen immediately
+> +		 * after reclaimed.  It looks like we are making progress, and
+> +		 * compaction_retries is not incremented.  This could cause
+> +		 * an indefinite number of retries.  Cap the number of retries
+> +		 * for costly orders.
+> +		 */
+> +		if (max_tries && tries > max_tries)
+> +			goto nopage;
+>  		goto retry;
+> +	}
 
-It is worth considering having an eth aux device/driver but is it a hard-and-fast rule?
-In this case, the RDMA-capable PCI network device spawns an auxiliary device for RDMA
-and the core driver is a network driver.
+I do not think this is a good approach. We do not want to play with
+retries numbers. If we want to go with a minimal change for now then the
+compaction feedback mechanism should track the number of reclaimed pages
+to satisfy watermarks and if that grows beyond reasonable (proportionaly
+to the request size) then simply give up rather than keep trying again
+and again.
 
-> 
-> Your "bug" is that you mixed auxiliary bus devices with "regular" ones and created
-> eth device not as auxiliary one. This is why you are calling to auxiliary_device_init()
-> for RDMA only and fallback to non-auxiliary mode.
-
-It's a design choice on how you carve out function(s) off your PCI core device to be
-managed by auxiliary driver(s) and not a bug.
-
-Shiraz
+-- 
+Michal Hocko
+SUSE Labs
