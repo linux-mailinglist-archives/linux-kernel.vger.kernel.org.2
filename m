@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517C1409AB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B6C409AB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242588AbhIMRcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        id S242870AbhIMReL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbhIMRcJ (ORCPT
+        with ESMTP id S238180AbhIMReK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:32:09 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C51C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y7Foc9Z7zhR5fwxXcBPgaj9Izqeozx1ChyyFKB+hvA4=; b=bQwzXOt1EPnT7L+7hZ3kSnk9Wg
-        FYTLZZCR0UO04mpQTpd4K/2McQ92OoRmC4DRopgUlIiKSzy+F73bl1cNGyLAEX8IOccIlkO0oyXXm
-        rCYjul66IPPR0utl334hShV5/BS/sAxs0iwDIyl/KejCrddfK883uf7BP7P7zr1ulFEnVu7eaMZZ9
-        c9UdTl9l7qXdtxpA+fbLCwME2EbollArLPW0n+OyVnl8s+yoWKP3MF9yhos9cKVsGNU6RHCiDkY7j
-        aXKGM3iTXUfx+ZYH/Nzv/AF+ord/D9n1Yo5yYaSUX6uSbsJ2B3uXW2cgkeS9Qmh4XOdIMkQAa4SCF
-        EGh2E52g==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mPpn9-002hlb-9P; Mon, 13 Sep 2021 17:30:51 +0000
-Date:   Mon, 13 Sep 2021 10:30:51 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
- drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
- prototype for function 'firmware_is_builtin'
-Message-ID: <YT+Ky1+cXrqesI6G@bombadil.infradead.org>
-References: <202109101524.pjY4q0Dy-lkp@intel.com>
- <YTv817Srt8hoySP5@bombadil.infradead.org>
- <YTwLw+frJLbntgCJ@archlinux-ax161>
- <YT90vvVi7oYH0xpb@bombadil.infradead.org>
- <993e03a8-b07c-a8d8-8c9f-75bfbab00f0e@kernel.org>
+        Mon, 13 Sep 2021 13:34:10 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8209DC061574;
+        Mon, 13 Sep 2021 10:32:54 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id f65so9519602pfb.10;
+        Mon, 13 Sep 2021 10:32:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=7hvNpGBwPO+Az8BZhVNmi7/8xqiNXdXyDIhTpZcUsFc=;
+        b=QVEKEDy2tEFcufZMnGR8xpHQYRt1ADgg2D4ZeBZcUHNaZSv9DrjsNuY9l1wN5F6YWz
+         8Urs3AcMayBmO78lQRiP+8ruVSOv1pKCKejhngHGQ1LNgGMP22+u+qAhRKgpnJVWArSj
+         3wozxLyMfQqv9zmZhM19z5t8A71Ars5PNTEx16InAxdLZLdL59S8R0QwTl1AqHJnM2CJ
+         87zULw3DxeXkQLtN53enTz+Os9PvZ1PXSDJp4W5MQsZgnR55h07tVMegeY12wLLjG+b3
+         jeYuEI/5dz44lN6P0csdVrby1Jr8XbkGwCHdYG7bNdi8gFduRHAtPxwtUQclD7pCjdli
+         DyeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=7hvNpGBwPO+Az8BZhVNmi7/8xqiNXdXyDIhTpZcUsFc=;
+        b=cSrqY0GF5xBpGl/zNl9fou6eTXXWnBd7dg8SeeZH6ONV9iv/DMn8uwFmpyASSAvYFs
+         2zixtTkYDrWq+lU5jVJJnbEKgN6AvTsvn77zqOlx5UFmKSFMqu1dCqybvYi76k88nIMe
+         wBRoKNeyTxn3VSOSqz6wpc2M4BHGokMArX0A9CsUv1Qxg/3PcFJ2u2Xf6OV2zGwjHhKd
+         i5LEt4uRbLEBIXbRShANPkMzM6/bsBFLuhQmbvswJ8+n1jQyKoSoknKagJq7pQUS4FMQ
+         ERCreO8W3cp5/38TOrsEcZKicErFN8junrnl/tAXWduXpt30DN1ZwlZQ1NW8rq5+Nnjj
+         o4ww==
+X-Gm-Message-State: AOAM532TuDVFUrSYIPjGSlxf4lGZ03CASr1+EtY5y+PZ1CooXnRCL4cX
+        RXFN/Er7eeNEayqT9FJax0JgKKTeGYw=
+X-Google-Smtp-Source: ABdhPJxbDzYYc5ZWgSx1M7eLr3WEyO0mdNwo7qEOr7muhYV3+BRnV5xiMqsfS0VesLaFAx0AT5iqoQ==
+X-Received: by 2002:a05:6a00:787:b0:405:700b:69ce with SMTP id g7-20020a056a00078700b00405700b69cemr630522pfu.50.1631554373957;
+        Mon, 13 Sep 2021 10:32:53 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id c133sm7738037pfb.39.2021.09.13.10.32.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 10:32:53 -0700 (PDT)
+Message-ID: <bb5ef571-fdda-f5e3-952e-6ba424de969b@gmail.com>
+Date:   Mon, 13 Sep 2021 10:32:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <993e03a8-b07c-a8d8-8c9f-75bfbab00f0e@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 5.10 000/236] 5.10.65-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210913131100.316353015@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:25:35AM -0700, Nathan Chancellor wrote:
-> On 9/13/2021 8:56 AM, Luis Chamberlain wrote:
-> > On Fri, Sep 10, 2021 at 06:52:03PM -0700, Nathan Chancellor wrote:
-> > > On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
-> > > > On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
-> > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
-> > > > > head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
-> > > > > commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
-> > > > > config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
-> > > > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
-> > > > > reproduce (this is a W=1 build):
-> > > > >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > > > >          chmod +x ~/bin/make.cross
-> > > > >          # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
-> > > > >          git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-> > > > >          git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
-> > > > >          git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
-> > > > >          # save the attached .config to linux build tree
-> > > > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon
-> > > > > 
-> > > > > If you fix the issue, kindly add following tag as appropriate
-> > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > 
-> > > > > All errors (new ones prefixed by >>):
-> > > > > 
-> > > > > > > drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
-> > > > >     bool firmware_is_builtin(const struct firmware *fw)
-> > > > 
-> > > > This is a lie though its defined on drivers/base/firmware_loader/firmware.h
-> > > 
-> > > Unless I am missing something, you don't include the firmware_loader
-> > > copy of firmware.h in builtin/main.c (only the linux one)? Isn't that
-> > > the source of the warning?
-> > 
-> > You would think, but nope, its there:
-> > 
-> > #include "firmware.h"
-> 
-> I see that in drivers/base/firmware_loader/main.c but the warning is
-> complaining about drivers/base/firmware_loader/builtin/main.c, where I only
-> see
-> 
-> #include <linux/firmware.h>
-> 
-> Sorry for the issues with reproducing. For what it's worth, I can reproduce
-> this locally and adding
-> 
-> #include "../firmware.h"
-> 
-> to drivers/base/firmware_loader/builtin/main.c fixes it for me.
 
-Got it, thanks! I've ammended this change.
 
- Luis
+On 9/13/2021 6:11 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.65 release.
+> There are 236 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.65-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
+
