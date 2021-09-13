@@ -2,150 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F3D409C52
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EC7409C56
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240825AbhIMSdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:33:39 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:35637 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236549AbhIMSdi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:33:38 -0400
-Received: by mail-il1-f197.google.com with SMTP id f4-20020a056e0204c400b0022dbd3f8b18so15283262ils.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:32:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NHZDHLYcnktOgU5NNoVaZJ4zgNvYHLZXM7Gbcpsm29s=;
-        b=cBK4yiyqvfxA/ooDv9N1mYryKTMyoTCvEz73vpimq9mDyBcW/GBfwxWiSHdaOlKDCf
-         5cfRECXQ1/lSDK/1bmE7VrO6h0jgLr2aMu2eg1D3K6+g/g3jHHriQBV88J/YI3YglTgV
-         K7W8uMbm5Fwm+OZw4fr7sOyHKm/Y8pHg1Ef9KT6qy6M8w0tvjy/tAgXbcsuMLkjRt4dK
-         DqKw37gMPsgrYeP0t9EFzdOBrTuVqnfD5UQioD2oN5+o0gXRydGCWZoEomDq7jtXw13i
-         1L+DXUZzJ6eXITNvR8uaNzbO+s59SyQ/saUtY5TnOd//N1maUXkbR5vVpLayMrfSIP4k
-         K8cA==
-X-Gm-Message-State: AOAM533v6a0s5V2rT2UA4XTDi8lBjeWaJ1edP5zAzQpjQRUNhHuhqLMf
-        C1gfVcpPEpKiCgVnFIiyQVYhHe5hvj+wLk2hkbIg2qG6QpAs
-X-Google-Smtp-Source: ABdhPJxTPls5IFmATONlxtTSL49mlLZVdjNPiZE5bqHWJgUX6wQhApVBo9BfYVf8ynISWlBMAlZXauZfEadOLWBfm8whFgK4b1Nv
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2001:: with SMTP id y1mr10258322iod.97.1631557941930;
- Mon, 13 Sep 2021 11:32:21 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 11:32:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008f30cb05cbe4af29@google.com>
-Subject: [syzbot] general protection fault in io_uring_register
-From:   syzbot <syzbot+337de45f13a4fd54d708@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        johalun0@gmail.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S241178AbhIMSev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:34:51 -0400
+Received: from comms.puri.sm ([159.203.221.185]:56034 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236549AbhIMSet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:34:49 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 95AF4DFA1F;
+        Mon, 13 Sep 2021 11:33:01 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id chX-iOGg-ZNZ; Mon, 13 Sep 2021 11:33:00 -0700 (PDT)
+From:   Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Anton Vorontsov <anton.vorontsov@linaro.org>,
+        Ramakrishna Pallala <ramakrishna.pallala@intel.com>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        stable@vger.kernel.org, kernel@puri.sm
+Subject: Re: [PATCH 1/2] power: supply: max17042_battery: Clear status bits in interrupt handler
+Date:   Mon, 13 Sep 2021 20:32:52 +0200
+Message-ID: <5702731.UytLkSCjyO@pliszka>
+In-Reply-To: <0123524d-b767-5b5b-8b14-60d8cea3c429@canonical.com>
+References: <20210912205402.160939-1-sebastian.krzyszkowiak@puri.sm> <0123524d-b767-5b5b-8b14-60d8cea3c429@canonical.com>
+Content-Type: multipart/signed; boundary="nextPart89881716.T3fe8mzVK5"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--nextPart89881716.T3fe8mzVK5
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+To: Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: linux-kernel@vger.kernel.org, Anton Vorontsov <anton.vorontsov@linaro.org>, Ramakrishna Pallala <ramakrishna.pallala@intel.com>, Dirk Brandewie <dirk.brandewie@gmail.com>, stable@vger.kernel.org, kernel@puri.sm
+Subject: Re: [PATCH 1/2] power: supply: max17042_battery: Clear status bits in interrupt handler
+Date: Mon, 13 Sep 2021 20:32:52 +0200
+Message-ID: <5702731.UytLkSCjyO@pliszka>
+In-Reply-To: <0123524d-b767-5b5b-8b14-60d8cea3c429@canonical.com>
+References: <20210912205402.160939-1-sebastian.krzyszkowiak@puri.sm> <0123524d-b767-5b5b-8b14-60d8cea3c429@canonical.com>
 
-syzbot found the following issue on:
+On poniedzia=C5=82ek, 13 wrze=C5=9Bnia 2021 15:02:34 CEST Krzysztof Kozlows=
+ki wrote:
+> On 12/09/2021 22:54, Sebastian Krzyszkowiak wrote:
+> > The gauge requires us to clear the status bits manually for some alerts
+> > to be properly dismissed. Previously the IRQ was configured to react on=
+ly
+> > on falling edge, which wasn't technically correct (the ALRT line is act=
+ive
+> > low), but it had a happy side-effect of preventing interrupt storms
+> > on uncleared alerts from happening.
+> >=20
+> > Fixes: 7fbf6b731bca ("power: supply: max17042: Do not enforce (incorrec=
+t)
+> > interrupt trigger type") Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+> > ---
+> >=20
+> >  drivers/power/supply/max17042_battery.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/drivers/power/supply/max17042_battery.c
+> > b/drivers/power/supply/max17042_battery.c index
+> > 8dffae76b6a3..c53980c8432a 100644
+> > --- a/drivers/power/supply/max17042_battery.c
+> > +++ b/drivers/power/supply/max17042_battery.c
+> > @@ -876,6 +876,9 @@ static irqreturn_t max17042_thread_handler(int id,
+> > void *dev)>=20
+> >  		max17042_set_soc_threshold(chip, 1);
+> >  =09
+> >  	}
+> >=20
+> > +	regmap_clear_bits(chip->regmap, MAX17042_STATUS,
+> > +			  0xFFFF & ~(STATUS_POR_BIT |=20
+STATUS_BST_BIT));
+> > +
+>=20
+> Are you sure that this was the reason of interrupt storm? Not incorrect
+> SoC value (read from register for ModelGauge m3 while not configuring
+> fuel gauge model).
 
-HEAD commit:    a3fa7a101dcf Merge branches 'akpm' and 'akpm-hotfixes' (pa..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17da7b93300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ddf81d5d49fe3452
-dashboard link: https://syzkaller.appspot.com/bug?extid=337de45f13a4fd54d708
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=129e9da5300000
+Yes, I am sure. I have observed this on a fully configured max17055 with=20
+ModelGauge m5. It also makes sense to me based on what I read in the code a=
+nd=20
+datasheets.
 
-The issue was bisected to:
+There were two kinds of storms - the short ones happening on each SOC chang=
+e=20
+caused by SOC threshold alerts set by max17042_set_soc_threshold which=20
+eventually got cleared by reconfiguring the thresholds; and a huge one=20
+happening when SOC got down to 0% that did not get away until the battery g=
+ot=20
+charged to at least 1% at which point the thresholds got reconfigured again=
+=20
+(which is how I noticed the underflow fixed by the second patch).
 
-commit fa84693b3c896460831fe0750554121121a23da8
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Wed Sep 1 20:15:59 2021 +0000
+Besides, I also have patches for configuring m5 gauge via DT that I'll send=
+=20
+once I clean them up.
 
-    io_uring: ensure IORING_REGISTER_IOWQ_MAX_WORKERS works with SQPOLL
+> You should only clear bits which you are awaken for... Have in mind that
+> in DT-configuration the fuel gauge is most likely broken by missing
+> configuration. With alert enabled, several other config fields should be
+> cleared.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164900c3300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=154900c3300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=114900c3300000
+I have checked all the bits in the Status register and aside of Bst, POR an=
+d=20
+bunch of "don't-care" bits they're all alert indicators that we either hand=
+le=20
+explicitly in the interrupt handler (Smn/Smx) or implicitly via=20
+power_supply_changed (Imn/Imx, Vmn/Vmx, Tmn/Tmx, dSOCi, Bi/Br). The driver=
+=20
+unconditionally enables alerts for SOC thresholds and all the rest stays=20
+effectively disabled at POR; however, a bootloader or firmware may configur=
+e it=20
+differently, which may be wanted for things like resuming from suspend when=
+ a=20
+bad condition happens. Therefore we need to clear all the bits anyway and I=
+'m=20
+not sure whether iterating through them in a "if set then clear" loop gains=
+ us=20
+anything aside of additional lines of code.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+337de45f13a4fd54d708@syzkaller.appspotmail.com
-Fixes: fa84693b3c89 ("io_uring: ensure IORING_REGISTER_IOWQ_MAX_WORKERS works with SQPOLL")
+> Best regards,
+> Krzysztof
 
-general protection fault, probably for non-canonical address 0xdffffc0000000103: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000818-0x000000000000081f]
-CPU: 0 PID: 12816 Comm: syz-executor.1 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_register_iowq_max_workers fs/io_uring.c:10552 [inline]
-RIP: 0010:__io_uring_register fs/io_uring.c:10757 [inline]
-RIP: 0010:__do_sys_io_uring_register+0x10e9/0x2e70 fs/io_uring.c:10792
-Code: ea 03 80 3c 02 00 0f 85 43 1b 00 00 48 8b 9b a8 00 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bb 18 08 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 11 1b 00 00 48 8b 9b 18 08 00 00 48 85 db 0f 84
-RSP: 0018:ffffc90003f3fdf8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000103 RSI: 0000000000000004 RDI: 0000000000000818
-RBP: ffff888073777900 R08: 0000000000000000 R09: ffff88807e916413
-R10: ffffed100fd22c82 R11: 0000000000000001 R12: 0000000000000000
-R13: ffffc90003f3fec8 R14: 1ffff920007e7fc9 R15: ffff88805cd7e000
-FS:  00007f6c631e3700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000001907808 CR3: 0000000062c6d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6c631e3188 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
-RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665f9
-RDX: 0000000020004000 RSI: 0000000000000013 RDI: 0000000000000003
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000246 R12: 000000000056c038
-R13: 00007ffdd807e0af R14: 00007f6c631e3300 R15: 0000000000022000
-Modules linked in:
----[ end trace 1cd60a7726ee853d ]---
-RIP: 0010:io_register_iowq_max_workers fs/io_uring.c:10552 [inline]
-RIP: 0010:__io_uring_register fs/io_uring.c:10757 [inline]
-RIP: 0010:__do_sys_io_uring_register+0x10e9/0x2e70 fs/io_uring.c:10792
-Code: ea 03 80 3c 02 00 0f 85 43 1b 00 00 48 8b 9b a8 00 00 00 b8 ff ff 37 00 48 c1 e0 2a 48 8d bb 18 08 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 11 1b 00 00 48 8b 9b 18 08 00 00 48 85 db 0f 84
-RSP: 0018:ffffc90003f3fdf8 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000103 RSI: 0000000000000004 RDI: 0000000000000818
-RBP: ffff888073777900 R08: 0000000000000000 R09: ffff88807e916413
-R10: ffffed100fd22c82 R11: 0000000000000001 R12: 0000000000000000
-R13: ffffc90003f3fec8 R14: 1ffff920007e7fc9 R15: ffff88805cd7e000
-FS:  00007f6c631e3700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb988f6b000 CR3: 0000000062c6d000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	03 80 3c 02 00 0f    	add    0xf00023c(%rax),%eax
-   6:	85 43 1b             	test   %eax,0x1b(%rbx)
-   9:	00 00                	add    %al,(%rax)
-   b:	48 8b 9b a8 00 00 00 	mov    0xa8(%rbx),%rbx
-  12:	b8 ff ff 37 00       	mov    $0x37ffff,%eax
-  17:	48 c1 e0 2a          	shl    $0x2a,%rax
-  1b:	48 8d bb 18 08 00 00 	lea    0x818(%rbx),%rdi
-  22:	48 89 fa             	mov    %rdi,%rdx
-  25:	48 c1 ea 03          	shr    $0x3,%rdx
-* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2d:	0f 85 11 1b 00 00    	jne    0x1b44
-  33:	48 8b 9b 18 08 00 00 	mov    0x818(%rbx),%rbx
-  3a:	48 85 db             	test   %rbx,%rbx
-  3d:	0f                   	.byte 0xf
-  3e:	84                   	.byte 0x84
+Cheers,
+Sebastian
+--nextPart89881716.T3fe8mzVK5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEIt2frgBqEUNYNmF86PI1zzvbw/8FAmE/mVQACgkQ6PI1zzvb
+w/+Grw//R2Lf0O3clBJBYHfOdbwZS/SSetxXxps9CzCOu6GZ9NYUvaBe9TwPUrJP
+lXhAjPG9pCUyRMWIIAX72KdjLS5I8YHm7JxeqGyNJjr9vrdoT7GEirTIJN7AoyZN
+kAepbOND3DE6DpzX/McQq8vNsvtJc5lco3oMr8KEzYrKaP+HBe7tN5ZnJ3IJ4Vcy
+5XyYdDglP1wZceiKe8Qb1PwEn/xhYDMbgCyHGQzYcB7gEP8E6OgkOV1jk4bJk2fa
+XivbylCTqljKAmALJ1DBv1mwJ8XO5WqJLmwphRXSc4hxgiodyx3K94cxHnYcg3Al
+ycazR5wF2gT0BKuTH44Uz4ZdxoLgi6uSZqoy/LQ7XhdboJr2+FRRlyakO3d1DYqT
+1VIkECYeyWZtJOudhr+m2yIxTZRd3EUmYMV+l1AKoQk0ZJrMMxTnbYjI0h+CYYvL
+WLcuM9lcoWgNANkFVA4N9EK8edKxHeHtVAfoL/++6VMfmqdOyEZG0K6MwpOQt/U7
+R8ECgYfwIodTTLD/P3gbet8TJwvu19E/ldls23CRpbWi9XOu9rzMztCMwUc6LWx4
+Cnu0XJNso3J5pG3RHl6Nwgu9bgHpTbM10lz/pokOYfroDdO7mv6KmwN/OWnFrBxE
+s7HjT1N//3tiBWdwP68y4P3aPfSEXK4zTN0xCxgYZqIEvs+rbDg=
+=W1i9
+-----END PGP SIGNATURE-----
+
+--nextPart89881716.T3fe8mzVK5--
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
