@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C9B408F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED66408E0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242304AbhIMNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:38:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
+        id S241857AbhIMNbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:31:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241706AbhIMNdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:33:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1086138E;
-        Mon, 13 Sep 2021 13:26:25 +0000 (UTC)
+        id S240119AbhIMNTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:19:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BFF4610CF;
+        Mon, 13 Sep 2021 13:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539586;
-        bh=o21YIMvVkVJCwVrULYcHxHU/6XcaQYo/AjSboxziAsw=;
+        s=korg; t=1631539051;
+        bh=hswrED2gR8UQ4lYZmyMGHDw5ER84jk+N/42g+xUDEKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tTRfH5z4s/IQvi/tg01BeImz7K9NGXMXMUGy0icThfONqcToqIYwhngxptNBylw6T
-         RM3gHRdY/q6Mlyk49dRX8bfk1mZ8veBuhym028MfaJJWPyeq/OCNEVD9xue2CpGzwO
-         zt+m60kRdg0AS8KDSA4In3C099O13JQru+mEFJ+M=
+        b=oD8PBJ0LxSMOMV8t/93aodUzfpMz2BDhVAW6cVDTziyuShxhbfTeM0PVgb0zfFbq3
+         MT/SARorjszh2AoCZgj9x964QKKo+gINUEklNygeu6T19+zwr6KkYAWDIrTBBhpiE6
+         Mwhx/7pvMbZYa0ydNRiGEVov8oD0y11ee+ekpe/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuyi Cheng <chengshuyi@linux.alibaba.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 081/236] libbpf: Fix the possible memory leak on error
+Subject: [PATCH 5.4 005/144] power: supply: axp288_fuel_gauge: Report register-address on readb / writeb errors
 Date:   Mon, 13 Sep 2021 15:13:06 +0200
-Message-Id: <20210913131103.116958945@linuxfoundation.org>
+Message-Id: <20210913131048.148295034@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 18353c87e0e0440d4c7c746ed740738bbc1b538e ]
+[ Upstream commit caa534c3ba40c6e8352b42cbbbca9ba481814ac8 ]
 
-If the strdup() fails then we need to call bpf_object__close(obj) to
-avoid a resource leak.
+When fuel_gauge_reg_readb()/_writeb() fails, report which register we
+were trying to read / write when the error happened.
 
-Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
-Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/1626180159-112996-3-git-send-email-chengshuyi@linux.alibaba.com
+Also reword the message a bit:
+- Drop the axp288 prefix, dev_err() already prints this
+- Switch from telegram / abbreviated style to a normal sentence, aligning
+  the message with those from fuel_gauge_read_*bit_word()
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/power/supply/axp288_fuel_gauge.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 95eef7ebdac5..04cde732d686 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6907,8 +6907,10 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
- 	kconfig = OPTS_GET(opts, kconfig, NULL);
- 	if (kconfig) {
- 		obj->kconfig = strdup(kconfig);
--		if (!obj->kconfig)
--			return ERR_PTR(-ENOMEM);
-+		if (!obj->kconfig) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
+diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
+index f40fa0e63b6e..993e4a4a34b3 100644
+--- a/drivers/power/supply/axp288_fuel_gauge.c
++++ b/drivers/power/supply/axp288_fuel_gauge.c
+@@ -149,7 +149,7 @@ static int fuel_gauge_reg_readb(struct axp288_fg_info *info, int reg)
  	}
  
- 	err = bpf_object__elf_init(obj);
+ 	if (ret < 0) {
+-		dev_err(&info->pdev->dev, "axp288 reg read err:%d\n", ret);
++		dev_err(&info->pdev->dev, "Error reading reg 0x%02x err: %d\n", reg, ret);
+ 		return ret;
+ 	}
+ 
+@@ -163,7 +163,7 @@ static int fuel_gauge_reg_writeb(struct axp288_fg_info *info, int reg, u8 val)
+ 	ret = regmap_write(info->regmap, reg, (unsigned int)val);
+ 
+ 	if (ret < 0)
+-		dev_err(&info->pdev->dev, "axp288 reg write err:%d\n", ret);
++		dev_err(&info->pdev->dev, "Error writing reg 0x%02x err: %d\n", reg, ret);
+ 
+ 	return ret;
+ }
 -- 
 2.30.2
 
