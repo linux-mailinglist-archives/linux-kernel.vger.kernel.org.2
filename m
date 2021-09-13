@@ -2,120 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA456409E91
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054D3409E96
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 22:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344738AbhIMUxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 16:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50098 "EHLO
+        id S244422AbhIMUzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 16:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243622AbhIMUxN (ORCPT
+        with ESMTP id S244579AbhIMUyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 16:53:13 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126CEC0613BB
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:50:30 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id s3so19585780ljp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:50:29 -0700 (PDT)
+        Mon, 13 Sep 2021 16:54:55 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF6CC0613DE
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:53:16 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id s11so10574053pgr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:53:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8TVqbn8thZCqMP/VrYd9m008Vn/d1QsljDuZZA3Cj3U=;
-        b=Kx+QXs7/Gqu+0fT01IBf7AvtFuuKzukMCBr8Uj8Tlirfgy3sBlDb/0dgxW8i2fm4ki
-         Cr2wjOBudyMAbTz6hMk9v40PhWKj9nMcIvmb30kyKFZB5RsdvaSnLonYQoWCJky9Fn/q
-         rvmHHz1xfT6sAANA+Cql145bvCNIa1CwpBa7ThFjKt5zw9vKElWhqhFhEUwiaxOgfZ8Z
-         mc6ZDYEM+0S6oMqPrZMSE/Xi4nZl2oaQoisz2wKEDinJKmadJxfu8MSthUEwUNPCWeqH
-         fluefePE4KH12STgQsgozYhaHaImiPkP9T36zeeUIgpXLdwXCdryY+34zNJ9CWrttP02
-         lFrQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f90knbbhtSScT8ar0jqF08SQUZmsRray7TeEETy/L9c=;
+        b=TLgwdSKTYs4IaAyBBMpkY+P28NYma3r1phTKbQrF7ns68EYCnG/diFKdtFOwdJ2R8D
+         xT9nmLrmtnmDk54bafY9N3Zxttn4/3BZoudzEIvLFqtXIRDtgTzSPdOu0VCzfb3Skjyo
+         8K1CUuIokwBsacA+2mLbS6MBqCyLa4zgJLpQk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8TVqbn8thZCqMP/VrYd9m008Vn/d1QsljDuZZA3Cj3U=;
-        b=pe+MOCvKICChjuR7T5rR94GDOIRoeGF5nwNxBtQX4AZtwIMccobywOVnRkvj9uLAwb
-         /Asw2ukvN9ADsEJgz2/ChOKWowSxqkXS5Qm9skFewyMVBUn7DZM0vV+3OjO5J7B8MQca
-         M6dohd7+gkLAeyuDudbtH+zgE0BN5wsT0i+PIbv7wu9s7Wk24cYl7R9Xd/eM5Y7xLN/g
-         JQGKo+OXOPx/WCy9r+PtJBFJBiaiCVA74GLN6grzxAT68Ft5C7LKEj4kL5nK+WEA/QLn
-         YYArw81hagWtfsLH63B4ab5GPFhhXKulZ/Rqmh4r4HIyDvmCcxsCWEYL8DJO0JuYZ7ZQ
-         UxBA==
-X-Gm-Message-State: AOAM530P9ybqvsGSDsa94bkR5FN8gYrxh0qhoSkbdHEIrN3TkAo6qVhj
-        2vMZqHxzdhpJX8VCt+ngLP0ODj2cT6igwpwYmKViGw==
-X-Google-Smtp-Source: ABdhPJy0QpA58fznBHhrAEHivK9kgUxh+cUT8ejPHdCeOcbTpFXS2375qe5rVNCNeV1nKlpokjSe4FcWCpoMJsDrm+0=
-X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr12530242ljp.526.1631566228215;
- Mon, 13 Sep 2021 13:50:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f90knbbhtSScT8ar0jqF08SQUZmsRray7TeEETy/L9c=;
+        b=0iw0pS3e2rk7eDrC4Bb5byc5acWWUqy+xe2cJWnCKIg5OPNPvb96T0ZfxPcoHJxDWW
+         +IN01U1q+DHd0IOYi5+JwsNfv0b+Xq9SZDFbk2g1qz79xwSpLW108+iaK3auGtwMuEb1
+         foKzNcsLUQqwt9kznEAxvrkuNlyeOObTUkuLNfT1PDVojBYFF3+f1LiyXb50UsZMk+ik
+         6FdIeu/rgTwtHxI8lIP239X0zIGubP4Bu7rB2OlUeMEIpJnfiYQhfazjghR0D94ZTihh
+         XlqU1FZWp+KHNXfkyo5SCJTzNtY2/r+7qUErCaj1bwTyD09kxDnpQ8ksArvB0bcrIG+k
+         OHww==
+X-Gm-Message-State: AOAM533MSz4iZF66HiORm6nKAytLZ6pH3LThOUVgmx/Tr5WmhraClIoZ
+        Fg36b058JT11zg2aMyaxmySghQ==
+X-Google-Smtp-Source: ABdhPJxAl/mPXt91YwawfAofyXkkfN2pdLltwPNS+6qxwL3ENdYmXvUidco0XR00ILeLkAlx8X+QJg==
+X-Received: by 2002:a63:f817:: with SMTP id n23mr12417256pgh.250.1631566395792;
+        Mon, 13 Sep 2021 13:53:15 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:cd18:482a:6391:201b])
+        by smtp.gmail.com with ESMTPSA id n11sm7702188pjh.23.2021.09.13.13.53.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 13:53:15 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Youghandhar Chintala <youghand@codeaurora.org>,
+        Abhishek Kumar <kuabhs@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH v2] ath10k: Don't always treat modem stop events as crashes
+Date:   Mon, 13 Sep 2021 13:53:13 -0700
+Message-Id: <20210913205313.3420049-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
 MIME-Version: 1.0
-References: <20210913131113.390368911@linuxfoundation.org> <20210913131114.028340332@linuxfoundation.org>
- <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
- <YT+RKemKfg6GFq0S@kroah.com> <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
- <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
- <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
- <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
- <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
- <CAKwvOdkf3B41RRe8FDkw1H-0hBt1_PhZtZxBZ5pj0pyh7vDLmA@mail.gmail.com> <CAHk-=wjP2ijctPt2Hw3DagSZ-KgdRsO6zWTTKQNnSk0MajtJgA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjP2ijctPt2Hw3DagSZ-KgdRsO6zWTTKQNnSk0MajtJgA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Sep 2021 13:50:17 -0700
-Message-ID: <CAKwvOd=ZG8sf1ZOkuidX_49VGkQE+BJDa19_vR4gh2FNQ2F_9Q@mail.gmail.com>
-Subject: Re: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in __nbd_ioctl()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        lkft-triage@lists.linaro.org, llvm@lists.linux.dev,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:42 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Sep 13, 2021 at 1:16 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > Do we have access to _Generic in GCC 4.9?
->
-> We've ended up using it unconditionally since last year, so yes.
+When rebooting on sc7180 Trogdor devices I see the following crash from
+the wifi driver.
 
-Sorry, grepping would have taken < 1s. I'm very lazy.
-http://threevirtues.com/
+ ath10k_snoc 18800000.wifi: firmware crashed! (guid 83493570-29a2-4e98-a83e-70048c47669c)
 
->
-> In fact, the compiler version tests got removed when we raised the gcc
-> version requirement to 4.9 in commit 6ec4476ac825 ("Raise gcc version
-> requirement to 4.9"):
->
->    "In particular, raising the minimum to 4.9 means that we can now just
->     assume _Generic() exists, which is likely the much better replacement
->     for a lot of very convoluted built-time magic with conditionals on
->     sizeof and/or __builtin_choose_expr() with same_type() etc"
->
-> but we haven't used it much since.
->
-> The "seqprop" code for picking the right lock for seqlock is perhaps
-> the main example, and staring at that code will make you go blind, so
-> look away.
+This is because a modem stop event looks just like a firmware crash to
+the driver, the qmi connection is closed in both cases. Use the qcom ssr
+notifier block to stop treating the qmi connection close event as a
+firmware crash signal when the modem hasn't actually crashed. See
+ath10k_qmi_event_server_exit() for more details.
 
-Looking at my patch:
-https://lore.kernel.org/stable/20210913203201.1844253-1-ndesaulniers@google.com/
-I don't think _Generic helps us in the case of dispatching based on
-the result of is_signed_type() (the operands could undergo type
-promotion, so we'd need lots of cases that are more concisely covered
-by is_signed_type()). It could replace the nested checks in div_64
-with nested _Generics, I think. Not sure it's a huge win for
-readability.  Maybe cut the number of expansions of the parameters in
-half though. Let me give it a try just to see what it looks like.
+This silences the crash message seen during every reboot.
+
+Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
+Cc: Youghandhar Chintala <youghand@codeaurora.org>
+Cc: Abhishek Kumar <kuabhs@chromium.org>
+Tested-By: Steev Klimaszewski <steev@kali.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+
+Changes since v1 (https://lore.kernel.org/r/20210905210400.1157870-1-swboyd@chromium.org):
+ * Push error message into function instead of checking at callsite
+
+ drivers/net/wireless/ath/ath10k/snoc.c | 77 ++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/snoc.h |  4 ++
+ 2 files changed, 81 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index ea00fbb15601..965136261aef 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -12,6 +12,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/remoteproc/qcom_rproc.h>
+ #include <linux/of_address.h>
+ #include <linux/iommu.h>
+ 
+@@ -1477,6 +1478,74 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
+ 	mutex_unlock(&ar->dump_mutex);
+ }
+ 
++static int ath10k_snoc_modem_notify(struct notifier_block *nb, unsigned long action,
++				    void *data)
++{
++	struct ath10k_snoc *ar_snoc = container_of(nb, struct ath10k_snoc, nb);
++	struct ath10k *ar = ar_snoc->ar;
++	struct qcom_ssr_notify_data *notify_data = data;
++
++	switch (action) {
++	case QCOM_SSR_BEFORE_POWERUP:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem starting event\n");
++		clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++		break;
++
++	case QCOM_SSR_AFTER_POWERUP:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem running event\n");
++		break;
++
++	case QCOM_SSR_BEFORE_SHUTDOWN:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem %s event\n",
++			   notify_data->crashed ? "crashed" : "stopping");
++		if (!notify_data->crashed)
++			set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++		else
++			clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
++		break;
++
++	case QCOM_SSR_AFTER_SHUTDOWN:
++		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem offline event\n");
++		break;
++
++	default:
++		ath10k_err(ar, "received unrecognized event %lu\n", action);
++		break;
++	}
++
++	return NOTIFY_OK;
++}
++
++static int ath10k_modem_init(struct ath10k *ar)
++{
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	void *notifier;
++	int ret;
++
++	ar_snoc->nb.notifier_call = ath10k_snoc_modem_notify;
++
++	notifier = qcom_register_ssr_notifier("mpss", &ar_snoc->nb);
++	if (IS_ERR(notifier)) {
++		ret = PTR_ERR(notifier);
++		ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
++		return ret;
++	}
++
++	ar_snoc->notifier = notifier;
++
++	return 0;
++}
++
++static void ath10k_modem_deinit(struct ath10k *ar)
++{
++	int ret;
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++
++	ret = qcom_unregister_ssr_notifier(ar_snoc->notifier, &ar_snoc->nb);
++	if (ret)
++		ath10k_err(ar, "error %d unregistering notifier\n", ret);
++}
++
+ static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
+ {
+ 	struct device *dev = ar->dev;
+@@ -1740,10 +1809,17 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+ 		goto err_fw_deinit;
+ 	}
+ 
++	ret = ath10k_modem_init(ar);
++	if (ret)
++		goto err_qmi_deinit;
++
+ 	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
+ 
+ 	return 0;
+ 
++err_qmi_deinit:
++	ath10k_qmi_deinit(ar);
++
+ err_fw_deinit:
+ 	ath10k_fw_deinit(ar);
+ 
+@@ -1771,6 +1847,7 @@ static int ath10k_snoc_free_resources(struct ath10k *ar)
+ 	ath10k_fw_deinit(ar);
+ 	ath10k_snoc_free_irq(ar);
+ 	ath10k_snoc_release_resource(ar);
++	ath10k_modem_deinit(ar);
+ 	ath10k_qmi_deinit(ar);
+ 	ath10k_core_destroy(ar);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index 5095d1893681..d986edc772f8 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -6,6 +6,8 @@
+ #ifndef _SNOC_H_
+ #define _SNOC_H_
+ 
++#include <linux/notifier.h>
++
+ #include "hw.h"
+ #include "ce.h"
+ #include "qmi.h"
+@@ -75,6 +77,8 @@ struct ath10k_snoc {
+ 	struct clk_bulk_data *clks;
+ 	size_t num_clks;
+ 	struct ath10k_qmi *qmi;
++	struct notifier_block nb;
++	void *notifier;
+ 	unsigned long flags;
+ 	bool xo_cal_supported;
+ 	u32 xo_cal_data;
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
 -- 
-Thanks,
-~Nick Desaulniers
+https://chromeos.dev
+
