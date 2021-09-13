@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB51409010
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56544408E55
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244388AbhIMNtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:49:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51782 "EHLO mail.kernel.org"
+        id S240738AbhIMNdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:33:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243677AbhIMNov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:44:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD5E61440;
-        Mon, 13 Sep 2021 13:31:14 +0000 (UTC)
+        id S241365AbhIMNYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:24:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F057360724;
+        Mon, 13 Sep 2021 13:21:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539874;
-        bh=g5bvzzsZ30AzMLtzWBmROfQKl3rddEjPsLLezYEkHdw=;
+        s=korg; t=1631539306;
+        bh=cHZumzlrM6+tZYz5z+PpTZySAuJUyF2i/7mgvc4lVKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZ4fsa89q9RMdBjnl97PdjD/WcyayN1vxk1AAhLFj7DSvGRXmtS1yevWJT/2Sqdw1
-         fbqh0SEpdUyo33dyKk52jw1mRgSCu1vHjkzWrNFLlT1d0XHNXvb277akYKb8fT4Ofn
-         iG2EKxMNPFaVYgnTVYGTGh5w7ryeXapy2b5mb784=
+        b=Yf0ntNjXZjBcx00BTH2SRRSL2+hLPNirSqy1dpN/GgSKFgwByMtWz32ttChMFiif3
+         sFzVQmurETmR9VAll9bVM5Oh1DJoMlIQ2AHYgWpjFqWDmigyxqGGk72cuVdA4eY6qZ
+         4IGzqnPgGjnhdFGPaFneLz6hR6ND0Mod/kfn1j00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 195/236] usb: bdc: Fix a resource leak in the error handling path of bdc_probe()
+Subject: [PATCH 5.4 119/144] bcma: Fix memory leak for internally-handled cores
 Date:   Mon, 13 Sep 2021 15:15:00 +0200
-Message-Id: <20210913131107.010324831@linuxfoundation.org>
+Message-Id: <20210913131051.906335372@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,93 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zenghui Yu <yuzenghui@huawei.com>
 
-[ Upstream commit 6f15a2a09cecb7a2faba4a75bbd101f6f962294b ]
+[ Upstream commit b63aed3ff195130fef12e0af590f4838cf0201d8 ]
 
-If an error occurs after a successful 'clk_prepare_enable()' call, it must
-be undone by a corresponding 'clk_disable_unprepare()' call.
-This call is already present in the remove function.
+kmemleak reported that dev_name() of internally-handled cores were leaked
+on driver unbinding. Let's use device_initialize() to take refcounts for
+them and put_device() to properly free the related stuff.
 
-Add this call in the error handling path and reorder the code so that the
-'clk_prepare_enable()' call happens later in the function.
-The goal is to have as much managed resources functions as possible
-before the 'clk_prepare_enable()' call in order to keep the error handling
-path simple.
+While looking at it, there's another potential issue for those which should
+be *registered* into driver core. If device_register() failed, we put
+device once and freed bcma_device structures. In bcma_unregister_cores(),
+they're treated as unregistered and we hit both UAF and double-free. That
+smells not good and has also been fixed now.
 
-While at it, remove the now unneeded 'clk' variable.
-
-Fixes: c87dca047849 ("usb: bdc: Add clock enable for new chips with a separate BDC clock")
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/f8a4a6897deb0c8cb2e576580790303550f15fcd.1629314734.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ab54bc8460b5 ("bcma: fill core details for every device")
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210727025232.663-2-yuzenghui@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/bdc/bdc_core.c | 27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+ drivers/bcma/main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
-index 251db57e51fa..fa1a3908ec3b 100644
---- a/drivers/usb/gadget/udc/bdc/bdc_core.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
-@@ -488,27 +488,14 @@ static int bdc_probe(struct platform_device *pdev)
- 	int irq;
- 	u32 temp;
- 	struct device *dev = &pdev->dev;
--	struct clk *clk;
- 	int phy_num;
+diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
+index 6535614a7dc1..1df2b5801c3b 100644
+--- a/drivers/bcma/main.c
++++ b/drivers/bcma/main.c
+@@ -236,6 +236,7 @@ EXPORT_SYMBOL(bcma_core_irq);
  
- 	dev_dbg(dev, "%s()\n", __func__);
+ void bcma_prepare_core(struct bcma_bus *bus, struct bcma_device *core)
+ {
++	device_initialize(&core->dev);
+ 	core->dev.release = bcma_release_core_dev;
+ 	core->dev.bus = &bcma_bus_type;
+ 	dev_set_name(&core->dev, "bcma%d:%d", bus->num, core->core_index);
+@@ -277,11 +278,10 @@ static void bcma_register_core(struct bcma_bus *bus, struct bcma_device *core)
+ {
+ 	int err;
  
--	clk = devm_clk_get_optional(dev, "sw_usbd");
--	if (IS_ERR(clk))
--		return PTR_ERR(clk);
--
--	ret = clk_prepare_enable(clk);
--	if (ret) {
--		dev_err(dev, "could not enable clock\n");
--		return ret;
--	}
--
- 	bdc = devm_kzalloc(dev, sizeof(*bdc), GFP_KERNEL);
- 	if (!bdc)
- 		return -ENOMEM;
- 
--	bdc->clk = clk;
--
- 	bdc->regs = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(bdc->regs))
- 		return PTR_ERR(bdc->regs);
-@@ -545,10 +532,20 @@ static int bdc_probe(struct platform_device *pdev)
- 		}
+-	err = device_register(&core->dev);
++	err = device_add(&core->dev);
+ 	if (err) {
+ 		bcma_err(bus, "Could not register dev for core 0x%03X\n",
+ 			 core->id.id);
+-		put_device(&core->dev);
+ 		return;
  	}
- 
-+	bdc->clk = devm_clk_get_optional(dev, "sw_usbd");
-+	if (IS_ERR(bdc->clk))
-+		return PTR_ERR(bdc->clk);
-+
-+	ret = clk_prepare_enable(bdc->clk);
-+	if (ret) {
-+		dev_err(dev, "could not enable clock\n");
-+		return ret;
-+	}
-+
- 	ret = bdc_phy_init(bdc);
- 	if (ret) {
- 		dev_err(bdc->dev, "BDC phy init failure:%d\n", ret);
--		return ret;
-+		goto disable_clk;
+ 	core->dev_registered = true;
+@@ -372,7 +372,7 @@ void bcma_unregister_cores(struct bcma_bus *bus)
+ 	/* Now noone uses internally-handled cores, we can free them */
+ 	list_for_each_entry_safe(core, tmp, &bus->cores, list) {
+ 		list_del(&core->list);
+-		kfree(core);
++		put_device(&core->dev);
  	}
- 
- 	temp = bdc_readl(bdc->regs, BDC_BDCCAP1);
-@@ -581,6 +578,8 @@ cleanup:
- 	bdc_hw_exit(bdc);
- phycleanup:
- 	bdc_phy_exit(bdc);
-+disable_clk:
-+	clk_disable_unprepare(bdc->clk);
- 	return ret;
  }
  
 -- 
