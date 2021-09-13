@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA764090E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620B8408C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243872AbhIMN4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244729AbhIMNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:53:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2C9B619BB;
-        Mon, 13 Sep 2021 13:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540099;
-        bh=00q+aJlOKlzwhXjSi7vS+gsscWfTNQA5VQShj7MZak8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNzl5foGzQ4joZlkCj8jkmifVeRRrmO4bFaIA1+I2B/VeIBcailMjAfHqrb8suK3f
-         E4bEVGZFHK2Q0Ws5Wy1CBL+JLLibf1P4Ur/nZlRfKeZKZDdW2pRJM5Opu/9URDfy6m
-         INo9Y+lxqSLnP2frTx3hpN4IIV1xwDGNsmgAmm1o=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 049/300] m68k: emu: Fix invalid free in nfeth_cleanup()
-Date:   Mon, 13 Sep 2021 15:11:50 +0200
-Message-Id: <20210913131110.993242252@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236486AbhIMNNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:13:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235759AbhIMNNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:13:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631538717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fy9mvgIdV9oY9XF5VY1l7ljIvXqXbTfyzWN80Pw9vSg=;
+        b=AvOHSIdjVJRphLL6xGj63zRQbXA5DlLVXfbpGeODnC9dTvQs0px/21ZvfAZatSG5qyrxi0
+        7h9g9Ugbwya+q6Nr/roPabBZmPm2zD1juraRjsFiqlEtUplgdkMLWrzAwcmKVZqMRdeyOS
+        xsmDc62/pXu1QwY3D+tEJeGX22WD3ms=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-WbFXue24OjquLLFoG_Qw2Q-1; Mon, 13 Sep 2021 09:11:56 -0400
+X-MC-Unique: WbFXue24OjquLLFoG_Qw2Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7730710144E1;
+        Mon, 13 Sep 2021 13:11:54 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C8D4D6D01F;
+        Mon, 13 Sep 2021 13:11:53 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Subject: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all pages
+Date:   Mon, 13 Sep 2021 09:11:51 -0400
+Message-Id: <20210913131153.1202354-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+Based on discussions from the previous week(end), this series implements
+a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
+file descriptor.  Other possibilities, such as closing and reopening
+the device, are racy.
 
-[ Upstream commit 761608f5cf70e8876c2f0e39ca54b516bdcb7c12 ]
+The patches are untested, but I am posting them because they are simple
+and so that Yang Zhong can try using them in QEMU.
 
-In the for loop all nfeth_dev array members should be freed, not only
-the first one.  Freeing only the first array member can cause
-double-free bugs and memory leaks.
+Paolo
 
-Fixes: 9cd7b148312f ("m68k/atari: ARAnyM - Add support for network access")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/20210705204727.10743-1-paskripkin@gmail.com
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/emu/nfeth.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Paolo Bonzini (2):
+  x86: sgx_vepc: extract sgx_vepc_remove_page
+  x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
 
-diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
-index d2875e32abfc..79e55421cfb1 100644
---- a/arch/m68k/emu/nfeth.c
-+++ b/arch/m68k/emu/nfeth.c
-@@ -254,8 +254,8 @@ static void __exit nfeth_cleanup(void)
- 
- 	for (i = 0; i < MAX_UNIT; i++) {
- 		if (nfeth_dev[i]) {
--			unregister_netdev(nfeth_dev[0]);
--			free_netdev(nfeth_dev[0]);
-+			unregister_netdev(nfeth_dev[i]);
-+			free_netdev(nfeth_dev[i]);
- 		}
- 	}
- 	free_irq(nfEtherIRQ, nfeth_interrupt);
+ arch/x86/include/uapi/asm/sgx.h |  2 ++
+ arch/x86/kernel/cpu/sgx/virt.c  | 48 ++++++++++++++++++++++++++++++---
+ 2 files changed, 47 insertions(+), 3 deletions(-)
+
 -- 
-2.30.2
-
-
+2.27.0
 
