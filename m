@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB96408FF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379E0408D60
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243653AbhIMNsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:48:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46602 "EHLO mail.kernel.org"
+        id S241186AbhIMNZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:25:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241400AbhIMNoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:44:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C47C61423;
-        Mon, 13 Sep 2021 13:30:44 +0000 (UTC)
+        id S240610AbhIMNXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:23:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 837FE61214;
+        Mon, 13 Sep 2021 13:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539844;
-        bh=ddVMMC0wbuf+VeGv0g+vHvvy0VcVaIVhYGPqaJp9S4M=;
+        s=korg; t=1631539278;
+        bh=OH2yDzer+lljY8y7adYIAqHbNINB8ZEIvHhYPqgZF0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0UuPcPoAY/t5/CAlRMqb9l18XOp1lpkdwNu81GzL83VdzDbmlzLsLB4H6q9/uKTG4
-         4V/nL0NbLeHMILiv+XA/PdGp7qhSRaYAL6fve3KBgDPhug1RSg0Xe6YrBWT/HIoRMs
-         Grfc2/iuP0lUmzpQwsvqAf6mzrIWoJyJZeLKi1p8=
+        b=Ob8QAFYj5HUzHoPkzlbLe52KFWTwcyLb+NqeA/3kLBFxFAnPqT485qvWlRd6lsd6e
+         b38/k7qjCyCSKht0+Gj/Dy8d90NztfKUgb877TjhUdi0sVxEEVEtXZDCZ83AThj4Ti
+         j8Dl6HXu5SiFlJ/LxyCG8722UkhyZzl703wcsQ3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Lukasz Majczak <lma@semihalf.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 184/236] ASoC: Intel: Skylake: Leave data as is when invoking TLV IPCs
-Date:   Mon, 13 Sep 2021 15:14:49 +0200
-Message-Id: <20210913131106.634147717@linuxfoundation.org>
+Subject: [PATCH 5.4 109/144] bpf: Fix possible out of bound write in narrow load handling
+Date:   Mon, 13 Sep 2021 15:14:50 +0200
+Message-Id: <20210913131051.587991689@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
+References: <20210913131047.974309396@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Andrey Ignatov <rdna@fb.com>
 
-[ Upstream commit 126b3422adc80f29d2129db7f61e0113a8a526c6 ]
+[ Upstream commit d7af7e497f0308bc97809cc48b58e8e0f13887e1 ]
 
-Advancing pointer initially fixed issue for some users but caused
-regression for others. Leave data as it to make it easier for end users
-to adjust their topology files if needed.
+Fix a verifier bug found by smatch static checker in [0].
 
-Fixes: a8cd7066f042 ("ASoC: Intel: Skylake: Strip T and L from TLV IPCs")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Tested-by: Lukasz Majczak <lma@semihalf.com>
-Link: https://lore.kernel.org/r/20210818075742.1515155-3-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This problem has never been seen in prod to my best knowledge. Fixing it
+still seems to be a good idea since it's hard to say for sure whether
+it's possible or not to have a scenario where a combination of
+convert_ctx_access() and a narrow load would lead to an out of bound
+write.
+
+When narrow load is handled, one or two new instructions are added to
+insn_buf array, but before it was only checked that
+
+	cnt >= ARRAY_SIZE(insn_buf)
+
+And it's safe to add a new instruction to insn_buf[cnt++] only once. The
+second try will lead to out of bound write. And this is what can happen
+if `shift` is set.
+
+Fix it by making sure that if the BPF_RSH instruction has to be added in
+addition to BPF_AND then there is enough space for two more instructions
+in insn_buf.
+
+The full report [0] is below:
+
+kernel/bpf/verifier.c:12304 convert_ctx_accesses() warn: offset 'cnt' incremented past end of array
+kernel/bpf/verifier.c:12311 convert_ctx_accesses() warn: offset 'cnt' incremented past end of array
+
+kernel/bpf/verifier.c
+    12282
+    12283 			insn->off = off & ~(size_default - 1);
+    12284 			insn->code = BPF_LDX | BPF_MEM | size_code;
+    12285 		}
+    12286
+    12287 		target_size = 0;
+    12288 		cnt = convert_ctx_access(type, insn, insn_buf, env->prog,
+    12289 					 &target_size);
+    12290 		if (cnt == 0 || cnt >= ARRAY_SIZE(insn_buf) ||
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Bounds check.
+
+    12291 		    (ctx_field_size && !target_size)) {
+    12292 			verbose(env, "bpf verifier is misconfigured\n");
+    12293 			return -EINVAL;
+    12294 		}
+    12295
+    12296 		if (is_narrower_load && size < target_size) {
+    12297 			u8 shift = bpf_ctx_narrow_access_offset(
+    12298 				off, size, size_default) * 8;
+    12299 			if (ctx_field_size <= 4) {
+    12300 				if (shift)
+    12301 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+                                                         ^^^^^
+increment beyond end of array
+
+    12302 									insn->dst_reg,
+    12303 									shift);
+--> 12304 				insn_buf[cnt++] = BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
+                                                 ^^^^^
+out of bounds write
+
+    12305 								(1 << size * 8) - 1);
+    12306 			} else {
+    12307 				if (shift)
+    12308 					insn_buf[cnt++] = BPF_ALU64_IMM(BPF_RSH,
+    12309 									insn->dst_reg,
+    12310 									shift);
+    12311 				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
+                                        ^^^^^^^^^^^^^^^
+Same.
+
+    12312 								(1ULL << size * 8) - 1);
+    12313 			}
+    12314 		}
+    12315
+    12316 		new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+    12317 		if (!new_prog)
+    12318 			return -ENOMEM;
+    12319
+    12320 		delta += cnt - 1;
+    12321
+    12322 		/* keep walking new program and skip insns we just inserted */
+    12323 		env->prog = new_prog;
+    12324 		insn      = new_prog->insnsi + i + delta;
+    12325 	}
+    12326
+    12327 	return 0;
+    12328 }
+
+[0] https://lore.kernel.org/bpf/20210817050843.GA21456@kili/
+
+v1->v2:
+- clarify that problem was only seen by static checker but not in prod;
+
+Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20210820163935.1902398-1-rdna@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 6 ------
- 1 file changed, 6 deletions(-)
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 0955cbb4e918..16f9f3bd68be 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1463,12 +1463,6 @@ static int skl_tplg_tlv_control_set(struct snd_kcontrol *kcontrol,
- 	struct skl_dev *skl = get_skl_ctx(w->dapm->dev);
- 
- 	if (ac->params) {
--		/*
--		 * Widget data is expected to be stripped of T and L
--		 */
--		size -= 2 * sizeof(unsigned int);
--		data += 2;
--
- 		if (size > ac->max)
- 			return -EINVAL;
- 		ac->size = size;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 80b219d27e37..c5ecb6147ea2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8957,6 +8957,10 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 		if (is_narrower_load && size < target_size) {
+ 			u8 shift = bpf_ctx_narrow_access_offset(
+ 				off, size, size_default) * 8;
++			if (shift && cnt + 1 >= ARRAY_SIZE(insn_buf)) {
++				verbose(env, "bpf verifier narrow ctx load misconfigured\n");
++				return -EINVAL;
++			}
+ 			if (ctx_field_size <= 4) {
+ 				if (shift)
+ 					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
 -- 
 2.30.2
 
