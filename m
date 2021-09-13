@@ -2,142 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDE34089A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C1A4089BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239138AbhIMLAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:00:15 -0400
-Received: from m12-18.163.com ([220.181.12.18]:48642 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234958AbhIMLAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:00:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=cXS37
-        ga9lIUCDu3UszJeebR03eW18Sxrg0lTQIziZWI=; b=S/pfew6nNArZoIK01Ql+a
-        IRyNqWhAsO8VyY6UalKDvoth+aQ+zR04ta1UI9qx9vRRrHyUzQY9wPnPtXEuN/IA
-        nmcEvFaDlEShAjuuNdJNGqg8YQDWIMul+aJj+mHg1mbA2IFXJeFhGZ3QXzzEDn1h
-        58Oy5xQoNlJUlzRL1dVsPs=
-Received: from rockpi4b (unknown [112.20.66.82])
-        by smtp14 (Coremail) with SMTP id EsCowAAHmsvdLj9hkPaCAg--.37957S2;
-        Mon, 13 Sep 2021 18:58:38 +0800 (CST)
-Date:   Mon, 13 Sep 2021 18:58:36 +0800
-From:   Yue Hu <zbestahu@163.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     Yue Hu <zbestahu@gmail.com>, xiang@kernel.org, chao@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zhangwen@yulong.com
-Subject: Re: [PATCH] erofs: fix compacted_{4b_initial, 2b} when
- compacted_4b_initial > totalidx
-Message-ID: <20210913185836.088e7059.zbestahu@163.com>
-In-Reply-To: <YT8VvOyXIDdyD7WI@B-P7TQMD6M-0146.local>
-References: <20210913072405.1128-1-zbestahu@gmail.com>
-        <YT8QbaAEkqBw//R0@B-P7TQMD6M-0146.local>
-        <20210913170016.00007580.zbestahu@gmail.com>
-        <YT8VvOyXIDdyD7WI@B-P7TQMD6M-0146.local>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; aarch64-unknown-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: EsCowAAHmsvdLj9hkPaCAg--.37957S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxuF45tF1Dur48KFy8CFW7Arb_yoW5GFy7pr
-        ZrKF48Ja4vqFn2yw1xtw1rXF48tw4kCr4UW34YqFy0qr90kFn3Jr18tF98uF1UXw1fKr40
-        vF4Uu3Z3CFW7Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Ufb1nUUUUU=
-X-Originating-IP: [112.20.66.82]
-X-CM-SenderInfo: p2eh23xdkxqiywtou0bp/1tbitBINEVSIm3o6hQABs5
+        id S239330AbhIMLBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:01:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62848 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239432AbhIMLBY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:01:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631530808; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=x+BTpC89vilZ4sLQezFx5CKsCfRXRIQmVBrEeou7Fn8=; b=VEMvqCkfIETzd8YHJUD55SX4dBdcOPIguDrkT0xVSR1SSE16mpVEiGTzaIaHpTxyXFZa8uN0
+ JSQIX5GaeO6KwthYvmud74c/ACzknLab/Xh8I5HMb0AkUi/1V6mMqfPQE0PE+cjOsTatfxyg
+ DTwQm0eoXO+P/HBdUliSd0mxxv0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 613f2f1ec1b30e2f02fea95c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 10:59:42
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 50D1DC43619; Mon, 13 Sep 2021 10:59:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 693A5C4338F;
+        Mon, 13 Sep 2021 10:59:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 693A5C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rbokka@codeaurora.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH] arm64: dts: qcom: sc7280-idp: Add vcc-supply for qfprom
+Date:   Mon, 13 Sep 2021 16:28:55 +0530
+Message-Id: <1631530735-19811-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiang,
+Add vcc-supply for the IDP boards that was missed when the
+qfprom device tree properties were added for the sc7280 SoC.
 
-On Mon, 13 Sep 2021 17:11:24 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+Fixes: c1b2189a19cf ("arm64: dts: qcom: sc7280: Add qfprom node")
+Reported-by: satya priya <skakit@codeaurora.org>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> On Mon, Sep 13, 2021 at 05:00:16PM +0800, Yue Hu wrote:
-> > On Mon, 13 Sep 2021 16:48:45 +0800
-> > Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >   
-> > > Hi Yue,
-> > > 
-> > > On Mon, Sep 13, 2021 at 03:24:05PM +0800, Yue Hu wrote:  
-> > > > From: Yue Hu <huyue2@yulong.com>
-> > > > 
-> > > > mkfs.erofs will treat compacted_4b_initial & compacted_2b as 0 if
-> > > > compacted_4b_initial > totalidx, kernel should be aligned with it
-> > > > accordingly.    
-> > > 
-> > > There is no difference between compacted_4b_initial or compacted_4b_end
-> > > for compacted 4B. Since in this way totalidx for compact 2B won't larger
-> > > than 16 (number of lclusters in a compacted 2B pack.)  
-> > 
-> > However, we can see compacted_2b is a big number for this case. It should
-> > be pointless.  
-> 
-> Does it has some real impact?
-
-No real impact to correct result.
-
-> 
-> compacted_4b_initial is only used for the alignment use for the
-> first compacted_2b so that each compacted_2b pack won't cross
-> the block (page) boundary. And compacted_4b_end is for the last
-> lclusters aren't fitted in any compacted_2b pack.
-> 
-> If compacted_4b_initial > totalidx, I think the whole indexes
-> would be compacted 4B and handled in
-> 
-> 	if (lcn < compacted_4b_initial) {
-> 		amortizedshift = 2;
-> 		goto out;
-> 	}
-
-Yes, it is. 
-
-My point is why we need compacted_2b here for this case. If it's
-not helpful/used for next code logic, we should remove/avoid it.
-I think that may cause some misunderstanding and consume unneeded
-CPU resources.
-
-Thanks.
-
-> 
-> Thanks,
-> Gao Xiang
-> 
-> > 
-> > Thanks.
-> >   
-> > > 
-> > > So it can be handled in either compacted_4b_initial or compacted_4b_end
-> > > cases, because there are all compacted 4B.
-> > > 
-> > > Thanks,
-> > > Gao Xiang
-> > >   
-> > > > 
-> > > > Signed-off-by: Yue Hu <huyue2@yulong.com>
-> > > > ---
-> > > >  fs/erofs/zmap.c | 5 ++++-
-> > > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-> > > > index 9fb98d8..4f941b6 100644
-> > > > --- a/fs/erofs/zmap.c
-> > > > +++ b/fs/erofs/zmap.c
-> > > > @@ -369,7 +369,10 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
-> > > >  	if (compacted_4b_initial == 32 / 4)
-> > > >  		compacted_4b_initial = 0;
-> > > >  
-> > > > -	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
-> > > > +	if (compacted_4b_initial > totalidx) {
-> > > > +		compacted_4b_initial = 0;
-> > > > +		compacted_2b = 0;
-> > > > +	} else if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
-> > > >  		compacted_2b = rounddown(totalidx - compacted_4b_initial, 16);
-> > > >  	else
-> > > >  		compacted_2b = 0;
-> > > > -- 
-> > > > 1.9.1    
-
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+index 371a2a9..99f9ee5 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+@@ -207,6 +207,10 @@
+ 	};
+ };
+ 
++&qfprom {
++	vcc-supply = <&vreg_l1c_1p8>;
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
