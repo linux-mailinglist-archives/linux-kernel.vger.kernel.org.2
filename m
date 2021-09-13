@@ -2,157 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D3A4084C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D634084CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237411AbhIMGiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:38:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20285 "EHLO
+        id S237431AbhIMGjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:39:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34144 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237377AbhIMGiX (ORCPT
+        by vger.kernel.org with ESMTP id S237328AbhIMGjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:38:23 -0400
+        Mon, 13 Sep 2021 02:39:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631515028;
+        s=mimecast20190719; t=1631515065;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=LqkyzUI1dnGPwIvrGQ+g2Xfc1wH8fcvMTQo++GQRrBM=;
-        b=MqDdKUvDYfbmSXPGfRexT26s4gjtoWUgUR/04S8FPxXoYzbm5s19+9cSGloJl9bZ5rOoDU
-        j45mKljZdcKix9BqQAKsCJHto8k5cpUyAp/fUQwa/s7zVj+6hBZBYOl0gP/DrYtgenOqRe
-        e4QZknOnXox906f/ofrFRGW/0N5rqF0=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-Qxd_XxYiNCq-1mP582XcxA-1; Mon, 13 Sep 2021 02:37:07 -0400
-X-MC-Unique: Qxd_XxYiNCq-1mP582XcxA-1
-Received: by mail-lj1-f198.google.com with SMTP id e10-20020a05651c04ca00b001c99c74e564so3720976lji.11
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:37:06 -0700 (PDT)
+        bh=l2HYLSzn/SrMF6zbaMtjZKLuaGqdXFhaWNqckKCGg28=;
+        b=ThbCixspeps5n2KdD8R61ZQWWocSu0OKvIpG1z+aTp7suhgZpYq9dXbxffx+CqIpHnLCw2
+        uIFrzwaA1YBRdkjx4Kf4pQF81VsPrrKVpFE8ZhH795RiVJxbrVsMEsb7f599zbB/ROpEaG
+        obCdPJ1SjuIatRYKVUlkD5PC2LiJizc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-6oEF4xceONu3W8TDoED6Sw-1; Mon, 13 Sep 2021 02:37:44 -0400
+X-MC-Unique: 6oEF4xceONu3W8TDoED6Sw-1
+Received: by mail-ej1-f69.google.com with SMTP id g4-20020a170906520400b005e7d062772dso3201830ejm.13
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:37:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LqkyzUI1dnGPwIvrGQ+g2Xfc1wH8fcvMTQo++GQRrBM=;
-        b=ePIED84H7DyBAPTSMf6C7489Wn1hW+s9a5taXYatHLbE1ZcFRcZ1nuVpcBIMIB9WCW
-         +FG9aWrcCnfplqchfbYzaAqr55dkpKFpeY68k7oV774IU8IV3kQE6nrcsxyK0GiXfN5v
-         3uXt+xVbJ6gtxaZauk0Bk+30rONbKXlLdrmDdWhnJH4T5UroryfhTgnk6yXbauzyG+cl
-         AbsTz5nba7eGxTX93xExa+bup0FJpMh2YX7kPDUWGZt9UL/bLtaRAl3oKFz7XEhYq9H0
-         AugslGYgcO5FrD2lE2Fuog2C9mMqpiB/f5Uf0shGB8W/fVkRA2wB6Gf2F976CdqZu5C4
-         B3SA==
-X-Gm-Message-State: AOAM533MqZcCCEW9r4zLzWALscYUJRhKTxwsdF+7SMhzrMeWPXSGV5nu
-        jiCzfcopt8EgBSGZfQi1tuQms+WjuQT1iNour7D5iczK52ki4Qkgf5uVCh1+xFMfpbf5npDzBTi
-        KOD6O8WiG6dPqzFLLaqUIX1uWgtqBeQPOvphmFhrS
-X-Received: by 2002:a2e:5353:: with SMTP id t19mr259576ljd.420.1631515025416;
-        Sun, 12 Sep 2021 23:37:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbn7iuunCofdqVJY1OJWnNhI+lYxdwaHwFNiEIVLQCDg/YbWIC45Gj6fnmMR5J32oFhSBKyFcX6loiH4oMsqE=
-X-Received: by 2002:a2e:5353:: with SMTP id t19mr259567ljd.420.1631515025176;
- Sun, 12 Sep 2021 23:37:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913055353.35219-1-jasowang@redhat.com> <20210913055353.35219-8-jasowang@redhat.com>
- <20210913022824-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210913022824-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 13 Sep 2021 14:36:54 +0800
-Message-ID: <CACGkMEtnmLzQDNVYnAYSsEmjjRJVDhuK6VNj56S__zU9+5-JQQ@mail.gmail.com>
-Subject: Re: [PATCH 7/9] virtio-pci: harden INTX interrupts
-To:     "Michael S. Tsirkin" <mst@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l2HYLSzn/SrMF6zbaMtjZKLuaGqdXFhaWNqckKCGg28=;
+        b=J3xyVeyUNc+cD9iXZAygoRfNVW4OqHutiVah9S/VMWcwi8Qbrwima1Z86I1IbVKyHE
+         4phZulPHd/t9zIyyWsYJQC1AbHbLnVrGKtgTZ2r8D2R1aOiFpgLhhlwgH0Ypj4FhvkKH
+         hVGb4ZoHkoid6O2AovNwkH0Cg+cstWDTZoDE78lP9z/6aSI/QKStDQrwPQjKwA5ylnGZ
+         uXLte1p0Z5d3JFo7hooVhecWVoyw+hvXkTQKwSXrxavAGx/4G/EblJV28D+NAT0x6iMT
+         cd3ziAEBAlTQxfndOcvFj0JdCRMQTb5X7t6AwfNEb5bBj53AILRBggfw1mXE3chbcTZy
+         0UJQ==
+X-Gm-Message-State: AOAM530QiiJ2YMRDoC+KbrxjGk9ZIwc4FVzBFpYkKx7EUMWOrGiVwkx0
+        5Ij6XFYfePvB/cqLmvAa/FnkISkxLaQWGd/K8OR9AuxaKEdG8hqteJ17V2zY7/BBiMT5tStJ0p0
+        pRvnWtXgCsRYuIGrfBogsYD/y
+X-Received: by 2002:a50:aa9c:: with SMTP id q28mr11324464edc.199.1631515062852;
+        Sun, 12 Sep 2021 23:37:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzeg7XaCWGVfv3oFhbKwxwgfjAOz+bWcLcnXo1N9HH78BX31R+E3sHUiwBxOzMtKo4Qlllavw==
+X-Received: by 2002:a50:aa9c:: with SMTP id q28mr11324433edc.199.1631515062653;
+        Sun, 12 Sep 2021 23:37:42 -0700 (PDT)
+Received: from redhat.com ([2.55.27.174])
+        by smtp.gmail.com with ESMTPSA id t12sm2934878ejc.63.2021.09.12.23.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 23:37:42 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 02:37:33 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
 Cc:     virtualization <virtualization@lists.linux-foundation.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
         "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        pbonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: Re: [PATCH 6/9] virtio_pci: harden MSI-X interrupts
+Message-ID: <20210913023626-mutt-send-email-mst@kernel.org>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20210913055353.35219-7-jasowang@redhat.com>
+ <20210913015711-mutt-send-email-mst@kernel.org>
+ <CACGkMEva2j57tG=-QYG7NdgEV28i-gpBReRR+UX7YwrHzRWydw@mail.gmail.com>
+ <20210913022257-mutt-send-email-mst@kernel.org>
+ <CACGkMEsWJq0SMMfTBdoOxVa1_=k9nZkrRu2wYZo7WO-01p_sgQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEsWJq0SMMfTBdoOxVa1_=k9nZkrRu2wYZo7WO-01p_sgQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 2:33 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Mon, Sep 13, 2021 at 01:53:51PM +0800, Jason Wang wrote:
-> > This patch tries to make sure the virtio interrupt handler for INTX
-> > won't be called after a reset and before virtio_device_ready(). We
-> > can't use IRQF_NO_AUTOEN since we're using shared interrupt
-> > (IRQF_SHARED). So this patch tracks the INTX enabling status in a new
-> > intx_soft_enabled variable and toggle it during in
-> > vp_disable/enable_vectors(). The INTX interrupt handler will check
-> > intx_soft_enabled before processing the actual interrupt.
+On Mon, Sep 13, 2021 at 02:34:01PM +0800, Jason Wang wrote:
+> On Mon, Sep 13, 2021 at 2:28 PM Michael S. Tsirkin <mst@redhat.com> wrote:
 > >
-> > Signed-off-by: Jason Wang <jasowang@redhat.com>
->
->
-> Not all that excited about all the memory barriers for something
-> that should be an extremely rare event (for most kernels -
-> literally once per boot). Can't we do better?
+> > On Mon, Sep 13, 2021 at 02:08:02PM +0800, Jason Wang wrote:
+> > > On Mon, Sep 13, 2021 at 2:04 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Mon, Sep 13, 2021 at 01:53:50PM +0800, Jason Wang wrote:
+> > > > > We used to synchronize pending MSI-X irq handlers via
+> > > > > synchronize_irq(), this may not work for the untrusted device which
+> > > > > may keep sending interrupts after reset which may lead unexpected
+> > > > > results. Similarly, we should not enable MSI-X interrupt until the
+> > > > > device is ready. So this patch fixes those two issues by:
+> > > > >
+> > > > > 1) switching to use disable_irq() to prevent the virtio interrupt
+> > > > >    handlers to be called after the device is reset.
+> > > > > 2) using IRQF_NO_AUTOEN and enable the MSI-X irq during .ready()
+> > > > >
+> > > > > This can make sure the virtio interrupt handler won't be called before
+> > > > > virtio_device_ready() and after reset.
+> > > > >
+> > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > >
+> > > > I don't get the threat model here. Isn't disabling irqs done by the
+> > > > hypervisor anyway? Is there a reason to trust disable_irq but not
+> > > > device reset?
+> > >
+> > > My understanding is that e.g in the case of SEV/TDX we don't trust the
+> > > hypervisor. So the hypervisor can keep sending interrupts even if the
+> > > device is reset. The guest can only trust its own software interrupt
+> > > management logic to avoid call virtio callback in this case.
+> > >
+> > > Thanks
+> >
+> > Hmm but I don't see how do these patches do this.
+> > They call disable_irq but can't the hypervisor keep
+> > sending interrupts after disable_irq, too?
+> 
+> Yes, but since the irq is disabled, the vring or config callback won't
+> be called in this case.
+> 
+> Thanks
 
-I'm not sure, but do we need to care about the slow path (INTX)?
+But doen't "irq is disabled" basically mean "we told the hypervisor
+to disable the irq"?  What extractly prevents hypervisor from
+sending the irq even if guest thinks it disabled it?
 
-(Or do you have a better approach?)
-
-Thanks
-
->
-> > ---
-> >  drivers/virtio/virtio_pci_common.c | 18 ++++++++++++++++--
-> >  drivers/virtio/virtio_pci_common.h |  1 +
-> >  2 files changed, 17 insertions(+), 2 deletions(-)
 > >
-> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > index 0b9523e6dd39..835197151dc1 100644
-> > --- a/drivers/virtio/virtio_pci_common.c
-> > +++ b/drivers/virtio/virtio_pci_common.c
-> > @@ -30,8 +30,12 @@ void vp_disable_vectors(struct virtio_device *vdev)
-> >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> >       int i;
 > >
-> > -     if (vp_dev->intx_enabled)
-> > +     if (vp_dev->intx_enabled) {
-> > +             vp_dev->intx_soft_enabled = false;
-> > +             /* ensure the vp_interrupt see this intx_soft_enabled value */
-> > +             smp_wmb();
-> >               synchronize_irq(vp_dev->pci_dev->irq);
-> > +     }
 > >
-> >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> >               disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > @@ -43,8 +47,12 @@ void vp_enable_vectors(struct virtio_device *vdev)
-> >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> >       int i;
+> > > >
+> > > > Cc a bunch more people ...
+> > > >
+> > > >
+> > > > > ---
+> > > > >  drivers/virtio/virtio_pci_common.c | 27 +++++++++++++++++++++------
+> > > > >  drivers/virtio/virtio_pci_common.h |  6 ++++--
+> > > > >  drivers/virtio/virtio_pci_legacy.c |  5 +++--
+> > > > >  drivers/virtio/virtio_pci_modern.c |  6 ++++--
+> > > > >  4 files changed, 32 insertions(+), 12 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > > > > index b35bb2d57f62..0b9523e6dd39 100644
+> > > > > --- a/drivers/virtio/virtio_pci_common.c
+> > > > > +++ b/drivers/virtio/virtio_pci_common.c
+> > > > > @@ -24,8 +24,8 @@ MODULE_PARM_DESC(force_legacy,
+> > > > >                "Force legacy mode for transitional virtio 1 devices");
+> > > > >  #endif
+> > > > >
+> > > > > -/* wait for pending irq handlers */
+> > > > > -void vp_synchronize_vectors(struct virtio_device *vdev)
+> > > > > +/* disable irq handlers */
+> > > > > +void vp_disable_vectors(struct virtio_device *vdev)
+> > > > >  {
+> > > > >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > >       int i;
+> > > > > @@ -34,7 +34,20 @@ void vp_synchronize_vectors(struct virtio_device *vdev)
+> > > > >               synchronize_irq(vp_dev->pci_dev->irq);
+> > > > >
+> > > > >       for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > -             synchronize_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > +             disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > > +}
+> > > > > +
+> > > > > +/* enable irq handlers */
+> > > > > +void vp_enable_vectors(struct virtio_device *vdev)
+> > > > > +{
+> > > > > +     struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > > > > +     int i;
+> > > > > +
+> > > > > +     if (vp_dev->intx_enabled)
+> > > > > +             return;
+> > > > > +
+> > > > > +     for (i = 0; i < vp_dev->msix_vectors; ++i)
+> > > > > +             enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
+> > > > >  }
+> > > > >
+> > > > >  /* the notify function used when creating a virt queue */
+> > > > > @@ -141,7 +154,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+> > > > >       snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
+> > > > >                "%s-config", name);
+> > > > >       err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
+> > > > > -                       vp_config_changed, 0, vp_dev->msix_names[v],
+> > > > > +                       vp_config_changed, IRQF_NO_AUTOEN,
+> > > > > +                       vp_dev->msix_names[v],
+> > > > >                         vp_dev);
+> > > > >       if (err)
+> > > > >               goto error;
+> > > > > @@ -160,7 +174,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+> > > > >               snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
+> > > > >                        "%s-virtqueues", name);
+> > > > >               err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
+> > > > > -                               vp_vring_interrupt, 0, vp_dev->msix_names[v],
+> > > > > +                               vp_vring_interrupt, IRQF_NO_AUTOEN,
+> > > > > +                               vp_dev->msix_names[v],
+> > > > >                                 vp_dev);
+> > > > >               if (err)
+> > > > >                       goto error;
+> > > > > @@ -337,7 +352,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
+> > > > >                        "%s-%s",
+> > > > >                        dev_name(&vp_dev->vdev.dev), names[i]);
+> > > > >               err = request_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec),
+> > > > > -                               vring_interrupt, 0,
+> > > > > +                               vring_interrupt, IRQF_NO_AUTOEN,
+> > > > >                                 vp_dev->msix_names[msix_vec],
+> > > > >                                 vqs[i]);
+> > > > >               if (err)
+> > > > > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> > > > > index beec047a8f8d..a235ce9ff6a5 100644
+> > > > > --- a/drivers/virtio/virtio_pci_common.h
+> > > > > +++ b/drivers/virtio/virtio_pci_common.h
+> > > > > @@ -102,8 +102,10 @@ static struct virtio_pci_device *to_vp_device(struct virtio_device *vdev)
+> > > > >       return container_of(vdev, struct virtio_pci_device, vdev);
+> > > > >  }
+> > > > >
+> > > > > -/* wait for pending irq handlers */
+> > > > > -void vp_synchronize_vectors(struct virtio_device *vdev);
+> > > > > +/* disable irq handlers */
+> > > > > +void vp_disable_vectors(struct virtio_device *vdev);
+> > > > > +/* enable irq handlers */
+> > > > > +void vp_enable_vectors(struct virtio_device *vdev);
+> > > > >  /* the notify function used when creating a virt queue */
+> > > > >  bool vp_notify(struct virtqueue *vq);
+> > > > >  /* the config->del_vqs() implementation */
+> > > > > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+> > > > > index d62e9835aeec..bdf6bc667ab5 100644
+> > > > > --- a/drivers/virtio/virtio_pci_legacy.c
+> > > > > +++ b/drivers/virtio/virtio_pci_legacy.c
+> > > > > @@ -97,8 +97,8 @@ static void vp_reset(struct virtio_device *vdev)
+> > > > >       /* Flush out the status write, and flush in device writes,
+> > > > >        * including MSi-X interrupts, if any. */
+> > > > >       ioread8(vp_dev->ioaddr + VIRTIO_PCI_STATUS);
+> > > > > -     /* Flush pending VQ/configuration callbacks. */
+> > > > > -     vp_synchronize_vectors(vdev);
+> > > > > +     /* Disable VQ/configuration callbacks. */
+> > > > > +     vp_disable_vectors(vdev);
+> > > > >  }
+> > > > >
+> > > > >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+> > > > > @@ -194,6 +194,7 @@ static void del_vq(struct virtio_pci_vq_info *info)
+> > > > >  }
+> > > > >
+> > > > >  static const struct virtio_config_ops virtio_pci_config_ops = {
+> > > > > +     .ready          = vp_enable_vectors,
+> > > > >       .get            = vp_get,
+> > > > >       .set            = vp_set,
+> > > > >       .get_status     = vp_get_status,
+> > > > > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> > > > > index 30654d3a0b41..acf0f6b6381d 100644
+> > > > > --- a/drivers/virtio/virtio_pci_modern.c
+> > > > > +++ b/drivers/virtio/virtio_pci_modern.c
+> > > > > @@ -172,8 +172,8 @@ static void vp_reset(struct virtio_device *vdev)
+> > > > >        */
+> > > > >       while (vp_modern_get_status(mdev))
+> > > > >               msleep(1);
+> > > > > -     /* Flush pending VQ/configuration callbacks. */
+> > > > > -     vp_synchronize_vectors(vdev);
+> > > > > +     /* Disable VQ/configuration callbacks. */
+> > > > > +     vp_disable_vectors(vdev);
+> > > > >  }
+> > > > >
+> > > > >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+> > > > > @@ -380,6 +380,7 @@ static bool vp_get_shm_region(struct virtio_device *vdev,
+> > > > >  }
+> > > > >
+> > > > >  static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+> > > > > +     .ready          = vp_enable_vectors,
+> > > > >       .get            = NULL,
+> > > > >       .set            = NULL,
+> > > > >       .generation     = vp_generation,
+> > > > > @@ -397,6 +398,7 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+> > > > >  };
+> > > > >
+> > > > >  static const struct virtio_config_ops virtio_pci_config_ops = {
+> > > > > +     .ready          = vp_enable_vectors,
+> > > > >       .get            = vp_get,
+> > > > >       .set            = vp_set,
+> > > > >       .generation     = vp_generation,
+> > > > > --
+> > > > > 2.25.1
+> > > >
 > >
-> > -     if (vp_dev->intx_enabled)
-> > +     if (vp_dev->intx_enabled) {
-> > +             vp_dev->intx_soft_enabled = true;
-> > +             /* ensure the vp_interrupt see this intx_soft_enabled value */
-> > +             smp_wmb();
-> >               return;
-> > +     }
-> >
-> >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> >               enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > @@ -97,6 +105,12 @@ static irqreturn_t vp_interrupt(int irq, void *opaque)
-> >       struct virtio_pci_device *vp_dev = opaque;
-> >       u8 isr;
-> >
-> > +     if (!vp_dev->intx_soft_enabled)
-> > +             return IRQ_NONE;
-> > +
-> > +     /* read intx_soft_enabled before read others */
-> > +     smp_rmb();
-> > +
-> >       /* reading the ISR has the effect of also clearing it so it's very
-> >        * important to save off the value. */
-> >       isr = ioread8(vp_dev->isr);
-> > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-> > index a235ce9ff6a5..3c06e0f92ee4 100644
-> > --- a/drivers/virtio/virtio_pci_common.h
-> > +++ b/drivers/virtio/virtio_pci_common.h
-> > @@ -64,6 +64,7 @@ struct virtio_pci_device {
-> >       /* MSI-X support */
-> >       int msix_enabled;
-> >       int intx_enabled;
-> > +     bool intx_soft_enabled;
-> >       cpumask_var_t *msix_affinity_masks;
-> >       /* Name strings for interrupts. This size should be enough,
-> >        * and I'm too lazy to allocate each name separately. */
-> > --
-> > 2.25.1
->
 
