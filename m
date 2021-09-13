@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEE740928F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F9640928E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245461AbhIMOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:12:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55994 "EHLO mail.kernel.org"
+        id S244491AbhIMOMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243278AbhIMOJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244029AbhIMOJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Sep 2021 10:09:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F393613E8;
-        Mon, 13 Sep 2021 13:41:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC10A613D1;
+        Mon, 13 Sep 2021 13:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540469;
-        bh=jRPCEKKYWg+2r3Q55PnmcsHoHzvghlYmIOUah78fWJ8=;
+        s=korg; t=1631540472;
+        bh=dD3fqUeojFwl4DrUD/xsbfGqy5wqRmYiptQoXo5SqX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RMS9SvlJWh452zZ7QB27Z97oGtcHlbAUlWmDMREBABPfJK8gVpuiacRqeyBaP1Rvo
-         UokRY0LQ5PUMxOsqcjHpbkcjc0bH5Jj+9m1pjBDOqjZKRWFB6sKmgwesYIGtmU/8ol
-         BCO+FTbxGAIK1lkWxR2ZdORl16yQp9k3HVvkpZUw=
+        b=jXAW3+9pxZqOvlPNXlVkQotE0glLDjFY+j8AnTLbMZk7AKP9LWYuqvCpKsMYYsmsi
+         zluJC7NNFJ4NAu9nFlapmnTTnNLRuT6vZ03ZE6BBKxvb8+pRbOlJPGwnP+56+ADAhm
+         Bh1090forbxLSyAalc5Zjyf4r+AhjIdiiNRa8kUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Nadezda Lutovinova <lutovinova@ispras.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 207/300] firmware: raspberrypi: Fix a leak in rpi_firmware_get()
-Date:   Mon, 13 Sep 2021 15:14:28 +0200
-Message-Id: <20210913131116.361498755@linuxfoundation.org>
+Subject: [PATCH 5.13 208/300] usb: gadget: mv_u3d: request_irq() after initializing UDC
+Date:   Mon, 13 Sep 2021 15:14:29 +0200
+Message-Id: <20210913131116.394844439@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
 References: <20210913131109.253835823@linuxfoundation.org>
@@ -40,50 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 09cbd1df7d2615c19e40facbe31fdcb5f1ebfa96 ]
+[ Upstream commit 2af0c5ffadaf9d13eca28409d4238b4e672942d3 ]
 
-The reference taken by 'of_find_device_by_node()' must be released when
-not needed anymore.
+If IRQ occurs between calling  request_irq() and  mv_u3d_eps_init(),
+then null pointer dereference occurs since u3d->eps[] wasn't
+initialized yet but used in mv_u3d_nuke().
 
-Add the corresponding 'put_device()' in the normal and error handling
-paths.
+The patch puts registration of the interrupt handler after
+initializing of neccesery data.
 
-Fixes: 4e3d60656a72 ("ARM: bcm2835: Add the Raspberry Pi firmware driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/5e17e5409b934cd08bf6f9279c73be5c1cb11cce.1628232242.git.christophe.jaillet@wanadoo.fr
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: 90fccb529d24 ("usb: gadget: Gadget directory cleanup - group UDC drivers")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Link: https://lore.kernel.org/r/20210818141247.4794-1-lutovinova@ispras.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/raspberrypi.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/mv_u3d_core.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-index 250e01680742..4b8978b254f9 100644
---- a/drivers/firmware/raspberrypi.c
-+++ b/drivers/firmware/raspberrypi.c
-@@ -329,12 +329,18 @@ struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
+diff --git a/drivers/usb/gadget/udc/mv_u3d_core.c b/drivers/usb/gadget/udc/mv_u3d_core.c
+index 5486f5a70868..0db97fecf99e 100644
+--- a/drivers/usb/gadget/udc/mv_u3d_core.c
++++ b/drivers/usb/gadget/udc/mv_u3d_core.c
+@@ -1921,14 +1921,6 @@ static int mv_u3d_probe(struct platform_device *dev)
+ 		goto err_get_irq;
+ 	}
+ 	u3d->irq = r->start;
+-	if (request_irq(u3d->irq, mv_u3d_irq,
+-		IRQF_SHARED, driver_name, u3d)) {
+-		u3d->irq = 0;
+-		dev_err(&dev->dev, "Request irq %d for u3d failed\n",
+-			u3d->irq);
+-		retval = -ENODEV;
+-		goto err_request_irq;
+-	}
  
- 	fw = platform_get_drvdata(pdev);
- 	if (!fw)
--		return NULL;
-+		goto err_put_device;
+ 	/* initialize gadget structure */
+ 	u3d->gadget.ops = &mv_u3d_ops;	/* usb_gadget_ops */
+@@ -1941,6 +1933,15 @@ static int mv_u3d_probe(struct platform_device *dev)
  
- 	if (!kref_get_unless_zero(&fw->consumers))
--		return NULL;
-+		goto err_put_device;
+ 	mv_u3d_eps_init(u3d);
+ 
++	if (request_irq(u3d->irq, mv_u3d_irq,
++		IRQF_SHARED, driver_name, u3d)) {
++		u3d->irq = 0;
++		dev_err(&dev->dev, "Request irq %d for u3d failed\n",
++			u3d->irq);
++		retval = -ENODEV;
++		goto err_request_irq;
++	}
 +
-+	put_device(&pdev->dev);
+ 	/* external vbus detection */
+ 	if (u3d->vbus) {
+ 		u3d->clock_gating = 1;
+@@ -1964,8 +1965,8 @@ static int mv_u3d_probe(struct platform_device *dev)
  
- 	return fw;
-+
-+err_put_device:
-+	put_device(&pdev->dev);
-+	return NULL;
- }
- EXPORT_SYMBOL_GPL(rpi_firmware_get);
- 
+ err_unregister:
+ 	free_irq(u3d->irq, u3d);
+-err_request_irq:
+ err_get_irq:
++err_request_irq:
+ 	kfree(u3d->status_req);
+ err_alloc_status_req:
+ 	kfree(u3d->eps);
 -- 
 2.30.2
 
