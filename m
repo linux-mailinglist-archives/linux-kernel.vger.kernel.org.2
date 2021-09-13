@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F987409345
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3D44093C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345973AbhIMOUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:20:32 -0400
-Received: from relay03.th.seeweb.it ([5.144.164.164]:51853 "EHLO
-        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344901AbhIMOPi (ORCPT
+        id S1345368AbhIMOX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:23:26 -0400
+Received: from ipmail04.adl3.internode.on.net ([150.101.137.10]:61523 "EHLO
+        ipmail04.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245184AbhIMOSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:15:38 -0400
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6CC6A1F4B9;
-        Mon, 13 Sep 2021 16:14:18 +0200 (CEST)
-Date:   Mon, 13 Sep 2021 16:14:17 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, dmitry.baryshkov@linaro.org,
-        abhinavk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, paul.bouchara@somainline.org
-Subject: Re: [PATCH v2 2/2] drm/msm/dpu: Fix timeout issues on command mode
- panels
-Message-ID: <20210913141417.7brqczhagufgqch2@SoMainline.org>
-References: <20210911163919.47173-1-angelogioacchino.delregno@somainline.org>
- <20210911163919.47173-2-angelogioacchino.delregno@somainline.org>
+        Mon, 13 Sep 2021 10:18:16 -0400
+X-SMTP-MATCH: 1
+IronPort-Data: =?us-ascii?q?A9a23=3Aj2aOgaIA5b6Jcb/YFE+RVZclxSXFcZb7ZxGr2?=
+ =?us-ascii?q?PjKsXjdYENS1mEAzGpLW2yFMqnfY2v3fI8jaYWw/UpS6pTRzNEyQAJvrylhE?=
+ =?us-ascii?q?ngTpZOdD9+UdhuvYX2efpLIQUk7tZUXY9WQcek5HyTWzvuPGuGx9SMmiclkZ?=
+ =?us-ascii?q?VZd5NYpiUmdfCc8IMscoUsLd9AR0tYAbeeRW2thifuqyyHuEAfNNwxcawr42?=
+ =?us-ascii?q?IrbwP9bh8kejRtD1rAIiVGni3eF/5UdJMp3yahctBIUSKEMdgKxb76rIL1UY?=
+ =?us-ascii?q?grkExkR5tONyt4Xc6Hkrrz6ZFHezCAPAu7z314Y/XZaPqUTbZLwbW9ekSmJg?=
+ =?us-ascii?q?so3zdxXrpyYSAE1M7fKn+gQFR5eVSdzIcWq/Zeefing75HDlxGun3zEmK01X?=
+ =?us-ascii?q?BtsbOX04N1fH2BU8tQKJTYMcFaHhuSr0PS8UOYqm8dLBM3qOp4P/397wTzHA?=
+ =?us-ascii?q?PIOX5/OWePJ6MVe0TN2gdpBdd7aZswEeX9sYQ7GbhlnJFgaEtQ9kf2ui325d?=
+ =?us-ascii?q?CdXwHqcv7Y3/nKVyQVry7jFMdzJd8aMQslY2EGe4GTL4wzE7rsyXDCE4WPco?=
+ =?us-ascii?q?jT237aJzH69AtlIfIBUP8VC2DW7rlH/wjVNPbdjncSEtw=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AJngJT62OWVauaxZkU9MuyQqjBKckLtp133?=
+ =?us-ascii?q?Aq2lEZdPWaSKylfrOV88jzsiWE7Qr5OUtQ++xoV5PrfZqxz/9ICOoqUItKPj?=
+ =?us-ascii?q?OMhILAFugL0WKI+UyCJ8SRzIBgPOtbH5RDNA=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2DRBQBHXD9h/+hf03ZaHQEBPAEFBQE?=
+ =?us-ascii?q?CAQkBFQmBUAKBHIIEVmyER60agXwLASMCHQ0BAgQBAYQDcIJFASU0CQ4BAgQ?=
+ =?us-ascii?q?VAQEGAQEBAQEGBIEkhWgNhmwVQRgQBwYCHwcCXw0IAQGCbQGDBqxpgTEaAmW?=
+ =?us-ascii?q?EaoMqgWOBECoBjX03gVVEgRUnD4Myh1uCZASJPjdudZFzjG6BLl2BKYlZkRt?=
+ =?us-ascii?q?XLQeDLoExBguIfpQKBhQslXgDAZEJLZMFommHOmaBLjMaLoMuCUiOVBYViE+?=
+ =?us-ascii?q?FWjQwOAIGCwEBAwmFQQEeCBOJeAEB?=
+Received: from unknown (HELO localhost) ([118.211.95.232])
+  by ipmail04.adl3.internode.on.net with ESMTP; 13 Sep 2021 23:46:38 +0930
+Message-ID: <ad3d1354-59d6-2f1a-adf9-e09644ce9769@internode.on.net>
+Date:   Mon, 13 Sep 2021 23:46:31 +0930
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911163919.47173-2-angelogioacchino.delregno@somainline.org>
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Content-Language: en-AU
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+From:   Arthur Marsh <arthur.marsh@internode.on.net>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arthur Marsh <arthur.marsh@internode.on.net>
+Subject: VFAT mounting / sharing issue after: d_path: make 'prepend()' fill up
+ the buffer exactly on overflow
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-11 18:39:19, AngeloGioacchino Del Regno wrote:
-> In function dpu_encoder_phys_cmd_wait_for_commit_done we are always
-> checking if the relative CTL is started by waiting for an interrupt
-> to fire: it is fine to do that, but then sometimes we call this
-> function while the CTL is up and has never been put down, but that
-> interrupt gets raised only when the CTL gets a state change from
-> 0 to 1 (disabled to enabled), so we're going to wait for something
-> that will never happen on its own.
-> 
-> Solving this while avoiding to restart the CTL is actually possible
-> and can be done by just checking if it is already up and running
-> when the wait_for_commit_done function is called: in this case, so,
-> if the CTL was already running, we can say that the commit is done
-> if the command transmission is complete (in other terms, if the
-> interface has been flushed).
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-This has unfortunately not solved any ctl_start timeout issues for me/us
-on other platforms yet, but for the code:
+Hi,
 
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+On recent kernels a VFAT filesystem mounted on my i686 system started 
+behaving weirdly:
 
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> index aa01698d6b25..aa5d3b3cef15 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> @@ -682,6 +682,9 @@ static int dpu_encoder_phys_cmd_wait_for_commit_done(
->  	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
->  		return 0;
->  
-> +	if (phys_enc->hw_ctl->ops.is_started(phys_enc->hw_ctl))
-> +		return dpu_encoder_phys_cmd_wait_for_tx_complete(phys_enc);
-> +
->  	return _dpu_encoder_phys_cmd_wait_for_ctl_start(phys_enc);
->  }
->  
-> -- 
-> 2.32.0
-> 
+The /etc/fstab entry was:
+
+UUID=7417-5AFF       /victoria      vfat 
+defaults,uid=65534,gid=65534,umask=000        0     2
+
+After boot-up the filesystem had previously been mounted as:
+
+# mount|grep vic
+/dev/sdb6 on /victoria type vfat 
+(rw,relatime,uid=65534,gid=65534,fmask=0000,dmask=0000,allow_utime=0022,codepage=437,
+iocharset=utf8,shortname=mixed,errors=remount-ro)
+
+On more recent kernels after the boot-up I saw the mount name truncated:
+
+# mount|grep vic
+  /dev/sda6 on /vict type vfat 
+(rw,relatime,uid=65534,gid=65534,fmask=0000,dmask=0000,allow_utime=0022,codepage=437,
+iocharset=utf8,shortname=mixed,errors=remount-ro)
+
+I could cd to /victoria and access the filesystem locally, but samba 
+sharing of the filesystem failed.
+
+After a long git-bisect session I found the commit that caused it:
+
+commit b0cfcdd9b9672ea90642f33d6c0dd8516553adf2
+Author: Linus Torvalds @linux-foundation.org>
+Date:   Fri Jul 16 14:01:12 2021 -0700
+
+     d_path: make 'prepend()' fill up the buffer exactly on overflow
+
+Reverting the commit resolved the issue, including on kernel 5.15.0-rc1
+
+I'm at a loss as to why the patch caused the problem with the reported 
+mount name and samba sharing.
+
+Build was on i686 using gcc-11 and:
+
+make -j2 menuconfig bindeb-pkg
+
+I'm happy to supply .config and run tests.
+
+Arthur.
+
+
