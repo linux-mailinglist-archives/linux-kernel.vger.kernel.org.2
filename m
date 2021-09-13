@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D784091DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A8F4094AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343586AbhIMOEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:04:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50896 "EHLO mail.kernel.org"
+        id S1344517AbhIMOdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:33:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343929AbhIMOB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:01:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BAF661A60;
-        Mon, 13 Sep 2021 13:37:54 +0000 (UTC)
+        id S1346764AbhIMO3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:29:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7962161368;
+        Mon, 13 Sep 2021 13:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540274;
-        bh=GJNOncqH2W/ivQ9e4eSevRzDSsul7NmD2/lW4RAA1Mc=;
+        s=korg; t=1631541032;
+        bh=tvAYll6S3yFcBQZWiU3XvFXaCtGmkSUeThnCmg2wkBI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A2C908+BmkW4TCBCZBgm8EQfpPkb/jdr1TUtcNEmAiXzoVvl+aU8Vf1oBsu1Xk0AS
-         D81SUJHi07GC6ynJPrL/4mT084xFHA8onfTSKjYonwr50eB0DLnoptW4ZHJ6NqiGYG
-         2xhx9J0JQXn9LGuQrOEBx0bmfncgvhwszsXKxmEM=
+        b=g/ut4ZFBMYrRqhI78HP6s6DL5pCktr95tz/4lj5S1lVKrxrjsZEboJLTNdo+zHu4a
+         DwwvpmOm8G3gjUmE+DgOM1eOM/cTIwqNq6yFo9dTB4ikPUg9kc85fIYozh0unZGDYw
+         W6NtRpPCm+IIet41zfhx+rwR0U27PjQZtq8fjSJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haiyue Wang <haiyue.wang@intel.com>,
-        Catherine Sullivan <csully@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 093/300] gve: fix the wrong AdminQ buffer overflow check
-Date:   Mon, 13 Sep 2021 15:12:34 +0200
-Message-Id: <20210913131112.525394716@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Assmann <sassmann@kpanic.de>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH 5.14 101/334] i40e: improve locking of mac_filter_hash
+Date:   Mon, 13 Sep 2021 15:12:35 +0200
+Message-Id: <20210913131116.785913637@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +42,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiyue Wang <haiyue.wang@intel.com>
+From: Stefan Assmann <sassmann@kpanic.de>
 
-[ Upstream commit 63a9192b8fa1ea55efeba1f18fad52bb24d9bf12 ]
+[ Upstream commit 8b4b06919fd66caf49fdf4fe59f9d6312cf7956d ]
 
-The 'tail' pointer is also free-running count, so it needs to be masked
-as 'adminq_prod_cnt' does, to become an index value of AdminQ buffer.
+i40e_config_vf_promiscuous_mode() calls
+i40e_getnum_vf_vsi_vlan_filters() without acquiring the
+mac_filter_hash_lock spinlock.
 
-Fixes: 5cdad90de62c ("gve: Batch AQ commands for creating and destroying queues.")
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
-Reviewed-by: Catherine Sullivan <csully@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This is unsafe because mac_filter_hash may get altered in another thread
+while i40e_getnum_vf_vsi_vlan_filters() traverses the hashes.
+
+Simply adding the spinlock in i40e_getnum_vf_vsi_vlan_filters() is not
+possible as it already gets called in i40e_get_vlan_list_sync() with the
+spinlock held. Therefore adding a wrapper that acquires the spinlock and
+call the correct function where appropriate.
+
+Fixes: 37d318d7805f ("i40e: Remove scheduling while atomic possibility")
+Fix-suggested-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Stefan Assmann <sassmann@kpanic.de>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_adminq.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 23 ++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
-index 53864f200599..b175f2b2f5bc 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.c
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.c
-@@ -233,7 +233,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
- 	tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index eff0a30790dd..472f56b360b8 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -1160,12 +1160,12 @@ static int i40e_quiesce_vf_pci(struct i40e_vf *vf)
+ }
  
- 	// Check if next command will overflow the buffer.
--	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
-+	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
-+	    (tail & priv->adminq_mask)) {
- 		int err;
+ /**
+- * i40e_getnum_vf_vsi_vlan_filters
++ * __i40e_getnum_vf_vsi_vlan_filters
+  * @vsi: pointer to the vsi
+  *
+  * called to get the number of VLANs offloaded on this VF
+  **/
+-static int i40e_getnum_vf_vsi_vlan_filters(struct i40e_vsi *vsi)
++static int __i40e_getnum_vf_vsi_vlan_filters(struct i40e_vsi *vsi)
+ {
+ 	struct i40e_mac_filter *f;
+ 	u16 num_vlans = 0, bkt;
+@@ -1178,6 +1178,23 @@ static int i40e_getnum_vf_vsi_vlan_filters(struct i40e_vsi *vsi)
+ 	return num_vlans;
+ }
  
- 		// Flush existing commands to make room.
-@@ -243,7 +244,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
++/**
++ * i40e_getnum_vf_vsi_vlan_filters
++ * @vsi: pointer to the vsi
++ *
++ * wrapper for __i40e_getnum_vf_vsi_vlan_filters() with spinlock held
++ **/
++static int i40e_getnum_vf_vsi_vlan_filters(struct i40e_vsi *vsi)
++{
++	int num_vlans;
++
++	spin_lock_bh(&vsi->mac_filter_hash_lock);
++	num_vlans = __i40e_getnum_vf_vsi_vlan_filters(vsi);
++	spin_unlock_bh(&vsi->mac_filter_hash_lock);
++
++	return num_vlans;
++}
++
+ /**
+  * i40e_get_vlan_list_sync
+  * @vsi: pointer to the VSI
+@@ -1195,7 +1212,7 @@ static void i40e_get_vlan_list_sync(struct i40e_vsi *vsi, u16 *num_vlans,
+ 	int bkt;
  
- 		// Retry.
- 		tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
--		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
-+		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
-+		    (tail & priv->adminq_mask)) {
- 			// This should never happen. We just flushed the
- 			// command queue so there should be enough space.
- 			return -ENOMEM;
+ 	spin_lock_bh(&vsi->mac_filter_hash_lock);
+-	*num_vlans = i40e_getnum_vf_vsi_vlan_filters(vsi);
++	*num_vlans = __i40e_getnum_vf_vsi_vlan_filters(vsi);
+ 	*vlan_list = kcalloc(*num_vlans, sizeof(**vlan_list), GFP_ATOMIC);
+ 	if (!(*vlan_list))
+ 		goto err;
 -- 
 2.30.2
 
