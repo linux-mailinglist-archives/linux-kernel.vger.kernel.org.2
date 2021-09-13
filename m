@@ -2,153 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44940408909
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFCA408911
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 12:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239096AbhIMKdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 06:33:49 -0400
-Received: from mout.gmx.net ([212.227.17.21]:42875 "EHLO mout.gmx.net"
+        id S239103AbhIMKgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 06:36:22 -0400
+Received: from relay.sw.ru ([185.231.240.75]:42532 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238846AbhIMKdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 06:33:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631529134;
-        bh=wo/zYNHbmwqWHPTYaD4fECkvZkCdNhbPCdSJYZnhq6o=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=XpChBSD8F91ysTehBQS9ZVLVLeuttaE6lxQw5AZ6qcN9tI1ADR1TugDgtH9FO6f5f
-         tNF160UTMI7xOBPklUVo3gqQk2HC24f0ZeHypSm8AfZfyU2b1PrOin2H7PcGNIUWSi
-         6qDqlbU0mh2aq1CqHn1Xxfh9MIlPWzLBA8Vu9WCQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [46.223.119.124] ([46.223.119.124]) by web-mail.gmx.net
- (3c-app-gmx-bs55.server.lan [172.19.170.139]) (via HTTP); Mon, 13 Sep 2021
- 12:32:14 +0200
+        id S235123AbhIMKgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 06:36:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=JtnXdiyIXGAC109gjCty025cKhFakGINc+ixRMlNDpA=; b=A+qYkWFCnoHTc649z
+        HHLFN2PQHVW+RQhZp5w5+2cbHQTq1eQVtFctCPop4AQ2O6l1lZR3yYepfmSnBPbrqITSivRv2+pqX
+        tbp2/oezk8tLXe94ZguInAw4zdietPjN+h/L0pJm7V4tb4VC1shs+tdbXGXbVf3TZkucEPZVrYfDI
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mPjIk-001oDU-0G; Mon, 13 Sep 2021 13:35:02 +0300
+Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
+ of dying tasks
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
+ <YT8RjxShvfEVe4YU@dhcp22.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <7af26106-388c-6f99-e018-669a8f0cf9b5@virtuozzo.com>
+Date:   Mon, 13 Sep 2021 13:35:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <trinity-e5b95a34-015c-451d-bbfc-83bfb0bdecad-1631529134448@3c-app-gmx-bs55>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, p.rosenberger@kunbus.com,
-        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Aw: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 13 Sep 2021 12:32:14 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210912202913.mu3o5u2l64j7mpwe@skbuf>
-References: <trinity-85ae3f9c-38f9-4442-98d3-bdc01279c7a8-1631193592256@3c-app-gmx-bs01>
- <20210909154734.ujfnzu6omcjuch2a@skbuf>
- <8498b0ce-99bb-aef9-05e1-d359f1cad6cf@gmx.de>
- <2b316d9f-1249-9008-2901-4ab3128eed81@gmail.com>
- <5b899bb3-ed37-19ae-8856-3dabce534cc6@gmx.de>
- <20210909225457.figd5e5o3yw76mcs@skbuf>
- <35466c02-16da-0305-6d53-1c3bbf326418@gmail.com> <YTtG3NbYjUbu4jJE@lunn.ch>
- <20210910145852.4te2zjkchnajb3qw@skbuf>
- <53f2509f-b648-b33d-1542-17a2c9d69966@gmx.de>
- <20210912202913.mu3o5u2l64j7mpwe@skbuf>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:9oyu16jnUSyREoZM3DFHQ81KHcXAKv+ezBse+F+2s8njgqcNEidH7YPK94rsaGpBqTc4M
- eHWPiVCZt2WWQqAz7bO59hMV3OFQWuhiqce5awapeJNnT0KN807f68c3UuI8xKWY4u55/Yf+lkAW
- OiXy/vnDE3dLFMk36MB8ZFLXfSaMADXCemI130mH0RW7S6hzDSYQl8o9O8l7orCp59BfKs7cp2in
- 0poA/W3psH/+EOR+s+Xy/zB7CIabsipG+gVBStVlaC8RZ+03nP25yZFdm56gpfuOajynPw9KsORz
- ew=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qZAHdwE3Gvk=:zHS5T2l3cjgNEzayb01Ueu
- kRo65Suo8OYlAyylZ3xyVbPBJx/KFplBZuyOR3Qoxpx/GnYY4d8OT2Xf6C/U2yu1iguL8nKAc
- jYFhBzQoflC7bvnpkWpNMf2xn20FPzoW+jo8Pl0MvdiH2c421OZVfyejX29Qi+PVRVMBc1dqx
- L0S9LP2gZFBooatvelmO1z+2fQgtJFlFnKeKGL24hYpyTr/ILSWu1XMcU6V8bK18ON+kX2fAN
- PY/HbvPUB1Cgyy4iYNn41AdG//K6cjQNORfVtBcviSxkwV5hWmEEnH9grsBExg377CiNEhw5/
- PSS637nUP5R/2AVuZZ3r4TLZRJVnvuzzpEULwqDRFJmBK0hZbvTIi/f6AAP+bjjPcq4A8pXkg
- tzgb2E2FVh2CN2J8QFVDR2xMKdKKhhHka/wSBt5rwfQR+auZaYC5cYKCV2h9JW+DW+Qtw7AJH
- oR8xk3HMJThCJvc2LkfnYj9XSBI7gMZCBWDf0HeAwDwCYz6vYMy9awlnB6SY+te8hfqkkHjoK
- s11XFbBP21xWhjg/s88b5UVFZo/P5sksmlBXVwXUoZKzGsgqAWjZNzoNhgqGldBPRcjQlt4h7
- LLDo3Xz5sm0Dj6j/Cq+nvQ7uy1slEyct33jc+6Ob4jynwnOGHsgnXBGToJtU30SKb1Kmo56l9
- 3KeAPMlPjB1bOZOOeuCQL4S4eDUycOUNY7S5Y6bODnJIz9InzWk5zu/gTFJToecDSX3T4iVmU
- 0uInVsHjoCiaGXUgrtCa2WB51OkLz3PGZLj9x6cYxj3yYhsaQ25fNe3ncEIMQwjfgIe/RniHr
- YsVMo2Z
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YT8RjxShvfEVe4YU@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/13/21 11:53 AM, Michal Hocko wrote:
+> On Fri 10-09-21 15:39:28, Vasily Averin wrote:
+>> The kernel currently allows dying tasks to exceed the memcg limits.
+>> The allocation is expected to be the last one and the occupied memory
+>> will be freed soon.
+>> This is not always true because it can be part of the huge vmalloc
+>> allocation. Allowed once, they will repeat over and over again.
+>> Moreover lifetime of the allocated object can differ from
+>> In addition the lifetime of the dying task.
+>> Multiple such allocations running concurrently can not only overuse
+>> the memcg limit, but can lead to a global out of memory and,
+>> in the worst case, cause the host to panic.
+>>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>  mm/memcontrol.c | 23 +++++------------------
+>>  1 file changed, 5 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 389b5766e74f..67195fcfbddf 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -1834,6 +1834,9 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+>>  		return OOM_ASYNC;
+>>  	}
+>>  
+>> +	if (should_force_charge())
+>> +		return OOM_SKIPPED;
+> 
+> mem_cgroup_out_of_memory already check for the bypass, now you are
+> duplicating that check with a different answer to the caller. This is
+> really messy. One of the two has to go away.
 
-> Gesendet: Sonntag, 12. September 2021 um 22:29 Uhr
-> Von: "Vladimir Oltean" <olteanv@gmail.com>
-> An: "Lino Sanfilippo" <LinoSanfilippo@gmx.de>
-> Cc: "Andrew Lunn" <andrew@lunn.ch>, "Florian Fainelli" <f.fainelli@gmail=
-.com>, "Saravana Kannan" <saravanak@google.com>, "Rafael J. Wysocki" <rafa=
-el@kernel.org>, p.rosenberger@kunbus.com, woojung.huh@microchip.com, UNGLi=
-nuxDriver@microchip.com, vivien.didelot@gmail.com, davem@davemloft.net, ku=
-ba@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-> Betreff: Re: [PATCH 0/3] Fix for KSZ DSA switch shutdown
->
-> On Sun, Sep 12, 2021 at 10:19:24PM +0200, Lino Sanfilippo wrote:
-> >
-> > Hi,
-> >
-> > On 10.09.21 at 16:58, Vladimir Oltean wrote:
-> > > On Fri, Sep 10, 2021 at 01:51:56PM +0200, Andrew Lunn wrote:
-> > >>> It does not really scale but we also don't have that many DSA mast=
-ers to
-> > >>> support, I believe I can name them all: bcmgenet, stmmac, bcmsyspo=
-rt, enetc,
-> > >>> mv643xx_eth, cpsw, macb.
-> > >>
-> > >> fec, mvneta, mvpp2, i210/igb.
-> > >
-> > > I can probably double that list only with Freescale/NXP Ethernet
-> > > drivers, some of which are not even submitted to mainline. To name s=
-ome
-> > > mainline drivers: gianfar, dpaa-eth, dpaa2-eth, dpaa2-switch, ucc_ge=
-th.
-> > > Also consider that DSA/switchdev drivers can also be DSA masters of
-> > > their own, we have boards doing that too.
-> > >
-> > > Anyway, I've decided to at least try and accept the fact that DSA
-> > > masters will unregister their net_device on shutdown, and attempt to=
- do
-> > > something sane for all DSA switches in that case.
-> > >
-> > > Attached are two patches (they are fairly big so I won't paste them
-> > > inline, and I would like initial feedback before posting them to the
-> > > list).
-> > >
-> > > As mentioned in those patches, the shutdown ordering guarantee is st=
-ill
-> > > very important, I still have no clue what goes on there, what we nee=
-d to
-> > > do, etc.
-> > >
-> >
-> > I tested these patches with my 5.10 kernel (based on Gregs 5.10.27 sta=
-ble
-> > kernel) and while I do not see the message "unregister_netdevice: wait=
-ing
-> > for eth0 to become free. Usage count =3D 2." any more the shutdown/reb=
-oot hangs, too.
-> > After a few attempts without any error messages on the console I was a=
-ble to get a
-> >  stack trace. Something still seems to go wrong in bcm2835_spi_shutdow=
-n() (see attachment).
-> > I have not had the time yet to investigate this further (or to test th=
-e patches
-> >  with a newer kernel).
->
-> Could you post the full kernel output? The picture you've posted is
-> truncated and only shows a WARN_ON in rpi_firmware_transaction and is
-> probably a symptom and not the issue (which is above and not shown).
->
+In this case mem_cgroup_out_of_memory() takes locks and mutexes but doing nothing
+useful and its success causes try_charge_memcg() to repeat the loop unnecessarily.
 
-Unfortunately I dont see anything in the kernel log. The console output is=
- all I get,
-thats why I made the photo.
+I cannot change mem_cgroup_out_of_memory internals, because it is used in other places too.The check inside mem_cgroup_out_of_memory is required because situation can be changed after
+check added into mem_cgroup_oom().
 
-Regards,
-Lino
+Though I got your argument, and will think how to improve the patch.
+Anyway we'll need to do something with name of should_force_charge() function
+that will NOT lead to forced charge.
 
+Thank you,
+	Vasily Averin
 
+Thank you,
