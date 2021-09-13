@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C9C408D31
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E54408FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241362AbhIMNX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37510 "EHLO mail.kernel.org"
+        id S242013AbhIMNqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:46:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240696AbhIMNV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0935B610A8;
-        Mon, 13 Sep 2021 13:20:11 +0000 (UTC)
+        id S242947AbhIMNlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:41:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 370D76128B;
+        Mon, 13 Sep 2021 13:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539212;
-        bh=oAMR6sjJiAY134kjesPnp2OGnEER7a9bvYx9VfuW0SA=;
+        s=korg; t=1631539786;
+        bh=d9tOvY4GPK1jKWMaBSPHaYQUFYgLGzNJbCmnl5KHBLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sjFculH4QlepWAgKCMivxT4NCKYlMssX04F11GJXtOYr3LUwfzxuABR1ZLQl/2xz
-         g0We6fDSiqxbOs9Q0CajWtxZ9r5mKGxSb04ZhP3tb5QnritaSmAeOKcYCNINAYMumG
-         TRbt0r0fe+XjufPrpwtAsddDgbrmBjxdio0p1pvQ=
+        b=ULGIAdaqJK2gZAqEZDAYCT5dX6WsAHUZVtAzvMqLy+AyZ8+FNJdNv62Z9/psuxgmb
+         5gMU1L8XvSNXuBtL35R4LMespXyL5rOK/MNqpqE1J3v3sweb0Gli3GpRAEC1RrCw4L
+         5WOFn8dEqC6exQqpcAfqPVbP11QQp+Mf/73Ul004=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/144] drm/msm/dpu: make dpu_hw_ctl_clear_all_blendstages clear necessary LMs
-Date:   Mon, 13 Sep 2021 15:14:24 +0200
-Message-Id: <20210913131050.738573311@linuxfoundation.org>
+Subject: [PATCH 5.10 160/236] usb: phy: tahvo: add IRQ check
+Date:   Mon, 13 Sep 2021 15:14:25 +0200
+Message-Id: <20210913131105.830506534@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit a41cdb693595ae1904dd793fc15d6954f4295e27 ]
+[ Upstream commit 0d45a1373e669880b8beaecc8765f44cb0241e47 ]
 
-dpu_hw_ctl_clear_all_blendstages() clears settings for the few first LMs
-instead of mixers actually used for the CTL. Change it to clear
-necessary data, using provided mixer ids.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_threaded_irq() (which
+takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding an
+original error code.  Stop calling request_threaded_irq() with the invalid
+IRQ #s.
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20210704230519.4081467-1-dmitry.baryshkov@linaro.org
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 9ba96ae5074c ("usb: omap1: Tahvo USB transceiver driver")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/8280d6a4-8e9a-7cfe-1aa9-db586dc9afdf@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/usb/phy/phy-tahvo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-index 179e8d52cadb..a08ca7a47400 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-@@ -281,10 +281,12 @@ static void dpu_hw_ctl_clear_all_blendstages(struct dpu_hw_ctl *ctx)
- 	int i;
+diff --git a/drivers/usb/phy/phy-tahvo.c b/drivers/usb/phy/phy-tahvo.c
+index baebb1f5a973..a3e043e3e4aa 100644
+--- a/drivers/usb/phy/phy-tahvo.c
++++ b/drivers/usb/phy/phy-tahvo.c
+@@ -393,7 +393,9 @@ static int tahvo_usb_probe(struct platform_device *pdev)
  
- 	for (i = 0; i < ctx->mixer_count; i++) {
--		DPU_REG_WRITE(c, CTL_LAYER(LM_0 + i), 0);
--		DPU_REG_WRITE(c, CTL_LAYER_EXT(LM_0 + i), 0);
--		DPU_REG_WRITE(c, CTL_LAYER_EXT2(LM_0 + i), 0);
--		DPU_REG_WRITE(c, CTL_LAYER_EXT3(LM_0 + i), 0);
-+		enum dpu_lm mixer_id = ctx->mixer_hw_caps[i].id;
-+
-+		DPU_REG_WRITE(c, CTL_LAYER(mixer_id), 0);
-+		DPU_REG_WRITE(c, CTL_LAYER_EXT(mixer_id), 0);
-+		DPU_REG_WRITE(c, CTL_LAYER_EXT2(mixer_id), 0);
-+		DPU_REG_WRITE(c, CTL_LAYER_EXT3(mixer_id), 0);
- 	}
- }
+ 	dev_set_drvdata(&pdev->dev, tu);
  
+-	tu->irq = platform_get_irq(pdev, 0);
++	tu->irq = ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
++		return ret;
+ 	ret = request_threaded_irq(tu->irq, NULL, tahvo_usb_vbus_interrupt,
+ 				   IRQF_ONESHOT,
+ 				   "tahvo-vbus", tu);
 -- 
 2.30.2
 
