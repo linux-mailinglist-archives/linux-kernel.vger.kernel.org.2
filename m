@@ -2,185 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A0640843B
+	by mail.lfdr.de (Postfix) with ESMTP id AF95D40843C
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237233AbhIMF4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 01:56:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237303AbhIMF4g (ORCPT
+        id S237132AbhIMF5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 01:57:00 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:52842 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237095AbhIMF46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 01:56:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631512521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=59mlc5MAZl17Bwg0fnZF6E06RySu8Fbe/iP8dyny6Ao=;
-        b=gqfGxGRXWnu7gpXgj/89W0/4BloCQvOh4StusNfWjHGsi/N1FWPt517wEudV7KeJeKTsg+
-        cDub8Y5ies7KTJFBeLaUOy9VsWvHn9mgWZ9TmoNQDWQXHwMbT+44wUtm1588CKvUnq8O2H
-        PkCIJ405uzxPccB8iQ/vyDcwwzoUG64=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-JyQ73bKlN4WvJZxjyD7e5Q-1; Mon, 13 Sep 2021 01:55:17 -0400
-X-MC-Unique: JyQ73bKlN4WvJZxjyD7e5Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 251B88145E7;
-        Mon, 13 Sep 2021 05:55:16 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-13-146.pek2.redhat.com [10.72.13.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 759F85C23A;
-        Mon, 13 Sep 2021 05:55:02 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com
-Subject: [PATCH 9/9] virtio_ring: validate used buffer length
-Date:   Mon, 13 Sep 2021 13:53:53 +0800
-Message-Id: <20210913055353.35219-10-jasowang@redhat.com>
-In-Reply-To: <20210913055353.35219-1-jasowang@redhat.com>
-References: <20210913055353.35219-1-jasowang@redhat.com>
+        Mon, 13 Sep 2021 01:56:58 -0400
+X-UUID: a04d09bb2c8a4bf0aef64581cadeaee6-20210913
+X-UUID: a04d09bb2c8a4bf0aef64581cadeaee6-20210913
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1343577215; Mon, 13 Sep 2021 13:55:40 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 13 Sep 2021 13:55:38 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 13 Sep 2021 13:55:38 +0800
+Message-ID: <5fa1e99f1b9097336a3e610dc383170f09036b14.camel@mediatek.com>
+Subject: Re: [PATCH v2] ASoC: mediatek: common: handle NULL case in
+ suspend/resume function
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     <tiwai@suse.com>, <matthias.bgg@gmail.com>,
+        <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dan.carpenter@oracle.com>
+Date:   Mon, 13 Sep 2021 13:55:38 +0800
+In-Reply-To: <20210910102358.GC4474@sirena.org.uk>
+References: <20210910092613.30188-1-trevor.wu@mediatek.com>
+         <20210910102358.GC4474@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch validate the used buffer length provided by the device
-before trying to use it. This is done by record the in buffer length
-in a new field in desc_state structure during virtqueue_add(), then we
-can fail the virtqueue_get_buf() when we find the device is trying to
-give us a used buffer length which is greater than the in buffer
-length.
+On Fri, 2021-09-10 at 11:23 +0100, Mark Brown wrote:
+> On Fri, Sep 10, 2021 at 05:26:13PM +0800, Trevor Wu wrote:
+> 
+> > When memory allocation for afe->reg_back_up fails, reg_back_up
+> > can't
+> > be used.
+> > Keep the suspend/resume flow but skip register backup when
+> > afe->reg_back_up is NULL, in case illegal memory access happens.
+> 
+> It seems like it'd be better to just allocate the buffer at probe
+> time
+> and fail in case we can't get it, I'd be surprised if there's many
+> platforms using this hardware that don't also end up suspending and
+> resuming.
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_ring.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Hi Mark,
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index d2ca0a7365f8..b8374a6144f3 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -69,6 +69,7 @@
- struct vring_desc_state_split {
- 	void *data;			/* Data for callback. */
- 	struct vring_desc *indir_desc;	/* Indirect descriptor, if any. */
-+	u64 buflen;			/* In buffer length */
- };
- 
- struct vring_desc_state_packed {
-@@ -76,6 +77,7 @@ struct vring_desc_state_packed {
- 	struct vring_packed_desc *indir_desc; /* Indirect descriptor, if any. */
- 	u16 num;			/* Descriptor list length. */
- 	u16 last;			/* The last desc state in a list. */
-+	u64 buflen;			/* In buffer length */
- };
- 
- struct vring_desc_extra {
-@@ -490,6 +492,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 	unsigned int i, n, avail, descs_used, prev, err_idx;
- 	int head;
- 	bool indirect;
-+	u64 buflen = 0;
- 
- 	START_USE(vq);
- 
-@@ -571,6 +574,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 						     VRING_DESC_F_NEXT |
- 						     VRING_DESC_F_WRITE,
- 						     indirect);
-+			buflen += sg->length;
- 		}
- 	}
- 	/* Last one doesn't continue. */
-@@ -605,6 +609,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
- 
- 	/* Store token and indirect buffer state. */
- 	vq->split.desc_state[head].data = data;
-+	vq->split.desc_state[head].buflen = buflen;
- 	if (indirect)
- 		vq->split.desc_state[head].indir_desc = desc;
- 	else
-@@ -784,6 +789,11 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
- 		BAD_RING(vq, "id %u is not a head!\n", i);
- 		return NULL;
- 	}
-+	if (unlikely(*len > vq->split.desc_state[i].buflen)) {
-+		BAD_RING(vq, "used len %d is larger than in buflen %lld\n",
-+			*len, vq->split.desc_state[i].buflen);
-+		return NULL;
-+	}
- 
- 	/* detach_buf_split clears data, so grab it now. */
- 	ret = vq->split.desc_state[i].data;
-@@ -1062,6 +1072,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
- 	unsigned int i, n, err_idx;
- 	u16 head, id;
- 	dma_addr_t addr;
-+	u64 buflen = 0;
- 
- 	head = vq->packed.next_avail_idx;
- 	desc = alloc_indirect_packed(total_sg, gfp);
-@@ -1089,6 +1100,8 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
- 			desc[i].addr = cpu_to_le64(addr);
- 			desc[i].len = cpu_to_le32(sg->length);
- 			i++;
-+			if (n >= out_sgs)
-+				buflen += sg->length;
- 		}
- 	}
- 
-@@ -1141,6 +1154,7 @@ static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
- 	vq->packed.desc_state[id].data = data;
- 	vq->packed.desc_state[id].indir_desc = desc;
- 	vq->packed.desc_state[id].last = id;
-+	vq->packed.desc_state[id].buflen = buflen;
- 
- 	vq->num_added += 1;
- 
-@@ -1176,6 +1190,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 	unsigned int i, n, c, descs_used, err_idx;
- 	__le16 head_flags, flags;
- 	u16 head, id, prev, curr, avail_used_flags;
-+	u64 buflen = 0;
- 
- 	START_USE(vq);
- 
-@@ -1250,6 +1265,8 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 					1 << VRING_PACKED_DESC_F_AVAIL |
- 					1 << VRING_PACKED_DESC_F_USED;
- 			}
-+			if (n >= out_sgs)
-+				buflen += sg->length;
- 		}
- 	}
- 
-@@ -1268,6 +1285,7 @@ static inline int virtqueue_add_packed(struct virtqueue *_vq,
- 	vq->packed.desc_state[id].data = data;
- 	vq->packed.desc_state[id].indir_desc = ctx;
- 	vq->packed.desc_state[id].last = prev;
-+	vq->packed.desc_state[id].buflen = buflen;
- 
- 	/*
- 	 * A driver MUST NOT make the first descriptor in the list
-@@ -1455,6 +1473,11 @@ static void *virtqueue_get_buf_ctx_packed(struct virtqueue *_vq,
- 		BAD_RING(vq, "id %u is not a head!\n", id);
- 		return NULL;
- 	}
-+	if (unlikely(*len > vq->packed.desc_state[id].buflen)) {
-+		BAD_RING(vq, "used len %d is larger than in buflen %lld\n",
-+			*len, vq->packed.desc_state[id].buflen);
-+		return NULL;
-+	}
- 
- 	/* detach_buf_packed clears data, so grab it now. */
- 	ret = vq->packed.desc_state[id].data;
--- 
-2.25.1
+Thanks for your suggestion.
+I agree it's better to allocate the memory at probe time.
+I think we can still keep the implementation in the suspend/resume
+function as a fallback solution if user doesn't allocate the memory in
+probe function.
+
+In the new mediatek SOCs, regcache has been used to handle register
+backup.
+Do I need to add the buffer allocation on probe function to the
+platform in which mtk_afe_suspend and mtk_afe_resume are used?
+
+Thanks,
+Trevor
 
