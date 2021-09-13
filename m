@@ -2,137 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003AA409815
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56078409823
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344850AbhIMP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        id S245206AbhIMP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344280AbhIMP5o (ORCPT
+        with ESMTP id S1343907AbhIMP6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:57:44 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EF2C061760;
-        Mon, 13 Sep 2021 08:56:28 -0700 (PDT)
-Received: from cap.home.8bytes.org (p549ad441.dip0.t-ipconnect.de [84.154.212.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 5DC2810B2;
-        Mon, 13 Sep 2021 17:56:24 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
-        Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <joro@8bytes.org>, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v2 12/12] x86/sev: Support kexec under SEV-ES with AP Jump Table blob
-Date:   Mon, 13 Sep 2021 17:56:03 +0200
-Message-Id: <20210913155603.28383-13-joro@8bytes.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913155603.28383-1-joro@8bytes.org>
-References: <20210913155603.28383-1-joro@8bytes.org>
+        Mon, 13 Sep 2021 11:58:08 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874C7C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 08:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hkOXi5xr4aXoqhdGU7WryuhpzwY8D8TDudCJdLImCV0=; b=210NTgaIKAXb1FhiRk6o/LMiLc
+        IJKzhy3SH7P4lYTYX5vJSR4KZT1T7DTF0c2FVBKG3t5sSqBHmzcy7xJLoGQ94IbpbQ2lEmScPOQqd
+        NJSk2+Pnbqy9Z+WTNq/jjkVl0bidijL4gGCSALLpOWIU7z6QAxzZ8cZg2TuYy6KgZAidHeSp3UxUs
+        J369m2lG91y3VFGMc5i5PWPLfuydWXr+8DYL/eMsarc8OT5oW4S6P/25d1nMFk1XBKUSSqjipEoiU
+        h4GD6jLgUnRPQRAMzjsOdgIr1r/dqfX/yNKGaCNpYkkLSEazymePOrupb0a6razJ98kNx6hVK5Nd+
+        8T4q5A1Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPoK6-002G1j-A4; Mon, 13 Sep 2021 15:56:46 +0000
+Date:   Mon, 13 Sep 2021 08:56:46 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [mcgrof-next:20210908-firmware-builtin-v4 2/11]
+ drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous
+ prototype for function 'firmware_is_builtin'
+Message-ID: <YT90vvVi7oYH0xpb@bombadil.infradead.org>
+References: <202109101524.pjY4q0Dy-lkp@intel.com>
+ <YTv817Srt8hoySP5@bombadil.infradead.org>
+ <YTwLw+frJLbntgCJ@archlinux-ax161>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTwLw+frJLbntgCJ@archlinux-ax161>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Fri, Sep 10, 2021 at 06:52:03PM -0700, Nathan Chancellor wrote:
+> On Fri, Sep 10, 2021 at 05:48:23PM -0700, Luis Chamberlain wrote:
+> > On Fri, Sep 10, 2021 at 03:41:31PM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20210908-firmware-builtin-v4
+> > > head:   1c69d6a17750179d68bcaf6b16f9a08d2e475989
+> > > commit: 79e9fce20ee88ffe37542a66277628e6c53dde14 [2/11] firmware_loader: formalize built-in firmware API
+> > > config: hexagon-buildonly-randconfig-r004-20210910 (attached as .config)
+> > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=79e9fce20ee88ffe37542a66277628e6c53dde14
+> > >         git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+> > >         git fetch --no-tags mcgrof-next 20210908-firmware-builtin-v4
+> > >         git checkout 79e9fce20ee88ffe37542a66277628e6c53dde14
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=hexagon 
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > > >> drivers/base/firmware_loader/builtin/main.c:36:6: error: no previous prototype for function 'firmware_is_builtin' [-Werror,-Wmissing-prototypes]
+> > >    bool firmware_is_builtin(const struct firmware *fw)
+> > 
+> > This is a lie though its defined on drivers/base/firmware_loader/firmware.h
+> 
+> Unless I am missing something, you don't include the firmware_loader
+> copy of firmware.h in builtin/main.c (only the linux one)? Isn't that
+> the source of the warning?
 
-When the AP Jump Table blob is installed the kernel can hand over the
-APs from the old to the new kernel. Enable kexec when the AP Jump
-Table blob has been installed.
+You would think, but nope, its there:
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/include/asm/sev.h         |  2 ++
- arch/x86/kernel/machine_kexec_64.c |  6 +++++-
- arch/x86/kernel/sev.c              | 12 ++++++++++++
- 3 files changed, 19 insertions(+), 1 deletion(-)
+#include "firmware.h"
 
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index cd14b6e10f12..61910caf2a0d 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -87,6 +87,7 @@ static __always_inline void sev_es_stop_this_cpu(void)
- 	if (static_branch_unlikely(&sev_es_enable_key))
- 		__sev_es_stop_this_cpu();
- }
-+bool sev_kexec_supported(void);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
-@@ -94,6 +95,7 @@ static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { ret
- static inline void sev_es_nmi_complete(void) { }
- static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
- static inline void sev_es_stop_this_cpu(void) { }
-+static bool sev_kexec_supported(void) { return true; }
- #endif
- 
- #endif
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index a8e16a411b40..06ff51b2b3fb 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -26,6 +26,7 @@
- #include <asm/kexec-bzimage64.h>
- #include <asm/setup.h>
- #include <asm/set_memory.h>
-+#include <asm/sev.h>
- 
- #ifdef CONFIG_ACPI
- /*
-@@ -597,5 +598,8 @@ void arch_kexec_pre_free_pages(void *vaddr, unsigned int pages)
-  */
- bool arch_kexec_supported(void)
- {
--	return !sev_es_active();
-+	if (!sev_kexec_supported())
-+		return false;
-+
-+	return true;
- }
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 5d4b1d317317..8c7f1ad69185 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -901,6 +901,18 @@ static int __init sev_es_setup_ap_jump_table_blob(void)
- }
- core_initcall(sev_es_setup_ap_jump_table_blob);
- 
-+bool sev_kexec_supported(void)
-+{
-+	/*
-+	 * KEXEC with SEV-ES and more than one CPU is only supported
-+	 * when the AP Jump Table is installed.
-+	 */
-+	if (num_possible_cpus() > 1)
-+		return !sev_es_active() || sev_ap_jumptable_blob_installed;
-+	else
-+		return true;
-+}
-+
- static void __init alloc_runtime_data(int cpu)
- {
- 	struct sev_es_runtime_data *data;
--- 
-2.33.0
-
+  Luis
