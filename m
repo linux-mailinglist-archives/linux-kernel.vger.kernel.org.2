@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A993C408C9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E08F408F1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbhIMNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:20:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34830 "EHLO mail.kernel.org"
+        id S243833AbhIMNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:40:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239292AbhIMNTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BE616108B;
-        Mon, 13 Sep 2021 13:17:05 +0000 (UTC)
+        id S242972AbhIMNeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:34:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70E3061221;
+        Mon, 13 Sep 2021 13:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539026;
-        bh=x0C9rt2yVYfvMsFtVlMyMEYTBQEpGjCvQ2g3nY873dQ=;
+        s=korg; t=1631539610;
+        bh=jnUz3WBMv0JybVg3eiXs/+qckOwE0fCjdeXvU0eza/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ic7egVEHCGDTAqCEKytdQo4qHa96jfJzEpKh3NPq9UankMcfrEmBIwAtHRnwo8sbm
-         rvGHMgP9/ebSum/iTWDuH43TEzT+LzwBGL+Mvxtq6NnoL7f1neYmemcbomAJWS1V8S
-         KhKTQefxGUTLD35p7RHvMC2Vht04Mdyrd2gv/NrU=
+        b=LWPN972chQ0bxRE6lTVcldE6JEkyTNJ57HBjQvqsySQ/rXpYLBVBzOPT6q0f+XVUy
+         MLL4wF8TNRBNtyBVJkm3obcmQuSKPqhrbX0jSM0TQYHO6clvD3xORGW3q1im7q70ka
+         Adl0RqsDboL/3IZ0W5V/52W1uZXiMEsCn7FeFZUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 014/144] isofs: joliet: Fix iocharset=utf8 mount option
+        stable@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 090/236] ionic: cleanly release devlink instance
 Date:   Mon, 13 Sep 2021 15:13:15 +0200
-Message-Id: <20210913131048.443329086@linuxfoundation.org>
+Message-Id: <20210913131103.411286092@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,148 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 28ce50f8d96ec9035f60c9348294ea26b94db944 ]
+[ Upstream commit c2255ff47768c94a0ebc3968f007928bb47ea43b ]
 
-Currently iocharset=utf8 mount option is broken. To use UTF-8 as iocharset,
-it is required to use utf8 mount option.
+The failure to register devlink will leave the system with dangled
+devlink resource, which is not cleaned if devlink_port_register() fails.
 
-Fix iocharset=utf8 mount option to use be equivalent to the utf8 mount
-option.
+In order to remove access to ".registered" field of struct devlink_port,
+require both devlink_register and devlink_port_register to success and
+check it through device pointer.
 
-If UTF-8 as iocharset is used then s_nls_iocharset is set to NULL. So
-simplify code around, remove s_utf8 field as to distinguish between UTF-8
-and non-UTF-8 it is needed just to check if s_nls_iocharset is set to NULL
-or not.
-
-Link: https://lore.kernel.org/r/20210808162453.1653-5-pali@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Fixes: fbfb8031533c ("ionic: Add hardware init and device commands")
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Acked-by: Shannon Nelson <snelson@pensando.io>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/isofs/inode.c  | 27 +++++++++++++--------------
- fs/isofs/isofs.h  |  1 -
- fs/isofs/joliet.c |  4 +---
- 3 files changed, 14 insertions(+), 18 deletions(-)
+ .../net/ethernet/pensando/ionic/ionic_devlink.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-index 62c0462dc89f..bf30f6ce8dd1 100644
---- a/fs/isofs/inode.c
-+++ b/fs/isofs/inode.c
-@@ -155,7 +155,6 @@ struct iso9660_options{
- 	unsigned int overriderockperm:1;
- 	unsigned int uid_set:1;
- 	unsigned int gid_set:1;
--	unsigned int utf8:1;
- 	unsigned char map;
- 	unsigned char check;
- 	unsigned int blocksize;
-@@ -355,7 +354,6 @@ static int parse_options(char *options, struct iso9660_options *popt)
- 	popt->gid = GLOBAL_ROOT_GID;
- 	popt->uid = GLOBAL_ROOT_UID;
- 	popt->iocharset = NULL;
--	popt->utf8 = 0;
- 	popt->overriderockperm = 0;
- 	popt->session=-1;
- 	popt->sbsector=-1;
-@@ -388,10 +386,13 @@ static int parse_options(char *options, struct iso9660_options *popt)
- 		case Opt_cruft:
- 			popt->cruft = 1;
- 			break;
-+#ifdef CONFIG_JOLIET
- 		case Opt_utf8:
--			popt->utf8 = 1;
-+			kfree(popt->iocharset);
-+			popt->iocharset = kstrdup("utf8", GFP_KERNEL);
-+			if (!popt->iocharset)
-+				return 0;
- 			break;
--#ifdef CONFIG_JOLIET
- 		case Opt_iocharset:
- 			kfree(popt->iocharset);
- 			popt->iocharset = match_strdup(&args[0]);
-@@ -494,7 +495,6 @@ static int isofs_show_options(struct seq_file *m, struct dentry *root)
- 	if (sbi->s_nocompress)		seq_puts(m, ",nocompress");
- 	if (sbi->s_overriderockperm)	seq_puts(m, ",overriderockperm");
- 	if (sbi->s_showassoc)		seq_puts(m, ",showassoc");
--	if (sbi->s_utf8)		seq_puts(m, ",utf8");
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+index 51d64718ed9f..3d94064c685d 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+@@ -91,20 +91,20 @@ int ionic_devlink_register(struct ionic *ionic)
+ 	attrs.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL;
+ 	devlink_port_attrs_set(&ionic->dl_port, &attrs);
+ 	err = devlink_port_register(dl, &ionic->dl_port, 0);
+-	if (err)
++	if (err) {
+ 		dev_err(ionic->dev, "devlink_port_register failed: %d\n", err);
+-	else
+-		devlink_port_type_eth_set(&ionic->dl_port,
+-					  ionic->lif->netdev);
++		devlink_unregister(dl);
++		return err;
++	}
  
- 	if (sbi->s_check)		seq_printf(m, ",check=%c", sbi->s_check);
- 	if (sbi->s_mapping)		seq_printf(m, ",map=%c", sbi->s_mapping);
-@@ -517,9 +517,10 @@ static int isofs_show_options(struct seq_file *m, struct dentry *root)
- 		seq_printf(m, ",fmode=%o", sbi->s_fmode);
- 
- #ifdef CONFIG_JOLIET
--	if (sbi->s_nls_iocharset &&
--	    strcmp(sbi->s_nls_iocharset->charset, CONFIG_NLS_DEFAULT) != 0)
-+	if (sbi->s_nls_iocharset)
- 		seq_printf(m, ",iocharset=%s", sbi->s_nls_iocharset->charset);
-+	else
-+		seq_puts(m, ",iocharset=utf8");
- #endif
- 	return 0;
+-	return err;
++	devlink_port_type_eth_set(&ionic->dl_port, ionic->lif->netdev);
++	return 0;
  }
-@@ -867,14 +868,13 @@ root_found:
- 	sbi->s_nls_iocharset = NULL;
  
- #ifdef CONFIG_JOLIET
--	if (joliet_level && opt.utf8 == 0) {
-+	if (joliet_level) {
- 		char *p = opt.iocharset ? opt.iocharset : CONFIG_NLS_DEFAULT;
--		sbi->s_nls_iocharset = load_nls(p);
--		if (! sbi->s_nls_iocharset) {
--			/* Fail only if explicit charset specified */
--			if (opt.iocharset)
-+		if (strcmp(p, "utf8") != 0) {
-+			sbi->s_nls_iocharset = opt.iocharset ?
-+				load_nls(opt.iocharset) : load_nls_default();
-+			if (!sbi->s_nls_iocharset)
- 				goto out_freesbi;
--			sbi->s_nls_iocharset = load_nls_default();
- 		}
- 	}
- #endif
-@@ -890,7 +890,6 @@ root_found:
- 	sbi->s_gid = opt.gid;
- 	sbi->s_uid_set = opt.uid_set;
- 	sbi->s_gid_set = opt.gid_set;
--	sbi->s_utf8 = opt.utf8;
- 	sbi->s_nocompress = opt.nocompress;
- 	sbi->s_overriderockperm = opt.overriderockperm;
- 	/*
-diff --git a/fs/isofs/isofs.h b/fs/isofs/isofs.h
-index 055ec6c586f7..dcdc191ed183 100644
---- a/fs/isofs/isofs.h
-+++ b/fs/isofs/isofs.h
-@@ -44,7 +44,6 @@ struct isofs_sb_info {
- 	unsigned char s_session;
- 	unsigned int  s_high_sierra:1;
- 	unsigned int  s_rock:2;
--	unsigned int  s_utf8:1;
- 	unsigned int  s_cruft:1; /* Broken disks with high byte of length
- 				  * containing junk */
- 	unsigned int  s_nocompress:1;
-diff --git a/fs/isofs/joliet.c b/fs/isofs/joliet.c
-index be8b6a9d0b92..c0f04a1e7f69 100644
---- a/fs/isofs/joliet.c
-+++ b/fs/isofs/joliet.c
-@@ -41,14 +41,12 @@ uni16_to_x8(unsigned char *ascii, __be16 *uni, int len, struct nls_table *nls)
- int
- get_joliet_filename(struct iso_directory_record * de, unsigned char *outname, struct inode * inode)
+ void ionic_devlink_unregister(struct ionic *ionic)
  {
--	unsigned char utf8;
- 	struct nls_table *nls;
- 	unsigned char len = 0;
+ 	struct devlink *dl = priv_to_devlink(ionic);
  
--	utf8 = ISOFS_SB(inode->i_sb)->s_utf8;
- 	nls = ISOFS_SB(inode->i_sb)->s_nls_iocharset;
- 
--	if (utf8) {
-+	if (!nls) {
- 		len = utf16s_to_utf8s((const wchar_t *) de->name,
- 				de->name_len[0] >> 1, UTF16_BIG_ENDIAN,
- 				outname, PAGE_SIZE);
+-	if (ionic->dl_port.registered)
+-		devlink_port_unregister(&ionic->dl_port);
++	devlink_port_unregister(&ionic->dl_port);
+ 	devlink_unregister(dl);
+ }
 -- 
 2.30.2
 
