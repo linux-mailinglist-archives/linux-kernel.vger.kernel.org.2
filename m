@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10332408CCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7631408F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240789AbhIMNVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35044 "EHLO mail.kernel.org"
+        id S242515AbhIMNnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:43:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240355AbhIMNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:20:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4FB861213;
-        Mon, 13 Sep 2021 13:18:36 +0000 (UTC)
+        id S243112AbhIMNiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:38:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A52613CE;
+        Mon, 13 Sep 2021 13:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539117;
-        bh=pIxkAktNOY6QrjhQFrr7cN3KAeyJ+LBvpT2YKAK+pAs=;
+        s=korg; t=1631539696;
+        bh=54opRNZffh/YZmHEJUAs+p6fS++AsL+5onCIpjO2XTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rhcR/ZF/fe+hvKcgHP+U+qDZBBHPvFvGYCqL8LsH+Cyr6qrMlbhcwmUp2yjr7q76Q
-         IH/q/1yYnliulF2/d/4ejzpSLqyYNd8ctUob7tH8kPlLWj8r2Gpjo22e04rt0NIziK
-         54JaeJiNQCt4/uIX4EYZJubP+LngS7qB9HIN+MV8=
+        b=uyLpb4+mF+bYHWhKmdkqbArGO0vaWLf7nxOz5NNbWYVwK9Ug7KDxJ/PU57QWRSL0j
+         3Fzsm+Ju6CkQNA96lcILodjizg7aXl90JT5/xInbO5efMs8tXByYdTjQ46MCtrBxw6
+         wYSUMOcfFq4wvv9OwFoWZb6ftfexER4ttKN6D36Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khalasa@piap.pl>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 047/144] media: TDA1997x: enable EDID support
-Date:   Mon, 13 Sep 2021 15:13:48 +0200
-Message-Id: <20210913131049.517711514@linuxfoundation.org>
+Subject: [PATCH 5.10 124/236] media: venus: venc: Fix potential null pointer dereference on pointer fmt
+Date:   Mon, 13 Sep 2021 15:13:49 +0200
+Message-Id: <20210913131104.578335783@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Hałasa <khalasa@piap.pl>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit ea3e1c36e38810427485f06c2becc1f29e54521d ]
+[ Upstream commit 09ea9719a423fc675d40dd05407165e161ea0c48 ]
 
-Without this patch, the TDA19971 chip's EDID is inactive.
-EDID never worked with this driver, it was all tested with HDMI signal
-sources which don't need EDID support.
+Currently the call to find_format can potentially return a NULL to
+fmt and the nullpointer is later dereferenced on the assignment of
+pixmp->num_planes = fmt->num_planes.  Fix this by adding a NULL pointer
+check and returning NULL for the failure case.
 
-Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
-Fixes: 9ac0038db9a7 ("media: i2c: Add TDA1997x HDMI receiver driver")
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Addresses-Coverity: ("Dereference null return")
+
+Fixes: aaaa93eda64b ("[media] media: venus: venc: add video encoder files")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/platform/qcom/venus/venc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index e43d8327b810..1088161498df 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -2233,6 +2233,7 @@ static int tda1997x_core_init(struct v4l2_subdev *sd)
- 	/* get initial HDMI status */
- 	state->hdmi_status = io_read(sd, REG_HDMI_FLAGS);
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 47246528ac7e..e2d0fd5eaf29 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -183,6 +183,8 @@ venc_try_fmt_common(struct venus_inst *inst, struct v4l2_format *f)
+ 		else
+ 			return NULL;
+ 		fmt = find_format(inst, pixmp->pixelformat, f->type);
++		if (!fmt)
++			return NULL;
+ 	}
  
-+	io_write(sd, REG_EDID_ENABLE, EDID_ENABLE_A_EN | EDID_ENABLE_B_EN);
- 	return 0;
- }
- 
+ 	pixmp->width = clamp(pixmp->width, frame_width_min(inst),
 -- 
 2.30.2
 
