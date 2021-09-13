@@ -2,157 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF15540874D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86038408759
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238125AbhIMIql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:46:41 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40311 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236022AbhIMIqk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:46:40 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 563CF580C64;
-        Mon, 13 Sep 2021 04:45:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 13 Sep 2021 04:45:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=3xA6WliwGm5jheo/QDh1OhhZHgC
-        8t0qVZf0QWCOOHQY=; b=QK6e7NYjQrp3tC9TWK86Gz7Llio7+rF5/1HJVaEFRSU
-        hm2686y27TjHe+yJ37qLGYnfd4xHOdMPASf1rPnSgC7lKW7sKhsr1WGlunegHLyP
-        1BdtwcGB+0tYCUuW7LAYIWxQ//uEIw+SvAd83lOSzzQJuHZzTjWOL7axsfxTAsaF
-        NPnxjr4s+kqB09JEzRn6eywmxALCnAw4zPqw5V9BBckKB52aufakZ9iKGufj/7aF
-        QZzB4eVRb98Z3LoCV6sQ4LeHkQIwJi9qvEgFEKcLIvUoqtooFJ2lTNU+7mbw3Rj/
-        C2WaOdVdxA3lKpBNTL9BcPTp6VQCHcMbeXCbcFb8cKQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3xA6Wl
-        iwGm5jheo/QDh1OhhZHgC8t0qVZf0QWCOOHQY=; b=k7OjXt+/juxGGdFbWdXMNy
-        BZ5IJiEWYmT62dPp6ekQ/Mb9USqzKMaNXssS/U8ddVrj5J35CZg1+yXLxTbXv1Gz
-        z52tz7cVTBV19ptU0HlrMfr7JRRAg5zn6vyo025iWM03Zw0KlN1dJolHW5vdewOp
-        ZT+jUaYMjzm3DXWaBumhNi+HRiCdbTXeSSi1xxsi56/8/KF9Jp/nOJNW2zikUqrD
-        NZjk8+btDjxFK5hlt6U9UquOWh95iACkP/SI/a98Z5abkIz77TGgxaiiDcnZv680
-        W6OAjtsomwZd9BLvL4uO1GI/a1NpHcV5axUeKGHW0p1FUywy1WnNGO8WVKTYzqPg
-        ==
-X-ME-Sender: <xms:og8_YfeGI-H8Jzo1-4nlnDG2CzdriHN4qqJokV0kqSXQ-irHKwR49A>
-    <xme:og8_YVN9DK0SBXqSgmmCShDGwpiDISkwR1hw4RxHafOylk48FpsfISNILrzsAZOHG
-    3P7lIgbYJyZpXvOA64>
-X-ME-Received: <xmr:og8_YYhGzmCx7aKLDWDfVwg4U0mooJAx95Yu5ICCqGSdZY2WtLYJiT7ImqTYTu_71J4DXKLjZyZMTHRvS1wrexvWgJtyYtO2DqSr>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegjedgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:og8_YQ-kdcXTlmRHsqOj73Kn8AkrFpXxTNmqxeRu7aqI6aP3C-jFtQ>
-    <xmx:og8_YbsYlEB4kfkPeHb3sKr1Vsgmhxiut0TQ0WzfaJcfhzjCijCu3Q>
-    <xmx:og8_YfElkQQNWjLF0uU1obSU68HDbbsSDil_rJUBvAiJluItFn1lgQ>
-    <xmx:pA8_YXTCZWgfiG9sLalqvJ0FGekWvOy48LUP0K_qo2D3_FbiXA5-CQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Sep 2021 04:45:21 -0400 (EDT)
-Date:   Mon, 13 Sep 2021 10:45:20 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     guoren@kernel.org
-Cc:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
-        christoph.muellner@vrull.eu, philipp.tomsich@vrull.eu, hch@lst.de,
-        liush@allwinnertech.com, wefu@redhat.com, lazyparser@gmail.com,
-        drew@beagleboard.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, taiten.peng@canonical.com,
-        aniket.ponkshe@canonical.com, heinrich.schuchardt@canonical.com,
-        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [RFC PATCH V4 6/6] riscv: soc: Add Allwinner SoC kconfig option
-Message-ID: <20210913084520.kkbsupogkzv226x3@gilmour>
-References: <20210911092139.79607-1-guoren@kernel.org>
- <20210911092139.79607-7-guoren@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="p2xnpxdfevxsmmn3"
-Content-Disposition: inline
-In-Reply-To: <20210911092139.79607-7-guoren@kernel.org>
+        id S238179AbhIMItZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:49:25 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:35022 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237849AbhIMItY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:49:24 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CBA4A202A17;
+        Mon, 13 Sep 2021 10:48:07 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BE8D0202A2E;
+        Mon, 13 Sep 2021 10:48:07 +0200 (CEST)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 434B6202EC;
+        Mon, 13 Sep 2021 10:48:07 +0200 (CEST)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, Abel Vesa <abel.vesa@nxp.com>
+Subject: [PATCH 00/10] arm64: dts: Add i.MX8DXL initial support
+Date:   Mon, 13 Sep 2021 11:47:44 +0300
+Message-Id: <1631522874-19862-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This allows i.MX8DXL EVK board to boot to prompt.
 
---p2xnpxdfevxsmmn3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Abel Vesa (5):
+  arm64: dts: imx8-ss-lsio: Add mu5a mailbox
+  arm64: dts: freescale: Add adma subsystem dtsi for imx8dxl
+  dt-bindings: fsl: scu: add i.MX8DXL ocotp binding
+  dt-bindings: i2c: imx-lpi2c: Add i.MX8DXL compatible match
+  dt-bindings: serial: fsl-lpuart: Add i.MX8DXL compatible
 
-Hi,
+Jacky Bai (5):
+  arm64: dts: freescale: Add the top level dtsi support for imx8dxl
+  arm64: dts: freescale: Add the imx8dxl connectivity subsys dtsi
+  arm64: dts: freescale: Add ddr subsys dtsi for imx8dxl
+  arm64: dts: freescale: Add lsio subsys dtsi for imx8dxl
+  arm64: dts: imx8dxl: Add i.MX8DXL evk board support
 
-On Sat, Sep 11, 2021 at 05:21:39PM +0800, guoren@kernel.org wrote:
-> From: Liu Shaohua <liush@allwinnertech.com>
->=20
-> Add Allwinner kconfig option which selects SoC specific and common
-> drivers that is required for this SoC.
->=20
-> Allwinner D1 uses custom PTE attributes to solve non-coherency SOC
-> interconnect issues for dma synchronization, so we set the default
-> value when SOC_SUNXI selected.
->=20
-> Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Wei Fu <wefu@redhat.com>
-> Cc: Anup Patel <anup.patel@wdc.com>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Drew Fustini <drew@beagleboard.org>
-> Cc: Maxime Ripard <maxime@cerno.tech>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Wei Wu <lazyparser@gmail.com>
-> ---
->  arch/riscv/Kconfig.socs      | 15 +++++++++++++++
->  arch/riscv/configs/defconfig |  1 +
->  2 files changed, 16 insertions(+)
->=20
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index 30676ebb16eb..8721c000ef23 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -70,4 +70,19 @@ config SOC_CANAAN_K210_DTB_SOURCE
-> =20
->  endif
-> =20
-> +config SOC_SUNXI
-> +	bool "Allwinner SoCs"
-> +	depends on MMU
-> +	select DWMAC_GENERIC
-> +	select ERRATA_THEAD
-> +	select RISCV_DMA_NONCOHERENT
-> +	select RISCV_ERRATA_ALTERNATIVE
-> +	select SERIAL_8250
-> +	select SERIAL_8250_CONSOLE
-> +	select SERIAL_8250_DW
-> +	select SIFIVE_PLIC
-> +	select STMMAC_ETH
-> +	help
-> +	  This enables support for Allwinner SoC platforms like the D1.
-> +
+ .../bindings/arm/freescale/fsl,scu.txt        |   3 +-
+ .../bindings/i2c/i2c-imx-lpi2c.yaml           |   2 +
+ .../bindings/serial/fsl-lpuart.yaml           |   1 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../boot/dts/freescale/imx8-ss-lsio.dtsi      |   7 +
+ arch/arm64/boot/dts/freescale/imx8dxl-evk.dts | 266 ++++++++++++++++++
+ .../boot/dts/freescale/imx8dxl-ss-adma.dtsi   |  53 ++++
+ .../boot/dts/freescale/imx8dxl-ss-conn.dtsi   | 137 +++++++++
+ .../boot/dts/freescale/imx8dxl-ss-ddr.dtsi    |  36 +++
+ .../boot/dts/freescale/imx8dxl-ss-lsio.dtsi   |  78 +++++
+ arch/arm64/boot/dts/freescale/imx8dxl.dtsi    | 245 ++++++++++++++++
+ 11 files changed, 828 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-adma.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-conn.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-ddr.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl-ss-lsio.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8dxl.dtsi
 
-I'm not sure we should select the drivers there. We could very well
-imagine a board without UART, or even more so without ethernet.
+-- 
+2.31.1
 
-These options should be in the defconfig.
-
-Maxime
-
---p2xnpxdfevxsmmn3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYT8PoAAKCRDj7w1vZxhR
-xbVnAQCSKte+mjnWETzsLGCmouHNDj3ez50SJLr19qM4sU85pwD6AxCJ/iy45OIu
-yqt3psn20BR6AvoN5uS5dcTBkr2TLgI=
-=Tz1F
------END PGP SIGNATURE-----
-
---p2xnpxdfevxsmmn3--
