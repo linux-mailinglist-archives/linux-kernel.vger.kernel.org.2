@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A353B409237
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D619409513
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344611AbhIMOJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
+        id S1346151AbhIMOhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344301AbhIMOEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:04:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F8B61A57;
-        Mon, 13 Sep 2021 13:39:17 +0000 (UTC)
+        id S1345575AbhIMObu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:31:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 066ED6139F;
+        Mon, 13 Sep 2021 13:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540358;
-        bh=pyy8q8caTEBVtMulRO5jgxfmBBL852cVJ3x3bjtFNsA=;
+        s=korg; t=1631541116;
+        bh=Ktgn8aSBo1BQ6ZVaoVGvXutuao0+WIThFwopXTUPNLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m+bPlOhKjCeZPFilOpWZBNGFcvWfVWBC05gZ4sHxLiScHElkiVWdnVPK8iCn/iyV2
-         c02O2t6DeJva1keoF4DOPOw/PhcbXllyh0c6uOS9A8FQMUk7XDQNz4tnmr1PYTLzyO
-         T7ImBIwM3K70ko9hiVFUYyqfwIT1yWiKEMrpjbV0=
+        b=urTss1sXkFELeXPq/xSMxwWREdnNx7NDDK5+Glh1uNFLQN8Kj0ul1LW4ev6udXXiE
+         ciK7dY9CgE8uBLzfQrhZ4uNdNyl5L5pzJccDBQZh7bI/gah/2Gd39LLoWaW4YqGN8I
+         xc2OrNCN7aiSR+JtZefcyrgdSgVvwovMeKrWevfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Daniel Abrecht <public@danielabrecht.ch>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 129/300] drm: mxsfb: Increase number of outstanding requests on V4 and newer HW
-Date:   Mon, 13 Sep 2021 15:13:10 +0200
-Message-Id: <20210913131113.751853855@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
+Subject: [PATCH 5.14 137/334] net: cipso: fix warnings in netlbl_cipsov4_add_std
+Date:   Mon, 13 Sep 2021 15:13:11 +0200
+Message-Id: <20210913131117.997562952@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,123 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 9891cb54445bc65bf156bda416b6215048c7f617 ]
+[ Upstream commit 8ca34a13f7f9b3fa2c464160ffe8cc1a72088204 ]
 
-In case the DRAM is under high load, the MXSFB FIFO might underflow
-and that causes visible artifacts. This could be triggered on i.MX8MM
-using e.g. "$ memtester 128M" on a device with 1920x1080 panel. The
-first "Stuck Address" test of the memtester will completely corrupt
-the image on the panel and leave the MXSFB FIFO in odd state.
+Syzbot reported warning in netlbl_cipsov4_add(). The
+problem was in too big doi_def->map.std->lvl.local_size
+passed to kcalloc(). Since this value comes from userpace there is
+no need to warn if value is not correct.
 
-To avoid this underflow, increase number of outstanding requests to
-DRAM from 2 to 16, which is the maximum. This mitigates the issue
-and it can no longer be triggered.
+The same problem may occur with other kcalloc() calls in
+this function, so, I've added __GFP_NOWARN flag to all
+kcalloc() calls there.
 
-Fixes: 45d59d704080 ("drm: Add new driver for MXSFB controller")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Daniel Abrecht <public@danielabrecht.ch>
-Cc: Emil Velikov <emil.l.velikov@gmail.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Lucas Stach <l.stach@pengutronix.de>
-Cc: Stefan Agner <stefan@agner.ch>
-Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210620224759.189351-1-marex@denx.de
+Reported-and-tested-by: syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
+Fixes: 96cb8e3313c7 ("[NetLabel]: CIPSOv4 and Unlabeled packet integration")
+Acked-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mxsfb/mxsfb_drv.c  | 3 +++
- drivers/gpu/drm/mxsfb/mxsfb_drv.h  | 1 +
- drivers/gpu/drm/mxsfb/mxsfb_kms.c  | 8 ++++++++
- drivers/gpu/drm/mxsfb/mxsfb_regs.h | 8 ++++++++
- 4 files changed, 20 insertions(+)
+ net/netlabel/netlabel_cipso_v4.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 6da93551e2e5..c277d3f61a5e 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -51,6 +51,7 @@ static const struct mxsfb_devdata mxsfb_devdata[] = {
- 		.hs_wdth_mask	= 0xff,
- 		.hs_wdth_shift	= 24,
- 		.has_overlay	= false,
-+		.has_ctrl2	= false,
- 	},
- 	[MXSFB_V4] = {
- 		.transfer_count	= LCDC_V4_TRANSFER_COUNT,
-@@ -59,6 +60,7 @@ static const struct mxsfb_devdata mxsfb_devdata[] = {
- 		.hs_wdth_mask	= 0x3fff,
- 		.hs_wdth_shift	= 18,
- 		.has_overlay	= false,
-+		.has_ctrl2	= true,
- 	},
- 	[MXSFB_V6] = {
- 		.transfer_count	= LCDC_V4_TRANSFER_COUNT,
-@@ -67,6 +69,7 @@ static const struct mxsfb_devdata mxsfb_devdata[] = {
- 		.hs_wdth_mask	= 0x3fff,
- 		.hs_wdth_shift	= 18,
- 		.has_overlay	= true,
-+		.has_ctrl2	= true,
- 	},
- };
- 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.h b/drivers/gpu/drm/mxsfb/mxsfb_drv.h
-index 399d23e91ed1..7c720e226fdf 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.h
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.h
-@@ -22,6 +22,7 @@ struct mxsfb_devdata {
- 	unsigned int	hs_wdth_mask;
- 	unsigned int	hs_wdth_shift;
- 	bool		has_overlay;
-+	bool		has_ctrl2;
- };
- 
- struct mxsfb_drm_private {
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-index 01e0f525360f..5bcc06c1ac0b 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
-@@ -107,6 +107,14 @@ static void mxsfb_enable_controller(struct mxsfb_drm_private *mxsfb)
- 		clk_prepare_enable(mxsfb->clk_disp_axi);
- 	clk_prepare_enable(mxsfb->clk);
- 
-+	/* Increase number of outstanding requests on all supported IPs */
-+	if (mxsfb->devdata->has_ctrl2) {
-+		reg = readl(mxsfb->base + LCDC_V4_CTRL2);
-+		reg &= ~CTRL2_SET_OUTSTANDING_REQS_MASK;
-+		reg |= CTRL2_SET_OUTSTANDING_REQS_16;
-+		writel(reg, mxsfb->base + LCDC_V4_CTRL2);
-+	}
-+
- 	/* If it was disabled, re-enable the mode again */
- 	writel(CTRL_DOTCLK_MODE, mxsfb->base + LCDC_CTRL + REG_SET);
- 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_regs.h b/drivers/gpu/drm/mxsfb/mxsfb_regs.h
-index df90e960f495..694fea13e893 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_regs.h
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_regs.h
-@@ -15,6 +15,7 @@
- #define LCDC_CTRL			0x00
- #define LCDC_CTRL1			0x10
- #define LCDC_V3_TRANSFER_COUNT		0x20
-+#define LCDC_V4_CTRL2			0x20
- #define LCDC_V4_TRANSFER_COUNT		0x30
- #define LCDC_V4_CUR_BUF			0x40
- #define LCDC_V4_NEXT_BUF		0x50
-@@ -61,6 +62,13 @@
- #define CTRL1_CUR_FRAME_DONE_IRQ_EN	BIT(13)
- #define CTRL1_CUR_FRAME_DONE_IRQ	BIT(9)
- 
-+#define CTRL2_SET_OUTSTANDING_REQS_1	0
-+#define CTRL2_SET_OUTSTANDING_REQS_2	(0x1 << 21)
-+#define CTRL2_SET_OUTSTANDING_REQS_4	(0x2 << 21)
-+#define CTRL2_SET_OUTSTANDING_REQS_8	(0x3 << 21)
-+#define CTRL2_SET_OUTSTANDING_REQS_16	(0x4 << 21)
-+#define CTRL2_SET_OUTSTANDING_REQS_MASK	(0x7 << 21)
-+
- #define TRANSFER_COUNT_SET_VCOUNT(x)	(((x) & 0xffff) << 16)
- #define TRANSFER_COUNT_GET_VCOUNT(x)	(((x) >> 16) & 0xffff)
- #define TRANSFER_COUNT_SET_HCOUNT(x)	((x) & 0xffff)
+diff --git a/net/netlabel/netlabel_cipso_v4.c b/net/netlabel/netlabel_cipso_v4.c
+index baf235721c43..000bb3da4f77 100644
+--- a/net/netlabel/netlabel_cipso_v4.c
++++ b/net/netlabel/netlabel_cipso_v4.c
+@@ -187,14 +187,14 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
+ 		}
+ 	doi_def->map.std->lvl.local = kcalloc(doi_def->map.std->lvl.local_size,
+ 					      sizeof(u32),
+-					      GFP_KERNEL);
++					      GFP_KERNEL | __GFP_NOWARN);
+ 	if (doi_def->map.std->lvl.local == NULL) {
+ 		ret_val = -ENOMEM;
+ 		goto add_std_failure;
+ 	}
+ 	doi_def->map.std->lvl.cipso = kcalloc(doi_def->map.std->lvl.cipso_size,
+ 					      sizeof(u32),
+-					      GFP_KERNEL);
++					      GFP_KERNEL | __GFP_NOWARN);
+ 	if (doi_def->map.std->lvl.cipso == NULL) {
+ 		ret_val = -ENOMEM;
+ 		goto add_std_failure;
+@@ -263,7 +263,7 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
+ 		doi_def->map.std->cat.local = kcalloc(
+ 					      doi_def->map.std->cat.local_size,
+ 					      sizeof(u32),
+-					      GFP_KERNEL);
++					      GFP_KERNEL | __GFP_NOWARN);
+ 		if (doi_def->map.std->cat.local == NULL) {
+ 			ret_val = -ENOMEM;
+ 			goto add_std_failure;
+@@ -271,7 +271,7 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
+ 		doi_def->map.std->cat.cipso = kcalloc(
+ 					      doi_def->map.std->cat.cipso_size,
+ 					      sizeof(u32),
+-					      GFP_KERNEL);
++					      GFP_KERNEL | __GFP_NOWARN);
+ 		if (doi_def->map.std->cat.cipso == NULL) {
+ 			ret_val = -ENOMEM;
+ 			goto add_std_failure;
 -- 
 2.30.2
 
