@@ -2,258 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1AE40856F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459C840856A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237693AbhIMHgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:36:35 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:44701 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237650AbhIMHgc (ORCPT
+        id S237642AbhIMHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:35:45 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15405 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237568AbhIMHfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:36:32 -0400
-Received: by mail-io1-f70.google.com with SMTP id d15-20020a0566022befb02905b2e9040807so13294668ioy.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:35:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/3qBOAIb+oaRU7Tdnh7gYqhJUSX0yw+IA0kkRZFt0kc=;
-        b=4fgjw4S5E9dNLFwC1n+ZLyHxnCKKZVtO/nbbv1PxTwixWXCBbPjwgWZQbgkJBSnEAv
-         mPMMjl9wYWGlnyN5lWAM4RUIg+FoJ6QmmeLdMYZmluhM/k2axtkE3ejYs9FJR+akDBGL
-         h6KNlxRZ+8qrtakxOHXOhdG2uZMagedFX5wGxFpIj+/pebAYm6m9a5ITVn42zQgPzfCv
-         Wohw1pC3dsF1kOLIrgh1kwGMLu6RUlht/quksxmUSO4hINIM7mQ1KhMYFiaoL6wjwI/+
-         XtRoJ34gxJCydgxD6qn1Qkc4Wd40CvBh0SpxN75ZYPjrhgTA6MkDzNujShFB+R3U3F81
-         0KBQ==
-X-Gm-Message-State: AOAM530/H8s/l0A48NAgrhT837N28zEkVZOVXpVbwLNldYTaQaEzO6nc
-        PifU4LnEs9EPVhKGPdNtsQzZDU27IHYosnruDvZmHNxdCT9T
-X-Google-Smtp-Source: ABdhPJx12rehXBwlP8baN/io1bE9dR/hn6Ey3EZbk81ecOzOD0eXQ2VGJUHfrbqrFsM83KouMFk3H0dh50n+bblShcLX6fCTq3ia
+        Mon, 13 Sep 2021 03:35:43 -0400
+Received: from dggeml761-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H7J6P3tNyzQrl5
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 15:30:21 +0800 (CST)
+Received: from huawei.com (10.175.127.234) by dggeml761-chm.china.huawei.com
+ (10.1.199.171) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Mon, 13
+ Sep 2021 15:34:25 +0800
+From:   Wenyu Liu <liuwenyu7@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <yeyunfeng@huawei.com>, <hewenliang4@huawei.com>,
+        <wuxu.wu@huawei.com>
+Subject: [PATCH] tools api fs: fix the concurrency problem for  xxx__mountpoint()
+Date:   Mon, 13 Sep 2021 03:35:53 -0400
+Message-ID: <20210913073553.3384908-1-liuwenyu7@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1909:: with SMTP id p9mr3367647jal.108.1631518516808;
- Mon, 13 Sep 2021 00:35:16 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 00:35:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a3958805cbdb8102@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in nft_table_lookup (2)
-From:   syzbot <syzbot+f31660cf279b0557160c@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.234]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeml761-chm.china.huawei.com (10.1.199.171)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+When xxx_mountpoint() first acquires the mountpoint
+path,it also fills the path into fs__entries[idx]->path
+and set fs__entries[idx]->found to be true.
 
-syzbot found the following issue on:
+After that,every time xxx_mountpoint() is executed,the
+path is gotten directly from fs__entries[idx]->path.
 
-HEAD commit:    0f4b9289bad3 Merge tag 'docs-5.15-2' of git://git.lwn.net/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e95663300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ddf81d5d49fe3452
-dashboard link: https://syzkaller.appspot.com/bug?extid=f31660cf279b0557160c
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f78feb300000
+There will be a concurrency problem:
+The fs__entries[idx]->found has been set by a thread,
+but the fs__entries[idx]->path has not been completely
+filled.
+However, another thread thinks that the mountpoint path
+has been found and read it from fs__entries[idx]->path.
 
-The issue was bisected to:
+We found this bug when we repeatedly executed the
+"perf top" command:
+When the "perf top" command is executed, multiple
+threads are created and concurrently execute the func
+hugetlbfs_mountpoint().
 
-commit 6001a930ce0378b62210d4f83583fc88a903d89d
-Author: Pablo Neira Ayuso <pablo@netfilter.org>
-Date:   Mon Feb 15 11:28:07 2021 +0000
+Using memory barrier alone does not solve this problem,
+because if the current thread thinks the path is not
+found,it will still trys to find the path and fills it
+into fs__entries[idx]->path,it also will causes other
+threads that are getting fs__entries[idx]->path to read
+a wrong path.
 
-    netfilter: nftables: introduce table ownership
+This patch add a mutex_lock when fs__get_mountpoint(fs)
+is filling the fs->path,and uses memory barrier to ensure
+the path is completely filled before the fs->found is set.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f4170b300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f4170b300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f4170b300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f31660cf279b0557160c@syzkaller.appspotmail.com
-Fixes: 6001a930ce03 ("netfilter: nftables: introduce table ownership")
-
-==================================================================
-BUG: KASAN: use-after-free in memcmp+0x18f/0x1c0 lib/string.c:955
-Read of size 1 at addr ffff88806ef7e690 by task syz-executor.0/16206
-
-CPU: 1 PID: 16206 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- memcmp+0x18f/0x1c0 lib/string.c:955
- memcmp include/linux/fortify-string.h:235 [inline]
- nla_strcmp+0xf2/0x130 lib/nlattr.c:836
- nft_table_lookup.part.0+0x1a2/0x460 net/netfilter/nf_tables_api.c:570
- nft_table_lookup net/netfilter/nf_tables_api.c:4064 [inline]
- nf_tables_getset+0x1b3/0x860 net/netfilter/nf_tables_api.c:4064
- nfnetlink_rcv_msg+0x659/0x13f0 net/netfilter/nfnetlink.c:285
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f34c684e188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000020000d80 RDI: 0000000000000004
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffdd7170d4f R14: 00007f34c684e300 R15: 0000000000022000
-
-Allocated by task 16206:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
- kmalloc include/linux/slab.h:596 [inline]
- nla_strdup+0xc8/0x150 lib/nlattr.c:769
- nf_tables_newtable+0xe5e/0x1b40 net/netfilter/nf_tables_api.c:1116
- nfnetlink_rcv_batch+0x1710/0x25f0 net/netfilter/nfnetlink.c:513
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
- nfnetlink_rcv+0x3af/0x420 net/netfilter/nfnetlink.c:652
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 16205:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1700 [inline]
- slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
- slab_free mm/slub.c:3483 [inline]
- kfree+0xe4/0x530 mm/slub.c:4543
- nf_tables_table_destroy+0xd2/0x1b0 net/netfilter/nf_tables_api.c:1313
- __nft_release_table+0xabc/0xe30 net/netfilter/nf_tables_api.c:9603
- nft_rcv_nl_event+0x4af/0x590 net/netfilter/nf_tables_api.c:9645
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- blocking_notifier_call_chain kernel/notifier.c:318 [inline]
- blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:306
- netlink_release+0xcb8/0x1dd0 net/netlink/af_netlink.c:785
- __sock_release+0xcd/0x280 net/socket.c:649
- sock_close+0x18/0x20 net/socket.c:1314
- __fput+0x288/0x9f0 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88806ef7e690
- which belongs to the cache kmalloc-8 of size 8
-The buggy address is located 0 bytes inside of
- 8-byte region [ffff88806ef7e690, ffff88806ef7e698)
-The buggy address belongs to the page:
-page:ffffea0001bbdf80 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88806ef7ee10 pfn:0x6ef7e
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 ffffea00004deb00 0000000300000003 ffff888010c41280
-raw: ffff88806ef7ee10 0000000080660054 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 6577, ts 1160917309588, free_ts 1160767773568
- prep_new_page mm/page_alloc.c:2424 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4151
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5373
- alloc_pages+0x1a7/0x300 mm/mempolicy.c:2291
- alloc_slab_page mm/slub.c:1763 [inline]
- allocate_slab mm/slub.c:1900 [inline]
- new_slab+0x319/0x490 mm/slub.c:1963
- ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
- __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
- slab_alloc_node mm/slub.c:3172 [inline]
- __kmalloc_node+0x2d2/0x370 mm/slub.c:4435
- kmalloc_node include/linux/slab.h:614 [inline]
- __vmalloc_area_node mm/vmalloc.c:2903 [inline]
- __vmalloc_node_range+0x5ec/0x9e0 mm/vmalloc.c:3020
- __vmalloc_node mm/vmalloc.c:3069 [inline]
- vzalloc+0x67/0x80 mm/vmalloc.c:3139
- do_arpt_get_ctl+0x5f6/0x8f0 net/ipv4/netfilter/arp_tables.c:659
- nf_getsockopt+0x72/0xd0 net/netfilter/nf_sockopt.c:116
- ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
- ip_getsockopt+0x164/0x1c0 net/ipv4/ip_sockglue.c:1756
- tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4254
- __sys_getsockopt+0x21f/0x5f0 net/socket.c:2220
- __do_sys_getsockopt net/socket.c:2235 [inline]
- __se_sys_getsockopt net/socket.c:2232 [inline]
- __x64_sys_getsockopt+0xba/0x150 net/socket.c:2232
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1338 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
- free_unref_page_prepare mm/page_alloc.c:3315 [inline]
- free_unref_page_list+0x1a1/0x1010 mm/page_alloc.c:3431
- release_pages+0x830/0x20b0 mm/swap.c:950
- tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
- tlb_flush_mmu mm/mmu_gather.c:249 [inline]
- tlb_finish_mmu+0x165/0x8c0 mm/mmu_gather.c:340
- exit_mmap+0x1ea/0x620 mm/mmap.c:3173
- __mmput+0x122/0x4b0 kernel/fork.c:1114
- mmput+0x58/0x60 kernel/fork.c:1135
- exit_mm kernel/exit.c:501 [inline]
- do_exit+0xabc/0x2a30 kernel/exit.c:812
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2868
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff88806ef7e580: fc fc fc fc fb fc fc fc fc fb fc fc fc fc fb fc
- ffff88806ef7e600: fc fc fc fb fc fc fc fc fb fc fc fc fc fb fc fc
->ffff88806ef7e680: fc fc fa fc fc fc fc fa fc fc fc fc fa fc fc fc
-                         ^
- ffff88806ef7e700: fc fa fc fc fc fc fa fc fc fc fc fa fc fc fc fc
- ffff88806ef7e780: fa fc fc fc fc fa fc fc fc fc fa fc fc fc fc fa
-==================================================================
-
-
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Signed-off-by: Wenyu Liu <liuwenyu7@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/lib/api/Makefile |  1 +
+ tools/lib/api/fs/fs.c  | 51 +++++++++++++++++++++++++++++++++---------
+ 2 files changed, 42 insertions(+), 10 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
+index a13e9c7f1fc5..b75ba280dde9 100644
+--- a/tools/lib/api/Makefile
++++ b/tools/lib/api/Makefile
+@@ -19,6 +19,7 @@ LIBFILE = $(OUTPUT)libapi.a
+ 
+ CFLAGS := $(EXTRA_WARNINGS) $(EXTRA_CFLAGS)
+ CFLAGS += -ggdb3 -Wall -Wextra -std=gnu99 -U_FORTIFY_SOURCE -fPIC
++CFLAGS += -lpthread
+ 
+ ifeq ($(DEBUG),0)
+ ifeq ($(CC_NO_CLANG), 0)
+diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+index 82f53d81a7a7..65d19de3911c 100644
+--- a/tools/lib/api/fs/fs.c
++++ b/tools/lib/api/fs/fs.c
+@@ -12,6 +12,9 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <sys/mount.h>
++#include <pthread.h>
++#include <asm/barrier.h>
++#include <linux/compiler.h>
+ 
+ #include "fs.h"
+ #include "debug-internal.h"
+@@ -92,6 +95,7 @@ struct fs {
+ 	bool			 found;
+ 	bool			 checked;
+ 	long			 magic;
++	pthread_mutex_t		 lock;
+ };
+ 
+ enum {
+@@ -113,43 +117,69 @@ static struct fs fs__entries[] = {
+ 		.mounts	= sysfs__fs_known_mountpoints,
+ 		.magic	= SYSFS_MAGIC,
+ 		.checked = false,
++		.lock = PTHREAD_MUTEX_INITIALIZER,
+ 	},
+ 	[FS__PROCFS] = {
+ 		.name	= "proc",
+ 		.mounts	= procfs__known_mountpoints,
+ 		.magic	= PROC_SUPER_MAGIC,
+ 		.checked = false,
++		.lock = PTHREAD_MUTEX_INITIALIZER,
+ 	},
+ 	[FS__DEBUGFS] = {
+ 		.name	= "debugfs",
+ 		.mounts	= debugfs__known_mountpoints,
+ 		.magic	= DEBUGFS_MAGIC,
+ 		.checked = false,
++		.lock = PTHREAD_MUTEX_INITIALIZER,
+ 	},
+ 	[FS__TRACEFS] = {
+ 		.name	= "tracefs",
+ 		.mounts	= tracefs__known_mountpoints,
+ 		.magic	= TRACEFS_MAGIC,
+ 		.checked = false,
++		.lock = PTHREAD_MUTEX_INITIALIZER,
+ 	},
+ 	[FS__HUGETLBFS] = {
+ 		.name	= "hugetlbfs",
+ 		.mounts = hugetlbfs__known_mountpoints,
+ 		.magic	= HUGETLBFS_MAGIC,
+ 		.checked = false,
++		.lock = PTHREAD_MUTEX_INITIALIZER,
+ 	},
+ 	[FS__BPF_FS] = {
+ 		.name	= "bpf",
+ 		.mounts = bpf_fs__known_mountpoints,
+ 		.magic	= BPF_FS_MAGIC,
+ 		.checked = false,
++		.lock = PTHREAD_MUTEX_INITIALIZER,
+ 	},
+ };
+ 
++static void fs_fill_path(struct fs *fs, const char *path, size_t len)
++{
++	if (len >= sizeof(fs->path))
++		len = sizeof(fs->path) - 1;
++
++	pthread_mutex_lock(&fs->lock);
++	if (fs->found) {
++		pthread_mutex_unlock(&fs->lock);
++		return;
++	}
++	strncpy(fs->path, path, len);
++	fs->path[len] = '\0';
++	/* Make sure the path is filled before fs->found is set */
++	smp_wmb();
++	fs->found = true;
++	pthread_mutex_unlock(&fs->lock);
++}
++
++
+ static bool fs__read_mounts(struct fs *fs)
+ {
+ 	bool found = false;
+ 	char type[100];
++	char path[PATH_MAX];
+ 	FILE *fp;
+ 
+ 	fp = fopen("/proc/mounts", "r");
+@@ -158,15 +188,17 @@ static bool fs__read_mounts(struct fs *fs)
+ 
+ 	while (!found &&
+ 	       fscanf(fp, "%*s %" STR(PATH_MAX) "s %99s %*s %*d %*d\n",
+-		      fs->path, type) == 2) {
++		      path, type) == 2) {
+ 
+-		if (strcmp(type, fs->name) == 0)
++		if (strcmp(type, fs->name) == 0) {
++			fs_fill_path(fs, path, sizeof(path) - 1);
+ 			found = true;
++		}
+ 	}
+ 
+ 	fclose(fp);
+ 	fs->checked = true;
+-	return fs->found = found;
++	return found;
+ }
+ 
+ static int fs__valid_mount(const char *fs, long magic)
+@@ -188,8 +220,7 @@ static bool fs__check_mounts(struct fs *fs)
+ 	ptr = fs->mounts;
+ 	while (*ptr) {
+ 		if (fs__valid_mount(*ptr, fs->magic) == 0) {
+-			fs->found = true;
+-			strcpy(fs->path, *ptr);
++			fs_fill_path(fs, *ptr, strlen(*ptr));
+ 			return true;
+ 		}
+ 		ptr++;
+@@ -227,10 +258,7 @@ static bool fs__env_override(struct fs *fs)
+ 	if (!override_path)
+ 		return false;
+ 
+-	fs->found = true;
+-	fs->checked = true;
+-	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
+-	fs->path[sizeof(fs->path) - 1] = '\0';
++	fs_fill_path(fs, override_path, sizeof(fs->path) - 1);
+ 	return true;
+ }
+ 
+@@ -252,8 +280,11 @@ static const char *fs__mountpoint(int idx)
+ {
+ 	struct fs *fs = &fs__entries[idx];
+ 
+-	if (fs->found)
++	if (READ_ONCE(fs->found)) {
++		/* Make sure the path is filled completely */
++		smp_rmb();
+ 		return (const char *)fs->path;
++	}
+ 
+ 	/* the mount point was already checked for the mount point
+ 	 * but and did not exist, so return NULL to avoid scanning again.
+-- 
+2.27.0
+
