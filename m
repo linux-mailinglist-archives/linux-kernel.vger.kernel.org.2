@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240394094E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A716A409219
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345588AbhIMOgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51038 "EHLO mail.kernel.org"
+        id S1343584AbhIMOHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:07:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245472AbhIMOaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:30:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB0C60E08;
-        Mon, 13 Sep 2021 13:51:39 +0000 (UTC)
+        id S1344244AbhIMOEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:04:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95F4861251;
+        Mon, 13 Sep 2021 13:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541100;
-        bh=U/V0Muk/z2AxBNZ6AZLVKCfwt65va+Gefob8QAAvJRw=;
+        s=korg; t=1631540348;
+        bh=C8eNd1MQTyJsaVplq+bBpnJhdrxZ17E1OuFJjZatXgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X6ZkhZfQZLLULbCcsHYj8q8R0k/PpVIryfEmzOW1fmGOF/Rs4T6Kv6RFxtAvSZKU8
-         5y6vW/dPAaYIOUPUgNVvlQ2arnZ2xkmjzszLaRmxpdFdau8+6zUjlfwi96AbFAF9tN
-         rFj1l3gj3G8T47ap1si/OyFOKw9Ff1aNJyISnXT8=
+        b=BDifMeLdMtRdXujYaZ/sFMXksDVzU3i7bL5+LoNB8Y4Jgmb04PO4GxHvjoMuO2Wxm
+         RnhtMj/so2xuJBHtL/CLeqUcwA+H4mIym7QeTfqp6WHeimEXk7Cc1EQygcH7MMGMmq
+         KQHnW6RVYSFwC9Ad6UvjUbzQnEVrumlWQsk6b1lg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?q?M=C3=A1rio=20Lopes?= <ml@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 161/334] media: venus: hfi: fix return value check in sys_get_prop_image_version()
-Date:   Mon, 13 Sep 2021 15:13:35 +0200
-Message-Id: <20210913131118.792169763@linuxfoundation.org>
+Subject: [PATCH 5.13 155/300] debugfs: Return error during {full/open}_proxy_open() on rmmod
+Date:   Mon, 13 Sep 2021 15:13:36 +0200
+Message-Id: <20210913131114.642784108@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit 331e06bbde5856059b7a6bb183f12878ed4decb1 ]
+[ Upstream commit 112cedc8e600b668688eb809bf11817adec58ddc ]
 
-In case of error, the function qcom_smem_get() returns ERR_PTR()
-and never returns NULL. The NULL test in the return value check
-should be replaced with IS_ERR().
+If a kernel module gets unloaded then it printed report about a leak before
+commit 275678e7a9be ("debugfs: Check module state before warning in
+{full/open}_proxy_open()"). An additional check was added in this commit to
+avoid this printing. But it was forgotten that the function must return an
+error in this case because it was not actually opened.
 
-Fixes: d566e78dd6af ("media: venus : hfi: add venus image info into smem")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+As result, the systems started to crash or to hang when a module was
+unloaded while something was trying to open a file.
+
+Fixes: 275678e7a9be ("debugfs: Check module state before warning in {full/open}_proxy_open()")
+Cc: Taehee Yoo <ap420073@gmail.com>
+Reported-by: Mário Lopes <ml@simonwunderlich.de>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Link: https://lore.kernel.org/r/20210802162444.7848-1-sven@narfation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/venus/hfi_msgs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/debugfs/file.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
-index d9fde66f6fa8..9a2bdb002edc 100644
---- a/drivers/media/platform/qcom/venus/hfi_msgs.c
-+++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
-@@ -261,7 +261,7 @@ sys_get_prop_image_version(struct device *dev,
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index ba7c01cd9a5d..36f2dbe6061f 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -179,8 +179,10 @@ static int open_proxy_open(struct inode *inode, struct file *filp)
+ 	if (!fops_get(real_fops)) {
+ #ifdef CONFIG_MODULES
+ 		if (real_fops->owner &&
+-		    real_fops->owner->state == MODULE_STATE_GOING)
++		    real_fops->owner->state == MODULE_STATE_GOING) {
++			r = -ENXIO;
+ 			goto out;
++		}
+ #endif
  
- 	smem_tbl_ptr = qcom_smem_get(QCOM_SMEM_HOST_ANY,
- 		SMEM_IMG_VER_TBL, &smem_blk_sz);
--	if (smem_tbl_ptr && smem_blk_sz >= SMEM_IMG_OFFSET_VENUS + VER_STR_SZ)
-+	if (!IS_ERR(smem_tbl_ptr) && smem_blk_sz >= SMEM_IMG_OFFSET_VENUS + VER_STR_SZ)
- 		memcpy(smem_tbl_ptr + SMEM_IMG_OFFSET_VENUS,
- 		       img_ver, VER_STR_SZ);
- }
+ 		/* Huh? Module did not clean up after itself at exit? */
+@@ -314,8 +316,10 @@ static int full_proxy_open(struct inode *inode, struct file *filp)
+ 	if (!fops_get(real_fops)) {
+ #ifdef CONFIG_MODULES
+ 		if (real_fops->owner &&
+-		    real_fops->owner->state == MODULE_STATE_GOING)
++		    real_fops->owner->state == MODULE_STATE_GOING) {
++			r = -ENXIO;
+ 			goto out;
++		}
+ #endif
+ 
+ 		/* Huh? Module did not cleanup after itself at exit? */
 -- 
 2.30.2
 
