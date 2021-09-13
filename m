@@ -2,74 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C9D408317
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C2340831A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238330AbhIMDWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238302AbhIMDV6 (ORCPT
+        id S238392AbhIMDWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:22:51 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47051 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238372AbhIMDWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:21:58 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E0EC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:20:43 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id m21-20020a17090a859500b00197688449c4so5490994pjn.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:20:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KvjAfdMGc0TGSBNCXXOfp9eTXnGD+BLjalLtFXGEwNg=;
-        b=zx8MdaVaJTKEFi84nLllBeqnvpDCbryk+86ryq3PeVdGciZQWuXWApYXiZU+vpHIua
-         4auBFBrjVwFvfynotWMrYvCspi63M69XDBef877mrk4+8OX/ntCV/JZN7yMXbd1lQcSj
-         2QN/X0ooJEBsiOHmYMdEb+S8RG7uHOeQvWUSfB/EW18hyl5CDU3Y1hd2ZUPw/r0Cs19W
-         AUYsQEleNJD/cn9YDg2w9BSKlnwCdokq2s1nyG1F9ivTvEduL+z/fWjwRIBTmbJikgC0
-         nSxOEDj+SmfWeqMfmNbCsARvbCx40bqZmt4l+7COh5M7LH3amMGxAPNE0zDgnTAnWtVI
-         dFew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KvjAfdMGc0TGSBNCXXOfp9eTXnGD+BLjalLtFXGEwNg=;
-        b=xonc6xWobcLi868WMdakcn8sPB/tJTlDYeBfB+kUi5WvL50lLpFTWZBtjee45vpX66
-         NM92UEwmrbrNAPzbBPMK/rK8aUr6HS9FH3mlb+YvEvfPKogfB8hxR/42w30LOtABLI25
-         JNlJxpH+7eXcI7ELaAvsdxw9SyBtyEpru5r5FM+dAP0IHNgGOCbc/3nF2taeFk2uZq6X
-         h9K4SgGHaxlDvimtL9p4K5T0FynW6hfSSY9xhcPgoexKTLsXWiS5OG7S9PK6ANiH2fnZ
-         0lGSH8o/blegvGUbsJkTP92nKKBPProhTERxrgHkWpZhN/aZuu5UhtcU+P9Lc3g5vSKI
-         5UqA==
-X-Gm-Message-State: AOAM530T2jQMrn+gA0z0eVlIpJh7oEZT8pvClmoCeLDUJxd8Vs+Q/V6Z
-        MTGXA68bWHLXpMEXybz50AP2w2Bq98fMZ37pNo/syg==
-X-Google-Smtp-Source: ABdhPJyET22o17lmmxiiSRxXCkLqDeZtEMmzWp6jy7ieUEooxpxIyKFfqHWzCk1uF11g59TtExSO/xhSnOIX4JcQI8c=
-X-Received: by 2002:a17:90b:4a90:: with SMTP id lp16mr10644077pjb.5.1631503242721;
- Sun, 12 Sep 2021 20:20:42 -0700 (PDT)
+        Sun, 12 Sep 2021 23:22:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Uo6s7Rx_1631503290;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Uo6s7Rx_1631503290)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 13 Sep 2021 11:21:31 +0800
+Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
+ perf_log_throttle
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+Message-ID: <7aa8133d-a9e4-f0ae-7c98-4a38f0ca25d9@linux.alibaba.com>
+Date:   Mon, 13 Sep 2021 11:21:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210913024534.26161-1-tangyizhou@huawei.com>
-In-Reply-To: <20210913024534.26161-1-tangyizhou@huawei.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 13 Sep 2021 11:20:06 +0800
-Message-ID: <CAMZfGtU5o0Fr6ERRsTubqHCMaW=jYxhf+EvbWzVcvD=dmJ51_A@mail.gmail.com>
-Subject: Re: [PATCH] mm/memory_hotplug: Add static qualifier for online_policy_to_str
-To:     Tang Yizhou <tangyizhou@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:26 AM Tang Yizhou <tangyizhou@huawei.com> wrote:
->
-> online_policy_to_str is only used in memory_hotplug.c and should be
-> defined as static.
->
-> Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
 
-LGTM.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+On 2021/9/13 上午11:00, 王贇 wrote:
+> 
+> 
+> On 2021/9/10 下午11:38, Peter Zijlstra wrote:
+>> On Thu, Sep 09, 2021 at 11:13:21AM +0800, 王贇 wrote:
+>>> When running with ftrace function enabled, we observed panic
+>>> as below:
+>>>
+>>>   traps: PANIC: double fault, error_code: 0x0
+>>>   [snip]
+>>>   RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+>>>   [snip]
+>>>   Call Trace:
+>>>    <NMI>
+>>>    perf_trace_buf_alloc+0x26/0xd0
+>>>    perf_ftrace_function_call+0x18f/0x2e0
+>>>    kernelmode_fixup_or_oops+0x5/0x120
+>>>    __bad_area_nosemaphore+0x1b8/0x280
+>>>    do_user_addr_fault+0x410/0x920
+>>>    exc_page_fault+0x92/0x300
+>>>    asm_exc_page_fault+0x1e/0x30
+>>>   RIP: 0010:__get_user_nocheck_8+0x6/0x13
+>>>    perf_callchain_user+0x266/0x2f0
+>>>    get_perf_callchain+0x194/0x210
+>>>    perf_callchain+0xa3/0xc0
+>>>    perf_prepare_sample+0xa5/0xa60
+>>>    perf_event_output_forward+0x7b/0x1b0
+>>>    __perf_event_overflow+0x67/0x120
+>>>    perf_swevent_overflow+0xcb/0x110
+>>>    perf_swevent_event+0xb0/0xf0
+>>>    perf_tp_event+0x292/0x410
+>>>    perf_trace_run_bpf_submit+0x87/0xc0
+>>>    perf_trace_lock_acquire+0x12b/0x170
+>>>    lock_acquire+0x1bf/0x2e0
+>>>    perf_output_begin+0x70/0x4b0
+>>>    perf_log_throttle+0xe2/0x1a0
+>>>    perf_event_nmi_handler+0x30/0x50
+>>>    nmi_handle+0xba/0x2a0
+>>>    default_do_nmi+0x45/0xf0
+>>>    exc_nmi+0x155/0x170
+>>>    end_repeat_nmi+0x16/0x55
+>>
+>> kernel/events/Makefile has:
+>>
+>> ifdef CONFIG_FUNCTION_TRACER
+>> CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+>> endif
+>>
+>> Which, afaict, should avoid the above, no?
+> 
+> I'm afraid it's not working for this case, the
+> start point of tracing is at lock_acquire() which
+> is not from 'kernel/events/core', the following PF
+> related function are also not from 'core', prevent
+> ftrace on 'core' can't prevent this from happen...
+
+By a second thinking, I think you're right about the
+way it should be fixed, since disabling ftrace on
+'arch/x86/mm/fault.c' could also fix the problem.
+
+Will send a formal patch later :-)
+
+Regards,
+Michael Wang
+
+> 
+> Regards,
+> Michael Wang
+> 
+>>
