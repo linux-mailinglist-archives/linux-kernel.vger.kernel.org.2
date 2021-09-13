@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF1940986B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711A840986E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345211AbhIMQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:10:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235546AbhIMQKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:10:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AE25604D1;
-        Mon, 13 Sep 2021 16:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631549356;
-        bh=MDC4CdstYZFwgRAmMGslyg8XtdsQPBHzlq8pVMP5A+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KEf+n7YYrhGpogj+xis9XzGpEN6bMp+cNGv1jggMwXbWDtrh3g05mEJ0hpJsgowqE
-         s/AL5gDPASImA+NLkmo8N7fDmuC5WC1YXJ/jR5FH57GmELzcyKm3rfQxJkF1B6kN08
-         6ObO4eZawbVZocctMAJK5JFAQ8ho5xtDGZu8YumM=
-Date:   Mon, 13 Sep 2021 18:09:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "# 4.0+" <stable@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.14 147/334] drm/bridge: ti-sn65dsi86: Dont read EDID
- blob over DDC
-Message-ID: <YT93qkd8B7jy6AzV@kroah.com>
-References: <20210913131113.390368911@linuxfoundation.org>
- <20210913131118.330293390@linuxfoundation.org>
- <CAD=FV=UhovUSmvbpc3q9=J_NSU0mcvQ3Fv8r4hi1ZNO=cMteuA@mail.gmail.com>
+        id S1345570AbhIMQKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:10:51 -0400
+Received: from mail-pf1-f173.google.com ([209.85.210.173]:43930 "EHLO
+        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344663AbhIMQKn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:10:43 -0400
+Received: by mail-pf1-f173.google.com with SMTP id f65so9301194pfb.10;
+        Mon, 13 Sep 2021 09:09:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dSc5kQvSxq7QFQ+RxIMy3SGF+ywXK3wh1dZKmtJ3CBQ=;
+        b=PG1B7gYD27iIVZoZXo3vNphtY9ootwq1mLSRXtLK2enX1SAbJuZXWS1VNhO+kUOukc
+         HVacX7mYNCdOBAb439M4rPMTfIXIxHZbfqiw2vG8hP97IPo/x+kF7W5jVLZUVg2KwFjZ
+         kQfeopRJ3+nGaSB9Pkc02iC4cH3D7ttLK8CLy3pZGuTPk+kNXMy0+X+rAQq/tcGhE61j
+         HF6pDWat/7vwJTMCFp2q1OUwo6AelThGvTv2dEYMIVeWGyluhdGAawDaSsoh5k5F3+7m
+         LjDucUPzC5KjV3nCNVm8pBHI8hhId8pZW1KcxWzAHX/x5/dRSniS1urnA8jznDzFdQcL
+         N5BQ==
+X-Gm-Message-State: AOAM532ShHppoHC5hkkyXVTAEtx9xRzQyEHtMSJlAoS3HDXLTMhQ89Bv
+        cGIAX77IMF22XDVFqpvSEao=
+X-Google-Smtp-Source: ABdhPJzWynS+yAvMBvKG4tLvB+cSO2Wvgidxbb75XUDQm2K9/0pHJpnoILgqru/J0gl/P5KUbmguzw==
+X-Received: by 2002:a63:f946:: with SMTP id q6mr11840373pgk.42.1631549366800;
+        Mon, 13 Sep 2021 09:09:26 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:6765:113f:d2d7:def9])
+        by smtp.gmail.com with ESMTPSA id f2sm8579152pga.60.2021.09.13.09.09.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 09:09:26 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] scsi: ufs: introduce vendor isr
+To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
+        hy50.seo@samsung.com, sh425.lee@samsung.com,
+        bhoon95.kim@samsung.com
+References: <CGME20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00@epcas2p2.samsung.com>
+ <cover.1631519695.git.kwmad.kim@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <fbdd02bc-01ab-c5b3-9355-3ebe04601b04@acm.org>
+Date:   Mon, 13 Sep 2021 09:09:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UhovUSmvbpc3q9=J_NSU0mcvQ3Fv8r4hi1ZNO=cMteuA@mail.gmail.com>
+In-Reply-To: <cover.1631519695.git.kwmad.kim@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 06:57:20AM -0700, Doug Anderson wrote:
-> Hi,
+On 9/13/21 12:55 AM, Kiwoong Kim wrote:
+> This patch is to activate some interrupt sources
+> that aren't defined in UFSHCI specifications. Those
+> purpose could be error handling, workaround or whatever.
 > 
-> On Mon, Sep 13, 2021 at 6:51 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Douglas Anderson <dianders@chromium.org>
-> >
-> > [ Upstream commit a70e558c151043ce46a5e5999f4310e0b3551f57 ]
-> >
-> > This is really just a revert of commit 58074b08c04a ("drm/bridge:
-> > ti-sn65dsi86: Read EDID blob over DDC"), resolving conflicts.
-> >
-> > The old code failed to read the EDID properly in a very important
-> > case: before the bridge's pre_enable() was called. The way things need
-> > to work:
-> > 1. Read the EDID.
-> > 2. Based on the EDID, decide on video settings and pixel clock.
-> > 3. Enable the bridge w/ the desired settings.
-> >
-> > The way things were working:
-> > 1. Try to read the EDID but fail; fall back to hardcoded values.
-> > 2. Based on hardcoded values, decide on video settings and pixel clock.
-> > 3. Enable the bridge w/ the desired settings.
-> > 4. Try again to read the EDID, it works now!
-> > 5. Realize that the hardcoded settings weren't quite right.
-> > 6. Disable / reenable the bridge w/ the right settings.
-> >
-> > The reasons for the failures were twofold:
-> > a) Since we never ran the bridge chip's pre-enable then we never set
-> >    the bit to ignore HPD. This meant the bridge chip didn't even _try_
-> >    to go out on the bus and communicate with the panel.
-> > b) Even if we fixed things to ignore HPD, the EDID still wouldn't read
-> >    if the panel wasn't on.
-> >
-> > Instead of reverting the code, we could fix it to set the HPD bit and
-> > also power on the panel. However, it also works nicely to just let the
-> > panel code read the EDID. Now that we've split the driver up we can
-> > expose the DDC AUX channel bus to the panel node. The panel can take
-> > charge of reading the EDID.
-> >
-> > NOTE: in order for things to work, anyone that needs to read the EDID
-> > will need to instantiate their panel using the new DP AUX bus (AKA by
-> > listing their panel under the "aux-bus" node of the bridge chip in the
-> > device tree).
-> >
-> > In the future if we want to use the bridge chip to provide a full
-> > external DP port (which won't have a panel) then we will have to
-> > conditinally add EDID reading back in.
-> >
-> > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Link: https://patchwork.freedesktop.org/patch/msgid/20210611101711.v10.9.I9330684c25f65bb318eff57f0616500f83eac3cc@changeid
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 ----------------------
-> >  1 file changed, 22 deletions(-)
+> Kiwoong Kim (3):
+>    scsi: ufs: introduce vendor isr
+>    scsi: ufs: introduce force requeue
+>    scsi: ufs: ufs-exynos: implement exynos isr
 > 
-> I guess it's not a huge deal, but I did respond to Sasha and request
-> that this patch be dropped from the stable queue unless the whole big
-> pile of patches was being backported. See:
-> 
-> https://lore.kernel.org/lkml/CAD=FV=U2dGjeEzp+K1vnLTj8oPJ-GKBTTKz2XQ1OZ7QF_sTHuw@mail.gmail.com/
-> 
-> I said:
-> 
-> > I would suggest against backporting this one unless you're going to
-> > backport the whole pile of DP AUX bus patches, which probably doesn't
-> > make sense for stable. Even though the old EDID reading was broken for
-> > the first read, it still worked for later reads. ...and the first read
-> . didn't crash or anything--it just timed out.
+>   drivers/scsi/ufs/ufs-exynos.c | 84 ++++++++++++++++++++++++++++++++++++-------
+>   drivers/scsi/ufs/ufshcd.c     | 22 ++++++++++--
+>   drivers/scsi/ufs/ufshcd.h     |  2 ++
+>   3 files changed, 93 insertions(+), 15 deletions(-)
 
-I see a "bunch" of patches for this driver in this -rc, did Sasha not
-get them all?  If not, I can drop this one, but maybe it was needed for
-the follow-on patches?
+The UFS protocol is standardized. Your employer has a representative in the
+UFS standardization committee. Please work with that representative to
+standardize this feature instead of adding non-standard extensions to the UFS
+driver.
 
-thanks,
+Thanks,
 
-greg k-h
+Bart.
+
+
