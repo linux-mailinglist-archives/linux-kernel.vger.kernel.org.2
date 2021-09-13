@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F8B4093C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C4A4095FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345498AbhIMOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:23:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39370 "EHLO mail.kernel.org"
+        id S1346636AbhIMOqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:46:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344151AbhIMOSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:18:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B937361B1E;
-        Mon, 13 Sep 2021 13:45:15 +0000 (UTC)
+        id S1347785AbhIMOka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:40:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 412E6630ED;
+        Mon, 13 Sep 2021 13:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540716;
-        bh=fV11o18AQIheQuZcOCTElcYXX41bK2Jq8EtZ+jE9Vyo=;
+        s=korg; t=1631541373;
+        bh=ZGb9RYZACGSnH/PLr/YRLdSupo8QymnCu/qV1lT9CmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djgTMbZbSUuL/+CTllqcFNsPUL+sa8FJYxmJxjrApeTaCaCZIYxP+qST91HdA8RtM
-         7Md+KqXnv/ZvgXhrUWzVUD93tJp9nyJE80SqwFpi2GAdSW6NSh3hOmmeG0TfXXHdvz
-         M43Oie4hJkKTug3yVdA7QJGZ82jXL+WNSVn9no48=
+        b=So9lZ7YSmiL1Rlksy61YKCXOpg8iuXKKc2v6W5ntLqiVTp57YSrA+5dEFvPVM0rQb
+         4vNpALxppRxq8T+kuOL4jZZiML7FenTq5Fn1ZXYKy9V5Buf1JHxtQEJwebQGSMELGy
+         n1IDLeE+OPygxd9ydLnxzahA8DU1NL8FLxZxsh7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.13 264/300] ASoC: rt5682: Remove unused variable in rt5682_i2c_remove()
+        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 271/334] net/mlx5: E-Switch, Set vhca id valid flag when creating indir fwd group
 Date:   Mon, 13 Sep 2021 15:15:25 +0200
-Message-Id: <20210913131118.260495773@linuxfoundation.org>
+Message-Id: <20210913131122.580842635@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Maor Dickman <maord@nvidia.com>
 
-commit a1ea05723c27a6f77894a60038a7b2b12fcec9a7 upstream.
+[ Upstream commit ca6891f9b27db7764bba0798202b0a21d0dc909c ]
 
-In commit 772d44526e20 ("ASoC: rt5682: Properly turn off regulators if
-wrong device ID") I deleted code but forgot to delete a variable
-that's now unused. Delete it.
+When indirect forward group is created, flow is added with vhca id but
+without setting vhca id valid flag which violates the PRM.
 
-Fixes: 772d44526e20 ("ASoC: rt5682: Properly turn off regulators if wrong device ID")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210813073402.1.Iaa9425cfab80f5233afa78b32d02b6dc23256eb3@changeid
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix by setting the missing flag, vhca id valid.
+
+Fixes: 34ca65352ddf ("net/mlx5: E-Switch, Indirect table infrastructure")
+Signed-off-by: Maor Dickman <maord@nvidia.com>
+Reviewed-by: Roi Dayan <roid@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682-i2c.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -294,8 +294,6 @@ static void rt5682_i2c_shutdown(struct i
- 
- static int rt5682_i2c_remove(struct i2c_client *client)
- {
--	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
--
- 	rt5682_i2c_shutdown(client);
- 
- 	return 0;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+index 3da7becc1069..425c91814b34 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/indir_table.c
+@@ -364,6 +364,7 @@ static int mlx5_create_indir_fwd_group(struct mlx5_eswitch *esw,
+ 	dest.type = MLX5_FLOW_DESTINATION_TYPE_VPORT;
+ 	dest.vport.num = e->vport;
+ 	dest.vport.vhca_id = MLX5_CAP_GEN(esw->dev, vhca_id);
++	dest.vport.flags = MLX5_FLOW_DEST_VPORT_VHCA_ID;
+ 	e->fwd_rule = mlx5_add_flow_rules(e->ft, spec, &flow_act, &dest, 1);
+ 	if (IS_ERR(e->fwd_rule)) {
+ 		mlx5_destroy_flow_group(e->fwd_grp);
+-- 
+2.30.2
+
 
 
