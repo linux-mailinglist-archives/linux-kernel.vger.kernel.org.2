@@ -2,191 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29BA4085EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A04408629
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237746AbhIMIAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:00:05 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16194 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237725AbhIMIAE (ORCPT
+        id S237944AbhIMINM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:13:12 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:21956 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237913AbhIMINL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:00:04 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H7Jk30tSGz1DGxK;
-        Mon, 13 Sep 2021 15:57:47 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 13 Sep 2021 15:58:44 +0800
-Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 13 Sep
- 2021 15:58:44 +0800
-From:   Laibin Qiu <qiulaibin@huawei.com>
-To:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
-        <hare@suse.de>, <asml.silence@gmail.com>, <bvanassche@acm.org>
-Subject: [PATCH -next] blk-mq: fix tag_get wait task can't be awakened
-Date:   Mon, 13 Sep 2021 16:12:48 +0800
-Message-ID: <20210913081248.3201596-1-qiulaibin@huawei.com>
-X-Mailer: git-send-email 2.22.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500004.china.huawei.com (7.185.36.219)
+        Mon, 13 Sep 2021 04:13:11 -0400
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210913081154epoutp02f9d6c82ab540de7a2259b1e673f957d3~kU3IVaq-Y1743817438epoutp02f
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 08:11:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210913081154epoutp02f9d6c82ab540de7a2259b1e673f957d3~kU3IVaq-Y1743817438epoutp02f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631520714;
+        bh=3wSQHp5OD1QCkfHTySNHB+gLas/bsdRLv0o5Kcm6c8I=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=RfDvSwQeDmgz+WouElNWE1QMonVAjjj8HJH/C18SmDdGX8znDjEQ5XI74oMZtQ4Kl
+         9kbm0sfL+t5s9EH69M4ZARoaYWmUjlYl3XJZuiopi7y+tMhn/mjZeSStr53Bl/uDep
+         BG6C/9SpuHXKC/N4Jrs2UU3tmr3jyX/SXnKmxZcM=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210913081153epcas2p4b7856cbd4b513c1577184913fec9dfaf~kU3HRGoLo0388903889epcas2p4C;
+        Mon, 13 Sep 2021 08:11:53 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.186]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4H7K2F3lYmz4x9Pv; Mon, 13 Sep
+        2021 08:11:49 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A6.44.09816.5C70F316; Mon, 13 Sep 2021 17:11:49 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00~kU3Cvr2MH3185531855epcas2p2Q;
+        Mon, 13 Sep 2021 08:11:48 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210913081148epsmtrp227cf5e0f1b437beae00b7f902fcfe23f~kU3Cuvk082271422714epsmtrp25;
+        Mon, 13 Sep 2021 08:11:48 +0000 (GMT)
+X-AuditID: b6c32a46-625ff70000002658-37-613f07c50379
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        19.DD.09091.4C70F316; Mon, 13 Sep 2021 17:11:48 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210913081148epsmtip18983fb86545c8ea2b555ab1abff06d31~kU3CeIYZP0673006730epsmtip1y;
+        Mon, 13 Sep 2021 08:11:48 +0000 (GMT)
+From:   Kiwoong Kim <kwmad.kim@samsung.com>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
+        hy50.seo@samsung.com, sh425.lee@samsung.com,
+        bhoon95.kim@samsung.com
+Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
+Subject: [PATCH v2 0/3] scsi: ufs: introduce vendor isr
+Date:   Mon, 13 Sep 2021 16:55:52 +0900
+Message-Id: <cover.1631519695.git.kwmad.kim@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpik+LIzCtJLcpLzFFi42LZdljTTPcou32iwas/zBYnn6xhs3gwbxub
+        xcufV9ksDj7sZLH4uvQZq8Wn9ctYLVYvfsBisejGNiaLm1uOslhc3jWHzaL7+g42i+XH/zFZ
+        dN29wWix9N9bFgc+j8t9vUwei/e8ZPKYsOgAo8f39R1sHh+f3mLx6NuyitHj8yY5j/YD3UwB
+        HFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAhysp
+        lCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCgwNC/SKE3OLS/PS9ZLzc60MDQyMTIEq
+        E3Iy3vx8z1Ywn6Xi0qXJrA2M25m7GDk5JARMJNa9bGTtYuTiEBLYwSjx/PI0dgjnE6PErgMX
+        oDLfGCU+netkgWlpXfOGCSKxl1Hi5fUTbBDOD0aJow8bmECq2AQ0JZ7enApmiwjsY5I4uisd
+        xGYWUJfYNeEEWFxYwFxize3jYIewCKhKPD09ibGLkYODV8BCYt2ROIhlchI3z3Uyg8yXEPjJ
+        LtG3fi0bRMJF4lPzWaiLhCVeHd/CDmFLSXx+txeqpl5i39QGVojmHkaJp/v+MUIkjCVmPWsH
+        W8YMdOj6XfogpoSAssSRWywQZ/JJdBz+yw4R5pXoaBOCaFSW+DVpMtQQSYmZN+9AbfWQWLB+
+        H9gnQgKxEpNOLmefwCg7C2H+AkbGVYxiqQXFuempxUYFRsiRtIkRnBi13HYwTnn7Qe8QIxMH
+        4yFGCQ5mJRHebW9sE4V4UxIrq1KL8uOLSnNSiw8xmgKDayKzlGhyPjA155XEG5oamZkZWJpa
+        mJoZWSiJ855/bZkoJJCeWJKanZpakFoE08fEwSnVwLRo+e2N21x+ZsSeVP+4/OvE6Quv+FyU
+        Dqy41fpGtPRLxqN4axv7tMN/LqbVpUxem3aBKbhef/ryRuZN9XVaW1le/ym01v3hlPi5uPDD
+        lxP/n95nf25j0J6+adHybfvDKz4s+3x9UedGt6bNTcaOjyQ3RBuvWeWyet4EoSCHyQ+0PJQD
+        ueXrTyqZHPvIUeRle/i99WruOeFd6ttsFFKaZ740djn2yufCt1VPO0Nt5q1+E1dy7Oe557ov
+        95YEzdhxfqLFoVNhAc2MCx8ZLRftnfE/Umjf498W18z7ubKOe177+kO9Tma38oa0mTtPLuaL
+        UpDz4orc//miwN8pC/myZD1M/bYmnY57WXvgVEjMtkczlViKMxINtZiLihMBLbePVxUEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsWy7bCSnO4RdvtEgyevRCxOPlnDZvFg3jY2
+        i5c/r7JZHHzYyWLxdekzVotP65exWqxe/IDFYtGNbUwWN7ccZbG4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LA58Hpf7epk8Fu95yeQxYdEBRo/v6zvYPD4+vcXi0bdlFaPH501yHu0HupkC
+        OKK4bFJSczLLUov07RK4Mt78fM9WMJ+l4tKlyawNjNuZuxg5OSQETCRa17xh6mLk4hAS2M0o
+        MeFtBxtEQlLixM7njBC2sMT9liOsEEXfGCV6N7WDFbEJaEo8vTkVrFtE4ByTxNTLS5lAEswC
+        6hK7JpwAs4UFzCXW3D4Oto5FQFXi6elJQFM5OHgFLCTWHYmDWCAncfNcJ/MERp4FjAyrGCVT
+        C4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCQ1VLcwfj9lUf9A4xMnEwHmKU4GBWEuHd9sY2
+        UYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQYmuaMHV0x6
+        Ni1spsAlc2GGetkjq69OPyYqy5P9UIT/+DW3+OM3Ivyk/A5+/7yuZUZVo8/HM98Z9nFMLNM4
+        zVRaMUmhlen3a+EHJ0XzNrKe2ux3qmySG0PX/zd/LbR7GvOff0pZdOrAzQI2TZlTLQJnVD+Z
+        i6elqM6MmOT2SPirqPIFhztMB5YsduNI3/Bn6aVm4+XGcp3Vvza/YXvwRkftmGpF/obqerVu
+        +YmXvM7HSa9Rq5Wvr7C8KTbv8JmwzONJy0xK8np2X5bYtlnv7gk9/3at+jMz6ud0PCkJsb+f
+        sdFlY8jP43KnVK5wb14vnG+gv1cncVdhT6rXJB/ZKRkbi53OrK78mbb7Be8S0TOLlViKMxIN
+        tZiLihMB6rQJ58QCAAA=
+X-CMS-MailID: 20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00
+References: <CGME20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00@epcas2p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When multiple hctx share one tagset. The wake_batch is calculated
-during initialization by queue_depth. But when multiple hctx share one
-tagset. The queue depth assigned to each user may be smaller than
-wakup_batch. This may cause the waiting queue to fail to wakup and leads
-to Hang.
+This patch is to activate some interrupt sources
+that aren't defined in UFSHCI specifications. Those
+purpose could be error handling, workaround or whatever.
 
-Fix this by recalculating wake_batch when inc or dec active_queues.
+Kiwoong Kim (3):
+  scsi: ufs: introduce vendor isr
+  scsi: ufs: introduce force requeue
+  scsi: ufs: ufs-exynos: implement exynos isr
 
-Fixes: 0d2602ca30e41 ("blk-mq: improve support for shared tags maps")
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
----
- block/blk-mq-tag.c      | 44 +++++++++++++++++++++++++++++++++++++++--
- include/linux/sbitmap.h |  8 ++++++++
- lib/sbitmap.c           |  3 ++-
- 3 files changed, 52 insertions(+), 3 deletions(-)
+ drivers/scsi/ufs/ufs-exynos.c | 84 ++++++++++++++++++++++++++++++++++++-------
+ drivers/scsi/ufs/ufshcd.c     | 22 ++++++++++--
+ drivers/scsi/ufs/ufshcd.h     |  2 ++
+ 3 files changed, 93 insertions(+), 15 deletions(-)
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 86f87346232a..d02f5ac0004c 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -16,6 +16,27 @@
- #include "blk-mq-sched.h"
- #include "blk-mq-tag.h"
- 
-+static void bt_update_wake_batch(struct sbitmap_queue *bt, unsigned int users)
-+{
-+	unsigned int depth;
-+
-+	depth = max((bt->sb.depth + users - 1) / users, 4U);
-+	sbitmap_queue_update_wake_batch(bt, depth);
-+}
-+
-+/*
-+ * Recalculate wakeup batch when tag is shared by hctx.
-+ */
-+static void blk_mq_update_wake_batch(struct sbitmap_queue *bitmap_tags,
-+		struct sbitmap_queue *breserved_tags, unsigned int users)
-+{
-+	if (!users)
-+		return;
-+
-+	bt_update_wake_batch(bitmap_tags, users);
-+	bt_update_wake_batch(breserved_tags, users);
-+}
-+
- /*
-  * If a previously inactive queue goes active, bump the active user count.
-  * We need to do this before try to allocate driver tag, then even if fail
-@@ -24,17 +45,29 @@
-  */
- bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
- {
-+	unsigned int users;
-+
- 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
- 		struct request_queue *q = hctx->queue;
- 		struct blk_mq_tag_set *set = q->tag_set;
- 
- 		if (!test_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags) &&
--		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags))
-+		    !test_and_set_bit(QUEUE_FLAG_HCTX_ACTIVE, &q->queue_flags)) {
- 			atomic_inc(&set->active_queues_shared_sbitmap);
-+
-+			users = atomic_read(&set->active_queues_shared_sbitmap);
-+			blk_mq_update_wake_batch(&set->__bitmap_tags,
-+					&set->__breserved_tags, users);
-+		}
- 	} else {
- 		if (!test_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state) &&
--		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
-+		    !test_and_set_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state)) {
- 			atomic_inc(&hctx->tags->active_queues);
-+
-+			users = atomic_read(&hctx->tags->active_queues);
-+			blk_mq_update_wake_batch(&hctx->tags->__bitmap_tags,
-+					&hctx->tags->__breserved_tags, users);
-+		}
- 	}
- 
- 	return true;
-@@ -59,16 +92,23 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
- 	struct blk_mq_tags *tags = hctx->tags;
- 	struct request_queue *q = hctx->queue;
- 	struct blk_mq_tag_set *set = q->tag_set;
-+	unsigned int users;
- 
- 	if (blk_mq_is_sbitmap_shared(hctx->flags)) {
- 		if (!test_and_clear_bit(QUEUE_FLAG_HCTX_ACTIVE,
- 					&q->queue_flags))
- 			return;
- 		atomic_dec(&set->active_queues_shared_sbitmap);
-+		users = atomic_read(&set->active_queues_shared_sbitmap);
-+		blk_mq_update_wake_batch(&set->__bitmap_tags,
-+				&set->__breserved_tags, users);
- 	} else {
- 		if (!test_and_clear_bit(BLK_MQ_S_TAG_ACTIVE, &hctx->state))
- 			return;
- 		atomic_dec(&tags->active_queues);
-+		users = atomic_read(&tags->active_queues);
-+		blk_mq_update_wake_batch(&tags->__bitmap_tags,
-+				&tags->__breserved_tags, users);
- 	}
- 
- 	blk_mq_tag_wakeup_all(tags, false);
-diff --git a/include/linux/sbitmap.h b/include/linux/sbitmap.h
-index 2713e689ad66..d49e4f054bfe 100644
---- a/include/linux/sbitmap.h
-+++ b/include/linux/sbitmap.h
-@@ -406,6 +406,14 @@ static inline void sbitmap_queue_free(struct sbitmap_queue *sbq)
- 	sbitmap_free(&sbq->sb);
- }
- 
-+/**
-+ * sbitmap_queue_update_wake_batch() - Recalucate wake batch.
-+ * @sbq: Bitmap queue.
-+ * @depth: New number of queue depth.
-+ */
-+void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
-+				     unsigned int depth);
-+
- /**
-  * sbitmap_queue_resize() - Resize a &struct sbitmap_queue.
-  * @sbq: Bitmap queue to resize.
-diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-index b25db9be938a..bbe1d663763f 100644
---- a/lib/sbitmap.c
-+++ b/lib/sbitmap.c
-@@ -457,7 +457,7 @@ int sbitmap_queue_init_node(struct sbitmap_queue *sbq, unsigned int depth,
- }
- EXPORT_SYMBOL_GPL(sbitmap_queue_init_node);
- 
--static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
-+void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
- 					    unsigned int depth)
- {
- 	unsigned int wake_batch = sbq_calc_wake_batch(sbq, depth);
-@@ -475,6 +475,7 @@ static void sbitmap_queue_update_wake_batch(struct sbitmap_queue *sbq,
- 			atomic_set(&sbq->ws[i].wait_cnt, 1);
- 	}
- }
-+EXPORT_SYMBOL_GPL(sbitmap_queue_update_wake_batch);
- 
- void sbitmap_queue_resize(struct sbitmap_queue *sbq, unsigned int depth)
- {
 -- 
-2.22.0
+2.7.4
 
