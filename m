@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E34D409541
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61F7409259
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346968AbhIMOkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51898 "EHLO mail.kernel.org"
+        id S1343505AbhIMOKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:10:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347535AbhIMOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:34:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 162C361BD4;
-        Mon, 13 Sep 2021 13:53:08 +0000 (UTC)
+        id S245547AbhIMOHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:07:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FBFC61A62;
+        Mon, 13 Sep 2021 13:40:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541189;
-        bh=PSdgZwWfBa37uKwmv+1AQxPWJiOH+uzkAICtnW3d8aY=;
+        s=korg; t=1631540435;
+        bh=3ZSUj1LA8Z84TYLE66l9aqUSUuAjgFmY1u7tOR0uqs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MBRpZ2DbK3d4UOxCh7tLg/9KeZLJluj9LhGyAFSE790zR9CyT40qok+pzHorGgEWR
-         FwI8R59L7UTPNx6GwP7W3EEOoXE5QtL/1S1wjjZJQHY+q41p54+mlQgFWAmaLGfGnj
-         wO0wEU+9hdHh2+5Kh1uG6bSxGSuknz/GDAGhYJmM=
+        b=L4wNMIG6ny6Fs5p1FB9pw477wezwqzVUuANDKC2AsLKKXV2alBC7U29y0hrwNRcFf
+         TJCt7Iz0uHWX3gWgeNpeobRxuTpxbcN2KhLWtNPaF39TJRqR3XWbl6NOTPu/JRTPgP
+         nVtp3rttcrHkd/TTNHpvTczawbUWYNKXnmCAHTK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 198/334] drm/bridge: ti-sn65dsi86: Avoid creating multiple connectors
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Subject: [PATCH 5.13 191/300] Bluetooth: Move shutdown callback before flushing tx and rx queue
 Date:   Mon, 13 Sep 2021 15:14:12 +0200
-Message-Id: <20210913131120.110075410@linuxfoundation.org>
+Message-Id: <20210913131115.834737393@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit c7782443a88926a4f938f0193041616328cf2db2 ]
+[ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
 
-If we created our own connector because the driver does not support the
-NO_CONNECTOR flag, we don't want the downstream bridge to *also* create
-a connector.  And if this driver did pass the NO_CONNECTOR flag (and we
-supported that mode) this would change nothing.
+Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+are flushed or cancelled") introduced a regression that makes mtkbtsdio
+driver stops working:
+[   36.593956] Bluetooth: hci0: Firmware already downloaded
+[   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+[   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
 
-Fixes: 4e5763f03e10 ("drm/bridge: ti-sn65dsi86: Wrap panel with panel-bridge")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210811235253.924867-2-robdclark@gmail.com
+The shutdown callback depends on the result of hdev->rx_work, so we
+should call it before flushing rx_work:
+-> btmtksdio_shutdown()
+ -> mtk_hci_wmt_sync()
+  -> __hci_cmd_send()
+   -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
+
+-> btmtksdio_recv_event()
+ -> hci_recv_frame()
+  -> queue_work(hdev->workqueue, &hdev->rx_work)
+   -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+
+So move the shutdown callback before flushing TX/RX queue to resolve the
+issue.
+
+Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/bluetooth/hci_core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index c9cddf317c72..3aeed2731945 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -531,6 +531,9 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 	}
- 	pdata->dsi = dsi;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index ee59d1c7f1f6..7154af1fad81 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1734,6 +1734,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	hci_request_cancel_all(hdev);
+ 	hci_req_sync_lock(hdev);
  
-+	/* We never want the next bridge to *also* create a connector: */
-+	flags |= DRM_BRIDGE_ATTACH_NO_CONNECTOR;
++	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
++	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
++	    test_bit(HCI_UP, &hdev->flags)) {
++		/* Execute vendor specific shutdown routine */
++		if (hdev->shutdown)
++			hdev->shutdown(hdev);
++	}
 +
- 	/* Attach the next bridge */
- 	ret = drm_bridge_attach(bridge->encoder, pdata->next_bridge,
- 				&pdata->bridge, flags);
+ 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+ 		cancel_delayed_work_sync(&hdev->cmd_timer);
+ 		hci_req_sync_unlock(hdev);
 -- 
 2.30.2
 
