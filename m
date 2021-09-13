@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5409D4091F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700194094CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343724AbhIMOGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:06:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50892 "EHLO mail.kernel.org"
+        id S1347827AbhIMOfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:35:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343690AbhIMOD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:03:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC71661A52;
-        Mon, 13 Sep 2021 13:38:39 +0000 (UTC)
+        id S1347122AbhIMOaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C98A61B98;
+        Mon, 13 Sep 2021 13:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540320;
-        bh=AUAOhTPFuebkOjhrDueU01s6CvNvMJpixVeNc8usw/c=;
+        s=korg; t=1631541075;
+        bh=5mJ3Vh4DFqEpbhgjatt+KHU+ltW1SZdkbGGb41choXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b177O5OSamiBA5JQyc63y9RcIJtaVRF8L6eY2nh0miWbkyuJOCSigilI8ggbCP/B+
-         zGlhn8kTWZvwoeS8d9CeNZUoFPV1lnaAXv5VEwZkAd4JthkJu26ZQpeE0G1J1xBST3
-         A5T77O9DK+Dv48ANSIDLVbptMMZmWDnprtUPiOQA=
+        b=RAyQhIrBuRi+EUp3eVsQtz8a2bjXSh+BOBT1h1LL3VEc/IPW7sUYw2cUFjkDW+RBj
+         Z7TBMpJ2nxK26l8Zjsh9UYUEme9JBobHV5RHVZ05wH8VkC6WFBiq5MK4uFsy0ncnk6
+         KgNxHF8jdFCpysTplgmtF2363NKKZ64E/Yy/mKJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 144/300] leds: trigger: audio: Add an activate callback to ensure the initial brightness is set
-Date:   Mon, 13 Sep 2021 15:13:25 +0200
-Message-Id: <20210913131114.259756912@linuxfoundation.org>
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 152/334] net/mlx5: Fix missing return value in mlx5_devlink_eswitch_inline_mode_set()
+Date:   Mon, 13 Sep 2021 15:13:26 +0200
+Message-Id: <20210913131118.497657167@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,122 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 64f67b5240db79eceb0bd57dae8e591fd3103ba0 ]
+[ Upstream commit bcd68c04c7692416206414dc8971730aa140eba7 ]
 
-Some 2-in-1s with a detachable (USB) keyboard(dock) have mute-LEDs in
-the speaker- and/or mic-mute keys on the keyboard.
+The return value is missing in this code scenario, add the return value
+'0' to the return value 'err'.
 
-Examples of this are the Lenovo Thinkpad10 tablet (with its USB kbd-dock)
-and the HP x2 10 series.
+Eliminate the follow smatch warning:
 
-The detachable nature of these keyboards means that the keyboard and
-thus the mute LEDs may show up after the user (or userspace restoring
-old mixer settings) has muted the speaker and/or mic.
+drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c:3083
+mlx5_devlink_eswitch_inline_mode_set() warn: missing error code 'err'.
 
-Current LED-class devices with a default_trigger of "audio-mute" or
-"audio-micmute" initialize the brightness member of led_classdev with
-ledtrig_audio_get() before registering the LED.
-
-This makes the software state after attaching the keyboard match the
-actual audio mute state, e.g. cat /sys/class/leds/foo/brightness will
-show the right value.
-
-But before this commit nothing was actually calling the led_classdev's
-brightness_set[_blocking] callback so the value returned by
-ledtrig_audio_get() was never actually being sent to the hw, leading
-to the mute LEDs staying in their default power-on state, after
-attaching the keyboard, even if ledtrig_audio_get() returned a different
-state.
-
-This could be fixed by having the individual LED drivers call
-brightness_set[_blocking] themselves after registering the LED,
-but this really is something which should be done by a led-trigger
-activate callback.
-
-Add an activate callback for this, fixing the issue of the
-mute LEDs being out of sync after (re)attaching the keyboard.
-
-Cc: Takashi Iwai <tiwai@suse.de>
-Fixes: faa2541f5b1a ("leds: trigger: Introduce audio mute LED trigger")
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 8e0aa4bc959c ("net/mlx5: E-switch, Protect eswitch mode changes")
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/trigger/ledtrig-audio.c | 37 ++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/leds/trigger/ledtrig-audio.c b/drivers/leds/trigger/ledtrig-audio.c
-index f76621e88482..c6b437e6369b 100644
---- a/drivers/leds/trigger/ledtrig-audio.c
-+++ b/drivers/leds/trigger/ledtrig-audio.c
-@@ -6,10 +6,33 @@
- #include <linux/kernel.h>
- #include <linux/leds.h>
- #include <linux/module.h>
-+#include "../leds.h"
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index 3bb71a186004..fc945945ae33 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -3091,8 +3091,11 @@ int mlx5_devlink_eswitch_inline_mode_set(struct devlink *devlink, u8 mode,
  
--static struct led_trigger *ledtrig_audio[NUM_AUDIO_LEDS];
- static enum led_brightness audio_state[NUM_AUDIO_LEDS];
- 
-+static int ledtrig_audio_mute_activate(struct led_classdev *led_cdev)
-+{
-+	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MUTE]);
-+	return 0;
-+}
+ 	switch (MLX5_CAP_ETH(dev, wqe_inline_mode)) {
+ 	case MLX5_CAP_INLINE_MODE_NOT_REQUIRED:
+-		if (mode == DEVLINK_ESWITCH_INLINE_MODE_NONE)
++		if (mode == DEVLINK_ESWITCH_INLINE_MODE_NONE) {
++			err = 0;
+ 			goto out;
++		}
 +
-+static int ledtrig_audio_micmute_activate(struct led_classdev *led_cdev)
-+{
-+	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MICMUTE]);
-+	return 0;
-+}
-+
-+static struct led_trigger ledtrig_audio[NUM_AUDIO_LEDS] = {
-+	[LED_AUDIO_MUTE] = {
-+		.name     = "audio-mute",
-+		.activate = ledtrig_audio_mute_activate,
-+	},
-+	[LED_AUDIO_MICMUTE] = {
-+		.name     = "audio-micmute",
-+		.activate = ledtrig_audio_micmute_activate,
-+	},
-+};
-+
- enum led_brightness ledtrig_audio_get(enum led_audio type)
- {
- 	return audio_state[type];
-@@ -19,24 +42,22 @@ EXPORT_SYMBOL_GPL(ledtrig_audio_get);
- void ledtrig_audio_set(enum led_audio type, enum led_brightness state)
- {
- 	audio_state[type] = state;
--	led_trigger_event(ledtrig_audio[type], state);
-+	led_trigger_event(&ledtrig_audio[type], state);
- }
- EXPORT_SYMBOL_GPL(ledtrig_audio_set);
- 
- static int __init ledtrig_audio_init(void)
- {
--	led_trigger_register_simple("audio-mute",
--				    &ledtrig_audio[LED_AUDIO_MUTE]);
--	led_trigger_register_simple("audio-micmute",
--				    &ledtrig_audio[LED_AUDIO_MICMUTE]);
-+	led_trigger_register(&ledtrig_audio[LED_AUDIO_MUTE]);
-+	led_trigger_register(&ledtrig_audio[LED_AUDIO_MICMUTE]);
- 	return 0;
- }
- module_init(ledtrig_audio_init);
- 
- static void __exit ledtrig_audio_exit(void)
- {
--	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MUTE]);
--	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MICMUTE]);
-+	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MUTE]);
-+	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MICMUTE]);
- }
- module_exit(ledtrig_audio_exit);
- 
+ 		fallthrough;
+ 	case MLX5_CAP_INLINE_MODE_L2:
+ 		NL_SET_ERR_MSG_MOD(extack, "Inline mode can't be set");
 -- 
 2.30.2
 
