@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1671408DB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CA1409039
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242033AbhIMN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:28:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37736 "EHLO mail.kernel.org"
+        id S244854AbhIMNux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241985AbhIMN0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 056E26113B;
-        Mon, 13 Sep 2021 13:22:47 +0000 (UTC)
+        id S243856AbhIMNq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:46:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD04861528;
+        Mon, 13 Sep 2021 13:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539368;
-        bh=jGWAl/K8bG2tdjP2RrtegwZ+kT089noGrVOSSSF+j2k=;
+        s=korg; t=1631539936;
+        bh=PZFijUnzFm1xU7t6cRsvOEqatyXFFIlW64bKY8NGXoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izedSLY6SnmeqUqiWKOvnUHYDI5FINXC34SrRC61me/0y+MdmGTJrUDHZA7c/+yy7
-         /1dDnkC4v1nKGlS4WdnaC9G8rG8Ub/Dl0kFmxEHLjke79UnRPICET3ZAYX7Ejm9Poa
-         ItuwxtX93QA9zg2i5jF9jp15VNX7RzigSg739Mmw=
+        b=YZ/Bs3MDH+pkS8gXMecO4aJ4SMtv6g50GgkM4gWnHTbEToeGxdVRDvMbU+NN23gjS
+         yf+20LM9UT291/ZQ30grGqEXcsH+HZ6Gk8K9fZUy0UrhbMcquWwHC6RC9geRQXFadj
+         X4b6Gzj8PqYx9jCQiZEeKHIxoyX9YRFMsoMnI+AY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 5.4 144/144] clk: kirkwood: Fix a clocking boot regression
-Date:   Mon, 13 Sep 2021 15:15:25 +0200
-Message-Id: <20210913131052.742733455@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nguyen Dinh Phi <phind.uet@gmail.com>
+Subject: [PATCH 5.10 221/236] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Date:   Mon, 13 Sep 2021 15:15:26 +0200
+Message-Id: <20210913131107.877083865@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-commit aaedb9e00e5400220a8871180d23a83e67f29f63 upstream.
+commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
 
-Since a few kernel releases the Pogoplug 4 has crashed like this
-during boot:
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is waiting for the
+ops->receive_buf() to finish its work, the data race will happen.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000002
-(...)
-[<c04116ec>] (strlen) from [<c00ead80>] (kstrdup+0x1c/0x4c)
-[<c00ead80>] (kstrdup) from [<c04591d8>] (__clk_register+0x44/0x37c)
-[<c04591d8>] (__clk_register) from [<c04595ec>] (clk_hw_register+0x20/0x44)
-[<c04595ec>] (clk_hw_register) from [<c045bfa8>] (__clk_hw_register_mux+0x198/0x1e4)
-[<c045bfa8>] (__clk_hw_register_mux) from [<c045c050>] (clk_register_mux_table+0x5c/0x6c)
-[<c045c050>] (clk_register_mux_table) from [<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0+0x13c/0x1ac)
-[<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0) from [<c0aceae0>] (of_clk_init+0x12c/0x214)
-[<c0aceae0>] (of_clk_init) from [<c0ab576c>] (time_init+0x20/0x2c)
-[<c0ab576c>] (time_init) from [<c0ab3d18>] (start_kernel+0x3dc/0x56c)
-[<c0ab3d18>] (start_kernel) from [<00000000>] (0x0)
-Code: e3130020 1afffffb e12fff1e c08a1078 (e5d03000)
+For example:
+tty_ioctl			|tty_ldisc_receive_buf
+ ->tioctsi			| ->tty_port_default_receive_buf
+				|  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
 
-This is because the "powersave" mux clock 0 was provided in an unterminated
-array, which is required by the loop in the driver:
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and we will lost the data.
 
-        /* Count, allocate, and register clock muxes */
-        for (n = 0; desc[n].name;)
-                n++;
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
 
-Here n will go out of bounds and then call clk_register_mux() on random
-memory contents after the mux clock.
-
-Fix this by terminating the array with a blank entry.
-
-Fixes: 105299381d87 ("cpufreq: kirkwood: use the powersave multiplexer")
-Cc: stable@vger.kernel.org
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210814235514.403426-1-linus.walleij@linaro.org
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clk/mvebu/kirkwood.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/tty_io.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/clk/mvebu/kirkwood.c
-+++ b/drivers/clk/mvebu/kirkwood.c
-@@ -265,6 +265,7 @@ static const char *powersave_parents[] =
- static const struct clk_muxing_soc_desc kirkwood_mux_desc[] __initconst = {
- 	{ "powersave", powersave_parents, ARRAY_SIZE(powersave_parents),
- 		11, 1, 0 },
-+	{ }
- };
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2257,8 +2257,6 @@ static int tty_fasync(int fd, struct fil
+  *	Locking:
+  *		Called functions take tty_ldiscs_lock
+  *		current->signal->tty check is safe without locks
+- *
+- *	FIXME: may race normal receive processing
+  */
  
- static struct clk *clk_muxing_get_src(
+ static int tiocsti(struct tty_struct *tty, char __user *p)
+@@ -2274,8 +2272,10 @@ static int tiocsti(struct tty_struct *tt
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
 
 
