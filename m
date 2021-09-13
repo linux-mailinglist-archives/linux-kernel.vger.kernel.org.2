@@ -2,153 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0EB408595
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081B340859D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237671AbhIMHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:47:38 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:53263 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237732AbhIMHr1 (ORCPT
+        id S237755AbhIMHuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237764AbhIMHtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:47:27 -0400
-Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 24A0C100007;
-        Mon, 13 Sep 2021 07:45:59 +0000 (UTC)
-Date:   Mon, 13 Sep 2021 09:45:59 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-phy@lists.infradead.org,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-staging@lists.linux.dev, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH NOT FOR MERGE 13/22] ARM: dts: sun8i: a83t: Add MIPI
- CSI-2 controller node
-Message-ID: <YT8Bt3Fmakn97vi9@aptenodytes>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-14-paul.kocialkowski@bootlin.com>
- <CAGb2v66OHJREEg1Djkk=VyY0yUr5JE8Fp+xsb40wCk6E56bH8A@mail.gmail.com>
+        Mon, 13 Sep 2021 03:49:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE3EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:47:59 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mPgh3-00024a-5u; Mon, 13 Sep 2021 09:47:57 +0200
+Subject: Re: [PATCH v3] KEYS: trusted: Fix trusted key backends when building
+ as module
+To:     Andreas Rammhold <andreas@rammhold.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210730012822.3460913-1-andreas@rammhold.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <0d42a11a-0117-49a9-d2c9-bc6cc405235d@pengutronix.de>
+Date:   Mon, 13 Sep 2021 09:47:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="a3BeDpyJol7qXzGn"
-Content-Disposition: inline
-In-Reply-To: <CAGb2v66OHJREEg1Djkk=VyY0yUr5JE8Fp+xsb40wCk6E56bH8A@mail.gmail.com>
+In-Reply-To: <20210730012822.3460913-1-andreas@rammhold.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear trusted key maintainers,
 
---a3BeDpyJol7qXzGn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 30.07.21 03:28, Andreas Rammhold wrote:
+> Before this commit the kernel could end up with no trusted key sources
+> even though both of the currently supported backends (TPM and TEE) were
+> compiled as modules. This manifested in the trusted key type not being
+> registered at all.
+> 
+> When checking if a CONFIG_… preprocessor variable is defined we only
+> test for the builtin (=y) case and not the module (=m) case. By using
+> the IS_REACHABLE() macro we do test for both cases.
+> 
+> Fixes: 5d0682be3189 ("KEYS: trusted: Add generic trusted keys framework")
+> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Does anyone intend to pick this up?
 
-Hi Chen-Yu,
+Cheers,
+Ahmad
 
-On Sat 11 Sep 21, 10:53, Chen-Yu Tsai wrote:
-> Hi,
->=20
-> On Sat, Sep 11, 2021 at 2:42 AM Paul Kocialkowski
-> <paul.kocialkowski@bootlin.com> wrote:
-> >
-> > MIPI CSI-2 is supported on the A83T with a dedicated controller that
-> > covers both the protocol and D-PHY. It can be connected to the CSI
-> > interface as a V4L2 subdev through the fwnode graph.
-> >
-> > This is not done by default since connecting the bridge without a
-> > subdev attached to it will cause a failure on the CSI driver.
-> >
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
->=20
-> I believe you tagged the wrong patch to not be merged? AFAICT it
-> should be the next patch that hooks up OV8865, not this one.
 
-Yes you are definitely right, this patch is good for merge and the next
-one is not.
 
-Thanks,
+> 
+> ---
+> 
+> v3:
+> * Fixed patch formatting
+> 
+> v2:
+> * Fixed commit message
+> * Switched from IS_DEFINED() to IS_REACHABLE()
+> 
+>  security/keys/trusted-keys/trusted_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> index d5c891d8d353..5b35f1b87644 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
+>  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
+>  
+>  static const struct trusted_key_source trusted_key_sources[] = {
+> -#if defined(CONFIG_TCG_TPM)
+> +#if IS_REACHABLE(CONFIG_TCG_TPM)
+>  	{ "tpm", &trusted_key_tpm_ops },
+>  #endif
+> -#if defined(CONFIG_TEE)
+> +#if IS_REACHABLE(CONFIG_TEE)
+>  	{ "tee", &trusted_key_tee_ops },
+>  #endif
+>  };
+> 
 
-Paul
 
-> > ---
-> >  arch/arm/boot/dts/sun8i-a83t.dtsi | 26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/sun8i-a83t.dtsi b/arch/arm/boot/dts/sun8=
-i-a83t.dtsi
-> > index ac97eac91349..1fa51f7ef063 100644
-> > --- a/arch/arm/boot/dts/sun8i-a83t.dtsi
-> > +++ b/arch/arm/boot/dts/sun8i-a83t.dtsi
-> > @@ -1064,6 +1064,32 @@ csi: camera@1cb0000 {
-> >                         status =3D "disabled";
-> >                 };
-> >
-> > +               mipi_csi2: csi@1cb1000 {
-> > +                       compatible =3D "allwinner,sun8i-a83t-mipi-csi2";
-> > +                       reg =3D <0x01cb1000 0x1000>;
-> > +                       interrupts =3D <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-> > +                       clocks =3D <&ccu CLK_BUS_CSI>,
-> > +                                <&ccu CLK_CSI_SCLK>,
-> > +                                <&ccu CLK_MIPI_CSI>,
-> > +                                <&ccu CLK_CSI_MISC>;
-> > +                       clock-names =3D "bus", "mod", "mipi", "misc";
-> > +                       resets =3D <&ccu RST_BUS_CSI>;
-> > +                       status =3D "disabled";
-> > +
-> > +                       ports {
-> > +                               #address-cells =3D <1>;
-> > +                               #size-cells =3D <0>;
-> > +
-> > +                               mipi_csi2_in: port@0 {
-> > +                                       reg =3D <0>;
-> > +                               };
-> > +
-> > +                               mipi_csi2_out: port@1 {
-> > +                                       reg =3D <1>;
-> > +                               };
-> > +                       };
-> > +               };
-> > +
-> >                 hdmi: hdmi@1ee0000 {
-> >                         compatible =3D "allwinner,sun8i-a83t-dw-hdmi";
-> >                         reg =3D <0x01ee0000 0x10000>;
-> > --
-> > 2.32.0
-> >
-> >
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---a3BeDpyJol7qXzGn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmE/AbcACgkQ3cLmz3+f
-v9GBrgf9HSUZdAaK36cq9m6svkBM+jphy40Yx1unln6fFfLoQoLluNFl8vwi5iKc
-Gb42Npg4NojviHDFxq71JtZiURP/pz9HiqmE7eOB0c9rdxL+SDXE9zzK8BfOXOwi
-1oySmXYcP2zbseeQHZ5VCCUzMZBcGWtnZTq+IJuYktq1F0448cYzUC1h7sdI0dbs
-yuEb9x2Xz0HtlLd5GuY8G3azwmyZxNdEotTP3LcFJ2mHbjxBvu6butmych9IOanN
-wnIPiULd3YFmoJ9khRL1KfKZ0N7WkZRLZBTlbhKrv5PIeQNjTWIIFjNN7y/gvEOZ
-omUKtZSmJY9vCNYwFHoATT43SX7uyA==
-=MNI6
------END PGP SIGNATURE-----
-
---a3BeDpyJol7qXzGn--
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
