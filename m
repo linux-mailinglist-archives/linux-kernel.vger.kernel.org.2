@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598DA409508
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCF6409217
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345214AbhIMOhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:37:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
+        id S245288AbhIMOHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:07:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345273AbhIMObO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:31:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34EBF61372;
-        Mon, 13 Sep 2021 13:51:42 +0000 (UTC)
+        id S1344245AbhIMOEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:04:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB17861A54;
+        Mon, 13 Sep 2021 13:39:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541102;
-        bh=oC6eQpK01ngWQiNw5ZPtbX52WtUnXX3Y1FnmYATwiE4=;
+        s=korg; t=1631540351;
+        bh=uuZMw6J5hMtC9lRbJ1wg88tUyZpGYzYRmpNXWwfNY5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aE1bsATVMMQnyxhDMpSBF3/E+yPCmBbPH8E1X/Arnh02WIujAY6fGOyWVnwFex9s/
-         E2FQsYd5E2MziZiXgWvCwsq5XXb1sODjcPYh+8vPkue7Vr+Kfhs/CUf+75PWieCdn7
-         vwE/b3R8DPVnUfd1OSgSvQmEFyAXbOKRaCSZQCHs=
+        b=QZXyvybMZt6gZhldSU/o00KkYFUHrD50HLcVrzSSx+8UarykmOJd/OD2yVsh9WNLL
+         CbvBDxy6VWUjKjMbgcJUi3Fzl6GwOIQ9/vG3OXkRdAtbMScx1hNytg+zmCra88/YVp
+         RXBu++TVnkefuBth+/wFJ5oizxGgsBKnCP/OG/vM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 162/334] media: venus: venc: Fix potential null pointer dereference on pointer fmt
-Date:   Mon, 13 Sep 2021 15:13:36 +0200
-Message-Id: <20210913131118.822904045@linuxfoundation.org>
+Subject: [PATCH 5.13 156/300] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
+Date:   Mon, 13 Sep 2021 15:13:37 +0200
+Message-Id: <20210913131114.683823141@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 09ea9719a423fc675d40dd05407165e161ea0c48 ]
+[ Upstream commit 713baf3dae8f45dc8ada4ed2f5fdcbf94a5c274d ]
 
-Currently the call to find_format can potentially return a NULL to
-fmt and the nullpointer is later dereferenced on the assignment of
-pixmp->num_planes = fmt->num_planes.  Fix this by adding a NULL pointer
-check and returning NULL for the failure case.
+An earlier commit replaced using batostr to using %pMR sprintf for the
+construction of session->name. Static analysis detected that this new
+method can use a total of 21 characters (including the trailing '\0')
+so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
+buffer overflows.
 
-Addresses-Coverity: ("Dereference null return")
-
-Fixes: aaaa93eda64b ("[media] media: venus: venc: add video encoder files")
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/venus/venc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/bluetooth/cmtp/cmtp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 8dd49d4f124c..1d62e38065d6 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -183,6 +183,8 @@ venc_try_fmt_common(struct venus_inst *inst, struct v4l2_format *f)
- 		else
- 			return NULL;
- 		fmt = find_format(inst, pixmp->pixelformat, f->type);
-+		if (!fmt)
-+			return NULL;
- 	}
+diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
+index c32638dddbf9..f6b9dc4e408f 100644
+--- a/net/bluetooth/cmtp/cmtp.h
++++ b/net/bluetooth/cmtp/cmtp.h
+@@ -26,7 +26,7 @@
+ #include <linux/types.h>
+ #include <net/bluetooth/bluetooth.h>
  
- 	pixmp->width = clamp(pixmp->width, frame_width_min(inst),
+-#define BTNAMSIZ 18
++#define BTNAMSIZ 21
+ 
+ /* CMTP ioctl defines */
+ #define CMTPCONNADD	_IOW('C', 200, int)
 -- 
 2.30.2
 
