@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B881409A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B034D409A59
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241049AbhIMRHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S241734AbhIMRJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238043AbhIMRHH (ORCPT
+        with ESMTP id S242067AbhIMRJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:07:07 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93560C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:05:51 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a4so22527613lfg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:05:51 -0700 (PDT)
+        Mon, 13 Sep 2021 13:09:11 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A415BC061574;
+        Mon, 13 Sep 2021 10:07:55 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d17so6253606plr.12;
+        Mon, 13 Sep 2021 10:07:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wm2HR4L0vBNqB3mM87MK6dpQpg/k1YQQXiC/25umcss=;
-        b=J7kfc2b6uIuG4RH/pAjQnpKhD2WCcEh0oILsdxS3STsS0fcE6lHeL8emJW/30ltYn7
-         pjigPwUJjZgUDowzRlQ5mz4Ccbz7rjeXiJw/+oaGIFg0PtnZOtyzJ08jLmPj+k0EAKNS
-         kVs/hUGgOPvhGjkmWr5LBt2WB8X9CXIrY0M2Q=
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=j5joFQfmpuIKYVq4FNGc92u2MbWnEsDplwU4rw1mhjA=;
+        b=fy0vl8AmOj4s3M3DJna3FR5Qme9G9LbD00lIVLAmOdkIEWKrvYWwPtLUyG9m522Eof
+         Jkl5y9a37qDWoFZqUjQay/7ozL3RXJbIRfzzbx1BFsdmyNUjml1OjPmYDX+Hhru9NIUb
+         KzeFQ9Z/pI6Quoxv+XkgFcAS49Pg6Wh8kHUihnBh8pIJntXDdtLDQNKg8kcHqw8mPDaY
+         EX27/6JdMuMpIrgyrms6hoJEBwZ/RW2mmN1cw8y7KJDb+N3ejsgHxlR5j6xF/xPMqd51
+         39FUWYUpEpOpqVqgjdhZBCzjvJT2yZWrn6Ow0VcaaqFcwqVvk1MjaTTJu9rnTOHf8OVx
+         fNUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wm2HR4L0vBNqB3mM87MK6dpQpg/k1YQQXiC/25umcss=;
-        b=Uv1n2rWy7+VpVUo3E0LEIhIHtPe4TjGqAu5Rn/4N9lkzqR07PpvhTHqm8xtxho9Zeh
-         rN7KCsdSkjyhwc7csWrUrbmm0/DxMYYEaNFjgkPR1JAuxoZSTM9XNSqbk8+ndHrGTIt3
-         +XqtO9dMBiiO2LM9HmtqodOG/TBHDDHi+qkDxl2xJb++J2Q9kb/rDmQ376xeZUJcHMXs
-         cThgHcVMJh3RscdrjiAJxzIEGcfrK8t1WRexXHFzOAnbC7GZQews9RGes4GJSEmugIIk
-         7+G8iFksY/DeI6PwmltoxqiEwivEO3pWAMKAH4IHAZf+pWtRwDZ3peCe4y59KvtdZp9X
-         VPsA==
-X-Gm-Message-State: AOAM532BWcZlKX/H3GFO3MeLYoe3KthLus0hxcUI+nn+DB39oHRVISBa
-        Oj3FHR2vEoTn1pDv9XLNBDZxZPaFkGmbBwbXFFk=
-X-Google-Smtp-Source: ABdhPJzHYKUNpCNATyXfxRidRoADBhc7MNrn5K6gA0Rt3uDq8nC7dffm2oeSKLTS0jRgkpoqDNyaFA==
-X-Received: by 2002:a05:6512:22d5:: with SMTP id g21mr684425lfu.544.1631552749045;
-        Mon, 13 Sep 2021 10:05:49 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id b2sm878281lfi.283.2021.09.13.10.05.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 10:05:48 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id g1so11059256lfj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:05:48 -0700 (PDT)
-X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr9855278lfv.655.1631552748031;
- Mon, 13 Sep 2021 10:05:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913163547.5156-1-will@kernel.org>
-In-Reply-To: <20210913163547.5156-1-will@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 13 Sep 2021 10:05:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whF01ZS30vQAEjY9K4RM_QNjZ0mTCTt8SY4KuER-2d14w@mail.gmail.com>
-Message-ID: <CAHk-=whF01ZS30vQAEjY9K4RM_QNjZ0mTCTt8SY4KuER-2d14w@mail.gmail.com>
-Subject: Re: [PATCH] x86/uaccess: Fix 32-bit __get_user_asm_u64() when CC_HAS_ASM_GOTO_OUTPUT=y
-To:     Will Deacon <will@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=j5joFQfmpuIKYVq4FNGc92u2MbWnEsDplwU4rw1mhjA=;
+        b=uxOClq/MGK0mI4YPFokZMxp2Ih9s6PDIuLL2NTWvSzlcK+LTGE5iZkFEwf/tbZekqv
+         /m7dSY1QFK9XRvOsYpEFfO2fUjy7FgkYhmevR5ETaqmCVgMpeVBNX+cq/bOHSpK35+cF
+         FUPTf/9m24EGh1CZRfE2UrUjlIof0z87WT53n9++1NCZ2PafDm+7n9uSs6MQgiFJ5Hox
+         4JIDkoIr1Vb3yC/pPJ5+E8YTn2Fz6qr2BU/ifDLtqM3D3kUZHTOHdtI/TKh2kG8J6ml6
+         lJtdMExxmpz/axev/eEPLwpGwfmfXTtJRcaaWfNbttx0Y9r0XifQw/Uv6l4GgNzUPvtB
+         G/Rg==
+X-Gm-Message-State: AOAM531Qn6RjkRUMZNB84IXhSIMW1qAurc1zSmhENMW//Z/H4PlfUUgV
+        xTsp5uddqIgc4jrAWI+fabBpOmze3KuSycdQzrQ=
+X-Google-Smtp-Source: ABdhPJyJD4cnJNKIDnyl48WnnxBO//vV82c/WWlcbLkyCRau4AbMFH4KzsIPcM5jp7BavzRKlHAktA==
+X-Received: by 2002:a17:902:8647:b0:139:edc9:ed43 with SMTP id y7-20020a170902864700b00139edc9ed43mr11294473plt.23.1631552874571;
+        Mon, 13 Sep 2021 10:07:54 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id v7sm7240512pjg.34.2021.09.13.10.07.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 10:07:54 -0700 (PDT)
+Message-ID: <613f856a.1c69fb81.51a0e.45ff@mx.google.com>
+Date:   Mon, 13 Sep 2021 10:07:54 -0700 (PDT)
+X-Google-Original-Date: Mon, 13 Sep 2021 17:07:52 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 000/236] 5.10.65-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 9:36 AM Will Deacon <will@kernel.org> wrote:
->
-> Use the existing '__gu_ptr' source pointer to unsigned int for 32-bit
-> __get_user_asm_u64() instead of the original pointer.
+On Mon, 13 Sep 2021 15:11:45 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.65 release.
+> There are 236 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.65-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Heh. And by "existing" you mean "the one that exists _purely_ for this
-exact reason and that wasn't used" ;)
+5.10.65-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-What a silly bug. And it's existed for a year, which I think shows
-just how little 32-bit x86 is used these days (*).
-
-            Linus
-
-(*) but also probably how few 64-bit user accesses we do - the fact
-that the bug was actually found by the "copy_from_kernel_nofault" code
-that just shares the infrastructure on x86 rather than any user access
-code is kind of interesting.
