@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D2A408A20
+	by mail.lfdr.de (Postfix) with ESMTP id AFB97408A21
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 13:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239624AbhIML2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 07:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
+        id S239640AbhIML2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 07:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239556AbhIML1z (ORCPT
+        with ESMTP id S239584AbhIML17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:27:55 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFDBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:26:40 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id v21-20020a05620a0a9500b003d5c1e2f277so40514693qkg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:26:40 -0700 (PDT)
+        Mon, 13 Sep 2021 07:27:59 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254D0C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:26:43 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so2360174wrq.18
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 04:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=RLfVSTnmaFR6BCLsdGDNNy/lIjkdCKWfb/4pjdgI7U4=;
-        b=FgLtShlMOVfjaXGo7f/oS0G8myvJmOGkAHupBhG1n66pC03AfWY1h02QQwxGm/BC2q
-         NIiVoAt5RptGMta67XGFwYCxNjlG5g+z4pbIT5EDeS+HaFlHPyxz6XLuLeBlG+4Abr3v
-         kYNbhUcrEFGFUE4/+CaCg1scl6StUbvOZxBpqOPfJgxIHfBIzP1tOoqI5daIERLmD/Xx
-         y79UikpTXnQMSKEd6Zhq79VGWW3+g8XJG6WHCYb1QvfRVRgYch7iMM9pNUn3WOVf62yO
-         rmPhlXm2OXvKXpmRroN3j6TxIJlZD+7fafvKRni0OdTZ5WyJIp789q/oqpIb9A8/9eM7
-         hrjw==
+        bh=uXbisNK0hzVjo0x7v5RilsBzlcwLLC23aSoidmJI5Q0=;
+        b=H9qgnMTa7AwCb5iArY+iTSmQ//hjkA1MCsuLuaE4/RUP/gDWt1slOPQx83Is1+UEkZ
+         7ldVIUBdbaEIP8vDVZbuoQ50dIniyyxtoZvPOB7cxVpBscdCyAJjLOWmnqdQeR+x+CNV
+         R59jlsb5GGt4EU0SDMVHt3JiOYWGuHTSUdLo8AkvkHKv5yH8yYTSjCJrl4UZcNae/xqq
+         wktQQsT9+pUVwO6scHnOqIkHX9607WZlLiri4nKPcHURD/uZZHKIepPX2DvcPENMqu+3
+         F0+uiIXW/gXBoLzzXUe4/bIjb/o7pcxzwMA2jaCf0hlT4hzHNQQxAMwxo+HxFlz61eyy
+         yNow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=RLfVSTnmaFR6BCLsdGDNNy/lIjkdCKWfb/4pjdgI7U4=;
-        b=So/1lXcQ6MODllTNIjmaL0MkL2e9tY4dxjJapGi48P/60KLqxJI6t0lE+De98hBE/A
-         ZbAb0fIehbMdk5Sh4gdSp5RkSnX3Buawl8wGjBPFhsfPsLxZYgXgIzCtgz6zix4Gn4Rq
-         3FiScxOhjLdfjlVWt6AOnchuJyPC1G4ydnioi0++P7UzIWXSNYcDyGrxIlopJ7ko+66c
-         OZB9Wj+pt8XAF8W9gzjWtAEAxRws012GjN121VU88e4QVqQpJzIGYDFY4ypO5owTIij5
-         /wImhCiaHtOMCk/sPFgaSIyhAetb/F2KGQF5wwzhZU+Pfy1Ig5z9uPfRxZE/0AeboXMG
-         szHw==
-X-Gm-Message-State: AOAM530t2sxUX1tEbVX2xWqxbLpBujWKmszYE1lpS+4JnT99o8roiicX
-        7tCyiz3uxTfYemlAyu1JR7/UB2NIqg==
-X-Google-Smtp-Source: ABdhPJwEBO7FeGHgJTcmfUUVA+smyLBjaAlSYjqDfG51drrvptWMJdaA6VPLMTvhcadpEq6oPbHI9LyatA==
+        bh=uXbisNK0hzVjo0x7v5RilsBzlcwLLC23aSoidmJI5Q0=;
+        b=i6DzX9Hx9WtLwvYnDIG7imoYweu4ikxkizn+Kj/BMNsLSVjMSI0VBUlnbc1upDHq9O
+         4ig37y0sCZql6DTx8Tb1m140mGhZV5DZVwcLymklAgAIdGznPNsHGATzgBiXJoUhDim2
+         eQsHmcGCLY0VkfJkgT+wRkRUNXyPoXaaLdQ9AvKpd977isovOplYgtXYUflO+QM8gT//
+         u+n0OAlegEUPMcsBffyRX3tLhEvYUOvneLSRCjMTXQhHunBacyCQhc4RZML1rSR64Xx6
+         dkaDA/d+dB70/owe8+6jcgoWYC96kdzAlzdvL7Pl1wgdjjPBBzDyWp8UZJW0Y1V4NQFS
+         zIQw==
+X-Gm-Message-State: AOAM531gDfzcQIWsPDVU4vna7W3nYB4UgqDRtP9fNNQBplSKLKMPAyto
+        NmpfMz785Tto7qGT+1zpor774T4sXQ==
+X-Google-Smtp-Source: ABdhPJwrHYb2pQNJIWj/O8r94l5tGwmsJgjQ5oX69os6T91IbgkHBm7FGNsYkspC/6g0HsRIyu30TJmAcA==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:1f19:d46:38c8:7e48])
- (user=elver job=sendgmr) by 2002:ad4:56a8:: with SMTP id bd8mr9898132qvb.0.1631532399089;
- Mon, 13 Sep 2021 04:26:39 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 13:26:08 +0200
+ (user=elver job=sendgmr) by 2002:a05:600c:245:: with SMTP id
+ 5mr9896478wmj.53.1631532401563; Mon, 13 Sep 2021 04:26:41 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 13:26:09 +0200
 In-Reply-To: <20210913112609.2651084-1-elver@google.com>
-Message-Id: <20210913112609.2651084-6-elver@google.com>
+Message-Id: <20210913112609.2651084-7-elver@google.com>
 Mime-Version: 1.0
 References: <20210913112609.2651084-1-elver@google.com>
 X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH v2 5/6] kasan: generic: introduce kasan_record_aux_stack_noalloc()
+Subject: [PATCH v2 6/6] workqueue, kasan: avoid alloc_pages() when recording stack
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
 Cc:     Shuah Khan <skhan@linuxfoundation.org>, Tejun Heo <tj@kernel.org>,
@@ -74,69 +74,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a variant of kasan_record_aux_stack() that does not do any
-memory allocation through stackdepot. This will permit using it in
-contexts that cannot allocate any memory.
+Shuah Khan reported:
 
+ | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
+ | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
+ | it tries to allocate memory attempting to acquire spinlock in page
+ | allocation code while holding workqueue pool raw_spinlock.
+ |
+ | There are several instances of this problem when block layer tries
+ | to __queue_work(). Call trace from one of these instances is below:
+ |
+ |     kblockd_mod_delayed_work_on()
+ |       mod_delayed_work_on()
+ |         __queue_delayed_work()
+ |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
+ |             insert_work()
+ |               kasan_record_aux_stack()
+ |                 kasan_save_stack()
+ |                   stack_depot_save()
+ |                     alloc_pages()
+ |                       __alloc_pages()
+ |                         get_page_from_freelist()
+ |                           rm_queue()
+ |                             rm_queue_pcplist()
+ |                               local_lock_irqsave(&pagesets.lock, flags);
+ |                               [ BUG: Invalid wait context triggered ]
+
+The default kasan_record_aux_stack() calls stack_depot_save() with
+GFP_NOWAIT, which in turn can then call alloc_pages(GFP_NOWAIT, ...).
+In general, however, it is not even possible to use either GFP_ATOMIC
+nor GFP_NOWAIT in certain non-preemptive contexts, including
+raw_spin_locks (see gfp.h and ab00db216c9c7).
+
+Fix it by instructing stackdepot to not expand stack storage via
+alloc_pages() in case it runs out by using kasan_record_aux_stack_noalloc().
+
+While there is an increased risk of failing to insert the stack trace,
+this is typically unlikely, especially if the same insertion had already
+succeeded previously (stack depot hit). For frequent calls from the same
+location, it therefore becomes extremely unlikely that
+kasan_record_aux_stack_noalloc() fails.
+
+Link: https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
+Reported-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Marco Elver <elver@google.com>
 Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/linux/kasan.h |  2 ++
- mm/kasan/generic.c    | 14 ++++++++++++--
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index dd874a1ee862..736d7b458996 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -370,12 +370,14 @@ static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
- void kasan_cache_shrink(struct kmem_cache *cache);
- void kasan_cache_shutdown(struct kmem_cache *cache);
- void kasan_record_aux_stack(void *ptr);
-+void kasan_record_aux_stack_noalloc(void *ptr);
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 33a6b4a2443d..9a042a449002 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1350,7 +1350,7 @@ static void insert_work(struct pool_workqueue *pwq, struct work_struct *work,
+ 	struct worker_pool *pool = pwq->pool;
  
- #else /* CONFIG_KASAN_GENERIC */
+ 	/* record the work call stack in order to print it in KASAN reports */
+-	kasan_record_aux_stack(work);
++	kasan_record_aux_stack_noalloc(work);
  
- static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
- static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
- static inline void kasan_record_aux_stack(void *ptr) {}
-+static inline void kasan_record_aux_stack_noalloc(void *ptr) {}
- 
- #endif /* CONFIG_KASAN_GENERIC */
- 
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 2a8e59e6326d..84a038b07c6f 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -328,7 +328,7 @@ DEFINE_ASAN_SET_SHADOW(f3);
- DEFINE_ASAN_SET_SHADOW(f5);
- DEFINE_ASAN_SET_SHADOW(f8);
- 
--void kasan_record_aux_stack(void *addr)
-+static void __kasan_record_aux_stack(void *addr, bool can_alloc)
- {
- 	struct page *page = kasan_addr_to_page(addr);
- 	struct kmem_cache *cache;
-@@ -345,7 +345,17 @@ void kasan_record_aux_stack(void *addr)
- 		return;
- 
- 	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
--	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT, true);
-+	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT, can_alloc);
-+}
-+
-+void kasan_record_aux_stack(void *addr)
-+{
-+	return __kasan_record_aux_stack(addr, true);
-+}
-+
-+void kasan_record_aux_stack_noalloc(void *addr)
-+{
-+	return __kasan_record_aux_stack(addr, false);
- }
- 
- void kasan_set_free_info(struct kmem_cache *cache,
+ 	/* we own @work, set data and link */
+ 	set_work_pwq(work, pwq, extra_flags);
 -- 
 2.33.0.309.g3052b89438-goog
 
