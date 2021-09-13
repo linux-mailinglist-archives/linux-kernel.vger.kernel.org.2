@@ -2,84 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C968A409ED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4EA409ECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243173AbhIMVJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:09:56 -0400
-Received: from hosting.gsystem.sk ([212.5.213.30]:56728 "EHLO
-        hosting.gsystem.sk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbhIMVJz (ORCPT
+        id S1343759AbhIMVGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345918AbhIMVGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:09:55 -0400
-X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 17:09:55 EDT
-Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id E799F7A0214;
-        Mon, 13 Sep 2021 23:01:35 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] usb-storage: Add quirk for ScanLogic SL11R-IDE older than 2.6c
-Date:   Mon, 13 Sep 2021 23:01:06 +0200
-Message-Id: <20210913210106.12717-1-linux@zary.sk>
-X-Mailer: git-send-email 2.20.1
+        Mon, 13 Sep 2021 17:06:33 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AEE0C061768
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:05:17 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id v5so16379682edc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=373m7inPGNTCDOiEZsbke1WmzoymEFvAttGADuwHDDA=;
+        b=dZApan+/iH4NW1oyIBh56hyWC0xvVWqlTSK28qynQC4TgDjgqY/p3DDGCieGAdnE+I
+         0aAGZTbnqRM5fK3TAuLjdF7NMMeCiV0kCAfGdpzcWIOkp6sGMVlUrfxYCH3SD3gyogJC
+         4YUBZARL2myz4qpAuMZTGYV2rnkRZ9K57xrX/1azGmh55BtgXM4p6fR98t3Lj/TtI5og
+         R/GBhjg5GXvtd+GgOVsER1+uWOFoeaerYmB9DSE925/Yk+BqT4PYFMFnKhDH3tmHZ5eB
+         xUYs9eTg/9uBmvVggoWXp8e0Cnzsirc3guy7n646rKKVwHb6iHMN/jX2KPg7JseQr8+1
+         ToQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=373m7inPGNTCDOiEZsbke1WmzoymEFvAttGADuwHDDA=;
+        b=TISNHl38r4lRjvARKOvlB6OLwnhZHnI+fqyXumwyKoAzqQIZfuDTjarRWie4UaSg03
+         jLrOOm4+IqAkM/rbzWEwjMqk4mMxha9miwRSntiUSJzvZCLRVLOSO1P6T+k8NSrI7Fvm
+         NHKoGZwYXOV3tWaFHhN+CjPeshY7XoMZsJXQAMVon22asVLNlTCH86qUS7FDHun/glCu
+         frh+5IvTg6Ip22OBOnv0qZ2UoK2eAfcn2P4nQCvtvzOTKhf6rdVhA9VVAi3C16XZii3C
+         HU4H+sZba62OH67fQHJIjMauvpbjaHKSvFnBU0FjZ5jFSvia5OotmjrtpJX1Y+5PzL4V
+         3S0w==
+X-Gm-Message-State: AOAM5312B61S1eH5agY0l/rtadIKTyjBW454gLdv94E6OhTLaDHFNxlU
+        wgfZ+rq3PKJpIyAttqzxL42htrDvNzLlUtM9C43D
+X-Google-Smtp-Source: ABdhPJyhjptYpi0mwh96yMlLzxckfq2tRXqkGTb/ZQJf0dLr8KeUC8PkrIaOITSWhjWsL1Ai+gNDn5oE1rgV2wDOPdI=
+X-Received: by 2002:a05:6402:2810:: with SMTP id h16mr14507917ede.293.1631567115278;
+ Mon, 13 Sep 2021 14:05:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913140229.24797-1-omosnace@redhat.com>
+In-Reply-To: <20210913140229.24797-1-omosnace@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 13 Sep 2021 17:05:04 -0400
+Message-ID: <CAHC9VhRw-S+zZUFz5QFFLMBATjo+YbPAiR21jX6p7cT0T+MVLA@mail.gmail.com>
+Subject: Re: [PATCH v4] lockdown,selinux: fix wrong subject in some SELinux
+ lockdown checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
-broken tag handling, preventing the device from working at all:
-usb 1-1: new full-speed USB device number 2 using uhci_hcd
-usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
-usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
-usb 1-1: Product: USB Device
-usb 1-1: Manufacturer: USB Device
-usb-storage 1-1:1.0: USB Mass Storage device detected
-scsi host2: usb-storage 1-1:1.0
-usbcore: registered new interface driver usb-storage
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
-usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+On Mon, Sep 13, 2021 at 10:02 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>
+> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> lockdown") added an implementation of the locked_down LSM hook to
+> SELinux, with the aim to restrict which domains are allowed to perform
+> operations that would breach lockdown.
+>
+> However, in several places the security_locked_down() hook is called in
+> situations where the current task isn't doing any action that would
+> directly breach lockdown, leading to SELinux checks that are basically
+> bogus.
+>
+> To fix this, add an explicit struct cred pointer argument to
+> security_lockdown() and define NULL as a special value to pass instead
+> of current_cred() in such situations. LSMs that take the subject
+> credentials into account can then fall back to some default or ignore
+> such calls altogether. In the SELinux lockdown hook implementation, use
+> SECINITSID_KERNEL in case the cred argument is NULL.
+>
+> Most of the callers are updated to pass current_cred() as the cred
+> pointer, thus maintaining the same behavior. The following callers are
+> modified to pass NULL as the cred pointer instead:
+> 1. arch/powerpc/xmon/xmon.c
+>      Seems to be some interactive debugging facility. It appears that
+>      the lockdown hook is called from interrupt context here, so it
+>      should be more appropriate to request a global lockdown decision.
+> 2. fs/tracefs/inode.c:tracefs_create_file()
+>      Here the call is used to prevent creating new tracefs entries when
+>      the kernel is locked down. Assumes that locking down is one-way -
+>      i.e. if the hook returns non-zero once, it will never return zero
+>      again, thus no point in creating these files. Also, the hook is
+>      often called by a module's init function when it is loaded by
+>      userspace, where it doesn't make much sense to do a check against
+>      the current task's creds, since the task itself doesn't actually
+>      use the tracing functionality (i.e. doesn't breach lockdown), just
+>      indirectly makes some new tracepoints available to whoever is
+>      authorized to use them.
+> 3. net/xfrm/xfrm_user.c:copy_to_user_*()
+>      Here a cryptographic secret is redacted based on the value returned
+>      from the hook. There are two possible actions that may lead here:
+>      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
+>         task context is relevant, since the dumped data is sent back to
+>         the current task.
+>      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
+>         dumped SA is broadcasted to tasks subscribed to XFRM events -
+>         here the current task context is not relevant as it doesn't
+>         represent the tasks that could potentially see the secret.
+>      It doesn't seem worth it to try to keep using the current task's
+>      context in the a) case, since the eventual data leak can be
+>      circumvented anyway via b), plus there is no way for the task to
+>      indicate that it doesn't care about the actual key value, so the
+>      check could generate a lot of "false alert" denials with SELinux.
+>      Thus, let's pass NULL instead of current_cred() here faute de
+>      mieux.
+>
+> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
+> Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
+> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+> Acked-by: Dan Williams <dan.j.williams@intel.com>         [cxl]
+> Acked-by: Steffen Klassert <steffen.klassert@secunet.com> [xfrm]
+> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+> ---
+>
+> v4:
+> - rebase on top of TODO
+> - fix rebase conflicts:
+>   * drivers/cxl/pci.c
+>     - trivial: the lockdown reason was corrected in mainline
+>   * kernel/bpf/helpers.c, kernel/trace/bpf_trace.c
+>     - trivial: LOCKDOWN_BPF_READ was renamed to LOCKDOWN_BPF_READ_KERNEL
+>       in mainline
+>   * kernel/power/hibernate.c
+>     - trivial: !secretmem_active() was added to the condition in
+>       hibernation_available()
+> - cover new security_locked_down() call in kernel/bpf/helpers.c
+>   (LOCKDOWN_BPF_WRITE_USER in BPF_FUNC_probe_write_user case)
+>
+> v3: https://lore.kernel.org/lkml/20210616085118.1141101-1-omosnace@redhat.com/
+> - add the cred argument to security_locked_down() and adapt all callers
+> - keep using current_cred() in BPF, as the hook calls have been shifted
+>   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
+>   buggy SELinux lockdown permission checks"))
+> - in SELinux, don't ignore hook calls where cred == NULL, but use
+>   SECINITSID_KERNEL as the subject instead
+> - update explanations in the commit message
+>
+> v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
+> - change to a single hook based on suggestions by Casey Schaufler
+>
+> v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
 
-Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
+The changes between v3 and v4 all seem sane to me, but I'm going to
+let this sit for a few days in hopes that we can collect a few more
+Reviewed-bys and ACKs.  If I don't see any objections I'll merge it
+mid-week(ish) into selinux/stable-5.15 and plan on sending it to Linus
+after it goes through a build/test cycle.
 
-2.6c is the only firmware that claims Linux compatibility.
-The firmware can be upgraded using ezotgdbg utility:
-https://github.com/asciilifeform/ezotgdbg
-
-Signed-off-by: Ondrej Zary <linux@zary.sk>
----
- drivers/usb/storage/unusual_devs.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
-index efa972be2ee3..c6b3fcf90180 100644
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x2210,
- 		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
- 
- /*
-- * Reported by Ondrej Zary <linux@rainbow-software.org>
-+ * Reported by Ondrej Zary <linux@zary.sk>
-  * The device reports one sector more and breaks when that sector is accessed
-+ * Firmwares older than 2.6c (the latest one and the only that claims Linux
-+ * support) have also broken tag handling
-  */
-+UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
-+		"ScanLogic",
-+		"SL11R-IDE",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
- UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
- 		"ScanLogic",
- 		"SL11R-IDE",
 -- 
-Ondrej Zary
-
+paul moore
+www.paul-moore.com
