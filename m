@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6310408D8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C08E409015
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240258AbhIMN1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37924 "EHLO mail.kernel.org"
+        id S244588AbhIMNtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:49:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241662AbhIMNYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:24:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 317FE61211;
-        Mon, 13 Sep 2021 13:22:00 +0000 (UTC)
+        id S244282AbhIMNpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:45:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F17261108;
+        Mon, 13 Sep 2021 13:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539321;
-        bh=bYQBbAhg4PKSorVTt+k42SFcTQ+v6vWpyrZlMLiUe2Q=;
+        s=korg; t=1631539891;
+        bh=EG/eYFze03obB/uxcryWFeHknZP8gHCPvJH9j9r9lYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d/0IswzX4q7/dky6tWH76SwwfvrEXzimgTYHFqyTWvfC9sY7ur7PhdIAw3wkvnRLa
-         Y9WzWN4ukv4dSUwjspvd84QtH8ekFwXlAHGoyQiIudanDdSqIsyWFuOm8AD8zlxMF4
-         obnT1NDXnhzFFOg4G7/msdbxCFpf46EbCugWADDM=
+        b=A+JR3xpvyjVuCA4a0FCb6fpKW4AtPm3+TG5cMEmtK+8SiLYaZ4LAhMvKrnBHtuWGQ
+         kcz/dYgsltMfxjB/LAP7DE03Wrl5atL5yasVSDT+luYYh976rPIqxLBFzCXWMHVUrz
+         xoDBHcEjtlhpcwycYJLTCEzliak57eV/FSnq18hg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Heimpold <michael.heimpold@in-tech.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Abhishek Naik <abhishek.naik@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 124/144] net: qualcomm: fix QCA7000 checksum handling
-Date:   Mon, 13 Sep 2021 15:15:05 +0200
-Message-Id: <20210913131052.077729252@linuxfoundation.org>
+Subject: [PATCH 5.10 201/236] iwlwifi: skip first element in the WTAS ACPI table
+Date:   Mon, 13 Sep 2021 15:15:06 +0200
+Message-Id: <20210913131107.224999422@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Wahren <stefan.wahren@i2se.com>
+From: Abhishek Naik <abhishek.naik@intel.com>
 
-[ Upstream commit 429205da6c834447a57279af128bdd56ccd5225e ]
+[ Upstream commit 19426d54302e199b3fd2d575f926a13af66be2b9 ]
 
-Based on tests the QCA7000 doesn't support checksum offloading. So assume
-ip_summed is CHECKSUM_NONE and let the kernel take care of the checksum
-handling. This fixes data transfer issues in noisy environments.
+By mistake we were considering the first element of the WTAS wifi
+package as part of the data we want to rid, but that element is the wifi
+package signature (always 0x07), so it should be skipped.
 
-Reported-by: Michael Heimpold <michael.heimpold@in-tech.com>
-Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA7000")
-Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Change the code to read the data starting from element 1 instead.
+
+Signed-off-by: Abhishek Naik <abhishek.naik@intel.com>
+Fixes: 28dd7ccdc56f ("iwlwifi: acpi: read TAS table from ACPI and send it to the FW")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210805141826.ff8148197b15.I70636c04e37b2b57a5df3ce611511f62203d27a7@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qualcomm/qca_spi.c  | 2 +-
- drivers/net/ethernet/qualcomm/qca_uart.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
-index baac016f3ec0..15591ad5fe4e 100644
---- a/drivers/net/ethernet/qualcomm/qca_spi.c
-+++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -434,7 +434,7 @@ qcaspi_receive(struct qcaspi *qca)
- 				skb_put(qca->rx_skb, retcode);
- 				qca->rx_skb->protocol = eth_type_trans(
- 					qca->rx_skb, qca->rx_skb->dev);
--				qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
-+				skb_checksum_none_assert(qca->rx_skb);
- 				netif_rx_ni(qca->rx_skb);
- 				qca->rx_skb = netdev_alloc_skb_ip_align(net_dev,
- 					net_dev->mtu + VLAN_ETH_HLEN);
-diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethernet/qualcomm/qca_uart.c
-index 0981068504fa..ade70f5df496 100644
---- a/drivers/net/ethernet/qualcomm/qca_uart.c
-+++ b/drivers/net/ethernet/qualcomm/qca_uart.c
-@@ -107,7 +107,7 @@ qca_tty_receive(struct serdev_device *serdev, const unsigned char *data,
- 			skb_put(qca->rx_skb, retcode);
- 			qca->rx_skb->protocol = eth_type_trans(
- 						qca->rx_skb, qca->rx_skb->dev);
--			qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
-+			skb_checksum_none_assert(qca->rx_skb);
- 			netif_rx_ni(qca->rx_skb);
- 			qca->rx_skb = netdev_alloc_skb_ip_align(netdev,
- 								netdev->mtu +
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
+index 8c78c6180d05..5e4faf9ce4bb 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
+@@ -254,7 +254,7 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
+ 		goto out_free;
+ 	}
+ 
+-	enabled = !!wifi_pkg->package.elements[0].integer.value;
++	enabled = !!wifi_pkg->package.elements[1].integer.value;
+ 
+ 	if (!enabled) {
+ 		*block_list_size = -1;
+@@ -263,15 +263,15 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
+ 		goto out_free;
+ 	}
+ 
+-	if (wifi_pkg->package.elements[1].type != ACPI_TYPE_INTEGER ||
+-	    wifi_pkg->package.elements[1].integer.value >
++	if (wifi_pkg->package.elements[2].type != ACPI_TYPE_INTEGER ||
++	    wifi_pkg->package.elements[2].integer.value >
+ 	    APCI_WTAS_BLACK_LIST_MAX) {
+ 		IWL_DEBUG_RADIO(fwrt, "TAS invalid array size %llu\n",
+ 				wifi_pkg->package.elements[1].integer.value);
+ 		ret = -EINVAL;
+ 		goto out_free;
+ 	}
+-	*block_list_size = wifi_pkg->package.elements[1].integer.value;
++	*block_list_size = wifi_pkg->package.elements[2].integer.value;
+ 
+ 	IWL_DEBUG_RADIO(fwrt, "TAS array size %d\n", *block_list_size);
+ 	if (*block_list_size > APCI_WTAS_BLACK_LIST_MAX) {
+@@ -284,15 +284,15 @@ int iwl_acpi_get_tas(struct iwl_fw_runtime *fwrt,
+ 	for (i = 0; i < *block_list_size; i++) {
+ 		u32 country;
+ 
+-		if (wifi_pkg->package.elements[2 + i].type !=
++		if (wifi_pkg->package.elements[3 + i].type !=
+ 		    ACPI_TYPE_INTEGER) {
+ 			IWL_DEBUG_RADIO(fwrt,
+-					"TAS invalid array elem %d\n", 2 + i);
++					"TAS invalid array elem %d\n", 3 + i);
+ 			ret = -EINVAL;
+ 			goto out_free;
+ 		}
+ 
+-		country = wifi_pkg->package.elements[2 + i].integer.value;
++		country = wifi_pkg->package.elements[3 + i].integer.value;
+ 		block_list_array[i] = cpu_to_le32(country);
+ 		IWL_DEBUG_RADIO(fwrt, "TAS block list country %d\n", country);
+ 	}
 -- 
 2.30.2
 
