@@ -2,702 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865FE408501
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4039A408503
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237499AbhIMG4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:56:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:20019 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237357AbhIMG4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:56:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="221640466"
-X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
-   d="scan'208";a="221640466"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2021 23:55:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,288,1624345200"; 
-   d="scan'208";a="543027298"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by FMSMGA003.fm.intel.com with ESMTP; 12 Sep 2021 23:55:19 -0700
-Date:   Mon, 13 Sep 2021 14:48:45 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v15 2/6] fpga: image-load: enable image loads
-Message-ID: <20210913064845.GF754505@yilunxu-OptiPlex-7050>
-References: <20210909021846.681121-1-russell.h.weight@intel.com>
- <20210909021846.681121-3-russell.h.weight@intel.com>
- <20210910082232.GB754505@yilunxu-OptiPlex-7050>
- <7945b45b-2728-2612-dc28-a848be8207ec@intel.com>
+        id S237504AbhIMG56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:57:58 -0400
+Received: from esa2.hc448-60.eu.iphmx.com ([207.54.71.102]:49099 "EHLO
+        esa2.hc448-60.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237453AbhIMG54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 02:57:56 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Sep 2021 02:57:56 EDT
+X-IronPort-AV: E=Sophos;i="5.85,288,1624312800"; 
+   d="scan'208";a="1743557"
+Received: from mail-he1eur01lp2053.outbound.protection.outlook.com (HELO EUR01-HE1-obe.outbound.protection.outlook.com) ([104.47.0.53])
+  by ob1.hc448-60.eu.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 08:49:29 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ne5FYBwddqX6N5enycIWa0E46qgMzg1kg5ikIynqPw8F1s33noRvV6S5SFJ20B9Q18pmg7wVA8MFQPBBU1HFNoR8YqSARvRDLBvXGO9ebvffFUf8UYPrw1V7r7d1lrZiWtqxGSO9IgHTkOaz2bD7F6/F7u1Bb5qg6s9iAnZM3wT/8JUH84blgcTnhgmtLGY0psY54bB4kAiuFCQXASoZajWgk96yhZb9fPuXlaDH4/2ROytkSHWdHXiwGONbRc0CAP+jDd+xZ/UgV+DSZIuhEpyDJBdhj2QhKm1A5nXyjEcoTZ9ekCVmCfp0h7q0frrK8HsVQDWIgHKluwm1m/h0ew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=SMXuRA3Y77bS48bBEw4O2xmJUoWZ07n3QpCyaVgJTc8=;
+ b=JEw7qFGznK+ucqCJpuEfMBmB6I2dNyHQnhxoPgMz/zmpyZ5suOCMbxyPZ0P/bT9gCM4lPcDO1JoucN+QSd2vgnFUamVRELotxTLAmwcq+c3vFoKG8IU61O3xXvyFWfZMxhUZ76RLruQ24kBP3Y4VRzzeXC028xc+mwwB+2wGuDqL0eP94LYe0niVZt0bNOgnrsud+oKGQQEKh3tnfPZHkBRg1FSxxKhaJQ8payoKzddu3HhToLgPxwAmdyFODWYFhq7sI8swheQVCXcc+NbkCZr+y8uzfy+pjan4S8WXg15zCKofaWaului604MBskszsOuXY0fstLIOc28yNV0www==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=opensource.tttech-industrial.com; dmarc=pass action=none
+ header.from=opensource.tttech-industrial.com; dkim=pass
+ header.d=opensource.tttech-industrial.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=tttech365.onmicrosoft.com; s=selector1-tttech365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SMXuRA3Y77bS48bBEw4O2xmJUoWZ07n3QpCyaVgJTc8=;
+ b=Rlz2/EjnfCAUWflG/82hUpacX55rWCxLREe9mu0K0s7Fu90c6ulFvnXY/2ooSor1M2F8xjvP/B+769z7pW8zfn81d+Wd8Fqmb1paMzih9msymrjLbsBsPFOW2N2sDogkGLJXMJ1yYQNgpUiONxBG++YsMFZ/LNUhZ9qPEcuDN38=
+Received: from AM0PR01MB5410.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:115::22) by AM0PR01MB4546.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:eb::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Mon, 13 Sep
+ 2021 06:49:28 +0000
+Received: from AM0PR01MB5410.eurprd01.prod.exchangelabs.com
+ ([fe80::807e:987c:688c:62be]) by AM0PR01MB5410.eurprd01.prod.exchangelabs.com
+ ([fe80::807e:987c:688c:62be%7]) with mapi id 15.20.4500.018; Mon, 13 Sep 2021
+ 06:49:28 +0000
+From:   OPENSOURCE Lukas Hannen 
+        <lukas.hannen@opensource.tttech-industrial.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        "EMC: linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RESEND PATCH] time: changed timespec64_to_ns to avoid underrun
+Thread-Topic: [RESEND PATCH] time: changed timespec64_to_ns to avoid underrun
+Thread-Index: AdemSfFfOqTnASerSE+/zqTNEdMoJwAXMZ6AAG/7fKA=
+Date:   Mon, 13 Sep 2021 06:49:27 +0000
+Message-ID: <AM0PR01MB5410AD1A0E31405EF63B3DF3EED99@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
+References: <AM0PR01MB54100B19D6ED5FDE764FA516EED69@AM0PR01MB5410.eurprd01.prod.exchangelabs.com>
+ <87fsucc4yy.ffs@tglx>
+In-Reply-To: <87fsucc4yy.ffs@tglx>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_ActionId=59b33203-ad07-41b8-9f5b-0e1f6440f15f;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_ContentBits=0;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_Enabled=true;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_Method=Privileged;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_Name=Public;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_SetDate=2021-09-13T06:35:30Z;MSIP_Label_b8b70055-b36e-4b3a-8b31-34156bd0f0a4_SiteId=5638dc0c-ffa2-418f-8078-70f739ff781f;
+authentication-results: linutronix.de; dkim=none (message not signed)
+ header.d=none;linutronix.de; dmarc=none action=none
+ header.from=opensource.tttech-industrial.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ace04023-9ebf-4f1c-ff9e-08d97682a1b3
+x-ms-traffictypediagnostic: AM0PR01MB4546:
+x-ld-processed: 5638dc0c-ffa2-418f-8078-70f739ff781f,ExtAddr
+x-microsoft-antispam-prvs: <AM0PR01MB45461B76AEB9EFE56A2A462DEED99@AM0PR01MB4546.eurprd01.prod.exchangelabs.com>
+x-ms-exchange-transport-forked: True
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0Ofp/5/BGGjrZcnBBbFDtdOSKieESjjzPFKrboI8NrqvfPc/4SyOn4M5kWcyI4qBX45Q0KRHRY2MSj7yEaKgnX31S+85uS7c8biJBxheXjoHDMAwlxNXpWjjn16sgxJg98O06iLuRw8qG+1R24+ov6lIVTR/xB9ZwxOVMj4VmFvrIe6V9e8VSNiiigZvDMZcnNKnUXfGkmaUoIxNFyFW/aAkF75bsOwHScNGIJj9OlIWxGkIa3bLxpkojMlDcM7kWlA9Qren8lZbfLv6S3RH+IV7FAXsET2xWsRt3x92smtHlk35rVzxAh9wSnMjRoIEcQ1NM46P3AOvRqh4dQSfFvcnBoBlZdTgzQk6G4RC7I+Y/vZdYufAt04simr0r16j42YuCGiRgXmCglP0GgJG4i9oU2QDwUuLv0aF+TiABwuXYiZgN0xJccddbZjwBUnoEvN+16cgjh8vpiMaCP3oevdw/rEP18bmGWoBk7JdlaIOzLLysKf3jXS7XSmdyPm8v8Cyfbr0FshsJAgVi7V2rehjt3BW9wf9DEfmcLi7tHN9FiYt2Gt9H2t/795+zvTA0q1RSLFwCYjmEFWQ9mo1vcpQCaxJlEnBpSHUdDp7bCQRiOp2izlCJK7kHkDIeJik3/13IRa/WsxPbAPiphIaZIwPp/4fJDGXSod/89b6apMmh3WzmigBkS4oxLBt3vpxKpML1BYGZdwDFfEcbd0ALA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR01MB5410.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38070700005)(76116006)(86362001)(66556008)(64756008)(66476007)(66946007)(66446008)(6506007)(8936002)(7696005)(186003)(9686003)(8676002)(83380400001)(110136005)(508600001)(122000001)(33656002)(71200400001)(38100700002)(2906002)(55016002)(5660300002)(52536014)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vYQ6i24EVuKMuCAPooI/PzI4MKUhuM8M2Us1tyDg4jcMU9a0oTOAi4+1MOlr?=
+ =?us-ascii?Q?VK+xEwnGB+9MLE9I2rDrS8MdRBgtSU57pxCa8jFn6sxU22oVdKzC5rChTm9Q?=
+ =?us-ascii?Q?XJPntsnnL2XZzlob4LcQY2qLce89XOahhXNlSX6X2mInyMJY2iLDgAmunVvs?=
+ =?us-ascii?Q?mRvtj8XsG2ubSOnGTPwoIAF3O2Bru1K3rnBzz2AlpJp7MZDpdhH97GxSsTLi?=
+ =?us-ascii?Q?WklU7rfogUCWqqxZ+/l01cpHst5uY10XB0RAl1/Xc6DHacKDXR8X2EFaAcTW?=
+ =?us-ascii?Q?jj0Ws13zJL3vJ226loNAiIms5CvlbR7fU09tirICZDXcx05OQxS1rmsKXWWu?=
+ =?us-ascii?Q?t9rClegzCbXelri1vFt6AgG4fvB8Wlh9oZMyKgcSrcK3u+utediWiDgs8q0m?=
+ =?us-ascii?Q?Z2ZNs8r9axJkhGJbfHSfZWrq2MtlU+wmJH4jUZwCHFBiSd4fFUgOUR1PYYSe?=
+ =?us-ascii?Q?i+L24nAXe4DOyifDFOpcHZ4f5IQmkK6YRuEwoyIht14RaepDBSTEwgyDixgv?=
+ =?us-ascii?Q?g+stb26CZnnwmSqDQj5lyZHLnFc+pXsRtCQkopcRWixsUg0NTLT3f2d0TOxF?=
+ =?us-ascii?Q?gOgNpZIuFKNRNtIyP7VfGLU/F0co36GdL7JlWyNsbONexyOov1ntJOA106nH?=
+ =?us-ascii?Q?MZOqowGkJnbxhJgSRk8LRKHFaN6WbR9/QrfTH0K+FWRQgYrCdirA2YORKwtq?=
+ =?us-ascii?Q?KjtB3dmqqxNpz2Gx/bQrraLDoPLlGrbD1LtuHUhWpTAP7DHx/w4zNpy7LTxu?=
+ =?us-ascii?Q?gUshILmCeJhLEwq2cdu4QuSBoadVy6ELNJANQUDSXqtTefcKdSmmua1S6AyH?=
+ =?us-ascii?Q?/FyXRjuJs/bxIHthTRs/5fMQdZcRwXaUrX2PPZJ9gK3afCWHNUEmnzupN9N6?=
+ =?us-ascii?Q?G38Aznjami1an4ikC9zhYMsYG4q6mHSdXSllAoI14LUCTj76twl9tH8jFQis?=
+ =?us-ascii?Q?+53PAeoYpAsdq1XCwfVUlNYhsepYkvP07MeBAilJZalhVvLryf7k0HfgLh9k?=
+ =?us-ascii?Q?7G7g7l1T178tU5EOOai9YztBmfiXDjpORl+afLFvjT7mZ+xRyQJqBNw8//m6?=
+ =?us-ascii?Q?48Iq3Qgb1F8zrZQzg3bUYO/aOA2RJjb25FAAukddL4UTdKkEXtKyLb0G9X0D?=
+ =?us-ascii?Q?e0bF1y7UiTGDQ/i9KiHivNLbFxDGBhISKkIDZVJBB/tjYm2HoclvUV4gIWWS?=
+ =?us-ascii?Q?OUxKITAqHYOA9wozd7lGn2BgmqzL/XOHNkFbKz9otfY25jdxmhOLSxjftfjZ?=
+ =?us-ascii?Q?cVCgluO+zbyG66PG3wxrfkFKVUt0G1NUSxhk0YhMvNhC9lTBO0DLi5gGTi89?=
+ =?us-ascii?Q?TDlHppu4Xf3FC26vn6fK9CNURDileYgl5prGqESw2+ooz3QFL9gu+oCpM/kE?=
+ =?us-ascii?Q?Ji5uJEUyaFPcRbGnsf95tndWR/t/?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7945b45b-2728-2612-dc28-a848be8207ec@intel.com>
+X-OriginatorOrg: opensource.tttech-industrial.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR01MB5410.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ace04023-9ebf-4f1c-ff9e-08d97682a1b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2021 06:49:27.9080
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5638dc0c-ffa2-418f-8078-70f739ff781f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z85U4L+TWIRbXYDiyK5f63mobhGGFYgw2eCsWXhkCRRd2P4ufywcfiL+PeKNWbbFnEPAdXF5xt12wGIK+qRGr8kX+znf6fiuhN1nrYgo/EH9gxVF3k/6bdnLk5qI6lzg6i1qlZ1aA6lSybn0pl8LpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR01MB4546
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:18:26PM -0700, Russ Weight wrote:
-> 
-> 
-> On 9/10/21 1:22 AM, Xu Yilun wrote:
-> > On Wed, Sep 08, 2021 at 07:18:42PM -0700, Russ Weight wrote:
-> >> Extend the FPGA Image Load class driver to include IOCTL support
-> >> (FPGA_IMAGE_LOAD_WRITE) for initiating an upload of an image to a device.
-> >> The IOCTL will return immediately, and the update will begin in the
-> >> context of a kernel worker thread.
-> >>
-> >> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> >> ---
-> >> v15:
-> >>  - Compare to previous patch:
-> >>      [PATCH v14 2/6] fpga: sec-mgr: enable secure updates
-> >>  - Changed file, symbol, and config names to reflect the new driver name
-> >>  - Removed update/filename sysfs file and added the FPGA_IMAGE_LOAD_WRITE
-> >>    IOCTL for writing the image data to the FPGA card. The driver no longer
-> >>    uses the request_firmware framework.
-> >>  - Fixed some error return values in fpga_image_load_register()
-> >>  - Removed signed-off/reviewed-by tags
-> >> v14:
-> >>  - Added MAINTAINERS reference for
-> >>    Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
-> >>  - Updated ABI documentation date and kernel version
-> >>  - Updated copyright to 2021
-> >> v13:
-> >>   - Change "if (count == 0 || " to "if (!count || "
-> >>   - Improve error message: "Attempt to register without all required ops\n"
-> >> v12:
-> >>   - Updated Date and KernelVersion fields in ABI documentation
-> >>   - Removed size parameter from write_blk() op - it is now up to
-> >>     the lower-level driver to determine the appropriate size and
-> >>     to update smgr->remaining_size accordingly.
-> >> v11:
-> >>   - Fixed a spelling error in a comment
-> >>   - Initialize smgr->err_code and smgr->progress explicitly in
-> >>     fpga_sec_mgr_create() instead of accepting the default 0 value.
-> >> v10:
-> >>   - Rebased to 5.12-rc2 next
-> >>   - Updated Date and KernelVersion in ABI documentation
-> >> v9:
-> >>   - Updated Date and KernelVersion in ABI documentation
-> >> v8:
-> >>   - No change
-> >> v7:
-> >>   - Changed Date in documentation file to December 2020
-> >>   - Changed filename_store() to use kmemdup_nul() instead of
-> >>     kstrndup() and changed the count to not assume a line-return.
-> >> v6:
-> >>   - Changed "security update" to "secure update" in commit message
-> >> v5:
-> >>   - When checking the return values for functions of type enum
-> >>     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
-> >> v4:
-> >>   - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
-> >>     and removed unnecessary references to "Intel".
-> >>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
-> >> v3:
-> >>   - Removed unnecessary "goto done"
-> >>   - Added a comment to explain imgr->driver_unload in
-> >>     ifpga_sec_mgr_unregister()
-> >> v2:
-> >>   - Bumped documentation date and version
-> >>   - Removed explicit value assignments in enums
-> >>   - Other minor code cleanup per review comments
-> >> ---
-> >>  Documentation/fpga/fpga-image-load.rst |  21 +++
-> >>  MAINTAINERS                            |   1 +
-> >>  drivers/fpga/fpga-image-load.c         | 224 ++++++++++++++++++++++++-
-> >>  include/linux/fpga/fpga-image-load.h   |  29 ++++
-> >>  include/uapi/linux/fpga-image-load.h   |  58 +++++++
-> >>  5 files changed, 329 insertions(+), 4 deletions(-)
-> >>  create mode 100644 include/uapi/linux/fpga-image-load.h
-> >>
-> >> diff --git a/Documentation/fpga/fpga-image-load.rst b/Documentation/fpga/fpga-image-load.rst
-> >> index a6e53ac66026..2ca8d2f0212d 100644
-> >> --- a/Documentation/fpga/fpga-image-load.rst
-> >> +++ b/Documentation/fpga/fpga-image-load.rst
-> >> @@ -8,3 +8,24 @@ The FPGA Image Load class driver provides a common API for user-space
-> >>  tools to manage image uploads to FPGA devices. Device drivers that
-> >>  instantiate the FPGA Image Load class driver will interact with the
-> >>  target device to transfer and authenticate the image data.
-> >> +
-> >> +User API
-> >> +========
-> >> +
-> >> +open
-> >> +----
-> >> +
-> >> +An FPGA Image Load device is opened exclusively to control an image load.
-> >> +Image loads are processed by a kernel worker thread. A user may choose
-> >> +close the device while the upload continues.
-> > Why we allow the user to close the dev while the uploading is ongoing?
-> > Seems it introduces more checking effort when another user open the dev
-> > again and try another uploading.
-> 
-> A user could choose to write their own tools. How would we prevent
-> them from closing the device while an update is in progress? Should
-> we attempt to cancel the update if they close the device?
+> Lukas,
 
-I think we could try to cancel the update when close(), if we cannot
-cancel we block on close().
+> why you are resending this patch?
 
-The driver should be responsible for the integrity of the update flow,
-it is not prefered a user starts an update and leaves, but canceled by
-another user.
+(also ad 2,3 and 4: ) unfortunately our company mail system never showed me
+your replies to my original mail.
 
-> 
-> Concurrent updates are already prevented by returning EBUSY for the
-> FPGA_IMAGE_LOAD_WRITE IOCTL if an update is already in progress.
-> 
-> A single IOCTL is sufficient to do a full update. Maybe a user
-> would want to have three small tools: update_start, update_status,
-> update_cancel, each of which would open the device, do an IOCTL,
-> and then close the device. This is analogous to the sysfs
-> implementation (no open/close that bounds the entire sequence).
-> 
-> With the current design, we do an exclusive open. As long as the user
-> keeps the device open, no other process can open the device to start
-> a new update, cancel, or collect status.
-> 
-> Those are my thoughts. What do you think? Is it OK as is? Or should
-> I make some changes here?
-> 
-> >
-> >> +
-> >> +ioctl
-> >> +-----
-> >> +
-> >> +FPGA_IMAGE_LOAD_WRITE:
-> >> +
-> >> +Start an image load with the provided image buffer. This IOCTL returns
-> >> +immediately after starting a kernel worker thread to process the image load
-> >> +which could take as long a 40 minutes depending on the actual device being
-> >> +updated. This is an exclusive operation; an attempt to start concurrent image
-> >> +load for the same device will fail with EBUSY.
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index 4e7f48fa7e5c..637bc003ca81 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -7365,6 +7365,7 @@ S:	Maintained
-> >>  F:	Documentation/fpga/fpga-image-load.rst
-> >>  F:	drivers/fpga/fpga-image-load.c
-> >>  F:	include/linux/fpga/fpga-image-load.h
-> >> +F:	include/uapi/linux/fpga-image-load.h
-> >>  
-> >>  FPU EMULATOR
-> >>  M:	Bill Metzenthen <billm@melbpc.org.au>
-> >> diff --git a/drivers/fpga/fpga-image-load.c b/drivers/fpga/fpga-image-load.c
-> >> index 7d75bbcff541..f5ccfa9dd977 100644
-> >> --- a/drivers/fpga/fpga-image-load.c
-> >> +++ b/drivers/fpga/fpga-image-load.c
-> >> @@ -5,18 +5,181 @@
-> >>   * Copyright (C) 2019-2021 Intel Corporation, Inc.
-> >>   */
-> >>  
-> >> +#include <linux/delay.h>
-> >>  #include <linux/fpga/fpga-image-load.h>
-> >> +#include <linux/fs.h>
-> >> +#include <linux/kernel.h>
-> >>  #include <linux/module.h>
-> >>  #include <linux/slab.h>
-> >> +#include <linux/uaccess.h>
-> >>  #include <linux/vmalloc.h>
-> >>  
-> >>  #define IMAGE_LOAD_XA_LIMIT	XA_LIMIT(0, INT_MAX)
-> >>  static DEFINE_XARRAY_ALLOC(fpga_image_load_xa);
-> >>  
-> >>  static struct class *fpga_image_load_class;
-> >> +static dev_t fpga_image_devt;
-> >>  
-> >>  #define to_image_load(d) container_of(d, struct fpga_image_load, dev)
-> >>  
-> >> +static void fpga_image_dev_error(struct fpga_image_load *imgld,
-> >> +				 enum fpga_image_err err_code)
-> >> +{
-> >> +	imgld->err_code = err_code;
-> >> +	imgld->lops->cancel(imgld);
-> >> +}
-> >> +
-> >> +static void fpga_image_prog_complete(struct fpga_image_load *imgld)
-> >> +{
-> >> +	mutex_lock(&imgld->lock);
-> >> +	imgld->progress = FPGA_IMAGE_PROG_IDLE;
-> >> +	complete_all(&imgld->update_done);
-> >> +	mutex_unlock(&imgld->lock);
-> >> +}
-> >> +
-> >> +static void fpga_image_do_load(struct work_struct *work)
-> >> +{
-> >> +	struct fpga_image_load *imgld;
-> >> +	enum fpga_image_err ret;
-> >> +	u32 size, offset = 0;
-> >> +
-> >> +	imgld = container_of(work, struct fpga_image_load, work);
-> >> +	size = imgld->remaining_size;
-> >> +
-> >> +	get_device(&imgld->dev);
-> >> +	if (!try_module_get(imgld->dev.parent->driver->owner)) {
-> >> +		imgld->err_code = FPGA_IMAGE_ERR_BUSY;
-> >> +		goto idle_exit;
-> >> +	}
-> >> +
-> >> +	imgld->progress = FPGA_IMAGE_PROG_PREPARING;
-> >> +	ret = imgld->lops->prepare(imgld);
-> >> +	if (ret != FPGA_IMAGE_ERR_NONE) {
-> >> +		fpga_image_dev_error(imgld, ret);
-> >> +		goto modput_exit;
-> >> +	}
-> >> +
-> >> +	imgld->progress = FPGA_IMAGE_PROG_WRITING;
-> >> +	while (imgld->remaining_size) {
-> >> +		ret = imgld->lops->write_blk(imgld, offset);
-> >> +		if (ret != FPGA_IMAGE_ERR_NONE) {
-> >> +			fpga_image_dev_error(imgld, ret);
-> >> +			goto done;
-> >> +		}
-> >> +
-> >> +		offset = size - imgld->remaining_size;
-> > The low level driver is required to update the "remaining_size" in
-> > write_blk ops?
-> >
-> > The API seems ambiguous. The framework asks for writing a block of data,
-> > but no block size is specified.
-> 
-> This change was made two or three iterations ago at Richard Gong's
-> suggestion. He asserted that the lower level driver should be in
-> control of the block size (based on write speeds). What do you
+> 1) The only change you did is adding a prefix to the subject line
+>   Changed patches even if the change is just in the subject line or the
+>   changelog want a version number.
 
-I think it is reasonable.
+I was unsure if the Subject line was considered part of the patch, and noti=
+ced
+the errors in the subject line on my own, and thus thought my previous mail
+got ignored because I had messed up the subject line.
 
-> think? Should the class driver impose a fixed size? Or allow the
+>   But what's worse:
+>
+> 2) You ignored any other review comment I gave here:
 
-But the definition of the API is hard to comprehend, either we input the
-offset & the blk size, or we record them all in imgld structure, is it
-better.
+I greatly appreciate your help in regards to commenting style and content.
+I am obviously entirely new to this community.
 
-If the framework provides the blk size, the low level driver could
-return the written size so it could still control its own batch.
+> So what exactly are you trying to achieve by "resending" a patch which st=
+ill
+> does not apply and still has a non-sensical subject line and changelog?
 
-> lower-level driver to determine the size? Is it OK to update
-> remaining_size in the lower-level driver? Or should there be
-> another call-back to request the size?
->  
-> >
-> >> +	}
-> >> +
-> >> +	imgld->progress = FPGA_IMAGE_PROG_PROGRAMMING;
-> >> +	ret = imgld->lops->poll_complete(imgld);
-> >> +	if (ret != FPGA_IMAGE_ERR_NONE)
-> >> +		fpga_image_dev_error(imgld, ret);
-> >> +
-> >> +done:
-> >> +	if (imgld->lops->cleanup)
-> >> +		imgld->lops->cleanup(imgld);
-> >> +
-> >> +modput_exit:
-> >> +	module_put(imgld->dev.parent->driver->owner);
-> >> +
-> >> +idle_exit:
-> >> +	/*
-> >> +	 * Note: imgld->remaining_size is left unmodified here to provide
-> >> +	 * additional information on errors. It will be reinitialized when
-> >> +	 * the next image load begins.
-> >> +	 */
-> >> +	vfree(imgld->data);
-> >> +	imgld->data = NULL;
-> >> +	put_device(&imgld->dev);
-> >> +	fpga_image_prog_complete(imgld);
-> >> +}
-> >> +
-> >> +static int fpga_image_load_ioctl_write(struct fpga_image_load *imgld,
-> >> +				       unsigned long arg)
-> >> +{
-> >> +	struct fpga_image_write wb;
-> >> +	unsigned long minsz;
-> >> +	u8 *buf;
-> >> +
-> >> +	if (imgld->driver_unload || imgld->progress != FPGA_IMAGE_PROG_IDLE)
-> >> +		return -EBUSY;
-> >> +
-> >> +	minsz = offsetofend(struct fpga_image_write, buf);
-> >> +	if (copy_from_user(&wb, (void __user *)arg, minsz))
-> >> +		return -EFAULT;
-> >> +
-> >> +	if (wb.flags)
-> >> +		return -EINVAL;
-> >> +
-> >> +	/* Enforce 32-bit alignment on the write data */
-> >> +	if (wb.size & 0x3)
-> >> +		return -EINVAL;
-> >> +
-> >> +	buf = vzalloc(wb.size);
-> >> +	if (!buf)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	if (copy_from_user(buf, u64_to_user_ptr(wb.buf), wb.size)) {
-> >> +		vfree(buf);
-> >> +		return -EFAULT;
-> >> +	}
-> >> +
-> >> +	imgld->data = buf;
-> >> +	imgld->remaining_size = wb.size;
-> >> +	imgld->err_code = FPGA_IMAGE_ERR_NONE;
-> >> +	imgld->progress = FPGA_IMAGE_PROG_STARTING;
-> >> +	reinit_completion(&imgld->update_done);
-> >> +	schedule_work(&imgld->work);
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static long fpga_image_load_ioctl(struct file *filp, unsigned int cmd,
-> >> +				  unsigned long arg)
-> >> +{
-> >> +	struct fpga_image_load *imgld = filp->private_data;
-> >> +	int ret = -ENOTTY;
-> >> +
-> >> +	switch (cmd) {
-> >> +	case FPGA_IMAGE_LOAD_WRITE:
-> >> +		mutex_lock(&imgld->lock);
-> >> +		ret = fpga_image_load_ioctl_write(imgld, arg);
-> >> +		mutex_unlock(&imgld->lock);
-> >> +		break;
-> >> +	}
-> >> +
-> >> +	return ret;
-> >> +}
-> >> +
-> >> +static int fpga_image_load_open(struct inode *inode, struct file *filp)
-> >> +{
-> >> +	struct fpga_image_load *imgld = container_of(inode->i_cdev,
-> >> +						     struct fpga_image_load, cdev);
-> >> +
-> >> +	if (test_and_set_bit(0, &imgld->opened))
-> > Some more flags to add for "opened" field? But the field name indicates
-> > it is a single flag.
-> Can you explain your comment further? I'm not understanding. What
-> "more flags" are you referring to?
-> 
+You were right in assuming that the format of the patch was messed up by
+our company mail, I am as infuriated about that as you are and will try to
+change this situation asap.
 
-The test_and_set_bit() makes me feel there are more bits to be
-controlled in "opened" for other purposes. The name "opened" indicates
-this is a single state, maybe you don't have to use bitops for it,
-atomic ops for int maybe better.
+The other mishaps (like the wrong use of the RESEND tag, failing to check
+if the changes were already applied to your tree etc. ) were caused by me
+being a young and inexperienced contributor.
 
-> This test_and_set_bit() operation and the "opened" structure member
-> were borrowed from the production driver implementation. opened is a
-> single value that is expected to be either 1 or 0.
-> 
-> >
-> >> +		return -EBUSY;
-> >> +
-> >> +	filp->private_data = imgld;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int fpga_image_load_release(struct inode *inode, struct file *filp)
-> >> +{
-> >> +	struct fpga_image_load *imgld = filp->private_data;
-> >> +
-> >> +	clear_bit(0, &imgld->opened);
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static const struct file_operations fpga_image_load_fops = {
-> >> +	.owner = THIS_MODULE,
-> >> +	.open = fpga_image_load_open,
-> >> +	.release = fpga_image_load_release,
-> >> +	.unlocked_ioctl = fpga_image_load_ioctl,
-> >> +};
-> >> +
-> >>  /**
-> >>   * fpga_image_load_register - create and register an FPGA Image Load Device
-> >>   *
-> >> @@ -33,11 +196,17 @@ fpga_image_load_register(struct device *parent,
-> >>  			 const struct fpga_image_load_ops *lops, void *priv)
-> >>  {
-> >>  	struct fpga_image_load *imgld;
-> >> -	int id, ret;
-> >> +	int ret;
-> >> +
-> >> +	if (!lops || !lops->cancel || !lops->prepare ||
-> >> +	    !lops->write_blk || !lops->poll_complete) {
-> >> +		dev_err(parent, "Attempt to register without all required ops\n");
-> >> +		return ERR_PTR(-ENOMEM);
-> >> +	}
-> >>  
-> >>  	imgld = kzalloc(sizeof(*imgld), GFP_KERNEL);
-> >>  	if (!imgld)
-> >> -		return NULL;
-> >> +		return ERR_PTR(-ENOMEM);
-> > This is the fix for Patch #1? If yes please merge it to Patch #1.
-> Good catch. Yes, I'll move it to patch #1.
-> >
-> >>  
-> >>  	ret = xa_alloc(&fpga_image_load_xa, &imgld->dev.id, imgld, IMAGE_LOAD_XA_LIMIT,
-> >>  		       GFP_KERNEL);
-> >> @@ -48,13 +217,19 @@ fpga_image_load_register(struct device *parent,
-> >>  
-> >>  	imgld->priv = priv;
-> >>  	imgld->lops = lops;
-> >> +	imgld->err_code = FPGA_IMAGE_ERR_NONE;
-> >> +	imgld->progress = FPGA_IMAGE_PROG_IDLE;
-> >> +	init_completion(&imgld->update_done);
-> >> +	INIT_WORK(&imgld->work, fpga_image_do_load);
-> >>  
-> >>  	imgld->dev.class = fpga_image_load_class;
-> >>  	imgld->dev.parent = parent;
-> >> +	imgld->dev.devt = MKDEV(MAJOR(fpga_image_devt), imgld->dev.id);
-> >>  
-> >> -	ret = dev_set_name(&imgld->dev, "fpga_image%d", id);
-> >> +	ret = dev_set_name(&imgld->dev, "fpga_image%d", imgld->dev.id);
-> > Another fix? Please merge it to Patch #1.
-> Yes.
-> 
-> >
-> >>  	if (ret) {
-> >> -		dev_err(parent, "Failed to set device name: fpga_image%d\n", id);
-> >> +		dev_err(parent, "Failed to set device name: fpga_image%d\n",
-> >> +			imgld->dev.id);
-> > Ditto
-> Yes.
-> >
-> >>  		goto error_device;
-> >>  	}
-> >>  
-> >> @@ -64,6 +239,16 @@ fpga_image_load_register(struct device *parent,
-> >>  		return ERR_PTR(ret);
-> >>  	}
-> >>  
-> >> +	cdev_init(&imgld->cdev, &fpga_image_load_fops);
-> >> +	imgld->cdev.owner = parent->driver->owner;
-> >> +	imgld->cdev.kobj.parent = &imgld->dev.kobj;
-> >> +
-> >> +	ret = cdev_add(&imgld->cdev, imgld->dev.devt, 1);
-> >> +	if (ret) {
-> >> +		put_device(&imgld->dev);
-> >> +		return ERR_PTR(ret);
-> >> +	}
-> >> +
-> >>  	return imgld;
-> >>  
-> >>  error_device:
-> >> @@ -83,9 +268,29 @@ EXPORT_SYMBOL_GPL(fpga_image_load_register);
-> >>   *
-> >>   * This function is intended for use in an FPGA Image Load driver's
-> >>   * remove() function.
-> >> + *
-> >> + * For some devices, once authentication of the uploaded image has begun,
-> >> + * the hardware cannot be signaled to stop, and the driver will not exit
-> >> + * until the hardware signals completion.  This could be 30+ minutes of
-> >> + * waiting. The driver_unload flag enables a force-unload of the driver
-> >> + * (e.g. modprobe -r) by signaling the parent driver to exit even if the
-> > How does the driver_unload enables the force unload of the parent
-> > driver? I didn't find the code.
-> 
-> The driver_unload field is tested in the lower-level (parent) driver in
-> m10bmc_sec_poll_complete(), allowing the kernel worker thread to exit
-> even if the firmware update is still in progress.
-
-I didn't see the signaling implementation here. Maybe you need to move the
-comments somewhere else, or in another patch.
-
-Thanks,
-Yilun
-
-> 
-> >
-> >> + * hardware update is incomplete. The driver_unload flag also prevents
-> >> + * new updates from starting once the unregister process has begun.
-> >>   */
-> >>  void fpga_image_load_unregister(struct fpga_image_load *imgld)
-> >>  {
-> >> +	mutex_lock(&imgld->lock);
-> >> +	imgld->driver_unload = true;
-> >> +	if (imgld->progress == FPGA_IMAGE_PROG_IDLE) {
-> >> +		mutex_unlock(&imgld->lock);
-> >> +		goto unregister;
-> >> +	}
-> >> +
-> >> +	mutex_unlock(&imgld->lock);
-> >> +	wait_for_completion(&imgld->update_done);
-> >> +
-> >> +unregister:
-> >> +	cdev_del(&imgld->cdev);
-> >>  	device_unregister(&imgld->dev);
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(fpga_image_load_unregister);
-> >> @@ -100,19 +305,30 @@ static void fpga_image_load_dev_release(struct device *dev)
-> >>  
-> >>  static int __init fpga_image_load_class_init(void)
-> >>  {
-> >> +	int ret;
-> >>  	pr_info("FPGA Image Load Driver\n");
-> >>  
-> >>  	fpga_image_load_class = class_create(THIS_MODULE, "fpga_image_load");
-> >>  	if (IS_ERR(fpga_image_load_class))
-> >>  		return PTR_ERR(fpga_image_load_class);
-> >>  
-> >> +	ret = alloc_chrdev_region(&fpga_image_devt, 0, MINORMASK,
-> >> +				  "fpga_image_load");
-> >> +	if (ret)
-> >> +		goto exit_destroy_class;
-> >> +
-> >>  	fpga_image_load_class->dev_release = fpga_image_load_dev_release;
-> >>  
-> >>  	return 0;
-> >> +
-> >> +exit_destroy_class:
-> >> +	class_destroy(fpga_image_load_class);
-> >> +	return ret;
-> >>  }
-> >>  
-> >>  static void __exit fpga_image_load_class_exit(void)
-> >>  {
-> >> +	unregister_chrdev_region(fpga_image_devt, MINORMASK);
-> >>  	class_destroy(fpga_image_load_class);
-> >>  	WARN_ON(!xa_empty(&fpga_image_load_xa));
-> >>  }
-> >> diff --git a/include/linux/fpga/fpga-image-load.h b/include/linux/fpga/fpga-image-load.h
-> >> index a9cef9e1056b..b3d790e5d943 100644
-> >> --- a/include/linux/fpga/fpga-image-load.h
-> >> +++ b/include/linux/fpga/fpga-image-load.h
-> >> @@ -7,22 +7,51 @@
-> >>  #ifndef _LINUX_FPGA_IMAGE_LOAD_H
-> >>  #define _LINUX_FPGA_IMAGE_LOAD_H
-> >>  
-> >> +#include <linux/cdev.h>
-> >> +#include <linux/completion.h>
-> >>  #include <linux/device.h>
-> >>  #include <linux/mutex.h>
-> >>  #include <linux/types.h>
-> >> +#include <uapi/linux/fpga-image-load.h>
-> >>  
-> >>  struct fpga_image_load;
-> >>  
-> >>  /**
-> >>   * struct fpga_image_load_ops - device specific operations
-> >> + * @prepare:		    Required: Prepare secure update
-> >> + * @write_blk:		    Required: Write a block of data
-> >> + * @poll_complete:	    Required: Check for the completion of the
-> >> + *			    HW authentication/programming process. This
-> >> + *			    function should check for imgld->driver_unload
-> >> + *			    and abort with FPGA_IMAGE_ERR_CANCELED when true.
-> >> + * @cancel:		    Required: Signal HW to cancel update
-> >> + * @cleanup:		    Optional: Complements the prepare()
-> >> + *			    function and is called at the completion
-> >> + *			    of the update, whether success or failure,
-> >> + *			    if the prepare function succeeded.
-> >>   */
-> >>  struct fpga_image_load_ops {
-> >> +	enum fpga_image_err (*prepare)(struct fpga_image_load *imgld);
-> >> +	enum fpga_image_err (*write_blk)(struct fpga_image_load *imgld, u32 offset);
-> >> +	enum fpga_image_err (*poll_complete)(struct fpga_image_load *imgld);
-> >> +	enum fpga_image_err (*cancel)(struct fpga_image_load *imgld);
-> >> +	void (*cleanup)(struct fpga_image_load *imgld);
-> >>  };
-> >>  
-> >>  struct fpga_image_load {
-> >>  	struct device dev;
-> >> +	struct cdev cdev;
-> >>  	const struct fpga_image_load_ops *lops;
-> >>  	struct mutex lock;		/* protect data structure contents */
-> >> +	unsigned long opened;
-> >> +	struct work_struct work;
-> >> +	struct completion update_done;
-> >> +	const u8 *data;				/* pointer to update data */
-> >> +	u32 remaining_size;			/* size remaining to transfer */
-> >> +	enum fpga_image_prog progress;
-> >> +	enum fpga_image_prog err_progress;	/* progress at time of failure */
-> > This field is not used in this patch? So could you introduce it later?
-> Yes - I'll move it. Thanks.
-> >
-> >> +	enum fpga_image_err err_code;		/* image load error code */
-> >> +	bool driver_unload;
-> >>  	void *priv;
-> >>  };
-> >>  
-> >> diff --git a/include/uapi/linux/fpga-image-load.h b/include/uapi/linux/fpga-image-load.h
-> >> new file mode 100644
-> >> index 000000000000..4146a0a9e408
-> >> --- /dev/null
-> >> +++ b/include/uapi/linux/fpga-image-load.h
-> >> @@ -0,0 +1,58 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> >> +/*
-> >> + * Header File for FPGA Image Load User API
-> >> + *
-> >> + * Copyright (C) 2019-2021 Intel Corporation, Inc.
-> >> + *
-> >> + */
-> >> +
-> >> +#ifndef _UAPI_LINUX_FPGA_IMAGE_LOAD_H
-> >> +#define _UAPI_LINUX_FPGA_IMAGE_LOAD_H
-> >> +
-> >> +#include <linux/types.h>
-> >> +#include <linux/ioctl.h>
-> >> +
-> >> +#define FPGA_IMAGE_LOAD_MAGIC 0xB9
-> >> +
-> >> +/* Image load progress codes */
-> >> +enum fpga_image_prog {
-> >> +	FPGA_IMAGE_PROG_IDLE,
-> >> +	FPGA_IMAGE_PROG_STARTING,
-> >> +	FPGA_IMAGE_PROG_PREPARING,
-> >> +	FPGA_IMAGE_PROG_WRITING,
-> >> +	FPGA_IMAGE_PROG_PROGRAMMING,
-> >> +	FPGA_IMAGE_PROG_MAX
-> >> +};
-> >> +
-> >> +/* Image error progress codes */
-> >> +enum fpga_image_err {
-> >> +	FPGA_IMAGE_ERR_NONE,
-> >> +	FPGA_IMAGE_ERR_HW_ERROR,
-> >> +	FPGA_IMAGE_ERR_TIMEOUT,
-> >> +	FPGA_IMAGE_ERR_CANCELED,
-> >> +	FPGA_IMAGE_ERR_BUSY,
-> >> +	FPGA_IMAGE_ERR_INVALID_SIZE,
-> >> +	FPGA_IMAGE_ERR_RW_ERROR,
-> >> +	FPGA_IMAGE_ERR_WEAROUT,
-> >> +	FPGA_IMAGE_ERR_MAX
-> >> +};
-> >> +
-> >> +#define FPGA_IMAGE_LOAD_WRITE	_IOW(FPGA_IMAGE_LOAD_MAGIC, 0, struct fpga_image_write)
-> > Put the cmd word definition under the comments and parameter definition.
-> OK
-> >
-> >> +
-> >> +/**
-> >> + * FPGA_IMAGE_LOAD_WRITE - _IOW(FPGA_IMAGE_LOAD_MAGIC, 0,
-> >> + *				struct fpga_image_write)
-> >> + *
-> >> + * Upload a data buffer to the target device. The user must provide the
-> >> + * data buffer, size, and an eventfd file descriptor.
-> > I didn't find the eventfd.
-> It is added in a later patch. I'll change the comment accordingly.
-> 
 > Thanks,
-> - Russ
-> >
-> > Thanks,
-> > Yilun
-> >
-> >> + *
-> >> + * Return: 0 on success, -errno on failure.
-> >> + */
-> >> +struct fpga_image_write {
-> >> +	/* Input */
-> >> +	__u32 flags;		/* Zero for now */
-> >> +	__u32 size;		/* Data size (in bytes) to be written */
-> >> +	__u64 buf;		/* User space address of source data */
-> >> +};
-> >> +
-> >> +#endif /* _UAPI_LINUX_FPGA_IMAGE_LOAD_H */
-> >> -- 
-> >> 2.25.1
+
+Thank _You_ for not immediately ignoring me forever,
+
+Lukas Hannen
+
+Public
