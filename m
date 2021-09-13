@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA0C409B8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5685409B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345360AbhIMSAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        id S1345697AbhIMSBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344671AbhIMSAI (ORCPT
+        with ESMTP id S239852AbhIMSBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:00:08 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4C4C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:58:52 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id p2so15204301oif.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 10:58:52 -0700 (PDT)
+        Mon, 13 Sep 2021 14:01:23 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7854BC061574;
+        Mon, 13 Sep 2021 11:00:07 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id f65so9588527pfb.10;
+        Mon, 13 Sep 2021 11:00:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WYhC7SL+4as2ND/qPy+Y7r2GKb7SvMEFyVMfGu0ciwc=;
-        b=lk5a4NHgzAda8Jp5cOipSeD/mJiI4TGViEw34RypmHjDcyqeAi7CV9o72mRAEqUFU9
-         C4NTOoZgnkF/s0hUzUJtaTwQtygl1TIey49qXPQx1RkL/vIYwjOuSa53n+Ia3kLB77cT
-         2+1tPi93FIl67SCsOihJjNHFRafmVdl07ZmshwykesytkL1dI8M3VBDfjFWqAwAjuOuX
-         4oYXxyAx6nGE+tjLd3AeagRQzBIC1Y7Fz4423pMD02xtAdajKvZY+vFwOjk61++p6O4y
-         1Z0412rOB9HjQ/KBQ2uzt4xs5PYfThWvvJB/ZtQzgBswPOXxK1VtRvfMjhTmc7JLv07/
-         CD9g==
+        bh=Ar4axcEWPrCdTuBIYlAX+Qe5Dwg1m8PpYyueFWZ9yZQ=;
+        b=GIepHmM3Nv01P4syO4b4WSy429ooFrVUkQPyjIgnmHdY1mruGmkNoK85n7l69tCgC2
+         8wZcK9Ydfpxfml+gWuabiks5mVSgFNNLMneKKjw5SQMBTOsu0ZaPTg3Wsf8VyVxLyeb8
+         1i8QfuAI2iRHlyjZ+WO04g5MoDEYjIz3FU6d2NvWDjR24D4aDeoiRX+ZPeNE/TbqT42i
+         GHWNysyC6KqM1psELCXSTspqM5vngDszHHeCz10TZDvIG+XXtWRXsY/lakY1tqLdrnpd
+         MYby3tcf890GQR9I81qPLNJRxvTeLOq4n5dKY/WHHdKXnxPbqo2Bs5lh7wlTblz77Zlr
+         dXgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WYhC7SL+4as2ND/qPy+Y7r2GKb7SvMEFyVMfGu0ciwc=;
-        b=qs13zkK4MnMdJeJ4dI1T48QO+FZ1MDXVU/rtXK8tAZOwZ4fOimj6fqircnkTZveVEu
-         EFN4aPRRno/+kZ46sqZYkHRM3L/cpshJSFEgS5CXB3LFi2FEqGZoIEytel31jG4UxDIH
-         mAb9hxKy3EropmqxOGbfkJZsPObWTSBmHfONaixave9lEs0EnSdzKx2l/vSZ3juPEd14
-         +Zo6pHCwVppMy4CXWp1sbNgjfjJk2HqhbvHypP2fWP1qW3LKJom72UeDlYAZkGnwYKOe
-         J4zmSpcjpDotrUQwtIBflc9GT6gJLFF38P7bfROv5CGhsBCz7tsJZPospjh5Ism8Yo62
-         jw/Q==
-X-Gm-Message-State: AOAM532SaimUOLajn6LnLmGFTgkuW41hJACl5pq0NYmUFdtdJstKhs1S
-        e7Rbhbr8EpbVjFNdClHnYeXK2uc/Zfvle9PdnJem/Q==
-X-Google-Smtp-Source: ABdhPJx1GF0fnNkLpruEj+Lqzz7FmMV1FL51iB1zp2oNxAaujdVlXBEy3MMDpYSYrrm5oGw0MReNlDfpcJb8JE1LLOo=
-X-Received: by 2002:aca:4344:: with SMTP id q65mr8845158oia.70.1631555931531;
- Mon, 13 Sep 2021 10:58:51 -0700 (PDT)
+        bh=Ar4axcEWPrCdTuBIYlAX+Qe5Dwg1m8PpYyueFWZ9yZQ=;
+        b=hoRO6u5Wn89LWoC7w/g9jPqPGDIxU+NlVzUa6wZ+7c4kBYXNArhxNQYhV/sBDqj4yv
+         srzqo/buAV2Wq6CUKHdRIN3+oeVxWfOWSomnJIl11U5p1juGUbNQxm+O8QBEx7XLu9Ei
+         J1LMUWI+J/4iiWKFrgSnihnxElcTLM84eerpblLFW0vw6vxhWx6yuDsBOxky+63GFzVH
+         pRBsR6kR0+SM1+unPmcrnzXTCuQufoQH2AX5O4J0OCR+u48XCQ5aijjK3niiNNGCJ7+5
+         /AlqbZXx28LUXHNSUoHyj4ggs57C/RfdQPLXCngDGrXmm0eO9RjxUZA8JzP6u2VbBY23
+         uGFQ==
+X-Gm-Message-State: AOAM532IvUK7bhuqJCC60Tq+teXCRAQH5W8WhgRb8spflMgoK7HKOWcV
+        7jXfVURakBk7dNBKrGuitK1G9A6ZiZFUBxay6fiHCkk+
+X-Google-Smtp-Source: ABdhPJx76g7XE+cm9Cy/u2amnPaDbEnbPyH+7Gbc2SQwtfOLMuma6c2aq/b/+k8WvDgrfxEFuG/oGYFdjaJYVA++srg=
+X-Received: by 2002:a05:6a00:88b:b0:43d:e85f:e9ee with SMTP id
+ q11-20020a056a00088b00b0043de85fe9eemr648919pfj.46.1631556006839; Mon, 13 Sep
+ 2021 11:00:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913112609.2651084-1-elver@google.com> <20210913112609.2651084-7-elver@google.com>
- <YT+EStsWldSp76HX@slm.duckdns.org>
-In-Reply-To: <YT+EStsWldSp76HX@slm.duckdns.org>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 13 Sep 2021 19:58:39 +0200
-Message-ID: <CANpmjNPA9qW8i=gHvrdMRag0kOrOJR-zCZe6tpucOB4XN8dfWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] workqueue, kasan: avoid alloc_pages() when
- recording stack
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>
+References: <20210910183352.3151445-1-songliubraving@fb.com>
+In-Reply-To: <20210910183352.3151445-1-songliubraving@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 13 Sep 2021 10:59:55 -0700
+Message-ID: <CAADnVQLLYQwMh-jUa7pJH9uwAhEyVhc1gGR+cnS_s-4YTPqpTQ@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, kjain@linux.ibm.com,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sept 2021 at 19:03, Tejun Heo <tj@kernel.org> wrote:
+On Fri, Sep 10, 2021 at 11:34 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> On Mon, Sep 13, 2021 at 01:26:09PM +0200, Marco Elver wrote:
-> > While there is an increased risk of failing to insert the stack trace,
-> > this is typically unlikely, especially if the same insertion had already
-> > succeeded previously (stack depot hit). For frequent calls from the same
-> > location, it therefore becomes extremely unlikely that
-> > kasan_record_aux_stack_noalloc() fails.
-> >
-> > Link: https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
-> > Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-> > Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Changes v6 => v7:
+> 1. Improve/fix intel_pmu_snapshot_branch_stack() logic. (Peter).
 >
-> Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks!
-
-> Please feel free to route with the rest of series or if you want me to take
-> these through the wq tree, please let me know.
-
-Usually KASAN & stackdepot patches go via the -mm tree. I hope the
-1-line change to workqueue won't conflict with other changes pending
-in the wq tree. Unless you or Andrew tells us otherwise, I assume
-these will at some point appear in -mm.
-
-Thanks,
--- Marco
-
-> Thanks.
+> Branch stack can be very useful in understanding software events. For
+> example, when a long function, e.g. sys_perf_event_open, returns an errno,
+> it is not obvious why the function failed. Branch stack could provide very
+> helpful information in this type of scenarios.
 >
-> --
-> tejun
+> This set adds support to read branch stack with a new BPF helper
+> bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+> It is also possible to support the same feaure for PowerPC.
+
+Applied. Thanks
