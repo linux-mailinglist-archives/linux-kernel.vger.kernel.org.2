@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735CD408F40
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CD9409194
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242857AbhIMNlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34490 "EHLO mail.kernel.org"
+        id S244724AbhIMOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:02:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243209AbhIMNfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:35:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62851613AD;
-        Mon, 13 Sep 2021 13:27:12 +0000 (UTC)
+        id S1343534AbhIMN7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:59:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB90C613A4;
+        Mon, 13 Sep 2021 13:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539632;
-        bh=vzZUWT0/aD45uH0TAAbOOVjZcSZa2+chkEMErF4OKpw=;
+        s=korg; t=1631540239;
+        bh=+KgFxSgNdFkMVgeqQhxhH1KWHyahO0U7bjcVk1OwuGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZrbuONnevjGul/5URuZnon6y3XSPxoQHh0g3WpbK2BEw+XHSML8E5hVfxAmUSEVmr
-         SRNqtRaa8USejaW+PfR9rYsH0/1/qDxUjly/fZvPPAe7oH3AOPNF3E9Q321Z1JeNdh
-         D2BgoerJzpcZalIHRK+dVsomies3SGxG7mGMaXEU=
+        b=ZYUGPrrkzra7kpv6wa94dU+WIHaCf43cDCxQ0uqctwYgnfrJ+0200jvPonWyOMXu4
+         lZxakkNBALVCfD+ahTwoFD4Mv0LX3wABwa06k7+Sg6YVEibzxoBYU2VWsHjzZWre0r
+         VtzNceQdISgiMn6ygRwYNHx/Y97B1VmcPvBaSPc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 066/236] spi: sprd: Fix the wrong WDG_LOAD_VAL
+Subject: [PATCH 5.13 110/300] media: go7007: fix memory leak in go7007_usb_probe
 Date:   Mon, 13 Sep 2021 15:12:51 +0200
-Message-Id: <20210913131102.606268550@linuxfoundation.org>
+Message-Id: <20210913131113.104415968@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-References: <20210913131100.316353015@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 245ca2cc212bb2a078332ec99afbfbb202f44c2d ]
+[ Upstream commit 47d94dad8e64b2fc1d8f66ce7acf714f9462c60f ]
 
-Use 50ms as default timeout value and the time clock is 32768HZ.
-The original value of WDG_LOAD_VAL is not correct, so this patch
-fixes it.
+In commit 137641287eb4 ("go7007: add sanity checking for endpoints")
+endpoint sanity check was introduced, but if check fails it simply
+returns with leaked pointers.
 
-Fixes: ac1775012058 ("spi: sprd: Add the support of restarting the system")
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Link: https://lore.kernel.org/r/20210826091549.2138125-2-zhang.lyra@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cutted log from my local syzbot instance:
+
+BUG: memory leak
+unreferenced object 0xffff8880209f0000 (size 8192):
+  comm "kworker/0:4", pid 4916, jiffies 4295263583 (age 29.310s)
+  hex dump (first 32 bytes):
+    30 b0 27 22 80 88 ff ff 75 73 62 2d 64 75 6d 6d  0.'"....usb-dumm
+    79 5f 68 63 64 2e 33 2d 31 00 00 00 00 00 00 00  y_hcd.3-1.......
+  backtrace:
+    [<ffffffff860ca856>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff860ca856>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff860ca856>] go7007_alloc+0x46/0xb40 drivers/media/usb/go7007/go7007-driver.c:696
+    [<ffffffff860de74e>] go7007_usb_probe+0x13e/0x2200 drivers/media/usb/go7007/go7007-usb.c:1114
+    [<ffffffff854a5f74>] usb_probe_interface+0x314/0x7f0 drivers/usb/core/driver.c:396
+    [<ffffffff845a7151>] really_probe+0x291/0xf60 drivers/base/dd.c:576
+
+BUG: memory leak
+unreferenced object 0xffff88801e2f2800 (size 512):
+  comm "kworker/0:4", pid 4916, jiffies 4295263583 (age 29.310s)
+  hex dump (first 32 bytes):
+    00 87 40 8a ff ff ff ff 00 00 00 00 00 00 00 00  ..@.............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff860de794>] kmalloc include/linux/slab.h:556 [inline]
+    [<ffffffff860de794>] kzalloc include/linux/slab.h:686 [inline]
+    [<ffffffff860de794>] go7007_usb_probe+0x184/0x2200 drivers/media/usb/go7007/go7007-usb.c:1118
+    [<ffffffff854a5f74>] usb_probe_interface+0x314/0x7f0 drivers/usb/core/driver.c:396
+    [<ffffffff845a7151>] really_probe+0x291/0xf60 drivers/base/dd.c:576
+
+Fixes: 137641287eb4 ("go7007: add sanity checking for endpoints")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-sprd-adi.c | 2 +-
+ drivers/media/usb/go7007/go7007-usb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-sprd-adi.c b/drivers/spi/spi-sprd-adi.c
-index 392ec5cfa3d6..307c079b938d 100644
---- a/drivers/spi/spi-sprd-adi.c
-+++ b/drivers/spi/spi-sprd-adi.c
-@@ -103,7 +103,7 @@
- #define HWRST_STATUS_WATCHDOG		0xf0
+diff --git a/drivers/media/usb/go7007/go7007-usb.c b/drivers/media/usb/go7007/go7007-usb.c
+index dbf0455d5d50..eeb85981e02b 100644
+--- a/drivers/media/usb/go7007/go7007-usb.c
++++ b/drivers/media/usb/go7007/go7007-usb.c
+@@ -1134,7 +1134,7 @@ static int go7007_usb_probe(struct usb_interface *intf,
  
- /* Use default timeout 50 ms that converts to watchdog values */
--#define WDG_LOAD_VAL			((50 * 1000) / 32768)
-+#define WDG_LOAD_VAL			((50 * 32768) / 1000)
- #define WDG_LOAD_MASK			GENMASK(15, 0)
- #define WDG_UNLOCK_KEY			0xe551
+ 	ep = usb->usbdev->ep_in[4];
+ 	if (!ep)
+-		return -ENODEV;
++		goto allocfail;
  
+ 	/* Allocate the URB and buffer for receiving incoming interrupts */
+ 	usb->intr_urb = usb_alloc_urb(0, GFP_KERNEL);
 -- 
 2.30.2
 
