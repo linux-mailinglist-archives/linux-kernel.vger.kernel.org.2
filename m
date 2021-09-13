@@ -2,127 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B84C408AC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DC4408AF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 14:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239880AbhIMMMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 08:12:40 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9035 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239865AbhIMMMi (ORCPT
+        id S239930AbhIMMVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 08:21:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32313 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237538AbhIMMVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:12:38 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7QKW52MHzW2Lq;
-        Mon, 13 Sep 2021 20:10:23 +0800 (CST)
-Received: from dggema756-chm.china.huawei.com (10.1.198.198) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Mon, 13 Sep 2021 20:11:22 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggema756-chm.china.huawei.com (10.1.198.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 13 Sep 2021 20:11:21 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     Chen Huang <chenhuang5@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] riscv: Support DCACHE_WORD_ACCESS
-Date:   Mon, 13 Sep 2021 12:19:56 +0000
-Message-ID: <20210913121956.1776656-3-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-In-Reply-To: <20210913121956.1776656-1-chenhuang5@huawei.com>
-References: <20210913121956.1776656-1-chenhuang5@huawei.com>
+        Mon, 13 Sep 2021 08:21:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631535630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dc6ekLOLHMsMtYs2HMXfatsRC2o+NJYfkVB406jRynY=;
+        b=C8nlkjVV0ZodijDwrH9cO7pQ90ZqJZk7gXn3GLyHmO/0r2uBQR8MGA5cFqwb9vTbCGWETd
+        Ce8ni/TlSeJpLnxZgLCe7J/eSY1LzQW1qXGjOtHSqLIP1sbcDiL0NYgDYgWv7R903GyRRd
+        l2WA0cgNSXkiH11SH74DyANVAPIk4z8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-yr3hVtgDPy2Bemh351gH3A-1; Mon, 13 Sep 2021 08:20:28 -0400
+X-MC-Unique: yr3hVtgDPy2Bemh351gH3A-1
+Received: by mail-wr1-f70.google.com with SMTP id d10-20020adffbca000000b00157bc86d94eso2592691wrs.20
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 05:20:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=dc6ekLOLHMsMtYs2HMXfatsRC2o+NJYfkVB406jRynY=;
+        b=5WaAeVN0Wq3ndbNJVOkEjJnrYcgQsJsk8EmsHswyqr9I2u5fxxXY+Lw4iqZi/YrDD9
+         ksrTUmI9dAiuXHMyig6TaL8gaWrMrdIV8md3BwScDJ/caU6rgMu0Eno5vk86hbm09e/X
+         pU7IbcTt2H35Cuz/xD15yfiQUvZKwt3l/M3/NksvnCtMdscFPT1tEQ+MQWQJlxmcX/ee
+         L1vgS6M4U45N7jmH3VC+wS3snzzH5xPi7TNy1RlYl2aYo58M6cEiPg4cDIZRp6CAWf/4
+         b1iArIPR1+pkPpSv4+U4DmgtC7cn/dszlWU2b+ZwxGd/I4fucWK4/taUa9aQZXJ6o25A
+         qBWg==
+X-Gm-Message-State: AOAM531JAlB5qGfNFrQtkBq4cNRO4gVxIkLcPwB7qu4Ze0jLE8qALdHz
+        ZY0fdtn0b6XYDccLACk3wKuTCar56eF1reR7345FxGCd4f8CyH6UdkVsqJWEJMCijM2tduivRJ/
+        Phpr3DHeAUYzWF3ir8WZYi0APZc5y7EjvJ/73Faeq5I2SAdFqZNVJMILQ7lrP4Dt5UXLG1Bgw
+X-Received: by 2002:adf:80eb:: with SMTP id 98mr12140649wrl.348.1631535627797;
+        Mon, 13 Sep 2021 05:20:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqACPVeVpqdGbdZKyYWRSwo6XFlp8j0+JXG9OX6JdRQ4wyJBLWvBTheHOQ1up66bOZp7bZ0g==
+X-Received: by 2002:adf:80eb:: with SMTP id 98mr12140621wrl.348.1631535627518;
+        Mon, 13 Sep 2021 05:20:27 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6576.dip0.t-ipconnect.de. [91.12.101.118])
+        by smtp.gmail.com with ESMTPSA id i18sm3635059wrn.64.2021.09.13.05.20.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 05:20:27 -0700 (PDT)
+Subject: Re: [PATCH v2] mm/page_isolation: fix potential missing call to
+ unset_migratetype_isolate()
+To:     Michal Hocko <mhocko@suse.com>, Miaohe Lin <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210913115125.33617-1-linmiaohe@huawei.com>
+ <YT9AS6I1Th14mCxh@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <e1e772b8-b9a7-0182-c469-73f32cda005e@redhat.com>
+Date:   Mon, 13 Sep 2021 14:20:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema756-chm.china.huawei.com (10.1.198.198)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YT9AS6I1Th14mCxh@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch selects DCACHE_WORD_ACCESS on riscv and implements support
-for load_unaligned_zeropad.
+On 13.09.21 14:12, Michal Hocko wrote:
+> On Mon 13-09-21 19:51:25, Miaohe Lin wrote:
+>> In start_isolate_page_range() undo path, pfn_to_online_page() just checks
+>> the first pfn in a pageblock while __first_valid_page() will traverse the
+>> pageblock until the first online pfn is found. So we may miss the call to
+>> unset_migratetype_isolate() in undo path and pages will remain isolated
+>> unexpectedly. Fix this by calling undo_isolate_page_range() and this will
+>> also help to simplify the code further.
+> 
+> I like the clean up part but is this a real problem that requires CC
+> stable? Have you ever seen this to be a real problem? It looks like
+> something based on reading the code.
 
-DCACHE_WORD_ACCESS uses the word-at-a-time API for optimised string
-comparisons in the vfs layer.
+We discussed that it isn't an issue anymore (we never call it on memory 
+holes), but might have been an issue on older kernels, back when we 
+didn't have the "memory holes" check in the memory offlining path in place.
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/riscv/Kconfig                      |  1 +
- arch/riscv/include/asm/word-at-a-time.h | 36 +++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+Agreed, these details belong into this description.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 6e70bf50b02a..f6f0da0f436b 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -44,6 +44,7 @@ config RISCV
- 	select CLONE_BACKWARDS
- 	select CLINT_TIMER if !MMU
- 	select COMMON_CLK
-+	select DCACHE_WORD_ACCESS
- 	select EDAC_SUPPORT
- 	select GENERIC_ARCH_TOPOLOGY if SMP
- 	select GENERIC_ATOMIC64 if !64BIT
-diff --git a/arch/riscv/include/asm/word-at-a-time.h b/arch/riscv/include/asm/word-at-a-time.h
-index 7c086ac6ecd4..0b77ce654f56 100644
---- a/arch/riscv/include/asm/word-at-a-time.h
-+++ b/arch/riscv/include/asm/word-at-a-time.h
-@@ -11,6 +11,8 @@
- 
- #include <linux/kernel.h>
- 
-+#include <asm/asm.h>
-+
- struct word_at_a_time {
- 	const unsigned long one_bits, high_bits;
- };
-@@ -45,4 +47,38 @@ static inline unsigned long find_zero(unsigned long mask)
- /* The mask we created is directly usable as a bytemask */
- #define zero_bytemask(mask) (mask)
- 
-+/*
-+ * Load an unaligned word from kernel space.
-+ *
-+ * In the (very unlikely) case of the word being a page-crosser
-+ * and the next page not being mapped, take the exception and
-+ * return zeroes in the non-existing part.
-+ */
-+static inline unsigned long load_unaligned_zeropad(const void *addr)
-+{
-+	unsigned long ret, tmp;
-+
-+	/* Load word from unaligned pointer addr */
-+	asm(
-+	"1:	" REG_L " %0, %3\n"
-+	"2:\n"
-+	"	.section .fixup,\"ax\"\n"
-+	"	.balign 2\n"
-+	"3:	andi	%1, %2, ~0x7\n"
-+	"	" REG_L " %0, (%1)\n"
-+	"	andi	%1, %2, 0x7\n"
-+	"	slli	%1, %1, 0x3\n"
-+	"	srl	%0, %0, %1\n"
-+	"	jump	2b, %1\n"
-+	"	.previous\n"
-+	"	.section __ex_table,\"a\"\n"
-+	"	.balign	" RISCV_SZPTR "\n"
-+	"	" RISCV_PTR "	1b, 3b\n"
-+	"	.previous"
-+	: "=&r" (ret), "=&r" (tmp)
-+	: "r" (addr), "m" (*(unsigned long *)addr));
-+
-+	return ret;
-+}
-+
- #endif /* _ASM_RISCV_WORD_AT_A_TIME_H */
+> 
+>> Fixes: 2ce13640b3f4 ("mm: __first_valid_page skip over offline pages")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> Cc: <stable@vger.kernel.org>
+>> ---
+>> v1->v2:
+>>    Simplify the code further per David Hildenbrand.
+>> ---
+>>   mm/page_isolation.c | 20 +++-----------------
+>>   1 file changed, 3 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>> index a95c2c6562d0..f93cc63d8fa1 100644
+>> --- a/mm/page_isolation.c
+>> +++ b/mm/page_isolation.c
+>> @@ -183,7 +183,6 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+>>   			     unsigned migratetype, int flags)
+>>   {
+>>   	unsigned long pfn;
+>> -	unsigned long undo_pfn;
+>>   	struct page *page;
+>>   
+>>   	BUG_ON(!IS_ALIGNED(start_pfn, pageblock_nr_pages));
+>> @@ -193,25 +192,12 @@ int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
+>>   	     pfn < end_pfn;
+>>   	     pfn += pageblock_nr_pages) {
+>>   		page = __first_valid_page(pfn, pageblock_nr_pages);
+>> -		if (page) {
+>> -			if (set_migratetype_isolate(page, migratetype, flags)) {
+>> -				undo_pfn = pfn;
+>> -				goto undo;
+>> -			}
+>> +		if (page && set_migratetype_isolate(page, migratetype, flags)) {
+>> +			undo_isolate_page_range(start_pfn, pfn, migratetype);
+>> +			return -EBUSY;
+>>   		}
+>>   	}
+>>   	return 0;
+>> -undo:
+>> -	for (pfn = start_pfn;
+>> -	     pfn < undo_pfn;
+>> -	     pfn += pageblock_nr_pages) {
+>> -		struct page *page = pfn_to_online_page(pfn);
+>> -		if (!page)
+>> -			continue;
+>> -		unset_migratetype_isolate(page, migratetype);
+>> -	}
+>> -
+>> -	return -EBUSY;
+>>   }
+>>   
+>>   /*
+>> -- 
+>> 2.23.0
+> 
+
+
 -- 
-2.18.0.huawei.25
+Thanks,
+
+David / dhildenb
 
