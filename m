@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048804083DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AF04083E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 07:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhIMFmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 01:42:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230390AbhIMFmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 01:42:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A8160FED;
-        Mon, 13 Sep 2021 05:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631511665;
-        bh=isvnjXQAvGPhT0oHosKnKu26KlhYKrH2kGNhw4wK8Ok=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RJiFPEZzWy9tZvCaGpDZcJlkoxwKLIZJNzhojwKLCUjGmrYSOhqHgGCzaqJAQYISR
-         pxj5QNHPn7T1FKlhjcVIaL69xmO0HoStpYvxD0CP9xuCNlCLCLoow+gBPLUTGZ9G6P
-         XFf90rFHedtRJSPabfY2PJ1Xs9vUR41SPDoU682ONVcmFra5xdFvdLR7W8bHvb3VPt
-         RO6LwH+cHdBAVFqJHPGeq4cJ8y1nxn24hiaxzJFaXmU5syZA2/f6iJjelakQWB53fY
-         BqwsBzwzM3pxOvzdtoaiEMR5EJbouiKLAweGjE5Tsje8lmEqBLxue1zD6tyzW2+q/X
-         MRYoGjvx1nYpg==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH] bootconfig: Free copied bootconfig data after boot
-Date:   Mon, 13 Sep 2021 14:41:03 +0900
-Message-Id: <163151166275.369741.12201304720604568345.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S237017AbhIMFnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 01:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236970AbhIMFnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 01:43:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62ACBC061760;
+        Sun, 12 Sep 2021 22:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=fmH2LXB3YYbj1yq4cqvqVQN291/Bevk7C+ybmXkGJs4=; b=MXOmqSVB4wrbkg1XuD8128fiQz
+        CoUNXmPtB7i4NkqsXyoCpNKf0PDLmGLco654RxYnXy3k/+Jas+6l1fkaJCTJlza+dPHXSUR1bcvwQ
+        U5MYc6d+C/rTkRV5T1wgXg9Udu/4TuAxLuuT+FXWhjn48+Rj5Y+RZfwEzfMCLdFN1Ai0aMCpsyiz4
+        3CMSbgqoecqVIL41PDlOJZ3gO5EWGMXSuAqoWJPxFNfc4TMZCAg9zCEb/KSdEGfhr99nzE1BE61TA
+        Lttv6IVSVLflJW+z2FG1xuZoc5VoFTVrQn3WDKcL0kho+oPm+JpRYwu6Wt/PdP412f+Z1imGtjVuS
+        t5mNUCDQ==;
+Received: from 089144214237.atnat0023.highway.a1.net ([89.144.214.237] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPeiZ-00DCUF-KT; Mon, 13 Sep 2021 05:41:39 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: start switching sysfs attributes to expose the seq_file
+Date:   Mon, 13 Sep 2021 07:41:08 +0200
+Message-Id: <20210913054121.616001-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Free copied bootconfig data after booting kernel because that
-data will not be used anymore.
+Hi all,
 
-commit 40caa127f3c7 ("init: bootconfig: Remove all bootconfig
-data when the init memory is removed") freed the bootconfig
-xbc_node array after booting kernel, but forgot to free the
-bootconfig data itself. This fixes that to free the bootconfig
-data too.
+Al pointed out multiple times that seq_get_buf is highly dangerous as
+it opens up the tight seq_file abstractions to buffer overflows.  The
+last such caller now is sysfs.
 
-This also frees the bootconfig data if the bootconfig data
-parsing failed.
+This series allows attributes to implement a seq_show method and switch
+the block and XFS code as users that I'm most familiar with to use
+seq_files directly after a few preparatory cleanups.  With this series
+"leaf" users of sysfs_ops can be converted one at at a time, after that
+we can move the seq_get_buf into the multiplexers (e.g. kobj, device,
+class attributes) and remove the show method in sysfs_ops and repeat the
+process until all attributes are converted.  This will probably take a
+fair amount of time.
 
-Fixes: 40caa127f3c7 ("init: bootconfig: Remove all bootconfig data when the init memory is removed")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- init/main.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/init/main.c b/init/main.c
-index 5c9a48df90e1..dc433d1d5fc4 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -319,6 +319,8 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
- #ifdef CONFIG_BOOT_CONFIG
- 
- static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
-+static void *init_xbc_data_copy __initdata;
-+static phys_addr_t init_xbc_data_size __initdata;
- 
- #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
- 
-@@ -458,18 +460,24 @@ static void __init setup_boot_config(void)
- 		else
- 			pr_err("Failed to parse bootconfig: %s at %d.\n",
- 				msg, pos);
-+		memblock_free(__pa(copy), size + 1);
- 	} else {
- 		pr_info("Load bootconfig: %d bytes %d nodes\n", size, ret);
- 		/* keys starting with "kernel." are passed via cmdline */
- 		extra_command_line = xbc_make_cmdline("kernel");
- 		/* Also, "init." keys are init arguments */
- 		extra_init_args = xbc_make_cmdline("init");
-+		init_xbc_data_copy = copy;
-+		init_xbc_data_size = size + 1;
- 	}
- 	return;
- }
- 
- static void __init exit_boot_config(void)
- {
-+	if (!init_xbc_data_copy)
-+		return;
-+	memblock_free(__pa(init_xbc_data_copy), init_xbc_data_size);
- 	xbc_destroy_all();
- }
- 
-
+Diffstat:
+ block/bfq-iosched.c      |   12 +-
+ block/blk-integrity.c    |   44 +++++----
+ block/blk-mq-sysfs.c     |   64 ++++++--------
+ block/blk-sysfs.c        |  209 ++++++++++++++++++++++++++---------------------
+ block/blk-throttle.c     |    5 -
+ block/blk.h              |    2 
+ block/elevator.c         |   42 +++++----
+ block/kyber-iosched.c    |    7 -
+ block/mq-deadline.c      |    5 -
+ fs/sysfs/file.c          |  135 +++++++++++++++++-------------
+ fs/sysfs/group.c         |   15 +--
+ fs/sysfs/sysfs.h         |    8 +
+ fs/xfs/xfs_error.c       |   14 +--
+ fs/xfs/xfs_stats.c       |   24 ++---
+ fs/xfs/xfs_stats.h       |    2 
+ fs/xfs/xfs_sysfs.c       |   96 ++++++++++-----------
+ include/linux/elevator.h |    4 
+ include/linux/kernfs.h   |   28 ------
+ include/linux/seq_file.h |    4 
+ include/linux/sysfs.h    |    9 +-
+ 20 files changed, 376 insertions(+), 353 deletions(-)
