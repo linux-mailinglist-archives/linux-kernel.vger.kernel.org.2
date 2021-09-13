@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67240409BCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2882F409BDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346501AbhIMSJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235056AbhIMSJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:09:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1037560EE9;
-        Mon, 13 Sep 2021 18:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631556514;
-        bh=ywiRedTR5zeyIz8MBcSAEfY/rfpHmNISjeocjDRzgzI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ebY5qZQgF1O3prH+NZwpoV4lCtWt2UxvQ5jFaOgo7IXSYrbpjzXRtH922oEnxs3it
-         2XhK0/vgQSpcYzsJIOVPFWyCbS/ttldHMSOu+uVg3mlpRyEWZeri9nIfEmJhWM0sEZ
-         agYIhsPLnOMEyop3PBPTR0/s2/ZA4Di+8wwGXLOl7v7w1WH8o2dRxLSKGnZjK0h20+
-         OBdlyinH0cCnqG9pciu2ac1mdkMsInmDRZk9doY+Oo7Tx6bhpfO9z2s0aUQbhUKiCn
-         tY0t5TGXo4XRHyAjIN5N+YSZeNIwOHiWxPAAqAeFftQkYILXS3EAVuIjuBe6FPYBrW
-         ro0TK5fH2UK/g==
-Date:   Mon, 13 Sep 2021 11:08:19 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev
-Subject: Re: [PATCH 0/2] Harden clang against unknown flag options
-Message-ID: <YT+Tk55IKG/PyYgr@archlinux-ax161>
-References: <20210824022640.2170859-1-nathan@kernel.org>
+        id S1346634AbhIMSLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346615AbhIMSLk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 14:11:40 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85401C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:10:23 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id x11so23019878ejv.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W9vZwmlkrDBjvEWyCMDm/dnLCct5DvZtNMR1EOH464M=;
+        b=O+XyRFkRhNILNdeUWZgUoamaUVDiY4Van3n3NvBFXRPsO/RNK3cBvycVR5kV5P4A1C
+         0LIVBpLG6/ihvlIP+w3eaB9judjq+TEFuK+e8Ld04dr7PdMqwJeYqxlcpeBmELzGYYj3
+         msFdvvAbG6wrDaEtX6A09Cq14sX6lTccRUb7ptWguk8/yt/q1G4UqP5i7Ilv5L1hQSdz
+         eBJ5W5I+U5EP6JGKSDWgorAJIoLGcvoUdK2nRYgg1THK1ndbLcy8Alb/CAzpdRe6bcTp
+         Su2UjZJskkUVZwcjwOKg2lzX8/lTY5SIGD0BJZmPMVO5koGfBlmDeGqEDS2FuWwQJ7eb
+         f2FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W9vZwmlkrDBjvEWyCMDm/dnLCct5DvZtNMR1EOH464M=;
+        b=uPZl71SUqj++KKck/ucWfTZpArEP432/b7cKxZfg07DAwOovPuRVTUlxvfOpNVnc/A
+         3p+iHcN9rg63LBz7uEzb5Tk2DaXiD+9pIiKIJ8urVQ8MU3UXigMmsed8MObDcybE760E
+         F+xCvWUgisZ/wQhoUX83YLjuftzH402Fba8W/PfHXdrexNZO8DOjFReSG8rH5/OM51Z6
+         +KMC9ZLAdJATfsdSfj01hAdxWCR0/MF//ZUYo0EjuOkynV1GQtG1SJ61DWD+M41zlq8a
+         oLGhzh25vUnLCcYHsk0blDLX3R5Vx1U4xVVottTcJTFK1oZn8yGb+YLHNXg53BqfX9z+
+         BEGA==
+X-Gm-Message-State: AOAM532xmxtzU6Mbl5nHGuaarb6L9vS0RP1122R6Rcs//O3A5SBUt4dm
+        eepC4Cr8mI+Fp0+mlzn4bas=
+X-Google-Smtp-Source: ABdhPJyCAxJTcYtbPJOTf3H833YeEg4AAyF8nk4KVRiBXBpuEs0lBnPEOJJafFv4DQ5K4SAMD/8W5A==
+X-Received: by 2002:a17:906:2bc7:: with SMTP id n7mr13605981ejg.238.1631556622092;
+        Mon, 13 Sep 2021 11:10:22 -0700 (PDT)
+Received: from localhost.localdomain.it (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
+        by smtp.gmail.com with ESMTPSA id d25sm4258999edt.33.2021.09.13.11.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 11:10:21 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v4 00/18] staging: r8188eu: Shorten and simplify calls chain
+Date:   Mon, 13 Sep 2021 20:09:44 +0200
+Message-Id: <20210913181002.16651-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824022640.2170859-1-nathan@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 07:26:38PM -0700, Nathan Chancellor wrote:
-> Hi all,
-> 
-> This series cleans up an issue that was noticed by the kernel test robot
-> where flags that clang does not implement support for are
-> unconditionally added to the command line, which causes all subsequent
-> calls to cc-{disable-warning,option} to fail, meaning developers are
-> flooded with unnecessary and pointless warnings.
-> 
-> I hope the patches in and of themselves are reasonable and
-> non-controversial. This is based on Masahiro's kbuild tree as there was
-> a fairly large refactor around where clang's flags were added so I
-> figured it would be best to go there with an x86 ack since the first
-> patch does not depend on anything in -tip.
-> 
-> Cheers,
-> Nathan
-> 
-> Nathan Chancellor (2):
->   x86: Do not add -falign flags unconditionally for clang
->   kbuild: Add -Werror=ignored-optimization-argument to CLANG_FLAGS
-> 
->  arch/x86/Makefile_32.cpu | 12 +++++++++---
->  scripts/Makefile.clang   |  4 ++++
->  2 files changed, 13 insertions(+), 3 deletions(-)
-> 
-> 
-> base-commit: fb3fdea450305d932d933d7e75eead0477249d8e
-> -- 
-> 2.33.0
-> 
-> 
+io_ops abstraction is useless in this driver, since there is only one ops
+registration. Without io_ops we can get rid of indirect calls mess and
+shorten the calls chain.
 
-Hello x86 folks,
+Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+For this purpose unify the three usb_read8/16/32 into the new
+usb_read(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_read() and use in it the new
+usb_control_msg_recv() API of USB Core.
 
-Would you guys be able to give me feedback on this series or accept it?
-We are continuously getting false positive warning reports from i386 randconfigs.
+Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
+For this purpose unify the four usb_write8/16/32/N() into the new
+usb_write(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_write() and use in it the new
+usb_control_msg_send() API of USB Core.
 
-https://lore.kernel.org/r/ece61908-f8eb-4c45-5d5f-bfc52f3b8f45@kernel.org/
-https://lore.kernel.org/r/YT+RqrkQAOVhbkWu@archlinux-ax161/
+The code with the modifications was thoroughly tested by Pavel Skripkin
+using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS] and by Fabio M.
+De Francesco using a ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano].
 
-Cheers,
-Nathan
+Fabio M. De Francesco (4):
+  staging: r8188eu: hal: Clean up usbctrl_vendorreq()
+  staging: r8188eu: hal: Clean up rtw_read*() and rtw_write*()
+  staging: r8188eu: Shorten calls chain of rtw_read8/16/32()
+  staging: r8188eu: Shorten calls chain of rtw_write8/16/32/N()
+
+Pavel Skripkin (14):
+  staging: r8188eu: remove usb_{read,write}_mem
+  staging: r8188eu: remove the helpers of rtw_read8()
+  staging: r8188eu: remove the helpers of rtw_read16()
+  staging: r8188eu: remove the helpers of rtw_read32()
+  staging: r8188eu: remove the helpers of usb_write8
+  staging: r8188eu: remove the helpers of usb_write16
+  staging: r8188eu: remove the helpers of usb_write32
+  staging: r8188eu: remove the helpers of usb_writeN
+  staging: r8188eu: remove the helpers of usb_read_port
+  staging: r8188eu: remove the helpers of usb_write_port
+  staging: r8188eu: remove the helpers of usb_read_port_cancel
+  staging: r8188eu: remove the helpers of usb_write_port_cancel
+  staging: r8188eu: remove core/rtw_io.c
+  staging: remove struct _io_ops
+
+ drivers/staging/r8188eu/Makefile              |   1 -
+ drivers/staging/r8188eu/core/rtw_io.c         | 299 ------------------
+ drivers/staging/r8188eu/hal/usb_halinit.c     |   6 +-
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   | 250 ++++++++-------
+ drivers/staging/r8188eu/include/rtw_io.h      |  89 +-----
+ drivers/staging/r8188eu/include/usb_ops.h     |   2 -
+ .../staging/r8188eu/include/usb_ops_linux.h   |   8 -
+ drivers/staging/r8188eu/os_dep/usb_intf.c     |   8 +-
+ .../staging/r8188eu/os_dep/usb_ops_linux.c    |  20 +-
+ 9 files changed, 157 insertions(+), 526 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/core/rtw_io.c
+
+-- 
+2.33.0
+
