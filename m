@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BF54092A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99291409595
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343793AbhIMONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59956 "EHLO mail.kernel.org"
+        id S1344299AbhIMOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345153AbhIMOKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0EF96124D;
-        Mon, 13 Sep 2021 13:41:43 +0000 (UTC)
+        id S1345994AbhIMOhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:37:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DE7617E2;
+        Mon, 13 Sep 2021 13:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540504;
-        bh=iROBwrTyeLFDxNp08ASFLBO0T3JBIXrkaaErhQ9G5Hw=;
+        s=korg; t=1631541263;
+        bh=jRPCEKKYWg+2r3Q55PnmcsHoHzvghlYmIOUah78fWJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=veXrATK52odJZWWTb0kJKQ3E0NYm3efjcMLXO4V8fcKa7Mgop+Wu+JmuzUcvU3ran
-         1x7Z0kyyYqhsJwDRV6R5pc0PeNIs3r9Tr5pcj37MWHa+laq/OjUCJboaft/qlGQXLx
-         3FKoL0nhwtswsEFLhELvQtdnZ/M6h8M20VZPwAuE=
+        b=BnQAKBUZgo/we64lvfjUS67lawyAm/ZbYWQxpL+yi/OUwBiv4naNZ16GptjcDEeib
+         p5eLW8KjCXpGhBxrztfyXSn/4JbG6aVx1aR38hW3zbjsGGlvYdJHbGKbaNZN0SeGxo
+         Sg1j7dtNcTZYNokymxZbWTmg4l2972NkD+xKwDtE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 220/300] octeontx2-pf: Dont install VLAN offload rule if netdev is down
-Date:   Mon, 13 Sep 2021 15:14:41 +0200
-Message-Id: <20210913131116.792731061@linuxfoundation.org>
+Subject: [PATCH 5.14 228/334] firmware: raspberrypi: Fix a leak in rpi_firmware_get()
+Date:   Mon, 13 Sep 2021 15:14:42 +0200
+Message-Id: <20210913131121.126520503@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sunil Goutham <sgoutham@marvell.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 05209e3570e452cdaa644e8398a8875b6a91051d ]
+[ Upstream commit 09cbd1df7d2615c19e40facbe31fdcb5f1ebfa96 ]
 
-Whenever user changes interface MAC address both default DMAC based
-MCAM rule and VLAN offload (for strip) rules are updated with new
-MAC address. To update or install VLAN offload rule PF driver needs
-interface's receive channel info, which is retrieved from admin
-function at the time of NIXLF initialization.
+The reference taken by 'of_find_device_by_node()' must be released when
+not needed anymore.
 
-If user changes MAC address before interface is UP, VLAN offload rule
-installation will fail and throw error as receive channel is not valid.
-To avoid this, skip VLAN offload rule installation if netdev is not UP.
-This rule will anyway be reinslatted as part of open() call.
+Add the corresponding 'put_device()' in the normal and error handling
+paths.
 
-Fixes: fd9d7859db6c ("octeontx2-pf: Implement ingress/egress VLAN offload")
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 4e3d60656a72 ("ARM: bcm2835: Add the Raspberry Pi firmware driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/5e17e5409b934cd08bf6f9279c73be5c1cb11cce.1628232242.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/firmware/raspberrypi.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 16ba457197a2..871404f3b8d3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -208,7 +208,8 @@ int otx2_set_mac_address(struct net_device *netdev, void *p)
- 	if (!otx2_hw_set_mac_addr(pfvf, addr->sa_data)) {
- 		memcpy(netdev->dev_addr, addr->sa_data, netdev->addr_len);
- 		/* update dmac field in vlan offload rule */
--		if (pfvf->flags & OTX2_FLAG_RX_VLAN_SUPPORT)
-+		if (netif_running(netdev) &&
-+		    pfvf->flags & OTX2_FLAG_RX_VLAN_SUPPORT)
- 			otx2_install_rxvlan_offload_flow(pfvf);
- 	} else {
- 		return -EPERM;
+diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
+index 250e01680742..4b8978b254f9 100644
+--- a/drivers/firmware/raspberrypi.c
++++ b/drivers/firmware/raspberrypi.c
+@@ -329,12 +329,18 @@ struct rpi_firmware *rpi_firmware_get(struct device_node *firmware_node)
+ 
+ 	fw = platform_get_drvdata(pdev);
+ 	if (!fw)
+-		return NULL;
++		goto err_put_device;
+ 
+ 	if (!kref_get_unless_zero(&fw->consumers))
+-		return NULL;
++		goto err_put_device;
++
++	put_device(&pdev->dev);
+ 
+ 	return fw;
++
++err_put_device:
++	put_device(&pdev->dev);
++	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(rpi_firmware_get);
+ 
 -- 
 2.30.2
 
