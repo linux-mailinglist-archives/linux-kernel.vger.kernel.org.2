@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F28409185
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480F3408EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243693AbhIMOCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:02:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46224 "EHLO mail.kernel.org"
+        id S242330AbhIMNgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:36:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244580AbhIMN6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:58:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E62619F5;
-        Mon, 13 Sep 2021 13:36:55 +0000 (UTC)
+        id S242501AbhIMNbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:31:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B6D610F7;
+        Mon, 13 Sep 2021 13:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540215;
-        bh=DpN0gwAy7LbhWQbQzhZCdmWMr/MbbS1yDoc5zKleJww=;
+        s=korg; t=1631539528;
+        bh=+cSAMw9L8uwZ1vm8iSpE6QQ94QaxTTTPHyeaLwQH5WU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTPjhBmKGDHaCCwSnNJI+D3J8vMKvuSqUGwYDIsr43wsrkXSARAEmLfnZgNU086Bc
-         kjpMEj52VnUS6Fo1vFvSJQsnGVDuBuTJIeZN3myWCDhnJDVpwKj6FYZvBUIaS0WqvZ
-         AKAkcugjcC0TQhsEO5Gz/DY/C4wdRd0ofvx94azg=
+        b=dnzPVtAJoYolLdY+lyGUcepXdNiKgr+meLkfiJuiom3OODCvh4LH2YrsVqmjiKFEe
+         DeDBcBjmwcTqZxvZe0XdWQGfx54Aa0SfscxhdgAewYErMFR9ULfQO2Y9dKW3EmngPx
+         qtQgPbHy06HtrOAWD22k9HFdD9pIjFDPKFwZu0qU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 101/300] gfs2: Fix memory leak of object lsi on error return path
-Date:   Mon, 13 Sep 2021 15:12:42 +0200
-Message-Id: <20210913131112.787815130@linuxfoundation.org>
+Subject: [PATCH 5.10 058/236] crypto: qat - use proper type for vf_mask
+Date:   Mon, 13 Sep 2021 15:12:43 +0200
+Message-Id: <20210913131102.338397105@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-[ Upstream commit a6579cbfd7216b071008db13360c322a6b21400b ]
+[ Upstream commit 462354d986b6a89c6449b85f17aaacf44e455216 ]
 
-In the case where IS_ERR(lsi->si_sc_inode) is true the error exit path
-to free_local does not kfree the allocated object lsi leading to a memory
-leak. Fix this by kfree'ing lst before taking the error exit path.
+Replace vf_mask type with unsigned long to avoid a stack-out-of-bound.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: 97fd734ba17e ("gfs2: lookup local statfs inodes prior to journal recovery")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+This is to fix the following warning reported by KASAN the first time
+adf_msix_isr_ae() gets called.
+
+    [  692.091987] BUG: KASAN: stack-out-of-bounds in find_first_bit+0x28/0x50
+    [  692.092017] Read of size 8 at addr ffff88afdf789e60 by task swapper/32/0
+    [  692.092076] Call Trace:
+    [  692.092089]  <IRQ>
+    [  692.092101]  dump_stack+0x9c/0xcf
+    [  692.092132]  print_address_description.constprop.0+0x18/0x130
+    [  692.092164]  ? find_first_bit+0x28/0x50
+    [  692.092185]  kasan_report.cold+0x7f/0x111
+    [  692.092213]  ? static_obj+0x10/0x80
+    [  692.092234]  ? find_first_bit+0x28/0x50
+    [  692.092262]  find_first_bit+0x28/0x50
+    [  692.092288]  adf_msix_isr_ae+0x16e/0x230 [intel_qat]
+
+Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/ops_fstype.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/qat/qat_common/adf_isr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index 5f4504dd0875..bd3b3be1a473 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -677,6 +677,7 @@ static int init_statfs(struct gfs2_sbd *sdp)
- 			error = PTR_ERR(lsi->si_sc_inode);
- 			fs_err(sdp, "can't find local \"sc\" file#%u: %d\n",
- 			       jd->jd_jid, error);
-+			kfree(lsi);
- 			goto free_local;
- 		}
- 		lsi->si_jid = jd->jd_jid;
+diff --git a/drivers/crypto/qat/qat_common/adf_isr.c b/drivers/crypto/qat/qat_common/adf_isr.c
+index da6ef007a6ae..de2f137e44ef 100644
+--- a/drivers/crypto/qat/qat_common/adf_isr.c
++++ b/drivers/crypto/qat/qat_common/adf_isr.c
+@@ -15,6 +15,8 @@
+ #include "adf_transport_access_macros.h"
+ #include "adf_transport_internal.h"
+ 
++#define ADF_MAX_NUM_VFS	32
++
+ static int adf_enable_msix(struct adf_accel_dev *accel_dev)
+ {
+ 	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
+@@ -67,7 +69,7 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
+ 		struct adf_bar *pmisc =
+ 			&GET_BARS(accel_dev)[hw_data->get_misc_bar_id(hw_data)];
+ 		void __iomem *pmisc_bar_addr = pmisc->virt_addr;
+-		u32 vf_mask;
++		unsigned long vf_mask;
+ 
+ 		/* Get the interrupt sources triggered by VFs */
+ 		vf_mask = ((ADF_CSR_RD(pmisc_bar_addr, ADF_ERRSOU5) &
+@@ -88,8 +90,7 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
+ 			 * unless the VF is malicious and is attempting to
+ 			 * flood the host OS with VF2PF interrupts.
+ 			 */
+-			for_each_set_bit(i, (const unsigned long *)&vf_mask,
+-					 (sizeof(vf_mask) * BITS_PER_BYTE)) {
++			for_each_set_bit(i, &vf_mask, ADF_MAX_NUM_VFS) {
+ 				vf_info = accel_dev->pf.vf_info + i;
+ 
+ 				if (!__ratelimit(&vf_info->vf2pf_ratelimit)) {
 -- 
 2.30.2
 
