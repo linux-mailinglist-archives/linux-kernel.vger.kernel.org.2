@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB03408322
+	by mail.lfdr.de (Postfix) with ESMTP id 96BEB408323
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 05:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238537AbhIMDaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 23:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
+        id S238550AbhIMDaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 23:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238149AbhIMDaM (ORCPT
+        with ESMTP id S238543AbhIMDaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 23:30:12 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0649C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:28:57 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id g184so8098661pgc.6
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:28:57 -0700 (PDT)
+        Sun, 12 Sep 2021 23:30:17 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB1BC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:29:02 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id n30so4826118pfq.5
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 20:29:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iViKe5K3OqUUSjVw078CMVuYB4UJnlNbs8QNGz+R2bk=;
-        b=QuvrONocgrdG2UW5id/w9e+Zg+OK6huNOHJCs5CQO8CBcP0vNlFWRGMOvhG535fUYw
-         bEapnFXia2rdEQ/C9Kkhj0V0ktPKm5xbFIjD5F1M947KkfDbjSFU4iuwIiaC6WtC4bdw
-         xeryu0CN2Fb9fnnmDB1rUJCAjSZM6GAa0K1ZVNEFBSjaGzpEkeXBh+k0rk1+VPfGnOsm
-         Kxv0XrSQOakLGjq9cU9c/gScE1E8Fcqm0Xmrxowfm5wktenTjjzr8zThEAhR/sA0+zfM
-         mvhSII69GupQsYh9+4a9fJ4L2K6eNE6OUHQsFFV5Wfvir/jKsAZhbsgqMqTDONRfGOB3
-         1nUg==
+        bh=rvKCNgGgd0GfHhvU5GqfwrcS3OOFuoT/zQm30z+9BCY=;
+        b=p1VbC9GMif3NvnkePRhh7l1KRQ6XwrGM46Gi+7GHRgMJ6tZjwSEv+MHy28wYGHJpo/
+         JHwpjti5wBwgQrAnKvZDFphYZH6Zqm7kP8dSPvxjOMlu9hLSBZG7p8pZnEiqlmYDQijs
+         p/PPYFkyr7pkcEEAqgrki5w72ik+EOuLVTAaYep94Rdgr6eRL9xGWDH0picc2Ukl70Jg
+         1Z+/c1fD6pMfIzN2sm/Lf7r0aN6gHoyuw5c26eotamZZ78Pk1Fx5Ok0yaxdGAw4e5LdP
+         WpTBlj8L1/lhuEwKnkj4IQs4S7nyiafVQbEdNa0nuP6Eq0QUap32R9J971nwWlv02L4E
+         OPCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iViKe5K3OqUUSjVw078CMVuYB4UJnlNbs8QNGz+R2bk=;
-        b=MAeGUlM1DqH9SNS1pjaIu8qnqO1E8c4Q0g6nL60GlL4ajyUI7bJLn0VNAM/kvuygo7
-         OI8atdz+jD6UXdxWWUELhO+VsOV/bcDi07bXTU67zUuZQeE4Fytl/BNWCCkhu3COgetr
-         fu/y2Y5ZqRv2bYAeowF2IAzUx3I78ROog94gLE5poYjU42J9YuSODTMmhGX9hGsanrSS
-         ITbMpGsl4IdoBURoDDfO0UREO4OeLwsX6dAPIL9Sec6HC00dHHvbNZOLtSb48xk/yE57
-         1XwqLO50JoIVCe+U0W7QkdvdLMmWV/Zz99Icpzv150KB8WU5JEnXBf6IjVXTzVIZdTkq
-         eUhQ==
-X-Gm-Message-State: AOAM531xfboTaQ4YgIb5N2M5T9dWUKVrFppErueyYr/q9ZgUycAHN/Qm
-        J3AgbHSdqughAd2DVPI12uo=
-X-Google-Smtp-Source: ABdhPJwjkiK7ziIc/3Ew0K5PdDMcWPuic8Fsx0T9SBWTgUSLolP2v3MTS6Lunhw3/wrjtWJzZ+yncA==
-X-Received: by 2002:aa7:99de:0:b0:43c:92ed:305b with SMTP id v30-20020aa799de000000b0043c92ed305bmr5048177pfi.86.1631503737211;
-        Sun, 12 Sep 2021 20:28:57 -0700 (PDT)
+        bh=rvKCNgGgd0GfHhvU5GqfwrcS3OOFuoT/zQm30z+9BCY=;
+        b=Uxsk2VBbW9kCa8SE4SwBmNXOBfUnNruiFhPjApvODEzBx0omRQHg0zXqMs9CJr4vRF
+         tdAyPh7MbJ0typzMRPm9NcuS3b1ziXSKvsTS8J7uIwxscQ4QPSMuggdgpR0a/Uywq9nL
+         JMUpmNMC2XUD4LEJoA/8heFzyMHiwh2kbcK2IFOkD0H5j8D8Mk1Xodk3S2XpECLjpKOF
+         dO7c3Mk3hG/IMpboUZ+2FaAyVONANLdzu7puXwh9oPIDEPWe2bPpAPk2oeCZ08QtxgrW
+         6R5yP/Fp0JYAqCX0KEcqBTuD6agdUlrnPWvMf8rTWqUyouqytQfZOaQYuxNSv2kBAaWg
+         xqaA==
+X-Gm-Message-State: AOAM5304oTbO8a6oJIf5KBT09uEAN3D7kYUg9MBsPnGhEduae04bp+7c
+        6fq4Dl8OnjfxNIoHRy8YPNI=
+X-Google-Smtp-Source: ABdhPJwL6awSS3mYuObiTCmClkKcOFDGBObJ8smaCP4HabqjuWi9bjFd0cWqalzKgNTe+FFlWpkr1Q==
+X-Received: by 2002:a05:6a00:a8a:b029:356:be61:7f18 with SMTP id b10-20020a056a000a8ab0290356be617f18mr9157356pfl.29.1631503742075;
+        Sun, 12 Sep 2021 20:29:02 -0700 (PDT)
 Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id m12sm665109pjv.29.2021.09.12.20.28.53
+        by smtp.gmail.com with ESMTPSA id m12sm665109pjv.29.2021.09.12.20.28.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Sep 2021 20:28:56 -0700 (PDT)
+        Sun, 12 Sep 2021 20:29:01 -0700 (PDT)
 From:   Chunyan Zhang <zhang.lyra@gmail.com>
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>
@@ -57,9 +57,9 @@ Cc:     Saravana Kannan <saravanak@google.com>,
         Chunyan Zhang <zhang.lyra@gmail.com>,
         Chunyan Zhang <chunyan.zhang@unisoc.com>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: [RESEND PATCH v3 1/3] drivers/clocksource/timer-of: Remove __init markings
-Date:   Mon, 13 Sep 2021 11:28:32 +0800
-Message-Id: <20210913032834.147237-2-zhang.lyra@gmail.com>
+Subject: [RESEND PATCH v3 2/3] clocksource/drivers/timer-of: Add a boilerplate macro for timer module driver
+Date:   Mon, 13 Sep 2021 11:28:33 +0800
+Message-Id: <20210913032834.147237-3-zhang.lyra@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210913032834.147237-1-zhang.lyra@gmail.com>
 References: <20210913032834.147237-1-zhang.lyra@gmail.com>
@@ -69,115 +69,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-This allows timer drivers to be compiled as modules which can be a
-platform-level devices, so the timer_of_init()/_cleanup() should able to
-be called from platform_driver_register() which support deferred probing.
+To support module build, platform driver structs, .probe(), match table and
+module macros need to be added to the timer driver. So this patch provides
+a macro to take care of these things, and that would reduce the repeat
+code lines in every sigle driver.
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Since timer module should support loading only, we use
+builtin_platform_driver() which doesn't include module_exit() to make
+sure timer modules wouldn't be unloaded.
+
 Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 ---
- drivers/clocksource/timer-of.c | 17 +++++++++--------
- drivers/clocksource/timer-of.h |  4 ++--
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ drivers/clocksource/timer-of.c | 13 +++++++++++++
+ drivers/clocksource/timer-of.h | 15 +++++++++++++++
+ 2 files changed, 28 insertions(+)
 
 diff --git a/drivers/clocksource/timer-of.c b/drivers/clocksource/timer-of.c
-index 529cc6a51cdb..7f108978fd51 100644
+index 7f108978fd51..ecd7f7379400 100644
 --- a/drivers/clocksource/timer-of.c
 +++ b/drivers/clocksource/timer-of.c
-@@ -19,7 +19,7 @@
-  *
-  * Free the irq resource
-  */
--static __init void timer_of_irq_exit(struct of_timer_irq *of_irq)
-+static void timer_of_irq_exit(struct of_timer_irq *of_irq)
- {
- 	struct timer_of *to = container_of(of_irq, struct timer_of, of_irq);
+@@ -8,7 +8,9 @@
+ #include <linux/interrupt.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/of_device.h>
+ #include <linux/of_irq.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
  
-@@ -47,7 +47,7 @@ static __init void timer_of_irq_exit(struct of_timer_irq *of_irq)
-  *
-  * Returns 0 on success, < 0 otherwise
-  */
--static __init int timer_of_irq_init(struct device_node *np,
-+static int timer_of_irq_init(struct device_node *np,
- 				    struct of_timer_irq *of_irq)
- {
- 	int ret;
-@@ -91,7 +91,7 @@ static __init int timer_of_irq_init(struct device_node *np,
-  *
-  * Disables and releases the refcount on the clk
-  */
--static __init void timer_of_clk_exit(struct of_timer_clk *of_clk)
-+static void timer_of_clk_exit(struct of_timer_clk *of_clk)
- {
- 	of_clk->rate = 0;
- 	clk_disable_unprepare(of_clk->clk);
-@@ -107,7 +107,7 @@ static __init void timer_of_clk_exit(struct of_timer_clk *of_clk)
-  *
-  * Returns 0 on success, < 0 otherwise
-  */
--static __init int timer_of_clk_init(struct device_node *np,
-+static int timer_of_clk_init(struct device_node *np,
- 				    struct of_timer_clk *of_clk)
- {
- 	int ret;
-@@ -146,12 +146,12 @@ static __init int timer_of_clk_init(struct device_node *np,
- 	goto out;
- }
- 
--static __init void timer_of_base_exit(struct of_timer_base *of_base)
-+static void timer_of_base_exit(struct of_timer_base *of_base)
- {
- 	iounmap(of_base->base);
- }
- 
--static __init int timer_of_base_init(struct device_node *np,
-+static int timer_of_base_init(struct device_node *np,
- 				     struct of_timer_base *of_base)
- {
- 	of_base->base = of_base->name ?
-@@ -165,7 +165,7 @@ static __init int timer_of_base_init(struct device_node *np,
- 	return 0;
- }
- 
--int __init timer_of_init(struct device_node *np, struct timer_of *to)
-+int timer_of_init(struct device_node *np, struct timer_of *to)
- {
- 	int ret = -EINVAL;
- 	int flags = 0;
-@@ -209,6 +209,7 @@ int __init timer_of_init(struct device_node *np, struct timer_of *to)
+ #include "timer-of.h"
+@@ -229,3 +231,14 @@ void timer_of_cleanup(struct timer_of *to)
+ 	if (to->flags & TIMER_OF_BASE)
  		timer_of_base_exit(&to->of_base);
- 	return ret;
  }
-+EXPORT_SYMBOL_GPL(timer_of_init);
- 
- /**
-  * timer_of_cleanup - release timer_of resources
-@@ -217,7 +218,7 @@ int __init timer_of_init(struct device_node *np, struct timer_of *to)
-  * Release the resources that has been used in timer_of_init().
-  * This function should be called in init error cases
-  */
--void __init timer_of_cleanup(struct timer_of *to)
-+void timer_of_cleanup(struct timer_of *to)
- {
- 	if (to->flags & TIMER_OF_IRQ)
- 		timer_of_irq_exit(&to->of_irq);
++
++int platform_timer_probe(struct platform_device *pdev)
++{
++	int (*init_cb)(struct device_node *node);
++	struct device_node *np = pdev->dev.of_node;
++
++	init_cb = of_device_get_match_data(&pdev->dev);
++
++	return init_cb(np);
++}
++EXPORT_SYMBOL_GPL(platform_timer_probe);
 diff --git a/drivers/clocksource/timer-of.h b/drivers/clocksource/timer-of.h
-index a5478f3e8589..1b8cfac5900a 100644
+index 1b8cfac5900a..04a476da01bb 100644
 --- a/drivers/clocksource/timer-of.h
 +++ b/drivers/clocksource/timer-of.h
-@@ -66,9 +66,9 @@ static inline unsigned long timer_of_period(struct timer_of *to)
- 	return to->of_clk.period;
- }
+@@ -3,6 +3,7 @@
+ #define __TIMER_OF_H__
  
--extern int __init timer_of_init(struct device_node *np,
-+extern int timer_of_init(struct device_node *np,
- 				struct timer_of *to);
+ #include <linux/clockchips.h>
++#include <linux/platform_device.h>
  
--extern void __init timer_of_cleanup(struct timer_of *to);
-+extern void timer_of_cleanup(struct timer_of *to);
+ #define TIMER_OF_BASE	0x1
+ #define TIMER_OF_CLOCK	0x2
+@@ -71,4 +72,18 @@ extern int timer_of_init(struct device_node *np,
  
+ extern void timer_of_cleanup(struct timer_of *to);
+ 
++extern int platform_timer_probe(struct platform_device *pdev);
++
++#define TIMER_PLATFORM_DECLEAR(desc, drv_name, table)		\
++MODULE_DEVICE_TABLE(of, table);					\
++static struct platform_driver drv_name##_driver = {		\
++	.probe  = platform_timer_probe,				\
++	.driver = {						\
++		.name = #drv_name,				\
++		.of_match_table = table,			\
++	},							\
++};								\
++builtin_platform_driver(drv_name##_driver);			\
++MODULE_DESCRIPTION(desc);					\
++MODULE_LICENSE("GPL")
  #endif
 -- 
 2.25.1
