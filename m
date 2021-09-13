@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA194085BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACDE4085C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 09:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237799AbhIMHxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 03:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237796AbhIMHxS (ORCPT
+        id S237765AbhIMHyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 03:54:20 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:47644 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235914AbhIMHyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 03:53:18 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695D1C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:52:03 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso732490wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 00:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cygGWb35mhwgdgwZFmfBqgzwCiy35oriwBT5rg97pAA=;
-        b=l6tTu+J1gNVpjt0YJViPvIGVDUn95qrgSOmh4W1N7+QhW4URIcDvDJWy2mEYpQgOd9
-         0mbo9KVsC8Xf7nahkNXqC7dMIsO5yCFYa21lJVSe0SZi9+R1fuPRV2756Uo3S/bfziqO
-         RqYspYBo1cVHqFL9qKqUQQSr+fcXa4xZ9dfGCWVGF7DAZ+Tjm8bhJrWeR827nwrfKRE3
-         wkha4LfSxt7VZxj5Q3JHpIq9xBytSXEVucVFRD2FDwV20n3AnJtjXVC9HXJDpzN6EIBv
-         5NY2HwxRLk+GaQt4BXjxsB7Vt3f6nGmSFAK/WxxvZPvFh/XtDJgCj8SmHMzV3gGxH895
-         Q2PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cygGWb35mhwgdgwZFmfBqgzwCiy35oriwBT5rg97pAA=;
-        b=jNAtx2sQAz4fdfg+k6iEB5bMGqxj3uUR5UZqbrBApcsJ+aoAO+HzP+mO38uaIOs/M0
-         LMf+BjK0nIBUGhKa738Gcd2YAiYV6no9Wjp/BZpnGHF+nf9s8G9ZaTiCXogP3Qa+Oqfh
-         gb0z+E2io3iDTbsYzBrYzngdv+nnbjLuE2peRfd+QLEnqmiF/Li4g225wMrYad/g6XtY
-         MjJqjhtCZKXbiDiRnFoqRkAt1TOiSd2r1U9VTjiNVS60jAU39hjxhfL3fJVaz8qkccst
-         Lbv/B9KpPBMUw7DS/isLF1gCEvrRjsGkFm9d0SJPuyvVZ9ips6EUTkuOwutl6IyJMad7
-         5DAA==
-X-Gm-Message-State: AOAM532+hfDo1azimDit6KOHFBt4yuJtPhm1ZFPn2yEyqJy/E+wKBr0Y
-        QLljBaJPBotx6pPqBhqIIWG4w+Ip/pwFYyJx
-X-Google-Smtp-Source: ABdhPJwKdlZlHEAetExFULHUEzt1uQWLZHnJMEz83ND/A7xfnHUhHR/XIKATjRnET3B9irrENuoMGA==
-X-Received: by 2002:a05:600c:3656:: with SMTP id y22mr9945885wmq.58.1631519521600;
-        Mon, 13 Sep 2021 00:52:01 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:9ebe:26f1:5acc:c894])
-        by smtp.gmail.com with ESMTPSA id z19sm7137511wma.0.2021.09.13.00.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 00:52:00 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     linux-kernel@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH v3 0/2] arm64: dts: amlogic: add support for Radxa Zero
-Date:   Mon, 13 Sep 2021 09:52:00 +0200
-Message-Id: <163151951546.828361.7102466420110294894.b4-ty@baylibre.com>
+        Mon, 13 Sep 2021 03:54:17 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 18D7VKnB004716;
+        Mon, 13 Sep 2021 15:31:20 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 13 Sep
+ 2021 15:51:05 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [v6 00/11] Add support for ast2600 ADC
+Date:   Mon, 13 Sep 2021 15:53:26 +0800
+Message-ID: <20210913075337.19991-1-billy_tsai@aspeedtech.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210909102154.22710-1-christianshewitt@gmail.com>
-References: <20210909102154.22710-1-christianshewitt@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.149]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 18D7VKnB004716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch serials make aspeed_adc.c can support ast2600 and backward
+compatible.
 
-On Thu, 9 Sep 2021 10:21:52 +0000, Christian Hewitt wrote:
-> This adds support for the Radxa Zero SBC. The device-tree is loosely
-> based upon existing support for SEI510 and U200 (also G12A boards)
-> and has been developed with the 4/32 board configuration.
-> 
-> Changes since v2:
-> - Add Rob's bindings ack
-> - Drop interrupts from wifi node
-> 
-> [...]
+Change since v5:
+aspeed_adc.c:
+  - Use devm_clk_hw_register_divider()
+  - Enabling and setting the ADC to normal mode is a necessary flow, so
+  take it out of the condition.
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
+Change since v4:
+dt-bindings:
+  - Add clocks maxItems.
+  - Rename the property to meet the property-units.yaml.
+  - Add the description for the difference between adc0 and adc1.
+aspeed_adc.c:
+  - Use new property name to get internal reference voltage: units from mv
+  to uv.
+  - Fix -Wnonnull warning caused by snprintf parameters.
+  - Add suffix mv to the vref parameters.
+  - Use ARRAY_SIZE instead of 32.
+  - Add a reset action for ADC power down and Use devm_iio_device_register.
+  - Fix typo error.
+  - Separate the offset interface of ch7 when battery sensing enable
 
-[1/2] dt-bindings: arm: amlogic: add support for Radxa Zero
-      https://git.kernel.org/amlogic/c/663aa3b3c8a26bf449944c9385e8d04512d84ba9
-[2/2] arm64: dts: amlogic: add support for Radxa Zero
-      https://git.kernel.org/amlogic/c/26d1400f7457cdca3f1f86a7cccb0167f96e2edf
+Change since v3:
+dt-bindings:
+  - Fix properties:aspeed,int_vref_mv type error.
+
+Change since v2:
+dt-bindings:
+  - Create a new dt-bindings for ast2600 adc
+aspeed_adc.c:
+  - Splits the patch for more details
+  - Remove version enum and use the flags in model data to distinguish
+  hardware feature
+  - Support trimming data get and set.
+  - Use devm_add_action_or_reset to simplify probe error handling.
+
+Changes since v1:
+dt-bindings:
+  - Fix the aspeed,adc.yaml check error.
+  - Add battery-sensing property.
+aspeed_adc.c:
+  - Change the init flow:
+    Clock and reference voltage setting should be completed before adc
+    engine enable.
+  - Change the default sampling rate to meet most user case.
+  - Add patch #8 to suppoert battery sensing mode.
+
+Billy Tsai (11):
+  iio: adc: aspeed: Keep model data to driver data.
+  iio: adc: aspeed: Restructure the model data
+  iio: adc: aspeed: Add vref config function
+  iio: adc: aspeed: Use model_data to set clk scaler.
+  iio: adc: aspeed: Use devm_add_action_or_reset.
+  iio: adc: aspeed: Support ast2600 adc.
+  iio: adc: aspeed: Fix the calculate error of clock.
+  iio: adc: aspeed: Add func to set sampling rate.
+  iio: adc: aspeed: Add compensation phase.
+  iio: adc: aspeed: Support battery sensing.
+  iio: adc: aspeed: Get and set trimming data.
+
+ drivers/iio/adc/aspeed_adc.c | 554 +++++++++++++++++++++++++++++------
+ 1 file changed, 459 insertions(+), 95 deletions(-)
 
 -- 
-Neil
+2.25.1
+
