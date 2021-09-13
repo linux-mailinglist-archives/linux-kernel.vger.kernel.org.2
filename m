@@ -2,44 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7597140867F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F77408683
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbhIMIbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:31:03 -0400
-Received: from relay.sw.ru ([185.231.240.75]:56614 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234575AbhIMIa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=hQgKXyWNPvle3hQKqsfae85Qw8UvU0A7uIpON9jfF6c=; b=S66sreVvkhtAHXlkX
-        3SJin2YhAz6QeFhEq7J7kxn/rGoVZWl2UkW9Eu3DJAfRVRKeHYZoR6NOCDu/WxkuytAfsKdYnQUk1
-        ZILk96zL8+M9MErZOpzrFJv0js8EdDQdJhzo8qlnfrLleAeUvEbpKSjx5c37qiI4EgHaSkT2AHxzo
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mPhLO-001nZm-35; Mon, 13 Sep 2021 11:29:38 +0300
-Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
- of dying tasks
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
- <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
- <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
- <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <9556c2ae-2dc8-9d0a-55de-002d674680bf@virtuozzo.com>
-Date:   Mon, 13 Sep 2021 11:29:37 +0300
+        id S238003AbhIMIcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237811AbhIMIcC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:32:02 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059C2C061760;
+        Mon, 13 Sep 2021 01:30:47 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id t19so19197086ejr.8;
+        Mon, 13 Sep 2021 01:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S04yNFgZ4hxBAhctv/zD4ywMbFHZufB8ODvyMoyYBUs=;
+        b=SSfu2QX7uPQFkLNNvYenowTcZkH/mds0SwrzE25hxOI6RojTHP0gx3m/GVFRvGn/cx
+         a2yA4FoBB6tnGr1r9LbSSsEw1sbThjaQb1qWDlSc8pzFLd0wwgip3Mo2QS5orTdo+UD/
+         H1IEZ6qFBNRbuI4+UW/ByscyoBNB8lHEFdJhfeL6fbzfhT0ftdYMv0HObUwTy+ZXDp+g
+         xl4Mh9F/w3BU1M5syOPgl/nt87pjnsnfM3jHgBntJXq9cQSU8UnPOILpMuhhC52B1Sfx
+         E2MdtCBiToOFF2PigOH8xZZcWahokDJI/5TNMSFZyNFQOUwc+LnIpmojzl8xZbXIhfua
+         ipcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S04yNFgZ4hxBAhctv/zD4ywMbFHZufB8ODvyMoyYBUs=;
+        b=L4m9Iiuz1o7tv7ykKY86pccVypF97zWEDrYMf8xls+sdnfSnxf4tZq8sO1JEgfOK96
+         TJYcaVsNYjeS8zB0ESbgnvH6EJW2wbIT6n8RMTn3UwxWTu+EjbtCMvwKFtNulkcBckdB
+         tDX7j3gpKVsZ/HKzpPdliYU+J57LxPaXdtMEHtrSjs5DrMWxXEB9DHJJKJZXhqLWbIpr
+         K/ZM9ETYimTHkEMi9/O9Ib4sHb6VfBbO+dlPWIzRQyBSC5Dwq5lpOs3KIFhDJUmiq09A
+         qqjJM+xRJOPhbtv3hdFPQL4dio3gOxVwPAf+6fWcAl4aA71gGqOp0OhPeL02sA2Tv3nH
+         WugA==
+X-Gm-Message-State: AOAM5303ivpHkvoqmYouloMeiC0p19nC0dMl7ovBsFZLV7ykj6lkkcod
+        xUSvCBciOVhFbjkjPlBM1D8wbtsg5dc=
+X-Google-Smtp-Source: ABdhPJxy609z7lNvG5cLClXJDmiweRbYipKNo16255Iydj1lvDaG4H74OPpBd38bmx4CLAwvvvSUJw==
+X-Received: by 2002:a17:906:1d41:: with SMTP id o1mr11671160ejh.232.1631521845117;
+        Mon, 13 Sep 2021 01:30:45 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.232.220])
+        by smtp.gmail.com with ESMTPSA id t14sm3115615ejf.24.2021.09.13.01.30.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 01:30:44 -0700 (PDT)
+Subject: Re: INFO: task hung in io_uring_cancel_generic
+To:     Hao Sun <sunhao.th@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
+ <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk>
+ <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+ <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
+ <CACkBjsaGTkxsrBW+HNsgR0Pj7kbbrK-F5E4hp3CJJjYf3ASimQ@mail.gmail.com>
+ <ce4db530-3e7c-1a90-f271-42d471b098ed@gmail.com>
+ <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <7faa04f8-cd98-7d8a-2e54-e84e1fe742f7@gmail.com>
+Date:   Mon, 13 Sep 2021 09:30:09 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
+In-Reply-To: <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,34 +73,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/21 5:55 PM, Michal Hocko wrote:
-> On Fri 10-09-21 16:20:58, Vasily Averin wrote:
->> On 9/10/21 4:04 PM, Tetsuo Handa wrote:
->>> Can't we add fatal_signal_pending(current) test to vmalloc() loop?
+On 9/13/21 3:26 AM, Hao Sun wrote:
+> Hi
 > 
-> We can and we should.
+> Healer found a C reproducer for this crash ("INFO: task hung in
+> io_ring_exit_work").
 > 
->> 1) this has been done in the past but has been reverted later.
+> HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/1NswMU2yMRTc8-EqbZcVvcJejV92cuZIk/view?usp=sharing
+> kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvAtJd6kfg-p/view?usp=sharing
+> C reproducer: https://drive.google.com/file/d/170wk5_T8mYDaAtDcrdVi2UU9_dW1894s/view?usp=sharing
+> Syzlang reproducer:
+> https://drive.google.com/file/d/1eo-jAS9lncm4i-1kaCBkexrjpQHXboBq/view?usp=sharing
 > 
-> The reason for that should be addressed IIRC.
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-I don't know the details of this, and I need some time to investigate it.
+I don't see the repro using io_uring at all. Can it be because of
+the delay before the warning shows itself? 120 secs, this appeared
+after 143.
 
->> 2) any vmalloc changes will affect non-memcg allocations too.
->>  If we're doing memcg-related checks it's better to do it in one place.
-> 
-> I think those two things are just orthogonal. Bailing out from vmalloc
-> early sounds reasonable to me on its own. Allocating a large thing that
-> is likely to go away with the allocating context is just a waste of
-> resources and potential reason to disruptions to others.
+[...]
 
-I doubt that fatal signal should block any vmalloc allocations.
-I assume there are situations where rollback of some cancelled operation uses vmalloc.
-Or coredump saving on some remote storage can uses vmalloc.
-
-However for me it's abnormal that even OOM-killer cannot cancel huge vmalloc allocation.
-So I think tsk_is_oom_victim(current) check should be added to vm_area_alloc_pages() 
-to break vmalloc cycle.
-
-Thank you,
-	Vasily Averin
+-- 
+Pavel Begunkov
