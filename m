@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C7B409F02
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46695409F09
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 23:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348257AbhIMVR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 17:17:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241460AbhIMVRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 17:17:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E38F560EE5;
-        Mon, 13 Sep 2021 21:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631567799;
-        bh=C0wLsuXykuiRmyrc5T0ggXJ03eTwpJGDkp0yo3yMhGY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aAeyAGQ0mNqa8u/qTvmX1T1tQTiqBAMNxGECgA0CzMEnqHfSOOHmJMm8jpZ2yGE4E
-         va9WEo3sveQZvHusYmgYY+r6BJ18P1CMCtOcuEPLdtXwm6s4TY5DyuDFf2UZ4ux3Vs
-         jrjz62ZA+fZ/vKh3wUUPVl00A1setVUG908iHU+rO2tUxkuO4baVHFwSsPsNKpSqoN
-         OV85FDepJn5xKfjkpAFRQIGSr9mpZPvFr/LqbnfGN0KwsOAnPYE2BTE46B1ubZWVwV
-         ccwY0OH/Qla/nLZ4aBOdafKIwUDBDr0L2HtjP8eLPsV3Pi9lF2x4eQXyeYV9+F4AyS
-         NRSiAmgQxeNUw==
-Message-ID: <de03361aab108ff481f6472978265e754100c6fb.camel@kernel.org>
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Date:   Tue, 14 Sep 2021 00:16:37 +0300
-In-Reply-To: <fa8e8573-d907-11b0-60e1-f31e050beb64@intel.com>
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
-         <20210913131153.1202354-2-pbonzini@redhat.com>
-         <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
-         <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
-         <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
-         <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
-         <480cf917-7301-4227-e1c4-728b52537f46@intel.com>
-         <2b595588-eb98-6d30-dc50-794fc396bf7e@redhat.com>
-         <fa8e8573-d907-11b0-60e1-f31e050beb64@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S1348311AbhIMVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 17:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348275AbhIMVUj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 17:20:39 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20540C061766
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:19:23 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id b10so14047725ioq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYmjXqUredMLKaYC4ubAsdzpEYCQPYEXGOAkW9neusA=;
+        b=ZpVIjfsHciYk8cbGKMwZgoe4Xz+/F6yYyiSmFw91eWgREeOa2lMezbGTjc9SG9iZhI
+         YppUyg45qXtmcD6gFrGGBhWq+8mJs+tBgvbuSz1CQocayE1foNY5u1cRKSALiqyPQ+JB
+         yhU17g07FoTVRCS7XuehDP+A5Jd/NkpWoC4OA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYmjXqUredMLKaYC4ubAsdzpEYCQPYEXGOAkW9neusA=;
+        b=0ITqn4FzX44Unlf6oUYdFWd9W4zJnW8xmUN/5vEZ+9iukl4D1d1KiVov39WPbXnP9q
+         3bBsO/u4sn8au+Fc4VvaS1N06OFBus6IOSPfEDTca6fT++/n9CHwPeiEM3y4IdCEZcPp
+         bjM4KtSPI0y+g++K92xg43Q6R4nxBeeHwFv3wEBOg5EU3Vl/kTI9oan7BVaL8smOvTdP
+         DktxhGmZPhNw5ywduhLnt1Z2xi4H5Bgn0150L9ok+7WI8iOoq+R1jvCx6sfIeQkwGWhl
+         EPuNkcwOWGDBZzdMMxzv8wUmAlw9WH4FQE3fh+lBJm7rOYVbuw3EBqOzTwRwnJQWiOCT
+         /2Ew==
+X-Gm-Message-State: AOAM533TNCKIOUkc/6obxexZRcDp7E5QMDEV5+HKlOeOPLxjInzGejoi
+        hyt7kNA11C2b/GIL1S3XSBNw0EWME3XqzA==
+X-Google-Smtp-Source: ABdhPJyQL3DVNw+ABOiUqcmbkVXwOVRelq9WG1fsgBRtkYb1MRTtHPpHIPBssXGjMfad5eP2OLWGAQ==
+X-Received: by 2002:a5d:9145:: with SMTP id y5mr10658691ioq.200.1631567962384;
+        Mon, 13 Sep 2021 14:19:22 -0700 (PDT)
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com. [209.85.166.175])
+        by smtp.gmail.com with ESMTPSA id y15sm4035025ilc.32.2021.09.13.14.19.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 14:19:21 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id h29so11637911ila.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 14:19:21 -0700 (PDT)
+X-Received: by 2002:a05:6e02:214e:: with SMTP id d14mr8947719ilv.142.1631567961422;
+ Mon, 13 Sep 2021 14:19:21 -0700 (PDT)
 MIME-Version: 1.0
+References: <1631530735-19811-1-git-send-email-rnayak@codeaurora.org> <CAE-0n51miUjP4dg4wQR_JBwNNvMNqAafv7jFvEKU+MrfQmhV5A@mail.gmail.com>
+In-Reply-To: <CAE-0n51miUjP4dg4wQR_JBwNNvMNqAafv7jFvEKU+MrfQmhV5A@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 13 Sep 2021 14:19:08 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UV4odosuOTKCdQCa4pmMEF0gn_eKmsR-2FEtt_eF+98w@mail.gmail.com>
+Message-ID: <CAD=FV=UV4odosuOTKCdQCa4pmMEF0gn_eKmsR-2FEtt_eF+98w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280-idp: Add vcc-supply for qfprom
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 12:25 -0700, Dave Hansen wrote:
-> On 9/13/21 11:35 AM, Paolo Bonzini wrote:
-> > > > Apart from reclaiming, /dev/sgx_vepc might disappear between the fi=
-rst
-> > > > open() and subsequent ones.
-> > >=20
-> > > Aside from it being rm'd, I don't think that's possible.
-> > >=20
-> >=20
-> > Being rm'd would be a possibility in principle, and it would be ugly fo=
-r
-> > it to cause issues on running VMs.  Also I'd like for it to be able to
-> > pass /dev/sgx_vepc in via a file descriptor, and run QEMU in a chroot o=
-r
-> > a mount namespace.  Alternatively, with seccomp it may be possible to
-> > sandbox a running QEMU process in such a way that open() is forbidden a=
-t
-> > runtime (all hotplug is done via file descriptor passing); it is not ye=
-t
-> > possible, but it is a goal.
->=20
-> OK, so maybe another way of saying this:
->=20
-> For bare-metal SGX on real hardware, the hardware provides guarantees
-> SGX state at reboot.  For instance, all pages start out uninitialized.
-> The vepc driver provides a similar guarantee today for freshly-opened
-> vepc instances.
->=20
-> But, vepc users have a problem: they might want to run an OS that
-> expects to be booted with clean, fully uninitialized SGX state, just as
-> it would be on bare-metal.  Right now, the only way to get that is to
-> create a new vepc instance.  That might not be possible in all
-> configurations, like if the permission to open(/dev/sgx_vepc) has been
-> lost since the VM was first booted.
+Hi,
 
-So you maintain your systems in a way that this does not happen?
+On Mon, Sep 13, 2021 at 12:57 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Rajendra Nayak (2021-09-13 03:58:55)
+> > Add vcc-supply for the IDP boards that was missed when the
+> > qfprom device tree properties were added for the sc7280 SoC.
+> >
+> > Fixes: c1b2189a19cf ("arm64: dts: qcom: sc7280: Add qfprom node")
+> > Reported-by: satya priya <skakit@codeaurora.org>
+> > Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> > ---
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>
+> >  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> > index 371a2a9..99f9ee5 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> > @@ -207,6 +207,10 @@
+> >         };
+> >  };
+> >
+> > +&qfprom {
+>
+> Maybe that node should also be marked status = "disabled" by default so
+> that it can only be marked OK if the board has setup the regulator
+> properly?
 
-/Jarkko
+I don't think that's a good idea. You still want to be able to use the
+nvmem in "read only" mode and it doesn't seem to need the regulator
+for that. This is only for burning.
+
+I believe that actually everything will work out fine-ish for boards
+that leave this regulator off. They'll get a dummy regulator. When
+they start trying to burn fuses and the call the
+regulator_set_voltage() happens then that'll fail (you can't do that
+on a dummy) and we should error out of writing. Reading will work
+fine. It would probably be better if qfprom_probe() used
+devm_regulator_get_optional() though and fell back to read-only mode.
+I'm happy to review a patch that does that.
+
+-Doug
