@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D36E409BA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C075409BA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346168AbhIMSCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        id S234018AbhIMSDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346198AbhIMSCe (ORCPT
+        with ESMTP id S1346241AbhIMSDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:02:34 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6ADC061762
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:01:18 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id d6so9268683vsr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:01:18 -0700 (PDT)
+        Mon, 13 Sep 2021 14:03:24 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0984EC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:02:06 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id v5so15653068edc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=wCisvlKWb1zXJ/3Z2KU187/4U2TtQ84I590BSmhZRjw=;
-        b=pYE3gKubI6OtPDcc1fuIrX4snqO15XNP3wRxaHlwjGHArLPCeU/Cx1hsm30tylzYLE
-         qmjk3/pzbXQfSbEZ0mo6ksdTGZnYTV/Q2kxvVrQinxjp3vaB/f7byjFqcwaU3eovwIYr
-         z3anJHABEw0YePZEilCi3kn4SXKk/M4nw5qzAAHmvKPRUMj3hjlAZOCauVdup14XSzLN
-         WmDF+yfp7W2q/GWEB2ZeieB0m40TOXs1+BusG6rJYykSBxGR34ahkDSaHL2lid7O1Onn
-         Gk8mbn6TbcrMc22OVhdDRC/LSQqGlWbHQML+ZjOZFsUaNk8RZKzhBLNQhsPM0qmSPOf0
-         XXJA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5Qkth7woyLAVIJdWp+l8uz/eF+3cl4KMIagT6yeHJcs=;
+        b=MinFidCnrduDGXC5mBb+NPraRLlqsfI93t+fXxh+y6N8rd5/K0E9dCbG3uPEvo/082
+         MDOc7fv4v0jfyxuOs9yWH30VaV0kdU9/QcwetUalRgD7YtKHUgfUIp4ELNAnI4PO/Shz
+         vgOHB26JzTKIjDYug0X3DNXr7p5e+9K4NmnWQ3qwUh9fEbN8U3ltnImWJLhyAjF0GsXI
+         ABvaPbIDdzjjmrwD+q9yppJRrKEPKbiAPnSsJdDPdiUfsEHYznF5piBISZ6sciRh/itM
+         0xvUbYt5pDNCROZxNUh9WvisFk8JHQ/iP0P0D4wv8v+utv2BR2uLaO7fHhZ41OwCAy8k
+         B5Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=wCisvlKWb1zXJ/3Z2KU187/4U2TtQ84I590BSmhZRjw=;
-        b=71oUVRNMfhE7jLa33f/6z4CBR2QJtIQuXc+l+4WTszYYy6BTpt0ChIzrnW4E2p/Tc9
-         kehGjBQLXqo/RwToSQmaNl2PJg/sq+7s2Yp7oOP9MrfF9cLzq+VIw4SlmNB4uOqRlzn9
-         YNgINixaTLXu0CdNWoQiJQ/X+3ZpqBmPHVn9eHDr/ZMcvYsRAnOsue4Q48Vn4DrsB/bQ
-         xytV6ffoyTNtlDvF9hYiGF098EU6x+5xaXribVMsLGA++70MRbLlAJkKV9OMBeS2Cdna
-         p9m+NMfPYCIYtrVT+ezFahWxAe0KB4LH1oCwm+8yGF8PprQ5w3DzBdV9zZDfA+KelQID
-         SSIQ==
-X-Gm-Message-State: AOAM533JN2HAdXkx2pdsAx2WDW6u9IZOD7AnYvJiGOEsUfFOsWIWXwSQ
-        Nj/GhWT3tsD418OO/h7ihhaP4fM0MukX0DKZ9dc=
-X-Google-Smtp-Source: ABdhPJw/PjbHCtTfNiio+7X7Me9z9HmWj395u/NZAzk3iIPwVYqLfFOQocl82V/Oq5fMA+VlrogZ4TN8cRwt5aTRtVM=
-X-Received: by 2002:a67:ce07:: with SMTP id s7mr6022439vsl.46.1631556077596;
- Mon, 13 Sep 2021 11:01:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Qkth7woyLAVIJdWp+l8uz/eF+3cl4KMIagT6yeHJcs=;
+        b=0uUsRje86YbDpf3dVBnV7iRuZb9+SJScaBAVc14zS7P+E0EQ7/suIZ1QqZYnApDXFa
+         lMO42jBpg0+f0cKw46aNcg4Mkdz2zM/uOhBvIxZDp0W10svT9rw85BofwEzJ1PHpsIxM
+         wtp8eLrfMXVJpbMQCFieYfQux+yAqK/kjQ74KaBL69DcZ0KoqKw75Lz+Y+viOF30rANg
+         b/g7tqrucHXoZ4jWFG4LaADLWnXsuWe/RsTpuTyysJ+VLiIWjIIwO+2hknmL84AC+FEV
+         r5VVCvZg4h6vQip+w1+KIh34ooEVBMdB+LwkBwYOC7ShUfqRdRfc4sJSZaJqVt9xLva+
+         0WBA==
+X-Gm-Message-State: AOAM530tiv/4j0u5gHF2241oXNnU3mQZcXr3GNY1FiKrWNGDfkiy0eNO
+        Ut4oHbmnKr64rK63hExIIOhKitGAB6ywFYuwBdudHQ==
+X-Google-Smtp-Source: ABdhPJyLWma6j5HJ2oNefPP9FqgeO0QHxx6F012Rn57fMjXDf02G3TY8321grWfexwEtUaVC7ICAvi0xc2L12iQcFa8=
+X-Received: by 2002:a05:6402:2695:: with SMTP id w21mr14486313edd.182.1631556124338;
+ Mon, 13 Sep 2021 11:02:04 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a67:24c7:0:0:0:0:0 with HTTP; Mon, 13 Sep 2021 11:01:16
- -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uchenna <robertandersonhappy9@gmail.com>
-Date:   Mon, 13 Sep 2021 11:01:16 -0700
-Message-ID: <CAJ63Umikwt_ywZMRNRBuGwKG2MSVWGd-ciiqeN6HGsGtJspc_A@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 13 Sep 2021 23:31:52 +0530
+Message-ID: <CA+G9fYuhgknV+hEpeyEN8xCEbY_dspFsTU=-XpH4vKEMqMiRmg@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/300] 5.13.17-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0JLQvdC40LzQsNC90LjQtSwg0L/QvtC20LDQu9GD0LnRgdGC0LAsDQoNCtCvINCR0LDRgC4gdWNo
-ZW5uYSBpbG9iaSwg0LrQsNC6INC00LXQu9CwLCDQvdCw0LTQtdGO0YHRjCDRgyDRgtC10LHRjyDQ
-stGB0LUg0YXQvtGA0L7RiNC+INC4INC30LTQvtGA0L7QstCwPw0K0KHQvtC+0LHRidCw0LXQvCDQ
-stCw0LwsINGH0YLQviDRjyDRg9GB0L/QtdGI0L3QviDQt9Cw0LLQtdGA0YjQuNC7INGC0YDQsNC9
-0LfQsNC60YbQuNGOINGBINC/0L7QvNC+0YnRjNGOINC90L7QstC+0LPQvg0K0L/QsNGA0YLQvdC1
-0YDQsCDQuNC3INCS0LXQvdC10YHRg9GN0LvRiywg0Lgg0YLQtdC/0LXRgNGMINGB0YDQtdC00YHR
-gtCy0LAg0LHRi9C70Lgg0L/QtdGA0LXQstC10LTQtdC90Ysg0LIg0JLQtdC90LXRgdGD0Y3Qu9GD
-DQrQvdCwINCx0LDQvdC60L7QstGB0LrQuNC5INGB0YfQtdGCINC90L7QstC+0LPQviDQv9Cw0YDR
-gtC90LXRgNCwLg0KDQrQnNC10LbQtNGDINGC0LXQvCwg0Y8g0YDQtdGI0LjQuyDQutC+0LzQv9C1
-0L3RgdC40YDQvtCy0LDRgtGMINCy0LDQvCDRgdGD0LzQvNGDINCyIDM1MCAwMDAg0LTQvtC70LvQ
-sNGA0L7QsiDQodCo0JANCijRgtGA0Lgg0YHQvtGC0L3QuCDQv9GP0YLRjNC00LXRgdGP0YIg0YLR
-i9GB0Y/RhyDQtNC+0LvQu9Cw0YDQvtCyINCh0KjQkCkg0LjQty3Qt9CwINCy0LDRiNC40YUg0L/R
-gNC+0YjQu9GL0YUg0YPRgdC40LvQuNC5LA0K0YXQvtGC0Y8g0LLRiyDQvNC10L3RjyDRgNCw0LfQ
-vtGH0LDRgNC+0LLQsNC70LguINCd0L4sINGC0LXQvCDQvdC1INC80LXQvdC10LUsINGPINC+0YfQ
-tdC90Ywg0YDQsNC0INGD0YHQv9C10YjQvdC+0LzRgw0K0LfQsNCy0LXRgNGI0LXQvdC40Y4g0YHQ
-tNC10LvQutC4INCx0LXQtyDQutCw0LrQuNGFLdC70LjQsdC+INC/0YDQvtCx0LvQtdC8LCDQuCDQ
-uNC80LXQvdC90L4g0L/QvtGN0YLQvtC80YMg0Y8g0YDQtdGI0LjQuw0K0LrQvtC80L/QtdC90YHQ
-uNGA0L7QstCw0YLRjCDQstCw0Lwg0YHRg9C80LzRgyDQsiDRgNCw0LfQvNC10YDQtSAzNTAgMDAw
-LDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDRh9GC0L7QsdGLINCy0YsNCtGA0LDQt9C00LXQ
-u9C40LvQuCDRgdC+INC80L3QvtC5INGA0LDQtNC+0YHRgtGMLg0KDQrQryDRgdC+0LLQtdGC0YPR
-jiDQstCw0Lwg0L7QsdGA0LDRgtC40YLRjNGB0Y8g0Log0LzQvtC10LzRgyDRgdC10LrRgNC10YLQ
-sNGA0Y4g0LfQsCDQsdCw0L3QutC+0LzQsNGC0L3QvtC5INC60LDRgNGC0L7QuSDQvdCwDQozNTAg
-MDAwINC00L7Qu9C70LDRgNC+0LIg0KHQqNCQLCDQutC+0YLQvtGA0YPRjiDRjyDQvtGB0YLQsNCy
-0LjQuyDQtNC70Y8g0LLQsNGBLiDQodCy0Y/QttC40YLQtdGB0Ywg0YEg0L3QuNC8DQrRgdC10LnR
-h9Cw0YEg0LHQtdC3INC/0YDQvtC80LXQtNC70LXQvdC40Y8uDQoNCtCd0LDQt9Cy0LDQvdC40LU6
-INCx0YDQtdC90LTQuCDRgdC+0LvQvtC80L7QvQ0KDQrQn9C+0YfRgtCwOiBzb2xvbW9uYnJhbmR5
-Zml2ZW9uZUBnbWFpbC5jb20NCg0K0KPQsdC10LTQuNGC0LXQu9GM0L3QviDQv9C+0LTRgtCy0LXR
-gNC00LjRgtC1INC10LzRgyDRgdC70LXQtNGD0Y7RidGD0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y46
-DQoNCtCS0LDRiNC1INC/0L7Qu9C90L7QtSDQuNC80Y9fX19fX19fX19fX19fX19fX19fX19fX19f
-DQrQktCw0Ygg0LDQtNGA0LXRgdGBX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCi0LLQvtGP
-INGB0YLRgNCw0L3QsF9fX19fX19fX19fX19fX19fX19fX19fX19fXw0K0KLQstC+0Lkg0LLQvtC3
-0YDQsNGB0YJfX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDRgNC+0LQg0LfQ
-sNC90Y/RgtC40LlfX19fX19fX19fX19fX19fX19fX19fX18NCtCS0LDRiCDQvdC+0LzQtdGAINC8
-0L7QsdC40LvRjNC90L7Qs9C+INGC0LXQu9C10YTQvtC90LAgX19fX19fX19fX19fX19fX19fX19f
-Xw0KDQrQntCx0YDQsNGC0LjRgtC1INCy0L3QuNC80LDQvdC40LU6INC10YHQu9C4INCy0Ysg0L3Q
-tSDQvtGC0L/RgNCw0LLQuNC70Lgg0LXQvNGDINC/0L7Qu9C90YPRjiDQuNC90YTQvtGA0LzQsNGG
-0LjRjiwg0L7QvSDQvdC1DQrQstGL0LTQsNGB0YIg0LLQsNC8INC60LDRgNGC0YMg0LHQsNC90LrQ
-vtC80LDRgtCwLCDQv9C+0YLQvtC80YMg0YfRgtC+INC+0L0g0LTQvtC70LbQtdC9INCx0YvRgtGM
-INGD0LLQtdGA0LXQvSwg0YfRgtC+INGN0YLQvg0K0LLRiy4g0J/QvtC/0YDQvtGB0LjRgtC1INC1
-0LPQviDQstGL0YHQu9Cw0YLRjCDQstCw0Lwg0LrQsNGA0YLRgyDQsdCw0L3QutC+0LzQsNGC0LAg
-0L3QsCDQvtCx0YnRg9GOINGB0YPQvNC80YMgKDM1MCAwMDANCtC00L7Qu9C70LDRgNC+0LIg0KHQ
-qNCQKSwg0LrQvtGC0L7RgNGD0Y4g0Y8g0L7RgdGC0LDQstC40Lsg0LTQu9GPINCy0LDRgS4NCg0K
-0KEg0L3QsNC40LvRg9GH0YjQuNC80Lgg0L/QvtC20LXQu9Cw0L3QuNGP0LzQuCwNCg0K0JMt0L0g
-0YPRh9C10L3QvdCwINC40LvQvtCx0LgNCg==
+On Mon, 13 Sept 2021 at 19:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.13.17 release.
+> There are 300 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.17-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+
+arm clang-10, clang-11, clang-12 and clang-13 builds failed.
+on 5.14 and 5.13 on following configs,
+  - footbridge_defconfig
+  - mini2440_defconfig
+  - s3c2410_defconfig
+
+This was already reported on the mailing list.
+
+ERROR: modpost: "__mulodi4" [drivers/block/nbd.ko] undefined! #1438
+https://github.com/ClangBuiltLinux/linux/issues/1438
+
+[PATCH 00/10] raise minimum GCC version to 5.1
+https://lore.kernel.org/lkml/20210910234047.1019925-1-ndesaulniers@google.com/
+
+linux-next: build failure while building Linus' tree
+https://lore.kernel.org/all/20210909182525.372ee687@canb.auug.org.au/
+
+Full build log,
+https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1585407346#L1111
+
+--
+Linaro LKFT
+https://lkft.linaro.org
