@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526AB4082F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 04:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01CD4082F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 04:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236990AbhIMCv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Sep 2021 22:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S236996AbhIMCwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Sep 2021 22:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236979AbhIMCvY (ORCPT
+        with ESMTP id S236965AbhIMCwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Sep 2021 22:51:24 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9277AC061574;
-        Sun, 12 Sep 2021 19:50:09 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id f65so7436183pfb.10;
-        Sun, 12 Sep 2021 19:50:09 -0700 (PDT)
+        Sun, 12 Sep 2021 22:52:11 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA17BC06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 19:50:56 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id a15so10197943iot.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 19:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=SJy6j8xHJf2UWlDGKr4t0U01qfCqbFHlSGdSCMVDUaA=;
-        b=e8RtgZYL/h/VeYDitlbzBgPtSuJRmI/4Ze+6DW9J/azYE9l7RhDT9pBHCaUkKNCJzs
-         PspgZIg10DBmDnamC/WXmcdO5buq/WmZ4As09YUsn6sFfzapMZ1xLajox0gGAI9tNzsU
-         5JFAlxNaJfuKt6jh10NOqhRQRO+IxWiPkibS+b/+ZH/Ed0ABQYdYAddpJogJZZIcmrHQ
-         nRZJfSGvu4L4p4R6QmTwtI2DkbZtC1lp/38MAr7HED2Vgbf2jZWXR5boBAMtXGhF/Zpi
-         ESC0/uBkO9+9Ry0GPFUVdXn9jkEjfCGvhMUEEqn48OLiObj30FHFGsyQzLf+N6nGaF0N
-         JflA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ThbAI+5YxnpFJqe1M2jD1J1Y+Fa7E6ZmvkAniQmhAF4=;
+        b=orpszyoX6g9Oi0URBnBo3drRbJgLY5TFQZyavsbeJFe0o41NI6vmBtSAMpTwS2fSOA
+         GYcj2Vzy7kQvMSB0j3X0rBdlGnsHW1e9KhEOW6hMMnJKSOrHh87AFrcL4EBcOPfzLLZp
+         Wwf1tHH49RSWxd6i9jU4b0LG/eYU7v7VwxY64Rcsj73dSWl59IOJS1obI2RIla5wKEkW
+         xyFNi3E/jWbOuRE/3hYA5bakI4GSnXXeyQjMglm8Kk2TwrzG6R2h+/haytE2PqXR6JI1
+         6cW6tZaHPPLqg6vpXOSAX+dYZ/oR81W/rwDyY/0PLpkb95PN+KqW/Nv6w/NKHfePrlBL
+         ePDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=SJy6j8xHJf2UWlDGKr4t0U01qfCqbFHlSGdSCMVDUaA=;
-        b=PC4ThP5mnzLQFWSJuM82ndyGiRmFRfB+XYYeyxtVDel9tKQIPi0mmsR9PTrLeg5ejF
-         FiESQemv3YqjqtuHwKKBJxJG7ITIF02WhcgqASPQnjv5TCzTzNVyqBhdHE+rLGxla+7r
-         zQLMc7yQ5fwuh1neXkm38jipJZsfdHlxRQFMMWPgn9gnAkoNkMaR6eH9OTLyyCNJpxHm
-         ZgRcWlvwQtoZOkyG0ed0L5wxpay6SMl1f5XWJiJho+Md+lj4mRcAEiDDCCLUAfQG1K/Y
-         23WE6CR/z+bMUrUkGrdRCyFmA9ML30V7K8UxKrF0qB/231ZUTzlhvqY+8PvqCoIfh5T+
-         Bvvg==
-X-Gm-Message-State: AOAM531c/mCKUh0iwJohxhOyz/Y6fKVQQH0ix96W2ciFpfSDWAcZ6TDW
-        aFrJrqwYTb73dcGiG7bWvCwUsW3a58SC0yCRyR2fd+0h5a5n
-X-Google-Smtp-Source: ABdhPJxK6LeoLmoTjR5chnRS8zZhOYbRI2wwd6HSMCXly+/oXflD7LlP8Hu6bXEgSkYE5TsP+HiQPk0IIBipVfznxv4=
-X-Received: by 2002:a65:6389:: with SMTP id h9mr9161683pgv.83.1631501408784;
- Sun, 12 Sep 2021 19:50:08 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ThbAI+5YxnpFJqe1M2jD1J1Y+Fa7E6ZmvkAniQmhAF4=;
+        b=RDWKJ+jfXA0ZWQpk3Klf4Zo3xsQOPrq5l9t6OkFepud4C8qw1GKntSBHPpkgYoWNFV
+         H/q/0ZFvTiC97k1QRij+b3kv4l0nk01XGk0yfyUAS/6ezZat8lnAzXOeigXT/OkRull4
+         KmpjeLLGWMO9ihtsZRqG/6hel/FzZIvFdgwm9IsPlP+iwIVD/RQKMho3y/H7m+DjRO/w
+         vWaWyh5QeHSgO3Qv1iEFBMVffevAhZeaU4FB/oUfCpC0AmxekjlyCylB7jw7XjaYXWup
+         3Qvi7jO0F5LM0SwsqmBP1cwULpJt3NtyK6d4jn/gAC8NDJ+7wzKfRqbZ2vA2tt7JrtP0
+         7L1g==
+X-Gm-Message-State: AOAM533ZEGXi913CaXLhGR3tivTq0UxbiDgfPzkhEQyl3FKjoM60ZKyd
+        b35KYy5TJsf58JRB9zzCrnmTBGA7735/xA==
+X-Google-Smtp-Source: ABdhPJxs4WWwYVZefB5LmjszWdfcnUu77zRi+S4z4+69IvnpCKCE45e2adAOhZdMHUkfk6RkKW45qg==
+X-Received: by 2002:a5d:9247:: with SMTP id e7mr7280591iol.161.1631501456083;
+        Sun, 12 Sep 2021 19:50:56 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id a16sm3958547ili.64.2021.09.12.19.50.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Sep 2021 19:50:55 -0700 (PDT)
+Subject: Re: INFO: task hung in io_uring_cancel_generic
+To:     Hao Sun <sunhao.th@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
+ <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk>
+ <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+ <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
+ <CACkBjsaGTkxsrBW+HNsgR0Pj7kbbrK-F5E4hp3CJJjYf3ASimQ@mail.gmail.com>
+ <ce4db530-3e7c-1a90-f271-42d471b098ed@gmail.com>
+ <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9b5d8c00-0191-895b-0556-2f8167ab52bd@kernel.dk>
+Date:   Sun, 12 Sep 2021 20:50:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 13 Sep 2021 10:49:57 +0800
-Message-ID: <CACkBjsa-Ng+ayABMe_L6=Jf-L3LuF7ohXraf0i5R-67sLhwh2g@mail.gmail.com>
-Subject: WARNING in schedule_bh
-To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
-Cc:     efremov@linux.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 9/12/21 8:26 PM, Hao Sun wrote:
+> Hi
+> 
+> Healer found a C reproducer for this crash ("INFO: task hung in
+> io_ring_exit_work").
+> 
+> HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Does this reproduce on 5.15-rc1? We had a few hang cases fixed for io-wq
+since that commit 6 days ago.
 
-HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1hPcef9aADlFdNS6_ujlRpU-HoebC2uXF/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvAtJd6kfg-p/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/1zvo1s72quEdpM5xQ7zQxU8oOLiZpoFTN/view?usp=sharing
-Similar report:
-[1] https://groups.google.com/g/syzkaller-bugs/c/B8I1zHVqoxk/m/8PlQrZRbAwAJ
-[2] https://groups.google.com/g/syzkaller-bugs/c/NLim2pbuazk/m/xd3MD-Q-BQAJ
+-- 
+Jens Axboe
 
-Sorry, I don't have a C reproducer for this crash but have a Syzlang
-reproducer. Also, hope the symbolized report can help.
-Here are the instructions on how to execute Syzlang prog:
-https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md
-
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 8715 at drivers/block/floppy.c:999
-schedule_bh+0x5f/0x70 drivers/block/floppy.c:999
-Modules linked in:
-CPU: 3 PID: 8715 Comm: kworker/u8:2 Not tainted 5.14.0+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Workqueue: floppy floppy_work_workfn
-RIP: 0010:schedule_bh+0x5f/0x70 drivers/block/floppy.c:999
-Code: 27 67 ff fc 48 89 2d 40 d9 db 0b 5b 48 c7 c2 40 69 48 8c 48 8b
-35 11 de db 0b bf 08 00 00 00 5d e9 56 d5 d4 fc e8 01 67 ff fc <0f> 0b
-eb d1 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 e8 eb 66 ff fc
-RSP: 0018:ffffc900008a0dc8 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff88801badd580
-RDX: 0000000000000000 RSI: ffff88801badd580 RDI: 0000000000000002
-RBP: ffffffff8476e0d0 R08: ffffffff8476b93f R09: 0000000000000000
-R10: 0000000000000007 R11: fffffbfff1890d28 R12: 0000000000000001
-R13: ffffffff8476e0d0 R14: 0000000000000000 R15: ffff888010c75000
-FS:  0000000000000000(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000048b8e0 CR3: 000000002ee93000 CR4: 0000000000350ee0
-Call Trace:
- <IRQ>
- floppy_interrupt+0x228/0x340 drivers/block/floppy.c:1765
- floppy_hardint+0x256/0x320 arch/x86/include/asm/floppy.h:66
- __handle_irq_event_percpu+0xfd/0x900 kernel/irq/handle.c:156
- handle_irq_event_percpu+0x76/0x160 kernel/irq/handle.c:196
- handle_irq_event+0xa1/0x130 kernel/irq/handle.c:213
- handle_edge_irq+0x24a/0x8a0 kernel/irq/chip.c:822
- generic_handle_irq_desc include/linux/irqdesc.h:158 [inline]
- handle_irq arch/x86/kernel/irq.c:231 [inline]
- __common_interrupt+0x9d/0x210 arch/x86/kernel/irq.c:250
- common_interrupt+0x9f/0xd0 arch/x86/kernel/irq.c:240
- </IRQ>
- asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:629
-RIP: 0010:slow_down_io arch/x86/include/asm/paravirt.h:55 [inline]
-RIP: 0010:outb_p arch/x86/include/asm/io.h:334 [inline]
-RIP: 0010:fdc_outb drivers/block/floppy.c:602 [inline]
-RIP: 0010:reset_fdc+0x328/0x8a0 drivers/block/floppy.c:1817
-Code: ba 00 00 00 00 00 fc ff df 48 89 f9 48 c1 e9 03 80 3c 11 00 0f
-85 e8 04 00 00 48 8d 14 9b 48 8b 14 d5 d0 97 52 90 83 c2 04 ee <48> c7
-c3 e0 47 7f 8b 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1
-RSP: 0018:ffffc90001d0fcf8 EFLAGS: 00000202
-RAX: 00000000ffffff83 RBX: 0000000000000000 RCX: 1ffffffff20a52fa
-RDX: 00000000000003f4 RSI: ffff88801badd580 RDI: ffffffff905297d0
-RBP: 0000000000000062 R08: ffffffff8476f60f R09: 0000000000000044
-R10: 0000000000000001 R11: fffffbfff1fa0127 R12: 0000000000000001
-R13: 0000000000000000 R14: dffffc0000000000 R15: 000000000000fffd
- process_one_work+0x9df/0x16d0 kernel/workqueue.c:2297
- worker_thread+0x90/0xed0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess):
-   0: ba 00 00 00 00        mov    $0x0,%edx
-   5: 00 fc                add    %bh,%ah
-   7: ff                    (bad)
-   8: df 48 89              fisttps -0x77(%rax)
-   b: f9                    stc
-   c: 48 c1 e9 03          shr    $0x3,%rcx
-  10: 80 3c 11 00          cmpb   $0x0,(%rcx,%rdx,1)
-  14: 0f 85 e8 04 00 00    jne    0x502
-  1a: 48 8d 14 9b          lea    (%rbx,%rbx,4),%rdx
-  1e: 48 8b 14 d5 d0 97 52 mov    -0x6fad6830(,%rdx,8),%rdx
-  25: 90
-  26: 83 c2 04              add    $0x4,%edx
-  29: ee                    out    %al,(%dx)
-* 2a: 48 c7 c3 e0 47 7f 8b mov    $0xffffffff8b7f47e0,%rbx <--
-trapping instruction
-  31: 48 b8 00 00 00 00 00 movabs $0xdffffc0000000000,%rax
-  38: fc ff df
-  3b: 48 89 da              mov    %rbx,%rdx
-  3e: 48                    rex.W
-  3f: c1                    .byte 0xc1
