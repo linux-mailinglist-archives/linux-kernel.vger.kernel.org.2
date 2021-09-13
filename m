@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313B04099D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D794099D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239432AbhIMQrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S239396AbhIMQrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239203AbhIMQr2 (ORCPT
+        with ESMTP id S239423AbhIMQrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:47:28 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3672CC061574;
-        Mon, 13 Sep 2021 09:46:12 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id q22so9437698pfu.0;
-        Mon, 13 Sep 2021 09:46:12 -0700 (PDT)
+        Mon, 13 Sep 2021 12:47:31 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4302BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:46:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g14so9416077pfm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=conXI1S71dzOKN/GsCD3g+iOZCipj3z63WFVKKhrZag=;
-        b=CuVJd2NjLKuXwb15yGRvvjY3Gw9r+S46a2UWofPxgvZWhvKyou3neHa6HxpVJC9YF6
-         rn4Vw9c6zK9TVRh9UV/9XPFXFQvdqcYQsB/vAjkeYGoN8NWtY0lsmMk6eMYATgPjktJf
-         K2L/ZPRuTNfUrHK11lLkDd7Y84EKVUXDTL66NYoM1aSly6vjulAF9QccBhuEr9H+rvBE
-         5VxuAI3BYeLwP8JHmD5t0fZhNw1MImFtV6evDlp0ucmi0XPFTfbEcAZ9+/liP0StvQOz
-         sKCRKg4PStV5PJ1jIjcRIjGgr7s+jRus2RuuzN94yEuaYtN1tUkoLX57A+npTgaBugox
-         tTiw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1GV6bysSmlOc/rG3VfzJl7/tqTZcVf8ssdMAyonCG0A=;
+        b=gR63pR3mJ7d6d2dagDjbYHuhSDEoDZ2e8Qxpk0caet+ru8PlAOIWoJ8TIvH15gxxOK
+         el1Qz2woHoekVl8F8VHlWFHqtin9iVlqd1EK81ys/1+0K0u+2PHheu9FwEvDqKI/wVz7
+         bhxwQFwyaZICMm7Cck3OdUdDnnDNeTTltRBNXQ6JY5MOvQhz89UxNnDvDz7qC5elEAJR
+         rSSiA8DQmTiuv+qRMonyBk6gOu/b4vN++NJQNLiwRvUpilFfXsdsBG2Zd+dUArujogNF
+         zZT/HeOljNFmfusIZ/33c3nmpZvBs+tVpnGG6tCr8kUPGQBpNgmHwWengwjt4D5GNAqX
+         yL+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=conXI1S71dzOKN/GsCD3g+iOZCipj3z63WFVKKhrZag=;
-        b=0f1Nm/BSPR10pLCWU5lMpTaj0ZGVUPeOPD2c+f8poEBnqhjIqqstBWMEg+mh0F7n28
-         PgMskEmXFaHXb2qKRq/4dauYwe/J0HzWq1o1YdQ4fcB4dWijGtfSJU+BhEaNuD++uryE
-         rDFX4Negb9wXqLlpPPiPfIUBHt6L9uML1juAW87RahNinmUMXFotvusfGZ01yt1Wbisl
-         JVSWKycdIz7ElYiJpQFDyw8sjuV+1TdqIMb914U9gRbpgv2e8rNX/x8X2Tin+TMMiBL5
-         5yGEkiTWEvQe1QBGb3OmKMqF1UkxnOH+HZcdmlIr1mlWxARvQRWchGaAFO03DOCXJI1K
-         iHjw==
-X-Gm-Message-State: AOAM530LSwkmn+VZLqqc97d8cqt6iFuA0br7VL4NbEkL2TM2TdLCnlnk
-        QLaDQxWvCpMFgl6YTc59b0U=
-X-Google-Smtp-Source: ABdhPJxHdQMvwexSH17nMUUBTJHUwd2zo68lbHBbS+Iya/3YAr0yqSwuXcAu/E6pjL0PV2J3eTs98w==
-X-Received: by 2002:a05:6a00:2129:b0:434:ab92:5af4 with SMTP id n9-20020a056a00212900b00434ab925af4mr427576pfj.3.1631551571479;
-        Mon, 13 Sep 2021 09:46:11 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id g3sm9250617pgf.1.2021.09.13.09.46.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1GV6bysSmlOc/rG3VfzJl7/tqTZcVf8ssdMAyonCG0A=;
+        b=ezcEK8DLYINSOwd6tq3I++fCDbovThrQK1zPy7twYj9J5zP55F2PZQL0Edqfigtk2n
+         s8ZGDfmIAEVv6XuHOsKdciL0J28AE5pzG9RC3Yq6Fexo9RxNeDiNqLYBElmRYfxKWKum
+         cT5KjU14CYC+rqFWUW7xnEAthVAV/GoRRrfAyEGez4Sznvj38ZOhSGgBBdW7oDXRx4CC
+         Uxi9xx+HyabuC+YHaNSP+M/B+7hrMEqFzwjZkiHxPlNDvfmBmWx22fYIMWqjpJyrKWtu
+         bmEbS1MzBNr0d5nozNWvPWviGe/4gok/FCDtvvddcvNs71Tj80aHVqs5wlqVHq02sNq7
+         x+dg==
+X-Gm-Message-State: AOAM532ED/s52nkg6pMc+Mv90ahy/2Ak6ac2UoPhCF2Bh6EzSRdU9HVS
+        5dO0EiOMZwvptoL/CRydiA2oMg==
+X-Google-Smtp-Source: ABdhPJxayft6ULOval7m0WzBQdnnTrTZfACybkKAQYBQYjZBSbHKxqAkDObrTYgeN5IBHtEPlpNv8Q==
+X-Received: by 2002:a05:6a00:10cb:b029:3c6:8cc9:5098 with SMTP id d11-20020a056a0010cbb02903c68cc95098mr319051pfu.41.1631551574795;
+        Mon, 13 Sep 2021 09:46:14 -0700 (PDT)
+Received: from p14s.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id g3sm7615572pfi.197.2021.09.13.09.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:46:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 13 Sep 2021 06:46:09 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Mon, 13 Sep 2021 09:46:14 -0700 (PDT)
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     jiancai@google.com, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: start switching sysfs attributes to expose the seq_file
-Message-ID: <YT+AUXZPFWRSFCRK@slm.duckdns.org>
-References: <20210913054121.616001-1-hch@lst.de>
+Subject: [PATCH 0/1] Coresight: Fixes for 5.15-rc1
+Date:   Mon, 13 Sep 2021 10:46:12 -0600
+Message-Id: <20210913164613.1675791-1-mathieu.poirier@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913054121.616001-1-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 07:41:08AM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> Al pointed out multiple times that seq_get_buf is highly dangerous as
-> it opens up the tight seq_file abstractions to buffer overflows.  The
-> last such caller now is sysfs.
-> 
-> This series allows attributes to implement a seq_show method and switch
-> the block and XFS code as users that I'm most familiar with to use
-> seq_files directly after a few preparatory cleanups.  With this series
-> "leaf" users of sysfs_ops can be converted one at at a time, after that
-> we can move the seq_get_buf into the multiplexers (e.g. kobj, device,
-> class attributes) and remove the show method in sysfs_ops and repeat the
-> process until all attributes are converted.  This will probably take a
-> fair amount of time.
+Hi Greg,
 
-The whole series looks good to me. With Greg's sysfs_emit argument aside on
-which I don't have any opinion,
+Please consider when you have a minute - applies cleanly to
+char-misc-linus (6880fa6c5660).
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Thanks,
+Mathieu 
 
-Thanks.
+Jian Cai (1):
+  coresight: syscfg: Fix compiler warning
+
+ drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 -- 
-tejun
+2.25.1
+
