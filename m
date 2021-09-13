@@ -2,116 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8090C409AA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738CA409AAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 19:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241895AbhIMR2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 13:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbhIMR2n (ORCPT
+        id S242416AbhIMR3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 13:29:25 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:44030 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233121AbhIMR3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 13:28:43 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C569C061574;
-        Mon, 13 Sep 2021 10:27:27 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id l10so10894090ilh.8;
-        Mon, 13 Sep 2021 10:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xSARZJQ5YAoGeRg4cb1w9teZ8eBbMh7jYvTDIyUb0K8=;
-        b=WuuOMMfotN2bgRawb+bw9VOL/sMzldC/ko1wvu1pD0dlms6lKUll54OnTwrgNQkdgY
-         XMhcvugn5Sbz5cD0t2w8RfOb5j3teeU4A8GBpHJ9NeZm6co3baMNsEUeRjDCQgwhIfdW
-         Ezm7MqMBCxdGtLS+5Zp1ct1HRQVj8GTl4CjXzwTVLQg1nQhaE+igxr/Doe/fx/TXVHTK
-         AXtWPy6s53pQ7kQ+tVeNJYgch3BDPAl/AJOb5ZtosFWViMReP/cBa8bs/H9Qy/jZ2D8R
-         i+aMdKAsSu4yCL4vi6Ge+uEUXgL9l5tmRwUj8zuk8IVuL/gzkcgWfQf0H7SnIhtycfrP
-         Xt9A==
+        Mon, 13 Sep 2021 13:29:14 -0400
+Received: by mail-oi1-f170.google.com with SMTP id w19so15013707oik.10;
+        Mon, 13 Sep 2021 10:27:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xSARZJQ5YAoGeRg4cb1w9teZ8eBbMh7jYvTDIyUb0K8=;
-        b=nxuBlz9diFaIuHHHs8R3lIiBalw83L5F0YT2/dmJfWIyaDLFVEymg7dpzLqdFwrhvv
-         PiElDOlvpeNgVOc/7Dtsu3yGPKVGCBAwLQEpfTb7jqSBpf51qCO6NNZLXUr9DM17++a8
-         7dNbHbHoVMRIHafrHxERf/3VH7nLX4Y0UhA8lx6TdmvIHjyO11OT/+uMzRf1CGWWY4Xj
-         WtIDCrYHuYM6r3NNzfuS9UxSMbOGGelfIIs0Z2bZQTgCX0P9QUdycN/RayPKa/IAVBtU
-         qXGu8ZOv0+RPtTSgo72+NLPWg+MReiTJYDn3UbK3KLaFAqurpz0XwH8Z4JkwSdeZbDLX
-         SnpQ==
-X-Gm-Message-State: AOAM5328ZQ6bXRoJKsuSzgf0hOLxVEIpKcC0NNZiIdC1c8HRThiO7ujN
-        BygMjseUFwCQwvNws1wDZ9n48sX4hpzno4CZE1U=
-X-Google-Smtp-Source: ABdhPJzku6ajJWNIuWGq4QNw2jHxveT8x1HGe9xc/beOqXsm+SHLo5hlaSEUieXfWziememH5sRW6x3kxrgBCxzSpmQ=
-X-Received: by 2002:a92:3012:: with SMTP id x18mr9192859ile.249.1631554045994;
- Mon, 13 Sep 2021 10:27:25 -0700 (PDT)
+        bh=zdKSajtGE1WLdR1EN0XVNqkFzr63oghr/1GUZ5MQ9jU=;
+        b=WdhH25xgQSSCgQVurnR6FYISzqPuxlYoLOQu2CIZe0zrBk3oeZOJbfaZfbs9xf1hXH
+         4+d24q4BjZgyNE/GW38zPYh0Fj0Yh+HB6XNHr0u/g6E85Ks6FXKAxJ2ANVATcd8l4Kgg
+         PEXUoV/4mrqAWqZq1p7oTBg9TfHtu/lndcMAojv0Jenz97L+fCQam7x4R7n6vsmYYVnN
+         RcY1qdZNfOK4tDr4MMWCM7RAx9HL12EdSXMQJ46du3zyUlzi8TAc1jhq2PdNzqPJSOow
+         63VV7In36LdsWzST7NQXHm/a5+cpIftnFgY1qQXg/nmhttotkVZ2SOo0Ufrev9x7clWp
+         PPpw==
+X-Gm-Message-State: AOAM533eHz5c1bWdHIz2VhJPY2CMOsJbAPhu9NzecH5DmLbmtDpGbVrA
+        8EowRij85PQWSJ++NCM6Pvnwwn8zXBk51Sq/W48=
+X-Google-Smtp-Source: ABdhPJwCVw3Fu91YqcoFNhErZVn6L/bKGxexNKukCG+Ecu6T8MRCWnvEdZbFs2c3COaeJ2K53Y+eExfkfXZmYKYMfbQ=
+X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr8277763ois.69.1631554077926;
+ Mon, 13 Sep 2021 10:27:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00@epcas2p2.samsung.com>
- <cover.1631519695.git.kwmad.kim@samsung.com> <fbdd02bc-01ab-c5b3-9355-3ebe04601b04@acm.org>
-In-Reply-To: <fbdd02bc-01ab-c5b3-9355-3ebe04601b04@acm.org>
-From:   Alim Akhtar <alim.akhtar@gmail.com>
-Date:   Mon, 13 Sep 2021 22:56:48 +0530
-Message-ID: <CAGOxZ51X-ThsqV35PiTh-awRvAkQ=Fjf9m+KRd1HLZ+pDNi=Xg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] scsi: ufs: introduce vendor isr
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        Can Guo <cang@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
+References: <20210912185029.5704-1-dsmythies@telus.net>
+In-Reply-To: <20210912185029.5704-1-dsmythies@telus.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 13 Sep 2021 19:27:47 +0200
+Message-ID: <CAJZ5v0g-fVO8_DGYtSF7e-VYc2Qzu60Ak0VK_f4x-V7dbO=+Eg@mail.gmail.com>
+Subject: Re: [PATCH v2] cpufreq: intel_pstate: Override parameters if HWP
+ forced by BIOS
+To:     Doug Smythies <doug.smythies@gmail.com>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+On Sun, Sep 12, 2021 at 8:51 PM Doug Smythies <doug.smythies@gmail.com> wrote:
+>
+> If HWP has been already been enabled by BIOS, it may be
+> necessary to override some kernel command line parameters.
+> Once it has been enabled it requires a reset to be disabled.
+>
+> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> ---
+>  drivers/cpufreq/intel_pstate.c | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 1097f826ad70..8c176b7dae41 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -3205,11 +3205,15 @@ static int __init intel_pstate_init(void)
+>         if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
+>                 return -ENODEV;
+>
+> -       if (no_load)
+> -               return -ENODEV;
+> -
+>         id = x86_match_cpu(hwp_support_ids);
+>         if (id) {
+> +               bool hwp_forced = intel_pstate_hwp_is_enabled();
+> +
+> +               if (hwp_forced)
+> +                       pr_info("HWP enabled by BIOS\n");
+> +               else if (no_load)
+> +                       return -ENODEV;
+> +
+>                 copy_cpu_funcs(&core_funcs);
+>                 /*
+>                  * Avoid enabling HWP for processors without EPP support,
+> @@ -3219,8 +3223,7 @@ static int __init intel_pstate_init(void)
+>                  * If HWP is enabled already, though, there is no choice but to
+>                  * deal with it.
+>                  */
+> -               if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
+> -                   intel_pstate_hwp_is_enabled()) {
+> +               if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) || hwp_forced) {
+>                         hwp_active++;
+>                         hwp_mode_bdw = id->driver_data;
+>                         intel_pstate.attr = hwp_cpufreq_attrs;
+> @@ -3235,7 +3238,11 @@ static int __init intel_pstate_init(void)
+>
+>                         goto hwp_cpu_matched;
+>                 }
+> +               pr_info("HWP not enabled\n");
+>         } else {
+> +               if (no_load)
+> +                       return -ENODEV;
+> +
+>                 id = x86_match_cpu(intel_pstate_cpu_ids);
+>                 if (!id) {
+>                         pr_info("CPU model not supported\n");
+> @@ -3314,10 +3321,9 @@ static int __init intel_pstate_setup(char *str)
+>         else if (!strcmp(str, "passive"))
+>                 default_driver = &intel_cpufreq;
+>
+> -       if (!strcmp(str, "no_hwp")) {
+> -               pr_info("HWP disabled\n");
+> +       if (!strcmp(str, "no_hwp"))
+>                 no_hwp = 1;
+> -       }
+> +
+>         if (!strcmp(str, "force"))
+>                 force_load = 1;
+>         if (!strcmp(str, "hwp_only"))
+> --
 
-On Mon, Sep 13, 2021 at 9:42 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 9/13/21 12:55 AM, Kiwoong Kim wrote:
-> > This patch is to activate some interrupt sources
-> > that aren't defined in UFSHCI specifications. Those
-> > purpose could be error handling, workaround or whatever.
-> >
-> > Kiwoong Kim (3):
-> >    scsi: ufs: introduce vendor isr
-> >    scsi: ufs: introduce force requeue
-> >    scsi: ufs: ufs-exynos: implement exynos isr
-> >
-> >   drivers/scsi/ufs/ufs-exynos.c | 84 ++++++++++++++++++++++++++++++++++++-------
-> >   drivers/scsi/ufs/ufshcd.c     | 22 ++++++++++--
-> >   drivers/scsi/ufs/ufshcd.h     |  2 ++
-> >   3 files changed, 93 insertions(+), 15 deletions(-)
->
-> The UFS protocol is standardized. Your employer has a representative in the
-> UFS standardization committee. Please work with that representative to
-> standardize this feature instead of adding non-standard extensions to the UFS
-> driver.
->
-Thanks for your input. Completely agree with you, in fact your suggestions
-make sense to me. As a driver developer, surely we can take these concerns
-to the IP designers and see how far we can get in terms of standardization.
-That, however, is not something that can be accomplished overnight. My main
-concern is, what about millions of devices which are already in the market?
-UFS subsystem does support _vops_ to handle vendor specific hooks/modifications.
-I am not saying we should always follow this path, but surely until
-these deviations
-are either fixed or become part of UFS standard itself, IMO.
-
-Thanks!
-
-> Thanks,
->
-> Bart.
->
->
-
-
--- 
-Regards,
-Alim
+Applied as 5.15-rc material, thanks!
