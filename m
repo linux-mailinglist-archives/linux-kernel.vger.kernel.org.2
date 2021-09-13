@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF39D409376
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD81140962F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346249AbhIMOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:21:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37086 "EHLO mail.kernel.org"
+        id S1347411AbhIMOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244373AbhIMORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:17:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC6FD61B31;
-        Mon, 13 Sep 2021 13:44:52 +0000 (UTC)
+        id S1347645AbhIMOoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:44:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEE696113B;
+        Mon, 13 Sep 2021 13:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540693;
-        bh=cBFE0kbMHQvo+MHLoQ0TDQ+UZS2bCFIFjzgl/uXkESg=;
+        s=korg; t=1631541458;
+        bh=I5NO4vbOtc+RqNT1FsktWqoBMD/ekz/C/KDVI5jjs7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4+gh7/5EKx5DF0A14U7IKbbM2qs54u7Kh5r8LCdZNRw/z4K2/amTpUT9vVQH1X+j
-         sZ6EwyfrlIWV5jaETOJsadQmF1s3adVJ/Y7P7Y7NHgPulCKq7It7VignafnQwuVcre
-         uO+L1nrmtok1m/8Pl6iEpAaAwLbfVq2JLgZz7Sqo=
+        b=I1wu6HY7wHcDfn/9zYVurvn9s801DKMJD9fKxmT/StEHesQ9DQmV21v3ksGEAbIAH
+         JuYqHT84R6AqtWKa5x4Gku99xUSzRLmnLulSMrscpdc1m8mukGQT7kQtnH5mgvPIOQ
+         HVkiFp95HFPPZhpw1oZhInWM9Hv+pIPHKdhVy/4U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, THOBY Simon <Simon.THOBY@viveris.fr>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.13 296/300] IMA: remove the dependency on CRYPTO_MD5
-Date:   Mon, 13 Sep 2021 15:15:57 +0200
-Message-Id: <20210913131119.356968344@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.14 304/334] bio: fix page leak bio_add_hw_page failure
+Date:   Mon, 13 Sep 2021 15:15:58 +0200
+Message-Id: <20210913131123.698338684@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: THOBY Simon <Simon.THOBY@viveris.fr>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit 8510505d55e194d3f6c9644c9f9d12c4f6b0395a upstream.
+commit d9cf3bd531844ffbfe94b16e417037a16efc988d upstream.
 
-MD5 is a weak digest algorithm that shouldn't be used for cryptographic
-operation. It hinders the efficiency of a patch set that aims to limit
-the digests allowed for the extended file attribute namely security.ima.
-MD5 is no longer a requirement for IMA, nor should it be used there.
+__bio_iov_append_get_pages() doesn't put not appended pages on
+bio_add_hw_page() failure, so potentially leaking them, fix it. Also, do
+the same for __bio_iov_iter_get_pages(), even though it looks like it
+can't be triggered by userspace in this case.
 
-The sole place where we still use the MD5 algorithm inside IMA is setting
-the ima_hash algorithm to MD5, if the user supplies 'ima_hash=md5'
-parameter on the command line.  With commit ab60368ab6a4 ("ima: Fallback
-to the builtin hash algorithm"), setting "ima_hash=md5" fails gracefully
-when CRYPTO_MD5 is not set:
-	ima: Can not allocate md5 (reason: -2)
-	ima: Allocating md5 failed, going to use default hash algorithm sha256
-
-Remove the CRYPTO_MD5 dependency for IMA.
-
-Signed-off-by: THOBY Simon <Simon.THOBY@viveris.fr>
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-[zohar@linux.ibm.com: include commit number in patch description for
-stable.]
-Cc: stable@vger.kernel.org # 4.17
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: 0512a75b98f8 ("block: Introduce REQ_OP_ZONE_APPEND")
+Cc: stable@vger.kernel.org # 5.8+
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/1edfa6a2ffd66d55e6345a477df5387d2c1415d0.1626653825.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/integrity/ima/Kconfig |    1 -
- 1 file changed, 1 deletion(-)
+ block/bio.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -6,7 +6,6 @@ config IMA
- 	select SECURITYFS
- 	select CRYPTO
- 	select CRYPTO_HMAC
--	select CRYPTO_MD5
- 	select CRYPTO_SHA1
- 	select CRYPTO_HASH_INFO
- 	select TCG_TPM if HAS_IOMEM && !UML
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -979,6 +979,14 @@ static int bio_iov_bvec_set_append(struc
+ 	return 0;
+ }
+ 
++static void bio_put_pages(struct page **pages, size_t size, size_t off)
++{
++	size_t i, nr = DIV_ROUND_UP(size + (off & ~PAGE_MASK), PAGE_SIZE);
++
++	for (i = 0; i < nr; i++)
++		put_page(pages[i]);
++}
++
+ #define PAGE_PTRS_PER_BVEC     (sizeof(struct bio_vec) / sizeof(struct page *))
+ 
+ /**
+@@ -1023,8 +1031,10 @@ static int __bio_iov_iter_get_pages(stru
+ 			if (same_page)
+ 				put_page(page);
+ 		} else {
+-			if (WARN_ON_ONCE(bio_full(bio, len)))
+-                                return -EINVAL;
++			if (WARN_ON_ONCE(bio_full(bio, len))) {
++				bio_put_pages(pages + i, left, offset);
++				return -EINVAL;
++			}
+ 			__bio_add_page(bio, page, len, offset);
+ 		}
+ 		offset = 0;
+@@ -1069,6 +1079,7 @@ static int __bio_iov_append_get_pages(st
+ 		len = min_t(size_t, PAGE_SIZE - offset, left);
+ 		if (bio_add_hw_page(q, bio, page, len, offset,
+ 				max_append_sectors, &same_page) != len) {
++			bio_put_pages(pages + i, left, offset);
+ 			ret = -EINVAL;
+ 			break;
+ 		}
 
 
