@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6BD409549
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA88409230
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347319AbhIMOk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:40:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51898 "EHLO mail.kernel.org"
+        id S1344194AbhIMOJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346310AbhIMOco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:32:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4CBC61246;
-        Mon, 13 Sep 2021 13:52:22 +0000 (UTC)
+        id S1344668AbhIMOFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:05:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 885CE61A71;
+        Mon, 13 Sep 2021 13:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631541143;
-        bh=n/89U9uu0YfxCegmcuZSJMSCsWFpawDetI+hIPXWxx0=;
+        s=korg; t=1631540393;
+        bh=eGdf2kV8mRk5nNuGBmPkMg81kjmIi9C7xp7zO1+/AJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0E3jxijkH/vXBRnFZZ9hpZqi1QYtorcskEC7S2P9yYULw35v4KZGHp8LH8Lh7jZIa
-         XbjIobpKcmg2n7y4IYtExy0Dg/S8nG2U4mcmP5nLNGDKYmVKGkQS1DcZ4mpYm6pvES
-         2dgRicC75ATrtTlo+Rv8wUbQ08WpZI6qBuZLpXtc=
+        b=kuoZsjugTcnx1opfIqelzsOjM9QtqK+Psj4VuhpyJga2bHkpK7uF9bOrLmZTjN3Gx
+         E7RHF8T96SUiInckQHwmoUKzeItttJ6oji0jwbaSy363yStxNDkIrpJ47ara97E8d2
+         9iA23MhCQdIC5Pa6hWsIKHBWQRYXbtFGtmZUfgnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jose Blanquicet <josebl@microsoft.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 181/334] selftests/bpf: Fix bpf-iter-tcp4 test to print correctly the dest IP
-Date:   Mon, 13 Sep 2021 15:13:55 +0200
-Message-Id: <20210913131119.469481052@linuxfoundation.org>
+        stable@vger.kernel.org, Kuogee Hsieh <khsieh@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 175/300] drm/msm/dp: replug event is converted into an unplug followed by an plug events
+Date:   Mon, 13 Sep 2021 15:13:56 +0200
+Message-Id: <20210913131115.312261670@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jose Blanquicet <josebl@microsoft.com>
+From: Kuogee Hsieh <khsieh@codeaurora.org>
 
-[ Upstream commit 277b134057036df8c657079ca92c3e5e7d10aeaf ]
+[ Upstream commit 7e10bf427850f2d7133fd091999abd5fc1755cdb ]
 
-Currently, this test is incorrectly printing the destination port in
-place of the destination IP.
+Remove special handling of replug interrupt and instead treat replug event
+as a sequential unplug followed by a plugin event. This is needed to meet
+the requirements of DP Link Layer CTS test case 4.2.1.3.
 
-Fixes: 2767c97765cb ("selftests/bpf: Implement sample tcp/tcp6 bpf_iter programs")
-Signed-off-by: Jose Blanquicet <josebl@microsoft.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210805164044.527903-1-josebl@microsoft.com
+Changes in V2:
+-- add fixes statement
+
+Changes in V3:
+-- delete EV_HPD_REPLUG_INT
+
+Fixes: f21c8a276c2d ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly")
+
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/1628196295-7382-5-git-send-email-khsieh@codeaurora.org
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/dp/dp_display.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-index 2e4775c35414..92267abb462f 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c
-@@ -121,7 +121,7 @@ static int dump_tcp_sock(struct seq_file *seq, struct tcp_sock *tp,
- 	}
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e6706a88d804..2b1e127390e4 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -55,7 +55,6 @@ enum {
+ 	EV_HPD_INIT_SETUP,
+ 	EV_HPD_PLUG_INT,
+ 	EV_IRQ_HPD_INT,
+-	EV_HPD_REPLUG_INT,
+ 	EV_HPD_UNPLUG_INT,
+ 	EV_USER_NOTIFICATION,
+ 	EV_CONNECT_PENDING_TIMEOUT,
+@@ -1119,9 +1118,6 @@ static int hpd_event_thread(void *data)
+ 		case EV_IRQ_HPD_INT:
+ 			dp_irq_hpd_handle(dp_priv, todo->data);
+ 			break;
+-		case EV_HPD_REPLUG_INT:
+-			/* do nothing */
+-			break;
+ 		case EV_USER_NOTIFICATION:
+ 			dp_display_send_hpd_notification(dp_priv,
+ 						todo->data);
+@@ -1165,10 +1161,8 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
  
- 	BPF_SEQ_PRINTF(seq, "%4d: %08X:%04X %08X:%04X ",
--		       seq_num, src, srcp, destp, destp);
-+		       seq_num, src, srcp, dest, destp);
- 	BPF_SEQ_PRINTF(seq, "%02X %08X:%08X %02X:%08lX %08X %5u %8d %lu %d ",
- 		       state,
- 		       tp->write_seq - tp->snd_una, rx_queue,
+ 	if (hpd_isr_status & 0x0F) {
+ 		/* hpd related interrupts */
+-		if (hpd_isr_status & DP_DP_HPD_PLUG_INT_MASK ||
+-			hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK) {
++		if (hpd_isr_status & DP_DP_HPD_PLUG_INT_MASK)
+ 			dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+-		}
+ 
+ 		if (hpd_isr_status & DP_DP_IRQ_HPD_INT_MASK) {
+ 			/* stop sentinel connect pending checking */
+@@ -1176,8 +1170,10 @@ static irqreturn_t dp_display_irq_handler(int irq, void *dev_id)
+ 			dp_add_event(dp, EV_IRQ_HPD_INT, 0, 0);
+ 		}
+ 
+-		if (hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK)
+-			dp_add_event(dp, EV_HPD_REPLUG_INT, 0, 0);
++		if (hpd_isr_status & DP_DP_HPD_REPLUG_INT_MASK) {
++			dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
++			dp_add_event(dp, EV_HPD_PLUG_INT, 0, 3);
++		}
+ 
+ 		if (hpd_isr_status & DP_DP_HPD_UNPLUG_INT_MASK)
+ 			dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
 -- 
 2.30.2
 
