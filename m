@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7947E408748
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF8B408741
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 10:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238191AbhIMIpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 04:45:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238126AbhIMIpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 04:45:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B8360F5B;
-        Mon, 13 Sep 2021 08:43:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631522639;
-        bh=LXUxLd87uLqHw6KTkQAAPRMwWhykDO/zu8ngz08HWA8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ag+uXb04sfWp+fEgNxuuHMwEbTDrjy5sY+q/TE3HTsRVL0dOGzTKI7n8oywE+PYo+
-         /kLwcCODNwO/E2X0M0dIvHnz1VuVxpyDv7+3UTZP4FoCrOjKCGdHmghBodgc7eT7Pf
-         9ZTocEnJk75pr5J1xqoKdjAUyRvbsoO0OoiYMNfs=
-Date:   Mon, 13 Sep 2021 10:42:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux-Net <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Guillaume Nault <gnault@redhat.com>
-Subject: Re: Please add 2dce224f469f ("netns: protect netns ID lookups with
- RCU") to LTS
-Message-ID: <YT8PBf0FiniWR0zm@kroah.com>
-References: <7F058034-8A2B-4C19-A39E-12B0DB117328@oracle.com>
- <YToMf8zUVNVDCAKX@kroah.com>
- <756E20E4-399D-45ED-AA9A-BB351C865C65@oracle.com>
+        id S238140AbhIMIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 04:44:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50482 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237831AbhIMIoP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:44:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3F5CC1FFAC;
+        Mon, 13 Sep 2021 08:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631522577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8kanT9LvCczrJLW86//mm44q0kFal7DLHz1meuR6IX0=;
+        b=auSFP3cSbtLDH8/xVJew4IJ/MN1dguOz5Le3URoMTqsmLf9D172qnDKyHsvueFiQpQni+V
+        iqYmA0o/CA185fT9Fu5DYTdrKJ9FsKsopivFohrGz4IA4xpbdx8zaR0+EF8n/DbRV2DeGq
+        KjLTsEbgxqHjGwGRRe1FlKKen1sn0b8=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 09F27A3B8E;
+        Mon, 13 Sep 2021 08:42:56 +0000 (UTC)
+Date:   Mon, 13 Sep 2021 10:42:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH memcg] memcg: prohibit unconditional exceeding the limit
+ of dying tasks
+Message-ID: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
+References: <5b06a490-55bc-a6a0-6c85-690254f86fad@virtuozzo.com>
+ <099aa0db-045a-e5b8-6df7-b7c3fc4d3caa@i-love.sakura.ne.jp>
+ <4a407474-ff7a-9e4f-d314-ab85f0eeaadf@virtuozzo.com>
+ <YTtx3toUOMLXk4GZ@dhcp22.suse.cz>
+ <9556c2ae-2dc8-9d0a-55de-002d674680bf@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <756E20E4-399D-45ED-AA9A-BB351C865C65@oracle.com>
+In-Reply-To: <9556c2ae-2dc8-9d0a-55de-002d674680bf@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 02:22:32PM +0000, Haakon Bugge wrote:
-> 
-> 
-> > On 9 Sep 2021, at 15:30, Greg KH <gregkh@linuxfoundation.org> wrote:
+On Mon 13-09-21 11:29:37, Vasily Averin wrote:
+> On 9/10/21 5:55 PM, Michal Hocko wrote:
+> > On Fri 10-09-21 16:20:58, Vasily Averin wrote:
+> >> On 9/10/21 4:04 PM, Tetsuo Handa wrote:
+> >>> Can't we add fatal_signal_pending(current) test to vmalloc() loop?
 > > 
-> > On Thu, Sep 09, 2021 at 01:10:05PM +0000, Haakon Bugge wrote:
-> >> Hi Greg & Sasha,
-> >> 
-> >> 
-> >> tl;dr: Please add 2dce224f469f ("netns: protect netns ID lookups with
-> >> RCU") to the stable releases from v5.4 and older. It fixes a
-> >> spin_unlock_bh() in peernet2id() called with IRQs off. I think this
-> >> neat side-effect of commit 2dce224f469f was quite un-intentional,
-> >> hence no Fixes: tag or CC: stable.
+> > We can and we should.
 > > 
-> > Please provide a working backport for all of the relevant kernel
-> > verisons, as it does not apply cleanly on it's own.
+> >> 1) this has been done in the past but has been reverted later.
+> > 
+> > The reason for that should be addressed IIRC.
 > 
-> I've done the backports. 4.9 is actually not needed, because it uses spin_{lock,unlock}_irqsave() in peernet2id(). Hence, we have an "offending" commit which this one fixes:
-> 
-> fba143c66abb ("netns: avoid disabling irq for netns id")
-> 
-> Will get'm out during the weekend.
+> I don't know the details of this, and I need some time to investigate it.
 
-All now queued up, thanks.
+b8c8a338f75e ("Revert "vmalloc: back off when the current task is killed"")
+should give a good insight and references.
 
-greg k-h
+> >> 2) any vmalloc changes will affect non-memcg allocations too.
+> >>  If we're doing memcg-related checks it's better to do it in one place.
+> > 
+> > I think those two things are just orthogonal. Bailing out from vmalloc
+> > early sounds reasonable to me on its own. Allocating a large thing that
+> > is likely to go away with the allocating context is just a waste of
+> > resources and potential reason to disruptions to others.
+> 
+> I doubt that fatal signal should block any vmalloc allocations.
+> I assume there are situations where rollback of some cancelled operation uses vmalloc.
+> Or coredump saving on some remote storage can uses vmalloc.
+
+If there really are any such requirements then this should be really
+documented. 
+
+> However for me it's abnormal that even OOM-killer cannot cancel huge vmalloc allocation.
+> So I think tsk_is_oom_victim(current) check should be added to vm_area_alloc_pages() 
+> to break vmalloc cycle.
+
+Why should oom killed task behave any different than any other task
+killed without a way to handle the signal?
+
+-- 
+Michal Hocko
+SUSE Labs
