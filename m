@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A06E409D25
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FE5409D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 21:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241386AbhIMTep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 15:34:45 -0400
-Received: from mga18.intel.com ([134.134.136.126]:61836 "EHLO mga18.intel.com"
+        id S241551AbhIMTfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 15:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235290AbhIMTen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 15:34:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="208874723"
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="208874723"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 12:33:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
-   d="scan'208";a="609187491"
-Received: from holdensm-mobl.amr.corp.intel.com (HELO [10.212.147.16]) ([10.212.147.16])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 12:33:26 -0700
-Subject: Re: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210913131153.1202354-3-pbonzini@redhat.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <50287173-0afb-36f4-058e-0960fb4017a7@intel.com>
-Date:   Mon, 13 Sep 2021 12:33:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235290AbhIMTfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 15:35:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD33C610D1;
+        Mon, 13 Sep 2021 19:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631561669;
+        bh=g0tIIdgSDeIurjAE/QD6sn73WxhdlEKzfqhQN39LJK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aBem/p5lSBs9iB9zsb0fNODAumEfxGDVQlj9nZQ1fQgMPXKi2BRV0jR//MD8vFVum
+         KbGgnaPlr2HEB4zP7TKR0Sk/g11zYNxoBv+a29k66IjZDoB8D7mFR6fhTYQzhI53bC
+         x2x4C6O828dB4lH1o0TfYlLAg2+l+ee8IgqDDiWdBn/oA1EsRnDa2l4i6CxT8r+S/w
+         oIvJ9pE1aNAusa6H06iLqwo2OUDUkxE+thzJtLXXVM0QKrhR0zlNh4Kena2Agg3fck
+         haFt870alDb/CG1q8H+erJpEWTIYupDdPyni1GSXpjla04JTR06vWuZ3PJqBVhmizR
+         y4/pyeG0ZGtXw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 10BC04038F; Mon, 13 Sep 2021 16:34:25 -0300 (-03)
+Date:   Mon, 13 Sep 2021 16:34:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        acme@redhat.com, jolsa@redhat.com, kim.phillips@amd.com,
+        namhyung@kernel.org, irogers@google.com
+Subject: Re: [PATCH v1 11/13] perf tools: improve IBS error handling
+Message-ID: <YT+nwP3jrzgxEdmu@kernel.org>
+References: <20210909075700.4025355-1-eranian@google.com>
+ <20210909075700.4025355-12-eranian@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210913131153.1202354-3-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909075700.4025355-12-eranian@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 6:11 AM, Paolo Bonzini wrote:
-> +static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
+Em Thu, Sep 09, 2021 at 12:56:58AM -0700, Stephane Eranian escreveu:
+> From: Kim Phillips <kim.phillips@amd.com>
+> 
+> This patch improves the error message returned on failed perf_event_open() on
+> AMD when using IBS.
+> 
+> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+> ---
+>  tools/perf/util/evsel.c | 42 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index f61e5dd53f5d..f203f178fdb9 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2684,12 +2684,52 @@ static bool find_process(const char *name)
+>  	return ret ? false : true;
+>  }
+>  
+> +static bool is_amd;
+> +
+> +static char *fgrep(FILE *inf, const char *str)
 > +{
-> +	struct sgx_epc_page *entry;
-> +	unsigned long index;
-> +	long failures = 0;
+> +	char line[256];
+> +	int slen = strlen(str);
 > +
-> +	xa_for_each(&vepc->page_array, index, entry)
-> +		if (sgx_vepc_remove_page(entry))
-> +			failures++;
+> +	while (!feof(inf)) {
+> +		if (!fgets(line, 256, inf))
+> +			break;
+> +		if (strncmp(line, str, slen))
+> +			continue;
 > +
-> +	/*
-> +	 * Return the number of pages that failed to be removed, so
-> +	 * userspace knows that there are still SECS pages lying
-> +	 * around.
-> +	 */
-> +	return failures;
+> +		return strdup(line);
+> +	}
+> +
+> +	return NULL;
 > +}
+> +
+> +static void detect_amd(void)
+> +{
+> +	FILE *inf = fopen("/proc/cpuinfo", "r");
+> +	char *res;
+> +
+> +	if (!inf)
+> +		return;
+> +
+> +	res = fgrep(inf, "vendor_id");
+> +
+> +	if (res) {
+> +		char *s = strchr(res, ':');
+> +
+> +		is_amd = s && !strcmp(s, ": AuthenticAMD\n");
+> +		free(res);
+> +	}
+> +	fclose(inf);
+> +}
+> +
 
-I'm not sure the retry logic should be in userspace.  Also, is this
-strictly limited to SECS pages?  It could also happen if there were
-enclaves running that used the page.  Granted, userspace can probably
-stop all the vcpus, but the *interface* doesn't prevent it being called
-like that.
+We have perf_env for such details, for instance in
+tools/perf/util/sample-raw.c we have:o
 
-What else can userspace do but:
+        const char *arch_pf = perf_env__arch(evlist->env);
+        const char *cpuid = perf_env__cpuid(evlist->env);
 
-	ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
-	if (ret)
-		ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
-	if (ret)
-		printf("uh oh\n");
+	        else if (arch_pf && !strcmp("x86", arch_pf) &&
+                 cpuid && strstarts(cpuid, "AuthenticAMD") &&
+                 evlist__has_amd_ibs(evlist)) {
 
-We already have existing code to gather up the pages that couldn't be
-EREMOVE'd and selectively EREMOVE them again.  Why not reuse that code
-here?  If there is 100GB of EPC, it's gotta be painful to run through
-the ->page_array twice when once plus a small list iteration will do.
 
-Which reminds me...  Do we need a cond_resched() in there or anything?
-That loop could theoretically get really, really long.
+
+>  int evsel__open_strerror(struct evsel *evsel, struct target *target,
+>  			 int err, char *msg, size_t size)
+>  {
+>  	char sbuf[STRERR_BUFSIZE];
+>  	int printed = 0, enforced = 0;
+>  
+> +	detect_amd();
+> +
+>  	switch (err) {
+>  	case EPERM:
+>  	case EACCES:
+> @@ -2782,6 +2822,8 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+>  			return scnprintf(msg, size, "wrong clockid (%d).", clockid);
+>  		if (perf_missing_features.aux_output)
+>  			return scnprintf(msg, size, "The 'aux_output' feature is not supported, update the kernel.");
+> +		if (is_amd && (evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name, "ibs", 3)) && (evsel->core.attr.exclude_kernel))
+> +			return scnprintf(msg, size, "AMD IBS can't exclude kernel events.  Try running at a higher privilege level.");
+>  		break;
+>  	case ENODATA:
+>  		return scnprintf(msg, size, "Cannot collect data source with the load latency event alone. "
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+
+-- 
+
+- Arnaldo
