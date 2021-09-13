@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3F3409338
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE7D409633
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 16:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345141AbhIMOT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 10:19:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
+        id S1347560AbhIMOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 10:49:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344997AbhIMOOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:14:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D64F61AEB;
-        Mon, 13 Sep 2021 13:43:49 +0000 (UTC)
+        id S245425AbhIMOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 10:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A72761880;
+        Mon, 13 Sep 2021 13:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540629;
-        bh=EnnD9X7Ge9A21vg+Gabm5zt/RLVbn0L/PJebjtQFBt8=;
+        s=korg; t=1631541391;
+        bh=kBsgrVDe7zt/GZ0Pd3XptA/5U+L9g86/TTGBqjTSM3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wbi9zX3QHvC7ASL/sDPrz9w+ttClUVoUGuoGuXIZ54k1HGcB2WCrM9O6dYYo8JadJ
-         O+KfCdzyj4m4DxmG8riJ7rV1QAA/ebo7DLJuj9ERvbBaUO7xjt1EilcDH7Tm9DZjTT
-         lWh42G4lMz5J6wkLNmrvwzMvpNj0syBY9Nyl0rvw=
+        b=PXeuDSgyroqprUNv/OHTLLmDRJmFFZcD618oOEv+zfsMBSWTniuG0jfmuZ1l2F+B3
+         6fU50XsOKcegiNNBdxLd3Val/FE7O8eFBkrHc0WuDFx7y6OgOAYpZ478L5Syhtuz1Q
+         kzY4+Ms6L4WybMavamLxBWd/6sHJ4aezhn6YuBmA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonas Jensen <jonas.jensen@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 228/300] mmc: moxart: Fix issue with uninitialized dma_slave_config
-Date:   Mon, 13 Sep 2021 15:14:49 +0200
-Message-Id: <20210913131117.052679424@linuxfoundation.org>
+Subject: [PATCH 5.14 236/334] gfs2: init system threads before freeze lock
+Date:   Mon, 13 Sep 2021 15:14:50 +0200
+Message-Id: <20210913131121.394853002@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+References: <20210913131113.390368911@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +39,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit ee5165354d498e5bceb0b386e480ac84c5f8c28c ]
+[ Upstream commit a28dc123fa66ba7f3eca7cffc4b01d96bfd35c27 ]
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+Patch 96b1454f2e ("gfs2: move freeze glock outside the make_fs_rw and _ro
+functions") changed the gfs2 mount sequence so that it holds the freeze
+lock before calling gfs2_make_fs_rw. Before this patch, gfs2_make_fs_rw
+called init_threads to initialize the quotad and logd threads. That is a
+problem if the system needs to withdraw due to IO errors early in the
+mount sequence, for example, while initializing the system statfs inode:
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
+1. An IO error causes the statfs glock to not sync properly after
+   recovery, and leaves items on the ail list.
+2. The leftover items on the ail list causes its do_xmote call to fail,
+   which makes it want to withdraw. But since the glock code cannot
+   withdraw (because the withdraw sequence uses glocks) it relies upon
+   the logd daemon to initiate the withdraw.
+3. The withdraw can never be performed by the logd daemon because all
+   this takes place before the logd daemon is started.
 
-For moxart, this is probably not currently an issue but is still good to
-fix though.
+This patch moves function init_threads from super.c to ops_fstype.c
+and it changes gfs2_fill_super to start its threads before holding the
+freeze lock, and if there's an error, stop its threads after releasing
+it. This allows the logd to run unblocked by the freeze lock. Thus,
+the logd daemon can perform its withdraw sequence properly.
 
-Fixes: 1b66e94e6b99 ("mmc: moxart: Add MOXA ART SD/MMC driver")
-Cc: Jonas Jensen <jonas.jensen@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081644.19353-3-tony@atomide.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 96b1454f2e8e ("gfs2: move freeze glock outside the make_fs_rw and _ro functions")
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/moxart-mmc.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/gfs2/ops_fstype.c | 42 ++++++++++++++++++++++++++++++
+ fs/gfs2/super.c      | 61 +++++---------------------------------------
+ 2 files changed, 48 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index bde298887579..6c9d38132f74 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -628,6 +628,7 @@ static int moxart_probe(struct platform_device *pdev)
- 			 host->dma_chan_tx, host->dma_chan_rx);
- 		host->have_dma = true;
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index bd3b3be1a473..ca76e3b8792c 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -1089,6 +1089,34 @@ void gfs2_online_uevent(struct gfs2_sbd *sdp)
+ 	kobject_uevent_env(&sdp->sd_kobj, KOBJ_ONLINE, envp);
+ }
  
-+		memset(&cfg, 0, sizeof(cfg));
- 		cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 		cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++static int init_threads(struct gfs2_sbd *sdp)
++{
++	struct task_struct *p;
++	int error = 0;
++
++	p = kthread_run(gfs2_logd, sdp, "gfs2_logd");
++	if (IS_ERR(p)) {
++		error = PTR_ERR(p);
++		fs_err(sdp, "can't start logd thread: %d\n", error);
++		return error;
++	}
++	sdp->sd_logd_process = p;
++
++	p = kthread_run(gfs2_quotad, sdp, "gfs2_quotad");
++	if (IS_ERR(p)) {
++		error = PTR_ERR(p);
++		fs_err(sdp, "can't start quotad thread: %d\n", error);
++		goto fail;
++	}
++	sdp->sd_quotad_process = p;
++	return 0;
++
++fail:
++	kthread_stop(sdp->sd_logd_process);
++	sdp->sd_logd_process = NULL;
++	return error;
++}
++
+ /**
+  * gfs2_fill_super - Read in superblock
+  * @sb: The VFS superblock
+@@ -1217,6 +1245,14 @@ static int gfs2_fill_super(struct super_block *sb, struct fs_context *fc)
+ 		goto fail_per_node;
+ 	}
+ 
++	if (!sb_rdonly(sb)) {
++		error = init_threads(sdp);
++		if (error) {
++			gfs2_withdraw_delayed(sdp);
++			goto fail_per_node;
++		}
++	}
++
+ 	error = gfs2_freeze_lock(sdp, &freeze_gh, 0);
+ 	if (error)
+ 		goto fail_per_node;
+@@ -1226,6 +1262,12 @@ static int gfs2_fill_super(struct super_block *sb, struct fs_context *fc)
+ 
+ 	gfs2_freeze_unlock(&freeze_gh);
+ 	if (error) {
++		if (sdp->sd_quotad_process)
++			kthread_stop(sdp->sd_quotad_process);
++		sdp->sd_quotad_process = NULL;
++		if (sdp->sd_logd_process)
++			kthread_stop(sdp->sd_logd_process);
++		sdp->sd_logd_process = NULL;
+ 		fs_err(sdp, "can't make FS RW: %d\n", error);
+ 		goto fail_per_node;
+ 	}
+diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
+index 4d4ceb0b6903..2bdbba5ea8d7 100644
+--- a/fs/gfs2/super.c
++++ b/fs/gfs2/super.c
+@@ -119,34 +119,6 @@ int gfs2_jdesc_check(struct gfs2_jdesc *jd)
+ 	return 0;
+ }
+ 
+-static int init_threads(struct gfs2_sbd *sdp)
+-{
+-	struct task_struct *p;
+-	int error = 0;
+-
+-	p = kthread_run(gfs2_logd, sdp, "gfs2_logd");
+-	if (IS_ERR(p)) {
+-		error = PTR_ERR(p);
+-		fs_err(sdp, "can't start logd thread: %d\n", error);
+-		return error;
+-	}
+-	sdp->sd_logd_process = p;
+-
+-	p = kthread_run(gfs2_quotad, sdp, "gfs2_quotad");
+-	if (IS_ERR(p)) {
+-		error = PTR_ERR(p);
+-		fs_err(sdp, "can't start quotad thread: %d\n", error);
+-		goto fail;
+-	}
+-	sdp->sd_quotad_process = p;
+-	return 0;
+-
+-fail:
+-	kthread_stop(sdp->sd_logd_process);
+-	sdp->sd_logd_process = NULL;
+-	return error;
+-}
+-
+ /**
+  * gfs2_make_fs_rw - Turn a Read-Only FS into a Read-Write one
+  * @sdp: the filesystem
+@@ -161,26 +133,17 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
+ 	struct gfs2_log_header_host head;
+ 	int error;
+ 
+-	error = init_threads(sdp);
+-	if (error) {
+-		gfs2_withdraw_delayed(sdp);
+-		return error;
+-	}
+-
+ 	j_gl->gl_ops->go_inval(j_gl, DIO_METADATA);
+-	if (gfs2_withdrawn(sdp)) {
+-		error = -EIO;
+-		goto fail;
+-	}
++	if (gfs2_withdrawn(sdp))
++		return -EIO;
+ 
+ 	error = gfs2_find_jhead(sdp->sd_jdesc, &head, false);
+ 	if (error || gfs2_withdrawn(sdp))
+-		goto fail;
++		return error;
+ 
+ 	if (!(head.lh_flags & GFS2_LOG_HEAD_UNMOUNT)) {
+ 		gfs2_consist(sdp);
+-		error = -EIO;
+-		goto fail;
++		return -EIO;
+ 	}
+ 
+ 	/*  Initialize some head of the log stuff  */
+@@ -188,20 +151,8 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
+ 	gfs2_log_pointers_init(sdp, head.lh_blkno);
+ 
+ 	error = gfs2_quota_init(sdp);
+-	if (error || gfs2_withdrawn(sdp))
+-		goto fail;
+-
+-	set_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
+-
+-	return 0;
+-
+-fail:
+-	if (sdp->sd_quotad_process)
+-		kthread_stop(sdp->sd_quotad_process);
+-	sdp->sd_quotad_process = NULL;
+-	if (sdp->sd_logd_process)
+-		kthread_stop(sdp->sd_logd_process);
+-	sdp->sd_logd_process = NULL;
++	if (!error && !gfs2_withdrawn(sdp))
++		set_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags);
+ 	return error;
+ }
  
 -- 
 2.30.2
