@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4CB408D7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F93408DE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242050AbhIMN0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:26:35 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34172
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240582AbhIMNXi (ORCPT
+        id S240915AbhIMNab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:30:31 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:57994
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240900AbhIMNXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:23:38 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        Mon, 13 Sep 2021 09:23:42 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 821254027A
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:20:53 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 50F514026C
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 13:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631539253;
-        bh=YdMV9AtCFFKriT3c6sHpvFf+xJsEOIFlGHmRsaTySis=;
+        s=20210705; t=1631539254;
+        bh=NBr1U4LAwKajfkWi8d66f/F7DJmWNcP01ndf/w7qpqs=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=D1QZmaEEOA+p+xPrbqrB3Dt2d7Lynrmjuk9snjpLUG8giQXNVkNpMVWrA2J2ES5V2
-         ALweacX8DmOVcxZXCNXPj/nGYKeYzM61wjeLsQm1B4+VYt/JlKJ3F4iFaIzYLlTOx2
-         TUN5GOEmStfnKE6M23Fbhr5KsTzS8tWwGNllE57SUFsxKGtv36a3v+KPlh8n/xno+a
-         OhO1aEEiAMpNsbu+Pp3pUCuCXyvDZbSID6uRwP6KS8MgfpSmZZ5PxgOYoGo+MqZmUs
-         b1uDlqzjZ9QVf2UA6v/V4ijxbF2DuPQuj4OSSEuDg9UxkTHN/FuPzws6w1N03HcTSH
-         mAsEOTQ9gJ2kA==
-Received: by mail-wr1-f70.google.com with SMTP id r5-20020adfb1c5000000b0015cddb7216fso2581972wra.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:20:53 -0700 (PDT)
+        b=eKne7l7JsWA9Oyqv1ej25m2CyAPojw00ksawllNBhUEzH0ZbiNYz83s/f9tfqky5F
+         nIdM5nruK+ENQJgamMXhOKzqvqbmCXZ0H7gNdv623agZNW7W2TuB96pz0byZuS9kyg
+         1gIsNpbQ/fU/u2CvHGQ7E4mmq4mZF83AJeCB6w2dhSVcMdPe8ZpB4/rbC/mVA9BAH3
+         jRY1ekDZCtXtrgeMFeSLZzbPulME9H2eq2URilg78BcpkGrFBSPkCj3QHpTJIw+OJb
+         fpCvjHdVDEuROrY95Re+jRus9/7YOom1q421gYqjLlWq7zNYRyfRgH8AR48iUwxE9P
+         KRmlgh5GimozA==
+Received: by mail-wm1-f72.google.com with SMTP id m22-20020a7bca56000000b002e7508f3faeso4916609wml.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 06:20:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YdMV9AtCFFKriT3c6sHpvFf+xJsEOIFlGHmRsaTySis=;
-        b=pd0YN+q7bBxlNZrvaqyHTN9gHNAAfPRn2P4iQij6IeeVyaTrOr3MIdf6Eg8SSk0Mgu
-         pWccsy4eG79rl8pJNnYOtAxfn332PUl/j/ENiDWn7mF+1kDbpPTa8kdHzBhYMPqVfp+0
-         jHZtqOTB+dfjQO8J5GXhWFXbvRd5htL0kUrGb14wNxoVLdAUbfoRkfQ9pEmLi4R2dQPA
-         Eb1wdPwzh0dRC7H2UsMRisjqeFfVIrGt6j4bLdRLNl9eiuLPbJuVr5ahUhlxOwER+t4b
-         dO3BirCDg7X+QhrxFRLpDLlQIaXUaeu+BCvfBNublte5ocmTycXNb/qQAWsb+bO+Jm65
-         y43w==
-X-Gm-Message-State: AOAM533IsHaMDTVofNEGa61wbBgJVonPlUldmgPIL83cG2H7ZSiSnBc4
-        UsOq1BKsPWiaztwSophoJDaSOk/ZFFg+sVjslRU1PuDCT/kffmY5o3OvM850UJSGl4C4Fl30Fgp
-        opsBBHiU9Vsqoho4+NmnIOR4a3ycmyK/dbv67D02FZA==
-X-Received: by 2002:a1c:a911:: with SMTP id s17mr11244121wme.84.1631539251775;
-        Mon, 13 Sep 2021 06:20:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDKCa2J0aDKEwfGljc8lrJwSBXahWxEFgvrIqIssT5ml8sBzDELvL1CsHBBwjLD7+R1dAL1A==
-X-Received: by 2002:a1c:a911:: with SMTP id s17mr11244098wme.84.1631539251649;
-        Mon, 13 Sep 2021 06:20:51 -0700 (PDT)
+        bh=NBr1U4LAwKajfkWi8d66f/F7DJmWNcP01ndf/w7qpqs=;
+        b=q/NnhApe7sGyfUCvSu3gXOgeQa+tKrkUSlPqtnCIAtLdCSkWwuhPHqQzj6hLF0BzBq
+         WPI8TFb6787ptAjg4WNZcs8xd/yHGL0rlpp+Ero+Obx3ezlr6d/Jb9CpmpulmunzzuDZ
+         KeufBdlfEyScimn0szaof5KJd8ITcD6aMNTNHKt/kfrK5NDx1vHr+6C1VLtT3wl/cPtW
+         JHT+U3bOPA9dU2LzTOnT5vCaUd3m3lUSMdzWyKLDIrCj/GWj0BA78UUKJQeVfONkqfgp
+         Xsc7Z2qJdbK4KQB+vOxD7lz9FZOvngXmG614gqJZYBcB+Y7i1Utwa4CmFDTfOA10Nz/z
+         ktqA==
+X-Gm-Message-State: AOAM532ihiPvUUHlGN517NHexE7E385VxFc60v5i1WiAAz+vUjYiu9u3
+        CzSqytf8gjfFsGQI+O0sxMaoMoIYGANRXptzLTiSocs3SHeeLqakiOkf/Ry8fQqBJo0IPCgvcpD
+        VmsobjvHHnQYdeXvp3JGfJdQ4DZOBFGdjgrZIyCGkPw==
+X-Received: by 2002:a1c:f60c:: with SMTP id w12mr11300812wmc.3.1631539253784;
+        Mon, 13 Sep 2021 06:20:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4mhlijtrqBRrwe325QIJTV+NH9oRbw4vOfFD3MMxQ/lm7QV3e8395RpL+PFPpNFF13sZ40A==
+X-Received: by 2002:a1c:f60c:: with SMTP id w12mr11300790wmc.3.1631539253600;
+        Mon, 13 Sep 2021 06:20:53 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id n3sm7195888wmi.0.2021.09.13.06.20.49
+        by smtp.gmail.com with ESMTPSA id n3sm7195888wmi.0.2021.09.13.06.20.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 06:20:51 -0700 (PDT)
+        Mon, 13 Sep 2021 06:20:53 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Krzysztof Opasiak <k.opasiak@samsung.com>,
@@ -62,9 +62,9 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-wireless@vger.kernel.org
-Subject: [PATCH v2 06/15] nfc: pn533: use dev_err() instead of pr_err()
-Date:   Mon, 13 Sep 2021 15:20:26 +0200
-Message-Id: <20210913132035.242870-7-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2 07/15] nfc: pn544: drop unneeded debug prints
+Date:   Mon, 13 Sep 2021 15:20:27 +0200
+Message-Id: <20210913132035.242870-8-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210913132035.242870-1-krzysztof.kozlowski@canonical.com>
 References: <20210913132035.242870-1-krzysztof.kozlowski@canonical.com>
@@ -74,26 +74,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print error message with reference to a device.
+ftrace is a preferred and standard way to debug entering and exiting
+functions so drop useless debug prints.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/pn533/pn533.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nfc/pn544/mei.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index c5f127fe2d45..da180335422c 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -2171,7 +2171,7 @@ void pn533_recv_frame(struct pn533 *dev, struct sk_buff *skb, int status)
- 	}
+diff --git a/drivers/nfc/pn544/mei.c b/drivers/nfc/pn544/mei.c
+index 5c10aac085a4..a519fa0a53e2 100644
+--- a/drivers/nfc/pn544/mei.c
++++ b/drivers/nfc/pn544/mei.c
+@@ -22,8 +22,6 @@ static int pn544_mei_probe(struct mei_cl_device *cldev,
+ 	struct nfc_mei_phy *phy;
+ 	int r;
  
- 	if (skb == NULL) {
--		pr_err("NULL Frame -> link is dead\n");
-+		dev_err(dev->dev, "NULL Frame -> link is dead\n");
- 		goto sched_wq;
- 	}
+-	pr_info("Probing NFC pn544\n");
+-
+ 	phy = nfc_mei_phy_alloc(cldev);
+ 	if (!phy) {
+ 		pr_err("Cannot allocate memory for pn544 mei phy.\n");
+@@ -46,8 +44,6 @@ static void pn544_mei_remove(struct mei_cl_device *cldev)
+ {
+ 	struct nfc_mei_phy *phy = mei_cldev_get_drvdata(cldev);
  
+-	pr_info("Removing pn544\n");
+-
+ 	pn544_hci_remove(phy->hdev);
+ 
+ 	nfc_mei_phy_free(phy);
 -- 
 2.30.2
 
