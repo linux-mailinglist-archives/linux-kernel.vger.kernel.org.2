@@ -2,85 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711A840986E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474EF40986F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345570AbhIMQKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:10:51 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:43930 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344663AbhIMQKn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:10:43 -0400
-Received: by mail-pf1-f173.google.com with SMTP id f65so9301194pfb.10;
-        Mon, 13 Sep 2021 09:09:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dSc5kQvSxq7QFQ+RxIMy3SGF+ywXK3wh1dZKmtJ3CBQ=;
-        b=PG1B7gYD27iIVZoZXo3vNphtY9ootwq1mLSRXtLK2enX1SAbJuZXWS1VNhO+kUOukc
-         HVacX7mYNCdOBAb439M4rPMTfIXIxHZbfqiw2vG8hP97IPo/x+kF7W5jVLZUVg2KwFjZ
-         kQfeopRJ3+nGaSB9Pkc02iC4cH3D7ttLK8CLy3pZGuTPk+kNXMy0+X+rAQq/tcGhE61j
-         HF6pDWat/7vwJTMCFp2q1OUwo6AelThGvTv2dEYMIVeWGyluhdGAawDaSsoh5k5F3+7m
-         LjDucUPzC5KjV3nCNVm8pBHI8hhId8pZW1KcxWzAHX/x5/dRSniS1urnA8jznDzFdQcL
-         N5BQ==
-X-Gm-Message-State: AOAM532ShHppoHC5hkkyXVTAEtx9xRzQyEHtMSJlAoS3HDXLTMhQ89Bv
-        cGIAX77IMF22XDVFqpvSEao=
-X-Google-Smtp-Source: ABdhPJzWynS+yAvMBvKG4tLvB+cSO2Wvgidxbb75XUDQm2K9/0pHJpnoILgqru/J0gl/P5KUbmguzw==
-X-Received: by 2002:a63:f946:: with SMTP id q6mr11840373pgk.42.1631549366800;
-        Mon, 13 Sep 2021 09:09:26 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:6765:113f:d2d7:def9])
-        by smtp.gmail.com with ESMTPSA id f2sm8579152pga.60.2021.09.13.09.09.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 09:09:26 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] scsi: ufs: introduce vendor isr
-To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
-References: <CGME20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00@epcas2p2.samsung.com>
- <cover.1631519695.git.kwmad.kim@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <fbdd02bc-01ab-c5b3-9355-3ebe04601b04@acm.org>
-Date:   Mon, 13 Sep 2021 09:09:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1345517AbhIMQLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:11:10 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42113 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344663AbhIMQLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 12:11:07 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 18DG9jti002589;
+        Mon, 13 Sep 2021 18:09:45 +0200
+Date:   Mon, 13 Sep 2021 18:09:45 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: how many memset(,0,) calls in kernel ?
+Message-ID: <20210913160945.GA2456@1wt.eu>
+References: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
+ <20210912045608.GB16216@1wt.eu>
+ <88976a40175c491fb5e3349f6686ad67@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1631519695.git.kwmad.kim@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88976a40175c491fb5e3349f6686ad67@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 12:55 AM, Kiwoong Kim wrote:
-> This patch is to activate some interrupt sources
-> that aren't defined in UFSHCI specifications. Those
-> purpose could be error handling, workaround or whatever.
+On Mon, Sep 13, 2021 at 04:03:09PM +0000, David Laight wrote:
+> >   36:   b9 06 00 00 00          mov    $0x6,%ecx
+> >   3b:   4c 89 e7                mov    %r12,%rdi
+> >   3e:   f3 ab                   rep stos %eax,%es:(%rdi)
+> > 
+> > The last line does exactly "memset(%rdi, %eax, %ecx)". Just two bytes
+> > for some code that modern processors are even able to optimize.
 > 
-> Kiwoong Kim (3):
->    scsi: ufs: introduce vendor isr
->    scsi: ufs: introduce force requeue
->    scsi: ufs: ufs-exynos: implement exynos isr
-> 
->   drivers/scsi/ufs/ufs-exynos.c | 84 ++++++++++++++++++++++++++++++++++++-------
->   drivers/scsi/ufs/ufshcd.c     | 22 ++++++++++--
->   drivers/scsi/ufs/ufshcd.h     |  2 ++
->   3 files changed, 93 insertions(+), 15 deletions(-)
+> Hmmm I'd bet that 6 stores will be faster on ~everything.
+> 'modern' processors do better than some older ones [1], but 6
+> writes isn't enough to get into the really fast paths.
+> So you'll still take a few cycles of setup.
 
-The UFS protocol is standardized. Your employer has a representative in the
-UFS standardization committee. Please work with that representative to
-standardize this feature instead of adding non-standard extensions to the UFS
-driver.
+The exact point is, here it's up to the compiler to decide thanks to
+its builtin what it considers best for the target CPU. It already
+knows the fixed size and the code is emitted accordingly. It may
+very well be a call to the memset() function when the size is large
+and a power of two because it knows alternate variants are available
+for example.
 
-Thanks,
+The compiler might even decide to shrink that area if other bytes
+are written just after the memset(), leaving only holes touched by
+memset().
 
-Bart.
-
-
+Willy
