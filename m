@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDF2408F02
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C9B408F04
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240574AbhIMNit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:38:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34490 "EHLO mail.kernel.org"
+        id S242304AbhIMNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240811AbhIMNdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:33:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C460613A2;
-        Mon, 13 Sep 2021 13:26:20 +0000 (UTC)
+        id S241706AbhIMNdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1086138E;
+        Mon, 13 Sep 2021 13:26:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539580;
-        bh=AbikhgoOUsxMKmjG7zqwGjfq+lOlQ99AzdclRJKEmLk=;
+        s=korg; t=1631539586;
+        bh=o21YIMvVkVJCwVrULYcHxHU/6XcaQYo/AjSboxziAsw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5pBEc3arrCNtT0f9o5cMd3fgYMf5/zHmMpn9SuLG/C0eamH+MCE+UrTd58DCgqWT
-         798q97HinBaOx90toUJOreZEX5KLMtrOxR4Rb2GCyNDUmHr0WcJcCykqd8m+sp9BUc
-         zb1EDUrtDUghcHYSjSZNDVqBy+HHOrR8N6glcUus=
+        b=tTRfH5z4s/IQvi/tg01BeImz7K9NGXMXMUGy0icThfONqcToqIYwhngxptNBylw6T
+         RM3gHRdY/q6Mlyk49dRX8bfk1mZ8veBuhym028MfaJJWPyeq/OCNEVD9xue2CpGzwO
+         zt+m60kRdg0AS8KDSA4In3C099O13JQru+mEFJ+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Haiyue Wang <haiyue.wang@intel.com>,
-        Catherine Sullivan <csully@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Shuyi Cheng <chengshuyi@linux.alibaba.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 080/236] gve: fix the wrong AdminQ buffer overflow check
-Date:   Mon, 13 Sep 2021 15:13:05 +0200
-Message-Id: <20210913131103.075999348@linuxfoundation.org>
+Subject: [PATCH 5.10 081/236] libbpf: Fix the possible memory leak on error
+Date:   Mon, 13 Sep 2021 15:13:06 +0200
+Message-Id: <20210913131103.116958945@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
 References: <20210913131100.316353015@linuxfoundation.org>
@@ -41,46 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiyue Wang <haiyue.wang@intel.com>
+From: Shuyi Cheng <chengshuyi@linux.alibaba.com>
 
-[ Upstream commit 63a9192b8fa1ea55efeba1f18fad52bb24d9bf12 ]
+[ Upstream commit 18353c87e0e0440d4c7c746ed740738bbc1b538e ]
 
-The 'tail' pointer is also free-running count, so it needs to be masked
-as 'adminq_prod_cnt' does, to become an index value of AdminQ buffer.
+If the strdup() fails then we need to call bpf_object__close(obj) to
+avoid a resource leak.
 
-Fixes: 5cdad90de62c ("gve: Batch AQ commands for creating and destroying queues.")
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
-Reviewed-by: Catherine Sullivan <csully@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
+Signed-off-by: Shuyi Cheng <chengshuyi@linux.alibaba.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/1626180159-112996-3-git-send-email-chengshuyi@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_adminq.c | 6 ++++--
+ tools/lib/bpf/libbpf.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_adminq.c b/drivers/net/ethernet/google/gve/gve_adminq.c
-index 24ae6a28a806..6009d76e41fc 100644
---- a/drivers/net/ethernet/google/gve/gve_adminq.c
-+++ b/drivers/net/ethernet/google/gve/gve_adminq.c
-@@ -182,7 +182,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
- 	tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 95eef7ebdac5..04cde732d686 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6907,8 +6907,10 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+ 	kconfig = OPTS_GET(opts, kconfig, NULL);
+ 	if (kconfig) {
+ 		obj->kconfig = strdup(kconfig);
+-		if (!obj->kconfig)
+-			return ERR_PTR(-ENOMEM);
++		if (!obj->kconfig) {
++			err = -ENOMEM;
++			goto out;
++		}
+ 	}
  
- 	// Check if next command will overflow the buffer.
--	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
-+	if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
-+	    (tail & priv->adminq_mask)) {
- 		int err;
- 
- 		// Flush existing commands to make room.
-@@ -192,7 +193,8 @@ static int gve_adminq_issue_cmd(struct gve_priv *priv,
- 
- 		// Retry.
- 		tail = ioread32be(&priv->reg_bar0->adminq_event_counter);
--		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) == tail) {
-+		if (((priv->adminq_prod_cnt + 1) & priv->adminq_mask) ==
-+		    (tail & priv->adminq_mask)) {
- 			// This should never happen. We just flushed the
- 			// command queue so there should be enough space.
- 			return -ENOMEM;
+ 	err = bpf_object__elf_init(obj);
 -- 
 2.30.2
 
