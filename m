@@ -2,270 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D9D40847C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E74408480
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237229AbhIMGJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:09:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44193 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237115AbhIMGJc (ORCPT
+        id S237251AbhIMGLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:11:10 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:62087 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234655AbhIMGLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:09:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631513296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H3hy39aR4W35XwAnR6w4lMHYQiAg4avzwmB3IQ+RBLg=;
-        b=iUklj6r16WqJ1BqISJfSN1oDW0W/9DHqIm6O2IUbAxhM5ksqf+oDFL/4vTBBkjH5Bfc/sz
-        dBjjY1I4efMPueP73aPYZbf+D8rB47BEC5sJ+sYCB2/rWohN+MRr0ASNL2FnhBraW5iFA0
-        MoE7lDTPHYKFSPK+Es+5tjmrPSiYWlk=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-bO3YaRqMORugmcxKvFCjSA-1; Mon, 13 Sep 2021 02:08:15 -0400
-X-MC-Unique: bO3YaRqMORugmcxKvFCjSA-1
-Received: by mail-lj1-f197.google.com with SMTP id b29-20020a2ebc1d000000b001ba014dfa94so3683890ljf.9
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Sep 2021 23:08:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H3hy39aR4W35XwAnR6w4lMHYQiAg4avzwmB3IQ+RBLg=;
-        b=TNCk45tSxmZr/IVbkFs1RVUiR9yT6DLgSse9yZADxp8+LcYjaONpn6ZlgBVSs9EIQt
-         ZS62C4Dypz4gPidc1McE/kT//vDwNGxcUHkU7CVvtcbLtgjalGvbZrA40yAy8RHjAUq7
-         7YfJsZsP56vDJmjANklu2YtR/I4943vC4vxJsG2l+3ecWS695VETjZb1XgAHBY2evY72
-         srqGXzfJ8e+ReqGSjWDhqRuxqOK8xq16WzpDOanEP7o0c5S8yYxDZwEoy3yzu77Wf8op
-         oDjMUmbbioyeD9kQDjxDeIMFsMj5V12fZKCZG4HEvf5YuTkQzSNKzUbH4+26hBZHc5Hy
-         qqGg==
-X-Gm-Message-State: AOAM530IoPMSbLMULfB7tYvrV9UKFaH4XW5XsquVGJNDWZRt1LXipOUN
-        4LvpjjAkYalQQCieP6mXaiYbxUgD1EkzksRYdmWI1lj0pfHIITp0uJR1um7KdwgnPCSgOZl4kUt
-        RrHLAEZI4ohJOLgqgzfu61B74oKDCTkzwwkWyRC1c
-X-Received: by 2002:a05:6512:110b:: with SMTP id l11mr7678175lfg.199.1631513293534;
-        Sun, 12 Sep 2021 23:08:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0Fy6hG7tOupTebTd6qmGV02QwYb1U9T+fAMtnI9Pi/sMIS4hZztZy7p4G3Xy3c5B4i+kOLvARZ6EoA8e+sG8=
-X-Received: by 2002:a05:6512:110b:: with SMTP id l11mr7678168lfg.199.1631513293305;
- Sun, 12 Sep 2021 23:08:13 -0700 (PDT)
+        Mon, 13 Sep 2021 02:11:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631513392; x=1663049392;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=vxFoJsVdZUJ/DCssOhxOG1Zwsz3ntnbgHD08j/PV/QI=;
+  b=M5wRRF2heqdeUg8HONffAnTQE/PHkp2MmiKtGFgCA3QbtYaMKSbPv9kc
+   poSXwwfO0aolwb1JeLdu0IZeeoEs7elqLA9XEe+wo2BLQ6fO90GietKI4
+   SGZCDaBob/0d2pLZ5BeTlqSVSWAvwg7HYFFoyLsZQXgntUzyTSZnqysaH
+   63zOs9Jhc2VFf4ukx5CE66Zr+KT1rmayXJkD82LlRshNTqPxjzZ4gNcI/
+   KDKS5irBVvFJ9rf14DsMEkt14CScM21p5d1K8nf1y+/sUqGzUazlrvxeO
+   KAXAmTXCDzeRJ1obPLfwCR3RjgnyELTCIbf/lnHtAE6TYFqGT82EGpTDc
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,288,1624291200"; 
+   d="scan'208";a="179828003"
+Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Sep 2021 14:09:51 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jP20La04EDU2FtDaEKhkVbbd9pDloeGhZTz1OuE8ztgqncPM78C4DLoKs/RIJgYJ5Sa1A5GU8nmraD1K/qSKk9noXwrSaaFvnS5uaeQOgd+nxn2yGzs5LD7lyxTXd5AyKq40B7/K97Y8eakuS4iMZ/lh9QQL8iI8mDx8WmaOORaPtKdlGwwB5MldnoMw8SZVupkjfD7QoczNn3oDa0P9spefg3s7FY/TNhBPnQlanm0uhbFY6ykYB0k8a3T6VpaTcX9kq4OJoLHZc5FaEHYcOO5LAl8Eg0mf4HJV1CFveZVhqK1d0tKB52d3MdsxzqTIL8SG63H2OvNtKdrwJcnMHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vxFoJsVdZUJ/DCssOhxOG1Zwsz3ntnbgHD08j/PV/QI=;
+ b=JzWAljTKTjNxonPjq0gom4r57GCICnfyw5OUxHpLJRVwBWFhLyz4tHVhIwlJfbL3B3lDrj8Z49j3IS9lhvNRKZAndsQY1dm3NcpTq1SKjNdabDnHjZW8LB4p2X2m+JhplVap6t3adh39s2Cs6w4zAlhRcdz4ln4BkmtCXTGQT8NLzZLoza8AD7KRZau5gQygmgcrPiD2LGJV5WVy2JGU68mPPHCGhNw35EzYg7aIS7SYbj22Whr1+r4aLuHiD3tefbB+PzmDv08M7ZhwKPR1DblRLVNJ34mphrzcEkFqYJJLr4Z+UNVA4xjw5rfKqqEvQtHH40EKuaSAug6HUGTzVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vxFoJsVdZUJ/DCssOhxOG1Zwsz3ntnbgHD08j/PV/QI=;
+ b=vcnvlnJFdfiQu/NJEN1zaqSKDKes82Cor/i/qUDWsijPdmjnsLY7Pz6ff4gh+F5Scjdo7oyVgACtkPEuHu2UyDjVTVnFJB9+R3KwjpyY+Hgo14rU26ZAu0vdnoDFSMmQxh6rEo88HuBCNHKsq5XZyHXi+B+bj+MhgY81tr3blPw=
+Received: from CH2PR04MB6570.namprd04.prod.outlook.com (2603:10b6:610:64::18)
+ by CH2PR04MB6855.namprd04.prod.outlook.com (2603:10b6:610:a2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15; Mon, 13 Sep
+ 2021 06:09:51 +0000
+Received: from CH2PR04MB6570.namprd04.prod.outlook.com
+ ([fe80::b96f:483e:1497:bc41]) by CH2PR04MB6570.namprd04.prod.outlook.com
+ ([fe80::b96f:483e:1497:bc41%2]) with mapi id 15.20.4457.024; Mon, 13 Sep 2021
+ 06:09:51 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>
+Subject: RE: [PATCH v3 2/2] scsi: ufs: Add temperature notification exception
+ handling
+Thread-Topic: [PATCH v3 2/2] scsi: ufs: Add temperature notification exception
+ handling
+Thread-Index: AQHXp9jd1Lsdm7me9kac2y8mgWkqi6ugjaCAgADubxA=
+Date:   Mon, 13 Sep 2021 06:09:51 +0000
+Message-ID: <CH2PR04MB65709BFDA3A7057FD44F663DFCD99@CH2PR04MB6570.namprd04.prod.outlook.com>
+References: <20210912131919.12962-1-avri.altman@wdc.com>
+ <20210912131919.12962-3-avri.altman@wdc.com>
+ <3dddb2a8-a599-2061-08e6-b4c5ca865cb9@roeck-us.net>
+In-Reply-To: <3dddb2a8-a599-2061-08e6-b4c5ca865cb9@roeck-us.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: roeck-us.net; dkim=none (message not signed)
+ header.d=none;roeck-us.net; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e7bc5e49-bc9a-413c-0012-08d9767d1903
+x-ms-traffictypediagnostic: CH2PR04MB6855:
+x-microsoft-antispam-prvs: <CH2PR04MB685561247F600DDF4BAB1D7EFCD99@CH2PR04MB6855.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1051;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1WnQ5Z7NaMDChm2XkGN6jlgKIYR5nnEVmx+62HBJsLkhRmMcqHS7rTEUQZ4jOPHYLqOBGyKXwGkrLGQMHQQPCnZrsV08vF0Bww0tRrUNJ1Hr/Ky8+EBtfn6+hTgkuOAKrQen3JPGiy8Ksa+5mXErPdYPP45eC/A8i7Sh2J2r1C/ENOC3D8wZNA+FpsHhV56UYQncdxNJ4T1LtTTaEicgahaUquhOXkRLmZiCXPJVn9XNCtczgYu03/F9DIvwSACTpw9J/u1waTH3mVfjCx59HNzd1JB8VdLGOrelQoF92WOgxEJvqjxetJYHKbK64R7lhujlppx8ITXGnpNxSdN8U3kSrXHIe61GZj+lhwJ8M5oL+i+re8wNvF35u1EbhXIVBxR+5NCT/BQivGacTnmpqbKpjlI/fiGbsdGukDql5EccN1X3mNMxLQeb3rCWMOSk1aCKe3qatfGd4mpKxO1Qel6Kxk36VHCoQ5b+Mf+sHSLAK4i4QMnQvKyAxKkmU9rUn4ldZteF9V1nAH0Vq6DC/bimFCh73dVEaB9OjybLkbndvCt5EWd+7EW+KqDahyWXOjZT6PPoaYAbNwIuJac21GOpwqFBY7xb0zrNxHb3cG1LLdNukfllM0PfPzvQDc6x/QKr8Jdj0dsQXThqaEwgzrPNDL63pvVMLG543HDSCZw3ulrCyZXXQtZldWl85ywxXGXDSpy6eg8x103nLIMTow==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR04MB6570.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(478600001)(64756008)(66556008)(66476007)(66946007)(4744005)(55016002)(38070700005)(76116006)(316002)(186003)(26005)(86362001)(54906003)(110136005)(8676002)(7696005)(9686003)(4326008)(71200400001)(6506007)(2906002)(38100700002)(66446008)(52536014)(5660300002)(122000001)(33656002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZkdFdXM5OXoyemdjYUhVT1lFdXJLNFhkSEUrUlJhYzJXcW1nc2w3a1FSc0xV?=
+ =?utf-8?B?SVNHV0dZa2FYOUpreFR5WDFEcVYvM2lzNTE3ZDJFdlJFSnk1K0l1N1BibkZi?=
+ =?utf-8?B?bDVnaWovdnBGcnJvMGdMU3N1eElkRzVieVIzcHhnTnk0akhXWEwvZGovSlF0?=
+ =?utf-8?B?U25VTnpBUGNSMnhDV1RDVVFDR3hhRE1yaXZBMURPTmNxZHArT08vUmE5MGxZ?=
+ =?utf-8?B?R1NiK1F1Y2pZeUVMYTdYYk15aHV5NkFCRHFCREhpSHBKa2o0V0RmczNwRUpN?=
+ =?utf-8?B?T1BmRHk0Z0RFcGZnMjVoR3QxaW94VGVRRk1uNWVMSHJrN2J0OFVwQ2JsNnps?=
+ =?utf-8?B?Nm1uZE1BdTlrYkdoWHBqeTgrZlZCU1JKTHFiMVZiUENKZFVjcjRnZ1hUUjNT?=
+ =?utf-8?B?bnRrUTJSU3V0QWJ3Z0Fpa2RGQkdSVGREVHNkcGdNV0FYa3ZIOVpuK205Tmlv?=
+ =?utf-8?B?WngrM2s2YlZoWDE4N3BXTi9XYXF4MjhiNmcyb092QWIrL3ZrdHpWV2NwY2sz?=
+ =?utf-8?B?d3RGbExhWnJwd0xFaHBsV0g4TXNRZHhxc3N1UXVQT0QrYWtCZjBBZGN3VzBa?=
+ =?utf-8?B?MXhwUGszWStIZ2Nza0NmdjFHUUc2aDBTK0NCUm5sNHMyZkNBd2hKTjNOUWk4?=
+ =?utf-8?B?MzMwVmtWZEpnNGo3UDJjbzlYUGgrQWF1ZnNEdk1SdGhmNUJKRE1ZQWpXeGMr?=
+ =?utf-8?B?R2NrcEN0RDJwb0xoUXRCUWU3RU1RRWR2dUgxUzlOZmhVTjJYZDJGK1hvdTJ0?=
+ =?utf-8?B?WU5UeEN4bjdVTi9zazN6d3hyakdiY21uajVSTWpCS2J4WTd0cGFMSUJWZTNM?=
+ =?utf-8?B?N1VJRkgzalNhMXhnek1XSVdMY2drSzlOc1ZsdDNWTjRHWHJYZzR1NEYreUo2?=
+ =?utf-8?B?WWk5TURlcnBXK1hWVXRIbnBTRVhMaHV4K1pNallhWmVrdEwvVWtxQk1Wb3A5?=
+ =?utf-8?B?SU1LcnZDQktNQmE5K29SY1VKZnM5OWxIdlh2VThDM001QzBDVDkvQit6ZGFs?=
+ =?utf-8?B?c0pXNk9OV3JuZ2dBcXhEcElsZjNuLy9zYTFKL1VmaXkyY09ZS2pQVWFyTEt1?=
+ =?utf-8?B?Z0xHZ2pIMjBibE9yYXdZSDZUQTJKNkpPeks1R1dOZ0ZPQUt2N2FnNjl6U0ov?=
+ =?utf-8?B?L2llREpUd3pQS0FSZ1EzbmxQMzQyUDc3a2k2cVhhRkc4RTFhdjJDSEJIMDQ4?=
+ =?utf-8?B?VHhmRk14MnJMTEYvQVNXT3RKZDVQdCsxelNONkZ5QkE0blArV1NuWUZZbGhx?=
+ =?utf-8?B?UVozUHRLejlrUFJMdFA4blRNRHlTa2NSeDZCUHk2aU9FSldNaWwxZ0lvQ2U0?=
+ =?utf-8?B?ZXFOemo5RDV5aVQrSCtvL04rSm1QQ2MyWThCVnVkeTZJNWRENWVRa2tRZ0RM?=
+ =?utf-8?B?T0JydUR4OWg1SWhWNlNWMlRHS0JpNUxqbzAybnBhMThwSHJ6K3YyQU04SHNZ?=
+ =?utf-8?B?MjlzbXcwSnU0ZjZ5bzBQZnFzdlkxd3RpeXBoRWRndEN5UmFNWjhrVzRBRVBk?=
+ =?utf-8?B?MzJGbXc2THFSVzhXYnYvVzNnQ1FXRXkzdkZWdlRRSDJQUGQxc1NVeFRoWnMy?=
+ =?utf-8?B?QWorWTNudUxFMXBZbEt2eUlncFhldG5jRXR5dFFjbVQ5aUtidU1ya1gwRy9r?=
+ =?utf-8?B?Z3FLdG9XNlFGc05lRjRSRW5vMElsWHY2Zko0bStoZ20rUXpsVTNrdEhKRjls?=
+ =?utf-8?B?VTdSTGt0SkVsa0JLTDhrblJCdHVzZDZrTGtGNUZqM1UySHExcjR3MjVvVjdi?=
+ =?utf-8?Q?pkn5TmLEATUq/dcq2msNLdTuJmMTC6bSsbM4COv?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210913055353.35219-1-jasowang@redhat.com> <20210913055353.35219-7-jasowang@redhat.com>
- <20210913015711-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210913015711-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 13 Sep 2021 14:08:02 +0800
-Message-ID: <CACGkMEva2j57tG=-QYG7NdgEV28i-gpBReRR+UX7YwrHzRWydw@mail.gmail.com>
-Subject: Re: [PATCH 6/9] virtio_pci: harden MSI-X interrupts
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        pbonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR04MB6570.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7bc5e49-bc9a-413c-0012-08d9767d1903
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2021 06:09:51.1077
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BHYO55OqOr5z/hXqt8Gvbh08d/z1KiuvHa2MYS8dXO2oiPi4xvQDGTfnBa2ObS7oEjZmWBMUSiI33NVE+WZQmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6855
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 2:04 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Mon, Sep 13, 2021 at 01:53:50PM +0800, Jason Wang wrote:
-> > We used to synchronize pending MSI-X irq handlers via
-> > synchronize_irq(), this may not work for the untrusted device which
-> > may keep sending interrupts after reset which may lead unexpected
-> > results. Similarly, we should not enable MSI-X interrupt until the
-> > device is ready. So this patch fixes those two issues by:
-> >
-> > 1) switching to use disable_irq() to prevent the virtio interrupt
-> >    handlers to be called after the device is reset.
-> > 2) using IRQF_NO_AUTOEN and enable the MSI-X irq during .ready()
-> >
-> > This can make sure the virtio interrupt handler won't be called before
-> > virtio_device_ready() and after reset.
-> >
-> > Signed-off-by: Jason Wang <jasowang@redhat.com>
->
-> I don't get the threat model here. Isn't disabling irqs done by the
-> hypervisor anyway? Is there a reason to trust disable_irq but not
-> device reset?
-
-My understanding is that e.g in the case of SEV/TDX we don't trust the
-hypervisor. So the hypervisor can keep sending interrupts even if the
-device is reset. The guest can only trust its own software interrupt
-management logic to avoid call virtio callback in this case.
-
-Thanks
-
->
-> Cc a bunch more people ...
->
->
-> > ---
-> >  drivers/virtio/virtio_pci_common.c | 27 +++++++++++++++++++++------
-> >  drivers/virtio/virtio_pci_common.h |  6 ++++--
-> >  drivers/virtio/virtio_pci_legacy.c |  5 +++--
-> >  drivers/virtio/virtio_pci_modern.c |  6 ++++--
-> >  4 files changed, 32 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > index b35bb2d57f62..0b9523e6dd39 100644
-> > --- a/drivers/virtio/virtio_pci_common.c
-> > +++ b/drivers/virtio/virtio_pci_common.c
-> > @@ -24,8 +24,8 @@ MODULE_PARM_DESC(force_legacy,
-> >                "Force legacy mode for transitional virtio 1 devices");
-> >  #endif
-> >
-> > -/* wait for pending irq handlers */
-> > -void vp_synchronize_vectors(struct virtio_device *vdev)
-> > +/* disable irq handlers */
-> > +void vp_disable_vectors(struct virtio_device *vdev)
-> >  {
-> >       struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> >       int i;
-> > @@ -34,7 +34,20 @@ void vp_synchronize_vectors(struct virtio_device *vdev)
-> >               synchronize_irq(vp_dev->pci_dev->irq);
-> >
-> >       for (i = 0; i < vp_dev->msix_vectors; ++i)
-> > -             synchronize_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > +             disable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> > +}
-> > +
-> > +/* enable irq handlers */
-> > +void vp_enable_vectors(struct virtio_device *vdev)
-> > +{
-> > +     struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > +     int i;
-> > +
-> > +     if (vp_dev->intx_enabled)
-> > +             return;
-> > +
-> > +     for (i = 0; i < vp_dev->msix_vectors; ++i)
-> > +             enable_irq(pci_irq_vector(vp_dev->pci_dev, i));
-> >  }
-> >
-> >  /* the notify function used when creating a virt queue */
-> > @@ -141,7 +154,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
-> >       snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
-> >                "%s-config", name);
-> >       err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
-> > -                       vp_config_changed, 0, vp_dev->msix_names[v],
-> > +                       vp_config_changed, IRQF_NO_AUTOEN,
-> > +                       vp_dev->msix_names[v],
-> >                         vp_dev);
-> >       if (err)
-> >               goto error;
-> > @@ -160,7 +174,8 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
-> >               snprintf(vp_dev->msix_names[v], sizeof *vp_dev->msix_names,
-> >                        "%s-virtqueues", name);
-> >               err = request_irq(pci_irq_vector(vp_dev->pci_dev, v),
-> > -                               vp_vring_interrupt, 0, vp_dev->msix_names[v],
-> > +                               vp_vring_interrupt, IRQF_NO_AUTOEN,
-> > +                               vp_dev->msix_names[v],
-> >                                 vp_dev);
-> >               if (err)
-> >                       goto error;
-> > @@ -337,7 +352,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
-> >                        "%s-%s",
-> >                        dev_name(&vp_dev->vdev.dev), names[i]);
-> >               err = request_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec),
-> > -                               vring_interrupt, 0,
-> > +                               vring_interrupt, IRQF_NO_AUTOEN,
-> >                                 vp_dev->msix_names[msix_vec],
-> >                                 vqs[i]);
-> >               if (err)
-> > diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-> > index beec047a8f8d..a235ce9ff6a5 100644
-> > --- a/drivers/virtio/virtio_pci_common.h
-> > +++ b/drivers/virtio/virtio_pci_common.h
-> > @@ -102,8 +102,10 @@ static struct virtio_pci_device *to_vp_device(struct virtio_device *vdev)
-> >       return container_of(vdev, struct virtio_pci_device, vdev);
-> >  }
-> >
-> > -/* wait for pending irq handlers */
-> > -void vp_synchronize_vectors(struct virtio_device *vdev);
-> > +/* disable irq handlers */
-> > +void vp_disable_vectors(struct virtio_device *vdev);
-> > +/* enable irq handlers */
-> > +void vp_enable_vectors(struct virtio_device *vdev);
-> >  /* the notify function used when creating a virt queue */
-> >  bool vp_notify(struct virtqueue *vq);
-> >  /* the config->del_vqs() implementation */
-> > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-> > index d62e9835aeec..bdf6bc667ab5 100644
-> > --- a/drivers/virtio/virtio_pci_legacy.c
-> > +++ b/drivers/virtio/virtio_pci_legacy.c
-> > @@ -97,8 +97,8 @@ static void vp_reset(struct virtio_device *vdev)
-> >       /* Flush out the status write, and flush in device writes,
-> >        * including MSi-X interrupts, if any. */
-> >       ioread8(vp_dev->ioaddr + VIRTIO_PCI_STATUS);
-> > -     /* Flush pending VQ/configuration callbacks. */
-> > -     vp_synchronize_vectors(vdev);
-> > +     /* Disable VQ/configuration callbacks. */
-> > +     vp_disable_vectors(vdev);
-> >  }
-> >
-> >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-> > @@ -194,6 +194,7 @@ static void del_vq(struct virtio_pci_vq_info *info)
-> >  }
-> >
-> >  static const struct virtio_config_ops virtio_pci_config_ops = {
-> > +     .ready          = vp_enable_vectors,
-> >       .get            = vp_get,
-> >       .set            = vp_set,
-> >       .get_status     = vp_get_status,
-> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> > index 30654d3a0b41..acf0f6b6381d 100644
-> > --- a/drivers/virtio/virtio_pci_modern.c
-> > +++ b/drivers/virtio/virtio_pci_modern.c
-> > @@ -172,8 +172,8 @@ static void vp_reset(struct virtio_device *vdev)
-> >        */
-> >       while (vp_modern_get_status(mdev))
-> >               msleep(1);
-> > -     /* Flush pending VQ/configuration callbacks. */
-> > -     vp_synchronize_vectors(vdev);
-> > +     /* Disable VQ/configuration callbacks. */
-> > +     vp_disable_vectors(vdev);
-> >  }
-> >
-> >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-> > @@ -380,6 +380,7 @@ static bool vp_get_shm_region(struct virtio_device *vdev,
-> >  }
-> >
-> >  static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
-> > +     .ready          = vp_enable_vectors,
-> >       .get            = NULL,
-> >       .set            = NULL,
-> >       .generation     = vp_generation,
-> > @@ -397,6 +398,7 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
-> >  };
-> >
-> >  static const struct virtio_config_ops virtio_pci_config_ops = {
-> > +     .ready          = vp_enable_vectors,
-> >       .get            = vp_get,
-> >       .set            = vp_set,
-> >       .generation     = vp_generation,
-> > --
-> > 2.25.1
->
-
+PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5oIGIvZHJpdmVycy9zY3Np
+L3Vmcy91ZnNoY2QuaA0KPiA+IGluZGV4IDc5OGE0MDhkNzFlNS4uZTZhYmNlOWE4YjAwIDEwMDY0
+NA0KPiA+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmgNCj4gPiArKysgYi9kcml2ZXJz
+L3Njc2kvdWZzL3Vmc2hjZC5oDQo+ID4gQEAgLTEwNjMsOSArMTA2MywxMSBAQCBzdGF0aWMgaW5s
+aW5lIHU4DQo+IHVmc2hjZF93Yl9nZXRfcXVlcnlfaW5kZXgoc3RydWN0IHVmc19oYmEgKmhiYSkN
+Cj4gPiAgICNpZmRlZiBDT05GSUdfU0NTSV9VRlNfSFdNT04NCj4gPiAgIHZvaWQgdWZzX2h3bW9u
+X3Byb2JlKHN0cnVjdCB1ZnNfaGJhICpoYmEsIHU4IG1hc2spOw0KPiA+ICAgdm9pZCB1ZnNfaHdt
+b25fcmVtb3ZlKHN0cnVjdCB1ZnNfaGJhICpoYmEpOw0KPiA+ICt2b2lkIHVmc19od21vbl9ub3Rp
+ZnlfZXZlbnQoc3RydWN0IHVmc19oYmEgKmhiYSwgdTggZWVfbWFzayk7DQo+ID4gICAjZWxzZQ0K
+PiA+ICAgc3RhdGljIGlubGluZSB2b2lkIHVmc19od21vbl9wcm9iZShzdHJ1Y3QgdWZzX2hiYSAq
+aGJhLCB1OCBtYXNrKSB7fQ0KPiA+ICAgc3RhdGljIGlubGluZSB2b2lkIHVmc19od21vbl9yZW1v
+dmUoc3RydWN0IHVmc19oYmEgKmhiYSkge30NCj4gPiArdm9pZCB1ZnNfaHdtb25fbm90aWZ5X2V2
+ZW50KHN0cnVjdCB1ZnNfaGJhICpoYmEsIHU4IGVlX21hc2spIHt9DQo+IA0KPiBzdGF0aWMNCkRv
+bmUuDQoNCj4gDQo+ID4gICAjZW5kaWYNCj4gPg0KPiA+ICAgI2lmZGVmIENPTkZJR19QTQ0KPiA+
+DQoNCg==
