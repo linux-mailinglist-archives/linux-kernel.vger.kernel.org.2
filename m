@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6C0409BDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82092409BF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 20:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346609AbhIMSLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 14:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
+        id S1347054AbhIMSPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 14:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346579AbhIMSLf (ORCPT
+        with ESMTP id S240519AbhIMSPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 14:11:35 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4240EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:10:19 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id t35so8914657qtc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 11:10:19 -0700 (PDT)
+        Mon, 13 Sep 2021 14:15:10 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC071C061760;
+        Mon, 13 Sep 2021 11:13:54 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id v19so4277501pjh.2;
+        Mon, 13 Sep 2021 11:13:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CrTVtOmuoVf96nTz7kdFQqbCSVSV3Q0MJ1SBqM620bA=;
-        b=rz8dgkQc9No0pdPKYoTN02+zFUzynYahwSz0IDpfNXzhpDj9cUye/fY4OMS9zG1tRi
-         5ciewBsc9nwisACmpHlIWZ3wxX2L+7AgD3ff0mYtnk9TCXin1RANN2wSDyTQgvdVMpw6
-         U+uQMLb7b+iyqAarJxk3vHZWPN3JCEaCm6CXnJoLuXLyhCS0LbWomjixD4MrxQnR3S8j
-         U3IWknP8CN0rfpAhJ0O0C8wurzEmSDBsMUEnCGCayf2Q3jDlbHIm2QB+kAghaDA9m8b4
-         Pkd7R8QiwhuoCnNuqcI1iH+DiVesej6zB7o4rrPzzYRfMf55BUxL9i6W8ECN6vy77fe2
-         Qk7g==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=/4uPDarz24UXr+YAssPYAyN6mqLcg35XkTUPvLLsvp0=;
+        b=XMNZQEWHrFBKVsHmCmGO/UxEfbCSmwWA9iUwJhtYL1pTOc/zzjAo6PQxhv4LSwRZkU
+         UwNLtLWPwFNT5VfcHlrLcFwKTg0AhLmiS7QKO3qu5KFECDujR7yK8ZkAVLvELx95tMBC
+         ZXOhJGvtKVUTWJwotNsGLlQgKZKNub6Djkz0aIWImAQN9dxpqtLY4/fdOA/VwLNWhb6Q
+         wc7UX+1pkpGhZBALZ8rpRPzx9GS30fwZXFJVvp5Y2xD4VFvFhoKT/NN/fmHlEyuc0zBp
+         rtWdUIeWmMX70dkh3izYt8PAbO0sAPMPvTiIyVS9u70n8mttu9/Y8KhmgRN+Nh+dImPh
+         MHcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CrTVtOmuoVf96nTz7kdFQqbCSVSV3Q0MJ1SBqM620bA=;
-        b=qtM3CELbgoE7f+T70kcISABK3r/JkU1yROHhgcmpwQ0cqgFwEBRYcNvYDQF6mz9yfw
-         t/wG/SmcgtDEDVJ/9QNzs9odQt07F0zcwV23Q19ptwl9GwHQ9k1f9BVzqFpotukSrkc1
-         k0F1FJmrF0PAtVYwc5+t9x68DJ8MjOsOZShOcZzld+tpP3a8Sy/Khwcs4nsmFeGJ0mIe
-         FVKVMDmyS5SGWCyQTNGdK0uBtbXOdkxIPHAN0YJp6u3M1MSUL6DNc1Ty87kDLBxxiXtM
-         dFN5/pz3whF89CZ0Xc/U+The7eRMCDhfiLOd1X5CDyzRVozbF9lOUxQoGElZ0h2WbBki
-         eOFw==
-X-Gm-Message-State: AOAM532sSpXedjY9chc4+d3j0ZaNjmntEqpexnol+Tz4xOW02G5CIdcN
-        LcsOKKphS8cDr0RBq1YInA5ERw==
-X-Google-Smtp-Source: ABdhPJxNvWeBzeXxgZ6yLYj86fQHbWdUKXNVfIYcjfa6FiOPfjujqLW6MccyXCdfczNfqFKptn6JgA==
-X-Received: by 2002:ac8:7dc6:: with SMTP id c6mr817719qte.25.1631556618418;
-        Mon, 13 Sep 2021 11:10:18 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id b12sm5554868qkk.3.2021.09.13.11.10.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 11:10:17 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 14:12:12 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YT+UfEH72o+Uabxv@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <20210911012324.6vb7tjbxvmpjfhxv@box.shutemov.name>
- <YT82zg6UE9DtQLhL@dhcp22.suse.cz>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=/4uPDarz24UXr+YAssPYAyN6mqLcg35XkTUPvLLsvp0=;
+        b=Tr6XN4uWJEPAordcUDgow/qqV221S5KPOLfXLXcjpnsq4gX4V+WQqeyvCX8YzayA1W
+         n7mu1Jh9/ynSgd/g9ez5I5MZE15xk0OrfvQyNOmShGdwG6+x/AXBHiH/gql/9NJBkdVo
+         kvUlQmA5WQyq71ajqWX+oX+zjYpVHbcerGDWLuU2paVu/9IkI26K+vOb02MnSjoLUh41
+         xw1uXn6uRqosHLO/tf7oWextEkg3hTVH2rtwvzbp0JEcmRWxEttkkwaxRAsU/utkqObZ
+         hzzAQQRt0OwzJ8Bec5zN3BvnS1Bg64oU/120O+TBaqZ194wFReR8UxplCD93zkI5wi9l
+         iSjw==
+X-Gm-Message-State: AOAM530/McoT11o/gd92B2X8WH8lOo1pKRSCRbb3s/NcrwiALo4don0u
+        OSi3t+45HkNtVRWelsOlMzo=
+X-Google-Smtp-Source: ABdhPJxkGd/xHVVkFK3JF6IYWybKCcwx2lG1h5ABdghsXUE6MZsE73b43XMe50eIPlqr/RNFx/TjWA==
+X-Received: by 2002:a17:90b:e0d:: with SMTP id ge13mr815719pjb.53.1631556834257;
+        Mon, 13 Sep 2021 11:13:54 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id p5sm7896845pfp.218.2021.09.13.11.13.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 11:13:53 -0700 (PDT)
+Message-ID: <1f1f5f42-a066-e9d9-d76c-df2e5891c6a9@gmail.com>
+Date:   Mon, 13 Sep 2021 11:13:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YT82zg6UE9DtQLhL@dhcp22.suse.cz>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 5.14 000/334] 5.14.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210913131113.390368911@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 01:32:30PM +0200, Michal Hocko wrote:
-> The existing code (fs or other subsystem interacting with MM) is
-> going to require quite a lot of changes to move away from struct
-> page notion but I do not see folios to add fundamental blocker
-> there.
 
-The current folio seems to do quite a bit of that work, actually. But
-it'll be undone when the MM conversion matures the data structure into
-the full-blown new page.
 
-It's not about hopes and dreams, it's the simple fact that the patches
-do something now that seems very valuable, but which we'll lose again
-over time. And avoiding that is a relatively minor adjustment at this
-time compared to a much larger one later on.
+On 9/13/2021 6:10 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.4 release.
+> There are 334 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-So yeah, it's not really a blocker. It's just a missed opportunity to
-lastingly disentangle struct page's multiple roles when touching all
-the relevant places anyway. It's also (needlessly) betting that
-compound pages can be made into a scalable, reliable, and predictable
-allocation model, and proliferating them into fs/ based on that.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-These patches, and all the ones that will need to follow to finish the
-conversion, are exceptionally expensive. It would have been nice to
-get more out of this disruption than to identify the relatively few
-places that genuinely need compound_head(), and having a datatype for
-N contiguous pages. Is there merit in solving those problems? Sure. Is
-it a robust, forward-looking direction for the MM space that justifies
-the cost of these and later patches? You seem to think so, I don't.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
 
-It doesn't look like we'll agree on this. But I think I've made my
-points several times now, so I'll defer to Linus and Andrew.
