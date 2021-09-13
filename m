@@ -2,122 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1804097F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57DA4097F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 17:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhIMPzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 11:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhIMPzl (ORCPT
+        id S241230AbhIMP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 11:56:17 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:56008 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231407AbhIMP4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 11:55:41 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF754C061574;
-        Mon, 13 Sep 2021 08:54:25 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id w19so4875307pfn.12;
-        Mon, 13 Sep 2021 08:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id;
-        bh=y/l6pZsY0+2abPXmYytXZzrEUxa84oSBx60olTgQf5E=;
-        b=mySNaluwtOtRo928O2znR/NiPO5G6dqZfvoJdPmgWCMzUgffI575v5P84+CHHB0Vfl
-         DdzelrBd3luKHRw23f4nlwsau96M4VKeCeePlQ381ozCkE2Q93w+7C8hHj9CjM3PJcpR
-         tWXVkRQzMnbron3nqCIfSDXucVPzZbtf3/TzXvE5dKu4fJ0IpmRfYgXO5HS7iTeEY3Xj
-         Pm2AYeBFlsxuceo0EjeJBuTL8OOsgePonPmKHpvzZhro/p9GixF6BZBcXiK8Mzs7Dwtg
-         lob1qjaliO8X4iXY3XGpzpTvPx9X70z8BJeQCYPBZv2/Tt+HCnwbBdQUVDTQz050SALw
-         1Bzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=y/l6pZsY0+2abPXmYytXZzrEUxa84oSBx60olTgQf5E=;
-        b=3utOoxJ4493UJ7pRwz6UKWJhqBHpc4ck6kY4JyMKn/oKlaWVWEgOHgWGXVWruATRnT
-         xHslwby1ccdlDFMiy7QGV8txEa9BYjT2YFWgggzmVDoouRe/S/BteHfB7uIys7jWH1ta
-         tVu9IP8gIH09eRvbDLCpL9j1pw6cyi3aq62oEOcrews5ytblX1mW94tPozZbeGGqrWm4
-         NPTIJHDXkzhLsDs+CmtTyinKMgdqvaYX14z9a0GqIywYb0ILh8DDn+3uXsrjyAhowgBu
-         16hw0IB+zpFSk0Up93WcrGjdaxSJlnH0Ggy6g7tQWDp3H/kFS786y3SCq9GLZJGDbVD9
-         OwLA==
-X-Gm-Message-State: AOAM533K3MEnmwEKTPXeQCBZGO4P3F/BpOayv9HLBhCTdGBW7V9y8Myc
-        MGlqhRWob5L/t7mhbiv+pqc=
-X-Google-Smtp-Source: ABdhPJzNqMuMRGdOROVmqd5AOofZXa1krgAO8dHxeUSI78J488MNadogQthymGUprBZCE86rFeIkYw==
-X-Received: by 2002:a62:403:0:b0:433:9582:d449 with SMTP id 3-20020a620403000000b004339582d449mr119417pfe.15.1631548465383;
-        Mon, 13 Sep 2021 08:54:25 -0700 (PDT)
-Received: from localhost.localdomain (vps-e35ab625.vps.ovh.us. [51.81.186.255])
-        by smtp.gmail.com with ESMTPSA id gp11sm7239662pjb.2.2021.09.13.08.54.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Sep 2021 08:54:24 -0700 (PDT)
-From:   yongw.pur@gmail.com
-X-Google-Original-From: wang.yong12@zte.com.cn
-To:     tj@kernel.org, mhocko@suse.com, mhocko@kernel.org,
-        peterz@infradead.org, wang.yong12@zte.com.cn,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, yang.yang29@zte.com.cn
-Subject: [PATCH v1] vmpressure: wake up work only when there is registration event
-Date:   Mon, 13 Sep 2021 08:54:01 -0700
-Message-Id: <1631548441-2784-1-git-send-email-wang.yong12@zte.com.cn>
-X-Mailer: git-send-email 2.7.4
+        Mon, 13 Sep 2021 11:56:14 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:60820)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mPoIK-00BaeR-Fi; Mon, 13 Sep 2021 09:54:56 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:45470 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mPoII-004igE-Vg; Mon, 13 Sep 2021 09:54:56 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631537060.git.christophe.leroy@csgroup.eu>
+        <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631537060.git.christophe.leroy@csgroup.eu>
+Date:   Mon, 13 Sep 2021 10:54:35 -0500
+In-Reply-To: <e1b94e52688cd99ed4a3ab86170cd9ec48849291.1631537060.git.christophe.leroy@csgroup.eu>
+        (Christophe Leroy's message of "Mon, 13 Sep 2021 17:19:08 +0200")
+Message-ID: <87r1dspj2c.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1mPoII-004igE-Vg;;;mid=<87r1dspj2c.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/oQU6ydp2sSUdMT2UjfVzHvAEgbZdCyJ0=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMGappySubj_01,XMGappySubj_02,
+        XMSubLong,XM_B_SpammyTLD,XM_B_SpammyWords autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4990]
+        *  1.0 XMGappySubj_02 Gappier still
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  1.0 XM_B_SpammyTLD Contains uncommon/spammy TLD
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Christophe Leroy <christophe.leroy@csgroup.eu>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 858 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 3.4 (0.4%), b_tie_ro: 2.3 (0.3%), parse: 1.11
+        (0.1%), extract_message_metadata: 12 (1.4%), get_uri_detail_list: 4.6
+        (0.5%), tests_pri_-1000: 9 (1.0%), tests_pri_-950: 1.03 (0.1%),
+        tests_pri_-900: 0.85 (0.1%), tests_pri_-90: 142 (16.6%), check_bayes:
+        140 (16.3%), b_tokenize: 17 (1.9%), b_tok_get_all: 10 (1.1%),
+        b_comp_prob: 2.0 (0.2%), b_tok_touch_all: 108 (12.6%), b_finish: 0.71
+        (0.1%), tests_pri_0: 676 (78.8%), check_dkim_signature: 0.55 (0.1%),
+        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 0.79 (0.1%), tests_pri_10:
+        1.70 (0.2%), tests_pri_500: 7 (0.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH RESEND v3 4/6] signal: Add unsafe_copy_siginfo_to_user32()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wangyong <wang.yong12@zte.com.cn>
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-Use the global variable num_events to record the number of vmpressure
-events registered by the system, and wake up work only when there is
-registration event.
-Usually, the vmpressure event is not registered in the system, this patch
-can avoid waking up work and doing nothing.
+> In the same spirit as commit fb05121fd6a2 ("signal: Add
+> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+> copy_siginfo_to_user32() in order to use it within user access blocks.
+>
+> To do so, we need inline version of copy_siginfo_to_external32() as we
+> don't want any function call inside user access blocks.
 
-Refer to Michal Hocko's suggestion:
-https://lore.kernel.org/linux-mm/YR%2FNRJEhPKRQ1r22@dhcp22.suse.cz/
+I don't understand.  What is wrong with?
 
-Tested-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: wangyong <wang.yong12@zte.com.cn>
----
- mm/vmpressure.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+#define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
+	struct compat_siginfo __user *__ucs_to = to;			\
+	const struct kernel_siginfo *__ucs_from = from;			\
+	struct compat_siginfo __ucs_new;				\
+									\
+	copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
+	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
+			    sizeof(struct compat_siginfo), label);	\
+} while (0)
 
-diff --git a/mm/vmpressure.c b/mm/vmpressure.c
-index 76518e4..dfac76b 100644
---- a/mm/vmpressure.c
-+++ b/mm/vmpressure.c
-@@ -67,6 +67,11 @@ static const unsigned int vmpressure_level_critical = 95;
-  */
- static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
- 
-+/*
-+ * Count the number of vmpressure events registered in the system.
-+ */
-+static atomic_t num_events = ATOMIC_INIT(0);
-+
- static struct vmpressure *work_to_vmpressure(struct work_struct *work)
- {
- 	return container_of(work, struct vmpressure, work);
-@@ -277,7 +282,7 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
- 		vmpr->tree_reclaimed += reclaimed;
- 		spin_unlock(&vmpr->sr_lock);
- 
--		if (scanned < vmpressure_win)
-+		if (scanned < vmpressure_win || atomic_read(&num_events) == 0)
- 			return;
- 		schedule_work(&vmpr->work);
- 	} else {
-@@ -407,6 +412,7 @@ int vmpressure_register_event(struct mem_cgroup *memcg,
- 	mutex_lock(&vmpr->events_lock);
- 	list_add(&ev->node, &vmpr->events);
- 	mutex_unlock(&vmpr->events_lock);
-+	atomic_add(1, &num_events);
- 	ret = 0;
- out:
- 	kfree(spec_orig);
-@@ -435,6 +441,7 @@ void vmpressure_unregister_event(struct mem_cgroup *memcg,
- 		if (ev->efd != eventfd)
- 			continue;
- 		list_del(&ev->node);
-+		atomic_sub(1, &num_events);
- 		kfree(ev);
- 		break;
- 	}
--- 
-2.7.4
+Your replacement of "memset(to, 0, sizeof(*to))" with
+"struct compat_siginfo __ucs_new = {0}".  is actively unsafe as the
+compiler is free not to initialize any holes in the structure to 0 in
+the later case.
 
+Is there something about the unsafe macros that I am not aware of that
+makes it improper to actually call C functions?  Is that a requirement
+for the instructions that change the user space access behavior?
+
+From the looks of this change all that you are doing is making it so
+that all of copy_siginfo_to_external32 is being inlined.  If that is not
+a hard requirement of the instructions it seems like the wrong thing to
+do here. copy_siginfo_to_external32 has not failures so it does not need
+to be inlined so you can jump to the label.
+
+Eric
+
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/linux/compat.h |  83 +++++++++++++++++++++++++++++-
+>  include/linux/signal.h |  58 +++++++++++++++++++++
+>  kernel/signal.c        | 114 +----------------------------------------
+>  3 files changed, 141 insertions(+), 114 deletions(-)
+>
+> diff --git a/include/linux/compat.h b/include/linux/compat.h
+> index 8e0598c7d1d1..68823f4b86ee 100644
+> --- a/include/linux/compat.h
+> +++ b/include/linux/compat.h
+> @@ -412,6 +412,19 @@ int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+>  #ifndef copy_siginfo_to_user32
+>  #define copy_siginfo_to_user32 __copy_siginfo_to_user32
+>  #endif
+> +
+> +#ifdef CONFIG_COMPAT
+> +#define unsafe_copy_siginfo_to_user32(to, from, label)	do {		\
+> +	struct compat_siginfo __user *__ucs_to = to;			\
+> +	const struct kernel_siginfo *__ucs_from = from;			\
+> +	struct compat_siginfo __ucs_new = {0};				\
+> +									\
+> +	__copy_siginfo_to_external32(&__ucs_new, __ucs_from);		\
+> +	unsafe_copy_to_user(__ucs_to, &__ucs_new,			\
+> +			    sizeof(struct compat_siginfo), label);	\
+> +} while (0)
+> +#endif
+> +
+>  int get_compat_sigevent(struct sigevent *event,
+>  		const struct compat_sigevent __user *u_event);
+>  
+> @@ -992,15 +1005,81 @@ static inline bool in_compat_syscall(void) { return false; }
+>   * appropriately converted them already.
+>   */
+>  #ifndef compat_ptr
+> -static inline void __user *compat_ptr(compat_uptr_t uptr)
+> +static __always_inline void __user *compat_ptr(compat_uptr_t uptr)
+>  {
+>  	return (void __user *)(unsigned long)uptr;
+>  }
+>  #endif
+>  
+> -static inline compat_uptr_t ptr_to_compat(void __user *uptr)
+> +static __always_inline compat_uptr_t ptr_to_compat(void __user *uptr)
+>  {
+>  	return (u32)(unsigned long)uptr;
+>  }
+>  
+> +static __always_inline void
+> +__copy_siginfo_to_external32(struct compat_siginfo *to,
+> +			     const struct kernel_siginfo *from)
+> +{
+> +	to->si_signo = from->si_signo;
+> +	to->si_errno = from->si_errno;
+> +	to->si_code  = from->si_code;
+> +	switch(__siginfo_layout(from->si_signo, from->si_code)) {
+> +	case SIL_KILL:
+> +		to->si_pid = from->si_pid;
+> +		to->si_uid = from->si_uid;
+> +		break;
+> +	case SIL_TIMER:
+> +		to->si_tid     = from->si_tid;
+> +		to->si_overrun = from->si_overrun;
+> +		to->si_int     = from->si_int;
+> +		break;
+> +	case SIL_POLL:
+> +		to->si_band = from->si_band;
+> +		to->si_fd   = from->si_fd;
+> +		break;
+> +	case SIL_FAULT:
+> +		to->si_addr = ptr_to_compat(from->si_addr);
+> +		break;
+> +	case SIL_FAULT_TRAPNO:
+> +		to->si_addr = ptr_to_compat(from->si_addr);
+> +		to->si_trapno = from->si_trapno;
+> +		break;
+> +	case SIL_FAULT_MCEERR:
+> +		to->si_addr = ptr_to_compat(from->si_addr);
+> +		to->si_addr_lsb = from->si_addr_lsb;
+> +		break;
+> +	case SIL_FAULT_BNDERR:
+> +		to->si_addr = ptr_to_compat(from->si_addr);
+> +		to->si_lower = ptr_to_compat(from->si_lower);
+> +		to->si_upper = ptr_to_compat(from->si_upper);
+> +		break;
+> +	case SIL_FAULT_PKUERR:
+> +		to->si_addr = ptr_to_compat(from->si_addr);
+> +		to->si_pkey = from->si_pkey;
+> +		break;
+> +	case SIL_FAULT_PERF_EVENT:
+> +		to->si_addr = ptr_to_compat(from->si_addr);
+> +		to->si_perf_data = from->si_perf_data;
+> +		to->si_perf_type = from->si_perf_type;
+> +		break;
+> +	case SIL_CHLD:
+> +		to->si_pid = from->si_pid;
+> +		to->si_uid = from->si_uid;
+> +		to->si_status = from->si_status;
+> +		to->si_utime = from->si_utime;
+> +		to->si_stime = from->si_stime;
+> +		break;
+> +	case SIL_RT:
+> +		to->si_pid = from->si_pid;
+> +		to->si_uid = from->si_uid;
+> +		to->si_int = from->si_int;
+> +		break;
+> +	case SIL_SYS:
+> +		to->si_call_addr = ptr_to_compat(from->si_call_addr);
+> +		to->si_syscall   = from->si_syscall;
+> +		to->si_arch      = from->si_arch;
+> +		break;
+> +	}
+> +}
+> +
+>  #endif /* _LINUX_COMPAT_H */
+> diff --git a/include/linux/signal.h b/include/linux/signal.h
+> index 70ea7e741427..637260bc193d 100644
+> --- a/include/linux/signal.h
+> +++ b/include/linux/signal.h
+> @@ -65,6 +65,64 @@ enum siginfo_layout {
+>  	SIL_SYS,
+>  };
+>  
+> +static const struct {
+> +	unsigned char limit, layout;
+> +} sig_sicodes[] = {
+> +	[SIGILL]  = { NSIGILL,  SIL_FAULT },
+> +	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
+> +	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
+> +	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
+> +	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
+> +#if defined(SIGEMT)
+> +	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
+> +#endif
+> +	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
+> +	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
+> +	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
+> +};
+> +
+> +static __always_inline enum
+> +siginfo_layout __siginfo_layout(unsigned sig, int si_code)
+> +{
+> +	enum siginfo_layout layout = SIL_KILL;
+> +
+> +	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
+> +		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
+> +		    (si_code <= sig_sicodes[sig].limit)) {
+> +			layout = sig_sicodes[sig].layout;
+> +			/* Handle the exceptions */
+> +			if ((sig == SIGBUS) &&
+> +			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
+> +				layout = SIL_FAULT_MCEERR;
+> +			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
+> +				layout = SIL_FAULT_BNDERR;
+> +#ifdef SEGV_PKUERR
+> +			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
+> +				layout = SIL_FAULT_PKUERR;
+> +#endif
+> +			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
+> +				layout = SIL_FAULT_PERF_EVENT;
+> +			else if (IS_ENABLED(CONFIG_SPARC) &&
+> +				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
+> +				layout = SIL_FAULT_TRAPNO;
+> +			else if (IS_ENABLED(CONFIG_ALPHA) &&
+> +				 ((sig == SIGFPE) ||
+> +				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
+> +				layout = SIL_FAULT_TRAPNO;
+> +		}
+> +		else if (si_code <= NSIGPOLL)
+> +			layout = SIL_POLL;
+> +	} else {
+> +		if (si_code == SI_TIMER)
+> +			layout = SIL_TIMER;
+> +		else if (si_code == SI_SIGIO)
+> +			layout = SIL_POLL;
+> +		else if (si_code < 0)
+> +			layout = SIL_RT;
+> +	}
+> +	return layout;
+> +}
+> +
+>  enum siginfo_layout siginfo_layout(unsigned sig, int si_code);
+>  
+>  /*
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 23f168730b7e..0d402bdb174e 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -3249,22 +3249,6 @@ COMPAT_SYSCALL_DEFINE2(rt_sigpending, compat_sigset_t __user *, uset,
+>  }
+>  #endif
+>  
+> -static const struct {
+> -	unsigned char limit, layout;
+> -} sig_sicodes[] = {
+> -	[SIGILL]  = { NSIGILL,  SIL_FAULT },
+> -	[SIGFPE]  = { NSIGFPE,  SIL_FAULT },
+> -	[SIGSEGV] = { NSIGSEGV, SIL_FAULT },
+> -	[SIGBUS]  = { NSIGBUS,  SIL_FAULT },
+> -	[SIGTRAP] = { NSIGTRAP, SIL_FAULT },
+> -#if defined(SIGEMT)
+> -	[SIGEMT]  = { NSIGEMT,  SIL_FAULT },
+> -#endif
+> -	[SIGCHLD] = { NSIGCHLD, SIL_CHLD },
+> -	[SIGPOLL] = { NSIGPOLL, SIL_POLL },
+> -	[SIGSYS]  = { NSIGSYS,  SIL_SYS },
+> -};
+> -
+>  static bool known_siginfo_layout(unsigned sig, int si_code)
+>  {
+>  	if (si_code == SI_KERNEL)
+> @@ -3286,42 +3270,7 @@ static bool known_siginfo_layout(unsigned sig, int si_code)
+>  
+>  enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+>  {
+> -	enum siginfo_layout layout = SIL_KILL;
+> -	if ((si_code > SI_USER) && (si_code < SI_KERNEL)) {
+> -		if ((sig < ARRAY_SIZE(sig_sicodes)) &&
+> -		    (si_code <= sig_sicodes[sig].limit)) {
+> -			layout = sig_sicodes[sig].layout;
+> -			/* Handle the exceptions */
+> -			if ((sig == SIGBUS) &&
+> -			    (si_code >= BUS_MCEERR_AR) && (si_code <= BUS_MCEERR_AO))
+> -				layout = SIL_FAULT_MCEERR;
+> -			else if ((sig == SIGSEGV) && (si_code == SEGV_BNDERR))
+> -				layout = SIL_FAULT_BNDERR;
+> -#ifdef SEGV_PKUERR
+> -			else if ((sig == SIGSEGV) && (si_code == SEGV_PKUERR))
+> -				layout = SIL_FAULT_PKUERR;
+> -#endif
+> -			else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
+> -				layout = SIL_FAULT_PERF_EVENT;
+> -			else if (IS_ENABLED(CONFIG_SPARC) &&
+> -				 (sig == SIGILL) && (si_code == ILL_ILLTRP))
+> -				layout = SIL_FAULT_TRAPNO;
+> -			else if (IS_ENABLED(CONFIG_ALPHA) &&
+> -				 ((sig == SIGFPE) ||
+> -				  ((sig == SIGTRAP) && (si_code == TRAP_UNK))))
+> -				layout = SIL_FAULT_TRAPNO;
+> -		}
+> -		else if (si_code <= NSIGPOLL)
+> -			layout = SIL_POLL;
+> -	} else {
+> -		if (si_code == SI_TIMER)
+> -			layout = SIL_TIMER;
+> -		else if (si_code == SI_SIGIO)
+> -			layout = SIL_POLL;
+> -		else if (si_code < 0)
+> -			layout = SIL_RT;
+> -	}
+> -	return layout;
+> +	return __siginfo_layout(sig, si_code);
+>  }
+>  
+>  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
+> @@ -3389,66 +3338,7 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
+>  {
+>  	memset(to, 0, sizeof(*to));
+>  
+> -	to->si_signo = from->si_signo;
+> -	to->si_errno = from->si_errno;
+> -	to->si_code  = from->si_code;
+> -	switch(siginfo_layout(from->si_signo, from->si_code)) {
+> -	case SIL_KILL:
+> -		to->si_pid = from->si_pid;
+> -		to->si_uid = from->si_uid;
+> -		break;
+> -	case SIL_TIMER:
+> -		to->si_tid     = from->si_tid;
+> -		to->si_overrun = from->si_overrun;
+> -		to->si_int     = from->si_int;
+> -		break;
+> -	case SIL_POLL:
+> -		to->si_band = from->si_band;
+> -		to->si_fd   = from->si_fd;
+> -		break;
+> -	case SIL_FAULT:
+> -		to->si_addr = ptr_to_compat(from->si_addr);
+> -		break;
+> -	case SIL_FAULT_TRAPNO:
+> -		to->si_addr = ptr_to_compat(from->si_addr);
+> -		to->si_trapno = from->si_trapno;
+> -		break;
+> -	case SIL_FAULT_MCEERR:
+> -		to->si_addr = ptr_to_compat(from->si_addr);
+> -		to->si_addr_lsb = from->si_addr_lsb;
+> -		break;
+> -	case SIL_FAULT_BNDERR:
+> -		to->si_addr = ptr_to_compat(from->si_addr);
+> -		to->si_lower = ptr_to_compat(from->si_lower);
+> -		to->si_upper = ptr_to_compat(from->si_upper);
+> -		break;
+> -	case SIL_FAULT_PKUERR:
+> -		to->si_addr = ptr_to_compat(from->si_addr);
+> -		to->si_pkey = from->si_pkey;
+> -		break;
+> -	case SIL_FAULT_PERF_EVENT:
+> -		to->si_addr = ptr_to_compat(from->si_addr);
+> -		to->si_perf_data = from->si_perf_data;
+> -		to->si_perf_type = from->si_perf_type;
+> -		break;
+> -	case SIL_CHLD:
+> -		to->si_pid = from->si_pid;
+> -		to->si_uid = from->si_uid;
+> -		to->si_status = from->si_status;
+> -		to->si_utime = from->si_utime;
+> -		to->si_stime = from->si_stime;
+> -		break;
+> -	case SIL_RT:
+> -		to->si_pid = from->si_pid;
+> -		to->si_uid = from->si_uid;
+> -		to->si_int = from->si_int;
+> -		break;
+> -	case SIL_SYS:
+> -		to->si_call_addr = ptr_to_compat(from->si_call_addr);
+> -		to->si_syscall   = from->si_syscall;
+> -		to->si_arch      = from->si_arch;
+> -		break;
+> -	}
+> +	__copy_siginfo_to_external32(to, from);
+>  }
+>  
+>  int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
