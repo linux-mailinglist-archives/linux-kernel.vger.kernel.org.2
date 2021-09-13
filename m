@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5372409911
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2837409917
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237640AbhIMQ37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237518AbhIMQ34 (ORCPT
+        id S237745AbhIMQak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:30:40 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:50914 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237518AbhIMQaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:29:56 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A9EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:28:40 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d18so6178151pll.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=snLhTAZZ8mV9205gGLjuCjWcda3VmzZbuUm4gtYTcyQ=;
-        b=IBkwnS8+MqgvS8IEyrao3x4kK53haBMPflE5veA3TazxGdf9xz91TghEVwzpcfEJVA
-         j2O4/XPA4XVvCx1Lh5MS8UbslhC00r/RjoD5WqPrH7K0GFxlqbLEyb6lO+gcvpSVQwFu
-         xLaYpnpDLNY3gbJEc8gxkG1cn+wlZqladYtUI=
+        Mon, 13 Sep 2021 12:30:39 -0400
+Received: by mail-io1-f71.google.com with SMTP id b202-20020a6bb2d3000000b005b7fb465c4aso14215043iof.17
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:29:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=snLhTAZZ8mV9205gGLjuCjWcda3VmzZbuUm4gtYTcyQ=;
-        b=FgI2w+6H2xzekAVwE+/so22kyZsugFmud0VHX5/pbB5jAr7tTRL8pByq1kYL1iU/n9
-         8itxCFxQcwoWoGjx96v53SmBF2pMAs32vL5YxW7ZE2M/C4a0T68t4g4Hu++2KcqlSzDM
-         qtjlpC8GfePOU2yYlpV0vSH8PP2TOMyL3w4hEZO3jTgE0ba8W3JEZSMSaZNmqG3DBtVW
-         /6ed1F737UvHp56yrhTlcQb5BZ0K4qPkmbgCVb3eThUCr6wO6piASG3BdRhBJQvy7EVm
-         RYbd7fLT8IJm0ozznhVaQjSCkjx0c86y1EQAR0JIpUmkhmxDtW+L9Sl6IPU7McI3SgLz
-         ItMQ==
-X-Gm-Message-State: AOAM533rKQNzzze56eygm4/2DgSwAEO0FA4NisShcAEGEYsi/uJDgIAg
-        77AEFsSbD5oFtj1bDcgZ3yiCUA==
-X-Google-Smtp-Source: ABdhPJzkaeDbhgspAY/Gf3N1YyCl39+Lgo1gmEg7Mf8Mdhiwe+2LLQuroVbM7OOb94SO+4Qbzo+WJQ==
-X-Received: by 2002:a17:90b:3b8b:: with SMTP id pc11mr406421pjb.153.1631550520097;
-        Mon, 13 Sep 2021 09:28:40 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o10sm8195671pgp.68.2021.09.13.09.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 09:28:39 -0700 (PDT)
-Date:   Mon, 13 Sep 2021 09:28:38 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 10/10] vmlinux.lds.h: remove old check for GCC 4.9
-Message-ID: <202109130927.6E5447B04C@keescook>
-References: <20210910234047.1019925-1-ndesaulniers@google.com>
- <20210910234047.1019925-11-ndesaulniers@google.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=KNdTyHh1t8BTf2GAYl/7g8JX/wIwOhnr4+QZ0NbF+rs=;
+        b=tc6YKrWiAiz6VbkxrSbW4TWO4AQD+K4pGS6vUUqlWbWHQSR00jbJpgjlNLuKFXiFav
+         1XhRbxK3XdyaGz5dwXofmRl4x9kmu81PC7AXpk7CLylCmjRNb1eUSnIAnInYkQz37nHb
+         +6WAc7U5S4o9X1GEU+EypbzyOIqsmNtJop7V2x95lvf5xymtSXC82iO6yiYdDhoqj02O
+         Eb0N+q4/sWhStRzg3B/3WlXaXZgBN+nT0WaPuNM3D18cIuODQnCXLate3y9p+g1Egzav
+         RQ7ZsU3uwtCJ4qA1wsmoDA+9PmCOAWAcXPEciodc87VtSUcHqpISagso3IJZi9QMvaUz
+         GIcg==
+X-Gm-Message-State: AOAM531NbzRY427vHFMTninPD+WgxJ1D47EQ3ZjqnSEDTWQ7CTmrR4TZ
+        JbC+/7cGUhnlvKf4b8F4YED+JSNpEI7uL5B41ZN7kbl7ltEu
+X-Google-Smtp-Source: ABdhPJxqhx6vjfx/fLIT2TJSpavcAHIAaPQAae6swcP106bVa8bxlhROSxLC8lCsQOZqkUA69I4Ou5h7Yh1isGjVAxOJW4Elw1T9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910234047.1019925-11-ndesaulniers@google.com>
+X-Received: by 2002:a92:da4a:: with SMTP id p10mr7660447ilq.13.1631550563219;
+ Mon, 13 Sep 2021 09:29:23 -0700 (PDT)
+Date:   Mon, 13 Sep 2021 09:29:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c0fea005cbe2f70d@google.com>
+Subject: [syzbot] WARNING: kmalloc bug in hash_ipportip_create
+From:   syzbot <syzbot+30aea515bdd9616dd4e9@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, coreteam@netfilter.org,
+        davem@davemloft.net, fw@strlen.de, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org, w@1wt.eu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:40:47PM -0700, Nick Desaulniers wrote:
-> Now that GCC 5.1 is the minimally supported version of GCC, we can
-> effectively revert
-> 
-> commit 85c2ce9104eb ("sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to
-> 64 bytes for GCC-4.9")
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  include/asm-generic/vmlinux.lds.h | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index aa50bf2959fe..f2984af2b85b 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -116,11 +116,7 @@
->   * GCC 4.5 and later have a 32 bytes section alignment for structures.
->   * Except GCC 4.9, that feels the need to align on 64 bytes.
->   */
-> -#if __GNUC__ == 4 && __GNUC_MINOR__ == 9
-> -#define STRUCT_ALIGNMENT 64
-> -#else
->  #define STRUCT_ALIGNMENT 32
-> -#endif
->  #define STRUCT_ALIGN() . = ALIGN(STRUCT_ALIGNMENT)
+Hello,
 
-Yeah, looking at users of the macro, I think it's best to keep the macro
-instead of hard-coding it everywhere.
+syzbot found the following issue on:
 
-Acked-by: Kees Cook <keescook@chromium.org>
+HEAD commit:    bf9f243f23e6 Merge tag '5.15-rc-ksmbd-part2' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=123479c7300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
+dashboard link: https://syzkaller.appspot.com/bug?extid=30aea515bdd9616dd4e9
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167a5873300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1080c163300000
 
--- 
-Kees Cook
+The issue was bisected to:
+
+commit 7661809d493b426e979f39ab512e3adf41fbcc69
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed Jul 14 16:45:49 2021 +0000
+
+    mm: don't allow oversized kvmalloc() calls
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e9083b300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e9083b300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e9083b300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+30aea515bdd9616dd4e9@syzkaller.appspotmail.com
+Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6538 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
+Modules linked in:
+CPU: 1 PID: 6538 Comm: syz-executor249 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
+Code: 01 00 00 00 4c 89 e7 e8 8d 18 0d 00 49 89 c5 e9 69 ff ff ff e8 10 9d d0 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 ff 9c d0 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 e6
+RSP: 0018:ffffc900025af268 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc900025af380 RCX: 0000000000000000
+RDX: ffff888025433900 RSI: ffffffff81a57041 RDI: 0000000000000003
+RBP: 0000000000400dc0 R08: 000000007fffffff R09: ffff8880b9d32a0b
+R10: ffffffff81a56ffe R11: 000000000000001f R12: 0000000400000018
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff88807bbce000
+FS:  0000000001a7d300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7269e1d6c0 CR3: 000000006f6c6000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ hash_ipportip_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
+ ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
+ nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43f029
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd69914258 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f029
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 0000000000403010 R08: 0000000000000005 R09: 0000000000400488
+R10: 0000000000000004 R11: 0000000000000246 R12: 00000000004030a0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
