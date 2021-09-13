@@ -2,151 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A62409873
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DC0409875
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344789AbhIMQMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:12:07 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:51751 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344663AbhIMQMG (ORCPT
+        id S1345670AbhIMQM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235710AbhIMQMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:12:06 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210913161049euoutp023c21018335d030efeb78958ea8ba60c1~kbZRnHPfb2252922529euoutp02D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:10:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210913161049euoutp023c21018335d030efeb78958ea8ba60c1~kbZRnHPfb2252922529euoutp02D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631549449;
-        bh=Zx8D72epb2PdIAupmljFTtGZ+DY+cmCbD9kHxLWNdyc=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=YSJssw0MoxceKzl/PWy+AaV5chfkQDs4sYNnJJh+GpNcHgbBbKJX1zxxYIl2alZZ7
-         4veLc2VxoF6tCkpNWjqkP+1mPyAL2BTLQCjibZ/33XJje5gnf3RQLwbCQtDmwRsK0s
-         kAbxJAg10YAnWFn2Qtcs9aP/wF5MulMInkq/BTi8=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210913161048eucas1p267aee7ce54e94beb4d4e6adca6c75b22~kbZRVtuTM2793827938eucas1p2K;
-        Mon, 13 Sep 2021 16:10:48 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 2F.BE.42068.8087F316; Mon, 13
-        Sep 2021 17:10:48 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210913161048eucas1p2b41cd188521dfba255bd47da7e677a42~kbZQoHtI12793827938eucas1p2I;
-        Mon, 13 Sep 2021 16:10:48 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210913161048eusmtrp1c16b3a5bcecf6e12f4d46664a8584b0a~kbZQnPaEs0906809068eusmtrp1O;
-        Mon, 13 Sep 2021 16:10:48 +0000 (GMT)
-X-AuditID: cbfec7f4-c89ff7000002a454-c2-613f78082e79
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id F3.61.20981.7087F316; Mon, 13
-        Sep 2021 17:10:47 +0100 (BST)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210913161047eusmtip2674b7de0c52c723e10efd72d30cd86d6~kbZQCQ33W2037120371eusmtip2u;
-        Mon, 13 Sep 2021 16:10:47 +0000 (GMT)
-Subject: Re: [PATCH] clk: samsung: exynos-audss: Make use of the helper
- function devm_platform_ioremap_resource()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <1ff69b9c-fe27-5da8-8908-c9777be0f72c@samsung.com>
-Date:   Mon, 13 Sep 2021 18:10:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        Mon, 13 Sep 2021 12:12:55 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AE7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:11:39 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso14057183otu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 09:11:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pF05lJj4lNy2tE9FXorSLt5VhlGQ+NsTtocuOEsRASU=;
+        b=nUn0QCbJ0IAMISgDmqkAYu1iK2EWcDmRXhy0FCpX2QZE0CNs+xak6z+P6NU1Xbo27K
+         vB4cdBZJ6i+9nIl99sZcFI91QoKrJLwtK0QoPAd6HMlzlfON18pDJZA9f6HuYjXoc9JQ
+         l0w7qpUoIfr21ochi8bBpVSlzsMt7rBvuWBEnBlo40xBl2gPOLjbmrfO2ATWeg0h5jry
+         RwhBWmdluIk2MMA5Q69hPhPpvaIMdyF8SrE6LmRkgXv0OHPBnXw1Ce0DFhqMXsAjCXEY
+         hkOwjrY1hnENZ5vpfASN4TQdIxvb0d6H0uo/5BTgIsQusq7jf9R2MuaRMYNAy69nq8LC
+         ByNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pF05lJj4lNy2tE9FXorSLt5VhlGQ+NsTtocuOEsRASU=;
+        b=QQhsy9LKde64RVxMcx8UY6+Zxg/gOckkjbAZT08qJcDZokl9dEDaSu7XcERiw1Wc9G
+         EtPmqkEs2amZ8QnMU57G9cUc2X1E15JNd1MKHqrO9deCY1ybByArEc9id9pi4+ht1tc1
+         GQK1q+nDRW578MKNmBQCllr5+yghNPIUPIyRLGZhld/oQOa0NdP0rfGU+j0OoSVZT+6B
+         K9af9tGbWJFNabJUb3lwacyYb2k9wi+xlPwWVVZcYNSZ7iCpaC+SG/fQDdkguOw8vuTZ
+         FymrZWU7VmTnaH1PP8LiXZG63NOfyfUnfjS4qtVqy7WgKTEBk+xNW+uGEgJiw4pj4S/p
+         mnvw==
+X-Gm-Message-State: AOAM530mbKNtsk6qosu4ys9VXzEZltN2t0jhI9NctxOgzH83uF0y+Z9n
+        u03aH/8UNtgMH5SUV7m9ICY=
+X-Google-Smtp-Source: ABdhPJzsgKf3WKH8fP1W+h9snAHV/O3HMbv1bH0ypEQHKa2OCdwW3gkUXmXUb5k1TUGmTvjxOphSiQ==
+X-Received: by 2002:a9d:38d:: with SMTP id f13mr10299861otf.66.1631549498900;
+        Mon, 13 Sep 2021 09:11:38 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b24sm1796190oic.33.2021.09.13.09.11.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 09:11:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>
+References: <20210912025235.3514761-1-linux@roeck-us.net>
+ <315e4a23990444f585a15d2e23a39b8f@AcuMS.aculab.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] xtensa: Increase size of gcc stack frame check
+Message-ID: <46f59bf8-f243-b65c-07b3-8ecbf7b410fa@roeck-us.net>
+Date:   Mon, 13 Sep 2021 09:11:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210907085100.4152-1-caihuoqing@baidu.com>
+In-Reply-To: <315e4a23990444f585a15d2e23a39b8f@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7djPc7ocFfaJBt+ua1msufeXzeL6l+es
-        Fhvf/mCy2PT4GqvFx557rBaXd81hs5hxfh+TxcVTrhb/rm1ksVi16w+jA5fHl6XNzB7vb7Sy
-        e8xq6GXz2DnrLrvHplWdbB6bl9R79G1ZxejxeZNcAEcUl01Kak5mWWqRvl0CV8a87dtZCi5x
-        V5zpPcLcwHiPs4uRg0NCwETi47+MLkYuDiGBFYwSc7ceZYRwvjBKtP+5yQbhfGaUOL9zN1CG
-        E6xj35eXUInljBLHNt5mgXA+Mkq8udgHViUsUCyxZfULZhBbREBNYsqk6ewgRcwCD5gkbq1+
-        wgSSYBMwlOg9CtHAK2AnseH9NzYQm0VAVeLTyecsILaoQLLEtL9NzBA1ghInZz4Bi3MKWEpM
-        37cezGYWEJe49WQ+E4QtL7H97RxmkGUSAt2cEpcO/4G620Vi8d+LLBC2sMSr41vYIWwZidOT
-        e1ggGpoZJXp232aHcCYwStw/vgCq21rizrlfbKAwYxbQlFi/Sx8SfI4SR2Z5Q5h8EjfeCkLc
-        wCcxadt0Zogwr0RHmxDEDBWJ36umM0HYUhLdT/6zTGBUmoXks1lIvpmF5JtZCGsXMLKsYhRP
-        LS3OTU8tNspLLdcrTswtLs1L10vOz93ECExep/8d/7KDcfmrj3qHGJk4GA8xSnAwK4nwbntj
-        myjEm5JYWZValB9fVJqTWnyIUZqDRUmcN2nLmnghgfTEktTs1NSC1CKYLBMHp1QDU+ZSySuW
-        07h3PBW4fOfcYb+SgMxrtya3u8fZvGHgeF87Z+/2NgfbzInyS9vvGpUcaLc99HaPzAyFZW8+
-        pia8elvmcTr93renHGvcrqleUtlce8pwg8SUVrG0NyyNLCVlD3Uu3b0cs61mbc9LJzflruQn
-        v0sVfPrP9ah6f6v+IZTXWp3SVFa0ZIHPPTe5Ob96Nn1YJ562yWD3x0mlblUTJULy43/7Pp3g
-        NmfC7u2njUoMiry/PTfvNIiMDXweuXOipd2mDXzHCrXjvVQOs+x3mbNnf6LGk6Ozlu74I/0t
-        qPXIZoabh+c/urz3CdtCFxmhF/F/JJZMZFVgPJa6SX6N2tsGvdurLl0WuSwW62fbvU+JpTgj
-        0VCLuag4EQCcxZByzQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsVy+t/xe7rsFfaJBvtnWlmsufeXzeL6l+es
-        Fhvf/mCy2PT4GqvFx557rBaXd81hs5hxfh+TxcVTrhb/rm1ksVi16w+jA5fHl6XNzB7vb7Sy
-        e8xq6GXz2DnrLrvHplWdbB6bl9R79G1ZxejxeZNcAEeUnk1RfmlJqkJGfnGJrVK0oYWRnqGl
-        hZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsa87dtZCi5xV5zpPcLcwHiPs4uRk0NCwERi
-        35eXbF2MXBxCAksZJa7fb2fvYuQASkhJzG9RgqgRlvhzrQuq5j2jxOcXnxhBEsICxRJbVr9g
-        BrFFBNQkpkyazg5SxCzwgEliyq8z7BAdPYwS699dYQGpYhMwlOg92gfWzStgJ7Hh/Tc2EJtF
-        QFXi08nnYDWiAskSb19/Z4KoEZQ4OfMJWJxTwFJi+r71YDazgLrEn3mXmCFscYlbT+YzQdjy
-        EtvfzmGewCg0C0n7LCQts5C0zELSsoCRZRWjSGppcW56brGRXnFibnFpXrpecn7uJkZgvG47
-        9nPLDsaVrz7qHWJk4mA8xCjBwawkwrvtjW2iEG9KYmVValF+fFFpTmrxIUZToH8mMkuJJucD
-        E0ZeSbyhmYGpoYmZpYGppZmxkjivyZE18UIC6YklqdmpqQWpRTB9TBycUg1MM09FGWx7Yjwz
-        w2ljj7JGWnls6Z1DvqlhO+SE13xhvFS29+C3X726iq8T/xo/yr3Cr/78SUKqMkvkgcC0dQnP
-        85JiG5rzX7x8y1n8vF545pcozoRdnBzv+dINJGZwfBPaldxfF99j8f6kYfshptPTC2UmPPxR
-        9rBlMScX43T2CD2LNZ+byoPNb85k2KpkmqVczVzH+SM//8bfpK3J808HP1ZTObVYZH/mRbnf
-        Cb2HvGcx9+wyNhBKlHdi1+V+YXtqziSBqxdLbQMnxE578z3w7hZfm8AnDuv8/eplhTfW6/26
-        zjR5nlToySOK94zvZR3f95Dr4G+BLXo97aeiyjdXMEyKVCo79DPwrYTbzL9KLMUZiYZazEXF
-        iQBiPVqXYAMAAA==
-X-CMS-MailID: 20210913161048eucas1p2b41cd188521dfba255bd47da7e677a42
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210907085111eucas1p12e14f7d5f4ec4cebfbde4f26e68754c3
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210907085111eucas1p12e14f7d5f4ec4cebfbde4f26e68754c3
-References: <CGME20210907085111eucas1p12e14f7d5f4ec4cebfbde4f26e68754c3@eucas1p1.samsung.com>
-        <20210907085100.4152-1-caihuoqing@baidu.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.09.2021 10:50, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+On 9/13/21 8:57 AM, David Laight wrote:
+> From: Guenter Roeck
+>> Sent: 12 September 2021 03:53
+>>
+>> xtensa frame size is larger than the frame size for almost all other
+>> architectures. This results in more than 50 "the frame size of <n> is
+>> larger than 1024 bytes" errors when trying to build xtensa:allmodconfig.
+>>
+>> Increase frame size for xtensa to 1536 bytes to avoid compile errors
+>> due to frame size limits.
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-
-Thanks for the patch. I have applied it with summary line changed to 
-"clk: samsung: exynos-audss: Make use of devm_platform_ioremap_resource()"
-so it doesn't exceed 75 characters.
-
-> ---
->  drivers/clk/samsung/clk-exynos-audss.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> Have you done anything to check what happens at run-time?
+> I'd guess that the deepest stack use is inside printk() in
+> some obscure error path.
 > 
-> diff --git a/drivers/clk/samsung/clk-exynos-audss.c b/drivers/clk/samsung/clk-exynos-audss.c
-> index 42b5d32c6cc7..9cc127a162ad 100644
-> --- a/drivers/clk/samsung/clk-exynos-audss.c
-> +++ b/drivers/clk/samsung/clk-exynos-audss.c
-> @@ -129,7 +129,6 @@ static int exynos_audss_clk_probe(struct platform_device *pdev)
->  	struct clk *pll_ref, *pll_in, *cdclk, *sclk_audio, *sclk_pcm_in;
->  	const struct exynos_audss_clk_drvdata *variant;
->  	struct clk_hw **clk_table;
-> -	struct resource *res;
->  	struct device *dev = &pdev->dev;
->  	int i, ret = 0;
->  
-> @@ -137,8 +136,7 @@ static int exynos_audss_clk_probe(struct platform_device *pdev)
->  	if (!variant)
->  		return -EINVAL;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	reg_base = devm_ioremap_resource(dev, res);
-> +	reg_base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(reg_base))
->  		return PTR_ERR(reg_base);
--- 
-Regards,
-Sylwester
+> In reality all these 1k+ stack frames need killing
+> rather than the limit for the compiler warning increased.
+> 
+> While it may be sensible for a system call entry function
+> so allocate a reasonable size buffer on stack (as poll()
+> and sendmsg() probably do) allocating big buffers way
+> down the call stack could easily cause stack overflow.
+> Even a 1k stack frame is huge.
+> 
+
+The functions I checked typically have pretty large local data
+(like, more than 700-800 bytes). The errors are only observed
+with xtensa:allmodconfig test builds. While it may be arguable
+if those functions really need that much data on the stack, it
+is unreasonable to assume that all those errors (again, more
+than 50) are ever going to get fixed, especially since the errors
+are only seen with xtensa and not with any other architecture
+(including parisc; setting a stack limit of 1024 works just fine
+with that architecture, at least with gcc 11.x). So the realistic
+options are:
+
+1) accept this or a similar patch
+2) stop build testing xtensa:allmodconfig
+3) Manually disable CONFIG_WERROR when test building xtensa:allmodconfig
+
+As it looks like, I'll probably implement option 3) in my test builds.
+I planned to start doing that around v5.15-rc4/rc5, but I may do it
+earlier if it is becoming obvious that the now-errors won't get fixed.
+
+Guenter
