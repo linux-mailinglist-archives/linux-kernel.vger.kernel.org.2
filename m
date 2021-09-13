@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB47409880
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7B9409885
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345802AbhIMQPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:15:35 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52940 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbhIMQPd (ORCPT
+        id S1345865AbhIMQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:16:06 -0400
+Received: from mail-oo1-f45.google.com ([209.85.161.45]:36432 "EHLO
+        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhIMQQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:15:33 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 85FAC1FD99;
-        Mon, 13 Sep 2021 16:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631549656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=am3WMc1q9XARynRDUM7E3FUGoxi9LsITJzf3oeQ+Lww=;
-        b=P/4IFY9RCf3aKGlNrhp4PnGQUQUBpMMsHj0KqsHTSXt5OdpCfML/CO9aOsYMSrM2X9fQuN
-        +uG8yEn3iOcJ4wLeht3ztrh5E3yCcwpzPJm7JFM92jmUw918wl5ZBG27ouscyAT4J34f1T
-        N3cV0Ud03Kmk8mK9YOC4/ANyQFbWLa0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631549656;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=am3WMc1q9XARynRDUM7E3FUGoxi9LsITJzf3oeQ+Lww=;
-        b=Q7q10t86FU0aIasjf0FzLIFUI+diQ5WAToTZOr1nw6kx/bpWHfTpn4UjvYcHbt8+s2poj8
-        UAtG7spSEyhbPVAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A329613AAB;
-        Mon, 13 Sep 2021 16:14:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 62cXJtd4P2F6IQAAMHmgww
-        (envelope-from <jroedel@suse.de>); Mon, 13 Sep 2021 16:14:15 +0000
-Date:   Mon, 13 Sep 2021 18:14:14 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        kexec@lists.infradead.org, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 00/12] x86/sev: KEXEC/KDUMP support for SEV-ES guests
-Message-ID: <YT941raolZvGTVR/@suse.de>
-References: <20210913155603.28383-1-joro@8bytes.org>
- <4e033293-b81d-1e21-6fd6-f507b6821d3c@intel.com>
+        Mon, 13 Sep 2021 12:16:05 -0400
+Received: by mail-oo1-f45.google.com with SMTP id y47-20020a4a9832000000b00290fb9f6d3fso3591840ooi.3;
+        Mon, 13 Sep 2021 09:14:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jD6b4gjEXuMSDssAEUxv3yw1AVPOlnQQhosOE6fABxw=;
+        b=mKE4Vwwhq4fOc6+vUkZco0lYCkl/hGnrrBt0agM2z8MZHfzep/rPS0DFpfWRoDRLFx
+         jCFqVbDa4BnxLDhBQRjj7i62+7pebm/oQ1TosFNa9qRnIDDed4IihAcTyZvwZ/X/eEH1
+         xO2yRs/vGB9pnq6aDtGiEoEORH/vzLY0UZYExzF3goVLrZjpMf0fQu6ctpbnV5Yx8h+S
+         azIwAJj3UQWFMu1m4aYJBO8yxfNXkoB9/Z2iGe+OPJXR7g6PNqGVs1qW2UVgyhX+Tdk7
+         h6RxDSlCago9eI5mLD/s7TGRF+EpwYpmkK2NQrSLQrp89XAH7FHewy4MI5OGjuYBEgSC
+         XUaQ==
+X-Gm-Message-State: AOAM532ewk9O9IFYVMLcl973XKbQEMHQqE0dAVmLJuqKuxfYTAJ80gGW
+        tr5Md/DTGC0ANy2e5RZyWHPXCt7CUAo3I8+CAfI=
+X-Google-Smtp-Source: ABdhPJz1C8i4WX56ljYUCpTaGKUQWQ7b2nSz3hNmFxzBCW7JaZjHuAA84c2M8Mm425XO9BsEXk6qvmLfTbSA5ZHcHyk=
+X-Received: by 2002:a4a:a78a:: with SMTP id l10mr9814539oom.30.1631549689413;
+ Mon, 13 Sep 2021 09:14:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e033293-b81d-1e21-6fd6-f507b6821d3c@intel.com>
+References: <20210824122054.29481-1-joro@8bytes.org> <CAJZ5v0jqwgvmRrRts4Nf4ySmrp5gwmv_iJWBh3OjN54ZU+qneQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jqwgvmRrRts4Nf4ySmrp5gwmv_iJWBh3OjN54ZU+qneQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 13 Sep 2021 18:14:38 +0200
+Message-ID: <CAJZ5v0hn5EvwjPggCeUw+kjDNjdzx3eLP2PRBGKRAyo2eYECyQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] PCI/ACPI: Simplify PCIe _OSC feature negotiation
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <jroedel@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 09:02:38AM -0700, Dave Hansen wrote:
-> On 9/13/21 8:55 AM, Joerg Roedel wrote:
-> > This does not work under SEV-ES, because the hypervisor has no access
-> > to the vCPU registers and can't make modifications to them. So an
-> > SEV-ES guest needs to reset the vCPU itself and park it using the
-> > AP-reset-hold protocol. Upon wakeup the guest needs to jump to
-> > real-mode and to the reset-vector configured in the AP-Jump-Table.
-> 
-> How does this end up looking to an end user that tries to kexec() from a
-> an SEV-ES kernel?  Does it just hang?
+On Wed, Sep 1, 2021 at 9:33 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Tue, Aug 24, 2021 at 2:21 PM Joerg Roedel <joro@8bytes.org> wrote:
+> >
+> > From: Joerg Roedel <jroedel@suse.de>
+> >
+> > Hi,
+> >
+> > here is the third version of my patches to simplify the _OSC
+> > negotiation of PCIe features between Linux and the firmware.
+> >
+> > This version is a complete rewrite, so there is no changelog to the
+> > previous version. Patches 1-3 are cleanups and small restructurings of
+> > the code as a preparation for patch 4.
+> >
+> > The last patch gets rid of the dedicated _OSC query to check for _OSC
+> > support and merges that functionality into acpi_pci_osc_control_set().
+> >
+> > This allows to simplify and/or remove other functions and consilidate
+> > error handling in negotiate_os_control().
+> >
+> > I have tested the patches with and without 'pcie_ports=compat' and
+> > found no regressions on my test machine.
+>
+> I have reviewed the patches, so if you want me to queue up this
+> series, please let me know.
 
-Yes, the kexec will just hang. This patch-set contains code to disable
-the kexec syscalls in situations where it would not work for that
-reason.
-
-Actually with the changes to the decompressor in this patch-set the
-kexec'ed kernel could boot, but would fail to bring up all the APs.
-
-Regards,
-
-	Joerg
+Should I assume that Bjorn will be taking it?
