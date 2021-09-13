@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77F2409108
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33809408E6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245670AbhIMN5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
+        id S241544AbhIMNdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:33:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245507AbhIMNyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:54:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4E3A6124F;
-        Mon, 13 Sep 2021 13:35:26 +0000 (UTC)
+        id S242193AbhIMN1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:27:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 378F1610A8;
+        Mon, 13 Sep 2021 13:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631540127;
-        bh=jgOIDr5IeFUVpjWtco33yuanNhwwD/tQC0IdBtSBabQ=;
+        s=korg; t=1631539400;
+        bh=iahcXtNmTikbc0e9WQ80924dKSq21TRzle63Y1mEAXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UHwKSxSuzjJD+pEUqQ9j0hf/eE6mmyaFkj8sBx56AiykyUp15QyLv9+xWyn3DWKaJ
-         fiIx9IRcYUxPUn1UozriZJbeQa15cFRWLorl6TS3a4Zu0NiZIM4vptsfOD2Ne2A0wF
-         qiNMTQe4Z7iawgtJortPlNwBfbHw6EDNy2zpj70M=
+        b=gz2AOpYGOcZFVGwipjbmN++GBLQ6Yoqaiqs0/cbFN3ymoqHZvvHFecfhghVh7jA2j
+         n3tPya+2EX+KeVCDA59DA1CZat753bf58MFVt/Qi8at5EE+Yp6RjrLhjSf7f4FAMjt
+         cQH4DK7lrxaRhDJ0qBiZNzKDtgznnRa/YsDIWyBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
-        Yanfei Xu <yanfei.xu@windriver.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 055/300] rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock
+Subject: [PATCH 5.10 011/236] posix-cpu-timers: Force next expiration recalc after itimer reset
 Date:   Mon, 13 Sep 2021 15:11:56 +0200
-Message-Id: <20210913131111.219104675@linuxfoundation.org>
+Message-Id: <20210913131100.714437277@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
-References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanfei Xu <yanfei.xu@windriver.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-[ Upstream commit dc87740c8a6806bd2162bfb441770e4e53be5601 ]
+[ Upstream commit 406dd42bd1ba0c01babf9cde169bb319e52f6147 ]
 
-If rcu_print_task_stall() is invoked on an rcu_node structure that does
-not contain any tasks blocking the current grace period, it takes an
-early exit that fails to release that rcu_node structure's lock.  This
-results in a self-deadlock, which is detected by lockdep.
+When an itimer deactivates a previously armed expiration, it simply doesn't
+do anything. As a result the process wide cputime counter keeps running and
+the tick dependency stays set until it reaches the old ghost expiration
+value.
 
-To reproduce this bug:
+This can be reproduced with the following snippet:
 
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
+	void trigger_process_counter(void)
+	{
+		struct itimerval n = {};
 
-This will also result in other complaints, including RCU's scheduler
-hook complaining about blocking rather than preemption and an rcutorture
-writer stall.
+		n.it_value.tv_sec = 100;
+		setitimer(ITIMER_VIRTUAL, &n, NULL);
+		n.it_value.tv_sec = 0;
+		setitimer(ITIMER_VIRTUAL, &n, NULL);
+	}
 
-Only a partial RCU CPU stall warning message will be printed because of
-the self-deadlock.
+Fix this with resetting the relevant base expiration. This is similar to
+disarming a timer.
 
-This commit therefore releases the lock on the rcu_print_task_stall()
-function's early exit path.
-
-Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-Tested-by: Qais Yousef <qais.yousef@arm.com>
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210726125513.271824-4-frederic@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/rcu/tree_stall.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ kernel/time/posix-cpu-timers.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index f1e011d4a899..c615fd153cb2 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -269,8 +269,10 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 	struct task_struct *ts[8];
+diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
+index 08c033b80256..d3d42b7637a1 100644
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -1346,8 +1346,6 @@ void set_process_cpu_timer(struct task_struct *tsk, unsigned int clkid,
+ 			}
+ 		}
  
- 	lockdep_assert_irqs_disabled();
--	if (!rcu_preempt_blocked_readers_cgp(rnp))
-+	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		return 0;
-+	}
- 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
- 	       rnp->level, rnp->grplo, rnp->grphi);
- 	t = list_entry(rnp->gp_tasks->prev,
+-		if (!*newval)
+-			return;
+ 		*newval += now;
+ 	}
+ 
 -- 
 2.30.2
 
