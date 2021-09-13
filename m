@@ -2,236 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8873540848C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DD4408497
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 08:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237256AbhIMGRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 02:17:16 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:37667 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237174AbhIMGRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 02:17:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631513758; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=pREX3LGwYAggCgYEPmLhKYdIv1mP8IQUL0WMH1SUxdA=; b=wLMsUZ3UShA1TC05KHGw6gSEM1w+5NzGCxyEe60NY43Mg4DjQo8w3VI7tUVJjBH+tpnSBfh7
- JpNC6f7v7QO6xULA9TBZyE3AYU/vniAO4t50bnPyeTpMdODRVoGmZeNCafqgn5ICWaFbW9A3
- i6kRZUzVBec0bRbGUrFR8TpydUU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 613eec9dd914b051822d1fd4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Sep 2021 06:15:57
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A0E48C43460; Mon, 13 Sep 2021 06:15:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.12] (unknown [59.89.228.88])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEDFAC4338F;
-        Mon, 13 Sep 2021 06:15:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CEDFAC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Caleb Connolly <caleb.connolly@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-References: <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org>
- <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <b7334a1a-c4ad-da90-03b4-0d19e1811b13@linaro.org>
- <CAF6AEGv0WWB3Z1hmXf8vxm1_-d7fsNBRcaQF35aE2JXcJn8-cA@mail.gmail.com>
- <8aa590be-6a9f-9343-e897-18e86ea48202@linaro.org>
- <CAF6AEGtd_5jKhixp6h+NnN8-aqjBHTLopRozASE73oT3rfnFHA@mail.gmail.com>
- <6eefedb2-9e59-56d2-7703-2faf6cb0ca3a@codeaurora.org>
- <CAF6AEGvhqPHWNK=6GYz+Mu5aKe8+iE4_Teem6o=X6eiANhWsPg@mail.gmail.com>
- <83ecbe74-caf0-6c42-e6f5-4887b3b534c6@linaro.org>
- <53d3e5b7-9dc0-a806-70e9-b9b5ff877462@codeaurora.org>
- <YTgeIuwumPoR9ZTE@ripper>
- <CAF6AEGt2f16=WWpKgGiWw1OJLrWMSunzrm853H+mGxPQuf2Xug@mail.gmail.com>
- <de162479-c4cb-e8b7-6044-e7ccd3cf29f6@linaro.org>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <b385ee2c-fd3c-86e7-c0a5-c3d5bfc59a17@codeaurora.org>
-Date:   Mon, 13 Sep 2021 11:45:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237272AbhIMGVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 02:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230003AbhIMGVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 02:21:40 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADEDC061574;
+        Sun, 12 Sep 2021 23:20:25 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y17so7799521pfl.13;
+        Sun, 12 Sep 2021 23:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MJZFP5k7d2O2P1gl9RWPWTU9kiXtHQ6xmLwf4B4cHAc=;
+        b=dWO6Vr1w1z/Y5cyRncMP28ZhnmG8SNYRD+5cWts5t4zwKh+N3m5+jrl3Nqe6zSSis4
+         KzqgKP429efnM2caaT8XS5hcH+Qo2YTKOFY37Ekz4Srvh3zR9upLXsdmuSv8Nx7X/jaF
+         LPuXdbJCfMU3bZLzvRey5coKIwDIwFJ3ckoMP1tPkvWupHPJCxe0Yo2mbq7gYPpzBm39
+         OQ56iT5SZmv+9r9+McdQDiBYeqQoy8dwrtCmdPofIsttfueDHztzIybGexrlfil4OY6c
+         M3iyl+uXNr55VAy+KRZFUZjsvBEj/ddtMOVgibtdAXn0KXMl43nalsHDBzrNQn6CYoQp
+         TiFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MJZFP5k7d2O2P1gl9RWPWTU9kiXtHQ6xmLwf4B4cHAc=;
+        b=niEBYWDpGauQmFeHKtxuWjBrcek9WNq6q/J7Xt05RBZYdI1OW9WSWo47ZrucQK1g9B
+         fBNIuizFO32DiPngeGDuwrAkWQB55Qh48HaXV8LwTAS1veWVbodY3NzSNjvRRfFQVnAs
+         k/hWdM9xAZr0HgF1/ihSQ7VR1ZGDKKwg3S/2wRIIQQ+ys0mLkh0TSSZsIgkI41kxH11N
+         1XeVmgaM/POJDxt8eR6YV0CTYZX4PsrItF3IBhj2aU/l+Sa0tRFSSJz3BNmINAr/cCkx
+         DcrMZwLFt7M+FRKqfxNiINBSqjUc1EJwAIahDEhjFhcaIvfgG8b+AMDsrLPvKULFyYVS
+         E02A==
+X-Gm-Message-State: AOAM532vRxzZg11e7/JS2WS0tTTcGLb6zgYVa625mjNTld2MNAweMZ0k
+        qDtEdGzqsaArwDX/YOdoNGA=
+X-Google-Smtp-Source: ABdhPJxydawtyrw408aHRADdQSSQtY4CoMrjVipz31NpqSnTyslm+Mek54wUlS+h5hosr6C61V6U/w==
+X-Received: by 2002:a63:7d04:: with SMTP id y4mr9854031pgc.131.1631514025291;
+        Sun, 12 Sep 2021 23:20:25 -0700 (PDT)
+Received: from localhost.localdomain ([111.207.172.18])
+        by smtp.gmail.com with ESMTPSA id f6sm5701659pfa.110.2021.09.12.23.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Sep 2021 23:20:24 -0700 (PDT)
+From:   zhaoxiao <long870912@gmail.com>
+To:     thierry.reding@gmail.com, lee.jones@linaro.org
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        zhaoxiao <long870912@gmail.com>
+Subject: [PATCH] pwm: visconti: Simplify using devm_pwmchip_add()
+Date:   Mon, 13 Sep 2021 14:15:53 +0800
+Message-Id: <20210913061553.21450-1-long870912@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <de162479-c4cb-e8b7-6044-e7ccd3cf29f6@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/2021 11:04 PM, Caleb Connolly wrote:
-> 
-> 
-> On 10/09/2021 18:18, Rob Clark wrote:
->> On Tue, Sep 7, 2021 at 7:20 PM Bjorn Andersson
->> <bjorn.andersson@linaro.org> wrote:
->>>
->>> On Mon 09 Aug 10:26 PDT 2021, Akhil P Oommen wrote:
->>>
->>>> On 8/9/2021 9:48 PM, Caleb Connolly wrote:
->>>>>
->>>>>
->>>>> On 09/08/2021 17:12, Rob Clark wrote:
->>>>>> On Mon, Aug 9, 2021 at 7:52 AM Akhil P Oommen
->>>>>> <akhilpo@codeaurora.org> wrote:
->>> [..]
->>>>>>> I am a bit confused. We don't define a power domain for gpu in dt,
->>>>>>> correct? Then what exactly set_opp do here? Do you think this 
->>>>>>> usleep is
->>>>>>> what is helping here somehow to mask the issue?
->>>>> The power domains (for cx and gx) are defined in the GMU DT, the 
->>>>> OPPs in
->>>>> the GPU DT. For the sake of simplicity I'll refer to the lowest
->>>>> frequency (257000000) and OPP level (RPMH_REGULATOR_LEVEL_LOW_SVS) as
->>>>> the "min" state, and the highest frequency (710000000) and OPP level
->>>>> (RPMH_REGULATOR_LEVEL_TURBO_L1) as the "max" state. These are 
->>>>> defined in
->>>>> sdm845.dtsi under the gpu node.
->>>>>
->>>>> The new devfreq behaviour unmasks what I think is a driver bug, it
->>>>> inadvertently puts much more strain on the GPU regulators than they
->>>>> usually get. With the new behaviour the GPU jumps from it's min 
->>>>> state to
->>>>> the max state and back again extremely rapidly under workloads as 
->>>>> small
->>>>> as refreshing UI. Where previously the GPU would rarely if ever go 
->>>>> above
->>>>> 342MHz when interacting with the device, it now jumps between min and
->>>>> max many times per second.
->>>>>
->>>>> If my understanding is correct, the current implementation of the GMU
->>>>> set freq is the following:
->>>>>    - Get OPP for frequency to set
->>>>>    - Push the frequency to the GMU - immediately updating the core 
->>>>> clock
->>>>>    - Call dev_pm_opp_set_opp() which triggers a notify chain, this 
->>>>> winds
->>>>> up somewhere in power management code and causes the gx regulator 
->>>>> level
->>>>> to be updated
->>>>
->>>> Nope. dev_pm_opp_set_opp() sets the bandwidth for gpu and nothing 
->>>> else. We
->>>> were using a different api earlier which got deprecated -
->>>> dev_pm_opp_set_bw().
->>>>
->>>
->>> On the Lenovo Yoga C630 this is reproduced by starting alacritty and if
->>> I'm lucky I managed to hit a few keys before it crashes, so I spent a
->>> few hours looking into this as well...
->>>
->>> As you say, the dev_pm_opp_set_opp() will only cast a interconnect vote.
->>> The opp-level is just there for show and isn't used by anything, at
->>> least not on 845.
->>>
->>> Further more, I'm missing something in my tree, so the interconnect
->>> doesn't hit sync_state, and as such we're not actually scaling the
->>> buses. So the problem is not that Linux doesn't turn on the buses in
->>> time.
->>>
->>> So I suspect that the "AHB bus error" isn't saying that we turned off
->>> the bus, but rather that the GPU becomes unstable or something of that
->>> sort.
->>>
->>>
->>> Lastly, I reverted 9bc95570175a ("drm/msm: Devfreq tuning") and ran
->>> Aquarium for 20 minutes without a problem. I then switched the gpu
->>> devfreq governor to "userspace" and ran the following:
->>>
->>> while true; do
->>>    echo 257000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
->>>    echo 710000000 > /sys/class/devfreq/5000000.gpu/userspace/set_freq
->>> done
->>>
->>> It took 19 iterations of this loop to crash the GPU.
->>
->> I assume you still had aquarium running, to keep the gpu awake while
->> you ran that loop?
->>
->> Fwiw, I modified this slightly to match sc7180's min/max gpu freq and
->> could not trigger any issue.. interestingly sc7180 has a lower min
->> freq (180) and higher max freq (800) so it was toggling over a wider
->> freq range.  I also tried on a device that  had the higher 825MHz opp
->> (since I noticed that was the only opp that used
->> RPMH_REGULATOR_LEVEL_TURBO_L1 and wanted to rule that out), but could
->> not reproduce.
->>
->> I guess a630 (sdm845) should have higher power draw (it is 2x # of
->> shader cores and 2x GMEM size, but lower max freq).. the question is,
->> is this the reason we see this on sdm845 and not sc7180?  Or is there
->> some other difference.  On the gpu side of this, they are both closely
->> related (ie. the same "sub-generation" of a6xx, same gmu fw, etc)..
->> I'm less sure about the other parts (icc, rpmh, etc)
-> 
-> My guess would be power draw, nobody has mentioned this yet but I've 
-> realised that the vdd_gfx rail is powered by a buck converter, which 
-> could explain a lot of the symptoms.
-> 
-> Buck converters depend on high frequency switching and inductors to 
-> work, this inherently leads to some lag time when changing voltages, and 
-> also means that the behaviour of the regulator is defined in part by how 
-> much current is being drawn. Wikipedia has a pretty good explanation: 
-> https://en.wikipedia.org/wiki/Buck_converter
-> 
-> At the best of times these regulators have a known voltage ripple, when 
-> under load and when rapidly switching voltages this will get a lot worse.
-> 
-> Someone with an oscilloscope and schematics could probe the rail and 
-> probably see exactly what's going on when the GPU crashes. Because of 
-> the lag time in the regulator changing voltage, it might be 
-> undershooting whilst the GPU is trying to clock up and draw more current 
-> - causing instability and crashes.
+This allows to drop the platform_driver's remove function. This is the
+only user of driver data so this can go away, too.
 
-Both of you are correct. The GPU is very similar including the GMU (we 
-have same fw for both), except the GBIF block. As far as I am aware, the 
-non-gpu blocks within SoC should be similar except the configs.
+Signed-off-by: zhaoxiao <long870912@gmail.com>
+---
+ drivers/pwm/pwm-visconti.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-And yes, for these sort of issues where we suspect a power issue, gx 
-rail should be probed for droops using a very high resolution 
-oscilloscopes (these droops might last less than 1us).
-
-I am aware of only Dragonboard that is still alive from QC perspective. 
-Can someone report this issue to DB support team as it is fairly easy to 
-reproduce?
-
--Akhil.
-
->>
->> BR,
->> -R
->>
->>> So the problem doesn't seem to be Rob's change, it's just that prior to
->>> it the chance to hitting it is way lower. Question is still what it is
->>> that we're triggering.
->>>
->>> Regards,
->>> Bjorn
-> 
+diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
+index af4e37d3e3a6..927c4cbb1daf 100644
+--- a/drivers/pwm/pwm-visconti.c
++++ b/drivers/pwm/pwm-visconti.c
+@@ -144,28 +144,17 @@ static int visconti_pwm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(priv->base))
+ 		return PTR_ERR(priv->base);
+ 
+-	platform_set_drvdata(pdev, priv);
+-
+ 	priv->chip.dev = dev;
+ 	priv->chip.ops = &visconti_pwm_ops;
+ 	priv->chip.npwm = 4;
+ 
+-	ret = pwmchip_add(&priv->chip);
++	ret = devm_pwmchip_add(&pdev->dev, &priv->chip);
+ 	if (ret < 0)
+ 		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
+ 
+ 	return 0;
+ }
+ 
+-static int visconti_pwm_remove(struct platform_device *pdev)
+-{
+-	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
+-
+-	pwmchip_remove(&priv->chip);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id visconti_pwm_of_match[] = {
+ 	{ .compatible = "toshiba,visconti-pwm", },
+ 	{ }
+@@ -178,7 +167,6 @@ static struct platform_driver visconti_pwm_driver = {
+ 		.of_match_table = visconti_pwm_of_match,
+ 	},
+ 	.probe = visconti_pwm_probe,
+-	.remove = visconti_pwm_remove,
+ };
+ module_platform_driver(visconti_pwm_driver);
+ 
+-- 
+2.20.1
 
