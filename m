@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2019408D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0BA408FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241337AbhIMNXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37924 "EHLO mail.kernel.org"
+        id S244083AbhIMNrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:47:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240824AbhIMNVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24AA3610CE;
-        Mon, 13 Sep 2021 13:20:24 +0000 (UTC)
+        id S243169AbhIMNmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:42:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3B16135A;
+        Mon, 13 Sep 2021 13:29:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539225;
-        bh=7rcpZBCqt7UxdGaW6PQLRf4U6sHFHTnF2VL4CG4bsbY=;
+        s=korg; t=1631539799;
+        bh=6Qk9BssbyK0UYvw8za6Swqpm4GUFOO+l2eyAMHBkIfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H2fwDSF6bEpFKZNZCQZgjmyJ/3ch57x/dOjDZNxoCLeWcpkLVg/s+4xfF9NY3Rn48
-         eMpeezxK/DpLgle0TG8EtmW8gwZ0xLejLvpB+QU9oXJD8vnecnhTV394slfcRJUQxT
-         pJw6rfNDlXkh0r8eCuo1f7e6wzc69Piit5KJokpI=
+        b=OIac7O+qs6/nITKjDH0WMk5d2Sj2x31vO3ONTpzniArnDJz26dYB6hgnnqSdQeOC1
+         +PkeO4NYcPb99mRLMsPGsmF5d1qs2q2HlnvRkc/t5em7j3kvxY3omsc+7gCNwJXa3k
+         aPDih9H8m05x/bzF/tjvhWn6WFdTtz353t+O0z/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 087/144] drm/msm/dsi: Fix some reference counted resource leaks
-Date:   Mon, 13 Sep 2021 15:14:28 +0200
-Message-Id: <20210913131050.865061609@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 164/236] locking/local_lock: Add missing owner initialization
+Date:   Mon, 13 Sep 2021 15:14:29 +0200
+Message-Id: <20210913131105.959519252@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 6977cc89c87506ff17e6c05f0e37f46752256e82 ]
+[ Upstream commit d8bbd97ad0b99a9394f2cd8410b884c48e218cf0 ]
 
-'of_find_device_by_node()' takes a reference that must be released when
-not needed anymore.
-This is expected to be done in 'dsi_destroy()'.
+If CONFIG_DEBUG_LOCK_ALLOC=y is enabled then local_lock_t has an 'owner'
+member which is checked for consistency, but nothing initialized it to
+zero explicitly.
 
-However, there are 2 issues in 'dsi_get_phy()'.
+The static initializer does so implicit, and the run time allocated per CPU
+storage is usually zero initialized as well, but relying on that is not
+really good practice.
 
-First, if 'of_find_device_by_node()' succeeds but 'platform_get_drvdata()'
-returns NULL, 'msm_dsi->phy_dev' will still be NULL, and the reference
-won't be released in 'dsi_destroy()'.
-
-Secondly, as 'of_find_device_by_node()' already takes a reference, there is
-no need for an additional 'get_device()'.
-
-Move the assignment to 'msm_dsi->phy_dev' a few lines above and remove the
-unneeded 'get_device()' to solve both issues.
-
-Fixes: ec31abf6684e ("drm/msm/dsi: Separate PHY to another platform device")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/f15bc57648a00e7c99f943903468a04639d50596.1628241097.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 91710728d172 ("locking: Introduce local_lock()")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210815211301.969975279@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/dsi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/local_lock_internal.h | 42 ++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
-index 55ea4bc2ee9c..0d37ae5b310c 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -26,8 +26,10 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
- 	}
+diff --git a/include/linux/local_lock_internal.h b/include/linux/local_lock_internal.h
+index ded90b097e6e..3f02b818625e 100644
+--- a/include/linux/local_lock_internal.h
++++ b/include/linux/local_lock_internal.h
+@@ -14,29 +14,14 @@ typedef struct {
+ } local_lock_t;
  
- 	phy_pdev = of_find_device_by_node(phy_node);
--	if (phy_pdev)
-+	if (phy_pdev) {
- 		msm_dsi->phy = platform_get_drvdata(phy_pdev);
-+		msm_dsi->phy_dev = &phy_pdev->dev;
-+	}
- 
- 	of_node_put(phy_node);
- 
-@@ -36,8 +38,6 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
- 		return -EPROBE_DEFER;
- 	}
- 
--	msm_dsi->phy_dev = get_device(&phy_pdev->dev);
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+-# define LL_DEP_MAP_INIT(lockname)			\
++# define LOCAL_LOCK_DEBUG_INIT(lockname)		\
+ 	.dep_map = {					\
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_CONFIG,	\
+-		.lock_type = LD_LOCK_PERCPU,			\
+-	}
+-#else
+-# define LL_DEP_MAP_INIT(lockname)
+-#endif
 -
- 	return 0;
+-#define INIT_LOCAL_LOCK(lockname)	{ LL_DEP_MAP_INIT(lockname) }
+-
+-#define __local_lock_init(lock)					\
+-do {								\
+-	static struct lock_class_key __key;			\
+-								\
+-	debug_check_no_locks_freed((void *)lock, sizeof(*lock));\
+-	lockdep_init_map_type(&(lock)->dep_map, #lock, &__key, 0, \
+-			      LD_WAIT_CONFIG, LD_WAIT_INV,	\
+-			      LD_LOCK_PERCPU);			\
+-} while (0)
++		.lock_type = LD_LOCK_PERCPU,		\
++	},						\
++	.owner = NULL,
+ 
+-#ifdef CONFIG_DEBUG_LOCK_ALLOC
+ static inline void local_lock_acquire(local_lock_t *l)
+ {
+ 	lock_map_acquire(&l->dep_map);
+@@ -51,11 +36,30 @@ static inline void local_lock_release(local_lock_t *l)
+ 	lock_map_release(&l->dep_map);
  }
  
++static inline void local_lock_debug_init(local_lock_t *l)
++{
++	l->owner = NULL;
++}
+ #else /* CONFIG_DEBUG_LOCK_ALLOC */
++# define LOCAL_LOCK_DEBUG_INIT(lockname)
+ static inline void local_lock_acquire(local_lock_t *l) { }
+ static inline void local_lock_release(local_lock_t *l) { }
++static inline void local_lock_debug_init(local_lock_t *l) { }
+ #endif /* !CONFIG_DEBUG_LOCK_ALLOC */
+ 
++#define INIT_LOCAL_LOCK(lockname)	{ LOCAL_LOCK_DEBUG_INIT(lockname) }
++
++#define __local_lock_init(lock)					\
++do {								\
++	static struct lock_class_key __key;			\
++								\
++	debug_check_no_locks_freed((void *)lock, sizeof(*lock));\
++	lockdep_init_map_type(&(lock)->dep_map, #lock, &__key,  \
++			      0, LD_WAIT_CONFIG, LD_WAIT_INV,	\
++			      LD_LOCK_PERCPU);			\
++	local_lock_debug_init(lock);				\
++} while (0)
++
+ #define __local_lock(lock)					\
+ 	do {							\
+ 		preempt_disable();				\
 -- 
 2.30.2
 
