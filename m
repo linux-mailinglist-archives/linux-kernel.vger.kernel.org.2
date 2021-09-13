@@ -2,136 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD2F408C23
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D404090EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238050AbhIMNNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:13:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56677 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236206AbhIMNNO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:13:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631538718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ssvFfazFHpZBhyJATyNfwQPcx2BQad/t+2J48qwVlfE=;
-        b=fXnc6nY3cnBDj1V5N9xAzn+WAYQDf8T3DA/BHMs8QS5bOW6OKIGRXVQq4JtoKC46J5xf7t
-        SphXPfYycvJOxpdybFhuJRRsV1wKmUeh/tz3KUS1XyKNxslCgYxKx92JBmVkPYwaX7Zudo
-        P/79uVv7s05NGibIzfYh3gmJuSN52w8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-MtjKCNNZOO-ViohxAn9OBg-1; Mon, 13 Sep 2021 09:11:57 -0400
-X-MC-Unique: MtjKCNNZOO-ViohxAn9OBg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6B901808305;
-        Mon, 13 Sep 2021 13:11:55 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CD236B54F;
-        Mon, 13 Sep 2021 13:11:55 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Subject: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-Date:   Mon, 13 Sep 2021 09:11:53 -0400
-Message-Id: <20210913131153.1202354-3-pbonzini@redhat.com>
-In-Reply-To: <20210913131153.1202354-1-pbonzini@redhat.com>
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
+        id S1343721AbhIMN4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242838AbhIMNxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:53:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D3361209;
+        Mon, 13 Sep 2021 13:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631540106;
+        bh=48pu5iASxiNMtjVwU7GIi6iA+uGpxSAHybb0FSBURQ8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wedvWKnvmefoY554rfILWWde/tdsYktMR2OZVNj1Yg/Wk5HsZWsv+ZzkGdMGIjlyy
+         gZtMaWGcyyaaOIPg/HTLcEqF6/Snh+OFW5NuxWHKRrBCAX5xuH99fa1fN5aghQ4WGh
+         WhVxldJXA+RSRst38B6SZEQevhmIBf+kLTw+uOII=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Mika=20Penttil=C3=A4?= <mika.penttila@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pankaj Gupta <pankaj.gupta@ionos.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 052/300] sched/numa: Fix is_core_idle()
+Date:   Mon, 13 Sep 2021 15:11:53 +0200
+Message-Id: <20210913131111.109561750@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+References: <20210913131109.253835823@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Windows expects all pages to be in uninitialized state on startup.
-Add a ioctl that does this with EREMOVE, so that userspace can bring
-the pages back to this state also when resetting the VM.
-Pure userspace implementations, such as closing and reopening the device,
-are racy.
+From: Mika Penttilä <mika.penttila@gmail.com>
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[ Upstream commit 1c6829cfd3d5124b125e6df41158665aea413b35 ]
+
+Use the loop variable instead of the function argument to test the
+other SMT siblings for idle.
+
+Fixes: ff7db0bf24db ("sched/numa: Prefer using an idle CPU as a migration target instead of comparing tasks")
+Signed-off-by: Mika Penttilä <mika.penttila@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Pankaj Gupta <pankaj.gupta@ionos.com>
+Link: https://lkml.kernel.org/r/20210722063946.28951-1-mika.penttila@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/uapi/asm/sgx.h |  2 ++
- arch/x86/kernel/cpu/sgx/virt.c  | 36 +++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-index 9690d6899ad9..f79d84ce8033 100644
---- a/arch/x86/include/uapi/asm/sgx.h
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -27,6 +27,8 @@ enum sgx_page_flags {
- 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
- #define SGX_IOC_ENCLAVE_PROVISION \
- 	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_provision)
-+#define SGX_IOC_VEPC_REMOVE \
-+	_IO(SGX_MAGIC, 0x04)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index f60ef0b4ec33..3889fee98d11 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1529,7 +1529,7 @@ static inline bool is_core_idle(int cpu)
+ 		if (cpu == sibling)
+ 			continue;
  
- /**
-  * struct sgx_enclave_create - parameter structure for the
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 59b9c13121cd..81dc186fda2e 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -154,6 +154,24 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 	return 0;
- }
- 
-+static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
-+{
-+	struct sgx_epc_page *entry;
-+	unsigned long index;
-+	long failures = 0;
-+
-+	xa_for_each(&vepc->page_array, index, entry)
-+		if (sgx_vepc_remove_page(entry))
-+			failures++;
-+
-+	/*
-+	 * Return the number of pages that failed to be removed, so
-+	 * userspace knows that there are still SECS pages lying
-+	 * around.
-+	 */
-+	return failures;
-+}
-+
- static int sgx_vepc_release(struct inode *inode, struct file *file)
- {
- 	struct sgx_vepc *vepc = file->private_data;
-@@ -239,9 +257,27 @@ static int sgx_vepc_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static long sgx_vepc_ioctl(struct file *file,
-+			   unsigned int cmd, unsigned long arg)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+
-+	switch (cmd) {
-+	case SGX_IOC_VEPC_REMOVE:
-+		if (arg)
-+			return -EINVAL;
-+		return sgx_vepc_remove_all(vepc);
-+
-+	default:
-+		return -ENOTTY;
-+	}
-+}
-+
- static const struct file_operations sgx_vepc_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= sgx_vepc_open,
-+	.unlocked_ioctl	= sgx_vepc_ioctl,
-+	.compat_ioctl	= sgx_vepc_ioctl,
- 	.release	= sgx_vepc_release,
- 	.mmap		= sgx_vepc_mmap,
- };
+-		if (!idle_cpu(cpu))
++		if (!idle_cpu(sibling))
+ 			return false;
+ 	}
+ #endif
 -- 
-2.27.0
+2.30.2
+
+
 
