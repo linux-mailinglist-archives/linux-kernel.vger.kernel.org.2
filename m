@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ACF408D0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AFE408FC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 15:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240830AbhIMNXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 09:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35020 "EHLO mail.kernel.org"
+        id S243964AbhIMNpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 09:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237166AbhIMNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 09:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E38386108B;
-        Mon, 13 Sep 2021 13:19:45 +0000 (UTC)
+        id S243828AbhIMNkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 09:40:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC9E613E8;
+        Mon, 13 Sep 2021 13:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631539186;
-        bh=AUAOhTPFuebkOjhrDueU01s6CvNvMJpixVeNc8usw/c=;
+        s=korg; t=1631539758;
+        bh=x73VeGWG/wCftAU+sqyya83+jbHEp6i30b7fFTCFvcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cFdEiktFPIccLnLZkd8ROdw68nE/kdQy9BTaiR7501UNWlARPsF8qEjdgUMmWrvMv
-         cokKVhHmRMSyYaKDOkdFenb4XNcgsOra/c1rt0VEa9Ox2xAfbepYdOpvCLLQxDAeVQ
-         qF64kdfq8S1ElqinbWYby8RisqCRZKra686vEMKI=
+        b=N1m+0XPNiVfp2GnYkqXqnxI7zC1I+/ogHl/zHiqVq6L/6ZColBWjSL7cEwqjneil3
+         ggMMHr+5W1Rb69m4GwZIK7lWaJjm0hGF/wZ4ZagVEcg/jK+thvSeye4YQSLjT8EW34
+         biqmCWqEfReN3KYLdnvKEk+2yE35U0uvJeqtXAfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 074/144] leds: trigger: audio: Add an activate callback to ensure the initial brightness is set
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 150/236] usb: gadget: udc: s3c2410: add IRQ check
 Date:   Mon, 13 Sep 2021 15:14:15 +0200
-Message-Id: <20210913131050.437095698@linuxfoundation.org>
+Message-Id: <20210913131105.468895932@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
-References: <20210913131047.974309396@linuxfoundation.org>
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+References: <20210913131100.316353015@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,122 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 64f67b5240db79eceb0bd57dae8e591fd3103ba0 ]
+[ Upstream commit ecff88e819e31081d41cd05bb199b9bd10e13e90 ]
 
-Some 2-in-1s with a detachable (USB) keyboard(dock) have mute-LEDs in
-the speaker- and/or mic-mute keys on the keyboard.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding an original
+error code. Stop calling request_irq() with the invalid IRQ #s.
 
-Examples of this are the Lenovo Thinkpad10 tablet (with its USB kbd-dock)
-and the HP x2 10 series.
-
-The detachable nature of these keyboards means that the keyboard and
-thus the mute LEDs may show up after the user (or userspace restoring
-old mixer settings) has muted the speaker and/or mic.
-
-Current LED-class devices with a default_trigger of "audio-mute" or
-"audio-micmute" initialize the brightness member of led_classdev with
-ledtrig_audio_get() before registering the LED.
-
-This makes the software state after attaching the keyboard match the
-actual audio mute state, e.g. cat /sys/class/leds/foo/brightness will
-show the right value.
-
-But before this commit nothing was actually calling the led_classdev's
-brightness_set[_blocking] callback so the value returned by
-ledtrig_audio_get() was never actually being sent to the hw, leading
-to the mute LEDs staying in their default power-on state, after
-attaching the keyboard, even if ledtrig_audio_get() returned a different
-state.
-
-This could be fixed by having the individual LED drivers call
-brightness_set[_blocking] themselves after registering the LED,
-but this really is something which should be done by a led-trigger
-activate callback.
-
-Add an activate callback for this, fixing the issue of the
-mute LEDs being out of sync after (re)attaching the keyboard.
-
-Cc: Takashi Iwai <tiwai@suse.de>
-Fixes: faa2541f5b1a ("leds: trigger: Introduce audio mute LED trigger")
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Fixes: 188db4435ac6 ("usb: gadget: s3c: use platform resources")
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/bd69b22c-b484-5a1f-c798-78d4b78405f2@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/leds/trigger/ledtrig-audio.c | 37 ++++++++++++++++++++++------
- 1 file changed, 29 insertions(+), 8 deletions(-)
+ drivers/usb/gadget/udc/s3c2410_udc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/leds/trigger/ledtrig-audio.c b/drivers/leds/trigger/ledtrig-audio.c
-index f76621e88482..c6b437e6369b 100644
---- a/drivers/leds/trigger/ledtrig-audio.c
-+++ b/drivers/leds/trigger/ledtrig-audio.c
-@@ -6,10 +6,33 @@
- #include <linux/kernel.h>
- #include <linux/leds.h>
- #include <linux/module.h>
-+#include "../leds.h"
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index b154b62abefa..82c4f3fb2dae 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -1784,6 +1784,10 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 	s3c2410_udc_reinit(udc);
  
--static struct led_trigger *ledtrig_audio[NUM_AUDIO_LEDS];
- static enum led_brightness audio_state[NUM_AUDIO_LEDS];
+ 	irq_usbd = platform_get_irq(pdev, 0);
++	if (irq_usbd < 0) {
++		retval = irq_usbd;
++		goto err_udc_clk;
++	}
  
-+static int ledtrig_audio_mute_activate(struct led_classdev *led_cdev)
-+{
-+	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MUTE]);
-+	return 0;
-+}
-+
-+static int ledtrig_audio_micmute_activate(struct led_classdev *led_cdev)
-+{
-+	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MICMUTE]);
-+	return 0;
-+}
-+
-+static struct led_trigger ledtrig_audio[NUM_AUDIO_LEDS] = {
-+	[LED_AUDIO_MUTE] = {
-+		.name     = "audio-mute",
-+		.activate = ledtrig_audio_mute_activate,
-+	},
-+	[LED_AUDIO_MICMUTE] = {
-+		.name     = "audio-micmute",
-+		.activate = ledtrig_audio_micmute_activate,
-+	},
-+};
-+
- enum led_brightness ledtrig_audio_get(enum led_audio type)
- {
- 	return audio_state[type];
-@@ -19,24 +42,22 @@ EXPORT_SYMBOL_GPL(ledtrig_audio_get);
- void ledtrig_audio_set(enum led_audio type, enum led_brightness state)
- {
- 	audio_state[type] = state;
--	led_trigger_event(ledtrig_audio[type], state);
-+	led_trigger_event(&ledtrig_audio[type], state);
- }
- EXPORT_SYMBOL_GPL(ledtrig_audio_set);
- 
- static int __init ledtrig_audio_init(void)
- {
--	led_trigger_register_simple("audio-mute",
--				    &ledtrig_audio[LED_AUDIO_MUTE]);
--	led_trigger_register_simple("audio-micmute",
--				    &ledtrig_audio[LED_AUDIO_MICMUTE]);
-+	led_trigger_register(&ledtrig_audio[LED_AUDIO_MUTE]);
-+	led_trigger_register(&ledtrig_audio[LED_AUDIO_MICMUTE]);
- 	return 0;
- }
- module_init(ledtrig_audio_init);
- 
- static void __exit ledtrig_audio_exit(void)
- {
--	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MUTE]);
--	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MICMUTE]);
-+	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MUTE]);
-+	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MICMUTE]);
- }
- module_exit(ledtrig_audio_exit);
- 
+ 	/* irq setup after old hardware state is cleaned up */
+ 	retval = request_irq(irq_usbd, s3c2410_udc_irq,
 -- 
 2.30.2
 
