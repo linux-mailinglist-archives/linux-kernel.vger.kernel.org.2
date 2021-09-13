@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 975E0409A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC54C409A12
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Sep 2021 18:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbhIMQyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 12:54:05 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:58552 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238466AbhIMQyE (ORCPT
+        id S240957AbhIMQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 12:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238901AbhIMQyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 12:54:04 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id C1D4C8226C;
-        Mon, 13 Sep 2021 19:52:47 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1631551967;
-        bh=PDgIp30dcU6oTi9tvqsbgLoR0+LbWe2UZNzoDH8i1fo=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=NSFEEpjHDDLBjONE8Iqkops8Lr3x3oGzzR6jFP8zLQMFYLgSvIAFoen65pB/EIkJc
-         /CuZmX3S2KEZ7DDg56IQ5S2NpzbY2Uiim3QwdMUN3rhflw2xrsVq+h5wYckpNHCoJl
-         2jYS2S9NyCUl8AeDZ7TKsE17DJYmkQCwOnw1bqh0=
-Received: from [192.168.211.103] (192.168.211.103) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 13 Sep 2021 19:52:47 +0300
-Message-ID: <babdd096-38e2-6cab-3326-3d2c97332980@paragon-software.com>
-Date:   Mon, 13 Sep 2021 19:52:46 +0300
+        Mon, 13 Sep 2021 12:54:37 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54ADC061766;
+        Mon, 13 Sep 2021 09:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m/3a5AY41rDqUNNKgbTN21eo535vkOk2RbK4QApErFo=; b=mTXsFDP3UjsDKBPdRKXLQ4tfgC
+        S0zlEqfitx1WA0aIQ0vmmKB0Kf4xhs+9iAE5T774WOW/Nid9YwGKfiUDd3HD66KAVNPlAy+dqbXxj
+        O4b2PMt4VGjwMa3kZqKWfuYixnaEHETy5vVqLguYmyjOtuQeiGX1lFe8vK0gLYz164Fxfco3Ini+P
+        PAueX2/2lwte2kAxUNi8+DI6bnhVvNVc6yg9B3DSFUYUT/UAFASVN6tQPFWt2FqQyWR5BDNS0G/hh
+        hgbtMPcqgRJeqXEFRoFZsshHQibor6ae94i0cm4pEU5sNewvSC8aTSwa3iCPuZVwIavUjHYTWw0xu
+        IFizBO1w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mPpCk-002WmJ-2M; Mon, 13 Sep 2021 16:53:14 +0000
+Date:   Mon, 13 Sep 2021 09:53:14 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>, axboe@kernel.dk,
+        gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
+        atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
+        oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
+        shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
+        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/9] s390/block/dcssblk: add error handling support for
+ add_disk()
+Message-ID: <YT+B+vCUcpZEq8hM@bombadil.infradead.org>
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-8-mcgrof@kernel.org>
+ <YTIscKy+jg5L/TMh@osiris>
+ <YTLP8mYBX37R++9E@bombadil.infradead.org>
+ <20210906134346.19c14246@thinkpad>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v2 0/8] fs/ntfs3: Refactor header includes
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20210902161528.6262-1-kari.argillander@gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210902161528.6262-1-kari.argillander@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.103]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210906134346.19c14246@thinkpad>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 06, 2021 at 01:43:46PM +0200, Gerald Schaefer wrote:
+> On Fri, 3 Sep 2021 18:46:26 -0700
+> Luis Chamberlain <mcgrof@kernel.org> wrote:
+> 
+> > On Fri, Sep 03, 2021 at 04:08:48PM +0200, Heiko Carstens wrote:
+> > > On Thu, Sep 02, 2021 at 10:41:03AM -0700, Luis Chamberlain wrote:
+> > > > We never checked for errors on add_disk() as this function
+> > > > returned void. Now that this is fixed, use the shiny new
+> > > > error handling.
+> > > > 
+> > > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > > ---
+> > > >  drivers/s390/block/dcssblk.c | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+> > > > index 5be3d1c39a78..b0fd5009a12e 100644
+> > > > --- a/drivers/s390/block/dcssblk.c
+> > > > +++ b/drivers/s390/block/dcssblk.c
+> > > > @@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+> > > >  	}
+> > > >  
+> > > >  	get_device(&dev_info->dev);
+> > > > -	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> > > > +	rc = device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> > > > +	if (rc)
+> > > > +		goto put_dev;
+> > > 
+> > > This looks not correct to me. We seem to have now in case of an error:
+> > > 
+> > > - reference count imbalance (= memory leak)
+> > > - dax cleanup is missing
+> > 
+> > Care to provide an alternative?
+> 
+> See patch below:
 
+Thanks! Will you queue this up on your end or do would you
+prefer for me to roll this into my tree and eventually resend
+with the rest?
 
-On 02.09.2021 19:15, Kari Argillander wrote:
-> Right now header includes are big mess with ntfs3 imo. We cannot example
-> include ntfs3 headers without need of punch of includes to source file.
-> This patch set try to address that. When this patch series is applied we
-> can include any header file without need of include anything else. This
-> does not mean source file should rely what header file includes. Instead
-> it should include them by self also if it needs them.
-> 
-> When some include is added I have write why this is needed to commit
-> message. Hopefully this will help when someone wants to correct them
-> again. I have also just delete unnecessary headers from some .c files
-> and not added what is needed. Usually deleted headers where there
-> because ntfs_fs.h need them not file itself. When file was simple enough
-> I added all necessary linux headers.
-> 
-> I did not add linux/headers to all files yet. That is big job. This is
-> good starting point. I did try to build every file itself so this will
-> build like it should.
-> 
-> Please do not hesitate to tell if there is something wrong with this
-> series or somethings could be done better.
-> 
-> V2:
-> 	Add missing first patch
-> 	Rebase
-> 	Use base-commit with format-patch
-> 
-> Kari Argillander (8):
->   fs/ntfs3. Add forward declarations for structs to debug.h
->   fs/ntfs3: Add missing header files to ntfs.h
->   fs/ntfs3: Add missing headers and forward declarations to ntfs_fs.h
->   fs/ntfs3: Add missing header and guards to lib/ headers
->   fs/ntfs3: Change right headers to bitfunc.c
->   fs/ntfs3: Change right headers to upcase.c
->   fs/ntfs3: Change right headers to lznt.c
->   fs/ntfs3: Remove unneeded header files from c files
-> 
->  fs/ntfs3/attrib.c                |  5 -----
->  fs/ntfs3/attrlist.c              |  3 ---
->  fs/ntfs3/bitfunc.c               |  7 +------
->  fs/ntfs3/bitmap.c                |  3 ---
->  fs/ntfs3/debug.h                 |  3 +++
->  fs/ntfs3/dir.c                   |  3 ---
->  fs/ntfs3/file.c                  |  1 -
->  fs/ntfs3/frecord.c               |  3 ---
->  fs/ntfs3/fslog.c                 |  4 ----
->  fs/ntfs3/fsntfs.c                |  1 -
->  fs/ntfs3/index.c                 |  1 -
->  fs/ntfs3/inode.c                 |  2 --
->  fs/ntfs3/lib/decompress_common.h |  5 +++++
->  fs/ntfs3/lib/lib.h               |  6 ++++++
->  fs/ntfs3/lznt.c                  | 10 +++++-----
->  fs/ntfs3/namei.c                 |  4 ----
->  fs/ntfs3/ntfs.h                  |  9 +++++++++
->  fs/ntfs3/ntfs_fs.h               | 31 +++++++++++++++++++++++++++++++
->  fs/ntfs3/record.c                |  3 ---
->  fs/ntfs3/run.c                   |  2 --
->  fs/ntfs3/super.c                 |  2 --
->  fs/ntfs3/upcase.c                |  8 ++------
->  fs/ntfs3/xattr.c                 |  3 ---
->  23 files changed, 62 insertions(+), 57 deletions(-)
-> 
-> 
-> base-commit: d3624466b56dd5b1886c1dff500525b544c19c83
-> 
-
-Hi Kari!
-
-Thanks for work - applied!
+  Luis
