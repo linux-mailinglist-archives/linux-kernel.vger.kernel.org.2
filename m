@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47B940B505
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DCF40B51F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbhINQij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:38:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
+        id S229861AbhINQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231202AbhINQib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:38:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD12F60FD7;
-        Tue, 14 Sep 2021 16:37:13 +0000 (UTC)
+        id S229975AbhINQoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:44:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32437610A6;
+        Tue, 14 Sep 2021 16:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631637434;
-        bh=UAcYLB+NEUWJXtqSiE8P3i+7GLJn9hsz9hqFty/Uc0g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=f18CaMqaWCA6mI5EuEpru5Amvr6VzYDlVPu58O+SJMc4jAhz8U/tjoDfBLlvVz0cH
-         YGyOiFOm3G9SE9oKZiKKvwf+6rmo3QV985HzIiisd2P+qN3804gwSxL00qWwmbVCMI
-         l1gstKRl8tiiPwVAoTbZc6Hut2viVfdtrJo3M68DxCHL7fxCdEibzOO/fPbCJf75U7
-         YTd7luKmFOgJIf/NBFGnbw9fZVnuo0py2fvlqkf18NqEfPps6H371ObuJzh6UQR7qy
-         yLUjF1OodXJqIAyZE0wcw9VBlb1S+Xyi/JFU+SJ8QI/lb5tQicXxlAoRI7DN9h4BA4
-         67+DHHVS5LPdg==
-Date:   Tue, 14 Sep 2021 11:41:00 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [GIT PULL] Enable -Wimplicit-fallthrough for Clang for 5.15-rc2
-Message-ID: <20210914164100.GA236780@embeddedor>
+        s=k20201202; t=1631637778;
+        bh=1wIid1GWYYDJRk4B5EvkgvC53Qon11JjbEFV0N5VjJs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=CnA1MDjvY30m3+AvGHVXgYJ4xMipP36WxUxNERnBAC5APzX/VRn9FeCmV4N4apDY8
+         iQelVlYqQV01SoKdspBWC3259gorEkulQ4aIdA4fch55pw6actv3jeN9+GImh99KHV
+         rOiajUDstHS3rQYNtNyN6XqpaGLCTR1036GEtZj+vhioZBaBKKmLP9jd3tzQigDFCh
+         wkqDsGUh43hydcsrtsJe7Mm+YSw9qsI2iouS28goF0F4He1emcNDbdR8wf5URKC79w
+         y8HhBZS9xTvb8lXWNphXLBP0wwcLPlf7eq4yCsRqNZL9QqEGkAJsKW8CVy9QeSKFM1
+         sW2N8cCEINNWw==
+Message-ID: <fb04eae72ca0b24fdb533585775f2f20de9f5beb.camel@kernel.org>
+Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE
+ all pages
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Yang Zhong <yang.zhong@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com
+Date:   Tue, 14 Sep 2021 19:42:56 +0300
+In-Reply-To: <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+         <20210914071030.GA28797@yangzhon-Virtual>
+         <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+On Tue, 2021-09-14 at 12:19 +0200, Paolo Bonzini wrote:
+> On 14/09/21 09:10, Yang Zhong wrote:
+> > On Mon, Sep 13, 2021 at 09:11:51AM -0400, Paolo Bonzini wrote:
+> > > Based on discussions from the previous week(end), this series impleme=
+nts
+> > > a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
+> > > file descriptor.  Other possibilities, such as closing and reopening
+> > > the device, are racy.
+> > >=20
+> > > The patches are untested, but I am posting them because they are simp=
+le
+> > > and so that Yang Zhong can try using them in QEMU.
+> > >=20
+> >=20
+> >    Paolo, i re-implemented one reset patch in the Qemu side to call thi=
+s ioctl(),
+> >    and did some tests on Windows and Linux guest, the Windows/Linux gue=
+st reboot
+> >    work well.
+> >=20
+> >    So, it is time for me to send this reset patch to Qemu community? or=
+ wait for
+> >    this kernel patchset merged? thanks!
+>=20
+> Let's wait for this patch to be accepted first.  I'll wait a little more=
+=20
+> for Jarkko and Dave to comment on this, and include your "Tested-by".
+>=20
+> I will also add cond_resched() on the final submission.
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+Why these would be conflicting tasks? I.e. why could not QEMU use
+what is available now and move forward using better mechanism, when
+they are available?
 
-are available in the Git repository at:
+BTW, I do all my SGX testing ATM in QEMU (for some weeks). IMHO, it's
+already "good enough" for many tasks, even if this fallback case is
+not perfectly sorted out.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git tags/implicit-fallthrough-clang-5.15-rc2
-
-for you to fetch changes up to 236378bb6ca791cbde68eacedd7688084d06177e:
-
-  Makefile: Enable -Wimplicit-fallthrough for Clang (2021-09-13 23:47:12 -0500)
-
-----------------------------------------------------------------
-Enable -Wimplicit-fallthrough for Clang for 5.15-rc2
-
-Hi Linus,
-
-Please, pull the following patches that fix the last warnings in
-x86_64, ARM and MIPS reported by kernel test robot, and enables
--Wimplicit-fallthrough for Clang 14+, globally.
-
-We had almost 40,000[1] of these issues for Clang in the beginning,
-and there might be a couple more out there when building some
-architectures with certain configurations. However, with the
-recent fixes, I think we are in good shape and it is now possible
-to enable -Wimplicit-fallthrough for Clang, with this finally getting rid of
-the unintentional fallthrough bug-class in the kernel, entirely. :)
-
-[1] https://github.com/KSPP/linux/issues/115
-
-Thanks!
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (4):
-      scsi: st: Fix fall-through warning for Clang
-      MIPS: Fix fall-through warnings for Clang
-      pcmcia: db1xxx_ss: Fix fall-through warning for Clang
-      Makefile: Enable -Wimplicit-fallthrough for Clang
-
- Makefile                             | 8 ++++++++
- arch/mips/alchemy/devboards/db1550.c | 1 +
- arch/mips/kernel/uprobes.c           | 1 +
- drivers/pcmcia/db1xxx_ss.c           | 1 +
- drivers/scsi/st.c                    | 1 +
- 5 files changed, 12 insertions(+)
+/Jarkko
