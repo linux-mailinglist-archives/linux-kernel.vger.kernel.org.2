@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0929540BA13
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD22240BA32
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235381AbhINVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:19:30 -0400
-Received: from ozlabs.org ([203.11.71.1]:60879 "EHLO ozlabs.org"
+        id S232047AbhINVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:22:35 -0400
+Received: from mx3.wp.pl ([212.77.101.10]:20865 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234814AbhINVTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:19:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631654264;
-        bh=jpePyfrAiPQP+DJsSP7VrmKk3+QH+uStzETrz20Cs8A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AeZFJAXauEr4wGk1J+iSZXB1uhkoLPpa/K1MDU/GqP02LInU1finbF62c+WqN+c1z
-         wAASoMGScJ7pUZEIfLfJg3b4C6jq7QoqqrXjKL074hjo0BscmaNvlXAfbUnrEPxYbZ
-         WpONbWeZ/ITx0MoFjxTlWrMOB+yrmbCS7xpYV9194a+4umLAVtO5OwwE/8RR6GfS5L
-         L8ySKn2GWAxj2rgS46wJY1Ru0xEj1f3IdBW1XzDb6rWXANO54kAMxZgPlzoFk8VD8x
-         rroHLPKlEYmwrkqWTarW9Ud9smuM4OPtDf4R5yk/X8JEvYZcdHFU9oAaZu52RMg5bp
-         2E2q6KSA0tHIg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H8GQb6c7dz9sRN;
-        Wed, 15 Sep 2021 07:17:43 +1000 (AEST)
-Date:   Wed, 15 Sep 2021 07:17:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the amdgpu tree
-Message-ID: <20210915071740.119db858@canb.auug.org.au>
+        id S231536AbhINVWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:22:30 -0400
+Received: (wp-smtpd smtp.wp.pl 5375 invoked from network); 14 Sep 2021 23:21:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1631654468; bh=tAPSHYLfJCfHanCPetkA371bKGzel09qbwJJnHLD89E=;
+          h=From:To:Subject;
+          b=kNSmpwIKQBuL5uP3J961AIFtCQZmZMcaemQD9pjMSkQ4ffQg8b05AUfEA2mJ13shm
+           0Xrxn/F28GhH22gMt8ThfN2j6Gki/R5voEro/DqU2FAj/tiCnu/zhekH1ytxekdCM7
+           KQWBs+6ud5Td4zFYJirOP6j5xyvHmzHtfeZsYqIQ=
+Received: from 46.204.52.243.nat.umts.dynamic.t-mobile.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[46.204.52.243])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <john@phrozen.org>; 14 Sep 2021 23:21:07 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
+        maz@kernel.org, ralf@linux-mips.org, ralph.hempel@lantiq.com,
+        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        hauke@hauke-m.de, dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/8] MIPS: lantiq: dma: add small delay after reset
+Date:   Tue, 14 Sep 2021 23:20:58 +0200
+Message-Id: <20210914212105.76186-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wkY4f=_TYOIUoYL.GWDFqLw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 9c083a352a31c4ae3946ffbe1e95c549
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [cXMk]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wkY4f=_TYOIUoYL.GWDFqLw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Reading the DMA registers immediately after the reset causes
+Data Bus Error. Adding a small delay fixes this issue.
 
-Hi all,
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ arch/mips/lantiq/xway/dma.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-In commit
+diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
+index 63dccb2ed08b..2784715933d1 100644
+--- a/arch/mips/lantiq/xway/dma.c
++++ b/arch/mips/lantiq/xway/dma.c
+@@ -11,6 +11,7 @@
+ #include <linux/export.h>
+ #include <linux/spinlock.h>
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/of.h>
+ 
+@@ -222,6 +223,8 @@ ltq_dma_init(struct platform_device *pdev)
+ 	clk_enable(clk);
+ 	ltq_dma_w32_mask(0, DMA_RESET, LTQ_DMA_CTRL);
+ 
++	usleep_range(1, 10);
++
+ 	/* disable all interrupts */
+ 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
+ 
+-- 
+2.30.2
 
-  8e4826da95bc ("drm/amd/display: Fix white screen page fault for gpuvm")
-
-Fixes tag
-
-  Fixes: 64b1d0e8d50 ("drm/amd/display: Add DCN3.1 HWSEQ")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/wkY4f=_TYOIUoYL.GWDFqLw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFBEXQACgkQAVBC80lX
-0Gxy/gf/SzPqOhIxiBVsQa4L2Lg8R9r+lZ4Cel8UI4Dgs1x9GHonKsE7Xu5LRugM
-wBtDTUVY68erqKTj6jD67lys50yyI0Ai68YQ58GJN15mUI7rY970v2AK+FlI2YAk
-MEfomfjwkcQDZlQ5/hmLDR1jH4V9EtNiKt1VRRfcodKdj4c2PhmTFbhtgBrR9XSo
-KBRfqEdum3yaeljpDUFU9/gYr6FB1XX6IEyZ1IddzttDCyT3KkKB9hPcf5YmaC4F
-u7NUSfyB0pq/OHkvSPm5TRQNMNHcfh3gl4mzIG/oMngeBkINTuOUOZ7z/fsExDL+
-0FK1wbScIanVCkRcquph2ByNN8GLTQ==
-=joE7
------END PGP SIGNATURE-----
-
---Sig_/wkY4f=_TYOIUoYL.GWDFqLw--
