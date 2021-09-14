@@ -2,120 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F3F40A8E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4F540A8EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhINIKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:10:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60066 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhINIJp (ORCPT
+        id S231547AbhINILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhINILU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:09:45 -0400
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631606907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VPFtXk9zgPFdsFoa+TMu+4lql0yJlSvrdlqa2T6Fv+A=;
-        b=rtSplDVVH0CTKQqMpgbAvWqYNnVgXqayf734MfeHIWty2B4/RysvD72nKh1Y9Odhfp0xsp
-        5G66IA+5Ai9MfDuDRDH3CMHufBTd7OPUaz6fKIt2l7JQfebSManAaRc/W8JY4wLQSatzNG
-        OlmqRnFOzvfS3ZpvLYW6SANEiwGNEnmRz8+RMRQv+CqifvIxB2k4JNITK0CgxbpGBOBfMc
-        O7lqiAcEwyLMHOCCRyPjYQ0wk/2O6kb/5WWqGXBK9w/Q6ojABRBpONbhxRdMiCutwrBikG
-        UAlxO6VPeYCao34K9iEIEzVkl8gUK5ebYBJgQMwrHIuB6PxgkSmaHfanjFmijQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631606907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VPFtXk9zgPFdsFoa+TMu+4lql0yJlSvrdlqa2T6Fv+A=;
-        b=87SfjU90ZJ7Wv1Z2ho9VEWI+5ci+JnNsyFCisenIsJ3nU3urMes9yOo3eKDJSWI54wftGl
-        WLYvOVTdpNMUzIBg==
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: Re: [RFC PATCH net 3/5] net: dsa: hellcreek: be compatible with
- masters which unregister on shutdown
-In-Reply-To: <20210912120932.993440-4-vladimir.oltean@nxp.com>
-References: <20210912120932.993440-1-vladimir.oltean@nxp.com>
- <20210912120932.993440-4-vladimir.oltean@nxp.com>
-Date:   Tue, 14 Sep 2021 10:08:26 +0200
-Message-ID: <874kan1sw5.fsf@kurt>
+        Tue, 14 Sep 2021 04:11:20 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76007C0613AD
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:09:20 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id n30so8723746pfq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HORz+N9iPM3MBLFTrD2etygd1AQ7C3FwAZKQ2ef9vXA=;
+        b=hNqZp1dwfdFkEDBjv3xUXxcGBjBFOYQgKv9Fg+Lztu1zsRHrV3An6X4PLGSsbKhgOa
+         t9JlCxXjagpAmLziP/AL4bkyLre2pXearJ6vsOhr3a4OMeeE5IWFJItz28A/KEi4a3t8
+         mBpgnfsVbpl9pw9GSX02QXTV+i2OrSKCNJzSQLhyxVbOQSMnvydpM/9vsKsudJbutJt/
+         VlHtTVJtBzxB+XhxVk5T/zY1+eqmH4bBZobJzk0Ccqr9JCQQ/PGT4tbPOkPrXWRl3JCx
+         nFuZpm82/kf2CtsMtwOjplejstBJ5m09BzGpksPce+zrvVQFXeXb8WLPsb6c9Mn8XRYL
+         NIrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HORz+N9iPM3MBLFTrD2etygd1AQ7C3FwAZKQ2ef9vXA=;
+        b=7rwKzaeMQKwrZ+KXT50lWUGMBig/ovr49A4gQiJmXFQ00dLk6CTFL+7BxAnDlhZZHJ
+         S+YKp4PloResO7eB5ZRA5tfJI839m0o9IBvk9Onsd3NQciFS1f4KFtKT2rdOUXxxUGPd
+         iXp2cRaIfgaGTvai2ZNnTqsKov44AANytDt/m3O0B9hMkVFiVP17YwKHZr90jKSejM4V
+         kIWymD2QtKNd+KqCsrU77Q7UwMwemD8JlI/KCTwcaocN1bP1zI/gs6KGeR9ahnrVOKHP
+         ddDbkiNqKvXQEDumgg2QQ0/m/580uoIeB/3SkiWyGleKSMEGg0hI3OOO0+kI+nLVtAaI
+         W35w==
+X-Gm-Message-State: AOAM532wpgTH2V/CGOiybgZq8875Q9yar7Z5ROplIfhp3T1n+zyb+WfR
+        Q3NVtnjPcs0Sk88fiaDS82jf
+X-Google-Smtp-Source: ABdhPJyh/TNWx4PNfVhDrSi721PTkgySN/TIS/csuXWue6mCXR6CsUoAqZhV2TwTkxInYfdYoJMZGw==
+X-Received: by 2002:aa7:9f8a:0:b0:43c:39be:23fb with SMTP id z10-20020aa79f8a000000b0043c39be23fbmr3434984pfr.57.1631606959868;
+        Tue, 14 Sep 2021 01:09:19 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6211:54eb:fe9c:efbb:2b75:a575])
+        by smtp.gmail.com with ESMTPSA id d5sm669016pjs.53.2021.09.14.01.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 01:09:19 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 13:39:11 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, smohanad@codeaurora.org,
+        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
+        skananth@codeaurora.org, vpernami@codeaurora.org,
+        vbadigan@codeaurora.org
+Subject: Re: [PATCH v7 0/3] Add Qualcomm PCIe Endpoint driver support
+Message-ID: <20210914080911.GA16774@thinkpad>
+References: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+Hi,
 
-On Sun Sep 12 2021, Vladimir Oltean wrote:
-> Since commit 2f1e8ea726e9 ("net: dsa: link interfaces with the DSA
-> master to get rid of lockdep warnings"), DSA gained a requirement which
-> it did not fulfill, which is to unlink itself from the DSA master at
-> shutdown time.
->
-> Since the hellcreek driver was introduced after the bad commit, it has
-> never worked with DSA masters which decide to unregister their
-> net_device on shutdown, effectively hanging the reboot process.
->
-> Hellcreek is a platform device driver, so we probably cannot have the
-> oddities of ->shutdown and ->remove getting both called for the exact
-> same struct device. But to be in line with the pattern from the other
-> device drivers which are on slow buses, implement the same "if this then
-> not that" pattern of either running the ->shutdown or the ->remove hook.
-> The driver's current ->remove implementation makes that very easy
-> because it already zeroes out its device_drvdata on ->remove.
->
-> Fixes: e4b27ebc780f ("net: dsa: Add DSA driver for Hirschmann Hellcreek switches")
-> Link: https://lore.kernel.org/netdev/20210909095324.12978-1-LinoSanfilippo@gmx.de/
-> Reported-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Thu, Jul 22, 2021 at 05:42:39PM +0530, Manivannan Sadhasivam wrote:
+> Hello,
+> 
+> This series adds support for Qualcomm PCIe Endpoint controller found
+> in platforms like SDX55. The Endpoint controller is based on the designware
+> core with additional Qualcomm wrappers around the core.
+> 
+> The driver is added separately unlike other Designware based drivers that
+> combine RC and EP in a single driver. This is done to avoid complexity and
+> to maintain this driver autonomously.
+> 
+> The driver has been validated with an out of tree MHI function driver on
+> SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
+> 
 
-Acked-by: Kurt Kanzenbach <kurt@linutronix.de>
+Ping again! Do I need to resend this series on top of v5.15-rc1? I thought this
+one could go in for v5.15 but...
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mani
 
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmFAWHoTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRB5KluBy5jwpsxRD/9ANtJRKndzoSp2shelf4V/aCarmfLF
-GWf7nqLf5GsK0dl7bKUD8EM2OH647C7F1Qan0Ch4EVjw3OKxz7+J84x2QzZQ6u0C
-lEGrHDrrkCXp4oCqV8aZoX5wLhXXjoto4LBJK/oobKzdAqPRBu171acXH357bd94
-x7YjHTlnohSv6Q8RsjGQ4ba4qPjJ69cEhYKBKydsoTBSUnRzyzzgVtxz9GqpEKXa
-lO8uyPzgqfB/ivLKWOJ8/Ugt8xaNBiH0+K1Me516e3Ui+3XBiKFr8uSYpdK2HSKl
-sAugTY64Dd1mgYfVZ2FWhphcGU5YpbUmdYNpyny8swWkSjd9oUvW8ZDBva/TBRN8
-KQzfrAqrCGGuYeYrNfFVoOkcQdNAWI2CuUhaLr+6tbnVo8KO8f5PhvoQWcIh2IqP
-eeR3w/5m4sSYBsZlOG/VbEscT525R9y8oZvNjcVtbWeMf9J3jFZI9hgXcMvQXP93
-NR9WihCzM8dHF8tSZTfUttZLXuYmzBBm0jxgvhUfu4gMp9bGUXtWZcS8vYTO7XED
-CC7ipYT3aU2/qNyqodWYMfs1cZynJEeZl2QID2QAj5xtnRH527KhwMVQAkZVxDkb
-PR7T4Iu4/XPkPztHLS2U59Dxa/uPikXpxdabfPo5ScshHyPDp5gTEiFGMIeIhb+O
-GbkqtdvJEuFa2g==
-=A1oq
------END PGP SIGNATURE-----
---=-=-=--
+> Thanks,
+> Mani
+> 
+> Changes in v7:
+> 
+> * Used existing naming convention for callback functions
+> * Used active low state for PERST# gpio
+> 
+> Changes in v6:
+> 
+> * Removed status property in DT and added reviewed tag from Rob
+> * Switched to _relaxed variants as suggested by Rob
+> 
+> Changes in v5:
+> 
+> * Removed the DBI register settings that are not needed
+> * Used the standard definitions available in pci_regs.h
+> * Added defines for all the register fields
+> * Removed the left over code from previous iteration
+> 
+> Changes in v4:
+> 
+> * Removed the active_config settings needed for IPA integration
+> * Switched to writel for couple of relaxed versions that sneaked in
+> 
+> Changes in v3:
+> 
+> * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+> * Noticeable changes are:
+>   - Got rid of _relaxed calls and used readl/writel
+>   - Got rid of separate TCSR memory region and used syscon for getting the
+>     register offsets for Perst registers
+>   - Changed the wake gpio handling logic
+>   - Added remove() callback and removed "suppress_bind_attrs"
+>   - stop_link() callback now just disables PERST IRQ
+> * Added MMIO region and doorbell interrupt to the binding
+> * Added logic to write MMIO physicall address to MHI base address as it is
+>   for the function driver to work
+> 
+> Changes in v2:
+> 
+> * Addressed the comments from Rob on bindings patch
+> * Modified the driver as per binding change
+> * Fixed the warnings reported by Kbuild bot
+> * Removed the PERST# "enable_irq" call from probe()
+> 
+> Manivannan Sadhasivam (3):
+>   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+>     controller
+>   PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+>   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+> 
+>  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+>  MAINTAINERS                                   |  10 +-
+>  drivers/pci/controller/dwc/Kconfig            |  10 +
+>  drivers/pci/controller/dwc/Makefile           |   1 +
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+>  5 files changed, 888 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
+> 
+> -- 
+> 2.25.1
+> 
