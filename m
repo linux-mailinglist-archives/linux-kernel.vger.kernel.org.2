@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE9540AA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FF240AA17
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhINJCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:02:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59466 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhINJCX (ORCPT
+        id S230346AbhINJD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:03:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229868AbhINJDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:02:23 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4A8B3220BA;
-        Tue, 14 Sep 2021 09:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631610065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 14 Sep 2021 05:03:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631610157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=seidAS9JqA/z63Wo4YmSLROfSZAIjV9xwK5/H5h3XO0=;
-        b=FklnkAPc3JkEAYVv/RIpkBnRLQVba4+tUcdADN0lLmtBRt5DKRq1XyfZU4jgyAOCY496YF
-        xFZs6I8D1dssf3ML5OjXj/ZQZ11q1RwzOAX+VP6QuFwmhe75GbnxzaFY2l6aALSR4lf4st
-        /ztumWb5/EmxAJilFBtBORCHEhEYw+4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631610065;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=seidAS9JqA/z63Wo4YmSLROfSZAIjV9xwK5/H5h3XO0=;
-        b=QR9YQCggbndcJ9s78TDmJ0RYLmLergoY7ylXCnDIWUjqT1XR33obJgputPPSa3/dJCm00/
-        N9mtARIO1anBYxAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=d9zHzAE5JRRNzn4tPguLuhYSUPQr1fd/jH5EtFVUE3c=;
+        b=QAbt76ZBn3ZTIsTesDpADF+Lf4xTewBwxcV/pBc137OsigI6iBWuRXA+MEOJc7S643TMm4
+        Ky5P4jJ4w5OlrLzklw9Yo/GmyZ0EP8956iVCscAv7fdve4ofZwa6pH4LRFy4ONDpazzA2k
+        QYbs4UvLGFM9ZAZEvjWNWAPVSBlKWLE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-6ZFRKCtGND6AYxhtycmzbw-1; Tue, 14 Sep 2021 05:02:36 -0400
+X-MC-Unique: 6ZFRKCtGND6AYxhtycmzbw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 181EE13D3F;
-        Tue, 14 Sep 2021 09:01:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id IPopBdFkQGGFNAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 14 Sep 2021 09:01:05 +0000
-Message-ID: <ef0aa660-0cb6-dc21-f2ce-368b34f8af3d@suse.cz>
-Date:   Tue, 14 Sep 2021 11:01:04 +0200
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF157800FF4;
+        Tue, 14 Sep 2021 09:02:32 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 668835D9DC;
+        Tue, 14 Sep 2021 09:02:29 +0000 (UTC)
+Message-ID: <9585f1387b2581d30b74cd163a9aac2adbd37a93.camel@redhat.com>
+Subject: Re: [RFC PATCH 3/3] nSVM: use svm->nested.save to load vmcb12
+ registers and avoid TOC/TOU races
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 14 Sep 2021 12:02:28 +0300
+In-Reply-To: <73b5a5bb-48f2-3a08-c76b-a82b5b69c406@redhat.com>
+References: <20210903102039.55422-1-eesposit@redhat.com>
+         <20210903102039.55422-4-eesposit@redhat.com>
+         <21d2bf8c4e3eb3fc5d297fd13300557ec686b625.camel@redhat.com>
+         <73b5a5bb-48f2-3a08-c76b-a82b5b69c406@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH v2 2/2] lib, stackdepot: Add helper to print stack
- entries.
-Content-Language: en-US
-To:     Imran Khan <imran.f.khan@oracle.com>, geert@linux-m68k.org,
-        akpm@linux-foundation.org, ryabinin.a.a@gmail.com,
-        glider@google.com, andreyknvl@gmail.com, dvyukov@google.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210902000154.1096484-1-imran.f.khan@oracle.com>
- <20210902000154.1096484-3-imran.f.khan@oracle.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210902000154.1096484-3-imran.f.khan@oracle.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 02:01, Imran Khan wrote:
-> To print a stack entries, users of stackdepot, first
-> use stack_depot_fetch to get a list of stack entries
-> and then use stack_trace_print to print this list.
-> Provide a helper in stackdepot to print stack entries
-> based on stackdepot handle.
-> Also change above mentioned users to use this helper.
+On Tue, 2021-09-14 at 10:20 +0200, Emanuele Giuseppe Esposito wrote:
 > 
-> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/stackdepot.h |  2 ++
->  lib/stackdepot.c           | 17 +++++++++++++++++
->  mm/kasan/report.c          | 15 +++------------
->  mm/page_owner.c            | 13 ++++---------
->  4 files changed, 26 insertions(+), 21 deletions(-)
+> On 12/09/2021 12:42, Maxim Levitsky wrote:
+> > >   
+> > > -	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
+> > > +	if (!nested_vmcb_valid_sregs(vcpu, &svm->nested.save) ||
+> > >   	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
+> > If you use a different struct for the copied fields, then it makes
+> > sense IMHO to drop the 'control' parameter from nested_vmcb_check_controls,
+> > and just use the svm->nested.save there directly.
+> > 
 > 
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index 6bb4bc1a5f54..d77a30543dd4 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -19,6 +19,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
->  unsigned int stack_depot_fetch(depot_stack_handle_t handle,
->  			       unsigned long **entries);
->  
-> +void stack_depot_print(depot_stack_handle_t stack);
-> +
->  unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
->  
->  #ifdef CONFIG_STACKDEPOT
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 67439c082490..873aeb152f52 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -214,6 +214,23 @@ static inline struct stack_record *find_stack(struct stack_record *bucket,
->  	return NULL;
->  }
->  
-> +/**
-> + * stack_depot_print - print stack entries from a depot
-> + *
-> + * @handle:		Stack depot handle which was returned from
-> + *			stack_depot_save().
-> + *
-> + */
-> +void stack_depot_print(depot_stack_handle_t stack)
-> +{
-> +	unsigned long *entries;
-> +	unsigned int nr_entries;
-> +
-> +	nr_entries = stack_depot_fetch(stack, &entries);
+> Ok, what you say in patch 2 makes sense to me. I can create a new struct 
+> vmcb_save_area_cached, but I need to keep nested.ctl because 1) it is 
+> used also elsewhere, and different fields from the one checked here are 
+> read/set and 2) using another structure (or the same 
 
-Maybe this should also skip stack_trace_print when nr_entries is 0, to avoid
-the warning. While the callers added by this patch check handle != 0, future
-ones might not.
+Yes, keep nested.ctl, since vast majority of the fields are copied I think.
+
+Best regards,
+	Maxim Levitsky
+
+
+> vmcb_save_area_cached) in its place would just duplicate the same fields 
+> of nested.ctl, creating even more confusion and possible inconsistency.
+> 
+> Let me know if you disagree.
+> 
+> Thank you,
+> Emanuele
+> 
+
+
