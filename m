@@ -2,127 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0F140B710
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7197540B712
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhINSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:41:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhINSlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:41:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0654610E6;
-        Tue, 14 Sep 2021 18:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631644826;
-        bh=l7C56GEOC+aCw6hs43x4MKGepxIPQ/bOtEDY/hCzwNQ=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=eLekWCKFBxK4cA+J4J+PVXVWpATAWAY8FORxhwkJ193WGqfguIhEIf5BR0syRlowU
-         l/WCM/7O2A6rjqREoXDqhQrEcq+t6DrjwoIE9ffSc0ovJ5sCFJB347WfXp21JOuPmN
-         b4hDChbeD+fQyuL4lqZr6QWpyR1FsOBNc8NFOun1m4vhRFfDnp2mVgcJLVmHOOars+
-         QMeyzo5eJsWQu0TNkk4gYNoO/6yty/k9x9szkhdlwTOiitTRahdLWYxQevO2QYATdz
-         YhVB6wkOblGy5q5soUjtDUnW4H2XBlRpv5UeTE3Ls3wRBF48Ijo8txx/7sw+hVgqIl
-         49TOqkwUb1wAw==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id CE00B27C0054;
-        Tue, 14 Sep 2021 14:40:24 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute6.internal (MEProxy); Tue, 14 Sep 2021 14:40:24 -0400
-X-ME-Sender: <xms:l-xAYd4-h5qAKx4EUeas2immw3-tDeP0V3xnPhi-qlt2hzKGNIHKdg>
-    <xme:l-xAYa5Urw6Nkn6eI-ESxdFC2L3KNspMNkPEIJmFexNlNMOTjSoyDYMkOJv6-pNgJ
-    y1JT7-7cWcZwoxGtlI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:l-xAYUe6g7JP8B6UQ5jhjFySNQgGYxuzWfDDK5_fWfLW4Y0R_vwI8g>
-    <xmx:l-xAYWKGyeuTQ2XB8HO_a34Dayp7Qk0ATv9AuZpMNwmvyQW1h2iRmw>
-    <xmx:l-xAYRIIJo5m2sGPdNiTo7oLvgMK0tWY38qnspjSmtdua4mkcljZtA>
-    <xmx:mOxAYaUDtTJ9m5CjWeBoZCY5l55HKTKhrCwOOhhUlSdPPlgDF2EIrW0IgU4>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7823AA002E4; Tue, 14 Sep 2021 14:40:23 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
-Mime-Version: 1.0
-Message-Id: <f6fdecfe-963d-4669-ae05-1d7192467a19@www.fastmail.com>
-In-Reply-To: <YUDlzxLjNsW+oYGC@hirez.programming.kicks-ass.net>
-References: <20210908184905.163787-1-posk@google.com>
- <20210908184905.163787-3-posk@google.com>
- <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
- <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
- <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
- <d656e605-4f89-4ea2-8baf-f7786f0630d9@www.fastmail.com>
- <YUDlzxLjNsW+oYGC@hirez.programming.kicks-ass.net>
-Date:   Tue, 14 Sep 2021 11:40:01 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     "Jann Horn" <jannh@google.com>, "Peter Oskolkov" <posk@google.com>,
-        "Peter Oskolkov" <posk@posk.io>, "Ingo Molnar" <mingo@redhat.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        "Paul Turner" <pjt@google.com>, "Ben Segall" <bsegall@google.com>,
-        "Andrei Vagin" <avagin@google.com>,
-        "Thierry Delisle" <tdelisle@uwaterloo.ca>
-Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
-Content-Type: text/plain;charset=utf-8
+        id S231593AbhINSmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhINSmh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 14:42:37 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F522C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:19 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id r3so481410ljc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5VMpWRXt0jQuCEr+r0BM8kFoy1D29x31MLf3bnRKZqo=;
+        b=b11SCPjz52oi1yBAOvY57UeyiD8/Ms3ExnET43X/lvFkWoqblZlZUbvHg0+wdNXdFN
+         CtUHC+3qh+hX78zPevGjyIuPDcLVquMk4uXzdJJaQHd+HiaK71IWmxnnp0vIYzGq1JMX
+         AtyJpWb0WCFKDqWlXiWidZUM93Gm0wERsRan+CRsWEpPTJ9gVdeJHf48KYpe8fuEB2uf
+         es8EK1+mpdeMIsqsv4hT+cxjb5HUEsmqU3MV9yeFjEO/Yl4q0xv0YMtOugxPPSgOpVHw
+         Gg1nTijVelp3vnDjGo4pu03Hx1GOjxaum78pSG6eY99ouhpbcGSjX0tb3jl/DYEgF1Gn
+         lV6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5VMpWRXt0jQuCEr+r0BM8kFoy1D29x31MLf3bnRKZqo=;
+        b=MNK9uFjsoINjipNnIAXet8lV3/SYJK8yD/PiW6BHb0SNGJ8r/FUSfB3axe9hI1g/MF
+         1RxU69M/gz5RrvYZ2FxRSxZ4e6I2r0vXpu++0puiIs7nast61F9SFsvqXbwoopgc+tso
+         +Sbh+VlSiufrnoMADDgrdM8y/8kKvGqUs4pCONPC8ckt9+dnE+Q3wl5pB1keyOgsJcri
+         hj1g6GCHAK6jqpZL9E2cHNJZ8FU18teO9V/Yn5H3faPhoB1pNnqkrbTPu3x2WxaODJ2C
+         AQ5SsYIcqHoCj3EKmxA8OhseWqcuduVSknZRZIoWRlwEWvM6rlMPVh4RsF5049COHiNz
+         vyog==
+X-Gm-Message-State: AOAM533JusP2Qn4ciEVe9SX8wY0Vqm/gzXqSOrrdx9OaZ/1By0G9UZrH
+        JJ/L42MyP7QyOb8bBWS/BuPh9Ir2MwaaZdoaQRr/3A==
+X-Google-Smtp-Source: ABdhPJyJFg7U0SySGwcX4hh4wxl9aHZdQMr5YsM70bRBO1qYAVvBNFSlNsuAYAWsKhw+uCtIo3ojWd6+04ZNE3bd/P4=
+X-Received: by 2002:a2e:8504:: with SMTP id j4mr16617853lji.352.1631644877772;
+ Tue, 14 Sep 2021 11:41:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
+ <20210513132051.31465-1-ggherdovich@suse.cz> <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
+ <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz> <CAAYoRsX0xJf1mm1a_YUCzDy86r8q4QE98iVtS1AMLaUx+KTgQQ@mail.gmail.com>
+ <CAAYoRsXK79PspEUh9pqgj2OGQnxQONkEeK-7af3=5frBzAqULQ@mail.gmail.com>
+ <2a1b000cd101737400f6320ef18c0143d3a5145b.camel@linux.intel.com>
+ <CAAYoRsVeMCivVBp-q_9N23BDOVvkc8ZLS3mubnz+4TREZ9Cz_A@mail.gmail.com>
+ <7abae13c235d74f4789cd93c6c6b0cbf69df243d.camel@linux.intel.com> <CAAYoRsVd4uU7sofcvYWd__evKJTf7HE5mi2ZVDjAYNYWXS3mzQ@mail.gmail.com>
+In-Reply-To: <CAAYoRsVd4uU7sofcvYWd__evKJTf7HE5mi2ZVDjAYNYWXS3mzQ@mail.gmail.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Tue, 14 Sep 2021 11:41:07 -0700
+Message-ID: <CAAYoRsUnuNL+orjeXpxEE4fyknGGk3Kngk6Gt+hoCHxLYg9D6A@mail.gmail.com>
+Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in
+ no-HWP mode
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 7, 2021 at 8:43 PM Doug Smythies <dsmythies@telus.net> wrote:
+> On Tue, Sep 7, 2021 at 7:04 PM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > On Tue, 2021-09-07 at 13:16 -0700, Doug Smythies wrote:
+> > > On Tue, Sep 7, 2021 at 9:01 AM Srinivas Pandruvada
+> > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > On Tue, 2021-09-07 at 08:45 -0700, Doug Smythies wrote:
+> > > > >
+> > > > > Recent ASUS BIOS updates have changed the default system
+> > > > > response for this old thread, rendering "intel_pstate=3Dno_hwp"
+> > > > > useless.
+> > > > >
+> > > > > It also raises a question: If BIOS has forced HWP, then how do we
+> > > > > prevent the acpi-cpufreq driver from being used? Read on.
+> > > >
+> > > > Does BIOS has option to enable Intel speed shift with no legacy
+> > > > support?
+> > > > Then this option will not populate ACPI _PSS table.
+> > >
+> > > The option is there no matter what.
+> > > I have tried every variation of legacy or no legacy that
+> > > I can find. Currently:
+> > > Current boot mode:   UEFI Firmware mode
+> > > SecureBoot:          disabled
+> > >
+> > > >
+> > > > >
+> > > > > On Fri, May 14, 2021 at 3:12 PM Doug Smythies <
+> > > > > dsmythies@telus.net>
+> > > > > wrote:
+> > > > > >
+> > > > > > On Fri, May 14, 2021 at 1:33 PM Giovanni Gherdovich <
+> > > > > > ggherdovich@suse.cz> wrote:
+> > > > > > > On Fri, 2021-05-14 at 08:31 -0700, Doug Smythies wrote:
+> > > > > ...
+> > > > > > >
+> > > ...
+> > > > > Previous correspondence was with BIOS version 1003. There have
+> > > > > been 3 BIOS
+> > > > > releases since then (at least that I know of), 2103, 2201, 2301,
+> > > > > and all of them have changed the behaviour
+> > > > > of the "Auto" setting for Intel Speed Shift
+> > > > > Technology BIOS setting, forcing it on upon transfer of control
+> > > > > to the OS.
+> > > > >
+> > > > > Where with "intel_pstate=3Dno_hwp" one used to get 0 for
+> > > > > MSR_PM_ENABLE
+> > > > > (0x770) they now get 1.
+> > > >
+> > > > So they are forcing Out of band OOB mode.
+> > > > Does bit 8 or 18 in MSR 0x1aa is set?
+> > >
+> > > No.
+> >
+> > So there is no legacy path. I think you are working with their support.
+>
+> Yes, for almost a month now, with very little to show for it.
+> We'll see what happens. I did get a message this afternoon:
+>
+> "Our GTSD is debugging the issue,.
+> When they have the result, they will directly update you."
+>
+> > In HWP mode does setting scaling min/max frequency has any impact?
+>
+> No. I wouldn't have expected it to, as the system is confused as to who
+> is in charge. The acpi-cpufreq driver thinks it is in charge, but HWP
+> thinks it is.
+>
+> The intel_pstate driver works fine.
 
+Hi Srinivas,
 
-On Tue, Sep 14, 2021, at 11:11 AM, Peter Zijlstra wrote:
-> On Tue, Sep 14, 2021 at 09:52:08AM -0700, Andy Lutomirski wrote:
-> > With a custom mapping, you don=E2=80=99t need to pin pages at all, I=
- think.
-> > As long as you can reconstruct the contents of the shared page and
-> > you=E2=80=99re willing to do some slightly careful synchronization, =
-you can
-> > detect that the page is missing when you try to update it and skip t=
-he
-> > update. The vm_ops->fault handler can repopulate the page the next
-> > time it=E2=80=99s accessed.
->=20
-> The point is that the moment we know we need to do this user-poke, is
-> schedule(), which could be called while holding mmap_sem (it being a
-> preemptable lock). Which means we cannot go and do faults.
+I heard back from ASUS, and they now confirm that they
+did change the behaviour of the "Auto" setting in BIOS
+version 2103. They say they did it to fix an issue with
+ITB3.0, which I assume means Intel Turbo Boost 3.0.
+I'll copy and paste the relevant portion of the email
+below:
 
-That=E2=80=99s fine. The page would be in one or two states: present and=
- writable by kernel or completely gone. If its present, the scheduler wr=
-ites it. If it=E2=80=99s gone, the scheduler skips the write and the nex=
-t fault fills it in.
+" I am in direct contact with the engineers.
+Here is the result from their test:
 
->=20
-> > All that being said, I feel like I=E2=80=99m missing something. The =
-point of
-> > this is to send what the old M:N folks called =E2=80=9Cscheduler act=
-ivations=E2=80=9D,
-> > right?  Wouldn=E2=80=99t it be more efficient to explicitly wake som=
-ething
-> > blockable/pollable and write the message into a more efficient data
-> > structure?  Polling one page per task from userspace seems like it
-> > will have inherently high latency due to the polling interval and wi=
-ll
-> > also have very poor locality.  Or am I missing something?
->=20
-> The idea was to link the user structures together in a (single) linked
-> list. The server structure gets a list of all the blocked tasks. This
-> avoids having to a full N iteration (like Java, they're talking stupid
-> number of N).
->=20
-> Polling should not happen, once we run out of runnable tasks, the serv=
-er
-> task gets ran again and it can instantly pick up all the blocked
-> notifications.
->=20
+In BIOS 2103,the =E2=80=9CAuto=E2=80=9D setting transfers control to
+the OS with HWP available and enabled.
 
-How does the server task know when to read the linked list?  And what=E2=
-=80=99s wrong with a ring buffer or a syscall?
+This is side effect to fix ITBM3.0 not work after HWP enabled.
+We can remove this patch, but ITBM3.0 will not work when HWP enabled"
+
+Are you familiar with this issue?
+
+I want the original behaviour of the "Auto" setting, as it is
+the only way for control to go to the OS with HWP
+available but disabled.
+
+... Doug
