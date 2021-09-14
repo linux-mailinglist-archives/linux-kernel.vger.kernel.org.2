@@ -2,103 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FDA40B62B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7033340B62E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhINRru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
+        id S231828AbhINRsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhINRrt (ORCPT
+        with ESMTP id S231771AbhINRsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:47:49 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2614C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:46:31 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id w19so8656701pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:46:31 -0700 (PDT)
+        Tue, 14 Sep 2021 13:48:01 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32DCC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:46:43 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id 18so13018847pfh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=30/B84g0scVe64w1jrJPAZx8Vu/dGGlZHuOB6QGy0Rs=;
-        b=RX+Ricnc4mmAv/2u3XbIfohQD7aUkR5aJ5OTlSvGLp5M85x/LTP2P05AipcYelIDJ3
-         wLfcoD+QlsV7Uq+8fE3q1QnE+7ZcIf+kjtWCEHmbbp+eJ0e7f7R1Gky7wN33PU3WWQl1
-         QcFTHx+ryxw+dJM2lQRfrPwczd0yif6mVX59ueVVZV3O+HnXX+qgT7J09v7koiTcmxTA
-         jElVUo7qtfnXc58sreR7P5KN7wURFXbIEyT1agjHoU4YgRXZA9KDRljEfwd6ppOEKA5c
-         qxgaA3g4hne6kR9VbCp6GoaQs1pFsNtR2XsIcoDTgnd4onlGk6P1LhtneyRs6sJWs1zJ
-         yj6w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7UFM2ZEfyisKcjzE2kztorsuEGj60mmoqCDZgmBx5qk=;
+        b=adISV1GzrtR3BVLqWylk7j+Nf0f9LohcT8NA2GxEC5o5Ir6X0Rf80NFfjWbiZ4MfIH
+         ARLEjkxxSPs8mBEmc9VUj2WyjNFe0RkVCmXChHcxpVOh50a4gFrHiqvBH8BTPF2sT1jd
+         aaLZPBnnrqTDq2NK/mwpYYUhvoXrF1JBe6706NdMEh8Iua+zLYFmVbYAU5GTw8bwA/dt
+         di+mdi9j/bH5jgWOne9zkrkyVO32aegprpms/DaZkgojU9DnTvLT91RNBHstQRZS/ktF
+         c4MOx8GF/wpcp/CSo05i1B66s/sOZBxxhFS/d0ZvSSStyIXEIXRE+t+8FKHmY81HfZ5E
+         CcPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=30/B84g0scVe64w1jrJPAZx8Vu/dGGlZHuOB6QGy0Rs=;
-        b=BwhuovqBTGNZO3tf3J8XUSj70GTUnXhVaXQKFxjxeztUrFbnq7nKjUvVarwxbN10GV
-         O5aAFsUriNdOC73KN6k0rnZL++xF4+4LxGjoTm88mDDw6IHg7Uwaw2M2JyUagEwQEs5B
-         xLq68CWwSacSMidigfIprj8aVKQpqsX39JLcUV3P+cn0YakF/we4bFhVKJAj4MLJc+51
-         dAPZUFDwMPoR0Th/u1JSBk9Le9somEjkKz5I6U8ffQqIF60f0TH7HHGy6a+TNXFmeTca
-         Izs9XxoB7Rq+nWu06xUtwWA1kbI+VjMwAhJnziakr8MBx9owTisyl+34AE0vIXf1Kl+u
-         +NeA==
-X-Gm-Message-State: AOAM5325sWYH662slLs6KxYg7dl9eITR0Wq0s6xJb1DfX3uxRwbbvf/4
-        597w4QWjurTLogN/BR1miNKdfRt1oqW50jKGBySR45Cs7d0KHg==
-X-Google-Smtp-Source: ABdhPJxUeTTwLZ7dZVb7Aqg1iR36DJipbk6h5IrKFiR+Fg8R/Iea/pxUrveUY66JJyNJIBPnyaH0QEdNGlp4fR3d7bg=
-X-Received: by 2002:a63:3545:: with SMTP id c66mr16405202pga.377.1631641591034;
- Tue, 14 Sep 2021 10:46:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7UFM2ZEfyisKcjzE2kztorsuEGj60mmoqCDZgmBx5qk=;
+        b=1l5TwobByRa91vIW+LrdENlR53VuWlOOp+2Oea87EeaK2/M2O1IePkSQOO+yvNVVtk
+         vM5MiViQK9bcM69StYpoTv1vF4yOiCOMJceV6JQekI5SRM/d0siEPcRbs48wBjBJJrL3
+         rgajGqLlsd8759W/I09wcgozdPSCUw0ZZQDgVPD1DolWJrinvIeJlSE6pp2BxxjLR9bt
+         U3Vb5Q2lGqL+lMMEGqxEVcm/9kHNQEbBOlXKQZFxaI/O9bwZ3muynsmbKCFpuk3FgpUz
+         De4qc90eoMlzbShmnlgDBO3Xbvc0B6uTorJriBW2EJu3Iryp8O+b/0E3bAefKEIeZp3J
+         CHQw==
+X-Gm-Message-State: AOAM533WZZK2JAxX9sMheh/R/z+twLoUbboCObwcVnS8FlMuMMdqURn2
+        lbRdreXL6TlTdLHdHmhtdUasdQ==
+X-Google-Smtp-Source: ABdhPJzNx8VjnH2V9I2EnHJTuQp2w956w0/y+JiYMwH4mCa/ph7gOkFElD1jQd/qXlADKOpBI9CZjA==
+X-Received: by 2002:a63:da49:: with SMTP id l9mr16290385pgj.277.1631641602979;
+        Tue, 14 Sep 2021 10:46:42 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id pc3sm2354264pjb.0.2021.09.14.10.46.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 10:46:42 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 11:46:39 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, daniel.baluta@nxp.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com
+Subject: Re: [PATCH v4 1/4] remoteproc: imx_rproc: Move common structure to
+ header file
+Message-ID: <20210914174639.GB1719994@p14s>
+References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
+ <1631092255-25150-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-References: <20210913223339.435347-1-sashal@kernel.org> <20210913223339.435347-4-sashal@kernel.org>
- <CAPcyv4i5OHv2wHTO1Pdjz+qzAAWEha-7HdDdt42VyO_FasLSEA@mail.gmail.com> <YUDVXV8egoZP05SF@sashalap>
-In-Reply-To: <YUDVXV8egoZP05SF@sashalap>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 14 Sep 2021 10:46:20 -0700
-Message-ID: <CAPcyv4iiF1b53zn+zVvCjJFs2JKX=HvHAVggae-wULVD8jBFBQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.14 04/25] cxl/pci: Introduce cdevm_file_operations
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-cxl@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631092255-25150-2-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:01 AM Sasha Levin <sashal@kernel.org> wrote:
->
-> On Tue, Sep 14, 2021 at 08:42:04AM -0700, Dan Williams wrote:
-> >On Mon, Sep 13, 2021 at 3:33 PM Sasha Levin <sashal@kernel.org> wrote:
-> >>
-> >> From: Dan Williams <dan.j.williams@intel.com>
-> >>
-> >> [ Upstream commit 9cc238c7a526dba9ee8c210fa2828886fc65db66 ]
-> >>
-> >> In preparation for moving cxl_memdev allocation to the core, introduce
-> >> cdevm_file_operations to coordinate file operations shutdown relative to
-> >> driver data release.
-> >>
-> >> The motivation for moving cxl_memdev allocation to the core (beyond
-> >> better file organization of sysfs attributes in core/ and drivers in
-> >> cxl/), is that device lifetime is longer than module lifetime. The cxl_pci
-> >> module should be free to come and go without needing to coordinate with
-> >> devices that need the text associated with cxl_memdev_release() to stay
-> >> resident. The move will fix a use after free bug when looping driver
-> >> load / unload with CONFIG_DEBUG_KOBJECT_RELEASE=y.
-> >>
-> >> Another motivation for passing in file_operations to the core cxl_memdev
-> >> creation flow is to allow for alternate drivers, like unit test code, to
-> >> define their own ioctl backends.
-> >
-> >Hi Sasha,
-> >
-> >Please drop this. It's not a fix, it's just a reorganization for
-> >easing the addition of new features and capabilities.
->
-> I'll drop it, but just to satisfy my curiousity: the description says it
-> fixes a use-after-free bug in the existing code, is it not the case?
+On Wed, Sep 08, 2021 at 05:10:52PM +0800, Shengjiu Wang wrote:
+> Move common structure imx_rproc_att, imx_rproc_method
+> and imx_rproc_dcfg to header file which can be shared with
+> imx_dsp_rproc driver.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 28 +------------------------
+>  drivers/remoteproc/imx_rproc.h | 37 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 38 insertions(+), 27 deletions(-)
+>  create mode 100644 drivers/remoteproc/imx_rproc.h
+> 
 
-It does fix a problem if the final put_device() happens after the
-module text has been unloaded. However, I am only aware of the
-artificial trigger for that (CONFIG_DEBUG_KOBJECT_RELEASE=y). I.e. if
-CONFIG_DEBUG_KOBJECT_RELEASE=n I am not aware of any agent that will
-hold a device reference besides the driver itself. That was the
-rationale for not tagging this for -stable.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index d88f76f5305e..b0da0130c3b6 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/remoteproc.h>
+>  #include <linux/workqueue.h>
+>  
+> +#include "imx_rproc.h"
+>  #include "remoteproc_internal.h"
+>  
+>  #define IMX7D_SRC_SCR			0x0C
+> @@ -72,33 +73,6 @@ struct imx_rproc_mem {
+>  /* M4 own area. Can be mapped at probe */
+>  #define ATT_OWN		BIT(1)
+>  
+> -/* address translation table */
+> -struct imx_rproc_att {
+> -	u32 da;	/* device address (From Cortex M4 view)*/
+> -	u32 sa;	/* system bus address */
+> -	u32 size; /* size of reg range */
+> -	int flags;
+> -};
+> -
+> -/* Remote core start/stop method */
+> -enum imx_rproc_method {
+> -	IMX_RPROC_NONE,
+> -	/* Through syscon regmap */
+> -	IMX_RPROC_MMIO,
+> -	/* Through ARM SMCCC */
+> -	IMX_RPROC_SMC,
+> -};
+> -
+> -struct imx_rproc_dcfg {
+> -	u32				src_reg;
+> -	u32				src_mask;
+> -	u32				src_start;
+> -	u32				src_stop;
+> -	const struct imx_rproc_att	*att;
+> -	size_t				att_size;
+> -	enum imx_rproc_method		method;
+> -};
+> -
+>  struct imx_rproc {
+>  	struct device			*dev;
+>  	struct regmap			*regmap;
+> diff --git a/drivers/remoteproc/imx_rproc.h b/drivers/remoteproc/imx_rproc.h
+> new file mode 100644
+> index 000000000000..23d8e808d27f
+> --- /dev/null
+> +++ b/drivers/remoteproc/imx_rproc.h
+> @@ -0,0 +1,37 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2017 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
+> + * Copyright 2021 NXP
+> + */
+> +
+> +#ifndef _IMX_RPROC_H
+> +#define _IMX_RPROC_H
+> +
+> +/* address translation table */
+> +struct imx_rproc_att {
+> +	u32 da;	/* device address (From Cortex M4 view)*/
+> +	u32 sa;	/* system bus address */
+> +	u32 size; /* size of reg range */
+> +	int flags;
+> +};
+> +
+> +/* Remote core start/stop method */
+> +enum imx_rproc_method {
+> +	IMX_RPROC_NONE,
+> +	/* Through syscon regmap */
+> +	IMX_RPROC_MMIO,
+> +	/* Through ARM SMCCC */
+> +	IMX_RPROC_SMC,
+> +};
+> +
+> +struct imx_rproc_dcfg {
+> +	u32				src_reg;
+> +	u32				src_mask;
+> +	u32				src_start;
+> +	u32				src_stop;
+> +	const struct imx_rproc_att	*att;
+> +	size_t				att_size;
+> +	enum imx_rproc_method		method;
+> +};
+> +
+> +#endif /* _IMX_RPROC_H */
+> -- 
+> 2.17.1
+> 
