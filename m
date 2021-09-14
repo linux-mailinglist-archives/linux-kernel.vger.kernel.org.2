@@ -2,130 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E6140B016
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F7140B018
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhINOB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:01:26 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3701 "EHLO mga17.intel.com"
+        id S233422AbhINOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:02:19 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:43871 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232682AbhINOBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:01:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="202170265"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="202170265"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 07:00:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="609638201"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 Sep 2021 07:00:02 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 14 Sep 2021 17:00:01 +0300
-Date:   Tue, 14 Sep 2021 17:00:01 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     laurentiu.tudor@nxp.com
-Cc:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jon@solid-run.com
-Subject: Re: [PATCH] software node: balance refcount for managed sw nodes
-Message-ID: <YUCq4axWKqn4vwW6@kuha.fi.intel.com>
-References: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
+        id S232682AbhINOCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:02:16 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H84kf3qLwz9sSh;
+        Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LUdiTfEngcWB; Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H84kf2vLqz9sSS;
+        Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 51B8F8B773;
+        Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Sfnj682Q6TWA; Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.207])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9A23B8B763;
+        Tue, 14 Sep 2021 16:00:57 +0200 (CEST)
+Subject: Re: [PATCH RESEND v3 6/6] powerpc/signal: Use
+ unsafe_copy_siginfo_to_user()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631537060.git.christophe.leroy@csgroup.eu>
+ <2b179deba4fd4ec0868cdc48a0230dfa3aa5a22f.1631537060.git.christophe.leroy@csgroup.eu>
+ <87h7eopixa.fsf@disp2133> <87y280o38q.fsf@disp2133>
+ <96d06ad9-5a9b-b8c3-3c1d-ed8837091a60@csgroup.eu> <87ilz4mgts.fsf@disp2133>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <00226633-0a5a-bcca-0a2a-9bfd754e61a5@csgroup.eu>
+Date:   Tue, 14 Sep 2021 16:00:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716101602.1891-1-laurentiu.tudor@nxp.com>
+In-Reply-To: <87ilz4mgts.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 01:16:02PM +0300, laurentiu.tudor@nxp.com wrote:
-> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> 
-> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
-> software nodes, thus leading to underflow errors. Balance the refcount by
-> bumping it in the device_create_managed_software_node() function.
-> 
-> The error [1] was encountered after adding a .shutdown() op to our
-> fsl-mc-bus driver.
-> 
-> [1]
-> pc : refcount_warn_saturate+0xf8/0x150
-> lr : refcount_warn_saturate+0xf8/0x150
-> sp : ffff80001009b920
-> x29: ffff80001009b920 x28: ffff1a2420318000 x27: 0000000000000000
-> x26: ffffccac15e7a038 x25: 0000000000000008 x24: ffffccac168e0030
-> x23: ffff1a2428a82000 x22: 0000000000080000 x21: ffff1a24287b5000
-> x20: 0000000000000001 x19: ffff1a24261f4400 x18: ffffffffffffffff
-> x17: 6f72645f726f7272 x16: 0000000000000000 x15: ffff80009009b607
-> x14: 0000000000000000 x13: ffffccac16602670 x12: 0000000000000a17
-> x11: 000000000000035d x10: ffffccac16602670 x9 : ffffccac16602670
-> x8 : 00000000ffffefff x7 : ffffccac1665a670 x6 : ffffccac1665a670
-> x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff1a2420318000
-> Call trace:
->  refcount_warn_saturate+0xf8/0x150
->  kobject_put+0x10c/0x120
->  software_node_notify+0xd8/0x140
->  device_platform_notify+0x4c/0xb4
->  device_del+0x188/0x424
->  fsl_mc_device_remove+0x2c/0x4c
->  rebofind sp.c__fsl_mc_device_remove+0x14/0x2c
->  device_for_each_child+0x5c/0xac
->  dprc_remove+0x9c/0xc0
->  fsl_mc_driver_remove+0x28/0x64
->  __device_release_driver+0x188/0x22c
->  device_release_driver+0x30/0x50
->  bus_remove_device+0x128/0x134
->  device_del+0x16c/0x424
->  fsl_mc_bus_remove+0x8c/0x114
->  fsl_mc_bus_shutdown+0x14/0x20
->  platform_shutdown+0x28/0x40
->  device_shutdown+0x15c/0x330
->  __do_sys_reboot+0x218/0x2a0
->  __arm64_sys_reboot+0x28/0x34
->  invoke_syscall+0x48/0x114
->  el0_svc_common+0x40/0xdc
->  do_el0_svc+0x2c/0x94
->  el0_svc+0x2c/0x54
->  el0t_64_sync_handler+0xa8/0x12c
->  el0t_64_sync+0x198/0x19c
-> ---[ end trace 32eb1c71c7d86821 ]---
-> 
-> Reported-by: Jon Nettleton <jon@solid-run.com>
-> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-FWIW:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
-> Changes since RFC:
->  - use software_node_notify(KOBJ_ADD) instead of directly bumping
->    refcount (Heikki)
+Le 13/09/2021 à 21:11, Eric W. Biederman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 > 
->  drivers/base/swnode.c | 3 +++
->  1 file changed, 3 insertions(+)
+>> Le 13/09/2021 à 18:21, Eric W. Biederman a écrit :
+>>> ebiederm@xmission.com (Eric W. Biederman) writes:
+>>>
+>>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>>>
+>>>>> Use unsafe_copy_siginfo_to_user() in order to do the copy
+>>>>> within the user access block.
+>>>>>
+>>>>> On an mpc 8321 (book3s/32) the improvment is about 5% on a process
+>>>>> sending a signal to itself.
+>>>
+>>> If you can't make function calls from an unsafe macro there is another
+>>> way to handle this that doesn't require everything to be inline.
+>>>
+>>>   From a safety perspective it is probably even a better approach.
+>>
+>> Yes but that's exactly what I wanted to avoid for the native ppc32 case: this
+>> double hop means useless pressure on the cache. The siginfo_t structure is 128
+>> bytes large, that means 8 lines of cache on powerpc 8xx.
+>>
+>> But maybe it is acceptable to do that only for the compat case. Let me think
+>> about it, it might be quite easy.
 > 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index d1f1a8240120..bdb50a06c82a 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -1113,6 +1113,9 @@ int device_create_managed_software_node(struct device *dev,
->  	to_swnode(fwnode)->managed = true;
->  	set_secondary_fwnode(dev, fwnode);
->  
-> +	if (device_is_registered(dev))
-> +		software_node_notify(dev, KOBJ_ADD);
-> +
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(device_create_managed_software_node);
-> -- 
-> 2.17.1
+> The places get_signal is called tend to be well known.  So I think we
+> are safe from a capacity standpoint.
+> 
+> I am not certain it makes a difference in capacity as there is a high
+> probability that the stack was deeper recently than it is now which
+> suggests the cache blocks might already be in the cache.
+> 
+> My sense it is worth benchmarking before optimizing out the extra copy
+> like that.
+> 
+> On the extreme side there is simply building the entire sigframe on the
+> stack and then just calling it copy_to_user.  As the stack cache lines
+> are likely to be hot, and copy_to_user is quite well optimized
+> there is a real possibility that it is faster to build everything
+> on the kernel stack, and then copy it to the user space stack.
+> 
+> It is also possible that I am wrong and we may want to figure out how
+> far up we can push the conversion to the 32bit siginfo format.
+> 
+> If could move the work into collect_signal we could guarantee there
+> would be no extra work.  That would require adjusting the sigframe
+> generation code on all of the architectures.
+> 
+> There is a lot we can do but we need benchmarking to tell if it is
+> worth it.
+> 
 
-thanks,
 
--- 
-heikki
+Sure, I'm benchmarking all the work I have been doing on signal code 
+with the following simple app that I run with 'perf stat':
+
+#include <stdlib.h>
+#include <signal.h>
+
+void sigusr1(int sig) { }
+
+int main(int argc, char **argv)
+{
+	int i = 100000;
+
+	signal(SIGUSR1, sigusr1);
+	for (;i--;)
+	raise(SIGUSR1);
+	exit(0);
+}
+
+
+On an mpc8321 a 32 bits powerpc with KUAP enabled (KUAP is equivalent of 
+x86 SMAP)
+
+Before changing copy_siginfo_to_user() to unsafe_copy_siginfo_to_user(), 
+'perf stat' reports 1983 msec (task-clock)
+
+After my change I get 1900 msec.
+
+With your approach I get 1930 msec, so we are loosing 36% of the benefit 
+of converting to the 'unsafe_' alternative.
+
+So I think it is worth it.
+
+Christophe
