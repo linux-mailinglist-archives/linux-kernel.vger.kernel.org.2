@@ -2,169 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8733340B683
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F9140B686
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhINSG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhINSGy (ORCPT
+        id S231815AbhINSHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:07:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35930 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230035AbhINSHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:06:54 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B5FC061574;
-        Tue, 14 Sep 2021 11:05:37 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t8so16632024wrq.4;
-        Tue, 14 Sep 2021 11:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=+1y8l2tNjfVvue0GuX0pU4hXK+xpXz6uowb3ztMXPXM=;
-        b=lVX78cx2cu9BrWY/tMDofsnuzHJFq2TMG8Ky4M7BNgAAA3x8GrZbgFcOcHnhT0Dlk9
-         CZG3gIeBPr9PQrCCJiN3B73jX1l5mXVhjhNtl0lXZctpsX9QN/qf6jb+x+WJ9i2onw5e
-         TYsldgo7wemxEHewPYgD+8FsunBzv2rGD2GLOKzk0ZZuLmDwoTtNxr7xnknjW1GDfTub
-         3UyWOs+CgPz3EbBfvxJtvvbxHw/0UfNJ+qa/iih66fGd4QbmGRgV52+2S/IqZCuCwoM6
-         FZG2mhvPn+qwCxhEkRtLUxJq6B+u2wXUhZbvnRCSTaJZuRhvhsVbqF3qO5xXkKlB4OFu
-         C0ZA==
+        Tue, 14 Sep 2021 14:07:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631642781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WdkTeh35hskFjppx/AtCQ+7sni5H8rOPzWMjSfWm50U=;
+        b=V1x/lpqKZrj/nOekKwl9yjJBE979ubRrXkUP/oRc678n8F5WfdI3y+o/Gq6y9rkL3Y4BVK
+        k3P8iUwVyjXubW5F4dAbwe/8DqFSDiyR/yJxMhZM3QvWRoDz9gngQFiVhb2EA/U0AAHVmr
+        BobHd/o+Oh4Y3BFYv1YsZE9nageGhQ8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-tGTAs4zNMRSUtZa7Y9DzCQ-1; Tue, 14 Sep 2021 14:06:20 -0400
+X-MC-Unique: tGTAs4zNMRSUtZa7Y9DzCQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 17-20020a05600c029100b00305eac9f29aso56031wmk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:06:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=+1y8l2tNjfVvue0GuX0pU4hXK+xpXz6uowb3ztMXPXM=;
-        b=syzelaWzZjY8gGtGC3aWiv+9R+4VByIY24hQ8sRfExSAAuZSOxqMRhSgipp4JruPJQ
-         XuHUI1SMVtnVZpD/rSUqRJ3ZlzY5Csp3vnjkk2jgR1p0jjpkjsD+39HllHGOlMUhUrLi
-         ia+4qC4bpUFrU5ACUhnRetIkYm2cxI0NVfNYdzPEG4lEA26WLkBrkrZ1TQ+L41xZJo5o
-         xfBGAFH0FzHtCV/CgKxBS4n+eFiOvOip/FGvTx3DIqpxmC26Yh1OssZCHUI51fUpHLri
-         aOFPZHeJKQdR7lRGIqaZhcbj7burjqndT40+RVQ3t5e+OjmAhKe+AfsV1Kd9fJQU41CI
-         aytw==
-X-Gm-Message-State: AOAM532bRD4f1qKFH8WCHI4l/0BYy8vd6tl0OfuKejxzurxzepfDT7XY
-        XyUimZ72fWdR1sifJTZcifU=
-X-Google-Smtp-Source: ABdhPJxqpTLNGYPNjmcbbLjVJoUGnCTDdwnuvBoAur6n27EC8bdWn7zaOL01tPtyuvM42HRh+nwEKQ==
-X-Received: by 2002:adf:f911:: with SMTP id b17mr517696wrr.412.1631642735637;
-        Tue, 14 Sep 2021 11:05:35 -0700 (PDT)
-Received: from [192.168.0.16] ([37.223.140.66])
-        by smtp.gmail.com with ESMTPSA id g1sm1849151wrr.2.2021.09.14.11.05.34
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WdkTeh35hskFjppx/AtCQ+7sni5H8rOPzWMjSfWm50U=;
+        b=kz+KSWsHEaxlo3rlgMWHXQZyFZZtpZCJswJuhI7cq6n8ic0pJiLYq6Z64zqRqV6dRN
+         m+/KXLF1opFprr+arTO12iDXX3YWT91SpH7axXy1pK34L9paLOKCVmiRPG2DJbnDgZO7
+         aeMLK2c1LlCjDPOYToOeUjnoorMJLxqqxGrnBlQaI32kjGM28xNOepiRDpG50iO3dHER
+         G1qTqWkpfpTLI3hqsDWvXcNA28yrF7hIFQBDWBEGf/VKpKVEiPc6DaFKhHCasLLeqV5G
+         FKU0BE1ZvHYMAmJBFkyQyDTjKfMNd+FzW2a/83vQ2FTBFoUnpfRBigOn3k7veXvI07Wq
+         QUZQ==
+X-Gm-Message-State: AOAM530nmaK/S4mMIYuSzc2oiWQ26SGQx4qFWAc5oVExLbanV7sq2kSK
+        XQQn3rUagbPDwds0CjZ269PWj++z2MxZdPJG2oBbvLIR1+aY/BuW9UDJ/kQlIDY/Vl0ajme1MVS
+        ZmJjHdS/I6idRxxue5vXy0G0T
+X-Received: by 2002:a1c:c903:: with SMTP id f3mr450193wmb.101.1631642779380;
+        Tue, 14 Sep 2021 11:06:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKIqckQty8a8VOzJidD+CVHVc1oyd0LQz0Ukul/JPoVTfeji3ABJKcoR2cUc0zjpzdgVfVPg==
+X-Received: by 2002:a1c:c903:: with SMTP id f3mr450166wmb.101.1631642779102;
+        Tue, 14 Sep 2021 11:06:19 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6041.dip0.t-ipconnect.de. [91.12.96.65])
+        by smtp.gmail.com with ESMTPSA id g143sm1846758wme.16.2021.09.14.11.06.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 11:05:35 -0700 (PDT)
-Message-ID: <84ab5c30-7661-f225-96c3-59ead2391eec@gmail.com>
-Date:   Tue, 14 Sep 2021 20:05:34 +0200
+        Tue, 14 Sep 2021 11:06:18 -0700 (PDT)
+Subject: Re: [PATCH resend RFC 0/9] s390: fixes, cleanups and optimizations
+ for page table walkers
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+References: <20210909162248.14969-1-david@redhat.com>
+ <20210914185033.367020b3@p-imbrenda>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <858a5f3b-99c0-6da3-6a60-8d01886399c6@redhat.com>
+Date:   Tue, 14 Sep 2021 20:06:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH] arm64: dts: mt8183: support coresight-cpu-debug for
- mt8183
+In-Reply-To: <20210914185033.367020b3@p-imbrenda>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Seiya Wang <seiya.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com
-References: <20210913092736.19207-1-seiya.wang@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20210913092736.19207-1-seiya.wang@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 13/09/2021 11:27, Seiya Wang wrote:
-> Add coresight-cpu-debug nodes to mt8183 for dumping
-> EDPRSR, EDPCSR, EDCIDSR, EDVIDSR
-> while kernel panic happens
+On 14.09.21 18:50, Claudio Imbrenda wrote:
+> On Thu,  9 Sep 2021 18:22:39 +0200
+> David Hildenbrand <david@redhat.com> wrote:
 > 
-> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 64 ++++++++++++++++++++++++++++++++
->   1 file changed, 64 insertions(+)
+>> Resend because I missed ccing people on the actual patches ...
+>>
+>> RFC because the patches are essentially untested and I did not actually
+>> try to trigger any of the things these patches are supposed to fix. It
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 409cf827970c..3ad4dd47518a 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -367,6 +367,70 @@
->   			reg = <0 0x0c530a80 0 0x50>;
->   		};
->   
-> +		cpu_debug0: cpu-debug@d410000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
+> this is an interesting series, and the code makes sense, but I would
+> really like to see some regression tests, and maybe even some
+> selftests to trigger (at least some of) the issues.
 
-Missing a space:  "arm,coresight-cpu-debug", "arm,primecell";
+Yep, it most certainly needs regression testing before picking any of 
+this. selftests would be great, but I won't find time for it in the 
+foreseeable future.
 
-I suppose that's a copy-paste from the binding doc which is wrong. Other then 
-that, things look fine.
-
-Regards,
-Matthias
-
-> +			reg = <0x0 0xd410000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu0>;
-> +		};
-> +
-> +		cpu_debug1: cpu-debug@d510000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xd510000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu1>;
-> +		};
-> +
-> +		cpu_debug2: cpu-debug@d610000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xd610000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu2>;
-> +		};
-> +
-> +		cpu_debug3: cpu-debug@d710000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xd710000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu3>;
-> +		};
-> +
-> +		cpu_debug4: cpu-debug@d810000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xd810000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu4>;
-> +		};
-> +
-> +		cpu_debug5: cpu-debug@d910000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xd910000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu5>;
-> +		};
-> +
-> +		cpu_debug6: cpu-debug@da10000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xda10000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu6>;
-> +		};
-> +
-> +		cpu_debug7: cpu-debug@db10000 {
-> +			compatible = "arm,coresight-cpu-debug","arm,primecell";
-> +			reg = <0x0 0xdb10000 0x0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_DEBUGSYS>;
-> +			clock-names = "apb_pclk";
-> +			cpu = <&cpu7>;
-> +		};
-> +
->   		topckgen: syscon@10000000 {
->   			compatible = "mediatek,mt8183-topckgen", "syscon";
->   			reg = <0 0x10000000 0 0x1000>;
 > 
+> the follow-up question is: how did we manage to go on so long without
+> noticing these issues? :D
+
+Excellent question - I guess we simply weren't aware of the dos and 
+don'ts when dealing with process page tables :)
+
+> 
+>> merely matches my current understanding (and what other code does :) ). I
+>> did compile-test as far as possible.
+>>
+>> After learning more about the wonderful world of page tables and their
+>> interaction with the mmap_sem and VMAs, I spotted some issues in our
+>> page table walkers that allow user space to trigger nasty behavior when
+>> playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
+>> should be hard to trigger, others are fairly easy because we provide
+>> conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
+>>
+>> Future work:
+>> - Don't use get_locked_pte() when it's not required to actually allocate
+>>    page tables -- similar to how storage keys are now handled. Examples are
+>>    get_pgste() and __gmap_zap.
+>> - Don't use get_locked_pte() and instead let page fault logic allocate page
+>>    tables when we actually do need page tables -- also, similar to how
+>>    storage keys are now handled. Examples are set_pgste_bits() and
+>>    pgste_perform_essa().
+>> - Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
+>>    __gmap_zap() that's very easy.
+>>
+>> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+>> Cc: Janosch Frank <frankja@linux.ibm.com>
+>> Cc: Cornelia Huck <cohuck@redhat.com>
+>> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+>> Cc: Heiko Carstens <hca@linux.ibm.com>
+>> Cc: Vasily Gorbik <gor@linux.ibm.com>
+>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+>> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+>> Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+>>
+>> David Hildenbrand (9):
+>>    s390/gmap: validate VMA in __gmap_zap()
+>>    s390/gmap: don't unconditionally call pte_unmap_unlock() in
+>>      __gmap_zap()
+>>    s390/mm: validate VMA in PGSTE manipulation functions
+>>    s390/mm: fix VMA and page table handling code in storage key handling
+>>      functions
+>>    s390/uv: fully validate the VMA before calling follow_page()
+>>    s390/pci_mmio: fully validate the VMA before calling follow_pte()
+>>    s390/mm: no need for pte_alloc_map_lock() if we know the pmd is
+>>      present
+>>    s390/mm: optimize set_guest_storage_key()
+>>    s390/mm: optimize reset_guest_reference_bit()
+>>
+>>   arch/s390/kernel/uv.c    |   2 +-
+>>   arch/s390/mm/gmap.c      |  11 +++-
+>>   arch/s390/mm/pgtable.c   | 109 +++++++++++++++++++++++++++------------
+>>   arch/s390/pci/pci_mmio.c |   4 +-
+>>   4 files changed, 89 insertions(+), 37 deletions(-)
+>>
+>>
+>> base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+> 
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
