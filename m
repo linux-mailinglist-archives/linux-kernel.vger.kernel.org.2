@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D56640B842
+	by mail.lfdr.de (Postfix) with ESMTP id 2C93740B841
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhINTjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
+        id S232983AbhINTkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232182AbhINTjf (ORCPT
+        with ESMTP id S230390AbhINTkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:39:35 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4C6C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:38:18 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id x10-20020a056830408a00b004f26cead745so93222ott.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:38:18 -0700 (PDT)
+        Tue, 14 Sep 2021 15:40:31 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307F0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:39:13 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id s12so865447ljg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=MLQfJAb2nshbl/BB+0CPYD8WzePweEOPxKjryODlhBY=;
-        b=fU+2fUmhgATKS8sAffT3oVU6G2cnoZkbVdK4P3jZkCaJb9Xfxl7zEis23p11wyRKLT
-         gevV9/SEA5s4KPdSYD/V458UJayvvtRbj36OivXuugfYVP8wsl59bEM5GB4iKnz7Luph
-         dlhHwKeU4rYMBNLJ08Mo9iphxOG4w0qe+9FXE=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aeXwmIgch5WdkpveenJmPeY14PQ1LoSRtKhoZ8R2ZN4=;
+        b=E2QZm15xPjr/oWMY3iwMNj1tCXmIb5gTlQ3a8w0mki3WM83ocnAaFZO2cE8qkxJwLR
+         aobGFaVqRefIPy2/h78IdfM6qFH+tofHv3K1o0MBA2koB09YYdlzJg9NMwDdGYibx9r+
+         N8vo2nAu3SG55qHrSsV1OfPWwYV/u5LP6H0G435Wty9+v9DiDUFC29jPJmJ6wffF4GQ4
+         YFw/Sjx5guzRdwJ6tolYpZlyO3DRIeP73/BId7Wc105H+AeVLhIzqSMMO1W6UNpUEun2
+         h+2kPvrJ2cXqC9g8iQNqKvWmmy7z1nj1L9AHi3Crme67QTXVqvLcBI4U5TTGj9XdPNOd
+         r1cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=MLQfJAb2nshbl/BB+0CPYD8WzePweEOPxKjryODlhBY=;
-        b=Q9zf+puoA+6883d2RjO8GlfbtI5kCg9lDvxWisYxVD4sxBUBe9bg+q/KfE2XkjjLPY
-         v78eSIjkTRl2oQisilpcbDFyvH0pbRZITg/h8TkHiBXrSruvIRDpG502PVFFays7ms3m
-         wJFsz9S3SVQ0EgjApWtYQeESFR4T8+7VV7EmFUnroAXS1dg087wIx0DzF3LDxD8T+gTe
-         1uFwtf0eEIaTugR20bnP9jhRLR9eCNZCtMFBF7dihD+/hKKfIprNivfipWnlJkWkgKs/
-         d+nogBRl49Y4AkuXLI2PlIc0mJg+h+I0hGLLbPdT/alEyNFQ0dkU74JGz9gDKaTmz96Q
-         UsjA==
-X-Gm-Message-State: AOAM533HJVbRTXzO3ugBdTVIGpu/eUS+DH7Vae84zGkv7Z3wEeLzv3T8
-        lDyDSrl9xjm4yj8QthSiPoZGKOKKFP5y8piTqMcVHQ==
-X-Google-Smtp-Source: ABdhPJxur0KKzVgNz/Rt1leSMplGKbq52Yi9bMuRCAElrwUadKtFKUESc7Cpo+vzi77WMrUS5VZsmr6ZB/ewu6AFCd0=
-X-Received: by 2002:a05:6830:719:: with SMTP id y25mr16212633ots.77.1631648296004;
- Tue, 14 Sep 2021 12:38:16 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 14 Sep 2021 12:38:15 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aeXwmIgch5WdkpveenJmPeY14PQ1LoSRtKhoZ8R2ZN4=;
+        b=xNtHpaj8GBZSsS+ppBGGtBEOVaaUhyhaQ96DaLbdasnAkkNpADEksjV8sopmvM5qFE
+         esz+zrDuuzIw45Fz9MuINIQVD0Q9U2wnGb4l683s3pTyZagmmCPQIv2nkyYpacFTXUIg
+         /ngmCQj5u9YwYUUCoKZBmWFkX3JG8ocLt8jtmUeCdF0/WyezXQc1Fs2k0TAkHrTctKtE
+         lBY2e4D92q/ZlwUtX2+pzT0Q1k6soM0j+sXFE9nvik77rcWUYQJlRjmg9t5hIKL1y/aW
+         0+95hR1LQkMzG9V/oWwOvu52x/P7/wNrV0mQS9rKK+ObzfYhdgij3k8RsctvJ/2+L2F6
+         hs/Q==
+X-Gm-Message-State: AOAM532xMVm75pErCaSmyFPLbli+aQrBShhMk2EhfmbWSsZQV0LM50w3
+        pd5rKpbCvRjHM0MAXdWfcIbENLiYwd0yKVFaQzYE/w==
+X-Google-Smtp-Source: ABdhPJxgAXKpry1tlDJug10xY3s3IbKLhBYYOOOqRKPqGpSgDAtG9tD969ZapfyKNyp/uNRFVYGOG2GTwBTdYez5RS0=
+X-Received: by 2002:a05:651c:1305:: with SMTP id u5mr16539923lja.198.1631648351403;
+ Tue, 14 Sep 2021 12:39:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1631624108-15491-3-git-send-email-skakit@codeaurora.org>
-References: <1631624108-15491-1-git-send-email-skakit@codeaurora.org> <1631624108-15491-3-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 14 Sep 2021 12:38:15 -0700
-Message-ID: <CAE-0n53z4SmMAM4VfY+beCHNzpYfQN7+LsXJBGXC3+7Lm-s1XA@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] arm64: dts: sc7280: Add volume up support for sc7280-idp
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Satya Priya <skakit@codeaurora.org>
-Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20210914191045.2234020-1-samitolvanen@google.com> <20210914191045.2234020-6-samitolvanen@google.com>
+In-Reply-To: <20210914191045.2234020-6-samitolvanen@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 14 Sep 2021 12:39:00 -0700
+Message-ID: <CAKwvOdmx=XTaKfT1-KNz1j8W0E7HDrWNHKdpCCXQUs+ZDPfXvg@mail.gmail.com>
+Subject: Re: [PATCH v3 05/16] tracepoint: Exclude tp_stub_func from CFI checking
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Satya Priya (2021-09-14 05:55:08)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> index 371a2a9..003112f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> @@ -239,6 +239,26 @@
->         cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
+On Tue, Sep 14, 2021 at 12:11 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> If allocate_probes fails, func_remove replaces the old function
+> with a pointer to tp_stub_func, which is called using a mismatching
+> function pointer that's will always trip indirect call checks with
+> CONFIG_CFI_CLANG. Use DEFINE_CFI_IMMEDATE_RETURN_STUB to define
+> tp_stub_func to allow it to pass CFI checking.
+>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  kernel/tracepoint.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index 64ea283f2f86..58acc7d86c3f 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -99,10 +99,7 @@ struct tp_probes {
 >  };
 >
-> +&soc {
-> +       gpio-keys {
+>  /* Called in removal of a func but failed to allocate a new tp_funcs */
+> -static void tp_stub_func(void)
+> -{
+> -       return;
+> -}
+> +static DEFINE_CFI_IMMEDIATE_RETURN_STUB(tp_stub_func);
+>
+>  static inline void *allocate_probes(int count)
+>  {
+> --
+> 2.33.0.309.g3052b89438-goog
+>
 
-This should be in the root node, not soc node as it doesn't have any reg
-property. Please move it to / and put it at the top of the file.
 
-> +               compatible = "gpio-keys";
-> +               label = "gpio-keys";
-> +
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&key_vol_up_default>;
-> +
-> +               volume-up {
-> +                       label = "volume_up";
-> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
-> +                       linux,input-type = <1>;
-> +                       linux,code = <KEY_VOLUMEUP>;
-> +                       gpio-key,wakeup;
-> +                       debounce-interval = <15>;
-> +                       linux,can-disable;
-> +               };
-> +       };
-> +};
-> +
->  &uart5 {
->         status = "okay";
->  };
+-- 
+Thanks,
+~Nick Desaulniers
