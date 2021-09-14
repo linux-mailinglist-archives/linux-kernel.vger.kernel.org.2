@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96B140A8AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABB640A8A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhINHwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbhINHwH (ORCPT
+        id S229699AbhINHwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:52:17 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:34523 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhINHwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:52:07 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAA9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:50:12 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id g19-20020a1c9d13000000b003075062d4daso1782184wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=reply-to:subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fQQsBMV/KZRW/W+H2x46A5MmwVr95aBTpydU/d7M2HU=;
-        b=AAjpTdBAhVY5A9abSR3cTV0Gdf/FJZyO4h7UFY9WJwTTbhzLUwas+aaaisHVDEj0k+
-         ENHa2/XA9Mh2s5Ju3ON8/Lr5RW6LWd3ohSieGKtfbUJ47Vc42IuhCmLZJUmoKwTBFKxb
-         +bjPrKYIZkiMEdJdpuEkMzKp73uofCIQ3mFPnmebzxvzF7NnwHurzMaqZNWz8I5lslyt
-         MwP9IP4i3ckQpDiU1NsEbEfrIfu+EHbyC4T7IFlehCsRhQlU+a42wNfzrSHEAoZ1ug1a
-         Lgg3to8Ga84J1iDwwtOzDEq3E03H69BSe27MxiDm+iRzgoochO9W329XnnM2IUPaSk2/
-         2hbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fQQsBMV/KZRW/W+H2x46A5MmwVr95aBTpydU/d7M2HU=;
-        b=xLdJL6Lu8YGTKqlVnNmRwmIWPoTKJCJ91XDtivukIddUCFn6XdlE81vAttTchlCphs
-         CljYemMfJWBcvg/GbA39y8UCtVsL0EmHOn3ci3HxRVl3qhClMA7D+tBo7L1jcrS4r22j
-         C3heUhWoeLH12sS0ZUYnD0uP+coDxCkhMKEhi7KK/9rwX0ROYy/86R3nXX1FDNz0Xpd9
-         7HS3kUgS8sdiaOfmadITwENSfBKZfSsOjOTBVUfzA+2glSt5uJX6wcWPj9Fl311fFNd8
-         vWeKRcjNqy/WHQafvtESxF7p9ZCwhwE4SLfXyuTq0QvYy5AX6X3/21/D2sHUzjUzxYxQ
-         3F5g==
-X-Gm-Message-State: AOAM531JF7U1oMSPpMdM7MAhZ+W0kozHIQO/OVPIOSwVX2iGRWYByhee
-        4SwCaJUpfDpaHT8qG26MWSokaQ==
-X-Google-Smtp-Source: ABdhPJygFgkHfp5lL4CsS4GMWPjddGH6Owu9/1fa7A2NoDH5ihup042p3PzAjCG2K9U9bJGYvkjbsg==
-X-Received: by 2002:a7b:ce06:: with SMTP id m6mr619819wmc.85.1631605811109;
-        Tue, 14 Sep 2021 00:50:11 -0700 (PDT)
-Received: from [10.16.0.69] (host.78.145.23.62.rev.coltfrance.com. [62.23.145.78])
-        by smtp.gmail.com with ESMTPSA id r27sm9531178wrr.70.2021.09.14.00.50.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 00:50:10 -0700 (PDT)
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH v2] include/uapi/linux/xfrm.h: Fix XFRM_MSG_MAPPING ABI
- breakage
-To:     Eugene Syromiatnikov <esyr@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Antony Antony <antony.antony@secunet.com>,
-        Christian Langrock <christian.langrock@secunet.com>
-Cc:     selinux@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Dmitry V. Levin" <ldv@strace.io>,
-        linux-api@vger.kernel.org
-References: <20210912122234.GA22469@asgard.redhat.com>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-Message-ID: <9ce148b0-7694-83f7-0d04-546e2cae9500@6wind.com>
-Date:   Tue, 14 Sep 2021 09:50:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 14 Sep 2021 03:52:03 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 07B6E4000C;
+        Tue, 14 Sep 2021 07:50:41 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 09:50:41 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
+        Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 20/22] staging: media: Add support for the Allwinner A31
+ ISP
+Message-ID: <YUBUUQxBaGUkjzMP@aptenodytes>
+References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
+ <20210910184147.336618-21-paul.kocialkowski@bootlin.com>
+ <20210913083135.v7q7joux2xckat62@gilmour>
 MIME-Version: 1.0
-In-Reply-To: <20210912122234.GA22469@asgard.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="N+QqgaOnVGg+nb5A"
+Content-Disposition: inline
+In-Reply-To: <20210913083135.v7q7joux2xckat62@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 12/09/2021 à 14:22, Eugene Syromiatnikov a écrit :
-> Commit 2d151d39073a ("xfrm: Add possibility to set the default to block
-> if we have no policy") broke ABI by changing the value of the XFRM_MSG_MAPPING
-> enum item, thus also evading the build-time check
-> in security/selinux/nlmsgtab.c:selinux_nlmsg_lookup for presence of proper
-> security permission checks in nlmsg_xfrm_perms.  Fix it by placing
-> XFRM_MSG_SETDEFAULT/XFRM_MSG_GETDEFAULT to the end of the enum, right before
-> __XFRM_MSG_MAX, and updating the nlmsg_xfrm_perms accordingly.
-> 
-> Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
-> References: https://lore.kernel.org/netdev/20210901151402.GA2557@altlinux.org/
-> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
 
-Acked-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+--N+QqgaOnVGg+nb5A
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon 13 Sep 21, 10:31, Maxime Ripard wrote:
+> On Fri, Sep 10, 2021 at 08:41:45PM +0200, Paul Kocialkowski wrote:
+> > Some Allwinner platforms come with an Image Signal Processor, which
+> > supports various features in order to enhance and transform data
+> > received by image sensors into good-looking pictures. In most cases,
+> > the data is raw bayer, which gets internally converted to RGB and
+> > finally YUV, which is what the hardware produces.
+> >=20
+> > This driver supports ISPs that are similar to the A31 ISP, which was
+> > the first standalone ISP found in Allwinner platforms. Simpler ISP
+> > blocks were found in the A10 and A20, where they are tied to a CSI
+> > controller. Newer generations of Allwinner SoCs (starting with the
+> > H6, H616, etc) come with a new camera subsystem and revised ISP.
+> > Even though these previous and next-generation ISPs are somewhat
+> > similar to the A31 ISP, they have enough significant differences to
+> > be out of the scope of this driver.
+> >=20
+> > While the ISP supports many features, including 3A and many
+> > enhancement blocks, this implementation is limited to the following:
+> > - V3s (V3/S3) platform support;
+> > - Bayer media bus formats as input;
+> > - Semi-planar YUV (NV12/NV21) as output;
+> > - Debayering with per-component gain and offset configuration;
+> > - 2D noise filtering with configurable coefficients.
+> >=20
+> > Since many features are missing from the associated uAPI, the driver
+> > is aimed to integrate staging until all features are properly
+> > described.
+>=20
+> We can add new features/interfaces to a !staging driver. Why do you
+> think staging is required?
+
+This is true for the driver but not so much for the uAPI, so it seems that
+the uAPI must be added to staging in some way. Then I'm not sure it makes s=
+ense
+to have a !staging driver that depends on a staging uAPI.
+
+Besides that, I added it to staging because that's the process that was
+followed by rkisp1, which is a very similar case.
+
+> > On the technical side, it uses the v4l2 and media controller APIs,
+> > with a video node for capture, a processor subdev and a video node
+> > for parameters submission. A specific uAPI structure and associated
+> > v4l2 meta format are used to configure parameters of the supported
+> > modules.
+>=20
+> This meta format needs to be documented
+
+You're right, there should probably be a pixfmt-meta-sun6i-isp.rst
+documentation file. I guess it should live along in the staging driver
+directory for now and be destaged later.
+
+Cheers,
+
+Paul
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--N+QqgaOnVGg+nb5A
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmFAVFEACgkQ3cLmz3+f
+v9FMhAf/bAGGMJm3PCVKPQFBMmTnl7dcHX2eA24BUWY8e+zsCMmd7A74imEjZUXg
+xURaGLaWc3WVje8tq2idWiyGMIZOLPwlJBI2mhTnZaJiMhTxBN4NvURssuHyu+e6
+lnvOUXXALN2oJPBoBVaTYuqMyECYxsWCjUjZG5XgASjlSIHZDH0jDkGAqfuOeRlB
+r8dVEMjS/sWtBlLOp6Mw1Z1Rc8w3fEj5++D5bXd/aOGYavZeo2/2yn6cOoVsRsf3
+abhdRCEy7tVL5hyb6HGD4CPkIcZtMcvVvxomiX5f7fVCba5iuexjdgzaugg/fsYi
+0IMX9Lr/PmNJ9/5VNbHg7nfhhZcF/g==
+=3ZW0
+-----END PGP SIGNATURE-----
+
+--N+QqgaOnVGg+nb5A--
