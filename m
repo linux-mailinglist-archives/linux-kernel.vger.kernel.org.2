@@ -2,192 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B00040A723
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A510140A726
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240616AbhINHNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S240631AbhINHN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240575AbhINHNF (ORCPT
+        with ESMTP id S240599AbhINHN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:13:05 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D3DC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:11:48 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id h16so26658512lfk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:11:48 -0700 (PDT)
+        Tue, 14 Sep 2021 03:13:26 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEDCC061762;
+        Tue, 14 Sep 2021 00:12:09 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id o20so16004578ejd.7;
+        Tue, 14 Sep 2021 00:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mmfjy5Th0WsOwkJt7Ir/JFNee8szHt3Y0EugGTp0ia0=;
-        b=1JlTTQK545gD4gENkjtzDBBttLJSew1xXd5vdCvxPNjtrEIr1RUw7tM82TRpRzJNnD
-         /EweNJnNWjq1AHSY2ilH3NKTgEK6aSlHrC/cYSoQgrDhyxKlV4HASpkpcw9hiwqANtkT
-         nVH8j+GyM+5w/H3xnUYFiRy60ViBW8qKEHd12BUB5+doy9xEp0mQ5VnBz/tnavt/Aamo
-         PL2+LC5vzWc0cLDQn584bgIJ//1HRv6aQv8Knu52ewfQOpCZ7JV/2/+imPZ0YoSa0cP2
-         Y0jpslrkGOQysod+TPif+nc6oL8QzdZSFzdAccSdIIN1OOhIuUF0x0qw3FaqOrw6NEaT
-         4x4g==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ib2Cla9NE9BCcyIj9QHsclYFQpDljJidgC34V3t8so=;
+        b=Kox0pd77V5Fior9IvRAfA+R18h2wFSqR3w0DOclaqmhPTcWSz8zCUrSnRTE+tsHJfT
+         H4eH4vII9n0+dLIbuGohuulLGe6R3J2/18u3T9HMQYQ/UrbK4tBXjdIlYX4UsaJHNeIC
+         8l2GspmaSA1iXOpHRWtLATgFBY21vfhnQmDf9bHOFOSJ6Md2pijXmllP+JSFwd0ljL0z
+         CAY87ZqkweOFPwD1fZb0VgC10jDwehKQWLwunN84PpmO2mz1TMMaWJWhqnU/OUSFmCfH
+         T/qffdHPLZTUz6k7CVjkC+X/4DGCo2oFL0H+e2t88JhOEMsgh26wlav/PHpI/wuN3yC4
+         Yh4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mmfjy5Th0WsOwkJt7Ir/JFNee8szHt3Y0EugGTp0ia0=;
-        b=YNiPa7ZAWsOQM1TnhT0t/5XTlEAmuxYZoMza7URpc4ZolETCBUUGGPJ4e1wUMJM4xd
-         e/fxcgVobX3YX8vbHDoBd1dJYAsArlEz14ezncJlEOE+TuA9Us2mV5Qq74o76Ndb1Fgr
-         OM9MJd0pyn29uyvlwbENLg8HrQEM1gx4QsfzfghGndz7aBnyJa4zweyiPeAi/c/NsUSM
-         zmzMTISqFMhGqME0D8a9H9IHJCdkpgHyB5RGNgyKfVE6S5FX4CBRfGfAgAZbvAVj4IY0
-         /dFqMD1Sv62fAScmYdJvhanJaf0MTetInCOF3KvhlxsCUYZ/4X2Za2USVSrymTqr/g41
-         nfhA==
-X-Gm-Message-State: AOAM530BOk6G9JAwUAOHcUS2LRT5KSvnjFM+PUusTAnsCh/SKU/9ehSF
-        /s78g1VP+OndDrKuXSOgnFTbURgu3aIAvcQ4BhNgkw==
-X-Google-Smtp-Source: ABdhPJzPI3Q6eKZTET4UijO1AFuDxaLYa0iCHAyZUs/1HTcP7gkzVgBvmuq8ziEB04O0rJuEZ9fYk1pqrgztgz0/PzQ=
-X-Received: by 2002:a05:6512:38a1:: with SMTP id o1mr12050131lft.645.1631603506141;
- Tue, 14 Sep 2021 00:11:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6ib2Cla9NE9BCcyIj9QHsclYFQpDljJidgC34V3t8so=;
+        b=ldhfqEfCkMrvjCDOeZdh2mq4sNqepIu/P5x3eBSDdz0MOzZQLj5tQ40uOFQjAvm3+/
+         owJNMCYfKJjq1Z24fiLGEInleEz+X70o2ojjNmwPCp7qfjMXuyPnAFbwP6SElEkPcvhf
+         90ILqT9H1tLmB72skiPJGFoquWuurIB3U8WZl6rlsoEbQ72eTZhsO9hMXngKjLd1tFym
+         27YPI8n7hO6HVG/qZMMUEBOUfTsIf19f4sqo1Y9bU+i8BNbWbFWgznO4uXpetbPRjlur
+         ec9qc0WuyanvGbTQtQPplOwTXkH7RWG7HfmwCtGzV5bEoa1y0GyrxSQo7Ayb5cLLK1Y1
+         cMeg==
+X-Gm-Message-State: AOAM53164XKgYacX2puLz7jWAFddhgJLsSCUDHpJC//4VCBsyAPCExyV
+        MQrU8n43m8TjM6Ctd+galoxw06IHQ0g=
+X-Google-Smtp-Source: ABdhPJyNL356wHsefJWV212NycXXo6I3rwdwcajnGU37zWKQr+IfDxsSCrtmLouc3ZJY7RKHeVF+4Q==
+X-Received: by 2002:a17:906:6b96:: with SMTP id l22mr17430468ejr.430.1631603528237;
+        Tue, 14 Sep 2021 00:12:08 -0700 (PDT)
+Received: from Ansuel-xps.localdomain ([5.170.141.93])
+        by smtp.googlemail.com with ESMTPSA id s26sm4988549edt.41.2021.09.14.00.12.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 00:12:07 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rosen Penev <rosenp@gmail.com>
+Subject: [PATCH net-next] net: phy: at803x: add support for qca 8327 internal phy
+Date:   Tue, 14 Sep 2021 09:11:41 +0200
+Message-Id: <20210914071141.2616-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
- <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
- <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
- <20210908233354.GB3544071@ziepe.ca> <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
- <CANXvt5rYxr0xBrdbmqqKAV8ctCZaJrxEM7F0Hpt2k98wBvah7Q@mail.gmail.com> <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
-In-Reply-To: <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Tue, 14 Sep 2021 16:11:34 +0900
-Message-ID: <CANXvt5p4H5cSR3jBFM8++TwWKP2FaaiJ4kESEvnwZdDoxXhi-w@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=E5=B9=B49=E6=9C=8814=E6=97=A5(=E7=81=AB) 4:23 Daniel Vetter <daniel.ve=
-tter@ffwll.ch>:
->
-> On Fri, Sep 10, 2021 at 3:46 AM Shunsuke Mie <mie@igel.co.jp> wrote:
-> >
-> > 2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 18:26 Daniel Vetter <danie=
-l.vetter@ffwll.ch>:
-> > >
-> > > On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
-> > > > > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.ko=
-enig@amd.com> wrote:
-> > > > > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
-> > > > > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
-> > > > > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph=
- Hellwig <hch@infradead.org>:
-> > > > > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrot=
-e:
-> > > > > > >>>> Thank you for your comment.
-> > > > > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wr=
-ote:
-> > > > > > >>>>>> To share memory space using dma-buf, a API of the dma-bu=
-f requires dma
-> > > > > > >>>>>> device, but devices such as rxe do not have a dma device=
-. For those case,
-> > > > > > >>>>>> change to specify a device of struct ib instead of the d=
-ma device.
-> > > > > > >>>>> So if dma-buf doesn't actually need a device to dma map w=
-hy do we ever
-> > > > > > >>>>> pass the dma_device here?  Something does not add up.
-> > > > > > >>>> As described in the dma-buf api guide [1], the dma_device =
-is used by dma-buf
-> > > > > > >>>> exporter to know the device buffer constraints of importer=
-.
-> > > > > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3D=
-https%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian=
-.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11=
-a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
-C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=
-=3DARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
-> > > > > > >>> Which means for rxe you'd also have to pass the one for the=
- underlying
-> > > > > > >>> net device.
-> > > > > > >> I thought of that way too. In that case, the memory region i=
-s constrained by the
-> > > > > > >> net device, but rxe driver copies data using CPU. To avoid t=
-he constraints, I
-> > > > > > >> decided to use the ib device.
-> > > > > > > Well, that is the whole problem.
-> > > > > > >
-> > > > > > > We can't mix the dmabuf stuff people are doing that doesn't f=
-ill in
-> > > > > > > the CPU pages in the SGL with RXE - it is simply impossible a=
-s things
-> > > > > > > currently are for RXE to acess this non-struct page memory.
-> > > > > >
-> > > > > > Yeah, agree that doesn't make much sense.
-> > > > > >
-> > > > > > When you want to access the data with the CPU then why do you w=
-ant to
-> > > > > > use DMA-buf in the first place?
-> > > > > >
-> > > > > > Please keep in mind that there is work ongoing to replace the s=
-g table
-> > > > > > with an DMA address array and so make the underlying struct pag=
-e
-> > > > > > inaccessible for importers.
-> > > > >
-> > > > > Also if you do have a dma-buf, you can just dma_buf_vmap() the bu=
-ffer
-> > > > > for cpu access. Which intentionally does not require any device. =
-No
-> > > > > idea why there's a dma_buf_attach involved. Now not all exporters
-> > > > > support this, but that's fixable, and you must call
-> > > > > dma_buf_begin/end_cpu_access for cache management if the allocati=
-on
-> > > > > isn't cpu coherent. But it's all there, no need to apply hacks of
-> > > > > allowing a wrong device or other fun things.
-> > > >
-> > > > Can rxe leave the vmap in place potentially forever?
-> > >
-> > > Yeah, it's like perma-pinning the buffer into system memory for
-> > > non-p2p dma-buf sharing. We just squint and pretend that can't be
-> > > abused too badly :-) On 32bit you'll run out of vmap space rather
-> > > quickly, but that's not something anyone cares about here either. We
-> > > have a bunch of more sw modesetting drivers in drm which use
-> > > dma_buf_vmap() like this, so it's all fine.
-> > > -Daniel
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
-> >
-> > Thanks for your comments.
-> >
-> > In the first place, the CMA region cannot be used for RDMA because the
-> > region has no struct page. In addition, some GPU drivers use CMA and sh=
-are
-> > the region as dma-buf. As a result, RDMA cannot transfer for the region=
-. To
-> > solve this problem, rxe dma-buf support is better I thought.
-> >
-> > I'll consider and redesign the rxe dma-buf support using the dma_buf_vm=
-ap()
-> > instead of the dma_buf_dynamic_attach().
->
-> btw for next version please cc dri-devel. get_maintainers.pl should
-> pick it up for these patches.
-A CC list of these patches is generated by get_maintainers.pl but it
-didn't pick up the dri-devel. Should I add the dri-devel to the cc
-manually?
+Add support for qca8327 internal phy needed for correct init of the
+switch port. It does use the same qca8337 function and reg just with a
+different id.
 
-Regards,
-Shunsuke
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Tested-by: Rosen Penev <rosenp@gmail.com>
+---
+ drivers/net/phy/at803x.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+index bdac087058b2..19a426aa4ede 100644
+--- a/drivers/net/phy/at803x.c
++++ b/drivers/net/phy/at803x.c
+@@ -1420,6 +1420,19 @@ static struct phy_driver at803x_driver[] = {
+ 	.get_sset_count = at803x_get_sset_count,
+ 	.get_strings = at803x_get_strings,
+ 	.get_stats = at803x_get_stats,
++}, {
++	/* QCA8327 */
++	.phy_id = QCA8327_PHY_ID,
++	.phy_id_mask = QCA8K_PHY_ID_MASK,
++	.name = "QCA PHY 8327",
++	/* PHY_GBIT_FEATURES */
++	.probe = at803x_probe,
++	.flags = PHY_IS_INTERNAL,
++	.config_init = qca83xx_config_init,
++	.soft_reset = genphy_soft_reset,
++	.get_sset_count = at803x_get_sset_count,
++	.get_strings = at803x_get_strings,
++	.get_stats = at803x_get_stats,
+ }, };
+ 
+ module_phy_driver(at803x_driver);
+-- 
+2.32.0
+
