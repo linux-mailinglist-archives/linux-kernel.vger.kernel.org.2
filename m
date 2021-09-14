@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C286040A907
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC5F40A90B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhINIT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:19:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59132 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhINITN (ORCPT
+        id S230125AbhINIVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:21:25 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16252 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhINIVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:19:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 33098200DA;
-        Tue, 14 Sep 2021 08:17:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631607473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FmdG8PcnuIQuqHtdoYXiNJLHdhDIQt4J2A8/AC35I5c=;
-        b=IEJQ2TEznajvCNl1nH6A7iIwCu5Yz2J4O6kJpMm04Zzijue7NO/Y3POHnHOX/b/kVKP4jV
-        J+NBflkpoVjrX5prgNDVxIDkMc5fP1DKHCuipbUuWPRYs87/FbhXcV/LjmatEWuDCKSPaZ
-        sC94sWIZJ7yhH2Qaf8zqyF2fSfFK1d4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 94D58A3B88;
-        Tue, 14 Sep 2021 08:17:52 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 10:17:52 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
- and bail out early
-Message-ID: <YUBasMWLAjzcgtt9@dhcp22.suse.cz>
-References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
- <24d89efa-502f-e31a-5d45-536352485bbb@suse.cz>
+        Tue, 14 Sep 2021 04:21:24 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H7x8d073Lz8t7f;
+        Tue, 14 Sep 2021 16:19:29 +0800 (CST)
+Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 16:20:04 +0800
+Received: from [10.67.101.251] (10.67.101.251) by
+ dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 16:20:03 +0800
+Subject: Re: [PATCH v2] kernel/sched: Fix sched_fork() access an invalid
+ sched_task_group
+To:     Tejun Heo <tj@kernel.org>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <juri.lelli@redhat.com>,
+        <vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
+        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+        <bristot@redhat.com>
+References: <20210911075054.6358-1-zhangqiao22@huawei.com>
+ <YT+R3EnFgs78Vyvh@slm.duckdns.org>
+From:   Zhang Qiao <zhangqiao22@huawei.com>
+In-Reply-To: <YT+R3EnFgs78Vyvh@slm.duckdns.org>
+Message-ID: <b30205b0-bf54-7255-fc1c-9dfa5dbb4940@huawei.com>
+Date:   Tue, 14 Sep 2021 16:20:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24d89efa-502f-e31a-5d45-536352485bbb@suse.cz>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.101.251]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500018.china.huawei.com (7.185.36.186)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-09-21 10:01:26, Vlastimil Babka wrote:
-> On 9/14/21 05:40, Feng Tang wrote:
-[...]
-> > +/* Whether the 'nodes' are all movable nodes */
-> > +static inline bool movable_only_nodes(nodemask_t *nodes)
-> > +{
-> > +	struct zonelist *zonelist;
-> > +	struct zoneref *z;
-> > +
-> > +	if (nodes_empty(*nodes))
-> > +		return false;
-> > +
-> > +	zonelist =
-> > +	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
-> > +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-> > +	return (!z->zone) ? true : false;
-> > +}
-> 
-> Hmm, could all that become just this?
-> 
-> !nodes_intersects(&node_states[N_NORMAL_MEMORY], nodes)
 
-Maybe yes but I find the zonelist approach much easier to follow even
-though the code looks more complex at first sight. It talks about an
-empty zone list for ZONE_NORMAL request which is quite clear from the
-scribble. I always have to re-learn how the N*MEMORY works TBH. Maybe
-this is just me though.
--- 
-Michal Hocko
-SUSE Labs
+
+ÔÚ 2021/9/14 2:01, Tejun Heo Ð´µÀ:
+> Hello,
+> 
+> On Sat, Sep 11, 2021 at 03:50:54PM +0800, Zhang Qiao wrote:
+>> Between cgroup_can_fork() and cgroup_post_fork(), the cgroup
+>> membership is fixed and thus sched_task_group can't change. So
+>> call sched_fork() after cgroup_can_fork() and update the child's
+>> sched_task_group before it is used.
+> 
+> The part being fixed looks correct to me but it's difficult to for me to
+> assess whether the whole relocation of the sched_fork() hook doesn't change
+
+Indeed is this, although I checked and tested it many times.
+
+> anything else. Besides, even if we decide to relocate the sched_fork hook, I
+> think it'd be better to separate the two changes - one is a relatively safe
+> bug fix, the other is a code reorganization with possibly subtle side
+> effects. So, I think it'd be better to produce a patch which just fixes the
+> bug even if that ends up introducing another function in the flow.
+
+Perhaps we can fix this bug at sched_post_fork(), which is executed between cgroup_can_fork()
+and cgroup_post_fork(). Relocate the fectching of task_group and access it at sched_post_fork().
+
+thanks.
+
+> 
+> Thanks.
+> 
