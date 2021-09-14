@@ -2,111 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B30D40B246
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA47940B252
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhINO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:57:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233856AbhINO5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:57:39 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CDEA60FD7;
-        Tue, 14 Sep 2021 14:56:21 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 10:56:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [GIT PULL] tracing: Fixes to bootconfig memory management
-Message-ID: <20210914105620.677b90e5@oasis.local.home>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234864AbhINO6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234274AbhINO6N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:58:13 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BACC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:56:56 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id f2so24445289ljn.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=32RtfxSjG9sP/kIUfnN+bsrpnlPSA3iRbY0ztFhcO1k=;
+        b=g1blrE6JWLFlISD43DfLBsNCmJMHG7OgT6BtlTPAhH4bPy239jRIor5E6XtKGxd4OJ
+         7EdyhWmvDX37aY6E/GXP9AYiE+/+E+wxKsjaMwQo6vMmd7UBJf3FvbE5TRes47YjVxtz
+         YoURR3UBON8M36HXELphQ4nP3UX1Y3hdCFiW0R6wfuakERNgszQoNquAKZhYhMLNtZQD
+         4Z3G35XKyY7z14jMwT/T5HV+gWgNBRVSB3+gFFjFB3tDKFh+2mhJfvUyUNYvKCgizSw8
+         aUC7/hvkEpIHsezgj8H91jbzmegcYauM4kRnXQqRoZu0fOd7NLSrW4x8W52J5m3hJGZ3
+         32rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=32RtfxSjG9sP/kIUfnN+bsrpnlPSA3iRbY0ztFhcO1k=;
+        b=ZMSZOHfdmcA1eOCH6LQMdMzcipap43NNuK5aHGiWxlHRe6q4FmdwNE9gKtoLqHifSy
+         9RKaE+pelcEmAko8fRGiFg/foosBSz29HjjG/349g2sj9l6yGQ5eXA09MYD70pMOHNJG
+         z2SBZg20XvM7yctTLM8wRy6ltPA8VwUFd22oyTInEKLPsTfQE/7lyzrtUWaskI8Wugbh
+         BlwgNzLRBxbe51hkzWNSQc51KEkPvOVZFtwXTzCNaK+IBd7ynQnBrQTb5EGTCH82vOMv
+         0V4d8ZR2Kjeud8m/wdLy6SI+3ZWKBiclbqRP0u/6ahS5kC9tQ/ANoD9B7h/bOhpAelrf
+         HoTw==
+X-Gm-Message-State: AOAM530aIl+t9XhkUh8qhLahOk7GLb3IVWyElMnv2XliKnlw9NL+ZF6C
+        HB8SScncBVh1HhylR0Sybv9ynqJhAu+/MGN5EXo2gQ==
+X-Google-Smtp-Source: ABdhPJyN4Gk+w1SqRvWCMhYlWwXBQTnF9kGXxlYteM5XO81E0lzwURPIhsqxkIDPE4IyeA8D51INwkfKvRBNLaacWoA=
+X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr15505095ljk.121.1631631414295;
+ Tue, 14 Sep 2021 07:56:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210909023741.2592429-1-john.stultz@linaro.org> <YUCqFfalhgSTX249@phenom.ffwll.local>
+In-Reply-To: <YUCqFfalhgSTX249@phenom.ffwll.local>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Tue, 14 Sep 2021 20:26:42 +0530
+Message-ID: <CAO_48GGtwDJPFqfsQvDPGwF-B+9GAVxEjS+jSWvmbeFHSkutiA@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: system_heap: Avoid warning on mid-order allocations
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, Leo Yan <leo.yan@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks John!
 
-Linus,
+On Tue, 14 Sept 2021 at 19:26, Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Thu, Sep 09, 2021 at 02:37:41AM +0000, John Stultz wrote:
+> > When trying to do mid-order allocations, set __GFP_NOWARN to
+> > avoid warning messages if the allocation fails, as we will
+> > still fall back to single page allocatitions in that case.
+> > This is the similar to what we already do for large order
+> > allocations.
+> >
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Christian Koenig <christian.koenig@amd.com>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: Liam Mark <lmark@codeaurora.org>
+> > Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> > Cc: Laura Abbott <labbott@kernel.org>
+> > Cc: Brian Starkey <Brian.Starkey@arm.com>
+> > Cc: Hridya Valsaraju <hridya@google.com>
+> > Cc: Suren Baghdasaryan <surenb@google.com>
+> > Cc: Sandeep Patil <sspatil@google.com>
+> > Cc: Daniel Mentz <danielmentz@google.com>
+> > Cc: =C3=98rjan Eide <orjan.eide@arm.com>
+> > Cc: Robin Murphy <robin.murphy@arm.com>
+> > Cc: Simon Ser <contact@emersion.fr>
+> > Cc: James Jones <jajones@nvidia.com>
+> > Cc: Leo Yan <leo.yan@linaro.org>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
+>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>
+Pushed to drm-misc-next.
 
-A couple of memory management fixes to the bootconfig code
+> > ---
+> >  drivers/dma-buf/heaps/system_heap.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heap=
+s/system_heap.c
+> > index 23a7e74ef966..f57a39ddd063 100644
+> > --- a/drivers/dma-buf/heaps/system_heap.c
+> > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > @@ -40,11 +40,12 @@ struct dma_heap_attachment {
+> >       bool mapped;
+> >  };
+> >
+> > +#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > +#define MID_ORDER_GFP (LOW_ORDER_GFP | __GFP_NOWARN)
+> >  #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
+> >                               | __GFP_NORETRY) & ~__GFP_RECLAIM) \
+> >                               | __GFP_COMP)
+> > -#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
+> > -static gfp_t order_flags[] =3D {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORD=
+ER_GFP};
+> > +static gfp_t order_flags[] =3D {HIGH_ORDER_GFP, MID_ORDER_GFP, LOW_ORD=
+ER_GFP};
+> >  /*
+> >   * The selection of the orders used for allocation (1MB, 64K, 4K) is d=
+esigned
+> >   * to match with the sizes often found in IOMMUs. Using order 4 pages =
+instead
+> > --
+> > 2.25.1
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
 
 
-Please pull the latest trace-v5.15-rc1 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.15-rc1
-
-Tag SHA1: 04c8861530c8c66f00918702374668e8e8b230af
-Head SHA1: 8e9f0934a07e699044d422ca9cfb553f25c72b41
-
-
-Masami Hiramatsu (2):
-      bootconfig: Fix to check the xbc_node is used before free it
-      bootconfig: Free copied bootconfig data after boot
-
-----
- init/main.c      | 8 ++++++++
- lib/bootconfig.c | 3 ++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
----------------------------
-diff --git a/init/main.c b/init/main.c
-index d08caed17c7f..ddbcb372225a 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -319,6 +319,8 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
- #ifdef CONFIG_BOOT_CONFIG
- 
- static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
-+static void *init_xbc_data_copy __initdata;
-+static phys_addr_t init_xbc_data_size __initdata;
- 
- #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
- 
-@@ -458,18 +460,24 @@ static void __init setup_boot_config(void)
- 		else
- 			pr_err("Failed to parse bootconfig: %s at %d.\n",
- 				msg, pos);
-+		memblock_free(__pa(copy), size + 1);
- 	} else {
- 		pr_info("Load bootconfig: %d bytes %d nodes\n", size, ret);
- 		/* keys starting with "kernel." are passed via cmdline */
- 		extra_command_line = xbc_make_cmdline("kernel");
- 		/* Also, "init." keys are init arguments */
- 		extra_init_args = xbc_make_cmdline("init");
-+		init_xbc_data_copy = copy;
-+		init_xbc_data_size = size + 1;
- 	}
- 	return;
- }
- 
- static void __init exit_boot_config(void)
- {
-+	if (!init_xbc_data_copy)
-+		return;
-+	memblock_free(__pa(init_xbc_data_copy), init_xbc_data_size);
- 	xbc_destroy_all();
- }
- 
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index f8419cff1147..4f8849706ef6 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -792,7 +792,8 @@ void __init xbc_destroy_all(void)
- 	xbc_data = NULL;
- 	xbc_data_size = 0;
- 	xbc_node_num = 0;
--	memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
-+	if (xbc_nodes)
-+		memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
- 	xbc_nodes = NULL;
- 	brace_index = 0;
- }
+Best,
+Sumit.
