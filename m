@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0451440B02F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A7B40B031
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhINOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:04:06 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51613 "EHLO
+        id S233618AbhINOEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:04:10 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55511 "EHLO
         out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233550AbhINOEE (ORCPT
+        by vger.kernel.org with ESMTP id S233572AbhINOEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:04:04 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 41C3B5C01C0;
-        Tue, 14 Sep 2021 10:02:47 -0400 (EDT)
+        Tue, 14 Sep 2021 10:04:06 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id B1E6B5C01C0;
+        Tue, 14 Sep 2021 10:02:48 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 14 Sep 2021 10:02:47 -0400
+  by compute4.internal (MEProxy); Tue, 14 Sep 2021 10:02:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
          h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=wLpknvgdOyW6A
-        0yW8l9BGg3ldSZFzQqA07ke3tiZCkY=; b=G/G6AZlq7M6KNE68rloL5gKhhboOu
-        15yU7TxQchD7JBBLMmkYJVBzkvvpOGZkSs7RUBsQy+DBOWLExqZGrZ3V/Aw2T4iL
-        bVAEzpCIchVEXU2sOitsH1vSLXroRExvPYGhEoHI+k60YEf3RIWynNVbpD4aGtf/
-        zB6Z3PQR5ISyLlBnPGuqOS+G1hiagb0dVPQ6x9+7H5EAja/L8Nzwb/qo5CM8CXuq
-        R1cJ6jGZ/dlHuY4dcevesgrD1ivAjo9+iJmK+H29boKxKDZqefbQVG3bIYrmSBmA
-        UAH0/Vnn4yGosVODNW5Bl4Ds0Y3WxCFCm+xqHKtE08NhyhaipbZoc31Gg==
+        :mime-version:content-transfer-encoding; s=fm2; bh=9FXyPXkwkycT7
+        FpDBprBIlpPCJk+3RJgiVL3MbYdviE=; b=bKMd6ghzLgrKYQk8XadO3FM8GCSCw
+        eRWRkjAM21IQ+Z2WCJVDDh0FFyNelPRfeewZnfWsCD6ea2zye+59QAlZMjt6rYk4
+        5R75UfmuFsYmqz776a+qVyQUXstIqIlvnNGMLCav6cyHsPsxxpaiBoTpKUxwZf8T
+        y+9vkAc0UkkH4h0r2rm0VGbHa76U1MQJwEAN8zYUvaL8Mb7RHc/ahnW6Le/SN9gQ
+        HyQOOcfAdmQ9Nkg35lZcQrOXO7bVm29nqthLFLs7ADhUMD0CU3L3zNr7txqo0wKW
+        QkPhmDGiiY6wvBz56yfuPjRefRViYjAtvZWf2PTD259bwrmXnO9LBLVXg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=wLpknvgdOyW6A0yW8l9BGg3ldSZFzQqA07ke3tiZCkY=; b=ekyFh0hd
-        5e1n/msTTWiP8z40ZRMbnS4SPqks+VA+ulQwhkV3KWe+OT574n0KrhMsTaR6y0sh
-        3ocrujen29xhCz2YHpipjC2Kuci0gsbyooeVIWo9i0gLmuubEczo01OgKKV3FfSc
-        zuGHk3u8JxcmWO/UFFPbdzughDKm3obWVlD95AHL8KydEXeOmHUjJ5Vw55yLwDba
-        g0F9o0hDW8R1hoOF86UzuZWKd9Kzg7DMfkTebK9GRupVgcjwyx4w5d0CuC75SYlZ
-        K6vvVPpkmCHrsXXuuuH0Ir/HHcGM8lFPu9HO3JIKev3QQY8Cs82O+lkALrpI1KLf
-        sC+JnpG9+e2I7Q==
-X-ME-Sender: <xms:hqtAYSM-u5BCv4OtNEaPWHE6_Ng7-p8Enuh0gzQg76akp2VtxxYuFw>
-    <xme:hqtAYQ8Dx8ML-FJ1XkKTVw67yss3Oi1wds1wH-_X70PuuHkQDgptvG_9iSyGin10Z
-    k2ZJxa_dMaGCjwqyOE>
-X-ME-Received: <xmr:hqtAYZQfsPM3b2nWYul58C9t4GItHLXy5-ivT1CSmB09kwXahc4_7kriA_O0dkkWdvbPhTGHcua0LsNnHTIw02-wDV4c5UF5SplhJqqOOBdS6FTiz8MBVSqC__SrlA>
+        fm3; bh=9FXyPXkwkycT7FpDBprBIlpPCJk+3RJgiVL3MbYdviE=; b=EUe6hKO5
+        m6M6Ib2Pc29ULZbERVZyQpfN40C0lbci26ar3b0XUoP/OOvpPyqXwTJ7wxPn0UK3
+        KSS22yTHHiGhwFCZKJ40PH0Kf/uPhSI6UY3/p6HiMdY9YBLyPXVh1MfTKdwMeHdG
+        x2kjFDmdLtdNvTuCWjC8ra5UPKAO1UpUf5+eji7eGVsmzTnztN1+LTTBrUxR452U
+        ZkO7jHDC2gShD1Zk3lrr68aX8+q/02FyhMRsmEPTkqd8X2NHyfEYhe02l0ItFWAb
+        nNWbH9Bo80JdtpI7z/DZVcWnwcfo1yMTMFpZ4Ki2nyZ1+TYOmL9ywHCr5aNOFvjH
+        2u38RUczPsNJWQ==
+X-ME-Sender: <xms:iKtAYYwvl165O3NRQsA8kD_vNirHzbXbbtamcMy9bcZ3RVpM5HeF2g>
+    <xme:iKtAYcQiHaB2_fDiNuranB-_ZJtoLl70chHfJdfs0pZt3iTVYSSelZfmfivW0Hn2h
+    SzcK8OtxRXL9UPHaMY>
+X-ME-Received: <xmr:iKtAYaU9tFXSpfYbUFUXf_Ul1jh0DP2XfWhftfanzbFC6xS46WOWP6z8nfJX4d9t5Y_Rz7r5VGqAcvAlLHdWO5u5y3Dzb9mHQEWCmybrme7rTXp_vM7gvDT2S_1V4g>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgjedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -49,20 +49,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgjedtucetufdoteggod
     hrnheptedvkeetleeuffffhfekteetffeggffgveehieelueefvddtueffveevlefhfeej
     necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvg
     hnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:hqtAYSvWr7cHApHxZyoYcDCf4SfxJaa1-iVQ49qs3QIA94PmJvdjNg>
-    <xmx:hqtAYaeWMCbhOxeSarj4G_rj_Hq0MS99celQUXxQVWOhRNOQ_6H7mg>
-    <xmx:hqtAYW3L5B54Y2Waejabii2KRACkQgYyA2Aw41YEK6tt8NrxwjLtRA>
-    <xmx:h6tAYa5RQBUneyDUKEim1rEeWl0Dlj0J5VRqPd88fwBJQesk84dt8g>
+X-ME-Proxy: <xmx:iKtAYWjpH5znDmDKWT7iY6wzYNLHVXC5SvD43dx64rV8z_vqWHX5VA>
+    <xmx:iKtAYaCVbb1UDV9pmZVSZN56fj1_aKmU7T06nfRRChZYcxNAqwNjlA>
+    <xmx:iKtAYXIRfUzowpesl4_K48gGSw3D6ryYlJSfSX2Vwax47tqPVzYdGA>
+    <xmx:iKtAYVNzF8PjeYXF_uErkbckSBnEsX29O3upWbsB6Y9XkI5nYcGGFw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 10:02:45 -0400 (EDT)
+ 14 Sep 2021 10:02:47 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sven Peter <sven@svenpeter.dev>
-Subject: [PATCH v2 2/3] usb: typec: tipd: Add an additional overflow check
-Date:   Tue, 14 Sep 2021 16:02:34 +0200
-Message-Id: <20210914140235.65955-2-sven@svenpeter.dev>
+Subject: [PATCH v2 3/3] usb: typec: tipd: Remove WARN_ON in tps6598x_block_read
+Date:   Tue, 14 Sep 2021 16:02:35 +0200
+Message-Id: <20210914140235.65955-3-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <20210914140235.65955-1-sven@svenpeter.dev>
 References: <20210914140235.65955-1-sven@svenpeter.dev>
@@ -72,33 +72,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tps6598x_block_read already checks for the maximum length of the read
-but tps6598x_block_write does not. Add the symmetric check there as
-well.
+Calling tps6598x_block_read with a higher than allowed len can be
+handled by just returning an error. There's no need to crash systems
+with panic-on-warn enabled.
 
 Signed-off-by: Sven Peter <sven@svenpeter.dev>
 ---
 v1 -> v2:
- - removed the WARN_ON to not crash machines running with panic-on-warn
-   as pointed out by greg k-h
+ - added this patch to also remove the WARN_ON in tps6598x_block_read
+   as suggested by greg k-h
 
- drivers/usb/typec/tipd/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/typec/tipd/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index c18ec3785592..8c79ba17a157 100644
+index 8c79ba17a157..93e56291f0cf 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -139,6 +139,9 @@ static int tps6598x_block_write(struct tps6598x *tps, u8 reg,
- {
+@@ -117,7 +117,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
  	u8 data[TPS_MAX_LEN + 1];
+ 	int ret;
  
+-	if (WARN_ON(len + 1 > sizeof(data)))
 +	if (len + 1 > sizeof(data))
-+		return -EINVAL;
-+
- 	if (!tps->i2c_protocol)
- 		return regmap_raw_write(tps->regmap, reg, val, len);
+ 		return -EINVAL;
  
+ 	if (!tps->i2c_protocol)
 -- 
 2.25.1
 
