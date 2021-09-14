@@ -2,295 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E5040A2CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B784E40A2AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236989AbhINBtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 21:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S232347AbhINBmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 21:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhINBsz (ORCPT
+        with ESMTP id S230131AbhINBmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:48:55 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF91DC061574;
-        Mon, 13 Sep 2021 18:47:38 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id v19so5052998pjh.2;
-        Mon, 13 Sep 2021 18:47:38 -0700 (PDT)
+        Mon, 13 Sep 2021 21:42:15 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B8FC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:40:59 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id j1so7718103pjv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:40:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=KEHBwA3froCQB75sci1LoZ3044EVfAvduVBAgISzhzk=;
-        b=gQzHtdm0kIgxR9hlbp7Pjgzn6MbQiszWuTlHp1mtplAW/fkprOBU+rypu/wfNDbK7R
-         gG3vr58E51xUDsidiN1Q2L36oZ4e6d+Kwfy/DWRenC3EWKJrF8ztDCU+1BrvYo1LHAQ6
-         OY1jrcZRlJad9c7azQpLZEBlDZa5ZjtKiXnis+BPxuMl7GIPm56nwQiFaXxfBzFlFUNW
-         qRMNJmAMWT3KCoG0RcXZ25MDEvhc4N4eghuMAsCaWEQIa0DWpFhWv4p8ab0i8bxZdaJr
-         T7lxMfz4xiWi6cyuty4w1xvgBhK2oFkgXPT4oPXNV1vHZtuGYkKXyr7M+jlqLm3mPZ7T
-         OY0g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=i50eXCIMPdV7KIYFDqVqCxJ2nl6Tna8Sip8wf7VdYRs=;
+        b=WycG2898W7Z4ctAx2UYR1U+cmhGLKDlysRStdiZ/ssFCUg48KW4d3R2nTb6MZtNKxU
+         LHRD3TbGra7M2Sqiu5tznmNrfNp1BAbBadopb1fAeBGhUMEvDLXcHiKHoqrgtOZ/+NcJ
+         yBtEmw/SBop0Q0cGL9BaUbyV+SX43/jdmOLRjXyCY7xXAVftv0/PgvbUvcW8GuUAzAWv
+         fkHQh1Sbn+ypO6pNQ5fLBaxbHglvIqLDi8hw4hdzOFFrerLqRBWuTtyU7msneqdwPdCJ
+         eKIEh3CLgA1Kqgy+SqJXZrvK9Kq++aET3BlGK21Un5DxtqS9MzGKY4tOwskVm8FNZHtg
+         UO/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=KEHBwA3froCQB75sci1LoZ3044EVfAvduVBAgISzhzk=;
-        b=sfK7sQSsLzGeXfmiPJERGhZFekyi+qNZ1IAfWLbr9hoCq1/OoVaet/+2IpmNQXiMkP
-         MTIlXIbv/F7QQ4CqHWcrLQdb71B5aAu7AVrtC+7fwC5Fsuxgae0loqRddjokYm0bbs0I
-         pliaja05qBPeBYIVvkId5TNzuRFQO/a8YaOFhAZ8g6UnnvCYIkcxnMxzSUEtBL5LvGPg
-         moBMugjL24PA2it3Ds1SW9R5gdmq8k+RYsaweZKD3V3RWB90dJJH0y9OPXBPR8mYzaje
-         l/QGsWKYE0zSTqwbNTQOW4bumCSj0mZaQupztIUAbbKqg+MVvfmI4PSsnPkWhAa8WPY8
-         jp2Q==
-X-Gm-Message-State: AOAM533TsKWqkOufG7R6nM+6NgGSw5h51mLEXY+mJRGywOMPXIqlImhE
-        39beYBcLua59MNKPSuBWhKM=
-X-Google-Smtp-Source: ABdhPJzskNw45GqqeSUXGgj/1ef7/AQJvkz3kHRa8IqJIcIMjhbaL0IaTXZxhlQF+pqgvenczr1Ibw==
-X-Received: by 2002:a17:902:968a:b0:133:e2c5:4908 with SMTP id n10-20020a170902968a00b00133e2c54908mr12842074plp.2.1631584058457;
-        Mon, 13 Sep 2021 18:47:38 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id z11sm8270101pfr.157.2021.09.13.18.47.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=i50eXCIMPdV7KIYFDqVqCxJ2nl6Tna8Sip8wf7VdYRs=;
+        b=q2oC8ZXG59IDhc+aTbJbq6cAAsYgdWBP7+X4ba3lb0AKoVEWjMeFWOVbcGIKYAO7FO
+         JZ8t6bGcxv0cNRs8fkVE9n+QdK5Tw2ErS6SQi/3+MkT7309h6OOeNXfYD4noyco7zOPd
+         b/lJi7VprIbi5y9dEbSJ9d4FP1rlRUZxoR8mtcs3vYnQzsUvzoauxOqjsFz4FE3js/ec
+         bOZVVvAxm/q+4DLrOrUbs9LcMkJOM6XStsyXt7kKv/qFWbNXqr1NaGiXVoFhZY4ZqptY
+         xnkUzMenImiE333de+gSusUgVruSZq3qVmSyocujrtBMMY+ZNVR8vU771qCrRzQbCC1/
+         oItg==
+X-Gm-Message-State: AOAM533AwpkFUGD2l0zv4l/tYk1GZKz0kXhLga8gDi1gHi7SIjIUcgyU
+        iJQyIXCh3MLu6GNhocgBD5AspQArGyA=
+X-Google-Smtp-Source: ABdhPJzUKcT7KSompsa/VD+baaMmMyUw4Saspi9tY7ldMEovaEXUNgmoWIgh5XO43YPCRRWyyu/aOA==
+X-Received: by 2002:a17:90a:a787:: with SMTP id f7mr2650269pjq.179.1631583658872;
+        Mon, 13 Sep 2021 18:40:58 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id 4sm8037615pjb.21.2021.09.13.18.40.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 18:47:38 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org, will@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, digetx@gmail.com
-Subject: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Date:   Mon, 13 Sep 2021 18:38:58 -0700
-Message-Id: <20210914013858.31192-7-nicoleotsuka@gmail.com>
+        Mon, 13 Sep 2021 18:40:58 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 0/3] mailbox: Add QCM2290 APCS IPC support
+Date:   Tue, 14 Sep 2021 09:40:47 +0800
+Message-Id: <20210914014050.28788-1-shawn.guo@linaro.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210914013858.31192-1-nicoleotsuka@gmail.com>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch dumps all active mapping entries from pagetable
-to a debugfs directory named "mappings".
+The first patch cleans up msm8994 type apcs_data, and the other two add
+QCM2290 APCS IPC support.
 
-Attaching an example:
+Shawn Guo (3):
+  mailbox: qcom-apcs-ipc: Consolidate msm8994 type apcs_data
+  dt-bindings: mailbox: qcom: Add QCM2290 APCS compatible
+  mailbox: qcom-apcs-ipc: Add QCM2290 APCS IPC support
 
-SWGROUP: hc
-as->id: 0
-as->attr: R|W|N
-as->pd_dma: 0x0000000080c03000
-{
-        [index: 1023] 0xf0080c3e (count: 2)
-        {
-                PTE RANGE      | ATTR | PHYS               | IOVA               | SIZE
-                [#1022, #1023] | 0x5  | 0x000000010bbf1000 | 0x00000000ffffe000 | 0x2000
-        }
-}
-Total PDE count: 1
-Total PTE count: 2
+ .../mailbox/qcom,apcs-kpss-global.yaml        |  1 +
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c       | 27 +++++--------------
+ 2 files changed, 7 insertions(+), 21 deletions(-)
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 145 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 145 insertions(+)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 68c34a4a0ecc..aac977e181f6 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -46,6 +46,7 @@ struct tegra_smmu {
- 	struct list_head list;
- 
- 	struct dentry *debugfs;
-+	struct dentry *debugfs_mappings;
- 
- 	struct iommu_device iommu;	/* IOMMU Core code handle */
- };
-@@ -153,6 +154,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu, unsigned long offset)
- 
- #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
- 				 SMMU_PDE_NONSECURE)
-+#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
-+				 SMMU_PTE_NONSECURE)
-+#define SMMU_PTE_ATTR_SHIFT	29
- 
- static unsigned int iova_pd_index(unsigned long iova)
- {
-@@ -164,6 +168,12 @@ static unsigned int iova_pt_index(unsigned long iova)
- 	return (iova >> SMMU_PTE_SHIFT) & (SMMU_NUM_PTE - 1);
- }
- 
-+static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
-+{
-+	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
-+	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-+}
-+
- static bool smmu_dma_addr_valid(struct tegra_smmu *smmu, dma_addr_t addr)
- {
- 	addr >>= 12;
-@@ -496,6 +506,8 @@ static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
- 	mutex_unlock(&smmu->lock);
- }
- 
-+static const struct file_operations tegra_smmu_debugfs_mappings_fops;
-+
- static void tegra_smmu_attach_as(struct tegra_smmu *smmu,
- 				 struct tegra_smmu_as *as,
- 				 unsigned int swgroup)
-@@ -517,6 +529,12 @@ static void tegra_smmu_attach_as(struct tegra_smmu *smmu,
- 			dev_warn(smmu->dev,
- 				 "overwriting group->as for swgroup: %s\n", swgrp->name);
- 		group->as = as;
-+
-+		if (smmu->debugfs_mappings)
-+			debugfs_create_file(group->swgrp->name, 0444,
-+					    smmu->debugfs_mappings, group,
-+					    &tegra_smmu_debugfs_mappings_fops);
-+
- 		break;
- 	}
- 
-@@ -541,6 +559,12 @@ static void tegra_smmu_detach_as(struct tegra_smmu *smmu,
- 		if (group->swgrp != swgrp)
- 			continue;
- 		group->as = NULL;
-+
-+		if (smmu->debugfs_mappings) {
-+			d = debugfs_lookup(group->swgrp->name, smmu->debugfs_mappings);
-+			debugfs_remove(d);
-+		}
-+
- 		break;
- 	}
- 
-@@ -1124,6 +1148,125 @@ static int tegra_smmu_clients_show(struct seq_file *s, void *data)
- 
- DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
- 
-+static int tegra_smmu_debugfs_mappings_show(struct seq_file *s, void *data)
-+{
-+	struct tegra_smmu_group *group = s->private;
-+	const struct tegra_smmu_swgroup *swgrp;
-+	struct tegra_smmu_as *as;
-+	struct tegra_smmu *smmu;
-+	unsigned int pd_index;
-+	unsigned int pt_index;
-+	unsigned long flags;
-+	u64 pte_count = 0;
-+	u32 pde_count = 0;
-+	u32 *pd, val;
-+
-+	if (!group || !group->as || !group->swgrp)
-+		return 0;
-+
-+	swgrp = group->swgrp;
-+	smmu = group->smmu;
-+	as = group->as;
-+
-+	mutex_lock(&smmu->lock);
-+
-+	val = smmu_readl(smmu, swgrp->reg) & SMMU_ASID_ENABLE;
-+	if (!val)
-+		goto unlock;
-+
-+	pd = page_address(as->pd);
-+	if (!pd)
-+		goto unlock;
-+
-+	seq_printf(s, "\nSWGROUP: %s\n", swgrp->name);
-+	seq_printf(s, "as->id: %d\nas->attr: %c|%c|%s\nas->pd_dma: %pad\n", as->id,
-+		   as->attr & SMMU_PD_READABLE ? 'R' : '-',
-+		   as->attr & SMMU_PD_WRITABLE ? 'W' : '-',
-+		   as->attr & SMMU_PD_NONSECURE ? "NS" : "S",
-+		   &as->pd_dma);
-+	seq_puts(s, "{\n");
-+
-+	spin_lock_irqsave(&as->lock, flags);
-+
-+	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-+		struct page *pt_page;
-+		unsigned int i;
-+		u32 *addr;
-+
-+		/* An empty PDE should not have a pte use count */
-+		WARN_ON_ONCE(!pd[pd_index] ^ !as->count[pd_index]);
-+
-+		/* Skip this empty PDE */
-+		if (!pd[pd_index])
-+			continue;
-+
-+		pde_count++;
-+		pte_count += as->count[pd_index];
-+		seq_printf(s, "\t[index: %u] 0x%x (count: %d)\n",
-+			   pd_index, pd[pd_index], as->count[pd_index]);
-+		pt_page = as->pts[pd_index];
-+		addr = page_address(pt_page);
-+
-+		seq_puts(s, "\t{\n");
-+		seq_printf(s, "\t\t%-14s | %-4s | %-10s%s | %-10s%s | %-11s\n",
-+			   "PTE RANGE", "ATTR",
-+			   "PHYS", sizeof(phys_addr_t) > 4 ? "        " : "",
-+			   "IOVA", sizeof(dma_addr_t)  > 4 ? "        " : "",
-+			   "SIZE");
-+		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index += i) {
-+			size_t size = SMMU_SIZE_PT;
-+			dma_addr_t iova;
-+			phys_addr_t pa;
-+
-+			i = 1;
-+
-+			if (!addr[pt_index])
-+				continue;
-+
-+			iova = pd_pt_index_iova(pd_index, pt_index);
-+			pa = SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR);
-+
-+			/* Check contiguous mappings and increase size */
-+			while (pt_index + i < SMMU_NUM_PTE) {
-+				dma_addr_t next_iova;
-+				phys_addr_t next_pa;
-+
-+				if (!addr[pt_index + i])
-+					break;
-+
-+				next_iova = pd_pt_index_iova(pd_index, pt_index + i);
-+				next_pa = SMMU_PFN_PHYS(addr[pt_index + i] & ~SMMU_PTE_ATTR);
-+
-+				/* Break at the end of a linear mapping */
-+				if ((next_iova - iova != SMMU_SIZE_PT * i) ||
-+				    (next_pa - pa != SMMU_SIZE_PT * i))
-+					break;
-+
-+				i++;
-+			}
-+
-+			seq_printf(s, "\t\t[#%-4u, #%-4u] | 0x%-2x | %pa | %pad | 0x%-9zx\n",
-+				   pt_index, pt_index + i - 1,
-+				   addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
-+				   &pa, &iova, size * i);
-+		}
-+		seq_puts(s, "\t}\n");
-+	}
-+
-+	spin_unlock_irqrestore(&as->lock, flags);
-+
-+	seq_puts(s, "}\n");
-+	seq_printf(s, "Total PDE count: %u\n", pde_count);
-+	seq_printf(s, "Total PTE count: %llu\n", pte_count);
-+
-+unlock:
-+	mutex_unlock(&smmu->lock);
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(tegra_smmu_debugfs_mappings);
-+
- static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- {
- 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
-@@ -1134,6 +1277,8 @@ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- 			    &tegra_smmu_swgroups_fops);
- 	debugfs_create_file("clients", S_IRUGO, smmu->debugfs, smmu,
- 			    &tegra_smmu_clients_fops);
-+
-+	smmu->debugfs_mappings = debugfs_create_dir("mappings", smmu->debugfs);
- }
- 
- static void tegra_smmu_debugfs_exit(struct tegra_smmu *smmu)
 -- 
 2.17.1
 
