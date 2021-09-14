@@ -2,232 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B4940B73D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0FE40B73F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhINSzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:55:16 -0400
-Received: from mga17.intel.com ([192.55.52.151]:32751 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230012AbhINSzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:55:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="202275439"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="202275439"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:53:53 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="552654619"
-Received: from lveltman-mobl.ger.corp.intel.com (HELO localhost) ([10.251.216.6])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:53:47 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 03/15] drm/edid: Allow querying/working with the panel ID from the EDID
-In-Reply-To: <20210909135838.v4.3.I4a672175ba1894294d91d3dbd51da11a8239cf4a@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210909210032.465570-1-dianders@chromium.org> <20210909135838.v4.3.I4a672175ba1894294d91d3dbd51da11a8239cf4a@changeid>
-Date:   Tue, 14 Sep 2021 21:53:44 +0300
-Message-ID: <874kan0z0n.fsf@intel.com>
+        id S232168AbhINSz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231758AbhINSzZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 14:55:25 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1CCC061574;
+        Tue, 14 Sep 2021 11:54:07 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 196-20020a1c04cd000000b002fa489ffe1fso2920081wme.4;
+        Tue, 14 Sep 2021 11:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LsGTlaQzTWws2sNOx8koEluc489AlRNu3fvWDuevqFU=;
+        b=QVc3/txLV2Ypq7Ur83cuPCdQcMAy02DQbDR4wJl7fPZ+X1r+j7SBk5rx240v0CKkkQ
+         t52bG1Zp481ianOCpsH5MwGsORzo7MKKtYhQLj6LB9LMlkzYZdjGIlrdQk8a8nimgFur
+         DlyvPj20ZVrj1J+HRsD1HbZCp2YBRwtncC+hZNLHWMOoOXZkqeXTKd9J6phHnr4mqFW+
+         AvFRtggd1b/3vMKHIYNSpP6nw9Ss4TpGdKALEqeacaSQue9g14HqeR2MyoNHdnTHH/Dv
+         3/rR15fzZ+zLFxBGx8Zd011ST4Wc7Wwqf0AmmL/+1EIXwltz6owhz5BJ+x13HpqZgn/T
+         NukA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LsGTlaQzTWws2sNOx8koEluc489AlRNu3fvWDuevqFU=;
+        b=nG6VuKp7yDESddiPGUBxWsvGDyjM3QMumxsPwg9Wq3F/zKcMZImbtF9sqOqB2GKXpc
+         S6xuU2+Aa3Wz02byswF8ugXim/JpTYW2FGBU7snRWfwBjA9uB6nenRavwsDjkF/5zS3T
+         hU4mMlr/FOdeabrlS66lIeb+4s42M4tP/HGhgtV1UyXnIIGLv5j8wOF8zreP8yXByCsI
+         yvN1brLg81QVtYfOeJeMIHaflzJszoHKDp8iczHBq1rCV6P0zljV//KfFj2NZcTdH5RI
+         8CaO3+HuBmJomPuOja3qfkwi6ghHP0PRpY2q+b5FCqs/6h6KfwG3iSeImA7/hd+meWAm
+         oQbw==
+X-Gm-Message-State: AOAM531EmaoblvGCmGz5yQonPup34QnWPH3rrJ+AqRKb1JUeLOZr0z8R
+        d939lRChw7v8Bu7qJvf+qok=
+X-Google-Smtp-Source: ABdhPJwHiJhAFykgznPlkoZAvI7X8xEz0hNGNmO01KJ5RCQ1hoHLCclhAriZ0RE1jLQWVj6eDah81A==
+X-Received: by 2002:a1c:f00a:: with SMTP id a10mr561589wmb.112.1631645646066;
+        Tue, 14 Sep 2021 11:54:06 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id c7sm2087877wmq.13.2021.09.14.11.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 11:54:05 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 19:54:03 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/144] 5.4.146-rc1 review
+Message-ID: <YUDvy0NN8zuZxSEw@debian>
+References: <20210913131047.974309396@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913131047.974309396@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 09 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
-> EDIDs have 32-bits worth of data which is intended to be used to
-> uniquely identify the make/model of a panel. This has historically
-> been used only internally in the EDID processing code to identify
-> quirks with panels.
->
-> We'd like to use this panel ID in panel drivers to identify which
-> panel is hooked up and from that information figure out power sequence
-> timings. Let's expose this information from the EDID code and also
-> allow it to be accessed early, before a connector has been created.
->
-> To make matching in the panel drivers code easier, we'll return the
-> panel ID as a 32-bit value. We'll provide some functions for
-> converting this value back and forth to something more human readable.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Hi Greg,
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+On Mon, Sep 13, 2021 at 03:13:01PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.146 release.
+> There are 144 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
 
-> ---
->
-> Changes in v4:
-> - Don't refer to "panel-simple" in commit message.
-> - decode_edid_id() => drm_edid_decode_panel_id()
-> - drm_do_get_edid_blk0() => drm_do_get_edid_base_block()
-> - drm_get_panel_id() => drm_edid_get_panel_id()
-> - encode_edid_id() => drm_edid_encode_panel_id()
-> - split panel id extraction out to its own function.
->
-> Changes in v3:
-> - Decode hex product ID w/ same endianness as everyone else.
->
->  drivers/gpu/drm/drm_edid.c | 67 ++++++++++++++++++++++++++++++++++++++
->  include/drm/drm_edid.h     | 47 ++++++++++++++++++++++++++
->  2 files changed, 114 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 520fe1391769..f84e0dd264f4 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -2087,6 +2087,73 @@ struct edid *drm_get_edid(struct drm_connector *connector,
->  }
->  EXPORT_SYMBOL(drm_get_edid);
->  
-> +static u32 edid_extract_panel_id(const struct edid *edid)
-> +{
-> +	/*
-> +	 * In theory we could try to de-obfuscate this like edid_get_quirks()
-> +	 * does, but it's easier to just deal with a 32-bit number since then
-> +	 * it can be compared with "==".
-> +	 *
-> +	 * NOTE that we deal with endianness differently for the top half
-> +	 * of this ID than for the bottom half. The bottom half (the product
-> +	 * id) gets decoded as little endian by the EDID_PRODUCT_ID because
-> +	 * that's how everyone seems to interpret it. The top half (the mfg_id)
-> +	 * gets stored as big endian because that makes
-> +	 * drm_edid_encode_panel_id() and drm_edid_decode_panel_id() easier
-> +	 * to write (it's easier to extract the ASCII). It doesn't really
-> +	 * matter, though, as long as the number here is unique.
-> +	 */
-> +	return (u32)edid->mfg_id[0] << 24   |
-> +	       (u32)edid->mfg_id[1] << 16   |
-> +	       (u32)EDID_PRODUCT_ID(edid);
-> +}
-> +
-> +/**
-> + * drm_edid_get_panel_id - Get a panel's ID through DDC
-> + * @adapter: I2C adapter to use for DDC
-> + *
-> + * This function reads the first block of the EDID of a panel and (assuming
-> + * that the EDID is valid) extracts the ID out of it. The ID is a 32-bit value
-> + * (16 bits of manufacturer ID and 16 bits of per-manufacturer ID) that's
-> + * supposed to be different for each different modem of panel.
-> + *
-> + * This function is intended to be used during early probing on devices where
-> + * more than one panel might be present. Because of its intended use it must
-> + * assume that the EDID of the panel is correct, at least as far as the ID
-> + * is concerned (in other words, we don't process any overrides here).
-> + *
-> + * NOTE: it's expected that this function and drm_do_get_edid() will both
-> + * be read the EDID, but there is no caching between them. Since we're only
-> + * reading the first block, hopefully this extra overhead won't be too big.
-> + *
-> + * Return: A 32-bit ID that should be different for each make/model of panel.
-> + *         See the functions drm_edid_encode_panel_id() and
-> + *         drm_edid_decode_panel_id() for some details on the structure of this
-> + *         ID.
-> + */
-> +
-> +u32 drm_edid_get_panel_id(struct i2c_adapter *adapter)
-> +{
-> +	struct edid *edid;
-> +	u32 panel_id;
-> +
-> +	edid = drm_do_get_edid_base_block(drm_do_probe_ddc_edid, adapter,
-> +					  NULL, NULL);
-> +
-> +	/*
-> +	 * There are no manufacturer IDs of 0, so if there is a problem reading
-> +	 * the EDID then we'll just return 0.
-> +	 */
-> +	if (IS_ERR_OR_NULL(edid))
-> +		return 0;
-> +
-> +	panel_id = edid_extract_panel_id(edid);
-> +	kfree(edid);
-> +
-> +	return panel_id;
-> +}
-> +EXPORT_SYMBOL(drm_edid_get_panel_id);
-> +
->  /**
->   * drm_get_edid_switcheroo - get EDID data for a vga_switcheroo output
->   * @connector: connector we're probing
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index deccfd39e6db..4d17cd04fff7 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -508,6 +508,52 @@ static inline u8 drm_eld_get_conn_type(const uint8_t *eld)
->  	return eld[DRM_ELD_SAD_COUNT_CONN_TYPE] & DRM_ELD_CONN_TYPE_MASK;
->  }
->  
-> +/**
-> + * drm_edid_encode_panel_id - Encode an ID for matching against drm_edid_get_panel_id()
-> + * @vend_chr_0: First character of the vendor string.
-> + * @vend_chr_2: Second character of the vendor string.
-> + * @vend_chr_3: Third character of the vendor string.
-> + * @product_id: The 16-bit product ID.
-> + *
-> + * This is a macro so that it can be calculated at compile time and used
-> + * as an initializer.
-> + *
-> + * For instance:
-> + *   drm_edid_encode_panel_id('B', 'O', 'E', 0x2d08) => 0x09e52d08
-> + *
-> + * Return: a 32-bit ID per panel.
-> + */
-> +#define drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, product_id) \
-> +	((((u32)(vend_chr_0) - '@') & 0x1f) << 26 | \
-> +	 (((u32)(vend_chr_1) - '@') & 0x1f) << 21 | \
-> +	 (((u32)(vend_chr_2) - '@') & 0x1f) << 16 | \
-> +	 ((product_id) & 0xffff))
-> +
-> +/**
-> + * drm_edid_decode_panel_id - Decode a panel ID from drm_edid_encode_panel_id()
-> + * @panel_id: The panel ID to decode.
-> + * @vend: A 4-byte buffer to store the 3-letter vendor string plus a '\0'
-> + *	  termination
-> + * @product_id: The product ID will be returned here.
-> + *
-> + * For instance, after:
-> + *   drm_edid_decode_panel_id(0x09e52d08, vend, &product_id)
-> + * These will be true:
-> + *   vend[0] = 'B'
-> + *   vend[1] = 'O'
-> + *   vend[2] = 'E'
-> + *   vend[3] = '\0'
-> + *   product_id = 0x2d08
-> + */
-> +static inline void drm_edid_decode_panel_id(u32 panel_id, char vend[4], u16 *product_id)
-> +{
-> +	*product_id = (u16)(panel_id & 0xffff);
-> +	vend[0] = '@' + ((panel_id >> 26) & 0x1f);
-> +	vend[1] = '@' + ((panel_id >> 21) & 0x1f);
-> +	vend[2] = '@' + ((panel_id >> 16) & 0x1f);
-> +	vend[3] = '\0';
-> +}
-> +
->  bool drm_probe_ddc(struct i2c_adapter *adapter);
->  struct edid *drm_do_get_edid(struct drm_connector *connector,
->  	int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
-> @@ -515,6 +561,7 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->  	void *data);
->  struct edid *drm_get_edid(struct drm_connector *connector,
->  			  struct i2c_adapter *adapter);
-> +u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
->  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
->  				     struct i2c_adapter *adapter);
->  struct edid *drm_edid_duplicate(const struct edid *edid);
+Build test:
+mips (gcc version 11.1.1 20210816): 65 configs -> no new failure
+arm (gcc version 11.1.1 20210816): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/133
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
