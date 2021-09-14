@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7197540B712
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105FE40B714
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhINSmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        id S232113AbhINSmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:42:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhINSmh (ORCPT
+        with ESMTP id S231335AbhINSmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:42:37 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F522C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:19 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id r3so481410ljc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:19 -0700 (PDT)
+        Tue, 14 Sep 2021 14:42:38 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05721C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:21 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id v2so4936361plp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5VMpWRXt0jQuCEr+r0BM8kFoy1D29x31MLf3bnRKZqo=;
-        b=b11SCPjz52oi1yBAOvY57UeyiD8/Ms3ExnET43X/lvFkWoqblZlZUbvHg0+wdNXdFN
-         CtUHC+3qh+hX78zPevGjyIuPDcLVquMk4uXzdJJaQHd+HiaK71IWmxnnp0vIYzGq1JMX
-         AtyJpWb0WCFKDqWlXiWidZUM93Gm0wERsRan+CRsWEpPTJ9gVdeJHf48KYpe8fuEB2uf
-         es8EK1+mpdeMIsqsv4hT+cxjb5HUEsmqU3MV9yeFjEO/Yl4q0xv0YMtOugxPPSgOpVHw
-         Gg1nTijVelp3vnDjGo4pu03Hx1GOjxaum78pSG6eY99ouhpbcGSjX0tb3jl/DYEgF1Gn
-         lV6A==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CZGAmbkitZy1k/EbPG4VZaALR8mUJkwDAJ+dhwnEfWA=;
+        b=g0XsY+ZsxAS62v5OORPhKedEFaUPok0532gCaf35nYaW3Xo3uVIUpkYTkh/m8MKQX2
+         JHSZRACscofgKlXYLwjExoXqvFEnzJNwUIWqwcOpMXquEUg8MTGk/vSM+81+7UgkGEu0
+         Uky5wXvnhZFp+7zM0zZavFzxVBblL0+3EYUF1DYEd4bYo4BChp9xJj1Nn6fd2LP7AX+g
+         2xFSKik3Fudqeki7Latt8irjFQXjYitD10ov4ymGe/ZENZ+Q/ffw/fu/rgq2DFSj72rx
+         EVfrofp0tBcb6+a+Ok77h9Cf3ebzU3GILYloXI5gAZLvT6cidT4VOOOyKHZArylBqZWV
+         LiaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5VMpWRXt0jQuCEr+r0BM8kFoy1D29x31MLf3bnRKZqo=;
-        b=MNK9uFjsoINjipNnIAXet8lV3/SYJK8yD/PiW6BHb0SNGJ8r/FUSfB3axe9hI1g/MF
-         1RxU69M/gz5RrvYZ2FxRSxZ4e6I2r0vXpu++0puiIs7nast61F9SFsvqXbwoopgc+tso
-         +Sbh+VlSiufrnoMADDgrdM8y/8kKvGqUs4pCONPC8ckt9+dnE+Q3wl5pB1keyOgsJcri
-         hj1g6GCHAK6jqpZL9E2cHNJZ8FU18teO9V/Yn5H3faPhoB1pNnqkrbTPu3x2WxaODJ2C
-         AQ5SsYIcqHoCj3EKmxA8OhseWqcuduVSknZRZIoWRlwEWvM6rlMPVh4RsF5049COHiNz
-         vyog==
-X-Gm-Message-State: AOAM533JusP2Qn4ciEVe9SX8wY0Vqm/gzXqSOrrdx9OaZ/1By0G9UZrH
-        JJ/L42MyP7QyOb8bBWS/BuPh9Ir2MwaaZdoaQRr/3A==
-X-Google-Smtp-Source: ABdhPJyJFg7U0SySGwcX4hh4wxl9aHZdQMr5YsM70bRBO1qYAVvBNFSlNsuAYAWsKhw+uCtIo3ojWd6+04ZNE3bd/P4=
-X-Received: by 2002:a2e:8504:: with SMTP id j4mr16617853lji.352.1631644877772;
- Tue, 14 Sep 2021 11:41:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CZGAmbkitZy1k/EbPG4VZaALR8mUJkwDAJ+dhwnEfWA=;
+        b=26/XRWQ8p2E5sTQrVhPVB2ccmOqoPsnb/g9NKWA34BTRzjKZva8SaRQxx/ekKLBXPQ
+         BGKvVI6VrcSk8/9sM3T0k5+lkgy31R7yIItEfeCl2I+9YDCTiIdAKNMpmt6hO/lq2lAD
+         Q7Yv4t6Rei16Z7hAV5AUujIUguZLF+rTBC52OH1/AzqkBjKbyeQPQxHfj4ZdmBaRWTK2
+         Xhogsbq6a5Cf2acwodt4ZXInqUNt3AwqhLUlkquiHeH8Y8FqxvVqZSAvja0PaInfPpar
+         hSE7LaR+03gpv4DV1RlYPpR8nGIHhL5wc9B35uECm2TuOo3iJSFjKg386eNPZwLp0Snd
+         /jWA==
+X-Gm-Message-State: AOAM530yjriWoy2BUzgLD5lR5R6BHZQqiDkAaRONY0yG0toYmSOAiymh
+        H2E6QTjvujHGuWDrafDvtdc3EA==
+X-Google-Smtp-Source: ABdhPJxutQ1GMW+J5gbp3HNJ6JRYL68/SsneQ7S3VEv4paQ8J4o2b7kmJu3ktKmvsaWglWEAw6Kbkg==
+X-Received: by 2002:a17:902:c948:b0:13a:345c:917c with SMTP id i8-20020a170902c94800b0013a345c917cmr16428275pla.61.1631644880303;
+        Tue, 14 Sep 2021 11:41:20 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id 23sm12220414pgk.89.2021.09.14.11.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 11:41:19 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 18:41:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Tempelman <natet@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for
+ SEV-ES
+Message-ID: <YUDsy4W0/FeIEJDr@google.com>
+References: <20210914171551.3223715-1-pgonda@google.com>
+ <YUDcvRB3/QOXSi8H@google.com>
+ <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
- <20210513132051.31465-1-ggherdovich@suse.cz> <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
- <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz> <CAAYoRsX0xJf1mm1a_YUCzDy86r8q4QE98iVtS1AMLaUx+KTgQQ@mail.gmail.com>
- <CAAYoRsXK79PspEUh9pqgj2OGQnxQONkEeK-7af3=5frBzAqULQ@mail.gmail.com>
- <2a1b000cd101737400f6320ef18c0143d3a5145b.camel@linux.intel.com>
- <CAAYoRsVeMCivVBp-q_9N23BDOVvkc8ZLS3mubnz+4TREZ9Cz_A@mail.gmail.com>
- <7abae13c235d74f4789cd93c6c6b0cbf69df243d.camel@linux.intel.com> <CAAYoRsVd4uU7sofcvYWd__evKJTf7HE5mi2ZVDjAYNYWXS3mzQ@mail.gmail.com>
-In-Reply-To: <CAAYoRsVd4uU7sofcvYWd__evKJTf7HE5mi2ZVDjAYNYWXS3mzQ@mail.gmail.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Tue, 14 Sep 2021 11:41:07 -0700
-Message-ID: <CAAYoRsUnuNL+orjeXpxEE4fyknGGk3Kngk6Gt+hoCHxLYg9D6A@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in
- no-HWP mode
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Giovanni Gherdovich <ggherdovich@suse.cz>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:43 PM Doug Smythies <dsmythies@telus.net> wrote:
-> On Tue, Sep 7, 2021 at 7:04 PM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> > On Tue, 2021-09-07 at 13:16 -0700, Doug Smythies wrote:
-> > > On Tue, Sep 7, 2021 at 9:01 AM Srinivas Pandruvada
-> > > <srinivas.pandruvada@linux.intel.com> wrote:
-> > > > On Tue, 2021-09-07 at 08:45 -0700, Doug Smythies wrote:
-> > > > >
-> > > > > Recent ASUS BIOS updates have changed the default system
-> > > > > response for this old thread, rendering "intel_pstate=3Dno_hwp"
-> > > > > useless.
-> > > > >
-> > > > > It also raises a question: If BIOS has forced HWP, then how do we
-> > > > > prevent the acpi-cpufreq driver from being used? Read on.
-> > > >
-> > > > Does BIOS has option to enable Intel speed shift with no legacy
-> > > > support?
-> > > > Then this option will not populate ACPI _PSS table.
-> > >
-> > > The option is there no matter what.
-> > > I have tried every variation of legacy or no legacy that
-> > > I can find. Currently:
-> > > Current boot mode:   UEFI Firmware mode
-> > > SecureBoot:          disabled
-> > >
-> > > >
-> > > > >
-> > > > > On Fri, May 14, 2021 at 3:12 PM Doug Smythies <
-> > > > > dsmythies@telus.net>
-> > > > > wrote:
-> > > > > >
-> > > > > > On Fri, May 14, 2021 at 1:33 PM Giovanni Gherdovich <
-> > > > > > ggherdovich@suse.cz> wrote:
-> > > > > > > On Fri, 2021-05-14 at 08:31 -0700, Doug Smythies wrote:
-> > > > > ...
-> > > > > > >
-> > > ...
-> > > > > Previous correspondence was with BIOS version 1003. There have
-> > > > > been 3 BIOS
-> > > > > releases since then (at least that I know of), 2103, 2201, 2301,
-> > > > > and all of them have changed the behaviour
-> > > > > of the "Auto" setting for Intel Speed Shift
-> > > > > Technology BIOS setting, forcing it on upon transfer of control
-> > > > > to the OS.
-> > > > >
-> > > > > Where with "intel_pstate=3Dno_hwp" one used to get 0 for
-> > > > > MSR_PM_ENABLE
-> > > > > (0x770) they now get 1.
-> > > >
-> > > > So they are forcing Out of band OOB mode.
-> > > > Does bit 8 or 18 in MSR 0x1aa is set?
-> > >
-> > > No.
+-stable, for giggles
+
+On Tue, Sep 14, 2021, Peter Gonda wrote:
+> On Tue, Sep 14, 2021 at 11:32 AM Sean Christopherson <seanjc@google.com> wrote:
 > >
-> > So there is no legacy path. I think you are working with their support.
->
-> Yes, for almost a month now, with very little to show for it.
-> We'll see what happens. I did get a message this afternoon:
->
-> "Our GTSD is debugging the issue,.
-> When they have the result, they will directly update you."
->
-> > In HWP mode does setting scaling min/max frequency has any impact?
->
-> No. I wouldn't have expected it to, as the system is confused as to who
-> is in charge. The acpi-cpufreq driver thinks it is in charge, but HWP
-> thinks it is.
->
-> The intel_pstate driver works fine.
+> > On Tue, Sep 14, 2021, Peter Gonda wrote:
+> > > Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
+> > > VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
+> > > error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
+> > > SEV-ES guest.
+> >
+> > What happens if userspace does KVM_CAP_VM_COPY_ENC_CONTEXT_FROM before the source
+> > has created vCPUs, i.e. before it has done SEV_LAUNCH_FINISH?
+> 
+> That's not enough. If you wanted to be able to mirror SEV-ES you'd
+> also need to call LAUNCH_UPDATE_VMSA on the mirror's vCPUs before
+> SEV_LAUNCH_FINISH. That is do-able but I was writing a small change to
+> fix this bug. If mirroring of SEV-ES is wanted it's a much bigger
+> change.
 
-Hi Srinivas,
+Is it doable without KVM updates?  If so, then outright rejection may not be the
+correct behavior.
 
-I heard back from ASUS, and they now confirm that they
-did change the behaviour of the "Auto" setting in BIOS
-version 2103. They say they did it to fix an issue with
-ITB3.0, which I assume means Intel Turbo Boost 3.0.
-I'll copy and paste the relevant portion of the email
-below:
+> > Might be worth noting that the destination cannot be an SEV guest, and therefore
+> > can't be an SEV-ES guest either.
+> 
+> sev_guest() implies sev_es_guest() so I think this case is covered.
 
-" I am in direct contact with the engineers.
-Here is the result from their test:
+Yes, I was suggesting calling that out in the changelog so that readers/reviewers
+don't worry about that case.
 
-In BIOS 2103,the =E2=80=9CAuto=E2=80=9D setting transfers control to
-the OS with HWP available and enabled.
+> > Cc: stable@vger.kernel.org
 
-This is side effect to fix ITBM3.0 not work after HWP enabled.
-We can remove this patch, but ITBM3.0 will not work when HWP enabled"
+> Oops. I'll update in the V2 if needed. Added to this thread for now.
 
-Are you familiar with this issue?
-
-I want the original behaviour of the "Auto" setting, as it is
-the only way for control to go to the OS with HWP
-available but disabled.
-
-... Doug
+FWIW, you don't actually need to Cc stable, just including it in the changelog is
+sufficient as the script automagic will pick it up when it hits Linus' tree.
