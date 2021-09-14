@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FC140B353
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B9040B35B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbhINPnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbhINPnd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:43:33 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020CEC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:42:16 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id t20so9160528pju.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uqrZf2RpvTXlUmbRyI2QxPTRCT62GWMUqprCb4O9iv0=;
-        b=R68nkCIBgi4tzTf2MsQxydUGK5qmIiOepWBVPDzhpnm4nX8LXu58vXbtjzmF+E8byt
-         8XTqcGe917Vrbpjr71mFbX1tJFns3YkzB9/rGD3J7a5+FdTugj8ONEIiiO6qXJqoBHX9
-         lMoFuKn75vZN3Txje64yeqHoFnlU9Ukbjn3YJ0nvUIaMymTN1Hntmmw4vXFkudk/3fkl
-         lOSrmvIwupDazVsHuXC7BSP/kradpQEU3rS2If8rC/6nrKUQTBunjN3/mwe1kRBUhr+4
-         U9p7my/NY7OVuJXjqhH1E0g+jrvxwSqrNUUTAUKeqD29Tq0n8/de8TeKkBYA+i3hzDwD
-         16yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uqrZf2RpvTXlUmbRyI2QxPTRCT62GWMUqprCb4O9iv0=;
-        b=sETs97dJL2guP19utavQZIWV7UhNJ2Mm8sb8x1QMQ/ryPRvBsXdHHtMIfVKgCI741A
-         ZmzAcRXxsH8sVW+6iaHrRbfMYNm4AAlYnZX2ZI3bJm3gz4SQgDXSvRtK/njYQpubgOyk
-         zl8YXk1w/C0xbYGdCM+kODHGcT3vg9oO85DtsQPTd0jZiLmrp3z3GqMdluw/E+nUb9+D
-         8ZxDvnyGftCD/WnwbOE/859j7HmLkZIGbWQ/bIw8CSxfrEgcGzcwShDi/PkC8eiqRXvW
-         GprnDY/JiCB9RTVLQp3JuZn4gifRChDx3XeCqk7pEhBK02qfmBsdKwbYkkJY5yu9nq9q
-         6/UA==
-X-Gm-Message-State: AOAM533SUoqiIgPmmYTcHse/6kZCz2neuBuD6XI2D1CcbJtCsXvoMlId
-        9GhnWFA0EwhGr9mCB/UlpLN87Jwc6Bmthlgs85CkXQ==
-X-Google-Smtp-Source: ABdhPJwdSVBKoaQKVJDayqeNTdAmPJTaWf0sE3199v0xfH37WlYDE5QvLJk18AFTt9/gOMFZnUXlAkZMmBQ27SCKhmI=
-X-Received: by 2002:a17:902:e80f:b0:13b:721d:f750 with SMTP id
- u15-20020a170902e80f00b0013b721df750mr15580149plg.18.1631634135572; Tue, 14
- Sep 2021 08:42:15 -0700 (PDT)
+        id S235026AbhINPoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234946AbhINPoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:44:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4502861165;
+        Tue, 14 Sep 2021 15:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631634172;
+        bh=mvuoWRdgyktEZkP8N46MKfVzy+eYPbk3NccSIQmsP8g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gK0FQ0PeB1KGKVjpD5I41SxP9q8BFZaSC+H7vWUQc2cIT20MSm9xvhKv6pyt0mNTd
+         6O533Ly5bVq86kr0pBEQ/vIPu1uqN9VDhd+B4VIzfvT/ppnoIfc6IJmyL4RW0INh0K
+         FlsnFgNG6A1fytjL7XSqHPZmIrxLvcUKqq+Sqh0H/nMor/MViwxnn06YitMP3yezWQ
+         TN3ANOdhdt6yxekfuAyXroQuvKHGtC49QVWow6crQ/PnKtr2phSkMBAwIhuKJxJnkt
+         ElPTmVrMq8iJhIKPaIy3OAgW8thjy28PYrwZiOODliPKmPIyHEBUoOWT6e1H5UxDRM
+         WVqvdiswrtBhQ==
+Received: by mail-ot1-f41.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso19077932ots.5;
+        Tue, 14 Sep 2021 08:42:52 -0700 (PDT)
+X-Gm-Message-State: AOAM533N2FkzVXKwB8A96KxdL0CAW4ZE8iIt0IAZ7oyqYf8CmIYv3Xon
+        /866c/X/ABpGVtOOSuJfCADoV16Sq1BtmgzkbJk=
+X-Google-Smtp-Source: ABdhPJwx57mZePF/+fKNrTKtnKV+7kzFgjzys0SKRPzR4omYEyny9bMvp54Zq3YK48l3ZGnV9SP3mhoLYT9teXG8qeY=
+X-Received: by 2002:a9d:200b:: with SMTP id n11mr15190375ota.30.1631634171520;
+ Tue, 14 Sep 2021 08:42:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913223339.435347-1-sashal@kernel.org> <20210913223339.435347-4-sashal@kernel.org>
-In-Reply-To: <20210913223339.435347-4-sashal@kernel.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 14 Sep 2021 08:42:04 -0700
-Message-ID: <CAPcyv4i5OHv2wHTO1Pdjz+qzAAWEha-7HdDdt42VyO_FasLSEA@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.14 04/25] cxl/pci: Introduce cdevm_file_operations
-To:     Sasha Levin <sashal@kernel.org>
+References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-2-ardb@kernel.org>
+ <CAHk-=whkCzP-wyZ08r9RDJRx9cbANVHy-jy=vJAGTkSbXm50iA@mail.gmail.com>
+In-Reply-To: <CAHk-=whkCzP-wyZ08r9RDJRx9cbANVHy-jy=vJAGTkSbXm50iA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 14 Sep 2021 17:42:40 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHK74XKWWs4C9zckOZsJP4cD+=B8gMx8QoohYVN61CJ-g@mail.gmail.com>
+Message-ID: <CAMj1kXHK74XKWWs4C9zckOZsJP4cD+=B8gMx8QoohYVN61CJ-g@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/8] arm64: add CPU field to struct thread_info
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-cxl@vger.kernel.org
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 3:33 PM Sasha Levin <sashal@kernel.org> wrote:
+On Tue, 14 Sept 2021 at 17:41, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> From: Dan Williams <dan.j.williams@intel.com>
+> On Tue, Sep 14, 2021 at 5:10 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > The CPU field will be moved back into thread_info even when
+> > THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
+> > struct thread_info.
 >
-> [ Upstream commit 9cc238c7a526dba9ee8c210fa2828886fc65db66 ]
+> The series looks sane to me, but it strikes me that it's inconsistent
+> - here for arm64, you make it unconditional, but for the other
+> architectures you end up putting it inside a #ifdef CONFIG_SMP.
 >
-> In preparation for moving cxl_memdev allocation to the core, introduce
-> cdevm_file_operations to coordinate file operations shutdown relative to
-> driver data release.
+> Was there some reason for this odd behavior?
 >
-> The motivation for moving cxl_memdev allocation to the core (beyond
-> better file organization of sysfs attributes in core/ and drivers in
-> cxl/), is that device lifetime is longer than module lifetime. The cxl_pci
-> module should be free to come and go without needing to coordinate with
-> devices that need the text associated with cxl_memdev_release() to stay
-> resident. The move will fix a use after free bug when looping driver
-> load / unload with CONFIG_DEBUG_KOBJECT_RELEASE=y.
->
-> Another motivation for passing in file_operations to the core cxl_memdev
-> creation flow is to allow for alternate drivers, like unit test code, to
-> define their own ioctl backends.
 
-Hi Sasha,
-
-Please drop this. It's not a fix, it's just a reorganization for
-easing the addition of new features and capabilities.
+Yes. CONFIG_SMP is a 'def_bool y' on arm64.
