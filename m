@@ -2,146 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F7140B018
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9907D40B027
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhINOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:02:19 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:43871 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232682AbhINOCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:02:16 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H84kf3qLwz9sSh;
-        Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LUdiTfEngcWB; Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H84kf2vLqz9sSS;
-        Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 51B8F8B773;
-        Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Sfnj682Q6TWA; Tue, 14 Sep 2021 16:00:58 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.207])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9A23B8B763;
-        Tue, 14 Sep 2021 16:00:57 +0200 (CEST)
-Subject: Re: [PATCH RESEND v3 6/6] powerpc/signal: Use
- unsafe_copy_siginfo_to_user()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, hch@infradead.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <1718f38859d5366f82d5bef531f255cedf537b5d.1631537060.git.christophe.leroy@csgroup.eu>
- <2b179deba4fd4ec0868cdc48a0230dfa3aa5a22f.1631537060.git.christophe.leroy@csgroup.eu>
- <87h7eopixa.fsf@disp2133> <87y280o38q.fsf@disp2133>
- <96d06ad9-5a9b-b8c3-3c1d-ed8837091a60@csgroup.eu> <87ilz4mgts.fsf@disp2133>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <00226633-0a5a-bcca-0a2a-9bfd754e61a5@csgroup.eu>
-Date:   Tue, 14 Sep 2021 16:00:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233526AbhINODm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233416AbhINODj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:03:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F3BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:02:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ikIcpvvxpz3lHW8UImkJMnAPIGaYfFUZqIxswpaNdgQ=; b=aNJ7XWDgkm0L1CF1btO9FfvG1e
+        UBsNhuSzqGYkh8x+pslQAHRVA19nkv5D7TqtT5jJV9Sws1mKcNe4tjKlIFPiyXwJ9Nszj+Fj4pgAN
+        KLuA6NjFUz+QcX1J30hSNRRAkKfnttr8mDvCkq1xiWXn4VRYa9rL1P5q+Kc+s6md4qZMm88dzAgqw
+        vq7vlDpr/DgJ0k6MetIP0LsegF3omAcY3LUd5hArq8c9Ieiyy/gQNNmIxsf8MsiXOFU84CJeYiXhd
+        9+x7uoCB5oMiPUENtGOMPjB/nrdz5U/MCmw1G1MvzGrDWWB6jkJdsj/MgdDks2WkW3F15IIEgLzKS
+        yEiqXajw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQ8yc-00EiwU-Cr; Tue, 14 Sep 2021 14:00:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72FCC300129;
+        Tue, 14 Sep 2021 15:59:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5BE62200C6C6A; Tue, 14 Sep 2021 15:59:56 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 15:59:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 3/4] locking/rwbase: Fix rwbase_write_lock() vs
+ __rwbase_read_lock()
+Message-ID: <YUCq3L+u44NDieEJ@hirez.programming.kicks-ass.net>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.893845303@infradead.org>
+ <87k0jjeh2v.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <87ilz4mgts.fsf@disp2133>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0jjeh2v.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 13/09/2021 à 21:11, Eric W. Biederman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+On Tue, Sep 14, 2021 at 09:45:12AM +0200, Thomas Gleixner wrote:
+> On Thu, Sep 09 2021 at 12:59, Peter Zijlstra wrote:
 > 
->> Le 13/09/2021 à 18:21, Eric W. Biederman a écrit :
->>> ebiederm@xmission.com (Eric W. Biederman) writes:
->>>
->>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>>>
->>>>> Use unsafe_copy_siginfo_to_user() in order to do the copy
->>>>> within the user access block.
->>>>>
->>>>> On an mpc 8321 (book3s/32) the improvment is about 5% on a process
->>>>> sending a signal to itself.
->>>
->>> If you can't make function calls from an unsafe macro there is another
->>> way to handle this that doesn't require everything to be inline.
->>>
->>>   From a safety perspective it is probably even a better approach.
->>
->> Yes but that's exactly what I wanted to avoid for the native ppc32 case: this
->> double hop means useless pressure on the cache. The siginfo_t structure is 128
->> bytes large, that means 8 lines of cache on powerpc 8xx.
->>
->> But maybe it is acceptable to do that only for the compat case. Let me think
->> about it, it might be quite easy.
+> > Boqun noticed that the write-trylock sequence of load+set is broken in
+> > rwbase_write_lock()'s wait-loop since they're not both under the same
+> > wait_lock instance.
 > 
-> The places get_signal is called tend to be well known.  So I think we
-> are safe from a capacity standpoint.
+> Confused.
 > 
-> I am not certain it makes a difference in capacity as there is a high
-> probability that the stack was deeper recently than it is now which
-> suggests the cache blocks might already be in the cache.
+> lock(); A
 > 
-> My sense it is worth benchmarking before optimizing out the extra copy
-> like that.
+> for (; atomic_read(readers);) {
+>    ...
+>    unlock();
+>    ..
+>    lock(); B
+> }
 > 
-> On the extreme side there is simply building the entire sigframe on the
-> stack and then just calling it copy_to_user.  As the stack cache lines
-> are likely to be hot, and copy_to_user is quite well optimized
-> there is a real possibility that it is faster to build everything
-> on the kernel stack, and then copy it to the user space stack.
+> atomic_set();
+> unlock(); A or B
 > 
-> It is also possible that I am wrong and we may want to figure out how
-> far up we can push the conversion to the 32bit siginfo format.
-> 
-> If could move the work into collect_signal we could guarantee there
-> would be no extra work.  That would require adjusting the sigframe
-> generation code on all of the architectures.
-> 
-> There is a lot we can do but we need benchmarking to tell if it is
-> worth it.
-> 
+> The read/set is always in the same lock instance.
 
+I really did make a mess of things didn't I :-/ It was some intermediate
+state that was broken.
 
-Sure, I'm benchmarking all the work I have been doing on signal code 
-with the following simple app that I run with 'perf stat':
+How's this then?
 
-#include <stdlib.h>
-#include <signal.h>
+---
+Subject: locking/rwbase: Extract __rwbase_write_trylock()
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Thu, 09 Sep 2021 12:59:18 +0200
 
-void sigusr1(int sig) { }
+The code in rwbase_write_lock() is a little non-obvious vs the
+read+set 'trylock', extract the sequence into a helper function to
+clarify the code.
 
-int main(int argc, char **argv)
-{
-	int i = 100000;
+This also provides a single site to fix fast-path ordering.
 
-	signal(SIGUSR1, sigusr1);
-	for (;i--;)
-	raise(SIGUSR1);
-	exit(0);
-}
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/locking/rwbase_rt.c |   44 ++++++++++++++++++++++++++------------------
+ 1 file changed, 26 insertions(+), 18 deletions(-)
 
-
-On an mpc8321 a 32 bits powerpc with KUAP enabled (KUAP is equivalent of 
-x86 SMAP)
-
-Before changing copy_siginfo_to_user() to unsafe_copy_siginfo_to_user(), 
-'perf stat' reports 1983 msec (task-clock)
-
-After my change I get 1900 msec.
-
-With your approach I get 1930 msec, so we are loosing 36% of the benefit 
-of converting to the 'unsafe_' alternative.
-
-So I think it is worth it.
-
-Christophe
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -196,6 +196,19 @@ static inline void rwbase_write_downgrad
+ 	__rwbase_write_unlock(rwb, WRITER_BIAS - 1, flags);
+ }
+ 
++static inline bool __rwbase_write_trylock(struct rwbase_rt *rwb)
++{
++	/* Can do without CAS because we're serialized by wait_lock. */
++	lockdep_assert_held(&rwb->rtmutex.wait_lock);
++
++	if (!atomic_read(&rwb->readers)) {
++		atomic_set(&rwb->readers, WRITER_BIAS);
++		return 1;
++	}
++
++	return 0;
++}
++
+ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+ 				     unsigned int state)
+ {
+@@ -210,34 +223,30 @@ static int __sched rwbase_write_lock(str
+ 	atomic_sub(READER_BIAS, &rwb->readers);
+ 
+ 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+-	/*
+-	 * set_current_state() for rw_semaphore
+-	 * current_save_and_set_rtlock_wait_state() for rwlock
+-	 */
+-	rwbase_set_and_save_current_state(state);
++	if (__rwbase_write_trylock(rwb))
++		goto out_unlock;
+ 
+-	/* Block until all readers have left the critical section. */
+-	for (; atomic_read(&rwb->readers);) {
++	rwbase_set_and_save_current_state(state);
++	for (;;) {
+ 		/* Optimized out for rwlocks */
+ 		if (rwbase_signal_pending_state(state, current)) {
+ 			rwbase_restore_current_state();
+ 			__rwbase_write_unlock(rwb, 0, flags);
+ 			return -EINTR;
+ 		}
++
++		if (__rwbase_write_trylock(rwb))
++			break;
++
+ 		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
++		rwbase_schedule();
++		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+ 
+-		/*
+-		 * Schedule and wait for the readers to leave the critical
+-		 * section. The last reader leaving it wakes the waiter.
+-		 */
+-		if (atomic_read(&rwb->readers) != 0)
+-			rwbase_schedule();
+ 		set_current_state(state);
+-		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+ 	}
+-
+-	atomic_set(&rwb->readers, WRITER_BIAS);
+ 	rwbase_restore_current_state();
++
++out_unlock:
+ 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+ 	return 0;
+ }
+@@ -253,8 +262,7 @@ static inline int rwbase_write_trylock(s
+ 	atomic_sub(READER_BIAS, &rwb->readers);
+ 
+ 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+-	if (!atomic_read(&rwb->readers)) {
+-		atomic_set(&rwb->readers, WRITER_BIAS);
++	if (__rwbase_write_trylock(rwb)) {
+ 		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+ 		return 1;
+ 	}
