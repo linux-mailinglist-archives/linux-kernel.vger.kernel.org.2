@@ -2,69 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC0840B587
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D21440B58A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhINRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhINRBt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:01:49 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFE9C061574;
-        Tue, 14 Sep 2021 10:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=MIME-Version:Content-Transfer-Encoding:Content-Type:References
-        :In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Vukq9aLRlDIuEgIBvRl1XztdbowlBl/E9LZtKyBLPPE=; b=p5Hb/m/7QgkQVw419B/zj4aOSU
-        fe9opCRint4uSYCmipXeH+7Cw30C7eRg0qO2d6/zxbaguDY5QKhKAYOKN5buZBCmRBojCl5cpC4yA
-        c4ROW/8Wuy263JE+SLM7zoKMYOGeNu5IeFdB/1sT7dtl4gW+zzPiWtockMl7Ar63eKAqVqxIry9mC
-        K0WIm66OJx7jr8jcCqQI3amdArOXU0Tv9s4QCB6uEGgparSeeZRNnKqCDB/lLZJjctFqrugNImZFZ
-        7frS92ni1VNsJ4GdCRQfngawMF8iY9PkcUbVLy353kcyJsOfgLnuv9AS8skulCsclpYcjRusAEn35
-        PgJ+YNyw==;
-Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <jarkko.sakkinen@iki.fi>)
-        id 1mQBnB-0006sc-7F; Tue, 14 Sep 2021 20:00:21 +0300
-Message-ID: <d642b9c5e2bef4a76535627dc84e76073078bf7e.camel@iki.fi>
-Subject: Re: [PATCH v3 01/13] diglim: Overview
-From:   Jarkko Sakkinen <jarkko.sakkinen@iki.fi>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
-        gregkh@linuxfoundation.org, mchehab+huawei@kernel.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 14 Sep 2021 20:00:19 +0300
-In-Reply-To: <20210914163401.864635-2-roberto.sassu@huawei.com>
-References: <20210914163401.864635-1-roberto.sassu@huawei.com>
-         <20210914163401.864635-2-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S230332AbhINRCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:02:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhINRCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 13:02:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAA44610E6;
+        Tue, 14 Sep 2021 17:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631638879;
+        bh=YaevgdA3tVWWqnK3qgrVO5mk33AE2bodpz5BWxEyBmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WwWUY0+ycvXN5JE7MclYpLdYiVyU4Us3oCwRmKhdQJleDF++Rgn+dMx/Zt3dlbr0v
+         Z8BtyDYbPh7/siqDh8MmQmxzjjeMk5Z+8OP+sDlWgMGFkvQvlD4TkMckO2lT3mbi2R
+         G/Yrwpw8P6DO/4MmRnRBAodlCJgprmEZa0TSw5GgXTG0Vayw39BOwna4XTOfCvjCmM
+         rlx6o2URwvgOX/+S4cdqWpVSjSfTPmHuorKzKUiFSQDgjWmuQEmQQTBg1nJbdwp+Zq
+         kk+QcAxgy8NFhH4N/br3ky+lSmprKvCTKTElPsRzHG3D03my1OwPc2OOqXtLiFj6h0
+         JQ7NvK+Qu1uKg==
+Date:   Tue, 14 Sep 2021 13:01:17 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.14 04/25] cxl/pci: Introduce
+ cdevm_file_operations
+Message-ID: <YUDVXV8egoZP05SF@sashalap>
+References: <20210913223339.435347-1-sashal@kernel.org>
+ <20210913223339.435347-4-sashal@kernel.org>
+ <CAPcyv4i5OHv2wHTO1Pdjz+qzAAWEha-7HdDdt42VyO_FasLSEA@mail.gmail.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 83.245.197.237
-X-SA-Exim-Mail-From: jarkko.sakkinen@iki.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4i5OHv2wHTO1Pdjz+qzAAWEha-7HdDdt42VyO_FasLSEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-14 at 18:33 +0200, Roberto Sassu wrote:
-> Add an overview of DIGLIM to Documentation/security/diglim/introduction.r=
-st
-> and the architecture to Documentation/security/diglim/architecture.rst
->=20
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue, Sep 14, 2021 at 08:42:04AM -0700, Dan Williams wrote:
+>On Mon, Sep 13, 2021 at 3:33 PM Sasha Levin <sashal@kernel.org> wrote:
+>>
+>> From: Dan Williams <dan.j.williams@intel.com>
+>>
+>> [ Upstream commit 9cc238c7a526dba9ee8c210fa2828886fc65db66 ]
+>>
+>> In preparation for moving cxl_memdev allocation to the core, introduce
+>> cdevm_file_operations to coordinate file operations shutdown relative to
+>> driver data release.
+>>
+>> The motivation for moving cxl_memdev allocation to the core (beyond
+>> better file organization of sysfs attributes in core/ and drivers in
+>> cxl/), is that device lifetime is longer than module lifetime. The cxl_pci
+>> module should be free to come and go without needing to coordinate with
+>> devices that need the text associated with cxl_memdev_release() to stay
+>> resident. The move will fix a use after free bug when looping driver
+>> load / unload with CONFIG_DEBUG_KOBJECT_RELEASE=y.
+>>
+>> Another motivation for passing in file_operations to the core cxl_memdev
+>> creation flow is to allow for alternate drivers, like unit test code, to
+>> define their own ioctl backends.
+>
+>Hi Sasha,
+>
+>Please drop this. It's not a fix, it's just a reorganization for
+>easing the addition of new features and capabilities.
 
-You could broadly describe what DIGLIM is in the commit message.
+I'll drop it, but just to satisfy my curiousity: the description says it
+fixes a use-after-free bug in the existing code, is it not the case?
 
-What do you mean by architecture? Kernel implementation, or something
-else?
-
-/Jarkko
+-- 
+Thanks,
+Sasha
