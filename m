@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E1040AC45
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F7140AC49
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhINLRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:17:38 -0400
-Received: from vsp-unauthed02.binero.net ([195.74.38.227]:14179 "EHLO
-        vsp-unauthed02.binero.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231851AbhINLRh (ORCPT
+        id S232012AbhINLT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231879AbhINLTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:17:37 -0400
-X-Halon-ID: 2e0d504d-154d-11ec-ac84-005056917a89
-Authorized-sender: andreas@gaisler.com
-Received: from [192.168.10.42] (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
-        by bin-vsp-out-01.atm.binero.net (Halon) with ESMTPA
-        id 2e0d504d-154d-11ec-ac84-005056917a89;
-        Tue, 14 Sep 2021 13:16:17 +0200 (CEST)
-Subject: Re: [PATCH] sparc32: Page align size in arch_dma_alloc
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     David Miller <davem@davemloft.net>, sparclinux@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        software@gaisler.com
-References: <20210908074822.16793-1-andreas@gaisler.com>
- <20210909060712.GA25485@lst.de>
- <3a653ab5-14d2-f61f-cb0a-cbeba93b4ac8@gaisler.com>
- <20210914061705.GB26679@lst.de>
- <87971ad4-9519-cf0d-76a8-6baa253d0122@gaisler.com>
- <20210914104256.GA14645@lst.de>
-From:   Andreas Larsson <andreas@gaisler.com>
-Message-ID: <a5483206-0539-1d3f-c8e8-e66dbb6c8d96@gaisler.com>
-Date:   Tue, 14 Sep 2021 13:16:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 14 Sep 2021 07:19:23 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCA4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:18:06 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id z94so13085663ede.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/sbK6Gyku0pI2crTRLJKEIo3nSfX3xy0COK8b8AjyvI=;
+        b=HvCxjYx5jExAgYRvyFHZWAdtux8k0u8JyFtCMZNYuDqN3XWjtOvL4HnBVa7jZqenR5
+         UrIJ7gVErGlkNzG4FLSyzoVpIsMcFTboQD9Ina7NaqnEjkG/IP6So6vi6cnSXcUJzBek
+         EHe2lazYXYTNugfB6Ti+w8SWtUMummWgQbLKs0EYu4kJz5r78LpSGVjUx9StcVR3WOpU
+         qdCraJrIdndx0hFenerjMWEq40UW1P8UyaC2f9v4RT61WabGhepThWlsWNZCKV3MEPQm
+         G2XMBTeBtpXoXi/UaaSuLSpXwtj4hjGsEZlMrr4IWxhnVA0pX5aItJYwkJrYyPIh5Beb
+         njSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/sbK6Gyku0pI2crTRLJKEIo3nSfX3xy0COK8b8AjyvI=;
+        b=c5DeY5qzRPNHOC53mXahKM8NWZg7EzfXID+mh3Elu69n1ebDMpVMPhXmdUQmHUttf4
+         BVbujlJZFwSHNJu+Y9KRX9CQMxiSoUTsU798OlW1borsCuLXFSVnOsOuOpUsoCXX5PnK
+         Rd+6ieHvgvo2g7Z4cbnktUrNQhN+0htmObZ+hr/gR87h5iOOmmyIjxVEOkzN7mHeCEe0
+         rc2hdzxBEo9/8FoFKGJ9o+c+LboKk3JsaSt2sU8CU+101JPkxR05jxxCrXulm8F0np+s
+         X+BLa8tIcavtJGVRh474Pw0di06IFCZJmkt7endp2lAB9+gE086+AcvMALa7NrvELJeK
+         LIjg==
+X-Gm-Message-State: AOAM532BnlWKBn2dsai1UDh2Ei3t2Sq1S6n03ZCaLBYgaVPkPOKJz7wD
+        qS7szj0cPWzesZqIAsIwL40=
+X-Google-Smtp-Source: ABdhPJyGQLy3IoGt2RfEiNs8iExv2YYlSQEOTccADlEhuYNZT5i6aV/k/uGT/ked8e2B+i3J6rlIUA==
+X-Received: by 2002:a05:6402:493:: with SMTP id k19mr19144049edv.386.1631618284842;
+        Tue, 14 Sep 2021 04:18:04 -0700 (PDT)
+Received: from localhost.localdomain (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
+        by smtp.gmail.com with ESMTPSA id la17sm4683629ejb.80.2021.09.14.04.18.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 04:18:04 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v4 15/18] staging: r8188eu: hal: Clean up usbctrl_vendorreq()
+Date:   Tue, 14 Sep 2021 13:18:01 +0200
+Message-ID: <2067006.DYBlakG51R@localhost.localdomain>
+In-Reply-To: <20210914092405.GB2088@kadam>
+References: <20210913181002.16651-1-fmdefrancesco@gmail.com> <20210913181002.16651-16-fmdefrancesco@gmail.com> <20210914092405.GB2088@kadam>
 MIME-Version: 1.0
-In-Reply-To: <20210914104256.GA14645@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please consider the environment before printing this email
-On 2021-09-14 12:42, Christoph Hellwig wrote:
-
->> The added pgprot_dmacoherent is problematic as it sets SRMMU_PRIV, which
->> sets up kernel access only. This was fine for arch_dma_alloc that sets up
->> kernel accesses only, but for user space DMA mmap this would make them
->> kernel accessable only. Having no sparc-specific pgprot_dmacoherent,
->> keeping it to default to pgprot_noncached, is probably better.
+On Tuesday, September 14, 2021 11:24:05 AM CEST Dan Carpenter wrote:
+> On Mon, Sep 13, 2021 at 08:09:59PM +0200, Fabio M. De Francesco wrote:
+> > Clean up usbctrl_vendorreq () in usb_ops_linux.c because some
+> > of its code will be reused in this series. This cleanup is in
+> > preparation for shortening the call chains of rtw_read{8,16,32}()
+> > and rtw_write{8,16,32,N}(). More insights about the reasons why at
+> > https://lore.kernel.org/lkml/5319192.FrU0QrjFp7@localhost.localdomain/
+> > 
 > 
-> I've just tried to keep the existing attributes.  If SRMMU_PRIV does
-> indeed mean that the page can't also be mapped into userspace page tables
-> it would be good to remove it in an incremental patch.  If OTOH it only
-> means that this PTE is a kernel mapping it should not affect a userspace
-> mapping as that will always use separate PTEs.
+> This commit message is quite bad.
+> 
+> This patch has nothing to do with reusing the code or shortening call
+> chains.
 
-Before the patch, arch_dma_alloc did via srmmu_mapiorange set up pages 
-with SRMMU_PRIV, which is all fine as it sets up kernel buffers. With 
-your patch we get PAGE_KERNEL as an argument to dma_pgprot in the 
-corresponding call path that earlier lead to arch_dma_alloc. PAGE_KERNEL 
-already includes SRMMU_PRIV so adding it again should not be necessary.
+It has to do, in a certain sense. Let me explain please...
 
-The problem I am pointing to is that adding a pgprot_dmacoherent that 
-adds SRMMU_PRIV, changes the behaviour of other call paths that calls 
-dma_pgprot but are not mapping in kernel pages.
+Some days ago, David Laight made the review of "Shorten calls chain of 
+rtw_write8/16/32/n()" version 3. 
 
-Now this is not confirmed in execution from my side, but it seems that 
-from following the code that e.g. this call path that is about mapping 
-DMA pages accessible from user space:
+In that patch he noticed some lines of usb_read() that I had created with the 
+help of reusing some lines of the code of usbctrl_vendorreq() that is deleted 
+in the same patch. 
 
-dma_mmap_attrs ->  dma_direct_mmap -> dma_pgprot -> pgprot_dmacoherent
+He thought that they were clean-ups and renames and so he suggested to make 
+those "clean-ups" in a separate patch.
 
-goes from making it merely uncacheable with the default
+However they were _not_ renames or other clean-ups, because usb_read() was 
+not touched in that patch and, above all, it was a new function. 
 
-#ifndef pgprot_dmacoherent
-#define pgprot_dmacoherent(prot)	pgprot_noncached(prot)
-#endif
+I am sure that when I write new functions I can use whatever name of 
+variables I like, even if people may think I'm renaming the variables that 
+were in a old function that now is deleted. Am I not permitted?
 
-to also being non-user-accessible if we change to this  pgprot_dmacoherent
+However, because I also think that readability of the diffs matters, I 
+decided to do some clean-up of the code I'm about to reuse in the new 
+functions. It improves readability of the above-mentioned patch that is also 
+the 18/18 of this series.
 
-#define pgprot_dmacoherent pgprot_dmacoherent
-static inline pgprot_t pgprot_dmacoherent(pgprot_t prot)
-{
-	pgprot_val(prot) &= ~pgprot_val(__pgprot(SRMMU_CACHE));
-	pgprot_val(prot) |= pgprot_val(__pgprot(SRMMU_PRIV));
-	return prot;
-}
+That is the reason why I'm cleaning up a function that is going to be deleted 
+in the last patch of the series.
 
--- 
-Andreas Larsson
+> Don't use a link like that in the commit message especially when it's a
+> link to an email you wrote.  If it's someone else's email you can say,
+> something like "As <name> points out in <his/her> email <url>.  Blah
+> blah blah."  That way you give credit to the other person but all the
+> information is in the commit message.
+
+I agree with you. I'll redo the commit message for in order to summarize in 
+few lines why I'm doing clean-ups of functions that must be deleted in 18/18.
+The same for 16/18. I think that a short explanation like the one that I gave 
+you above should suffice (much shorter, obviously).
+
+I hope that I've been clear now. Please let me know if you have more 
+suggestions about this patch and the next (16/18).
+
+Regards,
+
+Fabio
+
 
