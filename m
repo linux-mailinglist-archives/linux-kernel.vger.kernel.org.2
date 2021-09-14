@@ -2,163 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2C240A310
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEA640A315
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236354AbhINCJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 22:09:39 -0400
-Received: from ozlabs.org ([203.11.71.1]:41285 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhINCJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 22:09:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1631585300;
-        bh=YX/Srh4S60PRPjnNxVBWCQQin9P6BFcBIH7YYSh4zVI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fRbdcp8KjhHQjz6XV6ffHl4hFaRkfbq3b8P+ewZZy9eDr9ltDRq+rdkw2Dqm9MX2u
-         z2ekM5vxIey7xaaMq8mprUkUvI/XuEmvuqQAl0FpnhPGLzkye++J+YCUgY6iwDeeZP
-         svVgygjo5N0l2GquqZuMx22jbPLvKh9OgwSZHdIdLIoq5WW/zmq+SXjxlLzzu/Qhdu
-         2Cd03JvoHyIZee+cwJT8BhYtp+BTSCNXTtufIH8/41xyim+XU4ztMlUSVXtMLhNkMq
-         ZCkmu2XQnqTcalfcU020DdYfFCx86GcTxL6GYCekUl9tiAKqQ4zObEH/B9RjYlyT5V
-         fMKPpWVFHyNIQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H7mwM64q1z9sR4;
-        Tue, 14 Sep 2021 12:08:19 +1000 (AEST)
-Date:   Tue, 14 Sep 2021 12:08:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: build failure after merge of the origin tree
-Message-ID: <20210914120818.4a102b46@canb.auug.org.au>
-In-Reply-To: <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
-References: <20210914100853.3f502bc9@canb.auug.org.au>
-        <CAHk-=whOv-LZKxBqQr8yzmhi7sN4zoFG7t8ALNx+2XFhXjGTpA@mail.gmail.com>
-        <CAHk-=whGuEkYmQcJx8WfZ7MFhbKGJDcA6NUZWtrnM6Y6xFqATw@mail.gmail.com>
-        <20210914105359.5c651d55@canb.auug.org.au>
-        <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
+        id S236746AbhINCKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 22:10:01 -0400
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:50947 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233111AbhINCKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 22:10:00 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 82C30ECDEAD;
+        Tue, 14 Sep 2021 12:08:40 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mPxsD-00CD9j-TB; Tue, 14 Sep 2021 12:08:37 +1000
+Date:   Tue, 14 Sep 2021 12:08:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from
+ xfs_buf_alloc_pages()
+Message-ID: <20210914020837.GH2361455@dread.disaster.area>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838440.13293.12568710689057349786.stgit@noble.brown>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1jekrzk1d8gX=b60zYOtwUN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163157838440.13293.12568710689057349786.stgit@noble.brown>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=W8B-ML30YZIRN3gm7fgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1jekrzk1d8gX=b60zYOtwUN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
+> Documentation commment in gfp.h discourages indefinite retry loops on
+> ENOMEM and says of __GFP_NOFAIL that it
+> 
+>     is definitely preferable to use the flag rather than opencode
+>     endless loop around allocator.
+> 
+> congestion_wait() is indistinguishable from
+> schedule_timeout_uninterruptible() in practice and it is not a good way
+> to wait for memory to become available.
+> 
+> So instead of waiting, allocate a single page using __GFP_NOFAIL, then
+> loop around and try to get any more pages that might be needed with a
+> bulk allocation.  This single-page allocation will wait in the most
+> appropriate way.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+>  fs/xfs/xfs_buf.c |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+> index 5fa6cd947dd4..1ae3768f6504 100644
+> --- a/fs/xfs/xfs_buf.c
+> +++ b/fs/xfs/xfs_buf.c
+> @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
+>  
+>  	/*
+>  	 * Bulk filling of pages can take multiple calls. Not filling the entire
+> -	 * array is not an allocation failure, so don't back off if we get at
+> -	 * least one extra page.
+> +	 * array is not an allocation failure, so don't fail or fall back on
+> +	 * __GFP_NOFAIL if we get at least one extra page.
+>  	 */
+>  	for (;;) {
+>  		long	last = filled;
+> @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
+>  		}
+>  
+>  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
+> -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
+> +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
 
-Hi Linus,
+This smells wrong - the whole point of using the bulk page allocator
+in this loop is to avoid the costly individual calls to
+alloc_page().
 
-On Mon, 13 Sep 2021 18:29:26 -0700 Linus Torvalds <torvalds@linux-foundatio=
-n.org> wrote:
->
-> On Mon, Sep 13, 2021 at 5:58 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
-> >
-> > > I have no idea why it then complains about removal of the GCC4 macros.
-> >
-> > Me neither :-(
->=20
-> Ooh.
->=20
-> So I'm looking at gcc sources, just to see if "maybe this thing is
-> somehow conditional".
->=20
-> And bingo.
->=20
-> In cpp_init_special_builtins(), gcc does
->=20
->       if (b->value =3D=3D BT_HAS_ATTRIBUTE
->           && (CPP_OPTION (pfile, lang) =3D=3D CLK_ASM
->               || pfile->cb.has_attribute =3D=3D NULL))
->         continue;
->=20
-> which basically says that if we're pre-processing an ASM file, the
-> magical pre-processor symbol for __has_attribute is not defined.
->=20
-> I'm not sure what that 'pfile->cb.has_attribute =3D=3D NULL' thing means,
-> but the libcpp/ChangeLog file also mentions this:
->=20
->         (cpp_init_special_builtins): Don't initialize __has_attribute
->         or __has_cpp_attribute if CLK_ASM or pfile->cb.has_attribute is N=
-ULL.
->=20
-> So this is a very very special magical thing: if building an *.S file,
-> __has_attribute magically goes away.
->=20
-> And sure enough, that's exactly what is going on. It's during that
-> build of arch/powerpc/boot/crt0.S, and the reason this hits on powerpc
-> is that in arch/powerpc/boot/Makefile we have
->=20
->          -include $(srctree)/include/linux/compiler_attributes.h
->=20
-> as part of BOOTCFLAGS, and then it does
->=20
->         BOOTAFLAGS      :=3D -D__ASSEMBLY__ $(BOOTCFLAGS) -nostdinc
->=20
-> to also include that header file when building ASM files.
->=20
-> And our old GCC4 code silently hid this all, and made it work, because
-> for a *.S file  you'd then (completely illogically) get those fake
-> gcc-4 attribute macros.
->=20
-> Now, do I know *why* that ppc Makefile it does that? No. Neither do I
-> know why the gcc people decided to just make ASM preprocessor so
-> special.
->=20
-> But at least I understand how the odd error happens.
+What we are implementing here fail-fast semantics for readahead and
+fail-never for everything else.  If the bulk allocator fails to get
+a page from the fast path free lists, it already falls back to
+__alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
+there's no need to add another call to alloc_page() because we can
+just do this instead:
 
-Its good to know there is a reason :-)
+	if (flags & XBF_READ_AHEAD)
+		gfp_mask |= __GFP_NORETRY;
+	else
+-		gfp_mask |= GFP_NOFS;
++		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
 
-> This was too damn subtle. When you have to go read the compiler
-> sources to figure things like this out, you know you are too deep.
->=20
-> The fix should be pretty simple: remove almost all of BOOTCFLAGS from
-> BOOTAFLAGS.
->=20
-> But sadly, "almost all" isn't "all". There's the include path stuff,
-> there's the ABI and endianness, and there's the bit size ones.
->=20
-> So I think the fix is either
->=20
->  (a) remove that
->=20
->          -include $(srctree)/include/linux/compiler_attributes.h
->=20
->      thing entirely, and add it as required to the C files.
->=20
-> OR
->=20
->  (b) something like this ENTIRELY UNTESTED ATTACHED patch
->=20
-> I will leave it to the powerpc people to make the right choice.
+Which should make the __alloc_pages() call in
+alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
+provide the necessary never-fail guarantee that is needed here.
 
-That patch works for me - for the ppc64_defconfig build at least.
+At which point, the bulk allocation loop can be simplified because
+we can only fail bulk allocation for readahead, so something like:
 
---=20
+		if (filled == bp->b_page_count) {
+			XFS_STATS_INC(bp->b_mount, xb_page_found);
+			break;
+		}
+
+-		if (filled != last)
++		if (filled == last) {
+-			continue;
+-
+-		if (flags & XBF_READ_AHEAD) {
+			ASSERT(flags & XBF_READ_AHEAD);
+			xfs_buf_free_pages(bp);
+			return -ENOMEM;
+		}
+
+		XFS_STATS_INC(bp->b_mount, xb_page_retries);
+-		congestion_wait(BLK_RW_ASYNC, HZ / 50);
+	}
+	return 0;
+}
+
+would do the right thing and still record that we are doing
+blocking allocations (via the xb_page_retries stat) in this loop.
+
 Cheers,
-Stephen Rothwell
 
---Sig_/1jekrzk1d8gX=b60zYOtwUN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFABBIACgkQAVBC80lX
-0Gw36gf5Abis6eF6S1lBVUcZ8TDSTmH/OH4r6cgqJa1KHJivgzxwa3ad/cR0UI2p
-YgyVR6N/a0ON8I5LYzeFicj2JlsNtFn1qUEiw2/xtm8J+747KFC2VSHYObGkALM5
-x7LaA+3YfWfyHkSOsWjeTB/L1WSJwby+TL7HvGVcoti/pJxnbqoR0l1xcpoQTKd2
-RtR+YkmWST5uTAt5FRp+TwSo+hS7iXem03VWQtTk80/aNQJ/zJ6ttBsvXxSo2zdj
-Bo5fkZfpsTweAk1OtyFSJ4GklYzRErZfD6VCV00j4imKndsyiLHdbMAx13RUaVv/
-BpR+2toJg0tATicY/qPrcIixhomeLg==
-=ccEB
------END PGP SIGNATURE-----
-
---Sig_/1jekrzk1d8gX=b60zYOtwUN--
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
