@@ -2,127 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B5540AA86
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6F640AA8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhINJRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:17:37 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40628
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229624AbhINJRc (ORCPT
+        id S229874AbhINJTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:19:32 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35166
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229581AbhINJTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:17:32 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        Tue, 14 Sep 2021 05:19:30 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A6FCA40179
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:16:14 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3A70D3F332
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:18:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631610974;
-        bh=jxjZWeYzE1U9O4nD59VvfbtIKZY2vfyOzjYk3FCwwC0=;
+        s=20210705; t=1631611092;
+        bh=aRxLbL6hEiGe6xganEKR1lyiW6DB54cMIWpJYFs9yww=;
         h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
          In-Reply-To:Content-Type;
-        b=hjvpZDd8ecge18HPuC5QKbExWhds+DghA9closfxiewvs8b6YIBsgMDohlE8qUjAM
-         T2A12JMkgeyxng9QXZLxFVFBljtZg3wZZEMPLEppEYd7RjB6TXoYKF+rcAakoW0m6e
-         S/FFyoj19DuvSSkaAhP22i92GvDQ9WBtKj0EfRu318EshOgw/EHq7be3hMrj5H/nIi
-         dL5JMpl6AwqqDZKU2mbHVEr4B2rw+wjD6cTtAaKQVm+D0TjZu40dJnw9VfcWn6I1nz
-         HiZZ8rPcbytS0yipfh9VZV4Pm474UHeNtp9xCbTUkKch+tfN+l//Fx9IbpiCvVJpeo
-         y8NDArl7o543A==
-Received: by mail-wr1-f72.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so3699649wrn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:16:14 -0700 (PDT)
+        b=Yz7nBN8BgbAQWPYoyyWXE2ceEeG2Sxvp0BR1FZ6c3xuF2SBTv72adgWRdpFjpP04O
+         fDJSU8v0bAfKmrco7akps9yaV9uNwyWb+DP8pxCBnde43fFAj81iBa+vgQpQz6ysnz
+         TkiSY9SsWEUhlhESLYz5wK5N8uLa5N3cF37akfxMyci4HnAReeeazLM7s9VB7Om9sw
+         KH8+rMAKl92qTrqUIfa6agaZjSga3X+/z4+jW0Fd1x5K2r7vGutyQgc1b9U6S8b4cG
+         nRkwOYUPYNjcc2w4cKUujYzlX95c/57kyj032weSzmBFXH8VGoLvIEYJ9wDHXTTCEp
+         V/uYMTCSUYirg==
+Received: by mail-ed1-f70.google.com with SMTP id y17-20020a50e611000000b003d051004603so5753211edm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:18:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jxjZWeYzE1U9O4nD59VvfbtIKZY2vfyOzjYk3FCwwC0=;
-        b=CTpM2wdtqfuHqzXGRAL59ppOrXDPypwnlSf+pRyk3vDNvPmXf5GcePDu8m9niVxjXU
-         Jiv1FtV1AI3n89cQCN9r0ja1hRgoAYFatmNeGlnnR4G/eNxiFnfJxZLw1QbnJD2+Aj+s
-         2/AbvrLysEFOQDZu/CaFa8A63oAhc824llWGFnXrpVuiijTgIci3wmAdXW1OUTwM3B7M
-         nbJmSL7sCdYryHLv722lygRNYzHVySfLSPKi86M23sCkXuGsowUx3WyIoVNJ6e0jmP1d
-         S8zjLeoBn/ZYUfmHi5DJ/5SMh2hnp51mJ3TGiMqKUos6NJapojm9/ALhSJ/vlmNPOqzc
-         txDA==
-X-Gm-Message-State: AOAM533FqQ2j3xVnPAZ3FJW30ttAYRlchnAyTj3jkjX2/RiJyHE195As
-        VNzlcsgiizCwQZSTUUWQ4/Vwy1Ajp0EjnaIVOORtL4mp/GA46lGRjjr5mxrNoGIA41Hn2ms1Xbb
-        dF81vjIbHKkEVN6kres9w3pAGn9Iy/7jdjYiHATzCRA==
-X-Received: by 2002:adf:f486:: with SMTP id l6mr9551820wro.375.1631610974346;
-        Tue, 14 Sep 2021 02:16:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBcxJ9+nhpnNlsX6tU3CX3V3dg3Nt9kYahBWD5t+KHoQHqK28w2iy95+n9ca/OanwGluxzRA==
-X-Received: by 2002:adf:f486:: with SMTP id l6mr9551804wro.375.1631610974177;
-        Tue, 14 Sep 2021 02:16:14 -0700 (PDT)
+        bh=aRxLbL6hEiGe6xganEKR1lyiW6DB54cMIWpJYFs9yww=;
+        b=AKhmORFw08ylgmH6kS8vlKJma0z/RAEf19CdpoMA8iHGWKNYfN0jR4gUWKCh8d+f3t
+         7oz7Cy3G/Q5nbskKkQKumDiTrSN1cvMducq0z930tk8gyNkWyRH2Gxjus3XzgMiZ1ggP
+         FdZ33e/IlcFJf0GsfuisckY+WjE/+lCdTts1y/QVdO/LxBhzF9SMecKftyJNbYodlElj
+         4dRjeUcEmOS7FE66c2/hAI4sWs6EaJ+kPMza8PQi7SFGsGWRzzKIeyGKSLYOGkCixX3I
+         i9QFq76sq1Uw6XGvsAnXONhrJK7k/9qT1s+vnMGHLabXrk+9GbB3S5a3fbNq8zdxQYnj
+         bd3A==
+X-Gm-Message-State: AOAM530J12TjXFgZjT/V9uElGQA2lrZotQLKwonZ1JwxmIdBnvsnD+do
+        6XAm3b0z3TJICBj2K+TrOaAKnzvNkfPtti9qyFbX1XApH7umu1va/aaQ5jwu1aB3cDAjoKFm7Kr
+        F16WsYsTuLRpjVAhrufoqPEeH3BE+tPm3tQZCxrbVFg==
+X-Received: by 2002:adf:9f0d:: with SMTP id l13mr17852466wrf.328.1631611081603;
+        Tue, 14 Sep 2021 02:18:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyzQztBzbBrYTaOhN+AokKj5GVs0m53CtmIkzfLqV3EcR+H0RZPuNBjuVmjpdyhO8bDxCc7A==
+X-Received: by 2002:adf:9f0d:: with SMTP id l13mr17852425wrf.328.1631611081418;
+        Tue, 14 Sep 2021 02:18:01 -0700 (PDT)
 Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id o13sm7992153wri.53.2021.09.14.02.16.12
+        by smtp.gmail.com with ESMTPSA id n17sm2747552wrp.17.2021.09.14.02.17.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 02:16:13 -0700 (PDT)
-Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
- compat_ioctl
+        Tue, 14 Sep 2021 02:18:00 -0700 (PDT)
+Subject: Re: [PATCH 08/16] tty: drivers/tty/serial/, stop using
+ tty_flip_buffer_push
 To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Al Cooper <alcooperx@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Richard Genoud <richard.genoud@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Baruch Siach <baruch@tkos.co.il>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Paul Mackerras <paulus@samba.org>
+        Peter Korsgaard <jacmet@sunsite.dk>,
+        Timur Tabi <timur@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
 References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091134.17426-7-jslaby@suse.cz>
+ <20210914091415.17918-1-jslaby@suse.cz>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <5093137d-c30e-8cdb-585b-8d9198c8893d@canonical.com>
-Date:   Tue, 14 Sep 2021 11:16:10 +0200
+Message-ID: <3551622b-31a5-d349-5785-a07fc1241958@canonical.com>
+Date:   Tue, 14 Sep 2021 11:17:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210914091134.17426-7-jslaby@suse.cz>
+In-Reply-To: <20210914091415.17918-1-jslaby@suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2021 11:11, Jiri Slaby wrote:
-> After the previous patches, noone needs 'file' parameter in neither
-> ioctl hook from tty_ldisc_ops. So remove 'file' from both of them.
+On 14/09/2021 11:14, Jiri Slaby wrote:
+> Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
+> tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). We are
+> going to remove the former, so call the latter directly in
+> drivers/tty/serial/.
 > 
 > Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Marcel Holtmann <marcel@holtmann.org>
-> Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Andreas Koensgen <ajk@comnets.uni-bremen.de>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Andrew Jeffery <andrew@aj.id.au>
+> Cc: Al Cooper <alcooperx@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Tobias Klauser <tklauser@distanz.ch>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Vineet Gupta <vgupta@kernel.org>
+> Cc: Richard Genoud <richard.genoud@gmail.com>
+> Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: Alexander Shiyan <shc_work@mail.ru>
+> Cc: Baruch Siach <baruch@tkos.co.il>
+> Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Cc: Karol Gugala <kgugala@antmicro.com>
+> Cc: Mateusz Holenko <mholenko@antmicro.com>
+> Cc: Vladimir Zapolskiy <vz@mleia.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Kevin Hilman <khilman@baylibre.com>
+> Cc: Jerome Brunet <jbrunet@baylibre.com>
+> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Cc: Liviu Dudau <liviu.dudau@arm.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: "Andreas Färber" <afaerber@suse.de>
+> Cc: Manivannan Sadhasivam <mani@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 > Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Kevin Cernekee <cernekee@gmail.com>
 > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Cc: Laxman Dewangan <ldewangan@nvidia.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Jonathan Hunter <jonathanh@nvidia.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Baolin Wang <baolin.wang7@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Peter Korsgaard <jacmet@sunsite.dk>
+> Cc: Timur Tabi <timur@kernel.org>
+> Cc: Michal Simek <michal.simek@xilinx.com>
 > ---
->  drivers/bluetooth/hci_ldisc.c |  5 ++---
->  drivers/input/serio/serport.c |  5 ++---
->  drivers/net/can/slcan.c       |  4 ++--
->  drivers/net/hamradio/6pack.c  |  4 ++--
->  drivers/net/hamradio/mkiss.c  |  4 ++--
->  drivers/net/ppp/ppp_async.c   |  3 +--
->  drivers/net/ppp/ppp_synctty.c |  3 +--
->  drivers/net/slip/slip.c       |  4 ++--
->  drivers/tty/n_gsm.c           |  4 ++--
->  drivers/tty/n_hdlc.c          |  5 ++---
->  drivers/tty/n_tty.c           |  4 ++--
->  drivers/tty/tty_io.c          |  8 ++++----
->  include/linux/tty_ldisc.h     | 15 +++++++--------
->  net/nfc/nci/uart.c            |  5 ++---
->  14 files changed, 33 insertions(+), 40 deletions(-)
-> 
+>  drivers/tty/serial/21285.c                  |  2 +-
+>  drivers/tty/serial/8250/8250_aspeed_vuart.c |  2 +-
+>  drivers/tty/serial/8250/8250_bcm7271.c      |  2 +-
+>  drivers/tty/serial/8250/8250_dma.c          |  2 +-
+>  drivers/tty/serial/8250/8250_mtk.c          |  2 +-
+>  drivers/tty/serial/8250/8250_omap.c         |  2 +-
+>  drivers/tty/serial/8250/8250_port.c         |  2 +-
+>  drivers/tty/serial/altera_jtaguart.c        |  2 +-
+>  drivers/tty/serial/altera_uart.c            |  2 +-
+>  drivers/tty/serial/amba-pl010.c             |  2 +-
+>  drivers/tty/serial/amba-pl011.c             |  6 +++---
+>  drivers/tty/serial/apbuart.c                |  2 +-
+>  drivers/tty/serial/ar933x_uart.c            |  2 +-
+>  drivers/tty/serial/arc_uart.c               |  2 +-
+>  drivers/tty/serial/atmel_serial.c           |  6 +++---
+>  drivers/tty/serial/bcm63xx_uart.c           |  2 +-
+>  drivers/tty/serial/clps711x.c               |  2 +-
+>  drivers/tty/serial/cpm_uart/cpm_uart_core.c |  2 +-
+>  drivers/tty/serial/digicolor-usart.c        |  2 +-
+>  drivers/tty/serial/dz.c                     |  2 +-
+>  drivers/tty/serial/fsl_linflexuart.c        |  2 +-
+>  drivers/tty/serial/fsl_lpuart.c             |  6 +++---
+>  drivers/tty/serial/icom.c                   |  2 +-
+>  drivers/tty/serial/imx.c                    |  6 +++---
+>  drivers/tty/serial/ip22zilog.c              |  4 ++--
+>  drivers/tty/serial/jsm/jsm_tty.c            |  2 +-
+>  drivers/tty/serial/kgdb_nmi.c               |  2 +-
+>  drivers/tty/serial/lantiq.c                 |  4 ++--
+>  drivers/tty/serial/liteuart.c               |  2 +-
+>  drivers/tty/serial/lpc32xx_hs.c             |  2 +-
+>  drivers/tty/serial/max3100.c                |  4 ++--
+>  drivers/tty/serial/max310x.c                |  2 +-
+>  drivers/tty/serial/mcf.c                    |  2 +-
+>  drivers/tty/serial/men_z135_uart.c          |  2 +-
+>  drivers/tty/serial/meson_uart.c             |  2 +-
+>  drivers/tty/serial/milbeaut_usio.c          |  2 +-
+>  drivers/tty/serial/mpc52xx_uart.c           |  2 +-
+>  drivers/tty/serial/mps2-uart.c              |  4 ++--
+>  drivers/tty/serial/msm_serial.c             |  6 +++---
+>  drivers/tty/serial/mux.c                    |  2 +-
+>  drivers/tty/serial/mvebu-uart.c             |  2 +-
+>  drivers/tty/serial/mxs-auart.c              |  4 ++--
+>  drivers/tty/serial/omap-serial.c            |  2 +-
+>  drivers/tty/serial/owl-uart.c               |  2 +-
+>  drivers/tty/serial/pch_uart.c               |  4 ++--
+>  drivers/tty/serial/pic32_uart.c             |  2 +-
+>  drivers/tty/serial/pmac_zilog.c             |  4 ++--
+>  drivers/tty/serial/pxa.c                    |  2 +-
+>  drivers/tty/serial/qcom_geni_serial.c       |  4 ++--
+>  drivers/tty/serial/rda-uart.c               |  2 +-
+>  drivers/tty/serial/rp2.c                    |  2 +-
+>  drivers/tty/serial/sa1100.c                 |  2 +-
+>  drivers/tty/serial/samsung_tty.c            |  6 +++---
 
-For NFC:
+For Samsung:
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-
-
-Best regards,
+BR,
 Krzysztof
