@@ -2,204 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C0740A5F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039D740A5F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239505AbhINFgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 01:36:48 -0400
-Received: from mail.lvk.cs.msu.ru ([188.44.42.233]:51810 "EHLO
-        mail.lvk.cs.msu.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237341AbhINFgr (ORCPT
+        id S239587AbhINFe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 01:34:26 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:51871 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237341AbhINFeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:36:47 -0400
-X-Greylist: delayed 458 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 01:36:46 EDT
-Received: from mail.lvk.cs.msu.ru (localhost.localdomain [127.0.0.1])
-        by mail.lvk.cs.msu.ru (Postfix) with ESMTP id 2D6B910EC48;
-        Tue, 14 Sep 2021 08:27:48 +0300 (MSK)
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on spamd.lvknet
-X-Spam-Level: 
-X-Spam-ASN:  
-X-Spam-Status: No, score=-2.9 required=7.0 tests=ALL_TRUSTED=-1,BAYES_00=-1.9
-        autolearn=ham version=3.3.2
-Received: from blacky.home (nikaet.starlink.ru [94.141.168.29])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        by mail.lvk.cs.msu.ru (Postfix) with ESMTPSA id EDA8E10DCA1;
-        Tue, 14 Sep 2021 08:27:47 +0300 (MSK)
-Received: from [192.168.112.17] (helo=cobook.home)
-        by blacky.home with smtp (Exim 4.80)
-        (envelope-from <yoush@cs.msu.su>)
-        id 1mQ0ry-0007OB-QC; Tue, 14 Sep 2021 08:20:34 +0300
-Received: (nullmailer pid 23427 invoked by uid 1000);
-        Tue, 14 Sep 2021 05:27:47 -0000
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Nechaev <petr.nechaev@cogentembedded.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] usb: gadget: storage: add support for media larger than 2T
-Date:   Tue, 14 Sep 2021 08:27:28 +0300
-Message-Id: <20210914052728.23369-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 14 Sep 2021 01:34:24 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 39C52ECB28F;
+        Tue, 14 Sep 2021 15:33:01 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mQ140-00CGXq-43; Tue, 14 Sep 2021 15:33:00 +1000
+Date:   Tue, 14 Sep 2021 15:33:00 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from
+ xfs_buf_alloc_pages()
+Message-ID: <20210914053300.GI2361455@dread.disaster.area>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838440.13293.12568710689057349786.stgit@noble.brown>
+ <20210914020837.GH2361455@dread.disaster.area>
+ <163158695921.3992.9776900395549582360@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AV-Checked: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163158695921.3992.9776900395549582360@noble.neil.brown.name>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=VwQbUJbxAAAA:8 a=iox4zFpeAAAA:8
+        a=7-415B0cAAAA:8 a=yYcZo1LRrv0jFWDY_EMA:9 a=CjuIK1q_8ugA:10
+        a=AjGcO6oz07-iQ99wixmX:22 a=WzC6qhA0u3u7Ye7llzcV:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
-commands, and fixes READ_CAPACITY command to return 0xffffffff if
-media size does not fit in 32 bits.
+On Tue, Sep 14, 2021 at 12:35:59PM +1000, NeilBrown wrote:
+> On Tue, 14 Sep 2021, Dave Chinner wrote:
+> > On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
+> > > Documentation commment in gfp.h discourages indefinite retry loops on
+> > > ENOMEM and says of __GFP_NOFAIL that it
+> > > 
+> > >     is definitely preferable to use the flag rather than opencode
+> > >     endless loop around allocator.
+> > > 
+> > > congestion_wait() is indistinguishable from
+> > > schedule_timeout_uninterruptible() in practice and it is not a good way
+> > > to wait for memory to become available.
+> > > 
+> > > So instead of waiting, allocate a single page using __GFP_NOFAIL, then
+> > > loop around and try to get any more pages that might be needed with a
+> > > bulk allocation.  This single-page allocation will wait in the most
+> > > appropriate way.
+> > > 
+> > > Signed-off-by: NeilBrown <neilb@suse.de>
+> > > ---
+> > >  fs/xfs/xfs_buf.c |    6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
+> > > index 5fa6cd947dd4..1ae3768f6504 100644
+> > > --- a/fs/xfs/xfs_buf.c
+> > > +++ b/fs/xfs/xfs_buf.c
+> > > @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
+> > >  
+> > >  	/*
+> > >  	 * Bulk filling of pages can take multiple calls. Not filling the entire
+> > > -	 * array is not an allocation failure, so don't back off if we get at
+> > > -	 * least one extra page.
+> > > +	 * array is not an allocation failure, so don't fail or fall back on
+> > > +	 * __GFP_NOFAIL if we get at least one extra page.
+> > >  	 */
+> > >  	for (;;) {
+> > >  		long	last = filled;
+> > > @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
+> > >  		}
+> > >  
+> > >  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
+> > > -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
+> > > +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
+> > 
+> > This smells wrong - the whole point of using the bulk page allocator
+> > in this loop is to avoid the costly individual calls to
+> > alloc_page().
+> > 
+> > What we are implementing here fail-fast semantics for readahead and
+> > fail-never for everything else.  If the bulk allocator fails to get
+> > a page from the fast path free lists, it already falls back to
+> > __alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
+> > there's no need to add another call to alloc_page() because we can
+> > just do this instead:
+> > 
+> > 	if (flags & XBF_READ_AHEAD)
+> > 		gfp_mask |= __GFP_NORETRY;
+> > 	else
+> > -		gfp_mask |= GFP_NOFS;
+> > +		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
+> > 
+> > Which should make the __alloc_pages() call in
+> > alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
+> > provide the necessary never-fail guarantee that is needed here.
+> 
+> That is a nice simplification.
+> Mel Gorman told me
+>   https://lore.kernel.org/linux-nfs/20210907153116.GJ3828@suse.com/
+> that alloc_pages_bulk ignores GFP_NOFAIL.  I added that to the
+> documentation comment in an earlier patch.
 
-This makes f_mass_storage to export a 16T disk array correctly.
+Well, that's a surprise to me - I can't see where it masked out
+NOFAIL, and it seems quite arbitrary to just say "different code
+needs different fallbacks, so you can't have NOFAIL" despite NOFAIL
+being the exact behavioural semantics one of only three users of the
+bulk allocator really needs...
 
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/usb/gadget/function/f_mass_storage.c | 70 ++++++++++++++++++--
- 1 file changed, 63 insertions(+), 7 deletions(-)
+> I had a look at the code and cannot see how it would fail to allocate at
+> least one page.  Maybe Mel can help....
 
-diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
-index 7c96c4665178..b79737c19750 100644
---- a/drivers/usb/gadget/function/f_mass_storage.c
-+++ b/drivers/usb/gadget/function/f_mass_storage.c
-@@ -619,7 +619,7 @@ static int sleep_thread(struct fsg_common *common, bool can_freeze,
- static int do_read(struct fsg_common *common)
- {
- 	struct fsg_lun		*curlun = common->curlun;
--	u32			lba;
-+	u64			lba;
- 	struct fsg_buffhd	*bh;
- 	int			rc;
- 	u32			amount_left;
-@@ -634,7 +634,10 @@ static int do_read(struct fsg_common *common)
- 	if (common->cmnd[0] == READ_6)
- 		lba = get_unaligned_be24(&common->cmnd[1]);
- 	else {
--		lba = get_unaligned_be32(&common->cmnd[2]);
-+		if (common->cmnd[0] == READ_16)
-+			lba = get_unaligned_be64(&common->cmnd[2]);
-+		else
-+			lba = get_unaligned_be32(&common->cmnd[2]);
- 
- 		/*
- 		 * We allow DPO (Disable Page Out = don't save data in the
-@@ -747,7 +750,7 @@ static int do_read(struct fsg_common *common)
- static int do_write(struct fsg_common *common)
- {
- 	struct fsg_lun		*curlun = common->curlun;
--	u32			lba;
-+	u64			lba;
- 	struct fsg_buffhd	*bh;
- 	int			get_some_more;
- 	u32			amount_left_to_req, amount_left_to_write;
-@@ -771,7 +774,10 @@ static int do_write(struct fsg_common *common)
- 	if (common->cmnd[0] == WRITE_6)
- 		lba = get_unaligned_be24(&common->cmnd[1]);
- 	else {
--		lba = get_unaligned_be32(&common->cmnd[2]);
-+		if (common->cmnd[0] == WRITE_16)
-+			lba = get_unaligned_be64(&common->cmnd[2]);
-+		else
-+			lba = get_unaligned_be32(&common->cmnd[2]);
- 
- 		/*
- 		 * We allow DPO (Disable Page Out = don't save data in the
-@@ -1146,6 +1152,7 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
- 	u32		lba = get_unaligned_be32(&common->cmnd[2]);
- 	int		pmi = common->cmnd[8];
- 	u8		*buf = (u8 *)bh->buf;
-+	u32		mlb;
- 
- 	/* Check the PMI and LBA fields */
- 	if (pmi > 1 || (pmi == 0 && lba != 0)) {
-@@ -1153,12 +1160,28 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
- 		return -EINVAL;
- 	}
- 
--	put_unaligned_be32(curlun->num_sectors - 1, &buf[0]);
--						/* Max logical block */
--	put_unaligned_be32(curlun->blksize, &buf[4]);/* Block length */
-+	if (curlun->num_sectors < 0x100000000ULL)
-+		mlb = curlun->num_sectors - 1;
-+	else
-+		mlb = 0xffffffff;
-+	put_unaligned_be32(mlb, &buf[0]);		/* Max logical block */
-+	put_unaligned_be32(curlun->blksize, &buf[4]);	/* Block length */
- 	return 8;
- }
- 
-+static int do_read_capacity_16(struct fsg_common *common, struct fsg_buffhd *bh)
-+{
-+	struct fsg_lun  *curlun = common->curlun;
-+	u8		*buf = (u8 *)bh->buf;
-+
-+	put_unaligned_be64(curlun->num_sectors - 1, &buf[0]);
-+							/* Max logical block */
-+	put_unaligned_be32(curlun->blksize, &buf[8]);	/* Block length */
-+	/* It is safe to keep other fields zeroed */
-+	memset(&buf[12], 0, 32 - 12);
-+	return 32;
-+}
-+
- static int do_read_header(struct fsg_common *common, struct fsg_buffhd *bh)
- {
- 	struct fsg_lun	*curlun = common->curlun;
-@@ -1905,6 +1928,17 @@ static int do_scsi_command(struct fsg_common *common)
- 			reply = do_read(common);
- 		break;
- 
-+	case READ_16:
-+		common->data_size_from_cmnd =
-+				get_unaligned_be32(&common->cmnd[10]);
-+		reply = check_command_size_in_blocks(common, 16,
-+				      DATA_DIR_TO_HOST,
-+				      (1<<1) | (0xff<<2) | (0xf<<10), 1,
-+				      "READ(16)");
-+		if (reply == 0)
-+			reply = do_read(common);
-+		break;
-+
- 	case READ_CAPACITY:
- 		common->data_size_from_cmnd = 8;
- 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
-@@ -1914,6 +1948,17 @@ static int do_scsi_command(struct fsg_common *common)
- 			reply = do_read_capacity(common, bh);
- 		break;
- 
-+	case SERVICE_ACTION_IN_16:
-+		if ((common->cmnd[1] & 0x1f) != SAI_READ_CAPACITY_16)
-+			goto unknown_cmnd;
-+		common->data_size_from_cmnd = 32;
-+		reply = check_command(common, 14, DATA_DIR_TO_HOST,
-+				      (1<<1) | (1<<13), 1,
-+				      "READ CAPACITY(16)");
-+		if (reply == 0)
-+			reply = do_read_capacity_16(common, bh);
-+		break;
-+
- 	case READ_HEADER:
- 		if (!common->curlun || !common->curlun->cdrom)
- 			goto unknown_cmnd;
-@@ -2028,6 +2073,17 @@ static int do_scsi_command(struct fsg_common *common)
- 			reply = do_write(common);
- 		break;
- 
-+	case WRITE_16:
-+		common->data_size_from_cmnd =
-+				get_unaligned_be32(&common->cmnd[10]);
-+		reply = check_command_size_in_blocks(common, 16,
-+				      DATA_DIR_FROM_HOST,
-+				      (1<<1) | (0xff<<2) | (0xf<<10), 1,
-+				      "WRITE(16)");
-+		if (reply == 0)
-+			reply = do_write(common);
-+		break;
-+
- 	/*
- 	 * Some mandatory commands that we recognize but don't implement.
- 	 * They don't mean much in this setting.  It's left as an exercise
+Yup, clarification is definitely needed here.
+
+Cheers,
+
+Dave.
 -- 
-2.20.1
-
+Dave Chinner
+david@fromorbit.com
