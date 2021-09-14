@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB2740B3BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3038440B3C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbhINPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbhINPwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:52:39 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8CAC0613D8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:50:57 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id c8so29857775lfi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q8e6vYMWtLVlzKilUTUU45LYQ5AtwsMVMMhkibc3Y9M=;
-        b=VPtON4P1X5GExo1d6Z5sCnVYLKvvLO0Re2N5FswMDFOHm94KFNCSQXm1LsojcswGFd
-         7lS7F4RRELcrCB8z1u8gNMvwZmlI+QPC+BiV3B7cnvHDVAeCZQK6r2tCoJgfCs7Z2Nak
-         sV0Tdz/F2v44DRwN6x9q0DQx82ZY2rBsgEjYw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q8e6vYMWtLVlzKilUTUU45LYQ5AtwsMVMMhkibc3Y9M=;
-        b=XNFXX1TGycsdO8dUuODOJxhhPjtVoT+CieVBF9epEnDTECCw7Lzd7OxL5LNrMhh6NI
-         cyJ73DMsZyPirvKERn2p6TUbi5MGGbNOSopAL9VA+FKBMo69SsbxEjotsRz88h3yKve4
-         /ul3GrvRvAwgv3BjeRCT8XGJDDFm2JzmTkp3mG+p5jYSBcrCLpypkNQ5weBMd2rbvfxL
-         DZkSwF4JkTTNknsfWJ/g0PMnqbI2TuWydXSxRBA06M0wK++9AMUWsh76iKv/V4R6Y1Sl
-         +p7X4u/iwQVIALsb9NaTx/9sYbFGRW7Oy5btD0CQIs4z9dORAsKTw0AxIqPY8DXwr0DY
-         NTNQ==
-X-Gm-Message-State: AOAM530hIjryuN50vD02NCLpWggGJ44ryNeZ4tVB2sSsUnUU13KkkXt7
-        mNd2CxQLHbawEPBSk7DcRRtYCBLWUrF/0gMZA+U=
-X-Google-Smtp-Source: ABdhPJya9GkuXQLbpOxyg5V8mbFnJb2+0YoefcoF8ERb7n7bxxwkkqg2ILLLZMlPIm86EpzwmFb2aw==
-X-Received: by 2002:a19:6b18:: with SMTP id d24mr14185174lfa.84.1631634655122;
-        Tue, 14 Sep 2021 08:50:55 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id t15sm1382042ljh.7.2021.09.14.08.50.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 08:50:54 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id l11so29858582lfe.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:50:54 -0700 (PDT)
-X-Received: by 2002:a05:6512:3d04:: with SMTP id d4mr13360552lfv.474.1631634653874;
- Tue, 14 Sep 2021 08:50:53 -0700 (PDT)
+        id S234979AbhINPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:54:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234905AbhINPy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:54:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B98860F11;
+        Tue, 14 Sep 2021 15:53:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631634791;
+        bh=SyILGKt3RsxWQZLKn6wlRw/UVoEX8mvp4miVI+z/vYo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HZ04Xourmi4uPI/BROV4LV3A0BImAtSUW0BcMr1LQ0ARiNbPPZMZFjVa+zXsdJi27
+         63UP/yltipbMB9MgHcllDWmA+E+r+KPo5uyphrDt7ZzSJMi2Gl7nMQD6pRFkDpTj2O
+         sENkKq3SrcVv2keytWm/YehRRfuXpzHrYeAO2ovXUnHTJWvQehVzjYMHabmT0icoyS
+         iX9iygyFIqVAlScoGbL/xTFmfpzkfWpDKttM0sJMY6weSYzGxAGuS/p9QoNurNfWy+
+         vHGWSHv7U1EElEFDnggSOdJI5FBrY4J9S5kTMUKsTYIF1C1j7EOi70w4LZyjXQB4fd
+         qYfwT4p4rOeOw==
+Received: by mail-oo1-f42.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so4819700ooe.0;
+        Tue, 14 Sep 2021 08:53:11 -0700 (PDT)
+X-Gm-Message-State: AOAM530Hb8wLjv0RjiruUtGM56KjwDLyL1Gj8eYcTpp6PmFiFL3VO42z
+        1MlFh8PowEa/QNBXG3C2AJ8k3Qo+vszr2oJrrp8=
+X-Google-Smtp-Source: ABdhPJyDFc9VSO5h/RiqccbxZgmZOWSklBB73HxlIVY43T/ttJWTuXgDpoHxXQAJINO0RmpPM1mGY0nlklwutQHfE4k=
+X-Received: by 2002:a4a:c904:: with SMTP id v4mr14629736ooq.26.1631634790945;
+ Tue, 14 Sep 2021 08:53:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914092603.18722-1-jslaby@suse.cz>
-In-Reply-To: <20210914092603.18722-1-jslaby@suse.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Sep 2021 08:50:38 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjctpqFhN1MQKTaGLrb9BrynU8KpRcx1zW32TF_GJ9ChQ@mail.gmail.com>
-Message-ID: <CAHk-=wjctpqFhN1MQKTaGLrb9BrynU8KpRcx1zW32TF_GJ9ChQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: remove dead e-mails
-To:     Jiri Slaby <jslaby@suse.cz>
+References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-6-ardb@kernel.org>
+ <CAHk-=whLEofPLzzTKXN5etnH5WqsTPQRLVv8uQgHnx7c59omBg@mail.gmail.com>
+In-Reply-To: <CAHk-=whLEofPLzzTKXN5etnH5WqsTPQRLVv8uQgHnx7c59omBg@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 14 Sep 2021 17:52:59 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH_Q4a4Gsi0Xuw=YsV-b7Mu8TQndk3Ei-JFaRV=GSiqUQ@mail.gmail.com>
+Message-ID: <CAMj1kXH_Q4a4Gsi0Xuw=YsV-b7Mu8TQndk3Ei-JFaRV=GSiqUQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/8] sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Korsgaard <peter@korsgaard.com>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-usb@vger.kernel.org
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 2:26 AM Jiri Slaby <jslaby@suse.cz> wrote:
+On Tue, 14 Sept 2021 at 17:49, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> jacmet@sunsite.dk and linux@prisktech.co.nz are dead:
+> On Tue, Sep 14, 2021 at 5:11 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> >  static inline unsigned int task_cpu(const struct task_struct *p)
+> >  {
+> >  #ifdef CONFIG_THREAD_INFO_IN_TASK
+> > -       return READ_ONCE(p->cpu);
+> > +       return READ_ONCE(p->thread_info.cpu);
+> >  #else
+> >         return READ_ONCE(task_thread_info(p)->cpu);
+> >  #endif
+>
+> Those two lines look different, but aren't.
+>
+> Please just remove the CONFIG_THREAD_INFO_IN_TASK conditional, and use
+>
+>           return READ_ONCE(task_thread_info(p)->cpu);
+>
+> unconditionally, which now does the right thing regardless.
+>
 
-Please say "these email addresses no longer work" - the "are dead"
-makes it sound like the people have died. Which is not impossible, but
-not what you verified.
+Unfortunately not.
 
-> Remove them from MAINTAINERS.
+task_cpu() takes a 'const struct task_struct *', whereas
+task_thread_info() takes a 'struct task_struct *'.
 
-If the only maintainer email is gone, then you can't reasonably leave these as
+Since task_thread_info()-><foo> is widely used as an lvalue, I would
+need to update task_cpu()'s prototype and fix up all the callers, some
+of which take the const flavor themselves. Or introduce
+'const_task_thread_info()' which takes the const flavor, and cannot be
+used to instantiate lvalues.
 
-  S:     Maintained
-
-and that should be updated too.
-
-          Linus
+Suggestions welcome, but this is the cleanest I could come up with.
