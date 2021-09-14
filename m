@@ -2,80 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0925A40AFA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A8C40AF9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbhINNxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
+        id S233296AbhINNxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbhINNxi (ORCPT
+        with ESMTP id S232420AbhINNxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:53:38 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CBEC061574;
-        Tue, 14 Sep 2021 06:52:21 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso2060157pjb.3;
-        Tue, 14 Sep 2021 06:52:21 -0700 (PDT)
+        Tue, 14 Sep 2021 09:53:35 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB08C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:52:18 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id r2so12761676pgl.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:52:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=OBuM8TqJ0Hiy++w0Eg3iCTeKL45+UH97Wc5WiqGlxYk=;
-        b=eEN/Cjx/RaHtIuifTzIWtuTNXKn8gN7MXFN1fkI/BBhKK6N8yNK1egUZx6Da0ngWPm
-         4CyFlthWnBdrVPGH5fxFgu6g6VUQH6THmXauJJaclzQFID3Pl9tghRPKFiTU2b+vAXjY
-         4wQS8Z3dv3uWNA8aW2T612eXFIiVHtj8zvmt5CkuuDOdsI94bnDB9Lz8ITLswRwz9YYJ
-         KGugdCwyd2t2b0XfFKZ7EXIeFO9Mhxpu7rxald7qSmyebUL8sMUjdQXjTkZWVLcDnxVS
-         W6U4CBI0RrTWjUbcWgpbwcfy8ZllzRSNNTlBna4UpU1ilh3mx80C67OXU86/9LAFygfQ
-         YUkg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=m05pyjIx36bCyATYdVUgvIAee/hjT8Yiwdj2jgWsHuY=;
+        b=YKfEsXnLvnOFhX1xWK7ivgxjYMuagNacVuAZqb62a6x0Du2KWQpx9g0BXXWd1r2VsY
+         c2iRZM+8W/3Ru7thtUTdQ3RA8gZf0wgG0HQn/CH3tkVF3PhsFSCJu8DwFv1xNI+4q4Of
+         xuQJKpaOFSh92nm0nGjyMYr+ig8iurMBvqKMweG8PEkEH7vPuTVmmVxfk4HcvW5gAYhM
+         iF0Dw5u/vxycJTzpvjsFkBGyyksPS/heYo2s5hFN3+dpgZmv/uic7IfNUWMyhw43Gf2L
+         iUabrMbCsFIH2/AUtJ2bJsY/Lm/GrgQJtBXvZR+OBKg7/yib+W08JyRNsVsBX0lcqOXC
+         djAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=OBuM8TqJ0Hiy++w0Eg3iCTeKL45+UH97Wc5WiqGlxYk=;
-        b=ED93Yvt1rORh9azeDQ6BB0lfXwSUO8e6cFBtWP1rosSwIyuIiuOkaTvIXRh5KSxg3G
-         mynN6gp82oNmpaunOY08sY3UovhAq91zUOQb4FPY0yvkp6N8iA0dN9LlRHmeXNDHmBYt
-         yQoQqxI5H9n7dNhPyC6h49Yzg8W7cwfTkL+/vQCUb01LRnBv4IEHSN3jfKiSD1K7QlMy
-         nN8QY+Js+oP5U/vhEDaP4rD+dRUZecPYStIycjZX52FoLDonf90FR2M99+GshrIVjELp
-         UG9Z3RzJmZNOCFx25eEJWD9jrAS9KQN3QbB2mLQIi+0AnzidhayevndzLefuhbinuYGv
-         OhHQ==
-X-Gm-Message-State: AOAM5320k94w8oiyr9sUKNkenn08XhKSZMjvraOn44ZXruCsBeDh00cS
-        OPZNkwUTyaY6LfYcaJoL2HBGF/MWCWWRPyIrd4Zxoh16
-X-Google-Smtp-Source: ABdhPJzi5Dur2NFQQ5T9iQZsUMijQaMGcr7v2R5hGtdc9r2AmXXaZFZAwG4BBUqObGzm+ZSWsJkvmPKgtEDaJpkN2U0=
-X-Received: by 2002:a17:902:8ec5:b0:13a:2789:cbb0 with SMTP id
- x5-20020a1709028ec500b0013a2789cbb0mr15236406plo.60.1631627540581; Tue, 14
- Sep 2021 06:52:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m05pyjIx36bCyATYdVUgvIAee/hjT8Yiwdj2jgWsHuY=;
+        b=ygiI1S20EjhmqAxNCvGG2y6QbTFlLAOGY8JX+xpXYtXrOgafVLfjvvXd4ZdXTghMNV
+         X3GEUYgS1SsE+05r2tczPupN3OXdYLwWubEG8YVXG+Dc4q/MhImc+D5/uKozyBBCWohq
+         Juffgcv7s2F5B0fJUqUnXYfOGsNodBdYhuyEoyDoTDu/vpeEZ4XkVBu2/9h3bMQolTxD
+         qpBLCoELLqUn1/0ywu+XLwsqW0yx7miKUbXxcr38PAhlSfwuZD7yD021BFEZP02TowFD
+         YYsr0PgQnPCif2B+XlyQfkzA3IqCFtnhzQDMD4OqtiuAIGBT6C49xvusFZaazRUWslSE
+         1dSw==
+X-Gm-Message-State: AOAM5313syoD68sxVehN4c1oOjf+VhQ6vsd/Z0ql07EH6M/TGD7bxuxv
+        ckmkeuZ3gJ4DBQ2JWTqRuGA=
+X-Google-Smtp-Source: ABdhPJxaeIvPbR+IGON/k2EuUxVQZddP2muV5KT7LDNaeIOsHCJE0L5BNNlFZfww2mWD651N7AHydQ==
+X-Received: by 2002:aa7:8014:0:b029:3cd:b6f3:5dd6 with SMTP id j20-20020aa780140000b02903cdb6f35dd6mr4963213pfi.39.1631627537791;
+        Tue, 14 Sep 2021 06:52:17 -0700 (PDT)
+Received: from shinobu ([23.82.194.94])
+        by smtp.gmail.com with ESMTPSA id g16sm11188181pfj.19.2021.09.14.06.52.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 06:52:17 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 22:52:12 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        jarkko.nikula@linux.intel.com
+Subject: Re: [iio:testing 40/43] ld.lld: error: undefined symbol: __udivdi3
+Message-ID: <YUCpDDkNSqhlaThq@shinobu>
+References: <202109120656.fiJqCh8H-lkp@intel.com>
+ <20210914134103.00006d23@Huawei.com>
 MIME-Version: 1.0
-References: <20210824122054.29481-1-joro@8bytes.org> <CAJZ5v0jqwgvmRrRts4Nf4ySmrp5gwmv_iJWBh3OjN54ZU+qneQ@mail.gmail.com>
- <CAJZ5v0hn5EvwjPggCeUw+kjDNjdzx3eLP2PRBGKRAyo2eYECyQ@mail.gmail.com> <YUCodXHfHmap1+la@8bytes.org>
-In-Reply-To: <YUCodXHfHmap1+la@8bytes.org>
-Reply-To: bjorn@helgaas.com
-From:   Bjorn Helgaas <bjorn.helgaas@gmail.com>
-Date:   Tue, 14 Sep 2021 08:52:08 -0500
-Message-ID: <CABhMZUV50Tp6-UrRnm_E55QiwJvtLQ64qp7Tn2h+pw_uu7M=iA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] PCI/ACPI: Simplify PCIe _OSC feature negotiation
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <jroedel@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ktaNQ2IAKnYoYMdX"
+Content-Disposition: inline
+In-Reply-To: <20210914134103.00006d23@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 8:50 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> On Mon, Sep 13, 2021 at 06:14:38PM +0200, Rafael J. Wysocki wrote:
-> > Should I assume that Bjorn will be taking it?
->
-> No idea, checking git-log on the file shows mixed Signed-off-bys from
-> both of you. Bjorn?
 
-I'll merge it, hopefully this week.  Thanks!
+--ktaNQ2IAKnYoYMdX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Bjorn
+On Tue, Sep 14, 2021 at 01:41:03PM +0100, Jonathan Cameron wrote:
+> On Sun, 12 Sep 2021 06:43:58 +0800
+> kernel test robot <lkp@intel.com> wrote:
+>=20
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git t=
+esting
+> > head:   77a4a019161bcba51af1dbbeadc04795840fb3e0
+> > commit: f7da4339ca510e4476ea35cb9fd44f3f190706c5 [40/43] counter: Inter=
+nalize sysfs interface code
+> > config: i386-randconfig-r022-20210911 (attached as .config)
+> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 26=
+1cbe98c38f8c1ee1a482fe76511110e790f58a)
+> > reproduce (this is a W=3D1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
+bin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git=
+/commit/?id=3Df7da4339ca510e4476ea35cb9fd44f3f190706c5
+> >         git remote add iio https://git.kernel.org/pub/scm/linux/kernel/=
+git/jic23/iio.git
+> >         git fetch --no-tags iio testing
+> >         git checkout f7da4339ca510e4476ea35cb9fd44f3f190706c5
+> >         # save the attached .config to linux build tree
+> >         mkdir build_dir
+> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
+O=3Dbuild_dir ARCH=3Di386 SHELL=3D/bin/bash
+> >=20
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >=20
+> > All errors (new ones prefixed by >>):
+> >=20
+> > >> ld.lld: error: undefined symbol: __udivdi3 =20
+> >    >>> referenced by intel-qep.c:290 (drivers/counter/intel-qep.c:290)
+> >    >>>               counter/intel-qep.o:(intel_qep_spike_filter_ns_wri=
+te) in archive drivers/built-in.a =20
+> This is a result of a change to passing in a u64 instead of a string.   I=
+'ve applied a fix
+> that uses do_div() and pushed out as testing again.
+>=20
+> William, please sanity check that fix looks right to you.
+>=20
+> Thanks,
+>=20
+> Jonathan
+
+Your do_div() change seems sane to me; would div_u64_rem() work here as
+well, or is do_div preferred because we're not using the remainder?
+
+I'm CCing Jarkko Nikula as well to keep them in the loop.
+
+William Breathitt Gray
+
+--ktaNQ2IAKnYoYMdX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFAqQIACgkQhvpINdm7
+VJLmQA/+PdmN9VE1QBJp2e3T0shwh/MrS5hMTfj9o8GCbtCgDVnFkiXfIbrG7elx
+8KKSy+KROs54WFGkp0alWLd4U8ocZjckwg+2Y+z1XzSyk39Df7VGlx3O147maHrX
+SwlxZPZqeZbftuahhn6k+KRFo36ZhkjbLQNdhdaUtu357Y2EFBTIm3aZfh5yi1FS
+4+zrLCVwgJQSzRg0mwdO1Btb53d2n/L6gbdeZcpoGZugEuPBXNbdszTvc4J+jnj4
+IupbEPAGgdK+oC7kyVMTBkLHTrH8tRQWwX48XCUVYsJ+yjQ1s7/ghDCLlaOa0nvV
+9ZMMqN2rWUaq9bs1dKRcsRGHksAWyC0RPtcc7CX21UF5776fNL+k5OySlbGBXrUt
+GCuoAoP2qkItHTDplnho3nJ12Nxv/DL8029LUarzdlpU9JYJFvDqRcLz21ClpU8Y
+ltfaAL544f8V3awyxRVtekfxX9gm3yE50ugYHj+bmw5Mzshw6oyKhUpW9Hw553Xt
+v8CuDSxemllkMpK0bHAqUVcErxIFMAH5DSJYq9mV64LrW920oxvvTI7kjuWHR00i
+m78+bvQTBIfW2X246+aGsWzwUKsCXhrRE0sjRlkxnFY/nKD6TxJqXwrMA47ryHQm
+jZK7UNvsu2tWlU28Y72Sdhh3mHG/KyxH8we7RKXNyg0tsIz/11M=
+=tOCE
+-----END PGP SIGNATURE-----
+
+--ktaNQ2IAKnYoYMdX--
