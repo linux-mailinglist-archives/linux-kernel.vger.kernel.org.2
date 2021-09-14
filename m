@@ -2,72 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81D340AAD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C03940AAE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbhINJbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        id S230391AbhINJco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhINJbN (ORCPT
+        with ESMTP id S229581AbhINJck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:31:13 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D3FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:29:55 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d46f:7eb5:4a37:9d14])
-        by xavier.telenet-ops.be with bizsmtp
-        id tlVr2500F2aSKa101lVr2l; Tue, 14 Sep 2021 11:29:54 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mQ4lC-004R8x-M8; Tue, 14 Sep 2021 11:29:50 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mQ4lC-000i9G-7c; Tue, 14 Sep 2021 11:29:50 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] nvmem: NVMEM_NINTENDO_OTP should depend on WII
-Date:   Tue, 14 Sep 2021 11:29:49 +0200
-Message-Id: <01318920709dddc4d85fe895e2083ca0eee234d8.1631611652.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Sep 2021 05:32:40 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BFAC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:31:23 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id bt14so27463464ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=17e6dnCGQrM5q2+qRVCN9tZEDHHPDT+i9nl8Ba63qoA=;
+        b=fO18a/ZXri1YVEFcqIhfCrlV+yhZ4JuoBFIJYJ0gi3qRiWlE+WheRR9VI8s/q7Qdb9
+         MpQ0vm/mMagzeCRTWE9/x00okFljf1w8M81fXCJIbzd02avrFzESu+lY68S8snGwXyha
+         Kirm92Bmmyz5IXgmzmAI/Asrt48Vh2wg97sHTHCeJuF1tnUvTQCzX7sE7XI6R8p9eowY
+         fob+yVX/rgWiBN569pxURVvr1G0R9E0MgcrfC7kuEX7jXczuO8A11kXhQqHupoDtqN5c
+         M0CaLfPzkn+RRPuiSXzJem1keHYNHDwhlgo8U9LLFDwVJdoXENQCw1FSOM7+R89DV5GS
+         0iWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=17e6dnCGQrM5q2+qRVCN9tZEDHHPDT+i9nl8Ba63qoA=;
+        b=WGD/+LSlDwW0owCl8+cwNG+cN6bleUdcPbw0oK/zZxREah9QVBcKAv/19/kBgqgYPs
+         pUYPNyAVb2kl8YNjrG98k0F4DhjROvLLbuNR2IQ+9PS2q8UXzwshsx1DDHoC40JaLU+m
+         ZdRIkrv5J3/ZX1c/cRoyTWCS5SQwRSCec8Z5wOp/cgrxxoaOdUjXtusxiAlrrkPDTysV
+         wjJ8cdP/sr2Fe1r5YwptT/GZfrtUcL9ABuToZ2bouoFFebhl82ZHPVwL0faGxS+3QS59
+         1w9frTw5Gc/9APByU0bX4AnNss8SoS3mWbVLQKd/YVsCTri4Sl7NmActHVhpjuHLc60I
+         vOsA==
+X-Gm-Message-State: AOAM531pwBuesTR1FUPwZFn6WNZSyHiTnbHw6iymbf/FLC7rvxMoEM1y
+        D5FhbX+QHtyDjibeupYMvfLbJWVUA7/+VD7uuZQdhw==
+X-Google-Smtp-Source: ABdhPJwWKL1MZRa7/+NpnheWZH9rbynmXky1A4LtI1nrRurIHCzQCecTbefrwitUWW42M7q0WAIKkn0HHlfFuOcXduM=
+X-Received: by 2002:a17:906:52c5:: with SMTP id w5mr17601927ejn.567.1631611881966;
+ Tue, 14 Sep 2021 02:31:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913131109.253835823@linuxfoundation.org>
+In-Reply-To: <20210913131109.253835823@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 14 Sep 2021 15:01:09 +0530
+Message-ID: <CA+G9fYvd_ppNoRiCDAgfoD9dvOdOSqRHNWh489h=g7Bt4zpfPA@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/300] 5.13.17-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Nintendo Wii and Wii U OTP is only present on Nintendo Wii and Wii U
-consoles.  Hence add a dependency on WII, to prevent asking the user
-about this driver when configuring a kernel without Nintendo Wii and Wii
-U console support.
+On Mon, 13 Sept 2021 at 19:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.13.17 release.
+> There are 300 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.17-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Fixes: 3683b761fe3a10ad ("nvmem: nintendo-otp: Add new driver for the Wii and Wii U OTP")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/nvmem/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Results from Linaro=E2=80=99s test farm.
+Regressions on arm.
 
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 39854d43758be3fb..da414617a54d4b99 100644
---- a/drivers/nvmem/Kconfig
-+++ b/drivers/nvmem/Kconfig
-@@ -109,6 +109,7 @@ config MTK_EFUSE
- 
- config NVMEM_NINTENDO_OTP
- 	tristate "Nintendo Wii and Wii U OTP Support"
-+	depends on WII || COMPILE_TEST
- 	help
- 	  This is a driver exposing the OTP of a Nintendo Wii or Wii U console.
- 
--- 
-2.25.1
+ERROR: modpost: __mulodi4 [drivers/block/nbd.ko] undefined!
 
+arm clang-10, clang-11, clang-12 and clang-13 builds failed
+on stable rc 5.14 and 5.13 with following arm configs,
+  - footbridge_defconfig
+  - mini2440_defconfig
+  - s3c2410_defconfig
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.13.17-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.13.y
+* git commit: daeb634aa75fbff920be96c86c18510120951cd0
+* git describe: v5.13.16-301-gdaeb634aa75f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13=
+.16-301-gdaeb634aa75f
+
+## Regressions (compared to v5.13.16-264-ga06d976ecf87)
+
+arm clang-10, clang-11, clang-12 and clang-13 builds failed
+on stable rc 5.14 and 5.13 with following arm configs,
+  - footbridge_defconfig
+  - mini2440_defconfig
+  - s3c2410_defconfig
+
+## No fixes (compared to v5.13.16-264-ga06d976ecf87)
+
+## Test result summary
+total: 89815, pass: 75073, fail: 999, skip: 12693, xfail: 1050
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 277 passed, 12 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 35 passed, 1 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-l[
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
