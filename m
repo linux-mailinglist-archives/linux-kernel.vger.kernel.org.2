@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A2840A577
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA8140A579
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233376AbhINEgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 00:36:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230415AbhINEgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:36:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B700610FB;
-        Tue, 14 Sep 2021 04:35:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631594128;
-        bh=ra6VTPUM7uTTtmDygf40MfCsvK85UJSZXairSp1Afw4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WlJW+Ls3DHrP1M+25UIiAWFMI1sgcPatogBzjaVTF7a0gdjs6MhNLs6UllPISyA8N
-         RfLZ2qk8Acohuhg9pus4YjAC+J3Mp8YH5+fHfk5Y1bqBXVxgGE7v4e+WeqaA8ORgfI
-         zI1seoxdssPKyrB2Gf3mb51Gd2yz7+AKliKCyy48=
-Date:   Tue, 14 Sep 2021 06:35:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        prashanth.ka@pathpartnertech.com, praneeth@ti.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        praveen.ap@pathpartnertech.com
-Subject: Re: [PATCH 03/30] v4l: vxd-dec: Create vxd_dec Mem Manager helper
- library
-Message-ID: <YUAmeLYf/fvbCHo3@kroah.com>
-References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
- <20210818141037.19990-4-sidraya.bj@pathpartnertech.com>
- <20210824133438.GO1931@kadam>
- <20210914034032.orctp5ov5oc33vag@sidraya-laptopU>
+        id S234358AbhINEif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 00:38:35 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:58497 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230415AbhINEie (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 00:38:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UoKZg15_1631594234;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UoKZg15_1631594234)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 14 Sep 2021 12:37:16 +0800
+Date:   Tue, 14 Sep 2021 12:37:14 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com,
+        zhangwen@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] erofs: fix compacted_2b if compacted_4b_initial >
+ totalidx
+Message-ID: <YUAm+kOdKcCzgcEy@B-P7TQMD6M-0146.local>
+References: <20210914035915.1190-1-zbestahu@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210914034032.orctp5ov5oc33vag@sidraya-laptopU>
+In-Reply-To: <20210914035915.1190-1-zbestahu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 09:10:37AM +0530, Sidraya Jayagond wrote:
-> This
-> message contains confidential information and is intended only 
-> for the
-> individual(s) named. If you are not the intended
-> recipient, you are 
-> notified that disclosing, copying, distributing or taking any
-> action in 
-> reliance on the contents of this mail and attached file/s is strictly
-> prohibited. Please notify the
-> sender immediately and delete this e-mail 
-> from your system. E-mail transmission
-> cannot be guaranteed to be secured or 
-> error-free as information could be
-> intercepted, corrupted, lost, destroyed, 
-> arrive late or incomplete, or contain
-> viruses. The sender therefore does 
-> not accept liability for any errors or
-> omissions in the contents of this 
-> message, which arise as a result of e-mail
-> transmission.
+On Tue, Sep 14, 2021 at 11:59:15AM +0800, Yue Hu wrote:
+> From: Yue Hu <huyue2@yulong.com>
 > 
+> Currently, the whole indexes will only be compacted 4B if
+> compacted_4b_initial > totalidx. So, the calculated compacted_2b
+> is worthless for that case. It may waste CPU resources.
+> 
+> No need to update compacted_4b_initial as mkfs since it's used to
+> fulfill the alignment of the 1st compacted_2b pack and would handle
+> the case above.
+> 
+> We also need to clarify compacted_4b_end here. It's used for the
+> last lclusters which aren't fitted in the previous compacted_2b
+> packs.
+> 
+> Some messages are from Xiang.
+> 
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
 
-Now deleted, this is not ok for kernel development mailing lists, sorry.
+Looks good to me,
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+
+(although I think the subject title would be better changed into
+ "clear compacted_2b if compacted_4b_initial > totalidx"
+ since 'fix'-likewise words could trigger some AI bot for stable
+ kernel backporting..)
+
+Thanks,
+Gao Xiang
+
+> ---
+>  fs/erofs/zmap.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> index 9fb98d8..aeed404 100644
+> --- a/fs/erofs/zmap.c
+> +++ b/fs/erofs/zmap.c
+> @@ -369,7 +369,8 @@ static int compacted_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+>  	if (compacted_4b_initial == 32 / 4)
+>  		compacted_4b_initial = 0;
+>  
+> -	if (vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B)
+> +	if ((vi->z_advise & Z_EROFS_ADVISE_COMPACTED_2B) &&
+> +	    compacted_4b_initial <= totalidx) {
+>  		compacted_2b = rounddown(totalidx - compacted_4b_initial, 16);
+>  	else
+>  		compacted_2b = 0;
+> -- 
+> 1.9.1
