@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2000940B8A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1301440B8B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhINUD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S233434AbhINUJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbhINUD0 (ORCPT
+        with ESMTP id S232545AbhINUJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:03:26 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6B2C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:02:08 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id v19so486338pjh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:02:08 -0700 (PDT)
+        Tue, 14 Sep 2021 16:09:06 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D84C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:07:48 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id a10so780990qka.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:07:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ytz9T65KINeMDYgtvEhkkCARVDqnbfdteXwgWuVKDiI=;
-        b=NRuom6JboBrj4IXL+pBGw7eEz90ljXX1tfKU8KHlfdND+6f8WcEcq3XSl5fZ+Z7Hm7
-         jOf2r+/EUDLBo2NN6Fo36PIWetd1fxV20GRa8K/6eGrxrDkSGtLwzkC0HQ2wotAzsSqJ
-         QwxakmNvcd59dGryK2aUYTK0qGCUv6FnpFEms=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2K42Cco3VEzvh5/q/0m2XAwxpLXefoWzF9vdOC1B4Gw=;
+        b=BJhND6MG+JUZihcXSCVNsVkdDkscbXLe8kths9jHgjS4SLgYrqGaQp9OPqfXejdGA/
+         ZIntkKlQZztXJwl/c/22qlX12SBrSu9xI7kd5YDbYcDWkLHLSQisKoAr972kYDUnT241
+         jPCyXtIrFjVVOZz3sqJrKkZeNMO/myXFIEVEc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ytz9T65KINeMDYgtvEhkkCARVDqnbfdteXwgWuVKDiI=;
-        b=x3n54aViWLYn4H6BtLMPVwPYcClAayoZmq1ntmkPcLiQyUxEah3m7bfSMvbbyE6fAi
-         IAbVqgC/X5hzCbS+LBSupbRrKThw6aH7G5SEMoG5qayopm5Ny87BvoA/Iauz48ZBR3/d
-         cVAfJ6TxAXIQwR/eomcy/VjJMjdr7oaj/Zz4NHU2HqwDfwBl2Hrdzha7A6dZrXycJk20
-         klJkv+1OzV5O8fD3i0sYgkRtl+oiDqRAX60fIVxkjXPx8klwaPYen7dV+r8PkO3yGWR4
-         dD8lBINgzfMfg8JmLlor4d5PgNer5fnKOBux1lZKoy1aF5WQOyVOcFxZyIi2vy1aQojD
-         20sw==
-X-Gm-Message-State: AOAM530NtLG9hor1rDE+DUAr5LOvD2YOI5qmNLi5SyCgm5tlrR+fND10
-        Sk/x+HVvcSxVVkDTKC87qNPi9w==
-X-Google-Smtp-Source: ABdhPJxhhZk1i7zHZPiprze3RqdD3yBPfw9oRSO69WtgTUwL8hmFgpqNya25NvLvysnJFy0XAsg0ng==
-X-Received: by 2002:a17:902:8a83:b0:132:6674:f28b with SMTP id p3-20020a1709028a8300b001326674f28bmr16382589plo.63.1631649727515;
-        Tue, 14 Sep 2021 13:02:07 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m21sm2406530pjl.14.2021.09.14.13.02.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 13:02:06 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>, llvm@lists.linux.dev,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2] hardening: Avoid harmless Clang option under CONFIG_INIT_STACK_ALL_ZERO
-Date:   Tue, 14 Sep 2021 13:02:03 -0700
-Message-Id: <20210914200203.1667751-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2K42Cco3VEzvh5/q/0m2XAwxpLXefoWzF9vdOC1B4Gw=;
+        b=Lemw6+bSl4nsvf1RDQ5bf4f7qX3ruhhCcCytMj8m8xRg8JADYmxHGKIkQ8sI1lvQpi
+         tCYGnAIZR0mheOGiQMBljuECskEdHiIAIVXnl4OPJGWKgLMnzLpgitr4Qyx/uI1SiU7G
+         WDTOEtvxrhZRfncsaroRw3NWEBm+l/eOkteFbHB8gxsPlOTxR3Lr7QtakO5+MdXetBMt
+         X6ikFIVxlpT7Bq5YK3WR+aV8P561CtWDyZxTclBYyyy6BtQMGTjPt7YhtEflzB1UumZ4
+         UnqVOCtTpv1uBvSwn09zrU+X/35Mo6ph/VhVoofu05qYSSYq4hxQj4PnMLDkzjNceDB4
+         hs1g==
+X-Gm-Message-State: AOAM5337CfrEHWU/y5E91goZY0s7i9IJP/ICZvR9xoOT3h3HKL+PFv82
+        2dgGcV6v1ZwXfc4WmO1a3/5cI4sfEUKAzg==
+X-Google-Smtp-Source: ABdhPJzrx5Bk5WIdkB2N5adsGPsAFCOof8sE3XmBcbxXDGTdzNkLvxiQiBzGrLuTH0Z8V8dqaDFHNQ==
+X-Received: by 2002:a37:741:: with SMTP id 62mr6768249qkh.490.1631650067422;
+        Tue, 14 Sep 2021 13:07:47 -0700 (PDT)
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com. [209.85.222.175])
+        by smtp.gmail.com with ESMTPSA id v14sm8296004qkb.88.2021.09.14.13.07.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 13:07:47 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id y144so825558qkb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:07:47 -0700 (PDT)
+X-Received: by 2002:a05:6638:dc8:: with SMTP id m8mr16281460jaj.93.1631649751964;
+ Tue, 14 Sep 2021 13:02:31 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2977; h=from:subject; bh=imXvSq9i08/jXla4+sBmsEoHRgxDVq0c/pR4Y+Src2Y=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhQP+6KIBv7ADhwLtBfRJcxajHiIjU9syPZkgPPvze 7pK8/OSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYUD/ugAKCRCJcvTf3G3AJmttD/ 4mVU7Uy78lGKS9GG4/AATbbI2r+H4dlMvkCBdPoS9u0ZZWy9ANO/hgX4YAbWMHyJlcwuYaEF0qlNXY FH+7dggnZaFS02i3ZFJLPcdDZPEBZnFO87uTxXL9lDha35X9mC7epPNTP4noj25bU5erE5pbxyxPDu DqImezS/gxrMsa1DPkvzKshSTEOM/LfO9VmN9wucjUMzlEYZzsToT+DbvdczK0B5RgoCSY787J5FYu 6P+N5A3SeT4ob22KoyAGNYGhXjELxTAPqnvXbj0CEkRh1WKNc8Knz/R9mk3FCx0qMkCRx5UxqYXMc2 E46IBRhrauS2lc2V0BQ9Ucip2broVQVj/A5jWAt7zd3JubGP14NTreyt9tV3Ry21uOrZfpipH/Txh5 plKgkla9cKh4yOR6PXD6wmEihq0pkOrOg3HSkWLtH2/dknakAYmN863uoCRPbe86Y2PMyM9uy1EU7V 9pS8Hz+GnxJLTX6HMJvQZvCyfQ/9Nj996X3+9iXDguWxM1fqrw9vwr/qdP1GO0jMKb/CqdAUNM1Xge 2tzx3f9Ds6ue6YV6t28roXbHEyYyTwzggRYDpWyj6pbN3NknET2P0o8TNtnCBFLDYyQKwc9YstZ02m vuyuoahu6RDM2jnuT5Khd3rtsnEBEbQW7Wp952MN5xrEpYIsZ2Os14rEiVNw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20210909210032.465570-1-dianders@chromium.org>
+ <20210909135838.v4.4.I6103ce2b16e5e5a842b14c7022a034712b434609@changeid>
+ <87ee9r10qw.fsf@intel.com> <CAD=FV=XgLcOBOOp9kgShE4+T8g8UZcO_Ff3hhAbGTyLkdE7HNA@mail.gmail.com>
+ <CGME20210914185943eucas1p145cf1b087572ec1c4da1f1e269c6f11b@eucas1p1.samsung.com>
+ <87y27zyodw.fsf@intel.com> <5af6cd50-0ed3-1a70-d7d0-66ca18a83d65@samsung.com>
+In-Reply-To: <5af6cd50-0ed3-1a70-d7d0-66ca18a83d65@samsung.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 14 Sep 2021 13:02:20 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XHvFq5+Rtax7WNq2-BieQr-BM4UnmOcma_eTzkX2ZtNA@mail.gmail.com>
+Message-ID: <CAD=FV=XHvFq5+Rtax7WNq2-BieQr-BM4UnmOcma_eTzkX2ZtNA@mail.gmail.com>
+Subject: Re: [PATCH v4 04/15] drm/edid: Use new encoded panel id style for
+ quirks matching
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently under Clang, CC_HAS_AUTO_VAR_INIT_ZERO requires an extra
--enable flag compared to CC_HAS_AUTO_VAR_INIT_PATTERN. GCC does not,
-and will happily ignore the Clang-specific flag. However, its presence
-on the command-line is both cumbersome and confusing. Due to GCC's
-tolerant behavior, though, we can continue to use a single Kconfig
-cc-option test for the feature on both compilers, but then drop the
-Clang-specific option in the Makefile.
+Hi,
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: llvm@lists.linux.dev
-Fixes: dcb7c0b9461c ("hardening: Clarify Kconfig text for auto-var-init")
-Suggested-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/lkml/20210914102837.6172-1-will@kernel.org/
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- Makefile                   | 6 +++---
- security/Kconfig.hardening | 5 ++++-
- 2 files changed, 7 insertions(+), 4 deletions(-)
+On Tue, Sep 14, 2021 at 12:36 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+>
+> W dniu 14.09.2021 o 20:59, Jani Nikula pisze:
+> > On Tue, 14 Sep 2021, Doug Anderson <dianders@chromium.org> wrote:
+> >> Hi,
+> >>
+> >> On Tue, Sep 14, 2021 at 11:16 AM Jani Nikula
+> >> <jani.nikula@linux.intel.com> wrote:
+> >>> On Thu, 09 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
+> >>>> In the patch ("drm/edid: Allow the querying/working with the panel ID
+> >>>> from the EDID") we introduced a different way of working with the
+> >>>> panel ID stored in the EDID. Let's use this new way for the quirks
+> >>>> code.
+> >>>>
+> >>>> Advantages of the new style:
+> >>>> * Smaller data structure size. Saves 4 bytes per panel.
+> >>>> * Iterate through quirks structure with just "==" instead of strncmp()
+> >>>> * In-kernel storage is more similar to what's stored in the EDID
+> >>>>    itself making it easier to grok that they are referring to the same
+> >>>>    value.
+> >>>>
+> >>>> The quirk table itself is arguably a bit less readable in the new
+> >>>> style but not a ton less and it feels like the above advantages make
+> >>>> up for it.
+> >>> I suppose you could pass vendor as a string to EDID_QUIRK() to retain
+> >>> better readability?
+> >> I would love to, but I couldn't figure out how to do this and have it
+> >> compile! Notably I need the compiler to be able to do math at compile
+> >> time to compute the final u32 to store in the init data. I don't think
+> >> the compiler can dereference strings (even constant strings) and do
+> >> math on the result at compile time.
+> > Ah, right.
+>
+>
+> What about:
+>
+> +#define drm_edid_encode_panel_id(vend, product_id) \
+> +       ((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
+> +        (((u32)((vend)[1]) - '@') & 0x1f) << 21 | \
+> +        (((u32)((vend)[2]) - '@') & 0x1f) << 16 | \
+> +        ((product_id) & 0xffff))
 
-diff --git a/Makefile b/Makefile
-index 34a0afc3a8eb..72d165ffabdb 100644
---- a/Makefile
-+++ b/Makefile
-@@ -831,12 +831,12 @@ endif
- 
- # Initialize all stack variables with a zero value.
- ifdef CONFIG_INIT_STACK_ALL_ZERO
--# Future support for zero initialization is still being debated, see
--# https://bugs.llvm.org/show_bug.cgi?id=45497. These flags are subject to being
--# renamed or dropped.
- KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
-+ifdef CONFIG_CC_IS_CLANG
-+# https://bugs.llvm.org/show_bug.cgi?id=45497
- KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
- endif
-+endif
- 
- # While VLAs have been removed, GCC produces unreachable stack probes
- # for the randomize_kstack_offset feature. Disable it for all compilers.
-diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-index 90cbaff86e13..ded17b8abce2 100644
---- a/security/Kconfig.hardening
-+++ b/security/Kconfig.hardening
-@@ -23,13 +23,16 @@ config CC_HAS_AUTO_VAR_INIT_PATTERN
- 	def_bool $(cc-option,-ftrivial-auto-var-init=pattern)
- 
- config CC_HAS_AUTO_VAR_INIT_ZERO
-+	# GCC ignores the -enable flag, so we can test for the feature with
-+	# a single invocation using the flag, but drop it as appropriate in
-+	# the Makefile, depending on the presence of Clang.
- 	def_bool $(cc-option,-ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang)
- 
- choice
- 	prompt "Initialize kernel stack variables at function entry"
- 	default GCC_PLUGIN_STRUCTLEAK_BYREF_ALL if COMPILE_TEST && GCC_PLUGINS
- 	default INIT_STACK_ALL_PATTERN if COMPILE_TEST && CC_HAS_AUTO_VAR_INIT_PATTERN
--	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_PATTERN
-+	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
- 	default INIT_STACK_NONE
- 	help
- 	  This option enables initialization of stack variables at
--- 
-2.30.2
+Wow, I _swear_ I tried exactly that syntax, but clearly I didn't. It
+works great and it looks _sooo_ much nicer now. Thanks! I'll send out
+a v5 shortly with this.
 
+-Doug
