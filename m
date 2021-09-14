@@ -2,135 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207BB40B533
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861E040B535
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhINQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:48:17 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42124 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhINQsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:48:16 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 18EGksoH011021;
-        Tue, 14 Sep 2021 18:46:54 +0200
-Date:   Tue, 14 Sep 2021 18:46:54 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: how many memset(,0,) calls in kernel ?
-Message-ID: <20210914164654.GC10488@1wt.eu>
-References: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
- <20210912045608.GB16216@1wt.eu>
- <88976a40175c491fb5e3349f6686ad67@AcuMS.aculab.com>
- <20210913160945.GA2456@1wt.eu>
- <15cd0a8e72b3460db939060db25dd59a@AcuMS.aculab.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15cd0a8e72b3460db939060db25dd59a@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230128AbhINQsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhINQst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:48:49 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B931AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:47:31 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id 127-20020a621685000000b0043376b0ce1dso8627397pfw.22
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:47:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZlkIDsFBSERm/Xbx3Ggd03CqQdqQbhahkeWLgMh2nug=;
+        b=AEjRWP+lD/D5q9exkYWG+QxaG03/J156jSXYDhoyQGVcNjoLONBxPwXyn15Pqw2sgT
+         USFgJx4v+B3SOKGRmvDCEH5fJucy0NfisIHBinP3+VWp16Us041hvFMEqWyXqvskMpaA
+         2qSsPhKMzTr+dovtd2sMCAOqQ035xJnunLq2HLyb8D1pnLdReIn2beODwLrIONtJaxks
+         caOP2CR4UKbkhLJJ56Z+LQegVzhBBFaGjpJaaOdq7/eKDlhjWhrkoY55jH5n2KZxO9wX
+         GF/lsiXhxiX/LQnJNbuLF6rLXxe3HagGylMT9znXfAwwhN8Ksb7bVaMrj8AJF1sH2YSF
+         MwTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZlkIDsFBSERm/Xbx3Ggd03CqQdqQbhahkeWLgMh2nug=;
+        b=4mZ6S4aqrcwJAaTYSIickL0dKYAcPLiSsXzL91O3PyG7kN1i1rc9VI5hfWhhdwdrHl
+         cY27Zl1Ze0Vr0c1daCwgmB2p+MFIkKVN/6N1pLFxpjD5bPSH6pO3tdIXxjVWzyNKVFae
+         HmZ8H/2P0DQbS1E7tvYpg6tktftycTIjiLzDpsto1nQoFZDMSMn+4UE5wOpKJEIcd2KE
+         lrZRRPs5RKPp2EKzsv+6fnD44SX/4cKVSWRQPqXcCX/HOpPzHnhhs1OtHOxbi9OvXsYO
+         4DehjC90eQweTGKEVfp/s3Co6CuZZTOExPNdj3D2FYW+EQrdy2mmWuaSTsWqPseTj/cY
+         4HFg==
+X-Gm-Message-State: AOAM530UCrXWjYWdx0CK5MXciSszZ6e6QMSdwg1dBwkM8bAQgLtknLf1
+        orkpzsZ+Czr5UCpxtz0ev69hyTkRghM=
+X-Google-Smtp-Source: ABdhPJxP0z3NqxcPYSBvChKyaZ263JWYy3SOY6I1xc5+L47cHHK1bFD1b67xcFV3wDtohpjKV5Zf554sBaA=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:b358:1f40:79d5:ab23])
+ (user=pgonda job=sendgmr) by 2002:a62:7997:0:b0:43d:f9e1:939c with SMTP id
+ u145-20020a627997000000b0043df9e1939cmr5102953pfc.2.1631638051037; Tue, 14
+ Sep 2021 09:47:31 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 09:47:23 -0700
+Message-Id: <20210914164727.3007031-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH 0/4 V8] Add AMD SEV and SEV-ES intra host migration support
+From:   Peter Gonda <pgonda@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:23:40AM +0000, David Laight wrote:
-> > The exact point is, here it's up to the compiler to decide thanks to
-> > its builtin what it considers best for the target CPU. It already
-> > knows the fixed size and the code is emitted accordingly. It may
-> > very well be a call to the memset() function when the size is large
-> > and a power of two because it knows alternate variants are available
-> > for example.
-> > 
-> > The compiler might even decide to shrink that area if other bytes
-> > are written just after the memset(), leaving only holes touched by
-> > memset().
-> 
-> You might think the compiler will make sane choices for the target CPU.
-> But it often makes a complete pig's breakfast of it.
-> I'm pretty sure 6 'rep stos' is slower than 6 write an absolutely
-> everything - with the possible exception of an 8088.
+Intra host migration provides a low-cost mechanism for userspace VMM
+upgrades.  It is an alternative to traditional (i.e., remote) live
+migration. Whereas remote migration handles moving a guest to a new host,
+intra host migration only handles moving a guest to a new userspace VMM
+within a host.  This can be used to update, rollback, change flags of the
+VMM, etc. The lower cost compared to live migration comes from the fact
+that the guest's memory does not need to be copied between processes. A
+handle to the guest memory simply gets passed to the new VMM, this could
+be done via /dev/shm with share=on or similar feature.
 
-It can be suboptimal (especially with the moderate latencies required
-for small areas), but my point is that in plenty of cases the memset()
-call will be totally eliminated. Example:
+The guest state can be transferred from an old VMM to a new VMM as follows:
+1. Export guest state from KVM to the old user-space VMM via a getter
+user-space/kernel API 2. Transfer guest state from old VMM to new VMM via
+IPC communication 3. Import guest state into KVM from the new user-space
+VMM via a setter user-space/kernel API VMMs by exporting from KVM using
+getters, sending that data to the new VMM, then setting it again in KVM.
 
-The file:
-  #include <string.h>
+In the common case for intra host migration, we can rely on the normal
+ioctls for passing data from one VMM to the next. SEV, SEV-ES, and other
+confidential compute environments make most of this information opaque, and
+render KVM ioctls such as "KVM_GET_REGS" irrelevant.  As a result, we need
+the ability to pass this opaque metadata from one VMM to the next. The
+easiest way to do this is to leave this data in the kernel, and transfer
+ownership of the metadata from one KVM VM (or vCPU) to the next. For
+example, we need to move the SEV enabled ASID, VMSAs, and GHCB metadata
+from one VMM to the next.  In general, we need to be able to hand off any
+data that would be unsafe/impossible for the kernel to hand directly to
+userspace (and cannot be reproduced using data that can be handed safely to
+userspace).
 
-  int f(int a, int b)
-  {
-        struct {
-                int n1;
-                int n2;
-                int n3;
-                int n4;
-        } s;
+V8
+ * Update to require that @dst is not SEV or SEV-ES enabled.
+ * Address selftest feedback.
 
-        memset(&s, 0, sizeof(s));
+V7
+ * Address selftest feedback.
 
-        s.n2 = a;
-        s.n3 = b;
+V6
+ * Add selftest.
 
-        return s.n1 + s.n2 + s.n3 + s.n4;
-  }
+V5:
+ * Fix up locking scheme
+ * Address marcorr@ comments.
 
-gives:
+V4:
+ * Move to seanjc@'s suggestion of source VM FD based single ioctl design.
 
-  0000000000000000 <f>:
-   0:   8d 04 37                lea    (%rdi,%rsi,1),%eax
-   3:   c3                      retq   
+v3:
+ * Fix memory leak found by dan.carpenter@
 
-See ? The builtin allowed the compiler to *know* that these areas
-were zeroes and could optimize them away. More importantly this
-can save some reads from being performed, with the data being only
-written into:
+v2:
+ * Added marcorr@ reviewed by tag
+ * Renamed function introduced in 1/3
+ * Edited with seanjc@'s review comments
+ ** Cleaned up WARN usage
+ ** Userspace makes random token now
+ * Edited with brijesh.singh@'s review comments
+ ** Checks for different LAUNCH_* states in send function
 
-  #include <string.h>
+v1: https://lore.kernel.org/kvm/20210621163118.1040170-1-pgonda@google.com/
 
-  struct {
-        int n1;
-        int n2;
-  } s;
+base-commit: 680c7e3be6a3
 
-  void f(int a, int b)
-  {
+Cc: Marc Orr <marcorr@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-        memset(&s, 0, sizeof(s));
+Peter Gonda (4):
+  KVM: SEV: Add support for SEV intra host migration
+  KVM: SEV: Add support for SEV-ES intra host migration
+  selftest: KVM: Add open sev dev helper
+  selftest: KVM: Add intra host migration tests
 
-        s.n1 |= a;
-        s.n2 |= b;
-  }
+ Documentation/virt/kvm/api.rst                |  15 ++
+ arch/x86/include/asm/kvm_host.h               |   1 +
+ arch/x86/kvm/svm/sev.c                        | 187 ++++++++++++++++
+ arch/x86/kvm/svm/svm.c                        |   1 +
+ arch/x86/kvm/svm/svm.h                        |   2 +
+ arch/x86/kvm/x86.c                            |   6 +
+ include/uapi/linux/kvm.h                      |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ .../selftests/kvm/include/x86_64/svm_util.h   |   2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  24 ++-
+ tools/testing/selftests/kvm/lib/x86_64/svm.c  |  13 ++
+ .../selftests/kvm/x86_64/sev_vm_tests.c       | 203 ++++++++++++++++++
+ 13 files changed, 447 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
 
-Gives:
+-- 
+2.33.0.309.g3052b89438-goog
 
-  0000000000000000 <f>:
-   0:   89 3d 00 00 00 00       mov    %edi,0x0(%rip)        # 6 <f+0x6>
-   6:   89 35 00 00 00 00       mov    %esi,0x0(%rip)        # c <f+0xc>
-   c:   c3                      retq   
-
-See ? Just plain writes, no read-modify-write of the memory area.
-If you'd call an external memset() function, you'd instantly lose
-all these possibilities:
-
-  0000000000000000 <f>:
-   0:   55                      push   %rbp
-   1:   ba 08 00 00 00          mov    $0x8,%edx
-   6:   89 fd                   mov    %edi,%ebp
-   8:   bf 00 00 00 00          mov    $0x0,%edi
-   d:   53                      push   %rbx
-   e:   89 f3                   mov    %esi,%ebx
-  10:   31 f6                   xor    %esi,%esi
-  12:   48 83 ec 08             sub    $0x8,%rsp
-  16:   e8 00 00 00 00          callq  1b <f+0x1b>
-  1b:   09 2d 00 00 00 00       or     %ebp,0x0(%rip)        # 21 <f+0x21>
-  21:   09 1d 00 00 00 00       or     %ebx,0x0(%rip)        # 27 <f+0x27>
-  27:   48 83 c4 08             add    $0x8,%rsp
-  2b:   5b                      pop    %rbx
-  2c:   5d                      pop    %rbp
-  2d:   c3                      retq   
-
-Thus the fact that the compiler has knowledge of the memset() is useful.
-
-Willy
