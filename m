@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7EC40A8FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C15A40A8FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhINIQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S230091AbhINIPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbhINIQC (ORCPT
+        with ESMTP id S229964AbhINIPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:16:02 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E27CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JS9XyKWEu9peOQhroFkD4dSiIRWtHH+3VNvEsw4skCM=; b=Gqti5ZKd7QF32ulr9bxdbXq7oe
-        MNN27qwusW3esipiWGBJPop9X8JDhncx+CSq/fl0wv6WIfWMJmmzo5D5ZBf9TOsvgPIrd25iXjrDe
-        ok4L84ZpPNbVXseqwSnH76ndQIarR/GL5ERuW1dzjx3govhMJ6VHvCzAzkIBDfG3fIAvvg8DJWX+s
-        9MOMNYTFKj9pAEIASAZAsOFlU2WQvLvBvwXmdwH2t37o9H9jWHGEGwRK1eNUrUJaWuYHoH+c5cknt
-        K/xD41LgJdGJ0uzQayxvJQbH6Xa7cbBS5chmaZpb8hNL5iX+9E/JAySg4fMCzpUpNie8FUH2l/Zn5
-        QUVnmP6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQ3aC-0034m2-81; Tue, 14 Sep 2021 08:14:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7145D30026F;
-        Tue, 14 Sep 2021 10:14:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0B7062C856301; Tue, 14 Sep 2021 10:14:20 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 10:14:20 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
-Message-ID: <YUBZ3J4Jy3x0VDkX@hirez.programming.kicks-ass.net>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210902105052.2842-1-jiangshanlai@gmail.com>
- <bfeb0b12-5b95-46c9-8ea3-6a4a5bf59076@www.fastmail.com>
- <4ecf191a-6642-6d59-cf10-6fe51e261b28@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ecf191a-6642-6d59-cf10-6fe51e261b28@linux.alibaba.com>
+        Tue, 14 Sep 2021 04:15:51 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A19C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:34 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id di6so1062367qvb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=UkRITEGXX6CzWObn2Pss3N17QNxFhOacW/rBM6plBko=;
+        b=MMtZoSeZPocFS1s4AR+1LL8xRFfHnFS+4Wq3a4MmLjZxkB2IXZT/iOZcQMyEOdrHbn
+         QzlZiqls0kGome6fCgqhcZgoxrpmDHE6SsO0rinz4o3/gSguY3YsK58rKtRNqotHIYPi
+         HMFL6Z62BRIdAxvZMC2jxGp/8tEe2cEI9ErjH8s7iqg4ZHQWofed0leTm7yWh3S0BT3k
+         bwBHwq5YnDj8X5lJKcKYSmVw6RGp//IOaW1sCKkQGG8t7fl6gkkyukdse7oEYuTJDoVf
+         99sB7TGzSsGzozzhJUH+VypdR9YDiRe+YC2Xavv8KgN0ZGQgtKC9Y3q5iw1ujrI+dL8C
+         5ctw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=UkRITEGXX6CzWObn2Pss3N17QNxFhOacW/rBM6plBko=;
+        b=wGHfkdmv+JeT5I1MM73j53SrHy8Aiab66TeTzjLHa3SOUoHYvGktj9NAmAYvzWdO1M
+         Jf2lhAlK4v7tNm84Wb3N7t3d/SJg/whXpfYPblBVdLMZaMf5ROv8DkyJTMhQBcgW/Uel
+         kebHIJ9zjaQLEtrqmQcHcq+1e+B7qtLxeJEvLMl3YPjW9Q9OkRBJ4hOysHry76r0L5mI
+         ykGUwRQR6Fo3iDq01r7RyBHanWtfEohmCnTHm1q5ivJoYjqerX/47kq0TsgAxCbS8Kh8
+         v8tG04fG5e2IILaJpepo6k02ZVrQrpcjtebD6q9a6jyWRiomfbq8Wb4JYdthISh05/bI
+         zYWg==
+X-Gm-Message-State: AOAM531Gfd2fDSYP7Bs6t8xWGtlto7NLW4lEwdCEOKj77JUONXac45ci
+        YMowUmNX0AxsCOD9NOxBsWrj4wjWiboHMQ==
+X-Google-Smtp-Source: ABdhPJywrDCkPNv5Y8r1ovCy4W59cnTuIItmjYmAjBy0zVzaMmsw0aT6O0jKvOxYEluOt8hQlY+HWg==
+X-Received: by 2002:a05:6214:527:: with SMTP id x7mr3884341qvw.55.1631607273733;
+        Tue, 14 Sep 2021 01:14:33 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id a9sm7217438qko.27.2021.09.14.01.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 01:14:33 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     SeongJae Park <sjpark@amazon.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jiri Kosina <trivial@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH trivial] mm/damon: Grammar s/works/work/
+Date:   Tue, 14 Sep 2021 08:14:27 +0000
+Message-Id: <20210914081427.18965-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210914073451.3883834-1-geert@linux-m68k.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:04:47AM +0800, Lai Jiangshan wrote:
-> I think Peter is still working on reworking the patchset and may be
-> including improving this patch.  I'm Okay if this patch is dropped.
+From: SeongJae Park <sjpark@amazon.de>
 
-No I am not.
+Hi Geert,
 
-I said I have interest, I also said you shouldn't repost after a single
-bit of feedback -- there's nothing more annoying than trying to review a
-large-ish and complicated series of patches when you get a new version
-every other day.
 
-But please do work on it, because I really don't have the bandwidth to
-carry this atm.  By now there's been a fair amount of feedback, so a new
-version might be appropriate.
+Thank you for this patch!
 
-I really do think you've got some very good things here. Please work on
-it. I will try and review :-)
+On Tue, 14 Sep 2021 09:34:51 +0200	[thread overview] Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+
+> Correct a singular versus plural grammar mistake in the help text for
+> the DAMON_VADDR config symbol.
+> 
+> Fixes: 3f49584b262cf8f4 ("mm/damon: implement primitives for the virtual memory address spaces")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Reviewed-by: SeongJae Park <sjpark@amazon.de>
+
+
+Thanks,
+SJ
+
+> ---
+>  mm/damon/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
+> index 37024798a97caf0b..ba8898c7eb8eb35e 100644
+> --- a/mm/damon/Kconfig
+> +++ b/mm/damon/Kconfig
+> @@ -30,7 +30,7 @@ config DAMON_VADDR
+>  	select PAGE_IDLE_FLAG
+>  	help
+>  	  This builds the default data access monitoring primitives for DAMON
+> -	  that works for virtual address spaces.
+> +	  that work for virtual address spaces.
+>  
+>  config DAMON_VADDR_KUNIT_TEST
+>  	bool "Test for DAMON primitives" if !KUNIT_ALL_TESTS
+> -- 
+> 2.25.1
+> 
