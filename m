@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739D440B868
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89A340B86B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhINTy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:54:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49596 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232552AbhINTy4 (ORCPT
+        id S233145AbhINT4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232050AbhINT4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:54:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631649218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dkmQm8W6bvbG86Wt4h4OqHW+/RRUFwTqElupwuosMGw=;
-        b=QSUOfjXgROxrJ6QbPez4RTDfcz2IZfZEUz0MIme2TT8xt9X44VTyxWSKtYcaGAoAh8slmx
-        nkOavWcHj9npvNDoR7gIpN5IpA9+5nncvjr2eBuirnOwFKpyPZuhReykc8jnAMsZJwVa6+
-        rg+0thLsgol+PiH7+WnbLPmGqORTI8M=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-CxhpntGENTiypthuDNBDmQ-1; Tue, 14 Sep 2021 15:53:36 -0400
-X-MC-Unique: CxhpntGENTiypthuDNBDmQ-1
-Received: by mail-ej1-f72.google.com with SMTP id q15-20020a17090622cf00b005c42d287e6aso175892eja.18
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:53:36 -0700 (PDT)
+        Tue, 14 Sep 2021 15:56:04 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D23C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:54:46 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id c79so778769oib.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xtR27z6ArnQBxxqRuhMNgUKk5tpQO0X2C1F4R+xD3JM=;
+        b=SCLn97FK+hXMMlHmbUSLfHw7x68WBqS0hKDXIZGicXin4gluDW3vfgrkP2Ca4RSOpc
+         XibbKhQs8gUw+nb8qarCB2xb87HrBOpLTbs25sC+4CrzbceexThTsvsv9Cdpo2QZahKQ
+         982mpMQRpEm/DlBtrRGoR2UVPQ9sd4kxxT00lfVsz1O9mPAVEzVAllr2p8tcS8MhweBs
+         hOBITNlddkzMFCO6Spq57aTaCKRcmnK69vaaUSgFoBOb+8q59JHvx5eA/Fz67P65/ZN0
+         V3OhgYKPezO1iVjRd4iDkrNYZHd6MPS2W5rDJhUCjW7uq20J0SdaP/6dp4e+JEqOiLbz
+         cIow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=dkmQm8W6bvbG86Wt4h4OqHW+/RRUFwTqElupwuosMGw=;
-        b=jbDYKIkIhuxF4qSOifvKdbhpOdaLWysziY2U3ajz8SSt+PdFvyYckmO9sqAIvQNtVV
-         si69x9Y5UvgP6ZgUY2bwhSlfpNk48Z1DDChCtIotjqMMmNHDMa2tx3ZKVtCcUY73JXzw
-         L+lYIKXlJIC/ykNMEnq14Wu427IPJZwjj8YgqHr/MiJBPj07clJHwAmsnmf9hCKCy0zY
-         gylFj2Dl2mZbpsIX3hheTEE0FMuJMt9qqgeYE+sW0GkagLvKikYJcgwUO5xpT7GclCRm
-         ddA6ZgD6r8d8EmObHIRn5prYkCN/KB8HRe+Fy8D2ezmmxFr1vD8KxF75KyUQRkny+v9X
-         BvHQ==
-X-Gm-Message-State: AOAM530UcEdleosbX4O7g03ic6Qz+WZ7mRPswVOJHs8KLugBVJhTO1vd
-        G0zLLAOd4rbgIYBmruIz25JqyLDUJYnB1H3woGHWLzH0QeuVG0dfiJVunlJx0bvdNMhrjm3kyw5
-        9ZJ6BbMpkH79wizU0I+4ROApR
-X-Received: by 2002:a17:906:31ca:: with SMTP id f10mr20060761ejf.73.1631649215719;
-        Tue, 14 Sep 2021 12:53:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxM/UIv4EzPb+rSyq8EubqXE2rc9ZXZPKXWi2tuR39YigTtmGpcgA9b+50W9qR7lb08qZkbcg==
-X-Received: by 2002:a17:906:31ca:: with SMTP id f10mr20060745ejf.73.1631649215382;
-        Tue, 14 Sep 2021 12:53:35 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id gc19sm2566172ejb.35.2021.09.14.12.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 12:53:34 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 21A8118033D; Tue, 14 Sep 2021 21:53:34 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Sujith Manoharan <c_manoha@qca.qualcomm.com>,
-        ath9k-devel@qca.qualcomm.com
-Cc:     linux-wireless@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "John W . Linville" <linville@tuxdriver.com>,
-        Felix Fietkau <nbd@openwrt.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sven Eckelmann <sven@narfation.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] ath9k: interrupt fixes on queue reset
-In-Reply-To: <20210914192515.9273-1-linus.luessing@c0d3.blue>
-References: <20210914192515.9273-1-linus.luessing@c0d3.blue>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 14 Sep 2021 21:53:34 +0200
-Message-ID: <87a6kf6iip.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xtR27z6ArnQBxxqRuhMNgUKk5tpQO0X2C1F4R+xD3JM=;
+        b=aZzsBNYaT51bj4kptjxUvDpT3KhzhBEEzESg2ciGY4E6xamXWHNMn3KwnNJihc1J0J
+         lOE7OoRXGCIicKgT9TykOghS2Dt6c+wCrXbpMIvbEdP7gTe3oyewkitcXwa42DGuoEFk
+         1D3cMKz1/PPoJiZo5Gj5WRMvjX4JTQM7/kPGXRxd6oListrNL0czjxyeMuqksEKLoUX+
+         3F9GTqrPKfKx5UNswiYKAmA21+djZJjfGh90+43Ekpq7n7MeCRiQ/GO+JhOvKfVNVr7E
+         2W2jTspecvLut0ovcv92nO24OSerd2x1tm5YqDtSYdza+2YBQ9AVEae+DUdLpcu5hyhY
+         ciiA==
+X-Gm-Message-State: AOAM530WvRukX3+YBcCGQkgfuxXo7Be0o92NEIh/KgYbOGh1+EQ5C07P
+        877AfqszWz4vgfQOSnO+c3Qb7DJxUU5RjN0F+fAP2Q==
+X-Google-Smtp-Source: ABdhPJyY49qMeuzZKAaa8KedjVaEkbHPUYNH9m6MA6xJpe80HJVWe/OsgcQjWGCihyusAFnyuLtDB0ocuzpVrrtBnH8=
+X-Received: by 2002:a05:6808:909:: with SMTP id w9mr2742252oih.164.1631649286048;
+ Tue, 14 Sep 2021 12:54:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210914190125.3289256-1-pgonda@google.com>
+In-Reply-To: <20210914190125.3289256-1-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Tue, 14 Sep 2021 12:54:35 -0700
+Message-ID: <CAA03e5HBzp4ttsQ_o8xTmtMNhp9WM0zTUgS_SQViAAhTX5=hTQ@mail.gmail.com>
+Subject: Re: [PATCH V2] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for SEV-ES
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Nathan Tempelman <natet@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus L=C3=BCssing <linus.luessing@c0d3.blue> writes:
-
-> Hi,
+On Tue, Sep 14, 2021 at 12:01 PM Peter Gonda <pgonda@google.com> wrote:
 >
-> The following are two patches for ath9k to fix a potential interrupt
-> storm (PATCH 2/3) and to fix potentially resetting the wifi chip while
-> its interrupts were accidentally reenabled (PATCH 3/3).
+> Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
+> VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
+> error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
+> SEV-ES guest. The destination VM is already checked for SEV and SEV-ES
+> with sev_guest(), so this ioctl already fails if the destination is SEV
+> enabled.
+>
+> Enabling mirroring a VM or copying its encryption context with an SEV-ES
+> VM is more involved and should happen in its own feature patch if that's
+> needed. This is because the vCPUs of SEV-ES VMs need to be updated with
+> LAUNCH_UPDATE_VMSA before LAUNCH_FINISH. This needs KVM changes because
+> the mirror VM has all its SEV ioctls blocked and the original VM doesn't
+> know about the mirrors vCPUs.
+>
+> Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
+>
+> V2:
+>  * Updated changelog with more information and added stable CC.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Nathan Tempelman <natet@google.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: kvm@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/x86/kvm/svm/sev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 75e0b21ad07c..8a279027425f 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1728,7 +1728,7 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>         source_kvm = source_kvm_file->private_data;
+>         mutex_lock(&source_kvm->lock);
+>
+> -       if (!sev_guest(source_kvm)) {
+> +       if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
+>                 ret = -EINVAL;
+>                 goto e_source_unlock;
+>         }
+> --
+> 2.33.0.309.g3052b89438-goog
+>
 
-Uhh, interesting - nice debugging work! What's the user-level symptom of
-this? I.e., when this triggers does the device just appear to hang, or
-does it cause reboots, or?
-
--Toke
-
+Reviewed-by: Marc Orr <marcorr@google.com>
