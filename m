@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AA240B40F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E1340B621
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235231AbhINQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234037AbhINQCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:02:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24E4061151;
-        Tue, 14 Sep 2021 16:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631635280;
-        bh=YvnFp+LTkAmgQGEWe/SBIyJmwTJ98eh4cA8SOGc7JFg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PoeDqNqBcSWSq1v+Ma1vPWkDVmsjzdnoNH6UUs+V6Q3jziaFY5UXhmF6yE+k8LOuV
-         pDIwhVhEAeUXWFuhV5EeEvCu0y0iAINaXs+FMhZ25+5/eDn0gkyBgAhx6/AcGRtBPc
-         31mYGojmg8mqOzxoHcqd2Ulah1rFqBjib1XZWeJ5lzPbBLEYEMapC3jKYkDOHgpjkR
-         LqMlFFUi3jwDRzRs1YHR1Nyn/M4GJVKCySeFzIh1e1MhE1vYXWNWDgjVlIaq0Qt3Q4
-         BzM1A+Kvw2V8cMZCtlJqdHDZao17Q0Xc+WLssKOlpqzZiP/Ifx5gUFIEprQGxpaP0d
-         W3t5hV+r1gz+A==
-Subject: Re: [PATCH] gen_compile_commands: add missing sys import
-To:     andreas@rammhold.de, Nick Desaulniers <ndesaulniers@google.com>
-Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210914154441.1726853-1-andreas@rammhold.de>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <026a4e82-da46-a559-06d5-18cff798ad96@kernel.org>
-Date:   Tue, 14 Sep 2021 09:01:17 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S231493AbhINRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:44:06 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:45607 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229795AbhINRoF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 13:44:05 -0400
+Received: (Authenticated sender: peter@casa-korsgaard.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 803B8100006;
+        Tue, 14 Sep 2021 17:42:45 +0000 (UTC)
+Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
+        (envelope-from <peter@korsgaard.com>)
+        id 1mQCSC-00070f-Qn; Tue, 14 Sep 2021 19:42:44 +0200
+X-From-Line: nobody Tue Sep 14 14:03:52 2021
+From:   Peter Korsgaard <peter@korsgaard.com>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: remove dead e-mails
+References: <20210914092603.18722-1-jslaby@suse.cz>
+Date:   Tue, 14 Sep 2021 14:03:52 +0200
+In-Reply-To: <20210914092603.18722-1-jslaby@suse.cz> (Jiri Slaby's message of
+        "Tue, 14 Sep 2021 11:26:03 +0200")
+Message-ID: <874kan5pp3.fsf@dell.be.48ers.dk>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210914154441.1726853-1-andreas@rammhold.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Lines:  27
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+>>>>> "Jiri" == Jiri Slaby <jslaby@suse.cz> writes:
 
-On 9/14/2021 8:44 AM, andreas@rammhold.de wrote:
-> From: Andreas Rammhold <andreas@rammhold.de>
-> 
-> The sys.exit was being used at multiple locations within the script but
-> never imported. This lead to the script exiting with a error instead of
-> with the nicely formatted (useful) error output.
-> 
-> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
-> ---
->   scripts/clang-tools/gen_compile_commands.py | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> index 0033eedce003e..1d1bde1fd45eb 100755
-> --- a/scripts/clang-tools/gen_compile_commands.py
-> +++ b/scripts/clang-tools/gen_compile_commands.py
-> @@ -13,6 +13,7 @@ import logging
->   import os
->   import re
->   import subprocess
-> +import sys
->   
->   _DEFAULT_OUTPUT = 'compile_commands.json'
->   _DEFAULT_LOG_LEVEL = 'WARNING'
-> 
+ > jacmet@sunsite.dk and linux@prisktech.co.nz are dead:
+ > * This is the qmail-send program at a.mx.sunsite.dk.
+ >   <jacmet@sunsite.dk>:
+ >   Sorry, no mailbox here by that name. (#5.1.1)
+ > * 4.1.2 <linux@prisktech.co.nz>: Recipient address rejected: Domain not
+ >   found
 
-Thank you for the patch! Someone else submitted the exact same fix and 
-it is now pending in the kbuild tree:
+ > Remove them from MAINTAINERS.
 
-https://git.kernel.org/masahiroy/linux-kbuild/c/776f04ca2c29f13d483a3effc0c27404fe901143
+ > CCing Peter with his (different) e-mail, he likely wants to update?
 
-I am curious, how did you discover this? Did you hit one of those error 
-paths?
+Ahh yes, it should be changed to peter@korsgaard.com
 
-Cheers,
-Nathan
 
+ >  USB CYPRESS C67X00 DRIVER
+ > -M:	Peter Korsgaard <jacmet@sunsite.dk>
+ >  L:	linux-usb@vger.kernel.org
+ >  S:	Maintained
+ >  F:	drivers/usb/c67x00/
+
+I haven't had access to c67x00 hw for quite some years though, so maybe
+it should be marked Orphan instead?
+
+-- 
+Bye, Peter Korsgaard
