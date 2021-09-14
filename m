@@ -2,230 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0662B40B963
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0AD40B96F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbhINUpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:45:16 -0400
-Received: from mail-eopbgr1410109.outbound.protection.outlook.com ([40.107.141.109]:12005
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233145AbhINUpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:45:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HkLuziaZaMBe7RiDCJYH8xBVcJiuOz8A3Ih9OvRcf3DBuJOc4RnRohRiHD6/WGD2XLP8sDYMkSN5DqS3uj8xSS346du9Tr/No/u6UBPaW2fI12bKqJJgQzNz9wsdL534/2vfE6SNt1jdY1feX1tcfrWmdJ/EPiRYchzOlLp3QqW7mnLXmkBR3a0ORKULQNhUfANlHnmuWIImJRrF+j+RF6YCQbXVYLyTabuCk6B5gUevbqS7VG+gclLuBljva+2DJv7EtwXYvsT6+AB6juXuvHnK2EQ0EGoGS/ZYhiva/DGIfl8pMYr1Kd3bHy+VX5T+LoWK6V3aEhtM/vcbBHdAYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=LbOkYA3NOywxDgwQstGEBv8OB6EgGTLy1r2gD7/KDvY=;
- b=AljZgAvH+2cBitM6sFcN1B0dr9Vvln2L0NFaGEP3KV3O4ITwbpp3kF7EI5xIQmvqjxZdkY0YVAN+q4LPAHo8tt4/5XTxAty+9zILvYuv8S4crZQFsVHWdZLDC2i88Y7YuHFZ2MOeF4poon273qxAdQRAfBkdqtvSDlvnzwW2V2N0Vm1Ihyz4+IQb+9YVGLS869qwiPBwDEoWRZ7KkfjAIkpdZT0ZAxA63Ex5CzopGD0cr/6Hts0B1jy3m7AdTY9RApXEck2vW/tXCNnurSdH//MRrasP8TXueQIa1w/rc/hzI36VqZCPaPOpJ/V0ylArj9TrxsYq5mrsA8cUmR/LMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S234067AbhINUs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233863AbhINUsX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 16:48:23 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B41C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:47:05 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso561816pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LbOkYA3NOywxDgwQstGEBv8OB6EgGTLy1r2gD7/KDvY=;
- b=OM9ce+XuUu/1j+D1sk5IpkMepgkvaOzP5P645Yo8hHAdUQFGnpO4rWDuDO3su5L1fcFTqW7NrmFwzuPF5/L0rgh2q5Q5M1FO2mJiyYQ5dXIh+Y5zYY0Q9h6Ft+u/oAWXOJL5IeZMPL45KteoXQvHX75nYQ+gs1nCH43i4VM54Fo=
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
- by OSBPR01MB4534.jpnprd01.prod.outlook.com (2603:1096:604:78::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.19; Tue, 14 Sep
- 2021 20:43:45 +0000
-Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::84ad:ad49:6f8:1312]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
- ([fe80::84ad:ad49:6f8:1312%5]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 20:43:45 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH misc] misc: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Topic: [PATCH misc] misc: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Index: AQHXoCrWcPCOZLcVpEOu9zHAf9JJVKujT1SAgAC5dCA=
-Date:   Tue, 14 Sep 2021 20:43:44 +0000
-Message-ID: <OS3PR01MB6593057EA6257006C7228542BADA9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-References: <1630608353-7606-1-git-send-email-min.li.xe@renesas.com>
- <YUBmIWU6HwIjjeXa@kroah.com>
-In-Reply-To: <YUBmIWU6HwIjjeXa@kroah.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 16585984-c254-4d27-8678-08d977c05889
-x-ms-traffictypediagnostic: OSBPR01MB4534:
-x-microsoft-antispam-prvs: <OSBPR01MB453477B5CEF82979B6BE32DBBADA9@OSBPR01MB4534.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rYPMp3Bz6qBjUlBH2b5Z2xv4LJUSCR8s3q6v05NvtRdypB3Oc2yiIGPRvzWoMx0TwjATc6vwdcFPNTscLguCRzYowkh6Oc/GdBIshhrPfA84ts+Yrnp2F/9a+JmjGvlz3Ilq++Gu6Vf2aC0gMvY/IEXgjK+lpHURh3+vHvCRZTGalrLsntDZGchsRVgWzjpABKf6OwFh/nss5sFGfHOcVne/8oRphv1kZ2IvfJjn1ajR6gr4ShVkxydwaY6vlhNc2IEdJzu5Fccj1hQgrS90/Z4etBjF8jWCNv0kejJRN9ZJ3razRIFDuEYoVYPXVkpbt+z0+Oluc5s5JiZ6Nbh3WdVm3pm6o9EvuGI3Fog3LWyiMSmXCR3Ptjo9AEuJ3tH1acHhZngIS73zePkh0WdQPjktLjXN2KSjI8gGy4E6UvwF9oZ52z9GMnSDTKEIqp13TdNLFU+vc29B3FTOvXlnhd7z24ZX/arOflo4kRHNYve4JKb0TKW+zSq9uot3jCKH8xqGiR08jLDl4tDxA7JQTIa57OHZuzAk2bmu4Zvbnzu45A6JlAve0s/cVal1Rf7erR8/jYJ2XU5gra6T3U5G3fW5ZerGtaipV90vKqWQMnGl+JesQLU6nmL8FAnnHvyPBoHzcpGeVsrvp0TnRZ2tpjCzXfHYuydXwvUASfvL1Tn+rDioQ7iMYiR8ij4Y1PSEyzKRzdSahlA8AMrPjwTMaA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(136003)(346002)(39860400002)(9686003)(55016002)(86362001)(2906002)(478600001)(33656002)(8676002)(66446008)(64756008)(66556008)(26005)(4326008)(7696005)(38070700005)(186003)(66476007)(54906003)(8936002)(52536014)(6916009)(122000001)(316002)(38100700002)(83380400001)(5660300002)(76116006)(66946007)(71200400001)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?17GMFEWdhHLAsXTr3E+NOXA/sOhGJYE9sJvOq+ILI0SlGjmymixTsQw+rquj?=
- =?us-ascii?Q?y40Gsd11D43nZ/29Uzc3KnVBY922AW6KFdLXg8csZZIRjeWNf6pTgthSQUOJ?=
- =?us-ascii?Q?BCNL0EbMNPdtNX1b2tEBCET0kA0Vc00jpOBI5KQtjPPJDpdYU1OCQyxIutDJ?=
- =?us-ascii?Q?BquUBHYv/AnoZNcdGjxowLnQyKDTS22Cjn/k1XtIaN1eXW9WDQoyxAUSURCo?=
- =?us-ascii?Q?iCfTVu7hCHQrRUGkvoZal1mQCoEyBFsL9qZLniXjBpl2o060/3+zvDCY77Cm?=
- =?us-ascii?Q?NkPjZymbm35XY8CWLEE8zNGRrngbK0TAroY7gxqZfOmuUZN6TXjzm1p2J0Yh?=
- =?us-ascii?Q?vE4Bi2R5AuXcTwE2mVcYojggITHJPnrQdFM2LSU1tEyvVSw0MgUY9LSPVJ1Y?=
- =?us-ascii?Q?4+v7wxj05CFY5DsZdRqW9QJO5Yku0LW5TUm4NV+OLb40i9u2qi0cKGTLt02+?=
- =?us-ascii?Q?AsMIsohoVf0J5jDJGpjTuAbq9Lx1WDq+5sti8bwFNQLtrimz/PSBY0gR3+pi?=
- =?us-ascii?Q?2Km/5qfmJQN1WRZ/v12LOKbAhUFWxFBti5dlNatsWve26N4/Mc8Zbkdr0jOz?=
- =?us-ascii?Q?jLK46GOpzCQCQLw6ajj6gaKXep5SLdxP1gxU/zNJ4wd2gWU4FJGeYrjuN+Ok?=
- =?us-ascii?Q?ZmMrUkASXqKv+ahnN7xtisUtEuUN+KovoMbaCfz4iisnQZEpV37/uD+o8QII?=
- =?us-ascii?Q?ounSCIpi3yS96eqp8Hafwv9Ivrj3ur8m40wztUsAQJi542G9MYMPQFE2F0oK?=
- =?us-ascii?Q?MQetN++V7jcB8p+fXGPQ/7adH30sjNZ2wPCUKahy1ta1bMU8fi5GrrKMOVA1?=
- =?us-ascii?Q?UnK0MrDKnRma7VaYMn5c7jc7gv+X/UYI2pnaCfyjaDlUxBWO8Y5aYin0CYhk?=
- =?us-ascii?Q?AAX4HnOKDD7VHE6h2zQ19WFj5eOTo9aHDHOscDFJx/Gq3KRgLKgp3mWlJYCu?=
- =?us-ascii?Q?EAME9VXXOEITsmN3NjYUQ3wNuIlhxUZHkDwxpcGQTnbZl0AKoAIMuyKPuVCA?=
- =?us-ascii?Q?u0RLH6GAVOMRCRqZx3g1CtE6sUFtpQlKkzZK1MwW7iG8NS5+ma3kh/6lPC+s?=
- =?us-ascii?Q?QI7Jad6WSQCUNTXopzQ5ybWPn8VBEh0EChkL4tWBRBSVjI+lFjMFI7zqMI16?=
- =?us-ascii?Q?OHGgwWUZ4Ubx8leG/PP01BYbDPB/sDS8rryxFb0f5kfoeO6EDf0DtZ1PR08r?=
- =?us-ascii?Q?Busc+Mg6XB1s5IXIvVX40mMjFX404Klz+veaRgKKHFMQ4HfwMpGtAGkAGTrT?=
- =?us-ascii?Q?lRfl24tHsXlEslY6AndgZqqlggEPmcr/FhV+ubMdHF1WFZorF5KSModI1ChV?=
- =?us-ascii?Q?77ntRJ8APFoDmVTDsAjDD4AK?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z6sjgsRXHAAZe5EpmfS0mxe4gOnh7qI8vZt4uYNXxzk=;
+        b=E92+P6I/zl5VP9TVKRsNL+Ylr6HQVo9mHZ/GiiOaVcKvrSJhfz2YAqxKHcRoGPAouS
+         gUGcTf+QgD5OqLQE/23Jw8K+0+WMHUd932I6GUprDEO7F4aRnU9rgIQ+STPts8y8nrv9
+         +cvBMgYAsIfDX5vZ2McLpy0jIVA/6UqgpnPzACepffwMZSCbdnbTWoUSGkr3F7wd3MGs
+         pu6pcdii/cEFRINOc4mECjUQ1vyKgli82I/4Ckar4LaCEY3k1BMKRD+91ZCW8cIz9TZe
+         1HTM73axiD6zbYIBnfp1qs9U8f/hMloM0ZttGHMMvtvPCmCsD0E+IGUiO7V3L+nlyABu
+         lvRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z6sjgsRXHAAZe5EpmfS0mxe4gOnh7qI8vZt4uYNXxzk=;
+        b=dQ6gm3Sgll2QzuXx9ZTphKYe2H3El82irMpBwTdyhOpNk5v79fGxjltcXKaYQ5f3t+
+         MAlawGgJP4+n3mI8CKBFSs66T6xPGZl73hSH2aZ1SwU8C4hu9A994C5msY16RaMqdKX1
+         Ee2FAptOSfRfrc4rrv78PjRDZ6ChHewTHS6Bn8+F8zTtn+bW3obtGC3dIFbZbCIHMJY6
+         KLDvsjc+6ubJ7N9EZ6WBj1xfYr2huFtWfmpbGkCPCeY8xeGbF0rjBW8bRoUUumqvg2+i
+         GzHlLUX7OgpP6nrFmeiZ66JZg4WSTWS4hP4O7imnn62XAZp1J/emtUFqQAJ4Q4h7YNY5
+         RTmQ==
+X-Gm-Message-State: AOAM532X2c1azx5G1tX32+OiTkNsn3lyMji8/uvdD+5I7/GcLe1+u1I/
+        QMO0cTlg/Es6fDwfRqf0t41d3MIAxSPo1+/7nLSWWQ==
+X-Google-Smtp-Source: ABdhPJyd8cTnpvNGrPcB7rDUXyzlfuperCL06Jsg632npMA9exX1dQjA6dOdA02bgoQpeqRJNkDcGKqaHCx/3gKXW2s=
+X-Received: by 2002:a17:90a:1d4c:: with SMTP id u12mr4095618pju.95.1631652424662;
+ Tue, 14 Sep 2021 13:47:04 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16585984-c254-4d27-8678-08d977c05889
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 20:43:44.9094
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cDtElfKbklf3YfqUWyPGCpGtnoZ0MVfK6OY4K0sueLfStaVc9Nyxqe3AzoeoaoMWs6uEWyGTz7vEZw3df3qcXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4534
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
+ <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
+ <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
+ <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
+ <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com> <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
+In-Reply-To: <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 14 Sep 2021 13:46:53 -0700
+Message-ID: <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
-
-Thanks for the review
-
-> >  drivers/misc/Kconfig      |   9 ++
-> >  drivers/misc/Makefile     |   2 +
-> >  drivers/misc/rsmu_cdev.c  | 239
-> > ++++++++++++++++++++++++++++++++++++++++++++++
-> >  drivers/misc/rsmu_cdev.h  |  77 +++++++++++++++
-> >  drivers/misc/rsmu_cm.c    | 164 +++++++++++++++++++++++++++++++
-> >  drivers/misc/rsmu_sabre.c | 133 ++++++++++++++++++++++++++
->=20
-> If you make this all one .c file, the .h file can go away and it will be =
-much
-> simpler in the end.  And will get rid of the global symbols.
->=20
-
-That is doable. But <linux/mfd/idt8a340_reg.h> and <linux/mfd/idt82p33_reg.=
-h> have naming confliction.
-To make this change one file, I have to include both of them and therefore =
-I have to change them to resolve
-Conflicts. Can I include this=20
-
+On Mon, Sep 13, 2021 at 1:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 9/8/21 3:24 PM, Brendan Higgins wrote:
+> > On Wed, Sep 8, 2021 at 10:16 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>
+> >> On 9/8/21 11:05 AM, Arnd Bergmann wrote:
+> >>> On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>>> On 9/7/21 5:14 PM, Linus Torvalds wrote:
+> >>>>> The KUNIT macros create all these individually reasonably small
+> >>>>> initialized structures on stack, and when you have more than a small
+> >>>>> handful of them the KUNIT infrastructure just makes the stack space
+> >>>>> explode. Sometimes the compiler will be able to re-use the stack
+> >>>>> slots, but it seems to be an iffy proposition to depend on it - it
+> >>>>> seems to be a combination of luck and various config options.
+> >>>>>
+> >>>>
+> >>>> I have been concerned about these macros creeping in for a while.
+> >>>> I will take a closer look and work with Brendan to come with a plan
+> >>>> to address it.
+> >>>
+> >>> I've previously sent patches to turn off the structleak plugin for
+> >>> any kunit test file to work around this, but only a few of those patches
+> >>> got merged and new files have been added since. It would
+> >>> definitely help to come up with a proper fix, but my structleak-disable
+> >>> hack should be sufficient as a quick fix.
+> >>>
+> >>
+> >> Looks like these are RFC patches and the discussion went cold. Let's pick
+> >> this back up and we can make progress.
+> >>
+> >> https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
 > >
-> > +config RSMU
-> > +	tristate "Renesas Synchronization Management Unit (SMU)"
-> > +	help
-> > +	  This option enables support for the IDT ClockMatrix(TM) and
-> 82P33xxx
-> > +	  families of timing and synchronization devices. It will be used by
-> > +	  Renesas PTP Clock Manager for Linux (pcm4l) software to provide
-> support
-> > +	  for GNSS assisted partial timing support (APTS) and other
-> networking
-> > +	  timing functions.
->=20
-> No driver name listed?
+> > I can try to get the patch reapplying and send it out (I just figured
+> > that Arnd or Kees would want to send it out :-)  since it was your
+> > idea).
+> >
+>
+> Brendan,
+>
+> Would you like to send me the fix with Suggested-by for Arnd or Kees?
 
-Sorry, what do you mean by driver name in this context?
+So it looks like Arnd's fix was accepted (whether by him or someone
+else) for property-entry-test and Linus already fixed thunderbolt, so
+the only remaining of Arnd's patches is for the bitfield test, so I'll
+resend that one in a bit.
 
->=20
-> > diff --git a/drivers/misc/rsmu_cdev.c b/drivers/misc/rsmu_cdev.c new
-> > file mode 100644 index 0000000..8e856a6
-> > --- /dev/null
-> > +++ b/drivers/misc/rsmu_cdev.c
-> > @@ -0,0 +1,239 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
->=20
-> Are you sure about "+"?  I have to ask.
-
-All of our Linux kernel code have this license. I don't know what is the ca=
-tch here.
-
-> > +
-> > +/**
-> > + * struct rsmu_cdev - Driver data for RSMU character device
-> > + * @name: rsmu device name as rsmu[index]
-> > + * @dev: pointer to device
-> > + * @mfd: pointer to MFD device
-> > + * @miscdev: character device handle
-> > + * @regmap: I2C/SPI regmap handle
-> > + * @lock: mutex to protect operations from being interrupted
-> > + * @type: rsmu device type, passed through platform data
-> > + * @ops: rsmu device methods
-> > + * @index: rsmu device index
-> > + */
-> > +struct rsmu_cdev {
-> > +	char name[16];
-> > +	struct device *dev;
->=20
-> What device is this pointing to?
-
-It is the platform device from rsmu_probe(struct platform_device *pdev)
-
->=20
-> > +	struct device *mfd;
->=20
-> What is this for?
-
-It is the multi-functional device from driver/mfd/rsmu_core.c
-The mfd driver is responsible for spawn this platform device and spi/i2c
-bus access
-
-> > +/*
-> > + * RSMU IOCTL List
-> > + */
-> > +#define RSMU_MAGIC '?'
->=20
-> Where did you get this value from?
->=20
-> Where did you reserve it?
-
-No I didn't reserve it. I checked other code and they all seem to use a ran=
-dom character
-
->=20
-> > +
-> > +/**
-> > + * @Description
->=20
-> What is this format?  It is not kernel-doc :(
->=20
-> > + * ioctl to set SMU combo mode.Combo mode provides physical layer
-> > + frequency
-> > + * support from the Ethernet Equipment Clock to the PTP clock
-> > + *
-> > + * @Parameters
->=20
-> Same here and elsewhere in this file.
-
-I was copying the format from xilinx_sdfec.h
-
-Is there a place that tells me how to properly document ioctl or can you gi=
-ve me an code example?
-
-Thanks
-
-Min
+Also, I haven't actually tried Linus' suggestion yet, but the logic is
+sound and the change *should* be fairly unintrusive - I am going to
+give that a try and report back (but I will get the bitfield
+structleak disable patch out first since I already got that applying).
