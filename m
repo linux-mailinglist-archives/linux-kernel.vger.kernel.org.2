@@ -2,945 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9892F40B2E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8041B40B2D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234926AbhINPU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:20:29 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:45181 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234534AbhINPTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:19:14 -0400
-Received: from stefan-VirtualBox.in-tech.global ([37.4.249.93]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1Mzy6q-1mniz01Ayk-00wzd4; Tue, 14 Sep 2021 17:17:44 +0200
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Heimpold <michael.heimpold@in-tech.com>,
-        jimmy.shen@vertexcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH RFC 3/3] net: vertexcom: Add MSE102x SPI support
-Date:   Tue, 14 Sep 2021 17:17:17 +0200
-Message-Id: <20210914151717.12232-4-stefan.wahren@i2se.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210914151717.12232-1-stefan.wahren@i2se.com>
-References: <20210914151717.12232-1-stefan.wahren@i2se.com>
-X-Provags-ID: V03:K1:HeZvaebRpT3wt6aNTNFdyRdQQQav7brDMM6Iarj+cUultdWJ53/
- a8zGpWXoqdicoLoCPwCQrcU5XdOo52OPd4TvVsaKLC5P13gXh6SOoPCOQeeg3l6pe7ZggaF
- SQIRYQytUUFOIvmLeeSpLflHX0Kuzd27ogQPlmVPmH+9oYUt+bf/0scmqCIdBDuDAAaff05
- r1If9+CqZDJslbdRnm5Vw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:McNXlzbWK3w=:EYwalHg3DdbVqknV6Tjzz1
- jlFcFXolbS+a3iAvBtV+q8K+C+ocmDJU6JoY/wEsW9USE3RkJja6QIuHUd2t/99V1+uyVf2qQ
- MZsCyYADXr9xXkN5x0hxNRpii/qEZUOnqyNT7MRbG9TIeEfSnkA+mcbb9KnUvbC2DiJPCXorb
- JD6fDAW6+/CLcO3Mzmcj5xPU2weulMFWwCtzMD5HaAj+IB8BMJD9uqBeBZeX9Judzr+0YU6Ex
- 8jLoZLbQ3BfzFoethuFe+5Qef0ZG0bxA4tqstHMT7vaPM/VcJPOwNNCLEYiyfve48L84nYvGj
- RSYIo7Sxv/k0rn//a4fTFGMreBf8uuyfHTHvP83mD6DreN8dt1EgSFZRueJoxJ5K0GC6G6Psl
- P/92rJkHPpimt1cE9OhlWbzLMV4rBAV7krGHdtUveghqdLD5vsN2FiK70r4Dj7AhvSWnl997C
- e0yS5OFJLaLNRqCuwnRnih39dr2Ce0TR8H9A0KyP20XrTZUD4ZXjHPrCzMtVBn1umFUJrNHgQ
- ZMm7ZfCNNZM0vt3TX95+g1B8Nmufg19U+rVSv0qoYE0cPg3NC+pglUOxNAQ+ayy4s1ICUYZAS
- MSI2bojvOKiIsUmLKVVjywr6Vcmiu+ptzS81Cn/UoqLwajBJ9JE7rGr3qVsNK17IeRTPcRUPs
- qdpXoVr8tiX1Pttq0rBwJS7WBjAI9slxpp2X5A56V5Wa6NHPXy/KqheolPkyJKeoiMAzL0Qab
- uwy5Hy2zRGjaEYLrgPAXNk97ngOQpv20Xy1drnyqb6eSZpb/0FXQkcznLWE=
+        id S234357AbhINPTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:19:25 -0400
+Received: from mail-vi1eur05on2054.outbound.protection.outlook.com ([40.107.21.54]:61953
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234273AbhINPTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ppl/mDrXQizW8mIqhIcC54Kw3sb7SUDfPkSL/GEnuh8=;
+ b=LVJ5GJOeeNvQk2O0ZAtS1z8TkkQ4h0zuacqggPqErNhsuRboTarFd0kagcFUXemAEF9UPLSKGNPWNkXzckg/Szgvk2DlDl7MtmNG4tmktlPZEUqThteGGxFV+GMLmb0pfxbFLnwAbbpbWiklwFjnxe6GQtTvq+JDxgyRSaZfCyo=
+Received: from AM6P194CA0098.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:8f::39)
+ by DB6PR0801MB1781.eurprd08.prod.outlook.com (2603:10a6:4:3c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Tue, 14 Sep
+ 2021 15:17:50 +0000
+Received: from VE1EUR03FT033.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:209:8f:cafe::59) by AM6P194CA0098.outlook.office365.com
+ (2603:10a6:209:8f::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
+ Transport; Tue, 14 Sep 2021 15:17:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
+ header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ VE1EUR03FT033.mail.protection.outlook.com (10.152.18.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 15:17:49 +0000
+Received: ("Tessian outbound b9598e0ead92:v103"); Tue, 14 Sep 2021 15:17:48 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: 31f54c92c71872e2
+X-CR-MTA-TID: 64aa7808
+Received: from d33975e69068.2
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id AC9F01BA-09FA-474E-8850-24FF3C4113C9.1;
+        Tue, 14 Sep 2021 15:17:37 +0000
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id d33975e69068.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Tue, 14 Sep 2021 15:17:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JBIWOpQx0Rmye8QFtrTM/hh7TUEntaUQJJP0wLzhvCp51uJ4w4RtWgJuY0iqQdBnMdAIfPgEr/TIFUpk6kWf0qYV/TuLwOWIn/qjmqd3G9WAfx6SaNhhbNt2wu4jA6lkT2YAkertRcpHGSnIC7n4GhZBEMwueoYZ9Vkro6wTQwF3Afh4hbVMwDPHV7+lUBz4zBR4fZ3O0lHZuZLO2y6n0jMSFQ3xAaBFWnkxPnyhacmtPLZrPrFItAuF/Yz9Gr07lbCb7HXHgzkPkG1Tmb2yY4ncE3mzWBnvffofOWaNFsW5t9pAM/voRcd8IKVXN4kP3QnZof18jm9yq635rlnYhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=ppl/mDrXQizW8mIqhIcC54Kw3sb7SUDfPkSL/GEnuh8=;
+ b=PezPd8qzoxY/bncdu/hWvOFBJac7jayQxTpIWqStVCAxmDqWMj/oeX8vibMVp5s+Ekt/3TMjYjdt8hNV2jXPjOuxVECrzbZU6WLR9nGKp55JhIKCy4jM5Ukw5BteXN2TlY9JkA2Fy0zI4LYUNMnji2MdbozxcinJZ+LyLgp+cPXTd29lrXHEZcIn7ZsgRUVW+4gPZgarx8B00ENLI2t0NVZl47zVLinRA+IKQlQwr1fO7ax2zPvLBHz2Ns79TnKsK6IxNz8GTDfcLx7Cxt7Afixoej8lCnapTgxytDJSMR7xATzXQBbYwphQOaIiecThuZinhbYAr4sMvfB7wxRUpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ppl/mDrXQizW8mIqhIcC54Kw3sb7SUDfPkSL/GEnuh8=;
+ b=LVJ5GJOeeNvQk2O0ZAtS1z8TkkQ4h0zuacqggPqErNhsuRboTarFd0kagcFUXemAEF9UPLSKGNPWNkXzckg/Szgvk2DlDl7MtmNG4tmktlPZEUqThteGGxFV+GMLmb0pfxbFLnwAbbpbWiklwFjnxe6GQtTvq+JDxgyRSaZfCyo=
+Authentication-Results-Original: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=arm.com;
+Received: from DB8PR08MB5433.eurprd08.prod.outlook.com (2603:10a6:10:118::13)
+ by DB6PR0802MB2278.eurprd08.prod.outlook.com (2603:10a6:4:85::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Tue, 14 Sep
+ 2021 15:17:34 +0000
+Received: from DB8PR08MB5433.eurprd08.prod.outlook.com
+ ([fe80::951e:f504:6b46:28a3]) by DB8PR08MB5433.eurprd08.prod.outlook.com
+ ([fe80::951e:f504:6b46:28a3%9]) with mapi id 15.20.4500.018; Tue, 14 Sep 2021
+ 15:17:33 +0000
+Date:   Tue, 14 Sep 2021 16:17:24 +0100
+From:   Joey Gouly <joey.gouly@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, nd@arm.com
+Subject: Re: [PATCH] arm64: entry: Improve the performance of system calls
+Message-ID: <20210914151724.GA34977@e124191.cambridge.arm.com>
+References: <20210903121950.2284-1-thunder.leizhen@huawei.com>
+ <20210914095436.GA26544@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914095436.GA26544@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: SN7PR04CA0076.namprd04.prod.outlook.com
+ (2603:10b6:806:121::21) To DB8PR08MB5433.eurprd08.prod.outlook.com
+ (2603:10a6:10:118::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from e124191.cambridge.arm.com (217.140.106.55) by SN7PR04CA0076.namprd04.prod.outlook.com (2603:10b6:806:121::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16 via Frontend Transport; Tue, 14 Sep 2021 15:17:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5b24935f-7034-430f-674f-08d97792d078
+X-MS-TrafficTypeDiagnostic: DB6PR0802MB2278:|DB6PR0801MB1781:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0801MB1781BE2308FA2C1F8680634294DA9@DB6PR0801MB1781.eurprd08.prod.outlook.com>
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: +jKsRqNrJy/F9xJqutLhfVz7vb/3LG1o9xATKnGn+oSODFYGjutM0d8/Hm11p2GSvKVkC9jtEAkdkU4TyeGb98BHs/iD7n3f94b3njKUS59wHleUfFOLRvB4sF+kz7u43ZopySM359NP9g9Nv71jUEamPQ0H2OBy8MbJbwb5dBu6KGfxKNVjvbGreAzw2iFXHdUw4ZrmG836fMeMiNkIhpH3bp9ADOdzLNmopRphnqNBfkaBSIGs2lKp6cu5RHIxKAk0jQM2XxAP3GWG5s/LRHbsgy2lbGSnriRwj46w4mKSxlWmbdWT7s8b83CpaAFDMtN+MLK1HdCiuHZ7xnKHmJqbpk3L7QTLLKBYa34r8Za2KyiLVmfYFeIddjGZ4+DpducpjOUj9EegUzb1nSoeYRyzf+SZdEVYPwSIt2WiA4GH9+aub9KaATwFYuthcUJy7LauW7U/nJSBm/Wfs6wJ6FeTlIWgEJ8WuL9QPiB48uRRz94FcmP6C93nB7eS1CpyersrGjgJyXIoLpeFyjiJHGeRdOOTQukpCK9YNsxryba3WO2K8Znd2zg0KmjIWWuv6S9hORqe447u24WFZFGDAZRH/Ot1+VHkUdRiLj6Mc9NZQOPBXUKgillrId3PR/pF/cgmdo9o+O2KVQoU/RcGtPdLQcyUB5Wt9KgfwXlbB5jESMRGEoncz6nenT1KomCyrhmZZtfeSX0Q5+MYFS9ViIxmsJRwqc7ysROtVwfBVkVkLcC4edjZwvhjGPY3y/1FshFBy3PoTnOxJ3mFTi2ws24x/sUxUWdXKNdIvNHU5Hq2JCF39Q8ZOGCd5Pa+2LFIE3MeYpDOT8V4WdM/sdNcew==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR08MB5433.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(508600001)(44832011)(8936002)(6636002)(2906002)(66476007)(8676002)(66556008)(186003)(26005)(66946007)(38350700002)(52116002)(7696005)(33656002)(1076003)(956004)(55016002)(966005)(4326008)(6666004)(316002)(6862004)(5660300002)(38100700002)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0802MB2278
+Original-Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: VE1EUR03FT033.eop-EUR03.prod.protection.outlook.com
+X-MS-Office365-Filtering-Correlation-Id-Prvs: 5e045732-baf4-4efa-d933-08d97792c681
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QOp0MpZzLAeSSUuY8ADyj2n2qq6j4SCCmEIXc3GxSKUlZrhuj/N1ksKZ08H33Ma4ot/r+AwJLVK3gFe7/ahUbaNpz0xNOKVGRpehhyT4O9zAIPs3pCOyB2RUH2kmF0nFOBivHWHNcwmrpHAHaNnLG1FFVWGF5eZF+W5kUoc0JEv4UbnpPafYdODX92QzkEuLHBcS3DXASE4MfWN2krFC5upWu23pzH7rpcIY08mlhTuGfDItYnUl56AdCEH++FVlPPlVwl9TzbdHtU0MPB7n37top/Ucvgxo4I/LuTI22KP8PN+XQgm4HU7U3oUF3waDFZNibJ3eHs+6fSky7J5W3b2VKur9NZ3IP9ZeC+rEEX0TjueOBaqpeLdH6OQGnIlt6q299vLITQ4VL/QzKWZd9b+akPgQQBWziWFaRKNhkVIRQoxXNlU3OZOa4Ic6X+4UmF27Fqc7iomNqNg1CldTMQCBx0g8GeqnnDdCZ6S8Pe7vsprjN0fcIN+DX7O9KgeN7FfTwgNHJ5gtrEgJDa7Fc/w4GibcQsT5iDmmTnZ15GBjkDv1+UVlYJoVyoovcqbR7ir+VsNFFgHPSoeiT+4mhLB7yBttgE7Cos/9vhjxovplhRIcMNfKhAmQLI7igJdGX+XTtG/N6iARfppJPreVCvDaKOG5SJ9WXxoK5P8R11/vsiUlCIgVdJPDYLcdo7ceymtvi9Y26nceQ+W1NYeJ2tYOGu7qJWMmH38sPNiSIEegfnZxhvOryGpZYLLcD+q2Sz7GAlV/d9Qh9BbWzT8UbE6EpMn2tf5k/GWtWo0ewKF9+LNjy3+Hu8N7f08ye2FGtkJQY3H/lEcMBiuPSljp7A==
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(39860400002)(46966006)(36840700001)(356005)(86362001)(70206006)(33656002)(70586007)(7696005)(82740400003)(55016002)(6666004)(6862004)(36860700001)(336012)(478600001)(956004)(186003)(82310400003)(2906002)(81166007)(47076005)(1076003)(54906003)(26005)(966005)(316002)(8936002)(6636002)(4326008)(5660300002)(8676002)(44832011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 15:17:49.5048
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b24935f-7034-430f-674f-08d97792d078
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT033.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0801MB1781
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This implements an SPI protocol driver for Vertexcom MSE102x
-Homeplug GreenPHY chip.
+Hi,
 
-Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
----
- drivers/net/ethernet/Kconfig             |   1 +
- drivers/net/ethernet/Makefile            |   1 +
- drivers/net/ethernet/vertexcom/Kconfig   |  25 +
- drivers/net/ethernet/vertexcom/Makefile  |   6 +
- drivers/net/ethernet/vertexcom/mse102x.c | 803 +++++++++++++++++++++++
- 5 files changed, 836 insertions(+)
- create mode 100644 drivers/net/ethernet/vertexcom/Kconfig
- create mode 100644 drivers/net/ethernet/vertexcom/Makefile
- create mode 100644 drivers/net/ethernet/vertexcom/mse102x.c
+On Tue, Sep 14, 2021 at 10:55:16AM +0100, Mark Rutland wrote:
+> Hi,
+> 
+> At a high-level, I'm not too keen on special-casing things unless
+> necessary.
+> 
+> I wonder if we could get similar results without special-casing by using
+> a static const array of handlers indexed by the EC, since (with GCC
+> 11.1.0 from the kernel.org crosstool page) that can result in code like:
+> 
+> 0000000000001010 <el0t_64_sync_handler>:
+>     1010:       d503245f        bti     c
+>     1014:       d503233f        paciasp
+>     1018:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+>     101c:       910003fd        mov     x29, sp
+>     1020:       d5385201        mrs     x1, esr_el1
+>     1024:       90000002        adrp    x2, 0 <el0t_64_sync_handlers>
+>     1028:       531a7c23        lsr     w3, w1, #26
+>     102c:       91000042        add     x2, x2, #:lo12:<el0t_64_sync_handlers>
+>     1030:       f8637842        ldr     x2, [x2, x3, lsl #3]
+>     1034:       d63f0040        blr     x2
+>     1038:       a8c17bfd        ldp     x29, x30, [sp], #16
+>     103c:       d50323bf        autiasp
+>     1040:       d65f03c0        ret
+> 
+> ... which might do better by virtue of reducing a chain of potential
+> mispredicts down to a single potential mispredict, and dynamic branch
+> prediction hopefully does a good job of predicting the common case at
+> runtime. That said, the resulting tables will be pretty big...
 
-diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index d796684ec9ca..373f3ec28b7a 100644
---- a/drivers/net/ethernet/Kconfig
-+++ b/drivers/net/ethernet/Kconfig
-@@ -180,6 +180,7 @@ source "drivers/net/ethernet/tehuti/Kconfig"
- source "drivers/net/ethernet/ti/Kconfig"
- source "drivers/net/ethernet/toshiba/Kconfig"
- source "drivers/net/ethernet/tundra/Kconfig"
-+source "drivers/net/ethernet/vertexcom/Kconfig"
- source "drivers/net/ethernet/via/Kconfig"
- source "drivers/net/ethernet/wiznet/Kconfig"
- source "drivers/net/ethernet/xilinx/Kconfig"
-diff --git a/drivers/net/ethernet/Makefile b/drivers/net/ethernet/Makefile
-index aaa5078cd7d1..2ef412a88296 100644
---- a/drivers/net/ethernet/Makefile
-+++ b/drivers/net/ethernet/Makefile
-@@ -91,6 +91,7 @@ obj-$(CONFIG_NET_VENDOR_TEHUTI) += tehuti/
- obj-$(CONFIG_NET_VENDOR_TI) += ti/
- obj-$(CONFIG_NET_VENDOR_TOSHIBA) += toshiba/
- obj-$(CONFIG_NET_VENDOR_TUNDRA) += tundra/
-+obj-$(CONFIG_NET_VENDOR_VERTEXCOM) += vertexcom/
- obj-$(CONFIG_NET_VENDOR_VIA) += via/
- obj-$(CONFIG_NET_VENDOR_WIZNET) += wiznet/
- obj-$(CONFIG_NET_VENDOR_XILINX) += xilinx/
-diff --git a/drivers/net/ethernet/vertexcom/Kconfig b/drivers/net/ethernet/vertexcom/Kconfig
-new file mode 100644
-index 000000000000..4184a635fe01
---- /dev/null
-+++ b/drivers/net/ethernet/vertexcom/Kconfig
-@@ -0,0 +1,25 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Vertexcom network device configuration
-+#
-+
-+config NET_VENDOR_VERTEXCOM
-+	bool "Vertexcom devices"
-+	default y
-+	help
-+	  If you have a network (Ethernet) card belonging to this class, say Y.
-+
-+	  Note that the answer to this question doesn't directly affect the
-+	  kernel: saying N will just cause the configurator to skip all
-+	  the questions about Vertexcom cards. If you say Y, you will be asked
-+	  for your specific card in the following questions.
-+
-+if NET_VENDOR_VERTEXCOM
-+
-+config MSE102X
-+	tristate "Vertexcom MSE102x SPI"
-+	depends on SPI
-+	help
-+	  SPI driver for Vertexcom MSE102x SPI attached network chip.
-+
-+endif # NET_VENDOR_VERTEXCOM
-diff --git a/drivers/net/ethernet/vertexcom/Makefile b/drivers/net/ethernet/vertexcom/Makefile
-new file mode 100644
-index 000000000000..f8b12e312637
---- /dev/null
-+++ b/drivers/net/ethernet/vertexcom/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for the Vertexcom network device drivers.
-+#
-+
-+obj-$(CONFIG_MSE102X) += mse102x.o
-diff --git a/drivers/net/ethernet/vertexcom/mse102x.c b/drivers/net/ethernet/vertexcom/mse102x.c
-new file mode 100644
-index 000000000000..a580ccac3782
---- /dev/null
-+++ b/drivers/net/ethernet/vertexcom/mse102x.c
-@@ -0,0 +1,803 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (C) 2021 in-tech smart charging GmbH
-+ *
-+ * driver is based on micrel/ks8851_spi.c
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/netdevice.h>
-+#include <linux/etherdevice.h>
-+#include <linux/ethtool.h>
-+#include <linux/cache.h>
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+
-+#include <linux/spi/spi.h>
-+#include <linux/of_net.h>
-+
-+#define MSG_DEFAULT	(NETIF_MSG_DRV | NETIF_MSG_PROBE | NETIF_MSG_LINK | \
-+			 NETIF_MSG_TIMER)
-+
-+#define DRV_NAME	"mse102x"
-+
-+#define DET_CMD		0x0001
-+#define DET_SOF		0x0002
-+#define DET_DFT		0x55AA
-+
-+#define CMD_SHIFT	12
-+#define CMD_RTS		(0x1 << CMD_SHIFT)
-+#define CMD_CTR		(0x2 << CMD_SHIFT)
-+
-+#define CMD_MASK	GENMASK(15, CMD_SHIFT)
-+#define LEN_MASK	GENMASK(CMD_SHIFT - 1, 0)
-+
-+#define	DET_CMD_LEN	4
-+#define	DET_SOF_LEN	2
-+#define	DET_DFT_LEN	2
-+
-+#define MIN_FREQ_HZ	6000000
-+#define MAX_FREQ_HZ	7142857
-+
-+struct mse102x_stats {
-+	u64 xfer_err;
-+	u64 invalid_cmd;
-+	u64 invalid_ctr;
-+	u64 invalid_dft;
-+	u64 invalid_len;
-+	u64 invalid_rts;
-+	u64 invalid_sof;
-+	u64 tx_timeout;
-+};
-+
-+static const char mse102x_gstrings_stats[][ETH_GSTRING_LEN] = {
-+	"SPI transfer errors",
-+	"Invalid command",
-+	"Invalid CTR",
-+	"Invalid DFT",
-+	"Invalid frame length",
-+	"Invalid RTS",
-+	"Invalid SOF",
-+	"TX timeout",
-+};
-+
-+struct mse102x_net {
-+	struct net_device	*ndev;
-+
-+	u8			rxd[8];
-+	u8			txd[8];
-+
-+	u32			msg_enable ____cacheline_aligned;
-+
-+	struct sk_buff_head	txq;
-+	struct mse102x_stats	stats;
-+};
-+
-+struct mse102x_net_spi {
-+	struct mse102x_net	mse102x;
-+	struct mutex		lock;		/* Protect SPI frame transfer */
-+	struct work_struct	tx_work;
-+	struct spi_device	*spidev;
-+	struct spi_message	spi_msg;
-+	struct spi_transfer	spi_xfer;
-+
-+#ifdef CONFIG_DEBUG_FS
-+	struct dentry		*device_root;
-+#endif
-+};
-+
-+#define to_mse102x_spi(mse) container_of((mse), struct mse102x_net_spi, mse102x)
-+
-+static int msg_enable;
-+module_param_named(message, msg_enable, int, 0);
-+MODULE_PARM_DESC(message, "Message verbosity level (0=none, 31=all)");
-+
-+#ifdef CONFIG_DEBUG_FS
-+
-+static int mse102x_info_show(struct seq_file *s, void *what)
-+{
-+	struct mse102x_net_spi *mses = s->private;
-+
-+	seq_printf(s, "TX ring size        : %u\n",
-+		   skb_queue_len(&mses->mse102x.txq));
-+
-+	seq_printf(s, "IRQ                 : %d\n",
-+		   mses->spidev->irq);
-+
-+	seq_printf(s, "SPI effective speed : %lu\n",
-+		   (unsigned long)mses->spi_xfer.effective_speed_hz);
-+	seq_printf(s, "SPI mode            : %x\n",
-+		   mses->spidev->mode);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(mse102x_info);
-+
-+void mse102x_init_device_debugfs(struct mse102x_net_spi *mses)
-+{
-+	mses->device_root = debugfs_create_dir(dev_name(&mses->mse102x.ndev->dev),
-+					       NULL);
-+
-+	debugfs_create_file("info", S_IFREG | 0444, mses->device_root, mses,
-+			    &mse102x_info_fops);
-+}
-+
-+void mse102x_remove_device_debugfs(struct mse102x_net_spi *mses)
-+{
-+	debugfs_remove_recursive(mses->device_root);
-+}
-+
-+#else /* CONFIG_DEBUG_FS */
-+
-+void mse102x_init_device_debugfs(struct mse102x_net_spi *mses)
-+{
-+}
-+
-+void mse102x_remove_device_debugfs(struct mse102x_net_spi *mses)
-+{
-+}
-+
-+#endif
-+
-+/* SPI register read/write calls.
-+ *
-+ * All these calls issue SPI transactions to access the chip's registers. They
-+ * all require that the necessary lock is held to prevent accesses when the
-+ * chip is busy transferring packet data.
-+ */
-+
-+static void mse102x_tx_cmd_spi(struct mse102x_net *mse, u16 cmd)
-+{
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	struct spi_transfer *xfer = &mses->spi_xfer;
-+	struct spi_message *msg = &mses->spi_msg;
-+	__be16 txb[2];
-+	int ret;
-+
-+	txb[0] = cpu_to_be16(DET_CMD);
-+	txb[1] = cpu_to_be16(cmd);
-+
-+	xfer->tx_buf = txb;
-+	xfer->rx_buf = NULL;
-+	xfer->len = DET_CMD_LEN;
-+
-+	ret = spi_sync(mses->spidev, msg);
-+	if (ret < 0) {
-+		netdev_err(mse->ndev, "%s: spi_sync() failed: %d\n",
-+			   __func__, ret);
-+		mse->stats.xfer_err++;
-+	}
-+}
-+
-+static int mse102x_rx_cmd_spi(struct mse102x_net *mse, u8 *rxb)
-+{
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	struct spi_transfer *xfer = &mses->spi_xfer;
-+	struct spi_message *msg = &mses->spi_msg;
-+	__be16 *txb = (__be16 *)mse->txd;
-+	__be16 *cmd = (__be16 *)mse->rxd;
-+	u8 *trx = mse->rxd;
-+	int ret;
-+
-+	txb[0] = 0;
-+	txb[1] = 0;
-+
-+	xfer->tx_buf = txb;
-+	xfer->rx_buf = trx;
-+	xfer->len = DET_CMD_LEN;
-+
-+	ret = spi_sync(mses->spidev, msg);
-+	if (ret < 0) {
-+		netdev_err(mse->ndev, "%s: spi_sync() failed: %d\n",
-+			   __func__, ret);
-+		mse->stats.xfer_err++;
-+	} else if (*cmd != cpu_to_be16(DET_CMD)) {
-+		net_dbg_ratelimited("%s: Unexpected response (0x%04x)\n",
-+				    __func__, *cmd);
-+		mse->stats.invalid_cmd++;
-+		ret = -EIO;
-+	} else {
-+		memcpy(rxb, trx + 2, 2);
-+	}
-+
-+	return ret;
-+}
-+
-+static inline void mse102x_push_header(struct sk_buff *skb)
-+{
-+	__be16 *header = skb_push(skb, DET_SOF_LEN);
-+
-+	*header = cpu_to_be16(DET_SOF);
-+}
-+
-+static inline void mse102x_put_footer(struct sk_buff *skb)
-+{
-+	__be16 *footer = skb_put(skb, DET_DFT_LEN);
-+
-+	*footer = cpu_to_be16(DET_DFT);
-+}
-+
-+static int mse102x_tx_frame_spi(struct mse102x_net *mse, struct sk_buff *txp,
-+				unsigned int pad)
-+{
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	struct spi_transfer *xfer = &mses->spi_xfer;
-+	struct spi_message *msg = &mses->spi_msg;
-+	struct sk_buff *tskb;
-+	int ret;
-+
-+	netif_dbg(mse, tx_queued, mse->ndev, "%s: skb %p, %d@%p\n",
-+		  __func__, txp, txp->len, txp->data);
-+
-+	if ((skb_headroom(txp) < DET_SOF_LEN) ||
-+	    (skb_tailroom(txp) < DET_DFT_LEN + pad)) {
-+		tskb = skb_copy_expand(txp, DET_SOF_LEN, DET_DFT_LEN + pad,
-+				       GFP_KERNEL);
-+		if (!tskb)
-+			return -ENOMEM;
-+
-+		dev_kfree_skb(txp);
-+		txp = tskb;
-+	}
-+
-+	mse102x_push_header(txp);
-+
-+	if (pad)
-+		skb_put_zero(txp, pad);
-+
-+	mse102x_put_footer(txp);
-+
-+	xfer->tx_buf = txp->data;
-+	xfer->rx_buf = NULL;
-+	xfer->len = txp->len;
-+
-+	ret = spi_sync(mses->spidev, msg);
-+	if (ret < 0) {
-+		netdev_err(mse->ndev, "%s: spi_sync() failed: %d\n",
-+			   __func__, ret);
-+		mse->stats.xfer_err++;
-+	}
-+
-+	return ret;
-+}
-+
-+static int mse102x_rx_frame_spi(struct mse102x_net *mse, u8 *buff,
-+				unsigned int frame_len)
-+{
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	struct spi_transfer *xfer = &mses->spi_xfer;
-+	struct spi_message *msg = &mses->spi_msg;
-+	__be16 *sof = (__be16 *)buff;
-+	__be16 *dft = (__be16 *)(buff + DET_SOF_LEN + frame_len);
-+	int ret;
-+
-+	xfer->rx_buf = buff;
-+	xfer->tx_buf = NULL;
-+	xfer->len = DET_SOF_LEN + frame_len + DET_DFT_LEN;
-+
-+	ret = spi_sync(mses->spidev, msg);
-+	if (ret < 0) {
-+		netdev_err(mse->ndev, "%s: spi_sync() failed: %d\n",
-+			   __func__, ret);
-+		mse->stats.xfer_err++;
-+	} else if (*sof != cpu_to_be16(DET_SOF)) {
-+		netdev_dbg(mse->ndev, "%s: SPI start of frame is invalid (0x%04x)\n",
-+			   __func__, *sof);
-+		mse->stats.invalid_sof++;
-+		ret = -EIO;
-+	} else if (*dft != cpu_to_be16(DET_DFT)) {
-+		netdev_dbg(mse->ndev, "%s: SPI frame tail is invalid (0x%04x)\n",
-+			   __func__, *dft);
-+		mse->stats.invalid_dft++;
-+		ret = -EIO;
-+	}
-+
-+	return ret;
-+}
-+
-+static void mse102x_dump_packet(const char *msg, int len, const char *data)
-+{
-+	printk(KERN_DEBUG ": %s - packet len:%d\n", msg, len);
-+	print_hex_dump(KERN_DEBUG, "pk data: ", DUMP_PREFIX_OFFSET, 16, 1,
-+		       data, len, true);
-+}
-+
-+static void mse102x_rx_pkt_spi(struct mse102x_net *mse)
-+{
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	struct sk_buff *skb;
-+	unsigned int rxalign;
-+	unsigned int rxlen;
-+	__be16 rx = 0;
-+	u16 cmd_resp;
-+	u8 *rxpkt;
-+	int ret;
-+
-+	mutex_lock(&mses->lock);
-+
-+	mse102x_tx_cmd_spi(mse, CMD_CTR);
-+	ret = mse102x_rx_cmd_spi(mse, (u8 *)&rx);
-+	cmd_resp = be16_to_cpu(rx);
-+
-+	if (ret || ((cmd_resp & CMD_MASK) != CMD_RTS)) {
-+		usleep_range(50, 100);
-+
-+		mse102x_tx_cmd_spi(mse, CMD_CTR);
-+		ret = mse102x_rx_cmd_spi(mse, (u8 *)&rx);
-+		cmd_resp = be16_to_cpu(rx);
-+		if (ret) {
-+			goto unlock_spi;
-+		} else if ((cmd_resp & CMD_MASK) != CMD_RTS) {
-+			net_dbg_ratelimited("%s: Unexpected response (0x%04x)\n",
-+					    __func__, cmd_resp);
-+			mse->stats.invalid_rts++;
-+			goto unlock_spi;
-+		} else {
-+			net_dbg_ratelimited("%s: Unexpected response to first CMD\n",
-+					    __func__);
-+		}
-+	}
-+
-+	rxlen = cmd_resp & LEN_MASK;
-+	if (!rxlen) {
-+		net_dbg_ratelimited("%s: No frame length defined\n", __func__);
-+		mse->stats.invalid_len++;
-+		goto unlock_spi;
-+	}
-+
-+	rxalign = ALIGN(rxlen + DET_SOF_LEN + DET_DFT_LEN, 4);
-+	skb = netdev_alloc_skb_ip_align(mse->ndev, rxalign);
-+	if (!skb)
-+		goto unlock_spi;
-+
-+	/* 2 bytes Start of frame (before ethernet header)
-+	 * 2 bytes Data frame tail (after ethernet frame)
-+	 * They are copied, but ignored.
-+	 */
-+	rxpkt = skb_put(skb, rxlen) - DET_SOF_LEN;
-+	if (mse102x_rx_frame_spi(mse, rxpkt, rxlen)) {
-+		mse->ndev->stats.rx_errors++;
-+		dev_kfree_skb(skb);
-+		goto unlock_spi;
-+	}
-+
-+	if (netif_msg_pktdata(mse))
-+		mse102x_dump_packet(__func__, skb->len, skb->data);
-+
-+	skb->protocol = eth_type_trans(skb, mse->ndev);
-+	netif_rx_ni(skb);
-+
-+	mse->ndev->stats.rx_packets++;
-+	mse->ndev->stats.rx_bytes += rxlen;
-+
-+unlock_spi:
-+	mutex_unlock(&mses->lock);
-+}
-+
-+static int mse102x_tx_pkt_spi(struct mse102x_net *mse, struct sk_buff *txb,
-+			      unsigned long work_timeout)
-+{
-+	unsigned int pad = 0;
-+	__be16 rx = 0;
-+	u16 cmd_resp;
-+	int ret;
-+	bool first = true;
-+
-+	if (txb->len < 60)
-+		pad = 60 - txb->len;
-+
-+	while (1) {
-+		/* It's not predictable how long / many retries it takes to
-+		 * send at least one packet, so TX timeouts are possible.
-+		 * That's the reason why the netdev watchdog is not used here.
-+		 */
-+		if (time_after(jiffies, work_timeout))
-+			return -ETIMEDOUT;
-+
-+		mse102x_tx_cmd_spi(mse, CMD_RTS | (txb->len + pad));
-+		ret = mse102x_rx_cmd_spi(mse, (u8 *)&rx);
-+		cmd_resp = be16_to_cpu(rx);
-+
-+		if (!ret) {
-+			/* ready to send frame ? */
-+			if (cmd_resp == CMD_CTR)
-+				break;
-+
-+			net_dbg_ratelimited("%s: Unexpected response (0x%04x)\n",
-+					    __func__, cmd_resp);
-+			mse->stats.invalid_ctr++;
-+		}
-+
-+		if (first) {
-+			/* throttle at first issue */
-+			netif_stop_queue(mse->ndev);
-+			/* fast retry */
-+			usleep_range(50, 100);
-+			first = false;
-+		} else {
-+			msleep(20);
-+		}
-+	};
-+
-+	ret = mse102x_tx_frame_spi(mse, txb, pad);
-+	if (ret) {
-+		net_dbg_ratelimited("%s: Failed to send (%d), drop frame\n",
-+				    __func__, ret);
-+	}
-+
-+	return ret;
-+}
-+
-+#define TX_QUEUE_MAX 10
-+
-+static void mse102x_tx_work(struct work_struct *work)
-+{
-+	/* Make sure timeout is sufficient to transfer TX_QUEUE_MAX frames */
-+	unsigned long work_timeout = jiffies + msecs_to_jiffies(1000);
-+	struct mse102x_net_spi *mses;
-+	struct mse102x_net *mse;
-+	struct sk_buff *txb;
-+	bool done = false;
-+	int ret = 0;
-+
-+	mses = container_of(work, struct mse102x_net_spi, tx_work);
-+	mse = &mses->mse102x;
-+
-+	while (!done) {
-+		mutex_lock(&mses->lock);
-+
-+		txb = skb_dequeue(&mse->txq);
-+		if (!txb) {
-+			done = true;
-+			goto unlock_spi;
-+		}
-+
-+		ret = mse102x_tx_pkt_spi(mse, txb, work_timeout);
-+		if (ret) {
-+			mse->ndev->stats.tx_dropped++;
-+		} else {
-+			mse->ndev->stats.tx_bytes += txb->len;
-+			mse->ndev->stats.tx_packets++;
-+		}
-+
-+		dev_kfree_skb(txb);
-+
-+unlock_spi:
-+		mutex_unlock(&mses->lock);
-+	}
-+
-+	if (ret == -ETIMEDOUT) {
-+		if (netif_msg_timer(mse))
-+			netdev_err(mse->ndev, "tx work timeout\n");
-+
-+		mse->stats.tx_timeout++;
-+	}
-+
-+	netif_wake_queue(mse->ndev);
-+}
-+
-+static netdev_tx_t mse102x_start_xmit_spi(struct sk_buff *skb,
-+					  struct net_device *ndev)
-+{
-+	struct mse102x_net *mse = netdev_priv(ndev);
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	netdev_tx_t ret = NETDEV_TX_OK;
-+
-+	netif_dbg(mse, tx_queued, ndev,
-+		  "%s: skb %p, %d@%p\n", __func__, skb, skb->len, skb->data);
-+
-+	if (skb_queue_len(&mse->txq) >= TX_QUEUE_MAX) {
-+		netif_stop_queue(ndev);
-+		ret = NETDEV_TX_BUSY;
-+	} else {
-+		skb_queue_tail(&mse->txq, skb);
-+	}
-+
-+	schedule_work(&mses->tx_work);
-+
-+	return ret;
-+}
-+
-+static void mse102x_init_mac(struct mse102x_net *mse, struct device_node *np)
-+{
-+	struct net_device *ndev = mse->ndev;
-+	int ret = of_get_mac_address(np, ndev->dev_addr);
-+
-+	if (ret) {
-+		eth_hw_addr_random(ndev);
-+		netdev_err(ndev, "Using random MAC address: %pM\n",
-+			   ndev->dev_addr);
-+	}
-+}
-+
-+/* Assumption: this is called for every incoming packet */
-+static irqreturn_t mse102x_irq(int irq, void *_mse)
-+{
-+	struct mse102x_net *mse = _mse;
-+
-+	mse102x_rx_pkt_spi(mse);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int mse102x_net_open(struct net_device *ndev)
-+{
-+	struct mse102x_net *mse = netdev_priv(ndev);
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+	int ret;
-+
-+	ret = request_threaded_irq(ndev->irq, NULL, mse102x_irq, IRQF_ONESHOT,
-+				   ndev->name, mse);
-+	if (ret < 0) {
-+		netdev_err(ndev, "Failed to get irq: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* lock the card, even if we may not actually be doing anything
-+	 * else at the moment
-+	 */
-+	mutex_lock(&mses->lock);
-+
-+	netif_dbg(mse, ifup, ndev, "opening\n");
-+
-+	netif_start_queue(ndev);
-+
-+	netif_carrier_on(ndev);
-+
-+	netif_dbg(mse, ifup, ndev, "network device up\n");
-+
-+	mutex_unlock(&mses->lock);
-+
-+	return 0;
-+}
-+
-+static int mse102x_net_stop(struct net_device *ndev)
-+{
-+	struct mse102x_net *mse = netdev_priv(ndev);
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+
-+	netif_info(mse, ifdown, ndev, "shutting down\n");
-+
-+	netif_stop_queue(ndev);
-+
-+	/* stop any outstanding work */
-+	flush_work(&mses->tx_work);
-+
-+	/* ensure any queued tx buffers are dumped */
-+	while (!skb_queue_empty(&mse->txq)) {
-+		struct sk_buff *txb = skb_dequeue(&mse->txq);
-+
-+		netif_dbg(mse, ifdown, ndev,
-+			  "%s: freeing txb %p\n", __func__, txb);
-+
-+		dev_kfree_skb(txb);
-+	}
-+
-+	free_irq(ndev->irq, mse);
-+
-+	return 0;
-+}
-+
-+static const struct net_device_ops mse102x_netdev_ops = {
-+	.ndo_open		= mse102x_net_open,
-+	.ndo_stop		= mse102x_net_stop,
-+	.ndo_start_xmit		= mse102x_start_xmit_spi,
-+	.ndo_set_mac_address	= eth_mac_addr,
-+	.ndo_validate_addr	= eth_validate_addr,
-+};
-+
-+/* ethtool support */
-+
-+static void mse102x_get_drvinfo(struct net_device *ndev,
-+				struct ethtool_drvinfo *di)
-+{
-+	strscpy(di->driver, DRV_NAME, sizeof(di->driver));
-+	strscpy(di->version, "1.00", sizeof(di->version));
-+	strscpy(di->bus_info, dev_name(ndev->dev.parent), sizeof(di->bus_info));
-+}
-+
-+static u32 mse102x_get_msglevel(struct net_device *ndev)
-+{
-+	struct mse102x_net *mse = netdev_priv(ndev);
-+
-+	return mse->msg_enable;
-+}
-+
-+static void mse102x_set_msglevel(struct net_device *ndev, u32 to)
-+{
-+	struct mse102x_net *mse = netdev_priv(ndev);
-+
-+	mse->msg_enable = to;
-+}
-+
-+static void mse102x_get_ethtool_stats(struct net_device *ndev,
-+				      struct ethtool_stats *estats, u64 *data)
-+{
-+	struct mse102x_net *mse = netdev_priv(ndev);
-+	struct mse102x_stats *st = &mse->stats;
-+
-+	memcpy(data, st, ARRAY_SIZE(mse102x_gstrings_stats) * sizeof(u64));
-+}
-+
-+static void mse102x_get_strings(struct net_device *ndev, u32 stringset, u8 *buf)
-+{
-+	switch (stringset) {
-+	case ETH_SS_STATS:
-+		memcpy(buf, &mse102x_gstrings_stats,
-+		       sizeof(mse102x_gstrings_stats));
-+		break;
-+	default:
-+		WARN_ON(1);
-+		break;
-+	}
-+}
-+
-+static int mse102x_get_sset_count(struct net_device *ndev, int sset)
-+{
-+	switch (sset) {
-+	case ETH_SS_STATS:
-+		return ARRAY_SIZE(mse102x_gstrings_stats);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct ethtool_ops mse102x_ethtool_ops = {
-+	.get_drvinfo		= mse102x_get_drvinfo,
-+	.get_link		= ethtool_op_get_link,
-+	.get_msglevel		= mse102x_get_msglevel,
-+	.set_msglevel		= mse102x_set_msglevel,
-+	.get_ethtool_stats	= mse102x_get_ethtool_stats,
-+	.get_strings		= mse102x_get_strings,
-+	.get_sset_count		= mse102x_get_sset_count,
-+};
-+
-+/* driver bus management functions */
-+
-+#ifdef CONFIG_PM_SLEEP
-+
-+static int mse102x_suspend(struct device *dev)
-+{
-+	struct mse102x_net *mse = dev_get_drvdata(dev);
-+	struct net_device *ndev = mse->ndev;
-+
-+	if (netif_running(ndev)) {
-+		netif_device_detach(ndev);
-+		mse102x_net_stop(ndev);
-+	}
-+
-+	return 0;
-+}
-+
-+static int mse102x_resume(struct device *dev)
-+{
-+	struct mse102x_net *mse = dev_get_drvdata(dev);
-+	struct net_device *ndev = mse->ndev;
-+
-+	if (netif_running(ndev)) {
-+		mse102x_net_open(ndev);
-+		netif_device_attach(ndev);
-+	}
-+
-+	return 0;
-+}
-+#endif
-+
-+static SIMPLE_DEV_PM_OPS(mse102x_pm_ops, mse102x_suspend, mse102x_resume);
-+
-+static int mse102x_probe_spi(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct mse102x_net_spi *mses;
-+	struct net_device *ndev;
-+	struct mse102x_net *mse;
-+	int ret;
-+
-+	spi->bits_per_word = 8;
-+	spi->mode |= SPI_MODE_3;
-+	/* enforce minimum speed to ensure device functionality */
-+	spi->master->min_speed_hz = MIN_FREQ_HZ;
-+
-+	if (!spi->max_speed_hz)
-+		spi->max_speed_hz = MAX_FREQ_HZ;
-+
-+	if (spi->max_speed_hz < MIN_FREQ_HZ ||
-+	    spi->max_speed_hz > MAX_FREQ_HZ) {
-+		dev_err(&spi->dev, "SPI max frequency out of range (min: %u, max: %u)\n",
-+			MIN_FREQ_HZ, MAX_FREQ_HZ);
-+		return -EINVAL;
-+	}
-+
-+	ret = spi_setup(spi);
-+	if (ret < 0) {
-+		dev_err(&spi->dev, "Unable to setup SPI device: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ndev = devm_alloc_etherdev(dev, sizeof(struct mse102x_net_spi));
-+	if (!ndev)
-+		return -ENOMEM;
-+
-+	ndev->priv_flags &= ~IFF_TX_SKB_SHARING;
-+	ndev->tx_queue_len = 100;
-+
-+	mse = netdev_priv(ndev);
-+	mses = to_mse102x_spi(mse);
-+
-+	mses->spidev = spi;
-+	mutex_init(&mses->lock);
-+	INIT_WORK(&mses->tx_work, mse102x_tx_work);
-+
-+	/* initialise pre-made spi transfer messages */
-+	spi_message_init(&mses->spi_msg);
-+	spi_message_add_tail(&mses->spi_xfer, &mses->spi_msg);
-+
-+	ndev->irq = spi->irq;
-+	mse->ndev = ndev;
-+
-+	/* set the default message enable */
-+	mse->msg_enable = netif_msg_init(msg_enable, MSG_DEFAULT);
-+
-+	skb_queue_head_init(&mse->txq);
-+
-+	SET_NETDEV_DEV(ndev, dev);
-+
-+	dev_set_drvdata(dev, mse);
-+
-+	netif_carrier_off(mse->ndev);
-+	ndev->if_port = IF_PORT_10BASET;
-+	ndev->netdev_ops = &mse102x_netdev_ops;
-+	ndev->ethtool_ops = &mse102x_ethtool_ops;
-+
-+	mse102x_init_mac(mse, dev->of_node);
-+
-+	ret = register_netdev(ndev);
-+	if (ret) {
-+		dev_err(dev, "failed to register network device: %d\n", ret);
-+		return ret;
-+	}
-+
-+	mse102x_init_device_debugfs(mses);
-+
-+	return 0;
-+}
-+
-+static int mse102x_remove_spi(struct spi_device *spi)
-+{
-+	struct mse102x_net *mse = dev_get_drvdata(&spi->dev);
-+	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
-+
-+	if (netif_msg_drv(mse))
-+		dev_info(&spi->dev, "remove\n");
-+
-+	mse102x_remove_device_debugfs(mses);
-+	unregister_netdev(mse->ndev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id mse102x_match_table[] = {
-+	{ .compatible = "vertexcom,mse1021" },
-+	{ .compatible = "vertexcom,mse1022" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, mse102x_match_table);
-+
-+static struct spi_driver mse102x_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = mse102x_match_table,
-+		.pm = &mse102x_pm_ops,
-+	},
-+	.probe = mse102x_probe_spi,
-+	.remove = mse102x_remove_spi,
-+};
-+module_spi_driver(mse102x_driver);
-+
-+MODULE_DESCRIPTION("MSE102x Network driver");
-+MODULE_AUTHOR("Stefan Wahren <stefan.wahren@in-tech.com>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("spi:" DRV_NAME);
--- 
-2.17.1
+I tested Mark's branch which implements this (found at
+https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/entry/switch-table)
 
+I also took lmbench from https://github.com/intel/lmbench.git and built
+`lat_syscall` with:
+
+    gcc lat_syscall.c lib_*.c -l m -o lat_syscall -static
+
+These are the results I got from benchmarking on my MacBook Air M1, with
+the following command:
+
+    ./lat_syscall null &> /dev/null ; uname -a ; for i in 0 1 2 3 4 ; do ./lat_syscall null ; done
+
+The kernel was based on arm64_defconfig that was then stripped of as much as possible. 
+GCC 11.1.0 from kernel.org crosstool page.
+Clang build fom git b041b613e6fff713fc9ad6dbc73024286fb2fc93.
+
+gcc:
+        master: 0.14300
+  switch-table: 0.14350
+        likely: 0.13962
+
+clang:
+        master: 0.14354
+  switch-table: 0.14642
+        likely: 0.14256
+
+
+The generated code looks similar to what Leizhen has posted, so I didn't
+post it again.
+
+So it seems the table approach actually performs worse in my testing,
+and Leizhen's approach is slightly better than master (d0ee23f9d78be5531c4b055ea424ed0b489dfe9b).
+
+Thanks,
+Joey
