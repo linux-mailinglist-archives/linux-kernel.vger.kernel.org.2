@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0668740A259
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A49BC40A25E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237228AbhINBMX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Sep 2021 21:12:23 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:36774 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232241AbhINBMV (ORCPT
+        id S237470AbhINBNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 21:13:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237240AbhINBNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:12:21 -0400
-Received: from localhost (unknown [IPv6:2a00:5f00:102:0:f4d2:afff:fe2b:18b5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 13 Sep 2021 21:13:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631581908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sAmERlnzgu6E6drIi7Ej5aFj4eTItZbD2NbSWsNlmtQ=;
+        b=dg5EUKpFhO4JsEgxQSQOAFq1xBOE9NNH2Wp39yWV9wWbeRAJzklFDSsI9K5ta447zq+9uK
+        QdzmedUQn34jD8Jp2tW7XZjb5XaoLhi9btzcxKgvfRrOTC0W4MLGcSmoBK4841uiVPrjyo
+        ZeBokWLhRLR/xa1oe41gnBFDOTCJ7BM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-AWq1OgyxOhaXC5VvJWxvPQ-1; Mon, 13 Sep 2021 21:11:45 -0400
+X-MC-Unique: AWq1OgyxOhaXC5VvJWxvPQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: krisman)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 30B301F42CB3;
-        Tue, 14 Sep 2021 02:11:04 +0100 (BST)
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, linux-api@vger.kernel.org,
-        libc-alpha@sourceware.org, mtk.manpages@gmail.com,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3 5/6] selftests: futex2: Add waitv test
-Organization: Collabora
-References: <20210913175249.81074-1-andrealmeid@collabora.com>
-        <20210913175249.81074-6-andrealmeid@collabora.com>
-Date:   Mon, 13 Sep 2021 21:11:00 -0400
-In-Reply-To: <20210913175249.81074-6-andrealmeid@collabora.com>
- (=?utf-8?Q?=22Andr=C3=A9?=
-        Almeida"'s message of "Mon, 13 Sep 2021 14:52:48 -0300")
-Message-ID: <87wnnkezbv.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC277802936;
+        Tue, 14 Sep 2021 01:11:43 +0000 (UTC)
+Received: from T590 (ovpn-12-85.pek2.redhat.com [10.72.12.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9220A60C82;
+        Tue, 14 Sep 2021 01:11:34 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 09:11:43 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
+Message-ID: <YT/2z4PSeW5oJWMq@T590>
+References: <20210909141256.2606682-1-yukuai3@huawei.com>
+ <20210909141256.2606682-6-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210909141256.2606682-6-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-André Almeida <andrealmeid@collabora.com> writes:
+On Thu, Sep 09, 2021 at 10:12:55PM +0800, Yu Kuai wrote:
+> blk_mq_tag_to_rq() can only ensure to return valid request in
+> following situation:
+> 
+> 1) client send request message to server first
+> submit_bio
+> ...
+>  blk_mq_get_tag
+>  ...
+>  blk_mq_get_driver_tag
+>  ...
+>  nbd_queue_rq
+>   nbd_handle_cmd
+>    nbd_send_cmd
+> 
+> 2) client receive respond message from server
+> recv_work
+>  nbd_read_stat
+>   blk_mq_tag_to_rq
+> 
+> If step 1) is missing, blk_mq_tag_to_rq() will return a stale
+> request, which might be freed. Thus convert to use
+> blk_mq_find_and_get_req() to make sure the returned request is not
+> freed.
 
-> Create a new file to test the waitv mechanism. Test both private and
-> shared futexes. Wake the last futex in the array, and check if the
-> return value from futex_waitv() is the right index.
->
-> Signed-off-by: André Almeida <andrealmeid@collabora.com>
-> ---
->  .../selftests/futex/functional/.gitignore     |   1 +
->  .../selftests/futex/functional/Makefile       |   3 +-
->  .../selftests/futex/functional/futex_waitv.c  | 158 ++++++++++++++++++
->  .../testing/selftests/futex/functional/run.sh |   3 +
->  .../selftests/futex/include/futex2test.h      |  31 ++++
->  5 files changed, 195 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/futex/functional/futex_waitv.c
->  create mode 100644 tools/testing/selftests/futex/include/futex2test.h
->
-> diff --git a/tools/testing/selftests/futex/functional/.gitignore b/tools/testing/selftests/futex/functional/.gitignore
-> index 0e78b49d0f2f..fbcbdb6963b3 100644
-> --- a/tools/testing/selftests/futex/functional/.gitignore
-> +++ b/tools/testing/selftests/futex/functional/.gitignore
-> @@ -8,3 +8,4 @@ futex_wait_uninitialized_heap
->  futex_wait_wouldblock
->  futex_wait
->  futex_requeue
-> +futex_waitv
-> diff --git a/tools/testing/selftests/futex/functional/Makefile b/tools/testing/selftests/futex/functional/Makefile
-> index bd1fec59e010..5cc38de9d8ea 100644
-> --- a/tools/testing/selftests/futex/functional/Makefile
-> +++ b/tools/testing/selftests/futex/functional/Makefile
-> @@ -17,7 +17,8 @@ TEST_GEN_FILES := \
->  	futex_wait_uninitialized_heap \
->  	futex_wait_private_mapped_file \
->  	futex_wait \
-> -	futex_requeue
-> +	futex_requeue \
-> +	futex_waitv
->  
->  TEST_PROGS := run.sh
->  
-> diff --git a/tools/testing/selftests/futex/functional/futex_waitv.c b/tools/testing/selftests/futex/functional/futex_waitv.c
-> new file mode 100644
-> index 000000000000..567667dfa7cf
-> --- /dev/null
-> +++ b/tools/testing/selftests/futex/functional/futex_waitv.c
-> @@ -0,0 +1,158 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/******************************************************************************
-> + *
-> + *   Copyright Collabora Ltd., 2021
-> + *
-> + * DESCRIPTION
-> + *	Test waitv/wake mechanism of futex2, using 32bit sized futexes.
-> + *
-> + * AUTHOR
-> + *	André Almeida <andrealmeid@collabora.com>
-> + *
-> + * HISTORY
-> + *      2021-Feb-5: Initial version by André <andrealmeid@collabora.com>
-
-We have git to keep history nowadays.  This type of changelog is a relic
-from less civilized times and adds no extra information.  :)
+But NBD_CMD_INFLIGHT has been added for checking if the reply is
+expected, do we still need blk_mq_find_and_get_req() for covering
+this issue? BTW, request and its payload is pre-allocated, so there
+isn't real use-after-free.
 
 
+Thanks,
+Ming
 
--- 
-Gabriel Krisman Bertazi
