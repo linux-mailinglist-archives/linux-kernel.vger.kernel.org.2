@@ -2,88 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B6440B954
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4F740B95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbhINUfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhINUfg (ORCPT
+        id S233954AbhINUi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:38:28 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:61305 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233416AbhINUi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:35:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A54C061574;
-        Tue, 14 Sep 2021 13:34:18 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f104800104a7ca086fcfa54.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:4800:104a:7ca0:86fc:fa54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D40BA1EC0298;
-        Tue, 14 Sep 2021 22:34:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631651657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=ho0dIkyXb9rhQ4ltF8xF/Fh/kKjZFTuUyHYcmevz7B4=;
-        b=mFAnc9V6M98Xy3oMHBpkH8puEf9GQ4HT6tCOMvcz22KIL9BnyevbDohEJ8tTUH/g+OODfq
-        O5n3/1zLTzv7YcAnB3qfsu3R3UndsBwSi//8U3d2kzNDuiLtaIU6Ie853ibz75ZxPnPblM
-        zft0USk3XtqZ/+D7z+UBI6J0V6jmh1k=
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Documentation/no_hz: Introduce "dyntick-idle mode" before using it
-Date:   Tue, 14 Sep 2021 22:33:55 +0200
-Message-Id: <20210914203355.21360-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
+        Tue, 14 Sep 2021 16:38:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1631651828; x=1663187828;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=e9+MnVGP6nZ0gzSUFWJSEfCLJT8aPGDyoOowZmdBVyc=;
+  b=kUAZAnM0bxwA37CcRXy1of4n6JE5MOMZAd418iIekjmTbQgU76dq8zsK
+   Wr8Re5+FsHhyVlsWrecfj5C2XFKENU4lS0398351sfiOXOZ0KP3E70p9y
+   bbJtF0EXLatOCQLACsiFQwFZ718nQy/5VNKZvjNnJryPaTELIqll7a9EP
+   w=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 14 Sep 2021 13:37:08 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 13:37:08 -0700
+Received: from QIANCAI.na.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Tue, 14 Sep 2021 13:37:06 -0700
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Kevin Hao <haokexin@gmail.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Qian Cai <quic_qiancai@quicinc.com>
+Subject: [PATCH] cpufreq: Fix an use-after-free in gov_attr_set_put
+Date:   Tue, 14 Sep 2021 16:35:42 -0400
+Message-ID: <20210914203542.209-1-quic_qiancai@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+A recent commit started to call sugov_tunables_free() in
+kobject_release() which results in an use-after-free when
+mutex_destroy() is called later in gov_attr_set_put(). Fixed it by
+calling mutex_destroy() before kobject_put().
 
-The CONFIG_NO_HZ_IDLE paragraph is using "dyntick-idle mode" before
-having defined it while the definition comes a couple of paragraphs
-later.
+BUG: KASAN: use-after-free in mutex_is_locked+0x24/0x60
+Read of size 8 at addr ffff000877717950 by task cpuhp/0/15
 
-That is leaving the reader with scratching head what that dyntick-idle
-mode might be. Pull its definition up so that it is clear.
+Call trace:
+ dump_backtrace+0x0/0x3b8
+ show_stack+0x20/0x30
+ dump_stack_lvl+0x8c/0xb8
+ print_address_description.constprop.0+0x74/0x3c8
+ kasan_report+0x1f0/0x208
+ kasan_check_range+0x100/0x1b8
+ __kasan_check_read+0x34/0x60
+ mutex_is_locked+0x24/0x60
+ mutex_destroy+0x7c/0xf8
+ gov_attr_set_put+0x140/0x1b0
+ sugov_exit+0x7c/0x198
+ cpufreq_exit_governor+0x78/0x178
+ cpufreq_offline+0x2f8/0x6f8
+ cpuhp_cpufreq_offline+0x18/0x28
+ cpuhp_invoke_callback+0x51c/0x2ab8
+ cpuhp_thread_fun+0x204/0x588
+ smpboot_thread_fn+0x3f0/0xc40
+ kthread+0x3bc/0x470
+ ret_from_fork+0x10/0x20
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
+Allocated by task 638:
+ kasan_save_stack+0x28/0x58
+ __kasan_kmalloc+0x8c/0xb0
+ kmem_cache_alloc_trace+0x21c/0x358
+ sugov_init+0x478/0x768
+ cpufreq_init_governor+0x11c/0x318
+ cpufreq_set_policy+0x5d0/0xd88
+ cpufreq_online+0x72c/0x1938
+ cpufreq_add_dev+0x154/0x1a8
+ subsys_interface_register+0x218/0x360
+ cpufreq_register_driver+0x2a4/0x4c0
+ 0xffff8000098d0348
+ do_one_initcall+0x160/0xb48
+ do_init_module+0x18c/0x648
+ load_module+0x2614/0x3238
+ __do_sys_finit_module+0x118/0x1a8
+ __arm64_sys_finit_module+0x74/0xa8
+ invoke_syscall.constprop.0+0xdc/0x1d8
+ do_el0_svc+0x1f8/0x298
+ el0_svc+0x64/0x130
+ el0t_64_sync_handler+0xb0/0xb8
+ el0t_64_sync+0x180/0x184
+
+Freed by task 15:
+ kasan_save_stack+0x28/0x58
+ kasan_set_track+0x28/0x40
+ kasan_set_free_info+0x28/0x50
+ __kasan_slab_free+0xfc/0x150
+ slab_free_freelist_hook+0x108/0x200
+ kfree+0x13c/0x3b8
+ sugov_tunables_free+0x18/0x28
+ kobject_release+0xe4/0x360
+ kobject_put+0x7c/0x138
+ gov_attr_set_put+0x138/0x1b0
+ sugov_exit+0x7c/0x198
+ cpufreq_exit_governor+0x78/0x178
+ cpufreq_offline+0x2f8/0x6f8
+ cpuhp_cpufreq_offline+0x18/0x28
+ cpuhp_invoke_callback+0x51c/0x2ab8
+ cpuhp_thread_fun+0x204/0x588
+ smpboot_thread_fn+0x3f0/0xc40
+ kthread+0x3bc/0x470
+ ret_from_fork+0x10/0x20
+
+The buggy address belongs to the object at ffff000877717900
+                which belongs to the cache kmalloc-256 of size 256
+The buggy address is located 80 bytes inside of
+                256-byte region [ffff000877717900, ffff000877717a00)
+The buggy address belongs to the page:
+page:ffffffc0021ddc40 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x8f771
+flags: 0x7ffff800000200(slab|node=0|zone=0|lastcpupid=0xfffff)
+raw: 007ffff800000200 ffffffc0021a6508 ffffffc0022bd488 ffff000012910980
+raw: 0000000000000000 0000000000400040 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff000877717800: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff000877717880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff000877717900: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                 ^
+ ffff000877717980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff000877717a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+
+Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
+Signed-off-by: Qian Cai <quic_qiancai@quicinc.com>
 ---
- Documentation/timers/no_hz.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/timers/no_hz.rst b/Documentation/timers/no_hz.rst
-index 6cadad7c3aad..20ad23a6c618 100644
---- a/Documentation/timers/no_hz.rst
-+++ b/Documentation/timers/no_hz.rst
-@@ -70,6 +70,10 @@ interrupt.  After all, the primary purpose of a scheduling-clock interrupt
- is to force a busy CPU to shift its attention among multiple duties,
- and an idle CPU has no duties to shift its attention among.
+diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
+index 66b05a326910..a6f365b9cc1a 100644
+--- a/drivers/cpufreq/cpufreq_governor_attr_set.c
++++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
+@@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
+ 	if (count)
+ 		return count;
  
-+An idle CPU that is not receiving scheduling-clock interrupts is said to
-+be "dyntick-idle", "in dyntick-idle mode", "in nohz mode", or "running
-+tickless".  The remainder of this document will use "dyntick-idle mode".
-+
- The CONFIG_NO_HZ_IDLE=y Kconfig option causes the kernel to avoid sending
- scheduling-clock interrupts to idle CPUs, which is critically important
- both to battery-powered devices and to highly virtualized mainframes.
-@@ -91,10 +95,6 @@ Therefore, systems with aggressive real-time response constraints often
- run CONFIG_HZ_PERIODIC=y kernels (or CONFIG_NO_HZ=n for older kernels)
- in order to avoid degrading from-idle transition latencies.
- 
--An idle CPU that is not receiving scheduling-clock interrupts is said to
--be "dyntick-idle", "in dyntick-idle mode", "in nohz mode", or "running
--tickless".  The remainder of this document will use "dyntick-idle mode".
--
- There is also a boot parameter "nohz=" that can be used to disable
- dyntick-idle mode in CONFIG_NO_HZ_IDLE=y kernels by specifying "nohz=off".
- By default, CONFIG_NO_HZ_IDLE=y kernels boot with "nohz=on", enabling
+-	kobject_put(&attr_set->kobj);
+ 	mutex_destroy(&attr_set->update_lock);
++	kobject_put(&attr_set->kobj);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(gov_attr_set_put);
 -- 
-2.29.2
+2.25.1
 
