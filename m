@@ -2,206 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4082A40A781
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CB540A75D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240685AbhINHfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240910AbhINHen (ORCPT
+        id S240705AbhINH3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:29:50 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:52461 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239257AbhINH3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:34:43 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21888C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:33:24 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d17so7582046plr.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=i9dWAQT9MnFNTmopLa7uI8hnCzKur7mFh/tgOEsG0ak=;
-        b=tvtI2oh7KRqjHCGIC33vHZ0eTeCepMMOZzXUpOe8B0d52bMkBme0jt/iAIH+WSxPrU
-         bmQxXDU5jsRQtJpLnGyCh7yW3S9qM2hCZqV3O4vqTbI16BR8EagQaj5prtkzuF1OLCgQ
-         rSpGZHDgWCEWqYpkz+G07cHTCU35NTg5bhnq73sgywUxy1uC+y4xFqljbevKplx0vCIF
-         8ewaaJ6a04UMwXac4zqf+HlKhbM7u5HD+IrzirICPUWi3cVzIFEd1tQcvxmSw3M9EAPW
-         qB4HE29noctkhSzKmIGAKTzrJn/qPJIViF3DVha1y4XA0qZ5Cx2vgipV5a+eR5V6n/N8
-         WzvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=i9dWAQT9MnFNTmopLa7uI8hnCzKur7mFh/tgOEsG0ak=;
-        b=qmjNpurNb3fb3iS7ZrgrN+QVg9gnw6K1IKUnzmub7seJjcL+PBG4oZZ4fohV9Z67nO
-         gVbtdNd4bEGBL3M2Xj880NTLNjwIB2FM4c/sgYgnLQDyDnAnMlTrhObfcQs4Rg+azwNt
-         5Fr6mtrmXY8x4IwX75yjxHL+72Wdk6UvAzSRCGaLVpO4MSoLETZEEpIvMZkby8nH1Ss/
-         6pR+LkxgBSH1jMZ/ys0VwULb1rDZgNK3SL7pRr3/1iRsyWlPG5Px9rpIiAglZPzC+uLg
-         596fVdtFibxFedok1hCAFyr8Zg0280iGPnikbyJHn/VembdB+vQMQ/6Awv2KFqhAtAgP
-         bnpA==
-X-Gm-Message-State: AOAM530CXvxD4HHZwx2fko3y9MmkUA5yWamd4sb/BglnhhwmniI6YmV1
-        Dq2MDZKOR6KxB1rSDBjAbb/hQA==
-X-Google-Smtp-Source: ABdhPJw9AsHD8axsXPLJrDHn4xQlPyJpmiPLXcwCJC6VSXKd8nsAkTIpKAaLCtfS9+xfnNlqvB4zfg==
-X-Received: by 2002:a17:90b:2243:: with SMTP id hk3mr507259pjb.203.1631604803701;
-        Tue, 14 Sep 2021 00:33:23 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id s3sm9377839pfd.188.2021.09.14.00.33.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Sep 2021 00:33:23 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
-        guro@fb.com, shy828301@gmail.com, alexs@kernel.org,
-        richard.weiyang@gmail.com, david@fromorbit.com,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        zhengqi.arch@bytedance.com, duanxiongchun@bytedance.com,
-        fam.zheng@bytedance.com, smuchun@gmail.com,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3 04/76] mm: memcontrol: move memcg_online_kmem() to mem_cgroup_css_online()
-Date:   Tue, 14 Sep 2021 15:28:26 +0800
-Message-Id: <20210914072938.6440-5-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210914072938.6440-1-songmuchun@bytedance.com>
-References: <20210914072938.6440-1-songmuchun@bytedance.com>
+        Tue, 14 Sep 2021 03:29:49 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 93C8D2B01223;
+        Tue, 14 Sep 2021 03:28:31 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 14 Sep 2021 03:28:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=hvVjVrfSs4NfbZwUvsxZ1AIAjiN
+        Kf/AxOnqlfzcIO3w=; b=BNjOx/AihmBs1wdMnZUt41zDND5dmoq3ZZKrl4HnHY2
+        n4O9g5pag6oJ5V5QTKYLEopFcFit8H4TZpnDTVDpL6VCgV4U7+oH2Pu31fZx8rkL
+        H7O0p086NO9gxYhsy5J980A8m8Tmc0skb3jPLDf5qgpfd7vS4mT3NxTZ/f5KlcDj
+        pomU3VcA+wl/EPKshVIA9geMP8YSY+dSL+VVBMO5Kpnkht1EhyymvYP4mV008bL7
+        VK10llKYavsHEi2yfYrQO4E06d8mvcr2m9WHeHPUKVDfb6cnnwfxT1eIjS/hzWiz
+        zbEhlhpGpuC4U85fOFt8M60mcKl5BkEJnSvlM2VKQGQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=hvVjVr
+        fSs4NfbZwUvsxZ1AIAjiNKf/AxOnqlfzcIO3w=; b=ZC1956DSICswdAdl2s0Ol1
+        cA7e+CBNDk1Pe+3u0UpevfVh8x4SC7ROXTDG1g+0eEdpaWnR0oDrxx9YkFNhmISp
+        fO9taT451Y4czoXjFCK/47IbIFNaqe4LaruKbhcIR5yGsQ5QoJensUbi+iZjDyMV
+        xV07pzZYHUNz1d26YDYTj17ylP+yJGksyaWVcUdjhT4zPrqlzrt8STXlyzvSBtJM
+        ZJbEnF7PEO/8yI6I9GiBN073gSJN4YXheFSrM1xb1UgCykV+fKzWiv90XbT5j+ld
+        SS228t1xyl/HHB96yVTUXYvHZlxjQhq1+3vCyzf2dvZDwCU5ZAbrl2jF1mCgZW9Q
+        ==
+X-ME-Sender: <xms:HU9AYef3U-RIC9y5UMJXVQDgp6GwACAnL9bFdJKWVbNm6XCesVxx8A>
+    <xme:HU9AYYMzZMv9xngwQxW2XtondmcytEqbhiXn67vX8EwijZLrCCybw3oWW12cinPku
+    5kKLflr030C3dKSouA>
+X-ME-Received: <xmr:HU9AYfj4Fa436Mt463OO35qwTb4G206LYAEpeXoZEtFQgAl0ZyyER5JWvs6lLpaHX1LnYLe5_V0jKVENXBMcTuQwrvhlYOHxEsst>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegkedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:HU9AYb89jbYfEMiRLB27f6ah2wxdrgVe6xQBt1xW-b9ygm7bZ1Ag2Q>
+    <xmx:HU9AYauo9Gmhe6oLA--TfbPTayoL6BGjfOpkeeEYVVxuSaMZIwkgPA>
+    <xmx:HU9AYSEPQDVeDCIBk96VQNnoljKa3Bi_ij8ZkfL6uCoprz6Er5LSuQ>
+    <xmx:Hk9AYbm7Uu7EYHSgYlF5jyfWU6sqGOvsA9aibli3ShHeUz_Yq-CJVH-exBQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Sep 2021 03:28:29 -0400 (EDT)
+Date:   Tue, 14 Sep 2021 09:28:27 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-input@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] Input: sun4i-lradc-keys: Add optional clock/reset
+ support
+Message-ID: <20210914072827.jgv6piny47veacig@gilmour>
+References: <20210908034016.24119-1-samuel@sholland.org>
+ <20210908034016.24119-3-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rzmx22vvpwfmbzkv"
+Content-Disposition: inline
+In-Reply-To: <20210908034016.24119-3-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It will simplify code if moving work of making kmem online to the place
-where making memcg online. It is unnecessary to set ->kmemcg_id when the
-kmem is offline, memcg_free_kmem() can go away as well.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 42 +++++++++++++++---------------------------
- 1 file changed, 15 insertions(+), 27 deletions(-)
+--rzmx22vvpwfmbzkv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6844d8b511d8..a85b52968666 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3610,7 +3610,8 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- 	if (cgroup_memory_nokmem)
- 		return 0;
- 
--	BUG_ON(memcg->kmemcg_id >= 0);
-+	if (unlikely(mem_cgroup_is_root(memcg)))
-+		return 0;
- 
- 	memcg_id = memcg_alloc_cache_id();
- 	if (memcg_id < 0)
-@@ -3639,6 +3640,9 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 	if (cgroup_memory_nokmem)
- 		return;
- 
-+	if (unlikely(mem_cgroup_is_root(memcg)))
-+		return;
-+
- 	parent = parent_mem_cgroup(memcg);
- 	if (!parent)
- 		parent = root_mem_cgroup;
-@@ -3646,20 +3650,11 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 	memcg_reparent_objcgs(memcg, parent);
- 
- 	kmemcg_id = memcg->kmemcg_id;
--	BUG_ON(kmemcg_id < 0);
- 
- 	/* memcg_reparent_objcgs() must be called before this. */
- 	memcg_drain_all_list_lrus(kmemcg_id, parent);
- 
- 	memcg_free_cache_id(kmemcg_id);
--	memcg->kmemcg_id = -1;
--}
--
--static void memcg_free_kmem(struct mem_cgroup *memcg)
--{
--	/* css_alloc() failed, offlining didn't happen */
--	if (unlikely(memcg->kmemcg_id != -1))
--		memcg_offline_kmem(memcg);
- }
- #else
- static int memcg_online_kmem(struct mem_cgroup *memcg)
-@@ -3669,9 +3664,6 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- static void memcg_offline_kmem(struct mem_cgroup *memcg)
- {
- }
--static void memcg_free_kmem(struct mem_cgroup *memcg)
--{
--}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- static int memcg_update_kmem_max(struct mem_cgroup *memcg,
-@@ -5183,7 +5175,6 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- {
- 	struct mem_cgroup *parent = mem_cgroup_from_css(parent_css);
- 	struct mem_cgroup *memcg, *old_memcg;
--	long error = -ENOMEM;
- 
- 	old_memcg = set_active_memcg(parent);
- 	memcg = mem_cgroup_alloc();
-@@ -5213,33 +5204,26 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 	}
- 
- 	/* The following stuff does not apply to the root */
--	error = memcg_online_kmem(memcg);
--	if (error)
--		goto fail;
--
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
- 		static_branch_inc(&memcg_sockets_enabled_key);
- 
- 	return &memcg->css;
--fail:
--	mem_cgroup_id_remove(memcg);
--	mem_cgroup_free(memcg);
--	return ERR_PTR(error);
- }
- 
- static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
- 
-+	if (memcg_online_kmem(memcg))
-+		goto remove_id;
-+
- 	/*
- 	 * A memcg must be visible for expand_shrinker_info()
- 	 * by the time the maps are allocated. So, we allocate maps
- 	 * here, when for_each_mem_cgroup() can't skip it.
- 	 */
--	if (alloc_shrinker_info(memcg)) {
--		mem_cgroup_id_remove(memcg);
--		return -ENOMEM;
--	}
-+	if (alloc_shrinker_info(memcg))
-+		goto offline_kmem;
- 
- 	/* Online state pins memcg ID, memcg ID pins CSS */
- 	refcount_set(&memcg->id.ref, 1);
-@@ -5249,6 +5233,11 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
- 				   2UL*HZ);
- 	return 0;
-+offline_kmem:
-+	memcg_offline_kmem(memcg);
-+remove_id:
-+	mem_cgroup_id_remove(memcg);
-+	return -ENOMEM;
- }
- 
- static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
-@@ -5306,7 +5295,6 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
- 	cancel_work_sync(&memcg->high_work);
- 	mem_cgroup_remove_from_trees(memcg);
- 	free_shrinker_info(memcg);
--	memcg_free_kmem(memcg);
- 	mem_cgroup_free(memcg);
- }
- 
--- 
-2.11.0
+Hi Samuel,
 
+On Tue, Sep 07, 2021 at 10:40:15PM -0500, Samuel Holland wrote:
+> Until the R329, the LRADC hardware was always active. Now it requires
+> enabling a clock gate and deasserting a reset line. Do this if the clock
+> and reset are provided in the device tree, but keep them optional to
+> maintain support for the existing binding.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  drivers/input/keyboard/sun4i-lradc-keys.c | 29 +++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/drivers/input/keyboard/sun4i-lradc-keys.c b/drivers/input/ke=
+yboard/sun4i-lradc-keys.c
+> index 4a796bed48ac..50fc18052829 100644
+> --- a/drivers/input/keyboard/sun4i-lradc-keys.c
+> +++ b/drivers/input/keyboard/sun4i-lradc-keys.c
+> @@ -14,6 +14,7 @@
+>   * there are no boards known to use channel 1.
+>   */
+> =20
+> +#include <linux/clk.h>
+>  #include <linux/err.h>
+>  #include <linux/init.h>
+>  #include <linux/input.h>
+> @@ -23,6 +24,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regulator/consumer.h>
+> +#include <linux/reset.h>
+>  #include <linux/slab.h>
+> =20
+>  #define LRADC_CTRL		0x00
+> @@ -83,6 +85,8 @@ struct sun4i_lradc_data {
+>  	struct device *dev;
+>  	struct input_dev *input;
+>  	void __iomem *base;
+> +	struct clk *clk;
+> +	struct reset_control *reset;
+>  	struct regulator *vref_supply;
+>  	struct sun4i_lradc_keymap *chan0_map;
+>  	const struct lradc_variant *variant;
+> @@ -140,6 +144,14 @@ static int sun4i_lradc_open(struct input_dev *dev)
+>  	if (error)
+>  		return error;
+> =20
+> +	error =3D reset_control_deassert(lradc->reset);
+> +	if (error)
+> +		goto err_disable_reg;
+> +
+> +	error =3D clk_prepare_enable(lradc->clk);
+> +	if (error)
+> +		goto err_assert_reset;
+> +
+>  	lradc->vref =3D regulator_get_voltage(lradc->vref_supply) *
+>  		      lradc->variant->divisor_numerator /
+>  		      lradc->variant->divisor_denominator;
+> @@ -153,6 +165,13 @@ static int sun4i_lradc_open(struct input_dev *dev)
+>  	writel(CHAN0_KEYUP_IRQ | CHAN0_KEYDOWN_IRQ, lradc->base + LRADC_INTC);
+> =20
+>  	return 0;
+> +
+> +err_assert_reset:
+> +	reset_control_assert(lradc->reset);
+> +err_disable_reg:
+> +	regulator_disable(lradc->vref_supply);
+> +
+> +	return error;
+>  }
+> =20
+>  static void sun4i_lradc_close(struct input_dev *dev)
+> @@ -164,6 +183,8 @@ static void sun4i_lradc_close(struct input_dev *dev)
+>  		SAMPLE_RATE(2), lradc->base + LRADC_CTRL);
+>  	writel(0, lradc->base + LRADC_INTC);
+> =20
+> +	clk_disable_unprepare(lradc->clk);
+> +	reset_control_assert(lradc->reset);
+>  	regulator_disable(lradc->vref_supply);
+>  }
+> =20
+> @@ -243,6 +264,14 @@ static int sun4i_lradc_probe(struct platform_device =
+*pdev)
+>  		return -EINVAL;
+>  	}
+> =20
+> +	lradc->clk =3D devm_clk_get_optional(dev, NULL);
+> +	if (IS_ERR(lradc->clk))
+> +		return PTR_ERR(lradc->clk);
+> +
+> +	lradc->reset =3D devm_reset_control_get_optional_exclusive(dev, NULL);
+> +	if (IS_ERR(lradc->reset))
+> +		return PTR_ERR(lradc->reset);
+> +
+
+This wouldn't report an error if the clocks are missing on the R329 (and
+D1), even though they are required. The way we usually deal with this is
+through a flag in the variant structure (at least to guard clk_get /
+reset_control_get)
+
+Maxime
+
+--rzmx22vvpwfmbzkv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUBPGwAKCRDj7w1vZxhR
+xQPqAP9LGRvPenYpVtWJ7qukgVZrUVeqfttxeSmMC5gIPT+hLwEA+33NIDCBUsS5
+hzuRkA1uLpYHY1fKdfQpdP+Kvb8XhQM=
+=KI02
+-----END PGP SIGNATURE-----
+
+--rzmx22vvpwfmbzkv--
