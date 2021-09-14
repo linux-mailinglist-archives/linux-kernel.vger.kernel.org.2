@@ -2,177 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFE140ADD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE9E40ACFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhINMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:37:15 -0400
-Received: from fanzine.igalia.com ([178.60.130.6]:47869 "EHLO
-        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbhINMhL (ORCPT
+        id S232467AbhINMGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232629AbhINMEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:37:11 -0400
-X-Greylist: delayed 2243 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 08:37:08 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
-        h=MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=V389QlEPoa4H0g6tvmBCmXe0Mn/biFCGdcUxSHGw0bg=;
-        b=KSMvgSawYxoMYj3QpeMNiCIgFiuis2WmEklbbbFV3SRfOvRg3IE3CNaJswnjVOLYNI9H9rQUmVY7hxHIzvTtLqHWIZJVFLsjkkfhMIpiFwLJk/BUxnqKlyRRo2vT0EsjELD+VyGArNOCzMEgNLKsBNi8OLuoCWQ3fMsirgI98iLz/rJ3zQLfFBmBI2pWXf6NHwHdRPX33N/+PeG+09Aov5k/NxKgR6IFg3ovqoeLkzOXy9E6m90Th193wzRgowxQh5pUqNsK+tvsqQkIMyUGdT7EgPx1tneQTZcAitUNoFfyyH5REnun4UFR4dbPbfnzmgRtwC2b3oNv+5kVfUDfBA==;
-Received: from 101.red-88-4-142.dynamicip.rima-tde.net ([88.4.142.101] helo=[192.168.2.252])
-        by fanzine.igalia.com with esmtpsa 
-        (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
-        id 1mQ74t-0000M4-1u; Tue, 14 Sep 2021 13:58:19 +0200
-Message-ID: <0f88635bb2da781aede7b63350edc21ccb5c7536.camel@igalia.com>
-Subject: Re: [PATCH 15/16] tty: the rest, stop using tty_flip_buffer_push
-From:   Samuel Iglesias =?ISO-8859-1?Q?Gons=E1lvez?= 
-        <siglesias@igalia.com>
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 14 Sep 2021 13:58:09 +0200
-In-Reply-To: <20210914091415.17918-8-jslaby@suse.cz>
-References: <20210914091134.17426-1-jslaby@suse.cz>
-         <20210914091415.17918-1-jslaby@suse.cz>
-         <20210914091415.17918-8-jslaby@suse.cz>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-UdnmcUv33UBwH0NOJ0sJ"
-User-Agent: Evolution 3.38.3-1 
+        Tue, 14 Sep 2021 08:04:31 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F33C061574;
+        Tue, 14 Sep 2021 05:03:14 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id c206so27576232ybb.12;
+        Tue, 14 Sep 2021 05:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pMuzqmLn8R49faYvkNEUgKWF6kt1oCNrbXKOw1AJ9/g=;
+        b=DsEtZ1gvFmXGkGEiFUBeat38tAyUQbLjHQG4pLWSFt4W5aD6/4my4JQwwdQ78/VMRq
+         IteK/4ej6cPcHmeTqYEs3SsJFPijWLn9nXkUQtfRwqnxSTFAaJIIUUC3BEoL2h/IAhxK
+         LRUTDC/EEXseM9a3uEC9QjOCnAyyrWovRAVkXNTL6P+ho8k9Biq6JEnxJ+z6gG8Y7tOm
+         rl7tjVC5Y1XnSWuSsJTToAKGLHupore67DgKm628AbFLFSfm7SG/zFcRXO2N8UBAjR43
+         JBIwIJzwspQme1FN5F9mH0IvxTp0wT2sdcl1B/n/ns276RN+W9/1GYm4jXh7O/herInH
+         Ulpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pMuzqmLn8R49faYvkNEUgKWF6kt1oCNrbXKOw1AJ9/g=;
+        b=F4eHnIJH9IEbvY0n19uFCrbb5oQZjGI03ThHo41E+rFrc54ea2c4C1FL6kn5t4yJ1/
+         VsIMibkZtq+Sxbqc4VDz6f1YSbow9vJmbUw3ImxgYtyyZSChZdR2va+HOJNDiu8RWp++
+         4VRRyw5wMa78unDu/eocXSVnwViFgsyHweLEFe1eJw8Aj0txzXJSEcEZWCntuxxKAaui
+         RBetB+V71iAaYPDUuEDc4XpajrkdhJKMBxddF3ERQUlCOKfmr2QVLzQ4tPVkF9rKjadl
+         EtAmO4aGB8h7meQgbkhuGLf+y9+txQzhsQvPtxkkEUgqrGJsXQcCY5jMJ6FQKE1zB0jO
+         rleQ==
+X-Gm-Message-State: AOAM531Yj1efgYZNktzDxUZYlikeUyVX5RgJZdoe+fe6BsIJcjfK4Pzo
+        ws4LNR2/cAAIJBDtHjP8z64J27SH9KRtUE7nH/c=
+X-Google-Smtp-Source: ABdhPJx3Xv+ZrAwReMnF+D+nYEmGsxevtbsIcDUCvtkX3v5AmCaUQqzaGf1EAFlMzJ9aveoWhQG6Yfuw/sg+1sJSESg=
+X-Received: by 2002:a05:6902:1505:: with SMTP id q5mr11829563ybu.244.1631620990398;
+ Tue, 14 Sep 2021 05:03:10 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210913163712.922188-1-linux@roeck-us.net> <YT+SPIAl0IdWOAn/@ravnborg.org>
+ <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
+In-Reply-To: <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Tue, 14 Sep 2021 15:02:59 +0300
+Message-ID: <CADxRZqwU6URhCpsUifon+B1QYHepx6gjExAFfK6SeXyu4JpF4w@mail.gmail.com>
+Subject: Re: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Sparc kernel list <sparclinux@vger.kernel.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 14, 2021 at 3:54 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 9/13/21 11:02 AM, Sam Ravnborg wrote:
+> > Hi Guenter,
+> >
+> > On Mon, Sep 13, 2021 at 09:37:12AM -0700, Guenter Roeck wrote:
+> >> sparc64 images fail to compile with gcc 11.x, reporting the following
+> >> errors.
+> >>
+> >> arch/sparc/kernel/mdesc.c:647:22: error:
+> >>      'strcmp' reading 1 or more bytes from a region of size 0
+> >> arch/sparc/kernel/mdesc.c:692:22: error:
+> >>      'strcmp' reading 1 or more bytes from a region of size 0
+> >> arch/sparc/kernel/mdesc.c:719:21:
+> >>      error: 'strcmp' reading 1 or more bytes from a region of size 0
+> >>
+> >> The underlying problem is that node_block() returns a pointer beyond
+> >> the end of struct mdesc_hdr. gcc 11.x detects that and reports the error.
+> >> Adding an additional zero-length field to struct mdesc_hdr and pointing
+> >> to that field fixes the problem.
+> >>
+> >> Cc: Arnd Bergmann <arnd@kernel.org>
+> >> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> >> ---
+> >> My apologies if a similar patch was submitted already; I was unable to find it.
+> >> I did find the following patch:
+> >>      https://git.busybox.net/buildroot/commit/?id=6e1106b4a9aee25d1556310d5cd1cb6dde2e6e3f
+> >> but I failed to find it in patchwork or on lore.kernel.org, and it
+> >> seems to be more expensive than the solution suggested here.
+> >>
+> >>   arch/sparc/kernel/mdesc.c | 3 ++-
+> >>   1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
+> >> index 8e645ddac58e..c67bdcc23727 100644
+> >> --- a/arch/sparc/kernel/mdesc.c
+> >> +++ b/arch/sparc/kernel/mdesc.c
+> >> @@ -39,6 +39,7 @@ struct mdesc_hdr {
+> >>      u32     node_sz; /* node block size */
+> >>      u32     name_sz; /* name block size */
+> >>      u32     data_sz; /* data block size */
+> >> +    char    data[0];
+> >>   } __attribute__((aligned(16)));
+> >
+> > I do not think this will works.
+> > See following comment:
+> >   * mdesc_hdr and mdesc_elem describe the layout of the data structure
+> >   * we get from the Hypervisor.
+> >
+> > With the above change you increased the size from 16 to 32 bytes,
+> > and any code using sizeof(struct mdesc_hdr) will now point too far in
+> > memory for the second and subsequent entries.
+> >
+> > I did not take any closer look, but this was from a quick analysis.
+> >
+>
+> Sorry, I didn't realize that a field of size 0 increases the structure size
+> on sparc. I had checked the size of the old and the new structure with gcc
+> on x86_64 and didn't see a field size increase.
+>
+> Guenter
+>
+> ---
+> Test code I had used:
+>
+> #include <stddef.h>
+> #include <stdio.h>
+>
+> typedef unsigned int u32;
+>
+> struct mdesc_hdr {
+>          u32     version; /* Transport version */
+>          u32     node_sz; /* node block size */
+>          u32     name_sz; /* name block size */
+>          u32     data_sz; /* data block size */
+> } __attribute__((aligned(16)));
+>
+> struct mdesc_hdr2 {
+>          u32     version; /* Transport version */
+>          u32     node_sz; /* node block size */
+>          u32     name_sz; /* name block size */
+>          u32     data_sz; /* data block size */
+>          char    data[0];
+> } __attribute__((aligned(16)));
+>
+> int main()
+> {
+>         printf("%ld %ld\n", sizeof(struct mdesc_hdr), sizeof(struct mdesc_hdr2));
+>
+>         return 0;
+> }
 
---=-UdnmcUv33UBwH0NOJ0sJ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+used the code above on my sparc64 installation:
 
-T24gVHVlLCAyMDIxLTA5LTE0IGF0IDExOjE0ICswMjAwLCBKaXJpIFNsYWJ5IHdyb3RlOgo+IFNp
-bmNlIGNvbW1pdCBhOWMzZjY4ZjNjZDhkICh0dHk6IEZpeCBsb3dfbGF0ZW5jeSBCVUcpIGluIDIw
-MTQsCj4gdHR5X2ZsaXBfYnVmZmVyX3B1c2goKSBpcyBvbmx5IGEgd3JhcHBlciB0byB0dHlfc2No
-ZWR1bGVfZmxpcCgpLiBXZQo+IGFyZQo+IGdvaW5nIHRvIHJlbW92ZSB0aGUgZm9ybWVyLCBzbyBj
-YWxsIHRoZSBsYXR0ZXIgZGlyZWN0bHkgaW4gdGhlIGNvdXBsZQo+IG9mCj4gcmVtYWluaW5nIHVz
-ZXJzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEppcmkgU2xhYnkgPGpzbGFieUBzdXNlLmN6Pgo+IENj
-OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+IENjOiBTYW11ZWwgSWdsZXNpYXMgR29u
-c2FsdmV6IDxzaWdsZXNpYXNAaWdhbGlhLmNvbT4KPiBDYzogSmVucyBUYXByb2dnZSA8amVucy50
-YXByb2dnZUB0YXByb2dnZS5vcmc+Cj4gQ2M6IFNjb3R0IEJyYW5kZW4gPHNjb3R0LmJyYW5kZW5A
-YnJvYWRjb20uY29tPgo+IENjOiBVbGYgSGFuc3NvbiA8dWxmLmhhbnNzb25AbGluYXJvLm9yZz4K
-PiBDYzogIkRhdmlkIFMuIE1pbGxlciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+Cj4gQ2M6IEpha3Vi
-IEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+Cj4gQ2M6IE1hcmNlbCBIb2x0bWFubiA8bWFyY2Vs
-QGhvbHRtYW5uLm9yZz4KPiBDYzogSm9oYW4gSGVkYmVyZyA8am9oYW4uaGVkYmVyZ0BnbWFpbC5j
-b20+Cj4gQ2M6IEx1aXogQXVndXN0byB2b24gRGVudHogPGx1aXouZGVudHpAZ21haWwuY29tPgo+
-IC0tLQo+IMKgZHJpdmVycy9jaGFyL3BjbWNpYS9zeW5jbGlua19jcy5jIHwgMiArLQo+IMKgZHJp
-dmVycy9pcGFjay9kZXZpY2VzL2lwb2N0YWwuY8KgwqAgfCAyICstCj4gwqBkcml2ZXJzL21pc2Mv
-YmNtLXZrL2JjbV92a190dHkuY8KgIHwgMiArLQo+IMKgZHJpdmVycy9tbWMvY29yZS9zZGlvX3Vh
-cnQuY8KgwqDCoMKgwqAgfCAyICstCj4gwqBkcml2ZXJzL25ldC91c2IvaHNvLmPCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfCAyICstCj4gwqBuZXQvYmx1ZXRvb3RoL3JmY29tbS90dHkuY8KgwqDC
-oMKgwqDCoMKgIHwgNCArKy0tCj4gwqA2IGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
-NyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jaGFyL3BjbWNpYS9zeW5j
-bGlua19jcy5jCj4gYi9kcml2ZXJzL2NoYXIvcGNtY2lhL3N5bmNsaW5rX2NzLmMKPiBpbmRleCA3
-OGJhYmE1NWE4YjUuLjI5YTdhODllZTU4ZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2NoYXIvcGNt
-Y2lhL3N5bmNsaW5rX2NzLmMKPiArKysgYi9kcml2ZXJzL2NoYXIvcGNtY2lhL3N5bmNsaW5rX2Nz
-LmMKPiBAQCAtOTUyLDcgKzk1Miw3IEBAIHN0YXRpYyB2b2lkIHJ4X3JlYWR5X2FzeW5jKE1HU0xQ
-Q19JTkZPICppbmZvLCBpbnQKPiB0Y2QpCj4gwqDCoMKgwqDCoMKgwqDCoH0KPiDCoAo+IMKgwqDC
-oMKgwqDCoMKgwqBpZiAod29yaykKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdHR5
-X2ZsaXBfYnVmZmVyX3B1c2gocG9ydCk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oHR0eV9zY2hlZHVsZV9mbGlwKHBvcnQpOwo+IMKgfQo+IMKgCj4gwqAKPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9pcGFjay9kZXZpY2VzL2lwb2N0YWwuYwo+IGIvZHJpdmVycy9pcGFjay9kZXZpY2Vz
-L2lwb2N0YWwuYwo+IGluZGV4IGMxNGU2NWE1ZDM4Zi4uNzE0ZTJiOGM1NTFmIDEwMDY0NAo+IC0t
-LSBhL2RyaXZlcnMvaXBhY2svZGV2aWNlcy9pcG9jdGFsLmMKPiArKysgYi9kcml2ZXJzL2lwYWNr
-L2RldmljZXMvaXBvY3RhbC5jCj4gQEAgLTE4NCw3ICsxODQsNyBAQCBzdGF0aWMgdm9pZCBpcG9j
-dGFsX2lycV9yeChzdHJ1Y3QgaXBvY3RhbF9jaGFubmVsCj4gKmNoYW5uZWwsIHU4IHNyKQo+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3IgPSBpb3JlYWQ4KCZjaGFubmVsLT5yZWdz
-LT5yLnNyKTsKPiDCoMKgwqDCoMKgwqDCoMKgfSB3aGlsZSAoaXNyICYgY2hhbm5lbC0+aXNyX3J4
-X3JkeV9tYXNrKTsKPiDCoAo+IC3CoMKgwqDCoMKgwqDCoHR0eV9mbGlwX2J1ZmZlcl9wdXNoKHBv
-cnQpOwo+ICvCoMKgwqDCoMKgwqDCoHR0eV9zY2hlZHVsZV9mbGlwKHBvcnQpOwo+IMKgfQo+IMKg
-CgpGb3IgaXBvY3RhbCBjaGFuZ2VzOgoKQWNrZWQtYnk6IFNhbXVlbCBJZ2xlc2lhcyBHb25zw6Fs
-dmV6IDxzaWdsZXNpYXNAaWdhbGlhLmNvbT4KClNhbQoKPiDCoHN0YXRpYyB2b2lkIGlwb2N0YWxf
-aXJxX3R4KHN0cnVjdCBpcG9jdGFsX2NoYW5uZWwgKmNoYW5uZWwpCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvbWlzYy9iY20tdmsvYmNtX3ZrX3R0eS5jIGIvZHJpdmVycy9taXNjL2JjbS0KPiB2ay9i
-Y21fdmtfdHR5LmMKPiBpbmRleCAxYjYwNzZhODljYTYuLjMyODEwOWE3MTliZSAxMDA2NDQKPiAt
-LS0gYS9kcml2ZXJzL21pc2MvYmNtLXZrL2JjbV92a190dHkuYwo+ICsrKyBiL2RyaXZlcnMvbWlz
-Yy9iY20tdmsvYmNtX3ZrX3R0eS5jCj4gQEAgLTExNCw3ICsxMTQsNyBAQCBzdGF0aWMgdm9pZCBi
-Y21fdmtfdHR5X3dxX2hhbmRsZXIoc3RydWN0Cj4gd29ya19zdHJ1Y3QgKndvcmspCj4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoGlmIChjb3VudCkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgdHR5X2ZsaXBfYnVmZmVyX3B1c2goJnZrdHR5LT5wb3J0KTsKPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR0eV9zY2hlZHVsZV9m
-bGlwKCZ2a3R0eS0+cG9ydCk7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAvKiBVcGRhdGUgcmVhZCBvZmZzZXQgZnJvbSBzaGFkb3cgcmVnaXN0
-ZXIgdG8KPiBjYXJkICovCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgdmt3cml0ZTMyKHZrLCB2a3R0eS0+cmQsIEJBUl8xLAo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL21tYy9jb3JlL3NkaW9fdWFydC5jCj4gYi9kcml2ZXJzL21tYy9jb3JlL3NkaW9fdWFy
-dC5jCj4gaW5kZXggMDRjMDgyM2UwMzU5Li41NWZjNjdiZDA5MzcgMTAwNjQ0Cj4gLS0tIGEvZHJp
-dmVycy9tbWMvY29yZS9zZGlvX3VhcnQuYwo+ICsrKyBiL2RyaXZlcnMvbW1jL2NvcmUvc2Rpb191
-YXJ0LmMKPiBAQCAtNDE4LDcgKzQxOCw3IEBAIHN0YXRpYyB2b2lkIHNkaW9fdWFydF9yZWNlaXZl
-X2NoYXJzKHN0cnVjdAo+IHNkaW9fdWFydF9wb3J0ICpwb3J0LAo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgKnN0YXR1cyA9IHNkaW9faW4ocG9ydCwgVUFSVF9MU1IpOwo+IMKgwqDC
-oMKgwqDCoMKgwqB9IHdoaWxlICgoKnN0YXR1cyAmIFVBUlRfTFNSX0RSKSAmJiAobWF4X2NvdW50
-LS0gPiAwKSk7Cj4gwqAKPiAtwqDCoMKgwqDCoMKgwqB0dHlfZmxpcF9idWZmZXJfcHVzaCgmcG9y
-dC0+cG9ydCk7Cj4gK8KgwqDCoMKgwqDCoMKgdHR5X3NjaGVkdWxlX2ZsaXAoJnBvcnQtPnBvcnQp
-Owo+IMKgfQo+IMKgCj4gwqBzdGF0aWMgdm9pZCBzZGlvX3VhcnRfdHJhbnNtaXRfY2hhcnMoc3Ry
-dWN0IHNkaW9fdWFydF9wb3J0ICpwb3J0KQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC91c2Iv
-aHNvLmMgYi9kcml2ZXJzL25ldC91c2IvaHNvLmMKPiBpbmRleCA3ZGMxZWYzZjkzYzMuLjU1ZWE2
-NGIxNjJlMSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC91c2IvaHNvLmMKPiArKysgYi9kcml2
-ZXJzL25ldC91c2IvaHNvLmMKPiBAQCAtMjAxOCw3ICsyMDE4LDcgQEAgc3RhdGljIGludCBwdXRf
-cnhidWZfZGF0YShzdHJ1Y3QgdXJiICp1cmIsCj4gc3RydWN0IGhzb19zZXJpYWwgKnNlcmlhbCkK
-PiDCoMKgwqDCoMKgwqDCoMKgaWYgKGNvdW50ID49IHVyYi0+YWN0dWFsX2xlbmd0aCkgewo+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdHR5X2luc2VydF9mbGlwX3N0cmluZygmc2Vy
-aWFsLT5wb3J0LCB1cmItCj4gPnRyYW5zZmVyX2J1ZmZlciwKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHVyYi0+YWN0dWFsX2xlbmd0aCk7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR0
-eV9mbGlwX2J1ZmZlcl9wdXNoKCZzZXJpYWwtPnBvcnQpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqB0dHlfc2NoZWR1bGVfZmxpcCgmc2VyaWFsLT5wb3J0KTsKPiDCoMKgwqDCoMKg
-wqDCoMKgfSBlbHNlIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldl93YXJu
-KCZzZXJpYWwtPnBhcmVudC0+dXNiLT5kZXYsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgICJkcm9wcGluZyBkYXRhLCAlZCBieXRlcyBsb3N0XG4iLCB1
-cmItCj4gPmFjdHVhbF9sZW5ndGgpOwo+IGRpZmYgLS1naXQgYS9uZXQvYmx1ZXRvb3RoL3JmY29t
-bS90dHkuYyBiL25ldC9ibHVldG9vdGgvcmZjb21tL3R0eS5jCj4gaW5kZXggZWJkNzhmZGJkNmU4
-Li4yYTA5NjM3YmRiMDAgMTAwNjQ0Cj4gLS0tIGEvbmV0L2JsdWV0b290aC9yZmNvbW0vdHR5LmMK
-PiArKysgYi9uZXQvYmx1ZXRvb3RoL3JmY29tbS90dHkuYwo+IEBAIC02MTgsNyArNjE4LDcgQEAg
-c3RhdGljIHZvaWQgcmZjb21tX2Rldl9kYXRhX3JlYWR5KHN0cnVjdAo+IHJmY29tbV9kbGMgKmRs
-Yywgc3RydWN0IHNrX2J1ZmYgKnNrYikKPiDCoMKgwqDCoMKgwqDCoMKgQlRfREJHKCJkbGMgJXAg
-bGVuICVkIiwgZGxjLCBza2ItPmxlbik7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgdHR5X2luc2Vy
-dF9mbGlwX3N0cmluZygmZGV2LT5wb3J0LCBza2ItPmRhdGEsIHNrYi0+bGVuKTsKPiAtwqDCoMKg
-wqDCoMKgwqB0dHlfZmxpcF9idWZmZXJfcHVzaCgmZGV2LT5wb3J0KTsKPiArwqDCoMKgwqDCoMKg
-wqB0dHlfc2NoZWR1bGVfZmxpcCgmZGV2LT5wb3J0KTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqBr
-ZnJlZV9za2Ioc2tiKTsKPiDCoH0KPiBAQCAtNjc3LDcgKzY3Nyw3IEBAIHN0YXRpYyB2b2lkIHJm
-Y29tbV90dHlfY29weV9wZW5kaW5nKHN0cnVjdAo+IHJmY29tbV9kZXYgKmRldikKPiDCoMKgwqDC
-oMKgwqDCoMKgcmZjb21tX2RsY191bmxvY2soZGV2LT5kbGMpOwo+IMKgCj4gwqDCoMKgwqDCoMKg
-wqDCoGlmIChpbnNlcnRlZCA+IDApCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR0
-eV9mbGlwX2J1ZmZlcl9wdXNoKCZkZXYtPnBvcnQpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqB0dHlfc2NoZWR1bGVfZmxpcCgmZGV2LT5wb3J0KTsKPiDCoH0KPiDCoAo+IMKgLyog
-ZG8gdGhlIHJldmVyc2Ugb2YgaW5zdGFsbCwgY2xlYXJpbmcgdGhlIHR0eSBmaWVsZHMgYW5kIHJl
-bGVhc2luZwo+IHRoZQoK
+copy-paste code to 123.c file
 
-
---=-UdnmcUv33UBwH0NOJ0sJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEQP+ZAvaXWkfuKXiEf/S6MvF9w0MFAmFAjlEACgkQf/S6MvF9
-w0NbiQ//ayCKwShaHxMKd9xRqoMn6pdr4lDJbo2vjiZvpqCGVFmsbJSM+T90oXRY
-pisR1tOhThyJZ0Llsa9fulLZhgaZIjka8jnBnIN4Ntvx2yuNYPHremO7KOg8ZFNq
-SdzRIouhe2IghKlE8yRNori9d7daYniGu2SAnzza+yXVAFG28HwJmzsLxjHyYSjW
-hWfMYpL4xp7aHl4ihDJeMSri+GNDsOL7qzV7j1QOvb8mbHDNV7IUiSDh/ulsS0KU
-s8GRR0dopVDu0GXu2BJ6Lhpr79WpW+ZVBl5YIRjIFK4/7zIQ9u7hvQ/XOxmcPGXz
-607NNnYeOy0s4+GTwD4FIoAIjN0zKAAQ9Wnz6EbBG4p0fagR5fYAk1y/wHi2onJX
-WjtHnU5BBVNEYk90hdKSvWr8Xb97rUln+dTiREteZW/aDIyXnXckSmeMmTPRakYt
-ri8kjFTuWiunGWKFbPsex4Rp2XFyoUCXZDX8Whhaq3+LeyrvcpmZO9B/vEKpyneh
-Sg8Q8vPEMQpuojDk7HpUl7KJWG9DRWHMGOutZdCwCuTwwkYUrJMu1IJxKH7GIfhA
-L2oIuQusy24xb5Mzf+AltLwPIaQ/SxaopfRKwBL4kuukuIkQy/SkzqN9HidxPXx1
-PkNAU1aWn8I7ym/VVkvqS+32cf1+M7xxWstcX5s1cYd69FTW08w=
-=/PAG
------END PGP SIGNATURE-----
-
---=-UdnmcUv33UBwH0NOJ0sJ--
-
+$ gcc-11 123.c
+$ ./a.out
+16 16
+$ uname -a
+Linux ttip 5.15.0-rc1 #273 SMP Mon Sep 13 12:47:14 MSK 2021 sparc64 GNU/Linux
