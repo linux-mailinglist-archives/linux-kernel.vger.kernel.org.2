@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5686740ADDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9684840AE03
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhINMhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbhINMhu (ORCPT
+        id S232716AbhINMm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:42:27 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3792 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232524AbhINMm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:37:50 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D567C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:36:33 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id a93so27865573ybi.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=2rUWSusmNixKkjPyphydJlXG3zxtx42Cz9HsDz2rQpo=;
-        b=hHuRtAE/gdNi8rJdroA0yp1Fhw+MHBGhEdg4ZJd8qcnAKL1r1LJ763kAQHS/tgdRD1
-         VZIXVBkJ8dCzJCsWj45pzNY70kawd3o89G1EUQYDUbhkqQLVLuXZNfpmmB+4h96+GWEp
-         3F1b2fFu2cMkVJ7poh4mwmPWkgxpeJ7L3xrL1tIY592UG6WH+J9R5m2ZdgC20yNVD98W
-         D5uAoZ6bbI0iYptNbaF1pBktNlF35A+k7uKxoirM5YbfZEi5MvQT0UQUDrfUqL8t88tD
-         QT9YVFuXet7k8MBBq6tG//X6Hzn+El8J3AoCG11DNv84qYO1qbRBiOsrXPX8nmNRVNAr
-         zFOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=2rUWSusmNixKkjPyphydJlXG3zxtx42Cz9HsDz2rQpo=;
-        b=wnCbradERkQ3cePJxkQV2kUogp91PMBdji8mIA5vFmbLkp6M/uCCfuVtUkHGl0CRTa
-         iC/2z4xNanCv+i9JccwGlXG+StTKagIwmt3TN2Ku0vc/1SjCE1O4MeyZ1Vyuh8UUrHzw
-         r1LkD8r+w9QNbxOED477B+/BN+ShefAuFC1Cl5+sjfcIwP6UYk4rn93D8xz8Uvybyv0J
-         6D6KvgkSmOB+IXmtrpXWCvQY+CApLbNwv6wz9+9Eb60jO3GQ7S+xLzKN5tjy+YNJiT6t
-         Kgmi8PaloQ3Vg99OseJstmNEpyPbqkJj4k2K1tLgGxK/R7C/Vg5PpojicIgmk3OHiWy9
-         ydIA==
-X-Gm-Message-State: AOAM5329jig5k+FtWsO00Qq2syMwpBPHqLGDWlaY0VDS6L/TQSGaU0eo
-        uyPcRXVDI+7wGoGRJ6AgdO9VfJr1ga7T6T49GaU=
-X-Google-Smtp-Source: ABdhPJyg6B6jTM1EWw6TZuy2wwINUiXRvwMMFjMalys61nqu68QJEm0PhZ18v/252tiLn6+spY6vNYuywhXAC+kta5E=
-X-Received: by 2002:a25:b74b:: with SMTP id e11mr21325331ybm.483.1631622992290;
- Tue, 14 Sep 2021 05:36:32 -0700 (PDT)
+        Tue, 14 Sep 2021 08:42:26 -0400
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H82w24by1z67svF;
+        Tue, 14 Sep 2021 20:38:58 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 14:41:06 +0200
+Received: from localhost (10.52.125.225) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 14 Sep
+ 2021 13:41:06 +0100
+Date:   Tue, 14 Sep 2021 13:41:03 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        <llvm@lists.linux.dev>, <kbuild-all@lists.01.org>,
+        <linux-kernel@vger.kernel.org>,
+        David Lechner <david@lechnology.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Subject: Re: [iio:testing 40/43] ld.lld: error: undefined symbol: __udivdi3
+Message-ID: <20210914134103.00006d23@Huawei.com>
+In-Reply-To: <202109120656.fiJqCh8H-lkp@intel.com>
+References: <202109120656.fiJqCh8H-lkp@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Received: by 2002:a05:6918:520c:b0:5e:212:c1c0 with HTTP; Tue, 14 Sep 2021
- 05:36:32 -0700 (PDT)
-Reply-To: michellegoodman035@gmail.com
-From:   Michelle <michellegood044@gmail.com>
-Date:   Tue, 14 Sep 2021 13:36:32 +0100
-Message-ID: <CAJ5e1jZNJJdW0Lgpnu-iGCXP2gdeAVu=Zc+FgTGNXLZh4YLtxw@mail.gmail.com>
-Subject: From Michelle
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.225]
+X-ClientProxiedBy: lhreml726-chm.china.huawei.com (10.201.108.77) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo Liebes, bitte best=C3=A4tige meine Nachricht, um zu wissen, dass du
-sie erh=C3=A4ltst, bitte ist sehr dringend
-Vielen Dank
-Ihre Michelle
+On Sun, 12 Sep 2021 06:43:58 +0800
+kernel test robot <lkp@intel.com> wrote:
+
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git testing
+> head:   77a4a019161bcba51af1dbbeadc04795840fb3e0
+> commit: f7da4339ca510e4476ea35cb9fd44f3f190706c5 [40/43] counter: Internalize sysfs interface code
+> config: i386-randconfig-r022-20210911 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 261cbe98c38f8c1ee1a482fe76511110e790f58a)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/commit/?id=f7da4339ca510e4476ea35cb9fd44f3f190706c5
+>         git remote add iio https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+>         git fetch --no-tags iio testing
+>         git checkout f7da4339ca510e4476ea35cb9fd44f3f190706c5
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=i386 SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> ld.lld: error: undefined symbol: __udivdi3  
+>    >>> referenced by intel-qep.c:290 (drivers/counter/intel-qep.c:290)
+>    >>>               counter/intel-qep.o:(intel_qep_spike_filter_ns_write) in archive drivers/built-in.a  
+This is a result of a change to passing in a u64 instead of a string.   I've applied a fix
+that uses do_div() and pushed out as testing again.
+
+William, please sanity check that fix looks right to you.
+
+Thanks,
+
+Jonathan
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+
