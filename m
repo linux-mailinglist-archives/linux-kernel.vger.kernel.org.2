@@ -2,57 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAD940BBA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D8040BBAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbhINWe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
+        id S235531AbhINWg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236407AbhINWew (ORCPT
+        with ESMTP id S235864AbhINWgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:34:52 -0400
-Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E216C061787;
-        Tue, 14 Sep 2021 15:33:30 -0700 (PDT)
-Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
-        by scorn.kernelslacker.org with esmtp (Exim 4.92)
-        (envelope-from <davej@codemonkey.org.uk>)
-        id 1mQGzY-0006y8-8S; Tue, 14 Sep 2021 18:33:28 -0400
-Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
-        id E6B4056008F; Tue, 14 Sep 2021 18:33:27 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 18:33:27 -0400
-From:   Dave Jones <davej@codemonkey.org.uk>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: Linux 5.15-rc1
-Message-ID: <20210914223327.GA14422@codemonkey.org.uk>
-Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-References: <20210914215543.GA1437800@bjorn-Precision-5520>
- <4f0aa389-439a-750d-a9ac-1b24ae74aacf@gmail.com>
+        Tue, 14 Sep 2021 18:36:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2BAC0613DE
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:35:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=UU8NPRmd+WrsnL1h2xgrcQ/YKA6+gLoFDMON/ybQaQ0=; b=c1OtSLFAo4M0NNPtWPVb8JIekI
+        IaIzxdSMDGHpnQ/h3DlU2zriGdjS+nPr3bdvx1StU1I1WMJ5rYeVznEjTJnoDPnTjx2iseFgWUwqJ
+        hCO/4qyxYlXfq0wDbsVDj7Bn+HHoLMtdZ8bO2cSBqRUXTUnGMK4+4JY4yNKtQ39jdMSnesezOoIQf
+        StRqZ1SHCGbdngAZxqPWyfsCFFXHBLWuBb9JZQBYEBHReBDfn8hlhUcFkRig4FSoLNsBVrnlElwoL
+        v2jorbiu1PiozSKgb8x3q2HUl81ofXrQmn8WTNlVvdOWE/uVHAdUUgnyq6t1FQw2D4bxy9dBdGvb0
+        ZNdbqvGQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQH1O-007QoH-OK; Tue, 14 Sep 2021 22:35:22 +0000
+Subject: Re: [PATCH v2 5/5] eni_vdpa: add vDPA driver for Alibaba ENI
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com
+Cc:     wei.yang1@linux.alibaba.com
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <cover.1631621507.git.wuzongyong@linux.alibaba.com>
+ <ab98427764198053b4277a127eaea3f32cd40ed5.1631621507.git.wuzongyong@linux.alibaba.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ef57dd1f-e94c-f5f2-6226-8ae53c22bb38@infradead.org>
+Date:   Tue, 14 Sep 2021 15:35:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f0aa389-439a-750d-a9ac-1b24ae74aacf@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Note: SpamAssassin invocation failed
+In-Reply-To: <ab98427764198053b4277a127eaea3f32cd40ed5.1631621507.git.wuzongyong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:06:33AM +0200, Heiner Kallweit wrote:
+On 9/14/21 5:24 AM, Wu Zongyong wrote:
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 3d91982d8371..9587b9177b05 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -78,4 +78,12 @@ config VP_VDPA
+>   	help
+>   	  This kernel module bridges virtio PCI device to vDPA bus.
+>   
+> +config ALIBABA_ENI_VDPA
+> +	tristate "vDPA driver for Alibaba ENI"
+> +	select VIRTIO_PCI_LEGACY_LIB
+> +	depends on PCI_MSI
+> +	help
+> +	  VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
 
- > > What do you think of the following?  (This is a diff from v5.15-rc1.)
- > > 
- > 
- > This looks very good to me.
+	                          ENI (Elastic                            built upon the
 
-fwiw, I tested this too, and it still works.
+> +	  virtio 0.9.5 specification.
+> +
+>   endif # VDPA
 
-	Dave
+
+-- 
+~Randy
+
