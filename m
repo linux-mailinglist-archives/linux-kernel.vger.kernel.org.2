@@ -2,163 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CFF40B547
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54A040B549
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhINQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:52:08 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34952 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229379AbhINQwF (ORCPT
+        id S230189AbhINQwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhINQwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:52:05 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18EGacw6017828;
-        Tue, 14 Sep 2021 12:50:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Rh3adKXOvTjnVLe7wTOUMZo3kGUE1+HavKT6nVaxveU=;
- b=FZP0WW8r6fDKNDLzVE79X/joPRQfRDxRd1pBy/bu0sRMU9tIhDZRAMd/QHCMAVQICxsz
- aQRudNMD1uNqWG4m/+EAcDs2RVe6R5Q0kvtcBeE8QSXzX52SonJYPUapuAz7vaF7nBYA
- j84ozPTFlwlVUbwYIKyflqSqbIDvsDLWcjSMvEJmJE2a3QW0ySE4vSI+xSJOhkKaJHXZ
- gWWZb2tbLzq68LvampgFUKFhtyQZE9UrjAA3fYWekA7896QGuQ+APue95BhQQ/DSg9lh
- ms+bOyWnO/uZn+MK4XcqNGbH1dAzpo4mL83fMSfyhYzNlEgkSJhxoIqplnEm+1unBYKG ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2ydjg83h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Sep 2021 12:50:45 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18EGe8jT032210;
-        Tue, 14 Sep 2021 12:50:44 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2ydjg82f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Sep 2021 12:50:44 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18EGTdXN018652;
-        Tue, 14 Sep 2021 16:50:42 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 3b0m39w8d9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Sep 2021 16:50:41 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18EGobta45154708
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Sep 2021 16:50:37 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DE5D4205E;
-        Tue, 14 Sep 2021 16:50:37 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8CDBA42056;
-        Tue, 14 Sep 2021 16:50:36 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.8.12])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Sep 2021 16:50:36 +0000 (GMT)
-Date:   Tue, 14 Sep 2021 18:50:33 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-Subject: Re: [PATCH resend RFC 0/9] s390: fixes, cleanups and optimizations
- for page table walkers
-Message-ID: <20210914185033.367020b3@p-imbrenda>
-In-Reply-To: <20210909162248.14969-1-david@redhat.com>
-References: <20210909162248.14969-1-david@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 14 Sep 2021 12:52:13 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD72C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:50:55 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id y17so12836850pfl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V6so9+H9B6dPIilTjmgcr2K/Yl8eZOWVBVGsoCJwBiw=;
+        b=gERDkktioufqF+vbtwYcgQ6QgXrCm5cHbppFCz3vX35Zom8hV9h9BZzOk/y2P89y5j
+         vjtufEiykiNg4Dv8s6bHZ6rFg0atu5FtqD4I8B3y5Z2dqtHFS+YxBvJdphTD6H6pHRxg
+         +ct2iwCH+GbOPoBwOgb72t2aNM8LJhQhGgfGw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V6so9+H9B6dPIilTjmgcr2K/Yl8eZOWVBVGsoCJwBiw=;
+        b=OBmk/r9856OEluOFm2RT9JeEJhikCLhDmglQ7ILApzFbvQoQHizNhlhUJ2POc+WWB9
+         rdhhSHQq+pUXHqXnIxlL6yEYhrn6qGBpQ+exp6qptCprslGZIOoZYm/e4i039zS00I9G
+         FloL7bzLR2NLj3XEYOsatIHD9y9ZYNo4iTHbLXuE1yJHjQUQ+bRNqppmOv05x2nsNozV
+         8nSr8cYpyAZk2giUxwQiz84sOXnugsatoSt/Pz1nZNu/RviUHbtjHfLULw1TKZ9y4UQW
+         nYbm4tSXs/+aoeKnZr8iRi2jORsC0doZoySgUcPxYTFg0T4kzONW3ci9ZGbIY/nOdGiz
+         V7hw==
+X-Gm-Message-State: AOAM5334P5WvuUFgfETryHrZvc81Q1Ur9RvtrskwrKh1tZPLiHC2hxT9
+        YrM9BHA1s4ABAcNqzB56x49N/5ZFA3x+8A==
+X-Google-Smtp-Source: ABdhPJznbuMgzCMFon27LH5XIM+/RW9oKNGMYjFddGOMgG/9zII/aZ5tpxqztUqBzMNpxAyC++Qllw==
+X-Received: by 2002:a63:fb49:: with SMTP id w9mr16133602pgj.156.1631638255346;
+        Tue, 14 Sep 2021 09:50:55 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a10sm11480982pfg.20.2021.09.14.09.50.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 09:50:54 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 09:50:53 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] treewide: Remove unnamed static initializations to 0
+Message-ID: <202109140938.65A989239@keescook>
+References: <20210910225207.3272766-1-keescook@chromium.org>
+ <CAHk-=wiyq84MKRd1F4d8SGTcTgdd3ktwPr7_9s8tjgKRx_+2kA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: PFTO1wmqLkc7mGdR--al99-8qbnnou4J
-X-Proofpoint-ORIG-GUID: GntbYdhzAhAgpOL2BHZLbv00a8NJIqdw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
- definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 adultscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109140091
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiyq84MKRd1F4d8SGTcTgdd3ktwPr7_9s8tjgKRx_+2kA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Sep 2021 18:22:39 +0200
-David Hildenbrand <david@redhat.com> wrote:
+On Mon, Sep 13, 2021 at 12:40:41PM -0700, Linus Torvalds wrote:
+> On Fri, Sep 10, 2021 at 3:52 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Since "= { 0 }" and "= { }" have the same meaning ("incomplete
+> > initializer") they will both initialize the given variable to zero
+> > (modulo padding games).
+> >
+> > After this change, I can almost build the "allmodconfig" target with
+> > GCC 4.9 again.
+> >
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> > With this patch and the following three, I can build with gcc 4.9 again:
+> > https://lore.kernel.org/lkml/20210910223332.3224851-1-keescook@chromium.org/
+> > https://lore.kernel.org/lkml/20210910223409.3225001-1-keescook@chromium.org/
+> > https://lore.kernel.org/lkml/20210910223613.3225685-1-keescook@chromium.org/
+> > I look forward to raising our minimum GCC version again! :)
+> 
+> So this was one of the patches I left in my pending queue, and I don't
+> exactly hate it, but given the option to just say "don't use gcc-4.9"
+> and applying this big patch, I did the former.
 
-> Resend because I missed ccing people on the actual patches ...
-> 
-> RFC because the patches are essentially untested and I did not actually
-> try to trigger any of the things these patches are supposed to fix. It
+Yeah, I think that's best.
 
-this is an interesting series, and the code makes sense, but I would
-really like to see some regression tests, and maybe even some
-selftests to trigger (at least some of) the issues.
+> That said, one of the reasons I didn't like the patch that much is
+> that it seems to be a mindless "just search-and-replace everything",
+> very much for initializers that didn't complain even with gcc-4.9, and
+> that were entirely correct.
 
-the follow-up question is: how did we manage to go on so long without
-noticing these issues? :D
+I was using Coccinelle to minimize the impact.
 
-> merely matches my current understanding (and what other code does :) ). I
-> did compile-test as far as possible.
+> I would _not_ mind a patch that actually fixed only the places where
+> it actually _is_ a question of missing braces, and we have an unnamed
+> union or something like that.
 > 
-> After learning more about the wonderful world of page tables and their
-> interaction with the mmap_sem and VMAs, I spotted some issues in our
-> page table walkers that allow user space to trigger nasty behavior when
-> playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
-> should be hard to trigger, others are fairly easy because we provide
-> conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
+> So some of the gcc-4.9 warnings certainly looked at least _somewhat_
+> reasonable for a compiler that didn't do unnamed unions or structures
+> very well.
 > 
-> Future work:
-> - Don't use get_locked_pte() when it's not required to actually allocate
->   page tables -- similar to how storage keys are now handled. Examples are
->   get_pgste() and __gmap_zap.
-> - Don't use get_locked_pte() and instead let page fault logic allocate page
->   tables when we actually do need page tables -- also, similar to how
->   storage keys are now handled. Examples are set_pgste_bits() and
->   pgste_perform_essa().
-> - Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
->   __gmap_zap() that's very easy.
-> 
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Janosch Frank <frankja@linux.ibm.com>
-> Cc: Cornelia Huck <cohuck@redhat.com>
-> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-> 
-> David Hildenbrand (9):
->   s390/gmap: validate VMA in __gmap_zap()
->   s390/gmap: don't unconditionally call pte_unmap_unlock() in
->     __gmap_zap()
->   s390/mm: validate VMA in PGSTE manipulation functions
->   s390/mm: fix VMA and page table handling code in storage key handling
->     functions
->   s390/uv: fully validate the VMA before calling follow_page()
->   s390/pci_mmio: fully validate the VMA before calling follow_pte()
->   s390/mm: no need for pte_alloc_map_lock() if we know the pmd is
->     present
->   s390/mm: optimize set_guest_storage_key()
->   s390/mm: optimize reset_guest_reference_bit()
-> 
->  arch/s390/kernel/uv.c    |   2 +-
->  arch/s390/mm/gmap.c      |  11 +++-
->  arch/s390/mm/pgtable.c   | 109 +++++++++++++++++++++++++++------------
->  arch/s390/pci/pci_mmio.c |   4 +-
->  4 files changed, 89 insertions(+), 37 deletions(-)
-> 
-> 
-> base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+> And I wouldn't mind replacing those. But this patch seems to then
+> change entirely correct code that no reasonable compiler could
+> possibly warn about. I wonder if some coccinelle script or other would
+> find a much more reasonable subset?
 
+Right -- for example I excluded all 1-dimensional scalar array
+initializers. The warning comes from (IIUC) compound types (i.e. a
+struct or union within another struct or union).
+
+> With the gcc-4.9 support being dropped, that probably doesn't matter
+> any more, of course. But I just wanted to say that I didn't hate the
+> patch, but that it seemed to be too much of an automated hammer for
+> the problem that could be solved a lot more surgically.
+
+Yup, I'd much rather just leave all this as-is. It's effectively a
+20,000 line white-space change, since there should be no actual binary
+output difference. When I spot-checked this, it was true, which is what
+I was expecting.
+
+> The three remaining patches you point at look interesting, although I
+> think that third one looks decidedly odd. Why not add the 'const' in
+> the callers instead of removing it from the function? And why don't I
+> see those warnings - is this some compiler bug?
+
+Looks like a GCC 4.9 bug, yes. The other two I'll continue to pursue,
+since they're general correctness fixes, even if modern GCC deals with
+them happily:
+> > https://lore.kernel.org/lkml/20210910223332.3224851-1-keescook@chromium.org/
+> > https://lore.kernel.org/lkml/20210910223409.3225001-1-keescook@chromium.org/
+
+-Kees
+
+-- 
+Kees Cook
