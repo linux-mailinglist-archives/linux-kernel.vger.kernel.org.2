@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC8B40BA2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBD440BA35
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235431AbhINVW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:22:59 -0400
-Received: from mx3.wp.pl ([212.77.101.9]:28705 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235074AbhINVWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:22:46 -0400
-Received: (wp-smtpd smtp.wp.pl 15615 invoked from network); 14 Sep 2021 23:21:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1631654484; bh=NI1s3fyUzKFnJoED0B09JtxVWEJcupkI0XVp/SgGAfw=;
-          h=From:To:Subject;
-          b=cCrJANci5DZlDbkrA82osLhdrQPRxOHO8phkpAMptkt23yfUK3Oh3zYMFw5mUD2fF
-           k3FJgLXCJ9/oDxckIVkzuMLpfIXRp9LnUEL3cE814flVUFyiNSlS21GCqw1ZxBREog
-           dQSIg6x8/vafCqTmRZXILt5JUUqeRW7pqOsV25Vs=
-Received: from 46.204.52.243.nat.umts.dynamic.t-mobile.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[46.204.52.243])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <john@phrozen.org>; 14 Sep 2021 23:21:24 +0200
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
-        maz@kernel.org, ralf@linux-mips.org, ralph.hempel@lantiq.com,
-        davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        hauke@hauke-m.de, dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 8/8] dt-bindings: net: lantiq: Add the burst length properties
-Date:   Tue, 14 Sep 2021 23:21:05 +0200
-Message-Id: <20210914212105.76186-8-olek2@wp.pl>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210914212105.76186-1-olek2@wp.pl>
-References: <20210914212105.76186-1-olek2@wp.pl>
+        id S234649AbhINVXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235357AbhINVXM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:23:12 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAACC0613EE;
+        Tue, 14 Sep 2021 14:21:49 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x27so1379892lfu.5;
+        Tue, 14 Sep 2021 14:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uo/LrTByBuM+thHtzRuHWUtLdiKYW1ebh0CY7Ez0iow=;
+        b=jeVUwEqzat+R2k0OIZLYt9s5LaqMT79H+JeUmw5eLwUbTrGEl/9tnHyVgazX2aUqlQ
+         tvtDxfMewrdORjzyXhDz+J4m/x7mkS9Uchh3MCCZkCX3XZsTUV/Jeh1O2JUMcroA6Qq3
+         hYI8oGd0H0YOFEkrR5W0k0vnl1nkYYxvJZWEzU5zhGSCyNd1iEGhKfU1VZNJvIjYqac4
+         SGQIU//roCq1aW4S2t47ula622a0P/WAzUYvoaIsgfsmm90uF5sv/fyy97/agOeLZjk2
+         syDqhoKrmrcJWrciBZytf+aEd2wZevBIj4VcDf1JCg4NaV0dAvxEdvjeNPxKyx7nGlqI
+         ZmMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uo/LrTByBuM+thHtzRuHWUtLdiKYW1ebh0CY7Ez0iow=;
+        b=vh3/QcWC5gqNPAiKvLj4i1X2VpNSKFZz+wXpx9PvM09UoYBIrcHN5Vfu1Y3zDMJ2yi
+         O3IqUplx1QyfTww8jD3htv5mHaz2g5gIXifyssS/5t65GBKrFq9NH8EQiEJ+ordHObCT
+         N5vN5qxndz5D/171NLmfq1ez2iSScpIYSqnowfKHloQT1yX69iCrsLRyMRhPuDWR0vHy
+         dAYnLid+GeQW3IjwgGYE77QDBL9b/3WbzZkd7RKrgzZ1WS7nFtgusGYUO6OswUOeDvPU
+         wN2FkThIPNKTY8VCsL0QdWMErEPy3rQiFSP6rgJrcXeJlkvnSR3Asg3uqKd06lGuN7aB
+         IWHQ==
+X-Gm-Message-State: AOAM530v419IK5v/DlpxTj+1QvZwRrJZt4KDUvZlS7qUe65UettKlK4X
+        mzQyAZy/SQnO8BgBdI4tvdvOLCT4f2QioUoLWz4=
+X-Google-Smtp-Source: ABdhPJxYxUwDbsIFF8eGusAVg9bszlieDML1vS548jRVAiFxa3aPFGAznC8pWnTKFGS4fdIiXsXhatDQ5nFZK372+CY=
+X-Received: by 2002:a05:6512:78:: with SMTP id i24mr14419410lfo.595.1631654506946;
+ Tue, 14 Sep 2021 14:21:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 3f16cb31ff38d9575689798d722fbd40
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [4ZN0]                               
+References: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
+ <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
+ <CAH2r5mtTLUQa2U=MGHOVk_FsPZg6owMsw+RoTudWxGuoQej41g@mail.gmail.com>
+ <CAHk-=wjxmDks6CS41PCy_BZG70pjAhcPBV_7ga8kSJySvvDezQ@mail.gmail.com> <CAH2r5mt72NYan9q8MR5H8cNkYzT4jn1ZM1f3jp5V-fDs2cyB-A@mail.gmail.com>
+In-Reply-To: <CAH2r5mt72NYan9q8MR5H8cNkYzT4jn1ZM1f3jp5V-fDs2cyB-A@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 14 Sep 2021 16:21:36 -0500
+Message-ID: <CAH2r5much4q6bETPPCbqmhb+ksrX=5RXu_fcNVNk8dHiqN+g2Q@mail.gmail.com>
+Subject: Re: [GIT PULL] cifs/smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        ronnie sahlberg <ronniesahlberg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new added properties are used for configuring burst length.
+On Tue, Aug 31, 2021 at 1:06 PM Steve French <smfrench@gmail.com> wrote:
+> On Tue, Aug 31, 2021 at 12:43 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Tue, Aug 31, 2021 at 10:09 AM Steve French <smfrench@gmail.com> wrote:
+<snip>
+> > I'm ok with directory renames, git handles it all well enough that the
+> > pain should be fairly minimal.
+> >
+> > I'd ask for that to be done during a fairly calm cycle, though, when
+> > there isn't a lot pending, so that any rename conflicts will be
+> > minimized.
+<snip>
+> > > Do you have any objections to me renaming the client's source
+> > > directory to "fs/smb3" (or fs/smb) and fs/smb3_common ...?
+> >
+> > So no objections to the rename per se, but can we please use a more
+> > specific name that is *not* tainted by history?
+> >
+> > I'll throw out two suggestions, but they are just that: (a) "smbfs" or
+> > (b) "smb-client".
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
- .../bindings/net/lantiq,etop-xway.yaml           | 16 ++++++++++++++++
- .../bindings/net/lantiq,xrx200-net.yaml          | 16 ++++++++++++++++
- 2 files changed, 32 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml b/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml
-index 4412abfb4987..437502c5ca96 100644
---- a/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml
-+++ b/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml
-@@ -29,6 +29,18 @@ properties:
-       - const: tx
-       - const: rx
- 
-+  lantiq,tx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      TX programmable burst length.
-+    enum: [2, 4, 8]
-+
-+  lantiq,rx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      RX programmable burst length.
-+    enum: [2, 4, 8]
-+
-   phy-mode: true
- 
- required:
-@@ -37,6 +49,8 @@ required:
-   - interrupt-parent
-   - interrupts
-   - interrupt-names
-+  - lantiq,tx-burst-length
-+  - lantiq,rx-burst-length
-   - phy-mode
- 
- additionalProperties: false
-@@ -49,5 +63,7 @@ examples:
-         interrupt-parent = <&icu0>;
-         interrupts = <73>, <78>;
-         interrupt-names = "tx", "rx";
-+        lantiq,tx-burst-length = <8>;
-+        lantiq,rx-burst-length = <8>;
-         phy-mode = "rmii";
-     };
-diff --git a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
-index 7bc074a42369..16d831f22063 100644
---- a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
-+++ b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
-@@ -29,6 +29,18 @@ properties:
-       - const: tx
-       - const: rx
- 
-+  lantiq,tx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      TX programmable burst length.
-+    enum: [2, 4, 8]
-+
-+  lantiq,rx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      RX programmable burst length.
-+    enum: [2, 4, 8]
-+
-   '#address-cells':
-     const: 1
- 
-@@ -41,6 +53,8 @@ required:
-   - interrupt-parent
-   - interrupts
-   - interrupt-names
-+  - lantiq,tx-burst-length
-+  - lantiq,rx-burst-length
-   - "#address-cells"
-   - "#size-cells"
- 
-@@ -56,4 +70,6 @@ examples:
-         interrupt-parent = <&icu0>;
-         interrupts = <73>, <72>;
-         interrupt-names = "tx", "rx";
-+        lantiq,tx-burst-length = <8>;
-+        lantiq,rx-burst-length = <8>;
-     };
--- 
-2.30.2
-
+Due to git history for fs/smbfs directory (from many, many years ago) rename
+to "fs/smbfs" could be more confusing. So alternative suggestion which
+I implemented
+was rename the source directory from fs/cifs to "fs/smbfs_client."  I
+will send a P/R
+for that since it is fairly quiet right now.  If you would prefer that
+we wait for a future
+release that is fine too, but seems like low risk now and might reduce
+future confusion in
+the future (to rename the source directory).
