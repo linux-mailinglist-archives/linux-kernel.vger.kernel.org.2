@@ -2,51 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8783940A601
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B757E40A604
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239619AbhINFjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 01:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237341AbhINFjI (ORCPT
+        id S239722AbhINFjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 01:39:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54484 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239674AbhINFjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:39:08 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833E9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 22:37:51 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:c857:b8a3:f154:bc3] (port=55486)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C@norir-7.org>)
-        id 1mQ18e-000681-92
-        for linux-kernel@vger.kernel.org; Tue, 14 Sep 2021 07:37:48 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@norir-7.org>
-Subject: Fair IT ultimates
-Message-ID: <535873e3-e968-aca1-9438-781491ffd231@norir-7.org>
-Date:   Tue, 14 Sep 2021 07:37:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 14 Sep 2021 01:39:10 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B605E220AF;
+        Tue, 14 Sep 2021 05:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631597872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=93mZYd+lAEcHjlpH7HC7AosvV1JsJgnb29A4POV21Z0=;
+        b=RSblGJtUuEl2S2/ObEulipdzro0Fox1CszL7LvtPd24jPz9ioctHlegtlmSF9M9UFvzy7A
+        mCdorLXdzLObhFc6WPP5/6pWSNf4ChIdIyfMpixtQNsjXmKCQvFaCil/0/oQhtyllKCZ23
+        xU2O6S9MfDXD/8m3Iij8K07iyQ9v0Mw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631597872;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=93mZYd+lAEcHjlpH7HC7AosvV1JsJgnb29A4POV21Z0=;
+        b=CvUL6HC1zRX5PEgRhCVwxo4a6mbdZdHU2a+xy4ezZ4jQovbdJUDVeueU7Pf85Or9SZXSp5
+        dVvsMQvUZ3YXsVBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FAE113E4A;
+        Tue, 14 Sep 2021 05:37:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Bs+cGTA1QGG+TwAAMHmgww
+        (envelope-from <hare@suse.de>); Tue, 14 Sep 2021 05:37:52 +0000
+Subject: Re: [PATCH RESEND v3 03/13] blk-mq: Relocate shared sbitmap resize in
+ blk_mq_update_nr_requests()
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        ming.lei@redhat.com, linux-scsi@vger.kernel.org
+References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
+ <1631545950-56586-4-git-send-email-john.garry@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <9630cb58-7133-d21b-2c31-05f4369f484b@suse.de>
+Date:   Tue, 14 Sep 2021 07:37:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <1631545950-56586-4-git-send-email-john.garry@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reaching some ultimates in Fair IT philosophy.
+On 9/13/21 5:12 PM, John Garry wrote:
+> For shared sbitmap, if the call to blk_mq_tag_update_depth() was
+> successful for any hctx when hctx->sched_tags is not set, then it would be
+> successful for all (due to nature in which blk_mq_tag_update_depth()
+> fails).
+> 
+> As such, there is no need to call blk_mq_tag_resize_shared_sbitmap() for
+> each hctx. So relocate the call until after the hctx iteration under the
+> !q->elevator check, which is equivalent (to !hctx->sched_tags).
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> ---
+>   block/blk-mq.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-My own culture is much norse-irish. This is a good background for 
-translation of The Quran, and I have updated this to use Ali (cursive) 
-now, which makes best use of 7 script, a subset of Roman for 
-translation. This should be almost 100% Quran, just translated.
+Cheers,
 
-My website is now Norir 7. And I will oversee and work more this Fair IT 
-basis.
-
-Serenity,
-Ywe Cærlyn
-http://www.norir-7.org
-
-
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
