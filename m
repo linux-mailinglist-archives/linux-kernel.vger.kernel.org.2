@@ -2,196 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A0C40A5C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1971540A5CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239450AbhINFOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 01:14:15 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:62006 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239265AbhINFON (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:14:13 -0400
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210914051255epoutp03d8b390b258a030a539c67db3c3bf1f67~kmEI98pDd1074710747epoutp03e
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:12:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210914051255epoutp03d8b390b258a030a539c67db3c3bf1f67~kmEI98pDd1074710747epoutp03e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631596375;
-        bh=JLuq6AO/ksQvXrLNL6IREO3MRAbg4xmAgIuiG+kBEVY=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=BHPPChJvWx/Ppd3HA63+vqg9oK9Orr/lsx5z6CIOHvfKupbzW3hYnVi19x/Vq1tj3
-         0EWtNExEUFFmd0O52iv2YxuvkRrd/LxCvFlyXh05LWbkePcZwoCuXs0MzVySiVM8ed
-         PYYs3Blq3JzfaKLOCQwJtbETQ+7pqAVX+7VVrepc=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210914051248epcas2p35b4a42880a304db80e92f36b7997c675~kmECyqXyj2605426054epcas2p3x;
-        Tue, 14 Sep 2021 05:12:48 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.189]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4H7s192tyhz4x9QX; Tue, 14 Sep
-        2021 05:12:45 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3B.D1.09472.C4F20416; Tue, 14 Sep 2021 14:12:44 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210914051242epcas2p3f63bdaf828a4f376517111ef7af1a786~kmD9HR6Ao0381203812epcas2p3w;
-        Tue, 14 Sep 2021 05:12:42 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210914051242epsmtrp1a411ce978d33a6b181ac2ce7591f404e~kmD9GaHxL1880618806epsmtrp1K;
-        Tue, 14 Sep 2021 05:12:42 +0000 (GMT)
-X-AuditID: b6c32a48-d5fff70000002500-f1-61402f4c5c98
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        36.2D.08750.A4F20416; Tue, 14 Sep 2021 14:12:42 +0900 (KST)
-Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210914051242epsmtip1fc4037ce5d4520028ae48515847e189b~kmD80cAu21693416934epsmtip1L;
-        Tue, 14 Sep 2021 05:12:42 +0000 (GMT)
-From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
-To:     "'Bart Van Assche'" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
-        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
-        <bhoon95.kim@samsung.com>
-In-Reply-To: <baf17040-70e8-d850-30cd-74944e41285d@acm.org>
-Subject: RE: [PATCH v2 3/3] scsi: ufs: ufs-exynos: implement exynos isr
-Date:   Tue, 14 Sep 2021 14:12:41 +0900
-Message-ID: <000001d7a927$252e77e0$6f8b67a0$@samsung.com>
+        id S239265AbhINFOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 01:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239500AbhINFOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 01:14:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBAB860F21;
+        Tue, 14 Sep 2021 05:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631596384;
+        bh=AUC88WAiX+VR+fTnlcmenz58rltr9CQ7tv88IFx/wQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gtm192x0anPgl38s8NNt3Wc46OwSlcp1LPVgM7PqMhdMDKdSPFD1Q4IclJL6sBYta
+         0BHtaIko7qK2PtfubiSe9GirD3MujUh3/nvebHmjtO4OdZDw1NHjwSlQiDXtJh2t9G
+         kAq4V7av/nhvVE56YXW3AU6pps/ZzeUu247yxXzM=
+Date:   Tue, 14 Sep 2021 07:12:43 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/13] xfs: convert xfs_sysfs attrs to use ->seq_show
+Message-ID: <YUAvSx42abg5S2ym@kroah.com>
+References: <20210913054121.616001-1-hch@lst.de>
+ <20210913054121.616001-14-hch@lst.de>
+ <YT7vZthsMCM1uKxm@kroah.com>
+ <20210914012029.GF2361455@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFyn/7MkbxYHt33UvraYb1f3WYrLgHrEvTlAh5z/LMCMoADnqw7Jm5w
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TfUwTZxjfe3c9CqPu1uJ412VLd8RkuAEt2HKMj5CMwC3AZNmWZc6lHvQC
-        zH6tVzacRsnAUkFAMLIJbmOA3bTEJsgYdloZoIiKLKITHWLdqJEiwiCmIELWW2vGf7/3eX8f
-        z/N+CFHxFVwqLNabWZOe0ZJ4GNbdH62KyYlLZ+SjVjE1NNmBU+7vunFqauk6Tv12dx9GPTp6
-        T0A1zi2h1LzDJqDsbW6Mah3rRqhR5xGcqr7Rg1M/Dq4iVNXtMUAdXZ3B0tfRo9ey6dHaGoRu
-        Oz2F0AdaewHtc1hx+h/PLYyu7ToO6IXOV+jK3mokL3SLNqWIZTSsScbqCwyaYn1hKpn9nvot
-        tVIlV8QokqhEUqZndGwqmZGTF5NZrPU3T8o+Z7Ql/lIew3FkXFqKyVBiZmVFBs6cSrJGjdao
-        UBhjOUbHlegLYwsMujcVcnm80s/cpi1qaKzHjddh6cSNh6AMDEuqQKgQEpug93QlXgXChGKi
-        B0B31SUssJgH8GLjSSSwWACw49xZwVPJk6sngywngO31NUH9fQAHV5ZDeBZOvA4b7/4q4Dci
-        iAoUXjsz7/cSCkOJZHj+51ieIyGy4JH2RcBjjNgAfzpVhvBYRCTBBuuqIICfh0OHJzEeo35P
-        2w/TaKALGVzy2AS8ZQSRCX1/aQKUCNi8z4LysZAYE8LznSshAX4GrKh2gACWQO9gV7AuhVN1
-        liDeA12HygQB8X4APa7VoCABNt2rBHwYSkRDhzOOh5CIggO3gq2tg9Z+Poovi6DVIg4Io+Dj
-        hoNBkxfh4ZvjwSQaOmpnwAHwatOaIZvWDNm0Zpqm/3NbAHYcvMAaOV0hy8UbN6297E7w38Pe
-        SPeA5pm52D6ACEEfgEKUjBB1P0hlxCINs+NL1mRQm0q0LNcHlP5jr0el6wsM/p+hN6sVyniV
-        Sp6kpJSqeIqMFI1MJzFiopAxs9tZ1sianuoQYai0DLmYKk0LG2FHdt4ZW9+SjMUtfkZMuLba
-        vrLdyTXNvpErTtucnZN8bgeNS5N8D9rpBM+TLT1DCtc0smyzy+deXhw99uyG6Ga1/USU6DL6
-        aevUn3JRv4CKDCnvzPs+Y78Aj7X/Xbcwxzpfm3Gpc1vyOzIqzvyRD+FHXyzVXLm9M+sxVVou
-        GW9LIZYnfZLfL4wX7N6ju5CYf1k7Mcy660LD3ekxlXjmB+GWt+vvP5N4Yle2ipntGrBMYuw7
-        dot978pmJOvqtynW8PcPPjo07RneVh45MXvpWNovK/mW50SnnGd3c19/uHXXS9/s9X7ycXmC
-        96F1efuwt8VX7Sp9VwDI3psDJMYVMYqNqIlj/gUjYZRyYQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRmVeSWpSXmKPExsWy7bCSnK6XvkOiwdoOCYuTT9awWTyYt43N
-        4uXPq2wWBx92slh8XfqM1WLah5/MFp/WL2O1WL34AYvFohvbmCwu75rDZtF9fQebxfLj/5gs
-        uu7eYLRY+u8tiwOfx+Ur3h6X+3qZPBbvecnkMWHRAUaP7+s72Dw+Pr3F4tG3ZRWjx+dNch7t
-        B7qZAjijuGxSUnMyy1KL9O0SuDLWz1rNWnBZouLGoelMDYz7hbsYOTkkBEwk/lzazNLFyMUh
-        JLCDUWLO36WsEAlJiRM7nzNC2MIS91uOsEIUPWOUOLj/MjtIgk1AW2Law91gCRGBKcwSd64d
-        ZYOo6mSSaL/wBGguBwengLXEsa16IA3CAu4Sc5b8AJvKIqAqsWJnAxOIzStgKTGp4x8rhC0o
-        cXImSCsnBzPQgqc3n8LZyxa+Zoa4SEHi59NlrCDjRQTcJL4/SoEoEZGY3dnGPIFRaBaSSbOQ
-        TJqFZNIsJC0LGFlWMUqmFhTnpucWGxYY5aWW6xUn5haX5qXrJefnbmIEx6iW1g7GPas+6B1i
-        ZOJgPMQowcGsJMK77Y1tohBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtS
-        i2CyTBycUg1M/gu0uM8eSZrLnxS7Qmlu+QyfSTs2S1zddTDDxqvXOSoiZU329z9GCnXTdQP7
-        GY8/f/nzY+l9biMJg3n7+WOmsuhxabGxri60j/meE/UrnqH8U87r/l9Ts05HCRSr8iUwPHr9
-        cs/cjxf2XHjE/Ktm5VePJNbFEQLZ/2qX36ycytP06elhxiV7W3sOF4R+8Z1frV+dyb+9MeJ/
-        YMUkYyftGr9Jpflx87ozN/0yzJt40YLzusNOhe2pG7h74xhf+upselrfM+Wj8+f6B8qR2x5X
-        7Xhn8WzNa6F7Rx6wfI3k2xlh8FL/0WRhdZP0yPj3MV/iZNblreLLf6whvnnDJ/OW3K97DsTX
-        t/9zk0tWj/JTYinOSDTUYi4qTgQA2kZgukADAAA=
-X-CMS-MailID: 20210914051242epcas2p3f63bdaf828a4f376517111ef7af1a786
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce
-References: <cover.1631519695.git.kwmad.kim@samsung.com>
-        <CGME20210913081152epcas2p2eac4a8dbef33164a150dccf2e282dcce@epcas2p2.samsung.com>
-        <746e059782953fca6c21945297151d2bb73d3370.1631519695.git.kwmad.kim@samsung.com>
-        <baf17040-70e8-d850-30cd-74944e41285d@acm.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914012029.GF2361455@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 9/13/21 12:55 AM, Kiwoong Kim wrote:
-> > This patch is to raise recovery in some abnormal conditions using an
-> > vendor specific interrupt for some cases, such as a situation that
-> > some contexts of a pending request in the host isn't the same with
-> > those of its corresponding UPIUs if they should have been the same
-> > exactly.
-> >
-> > The representative case is shown like below.
-> > In the case, a broken UTRD entry, for internal coherent problem or
-> > whatever, that had smaller value of PRDT length than expected was
-> > transferred to the host.
-> > So, the host raised an interrupt of transfer complete even if device
-> > didn't finish its data transfer because the host sees a fetched
-> > version of UTRD to determine if data tranfer is over or not. Then the
-> > application level seemed to recogize this as a sort of corruption and
-> > this symptom led to boot failure.
->=20
-> How can a UTRD entry be broken? Does that perhaps indicate memory
-> corruption at the host side? Working around host-side memory corruption i=
-n
-> a driver seems wrong to me. I think the root cause of the memory
-> corruption should be fixed.
+On Tue, Sep 14, 2021 at 11:20:29AM +1000, Dave Chinner wrote:
+> On Mon, Sep 13, 2021 at 08:27:50AM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Sep 13, 2021 at 07:41:21AM +0200, Christoph Hellwig wrote:
+> > > Trivial conversion to the seq_file based sysfs attributes.
+> > > 
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > ---
+> > >  fs/xfs/xfs_stats.c | 24 +++++-------
+> > >  fs/xfs/xfs_stats.h |  2 +-
+> > >  fs/xfs/xfs_sysfs.c | 96 +++++++++++++++++++++++-----------------------
+> > >  3 files changed, 58 insertions(+), 64 deletions(-)
+> > > 
+> > > diff --git a/fs/xfs/xfs_stats.c b/fs/xfs/xfs_stats.c
+> > > index 20e0534a772c9..71e7a84ba0403 100644
+> > > --- a/fs/xfs/xfs_stats.c
+> > > +++ b/fs/xfs/xfs_stats.c
+> > > @@ -16,10 +16,9 @@ static int counter_val(struct xfsstats __percpu *stats, int idx)
+> > >  	return val;
+> > >  }
+> > >  
+> > > -int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
+> > > +void xfs_stats_format(struct xfsstats __percpu *stats, struct seq_file *sf)
+> > >  {
+> > >  	int		i, j;
+> > > -	int		len = 0;
+> > >  	uint64_t	xs_xstrat_bytes = 0;
+> > >  	uint64_t	xs_write_bytes = 0;
+> > >  	uint64_t	xs_read_bytes = 0;
+> > > @@ -58,13 +57,12 @@ int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
+> > >  	/* Loop over all stats groups */
+> > >  
+> > >  	for (i = j = 0; i < ARRAY_SIZE(xstats); i++) {
+> > > -		len += scnprintf(buf + len, PATH_MAX - len, "%s",
+> > > -				xstats[i].desc);
+> > > +		seq_printf(sf, "%s", xstats[i].desc);
+> > > +
+> > >  		/* inner loop does each group */
+> > >  		for (; j < xstats[i].endpoint; j++)
+> > > -			len += scnprintf(buf + len, PATH_MAX - len, " %u",
+> > > -					counter_val(stats, j));
+> > > -		len += scnprintf(buf + len, PATH_MAX - len, "\n");
+> > > +			seq_printf(sf, " %u", counter_val(stats, j));
+> > > +		seq_printf(sf, "\n");
+> > >  	}
+> > >  	/* extra precision counters */
+> > >  	for_each_possible_cpu(i) {
+> > > @@ -74,18 +72,14 @@ int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
+> > >  		defer_relog += per_cpu_ptr(stats, i)->s.defer_relog;
+> > >  	}
+> > >  
+> > > -	len += scnprintf(buf + len, PATH_MAX-len, "xpc %Lu %Lu %Lu\n",
+> > > +	seq_printf(sf, "xpc %Lu %Lu %Lu\n",
+> > >  			xs_xstrat_bytes, xs_write_bytes, xs_read_bytes);
+> > > -	len += scnprintf(buf + len, PATH_MAX-len, "defer_relog %llu\n",
+> > > -			defer_relog);
+> > > -	len += scnprintf(buf + len, PATH_MAX-len, "debug %u\n",
+> > > +	seq_printf(sf, "defer_relog %llu\n", defer_relog);
+> > >  #if defined(DEBUG)
+> > > -		1);
+> > > +	seq_printf(sf, "debug 1\n");
+> > >  #else
+> > > -		0);
+> > > +	seq_printf(sf, "debug 0\n");
+> > >  #endif
+> > > -
+> > > -	return len;
+> > >  }
+> > 
+> > That is a sysfs file?  What happened to the "one value per file" rule
+> > here?
+> 
+> 
+> There is no "rule" that says syfs files must contain one value per
+> file; the documentation says that one value per file is the
+> "preferred" format.  Documentation/filesystems/sysfs.rst:
+> 
+> [...]
+> Attributes
+> ...
+> Attributes should be ASCII text files, preferably with only one value
+> per file. It is noted that it may not be efficient to contain only one
+> value per file, so it is socially acceptable to express an array of
+> values of the same type.
+> [...]
+> 
 
-For SoC internal problems, yes, of course, they should be fixed.
-But I don't think the causes always come from inside the system.
-They could be outside the system or a device, such as sending DATA IN
-with a tag that a host has ever submitted a command with because of
-some bugs of the device. You might think putting this sort of code doesn't
-make sense but there could be various events that can't be understood in th=
-e
-point of view of the spec. And chips that is already fab-outed can't be fix=
-ed.
-That's why I put the details into Exynos. I'm not talking about the spec.
-I think Exynos isn't required to contain only things related with the spec
-and it can have realistic part.
+An array of values is one thing like "what is the power states for this
+device".  A list of different key/value pairs is a totally different
+thing entirely.
 
->=20
-> > +static irqreturn_t exynos_ufs_isr(struct ufs_hba *hba) =7B
-> > +	struct exynos_ufs *ufs =3D ufshcd_get_variant(hba);
-> > +	u32 status;
-> > +	unsigned long flags;
-> > +
-> > +	if (=21hba->priv) return IRQ_HANDLED;
->=20
-> Please verify patches with checkpatch before posting these on the linux-
-> scsi mailing list. The above if-statement does not follow the Linux kerne=
-l
-> coding style.
->=20
-> > +	if (status & RX_UPIU_HIT_ERROR) =7B
-> > +		pr_err(=22%s: status: 0x%08x=5Cn=22, __func__, status);
-> > +		hba->force_reset =3D true;
-> > +		hba->force_requeue =3D true;
-> > +		scsi_schedule_eh(hba->host);
-> > +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > +		return IRQ_HANDLED;
-> > +	=7D
-> > +	return IRQ_NONE;
-> > +=7D
->=20
-> So the above code unlocks the host_lock depending on whether or not statu=
-s
-> & RX_UPIU_HIT_ERROR is true? Yikes ...
->=20
-> Additionally, in the above code I found the following pattern:
->=20
-> 	unsigned long flags;
-> 	=5B ... =5D
-> 	spin_unlock_irqrestore(hba->host->host_lock, flags);
->=20
-> Such code is ALWAYS wrong. The value of the 'flags' argument passed to
-> spin_unlock_irqrestore() must come from spin_lock_irqsave().
->=20
-> Bart.
+> We are exposing a large array of integer values here, so multiple
+> values per file are explicitly considered an acceptible format.
 
-I missed for two things. Thanks, I'll look more carefully.
+Not really, that was not the goal of sysfs at all.
 
+> Further, as there are roughly 200 individual stats in this file and
+> calculating each stat requires per-cpu aggregation, the the cost of
+> calculating and reading each stat individually is prohibitive, not
+> just inefficient.
 
+Have you measured it?  How often does the file get read and by what
+tools?
+
+We have learned from our past mistakes in /proc where we did this in the
+past and required keeping obsolete values and constantly tweaking
+userspace parsers.  That is why we made sysfs one-value-per-file.  If
+the file is not there, the value is not there, much easier to handle
+future changes.
+
+> So, yes, we might have multiple lines in the file that you can frown
+> about, but OTOH the file format has been exposed as a kernel ABI for
+> a couple of decades via /proc/fs/xfs/stat.
+
+proc had no such rules, but we have learned :)
+
+> Hence exposing it in
+> sysfs to provide a more fine-grained breakdown of the stats (per
+> mount instead of global) is a no-brainer. We don't have to rewrite
+> the parsing engines in multiple userspace monitoring programs to
+> extract this information from the kernel - they just create a new
+> instance and read a different file and it all just works.
+
+But then you run into the max size restriction on sysfs files
+(PAGE_SIZE) and things break down.
+
+Please don't do this.
+
+> Indeed, there's precedence for such /proc file formats in more
+> fine-grained sysfs files. e.g.  /sys/bus/node/devices/node<n>/vmstat
+> and /sys/bus/node/devices/node<n>/meminfo retain the same format
+> (and hence userspace parsers) for the per-node stats as /proc/vmstat
+> and /proc/meminfo use for the global stats...
+
+And I have complained about those files in the past many times.  And
+they are running into problems in places dealing with them too.
+
+> tl;dr: the file contains arrays of values, it's inefficient to read
+> values one at a time, it's a pre-existing ABI-constrainted file
+> format, there's precedence in core kernel statistics
+> implementations and the documented guidelines allow this sort of
+> usage in these cases.
+
+I would prefer not to do this, and I will not take core sysfs changes to
+make this any easier.
+
+Which is one big reason why I don't like just making sysfs use the seq
+file api, it would allow stuff like this to propagate to other places in
+the kernel.
+
+Maybe I should cut the file size of a sysfs file down to PAGE_SIZE/4 or
+less, that might be better :)
+
+thanks,
+
+greg k-h
