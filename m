@@ -2,92 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE4940B599
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A87040B59B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhINRIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:08:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21533 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230063AbhINRIl (ORCPT
+        id S230332AbhINRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhINRJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:08:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631639244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VSPaTs/Ana3c5AjdJic+DfXIvcN63Hc2gA/Tf0kL54c=;
-        b=ahIT9oyzQu4TdpTyFxvCnubAMMNSk8Yc6HzyYk6BDhUhgwpn5yTrZUORd4qfvtjoDbB5Os
-        08FH/vaY7Qo5sLskvDbFv9s+1h5LtnrWnpv0UXzOm0ZqacfrtYbLCO6cX8CVeZi9LyUZ0H
-        gvwWF9eZftz03MjfcFDiiGcWV4dqTVY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-3OmNa1GoMSW6Yi-nxpDEqA-1; Tue, 14 Sep 2021 13:07:20 -0400
-X-MC-Unique: 3OmNa1GoMSW6Yi-nxpDEqA-1
-Received: by mail-ed1-f69.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so7093827edd.22
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:07:20 -0700 (PDT)
+        Tue, 14 Sep 2021 13:09:12 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B95BC061574;
+        Tue, 14 Sep 2021 10:07:54 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id w29so20617323wra.8;
+        Tue, 14 Sep 2021 10:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UEz8abuPWgyHSc+A93wlQX9A3Gl7VlEueJS0Qvs3JhU=;
+        b=UTLBfvPvMZ+1dXSf5Y7P3VdtVRAXwLs7UG++gYy18zK3Uxok9w8j5CvTbxdqbGiSnJ
+         mQpzQ5YWS0TQuZrzq+L3BvwX4DduZ2JGlzFqv2w+Z3dCKZ6jZjo3vbruDIwv1NsN3Fp7
+         bnsDhHAkWc7XbgTBIlee24+8cqosxslJOrxfKoYPNMBVdx5haDuoiu32fGwYOGz1YuoN
+         Grm1pplnHyU2ehU+liSPzZ9WFZa5hwrDPM72rKvkURd74Cg5tuww0gW9YFYgqqhuqyR1
+         pQ1eUZHYlHsBEy1rfSuPfKyYKvQAzpApw16FkGujQBgkQ0BLGfY/yW5ERA32OGJpM+te
+         MYdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VSPaTs/Ana3c5AjdJic+DfXIvcN63Hc2gA/Tf0kL54c=;
-        b=gpB69/JrBcbqoQsoSVmyr9CrvpAD9b2FFdaD1ntO9RFO/Lkjqh+OmnNZoUuk9/0Xjn
-         HNWYYism/2eKzm2dkrbZ2NYYdc6cS2ItioLYElDNtGK0r7odHKt+vkVaAOEkAn2V3oY0
-         b1ajj6rUJBvLlaGQUj8zTtBo27+f8Fz++PB7jNSew5qXAp0+tyFozi4QoWRxis2SAkli
-         g2BCcXOyesP/aHUZOq9kPIgcgJToDl9wzX5IC+wPyGU7CHqs+FhLQXPqkX3Yj4eZ2sRK
-         vULsoZoBGlTPICOINkwd8qArhryerVMqwSzpiA/HO/f0j2BNSj44Mt/QOOLBs5ReIp7L
-         0Y0A==
-X-Gm-Message-State: AOAM530wsc/iSJOrawKG9jxj1cO6f5W08IhM7VepCZayPLsATfExjXiU
-        Ex7EIwVIjloZ43l5u/Y2adIyUHsZ6GAIWJdysVgvO450wLeSevQ74mO9Uy9up6J9LszNniAUiM8
-        ai9UfBAjIRu/WfD2vOJ9sj4kn
-X-Received: by 2002:a17:906:6148:: with SMTP id p8mr19508110ejl.17.1631639239599;
-        Tue, 14 Sep 2021 10:07:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyz+fGJykczhq+9IbbmATrEW/jUyWNpQF9sYky1OwNDGdYkM+u3sKi6b2acRNQYiL90BljSkw==
-X-Received: by 2002:a17:906:6148:: with SMTP id p8mr19508091ejl.17.1631639239377;
-        Tue, 14 Sep 2021 10:07:19 -0700 (PDT)
-Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.gmail.com with ESMTPSA id h2sm5905306edd.43.2021.09.14.10.07.12
+        bh=UEz8abuPWgyHSc+A93wlQX9A3Gl7VlEueJS0Qvs3JhU=;
+        b=HRlgG2S/GdCUrg3CsdNo845MLri92CRHDjFmaC3FYDruaVvfZKfNvUcIS/tbUiDej5
+         eU+46Vd3ay8b8aIrTnYOiAdTurOhIA9KAC7p0IjGsL9CDhP/JZo6NJM48bWI8aYdm4TG
+         8akjxqa2Ag8RPV+AzVCQiAS5dFzXpwVEeuAfcUDv/5hBeTp+NusmMJGDPPlN3xEoouxd
+         bCaDr0oYrFEPInlkUg++sGG4LZwBAcfVwnrVuDaxm6RK5g/J4Tf1ZX6HcvMvgAfyOAsx
+         IJ/XNTn+nlMdO7rRvSs8i3zaWqaRT7dh3TPC2FloFirRizqZbTRWVqGrn76BOYypTQrK
+         a5MQ==
+X-Gm-Message-State: AOAM530+YTlIV/+BmWA3U5cNCWfrM2b3/sVISZ202R5Imn08pkupbOVH
+        BbEnztcsIs/4mMU0dua1rBv4uqysfEI=
+X-Google-Smtp-Source: ABdhPJzzw234WDCAkyBTw+u+dKm5PzYtjHHsekK3mqvBJ3z3Vs7smt7E2sYvLhZIdg9w5NWAmHiDMA==
+X-Received: by 2002:adf:c542:: with SMTP id s2mr227088wrf.374.1631639271918;
+        Tue, 14 Sep 2021 10:07:51 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:c813:4da2:f58a:a1e2? (p200300ea8f084500c8134da2f58aa1e2.dip0.t-ipconnect.de. [2003:ea:8f08:4500:c813:4da2:f58a:a1e2])
+        by smtp.googlemail.com with ESMTPSA id j14sm11004462wrp.21.2021.09.14.10.07.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 10:07:18 -0700 (PDT)
-Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
- pages
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Yang Zhong <yang.zhong@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210914071030.GA28797@yangzhon-Virtual>
- <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
- <fb04eae72ca0b24fdb533585775f2f20de9f5beb.camel@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1afa3ed3-d77b-163d-e35e-30bf4f5d3a9e@redhat.com>
-Date:   Tue, 14 Sep 2021 19:07:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 14 Sep 2021 10:07:51 -0700 (PDT)
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Dave Jones <davej@codemonkey.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+References: <20210914112628.GA1412445@bjorn-Precision-5520>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: Linux 5.15-rc1
+Message-ID: <54bd54b9-3774-92a5-4193-5ccccd235572@gmail.com>
+Date:   Tue, 14 Sep 2021 19:07:40 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <fb04eae72ca0b24fdb533585775f2f20de9f5beb.camel@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210914112628.GA1412445@bjorn-Precision-5520>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/21 18:42, Jarkko Sakkinen wrote:
->> Let's wait for this patch to be accepted first.  I'll wait a little more
->> for Jarkko and Dave to comment on this, and include your "Tested-by".
+On 14.09.2021 13:26, Bjorn Helgaas wrote:
+> On Tue, Sep 14, 2021 at 08:21:46AM +0200, Heiner Kallweit wrote:
+>> On 14.09.2021 01:46, Bjorn Helgaas wrote:
+> 
+>>> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATTANSIC, PCI_ANY_ID, quirk_blacklist_vpd);
+>>>  /*
 >>
->> I will also add cond_resched() on the final submission.
-> Why these would be conflicting tasks? I.e. why could not QEMU use
-> what is available now and move forward using better mechanism, when
-> they are available?
+>> Leaving the quirks in FIXUP_HEADER stage would have the advantage that for
+>> blacklisted devices the vpd sysfs attribute isn't visibale. The needed
+>> changes to the patch are minimal.
+> 
+> What do you have in mind?  The only thing I can think of would be to
+> add a "pci_dev.no_vpd" bit.  "vpd.cap == 0" means the device has no
+> VPD, and "vpd.len == 0" means we haven't determined the size yet.  All
+> devices start off with vpd.cap == 0 and vpd.len == 0, so a
+> FIXUP_HEADER quirk would have to set a sentinel value or some other
+> bit.
+> 
+> Bjorn
+> 
 
-The implementation using close/open is quite ugly (destroying and 
-recreating the memory block breaks a few levels of abstractions), so 
-it's not really something I'd like to commit.
+Why not leave vpd.len == PCI_VPD_SZ_INVALID as sentinel?
 
-Paolo
+And one more question: Why do you move the "if (!vpd->cap)" check from
+pci_vpd_read() to pci_read_vpd()? At a first glance I see no benefit.
+
+Here comes my version. Your changes to pci_vpd_size() I left as-is.
+I tested the positive case and it works as expected.
+
+
+diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
+index 25557b272..04b14c488 100644
+--- a/drivers/pci/vpd.c
++++ b/drivers/pci/vpd.c
+@@ -52,7 +52,7 @@ static struct pci_dev *pci_get_func0_dev(struct pci_dev *dev)
+  * pci_vpd_size - determine actual size of Vital Product Data
+  * @dev:	pci device struct
+  */
+-static size_t pci_vpd_size(struct pci_dev *dev)
++static void pci_vpd_size(struct pci_dev *dev)
+ {
+ 	size_t off = 0, size;
+ 	unsigned char tag, header[1+2];	/* 1 byte tag, 2 bytes length */
+@@ -71,7 +71,7 @@ static size_t pci_vpd_size(struct pci_dev *dev)
+ 			if (pci_read_vpd(dev, off + 1, 2, &header[1]) != 2) {
+ 				pci_warn(dev, "failed VPD read at offset %zu\n",
+ 					 off + 1);
+-				return off ?: PCI_VPD_SZ_INVALID;
++				goto finish;
+ 			}
+ 			size = pci_vpd_lrdt_size(header);
+ 			if (off + size > PCI_VPD_MAX_SIZE)
+@@ -87,16 +87,19 @@ static size_t pci_vpd_size(struct pci_dev *dev)
+ 
+ 			off += PCI_VPD_SRDT_TAG_SIZE + size;
+ 			if (tag == PCI_VPD_STIN_END)	/* End tag descriptor */
+-				return off;
++				goto finish;
+ 		}
+ 	}
+-	return off;
++	goto finish;
+ 
+ error:
+ 	pci_info(dev, "invalid VPD tag %#04x (size %zu) at offset %zu%s\n",
+ 		 header[0], size, off, off == 0 ?
+ 		 "; assume missing optional EEPROM" : "");
+-	return off ?: PCI_VPD_SZ_INVALID;
++finish:
++	dev->vpd.len = off;
++	if (off == 0)
++		dev->vpd.cap = 0;		/* No VPD at all */
+ }
+ 
+ /*
+@@ -145,6 +148,8 @@ static ssize_t pci_vpd_read(struct pci_dev *dev, loff_t pos, size_t count,
+ 	loff_t end = pos + count;
+ 	u8 *buf = arg;
+ 
++	if (vpd->len == 0 && vpd->cap)
++		pci_vpd_size(dev);
+ 	if (!vpd->cap)
+ 		return -ENODEV;
+ 
+@@ -206,6 +211,8 @@ static ssize_t pci_vpd_write(struct pci_dev *dev, loff_t pos, size_t count,
+ 	loff_t end = pos + count;
+ 	int ret = 0;
+ 
++	if (vpd->len == 0 && vpd->cap)
++		pci_vpd_size(dev);
+ 	if (!vpd->cap)
+ 		return -ENODEV;
+ 
+@@ -245,9 +252,6 @@ void pci_vpd_init(struct pci_dev *dev)
+ 	dev->vpd.cap = pci_find_capability(dev, PCI_CAP_ID_VPD);
+ 	mutex_init(&dev->vpd.lock);
+ 
+-	if (!dev->vpd.len)
+-		dev->vpd.len = pci_vpd_size(dev);
+-
+ 	if (dev->vpd.len == PCI_VPD_SZ_INVALID)
+ 		dev->vpd.cap = 0;
+ }
+@@ -294,25 +298,27 @@ const struct attribute_group pci_dev_vpd_attr_group = {
+ 
+ void *pci_vpd_alloc(struct pci_dev *dev, unsigned int *size)
+ {
+-	unsigned int len = dev->vpd.len;
++	struct pci_vpd *vpd = &dev->vpd;
+ 	void *buf;
+ 	int cnt;
+ 
+-	if (!dev->vpd.cap)
++	if (vpd->len == 0 && vpd->cap)
++		pci_vpd_size(dev);
++	if (!vpd->cap)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	buf = kmalloc(len, GFP_KERNEL);
++	buf = kmalloc(vpd->len, GFP_KERNEL);
+ 	if (!buf)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	cnt = pci_read_vpd(dev, 0, len, buf);
+-	if (cnt != len) {
++	cnt = pci_read_vpd(dev, 0, vpd->len, buf);
++	if (cnt != vpd->len) {
+ 		kfree(buf);
+ 		return ERR_PTR(-EIO);
+ 	}
+ 
+ 	if (size)
+-		*size = len;
++		*size = vpd->len;
+ 
+ 	return buf;
+ }
+-- 
+2.33.0
+
+
+
 
