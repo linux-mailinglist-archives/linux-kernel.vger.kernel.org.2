@@ -2,136 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A150940B075
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A443D40B077
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhINOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbhINOU7 (ORCPT
+        id S233594AbhINOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:22:12 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:43683 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233309AbhINOWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:20:59 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:19:42 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id c8so29216656lfi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O3O9pavUsvQaLCKu2O/WDZy+zRAT00QZp8f3df/2+6A=;
-        b=wtfNHMPFTgr2cSQCGaxAiqSluRILESAr0akFI2FMy2CE5T5/m00/8Tt9QvoGG9jZlG
-         GbUOksYsG43MpfPEhF+ONVxgXCjjDsF8LFMgkhAr4orncRFcpYX3/talgQH0NppPFPGi
-         NWh1hW6dFU+tMYZnSDN5CA5/E3iZV3CJf6Q5bXqwX3Oi28Hi6Wxri+DiTzck028maU4g
-         UTHtiVzb2YyDs68NmeQcJNRPZP5Rj2OH9E9F6lZ5sut7g02tNbQlj3VZW7Fu0OwD4Lwq
-         SBf5bL6cCMSlWyZKml66kHd/W+kCI+ROceAodq/pCBuZ/4Xk535IDZf4m5fd/4FA0Iv3
-         IXEA==
+        Tue, 14 Sep 2021 10:22:07 -0400
+Received: by mail-ej1-f44.google.com with SMTP id qq21so23428765ejb.10;
+        Tue, 14 Sep 2021 07:20:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=O3O9pavUsvQaLCKu2O/WDZy+zRAT00QZp8f3df/2+6A=;
-        b=K8s+GPaEOiK1nTdY0hOYDcxR+Jx7K7dYTjx1Lu4SAjoLn2TvB6PNY11BM1gAJLltif
-         6RFfdeg/8K010yiw0lUXuJyI6U6JP0fn3AKVOKLjWZ5yDV/XVdqKmN1YvZCjmIkWkZPp
-         SdGhhPqYLvd2AJXksF9r1bMcGkWrVi5f4bTu+S1KLWCDzU4PN2ZmiHq18kF7y/w0iQik
-         5quoTXuto07DzSbYaYNaYTLs1n00PkvakBhtMVHKwXWo4zhT3cBjfuS5j6k61HVrwVRJ
-         RIrJz9FepVS0BjFCNWrH09dLE7Owt8+iKhhRsiuOKJXHpEUy99ELt8l58tfSd6D/pNtQ
-         0Ouw==
-X-Gm-Message-State: AOAM5313rXR+GpevJvluB1ZFRCDpgw/SZleLTut4CcixY0s6QA8kfHI9
-        v5BnTZVN3u/AIbKRKpN11ybgMMRN88FxCOGl
-X-Google-Smtp-Source: ABdhPJyHiPdnmDcScme8ggB6SkefTDo8MUhZKW5sX1Hp/YsLNMy6sUP5QRMrbmWMSX/bANnfJnU+SA==
-X-Received: by 2002:a05:6512:2e8:: with SMTP id m8mr7230911lfq.172.1631629180511;
-        Tue, 14 Sep 2021 07:19:40 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id b17sm1345309ljj.35.2021.09.14.07.19.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 07:19:40 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: Add clk_set_parent debugfs node
-Date:   Tue, 14 Sep 2021 17:19:39 +0300
-Message-Id: <20210914141939.26410-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        bh=XGnqHlTada8kt7JMhcSG+hhKlGg+XdQqdPMlXWGpXXk=;
+        b=UKbDQZcSGzJ10aODs5ZBIs0cd7mwnRG8ZxwogXG2H+vXJMjtCi3PE1fyWINfJxf4Dy
+         vTHbLdi+RBpn6lrDvqaU080SosTRoFuW+caudgOXS27bbvH87aJQW19VjQlk46YKyOcb
+         MainFBReCFEuUUDQnuhsOT5L2uhQHnzmP2Gqi71a8AqiOyYW6CLK1rLpMML9SIJdBJSO
+         K8q0SQvdDIHOeGXhlWrmeyKPe83J+gR7MjZ5l3tCWFdYMPDv705O2fXhMTPK4Z3cTbvv
+         zGQkjog09ZhH2Wrsd3tCK4MtnOSzng7tQIgjX9jb+Hznso2/w0bEJZmj1EamtIrTnZel
+         iljQ==
+X-Gm-Message-State: AOAM532U0kvPEF0WEsadEkJbYiyEuXnXhEZfb14ysTp1dM+tWlEqCYBu
+        hFXlP4vscy9KJSts1h0BRdx2BNYPXhc=
+X-Google-Smtp-Source: ABdhPJxDbmedGBT9r9JVf+HeI3wIhKhIVhW8I7W0RqxIT+ZyOY5isY7jp3mSeNz41l/EqPc/TJjXBg==
+X-Received: by 2002:a17:906:12c8:: with SMTP id l8mr18656289ejb.515.1631629248403;
+        Tue, 14 Sep 2021 07:20:48 -0700 (PDT)
+Received: from [10.100.102.14] (109-186-240-23.bb.netvision.net.il. [109.186.240.23])
+        by smtp.gmail.com with ESMTPSA id h10sm5004262ede.28.2021.09.14.07.20.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 07:20:47 -0700 (PDT)
+Subject: Re: [RFC v1] nvme-tcp: enable linger socket option on shutdown
+To:     Daniel Wagner <dwagner@suse.de>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20210903121757.140357-1-dwagner@suse.de>
+ <YTXKHOfnuf+urV1D@infradead.org> <20210914084613.75qykjxweh66mdpx@carbon>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <a79bf503-b1d5-8d18-5f02-c63e665e2e07@grimberg.me>
+Date:   Tue, 14 Sep 2021 17:20:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210914084613.75qykjxweh66mdpx@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for testing mux clocks. One can write the index of the parent to
-set into clk_set_parent node, starting from 0. Example
 
-    # cat clk_possible_parrents
-      dout_shared0_div4 dout_shared1_div4
-    # cat clk_parent
-      dout_shared0_div4
-    # echo 1 > clk_set_parent
-    # cat clk_parent
-      dout_shared1_div4
+>>> When the no linger is set, the networking stack sends FIN followed by
+>>> RST immediately when shutting down the socket. By enabling linger when
+>>> shutting down we have a proper shutdown sequence on the wire.
+>>>
+>>> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+>>> ---
+>>> The current shutdown sequence on the wire is a bit harsh and
+>>> doesn't let the remote host to react. I suppose we should
+>>> introduce a short (how long?) linger pause when shutting down
+>>> the connection. Thoughs?
+>>
+>> Why?  I'm not really a TCP expert, but why is this different from
+>> say iSCSI or NBD?
+> 
+> I am also no TCP expert. Adding netdev to Cc.
+> 
+> During testing the nvme-tcp subsystem by one of our partners we observed
+> this. Maybe this is perfectly fine. Just as I said it looks a bit weird
+> that a proper shutdown of the connection a RST is send out right after
+> the FIN.
 
-Define CLOCK_ALLOW_WRITE_DEBUGFS in drivers/clk/clk.c in order to use
-this feature.
+The point here is that when we close the connection we may have inflight
+requests that we already failed to upper layers and we don't want them
+to get through as we proceed to error handling. This is why we want the
+socket to go away asap.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/clk/clk.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+> No idea how iSCSI or NBD handles this. I'll check.
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 65508eb89ec9..3e5456580db9 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3214,6 +3214,30 @@ static int current_parent_show(struct seq_file *s, void *data)
- }
- DEFINE_SHOW_ATTRIBUTE(current_parent);
- 
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+static int clk_set_parent_set(void *data, u64 val)
-+{
-+	struct clk_core *core = data, *parent;
-+	int ret;
-+
-+	if (val >= core->num_parents)
-+		return -EINVAL;
-+
-+	parent = clk_core_get_parent_by_index(core, val);
-+	if (IS_ERR_OR_NULL(parent))
-+		return PTR_ERR(parent);
-+
-+	clk_prepare_lock();
-+	ret = clk_core_set_parent_nolock(core, parent);
-+	clk_prepare_unlock();
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(clk_set_parent_fops, NULL, clk_set_parent_set,
-+			 "%llu\n");
-+#endif
-+
- static int clk_duty_cycle_show(struct seq_file *s, void *data)
- {
- 	struct clk_core *core = s->private;
-@@ -3285,9 +3309,14 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
- 		debugfs_create_file("clk_parent", 0444, root, core,
- 				    &current_parent_fops);
- 
--	if (core->num_parents > 1)
-+	if (core->num_parents > 1) {
- 		debugfs_create_file("clk_possible_parents", 0444, root, core,
- 				    &possible_parents_fops);
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+		debugfs_create_file("clk_set_parent", 0200, root, core,
-+				    &clk_set_parent_fops);
-+#endif
-+	}
- 
- 	if (core->ops->debug_init)
- 		core->ops->debug_init(core->hw, core->dentry);
--- 
-2.30.2
-
+iSCSI does the same thing in essence (with a minor variation because in
+iscsi we have a logout message which we don't have in nvme).
