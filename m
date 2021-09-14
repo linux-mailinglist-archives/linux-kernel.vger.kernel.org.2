@@ -2,47 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3120340B0F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AEC40B0EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhINOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:36:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57442 "EHLO mail.kernel.org"
+        id S234134AbhINOga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:36:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233818AbhINOeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:34:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94A8D610F9;
+        id S233850AbhINOeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:34:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA86761212;
         Tue, 14 Sep 2021 14:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631629970;
-        bh=khkHTFCZzv02jdfwC6Of0Q3JW1xSILP59tRzCOX4+jw=;
+        bh=+z6dw7Tog78+7mQUP8MykHTfS8BskbmMD+pw4Idm0Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rPnovU0i/22fJNRWU6egvINNHoCIYFERn48tFFSYguh72SVSVMPGJUeMipmt7Roon
-         45qbmJQWMiXLCrtQIb3ms+yMojQ62lmFO0Rqss5eFrCeZFi4ADIIabqMcd+lyK1caN
-         miZ6MTqpFMwCIsUrYPgeBvzEly4p0Ec2cKQYePv2ylSgy7KXM2ecLZHBZNDUoML7tG
-         VaNFeOTN2KJqcrCGZdG0KPZoNSbNNwHyJJ2ZXXbQSRPp1112kdwty2XDKeI7h+PsTd
-         BNgHivlqG2UO8YfD4FdmWgetfNYx8jOIuWJqvk4Agko8NyRB6K7Ow4R0+gJOVCe1l1
-         zu/9rQlVwzfcA==
+        b=Tgy5hfhCwcWSBKHc0aU3V1vJUdNYwNVp/gbV8Nh/QADvdhwcQgNJ6EOSrbkVWa7uI
+         FeG3NrT4s2yJZjRLPLNtW1aia9Hm7vjXDy+3uZpBg/c5ojq8DwffOwP7lS/09uyEH1
+         FuVGt948NJuScrOpOidbK7SEF1vwbnoftslyOYt3syuwGEe24RAR+FsvcDclvswevV
+         22IKorzl6F10p4PX8TLSeSwmEzL1xNKOSb/33AU/f9WI8DHBw8Q63aLaaRNSGKrq7A
+         SWQku5ZLPR2c3SB8NU9BnggbxlxVS/+eEFoXMAj0Mmxc5G3uRqSk/kcROYZP0wF+zW
+         Vy7dTv9rs6Tqg==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mQ9UN-000KkG-Ai; Tue, 14 Sep 2021 16:32:47 +0200
+        id 1mQ9UN-000KkK-CT; Tue, 14 Sep 2021 16:32:47 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rajat Jain <rajatja@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/29] ABI: sysfs-bus-usb: better document variable argument
-Date:   Tue, 14 Sep 2021 16:32:16 +0200
-Message-Id: <cf40784dd4169897f7a28cc4d9393e8eaae5b873.1631629496.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 02/29] ABI: sysfs-tty: better document module name parameter
+Date:   Tue, 14 Sep 2021 16:32:17 +0200
+Message-Id: <d72c3257c3875769df7340f4f2d55011fd0ad002.1631629496.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631629496.git.mchehab+huawei@kernel.org>
 References: <cover.1631629496.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
@@ -55,70 +50,156 @@ such wildcards by regexes on a scriptable way.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-bus-usb | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ Documentation/ABI/testing/sysfs-tty | 32 ++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/testing/sysfs-bus-usb
-index 73eb23bc1f34..42103f0f54d6 100644
---- a/Documentation/ABI/testing/sysfs-bus-usb
-+++ b/Documentation/ABI/testing/sysfs-bus-usb
-@@ -166,14 +166,14 @@ Description:
- 		The file will be present for all speeds of USB devices, and will
- 		always read "no" for USB 1.1 and USB 2.0 devices.
+diff --git a/Documentation/ABI/testing/sysfs-tty b/Documentation/ABI/testing/sysfs-tty
+index e157130a6792..820e412d38a8 100644
+--- a/Documentation/ABI/testing/sysfs-tty
++++ b/Documentation/ABI/testing/sysfs-tty
+@@ -9,7 +9,7 @@ Description:
+ 		 The file supports poll() to detect virtual
+ 		 console switches.
  
--What:		/sys/bus/usb/devices/.../(hub interface)/portX
-+What:		/sys/bus/usb/devices/.../<hub_interface>/port<X>
- Date:		August 2012
- Contact:	Lan Tianyu <tianyu.lan@intel.com>
+-What:		/sys/class/tty/tty0/active
++What:		/sys/class/tty/tty<x>/active
+ Date:		Nov 2010
+ Contact:	Kay Sievers <kay.sievers@vrfy.org>
  Description:
--		The /sys/bus/usb/devices/.../(hub interface)/portX
-+		The /sys/bus/usb/devices/.../<hub_interface>/port<X>
- 		is usb port device's sysfs directory.
+@@ -18,7 +18,7 @@ Description:
+ 		 The file supports poll() to detect virtual
+ 		 console switches.
  
--What:		/sys/bus/usb/devices/.../(hub interface)/portX/connect_type
-+What:		/sys/bus/usb/devices/.../<hub_interface>/port<X>/connect_type
- Date:		January 2013
- Contact:	Lan Tianyu <tianyu.lan@intel.com>
+-What:		/sys/class/tty/ttyS0/uartclk
++What:		/sys/class/tty/ttyS<x>/uartclk
+ Date:		Sep 2012
+ Contact:	Tomas Hlavacek <tmshlvck@gmail.com>
  Description:
-@@ -182,7 +182,7 @@ Description:
- 		The file will read "hotplug", "hardwired" and "not used" if the
- 		information is available, and "unknown" otherwise.
+@@ -29,7 +29,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
--What:		/sys/bus/usb/devices/.../(hub interface)/portX/location
-+What:		/sys/bus/usb/devices/.../<hub_interface>/port<X>/location
- Date:		October 2018
- Contact:	Bjørn Mork <bjorn@mork.no>
+-What:		/sys/class/tty/ttyS0/type
++What:		/sys/class/tty/ttyS<x>/type
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
  Description:
-@@ -192,7 +192,7 @@ Description:
- 		raw location value as a hex integer.
+@@ -38,7 +38,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
- 
--What:		/sys/bus/usb/devices/.../(hub interface)/portX/quirks
-+What:		/sys/bus/usb/devices/.../<hub_interface>/port<X>/quirks
- Date:		May 2018
- Contact:	Nicolas Boichat <drinkcat@chromium.org>
+-What:		/sys/class/tty/ttyS0/line
++What:		/sys/class/tty/ttyS<x>/line
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
  Description:
-@@ -216,7 +216,7 @@ Description:
- 		   used to help make enumeration work better on some high speed
- 		   devices.
+@@ -47,7 +47,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
--What:		/sys/bus/usb/devices/.../(hub interface)/portX/over_current_count
-+What:		/sys/bus/usb/devices/.../<hub_interface>/port<X>/over_current_count
- Date:		February 2018
- Contact:	Richard Leitner <richard.leitner@skidata.com>
+-What:		/sys/class/tty/ttyS0/port
++What:		/sys/class/tty/ttyS<x>/port
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
  Description:
-@@ -230,10 +230,10 @@ Description:
- 		Any time this value changes the corresponding hub device will send a
- 		udev event with the following attributes::
+@@ -56,7 +56,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
--		  OVER_CURRENT_PORT=/sys/bus/usb/devices/.../(hub interface)/portX
-+		  OVER_CURRENT_PORT=/sys/bus/usb/devices/.../<hub_interface>/port<X>
- 		  OVER_CURRENT_COUNT=[current value of this sysfs attribute]
+-What:		/sys/class/tty/ttyS0/irq
++What:		/sys/class/tty/ttyS<x>/irq
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -65,7 +65,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
  
--What:		/sys/bus/usb/devices/.../(hub interface)/portX/usb3_lpm_permit
-+What:		/sys/bus/usb/devices/.../<hub_interface>/port<X>/usb3_lpm_permit
- Date:		November 2015
- Contact:	Lu Baolu <baolu.lu@linux.intel.com>
+-What:		/sys/class/tty/ttyS0/flags
++What:		/sys/class/tty/ttyS<x>/flags
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -74,7 +74,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/xmit_fifo_size
++What:		/sys/class/tty/ttyS<x>/xmit_fifo_size
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -83,7 +83,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/close_delay
++What:		/sys/class/tty/ttyS<x>/close_delay
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -92,7 +92,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/closing_wait
++What:		/sys/class/tty/ttyS<x>/closing_wait
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -101,7 +101,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/custom_divisor
++What:		/sys/class/tty/ttyS<x>/custom_divisor
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -110,7 +110,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/io_type
++What:		/sys/class/tty/ttyS<x>/io_type
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -120,7 +120,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/iomem_base
++What:		/sys/class/tty/ttyS<x>/iomem_base
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -129,7 +129,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/iomem_reg_shift
++What:		/sys/class/tty/ttyS<x>/iomem_reg_shift
+ Date:		October 2012
+ Contact:	Alan Cox <alan@linux.intel.com>
+ Description:
+@@ -139,7 +139,7 @@ Description:
+ 		 These sysfs values expose the TIOCGSERIAL interface via
+ 		 sysfs rather than via ioctls.
+ 
+-What:		/sys/class/tty/ttyS0/rx_trig_bytes
++What:		/sys/class/tty/ttyS<x>/rx_trig_bytes
+ Date:		May 2014
+ Contact:	Yoshihiro YUNOMAE <yoshihiro.yunomae.ez@hitachi.com>
+ Description:
+@@ -155,7 +155,7 @@ Description:
+ 		 16550A, which has 1/4/8/14 bytes trigger, the RX trigger is
+ 		 automatically changed to 4 bytes.
+ 
+-What:		/sys/class/tty/ttyS0/console
++What:		/sys/class/tty/ttyS<x>/console
+ Date:		February 2020
+ Contact:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
  Description:
 -- 
 2.31.1
