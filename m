@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F195140BB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F2F40BB67
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235656AbhINWYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        id S235478AbhINWa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235631AbhINWYb (ORCPT
+        with ESMTP id S235137AbhINWaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:24:31 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E242C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:23:13 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id g184so670501pgc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:23:13 -0700 (PDT)
+        Tue, 14 Sep 2021 18:30:25 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DDFC061574;
+        Tue, 14 Sep 2021 15:29:07 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id bq5so1672201lfb.9;
+        Tue, 14 Sep 2021 15:29:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5o8WWIA/LRw/JbdUBqLbwJmD47lNoYQx/n5FXd9wsPk=;
-        b=GKBuIqJk1w53+nXErkwbAbXRqmxNA8Z5xQLQ5lNeUtkz24XIsPartUATvHQ7MQ9MQ4
-         y2yZvUdTSb2NhK0Zw3owy9ntlUZSN67v9B2JyCYPo6GcARbrtytf+f0SeT2BjaZvypcR
-         nAty4F2FbjNpy85uHm1oc5YlLo3WboJ+3W/xHvFSJtxxLN5Bw3QX7vP5C8WWuhfg0mZj
-         56ZWbvlx+FrJ6Jg3hjL5srmTLsno4v1oul/dVUMaPgDB6jjnsyKMesI2tGdpP8QQA6RB
-         bYz02/M4cNZWOM+jBkkqwl0Yw7+Y28jXTPWmmgDwjU8JeC6dhc4ZtMN9zK0QApXUwmDN
-         TnNA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OOGSJMiHA0GrsheLPjqZOApUIXPheFNmd6HaQBlmI6I=;
+        b=NNcYyS7n3cxhdsmKNyNkWrRNCtdUVe+k005bVrKWPhkxeKYJGDY7JQItsGKP0R9ag7
+         OF+scHQFB5sD+jQDhuOe3nOtvvfvUuMtkvYC/bL7WEhlnv9VayfRoIia/JDeqdIvRpT0
+         nf+ouQMJ3XmxzytlJ82aHi5DVAbyQiCs8016ZBqVMJwDeSo/JNzCKUs8/Ky0shyBhgPO
+         NJfelis94P6JIDsDFPz/m+mydSHi4sdw8ZvVGDTjn9ZFY5TPB/gikmi6MK0Ldf+XqdWj
+         w2ymYG3Ykr64kMAOzTDhi15hF7mluus045/hquIPHuGz52xvc1+4LgfWCKBNeA0zhVpW
+         1UrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5o8WWIA/LRw/JbdUBqLbwJmD47lNoYQx/n5FXd9wsPk=;
-        b=7TvWXDCtqfWZBjkWb5Wt6asGixzzab58A3zq5+GWVImw+9HZ3Pqlve9KH4Tc55hAx8
-         Oi0GgQoQ7Qpcr5ZE/4Q5JJAO23qKoqsgr6jR8iko90raWYgKIAW367+yKI36nKdiqE5U
-         OzoFsoq/YmWWaI6kmc1gakbZ5ruWQTbTSPHRzFKBA3xP0YxKaOq5asSL1OUHQP7Y3Yu7
-         naNDszKCCYNpZb19QC7aPHU2bJdKbj/51DzoGbQpMsV3O/TM+kt9T9/I7iSfGhXLv/HC
-         lCkEA5nTOiqbSB5AGrfi7ngbUNq/5OLFGKU5whIWQDOVseYz68x4jvpq7X6+Nkd+ovi0
-         kOtQ==
-X-Gm-Message-State: AOAM532+wPk1unDnoIIisQqEJNKj8TOh8PXH7E7vJOs6KJjfepfJoj9q
-        lFFVURZez35rbL7NRtd3vAcB85tg7Gw=
-X-Google-Smtp-Source: ABdhPJx6Kp2wJUrAP1zzP2XCmzrFrF5+pqTqh0SyLED0c3RBhvQHUHVFd5gsaO/W7cDU1g086Z6vZg==
-X-Received: by 2002:a05:6a00:2410:b0:40e:7d8:ad7f with SMTP id z16-20020a056a00241000b0040e07d8ad7fmr7048939pfh.25.1631658192695;
-        Tue, 14 Sep 2021 15:23:12 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id v13sm11208285pfm.16.2021.09.14.15.23.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 15:23:12 -0700 (PDT)
-Subject: Re: [PATCH 1/2] soc: bcm: brcmstb: biuctrl: Tune MCP interface for
- 72113
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210914222146.214115-1-f.fainelli@gmail.com>
- <20210914222146.214115-2-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <0533cc7d-f1b7-7558-da05-30dadc0c4321@gmail.com>
-Date:   Tue, 14 Sep 2021 15:23:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OOGSJMiHA0GrsheLPjqZOApUIXPheFNmd6HaQBlmI6I=;
+        b=hW19RyCSQ8eeNXLf45HxW/7yUmKzkvcExNxYSzTogYPuUSg2fUKoVh5NJuqQSkafJx
+         uKXJO3sMt8m+e4ooRNKUvvAS1Phwv7R9+XfsbpDSC83wUvHD8IN/wf4cUElOJvm4LugP
+         pH44ISYEJZaJ7/w8H/uZ3PZrCESngZqI10E5hWwE1lvD865ycvW/QL9J1m8w204HiZJH
+         3tpNk1hzvQ9O2SruAYuXbKtABIWZDbjFTaRed24QVD5RAM770CmdpcO0Yi0gtjP79xD7
+         CLsQ+pKjszeGDC/Heha6Dz1aNV+aD8ZVqclEI9SdqUPjC+oYPUMw7QkKMym45yqoX3sB
+         cYyA==
+X-Gm-Message-State: AOAM530PTohr6hyrROPMLHVYql9baYYVYqwZn4htp1E3EZscO7cstRC5
+        DwRAnR71pOpp95ZxXQ4DQ5J9rewijclxhb1IkhIy4VM9hhQ=
+X-Google-Smtp-Source: ABdhPJxJRmrTSph3hEv5MyeNd4gzes70mmgLByycynCqyyqbKeWk3vdJZkpOYkAbqWNKa+I8G1dibBpNsazFoGIk7X4=
+X-Received: by 2002:a05:6512:3f91:: with SMTP id x17mr15108290lfa.518.1631658545482;
+ Tue, 14 Sep 2021 15:29:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210914222146.214115-2-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAKXUXMyRKM9Ev_Yyyup-T=AZe2aYcN-ZneXsLmHtUC7as67zNQ@mail.gmail.com>
+ <20210904082330.14864-1-utkarshverma294@gmail.com> <CABJPP5DyppeW=_XXJKn_NnQahOn=k0oBi-dDdcyxN8rygwusEw@mail.gmail.com>
+ <87ee9qdft1.fsf@meer.lwn.net>
+In-Reply-To: <87ee9qdft1.fsf@meer.lwn.net>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Wed, 15 Sep 2021 03:58:54 +0530
+Message-ID: <CABJPP5DjazfiTUe3wvnKyk86hN+SUK7aP9K5GP0L5tRW_TD_xw@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: checkpatch: Add SYMBOLIC_PERMS message
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Utkarsh Verma <utkarshverma294@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 3:21 PM, Florian Fainelli wrote:
-> 72113 uses a dual core Cortex-A72 CPU complex which requires tuning of
-> its bus interface unit the same way that the existing Cortex-A72 based
-> systems are tuned.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Wed, Sep 15, 2021 at 2:40 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Dwaipayan Ray <dwaipayanray1@gmail.com> writes:
+>
+> > On Sat, Sep 4, 2021 at 1:53 PM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
+> >>
+> >> Add a new message type SYMBOLIC_PERMS under the 'Permissions'
+> >> subsection. Octal permission bits are easier to read and understand
+> >> instead of their symbolic macro names.
+> >>
+> >> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> >> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+> >> Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> >> Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> >> ---
+> >>  Documentation/dev-tools/checkpatch.rst | 11 +++++++++++
+> >>  1 file changed, 11 insertions(+)
+> >>
+> >> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+> >> index f0956e9ea2d8..41037594ec24 100644
+> >> --- a/Documentation/dev-tools/checkpatch.rst
+> >> +++ b/Documentation/dev-tools/checkpatch.rst
+> >> @@ -957,6 +957,17 @@ Permissions
+> >>      Permission bits should use 4 digit octal permissions (like 0700 or 0444).
+> >>      Avoid using any other base like decimal.
+> >>
+> >> +  **SYMBOLIC_PERMS**
+> >> +    Permission bits in the octal form are more readable and easier to
+> >> +    understand than their symbolic counterparts because many command-line
+> >> +    tools use this notation only. Experienced kernel developers have been using
+> >
+> > Let's remove "only".
+> >
+> >> +    this traditional Unix permission bits for decades and so they find it
+> >
+> > Maybe you meant "these" here.
+> >
+> > With these changes made,
+> > Acked-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+>
+> I took the liberty of apply the patch with those changes made.
+>
 
-Meh, this one is a duplicate, I will drop it while applying the other
-two patches.
--- 
-Florian
+Thanks Jonathan.
+
+Utkarsh, you can start working on your next patches after submitting, you don't
+have to wait for the existing patches to be first accepted. They will follow
+the same review -> changes -> review cycle until they are good for
+acceptance.
+
+Like lukas said, try preparing a batch of say 3 to 5 rules and let's
+review it and get it in.
+
+Thanks,
+Dwaipayan.
