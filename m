@@ -2,363 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D639640BBBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13F540BBC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbhINWls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
+        id S235807AbhINWmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbhINWlr (ORCPT
+        with ESMTP id S235464AbhINWmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:41:47 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F263FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:40:28 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id z24so1803243ejf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:40:28 -0700 (PDT)
+        Tue, 14 Sep 2021 18:42:13 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1053C061574;
+        Tue, 14 Sep 2021 15:40:54 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id y8so782376pfa.7;
+        Tue, 14 Sep 2021 15:40:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RlQDFpxGWCG1kQOL2iskq9XEg10DKyLga2MNohigEk0=;
-        b=jeUN5cnea2Nba9yJlIlSfIg+i7VczoFsz+oict8zT8uruEv4imJMxTZ+Qb8b192tT0
-         cNoK8l82t6oROSfs25CmIHfn3Bj4nB5LQqBsfhLQf5YslldrYw16EtafnVAuUjsyH1L9
-         y/MYd4I2sTVb9IaW2Amx0JjxBYENhLzzvGdj9khJklpi8qxdcc+af44WPRUGra4RGTg0
-         Jo74gBoO1LNzltFnCakCqTY86qg4RZJqfsmSnPL6PAhSrfVE6yKlmMa4GMiRglGHIWD4
-         RVMMs0W8/zEellrm2TuAx3Uuk8xDFYFZ8sk+ENHQbk4S7XLy0O/D7FJEpyNY05x9Rudu
-         935w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ju9VZyqP21j8Scdz8OFW5dsbT6zZUxqBw2Xl/YF0nKI=;
+        b=KESGAPRIlqJz1bY9DWhdFrkTb8CR9fi+TfyHuZN5UQe7H/vc0me4eou2ycW2wOy8/f
+         nhInEoOOCgOV43QpQUWilSGwVwu08mP9Ei+jCDVRfgzLp1MTwbRkxzatTwcNBygh65mn
+         rLWimZuUO7vM6rr6WN1vysr3tIlSeQI/C0sXHDcNvz0woJx8fL4csCS7V88MryjAQtBS
+         NLEjeexdjmzbYZOtxUg+bLC/WOAEu1+D8p8OEHWOr71EV0mINfjnPYkMUCGpTUr8a9Q8
+         /G1E56l82gE7gosFl+w/3IvmYKSeTpl+MAfj55FJYTC7hSGiZh/w24pvcVSVQCRQzVT5
+         PeDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RlQDFpxGWCG1kQOL2iskq9XEg10DKyLga2MNohigEk0=;
-        b=Ra/QyHLL7hSc/Iioazd3Eh/5F3CohKMJfzfoNIlCYwWqvrEYm1Vh/o/IGRROBIc+j6
-         HwiFCFdnWQS7fylWpdrRghiEU4AVGhjxVS88qJmE1w/WTsEdzAcsgPxoF5nadUDTylgy
-         QTAZ/WN5xuAg4yDB0n/bPjIf9dfkLfrvmRdi6QkI0I0Z/U1fABC0Ccl6d4DoJJFdykxr
-         oJKB365eHdtbbze2BFUCLbFpx/yklJ/7PXxT887C7/X2HLsl+orV+GqUZUcp8lg9uCQ7
-         nwnrwrBtLs/xu/ERy5CegaYb7gT+aUm9R9ZhETaQttlZcPxVgU+P212NMDa0BlhHkNer
-         c3eQ==
-X-Gm-Message-State: AOAM531ZYcJ2D3yXz9k/mWt4aPzolCLotLBVTt35YX8Ip7M8VGa1n5Mx
-        Ig0dXS60hTdP7aiH+v3gXUxEfEjpO1ev9e9NACU=
-X-Google-Smtp-Source: ABdhPJxt5QxXCb6O9i0Jx3Y165bPsM4RVpaSrO5dl4xSltbvclv9ZjEvgAtvpnXxVhZhqHW9ok60XaztQgHU1fphU7o=
-X-Received: by 2002:a17:907:6297:: with SMTP id nd23mr21535624ejc.62.1631659227471;
- Tue, 14 Sep 2021 15:40:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ju9VZyqP21j8Scdz8OFW5dsbT6zZUxqBw2Xl/YF0nKI=;
+        b=SBxXZlUCwaknc82AuxmAdqvz96p0d7k2zQpFwIZ1Ceskj+T6nkQUsgprCttXLKb4TY
+         wPERiEZlyYVP+8uqgXSvNMRMAm4lCU9rigpN6e2m4DvpZf8GQrqwCQNE3Rk6P8JmtKKw
+         D1JzmwIzXZsBGjUImEssPOfSZ/JA4dWVO/A0goF38ASgbac0oqZkZ25k9lplN5tu+lBs
+         mFKUgANjOwXaJREKucYcYGaqdNmIkfN3XJSKgfbs4w2Ru2eV+3MDgvN5rUA2/FFxjq+e
+         5FO8uPQFvtDEgY5VCNFlnEnFFOLC9utN395cBgAr+C2EO4J8hBGDvPeAoFd5AfJrvbW9
+         sxRQ==
+X-Gm-Message-State: AOAM533ZnvJQXPrk6VigmNymIBdSg1LcNRcHofmpDeeQiZwzsamc4sM1
+        ubte47ExObFCyddIXT9IHPX+Uc7tbds=
+X-Google-Smtp-Source: ABdhPJzbABhOOHmOVLpdF+OYqigx4ocH172Z/Q3cbmCl7RwJaPmgaIrmf/A+FcIlD7T/FHEvxnzaXA==
+X-Received: by 2002:a65:67d6:: with SMTP id b22mr17355642pgs.430.1631659254015;
+        Tue, 14 Sep 2021 15:40:54 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g4sm12243158pgs.42.2021.09.14.15.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 15:40:53 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
+        DRIVERS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: phy: bcm7xxx: Add EPHY entry for 72165
+Date:   Tue, 14 Sep 2021 15:40:41 -0700
+Message-Id: <20210914224042.418365-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210914013701.344956-1-ying.huang@intel.com> <20210914013701.344956-2-ying.huang@intel.com>
-In-Reply-To: <20210914013701.344956-2-ying.huang@intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 14 Sep 2021 15:40:15 -0700
-Message-ID: <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com>
-Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
- memory tiering system
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
-        osalvador <osalvador@suse.de>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
->
-> With the advent of various new memory types, some machines will have
-> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
-> memory subsystem of these machines can be called memory tiering
-> system, because the performance of the different types of memory are
-> usually different.
->
-> In such system, because of the memory accessing pattern changing etc,
-> some pages in the slow memory may become hot globally.  So in this
-> patch, the NUMA balancing mechanism is enhanced to optimize the page
-> placement among the different memory types according to hot/cold
-> dynamically.
->
-> In a typical memory tiering system, there are CPUs, fast memory and
-> slow memory in each physical NUMA node.  The CPUs and the fast memory
-> will be put in one logical node (called fast memory node), while the
-> slow memory will be put in another (faked) logical node (called slow
-> memory node).  That is, the fast memory is regarded as local while the
-> slow memory is regarded as remote.  So it's possible for the recently
-> accessed pages in the slow memory node to be promoted to the fast
-> memory node via the existing NUMA balancing mechanism.
->
-> The original NUMA balancing mechanism will stop to migrate pages if the free
-> memory of the target node will become below the high watermark.  This
-> is a reasonable policy if there's only one memory type.  But this
-> makes the original NUMA balancing mechanism almost not work to optimize page
-> placement among different memory types.  Details are as follows.
->
-> It's the common cases that the working-set size of the workload is
-> larger than the size of the fast memory nodes.  Otherwise, it's
-> unnecessary to use the slow memory at all.  So in the common cases,
-> there are almost always no enough free pages in the fast memory nodes,
-> so that the globally hot pages in the slow memory node cannot be
-> promoted to the fast memory node.  To solve the issue, we have 2
-> choices as follows,
->
-> a. Ignore the free pages watermark checking when promoting hot pages
->    from the slow memory node to the fast memory node.  This will
->    create some memory pressure in the fast memory node, thus trigger
->    the memory reclaiming.  So that, the cold pages in the fast memory
->    node will be demoted to the slow memory node.
->
-> b. Make kswapd of the fast memory node to reclaim pages until the free
->    pages are a little more (about 10MB) than the high watermark.  Then,
->    if the free pages of the fast memory node reaches high watermark, and
->    some hot pages need to be promoted, kswapd of the fast memory node
->    will be waken up to demote some cold pages in the fast memory node to
->    the slow memory node.  This will free some extra space in the fast
->    memory node, so the hot pages in the slow memory node can be
->    promoted to the fast memory node.
->
-> The choice "a" will create the memory pressure in the fast memory
-> node.  If the memory pressure of the workload is high, the memory
-> pressure may become so high that the memory allocation latency of the
-> workload is influenced, e.g. the direct reclaiming may be triggered.
->
-> The choice "b" works much better at this aspect.  If the memory
-> pressure of the workload is high, the hot pages promotion will stop
-> earlier because its allocation watermark is higher than that of the
-> normal memory allocation.  So in this patch, choice "b" is
-> implemented.
->
-> In addition to the original page placement optimization among sockets,
-> the NUMA balancing mechanism is extended to be used to optimize page
-> placement according to hot/cold among different memory types.  So the
-> sysctl user space interface (numa_balancing) is extended in a backward
-> compatible way as follow, so that the users can enable/disable these
-> functionality individually.
->
-> The sysctl is converted from a Boolean value to a bits field.  The
-> definition of the flags is,
->
-> - 0x0: NUMA_BALANCING_DISABLED
-> - 0x1: NUMA_BALANCING_NORMAL
-> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+72165 is a 16nm process SoC with a 10/100 integrated Ethernet PHY,
+create a new macro and set of functions for this different process type.
 
-Thanks for coming up with the patches. TBH the first question off the
-top of my head is all the complexity is really worthy for real life
-workload at the moment? And the interfaces (sysctl knob files exported
-to users) look complicated for the users. I don't know if the users
-know how to set an optimal value for their workloads.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/phy/bcm7xxx.c | 200 ++++++++++++++++++++++++++++++++++++++
+ include/linux/brcmphy.h   |   1 +
+ 2 files changed, 201 insertions(+)
 
-I don't disagree the NUMA balancing needs optimization and improvement
-for tiering memory, the question we need answer is how far we should
-go for now and what the interfaces should look like. Does it make
-sense to you?
+diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
+index e79297a4bae8..f6912a77a378 100644
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -398,6 +398,189 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
+ 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
+ }
+ 
++static int bcm7xxx_16nm_ephy_afe_config(struct phy_device *phydev)
++{
++	int tmp, rcalcode, rcalnewcodelp, rcalnewcode11, rcalnewcode11d2;
++
++	/* Reset PHY */
++	tmp = genphy_soft_reset(phydev);
++	if (tmp)
++		return tmp;
++
++	/* Reset AFE and PLL */
++	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0006);
++	/* Clear reset */
++	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0000);
++
++	/* Write PLL/AFE control register to select 54MHz crystal */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0000);
++	bcm_phy_write_misc(phydev, 0x0031, 0x0000, 0x044a);
++
++	/* Change Ka,Kp,Ki to pdiv=1 */
++	bcm_phy_write_misc(phydev, 0x0033, 0x0002, 0x71a1);
++	/* Configuration override */
++	bcm_phy_write_misc(phydev, 0x0033, 0x0001, 0x8000);
++
++	/* Change PLL_NDIV and PLL_NUDGE */
++	bcm_phy_write_misc(phydev, 0x0031, 0x0001, 0x2f68);
++	bcm_phy_write_misc(phydev, 0x0031, 0x0002, 0x0000);
++
++	/* Reference frequency is 54Mhz, config_mode[15:14] = 3 (low
++	 * phase) */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0003, 0xc036);
++
++	/* Initialize bypass mode */
++	bcm_phy_write_misc(phydev, 0x0032, 0x0003, 0x0000);
++	/* Bypass code, default: VCOCLK enabled */
++	bcm_phy_write_misc(phydev, 0x0033, 0x0000, 0x0002);
++	/* LDOs at default setting */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0002, 0x01c0);
++	/* Release PLL reset */
++	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0001);
++
++	/* Bandgap curvature correction to correct default */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0000, 0x0010);
++
++	/* Run RCAL */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x0038);
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003b);
++	udelay(2);
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003f);
++	mdelay(5);
++
++	/* AFE_CAL_CONFIG_0, Vref=1000, Target=10, averaging enabled */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x1c82);
++	/* AFE_CAL_CONFIG_0, no reset and analog powerup */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e82);
++	udelay(2);
++	/* AFE_CAL_CONFIG_0, start calibration */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f82);
++	udelay(100);
++	/* AFE_CAL_CONFIG_0, clear start calibration, set HiBW */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e86);
++	udelay(2);
++	/* AFE_CAL_CONFIG_0, start calibration with hi BW mode set */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f86);
++	udelay(100);
++
++	/* Adjust 10BT amplitude additional +7% and 100BT +2% */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7ea);
++	/* Adjust 1G mode amplitude and 1G testmode1 */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0002, 0xede0);
++
++	/* Read CORE_EXPA9 */
++	tmp = bcm_phy_read_exp(phydev, 0x00a9);
++	/* CORE_EXPA9[6:1] is rcalcode[5:0] */
++	rcalcode = (tmp & 0x7e) / 2;
++	/* Correct RCAL code + 1 is -1% rprogr, LP: +16 */
++	rcalnewcodelp = rcalcode + 16;
++	/* Correct RCAL code + 1 is -15 rprogr, 11: +10 */
++	rcalnewcode11 = rcalcode + 10;
++	/* Saturate if necessary */
++	if (rcalnewcodelp > 0x3f)
++		rcalnewcodelp = 0x3f;
++	if (rcalnewcode11 > 0x3f)
++		rcalnewcode11 = 0x3f;
++	/* REXT=1 BYP=1 RCAL_st1<5:0>=new rcal code */
++	tmp = 0x00f8 + rcalnewcodelp * 256;
++	/* Program into AFE_CAL_CONFIG_2 */
++	bcm_phy_write_misc(phydev, 0x0039, 0x0003, tmp);
++	/* AFE_BIAS_CONFIG_0 10BT bias code (Bias: E4) */
++	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7e4);
++	/* invert adc clock output and 'adc refp ldo current To correct
++	 * default
++	 */
++	bcm_phy_write_misc(phydev, 0x003b, 0x0000, 0x8002);
++	/* 100BT stair case, high BW, 1G stair case, alternate encode */
++	bcm_phy_write_misc(phydev, 0x003c, 0x0003, 0xf882);
++	/* 1000BT DAC transition method per Erol, bits[32], DAC Shuffle
++	 * sequence 1 + 10BT imp adjust bits
++	 */
++	bcm_phy_write_misc(phydev, 0x003d, 0x0000, 0x3201);
++	/* Non-overlap fix */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0002, 0x0c00);
++
++	/* pwdb override (rxconfig<5>) to turn on RX LDO indpendent of
++	 * pwdb controls from DSP_TAP10
++	 */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0020);
++
++	/* Remove references to channel 2 and 3 */
++	bcm_phy_write_misc(phydev, 0x003b, 0x0002, 0x0000);
++	bcm_phy_write_misc(phydev, 0x003b, 0x0003, 0x0000);
++
++	/* Set cal_bypassb bit rxconfig<43> */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0003, 0x0800);
++	udelay(2);
++
++	/* Revert pwdb_override (rxconfig<5>) to 0 so that the RX pwr
++	 * is controlled by DSP.
++	 */
++	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0000);
++
++	/* Drop LSB */
++	rcalnewcode11d2 = (rcalnewcode11 & 0xfffe) / 2;
++	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0001);
++	/* Clear bits [11:5] */
++	tmp &= ~0xfe0;
++	/* set txcfg_ch0<5>=1 (enable + set local rcal) */
++	tmp |= 0x0020 | (rcalnewcode11d2 * 64);
++	bcm_phy_write_misc(phydev, 0x003d, 0x0001, tmp);
++	bcm_phy_write_misc(phydev, 0x003d, 0x0002, tmp);
++
++	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0000);
++	/* set txcfg<45:44>=11 (enable Rextra + invert fullscaledetect)
++	 */
++	tmp &= ~0x3000;
++	tmp |= 0x3000;
++	bcm_phy_write_misc(phydev, 0x003d, 0x0000, tmp);
++
++	return 0;
++}
++
++static int bcm7xxx_16nm_ephy_config_init(struct phy_device *phydev)
++{
++	int ret, val;
++
++	ret = bcm7xxx_16nm_ephy_afe_config(phydev);
++	if (ret)
++		return ret;
++
++	ret = bcm_phy_set_eee(phydev, true);
++	if (ret)
++		return ret;
++
++	ret = bcm_phy_read_shadow(phydev, BCM54XX_SHD_SCR3);
++	if (ret < 0)
++		return ret;
++
++	val = ret;
++
++	/* Auto power down of DLL enabled,
++	 * TXC/RXC disabled during auto power down.
++	 */
++	val &= ~BCM54XX_SHD_SCR3_DLLAPD_DIS;
++	val |= BIT(8);
++
++	ret = bcm_phy_write_shadow(phydev, BCM54XX_SHD_SCR3, val);
++	if (ret < 0)
++		return ret;
++
++	return bcm_phy_enable_apd(phydev, true);
++}
++
++static int bcm7xxx_16nm_ephy_resume(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Re-apply workarounds coming out suspend/resume */
++	ret = bcm7xxx_16nm_ephy_config_init(phydev);
++	if (ret)
++		return ret;
++
++	return genphy_config_aneg(phydev);
++}
++
+ static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -610,9 +793,25 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
+ 	.resume         = bcm7xxx_config_init,				\
+ }
+ 
++#define BCM7XXX_16NM_EPHY(_oui, _name)					\
++{									\
++	.phy_id		= (_oui),					\
++	.phy_id_mask	= 0xfffffff0,					\
++	.name		= _name,					\
++	/* PHY_BASIC_FEATURES */					\
++	.flags		= PHY_IS_INTERNAL,				\
++	.probe		= bcm7xxx_28nm_probe,				\
++	.remove		= bcm7xxx_28nm_remove,				\
++	.config_init	= bcm7xxx_16nm_ephy_config_init,		\
++	.config_aneg	= genphy_config_aneg,				\
++	.read_status	= genphy_read_status,				\
++	.resume		= bcm7xxx_16nm_ephy_resume,			\
++}
++
+ static struct phy_driver bcm7xxx_driver[] = {
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM72113, "Broadcom BCM72113"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM72116, "Broadcom BCM72116"),
++	BCM7XXX_16NM_EPHY(PHY_ID_BCM72165, "Broadcom BCM72165"),
+ 	BCM7XXX_28NM_GPHY(PHY_ID_BCM7250, "Broadcom BCM7250"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7255, "Broadcom BCM7255"),
+ 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7260, "Broadcom BCM7260"),
+@@ -635,6 +834,7 @@ static struct phy_driver bcm7xxx_driver[] = {
+ static struct mdio_device_id __maybe_unused bcm7xxx_tbl[] = {
+ 	{ PHY_ID_BCM72113, 0xfffffff0 },
+ 	{ PHY_ID_BCM72116, 0xfffffff0, },
++	{ PHY_ID_BCM72165, 0xfffffff0, },
+ 	{ PHY_ID_BCM7250, 0xfffffff0, },
+ 	{ PHY_ID_BCM7255, 0xfffffff0, },
+ 	{ PHY_ID_BCM7260, 0xfffffff0, },
+diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
+index c2c2147dfeb8..c2a5fc9f46c2 100644
+--- a/include/linux/brcmphy.h
++++ b/include/linux/brcmphy.h
+@@ -32,6 +32,7 @@
+ 
+ #define PHY_ID_BCM72113			0x35905310
+ #define PHY_ID_BCM72116			0x35905350
++#define PHY_ID_BCM72165			0x35905340
+ #define PHY_ID_BCM7250			0xae025280
+ #define PHY_ID_BCM7255			0xae025120
+ #define PHY_ID_BCM7260			0xae025190
+-- 
+2.25.1
 
-IMHO I'd prefer the most simple and straightforward approach at the
-moment. For example, we could just skip high water mark check for PMEM
-promotion.
-
->
-> TODO:
->
-> - Update ABI document: Documentation/sysctl/kernel.txt
->
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Rik van Riel <riel@surriel.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: osalvador <osalvador@suse.de>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> ---
->  include/linux/sched/sysctl.h | 10 ++++++++++
->  kernel/sched/core.c          | 10 ++++------
->  kernel/sysctl.c              |  7 ++++---
->  mm/migrate.c                 | 19 +++++++++++++++++--
->  mm/vmscan.c                  | 16 ++++++++++++++++
->  5 files changed, 51 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-> index 304f431178fd..bc54c1d75d6d 100644
-> --- a/include/linux/sched/sysctl.h
-> +++ b/include/linux/sched/sysctl.h
-> @@ -35,6 +35,16 @@ enum sched_tunable_scaling {
->         SCHED_TUNABLESCALING_END,
->  };
->
-> +#define NUMA_BALANCING_DISABLED                0x0
-> +#define NUMA_BALANCING_NORMAL          0x1
-> +#define NUMA_BALANCING_MEMORY_TIERING  0x2
-> +
-> +#ifdef CONFIG_NUMA_BALANCING
-> +extern int sysctl_numa_balancing_mode;
-> +#else
-> +#define sysctl_numa_balancing_mode     0
-> +#endif
-> +
->  /*
->   *  control realtime throttling:
->   *
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 1bba4128a3e6..e61c2d415601 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4228,6 +4228,8 @@ DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
->
->  #ifdef CONFIG_NUMA_BALANCING
->
-> +int sysctl_numa_balancing_mode;
-> +
->  void set_numabalancing_state(bool enabled)
->  {
->         if (enabled)
-> @@ -4240,20 +4242,16 @@ void set_numabalancing_state(bool enabled)
->  int sysctl_numa_balancing(struct ctl_table *table, int write,
->                           void *buffer, size_t *lenp, loff_t *ppos)
->  {
-> -       struct ctl_table t;
->         int err;
-> -       int state = static_branch_likely(&sched_numa_balancing);
->
->         if (write && !capable(CAP_SYS_ADMIN))
->                 return -EPERM;
->
-> -       t = *table;
-> -       t.data = &state;
-> -       err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
-> +       err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
->         if (err < 0)
->                 return err;
->         if (write)
-> -               set_numabalancing_state(state);
-> +               set_numabalancing_state(*(int *)table->data);
->         return err;
->  }
->  #endif
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 083be6af29d7..666c58455355 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -115,6 +115,7 @@ static int sixty = 60;
->
->  static int __maybe_unused neg_one = -1;
->  static int __maybe_unused two = 2;
-> +static int __maybe_unused three = 3;
->  static int __maybe_unused four = 4;
->  static unsigned long zero_ul;
->  static unsigned long one_ul = 1;
-> @@ -1803,12 +1804,12 @@ static struct ctl_table kern_table[] = {
->  #ifdef CONFIG_NUMA_BALANCING
->         {
->                 .procname       = "numa_balancing",
-> -               .data           = NULL, /* filled in by handler */
-> -               .maxlen         = sizeof(unsigned int),
-> +               .data           = &sysctl_numa_balancing_mode,
-> +               .maxlen         = sizeof(int),
->                 .mode           = 0644,
->                 .proc_handler   = sysctl_numa_balancing,
->                 .extra1         = SYSCTL_ZERO,
-> -               .extra2         = SYSCTL_ONE,
-> +               .extra2         = &three,
->         },
->  #endif /* CONFIG_NUMA_BALANCING */
->         {
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index a6a7743ee98f..a159a36dd412 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -50,6 +50,7 @@
->  #include <linux/ptrace.h>
->  #include <linux/oom.h>
->  #include <linux/memory.h>
-> +#include <linux/sched/sysctl.h>
->
->  #include <asm/tlbflush.h>
->
-> @@ -2110,16 +2111,30 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
->  {
->         int page_lru;
->         int nr_pages = thp_nr_pages(page);
-> +       int order = compound_order(page);
->
-> -       VM_BUG_ON_PAGE(compound_order(page) && !PageTransHuge(page), page);
-> +       VM_BUG_ON_PAGE(order && !PageTransHuge(page), page);
->
->         /* Do not migrate THP mapped by multiple processes */
->         if (PageTransHuge(page) && total_mapcount(page) > 1)
->                 return 0;
->
->         /* Avoid migrating to a node that is nearly full */
-> -       if (!migrate_balanced_pgdat(pgdat, nr_pages))
-> +       if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
-> +               int z;
-> +
-> +               if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) ||
-> +                   !numa_demotion_enabled)
-> +                       return 0;
-> +               if (next_demotion_node(pgdat->node_id) == NUMA_NO_NODE)
-> +                       return 0;
-> +               for (z = pgdat->nr_zones - 1; z >= 0; z--) {
-> +                       if (populated_zone(pgdat->node_zones + z))
-> +                               break;
-> +               }
-> +               wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
->                 return 0;
-> +       }
->
->         if (isolate_lru_page(page))
->                 return 0;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index f441c5946a4c..7fe737fd0e03 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -56,6 +56,7 @@
->
->  #include <linux/swapops.h>
->  #include <linux/balloon_compaction.h>
-> +#include <linux/sched/sysctl.h>
->
->  #include "internal.h"
->
-> @@ -3775,6 +3776,12 @@ static bool pgdat_watermark_boosted(pg_data_t *pgdat, int highest_zoneidx)
->         return false;
->  }
->
-> +/*
-> + * Keep the free pages on fast memory node a little more than the high
-> + * watermark to accommodate the promoted pages.
-> + */
-> +#define NUMA_BALANCING_PROMOTE_WATERMARK       (10UL * 1024 * 1024 >> PAGE_SHIFT)
-> +
->  /*
->   * Returns true if there is an eligible zone balanced for the request order
->   * and highest_zoneidx
-> @@ -3796,6 +3803,15 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
->                         continue;
->
->                 mark = high_wmark_pages(zone);
-> +               if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
-> +                   numa_demotion_enabled &&
-> +                   next_demotion_node(pgdat->node_id) != NUMA_NO_NODE) {
-> +                       unsigned long promote_mark;
-> +
-> +                       promote_mark = min(NUMA_BALANCING_PROMOTE_WATERMARK,
-> +                                          pgdat->node_present_pages >> 6);
-> +                       mark += promote_mark;
-> +               }
->                 if (zone_watermark_ok_safe(zone, order, mark, highest_zoneidx))
->                         return true;
->         }
-> --
-> 2.30.2
->
