@@ -2,140 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A1C40A8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C3840A8B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhINHyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:54:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229477AbhINHyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:54:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBF5661056;
-        Tue, 14 Sep 2021 07:52:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631605969;
-        bh=0naE1qrmfOABfJYDDKG+OSU0koFiRK7dYXmRlyCjsXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZkLO4m9MHy8PBhbfTRXr8fhl5bHGkGyH/wsqBD4YU9DW7nyho+OqiGZPNblu5M1sf
-         U4RofQhole4A8lSQR0hLevVv4fAqU2v240nEdSpWZTpjYdBHSP8+S9aiwY0KCLjVNR
-         af2xtYNzRqdLmAVIjBgaOMmzpTTzZebW0C5uCEim0aF9Ub/hsLiPPvN93MxhQt45le
-         2F27uqpnIsvrZGwtmLM3hUP7PtYCpCngw1uhA6n9O7wPGsVErK0Xuj3/yiuhslvO+6
-         sPwudecKzamFRoLcU34Dd8fj74uuEMFVt6QlHVz+XtoDFwfdgagZLvjf0IIf/VhDPr
-         kdaXff9YicfjQ==
-Date:   Tue, 14 Sep 2021 10:52:39 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        hpa@zytor.com, jroedel@suse.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/64/mm: Map all kernel memory into trampoline_pgd
-Message-ID: <YUBUx6KVwAp9b3b4@kernel.org>
-References: <20210913095236.24937-1-joro@8bytes.org>
+        id S229656AbhINH4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:56:47 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:46107 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229477AbhINH4q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 03:56:46 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 3E6482B01267;
+        Tue, 14 Sep 2021 03:55:28 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 14 Sep 2021 03:55:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=tv1B24UNRY5R7MO+atvnFCDCyGV
+        7pIAhheev5cAuHfs=; b=q2dzYt6kmjOcOq7BBfAvsYuTnW0caGcPFQZui19YRgF
+        N4PLjue7QVRICtASimeWF2cA79llRQw7MFiwVloZHiOceTrZblvib7LMEtfRwuXy
+        OimCSDAgV2/FvUqmS+tbaSwgGwJoSdKsZhq7zsDzjKpxONcbFnMne8Kq7JRYuLhQ
+        +Xxbptz2z9z4HAZq8dUPP0poz9L6hPX8wfXX1C3nMVmzeMtAVbHMWLGxVQ92SWC8
+        Sd+EZf6KQGcZwYIz93UODZb4aMOqGkExGwvQBAAFVZbI+3hHfLt/Vj/twoFFUvXO
+        xYh6O5X0GWE+C/mVe/5jRUFSCE6H6+dJdPgc0ez1Lug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=tv1B24
+        UNRY5R7MO+atvnFCDCyGV7pIAhheev5cAuHfs=; b=pVMGrj1F9OWPohBpq35pUE
+        KaJSC/Xzd0GdbaaXvY9FL9dCdEk0rtLeHLzJQZki45dddxRCqu7lL1/dWYgq61Yl
+        SVowWkKlwPsROkcQl5XIzp/KweZiHY1iir2eLbDGdlVzoviIwE0P5wTsRzjhZ5oB
+        NiY/3LlbNSmdmep8k00KeXeAo3cksCdYXJkaqriZ7iHmxxy3sx6GY/sGGDltZphH
+        DxrKLxrOTSE3onmMsrUBlzUwA29IumW/BbY+f0z1pOKDzRdx6r3PqorQpZgA5/VW
+        dib83Aa4e1siW7fWwrQo2ZTkQKwK2STRbz/Z9fJzAIYLQR3TXLrwLBEOf80OcNWg
+        ==
+X-ME-Sender: <xms:bVVAYWpMwTPplY-Jm27Ldg7Pnkz3N5BclGf626BHeWB8wEFwPFXCEA>
+    <xme:bVVAYUrholmyylM8SLt1FpebyvpCh5JhJQ9hb1_ffxKzE_tZ-z7yVzQyUvXZCRDa2
+    yB6CTBEjd8WqQjtKmk>
+X-ME-Received: <xmr:bVVAYbPAWlR_P0rYAfn9W8gnakkhbdzYfX1g7k2AeuOWpcXCwxC1hpGjGLF02yjWvJ46t2ivRDLxbRgngPQoINTdsrKji3Vy2mnM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegkedguddvfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
+    heegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:bVVAYV5KrJf9LKmElv5qs-5BdwIiew8zYkIn3LfgsVLassAePFs0rg>
+    <xmx:bVVAYV7iF65aWq-E9LN1vtuC-v8eYy1TmDLuhwS4fn3c_3UZU95aEw>
+    <xmx:bVVAYVhyGknzWKhxj4mybmlGI5jZMJsQW_hJ2yeMIMq-HfSS54Qn7g>
+    <xmx:b1VAYURCG4H9PvqdhIw7hePpBhdlhkAL35Y7_jT5ZH19Y8xhl1BS896oPgk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Sep 2021 03:55:25 -0400 (EDT)
+Date:   Tue, 14 Sep 2021 09:55:23 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: Re: [PATCH v3 0/6] drm/vc4: hdmi: Fix CEC access while disabled
+Message-ID: <20210914075523.nit6lznlpasb7pxy@gilmour>
+References: <20210819135931.895976-1-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zf5mccuff24ckjqq"
 Content-Disposition: inline
-In-Reply-To: <20210913095236.24937-1-joro@8bytes.org>
+In-Reply-To: <20210819135931.895976-1-maxime@cerno.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:52:36AM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> The trampoline_pgd only maps the 0xfffffff000000000-0xffffffffffffffff
-> range of kernel memory (with 4-level paging). This range contains the
-> kernels text+data+bss mappings and the module mapping space, but not the
-> direct mapping and the vmalloc area.
-> 
-> This is enough to get an application processors out of real-mode, but
-> for code that switches back to real-mode the trampoline_pgd is missing
-> important parts of the address space. For example, consider this code
-> from arch/x86/kernel/reboot.c, function machine_real_restart() for a
-> 64-bit kernel:
-> 
-> 	#ifdef CONFIG_X86_32
-> 		load_cr3(initial_page_table);
-> 	#else
-> 		write_cr3(real_mode_header->trampoline_pgd);
-> 
-> 		/* Exiting long mode will fail if CR4.PCIDE is set. */
-> 		if (boot_cpu_has(X86_FEATURE_PCID))
-> 			cr4_clear_bits(X86_CR4_PCIDE);
-> 	#endif
-> 
-> 		/* Jump to the identity-mapped low memory code */
-> 	#ifdef CONFIG_X86_32
-> 		asm volatile("jmpl *%0" : :
-> 			     "rm" (real_mode_header->machine_real_restart_asm),
-> 			     "a" (type));
-> 	#else
-> 		asm volatile("ljmpl *%0" : :
-> 			     "m" (real_mode_header->machine_real_restart_asm),
-> 			     "D" (type));
-> 	#endif
-> 
-> The code switches to the trampoline_pgd, which unmaps the direct mapping
-> and also the kernel stack. The call to cr4_clear_bits() will find no
-> stack and crash the machine. The real_mode_header pointer below points
-> into the direct mapping, and dereferencing it also causes a crash.
-> 
-> The reason this does not crash always is only that kernel mappings are
-> global and the CR3 switch does not flush those mappings. But if theses
-> mappings are not in the TLB already, the above code will crash before it
-> can jump to the real-mode stub.
-> 
-> Extend the trampoline_pgd to contain all kernel mappings to prevent
-> these crashes and to make code which runs on this page-table more
-> robust.
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/realmode/init.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/realmode/init.c b/arch/x86/realmode/init.c
-> index 31b5856010cb..7a08c96cb42a 100644
-> --- a/arch/x86/realmode/init.c
-> +++ b/arch/x86/realmode/init.c
-> @@ -72,6 +72,7 @@ static void __init setup_real_mode(void)
->  #ifdef CONFIG_X86_64
->  	u64 *trampoline_pgd;
->  	u64 efer;
-> +	int i;
->  #endif
->  
->  	base = (unsigned char *)real_mode_header;
-> @@ -128,8 +129,17 @@ static void __init setup_real_mode(void)
->  	trampoline_header->flags = 0;
->  
->  	trampoline_pgd = (u64 *) __va(real_mode_header->trampoline_pgd);
-> +
-> +	/*
-> +	 * Map all of kernel memory into the trampoline PGD so that it includes
-> +	 * the direct mapping and vmalloc space. This is needed to keep the
-> +	 * stack and real_mode_header mapped when switching to this page table.
-> +	 */
-> +	for (i = pgd_index(__PAGE_OFFSET); i < PTRS_PER_PGD; i++)
-> +		trampoline_pgd[i] = init_top_pgt[i].pgd;
 
-Don't we need to update the trampoline_pgd in sync_global_pgds() as well?
+--zf5mccuff24ckjqq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +	/* Map the real mode stub as virtual == physical */
->  	trampoline_pgd[0] = trampoline_pgd_entry.pgd;
-> -	trampoline_pgd[511] = init_top_pgt[511].pgd;
->  #endif
->  
->  	sme_sev_setup_real_mode(trampoline_header);
-> -- 
-> 2.33.0
-> 
+On Thu, Aug 19, 2021 at 03:59:25PM +0200, Maxime Ripard wrote:
+> Hi,
+>=20
+> This series aims at fixing a complete and silent hang when one tries to u=
+se CEC
+> while the display output is off.
+>=20
+> This can be tested with:
+>=20
+> echo off > /sys/class/drm/card0-HDMI-A-1/status
+> cec-ctl --tuner -p 1.0.0.0
+> cec-compliance
+>=20
+> This series addresses it by making sure the HDMI controller is powered up=
+ as
+> soon as the CEC device is opened by the userspace.
 
--- 
-Sincerely yours,
-Mike.
+Applied, thanks!
+Maxime
+
+--zf5mccuff24ckjqq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUBVawAKCRDj7w1vZxhR
+xfMkAQDyXm2NP51QANJCaA1mpIerOh4658ezgQ9dFCJ8t+JeogD8CSj3M1JZelNl
+8iwCKziBkPC6f6S2qoUz8RO9VBmvMwc=
+=UgoN
+-----END PGP SIGNATURE-----
+
+--zf5mccuff24ckjqq--
