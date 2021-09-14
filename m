@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E6940B978
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBA140B979
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhINUth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:49:37 -0400
-Received: from ms.lwn.net ([45.79.88.28]:40322 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234523AbhINUta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:49:30 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id F3DDC6156;
-        Tue, 14 Sep 2021 20:48:11 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net F3DDC6156
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1631652492; bh=25q3roP7moFr66dZAdbNxxrJLdL486o1EL3S3vBbRiY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZCbLP+A3kCkn5AB7Ec4A3M9JLEKRTyVp7t7f7PXl6teTrDKd8WE7tRtI5Iw0aWAVN
-         u4q0c8Mel5/IS/majhpS9Hup6IjStzVmjiAproB4PJ9cXpZGGZ79vFOKNJQ66lSdph
-         T59jD6PIa9RWn5jAtaOoXsB55r0U2TY1X72x0LbTnJAfsRIPzr+dqkfHbd9Iz05/Bo
-         4t6WaCs2FBkvKiWpT9Q1C4UqG4yFgbXUCBz6TV+uwjZaEsPl6IN+5AIhRd7Kj0emPk
-         PUauxm4lEWSkkWtPcXBwLHCORqdWNteCbjqTaV+KJGXzhltOipHaWZgZPh/K+6OvT2
-         RQi7GaGnwS8Pg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] doc: Add tip maintainer's handbook
-In-Reply-To: <20210913153942.15251-1-bp@alien8.de>
-References: <20210913153942.15251-1-bp@alien8.de>
-Date:   Tue, 14 Sep 2021 14:48:11 -0600
-Message-ID: <87h7emevec.fsf@meer.lwn.net>
+        id S234724AbhINUt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234710AbhINUtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 16:49:53 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF3CC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:35 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id p15so1109058ljn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0tzy5HhmdLCwbO3fFudYbI0KSBkL7KVwEu0UdmJ0Ygw=;
+        b=XII/PyFYNJd9fcTfzjp8XzgGS94O/8zoi8sxLS1Q42YB1xBdgzGXT06zapqTx5n1Xo
+         GONaGnMkVnx+vbpHjtcyEdqfbjQH0TUU+xVzULZKM7V4WuNyidewwKWl3iVik5363uMg
+         7qLMGQvrTMnNivZs1x2bRWqbcPWDPl9pcnslQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0tzy5HhmdLCwbO3fFudYbI0KSBkL7KVwEu0UdmJ0Ygw=;
+        b=P8/sRdNkfIp/V8anAKDHCSm9txn/2dkPniVOfht3S6ASJOoMStLl6jfvcNN66kImi6
+         KhkkPminTViDv1lMYC3Sxi58HBkmIA7yItY1f9OqVWWsNCnWx9zrfR5kqC+qVwojhfQK
+         UuDZxN7oE3yIAi+KxOpp1wBQvMU2nvbp6s0CZ9KRFZsqFscU3iBPt9uirwulhpLP3xRk
+         jU9SiCzb0ToCx5HTyrVUbT3qsk7IxwQ7HFwUhQHptWArVxuNKgtefIWece/s1iN3sIvI
+         sut89Hw7bclCGfmRqM8468GH7d04LQxeB9cSj2WCthGUdjBdVt/aYJi+VWdmk29pkA1U
+         +wKA==
+X-Gm-Message-State: AOAM532l2yUYWHfmHI5VrXqQEH0Tz2ip/yLh7CJfeo8v51kGFwBd/QDH
+        ZVax/pwero4PXb0jGQ1XfMpon87od4qR0QB1Dik=
+X-Google-Smtp-Source: ABdhPJxxY2NFP88fH2RMYcmrablfXfUeQcIpZ9m6VimldOlrqw09qzLZ7mruuMjQfUkwHqibWQO+Gw==
+X-Received: by 2002:a2e:4a19:: with SMTP id x25mr17062675lja.235.1631652513026;
+        Tue, 14 Sep 2021 13:48:33 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id q189sm1410170ljb.68.2021.09.14.13.48.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 13:48:32 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id r3so1106912ljc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:32 -0700 (PDT)
+X-Received: by 2002:a2e:1542:: with SMTP id 2mr17497299ljv.249.1631652511805;
+ Tue, 14 Sep 2021 13:48:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210914105620.677b90e5@oasis.local.home> <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
+ <20210914145953.189f15dc@oasis.local.home> <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
+ <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com> <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
+In-Reply-To: <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Sep 2021 13:48:15 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
+Message-ID: <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Borislav Petkov <bp@alien8.de> writes:
-
-> From: Borislav Petkov <bp@suse.de>
+On Tue, Sep 14, 2021 at 12:38 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Hi Jon,
->
-> here is the rest of the tip maintainer handbook "preachings" which are
-> not generic enough to go into the main documentation but are tip-tree
-> specific and are collected in a separate handbook.
+> So I'll do a minimal conversion that adds "memblock_free_ptr()" and
+> hope that people start using that. And then we can later try to move
+> "memblock_free()" to a name that isn't so misleading.
 
-Applied, thanks.
+Commit 77e02cf57b6c ("memblock: introduce saner 'memblock_free_ptr()'
+interface") should hopefully fix that panic that Vlastimil saw, and
+the kernel test robot report as well.
 
-jon
+And it should make it easy to cleanly fix that 'copy' leak too.
+
+            Linus
