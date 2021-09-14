@@ -2,115 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DDC40B1C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D3740B1CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhINOo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:44:58 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:33139 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235532AbhINOoV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:44:21 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A0E6D580982;
-        Tue, 14 Sep 2021 10:42:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 14 Sep 2021 10:42:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=r
-        TrdcideuqAdRBLxltadbqb3QFd2EfjWEM8++AODowE=; b=vzrrWfkb4w2WAhQzG
-        uLDXeekhfQZ0s9nZODV/KrLURhywvVzIANt0adM1JDi2vLSWo7mOPptMMTXSovTD
-        yCkZqewrQ4iOmkCI0fx/IIN8BXMcTei5RNsUEHoLTAXtG8na7zH6fwL1YVXVhDYW
-        nydS0kJrhWqEVZxixVjQCDX4Jd/KUrP7JEYB9HWJp//wvUhR1saVT4GgSNX87cla
-        64Fwd1naaTYl3Fubdo8YOoHO1I9C9lKTteWAWDI0ya2FfBgFZlx2tzwgg80Q+O7O
-        eVeLu7vVeHNZb2q33nYWNHI5Gkl0+opfWftbNHf7qo/VeRDzUG64CDocVcDDygL+
-        zvF6w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=rTrdcideuqAdRBLxltadbqb3QFd2EfjWEM8++AODo
-        wE=; b=GFcg53tY/jn0t4wgbiR4JH6CdiuAeiZ6iuRoXZhziCo1dQ400m2GKMD5n
-        VOIdnmcFbKIa94F3crJ8Fos18/KhXpf3rNLacVnzrrDIUR3SjZjq730RSp9YLwIr
-        ntD12rJGbX5n+eYZf/GjHn8pUN3vpR88o13LtQcRRcoUkWV2ptOA3PfW/lylNvmt
-        DW1z6WCeOZmEhZKIh8OKp5FQulV2EKn7kL8avr+I9AQIrwoqbRT0GdugdLOWeOOO
-        Uw4eQkxXf5UDyWstFwcuguxqRp/W1FtMYuHNRdfJLHU02K8KKy7smsqVh7Yib2Nl
-        8W2Wf+FqaQ4Bz47/LEEofL8rqBptQ==
-X-ME-Sender: <xms:8bRAYT5vDGYDk4jjbc5U1MplhMhe-0t9mWrHa3TWcELiy9iU8ayzAQ>
-    <xme:8bRAYY4tWzg9LyE9mxfMiJh6V7pF04mpgLM0612dzbvcR-p_Jpo64wDeLgaoNRZnw
-    eWPvAhmJTfkla_LsyA>
-X-ME-Received: <xmr:8bRAYadRCAT_Sctg5_8_IOoGfB9hEdoJlBKdJSqSpplgwUAggk1XTmx1xlUQVQw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvfhfhjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeehieduvdevhfekjeeftddtkeeitefhudekvdeiueeulefgleei
-    jeeghedvkeduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:8bRAYUI6vo3iXKCSbFelVmBSU_9Yt9nQX9OinVSNv2V-HHMsOjHFqg>
-    <xmx:8bRAYXLecW9w--mzGQZ1Umul0Bq8y6jYeL3V_U3rlGsPqopD1Byr8Q>
-    <xmx:8bRAYdy-VC-OCpg1TyjGQ2VvcpMl20QocSnB1hAgPp9dD1LMmFwrow>
-    <xmx:8rRAYUHAecQdRSW-P7e-pzaO3wbE2qzR2gaBplIY6f28zxu2tq6LKg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 10:42:56 -0400 (EDT)
-Message-ID: <0cea856f-d70e-8564-d12d-79100340a973@flygoat.com>
-Date:   Tue, 14 Sep 2021 15:42:52 +0100
+        id S235139AbhINOqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:46:34 -0400
+Received: from mail-eopbgr20081.outbound.protection.outlook.com ([40.107.2.81]:19012
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234868AbhINOpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:45:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lAtOIAm0nVsBOuJNQTIzDGGFPHGFMJdiqnfOaoIIVAbIqK2eehgGyQKiaXTDqjtncLLH9FJzSyU7g4d7bODrIIpRzM6ZPPatlWdQ0l1XB7O4ppl4z5zZpT58uDhsS31BYErlyG3E/bq6MNzIBeTnr7bl72J92ESqjZYF9w4j/YHa/DHwecjHHcb3E6f/EDN1CuZ1pd7U6r5yersdSeCZZk+IGIPZkZgtvGO6XC5kMO18KWlQfLbcBFEbU7oBI2owsaAoGNiOWdIEvxwftsWRylkxYIfGKG9SRHn02gFxMLN29wGbTQszYxnXdCJFFgRRk2VZDRXxIqITVvpoKoYKpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=gJf+yB3xCoeTfkZZ9YBSbF/uMyYxIiJtso+9TZxGeL0=;
+ b=OL7Qlsw3MpHzL8WroyNbq9NE+AHQ3taxeCYCJJbARzDiwQVekZSaIbfm0EuSA2eKx1748hTBbyaR5WLQVT6jGp54QgSM1AafsmChh1/8eMbTjz3IfkvYjdJ0UWL6gVXzUqic0mBulWKueKSWYhZNfQd1P84JCEJtQnjy59n7KFzvLNuYjzlbE4tW5DM0eX4z/UjuN/J3diNQ6SjHmaTDb5LZ7G4BMuqnOZKvYw/5W453q7aFQ2EgOkgLJjqfkvI/kkJq6qclaB4r847ov35RKRbM/Lpz21N/ytQXmSRVROyoCt86lmBqB1lq/CUHkjhGSkOdbGxB8BBh5PwtfNkFsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gJf+yB3xCoeTfkZZ9YBSbF/uMyYxIiJtso+9TZxGeL0=;
+ b=jJFsWOc+Tp1Ik42Gg9ylkQ6YZvrg5b4eQpsnq2cTu4R9c7FjAvIFK2P5Nc2lacXlYAeILHbt0dD0S2MDxlVoobPrh0BXj24ltl3uo1fj7hyEAtp73xQ7XsKYQpHm4Y1Pea0PUYkDKEieQF2drmSo+MPhSklz4EcK6gcDwzxkgNM=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR04MB7182.eurprd04.prod.outlook.com (2603:10a6:800:121::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Tue, 14 Sep
+ 2021 14:44:25 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::e948:b382:34fc:c923]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::e948:b382:34fc:c923%7]) with mapi id 15.20.4500.018; Tue, 14 Sep 2021
+ 14:44:25 +0000
+From:   laurentiu.tudor@nxp.com
+To:     andriy.shevchenko@linux.intel.com, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jon@solid-run.com, lorenzo.pieralisi@arm.com,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Subject: [PATCH v2] software node: balance refcount for managed sw nodes
+Date:   Tue, 14 Sep 2021 17:44:09 +0300
+Message-Id: <20210914144409.32626-1-laurentiu.tudor@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: FR0P281CA0056.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:49::6) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] reset: pistachio: Re-enable driver selection
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rahul Bedarkar <rahulbedarkar89@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <2c399e52540536df9c4006e46ef93fbccdde88db.1631610825.git.geert+renesas@glider.be>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <2c399e52540536df9c4006e46ef93fbccdde88db.1631610825.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-101.ea.freescale.net (92.120.5.2) by FR0P281CA0056.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:49::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.9 via Frontend Transport; Tue, 14 Sep 2021 14:44:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 31df69a0-094b-47ba-9f0f-08d9778e2578
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7182:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB71824C02E207416B13F6546AECDA9@VI1PR04MB7182.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7wYJbTciF8R3htjYNFVEwy6HZKyr38IAKkSGZa3QMNdhC/ahITz9wqiHPcuhzwz5SOZRtlVd15qOopA2oHv7KV7FjqkgVBmBL+au4SlQZx+7miUd1BGwAF+W/oh8aQgZ0aIYEUh5oyogeKxTT6xR5ncRaWLOhSfXGKyDcbTIqiDTrcDsVcPPGrWENtfic5beInPLc6aHn3Ilw/+i6oi83Y+hc/oEWYlu2fuG8jx7I/7QnrZ26Xc6mm0kkFHCrScAarn/hygRUvIuq/NveFu3kkBM+PpH1B2ADHNvsbg3JBFC5MIL9TKQgDDziZo4ncSkxaf32mut9KWZeT/+0+nHzfIYjFpwnnoFi54FrBfEPivsQ10OJk7quwI2MwamBOANWGOTi9ANOwIErNRFAsYxjq9x5uGyUFo2ze1Xdu6i/Qlk+vuhE97baFPK5EiOjZRhQWY+7DL61NmphAtDGQ5ScfoYlLGkaa5+YIdyI0OGfL9gDkhERCLT6HEuizFkpcC8eGohxTM2+yXHGdyKK/5ueDEFlPJB4uvwT44bue5NZVF0yTMaCmrR3fmBW3A/as0+xjrb/aY1SzkiSUrYG1G/RQB5GdRerEuEOoy47/RbY9btzwxdZFC1HeD/o6kdYK7WpV2zjoqFpplFUBhogFRpfRyD4o/UbuiYcGs1aUfBDuFxdAdO1hxUhBz6hn078JnLxudcDApGukL33kEiWUmMvQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(39860400002)(346002)(956004)(2616005)(186003)(9686003)(1076003)(86362001)(5660300002)(8936002)(38350700002)(38100700002)(478600001)(6506007)(26005)(6486002)(8676002)(4326008)(2906002)(66476007)(66556008)(52116002)(36756003)(66946007)(6512007)(316002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Xhckf8H/vnE6ZaHxr4/GHRPPTwpevcI5jhNH/sI+ecXhDwvfdfkiY/Zfrj9C?=
+ =?us-ascii?Q?OXlSsAAVBFNFlYDTfwnSupWGDfN83SUOk0GQOCUlJxyo6xR33StCRoyuoFeX?=
+ =?us-ascii?Q?HMVSvNYuFJj2rscoXXyZt1tdttIdulq46CLHcEszp/RvTxxLy0Gz5TTHwDt/?=
+ =?us-ascii?Q?y7JCodoICsExVLICZEL04vaoDA6qCxcwYx5XENk9l2HDkSl+8AlwgQ/3XSHY?=
+ =?us-ascii?Q?2MSJtlLBUwz1ZHdCDwi1rsooUXb67jYlDZerfuSuGuqCgCmAKdp0Ttkkn96T?=
+ =?us-ascii?Q?Oj0yUr8hjDO0hSbBT2qyXJC6e431o3cPlAq1eqQ+j/i0sTujfvJ6w55uusBO?=
+ =?us-ascii?Q?EHhaup187dx7IO4fjcebRVE1r/yscY7/uMxHjeScq5t/xaI6n85BfoGCALBQ?=
+ =?us-ascii?Q?eQEwKi+xGtFQNQIKs7cC70QPRT+FxOZg90uepf1yFKq/Jintqr/s/q1MYAsu?=
+ =?us-ascii?Q?/RogMfUvwTtKsodOYMwk1aU5/WdopSuiokaaJdpBZbTCjT6nP+i6kLy2mD8O?=
+ =?us-ascii?Q?1WyNvfHXP8EJHX2Nv9xlWH6Fr7Ex90DJqXQgsvoK9oSutxvq+pYGJRC9ntuJ?=
+ =?us-ascii?Q?A/1aI0SQSB18UFZwJYb4nSPpXmNeX0GslIZUW/BMQCmiFklAlsQQXt25Ry3Y?=
+ =?us-ascii?Q?ZaTraUr8L8cYjFR0cGs+9mn4A5GuSNzpeiQ0mP4zW1FRimc2ucUTN9/xwLIy?=
+ =?us-ascii?Q?EqpKeoxMkj9+gI7A24op8iLmVUJ8mBKtdrMSw0Fpn8Xyfa3GiiKQ5J8T9sP/?=
+ =?us-ascii?Q?l2tuSVE67B6qou55EnoGnqujotkCYQyIyMXEpL9yomK4ugLpz3Z27bVKCPdj?=
+ =?us-ascii?Q?idwdFBlf9TN4rbsqblt/ZkPQqXsfq2oehsSJ6PXmFaRnXuBIVp87oHS7ECMj?=
+ =?us-ascii?Q?NpxXRlHxy5N0zZIHOg2rfoZOAd7Zir4TlCrjR40vyNF798ODvNs1tj+dn/kb?=
+ =?us-ascii?Q?ohQFl0fRvzymm5SQnTsEFiqWdZppKal0hr2O/88s0a0aBfz5Td9Ce30LW0VX?=
+ =?us-ascii?Q?Z01xDwrpsQPsWP5aV6jjxc9F8tigOq6cVeLSF/QgawnuWg4G71yPDm+UqjtN?=
+ =?us-ascii?Q?EB1ODgdKndilduGcuPP43Xbj3oIYl5KKCN2igGE91FuxcFTSwEEQvYIgK2x2?=
+ =?us-ascii?Q?3xb2sMiMdYzifL6nV/Cx49vNpoonjWEn+VHulDppBUXItPPoXfuDGPoZWbok?=
+ =?us-ascii?Q?RAg5YvvVTGBH7dsMMWhX1oCgjnhx52SjSGlaCJjSDLdaVgYm5xeVagdf43Wc?=
+ =?us-ascii?Q?IZDZmqm2wEDkWNACzjpCJ0m8XxH8twrVJ6ZDjrsuP4uyz9cl1h0NiOohVqat?=
+ =?us-ascii?Q?JdT0WdlEe1RHoRly4nfZOZFt?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31df69a0-094b-47ba-9f0f-08d9778e2578
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 14:44:25.0377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QudEHJBneFZeNBxuKUDf+joTB+On8KYjOY+cYuKtL04gHGzAW0uaLJdeVohJno7AWN25AOZ3eDI3A07jBj8DQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
+software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
+software nodes, thus leading to underflow errors. Balance the refcount by
+bumping it in the device_create_managed_software_node() function.
 
-在 2021/9/14 10:15, Geert Uytterhoeven 写道:
-> After the retirement of MACH_PISTACHIO, the Pistachio Reset Driver is no
-> longer auto-enabled when building a kernel for Pistachio systems.
-> Worse, the driver cannot be enabled by the user at all (unless
-> compile-testing), as the config symbol is invisible.
->
-> Fix this partially by making the symbol visible again when compiling for
-> MIPS, and dropping the useless default.  The user still has to enable
-> the driver manually when building a kernel for Pistachio systems,
-> though.
->
-> Fixes: 104f942b2832ab13 ("MIPS: Retire MACH_PISTACHIO")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+The error [1] was encountered after adding a .shutdown() op to our
+fsl-mc-bus driver.
 
-Thanks!
-> ---
->   drivers/reset/Kconfig | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index be799a5abf8a6edc..b0056ae5d463aedd 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -147,8 +147,8 @@ config RESET_OXNAS
->   	bool
->   
->   config RESET_PISTACHIO
-> -	bool "Pistachio Reset Driver" if COMPILE_TEST
-> -	default MACH_PISTACHIO
-> +	bool "Pistachio Reset Driver"
-> +	depends on MIPS || COMPILE_TEST
->   	help
->   	  This enables the reset driver for ImgTec Pistachio SoCs.
->   
+[1]
+pc : refcount_warn_saturate+0xf8/0x150
+lr : refcount_warn_saturate+0xf8/0x150
+sp : ffff80001009b920
+x29: ffff80001009b920 x28: ffff1a2420318000 x27: 0000000000000000
+x26: ffffccac15e7a038 x25: 0000000000000008 x24: ffffccac168e0030
+x23: ffff1a2428a82000 x22: 0000000000080000 x21: ffff1a24287b5000
+x20: 0000000000000001 x19: ffff1a24261f4400 x18: ffffffffffffffff
+x17: 6f72645f726f7272 x16: 0000000000000000 x15: ffff80009009b607
+x14: 0000000000000000 x13: ffffccac16602670 x12: 0000000000000a17
+x11: 000000000000035d x10: ffffccac16602670 x9 : ffffccac16602670
+x8 : 00000000ffffefff x7 : ffffccac1665a670 x6 : ffffccac1665a670
+x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff1a2420318000
+Call trace:
+ refcount_warn_saturate+0xf8/0x150
+ kobject_put+0x10c/0x120
+ software_node_notify+0xd8/0x140
+ device_platform_notify+0x4c/0xb4
+ device_del+0x188/0x424
+ fsl_mc_device_remove+0x2c/0x4c
+ rebofind sp.c__fsl_mc_device_remove+0x14/0x2c
+ device_for_each_child+0x5c/0xac
+ dprc_remove+0x9c/0xc0
+ fsl_mc_driver_remove+0x28/0x64
+ __device_release_driver+0x188/0x22c
+ device_release_driver+0x30/0x50
+ bus_remove_device+0x128/0x134
+ device_del+0x16c/0x424
+ fsl_mc_bus_remove+0x8c/0x114
+ fsl_mc_bus_shutdown+0x14/0x20
+ platform_shutdown+0x28/0x40
+ device_shutdown+0x15c/0x330
+ __do_sys_reboot+0x218/0x2a0
+ __arm64_sys_reboot+0x28/0x34
+ invoke_syscall+0x48/0x114
+ el0_svc_common+0x40/0xdc
+ do_el0_svc+0x2c/0x94
+ el0_svc+0x2c/0x54
+ el0t_64_sync_handler+0xa8/0x12c
+ el0t_64_sync+0x198/0x19c
+---[ end trace 32eb1c71c7d86821 ]---
+
+Reported-by: Jon Nettleton <jon@solid-run.com>
+Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+---
+Changes since v1:
+ - added Heikki's Reviewed-by: (Thanks!)
+
+Changes since RFC:
+ - use software_node_notify(KOBJ_ADD) instead of directly bumping
+   refcount (Heikki)
+
+ drivers/base/swnode.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index d1f1a8240120..bdb50a06c82a 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -1113,6 +1113,9 @@ int device_create_managed_software_node(struct device *dev,
+ 	to_swnode(fwnode)->managed = true;
+ 	set_secondary_fwnode(dev, fwnode);
+ 
++	if (device_is_registered(dev))
++		software_node_notify(dev, KOBJ_ADD);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(device_create_managed_software_node);
+-- 
+2.17.1
 
