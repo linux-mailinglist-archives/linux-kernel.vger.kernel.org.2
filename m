@@ -2,225 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B12040B84B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D7B40B84E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhINTmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:42:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230390AbhINTmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:42:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C1AB610CE;
-        Tue, 14 Sep 2021 19:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631648461;
-        bh=baphM1piCC4FQbHOOAlCGasKXJ2VO8dPR0S2rdQl73Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=uEsayntVSbGMThYuwz5EWNI9w58RbWvnLNLegJILzXScm9/SXS83sLEJClPypfuK1
-         NpnlZRSQIS4jjIGMpdedw4L/n178xqDYld1jV7Jckh7wTb8LVStfLXYUR3GxnVzXLV
-         cj77pCNRMdLA966OG0aqD+kESfiowpk8HOqFV05QQuqyOIA3PWyVO8iJF8txql/vOc
-         kowII0gv5gsEqOAF3bOeNMhU/u9N91sN3pU9opoeeAM2OiBYJxFPEvF6moLn65CVRm
-         exNeCEbewWHw8Ms6ZwdFHSZm1Y0PJKzgddN4VEjRP1mJFGggsfd6wThwFcTqzmC6OK
-         lFIuOheqNzFkg==
-Date:   Tue, 14 Sep 2021 14:40:59 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Oliver O'Halloran <oohall@gmail.com>
-Cc:     Michal Simek <monstr@monstr.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH] pci: Rename pcibios_add_device to match
-Message-ID: <20210914194059.GA1448850@bjorn-Precision-5520>
+        id S232341AbhINTqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230390AbhINTqT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 15:46:19 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2F8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:45:01 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id e7so263954pgk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=40ZURQJupNlRJgwd5eFMDDAoOIJDnuXt7LSY56o8kS4=;
+        b=lzKqvUMMu5rxZiqj9wuiEEqTywKGvVrRs/BoshVydiH6sBPIGfWkXRSzVTGM3rvCS2
+         PAWNn8aqesPB4rxY0bXzkl7M1Ur32qcvhxqZYkIzSbrGQY7CJc1+59ig8uJED2rsTjGU
+         fgPULrNelKVe1v2UbHUgYjnLPZhiru0ekHUt8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=40ZURQJupNlRJgwd5eFMDDAoOIJDnuXt7LSY56o8kS4=;
+        b=jb+kxs/jRkgcBVWPELuoWjP/espdqqOE+/X6PoZrRpMCT23tTXkTgSlXNuY+mSUSpn
+         t/NJUWK489wn3Lto9J233RWp2g/j/ZY2Fsr00XJnjyGz2gyO/nJqMDNkBQg/w4K4vZpQ
+         vu3kU4aOcy50rlplK7qHzT0dPKQSpE/kqamsldVxjM8HKqt1jAbEwdqyEzbMNh8HYuwi
+         c/y3fFbFKSwpRZOkID8sIyuFjSkB6wRzxXDMcFsAhnrSh8nzMurHLJj+kUFu+joz9B6R
+         4QnWC2z41SlltGgMb2abMCnq8EQLDM8zTMvNLXpvkbQu9z3/McA198kRcC1VqMwrrqLD
+         s4RQ==
+X-Gm-Message-State: AOAM5334x3CPwlIuU6ArDJx+rFZ3f2oKF917MhegrgLfBogdKAp/Q/Ua
+        7j/tTK1XjY/Snm9ZETX1BMxa4A==
+X-Google-Smtp-Source: ABdhPJwZC1UnAqusCV/aN1WgfFeau94VOV/0JXpAw24GnrE0f07TEv5EJbkRuymd8go+0OU8PPvHYg==
+X-Received: by 2002:aa7:8426:0:b0:438:3550:f190 with SMTP id q6-20020aa78426000000b004383550f190mr6376014pfn.19.1631648700830;
+        Tue, 14 Sep 2021 12:45:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e11sm4983537pfv.201.2021.09.14.12.44.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 12:45:00 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 12:44:59 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3 14/16] x86, cpu: Use LTO for cpu.c with CFI
+Message-ID: <202109141240.6928C1498B@keescook>
+References: <20210914191045.2234020-1-samitolvanen@google.com>
+ <20210914191045.2234020-15-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913152709.48013-1-oohall@gmail.com>
+In-Reply-To: <20210914191045.2234020-15-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 01:27:08AM +1000, Oliver O'Halloran wrote:
-> The general convention for pcibios_* hooks is that they're named after
-> the corresponding pci_* function they provide a hook for. The exception
-> is pcibios_add_device() which provides a hook for pci_device_add(). This
-> has been irritating me for years so rename it.
+On Tue, Sep 14, 2021 at 12:10:43PM -0700, Sami Tolvanen wrote:
+> Allow LTO to be used for cpu.c when CONFIG_CFI_CLANG is enabled to avoid
+> indirect call failures. CFI requires Clang >= 13, which doesn't have the
+> stack protector inlining bug.
 > 
-> Also, remove the export of the microblaze version. The only caller
-> must be compiled as a built-in so there's no reason for the export.
-> 
-> Signed-off-by: Oliver O'Halloran <oohall@gmail.com>
-
-I fixed up the subject so it matches previous history and applied to
-pci/enumeration for v5.16, thanks!
-
-Stuff like this really annoys me, too.
-
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 > ---
->  arch/microblaze/pci/pci-common.c           | 3 +--
->  arch/powerpc/kernel/pci-common.c           | 2 +-
->  arch/powerpc/platforms/powernv/pci-sriov.c | 2 +-
->  arch/s390/pci/pci.c                        | 2 +-
->  arch/sparc/kernel/pci.c                    | 2 +-
->  arch/x86/pci/common.c                      | 2 +-
->  drivers/pci/pci.c                          | 4 ++--
->  drivers/pci/probe.c                        | 4 ++--
->  include/linux/pci.h                        | 2 +-
->  9 files changed, 11 insertions(+), 12 deletions(-)
+>  arch/x86/power/Makefile | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/arch/microblaze/pci/pci-common.c b/arch/microblaze/pci/pci-common.c
-> index 557585f1be41..622a4867f9e9 100644
-> --- a/arch/microblaze/pci/pci-common.c
-> +++ b/arch/microblaze/pci/pci-common.c
-> @@ -587,13 +587,12 @@ static void pcibios_fixup_resources(struct pci_dev *dev)
->  }
->  DECLARE_PCI_FIXUP_HEADER(PCI_ANY_ID, PCI_ANY_ID, pcibios_fixup_resources);
+> diff --git a/arch/x86/power/Makefile b/arch/x86/power/Makefile
+> index 379777572bc9..a0532851fed7 100644
+> --- a/arch/x86/power/Makefile
+> +++ b/arch/x86/power/Makefile
+> @@ -4,9 +4,11 @@
+>  # itself be stack-protected
+>  CFLAGS_cpu.o	:= -fno-stack-protector
 >  
-> -int pcibios_add_device(struct pci_dev *dev)
-> +int pcibios_device_add(struct pci_dev *dev)
->  {
->  	dev->irq = of_irq_parse_and_map_pci(dev, 0, 0);
+> +ifndef CONFIG_CFI_CLANG
+>  # Clang may incorrectly inline functions with stack protector enabled into
+>  # __restore_processor_state(): https://bugs.llvm.org/show_bug.cgi?id=47479
+>  CFLAGS_REMOVE_cpu.o := $(CC_FLAGS_LTO)
+> +endif
+
+This seems weird -- it's tangential that CONFIG_CFI_CLANG is only on
+Clang >= 13, but it does seem better than adding a $(shell) to test the
+Clang version. So:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 >  
->  	return 0;
->  }
-> -EXPORT_SYMBOL(pcibios_add_device);
->  
->  /*
->   * Reparent resource children of pr that conflict with res
-> diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-> index c3573430919d..6749905932f4 100644
-> --- a/arch/powerpc/kernel/pci-common.c
-> +++ b/arch/powerpc/kernel/pci-common.c
-> @@ -1059,7 +1059,7 @@ void pcibios_bus_add_device(struct pci_dev *dev)
->  		ppc_md.pcibios_bus_add_device(dev);
->  }
->  
-> -int pcibios_add_device(struct pci_dev *dev)
-> +int pcibios_device_add(struct pci_dev *dev)
->  {
->  	struct irq_domain *d;
->  
-> diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
-> index 28aac933a439..486c2937b159 100644
-> --- a/arch/powerpc/platforms/powernv/pci-sriov.c
-> +++ b/arch/powerpc/platforms/powernv/pci-sriov.c
-> @@ -54,7 +54,7 @@
->   * to "new_size", calculated above. Implementing this is a convoluted process
->   * which requires several hooks in the PCI core:
->   *
-> - * 1. In pcibios_add_device() we call pnv_pci_ioda_fixup_iov().
-> + * 1. In pcibios_device_add() we call pnv_pci_ioda_fixup_iov().
->   *
->   *    At this point the device has been probed and the device's BARs are sized,
->   *    but no resource allocations have been done. The SR-IOV BARs are sized
-> diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-> index e7e6788d75a8..ded3321b7208 100644
-> --- a/arch/s390/pci/pci.c
-> +++ b/arch/s390/pci/pci.c
-> @@ -561,7 +561,7 @@ static void zpci_cleanup_bus_resources(struct zpci_dev *zdev)
->  	zdev->has_resources = 0;
->  }
->  
-> -int pcibios_add_device(struct pci_dev *pdev)
-> +int pcibios_device_add(struct pci_dev *pdev)
->  {
->  	struct zpci_dev *zdev = to_zpci(pdev);
->  	struct resource *res;
-> diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
-> index 9c2b720bfd20..31b0c1983286 100644
-> --- a/arch/sparc/kernel/pci.c
-> +++ b/arch/sparc/kernel/pci.c
-> @@ -1010,7 +1010,7 @@ void pcibios_set_master(struct pci_dev *dev)
->  }
->  
->  #ifdef CONFIG_PCI_IOV
-> -int pcibios_add_device(struct pci_dev *dev)
-> +int pcibios_device_add(struct pci_dev *dev)
->  {
->  	struct pci_dev *pdev;
->  
-> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
-> index 3507f456fcd0..9e1e6b8d8876 100644
-> --- a/arch/x86/pci/common.c
-> +++ b/arch/x86/pci/common.c
-> @@ -632,7 +632,7 @@ static void set_dev_domain_options(struct pci_dev *pdev)
->  		pdev->hotplug_user_indicators = 1;
->  }
->  
-> -int pcibios_add_device(struct pci_dev *dev)
-> +int pcibios_device_add(struct pci_dev *dev)
->  {
->  	struct pci_setup_rom *rom;
->  	struct irq_domain *msidom;
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index ce2ab62b64cf..c63598c1cdd8 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -2091,14 +2091,14 @@ void pcim_pin_device(struct pci_dev *pdev)
->  EXPORT_SYMBOL(pcim_pin_device);
->  
->  /*
-> - * pcibios_add_device - provide arch specific hooks when adding device dev
-> + * pcibios_device_add - provide arch specific hooks when adding device dev
->   * @dev: the PCI device being added
->   *
->   * Permits the platform to provide architecture specific functionality when
->   * devices are added. This is the default implementation. Architecture
->   * implementations can override this.
->   */
-> -int __weak pcibios_add_device(struct pci_dev *dev)
-> +int __weak pcibios_device_add(struct pci_dev *dev)
->  {
->  	return 0;
->  }
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index d9fc02a71baa..2ba43b6adf31 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2450,7 +2450,7 @@ static struct irq_domain *pci_dev_msi_domain(struct pci_dev *dev)
->  	struct irq_domain *d;
->  
->  	/*
-> -	 * If a domain has been set through the pcibios_add_device()
-> +	 * If a domain has been set through the pcibios_device_add()
->  	 * callback, then this is the one (platform code knows best).
->  	 */
->  	d = dev_get_msi_domain(&dev->dev);
-> @@ -2518,7 +2518,7 @@ void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
->  	list_add_tail(&dev->bus_list, &bus->devices);
->  	up_write(&pci_bus_sem);
->  
-> -	ret = pcibios_add_device(dev);
-> +	ret = pcibios_device_add(dev);
->  	WARN_ON(ret < 0);
->  
->  	/* Set up MSI IRQ domain */
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index cd8aa6fce204..7e0ce3a4d5a1 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2126,7 +2126,7 @@ void pcibios_disable_device(struct pci_dev *dev);
->  void pcibios_set_master(struct pci_dev *dev);
->  int pcibios_set_pcie_reset_state(struct pci_dev *dev,
->  				 enum pcie_reset_state state);
-> -int pcibios_add_device(struct pci_dev *dev);
-> +int pcibios_device_add(struct pci_dev *dev);
->  void pcibios_release_device(struct pci_dev *dev);
->  #ifdef CONFIG_PCI
->  void pcibios_penalize_isa_irq(int irq, int active);
+>  obj-$(CONFIG_PM_SLEEP)		+= cpu.o
+>  obj-$(CONFIG_HIBERNATION)	+= hibernate_$(BITS).o hibernate_asm_$(BITS).o hibernate.o
 > -- 
-> 2.31.1
+> 2.33.0.309.g3052b89438-goog
 > 
+
+-- 
+Kees Cook
