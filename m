@@ -2,171 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C4B40A96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ED340A970
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhINIke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:40:34 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:56371 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhINIkc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:40:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631608754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HrAVZXNh4bCJ752ooATAW733Fmm6XrzqI9uo9s4JpAY=;
-        b=KXV1i/JNzBT2p6pgz49dz8z7kyJ4rq6JudwwXTDFPWG/HqmWT0Fm/vSlxvRxnW7PlVHjJP
-        EsovSeCW3CK8GVF6E6Y97YsyntabioTzNtD6Fl4yhc7XEz7DANZ1NLpaitHrhfZEW/V5rz
-        AEZJxY1x8mmvJPbebM720GA65C5R3bI=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2052.outbound.protection.outlook.com [104.47.13.52]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-13-7ixzqw4GPyKPIDlMrlTjbw-1; Tue, 14 Sep 2021 10:39:13 +0200
-X-MC-Unique: 7ixzqw4GPyKPIDlMrlTjbw-1
+        id S230063AbhINIlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:41:17 -0400
+Received: from mail-eopbgr20060.outbound.protection.outlook.com ([40.107.2.60]:24142
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229448AbhINIlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 04:41:16 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ybu5fnseQZNF/MCFwuOkw2QhBRdjHeK1S4D4DR/PBfTSOADFAMR6AsXkJBVfHR2MwBrL9Vf25VSSb9yI28vRT3CxdPymhIEdvknl6/bxwttzXj26jQFKVav+Bog+Pt5VKiBN5yqkHCOuGW41y2ewkHF6Kh5PkMG8btGkjTMsVPtxHVQGQORwlKQC9T/4fxszq8LcUErRu71DkwBUjneiRUuCa2iZnMmpKypjya7WFGfDFT4oxKB8tub4otXxhTavQO2Sn7NHbK4VaEt2xHkjTPs2o25EIsdoliUAUdcvWpU6+nwGbQgHEpqCtmxHzK5+krH6KqBBcf2p/QdDYB6sGQ==
+ b=AH+if6rhODDEwEwxvKvt91o+60ojFF22T0m4rnufvRyI8GW+AVYaWZGyydkwU8yq4LbJEk8tMlp/9yw4Ec3x3Uachq7lCStPValbEukk2REKGnqFUpF0AYqK1tX/ZmgiP4lVwE8kjReoMyDPr15U3rhWV/XoPVAB4ry9vNT/ZS8ycmEy8/aGRGA0rDZbUVEre14f+NDgRVyOp1V1gEvKxHI/CCH77Y/G7/Zuo8Bb8qgXOoqVwXrcD8R714oaqokCpUlTnhlTC+trcXSaXsBqgHFSTBZMVe2PDyqSqoMTO/N2n36sToXYnYOG2rBZvnprLc74f/26bqoNBWZqyQ+8Vw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=+wuUFNJGxVbJ34h7Y6G7CvvRLqWX2FD6F/vSJ208lEc=;
- b=R7mHUVaxYDwN3++87QHu35r26yNwg/grJNfBZD0D1yx+VwHgH7mO/pKTE5NLDAMtOqaiypbdEBy900bEgidhWWOUyXIxZahQRsf+KLd3/ZbCHmLhGy176gqffvCfEhmQG+UQyo+/oSg7vXTIL7GbbnMWiIyh6xxLPNmntMrtOJzsHExtqn4tIwo95p+Zs8pFPnVnCw6ecQ8N1yh3UnvHMH+RuHkjFpxiKraSK2NpCJd2B0C0SyNXf7mgCKUuRxBk807/2lcsNo0YyDQMaDcYs5Q0YEDpvF4UZ/yt21SFHT77c2FJbVdNI04UXcEVmrhFmAb2q4pjl09Iro3/A3evPA==
+ bh=Dcs75zWw5NDAsmxBRMqrNplhqKyewQddovnw+vjc7SE=;
+ b=AJGTNuRZtcRWAdb0HiEdq6pvE8o1m7hzbeB3GJZCIkdg5QofP2b0hsqoC0Eai9PNoVOk8WBCz4YSMmztcNCRlim3U9FBbmsj7ic14q7czystFgLEi/FGp07blmfzZrj5AAnMo+aHYnD+/1ov7bc0BETtJTrDInLaeXMZxCYER3cxClOIVfevVVKgtrMsxZyoevN6mxiYMTxce0BTwXLGCPGnb8WfzPbibnqi8EmCwW+SShLy41BD8h0JZiWfRXXkkQxCh3SPfVA3ej+6Vd33WoEAgqKqdxiJxyJeYjwefhhSvOK/lNZI8msvuxNLDpbZLVKTlXCy185ZM62TvF7gtw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0401MB2445.eurprd04.prod.outlook.com (2603:10a6:800:55::12) with
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dcs75zWw5NDAsmxBRMqrNplhqKyewQddovnw+vjc7SE=;
+ b=CM6Flv9hBw8eg+3Xu1h473+4bO1it1tEgKOkHwOwrg2z1FwyPOFpTPxFW9IFFnX5piaUXDadLkQyBK13t/N/S6RhYp8iRLrv7QWVJ4FgESbLCC97g5fH5tgEgmw6BsslJs2A6gHLwbD19+zla/3EzgEm0EXEqA3zN7MowfptFRA=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com (2603:10a6:800:57::8)
+ by VI1PR0401MB2638.eurprd04.prod.outlook.com (2603:10a6:800:56::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 14 Sep
- 2021 08:39:11 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 08:39:11 +0000
-Subject: Re: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading
- related?)
-To:     Juergen Gross <jgross@suse.com>,
-        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
-        <marmarek@invisiblethingslab.com>
-CC:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <YT9I+Xs9wOPVCIVd@mail-itl>
- <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <ed6b9999-7a7b-31db-9e88-efdeecefa45b@suse.com>
-Date:   Tue, 14 Sep 2021 10:39:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PR2P264CA0032.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:101:1::20) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Tue, 14 Sep
+ 2021 08:39:56 +0000
+Received: from VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb]) by VI1PR0401MB2559.eurprd04.prod.outlook.com
+ ([fe80::485a:4462:94c2:5edb%10]) with mapi id 15.20.4500.019; Tue, 14 Sep
+ 2021 08:39:56 +0000
+Date:   Tue, 14 Sep 2021 11:39:54 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 10/10] dt-bindings: serial: fsl-lpuart: Add i.MX8DXL
+ compatible
+Message-ID: <YUBf2vNnXK+JiITv@ryzen>
+References: <1631522874-19862-1-git-send-email-abel.vesa@nxp.com>
+ <1631522874-19862-11-git-send-email-abel.vesa@nxp.com>
+ <YUBXdR1RRWnItcAv@kroah.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUBXdR1RRWnItcAv@kroah.com>
+X-ClientProxiedBy: VI1PR06CA0109.eurprd06.prod.outlook.com
+ (2603:10a6:803:8c::38) To VI1PR0401MB2559.eurprd04.prod.outlook.com
+ (2603:10a6:800:57::8)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR2P264CA0032.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 08:39:10 +0000
+Received: from ryzen (188.25.164.198) by VI1PR06CA0109.eurprd06.prod.outlook.com (2603:10a6:803:8c::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 08:39:55 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 12f5a466-d40c-4cc4-d809-08d9775b201d
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2445:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Office365-Filtering-Correlation-Id: c245aaeb-5900-4498-e19c-08d9775b3ad7
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2638:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB2445AD25DD0FD06D6BD1A9D9B3DA9@VI1PR0401MB2445.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB26388BDFE8178E2551D00163F6DA9@VI1PR0401MB2638.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:93;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fIMuygzkZvvBzjuC6V3opgqW0OLrFnwpTOAZNc3tCSJgq7LK8XimuGxm2+Yav8SetnKFs/9ccsWiCZQUsaLJZ6ohvof20ZhPrU4JJ1AJulGRW+EyFc51IytCZv8ivOwyHl54tfDjphFljPouSDyG/SBwBho7kKM7RHrd+JUxOQF2+aw1xbWiVIwYRk01J6mzcJ6cg9+Ry0LVuVHHlQn/KkU14P4BQIAFXOGDMr2/XUrI6RvvXpvmvS3KpnPhsi9+6o3YZGrXPSYWnWa65K6xfk9U/XrNZpPKw6xEUruJNj6SEuuej9hRF+lg4Pbb3DI3scNZb2dcaIuv/OurYseW60Agicn9OvUW3iqDyBRroBFWZWRj6om804Mv71klNEk7SY0OY+hu/PI9U0Not/5t6fBEC0qmGC43Ey/jYwmfyNjvMmB3Qb2bMT4i2u/ZupLQQ+hpCob5yhTdKd0E9zc+f/DSdisJQjXFiNDb55VCSjWEmdRkp5Iil+EDxwXK8x3URNsGnujQoVuzscIemkp1xX4TZq7SQoIw+y5rJ6ygFzewB9XXyT2Ayip+8NZ02CZIXzXy4k1Z+kpYEGpdzVUY35oqYcoOdGUvn/Fi7Jir5/ZuVQBez3MGqRC0jN916i9PMeJD658CnOBjPtJ7Bkma0iGI6WcwsKWwqiCLUNP2dFA1R3syBzQhyBhjangkA8ipssOr3QbbWHBvQwPFhvfym3iEjv+4jeCvb4twFm+KZYk/AHnHC/1eUHjNWWZ2CkrEXEztUaiaWZiuGWuzbjfI5CYTkllYXYSV0cXd2iNRvU4UPP5arDhHZzdO/txBIREV8zl4HWsYr8kt2PczZB0hOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(366004)(396003)(136003)(346002)(36756003)(66574015)(31686004)(5660300002)(66946007)(2906002)(66556008)(38100700002)(2616005)(956004)(66476007)(6486002)(86362001)(4326008)(16576012)(54906003)(31696002)(110136005)(8936002)(316002)(83380400001)(26005)(478600001)(966005)(186003)(8676002)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: c5f/U3YLrJQtOt0eXGh0UTbekuSJYF0/L7KXTA9kmJbuVEPImyI4IiHV4qy5ajCguniPJXABvj65JxXgtXNndetUHUE7ldsBj5B3KfKGfyq3ivtEIwx8aA+hSUofUE6qYRfCUmTOLv1110y6SCln2d3nwfLHj8GlWaVzjlUoZEcdbi01Qql9SaVC5zGuqX8hn5uKf4VaSAPYOQwOtuoKOXmaCimMVLnkE2dlj0a/OwjafN3KKiyurm1VSeLg1Jt3FoEnRDiK09wV8BT/MPJxQZ4cZc1IhcsNCLzT7TBIzlL/SCmadrvNzIAMIpaXqUM0BiR1HDd/qfcSoo+nAAhIbgIPreCl3wumyZp+GfQLOKCRV75HHGdUuHRlejb8UB36vZTjDqWcKy06+rbRSwVxpxHMjEf+EmsN+KHAShrBzqu7QkP1lzD+Dl6ExK0lQUMkfTZBU4tJGeovjNdpMghgeLnckmmea67ET55G6h/dKWNKhQWpLlUWdbWIkCnFeyWCMmmK84CkZitHwXWZXD7ef4w6Cz/zV/mx0GXmUuooV0TcEMVKU9mP6LTf8CJYtmbv68WH5WtvEkHkz/QYuCuqGMqnBb49eEHY4Er+fD3AnjkDpLSYQpBwX7t9aGPIbVUc/3f9S87u16fik5aY2s8doBBaOg64qPEnWYHSNkQtVCKO0JCqZpv0VOnVUId8NtZ+RnDxQkPyYzyyZONs9fHo1QRUYavqXVih1jg1jZcAyy4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2559.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(346002)(39860400002)(66946007)(66476007)(66556008)(5660300002)(26005)(186003)(52116002)(6496006)(38350700002)(38100700002)(478600001)(86362001)(6916009)(33716001)(8936002)(53546011)(956004)(83380400001)(9686003)(55016002)(9576002)(558084003)(2906002)(54906003)(44832011)(316002)(7416002)(8676002)(4326008)(67856001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U1mDhRc7AJe8ZyO5FYxNVDTmpq9GrqbhAxz0gdmhyfZ8V5U9L95Ph6jOW4KL?=
- =?us-ascii?Q?nt9VchFIgWoV71E2bFpZ8OYp2teLCVuTsZsfotDf5/dmtdSnzQGmB1mib+yr?=
- =?us-ascii?Q?7Kmoa7Foa/6Dx14xaiaPnCnxOUZADwCnk5isVqAWA3rGlZFCQ0c8U2Du1a+5?=
- =?us-ascii?Q?DVnYz1xHSH18bVOQUuIzcuMu2RkA0Ya5PXqIN0N9+h9h0+JlQtXm4RZlY0qS?=
- =?us-ascii?Q?goeTsDYDj6KrbuXP0Kis7LhlKstJPjcNmBNycr34Brg20lZgHg/livu6mZYD?=
- =?us-ascii?Q?87jeKremBrks9lPOzZvRfb/z4O8N1BCPVAV8KcaciG5v+AKYB7jVmMShpbgk?=
- =?us-ascii?Q?zwsWKmkTV51PtTEIKfVLLUONtZ33qcWuTSP9PV4bmuNh32KCOVuzaOYrjTVS?=
- =?us-ascii?Q?wPLH99ih6I+zYV/C/CPVaq8LDJ0Bhl06jvGj8yhpuhSybLTx8m4VkXVuwRt6?=
- =?us-ascii?Q?i1iy+3IH4sKSRa3pbi1DzTvYHoh4l02YfPHDYk15uEsI7gV2Ig+dhShyH1RK?=
- =?us-ascii?Q?cnqPI4RXlGQ4//p5etMvJIKtCs80v/pZukzzPlp6ZJ9ASbE5KIoDdhZTXLaS?=
- =?us-ascii?Q?OzyWeJDsbQG2MWgH0nbS7B02K5ghS/DthP/twv2WJpNLTor6H7eKOEjGZYIY?=
- =?us-ascii?Q?mw8nQPBveo5O5zMLjETfzGApcG5qn5Fdlg84cb+qj5xQzrjjE/mn1tovga8I?=
- =?us-ascii?Q?UnS52hXiKzQtJA9Q7hWq0tUpiuOxtKJqdY3/3RgS4gL2i7CUWWaw5eUrOy8e?=
- =?us-ascii?Q?on73FKfD9y6SnWMnqyEFz3+CRKRf5svBuP07CJRhjCRunO62en+kgVwaKvWY?=
- =?us-ascii?Q?ojUpEpQLHtsjANg9TGVza5dQDSHxYmjuUMuPr9+zHW5oOAjsROu97KS661Lm?=
- =?us-ascii?Q?0inBr9mb3NSWYPYtESuSfzcuovUEvnZ0FJeiLH1J/SoLWPaGcFnVh2uBh9Su?=
- =?us-ascii?Q?0ae55jNYH8C5fpz7cnJHLx6i0zGDhDME1HrTtX2vdlwnmbLqo7QDlcAnOzBo?=
- =?us-ascii?Q?t6AyF3NdnZVL+9s/X5kEG21PVejPxeS3GXFONwjxczZrWPXM6ESFMSXZwRM4?=
- =?us-ascii?Q?XOckGQcLCGNclZOGpauLeAub2XETxpY322fIkCiIPzOiwvKVhFyrQ173pUks?=
- =?us-ascii?Q?4GgCQEvkOM/kQKIanpYb/2CWPIBS+42Dnc23W5Q0zkszbEslhTu+SAp4nMSB?=
- =?us-ascii?Q?aO9W4kpVYS4FAKtF03Lo4J8NRCFXP+bUqeqVaQ1/5Bm8BwtCMnwMM6/J0VuE?=
- =?us-ascii?Q?2c2376FYvR7guIVcHBPC93o8wk461smNz900Onuum+d1eWr+sbSyS74gDk8b?=
- =?us-ascii?Q?fgBvGlO6XnuYw0Q3r8cTPLy8?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12f5a466-d40c-4cc4-d809-08d9775b201d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?A0zyneJvHCeTJhjxKnOFfNjeV+Kt/4FChkZ1EsiEfvf973Y3sYj/hnQSGmbK?=
+ =?us-ascii?Q?awtau+75drSupz3nXHxEfQ6Yql2R3dqfFJjdVTe8xpnTwPoKteYhFRbqsFJD?=
+ =?us-ascii?Q?ZwOUQm7MeR5x+Y0kqSLAbAtwDQLT37p/Et7ExI8REIK7dOMSr5x5a/bogZ9Z?=
+ =?us-ascii?Q?1hduTvWXYchpmzjWYn9EGWvejeOSHHz2isGlSrlIR4LZ752cYZFX+lAd5Wqa?=
+ =?us-ascii?Q?HE5lz+VkJmi+CivKRfhwMkT9UWmLdzBFmpUah+HpCM/dxuD1cYseuilTi2IU?=
+ =?us-ascii?Q?ydiSjsg8IpH/ScJ35lonhuQLfoiJVlTvZsJAX9dpHnJdtD2NYanH9gJiEqT9?=
+ =?us-ascii?Q?56ZC/4m2gI29rY5mo2mdl8Wp7/HjBClExPZ9EIxMmuz685/AAdc+udI48zYo?=
+ =?us-ascii?Q?nv9D7N9CYOBx7EsWI0APgpU5bt+TFEcDq8h2MbC7d9w677lwP3dpT+fjNdpQ?=
+ =?us-ascii?Q?X+Pn41LI6bf90Q2wPk9FOVaLEM3TCgRUT1iv/hcssaa/b8ELnHT8ZQmEbTRM?=
+ =?us-ascii?Q?lK3sgKXmOpWRq+Tv0jHr9kAf6oDAoClfzrV+asYispN7LdYhaMgKnY659Wor?=
+ =?us-ascii?Q?0QyS+q8uPfHoTtVjfPWt1siD8wncueYGiIOv2SvtLPivAZxX/mgBwGWUiEAm?=
+ =?us-ascii?Q?GMbbxD2ZxnBF2tDGCQH3ZVSsmWMbnXoeraXX2C4FQKuRWeeYynQlEy8QDpp6?=
+ =?us-ascii?Q?8SwFpAGdQAlM/KcN8ID605HA2Q9W8RHLC+eg3lgl5+xAVtQuVXBqY/P5E8x8?=
+ =?us-ascii?Q?PKZSkjKsDOcnr+pFStR/v3wUCGZLcVe1ftn3CWe7LAyJFite2NPkl1ysd68G?=
+ =?us-ascii?Q?f5rMbBr42Ay7N8EG6BcOgJcjQkW9lxk6781w9K03Qbxo2eYVU+m8eKt8kmf3?=
+ =?us-ascii?Q?Nq0bs6KUDGGD/ud+mjCHNyv8aIqVjwqGu3jkyT3jeDJo+JMPYPvu2gyiJjM0?=
+ =?us-ascii?Q?jZs7j0FxUjUGHEuPeK7ryRJvlbYV2Ni06ozR8/b9HLPXO9BvhGdYbnEnWIu7?=
+ =?us-ascii?Q?H/pXVniqADtoypD66o/30IMuzmXKQf4sRKh7iMfsJOhNPSIE50FF9d25gKqP?=
+ =?us-ascii?Q?DVWgGzkC3fcbdy1w8/PFmxMHIBjVhrIA88ayGEC+m4ktmLERZBHfwh+ODEo5?=
+ =?us-ascii?Q?dGr2in9U8M+qNtqVBeeNrdkMEEVwCPjjQ/aQiA7HEkyG42wkHPiyxy7POCbx?=
+ =?us-ascii?Q?ezKetPqz6q5pOsFUWXWgT8Y/oDLM/48Rl8dSm8Ip2VSkfhKPX8js9I+7QUW/?=
+ =?us-ascii?Q?e7qkvwhb8k9n115fhJNY0U52rVH844tu8QEHhMdJP8ouy/ZfViyesRoz+H6v?=
+ =?us-ascii?Q?pDQL3sly6xJq+wRIvYI6b3R2?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c245aaeb-5900-4498-e19c-08d9775b3ad7
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2559.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 08:39:11.5301
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 08:39:56.4750
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3rppAkQOdYwbrLgt5z44IKy/+xDDqo9HUhN1BzUtbU6t+AOonysvbBoBE0FODIQuijbWedt3PZcz6WYEwR4ZwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2445
+X-MS-Exchange-CrossTenant-UserPrincipalName: QnH23BR3Cb8Esr1krRrrrdRAVKoQIPpC+NISnEWXMVuaVknLftsvJTkzJyyjR5Js5eS02vwGdXyYgv+Gxk8I8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2638
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2021 09:14, Juergen Gross wrote:
-> On 13.09.21 14:50, Marek Marczykowski-G=C3=B3recki wrote:
->> Hi,
->>
->> Since 5.13, the Xen (PV) dom0 crashes on boot, before even printing the
->> kernel version.
->> Test environment:
->>   - Xen 4.14.2
->>   - AMD Ryzen 5 4500U (reported also on AMD Ryzen 7 4750U)
->>   - Linux 5.13.13, confirmed also on 5.14
->>
->> The crash happens only if the initramfs has earlycpio with microcode.
->> I don't have a serial console, but I've got a photo with crash message
->> (from Xen, Linux doesn't managed to print anything):
->> https://user-images.githubusercontent.com/726704/133084966-5038f37e-001b=
--4688-9f90-83d09be3dc2d.jpg
->>
->> Transcription of some of it:
->>
->>      mapping kernel into physical memory
->>      about to get started
->>      (XEN) Pagetable walk from ffffffff82810888:
->>      (XEN)  L4[0x1ff] =3D 0000000332815067 0000000000002815
->>      (XEN)  L3[0x1fe] =3D 0000000332816067 0000000000002816
->>      (XEN)  L2[0x014] =3D 0000000334018067 0000000000004018
->>      (XEN)  L1[0x010] =3D 0000000332810067 0000000000002810
->>      (XEN) domain_crash_sync called from entry.S: fault at ffff82d04033e=
-790 x86_64/entry.S#domain_crash_page_fault
->>      (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
->>      (XEN) ----[ Xen-4.14.2  x86_64  debug=3Dn  Not tainted ]----
->>      (XEN) CPU:    0
->>      (XEN) RIP:    e033:[<0000000000000000>]
->=20
-> The domain's run state seems to be completely clobbered.
->=20
-> Did you try to boot the kernel with "earlyprintk=3Dxen" to get some idea
-> how far it progressed?
+On 21-09-14 10:04:05, Greg Kroah-Hartman wrote:
+> On Mon, Sep 13, 2021 at 11:47:54AM +0300, Abel Vesa wrote:
+> > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> 
+> I can not take patches without any changelog text at all, sorry.
 
-I guess without my "xen/x86: allow "earlyprintk=3Dxen" to work for PV Dom0"
-"earlyprintk=3Dxen" would need to be accompanied by "console=3Dxenboot". I
-have not tried whether this helps, this is merely a guess from having
-looked at the code relatively recently.
+Oups, my bad. Will resend with commit message.
 
-Jan
-
+> 
+> greg k-h
