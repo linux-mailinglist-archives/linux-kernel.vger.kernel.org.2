@@ -2,156 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34A340B08A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDB340B08C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhINOZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233437AbhINOZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:25:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BED0E60EFF;
-        Tue, 14 Sep 2021 14:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631629457;
-        bh=ICIH7KIpkdBO4VMxLxo32ZU28uu9Bch7RY2U4rQOErk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cVol9SmVMg6mvsb7u/IvVv1Eh8NERn0k4VZmSJLfCXcd8frhf5Hh0yloOI/eI1deZ
-         d56kT7BPfvDTXa472KGsuv90IhCbBCXir70dW0jD+CbHp6RVzy0UeMlfxVLqkw3Ema
-         L03jD+s1sQEbIamAH03/HTLVn0lJH7V2Gordt8u5n5J8tZ4tJay3DNvQG3D7Nzn3Wl
-         yhi8WdiCV2BbooWkqcv7WWkTR/s4yY4x8yxVgX06bETX23HfEHy0A6v3lFCzldUhqt
-         7MIjq1p+fiXrThFfedfJkIl4Oz5X+dE6HXQIyoWs0Zlj57ake0ZDMHQaZUksph1kfJ
-         nbe+bI1tFbGUA==
-Date:   Tue, 14 Sep 2021 16:24:12 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 0/9] get_abi.pl: Check for missing symbols at the ABI
- specs
-Message-ID: <20210914162412.0b642091@coco.lan>
-In-Reply-To: <YToRRMhYfdnzFyMB@kroah.com>
-References: <cover.1631112725.git.mchehab+huawei@kernel.org>
-        <YToRRMhYfdnzFyMB@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233697AbhINOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233437AbhINOZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:25:49 -0400
+Received: from scorn.kernelslacker.org (scorn.kernelslacker.org [IPv6:2600:3c03:e000:2fb::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF85C061574;
+        Tue, 14 Sep 2021 07:24:31 -0700 (PDT)
+Received: from [2601:196:4600:6634:ae9e:17ff:feb7:72ca] (helo=wopr.kernelslacker.org)
+        by scorn.kernelslacker.org with esmtp (Exim 4.92)
+        (envelope-from <davej@codemonkey.org.uk>)
+        id 1mQ9MC-0003hi-5m; Tue, 14 Sep 2021 10:24:20 -0400
+Received: by wopr.kernelslacker.org (Postfix, from userid 1026)
+        id D948856008F; Tue, 14 Sep 2021 10:24:19 -0400 (EDT)
+Date:   Tue, 14 Sep 2021 10:24:19 -0400
+From:   Dave Jones <davej@codemonkey.org.uk>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, todd.fujinaka@intel.com,
+        Hisashi T Fujinaka <htodd@twofifty.com>
+Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
+Message-ID: <20210914142419.GA32324@codemonkey.org.uk>
+Mail-Followup-To: Dave Jones <davej@codemonkey.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, todd.fujinaka@intel.com,
+        Hisashi T Fujinaka <htodd@twofifty.com>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com>
+ <20210913141818.GA27911@codemonkey.org.uk>
+ <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com>
+ <20210913201519.GA15726@codemonkey.org.uk>
+ <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
+ <20210913203234.GA6762@codemonkey.org.uk>
+ <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com>
+ <b4b543d4-c0c5-3c56-46b7-e17ec579edcc@twofifty.com>
+ <367cc748-d411-8cf8-ff95-07715c55e899@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <367cc748-d411-8cf8-ff95-07715c55e899@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Note: SpamAssassin invocation failed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 9 Sep 2021 15:51:00 +0200
-Greg KH <gregkh@linuxfoundation.org> escreveu:
+On Tue, Sep 14, 2021 at 07:51:22AM +0200, Heiner Kallweit wrote:
+ 
+ > > Sorry to reply from my personal account. If I did it from my work
+ > > account I'd be top-posting because of Outlook and that goes over like a
+ > > lead balloon.
+ > > 
+ > > Anyway, can you send us a dump of your eeprom using ethtool -e? You can
+ > > either send it via a bug on e1000.sourceforge.net or try sending it to
+ > > todd.fujinaka@intel.com
+ > > 
+ > > The other thing is I'm wondering is what the subvendor device ID you
+ > > have is referring to because it's not in the pci database. Some ODMs
+ > > like getting creative with what they put in the NVM.
+ > > 
+ > > Todd Fujinaka (todd.fujinaka@intel.com)
+ > 
+ > Thanks for the prompt reply. Dave, could you please provide the requested
+ > information?
 
-> On Wed, Sep 08, 2021 at 04:58:47PM +0200, Mauro Carvalho Chehab wrote:
-> > Hi Greg,
-> > 
-> > Sometime ago, I discussed with Jonathan Cameron about providing 
-> > a way check that the ABI documentation is incomplete.
-> > 
-> > While it would be doable to validate the ABI by searching __ATTR and 
-> > similar macros around the driver, this would probably be very complex
-> > and would take a while to parse.
-> > 
-> > So, I ended by implementing a new feature at scripts/get_abi.pl
-> > which does a check on the sysfs contents of a running system:
-> > it reads everything under /sys and reads the entire ABI from
-> > Documentation/ABI. It then warns for symbols that weren't found,
-> > optionally showing possible candidates that might be misdefined.
-> > 
-> > I opted to place it on 3 patches:
-> > 
-> > The first patch adds the basic logic. It runs really quicky (up to 2
-> > seconds), but it doesn't use sysfs softlinks.
-> > 
-> > Patch 2 adds support for also parsing softlinks. It slows the logic,
-> > with now takes ~40 seconds to run on my desktop (and ~23
-> > seconds on a HiKey970 ARM board). There are space there for
-> > performance improvements, by using a more sophisticated
-> > algorithm, at the expense of making the code harder to
-> > understand. I ended opting to use a simple implementation
-> > for now, as ~40 seconds sounds acceptable on my eyes.
-> > 
-> > Patch 3 adds an optional parameter to allow filtering the results
-> > using a regex given by the user.
-> > 
-> > One of the problems with the current ABI definitions is that several
-> > symbols define wildcards, on non-standard ways. The more commonly
-> > wildcards used there are:
-> > 
-> > 	<foo>
-> > 	{foo}
-> > 	[foo]
-> > 	X
-> > 	Y
-> > 	Z
-> > 	/.../
-> > 
-> > The script converts the above wildcards into (somewhat relaxed)
-> > regexes.
-> > 
-> > There's one place using  "(some description)". This one is harder to
-> > parse, as parenthesis are used by the parsing regexes. As this happens
-> > only on one file, patch 4 addresses such case.
-> > 
-> > Patch 5 to 9 fix some other ABI troubles I identified.
-> > 
-> > In long term, perhaps the better would be to just use regex on What:
-> > fields, as this would avoid extra heuristics at get_abi.pl, but this is
-> > OOT from this patch, and would mean a large number of changes.  
-> 
-> This is cool stuff, thanks for doing this!
-> 
-> I'll look at it more once 5.15-rc1 is out, thanks.
+sent off-list.
 
-FYI, there's a new version at:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_undefined
-
-In order for get_abi.pl to convert What: into regex, changes are needed on
-existing ABI files. One alternative would be to convert everything into
-regex, but that would probably mean that most ABI files would require work.
-
-In order to avoid a huge number of patches/changes, I opted to touch only
-the ones that aren't following the de-facto wildcard standards already 
-found on most of the ABI files. So, I added support at get_abi.pl to
-consider those patterns as wildcards:
-
-	/.../
-	*
-	<foo>
-	X
-	Y
-	Z
-	[0-9] (and variants)
-
-The files that use something else meaning a wildcard need changes, in order
-to avoid ambiguity when the script decides if a character is either a 
-wildcard or not. 
-
-One of the issues there is with "N". several files use it as a wildcard, 
-but USB sysfs parameters have several ABI nodes with an uppercase "N"
-letter (like bNumInterfaces and such). So, this one had to be converted
-too (and represents the vast majority of patches).
-
-Anyway, as the number of such patches is high, I'll submit the work 
-on three separate series:
-
-	- What: changes needed for regex conversion;
-	- get_abi.pl updates;
-	- Some additions for missing symbols found on my
-	  desktop.
-
-Thanks,
-Mauro
+	Dave
