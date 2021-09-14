@@ -2,77 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C4740AAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEF340AAB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhINJX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:23:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36700 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhINJX0 (ORCPT
+        id S230434AbhINJXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhINJXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:23:26 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2504F220D8;
-        Tue, 14 Sep 2021 09:22:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631611329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eK0M2+u819RbPSbOa+TChxkR/yeNh/tZ0Wr5oxu1nPw=;
-        b=ALiATahMKwWdxKrIMjcRx4ccjHnyv1c+BPI5ZNi2w7gnbKrpjEU0SvnsTIg2jAapmOVTrX
-        WVnAK1s2gKzy+vc6kz/kYGVv8rJg0aXvj+zkbQ7tAgGvlymh7SGD9iUQnwILxCBjshv+eY
-        5YoT89LI/+gUezjmzZla2iUYkoy1OoU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BBB6E13D3F;
-        Tue, 14 Sep 2021 09:22:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rsJPLcBpQGGnQAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 14 Sep 2021 09:22:08 +0000
-Date:   Tue, 14 Sep 2021 11:22:07 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list
- maintenance
-Message-ID: <20210914092207.GA23743@blackbody.suse.cz>
-References: <20210819175034.4577-1-mkoutny@suse.com>
- <20210819175034.4577-5-mkoutny@suse.com>
- <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
+        Tue, 14 Sep 2021 05:23:48 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77293C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:22:31 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id m9so19097144wrb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cB3SFW2TbyjnhTTrE3Gw+3s8XVu1+IHGM7eNQeJ4Ffo=;
+        b=yObLhpnSD42+GQIkt8UzLMbYH0wUIX/Qsa0sHlxnsX2a6lCRi2T3pjnP6ylSEK0yJ3
+         9HEeafmyGngxXsz0OE/+/lfSL1TAvR9Oy7nTZ2VS7wnHbM3FqlnZgMAmqYrHuwa5AF6D
+         gJ61PXj6JyqwEwgN3FHa2HW7n191IRrUNf8kgPM4zPuJCrpgtPVjML9EEzrM+Z1BFJBS
+         mvCJ6xIRFSlxuMWvg1LBuZJFpxOvmRxU/ESOtoMEwq17wYPRI1P8EHlh09PNk02lb6ce
+         D7wffZg7MrNeTUMMQQhpBzIyYZtIQzEW+fnuXJugHWvdZkX9yUA1Gn2Empvto1i9z80G
+         f4Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cB3SFW2TbyjnhTTrE3Gw+3s8XVu1+IHGM7eNQeJ4Ffo=;
+        b=CNInhR6tYKcOZXSmEdyCU/L/zPYn3A/mtATfgcMdIWkcc8B6LrO+duTZT+XD+SVrJJ
+         R4Nbkp70VgJ3MhFywqsVvXdDkbuxuZ26cm9cjSFWsDWbvaTKy+oRCpcr+PGZ0nzS7CAI
+         4E/13qc8ZqcCDHk3d9OrwnNNMUkaICrGMkJXxRdnDJzilOtAvbHZJJ7YAUANH9W6psGs
+         lhZ8sKSw5N7G7OfCQLqhDY+kiVi+kJksnp48uY1cVRB0vx8UeJfyXe6CR0iDDQhxw0SV
+         dCvFBg32163dOr9bEEEMfhl2bd2V21k/swEQQU/nKzsYgXaMD5aSYGnzatPD2UG0Y5Pc
+         gu0A==
+X-Gm-Message-State: AOAM532Q+lxlWdQtUXk4VG9OJofuVTUe63bbra/fUNVxxYh0oohPJcxz
+        /OCb+Z5t798hrTit+8rI1rFLqw==
+X-Google-Smtp-Source: ABdhPJwMPDMLf28adKZS5XckUAYfGJVT648BX9tymcGeqKckdlNi0lD28woO+vX6eLWMHhiiSvDVZQ==
+X-Received: by 2002:adf:8b43:: with SMTP id v3mr18138405wra.248.1631611349959;
+        Tue, 14 Sep 2021 02:22:29 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id p4sm544765wmg.16.2021.09.14.02.22.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 02:22:29 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     draviv@codeaurora.org, sthumma@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] scsi: ufs: ufshcd-pltfrm: fix memory leak due to probe defer
+Date:   Tue, 14 Sep 2021 10:22:14 +0100
+Message-Id: <20210914092214.6468-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:19:27PM +0200, Vincent Guittot <vincent.guittot@linaro.org> wrote:
-> Your proposal looks interesting but I need more time to make sure that
-> all cases are covered. We have faced several odd corner cases and
-> sequences in the past that I need time to check that you don't put
-> some back
+UFS drivers that probe defer will endup leaking memory allocated for
+clk and regulator names via kstrdup because the structure that is
+holding this memory is allocated via devm_* variants which will be
+freed during probe defer but the names are never freed.
 
-Do you have any pointers to the cases that come to your mind? I wonder
-if those could be reproduced with a simple setup.
-(FTR, I used the LTP test (at b673f49ae) cfs_bandwidth01 to check this change.)
+Use same devm_* variant of kstrdup to free the memory allocated to
+name when driver probe defers.
 
-Thanks,
-Michal
+Kmemleak found around 11 leaks on Qualcomm Dragon Board RB5:
+
+unreferenced object 0xffff66f243fb2c00 (size 128):
+  comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
+  hex dump (first 32 bytes):
+    63 6f 72 65 5f 63 6c 6b 00 76 69 72 74 75 61 6c  core_clk.virtual
+    2f 77 6f 72 6b 71 75 65 75 65 2f 73 63 73 69 5f  /workqueue/scsi_
+  backtrace:
+    [<000000006f788cd1>] slab_post_alloc_hook+0x88/0x410
+    [<00000000cfd1372b>] __kmalloc_track_caller+0x138/0x230
+    [<00000000a92ab17b>] kstrdup+0xb0/0x110
+    [<0000000037263ab6>] ufshcd_pltfrm_init+0x1a8/0x500
+    [<00000000a20a5caa>] ufs_qcom_probe+0x20/0x58
+    [<00000000a5e43067>] platform_probe+0x6c/0x118
+    [<00000000ef686e3f>] really_probe+0xc4/0x330
+    [<000000005b18792c>] __driver_probe_device+0x88/0x118
+    [<00000000a5d295e8>] driver_probe_device+0x44/0x158
+    [<000000007e83f58d>] __device_attach_driver+0xb4/0x128
+    [<000000004bfa4470>] bus_for_each_drv+0x68/0xd0
+    [<00000000b89a83bc>] __device_attach+0xec/0x170
+    [<00000000ada2beea>] device_initial_probe+0x14/0x20
+    [<0000000079921612>] bus_probe_device+0x9c/0xa8
+    [<00000000d268bf7c>] deferred_probe_work_func+0x90/0xd0
+    [<000000009ef64bfa>] process_one_work+0x29c/0x788
+unreferenced object 0xffff66f243fb2c80 (size 128):
+  comm "kworker/u16:0", pid 7, jiffies 4294893319 (age 94.848s)
+  hex dump (first 32 bytes):
+    62 75 73 5f 61 67 67 72 5f 63 6c 6b 00 00 00 00  bus_aggr_clk....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+
+with this patch no memory leaks are reported.
+Fixes: aa4976130934 ("ufs: Add regulator enable support")
+Fixes: c6e79dacd86f ("ufs: Add clock initialization support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/scsi/ufs/ufshcd-pltfrm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
+index 8859c13f4e09..eaeae83b999f 100644
+--- a/drivers/scsi/ufs/ufshcd-pltfrm.c
++++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+@@ -91,7 +91,7 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
+ 
+ 		clki->min_freq = clkfreq[i];
+ 		clki->max_freq = clkfreq[i+1];
+-		clki->name = kstrdup(name, GFP_KERNEL);
++		clki->name = devm_kstrdup(dev, name, GFP_KERNEL);
+ 		if (!strcmp(name, "ref_clk"))
+ 			clki->keep_link_active = true;
+ 		dev_dbg(dev, "%s: min %u max %u name %s\n", "freq-table-hz",
+@@ -126,7 +126,7 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
+ 	if (!vreg)
+ 		return -ENOMEM;
+ 
+-	vreg->name = kstrdup(name, GFP_KERNEL);
++	vreg->name = devm_kstrdup(dev, name, GFP_KERNEL);
+ 
+ 	snprintf(prop_name, MAX_PROP_SIZE, "%s-max-microamp", name);
+ 	if (of_property_read_u32(np, prop_name, &vreg->max_uA)) {
+-- 
+2.21.0
+
