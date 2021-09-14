@@ -2,152 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3490F40B6FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6D240B704
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhINSdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:33:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229658AbhINSc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:32:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50EA660F44;
-        Tue, 14 Sep 2021 18:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631644302;
-        bh=muly+Dmck52Ug2Tq86rnSCcvbWROds/qp05G9zAz1Qo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=m+iZMFxR5LnWXBFlv144Qb0N3yzssXiTPaj1m4mNubbor+zSMKtQF08xPDnbalpz+
-         T9Jd1peRHdjlKI+YO0ZpQDFksJopneLfjq1fHMcdE5ikZUSnwiYUBvo5pgkpNsj59I
-         DvWJhEjESInYtP34Fqd6E54w3Z3rI6MIAjbuDYq9rPdFFSS6qwSGOI9HPAq00VcZ6X
-         hRhqYZ0D6/aAMUbLPpI9qcxFuPXFZQaCYTwHBa7qFAOWaN8dEHDU0mwK05aBLyjI/m
-         J9IW/Z9VOsFHshCxOtRvXJjHnHdxPsw5h/Ard0aUwjMlnNt1vHm+8CWmetvRWKc+Ij
-         1LBKiWA4U7xLw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 198FC5C054C; Tue, 14 Sep 2021 11:31:42 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 11:31:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
-Message-ID: <20210914183142.GP4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <000000000000eaacf005ca975d1a@google.com>
- <20210831074532.2255-1-hdanton@sina.com>
- <20210914123726.4219-1-hdanton@sina.com>
- <87v933b3wf.ffs@tglx>
- <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com>
+        id S230332AbhINSiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhINSis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 14:38:48 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7356BC061574;
+        Tue, 14 Sep 2021 11:37:31 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id y8so124071pfa.7;
+        Tue, 14 Sep 2021 11:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pRa6HqUhQ+fdTXKvWXd36fRi3TX1WdardxQCBjScj6s=;
+        b=d9dsOcWabdNkz5M6PlZuPYWhfmeeWroMMJAR5Caicpoe4HKehNsXf+y9LHNyjCTi73
+         XRiNz4IBpGGyJhAlJRBKppO6OW0uUTf3nuiEU6JmZFb4fnCIhOQn366V8TKl/rqgRFsd
+         wPaFWgY/cDnSh9VS5Vw4A9ikPyT21abYl2qgQCyUc5cNU6sxxFu5ZQXyj9TQlzNKkpHp
+         U3h14HHBUHrZ8dP10GQ16pnIOU3g51930ImJEa3XohbY/iTHarAFAqTIyZu1gYey56TA
+         cFHCwONBGUxs80q4ivm2u4SpEbYjSP4wdE6a4+DOgXEbz0xg8PyE1nbATJN4L50xPfyC
+         AMuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pRa6HqUhQ+fdTXKvWXd36fRi3TX1WdardxQCBjScj6s=;
+        b=UNBQeh3la83u0kF8WFpWC/jq43SvpMX5RSsSe5/n/vq5mbgShX5qd/s2cjfW0fmU0M
+         C7Jlro46SRpatt3jyOR5zNOai0TCX/bTJSsyhi/QD1OAq1yCAMeHLfO98ZCCIIRr0p/J
+         wpNQgpKvDwGlzC+dmiuWYxS+F0zgUd879zk719c98AYVM6zRUd1zz4ZdF6G7K1YdPz0p
+         fU0QQ6tbqtKZ1M63s3WaGSTpzYhfUxnMHProd7ZW7O/MY2fvuAViOgyDeYhlFX+ubjS1
+         3YnHpxOcGpQGuEAnBmuzYUSpBbX2HTEw2hrEcP7SES1+2wEuokLo0gaNFWK+bm6Kxr11
+         ELDQ==
+X-Gm-Message-State: AOAM5310Xj3lL3DSQDYuhAKWW1MqtFnq17WzRvodpcNU6rV1+khSvypd
+        KZGofoYF0MMmEeR1C7OuAY2mt+KHXXQ=
+X-Google-Smtp-Source: ABdhPJwp7U2LDZyKE5jo/rvBVtBlZqpa3nv4i6qbaczOFuJ1PuBeyWWrqMw7ryfd72rrBgg7Nacehw==
+X-Received: by 2002:a65:508a:: with SMTP id r10mr16717565pgp.96.1631644651020;
+        Tue, 14 Sep 2021 11:37:31 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id y3sm12003965pge.44.2021.09.14.11.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 11:37:29 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     naoya.horiguchi@nec.com, hughd@google.com,
+        kirill.shutemov@linux.intel.com, willy@infradead.org,
+        osalvador@suse.de, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/4] Solve silent data loss caused by poisoned page cache (shmem/tmpfs)
+Date:   Tue, 14 Sep 2021 11:37:14 -0700
+Message-Id: <20210914183718.4236-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:00:04PM +0200, Dmitry Vyukov wrote:
-> On Tue, 14 Sept 2021 at 16:58, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > On Tue, Sep 14 2021 at 20:37, Hillf Danton wrote:
-> >
-> > > On Mon, 13 Sep 2021 12:28:14 +0200 Thomas Gleixner wrote:
-> > >>On Tue, Aug 31 2021 at 15:45, Hillf Danton wrote:
-> > >>> On Mon, 30 Aug 2021 12:58:58 +0200 Dmitry Vyukov wrote:
-> > >>>>>  ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
-> > >>>>>  mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
-> > >>>>>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
-> > >>>>>  __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
-> > >>>>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
-> > >>>>>  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-> > >>>
-> > >>> Add debug info only to help kasan catch the timer running longer than 2 ticks.
-> > >>>
-> > >>> Is it anything in the right direction, tglx?
-> > >>
-> > >>Not really. As Dmitry pointed out this seems to be related to
-> > >
-> > > Thanks for taking a look.
-> > >
-> > >>mac80211_hwsim and if you look at the above stacktrace then how is
-> > >>adding something to the timer wheel helpful?
-> > >
-> > > Given the stall was printed on CPU1 while the supposedly offending timer was
-> > > expiring on CPU0, what was proposed is the lame debug info only for kasan to
-> > > catch the timer red handed.
-> > >
-> > > It is more appreciated if the tglx dude would likely spend a couple of minutes
-> > > giving us a lesson on the expertises needed for collecting evidence that any
-> > > timer runs longer than two ticks. It helps beyond the extent of kasan.
-> >
-> > That tglx dude already picked the relevant part of the stack trace (see
-> > also above):
-> >
-> > >>>>>  ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
-> > >>>>>  mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
-> > >>>>>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
-> > >>>>>  __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
-> > >>>>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
-> > >>>>>  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-> >
-> > and then asked the question how a timer wheel timer runtime check
-> > helps. He just omitted the appendix "if the timer in question is a
-> > hrtimer" as he assumed that this is pretty obvious from the stack trace.
-> >
-> > Aside of that if the wireless timer callback runs in an endless loop,
-> > what is a runtime detection of that in the hrtimer softirq invocation
-> > helping to decode the problem if the stall detector catches it when it
-> > hangs there?
-> >
-> > Now that mac80211 hrtimer callback might actually be not the real
-> > problem. It's certainly containing a bunch of loops, but I couldn't find
-> > an endless loop there during a cursory inspection.
-> >
-> > But that callback does rearm the hrtimer and that made me look at
-> > hrtimer_run_queues() which might be the reason for the endless loop as
-> > it only terminates when there is no timer to expire anymore.
-> >
-> > Now what happens when the mac80211 callback rearms the timer so it
-> > expires immediately again:
-> >
-> >         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
-> >                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
-> >
-> > bcn is a user space controlled value. Now lets assume that bcn_int is <=1,
-> > which would certainly cause the loop in hrtimer_run_queues() to keeping
-> > looping forever.
-> >
-> > That should be easy to verify by implementing a simple test which
-> > reschedules a hrtimer from the callback with a expiry time close to now.
-> >
-> > Not today as I'm about to head home to fire up the pizza oven.
-> 
-> This question definitely shouldn't take priority over the pizza. But I
-> think I saw this "rearm a timer with a user-controlled value without
-> any checks" pattern lots of times and hangs are inherently harder to
-> localize and reproduce. So I wonder if it makes sense to add a debug
-> config that would catch such cases right when the timer is set up
-> (issue a WARNING)?
-> However, for automated testing there is the usual question of
-> balancing between false positives and false negatives. The check
-> should not produce false positives, but at the same time it should
-> catch [almost] all actual stalls so that they don't manifest as
-> duplicate stall reports.
-> 
-> If I understand it correctly the timer is not actually set up as
-> periodic, but rather each callback invocation arms it again. Setting
-> up a timer for 1 ns _once_ (or few times) is probably fine (right?),
-> so the check needs to be somewhat more elaborate and detect "infinite"
-> rearming.
 
-If it were practical, I would suggest checking for a CPU never actually
-executing any instructions in the interrupted context.  The old-school
-way of doing this was to check the amount of time spent interrupted,
-perhaps adding some guess at interrupt entry/exit overhead.  Is there
-a better new-school way?
+When discussing the patch that splits page cache THP in order to offline the
+poisoned page, Noaya mentioned there is a bigger problem [1] that prevents this
+from working since the page cache page will be truncated if uncorrectable
+errors happen.  By looking this deeper it turns out this approach (truncating
+poisoned page) may incur silent data loss for all non-readonly filesystems if
+the page is dirty.  It may be worse for in-memory filesystem, e.g. shmem/tmpfs
+since the data blocks are actually gone.
 
-							Thanx, Paul
+To solve this problem we could keep the poisoned dirty page in page cache then
+notify the users on any later access, e.g. page fault, read/write, etc.  The
+clean page could be truncated as is since they can be reread from disk later on.
+
+The consequence is the filesystems may find poisoned page and manipulate it as
+healthy page since all the filesystems actually don't check if the page is
+poisoned or not in all the relevant paths except page fault.  In general, we
+need make the filesystems be aware of poisoned page before we could keep the
+poisoned page in page cache in order to solve the data loss problem.
+
+To make filesystems be aware of poisoned page we should consider:
+- The page should be not written back: clearing dirty flag could prevent from
+  writeback.
+- The page should not be dropped (it shows as a clean page) by drop caches or
+  other callers: the refcount pin from hwpoison could prevent from invalidating
+  (called by cache drop, inode cache shrinking, etc), but it doesn't avoid
+  invalidation in DIO path.
+- The page should be able to get truncated/hole punched/unlinked: it works as it
+  is.
+- Notify users when the page is accessed, e.g. read/write, page fault and other
+  paths (compression, encryption, etc).
+
+The scope of the last one is huge since almost all filesystems need do it once
+a page is returned from page cache lookup.  There are a couple of options to
+do it:
+
+1. Check hwpoison flag for every path, the most straightforward way.
+2. Return NULL for poisoned page from page cache lookup, the most callsites
+   check if NULL is returned, this should have least work I think.  But the
+   error handling in filesystems just return -ENOMEM, the error code will incur
+   confusion to the users obviously.
+3. To improve #2, we could return error pointer, e.g. ERR_PTR(-EIO), but this
+   will involve significant amount of code change as well since all the paths
+   need check if the pointer is ERR or not just like option #1.
+
+I did prototype for both #1 and #3, but it seems #3 may require more changes
+than #1.  For #3 ERR_PTR will be returned so all the callers need to check the
+return value otherwise invalid pointer may be dereferenced, but not all callers
+really care about the content of the page, for example, partial truncate which
+just sets the truncated range in one page to 0.  So for such paths it needs
+additional modification if ERR_PTR is returned.  And if the callers have their
+own way to handle the problematic pages we need to add a new FGP flag to tell
+FGP functions to return the pointer to the page.
+
+It may happen very rarely, but once it happens the consequence (data corruption)
+could be very bad and it is very hard to debug.  It seems this problem had been
+slightly discussed before, but seems no action was taken at that time. [2]
+
+As the aforementioned investigation, it needs huge amount of work to solve
+the potential data loss for all filesystems.  But it is much easier for
+in-memory filesystems and such filesystems actually suffer more than others
+since even the data blocks are gone due to truncating.  So this patchset starts
+from shmem/tmpfs by taking option #1.
+
+Patch #1 and #2: fix bugs in page fault and khugepaged.  And patch #2 also
+                 did some preparation for the later patches.
+Patch #3: keep the poisoned page in page cache and handle such case for all
+          the paths.
+Patch #4: the previous patches unblock page cache THP split, so this patch
+          add page cache THP split support.
+
+
+[1] https://lore.kernel.org/linux-mm/CAHbLzkqNPBh_sK09qfr4yu4WTFOzRy+MKj+PA7iG-adzi9zGsg@mail.gmail.com/T/#m0e959283380156f1d064456af01ae51fdff91265
+[2] https://lore.kernel.org/lkml/20210318183350.GT3420@casper.infradead.org/
+
