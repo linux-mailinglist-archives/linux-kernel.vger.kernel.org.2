@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCC440B3F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D3440B3FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhINP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:59:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235068AbhINP7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:59:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE9C61157;
-        Tue, 14 Sep 2021 15:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631635095;
-        bh=S40ApYu3+8/mXjIC0MgqMN4flPXp1mC5JHBKiqjo1mU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FFSrDnn337ksWTJSmQHorLozHC1AvfksczrybxHQxAff6uMmH6Dwf4OP/4Bczmmj4
-         7J+S47J4TnkJ+N3nEd+rwHyjQ5xvABF/+yKlmcr22rLMjuTlbFLrEqNqI+FG+S8f+G
-         iVUagUnpq9N9upNv0kaKgFFGn/ESt//P2W+3X1r1NpDN5OdZEfdahn7DHznBGOj9RA
-         vBTR4FQpIsV0z8KywH0Zbjb//tlfx/celRbb+L+GqyvInUcJhLZqZbNMLCcqm8cre2
-         W7Xkz/TT2OxoNlnYavIz+mNT/UnHi+IO/i6LbZrzMUmwi5EjejiEGCKB886Xb3+3uh
-         j8QGaBQWEMRvQ==
-Subject: Re: [PATCH] hardening: Default to INIT_STACK_ALL_ZERO if
- CC_HAS_AUTO_VAR_INIT_ZERO
-To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     linux-security-module@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210914102837.6172-1-will@kernel.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <01f572ab-bea2-f246-2f77-2f119056db84@kernel.org>
-Date:   Tue, 14 Sep 2021 08:58:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234896AbhINQAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232986AbhINQAf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:00:35 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F95C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:59:18 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id x27so29881090lfu.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:59:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XpWi4volfcYSm2oFWphGxI70Xoc4gQDszmXfggbAPag=;
+        b=bXLrDvRwiE9LUrsUdTaOb8qv3MpstEI39Z126QnyB2PTkNIRA+z5Ylw/tbECp2MHmV
+         gX1JHV2JOFK1e1MJCTTlwV1kibUe3fFGD3LyBUKt18UoGfT0okDbQ+10t1fJme/j5P5U
+         D2vgNrnv1RgcRafeCGUDJ8RsTcI/ITO4E3K7Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XpWi4volfcYSm2oFWphGxI70Xoc4gQDszmXfggbAPag=;
+        b=Ni0pxraCdHc8/Lucom68EsX5DkECLs/JJm7YoriB1NaKhnkYY/HGzJcmrHcAj2M6cR
+         4EzHHI/1Vs3uhFLu7Wp2bLTot+hpi0aeimRu8et+ttW1beWIRylVwGm/EZMXkSJyaDad
+         NcTF1X+G15Tdo3BRoq/4IMHH0/C2Ty2l5ypFnSWiUSTsV7uC5JrR0PlompQReh+IHwN7
+         g1bH7yAJMTCjhnK1tmvRbxAJGZaBoPxG/ueg8SUWvFBWgJ94HDREo3suPJ3u/otwfkID
+         QREE/DSDNQ27kgU6LjtVM0uQILrQMxEXqNqre5PVaNeWuO0kZ7DGQHLDhbD9A7I8ijEx
+         PO+Q==
+X-Gm-Message-State: AOAM532Qid4V6Wof/BlMgdY6/EfYOXYyvfhpGiaCy7F9/QIpCC7cbiOX
+        mEoIoMx35BJxjMdp9WF/kUqANmqwgU+KNEJYRCM=
+X-Google-Smtp-Source: ABdhPJy5pDzsndBmLt6Q2GuPPJoMuOudrfo6FoHF6B6m7psfe4pbgDiP74St57elPHMWhW7DDNtijw==
+X-Received: by 2002:a05:6512:3d94:: with SMTP id k20mr13667220lfv.260.1631635156175;
+        Tue, 14 Sep 2021 08:59:16 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id f7sm565131lfv.96.2021.09.14.08.59.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 08:59:14 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id s3so24825874ljp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:59:14 -0700 (PDT)
+X-Received: by 2002:a2e:8107:: with SMTP id d7mr16501365ljg.68.1631635154125;
+ Tue, 14 Sep 2021 08:59:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210914102837.6172-1-will@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-6-ardb@kernel.org>
+ <CAHk-=whLEofPLzzTKXN5etnH5WqsTPQRLVv8uQgHnx7c59omBg@mail.gmail.com> <CAMj1kXH_Q4a4Gsi0Xuw=YsV-b7Mu8TQndk3Ei-JFaRV=GSiqUQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXH_Q4a4Gsi0Xuw=YsV-b7Mu8TQndk3Ei-JFaRV=GSiqUQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Sep 2021 08:58:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiaVLChOjJ=7fdoQXKE4JHb98MjDtg8pPkA8EYfd5aj3g@mail.gmail.com>
+Message-ID: <CAHk-=wiaVLChOjJ=7fdoQXKE4JHb98MjDtg8pPkA8EYfd5aj3g@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/8] sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/2021 3:28 AM, Will Deacon wrote:
-> CC_HAS_AUTO_VAR_INIT_ZERO requires a supported set of compiler options
-> distinct from those needed by CC_HAS_AUTO_VAR_INIT_PATTERN, Fix up
-> the Kconfig dependency for INIT_STACK_ALL_ZERO to test for the former
-> instead of the latter, as these are the options passed by the top-level
-> Makefile.
-> 
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Fixes: dcb7c0b9461c ("hardening: Clarify Kconfig text for auto-var-init")
-> Signed-off-by: Will Deacon <will@kernel.org>
+On Tue, Sep 14, 2021 at 8:53 AM Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> task_cpu() takes a 'const struct task_struct *', whereas
+> task_thread_info() takes a 'struct task_struct *'.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Oh, annoying, but that's easily fixed. Just make that
 
-One comment below.
+   static inline struct thread_info *task_thread_info(struct
+task_struct *task) ..
 
-> ---
-> 
-> I just noticed this while reading the code and I suspect it doesn't really
-> matter in practice.
-> 
->   security/Kconfig.hardening | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-> index 90cbaff86e13..341e2fdcba94 100644
-> --- a/security/Kconfig.hardening
-> +++ b/security/Kconfig.hardening
-> @@ -29,7 +29,7 @@ choice
->   	prompt "Initialize kernel stack variables at function entry"
->   	default GCC_PLUGIN_STRUCTLEAK_BYREF_ALL if COMPILE_TEST && GCC_PLUGINS
->   	default INIT_STACK_ALL_PATTERN if COMPILE_TEST && CC_HAS_AUTO_VAR_INIT_PATTERN
-> -	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_PATTERN
-> +	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
->   	default INIT_STACK_NONE
->   	help
->   	  This option enables initialization of stack variables at
-> 
+be a simple
 
-While I think this change is correct in and of itself, 
-CONFIG_INIT_STACK_ALL_ZERO is broken with GCC 12.x, as 
-CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO won't be set even though GCC now 
-supports -ftrivial-auto-var-init=zero because GCC does not implement the 
--enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang 
-flag for obvious reasons ;) the cc-option call probably needs to be 
-adjusted.
+  #define task_thread_info(tsk) (&(tsk)->thread_info)
 
-Cheers,
-Nathan
+instead. That actually then matches the !THREAD_INFO_IN_TASK case anyway.
+
+Make the commit comment be about how that fixes the type problem.
+
+Because while in many cases inline functions are superior to macros,
+it clearly isn't the case in this case.
+
+              Linus
