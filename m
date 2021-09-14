@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6949740B971
+	by mail.lfdr.de (Postfix) with ESMTP id C934D40B972
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhINUtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:49:20 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:45600 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbhINUtT (ORCPT
+        id S234153AbhINUtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:49:22 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:38824 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234061AbhINUtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:49:19 -0400
-Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso353965otv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:01 -0700 (PDT)
+        Tue, 14 Sep 2021 16:49:20 -0400
+Received: by mail-ot1-f49.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso415128ots.5;
+        Tue, 14 Sep 2021 13:48:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qPvDQKhg1n1f8bGdwOBMSp3wn8j/wkX8Ohng/eBtZuo=;
-        b=fvxVpalMYfg59gDaMZaSMvyj2BKcTVAaSQgRWkURQZOwYY4Np3+GS70jCvnmeAIMY/
-         WHA9qTfYjztmzU6attLCE72XGsqKDLT3WA3uTYGBjR0U1LVFvameg+Lb4WQh6B24acJW
-         wn13jAFy3cM0mfSZ4wkhJdflXU6WAk7xoKVMb0MNl5OjWcRA3uc/YCSboeca0s7O16CD
-         V+Rnqg95hky/V/9dYOcUDTrOdulWV8J9PsIBIP9wEShf7gZPim15uCWDBN4TbjsclTGr
-         l86sF3SGDgHcr4x0mDJ3XvK42TK6thS9Mzhx/uXKCbCmH499BY76JiRNcS2pNj/bUyUW
-         +SFw==
-X-Gm-Message-State: AOAM531Gng2UdXe/zZl79VphrXpXzLMrkL4/xuXfdGV0lMb9+9U8OzS2
-        3+Pn59PDQ52GxfCF/3HGUg==
-X-Google-Smtp-Source: ABdhPJyftqojhfGKxSKyaWLt/UEECCPFADXQuVzv0HZtq5Fj7BVDHGinL/WxABRO0EQbSRSgQ724Vg==
-X-Received: by 2002:a9d:719b:: with SMTP id o27mr16665039otj.257.1631652481388;
-        Tue, 14 Sep 2021 13:48:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uDRIOAbaco8+BSUgKBvehxogpXwXvKtkYheC/i9Zz6o=;
+        b=nj0bIZwf5a1xZwbdXsy7bwC1d2N4PClF1K8a+jsA8XWPhjp/D464ysYBSugOt0nXwD
+         Tanb5sp+CjozGbtdxDMnhl/Fu+WsL/nX9prDHRgNg0H4VJIjmeKyoyCGQFAqzr48qm4/
+         YKrpTHqc+Kp1IBbtsyOcMXsf6FPxIAIG3M6+7wYLDDycR2lM4a5iXH+xP8lljs37ZKZH
+         UkIcABvg53uFeKB4xOslksAyv1blAuXO9xS0eWOjj8Vb13O6gVQU0eVyQj0hZC+SADcH
+         bIs9BlHy78h+LcwyNkrviKJ9oOF6+HdxrwLI2YzBbGycMNAG8MO28yy6oFa9d93pPKZx
+         3f3w==
+X-Gm-Message-State: AOAM533d/OOg2iWFfQjH6j/j1/ynYasmapykrW9XWtiUEKnnExLUOGS8
+        3p/323LEfe8BgR0VeedRMg==
+X-Google-Smtp-Source: ABdhPJxDg0ZgOkAhOmf9hw7oTaPl+RpE5u2yx9glWvv4gFjePmF3bu1T2firC/i95H0r26La87qCMQ==
+X-Received: by 2002:a9d:7294:: with SMTP id t20mr16515006otj.275.1631652482637;
+        Tue, 14 Sep 2021 13:48:02 -0700 (PDT)
 Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id y14sm2883236oti.69.2021.09.14.13.48.00
+        by smtp.googlemail.com with ESMTPSA id y14sm2883236oti.69.2021.09.14.13.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 13:48:01 -0700 (PDT)
+        Tue, 14 Sep 2021 13:48:02 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -50,149 +50,124 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Itaru Kitayama <itaru.kitayama@gmail.com>,
         Vince Weaver <vincent.weaver@maine.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v10 0/5] arm64 userspace counter support
-Date:   Tue, 14 Sep 2021 15:47:55 -0500
-Message-Id: <20210914204800.3945732-1-robh@kernel.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-perf-users@vger.kernel.org
+Subject: [PATCH v10 1/5] x86: perf: Move RDPMC event flag to a common definition
+Date:   Tue, 14 Sep 2021 15:47:56 -0500
+Message-Id: <20210914204800.3945732-2-robh@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210914204800.3945732-1-robh@kernel.org>
+References: <20210914204800.3945732-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another version of arm64 userspace counter access support.
+In preparation to enable user counter access on arm64 and to move some
+of the user access handling to perf core, create a common event flag for
+user counter access and convert x86 to use it.
 
-The arm64 support departs from the x86 implementation by requiring the user
-to explicitly request user access (via attr.config1) and only enables access
-for task bound events. Since usage is explicitly requested, access is
-enabled at perf_event_open() rather than on mmap() as that greatly
-simplifies the implementation. Rather than trying to lock down the access
-as the x86 implementation has been doing, we can start with only a limited
-use case enabled and later expand it if needed.
+Since the architecture specific flags start at the LSB, starting at the
+MSB for common flags.
 
-I've run this version thru Vince's perf tests[12] with arm64 support added.
-I wish I'd found these tests sooner...
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: linux-perf-users@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/x86/events/core.c       | 10 +++++-----
+ arch/x86/events/perf_event.h |  2 +-
+ include/linux/perf_event.h   |  2 ++
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-This originally resurrected Raphael's series[1] to enable userspace counter
-access on arm64. My previous versions are here[2][3][4][5][6][7][8][9][10].
-A git branch is here[11].
-
-Changes in v10:
- - Drop changing event_mapped/event_unmapped ops to run on the event's
-   current CPU. This won't work for x86 where any thread sharing an mm
-   context will have rdpmc enabled. Instead, simply track user access
-   events when added to a perf context and use that count.
- - Documentation for the sysctl disable
-
-Changes in v9:
- - Reworked x86 and perf core to handle user access tracking and call
-   .event_mapped() and .event_unmapped() on the CPU with the event like
-   other changes to events.
- - Use sysctl instead of sysfs to disable user access.
-
-Changes in v8:
- - Restrict user access to thread bound events which simplifies the
-   implementation. A couple of perf core changes (patches 1 and 2) are
-   needed to do this.
- - Always require the user to request userspace access.
-
-Changes in v7:
- - Handling of dirty counter leakage and reworking of context switch and
-   user access enabling. The .sched_task hook and undef instruction handler
-   are now utilized. (Patch 3)
- - Add a userspace disable switch like x86. (Patch 5)
-
-Changes in v6:
- - Reworking of the handling of 64-bit counters and user access. There's
-   a new config1 flag to request user access. This takes priority over
-   the 64-bit flag and the user will get the maximum size the h/w
-   supports without chaining.
- - The libperf evsel mmap struct is stored in its own xyarray
- - New tests for user 64-bit and 32-bit counters
- - Rebase to v5.12-rc2
-
-Changes in v5:
- - Limit enabling/disabling access to CPUs associated with the PMU
-   (supported_cpus) and with the mm_struct matching current->active_mm.
-   The x86 method of using mm_cpumask doesn't work for arm64 as it is not
-   updated.
- - Only set cap_user_rdpmc if event is on current cpu. See patch 2.
- - Create an mmap for every event in an evsel. This results in some changes
-   to the libperf mmap API from the last version.
- - Rebase to v5.11-rc2
-
-Changes in v4:
- - Dropped 'arm64: pmu: Add hook to handle pmu-related undefined instructions'.
-   The onus is on userspace to pin itself to a homogeneous subset of CPUs
-   and avoid any aborts on heterogeneous systems, so the hook is not needed.
- - Make perf_evsel__mmap() take pages rather than bytes for size
- - Fix building arm64 heterogeneous test.
-
-Changes in v3:
- - Dropped removing x86 rdpmc test until libperf tests can run via 'perf test'
- - Added verbose prints for tests
- - Split adding perf_evsel__mmap() to separate patch
-
-The following changes to the arm64 support have been made compared to
-Raphael's last version:
-
-The major change is support for heterogeneous systems with some
-restrictions. Specifically, userspace must pin itself to like CPUs, open
-a specific PMU by type, and use h/w specific events. The tests have been
-reworked to demonstrate this.
-
-Chained events are not supported. The problem with supporting chained
-events was there's no way to distinguish between a chained event and a
-native 64-bit counter. We could add some flag, but do self monitoring
-processes really need that? Native 64-bit counters are supported if the
-PMU h/w has support. As there's already an explicit ABI to request 64-bit
-counters, userspace can request 64-bit counters and if user
-access is not enabled, then it must retry with 32-bit counters.
-
-Prior versions broke the build on arm32 (surprisingly never caught by
-0-day). As a result, event_mapped and event_unmapped implementations have
-been moved into the arm64 code.
-
-There was a bug in that pmc_width was not set in the user page. The tests
-now check for this.
-
-The documentation has been converted to rST. I've added sections on
-chained events and heterogeneous.
-
-Rob
-
-
-[1] https://lore.kernel.org/r/20190822144220.27860-1-raphael.gault@arm.com/
-[2] https://lore.kernel.org/r/20200707205333.624938-1-robh@kernel.org/
-[3] https://lore.kernel.org/r/20200828205614.3391252-1-robh@kernel.org/
-[4] https://lore.kernel.org/r/20200911215118.2887710-1-robh@kernel.org/
-[5] https://lore.kernel.org/r/20201001140116.651970-1-robh@kernel.org/
-[6] https://lore.kernel.org/r/20210114020605.3943992-1-robh@kernel.org/
-[7] https://lore.kernel.org/r/20210311000837.3630499-1-robh@kernel.org/
-[8] https://lore.kernel.org/r/20210420031511.2348977-1-robh@kernel.org/
-[9] https://lore.kernel.org/r/20210517195405.3079458-1-robh@kernel.org/
-[10] https://lore.kernel.org/all/20210806225123.1958497-1-robh@kernel.org/
-[11] git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git arm64-user-perf-event-v10
-[12] https://github.com/deater/perf_event_tests
-
-Raphael Gault (1):
-  Documentation: arm64: Document PMU counters access from userspace
-
-Rob Herring (4):
-  x86: perf: Move RDPMC event flag to a common definition
-  perf: Add a counter for number of user access events in context
-  arm64: perf: Add userspace counter access disable switch
-  arm64: perf: Enable PMU counter userspace access for perf event
-
- Documentation/admin-guide/sysctl/kernel.rst |  11 ++
- Documentation/arm64/perf.rst                |  73 +++++++++++-
- arch/arm64/kernel/perf_event.c              | 126 ++++++++++++++++++--
- arch/x86/events/core.c                      |  10 +-
- arch/x86/events/perf_event.h                |   2 +-
- include/linux/perf_event.h                  |   3 +
- kernel/events/core.c                        |   4 +
- 7 files changed, 215 insertions(+), 14 deletions(-)
-
---
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 2a57dbed4894..2bd50fc061e1 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2469,7 +2469,7 @@ static int x86_pmu_event_init(struct perf_event *event)
+ 
+ 	if (READ_ONCE(x86_pmu.attr_rdpmc) &&
+ 	    !(event->hw.flags & PERF_X86_EVENT_LARGE_PEBS))
+-		event->hw.flags |= PERF_X86_EVENT_RDPMC_ALLOWED;
++		event->hw.flags |= PERF_EVENT_FLAG_USER_READ_CNT;
+ 
+ 	return err;
+ }
+@@ -2503,7 +2503,7 @@ void perf_clear_dirty_counters(void)
+ 
+ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ {
+-	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
++	if (!(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT))
+ 		return;
+ 
+ 	/*
+@@ -2524,7 +2524,7 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ 
+ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+ {
+-	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
++	if (!(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT))
+ 		return;
+ 
+ 	if (atomic_dec_and_test(&mm->context.perf_rdpmc_allowed))
+@@ -2535,7 +2535,7 @@ static int x86_pmu_event_idx(struct perf_event *event)
+ {
+ 	struct hw_perf_event *hwc = &event->hw;
+ 
+-	if (!(hwc->flags & PERF_X86_EVENT_RDPMC_ALLOWED))
++	if (!(hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
+ 		return 0;
+ 
+ 	if (is_metric_idx(hwc->idx))
+@@ -2718,7 +2718,7 @@ void arch_perf_update_userpage(struct perf_event *event,
+ 	userpg->cap_user_time = 0;
+ 	userpg->cap_user_time_zero = 0;
+ 	userpg->cap_user_rdpmc =
+-		!!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED);
++		!!(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT);
+ 	userpg->pmc_width = x86_pmu.cntval_bits;
+ 
+ 	if (!using_native_sched_clock() || !sched_clock_stable())
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index e3ac05c97b5e..49f68b15745f 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -73,7 +73,7 @@ static inline bool constraint_match(struct event_constraint *c, u64 ecode)
+ #define PERF_X86_EVENT_PEBS_NA_HSW	0x0010 /* haswell style datala, unknown */
+ #define PERF_X86_EVENT_EXCL		0x0020 /* HT exclusivity on counter */
+ #define PERF_X86_EVENT_DYNAMIC		0x0040 /* dynamic alloc'd constraint */
+-#define PERF_X86_EVENT_RDPMC_ALLOWED	0x0080 /* grant rdpmc permission */
++
+ #define PERF_X86_EVENT_EXCL_ACCT	0x0100 /* accounted EXCL event */
+ #define PERF_X86_EVENT_AUTO_RELOAD	0x0200 /* use PEBS auto-reload */
+ #define PERF_X86_EVENT_LARGE_PEBS	0x0400 /* use large PEBS */
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index fe156a8170aa..12debf008d39 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -142,6 +142,8 @@ struct hw_perf_event {
+ 			int		event_base_rdpmc;
+ 			int		idx;
+ 			int		last_cpu;
++
++#define PERF_EVENT_FLAG_USER_READ_CNT	0x80000000
+ 			int		flags;
+ 
+ 			struct hw_perf_event_extra extra_reg;
+-- 
 2.30.2
+
