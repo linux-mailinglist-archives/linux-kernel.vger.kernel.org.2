@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC2340B6C7
+	by mail.lfdr.de (Postfix) with ESMTP id E8E4240B6C8
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhINSZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:25:18 -0400
+        id S232019AbhINSZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:25:19 -0400
 Received: from mga06.intel.com ([134.134.136.31]:52821 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230458AbhINSZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:25:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="283094766"
+        id S231284AbhINSZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 14:25:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="283094772"
 X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="283094766"
+   d="scan'208";a="283094772"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:23:55 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:23:57 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="470309638"
+   d="scan'208";a="470309639"
 Received: from nntpdsd52-165.inn.intel.com ([10.125.52.165])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Sep 2021 11:23:53 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 14 Sep 2021 11:23:55 -0700
 From:   alexander.antonov@linux.intel.com
 To:     peterz@infradead.org, linux-kernel@vger.kernel.org
 Cc:     kan.liang@linux.intel.com, ak@linux.intel.com,
         alexey.v.bayduraev@linux.intel.com,
         alexander.antonov@linux.intel.com
-Subject: [PATCH 2/3] Fix IIO event constraints for Skylake Server
-Date:   Tue, 14 Sep 2021 21:23:48 +0300
-Message-Id: <20210914182349.36186-3-alexander.antonov@linux.intel.com>
+Subject: [PATCH 3/3] Fix IIO event constraints for Snowridge
+Date:   Tue, 14 Sep 2021 21:23:49 +0300
+Message-Id: <20210914182349.36186-4-alexander.antonov@linux.intel.com>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20210914182349.36186-1-alexander.antonov@linux.intel.com>
 References: <20210914182349.36186-1-alexander.antonov@linux.intel.com>
@@ -40,29 +40,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-According to the latest uncore document, COMP_BUF_OCCUPANCY (0xd5) event
-can be collected on 2-3 counters. Update uncore IIO event constraints for
-Skylake Server.
+According to the latest uncore document, DATA_REQ_OF_CPU (0x83),
+DATA_REQ_BY_CPU (0xc0) and COMP_BUF_OCCUPANCY (0xd5) events have
+constraints. Add uncore IIO constraints for Snowridge.
 
-Fixes: cd34cd97b7b4 ("perf/x86/intel/uncore: Add Skylake server uncore support")
+Fixes: 210cc5f9db7a ("perf/x86/intel/uncore: Add uncore support for Snow Ridge server")
 Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
 ---
- arch/x86/events/intel/uncore_snbep.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/events/intel/uncore_snbep.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 9cc65a4194ce..4aa675a8a8eb 100644
+index 4aa675a8a8eb..2143be4b8e7a 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3677,6 +3677,7 @@ static struct event_constraint skx_uncore_iio_constraints[] = {
- 	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
- 	UNCORE_EVENT_CONSTRAINT(0xc5, 0xc),
- 	UNCORE_EVENT_CONSTRAINT(0xd4, 0xc),
-+	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
- 	EVENT_CONSTRAINT_END
- };
+@@ -4528,6 +4528,13 @@ static void snr_iio_cleanup_mapping(struct intel_uncore_type *type)
+ 	pmu_iio_cleanup_mapping(type, &snr_iio_mapping_group);
+ }
  
++static struct event_constraint snr_uncore_iio_constraints[] = {
++	UNCORE_EVENT_CONSTRAINT(0x83, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
++	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
++	EVENT_CONSTRAINT_END
++};
++
+ static struct intel_uncore_type snr_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -4539,6 +4546,7 @@ static struct intel_uncore_type snr_uncore_iio = {
+ 	.event_mask_ext		= SNR_IIO_PMON_RAW_EVENT_MASK_EXT,
+ 	.box_ctl		= SNR_IIO_MSR_PMON_BOX_CTL,
+ 	.msr_offset		= SNR_IIO_MSR_OFFSET,
++	.constraints		= snr_uncore_iio_constraints,
+ 	.ops			= &ivbep_uncore_msr_ops,
+ 	.format_group		= &snr_uncore_iio_format_group,
+ 	.attr_update		= snr_iio_attr_update,
 -- 
 2.21.3
 
