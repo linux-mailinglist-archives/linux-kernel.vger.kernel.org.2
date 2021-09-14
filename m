@@ -2,183 +2,782 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1442540B45C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8001540B45F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhINQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhINQT1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:19:27 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21539C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:18:10 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id y18so17888397ioc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=engleder-embedded-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RZGtX95KhDg6cOU6Ei2dCC/slYztCW/EyX0L9hAZFtM=;
-        b=ZJsotc+H2nYSr7+EQJ92nPpKJeN4hqtXVJ6wQN+VAhtNvYFgslAz+2Nbyj1loKz6R7
-         SfsLj04uR8i5G+ZMADV5pyLYwkiGM+CjVhrlhBHoFdat39xj7pnU+wi3kQnXL8/nCAnS
-         +ZmhHZVVTqvhSShkKo9FqC6kwBOagzOoEHdjPMXwZXSDPxvTXW9MhrXBpXfAwG9dWDyE
-         xecfpYKkXymSnbEajHYkUAulnlFPStl2skxJffCu+jRcIwIGj+gWlDAJooU1KYS/VGPy
-         HLrHvKArqtJkt3mA75f1xfcMb2cUG7Igs9af6Wq4jmPPAu1PprJvrX+uW1QpxEqU7+AF
-         og0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RZGtX95KhDg6cOU6Ei2dCC/slYztCW/EyX0L9hAZFtM=;
-        b=S64CPUpG/nu4o5c4lxfBSluhJPuQcPzxnMLyQYqOIIOXUpT3lLn1nFWpskiMvKrivO
-         V9nKLb7etkj90QDhTfkVSQj8YFrTFrhjrDFxU+z+9HtGCUEvweEB4ETiUnrdk02Hbcj4
-         3Qc/GuWYcEOpEWVlRtT604K9eOmj9dN2bN6p3D58Z76bfmnEGhaJe4MtOD/9GjlzB9JF
-         dvET3tlQMl8CB9G5sFUZ+j4+s4WUoj7ARMcayoFL4AbOmBbucV5csU4eKMChydJchbpi
-         bAc6OR/krY10IV7DYHsjehZPRFt+8Gkm1PIBgBQd3hcE6OkpQkQg1m1fmISreURd3U/b
-         oypg==
-X-Gm-Message-State: AOAM530YEAA/FRyzSi8her5Ij9v5KTlrvASsUT56y/AxJqNRvQuRgt09
-        Q9Ka3lyzzzmbbpKN0P9LC9RZDnImWvMc3lMipKGZ5A==
-X-Google-Smtp-Source: ABdhPJxgZagzAwO71dWHLXcdxeoMc/StkZk6J673IGRLD9RYbM4wcXihL2Z0SpALCePj2yVn3BWZHM71Hq98MUBaxdY=
-X-Received: by 2002:a02:cf06:: with SMTP id q6mr15264233jar.89.1631636289436;
- Tue, 14 Sep 2021 09:18:09 -0700 (PDT)
+        id S229753AbhINQTr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Sep 2021 12:19:47 -0400
+Received: from aposti.net ([89.234.176.197]:41344 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229526AbhINQTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:19:45 -0400
+Date:   Tue, 14 Sep 2021 17:18:17 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2] MIPS: Avoid macro redefinitions
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        list@opendingux.net, clang-built-linux@googlegroups.com
+Message-Id: <HMMFZQ.4BHOG14DQZPA3@crapouillou.net>
+In-Reply-To: <CAKwvOdknN5O2gDUXwLwQDhxJc15foagrfW=+u+6vtxKVHmwDOQ@mail.gmail.com>
+References: <20210913213415.527306-1-paul@crapouillou.net>
+        <CAKwvOdknN5O2gDUXwLwQDhxJc15foagrfW=+u+6vtxKVHmwDOQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210912192805.1394305-1-vladimir.oltean@nxp.com>
- <CANr-f5wCpcPM+FbeW+x-JmZt0-WmE=b5Ys1Pa_G7p8v3nLyCcQ@mail.gmail.com>
- <20210912213855.kxoyfqdyxktax6d3@skbuf> <YT+dL1R/DTVBWQ7D@lunn.ch>
- <20210914120617.iaqaukal3riridew@skbuf> <YUCytc0+ChhcdOo+@lunn.ch> <20210914151525.gg2ifaqqxrmytaxm@skbuf>
-In-Reply-To: <20210914151525.gg2ifaqqxrmytaxm@skbuf>
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-Date:   Tue, 14 Sep 2021 18:17:58 +0200
-Message-ID: <CANr-f5zNnywpNxMAmNDv60otqXo2oGKiQpT2BL3VraOZftGc4w@mail.gmail.com>
-Subject: Re: [RFC PATCH net] Revert "net: phy: Uniform PHY driver access"
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 5:15 PM Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
-> On Tue, Sep 14, 2021 at 04:33:25PM +0200, Andrew Lunn wrote:
-> > On Tue, Sep 14, 2021 at 12:06:18PM +0000, Vladimir Oltean wrote:
-> > > On Mon, Sep 13, 2021 at 08:49:19PM +0200, Andrew Lunn wrote:
-> > > > > I am not sure why "to_phy_driver" needs cleanup. Au contraire, I think
-> > > > > the PHY library's usage of struct phy_device :: drv is what is strange
-> > > > > and potentially buggy, it is the only subsystem I know of that keeps its
-> > > > > own driver pointer rather than looking at struct device :: driver.
-> > > >
-> > > > There is one odd driver in the mix. Take a look at xilinx_gmii2rgmii.c.
-> > > >
-> > > > It probably could be done a better way, but that is what we have.
-> > >
-> > > Interesting, to say the least. Also, is there any connection between
-> > > that and the revert I'm proposing?
-> >
-> > If i remember correctly, Gerhard Engleder is actually using this, and
-> > ran into a problem because the wrong driver structure was used.
+Hi Nick,
 
-Yes, but that was about phy_loopback and was fixed in the commit before.
-With this commit I tried to fix the remaining similar problems like the wrong
-driver structure use in phy_loopback. But as explained by Vladimir I failed.
-So it is totally ok to revert this commit, no functionality is lost.
+Le mar., sept. 14 2021 at 08:56:59 -0700, Nick Desaulniers 
+<ndesaulniers@google.com> a écrit :
+>  On Mon, Sep 13, 2021 at 2:34 PM Paul Cercueil <paul@crapouillou.net> 
+> wrote:
+>> 
+>>  To be able to compile the kernel with LTO, the assembler macros 
+>> cannot
+>>  be declared in the global scope, or the compiler will complain about
+>>  redefined macros.
+>> 
+>>  Update the code so that macros are defined then undefined when they 
+>> are
+>>  used.
+>> 
+>>  Note that virt support was added in 2.24 and xpa in 2.25. So we 
+>> still
+>>  need the TOOLCHAIN defines for them.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>> 
+>>  Notes:
+>>      v2: Removed commented undef line
+> 
+> Hi Paul, thanks for the v2. I think the point of the #undef was that
+> the _IFC_REG doesn't make sense outside of this header, so they
+> probably did not want to pollute the namespace for preprocessor
+> defines.  As such, I think it should actually stay, not be removed (or
+> commented out).
 
-> > > So compared to other vendors, where the RGMII gasket is part of the MAC
-> > > device, with Xilinx Zynq it is accessible via MDIO?
-> >
-> > Yes. Its control plane sits on the MDIO bus. Unfortunately, it does
-> > not have any ID registers, so it does not directly appear as a PHY. So
-> > it does interesting things it put itself in the control path to the
-> > real PHY.
-> >
-> > > It looks like it is said that this GMII2RGMII converter can be placed in
-> > > front of any GMII MAC. Nice that there are zero in-tree users of
-> > > "xlnx,gmii-to-rgmii-1.0" so that I could figure out exactly how that
-> > > plays out in practice.
-> >
-> > If you look back at the thread for that patch, i think Gerhard posted
-> > a DT fragment he is using. Hopefully it will get submitted as a full
-> > board description at some point.
+I can test it again later, but IIRC the #undef must be removed. Since 
+we use the new _ASM_SET_PARSE_R macro, which uses _IFC_REG, if we 
+#undef it early then it won't compile.
 
-I submitted it, but Michal Simek argumented that dts files of FPGA logic shall
-not be part of mainline. I suggested that at least one reference
-platform for every
-FPGA based IP core should be allowed, but he said that no one is able
-to test it.
-So it seems that you will never see any dts file which contains FPGA logic in
-mainline. I will try to submit it again if anyone will support me?
+Cheers,
+-Paul
 
-> > > Note that th                       e usage of priv->phy_dev, priv->phy_drv, priv->conv_phy_drv
-> > > beats me. Why is "phy_dev" kept inside "priv" even though it is accessed
-> > > only inside xgmiitorgmii_probe? Why does xgmiitorgmii_configure() need to
-> > > be called from xgmiitorgmii_read_status() which in turn hooks into the
-> > > attached PHY driver's phy_read_status()? Why does xgmiitorgmii_configure
-> > > not get exported and called from an .adjust_link method or the phylink
-> > > equivalent, like any other MAC-side hardware linked with the PHY library
-> > > in the kernel?
-> >
-> > I was never happy with this driver. It got submitted before i went on
-> > vacation, i had a few rounds trying to get the submitter to refactor
-> > it and was mostly ignored. I left on vacation with lots of open review
-> > points, and when i got back it had been merged. And the original
-> > submitters never responded to my requests for improvements.
->
-> Sorry, this is a rabbit hole I really don't want to go into. Allowing it
-> to override PHY driver functions in order to 'automagically' configure
-> itself when the PHY driver does stuff is probably where the bad decision
-> was, everything from there is just the resulting fallout.
->
-> Why don't all MAC drivers just hook themselves into the PHY driver's
-> ->read_status method and configure themselves from there?! Why do we
-> even need adjust_link, phylink, any of that? It's just a small
-> pointer/driver override, the PHY library supports it.
->
-> I have dug up this discussion where your stance seemed to be that
-> "you want the MAC phy-handle to point to the gmii_to_rgmii 'PHY'"
-> https://lore.kernel.org/netdev/20190309161912.GD9000@lunn.ch/#t
->
-> I am not really sure if that particular reply went towards making this
-> driver's design any saner than it is. As explained by Harini Katakam in
-> his reply to you, the GMII2RGMII converter is not a PHY, and should
-> therefore not be treated like one. It is an RGMII gasket for the MAC.
-> Treating it as a satellite device of the MAC, which happens by chance to
-> sit on an MDIO bus, but having otherwise nothing to do with the PHY
-> library, sounds like a more normal approach (please note that it is
-> quite likely I am oversimplifying some things since I just learned about
-> this).
+>> 
+>>   arch/mips/include/asm/ginvt.h                 |  11 +-
+>>   .../asm/mach-loongson64/loongson_regs.h       |  12 ++
+>>   arch/mips/include/asm/mipsregs.h              | 190 
+>> +++++++++++-------
+>>   arch/mips/include/asm/msa.h                   |  34 +++-
+>>   4 files changed, 155 insertions(+), 92 deletions(-)
+>> 
+>>  diff --git a/arch/mips/include/asm/ginvt.h 
+>> b/arch/mips/include/asm/ginvt.h
+>>  index 6eb7c2b94dc7..87b2974ffc53 100644
+>>  --- a/arch/mips/include/asm/ginvt.h
+>>  +++ b/arch/mips/include/asm/ginvt.h
+>>  @@ -12,11 +12,13 @@ enum ginvt_type {
+>> 
+>>   #ifdef TOOLCHAIN_SUPPORTS_GINV
+>>   # define _ASM_SET_GINV ".set   ginv\n"
+>>  +# define _ASM_UNSET_GINV
+>>   #else
+>>  -_ASM_MACRO_1R1I(ginvt, rs, type,
+>>  -               _ASM_INSN_IF_MIPS(0x7c0000bd | (__rs << 21) | 
+>> (\\type << 8))
+>>  -               _ASM_INSN32_IF_MM(0x0000717c | (__rs << 16) | 
+>> (\\type << 9)));
+>>  -# define _ASM_SET_GINV
+>>  +# define _ASM_SET_GINV                                             
+>>     \
+>>  +       _ASM_MACRO_1R1I(ginvt, rs, type,                            
+>>     \
+>>  +                       _ASM_INSN_IF_MIPS(0x7c0000bd | (__rs << 21) 
+>> | (\\type << 8))    \
+>>  +                       _ASM_INSN32_IF_MM(0x0000717c | (__rs << 16) 
+>> | (\\type << 9)))
+>>  +# define _ASM_UNSET_GINV ".purgem ginvt\n"
+>>   #endif
+>> 
+>>   static __always_inline void ginvt(unsigned long addr, enum 
+>> ginvt_type type)
+>>  @@ -25,6 +27,7 @@ static __always_inline void ginvt(unsigned long 
+>> addr, enum ginvt_type type)
+>>                  ".set   push\n"
+>>                  _ASM_SET_GINV
+>>                  "       ginvt   %0, %1\n"
+>>  +               _ASM_UNSET_GINV
+>>                  ".set   pop"
+>>                  : /* no outputs */
+>>                  : "r"(addr), "i"(type)
+>>  diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h 
+>> b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+>>  index 165993514762..b5be7511f6cd 100644
+>>  --- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+>>  +++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+>>  @@ -21,8 +21,10 @@ static inline u32 read_cpucfg(u32 reg)
+>>          u32 __res;
+>> 
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r __res,%0\n\t"
+>>                  "parse_r reg,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8080118 | (reg << 21) | (__res << 
+>> 11))\n\t"
+>>                  :"=r"(__res)
+>>  @@ -143,8 +145,10 @@ static inline u32 csr_readl(u32 reg)
+>> 
+>>          /* RDCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r __res,%0\n\t"
+>>                  "parse_r reg,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8000118 | (reg << 21) | (__res << 
+>> 11))\n\t"
+>>                  :"=r"(__res)
+>>  @@ -160,8 +164,10 @@ static inline u64 csr_readq(u32 reg)
+>> 
+>>          /* DRDCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r __res,%0\n\t"
+>>                  "parse_r reg,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8020118 | (reg << 21) | (__res << 
+>> 11))\n\t"
+>>                  :"=r"(__res)
+>>  @@ -175,8 +181,10 @@ static inline void csr_writel(u32 val, u32 reg)
+>>   {
+>>          /* WRCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r reg,%0\n\t"
+>>                  "parse_r val,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8010118 | (reg << 21) | (val << 11))\n\t"
+>>                  :
+>>  @@ -189,8 +197,10 @@ static inline void csr_writeq(u64 val, u32 reg)
+>>   {
+>>          /* DWRCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r reg,%0\n\t"
+>>                  "parse_r val,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8030118 | (reg << 21) | (val << 11))\n\t"
+>>                  :
+>>  @@ -243,8 +253,10 @@ static inline u64 drdtime(void)
+>>          u64 val = 0;
+>> 
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r rID,%0\n\t"
+>>                  "parse_r val,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8090118 | (rID << 21) | (val << 11))\n\t"
+>>                  :"=r"(rID),"=r"(val)
+>>  diff --git a/arch/mips/include/asm/mipsregs.h 
+>> b/arch/mips/include/asm/mipsregs.h
+>>  index acdf8c69220b..2616353b940c 100644
+>>  --- a/arch/mips/include/asm/mipsregs.h
+>>  +++ b/arch/mips/include/asm/mipsregs.h
+>>  @@ -1297,22 +1297,22 @@ static inline int mm_insn_16bit(u16 insn)
+>>          "\\var  = " #n "\n\t"                   \
+>>          ".endif\n\t"
+>> 
+>>  -__asm__(".macro        parse_r var r\n\t"
+>>  -       "\\var  = -1\n\t"
+>>  -       _IFC_REG(0)  _IFC_REG(1)  _IFC_REG(2)  _IFC_REG(3)
+>>  -       _IFC_REG(4)  _IFC_REG(5)  _IFC_REG(6)  _IFC_REG(7)
+>>  -       _IFC_REG(8)  _IFC_REG(9)  _IFC_REG(10) _IFC_REG(11)
+>>  -       _IFC_REG(12) _IFC_REG(13) _IFC_REG(14) _IFC_REG(15)
+>>  -       _IFC_REG(16) _IFC_REG(17) _IFC_REG(18) _IFC_REG(19)
+>>  -       _IFC_REG(20) _IFC_REG(21) _IFC_REG(22) _IFC_REG(23)
+>>  -       _IFC_REG(24) _IFC_REG(25) _IFC_REG(26) _IFC_REG(27)
+>>  -       _IFC_REG(28) _IFC_REG(29) _IFC_REG(30) _IFC_REG(31)
+>>  -       ".iflt  \\var\n\t"
+>>  -       ".error \"Unable to parse register name \\r\"\n\t"
+>>  -       ".endif\n\t"
+>>  -       ".endm");
+>>  -
+>>  -#undef _IFC_REG
+> 
+> ^ ie. I don't think we want to remove this undef.
+> 
+>>  +#define _ASM_SET_PARSE_R                                           
+>>     \
+>>  +       ".macro parse_r var r\n\t"                                  
+>>     \
+>>  +       "\\var  = -1\n\t"                                           
+>>     \
+>>  +       _IFC_REG(0)  _IFC_REG(1)  _IFC_REG(2)  _IFC_REG(3)          
+>>     \
+>>  +       _IFC_REG(4)  _IFC_REG(5)  _IFC_REG(6)  _IFC_REG(7)          
+>>     \
+>>  +       _IFC_REG(8)  _IFC_REG(9)  _IFC_REG(10) _IFC_REG(11)         
+>>     \
+>>  +       _IFC_REG(12) _IFC_REG(13) _IFC_REG(14) _IFC_REG(15)         
+>>     \
+>>  +       _IFC_REG(16) _IFC_REG(17) _IFC_REG(18) _IFC_REG(19)         
+>>     \
+>>  +       _IFC_REG(20) _IFC_REG(21) _IFC_REG(22) _IFC_REG(23)         
+>>     \
+>>  +       _IFC_REG(24) _IFC_REG(25) _IFC_REG(26) _IFC_REG(27)         
+>>     \
+>>  +       _IFC_REG(28) _IFC_REG(29) _IFC_REG(30) _IFC_REG(31)         
+>>     \
+>>  +       ".iflt  \\var\n\t"                                          
+>>     \
+>>  +       ".error \"Unable to parse register name \\r\"\n\t"          
+>>     \
+>>  +       ".endif\n\t"                                                
+>>     \
+>>  +       ".endm\n\t"
+>>  +#define _ASM_UNSET_PARSE_R ".purgem parse_r\n\t"
+>> 
+>>   /*
+>>    * C macros for generating assembler macros for common instruction 
+>> formats.
+>>  @@ -1322,43 +1322,45 @@ __asm__(".macro parse_r var r\n\t"
+>>    * the ENC encodings.
+>>    */
+>> 
+>>  -/* Instructions with no operands */
+>>  -#define _ASM_MACRO_0(OP, ENC)                                      
+>>     \
+>>  -       __asm__(".macro " #OP "\n\t"                                
+>>     \
+>>  -               ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  -
+>>   /* Instructions with 1 register operand & 1 immediate operand */
+>>   #define _ASM_MACRO_1R1I(OP, R1, I2, ENC)                           
+>>     \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #I2 "\n\t"               
+>>     \
+>>  +               ".macro " #OP " " #R1 ", " #I2 "\n\t"               
+>>     \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /* Instructions with 2 register operands */
+>>   #define _ASM_MACRO_2R(OP, R1, R2, ENC)                             
+>>     \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #R2 "\n\t"               
+>>     \
+>>  +               ".macro " #OP " " #R1 ", " #R2 "\n\t"               
+>>     \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R2 ", \\" #R2 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /* Instructions with 3 register operands */
+>>   #define _ASM_MACRO_3R(OP, R1, R2, R3, ENC)                         
+>>     \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #R2 ", " #R3 "\n\t"      
+>>     \
+>>  +               ".macro " #OP " " #R1 ", " #R2 ", " #R3 "\n\t"      
+>>     \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R2 ", \\" #R2 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R3 ", \\" #R3 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /* Instructions with 2 register operands and 1 optional select 
+>> operand */
+>>   #define _ASM_MACRO_2R_1S(OP, R1, R2, SEL3, ENC)                    
+>>             \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #R2 ", " #SEL3 " = 
+>> 0\n\t"    \
+>>  +               ".macro " #OP " " #R1 ", " #R2 ", " #SEL3 " = 
+>> 0\n\t"    \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R2 ", \\" #R2 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /*
+>>    * TLB Invalidate Flush
+>>  @@ -1618,15 +1620,21 @@ do {                                        
+>>                             \
+>>   } while (0)
+>> 
+>>   #ifndef TOOLCHAIN_SUPPORTS_XPA
+>>  -_ASM_MACRO_2R_1S(mfhc0, rt, rs, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40400000 | __rt << 16 | __rs << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000000f4 | __rt << 21 | __rs << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(mthc0, rt, rd, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40c00000 | __rt << 16 | __rd << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000002f4 | __rt << 21 | __rd << 16 | 
+>> \\sel << 11));
+>>  -#define _ASM_SET_XPA ""
+>>  +#define _ASM_SET_MFHC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mfhc0, rt, rs, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40400000 | __rt << 16 
+>> | __rs << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000000f4 | __rt << 21 
+>> | __rs << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MFHC0 ".purgem mfhc0\n\t"
+>>  +#define _ASM_SET_MTHC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mthc0, rt, rd, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40c00000 | __rt << 16 
+>> | __rd << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000002f4 | __rt << 21 
+>> | __rd << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MTHC0 ".purgem mthc0\n\t"
+>>   #else  /* !TOOLCHAIN_SUPPORTS_XPA */
+>>  -#define _ASM_SET_XPA ".set\txpa\n\t"
+>>  +#define _ASM_SET_MFHC0 ".set\txpa\n\t"
+>>  +#define _ASM_SET_MTHC0 ".set\txpa\n\t"
+>>  +#define _ASM_UNSET_MFHC0
+>>  +#define _ASM_UNSET_MTHC0
+>>   #endif
+>> 
+>>   #define __readx_32bit_c0_register(source, sel)                     
+>>     \
+>>  @@ -1636,8 +1644,9 @@ _ASM_MACRO_2R_1S(mthc0, rt, rd, sel,
+>>          __asm__ __volatile__(                                       
+>>     \
+>>          "       .set    push                                    \n" 
+>>     \
+>>          "       .set    mips32r2                                \n" 
+>>     \
+>>  -       _ASM_SET_XPA                                                
+>>     \
+>>  +       _ASM_SET_MFHC0                                              
+>>     \
+>>          "       mfhc0   %0, " #source ", %1                     \n" 
+>>     \
+>>  +       _ASM_UNSET_MFHC0                                            
+>>     \
+>>          "       .set    pop                                     \n" 
+>>     \
+>>          : "=r" (__res)                                              
+>>     \
+>>          : "i" (sel));                                               
+>>     \
+>>  @@ -1649,8 +1658,9 @@ do {                                          
+>>                             \
+>>          __asm__ __volatile__(                                       
+>>     \
+>>          "       .set    push                                    \n" 
+>>     \
+>>          "       .set    mips32r2                                \n" 
+>>     \
+>>  -       _ASM_SET_XPA                                                
+>>     \
+>>  +       _ASM_SET_MTHC0                                              
+>>     \
+>>          "       mthc0   %z0, " #register ", %1                  \n" 
+>>     \
+>>  +       _ASM_UNSET_MTHC0                                            
+>>     \
+>>          "       .set    pop                                     \n" 
+>>     \
+>>          :                                                           
+>>     \
+>>          : "Jr" (value), "i" (sel));                                 
+>>     \
+>>  @@ -2046,31 +2056,58 @@ do {                                        
+>>                             \
+>>    */
+>> 
+>>   #ifndef TOOLCHAIN_SUPPORTS_VIRT
+>>  -_ASM_MACRO_2R_1S(mfgc0, rt, rs, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600000 | __rt << 16 | __rs << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000004fc | __rt << 21 | __rs << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(dmfgc0, rt, rs, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600100 | __rt << 16 | __rs << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x580004fc | __rt << 21 | __rs << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(mtgc0, rt, rd, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600200 | __rt << 16 | __rd << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000006fc | __rt << 21 | __rd << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(dmtgc0, rt, rd, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600300 | __rt << 16 | __rd << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x580006fc | __rt << 21 | __rd << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_0(tlbgp,    _ASM_INSN_IF_MIPS(0x42000010)
+>>  -                      _ASM_INSN32_IF_MM(0x0000017c));
+>>  -_ASM_MACRO_0(tlbgr,    _ASM_INSN_IF_MIPS(0x42000009)
+>>  -                      _ASM_INSN32_IF_MM(0x0000117c));
+>>  -_ASM_MACRO_0(tlbgwi,   _ASM_INSN_IF_MIPS(0x4200000a)
+>>  -                      _ASM_INSN32_IF_MM(0x0000217c));
+>>  -_ASM_MACRO_0(tlbgwr,   _ASM_INSN_IF_MIPS(0x4200000e)
+>>  -                      _ASM_INSN32_IF_MM(0x0000317c));
+>>  -_ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
+>>  -                      _ASM_INSN32_IF_MM(0x0000517c));
+>>  -#define _ASM_SET_VIRT ""
+>>  +#define _ASM_SET_MFGC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mfgc0, rt, rs, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600000 | __rt << 16 
+>> | __rs << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000004fc | __rt << 21 
+>> | __rs << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MFGC0 ".purgem mfgc0\n\t"
+>>  +#define _ASM_SET_DMFGC0                                            
+>>             \
+>>  +       _ASM_MACRO_2R_1S(dmfgc0, rt, rs, sel,                       
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600100 | __rt << 16 
+>> | __rs << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x580004fc | __rt << 21 
+>> | __rs << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_DMFGC0 ".purgem dmfgc0\n\t"
+>>  +#define _ASM_SET_MTGC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mtgc0, rt, rd, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600200 | __rt << 16 
+>> | __rd << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000006fc | __rt << 21 
+>> | __rd << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MTGC0 ".purgem mtgc0\n\t"
+>>  +#define _ASM_SET_DMTGC0                                            
+>>             \
+>>  +       _ASM_MACRO_2R_1S(dmtgc0, rt, rd, sel,                       
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600300 | __rt << 16 
+>> | __rd << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x580006fc | __rt << 21 
+>> | __rd << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_DMTGC0 ".purgem dmtgc0\n\t"
+>>  +
+>>  +#define __tlbgp()                                                  
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x42000010)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000017c)
+>>  +#define __tlbgr()                                                  
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x42000009)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000117c)
+>>  +#define __tlbgwi()                                                 
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x4200000a)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000217c)
+>>  +#define __tlbgwr()                                                 
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x4200000e)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000317c)
+>>  +#define __tlbginvf()                                               
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x4200000c)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000517c)
+>>   #else  /* !TOOLCHAIN_SUPPORTS_VIRT */
+>>   #define _ASM_SET_VIRT ".set\tvirt\n\t"
+>>  +#define _ASM_SET_MFGC0 _ASM_SET_VIRT
+>>  +#define _ASM_SET_DMFGC0        _ASM_SET_VIRT
+>>  +#define _ASM_SET_MTGC0 _ASM_SET_VIRT
+>>  +#define _ASM_SET_DMTGC0        _ASM_SET_VIRT
+>>  +#define _ASM_UNSET_MFGC0
+>>  +#define _ASM_UNSET_DMFGC0
+>>  +#define _ASM_UNSET_MTGC0
+>>  +#define _ASM_UNSET_DMTGC0
+>>  +
+>>  +#define __tlbgp()      _ASM_SET_VIRT "tlbgp\n\t"
+>>  +#define __tlbgr()      _ASM_SET_VIRT "tlbgr\n\t"
+>>  +#define __tlbgwi()     _ASM_SET_VIRT "tlbgwi\n\t"
+>>  +#define __tlbgwr()     _ASM_SET_VIRT "tlbgwr\n\t"
+>>  +#define __tlbginvf()   _ASM_SET_VIRT "tlbginvf\n\t"
+>>   #endif
+>> 
+>>   #define __read_32bit_gc0_register(source, sel)                     
+>>     \
+>>  @@ -2078,8 +2115,9 @@ _ASM_MACRO_0(tlbginvf, 
+>> _ASM_INSN_IF_MIPS(0x4200000c)
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips32r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_MFGC0                                      
+>>     \
+>>                  "mfgc0\t%0, " #source ", %1\n\t"                    
+>>     \
+>>  +               _ASM_UNSET_MFGC0                                    
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : "=r" (__res)                                      
+>>     \
+>>                  : "i" (sel));                                       
+>>     \
+>>  @@ -2091,8 +2129,9 @@ _ASM_MACRO_0(tlbginvf, 
+>> _ASM_INSN_IF_MIPS(0x4200000c)
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips64r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_DMFGC0                                     
+>>     \
+>>                  "dmfgc0\t%0, " #source ", %1\n\t"                   
+>>     \
+>>  +               _ASM_UNSET_DMFGC0                                   
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : "=r" (__res)                                      
+>>     \
+>>                  : "i" (sel));                                       
+>>     \
+>>  @@ -2104,8 +2143,9 @@ do {                                          
+>>                             \
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips32r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_MTGC0                                      
+>>     \
+>>                  "mtgc0\t%z0, " #register ", %1\n\t"                 
+>>     \
+>>  +               _ASM_UNSET_MTGC0                                    
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : : "Jr" ((unsigned int)(value)),                   
+>>     \
+>>                      "i" (sel));                                     
+>>     \
+>>  @@ -2116,8 +2156,9 @@ do {                                          
+>>                             \
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips64r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_DMTGC0                                     
+>>     \
+>>                  "dmtgc0\t%z0, " #register ", %1\n\t"                
+>>     \
+>>  +               _ASM_UNSET_DMTGC0                                   
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : : "Jr" (value),                                   
+>>     \
+>>                      "i" (sel));                                     
+>>     \
+>>  @@ -2788,8 +2829,7 @@ static inline void guest_tlb_probe(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgp\n\t"
+>>  +               __tlbgp()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2798,8 +2838,7 @@ static inline void guest_tlb_read(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgr\n\t"
+>>  +               __tlbgr()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2808,8 +2847,7 @@ static inline void 
+>> guest_tlb_write_indexed(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgwi\n\t"
+>>  +               __tlbgwi()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2818,8 +2856,7 @@ static inline void 
+>> guest_tlb_write_random(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgwr\n\t"
+>>  +               __tlbgwr()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2831,8 +2868,7 @@ static inline void guest_tlbinvf(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbginvf\n\t"
+>>  +               __tlbginvf()
+>>                  ".set pop");
+>>   }
+>> 
+>>  diff --git a/arch/mips/include/asm/msa.h 
+>> b/arch/mips/include/asm/msa.h
+>>  index e0a3dd52334d..236a49ee2e3e 100644
+>>  --- a/arch/mips/include/asm/msa.h
+>>  +++ b/arch/mips/include/asm/msa.h
+>>  @@ -162,16 +162,26 @@ static inline void init_msa_upper(void)
+>>    * to allow compilation with toolchains that do not support MSA. 
+>> Once all
+>>    * toolchains in use support MSA these can be removed.
+>>    */
+>>  -_ASM_MACRO_2R(cfcmsa, rd, cs,
+>>  -       _ASM_INSN_IF_MIPS(0x787e0019 | __cs << 11 | __rd << 6)
+>>  -       _ASM_INSN32_IF_MM(0x587e0016 | __cs << 11 | __rd << 6));
+>>  -_ASM_MACRO_2R(ctcmsa, cd, rs,
+>>  -       _ASM_INSN_IF_MIPS(0x783e0019 | __rs << 11 | __cd << 6)
+>>  -       _ASM_INSN32_IF_MM(0x583e0016 | __rs << 11 | __cd << 6));
+>>  -#define _ASM_SET_MSA ""
+>>  +
+>>  +#define _ASM_SET_CFCMSA                                            
+>>             \
+>>  +       _ASM_MACRO_2R(cfcmsa, rd, cs,                               
+>>     \
+>>  +                     _ASM_INSN_IF_MIPS(0x787e0019 | __cs << 11 | 
+>> __rd << 6)    \
+>>  +                     _ASM_INSN32_IF_MM(0x587e0016 | __cs << 11 | 
+>> __rd << 6))
+>>  +#define _ASM_UNSET_CFCMSA ".purgem cfcmsa\n\t"
+>>  +#define _ASM_SET_CTCMSA                                            
+>>             \
+>>  +       _ASM_MACRO_2R(ctcmsa, cd, rs,                               
+>>     \
+>>  +                     _ASM_INSN_IF_MIPS(0x783e0019 | __rs << 11 | 
+>> __cd << 6)    \
+>>  +                     _ASM_INSN32_IF_MM(0x583e0016 | __rs << 11 | 
+>> __cd << 6))
+>>  +#define _ASM_UNSET_CTCMSA ".purgem ctcmsa\n\t"
+>>   #else /* TOOLCHAIN_SUPPORTS_MSA */
+>>  -#define _ASM_SET_MSA ".set\tfp=64\n\t"                         \
+>>  -                    ".set\tmsa\n\t"
+>>  +#define _ASM_SET_CFCMSA                                            
+>>     \
+>>  +               ".set\tfp=64\n\t"                               \
+>>  +               ".set\tmsa\n\t"
+>>  +#define _ASM_UNSET_CFCMSA
+>>  +#define _ASM_SET_CTCMSA                                            
+>>     \
+>>  +               ".set\tfp=64\n\t"                               \
+>>  +               ".set\tmsa\n\t"
+>>  +#define _ASM_UNSET_CTCMSA
+>>   #endif
+>> 
+>>   #define __BUILD_MSA_CTL_REG(name, cs)                          \
+>>  @@ -180,8 +190,9 @@ static inline unsigned int 
+>> read_msa_##name(void)            \
+>>          unsigned int reg;                                       \
+>>          __asm__ __volatile__(                                   \
+>>          "       .set    push\n"                                 \
+>>  -       _ASM_SET_MSA                                            \
+>>  +       _ASM_SET_CFCMSA                                         \
+>>          "       cfcmsa  %0, $" #cs "\n"                         \
+>>  +       _ASM_UNSET_CFCMSA                                       \
+>>          "       .set    pop\n"                                  \
+>>          : "=r"(reg));                                           \
+>>          return reg;                                             \
+>>  @@ -191,8 +202,9 @@ static inline void write_msa_##name(unsigned 
+>> int val)               \
+>>   {                                                              \
+>>          __asm__ __volatile__(                                   \
+>>          "       .set    push\n"                                 \
+>>  -       _ASM_SET_MSA                                            \
+>>  +       _ASM_SET_CTCMSA                                         \
+>>          "       ctcmsa  $" #cs ", %0\n"                         \
+>>  +       _ASM_UNSET_CTCMSA                                       \
+>>          "       .set    pop\n"                                  \
+>>          : : "r"(val));                                          \
+>>   }
+>>  --
+>>  2.33.0
+>> 
+> 
+> 
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-Just for information dts with working GMII2RGMII looks like this:
 
-       tnsep0: ethernet@a0000000 {
-                       compatible = "engleder,tsnep";
-                       reg = <0x0 0xa0000000 0x0 0x10000>;
-                       interrupts = <0 89 1>;
-                       interrupt-parent = <&gic>;
-                       local-mac-address = [00 00 00 00 00 00];
-                       phy-mode = "rgmii";
-                       phy-handle = <&phy1>;
-                       mdio {
-                               #address-cells = <1>;
-                               #size-cells = <0>;
-                               phy1: ethernet-phy@1 {
-                                       reg = <1>;
-                                       rxc-skew-ps = <1080>;
-                               };
-                               gmiitorgmii@8 {
-                                       compatible = "xlnx,gmii-to-rgmii-1.0";
-                                       reg = <8>;
-                                       phy-handle = <&phy1>;
-                               };
-                       };
-               };
-
-Gerhard
