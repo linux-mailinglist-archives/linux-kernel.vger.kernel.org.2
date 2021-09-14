@@ -2,40 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF6C40AC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0118440AC6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhINL2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:28:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:59800 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhINL2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:28:05 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 642E967373; Tue, 14 Sep 2021 13:26:46 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 13:26:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andreas Larsson <andreas@gaisler.com>
-Cc:     Christoph Hellwig <hch@lst.de>, David Miller <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        linux-kernel@vger.kernel.org, software@gaisler.com
-Subject: Re: [PATCH] sparc32: Page align size in arch_dma_alloc
-Message-ID: <20210914112646.GA18171@lst.de>
-References: <20210908074822.16793-1-andreas@gaisler.com> <20210909060712.GA25485@lst.de> <3a653ab5-14d2-f61f-cb0a-cbeba93b4ac8@gaisler.com> <20210914061705.GB26679@lst.de> <87971ad4-9519-cf0d-76a8-6baa253d0122@gaisler.com> <20210914104256.GA14645@lst.de> <a5483206-0539-1d3f-c8e8-e66dbb6c8d96@gaisler.com>
+        id S232035AbhINLdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231941AbhINLdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 07:33:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFD0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FsfKK5Kf9vKOxvR+9nsUJsi/c2UPNx/XksUYhPIZxzQ=; b=tbYyq0WkHL9L6+6fcr/8s9zv7m
+        FtDypcaSf0fRrxiR7uf3Snls2idNGwX9ErS/e0NlJeGHeC7a+gwkac2Z3ZimK4BSVm7NDdB8BanUT
+        CfGlGObVwO29buR3dsqrqVjLupweO/ib4f9EMeZI5Zc9fsqyFj9ZDo0kbGUWa2fhMdXi0XrH40Vdl
+        H9RvwtD2CNeDpTtlQih8oMEeeJ8nG/XhwxeGUP9NThATLhIewHghYw/58edZk9ciY74Asl+ixPkA4
+        wtHB25S38nccETWBDtl75G/OhnOP8OggfCzYWqDXjkYnjAItzLIYqDf3szJYH+aaPbcyW3gFyjYlk
+        kJgJVNHw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQ6df-00EbX3-Nz; Tue, 14 Sep 2021 11:30:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CFED3300255;
+        Tue, 14 Sep 2021 13:30:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A4DBE20CB3026; Tue, 14 Sep 2021 13:30:09 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 13:30:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, 21cnbao@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        prime.zeng@huawei.com,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>
+Subject: Re: [RFC] Perfomance varies according to sysctl_sched_migration_cost
+Message-ID: <YUCHwYo525+/98wq@hirez.programming.kicks-ass.net>
+References: <ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a5483206-0539-1d3f-c8e8-e66dbb6c8d96@gaisler.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 01:16:16PM +0200, Andreas Larsson wrote:
-> Before the patch, arch_dma_alloc did via srmmu_mapiorange set up pages with 
-> SRMMU_PRIV, which is all fine as it sets up kernel buffers. With your patch 
-> we get PAGE_KERNEL as an argument to dma_pgprot in the corresponding call 
-> path that earlier lead to arch_dma_alloc. PAGE_KERNEL already includes 
-> SRMMU_PRIV so adding it again should not be necessary.
+On Tue, Sep 14, 2021 at 03:27:09PM +0800, Yicong Yang wrote:
+> 2. The ABI now has been removed from sysctl and moved to debugfs. As tuning this can improve the performance
+>    of some workloads on some platforms, maybe it's better to make it a formal sysctl again with docs?
 
-You're right, I missed that PAGE_KERNEL already includes SRMMU_PRIV.
+It never was an ABI, there is nothing to restore. It has always been
+CONFIG_SCHED_DEBUG.
+
+I'm open to topology based improvements to the code, but I don't think
+user tunables are a good way.
