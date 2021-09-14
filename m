@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4F540A8EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3625740A8E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhINILe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhINILU (ORCPT
+        id S231545AbhINIK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:10:29 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3786 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230509AbhINII4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:11:20 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76007C0613AD
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:09:20 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id n30so8723746pfq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HORz+N9iPM3MBLFTrD2etygd1AQ7C3FwAZKQ2ef9vXA=;
-        b=hNqZp1dwfdFkEDBjv3xUXxcGBjBFOYQgKv9Fg+Lztu1zsRHrV3An6X4PLGSsbKhgOa
-         t9JlCxXjagpAmLziP/AL4bkyLre2pXearJ6vsOhr3a4OMeeE5IWFJItz28A/KEi4a3t8
-         mBpgnfsVbpl9pw9GSX02QXTV+i2OrSKCNJzSQLhyxVbOQSMnvydpM/9vsKsudJbutJt/
-         VlHtTVJtBzxB+XhxVk5T/zY1+eqmH4bBZobJzk0Ccqr9JCQQ/PGT4tbPOkPrXWRl3JCx
-         nFuZpm82/kf2CtsMtwOjplejstBJ5m09BzGpksPce+zrvVQFXeXb8WLPsb6c9Mn8XRYL
-         NIrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HORz+N9iPM3MBLFTrD2etygd1AQ7C3FwAZKQ2ef9vXA=;
-        b=7rwKzaeMQKwrZ+KXT50lWUGMBig/ovr49A4gQiJmXFQ00dLk6CTFL+7BxAnDlhZZHJ
-         S+YKp4PloResO7eB5ZRA5tfJI839m0o9IBvk9Onsd3NQciFS1f4KFtKT2rdOUXxxUGPd
-         iXp2cRaIfgaGTvai2ZNnTqsKov44AANytDt/m3O0B9hMkVFiVP17YwKHZr90jKSejM4V
-         kIWymD2QtKNd+KqCsrU77Q7UwMwemD8JlI/KCTwcaocN1bP1zI/gs6KGeR9ahnrVOKHP
-         ddDbkiNqKvXQEDumgg2QQ0/m/580uoIeB/3SkiWyGleKSMEGg0hI3OOO0+kI+nLVtAaI
-         W35w==
-X-Gm-Message-State: AOAM532wpgTH2V/CGOiybgZq8875Q9yar7Z5ROplIfhp3T1n+zyb+WfR
-        Q3NVtnjPcs0Sk88fiaDS82jf
-X-Google-Smtp-Source: ABdhPJyh/TNWx4PNfVhDrSi721PTkgySN/TIS/csuXWue6mCXR6CsUoAqZhV2TwTkxInYfdYoJMZGw==
-X-Received: by 2002:aa7:9f8a:0:b0:43c:39be:23fb with SMTP id z10-20020aa79f8a000000b0043c39be23fbmr3434984pfr.57.1631606959868;
-        Tue, 14 Sep 2021 01:09:19 -0700 (PDT)
-Received: from thinkpad ([2409:4072:6211:54eb:fe9c:efbb:2b75:a575])
-        by smtp.gmail.com with ESMTPSA id d5sm669016pjs.53.2021.09.14.01.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 01:09:19 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 13:39:11 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, smohanad@codeaurora.org,
-        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
-        skananth@codeaurora.org, vpernami@codeaurora.org,
-        vbadigan@codeaurora.org
-Subject: Re: [PATCH v7 0/3] Add Qualcomm PCIe Endpoint driver support
-Message-ID: <20210914080911.GA16774@thinkpad>
-References: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
+        Tue, 14 Sep 2021 04:08:56 -0400
+Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H7wqx49m6z67bMW;
+        Tue, 14 Sep 2021 16:05:01 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 10:07:09 +0200
+Received: from [10.47.80.114] (10.47.80.114) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 14 Sep
+ 2021 09:07:08 +0100
+Subject: Re: [PATCH RESEND v3 05/13] blk-mq-sched: Rename
+ blk_mq_sched_alloc_{tags -> map_and_rqs}()
+To:     Hannes Reinecke <hare@suse.de>, <axboe@kernel.dk>
+CC:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <ming.lei@redhat.com>, <linux-scsi@vger.kernel.org>
+References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
+ <1631545950-56586-6-git-send-email-john.garry@huawei.com>
+ <bcbc3479-86f9-6d72-44a5-aacd4f03fcc2@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4a139bf3-d536-4f9c-8cd2-6fbd6da7d6c4@huawei.com>
+Date:   Tue, 14 Sep 2021 09:10:47 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <bcbc3479-86f9-6d72-44a5-aacd4f03fcc2@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.80.114]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, Jul 22, 2021 at 05:42:39PM +0530, Manivannan Sadhasivam wrote:
-> Hello,
-> 
-> This series adds support for Qualcomm PCIe Endpoint controller found
-> in platforms like SDX55. The Endpoint controller is based on the designware
-> core with additional Qualcomm wrappers around the core.
-> 
-> The driver is added separately unlike other Designware based drivers that
-> combine RC and EP in a single driver. This is done to avoid complexity and
-> to maintain this driver autonomously.
-> 
-> The driver has been validated with an out of tree MHI function driver on
-> SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
-> 
+>> +static int blk_mq_sched_alloc_map_and_rqs(struct request_queue *q,
+>> +                      struct blk_mq_hw_ctx *hctx,
+>> +                      unsigned int hctx_idx)
+>>   {
+>>       struct blk_mq_tag_set *set = q->tag_set;
+>>       int ret;
+>> @@ -609,15 +609,15 @@ int blk_mq_init_sched(struct request_queue *q, 
+>> struct elevator_type *e)
+>>                      BLKDEV_DEFAULT_RQ);
+>>       queue_for_each_hw_ctx(q, hctx, i) {
+>> -        ret = blk_mq_sched_alloc_tags(q, hctx, i);
+>> +        ret = blk_mq_sched_alloc_map_and_rqs(q, hctx, i);
+>>           if (ret)
+>> -            goto err_free_tags;
+>> +            goto err_free_map_and_rqs;
+>>       }
+>>       if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
+>>           ret = blk_mq_init_sched_shared_sbitmap(q);
+>>           if (ret)
+>> -            goto err_free_tags;
+>> +            goto err_free_map_and_rqs;
+>>       }
+>>       ret = e->ops.init_sched(q, e);
+>> @@ -645,8 +645,8 @@ int blk_mq_init_sched(struct request_queue *q, 
+>> struct elevator_type *e)
+>>   err_free_sbitmap:
+>>       if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
+>>           blk_mq_exit_sched_shared_sbitmap(q);
+>> -err_free_tags:
+>>       blk_mq_sched_free_requests(q);
+>> +err_free_map_and_rqs:
+>>       blk_mq_sched_tags_teardown(q);
+>>       q->elevator = NULL;
+>>       return ret;
+>>
+> This is not only a rename, but it also moves the location of the label.
+> Is that intended?
+> If so it needs some documentation why this is safe.
 
-Ping again! Do I need to resend this series on top of v5.15-rc1? I thought this
-one could go in for v5.15 but...
+Yeah, I think you're right.
+
+The final code in the series looks correct, but this is a transient 
+breakage.
+
+I'll fix it.
 
 Thanks,
-Mani
-
-> Thanks,
-> Mani
-> 
-> Changes in v7:
-> 
-> * Used existing naming convention for callback functions
-> * Used active low state for PERST# gpio
-> 
-> Changes in v6:
-> 
-> * Removed status property in DT and added reviewed tag from Rob
-> * Switched to _relaxed variants as suggested by Rob
-> 
-> Changes in v5:
-> 
-> * Removed the DBI register settings that are not needed
-> * Used the standard definitions available in pci_regs.h
-> * Added defines for all the register fields
-> * Removed the left over code from previous iteration
-> 
-> Changes in v4:
-> 
-> * Removed the active_config settings needed for IPA integration
-> * Switched to writel for couple of relaxed versions that sneaked in
-> 
-> Changes in v3:
-> 
-> * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
-> * Noticeable changes are:
->   - Got rid of _relaxed calls and used readl/writel
->   - Got rid of separate TCSR memory region and used syscon for getting the
->     register offsets for Perst registers
->   - Changed the wake gpio handling logic
->   - Added remove() callback and removed "suppress_bind_attrs"
->   - stop_link() callback now just disables PERST IRQ
-> * Added MMIO region and doorbell interrupt to the binding
-> * Added logic to write MMIO physicall address to MHI base address as it is
->   for the function driver to work
-> 
-> Changes in v2:
-> 
-> * Addressed the comments from Rob on bindings patch
-> * Modified the driver as per binding change
-> * Fixed the warnings reported by Kbuild bot
-> * Removed the PERST# "enable_irq" call from probe()
-> 
-> Manivannan Sadhasivam (3):
->   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
->     controller
->   PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
->   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
-> 
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
->  MAINTAINERS                                   |  10 +-
->  drivers/pci/controller/dwc/Kconfig            |  10 +
->  drivers/pci/controller/dwc/Makefile           |   1 +
->  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
->  5 files changed, 888 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
->  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
-> 
-> -- 
-> 2.25.1
-> 
+John
