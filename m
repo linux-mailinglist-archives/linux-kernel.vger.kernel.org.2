@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CCA40A40C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0159A40A410
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237839AbhINDAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238162AbhINDAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:00:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ADEA61108;
-        Tue, 14 Sep 2021 02:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631588323;
-        bh=WwLKONhLQD5yu3qOg6mO99EvFPpF5pg1KAphIgvFPOY=;
-        h=Date:From:To:Subject:From;
-        b=jf740rma9NXfbo6JQs1uGl05VxesMb8BECRSsq+wrW2GXkmJf6qvIbv/QyhbtRCup
-         +/QN4frnt+BegLmND2vEZB0ONoOJxmBisc6jo7G/eWdEhgiDwuRr2droA9MsCa5WA9
-         nPT86BHq1OOHKt9/gbnaXjq8JFwdhxieuIzBQFX7uBJKrK3YZMVlTFI98tRLO9VIu3
-         xS9+eIFhZT4veKRI8pV8lOEdVMNvL+UKqSv+6CQGSDFQ84+pprOYXAK3BXFd0Fg85Z
-         FxGDNkyzlDXjhLm8ItI4sbMV/dMRMryPVaPV4V+zAz3vSs8TL22/qb3P4NzOr5VW0H
-         sloum5tdsZT3A==
-Date:   Mon, 13 Sep 2021 19:58:43 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: kvm crash in 5.14.1?
-Message-ID: <20210914025843.GA638460@magnolia>
+        id S238148AbhINDCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237213AbhINDCa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 23:02:30 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3ECBC061574;
+        Mon, 13 Sep 2021 20:01:13 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id k24so11327548pgh.8;
+        Mon, 13 Sep 2021 20:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DsCe+BZFESkDZsqe6u7iZYz+EpftXxtavi4h72VzJL0=;
+        b=VnhszOGJWKfWQf+O+OGEpQ1hmHGptjgf9GZCa88torTr+PLjyUoOSD5z2fKqOK+4/B
+         ZSu4hk5lKgKvx8ric1377rvyrZnEZAl2JQvlWYdwlcr8DA9rFIPzcNIxtt0GFAYrPnyA
+         Qf0fNGNSMSPYKIbUTYbCszYvQak+CKNWuRrtg665fqQxZzmei0Tpe1rtZxLAkYMUizXg
+         68V8QQJe8mfsPsHz/3o6Lu7+9r4AE+CH49ki2sXDa09osFn5damngbMiHKK0fBHKJ3dD
+         rl8oEJWW9unmoIZkxWv2g9qROeqgRzZRpaps+pQ6WPe0rbKCDY0cXaBNZDOszURs8gCF
+         NTgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DsCe+BZFESkDZsqe6u7iZYz+EpftXxtavi4h72VzJL0=;
+        b=AyFAOF/2yBidcc/jNDqoN5CuzVBb5OOOjhH8uePopkAzx6CXrv92uV3kvTxvZfPQC2
+         LQY/V0TaH12E9sdEePcEKqwHBd07gJknw71tdlQBud2lXoaW1le4fWfq2q8K5HQ7tl3K
+         4166cDFPfqJsm0ODXR/YUYB6ERhz3z1FIJj/gskD+W9v+8hHD5SKEEFA59BVnEDI+zsm
+         097neu6hUM+ScxV52v5A5ORsc5llDdRYLnrnwB8GcATWSPnW3N5UjeVS1J269Rl9bhkA
+         BYSwQ9C+uIZyEQKGOL30yDxDxNob19JnPom65GYq3sd75VJ+7NCC2TMahpKVcps3Exff
+         Vmqg==
+X-Gm-Message-State: AOAM530fM/k+P+f7hQFr2kCZ8UkXd30miCc8ZJxR2l2k2KqPiwbbYqfE
+        KhDlsBj87RScLNrq236AK9+5aOeSvx2M7o4x1g==
+X-Google-Smtp-Source: ABdhPJzqV2Mb1jqk9XIRMDrDzBl3o2KWNgVs9r4EafBsHrqUtaSwvYdUqcPtToLOnV1C3sAxFLcqdLaw7BV7NRq65Bo=
+X-Received: by 2002:a05:6a00:2449:b0:43c:4a5e:55a6 with SMTP id
+ d9-20020a056a00244900b0043c4a5e55a6mr2581819pfj.43.1631588473158; Mon, 13 Sep
+ 2021 20:01:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
+ <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk> <e5ac817b-bc96-bea6-aadb-89d3c201446d@gmail.com>
+ <CACkBjsZLyNbMwyoZc8T9ggq+R6-0aBFPCRB54jzAOF8f2QCH0Q@mail.gmail.com>
+ <CACkBjsaGTkxsrBW+HNsgR0Pj7kbbrK-F5E4hp3CJJjYf3ASimQ@mail.gmail.com>
+ <ce4db530-3e7c-1a90-f271-42d471b098ed@gmail.com> <CACkBjsYvCPQ2PpryOT5rHNTg5AuFpzOYip4UNjh40HwW2+XbsA@mail.gmail.com>
+ <7faa04f8-cd98-7d8a-2e54-e84e1fe742f7@gmail.com>
+In-Reply-To: <7faa04f8-cd98-7d8a-2e54-e84e1fe742f7@gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Tue, 14 Sep 2021 11:01:02 +0800
+Message-ID: <CACkBjsZE4=ErfsT7z=MDfCKEsafZ23BG-uCST1bT_HT_3NSMLA@mail.gmail.com>
+Subject: Re: INFO: task hung in io_uring_cancel_generic
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+Pavel Begunkov <asml.silence@gmail.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=
+=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=884:30=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> On 9/13/21 3:26 AM, Hao Sun wrote:
+> > Hi
+> >
+> > Healer found a C reproducer for this crash ("INFO: task hung in
+> > io_ring_exit_work").
+> >
+> > HEAD commit: 4b93c544e90e-thunderbolt: test: split up test cases
+> > git tree: upstream
+> > console output:
+> > https://drive.google.com/file/d/1NswMU2yMRTc8-EqbZcVvcJejV92cuZIk/view?=
+usp=3Dsharing
+> > kernel config: https://drive.google.com/file/d/1c0u2EeRDhRO-ZCxr9MP2VvA=
+tJd6kfg-p/view?usp=3Dsharing
+> > C reproducer: https://drive.google.com/file/d/170wk5_T8mYDaAtDcrdVi2UU9=
+_dW1894s/view?usp=3Dsharing
+> > Syzlang reproducer:
+> > https://drive.google.com/file/d/1eo-jAS9lncm4i-1kaCBkexrjpQHXboBq/view?=
+usp=3Dsharing
+> >
+> > If you fix this issue, please add the following tag to the commit:
+> > Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+> I don't see the repro using io_uring at all. Can it be because of
+> the delay before the warning shows itself? 120 secs, this appeared
+> after 143.
+>
 
-While running the XFS fuzz test suite (which launches ~50 VMs, which is
-enough to eat nearly all the DRAM on the system) on a VM host that I'd
-recently upgrade to 5.14.1, I noticed the following crash in dmesg on
-the host:
+I think the crash was most likely fixed. Here is what I've done.
+First, I re-run the whole execution history
+(https://drive.google.com/file/d/1NswMU2yMRTc8-EqbZcVvcJejV92cuZIk/view?usp=
+=3Dsharing)
+with `syz-repro` on  latest kernel (6880fa6c5660 Linux 5.15-rc1). The
+kernel did not crash at all.
+Then, I re-run the history on the original version of the kernel
+(4b93c544e90e-thunderbolt: test: split up test cases). It crashed and
+task hang happened but with a different location
+("io_wq_submit_work").
+Since `syz-repro` is smart enough and will give prog enough timeout to
+be executed when the crash type is `Hang` (see
+https://github.com/google/syzkaller/blob/master/pkg/repro/repro.go#L98),
+the delay before a warning can be handled properly.
 
-BUG: kernel NULL pointer dereference, address: 0000000000000068
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0 
-Oops: 0000 [#1] PREEMPT SMP NOPTI
-CPU: 6 PID: 4173897 Comm: CPU 3/KVM Tainted: G        W         5.14.1-67-server #67.3
-RIP: 0010:internal_get_user_pages_fast+0x621/0x9d0
-Code: f7 c2 00 00 01 00 0f 85 94 fb ff ff 48 8b 4c 24 18 48 8d bc 24 8c 00 00 00 8b b4 24 8c 00 00 00 e8 b4 cd ff ff e9 76 fb ff ff <48> 81 7a 68 80 08 04 bc 0f 85 21 ff ff 
-8 89 c7 be
-RSP: 0018:ffffaa90087679b0 EFLAGS: 00010046
-RAX: ffffe3f37905b900 RBX: 00007f2dd561e000 RCX: ffffe3f37905b934
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffe3f37905b900
-RBP: 00007f2dd561f000 R08: ffffe3f37905b900 R09: 000000049b4b6000
-R10: ffffaa9008767b17 R11: 0000000000000000 R12: 8000000e416e4067
-R13: ffff9dc39b4b60f0 R14: 000000ffffffffff R15: ffffe3f37905b900
-FS:  00007f2e07fff700(0000) GS:ffff9dcf3f980000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000068 CR3: 00000004c5898003 CR4: 00000000001726e0
-Call Trace:
- get_user_pages_fast_only+0x13/0x20
- hva_to_pfn+0xa9/0x3e0
- ? check_preempt_wakeup+0xec/0x230
- try_async_pf+0xa1/0x270
- ? try_to_wake_up+0x1f0/0x580
- ? generic_exec_single+0x50/0xa0
- direct_page_fault+0x113/0xad0
- kvm_mmu_page_fault+0x69/0x680
- ? __schedule+0x301/0x13f0
- ? enqueue_hrtimer+0x2f/0x80
- ? vmx_sync_pir_to_irr+0x73/0x100
- ? vmx_set_hv_timer+0x31/0x100
- vmx_handle_exit+0xe1/0x5d0
- kvm_arch_vcpu_ioctl_run+0xd81/0x1c70
- ? kvm_vcpu_ioctl+0xe8/0x670
- kvm_vcpu_ioctl+0x267/0x670
- ? kvm_on_user_return+0x7e/0x80
- ? fire_user_return_notifiers+0x38/0x50
- __x64_sys_ioctl+0x83/0xa0
- do_syscall_64+0x56/0x80
- ? do_syscall_64+0x63/0x80
- ? syscall_exit_to_user_mode+0x1d/0x40
- ? do_syscall_64+0x63/0x80
- ? do_syscall_64+0x63/0x80
- ? asm_exc_page_fault+0x5/0x20
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2e2018c50b
-Code: 0f 1e fa 48 8b 05 85 39 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 55 39 0d 00 f7 d8 64 89 01 48
-RSP: 002b:00007f2e07ffe5b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000000ae80 RCX: 00007f2e2018c50b
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 000000000000001e
-RBP: 0000556cd92161e0 R08: 0000556cd823b1d0 R09: 00000000000000ff
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000556cd88a8080 R14: 0000000000000001 R15: 0000000000000000
-Modules linked in: vhost_net vhost vhost_iotlb tap nfsv4 nfs xt_REDIRECT md5 xt_CHECKSUM xt_MASQUERADE ip6table_mangle ip6table_nat iptable_mangle ebtable_filter ebtables tun iptable_nat nf_nat joydev af_packet bonding bridge stp llc ip_set_hash_ip ip_set_hash_net xt_set tcp_diag udp_diag raw_diag inet_diag ip_set_hash_mac ip_set nfnetlink binfmt_misc nls_iso8859_1 nls_cp437 vfat fat bfq ipmi_ssif intel_rapl_msr at24 regmap_i2c intel_rapl_common iosf_mbi wmi ipmi_si ipmi_devintf ipmi_msghandler sch_fq_codel ip6t_REJECT nf_reject_ipv6 xt_hl ip6t_rt ipt_REJECT nfsd nf_reject_ipv4 xt_comment xt_limit xt_addrtype xt_tcpudp auth_rpcgss xt_conntrack nf_conntrack nfs_acl lockd nf_defrag_ipv6 nf_defrag_ipv4 grace ip6table_filter ip6_tables sunrpc iptable_filter ip_tables x_tables uas usb_storage megaraid_sas
-CR2: 0000000000000068
----[ end trace 09ba7735db5e61a6 ]---
-RIP: 0010:internal_get_user_pages_fast+0x621/0x9d0
-Code: f7 c2 00 00 01 00 0f 85 94 fb ff ff 48 8b 4c 24 18 48 8d bc 24 8c 00 00 00 8b b4 24 8c 00 00 00 e8 b4 cd ff ff e9 76 fb ff ff <48> 81 7a 68 80 08 04 bc 0f 85 21 ff ff ff 8b 54 24 68 48 89 c7 be
-RSP: 0018:ffffaa90087679b0 EFLAGS: 00010046
-RAX: ffffe3f37905b900 RBX: 00007f2dd561e000 RCX: ffffe3f37905b934
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffe3f37905b900
-RBP: 00007f2dd561f000 R08: ffffe3f37905b900 R09: 000000049b4b6000
-R10: ffffaa9008767b17 R11: 0000000000000000 R12: 8000000e416e4067
-R13: ffff9dc39b4b60f0 R14: 000000ffffffffff R15: ffffe3f37905b900
-FS:  00007f2e07fff700(0000) GS:ffff9dcf3f980000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000068 CR3: 00000004c5898003 CR4: 00000000001726e0
+However, I'll still keep track of this crash since it was still not
+reproduced yet.
 
-I also noticed that a number of the VMs seemed to be totally livelocked
-on "memset_erms" and the only thing I could do was terminate them all.
+> [...]
 
-I'll dig into this more tomorrow, but on the off chance this rings a
-bell for anyone, is this a known error?
-
---Darrick
+>
+> --
+> Pavel Begunkov
