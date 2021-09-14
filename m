@@ -2,188 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866E140A671
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7759740A674
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239963AbhINGGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:06:47 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:48644 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239812AbhINGGk (ORCPT
+        id S240044AbhINGG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:06:57 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36996 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239977AbhINGGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:06:40 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 74FF288194E;
-        Tue, 14 Sep 2021 16:05:20 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mQ1ZH-00CH3R-CT; Tue, 14 Sep 2021 16:05:19 +1000
-Date:   Tue, 14 Sep 2021 16:05:19 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
-Message-ID: <20210914060519.GJ2361455@dread.disaster.area>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>
- <163157838439.13293.5032214643474179966.stgit@noble.brown>
- <20210914013117.GG2361455@dread.disaster.area>
- <163159005180.3992.2350725240228509854@noble.neil.brown.name>
+        Tue, 14 Sep 2021 02:06:49 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DC50D1FDB5;
+        Tue, 14 Sep 2021 06:05:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631599531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=czloRHDt7KG6dixgZlMBPS8hgVmlcKIlRgQy6IQr0Qc=;
+        b=mXzTvmQ0fT5Rlu2mZ46JTwZ6V5roI73STmJKRDy4Wod4z613d3vn5J4MlJU/Q0KK/C1OWW
+        onrvj5CdbsfO+NVumqdV6SPnf7DWI5cqYREcgT0TKqmPTNn+YdY1Uxb8GpxTvpjgdaLu9g
+        26Bcq43CEyvMe5NJns5A0tj9B8ocZwQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631599531;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=czloRHDt7KG6dixgZlMBPS8hgVmlcKIlRgQy6IQr0Qc=;
+        b=3to0PJoVYXaPC3CGvvVAkwt854FYkwBpfOEBkWf6VncNnhkbFAnJHl/QT3nj9LwYdsrtwc
+        4595tkTI9OzkTXDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E85913E48;
+        Tue, 14 Sep 2021 06:05:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 05vgNag7QGF9WQAAMHmgww
+        (envelope-from <hare@suse.de>); Tue, 14 Sep 2021 06:05:28 +0000
+Subject: Re: [PATCH RESEND v3 13/13] blk-mq: Stop using pointers for
+ blk_mq_tags bitmap tags
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        ming.lei@redhat.com, linux-scsi@vger.kernel.org
+References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
+ <1631545950-56586-14-git-send-email-john.garry@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <cbbd167f-1b11-6cb4-94fb-7c13aa0b65b5@suse.de>
+Date:   Tue, 14 Sep 2021 08:05:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163159005180.3992.2350725240228509854@noble.neil.brown.name>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=8gt0TS_iLB6qLJAy30IA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <1631545950-56586-14-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 01:27:31PM +1000, NeilBrown wrote:
-> On Tue, 14 Sep 2021, Dave Chinner wrote:
-> > On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
-> > > Documentation commment in gfp.h discourages indefinite retry loops on
-> > > ENOMEM and says of __GFP_NOFAIL that it
-> > > 
-> > >     is definitely preferable to use the flag rather than opencode
-> > >     endless loop around allocator.
-> > > 
-> > > So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
-> > > not given.
-> > > 
-> > > Signed-off-by: NeilBrown <neilb@suse.de>
-> > > ---
-> > >  fs/xfs/kmem.c |   16 ++++------------
-> > >  1 file changed, 4 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
-> > > index 6f49bf39183c..f545f3633f88 100644
-> > > --- a/fs/xfs/kmem.c
-> > > +++ b/fs/xfs/kmem.c
-> > > @@ -13,19 +13,11 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
-> > >  {
-> > >  	int	retries = 0;
-> > >  	gfp_t	lflags = kmem_flags_convert(flags);
-> > > -	void	*ptr;
-> > >  
-> > >  	trace_kmem_alloc(size, flags, _RET_IP_);
-> > >  
-> > > -	do {
-> > > -		ptr = kmalloc(size, lflags);
-> > > -		if (ptr || (flags & KM_MAYFAIL))
-> > > -			return ptr;
-> > > -		if (!(++retries % 100))
-> > > -			xfs_err(NULL,
-> > > -	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
-> > > -				current->comm, current->pid,
-> > > -				(unsigned int)size, __func__, lflags);
-> > > -		congestion_wait(BLK_RW_ASYNC, HZ/50);
-> > > -	} while (1);
-> > > +	if (!(flags & KM_MAYFAIL))
-> > > +		lflags |= __GFP_NOFAIL;
-> > > +
-> > > +	return kmalloc(size, lflags);
-> > >  }
-> > 
-> > Which means we no longer get warnings about memory allocation
-> > failing - kmem_flags_convert() sets __GFP_NOWARN for all allocations
-> > in this loop. Hence we'll now get silent deadlocks through this code
-> > instead of getting warnings that memory allocation is failing
-> > repeatedly.
+On 9/13/21 5:12 PM, John Garry wrote:
+> Now that we use shared tags for shared sbitmap support, we don't require
+> the tags sbitmap pointers, so drop them.
 > 
-> Yes, that is a problem.  Could we just clear __GFP_NOWARN when setting
-> __GFP_NOFAIL?
-
-Probably.
-
-> Or is the 1-in-100 important? I think default warning is 1 every 10
-> seconds.
-
-1-in-100 is an arbitrary number to prevent spamming of logs unless
-there is a real likelihood of there being a memory allocation
-deadlock. We've typically only ever seen this when trying to do
-high-order allocations (e.g. 64kB for xattr buffers) and failing
-repeatedly in extreme memory pressure events. It's a canary that we
-leave in the logs so that when a user reports problems we know that
-they've been running under extended extreme low memory conditions
-and can adjust the triage process accordingly.
-
-So, we could remove __GFP_NOWARN, as long as the core allocator code
-has sufficient rate limiting that it won't spam the logs due to
-extended failure looping...
-
-> > I also wonder about changing the backoff behaviour here (it's a 20ms
-> > wait right now because there are not early wakeups) will affect the
-> > behaviour, as __GFP_NOFAIL won't wait for that extra time between
-> > allocation attempts....
+> This essentially reverts commit 222a5ae03cdd ("blk-mq: Use pointers for
+> blk_mq_tags bitmap tags").
 > 
-> The internal backoff is 100ms if there is much pending writeout, and
-> there are 16 internal retries.  If there is not much pending writeout, I
-> think it just loops with cond_resched().
-> So adding 20ms can only be at all interesting when the only way to
-> reclaim memory is something other than writeout.  I don't know how to
-> think about that.
-
-Any cache that uses a shrinker to reclaim (e.g. dentry, inodes, fs
-metadata, etc due to recursive directory traversals) can cause
-reclaim looping and priority escalation without there being any page
-cache writeback or reclaim possible. Especially when you have
-GFP_NOFS allocation context and all your memory is in VFS level
-caches. At that point, direct reclaim cannot (and will not) make
-forwards progress, so we still have to wait for some other
-GFP_KERNEL context reclaim (e.g. kswapd) to make progress reclaiming
-memory while we wait.
-
-Fundamentally, the memory reclaim backoff code doesn't play well
-with shrinkers. Patches from an old patchset which pushed lack of
-shrinker progress back up into the vmscan level backoff algorithms
-was something I was experimenting with a few years ago. e.g.
-
-https://lore.kernel.org/linux-xfs/20191031234618.15403-16-david@fromorbit.com/
-https://lore.kernel.org/linux-xfs/20191031234618.15403-17-david@fromorbit.com/
-
-We didn't end up going this way to solve the XFS inode reclaim
-problems - I ended up solving that entirely by pinning XFS buffer
-cache memory and modifying the XFS inode shrinker - but it was this
-patchset that first exposed the fact that congestion_wait() was no
-longer functioning as intended. See the last few paragraphs of the
-(long) cover letter for v1 of that patchset here:
-
-https://lore.kernel.org/linux-xfs/20190801021752.4986-1-david@fromorbit.com/
-
-So, yeah, I know full well that congestion_wait() is mostly just
-an unconditional timeout these days...
-
-> > And, of course, how did you test this? Sometimes we see
-> > unpredicted behaviours as a result of "simple" changes like this
-> > under low memory conditions...
+> Function blk_mq_init_bitmap_tags() is removed also, since it would be only
+> a wrappper for blk_mq_init_bitmaps().
 > 
-> I suspect this is close to untestable.  While I accept that there might
-> be a scenario where the change might cause some macro effect, it would
-> most likely be some interplay with some other subsystem struggling with
-> memory.  Testing XFS by itself would be unlikely to find it.
+> Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   block/bfq-iosched.c    |  4 +--
+>   block/blk-mq-debugfs.c |  8 +++---
+>   block/blk-mq-tag.c     | 56 +++++++++++++++---------------------------
+>   block/blk-mq-tag.h     |  7 ++----
+>   block/blk-mq.c         |  8 +++---
+>   block/kyber-iosched.c  |  4 +--
+>   block/mq-deadline.c    |  2 +-
+>   7 files changed, 35 insertions(+), 54 deletions(-)
+> A round of silent applause :-)
 
-Filesystem traversal workloads (e.g. chown -R) are the ones that
-hammer memory allocation from GFP_NOFS context which creates memory
-pressure that cannot be balanced by direct reclaim as direct reclaim
-cannot reclaim filesystem caches in this situation. This is where I
-would expect extra backoff on failing GFP_NOFS allocations to have
-some effect...
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
 Cheers,
 
-Dave.
+Hannes
 -- 
-Dave Chinner
-david@fromorbit.com
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
