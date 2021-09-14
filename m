@@ -2,127 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57B840ABD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E884340ABDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhINKkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:40:42 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:50050 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhINKki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:40:38 -0400
-Received: by mail-il1-f199.google.com with SMTP id p14-20020a92d48e000000b0022cf3231b41so17977449ilg.16
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:39:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=SXMhJrXbfSmRYQtaR0hUvN5LCQU2jsIHZIHNsTcJkxs=;
-        b=LelVSp7rcDG+9SwOmiV6Xed/rN0HK0CauQEygdLMu491Rwvx5ikxUpWGrf7QRUGvX+
-         6lHG9U+qFKSgd66tXCtwhsUseib8zCN9ZD8ZpROCDogZ3/jd/cazydYnaOY65Nh4Cc/k
-         o9EIkuscqrjoTN8+03eAl3TfTwrnov1C/rlGBYkiNX+QT8nFhecRa3NbsxLlpSS7HQal
-         HnpCf1/iRf3sq7tLBvGtwPsmq+fdd7m2bpZtAdM1eRst6J8eRyx6vDv3hkLYSksnS8NT
-         yJHWQzP04qoihNwFQ7+snFNOap8CUWkU+NUUuXz7QJ//pLN3AFYE82HcWvaQ4AQ4QllN
-         NTxA==
-X-Gm-Message-State: AOAM531HhQhv06sl513Vb9T32VILkQu2kVakmuNzK4yb+NKXzDf70G46
-        3Tsq7WAEhawZpd7Kp5z78cI6/ycL3BkriFOG0bYAvvMfJawA
-X-Google-Smtp-Source: ABdhPJyFJrq/sk58IUwgMvAsb0UVKVgi8l2Tr4ILjptBMcyVBJnOmb2r2bGWbwxouZEP+zjmULTARJRnu1Pd9J2h4B2SuQs7cRXG
+        id S231764AbhINKmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:42:04 -0400
+Received: from ozlabs.org ([203.11.71.1]:49355 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231650AbhINKmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:42:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631616042;
+        bh=PgQZCFTfY6IZcgN58w46zz5hDYowlMLp1ghqMp4Hbg4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EGrBq3KtE7FY3m14RhG6YIW5oblfrdOfbZhgOWEM5IeSyeUFIJ/avloWh8HYU8BZR
+         qGyKeFE5BzeOYdOA91GJ1LyYSmusJ/TOmpQ/UoD/omsdookewViKftpBRcpdfsLpbY
+         exiKjbh9JeJQg4kTbRhRvIp0aDJCYPZKjjicwvtmICoEXJv0K68ZHNbzdhNTbJMw28
+         WvcQcT7a4jwDunE0OxcRi6S2CNSbtr2eR6EqOJYveDylZ0larAzxpFey4n1PDxGnK6
+         wckS1WiwMl7tmNDJ46aTSixUN725HjtzMzygV8R2h3/QO4HT10SAF3onZXTjvdc3oQ
+         7a8E1Gxc5VDoA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H80HX53Zzz9sSn;
+        Tue, 14 Sep 2021 20:40:40 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kajol Jain <kjain@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, acme@kernel.org,
+        jolsa@kernel.org, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
+        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        rnsastry@linux.ibm.com, yao.jin@linux.intel.com, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        kan.liang@linux.intel.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, paulus@samba.org
+Subject: Re: [PATCH 1/3] perf: Add macros to specify onchip L2/L3 accesses
+In-Reply-To: <YTob/xfn1gt901K4@hirez.programming.kicks-ass.net>
+References: <20210904064932.307610-1-kjain@linux.ibm.com>
+ <87ilzbmt7i.fsf@mpe.ellerman.id.au>
+ <YTiBqbxe7ieqY2OE@hirez.programming.kicks-ass.net>
+ <87czphnchp.fsf@mpe.ellerman.id.au>
+ <YTob/xfn1gt901K4@hirez.programming.kicks-ass.net>
+Date:   Tue, 14 Sep 2021 20:40:38 +1000
+Message-ID: <87k0jjl9sp.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3046:: with SMTP id u6mr13906261jak.35.1631615961049;
- Tue, 14 Sep 2021 03:39:21 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 03:39:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c4ae8805cbf23125@google.com>
-Subject: [syzbot] riscv/fixes test error: BUG: unable to handle kernel NULL
- pointer dereference in corrupted
-From:   syzbot <syzbot+12f4d5520532d623ba3c@syzkaller.appspotmail.com>
-To:     alexanderduyck@fb.com, atenart@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        weiwan@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Peter Zijlstra <peterz@infradead.org> writes:
+> On Thu, Sep 09, 2021 at 10:45:54PM +1000, Michael Ellerman wrote:
+>
+>> > The 'new' composite doesnt have a hops field because the hardware that
+>> > nessecitated that change doesn't report it, but we could easily add a
+>> > field there.
+>> >
+>> > Suppose we add, mem_hops:3 (would 6 hops be too small?) and the
+>> > corresponding PERF_MEM_HOPS_{NA, 0..6}
+>> 
+>> It's really 7 if we use remote && hop = 0 to mean the first hop.
+>
+> I don't think we can do that, becaus of backward compat. Currently:
+>
+>   lvl_num=DRAM, remote=1
+>
+> denites: "Remote DRAM of any distance". Effectively it would have the new
+> hops field filled with zeros though, so if you then decode with the hops
+> field added it suddenly becomes:
+>
+>  lvl_num=DRAM, remote=1, hops=0
+>
+> and reads like: "Remote DRAM of 0 hops" which is quite daft. Therefore 0
+> really must denote a 'N/A'.
 
-syzbot found the following issue on:
+Ah yeah, duh, it needs to be backward compatible.
 
-HEAD commit:    7d2a07b76933 Linux 5.14
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d900c3300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=12f4d5520532d623ba3c
-compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: riscv64
+>> If we're wanting to use some of the hop levels to represent
+>> intra-chip/package hops then we could possibly use them all on a really
+>> big system.
+>> 
+>> eg. you could imagine something like:
+>> 
+>>  L2 | 		        - local L2
+>>  L2 | REMOTE | HOPS_0	- L2 of neighbour core
+>>  L2 | REMOTE | HOPS_1	- L2 of near core on same chip (same 1/2 of chip)
+>>  L2 | REMOTE | HOPS_2	- L2 of far core on same chip (other 1/2 of chip)
+>>  L2 | REMOTE | HOPS_3	- L2 of sibling chip in same package
+>>  L2 | REMOTE | HOPS_4	- L2 on separate package 1 hop away
+>>  L2 | REMOTE | HOPS_5	- L2 on separate package 2 hops away
+>>  L2 | REMOTE | HOPS_6	- L2 on separate package 3 hops away
+>> 
+>> 
+>> Whether it's useful to represent all those levels I'm not sure, but it's
+>> probably good if we have the ability.
+>
+> I'm thinking we ought to keep hops as steps along the NUMA fabric, with
+> 0 hops being the local node. That only gets us:
+>
+>  L2, remote=0, hops=HOPS_0 -- our L2
+>  L2, remote=1, hops=HOPS_0 -- L2 on the local node but not ours
+>  L2, remote=1, hops!=HOPS_0 -- L2 on a remote node
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+12f4d5520532d623ba3c@syzkaller.appspotmail.com
+Hmm. I'm not sure about tying it directly to NUMA hops. I worry we're
+going to see more and more systems where there's a hierarchy within the
+chip/package, in addition to the traditional NUMA hierarchy.
 
-bond0: (slave bond_slave_0): Enslaving as an active interface with an up link
-bond0: (slave bond_slave_1): Enslaving as an active interface with an up link
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000dc0
-Oops [#1]
-Modules linked in:
-CPU: 0 PID: 3090 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : slab_alloc_node mm/slub.c:2900 [inline]
-epc : slab_alloc mm/slub.c:2967 [inline]
-epc : __kmalloc+0xce/0x388 mm/slub.c:4111
- ra : slab_pre_alloc_hook mm/slab.h:494 [inline]
- ra : slab_alloc_node mm/slub.c:2880 [inline]
- ra : slab_alloc mm/slub.c:2967 [inline]
- ra : __kmalloc+0x6e/0x388 mm/slub.c:4111
-epc : ffffffff803e3568 ra : ffffffff803e3508 sp : ffffffe00924f1e0
- gp : ffffffff83f967d8 tp : ffffffe00db98000 t0 : ffffffc402a0e200
- t1 : 0000000000000001 t2 : 000000005784fdac s0 : ffffffe00924f280
- s1 : ffffffe005601640 a0 : 0000000000000000 a1 : ffffffe00924f5cc
- a2 : 1ffffffff07aa51f a3 : 0000000000000dc0 a4 : 0000000000000000
- a5 : ffffffff82e4b2b0 a6 : 0000000000f00000 a7 : ffffffff8038ca52
- s2 : ffffffff83f96adc s3 : 0000000000000dc0 s4 : 0000000000000026
- s5 : ffffffff80acc382 s6 : ffffffff83f9a0d0 s7 : 0000000000000000
- s8 : 0000000000000dc0 s9 : 0000000000000001 s10: ffffffe006bcbb00
- s11: ffffffff8365bbd8 t3 : 69ec673486bf2000 t4 : ffffffc1e04a9392
- t5 : ffffffc1e04a9393 t6 : ffffffe014ff375d
-status: 0000000000000120 badaddr: 0000000000000dc0 cause: 000000000000000d
-[<ffffffff803e3568>] slab_alloc_node mm/slub.c:2900 [inline]
-[<ffffffff803e3568>] slab_alloc mm/slub.c:2967 [inline]
-[<ffffffff803e3568>] __kmalloc+0xce/0x388 mm/slub.c:4111
-[<ffffffff80acc382>] kmalloc include/linux/slab.h:596 [inline]
-[<ffffffff80acc382>] kzalloc include/linux/slab.h:721 [inline]
-[<ffffffff80acc382>] kobject_get_path+0xac/0x16a lib/kobject.c:179
-[<ffffffff80ace5d0>] kobject_uevent_env+0x1d8/0xde4 lib/kobject_uevent.c:529
-[<ffffffff80acf1fe>] kobject_uevent+0x22/0x2e lib/kobject_uevent.c:642
-[<ffffffff8226afec>] rx_queue_add_kobject net/core/net-sysfs.c:1020 [inline]
-[<ffffffff8226afec>] net_rx_queue_update_kobjects+0xcc/0x372 net/core/net-sysfs.c:1060
-[<ffffffff8226b7f4>] register_queue_kobjects net/core/net-sysfs.c:1711 [inline]
-[<ffffffff8226b7f4>] netdev_register_kobject+0x166/0x208 net/core/net-sysfs.c:1959
-[<ffffffff821ffac6>] register_netdevice+0x872/0xbe0 net/core/dev.c:10349
-[<ffffffff82b10ce2>] hsr_dev_finalize+0x346/0x45e net/hsr/hsr_device.c:535
-[<ffffffff82b1122e>] hsr_newlink+0x1ca/0x37c net/hsr/hsr_netlink.c:102
-[<ffffffff82221fc2>] __rtnl_newlink+0xb04/0xe90 net/core/rtnetlink.c:3461
-[<ffffffff8222239e>] rtnl_newlink+0x50/0x7c net/core/rtnetlink.c:3509
-[<ffffffff82222a12>] rtnetlink_rcv_msg+0x2ce/0x90e net/core/rtnetlink.c:5575
-[<ffffffff82400cc4>] netlink_rcv_skb+0x9c/0x248 net/netlink/af_netlink.c:2504
-[<ffffffff8221a5da>] rtnetlink_rcv+0x26/0x30 net/core/rtnetlink.c:5593
-[<ffffffff823ffb92>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<ffffffff823ffb92>] netlink_unicast+0x398/0x584 net/netlink/af_netlink.c:1340
-[<ffffffff824001c8>] netlink_sendmsg+0x44a/0x894 net/netlink/af_netlink.c:1929
-[<ffffffff821908cc>] sock_sendmsg_nosec net/socket.c:703 [inline]
-[<ffffffff821908cc>] sock_sendmsg+0xa0/0xc4 net/socket.c:723
-[<ffffffff8219428a>] __sys_sendto+0x170/0x230 net/socket.c:2019
-[<ffffffff82194388>] __do_sys_sendto net/socket.c:2031 [inline]
-[<ffffffff82194388>] sys_sendto+0x3e/0x52 net/socket.c:2027
-[<ffffffff80005150>] ret_from_syscall+0x0/0x2
----[ end trace 6a349b32cfb17483 ]---
+Although then I guess it becomes a question of what exactly is a NUMA
+hop, maybe the answer is that on those future systems those
+intra-chip/package hops should be represented as NUMA hops.
 
+It's not like we have a hard definition of what a NUMA hop is?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>> I guess I'm 50/50 on whether that's enough levels, or whether we want
+>> another bit to allow for future growth.
+>
+> Right, possibly safer to add one extra bit while we can.... I suppose.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Equally it's not _that_ hard to add another bit later (if there's still
+one free), makes the API a little uglier to use, but not the end of the
+world.
+
+cheers
