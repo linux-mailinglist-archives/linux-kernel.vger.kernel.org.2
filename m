@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A26040B351
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FC140B353
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234802AbhINPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:43:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234803AbhINPm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:42:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CD3A60E9B;
-        Tue, 14 Sep 2021 15:41:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631634099;
-        bh=V6SyrZ3vPVHh40d+w/uevjVMUXwmNmk4y04a1VhSuNY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CMsNilTIuECmzmoxX++29DydrSWX03iJ65SmrVPT0kvIf75zOd6/O+QOvp4m4hLSD
-         7J1Usmf/DbcoyV7w7RYk9WKK6qCxjjSjVCMXpiAx8Kkl6/J3Jz/J+OjyOGSl8sUHkN
-         1VKuQGCf1ViTtBu0RQEflFYd76oJdVBPoZWOng/4=
-Date:   Tue, 14 Sep 2021 17:41:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] xfs: convert xfs_sysfs attrs to use ->seq_show
-Message-ID: <YUDCsXXNFfUyiMCk@kroah.com>
-References: <20210913054121.616001-1-hch@lst.de>
- <20210913054121.616001-14-hch@lst.de>
- <YT7vZthsMCM1uKxm@kroah.com>
- <20210914073003.GA31077@lst.de>
- <YUC/iH9yLlxblM09@kroah.com>
- <20210914153011.GA815@lst.de>
+        id S234864AbhINPnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234826AbhINPnd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:43:33 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020CEC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:42:16 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id t20so9160528pju.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uqrZf2RpvTXlUmbRyI2QxPTRCT62GWMUqprCb4O9iv0=;
+        b=R68nkCIBgi4tzTf2MsQxydUGK5qmIiOepWBVPDzhpnm4nX8LXu58vXbtjzmF+E8byt
+         8XTqcGe917Vrbpjr71mFbX1tJFns3YkzB9/rGD3J7a5+FdTugj8ONEIiiO6qXJqoBHX9
+         lMoFuKn75vZN3Txje64yeqHoFnlU9Ukbjn3YJ0nvUIaMymTN1Hntmmw4vXFkudk/3fkl
+         lOSrmvIwupDazVsHuXC7BSP/kradpQEU3rS2If8rC/6nrKUQTBunjN3/mwe1kRBUhr+4
+         U9p7my/NY7OVuJXjqhH1E0g+jrvxwSqrNUUTAUKeqD29Tq0n8/de8TeKkBYA+i3hzDwD
+         16yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uqrZf2RpvTXlUmbRyI2QxPTRCT62GWMUqprCb4O9iv0=;
+        b=sETs97dJL2guP19utavQZIWV7UhNJ2Mm8sb8x1QMQ/ryPRvBsXdHHtMIfVKgCI741A
+         ZmzAcRXxsH8sVW+6iaHrRbfMYNm4AAlYnZX2ZI3bJm3gz4SQgDXSvRtK/njYQpubgOyk
+         zl8YXk1w/C0xbYGdCM+kODHGcT3vg9oO85DtsQPTd0jZiLmrp3z3GqMdluw/E+nUb9+D
+         8ZxDvnyGftCD/WnwbOE/859j7HmLkZIGbWQ/bIw8CSxfrEgcGzcwShDi/PkC8eiqRXvW
+         GprnDY/JiCB9RTVLQp3JuZn4gifRChDx3XeCqk7pEhBK02qfmBsdKwbYkkJY5yu9nq9q
+         6/UA==
+X-Gm-Message-State: AOAM533SUoqiIgPmmYTcHse/6kZCz2neuBuD6XI2D1CcbJtCsXvoMlId
+        9GhnWFA0EwhGr9mCB/UlpLN87Jwc6Bmthlgs85CkXQ==
+X-Google-Smtp-Source: ABdhPJwdSVBKoaQKVJDayqeNTdAmPJTaWf0sE3199v0xfH37WlYDE5QvLJk18AFTt9/gOMFZnUXlAkZMmBQ27SCKhmI=
+X-Received: by 2002:a17:902:e80f:b0:13b:721d:f750 with SMTP id
+ u15-20020a170902e80f00b0013b721df750mr15580149plg.18.1631634135572; Tue, 14
+ Sep 2021 08:42:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914153011.GA815@lst.de>
+References: <20210913223339.435347-1-sashal@kernel.org> <20210913223339.435347-4-sashal@kernel.org>
+In-Reply-To: <20210913223339.435347-4-sashal@kernel.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 14 Sep 2021 08:42:04 -0700
+Message-ID: <CAPcyv4i5OHv2wHTO1Pdjz+qzAAWEha-7HdDdt42VyO_FasLSEA@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.14 04/25] cxl/pci: Introduce cdevm_file_operations
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 05:30:11PM +0200, Christoph Hellwig wrote:
-> On Tue, Sep 14, 2021 at 05:28:08PM +0200, Greg Kroah-Hartman wrote:
-> > We can "force" it by not allowing buffers to be bigger than that, which
-> > is what the code has always done.  I think we want to keep that for now
-> > and not add the new seq_show api.
-> 
-> The buffer already is not larger than that.  The problem is that
-> sysfs_emit does not actually work for the non-trivial attributes,
-> which generally are the source of bugs.
+On Mon, Sep 13, 2021 at 3:33 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Dan Williams <dan.j.williams@intel.com>
+>
+> [ Upstream commit 9cc238c7a526dba9ee8c210fa2828886fc65db66 ]
+>
+> In preparation for moving cxl_memdev allocation to the core, introduce
+> cdevm_file_operations to coordinate file operations shutdown relative to
+> driver data release.
+>
+> The motivation for moving cxl_memdev allocation to the core (beyond
+> better file organization of sysfs attributes in core/ and drivers in
+> cxl/), is that device lifetime is longer than module lifetime. The cxl_pci
+> module should be free to come and go without needing to coordinate with
+> devices that need the text associated with cxl_memdev_release() to stay
+> resident. The move will fix a use after free bug when looping driver
+> load / unload with CONFIG_DEBUG_KOBJECT_RELEASE=y.
+>
+> Another motivation for passing in file_operations to the core cxl_memdev
+> creation flow is to allow for alternate drivers, like unit test code, to
+> define their own ioctl backends.
 
-They huge majority of sysfs attributes are "trivial".  So for maybe at
-least 95% of the users, if not more, using sysfs_emit() is just fine as
-all you "should" be doing is emitting a single value.
+Hi Sasha,
 
-For those that are non-trivial, yes, that will be harder, but as the xfs
-discussion shows, those are not normal at all, and I do not want to make
-creating them easier as that is not the model that sysfs was designed
-for if at all possible.
-
-thanks,
-
-greg k-h
+Please drop this. It's not a fix, it's just a reorganization for
+easing the addition of new features and capabilities.
