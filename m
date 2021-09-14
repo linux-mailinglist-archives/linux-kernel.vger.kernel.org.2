@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875DA40AF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876CD40AF67
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhINNm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:42:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55212 "EHLO mail.kernel.org"
+        id S233701AbhINNmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:42:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233542AbhINNlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233748AbhINNlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Sep 2021 09:41:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7B30D61107;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 91D8360FD7;
         Tue, 14 Sep 2021 13:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631626808;
-        bh=M5m8aOVqVbgMB0rsQlPtRMkCmz/sNk5nTp39tXw9pvk=;
+        bh=r+BheNAAeuDGbMAMWTyJfHRJ2J1W3BnBWAD2phBTvio=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tStRK2PJs+Ol1d9tsWF8QLjmnRjfJS4WjCTHshU5BhgKKE39XU8I3gu9k8ITIC9Nq
-         thc0t3uh6N5OEIAp1/0ySy4qJFKPtVjN7R1J+AIEGqiwwpkg8Uwz6eba+GAUZVuL7k
-         Y89AnCgww6Vptv5bsvtKGA7hl/C1LRP3tH8QJwYuiU96UD5quDVAJ8GbKz1gH/AVMI
-         8rzyK0nUpWKPhyt50peYkG0RNNefkTUrOz/ibWWVmyOZf1iqhJXiDqNNgD0aqR1AT7
-         xBS71G9TnR70Za+gptddfHsyyZksBeyqh185ysiLOh3KZHJB/6XDdkTyJBB7vK/Qdg
-         XhuIbYWkO44Kg==
+        b=srKENhTHY5U9hqSBjfr31jpzUNlhQM9jSEWEyooydDJl6e86UhpxZBTQ/oHfpIR6/
+         zEPOvFU9jl8bpaOQRQ7zWQeSJWvdYhHo0rzFOtu0kWmsRKLXlp4Wh6EICFyUh049AY
+         XN3TQ7Qg98LwkP0P5erdMMWl9OiTmf4PLTKMXAHo3A+9kbw/U+8E9ZKtaedcMAUiCo
+         AaAKF/jn1mUC8MWS4SpJ1xlvjQ/B7+nwiD7jU5qT2//IXzPcAe6SIPfjqWCaPMWLep
+         rEgWQcigz50fraXKS9FYRlmNdythvy5mmP1Be2jaxYEUWbBqUfD/nhRDzhz8PBi+Kv
+         iKREfAjyCyqIw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6FEC460A7D;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 85BD860A9C;
         Tue, 14 Sep 2021 13:40:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] PF support get MAC address space assigned by
- firmware
+Subject: Re: [PATCH net-next v2] net: phy: at803x: add support for qca 8327
+ internal phy
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163162680845.2816.11518104751594889118.git-patchwork-notify@kernel.org>
+Message-Id: <163162680854.2816.673162311961277664.git-patchwork-notify@kernel.org>
 Date:   Tue, 14 Sep 2021 13:40:08 +0000
-References: <20210914121117.13054-1-huangguangbin2@huawei.com>
-In-Reply-To: <20210914121117.13054-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lipeng321@huawei.com
+References: <20210914123345.6321-1-ansuelsmth@gmail.com>
+In-Reply-To: <20210914123345.6321-1-ansuelsmth@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rosenp@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 14 Sep 2021 20:11:15 +0800 you wrote:
-> This series add support PF to get unicast/multicast MAC address space
-> assigned by firmware for the HNS3 ethernet driver.
+On Tue, 14 Sep 2021 14:33:45 +0200 you wrote:
+> Add support for qca8327 internal phy needed for correct init of the
+> switch port. It does use the same qca8337 function and reg just with a
+> different id.
 > 
-> Guangbin Huang (2):
->   net: hns3: PF support get unicast MAC address space assigned by
->     firmware
->   net: hns3: PF support get multicast MAC address space assigned by
->     firmware
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Tested-by: Rosen Penev <rosenp@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/2] net: hns3: PF support get unicast MAC address space assigned by firmware
-    https://git.kernel.org/netdev/net-next/c/e435a6b5315a
-  - [net-next,2/2] net: hns3: PF support get multicast MAC address space assigned by firmware
-    https://git.kernel.org/netdev/net-next/c/5c56ff486dfc
+  - [net-next,v2] net: phy: at803x: add support for qca 8327 internal phy
+    https://git.kernel.org/netdev/net-next/c/0ccf85111824
 
 You are awesome, thank you!
 --
