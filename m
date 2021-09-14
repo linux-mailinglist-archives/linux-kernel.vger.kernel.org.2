@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BA840B795
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1616440B796
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232545AbhINTMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48990 "EHLO
+        id S232622AbhINTMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhINTMF (ORCPT
+        with ESMTP id S232387AbhINTMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:12:05 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BDEC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:48 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id r18-20020a056214069200b0037a291a6081so670066qvz.18
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:48 -0700 (PDT)
+        Tue, 14 Sep 2021 15:12:08 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D80CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:50 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id w2-20020a3794020000b02903b54f40b442so887397qkd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=0GzzZ7fzGEuoqvnrH5xkZsITGuoIfAORG+08eeMzet8=;
-        b=ZYLtvV6X16SIUpn4RDpGbDZkx1qtx35cu9QwoKZ+WO3jrtH2C4maVDBWO6S4FooZC6
-         +rhiVcjwb1iqMyYKzEE4xHBLrlFu7uce41eVpuUw+ShgHXifI+6Ia5mLh3o6PU76uLfQ
-         EYelPJyaRUWQMEcgFIuYSJ+N+luEAqmynpGu2afAywUMuqCyvWMQDdQ9YBRZB5LcUHsr
-         6vXkMqlhPktT7wxZslwBjoUTnAIvCu2oZbU4hKLj/E+FyeaeTT+dnFVt5Kv9J81zrq2Z
-         PaASIvljK4PIF38jdAxIq1ogAPJecReg4WYPeY5jqLd9lsr92sRMpT4tgDWaNhj+staQ
-         NDGQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=6wsaeVs2pKdYr3cjE54GmOMKWkqFIYtd4ul6D2XgoZU=;
+        b=SltRY0PhqLK7FYtJkRMpj0cip7N3mIDzycHhJwSJI/vXbbxiBlS/DkOmt1Bam+2NaS
+         KNqcNsjuZHP2NrWLhUY05IfpzjDC9bG/2nBjT4fJAVqlS6mjc61BQWEl0JpHpFJ8CJGs
+         tS7wC9+QSXSSkJ/Lg7n1c03rmwmHz9phqCM1Zr4mVysI+SRsNQ2mRuQ+0jQpxyIKmDxO
+         5X3WotGkHldgI8P4dkwN8eSZs0YdF55zFQx6v5t5a9P9mI1dbku9QqjpOBr7lZY0fQzZ
+         9t3RkXjkzFiOIqtPKmwq0CcGZP+d35k6Am/sYlrNKXs3bhDVve8A5bzd+NV2w3Y/1qfX
+         2pJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=0GzzZ7fzGEuoqvnrH5xkZsITGuoIfAORG+08eeMzet8=;
-        b=xeJP6fVglKCtk/8xpN4farwevGzFkXgVHSWvvI1ACQxe9leJ4RMTrMgNeE+IoXHRaW
-         LnUj1Q7IS6xzwmyFy3sOjI+VOmFtgN5ZLcr0KsbWdT7oc4Ts9B9Ee3XTiZ7HG1wURGBS
-         AELYBWhu6w2P+yYPloUzr2yOpcwQF+xozmaPiGT3yEtU0bLzMiQyMSV2YXXtohT0NSvI
-         iOebRta5jaPCEPOhSRmjqJ4OIzFEtkARxguGsINaRvnX4iOD5htrR1pYFLcMTk1fmdNx
-         V8iGccexQkhyVpD1MpR9mQ+IUq2HjbWDumY4zlZAQyKA2QegGZuV8N/POPsj5WtaeDcl
-         B/pA==
-X-Gm-Message-State: AOAM531FPYIBzHPD3m8aE6Yd3HwlHLNCYsh1n96SD6o6Sy9ApcHTFZ29
-        B9+HKR17S8FKJTptisiXIonBPVTkvKjWPIoc74E=
-X-Google-Smtp-Source: ABdhPJzVKiVmBLzFyscwJg2BySA2AI8C83IYyZAd7DSnW+5f+oVTtLZCupWgG5oVzv8eQ+y4xEMFljYhA3aGhkVDbj4=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=6wsaeVs2pKdYr3cjE54GmOMKWkqFIYtd4ul6D2XgoZU=;
+        b=h4ZNVI6h8VeO9O1uy/1Tb+PR+JYg97K3AOR3h62RKdQzVrXzaI06b0k72Wx3GUuTMl
+         7yL4yQPUCXXeYkoIVnenucSIpDWVooW9kwAqeaTUI9vom/Fc9ztsJllx8DWuwKgrtCqY
+         y2PAL29zR2+LjbEZA8FNKNA0SHbVfAA/s7ZKpcdebh/ZWl3ldjO4UcWCaSX3YR2FC6e5
+         eGwm8lci/ORFW0H6WtkkZjfn4LOKPjnK/pRKO5nlOBGOGapBnxSRL7n95Zxn2/iu62bN
+         ukYUSgj1T0KsmectbBF+SG17Nsn0bONJXUrdWRoU/tu6ZlSkp+LYk0anAw+fnkmzCf4p
+         NPGw==
+X-Gm-Message-State: AOAM531xEiQwlMDQAy7Pbk09QqRqjh0PQXqkPRS/N2ntEfNe1uzNiIda
+        0isbVf7DYCLIUrcHJbxyIpVsLhOKRVvWg6bzRDY=
+X-Google-Smtp-Source: ABdhPJyDx0Z0D7ip/W8X0y/WUO54NQO7F+xb7o3bHjGEkSDgPZVhwNYUYk8ghI2IPK1QbCY4mIINfa4EP8DImMu+pLA=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:d19c:5902:49bb:c41])
- (user=samitolvanen job=sendgmr) by 2002:a0c:e0c7:: with SMTP id
- x7mr6956102qvk.55.1631646647327; Tue, 14 Sep 2021 12:10:47 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 12:10:29 -0700
-Message-Id: <20210914191045.2234020-1-samitolvanen@google.com>
+ (user=samitolvanen job=sendgmr) by 2002:a0c:aa01:: with SMTP id
+ d1mr7115315qvb.47.1631646649694; Tue, 14 Sep 2021 12:10:49 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 12:10:30 -0700
+In-Reply-To: <20210914191045.2234020-1-samitolvanen@google.com>
+Message-Id: <20210914191045.2234020-2-samitolvanen@google.com>
 Mime-Version: 1.0
+References: <20210914191045.2234020-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH v3 00/16] x86: Add support for Clang CFI
+Subject: [PATCH v3 01/16] objtool: Add CONFIG_CFI_CLANG support
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -64,120 +68,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for Clang's Control-Flow Integrity (CFI)
-checking to x86_64. With CFI, the compiler injects a runtime
-check before each indirect function call to ensure the target is
-a valid function with the correct static type. This restricts
-possible call targets and makes it more difficult for an attacker
-to exploit bugs that allow the modification of stored function
-pointers. For more details, see:
+With CONFIG_CFI_CLANG, the compiler replaces function references with
+references to the CFI jump table, which confuses objtool. This change,
+based on Josh's initial patch [1], goes through the list of relocations
+and replaces jump table symbols with the actual function symbols.
 
-  https://clang.llvm.org/docs/ControlFlowIntegrity.html
+[1] https://lore.kernel.org/r/d743f4b36e120c06506567a9f87a062ae03da47f.1611263462.git.jpoimboe@redhat.com/
 
-The first two patches contain objtool support for CFI, the
-remaining patches change function declarations to use opaque
-types, fix type mismatch issues that confuse the compiler, and
-disable CFI where it can't be used.
-
-You can also pull this series from
-
-  https://github.com/samitolvanen/linux.git x86-cfi-v3
-
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
-Changes in v3:
-- Dropped Clang requirement to >= 13 after the missing compiler
-  fix was backported there.
+ tools/objtool/arch/x86/decode.c      | 16 +++++++++
+ tools/objtool/elf.c                  | 51 ++++++++++++++++++++++++++++
+ tools/objtool/include/objtool/arch.h |  3 ++
+ tools/objtool/include/objtool/elf.h  |  2 +-
+ 4 files changed, 71 insertions(+), 1 deletion(-)
 
-- Added DEFINE_CFI_IMMEDIATE_RETURN_STUB to address the issue
-  with tp_stub_func in kernel/tracepoint.c.
-
-- Renamed asm_func_t to asm_func_ptr.
-
-- Changed extable handlers to use __cficanonical instead of
-  disabling CFI for fixup_exception.
-
-
-Changes in v2:
-- Dropped the first objtool patch as the warnings were fixed in
-  separate patches.
-
-- Changed fix_cfi_relocs() in objtool to not rely on jump table
-  symbols, and to return an error if it can't find a relocation.
-
-- Fixed a build issue with ASM_STACK_FRAME_NON_STANDARD().
-
-- Dropped workarounds for inline assembly references to
-  address-taken static functions with CFI as this was fixed in
-  the compiler.
-
-- Changed the C declarations of non-callable functions to use
-  opaque types and dropped the function_nocfi() patches.
-
-- Changed ARCH_SUPPORTS_CFI_CLANG to depend on Clang >=14 for
-  the compiler fixes.
-
-
-Kees Cook (1):
-  x86, relocs: Ignore __typeid__ relocations
-
-Sami Tolvanen (15):
-  objtool: Add CONFIG_CFI_CLANG support
-  objtool: Add ASM_STACK_FRAME_NON_STANDARD
-  linkage: Add DECLARE_ASM_FUNC_SYMBOL
-  cfi: Add DEFINE_CFI_IMMEDIATE_RETURN_STUB
-  tracepoint: Exclude tp_stub_func from CFI checking
-  ftrace: Use an opaque type for functions not callable from C
-  lkdtm: Disable UNSET_SMEP with CFI
-  lkdtm: Use an opaque type for lkdtm_rodata_do_nothing
-  x86: Use an opaque type for functions not callable from C
-  x86/extable: Mark handlers __cficanonical
-  x86/purgatory: Disable CFI
-  x86, module: Ignore __typeid__ relocations
-  x86, cpu: Use LTO for cpu.c with CFI
-  x86, kprobes: Fix optprobe_template_func type mismatch
-  x86, build: Allow CONFIG_CFI_CLANG to be selected
-
- arch/x86/Kconfig                      |  1 +
- arch/x86/include/asm/ftrace.h         |  2 +-
- arch/x86/include/asm/idtentry.h       | 10 ++---
- arch/x86/include/asm/page_64.h        |  7 +--
- arch/x86/include/asm/paravirt_types.h |  3 +-
- arch/x86/include/asm/processor.h      |  2 +-
- arch/x86/include/asm/proto.h          | 25 ++++++-----
- arch/x86/include/asm/uaccess_64.h     |  9 ++--
- arch/x86/kernel/alternative.c         |  2 +-
- arch/x86/kernel/ftrace.c              |  2 +-
- arch/x86/kernel/kprobes/opt.c         |  4 +-
- arch/x86/kernel/module.c              |  4 ++
- arch/x86/kernel/paravirt.c            |  4 +-
- arch/x86/kvm/emulate.c                |  4 +-
- arch/x86/kvm/kvm_emulate.h            |  9 +---
- arch/x86/mm/extable.c                 | 64 +++++++++++++++------------
- arch/x86/power/Makefile               |  2 +
- arch/x86/purgatory/Makefile           |  2 +-
- arch/x86/tools/relocs.c               |  7 +++
- arch/x86/xen/enlighten_pv.c           |  6 +--
- arch/x86/xen/xen-ops.h                | 10 ++---
- drivers/misc/lkdtm/bugs.c             |  2 +-
- drivers/misc/lkdtm/lkdtm.h            |  2 +-
- drivers/misc/lkdtm/perms.c            |  2 +-
- drivers/misc/lkdtm/rodata.c           |  2 +-
- include/asm-generic/vmlinux.lds.h     | 11 +++++
- include/linux/cfi.h                   | 14 ++++++
- include/linux/ftrace.h                |  7 +--
- include/linux/linkage.h               | 13 ++++++
- include/linux/objtool.h               |  6 +++
- kernel/cfi.c                          | 24 +++++++++-
- kernel/tracepoint.c                   |  5 +--
- tools/include/linux/objtool.h         |  6 +++
- tools/objtool/arch/x86/decode.c       | 16 +++++++
- tools/objtool/elf.c                   | 51 +++++++++++++++++++++
- tools/objtool/include/objtool/arch.h  |  3 ++
- tools/objtool/include/objtool/elf.h   |  2 +-
- 37 files changed, 250 insertions(+), 95 deletions(-)
-
-
-base-commit: d0ee23f9d78be5531c4b055ea424ed0b489dfe9b
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index bc821056aba9..318189c8065e 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -62,6 +62,22 @@ bool arch_callee_saved_reg(unsigned char reg)
+ 	}
+ }
+ 
++unsigned long arch_cfi_section_reloc_offset(struct reloc *reloc)
++{
++	if (!reloc->addend)
++		return 0;
++
++	if (reloc->type == R_X86_64_PC32 || reloc->type == R_X86_64_PLT32)
++		return reloc->addend + 4;
++
++	return reloc->addend;
++}
++
++unsigned long arch_cfi_jump_reloc_offset(unsigned long offset)
++{
++	return offset + 1;
++}
++
+ unsigned long arch_dest_reloc_offset(int addend)
+ {
+ 	return addend + 4;
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 8676c7598728..05a5f51aad2c 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -18,6 +18,7 @@
+ #include <errno.h>
+ #include <objtool/builtin.h>
+ 
++#include <objtool/arch.h>
+ #include <objtool/elf.h>
+ #include <objtool/warn.h>
+ 
+@@ -291,6 +292,10 @@ static int read_sections(struct elf *elf)
+ 		if (sec->sh.sh_flags & SHF_EXECINSTR)
+ 			elf->text_size += sec->len;
+ 
++		/* Detect -fsanitize=cfi jump table sections */
++		if (!strncmp(sec->name, ".text..L.cfi.jumptable", 22))
++			sec->cfi_jt = true;
++
+ 		list_add_tail(&sec->list, &elf->sections);
+ 		elf_hash_add(section, &sec->hash, sec->idx);
+ 		elf_hash_add(section_name, &sec->name_hash, str_hash(sec->name));
+@@ -576,6 +581,49 @@ static int read_rela_reloc(struct section *sec, int i, struct reloc *reloc, unsi
+ 	return 0;
+ }
+ 
++/*
++ * CONFIG_CFI_CLANG replaces function relocations to refer to an intermediate
++ * jump table. Undo the conversion so objtool can make sense of things.
++ */
++static int fix_cfi_relocs(const struct elf *elf)
++{
++	struct section *sec;
++	struct reloc *reloc;
++
++	list_for_each_entry(sec, &elf->sections, list) {
++		list_for_each_entry(reloc, &sec->reloc_list, list) {
++			struct reloc *cfi_reloc;
++			unsigned long offset;
++
++			if (!reloc->sym->sec->cfi_jt)
++				continue;
++
++			if (reloc->sym->type == STT_SECTION)
++				offset = arch_cfi_section_reloc_offset(reloc);
++			else
++				offset = reloc->sym->offset;
++
++			/*
++			 * The jump table immediately jumps to the actual function,
++			 * so look up the relocation there.
++			 */
++			offset = arch_cfi_jump_reloc_offset(offset);
++			cfi_reloc = find_reloc_by_dest(elf, reloc->sym->sec, offset);
++
++			if (!cfi_reloc || !cfi_reloc->sym) {
++				WARN("can't find a CFI jump table relocation at %s+0x%lx",
++					reloc->sym->sec->name, offset);
++				return -1;
++			}
++
++			reloc->sym = cfi_reloc->sym;
++			reloc->addend = 0;
++		}
++	}
++
++	return 0;
++}
++
+ static int read_relocs(struct elf *elf)
+ {
+ 	struct section *sec;
+@@ -639,6 +687,9 @@ static int read_relocs(struct elf *elf)
+ 		tot_reloc += nr_reloc;
+ 	}
+ 
++	if (fix_cfi_relocs(elf))
++		return -1;
++
+ 	if (stats) {
+ 		printf("max_reloc: %lu\n", max_reloc);
+ 		printf("tot_reloc: %lu\n", tot_reloc);
+diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
+index 062bb6e9b865..2205b2b08268 100644
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -81,6 +81,9 @@ unsigned long arch_jump_destination(struct instruction *insn);
+ 
+ unsigned long arch_dest_reloc_offset(int addend);
+ 
++unsigned long arch_cfi_section_reloc_offset(struct reloc *reloc);
++unsigned long arch_cfi_jump_reloc_offset(unsigned long offset);
++
+ const char *arch_nop_insn(int len);
+ 
+ int arch_decode_hint_reg(struct instruction *insn, u8 sp_reg);
+diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
+index e34395047530..d9c1dacc6572 100644
+--- a/tools/objtool/include/objtool/elf.h
++++ b/tools/objtool/include/objtool/elf.h
+@@ -39,7 +39,7 @@ struct section {
+ 	char *name;
+ 	int idx;
+ 	unsigned int len;
+-	bool changed, text, rodata, noinstr;
++	bool changed, text, rodata, noinstr, cfi_jt;
+ };
+ 
+ struct symbol {
 -- 
 2.33.0.309.g3052b89438-goog
 
