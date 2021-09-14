@@ -2,107 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8C440B8CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8999140B8D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhINUPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbhINUO4 (ORCPT
+        id S233489AbhINUQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:16:52 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38282 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232909AbhINUQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:14:56 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C482EC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:13:38 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id b200so295386iof.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=opbU04o7Av2seByLDm+85tUZqupNHweB2QHyYQl46u0=;
-        b=Cg4NzZFqSaeWh4iwIopzkDRdf9YkC4YU7w7K6lGW+bGKsuACZacPGqTiw32dbnvhK9
-         xKTisVlvzsBA9DGgELL0LAVERYePLiDfLtDhTF6kMZZh9bTierktXrVkazV0+fd34DWy
-         +kSKoNkXw7p2UWJVuUyM2SnhvGt0usal+Z5KY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=opbU04o7Av2seByLDm+85tUZqupNHweB2QHyYQl46u0=;
-        b=DgRjTFlbcri4/bD50Uq8WpdW/LC+Ya7m0nZzAeDe8xke37Mgfj1McruLoX9iMpLi1R
-         4cFwxWamuBPJgO2Zju1FypLs6LNxbyitg00/W+8Bt6BRb3IO/5f9JIduY1uRHlDlryVh
-         X7vZo5N9f4Rr4ej6ByPmi9ObnIgwBq7gWwfeopCYPVQ3gaC7JIfmAnKWx237ulVf9ZVL
-         WFEv4BH+fcF5dDr/9Q1ZCAtqB7AiaYLbVswqTQ2AnXYozXE+kDfhdB4gq++BEQMqg34z
-         2SRzTl8+MBOURE77ND7PN8/p4rR1Itex3OlGXqOzzO48ZGOcrgAUOD+Vpa4OjEpHhIN0
-         Yc5A==
-X-Gm-Message-State: AOAM530Bbm3zKgaCQr6IaFIMcfOtVWZJ/eOF+m+CIK+pQQ/7r1oUUUBb
-        auwffthj9QS2jDlESL7QIW07/VBVh+2aRw==
-X-Google-Smtp-Source: ABdhPJyEOYxjYbsvllKNYe2SiliybtvcaEQCS0JiCeMXTV6uN6dKOrf0fCnp4vPZoPDSaR5FGo/oyw==
-X-Received: by 2002:a6b:3e84:: with SMTP id l126mr15567618ioa.151.1631650417728;
-        Tue, 14 Sep 2021 13:13:37 -0700 (PDT)
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com. [209.85.166.171])
-        by smtp.gmail.com with ESMTPSA id f3sm7373362iow.3.2021.09.14.13.13.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 13:13:37 -0700 (PDT)
-Received: by mail-il1-f171.google.com with SMTP id h20so346925ilj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:13:36 -0700 (PDT)
-X-Received: by 2002:a05:6e02:214e:: with SMTP id d14mr12547218ilv.142.1631650416432;
- Tue, 14 Sep 2021 13:13:36 -0700 (PDT)
+        Tue, 14 Sep 2021 16:16:47 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18EKFIfi118112;
+        Tue, 14 Sep 2021 15:15:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1631650518;
+        bh=lq5McLfHFnZJXtETVxRy65ZaGodFkG723+t3RoSPFM4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=otS7QF9mQZU398UqW7r+/wmhofqprg1+SB029eFwX/94uDEiTeYjDFVTTj0V2hXF3
+         aFgybhvi8eVH72uXzM25Q72BfWISpG+a7YjwD+VYdJZeQ3edowOCM6qTTe+Y9V8i2n
+         qt23qd4nTW04tNI4joq9J+XB9PhWDSK25Im7RIVE=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18EKFHd2074345
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Sep 2021 15:15:17 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 14
+ Sep 2021 15:15:17 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 14 Sep 2021 15:15:17 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18EKFHqE054096;
+        Tue, 14 Sep 2021 15:15:17 -0500
+Date:   Tue, 14 Sep 2021 15:15:17 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Bao Cheng Su <baocheng.su@siemens.com>,
+        Chao Zeng <chao.zeng@siemens.com>
+Subject: Re: [PATCH v3 5/5] arm64: dts: ti: iot2050: Add support for product
+ generation 2 boards
+Message-ID: <20210914201517.s7cd23kj24seskm5@dallying>
+References: <cover.1631216478.git.jan.kiszka@siemens.com>
+ <206d28002626bb9e2e0ac3f82d3c6f9fdbbfc984.1631216478.git.jan.kiszka@siemens.com>
 MIME-Version: 1.0
-References: <20210909210032.465570-1-dianders@chromium.org>
- <20210909135838.v4.1.I1116e79d34035338a45c1fc7cdd14a097909c8e0@changeid> <CAE-0n53Pp1F5dZRk98WT5+K9jz_XpMkKUvYAs_suZFaOE0K39w@mail.gmail.com>
-In-Reply-To: <CAE-0n53Pp1F5dZRk98WT5+K9jz_XpMkKUvYAs_suZFaOE0K39w@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 14 Sep 2021 13:13:25 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Uc77p-BifFvr=GkWVbP=KKb-eHNtvnOKQJ5D86ogi8hA@mail.gmail.com>
-Message-ID: <CAD=FV=Uc77p-BifFvr=GkWVbP=KKb-eHNtvnOKQJ5D86ogi8hA@mail.gmail.com>
-Subject: Re: [PATCH v4 01/15] dt-bindings: drm/panel-simple-edp: Introduce
- generic eDP panels
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <206d28002626bb9e2e0ac3f82d3c6f9fdbbfc984.1631216478.git.jan.kiszka@siemens.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 21:41-20210909, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> This adds the devices trees for IOT2050 Product Generation 2 (PG2)
+> boards. We have Basic and an Advanced variants again, differing in
+> number of cores, RAM size, availability of eMMC and further details.
+> The major difference to PG1 is the used silicon revision (SR2.x on
+> PG2).
+> 
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> ---
+>  arch/arm64/boot/dts/ti/Makefile               |  2 +
+>  .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
+>  .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
+>  .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
+>  4 files changed, 106 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index d56c742f5a10..41a4bc96e6bd 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -8,7 +8,9 @@
+>  
+>  dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
+>  
+>  dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
+>  
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+> new file mode 100644
+> index 000000000000..2323628b0444
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) Siemens AG, 2021
+> + *
+> + * Authors:
+> + *   Chao Zeng <chao.zeng@siemens.com>
+> + *   Jan Kiszka <jan.kiszka@siemens.com>
+> + *
+> + * Common bits of the IOT2050 Basic and Advanced variants, PG2
+> + */
+> +
+> +&main_pmx0 {
+> +	cp2102n_reset_pin_default: cp2102n_reset_pin_default {
 
-On Tue, Sep 14, 2021 at 12:12 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Douglas Anderson (2021-09-09 14:00:17)
-> > diff --git a/Documentation/devicetree/bindings/display/panel/panel-edp.yaml b/Documentation/devicetree/bindings/display/panel/panel-edp.yaml
-> > new file mode 100644
-> > index 000000000000..6a621376ff86
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/panel/panel-edp.yaml
-> > @@ -0,0 +1,188 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/panel/panel-edp.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Probable (via DP AUX / EDID) eDP Panels with simple poweron sequences
->
-> Should that be "Probeable" or "Probe-able" or "Detectable"? It's not
-> about statistical probabilities right?
+	cp2102n_reset_pin_default: cp2102n-reset-pin-default
 
-Thanks for the catch! Will be fixed in v5.
+> +		pinctrl-single,pins = <
+> +			/* (AF12) GPIO1_24, used as cp2102 reset */
+> +			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
+> +		>;
+> +	};
+> +};
+> +
+> +&main_gpio1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp2102n_reset_pin_default>;
+> +	gpio-line-names =
+> +		"", "", "", "", "", "", "", "", "", "",
+> +		"", "", "", "", "", "", "", "", "", "",
+> +		"", "", "", "", "CP2102N-RESET";
+> +};
+> +
+> +&dss {
+> +	/* Workaround needed to get DP clock of 154Mhz */
+> +	assigned-clocks = <&k3_clks 67 0>;
+> +};
+> +
+> +&serdes0 {
+> +	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
+> +	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
+> +};
+> +
+> +&dwc3_0 {
+> +	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
+> +				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
+> +	phys = <&serdes0 PHY_TYPE_USB3 0>;
+> +	phy-names = "usb3-phy";
+> +};
+> +
+> +&usb0_phy {
+> +	maximum-speed = "super-speed";
+> +	snps,dis-u1-entry-quirk;
+> +	snps,dis-u2-entry-quirk;
+> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+> new file mode 100644
+> index 000000000000..c62549a4b436
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) Siemens AG, 2018-2021
+> + *
+> + * Authors:
+> + *   Le Jin <le.jin@siemens.com>
+> + *   Jan Kiszka <jan.kiszka@siemens.com>
+> + *
+> + * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
+> + * 1 GB RAM, no eMMC, main_uart0 on connector X30
+> + *
+> + * Product homepage:
+> + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "k3-am6528-iot2050-basic-common.dtsi"
+> +#include "k3-am65-iot2050-common-pg2.dtsi"
+> +
+> +/ {
+> +	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
+> +	model = "SIMATIC IOT2050 Basic PG2";
+> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+> new file mode 100644
+> index 000000000000..f00dc86d01b9
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) Siemens AG, 2018-2021
+> + *
+> + * Authors:
+> + *   Le Jin <le.jin@siemens.com>
+> + *   Jan Kiszka <jan.kiszka@siemens.com>
+> + *
+> + * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
+> + * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
+> + *
+> + * Product homepage:
+> + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "k3-am6548-iot2050-advanced-common.dtsi"
+> +#include "k3-am65-iot2050-common-pg2.dtsi"
+> +
+> +/ {
+> +	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
 
--Doug
+^^ siemens,iot2050-basic-pg2 -> needs a yaml update?
+
+> +	model = "SIMATIC IOT2050 Advanced PG2";
+> +};
+> +
+> +&mcu_r5fss0 {
+> +	/* lock-step mode not supported on this board */
+> +	ti,cluster-mode = <0>;
+> +};
+> -- 
+> 2.31.1
+> 
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
