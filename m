@@ -2,174 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1270340A4E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C1240A4EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbhINDvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:51:20 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:55778
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236149AbhINDvS (ORCPT
+        id S239107AbhINDyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238366AbhINDyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:51:18 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 41B034025D
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631591395;
-        bh=HI7zQXcihg2fy5dwCYrDgeNZBtRGWofDhJtkvOD6HGQ=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=I7CqaaEWKD+u8Xx92tTRcf1W5088CiPYsB79UsJjNp5Ah8yYPxd0LvhyNFd8K7meX
-         wUGuIcNWDaKOvbFHHGK+fhP2k84a44xC1Nf5AgDXOVCIyjYJ2mBOJlvTekVZuH1dCl
-         8VSxjGRLsxwV83iwz61Zm9nOZKUGFTITVd0/XdAuZG177ztWMcWbMr8LcY8sE1Bjd6
-         Tuxop2wJxRWgsaw0688ra/Q7qLQRe1r1WAYeDC0og57iqSRB0bW/nRVPAlkEoM3bp3
-         MWk+uR1ERTe/BJErE0kEtijI6ST/ZZlPfzgC3MPDN/Yokh/IQVSAwgrxNn4+8vKnYJ
-         BzYUQVgTYTBOQ==
-Received: by mail-wr1-f71.google.com with SMTP id i4-20020a5d5224000000b0015b14db14deso3394800wra.23
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:49:55 -0700 (PDT)
+        Mon, 13 Sep 2021 23:54:50 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B105C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:53:33 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so16503678otg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=i2DVq77R46Q4oh+eoDH+BZdxkoPPbYH0B3FNJQ4zVf8=;
+        b=CMeXYN+FAfHLeldeEcNaPsiUkFhdg2wk1AlaVy9Mv8UANEWITSv1wHEBzyDKn8kain
+         k7vZS1ckAohDbls3Havh4j+kVV9vU078oxz5MduWpkm1sBTA1vmajJ4DkxAdgHNDKJ4K
+         JHuWlxjVlQtMrPJZRfiY+Rgj3REm6Ludl/9xE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HI7zQXcihg2fy5dwCYrDgeNZBtRGWofDhJtkvOD6HGQ=;
-        b=PR9tbrqRYGZ9RdCbo5F1iKkVpO6pOyMQeIhqbLI0jpU2s66j8DgATSY7e/Wh23xSzx
-         USVFlj3XiiScIXdCKHuas6DmJTz8Wb+Mj67UGnimacQVIvCW7hiyNXdAickHg5g88389
-         CX6BvUZXaODAXetB8OGscYi9cM/zeH78Ju+j6KzUIYsnXoOiJdu9+f/YyULy9agCIJ1l
-         8pUpxhVK7FzsjBDotvZ/grNSYmF6mtj8TuG012nRP5G9lL8MM2Pd+hGgjtjWcVUI+wS9
-         oBUTHWhQi317wU243655yq+y6qQ1m9zzZo3jS7t4D1+Myvzgc7U5ss/9dgENGxU43MEB
-         Nhxw==
-X-Gm-Message-State: AOAM530jnxsfaQInpPwu58Ai1Gkb9kZtJQ0h5tPIpUFsSlfKjKqasNuw
-        vQERQgdk+I61Mss8Jrl6+st5l61MGmEtlAhl9VGzIR8OBlzzeivjMe1wYinoKZjeU++4Vo4nakV
-        e1hUocQWKjnbrBHYe1f6mtgTeFJ+5CBaoe7SZPTX9FQ==
-X-Received: by 2002:adf:8b03:: with SMTP id n3mr16188858wra.439.1631591394887;
-        Mon, 13 Sep 2021 20:49:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsO5Q5kY8Baak47Z/dM9JRQYNve65e5T72yYyoRiroYEO20cQg0HcDjZhu/ZwygPR7LKR/UQ==
-X-Received: by 2002:adf:8b03:: with SMTP id n3mr16188840wra.439.1631591394671;
-        Mon, 13 Sep 2021 20:49:54 -0700 (PDT)
-Received: from [192.168.178.189] ([46.253.247.67])
-        by smtp.gmail.com with ESMTPSA id q128sm10172520wma.27.2021.09.13.20.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 20:49:54 -0700 (PDT)
-Subject: Re: [RFC PATCH V4 6/6] riscv: soc: Add Allwinner SoC kconfig option
-To:     guoren@kernel.org, Liu Shaohua <liush@allwinnertech.com>,
-        wefu@redhat.com
-Cc:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
-        christoph.muellner@vrull.eu, philipp.tomsich@vrull.eu, hch@lst.de,
-        liush@allwinnertech.com, lazyparser@gmail.com,
-        drew@beagleboard.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, taiten.peng@canonical.com,
-        aniket.ponkshe@canonical.com, gordan.markus@canonical.com,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime@cerno.tech>
-References: <20210911092139.79607-1-guoren@kernel.org>
- <20210911092139.79607-7-guoren@kernel.org>
- <20210913084520.kkbsupogkzv226x3@gilmour>
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Message-ID: <e46bb02d-961d-672d-76c7-9844d76ee69b@canonical.com>
-Date:   Tue, 14 Sep 2021 05:49:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=i2DVq77R46Q4oh+eoDH+BZdxkoPPbYH0B3FNJQ4zVf8=;
+        b=ir/26UH4NJhSXxy72SfYhPaRbbzPvCi0uwJF61RaiLV/svP/cbhxVUO0KAhFKNzYmR
+         OKnIn/xbd/Ay+w0HyDM9VzZh/2vN1zaLiqCW5JifNzt2RyESSOYlE7sPPN9SdCDJLtVp
+         wMLGlP1JYPJS7/Bk2wiIiH4B5r/dbeGCrG3q9nufYWTaLzAoIUqiDbS93RNWgZWr6tpF
+         1knyYmUT+4AD4tgHaCvntcAMbtRHpg+/eebIH+fKSlZ1hegHIasnhQO4q5hO4aIUQD4F
+         falr/hKgPYD8xQN8ptV7nJ+u4dkibPcoeNgLBgblxq54gLkhXjiY5hiBrW7JKUa/AxZ4
+         pZ7A==
+X-Gm-Message-State: AOAM532MzMKoJtpbzoX1OIUeWMprHTJJF0hNA20Bd1UA1O1trBfRw1b9
+        kmCnVKMHws2ETlikNXzisQoeyahdF2tHyO43ApYw8Q==
+X-Google-Smtp-Source: ABdhPJwoKH4NRu22aHQhQLigGEjP8NGge3P2aM9lWffyrcLEzgZPwADb20z4GDX00vaZCgpJyE32xaMgcvWXUq6bKJg=
+X-Received: by 2002:a05:6830:719:: with SMTP id y25mr12716971ots.77.1631591612907;
+ Mon, 13 Sep 2021 20:53:32 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 13 Sep 2021 20:53:32 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210913084520.kkbsupogkzv226x3@gilmour>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
+References: <1628726882-27841-1-git-send-email-sbillaka@codeaurora.org> <1628726882-27841-2-git-send-email-sbillaka@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 13 Sep 2021 20:53:32 -0700
+Message-ID: <CAE-0n51EiVHB56AC5tdyRtkpy0B9OuOp_y5xBceaU_pyzr+_JA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] drm/msm/dp: Add support for SC7280 eDP
+To:     Sankeerth Billakanti <sbillaka@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     robdclark@gmail.com, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, abhinavk@codeaurora.org,
+        dianders@chromium.org, khsieh@codeaurora.org,
+        mkrishn@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Sankeerth Billakanti (2021-08-11 17:08:01)
+> The eDP controller on SC7280 is similar to the eDP/DP controllers
+> supported by the current driver implementation.
+>
+> SC7280 supports one EDP and one DP controller which can operate
+> concurrently.
+>
+> The following are some required changes for the sc7280 sink:
+> 1. Additional gpio configuration for backlight and pwm via pmic.
+> 2. ASSR support programming on the sink.
+> 3. SSC support programming on the sink.
+>
+> Signed-off-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c |  4 ++--
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c               | 19 +++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_display.c            | 32 ++++++++++++++++++++++++--
+>  drivers/gpu/drm/msm/dp/dp_parser.c             | 31 +++++++++++++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_parser.h             |  5 ++++
+>  5 files changed, 87 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index b131fd37..1096c44 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -856,9 +856,9 @@ static const struct dpu_intf_cfg sm8150_intf[] = {
+>  };
+>
+>  static const struct dpu_intf_cfg sc7280_intf[] = {
+> -       INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+> +       INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, 1, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
+>         INTF_BLK("intf_1", INTF_1, 0x35000, INTF_DSI, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
+> -       INTF_BLK("intf_5", INTF_5, 0x39000, INTF_EDP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
+> +       INTF_BLK("intf_5", INTF_5, 0x39000, INTF_DP, 0, 24, INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
 
+Why is this INTF_5? Instead of INTF_2? I noticed that if I changed it to
+INTF_2 that I could get external DP to work but not the internal eDP.
+Then changing it back to INTF_5 got eDP interface working but not DP. I
+also noticed that we changed it from INTF_EDP to INTF_DP for the eDP
+hardware. Can you please explain this struct? I looked at it and I still
+don't understand what's going on.
 
-On 9/13/21 10:45 AM, Maxime Ripard wrote:
-> Hi,
-> 
-> On Sat, Sep 11, 2021 at 05:21:39PM +0800, guoren@kernel.org wrote:
->> From: Liu Shaohua <liush@allwinnertech.com>
->>
->> Add Allwinner kconfig option which selects SoC specific and common
->> drivers that is required for this SoC.
->>
->> Allwinner D1 uses custom PTE attributes to solve non-coherency SOC
->> interconnect issues for dma synchronization, so we set the default
->> value when SOC_SUNXI selected.
->>
->> Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
->> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->> Signed-off-by: Wei Fu <wefu@redhat.com>
->> Cc: Anup Patel <anup.patel@wdc.com>
->> Cc: Atish Patra <atish.patra@wdc.com>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Chen-Yu Tsai <wens@csie.org>
->> Cc: Drew Fustini <drew@beagleboard.org>
->> Cc: Maxime Ripard <maxime@cerno.tech>
->> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
->> Cc: Wei Wu <lazyparser@gmail.com>
->> ---
->>   arch/riscv/Kconfig.socs      | 15 +++++++++++++++
->>   arch/riscv/configs/defconfig |  1 +
->>   2 files changed, 16 insertions(+)
->>
->> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
->> index 30676ebb16eb..8721c000ef23 100644
->> --- a/arch/riscv/Kconfig.socs
->> +++ b/arch/riscv/Kconfig.socs
->> @@ -70,4 +70,19 @@ config SOC_CANAAN_K210_DTB_SOURCE
->>   
->>   endif
->>   
->> +config SOC_SUNXI
->> +	bool "Allwinner SoCs"
->> +	depends on MMU
->> +	select DWMAC_GENERIC
->> +	select ERRATA_THEAD
->> +	select RISCV_DMA_NONCOHERENT
->> +	select RISCV_ERRATA_ALTERNATIVE
->> +	select SERIAL_8250
->> +	select SERIAL_8250_CONSOLE
->> +	select SERIAL_8250_DW
->> +	select SIFIVE_PLIC
->> +	select STMMAC_ETH
->> +	help
->> +	  This enables support for Allwinner SoC platforms like the D1.
->> +
-> 
-> I'm not sure we should select the drivers there. We could very well
-> imagine a board without UART, or even more so without ethernet.
-
-The draft of the RISC-V platform specification is available here:
-https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-spec.adoc#uartserial-console
-
-The specification requires in section "2.1.5.1. UART/Serial Console" 
-that on platforms with a rich operating system (e.g. Linux) you have a 
-serial console. Hence requiring 8250 support for the D1 CPU is justified.
-
-In the riscv defconfig as of v5.14 we have:
-
-CONFIG_SERIAL_8250=y
-CONFIG_SERIAL_8250_CONSOLE=y
-# CONFIG_SERIAL_8250_DW is not set
-(Support for Synopsys DesignWare 8250 quirks)
-
-CONFIG_SERIAL_8250_DW should be enabled (=y) in the defconfig.
-
-As the specification requires a 16550 UART and marks 8250 as deprecated 
-I expect that future Allwinner SoCs will move to 16550. Calling a 
-Kconfig menu item "Allwinner SoCs" which includes all future Allwinner 
-SoCs irritates me. How about CONFIG_SOC_SUNXI_D1 instead?
-
-Why does the patch use 'depends on MMU' and does not 'select MMU'?
-
-Best regards
-
-Heinrich
-
-> 
-> These options should be in the defconfig.
-> 
-> Maxime
-> 
+The index (fifth element above) seems to need to match the index that is
+set for the address in sc7280_edp_cfg[]. If the two don't match things
+don't seem to work either. But then I also tried flipping that and still
+things didn't work. Does that index matter? Or can the first INTF_DP be
+0 still?
