@@ -2,146 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEA640A315
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11AE40A318
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbhINCKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 22:10:01 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:50947 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233111AbhINCKA (ORCPT
+        id S236985AbhINCKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 22:10:10 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:37336 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233111AbhINCKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 22:10:00 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 82C30ECDEAD;
-        Tue, 14 Sep 2021 12:08:40 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mPxsD-00CD9j-TB; Tue, 14 Sep 2021 12:08:37 +1000
-Date:   Tue, 14 Sep 2021 12:08:37 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from
- xfs_buf_alloc_pages()
-Message-ID: <20210914020837.GH2361455@dread.disaster.area>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>
- <163157838440.13293.12568710689057349786.stgit@noble.brown>
+        Mon, 13 Sep 2021 22:10:06 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoK3s4Y_1631585325;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoK3s4Y_1631585325)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 14 Sep 2021 10:08:46 +0800
+Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+ <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <1e7a75ab-aa9e-1532-2746-28bfcbc98908@linux.alibaba.com>
+Date:   Tue, 14 Sep 2021 10:08:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163157838440.13293.12568710689057349786.stgit@noble.brown>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=W8B-ML30YZIRN3gm7fgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
-> Documentation commment in gfp.h discourages indefinite retry loops on
-> ENOMEM and says of __GFP_NOFAIL that it
+
+
+On 2021/9/13 下午10:49, Dave Hansen wrote:
+> On 9/12/21 8:30 PM, 王贇 wrote:
+>> According to the trace we know the story is like this, the NMI
+>> triggered perf IRQ throttling and call perf_log_throttle(),
+>> which triggered the swevent overflow, and the overflow process
+>> do perf_callchain_user() which triggered a user PF, and the PF
+>> process triggered perf ftrace which finally lead into a suspected
+>> stack overflow.
+>>
+>> This patch disable ftrace on fault.c, which help to avoid the panic.
+> ...
+>> +# Disable ftrace to avoid stack overflow.
+>> +CFLAGS_REMOVE_fault.o = $(CC_FLAGS_FTRACE)
 > 
->     is definitely preferable to use the flag rather than opencode
->     endless loop around allocator.
+> Was this observed on a mainline kernel?
+
+Yes, it is trigger on linux-next.
+
 > 
-> congestion_wait() is indistinguishable from
-> schedule_timeout_uninterruptible() in practice and it is not a good way
-> to wait for memory to become available.
+> How reproducible is this?
 > 
-> So instead of waiting, allocate a single page using __GFP_NOFAIL, then
-> loop around and try to get any more pages that might be needed with a
-> bulk allocation.  This single-page allocation will wait in the most
-> appropriate way.
+> I suspect we're going into do_user_addr_fault(), then falling in here:
 > 
-> Signed-off-by: NeilBrown <neilb@suse.de>
-> ---
->  fs/xfs/xfs_buf.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>>         if (unlikely(faulthandler_disabled() || !mm)) {
+>>                 bad_area_nosemaphore(regs, error_code, address);
+>>                 return;
+>>         }
 > 
-> diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> index 5fa6cd947dd4..1ae3768f6504 100644
-> --- a/fs/xfs/xfs_buf.c
-> +++ b/fs/xfs/xfs_buf.c
-> @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
->  
->  	/*
->  	 * Bulk filling of pages can take multiple calls. Not filling the entire
-> -	 * array is not an allocation failure, so don't back off if we get at
-> -	 * least one extra page.
-> +	 * array is not an allocation failure, so don't fail or fall back on
-> +	 * __GFP_NOFAIL if we get at least one extra page.
->  	 */
->  	for (;;) {
->  		long	last = filled;
-> @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
->  		}
->  
->  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
-> -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-> +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
 
-This smells wrong - the whole point of using the bulk page allocator
-in this loop is to avoid the costly individual calls to
-alloc_page().
+Correct, perf_callchain_user() disabled PF which lead into here.
 
-What we are implementing here fail-fast semantics for readahead and
-fail-never for everything else.  If the bulk allocator fails to get
-a page from the fast path free lists, it already falls back to
-__alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
-there's no need to add another call to alloc_page() because we can
-just do this instead:
+> Then something double faults in perf_swevent_get_recursion_context().
+> But, you snipped all of the register dump out so I can't quite see
+> what's going on and what might have caused *that* fault.  But, in my
+> kernel perf_swevent_get_recursion_context+0x0/0x70 is:
+> 
+> 	   mov    $0x27d00,%rdx
+> 
+> which is rather unlikely to fault.
 
-	if (flags & XBF_READ_AHEAD)
-		gfp_mask |= __GFP_NORETRY;
-	else
--		gfp_mask |= GFP_NOFS;
-+		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
+Would you like to check the full trace I just sent see if we can get any
+clue?
 
-Which should make the __alloc_pages() call in
-alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
-provide the necessary never-fail guarantee that is needed here.
+> 
+> Either way, we don't want to keep ftrace out of fault.c.  This patch is
+> just a hack, and doesn't really try to fix the underlying problem.  This
+> situation *should* be handled today.  There's code there to handle it.
+> 
+> Something else really funky is going on.
 
-At which point, the bulk allocation loop can be simplified because
-we can only fail bulk allocation for readahead, so something like:
+Do you think stack overflow is possible in this case? To be mentioned the NMI
+arrive in very high frequency, and reduce perf_event_max_sample_rate to a low
+value can also avoid the panic.
 
-		if (filled == bp->b_page_count) {
-			XFS_STATS_INC(bp->b_mount, xb_page_found);
-			break;
-		}
+Regards,
+Michael Wang
 
--		if (filled != last)
-+		if (filled == last) {
--			continue;
--
--		if (flags & XBF_READ_AHEAD) {
-			ASSERT(flags & XBF_READ_AHEAD);
-			xfs_buf_free_pages(bp);
-			return -ENOMEM;
-		}
-
-		XFS_STATS_INC(bp->b_mount, xb_page_retries);
--		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-	}
-	return 0;
-}
-
-would do the right thing and still record that we are doing
-blocking allocations (via the xb_page_retries stat) in this loop.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> 
