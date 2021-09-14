@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDA940B576
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E0440B57A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhINQ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:57:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:47238 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhINQ5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:57:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FE3531B;
-        Tue, 14 Sep 2021 09:56:31 -0700 (PDT)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B04E43F59C;
-        Tue, 14 Sep 2021 09:56:29 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     rafael@kernel.org, haokexin@gmail.com, juri.lelli@redhat.com,
-        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        viresh.kumar@linaro.org, james.morse@arm.com
-Subject: [PATCH] cpufreq: schedutil: Destroy mutex before kobject_put() frees the memory
-Date:   Tue, 14 Sep 2021 16:56:23 +0000
-Message-Id: <20210914165623.18972-1-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
+        id S229706AbhINQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhINQ7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:59:16 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17C7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:57:58 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id s12so20625ljg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fqQSMJ8RTVDNrryIulJY4YULkRA8eJdXQSnIYvRutRM=;
+        b=bOyzoS6TBDReuHrgJ73iE7TVyyReZIJ23lD6wghw6vtmD+J/kmrNOL66GQYOZbGyn7
+         iao01Np6tfD4fXrcNrsZrxBOr/kZX5yIUbmdB+WYDiu0fdw8WROJMqUheZBabwzRdzJc
+         S3yRwWcdOIGT+DzwYKmX2UxKzOm/KZEdkUs05mHhxgTb7tT8S+PggPMcaJOWr8QkQVZp
+         2Qf9lB+UKDuSz5Wjgt4QRgUgbvRbbZKpsTTT+Lqz04aeMN2mR0MNc4AdjPddJkHMDA/e
+         cgtcfH+3u7tLbNezP8DCYXLw9I8RjlsQpv2s/843ZPjaMNl65AkJE4DHLWqd15d9ysK7
+         mPsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fqQSMJ8RTVDNrryIulJY4YULkRA8eJdXQSnIYvRutRM=;
+        b=W/Lw1HuG49NlewXD9IPQ2fY4+97QZaZB6s2fVzxZtuCyd0l1m+OfPwkpoDL3mSca9y
+         1eD380RCgdKxPKbG7edTU26LTA9PiY4pze6gwOl+a3nwT0AaPl3dLjyHuF3xDYfqFMGM
+         yBa8h0YtUUvTHOLgy5hcRQP3hhKhI2htcxV/vEGXjzmTaiT6ukVCXmhIceR4lk7AAMVt
+         pg4ZtW3TiZ7Lt3gxi5wG/VTV9njBe1P12iIcKpd4WDTSmDya2aF98iJ5VOIwNIhWuRvH
+         u9dsRiBgQ9xhl23KbQZqqcCC6NvfpVr/cBQbif5BdqkH0W/yTaTh76i5ZbZSHqctFBGB
+         nfMA==
+X-Gm-Message-State: AOAM531FhoPcm9AqrtVbu6TqXAtgqdBH2SlY/5OjiyOfXvFfwx4p5rza
+        U9ZAW+RVRtmc02x0szYudmjB6xgPfn45lbhL9ET6A9MgVhg=
+X-Google-Smtp-Source: ABdhPJysNsvUDtxy30q4rx85+AbNCPtjDAx3HsUEPIj+nSsSwNY/e2GbTq6iwD8+O1eU5K92Jipb2fb7C5+7NUhYswM=
+X-Received: by 2002:a2e:900c:: with SMTP id h12mr16782693ljg.263.1631638677287;
+ Tue, 14 Sep 2021 09:57:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210908184905.163787-1-posk@google.com> <20210908184905.163787-5-posk@google.com>
+ <YUDPWnsLRoU8StFi@geo.homenetwork>
+In-Reply-To: <YUDPWnsLRoU8StFi@geo.homenetwork>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Tue, 14 Sep 2021 09:57:46 -0700
+Message-ID: <CAPNVh5eY68FSWEFwQuqN69rx2gvAn6T04SvV6MA=uEhtdy-Uyw@mail.gmail.com>
+Subject: Re: [PATCH 4/4 v0.5] sched/umcg: add Documentation/userspace-api/umcg.rst
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit e5c6b312ce3c ("cpufreq: schedutil: Use kobject release()
-method to free sugov_tunables") kobject_put() has kfree()d the
-attr_set before gov_attr_set_put() returns.
+On Tue, Sep 14, 2021 at 9:34 AM Tao Zhou <tao.zhou@linux.dev> wrote:
 
-kobject_put() isn't the last user of attr_set in gov_attr_set_put(),
-the subsequent mutex_destroy() triggers a use-after-free:
-| BUG: KASAN: use-after-free in mutex_is_locked+0x20/0x60
-| Read of size 8 at addr ffff000800ca4250 by task cpuhp/2/20
-|
-| CPU: 2 PID: 20 Comm: cpuhp/2 Not tainted 5.15.0-rc1 #12369
-| Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
-| Platform, BIOS EDK II Jul 30 2018
-| Call trace:
-|  dump_backtrace+0x0/0x380
-|  show_stack+0x1c/0x30
-|  dump_stack_lvl+0x8c/0xb8
-|  print_address_description.constprop.0+0x74/0x2b8
-|  kasan_report+0x1f4/0x210
-|  kasan_check_range+0xfc/0x1a4
-|  __kasan_check_read+0x38/0x60
-|  mutex_is_locked+0x20/0x60
-|  mutex_destroy+0x80/0x100
-|  gov_attr_set_put+0xfc/0x150
-|  sugov_exit+0x78/0x190
-|  cpufreq_offline.isra.0+0x2c0/0x660
-|  cpuhp_cpufreq_offline+0x14/0x24
-|  cpuhp_invoke_callback+0x430/0x6d0
-|  cpuhp_thread_fun+0x1b0/0x624
-|  smpboot_thread_fn+0x5e0/0xa6c
-|  kthread+0x3a0/0x450
-|  ret_from_fork+0x10/0x20
+[...]
 
-Swap the order of the calls.
+> > +- worker to worker context switch:
+> > +  ``W1:RUNNING+W2:IDLE => W1:IDLE+W2:RUNNING``:
+> > +
+> > +  - in the userspace, in the context of W1 running:
+> > +
+> > +    - ``W2:IDLE => W2:RUNNING|LOCKED`` (mark W2 as running)
+> > +    - ``W1:RUNNING => W1:IDLE|LOCKED`` (mark self as idle)
+> > +    - ``W2.next_tid := W1.next_tid; S.next_tid := W2.next_tid``
+>                                                         ^^^^^^^^
+> W2.next_tid is a server. S.next_tid should be a worker; say:
+>
+>   S.next_tid := W2.tid
 
-Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
-Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
-CC: Kevin Hao <haokexin@gmail.com>
-CC: Viresh Kumar <viresh.kumar@linaro.org>
-CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: James Morse <james.morse@arm.com>
----
- drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
-index 66b05a326910..a6f365b9cc1a 100644
---- a/drivers/cpufreq/cpufreq_governor_attr_set.c
-+++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
-@@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
- 	if (count)
- 		return count;
- 
--	kobject_put(&attr_set->kobj);
- 	mutex_destroy(&attr_set->update_lock);
-+	kobject_put(&attr_set->kobj);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(gov_attr_set_put);
--- 
-2.30.2
-
+You are definitely right here. I'll fix the doc in the next patchset.
