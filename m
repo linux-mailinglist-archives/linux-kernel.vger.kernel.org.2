@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4AC40AD2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C0E40AD3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhINMNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
+        id S232853AbhINMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232199AbhINMNj (ORCPT
+        with ESMTP id S232786AbhINMOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:13:39 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3A9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:12:22 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id t35so11164879qtc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:12:22 -0700 (PDT)
+        Tue, 14 Sep 2021 08:14:38 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCD7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:13:20 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id b64so14504068qkg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:13:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=0m8YoXMgG1crnCPt/39VMUSJpuHCvLuD4Bq99ZM/h/o=;
-        b=MlX97dF47qqDsV0jqCq7TvgIjZ+fLI3+0xZuolu5IyYJBpxoHlweELTuB/17lHf68J
-         +z/Hg8hO+c8ata8UGv78cQMaas2DhemTPZ4PQE9hU6Jc/WfULnyfPjNmZO74k002zRyv
-         NbLiWC4NQA+zOdK44lUWmB03tqzDJ8fkzgJma6/QZM2emd6RgengWoop2FM3F1mNkXU/
-         lNogzcfwTigwVHKWgRzwZ0ALfRqgE0TS31aoT489CrRVDY7JD4fBI7mf5F1fx6KI1muJ
-         ge6O4sI/+OAkSmGteF9Kh7iPIPy6Tfenl10WEVrjkknQNyJstFjoc/K67V6JANjRCJPe
-         llKw==
+        bh=pJ0yW4/1Jn6ZEeGlxOvvBqEA1VuZRtIwgqtBes2tjIY=;
+        b=ZT9oblhQOkOXScfXKv8+xOqRaGE0WgSKWm93+I3oT8FQcNL6gNEpMSrGUSsbksVmfb
+         y3GdJxN/nkFI6szxiiq0GYBxjof1k3RzFbKXcRnSuWr4rVjPew9FTFreNBDbfz40ABvo
+         YanTFu3rpFNJteFkq1DEjpegEKUARWnyRjEIzDqMN7dP42I5ZDNIpsB9bI+TihY+0XUL
+         bv4DOR9LPuDOLM35CzaDQdyEX5X0wD3aSkGeKI7PsqOJ8PCeYKPsRhATLiU1PE4trcAM
+         Ds5AcFT2m80OecQVCK6+2q3MWUedgmTfqjtPs1EYRflv/K24dgoNYftDbBq4MCldfxXH
+         qnKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0m8YoXMgG1crnCPt/39VMUSJpuHCvLuD4Bq99ZM/h/o=;
-        b=np9N337V/gtldc7I451OYU2LdeDWTPlM7nvLkndRKc1ZvakdE1f4PF3XJRKOullE/h
-         pn83LVIeqNOrloFi+ZPQB1sYCzhIskTULlFFNm49OEPN2w9SYysadO0oOewjgVqZxoJs
-         61hkLx8WoCGNOL+R2vPCUNvkC+gfzdJkk8jZwiY9zDis6mKtFTCcigP1GOtqaoHYH4uv
-         LX3hYmA4NMRs9WwkZQFA4tta35vCRox5uVx7WjfJ5CnA+cEBnmA/vJeDPnn4OdU09Zok
-         +AFY7r9eHdH3c28msq+b2aSQNNbMwRhyzVflVVJhw13EOEpH6ufHWhKixhPJsy3j2ZK+
-         pbQA==
-X-Gm-Message-State: AOAM532hogStr1oG6IrTGtFUyxyub/Ceo2cV4y+kv7ozXshQD56A2Qn8
-        mJ7qWhwZ2qxmaf6syeXUhG3rOqu99wX8GT/wo/Z0Tw==
-X-Google-Smtp-Source: ABdhPJyP5AGpXanp5wz7BJlsvOK8phQzjFiPdeW3a3/m1nrZTfsV4oskwTp3PUuoM7ezO8vAfoJN0hq/RRCHPPA2LRI=
-X-Received: by 2002:ac8:7482:: with SMTP id v2mr4321263qtq.235.1631621541584;
- Tue, 14 Sep 2021 05:12:21 -0700 (PDT)
+        bh=pJ0yW4/1Jn6ZEeGlxOvvBqEA1VuZRtIwgqtBes2tjIY=;
+        b=g4Rc0GaHzCp0yWKlb8vOA2Ji6D3Vh1RTkFBdIsfzdOTmVYHAATQJn4ypDmMwe69Z0S
+         aoup603zq6TgQk7SSJ3o39qeiYmpyALalScpKZpK/m9q+qcG7zBoy9INDBXFekk07k8M
+         4TzqmYRqIOpADeJH5SLJh+5Ti5DN8KVR52mG8NecOcIgqIvji8zUajsV0HlOlUGNS2xy
+         SSYqN+hUK5P+G/22zYKlq1Uf3LIFE5mIMOdtCIVYGgBvFbZT2eAz2F3G9VQVBXd7c1oJ
+         fnvN07VazUXfdRtg5fmPhWOxnO3gf+7MF1ylXyV0+Yfb4ft8b+DUh9mQEOhyNoUBTJsv
+         gmXg==
+X-Gm-Message-State: AOAM531enZUcxHc+qDWdbsDTwoWzNh1vKxcKTQQstglThYIG+GGicyVI
+        KbLv6aJjC8Ktx8ewIfYcajJFDCcT09JYPZ2f+8mYzg==
+X-Google-Smtp-Source: ABdhPJwLVdTNZsVxxo92ilXBQEiuYtzkaFYtDjigb7vv+T3hwYVL5wZO3l5lC4q8vtXtFjs2gqHYUYVCTZ6pi+MGjVQ=
+X-Received: by 2002:a05:620a:191d:: with SMTP id bj29mr4500655qkb.362.1631621599977;
+ Tue, 14 Sep 2021 05:13:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907141307.1437816-1-elver@google.com> <20210907141307.1437816-2-elver@google.com>
-In-Reply-To: <20210907141307.1437816-2-elver@google.com>
+References: <20210907141307.1437816-1-elver@google.com> <20210907141307.1437816-3-elver@google.com>
+In-Reply-To: <20210907141307.1437816-3-elver@google.com>
 From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 14 Sep 2021 14:11:45 +0200
-Message-ID: <CAG_fn=WEZ=W0DzLqbpmG3kgL4QjvBr7OfnPKN_peeti2GYB5Pg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] lib/stackdepot: include gfp.h
+Date:   Tue, 14 Sep 2021 14:12:43 +0200
+Message-ID: <CAG_fn=XGa=UK6cduTNAd2AREA6jxUaGFJqTWT1cNTXCK4-6k0Q@mail.gmail.com>
+Subject: Re: [PATCH 2/6] lib/stackdepot: remove unused function argument
 To:     Marco Elver <elver@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Shuah Khan <skhan@linuxfoundation.org>,
@@ -76,30 +76,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Sep 7, 2021 at 4:14 PM Marco Elver <elver@google.com> wrote:
 >
-> <linux/stackdepot.h> refers to gfp_t, but doesn't include gfp.h.
->
-> Fix it by including <linux/gfp.h>.
+> alloc_flags in depot_alloc_stack() is no longer used; remove it.
 >
 > Signed-off-by: Marco Elver <elver@google.com>
 Reviewed-by: Alexander Potapenko <glider@google.com>
 
 > ---
->  include/linux/stackdepot.h | 2 ++
->  1 file changed, 2 insertions(+)
+>  lib/stackdepot.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 >
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index 6bb4bc1a5f54..97b36dc53301 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -11,6 +11,8 @@
->  #ifndef _LINUX_STACKDEPOT_H
->  #define _LINUX_STACKDEPOT_H
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 0a2e417f83cb..c80a9f734253 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -102,8 +102,8 @@ static bool init_stack_slab(void **prealloc)
+>  }
 >
-> +#include <linux/gfp.h>
+>  /* Allocation of a new stack in raw storage */
+> -static struct stack_record *depot_alloc_stack(unsigned long *entries, in=
+t size,
+> -               u32 hash, void **prealloc, gfp_t alloc_flags)
+> +static struct stack_record *
+> +depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **pre=
+alloc)
+>  {
+>         struct stack_record *stack;
+>         size_t required_size =3D struct_size(stack, entries, size);
+> @@ -309,9 +309,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *=
+entries,
+>
+>         found =3D find_stack(*bucket, entries, nr_entries, hash);
+>         if (!found) {
+> -               struct stack_record *new =3D
+> -                       depot_alloc_stack(entries, nr_entries,
+> -                                         hash, &prealloc, alloc_flags);
+> +               struct stack_record *new =3D depot_alloc_stack(entries, n=
+r_entries, hash, &prealloc);
 > +
->  typedef u32 depot_stack_handle_t;
->
->  depot_stack_handle_t stack_depot_save(unsigned long *entries,
+>                 if (new) {
+>                         new->next =3D *bucket;
+>                         /*
 > --
 > 2.33.0.153.gba50c8fa24-goog
 >
