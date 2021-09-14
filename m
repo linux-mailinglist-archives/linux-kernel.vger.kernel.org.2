@@ -2,227 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0D540A916
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEB340A928
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhINIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:24:47 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3787 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhINIYq (ORCPT
+        id S229699AbhINI3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhINI3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:24:46 -0400
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H7xBk0RTxz67Xb5;
-        Tue, 14 Sep 2021 16:21:18 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 14 Sep 2021 10:23:25 +0200
-Received: from [10.47.80.114] (10.47.80.114) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 14 Sep
- 2021 09:23:25 +0100
-Subject: Re: [PATCH RESEND v3 12/13] blk-mq: Use shared tags for shared
- sbitmap support
-To:     Hannes Reinecke <hare@suse.de>, "axboe@kernel.dk" <axboe@kernel.dk>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
- <1631545950-56586-13-git-send-email-john.garry@huawei.com>
- <05804d91-4392-260d-34f2-618b0d3b3f7f@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <664ba62f-ccbf-ac0c-548e-e15561b82224@huawei.com>
-Date:   Tue, 14 Sep 2021 09:27:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 14 Sep 2021 04:29:38 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DDCC061574;
+        Tue, 14 Sep 2021 01:28:21 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1048004bf380b26d2cf776.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:4800:4bf3:80b2:6d2c:f776])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7699A1EC0464;
+        Tue, 14 Sep 2021 10:28:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1631608094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=a4eAzcmgT+Cbjjd6VWGKBIiTujYg8WfJzuB6hTCYge0=;
+        b=l1T5lQUt6p7TqQ2QYh6YIHTDNZbLx5KQRUA/63x2LTVAnIlUUp3NxdLHluIzr7RKuEZ7S0
+        hmW69MX2VECRwla3/KAx73SFgDDjgNCCjeNjQiv0BD65WMV2rI/i1k9dTbvfi2hK65gHGR
+        7LqZJqXn2VQhbNah1rz0rWeO1O7H7qY=
+Date:   Tue, 14 Sep 2021 10:28:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
+        naoya.horiguchi@nec.com, osalvador@suse.de,
+        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
+        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <YUBdGBRyMT0LCm1x@zn.tnic>
+References: <20210706190620.1290391-1-tony.luck@intel.com>
+ <20210818002942.1607544-1-tony.luck@intel.com>
+ <20210818002942.1607544-2-tony.luck@intel.com>
+ <YT8Y5cBiaD3NpAIi@zn.tnic>
+ <YT/IJ9ziLqmtqEPu@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <05804d91-4392-260d-34f2-618b0d3b3f7f@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.114]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YT/IJ9ziLqmtqEPu@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
+On Mon, Sep 13, 2021 at 02:52:39PM -0700, Luck, Tony wrote:
+> Also mark queue_task_work() as "noinstr" (as reported kernel test robot
+> <lkp@intel.com>)
 
->>    static int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
->>    {
->>    	struct blk_mq_tag_set *set = queue->tag_set;
->> -	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
->> -	struct blk_mq_hw_ctx *hctx;
->> -	int ret, i;
->>    
->>    	/*
->>    	 * Set initial depth at max so that we don't need to reallocate for
->>    	 * updating nr_requests.
->>    	 */
->> -	ret = blk_mq_init_bitmaps(&queue->sched_bitmap_tags,
->> -				  &queue->sched_breserved_tags,
->> -				  MAX_SCHED_RQ, set->reserved_tags,
->> -				  set->numa_node, alloc_policy);
->> -	if (ret)
->> -		return ret;
->> -
->> -	queue_for_each_hw_ctx(queue, hctx, i) {
->> -		hctx->sched_tags->bitmap_tags =
->> -					&queue->sched_bitmap_tags;
->> -		hctx->sched_tags->breserved_tags =
->> -					&queue->sched_breserved_tags;
->> -	}
->> +	queue->shared_sbitmap_tags = blk_mq_alloc_map_and_rqs(set,
->> +						BLK_MQ_NO_HCTX_IDX,
->> +						MAX_SCHED_RQ);
->> +	if (!queue->shared_sbitmap_tags)
->> +		return -ENOMEM;
->>    
+Yeah, that's not enough - I have a patchset in the works for all this so
+I'm going to drop your annotation.
+
+> Cc: <stable@vger.kernel.org>
+> Fixes: 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
+
+Ah ok, that one makes sense.
+
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
 > 
-> Any particular reason why the 'shared_sbitmap_tags' pointer is added to
-> the request queue and not the tagset?
-> Everything else is located there, so I would have found it more logical
-> to add the 'shared_sbitmap_tags' pointer to the tagset, not the queue ...
+> > What about a Fixes: tag?
 > 
-
-We already have it for both. Since commit d97e594c5166 ("blk-mq: Use 
-request queue-wide tags for tagset-wide sbitmap"), we have a "shared 
-sbitmap" per tagset and per request queue. If you check d97e594c5166 
-then it should explain the reason.
-
->>    	blk_mq_tag_update_sched_shared_sbitmap(queue);
->>    
->>    	return 0;
->>    }
->>    
->> -static void blk_mq_exit_sched_shared_sbitmap(struct request_queue *queue)
->> -{
->> -	sbitmap_queue_free(&queue->sched_bitmap_tags);
->> -	sbitmap_queue_free(&queue->sched_breserved_tags);
->> -}
->> -
->>    int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->>    {
->> +	unsigned int i, flags = q->tag_set->flags;
->>    	struct blk_mq_hw_ctx *hctx;
->>    	struct elevator_queue *eq;
->> -	unsigned int i;
->>    	int ret;
->>    
->>    	if (!e) {
->> @@ -598,21 +596,21 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->>    	q->nr_requests = 2 * min_t(unsigned int, q->tag_set->queue_depth,
->>    				   BLKDEV_DEFAULT_RQ);
->>    
->> -	queue_for_each_hw_ctx(q, hctx, i) {
->> -		ret = blk_mq_sched_alloc_map_and_rqs(q, hctx, i);
->> +	if (blk_mq_is_sbitmap_shared(flags)) {
->> +		ret = blk_mq_init_sched_shared_sbitmap(q); >   		if (ret)
->> -			goto err_free_map_and_rqs;
->> +			return ret;
->>    	}
->>    
->> -	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
->> -		ret = blk_mq_init_sched_shared_sbitmap(q);
->> +	queue_for_each_hw_ctx(q, hctx, i) {
->> +		ret = blk_mq_sched_alloc_map_and_rqs(q, hctx, i);
->>    		if (ret)
->>    			goto err_free_map_and_rqs;
->>    	}
->>    
->>    	ret = e->ops.init_sched(q, e);
->>    	if (ret)
->> -		goto err_free_sbitmap;
->> +		goto err_free_map_and_rqs;
->>    
->>    	blk_mq_debugfs_register_sched(q);
->>    
->> @@ -632,12 +630,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->>    
->>    	return 0;
->>    
->> -err_free_sbitmap:
->> -	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
->> -		blk_mq_exit_sched_shared_sbitmap(q);
->> -	blk_mq_sched_free_rqs(q);
->>    err_free_map_and_rqs:
->> -	blk_mq_sched_tags_teardown(q);
->> +	blk_mq_sched_free_rqs(q);
->> +	blk_mq_sched_tags_teardown(q, flags);
->> +
->>    	q->elevator = NULL;
->>    	return ret;
->>    }
->> @@ -651,9 +647,15 @@ void blk_mq_sched_free_rqs(struct request_queue *q)
->>    	struct blk_mq_hw_ctx *hctx;
->>    	int i;
->>    
->> -	queue_for_each_hw_ctx(q, hctx, i) {
->> -		if (hctx->sched_tags)
->> -			blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i);
->> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
->> +		blk_mq_free_rqs(q->tag_set, q->shared_sbitmap_tags,
->> +				BLK_MQ_NO_HCTX_IDX);
+> Added a Fixes tag.
 > 
-> 'if (q->shared_sbitmap_tags)'
+> Also added "noinstr" to queue_task_work() per a kernel robot report.
 > 
-> would be more obvious here ...
+> Also re-wrote the commit comment (based on questions raised against v2)
 
-I suppose so. I am just doing it this way for consistency.
+Thanks - very much appreciated and it reads really good!
 
+> > I guess backporting this to the respective kernels is predicated upon
+> > the existence of those other "places" in the kernel where code assumes
+> > the EFAULT was because of a #PF.
 > 
->> +	} else {
->> +		queue_for_each_hw_ctx(q, hctx, i) {
->> +			if (hctx->sched_tags)
->> +				blk_mq_free_rqs(q->tag_set,
->> +						hctx->sched_tags, i);
->> +		}
->>    	}
->>    }
->>    
+> Not really. I don't expect to change any kernel code that just bounces
+> off the same machine check a few times. This patch does work best in
+> conjunction with patches 2 & 3 (unchanged, not reposted here). But it
+> will fix some old issues even without those two.
 
-...
+Ok, got it.
 
->>    };
->> @@ -432,6 +429,8 @@ enum {
->>    	((policy & ((1 << BLK_MQ_F_ALLOC_POLICY_BITS) - 1)) \
->>    		<< BLK_MQ_F_ALLOC_POLICY_START_BIT)
->>    
->> +#define BLK_MQ_NO_HCTX_IDX	(-1U)
->> +
->>    struct gendisk *__blk_mq_alloc_disk(struct blk_mq_tag_set *set, void *queuedata,
->>    		struct lock_class_key *lkclass);
->>    #define blk_mq_alloc_disk(set, queuedata)				\
->> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
->> index 4baf9435232d..17e50e5ef47b 100644
->> --- a/include/linux/blkdev.h
->> +++ b/include/linux/blkdev.h
->> @@ -459,8 +459,7 @@ struct request_queue {
->>    
->>    	atomic_t		nr_active_requests_shared_sbitmap;
->>    
->> -	struct sbitmap_queue	sched_bitmap_tags;
->> -	struct sbitmap_queue	sched_breserved_tags;
->> +	struct blk_mq_tags	*shared_sbitmap_tags;
->>    
->>    	struct list_head	icq_list;
->>    #ifdef CONFIG_BLK_CGROUP
->>
-> Why the double shared_sbitmap_tags pointer in struct request_queue and
-> struct tag_set? To my knowledge there's a 1:1 relationship between
-> request_queue and tag_set, so where's the point?
-> 
+/me queues.
 
-As above, we also added a shared sbitmap per request queue.
+-- 
+Regards/Gruss,
+    Boris.
 
-The reason being that for "shared sbitmap" support, the request queue 
-total depth should not grow for an increase in the number of HW queues.
-
-Thanks,
-John
-
+https://people.kernel.org/tglx/notes-about-netiquette
