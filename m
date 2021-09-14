@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F13A40B2D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBE940B2EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhINPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S234184AbhINPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbhINPTH (ORCPT
+        with ESMTP id S233908AbhINPWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:19:07 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4762C061762;
-        Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id w144so19431787oie.13;
-        Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
+        Tue, 14 Sep 2021 11:22:47 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17F9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:21:29 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id p29so2713123lfa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NIqISq5kyGyxn6lso7aloBgg8et/zHxKVMufJ4ZAVqU=;
-        b=hQWeP0FIwUtKzXeWomGsCttQ4q1uiTlibaiX+8VKGgPFTz6cFjx9lZLqQ/5wwtfxW/
-         uL71c4jBsoTfAGshka+jeOEYYmOz/mor2uHIsgb4QK5idmE2UMNZkw7JlYjNYGvZ1Ogz
-         1jWxi0w5H+Rx4EeVeS/YXSkFN//okinFyiVmfXayhXg/XN/F3pkbj2LIeXB2+Q6vb2He
-         M6+Gvvb9jKL2pYY+bOQjeQliIOmI+HncWa00y0UG5UpHMPlyueWQpaYdt4grC1f9Wbhg
-         UA3TAOe7YOsV9JHaG0TkY6FshRBaPvDsP1ZBIgS8Zpbuf5e9z1UaFwicT2gBsSTdfhBl
-         weVw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ssguMYfEPbOSmQk+TNSW555SqwgqRq6H3zcx/TkiIG4=;
+        b=FOCU7M2910YmSjOs3uzHpvrnuMQJ+6M1Dun31eKpszs/tj2+qzYm9z475Xilelsvys
+         BTeQLXu8XYRilKkeG0H+vILFGBnsfuoI4l41i+l9D7E/k6I1cRZnZDsTAspeJQBMCXxU
+         F5g6oa+Za3j3ZMx2sgpuqVczHyUpa082sg1qrW/IjXZOJd87rVt77//45SksuqidkSUK
+         pb8mlOl62P/Y+Y7tX0eLO93yf6UamooBU0JCZYBhcYRT2jUG4rdr6K7HLdVtlbNVQ37s
+         bheb2rtjJcr9Nsjly6jMqj55NW9HaSIG4OFjySao28wYps/ZtTqMRil5gf+YyQmzxzcx
+         mW1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=NIqISq5kyGyxn6lso7aloBgg8et/zHxKVMufJ4ZAVqU=;
-        b=r8l9t7ZGP8QdDkx49LEORlorbGyP9Ykvvj/+TO9Pvpe2n9Px38rioa3GouvaiOFiat
-         e0Y88r7KAB/qQE9FAzA8Y+FcTSvFLhYtOQf4kd7Jyjajgl9f9RYNr7Qf9YMgDJ88mlfq
-         ivW33IYZ6o85j0ayStw7A76X9HCobCmqxynVhzflNjhVCwmtUEkLMNWUQSnNBCpnVfuw
-         LbVMyjZ7jjfotGaXNn1uhA3ZskQ8nYWhbjesPpYh4VG9hj+KBY32sM9QCbSMLTb+dK3W
-         YkjXOWDCkEI4qYkwoaD9FAIoUneTBSODLFPmXP0VG/E7wOIV+qPhqAvBRP8AMzHiz2Xl
-         0RFA==
-X-Gm-Message-State: AOAM530G8u4wTiI5SGd6rrUv20oCGPb3qFMYHvO1iUjf/2bbz01+Qm9j
-        Ts3ZyS4NTVgMVE/+cy7wg7c=
-X-Google-Smtp-Source: ABdhPJypTuRytG8Hj20qO41Btjs5P/8rJs8mRBuu6YJZr3+NCsokUyKXObMKggPKKVM9J3Jh7Yd8qg==
-X-Received: by 2002:a05:6808:150:: with SMTP id h16mr1877835oie.25.1631632669230;
-        Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d8sm2564662oij.53.2021.09.14.08.17.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 08:17:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 14 Sep 2021 08:17:47 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Arnd Bergmann' <arnd@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
-Message-ID: <20210914151747.GC3457579@roeck-us.net>
-References: <20210913163712.922188-1-linux@roeck-us.net>
- <YT+SPIAl0IdWOAn/@ravnborg.org>
- <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
- <2d8f45425f024fd9a3d91a4b4a1304cf@AcuMS.aculab.com>
- <3b069cde-6f15-1df1-fbed-e8d94d0ef173@roeck-us.net>
- <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
- <549b61046b134234bd4bffd85315f29a@AcuMS.aculab.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ssguMYfEPbOSmQk+TNSW555SqwgqRq6H3zcx/TkiIG4=;
+        b=5uZ6WpwAmiHZZ8jtOKs2lcrPFNu67I1fQHD8AC19v1813NLpfQ70QUzhqutn6n1WsC
+         fLzxunB1PBVmArq9/azsjruXaEtAInwda8CzY0DlDRLIUa5GpJDdqywUP3kxWyp5vl4+
+         G9aP4KxaEmui6DuPiUwV55PIy+S0QeNMrpnCvcTNzISw68GrjSGlYb52lWC/T0QUxNOV
+         iy4+aJ025Oyj3a50KWAOlbBZT5iv52VUoyQ/VdBXd9FaIB3autGvw38ALdbxznHgBWKa
+         nffp8MZ+9QRtgY2YS0ImaJ29Vk3ufggLp+iRr+qA+Su8EtV/0pb3xAQUiTt2dQV8KSOF
+         V3lA==
+X-Gm-Message-State: AOAM532wz8tKHaYSP3Moe0NWyXtNLuSGlK5q1y5TLMBL7jpk+Bncfs2y
+        w1RbR4QtZu9udIJzs/zQhX+vg4toSDX9JzhvGGKUxg==
+X-Google-Smtp-Source: ABdhPJzOgrp5/KaLNcSbRF5B6CJF4GNxa2fJrA0U7BpG9Ipq4En12c5XU9s2SEiPI6eY+owf3+qaJ4UpNavZz4Ja6Kk=
+X-Received: by 2002:a05:6512:1114:: with SMTP id l20mr14101535lfg.550.1631632888098;
+ Tue, 14 Sep 2021 08:21:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <549b61046b134234bd4bffd85315f29a@AcuMS.aculab.com>
+References: <20210910234047.1019925-1-ndesaulniers@google.com>
+ <20210910234047.1019925-11-ndesaulniers@google.com> <9433c702-ecf2-4197-2456-59857d38538d@kernel.org>
+In-Reply-To: <9433c702-ecf2-4197-2456-59857d38538d@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 14 Sep 2021 08:21:16 -0700
+Message-ID: <CAKwvOdk3NgvUWuBqkKh0RUiHCUO=1QHFeSykTq=U8gi2_6e4TA@mail.gmail.com>
+Subject: Re: [PATCH 10/10] vmlinux.lds.h: remove old check for GCC 4.9
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 03:03:51PM +0000, David Laight wrote:
-> From: Arnd Bergmann
-> > Sent: 14 September 2021 15:54
-> > 
-> > On Tue, Sep 14, 2021 at 4:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > > On 9/14/21 7:17 AM, David Laight wrote:
-> > > >> Sorry, I didn't realize that a field of size 0 increases the structure size
-> > > >> on sparc. I had checked the size of the old and the new structure with gcc
-> > > >> on x86_64 and didn't see a field size increase.
-> > > >
-> > > > clang output doesn't change:
-> > > >
-> > > > https://godbolt.org/z/bTeeq19j1
-> > > >
-> > > > gcc ought to generate the same size.
-> > > >
-> > > > It ought to be 'char data[];' though.
-> > > >
-> > >
-> > > I am never sure if [] or [0] is "correct". Anyway, is there agreement that this
-> > > is an acceptable solution ? I'll be happy to resend if that is the case.
-> > 
-> > Yes, looks good to me, in the [] version. I think the [0] version can be
-> > interpreted as a zero-length array that may not be accessed, while the
-> > [] flexible array syntax clearly means that extra data follows, and it's
-> > part of the C standard now, while [0] is a gcc extension.
-> 
-> More problematic is where is the correct place for the 'char data[]'.
-> It follows the header rather than being part of it.
+On Fri, Sep 10, 2021 at 4:51 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On 9/10/2021 4:40 PM, Nick Desaulniers wrote:
+> > Now that GCC 5.1 is the minimally supported version of GCC, we can
+> > effectively revert
+> >
+> > commit 85c2ce9104eb ("sched, vmlinux.lds: Increase STRUCT_ALIGNMENT to
+> > 64 bytes for GCC-4.9")
+> >
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >   include/asm-generic/vmlinux.lds.h | 4 ----
+> >   1 file changed, 4 deletions(-)
+> >
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > index aa50bf2959fe..f2984af2b85b 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -116,11 +116,7 @@
+> >    * GCC 4.5 and later have a 32 bytes section alignment for structures.
+> >    * Except GCC 4.9, that feels the need to align on 64 bytes.
+>
+> Comment should be adjusted.
 
-I personally always prefer the simple solution, and I don't really care
-about such nuances. I take it as granted that a header is followed by data,
-and I think that a zero-length field at the end of a header is a perfectly
-valid means to express that, but that is just my personal opinion.
-
-Anyway, I take that as non-agreement and won't resend at this time.
-
+I thought it was still interesting. Perhaps one day it will be super irrelevant.
+-- 
 Thanks,
-Guenter
+~Nick Desaulniers
