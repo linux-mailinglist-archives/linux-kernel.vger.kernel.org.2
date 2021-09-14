@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2520740B3F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCC440B3F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbhINP7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbhINP7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:59:06 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1A8C061574;
-        Tue, 14 Sep 2021 08:57:48 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id e206-20020a4a55d7000000b00291379cb2baso4806563oob.9;
-        Tue, 14 Sep 2021 08:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PIZHHdiPcvwwFxluJ6AJCH6oUS126Lg1WBvwhbI7rgI=;
-        b=LGK0+ce86mgDiAANAON2YuMVxapGHhcKbK47zz6YFnTL18T2jAmW5Fbww9fON6/K2n
-         kcrWG94GIdh+5ugSzz0AWtIwPtAMuE1IAKXWSn9jTV03ejFaUlDUmqdslMeVscagyoD/
-         d8UyV0FIzbL2S15FdOEAoJJG+3N/i5SCeLRhcoJX8wAo+SuV+bqVEXWAZLfyx472I2pN
-         erbBRVFUkaimLmYpVSgOhoYBqgkl+0abw6rrqg34VRM7nbhmSYFkOnBX2/c7KO9O+dpD
-         tHH9/iMjlSVlai6RYhg8f+FrfOX/MJtHggVQWxkvjrsNxaf4cjUZViqlcKYZyxAy7BMW
-         4few==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=PIZHHdiPcvwwFxluJ6AJCH6oUS126Lg1WBvwhbI7rgI=;
-        b=W/Mc7YW+wFejqF3vkVRS04DeQYX0yndvco8SYPPfNiSgaY8pgBoYqe31DY4IU7dwHZ
-         uooeiHvyd2rvgzmuR6I5w/7/8efVGhkete19R/K4azLhYU5YxLN2bJ3laOYgpaW92DG2
-         qTdFDU1yjd/p+MjNyIe7Us4Io8Grbm/Dkx1WtyTY85cJ6otIQgdaf+Zl3DX0VzgHNG9H
-         uqEKBmKxefRNdnk6W0LsxCegYKyNQPlyvHeBQbhDz7T6rZYo9CmM4oRf8tTIvZIAH1uE
-         rJb4SZviJwk/o+cnEuWdjvlYgfAfCHgIkpDPi1pkw0Ga6KeY5XfndJXMlLjRtXNfNzJa
-         dJ9A==
-X-Gm-Message-State: AOAM530M71MzG6EGwVyiVcYI3rF4trxfdwHurNimyf1Am7XUXZLaLUWr
-        koEkuqRWOcDeffcsUaUgFw8=
-X-Google-Smtp-Source: ABdhPJzk5at1/XJMOtuNWRphuCxxcdiaH9T25gGl81jj6UeytjwFnk4yVlPRxOPw+qz2jVz9eNz5lw==
-X-Received: by 2002:a4a:e942:: with SMTP id v2mr14706329ood.96.1631635068300;
-        Tue, 14 Sep 2021 08:57:48 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a13sm2730044oos.4.2021.09.14.08.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 08:57:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 14 Sep 2021 08:57:46 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/334] 5.14.4-rc1 review
-Message-ID: <20210914155746.GD4074868@roeck-us.net>
-References: <20210913131113.390368911@linuxfoundation.org>
+        id S235158AbhINP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:59:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235068AbhINP7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:59:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE9C61157;
+        Tue, 14 Sep 2021 15:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631635095;
+        bh=S40ApYu3+8/mXjIC0MgqMN4flPXp1mC5JHBKiqjo1mU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=FFSrDnn337ksWTJSmQHorLozHC1AvfksczrybxHQxAff6uMmH6Dwf4OP/4Bczmmj4
+         7J+S47J4TnkJ+N3nEd+rwHyjQ5xvABF/+yKlmcr22rLMjuTlbFLrEqNqI+FG+S8f+G
+         iVUagUnpq9N9upNv0kaKgFFGn/ESt//P2W+3X1r1NpDN5OdZEfdahn7DHznBGOj9RA
+         vBTR4FQpIsV0z8KywH0Zbjb//tlfx/celRbb+L+GqyvInUcJhLZqZbNMLCcqm8cre2
+         W7Xkz/TT2OxoNlnYavIz+mNT/UnHi+IO/i6LbZrzMUmwi5EjejiEGCKB886Xb3+3uh
+         j8QGaBQWEMRvQ==
+Subject: Re: [PATCH] hardening: Default to INIT_STACK_ALL_ZERO if
+ CC_HAS_AUTO_VAR_INIT_ZERO
+To:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     linux-security-module@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210914102837.6172-1-will@kernel.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <01f572ab-bea2-f246-2f77-2f119056db84@kernel.org>
+Date:   Tue, 14 Sep 2021 08:58:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210914102837.6172-1-will@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 03:10:54PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.4 release.
-> There are 334 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 9/14/2021 3:28 AM, Will Deacon wrote:
+> CC_HAS_AUTO_VAR_INIT_ZERO requires a supported set of compiler options
+> distinct from those needed by CC_HAS_AUTO_VAR_INIT_PATTERN, Fix up
+> the Kconfig dependency for INIT_STACK_ALL_ZERO to test for the former
+> instead of the latter, as these are the options passed by the top-level
+> Makefile.
 > 
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Fixes: dcb7c0b9461c ("hardening: Clarify Kconfig text for auto-var-init")
+> Signed-off-by: Will Deacon <will@kernel.org>
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+One comment below.
+
+> ---
+> 
+> I just noticed this while reading the code and I suspect it doesn't really
+> matter in practice.
+> 
+>   security/Kconfig.hardening | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+> index 90cbaff86e13..341e2fdcba94 100644
+> --- a/security/Kconfig.hardening
+> +++ b/security/Kconfig.hardening
+> @@ -29,7 +29,7 @@ choice
+>   	prompt "Initialize kernel stack variables at function entry"
+>   	default GCC_PLUGIN_STRUCTLEAK_BYREF_ALL if COMPILE_TEST && GCC_PLUGINS
+>   	default INIT_STACK_ALL_PATTERN if COMPILE_TEST && CC_HAS_AUTO_VAR_INIT_PATTERN
+> -	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_PATTERN
+> +	default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
+>   	default INIT_STACK_NONE
+>   	help
+>   	  This option enables initialization of stack variables at
 > 
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+While I think this change is correct in and of itself, 
+CONFIG_INIT_STACK_ALL_ZERO is broken with GCC 12.x, as 
+CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO won't be set even though GCC now 
+supports -ftrivial-auto-var-init=zero because GCC does not implement the 
+-enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang 
+flag for obvious reasons ;) the cc-option call probably needs to be 
+adjusted.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Cheers,
+Nathan
