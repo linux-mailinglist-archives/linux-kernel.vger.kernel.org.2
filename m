@@ -2,115 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E663D40A9FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB7D40AA03
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhINI5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhINI5X (ORCPT
+        id S231271AbhINI5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:57:47 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3788 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhINI5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:57:23 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71E9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:56:06 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id m9so7866131qtk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jmC8BFtcIlu9tQDDEKEhJinzoMTwWxx2bKO3/mR5MTk=;
-        b=JPSceBsmY+QUXryhoZVm4DgV8iWoUmwYcm18FTyzDrk/eV5SFl9eUANl11xbIdpeLo
-         gtwHfP4cONJSlsxSLTw8FmABzzJeGsIulJ8YrNvKUzr50G2ZajaCLMz8T7yCj/f03oHY
-         tqZsivBj1WD5sd+t7ujW3drsfawHE2PLbsQXbwY28NXxvWyXw/8vC20IqCjNcC/VG7PP
-         PBaiNWXyfgcPyfA90eo27E29zCd72LrvwSpJVmjl8CHEcd8ZYW1b4oxqGZW79v8G/feL
-         WRqirc2Rp4Lc55pyP60D0D/mgZqsRGBNAAVL13jpvLZEVnTpzQ+RFGgV0/4m+LwkCLjB
-         czSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jmC8BFtcIlu9tQDDEKEhJinzoMTwWxx2bKO3/mR5MTk=;
-        b=FvNzL0AQoM7B4MnNbs7wJsnGabd3d0zbjt8ZWUfWkFb2SM7/RCqrRShcCrqqgiov8k
-         0vPswaXl9kzn3T72NJBJH06oNTMJ/ssox0TiDGexKoYp2fKxD54tZ4JtsPa27sP6JoQp
-         8hcTaMZ3iPKPtSZLjOkVtV5DHi++JpeERNHCUeGpLpmDCI3CEyrIqiy9qJ2N27lRPtlZ
-         qmRHnr4OiIhFzZspH4hvELNkGQPG0I+NQHTWiRMgXw3FMOQ3VruuwMiJUWX4ADQqeJYv
-         NQ54Mn7cL2I7F3lmXKC/F8tPD6QwS+UrCq8x47HHy69pF4RN7wT7BCDnP/47fgluxddT
-         Xcrg==
-X-Gm-Message-State: AOAM532eLC+Vu8COS7qb4+RERYw8uXDPJb7w3dJ5pdtXensVXIu+oer6
-        0Gwueks/3vaDrV9TQzV2oWs5G2BnYdNW+JFJZx1RjIoN
-X-Google-Smtp-Source: ABdhPJyMESNiGETQ+IsMCvvHJh6G9CiPmXvtgztSYZvFfT9hrfiEN26fn2I7eW7z6QdmoFTMJpHOtPRP78t81PX+xvQ=
-X-Received: by 2002:ac8:4156:: with SMTP id e22mr3638684qtm.308.1631609766079;
- Tue, 14 Sep 2021 01:56:06 -0700 (PDT)
+        Tue, 14 Sep 2021 04:57:46 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H7xwq1S5Mz67Y1y;
+        Tue, 14 Sep 2021 16:54:19 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 10:56:27 +0200
+Received: from localhost (10.52.120.164) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 14 Sep
+ 2021 09:56:26 +0100
+Date:   Tue, 14 Sep 2021 09:56:23 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sasha Levin <sashal@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <linux-doc@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.14 03/25] cxl: Move cxl_core to new directory
+Message-ID: <20210914095623.00005306@Huawei.com>
+In-Reply-To: <20210913223339.435347-3-sashal@kernel.org>
+References: <20210913223339.435347-1-sashal@kernel.org>
+        <20210913223339.435347-3-sashal@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210819055227.140980-1-liuxiwei@inspur.com> <CANFuQ7A5jLXftmfLn_W93MuDF8heL88BPQRL_rkYk+bj0_Db0w@mail.gmail.com>
- <CACPK8XfbJbU8zPzTri3o+zbSf82iUuGUXmFL5TwsdPHKLnTNTQ@mail.gmail.com>
-In-Reply-To: <CACPK8XfbJbU8zPzTri3o+zbSf82iUuGUXmFL5TwsdPHKLnTNTQ@mail.gmail.com>
-From:   George Liu <liuxiwei1013@gmail.com>
-Date:   Tue, 14 Sep 2021 16:55:55 +0800
-Message-ID: <CANFuQ7A6xbM571ds+aq-QUmLxUZ-FUjKukPqGV-irt8X_j=fkw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: fp5280g2: Enable KCS 3 for MCTP binding
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        George Liu <liuxiwei@inspur.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.164]
+X-ClientProxiedBy: lhreml726-chm.china.huawei.com (10.201.108.77) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
+On Mon, 13 Sep 2021 18:33:17 -0400
+Sasha Levin <sashal@kernel.org> wrote:
 
-On Tue, Sep 14, 2021 at 4:45 PM Joel Stanley <joel@jms.id.au> wrote:
->
-> On Tue, 14 Sept 2021 at 08:16, George Liu <liuxiwei1013@gmail.com> wrote:
-> >
-> > Hey Joel:
-> > do you have any comments at this patch?
-> >
-> > Thx -- George Liu
-> >
-> > On Thu, Aug 19, 2021 at 1:52 PM George Liu <liuxiwei1013@gmail.com> wrote:
-> > >
-> > > Signed-off-by: George Liu <liuxiwei@inspur.com>
->
-> It looks okay to me.
->
-> Reviewed-by: Joel Stanley <joel@jms.id.au>
->
-> I have applied it for 5.16.
->
-> > > ---
-> > >  arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > >
-> > > diff --git a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> > > index 1752f3250e44..d0c3acbf6c8c 100644
-> > > --- a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> > > +++ b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> > > @@ -3,6 +3,7 @@
-> > >  #include "aspeed-g5.dtsi"
-> > >  #include <dt-bindings/gpio/aspeed-gpio.h>
-> > >  #include <dt-bindings/leds/leds-pca955x.h>
-> > > +#include <dt-bindings/interrupt-controller/irq.h>
-> > >
-> > >  / {
-> > >         model = "FP5280G2 BMC";
-> > > @@ -902,4 +903,10 @@ fan@7 {
-> > >
-> > >  };
-> > >
-> > > +&kcs3 {
-> > > +       status = "okay";
-> > > +       aspeed,lpc-io-reg = <0xca2>;
-> > > +       aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-> > > +};
-> > > +
-> > >  #include "ibm-power9-dual.dtsi"
-> > > --
-> > > 2.30.2
-> > >
+> From: Ben Widawsky <ben.widawsky@intel.com>
+> 
+> [ Upstream commit 5161a55c069f53d88da49274cbef6e3c74eadea9 ]
+> 
+> CXL core is growing, and it's already arguably unmanageable. To support
+> future growth, move core functionality to a new directory and rename the
+> file to represent just bus support. Future work will remove non-bus
+> functionality.
+> 
+> Note that mem.h is renamed to cxlmem.h to avoid a namespace collision
+> with the global ARCH=um mem.h header.
+
+Not a fix...
+
+I'm guessing this got picked up on the basis of the Reported-by: tag?
+I think that was added for a minor tweak as this went through review rather
+than referring to the whole patch.
+
+Jonathan
+
+
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Link: https://lore.kernel.org/r/162792537866.368511.8915631504621088321.stgit@dwillia2-desk3.amr.corp.intel.com
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  Documentation/driver-api/cxl/memory-devices.rst | 2 +-
+>  drivers/cxl/Makefile                            | 4 +---
+>  drivers/cxl/core/Makefile                       | 5 +++++
+>  drivers/cxl/{core.c => core/bus.c}              | 4 ++--
+>  drivers/cxl/{mem.h => cxlmem.h}                 | 0
+>  drivers/cxl/pci.c                               | 2 +-
+>  drivers/cxl/pmem.c                              | 2 +-
+>  7 files changed, 11 insertions(+), 8 deletions(-)
+>  create mode 100644 drivers/cxl/core/Makefile
+>  rename drivers/cxl/{core.c => core/bus.c} (99%)
+>  rename drivers/cxl/{mem.h => cxlmem.h} (100%)
+> 
+> diff --git a/Documentation/driver-api/cxl/memory-devices.rst b/Documentation/driver-api/cxl/memory-devices.rst
+> index 487ce4f41d77..a86e2c7c551a 100644
+> --- a/Documentation/driver-api/cxl/memory-devices.rst
+> +++ b/Documentation/driver-api/cxl/memory-devices.rst
+> @@ -36,7 +36,7 @@ CXL Core
+>  .. kernel-doc:: drivers/cxl/cxl.h
+>     :internal:
+>  
+> -.. kernel-doc:: drivers/cxl/core.c
+> +.. kernel-doc:: drivers/cxl/core/bus.c
+>     :doc: cxl core
+>  
+>  External Interfaces
+> diff --git a/drivers/cxl/Makefile b/drivers/cxl/Makefile
+> index 32954059b37b..d1aaabc940f3 100644
+> --- a/drivers/cxl/Makefile
+> +++ b/drivers/cxl/Makefile
+> @@ -1,11 +1,9 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -obj-$(CONFIG_CXL_BUS) += cxl_core.o
+> +obj-$(CONFIG_CXL_BUS) += core/
+>  obj-$(CONFIG_CXL_MEM) += cxl_pci.o
+>  obj-$(CONFIG_CXL_ACPI) += cxl_acpi.o
+>  obj-$(CONFIG_CXL_PMEM) += cxl_pmem.o
+>  
+> -ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL
+> -cxl_core-y := core.o
+>  cxl_pci-y := pci.o
+>  cxl_acpi-y := acpi.o
+>  cxl_pmem-y := pmem.o
+> diff --git a/drivers/cxl/core/Makefile b/drivers/cxl/core/Makefile
+> new file mode 100644
+> index 000000000000..ad137f96e5c8
+> --- /dev/null
+> +++ b/drivers/cxl/core/Makefile
+> @@ -0,0 +1,5 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_CXL_BUS) += cxl_core.o
+> +
+> +ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL -I$(srctree)/drivers/cxl
+> +cxl_core-y := bus.o
+> diff --git a/drivers/cxl/core.c b/drivers/cxl/core/bus.c
+> similarity index 99%
+> rename from drivers/cxl/core.c
+> rename to drivers/cxl/core/bus.c
+> index a2e4d54fc7bc..0815eec23944 100644
+> --- a/drivers/cxl/core.c
+> +++ b/drivers/cxl/core/bus.c
+> @@ -6,8 +6,8 @@
+>  #include <linux/pci.h>
+>  #include <linux/slab.h>
+>  #include <linux/idr.h>
+> -#include "cxl.h"
+> -#include "mem.h"
+> +#include <cxlmem.h>
+> +#include <cxl.h>
+>  
+>  /**
+>   * DOC: cxl core
+> diff --git a/drivers/cxl/mem.h b/drivers/cxl/cxlmem.h
+> similarity index 100%
+> rename from drivers/cxl/mem.h
+> rename to drivers/cxl/cxlmem.h
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 4cf351a3cf99..a945c5fda292 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -12,9 +12,9 @@
+>  #include <linux/pci.h>
+>  #include <linux/io.h>
+>  #include <linux/io-64-nonatomic-lo-hi.h>
+> +#include "cxlmem.h"
+>  #include "pci.h"
+>  #include "cxl.h"
+> -#include "mem.h"
+>  
+>  /**
+>   * DOC: cxl pci
+> diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
+> index 0088e41dd2f3..9652c3ee41e7 100644
+> --- a/drivers/cxl/pmem.c
+> +++ b/drivers/cxl/pmem.c
+> @@ -6,7 +6,7 @@
+>  #include <linux/ndctl.h>
+>  #include <linux/async.h>
+>  #include <linux/slab.h>
+> -#include "mem.h"
+> +#include "cxlmem.h"
+>  #include "cxl.h"
+>  
+>  /*
+
