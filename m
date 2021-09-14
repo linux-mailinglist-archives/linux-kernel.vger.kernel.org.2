@@ -2,100 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103A740AB8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE7940AB91
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbhINKVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:21:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:28532 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231322AbhINKUy (ORCPT
+        id S231734AbhINKV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231623AbhINKVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:20:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631614775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRAlggCC+PYlUePAB0cF2Y6j/OP0F7mIhm9zbgJqV5g=;
-        b=Bt0kNv/q4NZMamPIMD/8Fe4X3wcGWv1zk85EnYXvhHCi4PiuDtdlc4AOu7YiiQ/2ApMaLX
-        /JaxtflW5d69M0kuqRuh3110nNoFyzCAJjp5OiUfIhY0qcMfz4dov0PcJGwWw6vL8lZxX7
-        Pdhn+KNyKrquRMUTt6Am5o2gE7Tg394=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-em2agtoFONWOFZObCMMWmQ-1; Tue, 14 Sep 2021 06:19:35 -0400
-X-MC-Unique: em2agtoFONWOFZObCMMWmQ-1
-Received: by mail-ed1-f69.google.com with SMTP id h15-20020aa7de0f000000b003d02f9592d6so6143793edv.17
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:19:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DRAlggCC+PYlUePAB0cF2Y6j/OP0F7mIhm9zbgJqV5g=;
-        b=elZS0apiHOoMH64HcZij8IcWUaqowvfAYQrjR1IzKxNx/Frx6Ilhgag1Zp9EM6RTO2
-         6JHZKxUyEUl4hr7Q0L2f/jJb0N64j8MQs3ipktHyyNDpXhllPJiSnoxCU3r/4Oftk47U
-         1uuiDsUWbiLYtyWiABt03rq28xRSIE+8qzNHSIlgfTIjrsQwBNQljKfZy4tIcmp8KgY4
-         B7Nvn72UeCPUo5Mhbw9gP/tHV6Bgpg7L7W22kYlTa5Pq9D5SnBtLqWxU0C7Rncjo25Ry
-         VaiZQ/10GelpI6310WD1uubd8+cB9oDzaDYsha+vx5vl5B17ahoF1VX0oGX3YnAyXeX7
-         Qf8g==
-X-Gm-Message-State: AOAM532kwV6umC6lMSTNe6RKayjMBRTCqkruFI6Lw4YCERbJxLe++bFp
-        2H/b/VLMyssDj+SQDKHnPQR5TEyXpXDlOZYi/uvguR5UnNU9G0Fcw6Tty9HV992XxHtdebh7fh0
-        LKPmz2J8f6KtOJbBrvvdR8913
-X-Received: by 2002:a17:907:76e7:: with SMTP id kg7mr16778436ejc.344.1631614773415;
-        Tue, 14 Sep 2021 03:19:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbCELqwjjt8QQVuD+3BuPAl2MJy/czcHXmaprwjH6qzNCYuRmte+5SasZsQL6iipLwMo7OSg==
-X-Received: by 2002:a17:907:76e7:: with SMTP id kg7mr16778412ejc.344.1631614773211;
-        Tue, 14 Sep 2021 03:19:33 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id dg18sm2398050edb.44.2021.09.14.03.19.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 03:19:32 -0700 (PDT)
-Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
- pages
-To:     Yang Zhong <yang.zhong@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
- <20210914071030.GA28797@yangzhon-Virtual>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
-Date:   Tue, 14 Sep 2021 12:19:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 14 Sep 2021 06:21:03 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1C8C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:19:46 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQ5XS-0001eP-Ke; Tue, 14 Sep 2021 12:19:42 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQ5XR-0005tS-18; Tue, 14 Sep 2021 12:19:41 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mQ5XQ-0006WW-W9; Tue, 14 Sep 2021 12:19:41 +0200
+Date:   Tue, 14 Sep 2021 12:19:38 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-kernel@vger.kernel.org,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        kernel@pengutronix.de, Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 7/7] pwm: ep93xx: Prepare clock before using it
+Message-ID: <20210914101938.mo6puyhgp276jyu2@pengutronix.de>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+ <20210613233041.128961-8-alexander.sverdlin@gmail.com>
+ <20210614072222.wgivnzbaekxxw7qu@pengutronix.de>
+ <c2d54eb9c0061a779678e311ee6761fa6f117856.camel@gmail.com>
+ <20210914075815.alqnyux5ficgvkme@pengutronix.de>
+ <173088b768fbc1dbb49b6f53f7ac04a44f120f3a.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210914071030.GA28797@yangzhon-Virtual>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4ai6jn7aao6nof6f"
+Content-Disposition: inline
+In-Reply-To: <173088b768fbc1dbb49b6f53f7ac04a44f120f3a.camel@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/21 09:10, Yang Zhong wrote:
-> On Mon, Sep 13, 2021 at 09:11:51AM -0400, Paolo Bonzini wrote:
->> Based on discussions from the previous week(end), this series implements
->> a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
->> file descriptor.  Other possibilities, such as closing and reopening
->> the device, are racy.
->>
->> The patches are untested, but I am posting them because they are simple
->> and so that Yang Zhong can try using them in QEMU.
->>
-> 
->    Paolo, i re-implemented one reset patch in the Qemu side to call this ioctl(),
->    and did some tests on Windows and Linux guest, the Windows/Linux guest reboot
->    work well.
-> 
->    So, it is time for me to send this reset patch to Qemu community? or wait for
->    this kernel patchset merged? thanks!
 
-Let's wait for this patch to be accepted first.  I'll wait a little more 
-for Jarkko and Dave to comment on this, and include your "Tested-by".
+--4ai6jn7aao6nof6f
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will also add cond_resched() on the final submission.
+On Tue, Sep 14, 2021 at 12:15:14PM +0200, Alexander Sverdlin wrote:
+> Thank you, Uwe,
+>=20
+> On Tue, 2021-09-14 at 09:58 +0200, Uwe Kleine-K=F6nig wrote:
+> > > > On Mon, Jun 14, 2021 at 01:30:41AM +0200, Alexander Sverdlin wrote:
+> > > > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation f=
+or switch
+> > > > > to Common Clock Framework.
+> > > > >=20
+> > > > > Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> > > >=20
+> > > > Maybe it would make sense to move the prepare into the probe functi=
+on?!
+> > > > Anyhow, for now preparing the driver for the common-clk switch is t=
+he
+> > > > focus and for that the conversion is correct, so:
+> > > >=20
+> > > > Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > >=20
+> > > would you take this patch only, please?
+> > > It didn't work out to sell the whole series as one piece and
+> > > most of them were taken individually...
+> >=20
+> > Hmm, this patch is marked as accepted in patchwork
+> > (http://patchwork.ozlabs.org/project/linux-pwm/patch/20210613233041.128=
+961-8-alexander.sverdlin@gmail.com/).
+> > There is also a v2, that is also marked as accepted
+> > (http://patchwork.ozlabs.org/project/linux-pwm/patch/20210726140001.248=
+20-8-nikita.shubin@maquefel.me/).
+> >=20
+> > Not sure what want wrong here
+>=20
+> Sorry for the noise!
 
-Paolo
+No, it's no noise because I didn't see either of the versions in any
+tree. So the patches were marked as applied without being applied ...
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4ai6jn7aao6nof6f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFAdzcACgkQwfwUeK3K
+7Ak95gf/e4GuqPSYxyaPLcf4oYhaTsoyeNdmlrlH8HYMu4hdRnvM5fWtKyCZHnYp
+wNZrXq/rxSWAqrakpa4LTu0JCwS9uokSqgH42V6IHwne7pQBfAM4RhLLViwWQJr5
+Bf1o5B+FTZ8BmD+ieH/FC4gbQLK8SiosH0VfkIe7zapN9lSblDLs9tFzsfgfs9jf
+E0fiwPkmpfvaVNH+ln5+abaBzyQVsG2f4npPkpPd0FO8KsnXzbk2iSo/44Vn+tRL
+UcBKW05y3lMhewtNSDKNCPlXw1LO36Ax8g3Ark/U+1CfBvIrAOKormHduXm+/a9Q
+0MxKP9mbV5cSzYdpbVKOTAla0jtKWA==
+=Och2
+-----END PGP SIGNATURE-----
+
+--4ai6jn7aao6nof6f--
