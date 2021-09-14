@@ -2,262 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9003840A4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C10C40A4AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239008AbhINDlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:41:51 -0400
-Received: from mga02.intel.com ([134.134.136.20]:60416 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238834AbhINDlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:41:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209095050"
-X-IronPort-AV: E=Sophos;i="5.85,291,1624345200"; 
-   d="scan'208";a="209095050"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 20:40:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,291,1624345200"; 
-   d="scan'208";a="507664161"
-Received: from shbuild999.sh.intel.com ([10.239.146.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Sep 2021 20:40:29 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset and bail out early
-Date:   Tue, 14 Sep 2021 11:40:28 +0800
-Message-Id: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S239075AbhINDmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239028AbhINDmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 23:42:01 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93BEC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:40:44 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id dw14so6981487pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pathpartnertech.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :in-reply-to:user-agent:content-disposition;
+        bh=JbyQ7VGQk35fFKq+ZHXwnl3QOO9Lw+YzIfoAl5zBW0Y=;
+        b=jBZke60Q/SiBooMIMQxd5Irr3YfUKyl/Y4jaFWgUsT66RmMrS3i9rgfh2Ud0y5PY/z
+         NVk2Ar+iOzCEu4yReGS9MD0JwLXeP8/Cu6L78b3sFDT7vZPGx/+M8Ci/XrcrEvq/FXgr
+         +Rx1QioGafI5R5oMNd+Av5b0sOcxGZrEwZAg8mVssbP8jyiThl70WryrVbIeozbGYp5v
+         cm/ZQ4GtEd+wT1hH7Du7qbokadOflXuEx8jjIZ7WW/V5k96s7TrNicnPd1m0eVocYCS/
+         aj5aZjHYwgfXhIcHQBhvfEwxdx+5/YC53L98XhhmjEQPEcF2AQNEsbDYWvyz4SGsZ0jq
+         lTgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:in-reply-to:user-agent:content-disposition;
+        bh=JbyQ7VGQk35fFKq+ZHXwnl3QOO9Lw+YzIfoAl5zBW0Y=;
+        b=huBJaluQA9q7/TzV7S6gI9DY38qdjf3yY0hZOsGPcDPwaGge3bcFLH6Mz0KoaDlr80
+         /NxldnlR0Oa9oODeuFZxSbDDVlgrcJb294oWi1iNR2sud9rCZZClbfI7PEWe2kuADPN1
+         9rf9EX9+KrqzsyEazFfXdHhnzE8p6z2Z3QMC8QVsBOCgwg2uvFW9p4sYQTKbEBdbLoyv
+         +PZMqE9+1cFwN9C+BiGQZRfOXaiz5WfnMFl1WHkHM4Vntg4wcfoh0t1muZY7iWBEDA3j
+         UMi9IgSG+AxjpPeahXmJu5S7P0of+Fs0cMU3Fj1SjZLyQzdLuMwEnNTL3h6uLoQMpPAy
+         +AKw==
+X-Gm-Message-State: AOAM533YfGNtAAkVUCu/g5HT9J1PXWmIMoc4/1JBzOcvMhMrVnvjItv+
+        AMQlUaqv78jkLJAVzriLGq+KI8ZUz+4ifuNDPOiNn5KKMDjBZyZaR46TrYzaEpW584Mv9sJRKhv
+        UDzy1WYleSp/v2nV44A==
+X-Google-Smtp-Source: ABdhPJzvPREwsMVsSmlMxKvhTvyVINXu+p/ZqeLrzBiwtjk/uh+XdKf8sXnTS5Q0/U0ON8qIWM8GuA==
+X-Received: by 2002:a17:90a:e386:: with SMTP id b6mr1280514pjz.97.1631590844188;
+        Mon, 13 Sep 2021 20:40:44 -0700 (PDT)
+Received: from sidraya-laptopU ([203.201.61.238])
+        by smtp.gmail.com with ESMTPSA id w26sm476509pfj.178.2021.09.13.20.40.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 13 Sep 2021 20:40:43 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 09:10:37 +0530
+From:   Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, prashanth.ka@pathpartnertech.com,
+        praneeth@ti.com, mchehab@kernel.org, linux-media@vger.kernel.org,
+        praveen.ap@pathpartnertech.com
+Subject: Re: [PATCH 03/30] v4l: vxd-dec: Create vxd_dec Mem Manager helper
+ library
+Message-ID: <20210914034032.orctp5ov5oc33vag@sidraya-laptopU>
+References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
+ <20210818141037.19990-4-sidraya.bj@pathpartnertech.com>
+ <20210824133438.GO1931@kadam>
+MIME-Version: 1.0
+In-Reply-To: <20210824133438.GO1931@kadam>
+User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset="US-ASCII"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was report that starting an Ubuntu in docker while using cpuset
-to bind it to movable nodes (a node only has movable zone, like a node
-for hotplug or a Persistent Memory  node in normal usage) will fail
-due to memory allocation failure, and then OOM is involved and many
-other innocent processes got killed. It can be reproduced with command:
-$docker run -it --rm  --cpuset-mems 4 ubuntu:latest bash -c
-"grep Mems_allowed /proc/self/status" (node 4 is a movable node)
+On Tue, Aug 24, 2021 at 04:34:38PM +0300, Dan Carpenter wrote:
+> On Wed, Aug 18, 2021 at 07:40:10PM +0530, sidraya.bj@pathpartnertech.com wrote:
+> > +int img_mem_create_ctx(struct mem_ctx **new_ctx)
+> > +{
+> > +	struct mem_man *mem_man = &mem_man_data;
+> > +	struct mem_ctx *ctx;
+> > +
+> > +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+> > +	if (!ctx)
+> > +		return -ENOMEM;
+> > +
+> > +	ctx->buffers = kzalloc(sizeof(*ctx->buffers), GFP_KERNEL);
+> > +	if (!ctx->buffers)
+> > +		return -ENOMEM;
+> 
+> Smatch would have caught that this needs a kfree(ctx); before returning.
+> 
+> It wouldn't hurt to run Smatch over this code.
+> 
+> git clone https://repo.or.cz/w/smatch.git
+> cd smatch
+> yum install gcc make sqlite3 sqlite-devel sqlite perl-DBD-SQLite openssl-devel perl-Try-Tiny
+> make
+> cd ~/kernel/
+> ~/smatch/smatch_scripts/kchecker drivers/staging/media/vxd/common/img_mem_man.c
+> 
+> (I am the author of Smatch  #BlowYourOwnTrumpet).
+> 
+> regards,
+> dan carpenter
+> 
+I will run Smatch and will remove similar findings.
+Thank you for reviewing. 
 
-  runc:[2:INIT] invoked oom-killer: gfp_mask=0x500cc2(GFP_HIGHUSER|__GFP_ACCOUNT), order=0, oom_score_adj=0
-  CPU: 8 PID: 8291 Comm: runc:[2:INIT] Tainted: G        W I E     5.8.2-0.g71b519a-default #1 openSUSE Tumbleweed (unreleased)
-  Hardware name: Dell Inc. PowerEdge R640/0PHYDR, BIOS 2.6.4 04/09/2020
-  Call Trace:
-   dump_stack+0x6b/0x88
-   dump_header+0x4a/0x1e2
-   oom_kill_process.cold+0xb/0x10
-   out_of_memory.part.0+0xaf/0x230
-   out_of_memory+0x3d/0x80
-   __alloc_pages_slowpath.constprop.0+0x954/0xa20
-   __alloc_pages_nodemask+0x2d3/0x300
-   pipe_write+0x322/0x590
-   new_sync_write+0x196/0x1b0
-   vfs_write+0x1c3/0x1f0
-   ksys_write+0xa7/0xe0
-   do_syscall_64+0x52/0xd0
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  Mem-Info:
-  active_anon:392832 inactive_anon:182 isolated_anon:0
-   active_file:68130 inactive_file:151527 isolated_file:0
-   unevictable:2701 dirty:0 writeback:7
-   slab_reclaimable:51418 slab_unreclaimable:116300
-   mapped:45825 shmem:735 pagetables:2540 bounce:0
-   free:159849484 free_pcp:73 free_cma:0
-  Node 4 active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB all_unreclaimable? no
-  Node 4 Movable free:130021408kB min:9140kB low:139160kB high:269180kB reserved_highatomic:0KB active_anon:1448kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:130023424kB managed:130023424kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:292kB local_pcp:84kB free_cma:0kB
-  lowmem_reserve[]: 0 0 0 0 0
-  Node 4 Movable: 1*4kB (M) 0*8kB 0*16kB 1*32kB (M) 0*64kB 0*128kB 1*256kB (M) 1*512kB (M) 1*1024kB (M) 0*2048kB 31743*4096kB (M) = 130021156kB
-
-  oom-kill:constraint=CONSTRAINT_CPUSET,nodemask=(null),cpuset=docker-9976a269caec812c134fa317f27487ee36e1129beba7278a463dd53e5fb9997b.scope,mems_allowed=4,global_oom,task_memcg=/system.slice/containerd.service,task=containerd,pid=4100,uid=0
-  Out of memory: Killed process 4100 (containerd) total-vm:4077036kB, anon-rss:51184kB, file-rss:26016kB, shmem-rss:0kB, UID:0 pgtables:676kB oom_score_adj:0
-  oom_reaper: reaped process 8248 (docker), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-  oom_reaper: reaped process 2054 (node_exporter), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-  oom_reaper: reaped process 1452 (systemd-journal), now anon-rss:0kB, file-rss:8564kB, shmem-rss:4kB
-  oom_reaper: reaped process 2146 (munin-node), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-  oom_reaper: reaped process 8291 (runc:[2:INIT]), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
-
-The reason is, in the case, the target cpuset nodes only have movable
-zone, while the creation of an OS in docker sometimes needs to allocate
-memory in non-movable zones (dma/dma32/normal) like GFP_HIGHUSER, and
-the cpuset limit forbids the allocation, then out-of-memory killing is
-involved even when normal nodes and movable nodes both have many free
-memory.
-
-The OOM killer cannot help to resolve the situation as there is no
-usable memory for the request in the cpuset scope. The only reasonable
-measure to take is to fail the allocation right away and have the caller
-to deal with it.
-
-So add a check for cases like this in the slowpath of allocation, and
-bail out early returning NULL for the allocation.
-
-As page allocation is one of the hottest path in kernel, this check
-will hurt all users with sane cpuset configuration, add a static branch
-check and detect the abnormal config in cpuset memory binding setup so
-that the extra check in page allocation is not paid by everyone.
-
-[thanks to Micho Hocko and David Rientjes for suggesting not handle
- it inside OOM code, adding cpuset check, refining comments]
-
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
-Changelog:
-  
-  v3:
-  * refine the movable_only_nodes() and the nodemask check
-    in cpuset code (Michal Hocko)
-  * fix a compiling problem (0day test robot)
-
-  v2:
-  * add a static branch detection in cpuset code to reduce
-    the overhead in allocation hotpath (Michal Hocko)
-
-  v1 (since RFC):
-  * move the handling from oom code to page allocation 
-    path (Michal/David)
-
- include/linux/cpuset.h | 17 +++++++++++++++++
- include/linux/mmzone.h | 16 ++++++++++++++++
- kernel/cgroup/cpuset.c | 15 +++++++++++++++
- mm/page_alloc.c        | 13 +++++++++++++
- 4 files changed, 61 insertions(+)
-
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index d2b9c41..d58e047 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -34,6 +34,8 @@
-  */
- extern struct static_key_false cpusets_pre_enable_key;
- extern struct static_key_false cpusets_enabled_key;
-+extern struct static_key_false cpusets_insane_config_key;
-+
- static inline bool cpusets_enabled(void)
- {
- 	return static_branch_unlikely(&cpusets_enabled_key);
-@@ -51,6 +53,19 @@ static inline void cpuset_dec(void)
- 	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
- }
- 
-+/*
-+ * This will get enabled whenever a cpuset configuration is considered
-+ * unsupportable in general. E.g. movable only node which cannot satisfy
-+ * any non movable allocations (see update_nodemask). Page allocator
-+ * needs to make additional checks for those configurations and this
-+ * check is meant to guard those checks without any overhead for sane
-+ * configurations.
-+ */
-+static inline bool cpusets_insane_config(void)
-+{
-+	return static_branch_unlikely(&cpusets_insane_config_key);
-+}
-+
- extern int cpuset_init(void);
- extern void cpuset_init_smp(void);
- extern void cpuset_force_rebuild(void);
-@@ -167,6 +182,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
- 
- static inline bool cpusets_enabled(void) { return false; }
- 
-+static inline bool cpusets_insane_config(void) { return false; }
-+
- static inline int cpuset_init(void) { return 0; }
- static inline void cpuset_init_smp(void) {}
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 6a1d79d..a455333 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1220,6 +1220,22 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
- #define for_each_zone_zonelist(zone, z, zlist, highidx) \
- 	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
- 
-+/* Whether the 'nodes' are all movable nodes */
-+static inline bool movable_only_nodes(nodemask_t *nodes)
-+{
-+	struct zonelist *zonelist;
-+	struct zoneref *z;
-+
-+	if (nodes_empty(*nodes))
-+		return false;
-+
-+	zonelist =
-+	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
-+	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-+	return (!z->zone) ? true : false;
-+}
-+
-+
- #ifdef CONFIG_SPARSEMEM
- #include <asm/sparsemem.h>
- #endif
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index df1ccf4..7fa633e 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -69,6 +69,13 @@
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
- 
-+/*
-+ * There could be abnormal cpuset configurations for cpu or memory
-+ * node binding, add this key to provide a quick low-cost judgement
-+ * of the situation.
-+ */
-+DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
-+
- /* See "Frequency meter" comments, below. */
- 
- struct fmeter {
-@@ -1868,6 +1875,14 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (retval < 0)
- 		goto done;
- 
-+	if (!cpusets_insane_config() &&
-+		movable_only_nodes(&trialcs->mems_allowed)) {
-+		static_branch_enable(&cpusets_insane_config_key);
-+		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
-+			"Cpuset allocations might fail even with a lot of memory available.\n",
-+			nodemask_pr_args(&trialcs->mems_allowed));
-+	}
-+
- 	spin_lock_irq(&callback_lock);
- 	cs->mems_allowed = trialcs->mems_allowed;
- 	spin_unlock_irq(&callback_lock);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b37435c..a7e0854 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4914,6 +4914,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	if (!ac->preferred_zoneref->zone)
- 		goto nopage;
- 
-+	/*
-+	 * Check for insane configurations where the cpuset doesn't contain
-+	 * any suitable zone to satisfy the request - e.g. non-movable
-+	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
-+	 */
-+	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
-+		struct zoneref *z = first_zones_zonelist(ac->zonelist,
-+					ac->highest_zoneidx,
-+					&cpuset_current_mems_allowed);
-+		if (!z->zone)
-+			goto nopage;
-+	}
-+
- 	if (alloc_flags & ALLOC_KSWAPD)
- 		wake_all_kswapds(order, gfp_mask, ac);
- 
 -- 
-2.7.4
 
+
+
+
+
+
+This
+message contains confidential information and is intended only 
+for the
+individual(s) named. If you are not the intended
+recipient, you are 
+notified that disclosing, copying, distributing or taking any
+action in 
+reliance on the contents of this mail and attached file/s is strictly
+prohibited. Please notify the
+sender immediately and delete this e-mail 
+from your system. E-mail transmission
+cannot be guaranteed to be secured or 
+error-free as information could be
+intercepted, corrupted, lost, destroyed, 
+arrive late or incomplete, or contain
+viruses. The sender therefore does 
+not accept liability for any errors or
+omissions in the contents of this 
+message, which arise as a result of e-mail
+transmission.
