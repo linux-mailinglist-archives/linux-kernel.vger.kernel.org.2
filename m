@@ -2,110 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04B540B8AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B099240B8C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhINUFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhINUFQ (ORCPT
+        id S233290AbhINUOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:14:08 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:45819 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232207AbhINUOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:05:16 -0400
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7D9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:03:58 -0700 (PDT)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mQEeq-00DMlg-86
-        for linux-kernel@vger.kernel.org; Tue, 14 Sep 2021 22:03:56 +0200
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:9c5a:5ed4:98b1:9c44]
-        by yawp.biot.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mQEej-00DMlD-Qt; Tue, 14 Sep 2021 22:03:49 +0200
-Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
-To:     Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-References: <20210908201624.237634-1-bert@biot.com>
- <20210914193108.78df5367@xps13>
- <1517789471.73175.1631641788145.JavaMail.zimbra@nod.at>
-From:   Bert Vermeulen <bert@biot.com>
-Message-ID: <927c7c75-c0d3-b3fb-6b85-13dbc3c6edbe@biot.com>
-Date:   Tue, 14 Sep 2021 22:03:49 +0200
+        Tue, 14 Sep 2021 16:14:06 -0400
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 3102DCF35B;
+        Tue, 14 Sep 2021 20:06:10 +0000 (UTC)
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 930BEFF802;
+        Tue, 14 Sep 2021 20:05:47 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v9 0/4] drm: LogiCVC display controller support
+Date:   Tue, 14 Sep 2021 22:05:35 +0200
+Message-Id: <20210914200539.732093-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <1517789471.73175.1631641788145.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 7:49 PM, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
->> bert@biot.com wrote on Wed,  8 Sep 2021 22:16:19 +0200:
->> 
->>> This adds a new vendor Etron, and support for a 2Gb chip.
->>> 
->>> The datasheet is available at
->>> https://www.etron.com/cn/products/EM73%5B8%5DC%5BD_E_F%5DVC%20SPI%20NAND%20Flash_Promotion_Rev%201_00A.pdf
->>> 
->>> Signed-off-by: Bert Vermeulen <bert@biot.com>
->>> ---
->>> v2:
->>> - Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
->>>   hardcoded to this 2Gb chip only
->>> - Fixed manufacturer ordering
->>> - Fixed minor formatting issues as reported
->>> - Removed debug comment
->>> 
->>>  drivers/mtd/nand/spi/Makefile |   2 +-
->>>  drivers/mtd/nand/spi/core.c   |   1 +
->>>  drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
->>>  include/linux/mtd/spinand.h   |   1 +
->>>  4 files changed, 107 insertions(+), 1 deletion(-)
->>>  create mode 100644 drivers/mtd/nand/spi/etron.c
->> 
->> [...]
->> 
->>> +static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
->>> +{
->>> +	switch (status & STATUS_ECC_MASK) {
->>> +	case STATUS_ECC_NO_BITFLIPS:
->>> +		return 0;
->>> +
->>> +	case STATUS_ECC_HAS_BITFLIPS:
->>> +		/* Between 1-7 bitflips were corrected */
->>> +		return 7;
->> 
->> Mmmh this is a bit problematic, having no intermediate value means a
->> single bitflip will trigger UBI to move the data around as its
->> threshold will be reached. Richard, any feedback on this?
-> 
-> So, the NAND controller can only report "no bitflips", "some bitflips", "maximum biflips" and "no way to fix"?
-> If so, yes, this is problematic for UBI because it will trigger wear-leveling way too often.
-> On a medium aged NAND I'd expect to see STATUS_ECC_HAS_BITFLIPS almost always set. :-(
+This series introduces support for the LogiCVC display controller.
+The controller is a bit unusual since it is usually loaded as
+programmable logic on Xilinx FPGAs or Zynq-7000 SoCs.
+More details are presented on the main commit for the driver.
 
-Yes, that's all there is according to the datasheet. Can't be _that_
-unusual, since that's all the STATUS_ECC_* flags cover.
+More information about the controller is available on the dedicated
+web page: https://www.logicbricks.com/Products/logiCVC-ML.aspx
 
-Incidentally I'm abusing STATUS_ECC_MASK here, since the 0b11 pattern is
-missing from those flags.
+Note that this driver has rather simple connector management, which was
+not converted to drm_panel_bridge to keep the ability to enable the panel
+at first vblank but also to support DVI.
 
+Changes since v8:
+- Rebased on top of the latest drm-misc-next;
+- Dropped useless phandle-based syscon regmap support;
+- Switched to a single-port graph description;
+- Updated the device-tree schema to the port schema and added a
+  description for the port.
+
+Change since v7:
+- Replaced DRM_INFO/DRM_ERROR/DRM_DEBUG_DRIVER with fashions using drm_device;
+- Fixed yaml binding alignment issue;
+- Renamed logicvc-display name to the generic "display" name;
+- Added patternProperties match for display in the parent mfd binding;
+- Used drm_atomic_get_new_crtc_state when needed;
+- Checked mode in mode_valid instead of atomic_check;
+- Switched to drmm_mode_config_init;
+- Removed useless logicvc_connector_destroy wrapper;
+- Removed useless drm_dev_put calls;
+- Removed atomic_commit_tail that enables the panel and streamlined the logic;
+- Reworked Makefile cosmetics;
+- Fixed checkpatch issues.
+
+Changes since v6:
+- Updated to the latest DRM internal API changes; 
+- Used an enum to index dt properties instead of the name string.
+
+Changes since v5:
+- Subclass DRM device and use devm_drm_dev_alloc for allocation;
+- Removed call to drm_mode_config_cleanup (done automatically with devm);
+- Some related code cleanups;
+- Bring back not-for-merge patch adding colorkey support.
+
+Changes since v4:
+- Updated to internal DRM API changes (rebased on drm-misc-next);
+- Added Kconfig dependency on OF;
+- Added MAINTAINERS entry;
+- Used drm_err and dev_err instead of DRM_ERROR where possible;
+- Various cosmetic changes.
+
+Changes since v3:
+- Rebased on latest drm-misc;
+- Improved event lock wrapping;
+- Added collect tag;
+- Added color-key support patch (not for merge, for reference only).
+
+Changes since v2:
+- Fixed and slightly improved dt schema.
+
+Changes since v1:
+- Switched dt bindings documentation to dt schema;
+- Described more possible dt parameters;
+- Added support for the lvds-3bit interface;
+- Added support for grabbing syscon regmap from parent node;
+- Removed layers count property and count layers child nodes instead.
+
+Paul Kocialkowski (4):
+  dt-bindings: display: Document the Xylon LogiCVC display controller
+  dt-bindings: mfd: logicvc: Add patternProperties for the display
+  drm: Add support for the LogiCVC display controller
+  NOTFORMERGE: drm/logicvc: Add plane colorkey support
+
+ .../display/xylon,logicvc-display.yaml        | 302 +++++++
+ .../bindings/mfd/xylon,logicvc.yaml           |   3 +
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/Kconfig                       |   2 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/logicvc/Kconfig               |   9 +
+ drivers/gpu/drm/logicvc/Makefile              |   9 +
+ drivers/gpu/drm/logicvc/logicvc_crtc.c        | 280 +++++++
+ drivers/gpu/drm/logicvc/logicvc_crtc.h        |  21 +
+ drivers/gpu/drm/logicvc/logicvc_drm.c         | 471 +++++++++++
+ drivers/gpu/drm/logicvc/logicvc_drm.h         |  67 ++
+ drivers/gpu/drm/logicvc/logicvc_interface.c   | 214 +++++
+ drivers/gpu/drm/logicvc/logicvc_interface.h   |  28 +
+ drivers/gpu/drm/logicvc/logicvc_layer.c       | 767 ++++++++++++++++++
+ drivers/gpu/drm/logicvc/logicvc_layer.h       |  71 ++
+ drivers/gpu/drm/logicvc/logicvc_mode.c        |  80 ++
+ drivers/gpu/drm/logicvc/logicvc_mode.h        |  15 +
+ drivers/gpu/drm/logicvc/logicvc_of.c          | 185 +++++
+ drivers/gpu/drm/logicvc/logicvc_of.h          |  46 ++
+ drivers/gpu/drm/logicvc/logicvc_regs.h        |  88 ++
+ 20 files changed, 2665 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/xylon,logicvc-display.yaml
+ create mode 100644 drivers/gpu/drm/logicvc/Kconfig
+ create mode 100644 drivers/gpu/drm/logicvc/Makefile
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_crtc.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_crtc.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_drm.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_drm.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_interface.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_interface.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_layer.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_layer.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_mode.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_mode.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_of.c
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_of.h
+ create mode 100644 drivers/gpu/drm/logicvc/logicvc_regs.h
 
 -- 
-Bert Vermeulen
-bert@biot.com
+2.32.0
+
