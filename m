@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616D040B59C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F8B40B59E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhINRJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhINRJe (ORCPT
+        id S230497AbhINRKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:10:03 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:41609 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhINRKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:09:34 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69B3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:08:16 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id y144so97878qkb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bluespec-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=d9SzK4pBoaf11lP96SjVpjf29pHlYDeVwg9n+E1Drc4=;
-        b=QtkWU/EmWLfrq260BxNf0mGiuYZUZUYyoD0xPuezViRZ4mF/XCnK/tGHLl6uCuwm/l
-         OEBXW3WMwE0A/G6QfVBdQklqm6ber7gQIzEoSN3yJBWkAmnQxly90HsctdXmmytbzMHF
-         L3KoPTc+Mr9B9ig4OIUiOkfFqAQvWzvACCR/8Z5Ak8G8u2ih5jz8qYrxjV6ZrPlHV7nH
-         BwsNYjdiDWP5SUb4oj+pil2/1n683Q+0Hj+me82nhkYlYutM9n9fdJneQXyogDsqvWYR
-         fK3GeRs3REIVRpVxC3R5+Vhr/DO39JCqMeN/rHxtTsQw1cI5NFDsb8Hd8MuoOdbh+67y
-         eXmA==
+        Tue, 14 Sep 2021 13:10:02 -0400
+Received: by mail-ot1-f51.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso19522034ota.8;
+        Tue, 14 Sep 2021 10:08:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d9SzK4pBoaf11lP96SjVpjf29pHlYDeVwg9n+E1Drc4=;
-        b=ygNYBjmM9qIhutnZo/NzZ8apsc9tEHjK45zXBUI/22BpjRjHDth+PJmuNBZzqC9+Kz
-         zFQJ5Cev3/Uw/F1A2aHcBzk3xk+NMJChSDukSWzlF2uhkt/cDujkfA9/1Wd9+lPBk9R1
-         acoJmSY02amiYexBXEji9IH24DioqmiimkJE5IhCSGW00xBXruK/1PJlf1lLdzVsfgfM
-         PM4RTNDGKJN3eZYa6Ql6H96fG1HgWl0KVwsndwmr4kWLdjJK/RE0gvAtVPaDOgwLH2YT
-         YsPDYFhIWiviDbrhjHt92ToYflOVBlaLFfgJao3EE2WUcUYkq70F5/rJvcr6/d5CW1+i
-         anKQ==
-X-Gm-Message-State: AOAM530Gj6opDD0rdGsxN63XN8rVsf5nFRitxKzreWggDqzvEH8E9we/
-        wtB2mOK7Iul6ZFVJhYCjUHMSiv4zlWfi
-X-Google-Smtp-Source: ABdhPJxLVtFRYIDvR4qJehRmv7dzyozIgYmkFOFqnGnr6OykjMd+avsbggpblmz9NAJNvd4rGy/Okw==
-X-Received: by 2002:a05:620a:916:: with SMTP id v22mr6042305qkv.338.1631639295927;
-        Tue, 14 Sep 2021 10:08:15 -0700 (PDT)
-Received: from [10.28.133.11] ([154.3.44.94])
-        by smtp.gmail.com with ESMTPSA id r23sm6405377qtp.60.2021.09.14.10.08.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 10:08:15 -0700 (PDT)
-Subject: Re: [PATCH 1/2] riscv: support HAVE_EFFICIENT_UNALIGNED_ACCESS
-To:     Chen Huang <chenhuang5@huawei.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210913121956.1776656-1-chenhuang5@huawei.com>
- <20210913121956.1776656-2-chenhuang5@huawei.com>
-From:   Darius Rad <darius@bluespec.com>
-Message-ID: <84697744-f51e-8aaf-d1d3-d063f99b7790@bluespec.com>
-Date:   Tue, 14 Sep 2021 13:08:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FhUnbg+uhSt5ysUwKSnG6H0zuUdL3FIHTzTgcFPDfCs=;
+        b=diSXijtsednguG4SS/DfwdvJH/tnjOVu8IrhKjy3jqitKhcIclTO9+8G5L/VoCDGc2
+         KkQ0glxlS8ZmXLj/iwK29363FnXq9PfhVZ2z/NkwCRrzvOzZ5GSH9IuPQeL3cda8UxpJ
+         dggb59C3nxK9/OvJxlLcacWO20JmVbcuBSaD5c9QKwliLzAsYC0A+LPwcw7PajCAeW5V
+         y+jqQBrhSkCEqA6fY9YeJqOxfajQuDVeMCxw0lMBRAzbI0o7av0cE3+ZIKFGpOqTtoYp
+         jdPFcVt+0ufTZyiR4V+E3XgyL6pDUISfKzS12lE1sKwaQ0/fT7IPzxdypAy1NhfnlJV5
+         wy5Q==
+X-Gm-Message-State: AOAM533oE6Yih0duGuXtfTMpybbzFhi6hcjZ29uqtl8LK/5feRfqJt7I
+        GW+91stI0KimLDo77RU2g2LF2uMe/ai5iUIKiWY=
+X-Google-Smtp-Source: ABdhPJwwNvkCwgKHIXpSxGbqsgqWZFPM80nulHEd5WVGCXkN6rwUTA0/uY5HQm5l3gbFey6QGta7bdShVzTGDm5kdfo=
+X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr15965174ote.319.1631639324158;
+ Tue, 14 Sep 2021 10:08:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210913121956.1776656-2-chenhuang5@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210914165623.18972-1-james.morse@arm.com>
+In-Reply-To: <20210914165623.18972-1-james.morse@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 14 Sep 2021 19:08:33 +0200
+Message-ID: <CAJZ5v0juNZA8waQGyxTRQR05gQZa+qi0WksHUcfJSrzyFuMO7Q@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: schedutil: Destroy mutex before kobject_put()
+ frees the memory
+To:     James Morse <james.morse@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hao <haokexin@gmail.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 8:19 AM, Chen Huang wrote:
-> The RISCV ISA can perform efficient unaligned memory accesses
-> in hardware. This patch selects HAVE_EFFICIENT_UNALIGNED_ACCESS
-> for that.
-> 
-
-Not all implementations do, so it seems like this is not appropriate.
-
-> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+On Tue, Sep 14, 2021 at 6:56 PM James Morse <james.morse@arm.com> wrote:
+>
+> Since commit e5c6b312ce3c ("cpufreq: schedutil: Use kobject release()
+> method to free sugov_tunables") kobject_put() has kfree()d the
+> attr_set before gov_attr_set_put() returns.
+>
+> kobject_put() isn't the last user of attr_set in gov_attr_set_put(),
+> the subsequent mutex_destroy() triggers a use-after-free:
+> | BUG: KASAN: use-after-free in mutex_is_locked+0x20/0x60
+> | Read of size 8 at addr ffff000800ca4250 by task cpuhp/2/20
+> |
+> | CPU: 2 PID: 20 Comm: cpuhp/2 Not tainted 5.15.0-rc1 #12369
+> | Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
+> | Platform, BIOS EDK II Jul 30 2018
+> | Call trace:
+> |  dump_backtrace+0x0/0x380
+> |  show_stack+0x1c/0x30
+> |  dump_stack_lvl+0x8c/0xb8
+> |  print_address_description.constprop.0+0x74/0x2b8
+> |  kasan_report+0x1f4/0x210
+> |  kasan_check_range+0xfc/0x1a4
+> |  __kasan_check_read+0x38/0x60
+> |  mutex_is_locked+0x20/0x60
+> |  mutex_destroy+0x80/0x100
+> |  gov_attr_set_put+0xfc/0x150
+> |  sugov_exit+0x78/0x190
+> |  cpufreq_offline.isra.0+0x2c0/0x660
+> |  cpuhp_cpufreq_offline+0x14/0x24
+> |  cpuhp_invoke_callback+0x430/0x6d0
+> |  cpuhp_thread_fun+0x1b0/0x624
+> |  smpboot_thread_fn+0x5e0/0xa6c
+> |  kthread+0x3a0/0x450
+> |  ret_from_fork+0x10/0x20
+>
+> Swap the order of the calls.
+>
+> Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
+> Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
+> CC: Kevin Hao <haokexin@gmail.com>
+> CC: Viresh Kumar <viresh.kumar@linaro.org>
+> CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: James Morse <james.morse@arm.com>
 > ---
->  arch/riscv/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index aac669a6c3d8..6e70bf50b02a 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -81,6 +81,7 @@ config RISCV
->  	select HAVE_DEBUG_KMEMLEAK
->  	select HAVE_DMA_CONTIGUOUS if MMU
->  	select HAVE_EBPF_JIT if MMU
-> +	select HAVE_EFFICIENT_UNALIGNED_ACCESS
->  	select HAVE_FUNCTION_ERROR_INJECTION
->  	select HAVE_FUTEX_CMPXCHG if FUTEX
->  	select HAVE_GCC_PLUGINS
-> 
+>  drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
+> index 66b05a326910..a6f365b9cc1a 100644
+> --- a/drivers/cpufreq/cpufreq_governor_attr_set.c
+> +++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
+> @@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
+>         if (count)
+>                 return count;
+>
+> -       kobject_put(&attr_set->kobj);
+>         mutex_destroy(&attr_set->update_lock);
+> +       kobject_put(&attr_set->kobj);
+
+Doh
+
+I should have caught this one, thanks!
+
+>         return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(gov_attr_set_put);
+> --
+
+Applied as 5.15-rc material, thanks!
