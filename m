@@ -2,179 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2AC40A210
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 02:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6A840A21B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 02:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238771AbhINAdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 20:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbhINAdd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 20:33:33 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A731DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 17:32:16 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id a15so14622453iot.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 17:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fc2qpd7/HkED54Dmv5q2n398ZaaGwNXVhIhrR+B9+xg=;
-        b=fzBPJpuTidCguo+0rpVlS9ym+yazP5tQsqID/R/IBgyphfqbxgahDj1x5RehTy+98X
-         +ZGJ1PxOCKK46fxVEihbOpl06s9gLSmHjeu1H9ECcc4Mdn2o31bvHIhC0aBQs8KLG6Gj
-         Ib5rp1ioVdAUNCCvwvScdVCMBRQgtzl69rCMY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fc2qpd7/HkED54Dmv5q2n398ZaaGwNXVhIhrR+B9+xg=;
-        b=eD2PkU7UWYbGjDI4b3Afgl7+svyfevd4jQZNBEjD60IcO9AxWnF8S8CqofKZCGF5Vc
-         uXbN/OKbl0oQNLI2eDWtBBfmRY9WibRbNM7FRVgbxc1FpxH+JwwVTwoWy8ArRFwvW/d6
-         zozDGc/PWI9KyxUWykkAL0vtN1R8cPAJegNBrcFquI5rz1O6iKDdtKE8pxTQi0rBFETQ
-         w/S5GdAjmW+v7EmlcuLbflD4hQmZkKzNod+nA8sAXecCrXCcfc0J+XriEZmJH3Aux9dz
-         VPO/vDVNkJJxUax1FQybFFuSUSJkfzzQKbUw2RHibPVFCkjX5JlTr7S+RGkE/9Dvm4jn
-         RszQ==
-X-Gm-Message-State: AOAM530LnuDoTGf1jXb7A8Il1jVH7ag+LH7mDU5CX8k9QPXA+gLx4SUD
-        SptyWdeu1NjYk8Gj2bu+jrOGDtHt68HIpw==
-X-Google-Smtp-Source: ABdhPJyd7N/7jcS8Jzd3ylRvVT1MexhjG86xwWZeSHoTMRy+UZmGtJSybLp6/+tC6p2u169W8NpG0w==
-X-Received: by 2002:a05:6638:1352:: with SMTP id u18mr12257392jad.147.1631579535841;
-        Mon, 13 Sep 2021 17:32:15 -0700 (PDT)
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com. [209.85.166.175])
-        by smtp.gmail.com with ESMTPSA id s1sm5769992iln.12.2021.09.13.17.32.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 17:32:15 -0700 (PDT)
-Received: by mail-il1-f175.google.com with SMTP id a1so12080663ilj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 17:32:15 -0700 (PDT)
-X-Received: by 2002:a92:da0c:: with SMTP id z12mr9860853ilm.120.1631579534828;
- Mon, 13 Sep 2021 17:32:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210913143255.RFC.v2.1.I8ad7a535bb18a1f41f3858f83379beedb397a9db@changeid>
-In-Reply-To: <20210913143255.RFC.v2.1.I8ad7a535bb18a1f41f3858f83379beedb397a9db@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 13 Sep 2021 17:32:01 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XDn3XWt5USOmkhikYMUqY1gt7MQfOQhu7v+soy=u3_0g@mail.gmail.com>
-Message-ID: <CAD=FV=XDn3XWt5USOmkhikYMUqY1gt7MQfOQhu7v+soy=u3_0g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/2] drm/bridge: parade-ps8640: Use regmap APIs
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S235668AbhINAkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 20:40:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhINAkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 20:40:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B028A60FBF;
+        Tue, 14 Sep 2021 00:38:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631579937;
+        bh=NROVtiiKAsV1pJjMRHzw3+WInkMNdoRv0LJPub82ur4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pw5UzlRTmjvlPG7uuxHo3+/UOJAGIW6kz3+awtrN1NrUxsNZn+gGKpIk83+V2uTfM
+         GMysa5dCDuA9UklKyUyKxlaPvUiUQDUCXvcw2HqZ+2N4h49td7Ud5HMvA+5N54Tj/+
+         S2saNKRu1KsvZTVFdysMegCmTdTXV2qSNb54vpwT2j+kLI9koxY0couTG9UiQmJoKI
+         b6ZVZCevqX2BoGdTcZfRo++7O9GH4thr3jpWB6QiSWSugUwxAsB9NV7zW3gEBHFx+n
+         tWW3hVG4hsPlw+M2bAlsxuIFarks7kpSVQzvfNGcMC/NQDhUGbZFlDvwPOCnYz2qa1
+         UCZnm5vBe5AHQ==
+Date:   Tue, 14 Sep 2021 09:38:52 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH -tip v10 00/16] kprobes: Fix stacktrace with kretprobes
+ on x86
+Message-Id: <20210914093852.9ed9c70cbc414c0aa3ae5304@kernel.org>
+In-Reply-To: <CAEf4BzZjyt7dD4GGGyJVG0jL6iBZX1Y3CH5393JojdkCOmjCuA@mail.gmail.com>
+References: <162756755600.301564.4957591913842010341.stgit@devnote2>
+        <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
+        <CAEf4Bzb2i4Z9kUWU+L-HF3k+XQ0V3hLH1Er7U2_oCdv1BTvaBw@mail.gmail.com>
+        <20210824143242.a0558b6632eef0407282364e@kernel.org>
+        <CAEf4BzZjyt7dD4GGGyJVG0jL6iBZX1Y3CH5393JojdkCOmjCuA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 13 Sep 2021 10:14:55 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-On Mon, Sep 13, 2021 at 2:33 PM Philip Chen <philipchen@chromium.org> wrote:
->
-> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-> index 685e9c38b2db..1b2414601538 100644
-> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> @@ -9,6 +9,7 @@
->  #include <linux/i2c.h>
->  #include <linux/module.h>
->  #include <linux/of_graph.h>
-> +#include <linux/regmap.h>
->  #include <linux/regulator/consumer.h>
->
->  #include <drm/drm_bridge.h>
-> @@ -31,6 +32,11 @@
->
->  #define NUM_MIPI_LANES         4
->
-> +#define COMMON_PS8640_REGMAP_CONFIG \
-> +       .reg_bits = 8, \
-> +       .val_bits = 8, \
-> +       .cache_type = REGCACHE_NONE
+> On Mon, Aug 23, 2021 at 10:32 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Mon, 23 Aug 2021 22:12:06 -0700
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > > On Thu, Jul 29, 2021 at 4:35 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > On Thu, 29 Jul 2021 23:05:56 +0900
+> > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > > Hello,
+> > > > >
+> > > > > This is the 10th version of the series to fix the stacktrace with kretprobe on x86.
+> > > > >
+> > > > > The previous version is here;
+> > > > >
+> > > > >  https://lore.kernel.org/bpf/162601048053.1318837.1550594515476777588.stgit@devnote2/
+> > > > >
+> > > > > This version is rebased on top of new kprobes cleanup series(*1) and merging
+> > > > > Josh's objtool update series (*2)(*3) as [6/16] and [7/16].
+> > > > >
+> > > > > (*1) https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
+> > > > > (*2) https://lore.kernel.org/bpf/20210710192433.x5cgjsq2ksvaqnss@treble/
+> > > > > (*3) https://lore.kernel.org/bpf/20210710192514.ghvksi3ozhez4lvb@treble/
+> > > > >
+> > > > > Changes from v9:
+> > > > >  - Add Josh's objtool update patches with a build error fix as [6/16] and [7/16].
+> > > > >  - Add a API document for kretprobe_find_ret_addr() and check cur != NULL in [5/16].
+> > > > >
+> > > > > With this series, unwinder can unwind stack correctly from ftrace as below;
+> > > > >
+> > > > >   # cd /sys/kernel/debug/tracing
+> > > > >   # echo > trace
+> > > > >   # echo 1 > options/sym-offset
+> > > > >   # echo r vfs_read >> kprobe_events
+> > > > >   # echo r full_proxy_read >> kprobe_events
+> > > > >   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+> > > > >   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+> > > > >   # echo 1 > events/kprobes/enable
+> > > > >   # cat /sys/kernel/debug/kprobes/list
+> > > > > ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> > > > > ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+> > > > >   # echo 0 > events/kprobes/enable
+> > > > >   # cat trace
+> > > > > # tracer: nop
+> > > > > #
+> > > > > # entries-in-buffer/entries-written: 3/3   #P:8
+> > > > > #
+> > > > > #                                _-----=> irqs-off
+> > > > > #                               / _----=> need-resched
+> > > > > #                              | / _---=> hardirq/softirq
+> > > > > #                              || / _--=> preempt-depth
+> > > > > #                              ||| /     delay
+> > > > > #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> > > > > #              | |         |   ||||      |         |
+> > > > >            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+> > > > >            <...>-134     [007] ...1    16.185901: <stack trace>
+> > > > >  => kretprobe_trace_func+0x209/0x300
+> > > > >  => kretprobe_dispatcher+0x4a/0x70
+> > > > >  => __kretprobe_trampoline_handler+0xd4/0x170
+> > > > >  => trampoline_handler+0x43/0x60
+> > > > >  => kretprobe_trampoline+0x2a/0x50
+> > > > >  => vfs_read+0x98/0x180
+> > > > >  => ksys_read+0x5f/0xe0
+> > > > >  => do_syscall_64+0x37/0x90
+> > > > >  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > >            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+> > > > >
+> > > > > This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
+> > > > > correctly unwinded. (vfs_read() returns to 'ksys_read+0x5f' and full_proxy_read()
+> > > > > returns to 'vfs_read+0x98')
+> > > > >
+> > > > > This also changes the kretprobe behavisor a bit, now the instraction pointer in
+> > > > > the 'pt_regs' passed to kretprobe user handler is correctly set the real return
+> > > > > address. So user handlers can get it via instruction_pointer() API, and can use
+> > > > > stack_trace_save_regs().
+> > > > >
+> > > > > You can also get this series from
+> > > > >  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v9
+> > > >
+> > > > Oops, this is of course 'kprobes/kretprobe-stackfix-v10'. And this branch includes above (*1) series.
+> > >
+> > > Hi Masami,
+> > >
+> > > Was this ever merged/applied? This is a very important functionality
+> > > for BPF kretprobes, so I hope this won't slip through the cracks.
+> >
+> > No, not yet as far as I know.
+> > I'm waiting for any comment on this series. Since this is basically
+> > x86 ORC unwinder improvement, this series should be merged to -tip tree.
+> >
+> 
+> Hey Masami,
+> 
+> It's been a while since you posted v10. It seems like this series
+> doesn't apply cleanly anymore. Do you mind rebasing and resubmitting
+> it again to refresh the series and make it easier for folks to review
+> and test it?
 
-At some point we should see if we get any speed gains by actually
-caching, but that could be done later and isn't terribly high
-priority.
+Yes, I'm planning to do that this week soon.
+Thank you for ping me :)
+
+> 
+> Also, do I understand correctly that [0] is a dependency of this
+> series? If yes, please rebase and resubmit that one as well. Not sure
+> on the status of Josh's patches you have dependency on as well. Can
+> you please coordinate with him and maybe incorporate them into your
+> series?
+
+Sorry I can not see [0], could you tell me another URL or title?
+Or is that Kees's patch [1]?
+
+[1] https://lore.kernel.org/all/20210903021326.206548-1-keescook@chromium.org/T/#u
 
 
-> +
->  /*
->   * PS8640 uses multiple addresses:
->   * page[0]: for DP control
-> @@ -64,12 +70,48 @@ struct ps8640 {
->         struct drm_bridge *panel_bridge;
->         struct mipi_dsi_device *dsi;
->         struct i2c_client *page[MAX_DEVS];
-> +       struct regmap   *regmap[MAX_DEVS];
->         struct regulator_bulk_data supplies[2];
->         struct gpio_desc *gpio_reset;
->         struct gpio_desc *gpio_powerdown;
->         bool powered;
->  };
->
-> +static const struct regmap_config ps8640_regmap_config[] = {
-> +       [PAGE0_DP_CNTL] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xbf
-> +       },
-> +       [PAGE1_VDO_BDG] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xff
-> +       },
-> +       [PAGE2_TOP_CNTL] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xff
-> +       },
-> +       [PAGE3_DSI_CNTL1] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xff
-> +       },
-> +       [PAGE4_MIPI_PHY] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xff
-> +       },
-> +       [PAGE5_VPLL] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0x7f
-> +       },
-> +       [PAGE6_DSI_CNTL2] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xff
-> +       },
-> +       [PAGE7_SPI_CNTL] = {
-> +               COMMON_PS8640_REGMAP_CONFIG,
-> +               .max_register = 0xff
-> +       }
+> 
+> Please also cc Paul McKenney <paulmck@kernel.org> for the future
+> revisions so he can follow along as well? Thanks!
 
-nit: stylistically it's nice to add a "," after the last brace too.
-It's not technically needed but it makes diffs cleaner if another
-config is later added.
+OK!
+
+> 
+> 
+>   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=522757&state=*
+> 
+> 
+> 
+> > Ingo and Josh,
+> >
+> > Could you give me any comment, please?
+> >
+> > Thank you,
+> >
+> >
+> > > Thanks!
+> > >
+> > > >
+> > > > Thank you,
+> > > >
+> > > > --
+> > > > Masami Hiramatsu <mhiramat@kernel.org>
+> >
+> >
+> > --
+> > Masami Hiramatsu <mhiramat@kernel.org>
 
 
-> @@ -362,6 +390,10 @@ static int ps8640_probe(struct i2c_client *client)
->
->         ps_bridge->page[PAGE0_DP_CNTL] = client;
->
-> +       ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client, ps8640_regmap_config);
-> +       if (IS_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]))
-> +               return PTR_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]);
-
-I'm a huge fan of dev_err_probe(). I wonder if it makes sense to use
-it here? Untested:
-
-if (IS_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]))
-  return dev_err_probe(dev, PTR_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]),
-                       "Error initting page 0 regmap\n");
-
-
-All of that is just nits, so:
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
