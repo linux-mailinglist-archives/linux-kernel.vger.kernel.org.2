@@ -2,168 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9492340A328
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E0640A32A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbhINCQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 22:16:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        id S237165AbhINCRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 22:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbhINCQV (ORCPT
+        with ESMTP id S230042AbhINCRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 22:16:21 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899FFC061574;
-        Mon, 13 Sep 2021 19:15:04 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id k23-20020a17090a591700b001976d2db364so1550431pji.2;
-        Mon, 13 Sep 2021 19:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=TBiT1s9alKg/oSooqVv6OWDteVE2Febc34bdsbXnCa0=;
-        b=RuOIUQAOb71HSDQ6eeSB1B0tA3EG7OL/68p6WFjlUguQEDt0mx72GXVZSuH2GrXXP8
-         vTnel+0qDihHiT+GqS79R5wbGRj3VZQe0e3hvNNdXI/KQVPIIvP5eXXfvpF/QXIq0Ne1
-         o3uZLE0Cz6Jcpr1f3m+Pjc+3vA1PEly0J/n+U7HHAarOzEMbY8b4SNkNtqCpIQ/cgIt+
-         OrkgOcoPwopnRzoi/lSPQ1UuEbezyu934EJl7q/1dffVDk9r96aRtiH3L4gu6gncOgD7
-         7GqjlrhfqIC1PezlnhgOZK3y0gtBY7ZQd1zsdK68slKBlBYuBM9sMCsThkZQxNsDWd5t
-         KGmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=TBiT1s9alKg/oSooqVv6OWDteVE2Febc34bdsbXnCa0=;
-        b=QHWOoQ3wmYH5RrikOI94jWpjIx0M9fBLpO8s4Fwb5LYqMTGqhbsoHUSf6UZLATJBgu
-         q9iarrHTzjfYBBLuRxJ9byopaQDW8TI0B5Z3/tK6oK+li9e7YEBjY7t0ombP4EunUQ0U
-         xn/AaOcc0zhTGQvZz83B/UFeoYPWco7aQBBNjCf9dn6jX8+9VeZYzMJ+N2FDmq1aXr3Q
-         Qi5jvEfONebFcUqdmiGPke5EgvLfIU8z5HaLfPdASEncy+VB/BkzixYlUvV89ZMuWk2s
-         JVrUzrYkcglMFz6HqgNQS+HoglVR3MJv42CXQbxcthqJuGA80kDpDaEPmVZjhKOVdU0H
-         KVjw==
-X-Gm-Message-State: AOAM533Tmoka6a4/mgR8eF7tE5SEHuJ2Fs+hHxFmW5/3hEjltDL8eCVv
-        Ok0H9I+Ozyw8XXnwfhAUHie+d8TgmFV0WVN047zJuSxGByqH
-X-Google-Smtp-Source: ABdhPJwl/XhkGYLUNXGz26V313P+cabTyU+TnepWuqD45E5dGBOEGX9QsxDY8SffMUjjDlavs22yRQUhgXd+iAOSOVM=
-X-Received: by 2002:a17:90a:b794:: with SMTP id m20mr2868541pjr.178.1631585703888;
- Mon, 13 Sep 2021 19:15:03 -0700 (PDT)
+        Mon, 13 Sep 2021 22:17:12 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A066DC061574;
+        Mon, 13 Sep 2021 19:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631585752;
+        bh=Yfek201S7UZRNXn7fQvuGpRFmRRcwHcN4pbVnK/u+kk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bRqwzobUhmTgUpf9e/7B803+3R/GIAxmFaw+ABgwl+f605V5ZJeGWeDBqCLR9mWGG
+         yg9bFHnFPHrF/LPBYANbY8UD7rb+Tn9cbBduV1mWPfbrFY16SBwJASNU9pmKUUqabD
+         uDyAXe0tFzAOYqsQ+pKeZbVk3BOTFSHQmIe8yKMs/Mwd00yN6Gvtw46DDhzrzTILTv
+         9Q+W252aofqIyb/SYB9Pu4PTRL53ZHNhi8n4wuEFa7gdBQWE8dEiqOtMPCx2ZOO4cD
+         XVcQOuPYbavU1lFtpFzOTAviwk11EZpLhk79k23XGoCZlY6PPB+Faibj+4THK2efEq
+         2QrBctpFn943w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H7n533qMDz9sCD;
+        Tue, 14 Sep 2021 12:15:51 +1000 (AEST)
+Date:   Tue, 14 Sep 2021 12:15:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210914121550.39cfd366@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 14 Sep 2021 10:14:53 +0800
-Message-ID: <CACkBjsYac=fRmNOYxmy9PV4m5jnkS27mWw+hYVtHLsofCEXpLw@mail.gmail.com>
-Subject: WARNING in btrfs_add_link
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/rxBAZeekF/v=UgT4oj9Zwht";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/rxBAZeekF/v=UgT4oj9Zwht
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Hi all,
 
-HEAD commit: 6880fa6c5660 Linux 5.15-rc1
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1k-EKaYce-IATg5g1DJgsip49IfG3GrpV/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTLJvsUdWcgB/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/1YkHRFx6mtVvgXO6MEzuEpphazM1s4cgi/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/1WgZC8xwdVLeWU2GuY_UC8tFmQD5fPENu/view?usp=sharing
+After merging the net-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+In file included from drivers/net/wwan/iosm/iosm_ipc_task_queue.c:6:
+drivers/net/wwan/iosm/iosm_ipc_imem.h:10:10: fatal error: stdbool.h: No suc=
+h file or directory
+   10 | #include <stdbool.h>
+      |          ^~~~~~~~~~~
+In file included from drivers/net/wwan/iosm/iosm_ipc_protocol.h:9,
+                 from drivers/net/wwan/iosm/iosm_ipc_mux.h:9,
+                 from drivers/net/wwan/iosm/iosm_ipc_chnl_cfg.h:9,
+                 from drivers/net/wwan/iosm/iosm_ipc_imem_ops.c:8:
+drivers/net/wwan/iosm/iosm_ipc_imem.h:10:10: fatal error: stdbool.h: No suc=
+h file or directory
+   10 | #include <stdbool.h>
+      |          ^~~~~~~~~~~
+In file included from drivers/net/wwan/iosm/iosm_ipc_protocol.h:9,
+                 from drivers/net/wwan/iosm/iosm_ipc_mux.h:9,
+                 from drivers/net/wwan/iosm/iosm_ipc_chnl_cfg.h:9,
+                 from drivers/net/wwan/iosm/iosm_ipc_imem.c:8:
+drivers/net/wwan/iosm/iosm_ipc_imem.h:10:10: fatal error: stdbool.h: No suc=
+h file or directory
+   10 | #include <stdbool.h>
+      |          ^~~~~~~~~~~
 
-loop13: detected capacity change from 0 to 32768
-BTRFS info (device loop13): disk space caching is enabled
-BTRFS info (device loop13): has skinny extents
-BTRFS info (device loop13): enabling ssd optimizations
-FAULT_INJECTION: forcing a failure.
-name failslab, interval 1, probability 0, space 0, times 0
-CPU: 1 PID: 7350 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- fail_dump lib/fault-inject.c:52 [inline]
- should_fail+0x13c/0x160 lib/fault-inject.c:146
- should_failslab+0x5/0x10 mm/slab_common.c:1328
- slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
- slab_alloc_node mm/slub.c:3120 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
- btrfs_add_delayed_tree_ref+0xa1/0x580 fs/btrfs/delayed-ref.c:913
- btrfs_alloc_tree_block+0x478/0x670 fs/btrfs/extent-tree.c:4853
- __btrfs_cow_block+0x16f/0x7d0 fs/btrfs/ctree.c:415
- btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
- btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
- btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
- btrfs_insert_empty_item fs/btrfs/ctree.h:2905 [inline]
- insert_with_overflow+0x5e/0x170 fs/btrfs/dir-item.c:33
- btrfs_insert_dir_item+0xd2/0x290 fs/btrfs/dir-item.c:134
- btrfs_add_link+0xf1/0x660 fs/btrfs/inode.c:6631
- btrfs_add_nondir fs/btrfs/inode.c:6687 [inline]
- btrfs_create+0x21a/0x270 fs/btrfs/inode.c:6809
- lookup_open+0x660/0x780 fs/namei.c:3282
- open_last_lookups fs/namei.c:3352 [inline]
- path_openat+0x465/0xe20 fs/namei.c:3557
- do_filp_open+0xe3/0x170 fs/namei.c:3588
- do_sys_openat2+0x357/0x4a0 fs/open.c:1200
- do_sys_open+0x87/0xd0 fs/open.c:1216
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb8f3a31c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
-RBP: 00007fb8f3a31c80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000029
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffdb4e84790
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 7350 at fs/btrfs/inode.c:6636
-btrfs_add_link+0x4c9/0x660 fs/btrfs/inode.c:6636
-Modules linked in:
-CPU: 3 PID: 7350 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:btrfs_add_link+0x4c9/0x660 fs/btrfs/inode.c:6636
-Code: 4a ff 41 83 fd fb 0f 84 bd 00 00 00 41 83 fd e2 0f 84 b3 00 00
-00 e8 c6 dd 4a ff 44 89 ee 48 c7 c7 38 25 39 85 e8 e7 e4 35 ff <0f> 0b
-e8 b0 dd 4a ff 48 8b 7d a0 44 89 e9 ba ec 19 00 00 48 c7 c6
-RSP: 0018:ffffc90005b8fab8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff88810853a560 RCX: ffffc90001229000
-RDX: 0000000000040000 RSI: ffffffff812d18bc RDI: 00000000ffffffff
-RBP: ffffc90005b8fb38 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffc90005b8f8a8 R11: 0000000000000004 R12: 0000000000000100
-R13: 00000000fffffff4 R14: 0000000000000107 R15: ffff88810853aeb8
-FS:  00007fb8f3a32700(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000563bd7c7d150 CR3: 0000000018c7f000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- btrfs_add_nondir fs/btrfs/inode.c:6687 [inline]
- btrfs_create+0x21a/0x270 fs/btrfs/inode.c:6809
- lookup_open+0x660/0x780 fs/namei.c:3282
- open_last_lookups fs/namei.c:3352 [inline]
- path_openat+0x465/0xe20 fs/namei.c:3557
- do_filp_open+0xe3/0x170 fs/namei.c:3588
- do_sys_openat2+0x357/0x4a0 fs/open.c:1200
- do_sys_open+0x87/0xd0 fs/open.c:1216
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb8f3a31c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
-RBP: 00007fb8f3a31c80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000029
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffdb4e84790
+Caused by commit
+
+  13bb8429ca98 ("net: wwan: iosm: firmware flashing and coredump collection=
+")
+
+interacting with commit
+
+  0666a64a1f48 ("isystem: delete global -isystem compile option")
+
+from the kbuild tree.
+
+I have reverted the kbuild tree commit for today.  Please provide a
+merge resolution patch.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/rxBAZeekF/v=UgT4oj9Zwht
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFABdYACgkQAVBC80lX
+0GwBigf/Wp0Gx5zDpr9LDg06Ek6mWLTOOV9KFVOVq9opx9IF0U8oa+8AYR4jXpGY
+jMuuI0D4qTvuwFc1BcxDLUwqlIKW3bofhu8VwK2bahpUPuc/9zAOJKAa2WLq06k2
+brKJJZVT/xpQezQGRtvAXtavYggrmeWz84LWUtpHvSPDGIJNE12dUYeLwV4qSbRq
+QOXvA1c3vzqrYjffdc7RdEHoTXd9LDEa/sXGDaOYf8w8HKvTPnhlugvksPmHiF42
+7zwS3wVdx0p8w79QpuoVAfPdMDYHbcsmC5qhGBO0Oey1gKUIVUwZhRV5ngPzWewp
+JQwOAnyxkdIpl3QjHTC5KtN/IbrFSQ==
+=65FN
+-----END PGP SIGNATURE-----
+
+--Sig_/rxBAZeekF/v=UgT4oj9Zwht--
