@@ -2,141 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2602C40B7EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5DC40B7F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhINTVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S233904AbhINTWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbhINTU6 (ORCPT
+        with ESMTP id S234321AbhINTV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:20:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43867C0613E1;
-        Tue, 14 Sep 2021 12:19:39 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 19:19:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631647177;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ttf4FHZkDfLUX1c84FEW1oIgJyCtredJQQuaQ6q8hto=;
-        b=bRwDmIEVTU1ghVHtmJYg7B4z8kPWOXEhdTeguUz8xtw6k9N6ca/wt/B0VlnwMuDK8UAvYs
-        ipTBLJ8LjJcr2onsN3ld2w+4zzx/0hqwsDpa/fa7cX9XSinQkNdieuvwfcnVhL4ESePzmC
-        VnbYpm+kd4l+YMMw6vVXMGoakpGDM72ZxfFZeSBlc6qLCwKeaS5O54tN5yze7GJ5E/SeVv
-        xSNurFf7s/Ofn91P5Ve1Pq/VH857nNBpanpthzKlxRW1S3GuIa3ZFaw/ZhW9Deh+eefxR/
-        sXtI8NWJqmP5kCK1QpR+Vxe5useOd3H2rhjt2HZfdEgyRMsrrNvehVNo00Aq2g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631647177;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ttf4FHZkDfLUX1c84FEW1oIgJyCtredJQQuaQ6q8hto=;
-        b=mqTFENUrSIY2RvQ94bod1Mb7SRnG1iT88sRZtsIXCp/DsLFEqMAuY5ENFu/QjyEkQpXmzH
-        UAqVog8GSkyAx2Ag==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/extable: Get rid of redundant macros
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210908132525.023659534@linutronix.de>
-References: <20210908132525.023659534@linutronix.de>
+        Tue, 14 Sep 2021 15:21:57 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A3DC0613D8;
+        Tue, 14 Sep 2021 12:20:34 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id p29so603438lfa.11;
+        Tue, 14 Sep 2021 12:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sWUveR2st8W0vI/cjNjCZ7SFinSkJr9hz3+NwIh5zpw=;
+        b=QK8y3w5xbn/XH3R6Lh0goR3B1q+DKq37YdfrTgzs8oOf1GLlRm2xfOPYfMyZhG3wx4
+         O1RuuYiQNIIiCMWRzlpTWPY4Ngq4KW3zJvySWMYGGU42D900bBPxJTkhM0WqyyJksZMM
+         UoUkEGgvTRYRS2qvVmR0JB4qwKzxMKZOsUhXPlioGZi1r5AgJ3crLYgH0wRmAHD97pTq
+         yHWbUn01auG+e2mMFTej9B0R9POqdEkYQSPNeo2Rs32TD75Kwn3zKqqZJTzh8HVu+EHi
+         7azgZjW5KVW5pPHkGk80S54JdZXUCxOTeZgkuGMyibKF1XHik9T4HSnNQr0pLQ9wrJLX
+         oYwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sWUveR2st8W0vI/cjNjCZ7SFinSkJr9hz3+NwIh5zpw=;
+        b=cz1+k7sw+Cr5UaVS+VTxVoXiIHxEObU3tcLbfzXVmmTDIlFPKN8oRyeSOnN8LOSk86
+         H7bEYFmIgWknYzkje3fQ/DjAumLWENqTB1rGhUdS91FbQY8b0CXFJQj8u6yMPoRG5voq
+         9wnRXIonS/7n6+sc6K8z2Xm1FPUvSXw09pfIL7FE3VHOhXtr83BNmNvPhboQAFJ/PAfO
+         pKp7Hlss7p1lMAPrW1Nkry4ONV0NC085/6uth7iZ61MyYY6uZdRGkCFnfyHBLGzOBf95
+         MiKa1osi7SoNcXZqjCoSc/rCePlyLYwLnpojP3pXx1hqc0ZC09yIqdz3heWgoT+x8PlU
+         1AKw==
+X-Gm-Message-State: AOAM533VR8ycVcMyc8/dkYsJItqt8FRJCUAsSUF1WfihNv3drAbJN/2R
+        /A/FirpJned6NZG5KK4gLD6kyOIfuH0=
+X-Google-Smtp-Source: ABdhPJyY4q+Rms2R5q4yuEjNMcWE8zHzIgYnjvP4+9Cip3MQivqsHDeOuAYhpmFlejWFO+AL7aKTjQ==
+X-Received: by 2002:ac2:5e9c:: with SMTP id b28mr14190756lfq.405.1631647232471;
+        Tue, 14 Sep 2021 12:20:32 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
+        by smtp.googlemail.com with ESMTPSA id p14sm1405436ljj.140.2021.09.14.12.20.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 12:20:31 -0700 (PDT)
+Subject: Re: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to
+ debugfs
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, will@kernel.org,
+        vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
+ <20210914013858.31192-7-nicoleotsuka@gmail.com>
+ <31501a62-3312-9f04-3bb8-790d0481746c@gmail.com>
+ <20210914184933.GA32705@Asurada-Nvidia>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <25d68aff-323a-df54-45f9-55b22f3089e0@gmail.com>
+Date:   Tue, 14 Sep 2021 22:20:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Message-ID: <163164717712.25758.9720611386825936732.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210914184933.GA32705@Asurada-Nvidia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/fpu branch of tip:
+14.09.2021 21:49, Nicolin Chen пишет:
+> On Tue, Sep 14, 2021 at 04:29:15PM +0300, Dmitry Osipenko wrote:
+>> 14.09.2021 04:38, Nicolin Chen пишет:
+>>> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
+>>> +{
+>>> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
+>>> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
+>>> +}
+>>
+>> We know that IOVA is fixed to u32 for this controller. Can we avoid all
+>> these dma_addr_t castings? It should make code cleaner a tad, IMO.
+> 
+> Tegra210 actually supports 34-bit IOVA...
+> 
 
-Commit-ID:     32fd8b59f91fcd3bf9459aa72d90345735cc2588
-Gitweb:        https://git.kernel.org/tip/32fd8b59f91fcd3bf9459aa72d90345735cc2588
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 08 Sep 2021 15:29:13 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 13 Sep 2021 12:52:38 +02:00
+It doesn't. 34-bit is PA, 32-bit is VA.
 
-x86/extable: Get rid of redundant macros
+Quote from T210 TRM:
 
-No point in defining the identical macros twice depending on C or assembly
-mode. They are still identical.
+"The SMMU is a centralized virtual-to-physical translation for MSS. It
+maps a 32-bit virtual address to a 34-bit physical address. If the
+client address is 40 bits then bits 39:32 are ignored."
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210908132525.023659534@linutronix.de
----
- arch/x86/include/asm/asm.h | 36 ++++++++++++------------------------
- 1 file changed, 12 insertions(+), 24 deletions(-)
-
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index 3ad3da9..719955e 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -132,18 +132,6 @@
- 	.long (handler) - . ;					\
- 	.popsection
- 
--# define _ASM_EXTABLE(from, to)					\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
--
--# define _ASM_EXTABLE_UA(from, to)				\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
--
--# define _ASM_EXTABLE_CPY(from, to)				\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
--
--# define _ASM_EXTABLE_FAULT(from, to)				\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
--
- # ifdef CONFIG_KPROBES
- #  define _ASM_NOKPROBE(entry)					\
- 	.pushsection "_kprobe_blacklist","aw" ;			\
-@@ -164,18 +152,6 @@
- 	" .long (" _EXPAND_EXTABLE_HANDLE(handler) ") - .\n"	\
- 	" .popsection\n"
- 
--# define _ASM_EXTABLE(from, to)					\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
--
--# define _ASM_EXTABLE_UA(from, to)				\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
--
--# define _ASM_EXTABLE_CPY(from, to)				\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
--
--# define _ASM_EXTABLE_FAULT(from, to)				\
--	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
--
- /* For C file, we already have NOKPROBE_SYMBOL macro */
- 
- /*
-@@ -188,6 +164,18 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#define _ASM_EXTABLE(from, to)					\
-+	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
-+
-+#define _ASM_EXTABLE_UA(from, to)				\
-+	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
-+
-+#define _ASM_EXTABLE_CPY(from, to)				\
-+	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
-+
-+#define _ASM_EXTABLE_FAULT(from, to)				\
-+	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
-+
- #endif /* __KERNEL__ */
- 
- #endif /* _ASM_X86_ASM_H */
+Even if it supported more than 32bit, then the returned ulong is 32bit,
+which doesn't make sense.
