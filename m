@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFCF40BC59
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A21B40BC53
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbhINXqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 19:46:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235136AbhINXqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 19:46:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D1E2610D1;
-        Tue, 14 Sep 2021 23:44:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631663097;
-        bh=jPzXCbaYboqogHgyU4a5pn1KllvDy5UAWUWaY6rE2as=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p6f2Gt07SptLS5tCsam4bUpPP+zv/8SlZDlGFUQWkbk4L4ffFZ745e6rIWReqSg8V
-         NygS9oUCLX7g6LUoZcIO4+2VFg3SR3zkHiBP39SB7Jx80xqNCeEn94sfHGoM2JwAY3
-         U/asZb3lkVDSv0o5qtgzw+I+PmHEoUfi83pzq5pyR7mQ/285U3/K9UvJDSXuxjBFLf
-         NHPw/wIb62dnvgmMvNgvBQ98E3ab9IBHS0yrEhM3EJzJu7087oE02OVljZ/6Q1AP7y
-         OAoWDT/C367QTEgP4CNEm8ACuqDwPHW9JystnNRrgGKyZaN5a8z6ZH9AVe3pWk7lea
-         yzOyZi8dO56qA==
-Date:   Wed, 15 Sep 2021 08:44:54 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
-Message-Id: <20210915084454.b72fcdd705e553aabe6bc44e@kernel.org>
-In-Reply-To: <20210914170553.7c1e1faa@oasis.local.home>
-References: <20210914105620.677b90e5@oasis.local.home>
-        <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
-        <20210914145953.189f15dc@oasis.local.home>
-        <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
-        <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com>
-        <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
-        <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
-        <20210914170553.7c1e1faa@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235956AbhINXn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 19:43:28 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:43076 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233774AbhINXn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 19:43:27 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id CDE5942413;
+        Tue, 14 Sep 2021 23:42:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1631662926; x=1633477327; bh=R5bpcvsT3kXYqwQ+cjx1HLt+j
+        CeJZyVa9dVb6M+UHRc=; b=Tau0ZGRzI41Vrwpo448vEHSwjzNgq/xoACMaGw0PZ
+        PskR3K/6q0CWV7yu0pDusI8qIx1TNfvL9m3KUcDzUasmD8GUroN/Ey9bUFk5a9SR
+        cDM/BA0FfGfG1/xhErLeoJpTCe+jnB8c+gb3qPn1wxYTsMVlkifUjLtbZiajufQv
+        N0=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id For72AKW95pQ; Wed, 15 Sep 2021 02:42:06 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 1EB6A423EF;
+        Wed, 15 Sep 2021 02:42:05 +0300 (MSK)
+Received: from [10.199.0.2] (10.199.0.2) by T-EXCH-04.corp.yadro.com
+ (172.17.100.104) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Wed, 15
+ Sep 2021 02:42:05 +0300
+Message-ID: <8f47c350219719cbd8706ebc079b064cfa43ce95.camel@yadro.com>
+Subject: Re: [PATCH 0/2] rtc: pch-rtc: add Intel Series PCH built-in
+ read-only RTC
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Milton Miller II <miltonm@us.ibm.com>
+CC:     Paul Fertser <fercerpav@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        <openbmc@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Date:   Wed, 15 Sep 2021 02:52:55 +0300
+In-Reply-To: <ff8a8a78fefd2639fa0bcc68bbbb98ec9f1f2e4a.camel@yadro.com>
+References: <YRhQJ4kdyu1Xs1Rb@piout.net>
+         <20210810154436.125678-1-i.mikhaylov@yadro.com>
+         <20210814224215.GX15173@home.paul.comp>
+         <OFBF96A764.75CCED3A-ON00258734.0062B30C-00258734.00634222@ibm.com>
+         <YRwWmeQiVC3dGAjH@piout.net>
+         <ff8a8a78fefd2639fa0bcc68bbbb98ec9f1f2e4a.camel@yadro.com>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.199.0.2]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 17:05:53 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Tue, 14 Sep 2021 13:48:15 -0700
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> 
-> > On Tue, Sep 14, 2021 at 12:38 PM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > So I'll do a minimal conversion that adds "memblock_free_ptr()" and
-> > > hope that people start using that. And then we can later try to move
-> > > "memblock_free()" to a name that isn't so misleading.  
+On Mon, 2021-08-30 at 14:56 +0300, Ivan Mikhaylov wrote:
+> On Tue, 2021-08-17 at 22:05 +0200, Alexandre Belloni wrote:
+> > On 17/08/2021 18:04:09+0000, Milton Miller II wrote:
+> > > 
+> > > On Aug 16, 2021, Alexandre Belloni wrote:
+> > > > On 15/08/2021 01:42:15+0300, Paul Fertser wrote:
+> > > > > On Tue, Aug 10, 2021 at 06:44:34PM +0300, Ivan Mikhaylov wrote:
+> > > > > > Add RTC driver with dt binding tree document. Also this driver
+> > > > adds one sysfs
+> > > > > > attribute for host power control which I think is odd for RTC
+> > > > driver.
+> > > > > > Need I cut it off and use I2C_SLAVE_FORCE? I2C_SLAVE_FORCE is not
+> > > > good
+> > > > > > way too from my point of view. Is there any better approach?
+> > > > > 
+> > > > > Reading the C620 datasheet I see this interface also allows other
+> > > > > commands (wake up, watchdog feeding, reboot etc.) and reading
+> > > > statuses
+> > > > > (e.g Intruder Detect, POWER_OK_BAD).
+> > > > > 
+> > > > > I think if there's any plan to use anything other but RTC via this
+> > > > > interface then the driver should be registered as an MFD.
+> > > > > 
+> > > > 
+> > > > This is not the current thinking, if everything is integrated, then
+> > > > there is no issue registering a watchdog from the RTC driver. I'll
+> > > > let
+> > > > you check with Lee...
+> > > 
+> > > I think the current statement is "if they are truly disjoint 
+> > > hardware controls" then an MFD might suffice, but if they require 
+> > > software cordination the new auxillary bus seems to be desired.
+> > > 
 > > 
-> > Commit 77e02cf57b6c ("memblock: introduce saner 'memblock_free_ptr()'
-> > interface") should hopefully fix that panic that Vlastimil saw, and
-> > the kernel test robot report as well.
+> > Honestly, the auxiliary bus doesn't provide anything that you can't do
+> > by registering a device in multiple subsystem from a single driver.
+> > (Lee Jones, Mark Brown and I did complain at the time that this was yet
+> > another back channel for misuses).
 > > 
-> > And it should make it easy to cleanly fix that 'copy' leak too.
+> > > > > However, I'm not sure what is the correct interface for
+> > > > poweroff/reboot
+> > > > control.
+> > > 
+> > > While there is a gpio interface to a simple regulator switch,
+> > > the project to date has been asserting direct or indirect 
+> > > gpios etc to control the host.   If these are events to 
+> > > trigger a change in state and not a direct state change
+> > > that some controller trys to follow, maybe a message delivery 
+> > > model?   (this is not to reboot or cycle the bmc).
+> > > 
+> > > milton
 > > 
 > 
-> Vlastimil,
+> Alexandre, gentle reminder about this one series. I can get rid off from sysfs
+> attribute and put it like RO rtc without any additional things for now as
+> starter.
 > 
-> Can you confirm that Linus's changes addresses your issue?
+> Thanks.
 > 
-> Masami,
-> 
-> Care to rebase on top of Linus's change?
 
-Sure! and I found another memblock leak, so I'll add it too.
+ping
 
-Thank you!
+Thanks.
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
