@@ -2,233 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841EA40BBBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4C940BBBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235596AbhINWlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        id S235741AbhINWln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbhINWlK (ORCPT
+        with ESMTP id S235464AbhINWll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:41:10 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FBCC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:39:52 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id i7so1601409lfr.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+ZE2BawIU65HDTYQakuJiXPZQ2/PmXQG0jqaaUOAG3k=;
-        b=km4VCJqBJmlVrj14YwftblNq9T/nY2fuwDrkz+OhI7AfiWKEFvprziUIS0ZOjuM/r1
-         8rxYGKwS/d6aXpYDdHFdy4d2N3J7jWuPzxGWgiIZai5+lCRRzoN9k+WXSwwv5IJEurpY
-         119iNHScaih4bf0g9YH2D305Pa803HfX3UsoNjpavJrU5E2ULDGpaGPWaCROWaBtdvK3
-         pNm3MwpfjUw+kjMWPsGvANFpvvA8Z4CFutIWC15ANrQGgr30wpbFLRFdTfYpOtiPbiWG
-         nztIWzEbKol4gpNCt10dWnsPsC2BiAptgVpJ2TtstWNXd4eaa9gIEzxrUsqZQcqAsexj
-         q0pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+ZE2BawIU65HDTYQakuJiXPZQ2/PmXQG0jqaaUOAG3k=;
-        b=CSztsk49CSCijrzULj2ZN2j7dl804qBo6hRGnV+GM1f1vnJKElhL5Bx21Ja4XzCEp7
-         S+WIorBzF34nbeYfGJTALfqdOZZeDu0cJZRW9O+NlbzoZhk+ctUiXB7/Ar/LTe4DWkVI
-         /iHvlyvF4Yssb0i4Il4RMwlKfzv/0TQKPTNRjxLrOK8s8DNPw/SO3sfJazSdRE0U0ROM
-         LLElayxh+jK4uH824fXgkH44kw+8PIRB1pk/bhNRFVlMdkRVHE/DeL9XkRsxisRbeTUZ
-         IBnigAabxuXbUW4aKvpqMo3Mausife734j4mG+29qdtxIVBAe8WZ0HEp6vaKi/aB0ovT
-         ZqOQ==
-X-Gm-Message-State: AOAM533y56wVNUvQ/X++PRffE9Mhw2Q7AcfzbTa77NIs6kBu2ZkSUhi/
-        znAIkxznnp5kcSCTFix4XyrRWo6jA9VEjfGWCTKg67OF6b1G8Q==
-X-Google-Smtp-Source: ABdhPJxDxDrtWmPmN+FLHlNZw8mZA3aFHQX5XQpuMJbH10sfPsxgt8RqC6wuCf4rlESxpvmaBV314+yphKvuMEeSM2E=
-X-Received: by 2002:ac2:483b:: with SMTP id 27mr8966677lft.644.1631659190112;
- Tue, 14 Sep 2021 15:39:50 -0700 (PDT)
+        Tue, 14 Sep 2021 18:41:41 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07266C061574;
+        Tue, 14 Sep 2021 15:40:23 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4H8JFy3Q9mzQk4q;
+        Wed, 15 Sep 2021 00:40:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+        t=1631659220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gOanFGnzd70xddgIbFhvpYypTGbga6lbzZldRrxkK4U=;
+        b=KbcUIPaWx3ZU5tAfqJoFx1G6QLdASPBnllZc9tm+FtLw6NX26gymiW9Vx97iVKcK6T0AFo
+        iHXkqSNGPJEckM5PVb4/xKJ0E6XAKIG268hALmnBaAusbBF2rsucJqK2Ge5uVojit/TBun
+        jpEtcxZhFFyS6HNn1flUZM3zgsSdsd57bhkwN57D6yqe55paNiVLx+BAfY1yp2bImgTJIP
+        GrJ7Ib3vJvCAJ9plo99jxh5Wfw+wVMJgYLaXSUwMJ62YvCettsTgM5qPwv4NYEpWz8k4jq
+        puPsZ7JkzBepbY11rgamaWq7qfL08vCi17ZGhR5OFDKnG1QIpts/qRJrmsh2+A==
+Subject: Re: [PATCH net-next 4/8] MIPS: lantiq: dma: make the burst length
+ configurable by the drivers
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>, john@phrozen.org,
+        tsbogend@alpha.franken.de, maz@kernel.org, ralf@linux-mips.org,
+        ralph.hempel@lantiq.com, davem@davemloft.net, kuba@kernel.org,
+        robh+dt@kernel.org, dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210914212105.76186-1-olek2@wp.pl>
+ <20210914212105.76186-4-olek2@wp.pl>
+From:   Hauke Mehrtens <hauke@hauke-m.de>
+Message-ID: <5ca6a683-47b2-cb4e-aa79-9005bd55465e@hauke-m.de>
+Date:   Wed, 15 Sep 2021 00:40:14 +0200
 MIME-Version: 1.0
-References: <20210914200639.3305617-1-pgonda@google.com> <YUEVQDEvLbdJF+sj@google.com>
-In-Reply-To: <YUEVQDEvLbdJF+sj@google.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 14 Sep 2021 16:39:38 -0600
-Message-ID: <CAMkAt6rSsKuzE__pAodiJR9wFU-B3942+kdkQG-3M+jxhVco2w@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SEV: Acquire vcpu mutex when updating VMSA
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210914212105.76186-4-olek2@wp.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 4274826F
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 3:34 PM Sean Christopherson <seanjc@google.com> wro=
-te:
->
-> On Tue, Sep 14, 2021, Peter Gonda wrote:
-> > Adds mutex guard to the VMSA updating code. Also adds a check to skip a
-> > vCPU if it has already been LAUNCH_UPDATE_VMSA'd which should allow
-> > userspace to retry this ioctl until all the vCPUs can be successfully
-> > LAUNCH_UPDATE_VMSA'd. Because this operation cannot be undone we cannot
-> > unwind if one vCPU fails.
-> >
-> > Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SE=
-V-ES guest")
-> >
-> > Signed-off-by: Peter Gonda <pgonda@google.com>
-> > Cc: Marc Orr <marcorr@google.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Brijesh Singh <brijesh.singh@amd.com>
-> > Cc: kvm@vger.kernel.org
-> > Cc: stable@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > ---
-> >  arch/x86/kvm/svm/sev.c | 24 +++++++++++++++++++-----
-> >  1 file changed, 19 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> > index 75e0b21ad07c..9a2ebd0328ca 100644
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > @@ -598,22 +598,29 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
-> >  static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd =
-*argp)
-> >  {
-> >       struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
-> > -     struct sev_data_launch_update_vmsa vmsa;
-> > +     struct sev_data_launch_update_vmsa vmsa =3D {0};
-> >       struct kvm_vcpu *vcpu;
-> >       int i, ret;
-> >
-> >       if (!sev_es_guest(kvm))
-> >               return -ENOTTY;
-> >
-> > -     vmsa.reserved =3D 0;
-> > -
->
-> Zeroing all of 'vmsa' is an unrelated chagne and belongs in a separate pa=
-tch.  I
-> would even go so far as to say it's unnecessary, even field of the struct=
- is
-> explicitly written before it's consumed.
+On 9/14/21 11:21 PM, Aleksander Jan Bajkowski wrote:
+> Make the burst length configurable by the drivers.
+> 
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-I'll remove this.
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+For all 4 "MIPS: lantiq: dma:" changes.
 
->
-> >       kvm_for_each_vcpu(i, vcpu, kvm) {
-> >               struct vcpu_svm *svm =3D to_svm(vcpu);
-> >
-> > +             ret =3D mutex_lock_killable(&vcpu->mutex);
-> > +             if (ret)
-> > +                     goto out_unlock;
->
-> Rather than multiple unlock labels, move the guts of the loop to a wrappe=
-r.
-> As discussed off list, this really should be a vCPU-scoped ioctl, but tha=
-t ship
-> has sadly sailed :-(  We can at least imitate that by making the VM-scope=
-d ioctl
-> nothing but a wrapper.
->
-> > +
-> > +             /* Skip to the next vCPU if this one has already be updat=
-ed. */
->
-> s/be/been
->
-> Uber nit, there may not be a next vCPU.  It'd be more slightly more accur=
-ate to
-> say something like "Do nothing if this vCPU has already been updated".
->
-> > +             ret =3D sev_es_sync_vmsa(svm);
-> > +             if (svm->vcpu.arch.guest_state_protected)
-> > +                     goto unlock;
->
-> This belongs in a separate patch, too.  It also introduces a bug (arguabl=
-y two)
-> in that it adds a duplicate call to sev_es_sync_vmsa().  The second bug i=
-s that
-> if sev_es_sync_vmsa() fails _and_ the vCPU is already protected, this wil=
-l cause
-> that failure to be squashed.
+> ---
+>   .../include/asm/mach-lantiq/xway/xway_dma.h   |  2 +-
+>   arch/mips/lantiq/xway/dma.c                   | 38 ++++++++++++++++---
+>   2 files changed, 34 insertions(+), 6 deletions(-)
+> 
 
-I'll move skipping logic to a seperate patch
+The DMA changes are looking good.
 
->
-> In the end, I think the least gross implementation will look something li=
-ke this,
-> implemented over two patches (one for the lock, one for the protected che=
-ck).
->
-> static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcp=
-u,
->                                     int *error)
-> {
->         struct sev_data_launch_update_vmsa vmsa;
->         struct vcpu_svm *svm =3D to_svm(vcpu);
->         int ret;
->
->         /*
->          * Do nothing if this vCPU has already been updated.  This is all=
-owed
->          * to let userspace retry LAUNCH_UPDATE_VMSA if the command fails=
- on a
->          * later vCPU.
->          */
->         if (svm->vcpu.arch.guest_state_protected)
->                 return 0;
->
->         /* Perform some pre-encryption checks against the VMSA */
->         ret =3D sev_es_sync_vmsa(svm);
->         if (ret)
->                 return ret;
->
->         /*
->          * The LAUNCH_UPDATE_VMSA command will perform in-place
->          * encryption of the VMSA memory content (i.e it will write
->          * the same memory region with the guest's key), so invalidate
->          * it first.
->          */
->         clflush_cache_range(svm->vmsa, PAGE_SIZE);
->
->         vmsa.reserved =3D 0;
->         vmsa.handle =3D to_kvm_svm(kvm)->sev_info.handle;
->         vmsa.address =3D __sme_pa(svm->vmsa);
->         vmsa.len =3D PAGE_SIZE;
->         return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, erro=
-r);
-> }
->
-> static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *ar=
-gp)
-> {
->         struct kvm_vcpu *vcpu;
->         int i, ret;
->
->         if (!sev_es_guest(kvm))
->                 return -ENOTTY;
->
->         kvm_for_each_vcpu(i, vcpu, kvm) {
->                 ret =3D mutex_lock_killable(&vcpu->mutex);
->                 if (ret)
->                         return ret;
->
->                 ret =3D __sev_launch_update_vmsa(kvm, vcpu, &argp->error)=
-;
->
->                 mutex_unlock(&vcpu->mutex);
-">                 if (ret)
->                         return ret;
->         }
->         return 0;
-> }
+There is also a DMA API driver for this IP core now:
+https://elixir.bootlin.com/linux/v5.15-rc1/source/drivers/dma/lgm/lgm-dma.c
+I do not know if it works fully with these older MIPS SoCs.
+Changing the drivers to use the standard DMA API is a bigger change, 
+which could be done later.
 
-That looks reasonable to me. I didn't know if changes headed for LTS
-should be smaller so I avoided doing this refactor. From:
-https://www.kernel.org/doc/html/v4.11/process/stable-kernel-rules.html#stab=
-le-kernel-rules
-seems to say less than 100 lines is ideal. I guess this could also be
-a "theoretical race condition=E2=80=9D anyways so maybe not for LTS anyways=
-.
-Thoughts?
+Hauke
