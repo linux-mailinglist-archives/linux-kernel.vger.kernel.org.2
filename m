@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD2440A65C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1A540A65F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239831AbhINGAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:00:31 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:11687 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239359AbhINGAa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:00:30 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210914055911epoutp0123944890900f130c72a4775d7ffd47a2~kmsipPTYk1420014200epoutp01U
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:59:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210914055911epoutp0123944890900f130c72a4775d7ffd47a2~kmsipPTYk1420014200epoutp01U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631599151;
-        bh=CqEjZQuCMDS2ROC6JzgcbDJfIGS65t1ChHRfPgvFvKc=;
-        h=From:To:Subject:Date:References:From;
-        b=Sf0XoCMvj68P1X4iAB63uipngeiJ1dUlSC/Mk0qDtGyQdtHWivy+6zn79r0++G7/y
-         62TgxObV+ajYyva6fD4LqfJVOaVHtu9Jw/34/zBFwqpUp0kbw3RcduEj/Z12ua2lYh
-         Mj+yRsiQyel21Vp+LGsuEfCConwTctD0quHgW5DA=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210914055911epcas2p4f9b533a8d8e96b87be234f9b68aa0511~kmsiEDQg21315213152epcas2p4D;
-        Tue, 14 Sep 2021 05:59:11 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.191]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4H7t2h6hkRz4x9QQ; Tue, 14 Sep
-        2021 05:59:08 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0C.EC.09749.C2A30416; Tue, 14 Sep 2021 14:59:08 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210914055907epcas2p1c9d5d91c61592a67b9ce4b2a88d8f279~kmsebsi_E2282322823epcas2p1k;
-        Tue, 14 Sep 2021 05:59:07 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210914055907epsmtrp2a5d75cc40f149affcc2554268d5e420a~kmseax96f2427024270epsmtrp2N;
-        Tue, 14 Sep 2021 05:59:07 +0000 (GMT)
-X-AuditID: b6c32a47-d29ff70000002615-c8-61403a2c96d4
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        13.91.09091.A2A30416; Tue, 14 Sep 2021 14:59:06 +0900 (KST)
-Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210914055906epsmtip2f4f257ce1dad645652694be6a76463f3~kmseKnXpt2534925349epsmtip2X;
-        Tue, 14 Sep 2021 05:59:06 +0000 (GMT)
-From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
-To:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
-        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
-        <bhoon95.kim@samsung.com>
-Subject: Question about ufs_bsg
-Date:   Tue, 14 Sep 2021 14:59:06 +0900
-Message-ID: <000001d7a92d$a0edcb00$e2c96100$@samsung.com>
+        id S239882AbhINGBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:01:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:39832 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239359AbhINGBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 02:01:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B64E1FB;
+        Mon, 13 Sep 2021 23:00:27 -0700 (PDT)
+Received: from [10.57.94.84] (unknown [10.57.94.84])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17CC63F5A1;
+        Mon, 13 Sep 2021 23:00:25 -0700 (PDT)
+Subject: Re: [PATCH v4] coresight: tmc-etr: Speed up for bounce buffer in flat
+ mode
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210905032144.966766-1-leo.yan@linaro.org>
+ <20210913175635.GA1676953@p14s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <2a2ba78b-5a03-ccf3-00d8-b0e1b02dc293@arm.com>
+Date:   Tue, 14 Sep 2021 07:00:24 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdepKfDft4+mL617SwWrELRDClUMdw==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCJsWRmVeSWpSXmKPExsWy7bCmua6OlUOiwYPlLBYnn6xhs3gwbxub
-        xcufV9ksDj7sZLH4uvQZq8Wn9ctYLVYvfsBisejGNiaLy7vmsFl0X9/BZrH8+D8mi667Nxgt
-        lv57y+LA63G5r5fJY/Gel0weExYdYPT4vr6DzePj01ssHn1bVjF6fN4k59F+oJspgCMqxyYj
-        NTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6GYlhbLEnFKg
-        UEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhYYFecWJucWleul5yfq6VoYGBkSlQZUJOxqce
-        4YIVnBUX3hxmaWBczd7FyMkhIWAicWvdbsYuRi4OIYEdjBIzJ5xlh3A+MUpMbDrMBOF8Y5R4
-        2XsKruXNwZksILaQwF5GiR8vbSCKXjBKHFyxmQkkwSagLTHt4W5WkISIwA0miU33t4MlhAXk
-        JS6v2sAGYrMIqEpc+XcCLM4rYClxcM0zNghbUOLkzCdgG5iBBi1b+JoZYrOCxM+ny1hBbBEB
-        PYmJD34yQtSISMzubIOqWcshMX2hHoTtInHy9hImCFtY4tXxLVAfSEl8freXDcKul9g3tQHs
-        UAmBHkaJp/v+MUIkjCVmPWsHsjmAFmhKrN+lD2JKCChLHLkFdRqfRMfhv+wQYV6JjjYhiEZl
-        iV+TJkMNkZSYefMO1FYPifXXjrJCwi1WYsOxXcwTGBVmIXl4FpKHZyF5bBbCDQsYWVYxiqUW
-        FOempxYbFRgjx/UmRnBy1nLfwTjj7Qe9Q4xMHIyHGCU4mJVEeLe9sU0U4k1JrKxKLcqPLyrN
-        SS0+xGgKjIKJzFKiyfnA/JBXEm9oamRmZmBpamFqZmShJM57/rVlopBAemJJanZqakFqEUwf
-        EwenVAMTs87lwN8Pm7e9etQvdu19z798O5/gQ09mbmRnaVhjobOCo/fhknWqc/1ZN07oPnzg
-        k9VzqQ1n5ixPe6SWXBldtTp4ae7KwobbB1y2CK7ffCPyuqjDpmfLuP6xHXvafb4sSb3/v6NK
-        YkXuBtnP3J+tPrTu4/ZUfWka61iQENIdl7RKYHNeu1GuQ/a/++WJu7KkohZtUnUQ3eP35nYD
-        a9Xz7Se2Ky4/O2Nm3fZrr1NlXDxc+RuEDPSaJnnsyvbsnqddf87wzMr1Sr82ruX49XN5mbn6
-        C++eVbzn+7gFf2dG/OTPsjkxSb9w/iqVLs9oR4EbXHrLjm3+e4N9eeJhUY7qyl9r7RiO3te8
-        pHP5W1CvEktxRqKhFnNRcSIAWApvaFcEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJXlfLyiHRYPdaG4uTT9awWTyYt43N
-        4uXPq2wWBx92slh8XfqM1eLT+mWsFqsXP2CxWHRjG5PF5V1z2Cy6r+9gs1h+/B+TRdfdG4wW
-        S/+9ZXHg9bjc18vksXjPSyaPCYsOMHp8X9/B5vHx6S0Wj74tqxg9Pm+S82g/0M0UwBHFZZOS
-        mpNZllqkb5fAldG2dTtTwQrOir0nvjI3MK5m72Lk5JAQMJF4c3AmSxcjF4eQwG5Gif4Fx5gg
-        EpISJ3Y+Z4SwhSXutxxhhSh6xiixdPcBsG42AW2JaQ93gyVEBF4wSfzbv5kNJCEsIC9xedUG
-        MJtFQFXiyr8TYFN5BSwlDq55xgZhC0qcnPmEBcRmBhr09OZTOHvZwtfMEJsVJH4+XcYKYosI
-        6ElMfPCTEaJGRGJ2ZxvzBEaBWUhGzUIyahaSUbOQtCxgZFnFKJlaUJybnltsWGCYl1quV5yY
-        W1yal66XnJ+7iREcY1qaOxi3r/qgd4iRiYPxEKMEB7OSCO+2N7aJQrwpiZVVqUX58UWlOanF
-        hxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTBl2Jw99KyH3+vDC3amkqteL3acbL41
-        v+v5r7ddc7UOrlmSsj4x0j5S1VLb0NziuE6W51Oz4wlVp1f/bfErvviq8l7KHNW5aZyHvCff
-        qnZc0ZxnLbtk8Zb7abdOWPD/bTsiwX7sieWCFLnNX783NRSrbuypXLrE6KPJkr0i5ZeKXqpc
-        mV54PfVm0pFzJ+wzfr6L+3mrYv23idc0TkxiVb47ZbtYcI/ARuF/h+ozXC26Nvz9FxC7Z820
-        z/EBvrERbWzxOyYHBbNpXfxhznM5JfO9UPxZy+une8J3266bynrMvSpqVtzhtSECGdEzZifk
-        eomGVd1c0st4lGGhquCZjvrUU6s0cm6mTm1a+vrAgWc/lFiKMxINtZiLihMBDEm58yADAAA=
-X-CMS-MailID: 20210914055907epcas2p1c9d5d91c61592a67b9ce4b2a88d8f279
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210914055907epcas2p1c9d5d91c61592a67b9ce4b2a88d8f279
-References: <CGME20210914055907epcas2p1c9d5d91c61592a67b9ce4b2a88d8f279@epcas2p1.samsung.com>
+In-Reply-To: <20210913175635.GA1676953@p14s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 13/09/2021 18:56, Mathieu Poirier wrote:
+> On Sun, Sep 05, 2021 at 11:21:44AM +0800, Leo Yan wrote:
+>> The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
+>> low level's architecture code, e.g. for Arm64, it maps the memory with
+>> the attribution "Normal non-cacheable"; this can be concluded from the
+>> definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
+>>
+>> Later when access the AUX bounce buffer, since the memory mapping is
+>> non-cacheable, it's low efficiency due to every load instruction must
+>> reach out DRAM.
+>>
+>> This patch changes to allocate pages with dma_alloc_noncoherent(), the
+>> driver can access the memory via cacheable mapping; therefore, load
+>> instructions can fetch data from cache lines rather than always read
+>> data from DRAM, the driver can boost memory performance.  After using
+>> the cacheable mapping, the driver uses dma_sync_single_for_cpu() to
+>> invalidate cacheline prior to read bounce buffer so can avoid read stale
+>> trace data.
+>>
+>> By measurement the duration for function tmc_update_etr_buffer() with
+>> ftrace function_graph tracer, it shows the performance significant
+>> improvement for copying 4MiB data from bounce buffer:
+>>
+>>    # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
+>>    # echo tmc_update_etr_buffer > set_graph_function
+>>    # echo function_graph > current_tracer
+>>
+>>    before:
+>>
+>>    # CPU  DURATION                  FUNCTION CALLS
+>>    # |     |   |                     |   |   |   |
+>>    2)               |    tmc_update_etr_buffer() {
+>>    ...
+>>    2) # 8148.320 us |    }
+>>
+>>    after:
+>>
+>>    # CPU  DURATION                  FUNCTION CALLS
+>>    # |     |   |                     |   |   |   |
+>>    2)               |  tmc_update_etr_buffer() {
+>>    ...
+>>    2) # 2525.420 us |  }
+>>
+>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>
+>> Changes from v3:
+>> Refined change to use dma_alloc_noncoherent()/dma_free_noncoherent()
+>> (Robin Murphy);
+>> Retested functionality and performance on Juno-r2 board.
+>>
+>> Changes from v2:
+>> Sync the entire buffer in one go when the tracing is wrap around
+>> (Suzuki);
+>> Add Suzuki's review tage.
+>>
+>>   .../hwtracing/coresight/coresight-tmc-etr.c   | 26 ++++++++++++++++---
+>>   1 file changed, 22 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>> index acdb59e0e661..a049b525a274 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>> @@ -609,8 +609,9 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+>>   	if (!flat_buf)
+>>   		return -ENOMEM;
+>>   
+>> -	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+>> -					     &flat_buf->daddr, GFP_KERNEL);
+>> +	flat_buf->vaddr = dma_alloc_noncoherent(real_dev, etr_buf->size,
+>> +						&flat_buf->daddr,
+>> +						DMA_FROM_DEVICE, GFP_KERNEL);
+> 
+> Suzuki and Robin - are you guys good with this new revision?
 
-ufs_bsg was introduced nearly three years ago and it allocates its own requ=
-est queue.
-I faced a sytmpom with this and want to ask something about it.
+Yes, fine by me.
 
-That is, sometimes queue depth for ufs is limited to half of the its maximu=
-m value
-even in a situation with many IO requests from filesystem.
-It turned out that it only occurs when a query is being processed at the sa=
-me time.
-Regarding my tracing, when the query process starts, users for the hctx tha=
-t represents
-a ufs host increase to two and with this, some pathes calling 'hctx_may_que=
-ue'
-function in blk-mq seems to throttle dispatches, technically with 16 becaus=
-e the number of
-ufs slots (32 in my case) is dividend by two (users).
-
-I found that it happened when a query for write booster is processed
-because write booster only turns on in some conditions in my base that is d=
-ifferent
-from kernel mainline. But when an exceptional event or others that could le=
-ad to a query occurs,
-it can happen even in mainline.
-
-I think the throttling is a little bit excessive,
-so the question: is there any way to assign queue depth per user on an asym=
-metric basis?
-
-Thanks.
-Kiwoong Kim
-
-
+Suzuki
