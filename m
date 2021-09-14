@@ -2,191 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7727040AA11
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE9540AA12
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhINJAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:00:43 -0400
-Received: from vps.xff.cz ([195.181.215.36]:38368 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229526AbhINJAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:00:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1631609962; bh=FMNEyanpnGkCzKioEYG1k/II7rKs6qQbFTwCXVGg4oc=;
-        h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-        b=GGvk1MCa4lFwc1uX1oYJ6MPX92vPtub7KCi60FulGvIvB4YakA/B6yWwCeCJbkvaF
-         sdE2vneLJROD6ev1jyF1TxBuoaEp5kBzeFUBkFa89/dNGlnyb3UzeQKatkzk55w5fu
-         Xq4JkBithVZ/VaOEzMCCktvrEqFFBVw58taz9MnQ=
-Date:   Tue, 14 Sep 2021 10:59:22 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org, airlied@linux.ie,
-        daniel@ffwll.ch, saravanak@google.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/sun4i: dw-hdmi: Fix HDMI PHY clock setup
-Message-ID: <20210914085922.qxhmr6puvy5d2ceo@core>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>, mripard@kernel.org,
-        wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
-        saravanak@google.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20210913172154.2686-1-jernej.skrabec@gmail.com>
+        id S229874AbhINJCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:02:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59466 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhINJCX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:02:23 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4A8B3220BA;
+        Tue, 14 Sep 2021 09:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631610065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=seidAS9JqA/z63Wo4YmSLROfSZAIjV9xwK5/H5h3XO0=;
+        b=FklnkAPc3JkEAYVv/RIpkBnRLQVba4+tUcdADN0lLmtBRt5DKRq1XyfZU4jgyAOCY496YF
+        xFZs6I8D1dssf3ML5OjXj/ZQZ11q1RwzOAX+VP6QuFwmhe75GbnxzaFY2l6aALSR4lf4st
+        /ztumWb5/EmxAJilFBtBORCHEhEYw+4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631610065;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=seidAS9JqA/z63Wo4YmSLROfSZAIjV9xwK5/H5h3XO0=;
+        b=QR9YQCggbndcJ9s78TDmJ0RYLmLergoY7ylXCnDIWUjqT1XR33obJgputPPSa3/dJCm00/
+        N9mtARIO1anBYxAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 181EE13D3F;
+        Tue, 14 Sep 2021 09:01:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IPopBdFkQGGFNAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 14 Sep 2021 09:01:05 +0000
+Message-ID: <ef0aa660-0cb6-dc21-f2ce-368b34f8af3d@suse.cz>
+Date:   Tue, 14 Sep 2021 11:01:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913172154.2686-1-jernej.skrabec@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH v2 2/2] lib, stackdepot: Add helper to print stack
+ entries.
+Content-Language: en-US
+To:     Imran Khan <imran.f.khan@oracle.com>, geert@linux-m68k.org,
+        akpm@linux-foundation.org, ryabinin.a.a@gmail.com,
+        glider@google.com, andreyknvl@gmail.com, dvyukov@google.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210902000154.1096484-1-imran.f.khan@oracle.com>
+ <20210902000154.1096484-3-imran.f.khan@oracle.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210902000154.1096484-3-imran.f.khan@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jernej,
-
-On Mon, Sep 13, 2021 at 07:21:54PM +0200, Jernej Skrabec wrote:
-> Recent rework, which made HDMI PHY driver a platform device, inadvertely
-> reversed clock setup order. HW is very touchy about it. Proper way is to
-> handle controllers resets and clocks first and HDMI PHYs second.
+On 9/2/21 02:01, Imran Khan wrote:
+> To print a stack entries, users of stackdepot, first
+> use stack_depot_fetch to get a list of stack entries
+> and then use stack_trace_print to print this list.
+> Provide a helper in stackdepot to print stack entries
+> based on stackdepot handle.
+> Also change above mentioned users to use this helper.
 > 
-> Currently, without this fix, first mode set completely fails (nothing on
-> HDMI monitor) on H3 era PHYs. On H6, it still somehow work.
-> 
-> Move HDMI PHY reset & clocks handling to sun8i_hdmi_phy_init() which
-> will assure that code is executed after controllers reset & clocks are
-> handled. Additionally, add sun8i_hdmi_phy_deinit() which will deinit
-> them at controllers driver unload.
-> 
-> Tested on A64, H3, H6 and R40.
-> 
-> Fixes: 9bf3797796f5 ("drm/sun4i: dw-hdmi: Make HDMI PHY into a platform device")
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  |  7 +-
->  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  4 +-
->  drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 97 ++++++++++++++------------
->  3 files changed, 61 insertions(+), 47 deletions(-)
+>  include/linux/stackdepot.h |  2 ++
+>  lib/stackdepot.c           | 17 +++++++++++++++++
+>  mm/kasan/report.c          | 15 +++------------
+>  mm/page_owner.c            | 13 ++++---------
+>  4 files changed, 26 insertions(+), 21 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> index f75fb157f2ff..5fa5407ac583 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> @@ -216,11 +216,13 @@ static int sun8i_dw_hdmi_bind(struct device *dev, struct device *master,
->  		goto err_disable_clk_tmds;
->  	}
-
-^^^ This looks like...
-
-> +	ret = sun8i_hdmi_phy_init(hdmi->phy);
-> +	if (ret)
-> +		return ret;
-
-... you need 'goto err_disable_clk_tmds;' here, instead.
-
+> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+> index 6bb4bc1a5f54..d77a30543dd4 100644
+> --- a/include/linux/stackdepot.h
+> +++ b/include/linux/stackdepot.h
+> @@ -19,6 +19,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+>  unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+>  			       unsigned long **entries);
+>  
+> +void stack_depot_print(depot_stack_handle_t stack);
 > +
->  	drm_encoder_helper_add(encoder, &sun8i_dw_hdmi_encoder_helper_funcs);
->  	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
+>  unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
 >  
-> -	sun8i_hdmi_phy_init(hdmi->phy);
-> -
->  	plat_data->mode_valid = hdmi->quirks->mode_valid;
->  	plat_data->use_drm_infoframe = hdmi->quirks->use_drm_infoframe;
->  	sun8i_hdmi_phy_set_ops(hdmi->phy, plat_data);
-> @@ -262,6 +264,7 @@ static void sun8i_dw_hdmi_unbind(struct device *dev, struct device *master,
->  	struct sun8i_dw_hdmi *hdmi = dev_get_drvdata(dev);
->  
->  	dw_hdmi_unbind(hdmi->hdmi);
-> +	sun8i_hdmi_phy_deinit(hdmi->phy);
->  	clk_disable_unprepare(hdmi->clk_tmds);
->  	reset_control_assert(hdmi->rst_ctrl);
->  	gpiod_set_value(hdmi->ddc_en, 0);
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> index 74f6ed0e2570..bffe1b9cd3dc 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> @@ -169,6 +169,7 @@ struct sun8i_hdmi_phy {
->  	struct clk			*clk_phy;
->  	struct clk			*clk_pll0;
->  	struct clk			*clk_pll1;
-> +	struct device			*dev;
->  	unsigned int			rcal;
->  	struct regmap			*regs;
->  	struct reset_control		*rst_phy;
-> @@ -205,7 +206,8 @@ encoder_to_sun8i_dw_hdmi(struct drm_encoder *encoder)
->  
->  int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node *node);
->  
-> -void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-> +int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-> +void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy);
->  void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
->  			    struct dw_hdmi_plat_data *plat_data);
->  
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> index c9239708d398..78b152973957 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> @@ -506,9 +506,60 @@ static void sun8i_hdmi_phy_init_h3(struct sun8i_hdmi_phy *phy)
->  	phy->rcal = (val & SUN8I_HDMI_PHY_ANA_STS_RCAL_MASK) >> 2;
+>  #ifdef CONFIG_STACKDEPOT
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index 67439c082490..873aeb152f52 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -214,6 +214,23 @@ static inline struct stack_record *find_stack(struct stack_record *bucket,
+>  	return NULL;
 >  }
 >  
-> -void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
-> +int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
->  {
-> +	int ret;
+> +/**
+> + * stack_depot_print - print stack entries from a depot
+> + *
+> + * @handle:		Stack depot handle which was returned from
+> + *			stack_depot_save().
+> + *
+> + */
+> +void stack_depot_print(depot_stack_handle_t stack)
+> +{
+> +	unsigned long *entries;
+> +	unsigned int nr_entries;
 > +
-> +	ret = reset_control_deassert(phy->rst_phy);
-> +	if (ret) {
-> +		dev_err(phy->dev, "Cannot deassert phy reset control: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(phy->clk_bus);
-> +	if (ret) {
-> +		dev_err(phy->dev, "Cannot enable bus clock: %d\n", ret);
-> +		goto err_deassert_rst_phy;
+> +	nr_entries = stack_depot_fetch(stack, &entries);
 
-I know it was there before, but please:
-
-s/deassert/assert/
-
-kind regards,
-	o.
-
-> +	}
-> +
-> +	ret = clk_prepare_enable(phy->clk_mod);
-> +	if (ret) {
-> +		dev_err(phy->dev, "Cannot enable mod clock: %d\n", ret);
-> +		goto err_disable_clk_bus;
-> +	}
-> +
-> +	if (phy->variant->has_phy_clk) {
-> +		ret = sun8i_phy_clk_create(phy, phy->dev,
-> +					   phy->variant->has_second_pll);
-> +		if (ret) {
-> +			dev_err(phy->dev, "Couldn't create the PHY clock\n");
-> +			goto err_disable_clk_mod;
-> +		}
-> +
-> +		clk_prepare_enable(phy->clk_phy);
-> +	}
-> +
->  	phy->variant->phy_init(phy);
-> +
-> +	return 0;
-> +
-> +err_disable_clk_mod:
-> +	clk_disable_unprepare(phy->clk_mod);
-> +err_disable_clk_bus:
-> +	clk_disable_unprepare(phy->clk_bus);
-> +err_deassert_rst_phy:
-> +	reset_control_assert(phy->rst_phy);
-> +
-> +	return ret;
-> +}
-> +
->
-> [......]
+Maybe this should also skip stack_trace_print when nr_entries is 0, to avoid
+the warning. While the callers added by this patch check handle != 0, future
+ones might not.
