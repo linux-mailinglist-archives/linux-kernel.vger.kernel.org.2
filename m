@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373DD40A289
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3107340A288
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhINBck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 21:32:40 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39322 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhINBcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:32:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=KXOg1wnh22KbOjiVoErnse0MPToeoaHhPOYb0uwUyns=; b=K4Inj402fuVbGnCywXEmB2OIZb
-        j/MJqTfUMdGDXCqDwMPCx2HoKy8IZfDcJa1ePVQQqFtV7It3ciZmfNIDGp8NJvVBQcTcjtYNOlR0c
-        02EODSkYM+tvbiaCaBpyRovGW3qjhTrt4PQhI93R9lZWnPtP7AfUSGTHnsNPHPcg0CZs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mPxHl-006Ulp-0X; Tue, 14 Sep 2021 03:30:57 +0200
-Date:   Tue, 14 Sep 2021 03:30:57 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Subject: Re: [RFC PATCH net 2/5] net: dsa: be compatible with masters which
- unregister on shutdown
-Message-ID: <YT/7UVJghbbyd1t9@lunn.ch>
-References: <20210912120932.993440-1-vladimir.oltean@nxp.com>
- <20210912120932.993440-3-vladimir.oltean@nxp.com>
- <20210912131837.4i6pzwgn573xutmo@skbuf>
- <YT9QwOA2DxaXNsfw@lunn.ch>
- <20210913133130.ohk4co56v4mtljyk@skbuf>
+        id S236302AbhINBcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 21:32:42 -0400
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:47857 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232109AbhINBci (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 21:32:38 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id D566A1093D9;
+        Tue, 14 Sep 2021 11:31:18 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mPxI5-00CCbG-9U; Tue, 14 Sep 2021 11:31:17 +1000
+Date:   Tue, 14 Sep 2021 11:31:17 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
+Message-ID: <20210914013117.GG2361455@dread.disaster.area>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838439.13293.5032214643474179966.stgit@noble.brown>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913133130.ohk4co56v4mtljyk@skbuf>
+In-Reply-To: <163157838439.13293.5032214643474179966.stgit@noble.brown>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=-upqpVM4ziubeLwI_h0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Have you tested it with a D in DSA system?
+On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
+> Documentation commment in gfp.h discourages indefinite retry loops on
+> ENOMEM and says of __GFP_NOFAIL that it
 > 
-> To various degrees.
+>     is definitely preferable to use the flag rather than opencode
+>     endless loop around allocator.
+> 
+> So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
+> not given.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+>  fs/xfs/kmem.c |   16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+> index 6f49bf39183c..f545f3633f88 100644
+> --- a/fs/xfs/kmem.c
+> +++ b/fs/xfs/kmem.c
+> @@ -13,19 +13,11 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
+>  {
+>  	int	retries = 0;
+>  	gfp_t	lflags = kmem_flags_convert(flags);
+> -	void	*ptr;
+>  
+>  	trace_kmem_alloc(size, flags, _RET_IP_);
+>  
+> -	do {
+> -		ptr = kmalloc(size, lflags);
+> -		if (ptr || (flags & KM_MAYFAIL))
+> -			return ptr;
+> -		if (!(++retries % 100))
+> -			xfs_err(NULL,
+> -	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
+> -				current->comm, current->pid,
+> -				(unsigned int)size, __func__, lflags);
+> -		congestion_wait(BLK_RW_ASYNC, HZ/50);
+> -	} while (1);
+> +	if (!(flags & KM_MAYFAIL))
+> +		lflags |= __GFP_NOFAIL;
+> +
+> +	return kmalloc(size, lflags);
+>  }
 
-Hi Vladimir
+Which means we no longer get warnings about memory allocation
+failing - kmem_flags_convert() sets __GFP_NOWARN for all allocations
+in this loop. Hence we'll now get silent deadlocks through this code
+instead of getting warnings that memory allocation is failing
+repeatedly.
 
-I tested on ZII devel C, which has two switches in a DSA
-configuration. This worked before, and still cleanly reboots with this
-patchset.
+I also wonder about changing the backoff behaviour here (it's a 20ms
+wait right now because there are not early wakeups) will affect the
+behaviour, as __GFP_NOFAIL won't wait for that extra time between
+allocation attempts....
 
-Tested-by: Andrew Lunn <andrew@lunn.ch>
+And, of course, how did you test this? Sometimes we see
+unpredicted behaviours as a result of "simple" changes like this
+under low memory conditions...
 
-    Andrew
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
