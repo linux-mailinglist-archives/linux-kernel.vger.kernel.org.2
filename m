@@ -2,152 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC9440BAFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EC440BB03
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbhINWNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S235393AbhINWPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235285AbhINWNx (ORCPT
+        with ESMTP id S235285AbhINWPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:13:53 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8227AC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:12:35 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id y28so1778171lfb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:12:35 -0700 (PDT)
+        Tue, 14 Sep 2021 18:15:17 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B03C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:13:59 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id b18so447263lfb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:13:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LAvaIUH5OlRWAZQfOb+bWm3uVreewxT3eR+cClts1uI=;
-        b=VLrCs/+hNIGuWHNfFM8FPpo9MdASxRdZfjTQbnUJQyNoarhnB48pzOHj92Uv+amr9p
-         ixzRcYtYvH4tHeMTkq392YF521gX9qRP6RXpjY/MbnIpiM/U1DAP4rT3mhItZ+smgYPC
-         HAnvOKCP691XE//yBgTqBGfOzo3Xk8LHh+rXW30yKTdtiIQEgJZOMlPkWV+fJ3uxpW4R
-         nToOeYf0EHRW6z3YX/fLoUtleulbtYB1Liz6pppbcIZmFmkKstGWGpmXGDPpdxxXQDOO
-         To6zI2pt1uDGWX1qSHzdUDUBiwjbHPMgxHrVOk9ocyyjcFoQBRhXrj0omC1wbF+Moi96
-         n6BQ==
+        bh=JWsTCdHYGd/aJ+PxtTnWChkbPZ5sbeK96OrviSNN3s8=;
+        b=JwI9vP436C/kVkfUnMuUGF+nI4pwVjPPhEoYpHVyjC6EGPiJv+o1dTFRN2BzmBU3V4
+         EFFigSIycU81Epm9FYDl8VXTUYBK94Abt6JH3NzRFHzQjqNB8+Xc85rqKExn/7wtwZ9S
+         1pepJ65JI72LsWybw/vCvgtEqajrodwo4swId+LSjCBPfV1GdO9k2HaDOnW2jPNMJgYb
+         CJLrmqwxBt/mVUwJmbdjcNK5WmsCwEyziri5Oa5TsCtutle5iOXW3uaRUMpZOOxPGC3y
+         sFFYKLqsPpl8TFxyjNMvtL+5wHWLOECkG5cAa8mC4zVs9IHEMzq2SVXrkN3AX4PUeZvP
+         oXVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LAvaIUH5OlRWAZQfOb+bWm3uVreewxT3eR+cClts1uI=;
-        b=LajZj/1jOmBO4BhVBcLaGq+CGUuvy8ZDdGJXdRN0ZOrSyhN+qQQLH3mmnt2iHhR29E
-         2DpFjLN8JARVWnfheGysi0nVxYCOxbACcKvXehURZMhdKHDSxrScBbaib/89vTFH3rmc
-         OLCyLv9HEcPvjoQXeQK5tSfOd8XIXNPByu0hidR5MqqO+isRR6Ol3s+X+ZcEeihQSJ4J
-         rK6WOKbLtKmIrvlMHTRw6MolZd6CPywtaGrowIW7mFinCqhORBubu6wJM9CZB94t3dtS
-         RbspNS9oqDPRaT2aYq4ucCLW9ripJUF+5KUCWe+gGBSWMsIvSfOo+9NNbKsdWtNg9C1R
-         mi+g==
-X-Gm-Message-State: AOAM532Q/0pQjhMOqKgy+04pf7m6z8eXcKEkoGeMrIku+ZhezQuGOwz/
-        Xmlb4MKJGhm4CfA5irmfA6qtfaEtWnd+LbexOTOicQ==
-X-Google-Smtp-Source: ABdhPJwu3ztXRgAHEffeDYZFOfptVugQFO781IvsJ0Ym9L4qfm8T9QJBx3b1mwEoJsYA+Z6NYJX/ewEtSqtF71Fz60g=
-X-Received: by 2002:a05:6512:132a:: with SMTP id x42mr14797863lfu.291.1631657553855;
- Tue, 14 Sep 2021 15:12:33 -0700 (PDT)
+        bh=JWsTCdHYGd/aJ+PxtTnWChkbPZ5sbeK96OrviSNN3s8=;
+        b=jaMX7OjjYWdLC1mIPgzj0vLIim3FBJEEf+EysXZjv4VLEsxWajYhCC5QnDdMUfSZFX
+         4ltoKLRQKtz/Vy0L7dLqLvCidVYXCNfjoek90XFYqPyztrI7Z1ksQIAcs/nbR8jbPOry
+         DKKdh4usa4V2T8N7mHzh1MHZAYcbtHkiGp2uz0M0a0picGYqdSDzNkd2XkZxf6EdDKl7
+         z9/Z0CZA7u1AszD1Ye/AYAgS8EwnCntBVaYM+rF5ppibiY+WWkmboqfayGlChgZlz9oy
+         nk1gEeRmJ9FqnUoSq2ihHIIzpZfN1iXI0/YaxoVg24QdgcdbcDQCdrM9ZemlHiBeRznS
+         0pvQ==
+X-Gm-Message-State: AOAM5322C1gZL/XFSkikN8/T0kJTupkP1qFZFHCS5aYg3114BcbGfCtN
+        BV0sU25H4AyvzJq5KXQvHMb5R5nbDRIH7lJ06+4kjQ==
+X-Google-Smtp-Source: ABdhPJw++97HufaRBpmc24LoXmsRYCQ4n4TAIcOI/0662lI81pQdxcBwCQcnx6Q2PmqquC39Np2lofu+7pCvVqvvHVE=
+X-Received: by 2002:a05:6512:3096:: with SMTP id z22mr14628711lfd.584.1631657638198;
+ Tue, 14 Sep 2021 15:13:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914202202.1702601-1-dianders@chromium.org>
-In-Reply-To: <20210914202202.1702601-1-dianders@chromium.org>
+References: <20210913192816.1225025-1-robh@kernel.org> <20210913192816.1225025-6-robh@kernel.org>
+In-Reply-To: <20210913192816.1225025-6-robh@kernel.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 15 Sep 2021 00:12:22 +0200
-Message-ID: <CACRpkdaTb4_UfFzCqw=fiAnQhHD+1sDDua529KdGQbgMVfjYBw@mail.gmail.com>
-Subject: Re: [PATCH v5 00/15] eDP: Support probing eDP panels dynamically
- instead of hardcoding
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lionel Debieve <lionel.debieve@st.com>,
+Date:   Wed, 15 Sep 2021 00:13:46 +0200
+Message-ID: <CACRpkdaykxaECTH6nY4Z-k0qwxq+-o28O=OUqNR4fDRxD0P0zg@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] clk: versatile: clk-icst: Support 'reg' in
+ addition to 'vco-offset' for register address
+To:     Rob Herring <robh@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Pavel Machek <pavel@ucw.cz>,
         Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?Q?Martin_J=C3=BCcker?= <martin.juecker@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Nishanth Menon <nm@ti.com>,
-        Olivier Moysan <olivier.moysan@st.com>,
-        Otavio Salvador <otavio@ossystems.com.br>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
-        Robert Richter <rric@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
         Sudeep Holla <sudeep.holla@arm.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Will Deacon <will@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+        Linux LED Subsystem <linux-leds@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:22 PM Douglas Anderson <dianders@chromium.org> wrote:
+On Mon, Sep 13, 2021 at 9:28 PM Rob Herring <robh@kernel.org> wrote:
 
-> Version 5 of this series just fixes the panel ID encode macro to be
-> cleaner and adds Jani's review tags.
+> The ICST binding now also supports 'reg' in addition to 'vco-offset' for
+> the VCO register address. Add support to the driver to get the VCO
+> address from 'reg'.
 >
-> It could possibly be ready to land?
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-clk@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Definitely IMO, the kernel look so much better after this change,
-so for the series:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+This is nice.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
