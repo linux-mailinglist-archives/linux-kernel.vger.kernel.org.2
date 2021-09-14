@@ -2,130 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A80340A43E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDD940A446
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238751AbhINDRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:17:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237213AbhINDRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:17:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7B8F60FDA;
-        Tue, 14 Sep 2021 03:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631589391;
-        bh=W34OXpHVI8IRqoH+2KbWo+deibUpb2mP6Uf99tWa4No=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mB7vh8JYTdszNKhX1AtKYJeTmLz/5PNBNlVrtfJOPtqWBHZdQH35u7eRwjErtD4iK
-         E1iqgoA7/fk8BTgRM2awWB+DQ1lfjUwAbXMY+YKh0zstHRrzyf4WbKkEfuy5e5Shzx
-         5FZnNuZBqrXEzkicJwoY3FX1Hx/ask4KDqJz64i1jYHgvdIIv0U2UjvtwVntKOmtmL
-         OxpRXAybDUgS7Dk9Nr0WaijMocO+YNNYZTD8cCFaZcLe1qcOcHx3a3C13GYbul2vL8
-         ERy40P4yJTJp1LPX4GilQ3E3uIzkIFhxoX7OmrkNvBIagAFD+3fhMsuYxU/NJ01kcj
-         qTV7J47fU6V1g==
-Date:   Tue, 14 Sep 2021 06:16:27 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "yongxin.liu@windriver.com" <yongxin.liu@windriver.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Singhai, Anjali" <anjali.singhai@intel.com>,
-        "Parikh, Neerav" <neerav.parikh@intel.com>,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
- support RDMA
-Message-ID: <YUAUC1AJP6JVMxBr@unreal>
-References: <20210909151223.572918-1-david.m.ertman@intel.com>
- <YTsjDsFbBggL2X/8@unreal>
- <4bc2664ac89844a79242339f5e971335@intel.com>
- <PH0PR11MB49667F5B029D37D0E257A256DDD99@PH0PR11MB4966.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB49667F5B029D37D0E257A256DDD99@PH0PR11MB4966.namprd11.prod.outlook.com>
+        id S238804AbhINDWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238135AbhINDWG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 23:22:06 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C928C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:20:49 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n18so7229638plp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=evU0I9HnPhgr5ohWZx9jr9eeUj1gyXGQSZ1qih7ewsQ=;
+        b=vFkKjmn9myJ/WwjipewJfdVMZf/gzpnDh21+ca0Et4u9BXQ7MJtB2v8U1dFXgo4G2k
+         blhyZzgesJNZy3/f4iSyo4xA0UETFLbTEp9fnWCbSwO0V9qdB0QTT7eDtyU9XgxITDgh
+         q96znINhWc7XoE6oGNYtpfl6pkn/Zsy2L+Jfktx1mqt7eZp9a1ohfIjv2Rh6qDO/hjO/
+         vWW0sWbRikGHilXi/PBLgnwAbEp8BezQ/nBO46VycSuxCxzK70cvJs0EmK5mlG/1S+J7
+         SEVDCnr/oRUG85mkrNZ2yIKHCLZWsylMNUg7uAA0jmGSQE4eDJh7vkivnkWapPAU/sCT
+         WEbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=evU0I9HnPhgr5ohWZx9jr9eeUj1gyXGQSZ1qih7ewsQ=;
+        b=RzmiRVg/+BGyBUyw4rcheCg8BLU7IJqASm8vucSal93Nhd12R6paBOZGAivHs54dhd
+         LHiovcMGAM+y1+9tqvd0Vn7YwnClUGjLgYAO3kX5LWqFwVRb5IOzWuk/WwgM9xUJqZLA
+         4B+ZktEI1gQs8ZsLigXZEoCVJtGS9qzXNjEq28AaFcIHbD3X6Kpc9Ao3F37kYM3Fa9JL
+         fzMfrsIHtCMfssIVbZG7RT7Jg9b8iYKGUXRZLvAJYLJC6fnffqLGMk3Yf3WrZkRh+ej0
+         IE+QpU/3T0N3uL0h53f/s5EBIqCYyuWQrrPtgWasicQ3OpcWMf64lUMjby+SzXIb26Ff
+         97aQ==
+X-Gm-Message-State: AOAM531Z30WQx49ydZvPAb2U40xx9SuS7RFv/92qO1k6vfhViWnN/o48
+        MO0jTmEydnoNrTSJU5MkMMHXfQ==
+X-Google-Smtp-Source: ABdhPJxIyQS1srZp9DOkaJINQH22lKR3XD3oL6MRF2rFo6uIbf1esGRLezTtlN36pPLaf73feW+VpQ==
+X-Received: by 2002:a17:90b:814:: with SMTP id bk20mr3048004pjb.108.1631589648946;
+        Mon, 13 Sep 2021 20:20:48 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id t68sm9714498pgc.59.2021.09.13.20.20.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Sep 2021 20:20:48 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 0/2] Add QCM2290 Global Clock Controller driver
+Date:   Tue, 14 Sep 2021 11:20:39 +0800
+Message-Id: <20210914032041.6547-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 04:07:28PM +0000, Ertman, David M wrote:
-> > -----Original Message-----
-> > From: Saleem, Shiraz <shiraz.saleem@intel.com>
-> > Sent: Monday, September 13, 2021 8:50 AM
-> > To: Leon Romanovsky <leon@kernel.org>; Ertman, David M
-> > <david.m.ertman@intel.com>
-> > Cc: davem@davemloft.net; kuba@kernel.org; yongxin.liu@windriver.com;
-> > Nguyen, Anthony L <anthony.l.nguyen@intel.com>;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Brandeburg, Jesse
-> > <jesse.brandeburg@intel.com>; intel-wired-lan@lists.osuosl.org; linux-
-> > rdma@vger.kernel.org; jgg@ziepe.ca; Williams, Dan J
-> > <dan.j.williams@intel.com>; Singhai, Anjali <anjali.singhai@intel.com>;
-> > Parikh, Neerav <neerav.parikh@intel.com>; Samudrala, Sridhar
-> > <sridhar.samudrala@intel.com>
-> > Subject: RE: [PATCH RESEND net] ice: Correctly deal with PFs that do not
-> > support RDMA
-> > 
-> > > Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
-> > > support RDMA
-> > >
-> > > On Thu, Sep 09, 2021 at 08:12:23AM -0700, Dave Ertman wrote:
-> > > > There are two cases where the current PF does not support RDMA
-> > > > functionality.  The first is if the NVM loaded on the device is set to
-> > > > not support RDMA (common_caps.rdma is false).  The second is if the
-> > > > kernel bonding driver has included the current PF in an active link
-> > > > aggregate.
-> > > >
-> > > > When the driver has determined that this PF does not support RDMA,
-> > > > then auxiliary devices should not be created on the auxiliary bus.
-> > >
-> > > This part is wrong, auxiliary devices should always be created, in your case it
-> > will
-> > > be one eth device only without extra irdma device.
-> > 
-> > It is worth considering having an eth aux device/driver but is it a hard-and-
-> > fast rule?
-> > In this case, the RDMA-capable PCI network device spawns an auxiliary
-> > device for RDMA
-> > and the core driver is a network driver.
-> > 
-> > >
-> > > Your "bug" is that you mixed auxiliary bus devices with "regular" ones and
-> > created
-> > > eth device not as auxiliary one. This is why you are calling to
-> > auxiliary_device_init()
-> > > for RDMA only and fallback to non-auxiliary mode.
-> > 
-> > It's a design choice on how you carve out function(s) off your PCI core device
-> > to be
-> > managed by auxiliary driver(s) and not a bug.
-> > 
-> > Shiraz
-> 
-> Also, regardless of whether netdev functionality is carved out into an auxiliary device or not, this code would still be necessary.
+The series adds QCM2290 Global Clock Controller driver support.
 
-Right
+Shawn Guo (2):
+  dt-bindings: clk: qcom: Add QCM2290 Global Clock Controller bindings
+  clk: qcom: Add Global Clock Controller driver for QCM2290
 
-> 
-> We don't want to carve out an auxiliary device to support a functionality that the base PCI device does not support.  Not having
-> the RDMA auxiliary device for an auxiliary driver to bind to is how we differentiate between devices that support RDMA and those
-> that don't.
+ .../bindings/clock/qcom,gcc-qcm2290.yaml      |   72 +
+ drivers/clk/qcom/Kconfig                      |    7 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/gcc-qcm2290.c                | 3007 +++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-qcm2290.h  |  178 +
+ 5 files changed, 3265 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-qcm2290.yaml
+ create mode 100644 drivers/clk/qcom/gcc-qcm2290.c
+ create mode 100644 include/dt-bindings/clock/qcom,gcc-qcm2290.h
 
-This is right too.
+-- 
+2.17.1
 
-My complain is that you mixed enumerator logic with eth driver and
-create auxiliary bus only if your RDMA device exists. It is wrong.
-
-Thanks
-
-> 
-> Thanks,
-> DaveE
-> 
