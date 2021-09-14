@@ -2,148 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5926940ACC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673C140ACCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhINLuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbhINLuD (ORCPT
+        id S232413AbhINLwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:52:14 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:16253 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232562AbhINLuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:50:03 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CED3C061574;
-        Tue, 14 Sep 2021 04:48:46 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:105:465:1:3:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4H81p43fQSzQkBS;
-        Tue, 14 Sep 2021 13:48:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
-Subject: [PATCH v2 2/2] mwifiex: Try waking the firmware until we get an interrupt
-Date:   Tue, 14 Sep 2021 13:48:13 +0200
-Message-Id: <20210914114813.15404-3-verdre@v0yd.nl>
-In-Reply-To: <20210914114813.15404-1-verdre@v0yd.nl>
-References: <20210914114813.15404-1-verdre@v0yd.nl>
+        Tue, 14 Sep 2021 07:50:14 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H81nZ4t72z8t1Z;
+        Tue, 14 Sep 2021 19:48:18 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 19:48:54 +0800
+Received: from [10.174.178.55] (10.174.178.55) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 19:48:54 +0800
+Subject: Re: [PATCH] arm64: entry: Improve the performance of system calls
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210903121950.2284-1-thunder.leizhen@huawei.com>
+ <20210914095436.GA26544@C02TD0UTHF1T.local>
+ <1156204d-b48f-8416-a805-78274463bc81@huawei.com>
+Message-ID: <059eeb9e-ad18-d66f-74b9-6f06f5a954d2@huawei.com>
+Date:   Tue, 14 Sep 2021 19:48:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 94A12268
+In-Reply-To: <1156204d-b48f-8416-a805-78274463bc81@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.55]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that the firmware of the 88W8897 card sometimes ignores or
-misses when we try to wake it up by writing to the firmware status
-register. This leads to the firmware wakeup timeout expiring and the
-driver resetting the card because we assume the firmware has hung up or
-crashed (unfortunately that's not unlikely with this card).
 
-Turns out that most of the time the firmware actually didn't hang up,
-but simply "missed" our wakeup request and didn't send us an AWAKE
-event.
 
-Trying again to read the firmware status register after a short timeout
-usually makes the firmware wake up as expected, so add a small retry
-loop to mwifiex_pm_wakeup_card() that looks at the interrupt status to
-check whether the card woke up.
+On 2021/9/14 19:23, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/9/14 17:55, Mark Rutland wrote:
+>> Hi,
+>>
+>> On Fri, Sep 03, 2021 at 08:19:50PM +0800, Zhen Lei wrote:
+>>> Commit 582f95835a8f ("arm64: entry: convert el0_sync to C") converted lots
+>>> of functions from assembly to C, this greatly improves readability. But
+>>> el0_svc()/el0_svc_compat() is in response to system call requests from
+>>> user mode and may be in the hot path.
+>>>
+>>> Although the SVC is in the first case of the switch statement in C, the
+>>> compiler optimizes the switch statement as a whole, and does not give SVC
+>>> a small boost.
+>>>
+>>> Use "likely()" to help SVC directly invoke its handler after a simple
+>>> judgment to avoid entering the switch table lookup process.
+>>>
+>>> After:
+>>> 0000000000000ff0 <el0t_64_sync_handler>:
+>>>      ff0:       d503245f        bti     c
+>>>      ff4:       d503233f        paciasp
+>>>      ff8:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+>>>      ffc:       910003fd        mov     x29, sp
+>>>     1000:       d5385201        mrs     x1, esr_el1
+>>>     1004:       531a7c22        lsr     w2, w1, #26
+>>>     1008:       f100545f        cmp     x2, #0x15
+>>>     100c:       540000a1        b.ne    1020 <el0t_64_sync_handler+0x30>
+>>>     1010:       97fffe14        bl      860 <el0_svc>
+>>>     1014:       a8c17bfd        ldp     x29, x30, [sp], #16
+>>>     1018:       d50323bf        autiasp
+>>>     101c:       d65f03c0        ret
+>>>     1020:       f100705f        cmp     x2, #0x1c
+>>
+>> It would be helpful if you could state which toolchain and config was
+>> used to generate the above.
+> 
+> gcc version 7.3.0 (GCC), make defconfig
+> 
+>>
+>> For comparison, what was the code generation like before? I assume
+>> el0_svc wasn't the target of the first test and branch? Assuming so, how
+>> many tests and branches were there before the call to el0_svc()?
+> 
 
-The number of tries and timeout lengths for this were determined
-experimentally: The firmware usually takes about 500 us to wake up
-after we attempt to read the status register. In some cases where the
-firmware is very busy (for example while doing a bluetooth scan) it
-might even miss our requests for multiple milliseconds, which is why
-after 15 tries the waiting time gets increased to 10 ms. The maximum
-number of tries it took to wake the firmware when testing this was
-around 20, so a maximum number of 50 tries should give us plenty of
-safety margin.
+Sorry, the old assembly code was not compiled with the latest mainline.
+But the key point is no different.
 
-A good reproducer for this issue is letting the firmware sleep and wake
-up in very short intervals, for example by pinging a device on the
-network every 0.1 seconds.
+0000000000000fe0 <el0t_64_sync_handler>:
+     fe0:       d503233f        paciasp
+     fe4:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+     fe8:       910003fd        mov     x29, sp
+     fec:       d5385201        mrs     x1, esr_el1
+     ff0:       531a7c22        lsr     w2, w1, #26
+     ff4:       f100f05f        cmp     x2, #0x3c
+     ff8:       54000068        b.hi    1004 <el0t_64_sync_handler+0x24>  // b.pmore
+     ffc:       7100f05f        cmp     w2, #0x3c
+    1000:       540000c9        b.ls    1018 <el0t_64_sync_handler+0x38>  // b.plast
+    1004:       97fffce9        bl      3a8 <el0_inv>
+    1008:       a8c17bfd        ldp     x29, x30, [sp], #16
+    100c:       d50323bf        autiasp
+    1010:       d65f03c0        ret
+    1014:       d503201f        nop
+    1018:       90000003        adrp    x3, 0 <el0_da>
+    101c:       91000063        add     x3, x3, #0x0
+    1020:       38624862        ldrb    w2, [x3, w2, uxtw]
+    1024:       10000063        adr     x3, 1030 <el0t_64_sync_handler+0x50>
+    1028:       8b228862        add     x2, x3, w2, sxtb #2
+    102c:       d61f0040        br      x2
+    1030:       97fffc3a        bl      118 <el0_dbg>
+    1034:       17fffff5        b       1008 <el0t_64_sync_handler+0x28>
+    1038:       97fffc96        bl      290 <el0_fpsimd_exc>
+    103c:       17fffff3        b       1008 <el0t_64_sync_handler+0x28>
+    1040:       97fffc08        bl      60 <el0_sp>
+    1044:       17fffff1        b       1008 <el0t_64_sync_handler+0x28>
+    1048:       97fffbee        bl      0 <el0_da>
+    104c:       17ffffef        b       1008 <el0t_64_sync_handler+0x28>
+    1050:       97fffeea        bl      bf8 <el0_pc>
+    1054:       17ffffed        b       1008 <el0t_64_sync_handler+0x28>
+    1058:       97fffeb2        bl      b20 <el0_ia>
+    105c:       17ffffeb        b       1008 <el0t_64_sync_handler+0x28>
+    1060:       97fffc46        bl      178 <el0_fpac>
+    1064:       17ffffe9        b       1008 <el0t_64_sync_handler+0x28>
+    1068:       97fffc72        bl      230 <el0_sve_acc>
+    106c:       17ffffe7        b       1008 <el0t_64_sync_handler+0x28>
+    1070:       97ffff18        bl      cd0 <el0_svc>
+    1074:       17ffffe5        b       1008 <el0t_64_sync_handler+0x28>
+    1078:       97fffcb6        bl      350 <el0_bti>
+    107c:       17ffffe3        b       1008 <el0t_64_sync_handler+0x28>
+    1080:       97fffc54        bl      1d0 <el0_fpsimd_acc>
+    1084:       17ffffe1        b       1008 <el0t_64_sync_handler+0x28>
+    1088:       97fffc9a        bl      2f0 <el0_sys>
+    108c:       17ffffdf        b       1008 <el0t_64_sync_handler+0x28>
+    1090:       97fffc0c        bl      c0 <el0_undef>
+    1094:       17ffffdd        b       1008 <el0t_64_sync_handler+0x28>
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/pcie.c | 33 +++++++++++++++++----
- 1 file changed, 27 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index 0eff717ac5fa..7fea319e013c 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -661,11 +661,15 @@ static void mwifiex_delay_for_sleep_cookie(struct mwifiex_adapter *adapter,
- 			    "max count reached while accessing sleep cookie\n");
- }
- 
-+#define N_WAKEUP_TRIES_SHORT_INTERVAL 15
-+#define N_WAKEUP_TRIES_LONG_INTERVAL 35
-+
- /* This function wakes up the card by reading fw_status register. */
- static int mwifiex_pm_wakeup_card(struct mwifiex_adapter *adapter)
- {
- 	struct pcie_service_card *card = adapter->card;
- 	const struct mwifiex_pcie_card_reg *reg = card->pcie.reg;
-+	int n_tries = 0;
- 
- 	mwifiex_dbg(adapter, EVENT,
- 		    "event: Wakeup device...\n");
-@@ -673,12 +677,29 @@ static int mwifiex_pm_wakeup_card(struct mwifiex_adapter *adapter)
- 	if (reg->sleep_cookie)
- 		mwifiex_pcie_dev_wakeup_delay(adapter);
- 
--	/* Accessing fw_status register will wakeup device */
--	if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
--		mwifiex_dbg(adapter, ERROR,
--			    "Writing fw_status register failed\n");
--		return -1;
--	}
-+	/* Access the fw_status register to wake up the device.
-+	 * Since the 88W8897 firmware sometimes appears to ignore or miss
-+	 * that wakeup request, we continue trying until we receive an
-+	 * interrupt from the card.
-+	 */
-+	do {
-+		if (mwifiex_write_reg(adapter, reg->fw_status, FIRMWARE_READY_PCIE)) {
-+			mwifiex_dbg(adapter, ERROR,
-+				    "Writing fw_status register failed\n");
-+			return -EIO;
-+		}
-+
-+		n_tries++;
-+
-+		if (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL)
-+			usleep_range(400, 700);
-+		else
-+			msleep(10);
-+	} while (n_tries <= N_WAKEUP_TRIES_SHORT_INTERVAL + N_WAKEUP_TRIES_LONG_INTERVAL &&
-+		 READ_ONCE(adapter->int_status) == 0);
-+
-+	mwifiex_dbg(adapter, EVENT,
-+		    "event: Tried %d times until firmware woke up\n", n_tries);
- 
- 	if (reg->sleep_cookie) {
- 		mwifiex_pcie_dev_wakeup_delay(adapter);
--- 
-2.31.1
-
+> 
+> 
+>>
+>> At a high-level, I'm not too keen on special-casing things unless
+>> necessary.
+>>
+>> I wonder if we could get similar results without special-casing by using
+>> a static const array of handlers indexed by the EC, since (with GCC
+>> 11.1.0 from the kernel.org crosstool page) that can result in code like:
+>>
+>> 0000000000001010 <el0t_64_sync_handler>:
+>>     1010:       d503245f        bti     c
+>>     1014:       d503233f        paciasp
+>>     1018:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+>>     101c:       910003fd        mov     x29, sp
+>>     1020:       d5385201        mrs     x1, esr_el1
+>>     1024:       90000002        adrp    x2, 0 <el0t_64_sync_handlers>
+>>     1028:       531a7c23        lsr     w3, w1, #26
+>>     102c:       91000042        add     x2, x2, #:lo12:<el0t_64_sync_handlers>
+>>     1030:       f8637842        ldr     x2, [x2, x3, lsl #3]
+>>     1034:       d63f0040        blr     x2
+>>     1038:       a8c17bfd        ldp     x29, x30, [sp], #16
+>>     103c:       d50323bf        autiasp
+>>     1040:       d65f03c0        ret
+>>
+>> ... which might do better by virtue of reducing a chain of potential
+>> mispredicts down to a single potential mispredict, and dynamic branch
+>> prediction hopefully does a good job of predicting the common case at
+>> runtime. That said, the resulting tables will be pretty big...
+> 
+> 
+>  a48:   38624862        ldrb    w2, [x3, w2, uxtw]
+>  a4c:   10000063        adr     x3, a58 <el0_sync_handler+0x48>
+>  a50:   8b228862        add     x2, x3, w2, sxtb #2
+>  a54:   d61f0040        br      x2
+> 
+> The original implementation also generated a query table, but yours is
+> more concise. I will try to test it. Looks like a better solution.
+> 
+>>
+>>>
+>>> Execute "./lat_syscall null" on my board (BogoMIPS : 200.00), it can save
+>>> about 10ns.
+>>>
+>>> Before:
+>>> Simple syscall: 0.2365 microseconds
+>>> Simple syscall: 0.2354 microseconds
+>>> Simple syscall: 0.2339 microseconds
+>>>
+>>> After:
+>>> Simple syscall: 0.2255 microseconds
+>>> Simple syscall: 0.2254 microseconds
+>>> Simple syscall: 0.2256 microseconds
+>>
+>> I appreciate this can be seen by a microbenchmark, but does this have an
+>> impact on a real workload? I'd imagine that real syscall usage will
+>> dominate this in practice, and this would fall into the noise.
+> 
+> The product side has a test plan, but the progress will be slow.
+> 
+>>
+>> Thanks,
+>> Mark.
+>>
+>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>> ---
+>>>  arch/arm64/kernel/entry-common.c | 18 ++++++++++++------
+>>>  1 file changed, 12 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+>>> index 32f9796c4ffe77b..062eb5a895ec6f3 100644
+>>> --- a/arch/arm64/kernel/entry-common.c
+>>> +++ b/arch/arm64/kernel/entry-common.c
+>>> @@ -607,11 +607,14 @@ static void noinstr el0_fpac(struct pt_regs *regs, unsigned long esr)
+>>>  asmlinkage void noinstr el0t_64_sync_handler(struct pt_regs *regs)
+>>>  {
+>>>  	unsigned long esr = read_sysreg(esr_el1);
+>>> +	unsigned long ec = ESR_ELx_EC(esr);
+>>>  
+>>> -	switch (ESR_ELx_EC(esr)) {
+>>> -	case ESR_ELx_EC_SVC64:
+>>> +	if (likely(ec == ESR_ELx_EC_SVC64)) {
+>>>  		el0_svc(regs);
+>>> -		break;
+>>> +		return;
+>>> +	}
+>>> +
+>>> +	switch (ec) {
+>>>  	case ESR_ELx_EC_DABT_LOW:
+>>>  		el0_da(regs, esr);
+>>>  		break;
+>>> @@ -730,11 +733,14 @@ static void noinstr el0_svc_compat(struct pt_regs *regs)
+>>>  asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
+>>>  {
+>>>  	unsigned long esr = read_sysreg(esr_el1);
+>>> +	unsigned long ec = ESR_ELx_EC(esr);
+>>>  
+>>> -	switch (ESR_ELx_EC(esr)) {
+>>> -	case ESR_ELx_EC_SVC32:
+>>> +	if (likely(ec == ESR_ELx_EC_SVC32)) {
+>>>  		el0_svc_compat(regs);
+>>> -		break;
+>>> +		return;
+>>> +	}
+>>> +
+>>> +	switch (ec) {
+>>>  	case ESR_ELx_EC_DABT_LOW:
+>>>  		el0_da(regs, esr);
+>>>  		break;
+>>> -- 
+>>> 2.25.1
+>>>
+>> .
+>>
