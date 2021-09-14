@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0A040B70C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0F140B710
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbhINSjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhINSi5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:38:57 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAE6C061574;
-        Tue, 14 Sep 2021 11:37:39 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso2905266pjh.5;
-        Tue, 14 Sep 2021 11:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+QEr/go/GTpU7Rjfc4KC/IEXZ29vumfEE1Xw4ha+DtA=;
-        b=hGIOmUo0dI9QRjWTNJ0++NGUaLs7m410h6aj1jfFYUwSQIndsHJqOG2IEB3U0jZQ2y
-         BtZ0bX3w+jdCOyP48P8fz6pcr3NjeIHEtlBCKABnjmU/lgYMEUH3qLrFfjUkzxgUJlDj
-         q5zHi1TzMoWGOypCtlMzg3XmIJyzsQijTr6p8/meHv0tbpENrRiI2A8msEQXD//mbS+w
-         /RkZOqIjTJOb6UIidmw/CTSDIZ+sZUJkBzVSxjAT6yXIbzY4uVwsolmU5i4qu3NlDtpP
-         MXJuRRMAFJsQ6pNyeMpOaD1js3/O6dLMRGsaXuUgCHShkLnuYZj+Fbxr+fkRofNwucUJ
-         qzqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+QEr/go/GTpU7Rjfc4KC/IEXZ29vumfEE1Xw4ha+DtA=;
-        b=gQXBnGnuS7SGLYqa+J/6kjsUUakhy+b7ZmN6XtJAzgqTmlum4JQ9NJT7yXLsLEdlsL
-         LSR60/j671AdRHmloAbPsz1d8craShOp3qk7f1tBIrMc9OcwVLKXHdaaEomxt4MpIPGv
-         rnN1dHi9wDOzKdTdWUwX1LkaHzRFwb2XnOwJM2oME4VTfcynPNgqUH+ly6biqxP+W/x7
-         WdwxYUhsVkgVas+8NzJSY8WMj4xPiti++fX4Q1tUF2U1ldp59EeRfcQqZw4zhKRorJNp
-         GnoyK868z6yQKKa9bfBFjlZz9872en3ofrTKoewo0TuCXTL5Roo8CCW0F1osnl0iHzbJ
-         KWRg==
-X-Gm-Message-State: AOAM530nvEI1yanVSalGR6CSFwUK6yRtQIy5zgEUSquFynfWkhRmCeEd
-        4JkTui992s0BkFw64ekJmSw=
-X-Google-Smtp-Source: ABdhPJwLHyNOLnJIL5N7uW7LsNkxaZra7i3+ERtT/jDHWXVzQaxvTyMOQaAc7gHhlP+YS/zE7S1ZQA==
-X-Received: by 2002:a17:90a:1991:: with SMTP id 17mr3646240pji.149.1631644659271;
-        Tue, 14 Sep 2021 11:37:39 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id y3sm12003965pge.44.2021.09.14.11.37.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 11:37:38 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        osalvador@suse.de, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] mm: hwpoison: handle non-anonymous THP correctly
-Date:   Tue, 14 Sep 2021 11:37:18 -0700
-Message-Id: <20210914183718.4236-5-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210914183718.4236-1-shy828301@gmail.com>
-References: <20210914183718.4236-1-shy828301@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230332AbhINSlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229906AbhINSlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 14:41:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0654610E6;
+        Tue, 14 Sep 2021 18:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631644826;
+        bh=l7C56GEOC+aCw6hs43x4MKGepxIPQ/bOtEDY/hCzwNQ=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=eLekWCKFBxK4cA+J4J+PVXVWpATAWAY8FORxhwkJ193WGqfguIhEIf5BR0syRlowU
+         l/WCM/7O2A6rjqREoXDqhQrEcq+t6DrjwoIE9ffSc0ovJ5sCFJB347WfXp21JOuPmN
+         b4hDChbeD+fQyuL4lqZr6QWpyR1FsOBNc8NFOun1m4vhRFfDnp2mVgcJLVmHOOars+
+         QMeyzo5eJsWQu0TNkk4gYNoO/6yty/k9x9szkhdlwTOiitTRahdLWYxQevO2QYATdz
+         YhVB6wkOblGy5q5soUjtDUnW4H2XBlRpv5UeTE3Ls3wRBF48Ijo8txx/7sw+hVgqIl
+         49TOqkwUb1wAw==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id CE00B27C0054;
+        Tue, 14 Sep 2021 14:40:24 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Tue, 14 Sep 2021 14:40:24 -0400
+X-ME-Sender: <xms:l-xAYd4-h5qAKx4EUeas2immw3-tDeP0V3xnPhi-qlt2hzKGNIHKdg>
+    <xme:l-xAYa5Urw6Nkn6eI-ESxdFC2L3KNspMNkPEIJmFexNlNMOTjSoyDYMkOJv6-pNgJ
+    y1JT7-7cWcZwoxGtlI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
+    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
+    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
+    hugidrlhhuthhordhush
+X-ME-Proxy: <xmx:l-xAYUe6g7JP8B6UQ5jhjFySNQgGYxuzWfDDK5_fWfLW4Y0R_vwI8g>
+    <xmx:l-xAYWKGyeuTQ2XB8HO_a34Dayp7Qk0ATv9AuZpMNwmvyQW1h2iRmw>
+    <xmx:l-xAYRIIJo5m2sGPdNiTo7oLvgMK0tWY38qnspjSmtdua4mkcljZtA>
+    <xmx:mOxAYaUDtTJ9m5CjWeBoZCY5l55HKTKhrCwOOhhUlSdPPlgDF2EIrW0IgU4>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7823AA002E4; Tue, 14 Sep 2021 14:40:23 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
+Mime-Version: 1.0
+Message-Id: <f6fdecfe-963d-4669-ae05-1d7192467a19@www.fastmail.com>
+In-Reply-To: <YUDlzxLjNsW+oYGC@hirez.programming.kicks-ass.net>
+References: <20210908184905.163787-1-posk@google.com>
+ <20210908184905.163787-3-posk@google.com>
+ <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
+ <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
+ <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
+ <d656e605-4f89-4ea2-8baf-f7786f0630d9@www.fastmail.com>
+ <YUDlzxLjNsW+oYGC@hirez.programming.kicks-ass.net>
+Date:   Tue, 14 Sep 2021 11:40:01 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     "Jann Horn" <jannh@google.com>, "Peter Oskolkov" <posk@google.com>,
+        "Peter Oskolkov" <posk@posk.io>, "Ingo Molnar" <mingo@redhat.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Linux API" <linux-api@vger.kernel.org>,
+        "Paul Turner" <pjt@google.com>, "Ben Segall" <bsegall@google.com>,
+        "Andrei Vagin" <avagin@google.com>,
+        "Thierry Delisle" <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently hwpoison doesn't handle non-anonymous THP, but since v4.8 THP
-support for tmpfs and read-only file cache has been added.  They could
-be offlined by split THP, just like anonymous THP.
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- mm/memory-failure.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 3e06cb9d5121..6f72aab8ec4a 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1150,13 +1150,16 @@ static int __get_hwpoison_page(struct page *page)
- 
- 	if (PageTransHuge(head)) {
- 		/*
--		 * Non anonymous thp exists only in allocation/free time. We
--		 * can't handle such a case correctly, so let's give it up.
--		 * This should be better than triggering BUG_ON when kernel
--		 * tries to touch the "partially handled" page.
-+		 * We can't handle allocating or freeing THPs, so let's give
-+		 * it up. This should be better than triggering BUG_ON when
-+		 * kernel tries to touch the "partially handled" page.
-+		 *
-+		 * page->mapping won't be initialized until the page is added
-+		 * to rmap or page cache.  Use this as an indicator for if
-+		 * this is an instantiated page.
- 		 */
--		if (!PageAnon(head)) {
--			pr_err("Memory failure: %#lx: non anonymous thp\n",
-+		if (!head->mapping) {
-+			pr_err("Memory failure: %#lx: non instantiated thp\n",
- 				page_to_pfn(page));
- 			return 0;
- 		}
-@@ -1415,12 +1418,12 @@ static int identify_page_state(unsigned long pfn, struct page *p,
- static int try_to_split_thp_page(struct page *page, const char *msg)
- {
- 	lock_page(page);
--	if (!PageAnon(page) || unlikely(split_huge_page(page))) {
-+	if (!page->mapping || unlikely(split_huge_page(page))) {
- 		unsigned long pfn = page_to_pfn(page);
- 
- 		unlock_page(page);
--		if (!PageAnon(page))
--			pr_info("%s: %#lx: non anonymous thp\n", msg, pfn);
-+		if (!page->mapping)
-+			pr_info("%s: %#lx: not instantiated thp\n", msg, pfn);
- 		else
- 			pr_info("%s: %#lx: thp split failed\n", msg, pfn);
- 		put_page(page);
--- 
-2.26.2
+On Tue, Sep 14, 2021, at 11:11 AM, Peter Zijlstra wrote:
+> On Tue, Sep 14, 2021 at 09:52:08AM -0700, Andy Lutomirski wrote:
+> > With a custom mapping, you don=E2=80=99t need to pin pages at all, I=
+ think.
+> > As long as you can reconstruct the contents of the shared page and
+> > you=E2=80=99re willing to do some slightly careful synchronization, =
+you can
+> > detect that the page is missing when you try to update it and skip t=
+he
+> > update. The vm_ops->fault handler can repopulate the page the next
+> > time it=E2=80=99s accessed.
+>=20
+> The point is that the moment we know we need to do this user-poke, is
+> schedule(), which could be called while holding mmap_sem (it being a
+> preemptable lock). Which means we cannot go and do faults.
 
+That=E2=80=99s fine. The page would be in one or two states: present and=
+ writable by kernel or completely gone. If its present, the scheduler wr=
+ites it. If it=E2=80=99s gone, the scheduler skips the write and the nex=
+t fault fills it in.
+
+>=20
+> > All that being said, I feel like I=E2=80=99m missing something. The =
+point of
+> > this is to send what the old M:N folks called =E2=80=9Cscheduler act=
+ivations=E2=80=9D,
+> > right?  Wouldn=E2=80=99t it be more efficient to explicitly wake som=
+ething
+> > blockable/pollable and write the message into a more efficient data
+> > structure?  Polling one page per task from userspace seems like it
+> > will have inherently high latency due to the polling interval and wi=
+ll
+> > also have very poor locality.  Or am I missing something?
+>=20
+> The idea was to link the user structures together in a (single) linked
+> list. The server structure gets a list of all the blocked tasks. This
+> avoids having to a full N iteration (like Java, they're talking stupid
+> number of N).
+>=20
+> Polling should not happen, once we run out of runnable tasks, the serv=
+er
+> task gets ran again and it can instantly pick up all the blocked
+> notifications.
+>=20
+
+How does the server task know when to read the linked list?  And what=E2=
+=80=99s wrong with a ring buffer or a syscall?
