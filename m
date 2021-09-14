@@ -2,79 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D5A40AD72
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0868B40AD7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhINMXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:23:07 -0400
-Received: from ozlabs.org ([203.11.71.1]:50681 "EHLO ozlabs.org"
+        id S232554AbhINMZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:25:39 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40298 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232341AbhINMXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:23:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1631622102;
-        bh=SGmkhJPGIfCGzEckYi2O+WbmHpSLcYp+HxFHaUuDvuk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=HVq0sP8J8jzizJQOnivhASlokwaA8svM2hXDsjMztq3yrz9mFfliD1mxwmYq6P1oy
-         5OQAi86EFUQ2s2w5VpKQ+mYhNhsy+7dLmgehyd+ixnkRXL+3jNyzBDLODNS7W4MVmh
-         cqTiasrsAdGozGGNtoPpsSlcO8uTh6AtwzoGyYYKVEYea68dOAx3BGEapQ7chzzm1Y
-         ZmRYtuQHAAlNx7IXGY50Ks89slzj6cO7xs5sXTio2eskFipkseH8TqYO7eeiNtSVzg
-         qepcoFdtz16P3Upu+NIf393xxtfIy7VOLr4xkvBdmRomHTM/Kolh+10miFt7CJEw1t
-         FDTbfkwKmyMhg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H82X6487zz9sW4;
-        Tue, 14 Sep 2021 22:21:42 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: build failure after merge of the origin tree
-In-Reply-To: <CAHk-=wieb251-L9D-v3BeF-Cna8r5kLz2MeyXDS3mrNUmXNYrg@mail.gmail.com>
-References: <20210914100853.3f502bc9@canb.auug.org.au>
- <CAHk-=whOv-LZKxBqQr8yzmhi7sN4zoFG7t8ALNx+2XFhXjGTpA@mail.gmail.com>
- <CAHk-=whGuEkYmQcJx8WfZ7MFhbKGJDcA6NUZWtrnM6Y6xFqATw@mail.gmail.com>
- <20210914105359.5c651d55@canb.auug.org.au>
- <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
- <20210914120818.4a102b46@canb.auug.org.au>
- <CAHk-=wieb251-L9D-v3BeF-Cna8r5kLz2MeyXDS3mrNUmXNYrg@mail.gmail.com>
-Date:   Tue, 14 Sep 2021 22:21:41 +1000
-Message-ID: <87h7enl54a.fsf@mpe.ellerman.id.au>
+        id S232030AbhINMZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:25:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=gX7VWtJFHvrtg+r8F7qBL1Fs6/uueMeDb/1HgLJEGqw=; b=oIP1+/vN5wjrnXNSoX+SI5Udgk
+        T9jeyYkU0vosWkWKPEnCMlg+5N/s6lW9Ga7FL9UDTU81qbh8+sVPK09WYCQNtVGonvCsI3VCsPBUi
+        79HIjCXanu/dpnf4o6kRJoNzFl2QHq5/PABFaE3vHQi4JAvWnTAj3us8KuDW0gre7e64=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mQ7Tu-006a7u-4j; Tue, 14 Sep 2021 14:24:10 +0200
+Date:   Tue, 14 Sep 2021 14:24:10 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rosen Penev <rosenp@gmail.com>
+Subject: Re: [PATCH net-next] net: phy: at803x: add support for qca 8327
+ internal phy
+Message-ID: <YUCUar+c28XLOCXV@lunn.ch>
+References: <20210914071141.2616-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914071141.2616-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
-> On Mon, Sep 13, 2021 at 7:08 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> That patch works for me - for the ppc64_defconfig build at least.
->
-> Yeah, I just tested the allmodconfig case too, although I suspect it's
-> essentially the same wrt the boot *.S files, so it probably doesn't
-> matter.
->
-> I'd like to have Michael or somebody who can actually run some tests
-> on the end result ack that patch (or - even better - come up with
-> something cleaner) before committing it.
->
-> Because yeah, the build failure is annoying and I apologize, but I'd
-> rather have the build fail overnight than commit something that builds
-> but then is subtle buggy for some reason.
->
-> But if I don't get any other comments by the time I'm up again
-> tomorrow, I'll just commit it as "fixes the build".
+On Tue, Sep 14, 2021 at 09:11:41AM +0200, Ansuel Smith wrote:
+> Add support for qca8327 internal phy needed for correct init of the
+> switch port. It does use the same qca8337 function and reg just with a
+> different id.
 
-I ended up doing a more minimal version of your change.
+Hi Ansuel
 
-I sent it separately, or it's here:
+Please also add it to the atheros_tbl array. It looks like the 8337 is
+also missing as well.
 
-  https://lore.kernel.org/lkml/20210914121723.3756817-1-mpe@ellerman.id.au/
+Have you tried the cable test code on this PHY?
 
-
-cheers
+     Andrew
