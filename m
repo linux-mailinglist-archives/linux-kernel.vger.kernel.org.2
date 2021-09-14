@@ -2,218 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D1D40B459
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DD140B452
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhINQS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:18:56 -0400
-Received: from mail-vi1eur05on2067.outbound.protection.outlook.com ([40.107.21.67]:35169
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229461AbhINQSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:18:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LoAo0PUBqih0ZTURqv/x7+wppZVbI3A91cZNh50cS/lFvd+yWY6GwfDtBmdd4LT2kItbQspSpEH9nxfvMFoov8aPiloLMPdAT+Ch6iEw/K8r1K8UWA7w+d48aoQfJxGiidGa2IjwUF0cSYsE4lyVKTtzCLzkSwxLXHrlGxaBPkAH+YazDmPFSCAun8wOzx0yXR8/7Ao2t1rwyWUH4ioT19LnwStQdcD1CsJmYnJCDcdDIS/BNx3FRXYqcm42viK2rMVcmm+T2j4lH+plCCYaCLGW5DnO9zFw/DzWGyRP6h+RHF/JQO0zh/W+b8twefIFLpcI804tcUDOhOoqCHP1KQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=G9pM2xuKkukcK/SegGdvgmJfi9ppd4HHJlfkj+0hwvA=;
- b=EbXVm2nxewpttOeIyTWVOEEGLlyAa1DUOB79BiRDJ4EdwRBrJVMZ3KIgV5Re1KQb0HAwLMJCJ+qkIAwviP/nTuozpGZazgGDBeIbViscj0mQyYctv3ye7e3eJ8HgD1AJyisMnDiwSuYT6c6Vjk3Co1eiSZAVByHeBN9l2aHzSoJB3/O9HRFuvSXwJrqNHjVIXuWIT1BLns2FlkVMITNCqOUXtfGr2cxuSsrPbCPvfbuwpjNsC6lLXg0yOLz0wIetMrkdtXw8EE6EDxxfwjrkzZ9j/Gbh/Cmha29eI7eSyS5NqnDgiufasg3oIkVfJkyCwYoburpMEu0RXD7F2m7PLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G9pM2xuKkukcK/SegGdvgmJfi9ppd4HHJlfkj+0hwvA=;
- b=YnNzaCEI793MgoIl2SnMhPaORGpirUd5e6vuIeAW+kIMp4W96eB47x1YsVea604SqQ65sk3f3F4KMjqj31pHXNMiseupomy3qIxQnoH2mQcNWjhUEuTYfTdmsOSHG5fMQufPsHmimb3eLOoHnvZ8X3SVT8Me9BRQ5YOSnosFeCw=
-Authentication-Results: arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
- by VI1PR04MB5584.eurprd04.prod.outlook.com (2603:10a6:803:d5::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Tue, 14 Sep
- 2021 16:17:31 +0000
-Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::e948:b382:34fc:c923]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
- ([fe80::e948:b382:34fc:c923%7]) with mapi id 15.20.4500.018; Tue, 14 Sep 2021
- 16:17:31 +0000
-Subject: Re: [PATCH v2] software node: balance refcount for managed sw nodes
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     andriy.shevchenko@linux.intel.com, heikki.krogerus@linux.intel.com,
-        rafael@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jon@solid-run.com,
-        lorenzo.pieralisi@arm.com
-References: <20210914144409.32626-1-laurentiu.tudor@nxp.com>
- <YUC2q1du1vGjAtsd@kroah.com>
-From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Message-ID: <70940e81-c1cb-bb06-5184-32f5a36fb85d@nxp.com>
-Date:   Tue, 14 Sep 2021 19:16:04 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <YUC2q1du1vGjAtsd@kroah.com>
+        id S230060AbhINQSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:18:15 -0400
+Received: from mga02.intel.com ([134.134.136.20]:41775 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhINQSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:18:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209282641"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="209282641"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 09:16:56 -0700
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="544161710"
+Received: from ldraghi-mobl1.amr.corp.intel.com (HELO [10.209.28.176]) ([10.209.28.176])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 09:16:55 -0700
+Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+ <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+ <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
+ <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
+ <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
+Date:   Tue, 14 Sep 2021 09:16:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR0202CA0022.eurprd02.prod.outlook.com
- (2603:10a6:200:89::32) To VI1PR0402MB3405.eurprd04.prod.outlook.com
- (2603:10a6:803:3::26)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.238] (86.123.59.117) by AM4PR0202CA0022.eurprd02.prod.outlook.com (2603:10a6:200:89::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 16:17:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7dda70a0-6bb9-44a6-0d01-08d9779b2714
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5584:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5584AE28DFBE6482C66F23DAECDA9@VI1PR04MB5584.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XB5lvWZIY21c3R2jZWrpqbSVkeMQP4kZT3XeopGAApS7hmxG1lRGIB/JTdGPJYGcFy/o8JzvpY+a66fEDcXD7pCNc0H22enVxyOX3uhbsdSBT/eJku7YOeurRFaAocgGGdyRSORZBZrHkz8+pa2L3glQ5S6yNp7Qb1pxzdOh1kTM5FMyelZuW4x1H+ZcsEb2ku5+Wcz6G+iQrys94EeDTkPXdva0K4DBCcYgX+kZ0IOXO38VObijlOjmhUhbZPQ1M/QH63K0irmuOn+xxXSsiSJR3wtzTlmB95Jl3CvEcozssScr8W673xFhB8dClQj030H2GRmlgHgrBd5QxWnSoDH6EM6Jj/Y2DAqJFqSF//Kn/TZtlShRBqtJIhxfsQCz/LH2ynZqqSY8nCXdspoykKuZOwdJouyZfwsYH7+znY8aCdbjhS1ngEDm8nOVDl84aUVjQIE6IgjhqOtALY8hip4AiDoJqDwkOUSlz9g4YyoSbvUELYwrppQy/3ah0/sNbwY3Wo555a4NfRAVZsvTkVPJ474KwJIGN9Pvb34aSCdo+XSHcpXle5YDYNX9XaGxruQYguZ54V4N3VltB128kn6m8W0eDIoqfIrVDyUWloqR4ZK1RUv07SJVjkCnX9FxBOmUQ9Ki1s9FkvMJXGuUt+BBs9MQYhlDz4z+AvZpZEhRZEc/or9mPZVUzS8RS3w/CBO/GcnJtEIidusn5yMSlwdcxM3B9uUXlwZYeq0ETSBKXv9gT6sAfdapIRsZWMYvsSBGiyiJbDRK6LL75fpc1A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(366004)(136003)(39860400002)(6486002)(26005)(53546011)(38100700002)(6916009)(38350700002)(186003)(4326008)(31696002)(8936002)(956004)(2616005)(86362001)(6666004)(66946007)(2906002)(52116002)(44832011)(31686004)(316002)(16576012)(8676002)(36756003)(66556008)(5660300002)(66476007)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3JXOXRxeE0rL0s5RzNYVW0yL09MbC9WUDFnVmc5WE1oOHdRZ3dKQkpTN0Nj?=
- =?utf-8?B?eGtzbVkrU0c5RW0vUzZRK3FDdWRvWmxqSXFlUTYvemxuazNzTlZycFo5UHFK?=
- =?utf-8?B?eXRNSkJITXliM3RBaW5uSUEvUmw0ZkVSZ2JISEFmTXlkUk9uVkZVOWRIcGlR?=
- =?utf-8?B?S3ZwOU9RZlVpcHByL2ZUbk15UXB0VGZncTdvcnY3MnNUblNUcFd1WUZJSG91?=
- =?utf-8?B?SUlwN25RRStTWHVNdXRBQ05rcDNTZXU3TEJxOUM0UWpWeFNUMG9qZGhEWGov?=
- =?utf-8?B?TDNXeVlUSldLQW9JdGhPK0NWRFY4bWR4QlYyNzRPYTFIN3E1REFsSm92R3M4?=
- =?utf-8?B?Tkpod3RWUG1KK25XNXVCMUJETnhWVThQTzJ6ZGdBcmNvd0s0MzNNTklaQW1l?=
- =?utf-8?B?Tkh0b1FsTlpQbTREak50WXZkVFo3Ny8zWmVHK2grcmE0TXpuN0ZMK0c5YVdP?=
- =?utf-8?B?bGtsSm4rN01UOXVzR1o4Q2Npclp5a3JGRVdTcEwxUXJvVEFGelBWZmU0TnpD?=
- =?utf-8?B?aWNUU1doRVVKbXZ2eDFjYTNkQnl3VFd5YU1xVUIxWURXRERuUC9CNC84djRm?=
- =?utf-8?B?SVpFT053R2h4ODFOamI2dHUyWnVkZWRqaDJtOFZ2U3FPamNxSVBqUmFoMFhG?=
- =?utf-8?B?aE9jR1BHU3JrSGVITFZBaUFKb3A2WERvNUpYQS95dDFQVVlESG0zNkJQajZv?=
- =?utf-8?B?a2N0RE5XOG1wTjBrMGNsaVhHZ05TSVFrT2F6QWxkUFo0VUlCNTZNK1cxRE1N?=
- =?utf-8?B?YW9BRTBpZDNzU1pQK3Iyc21FYzBWakkzbnZmSEtsUWFqZm12OHhLYUEwaEY1?=
- =?utf-8?B?a0syMDRibkpWTitvbkJ3cUY3MTczM3g5UkxXRFltczkxblVMamJUZFNic2d5?=
- =?utf-8?B?RWF3R2YxczdiY2tLY2RSc0JzaEFVRTV2cy9mNFBOZ1NyME4vUm02VDdtYUps?=
- =?utf-8?B?a0ZyN09kWTBkcHV4N05lbkVvWlZQMUdkUFRjcUJNR0VYUXRTY29YRFpiVG11?=
- =?utf-8?B?UWQyU1pyN1MvRDdjTDBXYVdoaFhSV3hTL2tiMXByWDdWT3FZRVd2WDUveGVT?=
- =?utf-8?B?TklvR1p1dHBjazFPZDN2QmRwbFhSbXZEOCtQck96cit5SFhpK29NbmFlck1G?=
- =?utf-8?B?QllLaFRqelF0cHRFaWludzVORzBPSzVCVXNyVTYrMFE1Vm4rVDloQzNDdjVG?=
- =?utf-8?B?T1pwV3NmQVFwdEpHZE11VUlQTG5tb2RUbjJWQW1pc1AxTzRYaUFrWWZlYXhN?=
- =?utf-8?B?bGcwS1RiQzFIZ3AxMGxIYmMyTk5zbTVGeWwzUS9PTlJsUVFDcUZ3WXZaZnR0?=
- =?utf-8?B?N3N1aUhmRTZrSFpyTXRvMXVrblZEMGU2TDgzNjNVMjJSdXJaOFBBTFZOK3Fs?=
- =?utf-8?B?b3RZMWtDeDJIVGZEcHVEUHZMaWhWbzNMU0ZsM21JaTlpaHdkOEFPVkp1czBD?=
- =?utf-8?B?NTJSWmI3RVJ5SU0wamhCUTczc1pSR3dhS2FvV3h0QlA2amFtUVRNQ0pGL1VI?=
- =?utf-8?B?UzdjWkdVSnJTMXpMUCtRQTdZZTVBTVZBU0dIblVTR2hJQ0JBejdmY2p6MVpl?=
- =?utf-8?B?WjlkN2JCb1JibU95NG8rYmFjUEc3Q0tKRmtMTnR1eTNQeGEzRERZVVZVTFVs?=
- =?utf-8?B?NHJKUjlxSWtKS1p4NUtPYWpZN3YybWswS3pFWjZ5dEQvNzdGckdwOENjWDVm?=
- =?utf-8?B?RTY2R1VKMUdWVEhHN2hYUkJKbE8zVlhQUEs3YnkrTmlsaWVhUXFlSzJGYkJl?=
- =?utf-8?Q?ygV6s3bwb7G0hI3FYOwsmpOBB8vPTaBEv5jwOle?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dda70a0-6bb9-44a6-0d01-08d9779b2714
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 16:17:31.0696
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1DWraIZQr33E4dIHCe/znxRXuD9yX/f9D0UTA6lQmODnPJ6t7Q8mYbKC5bX9FGnLOB5ubgIQz1k2baMvsTu48w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5584
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/14/2021 5:50 PM, Greg KH wrote:
-> On Tue, Sep 14, 2021 at 05:44:09PM +0300, laurentiu.tudor@nxp.com wrote:
->> From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
->>
->> software_node_notify(), on KOBJ_REMOVE drops the refcount twice on managed
->> software nodes, thus leading to underflow errors. Balance the refcount by
->> bumping it in the device_create_managed_software_node() function.
->>
->> The error [1] was encountered after adding a .shutdown() op to our
->> fsl-mc-bus driver.
->>
->> [1]
->> pc : refcount_warn_saturate+0xf8/0x150
->> lr : refcount_warn_saturate+0xf8/0x150
->> sp : ffff80001009b920
->> x29: ffff80001009b920 x28: ffff1a2420318000 x27: 0000000000000000
->> x26: ffffccac15e7a038 x25: 0000000000000008 x24: ffffccac168e0030
->> x23: ffff1a2428a82000 x22: 0000000000080000 x21: ffff1a24287b5000
->> x20: 0000000000000001 x19: ffff1a24261f4400 x18: ffffffffffffffff
->> x17: 6f72645f726f7272 x16: 0000000000000000 x15: ffff80009009b607
->> x14: 0000000000000000 x13: ffffccac16602670 x12: 0000000000000a17
->> x11: 000000000000035d x10: ffffccac16602670 x9 : ffffccac16602670
->> x8 : 00000000ffffefff x7 : ffffccac1665a670 x6 : ffffccac1665a670
->> x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
->> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff1a2420318000
->> Call trace:
->>  refcount_warn_saturate+0xf8/0x150
->>  kobject_put+0x10c/0x120
->>  software_node_notify+0xd8/0x140
->>  device_platform_notify+0x4c/0xb4
->>  device_del+0x188/0x424
->>  fsl_mc_device_remove+0x2c/0x4c
->>  rebofind sp.c__fsl_mc_device_remove+0x14/0x2c
->>  device_for_each_child+0x5c/0xac
->>  dprc_remove+0x9c/0xc0
->>  fsl_mc_driver_remove+0x28/0x64
->>  __device_release_driver+0x188/0x22c
->>  device_release_driver+0x30/0x50
->>  bus_remove_device+0x128/0x134
->>  device_del+0x16c/0x424
->>  fsl_mc_bus_remove+0x8c/0x114
->>  fsl_mc_bus_shutdown+0x14/0x20
->>  platform_shutdown+0x28/0x40
->>  device_shutdown+0x15c/0x330
->>  __do_sys_reboot+0x218/0x2a0
->>  __arm64_sys_reboot+0x28/0x34
->>  invoke_syscall+0x48/0x114
->>  el0_svc_common+0x40/0xdc
->>  do_el0_svc+0x2c/0x94
->>  el0_svc+0x2c/0x54
->>  el0t_64_sync_handler+0xa8/0x12c
->>  el0t_64_sync+0x198/0x19c
->> ---[ end trace 32eb1c71c7d86821 ]---
->>
->> Reported-by: Jon Nettleton <jon@solid-run.com>
->> Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->> Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
->> ---
->> Changes since v1:
->>  - added Heikki's Reviewed-by: (Thanks!)
->>
->> Changes since RFC:
->>  - use software_node_notify(KOBJ_ADD) instead of directly bumping
->>    refcount (Heikki)
->>
->>  drivers/base/swnode.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
->> index d1f1a8240120..bdb50a06c82a 100644
->> --- a/drivers/base/swnode.c
->> +++ b/drivers/base/swnode.c
->> @@ -1113,6 +1113,9 @@ int device_create_managed_software_node(struct device *dev,
->>  	to_swnode(fwnode)->managed = true;
->>  	set_secondary_fwnode(dev, fwnode);
->>  
->> +	if (device_is_registered(dev))
->> +		software_node_notify(dev, KOBJ_ADD);
->> +
->>  	return 0;
->>  }
->>  EXPORT_SYMBOL_GPL(device_create_managed_software_node);
->> -- 
->> 2.17.1
->>
+On 9/14/21 12:23 AM, 王贇 wrote:
 > 
-> I am seeing that this needs to go into 5.15-final, but how about any
-> further back?  Stable kernels?  
+> On 2021/9/14 上午11:02, 王贇 wrote:
+> [snip]
+>> [   44.133509][    C0] traps: PANIC: double fault, error_code: 0x0
+>> [   44.133519][    C0] double fault: 0000 [#1] SMP PTI
+>> [   44.133526][    C0] CPU: 0 PID: 743 Comm: a.out Not tainted 5.14.0-next-20210913 #469
+>> [   44.133532][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+>> [   44.133536][    C0] RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+>> [   44.133549][    C0] Code: 48 03 43 28 48 8b 0c 24 bb 01 00 00 00 4c 29 f0 48 39 c8 48 0f 47 c1 49 89 45 08 e9 48 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 <55> 53 e8 09 20 f2 ff 48 c7 c2 20 4d 03 00 65 48 03 15 5a 3b d2 7e
+>> [   44.133556][    C0] RSP: 0018:fffffe000000b000 EFLAGS: 00010046
+> Another information is that I have printed '__this_cpu_ist_bottom_va(NMI)'
+> on cpu0, which is just the RSP fffffe000000b000, does this imply
+> we got an overflowed NMI stack?
 
-I think that's a good point. I can resend and Cc: stable if everyone's
-fine with that.
+Yep.  I have the feeling some of your sanitizer and other debugging is
+eating the stack:
 
-> Does this "fix" a specific commit?
+> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
+> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
 
-I did not found a certain commit that introduced the breakage so don't
-know what to say here. I'd let more experienced people comment on this.
-
----
-Best Regards, Laurentiu
+Just turning off tracing for the page fault handler is papering over the
+problem.  It'll just come back later with a slightly different form.
