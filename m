@@ -2,279 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2334040B56B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293A240B554
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhINQ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:56:09 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:24632 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230396AbhINQyH (ORCPT
+        id S229562AbhINQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:54:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12074 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229507AbhINQyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:54:07 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18E503lA016778;
-        Tue, 14 Sep 2021 11:52:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=RPUUNfkD77SxvTV4n4i6osbaFdwAR8+zqkgXsk/rY0s=;
- b=PsdLOxdbulN9+fobLBit5yG98Blx/ushIc1SG03crgbaO93kvvYhyzaxrTvERmyrNVye
- GKJzFVR1bfMTLbaftytJC5gz5ko1dtzcxWPFes3YZqoxqwWMFtcf7xX8R4YH5+ep+1jj
- yJCqTza+AfhAqhAKYT9/JB52aliDfdu2wKabn/rTYB6JxfosCtGhvmrgrXjydRqIKkch
- lSe5ppYHqbyfaOB03HOjH9uAFup11+uivYCsCNsvsLAf5q+3OT/NBi+FeM2wStAuJ4dB
- JXPlOlOEtUTvs4nbOZGbnVvuMqwEXt//kHFVplvJvFH9AneQ2GfngvR0nR+3bkY2TABN Sw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 3b2gkx8xd0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 14 Sep 2021 11:52:36 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 14 Sep
- 2021 17:52:34 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Tue, 14 Sep 2021 17:52:34 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.230])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0601478;
-        Tue, 14 Sep 2021 16:52:33 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH 2/2] ASoC: cs42l42: Implement Manual Type detection as fallback
-Date:   Tue, 14 Sep 2021 17:52:20 +0100
-Message-ID: <20210914165220.752498-3-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
-References: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
+        Tue, 14 Sep 2021 12:54:02 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18EF0KiW022418;
+        Tue, 14 Sep 2021 12:52:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4ESj+6KO+3A52gu6PVxC6TdHhPGQbw6bZ5a83zR1ryo=;
+ b=lsY60wx+OPDiz7z8/9hDwBiQ8wCliOYP6Vpu1Tf42dZftvthcfAan+0O/CJ/oIDCfuJf
+ CZQ5xTk+fv5QAqQcU6NoN9RVa+VPfBXJcXpZYVWmF8xo+5VZHYgDpsOdBIU1yaUD3GDz
+ e0Rsy0dFGR+TqfD5MpwsJLQn4oKHiAqg+/pLlCbfKnrXAfnSumqhEBChjjLFIjMxjdaP
+ itAKQmFHTzPWNOoK96+yMnOWDiZlYkQ5HQ+oXqPsAcS2DOInn/tRMRjrNSbZ/LQ1CAhT
+ NS7T0YBxcOVEHdgb/0Mt2wIje0UFsHRzJUraDRhWzSpkJsmjOOyMrG+LijJJ9w9fScxM Lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2x0gjty3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 12:52:43 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18EF1RL8026129;
+        Tue, 14 Sep 2021 12:52:43 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2x0gjtxc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 12:52:43 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18EGTSnT030129;
+        Tue, 14 Sep 2021 16:52:40 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3b0m39xb5g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 16:52:40 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18EGqa0b45678902
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 16:52:36 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8822642042;
+        Tue, 14 Sep 2021 16:52:36 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04F0642049;
+        Tue, 14 Sep 2021 16:52:36 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.8.12])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 14 Sep 2021 16:52:35 +0000 (GMT)
+Date:   Tue, 14 Sep 2021 18:52:32 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Subject: Re: [PATCH resend RFC 2/9] s390/gmap: don't unconditionally call
+ pte_unmap_unlock() in __gmap_zap()
+Message-ID: <20210914185232.3b86c7d3@p-imbrenda>
+In-Reply-To: <20210909162248.14969-3-david@redhat.com>
+References: <20210909162248.14969-1-david@redhat.com>
+ <20210909162248.14969-3-david@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: l6IFXDM3aRjwuP9jrmRYaYVvH_KjCmaP
-X-Proofpoint-GUID: l6IFXDM3aRjwuP9jrmRYaYVvH_KjCmaP
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: gh8oP10Yy3CcRrDUk05R5AEHlr7A2r90
+X-Proofpoint-ORIG-GUID: nzLA_OHx0ymGw3_JXA9_iI_qv_jk5Cry
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 phishscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109140081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+On Thu,  9 Sep 2021 18:22:41 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-Some headsets are not detected correctly by Automatic Type Detection
-on cs42l42. Instead, Manual Type Detection can be used to give a
-more accurate value.
+> ... otherwise we will try unlocking a spinlock that was never locked via a
+> garbage pointer.
+> 
+> At the time we reach this code path, we usually successfully looked up
+> a PGSTE already; however, evil user space could have manipulated the VMA
+> layout in the meantime and triggered removal of the page table.
+> 
+> Fixes: 1e133ab296f3 ("s390/mm: split arch/s390/mm/pgtable.c")
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 104 ++++++++++++++++++++++++++++++++-----
- sound/soc/codecs/cs42l42.h |  54 +++++++++++++++++++
- 2 files changed, 146 insertions(+), 12 deletions(-)
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index ca76d907da52..d5e1e5228b5f 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1046,37 +1046,117 @@ static struct snd_soc_dai_driver cs42l42_dai = {
- 		.ops = &cs42l42_ops,
- };
- 
--static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
-+static void cs42l42_manual_hs_type_detect(struct cs42l42_private *cs42l42)
- {
- 	unsigned int hs_det_status;
--	unsigned int int_status;
-+	unsigned int hs_det_comp;
-+	unsigned int hs_det_sw;
- 
--	/* Mask the auto detect interrupt */
-+	/* Set hs detect to manual, active mode */
- 	regmap_update_bits(cs42l42->regmap,
--		CS42L42_CODEC_INT_MASK,
--		CS42L42_PDN_DONE_MASK |
--		CS42L42_HSDET_AUTO_DONE_MASK,
--		(1 << CS42L42_PDN_DONE_SHIFT) |
--		(1 << CS42L42_HSDET_AUTO_DONE_SHIFT));
-+		CS42L42_HSDET_CTL2,
-+		CS42L42_HSDET_CTRL_MASK |
-+		CS42L42_HSDET_SET_MASK |
-+		CS42L42_HSBIAS_REF_MASK |
-+		CS42L42_HSDET_AUTO_TIME_MASK,
-+		(1 << CS42L42_HSDET_CTRL_SHIFT) |
-+		(0 << CS42L42_HSDET_SET_SHIFT) |
-+		(0 << CS42L42_HSBIAS_REF_SHIFT) |
-+		(0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
-+
-+	/* Open the SW_HSB_HS3 switch and close SW_HSB_HS4 for a Type 1 headset. */
-+	regmap_write(cs42l42->regmap, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP1);
-+
-+	regmap_read(cs42l42->regmap, CS42L42_HS_DET_STATUS, &hs_det_status);
-+
-+	hs_det_comp = (hs_det_status & CS42L42_HSDET_COMP1_OUT_MASK) >>
-+			CS42L42_HSDET_COMP1_OUT_SHIFT;
-+
-+	/* Close the SW_HSB_HS3 switch for a Type 2 headset. */
-+	regmap_write(cs42l42->regmap, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP2);
-+
-+	regmap_read(cs42l42->regmap, CS42L42_HS_DET_STATUS, &hs_det_status);
-+
-+	hs_det_comp |= ((hs_det_status & CS42L42_HSDET_COMP2_OUT_MASK) >>
-+			CS42L42_HSDET_COMP2_OUT_SHIFT) << 1;
-+
-+	switch (hs_det_comp) {
-+	case CS42L42_HSDET_COMP_TYPE1:
-+		cs42l42->hs_type = CS42L42_PLUG_CTIA;
-+		hs_det_sw = CS42L42_HSDET_SW_TYPE1;
-+		break;
-+	case CS42L42_HSDET_COMP_TYPE2:
-+		cs42l42->hs_type = CS42L42_PLUG_OMTP;
-+		hs_det_sw = CS42L42_HSDET_SW_TYPE2;
-+		break;
-+	case CS42L42_HSDET_COMP_TYPE3:
-+		cs42l42->hs_type = CS42L42_PLUG_HEADPHONE;
-+		hs_det_sw = CS42L42_HSDET_SW_TYPE3;
-+		break;
-+	default:
-+		cs42l42->hs_type = CS42L42_PLUG_INVALID;
-+		hs_det_sw = CS42L42_HSDET_SW_TYPE4;
-+		break;
-+	}
- 
--	/* Set hs detect to automatic, disabled mode */
-+	/* Set Switches */
-+	regmap_write(cs42l42->regmap, CS42L42_HS_SWITCH_CTL, hs_det_sw);
-+
-+	/* Set HSDET mode to Manual—Disabled */
- 	regmap_update_bits(cs42l42->regmap,
- 		CS42L42_HSDET_CTL2,
- 		CS42L42_HSDET_CTRL_MASK |
- 		CS42L42_HSDET_SET_MASK |
- 		CS42L42_HSBIAS_REF_MASK |
- 		CS42L42_HSDET_AUTO_TIME_MASK,
--		(2 << CS42L42_HSDET_CTRL_SHIFT) |
--		(2 << CS42L42_HSDET_SET_SHIFT) |
-+		(0 << CS42L42_HSDET_CTRL_SHIFT) |
-+		(0 << CS42L42_HSDET_SET_SHIFT) |
- 		(0 << CS42L42_HSBIAS_REF_SHIFT) |
--		(3 << CS42L42_HSDET_AUTO_TIME_SHIFT));
-+		(0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
-+}
-+
-+static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
-+{
-+	unsigned int hs_det_status;
-+	unsigned int int_status;
- 
- 	/* Read and save the hs detection result */
- 	regmap_read(cs42l42->regmap, CS42L42_HS_DET_STATUS, &hs_det_status);
- 
-+	/* Mask the auto detect interrupt */
-+	regmap_update_bits(cs42l42->regmap,
-+		CS42L42_CODEC_INT_MASK,
-+		CS42L42_PDN_DONE_MASK |
-+		CS42L42_HSDET_AUTO_DONE_MASK,
-+		(1 << CS42L42_PDN_DONE_SHIFT) |
-+		(1 << CS42L42_HSDET_AUTO_DONE_SHIFT));
-+
-+
- 	cs42l42->hs_type = (hs_det_status & CS42L42_HSDET_TYPE_MASK) >>
- 				CS42L42_HSDET_TYPE_SHIFT;
- 
-+	/* Run Manual detection if auto detect has not found a headset.
-+	 * We Re-Run with Manual Detection if the original detection was invalid or headphones,
-+	 * to ensure that a headset mic is detected in all cases.
-+	 */
-+	if (cs42l42->hs_type == CS42L42_PLUG_INVALID ||
-+		cs42l42->hs_type == CS42L42_PLUG_HEADPHONE) {
-+		dev_dbg(cs42l42->component->dev, "Running Manual Detection Fallback\n");
-+		cs42l42_manual_hs_type_detect(cs42l42);
-+	} else {
-+		/* Set hs detect to automatic, disabled mode */
-+		regmap_update_bits(cs42l42->regmap,
-+			CS42L42_HSDET_CTL2,
-+			CS42L42_HSDET_CTRL_MASK |
-+			CS42L42_HSDET_SET_MASK |
-+			CS42L42_HSBIAS_REF_MASK |
-+			CS42L42_HSDET_AUTO_TIME_MASK,
-+			(2 << CS42L42_HSDET_CTRL_SHIFT) |
-+			(2 << CS42L42_HSDET_SET_SHIFT) |
-+			(0 << CS42L42_HSBIAS_REF_SHIFT) |
-+			(3 << CS42L42_HSDET_AUTO_TIME_SHIFT));
-+	}
-+
- 	/* Set up button detection */
- 	if ((cs42l42->hs_type == CS42L42_PLUG_CTIA) ||
- 	      (cs42l42->hs_type == CS42L42_PLUG_OMTP)) {
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 8734f6828f3e..2aeabba73e05 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -228,6 +228,60 @@
- #define CS42L42_PLUG_HEADPHONE		2
- #define CS42L42_PLUG_INVALID		3
- 
-+#define CS42L42_HSDET_SW_COMP1		((0 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_REF_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS3_SHIFT))
-+#define CS42L42_HSDET_SW_COMP2		((1 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_REF_HS3_SHIFT))
-+#define CS42L42_HSDET_SW_TYPE1		((0 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_REF_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS3_SHIFT))
-+#define CS42L42_HSDET_SW_TYPE2		((1 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_REF_HS3_SHIFT))
-+#define CS42L42_HSDET_SW_TYPE3		((1 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS3_SHIFT))
-+#define CS42L42_HSDET_SW_TYPE4		((0 << CS42L42_SW_GNDHS_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_GNDHS_HS3_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_HS4_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_HSB_FILT_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_HSB_FILT_HS3_SHIFT) | \
-+					 (0 << CS42L42_SW_REF_HS4_SHIFT) | \
-+					 (1 << CS42L42_SW_REF_HS3_SHIFT))
-+
-+#define CS42L42_HSDET_COMP_TYPE1	1
-+#define CS42L42_HSDET_COMP_TYPE2	2
-+#define CS42L42_HSDET_COMP_TYPE3	0
-+#define CS42L42_HSDET_COMP_TYPE4	3
-+
- #define CS42L42_HS_CLAMP_DISABLE	(CS42L42_PAGE_11 + 0x29)
- #define CS42L42_HS_CLAMP_DISABLE_SHIFT	0
- #define CS42L42_HS_CLAMP_DISABLE_MASK	(1 << CS42L42_HS_CLAMP_DISABLE_SHIFT)
--- 
-2.25.1
+> ---
+>  arch/s390/mm/gmap.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> index b6b56cd4ca64..9023bf3ced89 100644
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -690,9 +690,10 @@ void __gmap_zap(struct gmap *gmap, unsigned long gaddr)
+>  
+>  		/* Get pointer to the page table entry */
+>  		ptep = get_locked_pte(gmap->mm, vmaddr, &ptl);
+> -		if (likely(ptep))
+> +		if (likely(ptep)) {
+>  			ptep_zap_unused(gmap->mm, vmaddr, ptep, 0);
+> -		pte_unmap_unlock(ptep, ptl);
+> +			pte_unmap_unlock(ptep, ptl);
+> +		}
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(__gmap_zap);
 
