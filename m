@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E94840B30A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A8C40B336
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbhINP33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:29:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
+        id S234592AbhINPfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:35:31 -0400
+Received: from mga01.intel.com ([192.55.52.88]:24594 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233202AbhINP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:29:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3706460234;
-        Tue, 14 Sep 2021 15:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631633290;
-        bh=uIk3pIzYCj67iKBpiYBKsYeqo7a5UjJ13ORlR6ji/Kk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jox5mamjWIxKYyEisZVncK1fTvx+5gWa1WND1w4SoytDRknTu9MYjxjTEnG+mhOv+
-         0XUnGtNOHzMT2NlfWzzFfv5ploG8qeiY883t2qP8WCy5soxs7BaIwDPaes1YFaPdxo
-         C9qeh3acGxvxRIpViddaJuziiuwiq+ZeiFav7m4s=
-Date:   Tue, 14 Sep 2021 17:28:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] xfs: convert xfs_sysfs attrs to use ->seq_show
-Message-ID: <YUC/iH9yLlxblM09@kroah.com>
-References: <20210913054121.616001-1-hch@lst.de>
- <20210913054121.616001-14-hch@lst.de>
- <YT7vZthsMCM1uKxm@kroah.com>
- <20210914073003.GA31077@lst.de>
+        id S233241AbhINPf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:35:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="244371129"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="244371129"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 08:28:25 -0700
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="481865571"
+Received: from tjohn2x-mobl.amr.corp.intel.com (HELO [10.209.157.105]) ([10.209.157.105])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 08:28:23 -0700
+Subject: Re: [PATCH v2 16/29] ABI: sysfs-bus-soundwire-slave: use wildcards on
+ What definitions
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Vinod Koul <vkoul@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1631629496.git.mchehab+huawei@kernel.org>
+ <5b868cdb441090cd9c1c4fcc593f069d1b1023d9.1631629496.git.mchehab+huawei@kernel.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <89985d2d-2aff-b7d6-ad9f-535655a5feb5@linux.intel.com>
+Date:   Tue, 14 Sep 2021 10:28:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914073003.GA31077@lst.de>
+In-Reply-To: <5b868cdb441090cd9c1c4fcc593f069d1b1023d9.1631629496.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 09:30:03AM +0200, Christoph Hellwig wrote:
-> On Mon, Sep 13, 2021 at 08:27:50AM +0200, Greg Kroah-Hartman wrote:
-> > Anyway, I like the idea, but as you can see here, it could lead to even
-> > more abuse of sysfs files.  We are just now getting people to use
-> > sysfs_emit() and that is showing us where people have been abusing the
-> > api in bad ways.
+
+
+On 9/14/21 9:32 AM, Mauro Carvalho Chehab wrote:
+> An "N" upper letter is not a wildcard, nor can easily be identified
+> by script, specially since the USB sysfs define things like.
+> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
+> to convert it into a Regex.
+
+No objection on the convention but shouldn't that convention be applied
+to all attributes?
+
 > 
-> To be honest I've always seen sysfs_emit as at best a horrible band aid
-> to enforce the PAGE_SIZE bounds checking.  Better than nothing, but
-> not a solution at all, as you can't force anyone to actually use it.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-soundwire-slave | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-soundwire-slave b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+> index d324aa0b678f..db6b8ffa753e 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+> +++ b/Documentation/ABI/testing/sysfs-bus-soundwire-slave
+> @@ -64,7 +64,7 @@ Description:	SoundWire Slave Data Port-0 DisCo properties.
+>  		Data port 0 are used by the bus to configure the Data Port 0.
+>  
+>  
+> -What:		/sys/bus/soundwire/devices/sdw:.../dpN_src/max_word
+> +What:		/sys/bus/soundwire/devices/sdw:.../dp<N>_src/max_word
+>  		/sys/bus/soundwire/devices/sdw:.../dpN_src/min_word
+>  		/sys/bus/soundwire/devices/sdw:.../dpN_src/words
+>  		/sys/bus/soundwire/devices/sdw:.../dpN_src/type
 
-We can "force" it by not allowing buffers to be bigger than that, which
-is what the code has always done.  I think we want to keep that for now
-and not add the new seq_show api.
-
-I've taken patches 2-6 in this series now, as those were great sysfs
-and kernfs cleanups, thanks for those.
-
-I can also take patch 1 if no one objects (I can edit the typo.)
-
-I agree that getting rid of seq_get_buf() is good, and can work on
-getting rid of the use here in sysfs if it's annoying people.
-
-thanks,
-
-greg k-h
+if we change max_word, shouldn't we change all the others as well?
