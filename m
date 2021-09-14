@@ -2,133 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DB840B75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACC440B760
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbhINTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:00:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:44162 "EHLO mga01.intel.com"
+        id S232217AbhINTBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232391AbhINTAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:00:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="244453667"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="244453667"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:59:32 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="544240275"
-Received: from lveltman-mobl.ger.corp.intel.com (HELO localhost) ([10.251.216.6])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:59:26 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list\:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 04/15] drm/edid: Use new encoded panel id style for quirks matching
-In-Reply-To: <CAD=FV=XgLcOBOOp9kgShE4+T8g8UZcO_Ff3hhAbGTyLkdE7HNA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210909210032.465570-1-dianders@chromium.org> <20210909135838.v4.4.I6103ce2b16e5e5a842b14c7022a034712b434609@changeid> <87ee9r10qw.fsf@intel.com> <CAD=FV=XgLcOBOOp9kgShE4+T8g8UZcO_Ff3hhAbGTyLkdE7HNA@mail.gmail.com>
-Date:   Tue, 14 Sep 2021 21:59:23 +0300
-Message-ID: <87y27zyodw.fsf@intel.com>
+        id S232378AbhINTBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 15:01:19 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD80761155;
+        Tue, 14 Sep 2021 19:00:00 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 14:59:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
+Message-ID: <20210914145953.189f15dc@oasis.local.home>
+In-Reply-To: <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
+References: <20210914105620.677b90e5@oasis.local.home>
+        <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021, Doug Anderson <dianders@chromium.org> wrote:
-> Hi,
->
-> On Tue, Sep 14, 2021 at 11:16 AM Jani Nikula
-> <jani.nikula@linux.intel.com> wrote:
->>
->> On Thu, 09 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
->> > In the patch ("drm/edid: Allow the querying/working with the panel ID
->> > from the EDID") we introduced a different way of working with the
->> > panel ID stored in the EDID. Let's use this new way for the quirks
->> > code.
->> >
->> > Advantages of the new style:
->> > * Smaller data structure size. Saves 4 bytes per panel.
->> > * Iterate through quirks structure with just "==" instead of strncmp()
->> > * In-kernel storage is more similar to what's stored in the EDID
->> >   itself making it easier to grok that they are referring to the same
->> >   value.
->> >
->> > The quirk table itself is arguably a bit less readable in the new
->> > style but not a ton less and it feels like the above advantages make
->> > up for it.
->>
->> I suppose you could pass vendor as a string to EDID_QUIRK() to retain
->> better readability?
->
-> I would love to, but I couldn't figure out how to do this and have it
-> compile! Notably I need the compiler to be able to do math at compile
-> time to compute the final u32 to store in the init data. I don't think
-> the compiler can dereference strings (even constant strings) and do
-> math on the result at compile time.
+On Tue, 14 Sep 2021 11:01:31 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Ah, right.
+> All of these are just plain wrong:
 
->
-> I _think_ you could make it work with four-character codes (only
-> specifying 3 characters), AKA single-quoting something like 'AUO' but
-> I think four-character codes are not dealt with in a standard enough
-> way between compilers so they're not allowed in Linux.
->
-> If you like it better, I could do something like this:
->
-> #define ACR_CODE 'A', 'C', 'R'
-> #define AUO_CODE 'A', 'U', 'O'
-> ...
-> ...
->
-> ...then I could refer to the #defines...
+I'll revert these, and expect Masami to address the issues you present.
 
-Nah.
+Note, they do fix a real bug as shown by:
 
->
->
->> Just bikeshedding, really. ;)
->
-> I'll take this comment (without any formal tags) as:
->
-> * You've seen this patch (and the previous ones) and wouldn't object
-> to it merging.
->
-> * You're not planning on any deeper review / testing, so I shouldn't
-> wait for more stuff from you before merging. Please yell if this is
-> not the case. I'm happy to wait but I don't want to wait if no further
-> review is planned.
+  https://lore.kernel.org/all/e5c7ce5b-93f0-b305-de32-c99d0390eb28@suse.cz/
 
-I have now reviewed the ones where my review is relevant, and certainly
-don't expect me to comment on the rest. ;)
+> 
+> > +static void *init_xbc_data_copy __initdata;
+> > +static phys_addr_t init_xbc_data_size __initdata;
+> > +               init_xbc_data_copy = copy;
+> > +               init_xbc_data_size = size + 1;
+> > +       memblock_free(__pa(init_xbc_data_copy), init_xbc_data_size);  
+> 
+> because the xbc code already saves these as xbc_data/xbc_data_size and
+> that final free should just be done in xbc_destroy_all().
+> 
+> So this fix is pointlessly ugly to begin with.
+> 
+> But what I _really_ ended up reacting to was that
+> 
+> > +               memblock_free(__pa(copy), size + 1);  
 
-BR,
-Jani.
+Should we hold off until mm has fixed this issue?
 
->
->
-> In general I'm still planning to give this series at least another
-> week for comments before merging. ${SUBJECT} patch also is the only
-> one lacking any type of Review / Ack tags so I'll see if I can find
-> someone to give it something before merging, too.
->
->
-> -Doug
+-- Steve
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
