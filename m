@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B8240ADC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC5E40ADC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbhINMgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        id S232664AbhINMfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbhINMfh (ORCPT
+        with ESMTP id S232495AbhINMfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:35:37 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B349C061574;
-        Tue, 14 Sep 2021 05:34:19 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id j13so19601303edv.13;
-        Tue, 14 Sep 2021 05:34:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ONT6D0TiwlnXZMTTExvQRnaRHuAUNBvjf6phJkt6RNk=;
-        b=ouM5qbXCBsmJ7JY62EOAMU/CprIJKWWvWJQXHHA+IW3UwqnO8TD+2avXe++SQD/iMg
-         ZnjQSRA/BreUynBx/szyvUPdsROEqIlVC54pe+Mtv3nJemWh1OerFxT83JAJyEvgUxrv
-         F7momqaRPGI52m1b0/oemT+SXjyXvr62zFtuDw09tgr1HueQKsC+mGWaLRHgdl3ieQ2Q
-         uxe30EyhWhEBXDJGplpv0Gdcl0y6aRfZe7DjLxQIYehp9By0sjN7T/YiC8ONjorzJyD0
-         pxacxulKjNDrILlGJKBbzvP+SoslgDSO9SGsG/A5VhNpxXk+9chHiP0VL0xmyqiIC8Q1
-         lU2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ONT6D0TiwlnXZMTTExvQRnaRHuAUNBvjf6phJkt6RNk=;
-        b=pg02Z2m2XzLTcVDiLbj9V+lPmFcWwggfEOG5vRxSkPl/p8hrw5gJqHYmQn6oB/vMLf
-         6QxOlAubIREdrFH0ACoPR3//1arKISx+j8AAiBoPbDasF38pTfKudst2AX+ZGqwRxNSW
-         8wdEs/SE7WHv7i+7w88NhcGsnalRE5FS3ZHcZ1yISXfDbUmG+F4CoDJbtwGIUl+Aj+zz
-         Ik8ItHocJIGeohUK8A/lmyJND3NG77g16LK5zTggSJcJj3eOOwtCnBNYIDKu7iQU3kO/
-         gxnv45ELmRkYTATXVRX4akcn+8Qq+eWrFdOy9lYGao6D8qusnskm8BwtFDlh9UKVt+xb
-         vp2A==
-X-Gm-Message-State: AOAM53173VzMe5CiKTt+kUis6QO2fvcM8hdr43+J/vdWMJ6+xdM0g3jc
-        c5qWvbAHittLUA11APs3mzw=
-X-Google-Smtp-Source: ABdhPJyoSCczXRLAdvmlZJBKAqHZYQ+OEAR8lz2OEzSD0vKkDaAbkZ503xDmJBIuuhlcZegPSGhLTQ==
-X-Received: by 2002:a05:6402:148:: with SMTP id s8mr18828560edu.298.1631622857804;
-        Tue, 14 Sep 2021 05:34:17 -0700 (PDT)
-Received: from Ansuel-xps.localdomain ([5.170.108.60])
-        by smtp.googlemail.com with ESMTPSA id l9sm5560306edt.55.2021.09.14.05.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 05:34:17 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rosen Penev <rosenp@gmail.com>
-Subject: [PATCH net-next v2] net: phy: at803x: add support for qca 8327 internal phy
-Date:   Tue, 14 Sep 2021 14:33:45 +0200
-Message-Id: <20210914123345.6321-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 14 Sep 2021 08:35:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6013EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:34:35 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1mQ7du-0001I5-RW; Tue, 14 Sep 2021 14:34:30 +0200
+Message-ID: <8f5a00dc2b6e3f23e669a8073daa8ddcd5fb1e01.camel@pengutronix.de>
+Subject: Re: [PATCH v2] arm64: dts: imx8mq-kontron-pitx-imx8m: remove
+ vqmmc-supply node
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Heiko Thiery <heiko.thiery@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Date:   Tue, 14 Sep 2021 14:34:29 +0200
+In-Reply-To: <9c4ada4b9ca1e806ea1916f195598b40@walle.cc>
+References: <20210914072627.24173-1-heiko.thiery@gmail.com>
+         <449f718706fd5af03190bdda986de37aa8fa14e3.camel@pengutronix.de>
+         <79fb60ea9a002ea553a92ea08b28b866@walle.cc>
+         <2dc72116ec935a5a5d7a1a176868b7af7ff3227c.camel@pengutronix.de>
+         <9c4ada4b9ca1e806ea1916f195598b40@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for qca8327 internal phy needed for correct init of the
-switch port. It does use the same qca8337 function and reg just with a
-different id.
+Am Dienstag, dem 14.09.2021 um 11:39 +0200 schrieb Michael Walle:
+> Am 2021-09-14 10:52, schrieb Lucas Stach:
+> > Am Dienstag, dem 14.09.2021 um 10:32 +0200 schrieb Michael Walle:
+> > > Hi Lucas,
+> > > 
+> > > Am 2021-09-14 10:20, schrieb Lucas Stach:
+> > > > Am Dienstag, dem 14.09.2021 um 09:26 +0200 schrieb Heiko Thiery:
+> > > > > The sw4 output (V_1V8_S0 voltage) from the PMIC is the main supply for
+> > > > > the 1V8 power domain. It is not only used as supply for the eMMC.
+> > > > > So this voltage can not be changed and is not allowed to switched off.
+> > > > > Therefore we do not want to provide this regulator to the SDHC driver
+> > > > > to
+> > > > > control this voltage.
+> > > > > 
+> > > > This specific requirement should not be solved by removing the
+> > > > regulator connection from the SDHCI node, but instead by constraining
+> > > > the regulator voltage range to a fixed 3.3V and marking the regulator
+> > > > as always-on to reflect the hardware requirements in the DT.
+> > > > 
+> > > > Also if your eMMC vqmmc is a fixed 3.3V, I don't think you need the
+> > > > faster pinctrl states, as you can't use the faster pin states anyways,
+> > > > as they require a 1.8V signaling voltage.
+> > > 
+> > > Are you speaking of the 1.8V signalling modes? As far as I know the
+> > > IMX SDHC controller will switch the voltage by its own function pin.
+> > > That is, its not a GPIO.
+> > 
+> > Ah, I mixed things up here. This is a fixed 1.8V supply, which is valid
+> > for eMMC, so the high-speed modes are available. My comment still
+> > applies that this should be fixed by constraining the regulator, not by
+> > removing the DT connection.
+> > 
+> > vqmmc is the MMC IO voltage, which can be switched either by the
+> > function pin, which gets toggled automatically when software does the
+> > voltage switch, or by explicitly switching the regulator voltage. eMMCs
+> > are a bit special as they can work with a fixed 1.8V IO supply and
+> > don't need to start with 3.3V.
+> 
+> Mh, I have some kind of general question though.
+> 
+> Lets take the SDHC controller for the SD card, which needs to change
+> the voltage if you want to use the high speed mode of the cards. Ie.
+> from 3.3V to 1.8V. The controller does this autonomously with the help
+> of a pin which is controlled by the controller itself. Will it have a
+> vqmmc-supply property? And if so what whould the supply be?
+> 
+If the IO voltage regulator is controlled via the fixed function pin
+you would not add the vqmmc-supply to the DT, as the regulator isn't
+known to Linux in that case.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Tested-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/net/phy/at803x.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+The vqmmc-supply should be used when you have a regulator which is
+controlled via some other path than the fixed function pin, or if the
+regulator is fixed. By having the connection to the fixed regulator,
+the MMC core is able to see that certain modes of operation are not
+available.
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index bdac087058b2..719860a93d7c 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1420,6 +1420,19 @@ static struct phy_driver at803x_driver[] = {
- 	.get_sset_count = at803x_get_sset_count,
- 	.get_strings = at803x_get_strings,
- 	.get_stats = at803x_get_stats,
-+}, {
-+	/* QCA8327 */
-+	.phy_id = QCA8327_PHY_ID,
-+	.phy_id_mask = QCA8K_PHY_ID_MASK,
-+	.name = "QCA PHY 8327",
-+	/* PHY_GBIT_FEATURES */
-+	.probe = at803x_probe,
-+	.flags = PHY_IS_INTERNAL,
-+	.config_init = qca83xx_config_init,
-+	.soft_reset = genphy_soft_reset,
-+	.get_sset_count = at803x_get_sset_count,
-+	.get_strings = at803x_get_strings,
-+	.get_stats = at803x_get_stats,
- }, };
- 
- module_phy_driver(at803x_driver);
-@@ -1430,6 +1443,8 @@ static struct mdio_device_id __maybe_unused atheros_tbl[] = {
- 	{ PHY_ID_MATCH_EXACT(ATH8032_PHY_ID) },
- 	{ PHY_ID_MATCH_EXACT(ATH8035_PHY_ID) },
- 	{ PHY_ID_MATCH_EXACT(ATH9331_PHY_ID) },
-+	{ PHY_ID_MATCH_EXACT(QCA8337_PHY_ID) },
-+	{ PHY_ID_MATCH_EXACT(QCA8327_PHY_ID) },
- 	{ }
- };
- 
--- 
-2.32.0
+Regards,
+Lucas
 
