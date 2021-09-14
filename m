@@ -2,151 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF5840B06F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A150940B075
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbhINOT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
+        id S233526AbhINOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233349AbhINOTx (ORCPT
+        with ESMTP id S233309AbhINOU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:19:53 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FB2C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:18:35 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id t18so20553433wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:18:35 -0700 (PDT)
+        Tue, 14 Sep 2021 10:20:59 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:19:42 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c8so29216656lfi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:19:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kpn+M1bqQCPZctbXT2rMFocOAVoHTOH/YHoMT77kaXA=;
-        b=KB4MNAxhrmlbX59MwAQZ6hLhzSFEWzYdMbFTOohpBg3/xVF58nlidY6zi0qGimEhqm
-         Jl6OCNnnQMIFIqi85bkucA2jwEyap/QQOUngnGS5sFkRXOcZpJV0qG67XAOWE7gBHPBL
-         dZ2GY6mBv3tc5NBbWhoYZ9ImG68TbT4LJGvgk=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O3O9pavUsvQaLCKu2O/WDZy+zRAT00QZp8f3df/2+6A=;
+        b=wtfNHMPFTgr2cSQCGaxAiqSluRILESAr0akFI2FMy2CE5T5/m00/8Tt9QvoGG9jZlG
+         GbUOksYsG43MpfPEhF+ONVxgXCjjDsF8LFMgkhAr4orncRFcpYX3/talgQH0NppPFPGi
+         NWh1hW6dFU+tMYZnSDN5CA5/E3iZV3CJf6Q5bXqwX3Oi28Hi6Wxri+DiTzck028maU4g
+         UTHtiVzb2YyDs68NmeQcJNRPZP5Rj2OH9E9F6lZ5sut7g02tNbQlj3VZW7Fu0OwD4Lwq
+         SBf5bL6cCMSlWyZKml66kHd/W+kCI+ROceAodq/pCBuZ/4Xk535IDZf4m5fd/4FA0Iv3
+         IXEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=kpn+M1bqQCPZctbXT2rMFocOAVoHTOH/YHoMT77kaXA=;
-        b=i5tBnlXooIuy/hEPZopFfr0g3Z3751H26Q9kO+3kExmGzxQciQicZTr0fAPzy4RUir
-         vBQTbZ4auaX8Pi7wcn5jepBfTKm2X5mXkUjuua/KCpWawMTnoAR2oxeil4XS/88hcM4v
-         DSOMZaBNXornjNRV6lmuZYl9hpODnf4eu++r2A3UfjjbhX+TNhseGeLs6eaGQGyt0Ng+
-         CjnM63hzdEqkgfQhSxKvYIyCqCdQHDu3odXxw5itQojNnGS9P5ub2MMw+OXkOU9pqzUH
-         TdEXMH0XSU7ThU08rXcdj9r/Pu611qcPhNfS1OW7UfXStBPauoOGOFy2MbFAP8eFWv3A
-         F73g==
-X-Gm-Message-State: AOAM530/ZMCc9q4tvXq7N4yyXZ+3L/QfT3eH7MV54q/N03HNX+fB2fj5
-        yt+TbVBSj9ZrfztLG5tCOFH5/w==
-X-Google-Smtp-Source: ABdhPJwKQcZFGHqC1jw8lf4RoQcxifPnrx41rU4gRLMHuOSauY9GY+Cp86a0hl31Z0tdwkoEknt34g==
-X-Received: by 2002:adf:f183:: with SMTP id h3mr13825816wro.32.1631629114235;
-        Tue, 14 Sep 2021 07:18:34 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id l15sm1251759wme.42.2021.09.14.07.18.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O3O9pavUsvQaLCKu2O/WDZy+zRAT00QZp8f3df/2+6A=;
+        b=K8s+GPaEOiK1nTdY0hOYDcxR+Jx7K7dYTjx1Lu4SAjoLn2TvB6PNY11BM1gAJLltif
+         6RFfdeg/8K010yiw0lUXuJyI6U6JP0fn3AKVOKLjWZ5yDV/XVdqKmN1YvZCjmIkWkZPp
+         SdGhhPqYLvd2AJXksF9r1bMcGkWrVi5f4bTu+S1KLWCDzU4PN2ZmiHq18kF7y/w0iQik
+         5quoTXuto07DzSbYaYNaYTLs1n00PkvakBhtMVHKwXWo4zhT3cBjfuS5j6k61HVrwVRJ
+         RIrJz9FepVS0BjFCNWrH09dLE7Owt8+iKhhRsiuOKJXHpEUy99ELt8l58tfSd6D/pNtQ
+         0Ouw==
+X-Gm-Message-State: AOAM5313rXR+GpevJvluB1ZFRCDpgw/SZleLTut4CcixY0s6QA8kfHI9
+        v5BnTZVN3u/AIbKRKpN11ybgMMRN88FxCOGl
+X-Google-Smtp-Source: ABdhPJyHiPdnmDcScme8ggB6SkefTDo8MUhZKW5sX1Hp/YsLNMy6sUP5QRMrbmWMSX/bANnfJnU+SA==
+X-Received: by 2002:a05:6512:2e8:: with SMTP id m8mr7230911lfq.172.1631629180511;
+        Tue, 14 Sep 2021 07:19:40 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id b17sm1345309ljj.35.2021.09.14.07.19.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 07:18:33 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 16:18:31 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Oded Gabbay <ogabbay@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        jgg@ziepe.ca, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
-        galpress@amazon.com, sleybo@amazon.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, dledford@redhat.com,
-        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
-        hch@lst.de, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <YUCvNzpyC091KeaJ@phenom.ffwll.local>
-Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        jgg@ziepe.ca, christian.koenig@amd.com, galpress@amazon.com,
-        sleybo@amazon.com, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
-        leonro@nvidia.com, hch@lst.de, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20210912165309.98695-1-ogabbay@kernel.org>
+        Tue, 14 Sep 2021 07:19:40 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: Add clk_set_parent debugfs node
+Date:   Tue, 14 Sep 2021 17:19:39 +0300
+Message-Id: <20210914141939.26410-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210912165309.98695-1-ogabbay@kernel.org>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> Hi,
-> Re-sending this patch-set following the release of our user-space TPC
-> compiler and runtime library.
-> 
-> I would appreciate a review on this.
+Useful for testing mux clocks. One can write the index of the parent to
+set into clk_set_parent node, starting from 0. Example
 
-I think the big open we have is the entire revoke discussions. Having the
-option to let dma-buf hang around which map to random local memory ranges,
-without clear ownership link and a way to kill it sounds bad to me.
+    # cat clk_possible_parrents
+      dout_shared0_div4 dout_shared1_div4
+    # cat clk_parent
+      dout_shared0_div4
+    # echo 1 > clk_set_parent
+    # cat clk_parent
+      dout_shared1_div4
 
-I think there's a few options:
-- We require revoke support. But I've heard rdma really doesn't like that,
-  I guess because taking out an MR while holding the dma_resv_lock would
-  be an inversion, so can't be done. Jason, can you recap what exactly the
-  hold-up was again that makes this a no-go?
+Define CLOCK_ALLOW_WRITE_DEBUGFS in drivers/clk/clk.c in order to use
+this feature.
 
-- The other option I discussed is a bit more the exlusive device ownership
-  model we've had for gpus in drm of the really old kind. Roughly this
-  would work like this, in terms of drm_device:
-  - Only the current owner (drm_master in current drm code, but should
-    probably rename that to drm_owner) is allowed to use the accel driver.
-    So all ioctl would fail if you're not drm_master.
-  - On dropmaster/file close we'd revoke as much as possible, e.g.
-    in-flight commands, mmaps, anything really that can be revoked.
-  - For non-revokable things like these dma-buf we'd keep a drm_master
-    reference around. This would prevent the next open to acquire
-    ownership rights, which at least prevents all the nasty potential
-    problems.
-  - admin (or well container orchestrator) then has responsibility to
-    shoot down all process until the problem goes away (i.e. until you hit
-    the one with the rdma MR which keeps the dma-buf alive)
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+ drivers/clk/clk.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-- Not sure there's another reasonable way to do this without inviting some
-  problems once we get outside of the "single kernel instance per tenant"
-  use-case.
-
-Wrt implementation there's the trouble of this reinventing a bunch of drm
-stuff and concepts, but that's maybe for after we've figured out
-semantics.
-
-Also would be great if you have a pull request for the userspace runtime
-that shows a bit how this all gets used and tied together. Or maybe some
-pointers, since I guess retconning a PR in github is maybe a bit much.
-
-Cheers, Daniel
-
-> 
-> Thanks,
-> Oded
-> 
-> Oded Gabbay (1):
->   habanalabs: define uAPI to export FD for DMA-BUF
-> 
-> Tomer Tayar (1):
->   habanalabs: add support for dma-buf exporter
-> 
->  drivers/misc/habanalabs/Kconfig             |   1 +
->  drivers/misc/habanalabs/common/habanalabs.h |  22 +
->  drivers/misc/habanalabs/common/memory.c     | 522 +++++++++++++++++++-
->  drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
->  drivers/misc/habanalabs/goya/goya.c         |   1 +
->  include/uapi/misc/habanalabs.h              |  28 +-
->  6 files changed, 570 insertions(+), 5 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
-
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..3e5456580db9 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -3214,6 +3214,30 @@ static int current_parent_show(struct seq_file *s, void *data)
+ }
+ DEFINE_SHOW_ATTRIBUTE(current_parent);
+ 
++#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
++static int clk_set_parent_set(void *data, u64 val)
++{
++	struct clk_core *core = data, *parent;
++	int ret;
++
++	if (val >= core->num_parents)
++		return -EINVAL;
++
++	parent = clk_core_get_parent_by_index(core, val);
++	if (IS_ERR_OR_NULL(parent))
++		return PTR_ERR(parent);
++
++	clk_prepare_lock();
++	ret = clk_core_set_parent_nolock(core, parent);
++	clk_prepare_unlock();
++
++	return ret;
++}
++
++DEFINE_DEBUGFS_ATTRIBUTE(clk_set_parent_fops, NULL, clk_set_parent_set,
++			 "%llu\n");
++#endif
++
+ static int clk_duty_cycle_show(struct seq_file *s, void *data)
+ {
+ 	struct clk_core *core = s->private;
+@@ -3285,9 +3309,14 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
+ 		debugfs_create_file("clk_parent", 0444, root, core,
+ 				    &current_parent_fops);
+ 
+-	if (core->num_parents > 1)
++	if (core->num_parents > 1) {
+ 		debugfs_create_file("clk_possible_parents", 0444, root, core,
+ 				    &possible_parents_fops);
++#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
++		debugfs_create_file("clk_set_parent", 0200, root, core,
++				    &clk_set_parent_fops);
++#endif
++	}
+ 
+ 	if (core->ops->debug_init)
+ 		core->ops->debug_init(core->hw, core->dentry);
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.30.2
+
