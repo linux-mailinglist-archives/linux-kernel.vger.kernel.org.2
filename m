@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C380740B5B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0176240B5B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhINRMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49032 "EHLO
+        id S231335AbhINRMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhINRM1 (ORCPT
+        with ESMTP id S231332AbhINRMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:12:27 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BFAC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:10 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id m21so56047qkm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:10 -0700 (PDT)
+        Tue, 14 Sep 2021 13:12:32 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05669C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:13 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id f22so119451qkm.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=determinate-systems.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
         bh=pGPO8aXiMyFr9xGkKJ7nDzZ1O2MpyXvL26J5zpRPMr8=;
-        b=z1zp2X5RzqK9p0okCWs5cE4c1vkO2tKU/KmTq2i36qs9/+PZvXBLLRsVJoI+AY13+d
-         kP2vMxN9Sq9xwXISzm6P0PXDrPzjl7LM/nxNIoxX38MxTBkZc4xg+KvcgXqQRToMme40
-         6y1rHUVj7VlPsx3FKEoGJCf9Bz/coUnrY5qQBeDTfJK0YOQyCaWW0Bfwmg1ZOp+3GDdL
-         ei/zac3VgZrbtbUKhP2VrfOmaRm8X0fnKyO+jVUuUHItggpbh3b2fcK1d0W8+hfsLv9R
-         mR89ikSqCc1u0sSfZOC6vxYyXl6pMcsXYOG6zAkGg+h7k9EY1PFq3TUZp5vl38PU/Y73
-         mxTA==
+        b=hk4NtdW9eKImQGzCH/9GmXuOzx+C9Vbqh+6NpITtiQgE0rg+KuwBU6pvS7CsyvlO1n
+         rYOF0vC0gap2u2GGfxdtSI44hXnL0jEdmLj270t27YYNoiXI/pR3QOGMYXGJj38FZGsz
+         Tt77CediPQ8CZbV5iIt9qNIiHhRBkNrVSm3zviQZBmAym/DhBuxaZa6/lt+VHCzOEkFx
+         S/uGfYPWEZnbQjeNK11Og6N2tduaMP+V8BSQc9v84rjSoGOtFBl9/3AtvdJFz6RLPGrG
+         uTBn14CgJuTgc6CVTB/rC0labhlt0jykpak/U2gQfdKftYDBVcQUiJT7unBkMprJwrns
+         QIHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=pGPO8aXiMyFr9xGkKJ7nDzZ1O2MpyXvL26J5zpRPMr8=;
-        b=u7ymq5p5oT44secxY4wzqcDNZIVCJxUcy8JGupkc70tNtI2zyz99JOE0osKf1HfLFz
-         flJKOOs8CChsS+DFCpcNWcWi3DhqSXxxyuZvtH34AJK5hwaGbf0QFKSaozXp1bUpKpeO
-         pqAUVyYEuJZdHUEqrQBI+VQkSBtwLSkMl53aF4+vOn0pLDpNIgsE+NW8lq2pzpCtbDCz
-         ERmzNtCjpzViHYqBdG0GLWMU3ZY/VulwR4bezGEMmLKflVRbixSwqTZHOcn6VWV7YpDK
-         1xV3ZR1SdpAtOKEIYiKNg4RGlTYCidnVq8jThQ7cQ7isfGezgs7bofO1QFlERpMOiHYc
-         ywWQ==
-X-Gm-Message-State: AOAM530FCEdVN/d/ziQzbuMzxY+gSWbt8z6VJv8roCHoTJljB7N2FC5D
-        288RXO0KVhh7IA7loPtjGYXgfAsjxk0IgylSMJo=
-X-Google-Smtp-Source: ABdhPJyX09LuIknFVVfLI/6zpiGY3O9KR+Z63SpGXMrDbqFYPBmkeqUqm2ABF1+dPeyaY28mrII7qA==
-X-Received: by 2002:a37:741:: with SMTP id 62mr6011709qkh.490.1631639469527;
-        Tue, 14 Sep 2021 10:11:09 -0700 (PDT)
+        b=xnunv8AxqxQyeFLyGWFQfxK5pxSLNj8m7IOdaRpLccEMBHmrDUEiUTafS3YCwPcSBG
+         f/oqiQzdE1E1D6gofLHfXeDdh+p5SbwA7alCrxM26KGxGjIXiMPal7QL75sKKWW6S8x6
+         sEhfkHwWm+GfPmiP816+S13kJA9zI9EyNMvbdXRFIJ3KXidkD76Q3knwjTKu/rKA0yr8
+         2nigTTLWGUU5vAzEQJ1k10mTYETRkxaolBZ3p2wgxpMSWPdx/m/P9Q+jOXIyrjFyszxT
+         IHtgcGWXqqUvJmst1D3xzxaNZ7/KjU917IitCquvLIXEfRZCkXwj93BvYAURZHNf+NBS
+         6p+g==
+X-Gm-Message-State: AOAM531h3A8S6CiR19YrdSWsfQ5R3rg213vbULPtoMP5utrnk5mMfqyg
+        orTm+7x8baEcbxxdnovUN9iO3w==
+X-Google-Smtp-Source: ABdhPJzIYBO0rohQg/SmOuz6BclTFzizLOyXSqI20jEc28Hr64Lesz2vrjXf8V05mhhxHDrcsZEyiw==
+X-Received: by 2002:ae9:e012:: with SMTP id m18mr6032913qkk.396.1631639472174;
+        Tue, 14 Sep 2021 10:11:12 -0700 (PDT)
 Received: from localhost (cpe-67-246-1-194.nycap.res.rr.com. [67.246.1.194])
-        by smtp.gmail.com with ESMTPSA id c2sm7951595qkd.57.2021.09.14.10.11.08
+        by smtp.gmail.com with ESMTPSA id r23sm6410998qtp.60.2021.09.14.10.11.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 10:11:09 -0700 (PDT)
+        Tue, 14 Sep 2021 10:11:11 -0700 (PDT)
 From:   graham@determinate.systems
 To:     graham@determinate.systems, Jonathan Corbet <corbet@lwn.net>,
         Alexander Viro <viro@zeniv.linux.org.uk>
 Cc:     Ignat Korchagin <ignat@cloudflare.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] mnt: add support for non-rootfs initramfs
-Date:   Tue, 14 Sep 2021 13:09:33 -0400
-Message-Id: <20210914170933.1922584-2-graham@determinate.systems>
+Subject: [PATCH v3] mnt: add support for non-rootfs initramfs
+Date:   Tue, 14 Sep 2021 13:09:34 -0400
+Message-Id: <20210914170933.1922584-3-graham@determinate.systems>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210914170933.1922584-1-graham@determinate.systems>
 References: <20210914170933.1922584-1-graham@determinate.systems>
