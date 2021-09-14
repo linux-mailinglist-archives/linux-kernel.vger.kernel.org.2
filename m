@@ -2,186 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7181A40A398
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9C040A39B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237647AbhINCh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 22:37:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36288 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234374AbhINChX (ORCPT
+        id S237734AbhINCkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 22:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234374AbhINCkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 22:37:23 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 13 Sep 2021 22:40:40 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A43C061574;
+        Mon, 13 Sep 2021 19:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631587161;
+        bh=NNLdb+tECq1l7xogf7Au1N/ustEDQllv2zv66oTGgyw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RxWoqC8fZvwPwEJrTLsNOSlk3DTOTx7zLVy+eV586m5Ls6i4NqwCow0eUFM/SpuMQ
+         EoAdWDY7N5bKIRYzNFJ+QvNAT5B1SfOZhhK/ifPri4SAnkkJ10e4yYMMe6i471GrHt
+         z3w1VgrWxo/xOOIUuTu2V/wSOXYmbNx9aqjCRwuEf3B9iZEXb1dAs3gapMlnAYkrp6
+         sgPCnqWA9ESkqVdkge5pMu2WnB82/IzfQcPSLWh3gFgmgggMttfiYiMgX0KBnXT9XP
+         pQ+DIMPN9wHQ2SHUjyKeHnFd0XTSRfgkba/EAvVzgr5U0pzXUh7gAih1n0NkuWpgg0
+         g2GbR4VL4MbFA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E4EDB21DDB;
-        Tue, 14 Sep 2021 02:36:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631586965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Np1b24Y1jsf4JFXb99vT1VoKvE/1uNudORwJZ2vKFkc=;
-        b=LSFcqfcpRgFTnxIQwkZmmJe5i8WfcEz6ATENYq3zy8Mt9igIghRP4XJgl57iMpRTwu3VL7
-        QcwyCrixojHmBVyyzyEijkfq4TtdGURNfAaQ4If3S8HH2xdNWzlKTywqXRWrg2cLUYIC02
-        aI6hRzXjQLSphhYMWQUymmWazx8Sw4c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631586965;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Np1b24Y1jsf4JFXb99vT1VoKvE/1uNudORwJZ2vKFkc=;
-        b=c7rLL2e4zLbiZ4/9hj+D7oO6Patx1a8luivPZ/+WDAuEi5ggAe+X5Ft+bUuKnDRjfBorV7
-        FDrEY8jjzyqeB7DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33AB513B56;
-        Tue, 14 Sep 2021 02:36:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id S0spOJEKQGHWFgAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 02:36:01 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H7nc85xK1z9sPf;
+        Tue, 14 Sep 2021 12:39:20 +1000 (AEST)
+Date:   Tue, 14 Sep 2021 12:39:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: linux-next: build failure after merge of the origin tree
+Message-ID: <20210914123919.58203eef@canb.auug.org.au>
+In-Reply-To: <20210914120818.4a102b46@canb.auug.org.au>
+References: <20210914100853.3f502bc9@canb.auug.org.au>
+        <CAHk-=whOv-LZKxBqQr8yzmhi7sN4zoFG7t8ALNx+2XFhXjGTpA@mail.gmail.com>
+        <CAHk-=whGuEkYmQcJx8WfZ7MFhbKGJDcA6NUZWtrnM6Y6xFqATw@mail.gmail.com>
+        <20210914105359.5c651d55@canb.auug.org.au>
+        <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
+        <20210914120818.4a102b46@canb.auug.org.au>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Dave Chinner" <david@fromorbit.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Mel Gorman" <mgorman@suse.com>, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from xfs_buf_alloc_pages()
-In-reply-to: <20210914020837.GH2361455@dread.disaster.area>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
- <163157838440.13293.12568710689057349786.stgit@noble.brown>,
- <20210914020837.GH2361455@dread.disaster.area>
-Date:   Tue, 14 Sep 2021 12:35:59 +1000
-Message-id: <163158695921.3992.9776900395549582360@noble.neil.brown.name>
+Content-Type: multipart/signed; boundary="Sig_/W27Rs8bNl2dBu3K5aSr+_f0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021, Dave Chinner wrote:
-> On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
-> > Documentation commment in gfp.h discourages indefinite retry loops on
-> > ENOMEM and says of __GFP_NOFAIL that it
-> > 
-> >     is definitely preferable to use the flag rather than opencode
-> >     endless loop around allocator.
-> > 
-> > congestion_wait() is indistinguishable from
-> > schedule_timeout_uninterruptible() in practice and it is not a good way
-> > to wait for memory to become available.
-> > 
-> > So instead of waiting, allocate a single page using __GFP_NOFAIL, then
-> > loop around and try to get any more pages that might be needed with a
-> > bulk allocation.  This single-page allocation will wait in the most
-> > appropriate way.
-> > 
-> > Signed-off-by: NeilBrown <neilb@suse.de>
-> > ---
-> >  fs/xfs/xfs_buf.c |    6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> > index 5fa6cd947dd4..1ae3768f6504 100644
-> > --- a/fs/xfs/xfs_buf.c
-> > +++ b/fs/xfs/xfs_buf.c
-> > @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
-> >  
-> >  	/*
-> >  	 * Bulk filling of pages can take multiple calls. Not filling the entire
-> > -	 * array is not an allocation failure, so don't back off if we get at
-> > -	 * least one extra page.
-> > +	 * array is not an allocation failure, so don't fail or fall back on
-> > +	 * __GFP_NOFAIL if we get at least one extra page.
-> >  	 */
-> >  	for (;;) {
-> >  		long	last = filled;
-> > @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
-> >  		}
-> >  
-> >  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
-> > -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-> > +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
-> 
-> This smells wrong - the whole point of using the bulk page allocator
-> in this loop is to avoid the costly individual calls to
-> alloc_page().
-> 
-> What we are implementing here fail-fast semantics for readahead and
-> fail-never for everything else.  If the bulk allocator fails to get
-> a page from the fast path free lists, it already falls back to
-> __alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
-> there's no need to add another call to alloc_page() because we can
-> just do this instead:
-> 
-> 	if (flags & XBF_READ_AHEAD)
-> 		gfp_mask |= __GFP_NORETRY;
-> 	else
-> -		gfp_mask |= GFP_NOFS;
-> +		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
-> 
-> Which should make the __alloc_pages() call in
-> alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
-> provide the necessary never-fail guarantee that is needed here.
+--Sig_/W27Rs8bNl2dBu3K5aSr+_f0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That is a nice simplification.
-Mel Gorman told me
-  https://lore.kernel.org/linux-nfs/20210907153116.GJ3828@suse.com/
-that alloc_pages_bulk ignores GFP_NOFAIL.  I added that to the
-documentation comment in an earlier patch.
+Hi all,
 
-I had a look at the code and cannot see how it would fail to allocate at
-least one page.  Maybe Mel can help....
+On Tue, 14 Sep 2021 12:08:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> That patch works for me - for the ppc64_defconfig build at least.
 
-NeilBrown
- 
+also allnoconfig, 64bit allnoconfig, pseries_le_defconfig and ppc44x_defcon=
+fig
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/W27Rs8bNl2dBu3K5aSr+_f0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> 
-> At which point, the bulk allocation loop can be simplified because
-> we can only fail bulk allocation for readahead, so something like:
-> 
-> 		if (filled == bp->b_page_count) {
-> 			XFS_STATS_INC(bp->b_mount, xb_page_found);
-> 			break;
-> 		}
-> 
-> -		if (filled != last)
-> +		if (filled == last) {
-> -			continue;
-> -
-> -		if (flags & XBF_READ_AHEAD) {
-> 			ASSERT(flags & XBF_READ_AHEAD);
-> 			xfs_buf_free_pages(bp);
-> 			return -ENOMEM;
-> 		}
-> 
-> 		XFS_STATS_INC(bp->b_mount, xb_page_retries);
-> -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-> 	}
-> 	return 0;
-> }
-> 
-> would do the right thing and still record that we are doing
-> blocking allocations (via the xb_page_retries stat) in this loop.
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
-> 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFAC1cACgkQAVBC80lX
+0GyFpwf9G08XKB33hmCsxFax7/TDrvGw4LjQgaGMmSAGRyoNbUfaQDKufP6jlej4
+w+ZJt8Dulpbi8y9gczXXtbwT65gU8jjK8M67ufP76UL+GJ5fcSqx6hwA8yq0RV2/
+t5HaQd83VM+PzVpSsiAcqOhMntuZrbz3wIieqGgytFUKUKtpA2MfBSsH4zm2pD9X
+uw/LtGyjsCk39CIMRBbeKxBbtMcrOaxnW/Q2JK5XEyTIT9LSInuHehh/xXQ9+I3d
+Bnz9JabAJKl3ke5GkRX/pq97oenQNx1J0udAaztYdbeGg+me96aNohEPZkITLl5S
+AV6jJUq3ruoETgb85CFKIjVoiij/kw==
+=N9Ki
+-----END PGP SIGNATURE-----
+
+--Sig_/W27Rs8bNl2dBu3K5aSr+_f0--
