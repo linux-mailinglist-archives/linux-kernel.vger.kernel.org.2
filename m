@@ -2,136 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1301440B8B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307E740B8A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhINUJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhINUJG (ORCPT
+        id S233358AbhINUD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:03:59 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:55231 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233096AbhINUD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:09:06 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D84C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:07:48 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id a10so780990qka.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:07:48 -0700 (PDT)
+        Tue, 14 Sep 2021 16:03:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631649760; x=1663185760;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=B0UMm8IYSKkU3zq8nRN/jPinCiWgJb/OJbFbrpIipBw=;
+  b=cqDAfpifGqt1G7MuCtIxJnycfupn4BmRgzP7ELusYHcITVnvUXJRN2Fn
+   3HkRphZdLEogGUzEJC3ncvm8c2ryd4DJopdA1Xod5s3akfVy6yISFUk9U
+   uIm5UUYdXQf1vkuzZ9sMffF3FTvOSMXj6E3suBMi+fnLM0+51JK4Za94w
+   4H70CPL7FUfI7UapG+iuiE/juIwde83CalteZGQrsFdutzOYKu72oTnoN
+   qZc+2WGSDVRaBcu73G6XBcH793zVtiFnhVotP8xcCsvPHRj/vrqQ9Lcsr
+   ldJiX9IPIJk9gM6+TZdkCIOkp9fgQEFbTmbBR4HUs+YlxYBZor4GYtysG
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,292,1624291200"; 
+   d="scan'208";a="179079914"
+Received: from mail-dm6nam10lp2106.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.106])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Sep 2021 04:02:39 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tk6r/c5s5Hz/jqgzec80YViwpS0UXsKTuWodvNMmpnq0UiDnFnqZhlyP152HeO2Pno1ZhQgG1MX7kBxAgTSWSNitUVLPTS/5V8tkz+JoTfZ9eRJdZLJG7q8sahZDsPjisf0j8An2Z5WXTlilUKkYY8sFgsXRA/N+HW4ZG2+JMn+BLPGpoDAuS9gV3jznREVhr0b+N8PgRnz8ZSeJNTl+12PzMmJ8MxctC0cnWBve/NGWnVjSojGBMQXVRh1W3vpbQ4wjTTCXBgQwvFqxReI3YEzCKeS64xfJwLUYn+lrSK4po8EhmGHA+gO5cf2/z3bm8dfZ8NCvkt7FmuTz6JtpYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=THdvLxjFaUfAgqXnIeNfeBczORruHqHqL+xMhz80Lcw=;
+ b=bbpPd5eDZMTSgrXw0wvjaB4H/XvXdDyW9s7dY132HSXbDnOa6cc2cXlW5ZDlmx31gwiVQk8W2Et4xAC8VUi4OT2rmSRETnPYCbVKMoZ7308IPmhNJvVqjzq9bQExh800DZjm7I5u4tH0AEO0fbIFtY7c36juQcwhvxOoya5vaMn5iBeOzgeu8hcq6QO6nkq+qP1rEraF29rDFMrvjR1IUS/+dOmhtyzrITNIq2PrsuKRL2YSguTbhENlaCzPFbeRXNQm52RL3/mB5m77chnBx+5p+wTD/8aSxSIBO58EGZ2kw1wBxeJLwc9VBhiVYOr4n4Yj7yIiVs8KC/3M5lWeNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2K42Cco3VEzvh5/q/0m2XAwxpLXefoWzF9vdOC1B4Gw=;
-        b=BJhND6MG+JUZihcXSCVNsVkdDkscbXLe8kths9jHgjS4SLgYrqGaQp9OPqfXejdGA/
-         ZIntkKlQZztXJwl/c/22qlX12SBrSu9xI7kd5YDbYcDWkLHLSQisKoAr972kYDUnT241
-         jPCyXtIrFjVVOZz3sqJrKkZeNMO/myXFIEVEc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2K42Cco3VEzvh5/q/0m2XAwxpLXefoWzF9vdOC1B4Gw=;
-        b=Lemw6+bSl4nsvf1RDQ5bf4f7qX3ruhhCcCytMj8m8xRg8JADYmxHGKIkQ8sI1lvQpi
-         tCYGnAIZR0mheOGiQMBljuECskEdHiIAIVXnl4OPJGWKgLMnzLpgitr4Qyx/uI1SiU7G
-         WDTOEtvxrhZRfncsaroRw3NWEBm+l/eOkteFbHB8gxsPlOTxR3Lr7QtakO5+MdXetBMt
-         X6ikFIVxlpT7Bq5YK3WR+aV8P561CtWDyZxTclBYyyy6BtQMGTjPt7YhtEflzB1UumZ4
-         UnqVOCtTpv1uBvSwn09zrU+X/35Mo6ph/VhVoofu05qYSSYq4hxQj4PnMLDkzjNceDB4
-         hs1g==
-X-Gm-Message-State: AOAM5337CfrEHWU/y5E91goZY0s7i9IJP/ICZvR9xoOT3h3HKL+PFv82
-        2dgGcV6v1ZwXfc4WmO1a3/5cI4sfEUKAzg==
-X-Google-Smtp-Source: ABdhPJzrx5Bk5WIdkB2N5adsGPsAFCOof8sE3XmBcbxXDGTdzNkLvxiQiBzGrLuTH0Z8V8dqaDFHNQ==
-X-Received: by 2002:a37:741:: with SMTP id 62mr6768249qkh.490.1631650067422;
-        Tue, 14 Sep 2021 13:07:47 -0700 (PDT)
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com. [209.85.222.175])
-        by smtp.gmail.com with ESMTPSA id v14sm8296004qkb.88.2021.09.14.13.07.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 13:07:47 -0700 (PDT)
-Received: by mail-qk1-f175.google.com with SMTP id y144so825558qkb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:07:47 -0700 (PDT)
-X-Received: by 2002:a05:6638:dc8:: with SMTP id m8mr16281460jaj.93.1631649751964;
- Tue, 14 Sep 2021 13:02:31 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=THdvLxjFaUfAgqXnIeNfeBczORruHqHqL+xMhz80Lcw=;
+ b=bDp3obzTcraxCtJqpqL7jZ15Lcpa2iYYzf0BXq8pEuujLyoO7hGcblSw6zMVtSV8qULSblxMQeN1PHWtC8Zca9nYb24jbv8psTbxy6FbF0JD+a+NWfgDQVzS3CstbeJpI+tNa7NSqKaXUgf07zO40RRwmrd0ZbLFW0O9mpbWBHY=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB5081.namprd04.prod.outlook.com (2603:10b6:5:fe::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4500.14; Tue, 14 Sep 2021 20:02:38 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::edbe:4c5:6ee8:fc59]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::edbe:4c5:6ee8:fc59%3]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 20:02:38 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bean Huo <beanhuo@micron.com>
+Subject: RE: [PATCH v5 1/2] scsi: ufs: Probe for temperature notification
+ support
+Thread-Topic: [PATCH v5 1/2] scsi: ufs: Probe for temperature notification
+ support
+Thread-Index: AQHXqTVBrRkhJGwiQEK7GP2aT950iaujnFsAgABXVkA=
+Date:   Tue, 14 Sep 2021 20:02:38 +0000
+Message-ID: <DM6PR04MB657572A17D9E6F8FCE3F7A69FCDA9@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210914065320.8554-1-avri.altman@wdc.com>
+ <20210914065320.8554-2-avri.altman@wdc.com>
+ <20210914144706.GA3457579@roeck-us.net>
+In-Reply-To: <20210914144706.GA3457579@roeck-us.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: roeck-us.net; dkim=none (message not signed)
+ header.d=none;roeck-us.net; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 487f59d4-167a-4d7b-8f5b-08d977ba9a58
+x-ms-traffictypediagnostic: DM6PR04MB5081:
+x-microsoft-antispam-prvs: <DM6PR04MB5081D1C5DB11FBBD90349065FCDA9@DM6PR04MB5081.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2582;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SmlVrRTvJa9Q86jsKIrWSsq55pwBwDA90hemEjuAOGdct4+8tHjoKSxX26FcMYqpU/gJJ/WEHeGYc3W0GV4D6367n0+0knG241fKyPUpHg02Ls5lcvkRS7CTqXDYX+AewqEZ3Upn1whQTDwmtUT0HkAt1GwAbcYMIP4xstggWt1L7n2/288V9zNUEYCRJwehZ/fh2LtWxMkRG8zi68YbHhjJXvsGvnfSOqoDGoMe1tiEIK/G/YkZFMM07Gq78EZRlDsRtBkgCJEzx21HF/rBwXJLq2uLiis7X0lrp2f3oBAXQ348jDZYKP2h9rCcxygx1oh1cIHkOfjH9w7jenotwabBFZk0BBn941TUxNvA5cUq9yJczYLXDmCmWUutQXTN3JLhASLxuBxlCsXdSO59r3q3CsWc/GEMFxj2kCxMmsL4tjEqa05aHDvqhYPZ0BxhVGT1PunKhEDNwOZ9pt3+7WbDCv0kfkN4XpZ0VBX2HGL1ysz0/QLkJF9DpF35CgPorCM71JHn1ephJHnevyS3VnNAAFIYW7tA9nWKzrVKVU6fVKleNpy1AMu/GfMEl9Jf6SiaXGtPnn2cGSRMzxqkXrJHR+MjKdES1soDCGKHqHTG5M9qnbK8zN9tuixxny92lUSxZSVGTRLJn2DB2mQYP3sxMh2LjP/LTHPdSJvrOGh4WQ57376eGnpdM/R5RcFsFiAsvB95b7zNaqShJ5FaDg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(76116006)(26005)(38100700002)(33656002)(9686003)(54906003)(5660300002)(66476007)(52536014)(66446008)(86362001)(71200400001)(6916009)(2906002)(316002)(8936002)(83380400001)(8676002)(7696005)(55016002)(64756008)(4326008)(122000001)(66946007)(6506007)(186003)(478600001)(38070700005)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CEXWo5hg4vYg+4/pV26VS/sAXHwqVaSuyvaTfaIUpr7OgNkBwnr841Y/YNQ9?=
+ =?us-ascii?Q?mvsh9eB81WOHC7g0Wairpu3U/BeL7HY8hfCKOfplUiYHIyNeMEFoqy1rpypr?=
+ =?us-ascii?Q?Z3JIimOlf5t2cwEkaBAUJgsuz5jgtfDMM6ucncvE35r3DxgiOeGgxp5zV2g1?=
+ =?us-ascii?Q?QSBQYepJdz7yipph3hm8f4FqFLHXJ81LbWiNM/NfnULjR4Cy+baOVe0IWKu4?=
+ =?us-ascii?Q?Ii4/xMbZMJ1CszLobxdm0FFNU1II5Ip4QgC6KvwfnEHS8P9bH5MAz/gKMTrg?=
+ =?us-ascii?Q?w03xF2xX4ytPiFbnzoPcQnenOz9rS1/rP2zeAyIclKW04ZKZGABWLEkYOPoV?=
+ =?us-ascii?Q?Nwgzf1fh/TuDfXEw8hsl+L+EJ1Hf2p+tDfehJt5Ik9CZ6q+JttV5+/ZttVlL?=
+ =?us-ascii?Q?jgxZtFbYX67+GGv+wQWOmnNYLtaaCVNWBXpCb4ruFx8YpGX2+tsMoUuHsdrz?=
+ =?us-ascii?Q?ap/21uhEBrahOvTcxBQI+GjSXN/RmIA1lpsUsunBCExTtubTtK0neWrwBv2R?=
+ =?us-ascii?Q?USFnmXW4ofw1Bzzfzn1bZWZzZJ2cpwPR3/GPNqNywAKaDJudY5sb/bLQvJxi?=
+ =?us-ascii?Q?tOqiWQohRlzkeMQ5D9tQFrDVW/X7bbJY5kbxKQyw4mxRSN2suC4/1GKk/ppf?=
+ =?us-ascii?Q?AFkPWjzZgaDtpmWrMt7NqO81iWeCkpj2ItVwmHn9SxvG5Dx5oZT3f+v4HdxO?=
+ =?us-ascii?Q?vQUwbld1lmdKjae4DzUfY4J9pW0Jnx3+WoipekTMejEnWewjZ6df/I6v6zzK?=
+ =?us-ascii?Q?bTKxYXltsGlsuY9yBP4y6174EPQI3lpaJ8vMKAXVMA8YS+CzpeER53ZlRLYS?=
+ =?us-ascii?Q?oaHg0K5CKBxSnaWUG6NVI1sdvMMKM/5gOGJ96ZhX6vUNFkn63JMpm+DARUt0?=
+ =?us-ascii?Q?80yGq6dPhUr+dkDMU7P2TP4J7GTjCKEBErUO9df0ejX0SJs4mXme3u0d4wcf?=
+ =?us-ascii?Q?PstvI2mz7dtVTUiCDYRH2+8Cs8j6mevS8kDAdoqaZTgTyuhNycQEEGsXFLXU?=
+ =?us-ascii?Q?SDNuT5JLNwL3r1YthUxsEpim6uhvqrdXudmJYfhjd3Da60LbWX/4hFUZV0SV?=
+ =?us-ascii?Q?bcpsZxPfi/rkCoz66wzDNxT9JazV/CVz+/ZInLhFrX0veVuIPbHrQHr31a1U?=
+ =?us-ascii?Q?hIXH5GPwekYEIXA9HpyWuYXQmcwNppMtBXLxWZzaQVeO1NUajrvlodjz1hCG?=
+ =?us-ascii?Q?o/IrVEuN4N9NPs1ZFtw02DkVgcT+GkrGe32mnGjU3eqs8KsT204Nz+zsLOtu?=
+ =?us-ascii?Q?uizbU8+RlIz9v1HOc+sGmiTn/O/AZTzuoQAxIHNr4AjraPl8j24p+AmZwYy4?=
+ =?us-ascii?Q?bj/ELhzejXkjGum+ArZPaPY6?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210909210032.465570-1-dianders@chromium.org>
- <20210909135838.v4.4.I6103ce2b16e5e5a842b14c7022a034712b434609@changeid>
- <87ee9r10qw.fsf@intel.com> <CAD=FV=XgLcOBOOp9kgShE4+T8g8UZcO_Ff3hhAbGTyLkdE7HNA@mail.gmail.com>
- <CGME20210914185943eucas1p145cf1b087572ec1c4da1f1e269c6f11b@eucas1p1.samsung.com>
- <87y27zyodw.fsf@intel.com> <5af6cd50-0ed3-1a70-d7d0-66ca18a83d65@samsung.com>
-In-Reply-To: <5af6cd50-0ed3-1a70-d7d0-66ca18a83d65@samsung.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 14 Sep 2021 13:02:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XHvFq5+Rtax7WNq2-BieQr-BM4UnmOcma_eTzkX2ZtNA@mail.gmail.com>
-Message-ID: <CAD=FV=XHvFq5+Rtax7WNq2-BieQr-BM4UnmOcma_eTzkX2ZtNA@mail.gmail.com>
-Subject: Re: [PATCH v4 04/15] drm/edid: Use new encoded panel id style for
- quirks matching
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 487f59d4-167a-4d7b-8f5b-08d977ba9a58
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 20:02:38.5727
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DqOdAKXcydMzOQoebakjtjHkoVAZ5xLCsfXjhQ86V4M2Hlo9lLTUCwhi266k2bbFhz1Si1StH3roMioTZakzwg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+> > +static int ufs_read_temp_enable(struct ufs_hba *hba, u8 mask, long
+> > +*val) {
+> > +     u32 ee_mask;
+> > +     int err =3D 0;
+>=20
+> Unnecessary initialization
+Done.
 
-On Tue, Sep 14, 2021 at 12:36 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
->
->
-> W dniu 14.09.2021 o 20:59, Jani Nikula pisze:
-> > On Tue, 14 Sep 2021, Doug Anderson <dianders@chromium.org> wrote:
-> >> Hi,
-> >>
-> >> On Tue, Sep 14, 2021 at 11:16 AM Jani Nikula
-> >> <jani.nikula@linux.intel.com> wrote:
-> >>> On Thu, 09 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
-> >>>> In the patch ("drm/edid: Allow the querying/working with the panel ID
-> >>>> from the EDID") we introduced a different way of working with the
-> >>>> panel ID stored in the EDID. Let's use this new way for the quirks
-> >>>> code.
-> >>>>
-> >>>> Advantages of the new style:
-> >>>> * Smaller data structure size. Saves 4 bytes per panel.
-> >>>> * Iterate through quirks structure with just "==" instead of strncmp()
-> >>>> * In-kernel storage is more similar to what's stored in the EDID
-> >>>>    itself making it easier to grok that they are referring to the same
-> >>>>    value.
-> >>>>
-> >>>> The quirk table itself is arguably a bit less readable in the new
-> >>>> style but not a ton less and it feels like the above advantages make
-> >>>> up for it.
-> >>> I suppose you could pass vendor as a string to EDID_QUIRK() to retain
-> >>> better readability?
-> >> I would love to, but I couldn't figure out how to do this and have it
-> >> compile! Notably I need the compiler to be able to do math at compile
-> >> time to compute the final u32 to store in the init data. I don't think
-> >> the compiler can dereference strings (even constant strings) and do
-> >> math on the result at compile time.
-> > Ah, right.
->
->
-> What about:
->
-> +#define drm_edid_encode_panel_id(vend, product_id) \
-> +       ((((u32)((vend)[0]) - '@') & 0x1f) << 26 | \
-> +        (((u32)((vend)[1]) - '@') & 0x1f) << 21 | \
-> +        (((u32)((vend)[2]) - '@') & 0x1f) << 16 | \
-> +        ((product_id) & 0xffff))
+>=20
+> > +
+> > +     err =3D ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+> QUERY_ATTR_IDN_EE_CONTROL, 0, 0,
+> > +                             &ee_mask);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     *val =3D (mask & ee_mask & MASK_EE_TOO_HIGH_TEMP) || (mask &
+> > + ee_mask & MASK_EE_TOO_LOW_TEMP);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int ufs_get_temp(struct ufs_hba *hba, enum attr_idn idn, long
+> > +*val) {
+> > +     u32 value;
+> > +     int err =3D 0;
+Here as well.
 
-Wow, I _swear_ I tried exactly that syntax, but clearly I didn't. It
-works great and it looks _sooo_ much nicer now. Thanks! I'll send out
-a v5 shortly with this.
+> > +
+> > +     err =3D ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR, idn,
+> 0, 0, &value);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     if (value =3D=3D 0)
+> > +             return -ENODATA;
+> > +
+> > +     *val =3D ((long)value - 80) * MILLIDEGREE_PER_DEGREE;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int ufs_hwmon_read(struct device *dev, enum
+> hwmon_sensor_types type, u32 attr, int channel,
+> > +                       long *val)
+> > +{
+> > +     struct ufs_hwmon_data *data =3D dev_get_drvdata(dev);
+> > +     struct ufs_hba *hba =3D data->hba;
+> > +     int err =3D 0;
+>=20
+> Unnecesaary initialization
+Done.
 
--Doug
+>=20
+> > +
+> > +     if (type !=3D hwmon_temp)
+> > +             return 0;
+> > +
+> > +     down(&hba->host_sem);
+> > +
+> > +     if (!ufshcd_is_user_access_allowed(hba)) {
+> > +             up(&hba->host_sem);
+> > +             return -EBUSY;
+> > +     }
+> > +
+> > +     ufshcd_rpm_get_sync(hba);
+> > +
+> > +     switch (attr) {
+> > +     case hwmon_temp_enable:
+> > +              err =3D ufs_read_temp_enable(hba, data->mask, val);
+>=20
+> extra space before 'err =3D'
+Done.
+
