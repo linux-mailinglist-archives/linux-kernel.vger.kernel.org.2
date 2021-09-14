@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A8C40AF9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CDC40AFA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbhINNxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232420AbhINNxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:53:35 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB08C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:52:18 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id r2so12761676pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m05pyjIx36bCyATYdVUgvIAee/hjT8Yiwdj2jgWsHuY=;
-        b=YKfEsXnLvnOFhX1xWK7ivgxjYMuagNacVuAZqb62a6x0Du2KWQpx9g0BXXWd1r2VsY
-         c2iRZM+8W/3Ru7thtUTdQ3RA8gZf0wgG0HQn/CH3tkVF3PhsFSCJu8DwFv1xNI+4q4Of
-         xuQJKpaOFSh92nm0nGjyMYr+ig8iurMBvqKMweG8PEkEH7vPuTVmmVxfk4HcvW5gAYhM
-         iF0Dw5u/vxycJTzpvjsFkBGyyksPS/heYo2s5hFN3+dpgZmv/uic7IfNUWMyhw43Gf2L
-         iUabrMbCsFIH2/AUtJ2bJsY/Lm/GrgQJtBXvZR+OBKg7/yib+W08JyRNsVsBX0lcqOXC
-         djAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m05pyjIx36bCyATYdVUgvIAee/hjT8Yiwdj2jgWsHuY=;
-        b=ygiI1S20EjhmqAxNCvGG2y6QbTFlLAOGY8JX+xpXYtXrOgafVLfjvvXd4ZdXTghMNV
-         X3GEUYgS1SsE+05r2tczPupN3OXdYLwWubEG8YVXG+Dc4q/MhImc+D5/uKozyBBCWohq
-         Juffgcv7s2F5B0fJUqUnXYfOGsNodBdYhuyEoyDoTDu/vpeEZ4XkVBu2/9h3bMQolTxD
-         qpBLCoELLqUn1/0ywu+XLwsqW0yx7miKUbXxcr38PAhlSfwuZD7yD021BFEZP02TowFD
-         YYsr0PgQnPCif2B+XlyQfkzA3IqCFtnhzQDMD4OqtiuAIGBT6C49xvusFZaazRUWslSE
-         1dSw==
-X-Gm-Message-State: AOAM5313syoD68sxVehN4c1oOjf+VhQ6vsd/Z0ql07EH6M/TGD7bxuxv
-        ckmkeuZ3gJ4DBQ2JWTqRuGA=
-X-Google-Smtp-Source: ABdhPJxaeIvPbR+IGON/k2EuUxVQZddP2muV5KT7LDNaeIOsHCJE0L5BNNlFZfww2mWD651N7AHydQ==
-X-Received: by 2002:aa7:8014:0:b029:3cd:b6f3:5dd6 with SMTP id j20-20020aa780140000b02903cdb6f35dd6mr4963213pfi.39.1631627537791;
-        Tue, 14 Sep 2021 06:52:17 -0700 (PDT)
-Received: from shinobu ([23.82.194.94])
-        by smtp.gmail.com with ESMTPSA id g16sm11188181pfj.19.2021.09.14.06.52.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 06:52:17 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 22:52:12 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        David Lechner <david@lechnology.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [iio:testing 40/43] ld.lld: error: undefined symbol: __udivdi3
-Message-ID: <YUCpDDkNSqhlaThq@shinobu>
-References: <202109120656.fiJqCh8H-lkp@intel.com>
- <20210914134103.00006d23@Huawei.com>
+        id S233217AbhINNyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:54:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233319AbhINNyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 09:54:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A3DB61107;
+        Tue, 14 Sep 2021 13:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631627577;
+        bh=BpjP19V1GArx35KplyxcS37xjhXHSaC39kHOiHZJM7I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilOvo0fbU/Cd2di+m1iZcwJ9EuMRdLFoQa58d4eGEYAEX6TpEvHx9XIJfwkDw55Ff
+         CSm6YzYsZiNo7GG3qze7OVv2xZF2MxNGSMtxTJ3xnSL0+QX+kgjwwT2T6FuUbYViFy
+         Sot2TI1Uo1LEp1sQVvnWXnSwbF21ca4rEHC6KGFGUWMRkaZqQiWfJz1cmju8Fi+9YC
+         dlox4kSn+dTRSasQtodrl97Unrii9wFoLSBYej20ILHU1c8M3yNEfj6wWfPlyKwK/f
+         kCTWWVclQPzl9gWcM3maVJD6KdzBMZVcOFeQRKdqi5/mK7179vzlIb2ZxDK82sGjjQ
+         cD9/Y+YKZ1a7w==
+Date:   Tue, 14 Sep 2021 14:52:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Stephen Boyd <sboyd@kernel.org>, alexandre.belloni@bootlin.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ludovic.Desroches@microchip.com, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, o.rempel@pengutronix.de,
+        andy.shevchenko@gmail.com, aardelean@deviqon.com,
+        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan.Cameron@huawei.com, linux-arm-kernel@lists.infradead.org,
+        a.zummo@towertech.it, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, wsa@kernel.org,
+        thierry.reding@gmail.com, kernel@pengutronix.de,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        Claudiu.Beznea@microchip.com
+Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
+ devm_clk_get for prepared and enabled clocks enabled clocks]
+Message-ID: <20210914135217.GD4434@sirena.org.uk>
+References: <20210728204033.GF22278@shell.armlinux.org.uk>
+ <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
+ <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
+ <20210802094810.GJ22278@shell.armlinux.org.uk>
+ <20210802152755.ibisunvibmwhiyry@pengutronix.de>
+ <20210802163824.GK22278@shell.armlinux.org.uk>
+ <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
+ <20210803104012.wf2buscbukxufesl@pengutronix.de>
+ <162820957661.19113.17221558053361108175@swboyd.mtv.corp.google.com>
+ <20210914132256.5ucytcfmk3sjn2vi@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ktaNQ2IAKnYoYMdX"
+        protocol="application/pgp-signature"; boundary="zS7rBR6csb6tI2e1"
 Content-Disposition: inline
-In-Reply-To: <20210914134103.00006d23@Huawei.com>
+In-Reply-To: <20210914132256.5ucytcfmk3sjn2vi@pengutronix.de>
+X-Cookie: This space intentionally left blank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ktaNQ2IAKnYoYMdX
-Content-Type: text/plain; charset=utf-8
+--zS7rBR6csb6tI2e1
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 14, 2021 at 01:41:03PM +0100, Jonathan Cameron wrote:
-> On Sun, 12 Sep 2021 06:43:58 +0800
-> kernel test robot <lkp@intel.com> wrote:
->=20
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git t=
-esting
-> > head:   77a4a019161bcba51af1dbbeadc04795840fb3e0
-> > commit: f7da4339ca510e4476ea35cb9fd44f3f190706c5 [40/43] counter: Inter=
-nalize sysfs interface code
-> > config: i386-randconfig-r022-20210911 (attached as .config)
-> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 26=
-1cbe98c38f8c1ee1a482fe76511110e790f58a)
-> > reproduce (this is a W=3D1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
-bin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git=
-/commit/?id=3Df7da4339ca510e4476ea35cb9fd44f3f190706c5
-> >         git remote add iio https://git.kernel.org/pub/scm/linux/kernel/=
-git/jic23/iio.git
-> >         git fetch --no-tags iio testing
-> >         git checkout f7da4339ca510e4476ea35cb9fd44f3f190706c5
-> >         # save the attached .config to linux build tree
-> >         mkdir build_dir
-> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
-O=3Dbuild_dir ARCH=3Di386 SHELL=3D/bin/bash
-> >=20
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >=20
-> > All errors (new ones prefixed by >>):
-> >=20
-> > >> ld.lld: error: undefined symbol: __udivdi3 =20
-> >    >>> referenced by intel-qep.c:290 (drivers/counter/intel-qep.c:290)
-> >    >>>               counter/intel-qep.o:(intel_qep_spike_filter_ns_wri=
-te) in archive drivers/built-in.a =20
-> This is a result of a change to passing in a u64 instead of a string.   I=
-'ve applied a fix
-> that uses do_div() and pushed out as testing again.
->=20
-> William, please sanity check that fix looks right to you.
->=20
-> Thanks,
->=20
-> Jonathan
+On Tue, Sep 14, 2021 at 03:22:56PM +0200, Uwe Kleine-K=F6nig wrote:
+> On Thu, Aug 05, 2021 at 05:26:16PM -0700, Stephen Boyd wrote:
 
-Your do_div() change seems sane to me; would div_u64_rem() work here as
-well, or is do_div preferred because we're not using the remainder?
+> > This proves why this topic is always contentious. It's too easy to
+> > blindly convert drivers to get the clk and leave it enabled forever and
+> > then they never use power management. The janitors win and nobody else.
 
-I'm CCing Jarkko Nikula as well to keep them in the loop.
+> If the janitors win and nobody else looses anything, this is fine for
+> me. And if in the future someone turns up who cares enough to improve
+> the converted drivers to a more efficient clock usage, they will
+> probably not stop their efforts just because then the driver uses
+> devm_clk_get_enabled.
 
-William Breathitt Gray
+The patterns that concern me are people either blindly converting to
+devm without checking for other usage and causing problems as a result
+(some of the janitorial stuff is done very mechanically) or thinking
+it's important to keep devm_ used (or not thinking through the
+interaction) and trying to do that while doing something more active.
 
---ktaNQ2IAKnYoYMdX
+--zS7rBR6csb6tI2e1
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFAqQIACgkQhvpINdm7
-VJLmQA/+PdmN9VE1QBJp2e3T0shwh/MrS5hMTfj9o8GCbtCgDVnFkiXfIbrG7elx
-8KKSy+KROs54WFGkp0alWLd4U8ocZjckwg+2Y+z1XzSyk39Df7VGlx3O147maHrX
-SwlxZPZqeZbftuahhn6k+KRFo36ZhkjbLQNdhdaUtu357Y2EFBTIm3aZfh5yi1FS
-4+zrLCVwgJQSzRg0mwdO1Btb53d2n/L6gbdeZcpoGZugEuPBXNbdszTvc4J+jnj4
-IupbEPAGgdK+oC7kyVMTBkLHTrH8tRQWwX48XCUVYsJ+yjQ1s7/ghDCLlaOa0nvV
-9ZMMqN2rWUaq9bs1dKRcsRGHksAWyC0RPtcc7CX21UF5776fNL+k5OySlbGBXrUt
-GCuoAoP2qkItHTDplnho3nJ12Nxv/DL8029LUarzdlpU9JYJFvDqRcLz21ClpU8Y
-ltfaAL544f8V3awyxRVtekfxX9gm3yE50ugYHj+bmw5Mzshw6oyKhUpW9Hw553Xt
-v8CuDSxemllkMpK0bHAqUVcErxIFMAH5DSJYq9mV64LrW920oxvvTI7kjuWHR00i
-m78+bvQTBIfW2X246+aGsWzwUKsCXhrRE0sjRlkxnFY/nKD6TxJqXwrMA47ryHQm
-jZK7UNvsu2tWlU28Y72Sdhh3mHG/KyxH8we7RKXNyg0tsIz/11M=
-=tOCE
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFAqRAACgkQJNaLcl1U
+h9AgDQf9FaB8NN9SPJzY87JQf0rdn7s4PizKVF0601355cdJqe1ogFgZalaw7hLc
+hxn4RRKTRGv8Yxrjt3am15H5/DUZillCg/bkxDlq2/Vdi3VmRSjlqdKANc/+WMj6
+nADV3B/yorQB1Mcy49EvaL4Y9vhYTeF+kwj7z8ijkCt/zregcfuuhZ8xiSveKGaa
+sfsKJlJvSbjbKEp3CPtFj+dqRpKUb55+FKR1z/tH6XKZf1dtYP3ORTCbQxk3DEE4
+ROe3jakuTEWrrbh8sPtplaviMX8fuLKs2qBP70r3/EGtpoAQDbBgj6fhUJud3vcy
+b9UCVUtYXiOVzuAC6+7b4iuXNbjzvQ==
+=zaar
 -----END PGP SIGNATURE-----
 
---ktaNQ2IAKnYoYMdX--
+--zS7rBR6csb6tI2e1--
