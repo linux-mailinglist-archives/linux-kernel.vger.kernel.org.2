@@ -2,214 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB2540B462
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1442540B45C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbhINQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S229728AbhINQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhINQUY (ORCPT
+        with ESMTP id S229526AbhINQT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:20:24 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8718FC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:19:07 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m16-20020a25d410000000b005ab243aaaf4so13530723ybf.20
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:19:07 -0700 (PDT)
+        Tue, 14 Sep 2021 12:19:27 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21539C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:18:10 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y18so17888397ioc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Ruv7ezEWWdUTVVZLqSe78q272b/bMY/ySC1JyxSYFiY=;
-        b=kSQFla5goeALrlJJglGShYI58OnYi8n8lNeZAQmsyOVFVcov0bfzPiR4j7C7zcM7Xw
-         yF4vcfBZIj4YlKKiz0Hw8BAS0s7Aw82FbD2l7aicpd9Z9Xn4w+Rf7jz//DiZNgyQ+sgc
-         ultxKeOLXVO/N6+ptCKiVQZQ7oFt/xiGP45U58XxuOp/yeCVMldlIzrFjmTfuoMhSdid
-         bxGeZicGy2KfLRgi3u/cs8umaU5WfRH3SS8G7vy8Odqm3X+LkM697vxJXc0PVbxl2E3A
-         ggv9l1lSvl2CRvTa1l6vH0h0iYrnO52Y1T8A8e77o6taqG1n5XS23SNvNMXGHBPk4n2b
-         dp7g==
+        d=engleder-embedded-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RZGtX95KhDg6cOU6Ei2dCC/slYztCW/EyX0L9hAZFtM=;
+        b=ZJsotc+H2nYSr7+EQJ92nPpKJeN4hqtXVJ6wQN+VAhtNvYFgslAz+2Nbyj1loKz6R7
+         SfsLj04uR8i5G+ZMADV5pyLYwkiGM+CjVhrlhBHoFdat39xj7pnU+wi3kQnXL8/nCAnS
+         +ZmhHZVVTqvhSShkKo9FqC6kwBOagzOoEHdjPMXwZXSDPxvTXW9MhrXBpXfAwG9dWDyE
+         xecfpYKkXymSnbEajHYkUAulnlFPStl2skxJffCu+jRcIwIGj+gWlDAJooU1KYS/VGPy
+         HLrHvKArqtJkt3mA75f1xfcMb2cUG7Igs9af6Wq4jmPPAu1PprJvrX+uW1QpxEqU7+AF
+         og0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Ruv7ezEWWdUTVVZLqSe78q272b/bMY/ySC1JyxSYFiY=;
-        b=w1aD0oXbaAy5R1R+chhrgsMNs/Zvw4iPUq23NgMGz8HsN75xs8p+JJRpVMs7EukWms
-         yumIOo0AT2302U0iBBmfQlECmNJNXwfLgCV5qbX3J3AHjSTb2j56SvejLh9HjfBulEOA
-         G3YzS5+FzZJYncupFmORIqMelHaTE5o5h2IpzkpcB6Deqa8kPbXNLNweDWsDkCievsQD
-         0PuPGLocFyhX61WN+/of3cSLq+rLwecRWd8Aow6xwMAfbxEcPMvrE6V81Hj3XrMyOh83
-         31QU74UlbTy9lVNanpFGU5QnEHVCmzuVQ2f4R5kZayEuPVP4Yu1oqMfVTuD937xglrYR
-         UzgQ==
-X-Gm-Message-State: AOAM530gxvLkszrXDSFVKQPUQhPARviHJlbqtWBtzhSYQ7Dl3FViCj89
-        RfcYdUv1L0nGtiySz/EFmcoZP5C8Dgzl7D26fhc=
-X-Google-Smtp-Source: ABdhPJw9RLm32EL4GnbLXlA33WVRSTqrf7sM0HxL6TI8e7GhDqbjh06RFLuyVaPPTR3C85JrmG1m7RxSH+8qBqmTWRo=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:4780:ab8c:bb56:31d6])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6902:1002:: with SMTP id
- w2mr21614613ybt.183.1631636346725; Tue, 14 Sep 2021 09:19:06 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 09:17:04 -0700
-Message-Id: <20210914161712.2463458-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH] powerpc: clean up UPD_CONSTR
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Christopher M. Riedl" <cmr@codefail.de>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm-ppc@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RZGtX95KhDg6cOU6Ei2dCC/slYztCW/EyX0L9hAZFtM=;
+        b=S64CPUpG/nu4o5c4lxfBSluhJPuQcPzxnMLyQYqOIIOXUpT3lLn1nFWpskiMvKrivO
+         V9nKLb7etkj90QDhTfkVSQj8YFrTFrhjrDFxU+z+9HtGCUEvweEB4ETiUnrdk02Hbcj4
+         3Qc/GuWYcEOpEWVlRtT604K9eOmj9dN2bN6p3D58Z76bfmnEGhaJe4MtOD/9GjlzB9JF
+         dvET3tlQMl8CB9G5sFUZ+j4+s4WUoj7ARMcayoFL4AbOmBbucV5csU4eKMChydJchbpi
+         bAc6OR/krY10IV7DYHsjehZPRFt+8Gkm1PIBgBQd3hcE6OkpQkQg1m1fmISreURd3U/b
+         oypg==
+X-Gm-Message-State: AOAM530YEAA/FRyzSi8her5Ij9v5KTlrvASsUT56y/AxJqNRvQuRgt09
+        Q9Ka3lyzzzmbbpKN0P9LC9RZDnImWvMc3lMipKGZ5A==
+X-Google-Smtp-Source: ABdhPJxgZagzAwO71dWHLXcdxeoMc/StkZk6J673IGRLD9RYbM4wcXihL2Z0SpALCePj2yVn3BWZHM71Hq98MUBaxdY=
+X-Received: by 2002:a02:cf06:: with SMTP id q6mr15264233jar.89.1631636289436;
+ Tue, 14 Sep 2021 09:18:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210912192805.1394305-1-vladimir.oltean@nxp.com>
+ <CANr-f5wCpcPM+FbeW+x-JmZt0-WmE=b5Ys1Pa_G7p8v3nLyCcQ@mail.gmail.com>
+ <20210912213855.kxoyfqdyxktax6d3@skbuf> <YT+dL1R/DTVBWQ7D@lunn.ch>
+ <20210914120617.iaqaukal3riridew@skbuf> <YUCytc0+ChhcdOo+@lunn.ch> <20210914151525.gg2ifaqqxrmytaxm@skbuf>
+In-Reply-To: <20210914151525.gg2ifaqqxrmytaxm@skbuf>
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+Date:   Tue, 14 Sep 2021 18:17:58 +0200
+Message-ID: <CANr-f5zNnywpNxMAmNDv60otqXo2oGKiQpT2BL3VraOZftGc4w@mail.gmail.com>
+Subject: Re: [RFC PATCH net] Revert "net: phy: Uniform PHY driver access"
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UPD_CONSTR was previously a preprocessor define for an old GCC 4.9 inline
-asm bug with m<> constraints.
+On Tue, Sep 14, 2021 at 5:15 PM Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
+> On Tue, Sep 14, 2021 at 04:33:25PM +0200, Andrew Lunn wrote:
+> > On Tue, Sep 14, 2021 at 12:06:18PM +0000, Vladimir Oltean wrote:
+> > > On Mon, Sep 13, 2021 at 08:49:19PM +0200, Andrew Lunn wrote:
+> > > > > I am not sure why "to_phy_driver" needs cleanup. Au contraire, I think
+> > > > > the PHY library's usage of struct phy_device :: drv is what is strange
+> > > > > and potentially buggy, it is the only subsystem I know of that keeps its
+> > > > > own driver pointer rather than looking at struct device :: driver.
+> > > >
+> > > > There is one odd driver in the mix. Take a look at xilinx_gmii2rgmii.c.
+> > > >
+> > > > It probably could be done a better way, but that is what we have.
+> > >
+> > > Interesting, to say the least. Also, is there any connection between
+> > > that and the revert I'm proposing?
+> >
+> > If i remember correctly, Gerhard Engleder is actually using this, and
+> > ran into a problem because the wrong driver structure was used.
 
-Fixes: 6563139d90ad ("powerpc: remove GCC version check for UPD_CONSTR")
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/powerpc/include/asm/asm-const.h | 2 --
- arch/powerpc/include/asm/atomic.h    | 8 ++++----
- arch/powerpc/include/asm/io.h        | 4 ++--
- arch/powerpc/include/asm/uaccess.h   | 6 +++---
- arch/powerpc/kvm/powerpc.c           | 4 ++--
- 5 files changed, 11 insertions(+), 13 deletions(-)
+Yes, but that was about phy_loopback and was fixed in the commit before.
+With this commit I tried to fix the remaining similar problems like the wrong
+driver structure use in phy_loopback. But as explained by Vladimir I failed.
+So it is totally ok to revert this commit, no functionality is lost.
 
-diff --git a/arch/powerpc/include/asm/asm-const.h b/arch/powerpc/include/asm/asm-const.h
-index dbfa5e1e3198..bfb3c3534877 100644
---- a/arch/powerpc/include/asm/asm-const.h
-+++ b/arch/powerpc/include/asm/asm-const.h
-@@ -12,6 +12,4 @@
- #  define ASM_CONST(x)		__ASM_CONST(x)
- #endif
- 
--#define UPD_CONSTR "<>"
--
- #endif /* _ASM_POWERPC_ASM_CONST_H */
-diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
-index 6a53ef178bfd..fd594fdbd84d 100644
---- a/arch/powerpc/include/asm/atomic.h
-+++ b/arch/powerpc/include/asm/atomic.h
-@@ -27,14 +27,14 @@ static __inline__ int arch_atomic_read(const atomic_t *v)
- {
- 	int t;
- 
--	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m"UPD_CONSTR(v->counter));
-+	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m<>"(v->counter));
- 
- 	return t;
- }
- 
- static __inline__ void arch_atomic_set(atomic_t *v, int i)
- {
--	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m"UPD_CONSTR(v->counter) : "r"(i));
-+	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m<>"(v->counter) : "r"(i));
- }
- 
- #define ATOMIC_OP(op, asm_op)						\
-@@ -320,14 +320,14 @@ static __inline__ s64 arch_atomic64_read(const atomic64_t *v)
- {
- 	s64 t;
- 
--	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m"UPD_CONSTR(v->counter));
-+	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m<>"(v->counter));
- 
- 	return t;
- }
- 
- static __inline__ void arch_atomic64_set(atomic64_t *v, s64 i)
- {
--	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m"UPD_CONSTR(v->counter) : "r"(i));
-+	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m<>"(v->counter) : "r"(i));
- }
- 
- #define ATOMIC64_OP(op, asm_op)						\
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index f130783c8301..beba4979bff9 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -122,7 +122,7 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
- {									\
- 	u##size ret;							\
- 	__asm__ __volatile__("sync;"#insn"%U1%X1 %0,%1;twi 0,%0,0;isync"\
--		: "=r" (ret) : "m"UPD_CONSTR (*addr) : "memory");	\
-+		: "=r" (ret) : "m<>" (*addr) : "memory");	\
- 	return ret;							\
- }
- 
-@@ -130,7 +130,7 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
- static inline void name(volatile u##size __iomem *addr, u##size val)	\
- {									\
- 	__asm__ __volatile__("sync;"#insn"%U0%X0 %1,%0"			\
--		: "=m"UPD_CONSTR (*addr) : "r" (val) : "memory");	\
-+		: "=m<>" (*addr) : "r" (val) : "memory");	\
- 	mmiowb_set_pending();						\
- }
- 
-diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
-index 22c79ab40006..63316100080c 100644
---- a/arch/powerpc/include/asm/uaccess.h
-+++ b/arch/powerpc/include/asm/uaccess.h
-@@ -86,7 +86,7 @@ __pu_failed:							\
- 		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
- 		EX_TABLE(1b, %l2)				\
- 		:						\
--		: "r" (x), "m"UPD_CONSTR (*addr)		\
-+		: "r" (x), "m<>" (*addr)		\
- 		:						\
- 		: label)
- 
-@@ -143,7 +143,7 @@ do {								\
- 		"1:	"op"%U1%X1 %0, %1	# get_user\n"	\
- 		EX_TABLE(1b, %l2)				\
- 		: "=r" (x)					\
--		: "m"UPD_CONSTR (*addr)				\
-+		: "m<>" (*addr)				\
- 		:						\
- 		: label)
- 
-@@ -200,7 +200,7 @@ __gus_failed:								\
- 		".previous\n"				\
- 		EX_TABLE(1b, 3b)			\
- 		: "=r" (err), "=r" (x)			\
--		: "m"UPD_CONSTR (*addr), "i" (-EFAULT), "0" (err))
-+		: "m<>" (*addr), "i" (-EFAULT), "0" (err))
- 
- #ifdef __powerpc64__
- #define __get_user_asm2(x, addr, err)			\
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index b4e6f70b97b9..3fd037d36afb 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -1094,7 +1094,7 @@ static inline u64 sp_to_dp(u32 fprs)
- 
- 	preempt_disable();
- 	enable_kernel_fp();
--	asm ("lfs%U1%X1 0,%1; stfd%U0%X0 0,%0" : "=m"UPD_CONSTR (fprd) : "m"UPD_CONSTR (fprs)
-+	asm ("lfs%U1%X1 0,%1; stfd%U0%X0 0,%0" : "=m<>" (fprd) : "m<>" (fprs)
- 	     : "fr0");
- 	preempt_enable();
- 	return fprd;
-@@ -1106,7 +1106,7 @@ static inline u32 dp_to_sp(u64 fprd)
- 
- 	preempt_disable();
- 	enable_kernel_fp();
--	asm ("lfd%U1%X1 0,%1; stfs%U0%X0 0,%0" : "=m"UPD_CONSTR (fprs) : "m"UPD_CONSTR (fprd)
-+	asm ("lfd%U1%X1 0,%1; stfs%U0%X0 0,%0" : "=m<>" (fprs) : "m<>" (fprd)
- 	     : "fr0");
- 	preempt_enable();
- 	return fprs;
--- 
-2.33.0.309.g3052b89438-goog
+> > > So compared to other vendors, where the RGMII gasket is part of the MAC
+> > > device, with Xilinx Zynq it is accessible via MDIO?
+> >
+> > Yes. Its control plane sits on the MDIO bus. Unfortunately, it does
+> > not have any ID registers, so it does not directly appear as a PHY. So
+> > it does interesting things it put itself in the control path to the
+> > real PHY.
+> >
+> > > It looks like it is said that this GMII2RGMII converter can be placed in
+> > > front of any GMII MAC. Nice that there are zero in-tree users of
+> > > "xlnx,gmii-to-rgmii-1.0" so that I could figure out exactly how that
+> > > plays out in practice.
+> >
+> > If you look back at the thread for that patch, i think Gerhard posted
+> > a DT fragment he is using. Hopefully it will get submitted as a full
+> > board description at some point.
 
+I submitted it, but Michal Simek argumented that dts files of FPGA logic shall
+not be part of mainline. I suggested that at least one reference
+platform for every
+FPGA based IP core should be allowed, but he said that no one is able
+to test it.
+So it seems that you will never see any dts file which contains FPGA logic in
+mainline. I will try to submit it again if anyone will support me?
+
+> > > Note that th                       e usage of priv->phy_dev, priv->phy_drv, priv->conv_phy_drv
+> > > beats me. Why is "phy_dev" kept inside "priv" even though it is accessed
+> > > only inside xgmiitorgmii_probe? Why does xgmiitorgmii_configure() need to
+> > > be called from xgmiitorgmii_read_status() which in turn hooks into the
+> > > attached PHY driver's phy_read_status()? Why does xgmiitorgmii_configure
+> > > not get exported and called from an .adjust_link method or the phylink
+> > > equivalent, like any other MAC-side hardware linked with the PHY library
+> > > in the kernel?
+> >
+> > I was never happy with this driver. It got submitted before i went on
+> > vacation, i had a few rounds trying to get the submitter to refactor
+> > it and was mostly ignored. I left on vacation with lots of open review
+> > points, and when i got back it had been merged. And the original
+> > submitters never responded to my requests for improvements.
+>
+> Sorry, this is a rabbit hole I really don't want to go into. Allowing it
+> to override PHY driver functions in order to 'automagically' configure
+> itself when the PHY driver does stuff is probably where the bad decision
+> was, everything from there is just the resulting fallout.
+>
+> Why don't all MAC drivers just hook themselves into the PHY driver's
+> ->read_status method and configure themselves from there?! Why do we
+> even need adjust_link, phylink, any of that? It's just a small
+> pointer/driver override, the PHY library supports it.
+>
+> I have dug up this discussion where your stance seemed to be that
+> "you want the MAC phy-handle to point to the gmii_to_rgmii 'PHY'"
+> https://lore.kernel.org/netdev/20190309161912.GD9000@lunn.ch/#t
+>
+> I am not really sure if that particular reply went towards making this
+> driver's design any saner than it is. As explained by Harini Katakam in
+> his reply to you, the GMII2RGMII converter is not a PHY, and should
+> therefore not be treated like one. It is an RGMII gasket for the MAC.
+> Treating it as a satellite device of the MAC, which happens by chance to
+> sit on an MDIO bus, but having otherwise nothing to do with the PHY
+> library, sounds like a more normal approach (please note that it is
+> quite likely I am oversimplifying some things since I just learned about
+> this).
+
+Just for information dts with working GMII2RGMII looks like this:
+
+       tnsep0: ethernet@a0000000 {
+                       compatible = "engleder,tsnep";
+                       reg = <0x0 0xa0000000 0x0 0x10000>;
+                       interrupts = <0 89 1>;
+                       interrupt-parent = <&gic>;
+                       local-mac-address = [00 00 00 00 00 00];
+                       phy-mode = "rgmii";
+                       phy-handle = <&phy1>;
+                       mdio {
+                               #address-cells = <1>;
+                               #size-cells = <0>;
+                               phy1: ethernet-phy@1 {
+                                       reg = <1>;
+                                       rxc-skew-ps = <1080>;
+                               };
+                               gmiitorgmii@8 {
+                                       compatible = "xlnx,gmii-to-rgmii-1.0";
+                                       reg = <8>;
+                                       phy-handle = <&phy1>;
+                               };
+                       };
+               };
+
+Gerhard
