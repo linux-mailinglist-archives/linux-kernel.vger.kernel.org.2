@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596C840B0A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30CD40B0A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhINOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhINOcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:32:31 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5032C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:31:13 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t1so12903785pgv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w0OnMvsDVskt5GO6UPoyhHQ+fQZFdSjePNVx2sNQE/o=;
-        b=WoiotpieTT+jVVeokS5GLYFcwyaC45SPW/UM4a76quzE/R4aR7TmMNDfidSmrxdpHh
-         sZ9kL+wPjdNPRlPVREHitomHTBrgxmtpBfqtkVvUFqJF31V9t+ycbishWeQoPS/n0q1g
-         Frn5c0tiwOf/FIyoZB0U9WftFGpMiaiReHbyzKjB3oAvha00x4VuJUU6sTK/2TfYg1zo
-         0MO7gckoCZbKjgjDULwGJmXL5u4eO97dvuuxM3DXlsPqVtUUA4D+B/5VU+dJHbeXrXzk
-         qHzxGujsX7DtZc6KFXY07TvBMWUgdV/BSXQuqR1w803PGtdjRrYdhtbj0TYesQqWertd
-         1MUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w0OnMvsDVskt5GO6UPoyhHQ+fQZFdSjePNVx2sNQE/o=;
-        b=bIaDCSDemc4RE4tbexj12PaSMYBf2B/CLZimXCZ5vsccStlZ0Ot5z0mxmsGC04EbBH
-         Jlw9RA7DjmxaYsx3niXCuTLmgBskYei/mkxsR5JW55IR3aL+N7dVUmulr7Ho8lYDvuz9
-         VY7JgoSW6RUvcJRp1knz57LlmMGvsVGB6eVdgMy/wfW66M3BCE2gh6kCLLz1elJ9Hta/
-         bsrV3ZDl+3zXqtqPl7IPviCpszpY1ubEmK2MEgUVsikzceON/8z7v2ryVsGanTh1d9WN
-         MbCTEHagYTyXA3RgsaM5hHCTU2R9q/pxZDepPJfeUdVeOQvwIKIa6Vc+TlHbVdHmpGe+
-         5+sw==
-X-Gm-Message-State: AOAM530q0wKDdMjAuxfBLILyprRwiopk/+TgvO16sgRTDWdgX49mcWaY
-        0CVNiIgZ1qXBh9VuY4kKCW/SsvkOTAPVtQ==
-X-Google-Smtp-Source: ABdhPJx+1bKb7b1nUkHsmCbarE6xqR+X/fKwp0fj/jnKlt7HW9AigaevdLjwlFuIs+zsRpahzX20Og==
-X-Received: by 2002:a63:7a0e:: with SMTP id v14mr15821775pgc.466.1631629873230;
-        Tue, 14 Sep 2021 07:31:13 -0700 (PDT)
-Received: from localhost.localdomain ([2401:4900:1c26:79fe:c0f6:4118:85fb:d7f6])
-        by smtp.gmail.com with ESMTPSA id p16sm10365073pfw.66.2021.09.14.07.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 07:31:12 -0700 (PDT)
-From:   Srivathsa Dara <srivathsa729.8@gmail.com>
-To:     jerome.pouiller@silabs.com, gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Srivathsa Dara <srivathsa729.8@gmail.com>
-Subject: [PATCH] staging: wfx: sta: Fix 'else' coding style warning
-Date:   Tue, 14 Sep 2021 20:01:06 +0530
-Message-Id: <20210914143107.18436-1-srivathsa729.8@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233594AbhINOdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:33:22 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:53425 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233562AbhINOdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:33:20 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H85QV3nsrz9sTY;
+        Tue, 14 Sep 2021 16:32:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pt6qTs5ExPd3; Tue, 14 Sep 2021 16:32:02 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H85QS4x93z9sTV;
+        Tue, 14 Sep 2021 16:32:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 94D6A8B778;
+        Tue, 14 Sep 2021 16:32:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id uaaL3fq-P0KO; Tue, 14 Sep 2021 16:32:00 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.207])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 35F958B776;
+        Tue, 14 Sep 2021 16:32:00 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18EEVnnb336568
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 16:31:49 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18EEViFm336564;
+        Tue, 14 Sep 2021 16:31:44 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, ebiederm@xmission.com,
+        hch@infradead.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v4 1/5] powerpc/signal64: Access function descriptor with user access block
+Date:   Tue, 14 Sep 2021 16:31:23 +0200
+Message-Id: <1718f38859d5366f82d5bef531f255cedf537b5d.1631629700.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix 'else is not generally useful after a break or return' checkpatch
-warning
+Access the function descriptor of the handler within a
+user access block.
 
-Signed-off-by: Srivathsa Dara <srivathsa729.8@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/staging/wfx/sta.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+v3: Flatten the change to avoid nested gotos.
+---
+ arch/powerpc/kernel/signal_64.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
-index aceb18a1f54b..23c0425e3929 100644
---- a/drivers/staging/wfx/sta.c
-+++ b/drivers/staging/wfx/sta.c
-@@ -169,19 +169,18 @@ static int wfx_get_ps_timeout(struct wfx_vif *wvif, bool *enable_ps)
- 			if (wvif->vif->bss_conf.assoc && wvif->vif->bss_conf.ps)
- 				dev_info(wvif->wdev->dev, "ignoring requested PS mode");
- 			return -1;
--		} else {
--			/* It is necessary to enable PS if channels
--			 * are different.
--			 */
--			if (enable_ps)
--				*enable_ps = true;
--			if (wvif->wdev->force_ps_timeout > -1)
--				return wvif->wdev->force_ps_timeout;
--			else if (wfx_api_older_than(wvif->wdev, 3, 2))
--				return 0;
--			else
--				return 30;
- 		}
-+		/* It is necessary to enable PS if channels
-+		 * are different.
-+		 */
-+		if (enable_ps)
-+			*enable_ps = true;
-+		if (wvif->wdev->force_ps_timeout > -1)
-+			return wvif->wdev->force_ps_timeout;
-+		else if (wfx_api_older_than(wvif->wdev, 3, 2))
-+			return 0;
-+		else
-+			return 30;
+diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
+index 1831bba0582e..7b1cd50bc4fb 100644
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -936,8 +936,13 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ 		func_descr_t __user *funct_desc_ptr =
+ 			(func_descr_t __user *) ksig->ka.sa.sa_handler;
+ 
+-		err |= get_user(regs->ctr, &funct_desc_ptr->entry);
+-		err |= get_user(regs->gpr[2], &funct_desc_ptr->toc);
++		if (!user_read_access_begin(funct_desc_ptr, sizeof(func_descr_t)))
++			goto badfunc;
++
++		unsafe_get_user(regs->ctr, &funct_desc_ptr->entry, badfunc_block);
++		unsafe_get_user(regs->gpr[2], &funct_desc_ptr->toc, badfunc_block);
++
++		user_read_access_end();
  	}
- 	if (enable_ps)
- 		*enable_ps = wvif->vif->bss_conf.ps;
+ 
+ 	/* enter the signal handler in native-endian mode */
+@@ -962,5 +967,12 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
+ badframe:
+ 	signal_fault(current, regs, "handle_rt_signal64", frame);
+ 
++	return 1;
++
++badfunc_block:
++	user_read_access_end();
++badfunc:
++	signal_fault(current, regs, __func__, (void __user *)ksig->ka.sa.sa_handler);
++
+ 	return 1;
+ }
 -- 
-2.25.1
+2.31.1
 
