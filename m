@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3625740A8E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035D040A8F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhINIK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:10:29 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3786 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhINII4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:08:56 -0400
-Received: from fraeml740-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H7wqx49m6z67bMW;
-        Tue, 14 Sep 2021 16:05:01 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml740-chm.china.huawei.com (10.206.15.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 14 Sep 2021 10:07:09 +0200
-Received: from [10.47.80.114] (10.47.80.114) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 14 Sep
- 2021 09:07:08 +0100
-Subject: Re: [PATCH RESEND v3 05/13] blk-mq-sched: Rename
- blk_mq_sched_alloc_{tags -> map_and_rqs}()
-To:     Hannes Reinecke <hare@suse.de>, <axboe@kernel.dk>
-CC:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <ming.lei@redhat.com>, <linux-scsi@vger.kernel.org>
-References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
- <1631545950-56586-6-git-send-email-john.garry@huawei.com>
- <bcbc3479-86f9-6d72-44a5-aacd4f03fcc2@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4a139bf3-d536-4f9c-8cd2-6fbd6da7d6c4@huawei.com>
-Date:   Tue, 14 Sep 2021 09:10:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S229874AbhINIMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:12:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229590AbhINIMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 04:12:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED4FF60EB6;
+        Tue, 14 Sep 2021 08:11:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631607093;
+        bh=XgV0VOwvYlmpCGt57z0PpVVIaNEuFhMTiNswnTjNPNc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g+2g4OFaI37lXcjPLJCQ+0laA6wruiudyCf/zFuxrhhSCpwWDxenL6rtAWeDR6OwP
+         qoM4EnRUWdvuX/xPQVORsc348Aooa0WKhnfCu0wUh0VydPo8LkaRn4DlvFPrhAovn1
+         uuybODtnhmLh9kjflC5slScmpz3iKy7a7WtBKNTo=
+Date:   Tue, 14 Sep 2021 10:11:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Alexander Graf <graf@amazon.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] drivers/acpi: Introduce Platform Firmware Runtime
+ Update device driver
+Message-ID: <YUBZM1vnZ3LjfUKc@kroah.com>
+References: <cover.1631600169.git.yu.c.chen@intel.com>
+ <7a739633b30f6fb5c258f21c443ed0c17b12896f.1631600169.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <bcbc3479-86f9-6d72-44a5-aacd4f03fcc2@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.80.114]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7a739633b30f6fb5c258f21c443ed0c17b12896f.1631600169.git.yu.c.chen@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 14, 2021 at 03:58:41PM +0800, Chen Yu wrote:
+> +enum start_action {
+> +	START_STAGE,
+> +	START_ACTIVATE,
+> +	START_STAGE_ACTIVATE,
+> +};
+> +
+> +enum dsm_status {
+> +	DSM_SUCCEED,
+> +	DSM_FUNC_NOT_SUPPORT,
+> +	DSM_INVAL_INPUT,
+> +	DSM_HARDWARE_ERR,
+> +	DSM_RETRY_SUGGESTED,
+> +	DSM_UNKNOWN,
+> +	DSM_FUNC_SPEC_ERR,
+> +};
+> +
+> +struct update_cap_info {
+> +	enum dsm_status status;
+> +	int update_cap;
+> +
+> +	uuid_t code_type;
+> +	int fw_version;
+> +	int code_rt_version;
+> +
+> +	uuid_t drv_type;
+> +	int drv_rt_version;
+> +	int drv_svn;
+> +
+> +	uuid_t platform_id;
+> +	uuid_t oem_id;
+> +
+> +	char oem_info[];
 
->> +static int blk_mq_sched_alloc_map_and_rqs(struct request_queue *q,
->> +                      struct blk_mq_hw_ctx *hctx,
->> +                      unsigned int hctx_idx)
->>   {
->>       struct blk_mq_tag_set *set = q->tag_set;
->>       int ret;
->> @@ -609,15 +609,15 @@ int blk_mq_init_sched(struct request_queue *q, 
->> struct elevator_type *e)
->>                      BLKDEV_DEFAULT_RQ);
->>       queue_for_each_hw_ctx(q, hctx, i) {
->> -        ret = blk_mq_sched_alloc_tags(q, hctx, i);
->> +        ret = blk_mq_sched_alloc_map_and_rqs(q, hctx, i);
->>           if (ret)
->> -            goto err_free_tags;
->> +            goto err_free_map_and_rqs;
->>       }
->>       if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
->>           ret = blk_mq_init_sched_shared_sbitmap(q);
->>           if (ret)
->> -            goto err_free_tags;
->> +            goto err_free_map_and_rqs;
->>       }
->>       ret = e->ops.init_sched(q, e);
->> @@ -645,8 +645,8 @@ int blk_mq_init_sched(struct request_queue *q, 
->> struct elevator_type *e)
->>   err_free_sbitmap:
->>       if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
->>           blk_mq_exit_sched_shared_sbitmap(q);
->> -err_free_tags:
->>       blk_mq_sched_free_requests(q);
->> +err_free_map_and_rqs:
->>       blk_mq_sched_tags_teardown(q);
->>       q->elevator = NULL;
->>       return ret;
->>
-> This is not only a rename, but it also moves the location of the label.
-> Is that intended?
-> If so it needs some documentation why this is safe.
+Please use valid types for structures that cross the user/kernel
+boundry.
 
-Yeah, I think you're right.
+> +};
+> +
+> +struct com_buf_info {
+> +	enum dsm_status status;
+> +	enum dsm_status ext_status;
+> +	unsigned long addr_lo;
+> +	unsigned long addr_hi;
+> +	int buf_size;
+> +};
 
-The final code in the series looks correct, but this is a transient 
-breakage.
+Same here.
 
-I'll fix it.
+> +
+> +struct updated_result {
+> +	enum dsm_status status;
+> +	enum dsm_status ext_status;
+> +	unsigned long low_auth_time;
+> +	unsigned long high_auth_time;
+> +	unsigned long low_exec_time;
+> +	unsigned long high_exec_time;
 
-Thanks,
-John
+And same here.
+
+And these are very odd structure names that you are adding to the
+"global" namespace.  Please make them have a prefix for your driver so
+that people know what they belong to.  "updated_result" is way too
+generic.
+
+thanks,
+
+greg k-h
