@@ -2,128 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC5540AC3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E2B40AC4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhINLNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:13:04 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53008 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbhINLND (ORCPT
+        id S231980AbhINLXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:23:52 -0400
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:3283 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231886AbhINLXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:13:03 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E3C042A5;
-        Tue, 14 Sep 2021 13:11:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1631617904;
-        bh=UVN9Czt4d3zRJH4FreSTQyVzvDmfnJhgwAWZq7jgpak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ir49+m105z1jz+jtGji8tsAqWQZ8kgxHOFeV7vW3ytIHrvOU2IzjHw58VO4/UNxu+
-         lIOsD8oGDBYhTPM01llE3XGSal0gIdRzQ6loCzgMS4e37f+38xDpUvlMovjblgVpDW
-         A3sCb3MMKNHeEYv1m+wh50lSeuiIqwZI6gF1G9ME=
-Date:   Tue, 14 Sep 2021 14:11:18 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-staging@lists.linux.dev, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 20/22] staging: media: Add support for the Allwinner A31
- ISP
-Message-ID: <YUCDVm4OA3C3Re09@pendragon.ideasonboard.com>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-21-paul.kocialkowski@bootlin.com>
- <20210913083135.v7q7joux2xckat62@gilmour>
- <YUBUUQxBaGUkjzMP@aptenodytes>
-MIME-Version: 1.0
+        Tue, 14 Sep 2021 07:23:51 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 07:23:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1631618554;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=fbwPSSqtThBA55/yBXof+39Y2XSi/PWHDb/MFGDwcuQ=;
+  b=BHzLooksZIVZ1jMG1nlne3BuIu2/0dkNpCQRwosq0usiOb9pxANiratj
+   27zwTczmAnb8By389U8SWL36rtz9pg2vd0YYQ/c5r1ia1K4yx29UUC5Bz
+   Q//iEE+M7P58nN/HwBwP5F6mFNu82ilp9/GsYP+iDMBzELaWLDdslrncQ
+   A=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: SGBRNgBbIYNKrgd4gVtK1JMQ8wjoUnqbS0HgjD+ezjUM6V+dTukYjFMmRwCXsXV1sic8R/JFu1
+ ASTJyz7Bq0eGBqFstwpQIbJ1q+UkNKpYvL+ejivCn0UkE35Wjv0obRmuuNy+n5vNPQygkGrzrw
+ XYv/Sfh8RSqFKHsZUjmnr9bsoC2JHHWNjG2wTtsH4/qvIjz8h/ewilwL79sR8VdTWaGD+HDuSl
+ VcpyFsIkapWHD+7kGNRK23Sqsf354g/4Vvx5TTC8gxDtDTHwqnbbN8HYzDemDCb9ddq73TWNfU
+ nmdFbliqv4E5995I48qiCz29
+X-SBRS: 5.1
+X-MesageID: 53073338
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+IronPort-Data: A9a23:Fh3PN6KXqp8i0gJZFE+RJpIlxSXFcZb7ZxGr2PjKsXjdYENS1TcGm
+ GAcCzvUO/vcMWr2fIh1O43j9htT6pOHmt8wGgNlqX01Q3x08seUXt7xwmUcns+xwm8vaGo9s
+ q3yv/GZdJhcokcxIn5BC5C5xZVG/fjgqoHUVaiUZ0ideSc+EH140UM6x7Zg6mJVqYPR7z2l6
+ IuaT/L3YDdJ6xYsWo7Dw/vewP/HlK2aVAIw5jTSV9gS1LPtvyB94KYkDbOwNxPFrrx8RYZWc
+ QphIIaRpQs19z91Yj+sfy2SnkciGtY+NiDW4pZatjTLbrGvaUXe345iXMfwZ3u7hB22z9tv9
+ 9tduKaAEyEjffHynMIwFDRxRnQW0a1uoNcrIFC6uM2XiUbHb2Ht07NlC0Re0Y8wo7gtRzsUr
+ LpBdW5LPkvra+GemdpXTsF2gcsuNo/zNZ43sXB81zDJS/0hRPgvRo2XvocHh2xr1qiiG96Df
+ uknZSRmTy/7TABTG00vFpk6lfm30yyXnzpw9wvO+PtfD3Lo5BdqzLHnPd7Re9qLbcZYhECVo
+ iTB5WuRKhUbMsGPjDmI6HShgsfRki7hHoEfDru18rhtmlL77nweDlgaWEW2pdG9i1WiQJRPJ
+ koM4C0soKMuskuxQbHVXRe1vXqFtR40QMdLHqsx7wTl4qjb+QGCHUAfUyVMLtchsaceTzsw1
+ 0TPmMj1Hztxq76EYXWH/7yQoHW5Pi19EIMZTXZaF01fuYCl+dxtyEKUJjp+LEKrpuKlEi/Pz
+ SCHlhhkob9Q0fAP8Yj80HmS1lpAuaP1oh4JChT/Bzz+t1kiOd/5OORE+nCAsq0Rd9/xok2p+
+ SFewpnAtrhm4YSlyXTVKNjhCo1F8Bps3Nf0uldpA5Bp3DCk4XfLkWt4sWwmeRsB3irpf1bUj
+ K7vVeF5v8Q70JiCN/Yfj2eN5yMCl/SIKDgdfqqIBueim7AoHON9wM2LWXN8Iki3yBR8+U3AB
+ XtrWZn1VitLYUiW5BG3W/0cwdcW+8zK/kuKHcqT503+idK2PSfJIZ9YYArmRr1ot8us/VSKm
+ +uzwuPXkn2zpsWlOXKJmWPSRHhXRUUG6Wfe8JAOLb/ffVM9QQnMyZb5mNscRmCspIwM/s/g9
+ XChQE5Ijl35gHzMMwKRbX5/LrjoWP5CQbgTZETA5H6khCouZ5iB9qAae8dldLUr7rU7n/V1U
+ +MEa4OLBfEWEmbL/DEUbJ/cqo1+dUv02VLSbnT9ODVvLYR9QwHp+8P/ele9/ic5ESfq59A1p
+ Ket112HTMNbFRhiFsvfdNmm00i14SoGgOt3UkaReotTdUzg/ZJEMSv0ivNrccgAJQ+anmmR1
+ hqMAAderu7I+tdn/N7MjKGCjoGoD+ohQRYKQziFte67bHCI8HCizIlMVPezUQrcDG6kqr+/Y
+ eh1zu3nNKFVllh9rIchQa1gyrgz5oWzquYCnBhkBnjCc3+iFqhkfiudxcBKu6BAmu1ZtA+xV
+ h7d89VWI+zUasbsEVpXLws5dOWTk/oTn2CKv/gyJUz74g5x/aaGDhoOb0Xd1nQFIesnKp4hz
+ McgpNUSul62hRcdO9qbijxZqjaXJXsaXqR77pwXDecHUObwJo2utXAENhLL3Q==
+IronPort-HdrOrdr: A9a23:PauX/q6C/SVmTWJBawPXwMbXdLJyesId70hD6qkRc3Bom6mj/P
+ xG88516faZslgssRMb+exoSZPgfZq0z/cci+Qs1NyZLWrbUQWTXeRfxLqn7zr8GzDvss5xvJ
+ 0QF5SW0eeAb2RHsQ==
+X-IronPort-AV: E=Sophos;i="5.85,292,1624334400"; 
+   d="scan'208";a="53073338"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fc0LxzpHkMOEA6wIlUcuxiamtt8XpwZCbSHELpUl2dqbTUBvTx/zHJrGaiEJ3eec/yqd2f1qjSeNohejfsTWxxXWUhxQx18QGOuYhBFNB4+tRRJTfN2wiH7bRPwWt/viYfCmSoei2wsTv0vrtCJZStfsmEiYwUJDbVeYYR+zvMC+47uv6VFe731SOocy4gcYOu01aTDDCHzvl1pgJL9rzvYq6B6Kyr3ealakMnKrPNc2L7yA1CoaEIF1qdmaqkn4w/ISu+N9x7+1z57/egrZ9pI52cSSVU6HZbanxR9wBKsliGCCUsDyovy5kmlboPEWeSgah17c8TMdyTpAGfK86A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vJODM7L9NIrwaWiYPjspGce8Y9XQfJBgNDO92ziqp/g=;
+ b=GWAaCu2ErDvoA5Zgp8sZagsze47GWnOlokNouUsI4AVgUtmmKvqNx/3aSGGmEu7eOqj+F/rXMIjMNtV9zKQ6hvVcsXVXzb32bsN+QrevtQo9yjHlqOKhQYI61poRPRKZBaaJBBNJIsRaoYX1UlaeuCmWU2YYi90jhMxuUBFXSkZsmeRyXj4+NDT43OIwPk8pL8uVpMyr8V1RwpCwjWqiBMBIWXIeKu4nEF4aEkj21Ay2G4rPH2zuIHA2YlXwPKMXjoPXaRZZuFBt+P4P9lbvtW4VRWoHtRkwTucGGHR/Y4DJLL9FxBPvunH5FIM/4t0Msuv2dlUxqJxDRb10pBNyiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vJODM7L9NIrwaWiYPjspGce8Y9XQfJBgNDO92ziqp/g=;
+ b=pyhAnFZ8TtyAE6C2KZVzMOosBMqd1JJ9HnKdVIpyDpSFLMZ+snItRLcJR4/S0A3H4cSc6+eP/jhUsDg6lMOMLizyFJReTtZhhCyZfiSdAW7Cqn+/7QT9fpnRANOvhSS5K650/ZuUrhC0BF4i1vOILcI5D5IlHfyohgxsAQI+77w=
+Date:   Tue, 14 Sep 2021 13:15:12 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Jan Beulich <jbeulich@suse.com>
+CC:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH 0/9] xen/x86: PVH Dom0 fixes and fallout adjustments
+Message-ID: <YUCEQFpdc+3kUqQj@MacBook-Air-de-Roger.local>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+ <YUBeJLvWXukyGSFf@MacBook-Air-de-Roger.local>
+ <050f71c8-227f-4f78-1ec5-394ba9fba9c1@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YUBUUQxBaGUkjzMP@aptenodytes>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <050f71c8-227f-4f78-1ec5-394ba9fba9c1@suse.com>
+X-ClientProxiedBy: LO4P123CA0093.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:191::8) To DS7PR03MB5608.namprd03.prod.outlook.com
+ (2603:10b6:5:2c9::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9b524273-2c64-47a8-5434-08d97770eec4
+X-MS-TrafficTypeDiagnostic: DM5PR03MB2922:
+X-Microsoft-Antispam-PRVS: <DM5PR03MB29229691A65D6FCCD1DDAE098FDA9@DM5PR03MB2922.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eveKJ6ioOjnnX1y/OE4RGiWMHM/f763rHyXHi+cEmawMKbDrWQt09Lokh8eoSzmcFnBDuxEitcQH2nMfJYvfthZ3C7RSB/W4dDv5FLDQSmnc9EWjPdbB+RLz/AtQFAStiq7ZJa1lt1a+RNKC89nGjilTxc6W3lrxDeCLDR7uKqXsgTmGkkgegmrG3MEC6py2X25u8gBcZqYIicAYUQBo3Ggng8peMaE2sHdZzge5nixEr1DscEn3IEVJvX7l8DvBlkJsi4eDdGoK2cO+FKMpWwdNK4Ygpy9CC+fvyxKzwaATFuy0JhrKJ27YUpcKnCfAFxjIk6fRYjfpn5ymMEOjqdzXtkrJyqR6F3DsacPg5+3cXL4HPbQIYzRFyJnfd91zlFxaKt3yRXrrZ15hpbQYyPSNqQ3RQQhVcN/5uBiFBQjnRpIw+R2a+57Tr7LX72YTBFrf//9dhI1DkIM5UFEMOnInUd2658qT/LtgAEygHKz7G8n7ejEziu8uyuajMvdluxlDe2SJ6dx5y7/vvXoMB+XEw+6BZ6eaS9YLSyBeG9poonkLQotkjNEDxUEA+xEH8NituEdYbtQ8BunMHjvqTk1Ngmay7N0NjATcBixzfy8AuGP5QnBdmfDLUy5kPimJBC/MPwmU3uzArzMe2SOVVbKmhP7FN50cLLBZNVLNecgWSh3ctRD/zmtVJgqEg1IETfKFqJQnhRFiYW7DTmyamzQ1OPJPkbS1anJIk2AIFwCsc95Jo7uqvAjG2NQcaGscohAoNsC0MGqsdcwcXBNT3wtbXwBUAPZyKcig0apDnV4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(2906002)(6666004)(86362001)(6496006)(5660300002)(85182001)(6916009)(4326008)(83380400001)(8936002)(966005)(6486002)(66556008)(478600001)(316002)(9686003)(66946007)(54906003)(8676002)(66476007)(186003)(956004)(38100700002)(53546011)(26005)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?amlYNU5lL1BDZ2s1QmJubFJzUGhxaFVMdmVFZCtrUmtiODc4QWFxcndiU2Mv?=
+ =?utf-8?B?Q0Z2dWFHQXQzZjRuZG5ER3Vyb29yVU4yT1NOc2tnUjNRZnhVWTJrejViTVo5?=
+ =?utf-8?B?cFY3ekVJcUlXWVhuM1hucGxsbkk5T29iOXpwS0l1VVhnU29JYkFKVDlVQzl1?=
+ =?utf-8?B?L2I3RFBqeThISU5Jc2NRR1FjaDA5R0ZPTlNPQkxiSDRqYThZM0VmU01ZcFBF?=
+ =?utf-8?B?clFaSTVudVFIUEp3ZFRCQU43YVZkZEhFeWxkVnBSVERkMy9XcG9CT0NpTEFB?=
+ =?utf-8?B?bk1hMkFkeDUwaDBseWxXMm1OSzkrNndLWE44Ykg5bDZsU05lMUZybUUwdGpk?=
+ =?utf-8?B?eWxVNGtvN08rZHAvRzR3c01tRTI1SlZvU3llMXZvS1V1OU9RaythNHAwR2xD?=
+ =?utf-8?B?cG1jelpmaDFVNDZkMVJZbTB6WGtJMXhCUWh4a1pkZSt1NGJHb1cvQ290WDla?=
+ =?utf-8?B?VlgxSDBubG5FMiswOVcrZWV6allvSkhTY2VIRlR5bVdsUmUxdGtqcXZpR0E5?=
+ =?utf-8?B?ZERCUnZKSi9FZjdHZFRvUFQwTHBlOGY5bTNYVUVuZEgyZXUrNWZQRmNQNDFR?=
+ =?utf-8?B?ZS83S05vQmZ5YkhQYWNYK1JkcnlyWVNYUzRpdlhWcjVZcnVQa3JnRTY1aHd5?=
+ =?utf-8?B?VmdxMDVaRzNOMXpOQWNNQy9lcGlEU0ZLMDhDTU1uSy9xcnEzL3dqZVhHcFk0?=
+ =?utf-8?B?WEFPRCsycGhHc1BjSm1HNVFFd294L1luOW9udm10WHZETmZQSEFIVUUwc0lZ?=
+ =?utf-8?B?MEZMbWd1cmE0d2J6RUhtd2lkRzdRd290bitpbDVBQnBiVHFMUXIxTkovbElq?=
+ =?utf-8?B?ZlpWam5QY01LcFY2dUZJVDA4R3ZoYWRzUkFnakZwcEdVbW9KTVpvUVZmRG9Y?=
+ =?utf-8?B?bm8xQ3o3TjJwWlV1SEtHQTA0Y0Fnbk02L0RyQ21vSDRXZW5qc0IrdUZoamtl?=
+ =?utf-8?B?QnM0dVZZYXp3RVlYTTF4cVZmYm5ITm9JNytzTlB4VFMzNkdYa1lYUW1rQ0NQ?=
+ =?utf-8?B?NkoyTUI3djZMSzlSTjhTdjlPQ0pvbzlPbUZQUXc0YkNYT1JNT3NTQ29WQVhp?=
+ =?utf-8?B?dld1UC9XU3k3TTM0S3lQZ2tYRHNVaFVwTUd4YXhML3BWZXZmaGVOc3VuNTJD?=
+ =?utf-8?B?NUYrR0JWZEZHNjZ4R2RwWmxuTTFiVmQ2L3ZzdFpmRHJsUHlScVVuV3lRaVJC?=
+ =?utf-8?B?MnRzZXdnVzZ5NzBSNVlFdkJaMnpNS2Zpbk5HNXN6cFhVMWN2ZXd0bmRJMTVF?=
+ =?utf-8?B?YkpySlZNTjhpbUlJMm1kdS9HZEZWdkFxTzVPSlFKVzRWTG1qNGg1MFJPMkxI?=
+ =?utf-8?B?M25RQzZpNi9QTWFvdzNUQXQyVmpEaFp0MzJRd0pEejN4Y3R4aTNEOU5Ob25o?=
+ =?utf-8?B?L3FSSEhKMW1GaE1ObzBPcjNuYStaNGhSWWdiUktHVmNkUXE5SkFZdzdsS0RS?=
+ =?utf-8?B?cENTbitLRXVmdlFwc2FDbzB5NXEwYVowWlNFQVgydllZckpRaURmdmIrNFRS?=
+ =?utf-8?B?RkZucGNsQTUrUk90Sm81T0FtODhJeG82c0craEFUVCtqSXBKR0FEeFJiRXAv?=
+ =?utf-8?B?bDF1bnBJaUczZkhzN3E3eGl5VDBDdUZhUFBGcXlVbGdINGhEeUhHRGpLZmF5?=
+ =?utf-8?B?bDhXSmpqNmtTMHcvbVhtalMva1hFdWVXQ0VnV3cvVElSOXBMYW9xWERjK1ZX?=
+ =?utf-8?B?ZzdLTUhVUG9CZmxQNHg4c0ZjbUZnM1crM3ludndWbnJTSTRrOER3NlFZYWJF?=
+ =?utf-8?Q?S+H4njhYesT/b+H0L1DeCnn+j/bgU1GAk9Fe/Y2?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b524273-2c64-47a8-5434-08d97770eec4
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 11:15:17.6970
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: buX4q2KgBa+ck5wZZv/i7p959I2i8O+Ne6iDNA7jBjmOG9yB+4WRWHBpxjJZBzDMBdLic0GddyhZRG5X79AS4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB2922
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On Tue, Sep 14, 2021 at 09:50:41AM +0200, Paul Kocialkowski wrote:
-> On Mon 13 Sep 21, 10:31, Maxime Ripard wrote:
-> > On Fri, Sep 10, 2021 at 08:41:45PM +0200, Paul Kocialkowski wrote:
-> > > Some Allwinner platforms come with an Image Signal Processor, which
-> > > supports various features in order to enhance and transform data
-> > > received by image sensors into good-looking pictures. In most cases,
-> > > the data is raw bayer, which gets internally converted to RGB and
-> > > finally YUV, which is what the hardware produces.
-> > > 
-> > > This driver supports ISPs that are similar to the A31 ISP, which was
-> > > the first standalone ISP found in Allwinner platforms. Simpler ISP
-> > > blocks were found in the A10 and A20, where they are tied to a CSI
-> > > controller. Newer generations of Allwinner SoCs (starting with the
-> > > H6, H616, etc) come with a new camera subsystem and revised ISP.
-> > > Even though these previous and next-generation ISPs are somewhat
-> > > similar to the A31 ISP, they have enough significant differences to
-> > > be out of the scope of this driver.
-> > > 
-> > > While the ISP supports many features, including 3A and many
-> > > enhancement blocks, this implementation is limited to the following:
-> > > - V3s (V3/S3) platform support;
-> > > - Bayer media bus formats as input;
-> > > - Semi-planar YUV (NV12/NV21) as output;
-> > > - Debayering with per-component gain and offset configuration;
-> > > - 2D noise filtering with configurable coefficients.
-> > > 
-> > > Since many features are missing from the associated uAPI, the driver
-> > > is aimed to integrate staging until all features are properly
-> > > described.
+On Tue, Sep 14, 2021 at 11:03:23AM +0200, Jan Beulich wrote:
+> On 14.09.2021 10:32, Roger Pau Monné wrote:
+> > On Tue, Sep 07, 2021 at 12:04:34PM +0200, Jan Beulich wrote:
+> >> In order to try to debug hypervisor side breakage from XSA-378 I found
+> >> myself urged to finally give PVH Dom0 a try. Sadly things didn't work
+> >> quite as expected. In the course of investigating these issues I actually
+> >> spotted one piece of PV Dom0 breakage as well, a fix for which is also
+> >> included here.
+> >>
+> >> There are two immediate remaining issues (also mentioned in affected
+> >> patches):
+> >>
+> >> 1) It is not clear to me how PCI device reporting is to work. PV Dom0
+> >>    reports devices as they're discovered, including ones the hypervisor
+> >>    may not have been able to discover itself (ones on segments other
+> >>    than 0 or hotplugged ones). The respective hypercall, however, is
+> >>    inaccessible to PVH Dom0. Depending on the answer to this, either
+> >>    the hypervisor will need changing (to permit the call) or patch 2
+> >>    here will need further refinement.
 > > 
-> > We can add new features/interfaces to a !staging driver. Why do you
-> > think staging is required?
-> 
-> This is true for the driver but not so much for the uAPI, so it seems that
-> the uAPI must be added to staging in some way. Then I'm not sure it makes sense
-> to have a !staging driver that depends on a staging uAPI.
-> 
-> Besides that, I added it to staging because that's the process that was
-> followed by rkisp1, which is a very similar case.
-
-Maxime is right in the sense that uAPI can always be extended, but it
-has to be done in a backward-compatible manner, and staging is sometimes
-considered as not being covered by the ABI stability requirements of the
-kernel. Not everybody agrees on this, but there are clear cases where
-userspace really can't expect staging ABIs to be stable (for instance
-when the driver doesn't even compile).
-
-I think there's value in having the driver in staging to facilitate
-development until we consider the ABI stable, but I'm not entirely sure
-if there should be another step taken to mark this ABI is not being
-ready yet.
-
-> > > On the technical side, it uses the v4l2 and media controller APIs,
-> > > with a video node for capture, a processor subdev and a video node
-> > > for parameters submission. A specific uAPI structure and associated
-> > > v4l2 meta format are used to configure parameters of the supported
-> > > modules.
+> > I would rather prefer if we could limit the hypercall usage to only
+> > report hotplugged segments to Xen. Then Xen would have to scan the
+> > segment when reported and add any devices found.
 > > 
-> > This meta format needs to be documented
+> > Such hypercall must be used before dom0 tries to access any device, as
+> > otherwise the BARs won't be mapped in the second stage translation and
+> > the traps for the MCFG area won't be setup either.
 > 
-> You're right, there should probably be a pixfmt-meta-sun6i-isp.rst
-> documentation file. I guess it should live along in the staging driver
-> directory for now and be destaged later.
+> This might work if hotplugging would only ever be of segments, and not
+> of individual devices. Yet the latter is, I think, a common case (as
+> far as hotplugging itself is "common").
 
-Can documentation in staging be compiled ? If not I think it can go to
-Documentation/
+Right, I agree to use hypercalls to report either hotplugged segments
+or devices. However I would like to avoid mandating usage of the
+hypercall for non-hotplug stuff, as then OSes not having hotplug
+support don't really need to care about making use of those
+hypercalls.
 
--- 
-Regards,
+> Also don't forget about SR-IOV VFs - they would typically not be there
+> when booting. They would materialize when the PF driver initializes
+> the device. This is, I think, something that can be dealt with by
+> intercepting writes to the SR-IOV capability.
 
-Laurent Pinchart
+My plan was to indeed trap SR-IOV capability accesses, see:
+
+https://lore.kernel.org/xen-devel/20180717094830.54806-1-roger.pau@citrix.com/
+
+I just don't have time ATM to continue this work.
+
+> But I wonder whether
+> there might be other cases where devices become "visible" only while
+> the Dom0 kernel is already running.
+
+I would consider those kind of hotplug devices, and hence would
+require the use of the hypercall in order to notify Xen about them.
+
+> >> 2) Dom0, unlike in the PV case, cannot access the screen (to use as a
+> >>    console) when in a non-default mode (i.e. not 80x25 text), as the
+> >>    necessary information (in particular about VESA-bases LFB modes) is
+> >>    not communicated. On the hypervisor side this looks like deliberate
+> >>    behavior, but it is unclear to me what the intentions were towards
+> >>    an alternative model. (X may be able to access the screen depending
+> >>    on whether it has a suitable driver besides the presently unusable
+> >>    /dev/fb<N> based one.)
+> > 
+> > I had to admit most of my boxes are headless servers, albeit I have
+> > one NUC I can use to test gfx stuff, so I don't really use gfx output
+> > with Xen.
+> > 
+> > As I understand such information is fetched from the BIOS and passed
+> > into Xen, which should then hand it over to the dom0 kernel?
+> 
+> That's how PV Dom0 learns of the information, yes. See
+> fill_console_start_info(). (I'm in the process of eliminating the
+> need for some of the "fetch from BIOS" in Xen right now, but that's
+> not going to get us as far as being able to delete that code, no
+> matter how much in particular Andrew would like that to happen.)
+> 
+> > I guess the only way for Linux dom0 kernel to fetch that information
+> > would be to emulate the BIOS or drop into realmode and issue the BIOS
+> > calls?
+> 
+> Native Linux gets this information passed from the boot loader, I think
+> (except in the EFI case, as per below).
+> 
+> > Is that an issue on UEFI also, or there dom0 can fetch the framebuffer
+> > info using the PV EFI interface?
+> 
+> There it's EFI boot services functions which can be invoked before
+> leaving boot services (in the native case). Aiui the PVH entry point
+> lives logically past any EFI boot services interaction, and hence
+> using them is not an option (if there was EFI firmware present in Dom0
+> in the first place, which I consider difficult all by itself - this
+> can't be the physical system's firmware, but I also don't see where
+> virtual firmware would be taken from).
+> 
+> There is no PV EFI interface to obtain video information. With the
+> needed information getting passed via start_info, PV has no need for
+> such, and I would be hesitant to add a fundamentally redundant
+> interface for PVH. The more that the information needed isn't EFI-
+> specific at all.
+
+I think our only option is to expand the HVM start info information to
+convey that data from Xen into dom0.
+
+Thanks, Roger.
