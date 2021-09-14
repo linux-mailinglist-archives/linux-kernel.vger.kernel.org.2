@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0118440AC6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A6C40AC77
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhINLdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231941AbhINLdR (ORCPT
+        id S232088AbhINLid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:38:33 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:51632 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232024AbhINLic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:33:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFD0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FsfKK5Kf9vKOxvR+9nsUJsi/c2UPNx/XksUYhPIZxzQ=; b=tbYyq0WkHL9L6+6fcr/8s9zv7m
-        FtDypcaSf0fRrxiR7uf3Snls2idNGwX9ErS/e0NlJeGHeC7a+gwkac2Z3ZimK4BSVm7NDdB8BanUT
-        CfGlGObVwO29buR3dsqrqVjLupweO/ib4f9EMeZI5Zc9fsqyFj9ZDo0kbGUWa2fhMdXi0XrH40Vdl
-        H9RvwtD2CNeDpTtlQih8oMEeeJ8nG/XhwxeGUP9NThATLhIewHghYw/58edZk9ciY74Asl+ixPkA4
-        wtHB25S38nccETWBDtl75G/OhnOP8OggfCzYWqDXjkYnjAItzLIYqDf3szJYH+aaPbcyW3gFyjYlk
-        kJgJVNHw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQ6df-00EbX3-Nz; Tue, 14 Sep 2021 11:30:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CFED3300255;
-        Tue, 14 Sep 2021 13:30:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A4DBE20CB3026; Tue, 14 Sep 2021 13:30:09 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 13:30:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, 21cnbao@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        prime.zeng@huawei.com,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>
-Subject: Re: [RFC] Perfomance varies according to sysctl_sched_migration_cost
-Message-ID: <YUCHwYo525+/98wq@hirez.programming.kicks-ass.net>
-References: <ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com>
+        Tue, 14 Sep 2021 07:38:32 -0400
+X-UUID: 9629ee9c86854d509c63fd7e5df02153-20210914
+X-UUID: 9629ee9c86854d509c63fd7e5df02153-20210914
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 476458489; Tue, 14 Sep 2021 19:37:12 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 14 Sep 2021 19:37:09 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 14 Sep 2021 19:37:07 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, <anan.sun@mediatek.com>,
+        <ming-fan.chen@mediatek.com>, <yi.kuo@mediatek.com>,
+        <anthony.huang@mediatek.com>, Ikjoon Jang <ikjn@chromium.org>
+Subject: [PATCH v4 00/13] MT8195 SMI support
+Date:   Tue, 14 Sep 2021 19:36:50 +0800
+Message-ID: <20210914113703.31466-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 03:27:09PM +0800, Yicong Yang wrote:
-> 2. The ABI now has been removed from sysctl and moved to debugfs. As tuning this can improve the performance
->    of some workloads on some platforms, maybe it's better to make it a formal sysctl again with docs?
+This patchset mainly adds SMI support for mt8195.
 
-It never was an ABI, there is nothing to restore. It has always been
-CONFIG_SCHED_DEBUG.
+Comparing with the previous version, add two new functions:
+a) add smi sub common
+b) add initial setting for smi-common and smi-larb.
 
-I'm open to topology based improvements to the code, but I don't think
-user tunables are a good way.
+Change note:
+v4:1) base on v5.15-rc1
+   2) In the dt-binding:
+      a. add "else mediatek,smi: false." in the yaml.
+      b. Remove mediatek,smi_sub_common. since we have only 2 level currently,
+      It should be smi-sub-common if that node has "mediatek,smi". otherwise,
+      it is smi-common.
+
+v3: https://lore.kernel.org/linux-mediatek/20210810080859.29511-1-yong.wu@mediatek.com/
+   1)in the dt-binding:
+       a. change mediatek,smi type from phandle-array to phandle from Rob.
+       b. Add a new bool property (mediatek,smi_sub_common)
+          to indicate if this is smi-sub-common.
+   2)change the clock using bulk parting.
+     keep the smi-common's flag. more strict.
+   3) more comment about larb initial setting.
+       
+v2: https://lore.kernel.org/linux-mediatek/20210715121209.31024-1-yong.wu@mediatek.com/
+    rebase on v5.14-rc1
+    1) Adjust clk_bulk flow: use devm_clk_bulk_get for necessary clocks.
+    2) Add two new little patches:
+       a) use devm_platform_ioremap_resource
+       b) Add error handle for smi_probe
+
+v1: https://lore.kernel.org/linux-mediatek/20210616114346.18812-1-yong.wu@mediatek.com/
+
+Yong Wu (13):
+  dt-bindings: memory: mediatek: Add mt8195 smi binding
+  dt-bindings: memory: mediatek: Add mt8195 smi sub common
+  memory: mtk-smi: Use clk_bulk clock ops
+  memory: mtk-smi: Rename smi_gen to smi_type
+  memory: mtk-smi: Adjust some code position
+  memory: mtk-smi: Add error handle for smi_probe
+  memory: mtk-smi: Add device link for smi-sub-common
+  memory: mtk-smi: Add clocks for smi-sub-common
+  memory: mtk-smi: Use devm_platform_ioremap_resource
+  memory: mtk-smi: mt8195: Add smi support
+  memory: mtk-smi: mt8195: Add initial setting for smi-common
+  memory: mtk-smi: mt8195: Add initial setting for smi-larb
+  MAINTAINERS: Add entry for MediaTek SMI
+
+ .../mediatek,smi-common.yaml                  |  34 +-
+ .../memory-controllers/mediatek,smi-larb.yaml |   3 +
+ MAINTAINERS                                   |   8 +
+ drivers/memory/mtk-smi.c                      | 596 ++++++++++--------
+ 4 files changed, 393 insertions(+), 248 deletions(-)
+
+-- 
+2.18.0
+
+
