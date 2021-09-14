@@ -2,98 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A7040B27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9912440B280
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhINPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhINPHy (ORCPT
+        id S233875AbhINPIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:08:04 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:47951 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233437AbhINPID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:07:54 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668F0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:06:36 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id i4so12386236lfv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EzJJglIKGC48QdUN7q/bO92tR/bPSNOmcPTOelyHSLI=;
-        b=QyiBaTXqJT3tfSj4FPnn3N5NJbOe8F+Cu+G+6IjAqi1mR6mzzmZRvnorZfNh67EhgA
-         E0kmmFugaVyuhHWBDxX1l7I+O8WXBOV2L4Z+uUWbE6+aB3Aglp62OhtimUbqhHFm7JEG
-         OFKxbo3qvCrdOzHN6gHAlI/xSVf+/qxXpALTbxz9eU9/8C6R0mH80f4oTEibxIdtjGJX
-         SuAtDKyMruCYj438VU1jDvmCVcoomgJSNJEuCINoVMe5TJNmefdcbBT02IEPDGYSQPjC
-         7mUJMxirCuXltF2UDOy3ZJMzjVcmfCpiIE/AJAmNQKpi5iQLyoGI9yHg4VL5Gz974KeL
-         WAgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EzJJglIKGC48QdUN7q/bO92tR/bPSNOmcPTOelyHSLI=;
-        b=Qwchh763E6FZr5dTqij1FxLuZeagO2Kg9EDPMT6kSe5YL+6fQyefmRNBpMC1Akjlmq
-         on8AeXyTEoGQTLNQtFUpQVt6Q4/GT24jKPhJ+jj0u+AMAW1Qu34qab6Ph0zijNd6SLSP
-         h2WhjicmaZCmA2oovIDrjFGNlVbpAP2U3HwtejY0KoIrWrx3FakqzO96gBI0gov41Mi9
-         SuqbOF+VaOxvIFFwTGET0QC7MXHj/TjhGQffdJrj4/znHGGaKR8xWwkZSwgFBwaOi+CN
-         8nSMiKPlkqfOVJXCuxMAGEgz/D7A7nzizprnF7Bj42XmlkyAvCDaWOFRwXJYu/zjEszW
-         USPg==
-X-Gm-Message-State: AOAM532JWi8jJdXKu2L9vJ0aUciI+LthIOQIHRqSfYBSIDDeUZe8Fr6P
-        jXHxq9SmpzqIcOIpdu+oXujeITfR/a48wwnEyqI+uw==
-X-Google-Smtp-Source: ABdhPJyfzYJNUVcid0Mv8SrxwCc8R0D2eUc9I9Ak+tqlBDDyuc1xrf0IHGsLNaiPxPe8a7FMvUdpMXF8J8LcpwRWLp4=
-X-Received: by 2002:a05:6512:14f:: with SMTP id m15mr8378352lfo.82.1631631994438;
- Tue, 14 Sep 2021 08:06:34 -0700 (PDT)
+        Tue, 14 Sep 2021 11:08:03 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id B54472B0125B;
+        Tue, 14 Sep 2021 11:06:44 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 14 Sep 2021 11:06:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=86VIvVWA0lpTbdksYCftwNrqcOF
+        h/mOj0+p0+34vYa0=; b=GBWYZ2MrlxZs/yCyBjJFDWobiKhCA1JpRuX4IzzO7R0
+        g6KXAfxkZ8+5BVhPMZtYxQ3E+D5aJHsU1t2/g9/gNh+V+UrWnK1veCe7VzmXfuoC
+        wMxQlPc1Dnqz9QBzp7GnIpXSD44G2qfUMMKj68wiwOb4GArjRI/8x/MxHjp4awXQ
+        Hdlx4+k9afysKw6qjsaTowisXWKNrtrqf9lBRqSHjaOwV49dj34TgWg2E2ammK1C
+        k/TKR4HiB7/UY7ObaGfA8clDDgnLYU5nohZnlotJCeyhSr1dld+SmIb0eL17kFHd
+        /rphFtPd7RrIxMCfSGT6F6eY3VY7syLNXiMFCkZ0KIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=86VIvV
+        WA0lpTbdksYCftwNrqcOFh/mOj0+p0+34vYa0=; b=uBY8Wu+PwwK/jvUId+NYNQ
+        0ra5aFFTIuB8iwMn7zQKI3lH9F1uDUDUfh8MwgG3CwhlFijJ6fSOTDcHOetrzNwa
+        eM/hGryovBF1dweQS0ahdvQTbMiTAQNfkT7G2ETtOR2g2q4MyHGp5dfMUSgLsJNq
+        2aafV9764pougbDJBDMsEkvN0s89heqPFZkijvgt+VuJ6lfbnkhvZLjvjiisFx//
+        HXfG7znHxTXcjwM8q+ZIHDHbUS6MOjVJOxQncHQg3hI/5aaBaXxIt/7N85uQcBO7
+        BC9aDIZ4pw9bSlp9f8V6lBwtbH/gkU4yoaP/l2+PVgiVUFMg3us75UVthIEKIpng
+        ==
+X-ME-Sender: <xms:grpAYTY6mFwp0TaPkR99QS2WD4quaLE1pDnbiCqV7LqAS4vsa7-2oA>
+    <xme:grpAYSZp2_YRHNft-NxGSgBFZJ5zMF6gkopEivB3tiJcrm9CLwQPHfk0pOZMxT527
+    n6ewO5qC0aaZcBmkQY>
+X-ME-Received: <xmr:grpAYV9BTBZFnG_h52EyUY-tSzGzeUTN77Wh2LAuaamHQvu9mjtsmCUH4H-P_kzVhHzWsH2qPgZNpGJHhRnNokdctnKVazNEbAQZ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:grpAYZqbqusuLlwsjH6rp5W4_FsR5r79A8nWAlh9qCsOkDCgdr6bHQ>
+    <xmx:grpAYepgrNk1xeO5LE0Ip2ATARaouOQKGQ-Wu_ORMChjt-PvpPVtBA>
+    <xmx:grpAYfQbFlIYjggKlP1cewJi_tJLaAnGnduUnnhLs7GtE-pwv8FTUQ>
+    <xmx:hLpAYT79UIPtUb-CPqNHk7eR5Rp51hSgi1OfT3RTXZtvhby14LEqlN3lb3g>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Sep 2021 11:06:42 -0400 (EDT)
+Date:   Tue, 14 Sep 2021 17:06:41 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>,
+        linux-rpi-kernel@lists.infradead.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] drm/probe-helper: Create a HPD IRQ event helper
+ for a single connector
+Message-ID: <20210914150641.dzyioa3wkoyv2o7k@gilmour>
+References: <20210914101724.266570-1-maxime@cerno.tech>
+ <20210914101724.266570-2-maxime@cerno.tech>
+ <YUB8c2If+E851x4A@ravnborg.org>
 MIME-Version: 1.0
-References: <50a91600-173f-ae8f-e194-4649a9f8176b@linux.vnet.ibm.com> <20210914162223.363dd7c2@canb.auug.org.au>
-In-Reply-To: <20210914162223.363dd7c2@canb.auug.org.au>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 14 Sep 2021 08:06:22 -0700
-Message-ID: <CAKwvOdmHH-tOkCPGX-Si7gSujKj-CV3O5UjZD7BNtsTKwMmkeA@mail.gmail.com>
-Subject: Re: [5.15-rc1][PPC][bisected 6d2ef226] mainline build breaks at
- ./include/linux/compiler_attributes.h:62:5: warning: "__has_attribute"
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-next <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        sachinp <sachinp@linux.vnet.ibm.com>, ojeda@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="h7ls47b3z6ubt5au"
+Content-Disposition: inline
+In-Reply-To: <YUB8c2If+E851x4A@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:22 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi Abdul,
->
-> On Tue, 14 Sep 2021 11:39:44 +0530 Abdul Haleem <abdhalee@linux.vnet.ibm.com> wrote:
-> >
-> > Today's mainline kernel fails to compile on my powerpc box with below errors
-> >
-> > ././include/linux/compiler_attributes.h:62:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-> >   #if __has_attribute(__assume_aligned__)
-> >       ^~~~~~~~~~~~~~~
-> > ././include/linux/compiler_attributes.h:62:20: error: missing binary operator before token "("
-> >   #if __has_attribute(__assume_aligned__)
-> >                      ^
-> > ././include/linux/compiler_attributes.h:88:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-> >   #if __has_attribute(__copy__)
-> >       ^~~~~~~~~~~~~~~
-> > ././include/linux/compiler_attributes.h:88:20: error: missing binary operator before token "("
-> >   #if __has_attribute(__copy__)
-> >
-> > Kernel builds fine when below patch is reverted
-> >
-> > commit 6d2ef22 : compiler_attributes.h: drop __has_attribute() support for gcc4
->
-> Thanks for your report.
->
-> This is known and being addressed.
 
-Thanks for the report. Support for GCC 4.X has been dropped.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=76ae847497bc5207c479de5e2ac487270008b19b
--- 
-Thanks,
-~Nick Desaulniers
+--h7ls47b3z6ubt5au
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Sam,
+
+On Tue, Sep 14, 2021 at 12:41:55PM +0200, Sam Ravnborg wrote:
+> On Tue, Sep 14, 2021 at 12:17:23PM +0200, Maxime Ripard wrote:
+> > The drm_helper_hpd_irq_event() function is iterating over all the
+> > connectors when an hotplug event is detected.
+> >=20
+> > During that iteration, it will call each connector detect function and
+> > figure out if its status changed.
+> >=20
+> > Finally, if any connector changed, it will notify the user-space and the
+> > clients that something changed on the DRM device.
+> >=20
+> > This is supposed to be used for drivers that don't have a hotplug
+> > interrupt for individual connectors. However, drivers that can use an
+> > interrupt for a single connector are left in the dust and can either
+> > reimplement the logic used during the iteration for each connector or
+> > use that helper and iterate over all connectors all the time.
+> >=20
+> > Since both are suboptimal, let's create a helper that will only perform
+> > the status detection on a single connector.
+> >=20
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> >=20
+> > ---
+> > Changes from v2:
+> >   - Skip connectors with DRM_CONNECTOR_POLL_HPD in drm_helper_hpd_irq_e=
+vent
+> >   - Add drm_connector_helper_hpd_irq_event returned value documentation
+> >   - Improve logging
+> >=20
+> > Changes from v1:
+> >   - Rename the shared function
+> >   - Move the hotplug event notification out of the shared function
+> >   - Added missing locks
+> >   - Improve the documentation
+> >   - Switched to drm_dbg_kms
+> > ---
+> >  drivers/gpu/drm/drm_probe_helper.c | 117 +++++++++++++++++++++--------
+> >  include/drm/drm_probe_helper.h     |   1 +
+> >  2 files changed, 87 insertions(+), 31 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_p=
+robe_helper.c
+> > index 5b77fb5c1a32..a1ffc0c30b3a 100644
+> > --- a/drivers/gpu/drm/drm_probe_helper.c
+> > +++ b/drivers/gpu/drm/drm_probe_helper.c
+> > @@ -795,6 +795,87 @@ void drm_kms_helper_poll_fini(struct drm_device *d=
+ev)
+> >  }
+> >  EXPORT_SYMBOL(drm_kms_helper_poll_fini);
+> > =20
+> > +static bool check_connector_changed(struct drm_connector *connector)
+> > +{
+> > +	struct drm_device *dev =3D connector->dev;
+> > +	enum drm_connector_status old_status;
+> > +	u64 old_epoch_counter;
+> > +	bool changed =3D false;
+> > +
+> > +	/* Only handle HPD capable connectors. */
+> > +	drm_WARN_ON(dev, !(connector->polled & DRM_CONNECTOR_POLL_HPD));
+>
+> This will WARN if DRM_CONNECTOR_POLL_HPD is not set - which the previous
+> code did not. I am not sure this is intentional.
+> Or have I missed something?
+
+Sorry, I misunderstood your previous comment and thought you wanted to
+skip the !HPD connectors in the drm_helper_hpd_irq_event loop.
+
+What do you think would be the proper scenario here? Just return false?
+
+Maxime
+
+--h7ls47b3z6ubt5au
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUC6gQAKCRDj7w1vZxhR
+xfvLAQCvjHZIOLIX10NwRDDeWNnz+BQt6EGDstR3f6aiQVq/zwD7Ba+EN1wlpHpD
+MiKDu9/bU4ZSc+apGZo9YgFu6QLNCQ4=
+=1ekQ
+-----END PGP SIGNATURE-----
+
+--h7ls47b3z6ubt5au--
