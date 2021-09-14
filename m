@@ -2,190 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C9840A699
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816B540A69D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240040AbhINGSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:18:10 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:43921 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239600AbhINGSJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:18:09 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210914061651euoutp024bbb90b625dfec1a790adfdcc1bed542~km7_DA8eN0904509045euoutp02W
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:16:51 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210914061651euoutp024bbb90b625dfec1a790adfdcc1bed542~km7_DA8eN0904509045euoutp02W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631600211;
-        bh=sJ896bsTZuWbJZQuipKgY7jqTRqWY4opH73RzQpVHts=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=cngnM9XRXtEMimi5PWNF3TAOJr8g+E/QT/pd3rhGggEgAvnHVzOko3yUu4J+MdsbI
-         kZC4RhOKdfQBrEIewq2imt437XG31wjX3WfZQ5APOh4/QbhMhBEEdvJxkd5Ohh8yvh
-         KrFxeKMoj95EAT9JfCb7LImsXQtXiZzTY5ivkpVA=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210914061651eucas1p130b23ce3f853fb0f75d3099eaa4e0489~km79y8uZd1713217132eucas1p1C;
-        Tue, 14 Sep 2021 06:16:51 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 56.E4.45756.35E30416; Tue, 14
-        Sep 2021 07:16:51 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210914061650eucas1p2d432b97038c76ee9778ee7678cbfd841~km79FdOLS3083730837eucas1p2G;
-        Tue, 14 Sep 2021 06:16:50 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210914061650eusmtrp1a28088e7d11743320886713aa17ce89d~km79EuVjP1049310493eusmtrp1w;
-        Tue, 14 Sep 2021 06:16:50 +0000 (GMT)
-X-AuditID: cbfec7f2-7d5ff7000002b2bc-2f-61403e53fab9
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id D5.EF.31287.25E30416; Tue, 14
-        Sep 2021 07:16:50 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210914061650eusmtip206166440f8aee732d2482ce16a42807d~km78aB3wy2697426974eusmtip2Y;
-        Tue, 14 Sep 2021 06:16:50 +0000 (GMT)
-Subject: Re: [PATCH v1 1/5] driver core: fw_devlink: Improve handling of
- cyclic dependencies
-To:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <7756112c-0378-f48b-ef5a-aafc994dc662@samsung.com>
-Date:   Tue, 14 Sep 2021 08:16:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.14.0
+        id S239906AbhINGS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:18:27 -0400
+Received: from verein.lst.de ([213.95.11.211]:58609 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240015AbhINGSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 02:18:24 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 94E1467357; Tue, 14 Sep 2021 08:17:05 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 08:17:05 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andreas Larsson <andreas@gaisler.com>
+Cc:     Christoph Hellwig <hch@lst.de>, David Miller <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel@vger.kernel.org, software@gaisler.com
+Subject: Re: [PATCH] sparc32: Page align size in arch_dma_alloc
+Message-ID: <20210914061705.GB26679@lst.de>
+References: <20210908074822.16793-1-andreas@gaisler.com> <20210909060712.GA25485@lst.de> <3a653ab5-14d2-f61f-cb0a-cbeba93b4ac8@gaisler.com>
 MIME-Version: 1.0
-In-Reply-To: <20210914043928.4066136-2-saravanak@google.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAKsWRmVeSWpSXmKPExsWy7djP87rBdg6JBp2zZCzO3z3EbPHs1l4m
-        i+bF69kszvzWtdixXcTi8q45bBYbNn9nspj7ZSqzReveI+wWXYf+sjlweWzbvY3VY+esu+we
-        CzaVemxa1cnmcefaHjaPQ4c7GD32z13D7rFzx2cmj8+b5AI4o7hsUlJzMstSi/TtErgy/kw+
-        zlTwX7Li+sQJjA2Mf0W6GDk5JARMJJrvLmTpYuTiEBJYwShxb99URgjnC6PEzznHmUCqhAQ+
-        M0rMWK4O03Fj0lpmiKLljBITLnexQTgfGSUu3F/CClIlLBAncW/9B7C5IgJtjBIP9/0Ec5gF
-        vjJKfLi4nhGkik3AUKLrLUg7JwevgJ3E0u3fWEBsFgFViT/bbrKD2KICyRLT/jYxQ9QISpyc
-        +QSshlPARuLn96tgNcwC8hLb385hhrDFJW49mc8EskxCoJ9TYvv6tUwQh7tIvL41D8oWlnh1
-        fAs7hC0jcXpyDwtEQzPQqefWskM4PYwSl5tmMEJUWUvcOfcL6FQOoBWaEut36UOEHSXOrJnI
-        BBKWEOCTuPFWEOIIPolJ26YzQ4R5JTrahCCq1SRmHV8Ht/bghUvMExiVZiF5bRaSd2YheWcW
-        wt4FjCyrGMVTS4tz01OLDfNSy/WKE3OLS/PS9ZLzczcxAhPZ6X/HP+1gnPvqo94hRiYOxkOM
-        EhzMSiK8297YJgrxpiRWVqUW5ccXleakFh9ilOZgURLnXTV7TbyQQHpiSWp2ampBahFMlomD
-        U6qBSfl7YOfnbo71zz5wsUzUZd5r8y6fwYXBMIY9YDtf0CrFssx1f3NPvNWaJZ/0K7c3LXmV
-        Qynv2f8ZSrl6nTergq9/3r1J3r56V9UK5t50MZbqnJ3OhyYe8Q3LWL/RvGf1QwnXJd8KXtht
-        u9+z4cnp8lIWlorfC6ZubTzsf6J19bO6r+xTn6ild5dcF/n0K3fC/85/jhMj5s0562fXvt37
-        9aU1bme+pxn8/74mTM7SKTvzU31tcPANFaYpfhkePvJZ266nslgv22q85Irp07lV0+b9t3/5
-        29rn2bvJ/UIKLfGiEuVm53R1V3rE1M/TOptv819ppdPW7llC/1yWesXq5UhML/k74dEFm8Jv
-        nOwZSizFGYmGWsxFxYkA4+cjItMDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMIsWRmVeSWpSXmKPExsVy+t/xe7pBdg6JBnPmalmcv3uI2eLZrb1M
-        Fs2L17NZnPmta7Fju4jF5V1z2Cw2bP7OZDH3y1Rmi9a9R9gtug79ZXPg8ti2exurx85Zd9k9
-        Fmwq9di0qpPN4861PWwehw53MHrsn7uG3WPnjs9MHp83yQVwRunZFOWXlqQqZOQXl9gqRRta
-        GOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehl/Jl8nKngv2TF9YkTGBsY/4p0MXJy
-        SAiYSNyYtJa5i5GLQ0hgKaPEzZ5HTBAJGYmT0xpYIWxhiT/Xutggit4zSry+e5cRJCEsECdx
-        b/0HFpCEiEAHo8S3q9fBqpgFvjJK3O5ZzQLRcpBRYu7PeSwgLWwChhJdb0FmcXLwCthJLN3+
-        DSzOIqAq8WfbTXYQW1QgWeLt6+9MEDWCEidnPgGr4RSwkfj5/SpYDbOAmcS8zQ+ZIWx5ie1v
-        50DZ4hK3nsxnmsAoNAtJ+ywkLbOQtMxC0rKAkWUVo0hqaXFuem6xoV5xYm5xaV66XnJ+7iZG
-        YOxuO/Zz8w7Gea8+6h1iZOJgPMQowcGsJMK77Y1tohBvSmJlVWpRfnxRaU5q8SFGU6B/JjJL
-        iSbnA5NHXkm8oZmBqaGJmaWBqaWZsZI479a5a+KFBNITS1KzU1MLUotg+pg4OKUamCYuFZn7
-        um2q5nMW/5ork91Ve42mOX61FJh8NChrD/v63bsYlq4pvVy7Qq8uPPmr6bdeibwVzm9N4hJE
-        f8+4s6+27EXc7y/XHn+ZoT/P8Lqgol/r5dmtP7fYP0p+NuWKxo1Drww0nolOv3bQunyD34uN
-        Xo2q+e9uL9JM3SXckOJesMZsnkXmks6z/Nv7DOcZcGp/WuD4Mv6i0fbrDW0fAvgS2q2rxR6y
-        bVLxeRX75XUD3+LnmQmTaoW+pupqOkc0Wh3PVX+17WvV1tfbq/UamG4KCDnwrEydt9Sp4VxK
-        Y9tU/SW9k/6m1HI77zl04H6Ck9+0Gu+KEwVnPhaU37cvqoyqlHQzW2096WhCfMnNbUosxRmJ
-        hlrMRcWJAAeCf89mAwAA
-X-CMS-MailID: 20210914061650eucas1p2d432b97038c76ee9778ee7678cbfd841
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210914043943eucas1p134f89c3399fb2bb6a5f24ea5b6119188
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210914043943eucas1p134f89c3399fb2bb6a5f24ea5b6119188
-References: <20210914043928.4066136-1-saravanak@google.com>
-        <CGME20210914043943eucas1p134f89c3399fb2bb6a5f24ea5b6119188@eucas1p1.samsung.com>
-        <20210914043928.4066136-2-saravanak@google.com>
+Content-Type: multipart/mixed; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <3a653ab5-14d2-f61f-cb0a-cbeba93b4ac8@gaisler.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2021 06:39, Saravana Kannan wrote:
-> When we have a dependency of the form:
->
-> Device-A -> Device-C
-> 	Device-B
->
-> Device-C -> Device-B
->
-> Where,
-> * Indentation denotes "child of" parent in previous line.
-> * X -> Y denotes X is consumer of Y based on firmware (Eg: DT).
->
-> We have cyclic dependency: device-A -> device-C -> device-B -> device-A
->
-> fw_devlink current treats device-C -> device-B dependency as an invalid
-> dependency and doesn't enforce it but leaves the rest of the
-> dependencies as is.
->
-> While the current behavior is necessary, it is not sufficient if the
-> false dependency in this example is actually device-A -> device-C. When
-> this is the case, device-C will correctly probe defer waiting for
-> device-B to be added, but device-A will be incorrectly probe deferred by
-> fw_devlink waiting on device-C to probe successfully. Due to this, none
-> of the devices in the cycle will end up probing.
->
-> To fix this, we need to go relax all the dependencies in the cycle like
-> we already do in the other instances where fw_devlink detects cycles.
-> A real world example of this was reported[1] and analyzed[2].
->
-> [1] - https://lore.kernel.org/lkml/0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com/
-> [2] - https://lore.kernel.org/lkml/CAGETcx8peaew90SWiux=TyvuGgvTQOmO4BFALz7aj0Za5QdNFQ@mail.gmail.com/
-> Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->   drivers/base/core.c | 17 ++++++++++++-----
->   1 file changed, 12 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index e65dd803a453..316df6027093 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -1772,14 +1772,21 @@ static int fw_devlink_create_devlink(struct device *con,
->   	 * be broken by applying logic. Check for these types of cycles and
->   	 * break them so that devices in the cycle probe properly.
->   	 *
-> -	 * If the supplier's parent is dependent on the consumer, then
-> -	 * the consumer-supplier dependency is a false dependency. So,
-> -	 * treat it as an invalid link.
-> +	 * If the supplier's parent is dependent on the consumer, then the
-> +	 * consumer and supplier have a cyclic dependency. Since fw_devlink
-> +	 * can't tell which of the inferred dependencies are incorrect, don't
-> +	 * enforce probe ordering between any of the devices in this cyclic
-> +	 * dependency. Do this by relaxing all the fw_devlink device links in
-> +	 * this cycle and by treating the fwnode link between the consumer and
-> +	 * the supplier as an invalid dependency.
->   	 */
->   	sup_dev = fwnode_get_next_parent_dev(sup_handle);
->   	if (sup_dev && device_is_dependent(con, sup_dev)) {
-> -		dev_dbg(con, "Not linking to %pfwP - False link\n",
-> -			sup_handle);
-> +		dev_info(con, "Fixing up cyclic dependency with %pfwP (%s)\n",
-> +			 sup_handle, dev_name(sup_dev));
-> +		device_links_write_lock();
-> +		fw_devlink_relax_cycle(con, sup_dev);
-> +		device_links_write_unlock();
->   		ret = -EINVAL;
->   	} else {
->   		/*
 
-Best regards
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Sep 13, 2021 at 03:18:38PM +0200, Andreas Larsson wrote:
+>> Andreas - while I've got your attention:  I've been looking into fully
+>> converting sparc32 to the generic DMA code.  Do you have any
+>> documentation for the Leon cache handling in dma_make_coherent,
+>> and more importantly how that applies to the dma coherent handling?
+>> I could see how a flush might be required for the streaming DMA mappings,
+>> that is mapping normal cached memory for I/O.  But for the coherent
+>> allocations which can be accessed from the device and the cpu without
+>> another DMA mapping call this seems really strange.
+>
+> As long as the area passed to arch_dma_free is mapped by
+> arch_dma_allocate, I don't see why the call to dma_make_coherent in
+> arch_dma_free should be needed. I am not sure if there are any current
+> (or historical paths) where we nevertheless have a cacheable mapping
+> when we reach arch_dma_free (or the historical pci32_free_coherent).
+
+Note that the cacheable mapping in the kernel map still exists, but is
+is not used for any access.
+
+> The usual case for LEON systems is that cache snooping on the CPU side
+> invalidates cache lines matching DMA that the CPU sees on the bus. Under
+> the assumption that DMA accesses are seen on the processor bus, this is
+> the reason for only flushing if snooping is not enabled in
+> dma_make_coherent.
+
+Thanks.  Can you take a look and test the two patches below on top of
+your fix?  A git tree is also available here:
+
+http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/sparc32-generic-dma
+
+--huq684BweRXVnRxX
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-sparc32-remove-dma_make_coherent.patch"
+
+From 832183d0409a941788e4c27682b2ad5164aec5d9 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Mon, 13 Sep 2021 18:39:38 +0200
+Subject: sparc32: remove dma_make_coherent
+
+LEON only needs snooping when DMA accesses are not seen on the processor
+bus.  Given that coherent allocations are mapped uncached this can't
+happen for those, so open code the d-cache flushing logic in the only
+remaing place that needs it, arch_sync_dma_for_cpu.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/sparc/kernel/ioport.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
+
+diff --git a/arch/sparc/kernel/ioport.c b/arch/sparc/kernel/ioport.c
+index 7ceae24b0ca99..3eb748e862220 100644
+--- a/arch/sparc/kernel/ioport.c
++++ b/arch/sparc/kernel/ioport.c
+@@ -52,17 +52,6 @@
+ #include <asm/io-unit.h>
+ #include <asm/leon.h>
+ 
+-/* This function must make sure that caches and memory are coherent after DMA
+- * On LEON systems without cache snooping it flushes the entire D-CACHE.
+- */
+-static inline void dma_make_coherent(unsigned long pa, unsigned long len)
+-{
+-	if (sparc_cpu_model == sparc_leon) {
+-		if (!sparc_leon3_snooping_enabled())
+-			leon_flush_dcache_all();
+-	}
+-}
+-
+ static void __iomem *_sparc_ioremap(struct resource *res, u32 bus, u32 pa, int sz);
+ static void __iomem *_sparc_alloc_io(unsigned int busno, unsigned long phys,
+     unsigned long size, char *name);
+@@ -361,18 +350,23 @@ void arch_dma_free(struct device *dev, size_t size, void *cpu_addr,
+ 	if (!sparc_dma_free_resource(cpu_addr, size))
+ 		return;
+ 
+-	dma_make_coherent(dma_addr, size);
+ 	srmmu_unmapiorange((unsigned long)cpu_addr, size);
+ 	free_pages((unsigned long)phys_to_virt(dma_addr), get_order(size));
+ }
+ 
+-/* IIep is write-through, not flushing on cpu to device transfer. */
+-
++/*
++ * IIep is write-through, not flushing on cpu to device transfer.
++ *
++ * On LEON systems without cache snooping, the entire D-CACHE must be flushed to
++ * make DMA to cacheable memory coherent.
++ */
+ void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size,
+ 		enum dma_data_direction dir)
+ {
+-	if (dir != PCI_DMA_TODEVICE)
+-		dma_make_coherent(paddr, PAGE_ALIGN(size));
++	if (dir != PCI_DMA_TODEVICE &&
++	    sparc_cpu_model == sparc_leon &&
++	    !sparc_leon3_snooping_enabled())
++		leon_flush_dcache_all();
+ }
+ 
+ #ifdef CONFIG_PROC_FS
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.30.2
 
+
+--huq684BweRXVnRxX
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0002-sparc32-use-DMA_DIRECT_REMAP.patch"
+
+From 0f612347699290a8d2f604a7640b5568e3d9af57 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Mon, 13 Sep 2021 18:44:55 +0200
+Subject: sparc32: use DMA_DIRECT_REMAP
+
+Use the generic dma remapping allocator instead of open coding it.
+This also avoids setting up page tables from irq context which is
+generally dangerous and uses the atomic pool instead.
+
+The only interesting part is the architecture specific pgprot_dmacoherent
+definition that sets the SRMMU_PRIV bit as done by the old implementation.
+(I have no idea what it is useful for, though).
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/sparc/Kconfig                  |  3 +-
+ arch/sparc/include/asm/pgtable_32.h |  8 +++++
+ arch/sparc/kernel/ioport.c          | 54 -----------------------------
+ 3 files changed, 10 insertions(+), 55 deletions(-)
+
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index f0c0f955e1695..8089258d6cc97 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -54,8 +54,9 @@ config SPARC32
+ 	def_bool !64BIT
+ 	select ARCH_32BIT_OFF_T
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+-	select GENERIC_ATOMIC64
+ 	select CLZ_TAB
++	select DMA_DIRECT_REMAP
++	select GENERIC_ATOMIC64
+ 	select HAVE_UID16
+ 	select OLD_SIGACTION
+ 	select ZONE_DMA
+diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
+index ffccfe3b22ed3..1e7984ff7b320 100644
+--- a/arch/sparc/include/asm/pgtable_32.h
++++ b/arch/sparc/include/asm/pgtable_32.h
+@@ -313,6 +313,14 @@ static inline pgprot_t pgprot_noncached(pgprot_t prot)
+ 	return prot;
+ }
+ 
++#define pgprot_dmacoherent pgprot_dmacoherent
++static inline pgprot_t pgprot_dmacoherent(pgprot_t prot)
++{
++	pgprot_val(prot) &= ~pgprot_val(__pgprot(SRMMU_CACHE));
++	pgprot_val(prot) |= pgprot_val(__pgprot(SRMMU_PRIV));
++	return prot;
++}
++
+ static pte_t pte_modify(pte_t pte, pgprot_t newprot) __attribute_const__;
+ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ {
+diff --git a/arch/sparc/kernel/ioport.c b/arch/sparc/kernel/ioport.c
+index 3eb748e862220..57a72c46eddb0 100644
+--- a/arch/sparc/kernel/ioport.c
++++ b/arch/sparc/kernel/ioport.c
+@@ -300,60 +300,6 @@ arch_initcall(sparc_register_ioport);
+ 
+ #endif /* CONFIG_SBUS */
+ 
+-
+-/* Allocate and map kernel buffer using consistent mode DMA for a device.
+- * hwdev should be valid struct pci_dev pointer for PCI devices.
+- */
+-void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
+-		gfp_t gfp, unsigned long attrs)
+-{
+-	unsigned long addr;
+-	void *va;
+-
+-	if (!size || size > 256 * 1024)	/* __get_free_pages() limit */
+-		return NULL;
+-
+-	size = PAGE_ALIGN(size);
+-	va = (void *) __get_free_pages(gfp | __GFP_ZERO, get_order(size));
+-	if (!va) {
+-		printk("%s: no %zd pages\n", __func__, size >> PAGE_SHIFT);
+-		return NULL;
+-	}
+-
+-	addr = sparc_dma_alloc_resource(dev, size);
+-	if (!addr)
+-		goto err_nomem;
+-
+-	srmmu_mapiorange(0, virt_to_phys(va), addr, size);
+-
+-	*dma_handle = virt_to_phys(va);
+-	return (void *)addr;
+-
+-err_nomem:
+-	free_pages((unsigned long)va, get_order(size));
+-	return NULL;
+-}
+-
+-/* Free and unmap a consistent DMA buffer.
+- * cpu_addr is what was returned arch_dma_alloc, size must be the same as what
+- * was passed into arch_dma_alloc, and likewise dma_addr must be the same as
+- * what *dma_ndler was set to.
+- *
+- * References to the memory and mappings associated with cpu_addr/dma_addr
+- * past this call are illegal.
+- */
+-void arch_dma_free(struct device *dev, size_t size, void *cpu_addr,
+-		dma_addr_t dma_addr, unsigned long attrs)
+-{
+-	size = PAGE_ALIGN(size);
+-
+-	if (!sparc_dma_free_resource(cpu_addr, size))
+-		return;
+-
+-	srmmu_unmapiorange((unsigned long)cpu_addr, size);
+-	free_pages((unsigned long)phys_to_virt(dma_addr), get_order(size));
+-}
+-
+ /*
+  * IIep is write-through, not flushing on cpu to device transfer.
+  *
+-- 
+2.30.2
+
+
+--huq684BweRXVnRxX--
