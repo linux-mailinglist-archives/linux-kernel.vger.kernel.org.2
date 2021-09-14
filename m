@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FF840ADD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB07C40ADD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhINMg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:36:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40486 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232801AbhINMgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:36:21 -0400
-X-UUID: 77751c7b44d8426493af619b85db3633-20210914
-X-UUID: 77751c7b44d8426493af619b85db3633-20210914
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <fengquan.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 900585629; Tue, 14 Sep 2021 20:35:01 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 14 Sep 2021 20:35:00 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 14 Sep 2021 20:34:59 +0800
-From:   Fengquan Chen <Fengquan.Chen@mediatek.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <fengquan.chen@mediatek.com>, <tinghan.shen@mediatek.com>,
-        <randy.wu@mediatek.com>, <rex-bc.chen@mediatek.com>,
-        <christine.zhu@mediatek.com>, <joe.yang@mediatek.com>,
-        <zhishuang.zhang@mediatek.com>
-Subject: [v3,2/2] watchdog: mtk: add disable_wdt_extrst support
-Date:   Tue, 14 Sep 2021 20:34:54 +0800
-Message-ID: <20210914123454.32603-3-Fengquan.Chen@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210914123454.32603-1-Fengquan.Chen@mediatek.com>
-References: <20210914123454.32603-1-Fengquan.Chen@mediatek.com>
+        id S232964AbhINMgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:36:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232920AbhINMgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:36:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC3BA60FED
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631622935;
+        bh=v6AkjW9KH6HTqCpgB1qg29+8WnES0yfsEN29ZRiutTY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AyvBvp3r+bpgEGVlB+uHeCPb9C89UrFZHQo+bHESmCAWUypgJFqmE5L2m0vJwEyIF
+         GaFlZJIJffWfjv5yKHr7/FOu+OcoYNwCorK1jvXIKt8HGcghVihFqTNXJDNWExiuhG
+         EWV00o5OT1JkT8rEgS2VZwJs36pp/F0yPOnLikpNHiNaADxlKhBysfPISrCmHBmljy
+         2ThQ7AYxMNva2VIhd62y6VCTxs+cubxnrVIMBK0uRiI72BBgxKtVANINO3hQvMPWDh
+         stALc57tN4y0vmvSFBvbwSTd/2B7h+8/+b8vtEAdAwIf6pOMVmxOB4UWjta8y4wlsK
+         FMb1bHNpbdNQw==
+Received: by mail-ed1-f46.google.com with SMTP id h17so9513876edj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:35:35 -0700 (PDT)
+X-Gm-Message-State: AOAM531l19U30VB6X3yF2h8nLxUtZxJOzShwNeUdp4l3S6NDQunimkrA
+        +ZbY5D5FYtQQv0km4A+RBCoewhic983tv210+A==
+X-Google-Smtp-Source: ABdhPJyGDyxKaWA1ojHga43nQMWt/OBfXcdzcCLAHa2S0mUuTH0AWr9TYtJGBHU8xItZHhMt+7ADGi/w47x2PuB7698=
+X-Received: by 2002:a05:6402:150a:: with SMTP id f10mr19053835edw.318.1631622934311;
+ Tue, 14 Sep 2021 05:35:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+References: <20210914043928.4066136-1-saravanak@google.com> <20210914043928.4066136-2-saravanak@google.com>
+In-Reply-To: <20210914043928.4066136-2-saravanak@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 14 Sep 2021 07:35:23 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+FXN9cU5h7ZtcR_P6kuF-Hs3Cy-Z8rEug=F_4v0sWggg@mail.gmail.com>
+Message-ID: <CAL_Jsq+FXN9cU5h7ZtcR_P6kuF-Hs3Cy-Z8rEug=F_4v0sWggg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] driver core: fw_devlink: Improve handling of
+ cyclic dependencies
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases, we may need watchdog just to trigger an
-internal soc reset without sending any output signal.
+On Mon, Sep 13, 2021 at 11:39 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> When we have a dependency of the form:
+>
+> Device-A -> Device-C
+>         Device-B
+>
+> Device-C -> Device-B
+>
+> Where,
+> * Indentation denotes "child of" parent in previous line.
+> * X -> Y denotes X is consumer of Y based on firmware (Eg: DT).
+>
+> We have cyclic dependency: device-A -> device-C -> device-B -> device-A
+>
+> fw_devlink current treats device-C -> device-B dependency as an invalid
+> dependency and doesn't enforce it but leaves the rest of the
+> dependencies as is.
+>
+> While the current behavior is necessary, it is not sufficient if the
+> false dependency in this example is actually device-A -> device-C. When
+> this is the case, device-C will correctly probe defer waiting for
+> device-B to be added, but device-A will be incorrectly probe deferred by
+> fw_devlink waiting on device-C to probe successfully. Due to this, none
+> of the devices in the cycle will end up probing.
+>
+> To fix this, we need to go relax all the dependencies in the cycle like
+> we already do in the other instances where fw_devlink detects cycles.
+> A real world example of this was reported[1] and analyzed[2].
+>
+> [1] - https://lore.kernel.org/lkml/0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com/
+> [2] - https://lore.kernel.org/lkml/CAGETcx8peaew90SWiux=TyvuGgvTQOmO4BFALz7aj0Za5QdNFQ@mail.gmail.com/
+> Fixes: f9aa460672c9 ("driver core: Refactor fw_devlink feature")
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/base/core.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
 
-Provide a disable_wdt_extrst parameter for configuration.
-We can disable or enable it just by configuring dts.
+Am I supposed to apply this? What about the revert and mdio-parent-bus
+support you mentioned? Those are needed too? Please send me a series
+with what I should apply for 5.15, not fixes and new features
+combined.
 
-Signed-off-by: Fengquan Chen <fengquan.chen@mediatek.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/watchdog/mtk_wdt.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 796fbb048cbe..ceb57ea627cd 100644
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -65,6 +65,7 @@ struct mtk_wdt_dev {
- 	void __iomem *wdt_base;
- 	spinlock_t lock; /* protects WDT_SWSYSRST reg */
- 	struct reset_controller_dev rcdev;
-+	bool disable_wdt_extrst;
- };
- 
- struct mtk_wdt_data {
-@@ -256,6 +257,8 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
- 		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
- 	else
- 		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	if (mtk_wdt->disable_wdt_extrst)
-+		reg &= ~WDT_MODE_EXRST_EN;
- 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
- 	iowrite32(reg, wdt_base + WDT_MODE);
- 
-@@ -381,6 +384,10 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 		if (err)
- 			return err;
- 	}
-+
-+	mtk_wdt->disable_wdt_extrst =
-+		of_property_read_bool(dev->of_node, "mediatek,disable-extrst");
-+
- 	return 0;
- }
- 
--- 
-2.25.1
-
+Rob
