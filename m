@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B354040AD26
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EB840AD2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhINMM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:12:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232695AbhINMMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:12:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C83CF6113B;
-        Tue, 14 Sep 2021 12:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631621494;
-        bh=Un8y/D+KQ7QnI5WCuToXds/wfl/En/jtOwh4rNfj9R8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ig+JhbgZYvBpoEkePCkGJri/drWhd/zNQud4qJwR8VAt84t30tIDeaFs97pqovpnU
-         WCFrlyeMm6+1wzrVATtgyga9C5qWYHs1yX99yykHrOJ3pCi9FXJKirLieFGvLxzC0K
-         Mywhpb0yr9NkpYWBDViktx8s3C+pE5TggWsvKK4IyjcPZc1m8gjUT/JKfmfVm6FX8H
-         CX7KnVaCKBdHWEu2l+bHSQiZ1f1aWajC83sfiAJLI1WCxOKfU4PeSC6JVYfKKmXY+Q
-         NIiIwTM/plhEKszesgnnR42HGaTtjXF+XLsz785RrqO0IDw4DjfEQpDioB90gj8vwG
-         AVBFyfowsQ6nQ==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org
-Subject: [RFC PATCH 8/8] ARM: rely on core code to keep thread_info::cpu updated
-Date:   Tue, 14 Sep 2021 14:10:36 +0200
-Message-Id: <20210914121036.3975026-9-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210914121036.3975026-1-ardb@kernel.org>
-References: <20210914121036.3975026-1-ardb@kernel.org>
+        id S232617AbhINMN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:13:59 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19974 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232199AbhINMN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:13:58 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H82Dy0k1gzbmN9;
+        Tue, 14 Sep 2021 20:08:34 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 20:12:39 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 20:12:38 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <jonathan.lemon@gmail.com>,
+        <alobakin@pm.me>, <willemb@google.com>, <cong.wang@bytedance.com>,
+        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
+        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
+        <alexander.duyck@gmail.com>, <dsahern@gmail.com>
+Subject: [PATCH net-next v2 0/3] some optimization for page pool
+Date:   Tue, 14 Sep 2021 20:11:11 +0800
+Message-ID: <20210914121114.28559-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the core code switched back to using thread_info::cpu to keep
-a task's CPU number, we no longer need to keep it in sync explicitly. So
-just drop the code that does this.
+Patch 1: support non-split page when PP_FLAG_PAGE_FRAG is set.
+patch 2: avoid calling compound_head() for skb frag page
+Patch 3: keep track of pp page when __skb_frag_ref() is called.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
-This patch applies onto [0], which we hope to get merged for v5.16
+V2: add patch 2, adjust the commit log accroding to the discussion
+    in V1, and fix a compiler error reported by kernel test robot.
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=arm32-ti-in-task-v5
+Yunsheng Lin (3):
+  page_pool: support non-split page with PP_FLAG_PAGE_FRAG
+  pool_pool: avoid calling compound_head() for skb frag page
+  skbuff: keep track of pp page when __skb_frag_ref() is called
 
- arch/arm/include/asm/switch_to.h | 14 --------------
- arch/arm/kernel/smp.c            |  3 ---
- 2 files changed, 17 deletions(-)
+ include/linux/skbuff.h  | 40 ++++++++++++++++++++++++++++++++++++----
+ include/net/page_pool.h | 34 +++++++++++++++++++++++++++++++++-
+ net/core/page_pool.c    | 30 +++++++++---------------------
+ 3 files changed, 78 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm/include/asm/switch_to.h b/arch/arm/include/asm/switch_to.h
-index db2be1f6550d..61e4a3c4ca6e 100644
---- a/arch/arm/include/asm/switch_to.h
-+++ b/arch/arm/include/asm/switch_to.h
-@@ -23,23 +23,9 @@
-  */
- extern struct task_struct *__switch_to(struct task_struct *, struct thread_info *, struct thread_info *);
- 
--static inline void set_ti_cpu(struct task_struct *p)
--{
--#ifdef CONFIG_THREAD_INFO_IN_TASK
--	/*
--	 * The core code no longer maintains the thread_info::cpu field once
--	 * CONFIG_THREAD_INFO_IN_TASK is in effect, but we rely on it for
--	 * raw_smp_processor_id(), which cannot access struct task_struct*
--	 * directly for reasons of circular #inclusion hell.
--	 */
--	task_thread_info(p)->cpu = p->cpu;
--#endif
--}
--
- #define switch_to(prev,next,last)					\
- do {									\
- 	__complete_pending_tlbi();					\
--	set_ti_cpu(next);						\
- 	if (IS_ENABLED(CONFIG_CURRENT_POINTER_IN_TPIDRURO))		\
- 		__this_cpu_write(__entry_task, next);			\
- 	last = __switch_to(prev,task_thread_info(prev), task_thread_info(next));	\
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index cde5b6d8bac5..97ee6b1567e9 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -154,9 +154,6 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
- 	secondary_data.swapper_pg_dir = get_arch_pgd(swapper_pg_dir);
- #endif
- 	secondary_data.task = idle;
--	if (IS_ENABLED(CONFIG_THREAD_INFO_IN_TASK))
--		task_thread_info(idle)->cpu = cpu;
--
- 	sync_cache_w(&secondary_data);
- 
- 	/*
 -- 
-2.30.2
+2.33.0
 
