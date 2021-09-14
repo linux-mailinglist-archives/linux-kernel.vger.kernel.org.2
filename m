@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE16E40B43D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B2240B442
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235299AbhINQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:12:22 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59952 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235006AbhINQMU (ORCPT
+        id S234814AbhINQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhINQNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:12:20 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FE131FE25;
-        Tue, 14 Sep 2021 16:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631635862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5C+B3s0+s0kVAvW4V7aTwm7p5FXKMe3BMinycoHWq7Y=;
-        b=i9eV3r3FIPHOQNdNf/CW/GDUW3bqiD53fKWAxaE1SHU1S1Ytd9RLvPedrIcJ969SUdcbtD
-        CW8Q5vT7ymAtE2Y29q0+iUpOybsyT1/iHw6UZUB4Mgr5qm90jimmyysImuJYMf7fkKcZ20
-        ZNknuPXUONAjWPy/Ld51RCXv/zzMxfs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631635862;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5C+B3s0+s0kVAvW4V7aTwm7p5FXKMe3BMinycoHWq7Y=;
-        b=YvaZOTmzjHv0DAJbtjujmYd45L4C+vqyCtA0YUc0bkoG7zJL3xumM+62H8Jg6OQBCCGxPi
-        vPsybwUSVysp8uCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EBC6813ABE;
-        Tue, 14 Sep 2021 16:11:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id x8fROJXJQGGYLwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 14 Sep 2021 16:11:01 +0000
-Message-ID: <e5c7ce5b-93f0-b305-de32-c99d0390eb28@suse.cz>
-Date:   Tue, 14 Sep 2021 18:11:01 +0200
+        Tue, 14 Sep 2021 12:13:37 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F989C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:12:20 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id y144so15438774qkb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I7DiJbd0cxUCLQIOVYzn8bpAGXC1DpRRoThWyrXU5us=;
+        b=VLAPpylLAYTeobmTkVR3mMWEApbSzQVCY6y9NZmlGqOYAYmCLqLovz+JRKOW4zbFQO
+         SsICmqARfpElDi01jfGPfhfGp+XbjOWG5j7xhqkXBcfxNTtfN0Q2EHL2YIPXJAmE5lqq
+         9fO4vT4ebWpM51oXh2PN3UzJN/nZE167NxFttlYk9zDneLRVxgg54Ms6stPw+IfwS8fE
+         BcU8DH0Wkz0TT/2TEuDT6T2VOxScMtYxzNvvbGLNasoE4MraqR/e/O1maoUvya4XQnt5
+         8ZqntLHL5K06ZWcY7hFsB6CkWDvb6eMwUQMOMC/DyK5zV21pUx/5Wgk/nJhjm274HIe8
+         i/Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I7DiJbd0cxUCLQIOVYzn8bpAGXC1DpRRoThWyrXU5us=;
+        b=hLFpXCFgMHm65TEEQ2Yiyng8KXNr2QMKWB2hPg2+ih0lxgnpXPlpmScP9pg1OVhu1j
+         Iebeu9isZwTZNFAj5uOjxNu3dIg27E8alDiGROliUxaeCuKMJ9rK/SAYlGS9nfZ4zWmm
+         gzUXhghcCe2pI34B5LNflwM0oRbWQ4s2YUHYIEos8XseVUJHdV2fkyW7SFvNTq+a9EXP
+         /aaWnS9vReUnNfpSrtBx1VSoy4i9WxuGRs4vSywgEvt3ZXszNQ0b7E1vxWFF4xCqHso9
+         //6vAQ+QEdzU5d9eMC0TMMh8zsdFzIFHyXw5PflNuGq3XrKgt/mmzkvbj6WrPFLfLdhK
+         oqtw==
+X-Gm-Message-State: AOAM532IGY+Ef1w457kUNMKVtBM3Z3knGFkZFx+kd0eQzTGVb4Lrzd3t
+        MeUeU5AvSNYkVBHaTGx64kztfw==
+X-Google-Smtp-Source: ABdhPJx4jViYSyei0WdKfCFMJbXr109wAbeh5pMtA2HJlrp+YG8SrdRPcGb67UHsXDEjE3Pl7PPDDA==
+X-Received: by 2002:a05:620a:4541:: with SMTP id u1mr5785047qkp.106.1631635939466;
+        Tue, 14 Sep 2021 09:12:19 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s18sm7826361qkj.87.2021.09.14.09.12.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 09:12:18 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQB2g-000UiF-8O; Tue, 14 Sep 2021 13:12:18 -0300
+Date:   Tue, 14 Sep 2021 13:12:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, christian.koenig@amd.com,
+        galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, dledford@redhat.com,
+        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
+        hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <20210914161218.GF3544071@ziepe.ca>
+References: <20210912165309.98695-1-ogabbay@kernel.org>
+ <YUCvNzpyC091KeaJ@phenom.ffwll.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [for-linus][PATCH 1/2] bootconfig: Fix to check the xbc_node is
- used before free it
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <20210914144809.297030763@goodmis.org>
- <20210914145033.337080566@goodmis.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210914145033.337080566@goodmis.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUCvNzpyC091KeaJ@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 16:48, Steven Rostedt wrote:
-> From: Masami Hiramatsu <mhiramat@kernel.org>
+On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > Hi,
+> > Re-sending this patch-set following the release of our user-space TPC
+> > compiler and runtime library.
+> > 
+> > I would appreciate a review on this.
 > 
-> Fix to check the xbc_node is used before calling memblock_free()
-> because passing NULL to phys_addr() will cause a panic.
-> This will happen if user doesn't pass any bootconfig to the
-> kernel, because kernel will call xbc_destroy_all() after
-> booting.
+> I think the big open we have is the entire revoke discussions. Having the
+> option to let dma-buf hang around which map to random local memory ranges,
+> without clear ownership link and a way to kill it sounds bad to me.
 > 
-> Link: https://lkml.kernel.org/r/163149460533.291098.7342418455457691240.stgit@devnote2
-> 
-> Fixes: 40caa127f3c7 ("init: bootconfig: Remove all bootconfig data when the init memory is removed")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> I think there's a few options:
+> - We require revoke support. But I've heard rdma really doesn't like that,
+>   I guess because taking out an MR while holding the dma_resv_lock would
+>   be an inversion, so can't be done. Jason, can you recap what exactly the
+>   hold-up was again that makes this a no-go?
 
-Should have replied here.
+RDMA HW can't do revoke.
 
-Tested-by: Vlastimil Babka <vbabka@suse.cz>
+So we have to exclude almost all the HW and several interesting use
+cases to enable a revoke operation.
 
-details:
-https://lore.kernel.org/all/61ab2d0c-3313-aaab-514c-e15b7aa054a0@suse.cz/
+>   - For non-revokable things like these dma-buf we'd keep a drm_master
+>     reference around. This would prevent the next open to acquire
+>     ownership rights, which at least prevents all the nasty potential
+>     problems.
 
-> ---
->  lib/bootconfig.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-> index f8419cff1147..4f8849706ef6 100644
-> --- a/lib/bootconfig.c
-> +++ b/lib/bootconfig.c
-> @@ -792,7 +792,8 @@ void __init xbc_destroy_all(void)
->  	xbc_data = NULL;
->  	xbc_data_size = 0;
->  	xbc_node_num = 0;
-> -	memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
-> +	if (xbc_nodes)
-> +		memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
->  	xbc_nodes = NULL;
->  	brace_index = 0;
->  }
-> 
+This is what I generally would expect, the DMABUF FD and its DMA
+memory just floats about until the unrevokable user releases it, which
+happens when the FD that is driving the import eventually gets closed.
 
+I still don't think any of the complexity is needed, pinnable memory
+is a thing in Linux, just account for it in mlocked and that is
+enough.
+
+Jason
