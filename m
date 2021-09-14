@@ -2,168 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74F740AAC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862C640AACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhINJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:25:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58790 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229551AbhINJZ5 (ORCPT
+        id S229960AbhINJ1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:27:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38768 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhINJ1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:25:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631611479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6eUT5aaraqAWkuE8C9hQZ8wEwgwIbUTUok3BPR1VmCk=;
-        b=Ik+ETu6B2BpHO3wOf2F7J2KABefBimfPqZ7h/kVvLV8Jy6XeWLYR0tRf6lF2mWa6+yqcLV
-        LG2hH1uvjo7JbiJoPlO4a2fVeLEVz3PurGVbaCkN0XVqCKR6qiz/IPWb4qFLQ6jWskE+T0
-        s1PBqJv4M6bC/fxoiUJR43ie33UGZHM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-cpkNzd4_MsK1d48mvuZeJg-1; Tue, 14 Sep 2021 05:24:38 -0400
-X-MC-Unique: cpkNzd4_MsK1d48mvuZeJg-1
-Received: by mail-ed1-f72.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so6417503edb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:24:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6eUT5aaraqAWkuE8C9hQZ8wEwgwIbUTUok3BPR1VmCk=;
-        b=u2O+bHy3f/tnGmDQvvwSAz4FWOcJUtnwSC9HnLG6QT0/WNSst/yd9RIQbKhAdoIwE+
-         EccDJWuNrABZrIQyuniTnV2LcskY+ub83axYA0cLuMNrR4jPRJKBsTd+XMxgPwv1RAud
-         FPbta/pdi78VlU4bVF0r4dW5a92+bG9/ygR6ob1h+i+62Y+70elK6IntZ6QIIy5y3hvS
-         ygYkLJuaRsNmuIY+fTGTs8Oszrz5I5HsXBaEDKvrbh+2t/Nto8dVZGtIW/0icgrvgSWy
-         PDESjmSXtZOWed3L7X9R1VfjTlAjFgnyXfuBDINnoRj2WiPTA9CTt8mwMvLZxmX9tZY9
-         KGQw==
-X-Gm-Message-State: AOAM5326j7k30PTUBgelUxXe9ewQYQ0RSE55xXzIFc1RwlxN72KAb6a0
-        2gZ49BYOjY9rlz9hSS9+zO1mFDVgYS5BllvP9Ket/3Rl0fIm94Ek3wvzqFYKzhuMOmMnQgvCR0k
-        Jc8YdK9yslqW9jjsSBRt5zT+4gE3ODcFQQiUH4Yaw6Gv2Vc9HPfXb8Njcte3+QBmZoj4cdD/8qv
-        5I
-X-Received: by 2002:a17:906:3ce2:: with SMTP id d2mr17979078ejh.410.1631611477096;
-        Tue, 14 Sep 2021 02:24:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJPtSEC6E3buj4o2YiBULsC0xfeCeTqpctyx2iTAATorSkT5ah2J8mPCLmx7GtLJxDJ5YfkA==
-X-Received: by 2002:a17:906:3ce2:: with SMTP id d2mr17979048ejh.410.1631611476892;
-        Tue, 14 Sep 2021 02:24:36 -0700 (PDT)
-Received: from localhost.localdomain ([2a04:ee41:4:31cb:e591:1e1e:abde:a8f1])
-        by smtp.gmail.com with ESMTPSA id q19sm5263011edc.74.2021.09.14.02.24.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 02:24:36 -0700 (PDT)
-Subject: Re: [RFC PATCH 3/3] nSVM: use svm->nested.save to load vmcb12
- registers and avoid TOC/TOU races
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20210903102039.55422-1-eesposit@redhat.com>
- <20210903102039.55422-4-eesposit@redhat.com>
- <21d2bf8c4e3eb3fc5d297fd13300557ec686b625.camel@redhat.com>
- <73b5a5bb-48f2-3a08-c76b-a82b5b69c406@redhat.com>
- <9585f1387b2581d30b74cd163a9aac2adbd37a93.camel@redhat.com>
- <2b1e17416cef1e37f42e9bc8b2283b03d2651cb2.camel@redhat.com>
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Message-ID: <ee207b0c-eab3-13ba-44be-999f849008d2@redhat.com>
-Date:   Tue, 14 Sep 2021 11:24:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 14 Sep 2021 05:27:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C4A0522095;
+        Tue, 14 Sep 2021 09:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631611563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oJP5Hgn0wV1kbaF6/yb6lHz6NXZ6FhJcsm4BqlwB55s=;
+        b=fBut3+/sp5BYQ8IrsEowd/IeHG4Il6jc/Gg4/1XgvqA7d0wzDxq4r2KPYPb912k3aJOG4R
+        Z0zSKPBHEoNK/vaPqNxaIu2gp0AaVNTbwmQ9Y4v8DYZqjqvW8dDAqDFrZuzkokdVGmKR7R
+        WCJtP259Bum9OVJTFCo0f2ogSaJGy2c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631611563;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oJP5Hgn0wV1kbaF6/yb6lHz6NXZ6FhJcsm4BqlwB55s=;
+        b=jvEP3lpXJ38/zVth26ajMow8wilEaur2rRYv7gumOt+4GAe1zr6MaD4YwZOXquXXh+B41g
+        LaAZObtUHWcfceBQ==
+Received: from localhost.localdomain (unknown [10.100.201.122])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 98D01A3B94;
+        Tue, 14 Sep 2021 09:26:03 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Peter Korsgaard <peter@korsgaard.com>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: remove dead e-mails
+Date:   Tue, 14 Sep 2021 11:26:03 +0200
+Message-Id: <20210914092603.18722-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <2b1e17416cef1e37f42e9bc8b2283b03d2651cb2.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+jacmet@sunsite.dk and linux@prisktech.co.nz are dead:
+* This is the qmail-send program at a.mx.sunsite.dk.
+  <jacmet@sunsite.dk>:
+  Sorry, no mailbox here by that name. (#5.1.1)
+* 4.1.2 <linux@prisktech.co.nz>: Recipient address rejected: Domain not
+  found
 
+Remove them from MAINTAINERS.
 
-On 14/09/2021 11:12, Maxim Levitsky wrote:
-> On Tue, 2021-09-14 at 12:02 +0300, Maxim Levitsky wrote:
->> On Tue, 2021-09-14 at 10:20 +0200, Emanuele Giuseppe Esposito wrote:
->>> On 12/09/2021 12:42, Maxim Levitsky wrote:
->>>>>    
->>>>> -	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
->>>>> +	if (!nested_vmcb_valid_sregs(vcpu, &svm->nested.save) ||
->>>>>    	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
->>>> If you use a different struct for the copied fields, then it makes
->>>> sense IMHO to drop the 'control' parameter from nested_vmcb_check_controls,
->>>> and just use the svm->nested.save there directly.
->>>>
->>>
->>> Ok, what you say in patch 2 makes sense to me. I can create a new struct
->>> vmcb_save_area_cached, but I need to keep nested.ctl because 1) it is
->>> used also elsewhere, and different fields from the one checked here are
->>> read/set and 2) using another structure (or the same
->>
->> Yes, keep nested.ctl, since vast majority of the fields are copied I think.
-> 
-> But actually that you mention it, I'll say why not to create vmcb_control_area_cached
-> as well indeed and change the type of svm->nested.save to it. (in a separate patch)
-> 
-> I see what you mean that we modify it a bit (but we shoudn't to be honest) and such, but
-> all of this can be fixed.
+CCing Peter with his (different) e-mail, he likely wants to update?
 
-So basically you are proposing:
+Could not find an alternative e-mail for Tony (CCing usb & arm). Maybe
+someon knows how to contact him.
 
-struct svm_nested_state {
-	...
-	struct vmcb_control_area ctl; // we need this because it is used 
-everywhere, I think
-	struct vmcb_control_area_cached ctl_cached;
-	struct vmcb_save_area_cached save_cached;
-	...
-}
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Peter Korsgaard <peter@korsgaard.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-usb@vger.kernel.org
+---
+ MAINTAINERS | 3 ---
+ 1 file changed, 3 deletions(-)
 
-and then
-
-if (!nested_vmcb_valid_sregs(vcpu, &svm->nested.save_cached) ||
-     !nested_vmcb_check_controls(vcpu, &svm->nested.ctl_cached)) {
-
-like that?
-
-Or do you want to delete nested.ctl completely and just keep the fields 
-actually used in ctl_cached?
-
-Also, note that as I am trying to use vmcb_save_area_cached, it is worth 
-noticing that nested_vmcb_valid_sregs() is also used in 
-svm_set_nested_state(), so it requires some additional little changes.
-
-Thank you,
-Emanuele
-
-> 
-> The advantage of having vmcb_control_area_cached is that it becomes impossible to use
-> by mistake a non copied field from the guest.
-> 
-> It would also emphasize that this stuff came from the guest and should be treated as
-> a toxic waste.
-> 
-> Note again that this should be done if we agree as a separate patch.
-> 
->>
->> Best regards,
->> 	Maxim Levitsky
->>
->>
->>> vmcb_save_area_cached) in its place would just duplicate the same fields
->>> of nested.ctl, creating even more confusion and possible inconsistency.
->>>
->>> Let me know if you disagree.
->>>
->>> Thank you,
->>> Emanuele
->>>
-> 
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f800abca74b0..a2ae91e67aaf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2803,7 +2803,6 @@ F:	arch/arm/mach-pxa/include/mach/vpac270.h
+ F:	arch/arm/mach-pxa/vpac270.c
+ 
+ ARM/VT8500 ARM ARCHITECTURE
+-M:	Tony Prisk <linux@prisktech.co.nz>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/i2c/i2c-wmt.txt
+@@ -19320,13 +19319,11 @@ S:	Maintained
+ F:	drivers/usb/misc/chaoskey.c
+ 
+ USB CYPRESS C67X00 DRIVER
+-M:	Peter Korsgaard <jacmet@sunsite.dk>
+ L:	linux-usb@vger.kernel.org
+ S:	Maintained
+ F:	drivers/usb/c67x00/
+ 
+ USB DAVICOM DM9601 DRIVER
+-M:	Peter Korsgaard <jacmet@sunsite.dk>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ W:	http://www.linux-usb.org/usbnet
+-- 
+2.33.0
 
