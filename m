@@ -2,150 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A5140A945
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C47440A955
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhINIfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:35:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40438 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229526AbhINIfK (ORCPT
+        id S231239AbhINIfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:35:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60280 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230509AbhINIff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:35:10 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18E8DDVp003164;
-        Tue, 14 Sep 2021 04:33:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=pKxQpYGx7FCYqXPJeZcEZp0s2mCsJ/vTkMebph8UpHg=;
- b=c/jFDeff74opNPuhZivqJl24DeEXWtHpxq0scPesE73bTGItp2la9ee5Le8rh2WDqhK8
- 19KvhsAHO5kIig7f3OtmztBotyUNdOjPpHcqNkQ3aoekjW6ssWFDj8sYyZRYyGZEVeJp
- W+KIFryQLSaPQLEYn80iFdI3jcSn3aukG2CQEjrLUBIWs8KA8ldRz5hq0JYSy3S03fav
- 9eLKLDhoIapuWcwXS0GzUKMmu5bY38f0ZyI/PY8HPiQJeiePP1FRVQKFiR/WEcMzXNJG
- dTFSWKJ+Qj6/VfFT0S70+1k7A/Gg0Vbjd9Oqc/5OVdajPAHX5Q4/5htM421/ItjqzpKF 4g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2n91v8qr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Sep 2021 04:33:30 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18E5xNPG014160;
-        Tue, 14 Sep 2021 04:33:30 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2n91v8pu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Sep 2021 04:33:30 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18E8XOWD005452;
-        Tue, 14 Sep 2021 08:33:27 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3b0m39rvyu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Sep 2021 08:33:27 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18E8Sthk59048334
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Sep 2021 08:28:55 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1501EA4057;
-        Tue, 14 Sep 2021 08:33:24 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D5C7A405F;
-        Tue, 14 Sep 2021 08:33:23 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.48.104])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 14 Sep 2021 08:33:23 +0000 (GMT)
-Date:   Tue, 14 Sep 2021 11:33:21 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
-        <marmarek@invisiblethingslab.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>
-Subject: Re: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading
- related?)
-Message-ID: <YUBeUZdduCAbOQJN@linux.ibm.com>
-References: <YT9I+Xs9wOPVCIVd@mail-itl>
- <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Fek_4RKUSmSBac3314u_qg2oT-UwR5fB
-X-Proofpoint-GUID: 1n5L13yxXZwxMDPxGVuAivJeUC3QPW11
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 14 Sep 2021 04:35:35 -0400
+Date:   Tue, 14 Sep 2021 08:34:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631608457;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ttKDHmXZ2SEwq47IpdZatFDKfcVfOeIjAV/RlgHOenw=;
+        b=i3EfgYX6baQhL4M3cGGU3q/t1sLEMnMptcnDteXJewWS6phLVeRGz5n6i3Esl4KYhSciK3
+        94sic7AHXSAmRUMq0z1EhxZGp5YRo0+NMsgLahEv4KLQMhbEsQG6mMVofbCvw26abUr3xy
+        ZyY343P72tU+pZuF9DCi3HNUCSSJo+c45nwl6IXODcK+B2TlpAejRnsclE1mrx4u5m5m9w
+        bbDxpV6kOoSocB7eVKk0ZGDoxKqa4h/pxWsrHqLGoG9srAwCc5ZpAwj+X+R5spDODuV6iK
+        UzuSOr3U6sGr4vvR6eZ1ToZSNc7eyhsrh8iFNktet27au5p1z/6Dhre4iXNyPw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631608457;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ttKDHmXZ2SEwq47IpdZatFDKfcVfOeIjAV/RlgHOenw=;
+        b=VoGMVACfHT9Ht7p359zxvp2XjY00qeZkqa6FqjexySUw3mSBloerIzK6bVBSqHfRgSYugq
+        w8CrDWQNMyN75zCw==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mce: Avoid infinite loop for copy from user recovery
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        <stable@vger.kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <IJ9ziLqmtqEPu@agluck-desk2.amr.corp.intel.com>
+References: <IJ9ziLqmtqEPu@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
- definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- adultscore=0 mlxscore=0 malwarescore=0 impostorscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109140027
+Message-ID: <163160845622.25758.10454193494124931065.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 09:14:38AM +0200, Juergen Gross wrote:
-> On 13.09.21 14:50, Marek Marczykowski-Górecki wrote:
-> > Hi,
-> > 
-> > Since 5.13, the Xen (PV) dom0 crashes on boot, before even printing the
-> > kernel version.
-> > Test environment:
-> >   - Xen 4.14.2
-> >   - AMD Ryzen 5 4500U (reported also on AMD Ryzen 7 4750U)
-> >   - Linux 5.13.13, confirmed also on 5.14
-> > 
-> > The crash happens only if the initramfs has earlycpio with microcode.
-> > I don't have a serial console, but I've got a photo with crash message
-> > (from Xen, Linux doesn't managed to print anything):
-> > https://user-images.githubusercontent.com/726704/133084966-5038f37e-001b-4688-9f90-83d09be3dc2d.jpg
-> > 
-> > Transcription of some of it:
-> > 
-> >      mapping kernel into physical memory
-> >      about to get started
-> >      (XEN) Pagetable walk from ffffffff82810888:
-> >      (XEN)  L4[0x1ff] = 0000000332815067 0000000000002815
-> >      (XEN)  L3[0x1fe] = 0000000332816067 0000000000002816
-> >      (XEN)  L2[0x014] = 0000000334018067 0000000000004018
-> >      (XEN)  L1[0x010] = 0000000332810067 0000000000002810
-> >      (XEN) domain_crash_sync called from entry.S: fault at ffff82d04033e790 x86_64/entry.S#domain_crash_page_fault
-> >      (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
-> >      (XEN) ----[ Xen-4.14.2  x86_64  debug=n  Not tainted ]----
-> >      (XEN) CPU:    0
-> >      (XEN) RIP:    e033:[<0000000000000000>]
-> 
-> The domain's run state seems to be completely clobbered.
-> 
-> Did you try to boot the kernel with "earlyprintk=xen" to get some idea
-> how far it progressed?
-> 
-> I could imagine that doing the early reservations after the call of
-> e820__memory_setup() is problematic, as Xen PV guests have a hook in
-> this function performing some rather extended actions.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Right, among them it may relocate initrd:
+Commit-ID:     81065b35e2486c024c7aa86caed452e1f01a59d4
+Gitweb:        https://git.kernel.org/tip/81065b35e2486c024c7aa86caed452e1f01a59d4
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Mon, 13 Sep 2021 14:52:39 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 14 Sep 2021 10:27:03 +02:00
 
-https://elixir.bootlin.com/linux/latest/source/arch/x86/xen/setup.c#L872
+x86/mce: Avoid infinite loop for copy from user recovery
+
+There are two cases for machine check recovery:
+
+1) The machine check was triggered by ring3 (application) code.
+   This is the simpler case. The machine check handler simply queues
+   work to be executed on return to user. That code unmaps the page
+   from all users and arranges to send a SIGBUS to the task that
+   triggered the poison.
+
+2) The machine check was triggered in kernel code that is covered by
+   an exception table entry. In this case the machine check handler
+   still queues a work entry to unmap the page, etc. but this will
+   not be called right away because the #MC handler returns to the
+   fix up code address in the exception table entry.
+
+Problems occur if the kernel triggers another machine check before the
+return to user processes the first queued work item.
+
+Specifically, the work is queued using the ->mce_kill_me callback
+structure in the task struct for the current thread. Attempting to queue
+a second work item using this same callback results in a loop in the
+linked list of work functions to call. So when the kernel does return to
+user, it enters an infinite loop processing the same entry for ever.
+
+There are some legitimate scenarios where the kernel may take a second
+machine check before returning to the user.
+
+1) Some code (e.g. futex) first tries a get_user() with page faults
+   disabled. If this fails, the code retries with page faults enabled
+   expecting that this will resolve the page fault.
+
+2) Copy from user code retries a copy in byte-at-time mode to check
+   whether any additional bytes can be copied.
+
+On the other side of the fence are some bad drivers that do not check
+the return value from individual get_user() calls and may access
+multiple user addresses without noticing that some/all calls have
+failed.
+
+Fix by adding a counter (current->mce_count) to keep track of repeated
+machine checks before task_work() is called. First machine check saves
+the address information and calls task_work_add(). Subsequent machine
+checks before that task_work call back is executed check that the address
+is in the same page as the first machine check (since the callback will
+offline exactly one page).
+
+Expected worst case is four machine checks before moving on (e.g. one
+user access with page faults disabled, then a repeat to the same address
+with page faults enabled ... repeat in copy tail bytes). Just in case
+there is some code that loops forever enforce a limit of 10.
+
+ [ bp: Massage commit message, drop noinstr, fix typo, extend panic
+   messages. ]
+
+Fixes: 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/YT/IJ9ziLqmtqEPu@agluck-desk2.amr.corp.intel.com
+---
+ arch/x86/kernel/cpu/mce/core.c | 43 ++++++++++++++++++++++++---------
+ include/linux/sched.h          |  1 +-
+ 2 files changed, 33 insertions(+), 11 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 8cb7816..193204a 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1253,6 +1253,9 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
  
-and this may cause the reported crash.
-
-> I'm not sure the call of early_reserve_memory() can be moved just before
-> the e820__memory_setup() call. If this is possibel it should be done
-> IMO, if not then the reservations which have been at the start of
-> setup_arch() might need to go there again.
-
-early_reserve_memory() can be moved to the beginning of setup_arch().
-
-Anther possibility is to move initrd relocation out of xen_setup_memory()
-and maybe even integrate it somehow in reserve_initrd().
-
--- 
-Sincerely yours,
-Mike.
+ static void kill_me_now(struct callback_head *ch)
+ {
++	struct task_struct *p = container_of(ch, struct task_struct, mce_kill_me);
++
++	p->mce_count = 0;
+ 	force_sig(SIGBUS);
+ }
+ 
+@@ -1262,6 +1265,7 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	int flags = MF_ACTION_REQUIRED;
+ 	int ret;
+ 
++	p->mce_count = 0;
+ 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
+ 
+ 	if (!p->mce_ripv)
+@@ -1290,17 +1294,34 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	}
+ }
+ 
+-static void queue_task_work(struct mce *m, int kill_current_task)
++static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
+ {
+-	current->mce_addr = m->addr;
+-	current->mce_kflags = m->kflags;
+-	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
+-	current->mce_whole_page = whole_page(m);
++	int count = ++current->mce_count;
+ 
+-	if (kill_current_task)
+-		current->mce_kill_me.func = kill_me_now;
+-	else
+-		current->mce_kill_me.func = kill_me_maybe;
++	/* First call, save all the details */
++	if (count == 1) {
++		current->mce_addr = m->addr;
++		current->mce_kflags = m->kflags;
++		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
++		current->mce_whole_page = whole_page(m);
++
++		if (kill_current_task)
++			current->mce_kill_me.func = kill_me_now;
++		else
++			current->mce_kill_me.func = kill_me_maybe;
++	}
++
++	/* Ten is likely overkill. Don't expect more than two faults before task_work() */
++	if (count > 10)
++		mce_panic("Too many consecutive machine checks while accessing user data", m, msg);
++
++	/* Second or later call, make sure page address matches the one from first call */
++	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
++		mce_panic("Consecutive machine checks to different user pages", m, msg);
++
++	/* Do not call task_work_add() more than once */
++	if (count > 1)
++		return;
+ 
+ 	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
+ }
+@@ -1438,7 +1459,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 		/* If this triggers there is no way to recover. Die hard. */
+ 		BUG_ON(!on_thread_stack() || !user_mode(regs));
+ 
+-		queue_task_work(&m, kill_current_task);
++		queue_task_work(&m, msg, kill_current_task);
+ 
+ 	} else {
+ 		/*
+@@ -1456,7 +1477,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+ 		}
+ 
+ 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
+-			queue_task_work(&m, kill_current_task);
++			queue_task_work(&m, msg, kill_current_task);
+ 	}
+ out:
+ 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 1780260..361c7bc 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1468,6 +1468,7 @@ struct task_struct {
+ 					mce_whole_page : 1,
+ 					__mce_reserved : 62;
+ 	struct callback_head		mce_kill_me;
++	int				mce_count;
+ #endif
+ 
+ #ifdef CONFIG_KRETPROBES
