@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCF240B999
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5CE40B99B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhINVHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56730 "EHLO mail.kernel.org"
+        id S234183AbhINVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:08:20 -0400
+Received: from ms.lwn.net ([45.79.88.28]:41268 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233101AbhINVHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:07:41 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S234059AbhINVIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:08:19 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7707F6117A;
-        Tue, 14 Sep 2021 21:06:19 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 17:05:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
-Message-ID: <20210914170553.7c1e1faa@oasis.local.home>
-In-Reply-To: <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
-References: <20210914105620.677b90e5@oasis.local.home>
-        <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
-        <20210914145953.189f15dc@oasis.local.home>
-        <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
-        <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com>
-        <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
-        <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ms.lwn.net (Postfix) with ESMTPSA id 49BE92CA;
+        Tue, 14 Sep 2021 21:07:01 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 49BE92CA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1631653621; bh=aRIuKcelosoK7HSq+GC2ST2aT0MMYO+BBP+OHR42Tnk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DF5eyEPCSfnJMLuEitlrBN1ofw/Bm9eNbLjJM8hQ3CmUUW2YVzeW2shBm9HLfu/5p
+         Ob6ojTKZEIP2RLq+DBTXEG1CHIc2Atym7cUat3XVjFfTbpBdCewoXlMjUKLHolV+kN
+         SZI8LixJab3flQHeGvMOxYiWlgTNtIbvABZGhQZCOR9lNxyuygNjGn07Cyiz8QK1Aq
+         gE7v+nb/TU3LATeSEfi1vjbwGIjBpyO0tV/xvajH5iFnIpIwlFZ0YLFm4vz4QQh7rt
+         8iDwky8DJB4GwbGY0mVnX3zVRkXOF0hZY5OnhcQAwQfZYHRXNc4hPngv2JcScbOfS3
+         uB5rT4GTT+VOw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] docs: deprecated.rst: Clarify open-coded arithmetic
+ with literals
+In-Reply-To: <20210829144716.2931-1-len.baker@gmx.com>
+References: <20210829144716.2931-1-len.baker@gmx.com>
+Date:   Tue, 14 Sep 2021 15:07:00 -0600
+Message-ID: <87r1dqdfyj.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 13:48:15 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Len Baker <len.baker@gmx.com> writes:
 
-> On Tue, Sep 14, 2021 at 12:38 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > So I'll do a minimal conversion that adds "memblock_free_ptr()" and
-> > hope that people start using that. And then we can later try to move
-> > "memblock_free()" to a name that isn't so misleading.  
-> 
-> Commit 77e02cf57b6c ("memblock: introduce saner 'memblock_free_ptr()'
-> interface") should hopefully fix that panic that Vlastimil saw, and
-> the kernel test robot report as well.
-> 
-> And it should make it easy to cleanly fix that 'copy' leak too.
-> 
+> Although using literals for size calculation in allocator arguments may
+> be harmless due to compiler warnings in case of overflows, it is better
+> to refactor the code to avoid the use of open-coded math idiom.
+>
+> So, clarify the preferred way in these cases.
+>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+> Changelog v1 -> v2
+>  - Clarify the sentence by changing "keep <foo> out" with "avoid <foo>"
+>    (Joe Perches).
+>
+>  Documentation/process/deprecated.rst | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+> index 9d83b8db8874..b5a8be914178 100644
+> --- a/Documentation/process/deprecated.rst
+> +++ b/Documentation/process/deprecated.rst
+> @@ -60,7 +60,8 @@ smaller allocation being made than the caller was expecting. Using those
+>  allocations could lead to linear overflows of heap memory and other
+>  misbehaviors. (One exception to this is literal values where the compiler
+>  can warn if they might overflow. Though using literals for arguments as
+> -suggested below is also harmless.)
+> +suggested below is also harmless. So, the preferred way in these cases is
+> +to refactor the code to avoid the open-coded math idiom.)
 
-Vlastimil,
+Sorry for being so slow to get to this...  honestly, though, I've been
+staring at it for a bit and cannot figure out what you are trying to
+communicate.  What does "math idiom" mean here?  If you are trying to
+say that using literals is *not* harmless, then perhaps the first part
+of the parenthetical should be taken out?
 
-Can you confirm that Linus's changes addresses your issue?
+Confused...
 
-Masami,
-
-Care to rebase on top of Linus's change?
-
-Thanks!
-
--- Steve
+jon
