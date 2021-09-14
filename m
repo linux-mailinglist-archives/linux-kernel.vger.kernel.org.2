@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC8640B74D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11E840B72D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhINS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S229906AbhINSvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhINS6n (ORCPT
+        with ESMTP id S232102AbhINSu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:58:43 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FD3C061574;
-        Tue, 14 Sep 2021 11:57:26 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id f21so6651861plb.4;
-        Tue, 14 Sep 2021 11:57:26 -0700 (PDT)
+        Tue, 14 Sep 2021 14:50:58 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A63C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:49:40 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id f21so6633630plb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:49:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=g2+loS70cSgdFxeOP/sRqiawauBWZZoV++pN8aeuNG4=;
-        b=LiNspIrKHZ8lHoj51foc14YEVker+hYXD5WF7LtIW9JrAXaWxwNzMiZ7xZoVWbD56P
-         MlFik++pPRVz1wMEMRg0xe0uhGUAVrFDWHIsl5zMK0v3OPiy9BPD8vIvB4rBSZDgwaKq
-         46NuEayBAIue4b0SSqeqACnyrYFZsCeiXF4+IUceZp71L8dOXKnnrCrHHDCc9NPJp3AL
-         8KhA1a0Gw4MSqKRZvyU9vcKv7FsJdQZ8vZxLCLxHxJm6nOYwgOeqrtO2pK5FkBCmhHVx
-         PK1IE/dSrc8ZJG9VL6NT7kXko3iE9mZF7frY1a+63UCcRBror9iuqWugJdnwQBeLi7NZ
-         sPTg==
+         :content-disposition:in-reply-to;
+        bh=561Sii/7Vnw9t2pBiBSueXkca1YF3r2gcFv6BNuZUlY=;
+        b=CU3iuOhK9BrlY2sp64svAK319eSzl4i7OV0UM4XGwQGUtlXxAIdOw5MGZFb98qVQaC
+         AgdKZO90Ph5BYBKt1POqky7wb5lJQg81Xb5aLjJ94nUeUy7YHNv29m/U1VbpdUsPf0vi
+         4gtWz36S7QywD3t/xQW3YcrmLGz/LQp0QU9HLAl1fDE24BlR9L0ZQlBR6ks5tT60X08M
+         NOQ6Q4vl8QobyEmb3AWoC9EtdZJlAAbfkcDSEGtR8kmsrm4nvjQaDR3t8Xjqs36djp4/
+         nvBWFLZtNfEwHA58bTnFGm0W0etD9FZViZvn3nSyIk0W0ZilkekwtD4GfRVxq681wuw4
+         cGDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=g2+loS70cSgdFxeOP/sRqiawauBWZZoV++pN8aeuNG4=;
-        b=1viJGb0v20uQvxUbbApBRyEd2GoER1X5w7RI7lr9d10rEGTXsDxKLfa1Krwb76Mj2N
-         xgYlP5/X+FuZnkzT/0LMdsrGnhMCckGJ3UnRm7XSMU88KiUJ3tDH9Rz10LMZm0C/Fguo
-         wDsXnkyiL0E32rNEHW3gImwQAsTBWBvzp9CY8cpPv7OkVqRDvquni/j1fgPfWT2XDdhd
-         +ucvdlEg6LQmFQM4vZfBby+TU7fdM5VH29fWqo/cdmL/rdVtD4+INxq5n7ZdKidWlq55
-         Jb8YQ3qq1I46NEI77TY9wchp/UsA5xbBd/FQjcNV64T1sUhWQ1R6Kk8NQwRMLAL0Rb6G
-         nOBQ==
-X-Gm-Message-State: AOAM532zbqROIsV3Rem/5huNIpZujER6FCq/b/eo1+83OgoETwdpVyEG
-        Iv3KhuWMkyYLlehLZuRzgsg=
-X-Google-Smtp-Source: ABdhPJxCnIRlsaQZc9Q4J3l7LWo55eKXeafd5utGpHYG1mnIrZXruWW/b6d7wLz5hFUBc4vE7exkkA==
-X-Received: by 2002:a17:90a:1984:: with SMTP id 4mr3788827pji.87.1631645845834;
-        Tue, 14 Sep 2021 11:57:25 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id x15sm12057669pgt.34.2021.09.14.11.57.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Sep 2021 11:57:25 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 11:49:34 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+         :mime-version:content-disposition:in-reply-to;
+        bh=561Sii/7Vnw9t2pBiBSueXkca1YF3r2gcFv6BNuZUlY=;
+        b=Md7HXnUJimRkKCCn2xNcLckUcrf6aPmnuracDMDkxi2eOJ/CTDu/K2YcAvZlnsE8nY
+         aWe4KHGK+PrfXXWnRHAUiSMEWlbfKnwteA6xL+Yk6YMVb02FYeYoAotw9dYFqzUsYObW
+         4tNXpoo9xy59kCEHtIEzVafQpOU4TWZq2iFDcCAETtww78/kD2wGySPDDtnuwEZT+2vF
+         YvKFxgOU4sO/AVYkxrepFbQ8aSFYzwLDDKA/4/9g3yCWLIkpGMLo7j2Ha2SaTtvYBRrE
+         dq65qxqumgBQEWsCIbnzmHMUqxgNM1RbtS0HAuvrKVVXGj6KjAtXv4s6WNYqnYmP/HGg
+         deww==
+X-Gm-Message-State: AOAM530y5XfZOGOcn4clfc5kxRozu6WSICTMjY51rHiZW2rQfSt9n41G
+        RzF2DYJXt8pCh5p0imNjtVv4/w==
+X-Google-Smtp-Source: ABdhPJwxBVPIh/RHGq0S4bd1U+knOnT9PmKUjE9pFWhpavi7yhGEVSRkAvzte5tgrQfJI3J3wTLpnQ==
+X-Received: by 2002:a17:90a:2:: with SMTP id 2mr3711554pja.77.1631645379434;
+        Tue, 14 Sep 2021 11:49:39 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id u15sm11739188pfl.14.2021.09.14.11.49.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 11:49:38 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 18:49:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Tempelman <natet@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to
- debugfs
-Message-ID: <20210914184933.GA32705@Asurada-Nvidia>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-7-nicoleotsuka@gmail.com>
- <31501a62-3312-9f04-3bb8-790d0481746c@gmail.com>
+Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for
+ SEV-ES
+Message-ID: <YUDuv1aTauPz9aqo@google.com>
+References: <20210914171551.3223715-1-pgonda@google.com>
+ <YUDcvRB3/QOXSi8H@google.com>
+ <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
+ <YUDsy4W0/FeIEJDr@google.com>
+ <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <31501a62-3312-9f04-3bb8-790d0481746c@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 04:29:15PM +0300, Dmitry Osipenko wrote:
-> 14.09.2021 04:38, Nicolin Chen пишет:
-> > +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
-> > +{
-> > +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
-> > +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-> > +}
+On Tue, Sep 14, 2021, Peter Gonda wrote:
+> On Tue, Sep 14, 2021 at 12:41 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > -stable, for giggles
+> >
+> > On Tue, Sep 14, 2021, Peter Gonda wrote:
+> > > On Tue, Sep 14, 2021 at 11:32 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > >
+> > > > On Tue, Sep 14, 2021, Peter Gonda wrote:
+> > > > > Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
+> > > > > VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
+> > > > > error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
+> > > > > SEV-ES guest.
+> > > >
+> > > > What happens if userspace does KVM_CAP_VM_COPY_ENC_CONTEXT_FROM before the source
+> > > > has created vCPUs, i.e. before it has done SEV_LAUNCH_FINISH?
+> > >
+> > > That's not enough. If you wanted to be able to mirror SEV-ES you'd
+> > > also need to call LAUNCH_UPDATE_VMSA on the mirror's vCPUs before
+> > > SEV_LAUNCH_FINISH. That is do-able but I was writing a small change to
+> > > fix this bug. If mirroring of SEV-ES is wanted it's a much bigger
+> > > change.
+> >
+> > Is it doable without KVM updates?  If so, then outright rejection may not be the
+> > correct behavior.
 > 
-> We know that IOVA is fixed to u32 for this controller. Can we avoid all
-> these dma_addr_t castings? It should make code cleaner a tad, IMO.
+> I do not think so. You cannot call KVM_SEV_LAUNCH_UPDATE_VMSA on the mirror
+> because svm_mem_enc_op() blocks calls from the mirror. So either you have to
+> update vmsa from the mirror or have the original VM read through its mirror's
+> vCPUs when calling KVM_SEV_LAUNCH_UPDATE_VMSA. Not sure which way is better
+> but I don't see a way to do this without updating KVM.
 
-Tegra210 actually supports 34-bit IOVA...
+Ah, right, I forgot all of the SEV ioctls are blocked on the mirror.  Put something
+to that effect into the changelog to squash any argument about whether or not this
+is the correct KVM behavior.
+
+Thanks!
