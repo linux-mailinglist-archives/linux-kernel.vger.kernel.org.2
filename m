@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD42340B00D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DF640B012
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbhINOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhINOAB (ORCPT
+        id S233358AbhINOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:00:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56000 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233309AbhINOAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:00:01 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C69BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:58:44 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id n18so8236942plp.7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=kuGfoiHW6NcPNvARG0VGXXuklmC4CvtIeNqf7tHyLDY=;
-        b=CYmjmGpeYGKepBsojHml54XupAoZlD3GyuZyIUd29k1M7Z3zYoYE3KKq4UJVsEK+JM
-         4w9uE0qxsLzI7exmwyRMPxmHZNg3A8EEmKNnqHbm/76Us6khGgCGW92gl8PViBcL9lju
-         bZTDfqzKgamLTOCVaubKn8XNR7aprZ5qMoWAX5YXkr/CY3q3SwG2bm1nAJpvdgOGEU40
-         os7Mv9Z+qkqg8iKhj3JLuni2jwYTjjbgeV4T3hT9xiVold1UzkQzcAAWH4socboX6gDK
-         pr3xZg3EQZcutndRaZ5Vdxw5eQQrJuNEZXbtEV8lVtLl7cJqA683pxUxO8dVcEbH7GKI
-         vTZA==
+        Tue, 14 Sep 2021 10:00:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631627972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kaya3EDVq+i2kEee2RcyRm9vp7G1d6PEMiE8V6O0cGg=;
+        b=OoZkV1uoe7bBEP32yxu+BlkeeR9otGOqfoAKEkf/x0V8c3zncIOvd6xIdsaOKNXXHuhHkH
+        Az2UOrSHlGjpsRjB78cooBtlL7K0MMuVbMhzwycrS5V3VbpbSG0XOsp16NCxG6xwn95B+l
+        kR6wmbDU8wF2mVljXRBuh+FpQEzovQs=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-1wcb5AK_PHq5D8N8YbqxQA-1; Tue, 14 Sep 2021 09:59:31 -0400
+X-MC-Unique: 1wcb5AK_PHq5D8N8YbqxQA-1
+Received: by mail-il1-f198.google.com with SMTP id f16-20020a92cb50000000b002376905517dso3132260ilq.18
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:59:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kuGfoiHW6NcPNvARG0VGXXuklmC4CvtIeNqf7tHyLDY=;
-        b=JE2rHE6ab3qM0WDWfHKTsqeWRalvZm3o37oIywg3M0Z37VjU+/NHnl2Zl6otlB9TVl
-         ryPHwuSwg7kL7O8J73HjFhuQB1IzQrhrOuJ+2iXXUeGzPiY7aaBuPvR1HvA8WZ4s4qaP
-         JupppV9a4ai0++kzJ51RYXfYW85QMj8WznHsrgQ2P0L4rSVp/IMN7K2mZqoH5xg/ogby
-         eW7l47nkYHRsfF2nMnEdyz658zmzRRXm4XuRCGdIkwenvSSO8VaKHG6GFhQzjpB6V5n+
-         vCES2DgKhNOfYmZ7t4UTcSv1FP+hoSpOvTRjHDCtM38zudJ7vp2pDsn9gZE/klnGaW3T
-         F/8Q==
-X-Gm-Message-State: AOAM533hoD3IXtDuhjCbPX1wi/wV8j1Gns1ZwN8geu5qv26mjiod6Uo7
-        fpvOkO0tOoMXyYZ3xlpsVze4wmvYyRY=
-X-Google-Smtp-Source: ABdhPJyvpRb9oGIkD6JcuwCNsRBMRVR2YXCVY3sZRerC6ijN3GdsTFxPS0dVQXWRg/U7qCzjQwoxug==
-X-Received: by 2002:a17:90b:4c4f:: with SMTP id np15mr2295910pjb.30.1631627923319;
-        Tue, 14 Sep 2021 06:58:43 -0700 (PDT)
-Received: from localhost.localdomain (1-171-6-195.dynamic-ip.hinet.net. [1.171.6.195])
-        by smtp.gmail.com with ESMTPSA id a15sm11869075pgn.25.2021.09.14.06.58.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Sep 2021 06:58:42 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     broonie@kernel.org
-Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com
-Subject: [PATCH] regulator: rtq6752: Enclose 'enable' gpio control by enable flag
-Date:   Tue, 14 Sep 2021 21:58:32 +0800
-Message-Id: <1631627912-7974-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kaya3EDVq+i2kEee2RcyRm9vp7G1d6PEMiE8V6O0cGg=;
+        b=shUW8524CUJPY+SHz69gKEX/ciqydXfekMLfJQDgmgPFfViE90GK2FcYLiSWYNZZEQ
+         ehbg/87aEOWDBKXnUJzSVbev5IdAvJOOOQ4VvjkHw4Roaf7xsncUPBsMUrdEgGpXhXz2
+         v1gqDIh38UwH31Yx48SyUkCvdbINwEoW2egIxbYsleWY7qDj+pq71gs0MVxOQYyvIAn8
+         Pp1X7pe50W8Ki/Ugkz4fd1gxbHaquslAqGgEmFogUv9KFqzQ3nb6od7l6UIcJbFdFmaV
+         orS01vC2oYMGNutfhWPjVonH/phundcxH4Abt66iikYpVPl3yTyMdRaYH+wyVm+skh/F
+         4GFw==
+X-Gm-Message-State: AOAM531MP61jU+Sn+h2/f9FNQGdY8Qwc9YrNccZS7GRUWWuDDe3xbnTo
+        +64a2pK5OwsNgwwne+bvVxHBRMpCVQlY/q9uZRuKDzokz7In9aTByapwG6zE3pFt3r+TzRf4105
+        oXEwL0V+RHlcp8Gpuc72FJmKwIP3AGJ3Dqq/ym/OV
+X-Received: by 2002:a05:6638:1606:: with SMTP id x6mr14896507jas.25.1631627970921;
+        Tue, 14 Sep 2021 06:59:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyykZ0VYVJ0bOaRFeN+fD5tTcAMHGgErQub0XJv3DCUagog8L0n472IWYdPHqWMZTwm1ZepJvhHcI2h2Lqcvw4=
+X-Received: by 2002:a05:6638:1606:: with SMTP id x6mr14896484jas.25.1631627970753;
+ Tue, 14 Sep 2021 06:59:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210902152228.665959-1-vgoyal@redhat.com> <79dcd300-a441-cdba-e523-324733f892ca@schaufler-ca.com>
+ <YTEEPZJ3kxWkcM9x@redhat.com> <YTENEAv6dw9QoYcY@redhat.com>
+ <3bca47d0-747d-dd49-a03f-e0fa98eaa2f7@schaufler-ca.com> <YTEur7h6fe4xBJRb@redhat.com>
+ <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com> <YTYr4MgWnOgf/SWY@work-vm>
+ <496e92bf-bf9e-a56b-bd73-3c1d0994a064@schaufler-ca.com> <YUCa6pWpr5cjCNrU@redhat.com>
+In-Reply-To: <YUCa6pWpr5cjCNrU@redhat.com>
+From:   Bruce Fields <bfields@redhat.com>
+Date:   Tue, 14 Sep 2021 09:59:19 -0400
+Message-ID: <CAPL3RVHB=E_s1AW1sQMEgrLYJ8ADCdr=qaKsDrpYjVzW-Apq8w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
+        Daniel Walsh <dwalsh@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Casey Schaufler <casey.schaufler@intel.com>,
+        LSM <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        stephen.smalley.work@gmail.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Dave Chinner <david@fromorbit.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Tue, Sep 14, 2021 at 8:52 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+> Same is the requirement for regular containers and that's why
+> podman (and possibly other container managers), make top level
+> storage directory only readable and searchable by root, so that
+> unpriveleged entities on host can not access container root filesystem
+> data.
 
-Fix 'enable' gpio control logic if it's specified.
+Note--if that directory is on NFS, making it readable and searchable
+by root is very weak protection, since it's often possible for an
+attacker to guess filehandles and access objects without the need for
+directory lookups.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
-This patch is to prevent the logic error from the below cases.
-
-1. All off and both are sequentially controlled to be on.
-The 'enable' gpio control block to be called twice including the delay time.
-
-2. Both are on and one is preparing to be off.
-The 'enable' gpio control low before register cache is configured to be true.
-
----
- drivers/regulator/rtq6752-regulator.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/regulator/rtq6752-regulator.c b/drivers/regulator/rtq6752-regulator.c
-index 609d3fc..dfe45fb 100644
---- a/drivers/regulator/rtq6752-regulator.c
-+++ b/drivers/regulator/rtq6752-regulator.c
-@@ -54,14 +54,14 @@ static int rtq6752_set_vdd_enable(struct regulator_dev *rdev)
- 	int rid = rdev_get_id(rdev), ret;
- 
- 	mutex_lock(&priv->lock);
--	if (priv->enable_gpio) {
--		gpiod_set_value(priv->enable_gpio, 1);
-+	if (!priv->enable_flag) {
-+		if (priv->enable_gpio) {
-+			gpiod_set_value(priv->enable_gpio, 1);
- 
--		usleep_range(RTQ6752_I2CRDY_TIMEUS,
--			     RTQ6752_I2CRDY_TIMEUS + 100);
--	}
-+			usleep_range(RTQ6752_I2CRDY_TIMEUS,
-+				     RTQ6752_I2CRDY_TIMEUS + 100);
-+		}
- 
--	if (!priv->enable_flag) {
- 		regcache_cache_only(priv->regmap, false);
- 		ret = regcache_sync(priv->regmap);
- 		if (ret) {
-@@ -91,11 +91,11 @@ static int rtq6752_set_vdd_disable(struct regulator_dev *rdev)
- 	if (!priv->enable_flag) {
- 		regcache_cache_only(priv->regmap, true);
- 		regcache_mark_dirty(priv->regmap);
--	}
- 
--	if (priv->enable_gpio)
--		gpiod_set_value(priv->enable_gpio, 0);
-+		if (priv->enable_gpio)
-+			gpiod_set_value(priv->enable_gpio, 0);
- 
-+	}
- 	mutex_unlock(&priv->lock);
- 
- 	return 0;
--- 
-2.7.4
+--b.
 
