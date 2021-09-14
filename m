@@ -2,293 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC9740B2C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056BA40B2C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234739AbhINPPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:15:25 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:43681 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234803AbhINPPP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:15:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631632436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eUEbQ511uBH4HywxbmIrZZ/yrHO5uYXLo2/mlkVIRZs=;
-        b=hDmUP210wMIryaLe6Q3jwIxldjYeC2icPwsG3UwHGkYVZixWp69Ra9RsY5OgUCqw7n7bXQ
-        VaKao+3s9ItnLnDyXSYeFIgLxxLwi6QbCx6lTHzTuxEhWdQJqiiZZz5N0gdwkPLAIuXUz0
-        HqXJbVbXLlPS5NSaurr05BWtht/b0sI=
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01lp2054.outbound.protection.outlook.com [104.47.1.54]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-7-gmrR_YGDP-my1J0cNaWr6g-1;
- Tue, 14 Sep 2021 17:13:55 +0200
-X-MC-Unique: gmrR_YGDP-my1J0cNaWr6g-1
+        id S234203AbhINPQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:16:49 -0400
+Received: from mail-eopbgr10041.outbound.protection.outlook.com ([40.107.1.41]:32351
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233765AbhINPQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:16:46 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SDk7/3jEJxafXnInRIatcNCb9ospsr2UZEnP4MNzQgTxNh0Zkn/nRJ8e2ATR2mE2pEs2xoxlw66pAX5aWsTvhN/5Q7bQ6YTfsb+iN9qWgzyoPkbcBnXrqJGxpSIoRoq7IaoH3FCu9CF9wEt0keXfhE6Lw9ehd2EbTz46H4zS3kvTNj+8AxpSYTKOnluAeTII4lTdTj6hRQpM4Hr6OyUrtTQOT0yP8sDh45u0+W1YZ2zY9eX6wAk753hnIbJqTp+BSgE3fdVmnHMTJFTMOPvqmqdDQoot5HCkGEZN6RHS8C1BeZToZuX8yiyNZKlrIhgBZbjXOIfa+6A+kvtGl1Axvw==
+ b=J1BVgqud1II5z7YVgqGRyJq2UNTpVPn3ZiQbmJkT5y8BCZn1Hbh2OHW1QLFkrhD7QdkPf/nb17w1zYGLF4qOH4tsCCNH3MAwy+xlZy+84ooEsgIs4dQijlG6BJvLEaHfNq1XHG7Bdukel2bMUbkKgJbcVx8FsQyDnDR2kU/ZfPe82n2BfO8P09IcSuU0RQMl1Dm5TvQ3ZQgIvuq1QX/HLvt8hZ2DAHh8dB0Cy997aV/IKGXpJy79LHzcWAt63RRHeVmx+Gi1g+dnGIc++WXC53OQqvwxOSmLt48U7sL4Ynq+cDAiJC5a1u3mrUYkYtdznTR2jtSkBafHYvzSSsiHJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ECD752V6eG6nfPVInGP4QXCeIopzoJTg6NlXkgkzu0M=;
- b=EBgpvGVvMvkHssBLZxzlbx/uL7AW0kM+JS0pHZe+ZxihM6sSiQdIK0vNBR2MMLDRuJcas/insmT2jj2KdOjNkPPNLB0JjFRbAGroHg4VWoqD/fZ6P1kjxQ8jKP94WX4xRYbPivCUhDwF4PZeC5SALD+j1niJujZ3cqEHbUI/kKPAg+XXy3kfMdQTYl3SHj2L0E9I56Cn0GNv2H6Wx296CZRNaS1NQfxPHOgCYJlCX++mb+d4fGZXnnupJAaZkbAOjjic7hbnWrTWLU1W03Gc5mzfeUGNetLd6bDtUhi8UEWcIB9O0g292aLai0XIV6nW1myXLFwkKzHspv0bS/iXVw==
+ bh=MQwuVtFLcaRXbOsMy29EvsVPvBC/qQRo9Ea2ghZX8gY=;
+ b=db6iofqN7FGWhSVML5BnvSay57XZzMXsZPUtGrmBz5kzZrf/STk8P+/Wb+k8OsTU6lnA83FQAcrG5WUv2Q9FeJSOtoegT+fANUvXLHUwZz2RFXziP2GNV5YU5/G2vQGIgbSfCtjrBOUfUmDZy8/fcV2CAF+9IcoPhZPR/uP5sSl6yrDqEoG6uOHFogF0BZ/LVKUDuwGD35q/rll/qpNSQ5Rf7xgNYvSI+v8HZk73XSwVTTGURiBll6IXWly/B1XjrJzUAi1SnkqFaPeEGyDqWIrlY1UavejMeFYEnKrGP7w/xozHGQAVYP5rB5YQqxJgl9vdrgrh0Uip1PpSd/4Hew==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR0401MB2335.eurprd04.prod.outlook.com (2603:10a6:800:2e::11) with
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MQwuVtFLcaRXbOsMy29EvsVPvBC/qQRo9Ea2ghZX8gY=;
+ b=ovO0RjaaUyVangZ6ZyyYRYo7GNNukcccyC2d11/Fh+wyHI+TEzeF2UU2BPC1l/9B4ePqqdzxlj3B51CTZpyzdHWZym7/A9F2JLgSkXZiXA1pysM93kQpeRd9m4ohDGemeTpPQGhTF8FC8yA2UeIUsfd4GS8oQPyHWmQ/77qnCOg=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5341.eurprd04.prod.outlook.com (2603:10a6:803:3d::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 14 Sep
- 2021 15:13:53 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 15:13:53 +0000
-Subject: Re: [PATCH 0/9] xen/x86: PVH Dom0 fixes and fallout adjustments
-To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-CC:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
- <YUBeJLvWXukyGSFf@MacBook-Air-de-Roger.local>
- <050f71c8-227f-4f78-1ec5-394ba9fba9c1@suse.com>
- <YUCEQFpdc+3kUqQj@MacBook-Air-de-Roger.local>
- <40ea4ec8-483b-9191-a233-f2916f22c131@suse.com>
- <YUCYYmqQMR5NCTyz@MacBook-Air-de-Roger.local>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <13dd8509-330b-4571-086a-7a3ed9c22c82@suse.com>
-Date:   Tue, 14 Sep 2021 17:13:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <YUCYYmqQMR5NCTyz@MacBook-Air-de-Roger.local>
-Content-Type: text/plain; charset=utf-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Tue, 14 Sep
+ 2021 15:15:26 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 15:15:26 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Vladimir Oltean <olteanv@gmail.com>,
+        Gerhard Engleder <gerhard@engleder-embedded.com>,
+        netdev <netdev@vger.kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net] Revert "net: phy: Uniform PHY driver access"
+Thread-Topic: [RFC PATCH net] Revert "net: phy: Uniform PHY driver access"
+Thread-Index: AQHXqAxVhGZiRJqQ+0q4p0VsyQZ526ug3z6AgAAN1YCAAWLygIABIbqAgAApG4CAAAu8gA==
+Date:   Tue, 14 Sep 2021 15:15:26 +0000
+Message-ID: <20210914151525.gg2ifaqqxrmytaxm@skbuf>
+References: <20210912192805.1394305-1-vladimir.oltean@nxp.com>
+ <CANr-f5wCpcPM+FbeW+x-JmZt0-WmE=b5Ys1Pa_G7p8v3nLyCcQ@mail.gmail.com>
+ <20210912213855.kxoyfqdyxktax6d3@skbuf> <YT+dL1R/DTVBWQ7D@lunn.ch>
+ <20210914120617.iaqaukal3riridew@skbuf> <YUCytc0+ChhcdOo+@lunn.ch>
+In-Reply-To: <YUCytc0+ChhcdOo+@lunn.ch>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 87aae961-c76a-485d-28c0-08d977927b55
+x-ms-traffictypediagnostic: VI1PR04MB5341:
+x-microsoft-antispam-prvs: <VI1PR04MB5341E9DDBDA2FFA94E190BAAE0DA9@VI1PR04MB5341.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yqnnBy1zGA5ZNmNRw35wkQ4Thxk8J9OlyqX5Q+VrWg9fkKzBflwV4NU35nGzAlLRHn0iRw4aTCNEMQJmPhjiN/5vhDOk00gWDKZslrt/ERsLHmEPDgVyqD8L5KsZRPNMZrA1Dgas34RcYTIqWx8Ok9rDEZfVVa9dTE31ZdyRDwvwy47M3EHDntMIdr+4fET/cr5l7TJCo4mLkyeCeMe9MN8kLSKW8USXG6p00cwwfyYLKIFF/sXnKCEIDlI6/QfN2HFwk48dn//AslXrdVsyapgBTT/QdOAFRjWkwvvjUQWasVE9zfPUfpjYAu8GrAHTCZHG1xn9wtd8AztGqWse/pKWt/B6j9cC9dTIgps9y3ZUelpalp3s/v5DEAl5lHLU3/ake+zGW0Hno8fnIdBkEVhXJ0i/CDRSER8T2f9YRxPAm7MLGu4XhQa6N7OShnUo7hFJgNMFRDgZQZSYS4VqHkYetlOftxYpLBTajSRR5l9mG1X28WL/UEKXnW/dmUt13uaOl7bNxonpzaXKZdqyE3V6zXkrk+ET59c2L6U76B9Ec6hYHCmoZ74q/FfozgtMB0MFravCJwlFMPed/fyZ7qWjUBelVJHAyURD15/0ww306gkWqCDMr/e7GyyYPTQ+59FcGl1mxqByvtECfV3jagowfNJaJb48CEyZ7TIz732Uz+3x95nBvWb59C2RJuBo+NCWlzNAwpD8lAhPLgubMcccftODu99j2iSfTx78XVtmY6BD0Ow9FAGtTLemSfLVWqryEzJO/gb59ep08/fZ3GDf03FgeM70uFIojl+zEvY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(396003)(376002)(39860400002)(346002)(136003)(91956017)(44832011)(4326008)(38070700005)(66556008)(8676002)(1076003)(2906002)(64756008)(26005)(83380400001)(66946007)(478600001)(5660300002)(316002)(9686003)(122000001)(33716001)(966005)(186003)(6916009)(38100700002)(6486002)(8936002)(66446008)(54906003)(76116006)(6512007)(66476007)(86362001)(71200400001)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lo5doqEZhNGHNet0nfmCNsALdgGmIhF67HR14UoCSqiJDENF3dntYcWXeK3n?=
+ =?us-ascii?Q?yX0VGDfNombTz9dUHH2gKaa1iLyNzStgife8uU/uKJ74DhjKCXNPJrhkbN+O?=
+ =?us-ascii?Q?0pVjZum8Q7WGJz6mDl7I9R+kw1qSg94eX8sm+0PJuO7ZQOlyPg8Pb5L7qgjo?=
+ =?us-ascii?Q?ckRuvXRq36rc9qFRdKOTHSMDgLm7BtVC6ei4wwHgM7MThGemKNa4xkt5Nizl?=
+ =?us-ascii?Q?o3TSu1sM0JTznfkGEYUBAWuLCB4TSNn/V1kWajU1L2pVbII8BPmbdSjs2pg5?=
+ =?us-ascii?Q?5oIhJ8kjl2yh2bjLfTRFOylruDAy3HWxeyJlgmCyn29QA4KzeifcrvEoB4hl?=
+ =?us-ascii?Q?bHkOJMj9uJrZi5+9ArJEuPT9zltS+VVtk+OdZbALg+8Ef4fCETPo0Nt/A/kA?=
+ =?us-ascii?Q?LAQdDvZK51B8ebbQZKMGlFNOOcVAx3xNpSVY8f6LQvCggOd7W/SMSx0N76jc?=
+ =?us-ascii?Q?foREwH2PIHUHs1nArhByXw6EJDRS5dWdPSDn1RogIejVc4NXYnXxhKC5kv07?=
+ =?us-ascii?Q?XaDXBWEYR6B2mazp1pxwQzXbMpIOSTNRlR9/O3xXapVMtQPgDAxnTZGBNA7x?=
+ =?us-ascii?Q?9pnPW3c4+gFoa9+drZHs9PQZKmBDA0xT01TklILmJyfkFFE41+qbB5hZKUEH?=
+ =?us-ascii?Q?KpXAslqJbbpnhMxs5dvE6jMeUdCGXuk097lOPclzEcfDul9v+CoxbWOzFqVF?=
+ =?us-ascii?Q?x25WdlPGrDqkQoKHkjOsUnYgeJ+STYS2fmYLEXCzrMkOSQpgyfMu7W2aN7N5?=
+ =?us-ascii?Q?sqUiUEn6wIwrfjG40iQdP1EFOBerJmaJmiIXEwr3pqR8oR2JlhRSWP/85ZfQ?=
+ =?us-ascii?Q?6oJOxh1dSEJHmkVg639Jvh7shH1z0pP4NJq9/6zrB/z1NUtce3l34r8xkzAh?=
+ =?us-ascii?Q?ywOKLnFwoPJBlJtFJdby3qwhRCKlGapja6m6zznkcxmAxPZ4s/DARYV0YCMy?=
+ =?us-ascii?Q?QLvCx2I8Bf6GUlmMgYj7gsEQ3sjK9YBrZ/0JMuS7lcsFL7kIRBSTZEXAmfnK?=
+ =?us-ascii?Q?OL6BkpgZeLYzXIEdjpHeUvelhZx+lF6HVvw80vjJpbEJBhEZwXHAeNKrhD49?=
+ =?us-ascii?Q?bsr+Ze+GVaON7c3qVBgoSa9B1TtYhuYhQkGlZ0IA1Bw34GEJ+PCifzGBbr+X?=
+ =?us-ascii?Q?1YaM80PSsRX/vK62ASs+RgJeGjTxEHXu8mAtugVosH3PR+AxRUQay3HYc1Ke?=
+ =?us-ascii?Q?DtBUBAjdPbpttxXwnsOMVehnzYxKmSLcoT+aE2h9P+DJbUrPC35Xgsa83zAK?=
+ =?us-ascii?Q?JBpeJCjqMUmPmYzibZ6JTbN5fM9B/wM/m40S1ka6K5k0Jlv8SBvj13Sz9viu?=
+ =?us-ascii?Q?pOOm+WyC3FAAwZWndzNfBMY5?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E4468B7AA16BAC4EAAF39CA80FD14FBB@eurprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: AM9P192CA0024.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:20b:21d::29) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by AM9P192CA0024.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21d::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 15:13:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5adbe3f1-dc66-4920-9049-08d9779243cc
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2335:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB23354197C41F9E71E890D952B3DA9@VI1PR0401MB2335.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: niMXTS/KNXbkB+wjze2R1IVFVOHfeFeUehENw3LpWc34kQZ/uDwbBYDyylTZSHN6Af2CWhGO/m8VaFaHKfzA7OCWPDWqRXw6lHK4EO7/RFfS4m6Q6eNxvjMyZtsnV9QzRAy67M8EsnHX48sMnWS+7gEMbnp4nP58ytzNFdg0d7icj93eucSz40ch4dC/CRMMSVJuGdm8tLmrmB9H3I1lmlQciFBxONE/dJYQd97qUakX1RhJy7kyV5WXzyTPq8hcXc2XioKsg76DKqaY1SeIoJLqfQ81CMBtpiw76HUleOvzWb4Eww9mIL+IBepbm6wQgLmj3t7nB0YNFd9trTpeO16kS3woMCS21xvx90dkaEZLjzzUMziYlnERLwxX8MsyAh/1tOumTIqIrdPCYQo9QcjmyRCq66OkV1oGfWQ3qGInVFSJ/DDALo1ua1E4KDiI00Egw1wGEj2IL5U9EBk/Ub4UU4SE+48V2Dh21CZbiBt9774DIsnc3b5Evms8PpY+9bXMqFmOO/qSICF9/vXwmFzJOZnoZu1g0l08NlR95O4S3w6wOV5pLUtFFB4dFrllJG5HEYOS1wAuhmHKMrYozw18JVlm3hhRTgxBniCtc2wzi/iyPbGWJM50ALMoKV5Sv4ZU/rkZ4zot653pTir4PgvwGRUFKO3R6Z1nEg7Q3sARDvlPYLEsm8pATRJesAWKHWxgWZoUPrmkNVaSQaN8YnXNBwTfJdlXFO1eoFgcZYYFWRiBqqeK5bwtgS/H5r97sRg87q4UB9igWTGL0AATwObzep+6+7b0sXjGCe0yhVQUZXOPvZaXe9G4QC7qWb41vCUUKB/2/oQy9pgYJa4kfQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(366004)(39860400002)(346002)(31686004)(6916009)(26005)(31696002)(53546011)(38100700002)(6486002)(36756003)(45080400002)(186003)(8936002)(478600001)(2906002)(8676002)(4326008)(5660300002)(83380400001)(86362001)(66556008)(966005)(54906003)(2616005)(316002)(16576012)(66946007)(66476007)(956004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?at9P6pCwgpCB5svNX/CO8os8thqC+oDosEeqZhCCWPGnq8Ianqz9YTumYWAz?=
- =?us-ascii?Q?pYfJFotsxwQVWlqDxvdA5qM9/g/xXjC2IJiFkAxGfOoaOglIVdDY66yxkCfP?=
- =?us-ascii?Q?iLKyAxPszcWk58xcg2s5o888Ot86GzyS13EHoaa5Fw86Vl9IydpOSa248ycE?=
- =?us-ascii?Q?0mF4EwCGNmHUEj4zo/5jD9ueHs+UTqmuEC0GZTfpoFKYIIkdmxLEHOt5Rchh?=
- =?us-ascii?Q?3QwgRdjHqUVamepONRBcOB8t/NokX5wgaTIm663jpfUETLAEaU+FCVKB8tUe?=
- =?us-ascii?Q?TIikDlPSFPtecMyApBPMWc1UNEnTQncixpXEcWuw9QoPtxUz7Cm158vQ9tZo?=
- =?us-ascii?Q?qu4WTnaAclCGL4XHb6Pt8yhype4ASP7xXsBWRVGsUrt+kAUkPGM6yChh4Mi5?=
- =?us-ascii?Q?gIvQG39g2f2g+HoLGzZY+49QQgN2FpIY0UKWXFihHoWLg61uVbhP/rRqppwV?=
- =?us-ascii?Q?dX4z7274+N9ER3v44BpTfIpWhsDR8n4ZKh3stNV3wgkKl3qaP3TQYlLCj48C?=
- =?us-ascii?Q?XPTiWO+fqR20RyHWao5/m+DB6l61FIKV9ixOqYIQ6QjAn03U6sE4itryNmLG?=
- =?us-ascii?Q?AJad+hYx6rs9+0icI/5NPGrg+bw1yCGYxtHE55PLUTB3joCwtM4LuZNJYrI8?=
- =?us-ascii?Q?TfEQO36EMMh/Bf4HSlVpVw7013jdjtKpTQxTcSQKulDFdG9oK85AHa5N19uZ?=
- =?us-ascii?Q?A6egGZPeHywWwsP6u9YbsnraixnKliksUxCliL1fRi03rqMwueY5pPC2Skxt?=
- =?us-ascii?Q?QGyjbzoelPs3AZbTQV20gslIMCJZ6Xpr9IMSbbMYJhOQc4H/FedgM1y6vRPR?=
- =?us-ascii?Q?WnSQ4UpfujbGA2Rj3hJ4bfpovykTSr+ifnPLod+WbygwXny3uMN/d9aqQk0V?=
- =?us-ascii?Q?DbWdLxcEHJzEUf/ZrpiMKRADHNNRBNMZ7aLE9WAFAQjY2tVQMpcDt8hmZbmz?=
- =?us-ascii?Q?PHrPklCbKyXXwqkJqw9koiJjTCg6ajLZ+eUY3M+qcZj/wae8X5/hnsb/Y8vG?=
- =?us-ascii?Q?S2bI0/19kswmUucSx60f7xdnSHasM0qs/CURuecuIzce43plvsgkvCS79hWk?=
- =?us-ascii?Q?gZocLPs9OCJMTCyr9oUnvN8SkU2Dd1W1gay3JXC0z514rKjAk/qOelaRAeMf?=
- =?us-ascii?Q?LCn2OIW9NnMhcHINTyqdlifvSrVFREkLFumbUqv4IEf7w8JD5IL+vOnyd7b9?=
- =?us-ascii?Q?h5T/oolHgA5Ypnz5K/fMmP/dP17VfLBEx/LX8cnwLrsb6Z8LR2N3Fr44opTN?=
- =?us-ascii?Q?cOf1ZBlgR0yfaWkYjif+PEsdE6BTJtKyLpGOnMsRXw3QEWY9iU9eQlT89909?=
- =?us-ascii?Q?Z994Ebuoov2NjYtiilYZq/MD?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5adbe3f1-dc66-4920-9049-08d9779243cc
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 15:13:53.7275
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87aae961-c76a-485d-28c0-08d977927b55
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 15:15:26.6375
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fRgwcyn0rXPUAjv56cYjTyvN4jc/Whq6BcRTH2XT8UX/14PdqMPKPyvYJls7GRbkf/0lH+D0IWJtNkSE1hQCbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2335
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UfgJFOYzribEhRgQXojD3knCF2oDmziUdexGCJGg6I2c7KewgglATozhvvymSsz+TPsmIdarnExiDR/fe6yU0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5341
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2021 14:41, Roger Pau Monn=C3=A9 wrote:
-> On Tue, Sep 14, 2021 at 01:58:29PM +0200, Jan Beulich wrote:
->> On 14.09.2021 13:15, Roger Pau Monn=C3=A9 wrote:
->>> On Tue, Sep 14, 2021 at 11:03:23AM +0200, Jan Beulich wrote:
->>>> On 14.09.2021 10:32, Roger Pau Monn=C3=A9 wrote:
->>>>> On Tue, Sep 07, 2021 at 12:04:34PM +0200, Jan Beulich wrote:
->>>>>> In order to try to debug hypervisor side breakage from XSA-378 I fou=
-nd
->>>>>> myself urged to finally give PVH Dom0 a try. Sadly things didn't wor=
-k
->>>>>> quite as expected. In the course of investigating these issues I act=
-ually
->>>>>> spotted one piece of PV Dom0 breakage as well, a fix for which is al=
-so
->>>>>> included here.
->>>>>>
->>>>>> There are two immediate remaining issues (also mentioned in affected
->>>>>> patches):
->>>>>>
->>>>>> 1) It is not clear to me how PCI device reporting is to work. PV Dom=
-0
->>>>>>    reports devices as they're discovered, including ones the hypervi=
-sor
->>>>>>    may not have been able to discover itself (ones on segments other
->>>>>>    than 0 or hotplugged ones). The respective hypercall, however, is
->>>>>>    inaccessible to PVH Dom0. Depending on the answer to this, either
->>>>>>    the hypervisor will need changing (to permit the call) or patch 2
->>>>>>    here will need further refinement.
->>>>>
->>>>> I would rather prefer if we could limit the hypercall usage to only
->>>>> report hotplugged segments to Xen. Then Xen would have to scan the
->>>>> segment when reported and add any devices found.
->>>>>
->>>>> Such hypercall must be used before dom0 tries to access any device, a=
-s
->>>>> otherwise the BARs won't be mapped in the second stage translation an=
+On Tue, Sep 14, 2021 at 04:33:25PM +0200, Andrew Lunn wrote:
+> On Tue, Sep 14, 2021 at 12:06:18PM +0000, Vladimir Oltean wrote:
+> > On Mon, Sep 13, 2021 at 08:49:19PM +0200, Andrew Lunn wrote:
+> > > > I am not sure why "to_phy_driver" needs cleanup. Au contraire, I th=
+ink
+> > > > the PHY library's usage of struct phy_device :: drv is what is stra=
+nge
+> > > > and potentially buggy, it is the only subsystem I know of that keep=
+s its
+> > > > own driver pointer rather than looking at struct device :: driver.
+> > >
+> > > There is one odd driver in the mix. Take a look at xilinx_gmii2rgmii.=
+c.
+> > >
+> > > It probably could be done a better way, but that is what we have.
+> >
+> > Interesting, to say the least. Also, is there any connection between
+> > that and the revert I'm proposing?
+>
+> If i remember correctly, Gerhard Engleder is actually using this, and
+> ran into a problem because the wrong driver structure was used.
+>
+> > So compared to other vendors, where the RGMII gasket is part of the MAC
+> > device, with Xilinx Zynq it is accessible via MDIO?
+>
+> Yes. Its control plane sits on the MDIO bus. Unfortunately, it does
+> not have any ID registers, so it does not directly appear as a PHY. So
+> it does interesting things it put itself in the control path to the
+> real PHY.
+>
+> > It looks like it is said that this GMII2RGMII converter can be placed i=
+n
+> > front of any GMII MAC. Nice that there are zero in-tree users of
+> > "xlnx,gmii-to-rgmii-1.0" so that I could figure out exactly how that
+> > plays out in practice.
+>
+> If you look back at the thread for that patch, i think Gerhard posted
+> a DT fragment he is using. Hopefully it will get submitted as a full
+> board description at some point.
+>
+> > Note that the usage of priv->phy_dev, priv->phy_drv, priv->conv_phy_drv
+> > beats me. Why is "phy_dev" kept inside "priv" even though it is accesse=
 d
->>>>> the traps for the MCFG area won't be setup either.
->>>>
->>>> This might work if hotplugging would only ever be of segments, and not
->>>> of individual devices. Yet the latter is, I think, a common case (as
->>>> far as hotplugging itself is "common").
->>>
->>> Right, I agree to use hypercalls to report either hotplugged segments
->>> or devices. However I would like to avoid mandating usage of the
->>> hypercall for non-hotplug stuff, as then OSes not having hotplug
->>> support don't really need to care about making use of those
->>> hypercalls.
->>>
->>>> Also don't forget about SR-IOV VFs - they would typically not be there
->>>> when booting. They would materialize when the PF driver initializes
->>>> the device. This is, I think, something that can be dealt with by
->>>> intercepting writes to the SR-IOV capability.
->>>
->>> My plan was to indeed trap SR-IOV capability accesses, see:
->>>
->>> https://nam04.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flor=
-e.kernel.org%2Fxen-devel%2F20180717094830.54806-1-roger.pau%40citrix.com%2F=
-&amp;data=3D04%7C01%7Croger.pau%40citrix.com%7C35d2502d0128484e229e08d97777=
-087f%7C335836de42ef43a2b145348c2ee9ca5b%7C0%7C0%7C637672175399546062%7CUnkn=
-own%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXV=
-CI6Mn0%3D%7C1000&amp;sdata=3DsSeE%2F4wEo5%2Fplkj2yH%2B1kpHi5c15lxJxeUxx6Cby=
-r4s%3D&amp;reserved=3D0
->>>
->>> I just don't have time ATM to continue this work.
->>>
->>>> But I wonder whether
->>>> there might be other cases where devices become "visible" only while
->>>> the Dom0 kernel is already running.
->>>
->>> I would consider those kind of hotplug devices, and hence would
->>> require the use of the hypercall in order to notify Xen about them.
->>
->> So what does this mean for the one patch? Should drivers/xen/pci.c
->> then be built for PVH (and then have logic added to filter boot
->> time device discovery), or should I restrict this to be PV-only (and
->> PVH would get some completely different logic added later)?
->=20
-> I think we can reuse the same hypercalls for PVH, and maybe the same
-> code in Linux. For PVH we just need to be careful to make the
-> hypercalls before attempting to access the BARs (or the PCI
-> configuration space for the device) since there won't be any traps
-> setup, and BARs won't be mapped on the p2m.
->=20
-> It might be easier for Linux to just report every device it finds to
-> Xen, like it's currently done for PV dom0, instead of filtering on
-> whether the device has been hotplugged.
-
-Okay. I'll leave the Linux patch as is then and instead make a Xen
-patch to actually let through the necessary function(s) in
-hvm_physdev_op().
-
->>>>>> 2) Dom0, unlike in the PV case, cannot access the screen (to use as =
-a
->>>>>>    console) when in a non-default mode (i.e. not 80x25 text), as the
->>>>>>    necessary information (in particular about VESA-bases LFB modes) =
-is
->>>>>>    not communicated. On the hypervisor side this looks like delibera=
-te
->>>>>>    behavior, but it is unclear to me what the intentions were toward=
-s
->>>>>>    an alternative model. (X may be able to access the screen dependi=
-ng
->>>>>>    on whether it has a suitable driver besides the presently unusabl=
+> > only inside xgmiitorgmii_probe? Why does xgmiitorgmii_configure() need =
+to
+> > be called from xgmiitorgmii_read_status() which in turn hooks into the
+> > attached PHY driver's phy_read_status()? Why does xgmiitorgmii_configur=
 e
->>>>>>    /dev/fb<N> based one.)
->>>>>
->>>>> I had to admit most of my boxes are headless servers, albeit I have
->>>>> one NUC I can use to test gfx stuff, so I don't really use gfx output
->>>>> with Xen.
->>>>>
->>>>> As I understand such information is fetched from the BIOS and passed
->>>>> into Xen, which should then hand it over to the dom0 kernel?
->>>>
->>>> That's how PV Dom0 learns of the information, yes. See
->>>> fill_console_start_info(). (I'm in the process of eliminating the
->>>> need for some of the "fetch from BIOS" in Xen right now, but that's
->>>> not going to get us as far as being able to delete that code, no
->>>> matter how much in particular Andrew would like that to happen.)
->>>>
->>>>> I guess the only way for Linux dom0 kernel to fetch that information
->>>>> would be to emulate the BIOS or drop into realmode and issue the BIOS
->>>>> calls?
->>>>
->>>> Native Linux gets this information passed from the boot loader, I thin=
-k
->>>> (except in the EFI case, as per below).
->>>>
->>>>> Is that an issue on UEFI also, or there dom0 can fetch the framebuffe=
-r
->>>>> info using the PV EFI interface?
->>>>
->>>> There it's EFI boot services functions which can be invoked before
->>>> leaving boot services (in the native case). Aiui the PVH entry point
->>>> lives logically past any EFI boot services interaction, and hence
->>>> using them is not an option (if there was EFI firmware present in Dom0
->>>> in the first place, which I consider difficult all by itself - this
->>>> can't be the physical system's firmware, but I also don't see where
->>>> virtual firmware would be taken from).
->>>>
->>>> There is no PV EFI interface to obtain video information. With the
->>>> needed information getting passed via start_info, PV has no need for
->>>> such, and I would be hesitant to add a fundamentally redundant
->>>> interface for PVH. The more that the information needed isn't EFI-
->>>> specific at all.
->>>
->>> I think our only option is to expand the HVM start info information to
->>> convey that data from Xen into dom0.
->>
->> PHV doesn't use the ordinary start_info, does it?
->=20
-> No, it's HVM start info as described in:
->=20
-> xen/include/public/arch-x86/hvm/start_info.h
->=20
-> We have already extended it once to add a memory map, we could extend
-> it another time to add the video information.
+> > not get exported and called from an .adjust_link method or the phylink
+> > equivalent, like any other MAC-side hardware linked with the PHY librar=
+y
+> > in the kernel?
+>
+> I was never happy with this driver. It got submitted before i went on
+> vacation, i had a few rounds trying to get the submitter to refactor
+> it and was mostly ignored. I left on vacation with lots of open review
+> points, and when i got back it had been merged. And the original
+> submitters never responded to my requests for improvements.
 
-Okay, I'll try to make a(nother) patch along these lines. Since there's
-a DomU counterpart in PV's start_info - where does that information get
-passed for PVH? (I'm mainly wondering whether there's another approach
-to consider.)
+Sorry, this is a rabbit hole I really don't want to go into. Allowing it
+to override PHY driver functions in order to 'automagically' configure
+itself when the PHY driver does stuff is probably where the bad decision
+was, everything from there is just the resulting fallout.
 
-Jan
+Why don't all MAC drivers just hook themselves into the PHY driver's
+->read_status method and configure themselves from there?! Why do we
+even need adjust_link, phylink, any of that? It's just a small
+pointer/driver override, the PHY library supports it.
 
+I have dug up this discussion where your stance seemed to be that
+"you want the MAC phy-handle to point to the gmii_to_rgmii 'PHY'"
+https://lore.kernel.org/netdev/20190309161912.GD9000@lunn.ch/#t
+
+I am not really sure if that particular reply went towards making this
+driver's design any saner than it is. As explained by Harini Katakam in
+his reply to you, the GMII2RGMII converter is not a PHY, and should
+therefore not be treated like one. It is an RGMII gasket for the MAC.
+Treating it as a satellite device of the MAC, which happens by chance to
+sit on an MDIO bus, but having otherwise nothing to do with the PHY
+library, sounds like a more normal approach (please note that it is
+quite likely I am oversimplifying some things since I just learned about
+this).=
