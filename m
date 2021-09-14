@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF06840AB25
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F9640AB18
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhINJwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:52:02 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:16359 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhINJv6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:51:58 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 18E9Uefk047557;
-        Tue, 14 Sep 2021 17:30:40 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 14 Sep
- 2021 17:50:30 +0800
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH resend] media: aspeed: refine to avoid full jpeg update
-Date:   Tue, 14 Sep 2021 17:49:20 +0800
-Message-ID: <20210914094919.3506-1-jammy_huang@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 18E9Uefk047557
+        id S230371AbhINJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:47:43 -0400
+Received: from mga12.intel.com ([192.55.52.136]:24663 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230391AbhINJrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:47:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="201450572"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="201450572"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 02:46:23 -0700
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="543881837"
+Received: from chenyi-pc.sh.intel.com ([10.239.159.135])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 02:46:21 -0700
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: nVMX: Fix nested bus lock VM exit
+Date:   Tue, 14 Sep 2021 17:50:41 +0800
+Message-Id: <20210914095041.29764-1-chenyi.qiang@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The switch of jpeg 420/444 subsampling will update full jpeg header for
-aspeed now.
+Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
+VM exit, it will be directed to L1 VMM, which would cause unexpected
+behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
 
-Just update the 420/444 subsampling part of jpeg header is fine.
+Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
+Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
 
-Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
 ---
- resend the patch becuase cc-list isn't complete.
+Change log
+v1->v2
+- Because nested bus lock VM exit is not supported and how nested
+  support would operate is uncertain. Add a brief comment to state that this
+  feature is never exposed to L1 at present. (Sean)
+- v1: https://lore.kernel.org/lkml/20210827085110.6763-1-chenyi.qiang@intel.com/
+---
+ arch/x86/kvm/vmx/nested.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- drivers/media/platform/aspeed-video.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-index 3c90f3f3cf14..8b3939b8052d 100644
---- a/drivers/media/platform/aspeed-video.c
-+++ b/drivers/media/platform/aspeed-video.c
-@@ -401,6 +401,21 @@ static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index bc6327950657..5646cc1e8d4c 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -5873,6 +5873,12 @@ static bool nested_vmx_l0_wants_exit(struct kvm_vcpu *vcpu,
+ 	case EXIT_REASON_VMFUNC:
+ 		/* VM functions are emulated through L2->L0 vmexits. */
+ 		return true;
++	case EXIT_REASON_BUS_LOCK:
++		/*
++		 * At present, bus lock VM exit is never exposed to L1.
++		 * Handle L2's bus locks in L0 directly.
++		 */
++		return true;
+ 	default:
+ 		break;
  	}
- }
- 
-+// just update jpeg dct table per 420/444
-+static void aspeed_video_update_jpeg_table(u32 *table, bool yuv420)
-+{
-+	int i;
-+	unsigned int base;
-+
-+	for (i = 0; i < ASPEED_VIDEO_JPEG_NUM_QUALITIES; i++) {
-+		base = 256 * i;	/* AST HW requires this header spacing */
-+		base += ASPEED_VIDEO_JPEG_HEADER_SIZE +
-+			ASPEED_VIDEO_JPEG_DCT_SIZE;
-+
-+		table[base + 2] = (yuv420) ? 0x00220103 : 0x00110103;
-+	}
-+}
-+
- static void aspeed_video_update(struct aspeed_video *video, u32 reg, u32 clear,
- 				u32 bits)
- {
-@@ -1274,7 +1289,7 @@ static void aspeed_video_update_jpeg_quality(struct aspeed_video *video)
- static void aspeed_video_update_subsampling(struct aspeed_video *video)
- {
- 	if (video->jpeg.virt)
--		aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
-+		aspeed_video_update_jpeg_table(video->jpeg.virt, video->yuv420);
- 
- 	if (video->yuv420)
- 		aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_YUV420);
 -- 
-2.25.1
+2.17.1
 
