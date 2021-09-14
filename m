@@ -2,141 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBF140BC2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC96A40BC2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhINXbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 19:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        id S235939AbhINXbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 19:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbhINXbE (ORCPT
+        with ESMTP id S235884AbhINXbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 19:31:04 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7455EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:46 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id g1so1906138lfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0PDbAl7XBZ5+izFdXy34C90+UtfxGn4oelrSaT4hvZo=;
-        b=hlSJFVl2f17plnlKffHP/5QoB3uHmrBbD+1tiGUIZLKiDMBgtJ3uBmdOSRBxP5+jsD
-         aaKltm8spMSCmqJAcuexFIwMAQnUUPYC0fbxtQ9uTnNTtEb0pDhDsTsD8r8bhE5H+b5P
-         9C4lDvKr/M/ipfhZIzHDgdS25QNz/6UuPzLkA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0PDbAl7XBZ5+izFdXy34C90+UtfxGn4oelrSaT4hvZo=;
-        b=VW9lt6KRHZIQdGGidDDxqcPhnVP5PpBVhsScPJTG+saoaRQpMPattIK/PAfYRjhT/j
-         fb7bbShlZBa4njonDO0NbpogXpf3ZClgich5MXVixJzYlMPy5j7Hu3zmdPpB9B9DloG6
-         Q5o/s6UfT2vtRcB10h6Jx10KoLyar6rmNfTeMy+uAnrE8MhyPSIGPv9bclI11AriGLpw
-         msri4Mhe3o/nlnd7hK4+qpCYPaevziLdz49A8/sg/K1H42VXcN9owYuydZBGpau11fBn
-         1ZD/Vkj74LT/fQdKrfDuKEuUDut2H12cTSMoXXG52QTy1Pfb4BUFwsUxgwxhj6skkd5f
-         lw4A==
-X-Gm-Message-State: AOAM531WY3FrP8qyri97KSnYPMKM9w1vULFkrkTNQj+gEKZknrF/s6a5
-        y/4D+d+d8j9/QqpKuu1fjzUGE4jEJQ0TD1M/ZFg=
-X-Google-Smtp-Source: ABdhPJwaR/n8I006wf/fBu7kr6uxydvqQGNG/x8CAvQJeqwYu+RLRfhy2Xct3nHypjO6uo43zALOHQ==
-X-Received: by 2002:a05:6512:318a:: with SMTP id i10mr15647780lfe.444.1631662184404;
-        Tue, 14 Sep 2021 16:29:44 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id w25sm1231861lfu.123.2021.09.14.16.29.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 16:29:43 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id j12so1667195ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:43 -0700 (PDT)
-X-Received: by 2002:a2e:96c7:: with SMTP id d7mr17832442ljj.191.1631662183146;
- Tue, 14 Sep 2021 16:29:43 -0700 (PDT)
+        Tue, 14 Sep 2021 19:31:36 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46056C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:30:18 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id E60E5806AC;
+        Wed, 15 Sep 2021 11:30:12 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1631662212;
+        bh=RADbeFbJkIv7Big72n9qhNPRwU04jTokEdgTpQmNz9U=;
+        h=From:To:Cc:Subject:Date;
+        b=lF2Vj2Y/fx63oEGTRPUPZZakOUwp6k8LhQW33UBwsNjPPlZv6dn7ObMGxxyb7Evf5
+         /cGFRkcrpZaXw/tU8V1A4lss2nP50EGEnVUMHGguSoqvtiht5D64flR1COMvje1jCP
+         /d11eZa32d1gHVTuMIjXFcU/Dp1J4b9TM0kKht4PjM14WNksjJJu+R6+y+GUDNUahR
+         cuCnLYBXJqokWkIaX89KNCvGJv7FOIldkWKqElqnY9OOwzV8dxxfdHKBVidvUOf/BW
+         QH0aFOUnlKFzPMviRZPF+TKjj+q/G8vix05Qi6sCsUREH/0ypLcyL94noKtEGB5OQA
+         5RAGzowFvVGZQ==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B614130840000>; Wed, 15 Sep 2021 11:30:12 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id B116A13EE3F;
+        Wed, 15 Sep 2021 11:30:12 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id A9767240D70; Wed, 15 Sep 2021 11:30:12 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
+        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
+        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
+        Blair Steven <blair.steven@alliedtelesis.co.nz>
+Subject: [PATCH net v3] net: netfilter: Fix port selection of FTP for NF_NAT_RANGE_PROTO_SPECIFIED
+Date:   Wed, 15 Sep 2021 11:30:06 +1200
+Message-Id: <20210914233006.8710-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210914105620.677b90e5@oasis.local.home> <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
- <20210914145953.189f15dc@oasis.local.home> <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
- <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com>
- <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
- <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
- <20210914170553.7c1e1faa@oasis.local.home> <4392e867-0cce-d04a-e3d1-cba152daaa1f@suse.cz>
-In-Reply-To: <4392e867-0cce-d04a-e3d1-cba152daaa1f@suse.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Sep 2021 16:29:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wimTmUcYC_BPvwv-48OFwpzJhzrX-_9afk--ND6en81Xg@mail.gmail.com>
-Message-ID: <CAHk-=wimTmUcYC_BPvwv-48OFwpzJhzrX-_9afk--ND6en81Xg@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=fY/TNHYF c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=7QKq2e-ADPsA:10 a=oMNuOPhhpfK_yRezG5QA:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 3:48 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> Well, looks like I can't. Commit 77e02cf57b6cf does boot fine for me,
-> multiple times. But so now does the parent commit 6a4746ba06191. Looks like
-> the magic is gone. I'm now surprised how deterministic it was during the
-> bisect (most bad cases manifested on first boot, only few at second).
+FTP port selection ignores specified port ranges (with iptables
+masquerade --to-ports) when creating an expectation, based on
+FTP commands PORT or PASV, for the data connection.
 
-Well, your report was clearly memory corruption by the invalid
-memblock_free() just ending up causing random problems later on.
+Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
+Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
+Co-developed-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
+Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+---
 
-So it could easily be 100% deterministic with a certain memory layout
-at a particular commit. And then enough other changes later, and it's
-all gone, because the memory corruption now hits something else that
-didn't even care.
+Notes:
+    Thanks for your time reviewing!
+   =20
+    Changes:
+    - Removed check for port =3D=3D 0.
+    - Added nf_nat_l4proto_unique_tuple() to include/net/netfilter/nf_nat=
+.h.
+    - Simplify htons/ntohs calls.
+    - Move away from conditional call of nf_nat_l4proto_unique_tuple() to=
+ applying full range to dst port
+      if ftp active with PORT/ePORT is used.
+    - Remove check for exp->master !=3D NULL.
+   =20
+    Comments:
+    - dir is the direction of the ftp PORT/PASV request, so exp->dir is t=
+he direction
+      of the data connection. In nat helper, the range should be applied =
+on !exp->dir
+      source port since this is the connection from the client.
 
-The code for your oops was
+ include/net/netfilter/nf_nat.h | 11 ++++++++++
+ net/netfilter/nf_nat_core.c    | 17 +++++++++++----
+ net/netfilter/nf_nat_ftp.c     | 38 +++++++++++++++++++++++-----------
+ net/netfilter/nf_nat_helper.c  | 10 +++++++++
+ 4 files changed, 60 insertions(+), 16 deletions(-)
 
-   0: 48 8b 17              mov    (%rdi),%rdx
-   3: 48 39 d7              cmp    %rdx,%rdi
-   6: 74 43                je     0x4b
-   8: 48 8b 47 08          mov    0x8(%rdi),%rax
-   c: 48 85 c0              test   %rax,%rax
-   f: 74 23                je     0x34
-  11: 49 89 c0              mov    %rax,%r8
-  14:* 48 8b 40 10          mov    0x10(%rax),%rax <-- trapping instruction
+diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_na=
+t.h
+index 0d412dd63707..89796ed2aad3 100644
+--- a/include/net/netfilter/nf_nat.h
++++ b/include/net/netfilter/nf_nat.h
+@@ -27,12 +27,18 @@ union nf_conntrack_nat_help {
+ #endif
+ };
+=20
++struct nf_conn_nat_range_info {
++	union nf_conntrack_man_proto    min_proto;
++	union nf_conntrack_man_proto    max_proto;
++};
++
+ /* The structure embedded in the conntrack structure. */
+ struct nf_conn_nat {
+ 	union nf_conntrack_nat_help help;
+ #if IS_ENABLED(CONFIG_NF_NAT_MASQUERADE)
+ 	int masq_index;
+ #endif
++	struct nf_conn_nat_range_info range_info;
+ };
+=20
+ /* Set up the info structure to map into this range. */
+@@ -40,6 +46,11 @@ unsigned int nf_nat_setup_info(struct nf_conn *ct,
+ 			       const struct nf_nat_range2 *range,
+ 			       enum nf_nat_manip_type maniptype);
+=20
++void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
++				 const struct nf_nat_range2 *range,
++				 enum nf_nat_manip_type maniptype,
++				 const struct nf_conn *ct);
++
+ extern unsigned int nf_nat_alloc_null_binding(struct nf_conn *ct,
+ 					      unsigned int hooknum);
+=20
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index ea923f8cf9c4..edfd72524c38 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -397,10 +397,10 @@ find_best_ips_proto(const struct nf_conntrack_zone =
+*zone,
+  *
+  * Per-protocol part of tuple is initialized to the incoming packet.
+  */
+-static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple=
+,
+-					const struct nf_nat_range2 *range,
+-					enum nf_nat_manip_type maniptype,
+-					const struct nf_conn *ct)
++void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
++				 const struct nf_nat_range2 *range,
++				 enum nf_nat_manip_type maniptype,
++				 const struct nf_conn *ct)
+ {
+ 	unsigned int range_size, min, max, i, attempts;
+ 	__be16 *keyptr;
+@@ -623,6 +623,15 @@ nf_nat_setup_info(struct nf_conn *ct,
+ 			   &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
+=20
+ 	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
++	if (range && (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
++		struct nf_conn_nat *nat =3D nf_ct_nat_ext_add(ct);
++
++		if (WARN_ON_ONCE(!nat))
++			return NF_DROP;
++
++		nat->range_info.min_proto =3D range->min_proto;
++		nat->range_info.max_proto =3D range->max_proto;
++	}
+=20
+ 	if (!nf_ct_tuple_equal(&new_tuple, &curr_tuple)) {
+ 		struct nf_conntrack_tuple reply;
+diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
+index aace6768a64e..f14e53e8dc04 100644
+--- a/net/netfilter/nf_nat_ftp.c
++++ b/net/netfilter/nf_nat_ftp.c
+@@ -72,8 +72,14 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	u_int16_t port;
+ 	int dir =3D CTINFO2DIR(ctinfo);
+ 	struct nf_conn *ct =3D exp->master;
++	struct nf_conn_nat *nat =3D nfct_nat(ct);
++	struct nf_nat_range2 range =3D {};
+ 	char buffer[sizeof("|1||65535|") + INET6_ADDRSTRLEN];
+ 	unsigned int buflen;
++	int ret;
++
++	if (WARN_ON_ONCE(!nat))
++		return NF_DROP;
+=20
+ 	pr_debug("type %i, off %u len %u\n", type, matchoff, matchlen);
+=20
+@@ -86,21 +92,29 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
+ 	 * this one. */
+ 	exp->expectfn =3D nf_nat_follow_master;
+=20
+-	/* Try to get same port: if not, try to change it. */
+-	for (port =3D ntohs(exp->saved_proto.tcp.port); port !=3D 0; port++) {
+-		int ret;
++	/* Avoid applying range to external ports */
++	if (!exp->dir || !nat->range_info.min_proto.all || !nat->range_info.max=
+_proto.all) {
++		range.min_proto.all =3D htons(1);
++		range.max_proto.all =3D htons(65535);
++	} else {
++		range.min_proto     =3D nat->range_info.min_proto;
++		range.max_proto     =3D nat->range_info.max_proto;
++	}
++	range.flags                 =3D NF_NAT_RANGE_PROTO_SPECIFIED;
++
++	/* Try to get same port if it matches range */
++	ret =3D -1;
++	port =3D ntohs(exp->tuple.dst.u.tcp.port);
++	if (ntohs(range.min_proto.all) <=3D port && port <=3D ntohs(range.max_p=
+roto.all))
++		ret =3D nf_ct_expect_related(exp, 0);
+=20
+-		exp->tuple.dst.u.tcp.port =3D htons(port);
++	/* Same port is not available, try to change it */
++	if (ret !=3D 0) {
++		nf_nat_l4proto_unique_tuple(&exp->tuple, &range, NF_NAT_MANIP_DST, ct)=
+;
++		port =3D ntohs(exp->tuple.dst.u.tcp.port);
+ 		ret =3D nf_ct_expect_related(exp, 0);
+-		if (ret =3D=3D 0)
+-			break;
+-		else if (ret !=3D -EBUSY) {
+-			port =3D 0;
+-			break;
+-		}
+ 	}
+-
+-	if (port =3D=3D 0) {
++	if (ret !=3D 0) {
+ 		nf_ct_helper_log(skb, ct, "all ports in use");
+ 		return NF_DROP;
+ 	}
+diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.=
+c
+index a263505455fc..718fc423bc44 100644
+--- a/net/netfilter/nf_nat_helper.c
++++ b/net/netfilter/nf_nat_helper.c
+@@ -188,6 +188,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
+ 	range.flags =3D NF_NAT_RANGE_MAP_IPS;
+ 	range.min_addr =3D range.max_addr
+ 		=3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
++	if (!exp->dir) {
++		struct nf_conn_nat *nat =3D nfct_nat(exp->master);
++
++		if (nat && nat->range_info.min_proto.all &&
++		    nat->range_info.max_proto.all) {
++			range.min_proto =3D nat->range_info.min_proto;
++			range.max_proto =3D nat->range_info.max_proto;
++			range.flags |=3D NF_NAT_RANGE_PROTO_SPECIFIED;
++		}
++	}
+ 	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
+=20
+ 	/* For DST manip, map port here to where it's expected. */
+--=20
+2.33.0
 
-and that's the start of rb_next(), so what's going on is that
-"rb->rb_right" (the second word of 'struct rb_node') ends up having
-that value in %rax:
-
-  RAX: 343479726f6d656d
-
-which is ASCII "44yromem" rather than a valid pointer if I looked that up right.
-
-And just _slightly_ different allocation patterns, and your 'struct
-rb_node' gets allocated somewhere else, and you don't see the oops at
-all, or you get it later in some different place.
-
-Most memory corruption doesn't cause oopses, because most memory isn't
-used as pointers etc.
-
-What you _could_ try if you care enough is
-
- - go back to the thing you bisectted to where you can still hopefully
-recreate the problem
-
- - apply that patch at that point with no other changes
-
-and then the test would hopefully be closer to the state you could
-re-create the problem.
-
-And hopefully it would still not reproduce, just because the bug is
-fixed, of course ;)
-
-The very unlikely alternative is that your bisect was just pure random
-bad luck and hit the wrong commit entirely, and the oops was due to
-some other problem.
-
-But it does seem unlikely to be something else. Usually when bisects
-go off into the weeds due to not being reproducible, they go very
-obviously off into the weeds rather than point to something that ends
-up having a very similar bug.
-
-           Linus
