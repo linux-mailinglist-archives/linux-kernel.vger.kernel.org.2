@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4450540B43C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE16E40B43D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhINQMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:12:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235205AbhINQMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:12:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EBE061184;
-        Tue, 14 Sep 2021 16:10:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631635846;
-        bh=EG2I9oaRHQ+gf10Ljpq+PHD1qpxygSWw9ESK9c5OiTI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IHaez8cpMAtBscPugr8Wcx49J5XMmJfvQ3Mok3kfERhW3dEAPDFubeaLOLLeh9fHG
-         t5pEK4LY2m3b8QwYehsOmmn+zYydXxpWeyI/hxKSpEuhTc8H6OvGtmAE2NhlJGK+g3
-         i0iqI5O2vxZND4woIXUIws78VJBZv/sXg/SPQRTYh2UPJItg9+zmp6pHD6hfFNF96Q
-         Y+GA5w3hfbEPP7jRxdS+2cqxABnGmRf7UBZxcVh0prTu8fgpFidPfDlongZapwbyW6
-         vNEe7VR9+LbNh4FHXz4UpdNRgT4H2B3yc0IfMjLEa1EhSNZlHpQwon17Fyxt0NQdXv
-         N32FT/mRdaGnA==
-Received: by mail-ot1-f49.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so19235288otg.11;
-        Tue, 14 Sep 2021 09:10:45 -0700 (PDT)
-X-Gm-Message-State: AOAM531KxFi6+kFUJWb+QARtiHxauuDPFE/u7WdbtXJQ8eRK0w+UJ0Ro
-        HjFE8l/cINdLwzfNfGotFHDDvzRpuwshANQ2adw=
-X-Google-Smtp-Source: ABdhPJy/NGgZ1IROAgHU5psXnjNt0DbcmbCt3vJiiC8iJFGuRSAXr6SftyZ8/TdDx/41hvt3tr6orITFhHtqOeCjlZU=
-X-Received: by 2002:a9d:200b:: with SMTP id n11mr15316897ota.30.1631635845243;
- Tue, 14 Sep 2021 09:10:45 -0700 (PDT)
+        id S235299AbhINQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:12:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59952 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235006AbhINQMU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:12:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FE131FE25;
+        Tue, 14 Sep 2021 16:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631635862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5C+B3s0+s0kVAvW4V7aTwm7p5FXKMe3BMinycoHWq7Y=;
+        b=i9eV3r3FIPHOQNdNf/CW/GDUW3bqiD53fKWAxaE1SHU1S1Ytd9RLvPedrIcJ969SUdcbtD
+        CW8Q5vT7ymAtE2Y29q0+iUpOybsyT1/iHw6UZUB4Mgr5qm90jimmyysImuJYMf7fkKcZ20
+        ZNknuPXUONAjWPy/Ld51RCXv/zzMxfs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631635862;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5C+B3s0+s0kVAvW4V7aTwm7p5FXKMe3BMinycoHWq7Y=;
+        b=YvaZOTmzjHv0DAJbtjujmYd45L4C+vqyCtA0YUc0bkoG7zJL3xumM+62H8Jg6OQBCCGxPi
+        vPsybwUSVysp8uCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EBC6813ABE;
+        Tue, 14 Sep 2021 16:11:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id x8fROJXJQGGYLwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 14 Sep 2021 16:11:01 +0000
+Message-ID: <e5c7ce5b-93f0-b305-de32-c99d0390eb28@suse.cz>
+Date:   Tue, 14 Sep 2021 18:11:01 +0200
 MIME-Version: 1.0
-References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-6-ardb@kernel.org>
- <CAHk-=whLEofPLzzTKXN5etnH5WqsTPQRLVv8uQgHnx7c59omBg@mail.gmail.com>
- <CAMj1kXH_Q4a4Gsi0Xuw=YsV-b7Mu8TQndk3Ei-JFaRV=GSiqUQ@mail.gmail.com> <CAHk-=wiaVLChOjJ=7fdoQXKE4JHb98MjDtg8pPkA8EYfd5aj3g@mail.gmail.com>
-In-Reply-To: <CAHk-=wiaVLChOjJ=7fdoQXKE4JHb98MjDtg8pPkA8EYfd5aj3g@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 14 Sep 2021 18:10:33 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHKn+RLQf1Nc_7Vs1qVoFZd6RL4=WX8AwoLst18i7n+LA@mail.gmail.com>
-Message-ID: <CAMj1kXHKn+RLQf1Nc_7Vs1qVoFZd6RL4=WX8AwoLst18i7n+LA@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/8] sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [for-linus][PATCH 1/2] bootconfig: Fix to check the xbc_node is
+ used before free it
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+References: <20210914144809.297030763@goodmis.org>
+ <20210914145033.337080566@goodmis.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210914145033.337080566@goodmis.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 17:59, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, Sep 14, 2021 at 8:53 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > task_cpu() takes a 'const struct task_struct *', whereas
-> > task_thread_info() takes a 'struct task_struct *'.
->
-> Oh, annoying, but that's easily fixed. Just make that
->
->    static inline struct thread_info *task_thread_info(struct
-> task_struct *task) ..
->
-> be a simple
->
->   #define task_thread_info(tsk) (&(tsk)->thread_info)
->
-> instead. That actually then matches the !THREAD_INFO_IN_TASK case anyway.
->
-> Make the commit comment be about how that fixes the type problem.
->
-> Because while in many cases inline functions are superior to macros,
-> it clearly isn't the case in this case.
->
+On 9/14/21 16:48, Steven Rostedt wrote:
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> Fix to check the xbc_node is used before calling memblock_free()
+> because passing NULL to phys_addr() will cause a panic.
+> This will happen if user doesn't pass any bootconfig to the
+> kernel, because kernel will call xbc_destroy_all() after
+> booting.
+> 
+> Link: https://lkml.kernel.org/r/163149460533.291098.7342418455457691240.stgit@devnote2
+> 
+> Fixes: 40caa127f3c7 ("init: bootconfig: Remove all bootconfig data when the init memory is removed")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Works for me.
+Should have replied here.
+
+Tested-by: Vlastimil Babka <vbabka@suse.cz>
+
+details:
+https://lore.kernel.org/all/61ab2d0c-3313-aaab-514c-e15b7aa054a0@suse.cz/
+
+> ---
+>  lib/bootconfig.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+> index f8419cff1147..4f8849706ef6 100644
+> --- a/lib/bootconfig.c
+> +++ b/lib/bootconfig.c
+> @@ -792,7 +792,8 @@ void __init xbc_destroy_all(void)
+>  	xbc_data = NULL;
+>  	xbc_data_size = 0;
+>  	xbc_node_num = 0;
+> -	memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
+> +	if (xbc_nodes)
+> +		memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
+>  	xbc_nodes = NULL;
+>  	brace_index = 0;
+>  }
+> 
+
