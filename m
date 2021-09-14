@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBD440BA35
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6886240BA37
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhINVXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235357AbhINVXM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:23:12 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAACC0613EE;
-        Tue, 14 Sep 2021 14:21:49 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x27so1379892lfu.5;
-        Tue, 14 Sep 2021 14:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uo/LrTByBuM+thHtzRuHWUtLdiKYW1ebh0CY7Ez0iow=;
-        b=jeVUwEqzat+R2k0OIZLYt9s5LaqMT79H+JeUmw5eLwUbTrGEl/9tnHyVgazX2aUqlQ
-         tvtDxfMewrdORjzyXhDz+J4m/x7mkS9Uchh3MCCZkCX3XZsTUV/Jeh1O2JUMcroA6Qq3
-         hYI8oGd0H0YOFEkrR5W0k0vnl1nkYYxvJZWEzU5zhGSCyNd1iEGhKfU1VZNJvIjYqac4
-         SGQIU//roCq1aW4S2t47ula622a0P/WAzUYvoaIsgfsmm90uF5sv/fyy97/agOeLZjk2
-         syDqhoKrmrcJWrciBZytf+aEd2wZevBIj4VcDf1JCg4NaV0dAvxEdvjeNPxKyx7nGlqI
-         ZmMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uo/LrTByBuM+thHtzRuHWUtLdiKYW1ebh0CY7Ez0iow=;
-        b=vh3/QcWC5gqNPAiKvLj4i1X2VpNSKFZz+wXpx9PvM09UoYBIrcHN5Vfu1Y3zDMJ2yi
-         O3IqUplx1QyfTww8jD3htv5mHaz2g5gIXifyssS/5t65GBKrFq9NH8EQiEJ+ordHObCT
-         N5vN5qxndz5D/171NLmfq1ez2iSScpIYSqnowfKHloQT1yX69iCrsLRyMRhPuDWR0vHy
-         dAYnLid+GeQW3IjwgGYE77QDBL9b/3WbzZkd7RKrgzZ1WS7nFtgusGYUO6OswUOeDvPU
-         wN2FkThIPNKTY8VCsL0QdWMErEPy3rQiFSP6rgJrcXeJlkvnSR3Asg3uqKd06lGuN7aB
-         IWHQ==
-X-Gm-Message-State: AOAM530v419IK5v/DlpxTj+1QvZwRrJZt4KDUvZlS7qUe65UettKlK4X
-        mzQyAZy/SQnO8BgBdI4tvdvOLCT4f2QioUoLWz4=
-X-Google-Smtp-Source: ABdhPJxYxUwDbsIFF8eGusAVg9bszlieDML1vS548jRVAiFxa3aPFGAznC8pWnTKFGS4fdIiXsXhatDQ5nFZK372+CY=
-X-Received: by 2002:a05:6512:78:: with SMTP id i24mr14419410lfo.595.1631654506946;
- Tue, 14 Sep 2021 14:21:46 -0700 (PDT)
+        id S234320AbhINV0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:26:10 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57503 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231472AbhINV0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:26:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631654689;
+        bh=GqhpUesFiiwJ4pGqUGcTeqGjq65zn8hwrtbRJR69JlY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=apUPwctEcoSa8DY5P+i+egCn3vH9eV/GrqJNldGweuvGKQ8wfy6YV8NVjelWrFNZk
+         f4suewZWZn/JFhhiv6l0Uht1fjp8eEbJTXDsObqABb+udCB3tnrj280PWk2dCYIQsr
+         BNqKIJoKkGMN3T8ppl47qJ8zpvkWRSB4vNg/+Z+5FbAKCj7tdlg5huoKnJlHhJm3Vc
+         ZO90rhjYqe6SikUqgI+IrgCWz4HqavYZiRBGJG6pgvhvMWUIgFdaBBiAVef2z4Fpx3
+         mWtK8arEqtIiGEImzryLv1Y6ApFz9+FlxO87rtuItvfgS42Hs0H0G1Z2SmuU8BOour
+         vM9apJcyU9UKw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H8GZn5W7hz9sRN;
+        Wed, 15 Sep 2021 07:24:49 +1000 (AEST)
+Date:   Wed, 15 Sep 2021 07:24:49 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the vhost tree
+Message-ID: <20210915072449.797e15d2@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CAH2r5mvVdBoUW-0BfsxiRAE6X30cqhBtNDvG7pwKdQwsu+wXfg@mail.gmail.com>
- <CAHk-=wiNvB_j3VZYJ1yZqq+9JjgWCO1MUmRsjTKBwQ+x=kB5tg@mail.gmail.com>
- <CAH2r5mtTLUQa2U=MGHOVk_FsPZg6owMsw+RoTudWxGuoQej41g@mail.gmail.com>
- <CAHk-=wjxmDks6CS41PCy_BZG70pjAhcPBV_7ga8kSJySvvDezQ@mail.gmail.com> <CAH2r5mt72NYan9q8MR5H8cNkYzT4jn1ZM1f3jp5V-fDs2cyB-A@mail.gmail.com>
-In-Reply-To: <CAH2r5mt72NYan9q8MR5H8cNkYzT4jn1ZM1f3jp5V-fDs2cyB-A@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 14 Sep 2021 16:21:36 -0500
-Message-ID: <CAH2r5much4q6bETPPCbqmhb+ksrX=5RXu_fcNVNk8dHiqN+g2Q@mail.gmail.com>
-Subject: Re: [GIT PULL] cifs/smb3 client fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        ronnie sahlberg <ronniesahlberg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/i/RL8mDqC28Q_JcRZp0AnYL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 1:06 PM Steve French <smfrench@gmail.com> wrote:
-> On Tue, Aug 31, 2021 at 12:43 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Tue, Aug 31, 2021 at 10:09 AM Steve French <smfrench@gmail.com> wrote:
-<snip>
-> > I'm ok with directory renames, git handles it all well enough that the
-> > pain should be fairly minimal.
-> >
-> > I'd ask for that to be done during a fairly calm cycle, though, when
-> > there isn't a lot pending, so that any rename conflicts will be
-> > minimized.
-<snip>
-> > > Do you have any objections to me renaming the client's source
-> > > directory to "fs/smb3" (or fs/smb) and fs/smb3_common ...?
-> >
-> > So no objections to the rename per se, but can we please use a more
-> > specific name that is *not* tainted by history?
-> >
-> > I'll throw out two suggestions, but they are just that: (a) "smbfs" or
-> > (b) "smb-client".
+--Sig_/i/RL8mDqC28Q_JcRZp0AnYL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Due to git history for fs/smbfs directory (from many, many years ago) rename
-to "fs/smbfs" could be more confusing. So alternative suggestion which
-I implemented
-was rename the source directory from fs/cifs to "fs/smbfs_client."  I
-will send a P/R
-for that since it is fairly quiet right now.  If you would prefer that
-we wait for a future
-release that is fine too, but seems like low risk now and might reduce
-future confusion in
-the future (to rename the source directory).
+Hi all,
+
+In commit
+
+  71a6465aadf4 ("virtio: don't fail on !of_device_is_compatible")
+
+Fixes tag
+
+  Fixes: 694a1116b405 (&quot;virtio: Bind virtio device to device-tree node=
+&quot;)<br>
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+Something weird happened here - the tags seem to be partly repeasted and
+"html-ized".
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/i/RL8mDqC28Q_JcRZp0AnYL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFBEyEACgkQAVBC80lX
+0Gxx5wf/aPShYs/Ip/sl/jhGmUmFxgTh4CfkWaJg0PAZTofjqIWHlmwEEUvM2MEs
+i3Nw3ZxTICk7TtMjbARUY524S7x3d/8xTHC00c7d5qIkgeibKjffFv0lkMTCON/d
+Bp90Qt7b/dclBRD26DWWrjZdMZPByX/VN5OjAjKpGBNDcPItoSY+Y6JjfBzObQ/p
++YXmySLlINoVks85iy4c95FOm9hH6ujN7R0lyrhJQHGY8LT8u/gxmq6htNkk3T0v
+B8raoAIKrnIbEU4IqUa03fn9teCxBNEJKsefkvB+1wQO6KeSF2Ls508LPPSQ/3Xq
+XOfZF0jdAfbC4synsmtfZ6qUCq6cQA==
+=P2V3
+-----END PGP SIGNATURE-----
+
+--Sig_/i/RL8mDqC28Q_JcRZp0AnYL--
