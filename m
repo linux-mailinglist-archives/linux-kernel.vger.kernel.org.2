@@ -2,196 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0878140ADA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C73040AD8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhINM3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:29:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232955AbhINM2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:28:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5AAB610D1;
-        Tue, 14 Sep 2021 12:27:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631622449;
-        bh=Bwud0fP3iNmVaqY9vJHe5wuYcTefF0iauOEY29BG9Oc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cxIrbJIx0PpGUuVOsqbM1sSzjYec2hfwcN6vBpM7b9BmUBavl4fv2xTn6BjtLLVV3
-         /WLeT+cgam4dldPB/EVza4mdCMW/ukcbldV3WMMhUSP2Z5JcPkkrnb3TnGKPl+8q5T
-         Xk4T7YoyxYLDP3GlN3n2YL//Am5kkcKVhVoa+IktAduRVh7WHdHlqJIHT0k7Yp+wQr
-         776/YV42NeuYMoS+Qgl0tpjsAwL509tLaaV3x9AkZUuCpr5d/Mm4F+okPQzbnaxQaT
-         x7MlmuzoZpYy8fWxHj/1RDnGLTeCVsbMFg0FzqPZ++DE2GUKwuUwmIut3y2wtP5N/o
-         9jxiSJXaQMjZQ==
-From:   Roger Quadros <rogerq@kernel.org>
-To:     tony@atomide.com
-Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
-        lokeshvutla@ti.com, nsekhar@ti.com,
-        krzysztof.kozlowski@canonical.com, miquel.raynal@bootlin.com,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v4 6/8] dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
-Date:   Tue, 14 Sep 2021 15:27:03 +0300
-Message-Id: <20210914122705.15421-7-rogerq@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210914122705.15421-1-rogerq@kernel.org>
-References: <20210914122705.15421-1-rogerq@kernel.org>
+        id S232804AbhINM2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:28:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33268 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232801AbhINM2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:28:22 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631622424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YMs7eRVf7WZVlO2rvbc4ggFxzEshoEoI2sMVNW5jfHA=;
+        b=S2dlEmMPnzFVj0Yr5uaW98D0wHnA7TWdKIEKAmCdMMiVT6OP/CW2jFfN9iBoCONXaQ4Yyc
+        ssirJ6oOfonmLhPrlyZVLTwQgcBSzS2VBJ6NVeOa0Bbro9p43Wy/Nux1XCYczHsdDS5KtN
+        exPeb/irwKDHAbwg1iHTGJdl0t0T6VtpuU3BGdGciKXXtbN0EgtoZhx3KCMpbm63lvPMWe
+        qGDR/FTp6jv54kQmHW4toU6OCns7qe4AtAu6t2M+kIW1NPtxQ8Zq4UZi1xErEjVDo2FsZj
+        KCk8SsLmmdjtpi6rRclplQibStGD6h8kRnqx3ZNkxfGfmonjd5QsGrXXpQAoVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631622424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YMs7eRVf7WZVlO2rvbc4ggFxzEshoEoI2sMVNW5jfHA=;
+        b=lOkQle13+r8kObXOu+Agg331vU9fX/KVjjA+VrT7DumI9GZ3k9KbONNR0BEbYBbM3rHi5e
+        ERtBgxzZ+TlZmPDQ==
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re:Re:[PATCH 6/6] irq: Potentially 'offset out of size' bug
+In-Reply-To: <1631609290-2830831-1-git-send-email-jiasheng@iscas.ac.cn>
+References: <1631609290-2830831-1-git-send-email-jiasheng@iscas.ac.cn>
+Date:   Tue, 14 Sep 2021 14:27:04 +0200
+Message-ID: <87k0jjcpgn.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert gpmc-onenand.txt to ti,gpmc-onenand.yaml.
+On Tue, Sep 14 2021 at 08:48, Jiasheng Jiang wrote:
+>> On Fri, Sep 10 2021 at 03:26, Jiasheng Jiang wrote:
+>> The find_next_bit() use nr_irqs as size, and using it without
+>> any check might cause its returned value out of the sizei
+>
+> On Fri, Sep 10 2021 at 18:28, tglx wrote:
+>> Why exactly is this a problem? The return value has to be checked at the
+>> call site anyway.
+>
+> There is really a check at the call site, but the annotation of the 
+> irq_get_next_irq() is 'Returns next irq number after offset or nr_irqs 
+> if none is found', which tells the programmer should not check the
+> return value of it. In case of a programmer write a new call for the
+> irq_get_next_irq(), he may not check the return value because of the 
+> annotation said.
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
- .../devicetree/bindings/mtd/gpmc-onenand.txt  | 48 -----------
- .../bindings/mtd/ti,gpmc-onenand.yaml         | 81 +++++++++++++++++++
- 2 files changed, 81 insertions(+), 48 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+The return value has always to be checked because nr_irqs is guaranteed
+to be an invalid index.
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-deleted file mode 100644
-index e9f01a963a0a..000000000000
---- a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-+++ /dev/null
-@@ -1,48 +0,0 @@
--Device tree bindings for GPMC connected OneNANDs
--
--GPMC connected OneNAND (found on OMAP boards) are represented as child nodes of
--the GPMC controller with a name of "onenand".
--
--All timing relevant properties as well as generic gpmc child properties are
--explained in a separate documents - please refer to
--Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
--
--Required properties:
--
-- - compatible:		"ti,omap2-onenand"
-- - reg:			The CS line the peripheral is connected to
-- - gpmc,device-width:	Width of the ONENAND device connected to the GPMC
--			in bytes. Must be 1 or 2.
--
--Optional properties:
--
-- - int-gpios:		GPIO specifier for the INT pin.
--
--For inline partition table parsing (optional):
--
-- - #address-cells: should be set to 1
-- - #size-cells: should be set to 1
--
--Example for an OMAP3430 board:
--
--	gpmc: gpmc@6e000000 {
--		compatible = "ti,omap3430-gpmc";
--		ti,hwmods = "gpmc";
--		reg = <0x6e000000 0x1000000>;
--		interrupts = <20>;
--		gpmc,num-cs = <8>;
--		gpmc,num-waitpins = <4>;
--		#address-cells = <2>;
--		#size-cells = <1>;
--
--		onenand@0 {
--			compatible = "ti,omap2-onenand";
--			reg = <0 0 0>; /* CS0, offset 0 */
--			gpmc,device-width = <2>;
--
--			#address-cells = <1>;
--			#size-cells = <1>;
--
--			/* partitions go here */
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
-new file mode 100644
-index 000000000000..42149a9c3a8d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/ti,gpmc-onenand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OneNAND over Texas Instruments GPMC bus.
-+
-+maintainers:
-+  - Tony Lindgren <tony@atomide.com>
-+  - Roger Quadros <rogerq@kernel.org>
-+
-+description:
-+  GPMC connected OneNAND (found on OMAP boards) are represented
-+  as child nodes of the GPMC controller.
-+
-+properties:
-+  compatible:
-+    const: ti,omap2-onenand
-+
-+  reg:
-+    items:
-+      - description: |
-+          Chip Select number, register offset and size of
-+          OneNAND register window.
-+
-+  "#address-cells": true
-+
-+  "#size-cells": true
-+
-+  int-gpios:
-+    description: GPIO specifier for the INT pin.
-+
-+patternProperties:
-+  "@[0-9a-f]+$":
-+    $ref: "/schemas/mtd/partitions/partition.yaml"
-+
-+allOf:
-+  - $ref: "/schemas/memory-controllers/ti,gpmc-child.yaml"
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    gpmc: memory-controller@6e000000 {
-+      compatible = "ti,omap3430-gpmc";
-+      reg = <0x6e000000 0x02d0>;
-+      interrupts = <20>;
-+      gpmc,num-cs = <8>;
-+      gpmc,num-waitpins = <4>;
-+      clocks = <&l3s_clkctrl>;
-+      clock-names = "fck";
-+      #address-cells = <2>;
-+      #size-cells = <1>;
-+
-+      ranges = <0 0 0x01000000 0x01000000>,   /* 16 MB for OneNAND */
-+               <1 0 0x02000000 0x01000000>;   /* 16 MB for smc91c96 */
-+
-+      onenand@0,0 {
-+        compatible = "ti,omap2-onenand";
-+        reg = <0 0 0x20000>;    /* CS0, offset 0, IO size 128K */
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partition@0 {
-+          label = "bootloader";
-+          reg = <0x00000000 0x00100000>;
-+        };
-+
-+        partition@1 {
-+          label = "config";
-+          reg = <0x00100000 0x002c0000>;
-+        };
-+      };
-+    };
--- 
-2.17.1
+> Therefore, it had better to add the check inside of irq_get_next_irq()
+> to fit for the annotation.
 
+Care to look what find_next_bit(..., size) does?
+
+    * Returns the bit number for the next set bit
+    * If no bits are set, returns @size.
+
+So for:
+
+    res = find_next_bit(addr, size, offset);
+
+res is guaranteed to be:
+
+    offset < res <= size
+
+IOW. irq_get_next_irq() is doing exactly what the comment says.
+
+So again, which problem are you trying to solve?
+
+Thanks,
+
+        tglx
