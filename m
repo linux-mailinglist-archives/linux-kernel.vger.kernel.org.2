@@ -2,80 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C693F40A513
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3403640A4FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhINECZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 00:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhINECY (ORCPT
+        id S239279AbhIND6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:58:43 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19971 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238366AbhIND6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:02:24 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89975C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:01:07 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x27so25739570lfu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iqV90RnceA3yUtnO20ku1+cBNKzKF42y3vDyfuFCg6I=;
-        b=aymb2xNw9MWDQ5r1YExaL02R2WTT4y3lbBNUJ8uNopNlkPEkkjyy256PCafoeS7q7y
-         UKpbxQcBXuQddeingdXPXg3aneXtL4WsuplQpEQZA1tHOcs+YufO5uCYTpjrRq27gWL5
-         BG0InFWVu3lKlC/PopTnD3xQ1A5NdkHpqMkC8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iqV90RnceA3yUtnO20ku1+cBNKzKF42y3vDyfuFCg6I=;
-        b=ar6s//6FIqsby258SRgYi22Pn8xfUx0MPFoha6BDnB+FQlnzBS1WlS1jLJRdjxpHbK
-         1S7ANtIMI/3YasHyuWSqjj/rvfwxtRsHRLd4sSsa3DGRDghLhmFphhpwmLt6VAE8cWF8
-         Qm6Ypr6oSct2Rvz8fjkochOcn6LEFRjWX+oYjaYgpVEF3b8XKpe6QpUT+BRdChmBSSu2
-         KujxgTT0NsK/QTN0cESqvTbjOWb2ADi//uUOQJRUasB/IhPDwBSs5t7GJ4P1IX+oq8gB
-         OlkYNbX3HREL94qUWTWT1EGmCXtRfc4RqUxDkB3H2+dBQimNL7G4pO0VT9zRCgrr6i6i
-         UmtQ==
-X-Gm-Message-State: AOAM532yr/juGmyG3QNjbJbVLOMFi5iYVGkhoFSu/G56FziDgz9Ddev/
-        4l4xEVvu46vwdf/+0EdAu2Z278gQxGcoNRSEAy3smHmfjOthUA==
-X-Google-Smtp-Source: ABdhPJyXt6wQvXH4+CYasTSE55XYxX4nwPX+R/D4dbFHy4B3qEDKTJWWK07WS8HP4DQqmeU2wX22v89UmPkH5YLwkHw=
-X-Received: by 2002:ac2:5d71:: with SMTP id h17mr11277423lft.670.1631592065978;
- Mon, 13 Sep 2021 21:01:05 -0700 (PDT)
+        Mon, 13 Sep 2021 23:58:40 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7qFQ4kZ7zbmF1;
+        Tue, 14 Sep 2021 11:53:14 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 11:57:19 +0800
+Received: from localhost.huawei.com (10.175.124.27) by
+ dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 11:57:19 +0800
+From:   Li Jinlin <lijinlin3@huawei.com>
+To:     <axboe@kernel.dk>, <tj@kernel.org>
+CC:     <paolo.valente@linaro.org>, <cgroups@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linfeilong@huawei.com>, <louhongxiang@huawei.com>
+Subject: [PATCH v3] blk-cgroup: fix UAF by grabbing blkcg lock before destroying blkg pd
+Date:   Tue, 14 Sep 2021 12:26:05 +0800
+Message-ID: <20210914042605.3260596-1-lijinlin3@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210914021633.26377-1-chun-jie.chen@mediatek.com> <20210914021633.26377-19-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210914021633.26377-19-chun-jie.chen@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Tue, 14 Sep 2021 12:00:55 +0800
-Message-ID: <CAGXv+5HWT=9EzdhMvmHOS8Y+CpLyn5WZht_KP_YxzKG+x85AtQ@mail.gmail.com>
-Subject: Re: [v3 18/24] clk: mediatek: Add MT8195 vdosys1 clock support
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:18 AM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> Add MT8195 vdosys1 clock controller which provides clock gate
-> control in video system. This is integrated with mtk-mmsys
-> driver which will populate device by platform_device_register_data
-> to start vdosys clock driver.
->
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+KASAN reports a use-after-free report when doing fuzz test:
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+[693354.104835] ==================================================================
+[693354.105094] BUG: KASAN: use-after-free in bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105336] Read of size 4 at addr ffff888be0a35664 by task sh/1453338
+
+[693354.105607] CPU: 41 PID: 1453338 Comm: sh Kdump: loaded Not tainted 4.18.0-147
+[693354.105610] Hardware name: Huawei 2288H V5/BC11SPSCB0, BIOS 0.81 07/02/2018
+[693354.105612] Call Trace:
+[693354.105621]  dump_stack+0xf1/0x19b
+[693354.105626]  ? show_regs_print_info+0x5/0x5
+[693354.105634]  ? printk+0x9c/0xc3
+[693354.105638]  ? cpumask_weight+0x1f/0x1f
+[693354.105648]  print_address_description+0x70/0x360
+[693354.105654]  kasan_report+0x1b2/0x330
+[693354.105659]  ? bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105665]  ? bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105670]  bfq_io_set_weight_legacy+0xd3/0x160
+[693354.105675]  ? bfq_cpd_init+0x20/0x20
+[693354.105683]  cgroup_file_write+0x3aa/0x510
+[693354.105693]  ? ___slab_alloc+0x507/0x540
+[693354.105698]  ? cgroup_file_poll+0x60/0x60
+[693354.105702]  ? 0xffffffff89600000
+[693354.105708]  ? usercopy_abort+0x90/0x90
+[693354.105716]  ? mutex_lock+0xef/0x180
+[693354.105726]  kernfs_fop_write+0x1ab/0x280
+[693354.105732]  ? cgroup_file_poll+0x60/0x60
+[693354.105738]  vfs_write+0xe7/0x230
+[693354.105744]  ksys_write+0xb0/0x140
+[693354.105749]  ? __ia32_sys_read+0x50/0x50
+[693354.105760]  do_syscall_64+0x112/0x370
+[693354.105766]  ? syscall_return_slowpath+0x260/0x260
+[693354.105772]  ? do_page_fault+0x9b/0x270
+[693354.105779]  ? prepare_exit_to_usermode+0xf9/0x1a0
+[693354.105784]  ? enter_from_user_mode+0x30/0x30
+[693354.105793]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+
+[693354.105875] Allocated by task 1453337:
+[693354.106001]  kasan_kmalloc+0xa0/0xd0
+[693354.106006]  kmem_cache_alloc_node_trace+0x108/0x220
+[693354.106010]  bfq_pd_alloc+0x96/0x120
+[693354.106015]  blkcg_activate_policy+0x1b7/0x2b0
+[693354.106020]  bfq_create_group_hierarchy+0x1e/0x80
+[693354.106026]  bfq_init_queue+0x678/0x8c0
+[693354.106031]  blk_mq_init_sched+0x1f8/0x460
+[693354.106037]  elevator_switch_mq+0xe1/0x240
+[693354.106041]  elevator_switch+0x25/0x40
+[693354.106045]  elv_iosched_store+0x1a1/0x230
+[693354.106049]  queue_attr_store+0x78/0xb0
+[693354.106053]  kernfs_fop_write+0x1ab/0x280
+[693354.106056]  vfs_write+0xe7/0x230
+[693354.106060]  ksys_write+0xb0/0x140
+[693354.106064]  do_syscall_64+0x112/0x370
+[693354.106069]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+
+[693354.106114] Freed by task 1453336:
+[693354.106225]  __kasan_slab_free+0x130/0x180
+[693354.106229]  kfree+0x90/0x1b0
+[693354.106233]  blkcg_deactivate_policy+0x12c/0x220
+[693354.106238]  bfq_exit_queue+0xf5/0x110
+[693354.106241]  blk_mq_exit_sched+0x104/0x130
+[693354.106245]  __elevator_exit+0x45/0x60
+[693354.106249]  elevator_switch_mq+0xd6/0x240
+[693354.106253]  elevator_switch+0x25/0x40
+[693354.106257]  elv_iosched_store+0x1a1/0x230
+[693354.106261]  queue_attr_store+0x78/0xb0
+[693354.106264]  kernfs_fop_write+0x1ab/0x280
+[693354.106268]  vfs_write+0xe7/0x230
+[693354.106271]  ksys_write+0xb0/0x140
+[693354.106275]  do_syscall_64+0x112/0x370
+[693354.106280]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+
+[693354.106329] The buggy address belongs to the object at ffff888be0a35580
+                 which belongs to the cache kmalloc-1k of size 1024
+[693354.106736] The buggy address is located 228 bytes inside of
+                 1024-byte region [ffff888be0a35580, ffff888be0a35980)
+[693354.107114] The buggy address belongs to the page:
+[693354.107273] page:ffffea002f828c00 count:1 mapcount:0 mapping:ffff888107c17080 index:0x0 compound_mapcount: 0
+[693354.107606] flags: 0x17ffffc0008100(slab|head)
+[693354.107760] raw: 0017ffffc0008100 ffffea002fcbc808 ffffea0030bd3a08 ffff888107c17080
+[693354.108020] raw: 0000000000000000 00000000001c001c 00000001ffffffff 0000000000000000
+[693354.108278] page dumped because: kasan: bad access detected
+
+[693354.108511] Memory state around the buggy address:
+[693354.108671]  ffff888be0a35500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[693354.116396]  ffff888be0a35580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.124473] >ffff888be0a35600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.132421]                                                        ^
+[693354.140284]  ffff888be0a35680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.147912]  ffff888be0a35700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+[693354.155281] ==================================================================
+
+blkgs are protected by both queue and blkcg locks and holding
+either should stabilize them. However, the path of destroying
+blkg policy data is only protected by queue lock in
+blkcg_activate_policy()/blkcg_deactivate_policy(). Other tasks
+can get the blkg policy data before the blkg policy data is
+destroyed, and use it after destroyed, which will result in a 
+use-after-free.
+
+CPU0                             CPU1
+blkcg_deactivate_policy
+  spin_lock_irq(&q->queue_lock)
+                                 bfq_io_set_weight_legacy  
+                                   spin_lock_irq(&blkcg->lock)
+                                   blkg_to_bfqg(blkg)
+                                     pd_to_bfqg(blkg->pd[pol->plid])
+                                     ^^^^^^blkg->pd[pol->plid] != NULL
+                                           bfqg != NULL
+  pol->pd_free_fn(blkg->pd[pol->plid])
+    pd_to_bfqg(blkg->pd[pol->plid])
+    bfqg_put(bfqg)
+      kfree(bfqg)
+  blkg->pd[pol->plid] = NULL
+  spin_unlock_irq(q->queue_lock);
+                                   bfq_group_set_weight(bfqg, val, 0)
+                                     bfqg->entity.new_weight
+                                     ^^^^^^trigger uaf here 
+                                   spin_unlock_irq(&blkcg->lock);
+
+Fix by garbbing the matching blkcg lock before trying to
+destroy blkg policy data.
+
+Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+---
+changes since v2 send with Message-ID:
+20210910034642.2838054-1-lijinlin3@huawei.com
+
+ - grab the matching blkcg lock before trying to destroy
+   blkg policy data as suggested by Tejun
+ - modify the subject and message to match the content
+
+ block/blk-cgroup.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 3c88a79a319b..6c17ee6db20f 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1364,10 +1364,14 @@ int blkcg_activate_policy(struct request_queue *q,
+ 	/* alloc failed, nothing's initialized yet, free everything */
+ 	spin_lock_irq(&q->queue_lock);
+ 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
++		struct blkcg *blkcg = blkg->blkcg;
++
++		spin_lock(&blkcg->lock);
+ 		if (blkg->pd[pol->plid]) {
+ 			pol->pd_free_fn(blkg->pd[pol->plid]);
+ 			blkg->pd[pol->plid] = NULL;
+ 		}
++		spin_unlock(&blkcg->lock);
+ 	}
+ 	spin_unlock_irq(&q->queue_lock);
+ 	ret = -ENOMEM;
+@@ -1399,12 +1403,16 @@ void blkcg_deactivate_policy(struct request_queue *q,
+ 	__clear_bit(pol->plid, q->blkcg_pols);
+ 
+ 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
++		struct blkcg *blkcg = blkg->blkcg;
++
++		spin_lock(&blkcg->lock);
+ 		if (blkg->pd[pol->plid]) {
+ 			if (pol->pd_offline_fn)
+ 				pol->pd_offline_fn(blkg->pd[pol->plid]);
+ 			pol->pd_free_fn(blkg->pd[pol->plid]);
+ 			blkg->pd[pol->plid] = NULL;
+ 		}
++		spin_unlock(&blkcg->lock);
+ 	}
+ 
+ 	spin_unlock_irq(&q->queue_lock);
+-- 
+2.27.0
+
