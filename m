@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E8F40ABB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA6740ABBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhINKcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:32:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:42870 "EHLO foss.arm.com"
+        id S231913AbhINKc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:32:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:42916 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231728AbhINKcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:32:15 -0400
+        id S231839AbhINKcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:32:19 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A211C106F;
-        Tue, 14 Sep 2021 03:30:58 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68EFE11D4;
+        Tue, 14 Sep 2021 03:31:02 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 866CC3F59C;
-        Tue, 14 Sep 2021 03:30:55 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 577AB3F59C;
+        Tue, 14 Sep 2021 03:30:59 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
@@ -28,9 +28,9 @@ Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
         paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
         shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
         tglx@linutronix.de, vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCH v5 04/10] alpha: snapshot thread flags
-Date:   Tue, 14 Sep 2021 11:30:21 +0100
-Message-Id: <20210914103027.53565-5-mark.rutland@arm.com>
+Subject: [PATCH v5 05/10] arm: snapshot thread flags
+Date:   Tue, 14 Sep 2021 11:30:22 +0100
+Message-Id: <20210914103027.53565-6-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210914103027.53565-1-mark.rutland@arm.com>
 References: <20210914103027.53565-1-mark.rutland@arm.com>
@@ -50,25 +50,38 @@ Convert them all to the new flag accessor helpers.
 
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Richard Henderson <rth@twiddle.net>
+Cc: Russell King <linux@armlinux.org.uk>
 ---
- arch/alpha/kernel/signal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/kernel/signal.c | 2 +-
+ arch/arm/mm/alignment.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/alpha/kernel/signal.c b/arch/alpha/kernel/signal.c
-index bc077babafab..d8ed71d5bed3 100644
---- a/arch/alpha/kernel/signal.c
-+++ b/arch/alpha/kernel/signal.c
-@@ -535,6 +535,6 @@ do_work_pending(struct pt_regs *regs, unsigned long thread_flags,
+diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+index d0a800be0486..114fe5d775ac 100644
+--- a/arch/arm/kernel/signal.c
++++ b/arch/arm/kernel/signal.c
+@@ -632,7 +632,7 @@ do_work_pending(struct pt_regs *regs, unsigned int thread_flags, int syscall)
  			}
  		}
  		local_irq_disable();
 -		thread_flags = current_thread_info()->flags;
 +		thread_flags = read_thread_flags();
  	} while (thread_flags & _TIF_WORK_MASK);
+ 	return 0;
  }
+diff --git a/arch/arm/mm/alignment.c b/arch/arm/mm/alignment.c
+index ea81e89e7740..adbb3817d0be 100644
+--- a/arch/arm/mm/alignment.c
++++ b/arch/arm/mm/alignment.c
+@@ -990,7 +990,7 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+ 		 * there is no work pending for this thread.
+ 		 */
+ 		raw_local_irq_disable();
+-		if (!(current_thread_info()->flags & _TIF_WORK_MASK))
++		if (!(read_thread_flags() & _TIF_WORK_MASK))
+ 			set_cr(cr_no_alignment);
+ 	}
+ 
 -- 
 2.11.0
 
