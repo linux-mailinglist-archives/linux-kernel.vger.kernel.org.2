@@ -2,283 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C4A40A97E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3091540A985
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhINInU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:43:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35430 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhINInT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:43:19 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6A6401FDC4;
-        Tue, 14 Sep 2021 08:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631608921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xPouFTvUSxde8wBIN4mbuwBIT5eFtCgb2f3gPa9oKwA=;
-        b=fFpbWhGXaIJcgrTvJMcAfJA2LoW1SmE4HLDBdYBLf/w1tNW+AKkRq+ZjHvSdd7GQu0+Dzk
-        +eQc4mRGCsTtvMA2MDmE8kMPPznh0XifF83067GBKTF8uC710IdG8GoDQ4uxFbGsFTH3GW
-        aHTOX19CdE9lIVjWUG158jaRkclxXek=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 291DD13E4F;
-        Tue, 14 Sep 2021 08:42:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sMF6CFlgQGE4KgAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 14 Sep 2021 08:42:01 +0000
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
-        <marmarek@invisiblethingslab.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>
-References: <YT9I+Xs9wOPVCIVd@mail-itl>
- <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
- <YUBeUZdduCAbOQJN@linux.ibm.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading
- related?)
-Message-ID: <3680dfc8-d7a4-7b10-0070-eb476f55bcc3@suse.com>
-Date:   Tue, 14 Sep 2021 10:42:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230191AbhINIom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:44:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230184AbhINIol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 04:44:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A099060EE0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631609004;
+        bh=HB3hrUj5mCAg3X5UrVES+EN8+YFeilz+iMN6jNEZCX8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=okgaiadsrUSP+B3Kwp0rX/PAdF9reT+p+1+yfprr+VsZuZjYNgjudtVPQwx0p29vU
+         XqUQIjLNaYGyZVAoAahMHoGzK+BXrYQW4t4r5NtdciUekddNXwW0tlFRG42c6dIleD
+         eJIeSuQhcsn6+8BI/oIHrpeOKpUavyDO2HTJBOXgOJsHp13GvPFGqCTOqUvyYQ5NHo
+         B4g1V3D4UNb2wV7uhBodq7/4Np/ASVXZ/aNXuLtvjQSWQ/RDnqkvDaprIO4sfc+VwP
+         +UIYSbnGvF3nNtpTrQSFJe4clMDmiCXo8Vhri+glcSsSU8AM1fn0OK6LPi0ZJUc1bj
+         DIjtXVhb+xBow==
+Received: by mail-ot1-f54.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so17345085otf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:43:24 -0700 (PDT)
+X-Gm-Message-State: AOAM532AxhEmzkq2RE7PigCPrZX+qv2sqylzV5yL7bPngO9Bk6qm+3Va
+        TxiELsDDfq3nL2idRBZWOINFPCQHl1qITZVIPK8=
+X-Google-Smtp-Source: ABdhPJyMTJGEGcAcU1U9As2Pt9nvzf/4cGBp5tq4X0dVX+xWChi2REPwA47QD0I2z9Ff90HxrfTO3YiZ+fOMscJhnNk=
+X-Received: by 2002:a05:6830:12d7:: with SMTP id a23mr13552823otq.102.1631609003777;
+ Tue, 14 Sep 2021 01:43:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YUBeUZdduCAbOQJN@linux.ibm.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ilb5mPSY6AWHgPesUzx2TavFJnFwZ81vl"
+References: <CAFCwf119s7iXk+qpwoVPnRtOGcxeuZb3rnihf6NWWoVT-4ODHA@mail.gmail.com>
+ <YTsQJ753sm701R/n@kroah.com> <CAKMK7uFLBmdHphtnEa1nyAGUHdcP1KgmaK+vtV_GOU6wZZAOxg@mail.gmail.com>
+ <CAKMK7uFj-m4y+N-q8uoNasJuksgDj-oRK3K=SjoyKMQL=QCENw@mail.gmail.com>
+ <YT4GxO7ab+s0nbze@kroah.com> <CAPM=9tx2xyFGHBAfMT_D88JDbCJ4V6Ni2tiYx0=VNj5SmtdJxA@mail.gmail.com>
+In-Reply-To: <CAPM=9tx2xyFGHBAfMT_D88JDbCJ4V6Ni2tiYx0=VNj5SmtdJxA@mail.gmail.com>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Tue, 14 Sep 2021 11:42:57 +0300
+X-Gmail-Original-Message-ID: <CAFCwf13gXEX6F=SLJv+d6BeOQ-4q7ozdD2NarOmgbaDx6tFcGg@mail.gmail.com>
+Message-ID: <CAFCwf13gXEX6F=SLJv+d6BeOQ-4q7ozdD2NarOmgbaDx6tFcGg@mail.gmail.com>
+Subject: Re: Accelerator drivers going forward (was Re: Habanalabs Open-Source
+ TPC LLVM compiler and SynapseAI Core library)
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        mzuckerman@habana.ai, dsinger@habana.ai,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ilb5mPSY6AWHgPesUzx2TavFJnFwZ81vl
-Content-Type: multipart/mixed; boundary="ae01mqCaNnJ5aUgKVDKNJmIxZNb4zZNYO";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?=
- <marmarek@invisiblethingslab.com>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org,
- xen-devel <xen-devel@lists.xenproject.org>
-Message-ID: <3680dfc8-d7a4-7b10-0070-eb476f55bcc3@suse.com>
-Subject: Re: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading
- related?)
-References: <YT9I+Xs9wOPVCIVd@mail-itl>
- <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
- <YUBeUZdduCAbOQJN@linux.ibm.com>
-In-Reply-To: <YUBeUZdduCAbOQJN@linux.ibm.com>
+On Sun, Sep 12, 2021 at 10:32 PM Dave Airlie <airlied@gmail.com> wrote:
+>
+> On Sun, 12 Sept 2021 at 23:55, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Sep 10, 2021 at 06:10:27PM +0200, Daniel Vetter wrote:
+> > > Forgot to add dri-devel.
+> > >
+> > > On Fri, Sep 10, 2021 at 6:09 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+> > > >
+> > > > On Fri, Sep 10, 2021 at 9:58 AM Greg Kroah-Hartman
+> > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > On Fri, Sep 10, 2021 at 10:26:56AM +0300, Oded Gabbay wrote:
+> > > > > > Hi Greg,
+> > > > > >
+> > > > > > Following our conversations a couple of months ago, I'm happy to tell you that
+> > > > > > Habanalabs has open-sourced its TPC (Tensor Processing Core) LLVM compiler,
+> > > > > > which is a fork of the LLVM open-source project.
+> > > > > >
+> > > > > > The project can be found on Habanalabs GitHub website at:
+> > > > > > https://github.com/HabanaAI/tpc_llvm
+> > > > > >
+> > > > > > There is a companion guide on how to write TPC kernels at:
+> > > > > > https://docs.habana.ai/en/latest/TPC_User_Guide/TPC_User_Guide.html
+> > > > >
+> > > > > That's great news, thanks for pushing for this and releasing it all!
+> > > >
+> > > > Yeah this is neat.
+> > > >
+> > > > There's still the problem that we spent the past 2.5 years pissing off
+> > > > a lot of people for an imo questionable political project, bypassing
+> > > > all the technical review and expertise. Now that the political
+> > > > nonsense is resolved I think we need to look at at least the technical
+> > > > cleanup. The angered people are much harder to fix, so let's maybe
+> > > > ignore that (or perhaps a ks topic, no idea, I'm honestly not super
+> > > > motivated to rehash this entire story again). Here's what I think we
+> > > > should do:
+> > > >
+> > > > - move drivers/misc/habanalabs under drivers/gpu/habanalabs and
+> > > > review/discussions on dri-devel
+> >
+> > Wait, why move into gpu?  Are we going to do that for all hardware
+> > accelerators that we currently have in the kernel tree?
+> >
+>
+> We could just mv drivers/gpu drivers/accel if that helps your mental model here.
+>
+> > These things are not GPUs in the sense of them being "do some work and
+> > write out to a screen", which is what I would associate with a GPU (G
+> > does stand for "Graphical", right?)
+>
+> Neither are a lot of the gpu drivers, it's almost like we evolved the
+> subsystem in 20 years,
+> and the name got away from us.
+>
+> As an example:
+> etnaviv, panfrost, lima and vgem drivers have no display interfaces at
+> all. Nada, they do nothing except accelerate and use dma-buf to talk
+> to other drivers.
+>
+>
+> > Yes, GPUs can do things that some accelerators can do, but they can do
+> > things that accelerators can not do, and the other way around as well.
+> > I doubt you want all of the existing gpu drivers to be only treated as
+> > an "accelerator driver" now, as where would the logic that has to happen
+> > to get the bits out to a screen live?
+>
+> Don't care, totally doesn't matter if a driver is accelerator +
+> display, you could write in-driver buses if you wanted to abstract
+> this more, since internally most GPUs are just SoCs, the display and
+> accelerator pieces talk to power management, irqs and dma-buf like
+> functionality internally in the driver, the thing is for most GPUs
+> there is a single PCI device to bind to, so historically nobody has
+> seen the value in splitting them more or adding an in-driver bus for
+> one set of devices.
+>
+> > And since we have a long history of accepting accelerator drivers (I see
+> > some in our tree since 2018 at the least), and there is no common
+> > userspace collation trying to make a common userspace api, why do they
+> > have to live in the same place?  What makes them common except for the
+> > fact that they use the kernel as a semi-dumb pipe to send work to and
+> > from a different processor?
+> >
+> > Look at drivers/misc/cxl/ and drivers/misc/ocxl and drivers/misc/uacce/
+> > and drivers/misc/sgi-gru and drivers/misc/bcm-vk/ even drivers/misc/mei/
+> > as that is an off-load engine we talk to, right?
+> >
+> > What about the drivers/fpga/ api we have, it handles accelerators as
+> > well.  I'm sure we have many other examples in the kernel tree as well,
+> > I just did a quick look and found these.
+> >
+> > All the above accelerators do things in different ways because their
+> > hardware is different, so they need different user/kernel apis, right?
+> > How are we going to unify them?  Who is going to unify them?
+> >
+> > So drivers/accel/ perhaps?  I would be able to get rid of loads of
+> > drivers/misc/ code that way :)
+> >
+> > Who is going to be the new maintainer of this subsystem?
+>
+> We already said if we could get agreement on having things follow the
+> rules, then they can be merged under drm trees or we'd start a new
+> accel tree.
+>
+> The problem is the free-for-all merge with no barriers approach that
+> you and I believe Olof are campaigning for, doesn't seem to create
+> communities, it may create consulting or training opportunities for
+> the Linux Foundation, but thus far I don't see any communities.
+>
+> Graphics accelerator community exists because of and has itself
+> refined the rules over time. I don't think our rules will necessarily
+> work for other groups immediately but I think other groups need to
+> construct acceptable merge criteria beyond the kernel, and kernel
+> maintainers have to take more responsibility for saying no if they
+> don't have time for community building.
+>
+>
+> > So far they have all been going into drivers/misc/ because no one else
+> > stepped up to do the review of them except me.  I would _LOVE_ the help
+> > here as I end up reviewing a new one every kernel release at the least,
+> > but companies do not seem to be willing to fund developers to be
+> > maintainers these days :(
+> >
+> > And yes, I have been reviewing the fpga code as well, even though they
+> > do have a good maintainer, as those patches flow through my tree due to
+> > historical reasons.  I know the fpga developers would have loved some
+> > help with review of those patches.
+>
+> Lack of reviewing isn't the problem here, lack of responsibility for
+> creating a long term mess is. You are creating long term dumping
+> grounds for badly thought out stuff. Saying people keeping adding more
+> trash to my dump and it's overloading me is just the effect of having
+> created the dump with no rules to follow in the first place.
+>
+> >
+> > > > - review the dma-buf stuff on dri-devel and then land it through
+> > > > standard flows, not the gregk-misc bypass
+> >
+> > Are dma-bufs somehow required to be reviewed on dri-devel?  As others
+> > have asked in the past, they are already being used in other subsystems
+> > (like IB) today, did those authors also get review there?
+>
+> Yes any use of dma-buf has to be cc'ed to dri-devel and linux-media
+> per MAINTAINERS
+>
+Hi Dave/Daniel,
+Now that we opened up the user-space compiler and provided a library
+with which you can load compiled kernels and run them, I've re-sent
+the two dma-buf patches to dri-devel and linux-media (and to specific
+people) on Sunday evening.
 
---ae01mqCaNnJ5aUgKVDKNJmIxZNb4zZNYO
-Content-Type: multipart/mixed;
- boundary="------------E3D07A4408E216413FF53383"
-Content-Language: en-US
+Can you please help review them ? They already got reviewed by
+Christian and Jason on previous iterations and I fixed them according
+to their reviews so I believe they are fundamentally correct.
 
-This is a multi-part message in MIME format.
---------------E3D07A4408E216413FF53383
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 14.09.21 10:33, Mike Rapoport wrote:
-> On Tue, Sep 14, 2021 at 09:14:38AM +0200, Juergen Gross wrote:
->> On 13.09.21 14:50, Marek Marczykowski-G=C3=B3recki wrote:
->>> Hi,
->>>
->>> Since 5.13, the Xen (PV) dom0 crashes on boot, before even printing t=
-he
->>> kernel version.
->>> Test environment:
->>>    - Xen 4.14.2
->>>    - AMD Ryzen 5 4500U (reported also on AMD Ryzen 7 4750U)
->>>    - Linux 5.13.13, confirmed also on 5.14
->>>
->>> The crash happens only if the initramfs has earlycpio with microcode.=
-
->>> I don't have a serial console, but I've got a photo with crash messag=
-e
->>> (from Xen, Linux doesn't managed to print anything):
->>> https://user-images.githubusercontent.com/726704/133084966-5038f37e-0=
-01b-4688-9f90-83d09be3dc2d.jpg
->>>
->>> Transcription of some of it:
->>>
->>>       mapping kernel into physical memory
->>>       about to get started
->>>       (XEN) Pagetable walk from ffffffff82810888:
->>>       (XEN)  L4[0x1ff] =3D 0000000332815067 0000000000002815
->>>       (XEN)  L3[0x1fe] =3D 0000000332816067 0000000000002816
->>>       (XEN)  L2[0x014] =3D 0000000334018067 0000000000004018
->>>       (XEN)  L1[0x010] =3D 0000000332810067 0000000000002810
->>>       (XEN) domain_crash_sync called from entry.S: fault at ffff82d04=
-033e790 x86_64/entry.S#domain_crash_page_fault
->>>       (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
->>>       (XEN) ----[ Xen-4.14.2  x86_64  debug=3Dn  Not tainted ]----
->>>       (XEN) CPU:    0
->>>       (XEN) RIP:    e033:[<0000000000000000>]
->>
->> The domain's run state seems to be completely clobbered.
->>
->> Did you try to boot the kernel with "earlyprintk=3Dxen" to get some id=
-ea
->> how far it progressed?
->>
->> I could imagine that doing the early reservations after the call of
->> e820__memory_setup() is problematic, as Xen PV guests have a hook in
->> this function performing some rather extended actions.
->=20
-> Right, among them it may relocate initrd:
->=20
-> https://elixir.bootlin.com/linux/latest/source/arch/x86/xen/setup.c#L87=
-2
->  =20
-> and this may cause the reported crash.
->=20
->> I'm not sure the call of early_reserve_memory() can be moved just befo=
-re
->> the e820__memory_setup() call. If this is possibel it should be done
->> IMO, if not then the reservations which have been at the start of
->> setup_arch() might need to go there again.
->=20
-> early_reserve_memory() can be moved to the beginning of setup_arch().
-
-IMO this should be the preferred fix. I will write a patch to do that.
-
-> Anther possibility is to move initrd relocation out of xen_setup_memory=
-()
-> and maybe even integrate it somehow in reserve_initrd().
-
-This would be rather complicated as xen_setup_memory() is changing the
-memory map from one large memory chunk to match the memory map of the
-host in case the system is running as dom0 (the need to do so has
-historical reasons, changing that is no option). The initrd needs to be
-moved in case it is using memory which is conflicting with the new
-layout.
+Thanks,
+Oded
 
 
-Juergen
-
---------------E3D07A4408E216413FF53383
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------E3D07A4408E216413FF53383--
-
---ae01mqCaNnJ5aUgKVDKNJmIxZNb4zZNYO--
-
---ilb5mPSY6AWHgPesUzx2TavFJnFwZ81vl
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFAYFgFAwAAAAAACgkQsN6d1ii/Ey+h
-mQgAi/OAAYr7BdRGH/RZDoPLz7fsoqtr0Mu7XgC5fjwZt8HlagWMA75VQaiH18wANcinlvINcwfM
-0aqkBGugG9t+NBr4byO5C9UBLj/c3OYQzy0BYO9atduWdrBHxf2kYky0DAiHF+t8oh8uTBFj1pbt
-os5URpuzOF2Cr4WU9GVOI6wW1ledwm5mw8PxLJ7kepTj1G5aPicatKBPOw3Xm0VbVzCMvyOx8ym5
-eEa9alqxM9OjjEViu8Erxd7SfgKaAstQ5VQp03CHqVSUkKTHhy+qdpkyb0UNW9o+suV+FxJSYxSz
-o7u7gAGZlb1GXF7h/ceHtWsxp5qjRx+EKfH8S2ucGA==
-=bzrN
------END PGP SIGNATURE-----
-
---ilb5mPSY6AWHgPesUzx2TavFJnFwZ81vl--
+> >
+> > If so, great, if not, that feels odd to me, as I am seeing lots of
+> > out-of-tree drivers start to use these structures, which is why the api
+> > was created (to stop the roll-your-own-implementations.)  Does dri-devel
+> > want me to have those vendors cc: you all when those get submitted?
+>
+> Yes. MAINTAINERS has matching for this, are you not advising people to
+> use the proper submission techniques and thus bypassing that file?
+>
+> The reason is dma-buf and later by extension dma-fence can create
+> really bad problems for the kernel around memory management.
+>
+> https://dri.freedesktop.org/docs/drm/driver-api/dma-buf.html#indefinite-dma-fences
+>
+> When a driver is self contained and doesn't interact with other kernel
+> drivers nobody really has to care. However once a driver starts
+> interacting with other drivers in the kernel, a responsible maintainer
+> has to check that these new drivers aren't going to crap all over the
+> existing drivers and destabilise the kernel. Someone has to review the
+> hardware design to see if page faulting works or if preemption works
+> or a bunch of other gotchas. Someone has to review the userspace to
+> make sure it isn't doing knowingly bad things or making assumptions
+> based on the kernel driver doing bad things.
+>
+> The thing is we've had code merged into our in-tree i915 driver that
+> broke a bunch of these assumptions, and have had to spend a year
+> cleaning it out, now this happened post-merge and diligence had
+> lessened, having the expertise to spot this in new dma-buf/fence users
+> is why we insist on having access to way more than just the 1000 line
+> kernel driver submission.
+>
+>
+> > I will be glad to not accept any more, but as I say above, what are the
+> > new requirements going to be so that those companies that do want to
+> > submit their code know what to do?
+>
+> I'm proposing a patch for documentation that maintainers can sign up
+> for (it's mentioned in the ksummit thread).
+>
+> > And what exactly are we using as a definition of an accelerator?  We
+> > have networking cards that are "accelerators" as well as crypto
+> > "accelerators" :)
+> >
+> > > > I expect we'll have a proper discussion what the stack should look
+> > > > like with the next submission (from a different vendor maybe), that
+> > > > ship kinda sailed with habanalabs.
+> >
+> > Who is going to define this stack?  As there is no industry standard,
+> > why would we define this?
+>
+> Because someone has to help, saying yes isn't helping, it's enabling
+> back behaviour. Parenting and maintaining both involve saying No for
+> the future prosperity of the ecosystem.
+>
+> Dave.
