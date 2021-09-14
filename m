@@ -2,321 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13F540BBC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DF840BBC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbhINWmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbhINWmN (ORCPT
+        id S235849AbhINWmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:42:42 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:32718 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235464AbhINWml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:42:13 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1053C061574;
-        Tue, 14 Sep 2021 15:40:54 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id y8so782376pfa.7;
-        Tue, 14 Sep 2021 15:40:54 -0700 (PDT)
+        Tue, 14 Sep 2021 18:42:41 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18EKxjDC032082;
+        Tue, 14 Sep 2021 22:41:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=P519gENyp78y7SSoIHntU8nofN+lEx/muKd47UBgYuw=;
+ b=WQxLDNfd5kipxRmOMqzvKdEtQH52ePbhZSYsRpckR7qaYyWcyUog3hMDtwJvfH55NK2+
+ zQBOCVr30sjgDa7TSxrs/ia7ubFeiMzBFqM8MYnjXNBsiJMNsj9aZHvzHBb2Khcwv5YB
+ Z4AKo7wB2FWdbuhtp1DQ12xOyy8dvDMjVBj92ESt8BJt100mav3Sf4aiuYVmEGoojWor
+ IZFVRWssbhnbwMaAjLHae3EKvQ1Sa6FwDbrA4LT+od+c5eq6oDcDqymG5T82KzR2ZWwO
+ CvrDvr1YOs30d88MUYFD0+oBcagCk+CH5KAS+AEkUXVC8T9auhfNwG4hFZXWON3bTqGB Bg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=P519gENyp78y7SSoIHntU8nofN+lEx/muKd47UBgYuw=;
+ b=e+ImRojRJ3cnY/rAPdBfh0r7zmvudKED7ytdiviTMmuNQvZHdUwn+ncBtMCtVEH16gsi
+ 9dwYBC0Yzj+cX52NxEsUQBneXyFBwo53zpCqVc1Hjky8mXljae5ow/szX6eJBGQP8S2M
+ p5hYwCNa8gm/ywULnFgW1zp44MQSdGu78Pfm6fwC4r467Xk/IAWJKBdj/krhXPXgCrmE
+ C1Aam9km4y1Flh0bqa3mZAF+1g8yTgl5eoVTaXuxZQ6QFEIagffgSDRrW7yNIiaeKhZt
+ KpupXS0wwDehVEPagmNwL9V0T/q5QbooJH+4DIVQoQrZ6L82VBX3lLs4bkF6DlFWPt7h Uw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b2p3mk68b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 22:41:16 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18EMePmj146141;
+        Tue, 14 Sep 2021 22:41:15 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by aserp3020.oracle.com with ESMTP id 3b0m96yejk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 22:41:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lAacMuwCzxlxdcP9/JTxdhn5TzHL8CcLNxc26t55aIJnwqI40xYWkNmTdd1sefs+mQXizcMqDlQl1tlQmtLNV67J83WVswGHd3d9lqtDsqGUWf1RI7z6+L92oSWv4hFkQ+gkZSIZcymFYQvthH4b9Q5KQw9o1WWhUriptFGyunQIM8HwkmSkgUjxmOVnT2cWaEk4atIY8g97mEcmFucYIAitND/njcaeBj4HDU6BCdC/PrEkjkf51JTb4k/aeB3RPchmgkcwi0ovdKeuEoxaWyFrr3bFIkMaAMZWVlAr0eNabn4F+R6KXcaNnk+psGlOGSYqPqTXHLd1t8x8rb0Ejw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=P519gENyp78y7SSoIHntU8nofN+lEx/muKd47UBgYuw=;
+ b=C5DS7QliBQS5RLLUOBiYbN/r/GJu8rzea7g/n2oZmXdVUh/p+tsupftr2kim2BQTZmJLBCcT0uqBftbED4p3NIZvU6FoWZGGIhnIoVVfEOaaaDgT7DigtFJEPpfj+/q74fUZGZ32CSIlp7HMtHP9Ud9ZrUCvR+guTIEyVrsWkidrRurlwaG+bjBhw6iyAecz6XgYYJ1Aju0KBkWUDjNs4CtgFivj2EasMNiIaiN7ISO/DTOwr8Axrt1D5ImNFmQCKI7Z1Fdi85aWp12eDI6fvxsVbuUnvqngWXi3FAzkd/2VPM/OEO9ivAXll4ZWZOkeV6M8gPDq41oUTAhqknTiDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ju9VZyqP21j8Scdz8OFW5dsbT6zZUxqBw2Xl/YF0nKI=;
-        b=KESGAPRIlqJz1bY9DWhdFrkTb8CR9fi+TfyHuZN5UQe7H/vc0me4eou2ycW2wOy8/f
-         nhInEoOOCgOV43QpQUWilSGwVwu08mP9Ei+jCDVRfgzLp1MTwbRkxzatTwcNBygh65mn
-         rLWimZuUO7vM6rr6WN1vysr3tIlSeQI/C0sXHDcNvz0woJx8fL4csCS7V88MryjAQtBS
-         NLEjeexdjmzbYZOtxUg+bLC/WOAEu1+D8p8OEHWOr71EV0mINfjnPYkMUCGpTUr8a9Q8
-         /G1E56l82gE7gosFl+w/3IvmYKSeTpl+MAfj55FJYTC7hSGiZh/w24pvcVSVQCRQzVT5
-         PeDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ju9VZyqP21j8Scdz8OFW5dsbT6zZUxqBw2Xl/YF0nKI=;
-        b=SBxXZlUCwaknc82AuxmAdqvz96p0d7k2zQpFwIZ1Ceskj+T6nkQUsgprCttXLKb4TY
-         wPERiEZlyYVP+8uqgXSvNMRMAm4lCU9rigpN6e2m4DvpZf8GQrqwCQNE3Rk6P8JmtKKw
-         D1JzmwIzXZsBGjUImEssPOfSZ/JA4dWVO/A0goF38ASgbac0oqZkZ25k9lplN5tu+lBs
-         mFKUgANjOwXaJREKucYcYGaqdNmIkfN3XJSKgfbs4w2Ru2eV+3MDgvN5rUA2/FFxjq+e
-         5FO8uPQFvtDEgY5VCNFlnEnFFOLC9utN395cBgAr+C2EO4J8hBGDvPeAoFd5AfJrvbW9
-         sxRQ==
-X-Gm-Message-State: AOAM533ZnvJQXPrk6VigmNymIBdSg1LcNRcHofmpDeeQiZwzsamc4sM1
-        ubte47ExObFCyddIXT9IHPX+Uc7tbds=
-X-Google-Smtp-Source: ABdhPJzbABhOOHmOVLpdF+OYqigx4ocH172Z/Q3cbmCl7RwJaPmgaIrmf/A+FcIlD7T/FHEvxnzaXA==
-X-Received: by 2002:a65:67d6:: with SMTP id b22mr17355642pgs.430.1631659254015;
-        Tue, 14 Sep 2021 15:40:54 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g4sm12243158pgs.42.2021.09.14.15.40.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 15:40:53 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM ETHERNET PHY
-        DRIVERS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] net: phy: bcm7xxx: Add EPHY entry for 72165
-Date:   Tue, 14 Sep 2021 15:40:41 -0700
-Message-Id: <20210914224042.418365-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P519gENyp78y7SSoIHntU8nofN+lEx/muKd47UBgYuw=;
+ b=rJMxJ43ZasHOHS8AsLzeUuRdW2u5Gv3zLIzeZ5+vfIEM3E7pg3fScUIaMLmX7y/pB1M5jkh8D2DD+FxSMfWHVHTSd47yhEM6+ECYChIRMFBdhr2c8I1RB0Vq6ZB9yBQp4MNpo2vF4+nFm0atnkoNOwLzaITpIoKUwviUjm7LesA=
+Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
+ by DM6PR10MB4281.namprd10.prod.outlook.com (2603:10b6:5:216::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Tue, 14 Sep
+ 2021 22:41:13 +0000
+Received: from DM6PR10MB4380.namprd10.prod.outlook.com
+ ([fe80::f4b1:d890:7745:30a3]) by DM6PR10MB4380.namprd10.prod.outlook.com
+ ([fe80::f4b1:d890:7745:30a3%5]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 22:41:13 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Subject: Re: [PATCH resend RFC 5/9] s390/uv: fully validate the VMA before
+ calling follow_page()
+Thread-Topic: [PATCH resend RFC 5/9] s390/uv: fully validate the VMA before
+ calling follow_page()
+Thread-Index: AQHXpZcUo4CShfRFgUS/m3/66qDGNaukKAiA
+Date:   Tue, 14 Sep 2021 22:41:12 +0000
+Message-ID: <20210914224054.pigma5e3dfyiup44@revolver>
+References: <20210909162248.14969-1-david@redhat.com>
+ <20210909162248.14969-6-david@redhat.com>
+In-Reply-To: <20210909162248.14969-6-david@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6144b58c-5ea8-4b9b-85a4-08d977d0c165
+x-ms-traffictypediagnostic: DM6PR10MB4281:
+x-microsoft-antispam-prvs: <DM6PR10MB42813F9FF7C1473B017408A3FDDA9@DM6PR10MB4281.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:187;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oBcpPB/GzwLTLBQzv2BFrFnrdxDiG7uPkYfTkgD9XlABsWGGFv5+HqKXHP/GTLFQjx//hCnadu90zfC3GQ1LgRROU03uIg94U9QWXTDpqrswgALZRnu+kI/ZFEnwmq5fw+9zebuRmK4t8ISwHdkAyWhRKQsVZlvisZ3khkK1cCvb5ZThduTlUtnIbysUuvV++KJmtB0dqfVe+nuTyvZWw4W7Fuwa4gy+XCsdXg50khxNZ6R5zXcYCwAqfhoXOxoQJpJ04vWmaeF2IW04P/izC2UaSIzsLwo89sada54WPC6TISGyOhMliyICuq27ZiOoF59aB5YPJuwKExfnWq63LOVNy53JsDV6K0sQWb7gPLP04SvOqckiKJgYUJiN3IjdfUcBiXSednRvL49nzSiECtoDtqweN+xPNU0Rar32IdgEFY0KCw5isAFxBnoY+GzTl3I1w7JuTvSmpBlZpOyDUdyQsI8iaLInAI1VQENXPUKmZH9H3tJ72qodHTGundZ7YVfYWtwP4erFIHKrMEpOl7Gc9uS9xeXuzyhXgVWIetih37ZjeL4xyGqHozoTi8CEjTiVV3rmj74fmtBCXsZIJFQGY1TtXz/royZMhkPi4DVMX6n6oPnc4eLrdG1sS6twPwUQJrf1wU0cnRxFukqxkUxf3x5uIMqVETh9DsleKc+B/sYePKYxQ7zJmA27TPSZ8UX75EaU0vjPykGi5MNAbg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(136003)(376002)(366004)(346002)(396003)(39860400002)(71200400001)(26005)(8936002)(122000001)(38100700002)(76116006)(91956017)(2906002)(478600001)(4326008)(66476007)(64756008)(66946007)(66556008)(6486002)(5660300002)(33716001)(66446008)(44832011)(1076003)(83380400001)(186003)(54906003)(6506007)(7416002)(38070700005)(86362001)(316002)(8676002)(9686003)(6512007)(6916009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vwSLcEw/yeD3GeTNt55HY7jFuA8lj66Kdtem8wB503wXBEhXM65yb/QEhG9z?=
+ =?us-ascii?Q?e2N+GCt6DGkDkmEQSoNq4djMENqle7MIjOhoGOQOSehHfSpZVntsU7V85Yzi?=
+ =?us-ascii?Q?rwjt7DRYerTyccnuYKC60CUNPKs/fzfSHGtTnLVTPu4iad7g1ETFGRD5BRWN?=
+ =?us-ascii?Q?BH30hlCF8gbByt9RksZT7JBVbvdTjuTHYM6mErM3Qa40Zg/Ezv3MN4ub7G9u?=
+ =?us-ascii?Q?y3WPvCG2xvAI3IImTQxESYYg3T+HONCgByrzmi9OX+EfIBhuDONWia3oUFIh?=
+ =?us-ascii?Q?LeY7G4wXnC50Mcokf7Jm5KazXfa9MbbfjAOlAJ3jmH+BoE1WFsJ9Hr5I7xDt?=
+ =?us-ascii?Q?MAHU1RBcQdeu71XJZWz9cQUSGx2cOsjw/wXARAf6fFPDeXsoTZtmsSlc8OeO?=
+ =?us-ascii?Q?vNXHcHbg+/ltSkhd2iX4uuUSsTBfKud8eR7oecjXlpUHhYe6WoRohKKNvmW9?=
+ =?us-ascii?Q?/MrzJ3+XydFRZ7H/Cx85ZlvnMEV4RQHeR6qsRs/ZygDgmrCL1IVSkx23wFyh?=
+ =?us-ascii?Q?xucJ2YE2TEpfbpeYxIwHPF6LJ3IsiKXpCDqeMys0rqZ9dwQ+OIkAnlkcUSoh?=
+ =?us-ascii?Q?l9bAW4KyWQUYTEM8EyIOpdQlP2Yl6Or/Dss3utftktd90nTj1aKgRhACWR0X?=
+ =?us-ascii?Q?e+297NfKNoe0VO5WeT9wor2HXox3uTIY97MofWcP3MbmfaySApntrUYDku1f?=
+ =?us-ascii?Q?tV+Xjf5Ea0twfkWR6kWjG9nhvw/h4WZEXR7+ted2TDVnYyrxK9kllymYoman?=
+ =?us-ascii?Q?mUGZnUa89L8PRYawQhhoEQZPR7AXriYrIu//C3SDpya59PTuJiK4doUGvvTL?=
+ =?us-ascii?Q?trSyl+hbLGdx+3ML1XXQrFivlXoOc3que3OGx1QC9Oy0q5IPwo4CpB91NwIF?=
+ =?us-ascii?Q?BgGV3B+Ap2ltbVjJju2XivZDUPIw51mauW8gEX8bMWmpHJIduS5TYyrXIoWx?=
+ =?us-ascii?Q?D8tBLcNZffTP1gAo9Qojl1MBe44Hgm14kGEL9Dd3KwBePFue0r/fru7pfzI1?=
+ =?us-ascii?Q?dLA94VBsyXUPL6OgA+X4cIzCbtmEstwQIipX2IKQRZrk4si5bkNyV5P0aVY4?=
+ =?us-ascii?Q?SRsnShzIDa8+wf/DOigKZOmnKAteYYyhhq4kIXc77CcVqDk2N2xf8otr+LpA?=
+ =?us-ascii?Q?dplQMwXhy2YTRsyfzHrSNL8HwD97sLWIIcfq5rlf3eLCvkdQyRFYTrvIMx8i?=
+ =?us-ascii?Q?T4wJnw1hO4KgEHeJW4pwQU1J/+e8H7eouSwUUVke3LelrTnuXAYZChgd7J5j?=
+ =?us-ascii?Q?dzcATO7xyj6NUiVypFBFNmJ654wqsrEgtBC4NZpOVzNDbwMTeiIPmOJIJDAS?=
+ =?us-ascii?Q?tzeaXXOHxgyrRv325hLZDk0l?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BD14D07FA62D744DAAB7F276B5C2EA9F@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6144b58c-5ea8-4b9b-85a4-08d977d0c165
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 22:41:12.9980
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XhsgbE/g/FSxHCfL+S7RzSkAoS7J4GHfb/N5sfo65tpeEl8X1KxMJGXYedhWEFfxIGUeMKRnAHSrzuEV9vC82w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4281
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10107 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109140130
+X-Proofpoint-GUID: 5tLg38MzFuDpv98ARj5Pdo71E36w-hwA
+X-Proofpoint-ORIG-GUID: 5tLg38MzFuDpv98ARj5Pdo71E36w-hwA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-72165 is a 16nm process SoC with a 10/100 integrated Ethernet PHY,
-create a new macro and set of functions for this different process type.
+Reviwed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/phy/bcm7xxx.c | 200 ++++++++++++++++++++++++++++++++++++++
- include/linux/brcmphy.h   |   1 +
- 2 files changed, 201 insertions(+)
-
-diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
-index e79297a4bae8..f6912a77a378 100644
---- a/drivers/net/phy/bcm7xxx.c
-+++ b/drivers/net/phy/bcm7xxx.c
-@@ -398,6 +398,189 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
- 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
- }
- 
-+static int bcm7xxx_16nm_ephy_afe_config(struct phy_device *phydev)
-+{
-+	int tmp, rcalcode, rcalnewcodelp, rcalnewcode11, rcalnewcode11d2;
-+
-+	/* Reset PHY */
-+	tmp = genphy_soft_reset(phydev);
-+	if (tmp)
-+		return tmp;
-+
-+	/* Reset AFE and PLL */
-+	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0006);
-+	/* Clear reset */
-+	bcm_phy_write_exp_sel(phydev, 0x0003, 0x0000);
-+
-+	/* Write PLL/AFE control register to select 54MHz crystal */
-+	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0000);
-+	bcm_phy_write_misc(phydev, 0x0031, 0x0000, 0x044a);
-+
-+	/* Change Ka,Kp,Ki to pdiv=1 */
-+	bcm_phy_write_misc(phydev, 0x0033, 0x0002, 0x71a1);
-+	/* Configuration override */
-+	bcm_phy_write_misc(phydev, 0x0033, 0x0001, 0x8000);
-+
-+	/* Change PLL_NDIV and PLL_NUDGE */
-+	bcm_phy_write_misc(phydev, 0x0031, 0x0001, 0x2f68);
-+	bcm_phy_write_misc(phydev, 0x0031, 0x0002, 0x0000);
-+
-+	/* Reference frequency is 54Mhz, config_mode[15:14] = 3 (low
-+	 * phase) */
-+	bcm_phy_write_misc(phydev, 0x0030, 0x0003, 0xc036);
-+
-+	/* Initialize bypass mode */
-+	bcm_phy_write_misc(phydev, 0x0032, 0x0003, 0x0000);
-+	/* Bypass code, default: VCOCLK enabled */
-+	bcm_phy_write_misc(phydev, 0x0033, 0x0000, 0x0002);
-+	/* LDOs at default setting */
-+	bcm_phy_write_misc(phydev, 0x0030, 0x0002, 0x01c0);
-+	/* Release PLL reset */
-+	bcm_phy_write_misc(phydev, 0x0030, 0x0001, 0x0001);
-+
-+	/* Bandgap curvature correction to correct default */
-+	bcm_phy_write_misc(phydev, 0x0038, 0x0000, 0x0010);
-+
-+	/* Run RCAL */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x0038);
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003b);
-+	udelay(2);
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0003, 0x003f);
-+	mdelay(5);
-+
-+	/* AFE_CAL_CONFIG_0, Vref=1000, Target=10, averaging enabled */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x1c82);
-+	/* AFE_CAL_CONFIG_0, no reset and analog powerup */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e82);
-+	udelay(2);
-+	/* AFE_CAL_CONFIG_0, start calibration */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f82);
-+	udelay(100);
-+	/* AFE_CAL_CONFIG_0, clear start calibration, set HiBW */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9e86);
-+	udelay(2);
-+	/* AFE_CAL_CONFIG_0, start calibration with hi BW mode set */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0001, 0x9f86);
-+	udelay(100);
-+
-+	/* Adjust 10BT amplitude additional +7% and 100BT +2% */
-+	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7ea);
-+	/* Adjust 1G mode amplitude and 1G testmode1 */
-+	bcm_phy_write_misc(phydev, 0x0038, 0x0002, 0xede0);
-+
-+	/* Read CORE_EXPA9 */
-+	tmp = bcm_phy_read_exp(phydev, 0x00a9);
-+	/* CORE_EXPA9[6:1] is rcalcode[5:0] */
-+	rcalcode = (tmp & 0x7e) / 2;
-+	/* Correct RCAL code + 1 is -1% rprogr, LP: +16 */
-+	rcalnewcodelp = rcalcode + 16;
-+	/* Correct RCAL code + 1 is -15 rprogr, 11: +10 */
-+	rcalnewcode11 = rcalcode + 10;
-+	/* Saturate if necessary */
-+	if (rcalnewcodelp > 0x3f)
-+		rcalnewcodelp = 0x3f;
-+	if (rcalnewcode11 > 0x3f)
-+		rcalnewcode11 = 0x3f;
-+	/* REXT=1 BYP=1 RCAL_st1<5:0>=new rcal code */
-+	tmp = 0x00f8 + rcalnewcodelp * 256;
-+	/* Program into AFE_CAL_CONFIG_2 */
-+	bcm_phy_write_misc(phydev, 0x0039, 0x0003, tmp);
-+	/* AFE_BIAS_CONFIG_0 10BT bias code (Bias: E4) */
-+	bcm_phy_write_misc(phydev, 0x0038, 0x0001, 0xe7e4);
-+	/* invert adc clock output and 'adc refp ldo current To correct
-+	 * default
-+	 */
-+	bcm_phy_write_misc(phydev, 0x003b, 0x0000, 0x8002);
-+	/* 100BT stair case, high BW, 1G stair case, alternate encode */
-+	bcm_phy_write_misc(phydev, 0x003c, 0x0003, 0xf882);
-+	/* 1000BT DAC transition method per Erol, bits[32], DAC Shuffle
-+	 * sequence 1 + 10BT imp adjust bits
-+	 */
-+	bcm_phy_write_misc(phydev, 0x003d, 0x0000, 0x3201);
-+	/* Non-overlap fix */
-+	bcm_phy_write_misc(phydev, 0x003a, 0x0002, 0x0c00);
-+
-+	/* pwdb override (rxconfig<5>) to turn on RX LDO indpendent of
-+	 * pwdb controls from DSP_TAP10
-+	 */
-+	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0020);
-+
-+	/* Remove references to channel 2 and 3 */
-+	bcm_phy_write_misc(phydev, 0x003b, 0x0002, 0x0000);
-+	bcm_phy_write_misc(phydev, 0x003b, 0x0003, 0x0000);
-+
-+	/* Set cal_bypassb bit rxconfig<43> */
-+	bcm_phy_write_misc(phydev, 0x003a, 0x0003, 0x0800);
-+	udelay(2);
-+
-+	/* Revert pwdb_override (rxconfig<5>) to 0 so that the RX pwr
-+	 * is controlled by DSP.
-+	 */
-+	bcm_phy_write_misc(phydev, 0x003a, 0x0001, 0x0000);
-+
-+	/* Drop LSB */
-+	rcalnewcode11d2 = (rcalnewcode11 & 0xfffe) / 2;
-+	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0001);
-+	/* Clear bits [11:5] */
-+	tmp &= ~0xfe0;
-+	/* set txcfg_ch0<5>=1 (enable + set local rcal) */
-+	tmp |= 0x0020 | (rcalnewcode11d2 * 64);
-+	bcm_phy_write_misc(phydev, 0x003d, 0x0001, tmp);
-+	bcm_phy_write_misc(phydev, 0x003d, 0x0002, tmp);
-+
-+	tmp = bcm_phy_read_misc(phydev, 0x003d, 0x0000);
-+	/* set txcfg<45:44>=11 (enable Rextra + invert fullscaledetect)
-+	 */
-+	tmp &= ~0x3000;
-+	tmp |= 0x3000;
-+	bcm_phy_write_misc(phydev, 0x003d, 0x0000, tmp);
-+
-+	return 0;
-+}
-+
-+static int bcm7xxx_16nm_ephy_config_init(struct phy_device *phydev)
-+{
-+	int ret, val;
-+
-+	ret = bcm7xxx_16nm_ephy_afe_config(phydev);
-+	if (ret)
-+		return ret;
-+
-+	ret = bcm_phy_set_eee(phydev, true);
-+	if (ret)
-+		return ret;
-+
-+	ret = bcm_phy_read_shadow(phydev, BCM54XX_SHD_SCR3);
-+	if (ret < 0)
-+		return ret;
-+
-+	val = ret;
-+
-+	/* Auto power down of DLL enabled,
-+	 * TXC/RXC disabled during auto power down.
-+	 */
-+	val &= ~BCM54XX_SHD_SCR3_DLLAPD_DIS;
-+	val |= BIT(8);
-+
-+	ret = bcm_phy_write_shadow(phydev, BCM54XX_SHD_SCR3, val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return bcm_phy_enable_apd(phydev, true);
-+}
-+
-+static int bcm7xxx_16nm_ephy_resume(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* Re-apply workarounds coming out suspend/resume */
-+	ret = bcm7xxx_16nm_ephy_config_init(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return genphy_config_aneg(phydev);
-+}
-+
- static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
- {
- 	int ret;
-@@ -610,9 +793,25 @@ static void bcm7xxx_28nm_remove(struct phy_device *phydev)
- 	.resume         = bcm7xxx_config_init,				\
- }
- 
-+#define BCM7XXX_16NM_EPHY(_oui, _name)					\
-+{									\
-+	.phy_id		= (_oui),					\
-+	.phy_id_mask	= 0xfffffff0,					\
-+	.name		= _name,					\
-+	/* PHY_BASIC_FEATURES */					\
-+	.flags		= PHY_IS_INTERNAL,				\
-+	.probe		= bcm7xxx_28nm_probe,				\
-+	.remove		= bcm7xxx_28nm_remove,				\
-+	.config_init	= bcm7xxx_16nm_ephy_config_init,		\
-+	.config_aneg	= genphy_config_aneg,				\
-+	.read_status	= genphy_read_status,				\
-+	.resume		= bcm7xxx_16nm_ephy_resume,			\
-+}
-+
- static struct phy_driver bcm7xxx_driver[] = {
- 	BCM7XXX_28NM_EPHY(PHY_ID_BCM72113, "Broadcom BCM72113"),
- 	BCM7XXX_28NM_EPHY(PHY_ID_BCM72116, "Broadcom BCM72116"),
-+	BCM7XXX_16NM_EPHY(PHY_ID_BCM72165, "Broadcom BCM72165"),
- 	BCM7XXX_28NM_GPHY(PHY_ID_BCM7250, "Broadcom BCM7250"),
- 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7255, "Broadcom BCM7255"),
- 	BCM7XXX_28NM_EPHY(PHY_ID_BCM7260, "Broadcom BCM7260"),
-@@ -635,6 +834,7 @@ static struct phy_driver bcm7xxx_driver[] = {
- static struct mdio_device_id __maybe_unused bcm7xxx_tbl[] = {
- 	{ PHY_ID_BCM72113, 0xfffffff0 },
- 	{ PHY_ID_BCM72116, 0xfffffff0, },
-+	{ PHY_ID_BCM72165, 0xfffffff0, },
- 	{ PHY_ID_BCM7250, 0xfffffff0, },
- 	{ PHY_ID_BCM7255, 0xfffffff0, },
- 	{ PHY_ID_BCM7260, 0xfffffff0, },
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index c2c2147dfeb8..c2a5fc9f46c2 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -32,6 +32,7 @@
- 
- #define PHY_ID_BCM72113			0x35905310
- #define PHY_ID_BCM72116			0x35905350
-+#define PHY_ID_BCM72165			0x35905340
- #define PHY_ID_BCM7250			0xae025280
- #define PHY_ID_BCM7255			0xae025120
- #define PHY_ID_BCM7260			0xae025190
--- 
-2.25.1
-
+* David Hildenbrand <david@redhat.com> [210909 12:23]:
+> We should not walk/touch page tables outside of VMA boundaries when
+> holding only the mmap sem in read mode. Evil user space can modify the
+> VMA layout just before this function runs and e.g., trigger races with
+> page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+> with read mmap_sem in munmap").
+>=20
+> find_vma() does not check if the address is >=3D the VMA start address;
+> use vma_lookup() instead.
+>=20
+> Fixes: 214d9bbcd3a6 ("s390/mm: provide memory management functions for pr=
+otected KVM guests")
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/kernel/uv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index aeb0a15bcbb7..193205fb2777 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -227,7 +227,7 @@ int gmap_make_secure(struct gmap *gmap, unsigned long=
+ gaddr, void *uvcb)
+>  	uaddr =3D __gmap_translate(gmap, gaddr);
+>  	if (IS_ERR_VALUE(uaddr))
+>  		goto out;
+> -	vma =3D find_vma(gmap->mm, uaddr);
+> +	vma =3D vma_lookup(gmap->mm, uaddr);
+>  	if (!vma)
+>  		goto out;
+>  	/*
+> --=20
+> 2.31.1
+>=20
+> =
