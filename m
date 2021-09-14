@@ -2,100 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5DC40B7F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B03640B7F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbhINTWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
+        id S232695AbhINTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234321AbhINTV5 (ORCPT
+        with ESMTP id S232618AbhINTX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:21:57 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A3DC0613D8;
-        Tue, 14 Sep 2021 12:20:34 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id p29so603438lfa.11;
-        Tue, 14 Sep 2021 12:20:34 -0700 (PDT)
+        Tue, 14 Sep 2021 15:23:57 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB7EC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:22:37 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id o11so582085ljp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sWUveR2st8W0vI/cjNjCZ7SFinSkJr9hz3+NwIh5zpw=;
-        b=QK8y3w5xbn/XH3R6Lh0goR3B1q+DKq37YdfrTgzs8oOf1GLlRm2xfOPYfMyZhG3wx4
-         O1RuuYiQNIIiCMWRzlpTWPY4Ngq4KW3zJvySWMYGGU42D900bBPxJTkhM0WqyyJksZMM
-         UoUkEGgvTRYRS2qvVmR0JB4qwKzxMKZOsUhXPlioGZi1r5AgJ3crLYgH0wRmAHD97pTq
-         yHWbUn01auG+e2mMFTej9B0R9POqdEkYQSPNeo2Rs32TD75Kwn3zKqqZJTzh8HVu+EHi
-         7azgZjW5KVW5pPHkGk80S54JdZXUCxOTeZgkuGMyibKF1XHik9T4HSnNQr0pLQ9wrJLX
-         oYwg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RgqPc9G3kEzrx4a9xU6WJRNLMMqujZAV7WWA24EODcg=;
+        b=B7a2T/vWkandCsB27/jpPgZImnu46XBPtNlUpD22KxdbM1FhOhF2vGT8afNq9gpWHP
+         sJqxZ0BJNT5KcVCN04TGHBAIsa+zsxMVuSEbUMXiA+1WdMk1cjTcoTobbohQ7RgeZbrO
+         qY+SR583jpL9bTsYAfVzwqcrCgh9HG79xO7zdBNmaGL7nXHan6i4zEtmqtLcOClJxH9d
+         VbVzZj6tQBwXRjJkcB4j48au/AVdL0rRFGLYEu55uSc1sN1fvT+6QEsKRe31OWaRwzo2
+         kP1zz5FCzcfmVGOMkk2kTTnT3L8mgJxYU4HSMozh5gkA4UABdF5OJIYR0xGk+gnsB1ci
+         Fheg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sWUveR2st8W0vI/cjNjCZ7SFinSkJr9hz3+NwIh5zpw=;
-        b=cz1+k7sw+Cr5UaVS+VTxVoXiIHxEObU3tcLbfzXVmmTDIlFPKN8oRyeSOnN8LOSk86
-         H7bEYFmIgWknYzkje3fQ/DjAumLWENqTB1rGhUdS91FbQY8b0CXFJQj8u6yMPoRG5voq
-         9wnRXIonS/7n6+sc6K8z2Xm1FPUvSXw09pfIL7FE3VHOhXtr83BNmNvPhboQAFJ/PAfO
-         pKp7Hlss7p1lMAPrW1Nkry4ONV0NC085/6uth7iZ61MyYY6uZdRGkCFnfyHBLGzOBf95
-         MiKa1osi7SoNcXZqjCoSc/rCePlyLYwLnpojP3pXx1hqc0ZC09yIqdz3heWgoT+x8PlU
-         1AKw==
-X-Gm-Message-State: AOAM533VR8ycVcMyc8/dkYsJItqt8FRJCUAsSUF1WfihNv3drAbJN/2R
-        /A/FirpJned6NZG5KK4gLD6kyOIfuH0=
-X-Google-Smtp-Source: ABdhPJyY4q+Rms2R5q4yuEjNMcWE8zHzIgYnjvP4+9Cip3MQivqsHDeOuAYhpmFlejWFO+AL7aKTjQ==
-X-Received: by 2002:ac2:5e9c:: with SMTP id b28mr14190756lfq.405.1631647232471;
-        Tue, 14 Sep 2021 12:20:32 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-83-36.dynamic.spd-mgts.ru. [46.138.83.36])
-        by smtp.googlemail.com with ESMTPSA id p14sm1405436ljj.140.2021.09.14.12.20.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 12:20:31 -0700 (PDT)
-Subject: Re: [PATCH v6 6/6] iommu/tegra-smmu: Add pagetable mappings to
- debugfs
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, will@kernel.org,
-        vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-7-nicoleotsuka@gmail.com>
- <31501a62-3312-9f04-3bb8-790d0481746c@gmail.com>
- <20210914184933.GA32705@Asurada-Nvidia>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <25d68aff-323a-df54-45f9-55b22f3089e0@gmail.com>
-Date:   Tue, 14 Sep 2021 22:20:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RgqPc9G3kEzrx4a9xU6WJRNLMMqujZAV7WWA24EODcg=;
+        b=CP2O1I/u6+2Xz2XB7+dsG5OlV1YELQ8Crt1k+wXOc+O6ffIkXR3iXSox8r/+ij+ZiN
+         LY1i/oodBk4OX3dQhcUWw9nQ826ImODBAFqFDlLJwkgkYHPMFd4y4tW+RoUOMPaVHNok
+         XYTS719H2kksViR9QsoxZI7pAGyd4qhsKgIyWu2JgRS2AQ248aOCPY93BYzsyA2zYDe9
+         bebJCMbfcc91FNJbcQ3o2RLZ94ZTF8YuZ7ujx8x8IEKR5HhI/tt5ZvJMb9L6cUxHpthH
+         qV2vBIwR20M9BhHn4xlACD5+q/0+jI+JaTkrmryEjXh2Qff3D5EW+CYZwk8Umhk1aTqm
+         LJOg==
+X-Gm-Message-State: AOAM532sGLF/rtBKR7JlfAc03FZEgLlJbvOE4IePjIV6fN5DLwb03A9G
+        tHPW210l6Cnd6Wx4YBtLFXn0Frpnv5VS5Y3eSYw/dg==
+X-Google-Smtp-Source: ABdhPJwa7yL3vXUNDq0XxlCpymQppX1uWzQS6zEjAC1wqfD6PUQ6AH9Jk8yNqHqbph8WiBjGBnSH7AOvrA/KuPEzBR8=
+X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr17337321ljp.526.1631647355826;
+ Tue, 14 Sep 2021 12:22:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210914184933.GA32705@Asurada-Nvidia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210914102837.6172-1-will@kernel.org> <01f572ab-bea2-f246-2f77-2f119056db84@kernel.org>
+ <202109140958.11DCC6B6@keescook> <CAKwvOdnrO7X8h-g9Pn8RmfJhqj2zn3HJwpQ0p2EONNtFF0w-uA@mail.gmail.com>
+ <202109141214.630BB3A@keescook>
+In-Reply-To: <202109141214.630BB3A@keescook>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 14 Sep 2021 12:22:24 -0700
+Message-ID: <CAKwvOdmP6mYwZ+0Z5iXFv5dtd_96SxYsUn469ZC=C=SFw-Hs-A@mail.gmail.com>
+Subject: Re: [PATCH] hardening: Default to INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.09.2021 21:49, Nicolin Chen пишет:
-> On Tue, Sep 14, 2021 at 04:29:15PM +0300, Dmitry Osipenko wrote:
->> 14.09.2021 04:38, Nicolin Chen пишет:
->>> +static unsigned long pd_pt_index_iova(unsigned int pd_index, unsigned int pt_index)
->>> +{
->>> +	return ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT |
->>> +	       ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
->>> +}
->>
->> We know that IOVA is fixed to u32 for this controller. Can we avoid all
->> these dma_addr_t castings? It should make code cleaner a tad, IMO.
-> 
-> Tegra210 actually supports 34-bit IOVA...
-> 
+On Tue, Sep 14, 2021 at 12:14 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Tue, Sep 14, 2021 at 11:53:38AM -0700, Nick Desaulniers wrote:
+> > Rather than create 2 new kconfigs with 1 new invocation of the
+> > compiler via cc-option, how about just adding an `ifdef
+> > CONFIG_CC_IS_CLANG` guard around adding the obnoxious flag to
+> > `KBUILD_CFLAGS` in the top level Makefile?
+>
+> v2:
 
-It doesn't. 34-bit is PA, 32-bit is VA.
+LGTM
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Quote from T210 TRM:
+I think the formal patch should have Will's Suggested-by on it.
 
-"The SMMU is a centralized virtual-to-physical translation for MSS. It
-maps a 32-bit virtual address to a 34-bit physical address. If the
-client address is 40 bits then bits 39:32 are ignored."
+>
+> diff --git a/Makefile b/Makefile
+> index 34a0afc3a8eb..72d165ffabdb 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -831,12 +831,12 @@ endif
+>
+>  # Initialize all stack variables with a zero value.
+>  ifdef CONFIG_INIT_STACK_ALL_ZERO
+> -# Future support for zero initialization is still being debated, see
+> -# https://bugs.llvm.org/show_bug.cgi?id=45497. These flags are subject to being
+> -# renamed or dropped.
+>  KBUILD_CFLAGS  += -ftrivial-auto-var-init=zero
+> +ifdef CONFIG_CC_IS_CLANG
+> +# https://bugs.llvm.org/show_bug.cgi?id=45497
+>  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+>  endif
+> +endif
+>
+>  # While VLAs have been removed, GCC produces unreachable stack probes
+>  # for the randomize_kstack_offset feature. Disable it for all compilers.
+> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+> index 90cbaff86e13..ded17b8abce2 100644
+> --- a/security/Kconfig.hardening
+> +++ b/security/Kconfig.hardening
+> @@ -23,13 +23,16 @@ config CC_HAS_AUTO_VAR_INIT_PATTERN
+>         def_bool $(cc-option,-ftrivial-auto-var-init=pattern)
+>
+>  config CC_HAS_AUTO_VAR_INIT_ZERO
+> +       # GCC ignores the -enable flag, so we can test for the feature with
+> +       # a single invocation using the flag, but drop it as appropriate in
+> +       # the Makefile, depending on the presence of Clang.
+>         def_bool $(cc-option,-ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang)
+>
+>  choice
+>         prompt "Initialize kernel stack variables at function entry"
+>         default GCC_PLUGIN_STRUCTLEAK_BYREF_ALL if COMPILE_TEST && GCC_PLUGINS
+>         default INIT_STACK_ALL_PATTERN if COMPILE_TEST && CC_HAS_AUTO_VAR_INIT_PATTERN
+> -       default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_PATTERN
+> +       default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
+>         default INIT_STACK_NONE
+>         help
+>           This option enables initialization of stack variables at
+>
+> --
+> Kees Cook
 
-Even if it supported more than 32bit, then the returned ulong is 32bit,
-which doesn't make sense.
+
+
+-- 
+Thanks,
+~Nick Desaulniers
