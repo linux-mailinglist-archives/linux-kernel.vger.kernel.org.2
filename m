@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3919240A87A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1402440A87D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237575AbhINHrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
+        id S237921AbhINHr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237650AbhINHq4 (ORCPT
+        with ESMTP id S237725AbhINHrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:46:56 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61F3C0613AA
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:41:40 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id e16so11360704pfc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:41:40 -0700 (PDT)
+        Tue, 14 Sep 2021 03:47:02 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB678C06129F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:41:47 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id t20so8240201pju.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:41:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GTuclICje8xvheuCWw6eY5mtrJC1enFIQ8G/X086C4w=;
-        b=1+5SZrthq4E9CNTL9shy+XTzy4GfS0MhkZdeG8bD6fclynhHhj6SeOoRgLf3pFR4my
-         BGdV0PSiF09qkvytKWXvDnXU/KOBFqL/mqyOd1sL+vo2Gj5NZHMeujnW4p/ySo1tTlxW
-         5MEgUiDUCrH+j8TmwGGLYiTNfhLcLs0t0Id5/t6xyCn302Mn4qKJClIS5r943Vjxj4R3
-         3ESMJEOYtM7rTAMfYaypQTmjrXvgsC2iUteRT+ora65DDVkEHvRsGjpmwEPEOxw8Zrdi
-         fZ9RQ48GuD6pdi3pqwQ3fw6la2Ty26HoG1CaMfVQn3mCzfqq1EJZGL+pXOhOIh4oqFaO
-         8qtg==
+        bh=NN0gBfeiXzYvb6Jp1Xsxd7yBUqMa7ADBolLYHobpZVA=;
+        b=PK4VMjGvbH67oZYwUFRv0aAB52OL26OeD5aAWPYin+UtbhnEsqDqPB/EaOguwtEC31
+         +H+QEkDREFkUgugOadzHu6DvQ1BzJ/vqhb/+RWLh/+RYyQ8LgKEnWgtfmYOvBJ51exeO
+         MZgiFfKhKQnddBedK9WWyA0jmVYyXMDWB0GdLs3Q1eafPpFgDlESnFvNCg/Sy3ThEvhK
+         10G0Ha8bAyXS8XFbO1IiOFq2kDgJu71/0l9Y5QP4jAlQFBblZy3Ldk/w59Uu9dAQ/fA+
+         2TZgnJVhPh3fHVxylqst68t0JaN8QaVp+O9+z95FKOUk8Ajnp+TT5hDTuCf9KRba1/cO
+         xUjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GTuclICje8xvheuCWw6eY5mtrJC1enFIQ8G/X086C4w=;
-        b=lYkvavyADBmI0Sjq3D92co8Zv+f5XYVJ5Jit5wcVCVfnTmT7G+Te2l+mYCVbx6EmhX
-         GM8Qp33owcLBQG5gTDlTO/pNcEFcf/ifu1FyFsef6xtoeOqUQXfOC7LFT7kVFteqeBDJ
-         oC84hAcNLV3DR527VnhsZFZEsn16cxfNtDYhUl/pgqyK99pXc71b3Jx2Szs3ezj9xr/5
-         krgsb8DSoSG+4ZNGmEPUbS2/KvbgTGXgfA+CrXef9f8FpyhuO6+tjNlMtbUxXEykcqHK
-         xqH2gijKz8Fz3JPlIwSSF96/6W6fAuohR0xl7uXsKK+p//D1oreDEyiUJN+gpT7L+HWA
-         pNXA==
-X-Gm-Message-State: AOAM531Xr/rSO6DwY5QI0nVTVcH0+h3K2HOvKmknnTcu67wuh5QBIx+K
-        SAtxo6KRSMuHwQmCaKPd5w0MXw==
-X-Google-Smtp-Source: ABdhPJyCCwvzSMLS40nMeu2zuIgha4feIFEx/Jfsb/Qd1SEBLvcROtNSaH2rs4+NXS6rDZ6silJirQ==
-X-Received: by 2002:a63:1f24:: with SMTP id f36mr14690074pgf.6.1631605300457;
-        Tue, 14 Sep 2021 00:41:40 -0700 (PDT)
+        bh=NN0gBfeiXzYvb6Jp1Xsxd7yBUqMa7ADBolLYHobpZVA=;
+        b=QmGrLiDJxlVjqnzAA8XkwMmniSXVASG1mwRGKSj68i3ZgTNR0Aksoaiih74GwdJIx7
+         +IVsotiJjHh4jesxYEL8d/fdJq/aFYfzOGtChZEa8ArpCvzq7g6NibQmIOQD4vNOaYFe
+         3qCt4kURbXgrdMm6uOu81f7vAJM/Qg2DbfAhS0Ag/YYTjaZwW7EAnamOJdgA6tstXUhG
+         UV5KwzLh0w+y9BiyhLAgNO7a7vnhHCXdFjR/H8TzkIR8Hh8JWMFIG7oYutsewmgZwpny
+         IhWyfdlgJlQ1r1faR5Jo7/0iyiKTifH3AxuXREPB93RdUq92/ig1yGmeE9mlY/L2sdqh
+         p/gg==
+X-Gm-Message-State: AOAM5320py30IannJQj2+kUlB/V7u818x2O4YqVI+stQSidBD5vFfCDf
+        dmvxQRblCZsla+0SOtE9J55ZBw==
+X-Google-Smtp-Source: ABdhPJxeJOzJq9uyWwvOof6i8p5oYTy6e+2JuWR77baYHWZ6FfxGZ4+UTXzFXoerYhN4HhSwEh2Hqg==
+X-Received: by 2002:a17:90a:ab07:: with SMTP id m7mr567445pjq.27.1631605307523;
+        Tue, 14 Sep 2021 00:41:47 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id s3sm9377839pfd.188.2021.09.14.00.41.33
+        by smtp.gmail.com with ESMTPSA id s3sm9377839pfd.188.2021.09.14.00.41.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Sep 2021 00:41:39 -0700 (PDT)
+        Tue, 14 Sep 2021 00:41:47 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
         mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
@@ -59,9 +59,9 @@ Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         zhengqi.arch@bytedance.com, duanxiongchun@bytedance.com,
         fam.zheng@bytedance.com, smuchun@gmail.com,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3 73/76] mm: memcontrol: reuse memory cgroup ID for kmem ID
-Date:   Tue, 14 Sep 2021 15:29:35 +0800
-Message-Id: <20210914072938.6440-74-songmuchun@bytedance.com>
+Subject: [PATCH v3 74/76] mm: memcontrol: fix cannot alloc the maximum memcg ID
+Date:   Tue, 14 Sep 2021 15:29:36 +0800
+Message-Id: <20210914072938.6440-75-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210914072938.6440-1-songmuchun@bytedance.com>
 References: <20210914072938.6440-1-songmuchun@bytedance.com>
@@ -71,140 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two idrs being used by memory cgroup, one is for kmem ID,
-another is for memory cgroup ID. The maximum ID of both is 64Ki.
-Both of them can limit the total number of memory cgroups. Actually,
-we can reuse memory cgroup ID for kmem ID to simplify the code.
+The idr_alloc() does not include @max ID. So in the current implementation,
+the maximum memcg ID is 65534 instead of 65535. It seems a bug. So fix this.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- include/linux/memcontrol.h |  1 +
- mm/memcontrol.c            | 47 ++++++++--------------------------------------
- 2 files changed, 9 insertions(+), 39 deletions(-)
+ mm/memcontrol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 83add6c484b1..33f6ec4783f8 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -56,6 +56,7 @@ struct mem_cgroup_reclaim_cookie {
- #ifdef CONFIG_MEMCG
- 
- #define MEM_CGROUP_ID_SHIFT	16
-+#define MEM_CGROUP_ID_MIN	1
- #define MEM_CGROUP_ID_MAX	USHRT_MAX
- 
- struct mem_cgroup_id {
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8e0cde19b648..e3a2e4d65cc5 100644
+index e3a2e4d65cc5..28f0aa0a2ce5 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -356,23 +356,6 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
- }
- 
- /*
-- * This will be used as a shrinker list's index.
-- * The main reason for not using cgroup id for this:
-- *  this works better in sparse environments, where we have a lot of memcgs,
-- *  but only a few kmem-limited.
-- */
--static DEFINE_IDA(memcg_cache_ida);
--
--/*
-- * MAX_SIZE should be as large as the number of cgrp_ids. Ideally, we could get
-- * this constant directly from cgroup, but it is understandable that this is
-- * better kept as an internal representation in cgroup.c. In any case, the
-- * cgrp_id space is not getting any smaller, and we don't have to necessarily
-- * increase ours as well if it increases.
-- */
--#define MEMCG_CACHES_MAX_SIZE MEM_CGROUP_ID_MAX
--
--/*
-  * A lot of the calls to the cache allocation functions are expected to be
-  * inlined by the compiler. Since the calls to memcg_slab_pre_alloc_hook() are
-  * conditional to this static branch, we'll have to allow modules that does
-@@ -3520,10 +3503,12 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
- }
- 
- #ifdef CONFIG_MEMCG_KMEM
-+#define MEM_CGROUP_KMEM_ID_MIN	-1
-+#define MEM_CGROUP_ID_DIFF	(MEM_CGROUP_ID_MIN - MEM_CGROUP_KMEM_ID_MIN)
-+
- static int memcg_online_kmem(struct mem_cgroup *memcg)
- {
- 	struct obj_cgroup *objcg;
--	int memcg_id;
- 
- 	if (cgroup_memory_nokmem)
- 		return 0;
-@@ -3531,22 +3516,16 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- 	if (unlikely(mem_cgroup_is_root(memcg)))
- 		return 0;
- 
--	memcg_id = ida_alloc_max(&memcg_cache_ida, MEMCG_CACHES_MAX_SIZE - 1,
--				 GFP_KERNEL);
--	if (memcg_id < 0)
--		return memcg_id;
--
- 	objcg = obj_cgroup_alloc();
--	if (!objcg) {
--		ida_free(&memcg_cache_ida, memcg_id);
-+	if (!objcg)
- 		return -ENOMEM;
--	}
-+
- 	objcg->memcg = memcg;
- 	rcu_assign_pointer(memcg->objcg, objcg);
- 
- 	static_branch_enable(&memcg_kmem_enabled_key);
- 
--	memcg->kmemcg_id = memcg_id;
-+	memcg->kmemcg_id = memcg->id.id - MEM_CGROUP_ID_DIFF;
- 
- 	return 0;
- }
-@@ -3554,7 +3533,6 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
- static void memcg_offline_kmem(struct mem_cgroup *memcg)
- {
- 	struct mem_cgroup *parent;
--	int kmemcg_id;
- 
- 	if (cgroup_memory_nokmem)
- 		return;
-@@ -3567,16 +3545,7 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 		parent = root_mem_cgroup;
- 
- 	memcg_reparent_objcgs(memcg, parent);
--
--	/*
--	 * memcg_reparent_list_lrus() can change memcg->kmemcg_id.
--	 * Cache it to @kmemcg_id.
--	 */
--	kmemcg_id = memcg->kmemcg_id;
--
- 	memcg_reparent_list_lrus(memcg, parent);
--
--	ida_free(&memcg_cache_ida, kmemcg_id);
- }
- #else
- static int memcg_online_kmem(struct mem_cgroup *memcg)
-@@ -5042,7 +5011,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+@@ -5011,7 +5011,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
  		return ERR_PTR(error);
  
  	memcg->id.id = idr_alloc(&mem_cgroup_idr, NULL,
--				 1, MEM_CGROUP_ID_MAX,
-+				 MEM_CGROUP_ID_MIN, MEM_CGROUP_ID_MAX,
+-				 MEM_CGROUP_ID_MIN, MEM_CGROUP_ID_MAX,
++				 MEM_CGROUP_ID_MIN, MEM_CGROUP_ID_MAX + 1,
  				 GFP_KERNEL);
  	if (memcg->id.id < 0) {
  		error = memcg->id.id;
-@@ -5070,7 +5039,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- 	spin_lock_init(&memcg->event_list_lock);
- 	memcg->socket_pressure = jiffies;
- #ifdef CONFIG_MEMCG_KMEM
--	memcg->kmemcg_id = -1;
-+	memcg->kmemcg_id = MEM_CGROUP_KMEM_ID_MIN;
- 	INIT_LIST_HEAD(&memcg->objcg_list);
- #endif
- #ifdef CONFIG_CGROUP_WRITEBACK
 -- 
 2.11.0
 
