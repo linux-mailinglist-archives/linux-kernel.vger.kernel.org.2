@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FEC40B5EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E289F40B5ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhINRdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        id S230220AbhINRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhINRdR (ORCPT
+        with ESMTP id S230019AbhINRdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:33:17 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E88C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:00 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id m26so13014927pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:00 -0700 (PDT)
+        Tue, 14 Sep 2021 13:33:24 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6681EC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:07 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id c206so29992195ybb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qs/nXFozNO4XKGck5LQAgcVnI2HZwI8WrVsYnHtpC94=;
-        b=RJypP0ZEIzGrEzxsJiZ3f0EhlTI1eSOUL1RNtKf3JNQjS/D/d/8TfWrRamUe+4uj8F
-         +9R28NsHtXqgtoLOrQuCinGRhCU5+xPekYQzfQkk4KeTx+NqAgCJ/jOHs2EB63+fWZ28
-         CiVZ8vUPO+r3bA0nU12WHmTBuzxoVY6LkE+nsMbPacqfdTYzSBmV1BvmMGBi2N7L8Ndt
-         Hk4QaqGHrrANd5wG9uK+GLpVubcflZiUE2P84BsEL/S+6AU5sZaqw+iucEOwT7NQKczB
-         7Vfk8LbYYQh5hlbchTgQzdJZuGbUwSnTD4t6hMWx42JAg0EPigS1trYjsclzOmxN5dWG
-         iORw==
+         :cc;
+        bh=+3VBdlnD5tDSjFwQi8EY8+Mvb+JS3UIR+Tge1QvZxrw=;
+        b=Ra72o6AUkEG7riwrCrXA86JurDy6W5ZQsxVDxbDXAH73P0Ra3IPts1JHfFlgqfOMAB
+         htnkLp7mONdM3g2Xe7mo4qLSGJnShNBqVCtevUzNEyNlz+oh7CPIqP43OOSQNtGr2oOq
+         xjhlELP4yM6UDuaRq8tvfOhG4MNpLR0b97Jxqa9/CSiLwg+w6ICckpfKa6FjNBA3q6lx
+         ls5NwdczWKJHsYtAKuU8cuXn3Ih8RT4CwFO071cOFbYCEsYsEXp3uwo5NNylzFg+b7C3
+         YfYnKNCb5FMzg+yDTar2GToQbg9F6PxsxMMNkbEYVqZnxLdOrRz4IRsB25765yweP7HP
+         cKRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qs/nXFozNO4XKGck5LQAgcVnI2HZwI8WrVsYnHtpC94=;
-        b=EnT6RRzdYz0js1fxbhdkMhfrzpSKMR0nHHIk19chkuAUkLDQ1pKh8flms+r8r2ntz1
-         8M5clArh4f6Ts6qA4ED3uvIroN2YsZkkbZDwl76LDI30oPKQ+ki9VNZ/ifq4sKzsw8+x
-         dE1DGnSwjqxs50gX328VkryISYdnPXddeD/0wdyO8Ofh+zWbY8rIRY5UdoG8mh6eqJ4h
-         TVcqSljdJFBrK0KVkVfS9sarLSHnUqYHNsXBByz/B5u3ioh4AGg+3NS4pWCjySTav+3m
-         DUn/hHLPeG9HybpH9yUbwYK/TNCOWA13LxIygPuyDCW+bBUmLK0pEtcWpAxcvzLW4kRr
-         HDAQ==
-X-Gm-Message-State: AOAM531g5aEs8x/pDyk46A/1AIkvQLGqSh+0SHNxWyB/bRymNiPqzQDG
-        zLWkBaFg0uOIFsmIV4ZDlLCG85OnnSYcHYGC241n/w==
-X-Google-Smtp-Source: ABdhPJzDzncI+LLQAAhny8Ap5U3EtD5ysxI4W4mAYPPv4hTxXCM6lWOIjIHDh73AM/ND2P94HzpZw9Fi2MW9SJdt/Ps=
-X-Received: by 2002:a62:e70c:0:b0:43e:2de6:b09d with SMTP id
- s12-20020a62e70c000000b0043e2de6b09dmr134044pfh.9.1631640719199; Tue, 14 Sep
- 2021 10:31:59 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=+3VBdlnD5tDSjFwQi8EY8+Mvb+JS3UIR+Tge1QvZxrw=;
+        b=tQI17qDsB9T5V7wJQhc9TSUIopg1AF4KSK99dPjWl7YDGD9+/pOODpqVecy8afO3Hq
+         Zj6Z7VWfYfuKwpBTizqkNvP7rTJgmDeZk3O+/BIqRJ4ORwfmfYcfAilrw8Avi8GiSude
+         BP39bUOMjojGSdCOrFx3MsFzUhjLgqiooP7djoiOGraQNGnGT0e6mYMOXJ2F929wWSvs
+         2FWOFOAj4JEmtU8/aM4d1Mg5ca0Z4AHp7jTEEex4JbrpPJ/Q6PMmEw7zeigoLgtIafGi
+         fPdxxxQiJ8csiJeIZp7Sgtq/VGHVK31Xk7eYR1L+6k/+T5mnfdmoxGmtDZ6Zxv0u8HTa
+         d9GA==
+X-Gm-Message-State: AOAM5315BQ3p1ac6ZReJLWzdmsgm3A6Th/5f0g3oL/Ph+hvZT/qIpchM
+        GgVaOpmiY3V7KBpKMLXYNTfHNoEeWpgGD3tLUV75vDrWxOg+RA==
+X-Google-Smtp-Source: ABdhPJx90Za08zcRHVf7y+SxDDBaxyRY2wlLiV1YOOtINwYhwMsDEMGKh0JD49mJQNR+ddYHYO/CA4CpRRL1vbsTuR0=
+X-Received: by 2002:a25:b94:: with SMTP id 142mr374666ybl.508.1631640726428;
+ Tue, 14 Sep 2021 10:32:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1631629496.git.mchehab+huawei@kernel.org> <cf40784dd4169897f7a28cc4d9393e8eaae5b873.1631629496.git.mchehab+huawei@kernel.org>
-In-Reply-To: <cf40784dd4169897f7a28cc4d9393e8eaae5b873.1631629496.git.mchehab+huawei@kernel.org>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Tue, 14 Sep 2021 10:31:23 -0700
-Message-ID: <CACK8Z6HzNiVXxcW+yokW+db6-A5VgxixdzE-5B=tR1_Ph9JORw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/29] ABI: sysfs-bus-usb: better document variable argument
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org
+References: <20210914043928.4066136-1-saravanak@google.com>
+ <20210914043928.4066136-6-saravanak@google.com> <YUC7c9BNuHPOEg4g@lunn.ch>
+ <CAGETcx-B+yE8X2rn4GdzAikVO-swXb9a5-CxOG_HSuiQoHQZcw@mail.gmail.com>
+ <YUDRSIR2g6Pt1umn@lunn.ch> <CAL_Jsq+D2nyzrvWE7vdbQFB680+cmx=FfFMqHL0s=tkTSduz2Q@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+D2nyzrvWE7vdbQFB680+cmx=FfFMqHL0s=tkTSduz2Q@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 14 Sep 2021 10:31:30 -0700
+Message-ID: <CAGETcx9TN-sLdcir5kChNjx4i+C7gpyTSq4C+EARt42FmP_LzQ@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] driver core: Add fw_devlink.debug command line
+ boolean parameter
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 7:32 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
+On Tue, Sep 14, 2021 at 9:52 AM Rob Herring <robh+dt@kernel.org> wrote:
 >
-> On almost all ABI documents, variable arguments are declared
-> as <foo_bar>. Change it here too, in order to allow replacing
-> such wildcards by regexes on a scriptable way.
+> On Tue, Sep 14, 2021 at 11:44 AM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > > I did think of this, but the problem is that dynamic debug logs can
+> > > get compiled out (when DYNAMIC_DEBUG isn't set). I think debugging of
+> > > fw_devlink needs to be possible without having to recompile the
+> > > kernel. So in a sense similar to how initcall_debug works today.
+> >
+> > My off the shelf Debian kernel has it enabled. Maybe you can check
+> > other mainline distributions and see if it is enabled by default.
 >
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Right, I would expect users that can't rebuild their kernel easily
+> would have it enabled.
+>
+> > You are also on a slippery path. You argue this is needed all the time
+> > and add a custom knob. Somebody else adds a new feature which they
+> > also argue always needs bug, and add there own custom knob. We soon
+> > have lots of custom knobs, each doing it slightly differently, in
+> > different places. Chaos. So you need a really good argument why your
+> > code really is special.
+> >
+> > I would suggest you start with dynamic debug, and collect some
+> > statistics of how often you need to ask people to recompile their
+> > kernel.
+>
+> I agree.
 
-In case it matters:
-Acked-by: Rajat Jain <rajatja@google.com>
+Fair enough -- Andrew/Rob.
 
-> ---
->  Documentation/ABI/testing/sysfs-bus-usb | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
 >
-> diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/=
-testing/sysfs-bus-usb
-> index 73eb23bc1f34..42103f0f54d6 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-usb
-> +++ b/Documentation/ABI/testing/sysfs-bus-usb
-> @@ -166,14 +166,14 @@ Description:
->                 The file will be present for all speeds of USB devices, a=
-nd will
->                 always read "no" for USB 1.1 and USB 2.0 devices.
->
-> -What:          /sys/bus/usb/devices/.../(hub interface)/portX
-> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>
->  Date:          August 2012
->  Contact:       Lan Tianyu <tianyu.lan@intel.com>
->  Description:
-> -               The /sys/bus/usb/devices/.../(hub interface)/portX
-> +               The /sys/bus/usb/devices/.../<hub_interface>/port<X>
->                 is usb port device's sysfs directory.
->
-> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/connect_ty=
-pe
-> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/connect_=
-type
->  Date:          January 2013
->  Contact:       Lan Tianyu <tianyu.lan@intel.com>
->  Description:
-> @@ -182,7 +182,7 @@ Description:
->                 The file will read "hotplug", "hardwired" and "not used" =
-if the
->                 information is available, and "unknown" otherwise.
->
-> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/location
-> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/location
->  Date:          October 2018
->  Contact:       Bj=C3=B8rn Mork <bjorn@mork.no>
->  Description:
-> @@ -192,7 +192,7 @@ Description:
->                 raw location value as a hex integer.
->
->
-> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/quirks
-> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/quirks
->  Date:          May 2018
->  Contact:       Nicolas Boichat <drinkcat@chromium.org>
->  Description:
-> @@ -216,7 +216,7 @@ Description:
->                    used to help make enumeration work better on some high=
- speed
->                    devices.
->
-> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/over_curre=
-nt_count
-> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/over_cur=
-rent_count
->  Date:          February 2018
->  Contact:       Richard Leitner <richard.leitner@skidata.com>
->  Description:
-> @@ -230,10 +230,10 @@ Description:
->                 Any time this value changes the corresponding hub device =
-will send a
->                 udev event with the following attributes::
->
-> -                 OVER_CURRENT_PORT=3D/sys/bus/usb/devices/.../(hub inter=
-face)/portX
-> +                 OVER_CURRENT_PORT=3D/sys/bus/usb/devices/.../<hub_inter=
-face>/port<X>
->                   OVER_CURRENT_COUNT=3D[current value of this sysfs attri=
-bute]
->
-> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/usb3_lpm_p=
-ermit
-> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/usb3_lpm=
-_permit
->  Date:          November 2015
->  Contact:       Lu Baolu <baolu.lu@linux.intel.com>
->  Description:
-> --
-> 2.31.1
->
+> What would be nice is documenting what needs to be set for devlink.
+> What I used was just 'dyndbg="file drivers/base/core.c +p"'
+
+Yeah, I was thinking if we went with dynamic debug I'd have something
+I'll copy paste as a reply to any fw_devlink debug email thread.
+
+Where would be a good place to document this?
+
+I was actually thinking of making fw_devlink.debug=1 be an alias for
+something like:
+dyndbg="func device_link_add +p; func device_links_check_suppliers +p"....
+
+So that people don't have to remember what to copy paste into their
+command line as things change.
+
+-Saravana
