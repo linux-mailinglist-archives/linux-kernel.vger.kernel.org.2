@@ -2,156 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9813440B182
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C463440B1D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhINOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234270AbhINOlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:41:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C605C610E6;
-        Tue, 14 Sep 2021 14:39:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631630401;
-        bh=LeW+FpjWCoF8S7HB9VLImulpdbgkWfK0a1HfGP8n+lc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XOz28LWDlX0b6eeoTS5bcIurHSaAI5lRXlb1YVvTI4XGwGA+TaTM2xMCc5arQPcZO
-         +cQ7vwmJhaZbqhfU3/OfpNFV1pzPn+IHYAVWWP0RTyz9u974wVdhbgoCq2bCRD+e//
-         SB+1psdR3aWpMMgbAPLyRO0mWLezNk0BXfh70QqZH1LHNMyelueWLlpJ+6aDIRFJGX
-         V21/bLg2E0Um6hZswymx9yckupKxqqGDlkLzfk8GNHSBuWWpFY/lzkrTe2YKOk6eAc
-         aaeJeolLatp1XAMeszcb03Veri4O2C/CabKAQXjd8cP/ukR34zggtsIacDNoKyB0jm
-         HHCz52DnvKNZw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: [PATCH -tip v11 09/27] kprobes: Add assertions for required lock
-Date:   Tue, 14 Sep 2021 23:39:55 +0900
-Message-Id: <163163039572.489837.18011973177537476885.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <163163030719.489837.2236069935502195491.stgit@devnote2>
-References: <163163030719.489837.2236069935502195491.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S233863AbhINOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234582AbhINOrG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:47:06 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08EFC0610E0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:40:01 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id u8so3640783vsp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:40:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Pcwd0o/26YoPrQed2bMaVusigU9jUu5+1hxvi1dx9eA=;
+        b=a/0IWInRt3rW8ZMXx/Nx6Ah+PPaTo+l+Ela7UNbgUqTe2gVtVWChUCgsN+BmMeIazt
+         nhCguwNdi9dPBQVzuWQDoxY3gQ1BsbIS1sbdvpxYx4oTwBdtbCo5qqnBdOqyEVRdnQUq
+         jFldWPDRUDxSwGLJBhb4p8N/MLw4hfvstH3zwjp/jw3aOMEgynMuT9QFrdleiQQe+SAg
+         nfayW66oGHFj+j0dizbjbWbc/6nmjaZm746jCrJt+SO6IiVQlqDszeQwtlywJEP/uxoD
+         xnIz1eR9JY1dHh4mgSv8tC3Z0PclnXizzhIdQHuCgtNuZJF9u2gfBNXuBVsTmPiSi1qi
+         30NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Pcwd0o/26YoPrQed2bMaVusigU9jUu5+1hxvi1dx9eA=;
+        b=cG+omMzOBYMHUQCd1KQMBT+slnv4kodrtM+d3nokpxRxy8kCJswY/r2miZ1Rh+xYDA
+         KoQFueHKLFFTUSP4t7HQlPXlJffmKG79s+vloavviSUk44AQSiXVL5RSfVsazEdAOLPD
+         ywITKB9+HfFUb83aRykTeTlo0dPj2Ntacl3V9iemQeApFnjfOkgfgZVNBrdAYmbZ+dZ0
+         yJ9GQVrW64ps5Z+fZ3x9TyVvFUdHgttcMXBA4AD/NKgs9QE8Vww277UNxZJvDqdZOtme
+         zKKNF6WX0cSGbHuL1fieQNfYa9546T+Siu93GasPy9UgGpfwWQgtVhwGk1KScmMWxKKm
+         lspQ==
+X-Gm-Message-State: AOAM530biTCefXUHdzm2NG7IT1OOITuXwiAwmUuqTbPu92WHjlRUDmU7
+        uHwHlSd3vW0FQQr/HLZeETE3FEd2+rGq4y80xmc=
+X-Google-Smtp-Source: ABdhPJy0U/Fw7g4QuJbcBiz3qYUJ25yVjBWu8RAqMFZQ/a0VeL5T43NvrB25+3a+MmfywHu+kfWocr/xVJC8BzTIYRw=
+X-Received: by 2002:a67:eb43:: with SMTP id x3mr6103422vso.29.1631630399784;
+ Tue, 14 Sep 2021 07:39:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a59:a668:0:b0:226:c153:bd1c with HTTP; Tue, 14 Sep 2021
+ 07:39:59 -0700 (PDT)
+Reply-To: mrselizabethedward28@gmail.com
+From:   Elizabeth Edward <hon.victor.kabore@gmail.com>
+Date:   Tue, 14 Sep 2021 07:39:59 -0700
+Message-ID: <CAOEYS_cdqwCQ+QT0e=6VZU+XK46szeCTkoXssBzeTHhmCsJgXA@mail.gmail.com>
+Subject: I NEED YOUR URGENT ASSISTANCE.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add assertions for required locks instead of comment it
-so that the lockdep can inspect locks automatically.
+My Dear Friend,
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/kprobes.c |   19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+Please forgive me for stressing you with my predicaments and am sorry
+to approach you through this media, it is because it serves the
+fastest means of communication. I came across your E-mail from my
+personal search and I decided to contact you believing you will be
+honest to fulfill my final wish before I die.
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index ad39eeaa4371..ec3d97fd8c6b 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -959,11 +959,13 @@ int proc_kprobes_optimization_handler(struct ctl_table *table, int write,
- }
- #endif /* CONFIG_SYSCTL */
- 
--/* Put a breakpoint for a probe. Must be called with 'text_mutex' locked. */
-+/* Put a breakpoint for a probe. */
- static void __arm_kprobe(struct kprobe *p)
- {
- 	struct kprobe *_p;
- 
-+	lockdep_assert_held(&text_mutex);
-+
- 	/* Find the overlapping optimized kprobes. */
- 	_p = get_optimized_kprobe((unsigned long)p->addr);
- 	if (unlikely(_p))
-@@ -974,11 +976,13 @@ static void __arm_kprobe(struct kprobe *p)
- 	optimize_kprobe(p);	/* Try to optimize (add kprobe to a list) */
- }
- 
--/* Remove the breakpoint of a probe. Must be called with 'text_mutex' locked. */
-+/* Remove the breakpoint of a probe. */
- static void __disarm_kprobe(struct kprobe *p, bool reopt)
- {
- 	struct kprobe *_p;
- 
-+	lockdep_assert_held(&text_mutex);
-+
- 	/* Try to unoptimize */
- 	unoptimize_kprobe(p, kprobes_all_disarmed);
- 
-@@ -1047,12 +1051,13 @@ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
- static int kprobe_ipmodify_enabled;
- static int kprobe_ftrace_enabled;
- 
--/* Caller must lock 'kprobe_mutex' */
- static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 			       int *cnt)
- {
- 	int ret = 0;
- 
-+	lockdep_assert_held(&kprobe_mutex);
-+
- 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 0, 0);
- 	if (WARN_ONCE(ret < 0, "Failed to arm kprobe-ftrace at %pS (error %d)\n", p->addr, ret))
- 		return ret;
-@@ -1084,12 +1089,13 @@ static int arm_kprobe_ftrace(struct kprobe *p)
- 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
- }
- 
--/* Caller must lock 'kprobe_mutex'. */
- static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 				  int *cnt)
- {
- 	int ret = 0;
- 
-+	lockdep_assert_held(&kprobe_mutex);
-+
- 	if (*cnt == 1) {
- 		ret = unregister_ftrace_function(ops);
- 		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (error %d)\n", ret))
-@@ -1133,7 +1139,6 @@ static int prepare_kprobe(struct kprobe *p)
- 	return arch_prepare_kprobe(p);
- }
- 
--/* Arm a kprobe with 'text_mutex'. */
- static int arm_kprobe(struct kprobe *kp)
- {
- 	if (unlikely(kprobe_ftrace(kp)))
-@@ -1148,7 +1153,6 @@ static int arm_kprobe(struct kprobe *kp)
- 	return 0;
- }
- 
--/* Disarm a kprobe with 'text_mutex'. */
- static int disarm_kprobe(struct kprobe *kp, bool reopt)
- {
- 	if (unlikely(kprobe_ftrace(kp)))
-@@ -1691,12 +1695,13 @@ static int aggr_kprobe_disabled(struct kprobe *ap)
- 	return 1;
- }
- 
--/* Disable one kprobe: Make sure called under 'kprobe_mutex' is locked. */
- static struct kprobe *__disable_kprobe(struct kprobe *p)
- {
- 	struct kprobe *orig_p;
- 	int ret;
- 
-+	lockdep_assert_held(&kprobe_mutex);
-+
- 	/* Get an original kprobe for return */
- 	orig_p = __get_valid_kprobe(p);
- 	if (unlikely(orig_p == NULL))
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
+Since my days are numbered, I=E2=80=99ve decided, willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risks involved; it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
+
+
+
+Best Regards
+
+Mrs. Elizabeth Edward.
