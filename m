@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC8C40B797
+	by mail.lfdr.de (Postfix) with ESMTP id AF57540B798
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbhINTMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
+        id S232781AbhINTMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbhINTMM (ORCPT
+        with ESMTP id S232694AbhINTMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:12:12 -0400
+        Tue, 14 Sep 2021 15:12:14 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CB6C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso180775ybq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448BEC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:56 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id m16-20020a25d410000000b005ab243aaaf4so126449ybf.20
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:10:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=GntyULKYdaSgQ4FSc94xW8hjeJrETKXOJriN4s54uWw=;
-        b=aT2jrjMLALuM68EN4GvqBSoT8NJnT9S2KnAKIX46DewiNosK9gM7YNFb5fGzZriFGh
-         uDzfTa6GeTXvkTCRtLIUrwNnePSl9yeBJ1HJ7UMdv6Wk61BiJdpiqNGl1yHyLW9N/+8/
-         zLbll7gVEFTWrlgJM4DrG6I7JAkFPIYDb6kIAI9WSZoe5r2oil66tfaQj1AfRj8rU7hf
-         MEqRX7MYF0gEt6FXt6w1efL6SpTptQO5m8h2QhJrY/ctS7TpdEVAKklJCcBcwCJ3MwpG
-         AidaSzC9/d7Xhchi37fMrF9Zuszg6sAA/imLd95dIE12VzNWRmz7WRAeXqiLCoX4nyVN
-         mBvw==
+        bh=1oOz6kaFdaWVr/jQmAaRDSorIwh4Z5I78YdyCUUNK9s=;
+        b=Mpm5cQyxv4z1foMX312l2Tgy7gTfZn2UKqiNEm/bDeCpNs2Z2PFSloOoHJZbl9naVQ
+         zqBEYS3THb+8QyjMkgmxc7puYOFu37WsvvCCk/6UkKq4ej8f21HCMyVPWgDbpaQJiDcW
+         w+fBeBgbzefjp3/omKonhEIcGN10jh9cTkqGGDyim/HTmHZeV33Gc7604YpJPeObUCs2
+         d1y9TFpFItoYhXMBU67pq0VbC+GD++Rro/eLkWTCaJpM91IOrvQw4j+7aAZtd4+HTVHr
+         tCig2fxlOqSR035A/SVkPOC6u6oHEu73HqFSGhY9E1vq8t3WpjjlGvfT9N/hCxLoMNJ3
+         wdlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=GntyULKYdaSgQ4FSc94xW8hjeJrETKXOJriN4s54uWw=;
-        b=kHQ4eF+1UAysVtlsRECVEoV/nCXq+LQyQg+mkvV1F6PdWndVJKe4PKS7eJhjKJ64vo
-         OviNToer6L6Zps8ujiqm06y22j/JdXEHfJkU8cxx81z2y1boFaTMFLuLqC5kTnPgImFf
-         edKT3+pa+FZ/0pGa49koUmpkH2RQ3Avzu7o1UnWxj7Jeq2ny25cn3q3RgYAQ6E6pyyuL
-         hA3w+vKb+SccPfO8WfxJU5KANZ/mRsL8GImH9QVKq1MjALbFdKqPwn51tJ3ULeKk66Mh
-         PWuCz8IzF18Ls7e2g0ZIopRPOnfrth3lrxTwrQ5UcygCyqcZ07hthPLM6dlawW95pHCl
-         eJlw==
-X-Gm-Message-State: AOAM533dHfpKrSrn870tH1FchvZv+nHOsDhsxbMc6z0Rf5nsDrN/uY17
-        IfvJLoVTbw+NE1c5s3sjFPsNYTe5cPqJ7OWPFXE=
-X-Google-Smtp-Source: ABdhPJyYl9xP8Yp6E1SQkkBSZ4rht1wn3c1LW67yBaBUGjJheWeCP7bZzJS5bR7dIXtl9GLAlvLe0P8Tf6LjwTs01TA=
+        bh=1oOz6kaFdaWVr/jQmAaRDSorIwh4Z5I78YdyCUUNK9s=;
+        b=QQi5+yaNDzhTLOpNa5oxjPpr5AxdpPgvO+SPNEh7htc4i3iT/FO33v+eNnmeU741GO
+         QZG9g/81Tpxa1PeJ7r1iw4mz7Xj1+1Vck6HdU7MfTD32PqpZd1Yc6az+6Tdd0b9rMIKc
+         RwLxaPSxz5J3RSzhJi9YUg/867KOgbTvHbycEwF4XufYumc5S9RUJIf+UVC++8c+6Zp9
+         OzSypDRda/wijfQPCGLNC+TRIPS33z+vYYuFR80ylmqYTXLfag7A1yDjiVPZlNJxcmWk
+         tkI9U/OnprNd8AX0oG+Ci/TZm2x9SQHjOt5aws+nWmL1kO075m5xS4jRlxbT2bDkRXwa
+         Kqzg==
+X-Gm-Message-State: AOAM530vFyC7mS3UtaLB2gSuD7kuywQOhHhcPY+2L+vNcVO7Rr3UnoOz
+        Igl5mimrpCYIiWxQGZxc4uttC88rI+5SZsTkdaY=
+X-Google-Smtp-Source: ABdhPJygYL+QqEjY5IK1osIHUTbFG9QZLqmwDt4ruKmO9HXh0t15yJzZ0ETG7dkreOm0w+tD1mcKz/86mHGueJRp8Sc=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:d19c:5902:49bb:c41])
- (user=samitolvanen job=sendgmr) by 2002:a25:c446:: with SMTP id
- u67mr972641ybf.269.1631646653326; Tue, 14 Sep 2021 12:10:53 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 12:10:31 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a25:3046:: with SMTP id
+ w67mr1001922ybw.134.1631646655540; Tue, 14 Sep 2021 12:10:55 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 12:10:32 -0700
 In-Reply-To: <20210914191045.2234020-1-samitolvanen@google.com>
-Message-Id: <20210914191045.2234020-3-samitolvanen@google.com>
+Message-Id: <20210914191045.2234020-4-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210914191045.2234020-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-Subject: [PATCH v3 02/16] objtool: Add ASM_STACK_FRAME_NON_STANDARD
+Subject: [PATCH v3 03/16] linkage: Add DECLARE_ASM_FUNC_SYMBOL
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -68,66 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To use the STACK_FRAME_NON_STANDARD macro for a static symbol
-defined in inline assembly, we need a C declaration that implies
-global visibility. This type mismatch confuses the compiler with
-CONFIG_CFI_CLANG. This change adds an inline assembly version of
-the macro to avoid the issue.
+The kernel has several assembly functions, which are not directly
+callable from C but need to be referred to from C code. This change adds
+the DECLARE_ASM_FUNC_SYMBOL macro, which allows us to declare these
+symbols using an opaque type, which makes misuse harder, and avoids the
+need to annotate references to the functions for Clang's Control-Flow
+Integrity (CFI).
 
+Suggested-by: Andy Lutomirski <luto@amacapital.net>
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- include/linux/objtool.h       | 6 ++++++
- tools/include/linux/objtool.h | 6 ++++++
- 2 files changed, 12 insertions(+)
+ include/linux/linkage.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index 7e72d975cb76..080e95174536 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -66,6 +66,11 @@ struct unwind_hint {
- 	static void __used __section(".discard.func_stack_frame_non_standard") \
- 		*__func_stack_frame_non_standard_##func = func
+diff --git a/include/linux/linkage.h b/include/linux/linkage.h
+index dbf8506decca..f1eac26b2dd6 100644
+--- a/include/linux/linkage.h
++++ b/include/linux/linkage.h
+@@ -48,6 +48,19 @@
+ #define __PAGE_ALIGNED_DATA	.section ".data..page_aligned", "aw"
+ #define __PAGE_ALIGNED_BSS	.section ".bss..page_aligned", "aw"
  
-+#define ASM_STACK_FRAME_NON_STANDARD(func)				\
-+	".pushsection .discard.func_stack_frame_non_standard, \"aw\"\n"	\
-+	".long " __stringify(func) " - .\n"				\
-+	".popsection\n"
++/*
++ * Declares a function not callable from C using an opaque type. Defined as
++ * an array to allow the address of the symbol to be taken without '&'.
++ */
++#ifndef DECLARE_ASM_FUNC_SYMBOL
++#define DECLARE_ASM_FUNC_SYMBOL(sym) \
++	extern const u8 sym[]
++#endif
 +
- #else /* __ASSEMBLY__ */
- 
- /*
-@@ -127,6 +132,7 @@ struct unwind_hint {
- #define UNWIND_HINT(sp_reg, sp_offset, type, end)	\
- 	"\n\t"
- #define STACK_FRAME_NON_STANDARD(func)
-+#define ASM_STACK_FRAME_NON_STANDARD(func)
- #else
- #define ANNOTATE_INTRA_FUNCTION_CALL
- .macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
-diff --git a/tools/include/linux/objtool.h b/tools/include/linux/objtool.h
-index 7e72d975cb76..080e95174536 100644
---- a/tools/include/linux/objtool.h
-+++ b/tools/include/linux/objtool.h
-@@ -66,6 +66,11 @@ struct unwind_hint {
- 	static void __used __section(".discard.func_stack_frame_non_standard") \
- 		*__func_stack_frame_non_standard_##func = func
- 
-+#define ASM_STACK_FRAME_NON_STANDARD(func)				\
-+	".pushsection .discard.func_stack_frame_non_standard, \"aw\"\n"	\
-+	".long " __stringify(func) " - .\n"				\
-+	".popsection\n"
++#ifndef __ASSEMBLY__
++typedef const u8 *asm_func_ptr;
++#endif
 +
- #else /* __ASSEMBLY__ */
- 
  /*
-@@ -127,6 +132,7 @@ struct unwind_hint {
- #define UNWIND_HINT(sp_reg, sp_offset, type, end)	\
- 	"\n\t"
- #define STACK_FRAME_NON_STANDARD(func)
-+#define ASM_STACK_FRAME_NON_STANDARD(func)
- #else
- #define ANNOTATE_INTRA_FUNCTION_CALL
- .macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
+  * This is used by architectures to keep arguments on the stack
+  * untouched by the compiler by keeping them live until the end.
 -- 
 2.33.0.309.g3052b89438-goog
 
