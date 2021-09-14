@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F4740A70E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26EE40A70F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240482AbhINHGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240468AbhINHGZ (ORCPT
+        id S240486AbhINHH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:07:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37968 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240277AbhINHHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:06:25 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD06C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:05:08 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id kt8so26576426ejb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B2/VApyJZoRqB7L/N6VX+qLKsuRTi0j0Ev7mIRjfSzk=;
-        b=IemX1JxGW12b/l8eossorB4QY091xodevGLbTavaDgizjgxnuUyf/hunquBOn2xbr3
-         HZMMGQVAS1gBFy9qMLnbclwWPfNwCH1uKE0+JBJkIz70jkjNjq/B4BqjupE8y50kG8QS
-         02OoJYwW8RHILm9bXFAHwFXgKLBJNEnJ9qM5DnoTOCzFX8QC4PFQfnHYzHbQSRcSANbK
-         PI9Zfm+8xhispKdYwn1NpURo2Vcl6kYiXgkIHWX9Djr8AGf1Ze8NCun97cqDPI0sbMzd
-         aFXOW4D2zaykbvTiEyvHJBJfIgo8Ah9XjdWS/jf2DwLJBnAB9dlCS5uz8q9RYhAGqRik
-         kfsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B2/VApyJZoRqB7L/N6VX+qLKsuRTi0j0Ev7mIRjfSzk=;
-        b=YThPnvxPl54FA+bTCG+epObdqB/WsI2hqsciPvkjFefe1jLQn75DvShQg3ZFVSTK2s
-         +3DB+aiJK8X2G/fl9NrboELm6oxiugFLsAn4JD+0jb78oxbRPrd+GF2gBL1MXUEjh3iP
-         yoZEzieqMJHj1/0ZYJcKPsb1cAuc0boo/XzG+PR/7oknhgGtqTn2Yn5P81d3Wcx37M0m
-         YihH/KUCEU5P0LPxsgqotzFtSZTaEqalQMj/G5dV6A0WE+ayj/XaAbAo9/mkO15bxqrP
-         QK35jyoAK+34As8Lm2cVRTr1WhGwPICKf4q1wR8iC6biSQlRjk7OmpZ62P027BpvyyTX
-         yQYw==
-X-Gm-Message-State: AOAM530I89nBl3LhdM0jG1qitjefXANsMkY4KgIoi+EnxATa/NSmOwTv
-        J6odNVXGPKCrz1wl2fQ+mi0WhSpka8Mcqt5ShPo=
-X-Google-Smtp-Source: ABdhPJxaEPRWvCIK9AkYNuVoiK5RN68ymDm6C1UbwFr+PQNZ/GUvsrSOyDSIyEbP1n7Hb1vYqyZXGCxGI88xCl3vsI4=
-X-Received: by 2002:a17:906:4dc1:: with SMTP id f1mr17398909ejw.288.1631603107570;
- Tue, 14 Sep 2021 00:05:07 -0700 (PDT)
+        Tue, 14 Sep 2021 03:07:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 482AB22036;
+        Tue, 14 Sep 2021 07:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631603166; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A/1Y7KiDeeaT0dHdPrBGfhWOk81I7NO2b70BCS+BHrs=;
+        b=ikIlgBpZyivQEZXzhoOi40OPwAkWSBWdnWYZlYTMoY47xOuDzck5UFpfcDqmEtB5TVyDEY
+        dP/BgDGXjeqYybw2BIolssfpfvkxmyL6IMZVnnDRIwmRtQLE27ahOYy/Vo2AgPi7P7AiIa
+        nwn8HC9j7wDdOHmUmxRqEKu6OJdYumM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id F1B76A3B90;
+        Tue, 14 Sep 2021 07:06:05 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 09:06:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/page_isolation: fix potential missing call to
+ unset_migratetype_isolate()
+Message-ID: <YUBJ3eA0a+Vk1wm4@dhcp22.suse.cz>
+References: <20210913115125.33617-1-linmiaohe@huawei.com>
+ <YT9AS6I1Th14mCxh@dhcp22.suse.cz>
+ <e1e772b8-b9a7-0182-c469-73f32cda005e@redhat.com>
+ <6cb372ff-0b68-2143-913e-04ab3e6b4160@huawei.com>
+ <YT9LPoSSTJbmF3eF@dhcp22.suse.cz>
+ <1d0e15ab-4a1f-0820-26c2-4b9949164dfa@huawei.com>
 MIME-Version: 1.0
-References: <20210912025235.3514761-1-linux@roeck-us.net> <315e4a23990444f585a15d2e23a39b8f@AcuMS.aculab.com>
- <46f59bf8-f243-b65c-07b3-8ecbf7b410fa@roeck-us.net>
-In-Reply-To: <46f59bf8-f243-b65c-07b3-8ecbf7b410fa@roeck-us.net>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Tue, 14 Sep 2021 00:04:56 -0700
-Message-ID: <CAMo8BfLOhr8Gw9RbSM_pVhgokDcBZ3PgwQAG6sCxDBAm_rMy7Q@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: Increase size of gcc stack frame check
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d0e15ab-4a1f-0820-26c2-4b9949164dfa@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 9:11 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> The functions I checked typically have pretty large local data
-> (like, more than 700-800 bytes). The errors are only observed
-> with xtensa:allmodconfig test builds. While it may be arguable
-> if those functions really need that much data on the stack, it
-> is unreasonable to assume that all those errors (again, more
-> than 50) are ever going to get fixed, especially since the errors
-> are only seen with xtensa and not with any other architecture
+On Tue 14-09-21 11:09:47, Miaohe Lin wrote:
+[...]
+> So even the Fixes tag should be removed ?
 
-That's not what I observe. If I build allmodconfig on v5.15-rc1
-for arm with gcc-8.3 I get 69 of them.
+I would keep that one there. Fixes tag is useful to frame the scope of
+the fix. For example when somebody is backporting the commit mentioned
+in the Fixes tag then a) a lot of follow up patches with Fixes can tell
+you this won't be an easy ride and you might want to reconsider risks
+vs. benefit b) it helps to collect follow up fixes more easily.
 
-> (including parisc; setting a stack limit of 1024 works just fine
-> with that architecture, at least with gcc 11.x). So the realistic
+That is a different story from cc: stable which just collects patches
+and push them to all consumers of the stable branch if they apply.
 
-This comparison is a bit biased because allmodconfig on xtensa
-enables KASAN which is not supported by the parisc. Disabling
-KASAN roughly halves the size of stack frames for a few
-instances that I've checked.
-
+To conclude, the Fixes tag is a generaly useful tag to bind patches
+together and let people evaluate how important that is while Cc stable
+is an indication that a fix is serious enough to push to all stable
+users.
 -- 
-Thanks.
--- Max
+Michal Hocko
+SUSE Labs
