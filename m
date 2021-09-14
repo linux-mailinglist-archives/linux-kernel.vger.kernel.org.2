@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A4740A6F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AD840A6FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240403AbhING6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240277AbhING6N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:58:13 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95829C061574;
-        Mon, 13 Sep 2021 23:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=vPUlUbzkiqu+rcv52nE0RTFyv/GxprjJ7JCufB/wTvg=;
-        t=1631602616; x=1632812216; b=yH3bnixwvdtZl6rY0R3+TMAvyhVYA9sRRd1FzyRzE8FOBWd
-        FyQ3AzpegaxSg731hHTDvA+hPIwckMd087k6M3+soNE/tT9AE0C2LpR1J6EUtuJdqSzZkmUznr/3h
-        FFk8i67XmVPKJs+ihbvJ0sdbACmCxouxdaIQgh6OyJM8sXQnHIaraAf4LWcXD3M/wp9BfaxLslIkV
-        w8DjUhUju9pGeOR8rGppntovwWZaD60IIOK3bHRfTNLVXGoBX9Jgk36rW5j++2RgIPnONnphbgxJc
-        /QYQftN1DlFCvz6G+yw4Dt4Vm/HO21hIjeKbzReIKFckOT2oCPq3c5cR26jt1j3A==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95-RC2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mQ2N3-006k5n-V1;
-        Tue, 14 Sep 2021 08:56:46 +0200
-Message-ID: <7dbe6ec5b8e6b6d1e3457d075f21a7f93cc80e9c.camel@sipsolutions.net>
-Subject: Re: [PATCH AUTOSEL 5.13 01/19] dmaengine: idxd: depends on !UML
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Cc:     lkp <lkp@intel.com>, "Jiang, Dave" <dave.jiang@intel.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
-Date:   Tue, 14 Sep 2021 08:56:44 +0200
-In-Reply-To: <20210913223415.435654-1-sashal@kernel.org>
-References: <20210913223415.435654-1-sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S240186AbhINHB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:01:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240277AbhINHBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 03:01:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62DEF610E6;
+        Tue, 14 Sep 2021 07:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631602800;
+        bh=djzB+0WNEFw/XlKEoitEKNRrGEZA+fAQHWWOkYAQAAg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BirwWaNeYinjT/DGaZCKkFT3GlTG72mHbt20dAv/NlrU36ll88HmacB8AipeIo8t2
+         YA8yO8U199FiggXxfw5tnh5E7+1o3KrFK0aUF29thksOPjYtd1sp0f1YTkiF78oe6c
+         U8ikF5hNIbSzdbcKLDwWuw2HPAuvoazBC8rBvu+w=
+Date:   Tue, 14 Sep 2021 08:59:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fei Li <fei1.li@intel.com>
+Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
+        shuox.liu@gmail.com
+Subject: Re: [PATCH v4 0/2] Introduce some interfaces for ACRN hypervisor HSM
+ driver
+Message-ID: <YUBIbqeDyBELtR6H@kroah.com>
+References: <20210914062627.16431-1-fei1.li@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914062627.16431-1-fei1.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-13 at 22:33 +0000, Sasha Levin wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
+On Tue, Sep 14, 2021 at 02:26:25PM +0800, Fei Li wrote:
+> Add some new interfaces for ACRN hypervisor HSM driver:
+>   - MMIO device passthrough
+>   - virtual device creating/destroying
+>   - platform information fetching from the hypervisor
 > 
-> [ Upstream commit b2296eeac91555bd13f774efa7ab7d4b12fb71ef ]
+> ChangeLog:
+> v4:
+>  - remove "RFC" from Subject field.
+> 
+> v3:
+>  - remove "platform information fetching from the hypervisor". What platform
+>    information needs to be fetched has not been finally decided. Will send tis
+>    patch out once that has been decided.
+>  - add comments where is the userspace code that uses this new api:
+>    - MMIO device passthrough
+>      (a) assign a MMIO device to a User VM
+>      https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L562
+>      (b) de-assign a MMIO device from a User VM
+>      https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L568
+>    - virtual device creating/destroying
+>      (a) create a virtual device for a User VM
+>      https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L606
+>      (b) destroy a virtual device of a User VM
+>      https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L612
 
-While this commit (and also "dmaengine: ioat: depends on !UML") isn't
-*wrong* per se on old kernels, the subject matter is really only
-relevant since commit 68f5d3f3b654 ("um: add PCI over virtio emulation
-driver"), since previously "UML && PCI" could not be true.
+Can you put these comments in the changelog text?  Stuff in the 0/X
+email never shows up in the changelog at all.
 
-Hence, there's no point applying this (and the ioat one) to anything
-older than 5.14.
+thanks,
 
-johannes
-
+greg k-h
