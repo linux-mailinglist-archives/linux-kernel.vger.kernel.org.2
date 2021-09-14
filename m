@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A46340AC56
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E409940AC58
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhINLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        id S232145AbhINLZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbhINLZr (ORCPT
+        with ESMTP id S232108AbhINLZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:25:47 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23ABC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:29 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id g14so23136194ljk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:29 -0700 (PDT)
+        Tue, 14 Sep 2021 07:25:51 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB323C061768
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:33 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id s12so23216055ljg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nbHbzsUVfwaldp004hJ4jjr5J84FzOR0csevjsInRbE=;
-        b=gLP0H+ry/SWAhT5BEiNh1FWXkOJbfVobpcuxBz39q4wP3oRce/LNh+VmwVoWCqssQa
-         DiOZkRFt7gDlzMI/yco3aBYtGhFSX1cKB869NkY62py7W8IQ0eAOKtx0qf7D3nyokqZw
-         Mo2tVd3rZrv22beSeWrOi76EEZn3lmeJB39Gq71SH+R7iOCMOhtXfa2yrga2lFAzeuAa
-         cGOmCslsZKpFJzKih/XTy8fqctLPGdePabFqlF2QsGVYf51tLhNuKwGjZ2KKvwgm2rAf
-         dGN2hioI6JVRqzjHIEivSFlpgClaAT0Nveve8xlKK3unRIZ9QOzawKPhEi11YtsLIgn6
-         12Hw==
+        bh=Cp0SQvp2N+xoe5C9OTNfUx9zbpD4P6j+IayB6VA30bk=;
+        b=swnsW5M61hgulyulsIRu3aI3c5JyOHo1hV1BavL7cNd27JSmoAFdOmDyll3HQ+PKwA
+         do8l1rDRqZmoPpoMAtu5qvL8wektf5sqsuE7k+qr0J0fVhYytZgixfBXDAmEMq8kAH/F
+         pcHIRPN4ZC582Hgq2iITsA2M9JuBwvfDeR1Q03lkXWIvo2higY1eDlridEWIdGpqTrd3
+         8wfWcyEXeuT0bhRb/+n2Gcm0SrWajWSw5Ti0eetW0Lw48BaiArItYRrO9I4JQORqbWvB
+         6VargJN8dBi0DgoEyHfj/Eq+3Ft3CqUhBf+p0olPNckb4JjFdAcJiI5bnLOnZoaitVFs
+         hCNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nbHbzsUVfwaldp004hJ4jjr5J84FzOR0csevjsInRbE=;
-        b=L3D1sFx1wkfrl/P379r4t+eGODIOsY0K2cK+ecPVHLKN7NJUQQgJG5dlUeqpIGQ9hC
-         nOADbByU/u9UGlRgyxWXQOzNLGuVQUXQ/kWf69LSX48XY83zQ8vxy0zx0dWV7Dy2Hz6N
-         d3JWJMTnWXAxdOigANASK5liAGXaoEk/dfqX1RUQ7poMXoJFc1Sw8Pj6vkZwQkm+yhkv
-         hAiIJTmzjaLXSLB1FmDgl4n2qiJjzS1tKAcnkBaFhYhBswuY8HcU9Q1/Jv4ywJGGRgzh
-         L/VgXDttrCDofXF5lLQ/0hQvcsMNktA9qP1tyzyHkt/tIKrDCWXDYSx5voTVPAq8sWcK
-         AwDw==
-X-Gm-Message-State: AOAM5322B4o1a75TchQdPUvbctqYX78fbP126+GCvfV80G+iEPmPyVgc
-        DFwHRVAtyKegHxN3DEU7pfaehQ19njdxryXQUp2bzA==
-X-Google-Smtp-Source: ABdhPJxaKAD0c0v3CBN1um+VYpA7r68/YPXn+ub5FydWZVfWWKtI+1+mvXOkDL2WdBRkUWSYEOb/Mh4tFJYHh50dXAk=
-X-Received: by 2002:a05:651c:1b3:: with SMTP id c19mr15103309ljn.16.1631618668074;
- Tue, 14 Sep 2021 04:24:28 -0700 (PDT)
+        bh=Cp0SQvp2N+xoe5C9OTNfUx9zbpD4P6j+IayB6VA30bk=;
+        b=gBXUo5lbJfa73kZ2BAjEEsJhrqRS08NnddKG6t35r4erwLvJl9R58woSNStOVCh9TT
+         6rRH7HnhW4/GuikOkrd04LumODW+KZSS+MNNcOMjR/IgJBjOdMGE8X+vSE+pj7L1YQm3
+         rAGQkVM0HwcMvORj9oPVIAwVSXI7+K9Gr0T2vvktfp5lG4k5FuIeaRtjkDfrZsjL4Ips
+         TURPnVxmUYkOYY8KGR19SWQuI2KZV+WeVluDGM7GXjE6ElwlBoUbconBoeK6JeEx4GVi
+         kgGmn8XTfO+PenaH3Rbt/ia3du5LlfbTyFNVhmn/XjErOEpt54eH0IkDEqddB9/CWaTD
+         Fsyw==
+X-Gm-Message-State: AOAM53339DwfankGj5TmWb0RSyPKu+qgfA9pcUZMETKqxtxDu+kvRW6u
+        49oxarnUCWB593YwJBKbs3e/vjQd1PRzL2wJYDbIwg==
+X-Google-Smtp-Source: ABdhPJzf1cZ1haIuWx4qetdhB8fMA2L7nDxmvcpl12S8Bc/zLJ7IB1YUa/nTacFTu/yJmy9Nj89xbQhPxJ3NScN0wIc=
+X-Received: by 2002:a2e:b610:: with SMTP id r16mr14814634ljn.367.1631618672323;
+ Tue, 14 Sep 2021 04:24:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907151204.118861-1-huobean@gmail.com> <20210907151204.118861-2-huobean@gmail.com>
-In-Reply-To: <20210907151204.118861-2-huobean@gmail.com>
+References: <20210911131933.2089-1-len.baker@gmx.com>
+In-Reply-To: <20210911131933.2089-1-len.baker@gmx.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 14 Sep 2021 13:23:52 +0200
-Message-ID: <CAPDyKFrTDc2VnKffTiHx9A7CRsgQq8FZCj8U3+8xaVtQCPAkyQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] mmc: cqhci: Print out qcnt in case of timeout
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Avri Altman <avri.altman@wdc.com>,
+Date:   Tue, 14 Sep 2021 13:23:55 +0200
+Message-ID: <CAPDyKFrmSOWF4CsRApq58PVtp2XDfwsBFCYs4vHDDatQHQAA+g@mail.gmail.com>
+Subject: Re: [PATCH] memstick: jmb38x_ms: Prefer struct_size over open coded arithmetic
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Kees Cook <keescook@chromium.org>, Tom Rix <trix@redhat.com>,
+        linux-hardening@vger.kernel.org,
         linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sept 2021 at 17:12, Bean Huo <huobean@gmail.com> wrote:
+On Sat, 11 Sept 2021 at 15:22, Len Baker <len.baker@gmx.com> wrote:
 >
-> From: Bean Huo <beanhuo@micron.com>
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 >
-> Print task count that has not been completed, this is for the
-> purpose of debugging.
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kzalloc() function.
 >
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
 Applied for next, thanks!
 
@@ -80,24 +87,23 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/cqhci-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/memstick/host/jmb38x_ms.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-> index 38559a956330..ca8329d55f43 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -899,8 +899,8 @@ static bool cqhci_timeout(struct mmc_host *mmc, struct mmc_request *mrq,
->         spin_unlock_irqrestore(&cq_host->lock, flags);
->
->         if (timed_out) {
-> -               pr_err("%s: cqhci: timeout for tag %d\n",
-> -                      mmc_hostname(mmc), tag);
-> +               pr_err("%s: cqhci: timeout for tag %d, qcnt %d\n",
-> +                      mmc_hostname(mmc), tag, cq_host->qcnt);
->                 cqhci_dumpregs(cq_host);
+> diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb38x_ms.c
+> index f9a93b0565e1..a7a0f0caea15 100644
+> --- a/drivers/memstick/host/jmb38x_ms.c
+> +++ b/drivers/memstick/host/jmb38x_ms.c
+> @@ -927,8 +927,7 @@ static int jmb38x_ms_probe(struct pci_dev *pdev,
+>                 goto err_out_int;
 >         }
 >
+> -       jm = kzalloc(sizeof(struct jmb38x_ms)
+> -                    + cnt * sizeof(struct memstick_host *), GFP_KERNEL);
+> +       jm = kzalloc(struct_size(jm, hosts, cnt), GFP_KERNEL);
+>         if (!jm) {
+>                 rc = -ENOMEM;
+>                 goto err_out_int;
 > --
 > 2.25.1
 >
