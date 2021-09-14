@@ -2,189 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0334040A27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373DD40A289
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbhINBbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 21:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhINBbC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:31:02 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC5FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:29:46 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id r3so20660015ljc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bwi8JzS7IUd8bGkWIzVwnKvogSVEcsXYPsg+JItZ8oM=;
-        b=fiY6IKkngrztRhJGLgdJI9edL8TxraujPTd/SV9hEAguGAT699jCnoG9v8OqqH6g18
-         Q/qWrqcQakgXqGliTOaGo0x4Pbjavw5l8FSGzMGvdRux3P6zyr3TBrlLAYFaZ0KiKcI8
-         Ui5X/EZ1nitBe2QYSn5SdXndTGE/D8aiGMAJc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bwi8JzS7IUd8bGkWIzVwnKvogSVEcsXYPsg+JItZ8oM=;
-        b=cf3okybUI6u8moa0iZIzocoX44jdDQdUkz1SmiNqAnxtwoakohe1RDRLRJ3QUvEdII
-         QpmTdSbodBoK7Rx+T0/JFL50O6TLKt8Jt6h9wPW1ks+TRbh0I3n4YcqdJnzz+8bJBlMY
-         GcHSnyM6f55folfGEthG99FsxcywuOGHPoyUniYqM2OBPxaYerCT/VF8FUWDMBvxdojX
-         Pf9H0J0VFuM6MQOx7vBepeaNdYfMg3OqfCKVp9tHaos+vWLgwqWlftJYe0eA2fWjExQr
-         o5YKSOkC1NfiNAl7zCtAt8giAXepe9WpDckp89hoJ4T1lSuDMxuzT3HrzoAeIfXPxhK2
-         Hdrw==
-X-Gm-Message-State: AOAM530SefFf8VFAw7CaCBVk9+uE2fYEuFY9+s6v2uhH/vgXD8vECJho
-        uFTcUVFrQRNdoSuF+eHIiwAQ26ahZcp67+r/PmQ=
-X-Google-Smtp-Source: ABdhPJxXQWdW6xfZ33ZxIhhIGWkBSzTXOJ69WDhjPZ53DeVrD9iKSzgvEv2dzmPOLk6x26EN+XtywA==
-X-Received: by 2002:a2e:5345:: with SMTP id t5mr12850250ljd.20.1631582984048;
-        Mon, 13 Sep 2021 18:29:44 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id u24sm1131213ljg.64.2021.09.13.18.29.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 18:29:43 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id p15so20653440ljn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:29:42 -0700 (PDT)
-X-Received: by 2002:a05:651c:158e:: with SMTP id h14mr9527198ljq.56.1631582982632;
- Mon, 13 Sep 2021 18:29:42 -0700 (PDT)
+        id S231182AbhINBck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 21:32:40 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39322 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhINBcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 21:32:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=KXOg1wnh22KbOjiVoErnse0MPToeoaHhPOYb0uwUyns=; b=K4Inj402fuVbGnCywXEmB2OIZb
+        j/MJqTfUMdGDXCqDwMPCx2HoKy8IZfDcJa1ePVQQqFtV7It3ciZmfNIDGp8NJvVBQcTcjtYNOlR0c
+        02EODSkYM+tvbiaCaBpyRovGW3qjhTrt4PQhI93R9lZWnPtP7AfUSGTHnsNPHPcg0CZs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mPxHl-006Ulp-0X; Tue, 14 Sep 2021 03:30:57 +0200
+Date:   Tue, 14 Sep 2021 03:30:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: Re: [RFC PATCH net 2/5] net: dsa: be compatible with masters which
+ unregister on shutdown
+Message-ID: <YT/7UVJghbbyd1t9@lunn.ch>
+References: <20210912120932.993440-1-vladimir.oltean@nxp.com>
+ <20210912120932.993440-3-vladimir.oltean@nxp.com>
+ <20210912131837.4i6pzwgn573xutmo@skbuf>
+ <YT9QwOA2DxaXNsfw@lunn.ch>
+ <20210913133130.ohk4co56v4mtljyk@skbuf>
 MIME-Version: 1.0
-References: <20210914100853.3f502bc9@canb.auug.org.au> <CAHk-=whOv-LZKxBqQr8yzmhi7sN4zoFG7t8ALNx+2XFhXjGTpA@mail.gmail.com>
- <CAHk-=whGuEkYmQcJx8WfZ7MFhbKGJDcA6NUZWtrnM6Y6xFqATw@mail.gmail.com> <20210914105359.5c651d55@canb.auug.org.au>
-In-Reply-To: <20210914105359.5c651d55@canb.auug.org.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 13 Sep 2021 18:29:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
-Message-ID: <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the origin tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Content-Type: multipart/mixed; boundary="0000000000001a287705cbea846b"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913133130.ohk4co56v4mtljyk@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000001a287705cbea846b
-Content-Type: text/plain; charset="UTF-8"
+> > Have you tested it with a D in DSA system?
+> 
+> To various degrees.
 
-On Mon, Sep 13, 2021 at 5:58 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> > I have no idea why it then complains about removal of the GCC4 macros.
->
-> Me neither :-(
+Hi Vladimir
 
-Ooh.
+I tested on ZII devel C, which has two switches in a DSA
+configuration. This worked before, and still cleanly reboots with this
+patchset.
 
-So I'm looking at gcc sources, just to see if "maybe this thing is
-somehow conditional".
+Tested-by: Andrew Lunn <andrew@lunn.ch>
 
-And bingo.
-
-In cpp_init_special_builtins(), gcc does
-
-      if (b->value == BT_HAS_ATTRIBUTE
-          && (CPP_OPTION (pfile, lang) == CLK_ASM
-              || pfile->cb.has_attribute == NULL))
-        continue;
-
-which basically says that if we're pre-processing an ASM file, the
-magical pre-processor symbol for __has_attribute is not defined.
-
-I'm not sure what that 'pfile->cb.has_attribute == NULL' thing means,
-but the libcpp/ChangeLog file also mentions this:
-
-        (cpp_init_special_builtins): Don't initialize __has_attribute
-        or __has_cpp_attribute if CLK_ASM or pfile->cb.has_attribute is NULL.
-
-So this is a very very special magical thing: if building an *.S file,
-__has_attribute magically goes away.
-
-And sure enough, that's exactly what is going on. It's during that
-build of arch/powerpc/boot/crt0.S, and the reason this hits on powerpc
-is that in arch/powerpc/boot/Makefile we have
-
-         -include $(srctree)/include/linux/compiler_attributes.h
-
-as part of BOOTCFLAGS, and then it does
-
-        BOOTAFLAGS      := -D__ASSEMBLY__ $(BOOTCFLAGS) -nostdinc
-
-to also include that header file when building ASM files.
-
-And our old GCC4 code silently hid this all, and made it work, because
-for a *.S file  you'd then (completely illogically) get those fake
-gcc-4 attribute macros.
-
-Now, do I know *why* that ppc Makefile it does that? No. Neither do I
-know why the gcc people decided to just make ASM preprocessor so
-special.
-
-But at least I understand how the odd error happens.
-
-This was too damn subtle. When you have to go read the compiler
-sources to figure things like this out, you know you are too deep.
-
-The fix should be pretty simple: remove almost all of BOOTCFLAGS from
-BOOTAFLAGS.
-
-But sadly, "almost all" isn't "all". There's the include path stuff,
-there's the ABI and endianness, and there's the bit size ones.
-
-So I think the fix is either
-
- (a) remove that
-
-         -include $(srctree)/include/linux/compiler_attributes.h
-
-     thing entirely, and add it as required to the C files.
-
-OR
-
- (b) something like this ENTIRELY UNTESTED ATTACHED patch
-
-I will leave it to the powerpc people to make the right choice.
-
-               Linus
-
---0000000000001a287705cbea846b
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ktjeb6jv0>
-X-Attachment-Id: f_ktjeb6jv0
-
-IGFyY2gvcG93ZXJwYy9ib290L01ha2VmaWxlIHwgMjYgKysrKysrKysrKysrKystLS0tLS0tLS0t
-LS0KIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkKCmRp
-ZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvYm9vdC9NYWtlZmlsZSBiL2FyY2gvcG93ZXJwYy9ib290
-L01ha2VmaWxlCmluZGV4IDY5MDBkMGFjMjQyMS4uOWJjZjYyZDY1NTA5IDEwMDY0NAotLS0gYS9h
-cmNoL3Bvd2VycGMvYm9vdC9NYWtlZmlsZQorKysgYi9hcmNoL3Bvd2VycGMvYm9vdC9NYWtlZmls
-ZQpAQCAtMzIsMjggKzMyLDMwIEBAIGVsc2UKICAgICBCT09UQVIgOj0gJChBUikKIGVuZGlmCiAK
-LUJPT1RDRkxBR1MgICAgOj0gLVdhbGwgLVd1bmRlZiAtV3N0cmljdC1wcm90b3R5cGVzIC1Xbm8t
-dHJpZ3JhcGhzIFwKLQkJIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1PMiAtbXNvZnQtZmxvYXQgLW1u
-by1hbHRpdmVjIC1tbm8tdnN4IFwKLQkJIC1waXBlIC1mb21pdC1mcmFtZS1wb2ludGVyIC1mbm8t
-YnVpbHRpbiAtZlBJQyAtbm9zdGRpbmMgXAotCQkgLWluY2x1ZGUgJChzcmN0cmVlKS9pbmNsdWRl
-L2xpbnV4L2NvbXBpbGVyX2F0dHJpYnV0ZXMuaCBcCi0JCSAkKExJTlVYSU5DTFVERSkKK0JPT1RD
-T1JFRkxBR1MgOj0gJChMSU5VWElOQ0xVREUpCiAKIGlmZGVmIENPTkZJR19QUEM2NF9CT09UX1dS
-QVBQRVIKLUJPT1RDRkxBR1MJKz0gLW02NAorQk9PVENPUkVGTEFHUwkrPSAtbTY0CiBlbHNlCi1C
-T09UQ0ZMQUdTCSs9IC1tMzIKK0JPT1RDT1JFRkxBR1MJKz0gLW0zMgogZW5kaWYKIAotQk9PVENG
-TEFHUwkrPSAtaXN5c3RlbSAkKHNoZWxsICQoQk9PVENDKSAtcHJpbnQtZmlsZS1uYW1lPWluY2x1
-ZGUpCitCT09UQ09SRUZMQUdTCSs9IC1pc3lzdGVtICQoc2hlbGwgJChCT09UQ0MpIC1wcmludC1m
-aWxlLW5hbWU9aW5jbHVkZSkKIAogaWZkZWYgQ09ORklHX0NQVV9CSUdfRU5ESUFOCi1CT09UQ0ZM
-QUdTCSs9IC1tYmlnLWVuZGlhbgorQk9PVENPUkVGTEFHUwkrPSAtbWJpZy1lbmRpYW4KIGVsc2UK
-LUJPT1RDRkxBR1MJKz0gLW1saXR0bGUtZW5kaWFuCi1CT09UQ0ZMQUdTCSs9ICQoY2FsbCBjYy1v
-cHRpb24sLW1hYmk9ZWxmdjIpCitCT09UQ09SRUZMQUdTCSs9IC1tbGl0dGxlLWVuZGlhbgorQk9P
-VENPUkVGTEFHUwkrPSAkKGNhbGwgY2Mtb3B0aW9uLC1tYWJpPWVsZnYyKQogZW5kaWYKIAotQk9P
-VEFGTEFHUwk6PSAtRF9fQVNTRU1CTFlfXyAkKEJPT1RDRkxBR1MpIC1ub3N0ZGluYworQk9PVENG
-TEFHUyAgICA6PSAtV2FsbCAtV3VuZGVmIC1Xc3RyaWN0LXByb3RvdHlwZXMgLVduby10cmlncmFw
-aHMgXAorCQkgLWZuby1zdHJpY3QtYWxpYXNpbmcgLU8yIC1tc29mdC1mbG9hdCAtbW5vLWFsdGl2
-ZWMgLW1uby12c3ggXAorCQkgLXBpcGUgLWZvbWl0LWZyYW1lLXBvaW50ZXIgLWZuby1idWlsdGlu
-IC1mUElDIC1ub3N0ZGluYyBcCisJCSAtaW5jbHVkZSAkKHNyY3RyZWUpL2luY2x1ZGUvbGludXgv
-Y29tcGlsZXJfYXR0cmlidXRlcy5oIFwKKwkJICQoQk9PVENPUkVGTEFHUykKKworQk9PVEFGTEFH
-Uwk6PSAtRF9fQVNTRU1CTFlfXyAkKEJPT1RDT1JFRkxBR1MpIC1ub3N0ZGluYwogCiBCT09UQVJG
-TEFHUwk6PSAtY3JECiAK
---0000000000001a287705cbea846b--
+    Andrew
