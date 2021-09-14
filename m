@@ -2,166 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBE740B25E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A74340B263
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhINPAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:00:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234014AbhINPAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 850866113E;
-        Tue, 14 Sep 2021 14:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631631532;
-        bh=sO7K4nLD8Mc8xn5UOKFPrX2HuHh5LR3bGo163cAsds0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TuPr7CDZ2U59DvY4KHWGuvehlmcWjNymmIyLtQaAaj/NwxOHHRNQO1VVC+pBgARe8
-         Yxy43DJXh9XXc8cxch3+TK0OdCSoQjaupzvOTJncIEANBTmkPiyHjfbRMlR45k+c6Y
-         g1tli811VotLCkESNMjsSvXuof0EgR3Z3UcmQ2YXlueBLGAvDwJnU/QhsZRicMlTNZ
-         wmYxbK5u2dXZjd94Zx52ijl/ZMppJR21A2+Czo+oBtDMZ+jmzqW3diz2UiA9X+Qzu3
-         /gU7KTkp7c5iYkcPnoK1yIEby3iBvDfXPsKwtVVmzHAmt2K2g0xdGkBLtwmCrjmDRm
-         Kh9MVHTOTnCuQ==
-Received: by mail-oi1-f182.google.com with SMTP id y128so19391708oie.4;
-        Tue, 14 Sep 2021 07:58:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530mTXWoMgUMUERM0CLRR0M41gLnoPLuWmqCO2pZCJHNDoND1H+H
-        BsLPmZA9Wy8lpmr1xWjBz9lqSQDCDZN0Qx4HklA=
-X-Google-Smtp-Source: ABdhPJxVeTS/4JNRGwC903f+QhF2hSvwhyPj5Invrv2ftY17blLAru1BVfAfSs8MB5gXv2vQOjWBkLQJdnquJptLcZc=
-X-Received: by 2002:a05:6808:2193:: with SMTP id be19mr1741155oib.102.1631631531843;
- Tue, 14 Sep 2021 07:58:51 -0700 (PDT)
+        id S234014AbhINPCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:02:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34000 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhINPCO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:02:14 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631631656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wGBRmHV9K/M0F5ppDOKp+GVLwJxmlYjlIieCg77sEIs=;
+        b=i6zXfj1hGfaZEqgANktxkGbh4IjfyCDsOasfy5HpHdcvVUD6HwT6us2p5/KePzrmSxgQD7
+        tmqFPh2pxdAlI2sIJJ98TNtIWVoyMiDmYMzN5fZvBqQyxsFrqnloJrGJNVd829p1RdaLea
+        I++VIbp835LEiRGuafEqa14cXwbpjIyobOeltIGGYOkoIEAvLmgnzg7IZqgzVv3J4B30Tv
+        atFCr4hL462Ez57p1AiyEsXQcvlZ/SswQ1IZoMIzZ5jVSi4fJumsB95/8IzD/lVUeUjgHQ
+        qWoKLb1vNZb1FCoGRQqj77CWNnZdnTIXhl97/p7PpCCz/0MrDsOYKergrXHcIg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631631656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wGBRmHV9K/M0F5ppDOKp+GVLwJxmlYjlIieCg77sEIs=;
+        b=usbVLW4qSnYCxGogEAqh6bTxiRLYACwBtWZofJd+nQ5pfmeEcHqzy89uH4Cz7RjUx1cT5T
+        Ca2nkqmpfqWfymAw==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 3/4] locking/rwbase: Fix rwbase_write_lock() vs
+ __rwbase_read_lock()
+In-Reply-To: <YUCq3L+u44NDieEJ@hirez.programming.kicks-ass.net>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.893845303@infradead.org> <87k0jjeh2v.ffs@tglx>
+ <YUCq3L+u44NDieEJ@hirez.programming.kicks-ass.net>
+Date:   Tue, 14 Sep 2021 17:00:56 +0200
+Message-ID: <87sfy7b3rr.ffs@tglx>
 MIME-Version: 1.0
-References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
-In-Reply-To: <YUCvNzpyC091KeaJ@phenom.ffwll.local>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Tue, 14 Sep 2021 17:58:25 +0300
-X-Gmail-Original-Message-ID: <CAFCwf13WxpconckKoJOnsSGOaiqL=1RHMrpqOFVRcd2zm6iFmQ@mail.gmail.com>
-Message-ID: <CAFCwf13WxpconckKoJOnsSGOaiqL=1RHMrpqOFVRcd2zm6iFmQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-To:     Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>, dsinger@habana.ai
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 5:18 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Tue, Sep 14 2021 at 15:59, Peter Zijlstra wrote:
+> On Tue, Sep 14, 2021 at 09:45:12AM +0200, Thomas Gleixner wrote:
+>> The read/set is always in the same lock instance.
 >
-> On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > Hi,
-> > Re-sending this patch-set following the release of our user-space TPC
-> > compiler and runtime library.
-> >
-> > I would appreciate a review on this.
->
-> I think the big open we have is the entire revoke discussions. Having the
-> option to let dma-buf hang around which map to random local memory ranges,
-> without clear ownership link and a way to kill it sounds bad to me.
->
-Hi Daniel, thanks for the reply.
+> I really did make a mess of things didn't I :-/ It was some intermediate
+> state that was broken.
 
-What is this revocation requirement ?
-Is it relevant to my case, where our device has a single user at a
-time (only a single process can open the device character file) and
-that user has ownership of the entire device local memory ?
+Thinking about memory ordering can reorder your memory :)
 
-Because I don't care if the user has this dma-buf object lying around,
-as it only wastes device memory for that user. And the user can't
-close the fd of the device until it has closed the fd of the dmabuf.
+> How's this then?
+>
+> ---
+> Subject: locking/rwbase: Extract __rwbase_write_trylock()
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Thu, 09 Sep 2021 12:59:18 +0200
+>
+> The code in rwbase_write_lock() is a little non-obvious vs the
+> read+set 'trylock', extract the sequence into a helper function to
+> clarify the code.
+>
+> This also provides a single site to fix fast-path ordering.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Or is the revocation referring to something else entirely ?
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-> I think there's a few options:
-> - We require revoke support. But I've heard rdma really doesn't like that,
->   I guess because taking out an MR while holding the dma_resv_lock would
->   be an inversion, so can't be done. Jason, can you recap what exactly the
->   hold-up was again that makes this a no-go?
->
-> - The other option I discussed is a bit more the exlusive device ownership
->   model we've had for gpus in drm of the really old kind. Roughly this
->   would work like this, in terms of drm_device:
->   - Only the current owner (drm_master in current drm code, but should
->     probably rename that to drm_owner) is allowed to use the accel driver.
->     So all ioctl would fail if you're not drm_master.
->   - On dropmaster/file close we'd revoke as much as possible, e.g.
->     in-flight commands, mmaps, anything really that can be revoked.
->   - For non-revokable things like these dma-buf we'd keep a drm_master
->     reference around. This would prevent the next open to acquire
->     ownership rights, which at least prevents all the nasty potential
->     problems.
->   - admin (or well container orchestrator) then has responsibility to
->     shoot down all process until the problem goes away (i.e. until you hit
->     the one with the rdma MR which keeps the dma-buf alive)
->
-> - Not sure there's another reasonable way to do this without inviting some
->   problems once we get outside of the "single kernel instance per tenant"
->   use-case.
->
-> Wrt implementation there's the trouble of this reinventing a bunch of drm
-> stuff and concepts, but that's maybe for after we've figured out
-> semantics.
->
-> Also would be great if you have a pull request for the userspace runtime
-> that shows a bit how this all gets used and tied together. Or maybe some
-> pointers, since I guess retconning a PR in github is maybe a bit much.
-
-hmm.. so actually this has only an API in the hl-thunk library. I have
-not put it in github but I can do it fairly quickly.
-But the callee of this API is not the userspace runtime. The callee is
-another library which is responsible for doing scale-out of training
-outside of a box of gaudi devices. That library implements collective
-operations (e.g. all gather, all reduce) over multiple gaudi devices.
-And in fact, the real user is the training framework (e.g. tensorflow,
-pytorch) that calls these collective operations. The framework then
-passes the dmabuf fd to libfabric (open source project) which uses
-rdma-core to pass it to the rdma driver.
-
-I can give you a short presentation on that if you want :)
-
->
-> Cheers, Daniel
->
-> >
-> > Thanks,
-> > Oded
-> >
-> > Oded Gabbay (1):
-> >   habanalabs: define uAPI to export FD for DMA-BUF
-> >
-> > Tomer Tayar (1):
-> >   habanalabs: add support for dma-buf exporter
-> >
-> >  drivers/misc/habanalabs/Kconfig             |   1 +
-> >  drivers/misc/habanalabs/common/habanalabs.h |  22 +
-> >  drivers/misc/habanalabs/common/memory.c     | 522 +++++++++++++++++++-
-> >  drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
-> >  drivers/misc/habanalabs/goya/goya.c         |   1 +
-> >  include/uapi/misc/habanalabs.h              |  28 +-
-> >  6 files changed, 570 insertions(+), 5 deletions(-)
-> >
-> > --
-> > 2.17.1
-> >
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
