@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105FE40B714
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA2340B717
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhINSmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        id S230221AbhINSn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhINSmi (ORCPT
+        with ESMTP id S229869AbhINSn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:42:38 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05721C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:21 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id v2so4936361plp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:41:21 -0700 (PDT)
+        Tue, 14 Sep 2021 14:43:26 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E746C061574;
+        Tue, 14 Sep 2021 11:42:09 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id d21so14118395wra.12;
+        Tue, 14 Sep 2021 11:42:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CZGAmbkitZy1k/EbPG4VZaALR8mUJkwDAJ+dhwnEfWA=;
-        b=g0XsY+ZsxAS62v5OORPhKedEFaUPok0532gCaf35nYaW3Xo3uVIUpkYTkh/m8MKQX2
-         JHSZRACscofgKlXYLwjExoXqvFEnzJNwUIWqwcOpMXquEUg8MTGk/vSM+81+7UgkGEu0
-         Uky5wXvnhZFp+7zM0zZavFzxVBblL0+3EYUF1DYEd4bYo4BChp9xJj1Nn6fd2LP7AX+g
-         2xFSKik3Fudqeki7Latt8irjFQXjYitD10ov4ymGe/ZENZ+Q/ffw/fu/rgq2DFSj72rx
-         EVfrofp0tBcb6+a+Ok77h9Cf3ebzU3GILYloXI5gAZLvT6cidT4VOOOyKHZArylBqZWV
-         LiaA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/tAkEVveFRCNKrB9Q8J/MpncU1oa/2ziuig1e/Atj58=;
+        b=pKBxny78xL+Yy+YrisGKNVtF8G9VJGo1//nJXE0WWDo4oOyrbCRpMuIQ2dVBJHwuEV
+         vz73iwbm5T+Gq8tnfL70QJTi7Azewamt0lWiINm+sizLPXy/AagAeXjkYkVkxzNkXceK
+         UurUUmVQOnPFnR35u0DFseQakjk/WepL8pAwxEpC0YvrcYiTLPwI7FOYhN5LqpZ/YpPG
+         ZafzKHq1x58Cz0XXDAJyo+937kbvP4FouqAZF/bAuYdZXv1zUCsZ/iJE7XgSHX1bG0/D
+         pPFoqSP03Shxy0CFo67DJcd0epydscItG7XiLRCtVkPPwNA9P7oLpU4iViUANPu46OnR
+         Kb5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CZGAmbkitZy1k/EbPG4VZaALR8mUJkwDAJ+dhwnEfWA=;
-        b=26/XRWQ8p2E5sTQrVhPVB2ccmOqoPsnb/g9NKWA34BTRzjKZva8SaRQxx/ekKLBXPQ
-         BGKvVI6VrcSk8/9sM3T0k5+lkgy31R7yIItEfeCl2I+9YDCTiIdAKNMpmt6hO/lq2lAD
-         Q7Yv4t6Rei16Z7hAV5AUujIUguZLF+rTBC52OH1/AzqkBjKbyeQPQxHfj4ZdmBaRWTK2
-         Xhogsbq6a5Cf2acwodt4ZXInqUNt3AwqhLUlkquiHeH8Y8FqxvVqZSAvja0PaInfPpar
-         hSE7LaR+03gpv4DV1RlYPpR8nGIHhL5wc9B35uECm2TuOo3iJSFjKg386eNPZwLp0Snd
-         /jWA==
-X-Gm-Message-State: AOAM530yjriWoy2BUzgLD5lR5R6BHZQqiDkAaRONY0yG0toYmSOAiymh
-        H2E6QTjvujHGuWDrafDvtdc3EA==
-X-Google-Smtp-Source: ABdhPJxutQ1GMW+J5gbp3HNJ6JRYL68/SsneQ7S3VEv4paQ8J4o2b7kmJu3ktKmvsaWglWEAw6Kbkg==
-X-Received: by 2002:a17:902:c948:b0:13a:345c:917c with SMTP id i8-20020a170902c94800b0013a345c917cmr16428275pla.61.1631644880303;
-        Tue, 14 Sep 2021 11:41:20 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 23sm12220414pgk.89.2021.09.14.11.41.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/tAkEVveFRCNKrB9Q8J/MpncU1oa/2ziuig1e/Atj58=;
+        b=xxyjJNAb/SjdPJCt9B+jmJ++3r32BIxtXyYtpvL089mdB0U1gcyJfIZjwrNMD8R/Gh
+         E7eRC65rBZX9gR/08TkSW79M+ijSm4rslVik04lxSd809mblcUgaGsSHfBcd5ByfOF6y
+         ip+39Is9UtvcBw0rL/xdIbQXkQMAhw/DVVsMmSbMgotZ7wGjcE6X++6i7ezYvfNAbby/
+         ayBTfCafpzZyHDc987UzeQRYeCRYXxkZLLuNVYcJKHG7341Qw/tE5fWYfMvJN6yaBSix
+         CZnBh3lO2IQh78cB5ZqzTUxf1BE4sGaBeqSpMpkMYk0ExA5cCBJ8l00o77uy4MWi8Yp9
+         IJdg==
+X-Gm-Message-State: AOAM530DfxvxyUA+e7qvLoiBsZACfamVbRj8RAT577sf5EtmtlR7pdwB
+        ZiIoE1WlJqh7pbqlecolDVmnIaEAaLE=
+X-Google-Smtp-Source: ABdhPJwoCbjAGVYepjqO8nhhrZFroVZxKXsAti0UmIhzSWtLooNulTEu9rFco8glgMeDiMZHlm2SmA==
+X-Received: by 2002:a05:6000:160c:: with SMTP id u12mr696815wrb.100.1631644927292;
+        Tue, 14 Sep 2021 11:42:07 -0700 (PDT)
+Received: from debby ([2a01:e0a:a6d:a8d0:7ff4:8f61:5574:9f95])
+        by smtp.gmail.com with ESMTPSA id o26sm1890230wmc.17.2021.09.14.11.42.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 11:41:19 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 18:41:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Tempelman <natet@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
+        Tue, 14 Sep 2021 11:42:06 -0700 (PDT)
+From:   Romain Perier <romain.perier@gmail.com>
+To:     Daniel Palmer <daniel@0x0f.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for
- SEV-ES
-Message-ID: <YUDsy4W0/FeIEJDr@google.com>
-References: <20210914171551.3223715-1-pgonda@google.com>
- <YUDcvRB3/QOXSi8H@google.com>
- <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
+Subject: [PATCH v2 0/3] Add support for IDO-SBC2D06-V1B-22W
+Date:   Tue, 14 Sep 2021 20:41:38 +0200
+Message-Id: <20210914184141.32700-1-romain.perier@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--stable, for giggles
+IDO-SOM2D01 is an ultra-small SOM module based on SigmaStar SSD201/SSD202
+SoC (ARM Cortex A7 core). The module integrates WIFI, NAND and PM
+circuits on a PCB area of 2.95CM x 2.95CM. The SoC integrates 128 MB of
+DDR3 on-chip.
 
-On Tue, Sep 14, 2021, Peter Gonda wrote:
-> On Tue, Sep 14, 2021 at 11:32 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Tue, Sep 14, 2021, Peter Gonda wrote:
-> > > Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
-> > > VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
-> > > error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
-> > > SEV-ES guest.
-> >
-> > What happens if userspace does KVM_CAP_VM_COPY_ENC_CONTEXT_FROM before the source
-> > has created vCPUs, i.e. before it has done SEV_LAUNCH_FINISH?
-> 
-> That's not enough. If you wanted to be able to mirror SEV-ES you'd
-> also need to call LAUNCH_UPDATE_VMSA on the mirror's vCPUs before
-> SEV_LAUNCH_FINISH. That is do-able but I was writing a small change to
-> fix this bug. If mirroring of SEV-ES is wanted it's a much bigger
-> change.
+IDO-SBC2D06-V1B-22W is an dual-ethernet SBC powered by a IDO-SOM2D01,
+that embeds a MicroSD card slot, 4-lane MIPI DSI connector for 4-inch
+RGB565 display or 7-inch RGB888 display, Dual 10/100M Ethernet ports,
+and more.
 
-Is it doable without KVM updates?  If so, then outright rejection may not be the
-correct behavior.
+This series adds support for this SOM and this boards.
 
-> > Might be worth noting that the destination cannot be an SEV guest, and therefore
-> > can't be an SEV-ES guest either.
-> 
-> sev_guest() implies sev_es_guest() so I think this case is covered.
+Changes since v1:
+- Removed the commit that adds me as co-maintainer (merged)
+- Fixed alphabetic order in dt-bindings
+- Moved the commit that adds vendor prefix before adding the DT for the
+  board (re-ordered commits)
+- Removed unneeded space
 
-Yes, I was suggesting calling that out in the changelog so that readers/reviewers
-don't worry about that case.
+Romain Perier (3):
+  ARM: mstar: Mark timer with arm,cpu-registers-not-fw-configured
+  dt-bindings: add vendor prefix for Wireless Tag
+  ARM: dts: mstar: Add the Wireless Tag IDO-SBC2D06-V1B-22W
 
-> > Cc: stable@vger.kernel.org
+ .../devicetree/bindings/arm/mstar/mstar.yaml  |  2 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
+ arch/arm/boot/dts/Makefile                    |  1 +
+ .../dts/mstar-infinity2m-ssd201-som2d01.dtsi  | 20 +++++++++++++
+ ...sd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts | 23 +++++++++++++++
+ ...ity2m-ssd202d-wirelesstag-ido-som2d01.dtsi | 28 +++++++++++++++++++
+ arch/arm/boot/dts/mstar-v7.dtsi               |  1 +
+ 7 files changed, 77 insertions(+)
+ create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
+ create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
+ create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
 
-> Oops. I'll update in the V2 if needed. Added to this thread for now.
+-- 
+2.33.0
 
-FWIW, you don't actually need to Cc stable, just including it in the changelog is
-sufficient as the script automagic will pick it up when it hits Linus' tree.
