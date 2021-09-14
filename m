@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DD640B855
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1054540B85A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbhINTuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
+        id S233045AbhINTuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbhINTuC (ORCPT
+        with ESMTP id S232867AbhINTuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:50:02 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413A0C061574;
-        Tue, 14 Sep 2021 12:48:44 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id bd1so812099oib.5;
-        Tue, 14 Sep 2021 12:48:44 -0700 (PDT)
+        Tue, 14 Sep 2021 15:50:32 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEC0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:49:14 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so160451otq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:49:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F6PsShm2+LtRfF7zvUBuZb6sWSvD0FefZC4vf11za4g=;
-        b=ftEVYmXtzBqtgPMuCUQK92nlXhVyaFSoDT+bYIlkiiKIMvqDadH4mSO1dIERn4gEEd
-         +mCNnBQyYzd05jfVb6q5g36anr9co8J9dyiiABNwHw03o68G4BNeRVVNhDFroiB76Pgy
-         J9A7KrlRcXjhoqiXdv1Kacuqks5rjrufLzjT6YSXt1n6aKj5bd00EqSTswj2YCnmYyu8
-         bW7q4vl4/62EpYskk3Y/MHbVEmrMLV0C78/i7u8ArT7KrN2QqJXDvr2CfH53djfockAA
-         XLbEolIWFIhVJgWPc7g1czGR/DoQRyuLptt1gjUjQ0oOcr88ArF+pixVCFa3ZXU63rrw
-         e3hQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=v3c6E6MMQg7r5oBUq1m5l+3onlEbo8USrY7KqxJROCA=;
+        b=d82STJplqEDvwvwojrzgiDLySxHC1xT1ThA3Ss936NRBXycfFJuLyM8brNvGk8Q0BZ
+         RfBmUa9WgZiV5/lphxebcR9MMFlYTDzmZFqlnn1xZL+BdktpnYJhU6VO5vbPEWNE8pmP
+         0O+noFpedvkPblcENKaTnLBR08KFvN7bCh7tc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F6PsShm2+LtRfF7zvUBuZb6sWSvD0FefZC4vf11za4g=;
-        b=X2rAlUbI9We4jqvVuGtAvHM91aJXP1obmZ36N9Vz1WDZOgio4PWRzrOjENdjdpfwjL
-         ZGizX0iCnYqytnAJCXf5YNud3M2Tjq/6PV88/VESAauTmy9AYcSsX5sf2tPUHDpp0C2l
-         KFygTYKdKruE6PmaodkUteonhbV39zdif+eEiIFd88k8Ph8douah3V+i/eZtXsxinVPD
-         bACEvK/JRbTPbsMljfxZJxL3bRhEpzP7nX0aXM0t4eK+ii+5Rj8LqMvSz0wh+BagXxZ8
-         AljFZVvbflCP3Abj9IE/EyxSTdjRpNGc6mrm98ukSLGdvzGJHBgQafjqj3jFuWaQEf4+
-         btRg==
-X-Gm-Message-State: AOAM5333wBg64sndmJqyHbKDGkaufY6jatPIo7Ssj3QZLfWjWl16AS4E
-        mtV8Cw/Cv6ssahjW62ppKIRo5Imp0RPR8Nk+qAQ=
-X-Google-Smtp-Source: ABdhPJzmulVOve408+d4uWpQ3W0uTIjd3laX3vXZVJhsV8TXYBfwuMi48nlWry2DHtJD3C+p6c+qNZFmnxMn9erjRwc=
-X-Received: by 2002:aca:ab06:: with SMTP id u6mr2676900oie.120.1631648922227;
- Tue, 14 Sep 2021 12:48:42 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=v3c6E6MMQg7r5oBUq1m5l+3onlEbo8USrY7KqxJROCA=;
+        b=bKGVnwZBM+8o6mvuguBSfFVt5ZhSw7puS5lEfrOje7+HOCC99mvFGhPyQ6mGZheddo
+         zdUEE+gY7JtHKmTMU9//dBmwnJxOOfgGcV/PqK2hEG1RHhFZX3dtLVmC3hQSHde47lsV
+         zmp+NNmt4YXtCpRM6zvytBLUNqQjI+vJtYlfjXLtPvd60xKEG3Jsymk8/aGUV3wWzOz3
+         iKCTIMpx5Vn3hlEMfDt5nIvNazKVjtWAMKD6RsBukkLrFtblwP7/fi1Gf6W1BX+6C92k
+         AdsfMyF2lS2Dhd12XUGn0KE+ns/5KevEBe8ouzcolY29CJA48FIBMuBDezz6w24KaUA0
+         f2CQ==
+X-Gm-Message-State: AOAM533REr32TWEbirdVvGi9KK8QTEs8JwV3EVXb+RWklCOP4RDLSocv
+        O3q2EEIlA5k35GaftyygRJBedcjZhcaOPJswMRDFEg==
+X-Google-Smtp-Source: ABdhPJxmespo1Jy0mHteRtDveO8RQ+I+51B8KS7gLjSxy7Zo9ipn42budJZnsYHGhJ2GXe/Dp851pqDqSjKJs8/Nhqk=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr15731034otp.159.1631648953925;
+ Tue, 14 Sep 2021 12:49:13 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 14 Sep 2021 12:49:13 -0700
 MIME-Version: 1.0
-References: <20210907100302.3684453-1-ray.huang@amd.com> <5e365947-4ae1-47a0-7565-7f0cdde0bd84@amd.com>
-In-Reply-To: <5e365947-4ae1-47a0-7565-7f0cdde0bd84@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 14 Sep 2021 15:48:31 -0400
-Message-ID: <CADnq5_PXOXiob3k5Z+cZz6K2k5iSCdzwNm0ZxKQOuC+PvdJxxg@mail.gmail.com>
-Subject: Re: [PATCH] drm/ttm: fix the type mismatch error on sparc64
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Huang Rui <ray.huang@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        LKML <linux-kernel@vger.kernel.org>, sparclinux@vger.kernel.org
+In-Reply-To: <1631637901-11603-1-git-send-email-khsieh@codeaurora.org>
+References: <1631637901-11603-1-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 14 Sep 2021 12:49:13 -0700
+Message-ID: <CAE-0n50R1wfw=V7o19N20YOqSrRZKR7Zd4QLcRcjYQNsdf3QHg@mail.gmail.com>
+Subject: Re: [PATCH v4] phy: qcom-qmp: add support for display port voltage
+ and pre-emphasis swing
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        robdclark@gmail.com, robh+dt@kernel.org, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, p.zabel@pengutronix.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 6:25 AM Christian K=C3=B6nig <christian.koenig@amd.c=
-om> wrote:
+Quoting Kuogee Hsieh (2021-09-14 09:45:01)
+> Both voltage and pre-emphasis swing level are set during link training
+> negotiation between host and sink. There are totally four tables added.
+> A voltage swing table for both hbr and hbr1, a voltage table for both
+> hbr2 and hbr3, a pre-emphasis table for both hbr and hbr1 and a pre-emphasis
+> table for both hbr2 and hbr3. In addition, write 0x0a to TX_TX_POL_INV is
+> added to complete the sequence of configure dp phy base on HPG.
 >
-> Am 07.09.21 um 12:03 schrieb Huang Rui:
-> > __fls() on sparc64 return "int", but here it is expected as "unsigned
-> > long" (x86). It will cause the build errors because the warning becomes
-> > fatal while it is using sparc configuration. As suggested by Linus, it
-> > can use min_t instead of min to force the type as "unsigned int".
-> >
-> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Huang Rui <ray.huang@amd.com>
-> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> Chnages in v2:
+> -- revise commit test
+> -- add Fixes tag
+> -- replaced voltage_swing_cfg with voltage
+> -- replaced pre_emphasis_cfg with emphasis
+> -- delete drv_lvl_reg and emp_post_reg parameters from qcom_qmp_v4_phy_configure_dp_swing()
+> -- delete drv_lvl_reg and emp_post_reg parameters from qcom_qmp_phy_configure_dp_swing()
 >
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+> Changes in V3:
+> -- add __qcom_qmp_phy_configure_dp_swing() to commit swing/pre-emphasis level
+>
+> Changes in V4:
+> -- pass 2D array to __qcom_qmp_phy_configure_dp_swing()
+>
+> Fixes: aff188feb5e1 ("phy: qcom-qmp: add support for sm8250-usb3-dp phy")
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-Is one of you going to push this to drm-misc?
-
-Alex
-
->
-> > ---
-> >   drivers/gpu/drm/ttm/ttm_pool.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_p=
-ool.c
-> > index af1b41369626..c961a788b519 100644
-> > --- a/drivers/gpu/drm/ttm/ttm_pool.c
-> > +++ b/drivers/gpu/drm/ttm/ttm_pool.c
-> > @@ -382,7 +382,8 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct tt=
-m_tt *tt,
-> >       else
-> >               gfp_flags |=3D GFP_HIGHUSER;
-> >
-> > -     for (order =3D min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
-> > +     for (order =3D min_t(unsigned int, MAX_ORDER - 1, __fls(num_pages=
-));
-> > +          num_pages;
-> >            order =3D min_t(unsigned int, order, __fls(num_pages))) {
-> >               bool apply_caching =3D false;
-> >               struct ttm_pool_type *pt;
->
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
