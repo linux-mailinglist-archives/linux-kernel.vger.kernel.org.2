@@ -2,170 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18F940AE0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41FE40AE0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhINMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:42:48 -0400
-Received: from mail-bn8nam08on2046.outbound.protection.outlook.com ([40.107.100.46]:19392
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232800AbhINMmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:42:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JXZBBCKaah7ZBxRhxiKGIeBcWbk1gL3pzUET0SnnHOeLfqglreSbb2/6T8VxA1MAXpeGvKBE2BskoY38yRyeuzKxYc9HxwxGftc9yVbA3FZultxOtPFz2YymhiATk5HEiPK7jb6Qpy6Zn6CdprthAVoJQNLOu9V3oe+gMJxNFi/q+EX16MW7XxPb/tDTDp3+FG/43D4TfJ2mjeWfdxN6AQa4/Tnf4i4NFtoOsZjaWlSR6WUkzPZZYRL6gEdlb78wuOZfLLF6gmBj+W84SXcJ832ejOoL3T1wkvcIPqYpC1g+GpW2m1PA0xZluNEQEunCXVi+PjQS5Rj3rNFc8Hv1RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=1zZ0oGNc0kqgWdrGFmD/0Z8f973bbimjxLVn/zgMBXY=;
- b=DrWRTbRnjmyQ7yg4QUhxLm1NLgkaQxkao8344dGSvlHNBSTKPSpLris9D4BrbQVNf8+S8N50mctqyWnQLkz5/ROPrnU7DfBfTavILeo0sV9C9aM8mjJY9GR6SDFQejnC0DyjBxylBHVrkl41MjvYlnCshXCtTVVNMCVjSFYxEVkchAsiCodeiShumfgFv1a1KSuDAGFQuKdHi2JWkBktDt6pOcIYr80L1Kaf85eBwYkzUcTGzPzqKFyp10hC0S0EpQh+CNCVBQ0nyts7VUBTF/RRQUfR5jCmKLJ0iNqKrhtV4uu8U/yHNYPB+xaR6GOdtOVtig/MYk1Dpdw0H6JagA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1zZ0oGNc0kqgWdrGFmD/0Z8f973bbimjxLVn/zgMBXY=;
- b=L00j33Kfpvhi6mhBqknx8EHdVyr1gyF99C199ks4nnkpzBCKWac+AAJyziognCZL5Bbk839MBb0O0d11Z9kVs9JFmWzYR79MeSpJjCoDATScUjcL0v52cnkazZg19Hs7ZwrQTW/ApBI7QyloT2fUn3WxDT3vua15+7bS39U8onhzj+NT8EOUSgPiKe/e7UVJCTb6ZcDQCj31snCnX9MXAyxepLhGFy/m53r/OWHTINvh5eLckpv0vBivrji9aq45wvAQnnHGB0rhpis+vUTgP2ERya7fbiLEEBrHynI0Q4PEMQVNxTCGmBwaOKNREcfxp6Ta380gAOYOB14Vyi9/nA==
-Received: from DM5PR06CA0035.namprd06.prod.outlook.com (2603:10b6:3:5d::21) by
- SN1PR12MB2493.namprd12.prod.outlook.com (2603:10b6:802:2d::30) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4500.17; Tue, 14 Sep 2021 12:41:28 +0000
-Received: from DM6NAM11FT013.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:5d:cafe::71) by DM5PR06CA0035.outlook.office365.com
- (2603:10b6:3:5d::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Tue, 14 Sep 2021 12:41:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- DM6NAM11FT013.mail.protection.outlook.com (10.13.173.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 12:41:27 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 14 Sep
- 2021 12:41:27 +0000
-Received: from localhost (172.20.187.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 14 Sep 2021 12:41:26
- +0000
-Date:   Tue, 14 Sep 2021 15:41:23 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Mark Bloch <mbloch@nvidia.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        <netdev@vger.kernel.org>, Roi Dayan <roid@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>
-Subject: Re: [PATCH net-next] net/mlx5: Fix use of uninitialized variable in
- bridge.c
-Message-ID: <YUCYc7XkOVWS8h1F@unreal>
-References: <9e9eb5df93dbcba6faff199d71222785c1f1faf7.1631621485.git.leonro@nvidia.com>
+        id S232938AbhINMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232920AbhINMnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:43:12 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC966C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:41:54 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id s3so23556314ljp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4g2Wav+SkEq7UdYNbmRHcmC3tflY4E5NwVgSGxv7C8A=;
+        b=qOHx8aC8BMjVfANULofMofo+Gn7EYmEyRD60TzkLTAglNPJTgUY6AhDhJDlsuNmUVP
+         pXebtude00R9h0Np8DdVymybtPF6dYn5KcOfOMieN3ierydKjpSoQ3Ugm2L/Jv9GCMLG
+         r8sWnElZ+XaBahtw2lCd+4w85Iy0b0x6lklsk926EE3SUMXZRh5zKDz7x73nYKXUbAdt
+         oUkOddNJ6tJ15SieBfeBTGwdRHmoLxSp4LsdwD0hLo29Eze7Zk9SCmSoncJ0PNmbWJNq
+         D0tjsH/QLcoS5vJdmTG4hztbNWnUBcOI1chBAFAO1tfCQvTAr+hRZNi1yBv838898FJr
+         D/6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4g2Wav+SkEq7UdYNbmRHcmC3tflY4E5NwVgSGxv7C8A=;
+        b=5N2hrDqdITwFpCYklvIOs/IFINdru+PONcRslzU/JbA+nhs8ceWPny+5rTpH73Yq2J
+         WHUTdDU9XuQcX3pHKNoYZYK6F1Ryaf1j0+pbn2l/ZCAjm/7k8ywjachcQaIZbMSMXenU
+         FbwmxfneDbwTZta6LiZOwxN/B6m45H97ia5bjoqMomoUuAUf/SEnIBciT5lOrtqWe+xw
+         egS5ZTp7YD1Nm+c3/+iF4hoCfXydui5k9lVhmQGPcXanWkYL+7NnYSCDA/0O/EQtK4K6
+         xcLWLKHSC8OD4RUEqW4/CIZA6dPDg/15MesnZ8VonX4sMfOah8DeghInTFhviGx3Hn0s
+         MXMg==
+X-Gm-Message-State: AOAM5305ZrNDdQTnKBcOs2IPfeTnm2SgW3UpRv0Z39x+VGDRPoHWw9Ra
+        VY1SFrXvBUGbvP16YjWYF6og5GKFhhN88rxYWdKEPNx0mFdBrVNx
+X-Google-Smtp-Source: ABdhPJyCVc4mtRLHkSZpQgUbb2SW4fU+QPB5ugjn5OXSRgz/bPNeaI6YI6JPobEK5J+coeywBE3QAPCg1vCCKPGdf5E=
+X-Received: by 2002:a05:651c:1505:: with SMTP id e5mr15210748ljf.9.1631623312789;
+ Tue, 14 Sep 2021 05:41:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9e9eb5df93dbcba6faff199d71222785c1f1faf7.1631621485.git.leonro@nvidia.com>
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 62b209ff-3adc-47d3-cfaa-08d9777cf883
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2493:
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2493D6F9F81831A6C101845CBDDA9@SN1PR12MB2493.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rvr1mxyXafwHx9c/V6CRX8DGzXcVdLx5uzlinLPuyWQxhnptvDeGrWbNY/JheBOkJWYnN97UniMzZgARLCJgwo8fAaqEUyb8r6kWnWoZsdRlcOUH/d4DQhQoHj//KhayiQyCAhGbPgtr3otJFc5WuRorZxw5D23mKqkB1dQVuWx61p90YjQIwVliDKMD+u19Al7Wnfvgu4OeEbfYDbQNsm3YbhHBalw5tGh6yf3P3WTwEGQzK+qZcnQd59nM4b8O+M4W3KdmMkPekw7/bk8ipBkkiN2rfdyzbdE+698y1/ytTF8go/n8th0DoVyVIJFmsls22alnDMPxC/Q0lUzRFv4z7pUcwfDhmQVn66T0zcN83/iaBuPGxj586HzqhNZAq2KMdckdsjjyvrDugiKFFCgwq3oAkukO1uyF0ld/8gPjufTgiB682dvlGvGRY/2hPJIKcFMnviTC0Y9Vi/4adNlTxVyGH4ZvAy5vGRj+sqdYIahyButO9LdUPz2jFbqtFm+CKBp6U2iCkOfXZ5R6Qhuzj30xUOXG55B16xu7Lzh7xyHXk1KCj8lYxjU81F3UqeQW4YNPhp0Ut3Es/LL8aOcBMZCHVnauNzgaCXjVmLZJmQ3vGn47AhtgFfJQ8p9OtgmQLkKzXDL3Crt1MfZ0Mokal+csKiHw37dCrHPnMj3yx9d1qKhIFEU8IgEIqbsof5SDtpCEONWN4IqcmwgNYWqPbfjCWOsli2o2LfQYYXD+QSedLS3WR+wz0EMNgpNqPkrzbgKM5pdnAa2JKqBZE1BnPkGqR3Thg51oz++9x9Q=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(39860400002)(396003)(136003)(376002)(346002)(46966006)(36840700001)(36860700001)(82740400003)(6636002)(9686003)(356005)(36906005)(336012)(426003)(316002)(86362001)(6666004)(966005)(7636003)(8936002)(2906002)(70586007)(70206006)(478600001)(26005)(4326008)(16526019)(47076005)(107886003)(54906003)(83380400001)(110136005)(5660300002)(8676002)(33716001)(186003)(82310400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 12:41:27.7584
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62b209ff-3adc-47d3-cfaa-08d9777cf883
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT013.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2493
+References: <20210910130337.2025426-1-osk@google.com> <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
+ <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com> <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net>
+In-Reply-To: <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net>
+From:   Oskar Senft <osk@google.com>
+Date:   Tue, 14 Sep 2021 08:41:36 -0400
+Message-ID: <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 03:12:47PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Rewrite the code to fix the following compilation warnings that were
-> discovered once Linus enabled -Werror flag.
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:11: error:
-> variable 'err' is used uninitialized whenever 'if' condition is false
-> [-Werror,-Wsometimes-uninitialized]
->         else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
->                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:164:9: note:
-> uninitialized use occurs here
->         return err;
->                ^~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:7: note:
-> remove the 'if' if its condition is always true
->         else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
->              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:140:9: note:
-> initialize the variable 'err' to silence this warning
->         int err;
->                ^
->                 = 0
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:262:7: error:
-> variable 'err' is used uninitialized whenever switch case is taken
-> [-Werror,-Wsometimes-uninitialized]
->         case SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS:
->              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
-> uninitialized use occurs here
->         return err;
->                ^~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:7: error:
-> variable 'err' is used uninitialized whenever 'if' condition is false
-> [-Werror,-Wsometimes-uninitialized]
->                 if (attr->u.brport_flags.mask & ~(BR_LEARNING |
-> BR_FLOOD | BR_MCAST_FLOOD)) {
-> 
-> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
-> uninitialized use occurs here
->         return err;
->                ^~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:3: note:
-> remove the 'if' if its condition is always true
->                 if (attr->u.brport_flags.mask & ~(BR_LEARNING |
-> BR_FLOOD | BR_MCAST_FLOOD)) {
-> 
-> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:247:9: note:
-> initialize the variable 'err' to silence this warning
->         int err;
->                ^
->                 = 0
-> 3 errors generated.
-> 
-> Fixes: ff9b7521468b ("net/mlx5: Bridge, support LAG")
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  .../mellanox/mlx5/core/en/rep/bridge.c        | 36 +++++++++++--------
->  1 file changed, 22 insertions(+), 14 deletions(-)
+Hi Guenter
 
-Vlad pointed to me that similar patch was already accepted.
-https://patchwork.kernel.org/project/netdevbpf/patch/20210907212420.28529-2-saeed@kernel.org/
+> https://lore.kernel.org/linux-hwmon/cover.1631021349.git.krzysztof.adamski@nokia.com/
+>
+> That specifically includes the ability to enable or disable channels
+> using the standard 'status' property. While that series is primarily
+> for the n-factor property supported by the tmp421, the same approach
+> can be used for [temperature] sensor properties on other chips as well.
 
-Can we please expedite the fix to Linus so our other branches (RDMA e.t.c)
-that are based on pure -rcX from Linus will be compilation error free? 
+Good pointer! I should be able to replicate that for the LTD (@0) and
+RTDs (1, 2, 3) in a similar way.
+
+> I put [temperature] in [] because we'd need to find a means to express
+> if the sub-nodes are for temperature, voltage, or something else, but
+> I think the basic principle is sound.
+Following the example from tmp421, this could then be like this:
+
+i2c {
+    #address-cells = <1>;
+    #size-cells = <0>;
+
+    nct7802@28 {
+        compatible = "nuvoton,nct7802";
+        reg = <0x28>;
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        /* LTD */
+        input@0 {
+            reg = <0x0>;
+            status = "okay";
+            /* No "mode" attribute here*/
+            label = "local temp";
+        };
+
+        /* RTD1 */
+        input@1 {
+            reg = <0x1>;
+            mode = <0x2>; /* 3904 transistor */
+            label = "voltage mode";
+        };
+
+        input@2 {
+            reg = <0x2>;
+            mode = <0x4>; /* thermistor */
+            label = "thermistor mode";
+        };
+
+        /* RTD3 */
+        input@3 {
+            reg = <0x3>;
+            mode = <0x3>; /* thermal diode */
+            label = "current mode";
+            status = "disabled";
+        };
+    };
+};
+
+I noticed that "nct7802_temp_is_visible" only allows the temperature
+sensor to be visible for current and thermistor but not voltage. Is
+that right?
+
+Before I go and change the driver further, I'd like to make sure we
+agree on the interface.
+
+Also: Is nct7802_temp_is_visible called again after temp_type_store
+was called (I didn't try it)?
 
 Thanks
+Oskar.
