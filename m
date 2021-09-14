@@ -2,122 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABF240AB74
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3282B40AB77
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhINKMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhINKMX (ORCPT
+        id S231339AbhINKO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:14:57 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:34109 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229968AbhINKOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:12:23 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61195C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:11:04 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 18so11678202pfh.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=v+HvihQ88+3rcrBO8y3dqOMl+9UvluYXt6seefmUvYA=;
-        b=RjQsLf+0TEnI9r2RX1x0HCA8NKb87k4SaGuuP3EqDGJggSvrCbKas5yRUoEHWo4KpI
-         fmBAQOJNht4PKXoTqiok9yU9P1gGgaRN4toMjTKNkI/bHrqZIIHe1LQdoZtu5UaGLjD7
-         1aRV9DkhMZERHqECNki1jZl0uT4fLY+pmOQYuVYQZJJacEjleCklPy5ObJtYIKtWfI1u
-         BTlLE9SzPI+4QEq3/jX/fZ9N47sFlZaZJkfn2a3dqqZftbCgzyIvErLomvHALh1ylNU/
-         BpXOSFLlOmVZz+U4Wh4qoFEVA/4eA7p4LsJ4sR1NnMAKS7PmmwpIn4lY23Yupka21S1k
-         1Plw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=v+HvihQ88+3rcrBO8y3dqOMl+9UvluYXt6seefmUvYA=;
-        b=uHHb5KYc3Wyjqsmbq6GKJ/2UJfWR434mz8TISxH+LBHD7j+8V66wDzIm0+C+WSZWj3
-         Tv1niXDQT7L+o4WcSz9AeeIqPmQYHpkKkYdKqfgDmMAC9aWqgFXIG1wGI1PzIdvlgzXS
-         QbA3x1Wmwf2pmEZxEl2bn9P699N4YQxrFzbkDhrodKmDb/dfginTt1ovyqc3YTYJgey7
-         9Qn2ZMTc4vZXmcncYwFqiFlW/EkJOKHnYsHJYrCctLwqpJqtWvqKXmYDUEfhwYZJ7hTz
-         GBsorpZJREEYJlefUwth1YbZrEhBbIk3RvMuxC3scP+ap3+R8OVYFsl0K7+LXhSNDxwd
-         yvsQ==
-X-Gm-Message-State: AOAM533Pdb+D0f+TKxGjrMs/n214MpSPo1wxD/usk7qFCa0JTf26XNq9
-        n+NE0NzYhRWDmnabP0T4XM8WQPj2BNk=
-X-Google-Smtp-Source: ABdhPJzavhsobzYlsMLGf676R+ltWlrPwA3WT7aJpIVN07+WHfesgcCuVQukRiO8xyOOdsRYHa30Qw==
-X-Received: by 2002:aa7:8014:0:b029:3cd:b6f3:5dd6 with SMTP id j20-20020aa780140000b02903cdb6f35dd6mr4042791pfi.39.1631614263608;
-        Tue, 14 Sep 2021 03:11:03 -0700 (PDT)
-Received: from [10.102.0.6] ([85.203.23.52])
-        by smtp.gmail.com with ESMTPSA id s26sm9668465pfw.5.2021.09.14.03.11.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 03:11:03 -0700 (PDT)
-Subject: Re: [BUG] android: possible ABBA deadlock in print_binder_proc() and
- binder_get_txn_from_and_acq_inner()
-To:     Todd Kjos <tkjos@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, arve@android.com,
-        tkjos@android.com, maco@android.com, joel@joelfernandes.org,
-        christian@brauner.io, hridya@google.com, surenb@google.com,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <303401d0-25c9-d04b-e96d-3ca2aa0a616d@gmail.com>
- <CAHRSSEy9cYk2cUSQku5fsOjBErj9eEhMuMDQP8SJPJU9UhNOPw@mail.gmail.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <37c6a84a-77ee-449b-a83b-59e378242fcb@gmail.com>
-Date:   Tue, 14 Sep 2021 18:10:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 14 Sep 2021 06:14:50 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 2394F2B012D2;
+        Tue, 14 Sep 2021 06:13:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 14 Sep 2021 06:13:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=oBkNfwyFzUbtgbbxm3sHHN53g0U
+        wRCANpiEbWwktEsI=; b=1saxKCPQGLyQ9IO2OCEV6o2kPTwXjd3vIQWapzf+fgb
+        UrZX1Z31cJBJH3O0CvzaCg/tJkaEdV+0R6lk0cYA+rZfyc2qOpIvEh3+XHu1Pos+
+        fvkJVg+kT7eusAULpNBvxiQsVXYmOxgrNSR1RZjT09LjCZKSxUYtOQEKYtKJvJ4a
+        yQOReC6tqf+5wImhT4ZO6iJpNzHiELkq6QJ+xafntOwLx5XeIPlQRcKeCMM09t5o
+        njLYtmJXMM7j04HxnUnrGh3ytwZ0Wu7yqjMgcJpqtCzKrr9Fn3sCorKJJqakz015
+        W5ZMOobvkDQK2RjyHOfwZVkFRgwFN6ez+3sU9Z8aL/Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=oBkNfw
+        yFzUbtgbbxm3sHHN53g0UwRCANpiEbWwktEsI=; b=fMXTe22TPUjVB0nQGW/3a8
+        CIVrrOSnSNZOEcSpfwA8vNQubDmNMKhzvpLEeS71tvXMf/EwQoKLZ7ItUhGCW1tS
+        G8KQrpTPC8gkugyxfY2EFx4ldevGSRS0toLemois9zOzY/oHXesYC4squj9fGWIR
+        4rwM6m3sLmQ1gJ5Q/DEDayWghxTyfyL8HXvP+PRk+axI5cE9TXh2erkAcDUk8tOV
+        t+NUaonwkCTGXimxrQkDXaqNQzfsRgEiviuRQBZAvciS1g2+14UbaafZPthI3jlf
+        XSmgBKf5YhPb6QFZ3mBlD+cqdlTupVo6whS4uulpG5CddzMheuY2fHNN31RpyPrQ
+        ==
+X-ME-Sender: <xms:yXVAYbAM0iwHcxani78TfepPJ6irhUYyuxp0qLWL-Ja_IGRcCW7xNw>
+    <xme:yXVAYRijC2fVqg7QhatKutOfgIDCUbzsuEryoPb3NqepWou-Z24MdN1sbyhvkxBJ1
+    48vSx45vj-80PHyR88>
+X-ME-Received: <xmr:yXVAYWlZ_HWSTrWyPik46VRYoL27Q-2-6wfjJ2oeDClJCioBsWZ5e0fm0MY2pq-fXcWMiMirsPxU-JzI6rvv1QpF-FWH9Jx8Zyiu>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:yXVAYdzTdbRlpEDy3hE0K7RDUO3DnmSX2VlgiwnJ4G0nmVURW4B6iQ>
+    <xmx:yXVAYQShlgXeh0lvaJGEFaIren79h9upkTV4D44J3yIM1WdtR9Ds3g>
+    <xmx:yXVAYQbDYh4Xry2PetppjAx-z-khpXo8-u4k1GzxE4xpInri6PeZFg>
+    <xmx:y3VAYZTbrtyLiJeLzEM8XDa0LznC8y4g5sNdg7YjpkgjASH5p-q_8jU_yYU>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Sep 2021 06:13:29 -0400 (EDT)
+Date:   Tue, 14 Sep 2021 12:13:27 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Christoph =?utf-8?Q?M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        philipp.tomsich@vrull.eu, Christoph Hellwig <hch@lst.de>,
+        liush <liush@allwinnertech.com>, wefu@redhat.com,
+        Wei Wu =?utf-8?B?KOWQtOS8nyk=?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [RFC PATCH V4 6/6] riscv: soc: Add Allwinner SoC kconfig option
+Message-ID: <20210914101327.47baun6mop3mc56j@gilmour>
+References: <20210911092139.79607-1-guoren@kernel.org>
+ <20210911092139.79607-7-guoren@kernel.org>
+ <20210913084520.kkbsupogkzv226x3@gilmour>
+ <CAJF2gTT_8VLTt0B=LxXAPWVpHaBaVxy+V0rGCjr7JZyRiO7LfQ@mail.gmail.com>
+ <d2ac3da8-f4d5-52c1-da7f-f8260a0bb604@infradead.org>
+ <CAJF2gTTVj2J6_rCXAG81PB3vJZO2TTwpD03vAE2q+K=9zh_TzQ@mail.gmail.com>
+ <CAK8P3a1TY+XT1vF=wAh0XA5BXU5Z6Ab1d4DekXbVsN9aj3aL5w@mail.gmail.com>
+ <CAJKOXPdH0C0CJe_oxZ2rG1UeE5G9w2mh2Thh8LynpNHQk2g1qA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHRSSEy9cYk2cUSQku5fsOjBErj9eEhMuMDQP8SJPJU9UhNOPw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bilmfgj3f2ue6b6g"
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPdH0C0CJe_oxZ2rG1UeE5G9w2mh2Thh8LynpNHQk2g1qA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the reply :)
 
-On 2021/9/8 3:29, Todd Kjos wrote:
-> On Mon, Sep 6, 2021 at 7:30 PM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
->> Hello,
->>
->> My static analysis tool reports a possible ABBA deadlock in the android
->> driver in Linux 5.10:
->>
->> print_binder_proc()
->>     binder_inner_proc_lock()
->>       _binder_inner_proc_lock()
->>         spin_lock(&proc->inner_lock); --> Line 662 (Lock A)
->>     print_binder_thread_ilocked()
->>       print_binder_transaction_ilocked()
->>         spin_lock(&t->lock); --> Line 5531 (Lock B)
->>
->> binder_get_txn_from_and_acq_inner()
->>     binder_get_txn_from()
->>       spin_lock(&t->lock); --> Line 1833 (Lock B)
->>     binder_inner_proc_lock()
->>       _binder_inner_proc_lock()
->>         spin_lock(&proc->inner_lock); --> Line 662 (Lock A)
-> Hmm. What kernel version are you looking at? These line numbers don't
-> match what I see in mainline.
+--bilmfgj3f2ue6b6g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Linux 5.10
+On Tue, Sep 14, 2021 at 12:07:08PM +0200, Krzysztof Kozlowski wrote:
+> On Tue, 14 Sept 2021 at 11:31, Arnd Bergmann <arnd@arndb.de> wrote:
+> > Some subsystem maintainers want drivers to be selected by the SoC
+> > option, this is why you need the 'select SIFIVE_PLIC', but usually
+> > the drivers are selectable with a 'depends on ARCH_SUNXI ||
+> > COMPILE_TEST' and enabled in the defconfig.
+>=20
+> I would say selecting drivers is even more useful for distros and
+> other downstream users. Especially in the ARM world where we have so
+> many different SoCs - how could a distro person know which driver is
+> necessary, important or useful? Having all main SoC drivers enabled
+> when ARCH_SUNXI=3Dy, helps distro a lot.
 
-> Also, the sequence for
-> binder_get_txn_from_and_acq_inner() looks like this for me:
->
-> binder_get_txn_from_and_acq_inner()
->      binder_get_txn_from()
->        spin_lock(&t->lock); --> Line 1427 (Lock B)
->        spin_unlock(&t->lock); --> Line 1431 (Lock B)
->      binder_inner_proc_lock()
->        _binder_inner_proc_lock()
->           spin_lock(&proc->inner_lock); --> Line 256 (Lock A)
->
-> Which doesn't have the deadlock hazard.
->
+Imply, maybe, but select is far too painful for everyone else.
 
-Yes, you are right.
-My static tool has several errors in the implementation, and thus 
-reported this false positive, sorry...
+> > If you want to get fancy, you can use something like:
+> >
+> > config RESET_SUNXI
+> >         bool "Allwinner SoCs Reset Driver" if COMPILE_TEST && !ARCH_SUN=
+XI
+> >         default ARCH_SUNXI
+> >
+> > This will make an option that
+> >  - always enabled when the platform is built-in
+> >  - user selectable when compile-testing for any other platform
+> >  - always disabled otherwise
+>=20
+> +1 for this pattern.
 
+Yeah, or a default
 
-Best wishes,
-Jia-Ju Bai
+Maxime
+
+--bilmfgj3f2ue6b6g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUB1xwAKCRDj7w1vZxhR
+xaW4AQCjA2HZIq35rcUZ4xRg5zpPUX/IlJenhzSsJVR4kVhhUgD/Qfn9Rkd94UgU
+C0UYsWax+a1VpEmYSy5tBJAotQXQvQw=
+=u+RQ
+-----END PGP SIGNATURE-----
+
+--bilmfgj3f2ue6b6g--
