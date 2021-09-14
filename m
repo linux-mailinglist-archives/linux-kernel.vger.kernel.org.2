@@ -2,107 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC5140A988
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B206440A990
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhINIqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42070 "EHLO
+        id S231164AbhINIsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhINIqn (ORCPT
+        with ESMTP id S229993AbhINIsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:46:43 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8095DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:45:26 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id u4so10716310qta.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:45:26 -0700 (PDT)
+        Tue, 14 Sep 2021 04:48:04 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C82C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:46:47 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g1so15712987lfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iK9P8vIFFT9oL8kQTe19y5v8KSqHawUgdc7tgu6jnMk=;
-        b=Cvn9Hen1/zE/gCFNdbOMTSnCeR6Aaqfbmqxiwpzv7qfd+HzLbclvWSoFLy7wrbgTvN
-         NHoUf1vWsKtIlAcIz8r9ZxQbR7l8T5lbAtczKvCpz+1zGAuKERCwBVPdRTK8OKSyUwdk
-         FjMAXQ1I8T8JmOjhkX0l+QcQ5LWaNvrQD2T/Y=
+        bh=eVzLRyZ3tBwfIZJDoSWz5b2CGnpJiF+Z+OzXkxGBCw4=;
+        b=OO9EPfJNQ3b9uewCALjYNiE7OZqBh2usZHNHDb4AmegN8WvQGSXJO/R7sZ/8a5pgyb
+         d2n3lbLz08LMc/i84hp8tf6yTc4UvZxc53G8GmKeIrJbdUlke6oXdUXsFpjwIyTfyvzj
+         w66g80TPLWK667kEI0QExQ7peZSgJWsoCwzDsk2v1k38v3SebWVo+RMx6Oi7U1GFoHXF
+         FKH7wWGx4l9Q7A5yDnsrYml/RcE5SiPuFNKnRTrbr8Kg2dSxCRUm5SjobDzCxX1hBmd0
+         nnohyK6IUGBgrPtHpOsOsiIosbQpTvqreFI9766jWvnV4h1t0S+VugjQELDaJ1G3a9lE
+         vyqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iK9P8vIFFT9oL8kQTe19y5v8KSqHawUgdc7tgu6jnMk=;
-        b=qWrvJ8uLlNY8I7qf1mfadsEMV0Ij/U6kJrUjPhF84XsGSbQDfwzoQhMLbtZ7T+pwR4
-         KMcq06+1j43zpK1gF+Cgf9MoA6TcagnwlaPC0Vt61bq9cqJC9LgEb2ydIN8iDiA7NPl0
-         gp9j05qnbppUuxwGKZCQWovPlncaR5LdUe70Lbbm9guuuLJcHwb0Kvg3u/OeSFSOTLEl
-         4Ljl+qZafUq2BknzRUDt3WcUDu5oR8Sf57NABE8A2Amb4960uVLCl5skn/wsnzd+bzyo
-         yata/MhSaKnfryP7TovaFru1kCFJKbcR5jGu6VwKzQKdVutkCIBLKMVYy1K9PyqGqpZC
-         G9lw==
-X-Gm-Message-State: AOAM531rNn/4Z3NWCa5gYn/jKw/4ki7JrFC4OM6DP4nE0xhOD8lM0dG/
-        ZtxjNyC1txu1QLmRtD2J43rxfpzi405s1JY8j78=
-X-Google-Smtp-Source: ABdhPJwCWePNRUMT/Z0Tlj9D9n6UOcZX8cM3kXTZaf8wa4u/vSDJ52fustyWsztQJwELkActhXZKT85BQMHRjNmGVZQ=
-X-Received: by 2002:ac8:7dca:: with SMTP id c10mr3452405qte.259.1631609125669;
- Tue, 14 Sep 2021 01:45:25 -0700 (PDT)
+        bh=eVzLRyZ3tBwfIZJDoSWz5b2CGnpJiF+Z+OzXkxGBCw4=;
+        b=W9msj/DUS22ezbhM7dccI9L9NtUq0l78JWFvmI9fKwUulJMuPeW1fU6t+xXIOseuV6
+         Rsr3Oj1CaWFNGHZEB15ROwwAUbJkFqiG5g35J56uDmsL/CszVt7OBNz31GU95g7QHBrz
+         ois2tEMYfAtIvZ6VI5GV8T5yDVrnMnxBv0OjKlSAjAneqLPW8PUy7WXqjkUCkeNR328Z
+         d8YVTOrEC0eU1zKQHYkLcQ/HCBgty+Gdpvmrj1TYfRVB9itRCVgqgPeG9yVQYFFJJcMT
+         aoolEc5cvrmsKoWtj3it9kfcGNtRpzuXijspiMG4zfM453bGd71LW1X3Dj2pJSHY7Vl0
+         pMcw==
+X-Gm-Message-State: AOAM532xjXwvr2lWshFB0qI3dofO8+4edJEFgPLJNIXVvNt4YdFyCgy+
+        1FkREWs63zVCcjE7WeIZbMA6mwT9zSzxU9OYJZv5rA==
+X-Google-Smtp-Source: ABdhPJwm9Fa9t2awLScwmm/nxMarRLpP1y2ulQKwDEAW/KOHXQNaF25SwzxOyLxH0cQ8F+bKTo/fLEvEYpvS+Pjy5Bc=
+X-Received: by 2002:ac2:58d8:: with SMTP id u24mr12374452lfo.167.1631609205456;
+ Tue, 14 Sep 2021 01:46:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819055227.140980-1-liuxiwei@inspur.com> <CANFuQ7A5jLXftmfLn_W93MuDF8heL88BPQRL_rkYk+bj0_Db0w@mail.gmail.com>
-In-Reply-To: <CANFuQ7A5jLXftmfLn_W93MuDF8heL88BPQRL_rkYk+bj0_Db0w@mail.gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 14 Sep 2021 08:45:13 +0000
-Message-ID: <CACPK8XfbJbU8zPzTri3o+zbSf82iUuGUXmFL5TwsdPHKLnTNTQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: fp5280g2: Enable KCS 3 for MCTP binding
-To:     George Liu <liuxiwei1013@gmail.com>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        George Liu <liuxiwei@inspur.com>
+References: <20210908013218.29702-1-wenbin.mei@mediatek.com> <20210908013218.29702-3-wenbin.mei@mediatek.com>
+In-Reply-To: <20210908013218.29702-3-wenbin.mei@mediatek.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 14 Sep 2021 10:46:09 +0200
+Message-ID: <CAPDyKFqTx3wMm6mMy-wY892Nvu-ukqpRS=TSZxYr7e3TJWgF4A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mmc: mediatek: Add HS400 online tuning support
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 08:16, George Liu <liuxiwei1013@gmail.com> wrote:
+On Wed, 8 Sept 2021 at 03:32, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
 >
-> Hey Joel:
-> do you have any comments at this patch?
+> Due to the influence of the corner IC and vcore voltage, for the stability
+> of HS400 mode, we Add HS400 mode online tuning support for mediatek mmc
+> host.
+
+My apologies, but I am not familiar with what 'HS400 online tuning'
+is? Can you please elaborate on this?
+
+Is it specific for a Mediatek eMMC controller - or is a common eMMC
+feature that is described in the eMMC spec?
+
 >
-> Thx -- George Liu
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> Reviewed-by: Chaotian Jing <chaotian.jing@mediatek.com>
+> ---
+>  drivers/mmc/core/mmc.c    |   8 +++
+>  drivers/mmc/host/mtk-sd.c | 118 +++++++++++++++++++++++++++++++++++++-
+>  include/linux/mmc/host.h  |   3 +
+
+Please split this patch into a core patch and a mtk-sd patch.
+
+>  3 files changed, 127 insertions(+), 2 deletions(-)
 >
-> On Thu, Aug 19, 2021 at 1:52 PM George Liu <liuxiwei1013@gmail.com> wrote:
-> >
-> > Signed-off-by: George Liu <liuxiwei@inspur.com>
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> index 838726b68ff3..0aa72acd8612 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -1222,6 +1222,14 @@ static int mmc_select_hs400(struct mmc_card *card)
+>         mmc_set_timing(host, MMC_TIMING_MMC_HS400);
+>         mmc_set_bus_speed(card);
+>
+> +       if (host->ops->execute_hs400_tuning) {
+> +               mmc_retune_disable(host);
+> +               err = host->ops->execute_hs400_tuning(host, card);
+> +               mmc_retune_enable(host);
+> +               if (err)
+> +                       goto out_err;
+> +       }
+> +
+>         if (host->ops->hs400_complete)
+>                 host->ops->hs400_complete(host);
+>
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index 4dfc246c5f95..484f5c38bfaf 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -258,6 +258,7 @@
+>  #define MSDC_PAD_TUNE_RD_SEL     (0x1 << 13)   /* RW */
+>  #define MSDC_PAD_TUNE_CMD_SEL    (0x1 << 21)   /* RW */
+>
+> +#define PAD_DS_TUNE_DLY_SEL       (0x1 << 0)   /* RW */
+>  #define PAD_DS_TUNE_DLY1         (0x1f << 2)   /* RW */
+>  #define PAD_DS_TUNE_DLY2         (0x1f << 7)   /* RW */
+>  #define PAD_DS_TUNE_DLY3         (0x1f << 12)  /* RW */
+> @@ -301,6 +302,11 @@
+>  #define PAD_CMD_RD_RXDLY_SEL    (0x1 << 11)     /* RW */
+>  #define PAD_CMD_TX_DLY          (0x1f << 12)    /* RW */
+>
+> +/* EMMC50_PAD_DS_TUNE mask */
+> +#define PAD_DS_DLY_SEL         (0x1 << 16)     /* RW */
+> +#define PAD_DS_DLY1            (0x1f << 10)    /* RW */
+> +#define PAD_DS_DLY3            (0x1f << 0)     /* RW */
+> +
+>  #define REQ_CMD_EIO  (0x1 << 0)
+>  #define REQ_CMD_TMO  (0x1 << 1)
+>  #define REQ_DAT_ERR  (0x1 << 2)
+> @@ -448,11 +454,13 @@ struct msdc_host {
+>         bool vqmmc_enabled;
+>         u32 latch_ck;
+>         u32 hs400_ds_delay;
+> +       u32 hs400_ds_dly3;
+>         u32 hs200_cmd_int_delay; /* cmd internal delay for HS200/SDR104 */
+>         u32 hs400_cmd_int_delay; /* cmd internal delay for HS400 */
+>         bool hs400_cmd_resp_sel_rising;
+>                                  /* cmd response sample selection for HS400 */
+>         bool hs400_mode;        /* current eMMC will run at hs400 mode */
+> +       bool hs400_tuning;      /* hs400 mode online tuning */
+>         bool internal_cd;       /* Use internal card-detect logic */
+>         bool cqhci;             /* support eMMC hw cmdq */
+>         struct msdc_save_para save_para; /* used when gate HCLK */
+> @@ -1190,7 +1198,8 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
+>         if (!sbc_error && !(events & MSDC_INT_CMDRDY)) {
+>                 if (events & MSDC_INT_CMDTMO ||
+>                     (cmd->opcode != MMC_SEND_TUNING_BLOCK &&
+> -                    cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200))
+> +                    cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200 &&
+> +                    !host->hs400_tuning))
+>                         /*
+>                          * should not clear fifo/interrupt as the tune data
+>                          * may have alreay come when cmd19/cmd21 gets response
+> @@ -1287,7 +1296,8 @@ static void msdc_cmd_next(struct msdc_host *host,
+>         if ((cmd->error &&
+>             !(cmd->error == -EILSEQ &&
+>               (cmd->opcode == MMC_SEND_TUNING_BLOCK ||
+> -              cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200))) ||
+> +              cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200 ||
+> +              host->hs400_tuning))) ||
+>             (mrq->sbc && mrq->sbc->error))
+>                 msdc_request_done(host, mrq);
+>         else if (cmd == mrq->sbc)
+> @@ -2251,6 +2261,106 @@ static int msdc_prepare_hs400_tuning(struct mmc_host *mmc, struct mmc_ios *ios)
+>         return 0;
+>  }
+>
+> +static int msdc_send_cxd_data(struct mmc_card *card, struct mmc_host *host)
+> +{
+> +       struct mmc_request mrq = {};
+> +       struct mmc_command cmd = {};
+> +       struct mmc_data data = {};
+> +       unsigned int len = 512;
+> +       struct scatterlist sg;
+> +       u8 *ext_csd;
+> +
+> +       ext_csd = kzalloc(len, GFP_KERNEL);
+> +       if (!ext_csd)
+> +               return -ENOMEM;
+> +
+> +       mrq.cmd = &cmd;
+> +       mrq.data = &data;
+> +
+> +       cmd.opcode = MMC_SEND_EXT_CSD;
+> +       cmd.arg = 0;
+> +       cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
+> +
+> +       data.blksz = len;
+> +       data.blocks = 1;
+> +       data.flags = MMC_DATA_READ;
+> +       data.sg = &sg;
+> +       data.sg_len = 1;
+> +
+> +       sg_init_one(&sg, ext_csd, len);
+> +       mmc_set_data_timeout(&data, card);
+> +       mmc_wait_for_req(host, &mrq);
+> +
+> +       kfree(ext_csd);
+> +
+> +       if (cmd.error)
+> +               return cmd.error;
+> +       if (data.error)
+> +               return data.error;
+> +
+> +       return 0;
 
-It looks okay to me.
+Why do we need to send a MMC_SEND_EXT_CSD command, exactly?
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Why can't mmc_send_tuning() work here too? What does the eMMC spec
+state about this?
 
-I have applied it for 5.16.
+> +}
+> +
+> +static int msdc_execute_hs400_tuning(struct mmc_host *mmc, struct mmc_card *card)
+> +{
+> +       struct msdc_host *host = mmc_priv(mmc);
+> +       struct msdc_delay_phase dly1_delay;
+> +       u32 val, result_dly1 = 0;
+> +       int i, ret;
+> +
+> +       if (host->top_base) {
+> +               sdr_set_bits(host->top_base + EMMC50_PAD_DS_TUNE,
+> +                            PAD_DS_DLY_SEL);
+> +               if (host->hs400_ds_dly3)
+> +                       sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
+> +                                     PAD_DS_DLY3, host->hs400_ds_dly3);
+> +       } else {
+> +               sdr_set_bits(host->base + PAD_DS_TUNE, PAD_DS_TUNE_DLY_SEL);
+> +               if (host->hs400_ds_dly3)
+> +                       sdr_set_field(host->base + PAD_DS_TUNE,
+> +                                     PAD_DS_TUNE_DLY3, host->hs400_ds_dly3);
+> +       }
+> +
+> +       host->hs400_tuning = true;
+> +       for (i = 0; i < PAD_DELAY_MAX; i++) {
+> +               if (host->top_base)
+> +                       sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
+> +                                     PAD_DS_DLY1, i);
+> +               else
+> +                       sdr_set_field(host->base + PAD_DS_TUNE,
+> +                                     PAD_DS_TUNE_DLY1, i);
+> +               ret = msdc_send_cxd_data(card, mmc);
+> +               if (!ret)
+> +                       result_dly1 |= (1 << i);
+> +       }
+> +       host->hs400_tuning = false;
+> +
+> +       dly1_delay = get_best_delay(host, result_dly1);
+> +       if (dly1_delay.maxlen == 0) {
+> +               dev_err(host->dev, "Failed to get DLY1 delay!\n");
+> +               goto fail;
+> +       }
+> +       if (host->top_base)
+> +               sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
+> +                             PAD_DS_DLY1, dly1_delay.final_phase);
+> +       else
+> +               sdr_set_field(host->base + PAD_DS_TUNE,
+> +                             PAD_DS_TUNE_DLY1, dly1_delay.final_phase);
+> +
+> +       if (host->top_base)
+> +               val = readl(host->top_base + EMMC50_PAD_DS_TUNE);
+> +       else
+> +               val = readl(host->base + PAD_DS_TUNE);
+> +
+> +       dev_info(host->dev, "Fianl PAD_DS_TUNE: 0x%x\n", val);
+> +
+> +       return 0;
+> +
+> +fail:
+> +       dev_err(host->dev, "Failed to tuning DS pin delay!\n");
+> +       return -EIO;
+> +}
 
-> > ---
-> >  arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> > index 1752f3250e44..d0c3acbf6c8c 100644
-> > --- a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> > +++ b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
-> > @@ -3,6 +3,7 @@
-> >  #include "aspeed-g5.dtsi"
-> >  #include <dt-bindings/gpio/aspeed-gpio.h>
-> >  #include <dt-bindings/leds/leds-pca955x.h>
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> >
-> >  / {
-> >         model = "FP5280G2 BMC";
-> > @@ -902,4 +903,10 @@ fan@7 {
-> >
-> >  };
-> >
-> > +&kcs3 {
-> > +       status = "okay";
-> > +       aspeed,lpc-io-reg = <0xca2>;
-> > +       aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-> > +};
-> > +
-> >  #include "ibm-power9-dual.dtsi"
-> > --
-> > 2.30.2
-> >
+[...]
+
+Kind regards
+Uffe
