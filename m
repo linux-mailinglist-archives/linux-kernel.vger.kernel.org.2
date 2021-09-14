@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A94940B060
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF5840B06F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhINOSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:18:40 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:50146 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233300AbhINOSj (ORCPT
+        id S233701AbhINOT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233349AbhINOTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:18:39 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-226-psqTlCQSPzSokX6E0pG-_w-1; Tue, 14 Sep 2021 15:17:17 +0100
-X-MC-Unique: psqTlCQSPzSokX6E0pG-_w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 14 Sep 2021 15:17:16 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Tue, 14 Sep 2021 15:17:16 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Guenter Roeck' <linux@roeck-us.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: RE: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
-Thread-Topic: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
-Thread-Index: AQHXqNCRdjfpTL0To0ac+9sZuEahj6ujlB+Q
-Date:   Tue, 14 Sep 2021 14:17:15 +0000
-Message-ID: <2d8f45425f024fd9a3d91a4b4a1304cf@AcuMS.aculab.com>
-References: <20210913163712.922188-1-linux@roeck-us.net>
- <YT+SPIAl0IdWOAn/@ravnborg.org>
- <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
-In-Reply-To: <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 14 Sep 2021 10:19:53 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FB2C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:18:35 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t18so20553433wrb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kpn+M1bqQCPZctbXT2rMFocOAVoHTOH/YHoMT77kaXA=;
+        b=KB4MNAxhrmlbX59MwAQZ6hLhzSFEWzYdMbFTOohpBg3/xVF58nlidY6zi0qGimEhqm
+         Jl6OCNnnQMIFIqi85bkucA2jwEyap/QQOUngnGS5sFkRXOcZpJV0qG67XAOWE7gBHPBL
+         dZ2GY6mBv3tc5NBbWhoYZ9ImG68TbT4LJGvgk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=kpn+M1bqQCPZctbXT2rMFocOAVoHTOH/YHoMT77kaXA=;
+        b=i5tBnlXooIuy/hEPZopFfr0g3Z3751H26Q9kO+3kExmGzxQciQicZTr0fAPzy4RUir
+         vBQTbZ4auaX8Pi7wcn5jepBfTKm2X5mXkUjuua/KCpWawMTnoAR2oxeil4XS/88hcM4v
+         DSOMZaBNXornjNRV6lmuZYl9hpODnf4eu++r2A3UfjjbhX+TNhseGeLs6eaGQGyt0Ng+
+         CjnM63hzdEqkgfQhSxKvYIyCqCdQHDu3odXxw5itQojNnGS9P5ub2MMw+OXkOU9pqzUH
+         TdEXMH0XSU7ThU08rXcdj9r/Pu611qcPhNfS1OW7UfXStBPauoOGOFy2MbFAP8eFWv3A
+         F73g==
+X-Gm-Message-State: AOAM530/ZMCc9q4tvXq7N4yyXZ+3L/QfT3eH7MV54q/N03HNX+fB2fj5
+        yt+TbVBSj9ZrfztLG5tCOFH5/w==
+X-Google-Smtp-Source: ABdhPJwKQcZFGHqC1jw8lf4RoQcxifPnrx41rU4gRLMHuOSauY9GY+Cp86a0hl31Z0tdwkoEknt34g==
+X-Received: by 2002:adf:f183:: with SMTP id h3mr13825816wro.32.1631629114235;
+        Tue, 14 Sep 2021 07:18:34 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id l15sm1251759wme.42.2021.09.14.07.18.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 07:18:33 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 16:18:31 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jgg@ziepe.ca, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
+        galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-media@vger.kernel.org, dledford@redhat.com,
+        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
+        hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jgg@ziepe.ca, christian.koenig@amd.com, galpress@amazon.com,
+        sleybo@amazon.com, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
+        leonro@nvidia.com, hch@lst.de, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20210912165309.98695-1-ogabbay@kernel.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210912165309.98695-1-ogabbay@kernel.org>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR3VlbnRlciBSb2VjayA8
-Z3JvZWNrN0BnbWFpbC5jb20+IE9uIEJlaGFsZiBPZiBHdWVudGVyIFJvZWNrDQo+IFNlbnQ6IDEz
-IFNlcHRlbWJlciAyMDIxIDE5OjUzDQo+IFRvOiBTYW0gUmF2bmJvcmcgPHNhbUByYXZuYm9yZy5v
-cmc+DQo+IENjOiBEYXZpZCBTIC4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0Pjsgc3BhcmNs
-aW51eEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IEFy
-bmQgQmVyZ21hbm4gPGFybmRAa2VybmVsLm9yZz4NCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gc3Bh
-cmM6IG1kZXNjOiBGaXggY29tcGlsZSBlcnJvciBzZWVuIHdpdGggZ2NjIDExLngNCj4gDQo+IE9u
-IDkvMTMvMjEgMTE6MDIgQU0sIFNhbSBSYXZuYm9yZyB3cm90ZToNCj4gPiBIaSBHdWVudGVyLA0K
-PiA+DQo+ID4gT24gTW9uLCBTZXAgMTMsIDIwMjEgYXQgMDk6Mzc6MTJBTSAtMDcwMCwgR3VlbnRl
-ciBSb2VjayB3cm90ZToNCj4gPj4gc3BhcmM2NCBpbWFnZXMgZmFpbCB0byBjb21waWxlIHdpdGgg
-Z2NjIDExLngsIHJlcG9ydGluZyB0aGUgZm9sbG93aW5nDQo+ID4+IGVycm9ycy4NCj4gPj4NCj4g
-Pj4gYXJjaC9zcGFyYy9rZXJuZWwvbWRlc2MuYzo2NDc6MjI6IGVycm9yOg0KPiA+PiAJJ3N0cmNt
-cCcgcmVhZGluZyAxIG9yIG1vcmUgYnl0ZXMgZnJvbSBhIHJlZ2lvbiBvZiBzaXplIDANCj4gPj4g
-YXJjaC9zcGFyYy9rZXJuZWwvbWRlc2MuYzo2OTI6MjI6IGVycm9yOg0KPiA+PiAJJ3N0cmNtcCcg
-cmVhZGluZyAxIG9yIG1vcmUgYnl0ZXMgZnJvbSBhIHJlZ2lvbiBvZiBzaXplIDANCj4gPj4gYXJj
-aC9zcGFyYy9rZXJuZWwvbWRlc2MuYzo3MTk6MjE6DQo+ID4+IAllcnJvcjogJ3N0cmNtcCcgcmVh
-ZGluZyAxIG9yIG1vcmUgYnl0ZXMgZnJvbSBhIHJlZ2lvbiBvZiBzaXplIDANCj4gPj4NCj4gPj4g
-VGhlIHVuZGVybHlpbmcgcHJvYmxlbSBpcyB0aGF0IG5vZGVfYmxvY2soKSByZXR1cm5zIGEgcG9p
-bnRlciBiZXlvbmQNCj4gPj4gdGhlIGVuZCBvZiBzdHJ1Y3QgbWRlc2NfaGRyLiBnY2MgMTEueCBk
-ZXRlY3RzIHRoYXQgYW5kIHJlcG9ydHMgdGhlIGVycm9yLg0KPiA+PiBBZGRpbmcgYW4gYWRkaXRp
-b25hbCB6ZXJvLWxlbmd0aCBmaWVsZCB0byBzdHJ1Y3QgbWRlc2NfaGRyIGFuZCBwb2ludGluZw0K
-PiA+PiB0byB0aGF0IGZpZWxkIGZpeGVzIHRoZSBwcm9ibGVtLg0KPiA+Pg0KPiA+PiBDYzogQXJu
-ZCBCZXJnbWFubiA8YXJuZEBrZXJuZWwub3JnPg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBHdWVudGVy
-IFJvZWNrIDxsaW51eEByb2Vjay11cy5uZXQ+DQo+ID4+IC0tLQ0KPiA+PiBNeSBhcG9sb2dpZXMg
-aWYgYSBzaW1pbGFyIHBhdGNoIHdhcyBzdWJtaXR0ZWQgYWxyZWFkeTsgSSB3YXMgdW5hYmxlIHRv
-IGZpbmQgaXQuDQo+ID4+IEkgZGlkIGZpbmQgdGhlIGZvbGxvd2luZyBwYXRjaDoNCj4gPj4gICAg
-ICBodHRwczovL2dpdC5idXN5Ym94Lm5ldC9idWlsZHJvb3QvY29tbWl0Lz9pZD02ZTExMDZiNGE5
-YWVlMjVkMTU1NjMxMGQ1Y2QxY2I2ZGRlMmU2ZTNmDQo+ID4+IGJ1dCBJIGZhaWxlZCB0byBmaW5k
-IGl0IGluIHBhdGNod29yayBvciBvbiBsb3JlLmtlcm5lbC5vcmcsIGFuZCBpdA0KPiA+PiBzZWVt
-cyB0byBiZSBtb3JlIGV4cGVuc2l2ZSB0aGFuIHRoZSBzb2x1dGlvbiBzdWdnZXN0ZWQgaGVyZS4N
-Cj4gPj4NCj4gPj4gICBhcmNoL3NwYXJjL2tlcm5lbC9tZGVzYy5jIHwgMyArKy0NCj4gPj4gICAx
-IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4+DQo+ID4+
-IGRpZmYgLS1naXQgYS9hcmNoL3NwYXJjL2tlcm5lbC9tZGVzYy5jIGIvYXJjaC9zcGFyYy9rZXJu
-ZWwvbWRlc2MuYw0KPiA+PiBpbmRleCA4ZTY0NWRkYWM1OGUuLmM2N2JkY2MyMzcyNyAxMDA2NDQN
-Cj4gPj4gLS0tIGEvYXJjaC9zcGFyYy9rZXJuZWwvbWRlc2MuYw0KPiA+PiArKysgYi9hcmNoL3Nw
-YXJjL2tlcm5lbC9tZGVzYy5jDQo+ID4+IEBAIC0zOSw2ICszOSw3IEBAIHN0cnVjdCBtZGVzY19o
-ZHIgew0KPiA+PiAgIAl1MzIJbm9kZV9zejsgLyogbm9kZSBibG9jayBzaXplICovDQo+ID4+ICAg
-CXUzMgluYW1lX3N6OyAvKiBuYW1lIGJsb2NrIHNpemUgKi8NCj4gPj4gICAJdTMyCWRhdGFfc3o7
-IC8qIGRhdGEgYmxvY2sgc2l6ZSAqLw0KPiA+PiArCWNoYXIJZGF0YVswXTsNCj4gPj4gICB9IF9f
-YXR0cmlidXRlX18oKGFsaWduZWQoMTYpKSk7DQo+ID4NCj4gPiBJIGRvIG5vdCB0aGluayB0aGlz
-IHdpbGwgd29ya3MuDQo+ID4gU2VlIGZvbGxvd2luZyBjb21tZW50Og0KPiA+ICAgKiBtZGVzY19o
-ZHIgYW5kIG1kZXNjX2VsZW0gZGVzY3JpYmUgdGhlIGxheW91dCBvZiB0aGUgZGF0YSBzdHJ1Y3R1
-cmUNCj4gPiAgICogd2UgZ2V0IGZyb20gdGhlIEh5cGVydmlzb3IuDQo+ID4NCj4gPiBXaXRoIHRo
-ZSBhYm92ZSBjaGFuZ2UgeW91IGluY3JlYXNlZCB0aGUgc2l6ZSBmcm9tIDE2IHRvIDMyIGJ5dGVz
-LA0KPiA+IGFuZCBhbnkgY29kZSB1c2luZyBzaXplb2Yoc3RydWN0IG1kZXNjX2hkcikgd2lsbCBu
-b3cgcG9pbnQgdG9vIGZhciBpbg0KPiA+IG1lbW9yeSBmb3IgdGhlIHNlY29uZCBhbmQgc3Vic2Vx
-dWVudCBlbnRyaWVzLg0KPiA+DQo+ID4gSSBkaWQgbm90IHRha2UgYW55IGNsb3NlciBsb29rLCBi
-dXQgdGhpcyB3YXMgZnJvbSBhIHF1aWNrIGFuYWx5c2lzLg0KPiA+DQo+IA0KPiBTb3JyeSwgSSBk
-aWRuJ3QgcmVhbGl6ZSB0aGF0IGEgZmllbGQgb2Ygc2l6ZSAwIGluY3JlYXNlcyB0aGUgc3RydWN0
-dXJlIHNpemUNCj4gb24gc3BhcmMuIEkgaGFkIGNoZWNrZWQgdGhlIHNpemUgb2YgdGhlIG9sZCBh
-bmQgdGhlIG5ldyBzdHJ1Y3R1cmUgd2l0aCBnY2MNCj4gb24geDg2XzY0IGFuZCBkaWRuJ3Qgc2Vl
-IGEgZmllbGQgc2l6ZSBpbmNyZWFzZS4NCg0KY2xhbmcgb3V0cHV0IGRvZXNuJ3QgY2hhbmdlOg0K
-DQpodHRwczovL2dvZGJvbHQub3JnL3ovYlRlZXExOWoxDQoNCmdjYyBvdWdodCB0byBnZW5lcmF0
-ZSB0aGUgc2FtZSBzaXplLg0KDQpJdCBvdWdodCB0byBiZSAnY2hhciBkYXRhW107JyB0aG91Z2gu
-DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
-ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
-bzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> Hi,
+> Re-sending this patch-set following the release of our user-space TPC
+> compiler and runtime library.
+> 
+> I would appreciate a review on this.
 
+I think the big open we have is the entire revoke discussions. Having the
+option to let dma-buf hang around which map to random local memory ranges,
+without clear ownership link and a way to kill it sounds bad to me.
+
+I think there's a few options:
+- We require revoke support. But I've heard rdma really doesn't like that,
+  I guess because taking out an MR while holding the dma_resv_lock would
+  be an inversion, so can't be done. Jason, can you recap what exactly the
+  hold-up was again that makes this a no-go?
+
+- The other option I discussed is a bit more the exlusive device ownership
+  model we've had for gpus in drm of the really old kind. Roughly this
+  would work like this, in terms of drm_device:
+  - Only the current owner (drm_master in current drm code, but should
+    probably rename that to drm_owner) is allowed to use the accel driver.
+    So all ioctl would fail if you're not drm_master.
+  - On dropmaster/file close we'd revoke as much as possible, e.g.
+    in-flight commands, mmaps, anything really that can be revoked.
+  - For non-revokable things like these dma-buf we'd keep a drm_master
+    reference around. This would prevent the next open to acquire
+    ownership rights, which at least prevents all the nasty potential
+    problems.
+  - admin (or well container orchestrator) then has responsibility to
+    shoot down all process until the problem goes away (i.e. until you hit
+    the one with the rdma MR which keeps the dma-buf alive)
+
+- Not sure there's another reasonable way to do this without inviting some
+  problems once we get outside of the "single kernel instance per tenant"
+  use-case.
+
+Wrt implementation there's the trouble of this reinventing a bunch of drm
+stuff and concepts, but that's maybe for after we've figured out
+semantics.
+
+Also would be great if you have a pull request for the userspace runtime
+that shows a bit how this all gets used and tied together. Or maybe some
+pointers, since I guess retconning a PR in github is maybe a bit much.
+
+Cheers, Daniel
+
+> 
+> Thanks,
+> Oded
+> 
+> Oded Gabbay (1):
+>   habanalabs: define uAPI to export FD for DMA-BUF
+> 
+> Tomer Tayar (1):
+>   habanalabs: add support for dma-buf exporter
+> 
+>  drivers/misc/habanalabs/Kconfig             |   1 +
+>  drivers/misc/habanalabs/common/habanalabs.h |  22 +
+>  drivers/misc/habanalabs/common/memory.c     | 522 +++++++++++++++++++-
+>  drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
+>  drivers/misc/habanalabs/goya/goya.c         |   1 +
+>  include/uapi/misc/habanalabs.h              |  28 +-
+>  6 files changed, 570 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
