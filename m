@@ -2,178 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FA440AED5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED8E40AEDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhINNYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50834 "EHLO
+        id S233172AbhINNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbhINNYd (ORCPT
+        with ESMTP id S232696AbhINNZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:24:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFEA7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:23:15 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mQ8Or-0007cz-Dv; Tue, 14 Sep 2021 15:23:01 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mQ8Oo-0006RL-Ia; Tue, 14 Sep 2021 15:22:58 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mQ8Oo-00077e-GZ; Tue, 14 Sep 2021 15:22:58 +0200
-Date:   Tue, 14 Sep 2021 15:22:56 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     alexandre.belloni@bootlin.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ludovic.Desroches@microchip.com, lee.jones@linaro.org,
-        linux-clk@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, o.rempel@pengutronix.de,
-        andy.shevchenko@gmail.com, aardelean@deviqon.com,
-        linux-pwm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        broonie@kernel.org, Jonathan.Cameron@huawei.com,
-        linux-arm-kernel@lists.infradead.org, a.zummo@towertech.it,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        wsa@kernel.org, thierry.reding@gmail.com, kernel@pengutronix.de,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        Claudiu.Beznea@microchip.com
-Subject: Re: About clk maintainership [Was: Re: [PULL] Add variants of
- devm_clk_get for prepared and enabled clocks enabled clocks]
-Message-ID: <20210914132256.5ucytcfmk3sjn2vi@pengutronix.de>
-References: <20210728202547.7uvfwflpruku7yps@pengutronix.de>
- <20210728204033.GF22278@shell.armlinux.org.uk>
- <162771727997.714452.2303764341103276867@swboyd.mtv.corp.google.com>
- <20210731120004.i3affxw7upl5y4c5@pengutronix.de>
- <20210802094810.GJ22278@shell.armlinux.org.uk>
- <20210802152755.ibisunvibmwhiyry@pengutronix.de>
- <20210802163824.GK22278@shell.armlinux.org.uk>
- <162797831443.714452.3551045763456936564@swboyd.mtv.corp.google.com>
- <20210803104012.wf2buscbukxufesl@pengutronix.de>
- <162820957661.19113.17221558053361108175@swboyd.mtv.corp.google.com>
+        Tue, 14 Sep 2021 09:25:27 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F930C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:24:10 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id x11so28960493ejv.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZQjOz+ZZ81Ebb5EPtK1mTpOLbzJJlm8KGTxpSWS8pc8=;
+        b=qYtqhg8m/O1lCKQKsabfArcZaRMY9k0MxVOLEDIImkDyUsUQcqwHHYO3I02wBagofO
+         g4CJ/CkaQ9MYKHhK1Rag/COMV7aWzBYyqjJ/K8yWDgmTxN6vWtVqSXW4rqCw31LJk3sJ
+         NnNrvc1fTaNlGNXvlnHoz8jMfd9P9qz2PVblm26V7Il1wOAsfmACxLqqUFVHkGPa0d0K
+         occNgReCGrIz+tPL7NL9OERtSWof9C/I7UyXbCmLdOILHJqpIVtKvzHIm6KQowB/u0xq
+         JKRWJ9VBTW9yD8fy7D5xZqwcu2NXYHqxo2bXghmexvU9g0c+A7tuuvNW2qrBTKwXmbNv
+         e7NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZQjOz+ZZ81Ebb5EPtK1mTpOLbzJJlm8KGTxpSWS8pc8=;
+        b=unCkYRlBtiSukX/gQjMi1WAxx6wY70+fnKEDTJO9kgnjBtYsDqHBf602URoH6hNcHJ
+         eNxoPJ2P/l52P/2kL2N7BFiRIuvfcGLvnl3OX+6VhHUbJYVLJ641Y5Nzbs40ojy6gW1j
+         9uy6oA8RED/1U0TWHcNglIQ0KmxK7MSyk9n0kjn75FUrw0Bssm/tiBIaCaFe3ub8TMvT
+         gKfGgcZVy1CD3vIgbki2KcPdCNaH/kEyP4XfrluJy1d5nnmqJGcN70q5dLdI0cu6SmrI
+         ltmPgPP4zyaZrQYt3SNWPpYVBcJFnaCyWG89wTTRYFFJCw3QfBM9dHQEeT5JVSJ9yhN7
+         MXqQ==
+X-Gm-Message-State: AOAM53123dHYs7ipKDQ+8K6AI6pbRkWQq6Y/wWebILf4mC111E6yMkdw
+        po/hJbHiBOwDXROtrMJkESI=
+X-Google-Smtp-Source: ABdhPJyjBIUxZRK0NkYDdB1lV4Hw505+IjfjicfTiMb+15in7gxGkW5eFQAlERYZnJO4M0w1cr159Q==
+X-Received: by 2002:a17:906:144e:: with SMTP id q14mr18627455ejc.19.1631625848845;
+        Tue, 14 Sep 2021 06:24:08 -0700 (PDT)
+Received: from localhost.localdomain (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
+        by smtp.gmail.com with ESMTPSA id gc19sm2152431ejb.35.2021.09.14.06.24.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 06:24:08 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH v4 15/18] staging: r8188eu: hal: Clean up usbctrl_vendorreq()
+Date:   Tue, 14 Sep 2021 15:24:06 +0200
+Message-ID: <1670478.viNvIS23Oo@localhost.localdomain>
+In-Reply-To: <20210914092405.GB2088@kadam>
+References: <20210913181002.16651-1-fmdefrancesco@gmail.com> <20210913181002.16651-16-fmdefrancesco@gmail.com> <20210914092405.GB2088@kadam>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mggb23vxwlpcjl6t"
-Content-Disposition: inline
-In-Reply-To: <162820957661.19113.17221558053361108175@swboyd.mtv.corp.google.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tuesday, September 14, 2021 11:24:05 AM CEST Dan Carpenter wrote:
+> I don't understand why you moved these from the top to the bottom.
+> But the original was better.  In networking code declarations are
+> normally written in Reverse Christmas Tree format, longest to shortest,
+> like this:
+> 
+> 	long long long_name;
+> 	medium name;
+> 	u8 short;
 
---mggb23vxwlpcjl6t
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Dear Dan,
 
-On Thu, Aug 05, 2021 at 05:26:16PM -0700, Stephen Boyd wrote:
-> Quoting Uwe Kleine-K=F6nig (2021-08-03 03:40:12)
-> > On Tue, Aug 03, 2021 at 01:11:54AM -0700, Stephen Boyd wrote:
-> > >=20
-> > > Maybe this series would be more compelling if those various drivers t=
-hat
-> > > are hand rolling the devm action were converted to the consolidated
-> > > official devm function. The truth is it's already happening in various
-> > > subsystems so consolidating that logic into one place would be a win
-> > > code size wise and very hard to ignore.
-> > >=20
-> > > Doing
-> > >=20
-> > >  $ git grep devm_add_action | grep clk
-> > >=20
-> > > seems to catch quite a few of them.
+I'm sorry that I forgot to thank you for the reviews in the other messages I 
+sent in reply. :(
 
-Will do.
-=20
-> > Another upside is that grepping for these drivers with a potential for
-> > further improvement become easier to grep for as
-> > devm_clk_get_{prepared,enabled} is a much better hint :-)
->=20
-> Sorry, but that's a pretty weak argument. I'd think grepping for the
-> absence of pm_ops in drivers would be the same hint.
+I also forgot to answer to the above question...
 
-To be honest: Yes, it's a weak argument, but grepping for drivers
-without pm_ops is a tad more complicated and yields a different set of
-drivers. For example take the i2c-imx driver
-(drivers/i2c/busses/i2c-imx.c) which has a pm_ops but still can make use
-of devm_clk_get_enabled.
+I changed the order of the declarations because David Laight wrote "I think 
+you'll need 'reverse xmas tree' ordering as well." (copy-paste from his 
+message).
 
-> > The changes to these drivers probably won't go through a clk tree, so
-> > adding these patches before adding devm_clk_get_enabled() would only
-> > help for the warm and cozy feeling that it is right to do so, correct?
->=20
-> It isn't to feel warm and cozy. It's to demonstrate the need for
-> consolidating code. Converting the i2c and spi drivers to use this is
-> actively damaging the cause though. Those driver frameworks are more
-> likely to encourage proper power management around bus transfers, so
-> converting them to use the devm API moves them away from power
-> management, not closer to it.
+As far as I know you are both experienced kernel developers, so I took his 
+words for truth. Is it a matter of personal taste or Reverse/Non Reverse Xmas 
+Trees are strictly required by the Linux kernel coding style guidelines?
 
-Well I think one could disagree here. Today these drivers are not power
-efficient as they just enable the clock in their probe routine and keep
-it on even though it might not be needed.
+I thank you very much for the time you spent for reviewing.
 
-My patch still is beneficial as it simplifies the drivers without making
-them worse. Agreed, this isn't the best optimisation to the drivers
-(assuming it is possible to disable the clocks while the device isn't in
-use).
+Regards,
 
-> This proves why this topic is always contentious. It's too easy to
-> blindly convert drivers to get the clk and leave it enabled forever and
-> then they never use power management. The janitors win and nobody else.
+Fabio 
 
-If the janitors win and nobody else looses anything, this is fine for
-me. And if in the future someone turns up who cares enough to improve
-the converted drivers to a more efficient clock usage, they will
-probably not stop their efforts just because then the driver uses
-devm_clk_get_enabled.
 
-> Is there some way to avoid that trap? Maybe through some combination of
-> a device PM function that indicates the driver has no runtime PM
-> callbacks (pm_runtime_no_callbacks() perhaps?) and
-> devm_clk_get_enabled() checking for that and returning the clk only when
-> that call has been made (i.e. pm_runtime_has_no_callbacks())? This
-> approach would fail to catch the case where system wide suspend/resume
-> could turn the clk off but the driver doesn't do it. I'm not sure how
-> much we care about that case though.
->=20
-> > As my focus is limited to (mostly) drivers/pwm and I already have quite
-> > some other patch quests on my list:
->=20
-> Don't we all? :)
-
-Might be. The patches in your queue are however not a reason to drop my
-efforts to make my queue shorter :-P
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---mggb23vxwlpcjl6t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFAoiwACgkQwfwUeK3K
-7An7Fgf+Ia8CaycjOR7ZZLxYVuGNx+XLrBQeXwl1H3567k8tcNg55hObDzgVPo1w
-cB9RPS5f36SEEa4ixbzMsRINVfkngTTL2zyTKgniKoy4eD0Nb0qYNKuAxRmb87yt
-bURm19Q+4J/gdUkTzEVqYIYcXPQJlWzEPKaGHBNlZ55stXnT1IUf5FmoPWK7FWxM
-1FTzxg3khSQXc/UosMbVBY9slM4JAskBAfXk7oRasoVbuaEJldG+Gr4jDn78Cras
-mJHAT/hsDtRmum9dl8U2NdLXtHoEy3xg6MARQO/K50Kqixg8dIdOpajV8ynvsJFj
-3RYCJRrVGp7yeeS9SRw1w6IdNbkBHg==
-=z44f
------END PGP SIGNATURE-----
-
---mggb23vxwlpcjl6t--
