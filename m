@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77DF40B8E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCD040B8E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbhINUTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:19:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38938 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233775AbhINUTG (ORCPT
+        id S233476AbhINUUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232909AbhINUUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:19:06 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18EKHgKv119046;
-        Tue, 14 Sep 2021 15:17:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631650662;
-        bh=sa18CJ4cLCTP9vAmABvziakIoPCH/PszhmZbN0S9cTc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=kCjP0xfIxHQoWTSeITYjBlXzm/UFEUn0gLLBpWMVmRqlR5bz6KXcBwoiK+H+h5ADj
-         EQAAJdKyHO498zrLrI7OXvdTxm2HVPqTLYZ6x34uPqdjHGJk37w3Hey4BJqCuRrejN
-         kmBElOoGTH7AQeEAQKHzwco4y/7XlyUP/kDXyAwk=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18EKHgr9077092
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Sep 2021 15:17:42 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 14
- Sep 2021 15:17:42 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 14 Sep 2021 15:17:42 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18EKHf7W097900;
-        Tue, 14 Sep 2021 15:17:41 -0500
-Date:   Tue, 14 Sep 2021 15:17:41 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: Re: [PATCH v3 4/5] arm64: dts: ti: iot2050: Prepare for adding
- 2nd-generation boards
-Message-ID: <20210914201741.mz26sg6yvxqg6guf@diving>
-References: <cover.1631216478.git.jan.kiszka@siemens.com>
- <a0b569b9919a1d2c2bc20defeb310561572850da.1631216478.git.jan.kiszka@siemens.com>
+        Tue, 14 Sep 2021 16:20:33 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F19BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:19:15 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id w78so887764qkb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Q8rI+ToP6kPJ26VeNz3g2BY33PSAfL8SwgCPGgBzxok=;
+        b=ouAm2KhYNvNcg+SCXRb91PcXW2Xjgvp6ozeVdkKacvTCLRFqxu6yCRQOIbYqzXmLuU
+         0a34Y5305rBVrgn3Sl8BlYYcB6vA3I3NViu/ETc3u2NYfODcuwp4uFZ/w1aR8JApX1+/
+         WXgfwmx4UKxE9Rpw7Qe1XeavZmM1g444YfiI6SZ8laxt4yCImk1Sb31Ty7GogWN2GSiO
+         1Gwm9g6g8nWes+xBBn+XGCO5Fmn4+BUK7Gz5U7nHaXzpCltD37MELPAZhPOtLJ0CCJFk
+         AwsHaUeAvr2JgpBr6q7ID90gdVxjNuvqYlKfEjX8KMqUIrxp3ZE3Rde5wKFZBDNmdx9j
+         KyqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Q8rI+ToP6kPJ26VeNz3g2BY33PSAfL8SwgCPGgBzxok=;
+        b=bqZMWtEU3p8aM36BwB99OlB6J5KPyTUVNaymMUdFCegOlT5VlYiarumSpL3ZHauSK9
+         k+Zx5UKLi9YLq2B48Wz4C7qKgIW169qf15iork7l4T9tROLldrPCXthorH2eXtb1IiFL
+         GMNEZSG49j/07lSK3CphQhMz0fP/qgg8HyCWTZznLSJzRFL+eEjpSjq7vC3ng5e+Ucds
+         I4iFya8K3YUsWKild3PC1sKfq0g3IXxY2XS55mwY7BuT7Ts7ANBo/pfycYa7UddAw6R/
+         PTAwvuaX9jCtQLL6jAsURhLeLbNufFYdNLejkVpCCRX16kbrZKmg1ejV9LUJaKkJW/kL
+         vORg==
+X-Gm-Message-State: AOAM531Aa9eU1Y1CrqiGalQVPZZuOqonQU6ufuKZZsEXXuxnPbv8Ctcd
+        eApUiyfh6kU/mqbL/1vBXqdS4epMV0NcQDrJVxQ=
+X-Google-Smtp-Source: ABdhPJwBsibWClxgic4tT9gjpkcvXQMPwsl2S9RJC2EPcH0XRbLFN7rEXgr9NDIspy6iqQqvLsKMrRpWJ9sjF+dqy6Y=
+X-Received: by 2002:a37:809:: with SMTP id 9mr6654096qki.318.1631650754776;
+ Tue, 14 Sep 2021 13:19:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a0b569b9919a1d2c2bc20defeb310561572850da.1631216478.git.jan.kiszka@siemens.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Received: by 2002:a05:6214:946:0:0:0:0 with HTTP; Tue, 14 Sep 2021 13:19:14
+ -0700 (PDT)
+Reply-To: mrs.jessicamojoh03@gmail.com
+From:   Martial Akakpo <michellecynthia173@gmail.com>
+Date:   Tue, 14 Sep 2021 20:19:14 +0000
+Message-ID: <CALJZeUYgQ1ZSjzXDrz+B-Fbbhhf54HaDPd2rmN__xRoJiS-bJA@mail.gmail.com>
+Subject: Dear Good Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21:41-20210909, Jan Kiszka wrote:
-[..]
-> copy from arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> copy to arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-> index ec9617c13cdb..d25e8b26187f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-> @@ -4,10 +4,9 @@
->   *
->   * Authors:
->   *   Le Jin <le.jin@siemens.com>
-> - *   Jan Kiszka <jan.kiszk@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
+Dear Good Friend.
 
-^^ please call that email ID out in the commit message as well.
+I am happy to inform you about my success in getting those funds
+transferred under the cooperation of a new partner from Indonesia.
+Presently I am in Indonesia for investment projects with my own share
+of the total sum. Meanwhile, I didn=E2=80=99t forget your past efforts and
+attempts to assist me in transferring those funds despite the fact
+that it failed us somehow. Now contact my secretary in Togo Lome his
+name is Mrs.Jessica Mojoh
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+Mrs.Jessica Mojoh.
+
+Email: { mrs.jessicamojoh03@gmail.com  }
+
+Contact her and ask her to send you the total of $920.000.00.{Nine
+Hundred And Twenty Thousand United States Dollars} which I kept for
+your past efforts and attempts to assist me in this matter. I
+appreciate your efforts at that time very much. So feel free and get
+in touch with my Secretary Mrs.Jessica Mojoh and instruct her where to
+send the amount to you. Please do let me know immediately you receive
+it so that we can share the joy after all the suffering at that time.
+Do send to  Mrs.Jessica Mojoh, your contact details.
+
+Your Full Names=E2=80=A6...........................................
+
+You=E2=80=99re Address=E2=80=A6............................................=
+..
+
+Cell Phone Number=E2=80=A6........................................
+
+Your occupation................................................
+
+Your Age=E2=80=A6.....................................................
+
+To enable her to submit your details to my paying bank the Ned Bank
+Togo Lome to wire your compensation money to your nominated bank
+account/Bank Check or they can send to you an authorized bank atm
+master card to your address for you to withdraw the money from any
+bank atm machine in your country.
+
+In the moment, I am very busy here because of the investment projects
+which me and the new partner are having at hand, finally, remember
+that I had forwarded instruction to my secretary on your behalf to
+receive that money, so feel free to get in touch with Mrs.Jessica
+Mojoh she will send the amount to you without any delay.
+
+Thanks and God bless you.
+Mrs.Jessica Mojoh
