@@ -2,97 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5D340B5E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FEC40B5EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhINRca convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Sep 2021 13:32:30 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:36093 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhINRc3 (ORCPT
+        id S229795AbhINRdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhINRdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:32:29 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 59185E0008;
-        Tue, 14 Sep 2021 17:31:09 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 19:31:08 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Bert Vermeulen <bert@biot.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
-Message-ID: <20210914193108.78df5367@xps13>
-In-Reply-To: <20210908201624.237634-1-bert@biot.com>
-References: <20210908201624.237634-1-bert@biot.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 14 Sep 2021 13:33:17 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E88C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:00 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m26so13014927pff.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qs/nXFozNO4XKGck5LQAgcVnI2HZwI8WrVsYnHtpC94=;
+        b=RJypP0ZEIzGrEzxsJiZ3f0EhlTI1eSOUL1RNtKf3JNQjS/D/d/8TfWrRamUe+4uj8F
+         +9R28NsHtXqgtoLOrQuCinGRhCU5+xPekYQzfQkk4KeTx+NqAgCJ/jOHs2EB63+fWZ28
+         CiVZ8vUPO+r3bA0nU12WHmTBuzxoVY6LkE+nsMbPacqfdTYzSBmV1BvmMGBi2N7L8Ndt
+         Hk4QaqGHrrANd5wG9uK+GLpVubcflZiUE2P84BsEL/S+6AU5sZaqw+iucEOwT7NQKczB
+         7Vfk8LbYYQh5hlbchTgQzdJZuGbUwSnTD4t6hMWx42JAg0EPigS1trYjsclzOmxN5dWG
+         iORw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qs/nXFozNO4XKGck5LQAgcVnI2HZwI8WrVsYnHtpC94=;
+        b=EnT6RRzdYz0js1fxbhdkMhfrzpSKMR0nHHIk19chkuAUkLDQ1pKh8flms+r8r2ntz1
+         8M5clArh4f6Ts6qA4ED3uvIroN2YsZkkbZDwl76LDI30oPKQ+ki9VNZ/ifq4sKzsw8+x
+         dE1DGnSwjqxs50gX328VkryISYdnPXddeD/0wdyO8Ofh+zWbY8rIRY5UdoG8mh6eqJ4h
+         TVcqSljdJFBrK0KVkVfS9sarLSHnUqYHNsXBByz/B5u3ioh4AGg+3NS4pWCjySTav+3m
+         DUn/hHLPeG9HybpH9yUbwYK/TNCOWA13LxIygPuyDCW+bBUmLK0pEtcWpAxcvzLW4kRr
+         HDAQ==
+X-Gm-Message-State: AOAM531g5aEs8x/pDyk46A/1AIkvQLGqSh+0SHNxWyB/bRymNiPqzQDG
+        zLWkBaFg0uOIFsmIV4ZDlLCG85OnnSYcHYGC241n/w==
+X-Google-Smtp-Source: ABdhPJzDzncI+LLQAAhny8Ap5U3EtD5ysxI4W4mAYPPv4hTxXCM6lWOIjIHDh73AM/ND2P94HzpZw9Fi2MW9SJdt/Ps=
+X-Received: by 2002:a62:e70c:0:b0:43e:2de6:b09d with SMTP id
+ s12-20020a62e70c000000b0043e2de6b09dmr134044pfh.9.1631640719199; Tue, 14 Sep
+ 2021 10:31:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <cover.1631629496.git.mchehab+huawei@kernel.org> <cf40784dd4169897f7a28cc4d9393e8eaae5b873.1631629496.git.mchehab+huawei@kernel.org>
+In-Reply-To: <cf40784dd4169897f7a28cc4d9393e8eaae5b873.1631629496.git.mchehab+huawei@kernel.org>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Tue, 14 Sep 2021 10:31:23 -0700
+Message-ID: <CACK8Z6HzNiVXxcW+yokW+db6-A5VgxixdzE-5B=tR1_Ph9JORw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/29] ABI: sysfs-bus-usb: better document variable argument
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bert,
+On Tue, Sep 14, 2021 at 7:32 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> On almost all ABI documents, variable arguments are declared
+> as <foo_bar>. Change it here too, in order to allow replacing
+> such wildcards by regexes on a scriptable way.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Richard, a question for you below!
+In case it matters:
+Acked-by: Rajat Jain <rajatja@google.com>
 
-bert@biot.com wrote on Wed,  8 Sep 2021 22:16:19 +0200:
-
-> This adds a new vendor Etron, and support for a 2Gb chip.
-> 
-> The datasheet is available at
-> https://www.etron.com/cn/products/EM73%5B8%5DC%5BD_E_F%5DVC%20SPI%20NAND%20Flash_Promotion_Rev%201_00A.pdf
-> 
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
 > ---
-> v2:
-> - Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
->   hardcoded to this 2Gb chip only
-> - Fixed manufacturer ordering
-> - Fixed minor formatting issues as reported
-> - Removed debug comment
-> 
->  drivers/mtd/nand/spi/Makefile |   2 +-
->  drivers/mtd/nand/spi/core.c   |   1 +
->  drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
->  include/linux/mtd/spinand.h   |   1 +
->  4 files changed, 107 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mtd/nand/spi/etron.c
-
-[...]
-
-> +static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
-> +{
-> +	switch (status & STATUS_ECC_MASK) {
-> +	case STATUS_ECC_NO_BITFLIPS:
-> +		return 0;
-> +
-> +	case STATUS_ECC_HAS_BITFLIPS:
-> +		/* Between 1-7 bitflips were corrected */
-> +		return 7;
-
-Mmmh this is a bit problematic, having no intermediate value means a
-single bitflip will trigger UBI to move the data around as its
-threshold will be reached. Richard, any feedback on this?
-
-> +
-> +	case STATUS_ECC_MASK:
-> +		/* Maximum bitflips were corrected */
-> +		return 8;
-> +
-> +	case STATUS_ECC_UNCOR_ERROR:
-> +		return -EBADMSG;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-
-Thanks,
-Miquèl
+>  Documentation/ABI/testing/sysfs-bus-usb | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/=
+testing/sysfs-bus-usb
+> index 73eb23bc1f34..42103f0f54d6 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-usb
+> +++ b/Documentation/ABI/testing/sysfs-bus-usb
+> @@ -166,14 +166,14 @@ Description:
+>                 The file will be present for all speeds of USB devices, a=
+nd will
+>                 always read "no" for USB 1.1 and USB 2.0 devices.
+>
+> -What:          /sys/bus/usb/devices/.../(hub interface)/portX
+> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>
+>  Date:          August 2012
+>  Contact:       Lan Tianyu <tianyu.lan@intel.com>
+>  Description:
+> -               The /sys/bus/usb/devices/.../(hub interface)/portX
+> +               The /sys/bus/usb/devices/.../<hub_interface>/port<X>
+>                 is usb port device's sysfs directory.
+>
+> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/connect_ty=
+pe
+> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/connect_=
+type
+>  Date:          January 2013
+>  Contact:       Lan Tianyu <tianyu.lan@intel.com>
+>  Description:
+> @@ -182,7 +182,7 @@ Description:
+>                 The file will read "hotplug", "hardwired" and "not used" =
+if the
+>                 information is available, and "unknown" otherwise.
+>
+> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/location
+> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/location
+>  Date:          October 2018
+>  Contact:       Bj=C3=B8rn Mork <bjorn@mork.no>
+>  Description:
+> @@ -192,7 +192,7 @@ Description:
+>                 raw location value as a hex integer.
+>
+>
+> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/quirks
+> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/quirks
+>  Date:          May 2018
+>  Contact:       Nicolas Boichat <drinkcat@chromium.org>
+>  Description:
+> @@ -216,7 +216,7 @@ Description:
+>                    used to help make enumeration work better on some high=
+ speed
+>                    devices.
+>
+> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/over_curre=
+nt_count
+> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/over_cur=
+rent_count
+>  Date:          February 2018
+>  Contact:       Richard Leitner <richard.leitner@skidata.com>
+>  Description:
+> @@ -230,10 +230,10 @@ Description:
+>                 Any time this value changes the corresponding hub device =
+will send a
+>                 udev event with the following attributes::
+>
+> -                 OVER_CURRENT_PORT=3D/sys/bus/usb/devices/.../(hub inter=
+face)/portX
+> +                 OVER_CURRENT_PORT=3D/sys/bus/usb/devices/.../<hub_inter=
+face>/port<X>
+>                   OVER_CURRENT_COUNT=3D[current value of this sysfs attri=
+bute]
+>
+> -What:          /sys/bus/usb/devices/.../(hub interface)/portX/usb3_lpm_p=
+ermit
+> +What:          /sys/bus/usb/devices/.../<hub_interface>/port<X>/usb3_lpm=
+_permit
+>  Date:          November 2015
+>  Contact:       Lu Baolu <baolu.lu@linux.intel.com>
+>  Description:
+> --
+> 2.31.1
+>
