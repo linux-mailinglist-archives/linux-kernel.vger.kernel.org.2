@@ -2,85 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED67240A8D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D0B40A8D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbhINIJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:09:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbhINIGO (ORCPT
+        id S230086AbhINIJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:09:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47994 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhINIGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:06:14 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE14C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:04:41 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id f65so11398048pfb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=mPxf8n4L3IhQim+FqxOgbXfL3jMltbQ5PguuhqlZwis=;
-        b=jXuhTz2cNKtJ3NPxnOg3cpQ0f/hkZoz0EZ9XWrpKu5pQMOAWGEhYgfINCwMnPHZ0lQ
-         YVdkKLJwwQgTDtl7sWrMut5/du/OFrbE3JAsL03JhFKa30Vxg2pTpiae18R1lCLfQWCn
-         V4K/admGlmXsBKbbVTd4LhrwNpRrLKcUdKOnPgURsSh9MOL1y7hvUU0gUJJVef49EY9E
-         Ae9xZQr2HvAWF8Ge0MleZYx5YBPG6pO0GpkJXQjpyz+xOo9B1TBWEqpTQSjLHFvdAqLf
-         2rPbKN7KucbU8Q3zmTODxbKU35eUVgKGWS5UksNYYRSyc8HzdgRvdwBoMYkSq61NFVqA
-         ZHGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mPxf8n4L3IhQim+FqxOgbXfL3jMltbQ5PguuhqlZwis=;
-        b=fhF51XCD61kWeM6fHZu/98aNkmSuEL4kkp+IttqWdjL/1TncSoq/e/yAtfX5DXASth
-         pWdbtq/U3N34iJ4mIm3gvkep+LcG2ht9fsr9SjF0pMWrexV0x+W5vHX0mXz6L6pccKCM
-         V7XuiYyQgoI9ILJDJtsVKZ1D6XKuCOs8D+Q1I5FPiZwEmu5AgTbSa8RarCkm6n2ZBc4o
-         XBS2mbNwF3ZXO4d0/7Fc5JuMQNror/xbeFqZIjNhreuZTnsgenYhCCzdyvZZ/jAkLgXY
-         wSSo4Igv8GG9YmC/Y2TCVo0qlZe/trMBSw+O36xJxvWiQCFGDejPVrsNmUXH1MJ3VBA4
-         V1Cg==
-X-Gm-Message-State: AOAM533egSyo1LH9DCZ/4NETgqrr72gc2zohhkpFXL/cRc3gt35TQ34/
-        JU3CZji9Zry3yD+QhB0bVe0iUubiVl02tA==
-X-Google-Smtp-Source: ABdhPJyBV4Xv+A6RpGj+/8WZTrDIvEBMuenzOA/XTxb+vQGguV8s6pAEMow9p4iiamqfR0koc1YENg==
-X-Received: by 2002:a65:6ab0:: with SMTP id x16mr14713986pgu.181.1631606681022;
-        Tue, 14 Sep 2021 01:04:41 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id y6sm9328396pfb.64.2021.09.14.01.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 01:04:40 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] dt-bindings: mailbox: Update maintainer email for qcom apcs-kpss
-Date:   Tue, 14 Sep 2021 16:04:33 +0800
-Message-Id: <20210914080433.13499-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Tue, 14 Sep 2021 04:06:16 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 93C0A2209C;
+        Tue, 14 Sep 2021 08:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631606689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xZv9emHYY+yxYSbveEAhPUqXsMH0BbgkpDDj1kucJH4=;
+        b=F5uSC0rzCyAjPcq0hyMXgPO/L88HDxSapjV6r9Nk5T3to3fO2GkqMVFXlsZsWaMGy9jxAd
+        PnSqgOtK7dtJco7h2QphWJlzSKVN+mmyfnLfpGn11GU5BSVe2uU/kfrUctUYg6GV4D7Nad
+        oruLvkD/TY7Bmvx/yj2wzHP2owRwIhA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 679DD13E55;
+        Tue, 14 Sep 2021 08:04:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id B39pF6FXQGEPFwAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 14 Sep 2021 08:04:49 +0000
+Subject: Re: [PATCH] xen/pvcalls: backend can be a module
+To:     Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <54a6070c-92bb-36a3-2fc0-de9ccca438c5@suse.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <c5dd67c8-9292-d91b-dfe6-1ee397fa261e@suse.com>
+Date:   Tue, 14 Sep 2021 10:04:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <54a6070c-92bb-36a3-2fc0-de9ccca438c5@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="GXCKBqAPGfAuVlhONvxXkTU8QgRAYAYnS"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sivaprakash's codeaurora.org email address bounces.  Before he comes
-back with his new email, fill Jassi's address in there.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GXCKBqAPGfAuVlhONvxXkTU8QgRAYAYnS
+Content-Type: multipart/mixed; boundary="6kZ4hmri5TMIbfx8DVJmz0r56Iu4DOcX5";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Jan Beulich <jbeulich@suse.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>,
+ "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Message-ID: <c5dd67c8-9292-d91b-dfe6-1ee397fa261e@suse.com>
+Subject: Re: [PATCH] xen/pvcalls: backend can be a module
+References: <54a6070c-92bb-36a3-2fc0-de9ccca438c5@suse.com>
+In-Reply-To: <54a6070c-92bb-36a3-2fc0-de9ccca438c5@suse.com>
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml      | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--6kZ4hmri5TMIbfx8DVJmz0r56Iu4DOcX5
+Content-Type: multipart/mixed;
+ boundary="------------1BD2A8630832860143C174B8"
+Content-Language: en-US
 
-diff --git a/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml b/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
-index 6395281b0cec..371cf31f4154 100644
---- a/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
-+++ b/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
-@@ -11,7 +11,7 @@ description:
-   platforms.
- 
- maintainers:
--  - Sivaprakash Murugesan <sivaprak@codeaurora.org>
-+  - Jassi Brar <jassisinghbrar@gmail.com>
- 
- properties:
-   compatible:
--- 
-2.17.1
+This is a multi-part message in MIME format.
+--------------1BD2A8630832860143C174B8
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
+On 07.09.21 14:17, Jan Beulich wrote:
+> It's not clear to me why only the frontend has been tristate. Switch th=
+e
+> backend to be, too.
+>=20
+> Signed-off-by: Jan Beulich <jbeulich@suse.com>
+
+Pushed to xen/tip.git for-linus-5.15
+
+
+Juergen
+
+--------------1BD2A8630832860143C174B8
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------1BD2A8630832860143C174B8--
+
+--6kZ4hmri5TMIbfx8DVJmz0r56Iu4DOcX5--
+
+--GXCKBqAPGfAuVlhONvxXkTU8QgRAYAYnS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFAV6AFAwAAAAAACgkQsN6d1ii/Ey8G
+lwgAiF+Gq9LN2li0UkCKbMs+kfUngAhO0fpVOO6d++eE147kQKivgp8G3q+7oC2eRzbLjBK5uor6
+NMn7JK8bMq067/f5/CYVi1VuGH2uoC090JOgMWssFNzg0x3nlbXONWq5UGpJz+JY10qLTB1l6r+N
+rmyCJRO3dHTlW4WJkZu/WPTDLhNn6EzkJ2yUz7S4jT9xlVU39x2i3e8o22M2O4GNIqhYz5VMF0RL
+tB1lYYKEq/+t/pTliRhLD/OG4EXPQvw8K86hiMX6yVillnO1OENv69nhm7kcscQDSowJrlj6IMa8
+hbsyKos31ku5hzk+aJVAMlF4gLJ9tkJf9+9nJYjftg==
+=nGWZ
+-----END PGP SIGNATURE-----
+
+--GXCKBqAPGfAuVlhONvxXkTU8QgRAYAYnS--
