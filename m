@@ -2,88 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0693F40ACF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFE140ADD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhINMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232252AbhINMD3 (ORCPT
+        id S232951AbhINMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:37:15 -0400
+Received: from fanzine.igalia.com ([178.60.130.6]:47869 "EHLO
+        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232985AbhINMhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:03:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D69C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sMURhasWH7o24sIx6k+KJwjL13GOVwjz4KzyTqvqMaA=; b=AMH/RfTDsWf9TbGEll27BOuxfZ
-        YBIkPLhTMvDz+/zcYlxvuzyxFdRP5VeN/JLIriAD/nD96kRbe5gsvlT9gYvU35XdBdsONLGGLcuLT
-        YncfwElFeMzY9ID4XsZe8S50K5jzeW9NcGepi733QDc2E5Wo4tJbQNG+DlNoNkKUIlxsy4uigGPQ4
-        SdsBYVh4fpWsnBxj9Yk+6QNWy1s2QnVtt9eP293P8lEBMFc05xwZZ+HupVSPgCOYcdo8SyNwwJKR+
-        f7v3G8S9oV908W54XhpItz0yz/DnXqfRfgwtinVsONMVQovXtVbJBwlfeuAZFy5Zr6muLrRa+m4fK
-        95gzQb5g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQ74f-00Ed2c-5h; Tue, 14 Sep 2021 11:58:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C270730003A;
-        Tue, 14 Sep 2021 13:58:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A3FD52D1FEA0E; Tue, 14 Sep 2021 13:58:03 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 13:58:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Yicong Yang <yangyicong@hisilicon.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        21cnbao@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        prime.zeng@huawei.com,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>
-Subject: Re: [RFC] Perfomance varies according to sysctl_sched_migration_cost
-Message-ID: <YUCOSyFITy/dHcJI@hirez.programming.kicks-ass.net>
-References: <ef3b3e55-8be9-595f-6d54-886d13a7e2fd@hisilicon.com>
- <CAKfTPtDJip17rdZ0CMDwUztE7BGUF+J_O2Up=S5GLYrqtkA67A@mail.gmail.com>
+        Tue, 14 Sep 2021 08:37:11 -0400
+X-Greylist: delayed 2243 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 08:37:08 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
+        h=MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=V389QlEPoa4H0g6tvmBCmXe0Mn/biFCGdcUxSHGw0bg=;
+        b=KSMvgSawYxoMYj3QpeMNiCIgFiuis2WmEklbbbFV3SRfOvRg3IE3CNaJswnjVOLYNI9H9rQUmVY7hxHIzvTtLqHWIZJVFLsjkkfhMIpiFwLJk/BUxnqKlyRRo2vT0EsjELD+VyGArNOCzMEgNLKsBNi8OLuoCWQ3fMsirgI98iLz/rJ3zQLfFBmBI2pWXf6NHwHdRPX33N/+PeG+09Aov5k/NxKgR6IFg3ovqoeLkzOXy9E6m90Th193wzRgowxQh5pUqNsK+tvsqQkIMyUGdT7EgPx1tneQTZcAitUNoFfyyH5REnun4UFR4dbPbfnzmgRtwC2b3oNv+5kVfUDfBA==;
+Received: from 101.red-88-4-142.dynamicip.rima-tde.net ([88.4.142.101] helo=[192.168.2.252])
+        by fanzine.igalia.com with esmtpsa 
+        (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
+        id 1mQ74t-0000M4-1u; Tue, 14 Sep 2021 13:58:19 +0200
+Message-ID: <0f88635bb2da781aede7b63350edc21ccb5c7536.camel@igalia.com>
+Subject: Re: [PATCH 15/16] tty: the rest, stop using tty_flip_buffer_push
+From:   Samuel Iglesias =?ISO-8859-1?Q?Gons=E1lvez?= 
+        <siglesias@igalia.com>
+To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Tue, 14 Sep 2021 13:58:09 +0200
+In-Reply-To: <20210914091415.17918-8-jslaby@suse.cz>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+         <20210914091415.17918-1-jslaby@suse.cz>
+         <20210914091415.17918-8-jslaby@suse.cz>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-UdnmcUv33UBwH0NOJ0sJ"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDJip17rdZ0CMDwUztE7BGUF+J_O2Up=S5GLYrqtkA67A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 11:04:03AM +0200, Vincent Guittot wrote:
-> 
-> I would say that it's a heuristic value that works for most of system
-> but it should probably be tuned per platform. But also note that it's
-> quite difficult to get a correct value
-> 
 
-Right; so back before CFS there was some boot time benchmarks that
-measured something for each sched domain.
+--=-UdnmcUv33UBwH0NOJ0sJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-Conceptually that makes sense, the larger the domain, the larger the
-cost, also, you get per platform etc..
+T24gVHVlLCAyMDIxLTA5LTE0IGF0IDExOjE0ICswMjAwLCBKaXJpIFNsYWJ5IHdyb3RlOgo+IFNp
+bmNlIGNvbW1pdCBhOWMzZjY4ZjNjZDhkICh0dHk6IEZpeCBsb3dfbGF0ZW5jeSBCVUcpIGluIDIw
+MTQsCj4gdHR5X2ZsaXBfYnVmZmVyX3B1c2goKSBpcyBvbmx5IGEgd3JhcHBlciB0byB0dHlfc2No
+ZWR1bGVfZmxpcCgpLiBXZQo+IGFyZQo+IGdvaW5nIHRvIHJlbW92ZSB0aGUgZm9ybWVyLCBzbyBj
+YWxsIHRoZSBsYXR0ZXIgZGlyZWN0bHkgaW4gdGhlIGNvdXBsZQo+IG9mCj4gcmVtYWluaW5nIHVz
+ZXJzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEppcmkgU2xhYnkgPGpzbGFieUBzdXNlLmN6Pgo+IENj
+OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+IENjOiBTYW11ZWwgSWdsZXNpYXMgR29u
+c2FsdmV6IDxzaWdsZXNpYXNAaWdhbGlhLmNvbT4KPiBDYzogSmVucyBUYXByb2dnZSA8amVucy50
+YXByb2dnZUB0YXByb2dnZS5vcmc+Cj4gQ2M6IFNjb3R0IEJyYW5kZW4gPHNjb3R0LmJyYW5kZW5A
+YnJvYWRjb20uY29tPgo+IENjOiBVbGYgSGFuc3NvbiA8dWxmLmhhbnNzb25AbGluYXJvLm9yZz4K
+PiBDYzogIkRhdmlkIFMuIE1pbGxlciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+Cj4gQ2M6IEpha3Vi
+IEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+Cj4gQ2M6IE1hcmNlbCBIb2x0bWFubiA8bWFyY2Vs
+QGhvbHRtYW5uLm9yZz4KPiBDYzogSm9oYW4gSGVkYmVyZyA8am9oYW4uaGVkYmVyZ0BnbWFpbC5j
+b20+Cj4gQ2M6IEx1aXogQXVndXN0byB2b24gRGVudHogPGx1aXouZGVudHpAZ21haWwuY29tPgo+
+IC0tLQo+IMKgZHJpdmVycy9jaGFyL3BjbWNpYS9zeW5jbGlua19jcy5jIHwgMiArLQo+IMKgZHJp
+dmVycy9pcGFjay9kZXZpY2VzL2lwb2N0YWwuY8KgwqAgfCAyICstCj4gwqBkcml2ZXJzL21pc2Mv
+YmNtLXZrL2JjbV92a190dHkuY8KgIHwgMiArLQo+IMKgZHJpdmVycy9tbWMvY29yZS9zZGlvX3Vh
+cnQuY8KgwqDCoMKgwqAgfCAyICstCj4gwqBkcml2ZXJzL25ldC91c2IvaHNvLmPCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgfCAyICstCj4gwqBuZXQvYmx1ZXRvb3RoL3JmY29tbS90dHkuY8KgwqDC
+oMKgwqDCoMKgIHwgNCArKy0tCj4gwqA2IGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
+NyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jaGFyL3BjbWNpYS9zeW5j
+bGlua19jcy5jCj4gYi9kcml2ZXJzL2NoYXIvcGNtY2lhL3N5bmNsaW5rX2NzLmMKPiBpbmRleCA3
+OGJhYmE1NWE4YjUuLjI5YTdhODllZTU4ZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2NoYXIvcGNt
+Y2lhL3N5bmNsaW5rX2NzLmMKPiArKysgYi9kcml2ZXJzL2NoYXIvcGNtY2lhL3N5bmNsaW5rX2Nz
+LmMKPiBAQCAtOTUyLDcgKzk1Miw3IEBAIHN0YXRpYyB2b2lkIHJ4X3JlYWR5X2FzeW5jKE1HU0xQ
+Q19JTkZPICppbmZvLCBpbnQKPiB0Y2QpCj4gwqDCoMKgwqDCoMKgwqDCoH0KPiDCoAo+IMKgwqDC
+oMKgwqDCoMKgwqBpZiAod29yaykKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdHR5
+X2ZsaXBfYnVmZmVyX3B1c2gocG9ydCk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oHR0eV9zY2hlZHVsZV9mbGlwKHBvcnQpOwo+IMKgfQo+IMKgCj4gwqAKPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9pcGFjay9kZXZpY2VzL2lwb2N0YWwuYwo+IGIvZHJpdmVycy9pcGFjay9kZXZpY2Vz
+L2lwb2N0YWwuYwo+IGluZGV4IGMxNGU2NWE1ZDM4Zi4uNzE0ZTJiOGM1NTFmIDEwMDY0NAo+IC0t
+LSBhL2RyaXZlcnMvaXBhY2svZGV2aWNlcy9pcG9jdGFsLmMKPiArKysgYi9kcml2ZXJzL2lwYWNr
+L2RldmljZXMvaXBvY3RhbC5jCj4gQEAgLTE4NCw3ICsxODQsNyBAQCBzdGF0aWMgdm9pZCBpcG9j
+dGFsX2lycV9yeChzdHJ1Y3QgaXBvY3RhbF9jaGFubmVsCj4gKmNoYW5uZWwsIHU4IHNyKQo+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3IgPSBpb3JlYWQ4KCZjaGFubmVsLT5yZWdz
+LT5yLnNyKTsKPiDCoMKgwqDCoMKgwqDCoMKgfSB3aGlsZSAoaXNyICYgY2hhbm5lbC0+aXNyX3J4
+X3JkeV9tYXNrKTsKPiDCoAo+IC3CoMKgwqDCoMKgwqDCoHR0eV9mbGlwX2J1ZmZlcl9wdXNoKHBv
+cnQpOwo+ICvCoMKgwqDCoMKgwqDCoHR0eV9zY2hlZHVsZV9mbGlwKHBvcnQpOwo+IMKgfQo+IMKg
+CgpGb3IgaXBvY3RhbCBjaGFuZ2VzOgoKQWNrZWQtYnk6IFNhbXVlbCBJZ2xlc2lhcyBHb25zw6Fs
+dmV6IDxzaWdsZXNpYXNAaWdhbGlhLmNvbT4KClNhbQoKPiDCoHN0YXRpYyB2b2lkIGlwb2N0YWxf
+aXJxX3R4KHN0cnVjdCBpcG9jdGFsX2NoYW5uZWwgKmNoYW5uZWwpCj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbWlzYy9iY20tdmsvYmNtX3ZrX3R0eS5jIGIvZHJpdmVycy9taXNjL2JjbS0KPiB2ay9i
+Y21fdmtfdHR5LmMKPiBpbmRleCAxYjYwNzZhODljYTYuLjMyODEwOWE3MTliZSAxMDA2NDQKPiAt
+LS0gYS9kcml2ZXJzL21pc2MvYmNtLXZrL2JjbV92a190dHkuYwo+ICsrKyBiL2RyaXZlcnMvbWlz
+Yy9iY20tdmsvYmNtX3ZrX3R0eS5jCj4gQEAgLTExNCw3ICsxMTQsNyBAQCBzdGF0aWMgdm9pZCBi
+Y21fdmtfdHR5X3dxX2hhbmRsZXIoc3RydWN0Cj4gd29ya19zdHJ1Y3QgKndvcmspCj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoGlmIChjb3VudCkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgdHR5X2ZsaXBfYnVmZmVyX3B1c2goJnZrdHR5LT5wb3J0KTsKPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR0eV9zY2hlZHVsZV9m
+bGlwKCZ2a3R0eS0+cG9ydCk7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAvKiBVcGRhdGUgcmVhZCBvZmZzZXQgZnJvbSBzaGFkb3cgcmVnaXN0
+ZXIgdG8KPiBjYXJkICovCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgdmt3cml0ZTMyKHZrLCB2a3R0eS0+cmQsIEJBUl8xLAo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL21tYy9jb3JlL3NkaW9fdWFydC5jCj4gYi9kcml2ZXJzL21tYy9jb3JlL3NkaW9fdWFy
+dC5jCj4gaW5kZXggMDRjMDgyM2UwMzU5Li41NWZjNjdiZDA5MzcgMTAwNjQ0Cj4gLS0tIGEvZHJp
+dmVycy9tbWMvY29yZS9zZGlvX3VhcnQuYwo+ICsrKyBiL2RyaXZlcnMvbW1jL2NvcmUvc2Rpb191
+YXJ0LmMKPiBAQCAtNDE4LDcgKzQxOCw3IEBAIHN0YXRpYyB2b2lkIHNkaW9fdWFydF9yZWNlaXZl
+X2NoYXJzKHN0cnVjdAo+IHNkaW9fdWFydF9wb3J0ICpwb3J0LAo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgKnN0YXR1cyA9IHNkaW9faW4ocG9ydCwgVUFSVF9MU1IpOwo+IMKgwqDC
+oMKgwqDCoMKgwqB9IHdoaWxlICgoKnN0YXR1cyAmIFVBUlRfTFNSX0RSKSAmJiAobWF4X2NvdW50
+LS0gPiAwKSk7Cj4gwqAKPiAtwqDCoMKgwqDCoMKgwqB0dHlfZmxpcF9idWZmZXJfcHVzaCgmcG9y
+dC0+cG9ydCk7Cj4gK8KgwqDCoMKgwqDCoMKgdHR5X3NjaGVkdWxlX2ZsaXAoJnBvcnQtPnBvcnQp
+Owo+IMKgfQo+IMKgCj4gwqBzdGF0aWMgdm9pZCBzZGlvX3VhcnRfdHJhbnNtaXRfY2hhcnMoc3Ry
+dWN0IHNkaW9fdWFydF9wb3J0ICpwb3J0KQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC91c2Iv
+aHNvLmMgYi9kcml2ZXJzL25ldC91c2IvaHNvLmMKPiBpbmRleCA3ZGMxZWYzZjkzYzMuLjU1ZWE2
+NGIxNjJlMSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC91c2IvaHNvLmMKPiArKysgYi9kcml2
+ZXJzL25ldC91c2IvaHNvLmMKPiBAQCAtMjAxOCw3ICsyMDE4LDcgQEAgc3RhdGljIGludCBwdXRf
+cnhidWZfZGF0YShzdHJ1Y3QgdXJiICp1cmIsCj4gc3RydWN0IGhzb19zZXJpYWwgKnNlcmlhbCkK
+PiDCoMKgwqDCoMKgwqDCoMKgaWYgKGNvdW50ID49IHVyYi0+YWN0dWFsX2xlbmd0aCkgewo+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdHR5X2luc2VydF9mbGlwX3N0cmluZygmc2Vy
+aWFsLT5wb3J0LCB1cmItCj4gPnRyYW5zZmVyX2J1ZmZlciwKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHVyYi0+YWN0dWFsX2xlbmd0aCk7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR0
+eV9mbGlwX2J1ZmZlcl9wdXNoKCZzZXJpYWwtPnBvcnQpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqB0dHlfc2NoZWR1bGVfZmxpcCgmc2VyaWFsLT5wb3J0KTsKPiDCoMKgwqDCoMKg
+wqDCoMKgfSBlbHNlIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRldl93YXJu
+KCZzZXJpYWwtPnBhcmVudC0+dXNiLT5kZXYsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgICJkcm9wcGluZyBkYXRhLCAlZCBieXRlcyBsb3N0XG4iLCB1
+cmItCj4gPmFjdHVhbF9sZW5ndGgpOwo+IGRpZmYgLS1naXQgYS9uZXQvYmx1ZXRvb3RoL3JmY29t
+bS90dHkuYyBiL25ldC9ibHVldG9vdGgvcmZjb21tL3R0eS5jCj4gaW5kZXggZWJkNzhmZGJkNmU4
+Li4yYTA5NjM3YmRiMDAgMTAwNjQ0Cj4gLS0tIGEvbmV0L2JsdWV0b290aC9yZmNvbW0vdHR5LmMK
+PiArKysgYi9uZXQvYmx1ZXRvb3RoL3JmY29tbS90dHkuYwo+IEBAIC02MTgsNyArNjE4LDcgQEAg
+c3RhdGljIHZvaWQgcmZjb21tX2Rldl9kYXRhX3JlYWR5KHN0cnVjdAo+IHJmY29tbV9kbGMgKmRs
+Yywgc3RydWN0IHNrX2J1ZmYgKnNrYikKPiDCoMKgwqDCoMKgwqDCoMKgQlRfREJHKCJkbGMgJXAg
+bGVuICVkIiwgZGxjLCBza2ItPmxlbik7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgdHR5X2luc2Vy
+dF9mbGlwX3N0cmluZygmZGV2LT5wb3J0LCBza2ItPmRhdGEsIHNrYi0+bGVuKTsKPiAtwqDCoMKg
+wqDCoMKgwqB0dHlfZmxpcF9idWZmZXJfcHVzaCgmZGV2LT5wb3J0KTsKPiArwqDCoMKgwqDCoMKg
+wqB0dHlfc2NoZWR1bGVfZmxpcCgmZGV2LT5wb3J0KTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqBr
+ZnJlZV9za2Ioc2tiKTsKPiDCoH0KPiBAQCAtNjc3LDcgKzY3Nyw3IEBAIHN0YXRpYyB2b2lkIHJm
+Y29tbV90dHlfY29weV9wZW5kaW5nKHN0cnVjdAo+IHJmY29tbV9kZXYgKmRldikKPiDCoMKgwqDC
+oMKgwqDCoMKgcmZjb21tX2RsY191bmxvY2soZGV2LT5kbGMpOwo+IMKgCj4gwqDCoMKgwqDCoMKg
+wqDCoGlmIChpbnNlcnRlZCA+IDApCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHR0
+eV9mbGlwX2J1ZmZlcl9wdXNoKCZkZXYtPnBvcnQpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqB0dHlfc2NoZWR1bGVfZmxpcCgmZGV2LT5wb3J0KTsKPiDCoH0KPiDCoAo+IMKgLyog
+ZG8gdGhlIHJldmVyc2Ugb2YgaW5zdGFsbCwgY2xlYXJpbmcgdGhlIHR0eSBmaWVsZHMgYW5kIHJl
+bGVhc2luZwo+IHRoZQoK
 
-In practise it had boot to boot variance and virt fail written all over
-it, which is why Ingo ripped it out. I think someone once tried to bring
-some of it back, but that was a long time ago.
 
-I'm also not convinced boot time benchmarks are the best idea, because
-the above reasons, but perhaps we can do something topology based, and
-maybe using a few platform inputs.
+--=-UdnmcUv33UBwH0NOJ0sJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-And as with anything, some benchmarks will like it, others will not like
-it. It's only worth the complexity if we can get an improvement across
-the board.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEQP+ZAvaXWkfuKXiEf/S6MvF9w0MFAmFAjlEACgkQf/S6MvF9
+w0NbiQ//ayCKwShaHxMKd9xRqoMn6pdr4lDJbo2vjiZvpqCGVFmsbJSM+T90oXRY
+pisR1tOhThyJZ0Llsa9fulLZhgaZIjka8jnBnIN4Ntvx2yuNYPHremO7KOg8ZFNq
+SdzRIouhe2IghKlE8yRNori9d7daYniGu2SAnzza+yXVAFG28HwJmzsLxjHyYSjW
+hWfMYpL4xp7aHl4ihDJeMSri+GNDsOL7qzV7j1QOvb8mbHDNV7IUiSDh/ulsS0KU
+s8GRR0dopVDu0GXu2BJ6Lhpr79WpW+ZVBl5YIRjIFK4/7zIQ9u7hvQ/XOxmcPGXz
+607NNnYeOy0s4+GTwD4FIoAIjN0zKAAQ9Wnz6EbBG4p0fagR5fYAk1y/wHi2onJX
+WjtHnU5BBVNEYk90hdKSvWr8Xb97rUln+dTiREteZW/aDIyXnXckSmeMmTPRakYt
+ri8kjFTuWiunGWKFbPsex4Rp2XFyoUCXZDX8Whhaq3+LeyrvcpmZO9B/vEKpyneh
+Sg8Q8vPEMQpuojDk7HpUl7KJWG9DRWHMGOutZdCwCuTwwkYUrJMu1IJxKH7GIfhA
+L2oIuQusy24xb5Mzf+AltLwPIaQ/SxaopfRKwBL4kuukuIkQy/SkzqN9HidxPXx1
+PkNAU1aWn8I7ym/VVkvqS+32cf1+M7xxWstcX5s1cYd69FTW08w=
+=/PAG
+-----END PGP SIGNATURE-----
+
+--=-UdnmcUv33UBwH0NOJ0sJ--
+
