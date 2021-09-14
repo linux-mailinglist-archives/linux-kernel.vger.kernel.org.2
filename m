@@ -2,78 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6658140AE21
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 833EA40AE28
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhINMru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhINMrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:47:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556BBC061574;
-        Tue, 14 Sep 2021 05:46:27 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631623583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q/84IbPNGrTQfQ+vsiQ1jeuVMXcjffcoOobz9HXS1DE=;
-        b=oP2XLefL2yIJ+6Ioj819kz6Q8jspPl/Sjin4qKtUhFC0KKyL99sA2EouK74kKlj9EGFOTr
-        Tg9cb5G1D1N4V2RFqxK9XxmIvyxnkAfjQq87zwuGHECZ1+DzbmcHMeIXhz8+QMhqjDlHz0
-        EjoB2DAO6A7YO0qjixf7DhmedxiZGSJvcX1xKrT6wdao1+ytvgPQZaohTIslaYV0c9DBlC
-        naFi5CGOveKH6VJe+3mkg8lin54ZEwe9Y5O/sk7WQR67pAO1NzVyUGzBhEjZzhH5vueW3Y
-        j7GgXTAaakKKEFtyc06lixWDKYZ1op27Rh+3r6daqrbVPiUOI4XyeWEr1kNMzg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631623583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q/84IbPNGrTQfQ+vsiQ1jeuVMXcjffcoOobz9HXS1DE=;
-        b=gMw3xdcKKC5uepnGYt7QsCS/HH7qJ7ceE7u7+S+xPN02hcBa9frc2eNLT4ImQb7iA6EBFu
-        TISXsPlfK6bRPPAg==
-To:     Xie Yongji <xieyongji@bytedance.com>, bcrl@kvack.org,
-        viro@zeniv.linux.org.uk, axboe@kernel.dk
-Cc:     linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] aio: Fix incorrect usage of eventfd_signal_allowed()
-In-Reply-To: <20210913111928.98-1-xieyongji@bytedance.com>
-References: <20210913111928.98-1-xieyongji@bytedance.com>
-Date:   Tue, 14 Sep 2021 14:46:23 +0200
-Message-ID: <87ee9rcokg.ffs@tglx>
+        id S232916AbhINMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:50:52 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40384 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232664AbhINMuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:50:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=3R0iENPhbr0aRcLlreUU1mA+8RaF3rfMNqlBojkzVcQ=; b=Ck2zRM80L+Qxqipt4mSS11+7qw
+        3wt2R/x852k76evmri64Rl9DQZdFsmxHGWtLNNG3JFK15gV8zrx6/7iALpGpohjLvyr+rLwKVCTN8
+        l1q7Afhc4Zi41eTbyPEqIOXFwmNmTmUPXvQ5eYvbBVyLRSnFL2Ugg7mnkHhuQM1K99Sw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mQ7sP-006aQd-Mg; Tue, 14 Sep 2021 14:49:29 +0200
+Date:   Tue, 14 Sep 2021 14:49:29 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rosen Penev <rosenp@gmail.com>
+Subject: Re: [PATCH net-next] net: phy: at803x: add support for qca 8327
+ internal phy
+Message-ID: <YUCaWdyxY/aKaxqk@lunn.ch>
+References: <20210914071141.2616-1-ansuelsmth@gmail.com>
+ <YUCUar+c28XLOCXV@lunn.ch>
+ <YUCVo4+wS3Q1Tg6Q@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUCVo4+wS3Q1Tg6Q@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13 2021 at 19:19, Xie Yongji wrote:
-> We should defer eventfd_signal() to the workqueue when
-> eventfd_signal_allowed() return false rather than return
-> true.
->
-> Fixes: b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->  fs/aio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/aio.c b/fs/aio.c
-> index 51b08ab01dff..8822e3ed4566 100644
-> --- a/fs/aio.c
-> +++ b/fs/aio.c
-> @@ -1695,7 +1695,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
->  		list_del(&iocb->ki_list);
->  		iocb->ki_res.res = mangle_poll(mask);
->  		req->done = true;
-> -		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
-> +		if (iocb->ki_eventfd && !eventfd_signal_allowed()) {
+> > Have you tried the cable test code on this PHY?
+> 
+> Yes I tried, the documentation is very confusionary and with a simple
+> implementation it looks like it doesn't work at all... In one
+> documentation version the reg for cable test are described but by
+> actually implementing and setting the correct regs nothing happen and
+> the random results are reported. I honestly thing it doesn't support
+> cable test at all...
 
-Thanks for catching that!
+O.K, thanks for testing.
 
->  			iocb = NULL;
->  			INIT_WORK(&req->work, aio_poll_put_work);
->  			schedule_work(&req->work);
+     Andrew
