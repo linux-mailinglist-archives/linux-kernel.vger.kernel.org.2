@@ -2,103 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C687A40A6E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E727B40A6DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240247AbhINGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:52:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232570AbhINGwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:52:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631602266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uo1ypxwE99K2K4JA/RxOGUNqzLACfvlm1lsSRFgGyDc=;
-        b=cCjnWDX1eV7XLQalCYpMOmCVVYrt5qZKOeNqGZNOjisJQ7OxhSdMMZIIDhdjhrXyCH2bMO
-        gl8GdKTJa+KBPVngIy/mcy3U3LCZaLji86PO1iAVf/I/cSCAmugnMypbqHawOmSndtPcrd
-        w0E8pmyADZqXYCFYL9dg6ouIH6sYQaU=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-y21Sj3rBMwG5HLU4eeqkgA-1; Tue, 14 Sep 2021 02:51:02 -0400
-X-MC-Unique: y21Sj3rBMwG5HLU4eeqkgA-1
-Received: by mail-ej1-f72.google.com with SMTP id c25-20020a170906341900b005eea9bf6f4aso3375222ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 23:51:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uo1ypxwE99K2K4JA/RxOGUNqzLACfvlm1lsSRFgGyDc=;
-        b=OjA6b3l5QQclENwk8QsjY7JqI0BFOKmd0zlUVL4VswLdibQ5GUSqJFjs3pTeHPRNR9
-         qTGKdgKmAPjOcK2cGIFpoPYbxYzXkt4LvwL4iY6A3bJ9nZi59zaFNEe5QzKBSA80wnCh
-         XttU16KEglGpsOf5El21aLJGrC2kRdJOjdPhwHqntJuw2JkBv4S4SYTLH2PQVs6QVZEU
-         1B7gzm8gkdIGQ5Re7yD4IAYsGbXb1IeTMOr1ARzjFxVJzSHaInCiawINwQ3VXtIZfxAH
-         1GngbwKCqWYEYifHSbm6P0IaH+wjAl4lckEhY7nrVy04S/AbekawjCcdJEV3lwuv/V6/
-         E+hw==
-X-Gm-Message-State: AOAM531aYF3KFO6j5SWfE398AdffOr4emUrOBp4Yb/bhBkQU8o62sswo
-        knnk6cpB7HWwSIS8hCf01zmqjTngiUaCZzwP0nCR8AvTOikfdfZurudk9GR8ZvHNc3xldF6CP99
-        9Hxe+oJcHGyKqM5+YKGOM9O3K
-X-Received: by 2002:a17:906:686:: with SMTP id u6mr16587580ejb.569.1631602261019;
-        Mon, 13 Sep 2021 23:51:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylIm78jMF8rvHMhD/z1+b0Q3pmhqeY5KYi6PHEiggzRATGOoFe+gFNpkPigFiX6dd/K2Nvxw==
-X-Received: by 2002:a17:906:686:: with SMTP id u6mr16587561ejb.569.1631602260877;
-        Mon, 13 Sep 2021 23:51:00 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id k21sm4417460ejj.55.2021.09.13.23.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 23:51:00 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 08:50:58 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        id S240289AbhINGvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:51:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:40046 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232570AbhINGve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 02:51:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FD871FB;
+        Mon, 13 Sep 2021 23:50:17 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.71.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 363713F719;
+        Mon, 13 Sep 2021 23:50:14 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v6 04/14] KVM: arm64: selftests: Introduce
- ARM64_SYS_KVM_REG
-Message-ID: <20210914065058.3ujet4nesbzxy4vr@gator.home>
-References: <20210913230955.156323-1-rananta@google.com>
- <20210913230955.156323-5-rananta@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913230955.156323-5-rananta@google.com>
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/mm/hotplug: Warn when memory limit has been reduced
+Date:   Tue, 14 Sep 2021 12:21:10 +0530
+Message-Id: <1631602270-29215-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:09:45PM +0000, Raghavendra Rao Ananta wrote:
-> With the inclusion of sysreg.h, that brings in system register
-> encodings, it would be redundant to re-define register encodings
-> again in processor.h to use it with ARM64_SYS_REG for the KVM
-> functions such as set_reg() or get_reg(). Hence, add helper macro,
-> ARM64_SYS_KVM_REG, that converts SYS_* definitions in sysreg.h
-> into ARM64_SYS_REG definitions.
-> 
-> Also replace all the users of ARM64_SYS_REG, relying on
-> the encodings created in processor.h, with ARM64_SYS_KVM_REG and
-> remove the definitions.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Ricardo Koller <ricarkol@google.com>
-> ---
->  .../selftests/kvm/aarch64/debug-exceptions.c  |  2 +-
->  .../selftests/kvm/aarch64/psci_cpu_on_test.c  |  2 +-
->  .../selftests/kvm/include/aarch64/processor.h | 20 ++++++++++---------
->  .../selftests/kvm/lib/aarch64/processor.c     | 16 +++++++--------
->  4 files changed, 21 insertions(+), 19 deletions(-)
->
+If the max memory limit has been reduced with 'mem=' kernel command line
+option, there might be UEFI memory map described memory beyond that limit
+which could be hot removed. This might be problematic for subsequent kexec
+kernel which could just access such removed memory.
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+Memory offline notifier exists because there is no other way to block the
+removal of boot memory, only the offlining (which isn't actually a problem)
+But with 'mem=', there is no chance to stop such boot memory being offlined
+as it where never in use by the kernel. As 'mem=' is a debug only option on
+arm64 platform, just warn for such a situation and move on.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.15-rc1
+
+ arch/arm64/include/asm/memory.h |  1 +
+ arch/arm64/mm/init.c            |  9 +++++++--
+ arch/arm64/mm/mmu.c             | 12 ++++++++++++
+ 3 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index f1745a843414..361d4e01a864 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -353,6 +353,7 @@ static inline void *phys_to_virt(phys_addr_t x)
+ })
+ 
+ void dump_mem_limit(void);
++bool has_mem_limit_reduced(void);
+ #endif /* !ASSEMBLY */
+ 
+ /*
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 37a81754d9b6..cf21edfc8b0f 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -211,6 +211,11 @@ EXPORT_SYMBOL(pfn_is_map_memory);
+ 
+ static phys_addr_t memory_limit = PHYS_ADDR_MAX;
+ 
++bool has_mem_limit_reduced(void)
++{
++	return memory_limit != PHYS_ADDR_MAX;
++}
++
+ /*
+  * Limit the memory size that was specified via FDT.
+  */
+@@ -285,7 +290,7 @@ void __init arm64_memblock_init(void)
+ 	 * high up in memory, add back the kernel region that must be accessible
+ 	 * via the linear mapping.
+ 	 */
+-	if (memory_limit != PHYS_ADDR_MAX) {
++	if (has_mem_limit_reduced()) {
+ 		memblock_mem_limit_remove_map(memory_limit);
+ 		memblock_add(__pa_symbol(_text), (u64)(_end - _text));
+ 	}
+@@ -461,7 +466,7 @@ void free_initmem(void)
+ 
+ void dump_mem_limit(void)
+ {
+-	if (memory_limit != PHYS_ADDR_MAX) {
++	if (has_mem_limit_reduced()) {
+ 		pr_emerg("Memory Limit: %llu MB\n", memory_limit >> 20);
+ 	} else {
+ 		pr_emerg("Memory Limit: none\n");
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index cfd9deb347c3..7ac39ee876c3 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1627,6 +1627,18 @@ static int __init prevent_bootmem_remove_init(void)
+ 	if (!IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
+ 		return ret;
+ 
++	if (has_mem_limit_reduced()) {
++		/*
++		 * Physical memory limit has been reduced via the 'mem=' kernel
++		 * command line option. Memory beyond reduced limit could now be
++		 * removed and reassigned (guest ?) transparently to the kernel.
++		 * This might cause subsequent kexec kernel to crash or at least
++		 * corrupt the memory when accessing UEFI memory map enumerated
++		 * boot memory which might have been repurposed.
++		 */
++		pr_warn("Memory limit reduced, kexec might be problematic\n");
++	}
++
+ 	validate_bootmem_online();
+ 	ret = register_memory_notifier(&prevent_bootmem_remove_nb);
+ 	if (ret)
+-- 
+2.20.1
 
