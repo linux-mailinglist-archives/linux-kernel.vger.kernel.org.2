@@ -2,169 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1117A40B541
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CFF40B547
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhINQue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhINQu1 (ORCPT
+        id S229861AbhINQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:52:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34952 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229379AbhINQwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:50:27 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5095C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:49:09 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so2673757wmq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8cZjnBfKQ98RvNo+t8dXEqCfexHSNrNgQFLczr/dzUw=;
-        b=ZIQJC39PqdNfy6y886PfF/Xyv2QsZ3DqnoJ0S5ozQT5AMmPORdXwJF0cgGxR1S51r3
-         gipsEbV0W+CTKwig18Aid5zMp4RYSRvdqQYmr6PPuQTB/g14jrFlsq00X+H7aoLp4CvG
-         NSESuAgGbCn+bU1oZspQ0hEyU8eCwIaHXmNCE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8cZjnBfKQ98RvNo+t8dXEqCfexHSNrNgQFLczr/dzUw=;
-        b=e3qk5dtGkzqmX8CzkcFFIPm/q/XXW/ILkFn7Qy+FCDFzakMy3JJ0s8IcKj0zYA6m60
-         HT1ikNj7JCDsWzm54Pzs/KJxSy34EfJJ/FsjONE5PJ0qNpwbPHLsj6lX0sDjJR6q91jC
-         lRd6iaITq6n7GNeqOzm/1KCMt+Y/BUP26DVL1QZ1C+/3Jx38M6Q/FtGkasmCsTkqeAdI
-         NOzLUBE7a/4dK4Bu3CyngUa5YxcLIaayANcLwkAa00tb5vOdJBmDX8ueNH7H6Y/VirJx
-         nvK235mLPPgFuL72CkSCX8WzlndSf6UOBn2xCqBTWxOIkAE0t1L/EWEP/2WxXWpeycV7
-         gNlA==
-X-Gm-Message-State: AOAM533YFUVCEhmfvWt9i+27/vvkjKnImeO7qlORf1c3d80up7WUTPis
-        pBuoE8cdX1pVzl7wIvzWwPBTgQ==
-X-Google-Smtp-Source: ABdhPJzqeHEMXP/9pTdykDN6ru9xN7OB6P1teNNIhylfS1EyHKmQABixQp5Mj6EOHF/9gkP8sXVegg==
-X-Received: by 2002:a05:600c:2193:: with SMTP id e19mr54963wme.38.1631638148124;
-        Tue, 14 Sep 2021 09:49:08 -0700 (PDT)
-Received: from localhost ([194.207.141.245])
-        by smtp.gmail.com with ESMTPSA id z79sm310798wmc.17.2021.09.14.09.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 09:49:07 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 17:49:06 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     yongw.pur@gmail.com
-Cc:     tj@kernel.org, mhocko@suse.com, peterz@infradead.org,
-        wang.yong12@zte.com.cn, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.yang29@zte.com.cn
-Subject: Re: [PATCH v2] vmpressure: wake up work only when there is
- registration event
-Message-ID: <YUDSgr+iwVz7iFBN@chrisdown.name>
-References: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
+        Tue, 14 Sep 2021 12:52:05 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18EGacw6017828;
+        Tue, 14 Sep 2021 12:50:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Rh3adKXOvTjnVLe7wTOUMZo3kGUE1+HavKT6nVaxveU=;
+ b=FZP0WW8r6fDKNDLzVE79X/joPRQfRDxRd1pBy/bu0sRMU9tIhDZRAMd/QHCMAVQICxsz
+ aQRudNMD1uNqWG4m/+EAcDs2RVe6R5Q0kvtcBeE8QSXzX52SonJYPUapuAz7vaF7nBYA
+ j84ozPTFlwlVUbwYIKyflqSqbIDvsDLWcjSMvEJmJE2a3QW0ySE4vSI+xSJOhkKaJHXZ
+ gWWZb2tbLzq68LvampgFUKFhtyQZE9UrjAA3fYWekA7896QGuQ+APue95BhQQ/DSg9lh
+ ms+bOyWnO/uZn+MK4XcqNGbH1dAzpo4mL83fMSfyhYzNlEgkSJhxoIqplnEm+1unBYKG ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2ydjg83h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 12:50:45 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18EGe8jT032210;
+        Tue, 14 Sep 2021 12:50:44 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b2ydjg82f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 12:50:44 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18EGTdXN018652;
+        Tue, 14 Sep 2021 16:50:42 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 3b0m39w8d9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 16:50:41 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18EGobta45154708
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 16:50:37 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7DE5D4205E;
+        Tue, 14 Sep 2021 16:50:37 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8CDBA42056;
+        Tue, 14 Sep 2021 16:50:36 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.8.12])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 14 Sep 2021 16:50:36 +0000 (GMT)
+Date:   Tue, 14 Sep 2021 18:50:33 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+Subject: Re: [PATCH resend RFC 0/9] s390: fixes, cleanups and optimizations
+ for page table walkers
+Message-ID: <20210914185033.367020b3@p-imbrenda>
+In-Reply-To: <20210909162248.14969-1-david@redhat.com>
+References: <20210909162248.14969-1-david@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1631635551-8583-1-git-send-email-wang.yong12@zte.com.cn>
-User-Agent: Mutt/2.1.2 (9a92dba0) (2021-08-24)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PFTO1wmqLkc7mGdR--al99-8qbnnou4J
+X-Proofpoint-ORIG-GUID: GntbYdhzAhAgpOL2BHZLbv00a8NJIqdw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 clxscore=1011 mlxscore=0 adultscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109140091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-yongw.pur@gmail.com writes:
->From: wangyong <wang.yong12@zte.com.cn>
->
->Use the global variable num_events to record the number of vmpressure
->events registered by the system, and wake up work only when there is
->registration event.
->Usually, the vmpressure event is not registered in the system, this patch
->can avoid waking up work and doing nothing.
->
->Test with 5.14.0-rc5-next-20210813 on x86_64 4G ram.
->Consume cgroup memory until it is about to be reclaimed, then execute
->"perf stat -I 2000 malloc.out" command to trigger memory reclamation
->and get performance results.
->The context-switches is reduced by about 20 times.
->
->unpatched:
->Average of 10 test results
->582.4674048	task-clock(msec)
->19910.8		context-switches
->0		cpu-migrations
->1292.9		page-faults
->414784733.1	cycles
-><not supported>	stalled-cycles-frontend
-><not supported>	stalled-cycles-backend
->580070698.4	instructions
->125572244.7	branches
->2073541.2	branch-misses
->
->patched
->Average of 10 test results
->973.6174796	task-clock(msec)
->988.6		context-switches
->0		cpu-migrations
->1785.2		page-faults
->772883602.4	cycles
-><not supported>	stalled-cycles-frontend
-><not supported>	stalled-cycles-backend
->1360280911	instructions
->290519434.9	branches
->3378378.2	branch-misses
->
->Tested-by: Zeal Robot <zealci@zte.com.cn>
+On Thu,  9 Sep 2021 18:22:39 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-That's not how Tested-by works. Tested-by is for human testers who have 
-actively understand and have validated the effects of the code, not CI: please 
-remove the tag.
+> Resend because I missed ccing people on the actual patches ...
+> 
+> RFC because the patches are essentially untested and I did not actually
+> try to trigger any of the things these patches are supposed to fix. It
 
->Signed-off-by: wangyong <wang.yong12@zte.com.cn>
->---
->
->Changes since v1:
->-Use static_key type data as global variable
->-Make event registration judgment earlier
->
-> mm/vmpressure.c | 10 ++++++++++
-> 1 file changed, 10 insertions(+)
->
->diff --git a/mm/vmpressure.c b/mm/vmpressure.c
->index 76518e4..6f4e984 100644
->--- a/mm/vmpressure.c
->+++ b/mm/vmpressure.c
->@@ -67,6 +67,11 @@ static const unsigned int vmpressure_level_critical = 95;
->  */
-> static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
->
->+/*
->+ * Count the number of vmpressure events registered in the system.
->+ */
->+DEFINE_STATIC_KEY_FALSE(num_events);
->+
-> static struct vmpressure *work_to_vmpressure(struct work_struct *work)
-> {
-> 	return container_of(work, struct vmpressure, work);
->@@ -272,6 +277,9 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
-> 		return;
->
-> 	if (tree) {
->+		if (!static_branch_unlikely(&num_events))
->+			return;
->+
-> 		spin_lock(&vmpr->sr_lock);
-> 		scanned = vmpr->tree_scanned += scanned;
-> 		vmpr->tree_reclaimed += reclaimed;
->@@ -407,6 +415,7 @@ int vmpressure_register_event(struct mem_cgroup *memcg,
-> 	mutex_lock(&vmpr->events_lock);
-> 	list_add(&ev->node, &vmpr->events);
-> 	mutex_unlock(&vmpr->events_lock);
->+	static_branch_inc(&num_events);
-> 	ret = 0;
-> out:
-> 	kfree(spec_orig);
->@@ -435,6 +444,7 @@ void vmpressure_unregister_event(struct mem_cgroup *memcg,
-> 		if (ev->efd != eventfd)
-> 			continue;
-> 		list_del(&ev->node);
->+		static_branch_dec(&num_events);
-> 		kfree(ev);
-> 		break;
-> 	}
->-- 
->2.7.4
->
->
+this is an interesting series, and the code makes sense, but I would
+really like to see some regression tests, and maybe even some
+selftests to trigger (at least some of) the issues.
+
+the follow-up question is: how did we manage to go on so long without
+noticing these issues? :D
+
+> merely matches my current understanding (and what other code does :) ). I
+> did compile-test as far as possible.
+> 
+> After learning more about the wonderful world of page tables and their
+> interaction with the mmap_sem and VMAs, I spotted some issues in our
+> page table walkers that allow user space to trigger nasty behavior when
+> playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
+> should be hard to trigger, others are fairly easy because we provide
+> conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
+> 
+> Future work:
+> - Don't use get_locked_pte() when it's not required to actually allocate
+>   page tables -- similar to how storage keys are now handled. Examples are
+>   get_pgste() and __gmap_zap.
+> - Don't use get_locked_pte() and instead let page fault logic allocate page
+>   tables when we actually do need page tables -- also, similar to how
+>   storage keys are now handled. Examples are set_pgste_bits() and
+>   pgste_perform_essa().
+> - Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
+>   __gmap_zap() that's very easy.
+> 
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Janosch Frank <frankja@linux.ibm.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
+> 
+> David Hildenbrand (9):
+>   s390/gmap: validate VMA in __gmap_zap()
+>   s390/gmap: don't unconditionally call pte_unmap_unlock() in
+>     __gmap_zap()
+>   s390/mm: validate VMA in PGSTE manipulation functions
+>   s390/mm: fix VMA and page table handling code in storage key handling
+>     functions
+>   s390/uv: fully validate the VMA before calling follow_page()
+>   s390/pci_mmio: fully validate the VMA before calling follow_pte()
+>   s390/mm: no need for pte_alloc_map_lock() if we know the pmd is
+>     present
+>   s390/mm: optimize set_guest_storage_key()
+>   s390/mm: optimize reset_guest_reference_bit()
+> 
+>  arch/s390/kernel/uv.c    |   2 +-
+>  arch/s390/mm/gmap.c      |  11 +++-
+>  arch/s390/mm/pgtable.c   | 109 +++++++++++++++++++++++++++------------
+>  arch/s390/pci/pci_mmio.c |   4 +-
+>  4 files changed, 89 insertions(+), 37 deletions(-)
+> 
+> 
+> base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+
