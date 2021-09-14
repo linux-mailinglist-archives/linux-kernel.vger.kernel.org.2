@@ -2,164 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2688940A267
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A430040A274
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234843AbhINBVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 21:21:55 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:49441 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230131AbhINBVx (ORCPT
+        id S235884AbhINB0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 21:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhINB0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:21:53 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 3CFD9ECB25A;
-        Tue, 14 Sep 2021 11:20:30 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mPx7d-00CCJV-0Z; Tue, 14 Sep 2021 11:20:29 +1000
-Date:   Tue, 14 Sep 2021 11:20:29 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] xfs: convert xfs_sysfs attrs to use ->seq_show
-Message-ID: <20210914012029.GF2361455@dread.disaster.area>
-References: <20210913054121.616001-1-hch@lst.de>
- <20210913054121.616001-14-hch@lst.de>
- <YT7vZthsMCM1uKxm@kroah.com>
+        Mon, 13 Sep 2021 21:26:21 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05912C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:25:05 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id r21so9907942qtw.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:25:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8zeFrHijeuDDSgea2thpakNO3UstBjJsYAAwyq56two=;
+        b=YIQHhW+ZnjrjtKrGd8pHMXPiZJ50qUQ0iOC/25IJGJEZpaYUSt4QPmzq0av6x1Euvo
+         1WYSm0VMnNc2MnQAE8LN2Nng1BcKKn02FNVLI6wsTu4s+2/VKsrvHizh/SVpDlZUDkVe
+         QeawM4MI2DK7zN2IM++TJXzkjRqvG080nqfMgMBuB2V5HA4WWu5c3wr+gR0tECy4ikNX
+         bEBBhPAeDBP7A2gJSm4awv0B70PpXL2T3aUXeLNicEoirvh9F668oL+Xt+iDBIpNsjh0
+         z3wxVaTpSe4CRXuaBnrffFMNHRLBLL1Q+b5n8LXKsDB+9dBgSVleSXRQYopJTAo1UAGx
+         QWVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8zeFrHijeuDDSgea2thpakNO3UstBjJsYAAwyq56two=;
+        b=ZSTVNKXOo9MKcU6NaBQi7dXQCAVgJwEdUhxTnxUOA37ToAm+qCa8qFPD0iV4Rb3Gcu
+         E4w/4XWWCb3Z0V2uAQBWvhoO9Pu2HAbPpEsyU1r2SJ+mihG+on4yxCw4nY0CAHbQWWMf
+         d1ihR0PT2Qr7NhMtof41onOJ97DYBg8FTKpwhz0QyOyNN1va5sqPXORlm+XAZexBILRs
+         VMuw48DfxIXM2BEpUSf5khhSh52AY3gHVbKsoKYsapllOgWD47+MMsK2/bpH7MGnuKTG
+         UOFyyCZ+YiuGF22c6+TrW25zD8VnSd74goPa05PPnBtQmxeNR3CQbZWjkuqYY0qQivM0
+         LdIw==
+X-Gm-Message-State: AOAM532XWhr6d1Cqjb0ijJTy3Dm7o4XWgdIAaGK9vjxWWA7r13w+dVZA
+        POFuzpYd0GrLTwgt6O+4q/3G87yyT3K4hz7XKwp7J9E9MOk=
+X-Google-Smtp-Source: ABdhPJxcUN1eEILXXliVbFFENNwZ7+EUy+yzCOajOV+k2dgoAWPGn91ps4ir835E6uG3JF9r4xYjPqtMqclVvv+fZl4=
+X-Received: by 2002:ac8:410f:: with SMTP id q15mr2260768qtl.299.1631582704131;
+ Mon, 13 Sep 2021 18:25:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YT7vZthsMCM1uKxm@kroah.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=hM_N2pAvqWJ6tqKoahEA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <1631188824-25623-1-git-send-email-huangzhaoyang@gmail.com> <YTouqsXeAGV6c5oV@cmpxchg.org>
+In-Reply-To: <YTouqsXeAGV6c5oV@cmpxchg.org>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Tue, 14 Sep 2021 09:24:43 +0800
+Message-ID: <CAGWkznGFWE3A=QRvQQ89JhX9AG2DsH=vR58-UwZpYA1wbW74gQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] psi : calc psi memstall time more precisely
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, xuewen.yan@unisoc.com,
+        Ke Wang <ke.wang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 08:27:50AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Sep 13, 2021 at 07:41:21AM +0200, Christoph Hellwig wrote:
-> > Trivial conversion to the seq_file based sysfs attributes.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  fs/xfs/xfs_stats.c | 24 +++++-------
-> >  fs/xfs/xfs_stats.h |  2 +-
-> >  fs/xfs/xfs_sysfs.c | 96 +++++++++++++++++++++++-----------------------
-> >  3 files changed, 58 insertions(+), 64 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_stats.c b/fs/xfs/xfs_stats.c
-> > index 20e0534a772c9..71e7a84ba0403 100644
-> > --- a/fs/xfs/xfs_stats.c
-> > +++ b/fs/xfs/xfs_stats.c
-> > @@ -16,10 +16,9 @@ static int counter_val(struct xfsstats __percpu *stats, int idx)
-> >  	return val;
-> >  }
-> >  
-> > -int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
-> > +void xfs_stats_format(struct xfsstats __percpu *stats, struct seq_file *sf)
-> >  {
-> >  	int		i, j;
-> > -	int		len = 0;
-> >  	uint64_t	xs_xstrat_bytes = 0;
-> >  	uint64_t	xs_write_bytes = 0;
-> >  	uint64_t	xs_read_bytes = 0;
-> > @@ -58,13 +57,12 @@ int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
-> >  	/* Loop over all stats groups */
-> >  
-> >  	for (i = j = 0; i < ARRAY_SIZE(xstats); i++) {
-> > -		len += scnprintf(buf + len, PATH_MAX - len, "%s",
-> > -				xstats[i].desc);
-> > +		seq_printf(sf, "%s", xstats[i].desc);
-> > +
-> >  		/* inner loop does each group */
-> >  		for (; j < xstats[i].endpoint; j++)
-> > -			len += scnprintf(buf + len, PATH_MAX - len, " %u",
-> > -					counter_val(stats, j));
-> > -		len += scnprintf(buf + len, PATH_MAX - len, "\n");
-> > +			seq_printf(sf, " %u", counter_val(stats, j));
-> > +		seq_printf(sf, "\n");
-> >  	}
-> >  	/* extra precision counters */
-> >  	for_each_possible_cpu(i) {
-> > @@ -74,18 +72,14 @@ int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
-> >  		defer_relog += per_cpu_ptr(stats, i)->s.defer_relog;
-> >  	}
-> >  
-> > -	len += scnprintf(buf + len, PATH_MAX-len, "xpc %Lu %Lu %Lu\n",
-> > +	seq_printf(sf, "xpc %Lu %Lu %Lu\n",
-> >  			xs_xstrat_bytes, xs_write_bytes, xs_read_bytes);
-> > -	len += scnprintf(buf + len, PATH_MAX-len, "defer_relog %llu\n",
-> > -			defer_relog);
-> > -	len += scnprintf(buf + len, PATH_MAX-len, "debug %u\n",
-> > +	seq_printf(sf, "defer_relog %llu\n", defer_relog);
-> >  #if defined(DEBUG)
-> > -		1);
-> > +	seq_printf(sf, "debug 1\n");
-> >  #else
-> > -		0);
-> > +	seq_printf(sf, "debug 0\n");
-> >  #endif
-> > -
-> > -	return len;
-> >  }
-> 
-> That is a sysfs file?  What happened to the "one value per file" rule
-> here?
-
-
-There is no "rule" that says syfs files must contain one value per
-file; the documentation says that one value per file is the
-"preferred" format.  Documentation/filesystems/sysfs.rst:
-
-[...]
-Attributes
-...
-Attributes should be ASCII text files, preferably with only one value
-per file. It is noted that it may not be efficient to contain only one
-value per file, so it is socially acceptable to express an array of
-values of the same type.
-[...]
-
-We are exposing a large array of integer values here, so multiple
-values per file are explicitly considered an acceptible format.
-Further, as there are roughly 200 individual stats in this file and
-calculating each stat requires per-cpu aggregation, the the cost of
-calculating and reading each stat individually is prohibitive, not
-just inefficient.
-
-So, yes, we might have multiple lines in the file that you can frown
-about, but OTOH the file format has been exposed as a kernel ABI for
-a couple of decades via /proc/fs/xfs/stat. Hence exposing it in
-sysfs to provide a more fine-grained breakdown of the stats (per
-mount instead of global) is a no-brainer. We don't have to rewrite
-the parsing engines in multiple userspace monitoring programs to
-extract this information from the kernel - they just create a new
-instance and read a different file and it all just works.
-
-Indeed, there's precedence for such /proc file formats in more
-fine-grained sysfs files. e.g.  /sys/bus/node/devices/node<n>/vmstat
-and /sys/bus/node/devices/node<n>/meminfo retain the same format
-(and hence userspace parsers) for the per-node stats as /proc/vmstat
-and /proc/meminfo use for the global stats...
-
-tl;dr: the file contains arrays of values, it's inefficient to read
-values one at a time, it's a pre-existing ABI-constrainted file
-format, there's precedence in core kernel statistics
-implementations and the documented guidelines allow this sort of
-usage in these cases.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+On Thu, Sep 9, 2021 at 11:54 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Thu, Sep 09, 2021 at 08:00:24PM +0800, Huangzhaoyang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >
+> > psi's memstall time is counted as simple as exit - entry so far, which ignore
+> > the task's off cpu time. Fix it by calc the percentage of off time via task and
+> > rq's util and runq load.
+> >
+> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+>
+> Can you please explain what practical problem you are trying to solve?
+>
+> If a reclaimer gets preempted and has to wait for CPU, should that
+> stall be attributed to a lack of memory? Some of it should, since page
+> reclaim consumed CPU budget that would've otherwise been available for
+> doing real work. The application of course may still have experienced
+> a CPU wait outside of reclaim, but potentially a shorter one. Memory
+> pressure can definitely increase CPU pressure (as it can IO pressure).
+The preempted time which is mentioned here can be separated into 2
+categories. First one is cfs task preempted because running out of the
+share of schedule_lantency. The second one is preempted by RT,DL and
+IRQs. IMO, the previous is reasonable to be counted in stall time,
+while the second one NOT.
+>
+> Proportional and transitive accounting - how much of total CPU load is
+> page reclaim, and thus how much of each runq wait is due to memory
+> pressure - would give more precise answers. But generally discounting
+> off-CPU time in a stall is not any more correct than including it all.
+>
+> This is doable, but I think there needs to be better justification for
+> providing this level of precision, since it comes with code complexity
+> that has performance and maintenance overhead.
+The rq's utilization of load tracking provides an easy way to compute
+such proportion. A new commit has been given out which mainly deals
+with the 2nd scenario described above. The statistics of the precision
+are provided together.
