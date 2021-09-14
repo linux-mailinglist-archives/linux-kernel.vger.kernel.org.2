@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B37F40AB8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3550440AB8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhINKVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:21:11 -0400
-Received: from mga18.intel.com ([134.134.136.126]:48829 "EHLO mga18.intel.com"
+        id S231732AbhINKVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:21:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:48821 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231206AbhINKUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:20:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209044068"
+        id S231316AbhINKUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:20:53 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209044073"
 X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="209044068"
+   d="scan'208";a="209044073"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 03:19:31 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 03:19:35 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="543895838"
+   d="scan'208";a="543895853"
 Received: from brentlu-brix.itwn.intel.com ([10.5.253.10])
-  by FMSMGA003.fm.intel.com with ESMTP; 14 Sep 2021 03:19:28 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Sep 2021 03:19:32 -0700
 From:   Brent Lu <brent.lu@intel.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -41,9 +41,9 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Rander Wang <rander.wang@intel.com>,
         Paul Olaru <paul.olaru@oss.nxp.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] ASoC: Intel: sof_rt5682: support ALC5682I-VS codec
-Date:   Tue, 14 Sep 2021 18:18:44 +0800
-Message-Id: <20210914101847.778688-2-brent.lu@intel.com>
+Subject: [PATCH 2/4] ASoC: intel: sof_rt5682: support jsl_rt5682s_rt1015p board
+Date:   Tue, 14 Sep 2021 18:18:45 +0800
+Message-Id: <20210914101847.778688-3-brent.lu@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210914101847.778688-1-brent.lu@intel.com>
 References: <20210914101847.778688-1-brent.lu@intel.com>
@@ -53,176 +53,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new quirk SOF_RT5682S_HEADPHONE_CODEC_PRESENT to support
-ALC5682I-VS headphone codec which driver is a new one, rt5682s, with
-new macros and functions.
+This patch adds driver data for two ALC1015Q-VB speaker amplifiers on
+SSP1 and one ALC5682I-VS headphone codec on SSP0 for JSL platform.
+
+Topology is leveraged from jsl_rt5682_rt1015p since the capability of
+two ALC5682 variants is the same.
 
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- sound/soc/intel/boards/Kconfig      |  1 +
- sound/soc/intel/boards/sof_rt5682.c | 75 ++++++++++++++++++++++-------
- 2 files changed, 58 insertions(+), 18 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c               | 10 ++++++++++
+ sound/soc/intel/common/soc-acpi-intel-jsl-match.c |  8 ++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index 61b71d6c44cf..3e20c697b569 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -470,6 +470,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 	select SND_SOC_RT1015
- 	select SND_SOC_RT1015P
- 	select SND_SOC_RT5682_I2C
-+	select SND_SOC_RT5682S
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
- 	select SND_SOC_INTEL_HDA_DSP_COMMON
 diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index f096bd6d69be..69d1d9742ba5 100644
+index 69d1d9742ba5..eba67a99a6fe 100644
 --- a/sound/soc/intel/boards/sof_rt5682.c
 +++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -18,9 +18,11 @@
- #include <sound/soc.h>
- #include <sound/sof.h>
- #include <sound/rt5682.h>
-+#include <sound/rt5682s.h>
- #include <sound/soc-acpi.h>
- #include "../../codecs/rt1015.h"
- #include "../../codecs/rt5682.h"
-+#include "../../codecs/rt5682s.h"
- #include "../../codecs/hdac_hdmi.h"
- #include "../common/soc-intel-quirks.h"
- #include "hda_dsp_common.h"
-@@ -56,6 +58,7 @@
- #define SOF_BT_OFFLOAD_SSP(quirk)	\
- 	(((quirk) << SOF_BT_OFFLOAD_SSP_SHIFT) & SOF_BT_OFFLOAD_SSP_MASK)
- #define SOF_SSP_BT_OFFLOAD_PRESENT		BIT(22)
-+#define SOF_RT5682S_HEADPHONE_CODEC_PRESENT	BIT(23)
- 
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -208,9 +211,16 @@ static int sof_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- 	/* need to enable ASRC function for 24MHz mclk rate */
- 	if ((sof_rt5682_quirk & SOF_RT5682_MCLK_EN) &&
- 	    (sof_rt5682_quirk & SOF_RT5682_MCLK_24MHZ)) {
--		rt5682_sel_asrc_clk_src(component, RT5682_DA_STEREO1_FILTER |
--					RT5682_AD_STEREO1_FILTER,
--					RT5682_CLK_SEL_I2S1_ASRC);
-+		if (sof_rt5682_quirk & SOF_RT5682S_HEADPHONE_CODEC_PRESENT)
-+			rt5682s_sel_asrc_clk_src(component,
-+						 RT5682S_DA_STEREO1_FILTER |
-+						 RT5682S_AD_STEREO1_FILTER,
-+						 RT5682S_CLK_SEL_I2S1_ASRC);
-+		else
-+			rt5682_sel_asrc_clk_src(component,
-+						RT5682_DA_STEREO1_FILTER |
-+						RT5682_AD_STEREO1_FILTER,
-+						RT5682_CLK_SEL_I2S1_ASRC);
- 	}
- 
- 	if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
-@@ -277,7 +287,7 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	int clk_id, clk_freq, pll_out, ret;
-+	int pll_id, pll_source, pll_in, pll_out, clk_id, ret;
- 
- 	if (sof_rt5682_quirk & SOF_RT5682_MCLK_EN) {
- 		if (sof_rt5682_quirk & SOF_RT5682_MCLK_BYTCHT_EN) {
-@@ -289,35 +299,52 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
- 			}
- 		}
- 
--		clk_id = RT5682_PLL1_S_MCLK;
-+		if (sof_rt5682_quirk & SOF_RT5682S_HEADPHONE_CODEC_PRESENT)
-+			pll_source = RT5682S_PLL_S_MCLK;
-+		else
-+			pll_source = RT5682_PLL1_S_MCLK;
- 
- 		/* get the tplg configured mclk. */
--		clk_freq = sof_dai_get_mclk(rtd);
-+		pll_in = sof_dai_get_mclk(rtd);
- 
- 		/* mclk from the quirk is the first choice */
- 		if (sof_rt5682_quirk & SOF_RT5682_MCLK_24MHZ) {
--			if (clk_freq != 24000000)
-+			if (pll_in != 24000000)
- 				dev_warn(rtd->dev, "configure wrong mclk in tplg, please use 24MHz.\n");
--			clk_freq = 24000000;
--		} else if (clk_freq == 0) {
-+			pll_in = 24000000;
-+		} else if (pll_in == 0) {
- 			/* use default mclk if not specified correct in topology */
--			clk_freq = 19200000;
--		} else if (clk_freq < 0) {
--			return clk_freq;
-+			pll_in = 19200000;
-+		} else if (pll_in < 0) {
-+			return pll_in;
- 		}
- 	} else {
--		clk_id = RT5682_PLL1_S_BCLK1;
--		clk_freq = params_rate(params) * 50;
-+		if (sof_rt5682_quirk & SOF_RT5682S_HEADPHONE_CODEC_PRESENT)
-+			pll_source = RT5682S_PLL_S_BCLK1;
-+		else
-+			pll_source = RT5682_PLL1_S_BCLK1;
-+
-+		pll_in = params_rate(params) * 50;
-+	}
-+
-+	if (sof_rt5682_quirk & SOF_RT5682S_HEADPHONE_CODEC_PRESENT) {
-+		pll_id = RT5682S_PLL2;
-+		clk_id = RT5682S_SCLK_S_PLL2;
-+	} else {
-+		pll_id = RT5682_PLL1;
-+		clk_id = RT5682_SCLK_S_PLL1;
- 	}
- 
- 	pll_out = params_rate(params) * 512;
- 
--	ret = snd_soc_dai_set_pll(codec_dai, 0, clk_id, clk_freq, pll_out);
-+	/* Configure pll for codec */
-+	ret = snd_soc_dai_set_pll(codec_dai, pll_id, pll_source, pll_in,
-+				  pll_out);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "snd_soc_dai_set_pll err = %d\n", ret);
- 
- 	/* Configure sysclk for codec */
--	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-+	ret = snd_soc_dai_set_sysclk(codec_dai, clk_id,
- 				     pll_out, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-@@ -560,6 +587,13 @@ static struct snd_soc_dai_link_component rt5682_component[] = {
- 	}
- };
- 
-+static struct snd_soc_dai_link_component rt5682s_component[] = {
+@@ -1046,6 +1046,16 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(2) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
 +	{
-+		.name = "i2c-RTL5682:00",
-+		.dai_name = "rt5682s-aif1",
-+	}
-+};
-+
- static struct snd_soc_dai_link_component dmic_component[] = {
- 	{
- 		.name = "dmic-codec",
-@@ -610,8 +644,13 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 		goto devm_err;
- 
- 	links[id].id = id;
--	links[id].codecs = rt5682_component;
--	links[id].num_codecs = ARRAY_SIZE(rt5682_component);
-+	if (sof_rt5682_quirk & SOF_RT5682S_HEADPHONE_CODEC_PRESENT) {
-+		links[id].codecs = rt5682s_component;
-+		links[id].num_codecs = ARRAY_SIZE(rt5682s_component);
-+	} else {
-+		links[id].codecs = rt5682_component;
-+		links[id].num_codecs = ARRAY_SIZE(rt5682_component);
-+	}
- 	links[id].platforms = platform_component;
- 	links[id].num_platforms = ARRAY_SIZE(platform_component);
- 	links[id].init = sof_rt5682_codec_init;
++		.name = "jsl_rt5682s_rt1015p",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_MCLK_24MHZ |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_RT5682S_HEADPHONE_CODEC_PRESENT |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT1015P_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1)),
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 69ff7286d357..3cfab0c782a4 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -81,6 +81,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &mx98360a_spk,
+ 		.sof_tplg_filename = "sof-jsl-cs42l42-mx98360a.tplg",
+ 	},
++	{
++		.id = "RTL5682",
++		.drv_name = "jsl_rt5682s_rt1015p",
++		.sof_fw_filename = "sof-jsl.ri",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rt1015p_spk,
++		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_jsl_machines);
 -- 
 2.25.1
 
