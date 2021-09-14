@@ -2,199 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1971540A5CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F09940A5CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239265AbhINFOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 01:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239500AbhINFOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:14:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBAB860F21;
-        Tue, 14 Sep 2021 05:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631596384;
-        bh=AUC88WAiX+VR+fTnlcmenz58rltr9CQ7tv88IFx/wQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gtm192x0anPgl38s8NNt3Wc46OwSlcp1LPVgM7PqMhdMDKdSPFD1Q4IclJL6sBYta
-         0BHtaIko7qK2PtfubiSe9GirD3MujUh3/nvebHmjtO4OdZDw1NHjwSlQiDXtJh2t9G
-         kAq4V7av/nhvVE56YXW3AU6pps/ZzeUu247yxXzM=
-Date:   Tue, 14 Sep 2021 07:12:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] xfs: convert xfs_sysfs attrs to use ->seq_show
-Message-ID: <YUAvSx42abg5S2ym@kroah.com>
-References: <20210913054121.616001-1-hch@lst.de>
- <20210913054121.616001-14-hch@lst.de>
- <YT7vZthsMCM1uKxm@kroah.com>
- <20210914012029.GF2361455@dread.disaster.area>
+        id S239492AbhINFPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 01:15:06 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:14042 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239319AbhINFPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 01:15:05 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210914051346epoutp01166c6a73ce18b9c45ac081d4527a5bc1~kmE4wIfWD0435304353epoutp01N
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:13:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210914051346epoutp01166c6a73ce18b9c45ac081d4527a5bc1~kmE4wIfWD0435304353epoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631596426;
+        bh=R25NOvnUBSkJT6aqilTCPohjpfRCYDrv5wDWT17K454=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=giGp+jlpPaXPnHlwCQIXyasWm2NtL/qQ34954mBHYr+uQtEIwFyW7TbQU/Hda5Ejp
+         tmdBS5HctjA6lBkoawI+PkjTF+V1jy783pxLbMU4x/KOfY1L/qlrhC3oMrMcSYrJnS
+         N63neom3EGcbANNSHYsWztBqoCzGDKTwfXHdoF/I=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210914051345epcas2p4486b7a86a267105dcfe5be23214ec66a~kmE4F4RPB3180531805epcas2p4a;
+        Tue, 14 Sep 2021 05:13:45 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.185]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4H7s2H1sK8z4x9Qg; Tue, 14 Sep
+        2021 05:13:43 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DC.62.09472.68F20416; Tue, 14 Sep 2021 14:13:42 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210914051340epcas2p2a3d6facb33cd92f4e4a8361aa63e0be1~kmEzRrhZ52453424534epcas2p2C;
+        Tue, 14 Sep 2021 05:13:40 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210914051340epsmtrp1f89e46370feb63ddeed686e58bef3c87~kmEzQv__M1932419324epsmtrp1e;
+        Tue, 14 Sep 2021 05:13:40 +0000 (GMT)
+X-AuditID: b6c32a48-d5fff70000002500-f8-61402f86fc11
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        71.AC.09091.48F20416; Tue, 14 Sep 2021 14:13:40 +0900 (KST)
+Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210914051340epsmtip1a27dbf05cf501de47c5f0cb1e169cc05~kmEy-zp7R1965319653epsmtip1g;
+        Tue, 14 Sep 2021 05:13:40 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     "'Bart Van Assche'" <bvanassche@acm.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <beanhuo@micron.com>, <cang@codeaurora.org>,
+        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
+        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
+        <bhoon95.kim@samsung.com>
+In-Reply-To: <c6b2007b-155b-18b2-e45d-06f600c98797@acm.org>
+Subject: RE: [PATCH v2 1/3] scsi: ufs: introduce vendor isr
+Date:   Tue, 14 Sep 2021 14:13:40 +0900
+Message-ID: <000101d7a927$47dc7d50$d79577f0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914012029.GF2361455@dread.disaster.area>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFyn/7MkbxYHt33UvraYb1f3WYrLgJsxD2CAe3deC0BytsbgKw74pYw
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPJsWRmVeSWpSXmKPExsWy7bCmmW6bvkOiwe8TPBYnn6xhs3gwbxub
+        xcufV9ksDj7sZLH4uvQZq8W0Dz+ZLT6tX8ZqsXrxAxaLRTe2MVlc3jWHzaL7+g42i+XH/zFZ
+        dN29wWix9N9bFgc+j8tXvD0u9/UyeSze85LJY8KiA4we39d3sHl8fHqLxaNvyypGj8+b5Dza
+        D3QzBXBG5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXm
+        AB2vpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQw
+        MDIFqkzIyTjwfwVzwTWmim0fr7M0ME5n6mLk5JAQMJG4cmI1cxcjF4eQwA5GiRtXtrFDOJ8Y
+        Jb7cf8oC4XxjlHiw6BgzTMu084+gqvYCVTU1M0I4LxglZlw4CzaYTUBbYtrD3awgCRGBFmaJ
+        K3s/gSU4Bawlbrx6zQpiCwPZex7vZwexWQRUJW6tmAW0j4ODV8BSouGPGUiYV0BQ4uTMJywg
+        NrOAvMT2t3OgrlCQ+Pl0GdgYEQE3iYmbjzNB1IhIzO5sA3tIQuAOh8Tqq4ehPnWROHZzJiOE
+        LSzx6vgWdghbSuJlfxuUXS+xb2oDK0RzD6PE033/oBqMJWY9a2cEOY5ZQFNi/S59EFNCQFni
+        yC2o2/gkOg7/ZYcI80p0tAlBNCpL/Jo0GWqIpMTMm3egNnlITHjSxjiBUXEWki9nIflyFpJv
+        ZiHsXcDIsopRLLWgODc9tdiowAQ5tjcxglO2lscOxtlvP+gdYmTiYDzEKMHBrCTCu+2NbaIQ
+        b0piZVVqUX58UWlOavEhRlNgsE9klhJNzgdmjbySeENTIzMzA0tTC1MzIwslcd7zry0ThQTS
+        E0tSs1NTC1KLYPqYODilGphy51kGvm3ZyB/+sc/Ae3FqH793bmrvt239xcaBh6zuKgi69p0/
+        ZsfetMR1TlY2w4nOe3JNpatN/x1wWF64IHna8Xly/6/sexJ9yKt+W/Le/+vz/GRvr/hcqhIT
+        9Pf3x9pVgj8kBUQjo5n++bH5he+oue/qtHg3p+uVBKnNEyVfnvEX9VI83KNcs/jRGnaTj3qz
+        OHZ+e8dZJdOdxJ7BJSy8NTzhw/Zln1j0OTeIhiz7IPZ+wrq2qXXSQTcNdy6ON53Rsi0ptmXj
+        BOauD/tXPrrUxXsrmeNyVe3FnA3H1B7dVP0zU4310wHzRmnOcIHrvu8OrFpa+k6F4Ua+9YW7
+        G7NZp/y4qBW15KVUuNCzVjMlluKMREMt5qLiRABFP4itYgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsWy7bCSnG6LvkOiwYkeZYuTT9awWTyYt43N
+        4uXPq2wWBx92slh8XfqM1WLah5/MFp/WL2O1WL34AYvFohvbmCwu75rDZtF9fQebxfLj/5gs
+        uu7eYLRY+u8tiwOfx+Ur3h6X+3qZPBbvecnkMWHRAUaP7+s72Dw+Pr3F4tG3ZRWjx+dNch7t
+        B7qZAjijuGxSUnMyy1KL9O0SuDIO/F/BXHCNqWLbx+ssDYzTmboYOTkkBEwkpp1/xN7FyMEh
+        JLCbUWIND0RYUuLEzueMELawxP2WI6xdjFxAJc8YJbonrgFLsAloS0x7uBssISIwhVnizrWj
+        bBBVnUwSC9/fYwOp4hSwlrjx6jUriC0MZO95vJ8dxGYRUJW4tWIWC8hmXgFLiYY/ZiBhXgFB
+        iZMzn7CA2MxAC57efAply0tsfzuHGeIiBYmfT5eBjRQRcJOYuPk4E0SNiMTszjbmCYxCs5CM
+        moVk1Cwko2YhaVnAyLKKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10vOT93EyM4QrU0dzBuX/VB
+        7xAjEwfjIUYJDmYlEd5tb2wThXhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2a
+        WpBaBJNl4uCUamCK53/KKGFY/yfjQFvo0qkzFm59PFXM4GpYKe9WLWU3a7O0LYu2pK8oFrrO
+        4JAvqXM5R1n5LNPd+GhlvywVld+OIRf/+B0M41i94EdkqEqX5opKdafiB182PWMvack00Hzw
+        5FyG+5y3Nbzdhq8+PrUMkbzvOy+y4kDI61WMG7ftebYo5ficqudLNO7erb2trfhvxxFf6WlL
+        mBM2RDyKunZjh4OojRbvBYnKTfqzF29IyXwVMympWaGnsIPXzk1HRFbHeP7FV9b+tTsZe7vF
+        5y/5oDGNbRGn0wxmdhcHjwVVd86+ETlT8Yn9vK6ClPknm4+/JrMki+jeOvqBQ8EyPSJhWhyT
+        XclUk2eimyanaSqxFGckGmoxFxUnAgDuh1CfPwMAAA==
+X-CMS-MailID: 20210914051340epcas2p2a3d6facb33cd92f4e4a8361aa63e0be1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210913081150epcas2p11f98eed5939bf082981e2a4d6fd9a059
+References: <cover.1631519695.git.kwmad.kim@samsung.com>
+        <CGME20210913081150epcas2p11f98eed5939bf082981e2a4d6fd9a059@epcas2p1.samsung.com>
+        <6801341a6c4d533597050eb1aaa5bf18214fc47f.1631519695.git.kwmad.kim@samsung.com>
+        <c6b2007b-155b-18b2-e45d-06f600c98797@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 11:20:29AM +1000, Dave Chinner wrote:
-> On Mon, Sep 13, 2021 at 08:27:50AM +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Sep 13, 2021 at 07:41:21AM +0200, Christoph Hellwig wrote:
-> > > Trivial conversion to the seq_file based sysfs attributes.
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> > >  fs/xfs/xfs_stats.c | 24 +++++-------
-> > >  fs/xfs/xfs_stats.h |  2 +-
-> > >  fs/xfs/xfs_sysfs.c | 96 +++++++++++++++++++++++-----------------------
-> > >  3 files changed, 58 insertions(+), 64 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_stats.c b/fs/xfs/xfs_stats.c
-> > > index 20e0534a772c9..71e7a84ba0403 100644
-> > > --- a/fs/xfs/xfs_stats.c
-> > > +++ b/fs/xfs/xfs_stats.c
-> > > @@ -16,10 +16,9 @@ static int counter_val(struct xfsstats __percpu *stats, int idx)
-> > >  	return val;
-> > >  }
-> > >  
-> > > -int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
-> > > +void xfs_stats_format(struct xfsstats __percpu *stats, struct seq_file *sf)
-> > >  {
-> > >  	int		i, j;
-> > > -	int		len = 0;
-> > >  	uint64_t	xs_xstrat_bytes = 0;
-> > >  	uint64_t	xs_write_bytes = 0;
-> > >  	uint64_t	xs_read_bytes = 0;
-> > > @@ -58,13 +57,12 @@ int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
-> > >  	/* Loop over all stats groups */
-> > >  
-> > >  	for (i = j = 0; i < ARRAY_SIZE(xstats); i++) {
-> > > -		len += scnprintf(buf + len, PATH_MAX - len, "%s",
-> > > -				xstats[i].desc);
-> > > +		seq_printf(sf, "%s", xstats[i].desc);
-> > > +
-> > >  		/* inner loop does each group */
-> > >  		for (; j < xstats[i].endpoint; j++)
-> > > -			len += scnprintf(buf + len, PATH_MAX - len, " %u",
-> > > -					counter_val(stats, j));
-> > > -		len += scnprintf(buf + len, PATH_MAX - len, "\n");
-> > > +			seq_printf(sf, " %u", counter_val(stats, j));
-> > > +		seq_printf(sf, "\n");
-> > >  	}
-> > >  	/* extra precision counters */
-> > >  	for_each_possible_cpu(i) {
-> > > @@ -74,18 +72,14 @@ int xfs_stats_format(struct xfsstats __percpu *stats, char *buf)
-> > >  		defer_relog += per_cpu_ptr(stats, i)->s.defer_relog;
-> > >  	}
-> > >  
-> > > -	len += scnprintf(buf + len, PATH_MAX-len, "xpc %Lu %Lu %Lu\n",
-> > > +	seq_printf(sf, "xpc %Lu %Lu %Lu\n",
-> > >  			xs_xstrat_bytes, xs_write_bytes, xs_read_bytes);
-> > > -	len += scnprintf(buf + len, PATH_MAX-len, "defer_relog %llu\n",
-> > > -			defer_relog);
-> > > -	len += scnprintf(buf + len, PATH_MAX-len, "debug %u\n",
-> > > +	seq_printf(sf, "defer_relog %llu\n", defer_relog);
-> > >  #if defined(DEBUG)
-> > > -		1);
-> > > +	seq_printf(sf, "debug 1\n");
-> > >  #else
-> > > -		0);
-> > > +	seq_printf(sf, "debug 0\n");
-> > >  #endif
-> > > -
-> > > -	return len;
-> > >  }
-> > 
-> > That is a sysfs file?  What happened to the "one value per file" rule
-> > here?
-> 
-> 
-> There is no "rule" that says syfs files must contain one value per
-> file; the documentation says that one value per file is the
-> "preferred" format.  Documentation/filesystems/sysfs.rst:
-> 
-> [...]
-> Attributes
-> ...
-> Attributes should be ASCII text files, preferably with only one value
-> per file. It is noted that it may not be efficient to contain only one
-> value per file, so it is socially acceptable to express an array of
-> values of the same type.
-> [...]
-> 
+> Since "static inline irqreturn_t ufshcd_vendor_isr_def(struct ufs_hba
+> *hba)" occupies less than 80 columns please use a single line for the
+> declaration of this function. Additionally, please leave out the "inline"
+> keyword since modern compilers are good at deciding when to inline a
+> function and when not.
 
-An array of values is one thing like "what is the power states for this
-device".  A list of different key/value pairs is a totally different
-thing entirely.
+Got it. Thanks.
 
-> We are exposing a large array of integer values here, so multiple
-> values per file are explicitly considered an acceptible format.
-
-Not really, that was not the goal of sysfs at all.
-
-> Further, as there are roughly 200 individual stats in this file and
-> calculating each stat requires per-cpu aggregation, the the cost of
-> calculating and reading each stat individually is prohibitive, not
-> just inefficient.
-
-Have you measured it?  How often does the file get read and by what
-tools?
-
-We have learned from our past mistakes in /proc where we did this in the
-past and required keeping obsolete values and constantly tweaking
-userspace parsers.  That is why we made sysfs one-value-per-file.  If
-the file is not there, the value is not there, much easier to handle
-future changes.
-
-> So, yes, we might have multiple lines in the file that you can frown
-> about, but OTOH the file format has been exposed as a kernel ABI for
-> a couple of decades via /proc/fs/xfs/stat.
-
-proc had no such rules, but we have learned :)
-
-> Hence exposing it in
-> sysfs to provide a more fine-grained breakdown of the stats (per
-> mount instead of global) is a no-brainer. We don't have to rewrite
-> the parsing engines in multiple userspace monitoring programs to
-> extract this information from the kernel - they just create a new
-> instance and read a different file and it all just works.
-
-But then you run into the max size restriction on sysfs files
-(PAGE_SIZE) and things break down.
-
-Please don't do this.
-
-> Indeed, there's precedence for such /proc file formats in more
-> fine-grained sysfs files. e.g.  /sys/bus/node/devices/node<n>/vmstat
-> and /sys/bus/node/devices/node<n>/meminfo retain the same format
-> (and hence userspace parsers) for the per-node stats as /proc/vmstat
-> and /proc/meminfo use for the global stats...
-
-And I have complained about those files in the past many times.  And
-they are running into problems in places dealing with them too.
-
-> tl;dr: the file contains arrays of values, it's inefficient to read
-> values one at a time, it's a pre-existing ABI-constrainted file
-> format, there's precedence in core kernel statistics
-> implementations and the documented guidelines allow this sort of
-> usage in these cases.
-
-I would prefer not to do this, and I will not take core sysfs changes to
-make this any easier.
-
-Which is one big reason why I don't like just making sysfs use the seq
-file api, it would allow stuff like this to propagate to other places in
-the kernel.
-
-Maybe I should cut the file size of a sysfs file down to PAGE_SIZE/4 or
-less, that might be better :)
-
-thanks,
-
-greg k-h
