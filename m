@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EF740A719
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76AA40A74E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240577AbhINHK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:10:57 -0400
-Received: from mail-vk1-f182.google.com ([209.85.221.182]:34580 "EHLO
-        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240407AbhINHKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:10:50 -0400
-Received: by mail-vk1-f182.google.com with SMTP id 13so4443104vkl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:09:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=saxwiOrMQux4utpjc3YYE3pe8qPFO8tP4XAe7Pl8cfE=;
-        b=VVWlA9gU2j++WFmn8EWe3Az/VU+/fo3YExOau4yUkYRDH33a/qF3Fkba6tQ4a6+nRj
-         BiBaTOZECswKYSp+1pwM55fMwlXWSAolsl7dWDW7O+AsR7xKfprE3VdeHXMsyUSRw1W7
-         XCKyuYPtOzQybCujTPk36dLLWbeV45XHNrg9ahnUBLLxOvyp44PdCWJP43zsJLES7qNv
-         2Lo3eFHKebFQ3zohmDlCe1ez3RG6tG1LjZ2g0stvZYHPyVO/tFwv0hy/8tX9h9KIx/6L
-         Yd6+kr7P/XU8g75fKyUyQPYbHWjkUqhlsgppG+EqscbbB1KOHqljgiA9sRfTf5n2EkEn
-         zbNQ==
-X-Gm-Message-State: AOAM532aWBMsJTYFv9oPaBukGXWjvbOFKwF2M0ZatUi1DaKjdaczveNo
-        kM5bBl88FORnNBdcc8CNzO3abYZuwtV+U5r1IYHQXbsC
-X-Google-Smtp-Source: ABdhPJwtH0fzfhw5kI8DUaCOOuHWNj9B3Z85JKqsUnM1DTTLlKDmHQ/npR6LJBYNBygFtgPNX+Q4exBGSt/HH2jW/s0=
-X-Received: by 2002:a1f:9743:: with SMTP id z64mr7398091vkd.15.1631603373724;
- Tue, 14 Sep 2021 00:09:33 -0700 (PDT)
+        id S240672AbhINHZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:25:53 -0400
+Received: from mga02.intel.com ([134.134.136.20]:60742 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230108AbhINHZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 03:25:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209140145"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="209140145"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 00:24:34 -0700
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="543828297"
+Received: from yangzhon-virtual.bj.intel.com (HELO yangzhon-Virtual) ([10.238.144.101])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 14 Sep 2021 00:24:27 -0700
+Date:   Tue, 14 Sep 2021 15:10:30 +0800
+From:   Yang Zhong <yang.zhong@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE
+ all pages
+Message-ID: <20210914071030.GA28797@yangzhon-Virtual>
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210914043928.4066136-1-saravanak@google.com> <20210914043928.4066136-5-saravanak@google.com>
-In-Reply-To: <20210914043928.4066136-5-saravanak@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Sep 2021 09:09:22 +0200
-Message-ID: <CAMuHMdV7K1Le5ed3KVizcRDJHp7Ntw2wdUOjz-6_A_MA1x6P+Q@mail.gmail.com>
-Subject: Re: [PATCH v1 4/5] driver core: Add debug logs when fwnode links are added/deleted
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913131153.1202354-1-pbonzini@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 6:39 AM Saravana Kannan <saravanak@google.com> wrote:
-> This will help with debugging fw_devlink issues.
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+On Mon, Sep 13, 2021 at 09:11:51AM -0400, Paolo Bonzini wrote:
+> Based on discussions from the previous week(end), this series implements
+> a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
+> file descriptor.  Other possibilities, such as closing and reopening
+> the device, are racy.
+> 
+> The patches are untested, but I am posting them because they are simple
+> and so that Yang Zhong can try using them in QEMU.
+> 
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+  Paolo, i re-implemented one reset patch in the Qemu side to call this ioctl(),
+  and did some tests on Windows and Linux guest, the Windows/Linux guest reboot 
+  work well.
 
-Gr{oetje,eeting}s,
+  So, it is time for me to send this reset patch to Qemu community? or wait for
+  this kernel patchset merged? thanks! 
+     
+  Yang
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Paolo
+> 
+> Paolo Bonzini (2):
+>   x86: sgx_vepc: extract sgx_vepc_remove_page
+>   x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
+> 
+>  arch/x86/include/uapi/asm/sgx.h |  2 ++
+>  arch/x86/kernel/cpu/sgx/virt.c  | 48 ++++++++++++++++++++++++++++++---
+>  2 files changed, 47 insertions(+), 3 deletions(-)
+> 
+> -- 
+> 2.27.0
