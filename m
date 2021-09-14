@@ -2,193 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC2D40B28B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A7040B27F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhINPJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:09:00 -0400
-Received: from mga18.intel.com ([134.134.136.126]:9934 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233858AbhINPI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:08:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209115430"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="209115430"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 08:06:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="472024055"
-Received: from wilesamy-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.131.20])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 08:06:00 -0700
-Date:   Tue, 14 Sep 2021 08:05:58 -0700
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-doc@vger.kernel.org, linux-cxl@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.14 03/25] cxl: Move cxl_core to new directory
-Message-ID: <20210914150558.n3lbmmt7h6o2uz6a@intel.com>
-References: <20210913223339.435347-1-sashal@kernel.org>
- <20210913223339.435347-3-sashal@kernel.org>
- <20210914095623.00005306@Huawei.com>
- <20210914095749.0000151f@Huawei.com>
+        id S233757AbhINPHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233437AbhINPHy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:07:54 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668F0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:06:36 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id i4so12386236lfv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EzJJglIKGC48QdUN7q/bO92tR/bPSNOmcPTOelyHSLI=;
+        b=QyiBaTXqJT3tfSj4FPnn3N5NJbOe8F+Cu+G+6IjAqi1mR6mzzmZRvnorZfNh67EhgA
+         E0kmmFugaVyuhHWBDxX1l7I+O8WXBOV2L4Z+uUWbE6+aB3Aglp62OhtimUbqhHFm7JEG
+         OFKxbo3qvCrdOzHN6gHAlI/xSVf+/qxXpALTbxz9eU9/8C6R0mH80f4oTEibxIdtjGJX
+         SuAtDKyMruCYj438VU1jDvmCVcoomgJSNJEuCINoVMe5TJNmefdcbBT02IEPDGYSQPjC
+         7mUJMxirCuXltF2UDOy3ZJMzjVcmfCpiIE/AJAmNQKpi5iQLyoGI9yHg4VL5Gz974KeL
+         WAgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EzJJglIKGC48QdUN7q/bO92tR/bPSNOmcPTOelyHSLI=;
+        b=Qwchh763E6FZr5dTqij1FxLuZeagO2Kg9EDPMT6kSe5YL+6fQyefmRNBpMC1Akjlmq
+         on8AeXyTEoGQTLNQtFUpQVt6Q4/GT24jKPhJ+jj0u+AMAW1Qu34qab6Ph0zijNd6SLSP
+         h2WhjicmaZCmA2oovIDrjFGNlVbpAP2U3HwtejY0KoIrWrx3FakqzO96gBI0gov41Mi9
+         SuqbOF+VaOxvIFFwTGET0QC7MXHj/TjhGQffdJrj4/znHGGaKR8xWwkZSwgFBwaOi+CN
+         8nSMiKPlkqfOVJXCuxMAGEgz/D7A7nzizprnF7Bj42XmlkyAvCDaWOFRwXJYu/zjEszW
+         USPg==
+X-Gm-Message-State: AOAM532JWi8jJdXKu2L9vJ0aUciI+LthIOQIHRqSfYBSIDDeUZe8Fr6P
+        jXHxq9SmpzqIcOIpdu+oXujeITfR/a48wwnEyqI+uw==
+X-Google-Smtp-Source: ABdhPJyfzYJNUVcid0Mv8SrxwCc8R0D2eUc9I9Ak+tqlBDDyuc1xrf0IHGsLNaiPxPe8a7FMvUdpMXF8J8LcpwRWLp4=
+X-Received: by 2002:a05:6512:14f:: with SMTP id m15mr8378352lfo.82.1631631994438;
+ Tue, 14 Sep 2021 08:06:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914095749.0000151f@Huawei.com>
+References: <50a91600-173f-ae8f-e194-4649a9f8176b@linux.vnet.ibm.com> <20210914162223.363dd7c2@canb.auug.org.au>
+In-Reply-To: <20210914162223.363dd7c2@canb.auug.org.au>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 14 Sep 2021 08:06:22 -0700
+Message-ID: <CAKwvOdmHH-tOkCPGX-Si7gSujKj-CV3O5UjZD7BNtsTKwMmkeA@mail.gmail.com>
+Subject: Re: [5.15-rc1][PPC][bisected 6d2ef226] mainline build breaks at
+ ./include/linux/compiler_attributes.h:62:5: warning: "__has_attribute"
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        sachinp <sachinp@linux.vnet.ibm.com>, ojeda@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-09-14 09:57:49, Jonathan Cameron wrote:
-> On Tue, 14 Sep 2021 09:56:23 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
-> > On Mon, 13 Sep 2021 18:33:17 -0400
-> > Sasha Levin <sashal@kernel.org> wrote:
-> > 
-> > > From: Ben Widawsky <ben.widawsky@intel.com>
-> > > 
-> > > [ Upstream commit 5161a55c069f53d88da49274cbef6e3c74eadea9 ]
-> > > 
-> > > CXL core is growing, and it's already arguably unmanageable. To support
-> > > future growth, move core functionality to a new directory and rename the
-> > > file to represent just bus support. Future work will remove non-bus
-> > > functionality.
-> > > 
-> > > Note that mem.h is renamed to cxlmem.h to avoid a namespace collision
-> > > with the global ARCH=um mem.h header.  
-> > 
-> > Not a fix...
-> > 
-> > I'm guessing this got picked up on the basis of the Reported-by: tag?
-> > I think that was added for a minor tweak as this went through review rather
-> > than referring to the whole patch.
-> Or possibly because it was a precursor to the fix in the next patch.
-> 
-> Hmm.  Ben, Dan, does it make sense for these two to go into stable?
-> 
-> Jonathan
+On Mon, Sep 13, 2021 at 11:22 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi Abdul,
+>
+> On Tue, 14 Sep 2021 11:39:44 +0530 Abdul Haleem <abdhalee@linux.vnet.ibm.com> wrote:
+> >
+> > Today's mainline kernel fails to compile on my powerpc box with below errors
+> >
+> > ././include/linux/compiler_attributes.h:62:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+> >   #if __has_attribute(__assume_aligned__)
+> >       ^~~~~~~~~~~~~~~
+> > ././include/linux/compiler_attributes.h:62:20: error: missing binary operator before token "("
+> >   #if __has_attribute(__assume_aligned__)
+> >                      ^
+> > ././include/linux/compiler_attributes.h:88:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+> >   #if __has_attribute(__copy__)
+> >       ^~~~~~~~~~~~~~~
+> > ././include/linux/compiler_attributes.h:88:20: error: missing binary operator before token "("
+> >   #if __has_attribute(__copy__)
+> >
+> > Kernel builds fine when below patch is reverted
+> >
+> > commit 6d2ef22 : compiler_attributes.h: drop __has_attribute() support for gcc4
+>
+> Thanks for your report.
+>
+> This is known and being addressed.
 
-As of now, no, but having this will make future fixes much easier to cherry
-pick.
-
-> 
-> > 
-> > Jonathan
-> > 
-> > 
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > Link: https://lore.kernel.org/r/162792537866.368511.8915631504621088321.stgit@dwillia2-desk3.amr.corp.intel.com
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > ---
-> > >  Documentation/driver-api/cxl/memory-devices.rst | 2 +-
-> > >  drivers/cxl/Makefile                            | 4 +---
-> > >  drivers/cxl/core/Makefile                       | 5 +++++
-> > >  drivers/cxl/{core.c => core/bus.c}              | 4 ++--
-> > >  drivers/cxl/{mem.h => cxlmem.h}                 | 0
-> > >  drivers/cxl/pci.c                               | 2 +-
-> > >  drivers/cxl/pmem.c                              | 2 +-
-> > >  7 files changed, 11 insertions(+), 8 deletions(-)
-> > >  create mode 100644 drivers/cxl/core/Makefile
-> > >  rename drivers/cxl/{core.c => core/bus.c} (99%)
-> > >  rename drivers/cxl/{mem.h => cxlmem.h} (100%)
-> > > 
-> > > diff --git a/Documentation/driver-api/cxl/memory-devices.rst b/Documentation/driver-api/cxl/memory-devices.rst
-> > > index 487ce4f41d77..a86e2c7c551a 100644
-> > > --- a/Documentation/driver-api/cxl/memory-devices.rst
-> > > +++ b/Documentation/driver-api/cxl/memory-devices.rst
-> > > @@ -36,7 +36,7 @@ CXL Core
-> > >  .. kernel-doc:: drivers/cxl/cxl.h
-> > >     :internal:
-> > >  
-> > > -.. kernel-doc:: drivers/cxl/core.c
-> > > +.. kernel-doc:: drivers/cxl/core/bus.c
-> > >     :doc: cxl core
-> > >  
-> > >  External Interfaces
-> > > diff --git a/drivers/cxl/Makefile b/drivers/cxl/Makefile
-> > > index 32954059b37b..d1aaabc940f3 100644
-> > > --- a/drivers/cxl/Makefile
-> > > +++ b/drivers/cxl/Makefile
-> > > @@ -1,11 +1,9 @@
-> > >  # SPDX-License-Identifier: GPL-2.0
-> > > -obj-$(CONFIG_CXL_BUS) += cxl_core.o
-> > > +obj-$(CONFIG_CXL_BUS) += core/
-> > >  obj-$(CONFIG_CXL_MEM) += cxl_pci.o
-> > >  obj-$(CONFIG_CXL_ACPI) += cxl_acpi.o
-> > >  obj-$(CONFIG_CXL_PMEM) += cxl_pmem.o
-> > >  
-> > > -ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL
-> > > -cxl_core-y := core.o
-> > >  cxl_pci-y := pci.o
-> > >  cxl_acpi-y := acpi.o
-> > >  cxl_pmem-y := pmem.o
-> > > diff --git a/drivers/cxl/core/Makefile b/drivers/cxl/core/Makefile
-> > > new file mode 100644
-> > > index 000000000000..ad137f96e5c8
-> > > --- /dev/null
-> > > +++ b/drivers/cxl/core/Makefile
-> > > @@ -0,0 +1,5 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +obj-$(CONFIG_CXL_BUS) += cxl_core.o
-> > > +
-> > > +ccflags-y += -DDEFAULT_SYMBOL_NAMESPACE=CXL -I$(srctree)/drivers/cxl
-> > > +cxl_core-y := bus.o
-> > > diff --git a/drivers/cxl/core.c b/drivers/cxl/core/bus.c
-> > > similarity index 99%
-> > > rename from drivers/cxl/core.c
-> > > rename to drivers/cxl/core/bus.c
-> > > index a2e4d54fc7bc..0815eec23944 100644
-> > > --- a/drivers/cxl/core.c
-> > > +++ b/drivers/cxl/core/bus.c
-> > > @@ -6,8 +6,8 @@
-> > >  #include <linux/pci.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/idr.h>
-> > > -#include "cxl.h"
-> > > -#include "mem.h"
-> > > +#include <cxlmem.h>
-> > > +#include <cxl.h>
-> > >  
-> > >  /**
-> > >   * DOC: cxl core
-> > > diff --git a/drivers/cxl/mem.h b/drivers/cxl/cxlmem.h
-> > > similarity index 100%
-> > > rename from drivers/cxl/mem.h
-> > > rename to drivers/cxl/cxlmem.h
-> > > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> > > index 4cf351a3cf99..a945c5fda292 100644
-> > > --- a/drivers/cxl/pci.c
-> > > +++ b/drivers/cxl/pci.c
-> > > @@ -12,9 +12,9 @@
-> > >  #include <linux/pci.h>
-> > >  #include <linux/io.h>
-> > >  #include <linux/io-64-nonatomic-lo-hi.h>
-> > > +#include "cxlmem.h"
-> > >  #include "pci.h"
-> > >  #include "cxl.h"
-> > > -#include "mem.h"
-> > >  
-> > >  /**
-> > >   * DOC: cxl pci
-> > > diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
-> > > index 0088e41dd2f3..9652c3ee41e7 100644
-> > > --- a/drivers/cxl/pmem.c
-> > > +++ b/drivers/cxl/pmem.c
-> > > @@ -6,7 +6,7 @@
-> > >  #include <linux/ndctl.h>
-> > >  #include <linux/async.h>
-> > >  #include <linux/slab.h>
-> > > -#include "mem.h"
-> > > +#include "cxlmem.h"
-> > >  #include "cxl.h"
-> > >  
-> > >  /*  
-> > 
-> 
+Thanks for the report. Support for GCC 4.X has been dropped.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=76ae847497bc5207c479de5e2ac487270008b19b
+-- 
+Thanks,
+~Nick Desaulniers
