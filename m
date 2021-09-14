@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B2240B442
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1C840B449
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhINQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S234989AbhINQP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhINQNh (ORCPT
+        with ESMTP id S231684AbhINQP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:13:37 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F989C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:12:20 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id y144so15438774qkb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:12:20 -0700 (PDT)
+        Tue, 14 Sep 2021 12:15:57 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD246C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:14:33 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id s20so19740967oiw.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=I7DiJbd0cxUCLQIOVYzn8bpAGXC1DpRRoThWyrXU5us=;
-        b=VLAPpylLAYTeobmTkVR3mMWEApbSzQVCY6y9NZmlGqOYAYmCLqLovz+JRKOW4zbFQO
-         SsICmqARfpElDi01jfGPfhfGp+XbjOWG5j7xhqkXBcfxNTtfN0Q2EHL2YIPXJAmE5lqq
-         9fO4vT4ebWpM51oXh2PN3UzJN/nZE167NxFttlYk9zDneLRVxgg54Ms6stPw+IfwS8fE
-         BcU8DH0Wkz0TT/2TEuDT6T2VOxScMtYxzNvvbGLNasoE4MraqR/e/O1maoUvya4XQnt5
-         8ZqntLHL5K06ZWcY7hFsB6CkWDvb6eMwUQMOMC/DyK5zV21pUx/5Wgk/nJhjm274HIe8
-         i/Og==
+        bh=Bayy++x+q4ZvPh0XfqtGYK+C1gpsHQlhZj47g4V8IeQ=;
+        b=An8f7RFCD2w7aWPhrfYgWH7oUfRSscFDHWB2hOayxWdmgE2vuQZi8tael3xG5oiEll
+         MAeXeu6QkjyCEaTO18HrHbmfc22UNkBHglkKJCr4h2EaAlRkdzcLQdLV6eU2JxJsMokx
+         vmFWNMXE3vS2rSh7VBbMXATTCgbR/rHQxetoKudb/YxuOgSh8BabqKLNoA1U8seoUJvb
+         xJ0GHzBPjYFUVaFTczXLYlh4reIiNZvHMBLU4osF6gZodsSOMv76BlW62cpy1MeqcDMw
+         KhV2MOxsIeFHNMHSZ4cS8VhnvhWoMKTw2vwvglJlSkgmLlTCGxtBLURvZMnRHHQhgVFi
+         eHIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=I7DiJbd0cxUCLQIOVYzn8bpAGXC1DpRRoThWyrXU5us=;
-        b=hLFpXCFgMHm65TEEQ2Yiyng8KXNr2QMKWB2hPg2+ih0lxgnpXPlpmScP9pg1OVhu1j
-         Iebeu9isZwTZNFAj5uOjxNu3dIg27E8alDiGROliUxaeCuKMJ9rK/SAYlGS9nfZ4zWmm
-         gzUXhghcCe2pI34B5LNflwM0oRbWQ4s2YUHYIEos8XseVUJHdV2fkyW7SFvNTq+a9EXP
-         /aaWnS9vReUnNfpSrtBx1VSoy4i9WxuGRs4vSywgEvt3ZXszNQ0b7E1vxWFF4xCqHso9
-         //6vAQ+QEdzU5d9eMC0TMMh8zsdFzIFHyXw5PflNuGq3XrKgt/mmzkvbj6WrPFLfLdhK
-         oqtw==
-X-Gm-Message-State: AOAM532IGY+Ef1w457kUNMKVtBM3Z3knGFkZFx+kd0eQzTGVb4Lrzd3t
-        MeUeU5AvSNYkVBHaTGx64kztfw==
-X-Google-Smtp-Source: ABdhPJx4jViYSyei0WdKfCFMJbXr109wAbeh5pMtA2HJlrp+YG8SrdRPcGb67UHsXDEjE3Pl7PPDDA==
-X-Received: by 2002:a05:620a:4541:: with SMTP id u1mr5785047qkp.106.1631635939466;
-        Tue, 14 Sep 2021 09:12:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id s18sm7826361qkj.87.2021.09.14.09.12.18
+        bh=Bayy++x+q4ZvPh0XfqtGYK+C1gpsHQlhZj47g4V8IeQ=;
+        b=sLA+F56SmPRZCXU0JOl4W4h7TybkTZ3e5nyfIWRiJtwMXZhfps1DQWB7xXygQSaoTA
+         hZ/FEVtRC0FXmzMdbXuq6TJmYP7eNnU65rBgU0YoUSekZ5aqMpbVE1r999xGNdICgytc
+         H11aKRf1xT267S8ahm4+Z5owsGZaTYREYc2gGSS+iniPpzRnLotOGZlzVEGsBe1HVZ69
+         bxykppcZJ1/P51Y3O8WGVT1FpwnGreD9k/ia2B5eTVJJHZHZIVkQApZQK5N4AQ23qvpp
+         gLfh55ZZ4u1UxQ6kBkJbWQMC2FZrYGWElwwM0Tywo7XmOq2POn8x6tdxhS8spy3yv+Is
+         BhyA==
+X-Gm-Message-State: AOAM533XIPL4xmp/LTOiCr16cySPTantakF/+SD/u81bwf7m/CKVgKMP
+        qdxAsVXYPSJRhF14xVjf5zcfNQ==
+X-Google-Smtp-Source: ABdhPJycW74bahLCuLxw+NBWjUNIBq41E4aq+9jVnngqziSSjBuWG+6vsk4fiI85MbLzijc5BJ9qfA==
+X-Received: by 2002:aca:220a:: with SMTP id b10mr2024338oic.101.1631636072753;
+        Tue, 14 Sep 2021 09:14:32 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y138sm2523722oie.22.2021.09.14.09.14.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 09:12:18 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQB2g-000UiF-8O; Tue, 14 Sep 2021 13:12:18 -0300
-Date:   Tue, 14 Sep 2021 13:12:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <ogabbay@kernel.org>, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, christian.koenig@amd.com,
-        galpress@amazon.com, sleybo@amazon.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, dledford@redhat.com,
-        airlied@gmail.com, alexander.deucher@amd.com, leonro@nvidia.com,
-        hch@lst.de, amd-gfx@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210914161218.GF3544071@ziepe.ca>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+        Tue, 14 Sep 2021 09:14:32 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 11:14:30 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Vinod Koul <vkoul@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 16/18] arm64: dts: qcom: sm6350: Add iommus property
+ to USB1
+Message-ID: <YUDKZh5bEiXUspFV@builder.lan>
+References: <20210828131814.29589-1-konrad.dybcio@somainline.org>
+ <20210828131814.29589-16-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+In-Reply-To: <20210828131814.29589-16-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > Hi,
-> > Re-sending this patch-set following the release of our user-space TPC
-> > compiler and runtime library.
-> > 
-> > I would appreciate a review on this.
+On Sat 28 Aug 08:18 CDT 2021, Konrad Dybcio wrote:
+
+> This is required for us to be able to access the associated registers, which
+> are (on at least some devices) gated by default.
 > 
-> I think the big open we have is the entire revoke discussions. Having the
-> option to let dma-buf hang around which map to random local memory ranges,
-> without clear ownership link and a way to kill it sounds bad to me.
+
+Please either merge this with the patch that introduces the SMMU (which
+I presume causes this "issue") or introduce the SMMU earlier in the
+series.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm6350.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> I think there's a few options:
-> - We require revoke support. But I've heard rdma really doesn't like that,
->   I guess because taking out an MR while holding the dma_resv_lock would
->   be an inversion, so can't be done. Jason, can you recap what exactly the
->   hold-up was again that makes this a no-go?
-
-RDMA HW can't do revoke.
-
-So we have to exclude almost all the HW and several interesting use
-cases to enable a revoke operation.
-
->   - For non-revokable things like these dma-buf we'd keep a drm_master
->     reference around. This would prevent the next open to acquire
->     ownership rights, which at least prevents all the nasty potential
->     problems.
-
-This is what I generally would expect, the DMABUF FD and its DMA
-memory just floats about until the unrevokable user releases it, which
-happens when the FD that is driving the import eventually gets closed.
-
-I still don't think any of the complexity is needed, pinnable memory
-is a thing in Linux, just account for it in mlocked and that is
-enough.
-
-Jason
+> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> index a3a1f0e63ace..95e69d9f8657 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> @@ -584,6 +584,7 @@ usb_1_dwc3: dwc3@a600000 {
+>  				compatible = "snps,dwc3";
+>  				reg = <0 0x0a600000 0 0xcd00>;
+>  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> +				iommus = <&apps_smmu 0x540 0x0>;
+>  				snps,dis_u2_susphy_quirk;
+>  				snps,dis_enblslpm_quirk;
+>  				snps,has-lpm-erratum;
+> -- 
+> 2.33.0
+> 
