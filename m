@@ -2,80 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC3A40BACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8089040BAD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbhINV5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48726 "EHLO mail.kernel.org"
+        id S235137AbhINV5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232332AbhINV5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:57:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5AEF6121E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:56:28 +0000 (UTC)
+        id S235050AbhINV5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:57:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD138610A2;
+        Tue, 14 Sep 2021 21:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631656588;
-        bh=Ll67rbRc4gUJ+9O6OdSRmSgY9jfPA8IAo6JjA+x1hKU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Udg92vXYImQdyjpQl+ASXx87nMDQoj2aOOHovGwilHCR+klPFzIhRcEeFsGQXmfUt
-         xpdhwREuaTG2c15927DSgbzrValOG471FoHq6NaYXbkbT6TrP+lLXNMGCqtNEy7+xp
-         NOIu4AGcWgrdEzEp2dRut4gVfP/nFzIIyWW+hPncI9AWEGZ1OgLt0oV8WIFnfpkCuz
-         I0djqguPVpltb8MdQWCFYuXN5/RY+Kwn2OtgFLw1RNBB9V/n3Kyafkdh9mrRUVZjIb
-         IP/R3j+anRGh1ql3vIqGSX/KwXD2NHEeTASgPPQc3ix2iY2FmlcOS37kWa8VXjPcdx
-         mQ1DyoNaymn3Q==
-Received: by mail-wr1-f43.google.com with SMTP id t18so642891wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 14:56:28 -0700 (PDT)
-X-Gm-Message-State: AOAM531yI15RgSZWEEdQYxaDysBi152H8khKVoJe3eUoiBgnsV70afIS
-        YHLxOc3dRRH0OPlBAVSsopyRu9Bbn40q57EOZkQ=
-X-Google-Smtp-Source: ABdhPJwsJiXicBpos94epT3BeGaurFR0M7Eaki/aPYqnwGuBJ4F62qUa2Keqa9OxSn+hcsUV7Is58Qm+qSntB7EzDHY=
-X-Received: by 2002:a5d:528b:: with SMTP id c11mr1274072wrv.369.1631656587222;
- Tue, 14 Sep 2021 14:56:27 -0700 (PDT)
+        s=k20201202; t=1631656590;
+        bh=26RRDY4MrZRQbocGIi6oFL7ljTt1+HyBdeo7BWgaEQk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=rT003wPUsYOAJsOIrh5OiC2X9TCTTYGabsS1zZE7RxoQXAftXmBP4J3BmEUh2Z2ud
+         NibvcfZOaaE7md8JZ13O+Yo3/afFRxcMciO4eWAPb7akXDlxj4rRR73TwJSOG7Y2NU
+         EaCwxQkGPvUhzuWVPtnIHHjY8yHVUgOUTsICcdoi4A74mmKCb+rpt5uFtw+X9C87ij
+         yQiT/aJ1/7ndD36XvCztA9b43CQjHIxOTrdBxTS4ZaOUFeb9F3HbxILinEvKYylxxY
+         DQ9MgrnEAljriNvk/v4Of3OjEE9jxujWh8wYmdCcwr4A+Qzg99e1JR9/CpfUbzErr3
+         yUZYFbp993NIw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210914210508.10627-1-harry.wentland@amd.com>
-In-Reply-To: <20210914210508.10627-1-harry.wentland@amd.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 14 Sep 2021 23:56:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a243ruO-7H79yZ49_+5RVQk4V7kE_=Ffy7Gko-um_0VBA@mail.gmail.com>
-Message-ID: <CAK8P3a243ruO-7H79yZ49_+5RVQk4V7kE_=Ffy7Gko-um_0VBA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Reduce stack size for dml21_ModeSupportAndSystemConfigurationFull
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210914025554.5686-2-shawn.guo@linaro.org>
+References: <20210914025554.5686-1-shawn.guo@linaro.org> <20210914025554.5686-2-shawn.guo@linaro.org>
+Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for clk_smd_rpm_branch_ops
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Date:   Tue, 14 Sep 2021 14:56:28 -0700
+Message-ID: <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 11:05 PM Harry Wentland <harry.wentland@amd.com> wrote:
->
-> [Why & How]
-> With Werror enabled in the kernel we were failing the clang build since
-> dml21_ModeSupportAndSystemConfigurationFull's stack frame is 1064 when
-> building with clang, and exceeding the default 1024 stack frame limit.
->
-> The culprit seems to be the Pipe struct, so pull the relevant block
-> out into its own sub-function.
+Quoting Shawn Guo (2021-09-13 19:55:52)
+> On QCM2290 platform, the clock xo_board runs at 38400000, while the
+> child clock bi_tcxo needs to run at 19200000.  That said,
+> clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
+> hooks into clk_smd_rpm_branch_ops to make it possible.
 
-I suspect it's not the Pipe struct but rather the way that you call another
-function with a crazy number of arguments here. After your change,
-this likely gets inlined and you avoid the problem, so the patch ends
-up doing the right thing.
-
-If you do more patches like this, I would suggest mentioning the new
-stack usage of the calling function and the new noinline function, to
-make sure that the combined number isn't actually worse than the old
-number.
-
-You can get these numbers by recompiling the file with the frame
-size warning set to a low value, e.g. adding -Wframe-larger-than=100
-to the command line.
-
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+This doesn't sound right. The branch is a simple on/off. If xo_board is
+38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
+(i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
+divider, I guess because it isn't very important to. Instead, we tack on
+a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
+directory for this.
