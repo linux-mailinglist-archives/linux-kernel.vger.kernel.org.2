@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9AF40B212
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965E340B205
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhINOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233464AbhINOvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:51:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D2D46113B;
-        Tue, 14 Sep 2021 14:50:34 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mQ9lZ-001oPc-M6; Tue, 14 Sep 2021 10:50:33 -0400
-Message-ID: <20210914145033.522789625@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Tue, 14 Sep 2021 10:48:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-linus][PATCH 2/2] bootconfig: Free copied bootconfig data after boot
-References: <20210914144809.297030763@goodmis.org>
+        id S234775AbhINOuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235268AbhINOuI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:50:08 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26730C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:48:51 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id kt8so29506947ejb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7tK8Q8Zn3GUpR+B8TZD+RLtrcGX5lqXW2LlnHskkgzQ=;
+        b=n+EehvKhg5Sbr+8pktbyroiCnZ3okG02dx/mvQ5i8Dwuhk8eS/GIQT6xQGnIt5++an
+         eCT7dsOzfXDeBiDHWLSShbarVdsKXSSKMEVTGYNPDbK4LjIin7YSt5C0HJlh12odjNNK
+         YgMYfKJNO+isJ8HYE2YZ+utU2GtB9IXRG3RHOv4Su2CCDxnCPIzTolJIE/GrfjBIwvV0
+         SJ7ZmgtkWZC/pKCrHIueR6/aeONApzbUPyVvmWaaSPcw8f8P4EQ053TkECV/OVluK0sx
+         ydR9dlFrD/M3WWmE/D9rLVdQjgrhjpu28JfugGvqi2Dh1u2wyOWi53X1tZQ9Lfs7id2/
+         HRzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7tK8Q8Zn3GUpR+B8TZD+RLtrcGX5lqXW2LlnHskkgzQ=;
+        b=7gsIRQifaBaAdxWROjRdK1zVnx6HjCEGGFnbAolcj2oDN14rrFySRbDIYfR43V+xUh
+         C25fhLTHcpFT2wvUj/kBfJ+jh+H6Chg32jh/ClzMi2NZeRs3+oG7w/CcRa3VZtgTYHMU
+         s8XLpYC2WHHraIy7GG1iAgzZMyzuY2+zAJAHnBZ+/S7c6FORTsfHBBGrRnfDZwbQDNCb
+         bQ+JcPuE090iU/vdbBQx0r7+bXENyVAfRi8qdMMlaQYFcj9dySZfZYiXsUAKsYeFEz4a
+         4PK5eR1LM4dUvzBWoGtMg8gfEnlGdPRtfVxCha7W5GA4iRlyNUd4/B8n8Yhd2aWWIcvh
+         ICUg==
+X-Gm-Message-State: AOAM530xGxtREgfGYX23YDokwyyHrTvLMcug6+2yySu9Ep5OUOMTtTEJ
+        7TFvgAFfmbYdjU3JmxHH6zi6R3F9ORAShRuPXacm
+X-Google-Smtp-Source: ABdhPJyfWGvhuJMOM1Tejmpphkj2jtIUuDBTTyYcErbU0nkvy5jtFT/nbuZcqEeF3xISCyLvmp53DoKw93B0JcCfCrw=
+X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr19112012eje.341.1631630929504;
+ Tue, 14 Sep 2021 07:48:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20210914033339.134-1-caihuoqing@baidu.com>
+In-Reply-To: <20210914033339.134-1-caihuoqing@baidu.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 14 Sep 2021 10:48:38 -0400
+Message-ID: <CAHC9VhQz=ek+_hkbHpDNvaJ_GqZO3Rm+Erb31Vu0hxxc_F+jmw@mail.gmail.com>
+Subject: Re: [PATCH v2] audit: Convert to SPDX identifier
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+On Mon, Sep 13, 2021 at 11:33 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
+>
+> Use SPDX-License-Identifier instead of a verbose license text.
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+> v1->v2: Change recommended token from "GPL-2.0+" to "GPL-2.0-or-later"
+>
+>  kernel/auditsc.c | 15 +--------------
+>  1 file changed, 1 insertion(+), 14 deletions(-)
 
-Free copied bootconfig data after booting kernel because that
-data will not be used anymore.
+Merged into audit/next, thanks!
 
-commit 40caa127f3c7 ("init: bootconfig: Remove all bootconfig
-data when the init memory is removed") freed the bootconfig
-xbc_node array after booting kernel, but forgot to free the
-bootconfig data itself. This fixes that to free the bootconfig
-data too.
-
-This also frees the bootconfig data if the bootconfig data
-parsing failed.
-
-Link: https://lkml.kernel.org/r/163151166275.369741.12201304720604568345.stgit@devnote2
-
-Fixes: 40caa127f3c7 ("init: bootconfig: Remove all bootconfig data when the init memory is removed")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- init/main.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/init/main.c b/init/main.c
-index d08caed17c7f..ddbcb372225a 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -319,6 +319,8 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
- #ifdef CONFIG_BOOT_CONFIG
- 
- static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
-+static void *init_xbc_data_copy __initdata;
-+static phys_addr_t init_xbc_data_size __initdata;
- 
- #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
- 
-@@ -458,18 +460,24 @@ static void __init setup_boot_config(void)
- 		else
- 			pr_err("Failed to parse bootconfig: %s at %d.\n",
- 				msg, pos);
-+		memblock_free(__pa(copy), size + 1);
- 	} else {
- 		pr_info("Load bootconfig: %d bytes %d nodes\n", size, ret);
- 		/* keys starting with "kernel." are passed via cmdline */
- 		extra_command_line = xbc_make_cmdline("kernel");
- 		/* Also, "init." keys are init arguments */
- 		extra_init_args = xbc_make_cmdline("init");
-+		init_xbc_data_copy = copy;
-+		init_xbc_data_size = size + 1;
- 	}
- 	return;
- }
- 
- static void __init exit_boot_config(void)
- {
-+	if (!init_xbc_data_copy)
-+		return;
-+	memblock_free(__pa(init_xbc_data_copy), init_xbc_data_size);
- 	xbc_destroy_all();
- }
- 
 -- 
-2.32.0
+paul moore
+www.paul-moore.com
