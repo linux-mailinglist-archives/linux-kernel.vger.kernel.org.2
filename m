@@ -2,204 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C42A40A867
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726B040A872
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237066AbhINHqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:46:37 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:45971 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237252AbhINHpo (ORCPT
+        id S236483AbhINHrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:47:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59916 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236493AbhINHqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:45:44 -0400
-Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id AC9E4100011;
-        Tue, 14 Sep 2021 07:44:22 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 09:44:22 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-staging@lists.linux.dev,
-        Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 17/22] dt-bindings: media: Add Allwinner A31 ISP bindings
- documentation
-Message-ID: <YUBS1sdHKUMZx6gx@aptenodytes>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-18-paul.kocialkowski@bootlin.com>
- <20210913081808.esgqvz4eeatp4hkp@gilmour>
+        Tue, 14 Sep 2021 03:46:34 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631605512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nMIAonN/hzUSuGk60HD8q1xVwCYMSQjQiTEL6zcE47I=;
+        b=uyrEwqOJdUQDMUgZeHx/N1mKKFkyp25w2ulkpk2HkTFSo1is4RXoncwNFC170IIdPR5Pqq
+        Cx8+9bSXj569emBoP1BjVbtxJE0qkXuGm+HZL2XUp6rZLWHpPOuEPboC39YMGS3m6aq7V/
+        SQENvnMDs0jWkY8qSz2EQkzRluvhgQ7vdxO9MosPvWc6/6nWdkXPPfBFS86IN/da4qQTkA
+        jAW1Bm/Lb1wdGvuMtAJUMxxetWxkqBAJZpIMmFsgm02QMEg3fShx8crsqFIyZcmL7VVTHs
+        N9NhBwZzslWNEItYJSdkPvb5OuNhrfoX5iDymPuFyB/jV8fR8bXwmBOsOXy/IQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631605512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nMIAonN/hzUSuGk60HD8q1xVwCYMSQjQiTEL6zcE47I=;
+        b=2FE5vmVscw0U1jtxK2uXZg0Ll/Yb+jWArjOiTrXjfnW3K8XiNyQozWy5P96v2J2ovsJQf5
+        +monIl7OyhKuCwDw==
+To:     Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH 3/4] locking/rwbase: Fix rwbase_write_lock() vs
+ __rwbase_read_lock()
+In-Reply-To: <20210909110203.893845303@infradead.org>
+References: <20210909105915.757320973@infradead.org>
+ <20210909110203.893845303@infradead.org>
+Date:   Tue, 14 Sep 2021 09:45:12 +0200
+Message-ID: <87k0jjeh2v.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="x/ZjxzLvCjsZxqAS"
-Content-Disposition: inline
-In-Reply-To: <20210913081808.esgqvz4eeatp4hkp@gilmour>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 09 2021 at 12:59, Peter Zijlstra wrote:
 
---x/ZjxzLvCjsZxqAS
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Boqun noticed that the write-trylock sequence of load+set is broken in
+> rwbase_write_lock()'s wait-loop since they're not both under the same
+> wait_lock instance.
 
-Hi,
+Confused.
 
-On Mon 13 Sep 21, 10:18, Maxime Ripard wrote:
-> On Fri, Sep 10, 2021 at 08:41:42PM +0200, Paul Kocialkowski wrote:
-> > This introduces YAML bindings documentation for the Allwinner A31 Image
-> > Signal Processor (ISP).
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  .../media/allwinner,sun6i-a31-csi.yaml        |   2 +-
-> >  .../media/allwinner,sun6i-a31-isp.yaml        | 111 ++++++++++++++++++
-> >  2 files changed, 112 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/devicetree/bindings/media/allwinner,s=
-un6i-a31-isp.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a3=
-1-csi.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-cs=
-i.yaml
-> > index f4a686b77a38..c60f6b5403fa 100644
-> > --- a/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.y=
-aml
-> > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-csi.y=
-aml
-> > @@ -1,4 +1,4 @@
-> > -# SPDX-License-Identifier: GPL-2.0
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> >  %YAML 1.2
-> >  ---
-> >  $id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-csi.yaml#
-> > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun6i-a3=
-1-isp.yaml b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-is=
-p.yaml
-> > new file mode 100644
-> > index 000000000000..a0f82f150e90
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/allwinner,sun6i-a31-isp.y=
-aml
-> > @@ -0,0 +1,111 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/allwinner,sun6i-a31-isp.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Allwinner A31 Image Signal Processor Driver (ISP) Device Tree B=
-indings
-> > +
-> > +maintainers:
-> > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - allwinner,sun6i-a31-isp
-> > +      - allwinner,sun8i-v3s-isp
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: Bus Clock
-> > +      - description: Module Clock
-> > +      - description: DRAM Clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: bus
-> > +      - const: mod
-> > +      - const: ram
-> > +
-> > +  resets:
-> > +    maxItems: 1
-> > +
-> > +  ports:
-> > +    $ref: /schemas/graph.yaml#/properties/ports
-> > +
-> > +    properties:
-> > +      port@0:
-> > +        $ref: /schemas/graph.yaml#/$defs/port-base
-> > +        description: CSI0 input port
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 0
-> > +
-> > +          endpoint:
-> > +            $ref: video-interfaces.yaml#
-> > +            unevaluatedProperties: false
-> > +
-> > +        additionalProperties: false
-> > +
-> > +      port@1:
-> > +        $ref: /schemas/graph.yaml#/$defs/port-base
-> > +        description: CSI1 input port
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 0
-> > +
-> > +          endpoint:
-> > +            $ref: video-interfaces.yaml#
-> > +            unevaluatedProperties: false
-> > +
-> > +        additionalProperties: false
->=20
-> port@0 and port@1 required?
+lock(); A
 
-I'd say just one of them, does that make sense?
+for (; atomic_read(readers);) {
+   ...
+   unlock();
+   ..
+   lock(); B
+}
 
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +  - resets
->=20
-> ports required?
+atomic_set();
+unlock(); A or B
 
-I think so yes, so I'll add it there.
+The read/set is always in the same lock instance.
 
-Paul
+> Restructure the code to make this more obvious and correct.
 
+I agree that it's easier to read, but I disagree that it makes the code
+more correct.
 
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Thanks,
 
---x/ZjxzLvCjsZxqAS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmFAUtYACgkQ3cLmz3+f
-v9EiZQgAncwC5/lF0lGIbrTPuu+Q9LnR4LGlxrt2xaOkbmtxVfCuQexU1wx2+C0m
-X+H+fuo3Eq8DN3lFIeAmXG03mYFoVJj8kPybnE6K9e48LQJ70/ahwK7MueZQVuzO
-PDGmIDVxWJtGSbbPUTedQnlYgE+eVzqfbedRrdeYFGRdrUSS9pbO4kW/4lm0xkZW
-UMGcam8bE8v4iyc77LBdvX1cNtexR/PD4L7aiCD0zPkG35iHwzZcEPuXmhuyg/27
-ksjDM1DurT9+zJMQTOv09ii1qJr3jaN1t6l7THV3hOYupapueCU1G/ILqb2Wd4mK
-CSZ2qYlFM6vc5HrIf0v671i9ViGatQ==
-=gBHG
------END PGP SIGNATURE-----
-
---x/ZjxzLvCjsZxqAS--
+        tglx
