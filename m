@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD18C40A5FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D9340A600
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239605AbhINFhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 01:37:09 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33434 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237341AbhINFhH (ORCPT
+        id S239699AbhINFiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 01:38:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41979 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239666AbhINFiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:37:07 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6BECD1FDCA;
-        Tue, 14 Sep 2021 05:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631597749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 14 Sep 2021 01:38:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631597809;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0a/VnN2wn6kf3CRj3bkdHFe/CL4cRuLtEaRPbeckjQ4=;
-        b=KsjLS31ATYXTnlL4QvHJ/ThAcNB3xoCMosE6QzcP1t2e/HO1CIEPaJjmzqWoSPkbgBqTpA
-        p5xUfuwKGf2WFjNgkGEsT2ZcadRYw34yjsCGSHV6IiB6nrVaZSVKWJ7fTJAmkMU9nsQSXJ
-        dkiBtoEnOTeSQNBYhcrxvOFwcwhZyuk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631597749;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0a/VnN2wn6kf3CRj3bkdHFe/CL4cRuLtEaRPbeckjQ4=;
-        b=FKOY6uS0FUh60q5rvrz+RVtV1Rb1Oika+KRaosu8ykFoYfSekYTiv6+Qw0GMPGV7n/xeWe
-        oefhygvPfR60ddDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2244F13E4A;
-        Tue, 14 Sep 2021 05:35:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iZ5EArU0QGEOTwAAMHmgww
-        (envelope-from <hare@suse.de>); Tue, 14 Sep 2021 05:35:48 +0000
-Subject: Re: [PATCH RESEND v3 01/13] blk-mq: Change rqs check in
- blk_mq_free_rqs()
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org
-References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
- <1631545950-56586-2-git-send-email-john.garry@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <7a75a9e0-5467-e4fa-d059-8154f5568854@suse.de>
-Date:   Tue, 14 Sep 2021 07:35:48 +0200
+        bh=qZQpALJRO2DRj77s2ycL1tcep9ZQbvDn5QtKFTncmIU=;
+        b=H7Kp3yNeFhoQ0hWL0UoejFWcroaSK/CJTfN5erwvTmabbaU6HxAdccCJa+HucNkYV3U/Jb
+        i8IF/asWuO7JqYg3HBGLMeDzzyasN9/aZGdOBDDvf2KSOTskcA9XQ+oBQjXShHlRDZrZMj
+        3kX2PykxH/HwmtZTdhgiCqstHsEzpcs=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-rrdOA3QHPgO4s77uVPq1Pw-1; Tue, 14 Sep 2021 01:36:48 -0400
+X-MC-Unique: rrdOA3QHPgO4s77uVPq1Pw-1
+Received: by mail-ej1-f70.google.com with SMTP id ar17-20020a170907265100b005eff65b9184so2620573ejc.21
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 22:36:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qZQpALJRO2DRj77s2ycL1tcep9ZQbvDn5QtKFTncmIU=;
+        b=uXl3Z/RWACrhYzsb86MgoV6A5sP83yPpGoXh2bTgl7tTTEwPAcSVu4uWssCY4h4UYP
+         qZMVGLbHJJDEFDl0HFfDnC/TzsJ7PKCh2mF4GWtFyD/cDctfFUznMEi+Z2WgcGx9cgwJ
+         qbykAdvvZZDlvjmAqUq8TR7kA+Q1hv6oeAYkmC7ib6mBxbDRJJsEKm1NsRyHzvLhyAwQ
+         p+sbiqY8x9vHeRElUv/m1ZJHmXGQQL4ePGTjEDTb8HXHL7+03/RSiSmJZQQjF7rGde99
+         Co/5I7CnaOVD9TorJVXheCJZNMH/M0mRtrZaT1GUyn5ghojgoJ1+UIcYRBVCbwuL3C2d
+         1W/Q==
+X-Gm-Message-State: AOAM530ZQ1ffm4u8xNdmhZUet12R8Ye3ghEPq4eu9tGu+oJKVwU4QgKL
+        qQ+eucLOsRlPS9ImnIn1dHQvyI5t9grnXVSN3eAj1QzaT1YYRZLJ90ePM3EiTpjQ89wtsMhOgP8
+        ITIJqn9Afk7aamXlEOq7rh4Rn
+X-Received: by 2002:aa7:d619:: with SMTP id c25mr17109536edr.365.1631597806944;
+        Mon, 13 Sep 2021 22:36:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmANg/+bLpe7zpuvdvos4IkOjD3/HKp62bKU9//cD9FY70/rlU7rBvF5UxBlMBoRQft30l5g==
+X-Received: by 2002:aa7:d619:: with SMTP id c25mr17109523edr.365.1631597806770;
+        Mon, 13 Sep 2021 22:36:46 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id e11sm1494456ejm.41.2021.09.13.22.36.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 22:36:45 -0700 (PDT)
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210913131153.1202354-2-pbonzini@redhat.com>
+ <dc628588-3030-6c05-0ba4-d8fc6629c0d2@intel.com>
+ <8105a379-195e-8c9b-5e06-f981f254707f@redhat.com>
+ <06db5a41-3485-9141-10b5-56ca57ed1792@intel.com>
+ <34632ea9-42d3-fdfa-ae47-e208751ab090@redhat.com>
+ <3409573ac76aad2e7c3363343fc067d5b4621185.camel@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <734abf89-8be2-dd13-b649-fde5744ba465@redhat.com>
+Date:   Tue, 14 Sep 2021 07:36:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1631545950-56586-2-git-send-email-john.garry@huawei.com>
+In-Reply-To: <3409573ac76aad2e7c3363343fc067d5b4621185.camel@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 5:12 PM, John Garry wrote:
-> The original code in commit 24d2f90309b23 ("blk-mq: split out tag
-> initialization, support shared tags") would check tags->rqs is non-NULL and
-> then dereference tags->rqs[].
-> 
-> Then in commit 2af8cbe30531 ("blk-mq: split tag ->rqs[] into two"), we
-> started to dereference tags->static_rqs[], but continued to check non-NULL
-> tags->rqs.
-> 
-> Check tags->static_rqs as non-NULL instead, which is more logical.
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> ---
->   block/blk-mq.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index 108a352051be..2316ff27c1f5 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -2340,7 +2340,7 @@ void blk_mq_free_rqs(struct blk_mq_tag_set *set, struct blk_mq_tags *tags,
->   {
->   	struct page *page;
->   
-> -	if (tags->rqs && set->ops->exit_request) {
-> +	if (tags->static_rqs && set->ops->exit_request) {
->   		int i;
->   
->   		for (i = 0; i < tags->nr_tags; i++) {
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+On 13/09/21 23:13, Jarkko Sakkinen wrote:
+>> Apart from reclaiming, /dev/sgx_vepc might disappear between the first
+>> open() and subsequent ones.
+>
+> If /dev/sgx_vepc disappears, why is it a problem *for the software*, and
+> not a sysadmin problem?
 
-Cheers,
+Rather than disappearing, it could be that a program first gets all the 
+resources it needs before it gets malicious input, and then enter a 
+restrictive sandbox.  In this case open() could be completely forbidden.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+I will improve the documentation and changelogs when I post the non-RFC 
+version; that could have been done better, sorry.
+
+Paolo
+
