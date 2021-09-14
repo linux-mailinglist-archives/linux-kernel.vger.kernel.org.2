@@ -2,345 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1BA40BC2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBF140BC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhINXaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 19:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        id S235838AbhINXbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 19:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235838AbhINXaS (ORCPT
+        with ESMTP id S231435AbhINXbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 19:30:18 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5EFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:00 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id t1so826326pgv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:00 -0700 (PDT)
+        Tue, 14 Sep 2021 19:31:04 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7455EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:46 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id g1so1906138lfj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7N274+bFsdtfx87H4Nog/N0Sx3hhBVJ3U95tQ2EK/Ns=;
-        b=LLFLFw6IvwpOgA8y+fubVnQTzpT40Xu/JFxZ1dLTLxp8m8kDpVyGeO0di11XYA53ZD
-         E5d6AG03PI1kAfcpzLEcFCLLjZYeQ0UUfjnklyCm2Zz5Yy//99NvS/6//cgVEcwlFJOd
-         8stPxt2FstdEZo9+cEekAMHG6LAocAqyH15/Y=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0PDbAl7XBZ5+izFdXy34C90+UtfxGn4oelrSaT4hvZo=;
+        b=hlSJFVl2f17plnlKffHP/5QoB3uHmrBbD+1tiGUIZLKiDMBgtJ3uBmdOSRBxP5+jsD
+         aaKltm8spMSCmqJAcuexFIwMAQnUUPYC0fbxtQ9uTnNTtEb0pDhDsTsD8r8bhE5H+b5P
+         9C4lDvKr/M/ipfhZIzHDgdS25QNz/6UuPzLkA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7N274+bFsdtfx87H4Nog/N0Sx3hhBVJ3U95tQ2EK/Ns=;
-        b=4m4rPcKSI2+UktPP3Yns/rYcWIncFp+g+z/uqxbVP0JTd/ftj71mRqYkEkcIKY5cmN
-         jF/VewHUvFdSzsy4C7gpOzyQqkEFHZWgE+GpLfyu66Vfne4zs+E5+VHf3TRI1l628+hH
-         Uw7ivPOrcPVzuQVQ2dtMOYnS86awdYaauq5v5nyT0Dt8hVHG9Vov8Do6SRLRyUJudgl/
-         3GISR/j52SzPAHMxsvZmh/eDxUZFaJYPzAJB/tntEC7BWlpQMyuAPDF3XCRR2+BNpk9w
-         /c0LXrTmYDIGVg9yMkQJ+sSrwHLoyRcEvZ0rfSVRUrtXo7ZoLexUViX3Wf8CF+z3PBgB
-         RIKg==
-X-Gm-Message-State: AOAM5336o9MLw2ElQmkpxDiXrFeQnKsKsj1tdF24ljzu1BzZzPOW7/IW
-        A1J+t5y/BO6j7bubaCJMseetO9k3LbWwgA==
-X-Google-Smtp-Source: ABdhPJxRwlEbxnzzpSeLkxJKBJil1hG39cUSi5byGkeaewZyxtSXYDWu7jsVSAdXixSysoZk8szSzw==
-X-Received: by 2002:a65:6658:: with SMTP id z24mr18124899pgv.266.1631662140075;
-        Tue, 14 Sep 2021 16:29:00 -0700 (PDT)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:6213:6a82:3731:1220])
-        by smtp.gmail.com with ESMTPSA id x64sm11395360pfd.194.2021.09.14.16.28.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 16:28:59 -0700 (PDT)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org, swboyd@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 3/3] drm/bridge: parade-ps8640: Add support for AUX channel
-Date:   Tue, 14 Sep 2021 16:28:45 -0700
-Message-Id: <20210914162825.v3.3.Ibf9b125434e3806b35f9079f6d8125578d76f138@changeid>
-X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
-In-Reply-To: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
-References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0PDbAl7XBZ5+izFdXy34C90+UtfxGn4oelrSaT4hvZo=;
+        b=VW9lt6KRHZIQdGGidDDxqcPhnVP5PpBVhsScPJTG+saoaRQpMPattIK/PAfYRjhT/j
+         fb7bbShlZBa4njonDO0NbpogXpf3ZClgich5MXVixJzYlMPy5j7Hu3zmdPpB9B9DloG6
+         Q5o/s6UfT2vtRcB10h6Jx10KoLyar6rmNfTeMy+uAnrE8MhyPSIGPv9bclI11AriGLpw
+         msri4Mhe3o/nlnd7hK4+qpCYPaevziLdz49A8/sg/K1H42VXcN9owYuydZBGpau11fBn
+         1ZD/Vkj74LT/fQdKrfDuKEuUDut2H12cTSMoXXG52QTy1Pfb4BUFwsUxgwxhj6skkd5f
+         lw4A==
+X-Gm-Message-State: AOAM531WY3FrP8qyri97KSnYPMKM9w1vULFkrkTNQj+gEKZknrF/s6a5
+        y/4D+d+d8j9/QqpKuu1fjzUGE4jEJQ0TD1M/ZFg=
+X-Google-Smtp-Source: ABdhPJwaR/n8I006wf/fBu7kr6uxydvqQGNG/x8CAvQJeqwYu+RLRfhy2Xct3nHypjO6uo43zALOHQ==
+X-Received: by 2002:a05:6512:318a:: with SMTP id i10mr15647780lfe.444.1631662184404;
+        Tue, 14 Sep 2021 16:29:44 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id w25sm1231861lfu.123.2021.09.14.16.29.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 16:29:43 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id j12so1667195ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:29:43 -0700 (PDT)
+X-Received: by 2002:a2e:96c7:: with SMTP id d7mr17832442ljj.191.1631662183146;
+ Tue, 14 Sep 2021 16:29:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210914105620.677b90e5@oasis.local.home> <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
+ <20210914145953.189f15dc@oasis.local.home> <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
+ <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com>
+ <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
+ <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
+ <20210914170553.7c1e1faa@oasis.local.home> <4392e867-0cce-d04a-e3d1-cba152daaa1f@suse.cz>
+In-Reply-To: <4392e867-0cce-d04a-e3d1-cba152daaa1f@suse.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Sep 2021 16:29:27 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wimTmUcYC_BPvwv-48OFwpzJhzrX-_9afk--ND6en81Xg@mail.gmail.com>
+Message-ID: <CAHk-=wimTmUcYC_BPvwv-48OFwpzJhzrX-_9afk--ND6en81Xg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the first version of AUX support, which will be useful as
-we expand the driver to support varied use cases.
+On Tue, Sep 14, 2021 at 3:48 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> Well, looks like I can't. Commit 77e02cf57b6cf does boot fine for me,
+> multiple times. But so now does the parent commit 6a4746ba06191. Looks like
+> the magic is gone. I'm now surprised how deterministic it was during the
+> bisect (most bad cases manifested on first boot, only few at second).
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
+Well, your report was clearly memory corruption by the invalid
+memblock_free() just ending up causing random problems later on.
 
-Changes in v3:
-- Verify with HW and thus remove WARNING from the patch description
-- Fix the reg names to better match the manual
-- Fix aux_transfer function:
-  - Fix the switch statement which handles aux request
-  - Write the original (unstripped) aux request code to the register
-  - Replace DRM_ERROR with dev_err
-  - Remove goto and just return ret
-  - Fix the switch statement which handles aux status
-  - When reading returned data, read from RDATA instead of WDATA
-- Fix attach function:
-  - Call mipi_dsi_detach() when aux_register fails
+So it could easily be 100% deterministic with a certain memory layout
+at a particular commit. And then enough other changes later, and it's
+all gone, because the memory corruption now hits something else that
+didn't even care.
 
-Changes in v2:
-- Handle the case where an AUX transaction has no payload
-- Add a reg polling for p0.0x83 to confirm AUX cmd is issued and
-  read data is returned
-- Replace regmap_noinc_read/write with looped regmap_read/write,
-  as regmap_noinc_read/write doesn't read one byte at a time unless
-  max_raw_read/write is set to 1.
-- Register/Unregister the AUX device explicitly when the bridge is
-  attached/detached
-- Remove the use of runtime PM
-- Program AUX addr/cmd/len in a single regmap_bulk_write()
-- Add newlines for DRM_ERROR mesages
+The code for your oops was
 
- drivers/gpu/drm/bridge/parade-ps8640.c | 174 ++++++++++++++++++++++++-
- 1 file changed, 173 insertions(+), 1 deletion(-)
+   0: 48 8b 17              mov    (%rdi),%rdx
+   3: 48 39 d7              cmp    %rdx,%rdi
+   6: 74 43                je     0x4b
+   8: 48 8b 47 08          mov    0x8(%rdi),%rax
+   c: 48 85 c0              test   %rax,%rax
+   f: 74 23                je     0x34
+  11: 49 89 c0              mov    %rax,%r8
+  14:* 48 8b 40 10          mov    0x10(%rax),%rax <-- trapping instruction
 
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index 8d3e7a147170..dc349d729f5a 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -13,11 +13,37 @@
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_bridge.h>
-+#include <drm/drm_dp_helper.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
- #include <drm/drm_panel.h>
- #include <drm/drm_print.h>
- 
-+#define PAGE0_AUXCH_CFG3	0x76
-+#define  AUXCH_CFG3_RESET	0xff
-+#define PAGE0_SWAUX_ADDR_7_0	0x7d
-+#define PAGE0_SWAUX_ADDR_15_8	0x7e
-+#define PAGE0_SWAUX_ADDR_23_16	0x7f
-+#define  SWAUX_ADDR_19_16_MASK	GENMASK(3, 0)
-+#define  SWAUX_CMD_MASK		GENMASK(7, 4)
-+#define PAGE0_SWAUX_LENGTH	0x80
-+#define  SWAUX_LENGTH_MASK	GENMASK(3, 0)
-+#define  SWAUX_NO_PAYLOAD	BIT(7)
-+#define PAGE0_SWAUX_WDATA	0x81
-+#define PAGE0_SWAUX_RDATA	0x82
-+#define PAGE0_SWAUX_CTRL	0x83
-+#define  SWAUX_SEND		BIT(0)
-+#define PAGE0_SWAUX_STATUS	0x84
-+#define  SWAUX_M_MASK		GENMASK(4, 0)
-+#define  SWAUX_STATUS_MASK	GENMASK(7, 5)
-+#define  SWAUX_STATUS_NACK	(0x1 << 5)
-+#define  SWAUX_STATUS_DEFER	(0x2 << 5)
-+#define  SWAUX_STATUS_ACKM	(0x3 << 5)
-+#define  SWAUX_STATUS_INVALID	(0x4 << 5)
-+#define  SWAUX_STATUS_I2C_NACK	(0x5 << 5)
-+#define  SWAUX_STATUS_I2C_DEFER	(0x6 << 5)
-+#define  SWAUX_STATUS_TIMEOUT	(0x7 << 5)
-+
- #define PAGE2_GPIO_H		0xa7
- #define  PS_GPIO9		BIT(1)
- #define PAGE2_I2C_BYPASS	0xea
-@@ -68,6 +94,7 @@ enum ps8640_vdo_control {
- struct ps8640 {
- 	struct drm_bridge bridge;
- 	struct drm_bridge *panel_bridge;
-+	struct drm_dp_aux aux;
- 	struct mipi_dsi_device *dsi;
- 	struct i2c_client *page[MAX_DEVS];
- 	struct regmap	*regmap[MAX_DEVS];
-@@ -117,6 +144,129 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
- 	return container_of(e, struct ps8640, bridge);
- }
- 
-+static inline struct ps8640 *aux_to_ps8640(struct drm_dp_aux *aux)
-+{
-+	return container_of(aux, struct ps8640, aux);
-+}
-+
-+static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-+				   struct drm_dp_aux_msg *msg)
-+{
-+	struct ps8640 *ps_bridge = aux_to_ps8640(aux);
-+	struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
-+	struct device *dev = &ps_bridge->page[PAGE0_DP_CNTL]->dev;
-+
-+	unsigned int len = msg->size;
-+	unsigned int data;
-+	int ret;
-+	u8 request = msg->request &
-+		     ~(DP_AUX_I2C_MOT | DP_AUX_I2C_WRITE_STATUS_UPDATE);
-+	u8 *buf = msg->buffer;
-+	u8 addr_len[PAGE0_SWAUX_LENGTH + 1 - PAGE0_SWAUX_ADDR_7_0];
-+	u8 i;
-+	bool is_native_aux = false;
-+
-+	if (len > DP_AUX_MAX_PAYLOAD_BYTES)
-+		return -EINVAL;
-+
-+	switch (request) {
-+	case DP_AUX_NATIVE_WRITE:
-+	case DP_AUX_NATIVE_READ:
-+		is_native_aux = true;
-+		fallthrough;
-+	case DP_AUX_I2C_WRITE:
-+	case DP_AUX_I2C_READ:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_write(map, PAGE0_AUXCH_CFG3, AUXCH_CFG3_RESET);
-+	if (ret) {
-+		dev_err(dev, "failed to write PAGE0_AUXCH_CFG3: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Assume it's good */
-+	msg->reply = 0;
-+
-+	addr_len[0] = msg->address & 0xff;
-+	addr_len[1] = (msg->address >> 8) & 0xff;
-+	addr_len[2] = ((msg->request << 4) & SWAUX_CMD_MASK) |
-+		((msg->address >> 16) & SWAUX_ADDR_19_16_MASK);
-+	addr_len[3] = (len == 0) ? SWAUX_NO_PAYLOAD :
-+			((len - 1) & SWAUX_LENGTH_MASK);
-+
-+	regmap_bulk_write(map, PAGE0_SWAUX_ADDR_7_0, addr_len,
-+			  ARRAY_SIZE(addr_len));
-+
-+	if (len && (request == DP_AUX_NATIVE_WRITE ||
-+		    request == DP_AUX_I2C_WRITE)) {
-+		/* Write to the internal FIFO buffer */
-+		for (i = 0; i < len; i++) {
-+			ret = regmap_write(map, PAGE0_SWAUX_WDATA, buf[i]);
-+			if (ret) {
-+				dev_err(dev, "failed to write WDATA: %d\n",
-+					ret);
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	regmap_write(map, PAGE0_SWAUX_CTRL, SWAUX_SEND);
-+
-+	/* Zero delay loop because i2c transactions are slow already */
-+	regmap_read_poll_timeout(map, PAGE0_SWAUX_CTRL, data,
-+				 !(data & SWAUX_SEND), 0, 50 * 1000);
-+
-+	regmap_read(map, PAGE0_SWAUX_STATUS, &data);
-+	if (ret) {
-+		dev_err(dev, "failed to read PAGE0_SWAUX_STATUS: %d\n", ret);
-+		return ret;
-+	}
-+
-+	switch (data & SWAUX_STATUS_MASK) {
-+	/* Ignore the DEFER cases as they are already handled in hardware */
-+	case SWAUX_STATUS_NACK:
-+	case SWAUX_STATUS_I2C_NACK:
-+		/*
-+		 * The programming guide is not clear about whether a I2C NACK
-+		 * would trigger SWAUX_STATUS_NACK or SWAUX_STATUS_I2C_NACK. So
-+		 * we handle both cases together.
-+		 */
-+		if (is_native_aux)
-+			msg->reply |= DP_AUX_NATIVE_REPLY_NACK;
-+		else
-+			msg->reply |= DP_AUX_I2C_REPLY_NACK;
-+
-+		len = data & SWAUX_M_MASK;
-+		return len;
-+	case SWAUX_STATUS_ACKM:
-+		len = data & SWAUX_M_MASK;
-+		return len;
-+	case SWAUX_STATUS_INVALID:
-+		return -EOPNOTSUPP;
-+	case SWAUX_STATUS_TIMEOUT:
-+		return -ETIMEDOUT;
-+	}
-+
-+	if (len && (request == DP_AUX_NATIVE_READ ||
-+		    request == DP_AUX_I2C_READ)) {
-+		/* Read from the internal FIFO buffer */
-+		for (i = 0; i < len; i++) {
-+			ret = regmap_read(map, PAGE0_SWAUX_RDATA, &data);
-+			buf[i] = data;
-+			if (ret) {
-+				dev_err(dev, "failed to read RDATA: %d\n",
-+					ret);
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	return len;
-+}
-+
- static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
- 				     const enum ps8640_vdo_control ctrl)
- {
-@@ -286,18 +436,34 @@ static int ps8640_bridge_attach(struct drm_bridge *bridge,
- 	dsi->format = MIPI_DSI_FMT_RGB888;
- 	dsi->lanes = NUM_MIPI_LANES;
- 	ret = mipi_dsi_attach(dsi);
--	if (ret)
-+	if (ret) {
-+		dev_err(dev, "failed to attach dsi device: %d\n", ret);
- 		goto err_dsi_attach;
-+	}
-+
-+	ret = drm_dp_aux_register(&ps_bridge->aux);
-+	if (ret) {
-+		dev_err(dev, "failed to register DP AUX channel: %d\n", ret);
-+		goto err_aux_register;
-+	}
- 
- 	/* Attach the panel-bridge to the dsi bridge */
- 	return drm_bridge_attach(bridge->encoder, ps_bridge->panel_bridge,
- 				 &ps_bridge->bridge, flags);
- 
-+err_aux_register:
-+	mipi_dsi_detach(dsi);
- err_dsi_attach:
- 	mipi_dsi_device_unregister(dsi);
- 	return ret;
- }
- 
-+
-+static void ps8640_bridge_detach(struct drm_bridge *bridge)
-+{
-+	drm_dp_aux_unregister(&bridge_to_ps8640(bridge)->aux);
-+}
-+
- static struct edid *ps8640_bridge_get_edid(struct drm_bridge *bridge,
- 					   struct drm_connector *connector)
- {
-@@ -334,6 +500,7 @@ static struct edid *ps8640_bridge_get_edid(struct drm_bridge *bridge,
- 
- static const struct drm_bridge_funcs ps8640_bridge_funcs = {
- 	.attach = ps8640_bridge_attach,
-+	.detach = ps8640_bridge_detach,
- 	.get_edid = ps8640_bridge_get_edid,
- 	.post_disable = ps8640_post_disable,
- 	.pre_enable = ps8640_pre_enable,
-@@ -423,6 +590,11 @@ static int ps8640_probe(struct i2c_client *client)
- 
- 	i2c_set_clientdata(client, ps_bridge);
- 
-+	ps_bridge->aux.name = "parade-ps8640-aux";
-+	ps_bridge->aux.dev = dev;
-+	ps_bridge->aux.transfer = ps8640_aux_transfer;
-+	drm_dp_aux_init(&ps_bridge->aux);
-+
- 	drm_bridge_add(&ps_bridge->bridge);
- 
- 	return 0;
--- 
-2.33.0.309.g3052b89438-goog
+and that's the start of rb_next(), so what's going on is that
+"rb->rb_right" (the second word of 'struct rb_node') ends up having
+that value in %rax:
 
+  RAX: 343479726f6d656d
+
+which is ASCII "44yromem" rather than a valid pointer if I looked that up right.
+
+And just _slightly_ different allocation patterns, and your 'struct
+rb_node' gets allocated somewhere else, and you don't see the oops at
+all, or you get it later in some different place.
+
+Most memory corruption doesn't cause oopses, because most memory isn't
+used as pointers etc.
+
+What you _could_ try if you care enough is
+
+ - go back to the thing you bisectted to where you can still hopefully
+recreate the problem
+
+ - apply that patch at that point with no other changes
+
+and then the test would hopefully be closer to the state you could
+re-create the problem.
+
+And hopefully it would still not reproduce, just because the bug is
+fixed, of course ;)
+
+The very unlikely alternative is that your bisect was just pure random
+bad luck and hit the wrong commit entirely, and the oops was due to
+some other problem.
+
+But it does seem unlikely to be something else. Usually when bisects
+go off into the weeds due to not being reproducible, they go very
+obviously off into the weeds rather than point to something that ends
+up having a very similar bug.
+
+           Linus
