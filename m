@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDA740B893
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2828640B89C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbhINUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:01:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59596 "EHLO mail.kernel.org"
+        id S233416AbhINUCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:02:18 -0400
+Received: from mail.i8u.org ([75.148.87.25]:65321 "EHLO chris.i8u.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233929AbhINUBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:01:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1514E61107;
-        Tue, 14 Sep 2021 19:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631649590;
-        bh=ttsGooB3NEJfRQZomFeXbeFS0nz6PX5UINAWPJsLC44=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=dBKRcAdgI7q4J8YNisHk34wH/aEGN5EE2bTLvYM1hYjIAq91qwHPUSVlGr3YX3NXb
-         KEvQ9qH8eB4pMCSsazrrCVawAPiqNY/7qRttzwVnnEwG9iQaZ04xRSc+23q/3uAVjy
-         sXiV0FPcczf62soOOZfbLsg1JW8rKoYPcZOl9qm3tRSGDyj53nxGdrETt/rDLc/80I
-         qGc75cDNMEk60ggOzvxJKY9tvkaEdgd2y1btllcohtxqgOtA3korkuHzapEGP0gPGW
-         YvhFaf29njvi4/YR5lVa23fJofwA1nNQjvjbyTw6Q8ESKiPOSWNBqXZGeT39WeCXre
-         jJwT4iad1eUBQ==
-Content-Type: text/plain; charset="utf-8"
+        id S233390AbhINUCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 16:02:16 -0400
+Received: by chris.i8u.org (Postfix, from userid 1000)
+        id E0A9816C94EA; Tue, 14 Sep 2021 13:00:54 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by chris.i8u.org (Postfix) with ESMTP id DB7D316C9364;
+        Tue, 14 Sep 2021 13:00:54 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 13:00:54 -0700 (PDT)
+From:   Hisashi T Fujinaka <htodd@twofifty.com>
+To:     Dave Jones <davej@codemonkey.org.uk>
+cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
+In-Reply-To: <20210914142419.GA32324@codemonkey.org.uk>
+Message-ID: <c02876d7-c3f3-1953-334d-1248af919796@twofifty.com>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com> <20210913141818.GA27911@codemonkey.org.uk> <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com> <20210913201519.GA15726@codemonkey.org.uk> <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
+ <20210913203234.GA6762@codemonkey.org.uk> <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com> <b4b543d4-c0c5-3c56-46b7-e17ec579edcc@twofifty.com> <367cc748-d411-8cf8-ff95-07715c55e899@gmail.com> <20210914142419.GA32324@codemonkey.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210913192816.1225025-6-robh@kernel.org>
-References: <20210913192816.1225025-1-robh@kernel.org> <20210913192816.1225025-6-robh@kernel.org>
-Subject: Re: [PATCH v2 5/8] clk: versatile: clk-icst: Support 'reg' in addition to 'vco-offset' for register address
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>
-Date:   Tue, 14 Sep 2021 12:59:48 -0700
-Message-ID: <163164958886.763609.7483570624844319215@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rob Herring (2021-09-13 12:28:13)
-> The ICST binding now also supports 'reg' in addition to 'vco-offset' for
-> the VCO register address. Add support to the driver to get the VCO
-> address from 'reg'.
->=20
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-clk@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+On Tue, 14 Sep 2021, Dave Jones wrote:
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> On Tue, Sep 14, 2021 at 07:51:22AM +0200, Heiner Kallweit wrote:
+>
+> > > Sorry to reply from my personal account. If I did it from my work
+> > > account I'd be top-posting because of Outlook and that goes over like a
+> > > lead balloon.
+> > >
+> > > Anyway, can you send us a dump of your eeprom using ethtool -e? You can
+> > > either send it via a bug on e1000.sourceforge.net or try sending it to
+> > > todd.fujinaka@intel.com
+> > >
+> > > The other thing is I'm wondering is what the subvendor device ID you
+> > > have is referring to because it's not in the pci database. Some ODMs
+> > > like getting creative with what they put in the NVM.
+> > >
+> > > Todd Fujinaka (todd.fujinaka@intel.com)
+> >
+> > Thanks for the prompt reply. Dave, could you please provide the requested
+> > information?
+>
+> sent off-list.
+>
+> 	Dave
 
-I don't think this driver is changing much so you can take it through DT
-tree if you prefer.
+Whoops. I replied from outlook again.
+
+I have confirmation that this should be a valid image. The VPD is just a
+series of 3's. There are changes to preboot header, flash and BAR size,
+and as far as I can tell, a nonsense subdevice ID, but this should work.
+
+What was the original question?
+
+Todd Fujinaka <todd.fujinaka@intel.com>
