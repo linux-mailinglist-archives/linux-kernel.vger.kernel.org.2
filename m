@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFBF40B4AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEE540B483
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhINQd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
+        id S229795AbhINQYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhINQdZ (ORCPT
+        with ESMTP id S229903AbhINQYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:33:25 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDABC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:32:07 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id c21so13019056edj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:32:07 -0700 (PDT)
+        Tue, 14 Sep 2021 12:24:41 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E07C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:23:23 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id h133so19768924oib.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:23:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uU34i+EgJe3tqn17AWoGwVGTTIh0KVlY0SraTTmp6T0=;
-        b=VZdty0cyn24mKo+cOeBnS1zUwWEVr/Aq14PaZvBBUD6vKS7TpA6mbyHIis/pVaXAaf
-         SJ1YKxtYZYsZj/EY0JHr31tuvOq/g1o7mjxt6H1zfFHVSNCDSLB6nO1xycpBsN8+GLla
-         CROAP4iHjqNA3Dw+oLPHZ225XyXcBn1WLfKpY=
+        d=kali.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fo5eTbyUAHMaSsOWQYct0Sbh06FrAn9VAuVuFrAy4Kg=;
+        b=civ4NdxLkD2SvEeKXS9/qFJGoTwNILe2x7zlhd2cPN30FYHDT7b7SLu+lxAOpNOjqK
+         qw9s+1WyVVDzbOT1n8RK+mw1/09tx2ITRHMqdJ+C1kQHoE6qfWpFblc3vFzmKKnXJVUp
+         FDtoc2U7px9ZGus0P9UCniHqHkzm3oNJwEWcfffBipgpNywvqwPIzzid03mGOgfsIfsh
+         BcDbk7zuyRvDYF3b7rnfbQRz/QN/RdJrtk5JnBMR5yFsrMgk3qzJrCmkb62NyqmR9mlX
+         0lkyUoTi9OHGFiORa2anU10xp6mtIFalbApoXB/MVKJ10vpf/140hrwBB98TVXpDpFQq
+         Dgtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uU34i+EgJe3tqn17AWoGwVGTTIh0KVlY0SraTTmp6T0=;
-        b=6txFyndrvcaQFxk7nC6MPlA0KQEeL8GASyvCrErUoh3d8t8MngPA3J4yT8WCId3Zyg
-         ztS3q9R6cy15GdWHicCoM1BeZZTxN0VQJElh8Z5W8JPGTfTvHsqP0YKqrgjN9vSjI1EH
-         2Qo4JV1MsECPMySgRNF0L7uw3LQvKxaU51FptbbkRI1dt2+aV846LRuctBd7dvWhHKQJ
-         Sh0TeosOP4IQV9SEsu8ePQNcBJ5eUNYmq9Df2Yw+A9Qpy4Q8YQIl7DUtg+mNh4KjFGbE
-         c2/7yFhEuXanYyRdXsI0XgNPQHJTX18wUjpzsf//ZeAkFfBCBVlp02nYKkBr1fmFE9Ln
-         RN3A==
-X-Gm-Message-State: AOAM531hn+t8iO/u0djFGO4TEN3Xd1sNvpkIoA2mWHuaVYTCcCP4ODsl
-        P6bPekGI+jQAZEQDmet9mvuVArQY43tnpyHmnKg=
-X-Google-Smtp-Source: ABdhPJzNAPLhc4PSxoAh9Q3/TP3QzazF8YPgKdZmZ2+Pz/c8pCtO02MvZjci0CIPb02vXbNqK+G+QA==
-X-Received: by 2002:a05:6402:5c2:: with SMTP id n2mr20332567edx.239.1631637125784;
-        Tue, 14 Sep 2021 09:32:05 -0700 (PDT)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id o7sm5641047edt.68.2021.09.14.09.32.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 09:32:05 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id z24so222190ejf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:32:05 -0700 (PDT)
-X-Received: by 2002:a2e:b53a:: with SMTP id z26mr15485756ljm.95.1631636661566;
- Tue, 14 Sep 2021 09:24:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fo5eTbyUAHMaSsOWQYct0Sbh06FrAn9VAuVuFrAy4Kg=;
+        b=F83ZV2Obqr5efElPs6iOWK9ycwTUuw7e6Ri6WT11KVlm4qB9n2LnXmnSi/En/jynu1
+         58mCwXYcCeb59mnowN3iiyajxD6C1SG0lSBsu6nNvNI7Qbp1c8jgdUMtZHkRPsRgG3Zj
+         xIEyim5JP+BQBh+KBRz36d3oh2EloEWkbt0j8j+qhI1GNV0HgMXDO5XQhJYNWHhfRYpf
+         TvnTX32aLxkpYMwGQGsAWmBbSc/JbAw6tF5hX2CnmmD35DtOM2dCsqkTJpv55SlMxT2c
+         lvyJXTkwcaZ9ADyceTKofZsmNfhHQwEjBmJdfhv4xBuLzbXn48cxzTp1vNMqpHWtzxg8
+         9fvg==
+X-Gm-Message-State: AOAM532OEfbTMxRGUNLTHC2fbPvZlBbHiCgn9RaZs6g8Xq9M20ITeh03
+        OVuBHX+zILvjCUskWFyK8goAbOFoftRoQyCb
+X-Google-Smtp-Source: ABdhPJxS+JQL8FT4rErSWjDZ5aKOrGSDsFsVolzZ1IJkj+XOR0Qg8lAS9PbtOZjF93bPUY9ha1HhAw==
+X-Received: by 2002:a05:6808:613:: with SMTP id y19mr2069271oih.176.1631636603180;
+        Tue, 14 Sep 2021 09:23:23 -0700 (PDT)
+Received: from DESKTOP-UL9N8HT.localdomain (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id x198sm2669000ooa.43.2021.09.14.09.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 09:23:22 -0700 (PDT)
+From:   Steev Klimaszewski <steev@kali.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Steev Klimaszewski <steev@kali.org>
+Subject: [PATCH] arm64: dts: qcom: c630: add second channel for wifi
+Date:   Tue, 14 Sep 2021 11:24:39 -0500
+Message-Id: <20210914162439.31113-1-steev@kali.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <163162767601.438332.9017034724960075707.stgit@warthog.procyon.org.uk>
- <CAHk-=wiVK+1CyEjW8u71zVPK8msea=qPpznX35gnX+s8sXnJTg@mail.gmail.com>
-In-Reply-To: <CAHk-=wiVK+1CyEjW8u71zVPK8msea=qPpznX35gnX+s8sXnJTg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Sep 2021 09:24:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgR_unCDRZ+8iTb5gBO6bgRkuS4JYBpi25v12Yp6TzWVA@mail.gmail.com>
-Message-ID: <CAHk-=wgR_unCDRZ+8iTb5gBO6bgRkuS4JYBpi25v12Yp6TzWVA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] fscache: Replace and remove old I/O API
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-cachefs@redhat.com, CIFS <linux-cifs@vger.kernel.org>,
-        Shyam Prasad N <nspmangalore@gmail.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 9:21 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Call it "fallback" or "simple" or something that shows the intent, but
-> no, I'm not taking patches that introduce a _new_ interface and call
-> it "deprecated".
+On the Lenovo Yoga C630, the WiFi/BT chip can use both RF
+channels/antennas, so add the regulator for it.
 
-Put another way: to call something "deprecated", you have to already
-have the replacement all ready to go.
+Signed-off-by: Steev Klimaszewski <steev@kali.org>
+---
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-And if you have that, then converting existing code to a deprecated
-model isn't the way to go.
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index d7591a4621a2..1b048afd9d90 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -230,6 +230,9 @@ vreg_l22a_2p85: ldo22 {
+ 		};
+ 
+ 		vreg_l23a_3p3: ldo23 {
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3312000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 		};
+ 
+ 		vdda_qusb_hs0_3p1:
+@@ -724,6 +727,7 @@ &wifi {
+ 	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
+ 	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
+ 	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
++	vdd-3.3-ch1-supply = <&vreg_l23a_3p3>;
+ 
+ 	qcom,snoc-host-cap-8bit-quirk;
+ };
+-- 
+2.33.0
 
-So in neither situation does it make any sense to convert anything to
-a model that is deprecated.
-
-          Linus
