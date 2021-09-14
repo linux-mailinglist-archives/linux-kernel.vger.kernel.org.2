@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C15A40A8FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AADB40A8FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhINIPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
+        id S230222AbhINIQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhINIPv (ORCPT
+        with ESMTP id S230182AbhINIQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:15:51 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A19C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:34 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id di6so1062367qvb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:34 -0700 (PDT)
+        Tue, 14 Sep 2021 04:16:43 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB30C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:15:26 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id b14so10688386qtb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:15:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=UkRITEGXX6CzWObn2Pss3N17QNxFhOacW/rBM6plBko=;
-        b=MMtZoSeZPocFS1s4AR+1LL8xRFfHnFS+4Wq3a4MmLjZxkB2IXZT/iOZcQMyEOdrHbn
-         QzlZiqls0kGome6fCgqhcZgoxrpmDHE6SsO0rinz4o3/gSguY3YsK58rKtRNqotHIYPi
-         HMFL6Z62BRIdAxvZMC2jxGp/8tEe2cEI9ErjH8s7iqg4ZHQWofed0leTm7yWh3S0BT3k
-         bwBHwq5YnDj8X5lJKcKYSmVw6RGp//IOaW1sCKkQGG8t7fl6gkkyukdse7oEYuTJDoVf
-         99sB7TGzSsGzozzhJUH+VypdR9YDiRe+YC2Xavv8KgN0ZGQgtKC9Y3q5iw1ujrI+dL8C
-         5ctw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=McFPfgp+89QkBjV+rL8b9/JFaBCL/hN6AdRiaLyQM5Q=;
+        b=TDiqiQyd07G7uOdJOlYQxkkipWc8uuxMMgsDLmil0ViNQH11kpnH0kP9421cMyje+8
+         +Ys7OS2zIi6FGc7sJQq33n3Z7Zcnf5sQshdhEaKnGe5OZX40beS18RRSFo0mSB+k/oQX
+         m6ecVrZjFuBhGJKit8YeNytsIfui2/mdPrCliYKSyMKNOeEeioci34A5GHzdb+jhVdgV
+         AqF2/t97GASWT6Ii8qTu21CV0uiAdIzrHLoz2WF8dudVXr8UfzWxmeXVXhb56jtXmRSS
+         Jfe6bSt0KxrUgsP5pjnQ73UgaNwpk2VOrSkNGBmyoYsxLFftIFzUcR+2fDPze5x8q2Ju
+         HYug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=UkRITEGXX6CzWObn2Pss3N17QNxFhOacW/rBM6plBko=;
-        b=wGHfkdmv+JeT5I1MM73j53SrHy8Aiab66TeTzjLHa3SOUoHYvGktj9NAmAYvzWdO1M
-         Jf2lhAlK4v7tNm84Wb3N7t3d/SJg/whXpfYPblBVdLMZaMf5ROv8DkyJTMhQBcgW/Uel
-         kebHIJ9zjaQLEtrqmQcHcq+1e+B7qtLxeJEvLMl3YPjW9Q9OkRBJ4hOysHry76r0L5mI
-         ykGUwRQR6Fo3iDq01r7RyBHanWtfEohmCnTHm1q5ivJoYjqerX/47kq0TsgAxCbS8Kh8
-         v8tG04fG5e2IILaJpepo6k02ZVrQrpcjtebD6q9a6jyWRiomfbq8Wb4JYdthISh05/bI
-         zYWg==
-X-Gm-Message-State: AOAM531Gfd2fDSYP7Bs6t8xWGtlto7NLW4lEwdCEOKj77JUONXac45ci
-        YMowUmNX0AxsCOD9NOxBsWrj4wjWiboHMQ==
-X-Google-Smtp-Source: ABdhPJywrDCkPNv5Y8r1ovCy4W59cnTuIItmjYmAjBy0zVzaMmsw0aT6O0jKvOxYEluOt8hQlY+HWg==
-X-Received: by 2002:a05:6214:527:: with SMTP id x7mr3884341qvw.55.1631607273733;
-        Tue, 14 Sep 2021 01:14:33 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id a9sm7217438qko.27.2021.09.14.01.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 01:14:33 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     SeongJae Park <sjpark@amazon.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Kosina <trivial@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH trivial] mm/damon: Grammar s/works/work/
-Date:   Tue, 14 Sep 2021 08:14:27 +0000
-Message-Id: <20210914081427.18965-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210914073451.3883834-1-geert@linux-m68k.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=McFPfgp+89QkBjV+rL8b9/JFaBCL/hN6AdRiaLyQM5Q=;
+        b=LiJUbSfsF6OAObVYlZIsqEdrDSwpWHYhu6/h9PPX9TBv2uKj4oEOTyflvHC4MrOP2B
+         KnuM1VHR0x94SLzeh1lb0Z6i/nOlbrQRXzv8Zv2VqRixGdRuTzikxE32YEgEqG9vjTqT
+         T4nVe/Rxr4EZCFIl01sF2D7dDQmfQYx4+JCC0sw07rStGDvRlpOEeGjjY34ivXgxNlja
+         i660nHu22aVqIInaW3oTWwnhCzOcneLS0F3gf7U5espJppn/i8NcsBNMVRE7AtZoKMEE
+         7aJfW6Rmp75j+ygq9fY6adFK6k5rznI1/hj3+9tJl8j87HxvOwQN3r6+ka344c4Psg6w
+         Kazg==
+X-Gm-Message-State: AOAM533sPYuzxeviK8fR+J9nDPLbhww4RnmLW3b0N9bukTfIsdcGP28J
+        KgD3kRzkdp6U945xlaie1TTKacTbKLTZ6KrMGbs=
+X-Google-Smtp-Source: ABdhPJxQ2y7T2sJVQXB7MRygHfYxfwfK3HqUmuHPwMx4E6Ku5uphr5nfmF5aLPoPmS5RJHTa9r0G3desrVf520itfQ0=
+X-Received: by 2002:a05:622a:102:: with SMTP id u2mr3614591qtw.149.1631607325330;
+ Tue, 14 Sep 2021 01:15:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210819055227.140980-1-liuxiwei@inspur.com>
+In-Reply-To: <20210819055227.140980-1-liuxiwei@inspur.com>
+From:   George Liu <liuxiwei1013@gmail.com>
+Date:   Tue, 14 Sep 2021 16:15:14 +0800
+Message-ID: <CANFuQ7A5jLXftmfLn_W93MuDF8heL88BPQRL_rkYk+bj0_Db0w@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: fp5280g2: Enable KCS 3 for MCTP binding
+To:     joel@jms.id.au, OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Cc:     linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, George Liu <liuxiwei@inspur.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Hey Joel:
+do you have any comments at this patch?
 
-Hi Geert,
+Thx -- George Liu
 
-
-Thank you for this patch!
-
-On Tue, 14 Sep 2021 09:34:51 +0200	[thread overview] Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-
-> Correct a singular versus plural grammar mistake in the help text for
-> the DAMON_VADDR config symbol.
-> 
-> Fixes: 3f49584b262cf8f4 ("mm/damon: implement primitives for the virtual memory address spaces")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Reviewed-by: SeongJae Park <sjpark@amazon.de>
-
-
-Thanks,
-SJ
-
+On Thu, Aug 19, 2021 at 1:52 PM George Liu <liuxiwei1013@gmail.com> wrote:
+>
+> Signed-off-by: George Liu <liuxiwei@inspur.com>
 > ---
->  mm/damon/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
-> index 37024798a97caf0b..ba8898c7eb8eb35e 100644
-> --- a/mm/damon/Kconfig
-> +++ b/mm/damon/Kconfig
-> @@ -30,7 +30,7 @@ config DAMON_VADDR
->  	select PAGE_IDLE_FLAG
->  	help
->  	  This builds the default data access monitoring primitives for DAMON
-> -	  that works for virtual address spaces.
-> +	  that work for virtual address spaces.
->  
->  config DAMON_VADDR_KUNIT_TEST
->  	bool "Test for DAMON primitives" if !KUNIT_ALL_TESTS
-> -- 
-> 2.25.1
-> 
+>  arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
+> index 1752f3250e44..d0c3acbf6c8c 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-inspur-fp5280g2.dts
+> @@ -3,6 +3,7 @@
+>  #include "aspeed-g5.dtsi"
+>  #include <dt-bindings/gpio/aspeed-gpio.h>
+>  #include <dt-bindings/leds/leds-pca955x.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>
+>  / {
+>         model = "FP5280G2 BMC";
+> @@ -902,4 +903,10 @@ fan@7 {
+>
+>  };
+>
+> +&kcs3 {
+> +       status = "okay";
+> +       aspeed,lpc-io-reg = <0xca2>;
+> +       aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+> +};
+> +
+>  #include "ibm-power9-dual.dtsi"
+> --
+> 2.30.2
+>
