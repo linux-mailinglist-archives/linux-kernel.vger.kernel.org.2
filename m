@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE9940A8F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61A440A8F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhINIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhINIPn (ORCPT
+        id S229967AbhINIPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:15:32 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:46132 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229483AbhINIPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:15:43 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A55C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:26 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id k4so27002483lfj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gNAG6sGwDoGBymW4v3k2eOOtXFLNm8P1dLCL1GXtjWw=;
-        b=dNM9vb+VveLvd2V/oVpPSsK+h62LKqMHmFHU963BBbU4Lb9pm4ysOpfp5YnrysH+MJ
-         OUCVwq2PJIun9j6Ic/UtB+2eLZMl2AoehNGV4dSfUWT1LfrIQHNkD0wcBv7c/LXw0heO
-         FYNbd4K08VsPgRqWLKtWMmOhLpZOqwCtosnZbU1sRl704aoQiBsWew6hUdOLTY8WSieA
-         B6ZWLIFQJkh1iAahWrEBnjAj5mER4S6PBGGDgA+AmB/om+Y/r3t/sblBeUfhE0jD4d1b
-         IlilLuFbPSVd4HK0n1btBB5WB6mbnp0Sx/z7uLwZYp85/9QDAe55EavHS0ZEelactzRF
-         B8EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gNAG6sGwDoGBymW4v3k2eOOtXFLNm8P1dLCL1GXtjWw=;
-        b=7Aiv09I8Y1O2dOdJ2GQ+27mdJ0HOneBsFPF3WGHqUuzK7r+zRi5w3z3s6SzQrLHkPT
-         Dk1F87Md0KhSIVCIYw4VsXsIz/MH2aCaqcggSfqs98UVmCmJz8qpCMpw/mW5RKSfODW2
-         VDL2N+m6xA7/fo4pHCGlP5/MxkY7nM1jm2Sy353gvtbAF4ELT7PXSP2q6ra3yl1BL5gc
-         dAgubEYpFBleQLy9hBSr2+jY1kK/hoVStkqpTb+hHFrEx5Ky42T7vfuh4nzMuCIag3jT
-         OuA5tXKWapaZV1QF+xybRkOs+6yKo7EJGJI4jtx80hfAVMEm/uOTQgJTEtKGZKNADYh/
-         f4Rg==
-X-Gm-Message-State: AOAM533ViV/93iGr46bFXFvbO7wUc7kiByzwfNgb0qSGa3OEwjildjH5
-        wysvT9eQI7OhhFA02ifqwl/8eEDd9A9/quCv4FhalA==
-X-Google-Smtp-Source: ABdhPJz/39ZOyxqmVezb9i3SjizQHorwf0mpUOqdFpYqSbdtNny2LPuz9a6DaVUyBR31t7Q+Hk5gL+fzBvq2PVpCJ0o=
-X-Received: by 2002:ac2:43b1:: with SMTP id t17mr8992193lfl.373.1631607264938;
- Tue, 14 Sep 2021 01:14:24 -0700 (PDT)
+        Tue, 14 Sep 2021 04:15:31 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-228-4zbg9E4KPh6_KsOvdYrc_g-1; Tue, 14 Sep 2021 09:14:12 +0100
+X-MC-Unique: 4zbg9E4KPh6_KsOvdYrc_g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Tue, 14 Sep 2021 09:14:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Tue, 14 Sep 2021 09:14:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'libaokun (A)'" <libaokun1@huawei.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        Kees Cook <keescook@chromium.org>
+Subject: RE: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in
+ __nbd_ioctl()
+Thread-Topic: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in
+ __nbd_ioctl()
+Thread-Index: AQHXqQ4eXbMSnUIpgkqOMblgrD/eTKujLcBA
+Date:   Tue, 14 Sep 2021 08:14:10 +0000
+Message-ID: <27e1c6de36354620aaf8ed5a5fa944de@AcuMS.aculab.com>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
+ <YT+RKemKfg6GFq0S@kroah.com>
+ <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
+ <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
+ <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
+ <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
+ <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
+ <CAKwvOdkf3B41RRe8FDkw1H-0hBt1_PhZtZxBZ5pj0pyh7vDLmA@mail.gmail.com>
+ <CAHk-=wjP2ijctPt2Hw3DagSZ-KgdRsO6zWTTKQNnSk0MajtJgA@mail.gmail.com>
+ <CAKwvOd=ZG8sf1ZOkuidX_49VGkQE+BJDa19_vR4gh2FNQ2F_9Q@mail.gmail.com>
+ <CAKwvOdkz4e3HdNKFvOdDDWVijB7AKaeP14_vAEbxWXD1AviVhA@mail.gmail.com>
+ <CAKwvOdmtX8Y8eWESYj4W-H-KF7cZx6w1NbSjoSPt5x5U9ezQUQ@mail.gmail.com>
+ <CAHk-=whjhJgk7hD-ftUy-8+9cenhMDHqaNKXOyeNVoMxZRD-_A@mail.gmail.com>
+ <CAKwvOdnFRhKDZ3XuePSGsuxhOpuS5RmZ1u+MeN=PRPPKSS3wFg@mail.gmail.com>
+ <db321a38-f5f6-34cd-2f4f-37fc82201798@huawei.com>
+In-Reply-To: <db321a38-f5f6-34cd-2f4f-37fc82201798@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210907151204.118861-1-huobean@gmail.com> <20210907151204.118861-3-huobean@gmail.com>
-In-Reply-To: <20210907151204.118861-3-huobean@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 14 Sep 2021 10:13:48 +0200
-Message-ID: <CAPDyKFpC6iei96n-UcRTNrxTaHeejzfQX+rka7GSwSZjXN7-4g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: core: No need to calculate the timeout value
- for CQE data transmission
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Avri Altman <avri.altman@wdc.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sept 2021 at 17:12, Bean Huo <huobean@gmail.com> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> In case CQE is enabled, the timeout value of data transmission is always
-> set to be maximum in sdhci_cqe_enable(), so, calculating its timeout value
-> is obviously superfluous. Change to return directly, which can save some CPU
-> cycle time.
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/mmc/core/core.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index 240c5af793dc..0b571a3bc988 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -649,6 +649,7 @@ EXPORT_SYMBOL(mmc_wait_for_cmd);
->  void mmc_set_data_timeout(struct mmc_data *data, const struct mmc_card *card)
->  {
->         unsigned int mult;
-> +       struct mmc_host *host = card->host;
->
->         /*
->          * SDIO cards only define an upper 1 s limit on access.
-> @@ -659,6 +660,13 @@ void mmc_set_data_timeout(struct mmc_data *data, const struct mmc_card *card)
->                 return;
->         }
->
-> +       /*
-> +        * In case CQE is enabled, the timeout will be set a maximum timeout in
-> +        * sdhci_cqe_enable(), so, no need to go through the below algorithm.
-> +        */
-> +       if (host->cqe_enabled)
+Li4uDQo+ICDCoMKgwqDCoMKgwqDCoCBjYXNlIE5CRF9TRVRfU0laRToNCj4gIMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbmJkX3NldF9zaXplKG5iZCwgYXJnLCBjb25maWct
+PmJsa3NpemUpOw0KPiAgwqDCoMKgwqDCoMKgwqAgY2FzZSBOQkRfU0VUX1NJWkVfQkxPQ0tTOg0K
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoY2hlY2tfbXVsX292ZXJmbG93KChs
+b2ZmX3QpYXJnLCBjb25maWctPmJsa3NpemUsDQo+ICZieXRlc2l6ZSkpDQo+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGlmIChhcmcgJiYgKExMT05HX01BWCAvIGFyZyA8PSBjb25maWct
+PmJsa3NpemUpKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCByZXR1cm4gLUVJTlZBTDsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0
+dXJuIG5iZF9zZXRfc2l6ZShuYmQsIGJ5dGVzaXplLCBjb25maWctPmJsa3NpemUpOw0KPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbmJkX3NldF9zaXplKG5iZCwgYXJnICog
+Y29uZmlnLT5ibGtzaXplLA0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uZmlnLT5ibGtzaXplKTsNCg0KU2hv
+dWxkbid0IHRoZXJlIGp1c3QgYmUgc2FuaXR5IGJvdW5kIGNoZWNrcyBvbiAnY29uZmlnLT5ibGtz
+aXplJyBhbmQNCidhcmcnIHNvIHRoYXQgdGhlIHByb2R1Y3QgaXMgbmV2ZXIgZ29pbmcgdG8gb3Zl
+cmZsb3c/DQoNCkl0IGlzbid0IGFzIHRob3VnaCBhbnkgdmFsdWVzIG5lYXIgdGhlIG92ZXJmbG93
+IGxpbWl0IGFyZSBzYW5lLg0KDQpJIHN1c3BlY3QgeW91IGNvdWxkIGNoZWNrIGNvbmZpZy0+Ymxr
+c2l6ZSA8PSA2NGsgJiYgYXJnIDw9IDMyaw0KYW5kIGV2ZW4gdGhhdCB3b3VsZCBiZSBnZW5lcm91
+cy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
+b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
+IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
- I don't think this is a good idea. For example, host->cqe_enabled is
-set for the hsq case well.
-
-> +               return;
-> +
->         /*
->          * SD cards use a 100 multiplier rather than 10
->          */
-
-Kind regards
-Uffe
