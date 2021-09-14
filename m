@@ -2,167 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B536140B277
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5416440B275
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234772AbhINPFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:05:25 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:47431 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234522AbhINPFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234622AbhINPFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 14 Sep 2021 11:05:13 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 6D5542B01251;
-        Tue, 14 Sep 2021 11:03:55 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 14 Sep 2021 11:03:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=rnQbpsTt6i5vx40awBDFenSY/gc
-        rAOQUGKmQtJF7l2k=; b=O4FE7+5bP6FUgUr3ttXG1/yNC+52kCHOOkeWgRCCdK2
-        GjPdCqN9ybUEbBNX0HCZi9aJMi3a9BIhnVb10bEV3yS4S8AaQHpEl6M2LSlXFi4N
-        h4NMbcvfojPV2Ml3nF7nDoI+7JH5fpaGPqwgDhIeR/E10KRiDptQULY4vJWOsdUO
-        wkPLIIX3pxAjdnJtyZlh+G93HWCpriDy4XORMk0f99S+oGiSCV6QvKx4jLkOLOLG
-        Tp5kFSYJUZIUk63nJFL68tv6U0pMRoSl0xSjTbWO47zKQrg4nFCcdbZuaPLJlLnb
-        N1aZXBblt/VVXCDGcn1U2PBuzfxgrMm+hv2bjmXmoAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rnQbps
-        Tt6i5vx40awBDFenSY/gcrAOQUGKmQtJF7l2k=; b=Jp9VAmcbFMPJC7M8rcw/DV
-        Nn32peqoZCOCZFFEG7u+A9SYdfVBCx0SrYdfSXPveiN0I3BqskXcdOqLuzAwGk3z
-        0A0l7MZ+k93o5InxIU3v5LV7GKNkRnevheOqU12TQ2v5NgjOffwB6XDqckvYwOWY
-        hvqEr9KxePcH+nWc48JVB2oJtduDpHjEfTRMevotvilwvFjhHVWirEVjedteEqto
-        AvKj1ge+dVhwjlVZSaefNCRF6uEUvpNRCUH0H8yV9AHOBLyPIsUc4i8Ri6Kuqj8b
-        3z/1dragLz7Hkbr2nuWVWreuygUSynRhMEZPr2AFRAshf60LSHCjF9R0tUJBP5Kg
-        ==
-X-ME-Sender: <xms:2LlAYWmpAYp6UgQ-r5Iw_RnXIj5Op0i-wrSDulg43Ag8zrYx5cT9wg>
-    <xme:2LlAYd2Tq8PIWY5mEveI33erdMSHbNcqD6XCKn8Jgu4hcNi7bV0lY1NrhUDMkBstb
-    i8njOniClOtzsTGmGU>
-X-ME-Received: <xmr:2LlAYUrbAmT29J6OvroghLIkWER-MnfAh0yBUlGadt6CCWP2OWWYpG6TZT9uP7QyeT-WHhvPN4bap9zv9NnkqH_QRmgXCH_XTTAh>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgkedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:2LlAYalGV7_9NkfOhphADmMfhpwK3dbM37VUDKevDxkw5e6gr4WaRA>
-    <xmx:2LlAYU2wtM92Mdhnppp9fb-6ASykp4ipoElbpeRsRTbOQllhc7_GIw>
-    <xmx:2LlAYRvbNpSO0B-XIpX1YeXHvdw2bjteI0AsTRkWn5bobV-IlqI_OA>
-    <xmx:27lAYf0nuHUHrGfLXcFvrS1OjUMFY57q4F5bsTzlUzdSgVopHoWxIk06r5Y>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 11:03:52 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 17:03:50 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>,
-        linux-rpi-kernel@lists.infradead.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] drm/vc4: hdmi: Actually check for the connector
- status in hotplug
-Message-ID: <20210914150350.b6357jq2azalme4w@gilmour>
-References: <20210914101724.266570-1-maxime@cerno.tech>
- <20210914101724.266570-3-maxime@cerno.tech>
- <YUCy4AmYDFD2jtG6@phenom.ffwll.local>
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35122 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233823AbhINPFL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:05:11 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-171-uOHCrCrONzey65a0rqo3sw-1; Tue, 14 Sep 2021 16:03:52 +0100
+X-MC-Unique: uOHCrCrONzey65a0rqo3sw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Tue, 14 Sep 2021 16:03:51 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Tue, 14 Sep 2021 16:03:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
+Thread-Topic: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
+Thread-Index: AQHXqNCRdjfpTL0To0ac+9sZuEahj6ujlB+QgAAK78OAAAFOoA==
+Date:   Tue, 14 Sep 2021 15:03:51 +0000
+Message-ID: <549b61046b134234bd4bffd85315f29a@AcuMS.aculab.com>
+References: <20210913163712.922188-1-linux@roeck-us.net>
+ <YT+SPIAl0IdWOAn/@ravnborg.org>
+ <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
+ <2d8f45425f024fd9a3d91a4b4a1304cf@AcuMS.aculab.com>
+ <3b069cde-6f15-1df1-fbed-e8d94d0ef173@roeck-us.net>
+ <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="omqsbnjfiweckfg7"
-Content-Disposition: inline
-In-Reply-To: <YUCy4AmYDFD2jtG6@phenom.ffwll.local>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxNCBTZXB0ZW1iZXIgMjAyMSAxNTo1NA0KPiAN
+Cj4gT24gVHVlLCBTZXAgMTQsIDIwMjEgYXQgNDoyNCBQTSBHdWVudGVyIFJvZWNrIDxsaW51eEBy
+b2Vjay11cy5uZXQ+IHdyb3RlOg0KPiA+IE9uIDkvMTQvMjEgNzoxNyBBTSwgRGF2aWQgTGFpZ2h0
+IHdyb3RlOg0KPiA+ID4+IFNvcnJ5LCBJIGRpZG4ndCByZWFsaXplIHRoYXQgYSBmaWVsZCBvZiBz
+aXplIDAgaW5jcmVhc2VzIHRoZSBzdHJ1Y3R1cmUgc2l6ZQ0KPiA+ID4+IG9uIHNwYXJjLiBJIGhh
+ZCBjaGVja2VkIHRoZSBzaXplIG9mIHRoZSBvbGQgYW5kIHRoZSBuZXcgc3RydWN0dXJlIHdpdGgg
+Z2NjDQo+ID4gPj4gb24geDg2XzY0IGFuZCBkaWRuJ3Qgc2VlIGEgZmllbGQgc2l6ZSBpbmNyZWFz
+ZS4NCj4gPiA+DQo+ID4gPiBjbGFuZyBvdXRwdXQgZG9lc24ndCBjaGFuZ2U6DQo+ID4gPg0KPiA+
+ID4gaHR0cHM6Ly9nb2Rib2x0Lm9yZy96L2JUZWVxMTlqMQ0KPiA+ID4NCj4gPiA+IGdjYyBvdWdo
+dCB0byBnZW5lcmF0ZSB0aGUgc2FtZSBzaXplLg0KPiA+ID4NCj4gPiA+IEl0IG91Z2h0IHRvIGJl
+ICdjaGFyIGRhdGFbXTsnIHRob3VnaC4NCj4gPiA+DQo+ID4NCj4gPiBJIGFtIG5ldmVyIHN1cmUg
+aWYgW10gb3IgWzBdIGlzICJjb3JyZWN0Ii4gQW55d2F5LCBpcyB0aGVyZSBhZ3JlZW1lbnQgdGhh
+dCB0aGlzDQo+ID4gaXMgYW4gYWNjZXB0YWJsZSBzb2x1dGlvbiA/IEknbGwgYmUgaGFwcHkgdG8g
+cmVzZW5kIGlmIHRoYXQgaXMgdGhlIGNhc2UuDQo+IA0KPiBZZXMsIGxvb2tzIGdvb2QgdG8gbWUs
+IGluIHRoZSBbXSB2ZXJzaW9uLiBJIHRoaW5rIHRoZSBbMF0gdmVyc2lvbiBjYW4gYmUNCj4gaW50
+ZXJwcmV0ZWQgYXMgYSB6ZXJvLWxlbmd0aCBhcnJheSB0aGF0IG1heSBub3QgYmUgYWNjZXNzZWQs
+IHdoaWxlIHRoZQ0KPiBbXSBmbGV4aWJsZSBhcnJheSBzeW50YXggY2xlYXJseSBtZWFucyB0aGF0
+IGV4dHJhIGRhdGEgZm9sbG93cywgYW5kIGl0J3MNCj4gcGFydCBvZiB0aGUgQyBzdGFuZGFyZCBu
+b3csIHdoaWxlIFswXSBpcyBhIGdjYyBleHRlbnNpb24uDQoNCk1vcmUgcHJvYmxlbWF0aWMgaXMg
+d2hlcmUgaXMgdGhlIGNvcnJlY3QgcGxhY2UgZm9yIHRoZSAnY2hhciBkYXRhW10nLg0KSXQgZm9s
+bG93cyB0aGUgaGVhZGVyIHJhdGhlciB0aGFuIGJlaW5nIHBhcnQgb2YgaXQuDQoNClNvIHRoZToN
+CglkYXRhID0gKHZvaWQgKikoaGRyICsgMSk7DQpjb25zdHJ1Y3QgKEkndmUgbG9zdCB0aGUgb3Jp
+Z2luYWwgcGF0Y2gpIGlzIGFic29sdXRlbHkgZGVzY3JpcHRpdmUuDQoNCmdjYyBpcyBnZXR0aW5n
+IHRvIGJlIGEgcmVhbCBQSVRBIGZvciBzeXN0ZW0gY29kaW5nLg0KDQpGb3IgdGhpcyBwYXJ0aWN1
+bGFyIGNoZWNrICdzaXplIDAnIG91Z2h0IHRvIGJlICdzaXplIHVua25vd24nDQphbmQgYWx3YXlz
+IHZhbGlkLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFt
+bGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3Ry
+YXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
---omqsbnjfiweckfg7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Daniel,
-
-On Tue, Sep 14, 2021 at 04:34:08PM +0200, Daniel Vetter wrote:
-> On Tue, Sep 14, 2021 at 12:17:24PM +0200, Maxime Ripard wrote:
-> > The drm_helper_hpd_irq_event() documentation states that this function
-> > is "useful for drivers which can't or don't track hotplug interrupts for
-> > each connector." and that "Drivers which support hotplug interrupts for
-> > each connector individually and which have a more fine-grained detect
-> > logic should bypass this code and directly call
-> > drm_kms_helper_hotplug_event()". This is thus what we ended-up doing.
-> >=20
-> > However, what this actually means, and is further explained in the
-> > drm_kms_helper_hotplug_event() documentation, is that
-> > drm_kms_helper_hotplug_event() should be called by drivers that can
-> > track the connection status change, and if it has changed we should call
-> > that function.
-> >=20
-> > This underlying expectation we failed to provide is that the caller of
-> > drm_kms_helper_hotplug_event() should call drm_helper_probe_detect() to
-> > probe the new status of the connector.
-> >=20
-> > Since we didn't do it, it meant that even though we were sending the
-> > notification to user-space and the DRM clients that something changed we
-> > never probed or updated our internal connector status ourselves.
-> >=20
-> > This went mostly unnoticed since the detect callback usually doesn't
-> > have any side-effect. Also, if we were using the DRM fbdev emulation
-> > (which is a DRM client), or any user-space application that can deal
-> > with hotplug events, chances are they would react to the hotplug event
-> > by probing the connector status eventually.
-> >=20
-> > However, now that we have to enable the scrambler in detect() if it was
-> > enabled it has a side effect, and an application such as Kodi or
-> > modetest doesn't deal with hotplug events. This resulted with a black
-> > screen when Kodi or modetest was running when a screen was disconnected
-> > and then reconnected, or switched off and on.
->=20
-> Uh, why are you running this scrambler restore in your probe function? I
-> guess it works, but most drivers that do expensive hotplug restore to
-> handle the "no black screen for replug" use-case handle that in their own
-> dedicated code.
-
-That's what I got from our discussion back in June (I think?). The
-discussion was about an issue we were having back then where one would
-disconnect / reconnect the display while it had been setup through SCDC
-to use the scrambler and higher bit ratio.
-
-During that power cycle (that also happens when you turn a TV off and
-on), the display would obviously reset its SCDC status. But if there's
-nothing to handle the uevent, then the same mode remains applied
-resulting in a blank screen.
-
-If we're not supposed to set the SCDC status again in detect(), how
-would we deal with this?
-
-> But those also tend to have per-output hpd interrupt sources, so maybe
-> that's why?
-
-We do have an per-output HPD interrupt here
-
-Maximey
-
---omqsbnjfiweckfg7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUC51gAKCRDj7w1vZxhR
-xcwiAPwOelbHH/acgSu/HJHnxZj2wwWMcLHTWegRB50IMyBHDwD/ZfXzZGwXujvG
-F98415jDZnBjFchPKB9vJkeHXlCeegk=
-=LDfj
------END PGP SIGNATURE-----
-
---omqsbnjfiweckfg7--
