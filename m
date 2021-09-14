@@ -2,226 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635C840B1BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A185D40B1FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbhINOot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234359AbhINOnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:43:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C53610CE;
-        Tue, 14 Sep 2021 14:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631630555;
-        bh=juSmhxL2xpDmE4nzcIHTKDR3pzJZ+yWbGObEWpwCpho=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZ/qNmAZcrQwVPCzPPCGH9wQ6R45z0vu/AUPStlFjpz9ePnkbLSL8Q+xNXd+FW5wB
-         fi+glgnyZc6ft830YvM6QTjNDiPrtdKXIULLrO8vJZudR1IvHe4ZbMTG8Dg7QuqzZk
-         VXNJ4/TVQd/V2qwfmmrnWpymFeKfTrKo8vFDV++Il25NqRRmgkNxj11ixNE0wIgdbh
-         NBFFogEoyjZ6uix7qvRp4fyk3eK/BYJB7vqgUnZle7mHks0NckGaPewStHldHnY+Cs
-         QSfuZi/+ZVaK26zCdzrRuPQLQasxMIjweiAiNQ6VV/1q5jy0PTBlUvcR469UNrP8ep
-         FBcXyzXwQ4wbA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        yhs@fb.com, linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>
-Subject: [PATCH -tip v11 25/27] x86/unwind: Recover kretprobe trampoline entry
-Date:   Tue, 14 Sep 2021 23:42:31 +0900
-Message-Id: <163163055130.489837.5161749078833497255.stgit@devnote2>
+        id S234366AbhINOuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234534AbhINOtE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:49:04 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ACDC05BD1D
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:42:43 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d46f:7eb5:4a37:9d14])
+        by laurent.telenet-ops.be with bizsmtp
+        id tqih2500P2aSKa101qihrJ; Tue, 14 Sep 2021 16:42:41 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQ9dq-004VQr-Gt; Tue, 14 Sep 2021 16:42:34 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQ9dp-00297w-Vx; Tue, 14 Sep 2021 16:42:34 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] auxdisplay: ht16k33: Make use of device properties
+Date:   Tue, 14 Sep 2021 16:42:32 +0200
+Message-Id: <20210914144232.511697-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <163163030719.489837.2236069935502195491.stgit@devnote2>
-References: <163163030719.489837.2236069935502195491.stgit@devnote2>
-User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the kretprobe replaces the function return address with
-the kretprobe_trampoline on the stack, x86 unwinders can not
-continue the stack unwinding at that point, or record
-kretprobe_trampoline instead of correct return address.
+The device property API allows drivers to gather device resources from
+different sources, such as ACPI, and lift the dependency on Device Tree.
+Convert the driver to unleash the power of the device property API.
 
-To fix this issue, find the correct return address from task's
-kretprobe_instances as like as function-graph tracer does.
-
-With this fix, the unwinder can correctly unwind the stack
-from kretprobe event on x86, as below.
-
-           <...>-135     [003] ...1     6.722338: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
-           <...>-135     [003] ...1     6.722377: <stack trace>
- => kretprobe_trace_func+0x209/0x2f0
- => kretprobe_dispatcher+0x4a/0x70
- => __kretprobe_trampoline_handler+0xca/0x150
- => trampoline_handler+0x44/0x70
- => kretprobe_trampoline+0x2a/0x50
- => vfs_read+0xab/0x1a0
- => ksys_read+0x5f/0xe0
- => do_syscall_64+0x33/0x40
- => entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-Reported-by: Daniel Xu <dxu@dxuuu.xyz>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Tested-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Suggested-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-  Changes in v9:
-   - Update comment so that it explains why the strange address passed
-     to unwind_recover_kretprobe().
-  Changes in v7:
-   - Remove superfluous #include <linux/kprobes.h>.
-  Changes in v5:
-   - Fix the case of interrupt happens on kretprobe_trampoline+0.
-  Changes in v3:
-   - Split out the kretprobe side patch
-   - Fix build error when CONFIG_KRETPROBES=n.
-  Changes in v2:
-   - Remove kretprobe wrapper functions from unwind_orc.c
-   - Do not fixup state->ip when unwinding with regs because
-     kretprobe fixup instruction pointer before calling handler.
----
- arch/x86/include/asm/unwind.h  |   23 +++++++++++++++++++++++
- arch/x86/kernel/unwind_frame.c |    3 +--
- arch/x86/kernel/unwind_guess.c |    3 +--
- arch/x86/kernel/unwind_orc.c   |   21 +++++++++++++++++----
- 4 files changed, 42 insertions(+), 8 deletions(-)
+Compile-tested only for the !OF case.
 
-diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
-index 70fc159ebe69..fca2e783e3ce 100644
---- a/arch/x86/include/asm/unwind.h
-+++ b/arch/x86/include/asm/unwind.h
-@@ -4,6 +4,7 @@
+This depends on "[PATCH v6 00/19] auxdisplay: ht16k33: Add character display
+support"
+(https://lore.kernel.org/r/20210914143835.511051-1-geert@linux-m68k.org)
+
+ drivers/auxdisplay/Kconfig   |  2 +-
+ drivers/auxdisplay/ht16k33.c | 25 +++++++++++--------------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+index e32ef7f9945d49b2..64012cda4d126707 100644
+--- a/drivers/auxdisplay/Kconfig
++++ b/drivers/auxdisplay/Kconfig
+@@ -169,7 +169,7 @@ config IMG_ASCII_LCD
  
- #include <linux/sched.h>
- #include <linux/ftrace.h>
-+#include <linux/kprobes.h>
- #include <asm/ptrace.h>
- #include <asm/stacktrace.h>
+ config HT16K33
+ 	tristate "Holtek Ht16K33 LED controller with keyscan"
+-	depends on FB && OF && I2C && INPUT
++	depends on FB && I2C && INPUT
+ 	select FB_SYS_FOPS
+ 	select FB_SYS_FILLRECT
+ 	select FB_SYS_COPYAREA
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 89ee5b4b3dfccb68..e5b810e37e0337a6 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -12,7 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/i2c.h>
+-#include <linux/of.h>
++#include <linux/property.h>
+ #include <linux/fb.h>
+ #include <linux/slab.h>
+ #include <linux/backlight.h>
+@@ -481,15 +481,13 @@ static int ht16k33_led_probe(struct device *dev, struct led_classdev *led,
+ 			     unsigned int brightness)
+ {
+ 	struct led_init_data init_data = {};
+-	struct device_node *node;
+ 	int err;
  
-@@ -15,6 +16,7 @@ struct unwind_state {
- 	unsigned long stack_mask;
- 	struct task_struct *task;
- 	int graph_idx;
-+	struct llist_node *kr_cur;
- 	bool error;
- #if defined(CONFIG_UNWINDER_ORC)
- 	bool signal, full_regs;
-@@ -99,6 +101,27 @@ void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_size,
- 			void *orc, size_t orc_size) {}
- #endif
+ 	/* The LED is optional */
+-	node = of_get_child_by_name(dev->of_node, "led");
+-	if (!node)
++	init_data.fwnode = device_get_named_child_node(dev, "led");
++	if (!init_data.fwnode)
+ 		return 0;
  
-+static inline
-+unsigned long unwind_recover_kretprobe(struct unwind_state *state,
-+				       unsigned long addr, unsigned long *addr_p)
-+{
-+	return is_kretprobe_trampoline(addr) ?
-+		kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
-+		addr;
-+}
-+
-+/* Recover the return address modified by kretprobe and ftrace_graph. */
-+static inline
-+unsigned long unwind_recover_ret_addr(struct unwind_state *state,
-+				     unsigned long addr, unsigned long *addr_p)
-+{
-+	unsigned long ret;
-+
-+	ret = ftrace_graph_ret_addr(state->task, &state->graph_idx,
-+				    addr, addr_p);
-+	return unwind_recover_kretprobe(state, ret, addr_p);
-+}
-+
- /*
-  * This disables KASAN checking when reading a value from another task's stack,
-  * since the other task could be running on another CPU and could have poisoned
-diff --git a/arch/x86/kernel/unwind_frame.c b/arch/x86/kernel/unwind_frame.c
-index d7c44b257f7f..8e1c50c86e5d 100644
---- a/arch/x86/kernel/unwind_frame.c
-+++ b/arch/x86/kernel/unwind_frame.c
-@@ -240,8 +240,7 @@ static bool update_stack_state(struct unwind_state *state,
- 	else {
- 		addr_p = unwind_get_return_address_ptr(state);
- 		addr = READ_ONCE_TASK_STACK(state->task, *addr_p);
--		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
--						  addr, addr_p);
-+		state->ip = unwind_recover_ret_addr(state, addr, addr_p);
+-	init_data.fwnode = of_fwnode_handle(node);
+ 	init_data.devicename = "auxdisplay";
+ 	init_data.devname_mandatory = true;
+ 
+@@ -510,7 +508,6 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 				struct ht16k33_keypad *keypad)
+ {
+ 	struct device *dev = &client->dev;
+-	struct device_node *node = dev->of_node;
+ 	u32 rows = HT16K33_MATRIX_KEYPAD_MAX_ROWS;
+ 	u32 cols = HT16K33_MATRIX_KEYPAD_MAX_COLS;
+ 	int err;
+@@ -529,11 +526,11 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 	keypad->dev->open = ht16k33_keypad_start;
+ 	keypad->dev->close = ht16k33_keypad_stop;
+ 
+-	if (!of_get_property(node, "linux,no-autorepeat", NULL))
++	if (!device_property_present(dev, "linux,no-autorepeat"))
+ 		__set_bit(EV_REP, keypad->dev->evbit);
+ 
+-	err = of_property_read_u32(node, "debounce-delay-ms",
+-				   &keypad->debounce_ms);
++	err = device_property_read_u32(dev, "debounce-delay-ms",
++				       &keypad->debounce_ms);
+ 	if (err) {
+ 		dev_err(dev, "key debounce delay not specified\n");
+ 		return err;
+@@ -620,8 +617,8 @@ static int ht16k33_fbdev_probe(struct device *dev, struct ht16k33_priv *priv,
+ 		goto err_fbdev_buffer;
  	}
  
- 	/* Save the original stack pointer for unwind_dump(): */
-diff --git a/arch/x86/kernel/unwind_guess.c b/arch/x86/kernel/unwind_guess.c
-index c49f10ffd8cd..884d68a6e714 100644
---- a/arch/x86/kernel/unwind_guess.c
-+++ b/arch/x86/kernel/unwind_guess.c
-@@ -15,8 +15,7 @@ unsigned long unwind_get_return_address(struct unwind_state *state)
+-	err = of_property_read_u32(dev->of_node, "refresh-rate-hz",
+-				   &fbdev->refresh_rate);
++	err = device_property_read_u32(dev, "refresh-rate-hz",
++				       &fbdev->refresh_rate);
+ 	if (err) {
+ 		dev_err(dev, "refresh rate not specified\n");
+ 		goto err_fbdev_info;
+@@ -727,8 +724,8 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	if (err)
+ 		return err;
  
- 	addr = READ_ONCE_NOCHECK(*state->sp);
- 
--	return ftrace_graph_ret_addr(state->task, &state->graph_idx,
--				     addr, state->sp);
-+	return unwind_recover_ret_addr(state, addr, state->sp);
- }
- EXPORT_SYMBOL_GPL(unwind_get_return_address);
- 
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index a1202536fc57..e6f7592790af 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -534,9 +534,8 @@ bool unwind_next_frame(struct unwind_state *state)
- 		if (!deref_stack_reg(state, ip_p, &state->ip))
- 			goto err;
- 
--		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
--						  state->ip, (void *)ip_p);
--
-+		state->ip = unwind_recover_ret_addr(state, state->ip,
-+						    (unsigned long *)ip_p);
- 		state->sp = sp;
- 		state->regs = NULL;
- 		state->prev_regs = NULL;
-@@ -549,7 +548,18 @@ bool unwind_next_frame(struct unwind_state *state)
- 					 (void *)orig_ip);
- 			goto err;
- 		}
--
-+		/*
-+		 * There is a small chance to interrupt at the entry of
-+		 * __kretprobe_trampoline() where the ORC info doesn't exist.
-+		 * That point is right after the RET to __kretprobe_trampoline()
-+		 * which was modified return address.
-+		 * At that point, the @addr_p of the unwind_recover_kretprobe()
-+		 * (this has to point the address of the stack entry storing
-+		 * the modified return address) must be "SP - (a stack entry)"
-+		 * because SP is incremented by the RET.
-+		 */
-+		state->ip = unwind_recover_kretprobe(state, state->ip,
-+				(unsigned long *)(state->sp - sizeof(long)));
- 		state->regs = (struct pt_regs *)sp;
- 		state->prev_regs = NULL;
- 		state->full_regs = true;
-@@ -562,6 +572,9 @@ bool unwind_next_frame(struct unwind_state *state)
- 					 (void *)orig_ip);
- 			goto err;
- 		}
-+		/* See UNWIND_HINT_TYPE_REGS case comment. */
-+		state->ip = unwind_recover_kretprobe(state, state->ip,
-+				(unsigned long *)(state->sp - sizeof(long)));
- 
- 		if (state->full_regs)
- 			state->prev_regs = state->regs;
+-	err = of_property_read_u32(dev->of_node, "default-brightness-level",
+-				   &dft_brightness);
++	err = device_property_read_u32(dev, "default-brightness-level",
++				       &dft_brightness);
+ 	if (err) {
+ 		dft_brightness = MAX_BRIGHTNESS;
+ 	} else if (dft_brightness > MAX_BRIGHTNESS) {
+@@ -816,7 +813,7 @@ static struct i2c_driver ht16k33_driver = {
+ 	.remove		= ht16k33_remove,
+ 	.driver		= {
+ 		.name		= DRIVER_NAME,
+-		.of_match_table	= of_match_ptr(ht16k33_of_match),
++		.of_match_table	= ht16k33_of_match,
+ 	},
+ 	.id_table = ht16k33_i2c_match,
+ };
+-- 
+2.25.1
 
