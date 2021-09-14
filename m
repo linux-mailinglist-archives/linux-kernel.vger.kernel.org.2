@@ -2,131 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1B040B257
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBE740B25E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhINO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234420AbhINO72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:59:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74606C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:58:11 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631631488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IMf9Du4AoXtMqUqsAhP420PXBDeadynwXJLGh2bwgKY=;
-        b=IyK3iRLw+kk5pHxeHASPPHUKt5r/1oeO5oWCsIaGEdibD8T92YK9oSimc/F9jpB9m0sFeh
-        no9wppPFN4Ax+hMW7v6/2JIXk/j9c+asnp0PvUYAWSKYEVpa6mqgYU4+lTGEOu0izaDIXm
-        kkj4X/H4x9qUj5gNHcuUXzR7TyRSUBz9WZ+fEcgk0eTZeKDhTRIP4WxeIojBarEjvpA4tQ
-        SmzIoJ6NPtinYEo8g4wml8T4tJ60m64sYNXQjEbH7eO40fGr2RQojmgD4jnNvV4o/P/+3K
-        s4tmHZFTLGQWyEwLaIK95ehAuvuZ/MYFfaZS3eaYbAxG7Eu5rswcQhMuWaJwcA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631631488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IMf9Du4AoXtMqUqsAhP420PXBDeadynwXJLGh2bwgKY=;
-        b=fspJLkoPc2zYxntrLtxuSZ2JQABiT1vZMrgdYjXqOzXvUjg5GbpzBwCVwbVOr9r8qt1De7
-        IdurB+m6Od3HupBA==
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, paulmck@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
-In-Reply-To: <20210914123726.4219-1-hdanton@sina.com>
-References: <000000000000eaacf005ca975d1a@google.com>
- <20210831074532.2255-1-hdanton@sina.com>
- <20210914123726.4219-1-hdanton@sina.com>
-Date:   Tue, 14 Sep 2021 16:58:08 +0200
-Message-ID: <87v933b3wf.ffs@tglx>
+        id S234534AbhINPAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234014AbhINPAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 850866113E;
+        Tue, 14 Sep 2021 14:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631631532;
+        bh=sO7K4nLD8Mc8xn5UOKFPrX2HuHh5LR3bGo163cAsds0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TuPr7CDZ2U59DvY4KHWGuvehlmcWjNymmIyLtQaAaj/NwxOHHRNQO1VVC+pBgARe8
+         Yxy43DJXh9XXc8cxch3+TK0OdCSoQjaupzvOTJncIEANBTmkPiyHjfbRMlR45k+c6Y
+         g1tli811VotLCkESNMjsSvXuof0EgR3Z3UcmQ2YXlueBLGAvDwJnU/QhsZRicMlTNZ
+         wmYxbK5u2dXZjd94Zx52ijl/ZMppJR21A2+Czo+oBtDMZ+jmzqW3diz2UiA9X+Qzu3
+         /gU7KTkp7c5iYkcPnoK1yIEby3iBvDfXPsKwtVVmzHAmt2K2g0xdGkBLtwmCrjmDRm
+         Kh9MVHTOTnCuQ==
+Received: by mail-oi1-f182.google.com with SMTP id y128so19391708oie.4;
+        Tue, 14 Sep 2021 07:58:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530mTXWoMgUMUERM0CLRR0M41gLnoPLuWmqCO2pZCJHNDoND1H+H
+        BsLPmZA9Wy8lpmr1xWjBz9lqSQDCDZN0Qx4HklA=
+X-Google-Smtp-Source: ABdhPJxVeTS/4JNRGwC903f+QhF2hSvwhyPj5Invrv2ftY17blLAru1BVfAfSs8MB5gXv2vQOjWBkLQJdnquJptLcZc=
+X-Received: by 2002:a05:6808:2193:: with SMTP id be19mr1741155oib.102.1631631531843;
+ Tue, 14 Sep 2021 07:58:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+In-Reply-To: <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Tue, 14 Sep 2021 17:58:25 +0300
+X-Gmail-Original-Message-ID: <CAFCwf13WxpconckKoJOnsSGOaiqL=1RHMrpqOFVRcd2zm6iFmQ@mail.gmail.com>
+Message-ID: <CAFCwf13WxpconckKoJOnsSGOaiqL=1RHMrpqOFVRcd2zm6iFmQ@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+To:     Oded Gabbay <ogabbay@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>, dsinger@habana.ai
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14 2021 at 20:37, Hillf Danton wrote:
-
-> On Mon, 13 Sep 2021 12:28:14 +0200 Thomas Gleixner wrote:
->>On Tue, Aug 31 2021 at 15:45, Hillf Danton wrote:
->>> On Mon, 30 Aug 2021 12:58:58 +0200 Dmitry Vyukov wrote:
->>>>>  ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
->>>>>  mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
->>>>>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
->>>>>  __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
->>>>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
->>>>>  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
->>>
->>> Add debug info only to help kasan catch the timer running longer than 2 ticks.
->>>
->>> Is it anything in the right direction, tglx?
->>
->>Not really. As Dmitry pointed out this seems to be related to
+On Tue, Sep 14, 2021 at 5:18 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> Thanks for taking a look.
+> On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > Hi,
+> > Re-sending this patch-set following the release of our user-space TPC
+> > compiler and runtime library.
+> >
+> > I would appreciate a review on this.
 >
->>mac80211_hwsim and if you look at the above stacktrace then how is
->>adding something to the timer wheel helpful?
+> I think the big open we have is the entire revoke discussions. Having the
+> option to let dma-buf hang around which map to random local memory ranges,
+> without clear ownership link and a way to kill it sounds bad to me.
 >
-> Given the stall was printed on CPU1 while the supposedly offending timer was
-> expiring on CPU0, what was proposed is the lame debug info only for kasan to
-> catch the timer red handed.
+Hi Daniel, thanks for the reply.
+
+What is this revocation requirement ?
+Is it relevant to my case, where our device has a single user at a
+time (only a single process can open the device character file) and
+that user has ownership of the entire device local memory ?
+
+Because I don't care if the user has this dma-buf object lying around,
+as it only wastes device memory for that user. And the user can't
+close the fd of the device until it has closed the fd of the dmabuf.
+
+Or is the revocation referring to something else entirely ?
+
+> I think there's a few options:
+> - We require revoke support. But I've heard rdma really doesn't like that,
+>   I guess because taking out an MR while holding the dma_resv_lock would
+>   be an inversion, so can't be done. Jason, can you recap what exactly the
+>   hold-up was again that makes this a no-go?
 >
-> It is more appreciated if the tglx dude would likely spend a couple of minutes
-> giving us a lesson on the expertises needed for collecting evidence that any
-> timer runs longer than two ticks. It helps beyond the extent of kasan.
+> - The other option I discussed is a bit more the exlusive device ownership
+>   model we've had for gpus in drm of the really old kind. Roughly this
+>   would work like this, in terms of drm_device:
+>   - Only the current owner (drm_master in current drm code, but should
+>     probably rename that to drm_owner) is allowed to use the accel driver.
+>     So all ioctl would fail if you're not drm_master.
+>   - On dropmaster/file close we'd revoke as much as possible, e.g.
+>     in-flight commands, mmaps, anything really that can be revoked.
+>   - For non-revokable things like these dma-buf we'd keep a drm_master
+>     reference around. This would prevent the next open to acquire
+>     ownership rights, which at least prevents all the nasty potential
+>     problems.
+>   - admin (or well container orchestrator) then has responsibility to
+>     shoot down all process until the problem goes away (i.e. until you hit
+>     the one with the rdma MR which keeps the dma-buf alive)
+>
+> - Not sure there's another reasonable way to do this without inviting some
+>   problems once we get outside of the "single kernel instance per tenant"
+>   use-case.
+>
+> Wrt implementation there's the trouble of this reinventing a bunch of drm
+> stuff and concepts, but that's maybe for after we've figured out
+> semantics.
+>
+> Also would be great if you have a pull request for the userspace runtime
+> that shows a bit how this all gets used and tied together. Or maybe some
+> pointers, since I guess retconning a PR in github is maybe a bit much.
 
-That tglx dude already picked the relevant part of the stack trace (see
-also above):
+hmm.. so actually this has only an API in the hl-thunk library. I have
+not put it in github but I can do it fairly quickly.
+But the callee of this API is not the userspace runtime. The callee is
+another library which is responsible for doing scale-out of training
+outside of a box of gaudi devices. That library implements collective
+operations (e.g. all gather, all reduce) over multiple gaudi devices.
+And in fact, the real user is the training framework (e.g. tensorflow,
+pytorch) that calls these collective operations. The framework then
+passes the dmabuf fd to libfabric (open source project) which uses
+rdma-core to pass it to the rdma driver.
 
->>>>>  ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
->>>>>  mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
->>>>>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
->>>>>  __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
->>>>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
->>>>>  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+I can give you a short presentation on that if you want :)
 
-and then asked the question how a timer wheel timer runtime check
-helps. He just omitted the appendix "if the timer in question is a
-hrtimer" as he assumed that this is pretty obvious from the stack trace.
-
-Aside of that if the wireless timer callback runs in an endless loop,
-what is a runtime detection of that in the hrtimer softirq invocation
-helping to decode the problem if the stall detector catches it when it
-hangs there?
-
-Now that mac80211 hrtimer callback might actually be not the real
-problem. It's certainly containing a bunch of loops, but I couldn't find
-an endless loop there during a cursory inspection.
-
-But that callback does rearm the hrtimer and that made me look at
-hrtimer_run_queues() which might be the reason for the endless loop as
-it only terminates when there is no timer to expire anymore.
-
-Now what happens when the mac80211 callback rearms the timer so it
-expires immediately again:
-
-        hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
-                        ns_to_ktime(bcn_int * NSEC_PER_USEC));
-
-bcn is a user space controlled value. Now lets assume that bcn_int is <=1,
-which would certainly cause the loop in hrtimer_run_queues() to keeping
-looping forever.
-
-That should be easy to verify by implementing a simple test which
-reschedules a hrtimer from the callback with a expiry time close to now.
-
-Not today as I'm about to head home to fire up the pizza oven.
-
-Thanks,
-
-        tglx
+>
+> Cheers, Daniel
+>
+> >
+> > Thanks,
+> > Oded
+> >
+> > Oded Gabbay (1):
+> >   habanalabs: define uAPI to export FD for DMA-BUF
+> >
+> > Tomer Tayar (1):
+> >   habanalabs: add support for dma-buf exporter
+> >
+> >  drivers/misc/habanalabs/Kconfig             |   1 +
+> >  drivers/misc/habanalabs/common/habanalabs.h |  22 +
+> >  drivers/misc/habanalabs/common/memory.c     | 522 +++++++++++++++++++-
+> >  drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
+> >  drivers/misc/habanalabs/goya/goya.c         |   1 +
+> >  include/uapi/misc/habanalabs.h              |  28 +-
+> >  6 files changed, 570 insertions(+), 5 deletions(-)
+> >
+> > --
+> > 2.17.1
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
