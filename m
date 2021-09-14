@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5985740B2D1
+	by mail.lfdr.de (Postfix) with ESMTP id 4F13A40B2D0
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbhINPTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
+        id S234224AbhINPTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:19:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233584AbhINPTH (ORCPT
+        with ESMTP id S232840AbhINPTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Sep 2021 11:19:07 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D17C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id r3so24604424ljc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4762C061762;
+        Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id w144so19431787oie.13;
+        Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ASAhUY+G41HZqeopdHM7aTSiw9njl3EyKHtj3rFVhDs=;
-        b=ak1UeKaRxOfiClhnXWFlc5Tj5KPMuwNRFkYKCr7CwkblbA9Paw3cSpCmNNjhx8WlAR
-         mQVYneNQpWpRsZWGMZ81ZIH34dZdZtDMUoN3cV1bET1XUla44MYMFwHm0OhiEQ8yDSmx
-         qIaoPgDcted70DTDgGFCvmz8jNdMD5pdByWJCotfqt94eCEE9xwH05GjiwEKYbRedWR4
-         30qkyVGox3STWReT2o7u8OHwQAuOXe+zFCSrKHiFssbja0kfMIeSsjW2Sr2fq8/kTIQF
-         +/vCVb4lldH/n0uweX+WPK3fJki6M57mqQNhADYjgGtODprzhcTxJXAhbuz6QZRBBdd7
-         OpfQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NIqISq5kyGyxn6lso7aloBgg8et/zHxKVMufJ4ZAVqU=;
+        b=hQWeP0FIwUtKzXeWomGsCttQ4q1uiTlibaiX+8VKGgPFTz6cFjx9lZLqQ/5wwtfxW/
+         uL71c4jBsoTfAGshka+jeOEYYmOz/mor2uHIsgb4QK5idmE2UMNZkw7JlYjNYGvZ1Ogz
+         1jWxi0w5H+Rx4EeVeS/YXSkFN//okinFyiVmfXayhXg/XN/F3pkbj2LIeXB2+Q6vb2He
+         M6+Gvvb9jKL2pYY+bOQjeQliIOmI+HncWa00y0UG5UpHMPlyueWQpaYdt4grC1f9Wbhg
+         UA3TAOe7YOsV9JHaG0TkY6FshRBaPvDsP1ZBIgS8Zpbuf5e9z1UaFwicT2gBsSTdfhBl
+         weVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ASAhUY+G41HZqeopdHM7aTSiw9njl3EyKHtj3rFVhDs=;
-        b=LXeYhqnbRQEIlE7B1sF5hqpGJfngrX6v1DhFU4pmmNMVwdxKfeqDKb6wOrvAUyEZMp
-         mTWnTzYwR4H8GcZcWULpO3sUy6t3b7Z55EESyPHLoSk6CEJFF3xL4Mx3OEM4mLa55jH8
-         uUzHVNLoqt2SBbyZNH85mam3YKMY8ADLsxk/iWUr5uprbkw2k4dyCm3pN8PnTklKcdlD
-         C0kMwFlCAnBQa3lPR2J0jPUIpFm4/Ju96PU2RXwGXKdbpcMKj2S9jZlmuV7c8KxJeFve
-         UGSrMK67s0QHfZLOILAgNN6RqJDfkYa6AxgQ/fSQJjUF8OEsvUwRy+MYD5qf1Xe6nusN
-         HDKg==
-X-Gm-Message-State: AOAM532e0e50do3eAdFTlY64ith7TwAhsWCtd8LsaqYhyxGNp3GkwFIg
-        kdyN4u6VaLzt38fM8+ZE9sToGfNKWo1EFj5h3lSJiQ==
-X-Google-Smtp-Source: ABdhPJxrwrgQsvLdH3TFcygl7m8RHug7EOm+c31xSSPd1GollBX37JTf9f8IkkS/AT1bBnL51Z4Z9YyVU7EsQK1Cxs0=
-X-Received: by 2002:a2e:99da:: with SMTP id l26mr15293313ljj.339.1631632667834;
- Tue, 14 Sep 2021 08:17:47 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=NIqISq5kyGyxn6lso7aloBgg8et/zHxKVMufJ4ZAVqU=;
+        b=r8l9t7ZGP8QdDkx49LEORlorbGyP9Ykvvj/+TO9Pvpe2n9Px38rioa3GouvaiOFiat
+         e0Y88r7KAB/qQE9FAzA8Y+FcTSvFLhYtOQf4kd7Jyjajgl9f9RYNr7Qf9YMgDJ88mlfq
+         ivW33IYZ6o85j0ayStw7A76X9HCobCmqxynVhzflNjhVCwmtUEkLMNWUQSnNBCpnVfuw
+         LbVMyjZ7jjfotGaXNn1uhA3ZskQ8nYWhbjesPpYh4VG9hj+KBY32sM9QCbSMLTb+dK3W
+         YkjXOWDCkEI4qYkwoaD9FAIoUneTBSODLFPmXP0VG/E7wOIV+qPhqAvBRP8AMzHiz2Xl
+         0RFA==
+X-Gm-Message-State: AOAM530G8u4wTiI5SGd6rrUv20oCGPb3qFMYHvO1iUjf/2bbz01+Qm9j
+        Ts3ZyS4NTVgMVE/+cy7wg7c=
+X-Google-Smtp-Source: ABdhPJypTuRytG8Hj20qO41Btjs5P/8rJs8mRBuu6YJZr3+NCsokUyKXObMKggPKKVM9J3Jh7Yd8qg==
+X-Received: by 2002:a05:6808:150:: with SMTP id h16mr1877835oie.25.1631632669230;
+        Tue, 14 Sep 2021 08:17:49 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d8sm2564662oij.53.2021.09.14.08.17.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 08:17:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 14 Sep 2021 08:17:47 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arnd Bergmann' <arnd@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
+Message-ID: <20210914151747.GC3457579@roeck-us.net>
+References: <20210913163712.922188-1-linux@roeck-us.net>
+ <YT+SPIAl0IdWOAn/@ravnborg.org>
+ <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
+ <2d8f45425f024fd9a3d91a4b4a1304cf@AcuMS.aculab.com>
+ <3b069cde-6f15-1df1-fbed-e8d94d0ef173@roeck-us.net>
+ <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
+ <549b61046b134234bd4bffd85315f29a@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <20210824225427.2065517-1-nathan@kernel.org> <20210824225427.2065517-4-nathan@kernel.org>
-In-Reply-To: <20210824225427.2065517-4-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 14 Sep 2021 08:17:36 -0700
-Message-ID: <CAKwvOdmASG7XM5Lkv5aVttwQZkaLjm2jo+-BxBkG97h3hZ_Pew@mail.gmail.com>
-Subject: Re: [PATCH 3/3] drm/i915: Enable -Wsometimes-uninitialized
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <549b61046b134234bd4bffd85315f29a@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 3:54 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> This warning helps catch uninitialized variables. It should have been
-> enabled at the same time as commit b2423184ac33 ("drm/i915: Enable
-> -Wuninitialized") but I did not realize they were disabled separately.
-> Enable it now that i915 is clean so that it stays that way.
->
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Tue, Sep 14, 2021 at 03:03:51PM +0000, David Laight wrote:
+> From: Arnd Bergmann
+> > Sent: 14 September 2021 15:54
+> > 
+> > On Tue, Sep 14, 2021 at 4:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > On 9/14/21 7:17 AM, David Laight wrote:
+> > > >> Sorry, I didn't realize that a field of size 0 increases the structure size
+> > > >> on sparc. I had checked the size of the old and the new structure with gcc
+> > > >> on x86_64 and didn't see a field size increase.
+> > > >
+> > > > clang output doesn't change:
+> > > >
+> > > > https://godbolt.org/z/bTeeq19j1
+> > > >
+> > > > gcc ought to generate the same size.
+> > > >
+> > > > It ought to be 'char data[];' though.
+> > > >
+> > >
+> > > I am never sure if [] or [0] is "correct". Anyway, is there agreement that this
+> > > is an acceptable solution ? I'll be happy to resend if that is the case.
+> > 
+> > Yes, looks good to me, in the [] version. I think the [0] version can be
+> > interpreted as a zero-length array that may not be accessed, while the
+> > [] flexible array syntax clearly means that extra data follows, and it's
+> > part of the C standard now, while [0] is a gcc extension.
+> 
+> More problematic is where is the correct place for the 'char data[]'.
+> It follows the header rather than being part of it.
 
-Thanks for the series!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+I personally always prefer the simple solution, and I don't really care
+about such nuances. I take it as granted that a header is followed by data,
+and I think that a zero-length field at the end of a header is a perfectly
+valid means to express that, but that is just my personal opinion.
 
-> ---
->  drivers/gpu/drm/i915/Makefile | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> index 642a5b5a1b81..335ba9f43d8f 100644
-> --- a/drivers/gpu/drm/i915/Makefile
-> +++ b/drivers/gpu/drm/i915/Makefile
-> @@ -19,7 +19,6 @@ subdir-ccflags-y += $(call cc-disable-warning, missing-field-initializers)
->  subdir-ccflags-y += $(call cc-disable-warning, unused-but-set-variable)
->  # clang warnings
->  subdir-ccflags-y += $(call cc-disable-warning, sign-compare)
-> -subdir-ccflags-y += $(call cc-disable-warning, sometimes-uninitialized)
->  subdir-ccflags-y += $(call cc-disable-warning, initializer-overrides)
->  subdir-ccflags-y += $(call cc-disable-warning, frame-address)
->  subdir-ccflags-$(CONFIG_DRM_I915_WERROR) += -Werror
-> --
-> 2.33.0
->
+Anyway, I take that as non-agreement and won't resend at this time.
 
-
--- 
 Thanks,
-~Nick Desaulniers
+Guenter
