@@ -2,82 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F1040BAC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8960F40BAC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbhINV4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:56:16 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:43819 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbhINV4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:56:14 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B3CE340005;
-        Tue, 14 Sep 2021 21:54:55 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 23:54:55 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     jianbin zhang <quic_jianbinz@quicinc.com>
-Cc:     "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH] rtc: Disable alarm irq if alarm is enabled and alarm
- time is less than or equal to current time
-Message-ID: <YUEaL9CjTpPMr3Go@piout.net>
-References: <BN6PR02MB33324335E951F54DA1B00667E1D69@BN6PR02MB3332.namprd02.prod.outlook.com>
- <YTusgJlMUdXOKQaL@piout.net>
- <9c817836-64d6-1452-189f-2783c4138ace@quicinc.com>
+        id S234905AbhINV5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233952AbhINV5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:57:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE61D60F21;
+        Tue, 14 Sep 2021 21:55:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631656545;
+        bh=argaTgBr5VKnygg+HIx3am0H+3IxuMXP+1Nj76eAUGo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=RlXKjTqxbkMplldZoMu9gQ0gubJdn1CpeCHUDoqAq4ByneDA08RB8JjMEKU6vDHjp
+         +l68uERXQBD4coEGnknGy08Zp3ELWcKZHNWmsUMJIjRaTqaX19jw0BbKxkYsdlCkSA
+         p+uTJvgDqLZHX1y8OAT5S7CYufk05LbOuCnHPyX7Kax8b/1bz1PxHk4Oim0zqHCx/4
+         n8SrnuAQexoW9ufF6W7Oo5LplxJR/szSNdfB6LFrtFMe9LHN4lepjwAu38q6ZLhWih
+         WZZUv7BVlcRzNeYjg4bV0Nb1T2JpaA/FBJymWpK/Dr3+ekr89ZDLeFBko3c+dlWTi5
+         i8j65az7PxaQA==
+Date:   Tue, 14 Sep 2021 16:55:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     Dave Jones <davej@codemonkey.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: Linux 5.15-rc1
+Message-ID: <20210914215543.GA1437800@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c817836-64d6-1452-189f-2783c4138ace@quicinc.com>
+In-Reply-To: <54bd54b9-3774-92a5-4193-5ccccd235572@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2021 10:50:33+0800, jianbin zhang wrote:
-> 
-> On 9/11/21 3:05 AM, Alexandre Belloni wrote:
-> > Hello,
+On Tue, Sep 14, 2021 at 07:07:40PM +0200, Heiner Kallweit wrote:
+> On 14.09.2021 13:26, Bjorn Helgaas wrote:
+> > On Tue, Sep 14, 2021 at 08:21:46AM +0200, Heiner Kallweit wrote:
+> >> On 14.09.2021 01:46, Bjorn Helgaas wrote:
 > > 
-> > Please format your patch properly.
-> 
-> I am so sorry for bothering you because of the patch format. I test the patch format in the local and
-> 
-> the format works well. Such case will not occur.
-> 
-> > > If device is booted up by rtc alarm, the alarm irq  will still be enabled and the alarm time is less than current rtc time before any alarm is set or canceled .
-> > > 
-> > > If device is shut down this time, it will boot up automatically as the alarm irq is enabled and alarm time is less than current rtc time.
-> > > 
-> > > 
-> > > 
-> > > For the situation that the alarm time and rtc time are equal to boot up the device, we expect irq to be false until another alarm is reconfigured, then irq becomes true again.
-> > > 
-> > > 
-> > > 
-> > > So disable alarm irq if alarm is enabled and alarm time is less than or equal to current rtc time.
-> > > 
-> > You should probably fix your driver instead of messing with the core.
-> >  From what I understand, you have:
+> >>> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATTANSIC, PCI_ANY_ID, quirk_blacklist_vpd);
+> >>>  /*
+> >>
+> >> Leaving the quirks in FIXUP_HEADER stage would have the advantage that for
+> >> blacklisted devices the vpd sysfs attribute isn't visibale. The needed
+> >> changes to the patch are minimal.
 > > 
-> >   1/ set the alarm
-> >   2/ shutdown
-> >   3/ alarm happens, the device boots
-> >   4/ shutdown
-> >   5/ alarm irq is still set, device boots again
-> > 
-> > At step 3, your driver has to acknowledge and clear the irq
+> > What do you have in mind?  The only thing I can think of would be to
+> > add a "pci_dev.no_vpd" bit.  "vpd.cap == 0" means the device has no
+> > VPD, and "vpd.len == 0" means we haven't determined the size yet.  All
+> > devices start off with vpd.cap == 0 and vpd.len == 0, so a
+> > FIXUP_HEADER quirk would have to set a sentinel value or some other
+> > bit.
 > 
-> Thanks for great reviewing.
-> 1/Yeah, the steps you understand are right.
-> 2/In fact I met the issue when using the core rtc driver.That means I do not have a private driver on the issue.
-> 
+> Why not leave vpd.len == PCI_VPD_SZ_INVALID as sentinel?
 
-Well, the core isn't a driver, which driver are you using?
+Sentinel values aren't really my favorite thing, but it certainly does
+have the advantage of hiding the sysfs attribute.
 
+> And one more question: Why do you move the "if (!vpd->cap)" check from
+> pci_vpd_read() to pci_read_vpd()? At a first glance I see no benefit.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I'm pretty sure I *had* a reason, but I can't remember right now :(
+Moving it sure does uglify pci_read_vpd() and pci_write_vpd(), though.
+
+What do you think of the following?  (This is a diff from v5.15-rc1.)
+
+diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
+index 25557b272a4f..4be24890132e 100644
+--- a/drivers/pci/vpd.c
++++ b/drivers/pci/vpd.c
+@@ -99,6 +99,24 @@ static size_t pci_vpd_size(struct pci_dev *dev)
+ 	return off ?: PCI_VPD_SZ_INVALID;
+ }
+ 
++static bool pci_vpd_available(struct pci_dev *dev)
++{
++	struct pci_vpd *vpd = &dev->vpd;
++
++	if (!vpd->cap)
++		return false;
++
++	if (vpd->len == 0) {
++		vpd->len = pci_vpd_size(dev);
++		if (vpd->len == PCI_VPD_SZ_INVALID) {
++			vpd->cap = 0;
++			return false;
++		}
++	}
++
++	return true;
++}
++
+ /*
+  * Wait for last operation to complete.
+  * This code has to spin since there is no other notification from the PCI
+@@ -145,7 +163,7 @@ static ssize_t pci_vpd_read(struct pci_dev *dev, loff_t pos, size_t count,
+ 	loff_t end = pos + count;
+ 	u8 *buf = arg;
+ 
+-	if (!vpd->cap)
++	if (!pci_vpd_available(dev))
+ 		return -ENODEV;
+ 
+ 	if (pos < 0)
+@@ -206,7 +224,7 @@ static ssize_t pci_vpd_write(struct pci_dev *dev, loff_t pos, size_t count,
+ 	loff_t end = pos + count;
+ 	int ret = 0;
+ 
+-	if (!vpd->cap)
++	if (!pci_vpd_available(dev))
+ 		return -ENODEV;
+ 
+ 	if (pos < 0 || (pos & 3) || (count & 3))
+@@ -242,14 +260,11 @@ static ssize_t pci_vpd_write(struct pci_dev *dev, loff_t pos, size_t count,
+ 
+ void pci_vpd_init(struct pci_dev *dev)
+ {
++	if (dev->vpd.len == PCI_VPD_SZ_INVALID)
++		return;
++
+ 	dev->vpd.cap = pci_find_capability(dev, PCI_CAP_ID_VPD);
+ 	mutex_init(&dev->vpd.lock);
+-
+-	if (!dev->vpd.len)
+-		dev->vpd.len = pci_vpd_size(dev);
+-
+-	if (dev->vpd.len == PCI_VPD_SZ_INVALID)
+-		dev->vpd.cap = 0;
+ }
+ 
+ static ssize_t vpd_read(struct file *filp, struct kobject *kobj,
+@@ -294,13 +309,14 @@ const struct attribute_group pci_dev_vpd_attr_group = {
+ 
+ void *pci_vpd_alloc(struct pci_dev *dev, unsigned int *size)
+ {
+-	unsigned int len = dev->vpd.len;
++	unsigned int len;
+ 	void *buf;
+ 	int cnt;
+ 
+-	if (!dev->vpd.cap)
++	if (!pci_vpd_available(dev))
+ 		return ERR_PTR(-ENODEV);
+ 
++	len = dev->vpd.len;
+ 	buf = kmalloc(len, GFP_KERNEL);
+ 	if (!buf)
+ 		return ERR_PTR(-ENOMEM);
