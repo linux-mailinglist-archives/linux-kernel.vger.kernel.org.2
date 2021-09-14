@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0E940AF6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A1040AF6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbhINNnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233546AbhINNlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:41:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 86AE96113B;
-        Tue, 14 Sep 2021 13:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631626808;
-        bh=sY3FYoSmQbHrpuWmnj0pThI/ulhOQVvVphlKpaSOIvE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ufF7KNpBDyOJq95ZM5+lpeB3io8r4IdK7p/2kUauOWWFrwgyD9aloImCisrIb7N3Z
-         2qNhhTcMDR3Atw3vn9V7j6GFMyDGnOoUamY/ZikU1FHgJ5afcPSzBF4mv1y6DRO+Mj
-         igT4r6LUmuvQrMngVjXLrAvRe/kwsAGvei1N/RWwkb5uji0jtibVzxFsaJ1tpiwvt9
-         Ei/22SbZsK83Y5JDcaxtGvQAbJXxgImZah/joMdx8h8gEmv4xyz9I5rt7eRl6Pc8lU
-         NsxbCzVLYno5rVAlQeeREufqqyi13/BwPAQzM6RLn4pizQIMRtJoBJ8nlx/joEWBNQ
-         /fOg6BdLlB5TQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 79E4260A6F;
-        Tue, 14 Sep 2021 13:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233172AbhINNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:43:45 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57405 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhINNnT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 09:43:19 -0400
+Received: from fsav115.sakura.ne.jp (fsav115.sakura.ne.jp [27.133.134.242])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18EDfjtP001530;
+        Tue, 14 Sep 2021 22:41:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav115.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp);
+ Tue, 14 Sep 2021 22:41:45 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18EDfj5F001479
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 14 Sep 2021 22:41:45 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: linux: build faulure: error: "__has_attribute" is not defined
+Message-ID: <c1b1a299-c60d-28a4-07ab-1ecd211d6da9@i-love.sakura.ne.jp>
+Date:   Tue, 14 Sep 2021 22:41:45 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] skbuff: inline page_frag_alloc_align()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163162680849.2816.14803547503911298627.git-patchwork-notify@kernel.org>
-Date:   Tue, 14 Sep 2021 13:40:08 +0000
-References: <20210914034935.19137-1-yajun.deng@linux.dev>
-In-Reply-To: <20210914034935.19137-1-yajun.deng@linux.dev>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+With gcc (GCC) 8.3.1 20190311 (Red Hat 8.3.1-3) on d0ee23f9d78be553 ("tools:
+compiler-gcc.h: Guard error attribute use with __has_attribute"), I get
 
-On Tue, 14 Sep 2021 11:49:35 +0800 you wrote:
-> The __alloc_frag_align() is short, and only called by two functions,
-> so inline page_frag_alloc_align() for reduce the overhead of calls.
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/core/skbuff.c | 19 ++++++++-----------
->  1 file changed, 8 insertions(+), 11 deletions(-)
+  CC      /usr/src/linux/tools/objtool/exec-cmd.o
+In file included from /usr/src/linux/tools/include/linux/compiler_types.h:36:0,
+                 from /usr/src/linux/tools/include/linux/compiler.h:5,
+                 from exec-cmd.c:2:
+/usr/src/linux/tools/include/linux/compiler-gcc.h:19:5: error: "__has_attribute" is not defined [-Werror=undef]
+ #if __has_attribute(__error__)
+     ^
+/usr/src/linux/tools/include/linux/compiler-gcc.h:19:20: error: missing binary operator before token "("
+ #if __has_attribute(__error__)
+                    ^
+cc1: all warnings being treated as errors
+make[5]: *** [/usr/src/linux/tools/objtool/exec-cmd.o] Error 1
+make[4]: *** [/usr/src/linux/tools/objtool/libsubcmd-in.o] Error 2
+make[3]: *** [/usr/src/linux/tools/objtool/libsubcmd.a] Error 2
+make[2]: *** [objtool] Error 2
+make[1]: *** [tools/objtool] Error 2
+make: *** [__sub-make] Error 2
 
-Here is the summary with links:
-  - [net-next,v2] skbuff: inline page_frag_alloc_align()
-    https://git.kernel.org/netdev/net-next/c/32e3573f7392
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+On 2021/09/14 15:22, Stephen Rothwell wrote:
+> This is known and being addressed.
 
-
+Can you tell me the commit ?
