@@ -2,99 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBD440B0C0
+	by mail.lfdr.de (Postfix) with ESMTP id 1954240B0BE
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhINOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:34:57 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40660 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233776AbhINOex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234021AbhINOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:34:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41311 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233963AbhINOex (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Sep 2021 10:34:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=dZ/cFYIXkzWrizcxyNBXtpLSQbEflTCzb5tRuZNc66Y=; b=ug2UeG9zaaiVqqrkguGGsgp1hZ
-        VNHPJQCCiguzJu6rQLaBZR223BFSPl43F8xwMtYGTWUR3WZIsxvLdoXsjI0L8ZP/l2n8DhwUk96c7
-        Kef44QSK8NoZM1GwPcYilBlrZ+7wRTIjm5BshsuYBbHz/Q0kbRVVT0AhnL9vKWwszUfs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mQ9Uz-006bdI-LL; Tue, 14 Sep 2021 16:33:25 +0200
-Date:   Tue, 14 Sep 2021 16:33:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        netdev <netdev@vger.kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net] Revert "net: phy: Uniform PHY driver access"
-Message-ID: <YUCytc0+ChhcdOo+@lunn.ch>
-References: <20210912192805.1394305-1-vladimir.oltean@nxp.com>
- <CANr-f5wCpcPM+FbeW+x-JmZt0-WmE=b5Ys1Pa_G7p8v3nLyCcQ@mail.gmail.com>
- <20210912213855.kxoyfqdyxktax6d3@skbuf>
- <YT+dL1R/DTVBWQ7D@lunn.ch>
- <20210914120617.iaqaukal3riridew@skbuf>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631630015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=chATlUeF4N2elSt4fnYjmQllXyvDEPn10NBT5Xpx3Lc=;
+        b=QFIEPTRXlNb1ZpcwyX6OHpHomCOpd8b2xTFG/YHWFxl4KrkRFfJ97ZKYl+9C2bqAIv2MJy
+        GCd6j6xYdDmijJaJFIy5dlM4Z0Cwhfw3D78P/3E1Q7oz/Czu/gdx3iNBAtiDbAlmeAHnWe
+        XfsqaNA6w53M1pgTFxXHvq0out6TFgA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-xqTRlyvPP4GVeILmnWrUCw-1; Tue, 14 Sep 2021 10:33:31 -0400
+X-MC-Unique: xqTRlyvPP4GVeILmnWrUCw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 556671060DAB;
+        Tue, 14 Sep 2021 14:33:30 +0000 (UTC)
+Received: from T590 (ovpn-12-32.pek2.redhat.com [10.72.12.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B65585D9DC;
+        Tue, 14 Sep 2021 14:33:22 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 22:33:32 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
+Message-ID: <YUCyvDDG0gOzaFfR@T590>
+References: <20210909141256.2606682-1-yukuai3@huawei.com>
+ <20210909141256.2606682-6-yukuai3@huawei.com>
+ <YT/2z4PSeW5oJWMq@T590>
+ <c6af73a2-f12d-eeef-616e-ae0cdb4f6f2d@huawei.com>
+ <YUBE4BJ7+kN1c4l8@T590>
+ <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com>
+ <YUBTVBioqJ7qas2R@T590>
+ <39e628cc-496c-ba20-b53a-fbeecc1d7e4e@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210914120617.iaqaukal3riridew@skbuf>
+In-Reply-To: <39e628cc-496c-ba20-b53a-fbeecc1d7e4e@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:06:18PM +0000, Vladimir Oltean wrote:
-> On Mon, Sep 13, 2021 at 08:49:19PM +0200, Andrew Lunn wrote:
-> > > I am not sure why "to_phy_driver" needs cleanup. Au contraire, I think
-> > > the PHY library's usage of struct phy_device :: drv is what is strange
-> > > and potentially buggy, it is the only subsystem I know of that keeps its
-> > > own driver pointer rather than looking at struct device :: driver.
+On Tue, Sep 14, 2021 at 05:08:00PM +0800, yukuai (C) wrote:
+> On 2021/09/14 15:46, Ming Lei wrote:
+> > On Tue, Sep 14, 2021 at 03:13:38PM +0800, yukuai (C) wrote:
+> > > On 2021/09/14 14:44, Ming Lei wrote:
+> > > > On Tue, Sep 14, 2021 at 11:11:06AM +0800, yukuai (C) wrote:
+> > > > > On 2021/09/14 9:11, Ming Lei wrote:
+> > > > > > On Thu, Sep 09, 2021 at 10:12:55PM +0800, Yu Kuai wrote:
+> > > > > > > blk_mq_tag_to_rq() can only ensure to return valid request in
+> > > > > > > following situation:
+> > > > > > > 
+> > > > > > > 1) client send request message to server first
+> > > > > > > submit_bio
+> > > > > > > ...
+> > > > > > >     blk_mq_get_tag
+> > > > > > >     ...
+> > > > > > >     blk_mq_get_driver_tag
+> > > > > > >     ...
+> > > > > > >     nbd_queue_rq
+> > > > > > >      nbd_handle_cmd
+> > > > > > >       nbd_send_cmd
+> > > > > > > 
+> > > > > > > 2) client receive respond message from server
+> > > > > > > recv_work
+> > > > > > >     nbd_read_stat
+> > > > > > >      blk_mq_tag_to_rq
+> > > > > > > 
+> > > > > > > If step 1) is missing, blk_mq_tag_to_rq() will return a stale
+> > > > > > > request, which might be freed. Thus convert to use
+> > > > > > > blk_mq_find_and_get_req() to make sure the returned request is not
+> > > > > > > freed.
+> > > > > > 
+> > > > > > But NBD_CMD_INFLIGHT has been added for checking if the reply is
+> > > > > > expected, do we still need blk_mq_find_and_get_req() for covering
+> > > > > > this issue? BTW, request and its payload is pre-allocated, so there
+> > > > > > isn't real use-after-free.
+> > > > > 
+> > > > > Hi, Ming
+> > > > > 
+> > > > > Checking NBD_CMD_INFLIGHT relied on the request founded by tag is valid,
+> > > > > not the other way round.
+> > > > > 
+> > > > > nbd_read_stat
+> > > > >    req = blk_mq_tag_to_rq()
+> > > > >    cmd = blk_mq_rq_to_pdu(req)
+> > > > >    mutex_lock(cmd->lock)
+> > > > >    checking NBD_CMD_INFLIGHT
+> > > > 
+> > > > Request and its payload is pre-allocated, and either req->ref or cmd->lock can
+> > > > serve the same purpose here. Once cmd->lock is held, you can check if the cmd is
+> > > > inflight or not. If it isn't inflight, just return -ENOENT. Is there any
+> > > > problem to handle in this way?
+> > > 
+> > > Hi, Ming
+> > > 
+> > > in nbd_read_stat:
+> > > 
+> > > 1) get a request by tag first
+> > > 2) get nbd_cmd by the request
+> > > 3) hold cmd->lock and check if cmd is inflight
+> > > 
+> > > If we want to check if the cmd is inflight in step 3), we have to do
+> > > setp 1) and 2) first. As I explained in patch 0, blk_mq_tag_to_rq()
+> > > can't make sure the returned request is not freed:
+> > > 
+> > > nbd_read_stat
+> > > 			blk_mq_sched_free_requests
+> > > 			 blk_mq_free_rqs
+> > >    blk_mq_tag_to_rq
+> > >    -> get rq before clear mapping
+> > > 			  blk_mq_clear_rq_mapping
+> > > 			  __free_pages -> rq is freed
+> > >    blk_mq_request_started -> UAF
 > > 
-> > There is one odd driver in the mix. Take a look at xilinx_gmii2rgmii.c.
-> > 
-> > It probably could be done a better way, but that is what we have.
+> > If the above can happen, blk_mq_find_and_get_req() may not fix it too, just
 > 
-> Interesting, to say the least. Also, is there any connection between
-> that and the revert I'm proposing?
+> Hi, Ming
+> 
+> Why can't blk_mq_find_and_get_req() fix it? I can't think of any
+> scenario that might have problem currently.
 
-If i remember correctly, Gerhard Engleder is actually using this, and
-ran into a problem because the wrong driver structure was used.
+The principle behind blk_mq_find_and_get_req() is that if one request's
+ref is grabbed, the queue's usage counter is guaranteed to be grabbed,
+and this way isn't straight-forward.
 
-> So compared to other vendors, where the RGMII gasket is part of the MAC
-> device, with Xilinx Zynq it is accessible via MDIO?
+Yeah, it can fix the issue, but I don't think it is good to call it in
+fast path cause tags->lock is required.
 
-Yes. Its control plane sits on the MDIO bus. Unfortunately, it does
-not have any ID registers, so it does not directly appear as a PHY. So
-it does interesting things it put itself in the control path to the
-real PHY.
+> 
+> > wondering why not take the following simpler way for avoiding the UAF?
+> > 
+> > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> > index 5170a630778d..dfa5cce71f66 100644
+> > --- a/drivers/block/nbd.c
+> > +++ b/drivers/block/nbd.c
+> > @@ -795,9 +795,13 @@ static void recv_work(struct work_struct *work)
+> >   						     work);
+> >   	struct nbd_device *nbd = args->nbd;
+> >   	struct nbd_config *config = nbd->config;
+> > +	struct request_queue *q = nbd->disk->queue;
+> >   	struct nbd_cmd *cmd;
+> >   	struct request *rq;
+> > +	if (!percpu_ref_tryget(&q->q_usage_counter))
+> > +                return;
+> > +
+> 
+> We can't make sure freeze_queue is called before this, thus this approch
+> can't fix the problem, right?
+>  nbd_read_stat
+>     blk_mq_tag_to_rq
+> 			elevator_switch
+> 			 blk_mq_freeze_queue(q);
+> 			 elevator_switch_mq
+> 			  elevator_exit
+> 			   blk_mq_sched_free_requests
+>     blk_mq_request_started -> UAF
 
-> It looks like it is said that this GMII2RGMII converter can be placed in
-> front of any GMII MAC. Nice that there are zero in-tree users of
-> "xlnx,gmii-to-rgmii-1.0" so that I could figure out exactly how that
-> plays out in practice.
+No, blk_mq_freeze_queue() waits until .q_usage_counter becomes zero, so
+there won't be any concurrent nbd_read_stat() during switching elevator
+if ->q_usage_counter is grabbed in recv_work().
 
-If you look back at the thread for that patch, i think Gerhard posted
-a DT fragment he is using. Hopefully it will get submitted as a full
-board description at some point.
+Thanks,
+Ming
 
-> Note that the usage of priv->phy_dev, priv->phy_drv, priv->conv_phy_drv
-> beats me. Why is "phy_dev" kept inside "priv" even though it is accessed
-> only inside xgmiitorgmii_probe? Why does xgmiitorgmii_configure() need to
-> be called from xgmiitorgmii_read_status() which in turn hooks into the
-> attached PHY driver's phy_read_status()? Why does xgmiitorgmii_configure
-> not get exported and called from an .adjust_link method or the phylink
-> equivalent, like any other MAC-side hardware linked with the PHY library
-> in the kernel?
-
-I was never happy with this driver. It got submitted before i went on
-vacation, i had a few rounds trying to get the submitter to refactor
-it and was mostly ignored. I left on vacation with lots of open review
-points, and when i got back it had been merged. And the original
-submitters never responded to my requests for improvements.
-
-	Andrew
