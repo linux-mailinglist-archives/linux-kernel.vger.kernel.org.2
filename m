@@ -2,87 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBA140B979
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C68140B97B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbhINUt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        id S233992AbhINUwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234710AbhINUtx (ORCPT
+        with ESMTP id S233373AbhINUwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:49:53 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF3CC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:35 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id p15so1109058ljn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0tzy5HhmdLCwbO3fFudYbI0KSBkL7KVwEu0UdmJ0Ygw=;
-        b=XII/PyFYNJd9fcTfzjp8XzgGS94O/8zoi8sxLS1Q42YB1xBdgzGXT06zapqTx5n1Xo
-         GONaGnMkVnx+vbpHjtcyEdqfbjQH0TUU+xVzULZKM7V4WuNyidewwKWl3iVik5363uMg
-         7qLMGQvrTMnNivZs1x2bRWqbcPWDPl9pcnslQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0tzy5HhmdLCwbO3fFudYbI0KSBkL7KVwEu0UdmJ0Ygw=;
-        b=P8/sRdNkfIp/V8anAKDHCSm9txn/2dkPniVOfht3S6ASJOoMStLl6jfvcNN66kImi6
-         KhkkPminTViDv1lMYC3Sxi58HBkmIA7yItY1f9OqVWWsNCnWx9zrfR5kqC+qVwojhfQK
-         UuDZxN7oE3yIAi+KxOpp1wBQvMU2nvbp6s0CZ9KRFZsqFscU3iBPt9uirwulhpLP3xRk
-         jU9SiCzb0ToCx5HTyrVUbT3qsk7IxwQ7HFwUhQHptWArVxuNKgtefIWece/s1iN3sIvI
-         sut89Hw7bclCGfmRqM8468GH7d04LQxeB9cSj2WCthGUdjBdVt/aYJi+VWdmk29pkA1U
-         +wKA==
-X-Gm-Message-State: AOAM532l2yUYWHfmHI5VrXqQEH0Tz2ip/yLh7CJfeo8v51kGFwBd/QDH
-        ZVax/pwero4PXb0jGQ1XfMpon87od4qR0QB1Dik=
-X-Google-Smtp-Source: ABdhPJxxY2NFP88fH2RMYcmrablfXfUeQcIpZ9m6VimldOlrqw09qzLZ7mruuMjQfUkwHqibWQO+Gw==
-X-Received: by 2002:a2e:4a19:: with SMTP id x25mr17062675lja.235.1631652513026;
-        Tue, 14 Sep 2021 13:48:33 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id q189sm1410170ljb.68.2021.09.14.13.48.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 13:48:32 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id r3so1106912ljc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:48:32 -0700 (PDT)
-X-Received: by 2002:a2e:1542:: with SMTP id 2mr17497299ljv.249.1631652511805;
- Tue, 14 Sep 2021 13:48:31 -0700 (PDT)
+        Tue, 14 Sep 2021 16:52:12 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6BBC061574;
+        Tue, 14 Sep 2021 13:50:54 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id AEA0E2C1;
+        Tue, 14 Sep 2021 20:50:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net AEA0E2C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1631652653; bh=1C1Lum1SJ8liV3Fk2FKIE54N6AIkTwNqtnJFFKjEs1Q=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=W98IYDdkY7yNcjoWpD0qh92VOblQdoSU8ry90boi4zCCKsq1kJ+rgx4va0VB6KT8t
+         j3yBqeySZgdaG+tGC+HYYc3dSYSniWROOGqPwxMkuJldJjsAupsFMRJcUWSAWZrpJQ
+         voeA3MLmfBLlzdfyJIHsTqhItsr9Ur5jPM75JIW6broYgfiArNaD1LLgEafZ0FsQds
+         czXgOgMXdzs1Gc/wlHU+J0m5QTTLku8Ht4orMm/v1uNGusmPqSKwd9RvnlVidfHxBj
+         Y6f7y0aA/OZd3tBok4XeF9fYDRkGuV/IU5Yvis5zoNGHR+wDKjJ4jKh2TdiaShEo9C
+         LI+scrjijhkMg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Kitt <steve@sk2.org>, Jens Axboe <axboe@kernel.dk>,
+        linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: Re: [PATCH] docs: block: fix discard_max_bytes references
+In-Reply-To: <20210910105142.2116749-1-steve@sk2.org>
+References: <20210910105142.2116749-1-steve@sk2.org>
+Date:   Tue, 14 Sep 2021 14:50:53 -0600
+Message-ID: <87czpaev9u.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210914105620.677b90e5@oasis.local.home> <CAHk-=wj9k4LZTz+svCxLYs5Y1=+yKrbAUArH1+ghyG3OLd8VVg@mail.gmail.com>
- <20210914145953.189f15dc@oasis.local.home> <CAHk-=whfA=k0CP_cYzCn3Wt7De-OJQbJbOKsvowuYnxKCAavSg@mail.gmail.com>
- <CAHk-=wg5tJ_+sKKnkzc6nxpfEvvbUG2Yg3zF-vVfUfZD=PFy7Q@mail.gmail.com> <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
-In-Reply-To: <CAHk-=whBd5Sgg4if7HB4o0Zrj3eNprKv9U02uEUB1QhQvrsQZw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Sep 2021 13:48:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
-Message-ID: <CAHk-=wipBkq-OeUBsgv-_hvTfg=nveTpiZonWeY1dBMofkjEuw@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Fixes to bootconfig memory management
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:38 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Stephen Kitt <steve@sk2.org> writes:
+
+> When discard_max_hw_bytes was introduced, in commit 0034af036554
+> ("block: make /sys/block/<dev>/queue/discard_max_bytes writeable"),
+> the discard_max_bytes documentation section was renamed to
+> discard_max_hw_bytes, but the references it contains to
+> discard_max_bytes weren't updated.
 >
-> So I'll do a minimal conversion that adds "memblock_free_ptr()" and
-> hope that people start using that. And then we can later try to move
-> "memblock_free()" to a name that isn't so misleading.
+> This patch refers to discard_max_hw_bytes instead. It also reflows the
+> paragraph so that sentences end lines.
+>
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
+>  Documentation/block/queue-sysfs.rst | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 
-Commit 77e02cf57b6c ("memblock: introduce saner 'memblock_free_ptr()'
-interface") should hopefully fix that panic that Vlastimil saw, and
-the kernel test robot report as well.
+Applied, thanks.
 
-And it should make it easy to cleanly fix that 'copy' leak too.
-
-            Linus
+jon
