@@ -2,205 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9DA40ACAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7DC40ACA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhINLqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhINLqe (ORCPT
+        id S232147AbhINLqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:46:01 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15412 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232088AbhINLp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:46:34 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C884DC061574;
-        Tue, 14 Sep 2021 04:45:16 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso1815730wms.3;
-        Tue, 14 Sep 2021 04:45:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=srJ1nnPayRwL7lbGpY/83XlR5+6EDwIUs1YgAf5CvAc=;
-        b=Fc2tb5a+i6mPu1zN/Zy2JxO7WoxNmnQnZOv5gD83Goc9DsKmVsK/NYu2wuxtigRIX7
-         bvZCSnkatlKzFeuM8WHmywGr9Qm+Ot2AODaqLkfJAD0ujLhriqYZaDEVa4+odZxbeMYs
-         pmkCU3EUHQEVf7IaIkdPCfDJYulUV2iFDaw6+J6AvySE3oo87QbA7gikr2SUB9mG8pFM
-         iYzcB+AQP5SOR5K4w4iOZxQKw3OlSoNGDUMzhA2XLDzto1Pck1BbA2hcjswv5nLz2B+1
-         uKwoZyb271RHCRcPk/BbPiPGllvj8U9fq+819qFS0+H+VGy1dVZvq3L9l48SjL7a5dHg
-         7MqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=srJ1nnPayRwL7lbGpY/83XlR5+6EDwIUs1YgAf5CvAc=;
-        b=1fVjJbSvPkidiouSx5qKQtfbXdEuV/C0p0PVKEttkH3Ctb4nFrDVMGyWTYKoCfOuT5
-         hRshZojzlAdQQKDs9MQmARjLItEBKC+DDpm2rCJic8WtjdHmIskCTUMWQejmAySVbQ7F
-         54Z0XaNMehc65GeAQA27eEtfoxOvwOYcJ4cyHZqJj0ITMeX1uebm4hfUGv/kgjiy9Wy9
-         l/9zyuY9K30zD/tPUtmHxykj06ndVDb3W4P8klHAGJmfI1Veicnr6kcC3SkpNO47Fj0d
-         K4sJJjYCRSePgHn0zxDWGFho3XnLiGsD+TlCFM5NTRhH1elnT7+yDN9mfbISVawaiYYk
-         Qu1w==
-X-Gm-Message-State: AOAM533MC6Fh2IqJMWiraFlnUUzLpNT+UE2KxMV8Isuapncdyu3W/hig
-        9BpY90T6kc783+t+XNDAdLVWVX4FNVXDlQfx9qM=
-X-Google-Smtp-Source: ABdhPJx6ROBbB/L3d3MCNwPfBiaV7A37myc/PvlyZsasGnqr7pvETJ6x8p8mEb6FpotSotV0OiSP+CebEkJvY9YeNxQ=
-X-Received: by 2002:a1c:1cc:: with SMTP id 195mr1703232wmb.188.1631619915376;
- Tue, 14 Sep 2021 04:45:15 -0700 (PDT)
+        Tue, 14 Sep 2021 07:45:59 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H81cf6cfgzR51H;
+        Tue, 14 Sep 2021 19:40:34 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Tue, 14
+ Sep 2021 19:44:40 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <david@redhat.com>, <jhubbard@nvidia.com>, <vbabka@suse.cz>,
+        <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH v3] mm/page_isolation: guard against possible putback unisolated page
+Date:   Tue, 14 Sep 2021 19:45:08 +0800
+Message-ID: <20210914114508.23725-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <1631092255-25150-1-git-send-email-shengjiu.wang@nxp.com>
- <1631092255-25150-5-git-send-email-shengjiu.wang@nxp.com> <YTvRlmIedfBiXSCg@robh.at.kernel.org>
-In-Reply-To: <YTvRlmIedfBiXSCg@robh.at.kernel.org>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Tue, 14 Sep 2021 14:45:02 +0300
-Message-ID: <CAEnQRZBQ4HqfNJq-tYE5+6eVz=WSHPHfnY7_qLYOttKD2pgtvg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] dt-bindings: dsp: fsl: update binding document for
- remote proc driver
-To:     Rob Herring <robh@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Ohad Ben Cohen <ohad@wizery.com>, bjorn.andersson@linaro.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        linux-remoteproc@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 12:45 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Sep 08, 2021 at 05:10:55PM +0800, Shengjiu Wang wrote:
-> > As there are two drivers for DSP on i.MX, one is for sound open
-> > firmware, another is for remote processor framework. In order to
-> > distinguish two kinds of driver, defining different compatible strings.
->
-> What determines which firmware is used? Is it tied to the board? Or for
-> a given board, users could want different firmware? In the latter case,
-> this configuration should not be in DT.
->
-> > For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
-> > are needed and the mailbox channel is different with SOF.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
-> >  1 file changed, 75 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > index 7afc9f2be13a..51ea657f6d42 100644
-> > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-> > @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
-> >
-> >  maintainers:
-> >    - Daniel Baluta <daniel.baluta@nxp.com>
-> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> >
-> >  description: |
-> >    Some boards from i.MX8 family contain a DSP core used for
-> > @@ -19,6 +20,10 @@ properties:
-> >        - fsl,imx8qxp-dsp
-> >        - fsl,imx8qm-dsp
-> >        - fsl,imx8mp-dsp
-> > +      - fsl,imx8qxp-hifi4
-> > +      - fsl,imx8qm-hifi4
-> > +      - fsl,imx8mp-hifi4
-> > +      - fsl,imx8ulp-hifi4
-> >
-> >    reg:
-> >      maxItems: 1
-> > @@ -28,37 +33,63 @@ properties:
-> >        - description: ipg clock
-> >        - description: ocram clock
-> >        - description: core clock
-> > +      - description: debug interface clock
-> > +      - description: message unit clock
-> > +    minItems: 3
-> > +    maxItems: 5
-> >
-> >    clock-names:
-> >      items:
-> >        - const: ipg
-> >        - const: ocram
-> >        - const: core
-> > +      - const: debug
-> > +      - const: mu
-> > +    minItems: 3
-> > +    maxItems: 5
-> >
-> >    power-domains:
-> >      description:
-> >        List of phandle and PM domain specifier as documented in
-> >        Documentation/devicetree/bindings/power/power_domain.txt
-> > +    minItems: 1
-> >      maxItems: 4
->
-> How does the same h/w have different number of power domains?
->
-> >
-> >    mboxes:
-> >      description:
-> >        List of <&phandle type channel> - 2 channels for TXDB, 2 channels for RXDB
-> > +      or - 1 channel for TX, 1 channel for RX, 1 channel for RXDB
-> >        (see mailbox/fsl,mu.txt)
-> > +    minItems: 3
-> >      maxItems: 4
-> >
-> >    mbox-names:
-> > -    items:
-> > -      - const: txdb0
-> > -      - const: txdb1
-> > -      - const: rxdb0
-> > -      - const: rxdb1
-> > +    oneOf:
-> > +      - items:
-> > +          - const: txdb0
-> > +          - const: txdb1
-> > +          - const: rxdb0
-> > +          - const: rxdb1
-> > +      - items:
-> > +          - const: tx
-> > +          - const: rx
-> > +          - const: rxdb
->
-> These are completely different mailboxes?
->
-> >
-> >    memory-region:
-> >      description:
-> >        phandle to a node describing reserved memory (System RAM memory)
-> >        used by DSP (see bindings/reserved-memory/reserved-memory.txt)
-> > -    maxItems: 1
-> > +    minItems: 1
-> > +    maxItems: 4
-> > +
-> > +  firmware-name:
-> > +    description: |
-> > +      Default name of the firmware to load to the remote processor.
-> > +
-> > +  fsl,dsp-ctrl:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      Phandle to syscon block which provide access for processor enablement
->
-> Curious, how is this done with the open sound f/w?
+Isolating a free page in an isolated pageblock is expected to always work
+as watermarks don't apply here. But if __isolate_free_page() failed, due
+to condition changes, the page will be left on the free list. And the page
+will be put back to free list again via __putback_isolated_page(). This may
+trigger VM_BUG_ON_PAGE() on page->flags checking in __free_one_page() if
+PageReported is set. Or we will corrupt the free list because list_add()
+will be called for pages already on another list. Add a VM_WARN_ON() to
+complain about this change.
 
-Hi Rob,
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+v1->v2:
+  Add VM_WARN_ON to catch unexpected isolating failure.
+v2->v3:
+  Change the patch description+subject and remove Fixes.
+---
+ mm/page_isolation.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Should be the same story. Here is the PR sent for review with Sound
-Open Firmware (SOF):
+diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+index f93cc63d8fa1..f67c4c70f17f 100644
+--- a/mm/page_isolation.c
++++ b/mm/page_isolation.c
+@@ -94,8 +94,13 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+ 			buddy = page + (buddy_pfn - pfn);
+ 
+ 			if (!is_migrate_isolate_page(buddy)) {
+-				__isolate_free_page(page, order);
+-				isolated_page = true;
++				isolated_page = !!__isolate_free_page(page, order);
++				/*
++				 * Isolating a free page in an isolated pageblock
++				 * is expected to always work as watermarks don't
++				 * apply here.
++				 */
++				VM_WARN_ON(!isolated_page);
+ 			}
+ 		}
+ 	}
+-- 
+2.23.0
 
-https://github.com/thesofproject/linux/pull/3156
-
-The only difference is that SOF uses:
-syscon_regmap_lookup_by_compatible while remoteproc driver uses
-syscon_regmap_lookup_by_phandle.
-
-thanks,
-Daniel.
