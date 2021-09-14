@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9797440A575
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A2840A577
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhINEeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 00:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhINEeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:34:00 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF149C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:32:38 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id i28so21294411ljm.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fu4lIl+FKgt34SvsZzswMOLfBBmVaqouMxJqzvs5GUE=;
-        b=Wz8/qbTPuO2gFsebTp8dF07QwNkcGKHJMIVgEfNxylqPVZk6OBBEkaVAdxFl12egu7
-         l97RUWL/RGR8c934GwssB4/036sjsHpT9g0uqhwaOqSjYuXOsqG1yftRdoOu/8BIc9cl
-         6voG47yQxfvp9VzEVI9Iif5Icr86qsK7yGWbgCOsrBwFx2Jr+WK4n9+Syk4/kwti/G0V
-         nM5qOvg8C/2cJB40l7jsLaIeAnGw2ZFv+dElbWu8D9BO2Gt6R30tVUrztrdx7+U1Yux6
-         xFN2S8CNPAjBD2AY+FHArieeB3XWjHrOCCqrKRk/SSiCyDCnoxoBZeRQWTVCBTZLYVi8
-         dT9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fu4lIl+FKgt34SvsZzswMOLfBBmVaqouMxJqzvs5GUE=;
-        b=FAuDRg7XZOWlLCo9alGcJHPliltstvMPeG34XLZakgDckNCDCrwUAzZ/VSipTAjc51
-         1aWKJFFV42UQDyN7TpgEirkqfuEAnYVMy5AhPgVQGNpkuOfsC1fPsdyrfMULXYl2XKqg
-         n9RsVijM7uJoT489dMV/xDDse2Byw/M/3RRyXxU7Y0z7/4NXU1p//i1U+HqIi1qtRIcg
-         7CFyvn9ZtUJuC3a+MUU85mbPIRbxujaWacDNEH2UwQsgFrstVw6hfHnAywj3BYy8sox/
-         xkGVpCXWRiY0q6Xy5azWo06Qv/KR61PGhcyplT4QlvWN+DUhrp1Dd3B8+6wEP6zny3mX
-         09nw==
-X-Gm-Message-State: AOAM531yKl2w4hEBTPiG2ignilDP6wegFcsHnsXiWTkcv3KOOMbC7gGH
-        s92QUS9vRD4YDb3W+Av4CzvY5UPR9tepkJVx8FCMCw==
-X-Google-Smtp-Source: ABdhPJwwcJw34ryViJqWfeTSyIDbwy7I214F0qpdX1884+9sk07rIdBTGzjoVqFpSHQdDuRtvjz6KAek0X0vVU2EMsY=
-X-Received: by 2002:a05:651c:113b:: with SMTP id e27mr13609792ljo.6.1631593956911;
- Mon, 13 Sep 2021 21:32:36 -0700 (PDT)
+        id S233376AbhINEgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 00:36:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230415AbhINEgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 00:36:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B700610FB;
+        Tue, 14 Sep 2021 04:35:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631594128;
+        bh=ra6VTPUM7uTTtmDygf40MfCsvK85UJSZXairSp1Afw4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WlJW+Ls3DHrP1M+25UIiAWFMI1sgcPatogBzjaVTF7a0gdjs6MhNLs6UllPISyA8N
+         RfLZ2qk8Acohuhg9pus4YjAC+J3Mp8YH5+fHfk5Y1bqBXVxgGE7v4e+WeqaA8ORgfI
+         zI1seoxdssPKyrB2Gf3mb51Gd2yz7+AKliKCyy48=
+Date:   Tue, 14 Sep 2021 06:35:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        prashanth.ka@pathpartnertech.com, praneeth@ti.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        praveen.ap@pathpartnertech.com
+Subject: Re: [PATCH 03/30] v4l: vxd-dec: Create vxd_dec Mem Manager helper
+ library
+Message-ID: <YUAmeLYf/fvbCHo3@kroah.com>
+References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
+ <20210818141037.19990-4-sidraya.bj@pathpartnertech.com>
+ <20210824133438.GO1931@kadam>
+ <20210914034032.orctp5ov5oc33vag@sidraya-laptopU>
 MIME-Version: 1.0
-References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com> <YT8NrsaztWNDpKXk@dhcp22.suse.cz>
-In-Reply-To: <YT8NrsaztWNDpKXk@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 13 Sep 2021 21:32:25 -0700
-Message-ID: <CALvZod7Y4pC4XvqVp+tJ==CnS5Ay8YPqrxeUzA8tMLu+0U3hjQ@mail.gmail.com>
-Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in do_semtimedop()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914034032.orctp5ov5oc33vag@sidraya-laptopU>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:37 AM Michal Hocko <mhocko@suse.com> wrote:
->
-[...]
-> > However Shakeel Butt pointed that there are much more popular objects
-> > with the same life time and similar memory consumption, the accounting
-> > of which was decided to be rejected for performance reasons.
->
-> Is there any measurable performance impact in this particular case?
->
+On Tue, Sep 14, 2021 at 09:10:37AM +0530, Sidraya Jayagond wrote:
+> This
+> message contains confidential information and is intended only 
+> for the
+> individual(s) named. If you are not the intended
+> recipient, you are 
+> notified that disclosing, copying, distributing or taking any
+> action in 
+> reliance on the contents of this mail and attached file/s is strictly
+> prohibited. Please notify the
+> sender immediately and delete this e-mail 
+> from your system. E-mail transmission
+> cannot be guaranteed to be secured or 
+> error-free as information could be
+> intercepted, corrupted, lost, destroyed, 
+> arrive late or incomplete, or contain
+> viruses. The sender therefore does 
+> not accept liability for any errors or
+> omissions in the contents of this 
+> message, which arise as a result of e-mail
+> transmission.
+> 
 
-I don't think there was any regression report or any performance
-evaluation. Linus raised the concern on the potential performance
-impact. I suggested to backoff for this allocation for now and revisit
-again once we have improved the memcg accounting for kernel memory.
+Now deleted, this is not ok for kernel development mailing lists, sorry.
