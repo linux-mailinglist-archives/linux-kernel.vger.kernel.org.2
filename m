@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AF340A470
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A6E40A4A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238870AbhINDcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:32:10 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:33706 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238652AbhINDcJ (ORCPT
+        id S239179AbhINDfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239182AbhINDfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:32:09 -0400
-Received: by mail-pg1-f177.google.com with SMTP id u18so11456980pgf.0;
-        Mon, 13 Sep 2021 20:30:53 -0700 (PDT)
+        Mon, 13 Sep 2021 23:35:03 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B06C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:33:47 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id f65so10842118pfb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:33:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vi+6Oqzw5KxlySzgQbdJRDGWe6tPJCzCtUhaRDBd7v0=;
+        b=sx8egWgqFJdVg3oPrF2H/aMEWHH1fVFnCjLuhahKZJkxB5zim7av5ZHPiWAux7YLu4
+         /QvAsTtpu1bY2KFKwQDqqKT24Xq0gVO2HdvHIbTP5rwCfvYJmTA0XoYlhyqxIYGBGVSN
+         b1GpiZRgPxOXmKBhyBae38JdmOZmVRqCovCyd9qO53zTFTK5IHN7J8Uu0/cupFgXB29O
+         w1A65ec5e+yvYMP6d0uUdFg2bThTc8n8wbKrnDibWKb3ekrd4bghP4xEfTDwqFeZZrR4
+         55rUjD1IgbRJ5cqEPWjTHpFurBakE0mj0gF29cNihRJygPfjSZ4ViB3PWNbLTIX+O5Md
+         +fPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0bjrAWTQ5Nbpiiwg86S9P5tLkoKX1Hbn83j5How7zUE=;
-        b=PGODaQbCcwLkV69xzKS8BN/hythSLXlqlhkEdxIfUd8pYDWiXJ//2XkmyZn6doueLP
-         RdN8ZH4HL+y19YIL76Zxzv01e6Cmb9oZiVkoOa6CrPc+jq3spSjirNMnM9vZr9TlnjjU
-         29CubUWC0mWm08m7e6TD0wXsMZOOgftjwgeV6mFC1Y5+QuTv66k2tLpkNboGBLkm6pjT
-         Uz8mPqQ0/oX8bb1qp4YBbruB7J4bH7RxeupUahcEYkf/ParLA62Q6z1/8nDd9gR4aSoc
-         EweZiL41SJf4lxwrxYlIgIF+kJYsJ2LfiJ/8atbFPZRuk15WMSiNKBnSGrotuoKaO7Tw
-         vy6w==
-X-Gm-Message-State: AOAM533/t9Zt0KZHIJ4RFxuAiMl7QoPsfhkVg3VeqPnBDS/PFYczQTEP
-        znkNYtXoQ8CZqQXlKx+yIR0=
-X-Google-Smtp-Source: ABdhPJyXyVKxbj9IOO9q0ra6s7lB+wFjTb5ZqqyYr0YRmQ0B/dBFM3C+sSx0TQqop4ZDoSVjk5WepQ==
-X-Received: by 2002:a65:40c4:: with SMTP id u4mr13911546pgp.186.1631590252522;
-        Mon, 13 Sep 2021 20:30:52 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:e47e:ab85:4d9e:deba? ([2601:647:4000:d7:e47e:ab85:4d9e:deba])
-        by smtp.gmail.com with ESMTPSA id m9sm4139068pfh.94.2021.09.13.20.30.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 20:30:51 -0700 (PDT)
-Message-ID: <c6b2007b-155b-18b2-e45d-06f600c98797@acm.org>
-Date:   Mon, 13 Sep 2021 20:30:50 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vi+6Oqzw5KxlySzgQbdJRDGWe6tPJCzCtUhaRDBd7v0=;
+        b=gKSDmfeZnMMwrHRQjCwtm4/YOIh8mbHD0fR/ynTMGPOcNJXfUCPmYh0nTPjXqw/4kP
+         hlTrU+QDi9EUV/NnAjsoIR0rqMfPeozPw23cF6edQdEC+Lga9Qa2Hygj+Ex/XHrgEqL/
+         qqsoLcUAKp9jHSI9/pIjKuQWiihs/0xlRxP+fwdq6wTLod3oMvpwUR0cazAY4INtjqde
+         Ut3knF8V6Xnm7IGuf0VmqUf27ts4VwBrbpCkS9OZWiiXzSGTw1Q71u0pDiyb1aeszWn0
+         ZOcQI73vRbswQushlf51cplC23/sedVrKlnhAI+3V8HTlXJOcfK7IaxRTsGiRUUFBUwc
+         223A==
+X-Gm-Message-State: AOAM530Ak+xfcy/QtfOgY290x2gH/BDVfGiZ0fI6997IkVpKBsNYsOlQ
+        aoy+9DIhY80jy/IyEC6+3P+xMEYsRoAe8zTChuXMsQ==
+X-Google-Smtp-Source: ABdhPJzw2S/YgGBtO+1c3RPc29HGMQ/BkgHUl3KdPyLmldqI8eb6LknV3uVQi6FfdOHbKpFzUguwneEzrAZEpaVH5hI=
+X-Received: by 2002:a63:d806:: with SMTP id b6mr13920055pgh.395.1631590426624;
+ Mon, 13 Sep 2021 20:33:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v2 1/3] scsi: ufs: introduce vendor isr
-Content-Language: en-US
-To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
-References: <cover.1631519695.git.kwmad.kim@samsung.com>
- <CGME20210913081150epcas2p11f98eed5939bf082981e2a4d6fd9a059@epcas2p1.samsung.com>
- <6801341a6c4d533597050eb1aaa5bf18214fc47f.1631519695.git.kwmad.kim@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <6801341a6c4d533597050eb1aaa5bf18214fc47f.1631519695.git.kwmad.kim@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210913230955.156323-1-rananta@google.com> <20210913230955.156323-10-rananta@google.com>
+In-Reply-To: <20210913230955.156323-10-rananta@google.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Mon, 13 Sep 2021 20:33:30 -0700
+Message-ID: <CAAeT=Fyd-K6OSLuCTBsxwqv77yw8YzPouOM2Oiocw4R0qW-0mQ@mail.gmail.com>
+Subject: Re: [PATCH v6 09/14] KVM: arm64: selftests: Add guest support to get
+ the vcpuid
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 00:55, Kiwoong Kim wrote:
-> +static inline irqreturn_t
-> +ufshcd_vendor_isr_def(struct ufs_hba *hba)
-> +{
-> +	return IRQ_NONE;
-> +}
+On Mon, Sep 13, 2021 at 4:10 PM Raghavendra Rao Ananta
+<rananta@google.com> wrote:
+>
+> At times, such as when in the interrupt handler, the guest wants
+> to get the vcpuid that it's running on to pull the per-cpu private
+> data. As a result, introduce guest_get_vcpuid() that returns the
+> vcpuid of the calling vcpu. The interface is architecture
+> independent, but defined only for arm64 as of now.
+>
+> Suggested-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Ricardo Koller <ricarkol@google.com>
 
-Since "static inline irqreturn_t ufshcd_vendor_isr_def(struct ufs_hba 
-*hba)" occupies less than 80 columns please use a single line for the 
-declaration of this function. Additionally, please leave out the 
-"inline" keyword since modern compilers are good at deciding when to 
-inline a function and when not.
+Reviewed-by: Reiji Watanabe <reijiw@google.com>
 
-Thanks,
-
-Bart.
+Thank you for creating this utility !
+Reiji
