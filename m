@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4865D40B432
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BF440B435
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234918AbhINQJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
+        id S235227AbhINQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234037AbhINQJp (ORCPT
+        with ESMTP id S235204AbhINQKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:09:45 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CB3C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:08:27 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id w19so19667958oik.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:08:27 -0700 (PDT)
+        Tue, 14 Sep 2021 12:10:05 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C0EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:08:48 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id c79so19706025oib.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Qlzi8X+fHynAZe5knqS6ngFanCxQAZ6aTwOuu0uysUk=;
-        b=cZS0cmEcIKL92w98fkjndCHE20YN0nwdIQJ5SEE2/JoT/WBiFQIDM6bOjKcVZaoc0w
-         iwKWMvk+qF4zQrTkuddHfOJy4GaspVwYBtIYs8YErM3lMG1A3u9FGXodZPEyWelejV8r
-         d2zCm0ARoxj+dWhnSpkyWREof32qwfNkQz7Ck=
+        bh=2RfQkTzIaazG9aW7D87bI3SL7FWGDYir1432mvXAawM=;
+        b=kBwfIPkSP+kWJhn/vK3YFAiPfobchUsDdX5M+3LRjFmoR2EnxqLRLfPTcKn3eMIowo
+         tNW79kmM41Tf5ULqCc6ZfDFt0q3QF5sWJE1SxcfqJUd8jtbOqNYfHagXdI6/JaMIbgxT
+         fDVtoe8G32Pa6O6wO4/s1QTdatrGAgqZFq/vaGLk605XdLdRTqBzw4n7VSau5YQcv5ZQ
+         diZhpLG3G49C8VVQ/WgepScFCxFjrPVpAduAyOWz3yHJxgrBtoYEhS3husfcljJ7uamo
+         z6KuJrKlY5GuEvEdkIcIOc3ib1KFIWhAE0oETzUssq1UO8nGI7qBTogL3C4B3pa0V2Jl
+         NuYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Qlzi8X+fHynAZe5knqS6ngFanCxQAZ6aTwOuu0uysUk=;
-        b=6h8KFiJGHLPbZiYb3IlFt0jS9b1WbZiNPQ/vPkvRlE1dAvcfGqMOAy7oDeN16qZifa
-         V3y5Yt7YOAjU3EGQDgsLlRCc17eEMHj2l9aAx3QPvrXdIyUgSo2kbHOlG6SuVKslGS7b
-         U87akTSyN+83/x0tP518CgsDOYNfB5gwcdbKttYRH+aP1miXeWaj+zBnkXaI7N+EE9Yp
-         b8rJXsa8J2XWvSHVb4NT8XTj9OsO/k+edi0PflBkKCSf2qveq2hpdCd5MklTNiwnt7vc
-         NtSjkbAlr9O1OADi0Og/iwk37bEbPw/iJ1JRTqHV9VeoZ8imT0vXUjc5U0pwYrvlYmsz
-         cWJA==
-X-Gm-Message-State: AOAM5327aj76W8+tlXkj+xB41HmUgNnjAzvqS/fFLeGpBBn4K2wIwbNJ
-        BB+RKXWU2IHwAz6+46tPdMg2vQ==
-X-Google-Smtp-Source: ABdhPJxURUk077VNA63apO/42cIWMjGJjy+jmOG1cz+LQV75UmFUwY2fo5g6PHUcpauYb6Ma9g9/Zg==
-X-Received: by 2002:aca:1c13:: with SMTP id c19mr1993929oic.93.1631635706967;
-        Tue, 14 Sep 2021 09:08:26 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id u15sm2783243oon.35.2021.09.14.09.08.26
+        bh=2RfQkTzIaazG9aW7D87bI3SL7FWGDYir1432mvXAawM=;
+        b=nsdgkvWSUPyOrJ84ChJrUk+S30prXCOYDLox7rU/jnLAy5tFMpVi6QPmYd6rw13qky
+         GIeRxPIqyRE7+vBfyB4n4AUFnSNmH77aRa55alpmANWrmGGpeLLFiB3GvcTJVi+CfA1q
+         xUtTmy9z6wvih98FUestd/EpZp7qohqhiHdRhNCWUwP93425y7XBsjMctZOnmcKjjQLT
+         nJCdnb2BWdAdGELbkeNVHqiCtma5Tfe5ifFfrLb2XC60utWbtS9OY4pZJBTWmcC+Y01R
+         TiAVQUtXy2K0dZvJkucSLVLL2PlIIVhycUnBesK0J6OhiMk77KeLDwtiwQLQWZFQZLbx
+         9TKw==
+X-Gm-Message-State: AOAM533nHs87L20t5hnza+oF1LERl6jMXoQSSdueseATxqF4Z45X2+28
+        awT2yMqEWF9EYWBNknUsJZVawQ==
+X-Google-Smtp-Source: ABdhPJxtTxsR/Q6u4IRGpKnKJm4YOmmiy6ntvfdzN8ZelDaoe6Sku+w3B7gdkyZKy5GXgRU7MaiwUg==
+X-Received: by 2002:a05:6808:a01:: with SMTP id n1mr1976220oij.52.1631635727434;
+        Tue, 14 Sep 2021 09:08:47 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j10sm2707105oog.13.2021.09.14.09.08.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 09:08:26 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 11:08:24 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/334] 5.14.4-rc1 review
-Message-ID: <YUDI+NHVB+cEiLzc@fedora64.linuxtx.org>
-References: <20210913131113.390368911@linuxfoundation.org>
+        Tue, 14 Sep 2021 09:08:46 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 11:08:44 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/17] arm64: dts: qcom: Add SM6350 device tree
+Message-ID: <YUDJDDPWiGAYWpSi@builder.lan>
+References: <20210820204926.235192-1-konrad.dybcio@somainline.org>
+ <20210820204926.235192-3-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913131113.390368911@linuxfoundation.org>
+In-Reply-To: <20210820204926.235192-3-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 03:10:54PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.4 release.
-> There are 334 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Fri 20 Aug 15:49 CDT 2021, Konrad Dybcio wrote:
+> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+[..]
+> +		cpu-map {
+> +			cluster0 {
+> +				core0 {
+> +					cpu = <&CPU0>;
+> +				};
+> +
+> +				core1 {
+> +					cpu = <&CPU1>;
+> +				};
+> +
+> +				core2 {
+> +					cpu = <&CPU2>;
+> +				};
+> +
+> +				core3 {
+> +					cpu = <&CPU3>;
+> +				};
+> +
+> +				core4 {
+> +					cpu = <&CPU4>;
+> +				};
+> +
+> +				core5 {
+> +					cpu = <&CPU5>;
+> +				};
+> +			};
+> +
+> +			cluster1 {
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
+Shouldn't this be represented as a single "cluster", like other DynamIQ
+devices?
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> +				core0 {
+> +					cpu = <&CPU6>;
+> +				};
+> +
+> +				core1 {
+> +					cpu = <&CPU7>;
+> +				};
+> +			};
+> +		};
+> +	};
+
+Regards,
+Bjorn
