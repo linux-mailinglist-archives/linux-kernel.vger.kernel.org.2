@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E229040AD3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE30640AD40
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbhINMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
+        id S232646AbhINMP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbhINMPW (ORCPT
+        with ESMTP id S232568AbhINMPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Sep 2021 08:15:22 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82DCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:14:04 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t18so19886047wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:14:04 -0700 (PDT)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924F3C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:14:05 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u15so13785269wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:14:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RoJvBnKBOpOjZqtzLlm6r3dvhs4vOZnc+8JZoV4fMA0=;
-        b=B+CDqLAoKa4kJVCfKVFIjkvZH4MoHyqTAkLYmWNdaAEhskI1RxiLaY0LLVZVuUZBZd
-         x1VssxCNRhlqmzcIqVGRhdO4SrhFO0vDFbBx+qbP4fIqTiJhVNbJnZ726dAZHBA+vU4m
-         dN/2agRyClv2L43gpMyb0W7sUTkRn1bCsnyprvnXtbY4etSaZ7zc8FTGAeNWuU853z3a
-         PVt5fFzS5gXXDZzrUCk4xgpS1v8Vtws6TkVrS/3RXD1OohopGK5LcOiKFsLW7phFswb4
-         lTa0y2CVWcmPJuK9XEUl7V0A7FllDF3pJ5drU29BWdohVg/Hk45injR2defgsa1z9H9h
-         2aDg==
+        bh=8VnZsNnr3VQCrEo0PDtrkdRH8QBVvc3Duoao6HuugeY=;
+        b=TMTSsiFAB7lLVqx8XmDAGMzNBuNhOmKmNRLiBWV71JBy0EvCEF0+CSY7sqdoS90LFk
+         qJ7Sl6HclkhZf4hohaZARDtA22KVSsbBfZYGJoVjaJMuUnkcs18bGYasGkMn2ftJPKkq
+         JQ8dWhSVElVZIEHwypEJGbTMuuIHR3VgrjQhKYVca5MezXvSNuckPz2uv6xUw92eVKpL
+         AYK4ydjz3Maz7q78+MFsDIskRUUjSCumOVHEMTUYO/4pzut3PKLOA0g+F6jpqLrkVgqj
+         xAWS66uHU9+zJ8FJCTCVAnkrYc1UJpUoqCtbIGKeEX2PNZvV1wS32lbH0SDr5eZ4plaz
+         MC2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RoJvBnKBOpOjZqtzLlm6r3dvhs4vOZnc+8JZoV4fMA0=;
-        b=t7HDl3woKU2I//2YYOfwktAaubsSBTCeZCJVWiyJNGHRGZmJ5M1UHXCxUXj7N4cdLP
-         xqRSSMrr9H/v+oerc6EY36Y5bSqrs1Zm6KCPZ/aNW9XEIetMkVjlWrci1YRF7mp3qGnd
-         aZ7OwjfaEE0I5Fo6/rjqXV9P39aoQbr39f6xCNu0UXO5XSu1Ur2T4QCHzenJacrvItyb
-         ntLu/UFcuLSZCLt+BGc8CEVQXzXhISc15UPwJUvQp/eVjiKM1rk+Loji+pkkYEvWXfWF
-         anXfq1yd4KiJ//ENwe6jZLIHcr12yeXG8WOfMPZmxlhbTKnZuVgg56MW6xGUNgiAYOrg
-         yVPQ==
-X-Gm-Message-State: AOAM530QVhd5LKXr54cPtr2VG4hn0LL+R7QdM0qTj/EWeSaDRhp9U/Df
-        J59AgY7sLijyEaQnx8ti2o8=
-X-Google-Smtp-Source: ABdhPJzwt7sL/X15JIuK/UP65hzOWrQazW+J3Y0qUhw8dcKMaf67VyXTuR7cHHbiUeKjCpOzJ7I67A==
-X-Received: by 2002:adf:cf05:: with SMTP id o5mr18261260wrj.270.1631621643254;
-        Tue, 14 Sep 2021 05:14:03 -0700 (PDT)
+        bh=8VnZsNnr3VQCrEo0PDtrkdRH8QBVvc3Duoao6HuugeY=;
+        b=Bb5N9T8rhvtYFMXrHi2o4jlL/IV+Gl8sC4LE+RkTPxBMpjKFkQdpz6Vo9hSwa1a3Ls
+         q+uAX7pSn/japEyEPzX9BOg4h55v1YZrA4lWtw9x+ReWIXCrP+WbIU6Bk+1K2CoixQGP
+         lxe9C77dopuAh/Do7UFkfQX5/RxbiOTT++lHBOhh0MxK2DXcZwhHzyWeuIP9wNyJXY8i
+         BSLLB83c3KLVz1lQkJS1j6hay7ZHB7zPCi2TU0aD/i0tunrKN11Sd1jsCtUqlnSVDLZu
+         WodrizlmSRye71FJvGhbqEvw0PL6CoZEGKl8tWXAap2818gttMegtPDzQoZtE+qWroNW
+         AI6w==
+X-Gm-Message-State: AOAM530K7WIJWmqdLmSQ0VogCF5CkvGCT6Ul27JvixtWec6AMkOQCvHa
+        rO8Hx61TemmGXk6sndmquBg=
+X-Google-Smtp-Source: ABdhPJxzmvTChsPMPjCRecPc0KsX4ffk2jz57QgSfIhca/hl/sHWn+AhMpTk8Vjb/Tf2ZZhKh1tIUQ==
+X-Received: by 2002:adf:e643:: with SMTP id b3mr18850508wrn.67.1631621644255;
+        Tue, 14 Sep 2021 05:14:04 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ae40])
-        by smtp.gmail.com with ESMTPSA id j19sm10028100wra.92.2021.09.14.05.14.02
+        by smtp.gmail.com with ESMTPSA id j19sm10028100wra.92.2021.09.14.05.14.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 05:14:02 -0700 (PDT)
+        Tue, 14 Sep 2021 05:14:03 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 1/4] staging: r8188eu: remove unused macros from rtl8188e_hal.h
-Date:   Tue, 14 Sep 2021 14:13:49 +0200
-Message-Id: <20210914121352.26052-2-straube.linux@gmail.com>
+Subject: [PATCH 2/4] staging: r8188eu: remove write-only fields from struct hal_data_8188e
+Date:   Tue, 14 Sep 2021 14:13:50 +0200
+Message-Id: <20210914121352.26052-3-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210914121352.26052-1-straube.linux@gmail.com>
 References: <20210914121352.26052-1-straube.linux@gmail.com>
@@ -66,30 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macros INCLUDE_MULTI_FUNC_BT and INCLUDE_MULTI_FUNC_GPS are not
-used in the driver, remove them.
+The fields MultiFunc and RegulatorMode of struct hal_data_8188e are
+set but never used, remove them.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/include/rtl8188e_hal.h | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 5 -----
+ drivers/staging/r8188eu/include/rtl8188e_hal.h  | 2 --
+ 2 files changed, 7 deletions(-)
 
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+index c1188117a5cc..5c6c62e3f6ed 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+@@ -1684,12 +1684,7 @@ void rtl8188e_read_chip_version(struct adapter *padapter)
+ 	ChipVersion.RFType = RF_TYPE_1T1R;
+ 	ChipVersion.VendorType = ((value32 & VENDOR_ID) ? CHIP_VENDOR_UMC : CHIP_VENDOR_TSMC);
+ 	ChipVersion.CUTVersion = (value32 & CHIP_VER_RTL_MASK) >> CHIP_VER_RTL_SHIFT; /*  IC version (CUT) */
+-
+-	/*  For regulator mode. by tynli. 2011.01.14 */
+-	pHalData->RegulatorMode = ((value32 & TRP_BT_EN) ? RT_LDO_REGULATOR : RT_SWITCHING_REGULATOR);
+-
+ 	ChipVersion.ROMVer = 0;	/*  ROM code version. */
+-	pHalData->MultiFunc = RT_MULTI_FUNC_NONE;
+ 
+ 	dump_chip_info(ChipVersion);
+ 
 diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index 537a8d17642c..f16ffd952215 100644
+index f16ffd952215..7e2feb390416 100644
 --- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
 +++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -394,11 +394,6 @@ struct hal_data_8188e {
- 	((struct hal_data_8188e *)((__pAdapter)->HalData))
- #define GET_RF_TYPE(priv)		(GET_HAL_DATA(priv)->rf_type)
+@@ -223,8 +223,6 @@ enum rt_regulator_mode {
  
--#define INCLUDE_MULTI_FUNC_BT(_Adapter)				\
--	(GET_HAL_DATA(_Adapter)->MultiFunc & RT_MULTI_FUNC_BT)
--#define INCLUDE_MULTI_FUNC_GPS(_Adapter)			\
--	(GET_HAL_DATA(_Adapter)->MultiFunc & RT_MULTI_FUNC_GPS)
--
- /*  rtl8188e_hal_init.c */
- s32 rtl8188e_FirmwareDownload(struct adapter *padapter);
- void _8051Reset88E(struct adapter *padapter);
+ struct hal_data_8188e {
+ 	struct HAL_VERSION	VersionID;
+-	enum rt_multi_func MultiFunc; /*  For multi-function consideration. */
+-	enum rt_regulator_mode RegulatorMode; /*  switching regulator or LDO */
+ 	u16	CustomerID;
+ 
+ 	u16	FirmwareVersion;
 -- 
 2.33.0
 
