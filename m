@@ -2,251 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7CF40B10A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF5740B10D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhINOhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:37:51 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:39265 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234538AbhINOhM (ORCPT
+        id S234240AbhINOjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:39:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59170 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234023AbhINOiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:37:12 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 540172B01324;
-        Tue, 14 Sep 2021 10:35:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 14 Sep 2021 10:35:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=gzQp1QWFJ1terVGLXG3LkelZHX1
-        PY0zeCf7c+zfmKMQ=; b=qwrojLetWm8vSiNaOYOzvA/4bx5c9Ldp0mN1akY5Tic
-        XOFC+LZ3NHVFZI0Q4j2gV0uL7YEnEhe21l1M5TJFRig2DKZ4Un6hDXjgQOii1Y82
-        5WyO4KZZoNqJ7oKdX2MwmOfMWRot1Q9AgXdATsPsVVG1riN9nlnyyYDqXn3YFXN+
-        9s2V28gn97sb698EtmBEz1ccHFSZHOl3o33DXtlw99spoJ9ov5lx4oe2vyal1Z25
-        oC6aWg/N2xi93fEny5sIuxmWO0VPSLBWD1xzy12AF01w9pCYn7bWBQxuyyMCpvaM
-        y39vOL7n4ExOP5RKVrgIgcSbtNTWg/52A2XQpR9ZJ2g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=gzQp1Q
-        WFJ1terVGLXG3LkelZHX1PY0zeCf7c+zfmKMQ=; b=c/mMgHLb69f6Km6Eo4UNJk
-        iqu9ZZm7TixCWDggjEknfbBqsJ52MzYz/I4E70KNWN/WqGb3DQztg8k8Yrg3GJWH
-        j2J6KLBaFTzsJxJV91N4IKyxV0/a6O4XJ3IvpCkAC8pP6I0sr3cNzGcMlPlA8env
-        X2ImR9ouayJUHXEp/1vY0qlG+uEifOqaQSSqfF8UuJkExlp3xMnD0e7qfgfD0Sg1
-        OE5DWmY8f3GCZHWtF+3JmCP1ZfpRdijxPE1U4kDXV43gPOKkuJp+IpDKyKvq8XYx
-        80xU/GYYirii0rkNFO/4xy2V+mCPAhIrhQzaztYQ68dD9DiEY6KnX9Q9zY8okcEw
-        ==
-X-ME-Sender: <xms:QLNAYRRIFa4rSrl28gZuhzlFsybDsgQ7nkmeZl5zpLuNJOQCstlOig>
-    <xme:QLNAYazEN1B0GtYZNDVvBnlB_inGyLt5gYMTwFR3Val9eFw9-oUu_QjcxdFVSsaHx
-    H8s-ha7EhGz4epG-b8>
-X-ME-Received: <xmr:QLNAYW2dYbBrD_FTXbHB145EFkvIvpd4rn-cFX4ZyFRbm2b4ZWNyTLHLaYZHybdI9mP_f4AgYSHO9N5K59xExzFWHeqMJ_FLvMwB>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
-    gfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:QLNAYZBhX7gMyjqQnd3byuW810fgxZwSXvXY1EKAd67AkaRHHH7Evw>
-    <xmx:QLNAYaiuRz9tXXyco0VVshdpldJ7Wd0Gkg2gWwox-6NPEz6x1FD2-g>
-    <xmx:QLNAYdrpNozFNjj3x9MkmlrhwAaq7s2DlUm_F_ZyK07OOwtm1JX4kg>
-    <xmx:Q7NAYV2Gu08tOsNR8-vbHEH_8RwSgikcxSllFFc66JW-Hpv9TPo8yYDvtyI>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 10:35:44 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 16:35:41 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Sean Paul <sean@poorly.run>, freedreno@lists.freedesktop.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        John Stultz <john.stultz@linaro.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: [PATCH v4 02/24] drm/bridge: Document the probe issue with
- MIPI-DSI bridges
-Message-ID: <20210914143541.433ucx2kvz36tw42@gilmour>
-References: <20210910101218.1632297-1-maxime@cerno.tech>
- <CGME20210910101246eucas1p17191a80c37b0e1784d6d9b8bf6fbcd60@eucas1p1.samsung.com>
- <20210910101218.1632297-3-maxime@cerno.tech>
- <7ad18d53-3ad6-a614-a8e1-cce6505f90a8@samsung.com>
+        Tue, 14 Sep 2021 10:38:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631630257;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OttAcz4NMYxVushPx3IV+Bq6AS7PXnqsl2qz+4gqrCQ=;
+        b=jVmgF+GAjEP1eiOYyEtYfX10OyuiJrHOI1vBr2dmJST9dfjnu7uhDWrXHl84s0wJSrtzGM
+        AbAQula9RCpRo99vruWhibTzHvSirvOcXkxsOz8BRR2goPYlNzJPex+HUDaQwZ/stDS3Gg
+        jA3ueRyL1hoG5JaMffJDLVfIt2AuvA8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-GwTGfonYOOqIdWIiu4MWrw-1; Tue, 14 Sep 2021 10:37:35 -0400
+X-MC-Unique: GwTGfonYOOqIdWIiu4MWrw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FB7710053FB;
+        Tue, 14 Sep 2021 14:37:34 +0000 (UTC)
+Received: from T590 (ovpn-12-32.pek2.redhat.com [10.72.12.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9588369FC8;
+        Tue, 14 Sep 2021 14:37:25 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 22:37:35 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, josef@toxicpanda.com, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, yi.zhang@huawei.com
+Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
+Message-ID: <YUCzr2ysb+vJ1x0W@T590>
+References: <20210909141256.2606682-1-yukuai3@huawei.com>
+ <20210909141256.2606682-6-yukuai3@huawei.com>
+ <YT/2z4PSeW5oJWMq@T590>
+ <c6af73a2-f12d-eeef-616e-ae0cdb4f6f2d@huawei.com>
+ <YUBE4BJ7+kN1c4l8@T590>
+ <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com>
+ <YUBTVBioqJ7qas2R@T590>
+ <b8301834-5541-76ee-13a9-0fa565fce7e3@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6br4ofwy642o3hq4"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7ad18d53-3ad6-a614-a8e1-cce6505f90a8@samsung.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8301834-5541-76ee-13a9-0fa565fce7e3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---6br4ofwy642o3hq4
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Sep 13, 2021 at 08:29:37AM +0200, Andrzej Hajda wrote:
->=20
-> W dniu 10.09.2021 o=A012:11, Maxime Ripard pisze:
-> > Interactions between bridges, panels, MIPI-DSI host and the component
-> > framework are not trivial and can lead to probing issues when
-> > implementing a display driver. Let's document the various cases we need
-> > too consider, and the solution to support all the cases.
-> >
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > ---
-> >   Documentation/gpu/drm-kms-helpers.rst |  6 +++
-> >   drivers/gpu/drm/drm_bridge.c          | 57 +++++++++++++++++++++++++++
-> >   2 files changed, 63 insertions(+)
-> >
-> > diff --git a/Documentation/gpu/drm-kms-helpers.rst b/Documentation/gpu/=
-drm-kms-helpers.rst
-> > index 10f8df7aecc0..ec2f65b31930 100644
-> > --- a/Documentation/gpu/drm-kms-helpers.rst
-> > +++ b/Documentation/gpu/drm-kms-helpers.rst
-> > @@ -157,6 +157,12 @@ Display Driver Integration
-> >   .. kernel-doc:: drivers/gpu/drm/drm_bridge.c
-> >      :doc: display driver integration
-> >  =20
-> > +Special Care with MIPI-DSI bridges
-> > +----------------------------------
+On Tue, Sep 14, 2021 at 05:19:31PM +0800, yukuai (C) wrote:
+> On 在 2021/09/14 15:46, Ming Lei wrote:
+> 
+> > If the above can happen, blk_mq_find_and_get_req() may not fix it too, just
+> > wondering why not take the following simpler way for avoiding the UAF?
+> > 
+> > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> > index 5170a630778d..dfa5cce71f66 100644
+> > --- a/drivers/block/nbd.c
+> > +++ b/drivers/block/nbd.c
+> > @@ -795,9 +795,13 @@ static void recv_work(struct work_struct *work)
+> >   						     work);
+> >   	struct nbd_device *nbd = args->nbd;
+> >   	struct nbd_config *config = nbd->config;
+> > +	struct request_queue *q = nbd->disk->queue;
+> >   	struct nbd_cmd *cmd;
+> >   	struct request *rq;
+> > +	if (!percpu_ref_tryget(&q->q_usage_counter))
+> > +                return;
 > > +
-> > +.. kernel-doc:: drivers/gpu/drm/drm_bridge.c
-> > +   :doc: special care dsi
-> > +
-> >   Bridge Operations
-> >   -----------------
-> >  =20
-> > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > index baff74ea4a33..7cc2d2f94ae3 100644
-> > --- a/drivers/gpu/drm/drm_bridge.c
-> > +++ b/drivers/gpu/drm/drm_bridge.c
-> > @@ -96,6 +96,63 @@
-> >    * documentation of bridge operations for more details).
-> >    */
-> >  =20
-> > +/**
-> > + * DOC: special care dsi
-> > + *
-> > + * The interaction between the bridges and other frameworks involved in
-> > + * the probing of the upstream driver and the bridge driver can be
-> > + * challenging. Indeed, there's multiple cases that needs to be
-> > + * considered:
-> > + *
-> > + * - The upstream driver doesn't use the component framework and isn't=
- a
-> > + *   MIPI-DSI host. In this case, the bridge driver will probe at some
-> > + *   point and the upstream driver should try to probe again by return=
-ing
-> > + *   EPROBE_DEFER as long as the bridge driver hasn't probed.
-> > + *
-> > + * - The upstream driver doesn't use the component framework, but is a
-> > + *   MIPI-DSI host. The bridge device uses the MIPI-DCS commands to be
-> > + *   controlled. In this case, the bridge device is a child of the
-> > + *   display device and when it will probe it's assured that the displ=
-ay
-> > + *   device (and MIPI-DSI host) is present. The upstream driver will be
-> > + *   assured that the bridge driver is connected between the
-> > + *   &mipi_dsi_host_ops.attach and &mipi_dsi_host_ops.detach operation=
-s.
-> > + *   Therefore, it must run mipi_dsi_host_register() in its probe
-> > + *   function, and then run drm_bridge_attach() in its
-> > + *   &mipi_dsi_host_ops.attach hook.
-> > + *
-> > + * - The upstream driver uses the component framework and is a MIPI-DSI
-> > + *   host. The bridge device uses the MIPI-DCS commands to be
-> > + *   controlled. This is the same situation than above, and can run
-> > + *   mipi_dsi_host_register() in either its probe or bind hooks.
-> > + *
-> > + * - The upstream driver uses the component framework and is a MIPI-DSI
-> > + *   host. The bridge device uses a separate bus (such as I2C) to be
-> > + *   controlled. In this case, there's no correlation between the probe
-> > + *   of the bridge and upstream drivers, so care must be taken to avoid
-> > + *   an endless EPROBE_DEFER loop, with each driver waiting for the
-> > + *   other to probe.
-> > + *
-> > + * The ideal pattern to cover the last item (and all the others in the
-> > + * MIPI-DSI host driver case) is to split the operations like this:
-> > + *
-> > + * - The MIPI-DSI host driver must run mipi_dsi_host_register() in its
-> > + *   probe hook. It will make sure that the MIPI-DSI host sticks aroun=
-d,
-> > + *   and that the driver's bind can be called.
-> > + *
-> > + * - In its probe hook, the bridge driver must try to find its MIPI-DSI
-> > + *   host, register as a MIPI-DSI device and attach the MIPI-DSI device
-> > + *   to its host. The bridge driver is now functional.
-> > + *
-> > + * - In its &struct mipi_dsi_host_ops.attach hook, the MIPI-DSI host c=
-an
-> > + *   now add its component. Its bind hook will now be called and since
-> > + *   the bridge driver is attached and registered, we can now look for
-> > + *   and attach it.
-> > + *
-> > + * At this point, we're now certain that both the upstream driver and
-> > + * the bridge driver are functional and we can't have a deadlock-like
-> > + * situation when probing.
-> > + */
-> > +
-> >   static DEFINE_MUTEX(bridge_lock);
-> >   static LIST_HEAD(bridge_list);
->=20
->=20
-> Nice work with documenting this initialization dance. It clearly shows=20
-> that bridge API lacks better mechanism - usage of mipi dsi callbacks to=
-=20
-> get notifications about bridge appearance is ugly.
+> >   	while (1) {
+> >   		cmd = nbd_read_stat(nbd, args->index);
+> >   		if (IS_ERR(cmd)) {
+> > @@ -813,6 +817,7 @@ static void recv_work(struct work_struct *work)
+> >   		if (likely(!blk_should_fake_timeout(rq->q)))
+> >   			blk_mq_complete_request(rq);
+> >   	}
+> > +	blk_queue_exit(q);
+> >   	nbd_config_put(nbd);
+> >   	atomic_dec(&config->recv_threads);
+> >   	wake_up(&config->recv_wq);
+> > 
+> 
+> Hi, Ming
+> 
+> This apporch is wrong.
+> 
+> If blk_mq_freeze_queue() is called, and nbd is waiting for all
+> request to complete. percpu_ref_tryget() will fail here, and deadlock
+> will occur because request can't complete in recv_work().
 
-Yeah, there's so many moving parts it's definitely not great.
+No, percpu_ref_tryget() won't fail until ->q_usage_counter is zero, when
+it is perfectly fine to do nothing in recv_work().
 
-> It remains me my resource tracking patches which I have posted long
-> time ago [1] - they would solve the issue in much more elegant way,
-> described here [2]. Apparently I was not stubborn enough in promoting
-> this solution.
+Thanks,
+Ming
 
-Wow, that sounds like a massive change indeed :/
-
-> Anyway:
->=20
-> Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-
-I assume you'll want me to hold off that patch before someone reviews
-the rest?
-
-Thanks!
-Maxime
-
---6br4ofwy642o3hq4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUCzPQAKCRDj7w1vZxhR
-xZX4AQCpuzsltUoIAMTseQh0blWKIJdfpCQSgO0Tdf29VLbP8gEAx8aZkhD8UtLs
-gYRcFQgX4NWKsoez7eyiExM4WOxRygQ=
-=zKFO
------END PGP SIGNATURE-----
-
---6br4ofwy642o3hq4--
