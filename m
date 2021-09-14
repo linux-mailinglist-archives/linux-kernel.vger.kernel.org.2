@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881C840BAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF7040BAEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbhINWFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:05:00 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:45563 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbhINWE6 (ORCPT
+        id S235205AbhINWF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235116AbhINWF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:04:58 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M1HqM-1mT0c44Bzu-002mr2; Wed, 15 Sep 2021 00:03:39 +0200
-Received: by mail-wr1-f48.google.com with SMTP id g16so604033wrb.3;
-        Tue, 14 Sep 2021 15:03:38 -0700 (PDT)
-X-Gm-Message-State: AOAM533bFzfD1QPDo0LHSl1lDQiaan6eCHGFdYTI/yo2bKB5tPLGUfyp
-        E57iYd5P4gxI81a/d/CvYOvGzX6VEXVrt+0eOFs=
-X-Google-Smtp-Source: ABdhPJwhAXAnpXRH0/G3EydXtQOLww1rGEpSQchTL8vbfDRnOyiwnZ9a7hWu0kCogOma+gV7tQNgIhLP36LvPFqRwt0=
-X-Received: by 2002:adf:914e:: with SMTP id j72mr1380085wrj.428.1631657018586;
- Tue, 14 Sep 2021 15:03:38 -0700 (PDT)
+        Tue, 14 Sep 2021 18:05:26 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEE7C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:04:08 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id s3so1319516ljp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4r/QuEek1IJxOTV0kb5k4wwB4qARh5+mDnfq9y231lI=;
+        b=JkTwfbecRPqhMK7XoQ8d92T7iOKua5f+IVTLSDSDJB9qWyiIkM0SaCWyK06t6HTfzz
+         0i3FD4mp/tlKdDdsrBvEqcHZOynglvHdU/AL1a1ZT9cikXbKyCr702n3S+K1FmC/MORo
+         UsU0+uneGV8wluKv+9naoH8tUlhNqaaE+lUcuMzc3Bj68pKI7UL3So27UkZRr7ASSPyz
+         MkcB63hMgusMPBIXy0v6/ke/SIcj9e/1nhA1gLB/jI2/DGVx3OtlNc3vSkYLgZZX3Uo3
+         hBXV6LMnLsIxD2hLgTG0MrAWWizIDYq7aGRuvLWeQlBHWFdOZFqXI0uoKT8+JISo/g2V
+         JKnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4r/QuEek1IJxOTV0kb5k4wwB4qARh5+mDnfq9y231lI=;
+        b=3qb2/QCGXTcRwwMQvIMsBtpota3Yxn0RohEPyTE5+B5HhoFmThnh/lMohjIgebBV7c
+         kFKz39UfnUG2gu5N6XXPPKeIupVzXdwzYp+MBLEcICU8rTuXfab1oQxdTuIb2x458Htq
+         GHHGdwx36frSFkdVPh9kCzE4MxaoNqUKnCEfqPy+ICjN8/XrFEBEev7bmf+STUj/J3Ah
+         LEaI/pjLwOVmZsHjh1nVgq61gje0wpLjQMfdEkkxP0iwF7V5PIpQQf+RARGVGNgp12cK
+         an7fw2j+EDCG88VTqxt8ZzCPrPkXixjZmv2JpANKaxmqz557YMaxbKCVajJh0zMN6CSq
+         H4eA==
+X-Gm-Message-State: AOAM5322WaEQ/5yJbMSvS03umvarfs2ADx+vlVgQQBy7WyiUA6JZqyMx
+        crCdeZC2jKChd/u69xz2QjYB84l54F/hpgYVQ9ufeg==
+X-Google-Smtp-Source: ABdhPJyRlHmWOTMX6JO0I0LrUpZjPoiigiqAXnBic0Wf6wKgYPtz+W4ySCH25h/SuTM2qi/MjIA2o7jci+EHEpqI5VI=
+X-Received: by 2002:a2e:86d5:: with SMTP id n21mr16992991ljj.278.1631657046349;
+ Tue, 14 Sep 2021 15:04:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
- <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
- <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
- <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com>
- <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org> <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com>
-In-Reply-To: <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 15 Sep 2021 00:03:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0wQC+9_3wJEACgOLa9C5_zLSmDfU=_79h_KMSE_9JxRw@mail.gmail.com>
-Message-ID: <CAK8P3a0wQC+9_3wJEACgOLa9C5_zLSmDfU=_79h_KMSE_9JxRw@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>
+References: <20210914210951.2994260-1-seanjc@google.com> <20210914210951.2994260-2-seanjc@google.com>
+In-Reply-To: <20210914210951.2994260-2-seanjc@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 14 Sep 2021 16:03:54 -0600
+Message-ID: <CAMkAt6rnUUS9t1Z73dqZ0_3iUmyRxz5hJmZ+A3vQ34t3N=JAFQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: SEV: Pin guest memory for write for RECEIVE_UPDATE_DATA
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Marc Orr <marcorr@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Masahiro Kozuka <masa.koz@kozuka.jp>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:TGKoNGYg3XZ12X86bn6RKRgu+uL9/g8js96eejetf0UEDglfL2x
- PVN8Ua0qYSc9kXSY4DsJiQEiOCyFtN4A6SOuDMFkRHWpKNXTToVm1Lt8we224RgSkthBXSc
- GoLfVJW4mw+QVHRa2ehWKPt2ESxQ2FZuUiM76ZAoNdtIN2+5MYGs7LI/GJ/KVVZBjx3bQyl
- d2EVtdGqBmAi6lNybAucg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ryhRnBOopLo=:zztz24XlEDgzhvfcn38+q2
- i9P6qVZT9jo9judsStpheGS4GD8N4Pdh5cbeWIlHg/a6tExvNgmteHmIR8ynDc/IWPjDMkEmS
- U65A1kPe6bVI92yJDm1/k4br+2oJFStdvabzegFIy2YxHo+3Ngh3XAi1ijMGOiFQSMh+wmc0r
- kKwpLeEkdz11RfLgFRoJmivyuv5tck0KGkmyjF8LuxyFdc80hQH9LYi5BgK/DWefPqDe9eHHz
- mx/ODG6/s7suZ8XdUBTaURes+g5Jai0bZiQuQkEumGgt+pIctbZCwEQ85HuNhoHhI+aRjDUlt
- AlNXNnKisRNmguHWhY68AmpJVWMYHxyt2QwpRet6J7Tx9g/LnXtC1f65CBF/oo0nfsClfgtmv
- JrJpvr05D6aNae+bdOwFAd+a/O3ObN7lmpBqlB/zRXr2Ofpjh4jjeOhLWcex7Ov4GGe8EDrU4
- M9dH5bxjD4JFEclZd4mIY6jTPVkN6g8GaLEmffDlTo2RnvjK2SsF6yLZMAhsZf7M/bqBMqc9K
- U5be3jIUpTSGkSNGT/AiqXZKjPRBLkEDxEIHYDaA0MX+FGGK2/+awsmONVLYZlQyUeVEdjS2w
- g89gIrhdyc2rYC4r5pQE0yRANra7hhjw1iwKYt7yVfdUBxFMprJNd+/lfKlMtDeAJBNqfNGYw
- awnG2chADN9Zflee4CvCYU93sJEmJ+eIMQyWI8bdpUc0+MQXdsBvVgKU8G0m2jySosv5IQHeD
- /JX6OcTj8xyZrqT/2kJwtUNkyLH9doWrHQs14CRSSIwbmBgoZ7YK5t6mYe/su2aRRUdcN4owz
- B6Lu5qTMBURqLYRfzxwxDI+O5xKnoivvdTusaD+1jOi5iefbfJSR4jJH2V12YCCt8j0r1QS5t
- SqbSO1kelwQPLSBHDDDw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:48 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
+On Tue, Sep 14, 2021 at 3:09 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> On Mon, Sep 13, 2021 at 1:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >
-> > On 9/8/21 3:24 PM, Brendan Higgins wrote:
-> > Brendan,
-> >
-> > Would you like to send me the fix with Suggested-by for Arnd or Kees?
+> Require the target guest page to be writable when pinning memory for
+> RECEIVE_UPDATE_DATA.  Per the SEV API, the PSP writes to guest memory:
 >
-> So it looks like Arnd's fix was accepted (whether by him or someone
-> else) for property-entry-test and Linus already fixed thunderbolt, so
-> the only remaining of Arnd's patches is for the bitfield test, so I'll
-> resend that one in a bit.
+>   The result is then encrypted with GCTX.VEK and written to the memory
+>   pointed to by GUEST_PADDR field.
 >
-> Also, I haven't actually tried Linus' suggestion yet, but the logic is
-> sound and the change *should* be fairly unintrusive - I am going to
-> give that a try and report back (but I will get the bitfield
-> structleak disable patch out first since I already got that applying).
+> Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
+> Cc: stable@vger.kernel.org
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Looking at my randconfig tree, I find these six instances:
+Reviewed-by: Peter Gonda <pgonda@google.com>
 
-$ git grep -w DISABLE_STRUCTLEAK_PLUGIN
-drivers/base/test/Makefile:CFLAGS_property-entry-test.o +=
-$(DISABLE_STRUCTLEAK_PLUGIN)
-drivers/iio/test/Makefile:CFLAGS_iio-test-format.o +=
-$(DISABLE_STRUCTLEAK_PLUGIN)
-drivers/mmc/host/Makefile:CFLAGS_sdhci-of-aspeed.o              +=
-$(DISABLE_STRUCTLEAK_PLUGIN)
-drivers/thunderbolt/Makefile:CFLAGS_test.o += $(DISABLE_STRUCTLEAK_PLUGIN)
-lib/Makefile:CFLAGS_test_scanf.o += $(DISABLE_STRUCTLEAK_PLUGIN)
-lib/Makefile:CFLAGS_bitfield_kunit.o += $(DISABLE_STRUCTLEAK_PLUGIN)
-scripts/Makefile.gcc-plugins:    DISABLE_STRUCTLEAK_PLUGIN +=
--fplugin-arg-structleak_plugin-disable
-scripts/Makefile.gcc-plugins:export DISABLE_STRUCTLEAK_PLUGIN
+> ---
+>  arch/x86/kvm/svm/sev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 75e0b21ad07c..95228ba3cd8f 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1464,7 +1464,7 @@ static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>
+>         /* Pin guest memory */
+>         guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
+> -                                   PAGE_SIZE, &n, 0);
+> +                                   PAGE_SIZE, &n, 1);
+>         if (IS_ERR(guest_page)) {
+>                 ret = PTR_ERR(guest_page);
+>                 goto e_free_trans;
 
-Sorry for failing to submit these as a proper patch. If you send a new version,
-I think you need to make sure you cover all of the above, using whichever
-change you like best.
+Not sure how common this is but adding a comment like this could help
+with readability:
++                                   PAGE_SIZE, &n, /* write= */ 1);
 
-        Arnd
+
+> --
+> 2.33.0.309.g3052b89438-goog
+>
