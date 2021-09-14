@@ -2,153 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E38740B001
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD42340B00D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhINN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:58:54 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:46201 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233337AbhINN6t (ORCPT
+        id S233300AbhINOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232989AbhINOAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:58:49 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9DF1B5805AB;
-        Tue, 14 Sep 2021 09:57:31 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Tue, 14 Sep 2021 09:57:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=/qfI0kR2c2R9EpdH6XC5khZEU1Gd
-        sF66gEmUDSo9p/A=; b=p6wHtTjiRf96SdEIECnw2JMg3xosSsAID4XSdD66rNlF
-        CRMi3Vv74l8ByIFgm9xTCWSYpeiWi3PwKZVRzPJ5j5NjE3kIUg2lyqv249BDPmDK
-        HHoTDWMhEuhxEZjQw7Cfo5arwx9bpJ+ugQ2kdTOxaS9vOAH4rZ+hHYsQtnYa0M3k
-        9ECSbfibkn7fDt30DhgHe0rlYk0NnGamf+l0t6wY44OKT0P213GfMXg6UdavNmY1
-        UV2Pfni/60nfz6ZZ0SphMClLj2S4SFehFv4PXCL0G/uDhPZqvDwjQ/+KBmVR8XvY
-        uAp+hcQefXSa7Y7H2SpV+h2x+eGRHJWKg9x5ev3vtQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=/qfI0k
-        R2c2R9EpdH6XC5khZEU1GdsF66gEmUDSo9p/A=; b=ObmLpvpSpZfGpQpcnl5YxO
-        2bkGlWscTyRSRJD/0KgvU3cpLJhoM1bk8gn1/rzSYqBmC40jrsILJTtgaHeFABIo
-        L1gbQJ/sV55CRS6bPSXX5URC1Zv9pQ16r8/+smPaeV3ox0laG5ISLGjTEQN3Tpz0
-        M+ifqKc/x4Zkw42DIVGQDkV1AdOxM/7oA/ieMm6G2dC2ZnzZPyaLQgvgGyP6BB8t
-        cEi1GHm/MtvRkld5M2vcgQ+w+MbQlAT6YF3zuh6jydumvJiYXSgn/SF93TrtxMJ2
-        qV3QDweFuQmFr6aevXBlUbYfzaNgWEtOXjFiaMX8m3YdNgibDPi1zhrECNxGL6CQ
-        ==
-X-ME-Sender: <xms:SqpAYbM2nBhvqYKbyYus6Y-umQZylWC24XU3rl28HPvggniZXlO0Ng>
-    <xme:SqpAYV84osLKblh1IdJqrHo8olc86SBQyqV6SqtpLtbACyY63pVlFaf7nuqlbeq_H
-    TVHXsfhBLr1j6M_I18>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpeehjefgtddtfeelfeetjeeifeduueehleektdegtdejheeiteeuleehuefh
-    geehgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:SqpAYaSyq-4QbdkrA8xh4PHK8AR4dTyM3oN7d5RZJKojRhEA-Ktinw>
-    <xmx:SqpAYfvTrQ28Nsg0PzzUkcjAhCTSXWBv4IXw0xecdLJCox0vt_WUdw>
-    <xmx:SqpAYTeIHlFSSQymDMHwHrQ52O6jBAxfBot-hmS6EMIQtXQAUFv1CA>
-    <xmx:S6pAYb0BQ-05Equam92gWQz89p7akWV8vqNJHjsg_3CQ7QcVpHJ2lA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A09D051C0060; Tue, 14 Sep 2021 09:57:30 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
-Mime-Version: 1.0
-Message-Id: <06263cbc-70f1-4484-86f3-3735137b3a8f@www.fastmail.com>
-In-Reply-To: <87y27zbiu3.wl-maz@kernel.org>
-References: <20210913182550.264165-1-maz@kernel.org>
- <20210913182550.264165-11-maz@kernel.org>
- <b502383a-fe68-498a-b714-7832d3c8703e@www.fastmail.com>
- <87y27zbiu3.wl-maz@kernel.org>
-Date:   Tue, 14 Sep 2021 15:56:55 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Marc Zyngier" <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
-        "Stan Skowronek" <stan@corellium.com>,
-        "Mark Kettenis" <kettenis@openbsd.org>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Robin Murphy" <Robin.Murphy@arm.com>, kernel-team@android.com
-Subject: =?UTF-8?Q?Re:_[PATCH_v3_10/10]_PCI:_apple:_Configure_RID_to_SID_mapper_o?=
- =?UTF-8?Q?n_device_addition?=
-Content-Type: text/plain
+        Tue, 14 Sep 2021 10:00:01 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C69BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:58:44 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n18so8236942plp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=kuGfoiHW6NcPNvARG0VGXXuklmC4CvtIeNqf7tHyLDY=;
+        b=CYmjmGpeYGKepBsojHml54XupAoZlD3GyuZyIUd29k1M7Z3zYoYE3KKq4UJVsEK+JM
+         4w9uE0qxsLzI7exmwyRMPxmHZNg3A8EEmKNnqHbm/76Us6khGgCGW92gl8PViBcL9lju
+         bZTDfqzKgamLTOCVaubKn8XNR7aprZ5qMoWAX5YXkr/CY3q3SwG2bm1nAJpvdgOGEU40
+         os7Mv9Z+qkqg8iKhj3JLuni2jwYTjjbgeV4T3hT9xiVold1UzkQzcAAWH4socboX6gDK
+         pr3xZg3EQZcutndRaZ5Vdxw5eQQrJuNEZXbtEV8lVtLl7cJqA683pxUxO8dVcEbH7GKI
+         vTZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kuGfoiHW6NcPNvARG0VGXXuklmC4CvtIeNqf7tHyLDY=;
+        b=JE2rHE6ab3qM0WDWfHKTsqeWRalvZm3o37oIywg3M0Z37VjU+/NHnl2Zl6otlB9TVl
+         ryPHwuSwg7kL7O8J73HjFhuQB1IzQrhrOuJ+2iXXUeGzPiY7aaBuPvR1HvA8WZ4s4qaP
+         JupppV9a4ai0++kzJ51RYXfYW85QMj8WznHsrgQ2P0L4rSVp/IMN7K2mZqoH5xg/ogby
+         eW7l47nkYHRsfF2nMnEdyz658zmzRRXm4XuRCGdIkwenvSSO8VaKHG6GFhQzjpB6V5n+
+         vCES2DgKhNOfYmZ7t4UTcSv1FP+hoSpOvTRjHDCtM38zudJ7vp2pDsn9gZE/klnGaW3T
+         F/8Q==
+X-Gm-Message-State: AOAM533hoD3IXtDuhjCbPX1wi/wV8j1Gns1ZwN8geu5qv26mjiod6Uo7
+        fpvOkO0tOoMXyYZ3xlpsVze4wmvYyRY=
+X-Google-Smtp-Source: ABdhPJyvpRb9oGIkD6JcuwCNsRBMRVR2YXCVY3sZRerC6ijN3GdsTFxPS0dVQXWRg/U7qCzjQwoxug==
+X-Received: by 2002:a17:90b:4c4f:: with SMTP id np15mr2295910pjb.30.1631627923319;
+        Tue, 14 Sep 2021 06:58:43 -0700 (PDT)
+Received: from localhost.localdomain (1-171-6-195.dynamic-ip.hinet.net. [1.171.6.195])
+        by smtp.gmail.com with ESMTPSA id a15sm11869075pgn.25.2021.09.14.06.58.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Sep 2021 06:58:42 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     broonie@kernel.org
+Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com
+Subject: [PATCH] regulator: rtq6752: Enclose 'enable' gpio control by enable flag
+Date:   Tue, 14 Sep 2021 21:58:32 +0800
+Message-Id: <1631627912-7974-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: ChiYuan Huang <cy_huang@richtek.com>
 
+Fix 'enable' gpio control logic if it's specified.
 
-On Tue, Sep 14, 2021, at 11:35, Marc Zyngier wrote:
-> On Mon, 13 Sep 2021 21:45:13 +0100,
-> "Sven Peter" <sven@svenpeter.dev> wrote:
-> > 
-> > 
-> > 
-> > On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
-> > > The Apple PCIe controller doesn't directly feed the endpoint's
-> > > Requester ID to the IOMMU (DART), but instead maps RIDs onto
-> > > Stream IDs (SIDs). The DART and the PCIe controller must thus
-> > > agree on the SIDs that are used for translation (by using
-> > > the 'iommu-map' property).
-> > > 
-> > > For this purpose, parse the 'iommu-map' property each time a
-> > > device gets added, and use the resulting translation to configure
-> > > the PCIe RID-to-SID mapper. Similarily, remove the translation
-> > > if/when the device gets removed.
-> > > 
-> > > This is all driven from a bus notifier which gets registered at
-> > > probe time. Hopefully this is the only PCI controller driver
-> > > in the whole system.
-> > > 
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > ---
-> > >  drivers/pci/controller/pcie-apple.c | 158 +++++++++++++++++++++++++++-
-> > >  1 file changed, 156 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/pcie-apple.c 
-> > > b/drivers/pci/controller/pcie-apple.c
-> > > index 76344223245d..68d71eabe708 100644
-> > > --- a/drivers/pci/controller/pcie-apple.c
-> > > +++ b/drivers/pci/controller/pcie-apple.c
-> > > @@ -23,8 +23,10 @@
-> > >  #include <linux/iopoll.h>
-> > >  #include <linux/irqchip/chained_irq.h>
-> > >  #include <linux/irqdomain.h>
-> > > +#include <linux/list.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/msi.h>
-> > > +#include <linux/notifier.h>
-> > >  #include <linux/of_irq.h>
-> > >  #include <linux/pci-ecam.h>
-> > >  
-> > > @@ -116,6 +118,8 @@
-> > >  #define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
-> > >  #define PORT_PREFMEM_ENABLE		0x00994
-> > >  
-> > > +#define MAX_RID2SID			64
-> > 
-> > Do these actually have 64 slots? I thought that was only for
-> > the Thunderbolt controllers and that these only had 16.
-> 
-> You are indeed right, and I blindly used the limit used in the
-> Correlium driver. Using entries from 16 onward result in a non booting
-> system. The registers do not fault though, and simply ignore writes. I
-> came up with an simple fix for this, see below.
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+This patch is to prevent the logic error from the below cases.
 
-Looks good to me and at least I prefer that to an additional property
-in the device tree.
+1. All off and both are sequentially controlled to be on.
+The 'enable' gpio control block to be called twice including the delay time.
 
-Reviewed-by: Sven Peter <sven@svenpeter.dev>
+2. Both are on and one is preparing to be off.
+The 'enable' gpio control low before register cache is configured to be true.
 
+---
+ drivers/regulator/rtq6752-regulator.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Thanks,
+diff --git a/drivers/regulator/rtq6752-regulator.c b/drivers/regulator/rtq6752-regulator.c
+index 609d3fc..dfe45fb 100644
+--- a/drivers/regulator/rtq6752-regulator.c
++++ b/drivers/regulator/rtq6752-regulator.c
+@@ -54,14 +54,14 @@ static int rtq6752_set_vdd_enable(struct regulator_dev *rdev)
+ 	int rid = rdev_get_id(rdev), ret;
+ 
+ 	mutex_lock(&priv->lock);
+-	if (priv->enable_gpio) {
+-		gpiod_set_value(priv->enable_gpio, 1);
++	if (!priv->enable_flag) {
++		if (priv->enable_gpio) {
++			gpiod_set_value(priv->enable_gpio, 1);
+ 
+-		usleep_range(RTQ6752_I2CRDY_TIMEUS,
+-			     RTQ6752_I2CRDY_TIMEUS + 100);
+-	}
++			usleep_range(RTQ6752_I2CRDY_TIMEUS,
++				     RTQ6752_I2CRDY_TIMEUS + 100);
++		}
+ 
+-	if (!priv->enable_flag) {
+ 		regcache_cache_only(priv->regmap, false);
+ 		ret = regcache_sync(priv->regmap);
+ 		if (ret) {
+@@ -91,11 +91,11 @@ static int rtq6752_set_vdd_disable(struct regulator_dev *rdev)
+ 	if (!priv->enable_flag) {
+ 		regcache_cache_only(priv->regmap, true);
+ 		regcache_mark_dirty(priv->regmap);
+-	}
+ 
+-	if (priv->enable_gpio)
+-		gpiod_set_value(priv->enable_gpio, 0);
++		if (priv->enable_gpio)
++			gpiod_set_value(priv->enable_gpio, 0);
+ 
++	}
+ 	mutex_unlock(&priv->lock);
+ 
+ 	return 0;
+-- 
+2.7.4
 
-
-Sven
