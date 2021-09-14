@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8144940A93B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF3C40A940
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhINIcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:32:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229458AbhINIcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:32:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D4860EE0;
-        Tue, 14 Sep 2021 08:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631608297;
-        bh=oX/5ZZdm4wVN44TRFscoqvKnha+6+V0peernKrQWcE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ie7BWsEUv3r+l0ENRqwgNjhdGuC9pt94fhz0OuDHBqqnLw8nHJ/XdNbiDCkmZuKW2
-         XJ4kGbGz2LWrEVYz5yVbCYxt4DYMs04PmldjuXQgYnj5F8v1xEJEc0pP4bsfI7Dagk
-         WV+o8uIsv2Vujzx9hrjCANSGZVPc59sBKXwHcZJs5njm1qgriaxifGXLx7YalV1jwY
-         Tugv6pIz6s5WBcdTd4ZaTC2Ds0c0CvSHSfFB3oQ1YO7jEWi3hriUJUe5YE0DXFTKpq
-         IerDrBh0Zi39qu8OemUaq7/vHwc5l6gs3nSJtPRBXPZXkEPhxOoiGk0/8hJRcJVZzl
-         A1ulA2DzhHvIQ==
-Date:   Tue, 14 Sep 2021 09:31:32 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] mm: fix data race in PagePoisoned()
-Message-ID: <20210914083132.GA5891@willie-the-truck>
-References: <20210913113542.2658064-1-elver@google.com>
+        id S230194AbhINIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:33:49 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:34129 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhINIds (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 04:33:48 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id CFDCE22236;
+        Tue, 14 Sep 2021 10:32:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1631608350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mK45DPjPDOebyImyvNPsaRVqJdm0sKCXoLx5bi3Ug+M=;
+        b=hsUJ3wCHNDgvmQrAd2HiH3nwcRVBTnpR3kGFjUApcaz7O0ArrbYQ64aZHgIDHmYYIOJdks
+        jq8lNkT+pvwYqEjopTOwTi5bZrKimp//N6CzvEVaxDfhP0cQ7wvH1af/IztKiceGgmH75n
+        RBBpBFJcf9V47sI7kYBjCH0p8QRXojQ=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913113542.2658064-1-elver@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 14 Sep 2021 10:32:26 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Heiko Thiery <heiko.thiery@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2] arm64: dts: imx8mq-kontron-pitx-imx8m: remove
+ vqmmc-supply node
+In-Reply-To: <449f718706fd5af03190bdda986de37aa8fa14e3.camel@pengutronix.de>
+References: <20210914072627.24173-1-heiko.thiery@gmail.com>
+ <449f718706fd5af03190bdda986de37aa8fa14e3.camel@pengutronix.de>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <79fb60ea9a002ea553a92ea08b28b866@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 01:35:43PM +0200, Marco Elver wrote:
-> PagePoisoned() accesses page->flags which can be updated concurrently:
-> 
->   | BUG: KCSAN: data-race in next_uptodate_page / unlock_page
->   |
->   | write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
->   |  instrument_atomic_write           include/linux/instrumented.h:87 [inline]
->   |  clear_bit_unlock_is_negative_byte include/asm-generic/bitops/instrumented-lock.h:74 [inline]
->   |  unlock_page+0x102/0x1b0           mm/filemap.c:1465
->   |  filemap_map_pages+0x6c6/0x890     mm/filemap.c:3057
->   |  ...
->   | read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
->   |  PagePoisoned                   include/linux/page-flags.h:204 [inline]
->   |  PageReadahead                  include/linux/page-flags.h:382 [inline]
->   |  next_uptodate_page+0x456/0x830 mm/filemap.c:2975
->   |  ...
->   | CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
-> 
-> To avoid the compiler tearing or otherwise optimizing the access, use
-> READ_ONCE() to access flags.
-> 
-> Link: https://lore.kernel.org/all/20210826144157.GA26950@xsang-OptiPlex-9020/
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  include/linux/page-flags.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index a558d67ee86f..628ab237665e 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -206,7 +206,7 @@ static __always_inline int PageCompound(struct page *page)
->  #define	PAGE_POISON_PATTERN	-1l
->  static inline int PagePoisoned(const struct page *page)
->  {
-> -	return page->flags == PAGE_POISON_PATTERN;
-> +	return READ_ONCE(page->flags) == PAGE_POISON_PATTERN;
->  }
+Hi Lucas,
 
-Acked-by: Will Deacon <will@kernel.org>
+Am 2021-09-14 10:20, schrieb Lucas Stach:
+> Am Dienstag, dem 14.09.2021 um 09:26 +0200 schrieb Heiko Thiery:
+>> The sw4 output (V_1V8_S0 voltage) from the PMIC is the main supply for
+>> the 1V8 power domain. It is not only used as supply for the eMMC.
+>> So this voltage can not be changed and is not allowed to switched off.
+>> Therefore we do not want to provide this regulator to the SDHC driver 
+>> to
+>> control this voltage.
+>> 
+> This specific requirement should not be solved by removing the
+> regulator connection from the SDHCI node, but instead by constraining
+> the regulator voltage range to a fixed 3.3V and marking the regulator
+> as always-on to reflect the hardware requirements in the DT.
+> 
+> Also if your eMMC vqmmc is a fixed 3.3V, I don't think you need the
+> faster pinctrl states, as you can't use the faster pin states anyways,
+> as they require a 1.8V signaling voltage.
 
-Thanks for writing up the patch!
+Are you speaking of the 1.8V signalling modes? As far as I know the
+IMX SDHC controller will switch the voltage by its own function pin.
+That is, its not a GPIO.
 
-Will
+-michael
