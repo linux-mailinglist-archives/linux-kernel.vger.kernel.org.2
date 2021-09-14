@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AFA40B265
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E93240B271
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234420AbhINPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:02:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232079AbhINPCb (ORCPT
+        id S234420AbhINPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:04:43 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:46552 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233823AbhINPEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:02:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631631673;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f4doVZdRhwwzGkMFAoRi2PUNaC9z4kzqnDQ6De1+mEk=;
-        b=T1GYAYZBhwPfQ5/nR+ml/hTWlNetCXc3uBGr2ISr2FtplmX31s2TR3iYiWQMuLyf9degnK
-        2t74KNadb/P2toTx3P2YwAeFsZOeuMoIDO3UDezSbyhNKBN11H2XO7L+7drNBi9ZFjigLg
-        uTeuUSMU/06zTmcGI7ZdUVDb0NbGprs=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-SiKwvEdNOnOWkXz8LHaILA-1; Tue, 14 Sep 2021 11:01:12 -0400
-X-MC-Unique: SiKwvEdNOnOWkXz8LHaILA-1
-Received: by mail-io1-f71.google.com with SMTP id i78-20020a6b3b51000000b005b8dd0f9e76so16451340ioa.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:01:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f4doVZdRhwwzGkMFAoRi2PUNaC9z4kzqnDQ6De1+mEk=;
-        b=Ejex6ivmb6wn5g4ajjJL++ceAT0jZ/Ay3ykME8mUMiLs0GAPGPDzW+rOP4XXQZ0c22
-         Ai22Rn2C9qOyuMq6vMaJfBKU3mIFQPIORNzVM9m+hVs232rj6AYYbZMqheaUVVGiLv7J
-         vfVcL4N2QzCuFy//tIfMKtCT1b3IrfgMsMLMHwygrVoFg4XJq0qVaKr/469hDYeP1v1D
-         7gd9PNRKbg7ZKsWYvcBE1VpGLsAACA5VVC2Bacq/eRVdZc/EOaWQwdZZAe0RS2IiVEPR
-         VdccAGTVD3BoerZK0XcmWMhMkxG2Bat5+v6rO/3ZvM/qhEXPfcS+5iUvHmUd1UOkRA7i
-         sR2g==
-X-Gm-Message-State: AOAM533R3zuP7Bq1xv2U9d5WvIxTrUohMF4JICwAEv52ojrPa6HIcE6O
-        he/57RXiKXlmZsXEFSTqWQc5lo74jjkhoxOMl0tyxmBxX19rO90OR+mN2+dNMMDjBqvpYRlTh+A
-        kFXqEk6ewnaxnDa64+OQSXz9vkuYVv5I/vWGR9Rs0
-X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr12302580ili.29.1631631671753;
-        Tue, 14 Sep 2021 08:01:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyaAeiekMMKeZruAEeYbCxZpJjpmCzKAy5WCzmfRtD8PhxXBHVBLZZb+MFaozIMIyxqQwE9MVbD21EwvnT+xp8=
-X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr12302560ili.29.1631631671531;
- Tue, 14 Sep 2021 08:01:11 -0700 (PDT)
+        Tue, 14 Sep 2021 11:04:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631631805; x=1663167805;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=qz4dR1CgzYGGT0z26GzDEuB5PYVw4P8xOIwzgKSUxx4=;
+  b=Bz27UoGJg6mzzCDHrC2+KSczIFYix7I/78MIdO7yRS5b8Oy0+pFhvIpu
+   vAO/aVfXE0dIVWMkP1vgrbH309d0XjHfKiDF0OPRqQyvzJV5O7l8ZAvkj
+   465LvREbdoI7lacSl4z8SSfAJD5qZnaqdJkpPJZUSGix6r3EmXqyw9HgC
+   DsEf96p3etGWRKaJd6fGgHCbCtY9yEfXDBA/LFu3/x0s/P3PHglr3Kphv
+   ZCzGb2VdBpu/0eP1KZ9qVRvr2dxkHEOaV6i3k2EACd2X3l+OfGrIAjm7p
+   TCJLG1OAkiATnFc/IV4JcQQlMM4ZaG2ICPF/rh+3bvXt2veS5CqBQVaWB
+   A==;
+IronPort-SDR: K15dS+qzzbY1xjhLJL7gX16f92HHzS9PV9OYHL1A/6qcMySbagr3Bu+xptlD+wjBi7Fr7HgxLT
+ hThTAT6UqAMC6uybEvvEjiCWDl53Dz7mvAqvRShRnsLcTBHVCyOudLy0Y+427EwHvKbW2LeiKE
+ 4g3pyGhVbimKszgkab2GxvCN05jmqJCM4sPqjCJxgqVxJrgSughqNdjaKUz0nluj30oSMlaa4c
+ d6bz5ZizMRIf9LKJp7XbM/FQYxL4g8O3G828695PSSHXhqgIaBCrnO1eDOnj10t6ukKyoeH9Zu
+ zqfwpqtOKm+6oe95suo1tK3n
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="129271935"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Sep 2021 08:03:24 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 14 Sep 2021 08:03:18 -0700
+Received: from [10.171.246.26] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 14 Sep 2021 08:03:16 -0700
+Subject: Re: [PATCH] ARM: dts: at91: sama5d2_som1_ek: disable ISC node by
+ default
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+CC:     <robh+dt@kernel.org>, <ludovic.desroches@microchip.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210902121358.503589-1-eugen.hristev@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <c3afbdb3-ad68-f277-7405-9e98af1c8f97@microchip.com>
+Date:   Tue, 14 Sep 2021 17:03:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <79dcd300-a441-cdba-e523-324733f892ca@schaufler-ca.com>
- <YTEEPZJ3kxWkcM9x@redhat.com> <YTENEAv6dw9QoYcY@redhat.com>
- <3bca47d0-747d-dd49-a03f-e0fa98eaa2f7@schaufler-ca.com> <YTEur7h6fe4xBJRb@redhat.com>
- <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com> <YTYr4MgWnOgf/SWY@work-vm>
- <496e92bf-bf9e-a56b-bd73-3c1d0994a064@schaufler-ca.com> <YUCa6pWpr5cjCNrU@redhat.com>
- <CAPL3RVHB=E_s1AW1sQMEgrLYJ8ADCdr=qaKsDrpYjVzW-Apq8w@mail.gmail.com> <YUCybaYK/0RLvY9J@redhat.com>
-In-Reply-To: <YUCybaYK/0RLvY9J@redhat.com>
-From:   Bruce Fields <bfields@redhat.com>
-Date:   Tue, 14 Sep 2021 11:01:00 -0400
-Message-ID: <CAPL3RVGXWtakCS9bvE60gWp0tcsduJFKfoU4aoqANRgp7HvFow@mail.gmail.com>
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        Daniel Walsh <dwalsh@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Casey Schaufler <casey.schaufler@intel.com>,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        stephen.smalley.work@gmail.com,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Dave Chinner <david@fromorbit.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210902121358.503589-1-eugen.hristev@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:32 AM Vivek Goyal <vgoyal@redhat.com> wrote:
-> open_by_handle_at() requires CAP_DAC_READ_SEARCH.
+On 02/09/2021 at 14:13, Eugen Hristev wrote:
+> Without a sensor node, the ISC will simply fail to probe, as the
+> corresponding port node is missing.
+> It is then logical to disable the node in the devicetree.
+> If we add a port with a connection to a sensor endpoint, ISC can be enabled.
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
-Or some sort of access to the network.  If you can send rpc requests
-to the nfs server that appear to be from someone with access to the
-export, you can guess filehandles that allow access to objects under
-that directory.  You'll need access to particular objects, but you
-won't need read or lookup access to the directory.
+Makes sense:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-You can prevent that if you set things up right, but these
-filehandle-issues are poorly understood, and people often forget to
-take them into account.
+And queued for at91-fixes in 5.15 as there is no point continuing to 
+have a failing probe on this board.
 
---b.
+Thanks, best regards,
+   Nicolas
 
-> And if you have
-> CAP_DAC_READ_SEARCH, you don't need to even guess file handles. You
-> should be able to read/search through all directories, IIUC.
->
-> So how does one make sure that shared directory on host is not
-> accessible to unprivileged entities. If making directory accessible
-> to root only is weaker security, what are the options for stronger
-> security.
+> ---
+>   arch/arm/boot/dts/at91-sama5d27_som1_ek.dts | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+> index 614999dcb990..cd4672501add 100644
+> --- a/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+> +++ b/arch/arm/boot/dts/at91-sama5d27_som1_ek.dts
+> @@ -71,7 +71,6 @@ apb {
+>   			isc: isc@f0008000 {
+>   				pinctrl-names = "default";
+>   				pinctrl-0 = <&pinctrl_isc_base &pinctrl_isc_data_8bit &pinctrl_isc_data_9_10 &pinctrl_isc_data_11_12>;
+> -				status = "okay";
+>   			};
+>   
+>   			qspi1: spi@f0024000 {
+> 
 
+
+-- 
+Nicolas Ferre
