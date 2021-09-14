@@ -2,87 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E872C40A2EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E945D40A2F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 03:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235947AbhINBz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 21:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235290AbhINBzV (ORCPT
+        id S231164AbhINCAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 22:00:05 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:50482 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229778AbhINCAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:55:21 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A03C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:54:04 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id w19so6251783pfn.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 18:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FFh8IdunLG//5DDYuqmMORnNhMToSqUrMV0dgzC94Ew=;
-        b=wFZbbmdG7M7RKdvMHX5z7ppoUF4nB5PN/E8KCaRBvyNPk7b4bWbpK6ZFqtdyTof6xi
-         Dl8YB23VR0YKXfmLNWP2QUuNEYNLbIvKnS/l/fweMQ2e6H/ExTMV9bU5n5+bgEV1y0Wt
-         x+OoPyCuGATLCBJtvL6ZIBh2eteVc6X9rmn8sHsTuB3X62XayeYeE2RatB9O3dg9zw0E
-         k5dEwNBVVmvCmIHifpOyDks6K0dD110rRDrtx+7AoqThZNZQJZ1uZxqEMY02riJldqDW
-         QPOmywa6Zan9UhPofkqRnI/V9pPthBAz7R0ef0DZogncdmQPLvXjVrQ+lCxARU4Q0AW+
-         y4vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=FFh8IdunLG//5DDYuqmMORnNhMToSqUrMV0dgzC94Ew=;
-        b=tPFyjsQ8yfBoSRJLz56xkiJYzX0F/sZTKiV0pNFlwrTdf53BesBNEWE/FXHHGmvSjO
-         GA7La1q5p7LpvhDJEkMLM7zTQVdIILFNuVgBUh5sg7ng2NUjv9vqwgu3NLwab8AsMq1j
-         YAVGAsN9sp2f0LLbXLzZSfloWCZMa5IqUsn49tjPLoXmVkB4zqaQ212MEt46HlyyxN5A
-         O+GFtEQMfQweDfIGEwVYCYFdfNZ7wcmPphu9d26Fe5xiWjP25h/V6OLD/mnYkTzg7erb
-         DEVdJOEHqsgTqHYOJkZnlYX+ZXT1HdLROLXlW5PX+V7Y6GnRlYJYDLB37NUev1MScCmN
-         tnaA==
-X-Gm-Message-State: AOAM5321GN6ol5xinLlvwYFAth07gxJ1vcy8i56DmSa1fQublB79Kjmv
-        mBaGC2JtU3VFy8KovR1yYRLKwg==
-X-Google-Smtp-Source: ABdhPJx/hME72qzQHWN4AaPpXERrQ055xtzAXpNXhZOZb7pjOgAzGJMZCCbwPaHvLB3TOAqWsTGQBg==
-X-Received: by 2002:a63:20f:: with SMTP id 15mr13302037pgc.319.1631584444293;
-        Mon, 13 Sep 2021 18:54:04 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id fh3sm8089088pjb.8.2021.09.13.18.54.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 18:54:03 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Kathiravan T <kathirav@codeaurora.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH 2/2] soc: qcom: smd-rpm: Add QCM2290 compatible
-Date:   Tue, 14 Sep 2021 09:53:49 +0800
-Message-Id: <20210914015349.29295-3-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210914015349.29295-1-shawn.guo@linaro.org>
-References: <20210914015349.29295-1-shawn.guo@linaro.org>
+        Mon, 13 Sep 2021 22:00:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UoKP4AU_1631584724;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoKP4AU_1631584724)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 14 Sep 2021 09:58:45 +0800
+Subject: Re: [RFC PATCH] perf: fix panic by mark recursion inside
+ perf_log_throttle
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <20210910153839.GH4323@worktop.programming.kicks-ass.net>
+ <f38987a5-dc36-a20d-8c5e-81e8ead5b4dc@linux.alibaba.com>
+ <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <3fb7c51f-696b-da70-1965-1dda9910cb14@linux.alibaba.com>
+Date:   Tue, 14 Sep 2021 09:58:44 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YT8m2B6D2yWc5Umq@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible for QCM2290 SoC support.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- drivers/soc/qcom/smd-rpm.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/soc/qcom/smd-rpm.c b/drivers/soc/qcom/smd-rpm.c
-index dfdd4f20f5fd..e3aea5c6788e 100644
---- a/drivers/soc/qcom/smd-rpm.c
-+++ b/drivers/soc/qcom/smd-rpm.c
-@@ -244,6 +244,7 @@ static const struct of_device_id qcom_smd_rpm_of_match[] = {
- 	{ .compatible = "qcom,rpm-sdm660" },
- 	{ .compatible = "qcom,rpm-sm6115" },
- 	{ .compatible = "qcom,rpm-sm6125" },
-+	{ .compatible = "qcom,rpm-qcm2290" },
- 	{ .compatible = "qcom,rpm-qcs404" },
- 	{}
- };
--- 
-2.17.1
+On 2021/9/13 下午6:24, Peter Zijlstra wrote:
+> On Mon, Sep 13, 2021 at 11:00:47AM +0800, 王贇 wrote:
+>>
+>>
+>> On 2021/9/10 下午11:38, Peter Zijlstra wrote:
+>>> On Thu, Sep 09, 2021 at 11:13:21AM +0800, 王贇 wrote:
+>>>> When running with ftrace function enabled, we observed panic
+>>>> as below:
+>>>>
+>>>>   traps: PANIC: double fault, error_code: 0x0
+>>>>   [snip]
+>>>>   RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
+>>>>   [snip]
+>>>>   Call Trace:
+>>>>    <NMI>
+>>>>    perf_trace_buf_alloc+0x26/0xd0
+>>>>    perf_ftrace_function_call+0x18f/0x2e0
+>>>>    kernelmode_fixup_or_oops+0x5/0x120
+>>>>    __bad_area_nosemaphore+0x1b8/0x280
+>>>>    do_user_addr_fault+0x410/0x920
+>>>>    exc_page_fault+0x92/0x300
+>>>>    asm_exc_page_fault+0x1e/0x30
+>>>>   RIP: 0010:__get_user_nocheck_8+0x6/0x13
+>>>>    perf_callchain_user+0x266/0x2f0
+>>>>    get_perf_callchain+0x194/0x210
+>>>>    perf_callchain+0xa3/0xc0
+>>>>    perf_prepare_sample+0xa5/0xa60
+>>>>    perf_event_output_forward+0x7b/0x1b0
+>>>>    __perf_event_overflow+0x67/0x120
+>>>>    perf_swevent_overflow+0xcb/0x110
+>>>>    perf_swevent_event+0xb0/0xf0
+>>>>    perf_tp_event+0x292/0x410
+>>>>    perf_trace_run_bpf_submit+0x87/0xc0
+>>>>    perf_trace_lock_acquire+0x12b/0x170
+>>>>    lock_acquire+0x1bf/0x2e0
+>>>>    perf_output_begin+0x70/0x4b0
+>>>>    perf_log_throttle+0xe2/0x1a0
+>>>>    perf_event_nmi_handler+0x30/0x50
+>>>>    nmi_handle+0xba/0x2a0
+>>>>    default_do_nmi+0x45/0xf0
+>>>>    exc_nmi+0x155/0x170
+>>>>    end_repeat_nmi+0x16/0x55
+>>>
+>>> kernel/events/Makefile has:
+>>>
+>>> ifdef CONFIG_FUNCTION_TRACER
+>>> CFLAGS_REMOVE_core.o = $(CC_FLAGS_FTRACE)
+>>> endif
+>>>
+>>> Which, afaict, should avoid the above, no?
+>>
+>> I'm afraid it's not working for this case, the
+>> start point of tracing is at lock_acquire() which
+>> is not from 'kernel/events/core', the following PF
+>> related function are also not from 'core', prevent
+>> ftrace on 'core' can't prevent this from happen...
+> 
+> I'm confused tho; where does the #DF come from? Because taking a #PF
+> from NMI should be perfectly fine.
+> 
+> AFAICT that callchain is something like:
+> 
+> 	NMI
+> 	  perf_event_nmi_handler()
+> 	    (part of the chain is missing here)
+> 	      perf_log_throttle()
+> 	        perf_output_begin() /* events/ring_buffer.c */
+> 		  rcu_read_lock()
+> 		    rcu_lock_acquire()
+> 		      lock_acquire()
+> 		        trace_lock_acquire() --> perf_trace_foo
+> 
+> 			  ...
+> 			    perf_callchain()
+> 			      perf_callchain_user()
+> 			        #PF (fully expected during a userspace callchain)
+> 				  (some stuff, until the first __fentry)
+> 				    perf_trace_function_call
+> 				      perf_trace_buf_alloc()
+> 				        perf_swevent_get_recursion_context()
+> 					  *BOOM*
+> 
+> Now, supposedly we then take another #PF from get_recursion_context() or
+> something, but that doesn't make sense. That should just work...
+> 
+> Can you figure out what's going wrong there? going with the RIP, this
+> almost looks like 'swhash->recursion' goes splat, but again that makes
+> no sense, that's a per-cpu variable.
 
+That's true, I actually have tried several approach to avoid the issue, but
+it trigger panic as long as we access 'swhash->recursion', the array should
+be accessible but somehow broken, that's why I consider this a suspected
+stack overflow, since nmi repeated and trace seems very long, but just a
+suspect...
+
+Regards,
+Michael Wang
+
+> 
