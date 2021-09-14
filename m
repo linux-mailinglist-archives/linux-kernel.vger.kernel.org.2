@@ -2,199 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA7140BA4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3030940BA5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbhINVfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        id S235050AbhINVhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbhINVfP (ORCPT
+        with ESMTP id S235035AbhINVhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:35:15 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EA9C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 14:33:57 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id j6so684820pfa.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 14:33:57 -0700 (PDT)
+        Tue, 14 Sep 2021 17:37:32 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593EBC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 14:36:13 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id jo30so642092qvb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 14:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZyjM2wXU6lcczfYiDbbE+nr5M72sF/mBbv9m3C0jSUo=;
-        b=BBPcaDizm+ebmiak6LRh4102fNSBmRNhl4+y56Xy2ZoG6QzA2eKAqLu1xvxohYClem
-         UYDOdK/PS8+E8SGCISj7wMV0BW0SMNj/qd3gqwq4xV4LyCIfDhIofxM7O3ZCbrj9bTM6
-         AiBSpm5AnkHD7DK55QKyv67HyOeMAtBMryUEJCdRYXTXUeiiiGawQPSEU+YEOmzfc4OG
-         +cVLqYnv2f2/EV2Nx2RcyJGERu6F/4Lp8o8bVAROm9jRVliNOGKGT9tXaO6ZwrY7F62Q
-         I1OmwG/NvCeKXN5z93eojG4S2GjBmgVmTDZ2IyeN4Stdd+GGPp7tmKrb3fei2UwID+o8
-         mBuA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TM7n1dna53Y+KIAaPOy7ZFMjIdGf78aBP+tCGyC56Vg=;
+        b=DAC1/pVsNhGIcvBmDc9SeGCceDyR50hfxd+iKWA/tz5Vo1SNNSZT0AAOBvDUjXQra3
+         eZvPTp9ko9mZyp64jH3sdV5Dht380B+OfR0YsRKUguudovbd7d/DIgkfrRBT+KkpQZJh
+         9TITi118J4Ah3TXRLEZmM0HYFPCL66PLUjAW2j+VWmooUta6tHTi6clOy4FLp8oHfRLO
+         IiSbHzatBpg8dIv05lja0Ank4V56S6OSBNxEdAneqVRcC3O1yPzQ5HYhhAzyIW4EsGP7
+         idqPpGhEJmhugxPKOGzL85st/rmX3qXO/5AuDoCENlbRti0m628kg3uBUt+ukVqkxC5S
+         mJhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZyjM2wXU6lcczfYiDbbE+nr5M72sF/mBbv9m3C0jSUo=;
-        b=HXwOuGsfIMMOHnzl0Pj704RB8MmX3Xn/BwpR+dlIhiRDv1Guzph1bxEt7cNIBICSZH
-         EzyFX8WwDp98TCyrOiDWIL6s115uR68GyE+7TKOfWl3cwHqYvGZRslpLKmy4YnasPaVH
-         dDw1XSy2U2MGVnMF4MaOSP5zRhV3Kx+wIwpd0OwkoZU/KyGeZG5eqjs46HI8r00d6Nvs
-         qLBNx8kG0gyLaFyvJMs16PGHWKWCXWCYRKdqnR+4izhqGA9b8bLyOHjYpC1VFqIzmTlt
-         F2FTYdubHhsERSKDZGON0h24LDUInDevoMPWhLsIpq3eiHgpQznftDwqp8CHBaTBHxdN
-         gxiw==
-X-Gm-Message-State: AOAM533uJfxYK5BCF6TW02l54vo5EjGkkQvFP1LB9V2P5Q1S8UTlYDBF
-        FIPw37p4093JRNb10FJ5gcTRrQ==
-X-Google-Smtp-Source: ABdhPJybCI6QSBt4aaOFLxKB+NKlA+WI2FDLU3adUXCAU9W7cHSWjtPA3oc5IWHv9q84jY3U/uhClA==
-X-Received: by 2002:aa7:9d02:0:b0:43d:ea96:5882 with SMTP id k2-20020aa79d02000000b0043dea965882mr6882103pfp.23.1631655237051;
-        Tue, 14 Sep 2021 14:33:57 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m125sm3448904pfd.174.2021.09.14.14.33.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TM7n1dna53Y+KIAaPOy7ZFMjIdGf78aBP+tCGyC56Vg=;
+        b=OS+XOeiEZlBDSF9sP0N8uM6RhN5gohEHqNlfmUrmXSDVOQ0A23evkeLM8+/G0MCO0S
+         Kwx/Q4HpjyeGg2BHl/F/hk1EG5aGmDK9jTI91Yif2dIcnfCz5RJmwrwbErr4ncNyusfz
+         XIfbMKwzKs2XMst0NATFhA+HqzP5OGGpilIeoX7E3U0Tu/9oNwopc0zX+GOSVhGNz9Hv
+         Xl6IBfTTTuwj2Se7IpkopMKIs69mvfS2xygfzhjYGjK8e4qfkGwcA8jyCfFDHxEoIb1K
+         AaEU63E6efahQqk6x+PoBMRkyfmjxWe7e0J2zOeTtw+//zRH6YFgbt4wPfwbqW/yT1tC
+         j14A==
+X-Gm-Message-State: AOAM530GwqPS9bM2fB1jXi4zC0gNEZSfMmSnI1AUZihHfG7RwWvRMHr5
+        XgD/F3fjv2LLt8zdRHSApYLpkNLhz8Gleg==
+X-Google-Smtp-Source: ABdhPJz2Zop7j8KONtVZ0sRJ5q7df0Ka9HDAi4ufXlIgii5Kyy9dx1qoT8OkUBU9HJovOF8haJu1VQ==
+X-Received: by 2002:a05:6214:12eb:: with SMTP id w11mr7840443qvv.10.1631655372329;
+        Tue, 14 Sep 2021 14:36:12 -0700 (PDT)
+Received: from localhost.localdomain ([191.84.239.65])
+        by smtp.gmail.com with ESMTPSA id o7sm6716611qtw.87.2021.09.14.14.36.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 14:33:56 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 21:33:52 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: SEV: Acquire vcpu mutex when updating VMSA
-Message-ID: <YUEVQDEvLbdJF+sj@google.com>
-References: <20210914200639.3305617-1-pgonda@google.com>
+        Tue, 14 Sep 2021 14:36:12 -0700 (PDT)
+From:   Gaston Gonzalez <gascoar@gmail.com>
+To:     linux-staging@lists.linux.dev
+Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, gascoar@gmail.com
+Subject: [PATCH 1/8] staging: vchiq_arm: replace sleep() with usleep_range()
+Date:   Tue, 14 Sep 2021 18:35:26 -0300
+Message-Id: <20210914213532.396654-1-gascoar@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914200639.3305617-1-pgonda@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021, Peter Gonda wrote:
-> Adds mutex guard to the VMSA updating code. Also adds a check to skip a
-> vCPU if it has already been LAUNCH_UPDATE_VMSA'd which should allow
-> userspace to retry this ioctl until all the vCPUs can be successfully
-> LAUNCH_UPDATE_VMSA'd. Because this operation cannot be undone we cannot
-> unwind if one vCPU fails.
-> 
-> Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
-> 
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: kvm@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  arch/x86/kvm/svm/sev.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 75e0b21ad07c..9a2ebd0328ca 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -598,22 +598,29 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
->  static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  {
->  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> -	struct sev_data_launch_update_vmsa vmsa;
-> +	struct sev_data_launch_update_vmsa vmsa = {0};
->  	struct kvm_vcpu *vcpu;
->  	int i, ret;
->  
->  	if (!sev_es_guest(kvm))
->  		return -ENOTTY;
->  
-> -	vmsa.reserved = 0;
-> -
+usleep_range() should be used instead of sleep() when sleepings range
+from 10 us to 20 ms, [1].
 
-Zeroing all of 'vmsa' is an unrelated chagne and belongs in a separate patch.  I
-would even go so far as to say it's unnecessary, even field of the struct is
-explicitly written before it's consumed.
+Reported by checkpatch.pl
 
->  	kvm_for_each_vcpu(i, vcpu, kvm) {
->  		struct vcpu_svm *svm = to_svm(vcpu);
->  
-> +		ret = mutex_lock_killable(&vcpu->mutex);
-> +		if (ret)
-> +			goto out_unlock;
+[1] Documentation/timers/timers-howto.txt
+---
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Rather than multiple unlock labels, move the guts of the loop to a wrapper.
-As discussed off list, this really should be a vCPU-scoped ioctl, but that ship
-has sadly sailed :-(  We can at least imitate that by making the VM-scoped ioctl
-nothing but a wrapper.
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index b25369a13452..0214ae37e01f 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -824,7 +824,7 @@ vchiq_bulk_transmit(unsigned int handle, const void *data, unsigned int size,
+ 		if (status != VCHIQ_RETRY)
+ 			break;
+ 
+-		msleep(1);
++		usleep_range(1000, 1100);
+ 	}
+ 
+ 	return status;
+@@ -861,7 +861,7 @@ enum vchiq_status vchiq_bulk_receive(unsigned int handle, void *data,
+ 		if (status != VCHIQ_RETRY)
+ 			break;
+ 
+-		msleep(1);
++		usleep_range(1000, 1100);
+ 	}
+ 
+ 	return status;
+-- 
+2.33.0
 
-> +
-> +		/* Skip to the next vCPU if this one has already be updated. */
-
-s/be/been
-
-Uber nit, there may not be a next vCPU.  It'd be more slightly more accurate to
-say something like "Do nothing if this vCPU has already been updated".
-
-> +		ret = sev_es_sync_vmsa(svm);
-> +		if (svm->vcpu.arch.guest_state_protected)
-> +			goto unlock;
-
-This belongs in a separate patch, too.  It also introduces a bug (arguably two)
-in that it adds a duplicate call to sev_es_sync_vmsa().  The second bug is that
-if sev_es_sync_vmsa() fails _and_ the vCPU is already protected, this will cause
-that failure to be squashed.
-
-In the end, I think the least gross implementation will look something like this,
-implemented over two patches (one for the lock, one for the protected check).
-
-static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
-				    int *error)
-{
-	struct sev_data_launch_update_vmsa vmsa;
-	struct vcpu_svm *svm = to_svm(vcpu);
-	int ret;
-
-	/*
-	 * Do nothing if this vCPU has already been updated.  This is allowed
-	 * to let userspace retry LAUNCH_UPDATE_VMSA if the command fails on a
-	 * later vCPU.
-	 */
-	if (svm->vcpu.arch.guest_state_protected)
-		return 0;
-
-	/* Perform some pre-encryption checks against the VMSA */
-	ret = sev_es_sync_vmsa(svm);
-	if (ret)
-		return ret;
-
-	/*
-	 * The LAUNCH_UPDATE_VMSA command will perform in-place
-	 * encryption of the VMSA memory content (i.e it will write
-	 * the same memory region with the guest's key), so invalidate
-	 * it first.
-	 */
-	clflush_cache_range(svm->vmsa, PAGE_SIZE);
-
-	vmsa.reserved = 0;
-	vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
-	vmsa.address = __sme_pa(svm->vmsa);
-	vmsa.len = PAGE_SIZE;
-	return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
-}
-
-static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
-{
-	struct kvm_vcpu *vcpu;
-	int i, ret;
-
-	if (!sev_es_guest(kvm))
-		return -ENOTTY;
-
-	kvm_for_each_vcpu(i, vcpu, kvm) {
-		ret = mutex_lock_killable(&vcpu->mutex);
-		if (ret)
-			return ret;
-
-		ret = __sev_launch_update_vmsa(kvm, vcpu, &argp->error);
-
-		mutex_unlock(&vcpu->mutex);
-		if (ret)
-			return ret;
-	}
-	return 0;
-}
