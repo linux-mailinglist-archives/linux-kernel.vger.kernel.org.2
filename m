@@ -2,120 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3407240B2B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8D840B29F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhINPOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:14:54 -0400
-Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:43282 "EHLO
-        herzl.nuvoton.co.il" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234160AbhINPOk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:14:40 -0400
-Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
-        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 18EFAp0S031458;
-        Tue, 14 Sep 2021 18:10:51 +0300
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10140)
-        id 7064E63A1E; Tue, 14 Sep 2021 18:11:01 +0300 (IDT)
-From:   amirmizi6@gmail.com
-To:     Eyal.Cohen@nuvoton.com, jarkko@kernel.org, oshrialkoby85@gmail.com,
-        alexander.steffen@infineon.com, robh+dt@kernel.org,
-        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
-        eajames@linux.ibm.com, joel@jms.id.au
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, oshri.alkoby@nuvoton.com,
-        tmaimon77@gmail.com, gcwilson@us.ibm.com, kgoldman@us.ibm.com,
-        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
-        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com,
-        Amir Mizinski <amirmizi6@gmail.com>
-Subject: [PATCH v15 6/6] tpm: Add YAML schema for TPM TIS I2C options
-Date:   Tue, 14 Sep 2021 18:10:32 +0300
-Message-Id: <20210914151032.216122-7-amirmizi6@gmail.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20210914151032.216122-1-amirmizi6@gmail.com>
-References: <20210914151032.216122-1-amirmizi6@gmail.com>
+        id S234203AbhINPMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:12:12 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40786 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234104AbhINPMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 11:12:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=aSkOupdM/e9FjIq7o0qLJhFrJ1UQp6hlcbG1zxBt/wg=; b=PSGDgM9aGrXFXoq3Uvt80r/nl3
+        HvhMM9A89J42swmPlNS6/7V691UNTgcUsNDgkqQ5pdEBkbfq1X8wTDvM43YZEdXwWXyJ+aooMJG8G
+        RkXQHwb/BOH5+DcCO6IlyzOlwhEt3Uob0NTj/ZWwtt9bNN/Eihk5jozFVgipHtg0GVWQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mQA55-006c3F-Jq; Tue, 14 Sep 2021 17:10:43 +0200
+Date:   Tue, 14 Sep 2021 17:10:43 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 5/5] driver core: Add fw_devlink.debug command line
+ boolean parameter
+Message-ID: <YUC7c9BNuHPOEg4g@lunn.ch>
+References: <20210914043928.4066136-1-saravanak@google.com>
+ <20210914043928.4066136-6-saravanak@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914043928.4066136-6-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Mizinski <amirmizi6@gmail.com>
+On Mon, Sep 13, 2021 at 09:39:27PM -0700, Saravana Kannan wrote:
+> When the parameter is set, it enables all the debug logs that would be
+> useful for debugging fw_devlink issues.
+> 
+> I'll add the documentation if we agree that we should add this param.
 
-Add a YAML schema to support tpm tis i2c related dt-bindings for the I2c
-PTP based physical layer.
+https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html
 
-This patch adds the documentation for corresponding device tree bindings of
-I2C based Physical TPM.
-Refer to the 'I2C Interface Definition' section in
-'TCG PC Client PlatformTPMProfile(PTP) Specification' publication
-for specification.
+It is better to make use of existing infrastructure, maybe with
+extensions if needed.
 
-Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
----
- .../bindings/security/tpm/tpm-tis-i2c.yaml         | 52 ++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
-
-diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
-new file mode 100644
-index 0000000..217ba8e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: I2C PTP based TPM Device Tree Bindings
-+
-+maintainers:
-+  - Amir Mizinski <amirmizi6@gmail.com>
-+
-+description:
-+  Device Tree Bindings for I2C based Trusted Platform Module(TPM).
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          # Nuvoton's Trusted Platform Module (TPM) (NPCT75x)
-+          - nuvoton,npct75x
-+      - const: tcg,tpm-tis-i2c
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupt:
-+    maxItems: 1
-+
-+  crc-checksum:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Set this flag to enable CRC checksum.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      tpm@2e {
-+        compatible = "nuvoton,npct75x", "tcg,tpm-tis-i2c";
-+        reg = <0x2e>;
-+        crc-checksum;
-+      };
-+    };
-+...
--- 
-2.7.4
-
+	   Andrew
