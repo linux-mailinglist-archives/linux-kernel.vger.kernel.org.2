@@ -2,169 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F9140B686
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F4E40B692
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhINSHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:07:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35930 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230035AbhINSHj (ORCPT
+        id S230061AbhINSOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhINSOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:07:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631642781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WdkTeh35hskFjppx/AtCQ+7sni5H8rOPzWMjSfWm50U=;
-        b=V1x/lpqKZrj/nOekKwl9yjJBE979ubRrXkUP/oRc678n8F5WfdI3y+o/Gq6y9rkL3Y4BVK
-        k3P8iUwVyjXubW5F4dAbwe/8DqFSDiyR/yJxMhZM3QvWRoDz9gngQFiVhb2EA/U0AAHVmr
-        BobHd/o+Oh4Y3BFYv1YsZE9nageGhQ8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-545-tGTAs4zNMRSUtZa7Y9DzCQ-1; Tue, 14 Sep 2021 14:06:20 -0400
-X-MC-Unique: tGTAs4zNMRSUtZa7Y9DzCQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 17-20020a05600c029100b00305eac9f29aso56031wmk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:06:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WdkTeh35hskFjppx/AtCQ+7sni5H8rOPzWMjSfWm50U=;
-        b=kz+KSWsHEaxlo3rlgMWHXQZyFZZtpZCJswJuhI7cq6n8ic0pJiLYq6Z64zqRqV6dRN
-         m+/KXLF1opFprr+arTO12iDXX3YWT91SpH7axXy1pK34L9paLOKCVmiRPG2DJbnDgZO7
-         aeMLK2c1LlCjDPOYToOeUjnoorMJLxqqxGrnBlQaI32kjGM28xNOepiRDpG50iO3dHER
-         G1qTqWkpfpTLI3hqsDWvXcNA28yrF7hIFQBDWBEGf/VKpKVEiPc6DaFKhHCasLLeqV5G
-         FKU0BE1ZvHYMAmJBFkyQyDTjKfMNd+FzW2a/83vQ2FTBFoUnpfRBigOn3k7veXvI07Wq
-         QUZQ==
-X-Gm-Message-State: AOAM530nmaK/S4mMIYuSzc2oiWQ26SGQx4qFWAc5oVExLbanV7sq2kSK
-        XQQn3rUagbPDwds0CjZ269PWj++z2MxZdPJG2oBbvLIR1+aY/BuW9UDJ/kQlIDY/Vl0ajme1MVS
-        ZmJjHdS/I6idRxxue5vXy0G0T
-X-Received: by 2002:a1c:c903:: with SMTP id f3mr450193wmb.101.1631642779380;
-        Tue, 14 Sep 2021 11:06:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzKIqckQty8a8VOzJidD+CVHVc1oyd0LQz0Ukul/JPoVTfeji3ABJKcoR2cUc0zjpzdgVfVPg==
-X-Received: by 2002:a1c:c903:: with SMTP id f3mr450166wmb.101.1631642779102;
-        Tue, 14 Sep 2021 11:06:19 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6041.dip0.t-ipconnect.de. [91.12.96.65])
-        by smtp.gmail.com with ESMTPSA id g143sm1846758wme.16.2021.09.14.11.06.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 11:06:18 -0700 (PDT)
-Subject: Re: [PATCH resend RFC 0/9] s390: fixes, cleanups and optimizations
- for page table walkers
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-References: <20210909162248.14969-1-david@redhat.com>
- <20210914185033.367020b3@p-imbrenda>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <858a5f3b-99c0-6da3-6a60-8d01886399c6@redhat.com>
-Date:   Tue, 14 Sep 2021 20:06:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 14 Sep 2021 14:14:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF19C061574;
+        Tue, 14 Sep 2021 11:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=KD4Vc3vVXYvxW9rLdfJ2x8SJCDKSSlc572HoaFCtWLk=; b=qrX2GCVbRq7ZToTRh+/20Ru05J
+        q/l2WtO5JPMI7uBwoMt6htPafTOFzO/jBypogN7qINpet0B1NzT4i+yZqC2/k2PRkT2C0bhq6yFhy
+        D7QN+A7TcxAxmWc/6elEV4kVKCnHNsMqI+bTS5IdlIUHeZstwEWA7Tg1oUvPNBdniqf6AKIbnJw3z
+        +71+RYhYPoUtxfuzD8jsgQ/BXYOwwL5S6mBapQQudVV5A7184UrZOR9tyg8OAe0TkCmsmKCQOZJHX
+        hsvAqKotEspjmhhnL321T3xkrrIeasruzrIu6cY+WQEtwUgY+nj+Ubv0I9sMnlsrTO/x0KY/xYBOy
+        eypov2nw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQCu0-00EwTG-Gg; Tue, 14 Sep 2021 18:11:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 49AFC3001C7;
+        Tue, 14 Sep 2021 20:11:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 27FDB2D378DBA; Tue, 14 Sep 2021 20:11:27 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 20:11:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Jann Horn <jannh@google.com>, Peter Oskolkov <posk@google.com>,
+        Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Andrei Vagin <avagin@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH 2/4 v0.5] sched/umcg: RFC: add userspace atomic helpers
+Message-ID: <YUDlzxLjNsW+oYGC@hirez.programming.kicks-ass.net>
+References: <20210908184905.163787-1-posk@google.com>
+ <20210908184905.163787-3-posk@google.com>
+ <CAG48ez2LyLNkH4iVbeKJUuH=oh57WECkKYCW+G9mtheoh7Fsvg@mail.gmail.com>
+ <CAPNVh5eaW7r_Nv-wHEyxQiFkXngmONwPyZSFvtTEhk3TxJ+iMA@mail.gmail.com>
+ <CAG48ez0mgCXpXnqAUsa0TcFBPjrid-74Gj=xG8HZqj2n+OPoKw@mail.gmail.com>
+ <d656e605-4f89-4ea2-8baf-f7786f0630d9@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210914185033.367020b3@p-imbrenda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d656e605-4f89-4ea2-8baf-f7786f0630d9@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.21 18:50, Claudio Imbrenda wrote:
-> On Thu,  9 Sep 2021 18:22:39 +0200
-> David Hildenbrand <david@redhat.com> wrote:
-> 
->> Resend because I missed ccing people on the actual patches ...
->>
->> RFC because the patches are essentially untested and I did not actually
->> try to trigger any of the things these patches are supposed to fix. It
-> 
-> this is an interesting series, and the code makes sense, but I would
-> really like to see some regression tests, and maybe even some
-> selftests to trigger (at least some of) the issues.
+On Tue, Sep 14, 2021 at 09:52:08AM -0700, Andy Lutomirski wrote:
+> With a custom mapping, you don’t need to pin pages at all, I think.
+> As long as you can reconstruct the contents of the shared page and
+> you’re willing to do some slightly careful synchronization, you can
+> detect that the page is missing when you try to update it and skip the
+> update. The vm_ops->fault handler can repopulate the page the next
+> time it’s accessed.
 
-Yep, it most certainly needs regression testing before picking any of 
-this. selftests would be great, but I won't find time for it in the 
-foreseeable future.
+The point is that the moment we know we need to do this user-poke, is
+schedule(), which could be called while holding mmap_sem (it being a
+preemptable lock). Which means we cannot go and do faults.
 
-> 
-> the follow-up question is: how did we manage to go on so long without
-> noticing these issues? :D
+> All that being said, I feel like I’m missing something. The point of
+> this is to send what the old M:N folks called “scheduler activations”,
+> right?  Wouldn’t it be more efficient to explicitly wake something
+> blockable/pollable and write the message into a more efficient data
+> structure?  Polling one page per task from userspace seems like it
+> will have inherently high latency due to the polling interval and will
+> also have very poor locality.  Or am I missing something?
 
-Excellent question - I guess we simply weren't aware of the dos and 
-don'ts when dealing with process page tables :)
+The idea was to link the user structures together in a (single) linked
+list. The server structure gets a list of all the blocked tasks. This
+avoids having to a full N iteration (like Java, they're talking stupid
+number of N).
 
-> 
->> merely matches my current understanding (and what other code does :) ). I
->> did compile-test as far as possible.
->>
->> After learning more about the wonderful world of page tables and their
->> interaction with the mmap_sem and VMAs, I spotted some issues in our
->> page table walkers that allow user space to trigger nasty behavior when
->> playing dirty tricks with munmap() or mmap() of hugetlb. While some issues
->> should be hard to trigger, others are fairly easy because we provide
->> conventient interfaces (e.g., KVM_S390_GET_SKEYS and KVM_S390_SET_SKEYS).
->>
->> Future work:
->> - Don't use get_locked_pte() when it's not required to actually allocate
->>    page tables -- similar to how storage keys are now handled. Examples are
->>    get_pgste() and __gmap_zap.
->> - Don't use get_locked_pte() and instead let page fault logic allocate page
->>    tables when we actually do need page tables -- also, similar to how
->>    storage keys are now handled. Examples are set_pgste_bits() and
->>    pgste_perform_essa().
->> - Maybe switch to mm/pagewalk.c to avoid custom page table walkers. For
->>    __gmap_zap() that's very easy.
->>
->> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
->> Cc: Janosch Frank <frankja@linux.ibm.com>
->> Cc: Cornelia Huck <cohuck@redhat.com>
->> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
->> Cc: Heiko Carstens <hca@linux.ibm.com>
->> Cc: Vasily Gorbik <gor@linux.ibm.com>
->> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
->> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
->> Cc: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
->>
->> David Hildenbrand (9):
->>    s390/gmap: validate VMA in __gmap_zap()
->>    s390/gmap: don't unconditionally call pte_unmap_unlock() in
->>      __gmap_zap()
->>    s390/mm: validate VMA in PGSTE manipulation functions
->>    s390/mm: fix VMA and page table handling code in storage key handling
->>      functions
->>    s390/uv: fully validate the VMA before calling follow_page()
->>    s390/pci_mmio: fully validate the VMA before calling follow_pte()
->>    s390/mm: no need for pte_alloc_map_lock() if we know the pmd is
->>      present
->>    s390/mm: optimize set_guest_storage_key()
->>    s390/mm: optimize reset_guest_reference_bit()
->>
->>   arch/s390/kernel/uv.c    |   2 +-
->>   arch/s390/mm/gmap.c      |  11 +++-
->>   arch/s390/mm/pgtable.c   | 109 +++++++++++++++++++++++++++------------
->>   arch/s390/pci/pci_mmio.c |   4 +-
->>   4 files changed, 89 insertions(+), 37 deletions(-)
->>
->>
->> base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
-> 
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+Polling should not happen, once we run out of runnable tasks, the server
+task gets ran again and it can instantly pick up all the blocked
+notifications.
