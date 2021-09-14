@@ -2,101 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7759740A674
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C7240A678
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240044AbhINGG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:06:57 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36996 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239977AbhINGGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:06:49 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DC50D1FDB5;
-        Tue, 14 Sep 2021 06:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631599531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=czloRHDt7KG6dixgZlMBPS8hgVmlcKIlRgQy6IQr0Qc=;
-        b=mXzTvmQ0fT5Rlu2mZ46JTwZ6V5roI73STmJKRDy4Wod4z613d3vn5J4MlJU/Q0KK/C1OWW
-        onrvj5CdbsfO+NVumqdV6SPnf7DWI5cqYREcgT0TKqmPTNn+YdY1Uxb8GpxTvpjgdaLu9g
-        26Bcq43CEyvMe5NJns5A0tj9B8ocZwQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631599531;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=czloRHDt7KG6dixgZlMBPS8hgVmlcKIlRgQy6IQr0Qc=;
-        b=3to0PJoVYXaPC3CGvvVAkwt854FYkwBpfOEBkWf6VncNnhkbFAnJHl/QT3nj9LwYdsrtwc
-        4595tkTI9OzkTXDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E85913E48;
-        Tue, 14 Sep 2021 06:05:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 05vgNag7QGF9WQAAMHmgww
-        (envelope-from <hare@suse.de>); Tue, 14 Sep 2021 06:05:28 +0000
-Subject: Re: [PATCH RESEND v3 13/13] blk-mq: Stop using pointers for
- blk_mq_tags bitmap tags
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org
-References: <1631545950-56586-1-git-send-email-john.garry@huawei.com>
- <1631545950-56586-14-git-send-email-john.garry@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <cbbd167f-1b11-6cb4-94fb-7c13aa0b65b5@suse.de>
-Date:   Tue, 14 Sep 2021 08:05:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S239813AbhINGIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238788AbhINGIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 02:08:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EBE660EB4;
+        Tue, 14 Sep 2021 06:07:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631599641;
+        bh=0E+b9q6NU2EFfDBMlofZHdv0xH90MoQM52rsZZ1Yiz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UFOOA5oMW/BX5DUQjfbjhim5Eo/N6co32z5DzQ9967NanM+nizwx10tUGpyj8wPFd
+         LdH94u/211Uwd4YHHuHAi6RHzyaMknn/MpHQbau3EpXAWZmmJy1RkZJfTQg0KVRNoa
+         8dx3Arzqj988inMgifdgU5ut1PLDT/PBlN3qjNgg=
+Date:   Tue, 14 Sep 2021 08:07:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fei Li <fei1.li@intel.com>
+Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
+        shuox.liu@gmail.com
+Subject: Re: [RFC PATCH v3 0/2] Introduce some interfaces for ACRN hypervisor
+ HSM driver
+Message-ID: <YUA8Bb7OGg59eEzE@kroah.com>
+References: <20210914060141.16187-1-fei1.li@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1631545950-56586-14-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914060141.16187-1-fei1.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 5:12 PM, John Garry wrote:
-> Now that we use shared tags for shared sbitmap support, we don't require
-> the tags sbitmap pointers, so drop them.
-> 
-> This essentially reverts commit 222a5ae03cdd ("blk-mq: Use pointers for
-> blk_mq_tags bitmap tags").
-> 
-> Function blk_mq_init_bitmap_tags() is removed also, since it would be only
-> a wrappper for blk_mq_init_bitmaps().
-> 
-> Reviewed-by: Ming Lei <ming.lei@redhat.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   block/bfq-iosched.c    |  4 +--
->   block/blk-mq-debugfs.c |  8 +++---
->   block/blk-mq-tag.c     | 56 +++++++++++++++---------------------------
->   block/blk-mq-tag.h     |  7 ++----
->   block/blk-mq.c         |  8 +++---
->   block/kyber-iosched.c  |  4 +--
->   block/mq-deadline.c    |  2 +-
->   7 files changed, 35 insertions(+), 54 deletions(-)
-> A round of silent applause :-)
+On Tue, Sep 14, 2021 at 02:01:39PM +0800, Fei Li wrote:
+> Add some new interfaces for ACRN hypervisor HSM driver:
+>   - MMIO device passthrough
+>   - virtual device creating/destroying
+>   - platform information fetching from the hypervisor
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+"RFC" means that you do not feel good about having these merged.  What
+needs to be finished before you send a "real" set of patches that you
+want to have reviewed properly?
 
-Cheers,
+thanks,
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+greg k-h
