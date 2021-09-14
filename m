@@ -2,168 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235E540B5FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4E840B5FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhINRfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhINRfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:35:18 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC616C061574;
-        Tue, 14 Sep 2021 10:34:00 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id 6so222259oiy.8;
-        Tue, 14 Sep 2021 10:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8Var4fQF1XhsoVmdTJ7YRQUllwNpqTaomfukEwbYbZQ=;
-        b=PZxToyoB/iGvr8rt2v1pfgJfVpTI5N0w6XI6pLImxPZivPPloYRbZHZARAA13TT6kB
-         7NlESFpcSohzlpoii9z27Ixx02SOO+pfctFH8LH/k2U3VyS6pY86oMt23SkEweecYtWP
-         8HFdxbuT6flbYz8qKGeMeaNJzr6TGxH+PH6mDyes8nh82v0Zoy20eerbmk4Zvp8obwkJ
-         twEYt/KHIrc8+/noY4RUU71nOLw6iwbcgOLSSGNiUkFyQrGi6TBFW1iNWFplUm7idOL7
-         2ZVfS3Zc7BxH2jfHnVmpsFVli2brZ6iL+Oo1BL7JKx3HGmvUymdplQDryMQ5kpSo4Que
-         eO5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8Var4fQF1XhsoVmdTJ7YRQUllwNpqTaomfukEwbYbZQ=;
-        b=gEuenI5wM4+fHGfw2++Yqjb4XWNWZZl8TlwJoI+GWkNZ8cewOMMnmchkcPrtkoj0S3
-         /ORVcLXErd6zvLXzUskmjIrVQl6Q5jBFTVfRqK1XvlTDdEle34vGunEWL2XgUn8L5epn
-         jR69CHzLr5XrmQgzf5W1nb5a5vHpMyjOmQPMikIYkwhD892daVpF5XzWd7yAr+slxEey
-         Y/ECyU2FeESWPdTPAxqJjehi1tiSGfImEfIXMt8UvurWX3q0lUelY9wq5mk0IMThZ8PY
-         NgMhSR+H2CzmTpH+sjLinkuIeYnOxRsVP3CpLGGvzn6spoNQK6NmwhvnNIQ9U42vpEgb
-         NBfg==
-X-Gm-Message-State: AOAM532rSFAWKr0XfL48uV/WF66X166Rkc3/3ll5NMZQHGPUCjPStk4I
-        biDlgltBJMMjor7d0ie88JI=
-X-Google-Smtp-Source: ABdhPJzdfEBxf3YhjeaJoYbBfVki2x3p9gdFKon2ehXCuG9yDEaZ1WWuaIgvXSKRGffb+2ZcPTLB/Q==
-X-Received: by 2002:aca:6254:: with SMTP id w81mr2242540oib.83.1631640840079;
-        Tue, 14 Sep 2021 10:34:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u19sm2746582oof.30.2021.09.14.10.33.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 10:33:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Oskar Senft <osk@google.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210910130337.2025426-1-osk@google.com>
- <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
- <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
- <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net>
- <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
- <20210914150859.GB3457579@roeck-us.net>
- <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
-Message-ID: <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net>
-Date:   Tue, 14 Sep 2021 10:33:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230012AbhINRgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:36:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229464AbhINRgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 13:36:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CFCF601FC;
+        Tue, 14 Sep 2021 17:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631640887;
+        bh=jPDl5YDXgjmf6CfDMk+9JRodU8PE4msM+nJk8f/Xjh8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kRF5MhWUQrrFllsbI7dGeAkLlR1UU6ajP6Xk19Hwd7Fj+5JkPOvxXN4FoTXdAlWDD
+         q5y9aKGc9ZjH5s8EesXGO+r9tiEh3p+F5q3yQPuJ5iBQZImPn/qVCBv12eNdKb5noL
+         4SOW/YGS602+ykl6yd1w0k0/zviLxSr+NDpcbotQ=
+Date:   Tue, 14 Sep 2021 19:34:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "# 4.0+" <stable@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.14 147/334] drm/bridge: ti-sn65dsi86: Dont read EDID
+ blob over DDC
+Message-ID: <YUDdNcymLE2i9Yti@kroah.com>
+References: <20210913131113.390368911@linuxfoundation.org>
+ <20210913131118.330293390@linuxfoundation.org>
+ <CAD=FV=UhovUSmvbpc3q9=J_NSU0mcvQ3Fv8r4hi1ZNO=cMteuA@mail.gmail.com>
+ <YT93qkd8B7jy6AzV@kroah.com>
+ <CAD=FV=WPkVGTUmx2+Egt+ryO02n4cNGjN3S8gkBJP-WW3jPLWw@mail.gmail.com>
+ <YUDNXAVHfsrM7sR6@kroah.com>
+ <CAD=FV=XA4CVUp0DGs55PGdMirusits8SSmeZG=DoLzu1Km_-xw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=XA4CVUp0DGs55PGdMirusits8SSmeZG=DoLzu1Km_-xw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 10:11 AM, Oskar Senft wrote:
-> Hi Guenter
+On Tue, Sep 14, 2021 at 10:24:35AM -0700, Doug Anderson wrote:
+> Hi,
 > 
->>> Following the example from tmp421, this could then be like this:
->>
->> Something like that, only we'll need something to distinguish
->> temperature sensors from other sensor types, eg voltage or current.
->> Maybe a "type" property. I'd suggest "sensor-type", but we have
->> non-sensor attributes such as fan count and pwm values which should
->> be covered as well. But it looks like a good start for a set of
->> generic sensor properties.
-> Would it be acceptable to simply number the sensors and document which
-> sensor has which number?
+> On Tue, Sep 14, 2021 at 9:27 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Sep 13, 2021 at 09:31:03AM -0700, Doug Anderson wrote:
+> > > Hi,
+> > >
+> > > On Mon, Sep 13, 2021 at 9:09 AM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Mon, Sep 13, 2021 at 06:57:20AM -0700, Doug Anderson wrote:
+> > > > > Hi,
+> > > > >
+> > > > > On Mon, Sep 13, 2021 at 6:51 AM Greg Kroah-Hartman
+> > > > > <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > From: Douglas Anderson <dianders@chromium.org>
+> > > > > >
+> > > > > > [ Upstream commit a70e558c151043ce46a5e5999f4310e0b3551f57 ]
+> > > > > >
+> > > > > > This is really just a revert of commit 58074b08c04a ("drm/bridge:
+> > > > > > ti-sn65dsi86: Read EDID blob over DDC"), resolving conflicts.
+> > > > > >
+> > > > > > The old code failed to read the EDID properly in a very important
+> > > > > > case: before the bridge's pre_enable() was called. The way things need
+> > > > > > to work:
+> > > > > > 1. Read the EDID.
+> > > > > > 2. Based on the EDID, decide on video settings and pixel clock.
+> > > > > > 3. Enable the bridge w/ the desired settings.
+> > > > > >
+> > > > > > The way things were working:
+> > > > > > 1. Try to read the EDID but fail; fall back to hardcoded values.
+> > > > > > 2. Based on hardcoded values, decide on video settings and pixel clock.
+> > > > > > 3. Enable the bridge w/ the desired settings.
+> > > > > > 4. Try again to read the EDID, it works now!
+> > > > > > 5. Realize that the hardcoded settings weren't quite right.
+> > > > > > 6. Disable / reenable the bridge w/ the right settings.
+> > > > > >
+> > > > > > The reasons for the failures were twofold:
+> > > > > > a) Since we never ran the bridge chip's pre-enable then we never set
+> > > > > >    the bit to ignore HPD. This meant the bridge chip didn't even _try_
+> > > > > >    to go out on the bus and communicate with the panel.
+> > > > > > b) Even if we fixed things to ignore HPD, the EDID still wouldn't read
+> > > > > >    if the panel wasn't on.
+> > > > > >
+> > > > > > Instead of reverting the code, we could fix it to set the HPD bit and
+> > > > > > also power on the panel. However, it also works nicely to just let the
+> > > > > > panel code read the EDID. Now that we've split the driver up we can
+> > > > > > expose the DDC AUX channel bus to the panel node. The panel can take
+> > > > > > charge of reading the EDID.
+> > > > > >
+> > > > > > NOTE: in order for things to work, anyone that needs to read the EDID
+> > > > > > will need to instantiate their panel using the new DP AUX bus (AKA by
+> > > > > > listing their panel under the "aux-bus" node of the bridge chip in the
+> > > > > > device tree).
+> > > > > >
+> > > > > > In the future if we want to use the bridge chip to provide a full
+> > > > > > external DP port (which won't have a panel) then we will have to
+> > > > > > conditinally add EDID reading back in.
+> > > > > >
+> > > > > > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
+> > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > > > > Link: https://patchwork.freedesktop.org/patch/msgid/20210611101711.v10.9.I9330684c25f65bb318eff57f0616500f83eac3cc@changeid
+> > > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > > > ---
+> > > > > >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 22 ----------------------
+> > > > > >  1 file changed, 22 deletions(-)
+> > > > >
+> > > > > I guess it's not a huge deal, but I did respond to Sasha and request
+> > > > > that this patch be dropped from the stable queue unless the whole big
+> > > > > pile of patches was being backported. See:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/CAD=FV=U2dGjeEzp+K1vnLTj8oPJ-GKBTTKz2XQ1OZ7QF_sTHuw@mail.gmail.com/
+> > > > >
+> > > > > I said:
+> > > > >
+> > > > > > I would suggest against backporting this one unless you're going to
+> > > > > > backport the whole pile of DP AUX bus patches, which probably doesn't
+> > > > > > make sense for stable. Even though the old EDID reading was broken for
+> > > > > > the first read, it still worked for later reads. ...and the first read
+> > > > > . didn't crash or anything--it just timed out.
+> > > >
+> > > > I see a "bunch" of patches for this driver in this -rc, did Sasha not
+> > > > get them all?  If not, I can drop this one, but maybe it was needed for
+> > > > the follow-on patches?
+> > >
+> > > It's been a long journey trying to make this bridge work better. I
+> > > think the easiest way to say it is that if you don't have the parent
+> > > of ${SUBJECT} patch, AKA:
+> > >
+> > > e0bbcc6233f7 drm/bridge: ti-sn65dsi86: Add support for the DP AUX bus
+> > >
+> > > ...then you don't have DP AUX bus support and you shouldn't take
+> > > ${SUBJECT} patch. If you have that patch and it compiles / builds then
+> > > it means that you have all the proper dependencies. However, there are
+> > > _a lot_ of dependencies and I wouldn't suggest picking them all to
+> > > stable unless it's critical for someone.
+> >
+> > I tried to drop this one, and it turned out to be a depandancy for
+> > another patch for this driver.  And that was another dependancy.  So
+> > I've now dropped all of these from the queue.
 > 
-> Something like this:
-> 0 = LTD
-> 1 = RTD1
-> 2 = RTD2
-> 3 = RTD3
-> 4 = FAN1
-> 5 = FAN2
-> 6 = FAN3
+> Ugh. :(
 > 
-That might be a possibility, though it would have to be well defined
-for each chip (nct7802 also has voltage sensors). We'll have to discuss
-this with Rob.
+> 
+> > Here are the commits I dropped.  If you think any should be added back,
+> > please let us know:
+> >
+> > 05a7f4a8dff1 ("devlink: Break parameter notification sequence to be before/after unload/load driver")
+> 
+> I don't understand what the "devlink" patch had to do with
+> ti-sn65dsi86. I'll assume you didn't intend to have it in your list.
 
-Personally I think I would prefer using a type qualifier - that seems
-cleaner. But that is really a matter of opinion.
+Odd, good point, I think I messed up in removing too many patches, let
+me go add that back...
 
-> Would we also want to be able to define PWMs? From what I can tell the
-> driver does not support running individual pins in GPIO mode, right?
-> So I'm not quite clear what "disabling PWM" would actually mean.
-> 
-The ABI states that fans should run at full speed in that case,
-though that may be chip dependent (some chips stop the fan if pwm
-control is turned off).
+thanks,
 
-> Anyway, if we simply go by "sensor number", that would mean that we'd
-> have different attributes depending on the sensor number. Would that
-> be ok?
-> 
-That is a question for Rob to answer.
-
-> Also, I'm sorry, I think I just realized that in "voltage mode" we
-> don't seem to get a temperature reading. I hadn't actually looked
-> through more of the datasheet except for the single MODE register
-> before. But I don't think this makes a difference for what I proposed
-> so far?
-> 
-
-We don't ? I thought this reflects temperature measurement with a
-transistor instead of a diode (which would be current based).
-Hard to say - the datasheet is a bit vague in that regard.
-
->>>          /* LTD */
->>>          input@0 {
->>>              reg = <0x0>;
->>>              status = "okay";
->>
->> Not sure what the default is here ('okay' or 'disabled').
->> We'd also need to define what to do if there is no data
->> for a given sensor.
-> I think I'd like to keep previous behavior unmodified. From what I can
-> tell previous behavior was:
-> - xTDs enabled by default
-> - RTD modes unmodified, i.e. defaulting to whatever the HW comes up with
-> 
-> The NCT7802Y can self-program from an EEPROM, so I assume we should
-> honor the "power-up configuration" obtained from there? I.e. if no
-> configuration is provided in the device tree, the driver should use
-> whatever configuration the chip has when the driver is loaded.
-> 
-Definitely yes. My question was more what to do if the information
-in devicetree nodes is incomplete.
-
-Thanks,
-Guenter
-
->>>              label = "voltage mode";
->>
->> That isn't the idea for "label", as "label" would be expected to
->> show up as tempX_label (and a label of "voltage mode" would be odd).
->> The label should indicate where the sensor is located on a board,
->> such as "inlet" or "outlet".
-> Yes, absolutely. This was a bad example on my part. In my
-> understanding "label" is just a string that we pass through.
-> 
-> Oskar.
-> 
-
+greg k-h
