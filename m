@@ -2,84 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B22E40B5F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235E540B5FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhINReR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54084 "EHLO
+        id S229691AbhINRfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhINReH (ORCPT
+        with ESMTP id S229464AbhINRfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:34:07 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3849BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:50 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id bb10so8727518plb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:32:50 -0700 (PDT)
+        Tue, 14 Sep 2021 13:35:18 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC616C061574;
+        Tue, 14 Sep 2021 10:34:00 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 6so222259oiy.8;
+        Tue, 14 Sep 2021 10:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uuB6WFLIwWapJPUQWcB2Kv5KA49vQ2VGYpyDhpmsn5s=;
-        b=FbhetDrEjnwyCwxxkyOS62IWKG83CV+Pyc6FmO8RiYnUWRm0dtGq+M20733MOX0nty
-         9mQ8LWhIjb5ymv1z1AerabI3Fw6A++M1KrW0+/nQlRTN//phjBhsC0CnYokjPun+6R9R
-         EqcBM5D3im4CYFRqjN6L1J18ReNKMx3Osys+vg8g5JneWFAGpB1GuBTuov8t+6oqhDfs
-         dEu3LXKZef++ifkNdfGZbonc4WlPtdfNJGPBbCzRriR0ci2n7UbS3BdDrO0HoW2OkzcY
-         7i7Aw3Ph2roKzJS7Vw+9abmJlfxdEwAqqdgNp0lA4lOuPhX9gMcXdgGxA0noFBDQANL3
-         Qq5Q==
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8Var4fQF1XhsoVmdTJ7YRQUllwNpqTaomfukEwbYbZQ=;
+        b=PZxToyoB/iGvr8rt2v1pfgJfVpTI5N0w6XI6pLImxPZivPPloYRbZHZARAA13TT6kB
+         7NlESFpcSohzlpoii9z27Ixx02SOO+pfctFH8LH/k2U3VyS6pY86oMt23SkEweecYtWP
+         8HFdxbuT6flbYz8qKGeMeaNJzr6TGxH+PH6mDyes8nh82v0Zoy20eerbmk4Zvp8obwkJ
+         twEYt/KHIrc8+/noY4RUU71nOLw6iwbcgOLSSGNiUkFyQrGi6TBFW1iNWFplUm7idOL7
+         2ZVfS3Zc7BxH2jfHnVmpsFVli2brZ6iL+Oo1BL7JKx3HGmvUymdplQDryMQ5kpSo4Que
+         eO5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uuB6WFLIwWapJPUQWcB2Kv5KA49vQ2VGYpyDhpmsn5s=;
-        b=avaToQ8v4+LfzV3Q7RoL6E+x9D9hVlV0CJJVCZmLNWy7K93R5nl/Xzi5MSddzG4qI3
-         Vvjao0YFSl+dZqXralC++HXRI/ZuXW46bdPxPEDDPzdtFuzYOgSTfpAQWbQcX3Cne1JX
-         c+8iykmItGl+WqpFO8QZ9WKsTVTt3RaJllOKpyamqIB+wtukGdck0Rxo5T1BG45H0eCz
-         7qyGB6zlTDRKLGKiqImqBX2pOT9U4qF8KoC33+iU3bXy8IW7e/QPXSnXqNaVrLZ1rvRb
-         tVMftdDVp4cMcsliLmTf89soMLgNnIKVtAAnK211uGJnP2ATIzWpGuzcKUe46WnJp0AP
-         mwjw==
-X-Gm-Message-State: AOAM533g2UwH4MBGffYfii1DwL8zYHgb1UnM4X5L7Z4abicmYaaQend9
-        wN8hfTa6UCVPjxABdZhpaVofZA==
-X-Google-Smtp-Source: ABdhPJwxQ3GBt33aFswDWpHqFURv5eOW64rFsjKvyrEXPnm6hekDo0Fq8+7h7eHpKO/GRZgYwQ+EhA==
-X-Received: by 2002:a17:90a:b105:: with SMTP id z5mr3315056pjq.64.1631640769453;
-        Tue, 14 Sep 2021 10:32:49 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u12sm11981643pgi.21.2021.09.14.10.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 10:32:48 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 17:32:45 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Tempelman <natet@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for
- SEV-ES
-Message-ID: <YUDcvRB3/QOXSi8H@google.com>
-References: <20210914171551.3223715-1-pgonda@google.com>
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8Var4fQF1XhsoVmdTJ7YRQUllwNpqTaomfukEwbYbZQ=;
+        b=gEuenI5wM4+fHGfw2++Yqjb4XWNWZZl8TlwJoI+GWkNZ8cewOMMnmchkcPrtkoj0S3
+         /ORVcLXErd6zvLXzUskmjIrVQl6Q5jBFTVfRqK1XvlTDdEle34vGunEWL2XgUn8L5epn
+         jR69CHzLr5XrmQgzf5W1nb5a5vHpMyjOmQPMikIYkwhD892daVpF5XzWd7yAr+slxEey
+         Y/ECyU2FeESWPdTPAxqJjehi1tiSGfImEfIXMt8UvurWX3q0lUelY9wq5mk0IMThZ8PY
+         NgMhSR+H2CzmTpH+sjLinkuIeYnOxRsVP3CpLGGvzn6spoNQK6NmwhvnNIQ9U42vpEgb
+         NBfg==
+X-Gm-Message-State: AOAM532rSFAWKr0XfL48uV/WF66X166Rkc3/3ll5NMZQHGPUCjPStk4I
+        biDlgltBJMMjor7d0ie88JI=
+X-Google-Smtp-Source: ABdhPJzdfEBxf3YhjeaJoYbBfVki2x3p9gdFKon2ehXCuG9yDEaZ1WWuaIgvXSKRGffb+2ZcPTLB/Q==
+X-Received: by 2002:aca:6254:: with SMTP id w81mr2242540oib.83.1631640840079;
+        Tue, 14 Sep 2021 10:34:00 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u19sm2746582oof.30.2021.09.14.10.33.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 10:33:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Oskar Senft <osk@google.com>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210910130337.2025426-1-osk@google.com>
+ <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
+ <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
+ <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net>
+ <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
+ <20210914150859.GB3457579@roeck-us.net>
+ <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
+Message-ID: <c410eba9-f6cf-4dbf-797f-48afde9c1898@roeck-us.net>
+Date:   Tue, 14 Sep 2021 10:33:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914171551.3223715-1-pgonda@google.com>
+In-Reply-To: <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021, Peter Gonda wrote:
-> Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
-> VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
-> error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
-> SEV-ES guest.
+On 9/14/21 10:11 AM, Oskar Senft wrote:
+> Hi Guenter
+> 
+>>> Following the example from tmp421, this could then be like this:
+>>
+>> Something like that, only we'll need something to distinguish
+>> temperature sensors from other sensor types, eg voltage or current.
+>> Maybe a "type" property. I'd suggest "sensor-type", but we have
+>> non-sensor attributes such as fan count and pwm values which should
+>> be covered as well. But it looks like a good start for a set of
+>> generic sensor properties.
+> Would it be acceptable to simply number the sensors and document which
+> sensor has which number?
+> 
+> Something like this:
+> 0 = LTD
+> 1 = RTD1
+> 2 = RTD2
+> 3 = RTD3
+> 4 = FAN1
+> 5 = FAN2
+> 6 = FAN3
+> 
+That might be a possibility, though it would have to be well defined
+for each chip (nct7802 also has voltage sensors). We'll have to discuss
+this with Rob.
 
-What happens if userspace does KVM_CAP_VM_COPY_ENC_CONTEXT_FROM before the source
-has created vCPUs, i.e. before it has done SEV_LAUNCH_FINISH?
+Personally I think I would prefer using a type qualifier - that seems
+cleaner. But that is really a matter of opinion.
 
-Might be worth noting that the destination cannot be an SEV guest, and therefore
-can't be an SEV-ES guest either.
+> Would we also want to be able to define PWMs? From what I can tell the
+> driver does not support running individual pins in GPIO mode, right?
+> So I'm not quite clear what "disabling PWM" would actually mean.
+> 
+The ABI states that fans should run at full speed in that case,
+though that may be chip dependent (some chips stop the fan if pwm
+control is turned off).
 
-> Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
+> Anyway, if we simply go by "sensor number", that would mean that we'd
+> have different attributes depending on the sensor number. Would that
+> be ok?
+> 
+That is a question for Rob to answer.
 
-Cc: stable@vger.kernel.org
+> Also, I'm sorry, I think I just realized that in "voltage mode" we
+> don't seem to get a temperature reading. I hadn't actually looked
+> through more of the datasheet except for the single MODE register
+> before. But I don't think this makes a difference for what I proposed
+> so far?
+> 
+
+We don't ? I thought this reflects temperature measurement with a
+transistor instead of a diode (which would be current based).
+Hard to say - the datasheet is a bit vague in that regard.
+
+>>>          /* LTD */
+>>>          input@0 {
+>>>              reg = <0x0>;
+>>>              status = "okay";
+>>
+>> Not sure what the default is here ('okay' or 'disabled').
+>> We'd also need to define what to do if there is no data
+>> for a given sensor.
+> I think I'd like to keep previous behavior unmodified. From what I can
+> tell previous behavior was:
+> - xTDs enabled by default
+> - RTD modes unmodified, i.e. defaulting to whatever the HW comes up with
+> 
+> The NCT7802Y can self-program from an EEPROM, so I assume we should
+> honor the "power-up configuration" obtained from there? I.e. if no
+> configuration is provided in the device tree, the driver should use
+> whatever configuration the chip has when the driver is loaded.
+> 
+Definitely yes. My question was more what to do if the information
+in devicetree nodes is incomplete.
+
+Thanks,
+Guenter
+
+>>>              label = "voltage mode";
+>>
+>> That isn't the idea for "label", as "label" would be expected to
+>> show up as tempX_label (and a label of "voltage mode" would be odd).
+>> The label should indicate where the sensor is located on a board,
+>> such as "inlet" or "outlet".
+> Yes, absolutely. This was a bad example on my part. In my
+> understanding "label" is just a string that we pass through.
+> 
+> Oskar.
+> 
+
