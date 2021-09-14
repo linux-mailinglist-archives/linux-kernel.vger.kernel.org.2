@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EF240AB1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF06840AB25
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhINJsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhINJsM (ORCPT
+        id S230508AbhINJwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:52:02 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:16359 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhINJv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:48:12 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD2CC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:46:54 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id x11so27587216ejv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JvRU2iFGpeccVMjKtT6+w9RLMGZt7GKZuC+LrVKqfH0=;
-        b=t8nrtFt41e1x2hjfB+hxvI9+eBukzuV7NTc1HQbRTbL8KvWZ5US9ohxp3jIdQRMzNW
-         QSD8url1KQQ5Z2uU0ehu1MHjs6ZfwnarWTyqYP7EbHt2mk8rrtjWShCs+oMH8x45WJ/O
-         pH3DPccXXOXcZwODq2zBYgNCdMzjEJSy5jz6aQfSSAmYdIUzyBDONox3oE+/X0+IWlos
-         sublqwOAVJfDSzNYeKVB+nmpxBHCMNyvjvbecTYiXrYAQKzPCeF5LKaBh2kcM5eHkANY
-         f98J/vbQ5rhivwPzfELxDtdQbXKcyOOzbfmV30itqZjdwTy7GiJSprk49r5Xf5IqiYI5
-         +GSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JvRU2iFGpeccVMjKtT6+w9RLMGZt7GKZuC+LrVKqfH0=;
-        b=lxMfGJ+ZkqdeVOwEVgoRPhSPXZHtVIsEVzD5m8Uun6tZO/LQuzmx6UE0GgNoXMxLkg
-         HJ77DSn+y9evz2sviJebgmaRSMega4ADNi34iTKLdN+/nmxA0fwoPoM3HfpaYuzr/jvQ
-         ky9BW3mp3NKt4QMg3oz4bFAsIZimYzmd1MoFuXywf08l0q+bJdw4464hEblox6iwxRlm
-         X+F4D2lLd2ndNiQf8ZZ9BxftJJRetbvwaL4Dm/SWdVeaZnzptbCrORye6EphQ7qBPr3C
-         iTpddV4r99HKP3kn9NVgVyd+nw7Y9xUQdP12UI5f/Tzo8EAq0xLRQx3uXMpVlPZF9Xr2
-         dm5w==
-X-Gm-Message-State: AOAM530iEfjRRRjWx5H4XSsWjCn1UCULujFbRyA/gr+gqJLAqG6FX8ym
-        5l+wOKpcIcfv6PZYoN73iwexvi+hjhrrdHj2YjEoQA==
-X-Google-Smtp-Source: ABdhPJyqFuqqSFYnM8fLvzksw99NPbhAmI/hXod0tUt0kQbaWey9PC26NFmCh8Tjfe8zmbWTDgQepoYhos6KThLNtOQ=
-X-Received: by 2002:a17:906:417:: with SMTP id d23mr18175227eja.383.1631612813299;
- Tue, 14 Sep 2021 02:46:53 -0700 (PDT)
+        Tue, 14 Sep 2021 05:51:58 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 18E9Uefk047557;
+        Tue, 14 Sep 2021 17:30:40 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from JammyHuang-PC.aspeed.com (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 14 Sep
+ 2021 17:50:30 +0800
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+To:     <eajames@linux.ibm.com>, <mchehab@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <linux-media@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [PATCH resend] media: aspeed: refine to avoid full jpeg update
+Date:   Tue, 14 Sep 2021 17:49:20 +0800
+Message-ID: <20210914094919.3506-1-jammy_huang@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <720d0a9a42e33148fcac45cd39a727093a32bf32.1614965598.git.robin.murphy@arm.com>
- <a730070d718cb119f77c8ca1782a0d4189bfb3e7.1614965598.git.robin.murphy@arm.com>
- <0a1d437d-9ea0-de83-3c19-e07f560ad37c@arm.com> <20210730143431.GB1517404@mutt>
- <8b358507-dbdf-b05b-c1da-2ec9903a2912@arm.com>
-In-Reply-To: <8b358507-dbdf-b05b-c1da-2ec9903a2912@arm.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Tue, 14 Sep 2021 11:46:42 +0200
-Message-ID: <CADYN=9LE2JnE+vmv_UaeyJj_RpHcp+zZUv711VuQekLSiQ2bJA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: dts: juno: Enable more SMMUs
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     sudeep.holla@arm.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        liviu.dudau@arm.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        lkft-triage@lists.linaro.org,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 18E9Uefk047557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Jul 2021 at 16:44, Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-07-30 15:34, Anders Roxell wrote:
-> > On 2021-07-30 13:17, Robin Murphy wrote:
-> >> On 2021-07-30 12:35, Anders Roxell wrote:
-> >>> From: Robin Murphy <robin.murphy@arm.com>
-> >>>
-> >>>> Now that PCI inbound window restrictions are handled generically between
-> >>>> the of_pci resource parsing and the IOMMU layer, and described in the
-> >>>> Juno DT, we can finally enable the PCIe SMMU without the risk of DMA
-> >>>> mappings inadvertently allocating unusable addresses.
-> >>>>
-> >>>> Similarly, the relevant support for IOMMU mappings for peripheral
-> >>>> transfers has been hooked up in the pl330 driver for ages, so we can
-> >>>> happily enable the DMA SMMU without that breaking anything either.
-> >>>>
-> >>>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> >>>
-> >>> When we build a kernel with 64k page size and run the ltp syscalls we
-> >>> sporadically see a kernel crash while doing a mkfs on a connected SATA
-> >>> drive.  This is happening every third test run on any juno-r2 device in
-> >>> the lab with the same kernel image (stable-rc 5.13.y, mainline and next)
-> >>> with gcc-11.
-> >>
-> >> Hmm, I guess 64K pages might make a difference in that we'll chew through
-> >> IOVA space a lot faster with small mappings...
-> >>
-> >> I'll have to try to reproduce this locally, since the interesting thing
-> >> would be knowing what DMA address it was trying to use that went wrong, but
-> >> IOMMU tracepoints and/or dma-debug are going to generate an crazy amount of
-> >> data to sift through and try to correlate - having done it before it's not
-> >> something I'd readily ask someone else to do for me :)
-> >>
-> >> On a hunch, though, does it make any difference if you remove the first
-> >> entry from the PCIe "dma-ranges" (the 0x2c1c0000 one)?
-> >
-> > I did this change, and run the job 7 times and could not reproduce the
-> > issue.
->
-> Thanks! And hold that thought; if it works then I suspect it probably is
-> the best fix, but I'll double-check and write it up properly next week.
+The switch of jpeg 420/444 subsampling will update full jpeg header for
+aspeed now.
 
-I just want to send a friendly reminder to this issue, since I haven't
-seen a patch for this.
-We still see the issue on v5.13.y and above.
+Just update the 420/444 subsampling part of jpeg header is fine.
 
-Or have I missed anything?
+Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+---
+ resend the patch becuase cc-list isn't complete.
 
-Cheers,
-Anders
+ drivers/media/platform/aspeed-video.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
->
-> Cheers,
-> Robin.
->
-> > diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
-> > index 8e7a66943b01..d3148730e951 100644
-> > --- a/arch/arm64/boot/dts/arm/juno-base.dtsi
-> > +++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
-> > @@ -545,8 +545,7 @@ pcie_ctlr: pcie@40000000 {
-> >                           <0x02000000 0x00 0x50000000 0x00 0x50000000 0x0 0x08000000>,
-> >                           <0x42000000 0x40 0x00000000 0x40 0x00000000 0x1 0x00000000>;
-> >                  /* Standard AXI Translation entries as programmed by EDK2 */
-> > -               dma-ranges = <0x02000000 0x0 0x2c1c0000 0x0 0x2c1c0000 0x0 0x00040000>,
-> > -                            <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
-> > +               dma-ranges = <0x02000000 0x0 0x80000000 0x0 0x80000000 0x0 0x80000000>,
-> >                               <0x43000000 0x8 0x00000000 0x8 0x00000000 0x2 0x00000000>;
-> >                  #interrupt-cells = <1>;
-> >                  interrupt-map-mask = <0 0 0 7>;
-> >
-> >
-> > Cheers,
-> > Anders
-> >
+diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+index 3c90f3f3cf14..8b3939b8052d 100644
+--- a/drivers/media/platform/aspeed-video.c
++++ b/drivers/media/platform/aspeed-video.c
+@@ -401,6 +401,21 @@ static void aspeed_video_init_jpeg_table(u32 *table, bool yuv420)
+ 	}
+ }
+ 
++// just update jpeg dct table per 420/444
++static void aspeed_video_update_jpeg_table(u32 *table, bool yuv420)
++{
++	int i;
++	unsigned int base;
++
++	for (i = 0; i < ASPEED_VIDEO_JPEG_NUM_QUALITIES; i++) {
++		base = 256 * i;	/* AST HW requires this header spacing */
++		base += ASPEED_VIDEO_JPEG_HEADER_SIZE +
++			ASPEED_VIDEO_JPEG_DCT_SIZE;
++
++		table[base + 2] = (yuv420) ? 0x00220103 : 0x00110103;
++	}
++}
++
+ static void aspeed_video_update(struct aspeed_video *video, u32 reg, u32 clear,
+ 				u32 bits)
+ {
+@@ -1274,7 +1289,7 @@ static void aspeed_video_update_jpeg_quality(struct aspeed_video *video)
+ static void aspeed_video_update_subsampling(struct aspeed_video *video)
+ {
+ 	if (video->jpeg.virt)
+-		aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
++		aspeed_video_update_jpeg_table(video->jpeg.virt, video->yuv420);
+ 
+ 	if (video->yuv420)
+ 		aspeed_video_update(video, VE_SEQ_CTRL, 0, VE_SEQ_CTRL_YUV420);
+-- 
+2.25.1
+
