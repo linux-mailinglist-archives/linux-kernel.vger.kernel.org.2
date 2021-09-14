@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76AA40A74E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6696640A71D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240672AbhINHZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:25:53 -0400
-Received: from mga02.intel.com ([134.134.136.20]:60742 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230108AbhINHZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:25:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209140145"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="209140145"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 00:24:34 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="543828297"
-Received: from yangzhon-virtual.bj.intel.com (HELO yangzhon-Virtual) ([10.238.144.101])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 14 Sep 2021 00:24:27 -0700
-Date:   Tue, 14 Sep 2021 15:10:30 +0800
-From:   Yang Zhong <yang.zhong@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE
- all pages
-Message-ID: <20210914071030.GA28797@yangzhon-Virtual>
-References: <20210913131153.1202354-1-pbonzini@redhat.com>
+        id S240585AbhINHMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:12:08 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:58190 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240407AbhINHMH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 03:12:07 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 3A6571C0B79; Tue, 14 Sep 2021 09:10:49 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 09:10:48 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/236] 5.10.65-rc1 review
+Message-ID: <20210914071048.GA26516@amd>
+References: <20210913131100.316353015@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
 Content-Disposition: inline
-In-Reply-To: <20210913131153.1202354-1-pbonzini@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 09:11:51AM -0400, Paolo Bonzini wrote:
-> Based on discussions from the previous week(end), this series implements
-> a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
-> file descriptor.  Other possibilities, such as closing and reopening
-> the device, are racy.
-> 
-> The patches are untested, but I am posting them because they are simple
-> and so that Yang Zhong can try using them in QEMU.
-> 
 
-  Paolo, i re-implemented one reset patch in the Qemu side to call this ioctl(),
-  and did some tests on Windows and Linux guest, the Windows/Linux guest reboot 
-  work well.
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  So, it is time for me to send this reset patch to Qemu community? or wait for
-  this kernel patchset merged? thanks! 
-     
-  Yang
+Hi!
 
+> This is the start of the stable review cycle for the 5.10.65 release.
+> There are 236 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-> Paolo
-> 
-> Paolo Bonzini (2):
->   x86: sgx_vepc: extract sgx_vepc_remove_page
->   x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE ioctl
-> 
->  arch/x86/include/uapi/asm/sgx.h |  2 ++
->  arch/x86/kernel/cpu/sgx/virt.c  | 48 ++++++++++++++++++++++++++++++---
->  2 files changed, 47 insertions(+), 3 deletions(-)
-> 
-> -- 
-> 2.27.0
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmFASvgACgkQMOfwapXb+vJDRQCglmrVxG3J784FsN7xGMEPrXLK
+6EQAn1p3I7Px2Tfmn+oBuCuu2TErG5Gr
+=rx+E
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
