@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FACE40B485
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB2D40B484
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhINQY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:24:58 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:51454 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhINQYy (ORCPT
+        id S229582AbhINQYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhINQYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:24:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631636617; x=1663172617;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Z404bEPrvwr60WJ43wElB+2Jlcdg7Ky4eRj0OBYyGPw=;
-  b=t6sU/uUmPU0ZyfE6BKVXnCBCjq026PHpX+gARN58c4XcC6EmCxs1BIG3
-   mlCJRoUVND0a1MIJDOUxgfx3XD1qqrg/nEndIu3DXTsKiw/wKAan8Ku9e
-   eE/hxUVBhEfZ/e9eQz+KU6/gMlJgkUXPHmFLQhlvr3xo6dkD4B5DwyKxc
-   qf5zY/2ILXVIBH4hYqoORPGoXv369Nnqv9vl2aUil7bnRdJuoPC6rE8DQ
-   8duipUyxv/CdA/TtW30Qw7aAoxkiB/kHteCNq+ctCpNoRYOMHggJ1dZte
-   6l9nQSb/mB2SUQcEqUUf1MWZQGAFcPt9UapMp5e11dCsntBPh3Wpic61I
-   g==;
-IronPort-SDR: tSt0bZ4A5NvKb5e92OURoGkgcXEqpKmNoi8GsKtCqYvvkbwK09Va777CWYQqsoqT15SfVGNeYh
- W2Jkj7O7YckLbe73QmuL3kapvj3SaB4hEQtCA7l5pkX35xiMw2WUM/P5rOcCkb1Kc5gNvuAMh3
- hVhoLOjtXpQzY/dAftCFi3MVMdWWUDOPe5Nk906RB2x12MWjMu4qG4nYxZpi3CyNzMDJgP9KGK
- Gs9ykwYOV+G62qV0DSedJluLFTcuVjJmv9jbpYIvO78kNeJ4bhe4uadDKsFC378w38YYESW4Hx
- k+WCuNzdTAAfyFvCti5oMVuA
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="144068526"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Sep 2021 09:23:36 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 14 Sep 2021 09:23:35 -0700
-Received: from ness.home (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Tue, 14 Sep 2021 09:23:33 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Subject: [GIT PULL] ARM: at91: fixes for 5.15
-Date:   Tue, 14 Sep 2021 18:23:14 +0200
-Message-ID: <20210914162314.54347-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 14 Sep 2021 12:24:52 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C84C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:23:35 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id s11so13212757pgr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M1OLud5L7SR/XzmtK9MomZhlAfhb/UzSPLkSu/CN0Ls=;
+        b=B8NXLPlEGILsGJ/1BwUEO69eIWz2uwusaVZqj+8n7lxKrMWY1UtJ/zDlMWoJWgJ/00
+         qrIh2FpA72W3aJ6LOFl2Ehz5+ob/gv9jkQGgdZIWR2aSCP29UeIGtgMVP5jOVHvjUbkN
+         aRkH2aGdxhZQvKGUL0H4gelX3vrBCk+gBm6HKCU8x5DDf+SSw6wIosj4Cu+VBh5mpRRr
+         DvBlaX45P+OoBCtk2BUDQdhOsVdRswJ4SdgtcHH5gZ6WAoa7qusF5q2POcMBfZwNLXEd
+         hQbPG62Uh7phRRhj767kXZz36U5jGisbeguNV0y2HL9ZYIF1JJpN49RYVC+pxrnRFkvv
+         J3jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=M1OLud5L7SR/XzmtK9MomZhlAfhb/UzSPLkSu/CN0Ls=;
+        b=a41wtB8LltG+jyO+Vsa4kqD0AI2N0GCtr53ebPJeBzh0ZFuOXS4eLdwsPa/+kX2UBj
+         uayhfs0CADYDcnQuztCL73rt7PlLBULMNri3TMXSdfhqnhgyZPnc8ka/jL7sOzpKIaao
+         tLUKt9oPwErMtcPSqueHWy2yvDKPh+wHjANsq4Amw13LYH2XEpsyOPF71UgMbLwtV37/
+         mJXuj3xDOYiduPywT8RCSc9iExvFxar5M4PJDTZljPxdQW1mbLHMtzZGETiqkt/YOkoV
+         bCzqREDQvMmSVWJmIL2M9uY5DZucMuFaIUwMGpQncAIReQzJbYXpMtZyc/v/yNjgNHGB
+         MKQg==
+X-Gm-Message-State: AOAM5309PrG2Bgkcuj5SqfqWZWaazm3MKu0OrJ3q5T5rlUYVNkdMYmxC
+        JSEMTLQhdEt3118vSJAiZ54=
+X-Google-Smtp-Source: ABdhPJyR0pGdaF0XZzqirIt9uv2sXm7H8yc7mJ1F7Hy/d8nBrV9HEb9tCIOPXs06jYFigX2Fv+8YMg==
+X-Received: by 2002:a05:6a00:8c2:b0:438:7f68:2438 with SMTP id s2-20020a056a0008c200b004387f682438mr5730980pfu.33.1631636614285;
+        Tue, 14 Sep 2021 09:23:34 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id e5sm2138355pjv.44.2021.09.14.09.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 09:23:33 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 14 Sep 2021 06:23:32 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Zhang Qiao <zhangqiao22@huawei.com>
+Cc:     mingo@redhat.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Subject: Re: [PATCH v2] kernel/sched: Fix sched_fork() access an invalid
+ sched_task_group
+Message-ID: <YUDMhMgM4ZECVBo8@slm.duckdns.org>
+References: <20210911075054.6358-1-zhangqiao22@huawei.com>
+ <YT+R3EnFgs78Vyvh@slm.duckdns.org>
+ <b30205b0-bf54-7255-fc1c-9dfa5dbb4940@huawei.com>
 MIME-Version: 1.0
-Organization: microchip
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b30205b0-bf54-7255-fc1c-9dfa5dbb4940@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+On Tue, Sep 14, 2021 at 04:20:02PM +0800, Zhang Qiao wrote:
+> Perhaps we can fix this bug at sched_post_fork(), which is executed between cgroup_can_fork()
+> and cgroup_post_fork(). Relocate the fectching of task_group and access it at sched_post_fork().
 
-Arnd, Olof,
-
-Here is the first batch of fixes for 5.15. It is mostly targeted to our new
-SAMA7G5 and fix the PM on this platform a fix and with elements that were
-missing.
-I queue a fix for another board which is not a regression but we are early in
-the stabilization cyle.
-
-Note that I've just updated my GPG keys and that I use a newly deployed
-signature sub-key of my already known master key. Keys are deployed to the
-kernel dev. keyring:
-https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Don't hesitate to tell me if I need to review some part of this process.
-
-Thanks, best regards,
-  Nicolas
-
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-fixes-5.15
-
-for you to fetch changes up to 4348cc10da6377a86940beb20ad357933b8f91bb:
-
-  ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default (2021-09-14 17:05:40 +0200)
-
-----------------------------------------------------------------
-AT91 fixes #1 for 5.15:
-
-- Fixes for newly introduced SAMA7G5 and its Power Management code.
-  Associated core peripherals need to be instantiated in DT for
-  benefiting from best PM support like Backup mode with DDR in
-  Self-Refresh.
-- Add chip ID for SAMA7G5 for easing the kernel log identification.
-- Avoid Camera Sensor probe error on sama5d27 som1 ek board.
-
-----------------------------------------------------------------
-Claudiu Beznea (6):
-      ARM: at91: pm: do not panic if ram controllers are not enabled
-      ARM: dts: at91: sama7g5: add ram controllers
-      ARM: dts: at91: sama7g5: add securam node
-      ARM: dts: at91: sama7g5: add shdwc node
-      ARM: dts: at91: sama7g5: add chipid
-      ARM: at91: pm: switch backup area to vbat in backup mode
-
-Eugen Hristev (1):
-      ARM: dts: at91: sama5d2_som1_ek: disable ISC node by default
-
- arch/arm/boot/dts/at91-sama5d27_som1_ek.dts |   1 -
- arch/arm/boot/dts/at91-sama7g5ek.dts        |   9 ++
- arch/arm/boot/dts/sama7g5.dtsi              |  39 +++++++++
- arch/arm/mach-at91/pm.c                     | 130 ++++++++++++++++++++++++----
- 4 files changed, 162 insertions(+), 17 deletions(-)
+Can't we just add a can_fork callback in cpu_cgrp_subsys?
 
 -- 
-Nicolas Ferre
+tejun
