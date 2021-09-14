@@ -2,160 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CA440AC02
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B6340AC05
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbhINKwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:52:33 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:34965 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230153AbhINKwc (ORCPT
+        id S231913AbhINKyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:54:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23864 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231691AbhINKyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:52:32 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id C474A5C0069;
-        Tue, 14 Sep 2021 06:51:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 14 Sep 2021 06:51:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=K0U22i
-        YdgaWPJNYzZWHJRK3jLpUaQw4t+41HSf01KMU=; b=Vf8j1Sqc4VqqlWcLbEaj6e
-        OlwA80NMgML4FPQNtCOl/k0C8blxk68lpZv1yTNxoweFpLAU/oseEyGUTf+czHxL
-        eTjLLJcmM6KYS/71/s4oBM+68gslak72kkYdGf5wyETyzlhsqPNiXkvYaCFHNUzV
-        xyDcheXSCX5ysn7s9dz5kT2yoqhl90Hp+MEhhov0FfNdALacreTOolfgOlKE6LZo
-        OJdnqLwCLint6ZF6L/8Ts8DOkbzQKt3AAA3wMds47X3zU5fPOg/wCDB4WeydkpCw
-        28juCdhN4KsvgNzL4drJwQ1JAPG6RRu1QfljsuEa7xm1lypSGMfSgvfRI8nHWhYg
-        ==
-X-ME-Sender: <xms:oX5AYf4LpqYIAaN3wt7fmbcNfrwpYbTvy_XA3HauBlY3xHzdkywQbQ>
-    <xme:oX5AYU5rl709ozD3fsoxpy_wCKzjx_ouDHPqFA6OVm2Jdx4KWrPHUJNk2HHH13b1B
-    AWK-2iAMVfzug>
-X-ME-Received: <xmr:oX5AYWccKUsxHBLKxh_GF6lEdY945rsy5YalLh4p0BGrLLcwnjydmlA9L_atxbx48yIJsMtLpNuJ8HBnijve7aKx7FhLkUE1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
-    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
-    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpefhfeff
-    hfetgeffueekleehhfetkeetgedttdfhiedvteekjedufffgudeiffefjeenucffohhmrg
-    hinhepghhithhhuhgsuhhsvghrtghonhhtvghnthdrtghomhenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhesihhnvhhish
-    hisghlvghthhhinhhgshhlrggsrdgtohhm
-X-ME-Proxy: <xmx:oX5AYQIO3bVKwNtOVQk8behQdR2uoxB7Df4lMJvK-lFStIDadI9kmA>
-    <xmx:oX5AYTKH0Os9gtQmhLFx-Yf3Dad1hZ8ekJ8iZckUXRSNinTnNxjvFw>
-    <xmx:oX5AYZwYP0DhWEzJMmbA9CfR-VK1wA2a5SgJKy50oP8mpq2ss0jPuw>
-    <xmx:on5AYb9sxvbsSbhut3PLLQWQP4lEzh3PMNnmu0x6iHffTfKP8MKaLw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 06:51:12 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 12:51:09 +0200
-From:   Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading
- related?)
-Message-ID: <YUB+nbuIgI4vLilj@mail-itl>
-References: <YT9I+Xs9wOPVCIVd@mail-itl>
- <923de2f5-3d33-4c02-acec-739fdaf2ae05@suse.com>
- <ed6b9999-7a7b-31db-9e88-efdeecefa45b@suse.com>
+        Tue, 14 Sep 2021 06:54:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631616782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xWruQ/3HB3f8fPlOpFW89YUJGQb6La6iD1WrFwB+mXA=;
+        b=hI5O382XYItr3iyAkUblrsK7WWYD0bl/D6lvyHKFT/yI6TzwWo2mpqn7ANHliHo1mbI3G/
+        bybtLL8EZ5GNnPFO4wDD4a1+PGpyY7ot9nM3qIlhJAGcBSfeneLtuUr+oah53SJ5zwhriz
+        2deGs780jsSK1sR1pSPDke5ZIYy36so=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-kKOqLk4EPFGbCesAxZpuYg-1; Tue, 14 Sep 2021 06:53:01 -0400
+X-MC-Unique: kKOqLk4EPFGbCesAxZpuYg-1
+Received: by mail-ed1-f71.google.com with SMTP id o18-20020a056402439200b003d2b11eb0a9so1870755edc.23
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:53:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xWruQ/3HB3f8fPlOpFW89YUJGQb6La6iD1WrFwB+mXA=;
+        b=Rj63hiO6eAnWEDlAzi5efLe1gPZ3INGT9bOM85Kog9XnN1Fd+CiuegJxOzy2JReACq
+         cd0snhfUSq+U42ZU50u9aCl9SR7Eo+Dj6K88xYxgU2D+8CTcnf0P4kJozVkeXuPFJFq8
+         GosJ3gCRxfQjiBiunFa0vZdvTCVKlaAeBYuhDWZYqiYgTeAvQbsySDUI0iAq46spITXZ
+         UnNjrurD7ti4OB2nJ33CzaC2GTpLauoLBudrpXYk9O3VYuvdIbMALBGAmVYqSbKYfBBs
+         29jziYga1WZ1pLACbMMFRTtB+ZSg+65A0iAbE3ROuR0tdF9kPs2YsKvijYi6HuRc67aZ
+         Gn+g==
+X-Gm-Message-State: AOAM530L98zFVo+bzG2YITCYDPO1nmTL8TekU5CTUXR1f+hk2uoNkwPc
+        nGieiOz2OG494Wj2bI4PXuUsaDB68sYABlM3J04gbkC9BwXi7VDOzlLQCCBCXVdpKgCq0pZpgMH
+        Ar0Fjh7Z2wg/UxWPq+XcPhBjUNnkcGqyYvemHm+lXzPsG1zBcXx0IIzw0tZ86g86vTMfLIeNvpL
+        38
+X-Received: by 2002:a17:907:75d9:: with SMTP id jl25mr18158903ejc.4.1631616779975;
+        Tue, 14 Sep 2021 03:52:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+hi4n9xRSOVKeKx3t6GwkR3/2NedhuNekmOLb1VB4opjRzgR4tPgifcWpMRBTNG4c2w21Ag==
+X-Received: by 2002:a17:907:75d9:: with SMTP id jl25mr18158872ejc.4.1631616779777;
+        Tue, 14 Sep 2021 03:52:59 -0700 (PDT)
+Received: from localhost.localdomain ([2a04:ee41:4:31cb:e591:1e1e:abde:a8f1])
+        by smtp.gmail.com with ESMTPSA id v1sm4928263ejd.31.2021.09.14.03.52.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 03:52:55 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/3] nSVM: use svm->nested.save to load vmcb12
+ registers and avoid TOC/TOU races
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210903102039.55422-1-eesposit@redhat.com>
+ <20210903102039.55422-4-eesposit@redhat.com>
+ <21d2bf8c4e3eb3fc5d297fd13300557ec686b625.camel@redhat.com>
+ <73b5a5bb-48f2-3a08-c76b-a82b5b69c406@redhat.com>
+ <9585f1387b2581d30b74cd163a9aac2adbd37a93.camel@redhat.com>
+ <2b1e17416cef1e37f42e9bc8b2283b03d2651cb2.camel@redhat.com>
+ <ee207b0c-eab3-13ba-44be-999f849008d2@redhat.com>
+ <fb828c752fac255c6a1d997ff27dfc5264a5c658.camel@redhat.com>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Message-ID: <a1ab92dd-6e76-fb30-d570-582cd3ebecd3@redhat.com>
+Date:   Tue, 14 Sep 2021 12:52:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9IO9vSHELR/sHIWS"
-Content-Disposition: inline
-In-Reply-To: <ed6b9999-7a7b-31db-9e88-efdeecefa45b@suse.com>
+In-Reply-To: <fb828c752fac255c6a1d997ff27dfc5264a5c658.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---9IO9vSHELR/sHIWS
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 14 Sep 2021 12:51:09 +0200
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Jan Beulich <jbeulich@suse.com>
-Cc: Juergen Gross <jgross@suse.com>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-	x86@kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel <xen-devel@lists.xenproject.org>,
-	Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: Linux 5.13+ as Xen dom0 crashes on Ryzen CPU (ucode loading
- related?)
+> 
+> I would do it this way:
+> 
+> struct svm_nested_state {
+>          ...
+> 	/* cached fields from the vmcb12 */
+> 	struct  vmcb_control_area_cached ctl;
+> 	struct  vmcb_save_area_cached save;
+>          ...
+> };
+> 
+> 
 
-On Tue, Sep 14, 2021 at 10:39:10AM +0200, Jan Beulich wrote:
-> On 14.09.2021 09:14, Juergen Gross wrote:
-> > On 13.09.21 14:50, Marek Marczykowski-G=C3=B3recki wrote:
-> >> Hi,
-> >>
-> >> Since 5.13, the Xen (PV) dom0 crashes on boot, before even printing the
-> >> kernel version.
-> >> Test environment:
-> >>   - Xen 4.14.2
-> >>   - AMD Ryzen 5 4500U (reported also on AMD Ryzen 7 4750U)
-> >>   - Linux 5.13.13, confirmed also on 5.14
-> >>
-> >> The crash happens only if the initramfs has earlycpio with microcode.
-> >> I don't have a serial console, but I've got a photo with crash message
-> >> (from Xen, Linux doesn't managed to print anything):
-> >> https://user-images.githubusercontent.com/726704/133084966-5038f37e-00=
-1b-4688-9f90-83d09be3dc2d.jpg
-> >>
-> >> Transcription of some of it:
-> >>
-> >>      mapping kernel into physical memory
-> >>      about to get started
-> >>      (XEN) Pagetable walk from ffffffff82810888:
-> >>      (XEN)  L4[0x1ff] =3D 0000000332815067 0000000000002815
-> >>      (XEN)  L3[0x1fe] =3D 0000000332816067 0000000000002816
-> >>      (XEN)  L2[0x014] =3D 0000000334018067 0000000000004018
-> >>      (XEN)  L1[0x010] =3D 0000000332810067 0000000000002810
-> >>      (XEN) domain_crash_sync called from entry.S: fault at ffff82d0403=
-3e790 x86_64/entry.S#domain_crash_page_fault
-> >>      (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
-> >>      (XEN) ----[ Xen-4.14.2  x86_64  debug=3Dn  Not tainted ]----
-> >>      (XEN) CPU:    0
-> >>      (XEN) RIP:    e033:[<0000000000000000>]
-> >=20
-> > The domain's run state seems to be completely clobbered.
-> >=20
-> > Did you try to boot the kernel with "earlyprintk=3Dxen" to get some idea
-> > how far it progressed?
->=20
-> I guess without my "xen/x86: allow "earlyprintk=3Dxen" to work for PV Dom=
-0"
-> "earlyprintk=3Dxen" would need to be accompanied by "console=3Dxenboot". I
-> have not tried whether this helps, this is merely a guess from having
-> looked at the code relatively recently.
+The only thing that requires a little bit of additional work when 
+applying this is svm_get_nested_state() (and theoretically 
+svm_set_nested_state(), in option 2). In this function, nested.ctl is 
+copied in user_vmcb->control. But now nested.ctl is not anymore a 
+vmcb_control_area, so the sizes differ.
 
-This boot was with "earlyprintk=3Dxen" already, but I didn't know
-about "console=3Dxenboot".
-Anyway, it seems it isn't relevant anymore.
+There are 2 options here:
+1) copy nested.ctl into a full vmcb_control_area, and copy it to user 
+space without modifying the API. The advantage is that the API is left 
+intact, but an additional copy is required.
 
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
+2) modify KVM_GET_NESTED_STATE and KVM_SET_NESTED_STATE to handle 
+vmcb_control_area_cached. Advantage is that there is a lightweight copy 
++ the benefits explained by you in the previous email (no unset field).
 
---9IO9vSHELR/sHIWS
-Content-Type: application/pgp-signature; name="signature.asc"
+I am not sure which one is the preferred way here.
 
------BEGIN PGP SIGNATURE-----
+Thank you,
+Emanuele
 
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmFAfp0ACgkQ24/THMrX
-1yxj3QgAklzrVFkqulCCimAJBOIO9E4Yn5L9JXT1DXGQ0RH446/gqRWmYU7+Atu2
-6r4ZLfsYMIJm0FCKt3DTHvqFr9rWxbb1dOq4HVhLsid3Yp0zJZM39uhRUxKPopG3
-rgmE7V7A98pX4RQIw9FGiMiFmUryiAwvMgUI9afdQ1RF71gQwwE1pH8tDgsmMV86
-Te2ubFkmYakwszLdT4buG8Bwpc6s+rDcOzgIyruIgYLY20wNHEZm71TjNwqWUr8h
-h52671MMCj1/o9uTKPkiqHDSR6EUIwphTyDzKoAMCI5IdND+iIvSmjwqFj8idnNP
-ifatm5BSF9Knqy82Gt8CLJnTbkzBJg==
-=2izk
------END PGP SIGNATURE-----
-
---9IO9vSHELR/sHIWS--
