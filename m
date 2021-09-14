@@ -2,79 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814BE40B207
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C1740B1FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhINOuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235258AbhINOuI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:50:08 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76EBC0613BA;
-        Tue, 14 Sep 2021 07:47:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id 5so8355967plo.5;
-        Tue, 14 Sep 2021 07:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DFVYjmutsndVs1ZuTbUoHDKL/zDwuKKZLd3sEqGsf30=;
-        b=aLXTsKBX4Rold9d9yvndZNLNlk7FEA3iFWu++Vw+wsB50Mb5fUz1D9gq0aKO6oheEq
-         4a2lEHd4s0KFi69yL9AMhSrl17fmlsx5s542xSdiAtUCDETSqjxXJ6YCRrpW6itnzK4z
-         lLSWjrdt64wHloJZvNsVwiP/Yu6zXpP/i9VA/ZqJXxVnv3Hcf7XEsuMr9vpB5X4lKHeW
-         x+ylrA16PBZBRW6XiZhV9E4GmDM+lUCwN/B3FhvUDwxMt8lzkYq0lJJUAoKXTVUNC/NO
-         TasCdeOJ9vfTCn58W3CNIDxQMldPlCoUVY+5uN8WjDKEQ/E/kXO08tOi47wjle69Ym/N
-         tuww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DFVYjmutsndVs1ZuTbUoHDKL/zDwuKKZLd3sEqGsf30=;
-        b=z2VNU7OpElagLhziT3oQL3CpNnxnTOmthn+dJPdCSRLorKWjbCgTPIp8rFWllmDry1
-         lwamhUQ9JKwNOSirbrO7AvDgQWysm6HRkHYLpGX2OdAC/OwR/NlsZM01HcyTXIFXfgQL
-         MovH5U5VgSq3JIVHoH0b73Zh4iVqYEyLxo0oWwNtUovsNIfJljRvICsY0zAqYCNNeS71
-         OQEV/apNIZF4Nza8Lxh2Fb7UofElvnJyTi5SSIuLv1bueabl0Beth6yDTbUoGkFVrDE2
-         VIvaff7l2lBHUxGbARNU4W7DbkjDHpc4DRX3jK7kWjVJ/Woe7edoESWyC/e4wIDi/jMz
-         RgpA==
-X-Gm-Message-State: AOAM531lJ9BHrA7iO8fNsKWYjjMO6x4vitClfEG50oqf8XPJSwz3qVlD
-        h0MCZT5IP85pk0bB9319qvX3ZW1RMeI=
-X-Google-Smtp-Source: ABdhPJzO1eGYQioaLUQKJjYs439ok7X8lVlfFqEAw5m0vfIlGjvskR9EZaPEwap7NCSYxHi3U38BUg==
-X-Received: by 2002:a17:90b:3b4c:: with SMTP id ot12mr2535674pjb.36.1631630858406;
-        Tue, 14 Sep 2021 07:47:38 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id c23sm11643249pgb.74.2021.09.14.07.47.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 07:47:37 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 07:47:35 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v2 29/29] ABI: sysfs-ptp: use wildcards on What
- definitions
-Message-ID: <20210914144735.GD23296@hoboy.vegasvil.org>
-References: <cover.1631629496.git.mchehab+huawei@kernel.org>
- <ead7c9b34e7a00146e518d5f7c255b9fc72a9903.1631629496.git.mchehab+huawei@kernel.org>
+        id S233858AbhINOub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:50:31 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:36305 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234274AbhINOtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:49:03 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H85mc3stlz9sTZ;
+        Tue, 14 Sep 2021 16:47:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id GO3bOpvNkxSJ; Tue, 14 Sep 2021 16:47:44 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H85mc2pnkz9sTY;
+        Tue, 14 Sep 2021 16:47:44 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 475E88B773;
+        Tue, 14 Sep 2021 16:47:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 6uDZRDL0dNLX; Tue, 14 Sep 2021 16:47:44 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.207])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 86DA68B763;
+        Tue, 14 Sep 2021 16:47:42 +0200 (CEST)
+Subject: Re: [PATCH v3 4/8] powerpc/pseries/svm: Add a powerpc version of
+ cc_platform_has()
+To:     Borislav Petkov <bp@alien8.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-efi@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
+        kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        platform-driver-x86@vger.kernel.org,
+        Paul Mackerras <paulus@samba.org>, linux-s390@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-graphics-maintainer@vmware.com,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
+ <YUCOTIPPsJJpLO/d@zn.tnic>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <41b93dae-2f10-15a3-a079-c632381bec73@csgroup.eu>
+Date:   Tue, 14 Sep 2021 16:47:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ead7c9b34e7a00146e518d5f7c255b9fc72a9903.1631629496.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YUCOTIPPsJJpLO/d@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 04:32:44PM +0200, Mauro Carvalho Chehab wrote:
-> An "N" upper letter is not a wildcard, nor can easily be identified
-> by script, specially since the USB sysfs define things like.
-> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
-> to convert it into a Regex.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+
+Le 14/09/2021 à 13:58, Borislav Petkov a écrit :
+> On Wed, Sep 08, 2021 at 05:58:35PM -0500, Tom Lendacky wrote:
+>> Introduce a powerpc version of the cc_platform_has() function. This will
+>> be used to replace the powerpc mem_encrypt_active() implementation, so
+>> the implementation will initially only support the CC_ATTR_MEM_ENCRYPT
+>> attribute.
+>>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+>> ---
+>>   arch/powerpc/platforms/pseries/Kconfig       |  1 +
+>>   arch/powerpc/platforms/pseries/Makefile      |  2 ++
+>>   arch/powerpc/platforms/pseries/cc_platform.c | 26 ++++++++++++++++++++
+>>   3 files changed, 29 insertions(+)
+>>   create mode 100644 arch/powerpc/platforms/pseries/cc_platform.c
+> 
+> Michael,
+> 
+> can I get an ACK for the ppc bits to carry them through the tip tree
+> pls?
+> 
+> Btw, on a related note, cross-compiling this throws the following error here:
+> 
+> $ make CROSS_COMPILE=/home/share/src/crosstool/gcc-9.4.0-nolibc/powerpc64-linux/bin/powerpc64-linux- V=1 ARCH=powerpc
+> 
+> ...
+> 
+> /home/share/src/crosstool/gcc-9.4.0-nolibc/powerpc64-linux/bin/powerpc64-linux-gcc -Wp,-MD,arch/powerpc/boot/.crt0.o.d -D__ASSEMBLY__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -O2 -msoft-float -mno-altivec -mno-vsx -pipe -fomit-frame-pointer -fno-builtin -fPIC -nostdinc -include ./include/linux/compiler_attributes.h -I./arch/powerpc/include -I./arch/powerpc/include/generated  -I./include -I./arch/powerpc/include/uapi -I./arch/powerpc/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -m32 -isystem /home/share/src/crosstool/gcc-9.4.0-nolibc/powerpc64-linux/bin/../lib/gcc/powerpc64-linux/9.4.0/include -mbig-endian -nostdinc -c -o arch/powerpc/boot/crt0.o arch/powerpc/boot/crt0.S
+> In file included from <command-line>:
+> ././include/linux/compiler_attributes.h:62:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+>     62 | #if __has_attribute(__assume_aligned__)
+>        |     ^~~~~~~~~~~~~~~
+> ././include/linux/compiler_attributes.h:62:20: error: missing binary operator before token "("
+>     62 | #if __has_attribute(__assume_aligned__)
+>        |                    ^
+> ././include/linux/compiler_attributes.h:88:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
+>     88 | #if __has_attribute(__copy__)
+>        |     ^~~~~~~~~~~~~~~
+> ...
+> 
+> Known issue?
+> 
+> This __has_attribute() thing is supposed to be supported
+> in gcc since 5.1 and I'm using the crosstool stuff from
+> https://www.kernel.org/pub/tools/crosstool/ and gcc-9.4 above is pretty
+> new so that should not happen actually.
+> 
+> But it does...
+> 
+> Hmmm.
+> 
+
+
+Yes, see 
+https://lore.kernel.org/linuxppc-dev/20210914123919.58203eef@canb.auug.org.au/T/#t
+
