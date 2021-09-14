@@ -2,66 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B16F40BBCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C24440BBCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235645AbhINWqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:46:48 -0400
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:42257 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235313AbhINWqr (ORCPT
+        id S235707AbhINWsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235313AbhINWsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:46:47 -0400
-Date:   Tue, 14 Sep 2021 22:45:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail; t=1631659526;
-        bh=NgZMqBOxNObodZSjMDIHyt0PNPZZdXFN2N/CqmntTFM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nhf3S8liJkAq1T/BDhESL1FtcJzciSfJQV4L+im0hX0emr+legpSumjsxDFPfdCeS
-         w23Xuvq67qt++gt/7Av0d7Uuq7DY4UzWFn6eyGu/3ILjZtAep9Rt6jZBW3PZydmurv
-         ATfPA86ccj00/ZcuEK5gS+lhq55BPqK7UynZ77QOVjadz/8pF27rS53nub9tfDtpcp
-         Pov9QugSCgbjWU7OfyIRv+tYqkrEaYIWL4sppESlGsc/9Q0tZE/rc8eF5/MhqCIi4V
-         R3ZFwAFFQojvX15I9DT4WMa2FU8x0wN3AnF1SNdEU2Tgit3tbi4vPiIoQT7amXy0CJ
-         9phZSSpiTrOIw==
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH] staging: rtl8723bs: define wowlan_stub only when CONFIG_PM is enabled
-Message-ID: <20210914224509.g2fbttqmrjhevftu@h510>
-In-Reply-To: <20210914085214.GA2088@kadam>
-References: <20210913140937.1490133-1-hello@bryanbrattlof.com> <YT97lJVU8cx3wxwN@kroah.com> <20210913234247.ptqjjbilrtkzc4id@h510> <20210914085214.GA2088@kadam>
+        Tue, 14 Sep 2021 18:48:31 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3951BC061574;
+        Tue, 14 Sep 2021 15:47:13 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id r26so1483592oij.2;
+        Tue, 14 Sep 2021 15:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U71ZYWLeUYGsb2ZWR/vh55TR4X5quf+gNn2D15nmqy8=;
+        b=qs3xPb482ZOjCFLIEbuQgSD5/oQzzTlaI3YsIpJH6NxLSE+lkBmqkCiC1W/kBn1vdo
+         r3Y1Sufkq5D5CvkTSrlUI2J56zBP4owwNdHbGZvXmQq30PH1VclcM9Kr+lveqQB8kcQd
+         bGVjBhj828gqZKWTNpXEzeQxT5hUvZdbC6WWDI6ys8f86ci0nbHiLYKzwKtZ1IACNt3X
+         20h5Se6NrvgtJjzXBHCcnjtjFeWPDLoQP2Wc+diTD+KLKD5r318UbV1W6xNFtMOkQKv0
+         OSMU+INNRtu8zb8wE1OMcBj7+NNajkvIBaU7pEZ9EBCudGpPwuYYpCIAaivLcacWlYB5
+         rH3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=U71ZYWLeUYGsb2ZWR/vh55TR4X5quf+gNn2D15nmqy8=;
+        b=flRWByR3M4HbQ3eF07yl7/sS7iIXYYx4RW1J2wwoJqCNlab7leV5FcHvt78IVDC/lD
+         3FF8wm8hvZxdekOQ8Y764czv0KT/XSXVhu5lK7gZrP4CJQCKCEJI7VIKMaNC9/evv9TR
+         tcp6d1BdJiwLASnu59sAJlyvmUIoNF4VWba8/16qpB/4GRM5SAqR7JO+RFarZ+Jvf2JE
+         FKgn4Wz8/aC2Y9e3YIrss4Z6tAuWZuiL10n1AZDDlbckgj6vT3OssBWqFbiCMnLvVGn1
+         /021bikHq5M5Of8n8PsBQd0qScy3J/Xdbe3ZKkcxLWOzrxudzGj6UdqSPpi/zoC3xbbe
+         ELzg==
+X-Gm-Message-State: AOAM532lH/IY9CnJM4nG3dkd92G6PSJBNlPM3X3/iV5eQIInYsX+kz0R
+        nAhh3aBkIFVSYdWA9+yXBpi5IsgFkOU=
+X-Google-Smtp-Source: ABdhPJyem2PzCAqZw7otUsRf0pAwj2UhqxvfHjiY7lB9sr3qAdIYb+swAfqWLvh0K0mozsXmF1ZLwA==
+X-Received: by 2002:aca:accd:: with SMTP id v196mr3266817oie.152.1631659632620;
+        Tue, 14 Sep 2021 15:47:12 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t30sm2634402oiw.42.2021.09.14.15.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 15:47:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Anatoly Pugachev <matorola@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH v2] sparc: mdesc: Fix compile error seen with gcc 11.x
+Date:   Tue, 14 Sep 2021 15:47:09 -0700
+Message-Id: <20210914224709.601156-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On this day, September 14, 2021, thus sayeth Dan Carpenter:
-> On Mon, Sep 13, 2021 at 11:42:55PM +0000, Bryan Brattlof wrote:
-> > I'll be back with a v2 that rips all of this out.
->
-> Or use the __maybe_unused annotation:
->
-> static __maybe_unused const struct wiphy_wowlan_support wowlan_stub =3D {
->
+sparc64 images fail to compile with gcc 11.x, reporting the following
+errors.
 
-Thanks for the suggestion Dan; I like this much better. :)
+arch/sparc/kernel/mdesc.c:647:22: error:
+	'strcmp' reading 1 or more bytes from a region of size 0
+arch/sparc/kernel/mdesc.c:692:22: error:
+	'strcmp' reading 1 or more bytes from a region of size 0
+arch/sparc/kernel/mdesc.c:719:21:
+	error: 'strcmp' reading 1 or more bytes from a region of size 0
 
-I've been poking around with my config today and noticed I can still
-produce this warning with CONFIG_PM enabled, which means something else
-is going on that I don't fully understand yet.
+The underlying problem is that node_block() returns a pointer beyond
+the end of struct mdesc_hdr. gcc 11.x detects that and reports the error.
+Adding an additional zero-length field to struct mdesc_hdr and pointing
+to that field fixes the problem.
 
-I may hold off on sending v2 until I make sure I understand what's going
-on and double check that I didn't bork my config.
+Cc: Arnd Bergmann <arnd@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: Anatoly Pugachev <matorola@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: data[0] => data[]
 
-Thanks from jumping in
-~Bryan
+I am not sure if there was agreement to accept this patch or not, but
+I was asked to resend it with the above change, so here it is. An open
+question was if it is acceptable to have a structure named xxx_hdr
+include an element pointing to the data following that header.
+
+If this patch is not acceptable, the patch in buildbot may be a possible
+alternative to consider.
+    https://git.busybox.net/buildroot/commit/?id=6e1106b4a9aee25d1556310d5cd1cb6dde2e6e3f
+
+ arch/sparc/kernel/mdesc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
+index 8e645ddac58e..83e1f699bc32 100644
+--- a/arch/sparc/kernel/mdesc.c
++++ b/arch/sparc/kernel/mdesc.c
+@@ -39,6 +39,7 @@ struct mdesc_hdr {
+ 	u32	node_sz; /* node block size */
+ 	u32	name_sz; /* name block size */
+ 	u32	data_sz; /* data block size */
++	char	data[];
+ } __attribute__((aligned(16)));
+ 
+ struct mdesc_elem {
+@@ -612,7 +613,7 @@ EXPORT_SYMBOL(mdesc_get_node_info);
+ 
+ static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
+ {
+-	return (struct mdesc_elem *) (mdesc + 1);
++	return (struct mdesc_elem *) (mdesc->data);
+ }
+ 
+ static void *name_block(struct mdesc_hdr *mdesc)
+-- 
+2.33.0
 
