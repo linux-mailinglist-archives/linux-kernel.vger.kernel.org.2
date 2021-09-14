@@ -2,175 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEB340AAEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292F740AAEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhINJf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhINJfz (ORCPT
+        id S231150AbhINJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:36:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41078 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230330AbhINJgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:35:55 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E104BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:34:38 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id b15so12819363ils.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:34:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hMAVv0XT+E1ILWD7RS17ZuL6RZs23nNagE+ZxXeUmc4=;
-        b=DfhK2XQPq77fyylJZQ6SV9Tt0LGuzDR4qtbIiJf7rBrsCGFNdpeAejKoqrCDd66/lF
-         pbBfFW6GAaUaEiEhXv/kxgaoTiR4gOMv5Zi+Bvh8KfbmwhkXiFKLLq5Q+Wb5gI4Go1PN
-         w0phzrNI//UhNz13RTgymvcPwbJIlST/X/Y8Bqc+n7IOd1PswOjwP77lRbUKukQxiVdt
-         CPu68BWokEqnslEps5io/YtGIwK6PoexZJHmUREQRXORnG/D0UKudbJ5mq/Q523Nbnrm
-         MI9bgAmT6P7gA4KBOag52QslmNasWIaXxgx7ScOxXUTzJUExKPZIheLeK7NWdHFjKYam
-         h0cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hMAVv0XT+E1ILWD7RS17ZuL6RZs23nNagE+ZxXeUmc4=;
-        b=OoCGqWv5E3yHK0FLeOdQC7HA8iu2xN1fx8h3ORlC7CQ3r2UUf/XG75QYp61OTnwbLH
-         qELBzf6a33cC5sySER2NfqcaRjRr6130uf18CrdkHcD25wcxjLqg6yBhU6eAuIbnuFd7
-         Zm5hGYBIVxVfaLz/IGfA3TCffDtvQdKgXUZ6EJC5Ve0hUexBqFtYBAK6JhipsDpoAN3T
-         Y6yLs+a2j6fHEYnVkQOsfcW7PJ4wsXAwMA17qFnp4Cd9UBc1EsFc7qTm4/NaOVMBwgri
-         /+PJWS6p3FtEKdqFTASV/L9UQagykD4AiEIo7D4BzGL8YIXa/rSucbGr+nWIyAf9pJyJ
-         D/eg==
-X-Gm-Message-State: AOAM530yli+4aknYMHWMEzAbDdvjt/j8bcvYKjhGEdZKQjiDzsvVxFkA
-        9FZXs7ZQbQhDnBrfZE5AHuc=
-X-Google-Smtp-Source: ABdhPJzppb0sDrkpuWPulnFXyKo9jXoqYBuEOHHPhdWd2MDrwBzvAePpMlWbnmEThvBt50kB2+lqJw==
-X-Received: by 2002:a05:6e02:e53:: with SMTP id l19mr4706527ilk.217.1631612078377;
-        Tue, 14 Sep 2021 02:34:38 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id g13sm6557821ile.68.2021.09.14.02.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 02:34:37 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id E839427C0054;
-        Tue, 14 Sep 2021 05:34:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 14 Sep 2021 05:34:36 -0400
-X-ME-Sender: <xms:qmxAYSNp3sp2vYnMjCMlWqOXAMYEmmboWeqBjRiIVVejEc0eSMOJuQ>
-    <xme:qmxAYQ9SYsGOZpMCc-ot0wDxItxvXewVmRn6WjZRkm0Q5dte5fGUN7SVpMYBzMgeL
-    -8KjBjv2bwScUdhRA>
-X-ME-Received: <xmr:qmxAYZTCyksJuicjFZ2kb-JlaX0ruv-bW1Pb6bARrMqGB9HtUj2mnMQ_gAltFw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:qmxAYSs9eW0R0T78Rs9sR_666icd-so54uoQSmReUznEKHRcZ084HA>
-    <xmx:qmxAYadxe3Ozutru1w4Lp-V9M_L7t2ZOYaqrPsAWsuwiKdVlrtJQ6A>
-    <xmx:qmxAYW0KhiznUMqynA0I5CIX-lKxo0UBpjSUgJ_7mlbA6UHNi8yPhg>
-    <xmx:rGxAYbW7TfnOBX_dMmbtu7lAFNly2P18m5dVy6PgxDbIKeJqbSxE2Sjkx3E>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 05:34:34 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 17:34:31 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 7/9] virtio-pci: harden INTX interrupts
-Message-ID: <YUBsp7j6iHyQeMZ6@boqun-archlinux>
-References: <20210913055353.35219-1-jasowang@redhat.com>
- <20210913055353.35219-8-jasowang@redhat.com>
- <875yv4f99j.ffs@tglx>
+        Tue, 14 Sep 2021 05:36:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631612096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=51BjhGNRsIASk6oWqLFKhAN0ok8SXVqby17Dax7DoqY=;
+        b=YGo3Mv3krXeCpah8PGXYjXW8q+kacR9IPqm4sZbjE0AsnttXfD2XR6do4S9xC/vymbC5EH
+        FeYcYKOpoemuwIkQh10cGyXVnlwD+ug7QlggZfRKfSRW7QjRzqcMUfKP1x97TFuFkUkP+3
+        vetl+8zw4aRUgmIo7NDV3BtPMQnJbCE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-WOQz7cXmMwm8XUlpCfwUrA-1; Tue, 14 Sep 2021 05:34:54 -0400
+X-MC-Unique: WOQz7cXmMwm8XUlpCfwUrA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E4E5802923;
+        Tue, 14 Sep 2021 09:34:52 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5CE877F3C;
+        Tue, 14 Sep 2021 09:34:48 +0000 (UTC)
+Message-ID: <fb828c752fac255c6a1d997ff27dfc5264a5c658.camel@redhat.com>
+Subject: Re: [RFC PATCH 3/3] nSVM: use svm->nested.save to load vmcb12
+ registers and avoid TOC/TOU races
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 14 Sep 2021 12:34:47 +0300
+In-Reply-To: <ee207b0c-eab3-13ba-44be-999f849008d2@redhat.com>
+References: <20210903102039.55422-1-eesposit@redhat.com>
+         <20210903102039.55422-4-eesposit@redhat.com>
+         <21d2bf8c4e3eb3fc5d297fd13300557ec686b625.camel@redhat.com>
+         <73b5a5bb-48f2-3a08-c76b-a82b5b69c406@redhat.com>
+         <9585f1387b2581d30b74cd163a9aac2adbd37a93.camel@redhat.com>
+         <2b1e17416cef1e37f42e9bc8b2283b03d2651cb2.camel@redhat.com>
+         <ee207b0c-eab3-13ba-44be-999f849008d2@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875yv4f99j.ffs@tglx>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:36:24PM +0200, Thomas Gleixner wrote:
-[...]
-> As the device startup is not really happening often it's sensible to do
-> the following
+On Tue, 2021-09-14 at 11:24 +0200, Emanuele Giuseppe Esposito wrote:
 > 
->         disable_irq();
->         vp_dev->intx_soft_enabled = true;
->         enable_irq();
+> On 14/09/2021 11:12, Maxim Levitsky wrote:
+> > On Tue, 2021-09-14 at 12:02 +0300, Maxim Levitsky wrote:
+> > > On Tue, 2021-09-14 at 10:20 +0200, Emanuele Giuseppe Esposito wrote:
+> > > > On 12/09/2021 12:42, Maxim Levitsky wrote:
+> > > > > >    
+> > > > > > -	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
+> > > > > > +	if (!nested_vmcb_valid_sregs(vcpu, &svm->nested.save) ||
+> > > > > >    	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
+> > > > > If you use a different struct for the copied fields, then it makes
+> > > > > sense IMHO to drop the 'control' parameter from nested_vmcb_check_controls,
+> > > > > and just use the svm->nested.save there directly.
+> > > > > 
+> > > > 
+> > > > Ok, what you say in patch 2 makes sense to me. I can create a new struct
+> > > > vmcb_save_area_cached, but I need to keep nested.ctl because 1) it is
+> > > > used also elsewhere, and different fields from the one checked here are
+> > > > read/set and 2) using another structure (or the same
+> > > 
+> > > Yes, keep nested.ctl, since vast majority of the fields are copied I think.
+> > 
+> > But actually that you mention it, I'll say why not to create vmcb_control_area_cached
+> > as well indeed and change the type of svm->nested.save to it. (in a separate patch)
+> > 
+> > I see what you mean that we modify it a bit (but we shoudn't to be honest) and such, but
+> > all of this can be fixed.
 > 
-> because:
+> So basically you are proposing:
 > 
->         disable_irq()
->           synchronize_irq()
+> struct svm_nested_state {
+> 	...
+> 	struct vmcb_control_area ctl; // we need this because it is used 
+> everywhere, I think
+> 	struct vmcb_control_area_cached ctl_cached;
+> 	struct vmcb_save_area_cached save_cached;
+> 	...
+> }
 > 
-> acts as a barrier for the preceeding stores:
+> and then
 > 
->         disable_irq()
->    	  raw_spin_lock(desc->lock);
->           __disable_irq(desc);
->    	  raw_spin_unlock(desc->lock);
+> if (!nested_vmcb_valid_sregs(vcpu, &svm->nested.save_cached) ||
+>      !nested_vmcb_check_controls(vcpu, &svm->nested.ctl_cached)) {
 > 
->           synchronize_irq()
->             do {
->    	      raw_spin_lock(desc->lock);
->               in_progress = check_inprogress(desc);
->    	      raw_spin_unlock(desc->lock);
->             } while (in_progress);     
+> like that?
 > 
->         intx_soft_enabled = true;
-> 
->         enable_irq();
-> 
-> In this case synchronize_irq() prevents the subsequent store to
-> intx_soft_enabled to leak into the __disable_irq(desc) section which in
-> turn makes it impossible for an interrupt handler to observe
-> intx_soft_enabled == true before the prerequisites which preceed the
-> call to disable_irq() are visible.
-> 
+> Or do you want to delete nested.ctl completely and just keep the fields 
+> actually used in ctl_cached?
 
-Right. In our memory model, raw_spin_unlock(desc->lock) +
-raw_spin_lock(desc->lock) provides the so-call RCtso ordering, that is
-for the following code:
 
-	A
-	...
-	raw_spin_unlock(desc->lock);
-	...
-	raw_spin_lock(desc->lock);
-	...
-	B
+I would do it this way:
 
-Memory accesses A and B will not be reordered unless A is a store and B
-is a load. Such an ordering guarantee fulfils the requirement here.
+struct svm_nested_state {
+        ...
+	/* cached fields from the vmcb12 */
+	struct  vmcb_control_area_cached ctl;
+	struct  vmcb_save_area_cached save;
+        ...
+};
 
-For more information, see the LOCKING section of
-tools/memory-model/Documentation/explanation.txt
 
-Regards,
-Boqun
+Best regards,
+     Maxim Levitsky
 
-> Of course the memory ordering wizards might disagree, but if they do,
-> then we have a massive chase of ordering problems vs. similar constructs
-> all over the tree ahead of us.
 > 
-> From the interrupt perspective the sequence:
 > 
->         disable_irq();
->         vp_dev->intx_soft_enabled = true;
->         enable_irq();
+> Also, note that as I am trying to use vmcb_save_area_cached, it is worth 
+> noticing that nested_vmcb_valid_sregs() is also used in 
+> svm_set_nested_state(), so it requires some additional little changes.
 > 
-> is perfectly fine as well. Any interrupt arriving during the disabled
-> section will be reraised on enable_irq() in hardware because it's a
-> level interrupt. Any resulting failure is either a hardware or a
-> hypervisor bug.
+> Thank you,
+> Emanuele
 > 
-> Thanks,
-> 
->         tglx
+> > The advantage of having vmcb_control_area_cached is that it becomes impossible to use
+> > by mistake a non copied field from the guest.
+> > 
+> > It would also emphasize that this stuff came from the guest and should be treated as
+> > a toxic waste.
+> > 
+> > Note again that this should be done if we agree as a separate patch.
+> > 
+> > > Best regards,
+> > > 	Maxim Levitsky
+> > > 
+> > > 
+> > > > vmcb_save_area_cached) in its place would just duplicate the same fields
+> > > > of nested.ctl, creating even more confusion and possible inconsistency.
+> > > > 
+> > > > Let me know if you disagree.
+> > > > 
+> > > > Thank you,
+> > > > Emanuele
+> > > > 
+
+
