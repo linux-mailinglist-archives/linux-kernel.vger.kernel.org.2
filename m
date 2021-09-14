@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D9940B24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B30D40B246
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhINO5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234452AbhINO5n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:57:43 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A627DC061574;
-        Tue, 14 Sep 2021 07:56:25 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1048001ab509412f10df56.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:4800:1ab5:941:2f10:df56])
+        id S234771AbhINO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:57:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233856AbhINO5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:57:39 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3AA951EC04D1;
-        Tue, 14 Sep 2021 16:56:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631631379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fC6oRVekYYeOWo6Ou3mRPO8RAeBaCtshKbuZA0gycas=;
-        b=DjTjeMWi1aTZkXxq8Lf9KyX6WC0t0Xl9olO8XFqhK7E+qGjzzzpMJxBPFDqtXa7lxuvLMF
-        BJZxFO3MGqQdmfuJdFwoNpN1Q2f2YF1GOFt4ptUcVjuOWJnOJOQqL4VXuXLUK8z4I3mRHF
-        ddNSSmZuSk4r3r8c6iL+tcOt78DT0h0=
-Date:   Tue, 14 Sep 2021 16:56:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-efi@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
-        kvm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        platform-driver-x86@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>, linux-s390@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-graphics-maintainer@vmware.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v3 4/8] powerpc/pseries/svm: Add a powerpc version of
- cc_platform_has()
-Message-ID: <YUC4CW02tqEttZZJ@zn.tnic>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
- <YUCOTIPPsJJpLO/d@zn.tnic>
- <41b93dae-2f10-15a3-a079-c632381bec73@csgroup.eu>
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CDEA60FD7;
+        Tue, 14 Sep 2021 14:56:21 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 10:56:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL] tracing: Fixes to bootconfig memory management
+Message-ID: <20210914105620.677b90e5@oasis.local.home>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <41b93dae-2f10-15a3-a079-c632381bec73@csgroup.eu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 04:47:41PM +0200, Christophe Leroy wrote:
-> Yes, see https://lore.kernel.org/linuxppc-dev/20210914123919.58203eef@canb.auug.org.au/T/#t
 
-Aha, more compiler magic stuff ;-\
+Linus,
 
-Oh well, I guess that fix will land upstream soon.
+A couple of memory management fixes to the bootconfig code
 
-Thx.
 
--- 
-Regards/Gruss,
-    Boris.
+Please pull the latest trace-v5.15-rc1 tree, which can be found at:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.15-rc1
+
+Tag SHA1: 04c8861530c8c66f00918702374668e8e8b230af
+Head SHA1: 8e9f0934a07e699044d422ca9cfb553f25c72b41
+
+
+Masami Hiramatsu (2):
+      bootconfig: Fix to check the xbc_node is used before free it
+      bootconfig: Free copied bootconfig data after boot
+
+----
+ init/main.c      | 8 ++++++++
+ lib/bootconfig.c | 3 ++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+---------------------------
+diff --git a/init/main.c b/init/main.c
+index d08caed17c7f..ddbcb372225a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -319,6 +319,8 @@ static void * __init get_boot_config_from_initrd(u32 *_size, u32 *_csum)
+ #ifdef CONFIG_BOOT_CONFIG
+ 
+ static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
++static void *init_xbc_data_copy __initdata;
++static phys_addr_t init_xbc_data_size __initdata;
+ 
+ #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
+ 
+@@ -458,18 +460,24 @@ static void __init setup_boot_config(void)
+ 		else
+ 			pr_err("Failed to parse bootconfig: %s at %d.\n",
+ 				msg, pos);
++		memblock_free(__pa(copy), size + 1);
+ 	} else {
+ 		pr_info("Load bootconfig: %d bytes %d nodes\n", size, ret);
+ 		/* keys starting with "kernel." are passed via cmdline */
+ 		extra_command_line = xbc_make_cmdline("kernel");
+ 		/* Also, "init." keys are init arguments */
+ 		extra_init_args = xbc_make_cmdline("init");
++		init_xbc_data_copy = copy;
++		init_xbc_data_size = size + 1;
+ 	}
+ 	return;
+ }
+ 
+ static void __init exit_boot_config(void)
+ {
++	if (!init_xbc_data_copy)
++		return;
++	memblock_free(__pa(init_xbc_data_copy), init_xbc_data_size);
+ 	xbc_destroy_all();
+ }
+ 
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index f8419cff1147..4f8849706ef6 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -792,7 +792,8 @@ void __init xbc_destroy_all(void)
+ 	xbc_data = NULL;
+ 	xbc_data_size = 0;
+ 	xbc_node_num = 0;
+-	memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
++	if (xbc_nodes)
++		memblock_free(__pa(xbc_nodes), sizeof(struct xbc_node) * XBC_NODE_MAX);
+ 	xbc_nodes = NULL;
+ 	brace_index = 0;
+ }
