@@ -2,76 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D7A40B22C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B3140B230
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbhINOzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234229AbhINOzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:55:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E0C61151;
-        Tue, 14 Sep 2021 14:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631631233;
-        bh=UyPfgRf8uNvLL2Xoph5eeknTt2rDlA/6yr/mXz4e9fc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AErxpXCpEOQqU82TMQhzoDhGmr2/469JKSupeG6eotJUeKOVof2Kcxh6b6odFGtNr
-         KKk6aG1F/Nk3uu/5UblbKBbrpFjvO5djWyEVGHMjp5xKFko8wegbT8hwv3xxYcp6/w
-         gPh408iehUCBe3wVX5uHflQPuUBiDBHxHPVW0owuGhwpwdyyLoeUomxyjPTMaLjGVv
-         pZ4NzSo/qLQX89eP2craJtaW5Y8EKdLjpSeV1OmbNt8I6JpAwsJ2u3ZAGU4QbBXTri
-         /X1SbBnp304M4Td3rafIKWLmp71yI6T87IJn4hGGkZ4obi6cBQOcEXpIQNbNbajAfO
-         +gmVXE73WU08g==
-Received: by mail-wr1-f47.google.com with SMTP id g16so20737670wrb.3;
-        Tue, 14 Sep 2021 07:53:53 -0700 (PDT)
-X-Gm-Message-State: AOAM530TBt9UoKzI3XO/wp1FhMV6Dg5LaAClfhKuXt6s0tsBgDro8+20
-        BbW9k0UGUJTJXcgi6CG1RwNfqJL+6w4oPIzzPHQ=
-X-Google-Smtp-Source: ABdhPJx5ztYtEKc6yogUXMZL70X9nXnPBmct5T5kg4jZV1+wT3mtMsQKg31y65wrSbIFHbrJAKnwayH234TEtY5Vgdc=
-X-Received: by 2002:adf:f884:: with SMTP id u4mr18727055wrp.411.1631631232200;
- Tue, 14 Sep 2021 07:53:52 -0700 (PDT)
+        id S234308AbhINO4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:56:22 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:45092 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231816AbhINO4U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:56:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631631302; x=1663167302;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=IjFR4kRJRpH81PfAAqBxjNLPUPgdsFh5sAVjP2zjExY=;
+  b=rTYbQKL5cxYvwpacP+7glLOtXcdXpkdjwiznwhlSDv45t/QCY1wTfexK
+   3GDIV6dAm402KfQg7JV5zNIKYscr1nemZAajnYM/MTCgJFjS9gfTwKG8u
+   h4vjjL+7ZrnqcUdgOj0hDq2/FJzNt0uYMwohtARLN+69FUh5UYelrFgMS
+   dw0DKka1MUR4qeW3kQ0Zizqqp2WUMGsYzqD51y/WRECLf/8QVQShffl7z
+   szBHdkMyB3R24a7Z44itgcnBQKQDaO1a40zgjEbJGfB0e6sRYsKBWmz97
+   /Hwezqy0wWgW4/Eml5W/h+45EbmInwvg0jX3hT9W91EwGMY5CsbDTT5R8
+   g==;
+IronPort-SDR: WgsuTRdUEvBb/bBim9+6LQs+HiHsZAD93+sz2jBX3vGvxDlpezogYYT6614ZRDfbRJAu/V3l7n
+ zMUGxzTT1KhojNVkC0bpFpO+VH6GSrcXthkgeAXzRCSTMIP8o9bRheXmuTn08e6smYaiTkACGy
+ 5aAvyexFhHvpvEtXSCUzn0TF43dLoyQEFaX74EjfsbxCvAaA4MfU8023skkrbwdEpFCIcuWJaK
+ EiMrAZzg3fZplCXRe9Tm5XWFsaxBb0MCAaSbKprcmsFoB9VxCSA1qfUJQzvjFLW8ECzn7GQ+cV
+ h31XJL/EBml9VkD0Xvb06s1M
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="144049782"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Sep 2021 07:55:01 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 14 Sep 2021 07:55:01 -0700
+Received: from [10.171.246.26] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 14 Sep 2021 07:54:59 -0700
+Subject: Re: [PATCH v2 0/4] ARM: at91: add new nodes to DT and fix for PM
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <robh+dt@kernel.org>, <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210823131915.23857-1-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <2406a3ff-9fe0-441e-b4c8-eb8d0e5f7027@microchip.com>
+Date:   Tue, 14 Sep 2021 16:54:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210913163712.922188-1-linux@roeck-us.net> <YT+SPIAl0IdWOAn/@ravnborg.org>
- <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net> <2d8f45425f024fd9a3d91a4b4a1304cf@AcuMS.aculab.com>
- <3b069cde-6f15-1df1-fbed-e8d94d0ef173@roeck-us.net>
-In-Reply-To: <3b069cde-6f15-1df1-fbed-e8d94d0ef173@roeck-us.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 14 Sep 2021 16:53:35 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
-Message-ID: <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
-Subject: Re: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210823131915.23857-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 4:24 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 9/14/21 7:17 AM, David Laight wrote:
-> >> Sorry, I didn't realize that a field of size 0 increases the structure size
-> >> on sparc. I had checked the size of the old and the new structure with gcc
-> >> on x86_64 and didn't see a field size increase.
-> >
-> > clang output doesn't change:
-> >
-> > https://godbolt.org/z/bTeeq19j1
-> >
-> > gcc ought to generate the same size.
-> >
-> > It ought to be 'char data[];' though.
-> >
->
-> I am never sure if [] or [0] is "correct". Anyway, is there agreement that this
-> is an acceptable solution ? I'll be happy to resend if that is the case.
+On 23/08/2021 at 15:19, Claudiu Beznea wrote:
+> Hi,
+> 
+> The following patches enable UDDRC, DDR3 PHY, SECURAM and SHDWC IPs
+> on SAMA7G5.
+> 
+> Besides this patch 1/1 avoid the panic on PM initialization code allowing
+> the system to boot when PM is enabled but not enough information is
+> provided in DT.
 
-Yes, looks good to me, in the [] version. I think the [0] version can be
-interpreted as a zero-length array that may not be accessed, while the
-[] flexible array syntax clearly means that extra data follows, and it's
-part of the C standard now, while [0] is a gcc extension.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-        Arnd
+Whole series queued to at91-fixes for 5.15 as without these patches the 
+SAMA7G5 don't have power management at full capacity.
+
+Best regards,
+   Nicolas
+
+> Changes in v2:
+> - changes cover letter title from
+>    "ARM: dts: at91: enable ips for sama7g5" to
+>    "ARM: at91: add new nodes to DT and fix for PM"
+> - update the device tree patches title and description
+> - added patch "ARM: at91: pm: do not panic if ram controllers are not
+>    enabled"
+> 
+> Claudiu Beznea (4):
+>    ARM: at91: pm: do not panic if ram controllers are not enabled
+>    ARM: dts: at91: sama7g5: add ram controllers
+>    ARM: dts: at91: sama7g5: add securam node
+>    ARM: dts: at91: sama7g5: add shdwc node
+> 
+>   arch/arm/boot/dts/at91-sama7g5ek.dts |  9 ++++
+>   arch/arm/boot/dts/sama7g5.dtsi       | 34 ++++++++++++
+>   arch/arm/mach-at91/pm.c              | 78 ++++++++++++++++++++++------
+>   3 files changed, 105 insertions(+), 16 deletions(-)
+> 
+
+
+-- 
+Nicolas Ferre
