@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A6E40A4A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAFC40A4A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239179AbhINDfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239182AbhINDfD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:35:03 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B06C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:33:47 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id f65so10842118pfb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vi+6Oqzw5KxlySzgQbdJRDGWe6tPJCzCtUhaRDBd7v0=;
-        b=sx8egWgqFJdVg3oPrF2H/aMEWHH1fVFnCjLuhahKZJkxB5zim7av5ZHPiWAux7YLu4
-         /QvAsTtpu1bY2KFKwQDqqKT24Xq0gVO2HdvHIbTP5rwCfvYJmTA0XoYlhyqxIYGBGVSN
-         b1GpiZRgPxOXmKBhyBae38JdmOZmVRqCovCyd9qO53zTFTK5IHN7J8Uu0/cupFgXB29O
-         w1A65ec5e+yvYMP6d0uUdFg2bThTc8n8wbKrnDibWKb3ekrd4bghP4xEfTDwqFeZZrR4
-         55rUjD1IgbRJ5cqEPWjTHpFurBakE0mj0gF29cNihRJygPfjSZ4ViB3PWNbLTIX+O5Md
-         +fPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vi+6Oqzw5KxlySzgQbdJRDGWe6tPJCzCtUhaRDBd7v0=;
-        b=gKSDmfeZnMMwrHRQjCwtm4/YOIh8mbHD0fR/ynTMGPOcNJXfUCPmYh0nTPjXqw/4kP
-         hlTrU+QDi9EUV/NnAjsoIR0rqMfPeozPw23cF6edQdEC+Lga9Qa2Hygj+Ex/XHrgEqL/
-         qqsoLcUAKp9jHSI9/pIjKuQWiihs/0xlRxP+fwdq6wTLod3oMvpwUR0cazAY4INtjqde
-         Ut3knF8V6Xnm7IGuf0VmqUf27ts4VwBrbpCkS9OZWiiXzSGTw1Q71u0pDiyb1aeszWn0
-         ZOcQI73vRbswQushlf51cplC23/sedVrKlnhAI+3V8HTlXJOcfK7IaxRTsGiRUUFBUwc
-         223A==
-X-Gm-Message-State: AOAM530Ak+xfcy/QtfOgY290x2gH/BDVfGiZ0fI6997IkVpKBsNYsOlQ
-        aoy+9DIhY80jy/IyEC6+3P+xMEYsRoAe8zTChuXMsQ==
-X-Google-Smtp-Source: ABdhPJzw2S/YgGBtO+1c3RPc29HGMQ/BkgHUl3KdPyLmldqI8eb6LknV3uVQi6FfdOHbKpFzUguwneEzrAZEpaVH5hI=
-X-Received: by 2002:a63:d806:: with SMTP id b6mr13920055pgh.395.1631590426624;
- Mon, 13 Sep 2021 20:33:46 -0700 (PDT)
+        id S239165AbhINDfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:35:20 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:56090 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239185AbhINDfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 23:35:06 -0400
+Received: from BC-Mail-Ex22.internal.baidu.com (unknown [172.31.51.16])
+        by Forcepoint Email with ESMTPS id DAF5B42F58B5B2CC6978;
+        Tue, 14 Sep 2021 11:33:45 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex22.internal.baidu.com (172.31.51.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 14 Sep 2021 11:33:45 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 14 Sep 2021 11:33:45 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+        <linux-audit@redhat.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] audit: Convert to SPDX identifier
+Date:   Tue, 14 Sep 2021 11:33:38 +0800
+Message-ID: <20210914033339.134-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210913230955.156323-1-rananta@google.com> <20210913230955.156323-10-rananta@google.com>
-In-Reply-To: <20210913230955.156323-10-rananta@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Mon, 13 Sep 2021 20:33:30 -0700
-Message-ID: <CAAeT=Fyd-K6OSLuCTBsxwqv77yw8YzPouOM2Oiocw4R0qW-0mQ@mail.gmail.com>
-Subject: Re: [PATCH v6 09/14] KVM: arm64: selftests: Add guest support to get
- the vcpuid
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex10.internal.baidu.com (10.127.64.33) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 4:10 PM Raghavendra Rao Ananta
-<rananta@google.com> wrote:
->
-> At times, such as when in the interrupt handler, the guest wants
-> to get the vcpuid that it's running on to pull the per-cpu private
-> data. As a result, introduce guest_get_vcpuid() that returns the
-> vcpuid of the calling vcpu. The interface is architecture
-> independent, but defined only for arm64 as of now.
->
-> Suggested-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> Reviewed-by: Ricardo Koller <ricarkol@google.com>
+Use SPDX-License-Identifier instead of a verbose license text.
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+v1->v2: Change recommended token from "GPL-2.0+" to "GPL-2.0-or-later"
 
-Thank you for creating this utility !
-Reiji
+ kernel/auditsc.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
+
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index 8dd73a64f921..969c1613fed9 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /* auditsc.c -- System-call auditing support
+  * Handles all system-call specific auditing features.
+  *
+@@ -6,20 +7,6 @@
+  * Copyright (C) 2005, 2006 IBM Corporation
+  * All Rights Reserved.
+  *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- *
+  * Written by Rickard E. (Rik) Faith <faith@redhat.com>
+  *
+  * Many of the ideas implemented here are from Stephen C. Tweedie,
+-- 
+2.25.1
+
