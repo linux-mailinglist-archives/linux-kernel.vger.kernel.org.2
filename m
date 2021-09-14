@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B456540B52D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207BB40B533
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhINQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:46:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38400 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhINQq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:46:26 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 76C6520141;
-        Tue, 14 Sep 2021 16:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631637907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ozFdqBIwmwyJglrohMvn3NkJIfp+ikVZXcbLX7txgcw=;
-        b=c+tWXz3iFiMt2fBT2y8zj5/DP3kTS+clAtQNQjW/Q0M6SxwQAy6krw8G8j0cJ8C2E/b09i
-        awJaPyl97itLD9c6bLIbr1CN+kU50My+7nVpVgBukC5bx/DrxIAwFzjQQkm1Bg2V8RK7QV
-        BDTYLlCiPqBuvc5JJPd+Ai4Uy25bW3s=
-Received: from suse.com (unknown [10.163.32.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B15CCA3B94;
-        Tue, 14 Sep 2021 16:45:06 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 17:45:04 +0100
-From:   Mel Gorman <mgorman@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] XFS: remove congestion_wait() loop from
- xfs_buf_alloc_pages()
-Message-ID: <20210914164504.GS3828@suse.com>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>
- <163157838440.13293.12568710689057349786.stgit@noble.brown>
- <20210914020837.GH2361455@dread.disaster.area>
- <163158695921.3992.9776900395549582360@noble.neil.brown.name>
+        id S229946AbhINQsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:48:17 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:42124 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229464AbhINQsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:48:16 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 18EGksoH011021;
+        Tue, 14 Sep 2021 18:46:54 +0200
+Date:   Tue, 14 Sep 2021 18:46:54 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Douglas Gilbert <dgilbert@interlog.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: how many memset(,0,) calls in kernel ?
+Message-ID: <20210914164654.GC10488@1wt.eu>
+References: <1c4a94df-fc2f-1bb2-8bce-2d71f9f1f5df@interlog.com>
+ <20210912045608.GB16216@1wt.eu>
+ <88976a40175c491fb5e3349f6686ad67@AcuMS.aculab.com>
+ <20210913160945.GA2456@1wt.eu>
+ <15cd0a8e72b3460db939060db25dd59a@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163158695921.3992.9776900395549582360@noble.neil.brown.name>
+In-Reply-To: <15cd0a8e72b3460db939060db25dd59a@AcuMS.aculab.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:35:59PM +1000, NeilBrown wrote:
-> On Tue, 14 Sep 2021, Dave Chinner wrote:
-> > On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
-> > > Documentation commment in gfp.h discourages indefinite retry loops on
-> > > ENOMEM and says of __GFP_NOFAIL that it
-> > > 
-> > >     is definitely preferable to use the flag rather than opencode
-> > >     endless loop around allocator.
-> > > 
-> > > congestion_wait() is indistinguishable from
-> > > schedule_timeout_uninterruptible() in practice and it is not a good way
-> > > to wait for memory to become available.
-> > > 
-> > > So instead of waiting, allocate a single page using __GFP_NOFAIL, then
-> > > loop around and try to get any more pages that might be needed with a
-> > > bulk allocation.  This single-page allocation will wait in the most
-> > > appropriate way.
-> > > 
-> > > Signed-off-by: NeilBrown <neilb@suse.de>
-> > > ---
-> > >  fs/xfs/xfs_buf.c |    6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-> > > index 5fa6cd947dd4..1ae3768f6504 100644
-> > > --- a/fs/xfs/xfs_buf.c
-> > > +++ b/fs/xfs/xfs_buf.c
-> > > @@ -372,8 +372,8 @@ xfs_buf_alloc_pages(
-> > >  
-> > >  	/*
-> > >  	 * Bulk filling of pages can take multiple calls. Not filling the entire
-> > > -	 * array is not an allocation failure, so don't back off if we get at
-> > > -	 * least one extra page.
-> > > +	 * array is not an allocation failure, so don't fail or fall back on
-> > > +	 * __GFP_NOFAIL if we get at least one extra page.
-> > >  	 */
-> > >  	for (;;) {
-> > >  		long	last = filled;
-> > > @@ -394,7 +394,7 @@ xfs_buf_alloc_pages(
-> > >  		}
-> > >  
-> > >  		XFS_STATS_INC(bp->b_mount, xb_page_retries);
-> > > -		congestion_wait(BLK_RW_ASYNC, HZ / 50);
-> > > +		bp->b_pages[filled++] = alloc_page(gfp_mask | __GFP_NOFAIL);
+On Tue, Sep 14, 2021 at 08:23:40AM +0000, David Laight wrote:
+> > The exact point is, here it's up to the compiler to decide thanks to
+> > its builtin what it considers best for the target CPU. It already
+> > knows the fixed size and the code is emitted accordingly. It may
+> > very well be a call to the memset() function when the size is large
+> > and a power of two because it knows alternate variants are available
+> > for example.
 > > 
-> > This smells wrong - the whole point of using the bulk page allocator
-> > in this loop is to avoid the costly individual calls to
-> > alloc_page().
-> > 
-> > What we are implementing here fail-fast semantics for readahead and
-> > fail-never for everything else.  If the bulk allocator fails to get
-> > a page from the fast path free lists, it already falls back to
-> > __alloc_pages(gfp, 0, ...) to allocate a single page. So AFAICT
-> > there's no need to add another call to alloc_page() because we can
-> > just do this instead:
-> > 
-> > 	if (flags & XBF_READ_AHEAD)
-> > 		gfp_mask |= __GFP_NORETRY;
-> > 	else
-> > -		gfp_mask |= GFP_NOFS;
-> > +		gfp_mask |= GFP_NOFS | __GFP_NOFAIL;
-> > 
-> > Which should make the __alloc_pages() call in
-> > alloc_pages_bulk_array() do a __GFP_NOFAIL allocation and hence
-> > provide the necessary never-fail guarantee that is needed here.
+> > The compiler might even decide to shrink that area if other bytes
+> > are written just after the memset(), leaving only holes touched by
+> > memset().
 > 
-> That is a nice simplification.
-> Mel Gorman told me
->   https://lore.kernel.org/linux-nfs/20210907153116.GJ3828@suse.com/
-> that alloc_pages_bulk ignores GFP_NOFAIL.  I added that to the
-> documentation comment in an earlier patch.
-> 
-> I had a look at the code and cannot see how it would fail to allocate at
-> least one page.  Maybe Mel can help....
-> 
+> You might think the compiler will make sane choices for the target CPU.
+> But it often makes a complete pig's breakfast of it.
+> I'm pretty sure 6 'rep stos' is slower than 6 write an absolutely
+> everything - with the possible exception of an 8088.
 
-If there are already at least one page an the array and the first attempt
-at bulk allocation fails, it'll simply return. It's an odd corner case
-that may never apply but it's possible.  That said, I'm of the opinion that
-__GFP_NOFAIL should not be expanded and instead congestion_wait should be
-deleted and replaced with something triggered by reclaim making progress.
+It can be suboptimal (especially with the moderate latencies required
+for small areas), but my point is that in plenty of cases the memset()
+call will be totally eliminated. Example:
 
--- 
-Mel Gorman
-SUSE Labs
+The file:
+  #include <string.h>
+
+  int f(int a, int b)
+  {
+        struct {
+                int n1;
+                int n2;
+                int n3;
+                int n4;
+        } s;
+
+        memset(&s, 0, sizeof(s));
+
+        s.n2 = a;
+        s.n3 = b;
+
+        return s.n1 + s.n2 + s.n3 + s.n4;
+  }
+
+gives:
+
+  0000000000000000 <f>:
+   0:   8d 04 37                lea    (%rdi,%rsi,1),%eax
+   3:   c3                      retq   
+
+See ? The builtin allowed the compiler to *know* that these areas
+were zeroes and could optimize them away. More importantly this
+can save some reads from being performed, with the data being only
+written into:
+
+  #include <string.h>
+
+  struct {
+        int n1;
+        int n2;
+  } s;
+
+  void f(int a, int b)
+  {
+
+        memset(&s, 0, sizeof(s));
+
+        s.n1 |= a;
+        s.n2 |= b;
+  }
+
+Gives:
+
+  0000000000000000 <f>:
+   0:   89 3d 00 00 00 00       mov    %edi,0x0(%rip)        # 6 <f+0x6>
+   6:   89 35 00 00 00 00       mov    %esi,0x0(%rip)        # c <f+0xc>
+   c:   c3                      retq   
+
+See ? Just plain writes, no read-modify-write of the memory area.
+If you'd call an external memset() function, you'd instantly lose
+all these possibilities:
+
+  0000000000000000 <f>:
+   0:   55                      push   %rbp
+   1:   ba 08 00 00 00          mov    $0x8,%edx
+   6:   89 fd                   mov    %edi,%ebp
+   8:   bf 00 00 00 00          mov    $0x0,%edi
+   d:   53                      push   %rbx
+   e:   89 f3                   mov    %esi,%ebx
+  10:   31 f6                   xor    %esi,%esi
+  12:   48 83 ec 08             sub    $0x8,%rsp
+  16:   e8 00 00 00 00          callq  1b <f+0x1b>
+  1b:   09 2d 00 00 00 00       or     %ebp,0x0(%rip)        # 21 <f+0x21>
+  21:   09 1d 00 00 00 00       or     %ebx,0x0(%rip)        # 27 <f+0x27>
+  27:   48 83 c4 08             add    $0x8,%rsp
+  2b:   5b                      pop    %rbx
+  2c:   5d                      pop    %rbp
+  2d:   c3                      retq   
+
+Thus the fact that the compiler has knowledge of the memset() is useful.
+
+Willy
