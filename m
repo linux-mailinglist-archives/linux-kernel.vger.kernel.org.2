@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A649A40AC38
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3D240AC39
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhINLK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:10:26 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9041 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhINLKX (ORCPT
+        id S231975AbhINLKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:10:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:32870 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231691AbhINLKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:10:23 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H80v91VZRzVyD9;
-        Tue, 14 Sep 2021 19:08:05 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 14 Sep 2021 19:09:04 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 14 Sep 2021 19:09:03 +0800
-Subject: Re: [PATCH 5.10 000/236] 5.10.65-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210913131100.316353015@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <2c06cbad-4840-7ba1-b49a-56d5fcdc8ccb@huawei.com>
-Date:   Tue, 14 Sep 2021 19:09:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 14 Sep 2021 07:10:49 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631617771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M5L53b1aW4qWbrWwixZQLL5XpvN/Xich8YXIpyYky8g=;
+        b=taPBC9dDsPSAxokSNWsFlzdEp2X2njXjJABW2xf54PpdxaXJW8V5Hd8e98sgxTFU/0wj8z
+        4EZxiZFfGjQz1kncwWvCniVE0bwqUt3p7W0UAR0nH+JjDYw1GNW51sh4W9nmnfmmtOtwwK
+        b9Kn28esA6htvsuKMsWg6Ad32TAFZ/EASmvYpvNl6y97qFIZqHs6jrWWLZ6NyN7aUs7S3c
+        uUoaxJfxHbTV8tPLX22lWZEd4RhJgLQIE2zGXxiZRrJw1fwrIGVXx9onJyEnLTGPd7qhzq
+        pNE8d9p3pqBAAhXRXBzaf/5r9TzCqmeJ48dmS3L1Nm2iTYol58mWl4ST4g0Dkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631617771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M5L53b1aW4qWbrWwixZQLL5XpvN/Xich8YXIpyYky8g=;
+        b=IWZiRicc3an/+umdwpR9xwKZEvdzyIUll1dV1bDMKON/4eAqP/uib1dxUY6WkhRsurOu/S
+        npzWxwUSYz0F9nCg==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
+        david.kaplan@amd.com, konrad.wilk@oracle.com,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH 7/9] virtio-pci: harden INTX interrupts
+In-Reply-To: <YUCBZjjk77q8JS4f@hirez.programming.kicks-ass.net>
+References: <20210913055353.35219-1-jasowang@redhat.com>
+ <20210913055353.35219-8-jasowang@redhat.com> <875yv4f99j.ffs@tglx>
+ <YUCBZjjk77q8JS4f@hirez.programming.kicks-ass.net>
+Date:   Tue, 14 Sep 2021 13:09:31 +0200
+Message-ID: <87tuinct1w.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 14 2021 at 13:03, Peter Zijlstra wrote:
+> On Mon, Sep 13, 2021 at 11:36:24PM +0200, Thomas Gleixner wrote:
+> Here you rely on the UNLOCK+LOCK pattern because we have two adjacent
+> critical sections (or rather, the same twice), which provides RCtso
+> ordering, which is sufficient to make the below store:
+>
+>> 
+>>         intx_soft_enabled = true;
+>
+> a RELEASE. still, I would suggest writing it at least using
+> WRITE_ONCE() with a comment on.
 
+Right. forgot about that.
 
-On 2021/9/13 21:11, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.65 release.
-> There are 236 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 15 Sep 2021 13:10:21 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.65-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> 	disable_irq();
+> 	/*
+> 	 * The above disable_irq() provides TSO ordering and as such
+> 	 * promotes the below store to store-release.
+> 	 */
+> 	WRITE_ONCE(intx_soft_enabled, true);
+> 	enable_irq();
+>
+>> In this case synchronize_irq() prevents the subsequent store to
+>> intx_soft_enabled to leak into the __disable_irq(desc) section which in
+>> turn makes it impossible for an interrupt handler to observe
+>> intx_soft_enabled == true before the prerequisites which preceed the
+>> call to disable_irq() are visible.
+>> 
+>> Of course the memory ordering wizards might disagree, but if they do,
+>> then we have a massive chase of ordering problems vs. similar constructs
+>> all over the tree ahead of us.
+>
+> Your case, UNLOCK s + LOCK s, is fully documented to provide RCtso
+> ordering. The more general case of: UNLOCK r + LOCK s, will shortly
+> appear in documentation near you. Meaning we can forget about the
+> details an blanket state that any UNLOCK followed by a LOCK (on the same
+> CPU) will provide TSO ordering.
 
-Tested on arm64 and x86 for 5.10.65-rc1,
+I think we also should document the disable/synchronize_irq() scheme
+somewhere.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.65-rc1
-Commit: e306b25768e344bf338aeb3b1439af89af21b31e
-Compiler: gcc version 7.3.0 (GCC)
+Thanks,
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8907
-passed: 8907
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+        tglx
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8907
-passed: 8907
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
