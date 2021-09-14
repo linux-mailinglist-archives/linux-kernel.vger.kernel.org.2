@@ -2,182 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1954240B0BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807B140B0C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234021AbhINOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:34:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233963AbhINOex (ORCPT
+        id S233666AbhINOfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233437AbhINOfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:34:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631630015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=chATlUeF4N2elSt4fnYjmQllXyvDEPn10NBT5Xpx3Lc=;
-        b=QFIEPTRXlNb1ZpcwyX6OHpHomCOpd8b2xTFG/YHWFxl4KrkRFfJ97ZKYl+9C2bqAIv2MJy
-        GCd6j6xYdDmijJaJFIy5dlM4Z0Cwhfw3D78P/3E1Q7oz/Czu/gdx3iNBAtiDbAlmeAHnWe
-        XfsqaNA6w53M1pgTFxXHvq0out6TFgA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-xqTRlyvPP4GVeILmnWrUCw-1; Tue, 14 Sep 2021 10:33:31 -0400
-X-MC-Unique: xqTRlyvPP4GVeILmnWrUCw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 556671060DAB;
-        Tue, 14 Sep 2021 14:33:30 +0000 (UTC)
-Received: from T590 (ovpn-12-32.pek2.redhat.com [10.72.12.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B65585D9DC;
-        Tue, 14 Sep 2021 14:33:22 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 22:33:32 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nbd@other.debian.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
-Message-ID: <YUCyvDDG0gOzaFfR@T590>
-References: <20210909141256.2606682-1-yukuai3@huawei.com>
- <20210909141256.2606682-6-yukuai3@huawei.com>
- <YT/2z4PSeW5oJWMq@T590>
- <c6af73a2-f12d-eeef-616e-ae0cdb4f6f2d@huawei.com>
- <YUBE4BJ7+kN1c4l8@T590>
- <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com>
- <YUBTVBioqJ7qas2R@T590>
- <39e628cc-496c-ba20-b53a-fbeecc1d7e4e@huawei.com>
+        Tue, 14 Sep 2021 10:35:30 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185B9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:34:13 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m9so20633123wrb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=umuxgc7vOkVRRThGNSeYBWaUdtkpW3a8Wcpiqh4MYbc=;
+        b=jD8ytdC9p3Oynfkv/tjifDU0me0iiGMF/3m6ml50oggD+O0K3DOQyfqsmqlDIQDoCH
+         VwUYp0Wb4PDbLm7l1Rss7xsPk7TETZWw1YT27aWApJa4xAgZAyp649HE8fcODei/OAa8
+         jR3n5M6hKglM0yOeQkIKKlBnFvQX45NxCLTRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=umuxgc7vOkVRRThGNSeYBWaUdtkpW3a8Wcpiqh4MYbc=;
+        b=oX0F8MVNPef9MIRWqBlaB2BYjGiLDwQonNef4+tV7cn9WIGslr3X3dP5sc/k5pDURA
+         7uUCVjV6irP7aV5oGtEpcuYgKEkCXUJfQ4ahoEaYeXbMOWP8fmv3K2Eet9XDPSF8K8yP
+         c9rrj/FsrDhw2wh9aOlQh2GqymH+5S91mmYJdGy2Bp9j8CzAvSNs5cSxsMv7iskg+PoE
+         ja/R/MRoNL+nPMcKfefmTRgqSSaAZKIfk3uNk5r/LNjdrN9/LYLqdM7CVPKjENcCP4lv
+         5gE8lCgxphtcJURXqyEHmw2ybaCyQa6hSUOymZ84Ay5zUFMuPvmFS2+ziYlIuRZfxKK1
+         vAGQ==
+X-Gm-Message-State: AOAM533tO+UL4JgD6KPJh0mTpeRYZ4WXFXpCVdy2fHIga45y8rQcfsg1
+        jFm8doU1bXs7oPlCVBEbFwlRSQ==
+X-Google-Smtp-Source: ABdhPJyNO/LULB90/yEEwF9ND2QwLBtsq4PXK/5714kKpXeCbJIv1rAbuAXKev+VHEAfFBzqOw58yg==
+X-Received: by 2002:adf:e349:: with SMTP id n9mr19840313wrj.326.1631630051643;
+        Tue, 14 Sep 2021 07:34:11 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d9sm13255576wrb.36.2021.09.14.07.34.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 07:34:11 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 16:34:08 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>,
+        linux-rpi-kernel@lists.infradead.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] drm/vc4: hdmi: Actually check for the connector
+ status in hotplug
+Message-ID: <YUCy4AmYDFD2jtG6@phenom.ffwll.local>
+Mail-Followup-To: Maxime Ripard <maxime@cerno.tech>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>, linux-rpi-kernel@lists.infradead.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, Sam Ravnborg <sam@ravnborg.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+References: <20210914101724.266570-1-maxime@cerno.tech>
+ <20210914101724.266570-3-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <39e628cc-496c-ba20-b53a-fbeecc1d7e4e@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210914101724.266570-3-maxime@cerno.tech>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 05:08:00PM +0800, yukuai (C) wrote:
-> On 2021/09/14 15:46, Ming Lei wrote:
-> > On Tue, Sep 14, 2021 at 03:13:38PM +0800, yukuai (C) wrote:
-> > > On 2021/09/14 14:44, Ming Lei wrote:
-> > > > On Tue, Sep 14, 2021 at 11:11:06AM +0800, yukuai (C) wrote:
-> > > > > On 2021/09/14 9:11, Ming Lei wrote:
-> > > > > > On Thu, Sep 09, 2021 at 10:12:55PM +0800, Yu Kuai wrote:
-> > > > > > > blk_mq_tag_to_rq() can only ensure to return valid request in
-> > > > > > > following situation:
-> > > > > > > 
-> > > > > > > 1) client send request message to server first
-> > > > > > > submit_bio
-> > > > > > > ...
-> > > > > > >     blk_mq_get_tag
-> > > > > > >     ...
-> > > > > > >     blk_mq_get_driver_tag
-> > > > > > >     ...
-> > > > > > >     nbd_queue_rq
-> > > > > > >      nbd_handle_cmd
-> > > > > > >       nbd_send_cmd
-> > > > > > > 
-> > > > > > > 2) client receive respond message from server
-> > > > > > > recv_work
-> > > > > > >     nbd_read_stat
-> > > > > > >      blk_mq_tag_to_rq
-> > > > > > > 
-> > > > > > > If step 1) is missing, blk_mq_tag_to_rq() will return a stale
-> > > > > > > request, which might be freed. Thus convert to use
-> > > > > > > blk_mq_find_and_get_req() to make sure the returned request is not
-> > > > > > > freed.
-> > > > > > 
-> > > > > > But NBD_CMD_INFLIGHT has been added for checking if the reply is
-> > > > > > expected, do we still need blk_mq_find_and_get_req() for covering
-> > > > > > this issue? BTW, request and its payload is pre-allocated, so there
-> > > > > > isn't real use-after-free.
-> > > > > 
-> > > > > Hi, Ming
-> > > > > 
-> > > > > Checking NBD_CMD_INFLIGHT relied on the request founded by tag is valid,
-> > > > > not the other way round.
-> > > > > 
-> > > > > nbd_read_stat
-> > > > >    req = blk_mq_tag_to_rq()
-> > > > >    cmd = blk_mq_rq_to_pdu(req)
-> > > > >    mutex_lock(cmd->lock)
-> > > > >    checking NBD_CMD_INFLIGHT
-> > > > 
-> > > > Request and its payload is pre-allocated, and either req->ref or cmd->lock can
-> > > > serve the same purpose here. Once cmd->lock is held, you can check if the cmd is
-> > > > inflight or not. If it isn't inflight, just return -ENOENT. Is there any
-> > > > problem to handle in this way?
-> > > 
-> > > Hi, Ming
-> > > 
-> > > in nbd_read_stat:
-> > > 
-> > > 1) get a request by tag first
-> > > 2) get nbd_cmd by the request
-> > > 3) hold cmd->lock and check if cmd is inflight
-> > > 
-> > > If we want to check if the cmd is inflight in step 3), we have to do
-> > > setp 1) and 2) first. As I explained in patch 0, blk_mq_tag_to_rq()
-> > > can't make sure the returned request is not freed:
-> > > 
-> > > nbd_read_stat
-> > > 			blk_mq_sched_free_requests
-> > > 			 blk_mq_free_rqs
-> > >    blk_mq_tag_to_rq
-> > >    -> get rq before clear mapping
-> > > 			  blk_mq_clear_rq_mapping
-> > > 			  __free_pages -> rq is freed
-> > >    blk_mq_request_started -> UAF
-> > 
-> > If the above can happen, blk_mq_find_and_get_req() may not fix it too, just
+On Tue, Sep 14, 2021 at 12:17:24PM +0200, Maxime Ripard wrote:
+> The drm_helper_hpd_irq_event() documentation states that this function
+> is "useful for drivers which can't or don't track hotplug interrupts for
+> each connector." and that "Drivers which support hotplug interrupts for
+> each connector individually and which have a more fine-grained detect
+> logic should bypass this code and directly call
+> drm_kms_helper_hotplug_event()". This is thus what we ended-up doing.
 > 
-> Hi, Ming
+> However, what this actually means, and is further explained in the
+> drm_kms_helper_hotplug_event() documentation, is that
+> drm_kms_helper_hotplug_event() should be called by drivers that can
+> track the connection status change, and if it has changed we should call
+> that function.
 > 
-> Why can't blk_mq_find_and_get_req() fix it? I can't think of any
-> scenario that might have problem currently.
+> This underlying expectation we failed to provide is that the caller of
+> drm_kms_helper_hotplug_event() should call drm_helper_probe_detect() to
+> probe the new status of the connector.
+> 
+> Since we didn't do it, it meant that even though we were sending the
+> notification to user-space and the DRM clients that something changed we
+> never probed or updated our internal connector status ourselves.
+> 
+> This went mostly unnoticed since the detect callback usually doesn't
+> have any side-effect. Also, if we were using the DRM fbdev emulation
+> (which is a DRM client), or any user-space application that can deal
+> with hotplug events, chances are they would react to the hotplug event
+> by probing the connector status eventually.
+> 
+> However, now that we have to enable the scrambler in detect() if it was
+> enabled it has a side effect, and an application such as Kodi or
+> modetest doesn't deal with hotplug events. This resulted with a black
+> screen when Kodi or modetest was running when a screen was disconnected
+> and then reconnected, or switched off and on.
 
-The principle behind blk_mq_find_and_get_req() is that if one request's
-ref is grabbed, the queue's usage counter is guaranteed to be grabbed,
-and this way isn't straight-forward.
+Uh, why are you running this scrambler restore in your probe function? I
+guess it works, but most drivers that do expensive hotplug restore to
+handle the "no black screen for replug" use-case handle that in their own
+dedicated code.
 
-Yeah, it can fix the issue, but I don't think it is good to call it in
-fast path cause tags->lock is required.
+But those also tend to have per-output hpd interrupt sources, so maybe
+that's why?
+-Daniel
 
 > 
-> > wondering why not take the following simpler way for avoiding the UAF?
-> > 
-> > diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> > index 5170a630778d..dfa5cce71f66 100644
-> > --- a/drivers/block/nbd.c
-> > +++ b/drivers/block/nbd.c
-> > @@ -795,9 +795,13 @@ static void recv_work(struct work_struct *work)
-> >   						     work);
-> >   	struct nbd_device *nbd = args->nbd;
-> >   	struct nbd_config *config = nbd->config;
-> > +	struct request_queue *q = nbd->disk->queue;
-> >   	struct nbd_cmd *cmd;
-> >   	struct request *rq;
-> > +	if (!percpu_ref_tryget(&q->q_usage_counter))
-> > +                return;
-> > +
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> We can't make sure freeze_queue is called before this, thus this approch
-> can't fix the problem, right?
->  nbd_read_stat
->     blk_mq_tag_to_rq
-> 			elevator_switch
-> 			 blk_mq_freeze_queue(q);
-> 			 elevator_switch_mq
-> 			  elevator_exit
-> 			   blk_mq_sched_free_requests
->     blk_mq_request_started -> UAF
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index a3dbd1fdff7d..d9e001b9314f 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1578,10 +1578,11 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+>  static irqreturn_t vc4_hdmi_hpd_irq_thread(int irq, void *priv)
+>  {
+>  	struct vc4_hdmi *vc4_hdmi = priv;
+> -	struct drm_device *dev = vc4_hdmi->connector.dev;
+> +	struct drm_connector *connector = &vc4_hdmi->connector;
+> +	struct drm_device *dev = connector->dev;
+>  
+>  	if (dev && dev->registered)
+> -		drm_kms_helper_hotplug_event(dev);
+> +		drm_connector_helper_hpd_irq_event(connector);
+>  
+>  	return IRQ_HANDLED;
+>  }
+> -- 
+> 2.31.1
+> 
 
-No, blk_mq_freeze_queue() waits until .q_usage_counter becomes zero, so
-there won't be any concurrent nbd_read_stat() during switching elevator
-if ->q_usage_counter is grabbed in recv_work().
-
-Thanks,
-Ming
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
