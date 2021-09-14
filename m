@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7C140B767
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1D40B76E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhINTCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhINTCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:02:48 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1052C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:01:30 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id o4-20020ae9f504000000b003d39d97b227so761002qkg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=qXeN+0YjwEWrVRbmWh3uR8N524Lyfl40pJMmG7kpDMQ=;
-        b=l3NOXhYLSb4uR4qCfXv+kIDu6RaW+mh86Oqac9N3/0W8oiw7weakxDFnEWjIaXQdvN
-         IIOJGPaH4B859pASij8XptcTpT2pjissVlrsQ5wpefqrc1w+0gD3VAgCMHH8r7TauYQj
-         ySxAkItpKb5QI+a1Zp0uKUxfWB7zVMERif/fL67YtvPv05x+mH6K8xncGxzeVj58aOxZ
-         hzjo+FvWaHCuMlnNlIDbQ7H1WV6M/jU36au9d9ur7PKj44jQgyb7Qy+0fyc7qTAmAdB/
-         lD2RgigqVWFSJYOYiQYcUhzRvg6dUonCuhA2JrzCESG7+jezCoEDY2U8BE7w9WdT/DYh
-         NFew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=qXeN+0YjwEWrVRbmWh3uR8N524Lyfl40pJMmG7kpDMQ=;
-        b=Wv5mvYtHZj0D/N37Lcq23RvXFAPcu+R8VxhjLym1Pyy9J5YERxAwcP+cc6NxWcuRV3
-         U9uLlBfTvPBIbdgohogcRqp/p+BMzklz12NtsbpMlp6ElWS1Q3IcMbslR0bEg1mmT5Ut
-         KhiQWE08YEcKH+DPD212ZAyNz2f6waTw+4zN7R6Qe2RgG0FtoW2awXQ1hQY42aHvkuo2
-         cnb7JehEKrnJgC57fan7tQxAn0e/MZT+KqevKAIcjvqQBiP3a+wcEw8k6NPAI6q3F2Xm
-         kHniYDovUIqOv5VkUYxkG/4u0d7OMq9dXyGWLFRT2dSa/gfxQeTd5eWhc41B+djxDqdF
-         ueow==
-X-Gm-Message-State: AOAM533IkM8kCHKzG5ijW9/A/1WKErcj8KXZVOhq/uTiUyE/FaA3pA/5
-        ghEEccD093Y9X/mPzJeD8gxI6Owa1DY=
-X-Google-Smtp-Source: ABdhPJyKSDtjXlMeEQPNa3EfLfWLutRYhMOrRnGvZvDGH5j1BrBsdMydQKn0s3IIS0BQz+zLsPI4bROmm5A=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:b358:1f40:79d5:ab23])
- (user=pgonda job=sendgmr) by 2002:a0c:cb10:: with SMTP id o16mr7026938qvk.57.1631646088587;
- Tue, 14 Sep 2021 12:01:28 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 12:01:25 -0700
-Message-Id: <20210914190125.3289256-1-pgonda@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH V2] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for SEV-ES
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Nathan Tempelman <natet@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S232322AbhINTEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:04:49 -0400
+Received: from mail-mw2nam08on2059.outbound.protection.outlook.com ([40.107.101.59]:51041
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229658AbhINTEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 15:04:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VUFEwqwcWd0pBIegUvLIhW9tGr1gPoWcPctr0GNqYp0DqjDcDPUiDu5GExXShw892WD7V8PlVxeMeea4JA1UFdhin1sk+k6NTURFkKeAKQ05Yp157V0Y5mlSfdb+AeK/lfWrRErcSvT/yDaDEOQBhna0ul8equb1ORrJY7nmb1hmBgrXGEfWfVuG55V/wqswpEGVWvhhPKFoukNERw7eBXe4Qweyyxh5yAzzY/LkfPNc9xDmZNPFzZspk4MffuFldH6IPxOp3/qKFITztgWaftP0oWLZ62oJIlO/5uS8yxRu62w6p8jmkGkgdG3NgzJz3yIn7iWUF9r81DMIOkey+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=KOsR96AuUPZ+PuNLPrUEFmT7J+lOGOnyMgYrJ4D4IN0=;
+ b=RDUOjS+Gk7nN5Z7wuQf0ci2UGe9PNLvwkAGTZOgJ+OOpvfgaz1EPQ1yOi423xU7zX7urA9uFWwU+zttzTU+wfDcphqgzD8hxuXVvp/8eRQU4MJrC5WyzvEgPDZutBNuGG1Sf9eElFfG7JwZHB3grAStvLtnD+NijqxDSQINAkR+Ll/+LUkmEHw0RsseoeuTVVj+XVCPiYhZI8E7tkOldY0QGQVHoNoRRWVstk9Bv1IC+dZxLAUmK6YW2NnQdGewgM1BdV09FiC94EL9WG/h1CfQm5/q4X7smOgh5F47WOOy10tUwbB8P7H68KG+JFI3JhfP04uQjQkCh2dQYesEMmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KOsR96AuUPZ+PuNLPrUEFmT7J+lOGOnyMgYrJ4D4IN0=;
+ b=srgxvS0N+/fO6tyUHb0krOGUqvvd/0CPYz1S8Y5Xjni3SgrGMgwAG6GVXJeWa8PDuYBQigkn0XkHxWelf3JcFf8XBkjzkJ2V/g3IK2D8oZCk4SwF7dYD67rIfkbiV/rupK/5lOYxJ+z6kGpMGBnX5APTauoh1c5iMNv3Ekgdao/HHG7nVhcM8gmfmX8qg62XAtHhHTUfkfgGwPbwcKzLjTB69cGJPICUgr5D+BIC+Pc6DQ/JDHQFD6pNNJqwwQiFGaqL9dRmf09sL9rFnQmCB/2R3qWq1p4EX7f+hlEf545QAcZrBn2CjYd1jLpNJyEphd+RC5Jzz/dCOiafEJf/Jw==
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5062.namprd12.prod.outlook.com (2603:10b6:208:313::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Tue, 14 Sep
+ 2021 19:03:29 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 19:03:29 +0000
+Date:   Tue, 14 Sep 2021 16:03:27 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Junji Wei <weijunji@bytedance.com>
+Cc:     zyjzyj2000@gmail.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xieyongji@bytedance.com
+Subject: Re: [PATCH] RDMA/rxe: Fix wrong port_cap_flags
+Message-ID: <20210914190327.GA144382@nvidia.com>
+References: <20210831083223.65797-1-weijunji@bytedance.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831083223.65797-1-weijunji@bytedance.com>
+X-ClientProxiedBy: MN2PR16CA0039.namprd16.prod.outlook.com
+ (2603:10b6:208:234::8) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR16CA0039.namprd16.prod.outlook.com (2603:10b6:208:234::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 19:03:28 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQDiJ-000cWe-Qr; Tue, 14 Sep 2021 16:03:27 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a00c69e9-b89c-44be-5bad-08d977b2567e
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5062:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5062AAF964290ACF0D89B5D3C2DA9@BL1PR12MB5062.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C5kTWKBlYRSyz2suDttmuYklDsCFO4L/Bx4BlQg7edykkpnsfLZRmhPf13ljT5TR6VM9JHkpXq21MIwzdnDV70WqYvUWhzt9X97y2rJInOD7FiaM1tKn36chyPQNynI/8YsViUF1sTjRgkYklpWF0ZPVDJnMGPNBJtPKC1vDoqSDJP6DlDroWVRi1NqpRwrZ8w9meFgdB1gDuybATnt1+nEagTXbToq1xoeRjoxYP0sNcSCmZB5aJbMqXH8sZ55E/QGVcx/MbxvTdY484jeQTvPRxAxEAqEb2XI8Ew+LXw3DKQ7DJ3aL2nS2QkANpX95C1rX5Tzt8sCO+f3+ZWoWVBPbHfYO8/1s/JMEFB8QWM38NMCEnk+KHkA1ikXPcFXy8TD8hdE3h/PZVt7t3Fe9TOVOaiOHz2kNJO5qZx1ifM5atvKkR+qZd92b74DIfc1G7akvcojPmV1Dx25k/rXDAos+t484IDt5nQOmf8QeT4Z5s9kcf/CuXOlDrIf9XQumXtkEHl2oeYjLtCCJK0PS+37qn4+5e+l3k4rltf7mj/bNTRFO03zbn/BgvqvWymemB/K3DrLtz8xhCvghpu87oerpUc55fGUE8IZLZUmYgT14lm0GkLEzsbJNWLGyRBMMT/+WEq2rrmFpEWSZhSbvdP6ZE4byN2yjKgvPUPLUs1di5pAkpqGSobir4Mtr3kWdzJvhfIC7N+z6VE8mTitplw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(376002)(136003)(39860400002)(9746002)(9786002)(83380400001)(66476007)(1076003)(66556008)(5660300002)(316002)(38100700002)(8936002)(2906002)(426003)(478600001)(186003)(66946007)(26005)(2616005)(8676002)(4326008)(4744005)(86362001)(6916009)(33656002)(36756003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Gjwm4G2mmBEageVvK7XYsOcIFtNs9H86t1/eJiu2c/HT+1Mwiu078N09gU7Q?=
+ =?us-ascii?Q?t9O6E2p21rEdeF+HG2Xt2KOV09eS8/ykCD96Uk7nI3JfLf67QtWyY1Kmjyin?=
+ =?us-ascii?Q?Cprj5endRYI9VbKwQ/HK18gPeUVtm+cO9UtMoA5Gy6BeCyzQSUVPaMy6d0NN?=
+ =?us-ascii?Q?prEd38RR7ZHQHNIqGWPt/jGo/ZAI3NY1Tg7D2AMA+t0tmosoqYWwBDG1yk6I?=
+ =?us-ascii?Q?8w7XBbNecgh4DURXEXQk76G7bePU3ogbbTUSbvKuRhE+2iZ4jxEaDde9eh/b?=
+ =?us-ascii?Q?f2HObnVSEmFMvtXetq+hbtRgi4bgE9s9GBaWm2bWx+vqYmLgpB63nPaLN8gu?=
+ =?us-ascii?Q?TgAjJoO0hDhAh9yFDfznvkkkXViW+l20gtaPxUw9B08i9IFCJedArsqY39/u?=
+ =?us-ascii?Q?/lOHAtRzIM8/yAzCYg1w04TVAxUZEFA+en1wsJ3k5H4pmcruJZ6b4qJ9RdCJ?=
+ =?us-ascii?Q?Lk5PmQ+oEyfNMaPKBlZwTjDk2P+L2l1cV+WHaLKVqAfZxCn9fSQKWe3t+FiW?=
+ =?us-ascii?Q?5+NZI4X/lqyfI8/w27IhKfaMdqzBNyJMR8qXscfOMObKkGfC6FV/SM7lhgCs?=
+ =?us-ascii?Q?/6HeljuTfLwWZeQslVlM5Qag1rNAME76bFchGd3dCqZnF52Fd5dyxBBQOxWm?=
+ =?us-ascii?Q?O+E7WDzKYwpiQpoymDQP6dFCo/HGJgTxczJNpTtpaYOfZsqEOHOaoZIPwX3Q?=
+ =?us-ascii?Q?jGiA6NNnbBYXVUaM7k0tXT5Mp+XiOw+xQmc5KoImQqfsW4BCmfi6bsppYVX/?=
+ =?us-ascii?Q?qbSeoV+mevGVkL0q1P6+9O1+6FAB5GWnysM/3hhpTAiHpKI1zSFmKfrjJov5?=
+ =?us-ascii?Q?6g7mXa82/dVESEXQO5A9UsjafmpRE1tG0W16X3sLyV62AQ9ZtJuE3nopdQt0?=
+ =?us-ascii?Q?GMNimDukRyt8kzF55N+0JU0SkI7MzJuVoZG2LpHpdXxb+skJPsNMrpqeiU4Y?=
+ =?us-ascii?Q?RS2yThuCHeia2NNdTWOJX1nT1QQC16Yokgyb7nMxRs4vB8a/ZKZcZnvMJHUF?=
+ =?us-ascii?Q?l/CBHMAZ8wCqm6r4akoIkfD/efOi+p3VwGNzgZjUPAqIbJz0iqdZpyIjs6qN?=
+ =?us-ascii?Q?/E7vrRxnRzA8gU3ibksGsNFWT8jy/WTDtbwfGamLVHj/wCayefAmdXyUxAjj?=
+ =?us-ascii?Q?h772zQqP2uRa/1EqK8MzwNTVoMZu6EuASCW36mgxCnmUVe94Nrk8KosHHRsX?=
+ =?us-ascii?Q?ubDZLLzii77nb/ToWuGZN2ETX7p2zdlevSgrltLTMAKN8OTRPab8niGbWSYk?=
+ =?us-ascii?Q?n7djaWkvc4nu93/ggh3TkPfG/fcscsZVl2pFdzXzCwE0z8oxQzMOBVbmBkC0?=
+ =?us-ascii?Q?7/v33xJ1pfLGYOS9TwJKv+yN?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a00c69e9-b89c-44be-5bad-08d977b2567e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 19:03:29.0304
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: esDMfHtIRUVTfyLJP2xW9LiDUd3mINAz37HsVDUiT4SQgu5ApkQSOi1VWf27JFMv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
-VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
-error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
-SEV-ES guest. The destination VM is already checked for SEV and SEV-ES
-with sev_guest(), so this ioctl already fails if the destination is SEV
-enabled.
+On Tue, Aug 31, 2021 at 04:32:23PM +0800, Junji Wei wrote:
+> The port->attr.port_cap_flags should be set to enum
+> ib_port_capability_mask_bits in ib_mad.h,
+> not RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
+> 
+> Signed-off-by: Junji Wei <weijunji@bytedance.com>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Enabling mirroring a VM or copying its encryption context with an SEV-ES
-VM is more involved and should happen in its own feature patch if that's
-needed. This is because the vCPUs of SEV-ES VMs need to be updated with
-LAUNCH_UPDATE_VMSA before LAUNCH_FINISH. This needs KVM changes because
-the mirror VM has all its SEV ioctls blocked and the original VM doesn't
-know about the mirrors vCPUs.
+Applied to for-next, thanks
 
-Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
-
-V2:
- * Updated changelog with more information and added stable CC.
-
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Nathan Tempelman <natet@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/kvm/svm/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 75e0b21ad07c..8a279027425f 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1728,7 +1728,7 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
- 	source_kvm = source_kvm_file->private_data;
- 	mutex_lock(&source_kvm->lock);
- 
--	if (!sev_guest(source_kvm)) {
-+	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
- 		ret = -EINVAL;
- 		goto e_source_unlock;
- 	}
--- 
-2.33.0.309.g3052b89438-goog
-
+Jason
