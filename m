@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61A440A8F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7EC40A8FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhINIPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:15:32 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:46132 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229483AbhINIPb (ORCPT
+        id S230147AbhINIQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhINIQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:15:31 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-228-4zbg9E4KPh6_KsOvdYrc_g-1; Tue, 14 Sep 2021 09:14:12 +0100
-X-MC-Unique: 4zbg9E4KPh6_KsOvdYrc_g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 14 Sep 2021 09:14:11 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Tue, 14 Sep 2021 09:14:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'libaokun (A)'" <libaokun1@huawei.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        Kees Cook <keescook@chromium.org>
-Subject: RE: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in
- __nbd_ioctl()
-Thread-Topic: [PATCH 5.14 018/334] nbd: add the check to prevent overflow in
- __nbd_ioctl()
-Thread-Index: AQHXqQ4eXbMSnUIpgkqOMblgrD/eTKujLcBA
-Date:   Tue, 14 Sep 2021 08:14:10 +0000
-Message-ID: <27e1c6de36354620aaf8ed5a5fa944de@AcuMS.aculab.com>
-References: <20210913131113.390368911@linuxfoundation.org>
- <CA+G9fYtdPnwf+fi4Oyxng65pWjW9ujZ7dd2Z-EEEHyJimNHN6g@mail.gmail.com>
- <YT+RKemKfg6GFq0S@kroah.com>
- <CAKwvOdmOAKTkgFK4Oke1SFGR_NxNqXe-buj1uyDgwZ4JdnP2Vg@mail.gmail.com>
- <CAKwvOdmCS5Q7AzUL5nziYVU7RrtRjoE9JjOXfVBWagO1Bzbsew@mail.gmail.com>
- <CA+icZUVuRaMs=bx775gDF88_xzy8LFkBA5xaK21hFDeYvgo12A@mail.gmail.com>
- <CAKwvOdmN3nQe8aL=jUwi0nGXzYQGic=NA2o40Q=yeHeafSsS3g@mail.gmail.com>
- <CAHk-=whwREzjT7=OSi5=qqOkQsvMkCOYVhyKQ5t8Rdq4bBEzuw@mail.gmail.com>
- <CAKwvOdkf3B41RRe8FDkw1H-0hBt1_PhZtZxBZ5pj0pyh7vDLmA@mail.gmail.com>
- <CAHk-=wjP2ijctPt2Hw3DagSZ-KgdRsO6zWTTKQNnSk0MajtJgA@mail.gmail.com>
- <CAKwvOd=ZG8sf1ZOkuidX_49VGkQE+BJDa19_vR4gh2FNQ2F_9Q@mail.gmail.com>
- <CAKwvOdkz4e3HdNKFvOdDDWVijB7AKaeP14_vAEbxWXD1AviVhA@mail.gmail.com>
- <CAKwvOdmtX8Y8eWESYj4W-H-KF7cZx6w1NbSjoSPt5x5U9ezQUQ@mail.gmail.com>
- <CAHk-=whjhJgk7hD-ftUy-8+9cenhMDHqaNKXOyeNVoMxZRD-_A@mail.gmail.com>
- <CAKwvOdnFRhKDZ3XuePSGsuxhOpuS5RmZ1u+MeN=PRPPKSS3wFg@mail.gmail.com>
- <db321a38-f5f6-34cd-2f4f-37fc82201798@huawei.com>
-In-Reply-To: <db321a38-f5f6-34cd-2f4f-37fc82201798@huawei.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 14 Sep 2021 04:16:02 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E27CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JS9XyKWEu9peOQhroFkD4dSiIRWtHH+3VNvEsw4skCM=; b=Gqti5ZKd7QF32ulr9bxdbXq7oe
+        MNN27qwusW3esipiWGBJPop9X8JDhncx+CSq/fl0wv6WIfWMJmmzo5D5ZBf9TOsvgPIrd25iXjrDe
+        ok4L84ZpPNbVXseqwSnH76ndQIarR/GL5ERuW1dzjx3govhMJ6VHvCzAzkIBDfG3fIAvvg8DJWX+s
+        9MOMNYTFKj9pAEIASAZAsOFlU2WQvLvBvwXmdwH2t37o9H9jWHGEGwRK1eNUrUJaWuYHoH+c5cknt
+        K/xD41LgJdGJ0uzQayxvJQbH6Xa7cbBS5chmaZpb8hNL5iX+9E/JAySg4fMCzpUpNie8FUH2l/Zn5
+        QUVnmP6w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQ3aC-0034m2-81; Tue, 14 Sep 2021 08:14:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7145D30026F;
+        Tue, 14 Sep 2021 10:14:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0B7062C856301; Tue, 14 Sep 2021 10:14:20 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 10:14:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Subject: Re: [PATCH 25/24] x86/traps: Rewrite native_load_gs_index in C code
+Message-ID: <YUBZ3J4Jy3x0VDkX@hirez.programming.kicks-ass.net>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210902105052.2842-1-jiangshanlai@gmail.com>
+ <bfeb0b12-5b95-46c9-8ea3-6a4a5bf59076@www.fastmail.com>
+ <4ecf191a-6642-6d59-cf10-6fe51e261b28@linux.alibaba.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ecf191a-6642-6d59-cf10-6fe51e261b28@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+ICDCoMKgwqDCoMKgwqDCoCBjYXNlIE5CRF9TRVRfU0laRToNCj4gIMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbmJkX3NldF9zaXplKG5iZCwgYXJnLCBjb25maWct
-PmJsa3NpemUpOw0KPiAgwqDCoMKgwqDCoMKgwqAgY2FzZSBOQkRfU0VUX1NJWkVfQkxPQ0tTOg0K
-PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoY2hlY2tfbXVsX292ZXJmbG93KChs
-b2ZmX3QpYXJnLCBjb25maWctPmJsa3NpemUsDQo+ICZieXRlc2l6ZSkpDQo+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGlmIChhcmcgJiYgKExMT05HX01BWCAvIGFyZyA8PSBjb25maWct
-PmJsa3NpemUpKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCByZXR1cm4gLUVJTlZBTDsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0
-dXJuIG5iZF9zZXRfc2l6ZShuYmQsIGJ5dGVzaXplLCBjb25maWctPmJsa3NpemUpOw0KPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gbmJkX3NldF9zaXplKG5iZCwgYXJnICog
-Y29uZmlnLT5ibGtzaXplLA0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uZmlnLT5ibGtzaXplKTsNCg0KU2hv
-dWxkbid0IHRoZXJlIGp1c3QgYmUgc2FuaXR5IGJvdW5kIGNoZWNrcyBvbiAnY29uZmlnLT5ibGtz
-aXplJyBhbmQNCidhcmcnIHNvIHRoYXQgdGhlIHByb2R1Y3QgaXMgbmV2ZXIgZ29pbmcgdG8gb3Zl
-cmZsb3c/DQoNCkl0IGlzbid0IGFzIHRob3VnaCBhbnkgdmFsdWVzIG5lYXIgdGhlIG92ZXJmbG93
-IGxpbWl0IGFyZSBzYW5lLg0KDQpJIHN1c3BlY3QgeW91IGNvdWxkIGNoZWNrIGNvbmZpZy0+Ymxr
-c2l6ZSA8PSA2NGsgJiYgYXJnIDw9IDMyaw0KYW5kIGV2ZW4gdGhhdCB3b3VsZCBiZSBnZW5lcm91
-cy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
-b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
-IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Tue, Sep 14, 2021 at 10:04:47AM +0800, Lai Jiangshan wrote:
+> I think Peter is still working on reworking the patchset and may be
+> including improving this patch.  I'm Okay if this patch is dropped.
 
+No I am not.
+
+I said I have interest, I also said you shouldn't repost after a single
+bit of feedback -- there's nothing more annoying than trying to review a
+large-ish and complicated series of patches when you get a new version
+every other day.
+
+But please do work on it, because I really don't have the bandwidth to
+carry this atm.  By now there's been a fair amount of feedback, so a new
+version might be appropriate.
+
+I really do think you've got some very good things here. Please work on
+it. I will try and review :-)
