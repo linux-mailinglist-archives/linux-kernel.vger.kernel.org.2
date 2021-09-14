@@ -2,172 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF4040A73E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C217740A741
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240630AbhINHWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:22:11 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:55319 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235026AbhINHWJ (ORCPT
+        id S240056AbhINHWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:22:36 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:59300
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232880AbhINHWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:22:09 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 9B6392B01244;
-        Tue, 14 Sep 2021 03:20:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 14 Sep 2021 03:20:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=r3z+1fszfE1gQgB+PhQEZNe+vTo
-        g8UxvAWLg30OlyPQ=; b=G/gD/Kl4b74mLyIJd66lZu5Yo/D9Zk0LH8gY7wH/FeP
-        Nz1yR7TGM5Tq0E7jBj+Pe3dw8XmUvCZ2Tf9FwAZziG5eUb7iU5dzblMZ6dbRHN80
-        L/jIwwft+KbSprXsqoLwqJ6XHHccmimf0nRcHEclkc6zFCSyrAcGeTMMDhEbUL5g
-        wmDRwywS2rXzOQkmC8smWI6tvBmlvvqalWta8k842lHyTCYj+ODRs8ueNNE3/jY2
-        gCikhcckj1hv3T3VCwF4to7TgudEPWamZLvkB15itzkpwHnOAnzXMpexWqBbgeWF
-        UtFiUKET6oGgH3ZWy4esp18i4Zw+xDoSBxkrsX2BulQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=r3z+1f
-        szfE1gQgB+PhQEZNe+vTog8UxvAWLg30OlyPQ=; b=iqgPMLNMOcjMDFc71SsBK/
-        pKmNlqq+8UkXZzNtVuUuU7HxNxUaM2hBQD5L1DuNkQpAn6vyH92KREn8xDSa+XjF
-        6DGiyYTz8UZmCmOtOnlH93x7oacEqWLjVMn8RUKnjvOJzV0WJsa/LHXu24yGFQ1R
-        mdC3MONrY2bsXSKmIR0e2ttQGAPyACnQ9S6dNvojMTe7YsoBA7pjQd32TsoF97rY
-        pGqKZ5Gj56rykhpKFyMJ7xveBTs4uQjMd6xsyqDdPd0M13xGZJ2EQihmRRRCfGdq
-        6Z8JqfaH6vJ6KeL7nYsbWuQB8OnpSDcjBNuqq7nzOZS3bq6gU29JIg47q0dhqT5g
-        ==
-X-ME-Sender: <xms:T01AYax4d-hSa4FQiv6LmMkRkyFLGxdEOWkq8BMVndsVOjWkDRC_8g>
-    <xme:T01AYWQFz__bZUsK2WkcuQt0Ox356iPNIP6F-JmDVo0Cg1KR4fh7OHSaWOgJrpBIg
-    bNnXFUkq1ZSlELUPAA>
-X-ME-Received: <xmr:T01AYcV7jZGtMirbdWn8_G8gxUM2TJ0FwLA-l7XlUQOzx95oOCLBUlteiuXkPBKpi49wFkGJHHLtSI62CC-AvXPZfrsF-cLuUWA2>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegkedgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeevgeduteektefhtefggfdtkeekgfehhffffeegudelheegheeiueevfeeg
-    vdeigeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggt
-    hh
-X-ME-Proxy: <xmx:T01AYQgd8Er7NkXUTfsDojYWAB-uSohRL8WzfNGhQ8R3jDwtzoyNxw>
-    <xmx:T01AYcBQ9ZHyzc0uvap5l6kDamTJYv4AIw9-WdYEhXvNBf_gWFH_EA>
-    <xmx:T01AYRJ-5v0xCO2AOrHEOYLeTYD7ZFMyZrrb-jlsWry0noifvTuTTQ>
-    <xmx:Uk1AYc35cNV5-xhOsRonCfKX3hUuZfYfsQaClMSncnytyQXu6A6-Yh4jkvM>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 03:20:47 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 09:20:46 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Cc:     guoren@kernel.org, Liu Shaohua <liush@allwinnertech.com>,
-        wefu@redhat.com, anup.patel@wdc.com, atish.patra@wdc.com,
-        palmerdabbelt@google.com, christoph.muellner@vrull.eu,
-        philipp.tomsich@vrull.eu, hch@lst.de, lazyparser@gmail.com,
-        drew@beagleboard.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, taiten.peng@canonical.com,
-        aniket.ponkshe@canonical.com, gordan.markus@canonical.com,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [RFC PATCH V4 6/6] riscv: soc: Add Allwinner SoC kconfig option
-Message-ID: <20210914072046.s3nhxaut6kihe3tn@gilmour>
-References: <20210911092139.79607-1-guoren@kernel.org>
- <20210911092139.79607-7-guoren@kernel.org>
- <20210913084520.kkbsupogkzv226x3@gilmour>
- <e46bb02d-961d-672d-76c7-9844d76ee69b@canonical.com>
+        Tue, 14 Sep 2021 03:22:35 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BFF8E4017B
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631604077;
+        bh=CTieqUfrN3QD2Y917kpYPbjsuUgn/zzRL0HRoSY4mxA=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=V8DyrMwTlNsppkAUjKLe0Pt14bQP1U4xP2T++pOPHm2BQploQMcSaPZWp4FTSCrFD
+         CCf4iyU99bgstDvxyGg+BphVe88WB/hHi5z1gHFmxElvhfqi3c/pDiF6H+6ineWpoT
+         r3R+0/lHTCCsR1t/HH+G5ZYVnkPmlpYAUJCOTbdqRO8Hry/mcSt9xiRdtV4oA8YpIJ
+         KUD6SoAwxko6TCCTYHrQ/+dEdh78ZGQahdFpahATg+UdgplYbUO15Y8xtJgxC7p9xC
+         aV0NJn7lbcvb3iaeEJNb5gnNx+lsJRbzxxc9bAln4AFYx9aTylsHi08Rn2C8ecV+Ig
+         Ybc+iG2n0TQCw==
+Received: by mail-wr1-f69.google.com with SMTP id i16-20020adfded0000000b001572ebd528eso3580726wrn.19
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:21:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CTieqUfrN3QD2Y917kpYPbjsuUgn/zzRL0HRoSY4mxA=;
+        b=t1R3ZwfdT3HqEUDx9bMKjGHsoboM/q08XkYInKGl22i0MJk9tZEe2QAEN9vpu2+Bu0
+         CABkaQcL/Ut1ijZEuDOLRJUZo4Cd+SBU6zi6liSNFjpln0Ibs6wGgxatCgK1VIVJ+K44
+         egc/POMlyPv9opdIvUwRE7DtLi1R82e2O24D7BECFthbZFk4pxQQRvlEht0qT8VE2mx4
+         PzJLYGBe1Rkw2JLnXuUIESub4AQPy9NvM7ornLwib4BwFMrqY4i64oOmuA6klbP6nMLb
+         /foLhXRRRMJXrM8WFsv3JespB4v5V5PZ48iMytYI+ZBZeWqOyzXFjd4H8jjXLi5wUze0
+         8N/g==
+X-Gm-Message-State: AOAM533udtaPLFv0ZUiVvWTamLew7X1mb31+xhIv1hFxSmlB8EJX7UTy
+        Brz2XinUWFgzBWXOg51px3FDmqvUcvqcsD5y1i6yk3P5ZYeTD6VZwZQSw70pO26IvnR7UBGQle9
+        0N2dmQEtIRWYpz7CLt5x5j0fMNuBWnXxjxVksWgURBw==
+X-Received: by 2002:a05:6000:1569:: with SMTP id 9mr17026231wrz.343.1631604077420;
+        Tue, 14 Sep 2021 00:21:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6q9GIV+dbbGpUDkzy+9zvc6SY1/R/bzqrROtBxibMIPF3kczBjGgM2zPWhPd5LxWs/YX10w==
+X-Received: by 2002:a05:6000:1569:: with SMTP id 9mr17026215wrz.343.1631604077251;
+        Tue, 14 Sep 2021 00:21:17 -0700 (PDT)
+Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id v17sm9346322wrr.69.2021.09.14.00.21.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 00:21:16 -0700 (PDT)
+Subject: Re: [PATCH 1/2] power: supply: max17042_battery: Clear status bits in
+ interrupt handler
+To:     Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Anton Vorontsov <anton.vorontsov@linaro.org>,
+        Ramakrishna Pallala <ramakrishna.pallala@intel.com>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        stable@vger.kernel.org, kernel@puri.sm
+References: <20210912205402.160939-1-sebastian.krzyszkowiak@puri.sm>
+ <0123524d-b767-5b5b-8b14-60d8cea3c429@canonical.com>
+ <5702731.UytLkSCjyO@pliszka>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6affbb35-7b79-db6e-a346-e74d2ba2e886@canonical.com>
+Date:   Tue, 14 Sep 2021 09:21:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zjkz7mw5vd3whnco"
-Content-Disposition: inline
-In-Reply-To: <e46bb02d-961d-672d-76c7-9844d76ee69b@canonical.com>
+In-Reply-To: <5702731.UytLkSCjyO@pliszka>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/09/2021 20:32, Sebastian Krzyszkowiak wrote:
+> On poniedziałek, 13 września 2021 15:02:34 CEST Krzysztof Kozlowski wrote:
+>> On 12/09/2021 22:54, Sebastian Krzyszkowiak wrote:
+>>> The gauge requires us to clear the status bits manually for some alerts
+>>> to be properly dismissed. Previously the IRQ was configured to react only
+>>> on falling edge, which wasn't technically correct (the ALRT line is active
+>>> low), but it had a happy side-effect of preventing interrupt storms
+>>> on uncleared alerts from happening.
+>>>
+>>> Fixes: 7fbf6b731bca ("power: supply: max17042: Do not enforce (incorrect)
+>>> interrupt trigger type") Cc: <stable@vger.kernel.org>
+>>> Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+>>> ---
+>>>
+>>>  drivers/power/supply/max17042_battery.c | 3 +++
+>>>  1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/power/supply/max17042_battery.c
+>>> b/drivers/power/supply/max17042_battery.c index
+>>> 8dffae76b6a3..c53980c8432a 100644
+>>> --- a/drivers/power/supply/max17042_battery.c
+>>> +++ b/drivers/power/supply/max17042_battery.c
+>>> @@ -876,6 +876,9 @@ static irqreturn_t max17042_thread_handler(int id,
+>>> void *dev)> 
+>>>  		max17042_set_soc_threshold(chip, 1);
+>>>  	
+>>>  	}
+>>>
+>>> +	regmap_clear_bits(chip->regmap, MAX17042_STATUS,
+>>> +			  0xFFFF & ~(STATUS_POR_BIT | 
+> STATUS_BST_BIT));
+>>> +
+>>
+>> Are you sure that this was the reason of interrupt storm? Not incorrect
+>> SoC value (read from register for ModelGauge m3 while not configuring
+>> fuel gauge model).
+> 
+> Yes, I am sure. I have observed this on a fully configured max17055 with 
+> ModelGauge m5. It also makes sense to me based on what I read in the code and 
+> datasheets.
+> 
+> There were two kinds of storms - the short ones happening on each SOC change 
+> caused by SOC threshold alerts set by max17042_set_soc_threshold which 
+> eventually got cleared by reconfiguring the thresholds; and a huge one 
+> happening when SOC got down to 0% that did not get away until the battery got 
+> charged to at least 1% at which point the thresholds got reconfigured again 
+> (which is how I noticed the underflow fixed by the second patch).
 
---zjkz7mw5vd3whnco
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, undestood.
 
-Hi,
+> 
+> Besides, I also have patches for configuring m5 gauge via DT that I'll send 
+> once I clean them up.
 
-On Tue, Sep 14, 2021 at 05:49:52AM +0200, Heinrich Schuchardt wrote:
-> > Hi,
-> >=20
-> > On Sat, Sep 11, 2021 at 05:21:39PM +0800, guoren@kernel.org wrote:
-> > > From: Liu Shaohua <liush@allwinnertech.com>
-> > >=20
-> > > Add Allwinner kconfig option which selects SoC specific and common
-> > > drivers that is required for this SoC.
-> > >=20
-> > > Allwinner D1 uses custom PTE attributes to solve non-coherency SOC
-> > > interconnect issues for dma synchronization, so we set the default
-> > > value when SOC_SUNXI selected.
-> > >=20
-> > > Signed-off-by: Liu Shaohua <liush@allwinnertech.com>
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > Signed-off-by: Wei Fu <wefu@redhat.com>
-> > > Cc: Anup Patel <anup.patel@wdc.com>
-> > > Cc: Atish Patra <atish.patra@wdc.com>
-> > > Cc: Christoph Hellwig <hch@lst.de>
-> > > Cc: Chen-Yu Tsai <wens@csie.org>
-> > > Cc: Drew Fustini <drew@beagleboard.org>
-> > > Cc: Maxime Ripard <maxime@cerno.tech>
-> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> > > Cc: Wei Wu <lazyparser@gmail.com>
-> > > ---
-> > >   arch/riscv/Kconfig.socs      | 15 +++++++++++++++
-> > >   arch/riscv/configs/defconfig |  1 +
-> > >   2 files changed, 16 insertions(+)
-> > >=20
-> > > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> > > index 30676ebb16eb..8721c000ef23 100644
-> > > --- a/arch/riscv/Kconfig.socs
-> > > +++ b/arch/riscv/Kconfig.socs
-> > > @@ -70,4 +70,19 @@ config SOC_CANAAN_K210_DTB_SOURCE
-> > >   endif
-> > > +config SOC_SUNXI
-> > > +	bool "Allwinner SoCs"
-> > > +	depends on MMU
-> > > +	select DWMAC_GENERIC
-> > > +	select ERRATA_THEAD
-> > > +	select RISCV_DMA_NONCOHERENT
-> > > +	select RISCV_ERRATA_ALTERNATIVE
-> > > +	select SERIAL_8250
-> > > +	select SERIAL_8250_CONSOLE
-> > > +	select SERIAL_8250_DW
-> > > +	select SIFIVE_PLIC
-> > > +	select STMMAC_ETH
-> > > +	help
-> > > +	  This enables support for Allwinner SoC platforms like the D1.
-> > > +
-> >=20
-> > I'm not sure we should select the drivers there. We could very well
-> > imagine a board without UART, or even more so without ethernet.
->=20
-> The draft of the RISC-V platform specification is available here:
-> https://github.com/riscv/riscv-platform-specs/blob/main/riscv-platform-sp=
-ec.adoc#uartserial-console
->=20
-> The specification requires in section "2.1.5.1. UART/Serial Console" that=
- on
-> platforms with a rich operating system (e.g. Linux) you have a serial
-> console. Hence requiring 8250 support for the D1 CPU is justified.
+That's cool! Happy to see such work.
 
-I mean, not really? The platform is required to have a UART, but nothing
-requires the kernel to have a driver for it as far as I'm aware.
+> 
+>> You should only clear bits which you are awaken for... Have in mind that
+>> in DT-configuration the fuel gauge is most likely broken by missing
+>> configuration. With alert enabled, several other config fields should be
+>> cleared.
+> 
+> I have checked all the bits in the Status register and aside of Bst, POR and 
+> bunch of "don't-care" bits they're all alert indicators that we either handle 
+> explicitly in the interrupt handler (Smn/Smx) or implicitly via 
+> power_supply_changed (Imn/Imx, Vmn/Vmx, Tmn/Tmx, dSOCi, Bi/Br). The driver 
+> unconditionally enables alerts for SOC thresholds and all the rest stays 
+> effectively disabled at POR; however, a bootloader or firmware may configure it 
+> differently, which may be wanted for things like resuming from suspend when a 
+> bad condition happens. Therefore we need to clear all the bits anyway and I'm 
+> not sure whether iterating through them in a "if set then clear" loop gains us 
+> anything aside of additional lines of code.
 
-Maxime
+Seems reasonable, you're right. Could you mention this expolanation in
+commit msg or comment in the code?
 
---zjkz7mw5vd3whnco
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUBNTgAKCRDj7w1vZxhR
-xbLcAP4ydU6yZPm2aqeZbdBFbajBZuxuBTifIing7bv4DsbamQEAsVTigkpi8Fxu
-cJpZogfYIkGjA8oqsLG4qw2IQ3eV8gM=
-=Q8eQ
------END PGP SIGNATURE-----
-
---zjkz7mw5vd3whnco--
+Best regards,
+Krzysztof
