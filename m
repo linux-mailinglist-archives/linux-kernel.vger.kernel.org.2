@@ -2,123 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A1340BB06
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6071D40BB08
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhINWQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:16:11 -0400
-Received: from sonic317-39.consmr.mail.ne1.yahoo.com ([66.163.184.50]:38072
-        "EHLO sonic317-39.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235289AbhINWQI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:16:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1631657690; bh=7t/f/rwmI4aru/OpBUTpzrmLZ1IdImYeQocNXP9+3fU=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=kRvZyaP24RoD3LBfIovZakDwezvRSmL7bsprPerIcqfqP4SDiLi4qIKeP6J1irlKX/2TQJygcwTNoNg8b1f+lNTfjS9JnsOTYaAcTK2+nmlr1nboPy2uOn16hK79TXideu//4+5qHejIqWqclW8rP2+ZZjTG1XkffPyZP1eAqfHL4OBuyvh7ILxsmaHdjJG2SC0e4V4ikWrp6A45tfc4b8WPawAVKuKVjLieOXDENbS686UJ6xlXhM+8Ua5SKGXoAfKUBVaUSOWsUB8Bq3tbZ6rOjVJxHDko25/FyeSuEKKyLvry9rfoVH0dolfj9BSSMh9vzjCPaKxSMiH6Lo4P3Q==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1631657690; bh=bjjI1zV+B4q66Z30Z0vaQ3VAgTVdaRG5jOxRIEgu10X=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=P72/bNm5fLHA2Z8wTU/ReBhNvZdnGFemZSPH3oLaBVeD9GfAocFLqdNl4BCsFc+qiyEazloDmtsLCyBlLCbY5VVHPd8cXmCv/Jr2//ASu85C1CXMg7lz0WCcas38NwqhCZr8CGmxYO4VwWgQ1ppM40Y7KgtGmCP+UIUlCccP86pvxsdAv8RBmR2cuW1WFTG28qTNity+v+bFZ3WuHfhsJ+k9/xRjktPKAV+mTDuysmFus+qQd/FYEcEhmKT1JxKKEGBKz5hcxYCxy5MPWMgPQg8LBOfgVDpkp/j9U4giSzf+xHrVR7/q+SaQ7XKo9ETfQh5HSTNReYseuXEsUmhStQ==
-X-YMail-OSG: dOvq3VIVM1m4PYKtAWTNbkTNTqe9v26OC4NlGV3pRvCz.XlZG7AdJNLRvMyboml
- RUKHmy7t5N1fVx0hK3Y16TUkIwpxs9cYZW7QC.X1yR1HGez9xgCtNsWlwz7EiJ.i_fhvu.F_glLy
- gNYxtPp3OhdWxqL_jkWqLMuOYnGpGSEM8q8QWx7NtmOqjc_WwoT5AgIPJuQDJXkxl9xa8Jr4zGyR
- ovaZUDwZtJg3_QL5yaxxt.FttvE1b18PBXrTNaJ0aDA9PYNeHCDss_hjxaD1ctG.LDRfvwC9OTvJ
- 8MUKtXa1LgSJT5P97Mabr0rE15mPjFmaE_VtKXLTp.8J3fBXqCgKfF7Fn7twBO2xIyPcElL3qx93
- 2i1G.TLXhhxbF0I80IdLnIqBhalp5mqvf0GxAQEfsiiN0.L7iDxVzsS.jBatKEzq0IsyIrIFna8D
- 0dmS27Zt5pURcT.X7ghRUiW_xLIP7rukEHJjwjuTSTLBEnYLtaFZ5CR6k3vJ5mLY_DcLY_ZzValm
- W8e3rKgVN1fwinvRWsd0nOBySyTl9m3mSyRx_KCE4zAI6D0mHEjRBPx5i1S1UHXbvlfTLn8peeYB
- GI64gqZPK1M1aMRagU3Yk1kiV6L4rUfTzJKUcKW9ESnTIifTgfNhquqKdoISEneOq6A9pwUzPlcO
- g1d9wU2JY47adubQu0iKtFlfaXlKQ6xU_QvWOT599OaC4wc.LbWWXg7gKs2bxOsBycN0fq1CdC5A
- No5gZ2pe3zXtbWnFyOjOtv4dRZ.0y5wfH0Kelg9HBja9bahX4HdpYskC8Hwd0ZFcQX2vRY8G6kMi
- GKvFTZK05fHBGgRqzDzodgF0V.F.uZdEHuq.YDFY3tJP.m.m3vLWQEjlxBZTbkM55tvxjmeOrcIF
- PxitFi2gLlM34Q_TdvY6oqiY1qnpZvGUXsES6MSfhKaBTUXX9_llt5nY6sD_Wmztp2y.u5gbKxw8
- 1xFyF2YFOwt3se4x3BfiLbJJRVCmuGxMY9.yDPzBsH_ehfAaON3y_u9FErulqv5k2hsyohZEdN4z
- KdEqO8P_3PE12lU9zirQjrBjuRLP4qeXw4pWTg7uNqUg8krf7Wg3cbGtkDkeHFR4CtWh.SSVM3Z3
- jrm1F3jqYyp.Lpmxrgz.mWkX2wHWXw22A5EOjaP_y8uAv7Upmg2SccmBK5zbrO8xKQ0w3Tu9BOTW
- tTGvWLZbKporWWEfga1upwIw4zsAdiy6rH0SSBsp3wwhcUf5rdUGhY1UegPoUPMJvZyGbcY7V0Iw
- hWwr8_.ezieI2MoSTLu_c0Ad6b0DrXIs_2hMzAz.rQtgPruGXu3h8UXvsBIAX2QjBEQ3ODcuJuCz
- F.e7st4c0P6aoauC83Htv3A6P5krjkAbCn9Wdn1UtXwcTD86jigHtIKDMJT3k2mHdnpIEZDNjnVZ
- esRQeWhXdsrvZPK0YOxUFCV9eXwq0RNqH2VlCc.8fQHlgG3zy3Dt5wgy7xeCCEL.PDrNISQVS935
- m0P3k6_19rR.XuXfs3NyYD9KvOlVd5Gd0AurZI7LFjT0bkSVGMO5Ox2XsvhX3kHl_2lUR8CAxwR5
- k4kUgO0YALkPW27vYt__JChJTfzPt1mSpP0ZguDL.Pv8676.1eIYouSzmVV_Q82NTCajF.E2WNV9
- b20zFuNTDquRRsoFB5Yk0kXN0QWVpOH1CWWsqoBA7jHcIShe.L2beJreBvyGpwXAElP6Gt74dNr5
- xoQkJ7Y_U.8jScBq599Ky7KvOfajgm4LvakMTf6eJ7.WKotejRwmjoiOZz37CfoIved1NQmjBy73
- grikLdDcrs9LITCKNYkSrrpn8Uk0IkqNn7qlVpgYR2qoLtVFUOAh_sl64kfPrsTLYB_xPgpRKiKw
- Et3hvBmE_F3D__afyPyaxHL.OpjuX8n2INJ0jTtdQpnydkqhwn3TSYUO4dbp9Np8kwsZtVpbtda9
- aEPzBs_TPHUw1U.cVA81zSrqOGy5ihe1YPqxJEo50opr39c_INOzYPuqAtvdhfHDp1NOMh4QEwdd
- GwBvF0w1rLslE.GHDvO1KQwX_nPkUlDXz_59pY1yPeoGsApx2QkOl0bESt_ZVrsJkfeXuP3RpgcX
- tveHElQeUgLxSvYgCnl_eUHhK0B_6MZuOGE4qdCJM5gpcibB_yTgQ5D26I43XdSZgde4qHzsKUrw
- XhlVTNVGCmRmkp0ITOWd66r42ZDB6UvQ1DjHAWyjf4AbUn5EVBGPG5pchNuXLiBjM2fTME200xKX
- 0MFO2BT4AXOz2wlXwzc2UuAo.VB7I4DEo4y5yYfg2omsdhVmCK4TF9utGWbeaN3YuIkZ0JDZF.Q-
- -
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Tue, 14 Sep 2021 22:14:50 +0000
-Received: by kubenode520.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 213bc677fa039234cb827bbe34ec773d;
-          Tue, 14 Sep 2021 22:14:46 +0000 (UTC)
-Subject: Re: Regression in unix stream sockets with the Smack LSM
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Jiang Wang <jiang.wang@bytedance.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <a507efa7-066b-decf-8605-89cdb0ac1951.ref@schaufler-ca.com>
- <a507efa7-066b-decf-8605-89cdb0ac1951@schaufler-ca.com>
- <CAHC9VhR9SKX_-SAmtcCj+vuUvcdq-SWzKs86BKMjBcC8GhJ1gg@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <a5dc3f59-edc2-825a-31f6-7914c97a14d8@schaufler-ca.com>
-Date:   Tue, 14 Sep 2021 15:14:44 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAHC9VhR9SKX_-SAmtcCj+vuUvcdq-SWzKs86BKMjBcC8GhJ1gg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S235455AbhINWQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:16:28 -0400
+Received: from mail-mw2nam12on2043.outbound.protection.outlook.com ([40.107.244.43]:35136
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234701AbhINWQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 18:16:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mfhf9igWcIvEr06CfIbuTLwqjAWpc523aSxnbQi4tzcFaHV5hUlUlvsBX8WyJiWU2aWEgF9RljyryZtTyTqd2yvS+HAIqSxPeA3KokXCLV2CXPfX9g+3x05LuFPq5jfJ4DkcdnLyy2pZIOtG3/4w6Ny2LiLoU1+aqbvd/1kTcOb+t2GzUZM9wnKzuC9bbPnuekaDGVr7++har0b/7aFRbN1/5JJJG5J5DiGbBn2YTMi8lFAkpiYXxYcUXVz7w13P8EaCP1DZ95Yc15kDvcsMF2maYaU+hRb6Cl3gliukyniqNg/XJkc1l0qV2WzOIxLrgDLezPgfI2qmrTSyhbRhUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=11mzLZdW8kY//KpXbBnGuKQPE+l0X88l91mlt0GIATI=;
+ b=bcxAa49ZiaZZT1UpoBtH2+b7gggh7ayyylvlALun3xGvpUvfnuF9ws3N0IjExhVtmpAE+ns4PXCTkNH4USBWk23ysl18kHyEPo39kk2gISrAyjxGz8lhGR5oFMVhVCEi2cXq0OGesdBu3id+AWOJvH/XVdi2SFk+HdLRzXga00tmiCfxf5sFeVksp89WmZQTS6aOrJGn5uhfbJ9evBdWVVXoj+xnqPBzzjHX/oCaz+fNQtqJhHLJBoISvCTFAnE80+Yl3hvZt8/r9V98ofIGT8VdnJahiSh0wnM65mRPO1BtcB512YgvMB4DNUxOn30TIbbJjGCMcho2C0oVcj6xzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=11mzLZdW8kY//KpXbBnGuKQPE+l0X88l91mlt0GIATI=;
+ b=cnS7HP9Pp6xf8Oj8OKXlsSmoKB0Hu/1hLVigGd6StCzqYKww3bWjJaGJcR5RzAwh6MFwkGd9s4eklEmHI0C0JABHc2x4aqNKBM7aBjwr8MHiqz+KoXQWZoEbk66qu21r2Qjt7HD1o4mRfOhxAmQUuqtKvRiOfuE+MxKIjV/k0KA=
+Authentication-Results: kozuka.jp; dkim=none (message not signed)
+ header.d=none;kozuka.jp; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Tue, 14 Sep
+ 2021 22:15:08 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 22:15:08 +0000
+Cc:     brijesh.singh@amd.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Masahiro Kozuka <masa.koz@kozuka.jp>
+Subject: Re: [PATCH 1/2] KVM: SEV: Pin guest memory for write for
+ RECEIVE_UPDATE_DATA
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20210914210951.2994260-1-seanjc@google.com>
+ <20210914210951.2994260-2-seanjc@google.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <1bd21635-a198-327f-cca1-7fd8bc116c91@amd.com>
+Date:   Tue, 14 Sep 2021 17:15:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210914210951.2994260-2-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Mailer: WebService/1.1.19013 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR2101CA0007.namprd21.prod.outlook.com
+ (2603:10b6:805:106::17) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
+MIME-Version: 1.0
+Received: from [10.236.31.95] (165.204.77.1) by SN6PR2101CA0007.namprd21.prod.outlook.com (2603:10b6:805:106::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.1 via Frontend Transport; Tue, 14 Sep 2021 22:15:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 08aa05d9-e12e-4b0f-1dbc-08d977cd1c66
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4430:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4430AAD19EF50073E4818706E5DA9@SA0PR12MB4430.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: E3hjeltXjjY99O9exa299jjTX3UpHJ2PMzpxRYo0SoxCxXQPTqM/+2Ld8mMlcETm3cwtl0BsqoCdZjyI1G7Aa51ZxPAq01d8g82L4ABE6PFeCMRFFp55pRnjz8ZRV2YxPy1wyoYFNYFwrb/cEN8t9Mf93cDrevZzn0ya4+3SEuzajiWaLkG4zF5wRapLZ7KHqNwnLpYJIL2SaTtIBBOLTUH1MirzCBxOH5A+Xlom/zmCuFsTrGbzSqPnsht9+EHCCs2jbNiOaHxT3lyBATQbT/3A90HbgRxJAxg9M0Y7B0i9zhjpTteiJZcD7MqEci+fwnxAqF4BZTXyXfrx0zlIazuwJbVVTQgiby/5nQis5vZEmOQqUH2/ZqdmDqnfqBe/BRWzM3h2QWUdIhTEXUvc5SUTQdhPiT7Z5maJi2VcFeP3sGQNzqlZnWpTU+YkeUJ2PjkJ2xUfP6zd6PtmKsLeOdPDYgYBb9Goc4cJ9j9I9Lr6wKauZrSfAkXs36bxSy64+jkzJS7Pi4ld+HW3w4dcVfu2pDknuZQZ4qqhugQkKloI5Vvy9uF7kabuRtV1ht4KELd+mkoC5aV8wPdEeagzarbTLZn1UKtrZUj1teIQQ+yoHxMKkz7ok08ACx1+c13YebrEYUYgus/8mvQgOrkTv40stT9ODv2TJiMWdnw4jd+6WFkzraFo3uawrS6KckUHCyq6N7etgIfQTy9E/fK7O8t885SIHnze3Q6JXkHm4QUlAuE0ZxLF/mWmEY3wIvRs31qWHn6TOzigEtIXg/duAw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(366004)(136003)(478600001)(186003)(2616005)(4326008)(31696002)(26005)(8676002)(16576012)(6486002)(956004)(5660300002)(8936002)(53546011)(31686004)(44832011)(52116002)(4744005)(86362001)(66476007)(7416002)(2906002)(38100700002)(38350700002)(54906003)(316002)(66556008)(110136005)(36756003)(66946007)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1JybHgwM1NzdlF2WEdXNXp1WjByS3piNUZqQVFsUjJuK1J0bkp0M2R0T2tm?=
+ =?utf-8?B?cU9RRkJMWEdBTUNaUzJGaGRiN3kzbm9hVnhDRjFaTW9YdTFDYldieE81N3BN?=
+ =?utf-8?B?Q1VTMmJqVTZjYkFqMjlFZWJWZWQwNklKRko4WjVmNGxUVnhlWDRNZCt4OFdt?=
+ =?utf-8?B?V0R6V3g1ZUZBOEVTTTRPMDA1WmhUWkgyZVl5OW56RzcvSG9vK0dNQUNTRGJS?=
+ =?utf-8?B?SG83eHJrTXhYN0VnNHk2WnJ4NnBSYThqaFl6K01WbXp6SnJteTc5blY4TDRI?=
+ =?utf-8?B?bXVzZ1dVMlYxOU1vUUw1ZWkyYk16UTJkZGV0NCtna2l1RVNZZ0xVVlpEZ0I0?=
+ =?utf-8?B?QUZHT2dJTXl3cWQ0bUUvcEpXdmtPQ0Y2blVHVkFweUNYdDBIdklPNy81N0I5?=
+ =?utf-8?B?MDJoQ2F6TGtValNSamxIM1RxNjdKVUgwaUYrOUpiSHU3em5DeXlpcUFZYXRt?=
+ =?utf-8?B?MTlSN0FtYzJRT1RpSU54eC9jZ2pzSjJQclFSS2N3V3JzOUphN3JmM1N2UUha?=
+ =?utf-8?B?T2Q4djdVZkorQmdLZTRKSVFqS0dnYmJuZzNOZVJ1c0dSakY4MmhRSWUvUnBr?=
+ =?utf-8?B?aldJZzNzbUxFSHAwT2Zuc0x4MStuRTJ5aWZ6YVJjV3ZlcHA0REFLU2J0V0Zp?=
+ =?utf-8?B?NW5ZU0Z3bmI5VDg3YmY3a1g4WEgxNmRadjNFS3drS3VCeG9LVlNvUWpnNko2?=
+ =?utf-8?B?QWlWK2JGWHNpeVd1bFF2OTJqbUl1cmFxSFFZcUdDWEtMVW1QYVBSUEJBMkJz?=
+ =?utf-8?B?SS9kZmFveExSdWpXaTI2MGpOSC9XQktFUlVSS0o1bTdrdzRQbW1iQnRxb1Zw?=
+ =?utf-8?B?eGR0TmpMamd0ekFFeG80cDdiSkVFQUR2V3VHNFBNM0RSU1g3aDBDSEYrVkJr?=
+ =?utf-8?B?KzBXOXVTT00yNktNY25zUVpQMzdHOUhleUc1MVRxVG1JSDBmSngyR2JRdnhN?=
+ =?utf-8?B?akJ5cDVpcjZ0Qlk1NlM0ZWNCK2V5SUlvTEt1RlJyQy81Q0NRUk14c3EyRFdB?=
+ =?utf-8?B?ZElzRGJlOGwyamhWdGtMSCtBdkw2OVNEaVI1anhaci85VWM3ZkJqaFhFSXMy?=
+ =?utf-8?B?aWJWS09PcUZEYmQzMjl0OUV0ZkYwM0hkK3loYm83eTVvdlRJREtVNWVlbWI4?=
+ =?utf-8?B?R0Q3N04zS2pDeG51bXd6SEJBVzRmWFdHNlNzTDd4UWpNd0RDaFBlcTM1a0Zx?=
+ =?utf-8?B?Q2VUbndVSklmakswS29FalVxZytKa1QwY3pwN3d0cGJqYWJleUtJRTE4Lzgy?=
+ =?utf-8?B?VDFjWVptQ0htMGxZSlIwbEsrejFMbWpmSlo1QWJjS2tHUit6Y0E0TmlpTTJm?=
+ =?utf-8?B?bHFSYWFtOHdBS1FqdzlvNUE1MXpyZ1NGUHg2dzQvNGxiU3ZKNUJqNXpwWUZw?=
+ =?utf-8?B?WEg3K01iMGF2WGVlK1BjRnJ1cWN5dE5TTTg4Tm90MWJsalRCVCtPMGZUNWd2?=
+ =?utf-8?B?M1hIMXJsdUt2bk5uWGxXWG1KRzh0SVJvbDFIM1p0VThaODJhN0lIYkl3VEZU?=
+ =?utf-8?B?Z1RoaDkvYXpJZWhiNlY4MUtyNEljZXgrWjNDYTJ0enc2cFdxT3JqclZhSnY4?=
+ =?utf-8?B?VHRKTTltMk01dTdHY2hPNXE3cEpXZ1UwOWN0YTJ6Z0NQbHYyenAxZGxzOFk5?=
+ =?utf-8?B?MXFiTHdqUGxlM2dZS2hDNVpWRlVqekxoc2pUVmFsMXZVejZkOTVML095TmpG?=
+ =?utf-8?B?c3d3Z243VTdQRnhjVzFCL0VPcG1Ua1g1VVZJVU95MENtTGVuOWtQa1BKemNn?=
+ =?utf-8?Q?kYnXwTRijw+mbBcspTRjDR4/h6ZsHvxstcPr0k8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08aa05d9-e12e-4b0f-1dbc-08d977cd1c66
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 22:15:07.9610
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GCyRgrgvWgeYZO8iKee/dczec2jL/5ihtTZzlfKCBEIkLtZhT5oYkB10gfX1uupqMDrh/LlvcZPFjnm75dcSUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/2021 4:47 PM, Paul Moore wrote:
-> On Mon, Sep 13, 2021 at 6:53 PM Casey Schaufler <casey@schaufler-ca.com=
-> wrote:
->> Commit 77462de14a43f4d98dbd8de0f5743a4e02450b1d
->>
->>         af_unix: Add read_sock for stream socket types
->>
->> introduced a regression in UDS socket connections for the Smack LSM.
->> I have not tracked done the details of why the change broke the code,
->> but this is where bisecting the kernel indicates the problem lies, and=
-
->> I have verified that reverting this change repairs the problem.
->>
->> You can verify the problem with the Smack test suite:
->>
->>         https://github.com/smack-team/smack-testsuite.git
->>
->> The failing test is tests/uds-access.sh.
->>
->> I have not looked to see if there's a similar problem with SELinux.
->> There may be, but if there isn't it doesn't matter, there's still a
->> bug.
-> FWIW, the selinux-testsuite tests ran clean today with v5.15-rc1 (it
-> looks like this code is only in v5.15) but as Casey said, a regression
-> is a regression.
->
-> Casey, what actually fails on the Smack system with this commit?
-
-I reran the bisection and got a different answer, but the same set of
-suspects. The change:
-
-commit 94531cfcbe79c3598acf96806627b2137ca32eb9
-
-    af_unix: Add unix_stream_proto for sockmap
-
-came up this time. The two suspect patches are related.
-
-The Smack access check on UDS stream sockets is behaving erratically,
-as if it's using random data to make its checks. I can run the same
-test on the same system with the same kernel and get different results.
-The trivial test, where the Smack labels are the same, sometimes fails.
-But not always.
 
 
+On 9/14/21 4:09 PM, Sean Christopherson wrote:
+> Require the target guest page to be writable when pinning memory for
+> RECEIVE_UPDATE_DATA.  Per the SEV API, the PSP writes to guest memory:
+> 
+>    The result is then encrypted with GCTX.VEK and written to the memory
+>    pointed to by GUEST_PADDR field.
+> 
+> Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
+> Cc: stable@vger.kernel.org
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
+
+thanks
