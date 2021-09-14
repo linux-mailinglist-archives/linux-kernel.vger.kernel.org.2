@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E69440BC4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7363140BC57
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhINXmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 19:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S235970AbhINXow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 19:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233774AbhINXmH (ORCPT
+        with ESMTP id S235798AbhINXou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 19:42:07 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C29C061574;
-        Tue, 14 Sep 2021 16:40:49 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id m70so1788789ybm.5;
-        Tue, 14 Sep 2021 16:40:49 -0700 (PDT)
+        Tue, 14 Sep 2021 19:44:50 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D434AC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:43:30 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id c4so468787pls.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MTsWxNtVh/gUW07bqDpwxbltc3xjMs1mgO9/G4lqUoI=;
-        b=M6tRVQwm5bciunlN5mIWsPcm2jBtUHsBujVD/sLgb2d4nNsB49bvrth4G2E0TBN6Rm
-         CEAB9Y+3e8LQAoJivkEEyhOmnLWVL/ycS5tAZ+LjKWypyWSwF93S9OVBEZ3KgmlqpKxb
-         ctJ7dKuv62fgavf5UgcL6A0tiaH6dP82OERmpHn0ktHmTfW8tl1QXAI/y3u1L/ApTFkP
-         4zaObCjDHUDG1BzcsOfpcLhAa6GlkOms4wIdcJ7+I1S5gnXgKtqMnMQgKmhgGEFGoXZm
-         BlcbeE6mV8LLuD2wxuI7iNsvENBH8jwptyCcOl0T0VSH1LXkHzrijS2eJIujKMEcYoEe
-         fDFw==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=8O+Hy6We6pSl0DNT8xui4/8ZZ/lZgMhSAyPrG/8P2Ww=;
+        b=oBbEAG+7FvjkbqO7CpvRLFUIxM3766nu3aMkROo6iWBNl+TYiwyE3gtvbgifiEov3l
+         2Gq682Im2gXqCtjoMObMjTRSsP+KYH/KoviNQzjlvP/qqw+cFHzSPBfVUzhciitBkEMf
+         QstU8wTvI4+7x9gztxTlEhQv1RUiS4pBfuP+otYpBsQJxscX/Xnh6GT/c3k8aG4KKvBJ
+         9Vag7UGjME5jWsPFG0J4KmhykpaX+b2ydeG/za6E6zL3r8w2ohtyp8MGw++ceNfpPws0
+         OVJYrvSM/1tKBRHoZfvWibTBQOJMZ/t3efk2/xjycZ2Z2uBqAdX546KLbLMwFiyZOolx
+         Ky/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MTsWxNtVh/gUW07bqDpwxbltc3xjMs1mgO9/G4lqUoI=;
-        b=hvUbqUSUw2VcfiU9msaXv4P3MgRvZlIqVPY8c9T478p7U9QwFvBEzpFmkunGjOOjyJ
-         fYiS6WxKFC8pqfMvp2uP4d4jNAipnZi0dgTPPNkfdG1ncHS9+DpDCrOhsArzH8T+xp0y
-         +WhM/gaUKBC541z48Gyr1O+hDvHBY6UnunaZQELKkZT+ZEQvNsZApD36gFWR0losBQR6
-         WuwFKeoyjr5rrDIQ0+H2M8XIM8anFXydK9oHz1Lg3U+KmQ7mYf7KdL0RgnU59Lc7OxlO
-         qmlVWl+WPd3U7H5Us1mzAiOpOBH9W0ZafBVOZ5dIPG3TvbYtjY/XpdPV9p4aLoM2foe8
-         brDg==
-X-Gm-Message-State: AOAM531ignYg1sALbozwPMoRwg5FochSTKHnrNncB3qfYa5f5QhucmMV
-        kcSKQ+RH9trhU2dFp1Y4ZCWSLnClQ5ksyV5Oh4IBSkfm
-X-Google-Smtp-Source: ABdhPJzarngUCYaTNT7QCrz8jT8AJefDfCIDqRpsx5EvzBsCDCdYCX4vXnTdDV9CWiuNXNz+HgmQbthS7KYCfl4796M=
-X-Received: by 2002:a25:47c4:: with SMTP id u187mr2449162yba.225.1631662848122;
- Tue, 14 Sep 2021 16:40:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=8O+Hy6We6pSl0DNT8xui4/8ZZ/lZgMhSAyPrG/8P2Ww=;
+        b=pbdtX84YfZWEONuA1kFdbXsennYJKhPBxlPsvcUYB0CK2NTJjBXMUOEyh5Z+rmNgaU
+         HMgkn2LVHpPsIKvaB7wyQBU5BnBd/XLD3CUdLImgWX29Q+opzp8o8DRJClCxwwLbhmHL
+         u89UsylYdE5NSPO07dqdtB+KO4eLwXi0Q2brL8thGfcYBBmbajWBsilY+GmVYUf+p9q8
+         H5Ozozobic1lpzeLCqtAry7Avb6NmfgbcnxY7XhjclexXb+okjZ8zzCVBLHxg9IGLfpj
+         16Oizsbn2Hu+Z2BZ2orx/11t7l+kkVWtMyha1q3LtOktY5FypJn+upFvq2gzXQe6e64R
+         NFCA==
+X-Gm-Message-State: AOAM533k3BRxcFyBC5jj9GinN/gKjs5V+xOUCQ4cNAioFBdb1cEJBrim
+        NQO1UNgLgOJTjJmtehbkmwXmvQ==
+X-Google-Smtp-Source: ABdhPJyj23XbbLxNyB4sJkNtXn+USgxVzCsmWrwtl0ite0P6RNMul8bZnegi9bZ3G4X1QsMqKyJIFg==
+X-Received: by 2002:a17:90a:f002:: with SMTP id bt2mr4963401pjb.207.1631663010164;
+        Tue, 14 Sep 2021 16:43:30 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v23sm11084092pff.155.2021.09.14.16.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 16:43:29 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 23:43:25 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: SEV: Acquire vcpu mutex when updating VMSA
+Message-ID: <YUEznQvx+bycn9Iq@google.com>
+References: <20210914200639.3305617-1-pgonda@google.com>
+ <YUEVQDEvLbdJF+sj@google.com>
+ <CAMkAt6rSsKuzE__pAodiJR9wFU-B3942+kdkQG-3M+jxhVco2w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210914113730.74623156@canb.auug.org.au> <CAEf4BzYt4XnHr=zxAEeA2=xF_LCNs_eqneO1R6j8=PMTBo5Z5w@mail.gmail.com>
- <20210915093802.02303754@canb.auug.org.au>
-In-Reply-To: <20210915093802.02303754@canb.auug.org.au>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Sep 2021 16:40:37 -0700
-Message-ID: <CAEf4BzZ7LKNZ8w8=6PGTUxfp2ea_HOBJL=dZocdsyWjKqZ2LhQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMkAt6rSsKuzE__pAodiJR9wFU-B3942+kdkQG-3M+jxhVco2w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 4:38 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi Andrii,
->
-> On Tue, 14 Sep 2021 16:25:55 -0700 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Sep 13, 2021 at 6:37 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > After merging the bpf-next tree, today's linux-next build (perf) failed
-> > > like this:
-> > >
-> > > util/bpf-event.c: In function 'btf__load_from_kernel_by_id':
-> > > util/bpf-event.c:27:8: error: 'btf__get_from_id' is deprecated: libbpf v0.6+: use btf__load_from_kernel_by_id instead [-Werror=deprecated-declarations]
-> > >    27 |        int err = btf__get_from_id(id, &btf);
-> > >       |        ^~~
-> > > In file included from util/bpf-event.c:5:
-> > > /home/sfr/next/next/tools/lib/bpf/btf.h:54:16: note: declared here
-> > >    54 | LIBBPF_API int btf__get_from_id(__u32 id, struct btf **btf);
-> > >       |                ^~~~~~~~~~~~~~~~
-> > > cc1: all warnings being treated as errors
-> > >
-> > > Caused by commit
-> > >
-> > >   0b46b7550560 ("libbpf: Add LIBBPF_DEPRECATED_SINCE macro for scheduling API deprecations")
-> >
-> > Should be fixed by [0], when applied to perf tree. Thanks for reporting!
-> >
-> >   [0] https://patchwork.kernel.org/project/netdevbpf/patch/20210914170004.4185659-1-andrii@kernel.org/
->
-> That really needs to be applied to the bpf-next tree (presumably with
-> the appropriate Acks).
->
+On Tue, Sep 14, 2021, Peter Gonda wrote:
+> That looks reasonable to me. I didn't know if changes headed for LTS
+> should be smaller so I avoided doing this refactor. From:
+> https://www.kernel.org/doc/html/v4.11/process/stable-kernel-rules.html#stable-kernel-rules
+> seems to say less than 100 lines is ideal.
 
-This is perf code that's not in bpf-next yet.
+Most the rules are more like guidelines ;-)  In seriousness, there's a balance to
+be had between minimizing the diff and keeping everything maintainable.  E.g. if
+the fix is kept small and then the upstream code is immediately refactored, any
+future fixes to the refactored code will be harder to backport.  And the actual
+fix would also be poorly tested in upstream since folks would be testing the
+refactored version of the code.
 
+> I guess this could also be a "theoretical race condition” anyways so maybe
+> not for LTS anyways.
 
-> --
-> Cheers,
-> Stephen Rothwell
+If there's doubt, write a test :-)  The "theoretical race condition" thing is to
+discourage people from backporting fixes for ridiculously tiny windows that may
+or may not be exploitable.  This is a giant gaping chasm that userspace can drive
+a car through, e.g. literally "do KVM_RUN at the same time".
