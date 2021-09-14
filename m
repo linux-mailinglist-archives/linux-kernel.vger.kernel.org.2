@@ -2,134 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0AD40B96F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C0F40B96D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhINUs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233863AbhINUsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233872AbhINUsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 14 Sep 2021 16:48:23 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B41C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:47:05 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso561816pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z6sjgsRXHAAZe5EpmfS0mxe4gOnh7qI8vZt4uYNXxzk=;
-        b=E92+P6I/zl5VP9TVKRsNL+Ylr6HQVo9mHZ/GiiOaVcKvrSJhfz2YAqxKHcRoGPAouS
-         gUGcTf+QgD5OqLQE/23Jw8K+0+WMHUd932I6GUprDEO7F4aRnU9rgIQ+STPts8y8nrv9
-         +cvBMgYAsIfDX5vZ2McLpy0jIVA/6UqgpnPzACepffwMZSCbdnbTWoUSGkr3F7wd3MGs
-         pu6pcdii/cEFRINOc4mECjUQ1vyKgli82I/4Ckar4LaCEY3k1BMKRD+91ZCW8cIz9TZe
-         1HTM73axiD6zbYIBnfp1qs9U8f/hMloM0ZttGHMMvtvPCmCsD0E+IGUiO7V3L+nlyABu
-         lvRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z6sjgsRXHAAZe5EpmfS0mxe4gOnh7qI8vZt4uYNXxzk=;
-        b=dQ6gm3Sgll2QzuXx9ZTphKYe2H3El82irMpBwTdyhOpNk5v79fGxjltcXKaYQ5f3t+
-         MAlawGgJP4+n3mI8CKBFSs66T6xPGZl73hSH2aZ1SwU8C4hu9A994C5msY16RaMqdKX1
-         Ee2FAptOSfRfrc4rrv78PjRDZ6ChHewTHS6Bn8+F8zTtn+bW3obtGC3dIFbZbCIHMJY6
-         KLDvsjc+6ubJ7N9EZ6WBj1xfYr2huFtWfmpbGkCPCeY8xeGbF0rjBW8bRoUUumqvg2+i
-         GzHlLUX7OgpP6nrFmeiZ66JZg4WSTWS4hP4O7imnn62XAZp1J/emtUFqQAJ4Q4h7YNY5
-         RTmQ==
-X-Gm-Message-State: AOAM532X2c1azx5G1tX32+OiTkNsn3lyMji8/uvdD+5I7/GcLe1+u1I/
-        QMO0cTlg/Es6fDwfRqf0t41d3MIAxSPo1+/7nLSWWQ==
-X-Google-Smtp-Source: ABdhPJyd8cTnpvNGrPcB7rDUXyzlfuperCL06Jsg632npMA9exX1dQjA6dOdA02bgoQpeqRJNkDcGKqaHCx/3gKXW2s=
-X-Received: by 2002:a17:90a:1d4c:: with SMTP id u12mr4095618pju.95.1631652424662;
- Tue, 14 Sep 2021 13:47:04 -0700 (PDT)
+Received: from mail.kernel.org ([198.145.29.99]:48212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233373AbhINUsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 16:48:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E2260187;
+        Tue, 14 Sep 2021 20:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631652422;
+        bh=i1oCg/0TzFjJ8DdhzYxpYQet8rLvCyQpaM2G+FJ4ubY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bsEYIzEoKnJ6+UoYa6Kq6vOws/6IaHWEGY5hjKkjnOMo3aVdOKROYaPL0ycIZI27q
+         X9ZP33v21N5Q167DFFqXq+/+2Z6rcCBXfuSgNsXRhoVhA3UQgpgD0oCyTUg/J7SQ6H
+         k8jP/mIF7xeDgBYti7CIe9XnTGh6JviVgB9llqmOZC7/AQu9ffD0rQzD4RmKfbFd05
+         0lgoIb1xhoz48Sr1gAFhqUncAr4Rnetip2mXmmY1f6aT+eZe1J7PWELYXIn4Mepa6Z
+         9J+Q5/o1QfMe94iqaG0n2K6O9zjyU9smpyRRRiCXYLAn/RbXlDpB2pJ8oIkqZIfFVr
+         Rorv2HgOzpygQ==
+Received: by pali.im (Postfix)
+        id 95A45825; Tue, 14 Sep 2021 22:46:59 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 22:46:59 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
+ CRS response
+Message-ID: <20210914204659.hmn22qbwa2fkft7k@pali>
+References: <20210823120214.24837-1-pali@kernel.org>
+ <20210914202656.GA1452540@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
- <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
- <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com>
- <36aa5cb7-e3d6-33cb-9ac6-c9ff1169d711@linuxfoundation.org>
- <CAK8P3a1vNx1s-tcjtu6VDxak4NHyztF0XZGe3wOrNbigx1f4tw@mail.gmail.com>
- <120389b9-f90b-0fa3-21d5-1f789b4c984d@linuxfoundation.org>
- <CAFd5g47MgGCoenw08hehegstQSujT7AwksQkxA7mQgKhChimNw@mail.gmail.com> <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
-In-Reply-To: <3bad5d2f-8ce7-d0b9-19ad-def68d4193dd@linuxfoundation.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 14 Sep 2021 13:46:53 -0700
-Message-ID: <CAFd5g47bZbqGgMn8PVa=DaSFfjnJsLGVsLTYzmmCOpdv-TfUSQ@mail.gmail.com>
-Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
- than 1024 bytes [-Werror=frame-larger-than=]
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ariel Elior <aelior@marvell.com>,
-        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        KUnit Development <kunit-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210914202656.GA1452540@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 9/8/21 3:24 PM, Brendan Higgins wrote:
-> > On Wed, Sep 8, 2021 at 10:16 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>
-> >> On 9/8/21 11:05 AM, Arnd Bergmann wrote:
-> >>> On Wed, Sep 8, 2021 at 4:12 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>>> On 9/7/21 5:14 PM, Linus Torvalds wrote:
-> >>>>> The KUNIT macros create all these individually reasonably small
-> >>>>> initialized structures on stack, and when you have more than a small
-> >>>>> handful of them the KUNIT infrastructure just makes the stack space
-> >>>>> explode. Sometimes the compiler will be able to re-use the stack
-> >>>>> slots, but it seems to be an iffy proposition to depend on it - it
-> >>>>> seems to be a combination of luck and various config options.
-> >>>>>
-> >>>>
-> >>>> I have been concerned about these macros creeping in for a while.
-> >>>> I will take a closer look and work with Brendan to come with a plan
-> >>>> to address it.
-> >>>
-> >>> I've previously sent patches to turn off the structleak plugin for
-> >>> any kunit test file to work around this, but only a few of those patches
-> >>> got merged and new files have been added since. It would
-> >>> definitely help to come up with a proper fix, but my structleak-disable
-> >>> hack should be sufficient as a quick fix.
-> >>>
-> >>
-> >> Looks like these are RFC patches and the discussion went cold. Let's pick
-> >> this back up and we can make progress.
-> >>
-> >> https://lore.kernel.org/lkml/CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com/
-> >
-> > I can try to get the patch reapplying and send it out (I just figured
-> > that Arnd or Kees would want to send it out :-)  since it was your
-> > idea).
-> >
->
-> Brendan,
->
-> Would you like to send me the fix with Suggested-by for Arnd or Kees?
+On Tuesday 14 September 2021 15:26:56 Bjorn Helgaas wrote:
+> On Mon, Aug 23, 2021 at 02:02:14PM +0200, Pali Rohár wrote:
+> > Commit 43f5c77bcbd2 ("PCI: aardvark: Fix reporting CRS value") fixed
+> > handling of CRS response and when CRSSVE flag was not enabled it marked CRS
+> > response as failed transaction (due to simplicity).
+> > 
+> > But pci-aardvark.c driver is already waiting up to the PIO_RETRY_CNT count
+> > for PIO config response and implementation of re-issuing config requests
+> > according to PCIe base specification is therefore simple.
+> 
+> I think the spec is confusingly worded.  It says (PCIe r5.0, sec
+> 2.3.2) that when handling a Completion with CRS status for a config
+> request (paraphrasing slightly),
+> 
+>   If CRS Software Visibility is enabled, for config reads of Vendor
+>   ID, the Root Complex returns 0x0001 for Vendor ID.
+> 
+>   Otherwise ... the Root Complex must re-issue the Configuration
+>   Request as a new Request.
+> 
+> BUT:
+> 
+>   A Root Complex implementation may choose to limit the number of
+>   Configuration Request/ CRS Completion Status loops before
+>   determining that something is wrong with the target of the Request
+>   and taking appropriate action, e.g., complete the Request to the
+>   host as a failed transaction.
+> 
+> So I think zero is a perfectly valid number of retries, and I'm pretty
+> sure there are RCs that never retry.
+> 
+> Is there a benefit to doing retry like this in the driver?  Can we not
+> simply rely on retries at a higher level?
 
-So it looks like Arnd's fix was accepted (whether by him or someone
-else) for property-entry-test and Linus already fixed thunderbolt, so
-the only remaining of Arnd's patches is for the bitfield test, so I'll
-resend that one in a bit.
+I think that all drivers handle 0xFFFFFFFF read response as some kind of
+fatal error. And because every PCI error is mapped to value 0xFFFFFFFF
+it means that higher level has no chance to distinguish easily between
+unsupported request and completion retry status.
 
-Also, I haven't actually tried Linus' suggestion yet, but the logic is
-sound and the change *should* be fairly unintrusive - I am going to
-give that a try and report back (but I will get the bitfield
-structleak disable patch out first since I already got that applying).
+And issue is there also with write requests. Is somebody checking return
+value of pci_bus_write_config function?
+
+I guess that zero retry count as you pointed is valid. But it is
+something which we want?
+
+I sent this patch because implementation of request retry was very
+simple. Driver already waits for response, so adding another loop around
+it does not increase code complexity.
+
+> > This change implements re-issuing of config requests when response is CRS.
+> > And to prevent infinite loop set upper bound to around PIO_RETRY_CNT value,
+> > after which is transaction marked as failed and 0xFFFFFFFF is returned like
+> > before.
+> > 
+> > Implementation is done by returning appropriate error codes from function
+> > advk_pcie_check_pio_status(). On CRS is returned -EAGAIN and caller then
+> > reissue transaction up to the PIO_RETRY_CNT count. As advk_pcie_wait_pio()
+> > function waits some cycles, return number of these cycles and add them to
+> > the retry count. So the total time for config request would be only linear
+> > O(PIO_RETRY_CNT) and not quadratic O(PIO_RETRY_CNT^2) in the worst case.
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > Fixes: 43f5c77bcbd2 ("PCI: aardvark: Fix reporting CRS value")
+> > ---
+> >  drivers/pci/controller/pci-aardvark.c | 36 ++++++++++++++++++++++-----
+> >  1 file changed, 30 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > index abc93225ba20..99f244190eae 100644
+> > --- a/drivers/pci/controller/pci-aardvark.c
+> > +++ b/drivers/pci/controller/pci-aardvark.c
+> > @@ -470,6 +470,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+> >  	u32 reg;
+> >  	unsigned int status;
+> >  	char *strcomp_status, *str_posted;
+> > +	int ret;
+> >  
+> >  	reg = advk_readl(pcie, PIO_STAT);
+> >  	status = (reg & PIO_COMPLETION_STATUS_MASK) >>
+> > @@ -494,6 +495,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+> >  	case PIO_COMPLETION_STATUS_OK:
+> >  		if (reg & PIO_ERR_STATUS) {
+> >  			strcomp_status = "COMP_ERR";
+> > +			ret = -EFAULT;
+> >  			break;
+> >  		}
+> >  		/* Get the read result */
+> > @@ -501,9 +503,11 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+> >  			*val = advk_readl(pcie, PIO_RD_DATA);
+> >  		/* No error */
+> >  		strcomp_status = NULL;
+> > +		ret = 0;
+> >  		break;
+> >  	case PIO_COMPLETION_STATUS_UR:
+> >  		strcomp_status = "UR";
+> > +		ret = -EOPNOTSUPP;
+> >  		break;
+> >  	case PIO_COMPLETION_STATUS_CRS:
+> >  		if (allow_crs && val) {
+> > @@ -521,6 +525,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+> >  			 */
+> >  			*val = CFG_RD_CRS_VAL;
+> >  			strcomp_status = NULL;
+> > +			ret = 0;
+> >  			break;
+> >  		}
+> >  		/* PCIe r4.0, sec 2.3.2, says:
+> > @@ -536,21 +541,24 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+> >  		 * Request and taking appropriate action, e.g., complete the
+> >  		 * Request to the host as a failed transaction.
+> >  		 *
+> > -		 * To simplify implementation do not re-issue the Configuration
+> > -		 * Request and complete the Request as a failed transaction.
+> > +		 * So return -EAGAIN and caller (pci-aardvark.c driver) will
+> > +		 * re-issue request again up to the PIO_RETRY_CNT retries.
+> >  		 */
+> >  		strcomp_status = "CRS";
+> > +		ret = -EAGAIN;
+> >  		break;
+> >  	case PIO_COMPLETION_STATUS_CA:
+> >  		strcomp_status = "CA";
+> > +		ret = -ECANCELED;
+> >  		break;
+> >  	default:
+> >  		strcomp_status = "Unknown";
+> > +		ret = -EINVAL;
+> >  		break;
+> >  	}
+> >  
+> >  	if (!strcomp_status)
+> > -		return 0;
+> > +		return ret;
+> >  
+> >  	if (reg & PIO_NON_POSTED_REQ)
+> >  		str_posted = "Non-posted";
+> > @@ -560,7 +568,7 @@ static int advk_pcie_check_pio_status(struct advk_pcie *pcie, bool allow_crs, u3
+> >  	dev_err(dev, "%s PIO Response Status: %s, %#x @ %#x\n",
+> >  		str_posted, strcomp_status, reg, advk_readl(pcie, PIO_ADDR_LS));
+> >  
+> > -	return -EFAULT;
+> > +	return ret;
+> >  }
+> >  
+> >  static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+> > @@ -568,13 +576,13 @@ static int advk_pcie_wait_pio(struct advk_pcie *pcie)
+> >  	struct device *dev = &pcie->pdev->dev;
+> >  	int i;
+> >  
+> > -	for (i = 0; i < PIO_RETRY_CNT; i++) {
+> > +	for (i = 1; i <= PIO_RETRY_CNT; i++) {
+> >  		u32 start, isr;
+> >  
+> >  		start = advk_readl(pcie, PIO_START);
+> >  		isr = advk_readl(pcie, PIO_ISR);
+> >  		if (!start && isr)
+> > -			return 0;
+> > +			return i;
+> >  		udelay(PIO_RETRY_DELAY);
+> >  	}
+> >  
+> > @@ -764,6 +772,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> >  			     int where, int size, u32 *val)
+> >  {
+> >  	struct advk_pcie *pcie = bus->sysdata;
+> > +	int retry_count;
+> >  	bool allow_crs;
+> >  	u32 reg;
+> >  	int ret;
+> > @@ -816,6 +825,9 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> >  	/* Program the data strobe */
+> >  	advk_writel(pcie, 0xf, PIO_WR_DATA_STRB);
+> >  
+> > +	retry_count = 0;
+> > +
+> > +retry:
+> >  	/* Clear PIO DONE ISR and start the transfer */
+> >  	advk_writel(pcie, 1, PIO_ISR);
+> >  	advk_writel(pcie, 1, PIO_START);
+> > @@ -834,8 +846,12 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
+> >  		return PCIBIOS_SET_FAILED;
+> >  	}
+> >  
+> > +	retry_count += ret;
+> > +
+> >  	/* Check PIO status and get the read result */
+> >  	ret = advk_pcie_check_pio_status(pcie, allow_crs, val);
+> > +	if (ret == -EAGAIN && retry_count < PIO_RETRY_CNT)
+> > +		goto retry;
+> >  	if (ret < 0) {
+> >  		*val = 0xffffffff;
+> >  		return PCIBIOS_SET_FAILED;
+> > @@ -855,6 +871,7 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+> >  	struct advk_pcie *pcie = bus->sysdata;
+> >  	u32 reg;
+> >  	u32 data_strobe = 0x0;
+> > +	int retry_count;
+> >  	int offset;
+> >  	int ret;
+> >  
+> > @@ -896,6 +913,9 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+> >  	/* Program the data strobe */
+> >  	advk_writel(pcie, data_strobe, PIO_WR_DATA_STRB);
+> >  
+> > +	retry_count = 0;
+> > +
+> > +retry:
+> >  	/* Clear PIO DONE ISR and start the transfer */
+> >  	advk_writel(pcie, 1, PIO_ISR);
+> >  	advk_writel(pcie, 1, PIO_START);
+> > @@ -904,7 +924,11 @@ static int advk_pcie_wr_conf(struct pci_bus *bus, u32 devfn,
+> >  	if (ret < 0)
+> >  		return PCIBIOS_SET_FAILED;
+> >  
+> > +	retry_count += ret;
+> > +
+> >  	ret = advk_pcie_check_pio_status(pcie, false, NULL);
+> > +	if (ret == -EAGAIN && retry_count < PIO_RETRY_CNT)
+> > +		goto retry;
+> >  	if (ret < 0)
+> >  		return PCIBIOS_SET_FAILED;
+> >  
+> > -- 
+> > 2.20.1
+> > 
