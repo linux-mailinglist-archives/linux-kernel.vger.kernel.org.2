@@ -2,92 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33A240AB6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A387C40AB6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhINKIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:08:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
+        id S231316AbhINKJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:09:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:57910 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230035AbhINKIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:08:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1404561159
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631614041;
-        bh=Ik/HLIOub9MljzeBlj9WzGBM1qaqzGDYRzAzALcEBf8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EESCAmiKJOFXDlf0cjh3Pt9Bf4IH8B1oF+P2To5IyihBuwrVd5uHP6CIdcMaOyAYq
-         yPgMhDktoLsUaiQGZxeswuycykDrW/DDo5aUP06Wy4eo8DMMl/7QAGT7z97L10Lrjw
-         qb/S/vdzYmona5dULjtZGA8b22IDHKzn4a6yo2rHWXUEP1822q35acraOYIgCJqcLg
-         TodyyWdm3VLU77JRTkC6/042ZxmaO8I8NN1c3CIDYSWIZbrKaa8rhtPDx0JFIsiRAA
-         rR1LF0EeAzdyF4/BZDD+TCuz1+ZSGT1QDp+9+H29SKmCI4Gbnw7lgk6AKYzfQ1roB7
-         g47lhFmFI3uBA==
-Received: by mail-pg1-f176.google.com with SMTP id r2so12210914pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:07:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530Sh+7mDy1BmL0t+qw5rBu8lR1WoYd5/mH1NneoSExkBg9DZp87
-        etgu+g9nU2c5/YqEktWEr1ttMZYMjsVZhhpB/oc=
-X-Google-Smtp-Source: ABdhPJx8wLgrCETgV5FCCkV03G8EWefJb0qDhmI+vFfJR48Z0saK2K+Y6DLCjdrZx7DsPvGh1O/UCwj/Efyf01dSQBM=
-X-Received: by 2002:a62:ce0d:0:b0:438:71f1:4442 with SMTP id
- y13-20020a62ce0d000000b0043871f14442mr3980539pfg.21.1631614040608; Tue, 14
- Sep 2021 03:07:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210911092139.79607-1-guoren@kernel.org> <20210911092139.79607-7-guoren@kernel.org>
- <20210913084520.kkbsupogkzv226x3@gilmour> <CAJF2gTT_8VLTt0B=LxXAPWVpHaBaVxy+V0rGCjr7JZyRiO7LfQ@mail.gmail.com>
- <d2ac3da8-f4d5-52c1-da7f-f8260a0bb604@infradead.org> <CAJF2gTTVj2J6_rCXAG81PB3vJZO2TTwpD03vAE2q+K=9zh_TzQ@mail.gmail.com>
- <CAK8P3a1TY+XT1vF=wAh0XA5BXU5Z6Ab1d4DekXbVsN9aj3aL5w@mail.gmail.com>
-In-Reply-To: <CAK8P3a1TY+XT1vF=wAh0XA5BXU5Z6Ab1d4DekXbVsN9aj3aL5w@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 14 Sep 2021 12:07:08 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdH0C0CJe_oxZ2rG1UeE5G9w2mh2Thh8LynpNHQk2g1qA@mail.gmail.com>
-Message-ID: <CAJKOXPdH0C0CJe_oxZ2rG1UeE5G9w2mh2Thh8LynpNHQk2g1qA@mail.gmail.com>
-Subject: Re: [RFC PATCH V4 6/6] riscv: soc: Add Allwinner SoC kconfig option
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Guo Ren <guoren@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
-        philipp.tomsich@vrull.eu, Christoph Hellwig <hch@lst.de>,
-        liush <liush@allwinnertech.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
-        heinrich.schuchardt@canonical.com, gordan.markus@canonical.com,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Chen-Yu Tsai <wens@csie.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230223AbhINKJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:09:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631614117; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=XPF3ihCMAX+tX0noIpuQ+Pi13rzql/r9yG3jtqdHxXs=; b=eNTUuoWeHHWIyjMW0xX4WgTYomfo21gVxne9hAdmIcPyf8NlvX57EN7zxdF0vOzHAZHI9DqT
+ UdqTqe2j8SFwlBH+zT+h8ZeSSZ9NMXIR7pfl4vo+Es5GnOJq0HMe/redg+ZehQ2EHEmJ0xEj
+ Hqzgi1DNPTJ0tMtCF4Sp9j2+wsc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61407497b585cc7d24b27cd4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Sep 2021 10:08:23
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3D0E0C43619; Tue, 14 Sep 2021 10:08:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D98F8C4338F;
+        Tue, 14 Sep 2021 10:08:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D98F8C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v10] Bluetooth: btusb: Add support using different nvm for variant WCN6855 controller
+Date:   Tue, 14 Sep 2021 18:08:16 +0800
+Message-Id: <1631614096-24613-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 11:31, Arnd Bergmann <arnd@arndb.de> wrote:
-> Some subsystem maintainers want drivers to be selected by the SoC
-> option, this is why you need the 'select SIFIVE_PLIC', but usually
-> the drivers are selectable with a 'depends on ARCH_SUNXI ||
-> COMPILE_TEST' and enabled in the defconfig.
+the RF performance of wcn6855 soc chip from different foundries will be
+difference, so we should use different nvm to configure them.
 
-I would say selecting drivers is even more useful for distros and
-other downstream users. Especially in the ARM world where we have so
-many different SoCs - how could a distro person know which driver is
-necessary, important or useful? Having all main SoC drivers enabled
-when ARCH_SUNXI=y, helps distro a lot.
+Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
+---
+ drivers/bluetooth/btusb.c | 50 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 37 insertions(+), 13 deletions(-)
 
-> If you want to get fancy, you can use something like:
->
-> config RESET_SUNXI
->         bool "Allwinner SoCs Reset Driver" if COMPILE_TEST && !ARCH_SUNXI
->         default ARCH_SUNXI
->
-> This will make an option that
->  - always enabled when the platform is built-in
->  - user selectable when compile-testing for any other platform
->  - always disabled otherwise
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 928cbfa4c42d..6dc645698e30 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+ #define QCA_DFU_TIMEOUT		3000
+ #define QCA_FLAG_MULTI_NVM      0x80
+ 
++#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
++#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
++
+ struct qca_version {
+ 	__le32	rom_version;
+ 	__le32	patch_version;
+@@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
+ 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+ 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+ 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
++	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+ };
+ 
+ static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+@@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+ 	return err;
+ }
+ 
++static void btusb_generate_qca_nvm_name(char *fwname,
++					size_t max_size,
++					struct qca_version *ver,
++					char *variant)
++{
++	char *sep = (strlen(variant) == 0) ? "" : "_";
++	u16 board_id = le16_to_cpu(ver->board_id);
++	u32 rom_version = le32_to_cpu(ver->rom_version);
++
++	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
++		/* if boardid equal 0, use default nvm without suffix */
++		if (board_id == 0x0) {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
++				rom_version, sep, variant);
++		} else {
++			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
++				rom_version, sep, variant, board_id);
++		}
++	} else {
++		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
++			rom_version);
++	}
++
++}
++
+ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 				    struct qca_version *ver,
+ 				    const struct qca_device_info *info)
+@@ -3354,19 +3383,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+ 	char fwname[64];
+ 	int err;
+ 
+-	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+-		/* if boardid equal 0, use default nvm without surfix */
+-		if (le16_to_cpu(ver->board_id) == 0x0) {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-				 le32_to_cpu(ver->rom_version));
+-		} else {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-				le32_to_cpu(ver->rom_version),
+-				le16_to_cpu(ver->board_id));
+-		}
+-	} else {
+-		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-			 le32_to_cpu(ver->rom_version));
++	switch (ver->ram_version) {
++	case WCN6855_2_0_RAM_VERSION_GF:
++	case WCN6855_2_1_RAM_VERSION_GF:
++		btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
++		break;
++	default:
++		btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
++		break;
+ 	}
+ 
+ 	err = request_firmware(&fw, fwname, &hdev->dev);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-+1 for this pattern.
-
-Best regards,
-Krzysztof
