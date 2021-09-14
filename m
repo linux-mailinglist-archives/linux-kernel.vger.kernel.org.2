@@ -2,128 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DD140B452
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB2540B462
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhINQSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:18:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:41775 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhINQSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:18:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209282641"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="209282641"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 09:16:56 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="544161710"
-Received: from ldraghi-mobl1.amr.corp.intel.com (HELO [10.209.28.176]) ([10.209.28.176])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 09:16:55 -0700
-Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S229527AbhINQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhINQUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:20:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8718FC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:19:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id m16-20020a25d410000000b005ab243aaaf4so13530723ybf.20
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Ruv7ezEWWdUTVVZLqSe78q272b/bMY/ySC1JyxSYFiY=;
+        b=kSQFla5goeALrlJJglGShYI58OnYi8n8lNeZAQmsyOVFVcov0bfzPiR4j7C7zcM7Xw
+         yF4vcfBZIj4YlKKiz0Hw8BAS0s7Aw82FbD2l7aicpd9Z9Xn4w+Rf7jz//DiZNgyQ+sgc
+         ultxKeOLXVO/N6+ptCKiVQZQ7oFt/xiGP45U58XxuOp/yeCVMldlIzrFjmTfuoMhSdid
+         bxGeZicGy2KfLRgi3u/cs8umaU5WfRH3SS8G7vy8Odqm3X+LkM697vxJXc0PVbxl2E3A
+         ggv9l1lSvl2CRvTa1l6vH0h0iYrnO52Y1T8A8e77o6taqG1n5XS23SNvNMXGHBPk4n2b
+         dp7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Ruv7ezEWWdUTVVZLqSe78q272b/bMY/ySC1JyxSYFiY=;
+        b=w1aD0oXbaAy5R1R+chhrgsMNs/Zvw4iPUq23NgMGz8HsN75xs8p+JJRpVMs7EukWms
+         yumIOo0AT2302U0iBBmfQlECmNJNXwfLgCV5qbX3J3AHjSTb2j56SvejLh9HjfBulEOA
+         G3YzS5+FzZJYncupFmORIqMelHaTE5o5h2IpzkpcB6Deqa8kPbXNLNweDWsDkCievsQD
+         0PuPGLocFyhX61WN+/of3cSLq+rLwecRWd8Aow6xwMAfbxEcPMvrE6V81Hj3XrMyOh83
+         31QU74UlbTy9lVNanpFGU5QnEHVCmzuVQ2f4R5kZayEuPVP4Yu1oqMfVTuD937xglrYR
+         UzgQ==
+X-Gm-Message-State: AOAM530gxvLkszrXDSFVKQPUQhPARviHJlbqtWBtzhSYQ7Dl3FViCj89
+        RfcYdUv1L0nGtiySz/EFmcoZP5C8Dgzl7D26fhc=
+X-Google-Smtp-Source: ABdhPJw9RLm32EL4GnbLXlA33WVRSTqrf7sM0HxL6TI8e7GhDqbjh06RFLuyVaPPTR3C85JrmG1m7RxSH+8qBqmTWRo=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:4780:ab8c:bb56:31d6])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6902:1002:: with SMTP id
+ w2mr21614613ybt.183.1631636346725; Tue, 14 Sep 2021 09:19:06 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 09:17:04 -0700
+Message-Id: <20210914161712.2463458-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH] powerpc: clean up UPD_CONSTR
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
- <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
- <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
- <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
- <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
- <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
-Date:   Tue, 14 Sep 2021 09:16:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Boqun Feng <boqun.feng@gmail.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Daniel Axtens <dja@axtens.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Christopher M. Riedl" <cmr@codefail.de>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm-ppc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 12:23 AM, 王贇 wrote:
-> 
-> On 2021/9/14 上午11:02, 王贇 wrote:
-> [snip]
->> [   44.133509][    C0] traps: PANIC: double fault, error_code: 0x0
->> [   44.133519][    C0] double fault: 0000 [#1] SMP PTI
->> [   44.133526][    C0] CPU: 0 PID: 743 Comm: a.out Not tainted 5.14.0-next-20210913 #469
->> [   44.133532][    C0] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
->> [   44.133536][    C0] RIP: 0010:perf_swevent_get_recursion_context+0x0/0x70
->> [   44.133549][    C0] Code: 48 03 43 28 48 8b 0c 24 bb 01 00 00 00 4c 29 f0 48 39 c8 48 0f 47 c1 49 89 45 08 e9 48 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 <55> 53 e8 09 20 f2 ff 48 c7 c2 20 4d 03 00 65 48 03 15 5a 3b d2 7e
->> [   44.133556][    C0] RSP: 0018:fffffe000000b000 EFLAGS: 00010046
-> Another information is that I have printed '__this_cpu_ist_bottom_va(NMI)'
-> on cpu0, which is just the RSP fffffe000000b000, does this imply
-> we got an overflowed NMI stack?
+UPD_CONSTR was previously a preprocessor define for an old GCC 4.9 inline
+asm bug with m<> constraints.
 
-Yep.  I have the feeling some of your sanitizer and other debugging is
-eating the stack:
+Fixes: 6563139d90ad ("powerpc: remove GCC version check for UPD_CONSTR")
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ arch/powerpc/include/asm/asm-const.h | 2 --
+ arch/powerpc/include/asm/atomic.h    | 8 ++++----
+ arch/powerpc/include/asm/io.h        | 4 ++--
+ arch/powerpc/include/asm/uaccess.h   | 6 +++---
+ arch/powerpc/kvm/powerpc.c           | 4 ++--
+ 5 files changed, 11 insertions(+), 13 deletions(-)
 
-> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
-> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
+diff --git a/arch/powerpc/include/asm/asm-const.h b/arch/powerpc/include/asm/asm-const.h
+index dbfa5e1e3198..bfb3c3534877 100644
+--- a/arch/powerpc/include/asm/asm-const.h
++++ b/arch/powerpc/include/asm/asm-const.h
+@@ -12,6 +12,4 @@
+ #  define ASM_CONST(x)		__ASM_CONST(x)
+ #endif
+ 
+-#define UPD_CONSTR "<>"
+-
+ #endif /* _ASM_POWERPC_ASM_CONST_H */
+diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
+index 6a53ef178bfd..fd594fdbd84d 100644
+--- a/arch/powerpc/include/asm/atomic.h
++++ b/arch/powerpc/include/asm/atomic.h
+@@ -27,14 +27,14 @@ static __inline__ int arch_atomic_read(const atomic_t *v)
+ {
+ 	int t;
+ 
+-	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m"UPD_CONSTR(v->counter));
++	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m<>"(v->counter));
+ 
+ 	return t;
+ }
+ 
+ static __inline__ void arch_atomic_set(atomic_t *v, int i)
+ {
+-	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m"UPD_CONSTR(v->counter) : "r"(i));
++	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m<>"(v->counter) : "r"(i));
+ }
+ 
+ #define ATOMIC_OP(op, asm_op)						\
+@@ -320,14 +320,14 @@ static __inline__ s64 arch_atomic64_read(const atomic64_t *v)
+ {
+ 	s64 t;
+ 
+-	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m"UPD_CONSTR(v->counter));
++	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m<>"(v->counter));
+ 
+ 	return t;
+ }
+ 
+ static __inline__ void arch_atomic64_set(atomic64_t *v, s64 i)
+ {
+-	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m"UPD_CONSTR(v->counter) : "r"(i));
++	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m<>"(v->counter) : "r"(i));
+ }
+ 
+ #define ATOMIC64_OP(op, asm_op)						\
+diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
+index f130783c8301..beba4979bff9 100644
+--- a/arch/powerpc/include/asm/io.h
++++ b/arch/powerpc/include/asm/io.h
+@@ -122,7 +122,7 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
+ {									\
+ 	u##size ret;							\
+ 	__asm__ __volatile__("sync;"#insn"%U1%X1 %0,%1;twi 0,%0,0;isync"\
+-		: "=r" (ret) : "m"UPD_CONSTR (*addr) : "memory");	\
++		: "=r" (ret) : "m<>" (*addr) : "memory");	\
+ 	return ret;							\
+ }
+ 
+@@ -130,7 +130,7 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
+ static inline void name(volatile u##size __iomem *addr, u##size val)	\
+ {									\
+ 	__asm__ __volatile__("sync;"#insn"%U0%X0 %1,%0"			\
+-		: "=m"UPD_CONSTR (*addr) : "r" (val) : "memory");	\
++		: "=m<>" (*addr) : "r" (val) : "memory");	\
+ 	mmiowb_set_pending();						\
+ }
+ 
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index 22c79ab40006..63316100080c 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -86,7 +86,7 @@ __pu_failed:							\
+ 		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
+ 		EX_TABLE(1b, %l2)				\
+ 		:						\
+-		: "r" (x), "m"UPD_CONSTR (*addr)		\
++		: "r" (x), "m<>" (*addr)		\
+ 		:						\
+ 		: label)
+ 
+@@ -143,7 +143,7 @@ do {								\
+ 		"1:	"op"%U1%X1 %0, %1	# get_user\n"	\
+ 		EX_TABLE(1b, %l2)				\
+ 		: "=r" (x)					\
+-		: "m"UPD_CONSTR (*addr)				\
++		: "m<>" (*addr)				\
+ 		:						\
+ 		: label)
+ 
+@@ -200,7 +200,7 @@ __gus_failed:								\
+ 		".previous\n"				\
+ 		EX_TABLE(1b, 3b)			\
+ 		: "=r" (err), "=r" (x)			\
+-		: "m"UPD_CONSTR (*addr), "i" (-EFAULT), "0" (err))
++		: "m<>" (*addr), "i" (-EFAULT), "0" (err))
+ 
+ #ifdef __powerpc64__
+ #define __get_user_asm2(x, addr, err)			\
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index b4e6f70b97b9..3fd037d36afb 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -1094,7 +1094,7 @@ static inline u64 sp_to_dp(u32 fprs)
+ 
+ 	preempt_disable();
+ 	enable_kernel_fp();
+-	asm ("lfs%U1%X1 0,%1; stfd%U0%X0 0,%0" : "=m"UPD_CONSTR (fprd) : "m"UPD_CONSTR (fprs)
++	asm ("lfs%U1%X1 0,%1; stfd%U0%X0 0,%0" : "=m<>" (fprd) : "m<>" (fprs)
+ 	     : "fr0");
+ 	preempt_enable();
+ 	return fprd;
+@@ -1106,7 +1106,7 @@ static inline u32 dp_to_sp(u64 fprd)
+ 
+ 	preempt_disable();
+ 	enable_kernel_fp();
+-	asm ("lfd%U1%X1 0,%1; stfs%U0%X0 0,%0" : "=m"UPD_CONSTR (fprs) : "m"UPD_CONSTR (fprd)
++	asm ("lfd%U1%X1 0,%1; stfs%U0%X0 0,%0" : "=m<>" (fprs) : "m<>" (fprd)
+ 	     : "fr0");
+ 	preempt_enable();
+ 	return fprs;
+-- 
+2.33.0.309.g3052b89438-goog
 
-Just turning off tracing for the page fault handler is papering over the
-problem.  It'll just come back later with a slightly different form.
