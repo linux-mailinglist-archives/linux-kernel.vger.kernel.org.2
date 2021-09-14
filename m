@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B12340ABD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57B840ABD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhINKkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:40:47 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56948 "EHLO
+        id S231691AbhINKkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:40:42 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50050 "EHLO
         mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhINKki (ORCPT
+        with ESMTP id S229591AbhINKki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Sep 2021 06:40:38 -0400
-Received: by mail-il1-f199.google.com with SMTP id d11-20020a92d78b000000b0022c670da306so18142205iln.23
+Received: by mail-il1-f199.google.com with SMTP id p14-20020a92d48e000000b0022cf3231b41so17977449ilg.16
         for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:39:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=d+K/DZOWlylDTOK+FeJU8FsbbRqRUbkYTkMWd9k9EOQ=;
-        b=Zfo7ODCqkPYIeWZK+dtrUXxRDEiClZdS1jyE5nFbV5Mmap6RbHczLB2n0dpUxZldUI
-         F+fSEy8CE8K7VOVwf8BmWELEYG2IE1DsYAr0dcNZMwpdmgGk8AevCDnPj0FUVHZNqgdU
-         17wukITu7sLjy2EGpWIUgiy6XNybIUTIWHymY+KpxGZi/CPi9ZJgh64qnqRmyBG49XIg
-         YykdZf47RhKvXYFpwd6u5IylAhM8cG1SL+t7cG3NUQOVcWoJ9TCktcOljjs1je+4eG6P
-         we0RROqjYyd+E4gKnuwdkA1iuZTBodRezmaHCrx/T1/oVVqqdEGAyNVIBuEGMMCZYmmg
-         VHUw==
-X-Gm-Message-State: AOAM532toNHzYdX9aN+94fhROBNd3oRP0HIv2EspzJh+oSFmTCFyVu4g
-        CYdAYOm5nf65HV7AFu+CjGWBnH6YfmOBFyEbBHZjLQkEu/VF
-X-Google-Smtp-Source: ABdhPJyiSPRw9Faymwb4Xvjt8BfZoQWvGmFCB9bZHOGL2RB25E/cLIK6AfJPR/Qj9csYix5ohjJYgZ3wzCOr4Yh5Z3jc//mhqX8W
+        bh=SXMhJrXbfSmRYQtaR0hUvN5LCQU2jsIHZIHNsTcJkxs=;
+        b=LelVSp7rcDG+9SwOmiV6Xed/rN0HK0CauQEygdLMu491Rwvx5ikxUpWGrf7QRUGvX+
+         6lHG9U+qFKSgd66tXCtwhsUseib8zCN9ZD8ZpROCDogZ3/jd/cazydYnaOY65Nh4Cc/k
+         o9EIkuscqrjoTN8+03eAl3TfTwrnov1C/rlGBYkiNX+QT8nFhecRa3NbsxLlpSS7HQal
+         HnpCf1/iRf3sq7tLBvGtwPsmq+fdd7m2bpZtAdM1eRst6J8eRyx6vDv3hkLYSksnS8NT
+         yJHWQzP04qoihNwFQ7+snFNOap8CUWkU+NUUuXz7QJ//pLN3AFYE82HcWvaQ4AQ4QllN
+         NTxA==
+X-Gm-Message-State: AOAM531HhQhv06sl513Vb9T32VILkQu2kVakmuNzK4yb+NKXzDf70G46
+        3Tsq7WAEhawZpd7Kp5z78cI6/ycL3BkriFOG0bYAvvMfJawA
+X-Google-Smtp-Source: ABdhPJyFJrq/sk58IUwgMvAsb0UVKVgi8l2Tr4ILjptBMcyVBJnOmb2r2bGWbwxouZEP+zjmULTARJRnu1Pd9J2h4B2SuQs7cRXG
 MIME-Version: 1.0
-X-Received: by 2002:a6b:8d8a:: with SMTP id p132mr12670021iod.81.1631615961274;
+X-Received: by 2002:a05:6638:3046:: with SMTP id u6mr13906261jak.35.1631615961049;
  Tue, 14 Sep 2021 03:39:21 -0700 (PDT)
 Date:   Tue, 14 Sep 2021 03:39:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c81e6305cbf2319c@google.com>
-Subject: [syzbot] riscv/fixes boot error: BUG: unable to handle kernel NULL
+Message-ID: <000000000000c4ae8805cbf23125@google.com>
+Subject: [syzbot] riscv/fixes test error: BUG: unable to handle kernel NULL
  pointer dereference in corrupted
-From:   syzbot <syzbot+2a1797e8845b57b4a3c2@syzkaller.appspotmail.com>
-To:     jmorris@namei.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        penguin-kernel@I-love.SAKURA.ne.jp, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com, takedakn@nttdata.co.jp
+From:   syzbot <syzbot+12f4d5520532d623ba3c@syzkaller.appspotmail.com>
+To:     alexanderduyck@fb.com, atenart@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        weiwan@google.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,19 +52,21 @@ syzbot found the following issue on:
 
 HEAD commit:    7d2a07b76933 Linux 5.14
 git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=15cb131b300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d900c3300000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=f8211b06020972e8
-dashboard link: https://syzkaller.appspot.com/bug?extid=2a1797e8845b57b4a3c2
+dashboard link: https://syzkaller.appspot.com/bug?extid=12f4d5520532d623ba3c
 compiler:       riscv64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 userspace arch: riscv64
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2a1797e8845b57b4a3c2@syzkaller.appspotmail.com
+Reported-by: syzbot+12f4d5520532d623ba3c@syzkaller.appspotmail.com
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000d48
+bond0: (slave bond_slave_0): Enslaving as an active interface with an up link
+bond0: (slave bond_slave_1): Enslaving as an active interface with an up link
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000dc0
 Oops [#1]
 Modules linked in:
-CPU: 1 PID: 2924 Comm: kworker/u4:5 Not tainted 5.14.0-syzkaller #0
+CPU: 0 PID: 3090 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
 Hardware name: riscv-virtio,qemu (DT)
 epc : slab_alloc_node mm/slub.c:2900 [inline]
 epc : slab_alloc mm/slub.c:2967 [inline]
@@ -73,44 +75,48 @@ epc : __kmalloc+0xce/0x388 mm/slub.c:4111
  ra : slab_alloc_node mm/slub.c:2880 [inline]
  ra : slab_alloc mm/slub.c:2967 [inline]
  ra : __kmalloc+0x6e/0x388 mm/slub.c:4111
-epc : ffffffff803e3568 ra : ffffffff803e3508 sp : ffffffe008c6f780
- gp : ffffffff83f967d8 tp : ffffffe00b71df00 t0 : ffffffc400b37600
- t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffffe008c6f820
- s1 : ffffffe005601500 a0 : 0000000000000000 a1 : ffffffe008c6fb6c
- a2 : 1ffffffc016e3d07 a3 : 0000000000000d48 a4 : 0000000000000001
- a5 : ffffffff82e4b290 a6 : 0000000000f00000 a7 : ffffffff8038ca52
- s2 : ffffffff83f96adc s3 : 0000000000000d40 s4 : 0000000000000019
- s5 : ffffffff8080a860 s6 : ffffffff83f9a0d0 s7 : 0000000000000000
- s8 : 0000000000000d40 s9 : 0000000000000001 s10: ffffffe005aeb6e0
- s11: 000000000000002f t3 : 4f89673883b77f00 t4 : ffffffc40118df07
- t5 : ffffffc40118df09 t6 : ffffffe0059baffe
-status: 0000000000000120 badaddr: 0000000000000d48 cause: 000000000000000d
+epc : ffffffff803e3568 ra : ffffffff803e3508 sp : ffffffe00924f1e0
+ gp : ffffffff83f967d8 tp : ffffffe00db98000 t0 : ffffffc402a0e200
+ t1 : 0000000000000001 t2 : 000000005784fdac s0 : ffffffe00924f280
+ s1 : ffffffe005601640 a0 : 0000000000000000 a1 : ffffffe00924f5cc
+ a2 : 1ffffffff07aa51f a3 : 0000000000000dc0 a4 : 0000000000000000
+ a5 : ffffffff82e4b2b0 a6 : 0000000000f00000 a7 : ffffffff8038ca52
+ s2 : ffffffff83f96adc s3 : 0000000000000dc0 s4 : 0000000000000026
+ s5 : ffffffff80acc382 s6 : ffffffff83f9a0d0 s7 : 0000000000000000
+ s8 : 0000000000000dc0 s9 : 0000000000000001 s10: ffffffe006bcbb00
+ s11: ffffffff8365bbd8 t3 : 69ec673486bf2000 t4 : ffffffc1e04a9392
+ t5 : ffffffc1e04a9393 t6 : ffffffe014ff375d
+status: 0000000000000120 badaddr: 0000000000000dc0 cause: 000000000000000d
 [<ffffffff803e3568>] slab_alloc_node mm/slub.c:2900 [inline]
 [<ffffffff803e3568>] slab_alloc mm/slub.c:2967 [inline]
 [<ffffffff803e3568>] __kmalloc+0xce/0x388 mm/slub.c:4111
-[<ffffffff8080a860>] kmalloc include/linux/slab.h:596 [inline]
-[<ffffffff8080a860>] kzalloc include/linux/slab.h:721 [inline]
-[<ffffffff8080a860>] tomoyo_encode2.part.0+0xf0/0x262 security/tomoyo/realpath.c:45
-[<ffffffff8080abc2>] tomoyo_encode2 security/tomoyo/realpath.c:31 [inline]
-[<ffffffff8080abc2>] tomoyo_encode security/tomoyo/realpath.c:80 [inline]
-[<ffffffff8080abc2>] tomoyo_realpath_from_path+0x14c/0x3f4 security/tomoyo/realpath.c:288
-[<ffffffff807f17e8>] tomoyo_init_log+0x7a2/0x13aa security/tomoyo/audit.c:263
-[<ffffffff807f9c1e>] tomoyo_supervisor+0x1bc/0xb0c security/tomoyo/common.c:2097
-[<ffffffff80801ca0>] tomoyo_audit_env_log security/tomoyo/environ.c:36 [inline]
-[<ffffffff80801ca0>] tomoyo_env_perm+0x100/0x120 security/tomoyo/environ.c:63
-[<ffffffff80801798>] tomoyo_environ security/tomoyo/domain.c:672 [inline]
-[<ffffffff80801798>] tomoyo_find_next_domain+0xd24/0x109a security/tomoyo/domain.c:879
-[<ffffffff8080c098>] tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
-[<ffffffff8080c098>] tomoyo_bprm_check_security+0xdc/0x136 security/tomoyo/tomoyo.c:91
-[<ffffffff807e8b8e>] security_bprm_check+0x44/0x96 security/security.c:866
-[<ffffffff80438242>] search_binary_handler fs/exec.c:1709 [inline]
-[<ffffffff80438242>] exec_binprm fs/exec.c:1762 [inline]
-[<ffffffff80438242>] bprm_execve fs/exec.c:1831 [inline]
-[<ffffffff80438242>] bprm_execve+0x4ba/0x10a6 fs/exec.c:1793
-[<ffffffff80439e7c>] kernel_execve+0x204/0x288 fs/exec.c:1974
-[<ffffffff8005afec>] call_usermodehelper_exec_async+0x1bc/0x2d8 kernel/umh.c:112
-[<ffffffff8000515e>] ret_from_exception+0x0/0x14
----[ end trace 77235688c0a8656b ]---
+[<ffffffff80acc382>] kmalloc include/linux/slab.h:596 [inline]
+[<ffffffff80acc382>] kzalloc include/linux/slab.h:721 [inline]
+[<ffffffff80acc382>] kobject_get_path+0xac/0x16a lib/kobject.c:179
+[<ffffffff80ace5d0>] kobject_uevent_env+0x1d8/0xde4 lib/kobject_uevent.c:529
+[<ffffffff80acf1fe>] kobject_uevent+0x22/0x2e lib/kobject_uevent.c:642
+[<ffffffff8226afec>] rx_queue_add_kobject net/core/net-sysfs.c:1020 [inline]
+[<ffffffff8226afec>] net_rx_queue_update_kobjects+0xcc/0x372 net/core/net-sysfs.c:1060
+[<ffffffff8226b7f4>] register_queue_kobjects net/core/net-sysfs.c:1711 [inline]
+[<ffffffff8226b7f4>] netdev_register_kobject+0x166/0x208 net/core/net-sysfs.c:1959
+[<ffffffff821ffac6>] register_netdevice+0x872/0xbe0 net/core/dev.c:10349
+[<ffffffff82b10ce2>] hsr_dev_finalize+0x346/0x45e net/hsr/hsr_device.c:535
+[<ffffffff82b1122e>] hsr_newlink+0x1ca/0x37c net/hsr/hsr_netlink.c:102
+[<ffffffff82221fc2>] __rtnl_newlink+0xb04/0xe90 net/core/rtnetlink.c:3461
+[<ffffffff8222239e>] rtnl_newlink+0x50/0x7c net/core/rtnetlink.c:3509
+[<ffffffff82222a12>] rtnetlink_rcv_msg+0x2ce/0x90e net/core/rtnetlink.c:5575
+[<ffffffff82400cc4>] netlink_rcv_skb+0x9c/0x248 net/netlink/af_netlink.c:2504
+[<ffffffff8221a5da>] rtnetlink_rcv+0x26/0x30 net/core/rtnetlink.c:5593
+[<ffffffff823ffb92>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+[<ffffffff823ffb92>] netlink_unicast+0x398/0x584 net/netlink/af_netlink.c:1340
+[<ffffffff824001c8>] netlink_sendmsg+0x44a/0x894 net/netlink/af_netlink.c:1929
+[<ffffffff821908cc>] sock_sendmsg_nosec net/socket.c:703 [inline]
+[<ffffffff821908cc>] sock_sendmsg+0xa0/0xc4 net/socket.c:723
+[<ffffffff8219428a>] __sys_sendto+0x170/0x230 net/socket.c:2019
+[<ffffffff82194388>] __do_sys_sendto net/socket.c:2031 [inline]
+[<ffffffff82194388>] sys_sendto+0x3e/0x52 net/socket.c:2027
+[<ffffffff80005150>] ret_from_syscall+0x0/0x2
+---[ end trace 6a349b32cfb17483 ]---
 
 
 ---
