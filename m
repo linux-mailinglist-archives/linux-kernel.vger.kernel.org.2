@@ -2,190 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D0E40A30D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2C240A310
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 04:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236281AbhINCJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 22:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbhINCJC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 22:09:02 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65287C061574;
-        Mon, 13 Sep 2021 19:07:46 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id v123so10664188pfb.11;
-        Mon, 13 Sep 2021 19:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=d+5EAlpLu1PtcmGdfK1WhWtt4geqe+e2PpqZC+9r8tA=;
-        b=QKz0KdDFi5Z+Vss4BxmJF5+lJI3jzEVLqeORWX/Lx0WZlQiwwxECv4MbQ1GJV3OFZe
-         Khs6yEPNTIQJSXT4eeEQuAl3lPYD3JYtaPFjokLJjrNOGvYQtXcTdeISFPSFfsficrrz
-         grukKrYa37dBQtBJhkaester5bdEYt0Nb8QhzQcffJ9Cd4KRIXS3Sn2TtRhqomyz/KE2
-         ihwySEn1/OAUfcF+auufRIHsL7VUyA4SAASu5Tz7SNM3Yu6AkT9DXHKKvf12JiUs1Wtw
-         Z6cqsfAqefC63Ml9OhFNoJaOZMJLEi1rtjxMoooY06Xx/mWAbtM9zUtfltxO7hwsswUi
-         6JLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=d+5EAlpLu1PtcmGdfK1WhWtt4geqe+e2PpqZC+9r8tA=;
-        b=8PcW/hdOU424FcXybQy9ePNxbrkgf+z12bNlipKfxPM4HOfhiTd89c9zxFHt1IfClA
-         VX2CfSlDDShedC+vEqC2YW1+VpanUe9jTnshURtE4fTf7XrK7SE9eoYUqhtioUadnfEO
-         YmwHwP3iiU37tIpjo2V7n3BpadHNeN4Sic5uUA2NoPkZSioqAqd9Y3zJANnY5cXoBGZb
-         KypMeQtx7ebr7rtdPGaiys5yadaqQaCmV4XTNbc7qnt1VHF6TtV9ra+Abd35wQu27alr
-         w7zLfJqHdOhviZw5U/YK9nj9wLICSXpmIIiIb8cSf5ZCBnSy1ATkJVvqhhrAU7dkOqIT
-         mnwA==
-X-Gm-Message-State: AOAM530Gk/xRBHW6cAgo0tTVuSOowzEECEiERnvKz6z9OkYahCr46fK+
-        3N00OsJ2FRdxVPsAQWpPB8cfhaiTIpL9us+L4D7QjvQAlxXc
-X-Google-Smtp-Source: ABdhPJxfy9qVUYn9NTSwUpmXsaMo0A7YZF9pxtdIuChCFfh0IZfF1MijWCLOtitKMYEFMBCsIlhFlIVG8tkWzM/lo8I=
-X-Received: by 2002:a05:6a00:2449:b0:43c:4a5e:55a6 with SMTP id
- d9-20020a056a00244900b0043c4a5e55a6mr2408112pfj.43.1631585265690; Mon, 13 Sep
- 2021 19:07:45 -0700 (PDT)
+        id S236354AbhINCJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 22:09:39 -0400
+Received: from ozlabs.org ([203.11.71.1]:41285 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233111AbhINCJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 22:09:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631585300;
+        bh=YX/Srh4S60PRPjnNxVBWCQQin9P6BFcBIH7YYSh4zVI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fRbdcp8KjhHQjz6XV6ffHl4hFaRkfbq3b8P+ewZZy9eDr9ltDRq+rdkw2Dqm9MX2u
+         z2ekM5vxIey7xaaMq8mprUkUvI/XuEmvuqQAl0FpnhPGLzkye++J+YCUgY6iwDeeZP
+         svVgygjo5N0l2GquqZuMx22jbPLvKh9OgwSZHdIdLIoq5WW/zmq+SXjxlLzzu/Qhdu
+         2Cd03JvoHyIZee+cwJT8BhYtp+BTSCNXTtufIH8/41xyim+XU4ztMlUSVXtMLhNkMq
+         ZCkmu2XQnqTcalfcU020DdYfFCx86GcTxL6GYCekUl9tiAKqQ4zObEH/B9RjYlyT5V
+         fMKPpWVFHyNIQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H7mwM64q1z9sR4;
+        Tue, 14 Sep 2021 12:08:19 +1000 (AEST)
+Date:   Tue, 14 Sep 2021 12:08:18 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: linux-next: build failure after merge of the origin tree
+Message-ID: <20210914120818.4a102b46@canb.auug.org.au>
+In-Reply-To: <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
+References: <20210914100853.3f502bc9@canb.auug.org.au>
+        <CAHk-=whOv-LZKxBqQr8yzmhi7sN4zoFG7t8ALNx+2XFhXjGTpA@mail.gmail.com>
+        <CAHk-=whGuEkYmQcJx8WfZ7MFhbKGJDcA6NUZWtrnM6Y6xFqATw@mail.gmail.com>
+        <20210914105359.5c651d55@canb.auug.org.au>
+        <CAHk-=whyWUdJDeOBN1hRWYSkQkvzYiQ5RbSW5rJjExgnbSNX9Q@mail.gmail.com>
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 14 Sep 2021 10:07:34 +0800
-Message-ID: <CACkBjsbyFhwDgK0oBuu3P9Z0EqSpsb==9K_S+dxNwBj=qU_n=g@mail.gmail.com>
-Subject: kernel BUG in btrfs_free_tree_block
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/1jekrzk1d8gX=b60zYOtwUN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--Sig_/1jekrzk1d8gX=b60zYOtwUN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Hi Linus,
 
-HEAD commit: 6880fa6c5660 Linux 5.15-rc1
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1Dj7_zR7EzzSb0ba9M7QS43O3jrWBdaGW/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTLJvsUdWcgB/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/19Of7kky0AvoVCnDh45TfsFDgQ_HBZW67/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/10Ltk6J-pt41zI95k8B5gI-sZBZjI4Wyh/view?usp=sharing
+On Mon, 13 Sep 2021 18:29:26 -0700 Linus Torvalds <torvalds@linux-foundatio=
+n.org> wrote:
+>
+> On Mon, Sep 13, 2021 at 5:58 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> >
+> > > I have no idea why it then complains about removal of the GCC4 macros.
+> >
+> > Me neither :-(
+>=20
+> Ooh.
+>=20
+> So I'm looking at gcc sources, just to see if "maybe this thing is
+> somehow conditional".
+>=20
+> And bingo.
+>=20
+> In cpp_init_special_builtins(), gcc does
+>=20
+>       if (b->value =3D=3D BT_HAS_ATTRIBUTE
+>           && (CPP_OPTION (pfile, lang) =3D=3D CLK_ASM
+>               || pfile->cb.has_attribute =3D=3D NULL))
+>         continue;
+>=20
+> which basically says that if we're pre-processing an ASM file, the
+> magical pre-processor symbol for __has_attribute is not defined.
+>=20
+> I'm not sure what that 'pfile->cb.has_attribute =3D=3D NULL' thing means,
+> but the libcpp/ChangeLog file also mentions this:
+>=20
+>         (cpp_init_special_builtins): Don't initialize __has_attribute
+>         or __has_cpp_attribute if CLK_ASM or pfile->cb.has_attribute is N=
+ULL.
+>=20
+> So this is a very very special magical thing: if building an *.S file,
+> __has_attribute magically goes away.
+>=20
+> And sure enough, that's exactly what is going on. It's during that
+> build of arch/powerpc/boot/crt0.S, and the reason this hits on powerpc
+> is that in arch/powerpc/boot/Makefile we have
+>=20
+>          -include $(srctree)/include/linux/compiler_attributes.h
+>=20
+> as part of BOOTCFLAGS, and then it does
+>=20
+>         BOOTAFLAGS      :=3D -D__ASSEMBLY__ $(BOOTCFLAGS) -nostdinc
+>=20
+> to also include that header file when building ASM files.
+>=20
+> And our old GCC4 code silently hid this all, and made it work, because
+> for a *.S file  you'd then (completely illogically) get those fake
+> gcc-4 attribute macros.
+>=20
+> Now, do I know *why* that ppc Makefile it does that? No. Neither do I
+> know why the gcc people decided to just make ASM preprocessor so
+> special.
+>=20
+> But at least I understand how the odd error happens.
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+Its good to know there is a reason :-)
 
-loop13: detected capacity change from 0 to 32768
-BTRFS: device fsid 88a22be4-8cb5-4ed2-8c2d-1957ce391952 devid 1
-transid 7 /dev/loop13 scanned by syz-executor (7196)
-BTRFS info (device loop13): disk space caching is enabled
-BTRFS info (device loop13): has skinny extents
-BTRFS info (device loop13): enabling ssd optimizations
-FAULT_INJECTION: forcing a failure.
-name failslab, interval 1, probability 0, space 0, times 1
-CPU: 3 PID: 7196 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- fail_dump lib/fault-inject.c:52 [inline]
- should_fail+0x13c/0x160 lib/fault-inject.c:146
- should_failslab+0x5/0x10 mm/slab_common.c:1328
- slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
- slab_alloc_node mm/slub.c:3120 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
- btrfs_add_delayed_tree_ref+0xa1/0x580 fs/btrfs/delayed-ref.c:913
- btrfs_free_tree_block+0x14c/0x440 fs/btrfs/extent-tree.c:3296
- __btrfs_cow_block+0x5f6/0x7d0 fs/btrfs/ctree.c:465
- btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
- btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
- btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
- btrfs_new_inode+0x311/0xa60 fs/btrfs/inode.c:6530
- btrfs_create+0x12b/0x270 fs/btrfs/inode.c:6783
- lookup_open+0x660/0x780 fs/namei.c:3282
- open_last_lookups fs/namei.c:3352 [inline]
- path_openat+0x465/0xe20 fs/namei.c:3557
- do_filp_open+0xe3/0x170 fs/namei.c:3588
- do_sys_openat2+0x357/0x4a0 fs/open.c:1200
- do_sys_open+0x87/0xd0 fs/open.c:1216
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0ffa345c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
-RBP: 00007f0ffa345c80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001d
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffd3f5c1ed0
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/extent-tree.c:3297!
-invalid opcode: 0000 [#1] PREEMPT SMP
-CPU: 3 PID: 7196 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:btrfs_free_tree_block+0x159/0x440 fs/btrfs/extent-tree.c:3297
-Code: 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 81 9d 4d ff 31 d2 4c 89 e7
-48 89 e6 e8 e4 96 09 00 85 c0 0f 84 68 ff ff ff e8 67 9d 4d ff <0f> 0b
-e8 60 9d 4d ff 48 83 bd df 01 00 00 fa 74 27 e8 51 9d 4d ff
-RSP: 0018:ffffc9000528f7c8 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff888104ba4d80 RCX: ffffc9000125d000
-RDX: 0000000000040000 RSI: ffffffff81e9f499 RDI: ffffffff853cbec6
-RBP: ffff888103c67000 R08: 0000000000000068 R09: 0000000000000001
-R10: ffffc9000528f638 R11: 0000000000000005 R12: ffff888106374000
-R13: 0000000000000001 R14: ffff88810965c000 R15: 0000000000000000
-FS:  00007f0ffa346700(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000788000 CR3: 000000001aa9c000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- __btrfs_cow_block+0x5f6/0x7d0 fs/btrfs/ctree.c:465
- btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
- btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
- btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
- btrfs_new_inode+0x311/0xa60 fs/btrfs/inode.c:6530
- btrfs_create+0x12b/0x270 fs/btrfs/inode.c:6783
- lookup_open+0x660/0x780 fs/namei.c:3282
- open_last_lookups fs/namei.c:3352 [inline]
- path_openat+0x465/0xe20 fs/namei.c:3557
- do_filp_open+0xe3/0x170 fs/namei.c:3588
- do_sys_openat2+0x357/0x4a0 fs/open.c:1200
- do_sys_open+0x87/0xd0 fs/open.c:1216
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0ffa345c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
-RBP: 00007f0ffa345c80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001d
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffd3f5c1ed0
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 917bc653bd051886 ]---
-RIP: 0010:btrfs_free_tree_block+0x159/0x440 fs/btrfs/extent-tree.c:3297
-Code: 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 81 9d 4d ff 31 d2 4c 89 e7
-48 89 e6 e8 e4 96 09 00 85 c0 0f 84 68 ff ff ff e8 67 9d 4d ff <0f> 0b
-e8 60 9d 4d ff 48 83 bd df 01 00 00 fa 74 27 e8 51 9d 4d ff
-RSP: 0018:ffffc9000528f7c8 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff888104ba4d80 RCX: ffffc9000125d000
-RDX: 0000000000040000 RSI: ffffffff81e9f499 RDI: ffffffff853cbec6
-RBP: ffff888103c67000 R08: 0000000000000068 R09: 0000000000000001
-R10: ffffc9000528f638 R11: 0000000000000005 R12: ffff888106374000
-R13: 0000000000000001 R14: ffff88810965c000 R15: 0000000000000000
-FS:  00007f0ffa346700(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000788000 CR3: 000000001aa9c000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
+> This was too damn subtle. When you have to go read the compiler
+> sources to figure things like this out, you know you are too deep.
+>=20
+> The fix should be pretty simple: remove almost all of BOOTCFLAGS from
+> BOOTAFLAGS.
+>=20
+> But sadly, "almost all" isn't "all". There's the include path stuff,
+> there's the ABI and endianness, and there's the bit size ones.
+>=20
+> So I think the fix is either
+>=20
+>  (a) remove that
+>=20
+>          -include $(srctree)/include/linux/compiler_attributes.h
+>=20
+>      thing entirely, and add it as required to the C files.
+>=20
+> OR
+>=20
+>  (b) something like this ENTIRELY UNTESTED ATTACHED patch
+>=20
+> I will leave it to the powerpc people to make the right choice.
+
+That patch works for me - for the ppc64_defconfig build at least.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/1jekrzk1d8gX=b60zYOtwUN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFABBIACgkQAVBC80lX
+0Gw36gf5Abis6eF6S1lBVUcZ8TDSTmH/OH4r6cgqJa1KHJivgzxwa3ad/cR0UI2p
+YgyVR6N/a0ON8I5LYzeFicj2JlsNtFn1qUEiw2/xtm8J+747KFC2VSHYObGkALM5
+x7LaA+3YfWfyHkSOsWjeTB/L1WSJwby+TL7HvGVcoti/pJxnbqoR0l1xcpoQTKd2
+RtR+YkmWST5uTAt5FRp+TwSo+hS7iXem03VWQtTk80/aNQJ/zJ6ttBsvXxSo2zdj
+Bo5fkZfpsTweAk1OtyFSJ4GklYzRErZfD6VCV00j4imKndsyiLHdbMAx13RUaVv/
+BpR+2toJg0tATicY/qPrcIixhomeLg==
+=ccEB
+-----END PGP SIGNATURE-----
+
+--Sig_/1jekrzk1d8gX=b60zYOtwUN--
