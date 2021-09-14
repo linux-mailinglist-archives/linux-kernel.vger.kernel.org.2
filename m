@@ -2,251 +2,632 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE7640B359
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37D340B361
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234918AbhINPoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbhINPoF (ORCPT
+        id S234925AbhINPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:45:06 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:57386 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234457AbhINPpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:44:05 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665E9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:42:47 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id v5so20631061edc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:42:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=kRUP3124jFCDeJuxRpcOBXiHwnacoHhJ7Zfv1dwnqGk=;
-        b=l1x3YMt+D40sQh5Xj/MGN8XZugv8sHGNHuk5PfiUKUU34OF4TUpxkWKaF/FDOxcygz
-         zNRDHmW3HgcmmKzaP0kedYhEnfqKhAYDsQc8xFrWAgQntsD3h0IUStdgiJ5bpg5t6ALP
-         rkyM/xF7XB2c5RoZX4RWobBlT4EuZ7MAZTWhTnSeQFMWNthLabFaaaxIP6Ov+GKxFBNc
-         GpNa46fLPnsgQL9M7eGCFq1vhaWgJGi0NdKSgn9kXLe6P6ampgDXbIU+dBUgoi6IjqNe
-         Sk85Oqaqgy5+HIkGtFzxJFUfdLDprsO1ejsekEDhAGKW2swtOaENfRi3jL4WX2V3ftg8
-         dk8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kRUP3124jFCDeJuxRpcOBXiHwnacoHhJ7Zfv1dwnqGk=;
-        b=THJWQJQSiDmdbDiw1nXmU6eur684RoCOgpvMT29aca1M2HQ2kji3OvTHCsTWh27aEz
-         9PmXAXz74bNJhsyF65zlQVtbHuDo00Frd8j6cYKzbtvCqMY3CJdyJ0iVWy/1MlNoKl7O
-         1IuU+Wbeo9tZ/B1Lm42P425VnVU8ZdkrRn8ZVyYgShEDl+27OXlsHAuqNwALQfBbZxf0
-         JaCUGCqNuRBIm0upG/DbWtnGxcECa++RMv2+WZNxvxoT9grXcuvlbfOCKReiNuHpS1gv
-         LTLG+1TcsKkeJDxq7gLGhFIeP+557LhnZ3RpFbZsBdWmW/P7DPCc2dBFbb4dD4K8Eoqy
-         n2AQ==
-X-Gm-Message-State: AOAM530Rly/uwi4dKA0FoXksHIwxM+h3HiiOfhqU6Hsf6S4kiok/mOo1
-        pBqq3oliv7P2wMD1Bl+3+F0=
-X-Google-Smtp-Source: ABdhPJwGvwpsqvOBoHYx+3TGl1oPwUPzbvzzUiAzPN3tCNVotPdIOmLvk/3Hq0xHWbjN4q7JKBr9yg==
-X-Received: by 2002:aa7:c80a:: with SMTP id a10mr19943269edt.174.1631634165997;
-        Tue, 14 Sep 2021 08:42:45 -0700 (PDT)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id bi3sm5715920edb.91.2021.09.14.08.42.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 08:42:45 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     =?utf-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>, mripard@kernel.org,
-        wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
-        saravanak@google.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] drm/sun4i: dw-hdmi: Fix HDMI PHY clock setup
-Date:   Tue, 14 Sep 2021 17:42:43 +0200
-Message-ID: <1850995.CcfoNp1lXK@kista>
-In-Reply-To: <20210914085922.qxhmr6puvy5d2ceo@core>
-References: <20210913172154.2686-1-jernej.skrabec@gmail.com> <20210914085922.qxhmr6puvy5d2ceo@core>
+        Tue, 14 Sep 2021 11:45:05 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18EDNHlw026831;
+        Tue, 14 Sep 2021 17:43:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=A8LADHphWjjLt84Bir09Xe1QHp8f+yYPjzgWKfVFsHw=;
+ b=DS66DihZXyBSbUlyRb5ENSmSBzZj9zAigdPcGw0UzasbNZK9yN2ludCw1+hZb6o37nvi
+ 6blpaNC+Vs9ltAQoaL7r03kZGEfcI07PpAhhU9YOOlxLatX6ejtri1AB4vXpEjn20+tX
+ WUMyAqgrf6QkCQmoFILOoNE8PAX+wXMTFfj70vZP7kl2kqVjQL2DpJBq0Jq76VRYga+h
+ QDbgyC946/ZX3eJy3e/hDPDTFOub42K4aIxfh77+90qKYYWozr3S8lhU9jP8a+NXbqWx
+ GFJP9mvDUhx37kI1JE+Hx7eYrcHIU2ik0sGNOKVyCeZhuCZHlL9Luzsy6H9yMGIEhn7M nQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b2vjygqpu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Sep 2021 17:43:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0C444100034;
+        Tue, 14 Sep 2021 17:43:16 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C9D8C21B31E;
+        Tue, 14 Sep 2021 17:43:16 +0200 (CEST)
+Received: from lmecxl0577.lme.st.com (10.75.127.45) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 14 Sep
+ 2021 17:43:16 +0200
+Subject: Re: [PATCH 4/4] iio: adc: stm32-dfsdm: add scale and offset support
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     <robh+dt@kernel.org>, <mark.rutland@arm.com>, <knaack.h@gmx.de>,
+        <lars@metafoo.de>, <devicetree@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pmeerw@pmeerw.net>, <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>,
+        Fabrice GASNIER <fabrice.gasnier@foss.st.com>
+References: <20200204101008.11411-1-olivier.moysan@st.com>
+ <20200204101008.11411-5-olivier.moysan@st.com>
+ <20200208161847.76c7d6e8@archlinux>
+ <8400827e-5f3d-ad3f-99c8-986934b1a7b8@st.com>
+ <20200214131113.70aa36b8@archlinux>
+ <5b2e74a0-71bd-46d0-0096-b33ff17f780b@st.com>
+ <20200214151011.20111e8c@archlinux>
+ <AM9PR10MB43558CEB8DAE7F373E9E7A5DF9D69@AM9PR10MB4355.EURPRD10.PROD.OUTLOOK.COM>
+ <78f4e4b9-ef4c-982f-7cd3-8d3052d99150@foss.st.com>
+ <20210912182617.5635fa06@jic23-huawei>
+From:   Olivier MOYSAN <olivier.moysan@foss.st.com>
+Message-ID: <a38906b8-7d28-b5e0-939b-e8108bd7266c@foss.st.com>
+Date:   Tue, 14 Sep 2021 17:43:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210912182617.5635fa06@jic23-huawei>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-14_06,2021-09-14_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi Jonathan,
 
-Dne torek, 14. september 2021 ob 10:59:22 CEST je Ond=C5=99ej Jirman napisa=
-l(a):
-> Hello Jernej,
->=20
-> On Mon, Sep 13, 2021 at 07:21:54PM +0200, Jernej Skrabec wrote:
-> > Recent rework, which made HDMI PHY driver a platform device, inadvertely
-> > reversed clock setup order. HW is very touchy about it. Proper way is to
-> > handle controllers resets and clocks first and HDMI PHYs second.
-> >=20
-> > Currently, without this fix, first mode set completely fails (nothing on
-> > HDMI monitor) on H3 era PHYs. On H6, it still somehow work.
-> >=20
-> > Move HDMI PHY reset & clocks handling to sun8i_hdmi_phy_init() which
-> > will assure that code is executed after controllers reset & clocks are
-> > handled. Additionally, add sun8i_hdmi_phy_deinit() which will deinit
-> > them at controllers driver unload.
-> >=20
-> > Tested on A64, H3, H6 and R40.
-> >=20
-> > Fixes: 9bf3797796f5 ("drm/sun4i: dw-hdmi: Make HDMI PHY into a platform=
-=20
-device")
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > ---
-> >  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c  |  7 +-
-> >  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h  |  4 +-
-> >  drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c | 97 ++++++++++++++------------
-> >  3 files changed, 61 insertions(+), 47 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/su=
-n4i/
-sun8i_dw_hdmi.c
-> > index f75fb157f2ff..5fa5407ac583 100644
-> > --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> > +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-> > @@ -216,11 +216,13 @@ static int sun8i_dw_hdmi_bind(struct device *dev,=
-=20
-struct device *master,
-> >  		goto err_disable_clk_tmds;
-> >  	}
->=20
-> ^^^ This looks like...
->=20
-> > +	ret =3D sun8i_hdmi_phy_init(hdmi->phy);
-> > +	if (ret)
-> > +		return ret;
->=20
-> ... you need 'goto err_disable_clk_tmds;' here, instead.
+Thanks, for your comments.
 
-Ah, right. Will fix in v2.
+On 9/12/21 7:26 PM, Jonathan Cameron wrote:
+> On Fri, 10 Sep 2021 17:56:45 +0200
+> Olivier MOYSAN <olivier.moysan@foss.st.com> wrote:
+> 
+>> Hi Jonathan,
+>>
+>> On 9/10/21 4:05 PM, Olivier MOYSAN wrote:
+>>>
+>>>
+>>>
+>>> ST Restricted
+>>>
+>>> -----Original Message-----
+>>> From: Jonathan Cameron <jic23@kernel.org>
+>>> Sent: vendredi 14 février 2020 16:10
+>>> To: Olivier MOYSAN <olivier.moysan@st.com>
+>>> Cc: robh+dt@kernel.org; mark.rutland@arm.com; knaack.h@gmx.de; lars@metafoo.de; devicetree@vger.kernel.org; linux-iio@vger.kernel.org; linux-kernel@vger.kernel.org; pmeerw@pmeerw.net; linux-stm32@st-md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org
+>>> Subject: Re: [PATCH 4/4] iio: adc: stm32-dfsdm: add scale and offset support
+>>>
+>>> On Fri, 14 Feb 2020 14:49:18 +0000
+>>> Olivier MOYSAN <olivier.moysan@st.com> wrote:
+>>>    
+>>>> Hi Jonathan,
+>>>>
+>>>> On 2/14/20 2:11 PM, Jonathan Cameron wrote:
+>>>>> On Tue, 11 Feb 2020 15:19:01 +0000
+>>>>> Olivier MOYSAN <olivier.moysan@st.com> wrote:
+>>>>>      
+>>>>>> Hi Jonathan,
+>>>>>>
+>>>>>> On 2/8/20 5:18 PM, Jonathan Cameron wrote:
+>>>>>>> On Tue, 4 Feb 2020 11:10:08 +0100
+>>>>>>> Olivier Moysan <olivier.moysan@st.com> wrote:
+>>>>>>>         
+>>>>>>>> Add scale and offset attributes support to STM32 DFSDM.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+>>>>>>> Hmm. I can't remember this history of this but we've kind of ended
+>>>>>>> up backwards wrt to other consumer drivers.
+>>>>>>>
+>>>>>>> In some sense this is similar to the analog gyroscopes.  In those
+>>>>>>> the consumer driver is the gyroscope which is consuming the raw
+>>>>>>> readings from an ADC connected to the channel.  This results in us
+>>>>>>> getting readings reported by the gyroscope driver.
+>>>>>>>
+>>>>>>> Here we have a sigma delta convertor consuming the pulse train
+>>>>>>> from a sigma delta device.  So the channels are reported by the
+>>>>>>> sigma delta receiver, whereas i think the nearest equivalent to
+>>>>>>> the analog voltage outputing gyroscopes would have been if we had
+>>>>>>> reported the channel values at the sigma delta converter.
+>>>>>> The DFSDM driver is currently used as a consumer of the sd modulator.
+>>>>>> The scale and offset values of the channels are already computed by
+>>>>>> the DFSDM driver, and provided by this driver to the IIO ABI.
+>>>>>> However, the DFSDM has no voltage reference, so it has to retrieve
+>>>>>> it from sd-modulator channels, for the scale factor computation.
+>>>>>>
+>>>>>>                                         scale  offset
+>>>>>>                                           ^      ^
+>>>>>>                                           |      |       IIO ABI
+>>>>>> +-------------------------------------------------------------+
+>>>>>>              +---------------+          +-------------+
+>>>>>>              |sd driver      |          |DFSDM driver |
+>>>>>>              +---------------+          +-------------+
+>>>>>> +-------------------------------------------------------------+
+>>>>>>                                                              HW
+>>>>>>              +---------------+          +-------------+
+>>>>>> +------->+ sd-modulator  +--------->+ DFSDM +-------->
+>>>>>> analog   +------+--------+          +-------------+ output input
+>>>>>> ^
+>>>>>>                     | vref
+>>>>>>                     +
+>>>>>>
+>>>>>>
+>>>>>> Is it the topology your are expecting ?
+>>>>> It's not the one we'd expect if we are aligning with similar cases
+>>>>> elsewhere in IIO.  For example, if we attach an analog accelerometer
+>>>>> to an ADC, we report the accel channels on the accelerometer not the
+>>>>> ADC.  The equivalent would be to see the DFSDM as providing a
+>>>>> conversion service to the SD device which is actually executing the
+>>>>> measurement and has the input channels.
+>>>>>
+>>>>>
+>>>>>             scale  offset  raw
+>>>>>               ^      ^      ^
+>>>>>               |      |      |                              IIO ABI
+>>>>>     +-------------------------------------------------------------+
+>>>>>               +---------------+          +-------------+
+>>>>>               |sd driver      |          |DFSDM driver |
+>>>>>               +---------------+          +-------------+
+>>>>>     +-------------------------------------------------------------+
+>>>>>                                                               HW
+>>>>>               +---------------+          +-------------+
+>>>>>     +------->+ sd-modulator  +--------->+ DFSDM +-------->
+>>>>>     analog   +------+--------+          +-------------+ output
+>>>>>     input           ^
+>>>>>                      | vref
+>>>>>>                     +
+>>>>>>      
+>>>> Thanks for your clarification.
+>>>> ok, moving to this logic is a significant change.
+>>>> I need to evaluate further the impact on the dfsdm driver.
+>>>
+>>> Understood!  If we can't do it without potentially breaking users then such is life.
+>>>
+>>> Jonathan
+>>>    
+>>
+>> I come back to this old, but still valid topic.
+> 
+> I'd forgotten about this one, so apologies if it takes me a bit of time to
+> get back up to speed!
+> 
+>> You mentioned the example of analog gyroscopes in a previous message.
+>> Looking at gyroscope drivers, I found rcar-gyroadc driver which shows
+> 
+> Not a gyroscope driver despite the name :)  I was thinking more of the
+> case where we have a gyroscope that can be wired up to a bunch of different
+> ADCs.
+> 
+>> requirements similar to dfsdm needs:
+>> https://www.kernel.org/doc/Documentation/devicetree/bindings/iio/adc/renesas%2Crcar-gyroadc.yaml
+>>
+>> rcar-gyroadc driver main characterisitics:
+>> - the parent device (gyroadc) is a consumer of sub devices (SPI ADCs)
+>> - the channels are populated from the sub devices
+>> - the iio device is associated to the parent device
+> 
+> I wouldn't necessarily take that as a golden example.  We were still figuring
+> out how this stuff would fit together.
+>  From what I recall (and it's been a few years) that device provides no
+> configuration type interfaces for the SPI ADCs - they end up having no
+> existence in the device model as a result.  There is no means of
+> sharing anything between the ways this device uses the SPI ADCs and the
+> way any other device does.
+> 
+>>
+>>
+>> I took the example of gyroadc to reconsider dfsdm topology and explore
+>> some variants according to IIO devices use.
+>>
+>> 1) current topology: one IIO device per SD modulator and one iio device
+>> per DFSDM filter
+>>       The DFSDM is used as a consumer of SD modulator through the hw
+>>       consumer API.
+>>       * cons
+>>           - SD modulator and DFSDM filter have their own channel
+>>           specification.
+>>           - DFSDM retrieves channels scale information from SD
+>>           modulator to initialized its channels
+>>           - SD modulator IIO sysfs interface is useless
+>>
+>> +------------+     +-------+     +---------+  sysfs
+>> | sd0 iiodev | --> | chan0 | --> | filter0 | ------->
+>> +------------+     +-------+     +---------+
+>>     |                                ^
+>>     | sysfs                          |
+>>     v                                |
+>>                                      |
+>>                                      |
+>>                                      |
+>> +------------+     +-------+       |
+>> | sd1 iiodev | --> | chan1 | ------+
+>> +------------+     +-------+
+>>     |
+>>     | sysfs
+>>     v
+>>
+>>
+>> 2) "conversion service" topology: one IIO device per SD modulator
+>>       * cons
+>>           - Data transfers: in this case the converted data from
+>>           DFSDM filter have to be sent back to SD modulator to be 	
+>> 	available on sysfs interface.
+>>           - Scan mode: this topology seems not compatible with scan
+>>           mode, where multiplexed channels are expected are on
+>> 	IIO device interface.
+>>
+>> 	=> I don't find a proper way to address scan mode with multi SD
+>> 	modulator connected to one DFSM filter
+> 
+> Good point, there isn't a means of combining the scans from multiple
+> IIO devices and that is what we end up having in this model.
+> 
+> You can 'split' the channels so that enabling sd0 and sd1 buffered
+> mode will result in scans from the filter filling FIFOs for each of them
+> but that may not fit the use model you have in mind.
+> 
 
->=20
-> > +
-> >  	drm_encoder_helper_add(encoder,=20
-&sun8i_dw_hdmi_encoder_helper_funcs);
-> >  	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
-> > =20
-> > -	sun8i_hdmi_phy_init(hdmi->phy);
-> > -
-> >  	plat_data->mode_valid =3D hdmi->quirks->mode_valid;
-> >  	plat_data->use_drm_infoframe =3D hdmi->quirks->use_drm_infoframe;
-> >  	sun8i_hdmi_phy_set_ops(hdmi->phy, plat_data);
-> > @@ -262,6 +264,7 @@ static void sun8i_dw_hdmi_unbind(struct device *dev=
-,=20
-struct device *master,
-> >  	struct sun8i_dw_hdmi *hdmi =3D dev_get_drvdata(dev);
-> > =20
-> >  	dw_hdmi_unbind(hdmi->hdmi);
-> > +	sun8i_hdmi_phy_deinit(hdmi->phy);
-> >  	clk_disable_unprepare(hdmi->clk_tmds);
-> >  	reset_control_assert(hdmi->rst_ctrl);
-> >  	gpiod_set_value(hdmi->ddc_en, 0);
-> > diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h b/drivers/gpu/drm/su=
-n4i/
-sun8i_dw_hdmi.h
-> > index 74f6ed0e2570..bffe1b9cd3dc 100644
-> > --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> > +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.h
-> > @@ -169,6 +169,7 @@ struct sun8i_hdmi_phy {
-> >  	struct clk			*clk_phy;
-> >  	struct clk			*clk_pll0;
-> >  	struct clk			*clk_pll1;
-> > +	struct device			*dev;
-> >  	unsigned int			rcal;
-> >  	struct regmap			*regs;
-> >  	struct reset_control		*rst_phy;
-> > @@ -205,7 +206,8 @@ encoder_to_sun8i_dw_hdmi(struct drm_encoder *encode=
-r)
-> > =20
-> >  int sun8i_hdmi_phy_get(struct sun8i_dw_hdmi *hdmi, struct device_node=
-=20
-*node);
-> > =20
-> > -void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-> > +int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy);
-> > +void sun8i_hdmi_phy_deinit(struct sun8i_hdmi_phy *phy);
-> >  void sun8i_hdmi_phy_set_ops(struct sun8i_hdmi_phy *phy,
-> >  			    struct dw_hdmi_plat_data *plat_data);
-> > =20
-> > diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/
-sun4i/sun8i_hdmi_phy.c
-> > index c9239708d398..78b152973957 100644
-> > --- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> > +++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-> > @@ -506,9 +506,60 @@ static void sun8i_hdmi_phy_init_h3(struct=20
-sun8i_hdmi_phy *phy)
-> >  	phy->rcal =3D (val & SUN8I_HDMI_PHY_ANA_STS_RCAL_MASK) >> 2;
-> >  }
-> > =20
-> > -void sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
-> > +int sun8i_hdmi_phy_init(struct sun8i_hdmi_phy *phy)
-> >  {
-> > +	int ret;
-> > +
-> > +	ret =3D reset_control_deassert(phy->rst_phy);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "Cannot deassert phy reset control:=20
-%d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret =3D clk_prepare_enable(phy->clk_bus);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "Cannot enable bus clock: %d\n",=20
-ret);
-> > +		goto err_deassert_rst_phy;
->=20
-> I know it was there before, but please:
->=20
-> s/deassert/assert/
+Yes, this model may be an option when we have independent data on each 
+channel. If we want to handle data correlated in time, things become 
+more tricky, yet.
+The following presentation shows some examples of use cases for STM32 
+DFSDM (page 20 to 24):
+https://st-onlinetraining.s3.amazonaws.com/STM32L4_System_Digital_Filter_for_SD_Modulators_interface_(DFSDM)/index.html
 
-Ok.
+Looking at 3-phase electricity meter example (page 23), the voltages 
+from three SD modulators are captured and processed by one DFSDM filter.
+The mutiplexed filtered data can then be used for further processing.
+If we get the filtered data from three SD IIO devices, it looks 
+difficult to guarantee time alignment between these data.
 
-Best regards,
-Jernej
+It seems to me that the solution 2, may reduce the field of use cases 
+that could be addressed by the DFSDM.
 
->=20
-> kind regards,
-> 	o.
->=20
-> > +	}
-> > +
-> > +	ret =3D clk_prepare_enable(phy->clk_mod);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "Cannot enable mod clock: %d\n",=20
-ret);
-> > +		goto err_disable_clk_bus;
-> > +	}
-> > +
-> > +	if (phy->variant->has_phy_clk) {
-> > +		ret =3D sun8i_phy_clk_create(phy, phy->dev,
-> > +					   phy->variant-
->has_second_pll);
-> > +		if (ret) {
-> > +			dev_err(phy->dev, "Couldn't create the PHY=20
-clock\n");
-> > +			goto err_disable_clk_mod;
-> > +		}
-> > +
-> > +		clk_prepare_enable(phy->clk_phy);
-> > +	}
-> > +
-> >  	phy->variant->phy_init(phy);
-> > +
-> > +	return 0;
-> > +
-> > +err_disable_clk_mod:
-> > +	clk_disable_unprepare(phy->clk_mod);
-> > +err_disable_clk_bus:
-> > +	clk_disable_unprepare(phy->clk_bus);
-> > +err_deassert_rst_phy:
-> > +	reset_control_assert(phy->rst_phy);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >
-> > [......]
->=20
+> This sort of demux is more often done for when we have a consumer in
+> the form of say a touchscreen that uses a couple of channels off a
+> general purpose ADC. We have no reason to want to ensure any alignment
+> between the data going to the touchscreen and that going to the
+> who ever is interested in the other ADC channels.
+> 
+>>
+>> +------------+      +-------+     +---------+
+>> | sd0 iiodev | <--> | chan0 | <-> | filter0 |
+>> +------------+      +-------+     +---------+
+>>     |                                 ^
+>>     | sysfs                           |
+>>     v                                 |
+>>                                       |
+>>                                       |
+>>                                       |
+>> +------------+      +-------+       |
+>> | sd1 iiodev | <--> | chan1 | <-----+
+>> +------------+      +-------+
+>>     |
+>>     | sysfs
+>>     v
+>>
+>>
+>> 3) gyroadc like topology: one iio device per DFSDM filter
+>> (no SD modulator iio device registered)
+>>       For DFSDM scale and offset, the required information are SD
+>>       modulator reference voltage and channel types.
+>>
+>>       voltage reference: the regulator voltage can be retrieved as it
+>>       is done in  gyroadc driver.
+>>       Maybe we can dropped merely SD modulator, and describe voltage
+>>       as a property of the channel (through generic channel binding)
+>>       This may be too restrictive if more hardware has to be
+>>       configured in the SD modulator, yet.
+> 
+> That is indeed the key question. Do we need to configure the modulator
+> devices? If we do then they need to have an existence in the device model.
+> Mapping them as IIO devices provides reusability across multiple
+> filter implementations.
+> 
 
+We need to be able to manage a wide range of application. So, we have to 
+be flexible enough to configure SD modulator when necessary.
+I agree, that the SD device has to be kept from this point of view.
 
+>>
+>>       channel type: IIO generic channel binding could be used here
+>>       instead of proprietary properties
+>>       to describe the channels
+>>
+>>       binding sample:
+>>       dfsdm_pdm1: filter@1 {
+>>           compatible = "st,stm32-dfsdm-adc";
+>>           reg = <1>;
+>>           interrupts = <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+>>           dmas = <&dmamux1 102 0x400 0x01>;
+>>           dma-names = "rx";
+>>           st,filter-order = <1>;
+>>
+>>           channel@2 {
+>>               reg = <2>;
+>>               label = "in2";
+>>               st,adc-channel-types = "SPI_R";
+>>               st,adc-channel-clk-src = "CLKOUT_F";
+>>
+>>               sd@0 {    ?
+>>                   reg = <0>;
+>>                   compatible = "sd-mod";
+>>                   vref-supply = <&vref>;
+>>               };
+>>           };
+>>       };
+>>
+>>       * cons
+>>           - The sub devices are embedded in the driver and are not
+>>           based on general device API.
+>>           Alternatively, if we want to use standard device model
+>>           and avoid the creation of an unrelevant IIO device for
+>>           SD modulator, a specific type of device may be
+>>           provided by IIO framework. This could be a kind of
+>>           "backend" device without IIO sysfs interface attached.
+> 
+> That may be an option.  It was always on the list of things to do
+> to allow for IIO devices that have no 'IIO interface' to userspace.
+> The main usecase was SoC ADCs where all the channels are going to
+> other in kernel consumers, but it might be applicable here as well.
+> 
+
+Can you see another alternative to solution 2, to allow full support of 
+DFSDM features ?
+
+If 'backend' option turns out to be the most appropriated to match DFSDM 
+constraints, I can prepare some patches to support it.
+Would you have some guidelines or requirements for the implementation of 
+such feature, in this case ?
+
+Regards
+Olivier
+
+>>
+>>       => This solution could be applicable but some details in the
+>>       implementation will have to be clarified further.
+>>       May we consider adding a "backend" device without IIO interface
+>>       in the IIO framework ?
+>>       May the SD modulator be dropped ?
+>>
+>> +-----+     +-------+     +----------------+  sysfs
+>> | sd0 | --> | chan0 | --> | filter0 iiodev | ------->
+>> +-----+     +-------+     +----------------+
+>>                               ^
+>>                               |
+>>                               |
+>> +-----+     +-------+       |
+>> | sd1 | --> | chan1 | ------+
+>> +-----+     +-------+
+>>
+>>
+>> Here there is a point that needs to be clarified in relation to the
+>> previous discussions I think.
+>> If I refer to the last comment of the current thread, I understand that
+>> you were expecting the IIO sysfs interface to be attached to the SD
+>> modulator. (solution 2)
+> 
+> Yes.
+> 
+>> For the gyroadc, the channels are indeed populated by the sub devices.
+>> However the IIO device corresponds to the ADC consumer and not the ADCs
+>> themselves. (solution 3)
+> 
+> That one is a rather odd case because no generic handling is possible
+> of the ADCs. For example it doesn't use the ad7476 driver because we can't
+> talk to the device even though it's the same ADC as the ad7476 driver supports.
+> 
+>>
+>> What is the the preferred approach for you ?
+> 
+> I still favour solution 2, but if you need to have the channels cleanly
+> presented in a scan despite them coming from different modulators, then that
+> solution may not be sufficient and we need to think about how else to do
+> things.
+> 
+> Jonathan
+> 
+>>
+>> Thanks for your feedback
+>> Best regards
+>> Olivier
+>>
+>>
+>>>>
+>>>> Regards
+>>>> Olivier
+>>>>>> If not, I probably missedsomething. Could you please clarify this point ?
+>>>>>>
+>>>>>> Regards
+>>>>>> Olivier
+>>>>>>> This wasn't really an issue when the only values available were
+>>>>>>> raw, but if we are adding scale and offset, they are things that
+>>>>>>> belong to the ad1201 for example, not the upstream stm32-dfsdm unit.
+>>>>>>>
+>>>>>>> Thinking of it another way, we don't report an SPI ADC output in
+>>>>>>> the driver for the SPI master.
+>>>>>>>
+>>>>>>> Could we flip it around without breaking anything?
+>>>>>>>
+>>>>>>> Jonathan
+>>>>>>>         
+>>>>>>>> ---
+>>>>>>>>      drivers/iio/adc/stm32-dfsdm-adc.c | 105 +++++++++++++++++++++++++++++-
+>>>>>>>>      1 file changed, 102 insertions(+), 3 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c
+>>>>>>>> b/drivers/iio/adc/stm32-dfsdm-adc.c
+>>>>>>>> index 07b9dfdf8e76..b85fd3e90496 100644
+>>>>>>>> --- a/drivers/iio/adc/stm32-dfsdm-adc.c
+>>>>>>>> +++ b/drivers/iio/adc/stm32-dfsdm-adc.c
+>>>>>>>> @@ -10,6 +10,7 @@
+>>>>>>>>      #include <linux/dma-mapping.h>
+>>>>>>>>      #include <linux/iio/adc/stm32-dfsdm-adc.h>
+>>>>>>>>      #include <linux/iio/buffer.h>
+>>>>>>>> +#include <linux/iio/consumer.h>
+>>>>>>>>      #include <linux/iio/hw-consumer.h>
+>>>>>>>>      #include <linux/iio/sysfs.h>
+>>>>>>>>      #include <linux/iio/timer/stm32-lptim-trigger.h>
+>>>>>>>> @@ -67,6 +68,13 @@ struct stm32_dfsdm_dev_data {
+>>>>>>>>      	const struct regmap_config *regmap_cfg;
+>>>>>>>>      };
+>>>>>>>>      
+>>>>>>>> +struct stm32_dfsdm_sd_chan_info {
+>>>>>>>> +	int scale_val;
+>>>>>>>> +	int scale_val2;
+>>>>>>>> +	int offset;
+>>>>>>>> +	unsigned int differential;
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>>      struct stm32_dfsdm_adc {
+>>>>>>>>      	struct stm32_dfsdm *dfsdm;
+>>>>>>>>      	const struct stm32_dfsdm_dev_data *dev_data; @@ -79,6 +87,7
+>>>>>>>> @@ struct stm32_dfsdm_adc {
+>>>>>>>>      	struct iio_hw_consumer *hwc;
+>>>>>>>>      	struct completion completion;
+>>>>>>>>      	u32 *buffer;
+>>>>>>>> +	struct stm32_dfsdm_sd_chan_info *sd_chan;
+>>>>>>>>      
+>>>>>>>>      	/* Audio specific */
+>>>>>>>>      	unsigned int spi_freq;  /* SPI bus clock frequency */ @@
+>>>>>>>> -1271,7 +1280,10 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+>>>>>>>>      				int *val2, long mask)
+>>>>>>>>      {
+>>>>>>>>      	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
+>>>>>>>> -	int ret;
+>>>>>>>> +	struct stm32_dfsdm_filter *fl = &adc->dfsdm->fl_list[adc->fl_id];
+>>>>>>>> +	struct stm32_dfsdm_filter_osr *flo = &fl->flo[fl->fast];
+>>>>>>>> +	u32 max = flo->max << (flo->lshift - chan->scan_type.shift);
+>>>>>>>> +	int ret, idx = chan->scan_index;
+>>>>>>>>      
+>>>>>>>>      	switch (mask) {
+>>>>>>>>      	case IIO_CHAN_INFO_RAW:
+>>>>>>>> @@ -1307,6 +1319,41 @@ static int stm32_dfsdm_read_raw(struct iio_dev *indio_dev,
+>>>>>>>>      		*val = adc->sample_freq;
+>>>>>>>>      
+>>>>>>>>      		return IIO_VAL_INT;
+>>>>>>>> +
+>>>>>>>> +	case IIO_CHAN_INFO_SCALE:
+>>>>>>>> +		/*
+>>>>>>>> +		 * Scale is expressed in mV.
+>>>>>>>> +		 * When fast mode is disabled, actual resolution may be lower
+>>>>>>>> +		 * than 2^n, where n=realbits-1.
+>>>>>>>> +		 * This leads to underestimating input voltage. To
+>>>>>>>> +		 * compensate this deviation, the voltage reference can be
+>>>>>>>> +		 * corrected with a factor = realbits resolution / actual max
+>>>>>>>> +		 */
+>>>>>>>> +		*val = div_u64((u64)adc->sd_chan[idx].scale_val *
+>>>>>>>> +			       (u64)BIT(DFSDM_DATA_RES - 1), max);
+>>>>>>>> +		*val2 = chan->scan_type.realbits;
+>>>>>>>> +		if (adc->sd_chan[idx].differential)
+>>>>>>>> +			*val *= 2;
+>>>>>>>> +
+>>>>>>>> +		return IIO_VAL_FRACTIONAL_LOG2;
+>>>>>>>> +
+>>>>>>>> +	case IIO_CHAN_INFO_OFFSET:
+>>>>>>>> +		/*
+>>>>>>>> +		 * DFSDM output data are in the range [-2^n,2^n-1],
+>>>>>>>> +		 * with n=realbits-1.
+>>>>>>>> +		 * - Differential modulator:
+>>>>>>>> +		 * Offset correspond to SD modulator offset.
+>>>>>>>> +		 * - Single ended modulator:
+>>>>>>>> +		 * Input is in [0V,Vref] range, where 0V corresponds to -2^n.
+>>>>>>>> +		 * Add 2^n to offset. (i.e. middle of input range)
+>>>>>>>> +		 * offset = offset(sd) * vref / res(sd) * max / vref.
+>>>>>>>> +		 */
+>>>>>>>> +		*val = div_u64((u64)max * adc->sd_chan[idx].offset,
+>>>>>>>> +			       BIT(adc->sd_chan[idx].scale_val2 - 1));
+>>>>>>>> +		if (!adc->sd_chan[idx].differential)
+>>>>>>>> +			*val += max;
+>>>>>>>> +
+>>>>>>>> +		return IIO_VAL_INT;
+>>>>>>>>      	}
+>>>>>>>>      
+>>>>>>>>      	return -EINVAL;
+>>>>>>>> @@ -1430,7 +1477,9 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
+>>>>>>>>      	 * IIO_CHAN_INFO_RAW: used to compute regular conversion
+>>>>>>>>      	 * IIO_CHAN_INFO_OVERSAMPLING_RATIO: used to set oversampling
+>>>>>>>>      	 */
+>>>>>>>> -	ch->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
+>>>>>>>> +	ch->info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+>>>>>>>> +				 BIT(IIO_CHAN_INFO_SCALE) |
+>>>>>>>> +				 BIT(IIO_CHAN_INFO_OFFSET);
+>>>>>>>>      	ch->info_mask_shared_by_all = BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO) |
+>>>>>>>>      					BIT(IIO_CHAN_INFO_SAMP_FREQ);
+>>>>>>>>      
+>>>>>>>> @@ -1481,8 +1530,10 @@ static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
+>>>>>>>>      {
+>>>>>>>>      	struct iio_chan_spec *ch;
+>>>>>>>>      	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
+>>>>>>>> +	struct iio_channel *channels, *chan;
+>>>>>>>> +	struct stm32_dfsdm_sd_chan_info *sd_chan;
+>>>>>>>>      	int num_ch;
+>>>>>>>> -	int ret, chan_idx;
+>>>>>>>> +	int ret, chan_idx, val2;
+>>>>>>>>      
+>>>>>>>>      	adc->oversamp = DFSDM_DEFAULT_OVERSAMPLING;
+>>>>>>>>      	ret = stm32_dfsdm_compute_all_osrs(indio_dev, adc->oversamp);
+>>>>>>>> @@ -1506,6 +1557,22 @@ static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
+>>>>>>>>      	if (!ch)
+>>>>>>>>      		return -ENOMEM;
+>>>>>>>>      
+>>>>>>>> +	/* Get SD modulator channels */
+>>>>>>>> +	channels = iio_channel_get_all(&indio_dev->dev);
+>>>>>>>> +	if (IS_ERR(channels)) {
+>>>>>>>> +		dev_err(&indio_dev->dev, "Failed to get channel %ld\n",
+>>>>>>>> +			PTR_ERR(channels));
+>>>>>>>> +		return PTR_ERR(channels);
+>>>>>>>> +	}
+>>>>>>>> +	chan = &channels[0];
+>>>>>>>> +
+>>>>>>>> +	adc->sd_chan = devm_kzalloc(&indio_dev->dev,
+>>>>>>>> +				    sizeof(*adc->sd_chan) * num_ch, GFP_KERNEL);
+>>>>>>>> +	if (!adc->sd_chan)
+>>>>>>>> +		return -ENOMEM;
+>>>>>>>> +
+>>>>>>>> +	sd_chan = adc->sd_chan;
+>>>>>>>> +
+>>>>>>>>      	for (chan_idx = 0; chan_idx < num_ch; chan_idx++) {
+>>>>>>>>      		ch[chan_idx].scan_index = chan_idx;
+>>>>>>>>      		ret = stm32_dfsdm_adc_chan_init_one(indio_dev,
+>>>>>>>> &ch[chan_idx]); @@ -1513,6 +1580,38 @@ static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
+>>>>>>>>      			dev_err(&indio_dev->dev, "Channels init failed\n");
+>>>>>>>>      			return ret;
+>>>>>>>>      		}
+>>>>>>>> +
+>>>>>>>> +		if (!chan->indio_dev)
+>>>>>>>> +			return -EINVAL;
+>>>>>>>> +
+>>>>>>>> +		ret = iio_read_channel_scale(chan, &sd_chan->scale_val,
+>>>>>>>> +					     &sd_chan->scale_val2);
+>>>>>>>> +		if (ret < 0) {
+>>>>>>>> +			dev_err(&indio_dev->dev,
+>>>>>>>> +				"Failed to get channel %d scale\n", chan_idx);
+>>>>>>>> +			return ret;
+>>>>>>>> +		}
+>>>>>>>> +
+>>>>>>>> +		if (iio_channel_has_info(chan->channel, IIO_CHAN_INFO_OFFSET)) {
+>>>>>>>> +			ret = iio_read_channel_offset(chan, &sd_chan->offset,
+>>>>>>>> +						      &val2);
+>>>>>>>> +			if (ret < 0) {
+>>>>>>>> +				dev_err(&indio_dev->dev,
+>>>>>>>> +					"Failed to get channel %d offset\n",
+>>>>>>>> +					chan_idx);
+>>>>>>>> +				return ret;
+>>>>>>>> +			}
+>>>>>>>> +		}
+>>>>>>>> +
+>>>>>>>> +		sd_chan->differential = chan->channel->differential;
+>>>>>>>> +
+>>>>>>>> +		dev_dbg(&indio_dev->dev, "Channel %d %s scale ref=%d offset=%d",
+>>>>>>>> +			chan_idx, chan->channel->differential ?
+>>>>>>>> +			"differential" : "single-ended",
+>>>>>>>> +			sd_chan->scale_val, sd_chan->offset);
+>>>>>>>> +
+>>>>>>>> +		chan++;
+>>>>>>>> +		sd_chan++;
+>>>>>>>>      	}
+>>>>>>>>      
+>>>>>>>>      	indio_dev->num_channels = num_ch;
+> 
