@@ -2,185 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F0640AB3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8517F40AB3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhINJ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:57:27 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:62212 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhINJ5Y (ORCPT
+        id S231339AbhINJ5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:57:38 -0400
+Received: from m-r1.th.seeweb.it ([5.144.164.170]:58179 "EHLO
+        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhINJ5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:57:24 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 8905fce2;
-        Tue, 14 Sep 2021 11:56:05 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 11:56:05 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     sven@svenpeter.dev, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com,
-        kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com,
-        kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com,
-        kernel-team@android.com
-In-Reply-To: <87y27zbiu3.wl-maz@kernel.org> (message from Marc Zyngier on Tue,
-        14 Sep 2021 10:35:32 +0100)
-Subject: Re: [PATCH v3 10/10] PCI: apple: Configure RID to SID mapper on device addition
-References: <20210913182550.264165-1-maz@kernel.org>
-        <20210913182550.264165-11-maz@kernel.org>
-        <b502383a-fe68-498a-b714-7832d3c8703e@www.fastmail.com> <87y27zbiu3.wl-maz@kernel.org>
-Message-ID: <56145a72aa978ebd@bloch.sibelius.xs4all.nl>
+        Tue, 14 Sep 2021 05:57:37 -0400
+Received: from [192.168.1.101] (83.6.166.65.neoplus.adsl.tpnet.pl [83.6.166.65])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id A2F821F6A2;
+        Tue, 14 Sep 2021 11:56:14 +0200 (CEST)
+Subject: Re: [PATCH v3 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
+To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210828172315.55742-1-konrad.dybcio@somainline.org>
+ <20210828172315.55742-2-konrad.dybcio@somainline.org>
+ <6673399.dA2BYh7nEs@g550jk>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <9ef42060-7cf8-35e6-b7c8-9b51963d378a@somainline.org>
+Date:   Tue, 14 Sep 2021 11:56:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <6673399.dA2BYh7nEs@g550jk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Tue, 14 Sep 2021 10:35:32 +0100
-> From: Marc Zyngier <maz@kernel.org>
-> 
-> On Mon, 13 Sep 2021 21:45:13 +0100,
-> "Sven Peter" <sven@svenpeter.dev> wrote:
-> > 
-> > On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
-> > > The Apple PCIe controller doesn't directly feed the endpoint's
-> > > Requester ID to the IOMMU (DART), but instead maps RIDs onto
-> > > Stream IDs (SIDs). The DART and the PCIe controller must thus
-> > > agree on the SIDs that are used for translation (by using
-> > > the 'iommu-map' property).
-> > > 
-> > > For this purpose, parse the 'iommu-map' property each time a
-> > > device gets added, and use the resulting translation to configure
-> > > the PCIe RID-to-SID mapper. Similarily, remove the translation
-> > > if/when the device gets removed.
-> > > 
-> > > This is all driven from a bus notifier which gets registered at
-> > > probe time. Hopefully this is the only PCI controller driver
-> > > in the whole system.
-> > > 
-> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > ---
-> > >  drivers/pci/controller/pcie-apple.c | 158 +++++++++++++++++++++++++++-
-> > >  1 file changed, 156 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/pcie-apple.c 
-> > > b/drivers/pci/controller/pcie-apple.c
-> > > index 76344223245d..68d71eabe708 100644
-> > > --- a/drivers/pci/controller/pcie-apple.c
-> > > +++ b/drivers/pci/controller/pcie-apple.c
-> > > @@ -23,8 +23,10 @@
-> > >  #include <linux/iopoll.h>
-> > >  #include <linux/irqchip/chained_irq.h>
-> > >  #include <linux/irqdomain.h>
-> > > +#include <linux/list.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/msi.h>
-> > > +#include <linux/notifier.h>
-> > >  #include <linux/of_irq.h>
-> > >  #include <linux/pci-ecam.h>
-> > >  
-> > > @@ -116,6 +118,8 @@
-> > >  #define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
-> > >  #define PORT_PREFMEM_ENABLE		0x00994
-> > >  
-> > > +#define MAX_RID2SID			64
-> > 
-> > Do these actually have 64 slots? I thought that was only for
-> > the Thunderbolt controllers and that these only had 16.
-> 
-> You are indeed right, and I blindly used the limit used in the
-> Correlium driver. Using entries from 16 onward result in a non booting
-> system. The registers do not fault though, and simply ignore writes. I
-> came up with an simple fix for this, see below.
 
-Or should be add a property to the DT binding to indicate the number
-of entries (using a default of 16)?  We don't have to add that
-property right away; we can delay that until we actually try to
-support the Thunderbolt ports.
+On 13.09.2021 19:23, Luca Weiss wrote:
+> Hi Konrad,
+>
+> based on other reviews on the mailing list/IRC 
 
-In case you didn't know already, RIDs that have no mapping in the
-RID2SID table map to SID 0.  That's why I picked 1 as the SID in the
-iommu-map property for the port.
+Sorry, I wasn't very active for a while:)
 
-> > I never checked it myself though and it doesn't make much
-> > of a difference for now since only four different RIDs will
-> > ever be connected anyway.
-> 
-> Four? I guess the radios expose more than a single RID?
 
-At this point, on the M1 mini there is the Broadcom BCM4378 WiFi/BT
-device (which has two functions), the Fresco Logic FL1100 xHCI
-controller (single function) and the Broadcom BCM57765 Ethernet
-controller.  So yes, there are for RIDs.
+> I have some comments here
 
-Cheers,
+>
+> On Samstag, 28. August 2021 19:23:14 CEST Konrad Dybcio wrote:
+>> This adds pincontrol driver for tlmm block found in SM6350 SoC
+>>
+>> This patch is based on downstream copyleft code.
+>>
+>> Reviewed-by: AngeloGioacchino Del Regno
+>> <angelogioacchino.delregno@somainline.org> Signed-off-by: Konrad Dybcio
+>> <konrad.dybcio@somainline.org>
+>> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> ---
+>> Changes since v2:
+>> - Trim the forgotten-about comments
+>> - Add Bjorn's r-b
+>>
+>>  drivers/pinctrl/qcom/Kconfig          |    9 +
+>>  drivers/pinctrl/qcom/Makefile         |    1 +
+>>  drivers/pinctrl/qcom/pinctrl-sm6350.c | 1593 +++++++++++++++++++++++++
+>>  3 files changed, 1603 insertions(+)
+>>  create mode 100644 drivers/pinctrl/qcom/pinctrl-sm6350.c
+>>
+> [SNIP]
+>> +DECLARE_MSM_GPIO_PINS(128);
+>> +DECLARE_MSM_GPIO_PINS(129);
+>> +DECLARE_MSM_GPIO_PINS(130);
+>> +DECLARE_MSM_GPIO_PINS(131);
+>> +DECLARE_MSM_GPIO_PINS(132);
+>> +DECLARE_MSM_GPIO_PINS(133);
+>> +DECLARE_MSM_GPIO_PINS(134);
+>> +DECLARE_MSM_GPIO_PINS(135);
+>> +DECLARE_MSM_GPIO_PINS(136);
+>> +DECLARE_MSM_GPIO_PINS(137);
+>> +DECLARE_MSM_GPIO_PINS(138);
+>> +DECLARE_MSM_GPIO_PINS(139);
+>> +DECLARE_MSM_GPIO_PINS(140);
+>> +DECLARE_MSM_GPIO_PINS(141);
+>> +DECLARE_MSM_GPIO_PINS(142);
+>> +DECLARE_MSM_GPIO_PINS(143);
+>> +DECLARE_MSM_GPIO_PINS(144);
+>> +DECLARE_MSM_GPIO_PINS(145);
+>> +DECLARE_MSM_GPIO_PINS(146);
+>> +DECLARE_MSM_GPIO_PINS(147);
+>> +DECLARE_MSM_GPIO_PINS(148);
+>> +DECLARE_MSM_GPIO_PINS(149);
+>> +DECLARE_MSM_GPIO_PINS(150);
+>> +DECLARE_MSM_GPIO_PINS(151);
+>> +DECLARE_MSM_GPIO_PINS(152);
+>> +DECLARE_MSM_GPIO_PINS(153);
+>> +DECLARE_MSM_GPIO_PINS(154);
+>> +DECLARE_MSM_GPIO_PINS(155);
+>> +
+>> +static const unsigned int sdc1_rclk_pins[] = { 156 };
+>> +static const unsigned int sdc1_clk_pins[] = { 157 };
+>> +static const unsigned int sdc1_cmd_pins[] = { 158 };
+>> +static const unsigned int sdc1_data_pins[] = { 159 };
+>> +static const unsigned int sdc2_clk_pins[] = { 160 };
+>> +static const unsigned int sdc2_cmd_pins[] = { 161 };
+>> +static const unsigned int sdc2_data_pins[] = { 162 };
+>> +static const unsigned int ufs_reset_pins[] = { 163 };
+> All these numbers don't match anymore after moving ufs_reset to 156
+>
+> (ref: https://lore.kernel.org/lkml/YNTYvKYDWFxUcb+Y@yoga/ )
 
-Mark
+Good catch, thanks!
 
-> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-> index 68d71eabe708..ec9e7abd2aca 100644
-> --- a/drivers/pci/controller/pcie-apple.c
-> +++ b/drivers/pci/controller/pcie-apple.c
-> @@ -148,6 +148,7 @@ struct apple_pcie_port {
->  	struct irq_domain	*domain;
->  	struct list_head	entry;
->  	DECLARE_BITMAP(		sid_map, MAX_RID2SID);
-> +	int			sid_map_sz;
->  	int			idx;
->  };
->  
-> @@ -495,12 +496,12 @@ static int apple_pcie_setup_refclk(struct apple_pcie *pcie,
->  	return 0;
->  }
->  
-> -static void apple_pcie_rid2sid_write(struct apple_pcie_port *port,
-> +static u32 apple_pcie_rid2sid_write(struct apple_pcie_port *port,
->  				     int idx, u32 val)
->  {
->  	writel_relaxed(val, port->base + PORT_RID2SID(idx));
->  	/* Read back to ensure completion of the write */
-> -	(void)readl_relaxed(port->base + PORT_RID2SID(idx));
-> +	return readl_relaxed(port->base + PORT_RID2SID(idx));
->  }
->  
->  static int apple_pcie_setup_port(struct apple_pcie *pcie,
-> @@ -557,9 +558,16 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
->  	if (ret)
->  		return ret;
->  
-> -	/* Reset all RID/SID mappings */
-> -	for (i = 0; i < MAX_RID2SID; i++)
-> +	/* Reset all RID/SID mappings, and check for RAZ/WI registers */
-> +	for (i = 0; i < MAX_RID2SID; i++) {
-> +		if (apple_pcie_rid2sid_write(port, i, 0xbad1d) != 0xbad1d)
-> +			break;
->  		apple_pcie_rid2sid_write(port, i, 0);
-> +	}
-> +
-> +	dev_dbg(pcie->dev, "%pOF: %d RID/SID mapping entries\n", np, i);
-> +
-> +	port->sid_map_sz = i;
->  
->  	list_add_tail(&port->entry, &pcie->ports);
->  	init_completion(&pcie->event);
-> @@ -667,7 +675,7 @@ static int apple_pcie_add_device(struct pci_dev *pdev)
->  		return err;
->  
->  	mutex_lock(&port->pcie->lock);
-> -	sid_idx = bitmap_find_free_region(port->sid_map, MAX_RID2SID, 0);
-> +	sid_idx = bitmap_find_free_region(port->sid_map, port->sid_map_sz, 0);
->  	mutex_unlock(&port->pcie->lock);
->  
->  	if (sid_idx < 0)
-> @@ -696,7 +704,7 @@ static void apple_pcie_release_device(struct pci_dev *pdev)
->  
->  	mutex_lock(&port->pcie->lock);
->  
-> -	for_each_set_bit(idx, port->sid_map, MAX_RID2SID) {
-> +	for_each_set_bit(idx, port->sid_map, port->sid_map_sz) {
->  		u32 val;
->  
->  		val = readl_relaxed(port->base + PORT_RID2SID(idx));
-> 
-> -- 
-> Without deviation from the norm, progress is not possible.
-> 
+
+>
+>> +
+>> +enum sm6350_functions {
+>> +	msm_mux_adsp_ext,
+>> +	msm_mux_agera_pll,
+>> +	msm_mux_atest_char,
+>> +	msm_mux_atest_char0,
+>> +	msm_mux_atest_char1,
+>> +	msm_mux_atest_char2,
+>> +	msm_mux_atest_char3,
+>> +	msm_mux_atest_tsens,
+>> +	msm_mux_atest_tsens2,
+>> +	msm_mux_atest_usb1,
+>> +	msm_mux_atest_usb10,
+>> +	msm_mux_atest_usb11,
+>> +	msm_mux_atest_usb12,
+>> +	msm_mux_atest_usb13,
+>> +	msm_mux_atest_usb2,
+>> +	msm_mux_atest_usb20,
+>> +	msm_mux_atest_usb21,
+>> +	msm_mux_atest_usb22,
+>> +	msm_mux_atest_usb23,
+> Bjorn mentioned to merge all the atest_usb* functions into a single one.
+
+Will do.
+
+
+
+>
+>> +	msm_mux_audio_ref,
+>> +	msm_mux_btfm_slimbus,
+>> +	msm_mux_cam_mclk0,
+>> +	msm_mux_cam_mclk1,
+>> +	msm_mux_cam_mclk2,
+>> +	msm_mux_cam_mclk3,
+>> +	msm_mux_cam_mclk4,
+>> +	msm_mux_cci_async,
+>> +	msm_mux_cci_i2c,
+>> +	msm_mux_cci_timer0,
+>> +	msm_mux_cci_timer1,
+>> +	msm_mux_cci_timer2,
+>> +	msm_mux_cci_timer3,
+>> +	msm_mux_cci_timer4,
+>> +	msm_mux_cri_trng,
+>> +	msm_mux_dbg_out,
+>> +	msm_mux_ddr_bist,
+>> +	msm_mux_ddr_pxi0,
+>> +	msm_mux_ddr_pxi1,
+>> +	msm_mux_ddr_pxi2,
+>> +	msm_mux_ddr_pxi3,
+>> +	msm_mux_dp_hot,
+>> +	msm_mux_edp_lcd,
+>> +	msm_mux_gcc_gp1,
+>> +	msm_mux_gcc_gp2,
+>> +	msm_mux_gcc_gp3,
+>> +	msm_mux_gp_pdm0,
+>> +	msm_mux_gp_pdm1,
+>> +	msm_mux_gp_pdm2,
+>> +	msm_mux_gpio,
+>> +	msm_mux_gps_tx,
+>> +	msm_mux_ibi_i3c,
+>> +	msm_mux_jitter_bist,
+>> +	msm_mux_ldo_en,
+>> +	msm_mux_ldo_update,
+>> +	msm_mux_lpass_ext,
+>> +	msm_mux_m_voc,
+>> +	msm_mux_mclk,
+>> +	msm_mux_mdp_vsync,
+>> +	msm_mux_mdp_vsync0,
+>> +	msm_mux_mdp_vsync1,
+>> +	msm_mux_mdp_vsync2,
+>> +	msm_mux_mdp_vsync3,
+>> +	msm_mux_mi2s_0,
+>> +	msm_mux_mi2s_1,
+>> +	msm_mux_mi2s_2,
+>> +	msm_mux_mss_lte,
+>> +	msm_mux_nav_gpio,
+>> +	msm_mux_nav_pps,
+>> +	msm_mux_pa_indicator,
+>> +	msm_mux_pcie0_clk,
+>> +	msm_mux_phase_flag0,
+>> +	msm_mux_phase_flag1,
+>> +	msm_mux_phase_flag10,
+>> +	msm_mux_phase_flag11,
+>> +	msm_mux_phase_flag12,
+>> +	msm_mux_phase_flag13,
+>> +	msm_mux_phase_flag14,
+>> +	msm_mux_phase_flag15,
+>> +	msm_mux_phase_flag16,
+>> +	msm_mux_phase_flag17,
+>> +	msm_mux_phase_flag18,
+>> +	msm_mux_phase_flag19,
+>> +	msm_mux_phase_flag2,
+>> +	msm_mux_phase_flag20,
+>> +	msm_mux_phase_flag21,
+>> +	msm_mux_phase_flag22,
+>> +	msm_mux_phase_flag23,
+>> +	msm_mux_phase_flag24,
+>> +	msm_mux_phase_flag25,
+>> +	msm_mux_phase_flag26,
+>> +	msm_mux_phase_flag27,
+>> +	msm_mux_phase_flag28,
+>> +	msm_mux_phase_flag29,
+>> +	msm_mux_phase_flag3,
+>> +	msm_mux_phase_flag30,
+>> +	msm_mux_phase_flag31,
+>> +	msm_mux_phase_flag4,
+>> +	msm_mux_phase_flag5,
+>> +	msm_mux_phase_flag6,
+>> +	msm_mux_phase_flag7,
+>> +	msm_mux_phase_flag8,
+>> +	msm_mux_phase_flag9,
+> .. and all the phase_flag* ones.
+
+Sure
+
+
+>
+>> +	msm_mux_pll_bist,
+>> +	msm_mux_pll_bypassnl,
+>> +	msm_mux_pll_reset,
+>> +	msm_mux_prng_rosc,
+>> +	msm_mux_qdss_cti,
+>> +	msm_mux_qdss_gpio,
+>> +	msm_mux_qdss_gpio0,
+>> +	msm_mux_qdss_gpio1,
+>> +	msm_mux_qdss_gpio10,
+>> +	msm_mux_qdss_gpio11,
+>> +	msm_mux_qdss_gpio12,
+>> +	msm_mux_qdss_gpio13,
+>> +	msm_mux_qdss_gpio14,
+>> +	msm_mux_qdss_gpio15,
+>> +	msm_mux_qdss_gpio2,
+>> +	msm_mux_qdss_gpio3,
+>> +	msm_mux_qdss_gpio4,
+>> +	msm_mux_qdss_gpio5,
+>> +	msm_mux_qdss_gpio6,
+>> +	msm_mux_qdss_gpio7,
+>> +	msm_mux_qdss_gpio8,
+>> +	msm_mux_qdss_gpio9,
+>> +	msm_mux_qlink0_enable,
+>> +	msm_mux_qlink0_request,
+>> +	msm_mux_qlink0_wmss,
+>> +	msm_mux_qlink1_enable,
+>> +	msm_mux_qlink1_request,
+>> +	msm_mux_qlink1_wmss,
+>> +	msm_mux_qup00,
+>> +	msm_mux_qup01,
+>> +	msm_mux_qup02,
+>> +	msm_mux_qup10,
+>> +	msm_mux_qup11,
+>> +	msm_mux_qup12,
+>> +	msm_mux_qup13_f1,
+>> +	msm_mux_qup13_f2,
+>> +	msm_mux_qup14,
+>> +	msm_mux_rffe0_clk,
+>> +	msm_mux_rffe0_data,
+>> +	msm_mux_rffe1_clk,
+>> +	msm_mux_rffe1_data,
+>> +	msm_mux_rffe2_clk,
+>> +	msm_mux_rffe2_data,
+>> +	msm_mux_rffe3_clk,
+>> +	msm_mux_rffe3_data,
+>> +	msm_mux_rffe4_clk,
+>> +	msm_mux_rffe4_data,
+>> +	msm_mux_sd_write,
+>> +	msm_mux_sdc1_tb,
+>> +	msm_mux_sdc2_tb,
+>> +	msm_mux_sp_cmu,
+>> +	msm_mux_tgu_ch0,
+>> +	msm_mux_tgu_ch1,
+>> +	msm_mux_tgu_ch2,
+>> +	msm_mux_tgu_ch3,
+>> +	msm_mux_tsense_pwm1,
+>> +	msm_mux_tsense_pwm2,
+>> +	msm_mux_uim1_clk,
+>> +	msm_mux_uim1_data,
+>> +	msm_mux_uim1_present,
+>> +	msm_mux_uim1_reset,
+> maybe even uim1_* into uim1?
+
+Not sure about these ones though..
+
+
+>
+>> +	msm_mux_uim2_clk,
+>> +	msm_mux_uim2_data,
+>> +	msm_mux_uim2_present,
+>> +	msm_mux_uim2_reset,
+> .. and uim2?
+
+Ditto
+
+
+>> +	msm_mux_usb_phy,
+>> +	msm_mux_vfr_1,
+>> +	msm_mux_vsense_trigger,
+>> +	msm_mux_wlan1_adc0,
+>> +	msm_mux_wlan1_adc1,
+>> +	msm_mux_wlan2_adc0,
+>> +	msm_mux_wlan2_adc1,
+>> +	msm_mux__,
+>> +};
+>> +
+>>
+> [SNIP]
+>> +
+>> +static const struct msm_pinctrl_soc_data sm6350_pinctrl = {
+>> +	.pins = sm6350_pins,
+>> +	.npins = ARRAY_SIZE(sm6350_pins),
+>> +	.functions = sm6350_functions,
+>> +	.nfunctions = ARRAY_SIZE(sm6350_functions),
+>> +	.groups = sm6350_groups,
+>> +	.ngroups = ARRAY_SIZE(sm6350_groups),
+>> +	.ngpios = 157,
+>> +	.wakeirq_map = sm6350_pdc_map,
+>> +	.nwakeirq_map = ARRAY_SIZE(sm6350_pdc_map),
+>> +	.wakeirq_dual_edge_errata = true,
+>> +};
+>> +
+>> +static int sm6350_pinctrl_probe(struct platform_device *pdev)
+>> +{
+>> +	return msm_pinctrl_probe(pdev, &sm6350_pinctrl);
+>> +}
+>> +
+>> +static const struct of_device_id sm6350_pinctrl_of_match[] = {
+>> +	{ .compatible = "qcom,sm6350-tlmm", },
+>> +	{ },
+> No need for a trailing comma here ;)
+
+Heh, true
+
+
+>
+>> +};
+>> +
+>> +static struct platform_driver sm6350_pinctrl_driver = {
+>> +	.driver = {
+>> +		.name = "sm6350-pinctrl",
+>> +		.of_match_table = sm6350_pinctrl_of_match,
+>> +	},
+>> +	.probe = sm6350_pinctrl_probe,
+>> +	.remove = msm_pinctrl_remove,
+>> +};
+>> +
+>> +static int __init sm6350_pinctrl_init(void)
+>> +{
+>> +	return platform_driver_register(&sm6350_pinctrl_driver);
+>> +}
+>> +arch_initcall(sm6350_pinctrl_init);
+>> +
+>> +static void __exit sm6350_pinctrl_exit(void)
+>> +{
+>> +	platform_driver_unregister(&sm6350_pinctrl_driver);
+>> +}
+>> +module_exit(sm6350_pinctrl_exit);
+>> +
+>> +MODULE_DESCRIPTION("QTI sm6350 pinctrl driver");
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_DEVICE_TABLE(of, sm6350_pinctrl_of_match);
+> Some/most(?) newer drivers also use the name tlmm instead of pinctrl in the 
+> function names and in the .name of the driver.
+
+I can do the same for consistency.
+
+
+Konrad
