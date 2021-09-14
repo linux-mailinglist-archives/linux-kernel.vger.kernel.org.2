@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA5A40B867
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739D440B868
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhINTy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233142AbhINTy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:54:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49596 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232552AbhINTy4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Sep 2021 15:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhINTyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:54:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3760161108;
-        Tue, 14 Sep 2021 19:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631649218;
-        bh=th9TFOXsR06Xg/2ttcv1rjgy5eK+72XXt8aYRu+bByo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J5M0TLTr0U8YWN17ZphgSgOsr2LkfGc/XojytM3rF1QIuC2MWJk+hTrgoPUij63Tf
-         ZbK1iGOjiaztEHrnL5vad2ePLBAKUcN1kbiRKDdllueg705sx3t9CQPF/dksuWcCpF
-         zlj9V/fW3WAvq5nZxn6+YWn1IPxkJ4ru23CZmt8YAU/PZ03YdtlWMiMmoghpuNkSeh
-         S4NZsiBS+u+8Wx1VRDVaVJMazZM2ZRgiyu6L77M8++T3suP5qVHK3rnjA5DQCkChLN
-         18yNPa2S3CWiv3K22BWh1xIG6nTmWleS/yUu/XLKdD/bCeditfV4GkDlflsqU1n3KB
-         /VfLJbmib9UcA==
-Date:   Tue, 14 Sep 2021 12:53:31 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Matthew Auld <matthew.auld@intel.com>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH 0/3] drm/i915: Enable -Wsometimes-uninitialized
-Message-ID: <YUD9u88IGvdZ7MqW@archlinux-ax161>
-References: <20210824225427.2065517-1-nathan@kernel.org>
- <YT+QmKyKCdotTcqA@archlinux-ax161>
- <87wnnj13t5.fsf@intel.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631649218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dkmQm8W6bvbG86Wt4h4OqHW+/RRUFwTqElupwuosMGw=;
+        b=QSUOfjXgROxrJ6QbPez4RTDfcz2IZfZEUz0MIme2TT8xt9X44VTyxWSKtYcaGAoAh8slmx
+        nkOavWcHj9npvNDoR7gIpN5IpA9+5nncvjr2eBuirnOwFKpyPZuhReykc8jnAMsZJwVa6+
+        rg+0thLsgol+PiH7+WnbLPmGqORTI8M=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-210-CxhpntGENTiypthuDNBDmQ-1; Tue, 14 Sep 2021 15:53:36 -0400
+X-MC-Unique: CxhpntGENTiypthuDNBDmQ-1
+Received: by mail-ej1-f72.google.com with SMTP id q15-20020a17090622cf00b005c42d287e6aso175892eja.18
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:53:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=dkmQm8W6bvbG86Wt4h4OqHW+/RRUFwTqElupwuosMGw=;
+        b=jbDYKIkIhuxF4qSOifvKdbhpOdaLWysziY2U3ajz8SSt+PdFvyYckmO9sqAIvQNtVV
+         si69x9Y5UvgP6ZgUY2bwhSlfpNk48Z1DDChCtIotjqMMmNHDMa2tx3ZKVtCcUY73JXzw
+         L+lYIKXlJIC/ykNMEnq14Wu427IPJZwjj8YgqHr/MiJBPj07clJHwAmsnmf9hCKCy0zY
+         gylFj2Dl2mZbpsIX3hheTEE0FMuJMt9qqgeYE+sW0GkagLvKikYJcgwUO5xpT7GclCRm
+         ddA6ZgD6r8d8EmObHIRn5prYkCN/KB8HRe+Fy8D2ezmmxFr1vD8KxF75KyUQRkny+v9X
+         BvHQ==
+X-Gm-Message-State: AOAM530UcEdleosbX4O7g03ic6Qz+WZ7mRPswVOJHs8KLugBVJhTO1vd
+        G0zLLAOd4rbgIYBmruIz25JqyLDUJYnB1H3woGHWLzH0QeuVG0dfiJVunlJx0bvdNMhrjm3kyw5
+        9ZJ6BbMpkH79wizU0I+4ROApR
+X-Received: by 2002:a17:906:31ca:: with SMTP id f10mr20060761ejf.73.1631649215719;
+        Tue, 14 Sep 2021 12:53:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxM/UIv4EzPb+rSyq8EubqXE2rc9ZXZPKXWi2tuR39YigTtmGpcgA9b+50W9qR7lb08qZkbcg==
+X-Received: by 2002:a17:906:31ca:: with SMTP id f10mr20060745ejf.73.1631649215382;
+        Tue, 14 Sep 2021 12:53:35 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id gc19sm2566172ejb.35.2021.09.14.12.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 12:53:34 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 21A8118033D; Tue, 14 Sep 2021 21:53:34 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Sujith Manoharan <c_manoha@qca.qualcomm.com>,
+        ath9k-devel@qca.qualcomm.com
+Cc:     linux-wireless@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "John W . Linville" <linville@tuxdriver.com>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] ath9k: interrupt fixes on queue reset
+In-Reply-To: <20210914192515.9273-1-linus.luessing@c0d3.blue>
+References: <20210914192515.9273-1-linus.luessing@c0d3.blue>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 14 Sep 2021 21:53:34 +0200
+Message-ID: <87a6kf6iip.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnnj13t5.fsf@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:10:14PM +0300, Jani Nikula wrote:
-> On Mon, 13 Sep 2021, Nathan Chancellor <nathan@kernel.org> wrote:
-> > On Tue, Aug 24, 2021 at 03:54:24PM -0700, Nathan Chancellor wrote:
-> >> Commit 46e2068081e9 ("drm/i915: Disable some extra clang warnings")
-> >> disabled -Wsometimes-uninitialized as noisy but there have been a few
-> >> fixes to clang that make the false positive rate fairly low so it should
-> >> be enabled to help catch obvious mistakes. The first two patches fix
-> >> revent instances of this warning then enables it for i915 like the rest
-> >> of the tree.
-> >> 
-> >> Cheers,
-> >> Nathan
-> >> 
-> >> Nathan Chancellor (3):
-> >>   drm/i915/selftests: Do not use import_obj uninitialized
-> >>   drm/i915/selftests: Always initialize err in
-> >>     igt_dmabuf_import_same_driver_lmem()
-> >>   drm/i915: Enable -Wsometimes-uninitialized
-> >> 
-> >>  drivers/gpu/drm/i915/Makefile                        | 1 -
-> >>  drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 7 ++++---
-> >>  2 files changed, 4 insertions(+), 4 deletions(-)
-> >> 
-> >> 
-> >> base-commit: fb43ebc83e069625cfeeb2490efc3ffa0013bfa4
-> >> -- 
-> >> 2.33.0
-> >> 
-> >> 
-> >
-> > Ping, could this be picked up for an -rc as these are very clearly bugs?
-> 
-> Thanks for the patches and review. Pushed to drm-intel-gt-next and
-> cherry-picked to drm-intel-fixes, header to -rc2.
+Linus L=C3=BCssing <linus.luessing@c0d3.blue> writes:
 
-Thanks a lot!
+> Hi,
+>
+> The following are two patches for ath9k to fix a potential interrupt
+> storm (PATCH 2/3) and to fix potentially resetting the wifi chip while
+> its interrupts were accidentally reenabled (PATCH 3/3).
 
-Cheers,
-Nathan
+Uhh, interesting - nice debugging work! What's the user-level symptom of
+this? I.e., when this triggers does the device just appear to hang, or
+does it cause reboots, or?
+
+-Toke
+
