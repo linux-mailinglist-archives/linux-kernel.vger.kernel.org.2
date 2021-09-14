@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DA140B286
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D4340B28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234013AbhINPIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:08:43 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:48078 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233858AbhINPIm (ORCPT
+        id S234180AbhINPJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233617AbhINPJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:08:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1631632045; x=1663168045;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=WbzsE5CPbx1OvZmlMiX5JgPDXQPhCtNDGTNE8+SJ0yo=;
-  b=FJ16zqQlLr+gxmofsoBVECzLdX1Yix6RkN9PtBolDLcWmUhlF4d7EE1U
-   kz+k1Fnyk+VMxzYK6iiYJV4HLN2SD56+ynIunvupZC/yO85g+2ZqFPNfd
-   TwJgnHYwxhRPyaBvODSf7g5tpVkl1WVxdAghGKncj1bViFpivUsPb81iQ
-   l9PDGhVCn9LLC4eBb/nT16+nQ+ZaXQ1H/uAWBg1YcVFQO8fnqLVHm9yMZ
-   g6S61l4qSFVoItdfDQ58GSvcsRS7kKsaOvm00+gpluxAZIoAUWdMcMTun
-   6eA367z4tBeNdc7cLT91X1lBmMoyZRzJqmcLI0kC0tUIBkt6I8MytTijU
-   Q==;
-IronPort-SDR: aQqZBjit+kf9DbUG/qm9V5G5vf9iiAD2HVbEQp5rNcIyjSMP3Aj7aLet5INKqcSLEH/gQOf6tj
- wv1OZ8beZG7/S1a54PAX7ROXbvE6V3GFuKyVq+mVTpH6eI8OQMSvqCVa9XJLSio0XmT9APn7dM
- GAN+6uRvVuWldjkBp5xJvQDfww5k8D0HOhS2S0hbAYRotXdE/7+iAtdplMhm2uln+hyrS4sbvd
- +yxcOFgMiXhKswuH6Ga7gFGnrnrUgR4YVLOW1w4zmfbtGfi2i+4g18nT4uKE937cZYROtwCNn7
- W2BmTJezVf7v3Q2YPVgXA3mO
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="144052717"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Sep 2021 08:07:24 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 14 Sep 2021 08:07:24 -0700
-Received: from [10.171.246.26] (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Tue, 14 Sep 2021 08:07:23 -0700
-Subject: Re: [PATCH] ARM: dts: at91: sama7g5: add chipid
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210908094329.182477-1-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <50422bf9-01d5-3d11-ada1-f2f7ee155aba@microchip.com>
-Date:   Tue, 14 Sep 2021 17:07:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 14 Sep 2021 11:09:31 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFC6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:08:13 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id x6so20754995wrv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CRIlQg+upo5hP8weBxz0PNmeSI1bR0RemM+MM+p+Is0=;
+        b=WIPErERmvzG8kE+ee3gXEEaoYRJv5QdAd6mEUXBL1KiRLiBqfHT99QafcJEsV5HQRE
+         EyxBpxCwwlSJTmhJLueVm9BDnrqkSpOWCvzem0bbVGlCwj6Uk6gNuaiJG5UGDNpuS5mL
+         oZbVBZH/yTYcYVqsLKoffx7F5Wg3XXotg/OwQRSsRZ+739oVRz2CE+sMMnWOwgWvsTPS
+         G5JUUr5Rs22DDBvIyc/XSk9Q2u1E3IZKdoY+s9nbedyu6asgEULeAijPb918sjmFwaVn
+         6OFA+zvQRmxBZSYZkhkmjVp5xtk87vDER4PZ9tOpQ132GQLmgBlAXm59c8vx3ohTPvWW
+         ZNZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CRIlQg+upo5hP8weBxz0PNmeSI1bR0RemM+MM+p+Is0=;
+        b=JBy+cIvXjbW2yZuCPjBa2p5LFpT1ODZPcffRCixvHLdBvlXvCigndZtnPstInzWoN4
+         jPlgM97XVPADzqnuvzuoYZjMWJ187XTWMu/n5SdIEr0KOxbin6AMl0QaLna+8OgNDgx+
+         P+dScMWEYTdROP7BW7JH5DMW05hJoHauc+4gETZPpF+SQVn37wszvFPwFuI4pVcbPZgF
+         oiF/GjsnNalGXo3jAyDoMafwIgG71Icbb/HYHqYAlbhM8bdUzYEznRs43toY8DnQpD3J
+         12BrujpQaURwdC/3UFVZWJkukVL0UzQG7PCVOiNnuwDwvK8ZdAAEPvYYbWVsilxibJ82
+         0AoQ==
+X-Gm-Message-State: AOAM531dzOHlUbZRvlELsBvlmbdvVROEaE1/3VCkAjUeEHteEf3FY1df
+        EwEYp0kLaBTbYIINNCNf1g==
+X-Google-Smtp-Source: ABdhPJxFKWizTvgkbxISpyz7IpsBM8Sxby+VDRXDNDfqeOTD9NprIar1qRNoqr847/8XwV7/VlJmrA==
+X-Received: by 2002:a5d:6ca2:: with SMTP id a2mr19329229wra.291.1631632092081;
+        Tue, 14 Sep 2021 08:08:12 -0700 (PDT)
+Received: from alex-ThinkPad-E480.. ([2a02:810b:f40:4200:b79e:d9e1:c821:37f2])
+        by smtp.googlemail.com with ESMTPSA id k1sm10589441wrz.61.2021.09.14.08.08.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 08:08:11 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andy.yan@rock-chips.com>
+Cc:     Jonathan McDowell <noodles@earth.li>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] drm/rockchip: handle non-platform devices in rockchip_drm_endpoint_is_subdriver
+Date:   Tue, 14 Sep 2021 17:07:56 +0200
+Message-Id: <20210914150756.85190-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210908094329.182477-1-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2021 at 11:43, Claudiu Beznea wrote:
-> Add chipid node for sama7g5.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+As discussed at [1] rockchip_drm_endpoint_is_subdriver will currently always
+return -ENODEV for non-platform-devices (e.g. external i2c bridges), what
+makes them never being considered in rockchip_rgb_init.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+As suggested at [1] this additionally adds a of_device_is_available for
+the node found, which will work for both platform and non-platform devices.
+Also we can return early for non-platform-devices if they are enabled,
+as rockchip_sub_drivers contains exclusively platform-devices.
 
-> ---
-> 
-> Hi Nicolas,
-> 
-> This applies clean on top of series with title "ARM: at91: add new nodes
-> to DT and fix for PM".
+[1] https://lore.kernel.org/all/20210316182753.GA25685@earth.li/
 
-I think it can go in at91-fixes for 5.15 as it integrates nicely with 
-the basic IP that we need enabled on this new SoC.
+Suggested-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Best regards,
-   Nicolas
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+index bfba9793d238..81a5ec30ef4f 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+@@ -275,10 +275,17 @@ int rockchip_drm_endpoint_is_subdriver(struct device_node *ep)
+ 		return -ENODEV;
+ 
+ 	/* status disabled will prevent creation of platform-devices */
++	if (!of_device_is_available(node)) {
++		of_node_put(node);
++		return -ENODEV;
++	}
++
+ 	pdev = of_find_device_by_node(node);
+ 	of_node_put(node);
++
++	/* enabled non-platform-devices can immediately return here */
+ 	if (!pdev)
+-		return -ENODEV;
++		return false;
+ 
+ 	/*
+ 	 * All rockchip subdrivers have probed at this point, so
 
-> 
->   arch/arm/boot/dts/sama7g5.dtsi | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
-> index e50806cf7660..6c58c151c6d9 100644
-> --- a/arch/arm/boot/dts/sama7g5.dtsi
-> +++ b/arch/arm/boot/dts/sama7g5.dtsi
-> @@ -159,6 +159,11 @@ ps_wdt: watchdog@e001d180 {
->   			clocks = <&clk32k 0>;
->   		};
->   
-> +		chipid@e0020000 {
-> +			compatible = "microchip,sama7g5-chipid";
-> +			reg = <0xe0020000 0x8>;
-> +		};
-> +
->   		sdmmc0: mmc@e1204000 {
->   			compatible = "microchip,sama7g5-sdhci", "microchip,sam9x60-sdhci";
->   			reg = <0xe1204000 0x4000>;
-> 
-
-
+base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
 -- 
-Nicolas Ferre
+2.30.2
+
