@@ -2,130 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9942140AAFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2096340AAFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhINJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:36:56 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52971 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231467AbhINJgt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:36:49 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id C7EF62B012CF;
-        Tue, 14 Sep 2021 05:35:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 14 Sep 2021 05:35:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=KZiZWdvJgbm8A
-        O9dULU9dYb4KpiNbFD2SCZXSHEueLQ=; b=ajC70K3lqeOyYZmSGxc4Lt6XcQohF
-        vEeMGVa582IsocEEMobTkI3uc8XYsxtH4wOHznN+SZeFDn/T9H3NH7vUc3tnOQln
-        9StAP8PkUcMgJ9MKX5hPwBvaBx1EeIdae/9sg1zisOvutrqJ5D9eWhivq/Q/9+qj
-        ZnA9KOEJoPldXjEITevNfz3t2pQaWwp+Y+3+qDqPqtJa2borAKPw+RtmjxwrG5ET
-        aiPDbhsFEsYRaAPERU68NiBhYlI8ZkGq8BO679I7nGzTSEyymW2a45lm/bBLNIQx
-        s7R4TEScqxATE3xecZ/MgMCy37cy1clEJKc7qo2TUW0gnRKOENs7PWVzg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=KZiZWdvJgbm8AO9dULU9dYb4KpiNbFD2SCZXSHEueLQ=; b=Riu3p86K
-        KWS3saB5R0tzxx+3YXDroSZYqfXkHITrlTH4CLHxt+wFndfqFJe5r8w/UPmiyYI1
-        26vvnpSm1rysNhL0esg4EALs0xfMLj7FqhY/yHGkQiSCfNEzAoM7rpDYAgsQt7JM
-        52U68i75oG124puVtSof+dR68oIOwHKHoDPQ1XIvtyHN+PLaLGzv73HIwAoohK4m
-        p2rW8WW1XD0QcfPOV3Bx9CVK3AbTK9EVGe2iSxn37MTgEoDDcnvMMKTM5hlCvM7G
-        eBe4pTjBCysPQeykOcfX01+nOtdfeDyKw/VDs5yLmmGZilBdxOw3pWN0o5lBjk7g
-        tGk/ePK+XKK5Ig==
-X-ME-Sender: <xms:4mxAYeoEoX8ftxADMukZawuupQUOb8Ruityvyx9NJleXOS0VUwO_wQ>
-    <xme:4mxAYcpvp73chl79V2EUKbbXQeA0SPuZ-NmuqwqE1cuMyX7UtehoxQZTzS0NaTF88
-    oAtnFaHNWtzjeNL7Vk>
-X-ME-Received: <xmr:4mxAYTNtUmCyM5MDgcOSpZehkdRyIcFmrT8y2csXfOKcVENjI0U4P-HxPt48h5A0hg9bv-6SbnkW3uqtkQl4a3fOBZpOKe6UqZix>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:4mxAYd68GztJGyZDn412B-rtsxy_7qrKkGkJ9rCKrwkuKx9-SqauuQ>
-    <xmx:4mxAYd6iavMZuXWCEYJIoJ6YS5bFMB6VeytozvEmB-3PQ896J1KAgA>
-    <xmx:4mxAYdhoSZx0FsX9geo33a_YXjpjArIc6_zdDTriHtXCoS1Xq5NZww>
-    <xmx:4mxAYRrnpdEEynnxTJ3fmIk_WxAgJT3NDKhmP35PhagtIb4XTXm019f9Ta4>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 05:35:29 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-clk@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Emma Anholt <emma@anholt.net>, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Dom Cobley <popcornmix@gmail.com>
-Subject: [PATCH v2 3/3] drm/vc4: hvs: Convert to the new clock request API
-Date:   Tue, 14 Sep 2021 11:35:15 +0200
-Message-Id: <20210914093515.260031-4-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210914093515.260031-1-maxime@cerno.tech>
-References: <20210914093515.260031-1-maxime@cerno.tech>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231683AbhINJhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:37:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231420AbhINJgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:36:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAD8C610A2;
+        Tue, 14 Sep 2021 09:35:38 +0000 (UTC)
+Received: from [198.52.44.129] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mQ4qm-00AgPZ-3F; Tue, 14 Sep 2021 10:35:36 +0100
+Date:   Tue, 14 Sep 2021 10:35:32 +0100
+Message-ID: <87y27zbiu3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Sven Peter" <sven@svenpeter.dev>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <kettenis@openbsd.org>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Robin Murphy" <Robin.Murphy@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 10/10] PCI: apple: Configure RID to SID mapper on device addition
+In-Reply-To: <b502383a-fe68-498a-b714-7832d3c8703e@www.fastmail.com>
+References: <20210913182550.264165-1-maz@kernel.org>
+        <20210913182550.264165-11-maz@kernel.org>
+        <b502383a-fe68-498a-b714-7832d3c8703e@www.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 198.52.44.129
+X-SA-Exim-Rcpt-To: sven@svenpeter.dev, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+On Mon, 13 Sep 2021 21:45:13 +0100,
+"Sven Peter" <sven@svenpeter.dev> wrote:
+> 
+> 
+> 
+> On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
+> > The Apple PCIe controller doesn't directly feed the endpoint's
+> > Requester ID to the IOMMU (DART), but instead maps RIDs onto
+> > Stream IDs (SIDs). The DART and the PCIe controller must thus
+> > agree on the SIDs that are used for translation (by using
+> > the 'iommu-map' property).
+> > 
+> > For this purpose, parse the 'iommu-map' property each time a
+> > device gets added, and use the resulting translation to configure
+> > the PCIe RID-to-SID mapper. Similarily, remove the translation
+> > if/when the device gets removed.
+> > 
+> > This is all driven from a bus notifier which gets registered at
+> > probe time. Hopefully this is the only PCI controller driver
+> > in the whole system.
+> > 
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > ---
+> >  drivers/pci/controller/pcie-apple.c | 158 +++++++++++++++++++++++++++-
+> >  1 file changed, 156 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/pcie-apple.c 
+> > b/drivers/pci/controller/pcie-apple.c
+> > index 76344223245d..68d71eabe708 100644
+> > --- a/drivers/pci/controller/pcie-apple.c
+> > +++ b/drivers/pci/controller/pcie-apple.c
+> > @@ -23,8 +23,10 @@
+> >  #include <linux/iopoll.h>
+> >  #include <linux/irqchip/chained_irq.h>
+> >  #include <linux/irqdomain.h>
+> > +#include <linux/list.h>
+> >  #include <linux/module.h>
+> >  #include <linux/msi.h>
+> > +#include <linux/notifier.h>
+> >  #include <linux/of_irq.h>
+> >  #include <linux/pci-ecam.h>
+> >  
+> > @@ -116,6 +118,8 @@
+> >  #define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
+> >  #define PORT_PREFMEM_ENABLE		0x00994
+> >  
+> > +#define MAX_RID2SID			64
+> 
+> Do these actually have 64 slots? I thought that was only for
+> the Thunderbolt controllers and that these only had 16.
 
-The new clock request API allows us to increase the rate of the
-core clock as required during mode set while decreasing it when
-we're done, resulting in a better power-efficiency.
+You are indeed right, and I blindly used the limit used in the
+Correlium driver. Using entries from 16 onward result in a non booting
+system. The registers do not fault though, and simply ignore writes. I
+came up with an simple fix for this, see below.
 
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_kms.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> I never checked it myself though and it doesn't make much
+> of a difference for now since only four different RIDs will
+> ever be connected anyway.
 
-diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
-index f0b3e4cf5bce..3550ae9f782e 100644
---- a/drivers/gpu/drm/vc4/vc4_kms.c
-+++ b/drivers/gpu/drm/vc4/vc4_kms.c
-@@ -341,6 +341,7 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 	struct drm_crtc_state *new_crtc_state;
- 	struct drm_crtc *crtc;
- 	struct vc4_hvs_state *old_hvs_state;
-+	struct clk_request *core_req;
- 	int i;
+Four? I guess the radios expose more than a single RID?
+
+Thanks,
+
+	M.
+
+diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+index 68d71eabe708..ec9e7abd2aca 100644
+--- a/drivers/pci/controller/pcie-apple.c
++++ b/drivers/pci/controller/pcie-apple.c
+@@ -148,6 +148,7 @@ struct apple_pcie_port {
+ 	struct irq_domain	*domain;
+ 	struct list_head	entry;
+ 	DECLARE_BITMAP(		sid_map, MAX_RID2SID);
++	int			sid_map_sz;
+ 	int			idx;
+ };
  
- 	for_each_new_crtc_in_state(state, crtc, new_crtc_state, i) {
-@@ -354,7 +355,7 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 	}
- 
- 	if (vc4->hvs->hvs5)
--		clk_set_min_rate(hvs->core_clk, 500000000);
-+		core_req = clk_request_start(hvs->core_clk, 500000000);
- 
- 	old_hvs_state = vc4_hvs_get_old_global_state(state);
- 	if (!old_hvs_state)
-@@ -399,7 +400,7 @@ static void vc4_atomic_commit_tail(struct drm_atomic_state *state)
- 	drm_atomic_helper_cleanup_planes(dev, state);
- 
- 	if (vc4->hvs->hvs5)
--		clk_set_min_rate(hvs->core_clk, 0);
-+		clk_request_done(core_req);
+@@ -495,12 +496,12 @@ static int apple_pcie_setup_refclk(struct apple_pcie *pcie,
+ 	return 0;
  }
  
- static int vc4_atomic_commit_setup(struct drm_atomic_state *state)
--- 
-2.31.1
+-static void apple_pcie_rid2sid_write(struct apple_pcie_port *port,
++static u32 apple_pcie_rid2sid_write(struct apple_pcie_port *port,
+ 				     int idx, u32 val)
+ {
+ 	writel_relaxed(val, port->base + PORT_RID2SID(idx));
+ 	/* Read back to ensure completion of the write */
+-	(void)readl_relaxed(port->base + PORT_RID2SID(idx));
++	return readl_relaxed(port->base + PORT_RID2SID(idx));
+ }
+ 
+ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+@@ -557,9 +558,16 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Reset all RID/SID mappings */
+-	for (i = 0; i < MAX_RID2SID; i++)
++	/* Reset all RID/SID mappings, and check for RAZ/WI registers */
++	for (i = 0; i < MAX_RID2SID; i++) {
++		if (apple_pcie_rid2sid_write(port, i, 0xbad1d) != 0xbad1d)
++			break;
+ 		apple_pcie_rid2sid_write(port, i, 0);
++	}
++
++	dev_dbg(pcie->dev, "%pOF: %d RID/SID mapping entries\n", np, i);
++
++	port->sid_map_sz = i;
+ 
+ 	list_add_tail(&port->entry, &pcie->ports);
+ 	init_completion(&pcie->event);
+@@ -667,7 +675,7 @@ static int apple_pcie_add_device(struct pci_dev *pdev)
+ 		return err;
+ 
+ 	mutex_lock(&port->pcie->lock);
+-	sid_idx = bitmap_find_free_region(port->sid_map, MAX_RID2SID, 0);
++	sid_idx = bitmap_find_free_region(port->sid_map, port->sid_map_sz, 0);
+ 	mutex_unlock(&port->pcie->lock);
+ 
+ 	if (sid_idx < 0)
+@@ -696,7 +704,7 @@ static void apple_pcie_release_device(struct pci_dev *pdev)
+ 
+ 	mutex_lock(&port->pcie->lock);
+ 
+-	for_each_set_bit(idx, port->sid_map, MAX_RID2SID) {
++	for_each_set_bit(idx, port->sid_map, port->sid_map_sz) {
+ 		u32 val;
+ 
+ 		val = readl_relaxed(port->base + PORT_RID2SID(idx));
 
+-- 
+Without deviation from the norm, progress is not possible.
