@@ -2,96 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087A340AB70
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF3940AB72
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhINKKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhINKKM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:10:12 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FB8C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:08:53 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id w8so12217930pgf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8xfW5n5lGYHVjHYEbwTg272CCVO8ZvflsK9NBrpkrL8=;
-        b=SnNwn7UQ8QhZcGeDD0myjSpJ7z0VOD8lcXL+A4oGbNlWV0dzX/atBgXx/r4Glvvkbs
-         fYSR6NP4moNEEX24Ry62rkXiJuDpLyPiD6gOqzoNKwpCRh+piuvmZYBKc51uOLIuT1cG
-         S9vPVbBmBY2XvAB2chVphNaTjYMF2pMMmgYrs9DGMHcnGOu5AnU602gPxeMmXBjMCk1H
-         NdZHpRk17CLU7mQ+1Eq2AfLAYdS7wq+S8xpQ7cQgppsLpTNRLF4Mo5ZZJewjZDLvu/tA
-         EbIO+i2m4o/IO9ArY6gXKXstApZ/+bcDLL34I/uavVWnYCTh67rNUCOWez8oGU4fjvPi
-         hhtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8xfW5n5lGYHVjHYEbwTg272CCVO8ZvflsK9NBrpkrL8=;
-        b=izOlCjJ5kz8dvwuHUUdIY0ZjuHaavJvva7fzQpep/ZPWD9I3gbM/N2vih8GT5OPcdm
-         iZEA2pcmbiOP7UY2nzNbt8wuzc8LaG9jDr5s+wMfoHNV3mvf3lq2mE334mQcyT9EZjeq
-         tTR8pnH5uFPrT+Hte0N4Xpkjy58K94zHojsdHt+F5Z+Kf1Agz6BWxgB/etWIUogFZDtB
-         gC9r8O8n0S+UPzCMmvHR4JPhqjOhW8sMLOlns36C/9EJZQp05SYcuI9WSzu2ouNi4HJQ
-         OwBSZxZ4YU3Q4A7XwqyqjLKmPI2YANknnZWwhcOc6ZfojMCyDEDKjbDAPqsPHpOYiIYT
-         SPJw==
-X-Gm-Message-State: AOAM532urCeB1S2HGm3vZ2cW/GUkiAeTU9JtYfOHWSJAXr9Ci+lwcarT
-        eQjlbuPi6aEDMPSs0CYvsaWDpw==
-X-Google-Smtp-Source: ABdhPJyxxLqEAQTWjjzZxP89GKxIT19IHBKBS3aAHfouriHBRsZzMZaVmcusJD7X03+K1uKBye267g==
-X-Received: by 2002:a63:7045:: with SMTP id a5mr14635597pgn.404.1631614132722;
-        Tue, 14 Sep 2021 03:08:52 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([204.124.181.224])
-        by smtp.gmail.com with ESMTPSA id g9sm8012220pfh.13.2021.09.14.03.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 03:08:52 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 18:08:47 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] coresight: Update comments for removing
- cs_etm_find_snapshot()
-Message-ID: <20210914100847.GD1538480@leoy-ThinkPad-X240s>
-References: <20210912125748.2816606-1-leo.yan@linaro.org>
- <20210912125748.2816606-3-leo.yan@linaro.org>
- <f6700a4d-80e1-cd53-232c-0e26f7179d1b@arm.com>
+        id S229968AbhINKL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:11:26 -0400
+Received: from relay.sw.ru ([185.231.240.75]:60568 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229969AbhINKLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:11:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=87Usn2aUyaGukdvTQyAtkwgJSSvFWpDAI/0/mAUhfC4=; b=Eri6QZEdGzXIi6+R334
+        MJpM9u15Zah1NXvVDf73rRVgwcCQIRy7ETslE/3Nnh1JPqIagnOR3jsiiXGO51H6WySfgswpGti8d
+        ewNeU1Hl5U0GGI1TjYT+IcLjNRElnHlQr6VYemDwhb4E5pI/L2xEBgk51AuwEbgsEHQ+vVIlWaE=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mQ5O9-001wA6-K9; Tue, 14 Sep 2021 13:10:05 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH memcg v2] memcg: prohibit unconditional exceeding the limit of
+ dying tasks
+To:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel@openvz.org
+References: <bab6c1d2-38d8-9098-206f-54894f9871b6@virtuozzo.com>
+Message-ID: <817a6ce2-4da9-72ac-c5b9-edd398d28a15@virtuozzo.com>
+Date:   Tue, 14 Sep 2021 13:10:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6700a4d-80e1-cd53-232c-0e26f7179d1b@arm.com>
+In-Reply-To: <bab6c1d2-38d8-9098-206f-54894f9871b6@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:27:26AM +0100, Suzuki Kuruppassery Poulose wrote:
+The kernel currently allows dying tasks to exceed the memcg limits.
+The allocation is expected to be the last one and the occupied memory
+will be freed soon.
+This is not always true because it can be part of the huge vmalloc
+allocation. Allowed once, they will repeat over and over again.
+Moreover lifetime of the allocated object can differ from the lifetime
+of the dying task.
+Multiple such allocations running concurrently can not only overuse
+the memcg limit, but can lead to a global out of memory and,
+in the worst case, cause the host to panic.
 
-[...]
+This patch removes checks forced exceed of the memcg limit for dying
+tasks. Also it breaks endless loop for tasks bypassed by the oom killer.
+In addition, it renames should_force_charge() helper to task_is_dying()
+because now its use do not lead to the forced charge.
 
-> > diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> > index d23c7690f29a..ce14eb83925c 100644
-> > --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> > +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> > @@ -1573,9 +1573,8 @@ tmc_update_etr_buffer(struct coresight_device *csdev,
-> >   	/*
-> >   	 * In snapshot mode we simply increment the head by the number of byte
-> > -	 * that were written.  User space function  cs_etm_find_snapshot() will
-> > -	 * figure out how many bytes to get from the AUX buffer based on the
-> > -	 * position of the head.
-> > +	 * that were written.  User space will figure out how many bytes to get
-> > +	 * from the AUX buffer based on the position of the head.
-> >   	 */
-> >   	if (etr_perf->snapshot)
-> >   		handle->head += size;
-> > 
-> 
-> 
-> Thanks for the revised patch, I have queued both the patches.
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ mm/memcontrol.c | 27 ++++++++-------------------
+ 1 file changed, 8 insertions(+), 19 deletions(-)
 
-Cool, and thanks Suzuki!
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 389b5766e74f..707f6640edda 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -234,7 +234,7 @@ enum res_type {
+ 	     iter != NULL;				\
+ 	     iter = mem_cgroup_iter(NULL, iter, NULL))
+ 
+-static inline bool should_force_charge(void)
++static inline bool task_is_dying(void)
+ {
+ 	return tsk_is_oom_victim(current) || fatal_signal_pending(current) ||
+ 		(current->flags & PF_EXITING);
+@@ -1607,7 +1607,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * A few threads which were not waiting at mutex_lock_killable() can
+ 	 * fail to bail out. Therefore, check again after holding oom_lock.
+ 	 */
+-	ret = should_force_charge() || out_of_memory(&oc);
++	ret = task_is_dying() || out_of_memory(&oc);
+ 
+ unlock:
+ 	mutex_unlock(&oom_lock);
+@@ -2588,6 +2588,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	struct page_counter *counter;
+ 	enum oom_status oom_status;
+ 	unsigned long nr_reclaimed;
++	bool passed_oom = false;
+ 	bool may_swap = true;
+ 	bool drained = false;
+ 	unsigned long pflags;
+@@ -2622,15 +2623,6 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (gfp_mask & __GFP_ATOMIC)
+ 		goto force;
+ 
+-	/*
+-	 * Unlike in global OOM situations, memcg is not in a physical
+-	 * memory shortage.  Allow dying and OOM-killed tasks to
+-	 * bypass the last charges so that they can exit quickly and
+-	 * free their memory.
+-	 */
+-	if (unlikely(should_force_charge()))
+-		goto force;
+-
+ 	/*
+ 	 * Prevent unbounded recursion when reclaim operations need to
+ 	 * allocate memory. This might exceed the limits temporarily,
+@@ -2688,8 +2680,9 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+ 		goto nomem;
+ 
+-	if (fatal_signal_pending(current))
+-		goto force;
++	/* Avoid endless loop for tasks bypassed by the oom killer */
++	if (passed_oom && task_is_dying())
++		goto nomem;
+ 
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+@@ -2698,14 +2691,10 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 */
+ 	oom_status = mem_cgroup_oom(mem_over_limit, gfp_mask,
+ 		       get_order(nr_pages * PAGE_SIZE));
+-	switch (oom_status) {
+-	case OOM_SUCCESS:
++	if (oom_status == OOM_SUCCESS) {
++		passed_oom = true;
+ 		nr_retries = MAX_RECLAIM_RETRIES;
+ 		goto retry;
+-	case OOM_FAILED:
+-		goto force;
+-	default:
+-		goto nomem;
+ 	}
+ nomem:
+ 	if (!(gfp_mask & __GFP_NOFAIL))
+-- 
+2.31.1
+
