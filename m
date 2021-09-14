@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7083F40B5BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183FB40B5BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhINRMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S230207AbhINROi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbhINRMm (ORCPT
+        with ESMTP id S229517AbhINROh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:12:42 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A49C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:25 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id w4so25227463ljh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:25 -0700 (PDT)
+        Tue, 14 Sep 2021 13:14:37 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABFBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:13:19 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id z12so74593qvx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:13:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZT8P3mQS19BrQefv3EWE24TGiGm5rj3TjmzR3qpVXBE=;
-        b=R7/H7gDZMigDeE0/7mL3+Kht1Qq8uEhUZE8eVa7Zr8Sqp0Uiwp5ooulujxnj9DN26r
-         iXutHA2s1AR95Ie0uGO7kHklBl2AHrtx54ryEOSTh75NmQZElYFLohJYKbqTIG89cr3S
-         JaJUMhWPm4AfWjASiUMMoQ0NizfdQKNT4jYxkvLqSKHDqD+qKYnwntAQIdDoSLQXCb6W
-         HZdogmYivHX5NQ5UqfveQ01Mvsr0SQoqlqm5fhrEdfb7kxasv9mQeT8F0dP5E8xQLfya
-         ScbmThUzvRoKQSTNd8go1yGe8x+olw73/Xrj2sD/ic+NuiqDgF81lH+MIf/U49Wz/6rL
-         66Qw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bbnco7tVZttTiVHevv9Xt1I1fHW3axEITBc8rJrCa/w=;
+        b=Shvajud6QYbTM2sviB0SEQ32NJUKczdFWtfTdTp1RaEP506Xq0+3ue1NhbAOVLPO6y
+         9sgIQHT0vOx+9gNACsLxYqZdLQNes7cj2xJ/Km1kvUUCSPvcGIg06+5JR7UGVP1mIwJ0
+         FxrvUvBqsR4kEEdgpmlvuSXelgYxd/ZxrDLfyLQ/QQ5iMkk42xqcRfARqaSGV3JwKZrA
+         SEHieCwNBXwC2OduaVfaBxllg6eCH2eWPfNs2eCLDTHTqFJ3rA/AKPPq+nM9lRovpFdU
+         mhJe4LET28PvOYlKo283pRXT3v+g0SO0GQzNO1vB4w2np3DVvPf+Pmd80uPl7iCVBb8o
+         h7AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZT8P3mQS19BrQefv3EWE24TGiGm5rj3TjmzR3qpVXBE=;
-        b=DfgJjcOQJeVVQGAUka9dPXO4peSFOUswjrRUtLENcxkS2OeYy+8BfWTYiGWfLBb++s
-         2eEN5CpB3WyJx35KLPWDP4EdmAZVn/dzxVaMqp5VP4hcrGwxKY+MHtyPomnSg3261vlO
-         AzU1ceSFz+gnot91sgy7mbU5aRmYm5cbE+fWg+bOoAjoMAWJWCrogP5cJxXT1iAeUai4
-         i8g7DAG3eYR/9QyDp9PYrUv545Jbzodds2knZ+4t/iKY+ttc5l1cM/mxbUoqh81kt2Du
-         S+pZ4BjUoNX1mIlxcztt9pMxf38KxXPI1lNM3xoFlAeT+Y5U63qkYj68kWhmtlWmrAc0
-         +rtw==
-X-Gm-Message-State: AOAM531n/YLW7XoNq3REyj+NWEao1IkkG9bAG+z4UTeqRTatEAtG95vg
-        0ojAxhBUGr/a8e7/Z/v4g5FQBtlMrxWc8PQWy2VnjQ==
-X-Google-Smtp-Source: ABdhPJzbFGFCCGLaoraaVB4YLcpsXIXczCdDgluSLTvBSPzDSrdTaoBGMxoUjtGK6U6TnHPIhPELWTNCwL8e7mqTk/k=
-X-Received: by 2002:a05:651c:1209:: with SMTP id i9mr16692284lja.85.1631639483288;
- Tue, 14 Sep 2021 10:11:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bbnco7tVZttTiVHevv9Xt1I1fHW3axEITBc8rJrCa/w=;
+        b=2bE0qFtfyng0Zg99jhYgpQyHgE0ssn0lOwCCz6/z/cLTsumMQOkZ21uVsaJvssHw08
+         e2YLMhbEh+Cy/injvlXF1dNltk1V6w1clOpFJpLZthxsd/qkSF8KLnwldu/cgHHCAfc5
+         N/xNeiB/jSTcEHUTrxQWGyfV5/g2xTxwdOpf727/Xnk0nDy2EvYtEYb72qbDHHPUqFUg
+         9kEYMD3l1XBzLp0sAcRGYh49+5Cy0+H3VoJGa/AlBuPkyM4a1GT7QqGPI3dSuPpDX14Z
+         7/sTaDX66oCNLdr+AePcmO42uW0/pEeUOw884RKp7S+mUpUorGuLRHtW5jvLYO5ojMWc
+         23xw==
+X-Gm-Message-State: AOAM531d1f7V13LdAnefwDQEi5RwFfGBrkqLKbMn5Bw/rcRp9u6kSnH9
+        c6vIR967ebHUdP5JgUW08JAs1Kp2fDEwVA==
+X-Google-Smtp-Source: ABdhPJw9OLyImsITOs3vQXeqzfyvcNKfYnpWj06FRYMOnA8ztNhA+35jxsPV8fyKXUvDUM6vdi6dpw==
+X-Received: by 2002:a05:6214:2e4:: with SMTP id h4mr6551287qvu.3.1631639599017;
+        Tue, 14 Sep 2021 10:13:19 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id z186sm8101157qke.59.2021.09.14.10.13.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 10:13:18 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQBzh-000XMK-Li; Tue, 14 Sep 2021 14:13:17 -0300
+Date:   Tue, 14 Sep 2021 14:13:17 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 13/29] ABI: sysfs-class-infiniband: use wildcards on
+ What definitions
+Message-ID: <20210914171317.GG3544071@ziepe.ca>
+References: <cover.1631629496.git.mchehab+huawei@kernel.org>
+ <df195c1204a56a9a83926e6a1a38fb91a7221869.1631629496.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210910130337.2025426-1-osk@google.com> <71c17c47-ca9e-e9d2-7b89-cc25b512c06a@roeck-us.net>
- <CABoTLcRZ43EUVzbqWniu64PkB7Yx4RMYKjaBxaSihk+k0Ca-gA@mail.gmail.com>
- <722b27f6-4390-9b5b-f6f2-75ce9e967d12@roeck-us.net> <CABoTLcSdkmuBxd5Yh6z2Oqm1-_Vd4J5Ni1i1qq5s07mWu7Ndew@mail.gmail.com>
- <20210914150859.GB3457579@roeck-us.net>
-In-Reply-To: <20210914150859.GB3457579@roeck-us.net>
-From:   Oskar Senft <osk@google.com>
-Date:   Tue, 14 Sep 2021 13:11:07 -0400
-Message-ID: <CABoTLcQfS5-UL92NR9vbc2YrGJv3oQPYCqAm-diNoq-tkHP_hQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: hwmon: Add nct7802 bindings
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df195c1204a56a9a83926e6a1a38fb91a7221869.1631629496.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter
+On Tue, Sep 14, 2021 at 04:32:28PM +0200, Mauro Carvalho Chehab wrote:
+> An "N" upper letter is not a wildcard, nor can easily be identified
+> by script, specially since the USB sysfs define things like.
+> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
+> to convert it into a Regex.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../ABI/stable/sysfs-class-infiniband         | 64 +++++++++----------
+>  1 file changed, 32 insertions(+), 32 deletions(-)
 
-> > Following the example from tmp421, this could then be like this:
->
-> Something like that, only we'll need something to distinguish
-> temperature sensors from other sensor types, eg voltage or current.
-> Maybe a "type" property. I'd suggest "sensor-type", but we have
-> non-sensor attributes such as fan count and pwm values which should
-> be covered as well. But it looks like a good start for a set of
-> generic sensor properties.
-Would it be acceptable to simply number the sensors and document which
-sensor has which number?
+Acked-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Something like this:
-0 = LTD
-1 = RTD1
-2 = RTD2
-3 = RTD3
-4 = FAN1
-5 = FAN2
-6 = FAN3
-
-Would we also want to be able to define PWMs? From what I can tell the
-driver does not support running individual pins in GPIO mode, right?
-So I'm not quite clear what "disabling PWM" would actually mean.
-
-Anyway, if we simply go by "sensor number", that would mean that we'd
-have different attributes depending on the sensor number. Would that
-be ok?
-
-Also, I'm sorry, I think I just realized that in "voltage mode" we
-don't seem to get a temperature reading. I hadn't actually looked
-through more of the datasheet except for the single MODE register
-before. But I don't think this makes a difference for what I proposed
-so far?
-
-> >         /* LTD */
-> >         input@0 {
-> >             reg = <0x0>;
-> >             status = "okay";
->
-> Not sure what the default is here ('okay' or 'disabled').
-> We'd also need to define what to do if there is no data
-> for a given sensor.
-I think I'd like to keep previous behavior unmodified. From what I can
-tell previous behavior was:
-- xTDs enabled by default
-- RTD modes unmodified, i.e. defaulting to whatever the HW comes up with
-
-The NCT7802Y can self-program from an EEPROM, so I assume we should
-honor the "power-up configuration" obtained from there? I.e. if no
-configuration is provided in the device tree, the driver should use
-whatever configuration the chip has when the driver is loaded.
-
-> >             label = "voltage mode";
->
-> That isn't the idea for "label", as "label" would be expected to
-> show up as tempX_label (and a label of "voltage mode" would be odd).
-> The label should indicate where the sensor is located on a board,
-> such as "inlet" or "outlet".
-Yes, absolutely. This was a bad example on my part. In my
-understanding "label" is just a string that we pass through.
-
-Oskar.
+Jason
