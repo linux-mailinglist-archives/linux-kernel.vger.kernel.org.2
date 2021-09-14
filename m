@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9795140A708
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EF740A719
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240363AbhINHEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:04:24 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43416 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240327AbhINHEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:04:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="244234463"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="244234463"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 00:02:56 -0700
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="543817039"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.176])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 00:02:53 -0700
-Date:   Tue, 14 Sep 2021 15:08:46 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Dou Shengnan <shengnanx.dou@intel.com>
-Subject: Re: [PATCH 5/5][RFC] selftests/pfru: add test for Platform Firmware
- Runtime Update and Telemetry
-Message-ID: <20210914070846.GA80235@chenyu-desktop>
-References: <cover.1631025237.git.yu.c.chen@intel.com>
- <1cef405de3484eef108251562fbf461bad4294c7.1631025237.git.yu.c.chen@intel.com>
- <YTh9mEjm7EI1dmu7@kernel.org>
+        id S240577AbhINHK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:10:57 -0400
+Received: from mail-vk1-f182.google.com ([209.85.221.182]:34580 "EHLO
+        mail-vk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240407AbhINHKu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 03:10:50 -0400
+Received: by mail-vk1-f182.google.com with SMTP id 13so4443104vkl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:09:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=saxwiOrMQux4utpjc3YYE3pe8qPFO8tP4XAe7Pl8cfE=;
+        b=VVWlA9gU2j++WFmn8EWe3Az/VU+/fo3YExOau4yUkYRDH33a/qF3Fkba6tQ4a6+nRj
+         BiBaTOZECswKYSp+1pwM55fMwlXWSAolsl7dWDW7O+AsR7xKfprE3VdeHXMsyUSRw1W7
+         XCKyuYPtOzQybCujTPk36dLLWbeV45XHNrg9ahnUBLLxOvyp44PdCWJP43zsJLES7qNv
+         2Lo3eFHKebFQ3zohmDlCe1ez3RG6tG1LjZ2g0stvZYHPyVO/tFwv0hy/8tX9h9KIx/6L
+         Yd6+kr7P/XU8g75fKyUyQPYbHWjkUqhlsgppG+EqscbbB1KOHqljgiA9sRfTf5n2EkEn
+         zbNQ==
+X-Gm-Message-State: AOAM532aWBMsJTYFv9oPaBukGXWjvbOFKwF2M0ZatUi1DaKjdaczveNo
+        kM5bBl88FORnNBdcc8CNzO3abYZuwtV+U5r1IYHQXbsC
+X-Google-Smtp-Source: ABdhPJwtH0fzfhw5kI8DUaCOOuHWNj9B3Z85JKqsUnM1DTTLlKDmHQ/npR6LJBYNBygFtgPNX+Q4exBGSt/HH2jW/s0=
+X-Received: by 2002:a1f:9743:: with SMTP id z64mr7398091vkd.15.1631603373724;
+ Tue, 14 Sep 2021 00:09:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTh9mEjm7EI1dmu7@kernel.org>
+References: <20210914043928.4066136-1-saravanak@google.com> <20210914043928.4066136-5-saravanak@google.com>
+In-Reply-To: <20210914043928.4066136-5-saravanak@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 14 Sep 2021 09:09:22 +0200
+Message-ID: <CAMuHMdV7K1Le5ed3KVizcRDJHp7Ntw2wdUOjz-6_A_MA1x6P+Q@mail.gmail.com>
+Subject: Re: [PATCH v1 4/5] driver core: Add debug logs when fwnode links are added/deleted
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-On Wed, Sep 08, 2021 at 12:08:40PM +0300, Mike Rapoport wrote:
-> On Tue, Sep 07, 2021 at 11:40:30PM +0800, Chen Yu wrote:
-> > Introduce a simple test for Platform Firmware Runtime Update and Telemetry
-> > drivers. It is based on ioctl to either update firmware driver or code injection,
-> > and read corresponding PFRU Telemetry log into user space.
-> >
-[snip.. 
-> > +struct updated_result {
-> > +	enum dsm_status status;
-> > +	enum dsm_status ext_status;
-> > +	unsigned long low_auth_time;
-> > +	unsigned long high_auth_time;
-> > +	unsigned long low_exec_time;
-> > +	unsigned long high_exec_time;
-> > +};
-> 
-> Most of these types and constants seem to be a copy of uapu/linux/pfru.h.
-> Shouldn't the test get them from there?
+On Tue, Sep 14, 2021 at 6:39 AM Saravana Kannan <saravanak@google.com> wrote:
+> This will help with debugging fw_devlink issues.
 >
-Yes they have shared structures. The next version will reuse the uapi header.
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-thanks,
-Chenyu 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
