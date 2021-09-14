@@ -2,78 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA140A6B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B88840A6B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240176AbhING1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:27:21 -0400
+        id S240256AbhING1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:27:23 -0400
 Received: from mga11.intel.com ([192.55.52.93]:10352 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240172AbhING1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:27:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="218717564"
+        id S240186AbhING1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 02:27:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="218717568"
 X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="218717564"
+   d="scan'208";a="218717568"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 23:26:02 -0700
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 23:26:04 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="471855735"
+   d="scan'208";a="471855751"
 Received: from louislifei-optiplex-7050.sh.intel.com ([10.239.154.151])
-  by orsmga007.jf.intel.com with ESMTP; 13 Sep 2021 23:26:00 -0700
+  by orsmga007.jf.intel.com with ESMTP; 13 Sep 2021 23:26:02 -0700
 From:   Fei Li <fei1.li@intel.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
         shuox.liu@gmail.com, fei1.li@intel.com
-Subject: [PATCH v4 0/2] Introduce some interfaces for ACRN hypervisor HSM driver
-Date:   Tue, 14 Sep 2021 14:26:25 +0800
-Message-Id: <20210914062627.16431-1-fei1.li@intel.com>
+Subject: [PATCH v4 1/2] virt: acrn: Introduce interfaces for MMIO device passthrough
+Date:   Tue, 14 Sep 2021 14:26:26 +0800
+Message-Id: <20210914062627.16431-2-fei1.li@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210914062627.16431-1-fei1.li@intel.com>
+References: <20210914062627.16431-1-fei1.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some new interfaces for ACRN hypervisor HSM driver:
-  - MMIO device passthrough
-  - virtual device creating/destroying
-  - platform information fetching from the hypervisor
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-ChangeLog:
-v4:
- - remove "RFC" from Subject field.
+MMIO device passthrough enables an OS in a virtual machine to directly
+access a MMIO device in the host. It promises almost the native
+performance, which is required in performance-critical scenarios of
+ACRN.
 
-v3:
- - remove "platform information fetching from the hypervisor". What platform
-   information needs to be fetched has not been finally decided. Will send tis
-   patch out once that has been decided.
- - add comments where is the userspace code that uses this new api:
-   - MMIO device passthrough
-     (a) assign a MMIO device to a User VM
-     https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L562
-     (b) de-assign a MMIO device from a User VM
-     https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L568
-   - virtual device creating/destroying
-     (a) create a virtual device for a User VM
-     https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L606
-     (b) destroy a virtual device of a User VM
-     https://github.com/projectacrn/acrn-hypervisor/blob/master/devicemodel/core/vmmapi.c#L612
+HSM provides the following ioctls:
+  - Assign - ACRN_IOCTL_ASSIGN_MMIODEV
+    Pass data struct acrn_mmiodev from userspace to the hypervisor, and
+    inform the hypervisor to assign a MMIO device to a User VM.
 
-v2:
- - remove "stable@vger.kernel.org" in the cc list since this patch set
-   doesn't fix any anything, it's not for Linux -stable releases. 
+  - De-assign - ACRN_IOCTL_DEASSIGN_PCIDEV
+    Pass data struct acrn_mmiodev from userspace to the hypervisor, and
+    inform the hypervisor to de-assign a MMIO device from a User VM.
 
-Shuo Liu (2):
-  virt: acrn: Introduce interfaces for MMIO device passthrough
-  virt: acrn: Introduce interfaces for virtual device
-    creating/destroying
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Signed-off-by: Fei Li <fei1.li@intel.com>
+---
+ drivers/virt/acrn/hsm.c       | 25 +++++++++++++++++++++++++
+ drivers/virt/acrn/hypercall.h | 26 ++++++++++++++++++++++++++
+ include/uapi/linux/acrn.h     | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 79 insertions(+)
 
- drivers/virt/acrn/hsm.c       | 49 ++++++++++++++++++++++++
- drivers/virt/acrn/hypercall.h | 52 ++++++++++++++++++++++++++
- include/uapi/linux/acrn.h     | 70 +++++++++++++++++++++++++++++++++++
- 3 files changed, 171 insertions(+)
-
-
-base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
+index 130e12b8652a..f567ca59d7c2 100644
+--- a/drivers/virt/acrn/hsm.c
++++ b/drivers/virt/acrn/hsm.c
+@@ -114,6 +114,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+ 	struct acrn_ptdev_irq *irq_info;
+ 	struct acrn_ioeventfd ioeventfd;
+ 	struct acrn_vm_memmap memmap;
++	struct acrn_mmiodev *mmiodev;
+ 	struct acrn_msi_entry *msi;
+ 	struct acrn_pcidev *pcidev;
+ 	struct acrn_irqfd irqfd;
+@@ -217,6 +218,30 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+ 
+ 		ret = acrn_vm_memseg_unmap(vm, &memmap);
+ 		break;
++	case ACRN_IOCTL_ASSIGN_MMIODEV:
++		mmiodev = memdup_user((void __user *)ioctl_param,
++				      sizeof(struct acrn_mmiodev));
++		if (IS_ERR(mmiodev))
++			return PTR_ERR(mmiodev);
++
++		ret = hcall_assign_mmiodev(vm->vmid, virt_to_phys(mmiodev));
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to assign MMIO device!\n");
++		kfree(mmiodev);
++		break;
++	case ACRN_IOCTL_DEASSIGN_MMIODEV:
++		mmiodev = memdup_user((void __user *)ioctl_param,
++				      sizeof(struct acrn_mmiodev));
++		if (IS_ERR(mmiodev))
++			return PTR_ERR(mmiodev);
++
++		ret = hcall_deassign_mmiodev(vm->vmid, virt_to_phys(mmiodev));
++		if (ret < 0)
++			dev_dbg(acrn_dev.this_device,
++				"Failed to deassign MMIO device!\n");
++		kfree(mmiodev);
++		break;
+ 	case ACRN_IOCTL_ASSIGN_PCIDEV:
+ 		pcidev = memdup_user((void __user *)ioctl_param,
+ 				     sizeof(struct acrn_pcidev));
+diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
+index 0cfad05bd1a9..f0c78e52cebb 100644
+--- a/drivers/virt/acrn/hypercall.h
++++ b/drivers/virt/acrn/hypercall.h
+@@ -41,6 +41,8 @@
+ #define HC_RESET_PTDEV_INTR		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x04)
+ #define HC_ASSIGN_PCIDEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x05)
+ #define HC_DEASSIGN_PCIDEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x06)
++#define HC_ASSIGN_MMIODEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x07)
++#define HC_DEASSIGN_MMIODEV		_HC_ID(HC_ID, HC_ID_PCI_BASE + 0x08)
+ 
+ #define HC_ID_PM_BASE			0x80UL
+ #define HC_PM_GET_CPU_STATE		_HC_ID(HC_ID, HC_ID_PM_BASE + 0x00)
+@@ -194,6 +196,30 @@ static inline long hcall_set_memory_regions(u64 regions_pa)
+ 	return acrn_hypercall1(HC_VM_SET_MEMORY_REGIONS, regions_pa);
+ }
+ 
++/**
++ * hcall_assign_mmiodev() - Assign a MMIO device to a User VM
++ * @vmid:	User VM ID
++ * @addr:	Service VM GPA of the &struct acrn_mmiodev
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_assign_mmiodev(u64 vmid, u64 addr)
++{
++	return acrn_hypercall2(HC_ASSIGN_MMIODEV, vmid, addr);
++}
++
++/**
++ * hcall_deassign_mmiodev() - De-assign a PCI device from a User VM
++ * @vmid:	User VM ID
++ * @addr:	Service VM GPA of the &struct acrn_mmiodev
++ *
++ * Return: 0 on success, <0 on failure
++ */
++static inline long hcall_deassign_mmiodev(u64 vmid, u64 addr)
++{
++	return acrn_hypercall2(HC_DEASSIGN_MMIODEV, vmid, addr);
++}
++
+ /**
+  * hcall_assign_pcidev() - Assign a PCI device to a User VM
+  * @vmid:	User VM ID
+diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
+index 353b2a2e4536..470036d6b1ac 100644
+--- a/include/uapi/linux/acrn.h
++++ b/include/uapi/linux/acrn.h
+@@ -396,6 +396,7 @@ struct acrn_ptdev_irq {
+ /* Type of PCI device assignment */
+ #define ACRN_PTDEV_QUIRK_ASSIGN	(1U << 0)
+ 
++#define ACRN_MMIODEV_RES_NUM	3
+ #define ACRN_PCI_NUM_BARS	6
+ /**
+  * struct acrn_pcidev - Info for assigning or de-assigning a PCI device
+@@ -417,6 +418,29 @@ struct acrn_pcidev {
+ 	__u32	bar[ACRN_PCI_NUM_BARS];
+ };
+ 
++/**
++ * struct acrn_mmiodev - Info for assigning or de-assigning a MMIO device
++ * @name:			Name of the MMIO device.
++ * @res[].user_vm_pa:		Physical address of User VM of the MMIO region
++ *				for the MMIO device.
++ * @res[].service_vm_pa:	Physical address of Service VM of the MMIO
++ *				region for the MMIO device.
++ * @res[].size:			Size of the MMIO region for the MMIO device.
++ * @res[].mem_type:		Memory type of the MMIO region for the MMIO
++ *				device.
++ *
++ * This structure will be passed to hypervisor directly.
++ */
++struct acrn_mmiodev {
++	__u8	name[8];
++	struct {
++		__u64	user_vm_pa;
++		__u64	service_vm_pa;
++		__u64	size;
++		__u64	mem_type;
++	} res[ACRN_MMIODEV_RES_NUM];
++};
++
+ /**
+  * struct acrn_msi_entry - Info for injecting a MSI interrupt to a VM
+  * @msi_addr:	MSI addr[19:12] with dest vCPU ID
+@@ -568,6 +592,10 @@ struct acrn_irqfd {
+ 	_IOW(ACRN_IOCTL_TYPE, 0x55, struct acrn_pcidev)
+ #define ACRN_IOCTL_DEASSIGN_PCIDEV	\
+ 	_IOW(ACRN_IOCTL_TYPE, 0x56, struct acrn_pcidev)
++#define ACRN_IOCTL_ASSIGN_MMIODEV	\
++	_IOW(ACRN_IOCTL_TYPE, 0x57, struct acrn_mmiodev)
++#define ACRN_IOCTL_DEASSIGN_MMIODEV	\
++	_IOW(ACRN_IOCTL_TYPE, 0x58, struct acrn_mmiodev)
+ 
+ #define ACRN_IOCTL_PM_GET_CPU_STATE	\
+ 	_IOWR(ACRN_IOCTL_TYPE, 0x60, __u64)
 -- 
 2.17.1
 
