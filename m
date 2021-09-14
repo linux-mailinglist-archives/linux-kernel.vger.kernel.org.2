@@ -2,86 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B4A40A98D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC87940A994
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhINIrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:47:33 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55408 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhINIrc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:47:32 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B18A21EA2;
-        Tue, 14 Sep 2021 08:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631609174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZkMH63iTQ1WWrdV9xSbbANfuGbUt17bCT5Dl2F/Da0=;
-        b=XWISWXbcR3YdaeFQmM4w9+ukkxf4jSK2eqmQDo5iZ73XBLhF4jEDM8+2E0VxGtr5eFJxiC
-        nmb3T0gwe1ndT5H4JdLDKKBI4kjUyc4fjA7c0T2KqDcf4D22+99oItZYY+wjvqFoIvzlqP
-        K00ktKQrEH5F+uB2Tz7EXYr8uqK/J68=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631609174;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZkMH63iTQ1WWrdV9xSbbANfuGbUt17bCT5Dl2F/Da0=;
-        b=MJG30rqDnzxe65gQiiRdUUjTdYTTjoLnMy+u/ZtPzlpYnjvOOgqHQqAJZ29ngBM7p6RPor
-        ImJkDb/zx1w6yLBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29AD313D3F;
-        Tue, 14 Sep 2021 08:46:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KUIwClZhQGGpLAAAMHmgww
-        (envelope-from <dwagner@suse.de>); Tue, 14 Sep 2021 08:46:14 +0000
-Date:   Tue, 14 Sep 2021 10:46:13 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [RFC v1] nvme-tcp: enable linger socket option on shutdown
-Message-ID: <20210914084613.75qykjxweh66mdpx@carbon>
-References: <20210903121757.140357-1-dwagner@suse.de>
- <YTXKHOfnuf+urV1D@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTXKHOfnuf+urV1D@infradead.org>
+        id S230184AbhINItv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:49:51 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:47164 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229526AbhINItt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 04:49:49 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowAB3+djKYUBh329+AA--.35697S2;
+        Tue, 14 Sep 2021 16:48:10 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re:Re:[PATCH 6/6] irq: Potentially 'offset out of size' bug
+Date:   Tue, 14 Sep 2021 08:48:10 +0000
+Message-Id: <1631609290-2830831-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowAB3+djKYUBh329+AA--.35697S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JFyxuFy7tw45KFWfKF1rJFb_yoW3Crc_WF
+        yvqr15tFZ5Gwn5Xa1DKr4UA343tF45Cryavrs5Jw4fu34xWrZrZr1UAasY9r43J3yDtFn8
+        G34vkF47Za429jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7xYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jF38nUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 08:58:20AM +0100, Christoph Hellwig wrote:
-> On Fri, Sep 03, 2021 at 02:17:57PM +0200, Daniel Wagner wrote:
-> > When the no linger is set, the networking stack sends FIN followed by
-> > RST immediately when shutting down the socket. By enabling linger when
-> > shutting down we have a proper shutdown sequence on the wire.
-> > 
-> > Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> > ---
-> > The current shutdown sequence on the wire is a bit harsh and
-> > doesn't let the remote host to react. I suppose we should
-> > introduce a short (how long?) linger pause when shutting down
-> > the connection. Thoughs?
-> 
-> Why?  I'm not really a TCP expert, but why is this different from
-> say iSCSI or NBD?
+> On Fri, Sep 10 2021 at 03:26, Jiasheng Jiang wrote:
+> The find_next_bit() use nr_irqs as size, and using it without
+> any check might cause its returned value out of the sizei
 
-I am also no TCP expert. Adding netdev to Cc.
+On Fri, Sep 10 2021 at 18:28, tglx wrote:
+> Why exactly is this a problem? The return value has to be checked at the
+> call site anyway.
 
-During testing the nvme-tcp subsystem by one of our partners we observed
-this. Maybe this is perfectly fine. Just as I said it looks a bit weird
-that a proper shutdown of the connection a RST is send out right after
-the FIN.
+There is really a check at the call site, but the annotation of the 
+irq_get_next_irq() is 'Returns next irq number after offset or nr_irqs 
+if none is found', which tells the programmer should not check the
+return value of it. In case of a programmer write a new call for the
+irq_get_next_irq(), he may not check the return value because of the 
+annotation said. Therefore, it had better to add the check inside of
+irq_get_next_irq() to fit for the annotation.
 
-No idea how iSCSI or NBD handles this. I'll check.
+Thanks,
+
+        Jiasheng Jiang
+
