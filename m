@@ -2,143 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796A440B8B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC36240B8BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhINUIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhINUIC (ORCPT
+        id S233328AbhINULA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:11:00 -0400
+Received: from mail.lvk.cs.msu.ru ([188.44.42.233]:40432 "EHLO
+        mail.lvk.cs.msu.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhINUK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:08:02 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9D6C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:06:45 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 1-20020a630e41000000b002528846c9f2so145708pgo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ON+OppL5/OgNlba0Dbq0Mz8w7RQ1qvQulVb/hw2bToI=;
-        b=qPH9a0sWvm3uX1rkmTHgMFMLKFhqXFMqpNyQPlUxRqwX2MMEkhCDSn8q+ViSmHeJ6h
-         dnu6Nb5jtjwf9+YjXGyhFy8qwZzOucEQhsS51Q8SGKZADKcdrVtJhjt5N5Y3XUwjJhud
-         neuD+tcxsZUOW4YxIgGOfnMRL4BJb/dpjxAExbVJEamqf7pG2em1iHFL7qvD4jp+o/pq
-         laWrp/xyYRa3RSh/NHHJcI+BuEIGBM7YHF7CX1rOhG8kM9u0hRjV5FiVUiuaQskWY0pt
-         miW0zjtHEVRg3+cxjG9Hr3y6uQfG6kNVFlyUBpEffbZxSTM0UkVJba1u3wRVSuvWjeo3
-         pBvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ON+OppL5/OgNlba0Dbq0Mz8w7RQ1qvQulVb/hw2bToI=;
-        b=PI2LF5pBEbvaQ/VrAC5S9gD7T07r3yg9Q46LG9gjB6PyXtgQfw1MIqo7rX5DxqslE7
-         WlqsrimSeBgMauBz5PMu23Xs3XpvC/T2CrqH+0qCltg46iQDkcAmuzRj0KH9vLzFyD1v
-         XHdef0V8QUs3nrFvSFyKu2hbYLLHkAUHqncFKqz1jllmwHYX2Ps/yzvN2tklKlixGbwQ
-         pcffKR5pzIXsqSdPDe2A3JGFUUN5SmDG82PAcaX+esNny+/1O48U90rKUMzcvrNuewwI
-         Mb/k7vGlfpyTBJrwdLBkgwjPWgEPJkydAO+U0RACAUENU0NX/hLYliWbtuObp2u9YgMn
-         ojKw==
-X-Gm-Message-State: AOAM530+kcFgh1eScNsYXJwSOZ4dU0BCtSK/plx/1ZJrV8XQjVRZjc43
-        BU874mHxRmHo2Ra2f7RQLN31QtRI0A0=
-X-Google-Smtp-Source: ABdhPJz0gOgLHGvJtjv+by2R9hTkmBQUYbxEW1DGzC7AiHk+sIANx3xv/0zO30MRaCYTWMChaSogixwQ6g0=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:b358:1f40:79d5:ab23])
- (user=pgonda job=sendgmr) by 2002:a17:90b:3909:: with SMTP id
- ob9mr4023845pjb.75.1631650004482; Tue, 14 Sep 2021 13:06:44 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 13:06:39 -0700
-Message-Id: <20210914200639.3305617-1-pgonda@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH] KVM: SEV: Acquire vcpu mutex when updating VMSA
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 14 Sep 2021 16:10:58 -0400
+Received: from mail.lvk.cs.msu.ru (localhost.localdomain [127.0.0.1])
+        by mail.lvk.cs.msu.ru (Postfix) with ESMTP id A4FF310DBA9;
+        Tue, 14 Sep 2021 23:09:37 +0300 (MSK)
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on spamd.lvknet
+X-Spam-Level: 
+X-Spam-ASN:  
+X-Spam-Status: No, score=-2.9 required=7.0 tests=ALL_TRUSTED=-1,BAYES_00=-1.9
+        autolearn=ham version=3.3.2
+Received: from blacky.home (nikaet.starlink.ru [94.141.168.29])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        by mail.lvk.cs.msu.ru (Postfix) with ESMTPSA id 6986810DC0D;
+        Tue, 14 Sep 2021 23:09:37 +0300 (MSK)
+Received: from [192.168.112.17] (helo=cobook.home)
+        by blacky.home with smtp (Exim 4.80)
+        (envelope-from <yoush@cs.msu.su>)
+        id 1mQEdM-0001dc-8t; Tue, 14 Sep 2021 23:02:24 +0300
+Received: (nullmailer pid 24823 invoked by uid 1000);
+        Tue, 14 Sep 2021 20:09:36 -0000
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Nechaev <petr.nechaev@cogentembedded.com>,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH v2] usb: gadget: storage: add support for media larger than 2T
+Date:   Tue, 14 Sep 2021 23:09:17 +0300
+Message-Id: <20210914200917.24767-1-nikita.yoush@cogentembedded.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210914151329.GD155245@rowland.harvard.edu>
+References: <20210914151329.GD155245@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-AV-Checked: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds mutex guard to the VMSA updating code. Also adds a check to skip a
-vCPU if it has already been LAUNCH_UPDATE_VMSA'd which should allow
-userspace to retry this ioctl until all the vCPUs can be successfully
-LAUNCH_UPDATE_VMSA'd. Because this operation cannot be undone we cannot
-unwind if one vCPU fails.
+This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
+commands, and fixes READ_CAPACITY command to return 0xffffffff if
+media size does not fit in 32 bits.
 
-Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
+This makes f_mass_storage to export a 16T disk array correctly.
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 ---
- arch/x86/kvm/svm/sev.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ drivers/usb/gadget/function/f_mass_storage.c | 87 ++++++++++++++++++--
+ 1 file changed, 80 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 75e0b21ad07c..9a2ebd0328ca 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -598,22 +598,29 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
- static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+index 7c96c4665178..96de401f1282 100644
+--- a/drivers/usb/gadget/function/f_mass_storage.c
++++ b/drivers/usb/gadget/function/f_mass_storage.c
+@@ -619,7 +619,7 @@ static int sleep_thread(struct fsg_common *common, bool can_freeze,
+ static int do_read(struct fsg_common *common)
  {
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
--	struct sev_data_launch_update_vmsa vmsa;
-+	struct sev_data_launch_update_vmsa vmsa = {0};
- 	struct kvm_vcpu *vcpu;
- 	int i, ret;
- 
- 	if (!sev_es_guest(kvm))
- 		return -ENOTTY;
- 
--	vmsa.reserved = 0;
--
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
- 		struct vcpu_svm *svm = to_svm(vcpu);
- 
-+		ret = mutex_lock_killable(&vcpu->mutex);
-+		if (ret)
-+			goto out_unlock;
-+
-+		/* Skip to the next vCPU if this one has already be updated. */
-+		ret = sev_es_sync_vmsa(svm);
-+		if (svm->vcpu.arch.guest_state_protected)
-+			goto unlock;
-+
- 		/* Perform some pre-encryption checks against the VMSA */
- 		ret = sev_es_sync_vmsa(svm);
- 		if (ret)
--			return ret;
-+			goto out_unlock;
+ 	struct fsg_lun		*curlun = common->curlun;
+-	u32			lba;
++	u64			lba;
+ 	struct fsg_buffhd	*bh;
+ 	int			rc;
+ 	u32			amount_left;
+@@ -634,7 +634,10 @@ static int do_read(struct fsg_common *common)
+ 	if (common->cmnd[0] == READ_6)
+ 		lba = get_unaligned_be24(&common->cmnd[1]);
+ 	else {
+-		lba = get_unaligned_be32(&common->cmnd[2]);
++		if (common->cmnd[0] == READ_16)
++			lba = get_unaligned_be64(&common->cmnd[2]);
++		else		/* READ_10 or READ_12 */
++			lba = get_unaligned_be32(&common->cmnd[2]);
  
  		/*
- 		 * The LAUNCH_UPDATE_VMSA command will perform in-place
-@@ -629,12 +636,19 @@ static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 		ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa,
- 				    &argp->error);
- 		if (ret)
--			return ret;
-+			goto out_unlock;
+ 		 * We allow DPO (Disable Page Out = don't save data in the
+@@ -747,7 +750,7 @@ static int do_read(struct fsg_common *common)
+ static int do_write(struct fsg_common *common)
+ {
+ 	struct fsg_lun		*curlun = common->curlun;
+-	u32			lba;
++	u64			lba;
+ 	struct fsg_buffhd	*bh;
+ 	int			get_some_more;
+ 	u32			amount_left_to_req, amount_left_to_write;
+@@ -771,7 +774,10 @@ static int do_write(struct fsg_common *common)
+ 	if (common->cmnd[0] == WRITE_6)
+ 		lba = get_unaligned_be24(&common->cmnd[1]);
+ 	else {
+-		lba = get_unaligned_be32(&common->cmnd[2]);
++		if (common->cmnd[0] == WRITE_16)
++			lba = get_unaligned_be64(&common->cmnd[2]);
++		else		/* WRITE_10 or WRITE_12 */
++			lba = get_unaligned_be32(&common->cmnd[2]);
  
- 		svm->vcpu.arch.guest_state_protected = true;
-+
-+unlock:
-+		mutex_unlock(&vcpu->mutex);
+ 		/*
+ 		 * We allow DPO (Disable Page Out = don't save data in the
+@@ -1146,6 +1152,7 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
+ 	u32		lba = get_unaligned_be32(&common->cmnd[2]);
+ 	int		pmi = common->cmnd[8];
+ 	u8		*buf = (u8 *)bh->buf;
++	u32		max_lba;
+ 
+ 	/* Check the PMI and LBA fields */
+ 	if (pmi > 1 || (pmi == 0 && lba != 0)) {
+@@ -1153,12 +1160,37 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
+ 		return -EINVAL;
  	}
  
- 	return 0;
-+
-+out_unlock:
-+	mutex_unlock(&vcpu->mutex);
-+	return ret;
+-	put_unaligned_be32(curlun->num_sectors - 1, &buf[0]);
+-						/* Max logical block */
+-	put_unaligned_be32(curlun->blksize, &buf[4]);/* Block length */
++	if (curlun->num_sectors < 0x100000000ULL)
++		max_lba = curlun->num_sectors - 1;
++	else
++		max_lba = 0xffffffff;
++	put_unaligned_be32(max_lba, &buf[0]);		/* Max logical block */
++	put_unaligned_be32(curlun->blksize, &buf[4]);	/* Block length */
+ 	return 8;
  }
  
- static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
++static int do_read_capacity_16(struct fsg_common *common, struct fsg_buffhd *bh)
++{
++	struct fsg_lun  *curlun = common->curlun;
++	u64		lba = get_unaligned_be64(&common->cmnd[2]);
++	int		pmi = common->cmnd[14];
++	u8		*buf = (u8 *)bh->buf;
++
++	/* Check the PMI and LBA fields */
++	if (pmi > 1 || (pmi == 0 && lba != 0)) {
++		curlun->sense_data = SS_INVALID_FIELD_IN_CDB;
++		return -EINVAL;
++	}
++
++	put_unaligned_be64(curlun->num_sectors - 1, &buf[0]);
++							/* Max logical block */
++	put_unaligned_be32(curlun->blksize, &buf[8]);	/* Block length */
++
++	/* It is safe to keep other fields zeroed */
++	memset(&buf[12], 0, 32 - 12);
++	return 32;
++}
++
+ static int do_read_header(struct fsg_common *common, struct fsg_buffhd *bh)
+ {
+ 	struct fsg_lun	*curlun = common->curlun;
+@@ -1905,6 +1937,17 @@ static int do_scsi_command(struct fsg_common *common)
+ 			reply = do_read(common);
+ 		break;
+ 
++	case READ_16:
++		common->data_size_from_cmnd =
++				get_unaligned_be32(&common->cmnd[10]);
++		reply = check_command_size_in_blocks(common, 16,
++				      DATA_DIR_TO_HOST,
++				      (1<<1) | (0xff<<2) | (0xf<<10), 1,
++				      "READ(16)");
++		if (reply == 0)
++			reply = do_read(common);
++		break;
++
+ 	case READ_CAPACITY:
+ 		common->data_size_from_cmnd = 8;
+ 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
+@@ -1957,6 +2000,25 @@ static int do_scsi_command(struct fsg_common *common)
+ 			reply = do_request_sense(common, bh);
+ 		break;
+ 
++	case SERVICE_ACTION_IN_16:
++		switch (common->cmnd[1] & 0x1f) {
++
++		case SAI_READ_CAPACITY_16:
++			common->data_size_from_cmnd =
++				get_unaligned_be32(&common->cmnd[10]);
++			reply = check_command(common, 16, DATA_DIR_TO_HOST,
++					      (1<<1) | (0xff<<2) | (0xf<<10) |
++					      (1<<14), 1,
++					      "READ CAPACITY(16)");
++			if (reply == 0)
++				reply = do_read_capacity_16(common, bh);
++			break;
++
++		default:
++			goto unknown_cmnd;
++		}
++		break;
++
+ 	case START_STOP:
+ 		common->data_size_from_cmnd = 0;
+ 		reply = check_command(common, 6, DATA_DIR_NONE,
+@@ -2028,6 +2090,17 @@ static int do_scsi_command(struct fsg_common *common)
+ 			reply = do_write(common);
+ 		break;
+ 
++	case WRITE_16:
++		common->data_size_from_cmnd =
++				get_unaligned_be32(&common->cmnd[10]);
++		reply = check_command_size_in_blocks(common, 16,
++				      DATA_DIR_FROM_HOST,
++				      (1<<1) | (0xff<<2) | (0xf<<10), 1,
++				      "WRITE(16)");
++		if (reply == 0)
++			reply = do_write(common);
++		break;
++
+ 	/*
+ 	 * Some mandatory commands that we recognize but don't implement.
+ 	 * They don't mean much in this setting.  It's left as an exercise
 -- 
-2.33.0.464.g1972c5931b-goog
+2.20.1
 
