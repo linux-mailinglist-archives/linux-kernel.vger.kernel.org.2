@@ -2,151 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5149E40BC19
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D8540BC1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 01:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbhINXPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 19:15:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234320AbhINXPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 19:15:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631661266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4U82nHWoiCp51ZNXrLgZWl/q6yGkm2KC1XT/EobLwqE=;
-        b=C96dpEBAxt08vfE17siN30xRIgTZd4/acJtWYTgZdztKY78LHvsciI9TNmOiz0T6H4gBsJ
-        Jto47jrP7VFGKziAG5tQgUFuyWpSNXDJxSpXp9nD8ZomkcvbfY9UFthA6OKc7uKIkLWT2G
-        5Yef373ysxgNHeOWsRuYOf0zJXBG8m0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-kGib2PDhNcOKzkAvV0De2Q-1; Tue, 14 Sep 2021 19:14:22 -0400
-X-MC-Unique: kGib2PDhNcOKzkAvV0De2Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C38E362F9;
-        Tue, 14 Sep 2021 23:14:21 +0000 (UTC)
-Received: from horse.redhat.com (unknown [10.22.9.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82E1160C7F;
-        Tue, 14 Sep 2021 23:14:20 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 14B38220779; Tue, 14 Sep 2021 19:14:20 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 19:14:20 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     cgel.zte@gmail.com, hare@suse.de, axboe@kernel.dk, tj@kernel.org,
-        viro@zeniv.linux.org.uk, xu.xin16@zte.com.cn,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>,
-        zhang yunkai <zhang.yunkai@zte.com.cn>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH linux-next] init/do_mounts: fix potential memory out of
- bounds access
-Message-ID: <YUEszOPiJKROT1UG@redhat.com>
-References: <20210913114336.83684-1-xu.xin16@zte.com.cn>
- <20210914202349.GB9406@quack2.suse.cz>
- <YUElJqNI9VVL/SI/@redhat.com>
+        id S235575AbhINXTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 19:19:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231177AbhINXTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 19:19:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FF0860F6F;
+        Tue, 14 Sep 2021 23:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631661480;
+        bh=TeUjkgBTP3sIQTSJGSHh8y4gzMkgC/DCqfJ9lAa3qbY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TUvaEMttlfNNCHy6tpgKOeuH7BFlZBKjmuy43ZnslGKnQD54P/kZBLmIHMNJOsfoQ
+         C1+RUCYBpjwFpIdwNV+BRmzSJGu93IgR/vvhDwXPOUS6iIZ26rcMBMs85Rkv6hegFi
+         UVj8ly2Una/zT0M9k3jKIbfGmsUXhx+kECDEfXs2Mbu8fePce6BXB9Szh/u4rnKMif
+         joib5onQV05NLYcMwiO6SItHpg4/8b8f920rS1k6goONL08SbyDiatYJGFhtKKbBGQ
+         T3+XBK66uBd/jdsDRXoQISEk05u2juNtSK+NX8DbIIOkV1liUPlQClRgXj0Rv5asxQ
+         I3XvwRDqVFG6w==
+Date:   Wed, 15 Sep 2021 02:17:56 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Tao Liu <thomas.liu@ucloud.cn>, dledford@redhat.com,
+        haakon.bugge@oracle.com, shayd@nvidia.com, avihaih@nvidia.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.liu@ucloud.com
+Subject: Re: [PATCH] RDMA/cma: Fix listener leak in rdma_cma_listen_on_all()
+ failure
+Message-ID: <YUEtpNgI+Z8ksQjC@unreal>
+References: <20210913093344.17230-1-thomas.liu@ucloud.cn>
+ <20210914195444.GA156389@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUElJqNI9VVL/SI/@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210914195444.GA156389@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 06:41:42PM -0400, Vivek Goyal wrote:
-> On Tue, Sep 14, 2021 at 10:23:49PM +0200, Jan Kara wrote:
-> > On Mon 13-09-21 11:43:36, cgel.zte@gmail.com wrote:
-> > > From: xu xin <xu.xin16@zte.com.cn>
-> > > 
-> > > Initially the pointer "p" points to the start of "pages".
-> > > In the loop "while(*p++) {...}", it ends when "*p" equals
-> > > to zero. Just after that, the pointer "p" moves forward
-> > > with "p++", so "p" may points ouf of "pages".
-> > > 
-> > > furthermore, it is no use to set *p = '\0', so we remove it.
+On Tue, Sep 14, 2021 at 04:54:44PM -0300, Jason Gunthorpe wrote:
+> On Mon, Sep 13, 2021 at 05:33:44PM +0800, Tao Liu wrote:
+> > rdma_cma_listen_on_all() just destroy listener which lead to an error,
+> > but not including those already added in listen_list. Then cm state
+> > fallbacks to RDMA_CM_ADDR_BOUND.
 > > 
-> > Hum, I agree it is somewhat unclear that the assignment cannot go beyond
-> > the end of the page although I suspect it cannot happen in practice as that
-> > would mean parameter PAGE_SIZE long and I suspect parameter parsing code
-> > would refuse that earlier (but don't really know kernel cmdline parsing
-> > details).
+> > When user destroys id, the listeners will not be destroyed, and
+> > process stucks.
 > > 
-> > But what I'm quite sure about is that the assignment is not useless. If you
-> > look at the loop below this assignment, you'll notice it terminates on
-> > 0-length string and the assignment creates exactly this string at the end
-> > of the split parameter. So your patch certainly breaks things.
+> >  task:rping state:D stack:   0 pid:19605 ppid: 47036 flags:0x00000084
+> >  Call Trace:
+> >   __schedule+0x29a/0x780
+> >   ? free_unref_page_commit+0x9b/0x110
+> >   schedule+0x3c/0xa0
+> >   schedule_timeout+0x215/0x2b0
+> >   ? __flush_work+0x19e/0x1e0
+> >   wait_for_completion+0x8d/0xf0
+> >   _destroy_id+0x144/0x210 [rdma_cm]
+> >   ucma_close_id+0x2b/0x40 [rdma_ucm]
+> >   __destroy_id+0x93/0x2c0 [rdma_ucm]
+> >   ? __xa_erase+0x4a/0xa0
+> >   ucma_destroy_id+0x9a/0x120 [rdma_ucm]
+> >   ucma_write+0xb8/0x130 [rdma_ucm]
+> >   vfs_write+0xb4/0x250
+> >   ksys_write+0xb5/0xd0
+> >   ? syscall_trace_enter.isra.19+0x123/0x190
+> >   do_syscall_64+0x33/0x40
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
+> > Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> >  drivers/infiniband/core/cma.c | 22 +++++++++++++++-------
+> >  1 file changed, 15 insertions(+), 7 deletions(-)
 > 
-> Yes, that '\0' at the end is intentional so that we terminate the
-> loop right after this assignment and count number of strings and
-> return to caller.
+> I'd like to see a bit more than this, I reworked the patch slightly
+> into this below. It is in for-rc so let me know if it busted up. Thanks
 > 
-> Even before recent changes, get_fs_names() was doing same thing.
-> It was adding at '\0' at the end. So behavior has not changed.
+> From a17a1faf5d3e2e19a75397dfd740dbde06f054c3 Mon Sep 17 00:00:00 2001
+> From: Tao Liu <thomas.liu@ucloud.cn>
+> Date: Mon, 13 Sep 2021 17:33:44 +0800
+> Subject: [PATCH] RDMA/cma: Fix listener leak in rdma_cma_listen_on_all()
+>  failure
 > 
-> Now question is, is it easily possible to pass root_fs_names big
-> enough that it can overflow the page we have assigned. If yes,
-> then we can think if putting some safeguards and truncate the
-> passed string and not overflow into next page.
+> If cma_listen_on_all() fails it leaves the per-device ID still on the
+> listen_list but the state is not set to RDMA_CM_ADDR_BOUND.
+> 
+> When the cmid is eventually destroyed cma_cancel_listens() is not called
+> due to the wrong state, however the per-device IDs are still holding the
+> refcount preventing the ID from being destroyed, thus deadlocking:
+> 
+>  task:rping state:D stack:   0 pid:19605 ppid: 47036 flags:0x00000084
+>  Call Trace:
+>   __schedule+0x29a/0x780
+>   ? free_unref_page_commit+0x9b/0x110
+>   schedule+0x3c/0xa0
+>   schedule_timeout+0x215/0x2b0
+>   ? __flush_work+0x19e/0x1e0
+>   wait_for_completion+0x8d/0xf0
+>   _destroy_id+0x144/0x210 [rdma_cm]
+>   ucma_close_id+0x2b/0x40 [rdma_ucm]
+>   __destroy_id+0x93/0x2c0 [rdma_ucm]
+>   ? __xa_erase+0x4a/0xa0
+>   ucma_destroy_id+0x9a/0x120 [rdma_ucm]
+>   ucma_write+0xb8/0x130 [rdma_ucm]
+>   vfs_write+0xb4/0x250
+>   ksys_write+0xb5/0xd0
+>   ? syscall_trace_enter.isra.19+0x123/0x190
+>   do_syscall_64+0x33/0x40
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Ensure that cma_listen_on_all() atomically unwinds its action under the
+> lock during error and reorganize how destroy_id works to be directly
+> sensitive to the listen list not indirectly through the state and some
+> other random collection of variables.
+> 
+> Fixes: c80a0c52d85c ("RDMA/cma: Add missing error handling of listen_id")
+> Link: https://lore.kernel.org/r/20210913093344.17230-1-thomas.liu@ucloud.cn
+> Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/infiniband/core/cma.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 86ee3b01b3ee47..be6beee1dd4c5e 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -1746,16 +1746,17 @@ static void cma_cancel_route(struct rdma_id_private *id_priv)
+>  	}
+>  }
+>  
+> -static void cma_cancel_listens(struct rdma_id_private *id_priv)
+> +static void _cma_cancel_listens(struct rdma_id_private *id_priv)
+>  {
+>  	struct rdma_id_private *dev_id_priv;
+>  
+> +	lockdep_assert_held(&lock);
+> +
+>  	/*
+>  	 * Remove from listen_any_list to prevent added devices from spawning
+>  	 * additional listen requests.
+>  	 */
+> -	mutex_lock(&lock);
+> -	list_del(&id_priv->list);
+> +	list_del_init(&id_priv->list);
+>  
+>  	while (!list_empty(&id_priv->listen_list)) {
+>  		dev_id_priv = list_entry(id_priv->listen_list.next,
+> @@ -1768,6 +1769,20 @@ static void cma_cancel_listens(struct rdma_id_private *id_priv)
+>  		rdma_destroy_id(&dev_id_priv->id);
+>  		mutex_lock(&lock);
+>  	}
+> +}
+> +
+> +static void cma_cancel_listens(struct rdma_id_private *id_priv)
+> +{
+> +	/*
+> +	 * During _destroy_id() it is not possible for this value to transition
+> +	 * from empty to !empty, test it outside to lock to avoid taking a
+> +	 * global lock on every destroy. Only listen all cases will have
+> +	 * something to do
+> +	 */
+> +	if (list_empty(&id_priv->list))
+> +		return;
 
-Or we could pass "size" to split_fs_names() and make sure it
-does not cross page boundary. Something like this. Compile
-tested only. Will test tomorrow.
+IMHO, it is better do not do such check outside of the lock without real
+gain. It is too subtle to rely on _destroy_id() behaviour.
 
----
- init/do_mounts.c |   15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+Thanks
 
-Index: redhat-linux/init/do_mounts.c
-===================================================================
---- redhat-linux.orig/init/do_mounts.c	2021-09-14 18:50:13.608554845 -0400
-+++ redhat-linux/init/do_mounts.c	2021-09-14 19:08:58.349284067 -0400
-@@ -338,19 +338,20 @@ __setup("rootflags=", root_data_setup);
- __setup("rootfstype=", fs_names_setup);
- __setup("rootdelay=", root_delay_setup);
- 
--static int __init split_fs_names(char *page, char *names)
-+static int __init split_fs_names(char *page, size_t size, char *names)
- {
- 	int count = 0;
--	char *p = page;
-+	char *p = page, *end = page + size - 1;
-+
-+	strncpy(p, root_fs_names, size);
-+	*end = '\0';
- 
--	strcpy(p, root_fs_names);
- 	while (*p++) {
- 		if (p[-1] == ',')
- 			p[-1] = '\0';
- 	}
--	*p = '\0';
- 
--	for (p = page; *p; p += strlen(p)+1)
-+	for (p = page; p < end && *p; p += strlen(p)+1)
- 		count++;
- 
- 	return count;
-@@ -404,7 +405,7 @@ void __init mount_block_root(char *name,
- 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
- 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
- 	if (root_fs_names)
--		num_fs = split_fs_names(fs_names, root_fs_names);
-+		num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
- 	else
- 		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
- retry:
-@@ -543,7 +544,7 @@ static int __init mount_nodev_root(void)
- 	fs_names = (void *)__get_free_page(GFP_KERNEL);
- 	if (!fs_names)
- 		return -EINVAL;
--	num_fs = split_fs_names(fs_names, root_fs_names);
-+	num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
- 
- 	for (i = 0, fstype = fs_names; i < num_fs;
- 	     i++, fstype += strlen(fstype) + 1) {
-
+> +	mutex_lock(&lock);
+> +	_cma_cancel_listens(id_priv);
+>  	mutex_unlock(&lock);
+>  }
+>  
+> @@ -1781,10 +1796,6 @@ static void cma_cancel_operation(struct rdma_id_private *id_priv,
+>  	case RDMA_CM_ROUTE_QUERY:
+>  		cma_cancel_route(id_priv);
+>  		break;
+> -	case RDMA_CM_LISTEN:
+> -		if (cma_any_addr(cma_src_addr(id_priv)) && !id_priv->cma_dev)
+> -			cma_cancel_listens(id_priv);
+> -		break;
+>  	default:
+>  		break;
+>  	}
+> @@ -1855,6 +1866,7 @@ static void cma_leave_mc_groups(struct rdma_id_private *id_priv)
+>  static void _destroy_id(struct rdma_id_private *id_priv,
+>  			enum rdma_cm_state state)
+>  {
+> +	cma_cancel_listens(id_priv);
+>  	cma_cancel_operation(id_priv, state);
+>  
+>  	rdma_restrack_del(&id_priv->res);
+> @@ -2579,7 +2591,7 @@ static int cma_listen_on_all(struct rdma_id_private *id_priv)
+>  	return 0;
+>  
+>  err_listen:
+> -	list_del(&id_priv->list);
+> +	_cma_cancel_listens(id_priv);
+>  	mutex_unlock(&lock);
+>  	if (to_destroy)
+>  		rdma_destroy_id(&to_destroy->id);
+> -- 
+> 2.33.0
+> 
