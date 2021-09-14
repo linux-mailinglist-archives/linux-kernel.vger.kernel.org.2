@@ -2,288 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B206440A990
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B4A40A98D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 10:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhINIsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 04:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhINIsE (ORCPT
+        id S230464AbhINIrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 04:47:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55408 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhINIrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:48:04 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C82C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:46:47 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g1so15712987lfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 01:46:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eVzLRyZ3tBwfIZJDoSWz5b2CGnpJiF+Z+OzXkxGBCw4=;
-        b=OO9EPfJNQ3b9uewCALjYNiE7OZqBh2usZHNHDb4AmegN8WvQGSXJO/R7sZ/8a5pgyb
-         d2n3lbLz08LMc/i84hp8tf6yTc4UvZxc53G8GmKeIrJbdUlke6oXdUXsFpjwIyTfyvzj
-         w66g80TPLWK667kEI0QExQ7peZSgJWsoCwzDsk2v1k38v3SebWVo+RMx6Oi7U1GFoHXF
-         FKH7wWGx4l9Q7A5yDnsrYml/RcE5SiPuFNKnRTrbr8Kg2dSxCRUm5SjobDzCxX1hBmd0
-         nnohyK6IUGBgrPtHpOsOsiIosbQpTvqreFI9766jWvnV4h1t0S+VugjQELDaJ1G3a9lE
-         vyqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eVzLRyZ3tBwfIZJDoSWz5b2CGnpJiF+Z+OzXkxGBCw4=;
-        b=W9msj/DUS22ezbhM7dccI9L9NtUq0l78JWFvmI9fKwUulJMuPeW1fU6t+xXIOseuV6
-         Rsr3Oj1CaWFNGHZEB15ROwwAUbJkFqiG5g35J56uDmsL/CszVt7OBNz31GU95g7QHBrz
-         ois2tEMYfAtIvZ6VI5GV8T5yDVrnMnxBv0OjKlSAjAneqLPW8PUy7WXqjkUCkeNR328Z
-         d8YVTOrEC0eU1zKQHYkLcQ/HCBgty+Gdpvmrj1TYfRVB9itRCVgqgPeG9yVQYFFJJcMT
-         aoolEc5cvrmsKoWtj3it9kfcGNtRpzuXijspiMG4zfM453bGd71LW1X3Dj2pJSHY7Vl0
-         pMcw==
-X-Gm-Message-State: AOAM532xjXwvr2lWshFB0qI3dofO8+4edJEFgPLJNIXVvNt4YdFyCgy+
-        1FkREWs63zVCcjE7WeIZbMA6mwT9zSzxU9OYJZv5rA==
-X-Google-Smtp-Source: ABdhPJwm9Fa9t2awLScwmm/nxMarRLpP1y2ulQKwDEAW/KOHXQNaF25SwzxOyLxH0cQ8F+bKTo/fLEvEYpvS+Pjy5Bc=
-X-Received: by 2002:ac2:58d8:: with SMTP id u24mr12374452lfo.167.1631609205456;
- Tue, 14 Sep 2021 01:46:45 -0700 (PDT)
+        Tue, 14 Sep 2021 04:47:32 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B18A21EA2;
+        Tue, 14 Sep 2021 08:46:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631609174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kZkMH63iTQ1WWrdV9xSbbANfuGbUt17bCT5Dl2F/Da0=;
+        b=XWISWXbcR3YdaeFQmM4w9+ukkxf4jSK2eqmQDo5iZ73XBLhF4jEDM8+2E0VxGtr5eFJxiC
+        nmb3T0gwe1ndT5H4JdLDKKBI4kjUyc4fjA7c0T2KqDcf4D22+99oItZYY+wjvqFoIvzlqP
+        K00ktKQrEH5F+uB2Tz7EXYr8uqK/J68=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631609174;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kZkMH63iTQ1WWrdV9xSbbANfuGbUt17bCT5Dl2F/Da0=;
+        b=MJG30rqDnzxe65gQiiRdUUjTdYTTjoLnMy+u/ZtPzlpYnjvOOgqHQqAJZ29ngBM7p6RPor
+        ImJkDb/zx1w6yLBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29AD313D3F;
+        Tue, 14 Sep 2021 08:46:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KUIwClZhQGGpLAAAMHmgww
+        (envelope-from <dwagner@suse.de>); Tue, 14 Sep 2021 08:46:14 +0000
+Date:   Tue, 14 Sep 2021 10:46:13 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [RFC v1] nvme-tcp: enable linger socket option on shutdown
+Message-ID: <20210914084613.75qykjxweh66mdpx@carbon>
+References: <20210903121757.140357-1-dwagner@suse.de>
+ <YTXKHOfnuf+urV1D@infradead.org>
 MIME-Version: 1.0
-References: <20210908013218.29702-1-wenbin.mei@mediatek.com> <20210908013218.29702-3-wenbin.mei@mediatek.com>
-In-Reply-To: <20210908013218.29702-3-wenbin.mei@mediatek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 14 Sep 2021 10:46:09 +0200
-Message-ID: <CAPDyKFqTx3wMm6mMy-wY892Nvu-ukqpRS=TSZxYr7e3TJWgF4A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mmc: mediatek: Add HS400 online tuning support
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Yue Hu <huyue2@yulong.com>, Bean Huo <beanhuo@micron.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTXKHOfnuf+urV1D@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sept 2021 at 03:32, Wenbin Mei <wenbin.mei@mediatek.com> wrote:
->
-> Due to the influence of the corner IC and vcore voltage, for the stability
-> of HS400 mode, we Add HS400 mode online tuning support for mediatek mmc
-> host.
+On Mon, Sep 06, 2021 at 08:58:20AM +0100, Christoph Hellwig wrote:
+> On Fri, Sep 03, 2021 at 02:17:57PM +0200, Daniel Wagner wrote:
+> > When the no linger is set, the networking stack sends FIN followed by
+> > RST immediately when shutting down the socket. By enabling linger when
+> > shutting down we have a proper shutdown sequence on the wire.
+> > 
+> > Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> > ---
+> > The current shutdown sequence on the wire is a bit harsh and
+> > doesn't let the remote host to react. I suppose we should
+> > introduce a short (how long?) linger pause when shutting down
+> > the connection. Thoughs?
+> 
+> Why?  I'm not really a TCP expert, but why is this different from
+> say iSCSI or NBD?
 
-My apologies, but I am not familiar with what 'HS400 online tuning'
-is? Can you please elaborate on this?
+I am also no TCP expert. Adding netdev to Cc.
 
-Is it specific for a Mediatek eMMC controller - or is a common eMMC
-feature that is described in the eMMC spec?
+During testing the nvme-tcp subsystem by one of our partners we observed
+this. Maybe this is perfectly fine. Just as I said it looks a bit weird
+that a proper shutdown of the connection a RST is send out right after
+the FIN.
 
->
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> Reviewed-by: Chaotian Jing <chaotian.jing@mediatek.com>
-> ---
->  drivers/mmc/core/mmc.c    |   8 +++
->  drivers/mmc/host/mtk-sd.c | 118 +++++++++++++++++++++++++++++++++++++-
->  include/linux/mmc/host.h  |   3 +
-
-Please split this patch into a core patch and a mtk-sd patch.
-
->  3 files changed, 127 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 838726b68ff3..0aa72acd8612 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -1222,6 +1222,14 @@ static int mmc_select_hs400(struct mmc_card *card)
->         mmc_set_timing(host, MMC_TIMING_MMC_HS400);
->         mmc_set_bus_speed(card);
->
-> +       if (host->ops->execute_hs400_tuning) {
-> +               mmc_retune_disable(host);
-> +               err = host->ops->execute_hs400_tuning(host, card);
-> +               mmc_retune_enable(host);
-> +               if (err)
-> +                       goto out_err;
-> +       }
-> +
->         if (host->ops->hs400_complete)
->                 host->ops->hs400_complete(host);
->
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index 4dfc246c5f95..484f5c38bfaf 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -258,6 +258,7 @@
->  #define MSDC_PAD_TUNE_RD_SEL     (0x1 << 13)   /* RW */
->  #define MSDC_PAD_TUNE_CMD_SEL    (0x1 << 21)   /* RW */
->
-> +#define PAD_DS_TUNE_DLY_SEL       (0x1 << 0)   /* RW */
->  #define PAD_DS_TUNE_DLY1         (0x1f << 2)   /* RW */
->  #define PAD_DS_TUNE_DLY2         (0x1f << 7)   /* RW */
->  #define PAD_DS_TUNE_DLY3         (0x1f << 12)  /* RW */
-> @@ -301,6 +302,11 @@
->  #define PAD_CMD_RD_RXDLY_SEL    (0x1 << 11)     /* RW */
->  #define PAD_CMD_TX_DLY          (0x1f << 12)    /* RW */
->
-> +/* EMMC50_PAD_DS_TUNE mask */
-> +#define PAD_DS_DLY_SEL         (0x1 << 16)     /* RW */
-> +#define PAD_DS_DLY1            (0x1f << 10)    /* RW */
-> +#define PAD_DS_DLY3            (0x1f << 0)     /* RW */
-> +
->  #define REQ_CMD_EIO  (0x1 << 0)
->  #define REQ_CMD_TMO  (0x1 << 1)
->  #define REQ_DAT_ERR  (0x1 << 2)
-> @@ -448,11 +454,13 @@ struct msdc_host {
->         bool vqmmc_enabled;
->         u32 latch_ck;
->         u32 hs400_ds_delay;
-> +       u32 hs400_ds_dly3;
->         u32 hs200_cmd_int_delay; /* cmd internal delay for HS200/SDR104 */
->         u32 hs400_cmd_int_delay; /* cmd internal delay for HS400 */
->         bool hs400_cmd_resp_sel_rising;
->                                  /* cmd response sample selection for HS400 */
->         bool hs400_mode;        /* current eMMC will run at hs400 mode */
-> +       bool hs400_tuning;      /* hs400 mode online tuning */
->         bool internal_cd;       /* Use internal card-detect logic */
->         bool cqhci;             /* support eMMC hw cmdq */
->         struct msdc_save_para save_para; /* used when gate HCLK */
-> @@ -1190,7 +1198,8 @@ static bool msdc_cmd_done(struct msdc_host *host, int events,
->         if (!sbc_error && !(events & MSDC_INT_CMDRDY)) {
->                 if (events & MSDC_INT_CMDTMO ||
->                     (cmd->opcode != MMC_SEND_TUNING_BLOCK &&
-> -                    cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200))
-> +                    cmd->opcode != MMC_SEND_TUNING_BLOCK_HS200 &&
-> +                    !host->hs400_tuning))
->                         /*
->                          * should not clear fifo/interrupt as the tune data
->                          * may have alreay come when cmd19/cmd21 gets response
-> @@ -1287,7 +1296,8 @@ static void msdc_cmd_next(struct msdc_host *host,
->         if ((cmd->error &&
->             !(cmd->error == -EILSEQ &&
->               (cmd->opcode == MMC_SEND_TUNING_BLOCK ||
-> -              cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200))) ||
-> +              cmd->opcode == MMC_SEND_TUNING_BLOCK_HS200 ||
-> +              host->hs400_tuning))) ||
->             (mrq->sbc && mrq->sbc->error))
->                 msdc_request_done(host, mrq);
->         else if (cmd == mrq->sbc)
-> @@ -2251,6 +2261,106 @@ static int msdc_prepare_hs400_tuning(struct mmc_host *mmc, struct mmc_ios *ios)
->         return 0;
->  }
->
-> +static int msdc_send_cxd_data(struct mmc_card *card, struct mmc_host *host)
-> +{
-> +       struct mmc_request mrq = {};
-> +       struct mmc_command cmd = {};
-> +       struct mmc_data data = {};
-> +       unsigned int len = 512;
-> +       struct scatterlist sg;
-> +       u8 *ext_csd;
-> +
-> +       ext_csd = kzalloc(len, GFP_KERNEL);
-> +       if (!ext_csd)
-> +               return -ENOMEM;
-> +
-> +       mrq.cmd = &cmd;
-> +       mrq.data = &data;
-> +
-> +       cmd.opcode = MMC_SEND_EXT_CSD;
-> +       cmd.arg = 0;
-> +       cmd.flags = MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC;
-> +
-> +       data.blksz = len;
-> +       data.blocks = 1;
-> +       data.flags = MMC_DATA_READ;
-> +       data.sg = &sg;
-> +       data.sg_len = 1;
-> +
-> +       sg_init_one(&sg, ext_csd, len);
-> +       mmc_set_data_timeout(&data, card);
-> +       mmc_wait_for_req(host, &mrq);
-> +
-> +       kfree(ext_csd);
-> +
-> +       if (cmd.error)
-> +               return cmd.error;
-> +       if (data.error)
-> +               return data.error;
-> +
-> +       return 0;
-
-Why do we need to send a MMC_SEND_EXT_CSD command, exactly?
-
-Why can't mmc_send_tuning() work here too? What does the eMMC spec
-state about this?
-
-> +}
-> +
-> +static int msdc_execute_hs400_tuning(struct mmc_host *mmc, struct mmc_card *card)
-> +{
-> +       struct msdc_host *host = mmc_priv(mmc);
-> +       struct msdc_delay_phase dly1_delay;
-> +       u32 val, result_dly1 = 0;
-> +       int i, ret;
-> +
-> +       if (host->top_base) {
-> +               sdr_set_bits(host->top_base + EMMC50_PAD_DS_TUNE,
-> +                            PAD_DS_DLY_SEL);
-> +               if (host->hs400_ds_dly3)
-> +                       sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-> +                                     PAD_DS_DLY3, host->hs400_ds_dly3);
-> +       } else {
-> +               sdr_set_bits(host->base + PAD_DS_TUNE, PAD_DS_TUNE_DLY_SEL);
-> +               if (host->hs400_ds_dly3)
-> +                       sdr_set_field(host->base + PAD_DS_TUNE,
-> +                                     PAD_DS_TUNE_DLY3, host->hs400_ds_dly3);
-> +       }
-> +
-> +       host->hs400_tuning = true;
-> +       for (i = 0; i < PAD_DELAY_MAX; i++) {
-> +               if (host->top_base)
-> +                       sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-> +                                     PAD_DS_DLY1, i);
-> +               else
-> +                       sdr_set_field(host->base + PAD_DS_TUNE,
-> +                                     PAD_DS_TUNE_DLY1, i);
-> +               ret = msdc_send_cxd_data(card, mmc);
-> +               if (!ret)
-> +                       result_dly1 |= (1 << i);
-> +       }
-> +       host->hs400_tuning = false;
-> +
-> +       dly1_delay = get_best_delay(host, result_dly1);
-> +       if (dly1_delay.maxlen == 0) {
-> +               dev_err(host->dev, "Failed to get DLY1 delay!\n");
-> +               goto fail;
-> +       }
-> +       if (host->top_base)
-> +               sdr_set_field(host->top_base + EMMC50_PAD_DS_TUNE,
-> +                             PAD_DS_DLY1, dly1_delay.final_phase);
-> +       else
-> +               sdr_set_field(host->base + PAD_DS_TUNE,
-> +                             PAD_DS_TUNE_DLY1, dly1_delay.final_phase);
-> +
-> +       if (host->top_base)
-> +               val = readl(host->top_base + EMMC50_PAD_DS_TUNE);
-> +       else
-> +               val = readl(host->base + PAD_DS_TUNE);
-> +
-> +       dev_info(host->dev, "Fianl PAD_DS_TUNE: 0x%x\n", val);
-> +
-> +       return 0;
-> +
-> +fail:
-> +       dev_err(host->dev, "Failed to tuning DS pin delay!\n");
-> +       return -EIO;
-> +}
-
-[...]
-
-Kind regards
-Uffe
+No idea how iSCSI or NBD handles this. I'll check.
