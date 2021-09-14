@@ -2,133 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C0E40AD3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67B840AD38
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhINMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbhINMOi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:14:38 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCD7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:13:20 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id b64so14504068qkg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:13:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pJ0yW4/1Jn6ZEeGlxOvvBqEA1VuZRtIwgqtBes2tjIY=;
-        b=ZT9oblhQOkOXScfXKv8+xOqRaGE0WgSKWm93+I3oT8FQcNL6gNEpMSrGUSsbksVmfb
-         y3GdJxN/nkFI6szxiiq0GYBxjof1k3RzFbKXcRnSuWr4rVjPew9FTFreNBDbfz40ABvo
-         YanTFu3rpFNJteFkq1DEjpegEKUARWnyRjEIzDqMN7dP42I5ZDNIpsB9bI+TihY+0XUL
-         bv4DOR9LPuDOLM35CzaDQdyEX5X0wD3aSkGeKI7PsqOJ8PCeYKPsRhATLiU1PE4trcAM
-         Ds5AcFT2m80OecQVCK6+2q3MWUedgmTfqjtPs1EYRflv/K24dgoNYftDbBq4MCldfxXH
-         qnKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pJ0yW4/1Jn6ZEeGlxOvvBqEA1VuZRtIwgqtBes2tjIY=;
-        b=g4Rc0GaHzCp0yWKlb8vOA2Ji6D3Vh1RTkFBdIsfzdOTmVYHAATQJn4ypDmMwe69Z0S
-         aoup603zq6TgQk7SSJ3o39qeiYmpyALalScpKZpK/m9q+qcG7zBoy9INDBXFekk07k8M
-         4TzqmYRqIOpADeJH5SLJh+5Ti5DN8KVR52mG8NecOcIgqIvji8zUajsV0HlOlUGNS2xy
-         SSYqN+hUK5P+G/22zYKlq1Uf3LIFE5mIMOdtCIVYGgBvFbZT2eAz2F3G9VQVBXd7c1oJ
-         fnvN07VazUXfdRtg5fmPhWOxnO3gf+7MF1ylXyV0+Yfb4ft8b+DUh9mQEOhyNoUBTJsv
-         gmXg==
-X-Gm-Message-State: AOAM531enZUcxHc+qDWdbsDTwoWzNh1vKxcKTQQstglThYIG+GGicyVI
-        KbLv6aJjC8Ktx8ewIfYcajJFDCcT09JYPZ2f+8mYzg==
-X-Google-Smtp-Source: ABdhPJwLVdTNZsVxxo92ilXBQEiuYtzkaFYtDjigb7vv+T3hwYVL5wZO3l5lC4q8vtXtFjs2gqHYUYVCTZ6pi+MGjVQ=
-X-Received: by 2002:a05:620a:191d:: with SMTP id bj29mr4500655qkb.362.1631621599977;
- Tue, 14 Sep 2021 05:13:19 -0700 (PDT)
+        id S232762AbhINMOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:14:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232833AbhINMOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:14:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 222036112D;
+        Tue, 14 Sep 2021 12:12:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631621572;
+        bh=/guvqv519fLLLPCrNhLwtZ/c6qWEgPHi2aboPFDaiAo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YsAcbD59dUw9CAYmjsQ9XPgUveUh55lTIM54vqR6TWlLwRheYyeIzQ/PKOudm/bQJ
+         IALFukrxc2jJSvR6fdUspz/fVfJD0B3Tckc6yzkafRKMbSk3mmzToOjWDK7ncgePA2
+         pPSpADQ8jm9PxIravgVdWkL3Rk0V0HXKGDXBNQPLIgtuUmppDNZhMOsUuJT2g4dOpl
+         DQ4BaAXku2VqkzCdUugX7arQM8yc4jymFFBXRtQ+dAPj3D1epyP0jWsQZ7rP+JYNHf
+         ilHpGcDyaMfMmfzYSFTWpc/SYYwBQHbItCyXiRqbx9M/hSaO62DPZaZg1lNC6vDmzV
+         pwEJsbxaz7Qjg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        netdev@vger.kernel.org, Roi Dayan <roid@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>
+Subject: [PATCH net-next] net/mlx5: Fix use of uninitialized variable in bridge.c
+Date:   Tue, 14 Sep 2021 15:12:47 +0300
+Message-Id: <9e9eb5df93dbcba6faff199d71222785c1f1faf7.1631621485.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210907141307.1437816-1-elver@google.com> <20210907141307.1437816-3-elver@google.com>
-In-Reply-To: <20210907141307.1437816-3-elver@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 14 Sep 2021 14:12:43 +0200
-Message-ID: <CAG_fn=XGa=UK6cduTNAd2AREA6jxUaGFJqTWT1cNTXCK4-6k0Q@mail.gmail.com>
-Subject: Re: [PATCH 2/6] lib/stackdepot: remove unused function argument
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 4:14 PM Marco Elver <elver@google.com> wrote:
->
-> alloc_flags in depot_alloc_stack() is no longer used; remove it.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-> ---
->  lib/stackdepot.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index 0a2e417f83cb..c80a9f734253 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -102,8 +102,8 @@ static bool init_stack_slab(void **prealloc)
->  }
->
->  /* Allocation of a new stack in raw storage */
-> -static struct stack_record *depot_alloc_stack(unsigned long *entries, in=
-t size,
-> -               u32 hash, void **prealloc, gfp_t alloc_flags)
-> +static struct stack_record *
-> +depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **pre=
-alloc)
->  {
->         struct stack_record *stack;
->         size_t required_size =3D struct_size(stack, entries, size);
-> @@ -309,9 +309,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *=
-entries,
->
->         found =3D find_stack(*bucket, entries, nr_entries, hash);
->         if (!found) {
-> -               struct stack_record *new =3D
-> -                       depot_alloc_stack(entries, nr_entries,
-> -                                         hash, &prealloc, alloc_flags);
-> +               struct stack_record *new =3D depot_alloc_stack(entries, n=
-r_entries, hash, &prealloc);
-> +
->                 if (new) {
->                         new->next =3D *bucket;
->                         /*
-> --
-> 2.33.0.153.gba50c8fa24-goog
->
+Rewrite the code to fix the following compilation warnings that were
+discovered once Linus enabled -Werror flag.
 
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:11: error:
+variable 'err' is used uninitialized whenever 'if' condition is false
+[-Werror,-Wsometimes-uninitialized]
+        else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:164:9: note:
+uninitialized use occurs here
+        return err;
+               ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:7: note:
+remove the 'if' if its condition is always true
+        else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:140:9: note:
+initialize the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:262:7: error:
+variable 'err' is used uninitialized whenever switch case is taken
+[-Werror,-Wsometimes-uninitialized]
+        case SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS:
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
+uninitialized use occurs here
+        return err;
+               ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:7: error:
+variable 'err' is used uninitialized whenever 'if' condition is false
+[-Werror,-Wsometimes-uninitialized]
+                if (attr->u.brport_flags.mask & ~(BR_LEARNING |
+BR_FLOOD | BR_MCAST_FLOOD)) {
 
---=20
-Alexander Potapenko
-Software Engineer
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
+uninitialized use occurs here
+        return err;
+               ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:3: note:
+remove the 'if' if its condition is always true
+                if (attr->u.brport_flags.mask & ~(BR_LEARNING |
+BR_FLOOD | BR_MCAST_FLOOD)) {
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:247:9: note:
+initialize the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
+3 errors generated.
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+Fixes: ff9b7521468b ("net/mlx5: Bridge, support LAG")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ .../mellanox/mlx5/core/en/rep/bridge.c        | 36 +++++++++++--------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
+index 0c38c2e319be..55b4ce37bcae 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c
+@@ -137,7 +137,6 @@ static int mlx5_esw_bridge_port_changeupper(struct notifier_block *nb, void *ptr
+ 	u16 vport_num, esw_owner_vhca_id;
+ 	struct netlink_ext_ack *extack;
+ 	int ifindex = upper->ifindex;
+-	int err;
+ 
+ 	if (!netif_is_bridge_master(upper))
+ 		return 0;
+@@ -148,20 +147,29 @@ static int mlx5_esw_bridge_port_changeupper(struct notifier_block *nb, void *ptr
+ 
+ 	extack = netdev_notifier_info_to_extack(&info->info);
+ 
+-	if (mlx5_esw_bridge_is_local(dev, rep, esw))
+-		err = info->linking ?
+-			mlx5_esw_bridge_vport_link(ifindex, vport_num, esw_owner_vhca_id,
+-						   br_offloads, extack) :
+-			mlx5_esw_bridge_vport_unlink(ifindex, vport_num, esw_owner_vhca_id,
+-						     br_offloads, extack);
+-	else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+-		err = info->linking ?
+-			mlx5_esw_bridge_vport_peer_link(ifindex, vport_num, esw_owner_vhca_id,
+-							br_offloads, extack) :
+-			mlx5_esw_bridge_vport_peer_unlink(ifindex, vport_num, esw_owner_vhca_id,
++	if (mlx5_esw_bridge_is_local(dev, rep, esw)) {
++		if (info->linking)
++			return mlx5_esw_bridge_vport_link(ifindex, vport_num,
++							  esw_owner_vhca_id,
+ 							  br_offloads, extack);
+ 
+-	return err;
++		return mlx5_esw_bridge_vport_unlink(ifindex, vport_num,
++						    esw_owner_vhca_id,
++						    br_offloads, extack);
++	}
++
++	if (mlx5_esw_bridge_dev_same_hw(rep, esw)) {
++		if (info->linking)
++			return mlx5_esw_bridge_vport_peer_link(
++				ifindex, vport_num, esw_owner_vhca_id,
++				br_offloads, extack);
++		return mlx5_esw_bridge_vport_peer_unlink(ifindex, vport_num,
++							 esw_owner_vhca_id,
++							 br_offloads, extack);
++	}
++
++	WARN_ON(true);
++	return -EINVAL;
+ }
+ 
+ static int mlx5_esw_bridge_switchdev_port_event(struct notifier_block *nb,
+@@ -244,7 +252,7 @@ mlx5_esw_bridge_port_obj_attr_set(struct net_device *dev,
+ 	struct netlink_ext_ack *extack = switchdev_notifier_info_to_extack(&port_attr_info->info);
+ 	const struct switchdev_attr *attr = port_attr_info->attr;
+ 	u16 vport_num, esw_owner_vhca_id;
+-	int err;
++	int err = 0;
+ 
+ 	if (!mlx5_esw_bridge_lower_rep_vport_num_vhca_id_get(dev, br_offloads->esw, &vport_num,
+ 							     &esw_owner_vhca_id))
+-- 
+2.31.1
+
