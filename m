@@ -2,132 +2,473 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B03640B7F6
+	by mail.lfdr.de (Postfix) with ESMTP id C299E40B7F8
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhINTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbhINTX5 (ORCPT
+        id S232644AbhINTYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:24:24 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:55085 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232507AbhINTYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:23:57 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB7EC061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:22:37 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id o11so582085ljp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RgqPc9G3kEzrx4a9xU6WJRNLMMqujZAV7WWA24EODcg=;
-        b=B7a2T/vWkandCsB27/jpPgZImnu46XBPtNlUpD22KxdbM1FhOhF2vGT8afNq9gpWHP
-         sJqxZ0BJNT5KcVCN04TGHBAIsa+zsxMVuSEbUMXiA+1WdMk1cjTcoTobbohQ7RgeZbrO
-         qY+SR583jpL9bTsYAfVzwqcrCgh9HG79xO7zdBNmaGL7nXHan6i4zEtmqtLcOClJxH9d
-         VbVzZj6tQBwXRjJkcB4j48au/AVdL0rRFGLYEu55uSc1sN1fvT+6QEsKRe31OWaRwzo2
-         kP1zz5FCzcfmVGOMkk2kTTnT3L8mgJxYU4HSMozh5gkA4UABdF5OJIYR0xGk+gnsB1ci
-         Fheg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RgqPc9G3kEzrx4a9xU6WJRNLMMqujZAV7WWA24EODcg=;
-        b=CP2O1I/u6+2Xz2XB7+dsG5OlV1YELQ8Crt1k+wXOc+O6ffIkXR3iXSox8r/+ij+ZiN
-         LY1i/oodBk4OX3dQhcUWw9nQ826ImODBAFqFDlLJwkgkYHPMFd4y4tW+RoUOMPaVHNok
-         XYTS719H2kksViR9QsoxZI7pAGyd4qhsKgIyWu2JgRS2AQ248aOCPY93BYzsyA2zYDe9
-         bebJCMbfcc91FNJbcQ3o2RLZ94ZTF8YuZ7ujx8x8IEKR5HhI/tt5ZvJMb9L6cUxHpthH
-         qV2vBIwR20M9BhHn4xlACD5+q/0+jI+JaTkrmryEjXh2Qff3D5EW+CYZwk8Umhk1aTqm
-         LJOg==
-X-Gm-Message-State: AOAM532sGLF/rtBKR7JlfAc03FZEgLlJbvOE4IePjIV6fN5DLwb03A9G
-        tHPW210l6Cnd6Wx4YBtLFXn0Frpnv5VS5Y3eSYw/dg==
-X-Google-Smtp-Source: ABdhPJwa7yL3vXUNDq0XxlCpymQppX1uWzQS6zEjAC1wqfD6PUQ6AH9Jk8yNqHqbph8WiBjGBnSH7AOvrA/KuPEzBR8=
-X-Received: by 2002:a05:651c:54d:: with SMTP id q13mr17337321ljp.526.1631647355826;
- Tue, 14 Sep 2021 12:22:35 -0700 (PDT)
+        Tue, 14 Sep 2021 15:24:21 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7FBC3240002;
+        Tue, 14 Sep 2021 19:23:01 +0000 (UTC)
+Date:   Tue, 14 Sep 2021 21:23:01 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v8 1/4] dt-bindings: display: Document the Xylon LogiCVC
+ display controller
+Message-ID: <YUD2ldi4IOrI+Wjb@aptenodytes>
+References: <20201223212947.160565-1-paul.kocialkowski@bootlin.com>
+ <20201223212947.160565-2-paul.kocialkowski@bootlin.com>
+ <20210112151715.GA354038@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20210914102837.6172-1-will@kernel.org> <01f572ab-bea2-f246-2f77-2f119056db84@kernel.org>
- <202109140958.11DCC6B6@keescook> <CAKwvOdnrO7X8h-g9Pn8RmfJhqj2zn3HJwpQ0p2EONNtFF0w-uA@mail.gmail.com>
- <202109141214.630BB3A@keescook>
-In-Reply-To: <202109141214.630BB3A@keescook>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 14 Sep 2021 12:22:24 -0700
-Message-ID: <CAKwvOdmP6mYwZ+0Z5iXFv5dtd_96SxYsUn469ZC=C=SFw-Hs-A@mail.gmail.com>
-Subject: Re: [PATCH] hardening: Default to INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2iAkKRZEbYrnvNIT"
+Content-Disposition: inline
+In-Reply-To: <20210112151715.GA354038@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:14 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Sep 14, 2021 at 11:53:38AM -0700, Nick Desaulniers wrote:
-> > Rather than create 2 new kconfigs with 1 new invocation of the
-> > compiler via cc-option, how about just adding an `ifdef
-> > CONFIG_CC_IS_CLANG` guard around adding the obnoxious flag to
-> > `KBUILD_CFLAGS` in the top level Makefile?
->
-> v2:
 
-LGTM
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+--2iAkKRZEbYrnvNIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think the formal patch should have Will's Suggested-by on it.
+Hi Rob,
 
->
-> diff --git a/Makefile b/Makefile
-> index 34a0afc3a8eb..72d165ffabdb 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -831,12 +831,12 @@ endif
->
->  # Initialize all stack variables with a zero value.
->  ifdef CONFIG_INIT_STACK_ALL_ZERO
-> -# Future support for zero initialization is still being debated, see
-> -# https://bugs.llvm.org/show_bug.cgi?id=45497. These flags are subject to being
-> -# renamed or dropped.
->  KBUILD_CFLAGS  += -ftrivial-auto-var-init=zero
-> +ifdef CONFIG_CC_IS_CLANG
-> +# https://bugs.llvm.org/show_bug.cgi?id=45497
->  KBUILD_CFLAGS  += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
-> +endif
->
->  # While VLAs have been removed, GCC produces unreachable stack probes
->  # for the randomize_kstack_offset feature. Disable it for all compilers.
-> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-> index 90cbaff86e13..ded17b8abce2 100644
-> --- a/security/Kconfig.hardening
-> +++ b/security/Kconfig.hardening
-> @@ -23,13 +23,16 @@ config CC_HAS_AUTO_VAR_INIT_PATTERN
->         def_bool $(cc-option,-ftrivial-auto-var-init=pattern)
->
->  config CC_HAS_AUTO_VAR_INIT_ZERO
-> +       # GCC ignores the -enable flag, so we can test for the feature with
-> +       # a single invocation using the flag, but drop it as appropriate in
-> +       # the Makefile, depending on the presence of Clang.
->         def_bool $(cc-option,-ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang)
->
->  choice
->         prompt "Initialize kernel stack variables at function entry"
->         default GCC_PLUGIN_STRUCTLEAK_BYREF_ALL if COMPILE_TEST && GCC_PLUGINS
->         default INIT_STACK_ALL_PATTERN if COMPILE_TEST && CC_HAS_AUTO_VAR_INIT_PATTERN
-> -       default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_PATTERN
-> +       default INIT_STACK_ALL_ZERO if CC_HAS_AUTO_VAR_INIT_ZERO
->         default INIT_STACK_NONE
->         help
->           This option enables initialization of stack variables at
->
-> --
-> Kees Cook
+I just found out as I'm about to send a new revision that I had not yet
+responded to your concerns here.
 
+On Tue 12 Jan 21, 09:17, Rob Herring wrote:
+> On Wed, Dec 23, 2020 at 10:29:44PM +0100, Paul Kocialkowski wrote:
+> > The Xylon LogiCVC is a display controller implemented as programmable
+> > logic in Xilinx FPGAs.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../display/xylon,logicvc-display.yaml        | 313 ++++++++++++++++++
+> >  1 file changed, 313 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/xylon,log=
+icvc-display.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/display/xylon,logicvc-di=
+splay.yaml b/Documentation/devicetree/bindings/display/xylon,logicvc-displa=
+y.yaml
+> > new file mode 100644
+> > index 000000000000..aca78334ad2c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/xylon,logicvc-display.y=
+aml
+> > @@ -0,0 +1,313 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +# Copyright 2019 Bootlin
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/display/xylon,logicvc-display.yaml=
+#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Xylon LogiCVC display controller
+> > +
+> > +maintainers:
+> > +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > +
+> > +description: |
+> > +  The Xylon LogiCVC is a display controller that supports multiple lay=
+ers.
+> > +  It is usually implemented as programmable logic and was optimized fo=
+r use
+> > +  with Xilinx Zynq-7000 SoCs and Xilinx FPGAs.
+> > +
+> > +  Because the controller is intended for use in a FPGA, most of the
+> > +  configuration of the controller takes place at logic configuration b=
+itstream
+> > +  synthesis time. As a result, many of the device-tree bindings are me=
+ant to
+> > +  reflect the synthesis configuration and must not be configured diffe=
+rently.
+> > +  Matching synthesis parameters are provided when applicable.
+> > +
+> > +  Layers are declared in the "layers" sub-node and have dedicated conf=
+iguration.
+> > +  In version 3 of the controller, each layer has fixed memory offset a=
+nd address
+> > +  starting from the video memory base address for its framebuffer. In =
+version 4,
+> > +  framebuffers are configured with a direct memory address instead.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - xylon,logicvc-3.02.a-display
+> > +      - xylon,logicvc-4.01.a-display
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    minItems: 1
+> > +    maxItems: 4
+> > +
+> > +  clock-names:
+> > +    minItems: 1
+> > +    maxItems: 4
+> > +    items:
+> > +      # vclk is required and must be provided as first item.
+> > +      - const: vclk
+> > +      # Other clocks are optional and can be provided in any order.
+> > +      - enum:
+> > +          - vclk2
+> > +          - lvdsclk
+> > +          - lvdsclkn
+> > +      - enum:
+> > +          - vclk2
+> > +          - lvdsclk
+> > +          - lvdsclkn
+> > +      - enum:
+> > +          - vclk2
+> > +          - lvdsclk
+> > +          - lvdsclkn
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  memory-region:
+> > +    maxItems: 1
+> > +
+> > +  xylon,display-interface:
+> > +    enum:
+> > +      # Parallel RGB interface (C_DISPLAY_INTERFACE =3D=3D 0)
+> > +      - parallel-rgb
+> > +      # ITU-T BR656 interface (C_DISPLAY_INTERFACE =3D=3D 1)
+> > +      - bt656
+> > +      # 4-bit LVDS interface (C_DISPLAY_INTERFACE =3D=3D 2)
+> > +      - lvds-4bits
+> > +      # 3-bit LVDS interface (C_DISPLAY_INTERFACE =3D=3D 4)
+> > +      - lvds-3bits
+> > +      # DVI interface (C_DISPLAY_INTERFACE =3D=3D 5)
+> > +      - dvi
+> > +    description: Display output interface (C_DISPLAY_INTERFACE).
+>=20
+> As I mentioned before, we have standard properties for these or you know=
+=20
+> the setting based on the panel/bridge attached.=20
 
+The point here is to indicate how the bitstream was configured and not
+to indicate what some run-time configuration should be. The bottomline
+is to let the driver have knowledge of the bitstream configuration,
+like it's done for the other properties.
 
--- 
-Thanks,
-~Nick Desaulniers
+This could typically be used by the driver to check if a connected panel/br=
+idge
+is compatible or not with the bitstream configuration.
+
+As a result, it doesn't reflect the general "bus configuration" for which
+we may have a generic property, but a bitstream configuration property that
+is specific to our hardware. Hence why I think it makes sense to have it
+described that way.
+
+> > +
+> > +  xylon,display-colorspace:
+> > +    enum:
+> > +      # RGB colorspace (C_DISPLAY_COLOR_SPACE =3D=3D 0)
+> > +      - rgb
+> > +      # YUV 4:2:2 colorspace (C_DISPLAY_COLOR_SPACE =3D=3D 1)
+> > +      - yuv422
+> > +      # YUV 4:4:4 colorspace (C_DISPLAY_COLOR_SPACE =3D=3D 2)
+> > +      - yuv444
+> > +    description: Display output colorspace (C_DISPLAY_COLOR_SPACE).
+> > +
+> > +  xylon,display-depth:
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    description: Display output depth (C_PIXEL_DATA_WIDTH).
+> > +
+> > +  xylon,row-stride:
+> > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +    description: Fixed number of pixels in a framebuffer row (C_ROW_ST=
+RIDE).
+> > +
+> > +  xylon,syscon:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: |
+> > +      Syscon phandle representing the top-level logicvc instance, usef=
+ul when
+> > +      the parent node is not the top-level logicvc instance.
+>=20
+> Why do you need to support both ways? Drop this and require it to be the=
+=20
+> parent node.
+
+Fair enough, I guess I had seen similar things around but there's no real
+use-case as far as I know.
+
+> > +
+> > +  xylon,dithering:
+> > +    $ref: "/schemas/types.yaml#/definitions/flag"
+> > +    description: Dithering module is enabled (C_XCOLOR)
+> > +
+> > +  xylon,background-layer:
+> > +    $ref: "/schemas/types.yaml#/definitions/flag"
+> > +    description: |
+> > +      The last layer is used to display a black background (C_USE_BACK=
+GROUND).
+> > +      The layer must still be registered.
+> > +
+> > +  xylon,layers-configurable:
+> > +    $ref: "/schemas/types.yaml#/definitions/flag"
+> > +    description: |
+> > +      Configuration of layers' size, position and offset is enabled
+> > +      (C_USE_SIZE_POSITION).
+> > +
+> > +  layers:
+> > +    type: object
+> > +
+> > +    properties:
+> > +      "#address-cells":
+> > +        const: 1
+> > +
+> > +      "#size-cells":
+> > +        const: 0
+> > +
+> > +    patternProperties:
+> > +      "^layer@[0-9]+$":
+> > +        type: object
+> > +
+> > +        properties:
+> > +          reg:
+> > +            maxItems: 1
+> > +
+> > +          xylon,layer-depth:
+> > +            $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +            description: Layer depth (C_LAYER_X_DATA_WIDTH).
+> > +
+> > +          xylon,layer-colorspace:
+> > +            enum:
+> > +              # RGB colorspace (C_LAYER_X_TYPE =3D=3D 0)
+> > +              - rgb
+> > +              # YUV packed colorspace (C_LAYER_X_TYPE =3D=3D 0)
+> > +              - yuv
+> > +            description: Layer colorspace (C_LAYER_X_TYPE).
+> > +
+> > +          xylon,layer-alpha-mode:
+> > +            enum:
+> > +              # Alpha is configured layer-wide (C_LAYER_X_ALPHA_MODE =
+=3D=3D 0)
+> > +              - layer
+> > +              # Alpha is configured per-pixel (C_LAYER_X_ALPHA_MODE =
+=3D=3D 1)
+> > +              - pixel
+> > +            description: Alpha mode for the layer (C_LAYER_X_ALPHA_MOD=
+E).
+> > +
+> > +          xylon,layer-base-offset:
+> > +            $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +            description: |
+> > +              Offset in number of lines (C_LAYER_X_OFFSET) starting fr=
+om the
+> > +              video RAM base (C_VMEM_BASEADDR), only for version 3.
+> > +
+> > +          xylon,layer-buffer-offset:
+> > +            $ref: "/schemas/types.yaml#/definitions/uint32"
+> > +            description: |
+> > +              Offset in number of lines (C_BUFFER_*_OFFSET) starting f=
+rom the
+> > +              layer base offset for the second buffer used in double-b=
+uffering.
+> > +
+> > +          xylon,layer-primary:
+> > +            $ref: "/schemas/types.yaml#/definitions/flag"
+> > +            description: |
+> > +              Layer should be registered as a primary plane (exactly o=
+ne is
+> > +              required).
+> > +
+> > +        additionalProperties: false
+> > +
+> > +        required:
+> > +          - reg
+> > +          - xylon,layer-depth
+> > +          - xylon,layer-colorspace
+> > +          - xylon,layer-alpha-mode
+> > +
+> > +    required:
+> > +      - "#address-cells"
+> > +      - "#size-cells"
+> > +      - layer@0
+> > +
+> > +    additionalProperties: false
+> > +
+> > +    description: |
+> > +      The description of the display controller layers, containing lay=
+er
+> > +      sub-nodes that each describe a registered layer.
+> > +
+> > +  ports:
+> > +    type: object
+>=20
+> You have to define what each port is. If only 1, then use just 'port'.
+>=20
+> We now have graph.yaml (in dt-schema). You need to reference that here.=
+=20
+> See drm-misc-next as everything has been converted.
+
+I will definitely switch to a single port and describe its purpose.
+
+Thanks!
+
+Paul
+
+> > +
+> > +additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - interrupts
+> > +  - xylon,display-interface
+> > +  - xylon,display-colorspace
+> > +  - xylon,display-depth
+> > +  - xylon,row-stride
+> > +  - layers
+> > +  - ports
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +
+> > +    logicvc: logicvc@43c00000 {
+> > +      compatible =3D "xylon,logicvc-3.02.a", "syscon", "simple-mfd";
+> > +      reg =3D <0x43c00000 0x6000>;
+> > +
+> > +      #address-cells =3D <1>;
+> > +      #size-cells =3D <1>;
+> > +
+> > +      logicvc_display: display@0 {
+> > +        compatible =3D "xylon,logicvc-3.02.a-display";
+> > +        reg =3D <0x0 0x6000>;
+> > +
+> > +        memory-region =3D <&logicvc_cma>;
+> > +
+> > +        clocks =3D <&logicvc_vclk 0>, <&logicvc_lvdsclk 0>;
+> > +        clock-names =3D "vclk", "lvdsclk";
+> > +
+> > +        interrupt-parent =3D <&intc>;
+> > +        interrupts =3D <0 34 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        xylon,display-interface =3D "lvds-4bits";
+> > +        xylon,display-colorspace =3D "rgb";
+> > +        xylon,display-depth =3D <16>;
+> > +        xylon,row-stride =3D <1024>;
+> > +
+> > +        xylon,layers-configurable;
+> > +
+> > +        layers {
+> > +          #address-cells =3D <1>;
+> > +          #size-cells =3D <0>;
+> > +
+> > +          layer@0 {
+> > +            reg =3D <0>;
+> > +            xylon,layer-depth =3D <16>;
+> > +            xylon,layer-colorspace =3D "rgb";
+> > +            xylon,layer-alpha-mode =3D "layer";
+> > +            xylon,layer-base-offset =3D <0>;
+> > +            xylon,layer-buffer-offset =3D <480>;
+> > +            xylon,layer-primary;
+> > +          };
+> > +
+> > +          layer@1 {
+> > +            reg =3D <1>;
+> > +            xylon,layer-depth =3D <16>;
+> > +            xylon,layer-colorspace =3D "rgb";
+> > +            xylon,layer-alpha-mode =3D "layer";
+> > +            xylon,layer-base-offset =3D <2400>;
+> > +            xylon,layer-buffer-offset =3D <480>;
+> > +          };
+> > +
+> > +          layer@2 {
+> > +            reg =3D <2>;
+> > +            xylon,layer-depth =3D <16>;
+> > +            xylon,layer-colorspace =3D "rgb";
+> > +            xylon,layer-alpha-mode =3D "layer";
+> > +            xylon,layer-base-offset =3D <960>;
+> > +            xylon,layer-buffer-offset =3D <480>;
+> > +          };
+> > +
+> > +          layer@3 {
+> > +            reg =3D <3>;
+> > +            xylon,layer-depth =3D <16>;
+> > +            xylon,layer-colorspace =3D "rgb";
+> > +            xylon,layer-alpha-mode =3D "layer";
+> > +            xylon,layer-base-offset =3D <480>;
+> > +            xylon,layer-buffer-offset =3D <480>;
+> > +          };
+> > +
+> > +          layer@4 {
+> > +            reg =3D <4>;
+> > +            xylon,layer-depth =3D <16>;
+> > +            xylon,layer-colorspace =3D "rgb";
+> > +            xylon,layer-alpha-mode =3D "layer";
+> > +            xylon,layer-base-offset =3D <8192>;
+> > +            xylon,layer-buffer-offset =3D <480>;
+> > +          };
+> > +        };
+> > +
+> > +        ports {
+> > +          #address-cells =3D <1>;
+> > +          #size-cells =3D <0>;
+> > +
+> > +          logicvc_out: port@1 {
+> > +            reg =3D <1>;
+> > +
+> > +            #address-cells =3D <1>;
+> > +            #size-cells =3D <0>;
+> > +
+> > +            logicvc_output: endpoint@0 {
+> > +              reg =3D <0>;
+> > +              remote-endpoint =3D <&panel_input>;
+> > +            };
+> > +          };
+> > +        };
+> > +      };
+> > +    };
+> > --=20
+> > 2.29.2
+> >=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--2iAkKRZEbYrnvNIT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmFA9pUACgkQ3cLmz3+f
+v9Em+Af/W0JMmOr2yGSH6UssUF12OAAIb3VgVllKrag7DY4/AxE+zFErDlQoxu1/
+sKfhdc5mPHjB5WSa4ijUuzjGSQs/klnrJnEpA8G70MRceOCI1f4XHX59VAZExx8e
+CgbYeFriYKtZOIO6It1dKeumc/rQY1Wg8DV+XKj1SY4oDTX8ObmzgqQrKKSIdj1A
+9UQmAycRA2MGOAZzDtz18o1J2UG0teXzUnP2GxIF6KdcB5bPhLWrK36+mJ+zoUuy
+G/fR+O9w+ZC8ma3KTA7JdutQSTmpiqU5bD37pbYwi2UgBi8fntWRxiIvXe0yOT9V
+wAwS6HIm4JJTRPbMx8/TXQcACCpYsg==
+=hfQQ
+-----END PGP SIGNATURE-----
+
+--2iAkKRZEbYrnvNIT--
