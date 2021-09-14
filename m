@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8E740B7AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFBA40B7B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbhINTNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
+        id S233389AbhINTN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233730AbhINTN0 (ORCPT
+        with ESMTP id S233399AbhINTNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:13:26 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24195C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:11:58 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id j66so602143oih.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:11:58 -0700 (PDT)
+        Tue, 14 Sep 2021 15:13:50 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAB9C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:12:25 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 17so157433pgp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 12:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=BSSwT7oxjsgFOMu+1NGwhgQtpViayCWoOwG64CMoBRk=;
-        b=hDSs206v3195Y560qB95htiH1r7XdiqlWoYYGIMmZKsme0wdt3U7Hl0DEmzORETQAl
-         oY7mro96c7tw05FWPje4aYkbJ+sv5WycBN3Nw5uuG+YACDPdMvZNHwpOSPLMWJ5tSv7Q
-         K57nIq7SsAR9mAnQlW2a/GH3wsihNJPESaOnA=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JavJkkOpz22nHzp7w49aNBW1DkmZK4vezafTuT+JB/Q=;
+        b=tXfF+z4Yp+j8wWRQ41nGFR/bXPMSsEbE/fDdg9Ns4z8fATNJ/9CmhIyx7vMmciv2sS
+         URPJp/bYnqqm6wnuQVv5PLqBxYPDevjCgEdRXIf6irJlaBZJW2Sllz792nFeQAKz1iEO
+         VAilgKi1UEnb0ptCIEVmobEbo9Ir7l59XB6VfJGEj9KErgoP/CFurKO0p1Ykov6cUvQH
+         Bg03uL9DzFdnrrq4VXEoFjjm5830Rj0EvGlmkBPxfhBhxKN12Y3ucm9GC8gxLivYI/RB
+         kVdGHmmfZtqLW/XJZLKcxABywnOXIoK8nmx62ep4A0IpVC+JyhKvIvs4MuvvjUJp0HID
+         x7lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=BSSwT7oxjsgFOMu+1NGwhgQtpViayCWoOwG64CMoBRk=;
-        b=dGuvYGZJ0YqJ07smi9djybtE6w9VPCpCWS67a53esQbHBkj1lFdJ0uDgivwAJE7z0x
-         nfXW2fV6OEfcKs5k2SHc9eWqJ4OWYdb7yilp6Az9Ohy+y/HemL/dJhk1zLev4Pbt8xuw
-         ifyW/TCM1HnPFpj2DC4hAZdzbUJVKQXpihlgWN8FA5CpPPANiQOQIYubvSTWGMia3+1E
-         RNxiZR2BOIUBviFYa3D5zU3yEJ4M95CzbnjVNjEvJunwKN0rNRvk38Yxla4iZ30h48VF
-         saWejxM/htH027K86JOvvxlrh3E/QJd2W8hds5R9yaq07KlYIWFTVWh/oDTK6dIq+zln
-         jsig==
-X-Gm-Message-State: AOAM533mGoSnxWusZrVDAej2Td3s6/soWQMClMvFdnjmGn2c9lxJmxMG
-        gsU7TA3aS9ajrTwTg/GmrQ2bD59dxISSk38GLcBufA==
-X-Google-Smtp-Source: ABdhPJxj/G3bL5HF0hTnBTg2JQFv34CpmMFfj/HJPwzL7skUSH+a239+sjhTD9p4IGQVFNxccYFtNL83KeC+Bp7Fvi8=
-X-Received: by 2002:a54:4419:: with SMTP id k25mr2725351oiw.32.1631646717560;
- Tue, 14 Sep 2021 12:11:57 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 14 Sep 2021 12:11:57 -0700
-MIME-Version: 1.0
-In-Reply-To: <20210909135838.v4.1.I1116e79d34035338a45c1fc7cdd14a097909c8e0@changeid>
-References: <20210909210032.465570-1-dianders@chromium.org> <20210909135838.v4.1.I1116e79d34035338a45c1fc7cdd14a097909c8e0@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 14 Sep 2021 12:11:57 -0700
-Message-ID: <CAE-0n53Pp1F5dZRk98WT5+K9jz_XpMkKUvYAs_suZFaOE0K39w@mail.gmail.com>
-Subject: Re: [PATCH v4 01/15] dt-bindings: drm/panel-simple-edp: Introduce
- generic eDP panels
-To:     Douglas Anderson <dianders@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JavJkkOpz22nHzp7w49aNBW1DkmZK4vezafTuT+JB/Q=;
+        b=DddUB21q0SPaZMR11jO/4XGOAh/G4hsvDjIC8JRqOu+VtUU1m0VksZYoZjYdV17fyg
+         Pff578t6CuzIBrnjtoCq9JHQBirHSCk0T0rGJ+I3B7Q/9ez8eAP4u+UQILJJ/Gk/qcJT
+         FreQcfYcIC94pH7oyzpr9pSDyjNDvh5lBe1NI+KAlHyg61Wy1K9ARxy7UKxSFWVTMJtY
+         ypzZsLoHnjLP/sGg174UbZ7lvuC/be8fvDIgdqVthIzbtemR5svW8SHkgsOUNQs1RCIA
+         AAHBtwOSVuhRs+Th/CQtP1fe4iY3PBbS0/hzJxKgUEOF3D0GtSlfJeq4JDG0vGny9h+R
+         /ZLA==
+X-Gm-Message-State: AOAM532FjNPfOmSPtekPskPIkSJRcf7+JwsoAtqd8rXWM/NnDfzKb2+7
+        ULyiLVhZmbAbYqKSt/M3HOjnKA==
+X-Google-Smtp-Source: ABdhPJyHgXtFJpbpPr/S9sU8/wZ71wAYHggypbi7CIkwpk2dzuEbyfuFjIVCzgGueErMBWwFt58rHg==
+X-Received: by 2002:a63:1247:: with SMTP id 7mr16718436pgs.366.1631646744947;
+        Tue, 14 Sep 2021 12:12:24 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p27sm6765934pfq.164.2021.09.14.12.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 12:12:24 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 19:12:20 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Nathan Tempelman <natet@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH V2] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM
+ for SEV-ES
+Message-ID: <YUD0FIVTyW8c79b6@google.com>
+References: <20210914190125.3289256-1-pgonda@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914190125.3289256-1-pgonda@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-09-09 14:00:17)
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-edp.yaml b/Documentation/devicetree/bindings/display/panel/panel-edp.yaml
-> new file mode 100644
-> index 000000000000..6a621376ff86
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-edp.yaml
-> @@ -0,0 +1,188 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/panel-edp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Probable (via DP AUX / EDID) eDP Panels with simple poweron sequences
+On Tue, Sep 14, 2021, Peter Gonda wrote:
+> Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
+> VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
+> error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
+> SEV-ES guest. The destination VM is already checked for SEV and SEV-ES
+> with sev_guest(), so this ioctl already fails if the destination is SEV
+> enabled.
+> 
+> Enabling mirroring a VM or copying its encryption context with an SEV-ES
+> VM is more involved and should happen in its own feature patch if that's
+> needed. This is because the vCPUs of SEV-ES VMs need to be updated with
+> LAUNCH_UPDATE_VMSA before LAUNCH_FINISH. This needs KVM changes because
+> the mirror VM has all its SEV ioctls blocked and the original VM doesn't
+> know about the mirrors vCPUs.
 
-Should that be "Probeable" or "Probe-able" or "Detectable"? It's not
-about statistical probabilities right?
+mirror's, or I guess mirrors'? :-)
+
+> Fixes: 54526d1fd593 ("KVM: x86: Support KVM VMs sharing SEV context")
+> 
+> V2:
+>  * Updated changelog with more information and added stable CC.
+
+Nit, but this in the section ignored by git (below the ---) so that omitted from
+the committed changelog.
+
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Nathan Tempelman <natet@google.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: kvm@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+
+> ---
+
+Git ignores stuff in this section.
+
+>  arch/x86/kvm/svm/sev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 75e0b21ad07c..8a279027425f 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1728,7 +1728,7 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>  	source_kvm = source_kvm_file->private_data;
+>  	mutex_lock(&source_kvm->lock);
+>  
+> -	if (!sev_guest(source_kvm)) {
+> +	if (!sev_guest(source_kvm) || sev_es_guest(source_kvm)) {
+>  		ret = -EINVAL;
+>  		goto e_source_unlock;
+>  	}
+> -- 
+> 2.33.0.309.g3052b89438-goog
+> 
