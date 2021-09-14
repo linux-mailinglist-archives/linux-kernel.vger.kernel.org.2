@@ -2,74 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6696640A71D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB60F40A720
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240585AbhINHMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:12:08 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:58190 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240407AbhINHMH (ORCPT
+        id S240592AbhINHMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240341AbhINHMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:12:07 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3A6571C0B79; Tue, 14 Sep 2021 09:10:49 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 09:10:48 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/236] 5.10.65-rc1 review
-Message-ID: <20210914071048.GA26516@amd>
-References: <20210913131100.316353015@linuxfoundation.org>
+        Tue, 14 Sep 2021 03:12:33 -0400
+Received: from lb1-smtp-cloud8.xs4all.net (lb1-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::1b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B346C061574;
+        Tue, 14 Sep 2021 00:11:15 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id Q2b1mLTPxeJ0cQ2b2mnA5X; Tue, 14 Sep 2021 09:11:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1631603474; bh=JPQZgSS72PjvktvWuD+u+PSyd7cFf3S/v1dIeczmFr8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=XcWe6D4FUFu0DcmTSi8cWXlgdMM/vEKsN7bAKtr8l+1PL8ShXYHUadZX0RMGS5xSq
+         JubiW/LLnHUgvzGdtJhRJG4bV9VFN3NLvlG9ytBn8agPnhTg9vwGsD2kNNHdbMoZiY
+         aXOI/cnW5cf3jWbze18sGu60cnUv5hHXNPskS/hRwVn+DSoPaSw7Ltsm4zlbh2YIYN
+         jjtu5BGaJ8BFWZrECs/nFlq7Md0w/sK9zLPc5rZgsFefBcCA08BGYz6bd3mwwJJ8pI
+         7qHg4oFuGRPOZTxjoeJ95izaK3Z6eMcJvJvmFMDhxmcZNEdN1p6NCAEGdSjUuFwzwS
+         BVsVv/8yYW8Ww==
+Subject: Re: [PATCH v14 2/2] arm64: dts: imx8: Add jpeg encoder/decoder nodes
+To:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        robh+dt@kernel.org, shawnguo@kernel.org, aisheng.dong@nxp.com,
+        guoniu.zhou@nxp.com, linux-arm-kernel@lists.infradead.org,
+        mchehab@kernel.org
+Cc:     peng.fan@nxp.com, s.hauer@pengutronix.de, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, p.zabel@pengutronix.de,
+        ezequiel@collabora.com, kernel@pengutronix.de,
+        Mirela Rabulea <mirela.rabulea@nxp.com>
+References: <20210619143611.17280-1-mirela.rabulea@oss.nxp.com>
+ <20210619143611.17280-3-mirela.rabulea@oss.nxp.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <234f9d23-466d-18e5-e28b-c5e472c3c29c@xs4all.nl>
+Date:   Tue, 14 Sep 2021 09:11:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
-Content-Disposition: inline
-In-Reply-To: <20210913131100.316353015@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210619143611.17280-3-mirela.rabulea@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfEKmejbbk5FYA3Xg/ggV6LATwhCgP03jePp/LVUlKhyfZkmPA59iE/PS/tUjIGw6Al/9Io/H6lVRMOgtgwppI/vayLSrNES0JnLmw7dMqC1sSvYH4Jzi
+ mecxroRRMVAM2Cr+vJtP8AkpUqM9gNbXWlhSdS5xFW+ABFNuRJ3oamshjblh/uz3ysmaFLGeHo9LWU3aH3116/HTybVxha1Tm3yJcJd44qzbJJd+t9hWmW+L
+ wlIinPe4GgQ5rxz574RJK34RRGHS/8myRxzEfSC/07d//QW9l6L8NSAYoexT6xBpb9F9ruvOuLfPY29OsTsqOlHWDLReG6zGjgRRDT6tK2c9nILCW3+uLe/h
+ tQ2n0UMaL1LSAscmUGkDIAp+DGOs4+ktDuKkdktL0eimnIt1r5TPNchUUZHLVl2z5pB4rg5E4TQvKAhR8MBoY7dOOfZib+oOCdRBz2VigEzAqYGgNJgTpI+W
+ 1hlxk1LsCOdMtnbZmT8QFovSboHo5pkaG51HYb3PqacOEI72VvMUDhMzVQV8s9seKCE3qM3dI3Rb+jmT+ADPsRehNAJ6dnddOhzVoiVioSohWhTzvp2LVkmU
+ z+njrMS/RfaaSHors+2nA+LV92H/iRXrZmipS3BaCzBlwzyTpno5Ktt5vA8MoLbeFsqHvDgv4rmwlZdK7QS8G73OBp0lqR+IOb0S6XTyITrlMFKaG4OwVm7Y
+ 1C1TEbTtKqwhyHD9ROSv65QtSS1gLHGKIp7iqdlBfiYRkvWWP7MnwZyu+bPe97X+mCF8V4i+7BRD/aWqCAE7ZX4zqVHuKRwCyYs4wghThFkthbIU/2p7Lv5a
+ JOH8tUVpxcdYi61MadgtlFrfTBlYmlGhGWmjhXt9oabqxhQ6Aj0wSUPQc5jShbxyqDEje34jG7AQiBjj+KOrfv2Ku+MyQ0NFd2fc0rPCht8bopxkbxoUdc8Q
+ 03mYfC92RuqiNV7helN4J0E6pqIpUXP3wULMyJPap8LPc850
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mirela,
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 19/06/2021 16:36, Mirela Rabulea (OSS) wrote:
+> From: Mirela Rabulea <mirela.rabulea@nxp.com>
+> 
+> Add dts for imaging subsytem, include jpeg nodes here.
+> Tested on imx8qxp/qm.
 
-Hi!
+I've posted a pull request for the first bindings patch for v5.16, so this dts patch can be merged
+through whatever tree takes such dts patches.
 
-> This is the start of the stable review cycle for the 5.10.65 release.
-> There are 236 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Regards,
 
-CIP testing did not find any problems here:
+	Hans
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
+> 
+> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+> ---
+> Changes in v14:
+>   Address feedback from Aisheng Dong and Ezequiel Garcia:
+>     - use imx8 instead of imx in patch subject
+>     - keep jpeg and LPCGs used by jpeg enabled by default in platform dts (no change here)
+> 
+>  .../arm64/boot/dts/freescale/imx8-ss-img.dtsi | 80 +++++++++++++++++++
+>  .../boot/dts/freescale/imx8qm-ss-img.dtsi     | 12 +++
+>  arch/arm64/boot/dts/freescale/imx8qm.dtsi     |  2 +
+>  .../boot/dts/freescale/imx8qxp-ss-img.dtsi    | 13 +++
+>  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |  2 +
+>  5 files changed, 109 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
+>  create mode 100644 arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi b/arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi
+> new file mode 100644
+> index 000000000000..a90654155a88
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi
+> @@ -0,0 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2019-2021 NXP
+> + * Zhou Guoniu <guoniu.zhou@nxp.com>
+> + */
+> +img_subsys: bus@58000000 {
+> +	compatible = "simple-bus";
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	ranges = <0x58000000 0x0 0x58000000 0x1000000>;
+> +
+> +	img_ipg_clk: clock-img-ipg {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <200000000>;
+> +		clock-output-names = "img_ipg_clk";
+> +	};
+> +
+> +	jpegdec: jpegdec@58400000 {
+> +		reg = <0x58400000 0x00050000>;
+> +		interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 311 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&img_jpeg_dec_lpcg IMX_LPCG_CLK_0>,
+> +			 <&img_jpeg_dec_lpcg IMX_LPCG_CLK_4>;
+> +		clock-names = "per", "ipg";
+> +		assigned-clocks = <&img_jpeg_dec_lpcg IMX_LPCG_CLK_0>,
+> +				  <&img_jpeg_dec_lpcg IMX_LPCG_CLK_4>;
+> +		assigned-clock-rates = <200000000>, <200000000>;
+> +		power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>,
+> +				<&pd IMX_SC_R_MJPEG_DEC_S0>,
+> +				<&pd IMX_SC_R_MJPEG_DEC_S1>,
+> +				<&pd IMX_SC_R_MJPEG_DEC_S2>,
+> +				<&pd IMX_SC_R_MJPEG_DEC_S3>;
+> +	};
+> +
+> +	jpegenc: jpegenc@58450000 {
+> +		reg = <0x58450000 0x00050000>;
+> +		interrupts = <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&img_jpeg_enc_lpcg IMX_LPC[GIT PULL FOR v5.16]G_CLK_0>,
+> +			 <&img_jpeg_enc_lpcg IMX_LPCG_CLK_4>;
+> +		clock-names = "per", "ipg";
+> +		assigned-clocks = <&img_jpeg_enc_lpcg IMX_LPCG_CLK_0>,
+> +				  <&img_jpeg_enc_lpcg IMX_LPCG_CLK_4>;
+> +		assigned-clock-rates = <200000000>, <200000000>;
+> +		power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>,
+> +				<&pd IMX_SC_R_MJPEG_ENC_S0>,
+> +				<&pd IMX_SC_R_MJPEG_ENC_S1>,
+> +				<&pd IMX_SC_R_MJPEG_ENC_S2>,
+> +				<&pd IMX_SC_R_MJPEG_ENC_S3>;
+> +	};
+> +
+> +	img_jpeg_dec_lpcg: clock-controller@585d0000 {
+> +		compatible = "fsl,imx8qxp-lpcg";
+> +		reg = <0x585d0000 0x10000>;
+> +		#clock-cells = <1>;
+> +		clocks = <&img_ipg_clk>, <&img_ipg_clk>;
+> +		clock-indices = <IMX_LPCG_CLK_0>,
+> +				<IMX_LPCG_CLK_4>;
+> +		clock-output-names = "img_jpeg_dec_lpcg_clk",
+> +				     "img_jpeg_dec_lpcg_ipg_clk";
+> +		power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>;
+> +	};
+> +
+> +	img_jpeg_enc_lpcg: clock-controller@585f0000 {
+> +		compatible = "fsl,imx8qxp-lpcg";
+> +		reg = <0x585f0000 0x10000>;
+> +		#clock-cells = <1>;
+> +		clocks = <&img_ipg_clk>, <&img_ipg_clk>;
+> +		clock-indices = <IMX_LPCG_CLK_0>,
+> +				<IMX_LPCG_CLK_4>;
+> +		clock-output-names = "img_jpeg_enc_lpcg_clk",
+> +				     "img_jpeg_enc_lpcg_ipg_clk";
+> +		power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>;
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
+> new file mode 100644
+> index 000000000000..7764b4146e0a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-img.dtsi
+> @@ -0,0 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2021 NXP
+> + */
+> +
+> +&jpegdec {
+> +	compatible = "nxp,imx8qm-jpgdec", "nxp,imx8qxp-jpgdec";
+> +};
+> +
+> +&jpegenc {
+> +	compatible = "nxp,imx8qm-jpgdec", "nxp,imx8qxp-jpgenc";
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qm.dtsi b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> index 12cd059b339b..aebbe2b84aa1 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8qm.dtsi
+> @@ -166,11 +166,13 @@
+>  	};
+>  
+>  	/* sorted in register address */
+> +	#include "imx8-ss-img.dtsi"
+>  	#include "imx8-ss-dma.dtsi"
+>  	#include "imx8-ss-conn.dtsi"
+>  	#include "imx8-ss-lsio.dtsi"
+>  };
+>  
+> +#include "imx8qm-ss-img.dtsi"
+>  #include "imx8qm-ss-dma.dtsi"
+>  #include "imx8qm-ss-conn.dtsi"
+>  #include "imx8qm-ss-lsio.dtsi"
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
+> new file mode 100644
+> index 000000000000..3a087317591d
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/freescale/imx8qxp-ss-img.dtsi
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2021 NXP
+> + *	Dong Aisheng <aisheng.dong@nxp.com>
+> + */
+> +
+> +&jpegdec {
+> +	compatible = "nxp,imx8qxp-jpgdec";
+> +};
+> +
+> +&jpegenc {
+> +	compatible = "nxp,imx8qxp-jpgenc";
+> +};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> index 1e6b4995091e..a625fb6bdc62 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
+> @@ -258,12 +258,14 @@
+>  	};
+>  
+>  	/* sorted in register address */
+> +	#include "imx8-ss-img.dtsi"
+>  	#include "imx8-ss-adma.dtsi"
+>  	#include "imx8-ss-conn.dtsi"
+>  	#include "imx8-ss-ddr.dtsi"
+>  	#include "imx8-ss-lsio.dtsi"
+>  };
+>  
+> +#include "imx8qxp-ss-img.dtsi"
+>  #include "imx8qxp-ss-adma.dtsi"
+>  #include "imx8qxp-ss-conn.dtsi"
+>  #include "imx8qxp-ss-lsio.dtsi"
+> 
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmFASvgACgkQMOfwapXb+vJDRQCglmrVxG3J784FsN7xGMEPrXLK
-6EQAn1p3I7Px2Tfmn+oBuCuu2TErG5Gr
-=rx+E
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
