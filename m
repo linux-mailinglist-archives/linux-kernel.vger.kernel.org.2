@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7722B40AAD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC96C40AAD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhINJ1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        id S229560AbhINJ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhINJ1q (ORCPT
+        with ESMTP id S229874AbhINJ2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:27:46 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ABCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:26:29 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id c79so18102941oib.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:26:29 -0700 (PDT)
+        Tue, 14 Sep 2021 05:28:43 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4356C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:27:24 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so1960728wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 02:27:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Ph/tiCxt6J8lQbta3ZHrGApdLgqUBYn0fpRyKCOIpm8=;
-        b=nFvNtugE0xygWvQKkBBr5TFXt0y7G8aWpryRpcQZThBNYu18ybQPdGD4rmSR0O5duC
-         mPmvGCmWM2wJ459PcnCM6MB5f/tlK0IFWJADc035aUILyXa10PDdkOT5mJr9YcSIloD/
-         gfsSVEbJ0sEfDu8bNe9hwNpTieiFgewg/T/dh3OgiCCrOtQLlgQhWNHrv4p9BKCvMFCf
-         GL1VOkBeiTn9J2qww7OtAHtQ8NX90Z/G/Sn3zWnkElA7CXFbJrsAO+BPkMbe5xKso3sj
-         PDcbAVjFWT6ZV7wPFc5YW/GzZAdaPKxh36KrkGAS2eafJP2LEQ++9X0Om3GpApFsiqGC
-         zQ4A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bfv9mrhoCCh8u0D+lkls3XOLkYlFZSKbSMNA1jMqkE4=;
+        b=P0ezE9qhfQ7YFuhO5o2QECi/f/dbGOGBXB+TO/T0hYa1m+Ql/DlKarEYdW/5O3TOTH
+         cW54RAgvnTvUqFw67C78onjTPCu1bhmEPLrp5zufgaEkbjSBiSn7bc87IaxENdMiIz+3
+         Yzg9YIUIv0Yr/MEvhpR30B1yG4bwzj7WBzKkRU3FCDl2CABwwgB2xL0iuVblIeorM0/i
+         0UWWW3QYVAFNrknaal43z8LCumbNcimR/pCBL1HHkQRBkAlhCmyV4r0daxNFNB3cR5k3
+         vUVNiQKODDkdy2c3fItBF68vVG0jVvuv9nKkS+l3WSKwoSYl2B7teU1fNbZmmQSX8YgW
+         QedQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Ph/tiCxt6J8lQbta3ZHrGApdLgqUBYn0fpRyKCOIpm8=;
-        b=xLQfxDkuXGkxswEvTcB2/f6YajOeCKYHyg/GTyMjkoZAgfwyyb6x903b1iB+0zQ/0S
-         4gCmqih8yRgT1Sqqpra2Ey2pw2V7OP+e8A82SDZx8zuL7l+n961I3BLHyrwUOd1HVeZ8
-         HOtVzApW8SenCrFPUb8Ax+jLGP44WAaBNObJ3mxRdNOH1hmOuGhN5Xv/DxHxy6jf9PjJ
-         CQuTdUeYK6dbXao5tmh6hCIDQ67U+8ORSWbMl8YxLvZO5uijnW6nmSyVo36gmdPd8tHP
-         Jwvu91gzU6FRFVdqhsmV+9V1OhSb00py6a0TuximkaYfyLKO0W2QwJ43i0sMAPVuicYd
-         iOeA==
-X-Gm-Message-State: AOAM531dNY/BNaogzB8Pt+F6/yx1gxiRr66WHwJdJJAdH6P83vNm1vAt
-        KnfQMkdD5S9Z45cg1W4eK+J0JZiXPrOgKfuFEyc=
-X-Google-Smtp-Source: ABdhPJwZfE1rVjbB+I87yCABnvqlclHWSGVjIRoeO0yq4dw5o2A/fHUbhLrWlfWq5E9reP7j2ettFzdQGh8gUgr6MWo=
-X-Received: by 2002:aca:914:: with SMTP id 20mr586624oij.59.1631611588854;
- Tue, 14 Sep 2021 02:26:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bfv9mrhoCCh8u0D+lkls3XOLkYlFZSKbSMNA1jMqkE4=;
+        b=DacLFwL/ZEOumM6scHbiaBNlytKNmm64S8ap1MujILX8Xs9akqMkz9IDfFrCt6Eez2
+         58TreRHbZxeM08V3RA4Rbza4KId6mfmtpqATZdpn2Ip/j4FPLEdA6P2H0nedtPANwTtW
+         sxSiB9cjGMUpAki07x/V8+iRQjfTJMv5ezuBd4DF3uSnY0tvVfzyJx0vKJIUhMo/t2nT
+         Pz1lqPreemBa4Ae6JSF8v3844wCoreLxmwnGzLILOJqF6vyYBF0Y/bye99LzF4G7HmlZ
+         dLYIrSE4oLzSYlWTlpx7q5anoCZFN0vDypCl56xwK0GXUAaA0tsfQtj4ajtQQdxGizVw
+         cWbw==
+X-Gm-Message-State: AOAM5311gJinBsiwnZoFFxk3zKqs6XLO75jz6B3jmL+MoEhTs6lCZf1i
+        06X3uc3zMp/d9e3Cur4ltVs=
+X-Google-Smtp-Source: ABdhPJy3weP4Jyqn57+GuhwJkx7GYziPCndmJZ3YD2KZvj7dUExJNkmb/COoWp+4u1vnPjgGwJyH3g==
+X-Received: by 2002:a1c:20cf:: with SMTP id g198mr1014787wmg.143.1631611643356;
+        Tue, 14 Sep 2021 02:27:23 -0700 (PDT)
+Received: from monk.home (astrasbourg-652-1-178-243.w90-40.abo.wanadoo.fr. [90.40.105.243])
+        by smtp.gmail.com with ESMTPSA id a3sm9734085wrt.28.2021.09.14.02.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 02:27:22 -0700 (PDT)
+From:   Christophe Branchereau <cbranchereau@gmail.com>
+Cc:     paul@crapouillou.net,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] DRM/Panel : abt-y030xx067a yellow tint fix
+Date:   Tue, 14 Sep 2021 11:27:16 +0200
+Message-Id: <20210914092716.2370039-1-cbranchereau@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a05:6838:244:0:0:0:0 with HTTP; Tue, 14 Sep 2021 02:26:28
- -0700 (PDT)
-Reply-To: tamblynbarr47@gmail.com
-From:   Mr Suleman Bello <imf.fblservice@gmail.com>
-Date:   Tue, 14 Sep 2021 02:26:28 -0700
-Message-ID: <CA+sLMMJzhve21wifyQfkyggDnLax9VOfnU3UmQkCwygmc4iEFw@mail.gmail.com>
-Subject: Lets Work Together
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+The previous parameters caused an unbalanced yellow tint.
 
-Please i want you to read this letter very carefully and i must
-apologize for berging this message into your mail box without any
-formal introduction due to the urgency and confidential of this issue
-and i know that this message will come to you as a surprise, Please
-this is not a joke and i will not like you to joke with it.I am
-Mr.Suleman Bello, a staff in African Development Bank (A.D.B)
-Ouagadougou, Burkina faso West Africa.I discovered existing dormant
-account for years. When I discovered that there had been neither
-continuation nor withdrawals from this account for this long period
-and according to the laws and constitution guiding this banking
-institution, any unserviceable account for more than (7) seven years,
-that fund will be transferred to national treasury as unclaimed fund.
+Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
+---
+ drivers/gpu/drm/panel/panel-abt-y030xx067a.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I Hoped that you will not expose or betray this trust and confident
-that i am about to extablish with you for the mutual benefit of you
-and i.I need your urgent assistance in transferring the sum of $10.5
-)million usd into your account within 7 banking days. This money has
-been dormant for years in our Bank, and The request of foreigner in
-this transaction is necessary because our late customer was a
-foreigner and a burkinabe cannot stand as next of kin to a
-foreigner.Because of the static of this transaction I want you to
-stand as the next of kin so that our bank will accord you the
-recognition and have the fund transferred to your account.
+diff --git a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
+index 2d8794d495d0..3d8a9ab47cae 100644
+--- a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
++++ b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
+@@ -146,8 +146,8 @@ static const struct reg_sequence y030xx067a_init_sequence[] = {
+ 	{ 0x09, REG09_SUB_BRIGHT_R(0x20) },
+ 	{ 0x0a, REG0A_SUB_BRIGHT_B(0x20) },
+ 	{ 0x0b, REG0B_HD_FREERUN | REG0B_VD_FREERUN },
+-	{ 0x0c, REG0C_CONTRAST_R(0x10) },
+-	{ 0x0d, REG0D_CONTRAST_G(0x10) },
++	{ 0x0c, REG0C_CONTRAST_R(0x00) },
++	{ 0x0d, REG0D_CONTRAST_G(0x00) },
+ 	{ 0x0e, REG0E_CONTRAST_B(0x10) },
+ 	{ 0x0f, 0 },
+ 	{ 0x10, REG10_BRIGHT(0x7f) },
+-- 
+2.33.0
 
-Upon your response, I shall then provide you with further information
-and more deities that will help you understand the transaction. I am
-expecting your urgent response to enable me inform you on how the
-business will be executed. Please I would like you to keep this
-transaction confidential and as a top secret or delete if you are not
-interested.
-
-Thanks
-Mr.Suleman Bello.
