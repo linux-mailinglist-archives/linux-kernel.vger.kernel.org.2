@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4341740BAF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC9440BAFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbhINWNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
+        id S235319AbhINWNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhINWNd (ORCPT
+        with ESMTP id S235285AbhINWNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:13:33 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE57C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:12:15 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so739477pjq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:12:15 -0700 (PDT)
+        Tue, 14 Sep 2021 18:13:53 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8227AC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:12:35 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id y28so1778171lfb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2pOyKODTTbckGvzWr1C97Zs9KpuucrD9qrClzy15doM=;
-        b=g8DL/VLnPVI9uHMWr9a5jQ8quiP0AwK8ZkVUJx32p14hYNeHjhuOzWTeEKJN92njDB
-         lqkqhcPc4OV9UssFhAiGvfY8YzAqzpqm0LZdwuBzwC6yb6ccBgnwv185mxxnS/7/LQxu
-         DBLKXAiIhreRmcE4r/78rKHdvyA9OVtNzueSgMAGxmUmYS7Zovmcn+YRU+UGW0U2+9Wi
-         qBhU0zSED7moxxLJAAYVFmHmCEiA0pliz6y07VnQpmTjMQ4Sdnf1XiInuVrnxbIFNwmQ
-         2YxygoLfYERsr5rSX9c7RbO2ENPqnaOBIoOdKdb4Dzs/bJ2H+w1G8bk6imCuhY/zPn0R
-         bArw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LAvaIUH5OlRWAZQfOb+bWm3uVreewxT3eR+cClts1uI=;
+        b=VLrCs/+hNIGuWHNfFM8FPpo9MdASxRdZfjTQbnUJQyNoarhnB48pzOHj92Uv+amr9p
+         ixzRcYtYvH4tHeMTkq392YF521gX9qRP6RXpjY/MbnIpiM/U1DAP4rT3mhItZ+smgYPC
+         HAnvOKCP691XE//yBgTqBGfOzo3Xk8LHh+rXW30yKTdtiIQEgJZOMlPkWV+fJ3uxpW4R
+         nToOeYf0EHRW6z3YX/fLoUtleulbtYB1Liz6pppbcIZmFmkKstGWGpmXGDPpdxxXQDOO
+         To6zI2pt1uDGWX1qSHzdUDUBiwjbHPMgxHrVOk9ocyyjcFoQBRhXrj0omC1wbF+Moi96
+         n6BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2pOyKODTTbckGvzWr1C97Zs9KpuucrD9qrClzy15doM=;
-        b=n4wJCjYXK/x1YFO6BMVfmqrexFV3IrF14Z+GAcs3K3Cs6Eqi9dqofzL/06BDcA0dLN
-         UUnwJ0Vi6rNwEz1/4qaF7fslL8CdU7dmTV66Y6xAFE+cxf3v2BW2NcMLPcIRCa6RnoJO
-         4CNLw5bdYm7xlcewW+y0FaTcZbCsDEJTP/9nZ2FL/9g+ypaiAO9b19VqDxnDb9hnnDwK
-         POIZALH8Llj3FE8iVrPPNuH7GzvkjGNCwE6LxfbydJ/vkJI44W9XPQ8hS2cIjpoEgYNa
-         Xbv4w8gv50Ty2Uc7/JSZ19vpb58KzEGRTVrFlpNeRz1Ymf4r7aas4ji6ON4G2X3yLKxp
-         AFyQ==
-X-Gm-Message-State: AOAM533z5js1sOIjfx7U3hyDMhKz+2qDqxbUAH4bHVkDciuz0hABLlZw
-        P2HrpOW7JBAMikQiUnekBjRtd7hcQCg=
-X-Google-Smtp-Source: ABdhPJxSaO5qP79kRhNacaQI0D2PhMlhruO2k2vHtQ+2Nc+dggAEzN+HaVcRbytwKh2gEVVUo1HZxQ==
-X-Received: by 2002:a17:902:b102:b0:134:a329:c2f8 with SMTP id q2-20020a170902b10200b00134a329c2f8mr16833722plr.71.1631657534370;
-        Tue, 14 Sep 2021 15:12:14 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l22sm13085741pgo.45.2021.09.14.15.12.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 15:12:13 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM7XXX ARM
-        ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE)
-Subject: [PATCH] reset: brcmstb-rescal: fix incorrect polarity of status bit
-Date:   Tue, 14 Sep 2021 15:11:21 -0700
-Message-Id: <20210914221122.62315-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LAvaIUH5OlRWAZQfOb+bWm3uVreewxT3eR+cClts1uI=;
+        b=LajZj/1jOmBO4BhVBcLaGq+CGUuvy8ZDdGJXdRN0ZOrSyhN+qQQLH3mmnt2iHhR29E
+         2DpFjLN8JARVWnfheGysi0nVxYCOxbACcKvXehURZMhdKHDSxrScBbaib/89vTFH3rmc
+         OLCyLv9HEcPvjoQXeQK5tSfOd8XIXNPByu0hidR5MqqO+isRR6Ol3s+X+ZcEeihQSJ4J
+         rK6WOKbLtKmIrvlMHTRw6MolZd6CPywtaGrowIW7mFinCqhORBubu6wJM9CZB94t3dtS
+         RbspNS9oqDPRaT2aYq4ucCLW9ripJUF+5KUCWe+gGBSWMsIvSfOo+9NNbKsdWtNg9C1R
+         mi+g==
+X-Gm-Message-State: AOAM532Q/0pQjhMOqKgy+04pf7m6z8eXcKEkoGeMrIku+ZhezQuGOwz/
+        Xmlb4MKJGhm4CfA5irmfA6qtfaEtWnd+LbexOTOicQ==
+X-Google-Smtp-Source: ABdhPJwu3ztXRgAHEffeDYZFOfptVugQFO781IvsJ0Ym9L4qfm8T9QJBx3b1mwEoJsYA+Z6NYJX/ewEtSqtF71Fz60g=
+X-Received: by 2002:a05:6512:132a:: with SMTP id x42mr14797863lfu.291.1631657553855;
+ Tue, 14 Sep 2021 15:12:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210914202202.1702601-1-dianders@chromium.org>
+In-Reply-To: <20210914202202.1702601-1-dianders@chromium.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 15 Sep 2021 00:12:22 +0200
+Message-ID: <CACRpkdaTb4_UfFzCqw=fiAnQhHD+1sDDua529KdGQbgMVfjYBw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/15] eDP: Support probing eDP panels dynamically
+ instead of hardcoding
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Steev Klimaszewski <steev@kali.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lionel Debieve <lionel.debieve@st.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?Q?Martin_J=C3=BCcker?= <martin.juecker@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Nishanth Menon <nm@ti.com>,
+        Olivier Moysan <olivier.moysan@st.com>,
+        Otavio Salvador <otavio@ossystems.com.br>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
+        Robert Richter <rric@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Will Deacon <will@kernel.org>,
+        William Cohen <wcohen@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Quinlan <jim2101024@gmail.com>
+On Tue, Sep 14, 2021 at 10:22 PM Douglas Anderson <dianders@chromium.org> wrote:
 
-The readl_poll_timeout() should complete when the status bit
-is a 1, not 0.
+> Version 5 of this series just fixes the panel ID encode macro to be
+> cleaner and adds Jani's review tags.
+>
+> It could possibly be ready to land?
 
-Fixes: 4cf176e52397 ("reset: Add Broadcom STB RESCAL reset controller")
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/reset/reset-brcmstb-rescal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Definitely IMO, the kernel look so much better after this change,
+so for the series:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/reset/reset-brcmstb-rescal.c b/drivers/reset/reset-brcmstb-rescal.c
-index b6f074d6a65f..433fa0c40e47 100644
---- a/drivers/reset/reset-brcmstb-rescal.c
-+++ b/drivers/reset/reset-brcmstb-rescal.c
-@@ -38,7 +38,7 @@ static int brcm_rescal_reset_set(struct reset_controller_dev *rcdev,
- 	}
- 
- 	ret = readl_poll_timeout(base + BRCM_RESCAL_STATUS, reg,
--				 !(reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
-+				 (reg & BRCM_RESCAL_STATUS_BIT), 100, 1000);
- 	if (ret) {
- 		dev_err(data->dev, "time out on SATA/PCIe rescal\n");
- 		return ret;
--- 
-2.25.1
-
+Yours,
+Linus Walleij
