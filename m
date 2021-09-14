@@ -2,82 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D3540BAE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1F640BAF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbhINWBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:01:30 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:39664 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhINWB2 (ORCPT
+        id S235348AbhINWKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:10:11 -0400
+Received: from gateway20.websitewelcome.com ([192.185.68.24]:11685 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231559AbhINWKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:01:28 -0400
-Received: by mail-ot1-f47.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so677713otf.6;
-        Tue, 14 Sep 2021 15:00:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1+WLR65qTBoUub6/pKXyNbktbZPgOslN8+Xmkk6CTLc=;
-        b=gMkWFAvg+xfgzjR8+jNqi9dOrIDkdO7DIbrN+3/Ciqrf2rz1AraSCeqnecO8mhk3zd
-         LJMSecY4h/4r1waRd5VVxCTj/L0VyqvNdbAtASKVFRLFHADhHapHyOcxaE0SNVzJxFM7
-         8/yvac59177znNpEun7teaoM62vZaozJsW2qTuBpDBIvys55dZSRePtW8AIgnivg3lDz
-         /pq6qM+O62EB5sjNHNMOvZq0qT8ZuE8aZM/Fq/L1eB3eJh1FUbfyG7v67fehuG4vXJLb
-         1yk0C4T1tfL7UoggCoDz2Pw6xyhXklzbGk307InjVw7v97B5W5+iGWTOXMtdbD44GR7t
-         9BOw==
-X-Gm-Message-State: AOAM533uMD9a34XGNHBi0AjPVPCwN1B5ArDl31/mDxfdbGp/fa9eVFoK
-        k3C0NDsFkPmSvsHyxoVH1g==
-X-Google-Smtp-Source: ABdhPJz1pOO1WsaRumXrQshfHtdpfhL6MTWP4mSSbUpKyygYT9dlE16+Hwncpuov78gSO5mXYexJIQ==
-X-Received: by 2002:a05:6830:78c:: with SMTP id w12mr16229945ots.196.1631656810214;
-        Tue, 14 Sep 2021 15:00:10 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k23sm2943388ood.12.2021.09.14.15.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 15:00:09 -0700 (PDT)
-Received: (nullmailer pid 4040654 invoked by uid 1000);
-        Tue, 14 Sep 2021 22:00:08 -0000
-Date:   Tue, 14 Sep 2021 17:00:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v2 5/8] clk: versatile: clk-icst: Support 'reg' in
- addition to 'vco-offset' for register address
-Message-ID: <YUEbaEzKT+cCYk9z@robh.at.kernel.org>
-References: <20210913192816.1225025-1-robh@kernel.org>
- <20210913192816.1225025-6-robh@kernel.org>
- <163164958886.763609.7483570624844319215@swboyd.mtv.corp.google.com>
+        Tue, 14 Sep 2021 18:10:09 -0400
+X-Greylist: delayed 1387 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 18:10:09 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 5973F40120C4E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 16:27:11 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id QGFLmweYeK61iQGFLm4PpO; Tue, 14 Sep 2021 16:45:43 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2vSlWpDlgQ1WCtKW+iJxypZWQ+3srQCmJtCimsZZbKQ=; b=ccvX3c8vYx2soiyQjSD3Y3K9ld
+        9n8goroyewasfqmu9ivOOmOTa9INFz7yHnPJ9azhVmUGNyiekWz9n/lTDaBAAJuN7TXnRQnQewfra
+        yLoOnkE78oNRJR2Dt8+zAiXw/iUMCXDZPWQiDx8DCpCova0lD/z5VLA83pYB8s0ZJz0pAqCGlp4Tz
+        JaRPSkMp/vCIeWhkRSJOGwpOh6FbNWPWAxjwL8JbFfGGOBjbORla0GnVQ9kHpwVOfjCErxqoD0XVl
+        x279Qwh5Mjb2yhVQHWf93gTuFWGPWS2nccT1D3QueiBPvKXsaQiE12MeTd1YhutRZJDtmVAXyDsBh
+        FPleGuxw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35226 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mQGFK-003opJ-Uw; Tue, 14 Sep 2021 16:45:42 -0500
+Subject: Re: [PATCH] Input: omap-keypad - prefer struct_size over open coded
+ arithmetic
+To:     Len Baker <len.baker@gmx.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210911112716.10067-1-len.baker@gmx.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <32777a69-297a-f68a-d0c3-e5920035531b@embeddedor.com>
+Date:   Tue, 14 Sep 2021 16:49:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163164958886.763609.7483570624844319215@swboyd.mtv.corp.google.com>
+In-Reply-To: <20210911112716.10067-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mQGFK-003opJ-Uw
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:35226
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:59:48PM -0700, Stephen Boyd wrote:
-> Quoting Rob Herring (2021-09-13 12:28:13)
-> > The ICST binding now also supports 'reg' in addition to 'vco-offset' for
-> > the VCO register address. Add support to the driver to get the VCO
-> > address from 'reg'.
-> > 
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-clk@vger.kernel.org
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> 
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> 
-> I don't think this driver is changing much so you can take it through DT
-> tree if you prefer.
 
-clk tree is fine. :)
 
-Rob
+On 9/11/21 06:27, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kzalloc() function.
+> 
+> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+--
+Gustavo
+
+> ---
+>  drivers/input/keyboard/omap-keypad.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/omap-keypad.c b/drivers/input/keyboard/omap-keypad.c
+> index dbe836c7ff47..eb3a687796e7 100644
+> --- a/drivers/input/keyboard/omap-keypad.c
+> +++ b/drivers/input/keyboard/omap-keypad.c
+> @@ -190,8 +190,7 @@ static int omap_kp_probe(struct platform_device *pdev)
+>  	row_shift = get_count_order(pdata->cols);
+>  	keycodemax = pdata->rows << row_shift;
+> 
+> -	omap_kp = kzalloc(sizeof(struct omap_kp) +
+> -			keycodemax * sizeof(unsigned short), GFP_KERNEL);
+> +	omap_kp = kzalloc(struct_size(omap_kp, keymap, keycodemax), GFP_KERNEL);
+>  	input_dev = input_allocate_device();
+>  	if (!omap_kp || !input_dev) {
+>  		kfree(omap_kp);
+> --
+> 2.25.1
+> 
+> 
+> 
+> 
