@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0108D40B8AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04B540B8AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhINUEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33202 "EHLO
+        id S233389AbhINUFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhINUEq (ORCPT
+        with ESMTP id S232545AbhINUFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:04:46 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B0EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:03:29 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id y28so1067908lfb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z+PxJcPDFHKhLidz43OpQIl4xQ/achkAfQ8Re5y2cOQ=;
-        b=fcSz/fDM5ZUPGy3GEMeYii2Mxh/ipolL/v2vDh+qK9ADUjfXlFd3srXHg9A+o8Pmot
-         n22YK0z4o/I8BYxXDzQ3BS6AWAC5kHEw+OHh03vX0v2TJL7SqBHx47TacnNtNh92CNRV
-         fYIa/5xLSo1HRcb1pxNb1EXaluai7a63A3hPE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z+PxJcPDFHKhLidz43OpQIl4xQ/achkAfQ8Re5y2cOQ=;
-        b=sy91KpzYSbnFPxmrq/uOeHJMksqCf4AmTOUn9Y7D0RptQ357IBzGjwYMU0whUfGGaJ
-         /fcYMIWE8sB0wHNvDa9rzbmzQ2ZiEcQm20XZmb2mF109fATqymlM0lYhvsivpmu7mIAz
-         +ndTCJF/5BcGv7xbap02rVqH8SwS0KzI1akze70QDqLgrqDd2SdXDmivTVh8qNoxF57c
-         yIdtSXeZK9+lI8ogmXP5JQB8NkreAtoJw770Mr8imce3qyP/CCUlHywmyEAtm74YSkyG
-         nUi1uzZSwFJT4U9GhT1UzuzfY+zpRi2sWOXstF2xt2HOVwlCLRyabrTWDEYUDjMyuVoh
-         VEdw==
-X-Gm-Message-State: AOAM533M+43BVfblxv3BGG8v5Qe9GDEM3bDPHZFnIyNihhIsskPDK0MV
-        AfsojpZ6UH2856uGQqImKI208xxXOC+1vsnt5Gs=
-X-Google-Smtp-Source: ABdhPJzg3Z/qTxr3PYc/CK0krR/R8jHHUas4PcbdRO7jO7kCu/l7N9rmqbgbduDv/KGGNSAfCwBnUg==
-X-Received: by 2002:ac2:558a:: with SMTP id v10mr11209510lfg.338.1631649807155;
-        Tue, 14 Sep 2021 13:03:27 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id t15sm1404240ljo.102.2021.09.14.13.03.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 13:03:26 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id x27so937616lfu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:03:26 -0700 (PDT)
-X-Received: by 2002:a05:6512:3991:: with SMTP id j17mr3057776lfu.280.1631649806277;
- Tue, 14 Sep 2021 13:03:26 -0700 (PDT)
+        Tue, 14 Sep 2021 16:05:16 -0400
+Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7D9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:03:58 -0700 (PDT)
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mQEeq-00DMlg-86
+        for linux-kernel@vger.kernel.org; Tue, 14 Sep 2021 22:03:56 +0200
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.4
+Received: from [2a02:578:460c:1:9c5a:5ed4:98b1:9c44]
+        by yawp.biot.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1mQEej-00DMlD-Qt; Tue, 14 Sep 2021 22:03:49 +0200
+Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
+To:     Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+References: <20210908201624.237634-1-bert@biot.com>
+ <20210914193108.78df5367@xps13>
+ <1517789471.73175.1631641788145.JavaMail.zimbra@nod.at>
+From:   Bert Vermeulen <bert@biot.com>
+Message-ID: <927c7c75-c0d3-b3fb-6b85-13dbc3c6edbe@biot.com>
+Date:   Tue, 14 Sep 2021 22:03:49 +0200
 MIME-Version: 1.0
-References: <20210907100302.3684453-1-ray.huang@amd.com> <5e365947-4ae1-47a0-7565-7f0cdde0bd84@amd.com>
- <CADnq5_PXOXiob3k5Z+cZz6K2k5iSCdzwNm0ZxKQOuC+PvdJxxg@mail.gmail.com>
-In-Reply-To: <CADnq5_PXOXiob3k5Z+cZz6K2k5iSCdzwNm0ZxKQOuC+PvdJxxg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Sep 2021 13:03:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi=rz3trQgOJ76pe1poCtmFkat-Y_Dm9_x=fzb27OszJQ@mail.gmail.com>
-Message-ID: <CAHk-=wi=rz3trQgOJ76pe1poCtmFkat-Y_Dm9_x=fzb27OszJQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/ttm: fix the type mismatch error on sparc64
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1517789471.73175.1631641788145.JavaMail.zimbra@nod.at>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:48 PM Alex Deucher <alexdeucher@gmail.com> wrote=
-:
->
-> On Tue, Sep 7, 2021 at 6:25 AM Christian K=C3=B6nig <christian.koenig@amd=
-.com> wrote:
-> >
-> >
-> > Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> Is one of you going to push this to drm-misc?
+On 9/14/21 7:49 PM, Richard Weinberger wrote:
+> ----- Ursprüngliche Mail -----
+>> bert@biot.com wrote on Wed,  8 Sep 2021 22:16:19 +0200:
+>> 
+>>> This adds a new vendor Etron, and support for a 2Gb chip.
+>>> 
+>>> The datasheet is available at
+>>> https://www.etron.com/cn/products/EM73%5B8%5DC%5BD_E_F%5DVC%20SPI%20NAND%20Flash_Promotion_Rev%201_00A.pdf
+>>> 
+>>> Signed-off-by: Bert Vermeulen <bert@biot.com>
+>>> ---
+>>> v2:
+>>> - Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
+>>>   hardcoded to this 2Gb chip only
+>>> - Fixed manufacturer ordering
+>>> - Fixed minor formatting issues as reported
+>>> - Removed debug comment
+>>> 
+>>>  drivers/mtd/nand/spi/Makefile |   2 +-
+>>>  drivers/mtd/nand/spi/core.c   |   1 +
+>>>  drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
+>>>  include/linux/mtd/spinand.h   |   1 +
+>>>  4 files changed, 107 insertions(+), 1 deletion(-)
+>>>  create mode 100644 drivers/mtd/nand/spi/etron.c
+>> 
+>> [...]
+>> 
+>>> +static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
+>>> +{
+>>> +	switch (status & STATUS_ECC_MASK) {
+>>> +	case STATUS_ECC_NO_BITFLIPS:
+>>> +		return 0;
+>>> +
+>>> +	case STATUS_ECC_HAS_BITFLIPS:
+>>> +		/* Between 1-7 bitflips were corrected */
+>>> +		return 7;
+>> 
+>> Mmmh this is a bit problematic, having no intermediate value means a
+>> single bitflip will trigger UBI to move the data around as its
+>> threshold will be reached. Richard, any feedback on this?
+> 
+> So, the NAND controller can only report "no bitflips", "some bitflips", "maximum biflips" and "no way to fix"?
+> If so, yes, this is problematic for UBI because it will trigger wear-leveling way too often.
+> On a medium aged NAND I'd expect to see STATUS_ECC_HAS_BITFLIPS almost always set. :-(
 
-I was assuming it was there already.
+Yes, that's all there is according to the datasheet. Can't be _that_
+unusual, since that's all the STATUS_ECC_* flags cover.
 
-I guess I'll just apply it directly.
+Incidentally I'm abusing STATUS_ECC_MASK here, since the 0b11 pattern is
+missing from those flags.
 
-         Linus
+
+-- 
+Bert Vermeulen
+bert@biot.com
