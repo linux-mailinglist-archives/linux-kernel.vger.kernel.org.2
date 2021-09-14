@@ -2,105 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392A040BB93
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA6D40BBAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235974AbhINWdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S236023AbhINWgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235660AbhINWcp (ORCPT
+        with ESMTP id S235954AbhINWdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:32:45 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97652C061762
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:31:27 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id s3so1431304ljp.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:31:27 -0700 (PDT)
+        Tue, 14 Sep 2021 18:33:32 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD88C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:31:56 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f64-20020a2538430000b0290593bfc4b046so926891yba.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:31:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=/NVWJihw8+mxkblMeUMKWZHa5HcW57V47+/ryRA4f4g=;
-        b=qgFutAKEGpZf/SKejV/Bi2NvnFIej9XU7ZBF5Rsx7JkwnAFyYg3lckowPNJ17rk4mk
-         DV3q6AswIVnkJ/uQDSz3gsB946gSRsqJcBwHVi8iqbvUqaSIU04Vgj90096Fmxf+GWdy
-         I8Hd6on20wzkR5xl0kJGh5nQw44HLi/F6vtULV3QuN8FIByAMCEvwqyldqODg+2+vVjj
-         DOcdlURnGyYkSEVHXi7yl7y9pR9foHVBUJunF6gGn+NLicmzott3wMS8dDUM42YY9UEk
-         /LuBflX18x1HOIDjgpG3Svi7P8/2W+Ra1wC0LZa3Lbn8T6PyYcN9w8le+LW0PGIhBRd5
-         4Eqw==
+        bh=mkrEw/6odZA643/v871JIfxaL0FOz/JzQ68NluiA4Io=;
+        b=pWguaZ1X+xc+kKgb8hGucMka7FFypIerPRLXgRPBLAECFpye62NakBo8+/PZ4szLMK
+         0qBUCuVwIjlDg6CGOVVgtJS/H5b+HA0k7Bz+dVFJ3Z66BMhybAZTx9Q+zbYjuvzNm0uE
+         pENB4oui1tQ2AGPrZY3vIqtHyJQSmhclt0fnLauAEtMiGrH94dv9Tj+XZf0CJ0/uP1y1
+         RcZTOwSg8YPttPXs+F+gesKkiD/xrnxhe4cL1t96RKvMzT6MCUQ6+mvOtqke9Rxd8hQU
+         BQvpFhqZUuV78y6q+EpEsFCwitAu1cnKeW6Zuix/Nl8BRhGfi+H3Uhc5Vwv5g9zzpB08
+         3PsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/NVWJihw8+mxkblMeUMKWZHa5HcW57V47+/ryRA4f4g=;
-        b=leQ8rlu2WlHp6RbDbeoGxspQa4LMDKGRODfFjgSRXyWwOJt8InhVUXMSNeSYvXSAJI
-         8kDzcsuhp90ljAIGzLJO/8HZE9RGjq4LqMhzYuAC8ZLC1GUMpVk3AxSPfnqjARNvneko
-         zSmWUhdgtUt5RR2AsgtnjL+booHD2DKX1cLWWAVI2onOyCOOhaEPX1tlT8PuROdB+t+G
-         IveIohDYeYhx3zUD5opxneW8l38hI0YoDzgbHobvvFkVMm/JttJgrA/mcmqNaLkkuhsr
-         ILq6TK81OMftVoX4N7X9NSrmO4kSQa+oIWNrJyE/doXHZ0e6q/dIXeJnlbP7KATdzgug
-         U6vQ==
-X-Gm-Message-State: AOAM532j8h7yDMXPLvRnl0VMa4yXUC1SzBbcVerdNp+HDZICLYIAZLeB
-        XHSL0hKbUwc7DehSkt3yOqFccyHgcajxcyrDUib3Rg==
-X-Google-Smtp-Source: ABdhPJzfSMfk3cB0ZCvwLiGPWOn8ZNgyMxOydEvYDNoBwhQ3myvaaomRVN0JfSKn3Mu8Vcacbr1v4PNVRcOKeKSEf0Q=
-X-Received: by 2002:a2e:b551:: with SMTP id a17mr17253096ljn.128.1631658685761;
- Tue, 14 Sep 2021 15:31:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210914191045.2234020-1-samitolvanen@google.com>
- <20210914191045.2234020-12-samitolvanen@google.com> <CAKwvOd=OvR8iZogXhMxkbt5qT7jbhaARgk5NsCzhpkjoZ7yy5Q@mail.gmail.com>
- <CABCJKudRDcwfkSK205Pb__hzLWQPUFhbjUtFPbctdPAycSOKQw@mail.gmail.com>
-In-Reply-To: <CABCJKudRDcwfkSK205Pb__hzLWQPUFhbjUtFPbctdPAycSOKQw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 14 Sep 2021 15:31:14 -0700
-Message-ID: <CAKwvOd=q1xhn9OEyowWyMeDW8CbWW4=nRmdE1tHggjCZKr7xrA@mail.gmail.com>
-Subject: Re: [PATCH v3 11/16] x86/purgatory: Disable CFI
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=mkrEw/6odZA643/v871JIfxaL0FOz/JzQ68NluiA4Io=;
+        b=EUo3krYTJku3MeQ5Euesuas1KA06v1FfrAgZYJJiK1jkyq+H7wRbv9Gi+NbiOwdXxE
+         72jC2XPTntGeyqWmC4GH4rXBcE5Pj63C0LooUmmH0k3vd/1BSwf9rh4LqfFNoqGRUGG4
+         DN47eEGdh+tPrkrat3zAbohAoq5NWrucOOLPmDu40udmEHXoEi2+cW+OXOyGdbGDr6++
+         ojv0ZJ+wXI8KSMmpit6KToQpl4dKd6GTy3YhFx52NWzQ8aXOAFQozzC6ubjmQ7uENG+q
+         33bI64Q0HSfRc985UWr4pkcoTERKi37j/RSoIub/VET0kA4Bk5Dm2jjV0gYT2eJt6QNn
+         ggQg==
+X-Gm-Message-State: AOAM533STquiReExb6TRhHstWjBbyI7WUNJDdwjvwCeUWBb9SkB0hwWi
+        xwj2fh/E0uQAdTrE0NqQrDDSH7Nd5cpc
+X-Google-Smtp-Source: ABdhPJzpZoa9zZGM5vyPXwbQ3eFL89rD2TZs6diqA8ymkENI2ijJ9n/sNgUdRcVwqCDFoumpgDFICiXbFpuB
+X-Received: from rananta-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1bcc])
+ (user=rananta job=sendgmr) by 2002:a25:eb0b:: with SMTP id
+ d11mr1889054ybs.101.1631658715856; Tue, 14 Sep 2021 15:31:55 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 22:31:14 +0000
+In-Reply-To: <20210914223114.435273-1-rananta@google.com>
+Message-Id: <20210914223114.435273-16-rananta@google.com>
+Mime-Version: 1.0
+References: <20210914223114.435273-1-rananta@google.com>
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH v7 15/15] KVM: arm64: selftests: arch_timer: Support vCPU migration
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 1:30 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> On Tue, Sep 14, 2021 at 1:02 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Tue, Sep 14, 2021 at 12:11 PM Sami Tolvanen <samitolvanen@google.com> wrote:
-> > >
-> > > Disable CONFIG_CFI_CLANG for the stand-alone purgatory.ro.
-> > >
-> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> >
-> > I kind of prefer the existing convention that has explicit guards on
-> > specific configs (ie. CONFIG_FUNCTION_TRACER, CONFIG_STACKPROTECTOR,
-> > CONFIG_STACKPROTECTOR_STRONG, CONFIG_RETPOLINE); it's more obvious
-> > which configs may introduce which flags that are problematic. This
-> > patch is ok as is, but it kind of makes this Makefile more
-> > inconsistent.  I would prefer we had the explicit checks.
->
-> The Makefile does already use DISABLE_STACKLEAK_PLUGIN in a similar
-> way, but I don't have a strong preference here.
+Since the timer stack (hardware and KVM) is per-CPU, there
+are potential chances for races to occur when the scheduler
+decides to migrate a vCPU thread to a different physical CPU.
+Hence, include an option to stress-test this part as well by
+forcing the vCPUs to migrate across physical CPUs in the
+system at a particular rate.
 
-mmm...DISABLE_STACKLEAK_PLUGIN adds to PURGATORY_CFLAGS. This patch
-adds to PURGATORY_CFLAGS_REMOVE.
+Originally, the bug for the fix with commit 3134cc8beb69d0d
+("KVM: arm64: vgic: Resample HW pending state on deactivation")
+was discovered using arch_timer test with vCPU migrations and
+can be easily reproduced.
 
-> I can move this into
-> an ifdef if it makes things cleaner.
->
-> > Does CFI actually do any instrumentation in these object files? I
-> > guess issues in purgatory cause silent/hard to debug kexec failures?
->
-> The compiler shouldn't add any actual CFI instrumentation here right
-> now, but I would prefer to avoid issues in future.
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+---
+ .../selftests/kvm/aarch64/arch_timer.c        | 115 +++++++++++++++++-
+ 1 file changed, 114 insertions(+), 1 deletion(-)
 
-Ok, good to know.
+diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+index 3b6ea6a462f4..228e7ed5531c 100644
+--- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
++++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+@@ -14,6 +14,8 @@
+  *
+  * The test provides command-line options to configure the timer's
+  * period (-p), number of vCPUs (-n), and iterations per stage (-i).
++ * To stress-test the timer stack even more, an option to migrate the
++ * vCPUs across pCPUs (-m), at a particular rate, is also provided.
+  *
+  * Copyright (c) 2021, Google LLC.
+  */
+@@ -24,6 +26,8 @@
+ #include <pthread.h>
+ #include <linux/kvm.h>
+ #include <linux/sizes.h>
++#include <linux/bitmap.h>
++#include <sys/sysinfo.h>
+ 
+ #include "kvm_util.h"
+ #include "processor.h"
+@@ -36,17 +40,20 @@
+ #define NR_TEST_ITERS_DEF		5
+ #define TIMER_TEST_PERIOD_MS_DEF	10
+ #define TIMER_TEST_ERR_MARGIN_US	100
++#define TIMER_TEST_MIGRATION_FREQ_MS	2
+ 
+ struct test_args {
+ 	int nr_vcpus;
+ 	int nr_iter;
+ 	int timer_period_ms;
++	int migration_freq_ms;
+ };
+ 
+ static struct test_args test_args = {
+ 	.nr_vcpus = NR_VCPUS_DEF,
+ 	.nr_iter = NR_TEST_ITERS_DEF,
+ 	.timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
++	.migration_freq_ms = TIMER_TEST_MIGRATION_FREQ_MS,
+ };
+ 
+ #define msecs_to_usecs(msec)		((msec) * 1000LL)
+@@ -80,6 +87,9 @@ static struct test_vcpu_shared_data vcpu_shared_data[KVM_MAX_VCPUS];
+ 
+ static int vtimer_irq, ptimer_irq;
+ 
++static unsigned long *vcpu_done_map;
++static pthread_mutex_t vcpu_done_map_lock;
++
+ static void
+ guest_configure_timer_action(struct test_vcpu_shared_data *shared_data)
+ {
+@@ -215,6 +225,11 @@ static void *test_vcpu_run(void *arg)
+ 
+ 	vcpu_run(vm, vcpuid);
+ 
++	/* Currently, any exit from guest is an indication of completion */
++	pthread_mutex_lock(&vcpu_done_map_lock);
++	set_bit(vcpuid, vcpu_done_map);
++	pthread_mutex_unlock(&vcpu_done_map_lock);
++
+ 	switch (get_ucall(vm, vcpuid, &uc)) {
+ 	case UCALL_SYNC:
+ 	case UCALL_DONE:
+@@ -233,9 +248,78 @@ static void *test_vcpu_run(void *arg)
+ 	return NULL;
+ }
+ 
++static uint32_t test_get_pcpu(void)
++{
++	uint32_t pcpu;
++	unsigned int nproc_conf;
++	cpu_set_t online_cpuset;
++
++	nproc_conf = get_nprocs_conf();
++	sched_getaffinity(0, sizeof(cpu_set_t), &online_cpuset);
++
++	/* Randomly find an available pCPU to place a vCPU on */
++	do {
++		pcpu = rand() % nproc_conf;
++	} while (!CPU_ISSET(pcpu, &online_cpuset));
++
++	return pcpu;
++}
++
++static int test_migrate_vcpu(struct test_vcpu *vcpu)
++{
++	int ret;
++	cpu_set_t cpuset;
++	uint32_t new_pcpu = test_get_pcpu();
++
++	CPU_ZERO(&cpuset);
++	CPU_SET(new_pcpu, &cpuset);
++
++	pr_debug("Migrating vCPU: %u to pCPU: %u\n", vcpu->vcpuid, new_pcpu);
++
++	ret = pthread_setaffinity_np(vcpu->pt_vcpu_run,
++					sizeof(cpuset), &cpuset);
++
++	/* Allow the error where the vCPU thread is already finished */
++	TEST_ASSERT(ret == 0 || ret == ESRCH,
++			"Failed to migrate the vCPU:%u to pCPU: %u; ret: %d\n",
++			vcpu->vcpuid, new_pcpu, ret);
++
++	return ret;
++}
++
++static void *test_vcpu_migration(void *arg)
++{
++	unsigned int i, n_done;
++	bool vcpu_done;
++
++	do {
++		usleep(msecs_to_usecs(test_args.migration_freq_ms));
++
++		for (n_done = 0, i = 0; i < test_args.nr_vcpus; i++) {
++			pthread_mutex_lock(&vcpu_done_map_lock);
++			vcpu_done = test_bit(i, vcpu_done_map);
++			pthread_mutex_unlock(&vcpu_done_map_lock);
++
++			if (vcpu_done) {
++				n_done++;
++				continue;
++			}
++
++			test_migrate_vcpu(&test_vcpu[i]);
++		}
++	} while (test_args.nr_vcpus != n_done);
++
++	return NULL;
++}
++
+ static void test_run(struct kvm_vm *vm)
+ {
+ 	int i, ret;
++	pthread_t pt_vcpu_migration;
++
++	pthread_mutex_init(&vcpu_done_map_lock, NULL);
++	vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
++	TEST_ASSERT(vcpu_done_map, "Failed to allocate vcpu done bitmap\n");
+ 
+ 	for (i = 0; i < test_args.nr_vcpus; i++) {
+ 		ret = pthread_create(&test_vcpu[i].pt_vcpu_run, NULL,
+@@ -243,8 +327,23 @@ static void test_run(struct kvm_vm *vm)
+ 		TEST_ASSERT(!ret, "Failed to create vCPU-%d pthread\n", i);
+ 	}
+ 
++	/* Spawn a thread to control the vCPU migrations */
++	if (test_args.migration_freq_ms) {
++		srand(time(NULL));
++
++		ret = pthread_create(&pt_vcpu_migration, NULL,
++					test_vcpu_migration, NULL);
++		TEST_ASSERT(!ret, "Failed to create the migration pthread\n");
++	}
++
++
+ 	for (i = 0; i < test_args.nr_vcpus; i++)
+ 		pthread_join(test_vcpu[i].pt_vcpu_run, NULL);
++
++	if (test_args.migration_freq_ms)
++		pthread_join(pt_vcpu_migration, NULL);
++
++	bitmap_free(vcpu_done_map);
+ }
+ 
+ static void test_init_timer_irq(struct kvm_vm *vm)
+@@ -301,6 +400,8 @@ static void test_print_help(char *name)
+ 		NR_TEST_ITERS_DEF);
+ 	pr_info("\t-p: Periodicity (in ms) of the guest timer (default: %u)\n",
+ 		TIMER_TEST_PERIOD_MS_DEF);
++	pr_info("\t-m: Frequency (in ms) of vCPUs to migrate to different pCPU. 0 to turn off (default: %u)\n",
++		TIMER_TEST_MIGRATION_FREQ_MS);
+ 	pr_info("\t-h: print this help screen\n");
+ }
+ 
+@@ -308,7 +409,7 @@ static bool parse_args(int argc, char *argv[])
+ {
+ 	int opt;
+ 
+-	while ((opt = getopt(argc, argv, "hn:i:p:")) != -1) {
++	while ((opt = getopt(argc, argv, "hn:i:p:m:")) != -1) {
+ 		switch (opt) {
+ 		case 'n':
+ 			test_args.nr_vcpus = atoi(optarg);
+@@ -335,6 +436,13 @@ static bool parse_args(int argc, char *argv[])
+ 				goto err;
+ 			}
+ 			break;
++		case 'm':
++			test_args.migration_freq_ms = atoi(optarg);
++			if (test_args.migration_freq_ms < 0) {
++				pr_info("0 or positive value needed for -m\n");
++				goto err;
++			}
++			break;
+ 		case 'h':
+ 		default:
+ 			goto err;
+@@ -358,6 +466,11 @@ int main(int argc, char *argv[])
+ 	if (!parse_args(argc, argv))
+ 		exit(KSFT_SKIP);
+ 
++	if (test_args.migration_freq_ms && get_nprocs() < 2) {
++		print_skip("At least two physical CPUs needed for vCPU migration");
++		exit(KSFT_SKIP);
++	}
++
+ 	vm = test_vm_create();
+ 	test_run(vm);
+ 	kvm_vm_free(vm);
 -- 
-Thanks,
-~Nick Desaulniers
+2.33.0.309.g3052b89438-goog
+
