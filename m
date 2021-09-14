@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DDB40ABED
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB7840ABEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhINKo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:44:26 -0400
-Received: from verein.lst.de ([213.95.11.211]:59690 "EHLO verein.lst.de"
+        id S231938AbhINKoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:44:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:50765 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231941AbhINKoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:44:16 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A8D3E67373; Tue, 14 Sep 2021 12:42:56 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 12:42:56 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andreas Larsson <andreas@gaisler.com>
-Cc:     Christoph Hellwig <hch@lst.de>, David Miller <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        linux-kernel@vger.kernel.org, software@gaisler.com
-Subject: Re: [PATCH] sparc32: Page align size in arch_dma_alloc
-Message-ID: <20210914104256.GA14645@lst.de>
-References: <20210908074822.16793-1-andreas@gaisler.com> <20210909060712.GA25485@lst.de> <3a653ab5-14d2-f61f-cb0a-cbeba93b4ac8@gaisler.com> <20210914061705.GB26679@lst.de> <87971ad4-9519-cf0d-76a8-6baa253d0122@gaisler.com>
+        id S231945AbhINKoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:44:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="209049820"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="209049820"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 03:43:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="528733499"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Sep 2021 03:43:04 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 948D9FF; Tue, 14 Sep 2021 13:43:08 +0300 (EEST)
+Date:   Tue, 14 Sep 2021 13:43:08 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH] mm: fix data race in PagePoisoned()
+Message-ID: <20210914104308.hi55o2f4jfxpmswg@black.fi.intel.com>
+References: <20210913113542.2658064-1-elver@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87971ad4-9519-cf0d-76a8-6baa253d0122@gaisler.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210913113542.2658064-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:51:51AM +0200, Andreas Larsson wrote:
-> On 2021-09-14 08:17, Christoph Hellwig wrote:
->> Thanks.  Can you take a look and test the two patches below on top of
->> your fix?  A git tree is also available here:
->>
->> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/sparc32-generic-dma
->>
->
-> In a quick test, this seems to work on LEON for code paths previously going 
-> to arch_dma_alloc and arch_dma_free. However, this makes setting up these 
-> DMA mappings to not go through sparc_dma_alloc_resource, and it seems 
-> important that they do that on Sun systems. Hopefully, someone with more 
-> knowledge about that could chime in here.
+On Mon, Sep 13, 2021 at 01:35:43PM +0200, Marco Elver wrote:
+> PagePoisoned() accesses page->flags which can be updated concurrently:
+> 
+>   | BUG: KCSAN: data-race in next_uptodate_page / unlock_page
+>   |
+>   | write (marked) to 0xffffea00050f37c0 of 8 bytes by task 1872 on cpu 1:
+>   |  instrument_atomic_write           include/linux/instrumented.h:87 [inline]
+>   |  clear_bit_unlock_is_negative_byte include/asm-generic/bitops/instrumented-lock.h:74 [inline]
+>   |  unlock_page+0x102/0x1b0           mm/filemap.c:1465
+>   |  filemap_map_pages+0x6c6/0x890     mm/filemap.c:3057
+>   |  ...
+>   | read to 0xffffea00050f37c0 of 8 bytes by task 1873 on cpu 0:
+>   |  PagePoisoned                   include/linux/page-flags.h:204 [inline]
+>   |  PageReadahead                  include/linux/page-flags.h:382 [inline]
+>   |  next_uptodate_page+0x456/0x830 mm/filemap.c:2975
+>   |  ...
+>   | CPU: 0 PID: 1873 Comm: systemd-udevd Not tainted 5.11.0-rc4-00001-gf9ce0be71d1f #1
+> 
+> To avoid the compiler tearing or otherwise optimizing the access, use
+> READ_ONCE() to access flags.
+> 
+> Link: https://lore.kernel.org/all/20210826144157.GA26950@xsang-OptiPlex-9020/
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Cc: Will Deacon <will@kernel.org>
 
-Does the hardware actually care about it?  The only thing it does is
-to force allocating from a specific virtual address range, but how
-would that have a special meaning?
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-> The added pgprot_dmacoherent is problematic as it sets SRMMU_PRIV, which 
-> sets up kernel access only. This was fine for arch_dma_alloc that sets up 
-> kernel accesses only, but for user space DMA mmap this would make them 
-> kernel accessable only. Having no sparc-specific pgprot_dmacoherent, 
-> keeping it to default to pgprot_noncached, is probably better.
-
-I've just tried to keep the existing attributes.  If SRMMU_PRIV does
-indeed mean that the page can't also be mapped into userspace page tables
-it would be good to remove it in an incremental patch.  If OTOH it only
-means that this PTE is a kernel mapping it should not affect a userspace
-mapping as that will always use separate PTEs.
-
->
-> -- 
-> Andreas Larsson
----end quoted text---
+-- 
+ Kirill A. Shutemov
