@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6E640A589
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9618840A58B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbhINEqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 00:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhINEqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:46:01 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CD4C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:44:44 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id s16so25495852ybe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1r0TZ84blCBesuKiFn+H2dregrw6ABXsbkmKzg/nQu0=;
-        b=c2riprLKxlL27Yyb+7k/Vq2jY0mItg4VJfw5jDxlGCjxtTeG3KWmbBtziHwcvjK0s3
-         aWwZtlOjIMDctAYMxHSV9FM3XQrlNRH57/TGW+G31PD7pATUU5GsjIymcuvgVmTVi8Re
-         YsXewenPVW0hQXKlfqwLoVkITw/NCWFL4eqvWAxm79ZWMBjCbjfLLM5ZcbXWITR+1RFK
-         fMBA58TjwtqITsLD1tggkyfad4+bJ2ozO9bSgQdF+HTSW7gP9ZRl4pymd+56Q13uMlks
-         lJIzhn+3c8uFhhcLKo9NlUzP2e3VScbxfs/BDO9AwOVuHrty/thdLbN/tlBK7zYCOYyk
-         QCSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1r0TZ84blCBesuKiFn+H2dregrw6ABXsbkmKzg/nQu0=;
-        b=SjyV4Q/7P57ltI21Sw1Rx80kyEPC5X7ADuv8VFXbXrFt/NcHV7K9UsqY/lmT6C20DM
-         ihoxNiv+58+CYFJq4atBl5Z19ZU4pp92MXdgcwOMlg7pb4Dy3Q4/P6QzTfCyayXoK6O9
-         4IhRPlCbiV7dbW3BOv/KSlt8yNeUp05mmcNNgiUr/Krdv/FiD730lssxgj2sswZ07SgS
-         AL58Vg2BE5LkIcZHu33F98S5j2gwKde4cFZetfbO04U90BbxXT3b7pol1LH1FLTyvtIY
-         ZkDyxVJz4ohmziJLTfbW2CU+A64Z1zmQx/KhAfDYik7AZL9F+rtS+eVxFF0MUNUxwmOJ
-         loTw==
-X-Gm-Message-State: AOAM532LttHJsLEsIixUhZZRxLDEOCUtvaEmywhbKmKqZgJ5o8C0B04X
-        DHcT6ePcPQC6DpCo2/mT0svqJo5F6WV2YoMZZE7dmg==
-X-Google-Smtp-Source: ABdhPJyC79flKvm/NTskhQXFVLb8a+3+9QFks4On6LuHo0ZaivwVolNpwIdPxosiSI1x0RiEuI3f7yDxY5v64Cy+D2M=
-X-Received: by 2002:a25:b94:: with SMTP id 142mr19497766ybl.508.1631594683564;
- Mon, 13 Sep 2021 21:44:43 -0700 (PDT)
+        id S239303AbhINEqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 00:46:45 -0400
+Received: from mout.gmx.net ([212.227.15.15]:46693 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232829AbhINEqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 00:46:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631594719;
+        bh=6VXQSgwsXSdmo/m+d795endairul62ZGVBHgG0rMVO4=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=PXAHK6UQq4xbFDsF8HUJTdFKVIiZPts7ODOsNDQ6HPGFtMMVr4IFjg/yJWh6IhwO1
+         qP03R8699/Ppz+cq9HG69YR1TogQXNw6m3FaEYEXW2FtY4ExEAZeDzGAR/ovP57ZGK
+         Tfq68O1dA+YycfPKijvvhVap4JiS3tIh6JLRZJkI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrhUE-1nDcol0hbI-00niys; Tue, 14
+ Sep 2021 06:45:19 +0200
+Subject: Re: INFO: task hung in btrfs_alloc_tree_block
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CACkBjsZuFQykH=vQmy0n_mE1ACpiy1t48dvbUT0wtfBuHC4RFw@mail.gmail.com>
+ <1ffc5484-b68e-22db-349c-d1e0c31f9562@gmx.com>
+ <CACkBjsbUnPQ1J5HpXW-be2jb_h2k8d4b2p-epp5pUek_Rf0reQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <52b5e79f-6b56-2d90-6927-86b2faa295b9@gmx.com>
+Date:   Tue, 14 Sep 2021 12:45:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CGME20210908215815eucas1p12d139145cbb80041ca0dce750eed04fb@eucas1p1.samsung.com>
- <20210908215806.2748361-1-saravanak@google.com> <75889ceb-343b-161f-0280-13df347e6628@samsung.com>
- <CAGETcx8peaew90SWiux=TyvuGgvTQOmO4BFALz7aj0Za5QdNFQ@mail.gmail.com>
-In-Reply-To: <CAGETcx8peaew90SWiux=TyvuGgvTQOmO4BFALz7aj0Za5QdNFQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 13 Sep 2021 21:44:07 -0700
-Message-ID: <CAGETcx-qDPETtsSPKyW+6i=c=x2LG-tcJ+zCu40jCa9FwA-bEA@mail.gmail.com>
-Subject: Re: [PATCH v1] RFC: of: property: fix phy-hanlde issue
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, kernel-team@android.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACkBjsbUnPQ1J5HpXW-be2jb_h2k8d4b2p-epp5pUek_Rf0reQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tULegFjIvGnbxA/NfaYS99DxwIcCjszgLTd2YibruRy57x7WKAE
+ cbgL7cnKqI/dnF0QhsICC5m/6/9oQkaX2AjyJvfuq/TK6GjlXcXs/rba+OtmK9HqCerOXqw
+ 631w4Ur/vqgc2PnR99IXSrRC6E4HCCb4/xo55b6umObulzerXkK/Kfy62+Jt+4o3GM5rGNy
+ IyDz04OCBrv2v1YIOBIOA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FUHTIJppHZw=:jtuonRwitxbBSl9snPw0IF
+ rhHQB8puxH5xYDNsrUhGOdSyqvvXKE5pCxM9DFCtU1pln9uSyorrPbtNoyazloK+3wo5IgW4B
+ KCjkOENm+xvuxoaafyP1UW18MFxcgDk2qyFoZAE0keiAQK1QB4UwOpQ0SSUrgszVJ/z6v1tBE
+ 1rMe5fmWEfL1b7AwttHKH1Ys7oR9oXBqbf0BEHn0IiW+FifUfXxOkDdHEDDMgK9pX56GajR07
+ soa2nUr6SAVOY98f3B7zqpdkmAmegMWx1vSN1/cVx88WU3JaQr49eNUcEFjaXCtzd3+zNMzOF
+ a6WbtW50IHk2JfBztEJlgfjlldzmE1gPeED1xZDWjBiuaZdPmOUJkPq5n3JxJEIlLJnCd46Lt
+ cENaDYTQcAVYO/YrgMubLAiAqarHGaKNvKW7wBy5n5OGfPYEu6v1FJlpRz4l2gOBj2wJIl6BQ
+ lc2FwHVGw52NXshvMhIapWsFSrykgmRMYDgPFm4SV3B33y5LdwBabbYtxzRNdPVC0Ke5qLlNX
+ qxHac2uJKFmvsZ3a5DOlh29+uKdMvh6nJnary3P9fYBsda9xj179TKbfxCAjG9a90b/ze9tqs
+ ns3Z2Nz3NaEl4ku9tRjBuPlMpWOYaSecBoMvi2yGD6XVEpIj5c63WYBRTa4lnO+S9VmT4G30y
+ vFi0Wvq+RnC7GjAEk2SSHdJ1Eg/yPQRaynqSRZ+YBYbPNGR2CI/wRnR0ktAdfJxsHOKUeiRIu
+ 41pwXHO6qpAB4AsDq0iNLWrOIQ9WlEI+R2gVLbv4ocpnobSV+ad7ijftZHytozPaY3kVLfrGd
+ YDzVti4h3O9kVoRyG59BrLreBHP6Xa1WVoShRniZWkjAZ/IhLpco5gfKN7Wt2RBQd3De6Jxv4
+ DIzW5dvNYedsvmXF/mTAUWu6cyC08PuWtTAjuVzGx8+fZeaOg5EewWMemwqu3XxeQ0fnHoAlv
+ zyxgy+3qNDGVU8WzDm4Qw/LiSaSsUDmOQzOr98XdgfmfI8NNPL8YbLtQQJrrbD4CgTegO4sih
+ frZAFChnHE6LWsOCiOQU4ROECtOIQtIawlscks1FVw9YTyKWzGgZJMIkuYIV7RifKkz992mHU
+ K8WFL9wx+or3zn67L8m2DRQ/yfp+TsScymrm1xvybuWeDCwkmRmcVwW1qxzf4aven4AhgfeEn
+ Y2Wr8aJY/xre4nP4bHOoL2RFg2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 5:54 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Sep 9, 2021 at 1:03 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
-> >
-> > Hi
-> >
-> > On 08.09.2021 23:58, Saravana Kannan wrote:
-> > > This is a test patch. I'll split it up into multiple commits and clean
-> > > it up once it's shown to help.
-> > >
-> > > Marek, can you please test this and let me know if it helps?
-> > I've just checked and nope, it doesn't help for my case. Ethernet is
-> > still not probed on Amlogic G12A/B SoC based boards. :(
->
-> Hi Marek,
->
-> Thanks for testing out the patch. Turns out the issue was a lot more
-> complicated than I thought. Thanks to a bunch of debug logs that Rob
-> provided off-list, I was able to root cause the actual issue.
->
-> Looks like the problem is cyclic dependency between the mdio-multiplexer and the
-> ethernet:
-> ethmac -(phy-handle)-> external_phy -(parent) ->
-> mdio-multiplexer -(mdio-bus-parent)-> mdio0 -(parent)-> ethmac
->
-> Relevant parts of the DT combined from multiple files and trimmed and
-> pasted below.
->
-> If fw_devlink sees a cycle, it'll stop enforcing ordering between all
-> the devices in the cycle since it can't figure out which one of the
-> dependencies isn't real. So, the confusing part was that, when Andrew
-> Lunn gave the patch for adding support for "mdio-bus-parent", that
-> should have allowed fw_devlink to see the cycle and stop enforcing the
-> dependencies. But that didn't happen because of a bug in fw_devlink
-> cycle handling (it worked for most cases, but not for this specific
-> ordering in DT). I'll send out a fix for that soon.
 
-Here's the fix I promised:
-https://lore.kernel.org/lkml/20210914043928.4066136-2-saravanak@google.com/
 
-> That combined with
-> Andrew's "mdio-bus-parent" patch should fix things for you.
+On 2021/9/14 =E4=B8=8A=E5=8D=8811:22, Hao Sun wrote:
+> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8814=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=8811:13=E5=86=99=E9=81=93=EF=BC=
+=9A
+>>
+>>
+>>
+>> On 2021/9/14 =E4=B8=8A=E5=8D=8810:44, Hao Sun wrote:
+>>> Hello,
+>>>
+>>> When using Healer to fuzz the latest Linux kernel, the following crash
+>>> was triggered.
+>>>
+>>> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+>>> git tree: upstream
+>>> console output:
+>>> https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/view=
+?usp=3Dsharing
+>>> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHT=
+LJvsUdWcgB/view?usp=3Dsharing
+>>
+>> Any recorded info for the injected errors during the test?
+>>
+>> It's hanging on a tree lock, without knowing the error injected, it's
+>> really hard to find out what's the cause.
+>>
+>
+> The `task hang` happened without any fault injection.
+> Based on the recorded logs
+> (https://drive.google.com/file/d/1x7u4JfyeL8WhetacBsPDVXm48SvVJUo7/view?=
+usp=3Dsharing
+> and https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/vi=
+ew?usp=3Dsharing),
+> no fault-injection log was printed before the task hang.
 
-Fairly certain the fix above and Andrew's patch should fix it for you
-if you want to test it. Rob already verified a very similar patch for me.
+OK, then it seems like a big problem.
 
--Saravana
+Any workload log from the fuzzer so we can try to reproduce?
 
-> But I
-> think I'll revert the phy-handle patch for other reasons (I'll explain
-> that in the patch that reverts it).
+Or just using the tool?
+
+Thanks,
+Qu
 >
+> Regards
+> Hao
 >
-> Thanks,
-> Saravana
->
-> ethmac: ethernet@ff3f0000 {
->     compatible = "amlogic,meson-g12a-dwmac"
->
->     phy-handle = <&external_phy>;
->     mdio0: mdio {
->         compatible = "snps,dwmac-mdio";
->     }
-> };
->
-> mdio-multiplexer {
->     mdio-bus-parent = <&mdio0>;
->
->     ext_mdio: mdio@0 {
->         /* no compatible prop */
->         external_phy: ethernet-phy@0 {
->             /* no compatible prop */
->         }
->     }
-> }
->
-> -Saravana
