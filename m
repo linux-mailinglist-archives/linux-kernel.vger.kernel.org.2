@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3D240AC39
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC5540AC3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhINLKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:10:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32870 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbhINLKt (ORCPT
+        id S231948AbhINLNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:13:04 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:53008 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231691AbhINLND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:10:49 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631617771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M5L53b1aW4qWbrWwixZQLL5XpvN/Xich8YXIpyYky8g=;
-        b=taPBC9dDsPSAxokSNWsFlzdEp2X2njXjJABW2xf54PpdxaXJW8V5Hd8e98sgxTFU/0wj8z
-        4EZxiZFfGjQz1kncwWvCniVE0bwqUt3p7W0UAR0nH+JjDYw1GNW51sh4W9nmnfmmtOtwwK
-        b9Kn28esA6htvsuKMsWg6Ad32TAFZ/EASmvYpvNl6y97qFIZqHs6jrWWLZ6NyN7aUs7S3c
-        uUoaxJfxHbTV8tPLX22lWZEd4RhJgLQIE2zGXxiZRrJw1fwrIGVXx9onJyEnLTGPd7qhzq
-        pNE8d9p3pqBAAhXRXBzaf/5r9TzCqmeJ48dmS3L1Nm2iTYol58mWl4ST4g0Dkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631617771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M5L53b1aW4qWbrWwixZQLL5XpvN/Xich8YXIpyYky8g=;
-        b=IWZiRicc3an/+umdwpR9xwKZEvdzyIUll1dV1bDMKON/4eAqP/uib1dxUY6WkhRsurOu/S
-        npzWxwUSYz0F9nCg==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, f.hetzelt@tu-berlin.de,
-        david.kaplan@amd.com, konrad.wilk@oracle.com,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 7/9] virtio-pci: harden INTX interrupts
-In-Reply-To: <YUCBZjjk77q8JS4f@hirez.programming.kicks-ass.net>
-References: <20210913055353.35219-1-jasowang@redhat.com>
- <20210913055353.35219-8-jasowang@redhat.com> <875yv4f99j.ffs@tglx>
- <YUCBZjjk77q8JS4f@hirez.programming.kicks-ass.net>
-Date:   Tue, 14 Sep 2021 13:09:31 +0200
-Message-ID: <87tuinct1w.ffs@tglx>
+        Tue, 14 Sep 2021 07:13:03 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E3C042A5;
+        Tue, 14 Sep 2021 13:11:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1631617904;
+        bh=UVN9Czt4d3zRJH4FreSTQyVzvDmfnJhgwAWZq7jgpak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ir49+m105z1jz+jtGji8tsAqWQZ8kgxHOFeV7vW3ytIHrvOU2IzjHw58VO4/UNxu+
+         lIOsD8oGDBYhTPM01llE3XGSal0gIdRzQ6loCzgMS4e37f+38xDpUvlMovjblgVpDW
+         A3sCb3MMKNHeEYv1m+wh50lSeuiIqwZI6gF1G9ME=
+Date:   Tue, 14 Sep 2021 14:11:18 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-staging@lists.linux.dev, Yong Deng <yong.deng@magewell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 20/22] staging: media: Add support for the Allwinner A31
+ ISP
+Message-ID: <YUCDVm4OA3C3Re09@pendragon.ideasonboard.com>
+References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
+ <20210910184147.336618-21-paul.kocialkowski@bootlin.com>
+ <20210913083135.v7q7joux2xckat62@gilmour>
+ <YUBUUQxBaGUkjzMP@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YUBUUQxBaGUkjzMP@aptenodytes>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14 2021 at 13:03, Peter Zijlstra wrote:
-> On Mon, Sep 13, 2021 at 11:36:24PM +0200, Thomas Gleixner wrote:
-> Here you rely on the UNLOCK+LOCK pattern because we have two adjacent
-> critical sections (or rather, the same twice), which provides RCtso
-> ordering, which is sufficient to make the below store:
->
->> 
->>         intx_soft_enabled = true;
->
-> a RELEASE. still, I would suggest writing it at least using
-> WRITE_ONCE() with a comment on.
+Hi Paul,
 
-Right. forgot about that.
+On Tue, Sep 14, 2021 at 09:50:41AM +0200, Paul Kocialkowski wrote:
+> On Mon 13 Sep 21, 10:31, Maxime Ripard wrote:
+> > On Fri, Sep 10, 2021 at 08:41:45PM +0200, Paul Kocialkowski wrote:
+> > > Some Allwinner platforms come with an Image Signal Processor, which
+> > > supports various features in order to enhance and transform data
+> > > received by image sensors into good-looking pictures. In most cases,
+> > > the data is raw bayer, which gets internally converted to RGB and
+> > > finally YUV, which is what the hardware produces.
+> > > 
+> > > This driver supports ISPs that are similar to the A31 ISP, which was
+> > > the first standalone ISP found in Allwinner platforms. Simpler ISP
+> > > blocks were found in the A10 and A20, where they are tied to a CSI
+> > > controller. Newer generations of Allwinner SoCs (starting with the
+> > > H6, H616, etc) come with a new camera subsystem and revised ISP.
+> > > Even though these previous and next-generation ISPs are somewhat
+> > > similar to the A31 ISP, they have enough significant differences to
+> > > be out of the scope of this driver.
+> > > 
+> > > While the ISP supports many features, including 3A and many
+> > > enhancement blocks, this implementation is limited to the following:
+> > > - V3s (V3/S3) platform support;
+> > > - Bayer media bus formats as input;
+> > > - Semi-planar YUV (NV12/NV21) as output;
+> > > - Debayering with per-component gain and offset configuration;
+> > > - 2D noise filtering with configurable coefficients.
+> > > 
+> > > Since many features are missing from the associated uAPI, the driver
+> > > is aimed to integrate staging until all features are properly
+> > > described.
+> > 
+> > We can add new features/interfaces to a !staging driver. Why do you
+> > think staging is required?
+> 
+> This is true for the driver but not so much for the uAPI, so it seems that
+> the uAPI must be added to staging in some way. Then I'm not sure it makes sense
+> to have a !staging driver that depends on a staging uAPI.
+> 
+> Besides that, I added it to staging because that's the process that was
+> followed by rkisp1, which is a very similar case.
 
-> 	disable_irq();
-> 	/*
-> 	 * The above disable_irq() provides TSO ordering and as such
-> 	 * promotes the below store to store-release.
-> 	 */
-> 	WRITE_ONCE(intx_soft_enabled, true);
-> 	enable_irq();
->
->> In this case synchronize_irq() prevents the subsequent store to
->> intx_soft_enabled to leak into the __disable_irq(desc) section which in
->> turn makes it impossible for an interrupt handler to observe
->> intx_soft_enabled == true before the prerequisites which preceed the
->> call to disable_irq() are visible.
->> 
->> Of course the memory ordering wizards might disagree, but if they do,
->> then we have a massive chase of ordering problems vs. similar constructs
->> all over the tree ahead of us.
->
-> Your case, UNLOCK s + LOCK s, is fully documented to provide RCtso
-> ordering. The more general case of: UNLOCK r + LOCK s, will shortly
-> appear in documentation near you. Meaning we can forget about the
-> details an blanket state that any UNLOCK followed by a LOCK (on the same
-> CPU) will provide TSO ordering.
+Maxime is right in the sense that uAPI can always be extended, but it
+has to be done in a backward-compatible manner, and staging is sometimes
+considered as not being covered by the ABI stability requirements of the
+kernel. Not everybody agrees on this, but there are clear cases where
+userspace really can't expect staging ABIs to be stable (for instance
+when the driver doesn't even compile).
 
-I think we also should document the disable/synchronize_irq() scheme
-somewhere.
+I think there's value in having the driver in staging to facilitate
+development until we consider the ABI stable, but I'm not entirely sure
+if there should be another step taken to mark this ABI is not being
+ready yet.
 
-Thanks,
+> > > On the technical side, it uses the v4l2 and media controller APIs,
+> > > with a video node for capture, a processor subdev and a video node
+> > > for parameters submission. A specific uAPI structure and associated
+> > > v4l2 meta format are used to configure parameters of the supported
+> > > modules.
+> > 
+> > This meta format needs to be documented
+> 
+> You're right, there should probably be a pixfmt-meta-sun6i-isp.rst
+> documentation file. I guess it should live along in the staging driver
+> directory for now and be destaged later.
 
-        tglx
+Can documentation in staging be compiled ? If not I think it can go to
+Documentation/
 
+-- 
+Regards,
+
+Laurent Pinchart
