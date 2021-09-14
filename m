@@ -2,108 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AEA40A73A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0335F40A751
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240583AbhINHUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:20:12 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16795 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235026AbhINHUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:20:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="220032451"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="220032451"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 00:18:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="433556004"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
-  by orsmga003.jf.intel.com with ESMTP; 14 Sep 2021 00:18:46 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH v2 0/5] Introduce Platform Firmware Runtime Update and Telemetry drivers
-Date:   Tue, 14 Sep 2021 15:24:25 +0800
-Message-Id: <cover.1631600169.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S240707AbhINH0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:26:09 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:59378
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240702AbhINH0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 03:26:08 -0400
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8926340267
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:24:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631604290;
+        bh=4983Sfp485zuGKC0ImKtxBapf0kX8m2fzxgiCI1l5VQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=qqJtCJWSIUAevVqEQZ58Cq9CII7YjkGPxVYlCb9V71knxS97HNwa5fYNTfgAY/uMx
+         luL1R/YKa5193vZvst83kT7eHU6NU627mmNNTiAoVOSTEytHurot9P8uOmKsNKWaNT
+         +9xQpvK01ai2tKDHphdxoOwgU8QIEYSsfK1rIwR15B93+NVOqD9+/nTCDsghZ95BCC
+         8UeetpiCi3LGUpDRcjH9v+BGfjWas43qK1bENbOZ4bT3hkxMARSi4W0ZgWi02f3sXw
+         6bR86KZ8oH867y64hN9OCeGcrhM4IcQPE10H0xlPBoFWWuRpHzDkU/WtwIaE7rh+i3
+         dN3jQB4H4r7Hw==
+Received: by mail-wm1-f70.google.com with SMTP id m4-20020a05600c3b0400b00303b904380dso358033wms.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:24:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4983Sfp485zuGKC0ImKtxBapf0kX8m2fzxgiCI1l5VQ=;
+        b=N46fq0apXs0GySgkYldSgDoo7yIGzwLvuDAWlMCNIrPeYwLbXR5duGkq25pvdQRb7d
+         ZjNcQ2cwIO8aZEf9Px7SgOjoldBHQAZTeSrKhqjevKFfkbDIFQsPRyGgFdnXeKpIqAbS
+         zkp7IGiXvHCfq+D+76ln6nkWTmNYdKui18eldJaqDnuhFMPYTDhLp0W9R/+mzvXwz18S
+         UWtQ0jibSc/Bv6dwSv7+YYKZk9fnayLHC9IEqHsex168HEwO8aQ/PZ2KAgkXWTkEGJ07
+         VGQn+ZftRnbEuDWPyMr5GoGfxhwsrh63ecvO7OJRV39EtEtqQPRLjH1MOjvkXWqY7vXv
+         skUw==
+X-Gm-Message-State: AOAM530s+LrRpCLXpR3zLMTeva894E+jrraXIuB/jdgpYjjyjsQJrfTy
+        EEeoEfId6WUwcvaE3M4mfGMHMFFqsJIdtvPxNjhq9viHLOkJNmz65K8gZb7kXaf76vIrsGusyip
+        MwjCtqs7stmrfC3iP2HW6BVgLVIjfxKZ4FBuJlhnrLw==
+X-Received: by 2002:a5d:6a8f:: with SMTP id s15mr12285071wru.15.1631604289822;
+        Tue, 14 Sep 2021 00:24:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+Mz4fzrDvBl6O4ft7ymJcQ1n96FBpgww76aw4z7k8DvFWFMiqtByGcTnNnCjUrA24F2YULw==
+X-Received: by 2002:a5d:6a8f:: with SMTP id s15mr12285059wru.15.1631604289673;
+        Tue, 14 Sep 2021 00:24:49 -0700 (PDT)
+Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id m3sm12473012wrg.45.2021.09.14.00.24.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 00:24:49 -0700 (PDT)
+Subject: Re: [PATCH 6/8] dt-bindings: vendor-prefixes: add LG Electronics
+To:     Luca Weiss <luca@z3ntu.xyz>, linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, bartosz.dudziak@snejp.pl,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        Hao Fang <fanghao11@huawei.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210911232707.259615-1-luca@z3ntu.xyz>
+ <20210911232707.259615-7-luca@z3ntu.xyz>
+ <9942f964-442e-e782-3926-6d7d1123418a@canonical.com>
+ <5220943.AHGTne7y6d@g550jk>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <4f415ca1-6527-5667-01f2-9676f565d670@canonical.com>
+Date:   Tue, 14 Sep 2021 09:24:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5220943.AHGTne7y6d@g550jk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-High Service Level Agreements (SLAs) requires that the system runs without
-service interruptions. Generally, system firmware provides runtime services
-such as RAS(Reliability, Availability and Serviceability) features, UEFI runtime
-services and ACPI services. Currently if there is any firmware code changes in
-these code area, the system firmware update and reboot is required. Example of
-bug fix could be wrong register size or location of the register. This means
-customer services are not available during the firmware upgrade, which could
-approach several minutes, resulting in not able to meet SLAs.
+On 13/09/2021 21:14, Luca Weiss wrote:
+> Hi Krzysztof,
+> 
+> On Montag, 13. September 2021 10:49:43 CEST Krzysztof Kozlowski wrote:
+>> On 12/09/2021 01:27, Luca Weiss wrote:
+>>> LG Electronics is a part of the LG Corporation and produces, amongst
+>>> other things, consumer electronics such as phones and smartwatches.
+>>
+>> Hi,
+>>
+>> Thanks for the patches.
+>>
+>> I think "lge" it's the same prefix as "lg". There is no sense in having
+>> multiple vendor prefixes just because company splits inside business
+>> units or subsidiaries. The same as with other conglomerates, e.g.
+>> Samsung - if we wanted to be specific, there will be 4-5 Samsung
+>> vendors... Not mentioning that company organisation is not always
+>> disclosed and can change.
+>>
+> 
+> I was mostly following qcom-msm8974-lge-nexus5-hammerhead as it's the other LG 
+> device tree I am aware of so I've picked lge instead of lg. Also worth noting 
+> that Google uses "LGE" in the Android device tree[1] or in the model name in 
+> the LG G Watch R kernel sources ("LGE APQ 8026v2 LENOK rev-1.0")
 
-Intel provides a mechanism named Management Mode Runtime Update to help the users
-update the firmware without having to reboot[1].
+[1] Does not point to kernel tree. Downstream user could be a good
+argument to switch to lge, but then I would expect correcting other "lg"
+devices which are in fact made by LGE.
 
-This series provides the following facilities.
+> 
+> I don't have a strong opinion either way so I'm fine with either.
+> 
+> If we decide to go with "lg" do we want to change the Nexus 5 devicetree 
+> (hammerhead) also, that one has the lge name in at least compatible and 
+> filename (I don't know how much of a breaking change that would be considered 
+> as).
 
-  1. Perform a runtime firmware driver update and activate.
-  2. Ability to inject firmware code at runtime, for dynamic instrumentation.
-  3. Facility to retrieve logs from runtime firmware update and activate telemetry.
-     (The telemetry is based on runtime firmware update: it records the logs during
-      runtime update(code injection and driver update).
+We would have to add a new one and mark the old compatible as deprecated.
 
-The Management Mode Runtime Update OS Interface Specification[1] provides two ACPI
-device objects to interface with system firmware to perform these updates. This patch
-series introduces the drivers for those ACPI devices.
+> 
+>> We already have lg for several components, also made by LG Electronics.
+>> What about these?
+>>
+>> There is only one device with "lge", added back in 2016 without adding
+>> vendor prefix. I would propose to fix that one, instead of keeping
+>> duplicated "lg".
+>>
+>> Best regards,
+>> Krzysztof
+> 
+> Regards
+> Luca
+> 
+> [1] https://android.googlesource.com/device/lge/hammerhead/
+> 
+> 
+> 
 
-[1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
 
-Chen Yu (5):
-  Documentation: Introduce Platform Firmware Runtime Update
-    documentation
-  efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
-    corresponding structures
-  drivers/acpi: Introduce Platform Firmware Runtime Update device driver
-  drivers/acpi: Introduce Platform Firmware Runtime Update Telemetry
-  selftests/pfru: add test for Platform Firmware Runtime Update and
-    Telemetry
-
- .../userspace-api/ioctl/ioctl-number.rst      |   1 +
- Documentation/x86/index.rst                   |   1 +
- Documentation/x86/pfru.rst                    | 100 +++
- drivers/acpi/Kconfig                          |   1 +
- drivers/acpi/Makefile                         |   1 +
- drivers/acpi/pfru/Kconfig                     |  29 +
- drivers/acpi/pfru/Makefile                    |   3 +
- drivers/acpi/pfru/pfru_telemetry.c            | 412 +++++++++++++
- drivers/acpi/pfru/pfru_update.c               | 567 ++++++++++++++++++
- include/linux/efi.h                           |  50 ++
- include/uapi/linux/pfru.h                     | 151 +++++
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/pfru/Makefile         |   7 +
- tools/testing/selftests/pfru/config           |   2 +
- tools/testing/selftests/pfru/pfru_test.c      | 329 ++++++++++
- 15 files changed, 1655 insertions(+)
- create mode 100644 Documentation/x86/pfru.rst
- create mode 100644 drivers/acpi/pfru/Kconfig
- create mode 100644 drivers/acpi/pfru/Makefile
- create mode 100644 drivers/acpi/pfru/pfru_telemetry.c
- create mode 100644 drivers/acpi/pfru/pfru_update.c
- create mode 100644 include/uapi/linux/pfru.h
- create mode 100644 tools/testing/selftests/pfru/Makefile
- create mode 100644 tools/testing/selftests/pfru/config
- create mode 100644 tools/testing/selftests/pfru/pfru_test.c
-
--- 
-2.25.1
-
+Best regards,
+Krzysztof
