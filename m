@@ -2,85 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BFE40A459
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC04A40A468
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238135AbhINDY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:24:27 -0400
-Received: from mail-pf1-f178.google.com ([209.85.210.178]:39456 "EHLO
-        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238901AbhINDYV (ORCPT
+        id S238823AbhIND3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:29:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49238 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238424AbhIND3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:24:21 -0400
-Received: by mail-pf1-f178.google.com with SMTP id e16so10837585pfc.6;
-        Mon, 13 Sep 2021 20:23:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=sXdm6Z9DA7+o083V6MRzxK6U4l2Js+yCvrccU9cF5zI=;
-        b=ZfxkElickV39K5h0mR398p2NRoiwDbirXc9AuBkj6a4FkXsaCzSSA3PgB7cFe2YVMJ
-         h7Ip7z11I5x9+FE5U72XUGVwEcm7zg9A2X5p3MhrpGtF2cbdRHdO68dLTlf3OPNoxqUV
-         9Yn/DHAGH3baHHHViMKvIZT9KV+Xe7/rpbtg/uE0TOyhg5J1fKMMHfyQVvjkMnXdYg2C
-         KJi5NfoRi0Hv4hLY2D0gvkI5wOGf8PoV9ijMS7hE9IW8HQIYaShH4gRh1X6ubEtMTCcf
-         PUwBTV1xfruau58qSr4t1QjmEtSzBXcb/7vK3A10xB7MGUVvkYrxA2iygw8YuwkOVZry
-         rUeQ==
-X-Gm-Message-State: AOAM5328+IlY3QVdyZ4zqNF3kk/4pGdcrRFII1jIkXq3HDu0vvHaLT0v
-        PnFao5fL/7KIAXTCo747vAk=
-X-Google-Smtp-Source: ABdhPJwlGAYaNH88tev/TPlNavWU2YeRy3ZBTX4vmY9xLeXD+LBOR6qK35RfChI49sAR/zW/YDWxzQ==
-X-Received: by 2002:a63:7d55:: with SMTP id m21mr14079307pgn.455.1631589784451;
-        Mon, 13 Sep 2021 20:23:04 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:e47e:ab85:4d9e:deba? ([2601:647:4000:d7:e47e:ab85:4d9e:deba])
-        by smtp.gmail.com with ESMTPSA id q18sm8623247pfj.46.2021.09.13.20.23.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Sep 2021 20:23:03 -0700 (PDT)
-Message-ID: <f277507b-b62e-c874-b2ad-276ea03d2263@acm.org>
-Date:   Mon, 13 Sep 2021 20:23:01 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v2 0/3] scsi: ufs: introduce vendor isr
-Content-Language: en-US
-To:     Alim Akhtar <alim.akhtar@gmail.com>
-Cc:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        Can Guo <cang@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com
-References: <CGME20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00@epcas2p2.samsung.com>
- <cover.1631519695.git.kwmad.kim@samsung.com>
- <fbdd02bc-01ab-c5b3-9355-3ebe04601b04@acm.org>
- <CAGOxZ51X-ThsqV35PiTh-awRvAkQ=Fjf9m+KRd1HLZ+pDNi=Xg@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <CAGOxZ51X-ThsqV35PiTh-awRvAkQ=Fjf9m+KRd1HLZ+pDNi=Xg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Mon, 13 Sep 2021 23:29:04 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B3B32200C6;
+        Tue, 14 Sep 2021 03:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631590058; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cJSGn6WA2R49IT1QsgaLiH/CWsOR41ePlSu1rtiMbCg=;
+        b=lQFnJD3mRRl+MwXbo/AUs9pWRfh/FmxioTQrHr4TKGAwgXbBt7IwWVuOmR4BSPBTZzZaqp
+        w7oH+cfEoeoh/BCy8UzcBgFXeEtx+W7qx0FQ6M+NbOVVuAIhMyIsve4VWEUbFxFVob5BId
+        qXtJXoCmV+GsSqKzD5k9V9YpOjcWXGA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631590058;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cJSGn6WA2R49IT1QsgaLiH/CWsOR41ePlSu1rtiMbCg=;
+        b=h8MhPWifJWR/qF5e6Qb4KbwDznco+h5XlQjsH1PBqKDA5cr1isS79/33q0rOE8x7LqNmO+
+        dOn2OkKj5qqbJEAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 080A913B56;
+        Tue, 14 Sep 2021 03:27:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cgviLKYWQGGuJgAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 14 Sep 2021 03:27:34 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Dave Chinner" <david@fromorbit.com>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Mel Gorman" <mgorman@suse.com>, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] XFS: remove congestion_wait() loop from kmem_alloc()
+In-reply-to: <20210914013117.GG2361455@dread.disaster.area>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>,
+ <163157838439.13293.5032214643474179966.stgit@noble.brown>,
+ <20210914013117.GG2361455@dread.disaster.area>
+Date:   Tue, 14 Sep 2021 13:27:31 +1000
+Message-id: <163159005180.3992.2350725240228509854@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/21 10:26, Alim Akhtar wrote:
-> Thanks for your input. Completely agree with you, in fact your
-> suggestions make sense to me. As a driver developer, surely we can
-> take these concerns to the IP designers and see how far we can get in
-> terms of standardization. That, however, is not something that can be
-> accomplished overnight. My main concern is, what about millions of
-> devices which are already in the market? UFS subsystem does support
-> _vops_ to handle vendor specific hooks/modifications. I am not saying
-> we should always follow this path, but surely until these deviations 
-> are either fixed or become part of UFS standard itself, IMO.
-Hi Alim,
+On Tue, 14 Sep 2021, Dave Chinner wrote:
+> On Tue, Sep 14, 2021 at 10:13:04AM +1000, NeilBrown wrote:
+> > Documentation commment in gfp.h discourages indefinite retry loops on
+> > ENOMEM and says of __GFP_NOFAIL that it
+> > 
+> >     is definitely preferable to use the flag rather than opencode
+> >     endless loop around allocator.
+> > 
+> > So remove the loop, instead specifying __GFP_NOFAIL if KM_MAYFAIL was
+> > not given.
+> > 
+> > Signed-off-by: NeilBrown <neilb@suse.de>
+> > ---
+> >  fs/xfs/kmem.c |   16 ++++------------
+> >  1 file changed, 4 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+> > index 6f49bf39183c..f545f3633f88 100644
+> > --- a/fs/xfs/kmem.c
+> > +++ b/fs/xfs/kmem.c
+> > @@ -13,19 +13,11 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
+> >  {
+> >  	int	retries = 0;
+> >  	gfp_t	lflags = kmem_flags_convert(flags);
+> > -	void	*ptr;
+> >  
+> >  	trace_kmem_alloc(size, flags, _RET_IP_);
+> >  
+> > -	do {
+> > -		ptr = kmalloc(size, lflags);
+> > -		if (ptr || (flags & KM_MAYFAIL))
+> > -			return ptr;
+> > -		if (!(++retries % 100))
+> > -			xfs_err(NULL,
+> > -	"%s(%u) possible memory allocation deadlock size %u in %s (mode:0x%x)",
+> > -				current->comm, current->pid,
+> > -				(unsigned int)size, __func__, lflags);
+> > -		congestion_wait(BLK_RW_ASYNC, HZ/50);
+> > -	} while (1);
+> > +	if (!(flags & KM_MAYFAIL))
+> > +		lflags |= __GFP_NOFAIL;
+> > +
+> > +	return kmalloc(size, lflags);
+> >  }
+> 
+> Which means we no longer get warnings about memory allocation
+> failing - kmem_flags_convert() sets __GFP_NOWARN for all allocations
+> in this loop. Hence we'll now get silent deadlocks through this code
+> instead of getting warnings that memory allocation is failing
+> repeatedly.
 
-If there are already millions of devices in the market that support this 
-feature then that's an argument to proceed with this patch series.
+Yes, that is a problem.  Could we just clear __GFP_NOWARN when setting
+__GFP_NOFAIL?
+Or is the 1-in-100 important? I think default warning is 1 every 10
+seconds.
+
+> 
+> I also wonder about changing the backoff behaviour here (it's a 20ms
+> wait right now because there are not early wakeups) will affect the
+> behaviour, as __GFP_NOFAIL won't wait for that extra time between
+> allocation attempts....
+
+The internal backoff is 100ms if there is much pending writeout, and
+there are 16 internal retries.  If there is not much pending writeout, I
+think it just loops with cond_resched().
+So adding 20ms can only be at all interesting when the only way to
+reclaim memory is something other than writeout.  I don't know how to
+think about that.
+
+> 
+> And, of course, how did you test this? Sometimes we see
+> unpredicted behaviours as a result of "simple" changes like this
+> under low memory conditions...
+
+I suspect this is close to untestable.  While I accept that there might
+be a scenario where the change might cause some macro effect, it would
+most likely be some interplay with some other subsystem struggling with
+memory.  Testing XFS by itself would be unlikely to find it.
 
 Thanks,
+NeilBrown
 
-Bart.
+
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
+> 
