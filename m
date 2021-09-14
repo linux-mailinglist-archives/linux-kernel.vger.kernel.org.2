@@ -2,170 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08E140AB36
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F0640AB3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhINJ4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:56:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:42240 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229969AbhINJ4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:56:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D8CD6D;
-        Tue, 14 Sep 2021 02:55:24 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.21.233])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 986A13F719;
-        Tue, 14 Sep 2021 02:55:22 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 10:55:16 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: entry: Improve the performance of system calls
-Message-ID: <20210914095436.GA26544@C02TD0UTHF1T.local>
-References: <20210903121950.2284-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903121950.2284-1-thunder.leizhen@huawei.com>
+        id S231316AbhINJ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:57:27 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:62212 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhINJ5Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:57:24 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 8905fce2;
+        Tue, 14 Sep 2021 11:56:05 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 11:56:05 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     sven@svenpeter.dev, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com,
+        kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com,
+        kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com,
+        kernel-team@android.com
+In-Reply-To: <87y27zbiu3.wl-maz@kernel.org> (message from Marc Zyngier on Tue,
+        14 Sep 2021 10:35:32 +0100)
+Subject: Re: [PATCH v3 10/10] PCI: apple: Configure RID to SID mapper on device addition
+References: <20210913182550.264165-1-maz@kernel.org>
+        <20210913182550.264165-11-maz@kernel.org>
+        <b502383a-fe68-498a-b714-7832d3c8703e@www.fastmail.com> <87y27zbiu3.wl-maz@kernel.org>
+Message-ID: <56145a72aa978ebd@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Sep 03, 2021 at 08:19:50PM +0800, Zhen Lei wrote:
-> Commit 582f95835a8f ("arm64: entry: convert el0_sync to C") converted lots
-> of functions from assembly to C, this greatly improves readability. But
-> el0_svc()/el0_svc_compat() is in response to system call requests from
-> user mode and may be in the hot path.
+> Date: Tue, 14 Sep 2021 10:35:32 +0100
+> From: Marc Zyngier <maz@kernel.org>
 > 
-> Although the SVC is in the first case of the switch statement in C, the
-> compiler optimizes the switch statement as a whole, and does not give SVC
-> a small boost.
+> On Mon, 13 Sep 2021 21:45:13 +0100,
+> "Sven Peter" <sven@svenpeter.dev> wrote:
+> > 
+> > On Mon, Sep 13, 2021, at 20:25, Marc Zyngier wrote:
+> > > The Apple PCIe controller doesn't directly feed the endpoint's
+> > > Requester ID to the IOMMU (DART), but instead maps RIDs onto
+> > > Stream IDs (SIDs). The DART and the PCIe controller must thus
+> > > agree on the SIDs that are used for translation (by using
+> > > the 'iommu-map' property).
+> > > 
+> > > For this purpose, parse the 'iommu-map' property each time a
+> > > device gets added, and use the resulting translation to configure
+> > > the PCIe RID-to-SID mapper. Similarily, remove the translation
+> > > if/when the device gets removed.
+> > > 
+> > > This is all driven from a bus notifier which gets registered at
+> > > probe time. Hopefully this is the only PCI controller driver
+> > > in the whole system.
+> > > 
+> > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > ---
+> > >  drivers/pci/controller/pcie-apple.c | 158 +++++++++++++++++++++++++++-
+> > >  1 file changed, 156 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pcie-apple.c 
+> > > b/drivers/pci/controller/pcie-apple.c
+> > > index 76344223245d..68d71eabe708 100644
+> > > --- a/drivers/pci/controller/pcie-apple.c
+> > > +++ b/drivers/pci/controller/pcie-apple.c
+> > > @@ -23,8 +23,10 @@
+> > >  #include <linux/iopoll.h>
+> > >  #include <linux/irqchip/chained_irq.h>
+> > >  #include <linux/irqdomain.h>
+> > > +#include <linux/list.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/msi.h>
+> > > +#include <linux/notifier.h>
+> > >  #include <linux/of_irq.h>
+> > >  #include <linux/pci-ecam.h>
+> > >  
+> > > @@ -116,6 +118,8 @@
+> > >  #define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
+> > >  #define PORT_PREFMEM_ENABLE		0x00994
+> > >  
+> > > +#define MAX_RID2SID			64
+> > 
+> > Do these actually have 64 slots? I thought that was only for
+> > the Thunderbolt controllers and that these only had 16.
 > 
-> Use "likely()" to help SVC directly invoke its handler after a simple
-> judgment to avoid entering the switch table lookup process.
+> You are indeed right, and I blindly used the limit used in the
+> Correlium driver. Using entries from 16 onward result in a non booting
+> system. The registers do not fault though, and simply ignore writes. I
+> came up with an simple fix for this, see below.
+
+Or should be add a property to the DT binding to indicate the number
+of entries (using a default of 16)?  We don't have to add that
+property right away; we can delay that until we actually try to
+support the Thunderbolt ports.
+
+In case you didn't know already, RIDs that have no mapping in the
+RID2SID table map to SID 0.  That's why I picked 1 as the SID in the
+iommu-map property for the port.
+
+> > I never checked it myself though and it doesn't make much
+> > of a difference for now since only four different RIDs will
+> > ever be connected anyway.
 > 
-> After:
-> 0000000000000ff0 <el0t_64_sync_handler>:
->      ff0:       d503245f        bti     c
->      ff4:       d503233f        paciasp
->      ff8:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
->      ffc:       910003fd        mov     x29, sp
->     1000:       d5385201        mrs     x1, esr_el1
->     1004:       531a7c22        lsr     w2, w1, #26
->     1008:       f100545f        cmp     x2, #0x15
->     100c:       540000a1        b.ne    1020 <el0t_64_sync_handler+0x30>
->     1010:       97fffe14        bl      860 <el0_svc>
->     1014:       a8c17bfd        ldp     x29, x30, [sp], #16
->     1018:       d50323bf        autiasp
->     101c:       d65f03c0        ret
->     1020:       f100705f        cmp     x2, #0x1c
+> Four? I guess the radios expose more than a single RID?
 
-It would be helpful if you could state which toolchain and config was
-used to generate the above.
+At this point, on the M1 mini there is the Broadcom BCM4378 WiFi/BT
+device (which has two functions), the Fresco Logic FL1100 xHCI
+controller (single function) and the Broadcom BCM57765 Ethernet
+controller.  So yes, there are for RIDs.
 
-For comparison, what was the code generation like before? I assume
-el0_svc wasn't the target of the first test and branch? Assuming so, how
-many tests and branches were there before the call to el0_svc()?
+Cheers,
 
-At a high-level, I'm not too keen on special-casing things unless
-necessary.
+Mark
 
-I wonder if we could get similar results without special-casing by using
-a static const array of handlers indexed by the EC, since (with GCC
-11.1.0 from the kernel.org crosstool page) that can result in code like:
-
-0000000000001010 <el0t_64_sync_handler>:
-    1010:       d503245f        bti     c
-    1014:       d503233f        paciasp
-    1018:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
-    101c:       910003fd        mov     x29, sp
-    1020:       d5385201        mrs     x1, esr_el1
-    1024:       90000002        adrp    x2, 0 <el0t_64_sync_handlers>
-    1028:       531a7c23        lsr     w3, w1, #26
-    102c:       91000042        add     x2, x2, #:lo12:<el0t_64_sync_handlers>
-    1030:       f8637842        ldr     x2, [x2, x3, lsl #3]
-    1034:       d63f0040        blr     x2
-    1038:       a8c17bfd        ldp     x29, x30, [sp], #16
-    103c:       d50323bf        autiasp
-    1040:       d65f03c0        ret
-
-... which might do better by virtue of reducing a chain of potential
-mispredicts down to a single potential mispredict, and dynamic branch
-prediction hopefully does a good job of predicting the common case at
-runtime. That said, the resulting tables will be pretty big...
-
-> 
-> Execute "./lat_syscall null" on my board (BogoMIPS : 200.00), it can save
-> about 10ns.
-> 
-> Before:
-> Simple syscall: 0.2365 microseconds
-> Simple syscall: 0.2354 microseconds
-> Simple syscall: 0.2339 microseconds
-> 
-> After:
-> Simple syscall: 0.2255 microseconds
-> Simple syscall: 0.2254 microseconds
-> Simple syscall: 0.2256 microseconds
-
-I appreciate this can be seen by a microbenchmark, but does this have an
-impact on a real workload? I'd imagine that real syscall usage will
-dominate this in practice, and this would fall into the noise.
-
-Thanks,
-Mark.
-
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  arch/arm64/kernel/entry-common.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> index 32f9796c4ffe77b..062eb5a895ec6f3 100644
-> --- a/arch/arm64/kernel/entry-common.c
-> +++ b/arch/arm64/kernel/entry-common.c
-> @@ -607,11 +607,14 @@ static void noinstr el0_fpac(struct pt_regs *regs, unsigned long esr)
->  asmlinkage void noinstr el0t_64_sync_handler(struct pt_regs *regs)
->  {
->  	unsigned long esr = read_sysreg(esr_el1);
-> +	unsigned long ec = ESR_ELx_EC(esr);
+> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+> index 68d71eabe708..ec9e7abd2aca 100644
+> --- a/drivers/pci/controller/pcie-apple.c
+> +++ b/drivers/pci/controller/pcie-apple.c
+> @@ -148,6 +148,7 @@ struct apple_pcie_port {
+>  	struct irq_domain	*domain;
+>  	struct list_head	entry;
+>  	DECLARE_BITMAP(		sid_map, MAX_RID2SID);
+> +	int			sid_map_sz;
+>  	int			idx;
+>  };
 >  
-> -	switch (ESR_ELx_EC(esr)) {
-> -	case ESR_ELx_EC_SVC64:
-> +	if (likely(ec == ESR_ELx_EC_SVC64)) {
->  		el0_svc(regs);
-> -		break;
-> +		return;
+> @@ -495,12 +496,12 @@ static int apple_pcie_setup_refclk(struct apple_pcie *pcie,
+>  	return 0;
+>  }
+>  
+> -static void apple_pcie_rid2sid_write(struct apple_pcie_port *port,
+> +static u32 apple_pcie_rid2sid_write(struct apple_pcie_port *port,
+>  				     int idx, u32 val)
+>  {
+>  	writel_relaxed(val, port->base + PORT_RID2SID(idx));
+>  	/* Read back to ensure completion of the write */
+> -	(void)readl_relaxed(port->base + PORT_RID2SID(idx));
+> +	return readl_relaxed(port->base + PORT_RID2SID(idx));
+>  }
+>  
+>  static int apple_pcie_setup_port(struct apple_pcie *pcie,
+> @@ -557,9 +558,16 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+>  	if (ret)
+>  		return ret;
+>  
+> -	/* Reset all RID/SID mappings */
+> -	for (i = 0; i < MAX_RID2SID; i++)
+> +	/* Reset all RID/SID mappings, and check for RAZ/WI registers */
+> +	for (i = 0; i < MAX_RID2SID; i++) {
+> +		if (apple_pcie_rid2sid_write(port, i, 0xbad1d) != 0xbad1d)
+> +			break;
+>  		apple_pcie_rid2sid_write(port, i, 0);
 > +	}
 > +
-> +	switch (ec) {
->  	case ESR_ELx_EC_DABT_LOW:
->  		el0_da(regs, esr);
->  		break;
-> @@ -730,11 +733,14 @@ static void noinstr el0_svc_compat(struct pt_regs *regs)
->  asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
->  {
->  	unsigned long esr = read_sysreg(esr_el1);
-> +	unsigned long ec = ESR_ELx_EC(esr);
->  
-> -	switch (ESR_ELx_EC(esr)) {
-> -	case ESR_ELx_EC_SVC32:
-> +	if (likely(ec == ESR_ELx_EC_SVC32)) {
->  		el0_svc_compat(regs);
-> -		break;
-> +		return;
-> +	}
+> +	dev_dbg(pcie->dev, "%pOF: %d RID/SID mapping entries\n", np, i);
 > +
-> +	switch (ec) {
->  	case ESR_ELx_EC_DABT_LOW:
->  		el0_da(regs, esr);
->  		break;
+> +	port->sid_map_sz = i;
+>  
+>  	list_add_tail(&port->entry, &pcie->ports);
+>  	init_completion(&pcie->event);
+> @@ -667,7 +675,7 @@ static int apple_pcie_add_device(struct pci_dev *pdev)
+>  		return err;
+>  
+>  	mutex_lock(&port->pcie->lock);
+> -	sid_idx = bitmap_find_free_region(port->sid_map, MAX_RID2SID, 0);
+> +	sid_idx = bitmap_find_free_region(port->sid_map, port->sid_map_sz, 0);
+>  	mutex_unlock(&port->pcie->lock);
+>  
+>  	if (sid_idx < 0)
+> @@ -696,7 +704,7 @@ static void apple_pcie_release_device(struct pci_dev *pdev)
+>  
+>  	mutex_lock(&port->pcie->lock);
+>  
+> -	for_each_set_bit(idx, port->sid_map, MAX_RID2SID) {
+> +	for_each_set_bit(idx, port->sid_map, port->sid_map_sz) {
+>  		u32 val;
+>  
+>  		val = readl_relaxed(port->base + PORT_RID2SID(idx));
+> 
 > -- 
-> 2.25.1
+> Without deviation from the norm, progress is not possible.
 > 
