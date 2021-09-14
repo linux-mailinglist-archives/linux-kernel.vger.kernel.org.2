@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B937540A463
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BFE40A459
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 05:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239125AbhINDZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 23:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239017AbhINDYn (ORCPT
+        id S238135AbhINDY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 23:24:27 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:39456 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238901AbhINDYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 23:24:43 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6526EC061766
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:23:25 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id v123so10821247pfb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 20:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3PU6rpzmAIF3MmTwuCR+v+KeUhrwSAWjubDLHIrtCxY=;
-        b=wJQGT8RAjHG5DIUGjAhUK1TX7rW2wxQFdBzVd3921pRl8YzicvOtRBHVwshLYTwCec
-         bVHXEhJvWK5ugGTUuU84mqOOi3iEvT9cktDvycj/YVHo8VpxC+MgjjovfuHaAjaJWckg
-         oj4ad3sy1tkStkQOAPZN7SN6I3SXqSdSBFN7no0LFLFJNj06cS0ejfNTUbnVUxf0r/ln
-         fg0ij5s63EXaeCgIr7B0fJwk94bxBNkNwbuTnCODvdD1FbHyPOGHe5UXzJNdSWz7OEtW
-         EX76gpwpPq9ZdE6pq4MZJuqDJkOY1ZU1Oov8c8fTG3CqsJZemHhMGmm82VV8uUkrv18a
-         QTYw==
+        Mon, 13 Sep 2021 23:24:21 -0400
+Received: by mail-pf1-f178.google.com with SMTP id e16so10837585pfc.6;
+        Mon, 13 Sep 2021 20:23:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3PU6rpzmAIF3MmTwuCR+v+KeUhrwSAWjubDLHIrtCxY=;
-        b=PSAcoaXkphZBO3Z8b8hgmknIsWqh3PZLhzQ2sPUwlNExa246CJZZNNcCNEe71K+vAT
-         n3bQedYWeGHmpQKmlODu6e4K7hZubCUmWGvJ04rzal+8lPa64SsTfSOY931L6TC92THT
-         oSlQbYPNVAGu8Isacr3glQ4wbfTHjOW2VbKh+KI398BdOX32EapfQWEnlcxHp88IYsAY
-         N6jtgVOSpiBhbRSA32oEsuR63wvf0Hr8Mzk+G4BXlkqGCsLWYfgwp4CZ2tDWRnPRO0U5
-         VhkMN0Na60gNUgMwGzZNTnn/BC/vLmdCtHEBdkBwE00F1NRl8aoMJEDLFYUqTN4GRy5v
-         ktjw==
-X-Gm-Message-State: AOAM530aESnwiA5+Ref2JsedWf4LMlpy4OoXSLNqzr1yRDjGuyEv18GZ
-        0foEdqH7b+mPCwNqio5TG1iE7Q==
-X-Google-Smtp-Source: ABdhPJyVQDJrNV7MinubH+RyBfDVNPkJneyQGBSgzJBc7N1wfYKan9qqxLoqqYx6l1M4/ugaPPWWqA==
-X-Received: by 2002:a65:6398:: with SMTP id h24mr13594046pgv.367.1631589804965;
-        Mon, 13 Sep 2021 20:23:24 -0700 (PDT)
-Received: from yc.huaqin.com ([101.78.151.213])
-        by smtp.gmail.com with ESMTPSA id x15sm9354101pgt.34.2021.09.13.20.23.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Sep 2021 20:23:24 -0700 (PDT)
-From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
-To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
-        daniel@ffwll.ch, dianders@google.com
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        yangcong <yangcong5@huaqin.corp-partner.google.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [v6 4/4] dt-bindings: boe, tv101wum-n16: Add compatible for boe tv110c9m-ll3 and inx hj110iz-01a
-Date:   Tue, 14 Sep 2021 11:22:52 +0800
-Message-Id: <20210914032252.3770756-5-yangcong5@huaqin.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210914032252.3770756-1-yangcong5@huaqin.corp-partner.google.com>
-References: <20210914032252.3770756-1-yangcong5@huaqin.corp-partner.google.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=sXdm6Z9DA7+o083V6MRzxK6U4l2Js+yCvrccU9cF5zI=;
+        b=ZfxkElickV39K5h0mR398p2NRoiwDbirXc9AuBkj6a4FkXsaCzSSA3PgB7cFe2YVMJ
+         h7Ip7z11I5x9+FE5U72XUGVwEcm7zg9A2X5p3MhrpGtF2cbdRHdO68dLTlf3OPNoxqUV
+         9Yn/DHAGH3baHHHViMKvIZT9KV+Xe7/rpbtg/uE0TOyhg5J1fKMMHfyQVvjkMnXdYg2C
+         KJi5NfoRi0Hv4hLY2D0gvkI5wOGf8PoV9ijMS7hE9IW8HQIYaShH4gRh1X6ubEtMTCcf
+         PUwBTV1xfruau58qSr4t1QjmEtSzBXcb/7vK3A10xB7MGUVvkYrxA2iygw8YuwkOVZry
+         rUeQ==
+X-Gm-Message-State: AOAM5328+IlY3QVdyZ4zqNF3kk/4pGdcrRFII1jIkXq3HDu0vvHaLT0v
+        PnFao5fL/7KIAXTCo747vAk=
+X-Google-Smtp-Source: ABdhPJwlGAYaNH88tev/TPlNavWU2YeRy3ZBTX4vmY9xLeXD+LBOR6qK35RfChI49sAR/zW/YDWxzQ==
+X-Received: by 2002:a63:7d55:: with SMTP id m21mr14079307pgn.455.1631589784451;
+        Mon, 13 Sep 2021 20:23:04 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:e47e:ab85:4d9e:deba? ([2601:647:4000:d7:e47e:ab85:4d9e:deba])
+        by smtp.gmail.com with ESMTPSA id q18sm8623247pfj.46.2021.09.13.20.23.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Sep 2021 20:23:03 -0700 (PDT)
+Message-ID: <f277507b-b62e-c874-b2ad-276ea03d2263@acm.org>
+Date:   Mon, 13 Sep 2021 20:23:01 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH v2 0/3] scsi: ufs: introduce vendor isr
+Content-Language: en-US
+To:     Alim Akhtar <alim.akhtar@gmail.com>
+Cc:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+        Can Guo <cang@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, sc.suh@samsung.com,
+        hy50.seo@samsung.com, sh425.lee@samsung.com,
+        bhoon95.kim@samsung.com
+References: <CGME20210913081148epcas2p21c23ca6a745f40083ee7d6e7da4d7c00@epcas2p2.samsung.com>
+ <cover.1631519695.git.kwmad.kim@samsung.com>
+ <fbdd02bc-01ab-c5b3-9355-3ebe04601b04@acm.org>
+ <CAGOxZ51X-ThsqV35PiTh-awRvAkQ=Fjf9m+KRd1HLZ+pDNi=Xg@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <CAGOxZ51X-ThsqV35PiTh-awRvAkQ=Fjf9m+KRd1HLZ+pDNi=Xg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings documentation for boe tv110c9m-ll3, inx hj110iz-01a panel.
+On 9/13/21 10:26, Alim Akhtar wrote:
+> Thanks for your input. Completely agree with you, in fact your
+> suggestions make sense to me. As a driver developer, surely we can
+> take these concerns to the IP designers and see how far we can get in
+> terms of standardization. That, however, is not something that can be
+> accomplished overnight. My main concern is, what about millions of
+> devices which are already in the market? UFS subsystem does support
+> _vops_ to handle vendor specific hooks/modifications. I am not saying
+> we should always follow this path, but surely until these deviations 
+> are either fixed or become part of UFS standard itself, IMO.
+Hi Alim,
 
-Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml   | 4 ++++
- 1 file changed, 4 insertions(+)
+If there are already millions of devices in the market that support this 
+feature then that's an argument to proceed with this patch series.
 
-diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-index a7091ae0f791..45bd82931805 100644
---- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-@@ -26,6 +26,10 @@ properties:
-       - auo,b101uan08.3
-         # BOE TV105WUM-NW0 10.5" WUXGA TFT LCD panel
-       - boe,tv105wum-nw0
-+        # BOE TV110C9M-LL3 10.95" WUXGA TFT LCD panel
-+      - boe,tv110c9m-ll3
-+        # INX HJ110IZ-01A 10.95" WUXGA TFT LCD panel
-+      - inx,hj110iz-01a
- 
-   reg:
-     description: the virtual channel number of a DSI peripheral
--- 
-2.25.1
+Thanks,
 
+Bart.
