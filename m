@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B4340AEEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E10A40AF08
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhINNbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233143AbhINNbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:31:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 748F161107;
-        Tue, 14 Sep 2021 13:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631626208;
-        bh=Wx2ABN3/CU9YeSCXTNJp6ANx8IQO1VeMGt6q9i0MT78=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IBnnLAk0YJ0BFWfvCeJ+gN1YbPo4eaQY4srkQrqJ4yQcTWC2u0cWsxnx5+PeJZ6/B
-         S4GUqtGWN5xZmVajcWvW51wx9ZFWrflDnyZZst8fyXMz2lUWAy3K3hLVvjnufxbKSD
-         QPbhgkdaQ3lxrTAZblmsLNXytretwKzY0xKQBX6XgWtWc/yqRm2+br+AlkDSQlV5bc
-         st0YJq7AP5YLGstWAASRSinebdvSpFGmrYCi8Llv/0Hoc7r3eQgLU14WsG3d5YVwp5
-         01NP62ZUbONZgW3O6chlPG1r262f6VxbKE0CgV741/QoGM05D1DyPuy2boIiK2vP4Q
-         gJlr4cU5eRMCg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6EEF260A7D;
-        Tue, 14 Sep 2021 13:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233237AbhINNiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232420AbhINNiH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 09:38:07 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDB8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:36:50 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y132so9298242wmc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 06:36:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=VSKUxPWOEasaZQl1GngXqjbP0Aix+VFnz4Hm7DYF6XE=;
+        b=l91EmLKY2S9qBUnM1p7pnsC5VH3B9aEkqWo/TozG8lZjCiLBEiPcfVjfqfj14a3HWm
+         Cfwu3XNp18IFCEG/nlZ4axPsnrCDlhnREOToN0GjzaAq415q2XzSyT25WU/GA2x4W6oh
+         d2EQ5K33lZSBmT7K98sRzQJE/s5uB74sDfXpyR/WfaYU27HgQL9OpD01aw6VtJBb6Ht7
+         dZBiKSPFPvrlN9yzOopxYNg+Ki8MfLurmv4V+uFq3wtRkQ1iHtiIzdG/5gOwy9oUuXfP
+         rP/JgLYHE4cWhk93RM0tsaubIZN9Bohvw73j2O728QsNxZjq115NmUwwlQrvs3OGgkVY
+         Xwlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=VSKUxPWOEasaZQl1GngXqjbP0Aix+VFnz4Hm7DYF6XE=;
+        b=LZ5jYumX2wH0vOThHi5YLDA5V7eUk9Fc7Cj1ThPIJWoZ65dS3cXQ03UpOk4Ffs0ANy
+         Fym3CnxaO1EyxRKfxylZzeUEXZ4i13+e0rQgi+PzmHWxO/b6yGoPkiGCooW8mkKi0FlL
+         zo8d4Q3uS34R2EjsQVcTkZ2Ae3DG0AfMeihTAEKRswODefUg4Uma0cpiGoidZAV99wuo
+         1keyolYabEG2reqlN4j7HoWXKzAZ0uW99ZkFe5nf14HTse5L5/KcMa0I8JHETirEzNap
+         FHG4W8r5b/grHADiFPdkpm+UxL1UirEiV51dOUoef3oTvkoEE4fCH5ZgLq/mhBiLmCMG
+         voTg==
+X-Gm-Message-State: AOAM533DWnRJAz1Jwk9b38YKMVAcpav33m/Aj9vLAx3Q7O/ObjPyEbIp
+        Gs0WxKjYylVi2DjiBauZb/h+Lm0wNUc/c+mwegU=
+X-Google-Smtp-Source: ABdhPJwI7FQQk1306LwqweR80odI5tUZp1hR3T5h9pPadzk53N3lEseHREdFSSKHzVoqDbykaLOFdqldmUR7XCmoLzo=
+X-Received: by 2002:a1c:cc16:: with SMTP id h22mr2297410wmb.117.1631626609006;
+ Tue, 14 Sep 2021 06:36:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/3] ptp: ptp_clockmatrix: Remove idtcm_enable_tod_sync()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163162620845.30283.12490506691689292945.git-patchwork-notify@kernel.org>
-Date:   Tue, 14 Sep 2021 13:30:08 +0000
-References: <1631563954-6700-1-git-send-email-min.li.xe@renesas.com>
-In-Reply-To: <1631563954-6700-1-git-send-email-min.li.xe@renesas.com>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Received: by 2002:adf:d4ca:0:0:0:0:0 with HTTP; Tue, 14 Sep 2021 06:36:48
+ -0700 (PDT)
+Reply-To: bartholomieuakakpo226@gmail.com
+From:   BARTHOLOMIEU AKAKPO <borismayor938@gmail.com>
+Date:   Tue, 14 Sep 2021 14:36:48 +0100
+Message-ID: <CAM_Kk3=iGx0d25ZMM6=OJ_qi-gu9Jb-a5t4uZTK3-DPx79xsxw@mail.gmail.com>
+Subject: I am Bartholomieu
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Mon, 13 Sep 2021 16:12:32 -0400 you wrote:
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> Not need since TCS firmware file will configure it properlly.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
->  drivers/ptp/ptp_clockmatrix.c | 229 +-----------------------------------------
->  1 file changed, 2 insertions(+), 227 deletions(-)
-
-Here is the summary with links:
-  - [net,1/3] ptp: ptp_clockmatrix: Remove idtcm_enable_tod_sync()
-    https://git.kernel.org/netdev/net-next/c/c70aae139d39
-  - [net,2/3] ptp: ptp_clockmatrix: Add support for FW 5.2 (8A34005)
-    https://git.kernel.org/netdev/net-next/c/794c3dffacc1
-  - [net,3/3] ptp: ptp_clockmatrix: Add support for pll_mode=0 and manual ref switch of WF and WP
-    https://git.kernel.org/netdev/net-next/c/da9facf1c182
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Good day dear friend. My name is BARTHOLOMIEU; I'm the senior partner
+at BARTHOLOMIEU AKAKPO & Associate Law Firm based in Togo republic.
+I want us to claim the sum of (US$ 10,950,777.00) from the BTCI bank
+Lome Togo security company. You get 40% from the total amount.
+We work together and there will be success at the end. Reply for more details.
