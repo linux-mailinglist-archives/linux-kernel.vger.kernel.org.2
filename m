@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77DB40BAD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D3540BAE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhINWAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:00:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21018 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232349AbhINWAl (ORCPT
+        id S235025AbhINWBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:01:30 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:39664 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232351AbhINWB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:00:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631656763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EWjhoOQgjMbe+X4Kudlp/xxXqmY4RO46zebmZlYS91U=;
-        b=d8sKvooepPAj758YN1Y4s8Jhzu6GpI2HFeL90SppH18Z1b4cHH+maEIQchpiJGZJAicbmb
-        7yqrzG0Ag8q6/8yeg7cZ6tyHQNN0rTs7Aky4C//RYwUhIXkRuep9Msd5FaQtC0k4edu7bX
-        F/AoHATmAGfr5V5ohkP74x3+0o/P6EM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-95cK3flVO5ioljTyre8X1Q-1; Tue, 14 Sep 2021 17:59:22 -0400
-X-MC-Unique: 95cK3flVO5ioljTyre8X1Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBB68189CD1F;
-        Tue, 14 Sep 2021 21:59:19 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 27B141972D;
-        Tue, 14 Sep 2021 21:59:13 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YUEZXktGOCUWfvnU@codewreck.org>
-References: <YUEZXktGOCUWfvnU@codewreck.org> <6274f0922aecd9b40dd7ff1ef007442ed996aed7.camel@redhat.com> <163162767601.438332.9017034724960075707.stgit@warthog.procyon.org.uk> <163162772646.438332.16323773205855053535.stgit@warthog.procyon.org.uk> <439558.1631628579@warthog.procyon.org.uk>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        v9fs-developer@lists.sourceforge.net, linux-cachefs@redhat.com,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] 9p: (untested) Convert to using the netfs helper lib to do reads and caching
+        Tue, 14 Sep 2021 18:01:28 -0400
+Received: by mail-ot1-f47.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so677713otf.6;
+        Tue, 14 Sep 2021 15:00:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1+WLR65qTBoUub6/pKXyNbktbZPgOslN8+Xmkk6CTLc=;
+        b=gMkWFAvg+xfgzjR8+jNqi9dOrIDkdO7DIbrN+3/Ciqrf2rz1AraSCeqnecO8mhk3zd
+         LJMSecY4h/4r1waRd5VVxCTj/L0VyqvNdbAtASKVFRLFHADhHapHyOcxaE0SNVzJxFM7
+         8/yvac59177znNpEun7teaoM62vZaozJsW2qTuBpDBIvys55dZSRePtW8AIgnivg3lDz
+         /pq6qM+O62EB5sjNHNMOvZq0qT8ZuE8aZM/Fq/L1eB3eJh1FUbfyG7v67fehuG4vXJLb
+         1yk0C4T1tfL7UoggCoDz2Pw6xyhXklzbGk307InjVw7v97B5W5+iGWTOXMtdbD44GR7t
+         9BOw==
+X-Gm-Message-State: AOAM533uMD9a34XGNHBi0AjPVPCwN1B5ArDl31/mDxfdbGp/fa9eVFoK
+        k3C0NDsFkPmSvsHyxoVH1g==
+X-Google-Smtp-Source: ABdhPJz1pOO1WsaRumXrQshfHtdpfhL6MTWP4mSSbUpKyygYT9dlE16+Hwncpuov78gSO5mXYexJIQ==
+X-Received: by 2002:a05:6830:78c:: with SMTP id w12mr16229945ots.196.1631656810214;
+        Tue, 14 Sep 2021 15:00:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id k23sm2943388ood.12.2021.09.14.15.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 15:00:09 -0700 (PDT)
+Received: (nullmailer pid 4040654 invoked by uid 1000);
+        Tue, 14 Sep 2021 22:00:08 -0000
+Date:   Tue, 14 Sep 2021 17:00:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 5/8] clk: versatile: clk-icst: Support 'reg' in
+ addition to 'vco-offset' for register address
+Message-ID: <YUEbaEzKT+cCYk9z@robh.at.kernel.org>
+References: <20210913192816.1225025-1-robh@kernel.org>
+ <20210913192816.1225025-6-robh@kernel.org>
+ <163164958886.763609.7483570624844319215@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <746600.1631656752.1@warthog.procyon.org.uk>
-Date:   Tue, 14 Sep 2021 22:59:12 +0100
-Message-ID: <746601.1631656752@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163164958886.763609.7483570624844319215@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dominique Martinet <asmadeus@codewreck.org> wrote:
+On Tue, Sep 14, 2021 at 12:59:48PM -0700, Stephen Boyd wrote:
+> Quoting Rob Herring (2021-09-13 12:28:13)
+> > The ICST binding now also supports 'reg' in addition to 'vco-offset' for
+> > the VCO register address. Add support to the driver to get the VCO
+> > address from 'reg'.
+> > 
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-clk@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> 
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> 
+> I don't think this driver is changing much so you can take it through DT
+> tree if you prefer.
 
-> Agreed with the merge window passed it'll be for next one -- but I'd
-> like this to sit in -next for as long as possible, so I'd appreciate
-> either being able to carry the patch in my tree (difficult as then
-> you'll need to base yourself on mine) or you putting it in there somehow
-> after I've got the most basic tests verified again (do you have a branch
-> pulled for linux-next?)
+clk tree is fine. :)
 
-I can put it into my fscache-next branch.
-
-David
-
+Rob
