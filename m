@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E409940AC58
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0A240AC5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 13:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhINLZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 07:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        id S232165AbhINLZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 07:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232108AbhINLZv (ORCPT
+        with ESMTP id S232147AbhINLZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:25:51 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB323C061768
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:33 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id s12so23216055ljg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:33 -0700 (PDT)
+        Tue, 14 Sep 2021 07:25:56 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF379C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:38 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id l18so23129854lji.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 04:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Cp0SQvp2N+xoe5C9OTNfUx9zbpD4P6j+IayB6VA30bk=;
-        b=swnsW5M61hgulyulsIRu3aI3c5JyOHo1hV1BavL7cNd27JSmoAFdOmDyll3HQ+PKwA
-         do8l1rDRqZmoPpoMAtu5qvL8wektf5sqsuE7k+qr0J0fVhYytZgixfBXDAmEMq8kAH/F
-         pcHIRPN4ZC582Hgq2iITsA2M9JuBwvfDeR1Q03lkXWIvo2higY1eDlridEWIdGpqTrd3
-         8wfWcyEXeuT0bhRb/+n2Gcm0SrWajWSw5Ti0eetW0Lw48BaiArItYRrO9I4JQORqbWvB
-         6VargJN8dBi0DgoEyHfj/Eq+3Ft3CqUhBf+p0olPNckb4JjFdAcJiI5bnLOnZoaitVFs
-         hCNw==
+        bh=MXbax/1bglMzgg6o47IyNakKQ88KE4K/hGwmlnc25Ko=;
+        b=N4100R/sVYI9xB+3RNF629B4s5ko7wLFiA6IUtn0oKfdFh4s/DVlj2FjWpH4EB0GWf
+         nSMDgFuOB1FxKtOSkpd4KpnVn64T9GkSKp0EvH+DldoiZ0rVEhMOPAJHkgb89JuegEgT
+         hVS0D/Osme/N8neVgiEaMNrlnQFqwSccnIyfqqQPfVokx/xmcLh3RCXL52xiIJzY6ZRq
+         uMDG6zYAqhpcYdy+xr46dMDyzOciUPXIix6C8+tsMUz/w5rI2L27oVpcTqN6+X0BNIqO
+         PTdm9tL+nnkFsidR6SB0wS361pbbavkKWyVqdsTpBqhCe/DQMVtEr1A3eR2VmWTrUc/4
+         +zLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cp0SQvp2N+xoe5C9OTNfUx9zbpD4P6j+IayB6VA30bk=;
-        b=gBXUo5lbJfa73kZ2BAjEEsJhrqRS08NnddKG6t35r4erwLvJl9R58woSNStOVCh9TT
-         6rRH7HnhW4/GuikOkrd04LumODW+KZSS+MNNcOMjR/IgJBjOdMGE8X+vSE+pj7L1YQm3
-         rAGQkVM0HwcMvORj9oPVIAwVSXI7+K9Gr0T2vvktfp5lG4k5FuIeaRtjkDfrZsjL4Ips
-         TURPnVxmUYkOYY8KGR19SWQuI2KZV+WeVluDGM7GXjE6ElwlBoUbconBoeK6JeEx4GVi
-         kgGmn8XTfO+PenaH3Rbt/ia3du5LlfbTyFNVhmn/XjErOEpt54eH0IkDEqddB9/CWaTD
-         Fsyw==
-X-Gm-Message-State: AOAM53339DwfankGj5TmWb0RSyPKu+qgfA9pcUZMETKqxtxDu+kvRW6u
-        49oxarnUCWB593YwJBKbs3e/vjQd1PRzL2wJYDbIwg==
-X-Google-Smtp-Source: ABdhPJzf1cZ1haIuWx4qetdhB8fMA2L7nDxmvcpl12S8Bc/zLJ7IB1YUa/nTacFTu/yJmy9Nj89xbQhPxJ3NScN0wIc=
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr14814634ljn.367.1631618672323;
- Tue, 14 Sep 2021 04:24:32 -0700 (PDT)
+        bh=MXbax/1bglMzgg6o47IyNakKQ88KE4K/hGwmlnc25Ko=;
+        b=5UmGEpamRiGWhiT4zUDpgdU7xz9wUhEzSRi6NWElV9whj2C8lVe9FY4stE8K+UpZl3
+         WlBRFvLT7tO/v6LQlaZLOKYiFSBaZ862bToJG37GFMOzGwORwUliL0zQzlDvn7Z6RESw
+         3CP2XTGCvzBFMZsw+qKbnG9xGuKfy7BXXbcCSUzljRNnPJDFJzZVJGRNCyCO2ms17wQk
+         RvTjp5Oz0Omma0bn6udJxHTikU4Utxfl3S0bnYeHFW4yN1oHnuEd8WeA6Ic1N+QFe957
+         ppI4QMNKBj/altnageUQ1Phref96b/U7aLqUo0pZutmLeLwUBRsn6k2gF3rjXln2V18O
+         XP4A==
+X-Gm-Message-State: AOAM533Shr0fcqiMVmnr8hNMy+zLSgyDT23dbCL/TeWtCXPA+UBJaNBz
+        Tbp3pHmTiFB8GW32yK2nzhK3BmK1k/POLu0wOOC9wQ==
+X-Google-Smtp-Source: ABdhPJxNQjIx8LfDVzNm9Bxa8g8kduMXKBDzOD8rsarWhRJUMWWBpslN7FA28BAQA42mUmbJjsXpFhnu6cwrV9l1QHM=
+X-Received: by 2002:a2e:9b0b:: with SMTP id u11mr14793392lji.463.1631618677115;
+ Tue, 14 Sep 2021 04:24:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210911131933.2089-1-len.baker@gmx.com>
-In-Reply-To: <20210911131933.2089-1-len.baker@gmx.com>
+References: <20210911232707.259615-1-luca@z3ntu.xyz> <20210911232707.259615-3-luca@z3ntu.xyz>
+In-Reply-To: <20210911232707.259615-3-luca@z3ntu.xyz>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 14 Sep 2021 13:23:55 +0200
-Message-ID: <CAPDyKFrmSOWF4CsRApq58PVtp2XDfwsBFCYs4vHDDatQHQAA+g@mail.gmail.com>
-Subject: Re: [PATCH] memstick: jmb38x_ms: Prefer struct_size over open coded arithmetic
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Kees Cook <keescook@chromium.org>, Tom Rix <trix@redhat.com>,
-        linux-hardening@vger.kernel.org,
+Date:   Tue, 14 Sep 2021 13:24:00 +0200
+Message-ID: <CAPDyKFr9k2dO8FJf4=ZUKZ6=WpDS2mOJ+BZbtK1m_-OWx_ehmA@mail.gmail.com>
+Subject: Re: [PATCH 2/8] dt-bindings: mmc: sdhci-msm: Add compatible string
+ for msm8226
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, bartosz.dudziak@snejp.pl,
+        Rob Herring <robh+dt@kernel.org>,
         linux-mmc <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Sept 2021 at 15:22, Len Baker <len.baker@gmx.com> wrote:
+On Sun, 12 Sept 2021 at 01:28, Luca Weiss <luca@z3ntu.xyz> wrote:
 >
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
+> Add msm8226 SoC specific compatible strings for qcom-sdhci controller.
 >
-> So, use the struct_size() helper to do the arithmetic instead of the
-> argument "size + count * size" in the kzalloc() function.
->
-> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
->
-> Signed-off-by: Len Baker <len.baker@gmx.com>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 
 Applied for next, thanks!
 
@@ -87,23 +77,21 @@ Uffe
 
 
 > ---
->  drivers/memstick/host/jmb38x_ms.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/mmc/sdhci-msm.txt | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb38x_ms.c
-> index f9a93b0565e1..a7a0f0caea15 100644
-> --- a/drivers/memstick/host/jmb38x_ms.c
-> +++ b/drivers/memstick/host/jmb38x_ms.c
-> @@ -927,8 +927,7 @@ static int jmb38x_ms_probe(struct pci_dev *pdev,
->                 goto err_out_int;
->         }
->
-> -       jm = kzalloc(sizeof(struct jmb38x_ms)
-> -                    + cnt * sizeof(struct memstick_host *), GFP_KERNEL);
-> +       jm = kzalloc(struct_size(jm, hosts, cnt), GFP_KERNEL);
->         if (!jm) {
->                 rc = -ENOMEM;
->                 goto err_out_int;
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+> index 365c3fc122ea..50841e2843fc 100644
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+> +++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.txt
+> @@ -13,6 +13,7 @@ Required properties:
+>                 string is added to support this change - "qcom,sdhci-msm-v5".
+>         full compatible strings with SoC and version:
+>                 "qcom,apq8084-sdhci", "qcom,sdhci-msm-v4"
+> +               "qcom,msm8226-sdhci", "qcom,sdhci-msm-v4"
+>                 "qcom,msm8974-sdhci", "qcom,sdhci-msm-v4"
+>                 "qcom,msm8916-sdhci", "qcom,sdhci-msm-v4"
+>                 "qcom,msm8992-sdhci", "qcom,sdhci-msm-v4"
 > --
-> 2.25.1
+> 2.33.0
 >
