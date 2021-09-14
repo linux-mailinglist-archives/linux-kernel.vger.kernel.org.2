@@ -2,157 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC0940B66B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7400F40B669
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhINSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
+        id S232013AbhINSBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhINSBe (ORCPT
+        with ESMTP id S231682AbhINSB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:01:34 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F39C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:00:16 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id p2so394754oif.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:00:16 -0700 (PDT)
+        Tue, 14 Sep 2021 14:01:28 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79894C061574;
+        Tue, 14 Sep 2021 11:00:10 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id i3so190128wmq.3;
+        Tue, 14 Sep 2021 11:00:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=abYYEHNJJXsCK9xEzjjhn2BOAEkX0oOtIZ/c7rdmSQY=;
-        b=ShQlUJkeBUJYnoXL7YiRgx5PFCMS8+1KMy2xeaUAoNoODQa8epIWl5KrLD8+DtvmgL
-         jaUlzzGOpkLQsooGBWFLd1BQoq7DNzCi7EgyUlsWweWR+Thdp4PeBeF0XeQfmkIH+ztl
-         ggFmlwv++CTA9cEuEqCmrfd2brymOy/HTnvxlxNi1mcNHJQXD69iILpK92XdTRqVtUHE
-         CLuYDtkJ1oQKG4Z96Ks22KOnonlmbVRUI/CUIhEL9jVf0IaPSsZ2rXXJEoS3kTLydMq/
-         KUboY6KQQEWyVsc6THelndT7giao4bNA694+EMAy8VrSoTUc12s7wBig4i5D+vSK9dt2
-         zO3Q==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=wvbyZiOz7Ec9hyqSMpm7mmMn4oxPF4j+O4Rp3JHG2m4=;
+        b=mfyFG+lR7RBM2GfQ3G4NpQZOUn6NZBITG9iuVFfYmmBUHeB1Gcr/Wto32TRMdfaY4/
+         dc5LoMnFT4wsUNATmuqVy0looXm6tzhJHkysFpatHA3985nLfmeaLb7EUaU+gpbdQ6EP
+         vbR9qc+vBNEGDjUUc1b1qG67UMpiwBRH4odmNsNQ9yJ0Oj/jtfSvp3hDP/5z9PROi4Du
+         SJOYEhHS6D3tblpwl+UBx1H65Mc+hb529Xp4ZB+ilxabGLJ72wdsLjFmDy7CxDMhQO9x
+         /IuB7K2pDLMzKj7401b5P1UyuSqCsLAe6XkeEHPYHB+SxqLJbMF5pzl/VgAjStzztQ09
+         Pikg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=abYYEHNJJXsCK9xEzjjhn2BOAEkX0oOtIZ/c7rdmSQY=;
-        b=7SW87m9RP00k07vuPf2GHEJkOOaeJqFKVzyfYBPDjKUtpWEajvDXZ66aCJ3qgj4uyd
-         f4pA72bEPERw9sE6tb9dkSJTbUVTxjOIZ64+okwkrdH6ufnWjKEzRZR8vm0ZUn2zl/J4
-         YpP8RphB/ZXQ3C8PtfaLvC/a0xgmHW6Ivh5oZaw5/q0axr+O+MZgvfLuYFv+jbiRutZd
-         PK3L0iE5SH4R6VQ65kwVX4j/i2mFDa4U3rz2z5dpyzxR7MuJHiq67wZA8IWTJaExwDK5
-         sQyvAn47+BXWaBt3rvKJkD7RZ7AccymqvgBdTfUpq4pdiKmllt3iP+ySgQpCa8TKVnbR
-         7L2g==
-X-Gm-Message-State: AOAM531ZPnx//0jFyV2Hpa0hPItsBEjnmCcHnKIDaEW5ZEGaZVbkUqc5
-        fvupqooTD1ut8fqY38mffIxP9BcYgbtjOaxkU6RRZWG7ySs=
-X-Google-Smtp-Source: ABdhPJxWZqU1a9DPLexwrU2G4mMfRa1NIGy5Q0z5CPClYtGU+65QhDe4s146ZXM4OXy/RT91yMuGaX4craoPE/rP3To=
-X-Received: by 2002:aca:1109:: with SMTP id 9mr2342557oir.109.1631642415672;
- Tue, 14 Sep 2021 11:00:15 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wvbyZiOz7Ec9hyqSMpm7mmMn4oxPF4j+O4Rp3JHG2m4=;
+        b=3eFlh5a9lJKsVbb6dlRoIhxrvJaMTxZ5f0fYUNUAURhXl0R6cuVPj6JJoW8qLLTMjv
+         5Cos53K5z3PEdzYrNMZqRAjjO4SZ04tFBf1hpIDWV4jTZlHAM/x53J4smnqjmm9OxW9I
+         OFbr6Kpb8gGeTc7iD65jJrU6/q9q7xSk4DorJRKY6lNeY6yGy9lc6uEA+ZYAWHn0WR4E
+         4jOGQx2whCOPzYRgU36JigjeF0ekDYay5ZPDifnyNQjTmq66eoU8WQqa943emHJXhl0X
+         XuMg1qE7R0gxm7ga4P4vfm4Mh2C/WwyHjqLT8M8rDi+XEb+eI9mCksb48QkYe8MpIm5z
+         VJzg==
+X-Gm-Message-State: AOAM531fasc9MXoFjRoW2bSFZUxCbzcDVrHWkc6Y7W/iFnts33WrqbvD
+        3KJgwMbA2WjW6Jwqn4mAjgc=
+X-Google-Smtp-Source: ABdhPJw/wltv4HvH8nTvBUz2AhO7PAV/1Z+vLbyMv0bsdlONsSJXjcVDS6v23vp5wflmT7xBZuOXtg==
+X-Received: by 2002:a1c:7304:: with SMTP id d4mr315087wmb.119.1631642408706;
+        Tue, 14 Sep 2021 11:00:08 -0700 (PDT)
+Received: from [192.168.0.16] ([37.223.140.66])
+        by smtp.gmail.com with ESMTPSA id k17sm10887920wrq.7.2021.09.14.11.00.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 11:00:08 -0700 (PDT)
+Message-ID: <9552b0dc-337f-7edc-2997-50603dfe8bcd@gmail.com>
+Date:   Tue, 14 Sep 2021 20:00:06 +0200
 MIME-Version: 1.0
-References: <000000000000eaacf005ca975d1a@google.com> <20210831074532.2255-1-hdanton@sina.com>
- <20210914123726.4219-1-hdanton@sina.com> <87v933b3wf.ffs@tglx>
-In-Reply-To: <87v933b3wf.ffs@tglx>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 14 Sep 2021 20:00:04 +0200
-Message-ID: <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, paulmck@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [RESEND,v2,7/9] dt-bindings: arm64: dts: mediatek: Add mt7986
+ series
+Content-Language: en-US
+To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
+References: <20210914085137.31761-1-sam.shih@mediatek.com>
+ <20210914085137.31761-8-sam.shih@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20210914085137.31761-8-sam.shih@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 16:58, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Tue, Sep 14 2021 at 20:37, Hillf Danton wrote:
->
-> > On Mon, 13 Sep 2021 12:28:14 +0200 Thomas Gleixner wrote:
-> >>On Tue, Aug 31 2021 at 15:45, Hillf Danton wrote:
-> >>> On Mon, 30 Aug 2021 12:58:58 +0200 Dmitry Vyukov wrote:
-> >>>>>  ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
-> >>>>>  mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
-> >>>>>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
-> >>>>>  __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
-> >>>>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
-> >>>>>  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
-> >>>
-> >>> Add debug info only to help kasan catch the timer running longer than 2 ticks.
-> >>>
-> >>> Is it anything in the right direction, tglx?
-> >>
-> >>Not really. As Dmitry pointed out this seems to be related to
-> >
-> > Thanks for taking a look.
-> >
-> >>mac80211_hwsim and if you look at the above stacktrace then how is
-> >>adding something to the timer wheel helpful?
-> >
-> > Given the stall was printed on CPU1 while the supposedly offending timer was
-> > expiring on CPU0, what was proposed is the lame debug info only for kasan to
-> > catch the timer red handed.
-> >
-> > It is more appreciated if the tglx dude would likely spend a couple of minutes
-> > giving us a lesson on the expertises needed for collecting evidence that any
-> > timer runs longer than two ticks. It helps beyond the extent of kasan.
->
-> That tglx dude already picked the relevant part of the stack trace (see
-> also above):
->
-> >>>>>  ieee80211_iterate_active_interfaces_atomic+0x70/0x180 net/mac80211/util.c:829
-> >>>>>  mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1861
-> >>>>>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
-> >>>>>  __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1601
-> >>>>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1618
-> >>>>>  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
->
-> and then asked the question how a timer wheel timer runtime check
-> helps. He just omitted the appendix "if the timer in question is a
-> hrtimer" as he assumed that this is pretty obvious from the stack trace.
->
-> Aside of that if the wireless timer callback runs in an endless loop,
-> what is a runtime detection of that in the hrtimer softirq invocation
-> helping to decode the problem if the stall detector catches it when it
-> hangs there?
->
-> Now that mac80211 hrtimer callback might actually be not the real
-> problem. It's certainly containing a bunch of loops, but I couldn't find
-> an endless loop there during a cursory inspection.
->
-> But that callback does rearm the hrtimer and that made me look at
-> hrtimer_run_queues() which might be the reason for the endless loop as
-> it only terminates when there is no timer to expire anymore.
->
-> Now what happens when the mac80211 callback rearms the timer so it
-> expires immediately again:
->
->         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
->                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
->
-> bcn is a user space controlled value. Now lets assume that bcn_int is <=1,
-> which would certainly cause the loop in hrtimer_run_queues() to keeping
-> looping forever.
->
-> That should be easy to verify by implementing a simple test which
-> reschedules a hrtimer from the callback with a expiry time close to now.
->
-> Not today as I'm about to head home to fire up the pizza oven.
 
-This question definitely shouldn't take priority over the pizza. But I
-think I saw this "rearm a timer with a user-controlled value without
-any checks" pattern lots of times and hangs are inherently harder to
-localize and reproduce. So I wonder if it makes sense to add a debug
-config that would catch such cases right when the timer is set up
-(issue a WARNING)?
-However, for automated testing there is the usual question of
-balancing between false positives and false negatives. The check
-should not produce false positives, but at the same time it should
-catch [almost] all actual stalls so that they don't manifest as
-duplicate stall reports.
 
-If I understand it correctly the timer is not actually set up as
-periodic, but rather each callback invocation arms it again. Setting
-up a timer for 1 ns _once_ (or few times) is probably fine (right?),
-so the check needs to be somewhat more elaborate and detect "infinite"
-rearming.
+On 14/09/2021 10:51, Sam Shih wrote:
+> MT7986 is Mediatek's new 4-core SoC, which is mainly for wifi-router
+> application. The difference between mt7986a and mt7986b is that some
+> pins do not exist on mt7986b.
+> 
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+
+Sam, I'd like to take this patch through my tree but you seemed to have send the 
+patches in a strange way that confuses my b4.sh
+
+Would you mind send the next version using git send-email or similar?
+
+Regards,
+Matthias
+
+> 
+> ---
+> v2: added an Acked-by tag
+> ---
+>   Documentation/devicetree/bindings/arm/mediatek.yaml | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index 80a05f6fee85..a9a778269684 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -76,6 +76,14 @@ properties:
+>             - enum:
+>                 - mediatek,mt7629-rfb
+>             - const: mediatek,mt7629
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7986a-rfb
+> +          - const: mediatek,mt7986a
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7986b-rfb
+> +          - const: mediatek,mt7986b
+>         - items:
+>             - enum:
+>                 - mediatek,mt8127-moose
+> 
