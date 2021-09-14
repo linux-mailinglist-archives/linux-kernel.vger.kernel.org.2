@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F09940A5CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A062740A5DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 07:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239492AbhINFPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 01:15:06 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:14042 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239319AbhINFPF (ORCPT
+        id S239414AbhINFR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 01:17:29 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44741 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239328AbhINFR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 01:15:05 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210914051346epoutp01166c6a73ce18b9c45ac081d4527a5bc1~kmE4wIfWD0435304353epoutp01N
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 05:13:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210914051346epoutp01166c6a73ce18b9c45ac081d4527a5bc1~kmE4wIfWD0435304353epoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1631596426;
-        bh=R25NOvnUBSkJT6aqilTCPohjpfRCYDrv5wDWT17K454=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=giGp+jlpPaXPnHlwCQIXyasWm2NtL/qQ34954mBHYr+uQtEIwFyW7TbQU/Hda5Ejp
-         tmdBS5HctjA6lBkoawI+PkjTF+V1jy783pxLbMU4x/KOfY1L/qlrhC3oMrMcSYrJnS
-         N63neom3EGcbANNSHYsWztBqoCzGDKTwfXHdoF/I=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210914051345epcas2p4486b7a86a267105dcfe5be23214ec66a~kmE4F4RPB3180531805epcas2p4a;
-        Tue, 14 Sep 2021 05:13:45 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4H7s2H1sK8z4x9Qg; Tue, 14 Sep
-        2021 05:13:43 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DC.62.09472.68F20416; Tue, 14 Sep 2021 14:13:42 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210914051340epcas2p2a3d6facb33cd92f4e4a8361aa63e0be1~kmEzRrhZ52453424534epcas2p2C;
-        Tue, 14 Sep 2021 05:13:40 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210914051340epsmtrp1f89e46370feb63ddeed686e58bef3c87~kmEzQv__M1932419324epsmtrp1e;
-        Tue, 14 Sep 2021 05:13:40 +0000 (GMT)
-X-AuditID: b6c32a48-d5fff70000002500-f8-61402f86fc11
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        71.AC.09091.48F20416; Tue, 14 Sep 2021 14:13:40 +0900 (KST)
-Received: from KORCO011456 (unknown [12.36.185.54]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210914051340epsmtip1a27dbf05cf501de47c5f0cb1e169cc05~kmEy-zp7R1965319653epsmtip1g;
-        Tue, 14 Sep 2021 05:13:40 +0000 (GMT)
-From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
-To:     "'Bart Van Assche'" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
-        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
-        <bhoon95.kim@samsung.com>
-In-Reply-To: <c6b2007b-155b-18b2-e45d-06f600c98797@acm.org>
-Subject: RE: [PATCH v2 1/3] scsi: ufs: introduce vendor isr
-Date:   Tue, 14 Sep 2021 14:13:40 +0900
-Message-ID: <000101d7a927$47dc7d50$d79577f0$@samsung.com>
+        Tue, 14 Sep 2021 01:17:29 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D640258056A;
+        Tue, 14 Sep 2021 01:16:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 14 Sep 2021 01:16:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=i
+        Fscvg2UAmpuVVdpXjvJG379QTvu2lO6GFxJggs3RVE=; b=I05XragjQlJMB7LRR
+        5CizImRNGMqqoIFF8kK/pmXDYPh3Nu+iXAat2zToipMPQQLNmFGc/JNjQuGMbALw
+        H/8/f+sPhhxtgqwjaMkpHRNnlfWFKT6C7P88PAfCIWE3Xh9LiX8I/y0WIJMkiGfK
+        /K1Ek5IWGPhvKDhTqeqaz/A9OcLk6iODRRytF1x0sLNdGxgQU+TOH2Q8hXSGD6Rj
+        rri81ebspvSmStei2FjqNIOMA3+NWMisL0eG3UqihmFcLtJwsBNnK8vjlTF+csuB
+        Q0XcIiLvSkuLJq4ESznaeK/3LWVG3aAcY4dsZkTJcibkWSKOWSVaT/Juq7cSK7SB
+        NEz7Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=iFscvg2UAmpuVVdpXjvJG379QTvu2lO6GFxJggs3R
+        VE=; b=W6gik0BPSPSkR6ki9N4KEg7nH4fCeP5Cna/Ow1NeHjRTCULEzNBiUIIpI
+        poYDa2jLaTExav3o+BmUqt0L48ulTLkaqJ0gScgxp5zIyldce4KEyNW0uzdyKoJP
+        CbukXRVFbY2zJyIj/8Y3xBFBDDtBR2lNizglfzubpoQS8vGJEsxwVuCSN+ER082x
+        wKhLiGh6TEoU6EACkYAXuFgkLHQcEbvwZCNEZnckQg5GerCEnd5RJGgcrkf+Qbsx
+        l4c/i5ClieyGZy4P8kh/+R2XfzUN745tRpUVInQ+6oizDlgqYxFF7FIy6T0QVEBd
+        lZVnaZrHtAKOKWAfdSdhRn9gT3hcg==
+X-ME-Sender: <xms:FzBAYcDQGB5pEQsfEXeZFlOYLjuKcfA_yPfCVWqm22AaDnEP9n9UFA>
+    <xme:FzBAYeh9E1XYcSyqtnPG_0AgRZ8lHJZ2daOjYO0tCsCFHMRPjeEmQT-jySIx5m9cT
+    3ka-DY1OooNP_UBHA>
+X-ME-Received: <xmr:FzBAYfljq_Uy6hvHgIcalvmN73bZ4f4ppsnw65CJyEyxM7YmDmBip6zkYLYHohz0tbNU_oNfuVNqB-YHiVTROl2oybiZOOdCGz3dVt6AKYDwoxtypWCPrI16Ew>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegkedgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefheenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepieegffeuieeuleevvdelhefgudefffdufeetiedvffefgeehfeek
+    teelffduffeunecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+    nhgurdhorhhg
+X-ME-Proxy: <xmx:FzBAYSyzOvLx2dbyDCNWvUw8Vp5bVMJ5N8N-wpml3sl3uXK4IuTqxg>
+    <xmx:FzBAYRSWy3CS9g_MaIhpqO7RD58d87bqs7WKXd15z2N1nxAMgQgkAg>
+    <xmx:FzBAYdZ62yJy-LB7pd3afaq9qdqnbnkGzyC9XT4IRROKdDwEB92Z4A>
+    <xmx:GzBAYSJRRf7PJ4xlF_gZ698ApS6ESobUVD2_O5Xq6nk_EPgIVAQofw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Sep 2021 01:16:07 -0400 (EDT)
+To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        guoren@kernel.org, Liu Shaohua <liush@allwinnertech.com>,
+        wefu@redhat.com
+Cc:     anup.patel@wdc.com, atish.patra@wdc.com, palmerdabbelt@google.com,
+        christoph.muellner@vrull.eu, philipp.tomsich@vrull.eu, hch@lst.de,
+        lazyparser@gmail.com, drew@beagleboard.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        taiten.peng@canonical.com, aniket.ponkshe@canonical.com,
+        gordan.markus@canonical.com, Guo Ren <guoren@linux.alibaba.com>,
+        Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime@cerno.tech>
+References: <20210911092139.79607-1-guoren@kernel.org>
+ <20210911092139.79607-7-guoren@kernel.org>
+ <20210913084520.kkbsupogkzv226x3@gilmour>
+ <e46bb02d-961d-672d-76c7-9844d76ee69b@canonical.com>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [RFC PATCH V4 6/6] riscv: soc: Add Allwinner SoC kconfig option
+Message-ID: <9cd8db15-7431-dfec-6e48-dcf6b30d4f6c@sholland.org>
+Date:   Tue, 14 Sep 2021 00:16:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFyn/7MkbxYHt33UvraYb1f3WYrLgJsxD2CAe3deC0BytsbgKw74pYw
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPJsWRmVeSWpSXmKPExsWy7bCmmW6bvkOiwe8TPBYnn6xhs3gwbxub
-        xcufV9ksDj7sZLH4uvQZq8W0Dz+ZLT6tX8ZqsXrxAxaLRTe2MVlc3jWHzaL7+g42i+XH/zFZ
-        dN29wWix9N9bFgc+j8tXvD0u9/UyeSze85LJY8KiA4we39d3sHl8fHqLxaNvyypGj8+b5Dza
-        D3QzBXBG5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXm
-        AB2vpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQw
-        MDIFqkzIyTjwfwVzwTWmim0fr7M0ME5n6mLk5JAQMJG4cmI1cxcjF4eQwA5GiRtXtrFDOJ8Y
-        Jb7cf8oC4XxjlHiw6BgzTMu084+gqvYCVTU1M0I4LxglZlw4CzaYTUBbYtrD3awgCRGBFmaJ
-        K3s/gSU4Bawlbrx6zQpiCwPZex7vZwexWQRUJW6tmAW0j4ODV8BSouGPGUiYV0BQ4uTMJywg
-        NrOAvMT2t3OgrlCQ+Pl0GdgYEQE3iYmbjzNB1IhIzO5sA3tIQuAOh8Tqq4ehPnWROHZzJiOE
-        LSzx6vgWdghbSuJlfxuUXS+xb2oDK0RzD6PE033/oBqMJWY9a2cEOY5ZQFNi/S59EFNCQFni
-        yC2o2/gkOg7/ZYcI80p0tAlBNCpL/Jo0GWqIpMTMm3egNnlITHjSxjiBUXEWki9nIflyFpJv
-        ZiHsXcDIsopRLLWgODc9tdiowAQ5tjcxglO2lscOxtlvP+gdYmTiYDzEKMHBrCTCu+2NbaIQ
-        b0piZVVqUX58UWlOavEhRlNgsE9klhJNzgdmjbySeENTIzMzA0tTC1MzIwslcd7zry0ThQTS
-        E0tSs1NTC1KLYPqYODilGphy51kGvm3ZyB/+sc/Ae3FqH793bmrvt239xcaBh6zuKgi69p0/
-        ZsfetMR1TlY2w4nOe3JNpatN/x1wWF64IHna8Xly/6/sexJ9yKt+W/Le/+vz/GRvr/hcqhIT
-        9Pf3x9pVgj8kBUQjo5n++bH5he+oue/qtHg3p+uVBKnNEyVfnvEX9VI83KNcs/jRGnaTj3qz
-        OHZ+e8dZJdOdxJ7BJSy8NTzhw/Zln1j0OTeIhiz7IPZ+wrq2qXXSQTcNdy6ON53Rsi0ptmXj
-        BOauD/tXPrrUxXsrmeNyVe3FnA3H1B7dVP0zU4310wHzRmnOcIHrvu8OrFpa+k6F4Ua+9YW7
-        G7NZp/y4qBW15KVUuNCzVjMlluKMREMt5qLiRABFP4itYgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsWy7bCSnG6LvkOiwYkeZYuTT9awWTyYt43N
-        4uXPq2wWBx92slh8XfqM1WLah5/MFp/WL2O1WL34AYvFohvbmCwu75rDZtF9fQebxfLj/5gs
-        uu7eYLRY+u8tiwOfx+Ur3h6X+3qZPBbvecnkMWHRAUaP7+s72Dw+Pr3F4tG3ZRWjx+dNch7t
-        B7qZAjijuGxSUnMyy1KL9O0SuDIO/F/BXHCNqWLbx+ssDYzTmboYOTkkBEwkpp1/xN7FyMEh
-        JLCbUWIND0RYUuLEzueMELawxP2WI6xdjFxAJc8YJbonrgFLsAloS0x7uBssISIwhVnizrWj
-        bBBVnUwSC9/fYwOp4hSwlrjx6jUriC0MZO95vJ8dxGYRUJW4tWIWC8hmXgFLiYY/ZiBhXgFB
-        iZMzn7CA2MxAC57efAply0tsfzuHGeIiBYmfT5eBjRQRcJOYuPk4E0SNiMTszjbmCYxCs5CM
-        moVk1Cwko2YhaVnAyLKKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10vOT93EyM4QrU0dzBuX/VB
-        7xAjEwfjIUYJDmYlEd5tb2wThXhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2a
-        WpBaBJNl4uCUamCK53/KKGFY/yfjQFvo0qkzFm59PFXM4GpYKe9WLWU3a7O0LYu2pK8oFrrO
-        4JAvqXM5R1n5LNPd+GhlvywVld+OIRf/+B0M41i94EdkqEqX5opKdafiB182PWMvack00Hzw
-        5FyG+5y3Nbzdhq8+PrUMkbzvOy+y4kDI61WMG7ftebYo5ficqudLNO7erb2trfhvxxFf6WlL
-        mBM2RDyKunZjh4OojRbvBYnKTfqzF29IyXwVMympWaGnsIPXzk1HRFbHeP7FV9b+tTsZe7vF
-        5y/5oDGNbRGn0wxmdhcHjwVVd86+ETlT8Yn9vK6ClPknm4+/JrMki+jeOvqBQ8EyPSJhWhyT
-        XclUk2eimyanaSqxFGckGmoxFxUnAgDuh1CfPwMAAA==
-X-CMS-MailID: 20210914051340epcas2p2a3d6facb33cd92f4e4a8361aa63e0be1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210913081150epcas2p11f98eed5939bf082981e2a4d6fd9a059
-References: <cover.1631519695.git.kwmad.kim@samsung.com>
-        <CGME20210913081150epcas2p11f98eed5939bf082981e2a4d6fd9a059@epcas2p1.samsung.com>
-        <6801341a6c4d533597050eb1aaa5bf18214fc47f.1631519695.git.kwmad.kim@samsung.com>
-        <c6b2007b-155b-18b2-e45d-06f600c98797@acm.org>
+In-Reply-To: <e46bb02d-961d-672d-76c7-9844d76ee69b@canonical.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Since "static inline irqreturn_t ufshcd_vendor_isr_def(struct ufs_hba
-> *hba)" occupies less than 80 columns please use a single line for the
-> declaration of this function. Additionally, please leave out the "inline"
-> keyword since modern compilers are good at deciding when to inline a
-> function and when not.
+On 9/13/21 10:49 PM, Heinrich Schuchardt wrote:
+> Calling a Kconfig menu item "Allwinner SoCs" which includes all
+> future Allwinner SoCs irritates me. How about CONFIG_SOC_SUNXI_D1
+> instead?
 
-Got it. Thanks.
+Would you want to have a separate option for each new SoC? That seems
+like the only way to split things up, if you want to be more specific
+than than "sunxi" (or equivalently "sun20i", which is the codename for
+the RISC-V series).
 
+Except at the very beginning (sun4i-sun7i), there have not been clear
+generational boundaries between the various sunxi SoCs, so most of the
+32-bit ones already get lumped into a single symbol (MACH_SUN8I). And
+there is a single Kconfig symbol, ARCH_SUNXI, for all 64-bit Allwinner SoCs.
+
+There is enough overlap in peripherals that you need a common symbol for
+the peripheral drivers anyway. How about... ARCH_SUNXI? There are 90+
+uses of this symbol throughout drivers/ and sound/, and I have found
+that more than half of them apply to the D1 (see e.g. this commit[1] and
+some of its ancestors).
+
+RISC-V has so far adopted a CONFIG_SOC_xxx naming scheme, which is
+different from arm/arm64's CONFIG_ARCH_xxx pattern. But now we have a
+case where a SoC family is split between the two architectures. I'm all
+for consistency with the names of other RISC-V platform symbols, but it
+seems that reusing the existing ARCH_SUNXI symbol would be better than
+cluttering up the driver Kconfig files with a duplicate.
+
+Regards,
+Samuel
+
+[1]: https://github.com/smaeul/linux/commit/7841e5c32366
