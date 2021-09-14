@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3614A40B63B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D0E40B640
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhINRv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhINRvp (ORCPT
+        id S231614AbhINRyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:54:45 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:51055 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhINRyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:51:45 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74CAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:50:27 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id r4so30152096ybp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:50:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=BgWxITrR4cQ31cmnKtanEvZnHyiOgAyRG7C1Ouaeq94gihWwMAQRbiMOru7EdZBekd
-         ilYNhCwbQdt3rFBwPq5JFP+S9APFDQlGtDNjrhS00BQCl6GD7ZpPoQmI/RZqMw2RnEmQ
-         6lu6m4X4vtZgvd42jIvlH2eHis94jIIiPsRHBUnnabpl+Dqh/1N+7eIzeWAQGwGH+38k
-         3Crku+7UP+SAesh3inl5DEVW+KQwZc1Rjmt/mxyDl0zHJEGPMWGi+uK041ZiWzDStbKg
-         g8MW606hAwupNhbZzZ1Jk/gUYvmrkLJbof7MPdb4oTaILYj97ebIUhL9l9BoUH9mFeYm
-         eDiw==
+        Tue, 14 Sep 2021 13:54:41 -0400
+Received: by mail-io1-f70.google.com with SMTP id b202-20020a6bb2d3000000b005b7fb465c4aso16873518iof.17
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:53:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
-        b=qMc/nsjHBPNLZwaFrz0Pmo6Fmd8laG9RFs2hB9yNqnS+koHEnAK3vopKThkd4G/qjZ
-         Ee2cRimf0PkwSQ9uoSJFPNeKtukK61KkbhMnojr++DSZPsdlrtx+1oWVZfw0quDL0M8X
-         VslERCKE0lfwvqzJhWrx3zv5vMFWEDywyJzpEnt1BIn6/NE7ldSN8GvN6UX9YtTAS6gD
-         CvUJ+WQstJIHtCuLpMlRp6713WkMWJFFZHt5i8QP7f9X/GucAM7pwsnG9VqbJ/SqiJOt
-         jgRM+OIRvjPSmomXM7864qtjmXttNy0BMu9S2LGnbXVbvOFetN/gebrR/wXcNa8axI68
-         5t6w==
-X-Gm-Message-State: AOAM532zUZbPMhYRcuOq1CbzkFd+NYAMOs9sN0rFaErFLDhnRy44dlYE
-        t5tZgSO01I3Qy/FSanWquFQmzcHQkm+AAknkWcE=
-X-Google-Smtp-Source: ABdhPJwcGJCHxTWIEe1x+wN9yjQfYWFMitXDwwukoEhhh46blaqV18ICrutpdCR0qwl2mlQ6ZYq7OF1xfOvnsh1spn8=
-X-Received: by 2002:a25:664c:: with SMTP id z12mr549733ybm.62.1631641827010;
- Tue, 14 Sep 2021 10:50:27 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=d/BCEmiQUQZFxfE+JV0m+UftuHUj+57emuJFfJpTsxc=;
+        b=CQh2sxrdluiT9aS9HgAGkEQYbwy6wfvV4ind0PoK0vRwqhHKmsOfu1L2PM7bu7HFmA
+         SJjznRfzag2RC3ko+tQ17cQy/uflx5tr1OIaoR8Y78tZWQuaF3BFWovn9IQoEWPM6JAm
+         v+Pj/TzjmFsjDJx0HSVxhzPftL/iKdJ1fZzkducv/nUchO0fH035CYOTm4llJvH3q2iJ
+         /vDueBSh6a81zD6UejOII23POrqIrrYlEL2ZWVQxc3HKriHca0xbUGsDJuWEqNrt2CjF
+         JRjQsOL7aTftB19mWA8Yd3AGVcPX1a2CNH0s995zkZmb1eYT7/8oLLpQIoC9U8Zuk2Ns
+         h7kg==
+X-Gm-Message-State: AOAM530byQZfp+G/LDj7adkXx2TJwO7D8zJqbJjg1TVXFAVFLJyPdIhy
+        JbWhcbGoR2a5K6a9xDTpWTKrbifu2qbjcn18KgqQcOFmZ7zZ
+X-Google-Smtp-Source: ABdhPJzDkCxXta1Ys0R39HdGljue8uKEVN5XjQJBQYyOREPJAfUKUuvYUlVWUcBJJ1OeMxQRRf+GQ3Dduv+80XvpG4iqF+/4RQtb
 MIME-Version: 1.0
-Received: by 2002:a05:7110:2036:b0:f5:6146:e4a7 with HTTP; Tue, 14 Sep 2021
- 10:50:26 -0700 (PDT)
-Reply-To: uchennailobitenone@gmail.com
-From:   uhenna <tochiuju11@gmail.com>
-Date:   Tue, 14 Sep 2021 10:50:26 -0700
-Message-ID: <CA+6axKuWxAP_anYJPjqHKufVmaTQsnLnPg8owSqrQdcbgASvQA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+X-Received: by 2002:a6b:5819:: with SMTP id m25mr14781670iob.105.1631642003271;
+ Tue, 14 Sep 2021 10:53:23 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 10:53:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000001788e05cbf84285@google.com>
+Subject: [syzbot] WARNING in ieee80211_parse_tx_radiotap
+From:   syzbot <syzbot+0196ac871673f0c20f68@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention Please,
+Hello,
 
-I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
-healthy? This is to inform you that i have concluded the transaction
-successfully with the help of a new partner from Venezuela and now the
-fund has been transferred to Venezuela into the bank account of the
-new partner.
+syzbot found the following issue on:
 
-Meanwhile, I have decided to compensate you with the sum of
-US$350,000.00 (thiree Hundred and Fifty Thousand United States
-Dollars) due to your past effort, though you disappointed me along the
-line. But nevertheless I am very happy for the successful ending of
-the transaction without any problem and that is the reason why i have
-decided to compensate you with the sum of US$350,000.00 so that you
-will share the joy with me.
+HEAD commit:    3384c7c7641b selftests/bpf: Test new __sk_buff field hwtst..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1555b31b300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ddc7bf7ff3cd202
+dashboard link: https://syzkaller.appspot.com/bug?extid=0196ac871673f0c20f68
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-I advise you to contact my secretary for Atm Card of US$350.000.00,
-which I kept for you. Contact him now without any delay.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Name: solomon brandy
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0196ac871673f0c20f68@syzkaller.appspotmail.com
 
-Email:solomonbrandyfiveone@gmail.com
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 10717 at include/net/mac80211.h:989 ieee80211_rate_set_vht include/net/mac80211.h:989 [inline]
+WARNING: CPU: 0 PID: 10717 at include/net/mac80211.h:989 ieee80211_parse_tx_radiotap+0x101e/0x12d0 net/mac80211/tx.c:2244
+Modules linked in:
+CPU: 0 PID: 10717 Comm: syz-executor.5 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ieee80211_rate_set_vht include/net/mac80211.h:989 [inline]
+RIP: 0010:ieee80211_parse_tx_radiotap+0x101e/0x12d0 net/mac80211/tx.c:2244
+Code: 48 c1 ea 03 0f b6 04 02 84 c0 0f 84 41 fc ff ff 0f 8f 3b fc ff ff 48 8b 7c 24 10 e8 3c 1a 2e f9 e9 2c fc ff ff e8 b2 d9 e6 f8 <0f> 0b e9 6d ff ff ff e8 f6 19 2e f9 e9 10 fe ff ff e8 cc 19 2e f9
+RSP: 0018:ffffc9000186f3e8 EFLAGS: 00010216
+RAX: 0000000000000618 RBX: ffff88804ef76500 RCX: ffffc900143a5000
+RDX: 0000000000040000 RSI: ffffffff888f478e RDI: 0000000000000003
+RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000100
+R10: ffffffff888f46f9 R11: 0000000000000000 R12: 00000000fffffff8
+R13: ffff88804ef7653c R14: 0000000000000001 R15: 0000000000000004
+FS:  00007fbf5718f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2de23000 CR3: 000000006a671000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ ieee80211_monitor_select_queue+0xa6/0x250 net/mac80211/iface.c:740
+ netdev_core_pick_tx+0x169/0x2e0 net/core/dev.c:4089
+ __dev_queue_xmit+0x6f9/0x3710 net/core/dev.c:4165
+ __bpf_tx_skb net/core/filter.c:2114 [inline]
+ __bpf_redirect_no_mac net/core/filter.c:2139 [inline]
+ __bpf_redirect+0x5ba/0xd20 net/core/filter.c:2162
+ ____bpf_clone_redirect net/core/filter.c:2429 [inline]
+ bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2401
+ bpf_prog_eeb6f53a69e5c6a2+0x59/0x234
+ bpf_dispatcher_nop_func include/linux/bpf.h:717 [inline]
+ __bpf_prog_run include/linux/filter.h:624 [inline]
+ bpf_prog_run include/linux/filter.h:631 [inline]
+ bpf_test_run+0x381/0xa30 net/bpf/test_run.c:119
+ bpf_prog_test_run_skb+0xb84/0x1ee0 net/bpf/test_run.c:663
+ bpf_prog_test_run kernel/bpf/syscall.c:3307 [inline]
+ __sys_bpf+0x2137/0x5df0 kernel/bpf/syscall.c:4605
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fbf5718f188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
+RDX: 0000000000000048 RSI: 0000000020000080 RDI: 000000000000000a
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007fffc508498f R14: 00007fbf5718f300 R15: 0000000000022000
 
-Kindly reconfirm to him the following below information:
 
-Your full name_________________________
-Your address__________________________
-Your country___________________________
-Your age______________________________
-Your occupation________________________
-Your cell Phone number______________________
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Note that if you did not send him the above information complete, he
-will not release the Atm card to you because he has to be sure that it
-is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
-which I kept for you.
-
-Best regards,
-
-Mr. uchenna ilobi
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
