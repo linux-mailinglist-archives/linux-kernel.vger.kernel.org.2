@@ -2,95 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D84F40A1B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 01:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DC940A1C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 02:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245474AbhIMXtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Sep 2021 19:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhIMXtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Sep 2021 19:49:22 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27214C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:48:06 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id c22so15486983edn.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 16:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kHteEWVAZLt0OaBtiwLU1pAl1Ek5T6z635cI8YpKSSI=;
-        b=YJTK7efG4Mtv3PAk/JgStkogskGHLYDKrcfP9BC2F+OS3HdrsyrPXxGn4a7OqCk9xH
-         HJnf3f3PYl0utfAMttI/hepD0cH785+DFRDiyHvVJHcb9hl/s9oUOMlEQO0bx562kYkp
-         gBdHDPvk4mcICm8Rv4dQiWWNWwlME3M7DmsJ4EeKK9KU//OxxPMIbzQtvq5azlwJBlPw
-         jzbOQ2DUawDvWdnkb3KfucY9A7K17bxLOd/IZxnkl91rf1AcLion1a+fBY4H59QHFf7R
-         WsmrYXCCm5XC73QpPJ1uFdT1CK8+8xMssJExjvuD1jPcX/EJuqeJFl+6Y3sCEo32yaHA
-         hUjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kHteEWVAZLt0OaBtiwLU1pAl1Ek5T6z635cI8YpKSSI=;
-        b=yySCUNWTjmTCo4enmuj3NAZ9zrkHqYzfYe9RJDU/VPq+V+ehNydplBR+O08tPa8SOH
-         FKqNRFxZp6egtgGi1UvkLCi4GhVZgJEbIM885kQiniwHu4Pd9KA+myqjzxq8V7sjyrlJ
-         zp5dDtAMbez575TafMVhHU9dsMF/26KcMQBzk7RyOLz/HE2RdaFuZ8y2hFW7kMazW54q
-         PBCqCy+cAlfDOmUvT4tChgV6k03NB8G9VnQ6lKMc0ABlBIDpZxB2wMqF77FZ4EaT7DBy
-         4irtbnmPYy4OE9dYUKWtrHt/6ovxR1v1vggTiyiHsDh8rv0v4WIzIT56c+i4JZG3/O14
-         L9tg==
-X-Gm-Message-State: AOAM533n0idgsTwJfBBrmFW1qAHCeatvRPKxy5v8OKMGNjLFL4GI69Nf
-        QC5w0wv6N9zylJjhsT3yafyjwEMdA4k9HqBDqrM9
-X-Google-Smtp-Source: ABdhPJyTx4j9C5z7itSxBMb0ywnCVLrM09iZQDbyMJBj6xbfFQiRVOym1cj8gF+MLuypO+vpifw0tvCyHL7vtrwaNpw=
-X-Received: by 2002:a50:ab18:: with SMTP id s24mr9061810edc.88.1631576884555;
- Mon, 13 Sep 2021 16:48:04 -0700 (PDT)
+        id S235475AbhINAKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Sep 2021 20:10:13 -0400
+Received: from ozlabs.org ([203.11.71.1]:51637 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhINAKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Sep 2021 20:10:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631578134;
+        bh=v90zIYjxmWk7ZcxcpQ8ejCaQLB9RypWd6ospIYJbweg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=IOEknN+eZ8Adpj7/vLgyXCC7SV+e6VM1rumxhZfOx8snd515mlwrccDEbFtki+ZAF
+         4pg2bFjNEgaQJK5I8TEgXOZzS2tAZzC8XojQ+u0E0hypfVpM+c1epPwRGyBcjRDLMD
+         yWKlBvUWfedU5iLpoo7KMPuw10zAQaO9wi6l6MuCWUju8b/s87IVXvi4mlrogfJ8p+
+         wLiJH2zS8xDdM6d4B2KLCqFnrLmAC878bu3EyHHl+blPZyRLQPJpnMB0SE0Z167Zuc
+         2L1P86WHhEy2Lh/jeFs8rwQaBNzfarahn8ensDgE0Z7cMl7AvdEgiATZ7qIvStexeG
+         pikMI9BGhTC0g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H7kGZ0yPlz9sW4;
+        Tue, 14 Sep 2021 10:08:53 +1000 (AEST)
+Date:   Tue, 14 Sep 2021 10:08:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Subject: linux-next: build failure after merge of the origin tree
+Message-ID: <20210914100853.3f502bc9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <a507efa7-066b-decf-8605-89cdb0ac1951.ref@schaufler-ca.com> <a507efa7-066b-decf-8605-89cdb0ac1951@schaufler-ca.com>
-In-Reply-To: <a507efa7-066b-decf-8605-89cdb0ac1951@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 13 Sep 2021 19:47:53 -0400
-Message-ID: <CAHC9VhR9SKX_-SAmtcCj+vuUvcdq-SWzKs86BKMjBcC8GhJ1gg@mail.gmail.com>
-Subject: Re: Regression in unix stream sockets with the Smack LSM
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Jiang Wang <jiang.wang@bytedance.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/+fAm=g2A=.HjuXM/KZoYRo=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 6:53 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> Commit 77462de14a43f4d98dbd8de0f5743a4e02450b1d
->
->         af_unix: Add read_sock for stream socket types
->
-> introduced a regression in UDS socket connections for the Smack LSM.
-> I have not tracked done the details of why the change broke the code,
-> but this is where bisecting the kernel indicates the problem lies, and
-> I have verified that reverting this change repairs the problem.
->
-> You can verify the problem with the Smack test suite:
->
->         https://github.com/smack-team/smack-testsuite.git
->
-> The failing test is tests/uds-access.sh.
->
-> I have not looked to see if there's a similar problem with SELinux.
-> There may be, but if there isn't it doesn't matter, there's still a
-> bug.
+--Sig_/+fAm=g2A=.HjuXM/KZoYRo=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-FWIW, the selinux-testsuite tests ran clean today with v5.15-rc1 (it
-looks like this code is only in v5.15) but as Casey said, a regression
-is a regression.
+Hi all,
 
-Casey, what actually fails on the Smack system with this commit?
+After merging the origin tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
--- 
-paul moore
-www.paul-moore.com
+In file included from <command-line>:
+include/linux/compiler_attributes.h:62:5: warning: "__has_attribute" is not=
+ defined, evaluates to 0 [-Wundef]
+   62 | #if __has_attribute(__assume_aligned__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:62:20: error: missing binary operator b=
+efore token "("
+   62 | #if __has_attribute(__assume_aligned__)
+      |                    ^
+include/linux/compiler_attributes.h:88:5: warning: "__has_attribute" is not=
+ defined, evaluates to 0 [-Wundef]
+   88 | #if __has_attribute(__copy__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:88:20: error: missing binary operator b=
+efore token "("
+   88 | #if __has_attribute(__copy__)
+      |                    ^
+include/linux/compiler_attributes.h:113:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  113 | #if __has_attribute(__designated_init__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:113:20: error: missing binary operator =
+before token "("
+  113 | #if __has_attribute(__designated_init__)
+      |                    ^
+include/linux/compiler_attributes.h:124:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  124 | #if __has_attribute(__error__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:124:20: error: missing binary operator =
+before token "("
+  124 | #if __has_attribute(__error__)
+      |                    ^
+include/linux/compiler_attributes.h:135:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  135 | #if __has_attribute(__externally_visible__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:135:20: error: missing binary operator =
+before token "("
+  135 | #if __has_attribute(__externally_visible__)
+      |                    ^
+In file included from <command-line>:
+include/linux/compiler_attributes.h:171:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  171 | #if __has_attribute(__no_caller_saved_registers__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:171:20: error: missing binary operator =
+before token "("
+  171 | #if __has_attribute(__no_caller_saved_registers__)
+      |                    ^
+include/linux/compiler_attributes.h:182:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  182 | #if __has_attribute(__noclone__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:182:20: error: missing binary operator =
+before token "("
+  182 | #if __has_attribute(__noclone__)
+      |                    ^
+include/linux/compiler_attributes.h:199:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  199 | #if __has_attribute(__fallthrough__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:199:20: error: missing binary operator =
+before token "("
+  199 | #if __has_attribute(__fallthrough__)
+      |                    ^
+include/linux/compiler_attributes.h:226:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  226 | #if __has_attribute(__nonstring__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:226:20: error: missing binary operator =
+before token "("
+  226 | #if __has_attribute(__nonstring__)
+      |                    ^
+include/linux/compiler_attributes.h:238:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  238 | #if __has_attribute(__no_profile_instrument_function__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:238:20: error: missing binary operator =
+before token "("
+  238 | #if __has_attribute(__no_profile_instrument_function__)
+      |                    ^
+include/linux/compiler_attributes.h:296:5: warning: "__has_attribute" is no=
+t defined, evaluates to 0 [-Wundef]
+  296 | #if __has_attribute(__warning__)
+      |     ^~~~~~~~~~~~~~~
+include/linux/compiler_attributes.h:296:20: error: missing binary operator =
+before token "("
+  296 | #if __has_attribute(__warning__)
+      |                    ^
+make[2]: *** [arch/powerpc/boot/Makefile:225: arch/powerpc/boot/crt0.o] Err=
+or 1
+
+Exposed by commit
+
+  6d2ef226f2f1 ("compiler_attributes.h: drop __has_attribute() support for =
+gcc4")
+
+Powerpc uses BOOTAS to build arch/powerpc/boot/crt0.o (and others)
+which (with V=3D1) is
+
+  gcc -Wp,-MD,arch/powerpc/boot/.crt0.o.d -D__ASSEMBLY__ -Wall -Wundef -Wst=
+rict-prototypes -Wno-trigraphs -fno-strict-aliasing -O2 -msoft-float -mno-a=
+ltivec -mno-vsx -pipe -fomit-frame-pointer -fno-builtin -fPIC -nostdinc -in=
+clude /home/sfr/next/next/include/linux/compiler_attributes.h -I/home/sfr/n=
+ext/next/arch/powerpc/include -I./arch/powerpc/include/generated -I/home/sf=
+r/next/next/include -I./include -I/home/sfr/next/next/arch/powerpc/include/=
+uapi -I./arch/powerpc/include/generated/uapi -I/home/sfr/next/next/include/=
+uapi -I./include/generated/uapi -include /home/sfr/next/next/include/linux/=
+compiler-version.h -include /home/sfr/next/next/include/linux/kconfig.h -m3=
+2 -isystem /usr/lib/gcc/powerpc64le-linux-gnu/10/include -mbig-endian -nost=
+dinc -c -o arch/powerpc/boot/crt0.o /home/sfr/next/next/arch/powerpc/boot/c=
+rt0.S
+
+I am not sure what is missing here to get __has_attribute defined.
+
+I have reverted the above commit for today ( and reapplied the bits
+from commits
+
+  7ed012969bbc ("Compiler Attributes: fix __has_attribute(__no_sanitize_cov=
+erage__) for GCC 4")
+  b83a908498d6 ("compiler_attributes.h: move __compiletime_{error|warning}")
+).
+
+I assume that this needs some work in the powerpc arch Makfile(s) ...
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+fAm=g2A=.HjuXM/KZoYRo=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE/6BUACgkQAVBC80lX
+0GyYQgf6Ak0293PpiqdwsDmQ5V0aJ0jtRJdt/XPFzeDcvOIRHcA2T4ReoWyXlcHP
+GYVekkSInE/9x0vIeMGIEh4DRVj0X5gntdQ7O4IblUYwypEjyuCB8wz8QatIzeg2
+hrbtN3SFApTC7haf83VwDXalisCfpEIaJpNpJqNOzj4gQs0PEEmRsVrkusAT73C7
+sD799LU/XK+09tE6D9xHZm1FsQg1aRtdswuJAojUBNSwQDjgwDeVAOUNC3VQ4pyj
+POscsAoFX+Cskg7KVOK5tJgD/okG8UkZ9/PqI9ISGZltnyH+BO8QINXxhchO0E9H
+t7aB3eAHqU/+vQxCNdJ9PED32BDMAQ==
+=HgYZ
+-----END PGP SIGNATURE-----
+
+--Sig_/+fAm=g2A=.HjuXM/KZoYRo=--
