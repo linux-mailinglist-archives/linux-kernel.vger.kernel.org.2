@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A74340B263
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AFA40B265
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhINPCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:02:16 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34000 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbhINPCO (ORCPT
+        id S234420AbhINPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:02:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232079AbhINPCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:02:14 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631631656;
+        Tue, 14 Sep 2021 11:02:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631631673;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wGBRmHV9K/M0F5ppDOKp+GVLwJxmlYjlIieCg77sEIs=;
-        b=i6zXfj1hGfaZEqgANktxkGbh4IjfyCDsOasfy5HpHdcvVUD6HwT6us2p5/KePzrmSxgQD7
-        tmqFPh2pxdAlI2sIJJ98TNtIWVoyMiDmYMzN5fZvBqQyxsFrqnloJrGJNVd829p1RdaLea
-        I++VIbp835LEiRGuafEqa14cXwbpjIyobOeltIGGYOkoIEAvLmgnzg7IZqgzVv3J4B30Tv
-        atFCr4hL462Ez57p1AiyEsXQcvlZ/SswQ1IZoMIzZ5jVSi4fJumsB95/8IzD/lVUeUjgHQ
-        qWoKLb1vNZb1FCoGRQqj77CWNnZdnTIXhl97/p7PpCCz/0MrDsOYKergrXHcIg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631631656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wGBRmHV9K/M0F5ppDOKp+GVLwJxmlYjlIieCg77sEIs=;
-        b=usbVLW4qSnYCxGogEAqh6bTxiRLYACwBtWZofJd+nQ5pfmeEcHqzy89uH4Cz7RjUx1cT5T
-        Ca2nkqmpfqWfymAw==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH 3/4] locking/rwbase: Fix rwbase_write_lock() vs
- __rwbase_read_lock()
-In-Reply-To: <YUCq3L+u44NDieEJ@hirez.programming.kicks-ass.net>
-References: <20210909105915.757320973@infradead.org>
- <20210909110203.893845303@infradead.org> <87k0jjeh2v.ffs@tglx>
- <YUCq3L+u44NDieEJ@hirez.programming.kicks-ass.net>
-Date:   Tue, 14 Sep 2021 17:00:56 +0200
-Message-ID: <87sfy7b3rr.ffs@tglx>
+        bh=f4doVZdRhwwzGkMFAoRi2PUNaC9z4kzqnDQ6De1+mEk=;
+        b=T1GYAYZBhwPfQ5/nR+ml/hTWlNetCXc3uBGr2ISr2FtplmX31s2TR3iYiWQMuLyf9degnK
+        2t74KNadb/P2toTx3P2YwAeFsZOeuMoIDO3UDezSbyhNKBN11H2XO7L+7drNBi9ZFjigLg
+        uTeuUSMU/06zTmcGI7ZdUVDb0NbGprs=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-SiKwvEdNOnOWkXz8LHaILA-1; Tue, 14 Sep 2021 11:01:12 -0400
+X-MC-Unique: SiKwvEdNOnOWkXz8LHaILA-1
+Received: by mail-io1-f71.google.com with SMTP id i78-20020a6b3b51000000b005b8dd0f9e76so16451340ioa.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:01:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f4doVZdRhwwzGkMFAoRi2PUNaC9z4kzqnDQ6De1+mEk=;
+        b=Ejex6ivmb6wn5g4ajjJL++ceAT0jZ/Ay3ykME8mUMiLs0GAPGPDzW+rOP4XXQZ0c22
+         Ai22Rn2C9qOyuMq6vMaJfBKU3mIFQPIORNzVM9m+hVs232rj6AYYbZMqheaUVVGiLv7J
+         vfVcL4N2QzCuFy//tIfMKtCT1b3IrfgMsMLMHwygrVoFg4XJq0qVaKr/469hDYeP1v1D
+         7gd9PNRKbg7ZKsWYvcBE1VpGLsAACA5VVC2Bacq/eRVdZc/EOaWQwdZZAe0RS2IiVEPR
+         VdccAGTVD3BoerZK0XcmWMhMkxG2Bat5+v6rO/3ZvM/qhEXPfcS+5iUvHmUd1UOkRA7i
+         sR2g==
+X-Gm-Message-State: AOAM533R3zuP7Bq1xv2U9d5WvIxTrUohMF4JICwAEv52ojrPa6HIcE6O
+        he/57RXiKXlmZsXEFSTqWQc5lo74jjkhoxOMl0tyxmBxX19rO90OR+mN2+dNMMDjBqvpYRlTh+A
+        kFXqEk6ewnaxnDa64+OQSXz9vkuYVv5I/vWGR9Rs0
+X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr12302580ili.29.1631631671753;
+        Tue, 14 Sep 2021 08:01:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyaAeiekMMKeZruAEeYbCxZpJjpmCzKAy5WCzmfRtD8PhxXBHVBLZZb+MFaozIMIyxqQwE9MVbD21EwvnT+xp8=
+X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr12302560ili.29.1631631671531;
+ Tue, 14 Sep 2021 08:01:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <79dcd300-a441-cdba-e523-324733f892ca@schaufler-ca.com>
+ <YTEEPZJ3kxWkcM9x@redhat.com> <YTENEAv6dw9QoYcY@redhat.com>
+ <3bca47d0-747d-dd49-a03f-e0fa98eaa2f7@schaufler-ca.com> <YTEur7h6fe4xBJRb@redhat.com>
+ <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com> <YTYr4MgWnOgf/SWY@work-vm>
+ <496e92bf-bf9e-a56b-bd73-3c1d0994a064@schaufler-ca.com> <YUCa6pWpr5cjCNrU@redhat.com>
+ <CAPL3RVHB=E_s1AW1sQMEgrLYJ8ADCdr=qaKsDrpYjVzW-Apq8w@mail.gmail.com> <YUCybaYK/0RLvY9J@redhat.com>
+In-Reply-To: <YUCybaYK/0RLvY9J@redhat.com>
+From:   Bruce Fields <bfields@redhat.com>
+Date:   Tue, 14 Sep 2021 11:01:00 -0400
+Message-ID: <CAPL3RVGXWtakCS9bvE60gWp0tcsduJFKfoU4aoqANRgp7HvFow@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
+        Daniel Walsh <dwalsh@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Casey Schaufler <casey.schaufler@intel.com>,
+        LSM <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        stephen.smalley.work@gmail.com,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Dave Chinner <david@fromorbit.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14 2021 at 15:59, Peter Zijlstra wrote:
-> On Tue, Sep 14, 2021 at 09:45:12AM +0200, Thomas Gleixner wrote:
->> The read/set is always in the same lock instance.
->
-> I really did make a mess of things didn't I :-/ It was some intermediate
-> state that was broken.
+On Tue, Sep 14, 2021 at 10:32 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+> open_by_handle_at() requires CAP_DAC_READ_SEARCH.
 
-Thinking about memory ordering can reorder your memory :)
+Or some sort of access to the network.  If you can send rpc requests
+to the nfs server that appear to be from someone with access to the
+export, you can guess filehandles that allow access to objects under
+that directory.  You'll need access to particular objects, but you
+won't need read or lookup access to the directory.
 
-> How's this then?
->
-> ---
-> Subject: locking/rwbase: Extract __rwbase_write_trylock()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Thu, 09 Sep 2021 12:59:18 +0200
->
-> The code in rwbase_write_lock() is a little non-obvious vs the
-> read+set 'trylock', extract the sequence into a helper function to
-> clarify the code.
->
-> This also provides a single site to fix fast-path ordering.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+You can prevent that if you set things up right, but these
+filehandle-issues are poorly understood, and people often forget to
+take them into account.
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+--b.
+
+> And if you have
+> CAP_DAC_READ_SEARCH, you don't need to even guess file handles. You
+> should be able to read/search through all directories, IIUC.
+>
+> So how does one make sure that shared directory on host is not
+> accessible to unprivileged entities. If making directory accessible
+> to root only is weaker security, what are the options for stronger
+> security.
 
