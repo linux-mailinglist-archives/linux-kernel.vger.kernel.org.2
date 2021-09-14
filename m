@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7E940B051
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0DD40B057
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhINOOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:14:33 -0400
-Received: from mga06.intel.com ([134.134.136.31]:28113 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233300AbhINOOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:14:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="283006157"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="283006157"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 07:13:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="609642663"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 Sep 2021 07:13:05 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 14 Sep 2021 17:13:05 +0300
-Date:   Tue, 14 Sep 2021 17:13:04 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jon Nettleton <jon@solid-run.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH] software node: balance refcount for managed sw nodes
-Message-ID: <YUCt8KJAGnXdffHx@kuha.fi.intel.com>
-References: <2a0f7fa6-b164-eeb4-118a-acd57d79a484@nxp.com>
- <CAHp75VcYt+VQq4jp9JdkA4EpGqtks2sP-NRkfSbGj+-Vn5ke=g@mail.gmail.com>
- <c2186f2c-8be0-6f44-e442-8cb8cbd5f2c2@nxp.com>
- <2485ac73-6df6-3939-5ee5-ef650d951054@nxp.com>
- <YTn6dx2rRsLZ6GDJ@kuha.fi.intel.com>
- <YTn7G/Mgm18JfV9k@kuha.fi.intel.com>
- <ffe89a41-59c3-499b-1553-0c15f386df01@nxp.com>
- <e9bc1397-99b7-a57e-4860-80d146848e2c@nxp.com>
- <YTtR2pLEMFDubtqi@kuha.fi.intel.com>
- <56544211-7407-3de2-e30d-d1dbb7b2aeb2@nxp.com>
+        id S233481AbhINOQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:16:37 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:54851 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233300AbhINOQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:16:34 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M3lkT-1mQyIK1IeJ-000x5k; Tue, 14 Sep 2021 16:15:15 +0200
+Received: by mail-wr1-f43.google.com with SMTP id i23so20508236wrb.2;
+        Tue, 14 Sep 2021 07:15:15 -0700 (PDT)
+X-Gm-Message-State: AOAM533qTKsGTJ6FKavk2tX23ZQoFgfnTryW+WLEj9e+cVmZCEgwjo9Z
+        oBpeqJG50HlITnS9H4EGto49L6RNj1+jSWQbXd0=
+X-Google-Smtp-Source: ABdhPJyfE0LbNtbA9C1iEKp/h5+2GS0/mfmh9lX9kOSpOJ6ksc8CWeOUCyKxHnCiSVKgJxTP3lLoEFMBpF6CWjOTPgc=
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr19111975wrs.71.1631628914576;
+ Tue, 14 Sep 2021 07:15:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56544211-7407-3de2-e30d-d1dbb7b2aeb2@nxp.com>
+References: <20210913222447.4112-1-pcc@google.com>
+In-Reply-To: <20210913222447.4112-1-pcc@google.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Sep 2021 16:14:58 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3gKeZhvYv9CyVQS4d2=XhOQPQH8Jvjki_FzLZexa4oVA@mail.gmail.com>
+Message-ID: <CAK8P3a3gKeZhvYv9CyVQS4d2=XhOQPQH8Jvjki_FzLZexa4oVA@mail.gmail.com>
+Subject: Re: [PATCH] arch: remove unused function syscall_set_arguments()
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:+aevzmhEXGktP2WN7rlv6/v5Atdf6lSqsBA1lJ4+rZ/jWzz4ia6
+ MZPKqJbLP5HVK/fS5s/PRq5wrB59ArdrD/0vYJ2SYy4rLMpYd5BP5rAGCZ7nyBCZmysTmQk
+ 591o6SU/AUNu+yLo+RLxzuWX6b3xl5SQIRTg6xeIZsPLMghS60/BV/kfdZXkJQ5qI9CLRRO
+ oBntEVOpUcLBoocdpQyUg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Rh+rX4rhOFE=:kaAttO3IU06jG5bP0w2XoA
+ E9+a5viA0Fg+jJxy7XtGKALrT96AJfAHZu/cTsdYOIyC8LcBb+9OASqrnCV36uW/KGRWzrThW
+ 9MnQkFKn7Jp5Jl10mpQg3K3KY+D9F73IOJHyTVmwF+Jw2twAqskViETf7/qb2GKurRCRJBhPC
+ L/TQg8pGp8KtMF6+942ngEx60EdUoKVYy2/DPixP7+NU5rZceYsH2XfBQE2KHiWS75nrRgjph
+ snMAT43v+t56/EQsdIbXkhr0KSMUudeGSiGvOKSf1LifhlXKhr9/6/i4+4V4uhe24QFM3iiX+
+ 8iZFRZRMOH8wv5V9SrnqwVtQvA8eT9XBMnYarrRoaqiRNdNzMhBw2AeVi4C/OBqVfoiiSJza+
+ 8RwoOmaoPHL+AGrlzw8CewVbdkitJdfvMD9/KxWDcoX657JC79Bgav0z3HTgSmAK9HqjZO6EE
+ 9q2J8XXXzkk2nLj6z5G6WwvFm7Wl+FN//ROqwgdKyT2Pr0pjJYkQeghVU9zUAAdSiTIXV8zcT
+ Ioc7p4cGn+y7T/g7PDPTEwdKM7JwOYH+A+Mjgl4ALZ8s5HaXOQ7GYFRAFdCGyE2o8xDFRxDia
+ uEKdpqQtl/hfjDysN60EUrKbodfrYuHv4XMCurxmuz6vPOAFQ7NjJq1qjVIFpULTOKwbquPF3
+ dP6G4WsOYnRVkijREkN1BojgEcGOE+EahmdoVQhrVyMtwn+ZyCnM+kZJ0dE2fzywTZiuyBmnc
+ UVJKFwF5oS107mD+dPX5I847qRtY/Kcq3QTLVxRSwF0YzSfe1pBtVW3heG07j8Aj2e/90nFkx
+ juTGxAAO8VKDvJcX5N1im4rnbLcl+XnBqF2fa+iQIfb/sf9oZy+3060jxsiyrGJqxq616jbzR
+ LPgqRrkDc0XuisNZQ/4w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 04:00:49PM +0300, Laurentiu Tudor wrote:
-> >> I've spent some time looking into this and it  turns out that in the
-> >> ACPI case, device_create_managed_software_node() ends up being called
-> >> twice, first here [1] and after that, in the IORT code here [2]. With
-> >> the proposed patch this causes software_node_notify(KOBJ_ADD) being
-> >> called twice thus triggering the dup sysfs entry warning.
-> >> Any comments / ideas welcomed.
-> >>
-> >> [1] https://elixir.bootlin.com/linux/latest/source/drivers/usb/dwc3/host.c#L111
-> > 
-> > I think the problem here is that the secondary fwnode get's replaced
-> > because the primary fwnode is shared. Can you test it with this, just
-> > to see if the problem goes away:
-> > 
-> > diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
-> > index f29a264635aa1..e4b40f8b8f242 100644
-> > --- a/drivers/usb/dwc3/host.c
-> > +++ b/drivers/usb/dwc3/host.c
-> > @@ -76,7 +76,6 @@ int dwc3_host_init(struct dwc3 *dwc)
-> >         }
-> >  
-> >         xhci->dev.parent        = dwc->dev;
-> > -       ACPI_COMPANION_SET(&xhci->dev, ACPI_COMPANION(dwc->dev));
-> >  
-> >         dwc->xhci = xhci;
-> 
-> 
-> Thanks for looking into this! Yes, this does make the issue go away.
+On Tue, Sep 14, 2021 at 12:24 AM Peter Collingbourne <pcc@google.com> wrote:
+>
+> This function appears to have been unused since it was first introduced in
+> commit 828c365cc8b8 ("tracehook: asm/syscall.h").
+>
+> Signed-off-by: Peter Collingbourne <pcc@google.com>
+> Link: https://linux-review.googlesource.com/id/I8ce04f002903a37c0b6c1d16e9b2a3afa716c097
 
-We need to think about how to solve this one. The problem is that we
-have to share the ACPI node between the parent dwc3 device and child
-xHCI, but at the same xHCI needs to have its own software node.
+Looks good to me, applied to the asm-generic tree.
 
-The fwnode->secondary pointer does not quite bend to this. If the
-primary fwnode is shared, the secondary fwnode has to be shared as
-well.
-
-thanks,
-
--- 
-heikki
+        Arnd
