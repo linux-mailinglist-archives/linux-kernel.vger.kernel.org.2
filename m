@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0366C40BA0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0929540BA13
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 23:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbhINVSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 17:18:14 -0400
-Received: from ms.lwn.net ([45.79.88.28]:41628 "EHLO ms.lwn.net"
+        id S235381AbhINVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 17:19:30 -0400
+Received: from ozlabs.org ([203.11.71.1]:60879 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234971AbhINVR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:17:29 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S234814AbhINVTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:19:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631654264;
+        bh=jpePyfrAiPQP+DJsSP7VrmKk3+QH+uStzETrz20Cs8A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AeZFJAXauEr4wGk1J+iSZXB1uhkoLPpa/K1MDU/GqP02LInU1finbF62c+WqN+c1z
+         wAASoMGScJ7pUZEIfLfJg3b4C6jq7QoqqrXjKL074hjo0BscmaNvlXAfbUnrEPxYbZ
+         WpONbWeZ/ITx0MoFjxTlWrMOB+yrmbCS7xpYV9194a+4umLAVtO5OwwE/8RR6GfS5L
+         L8ySKn2GWAxj2rgS46wJY1Ru0xEj1f3IdBW1XzDb6rWXANO54kAMxZgPlzoFk8VD8x
+         rroHLPKlEYmwrkqWTarW9Ud9smuM4OPtDf4R5yk/X8JEvYZcdHFU9oAaZu52RMg5bp
+         2E2q6KSA0tHIg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BAA202C1;
-        Tue, 14 Sep 2021 21:16:00 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BAA202C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1631654160; bh=a4m+4kMVVStlQpILsxYOg56lxqhaYiXtRb4lYmS46AM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SCcTBBiHBe6ERIUulMDT2Wc1s3L/Wqzxg/2gI6BWAoDm53EHQvFzNPwMQc1HCUkyh
-         ns3+crQXrMvnk7qXUwI5JYEfpX4YCAhSJSUuKHkT4eovQE06b7BIV/oj1XstDYubTj
-         kV5O0c2qlsVcfnRM/Qm980CMQquA+THk0CXlX/OZjKgFSOMLRV09oodYmmwkRWwTrW
-         aKXYIvVcTuLjo/YxKAzinKd8kJQJLFuDjVf2ZoYw794bEH8ln2hqeHuidL2kOXWy6R
-         FP00qWtWJcp67gOnqtWO6utSO5kMZmSfQq6rKX/M7e0RT2Y34m49fLLfRSBCbRH/0/
-         fU6RJUGtE97mg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Akira Yokosawa <akiyks@gmail.com>, Hu Haowen <src.res@email.cn>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-Subject: Re: [PATCH] docs: zh_TW/index: Move arm64/index to arch-specific
- section
-In-Reply-To: <53d86385-b4db-5d02-be6b-795900166f17@gmail.com>
-References: <53d86385-b4db-5d02-be6b-795900166f17@gmail.com>
-Date:   Tue, 14 Sep 2021 15:15:59 -0600
-Message-ID: <875yv2dfjk.fsf@meer.lwn.net>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H8GQb6c7dz9sRN;
+        Wed, 15 Sep 2021 07:17:43 +1000 (AEST)
+Date:   Wed, 15 Sep 2021 07:17:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the amdgpu tree
+Message-ID: <20210915071740.119db858@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/wkY4f=_TYOIUoYL.GWDFqLw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Akira Yokosawa <akiyks@gmail.com> writes:
+--Sig_/wkY4f=_TYOIUoYL.GWDFqLw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> arm64/index is architecture specific.
-> Move it to the section "=E7=89=B9=E5=AE=9A=E9=AB=94=E7=B3=BB=E7=B5=90=E6=
-=A7=8B=E6=96=87=E6=AA=94" or "Architecture-specific
-> documentation".
->
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> Fixes: e5cb9494fe79 ("docs/zh_TW: add translations for zh_TW/arm64")
-> Cc: Hu Haowen <src.res@email.cn>
-> ---
-> Hi,
->
-> zh_CN/index.rst has arm64/index under the section "=E7=89=B9=E5=AE=9A=E4=
-=BD=93=E7=B3=BB=E7=BB=93=E6=9E=84=E6=96=87=E6=A1=A3".
-> zh_TW should be consistent with it.
->
->         Thanks, Akira
-> --
->  Documentation/translations/zh_TW/index.rst | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+Hi all,
 
-Applied, thanks.
+In commit
 
-jon
+  8e4826da95bc ("drm/amd/display: Fix white screen page fault for gpuvm")
+
+Fixes tag
+
+  Fixes: 64b1d0e8d50 ("drm/amd/display: Add DCN3.1 HWSEQ")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wkY4f=_TYOIUoYL.GWDFqLw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFBEXQACgkQAVBC80lX
+0Gxy/gf/SzPqOhIxiBVsQa4L2Lg8R9r+lZ4Cel8UI4Dgs1x9GHonKsE7Xu5LRugM
+wBtDTUVY68erqKTj6jD67lys50yyI0Ai68YQ58GJN15mUI7rY970v2AK+FlI2YAk
+MEfomfjwkcQDZlQ5/hmLDR1jH4V9EtNiKt1VRRfcodKdj4c2PhmTFbhtgBrR9XSo
+KBRfqEdum3yaeljpDUFU9/gYr6FB1XX6IEyZ1IddzttDCyT3KkKB9hPcf5YmaC4F
+u7NUSfyB0pq/OHkvSPm5TRQNMNHcfh3gl4mzIG/oMngeBkINTuOUOZ7z/fsExDL+
+0FK1wbScIanVCkRcquph2ByNN8GLTQ==
+=joE7
+-----END PGP SIGNATURE-----
+
+--Sig_/wkY4f=_TYOIUoYL.GWDFqLw--
