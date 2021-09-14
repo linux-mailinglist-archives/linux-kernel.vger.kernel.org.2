@@ -2,69 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC82340A6A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4016A40A6A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 08:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240092AbhINGWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 02:22:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10055 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239868AbhINGWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:22:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10106"; a="218716953"
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="218716953"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 23:21:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
-   d="scan'208";a="543798269"
-Received: from louislifei-optiplex-7050.sh.intel.com (HELO louislifei-OptiPlex-7050) ([10.239.154.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Sep 2021 23:21:32 -0700
-Date:   Tue, 14 Sep 2021 14:21:59 +0800
-From:   Li Fei1 <fei1.li@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, yu1.wang@intel.com,
-        shuox.liu@gmail.com, fei1.li@intel.com
-Subject: Re: [RFC PATCH v3 0/2] Introduce some interfaces for ACRN hypervisor
- HSM driver
-Message-ID: <20210914062159.GA16309@louislifei-OptiPlex-7050>
-References: <20210914060141.16187-1-fei1.li@intel.com>
- <YUA8Bb7OGg59eEzE@kroah.com>
- <20210914061419.GA16275@louislifei-OptiPlex-7050>
- <YUA+6XutXRtOjm4u@kroah.com>
+        id S240154AbhINGXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 02:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239908AbhINGXq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 02:23:46 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3991AC061762;
+        Mon, 13 Sep 2021 23:22:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1631600545;
+        bh=HJQTu66x3zmVdC/LjA4YQ3aUCZkRIjGXh97d4BVWhVI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r6MOddvS19+midSVt9Oralw4oock8sHMxeJLeBlhhacxTrpSX5Exg/LP1+7+XLACx
+         0B1ohfEd2jCa+s/KbfqHuRmA56BWOfyXSnBiY1hTK+Jyi2EnosanhrmkgRF3wgE4Ga
+         yD/vq0CBbg7/8+9im5Tq6V4B2m+ezVb092GRQSj6X4FbIEuvL2TnPYBPGeEvKC2gkc
+         SvxUa40kyTakmkb2+A18sO9pcuXWgc+Rfs2J/hM/XQ42baGXcXKpd9ad0N2kjEAWIN
+         3snz/leYj1chwtkR3MHhZaLlug9ll0H9LVZ+2svj5s2ONt5og0pT/k/Fae2ssBwhEE
+         IdcVye6cN9B/A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H7tYY2fprz9sW4;
+        Tue, 14 Sep 2021 16:22:25 +1000 (AEST)
+Date:   Tue, 14 Sep 2021 16:22:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-next <linux-next@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        sachinp <sachinp@linux.vnet.ibm.com>, ndesaulniers@google.com,
+        ojeda@kernel.org
+Subject: Re: [5.15-rc1][PPC][bisected 6d2ef226] mainline build breaks at
+ ./include/linux/compiler_attributes.h:62:5: warning: "__has_attribute"
+Message-ID: <20210914162223.363dd7c2@canb.auug.org.au>
+In-Reply-To: <50a91600-173f-ae8f-e194-4649a9f8176b@linux.vnet.ibm.com>
+References: <50a91600-173f-ae8f-e194-4649a9f8176b@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUA+6XutXRtOjm4u@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/njCH=GR_BjQ3APSXs8M14yw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:19:21AM +0200, Greg KH wrote:
-> On Tue, Sep 14, 2021 at 02:14:19PM +0800, Li Fei1 wrote:
-> > On Tue, Sep 14, 2021 at 08:07:01AM +0200, Greg KH wrote:
-> > > On Tue, Sep 14, 2021 at 02:01:39PM +0800, Fei Li wrote:
-> > > > Add some new interfaces for ACRN hypervisor HSM driver:
-> > > >   - MMIO device passthrough
-> > > >   - virtual device creating/destroying
-> > > >   - platform information fetching from the hypervisor
-> > > 
-> > > "RFC" means that you do not feel good about having these merged.  What
-> > > needs to be finished before you send a "real" set of patches that you
-> > > want to have reviewed properly?
-> > 
-> > Hi Greg
-> > 
-> > Sorry, please ignore the "RFC".
-> > I feel good about these patches. Would you help to review these patches ?
-> 
-> They are gone from my queue, please resend without the "RFC".
-OK. 
-thanks.
+--Sig_/njCH=GR_BjQ3APSXs8M14yw
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> thanks,
-> 
-> greg k-h
+Hi Abdul,
+
+On Tue, 14 Sep 2021 11:39:44 +0530 Abdul Haleem <abdhalee@linux.vnet.ibm.co=
+m> wrote:
+>
+> Today's mainline kernel fails to compile on my powerpc box with below err=
+ors
+>=20
+> ././include/linux/compiler_attributes.h:62:5: warning: "__has_attribute" =
+is not defined, evaluates to 0 [-Wundef]
+>  =C2=A0#if __has_attribute(__assume_aligned__)
+>  =C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~~
+> ././include/linux/compiler_attributes.h:62:20: error: missing binary oper=
+ator before token "("
+>  =C2=A0#if __has_attribute(__assume_aligned__)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
+> ././include/linux/compiler_attributes.h:88:5: warning: "__has_attribute" =
+is not defined, evaluates to 0 [-Wundef]
+>  =C2=A0#if __has_attribute(__copy__)
+>  =C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~~
+> ././include/linux/compiler_attributes.h:88:20: error: missing binary oper=
+ator before token "("
+>  =C2=A0#if __has_attribute(__copy__)
+>=20
+> Kernel builds fine when below patch is reverted
+>=20
+> commit 6d2ef22 : compiler_attributes.h: drop __has_attribute() support fo=
+r gcc4
+
+Thanks for your report.
+
+This is known and being addressed.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/njCH=GR_BjQ3APSXs8M14yw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFAP58ACgkQAVBC80lX
+0GyZ2wgAgkrc4BAXW9NL7ylTlrxNLIb6E4DF0hD9xQOuwWXfeIFQozZyrMtcDH/Z
+ZZXuJbJ2omSOyzAiFoQuo1aHAlAvPtbvoQCx7uqCHJHpuUhOn8N09XV1/uvRDvgF
+LAmdhMd7TUxIgRC8WBvKapmMGvLbtYRaqCnCrYb986V/nUcTEB3arai2fRPZF33h
+nBNvXewGtj6BasWIEQ3QTpxKdB6VLnPsDxjjRMJDdiYdZw3lCwwYfCBNrD0C78t5
+zOVIgGU7stX2NXWiptCsGs8TFeHoPanKlTbmWg8HNNB4JM2KfRa4Wf5XxQAxDIg5
+TwhN94ul8Q2jpPsfhK9sdcbSE+XZsA==
+=4u4P
+-----END PGP SIGNATURE-----
+
+--Sig_/njCH=GR_BjQ3APSXs8M14yw--
