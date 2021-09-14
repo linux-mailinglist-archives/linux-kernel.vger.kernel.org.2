@@ -2,223 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC36240B8BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC82A40B8BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhINULA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:11:00 -0400
-Received: from mail.lvk.cs.msu.ru ([188.44.42.233]:40432 "EHLO
-        mail.lvk.cs.msu.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbhINUK6 (ORCPT
+        id S233426AbhINUM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233142AbhINUMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:10:58 -0400
-Received: from mail.lvk.cs.msu.ru (localhost.localdomain [127.0.0.1])
-        by mail.lvk.cs.msu.ru (Postfix) with ESMTP id A4FF310DBA9;
-        Tue, 14 Sep 2021 23:09:37 +0300 (MSK)
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on spamd.lvknet
-X-Spam-Level: 
-X-Spam-ASN:  
-X-Spam-Status: No, score=-2.9 required=7.0 tests=ALL_TRUSTED=-1,BAYES_00=-1.9
-        autolearn=ham version=3.3.2
-Received: from blacky.home (nikaet.starlink.ru [94.141.168.29])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        by mail.lvk.cs.msu.ru (Postfix) with ESMTPSA id 6986810DC0D;
-        Tue, 14 Sep 2021 23:09:37 +0300 (MSK)
-Received: from [192.168.112.17] (helo=cobook.home)
-        by blacky.home with smtp (Exim 4.80)
-        (envelope-from <yoush@cs.msu.su>)
-        id 1mQEdM-0001dc-8t; Tue, 14 Sep 2021 23:02:24 +0300
-Received: (nullmailer pid 24823 invoked by uid 1000);
-        Tue, 14 Sep 2021 20:09:36 -0000
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Nechaev <petr.nechaev@cogentembedded.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH v2] usb: gadget: storage: add support for media larger than 2T
-Date:   Tue, 14 Sep 2021 23:09:17 +0300
-Message-Id: <20210914200917.24767-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210914151329.GD155245@rowland.harvard.edu>
-References: <20210914151329.GD155245@rowland.harvard.edu>
+        Tue, 14 Sep 2021 16:12:24 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602EFC061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:11:06 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id c8so1011496lfi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WNWKwD/mZ8dmcHnPyLauepOSjhSOQ4h/50JmWkiv3s0=;
+        b=EcGBNwXJXCtEjbiAqZ5SCobVNFat6cwVYl7UZrpcqRZjt6YQEX6uXqQn+h8Hur7RBP
+         6Lf5fTjpJCmj8IvaaOplqMgXBBuH+tHM8BEY2eJbEt2CZkmxcK439Q5LYO665Vl+hepx
+         U9uY2EfFCOyAcN720RTBPvT3JSy7zWXr5WL7kA4HRZZKTZaGILl/Fuo6ZgtZz8wkakTE
+         bKU8KjiEsTo2dhRmKNviX8IQnNZk8d6Rla/TZwPNDuABbhWsQCKglo8WsadZhoars8AK
+         wy5nMe2NRGbjEAOl5/WMffpVQdI12t6deZP3nc/5+R5qrjM6c9cJZ73AeuPhuI6PD293
+         OWAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WNWKwD/mZ8dmcHnPyLauepOSjhSOQ4h/50JmWkiv3s0=;
+        b=FSCacj1H5UEQXOv+Wy2iTVaI4bjZDzIdx1zrCnBS0C+Z/LiMB+bc3MJGKf5OBy67c3
+         ZXs0e7DiMlI2gEPN0jycocH32SICEG66aKp7pkKqTX1rpVglODswJm+/2vv9N0An3Tl3
+         07AVX+EtezyF5MafeYseTGksLowom/FOe9weulaTgleVvJQxqT2AzjIPYUD5aHp3rC+8
+         49tz86gKyMtgO0xmPMvmtEQMYbyyErh8HpOSAfM0+y34F/idaYJp8FGaJMnklg9VJQtg
+         fwSi8kMFxYJ/pJZy4/oyZjqrZ4a/MMJnXK+4JfKL1+hQA7swDrrwF8EGapwy8EzRo9kv
+         1iHw==
+X-Gm-Message-State: AOAM530e9cUdW5Tj3Cl/GxGQB6jXRF6In0wnix4CL7bSJNK2c/bNAxLO
+        ahdxRhe1FEGL7DhHeUsiXbpMKDOwpEsNZeG5nGRKlA==
+X-Google-Smtp-Source: ABdhPJwJhIZ7snNccUlf5HKWs3aKulgAz8Bz80UW1co9+ZsFlqTZY3qTz0PjV970lQ+di9xtI/9sOs58qbg+Py7MwnA=
+X-Received: by 2002:a05:6512:31d3:: with SMTP id j19mr1698923lfe.368.1631650264534;
+ Tue, 14 Sep 2021 13:11:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AV-Checked: ClamAV using ClamSMTP
+References: <50b83893065acaef2a9bc3f91c03812dc872f316.1631504710.git.brookxu@tencent.com>
+ <CAHVum0dmTULvzD6dhr4Jzow-M1ATi-ubDkO5wQR=RQmWtt_78w@mail.gmail.com> <b62597e9-72c4-563e-fdc7-3315569502f0@gmail.com>
+In-Reply-To: <b62597e9-72c4-563e-fdc7-3315569502f0@gmail.com>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Tue, 14 Sep 2021 13:10:28 -0700
+Message-ID: <CAHVum0dd5dw1rkcf0U7OjW2GX4VTZi4RCcbTph99qDftd=2taA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] misc_cgroup: introduce misc.events and misc_events.local
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, mkoutny@suse.com, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
-commands, and fixes READ_CAPACITY command to return 0xffffffff if
-media size does not fit in 32 bits.
+On Mon, Sep 13, 2021 at 7:24 PM brookxu <brookxu.cn@gmail.com> wrote:
+>
+> Thanks for your time.
+>
+> Vipin Sharma wrote on 2021/9/14 12:51 =E4=B8=8A=E5=8D=88:
+> > On Sun, Sep 12, 2021 at 10:01 PM brookxu <brookxu.cn@gmail.com> wrote:
+> >>
+> >> From: Chunguang Xu <brookxu@tencent.com>
+> >>
+> >> Introduce misc.events and misc.events.local to make it easier for
+> >
+> > I thought Tejun only gave go ahead for misc.events and not for
+> > misc.events.local.
+> >
+>
+> Maybe I missed something. I think events.local is somewhat useful. For
+> example, the events of node A is large. If we need to determine whether
+> it is caused by the max of node A, if there is no events.local, then we
+> need to traverse the events of the child nodes and compare them with
+> node A. This is a bit complicated. If there is events.local, we can do
+> it very easily. Should we keep the events.local interface=EF=BC=9F
 
-This makes f_mass_storage to export a 16T disk array correctly.
+Tejun mentioned in his previous email that he prefers the hierarchical
+one. https://lore.kernel.org/lkml/YTuX6Cpv1kg+DHmJ@slm.duckdns.org/
 
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/usb/gadget/function/f_mass_storage.c | 87 ++++++++++++++++++--
- 1 file changed, 80 insertions(+), 7 deletions(-)
+I agree with you that it's easier to identify the constraint cgroup
+with the local file. However, there is one downside also, which is if
+a cgroup gets deleted then that local information is lost, we will
+need a hierarchical reporting to observe the resource constraint. I
+will be fine with both files but if I have to choose one I am now more
+inclined towards hierarchical (events).
 
-diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
-index 7c96c4665178..96de401f1282 100644
---- a/drivers/usb/gadget/function/f_mass_storage.c
-+++ b/drivers/usb/gadget/function/f_mass_storage.c
-@@ -619,7 +619,7 @@ static int sleep_thread(struct fsg_common *common, bool can_freeze,
- static int do_read(struct fsg_common *common)
- {
- 	struct fsg_lun		*curlun = common->curlun;
--	u32			lba;
-+	u64			lba;
- 	struct fsg_buffhd	*bh;
- 	int			rc;
- 	u32			amount_left;
-@@ -634,7 +634,10 @@ static int do_read(struct fsg_common *common)
- 	if (common->cmnd[0] == READ_6)
- 		lba = get_unaligned_be24(&common->cmnd[1]);
- 	else {
--		lba = get_unaligned_be32(&common->cmnd[2]);
-+		if (common->cmnd[0] == READ_16)
-+			lba = get_unaligned_be64(&common->cmnd[2]);
-+		else		/* READ_10 or READ_12 */
-+			lba = get_unaligned_be32(&common->cmnd[2]);
- 
- 		/*
- 		 * We allow DPO (Disable Page Out = don't save data in the
-@@ -747,7 +750,7 @@ static int do_read(struct fsg_common *common)
- static int do_write(struct fsg_common *common)
- {
- 	struct fsg_lun		*curlun = common->curlun;
--	u32			lba;
-+	u64			lba;
- 	struct fsg_buffhd	*bh;
- 	int			get_some_more;
- 	u32			amount_left_to_req, amount_left_to_write;
-@@ -771,7 +774,10 @@ static int do_write(struct fsg_common *common)
- 	if (common->cmnd[0] == WRITE_6)
- 		lba = get_unaligned_be24(&common->cmnd[1]);
- 	else {
--		lba = get_unaligned_be32(&common->cmnd[2]);
-+		if (common->cmnd[0] == WRITE_16)
-+			lba = get_unaligned_be64(&common->cmnd[2]);
-+		else		/* WRITE_10 or WRITE_12 */
-+			lba = get_unaligned_be32(&common->cmnd[2]);
- 
- 		/*
- 		 * We allow DPO (Disable Page Out = don't save data in the
-@@ -1146,6 +1152,7 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
- 	u32		lba = get_unaligned_be32(&common->cmnd[2]);
- 	int		pmi = common->cmnd[8];
- 	u8		*buf = (u8 *)bh->buf;
-+	u32		max_lba;
- 
- 	/* Check the PMI and LBA fields */
- 	if (pmi > 1 || (pmi == 0 && lba != 0)) {
-@@ -1153,12 +1160,37 @@ static int do_read_capacity(struct fsg_common *common, struct fsg_buffhd *bh)
- 		return -EINVAL;
- 	}
- 
--	put_unaligned_be32(curlun->num_sectors - 1, &buf[0]);
--						/* Max logical block */
--	put_unaligned_be32(curlun->blksize, &buf[4]);/* Block length */
-+	if (curlun->num_sectors < 0x100000000ULL)
-+		max_lba = curlun->num_sectors - 1;
-+	else
-+		max_lba = 0xffffffff;
-+	put_unaligned_be32(max_lba, &buf[0]);		/* Max logical block */
-+	put_unaligned_be32(curlun->blksize, &buf[4]);	/* Block length */
- 	return 8;
- }
- 
-+static int do_read_capacity_16(struct fsg_common *common, struct fsg_buffhd *bh)
-+{
-+	struct fsg_lun  *curlun = common->curlun;
-+	u64		lba = get_unaligned_be64(&common->cmnd[2]);
-+	int		pmi = common->cmnd[14];
-+	u8		*buf = (u8 *)bh->buf;
-+
-+	/* Check the PMI and LBA fields */
-+	if (pmi > 1 || (pmi == 0 && lba != 0)) {
-+		curlun->sense_data = SS_INVALID_FIELD_IN_CDB;
-+		return -EINVAL;
-+	}
-+
-+	put_unaligned_be64(curlun->num_sectors - 1, &buf[0]);
-+							/* Max logical block */
-+	put_unaligned_be32(curlun->blksize, &buf[8]);	/* Block length */
-+
-+	/* It is safe to keep other fields zeroed */
-+	memset(&buf[12], 0, 32 - 12);
-+	return 32;
-+}
-+
- static int do_read_header(struct fsg_common *common, struct fsg_buffhd *bh)
- {
- 	struct fsg_lun	*curlun = common->curlun;
-@@ -1905,6 +1937,17 @@ static int do_scsi_command(struct fsg_common *common)
- 			reply = do_read(common);
- 		break;
- 
-+	case READ_16:
-+		common->data_size_from_cmnd =
-+				get_unaligned_be32(&common->cmnd[10]);
-+		reply = check_command_size_in_blocks(common, 16,
-+				      DATA_DIR_TO_HOST,
-+				      (1<<1) | (0xff<<2) | (0xf<<10), 1,
-+				      "READ(16)");
-+		if (reply == 0)
-+			reply = do_read(common);
-+		break;
-+
- 	case READ_CAPACITY:
- 		common->data_size_from_cmnd = 8;
- 		reply = check_command(common, 10, DATA_DIR_TO_HOST,
-@@ -1957,6 +2000,25 @@ static int do_scsi_command(struct fsg_common *common)
- 			reply = do_request_sense(common, bh);
- 		break;
- 
-+	case SERVICE_ACTION_IN_16:
-+		switch (common->cmnd[1] & 0x1f) {
-+
-+		case SAI_READ_CAPACITY_16:
-+			common->data_size_from_cmnd =
-+				get_unaligned_be32(&common->cmnd[10]);
-+			reply = check_command(common, 16, DATA_DIR_TO_HOST,
-+					      (1<<1) | (0xff<<2) | (0xf<<10) |
-+					      (1<<14), 1,
-+					      "READ CAPACITY(16)");
-+			if (reply == 0)
-+				reply = do_read_capacity_16(common, bh);
-+			break;
-+
-+		default:
-+			goto unknown_cmnd;
-+		}
-+		break;
-+
- 	case START_STOP:
- 		common->data_size_from_cmnd = 0;
- 		reply = check_command(common, 6, DATA_DIR_NONE,
-@@ -2028,6 +2090,17 @@ static int do_scsi_command(struct fsg_common *common)
- 			reply = do_write(common);
- 		break;
- 
-+	case WRITE_16:
-+		common->data_size_from_cmnd =
-+				get_unaligned_be32(&common->cmnd[10]);
-+		reply = check_command_size_in_blocks(common, 16,
-+				      DATA_DIR_FROM_HOST,
-+				      (1<<1) | (0xff<<2) | (0xf<<10), 1,
-+				      "WRITE(16)");
-+		if (reply == 0)
-+			reply = do_write(common);
-+		break;
-+
- 	/*
- 	 * Some mandatory commands that we recognize but don't implement.
- 	 * They don't mean much in this setting.  It's left as an exercise
--- 
-2.20.1
-
+Thanks
+Vipin
