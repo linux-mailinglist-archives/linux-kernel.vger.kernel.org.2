@@ -2,110 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11E840B72D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0BA40B731
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 20:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhINSvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 14:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbhINSu6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:50:58 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A63C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:49:40 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id f21so6633630plb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 11:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=561Sii/7Vnw9t2pBiBSueXkca1YF3r2gcFv6BNuZUlY=;
-        b=CU3iuOhK9BrlY2sp64svAK319eSzl4i7OV0UM4XGwQGUtlXxAIdOw5MGZFb98qVQaC
-         AgdKZO90Ph5BYBKt1POqky7wb5lJQg81Xb5aLjJ94nUeUy7YHNv29m/U1VbpdUsPf0vi
-         4gtWz36S7QywD3t/xQW3YcrmLGz/LQp0QU9HLAl1fDE24BlR9L0ZQlBR6ks5tT60X08M
-         NOQ6Q4vl8QobyEmb3AWoC9EtdZJlAAbfkcDSEGtR8kmsrm4nvjQaDR3t8Xjqs36djp4/
-         nvBWFLZtNfEwHA58bTnFGm0W0etD9FZViZvn3nSyIk0W0ZilkekwtD4GfRVxq681wuw4
-         cGDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=561Sii/7Vnw9t2pBiBSueXkca1YF3r2gcFv6BNuZUlY=;
-        b=Md7HXnUJimRkKCCn2xNcLckUcrf6aPmnuracDMDkxi2eOJ/CTDu/K2YcAvZlnsE8nY
-         aWe4KHGK+PrfXXWnRHAUiSMEWlbfKnwteA6xL+Yk6YMVb02FYeYoAotw9dYFqzUsYObW
-         4tNXpoo9xy59kCEHtIEzVafQpOU4TWZq2iFDcCAETtww78/kD2wGySPDDtnuwEZT+2vF
-         YvKFxgOU4sO/AVYkxrepFbQ8aSFYzwLDDKA/4/9g3yCWLIkpGMLo7j2Ha2SaTtvYBRrE
-         dq65qxqumgBQEWsCIbnzmHMUqxgNM1RbtS0HAuvrKVVXGj6KjAtXv4s6WNYqnYmP/HGg
-         deww==
-X-Gm-Message-State: AOAM530y5XfZOGOcn4clfc5kxRozu6WSICTMjY51rHiZW2rQfSt9n41G
-        RzF2DYJXt8pCh5p0imNjtVv4/w==
-X-Google-Smtp-Source: ABdhPJwxBVPIh/RHGq0S4bd1U+knOnT9PmKUjE9pFWhpavi7yhGEVSRkAvzte5tgrQfJI3J3wTLpnQ==
-X-Received: by 2002:a17:90a:2:: with SMTP id 2mr3711554pja.77.1631645379434;
-        Tue, 14 Sep 2021 11:49:39 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id u15sm11739188pfl.14.2021.09.14.11.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 11:49:38 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 18:49:35 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Nathan Tempelman <natet@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
+        id S232012AbhINSvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 14:51:46 -0400
+Received: from mga04.intel.com ([192.55.52.120]:13235 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229869AbhINSvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 14:51:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="220225411"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="220225411"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:50:26 -0700
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="544237888"
+Received: from lveltman-mobl.ger.corp.intel.com (HELO localhost) ([10.251.216.6])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 11:50:19 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Douglas Anderson <dianders@chromium.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Linus W <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for
- SEV-ES
-Message-ID: <YUDuv1aTauPz9aqo@google.com>
-References: <20210914171551.3223715-1-pgonda@google.com>
- <YUDcvRB3/QOXSi8H@google.com>
- <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
- <YUDsy4W0/FeIEJDr@google.com>
- <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
+Subject: Re: [PATCH v4 02/15] drm/edid: Break out reading block 0 of the EDID
+In-Reply-To: <20210909135838.v4.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210909210032.465570-1-dianders@chromium.org> <20210909135838.v4.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
+Date:   Tue, 14 Sep 2021 21:50:15 +0300
+Message-ID: <878rzz0z6g.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021, Peter Gonda wrote:
-> On Tue, Sep 14, 2021 at 12:41 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > -stable, for giggles
-> >
-> > On Tue, Sep 14, 2021, Peter Gonda wrote:
-> > > On Tue, Sep 14, 2021 at 11:32 AM Sean Christopherson <seanjc@google.com> wrote:
-> > > >
-> > > > On Tue, Sep 14, 2021, Peter Gonda wrote:
-> > > > > Copying an ASID into new vCPUs will not work for SEV-ES since the vCPUs
-> > > > > VMSAs need to be setup and measured before SEV_LAUNCH_FINISH. Return an
-> > > > > error if a users tries to KVM_CAP_VM_COPY_ENC_CONTEXT_FROM from an
-> > > > > SEV-ES guest.
-> > > >
-> > > > What happens if userspace does KVM_CAP_VM_COPY_ENC_CONTEXT_FROM before the source
-> > > > has created vCPUs, i.e. before it has done SEV_LAUNCH_FINISH?
-> > >
-> > > That's not enough. If you wanted to be able to mirror SEV-ES you'd
-> > > also need to call LAUNCH_UPDATE_VMSA on the mirror's vCPUs before
-> > > SEV_LAUNCH_FINISH. That is do-able but I was writing a small change to
-> > > fix this bug. If mirroring of SEV-ES is wanted it's a much bigger
-> > > change.
-> >
-> > Is it doable without KVM updates?  If so, then outright rejection may not be the
-> > correct behavior.
-> 
-> I do not think so. You cannot call KVM_SEV_LAUNCH_UPDATE_VMSA on the mirror
-> because svm_mem_enc_op() blocks calls from the mirror. So either you have to
-> update vmsa from the mirror or have the original VM read through its mirror's
-> vCPUs when calling KVM_SEV_LAUNCH_UPDATE_VMSA. Not sure which way is better
-> but I don't see a way to do this without updating KVM.
+On Thu, 09 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
+> A future change wants to be able to read just block 0 of the EDID, so
+> break it out of drm_do_get_edid() into a sub-function.
+>
+> This is intended to be a no-op change--just code movement.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-Ah, right, I forgot all of the SEV ioctls are blocked on the mirror.  Put something
-to that effect into the changelog to squash any argument about whether or not this
-is the correct KVM behavior.
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-Thanks!
+> ---
+>
+> Changes in v4:
+> - "u8 *edid" => "void *edid" to avoid cast.
+> - Don't put kmalloc() in the "if" test even if the old code did.
+> - drm_do_get_edid_blk0() => drm_do_get_edid_base_block()
+>
+>  drivers/gpu/drm/drm_edid.c | 63 +++++++++++++++++++++++++++-----------
+>  1 file changed, 45 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 6325877c5fd6..520fe1391769 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -1905,6 +1905,44 @@ int drm_add_override_edid_modes(struct drm_connector *connector)
+>  }
+>  EXPORT_SYMBOL(drm_add_override_edid_modes);
+>  
+> +static struct edid *drm_do_get_edid_base_block(
+> +	int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
+> +			      size_t len),
+> +	void *data, bool *edid_corrupt, int *null_edid_counter)
+> +{
+> +	int i;
+> +	void *edid;
+> +
+> +	edid = kmalloc(EDID_LENGTH, GFP_KERNEL);
+> +	if (edid == NULL)
+> +		return NULL;
+> +
+> +	/* base block fetch */
+> +	for (i = 0; i < 4; i++) {
+> +		if (get_edid_block(data, edid, 0, EDID_LENGTH))
+> +			goto out;
+> +		if (drm_edid_block_valid(edid, 0, false, edid_corrupt))
+> +			break;
+> +		if (i == 0 && drm_edid_is_zero(edid, EDID_LENGTH)) {
+> +			if (null_edid_counter)
+> +				(*null_edid_counter)++;
+> +			goto carp;
+> +		}
+> +	}
+> +	if (i == 4)
+> +		goto carp;
+> +
+> +	return edid;
+> +
+> +carp:
+> +	kfree(edid);
+> +	return ERR_PTR(-EINVAL);
+> +
+> +out:
+> +	kfree(edid);
+> +	return NULL;
+> +}
+> +
+>  /**
+>   * drm_do_get_edid - get EDID data using a custom EDID block read function
+>   * @connector: connector we're probing
+> @@ -1938,25 +1976,16 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
+>  	if (override)
+>  		return override;
+>  
+> -	if ((edid = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
+> +	edid = (u8 *)drm_do_get_edid_base_block(get_edid_block, data,
+> +						&connector->edid_corrupt,
+> +						&connector->null_edid_counter);
+> +	if (IS_ERR_OR_NULL(edid)) {
+> +		if (IS_ERR(edid))
+> +			connector_bad_edid(connector, edid, 1);
+>  		return NULL;
+> -
+> -	/* base block fetch */
+> -	for (i = 0; i < 4; i++) {
+> -		if (get_edid_block(data, edid, 0, EDID_LENGTH))
+> -			goto out;
+> -		if (drm_edid_block_valid(edid, 0, false,
+> -					 &connector->edid_corrupt))
+> -			break;
+> -		if (i == 0 && drm_edid_is_zero(edid, EDID_LENGTH)) {
+> -			connector->null_edid_counter++;
+> -			goto carp;
+> -		}
+>  	}
+> -	if (i == 4)
+> -		goto carp;
+>  
+> -	/* if there's no extensions, we're done */
+> +	/* if there's no extensions or no connector, we're done */
+>  	valid_extensions = edid[0x7e];
+>  	if (valid_extensions == 0)
+>  		return (struct edid *)edid;
+> @@ -2010,8 +2039,6 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
+>  
+>  	return (struct edid *)edid;
+>  
+> -carp:
+> -	connector_bad_edid(connector, edid, 1);
+>  out:
+>  	kfree(edid);
+>  	return NULL;
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
