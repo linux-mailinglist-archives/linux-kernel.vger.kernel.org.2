@@ -2,602 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D1B40AFCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D439540AFDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 15:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbhINN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 09:56:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233580AbhINN4m (ORCPT
+        id S233569AbhINN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 09:57:18 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:28176 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233494AbhINN5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 09:56:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631627724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HT359lxmrx137OrAQsAwFHZoPJCEJhAEpeTH6iGr3uo=;
-        b=F3NQoJCHv3y70a23FZ0UAK8HfpMoQANHDQUZZbgo5syWzUkTSicX8h1ptDap+Q0HATnj9s
-        DxM2KXk6+MTOUhWtwm1e/TjdV57d0iofaT7o9RBdXH7oLHIxgXsoV0yHJ65wLziKEJcO9R
-        S410NGC9K6PxY5q6KxzBjedV+B+DYtQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-nRDW0VtnNR6gBVHddm_LAw-1; Tue, 14 Sep 2021 09:55:23 -0400
-X-MC-Unique: nRDW0VtnNR6gBVHddm_LAw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E865824FA8;
-        Tue, 14 Sep 2021 13:55:21 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 16AC119736;
-        Tue, 14 Sep 2021 13:55:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 3/8] nfs: Move to using the alternate (deprecated) fscache I/O
- API
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        linux-nfs@vger.kernel.org, linux-cachefs@redhat.com,
-        dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 14 Sep 2021 14:55:14 +0100
-Message-ID: <163162771421.438332.11563297618174948818.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163162767601.438332.9017034724960075707.stgit@warthog.procyon.org.uk>
-References: <163162767601.438332.9017034724960075707.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 14 Sep 2021 09:57:09 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18ECncLq024441;
+        Tue, 14 Sep 2021 13:55:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=avW8nYTOoAFrLowm/LTwAErtsi6lJ/ZtLxlWps7tg7k=;
+ b=EkJ9F4Z4wP+nN8jA6wDB/2MPwR/jcbTgl0IIVfvXqH2V3vigUMK5QH8hgnSlvmbASl59
+ 0Xo4OdFje/CY2V5YN/YLJQk2uINCZ/kGXSC7bubuYqYTCa+f4NUMl6VFEbvEMS3MtG9d
+ 6FQ3HonxqjJAyYBljQyg+pjYb/m3ePwiWU+bT2RPq6B0oNFkVyU7ybSVk7k1SGJSa63n
+ oxHP8oV5+9BWDrRDr66v4HSljcQCAntd3UD/u9ClvMqKFVA5jKFvBTBJ0bxjW+4DF2hx
+ G2Sj1m1VVvDRn+lNgkQ7NcQAfC2Q+ct3/t6ajh3Nsx+VBrWG7fbPcKz8uuEmhajDnF9z hA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=avW8nYTOoAFrLowm/LTwAErtsi6lJ/ZtLxlWps7tg7k=;
+ b=Xti44XwBJha9vTcBZX50H0Z0FCoDVF5ncuwH4Twrwwcx6SakRb2v5z/ii7Bj66e6/3H1
+ suSlGCny2XBf14YHqpqZhESk97T45kGOWO2PIc0vaHEiN/npDKvAtYOMKIAzo/UGlEPK
+ G5ycmh0jbM7mz+h6J9r0shRK6uz72XnFk2FOzrC9Y2LhyDk3pC9RkGObo5jzYlLSRP75
+ axjCXe93m9y235bqKa6KqjDP9k079cesrkFee48HQqBrr0vaotccq/OGJ0EAzHzLfjVb
+ hLnqJVcUXfRfKLoxy0mmojYV90FRTiqS/hQevtLXF6Dkwi1YQlReFElwG2a+h27kc9k4 ew== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b2pyg9bpm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 13:55:35 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18EDtVgV057380;
+        Tue, 14 Sep 2021 13:55:34 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2176.outbound.protection.outlook.com [104.47.58.176])
+        by userp3020.oracle.com with ESMTP id 3b167s4s71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 13:55:33 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=inGQbYfaBVp2uNy2HjlQMfpt0AryzLn4mvFHIqeuV0EZppFX6T+j8Sk2j0g80MBjE99KjlhGQPl0TXVVNHNe860ZTsWjlob/QErkOO/FhDO7iMvaNbEGhR1G3b31/KnDbGXmROPJXUJ4Cdl0iWk5RLMCAo74yCTRkNaksmtwrQV7/yUjjB5tPAj52iSXj+lWNoX7ZFALenbz8AIRf8pCdDgY3y0rBvTOsXMKRbw0Y+Jklw1OD2ndX51bASmJCfIqLoaWPGMQTSR6zWSKzUXbp3xtfkq/++09Hl8LT1sc2LRDYlHcKqPREdhaHGdVWD0nXBbr8m9JojktYkqXaJCWTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=avW8nYTOoAFrLowm/LTwAErtsi6lJ/ZtLxlWps7tg7k=;
+ b=AEEP83zoQugxutOPwPY0kXVWXJnThBXZLSlrv2lpXIWBhnD5zauFeLToGus4EHZoWSKZ48KfMswXf4zwin/l9tKGO2VbSKpkyGPnri5BHfDumDlsbFnSQzZuIGKchHeEsGS5TJdq/rBEjlIc6BVsq9wIQcBpEfTB2xeRutxEi8BsBKOwLoJTNBk7na16/eoHQ1DhGwbUnrGoNzLZHrMiIttxK2pEina1yJhuMsWKOXvLhb2aPbETUDHeHiSPNRzvBuLoMrpUtJH8kp6ztD/iIAFzYvZ3Jk2jbBwpj7Zz5VmQLNuVVAcD5a/dEfY4ETpsIimplI7Ofsy5TuFAYQupeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=avW8nYTOoAFrLowm/LTwAErtsi6lJ/ZtLxlWps7tg7k=;
+ b=CbcxlJUlFvsXxA7fCdd1mQrj6o+JAYPDkHglElA7z1DEFGrVZFrtes3ZWYp1aH2J7AO0ZcG90T7Zl1BWoGe47jAK1kSCcJ0asOJlHmiyfYSDU3qHRi7ZPh/BwKQkt8igKmAkjDELNlo5Wpe3VPda0aKbsWRYOWecgQkuZn/i6+8=
+Received: from BYAPR10MB2934.namprd10.prod.outlook.com (2603:10b6:a03:85::22)
+ by SJ0PR10MB5518.namprd10.prod.outlook.com (2603:10b6:a03:3f7::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 14 Sep
+ 2021 13:55:23 +0000
+Received: from BYAPR10MB2934.namprd10.prod.outlook.com
+ ([fe80::d477:c047:7008:7696]) by BYAPR10MB2934.namprd10.prod.outlook.com
+ ([fe80::d477:c047:7008:7696%7]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 13:55:23 +0000
+From:   Himanshu Madhani <himanshu.madhani@oracle.com>
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Wen Xiong <wenxiong@us.ibm.com>,
+        James Smart <jsmart2021@gmail.com>
+Subject: Re: [PATCH v7 3/3] nvme-fc: Remove freeze/unfreeze around
+ update_nr_hw_queues
+Thread-Topic: [PATCH v7 3/3] nvme-fc: Remove freeze/unfreeze around
+ update_nr_hw_queues
+Thread-Index: AQHXqUm6rrULTUaw/k+KK4RXW1oSXqujjb4A
+Date:   Tue, 14 Sep 2021 13:55:23 +0000
+Message-ID: <4B62612F-EAA9-4E2B-9CCC-6C5C60C73EEC@oracle.com>
+References: <20210914092008.40370-1-dwagner@suse.de>
+ <20210914092008.40370-4-dwagner@suse.de>
+In-Reply-To: <20210914092008.40370-4-dwagner@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.7)
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=oracle.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9eff3b43-fd99-484f-d588-08d977874c64
+x-ms-traffictypediagnostic: SJ0PR10MB5518:
+x-microsoft-antispam-prvs: <SJ0PR10MB5518F5A80D9FDF8189EC412AE6DA9@SJ0PR10MB5518.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WBo8eYYT8h5wsng2aInFrzeM8GAyklXtdl10soIQTK8o4fL+1jY6k2qBpgHcWLVYgFjTbDfjpWHofu3Ogs5JQuAt9jNgoyjU+anFxGPBCc7He/+wra4iFrG3aLXgfixHPYotV0IrngDpb4NYXmc1HoGPSQcsVkcojIZ5yRjS86dRLhP5Q4XsWkA51X5X7q9RM84s+Fzc3qragIVw/OuifgP9ZblLquR+/3mELrpskUW3c+qi4MDbpZNhUfioEnP4lfbcGhTeSWithFm+WkmDdtBIniudMhDkWQtl3fjiI9Uz67Eeseg/SWuvp/WDXmmEXt3U+K10OWAdkYXebnm9Z6zhxv1Io12I5G1Jg8slEYkJwvbUpyh5ZUCQkC2Q0fVO8iXXSGGfixP3ffvUWcaeZNo6sJrWyJRySxB+iF9zzHC51oN4QeBte9e4en6hn6FKFHhflx2LMnviKlqH+vDS963rIZgZmGGM5ckGMdHprQkI9livQ/Fj7rh1QXx4Sjkr6aB41QKo+4YLU8XipeRi9knWFkuHpKCAjc1KmCOJlvX+mACC55vHSJSLXKPM0H1/A0dzl/faZ8T6QRjHuR0p5VxKfCQFimOHRdTnOWwCdZcl4vnIToS6970WQWefX4AIRdYB/4ECZdP3yIMnFO2GSWfvV9cCmRNSBNunJjEek8VOQKUvgXiNN3AfIzPkl4N6wXtjFhRrnaNPdHVCe7m+5/GXn8pmf0Wd1FeXPrbUFeb4e3pXfRRyiDBVovZ9EbKL
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2934.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(44832011)(36756003)(508600001)(2906002)(2616005)(71200400001)(83380400001)(6486002)(15650500001)(186003)(66946007)(122000001)(38100700002)(91956017)(54906003)(76116006)(6916009)(64756008)(66446008)(66556008)(66476007)(86362001)(26005)(38070700005)(6512007)(33656002)(5660300002)(8676002)(8936002)(316002)(6506007)(53546011)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tLRZN7Q3sOyA2dJFEHHHEgKlfL5zaoiOTjDx6Rz+FAHF/OeIgGJQolPRQ2Rg?=
+ =?us-ascii?Q?pHDLrdo9sT5hNkzQ+/ziVPMJ5WgKacXJeJVmwCyEZpeu/D7wygdxJN4eXa1d?=
+ =?us-ascii?Q?ayYFrNBiKk/9fclssTuTDfIEs2oFaMTUlVSBQJJXwaj26a7je+p7tPRSs2xc?=
+ =?us-ascii?Q?xUFUx6Fo/hJk7wQbhyh1Chm0+hHz8FhlUJxBNgtR74e9nmSLE05lglYnR7Uq?=
+ =?us-ascii?Q?PtE1JRxUS83d3TkS7mlCNraUGLvnV9QoxarJqwR1FpXZYUdiWrLWoCVl+r0c?=
+ =?us-ascii?Q?N9rGWDX1OtWcjRivlMkPUn8kR1MS1AIm7CCO0yXzBTK9+jB03jRv4RlegLGx?=
+ =?us-ascii?Q?ACrba8wqnv8PLLgZpG+dy/lsRZ1Hubj/Rtyc9331taMe6Dj3cOQdWlX2qPvP?=
+ =?us-ascii?Q?Z85A/lqThZy7XftlEE0+7DVclKyiU0iMxMchthg/i1ebsKETCWNSyxrN7Ao4?=
+ =?us-ascii?Q?QIBXHVO/mh0OAWpzDtrkU4QSozRjcaX1GufQ2n9ZXL2S2XdCN45qIbb8xiVn?=
+ =?us-ascii?Q?xrFbgyt5cdAeyabcLw+ISVwMhdZ50LBQDhfqfDUjarvEEL42j6BhtftqFsW5?=
+ =?us-ascii?Q?CNwsV2OUoX9vCG8/VP1p6Ky8HmXCGaEv2xR4pclZslf2tL8SGx9oXNROikgg?=
+ =?us-ascii?Q?DeSuC/B1JOU/Q+YJM3M8vEfr6WpE/sP/TpMFNEx8ruzYd1/nL76miwbxzTef?=
+ =?us-ascii?Q?fX1HLOXM1eVGU21xKlel1zPcZ3/2lPONd3xFv0AGhIyTX34cMCzFrYNOV4uG?=
+ =?us-ascii?Q?dA/2SSiLOVnqpOCM0DY00ZDvDaVAyeiYbTAKSunsD0seJ4+wRgyXWy7HUvzv?=
+ =?us-ascii?Q?85wpweGoZVTf1osMV8T6WJazbplmWKp5u0S+QkPCj5scBsxKmCXHznt6FTcf?=
+ =?us-ascii?Q?K5ti97f+kWC6guGS7Wu+amZTs576z5Fvk3oD6PXaMApeg1bn1QLGiFIc1Auv?=
+ =?us-ascii?Q?kBB1bRCTCSenPGR5mC3P7itH1f++BEVM6kSn/UvajxBfVkSxfhBeEQirITaY?=
+ =?us-ascii?Q?/DvBfecUgYMqprjfUKXohjNEKX/JUtCGjzjJyxPEZjmaC2IgyJwY/4jPLfaD?=
+ =?us-ascii?Q?lVpaHb6QINjT3e63Ug4KG+1jTQ/llMJwtausYyjsVs7/apPvu285UoMpgy+e?=
+ =?us-ascii?Q?SiSXsJWwD7dzQZ0lMj2T/lt5eApsvvRSBq3dju+cVNwWmXM3sTSOTuwFSS2E?=
+ =?us-ascii?Q?Fd3Qw+u7MAMoxgcxQlP8NMJC6tB9NhcZSFxybFwFJj+Thsqpjn8gViWxoTm4?=
+ =?us-ascii?Q?eh52Tg16aTUPqHSvnc/4iDJS5oMMqGs2jJnp2M+S9IeSaI6oMENJwByKvLNM?=
+ =?us-ascii?Q?RGXjTvKLlMNF5n2hpbl++O0uGQNU7EjJMUiVmOTYD6aOrA=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <20DB8EF8DD235A41A97C602B88CD249C@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2934.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9eff3b43-fd99-484f-d588-08d977874c64
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 13:55:23.4973
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X4stMUxYNcgqDDMIwOztYmEoAcybJxmTNKYgdTnLHzlU6c4STkgNa+bMXhdjhYaQI6+dGlDQGPteKcMahD4hlaUxgwTNm59XHCbizUCko0c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5518
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10106 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109140087
+X-Proofpoint-GUID: S3bPV2QS2jWecu45PBy9O1N316AAxOEJ
+X-Proofpoint-ORIG-GUID: S3bPV2QS2jWecu45PBy9O1N316AAxOEJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move NFS to using the alternate (deprecated) fscache I/O API instead of the
-old upstream I/O API as that is about to be deleted.  The alternate API
-will also be deleted at some point in the future as it's dangerous (as is
-the old API) and can lead to data corruption if the backing filesystem can
-insert/remove bridging blocks of zeros into its extent list[1].
 
-The alternate API reads and writes pages synchronously, with the intention
-of allowing removal of the operation management framework and thence the
-object management framework from fscache.
 
-The preferred change would be to use the netfs lib, but the new I/O API can
-be used directly.  It's just that as the cache now needs to track data for
-itself, caching blocks may exceed page size...
+> On Sep 14, 2021, at 4:20 AM, Daniel Wagner <dwagner@suse.de> wrote:
+>=20
+> From: James Smart <jsmart2021@gmail.com>
+>=20
+> Remove the freeze/unfreeze around changes to the number of hardware
+> queues. Study and retest has indicated there are no ios that can be
+> active at this point so there is nothing to freeze.
+>=20
+> nvme-fc is draining the queues in the shutdown and error recovery path
+> in __nvme_fc_abort_outstanding_ios.
+>=20
+> This patch primarily reverts 88e837ed0f1f "nvme-fc: wait for queues to
+> freeze before calling update_hr_hw_queues". It's not an exact revert as
+> it leaves the adjusting of hw queues only if the count changes.
+>=20
+> Signed-off-by: James Smart <jsmart2021@gmail.com>
+> [dwagner: added explanation why no IO is pending]
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> drivers/nvme/host/fc.c | 2 --
+> 1 file changed, 2 deletions(-)
+>=20
+> diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+> index 6ebe68396712..aa14ad963d91 100644
+> --- a/drivers/nvme/host/fc.c
+> +++ b/drivers/nvme/host/fc.c
+> @@ -2957,9 +2957,7 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctr=
+l)
+> 		dev_info(ctrl->ctrl.device,
+> 			"reconnect: revising io queue count from %d to %d\n",
+> 			prior_ioq_cnt, nr_io_queues);
+> -		nvme_wait_freeze(&ctrl->ctrl);
+> 		blk_mq_update_nr_hw_queues(&ctrl->tag_set, nr_io_queues);
+> -		nvme_unfreeze(&ctrl->ctrl);
+> 	}
+>=20
+> 	ret =3D nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+> --=20
+> 2.29.2
+>=20
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-cc: Anna Schumaker <anna.schumaker@netapp.com>
-cc: linux-nfs@vger.kernel.org
-cc: linux-cachefs@redhat.com
-Link: https://lore.kernel.org/r/YO17ZNOcq+9PajfQ@mit.edu [1]
----
+Looks Good.
 
- fs/nfs/file.c    |   14 +++--
- fs/nfs/fscache.c |  161 +++++++-----------------------------------------------
- fs/nfs/fscache.h |   85 ++++-------------------------
- fs/nfs/read.c    |   25 +++-----
- fs/nfs/write.c   |    7 ++
- 5 files changed, 55 insertions(+), 237 deletions(-)
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index aa353fd58240..209dac208477 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -416,7 +416,7 @@ static void nfs_invalidate_page(struct page *page, unsigned int offset,
- 	/* Cancel any unstarted writes on this page */
- 	nfs_wb_page_cancel(page_file_mapping(page)->host, page);
- 
--	nfs_fscache_invalidate_page(page, page->mapping->host);
-+	wait_on_page_fscache(page);
- }
- 
- /*
-@@ -432,7 +432,12 @@ static int nfs_release_page(struct page *page, gfp_t gfp)
- 	/* If PagePrivate() is set, then the page is not freeable */
- 	if (PagePrivate(page))
- 		return 0;
--	return nfs_fscache_release_page(page, gfp);
-+	if (PageFsCache(page)) {
-+		if (!(gfp & __GFP_DIRECT_RECLAIM) || !(gfp & __GFP_FS))
-+			return false;
-+		wait_on_page_fscache(page);
-+	}
-+	return true;
- }
- 
- static void nfs_check_dirty_writeback(struct page *page,
-@@ -475,12 +480,11 @@ static void nfs_check_dirty_writeback(struct page *page,
- static int nfs_launder_page(struct page *page)
- {
- 	struct inode *inode = page_file_mapping(page)->host;
--	struct nfs_inode *nfsi = NFS_I(inode);
- 
- 	dfprintk(PAGECACHE, "NFS: launder_page(%ld, %llu)\n",
- 		inode->i_ino, (long long)page_offset(page));
- 
--	nfs_fscache_wait_on_page_write(nfsi, page);
-+	wait_on_page_fscache(page);
- 	return nfs_wb_page(inode, page);
- }
- 
-@@ -555,7 +559,7 @@ static vm_fault_t nfs_vm_page_mkwrite(struct vm_fault *vmf)
- 	sb_start_pagefault(inode->i_sb);
- 
- 	/* make sure the cache has finished storing the page */
--	nfs_fscache_wait_on_page_write(NFS_I(inode), page);
-+	wait_on_page_fscache(page);
- 
- 	wait_on_bit_action(&NFS_I(inode)->flags, NFS_INO_INVALIDATING,
- 			nfs_wait_bit_killable, TASK_KILLABLE);
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index d743629e05e1..dd57439aecd0 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -317,7 +317,6 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
- 		dfprintk(FSCACHE, "NFS: nfsi 0x%p disabling cache\n", nfsi);
- 		clear_bit(NFS_INO_FSCACHE, &nfsi->flags);
- 		fscache_disable_cookie(cookie, &auxdata, true);
--		fscache_uncache_all_inode_pages(cookie, inode);
- 	} else {
- 		dfprintk(FSCACHE, "NFS: nfsi 0x%p enabling cache\n", nfsi);
- 		fscache_enable_cookie(cookie, &auxdata, nfsi->vfs_inode.i_size,
-@@ -328,79 +327,10 @@ void nfs_fscache_open_file(struct inode *inode, struct file *filp)
- }
- EXPORT_SYMBOL_GPL(nfs_fscache_open_file);
- 
--/*
-- * Release the caching state associated with a page, if the page isn't busy
-- * interacting with the cache.
-- * - Returns true (can release page) or false (page busy).
-- */
--int nfs_fscache_release_page(struct page *page, gfp_t gfp)
--{
--	if (PageFsCache(page)) {
--		struct fscache_cookie *cookie = nfs_i_fscache(page->mapping->host);
--
--		BUG_ON(!cookie);
--		dfprintk(FSCACHE, "NFS: fscache releasepage (0x%p/0x%p/0x%p)\n",
--			 cookie, page, NFS_I(page->mapping->host));
--
--		if (!fscache_maybe_release_page(cookie, page, gfp))
--			return 0;
--
--		nfs_inc_fscache_stats(page->mapping->host,
--				      NFSIOS_FSCACHE_PAGES_UNCACHED);
--	}
--
--	return 1;
--}
--
--/*
-- * Release the caching state associated with a page if undergoing complete page
-- * invalidation.
-- */
--void __nfs_fscache_invalidate_page(struct page *page, struct inode *inode)
--{
--	struct fscache_cookie *cookie = nfs_i_fscache(inode);
--
--	BUG_ON(!cookie);
--
--	dfprintk(FSCACHE, "NFS: fscache invalidatepage (0x%p/0x%p/0x%p)\n",
--		 cookie, page, NFS_I(inode));
--
--	fscache_wait_on_page_write(cookie, page);
--
--	BUG_ON(!PageLocked(page));
--	fscache_uncache_page(cookie, page);
--	nfs_inc_fscache_stats(page->mapping->host,
--			      NFSIOS_FSCACHE_PAGES_UNCACHED);
--}
--
--/*
-- * Handle completion of a page being read from the cache.
-- * - Called in process (keventd) context.
-- */
--static void nfs_readpage_from_fscache_complete(struct page *page,
--					       void *context,
--					       int error)
--{
--	dfprintk(FSCACHE,
--		 "NFS: readpage_from_fscache_complete (0x%p/0x%p/%d)\n",
--		 page, context, error);
--
--	/*
--	 * If the read completes with an error, mark the page with PG_checked,
--	 * unlock the page, and let the VM reissue the readpage.
--	 */
--	if (!error)
--		SetPageUptodate(page);
--	else
--		SetPageChecked(page);
--	unlock_page(page);
--}
--
- /*
-  * Retrieve a page from fscache
-  */
--int __nfs_readpage_from_fscache(struct nfs_open_context *ctx,
--				struct inode *inode, struct page *page)
-+int __nfs_readpage_from_fscache(struct inode *inode, struct page *page)
- {
- 	int ret;
- 
-@@ -409,112 +339,63 @@ int __nfs_readpage_from_fscache(struct nfs_open_context *ctx,
- 		 nfs_i_fscache(inode), page, page->index, page->flags, inode);
- 
- 	if (PageChecked(page)) {
-+		dfprintk(FSCACHE, "NFS:    readpage_from_fscache: PageChecked\n");
- 		ClearPageChecked(page);
- 		return 1;
- 	}
- 
--	ret = fscache_read_or_alloc_page(nfs_i_fscache(inode),
--					 page,
--					 nfs_readpage_from_fscache_complete,
--					 ctx,
--					 GFP_KERNEL);
-+	ret = fscache_deprecated_read_page(nfs_i_fscache(inode), page);
-+	if (ret < 0) {
-+		dfprintk(FSCACHE, "NFS:    readpage_from_fscache: "
-+			 "fscache_deprecated_read_page failed ret = %d\n", ret);
-+		return ret;
-+	}
- 
- 	switch (ret) {
--	case 0: /* read BIO submitted (page in fscache) */
-+	case 0: /* Read completed synchronously */
- 		dfprintk(FSCACHE,
--			 "NFS:    readpage_from_fscache: BIO submitted\n");
-+			 "NFS:    readpage_from_fscache: read successful\n");
- 		nfs_inc_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_OK);
--		return ret;
-+		SetPageUptodate(page);
-+		return 0;
- 
- 	case -ENOBUFS: /* inode not in cache */
- 	case -ENODATA: /* page not in cache */
- 		nfs_inc_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_FAIL);
- 		dfprintk(FSCACHE,
- 			 "NFS:    readpage_from_fscache %d\n", ret);
-+		SetPageChecked(page);
- 		return 1;
- 
- 	default:
- 		dfprintk(FSCACHE, "NFS:    readpage_from_fscache %d\n", ret);
- 		nfs_inc_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_FAIL);
-+		SetPageChecked(page);
- 	}
- 	return ret;
- }
- 
--/*
-- * Retrieve a set of pages from fscache
-- */
--int __nfs_readpages_from_fscache(struct nfs_open_context *ctx,
--				 struct inode *inode,
--				 struct address_space *mapping,
--				 struct list_head *pages,
--				 unsigned *nr_pages)
--{
--	unsigned npages = *nr_pages;
--	int ret;
--
--	dfprintk(FSCACHE, "NFS: nfs_getpages_from_fscache (0x%p/%u/0x%p)\n",
--		 nfs_i_fscache(inode), npages, inode);
--
--	ret = fscache_read_or_alloc_pages(nfs_i_fscache(inode),
--					  mapping, pages, nr_pages,
--					  nfs_readpage_from_fscache_complete,
--					  ctx,
--					  mapping_gfp_mask(mapping));
--	if (*nr_pages < npages)
--		nfs_add_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_OK,
--				      npages);
--	if (*nr_pages > 0)
--		nfs_add_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_FAIL,
--				      *nr_pages);
--
--	switch (ret) {
--	case 0: /* read submitted to the cache for all pages */
--		BUG_ON(!list_empty(pages));
--		BUG_ON(*nr_pages != 0);
--		dfprintk(FSCACHE,
--			 "NFS: nfs_getpages_from_fscache: submitted\n");
--
--		return ret;
--
--	case -ENOBUFS: /* some pages aren't cached and can't be */
--	case -ENODATA: /* some pages aren't cached */
--		dfprintk(FSCACHE,
--			 "NFS: nfs_getpages_from_fscache: no page: %d\n", ret);
--		return 1;
--
--	default:
--		dfprintk(FSCACHE,
--			 "NFS: nfs_getpages_from_fscache: ret  %d\n", ret);
--	}
--
--	return ret;
--}
--
- /*
-  * Store a newly fetched page in fscache
-- * - PG_fscache must be set on the page
-  */
--void __nfs_readpage_to_fscache(struct inode *inode, struct page *page, int sync)
-+void __nfs_readpage_to_fscache(struct inode *inode, struct page *page)
- {
- 	int ret;
- 
- 	dfprintk(FSCACHE,
--		 "NFS: readpage_to_fscache(fsc:%p/p:%p(i:%lx f:%lx)/%d)\n",
--		 nfs_i_fscache(inode), page, page->index, page->flags, sync);
-+		 "NFS: readpage_to_fscache(fsc:%p/p:%p(i:%lx f:%lx))\n",
-+		 nfs_i_fscache(inode), page, page->index, page->flags);
-+
-+	ret = fscache_deprecated_write_page(nfs_i_fscache(inode), page);
- 
--	ret = fscache_write_page(nfs_i_fscache(inode), page,
--				 inode->i_size, GFP_KERNEL);
- 	dfprintk(FSCACHE,
- 		 "NFS:     readpage_to_fscache: p:%p(i:%lu f:%lx) ret %d\n",
- 		 page, page->index, page->flags, ret);
- 
- 	if (ret != 0) {
--		fscache_uncache_page(nfs_i_fscache(inode), page);
--		nfs_inc_fscache_stats(inode,
--				      NFSIOS_FSCACHE_PAGES_WRITTEN_FAIL);
-+		nfs_inc_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_WRITTEN_FAIL);
- 		nfs_inc_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_UNCACHED);
- 	} else {
--		nfs_inc_fscache_stats(inode,
--				      NFSIOS_FSCACHE_PAGES_WRITTEN_OK);
-+		nfs_inc_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_WRITTEN_OK);
- 	}
- }
-diff --git a/fs/nfs/fscache.h b/fs/nfs/fscache.h
-index 6118cdd2e1d7..6fe6f2f99bba 100644
---- a/fs/nfs/fscache.h
-+++ b/fs/nfs/fscache.h
-@@ -11,7 +11,7 @@
- #include <linux/nfs_fs.h>
- #include <linux/nfs_mount.h>
- #include <linux/nfs4_mount.h>
--#define FSCACHE_USE_OLD_IO_API
-+#define FSCACHE_USE_DEPRECATED_IO_API
- #include <linux/fscache.h>
- 
- #ifdef CONFIG_NFS_FSCACHE
-@@ -94,61 +94,19 @@ extern void nfs_fscache_init_inode(struct inode *);
- extern void nfs_fscache_clear_inode(struct inode *);
- extern void nfs_fscache_open_file(struct inode *, struct file *);
- 
--extern void __nfs_fscache_invalidate_page(struct page *, struct inode *);
--extern int nfs_fscache_release_page(struct page *, gfp_t);
--
--extern int __nfs_readpage_from_fscache(struct nfs_open_context *,
--				       struct inode *, struct page *);
--extern int __nfs_readpages_from_fscache(struct nfs_open_context *,
--					struct inode *, struct address_space *,
--					struct list_head *, unsigned *);
--extern void __nfs_readpage_to_fscache(struct inode *, struct page *, int);
--
--/*
-- * wait for a page to complete writing to the cache
-- */
--static inline void nfs_fscache_wait_on_page_write(struct nfs_inode *nfsi,
--						  struct page *page)
--{
--	if (PageFsCache(page))
--		fscache_wait_on_page_write(nfsi->fscache, page);
--}
--
--/*
-- * release the caching state associated with a page if undergoing complete page
-- * invalidation
-- */
--static inline void nfs_fscache_invalidate_page(struct page *page,
--					       struct inode *inode)
--{
--	if (PageFsCache(page))
--		__nfs_fscache_invalidate_page(page, inode);
--}
-+extern int __nfs_readpage_from_fscache(struct inode *, struct page *);
-+extern void __nfs_read_completion_to_fscache(struct nfs_pgio_header *hdr,
-+					     unsigned long bytes);
-+extern void __nfs_readpage_to_fscache(struct inode *, struct page *);
- 
- /*
-  * Retrieve a page from an inode data storage object.
-  */
--static inline int nfs_readpage_from_fscache(struct nfs_open_context *ctx,
--					    struct inode *inode,
-+static inline int nfs_readpage_from_fscache(struct inode *inode,
- 					    struct page *page)
- {
- 	if (NFS_I(inode)->fscache)
--		return __nfs_readpage_from_fscache(ctx, inode, page);
--	return -ENOBUFS;
--}
--
--/*
-- * Retrieve a set of pages from an inode data storage object.
-- */
--static inline int nfs_readpages_from_fscache(struct nfs_open_context *ctx,
--					     struct inode *inode,
--					     struct address_space *mapping,
--					     struct list_head *pages,
--					     unsigned *nr_pages)
--{
--	if (NFS_I(inode)->fscache)
--		return __nfs_readpages_from_fscache(ctx, inode, mapping, pages,
--						    nr_pages);
-+		return __nfs_readpage_from_fscache(inode, page);
- 	return -ENOBUFS;
- }
- 
-@@ -157,11 +115,10 @@ static inline int nfs_readpages_from_fscache(struct nfs_open_context *ctx,
-  * in the cache.
-  */
- static inline void nfs_readpage_to_fscache(struct inode *inode,
--					   struct page *page,
--					   int sync)
-+					   struct page *page)
- {
--	if (PageFsCache(page))
--		__nfs_readpage_to_fscache(inode, page, sync);
-+	if (NFS_I(inode)->fscache)
-+		__nfs_readpage_to_fscache(inode, page);
- }
- 
- /*
-@@ -204,31 +161,13 @@ static inline void nfs_fscache_clear_inode(struct inode *inode) {}
- static inline void nfs_fscache_open_file(struct inode *inode,
- 					 struct file *filp) {}
- 
--static inline int nfs_fscache_release_page(struct page *page, gfp_t gfp)
--{
--	return 1; /* True: may release page */
--}
--static inline void nfs_fscache_invalidate_page(struct page *page,
--					       struct inode *inode) {}
--static inline void nfs_fscache_wait_on_page_write(struct nfs_inode *nfsi,
--						  struct page *page) {}
--
--static inline int nfs_readpage_from_fscache(struct nfs_open_context *ctx,
--					    struct inode *inode,
-+static inline int nfs_readpage_from_fscache(struct inode *inode,
- 					    struct page *page)
- {
- 	return -ENOBUFS;
- }
--static inline int nfs_readpages_from_fscache(struct nfs_open_context *ctx,
--					     struct inode *inode,
--					     struct address_space *mapping,
--					     struct list_head *pages,
--					     unsigned *nr_pages)
--{
--	return -ENOBUFS;
--}
- static inline void nfs_readpage_to_fscache(struct inode *inode,
--					   struct page *page, int sync) {}
-+					   struct page *page) {}
- 
- 
- static inline void nfs_fscache_invalidate(struct inode *inode) {}
-diff --git a/fs/nfs/read.c b/fs/nfs/read.c
-index 08d6cc57cbc3..06ed827a67e8 100644
---- a/fs/nfs/read.c
-+++ b/fs/nfs/read.c
-@@ -123,7 +123,7 @@ static void nfs_readpage_release(struct nfs_page *req, int error)
- 		struct address_space *mapping = page_file_mapping(page);
- 
- 		if (PageUptodate(page))
--			nfs_readpage_to_fscache(inode, page, 0);
-+			nfs_readpage_to_fscache(inode, page);
- 		else if (!PageError(page) && !PagePrivate(page))
- 			generic_error_remove_page(mapping, page);
- 		unlock_page(page);
-@@ -305,6 +305,12 @@ readpage_async_filler(void *data, struct page *page)
- 
- 	aligned_len = min_t(unsigned int, ALIGN(len, rsize), PAGE_SIZE);
- 
-+	if (!IS_SYNC(page->mapping->host)) {
-+		error = nfs_readpage_from_fscache(page->mapping->host, page);
-+		if (error == 0)
-+			goto out_unlock;
-+	}
-+
- 	new = nfs_create_request(desc->ctx, page, 0, aligned_len);
- 	if (IS_ERR(new))
- 		goto out_error;
-@@ -320,6 +326,7 @@ readpage_async_filler(void *data, struct page *page)
- 	return 0;
- out_error:
- 	error = PTR_ERR(new);
-+out_unlock:
- 	unlock_page(page);
- out:
- 	return error;
-@@ -367,12 +374,6 @@ int nfs_readpage(struct file *file, struct page *page)
- 		desc.ctx = get_nfs_open_context(nfs_file_open_context(file));
- 
- 	xchg(&desc.ctx->error, 0);
--	if (!IS_SYNC(inode)) {
--		ret = nfs_readpage_from_fscache(desc.ctx, inode, page);
--		if (ret == 0)
--			goto out_wait;
--	}
--
- 	nfs_pageio_init_read(&desc.pgio, inode, false,
- 			     &nfs_async_read_completion_ops);
- 
-@@ -382,7 +383,6 @@ int nfs_readpage(struct file *file, struct page *page)
- 
- 	nfs_pageio_complete_read(&desc.pgio);
- 	ret = desc.pgio.pg_error < 0 ? desc.pgio.pg_error : 0;
--out_wait:
- 	if (!ret) {
- 		ret = wait_on_page_locked_killable(page);
- 		if (!PageUptodate(page) && !ret)
-@@ -421,14 +421,6 @@ int nfs_readpages(struct file *file, struct address_space *mapping,
- 	} else
- 		desc.ctx = get_nfs_open_context(nfs_file_open_context(file));
- 
--	/* attempt to read as many of the pages as possible from the cache
--	 * - this returns -ENOBUFS immediately if the cookie is negative
--	 */
--	ret = nfs_readpages_from_fscache(desc.ctx, inode, mapping,
--					 pages, &nr_pages);
--	if (ret == 0)
--		goto read_complete; /* all pages were read */
--
- 	nfs_pageio_init_read(&desc.pgio, inode, false,
- 			     &nfs_async_read_completion_ops);
- 
-@@ -436,7 +428,6 @@ int nfs_readpages(struct file *file, struct address_space *mapping,
- 
- 	nfs_pageio_complete_read(&desc.pgio);
- 
--read_complete:
- 	put_nfs_open_context(desc.ctx);
- out:
- 	return ret;
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index eae9bf114041..466266a96b2a 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -2124,8 +2124,11 @@ int nfs_migrate_page(struct address_space *mapping, struct page *newpage,
- 	if (PagePrivate(page))
- 		return -EBUSY;
- 
--	if (!nfs_fscache_release_page(page, GFP_KERNEL))
--		return -EBUSY;
-+	if (PageFsCache(page)) {
-+		if (mode == MIGRATE_ASYNC)
-+			return -EBUSY;
-+		wait_on_page_fscache(page);
-+	}
- 
- 	return migrate_page(mapping, newpage, page, mode);
- }
-
+--
+Himanshu Madhani	 Oracle Linux Engineering
 
