@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C68140B97B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CFB40B97F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhINUwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S234020AbhINUwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhINUwM (ORCPT
+        with ESMTP id S233776AbhINUwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:52:12 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6BBC061574;
-        Tue, 14 Sep 2021 13:50:54 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id AEA0E2C1;
-        Tue, 14 Sep 2021 20:50:53 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net AEA0E2C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1631652653; bh=1C1Lum1SJ8liV3Fk2FKIE54N6AIkTwNqtnJFFKjEs1Q=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=W98IYDdkY7yNcjoWpD0qh92VOblQdoSU8ry90boi4zCCKsq1kJ+rgx4va0VB6KT8t
-         j3yBqeySZgdaG+tGC+HYYc3dSYSniWROOGqPwxMkuJldJjsAupsFMRJcUWSAWZrpJQ
-         voeA3MLmfBLlzdfyJIHsTqhItsr9Ur5jPM75JIW6broYgfiArNaD1LLgEafZ0FsQds
-         czXgOgMXdzs1Gc/wlHU+J0m5QTTLku8Ht4orMm/v1uNGusmPqSKwd9RvnlVidfHxBj
-         Y6f7y0aA/OZd3tBok4XeF9fYDRkGuV/IU5Yvis5zoNGHR+wDKjJ4jKh2TdiaShEo9C
-         LI+scrjijhkMg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Kitt <steve@sk2.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: Re: [PATCH] docs: block: fix discard_max_bytes references
-In-Reply-To: <20210910105142.2116749-1-steve@sk2.org>
-References: <20210910105142.2116749-1-steve@sk2.org>
-Date:   Tue, 14 Sep 2021 14:50:53 -0600
-Message-ID: <87czpaev9u.fsf@meer.lwn.net>
+        Tue, 14 Sep 2021 16:52:47 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100F2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:51:29 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id c21so904947edj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 13:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=5JMhK9pOqseAjHRtHcU/HG4i5NuvupLcjaClPwT4ItM=;
+        b=kS44ofgfGQyKmz0tNjrSG9ZtN/ltZYJAFnz+wPzAOctlc0RWCfAtTlOXfZeLp42NtJ
+         Ls68AXtPhxhzDeVYopS01IGoHZvuLz8wJYkw4hlOop14hPE3bOYCU+vmzC7Vdz14Mxta
+         e6q3x5oXMFAU0dbdw90EAa4TbDR+EE+mRTdsO+xhSX85Bf+GslnY1vmo/QTkd0B5nre6
+         usyol9zqfzLuXVetPKaqEIMDRRdNI307LdTBgii+pyPf5CmC2fgoRd6obGTuZ7PaJlLU
+         IkaNICIp6AuUxniZxhc114PcsoMRi6f2faV783d7xCHhvuxhoE2TGcJ+Wc6Ty/xprw0g
+         jhbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=5JMhK9pOqseAjHRtHcU/HG4i5NuvupLcjaClPwT4ItM=;
+        b=v0R1VIxtWoh6j7Gmzm1dSN6VGojDtNTpSeX0vAnWUP993WuKKjglIZKVjKifx241EU
+         KsEYKzfNzzax+qikQtJxLEkZ+cUofYBgjMBKuhMQu8A7FU5Ccjvv2BIOKjc4tCpnGLUV
+         9WSXaO/H0rbQYvvANiMRVGjD3iXm9gtf7jQNdy3urHR76Sx2ADFZp5+kJhaMp6fVB5Cw
+         Exxttuj0ubZwxDkJejkB7k0POJIwmVnnVA/2MJZzCh22AlEoZ1byTEoLoKetsYTmQjUn
+         uYgU53j1Pf0kajuibQErhZQeDcztxFtMbnh0k0IMFT1pSbRX/5U7/7aFF4m1+GO0V8JQ
+         duiA==
+X-Gm-Message-State: AOAM5333oeRrN2xAQWOJbSSotINXcVMNLrcXbXX4ItvOCgGL4wkW41t3
+        rgii4V84qSqSDg91IjsyGAUJWpXBcv8QmosY9Sg=
+X-Google-Smtp-Source: ABdhPJybl412w5jdLq4Wu7+u1R6CHTLC2G/l3nsPcvuxsFjhmqfRUuf7aX0MM+6fUZvDvV07YA8fsYa7SgdznnIEzoU=
+X-Received: by 2002:aa7:df09:: with SMTP id c9mr21837322edy.243.1631652687463;
+ Tue, 14 Sep 2021 13:51:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:a17:906:2921:0:0:0:0 with HTTP; Tue, 14 Sep 2021 13:51:26
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <aishagddaf068@gmail.com>
+Date:   Tue, 14 Sep 2021 13:51:26 -0700
+Message-ID: <CAL1XoCnY3X8Nh65Ov51hnBMp19O_NFusTq3AuWeB6BQdJhSp3g@mail.gmail.com>
+Subject: Liebster Freund,?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Kitt <steve@sk2.org> writes:
+--=20
+Liebster Freund,
 
-> When discard_max_hw_bytes was introduced, in commit 0034af036554
-> ("block: make /sys/block/<dev>/queue/discard_max_bytes writeable"),
-> the discard_max_bytes documentation section was renamed to
-> discard_max_hw_bytes, but the references it contains to
-> discard_max_bytes weren't updated.
->
-> This patch refers to discard_max_hw_bytes instead. It also reflows the
-> paragraph so that sentences end lines.
->
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
-> ---
->  Documentation/block/queue-sysfs.rst | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+Im Namen Gottes, des gn=C3=A4digsten, barmherzigsten.
 
-Applied, thanks.
+Friede sei mit dir und Barmherzigkeit sei mit dir und Segen sei mit dir.
+Ich habe die Summe von 27,5 Millionen USD f=C3=BCr Investitionen, ich
+interessiere mich f=C3=BCr Sie f=C3=BCr die Unterst=C3=BCtzung von
+Investitionsprojekten in Ihrem Land. Mein Name ist Aisha Gaddafi und
+lebe derzeit im Oman, ich bin eine Witwe und alleinerziehende Mutter
+mit drei Kindern, die einzige leibliche Tochter des verstorbenen
+libyschen Pr=C3=A4sidenten (dem verstorbenen Oberst Muammar Gaddafi) und
+stehe derzeit unter politischem Asylschutz der omanischen Regierung.
 
-jon
+Bitte antworten Sie dringend f=C3=BCr weitere Details.
+
+meine E-Mail-Adresse unten: ayishagddafio@mail.ru
+Vielen Dank
+Mit freundlichen Gr=C3=BC=C3=9Fen Aisha
