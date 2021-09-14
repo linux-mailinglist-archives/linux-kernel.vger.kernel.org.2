@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C156540B593
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE4940B599
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhINRHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:07:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhINRHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:07:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 871E9610E6;
-        Tue, 14 Sep 2021 17:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631639156;
-        bh=cK9jtjS6sGndb/tYO2Wm17SC/1VsCkyUP+bEtwppFPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QCHy3K7hqUJRnHjHLDdAeKJDSDxQPS5Ivqc9cIXglOKIydm1jTbhb0TbwksK+XgEu
-         TTBulmwC2NWmQ5rOVIT9weq8dtMXKYysBPb/usCVRFFY7V4Ic8+EUqje/hYrDtYBzA
-         9xwqx8Miv+S3C5CYqlIOQ3Epjenhbfx7mSbQ61V4hNiRarwpvowTZ3zTQZKTM46tK4
-         vnPSHVQkeR7lDWM4qgb5ZkRWKNGtpTnH/dij1prUq2ksh89duZ+wNIGepnnL/ZFvSw
-         4u0GFE6r9TVHa3rpDZcsy0s+vkvnU6goOuJE/Z56BiWyaIgCC5OEZkq2QHcUYYQY+l
-         rf9smhGKaEm8A==
-Date:   Tue, 14 Sep 2021 18:05:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Cc:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: cs42l42: Minor fix all errors reported by
- checkpatch.pl script
-Message-ID: <20210914170516.GG4434@sirena.org.uk>
-References: <20210914165220.752498-1-vitalyr@opensource.cirrus.com>
- <20210914165220.752498-2-vitalyr@opensource.cirrus.com>
+        id S230238AbhINRIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:08:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21533 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230063AbhINRIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 13:08:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631639244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VSPaTs/Ana3c5AjdJic+DfXIvcN63Hc2gA/Tf0kL54c=;
+        b=ahIT9oyzQu4TdpTyFxvCnubAMMNSk8Yc6HzyYk6BDhUhgwpn5yTrZUORd4qfvtjoDbB5Os
+        08FH/vaY7Qo5sLskvDbFv9s+1h5LtnrWnpv0UXzOm0ZqacfrtYbLCO6cX8CVeZi9LyUZ0H
+        gvwWF9eZftz03MjfcFDiiGcWV4dqTVY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-3OmNa1GoMSW6Yi-nxpDEqA-1; Tue, 14 Sep 2021 13:07:20 -0400
+X-MC-Unique: 3OmNa1GoMSW6Yi-nxpDEqA-1
+Received: by mail-ed1-f69.google.com with SMTP id s15-20020a056402520f00b003cad788f1f6so7093827edd.22
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:07:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VSPaTs/Ana3c5AjdJic+DfXIvcN63Hc2gA/Tf0kL54c=;
+        b=gpB69/JrBcbqoQsoSVmyr9CrvpAD9b2FFdaD1ntO9RFO/Lkjqh+OmnNZoUuk9/0Xjn
+         HNWYYism/2eKzm2dkrbZ2NYYdc6cS2ItioLYElDNtGK0r7odHKt+vkVaAOEkAn2V3oY0
+         b1ajj6rUJBvLlaGQUj8zTtBo27+f8Fz++PB7jNSew5qXAp0+tyFozi4QoWRxis2SAkli
+         g2BCcXOyesP/aHUZOq9kPIgcgJToDl9wzX5IC+wPyGU7CHqs+FhLQXPqkX3Yj4eZ2sRK
+         vULsoZoBGlTPICOINkwd8qArhryerVMqwSzpiA/HO/f0j2BNSj44Mt/QOOLBs5ReIp7L
+         0Y0A==
+X-Gm-Message-State: AOAM530wsc/iSJOrawKG9jxj1cO6f5W08IhM7VepCZayPLsATfExjXiU
+        Ex7EIwVIjloZ43l5u/Y2adIyUHsZ6GAIWJdysVgvO450wLeSevQ74mO9Uy9up6J9LszNniAUiM8
+        ai9UfBAjIRu/WfD2vOJ9sj4kn
+X-Received: by 2002:a17:906:6148:: with SMTP id p8mr19508110ejl.17.1631639239599;
+        Tue, 14 Sep 2021 10:07:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyz+fGJykczhq+9IbbmATrEW/jUyWNpQF9sYky1OwNDGdYkM+u3sKi6b2acRNQYiL90BljSkw==
+X-Received: by 2002:a17:906:6148:: with SMTP id p8mr19508091ejl.17.1631639239377;
+        Tue, 14 Sep 2021 10:07:19 -0700 (PDT)
+Received: from ?IPv6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.gmail.com with ESMTPSA id h2sm5905306edd.43.2021.09.14.10.07.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 10:07:18 -0700 (PDT)
+Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all
+ pages
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Yang Zhong <yang.zhong@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, dave.hansen@linux.intel.com
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210914071030.GA28797@yangzhon-Virtual>
+ <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
+ <fb04eae72ca0b24fdb533585775f2f20de9f5beb.camel@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1afa3ed3-d77b-163d-e35e-30bf4f5d3a9e@redhat.com>
+Date:   Tue, 14 Sep 2021 19:07:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GdbWtwDHkcXqP16f"
-Content-Disposition: inline
-In-Reply-To: <20210914165220.752498-2-vitalyr@opensource.cirrus.com>
-X-Cookie: This space intentionally left blank.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <fb04eae72ca0b24fdb533585775f2f20de9f5beb.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/09/21 18:42, Jarkko Sakkinen wrote:
+>> Let's wait for this patch to be accepted first.  I'll wait a little more
+>> for Jarkko and Dave to comment on this, and include your "Tested-by".
+>>
+>> I will also add cond_resched() on the final submission.
+> Why these would be conflicting tasks? I.e. why could not QEMU use
+> what is available now and move forward using better mechanism, when
+> they are available?
 
---GdbWtwDHkcXqP16f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The implementation using close/open is quite ugly (destroying and 
+recreating the memory block breaks a few levels of abstractions), so 
+it's not really something I'd like to commit.
 
-On Tue, Sep 14, 2021 at 05:52:19PM +0100, Vitaly Rodionov wrote:
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-> ---
->  sound/soc/codecs/cs42l42.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+Paolo
 
-This sort of minor cleanup should go after any fixes so that there's no
-dependency created needlessly.
-
---GdbWtwDHkcXqP16f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFA1ksACgkQJNaLcl1U
-h9CgbQf+OuIKym2dMtISggsJRRA2ZOkGY410Vm+jkhqXhNSBIRtiJY2B4hSlx3Yf
-qJfA0NLH0p6T9Z5TDptaqRDit7nENLTUxl/sqrioYt9YQAsYUhVTL3y9qG2U8Xxx
-sNcqEdK2AbsxmEYE94QMpjsewYD9BwRZJRF2wa4siL4kmIRWLlg72S7eoubDg/ET
-gOqKzEVH95AjCFCSB7IMIERJE2LeE0QAyyZi7W4LqCAIe8XokfFIGOrXB05AwIqN
-4/CMqir3xjM7MSx6i732GAxGxKcV1qQRT3RfLMADDOxb75Ua/9KVXElZm35s9N9z
-zudNb7dDBRQVNiFZ3QTL5ASF6vz2Gw==
-=UiJW
------END PGP SIGNATURE-----
-
---GdbWtwDHkcXqP16f--
