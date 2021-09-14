@@ -2,86 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3354340B083
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34A340B08A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhINOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:24:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36372 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbhINOYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:24:37 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6A5261FDFC;
-        Tue, 14 Sep 2021 14:23:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631629398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vPLjlxNiMy8SE7UjNTK8tngq7pn7HiFIBgi/dU4IiY4=;
-        b=RHBOwzDGUJPzZPe5F1N+ijWFfwWf18Vb1viFqcFbzGn1pNyswLU9xhfJWkC3kfqxfT3cQK
-        ASD9bWHOnAZDFsQpQ1ynhod/htXkglaRNsUdBxKpn7/nI/xk19+CoO4aINaWO4k22bBslH
-        d1n25oTi+dd0w5BtyfqC7w+1HHmLwYM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4BD9513B8A;
-        Tue, 14 Sep 2021 14:23:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OaVTEVawQGGacAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 14 Sep 2021 14:23:18 +0000
-Date:   Tue, 14 Sep 2021 16:23:16 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel@openvz.org,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH] ipc: remove memcg accounting for sops objects in
- do_semtimedop()
-Message-ID: <20210914142316.GA23024@blackbody.suse.cz>
-References: <90e254df-0dfe-f080-011e-b7c53ee7fd20@virtuozzo.com>
- <YT8NrsaztWNDpKXk@dhcp22.suse.cz>
- <CALvZod7Y4pC4XvqVp+tJ==CnS5Ay8YPqrxeUzA8tMLu+0U3hjQ@mail.gmail.com>
- <YUBLrJOL6DGxmira@dhcp22.suse.cz>
+        id S233673AbhINOZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:25:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233437AbhINOZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 10:25:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BED0E60EFF;
+        Tue, 14 Sep 2021 14:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631629457;
+        bh=ICIH7KIpkdBO4VMxLxo32ZU28uu9Bch7RY2U4rQOErk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cVol9SmVMg6mvsb7u/IvVv1Eh8NERn0k4VZmSJLfCXcd8frhf5Hh0yloOI/eI1deZ
+         d56kT7BPfvDTXa472KGsuv90IhCbBCXir70dW0jD+CbHp6RVzy0UeMlfxVLqkw3Ema
+         L03jD+s1sQEbIamAH03/HTLVn0lJH7V2Gordt8u5n5J8tZ4tJay3DNvQG3D7Nzn3Wl
+         yhi8WdiCV2BbooWkqcv7WWkTR/s4yY4x8yxVgX06bETX23HfEHy0A6v3lFCzldUhqt
+         7MIjq1p+fiXrThFfedfJkIl4Oz5X+dE6HXQIyoWs0Zlj57ake0ZDMHQaZUksph1kfJ
+         nbe+bI1tFbGUA==
+Date:   Tue, 14 Sep 2021 16:24:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 0/9] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <20210914162412.0b642091@coco.lan>
+In-Reply-To: <YToRRMhYfdnzFyMB@kroah.com>
+References: <cover.1631112725.git.mchehab+huawei@kernel.org>
+        <YToRRMhYfdnzFyMB@kroah.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YUBLrJOL6DGxmira@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 09:13:48AM +0200, Michal Hocko <mhocko@suse.com> wrote:
-> "
-> This object can consume up to 2 pages, syscall is sleeping one,
-> size and duration can be controlled by user, and this allocation
-> can be repeated by many thread at the same time.
-> "
+Em Thu, 9 Sep 2021 15:51:00 +0200
+Greg KH <gregkh@linuxfoundation.org> escreveu:
+
+> On Wed, Sep 08, 2021 at 04:58:47PM +0200, Mauro Carvalho Chehab wrote:
+> > Hi Greg,
+> > 
+> > Sometime ago, I discussed with Jonathan Cameron about providing 
+> > a way check that the ABI documentation is incomplete.
+> > 
+> > While it would be doable to validate the ABI by searching __ATTR and 
+> > similar macros around the driver, this would probably be very complex
+> > and would take a while to parse.
+> > 
+> > So, I ended by implementing a new feature at scripts/get_abi.pl
+> > which does a check on the sysfs contents of a running system:
+> > it reads everything under /sys and reads the entire ABI from
+> > Documentation/ABI. It then warns for symbols that weren't found,
+> > optionally showing possible candidates that might be misdefined.
+> > 
+> > I opted to place it on 3 patches:
+> > 
+> > The first patch adds the basic logic. It runs really quicky (up to 2
+> > seconds), but it doesn't use sysfs softlinks.
+> > 
+> > Patch 2 adds support for also parsing softlinks. It slows the logic,
+> > with now takes ~40 seconds to run on my desktop (and ~23
+> > seconds on a HiKey970 ARM board). There are space there for
+> > performance improvements, by using a more sophisticated
+> > algorithm, at the expense of making the code harder to
+> > understand. I ended opting to use a simple implementation
+> > for now, as ~40 seconds sounds acceptable on my eyes.
+> > 
+> > Patch 3 adds an optional parameter to allow filtering the results
+> > using a regex given by the user.
+> > 
+> > One of the problems with the current ABI definitions is that several
+> > symbols define wildcards, on non-standard ways. The more commonly
+> > wildcards used there are:
+> > 
+> > 	<foo>
+> > 	{foo}
+> > 	[foo]
+> > 	X
+> > 	Y
+> > 	Z
+> > 	/.../
+> > 
+> > The script converts the above wildcards into (somewhat relaxed)
+> > regexes.
+> > 
+> > There's one place using  "(some description)". This one is harder to
+> > parse, as parenthesis are used by the parsing regexes. As this happens
+> > only on one file, patch 4 addresses such case.
+> > 
+> > Patch 5 to 9 fix some other ABI troubles I identified.
+> > 
+> > In long term, perhaps the better would be to just use regex on What:
+> > fields, as this would avoid extra heuristics at get_abi.pl, but this is
+> > OOT from this patch, and would mean a large number of changes.  
 > 
-> It sounds like a problem, except it is not because? A worst case
-> scenario evaluation would be beneficial for example
+> This is cool stuff, thanks for doing this!
+> 
+> I'll look at it more once 5.15-rc1 is out, thanks.
 
-AFAICS, the offending allocation is in place only during the duration of
-the syscall. So it's basically O(#tasks).
-Considering at least 2 pages for task_struct + 2 pages for kernel stack,
-back of the envelope calculation gives me the footprint amplification is
-<1.5.
-The factor would IMO be interesting if it was >> 2 (from the PoV of
-excessive (ab)use, fine-grained accounting seems to be currently
-unfeasible due to performance impact).
+FYI, there's a new version at:
 
-The commit message can be more explicit about this but to the patch
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
+	https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/log/?h=get_undefined
+
+In order for get_abi.pl to convert What: into regex, changes are needed on
+existing ABI files. One alternative would be to convert everything into
+regex, but that would probably mean that most ABI files would require work.
+
+In order to avoid a huge number of patches/changes, I opted to touch only
+the ones that aren't following the de-facto wildcard standards already 
+found on most of the ABI files. So, I added support at get_abi.pl to
+consider those patterns as wildcards:
+
+	/.../
+	*
+	<foo>
+	X
+	Y
+	Z
+	[0-9] (and variants)
+
+The files that use something else meaning a wildcard need changes, in order
+to avoid ambiguity when the script decides if a character is either a 
+wildcard or not. 
+
+One of the issues there is with "N". several files use it as a wildcard, 
+but USB sysfs parameters have several ABI nodes with an uppercase "N"
+letter (like bNumInterfaces and such). So, this one had to be converted
+too (and represents the vast majority of patches).
+
+Anyway, as the number of such patches is high, I'll submit the work 
+on three separate series:
+
+	- What: changes needed for regex conversion;
+	- get_abi.pl updates;
+	- Some additions for missing symbols found on my
+	  desktop.
+
+Thanks,
+Mauro
