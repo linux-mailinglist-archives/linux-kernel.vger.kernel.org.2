@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274C340AB7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A26540AB80
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhINKQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhINKQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:16:35 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B85C061574;
-        Tue, 14 Sep 2021 03:15:18 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id s24so8777818wmh.4;
-        Tue, 14 Sep 2021 03:15:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Nf/SOAvbwz2MygXok4/Z17dVM/UAKbfgG9bWv41pHME=;
-        b=FlxD/nRhMOE4Q5Y7glvWLTVOuMWtLGBWL6qrtwOixRTjOKrhziCZJQyEA0SKdM5Hjl
-         /Kr/4ygu5IpdyTvEVAlEEoKfT0gz5d3FEeezDR7AYS1ogtLNgSpLEGTEzRcio3yq+hcp
-         Id8Bwc5LnPjYwJI6KxYMrKEJMyDfz7W9vy4SwfPvYxQLd5gcnqNHtdBDUkNVPIt4JFp2
-         nSQEkoYhILg2ZFY7jWPw+ppBwWOp+lW6VfHKZCBxTQjANOmESftDap+oT0cTsRB8a04f
-         NlvLfTzOjjwtB/b0s/mrKT43uAYPKI1m2KFN0DzKTpgbwCFOQiEHqKHNMD4RXnDl/vH/
-         f4ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Nf/SOAvbwz2MygXok4/Z17dVM/UAKbfgG9bWv41pHME=;
-        b=WU7ktXO6BDR5jwWeND8YFIzcb+zPesF9QjprZQuiklBoXYdw9obNqA8YQauGAHo67P
-         vZmy6wyUdB4aJz3Gop6HeiJrQ2D64XVEZkMJGdvY98GyWW8hqKKCBKzgy/olhYQs/Ub3
-         yhCrhDhTowzxcqyToU+GirMm/4V4QZEBnzSLf4ENTwGgvJduQ4/iYn6xjlSue+DCQPVA
-         kTuV+gRHwj56/Nm5gYkd9IfS2N4sNk/vgAULSl7d9kiHewVlv3p1mlHt6rEjgN40hrmI
-         JX07fBskLztqsXUOCwCOJngfJWyRK2c+s+wzq0jMqYlsiVcJJBiFcstVZH50DbAE9LPU
-         XZNA==
-X-Gm-Message-State: AOAM5332ygzFKM+8Ifv8u3vs2YT0gAcaE1iresVROri2BsImnIkNQ1qa
-        QFy7TRNrZuZjwzUBPuvTfeE=
-X-Google-Smtp-Source: ABdhPJzuZr0B0EPomiy8tK5LoL4hiLNe8IGef5SfQ/IkxN0UfwcjP+VlZTPId+hGZkBk6caLIaeWjg==
-X-Received: by 2002:a7b:c086:: with SMTP id r6mr1299438wmh.46.1631614516919;
-        Tue, 14 Sep 2021 03:15:16 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.16.219])
-        by smtp.gmail.com with ESMTPSA id 48sm10335007wrc.14.2021.09.14.03.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 03:15:16 -0700 (PDT)
-Message-ID: <173088b768fbc1dbb49b6f53f7ac04a44f120f3a.camel@gmail.com>
-Subject: Re: [PATCH 7/7] pwm: ep93xx: Prepare clock before using it
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        linux-kernel@vger.kernel.org,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel@pengutronix.de, Lee Jones <lee.jones@linaro.org>
-Date:   Tue, 14 Sep 2021 12:15:14 +0200
-In-Reply-To: <20210914075815.alqnyux5ficgvkme@pengutronix.de>
-References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
-         <20210613233041.128961-8-alexander.sverdlin@gmail.com>
-         <20210614072222.wgivnzbaekxxw7qu@pengutronix.de>
-         <c2d54eb9c0061a779678e311ee6761fa6f117856.camel@gmail.com>
-         <20210914075815.alqnyux5ficgvkme@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 
+        id S231352AbhINKSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:18:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:42444 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhINKSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 06:18:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89EC36D;
+        Tue, 14 Sep 2021 03:17:16 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.21.233])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD7763F59C;
+        Tue, 14 Sep 2021 03:17:14 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 11:17:09 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Dan Li <ashimida@linux.alibaba.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Laura Abbott <labbott@kernel.org>
+Subject: Re: [PATCH] [RFC]arm64:Mark __stack_chk_guard as __ro_after_init
+Message-ID: <20210914101709.GA29127@C02TD0UTHF1T.local>
+References: <1631612642-102881-1-git-send-email-ashimida@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631612642-102881-1-git-send-email-ashimida@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you, Uwe,
-
-On Tue, 2021-09-14 at 09:58 +0200, Uwe Kleine-König wrote:
-> > > On Mon, Jun 14, 2021 at 01:30:41AM +0200, Alexander Sverdlin wrote:
-> > > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
-> > > > to Common Clock Framework.
-> > > > 
-> > > > Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> > > 
-> > > Maybe it would make sense to move the prepare into the probe function?!
-> > > Anyhow, for now preparing the driver for the common-clk switch is the
-> > > focus and for that the conversion is correct, so:
-> > > 
-> > > Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > 
-> > would you take this patch only, please?
-> > It didn't work out to sell the whole series as one piece and
-> > most of them were taken individually...
+On Tue, Sep 14, 2021 at 05:44:02PM +0800, Dan Li wrote:
+> __stack_chk_guard is setup once while init stage and never changed
+> after that.
 > 
-> Hmm, this patch is marked as accepted in patchwork
-> (http://patchwork.ozlabs.org/project/linux-pwm/patch/20210613233041.128961-8-alexander.sverdlin@gmail.com/).
-> There is also a v2, that is also marked as accepted
-> (http://patchwork.ozlabs.org/project/linux-pwm/patch/20210726140001.24820-8-nikita.shubin@maquefel.me/).
+> Although the modification of this variable at runtime will usually
+> cause the kernel to crash (so dose the attacker), it should be marked
+> as _ro_after_init, and it should not affect performance if it is
+> placed in the ro_after_init section.
 > 
-> Not sure what want wrong here
+> This should also be the case on the ARM platform, or am I missing
+> something?
+> 
+> Signed-off-by: Dan Li <ashimida@linux.alibaba.com>
 
-Sorry for the noise!
+FWIW, this makes sense to me:
 
--- 
-Alexander Sverdlin.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
+Looking at the history, this was added to arm64 in commit:
 
+  c0c264ae5112d1cd ("arm64: Add CONFIG_CC_STACKPROTECTOR")
+
+... whereas __ro_after_init was introduced around 2 years later in
+commit:
+
+  c74ba8b3480da6dd ("arch: Introduce post-init read-only memory")
+
+... so we weren't deliberately avoiding __ro_after_init, and there are
+probably a significant number of other variables we could apply it to.
+
+Mark.
+
+> ---
+>  arch/arm64/kernel/process.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index c8989b9..c858b85 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -60,7 +60,7 @@
+>  
+>  #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
+>  #include <linux/stackprotector.h>
+> -unsigned long __stack_chk_guard __read_mostly;
+> +unsigned long __stack_chk_guard __ro_after_init;
+>  EXPORT_SYMBOL(__stack_chk_guard);
+>  #endif
+>  
+> -- 
+> 2.7.4
+> 
