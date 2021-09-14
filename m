@@ -2,121 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D0E40B640
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B1140B648
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhINRyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:54:45 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51055 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhINRyl (ORCPT
+        id S231642AbhINR4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhINR4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:54:41 -0400
-Received: by mail-io1-f70.google.com with SMTP id b202-20020a6bb2d3000000b005b7fb465c4aso16873518iof.17
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:53:23 -0700 (PDT)
+        Tue, 14 Sep 2021 13:56:46 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F54C061574;
+        Tue, 14 Sep 2021 10:55:28 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id i3so179106wmq.3;
+        Tue, 14 Sep 2021 10:55:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=o4N33InZazxjk2fm8q6vK8YiuSMIHI0rSm1Fto78HVY=;
+        b=Kq6HIns1wxIDQW7wVZGqtPs8Lakk8I2+OcNr4+nPCS8f/mzDXYIWAZxRV8SyM5sUl7
+         KThkCXKwt+hQ2dt63JusPyHaXkRQd/hdG4E/7waUU3CQ460zJKlwL3YYywxYlkQSRipj
+         eG2H/DFdMmgjEnu0ITT0qTmWNjC1TP+FcblWcm4/CiJFBebBVfahFriCoBHSbFSzGGpp
+         r60UtLtehM2QgVDXIgJQAsaNl1kpDPQVKHEzz5aPcMNQXZFOFRb3y3urst5VCx1aRF0k
+         xPfk6JJjY1uTSynF5d8puaV6rOVlAbsQrnhbUZJe+Dh5ke4Fj9YQTYDCZwnlEX32XaFZ
+         YnDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=d/BCEmiQUQZFxfE+JV0m+UftuHUj+57emuJFfJpTsxc=;
-        b=CQh2sxrdluiT9aS9HgAGkEQYbwy6wfvV4ind0PoK0vRwqhHKmsOfu1L2PM7bu7HFmA
-         SJjznRfzag2RC3ko+tQ17cQy/uflx5tr1OIaoR8Y78tZWQuaF3BFWovn9IQoEWPM6JAm
-         v+Pj/TzjmFsjDJx0HSVxhzPftL/iKdJ1fZzkducv/nUchO0fH035CYOTm4llJvH3q2iJ
-         /vDueBSh6a81zD6UejOII23POrqIrrYlEL2ZWVQxc3HKriHca0xbUGsDJuWEqNrt2CjF
-         JRjQsOL7aTftB19mWA8Yd3AGVcPX1a2CNH0s995zkZmb1eYT7/8oLLpQIoC9U8Zuk2Ns
-         h7kg==
-X-Gm-Message-State: AOAM530byQZfp+G/LDj7adkXx2TJwO7D8zJqbJjg1TVXFAVFLJyPdIhy
-        JbWhcbGoR2a5K6a9xDTpWTKrbifu2qbjcn18KgqQcOFmZ7zZ
-X-Google-Smtp-Source: ABdhPJzDkCxXta1Ys0R39HdGljue8uKEVN5XjQJBQYyOREPJAfUKUuvYUlVWUcBJJ1OeMxQRRf+GQ3Dduv+80XvpG4iqF+/4RQtb
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=o4N33InZazxjk2fm8q6vK8YiuSMIHI0rSm1Fto78HVY=;
+        b=PIfq5osUmHw/9xCG6+QgWbwEjpBMUIS8oQskvVn9JaY5M88iV5rgb9smHvxnv1zj0v
+         zHKoyE7kI0tuPpj8OfDEfJob8tMq6oPUHo3OsugGEN4nAGApxeLEmehEAzTeeBD3OXRd
+         NNZkzFmVFiY1YrtUqe7bMOGeKxkOQB3pkNAsxpjdRRa2KEsiA8ZizgNmKkhIWAk2G9Ve
+         yeHtevV9fuNh2gGDrXvf18qBOMdt2TF8FY0chUheXb2Hu1aVeeng8eyy6eHGExWqn1zc
+         n2UFYkU6boJrTjbZiiEkv4EcUBJm/tcrbyns5Cfog3oQ7my7C1lNFHj+kNr7Olbn9etZ
+         bzhA==
+X-Gm-Message-State: AOAM531yEr8nuyGmZL4QLjrC+5DCW+zvknrunfut/juPG3PifT9p6Fco
+        H2/nRUD376Pc8sK+gMShyLs=
+X-Google-Smtp-Source: ABdhPJzUGxuis/ruDJdd5qDR8TPtVsMGxpsuKrk+eTnAx/luvB3WM899gSd766IT/oCv1KftVjMfMQ==
+X-Received: by 2002:a05:600c:3203:: with SMTP id r3mr371006wmp.175.1631642126910;
+        Tue, 14 Sep 2021 10:55:26 -0700 (PDT)
+Received: from [192.168.0.16] ([37.223.140.66])
+        by smtp.gmail.com with ESMTPSA id u16sm1982308wmc.41.2021.09.14.10.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 10:55:26 -0700 (PDT)
+Message-ID: <016b501b-a4bf-c74d-9f7f-8145800ca6e0@gmail.com>
+Date:   Tue, 14 Sep 2021 19:55:24 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5819:: with SMTP id m25mr14781670iob.105.1631642003271;
- Tue, 14 Sep 2021 10:53:23 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 10:53:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000001788e05cbf84285@google.com>
-Subject: [syzbot] WARNING in ieee80211_parse_tx_radiotap
-From:   syzbot <syzbot+0196ac871673f0c20f68@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [RESEND,v2,8/9] arm64: dts: mediatek: add mt7986a support
+Content-Language: en-US
+To:     Sam Shih <sam.shih@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     John Crispin <john@phrozen.org>, Ryder Lee <Ryder.Lee@mediatek.com>
+References: <20210914085137.31761-1-sam.shih@mediatek.com>
+ <20210914085137.31761-9-sam.shih@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20210914085137.31761-9-sam.shih@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    3384c7c7641b selftests/bpf: Test new __sk_buff field hwtst..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1555b31b300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ddc7bf7ff3cd202
-dashboard link: https://syzkaller.appspot.com/bug?extid=0196ac871673f0c20f68
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0196ac871673f0c20f68@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 10717 at include/net/mac80211.h:989 ieee80211_rate_set_vht include/net/mac80211.h:989 [inline]
-WARNING: CPU: 0 PID: 10717 at include/net/mac80211.h:989 ieee80211_parse_tx_radiotap+0x101e/0x12d0 net/mac80211/tx.c:2244
-Modules linked in:
-CPU: 0 PID: 10717 Comm: syz-executor.5 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ieee80211_rate_set_vht include/net/mac80211.h:989 [inline]
-RIP: 0010:ieee80211_parse_tx_radiotap+0x101e/0x12d0 net/mac80211/tx.c:2244
-Code: 48 c1 ea 03 0f b6 04 02 84 c0 0f 84 41 fc ff ff 0f 8f 3b fc ff ff 48 8b 7c 24 10 e8 3c 1a 2e f9 e9 2c fc ff ff e8 b2 d9 e6 f8 <0f> 0b e9 6d ff ff ff e8 f6 19 2e f9 e9 10 fe ff ff e8 cc 19 2e f9
-RSP: 0018:ffffc9000186f3e8 EFLAGS: 00010216
-RAX: 0000000000000618 RBX: ffff88804ef76500 RCX: ffffc900143a5000
-RDX: 0000000000040000 RSI: ffffffff888f478e RDI: 0000000000000003
-RBP: 00000000ffffffff R08: 0000000000000000 R09: 0000000000000100
-R10: ffffffff888f46f9 R11: 0000000000000000 R12: 00000000fffffff8
-R13: ffff88804ef7653c R14: 0000000000000001 R15: 0000000000000004
-FS:  00007fbf5718f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2de23000 CR3: 000000006a671000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- ieee80211_monitor_select_queue+0xa6/0x250 net/mac80211/iface.c:740
- netdev_core_pick_tx+0x169/0x2e0 net/core/dev.c:4089
- __dev_queue_xmit+0x6f9/0x3710 net/core/dev.c:4165
- __bpf_tx_skb net/core/filter.c:2114 [inline]
- __bpf_redirect_no_mac net/core/filter.c:2139 [inline]
- __bpf_redirect+0x5ba/0xd20 net/core/filter.c:2162
- ____bpf_clone_redirect net/core/filter.c:2429 [inline]
- bpf_clone_redirect+0x2ae/0x420 net/core/filter.c:2401
- bpf_prog_eeb6f53a69e5c6a2+0x59/0x234
- bpf_dispatcher_nop_func include/linux/bpf.h:717 [inline]
- __bpf_prog_run include/linux/filter.h:624 [inline]
- bpf_prog_run include/linux/filter.h:631 [inline]
- bpf_test_run+0x381/0xa30 net/bpf/test_run.c:119
- bpf_prog_test_run_skb+0xb84/0x1ee0 net/bpf/test_run.c:663
- bpf_prog_test_run kernel/bpf/syscall.c:3307 [inline]
- __sys_bpf+0x2137/0x5df0 kernel/bpf/syscall.c:4605
- __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbf5718f188 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665f9
-RDX: 0000000000000048 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007fffc508498f R14: 00007fbf5718f300 R15: 0000000000022000
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 14/09/2021 10:51, Sam Shih wrote:
+> Add basic chip support for Mediatek mt7986a, include
+> uart nodes with correct clocks, rng node with correct clock,
+> and watchdog node and mt7986a pinctrl node.
+> 
+> Add cpu node, timer node, gic node, psci and reserved-memory node
+> for ARM Trusted Firmware,
+> 
+> Add clock controller nodes, include 40M clock source, topckgen, infracfg,
+> apmixedsys and ethernet subsystem.
+> 
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> 
+> ---
+> v2: modified clock and uart node due to clock driver updated
+> ---
+>   arch/arm64/boot/dts/mediatek/Makefile        |   1 +
+>   arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts |  49 ++++
+>   arch/arm64/boot/dts/mediatek/mt7986a.dtsi    | 227 +++++++++++++++++++
+>   3 files changed, 277 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> index 4f68ebed2e31..e6c3a73b9e4a 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -7,6 +7,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-evb.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt6797-x20-dev.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-rfb1.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt7622-bananapi-bpi-r64.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt7986a-rfb.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8167-pumpkin.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
+> diff --git a/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+> new file mode 100644
+> index 000000000000..a58347c09ab2
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright (C) 2021 MediaTek Inc.
+> + * Author: Sam.Shih <sam.shih@mediatek.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "mt7986a.dtsi"
+> +
+> +/ {
+> +	model = "MediaTek MT7986a RFB";
+> +	compatible = "mediatek,mt7986a-rfb";
+> +	chosen {
+> +		bootargs = "console=ttyS0,115200n1 loglevel=8  \
+> +				earlycon=uart8250,mmio32,0x11002000";
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+We should be able to achieve this by using the stdout-path instead.
+
+Regards,
+Matthias
