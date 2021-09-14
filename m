@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A10140B56F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDA940B576
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 18:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhINQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 12:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhINQ4r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 12:56:47 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CDAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:55:30 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id c206so29730369ybb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 09:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CiT20f+n/K0wwGy2+rqWqUjT0xmQpOS21TTyMD2zlmE=;
-        b=nMdL8uCTiQIMJh57mn76kJI1SjOunTniqob8xg06HjQHvwabBbiIEUoG1V/HxhbDRi
-         B/xog7mzfm9my23apb9v85KQrza1TrtowTXKcScTJZ4+X30PxKKrUOYeTVD2fdrTQ2g/
-         Pvq3Xd26dcI4NrPFe19pW1JvJMSQPv+FQM+wJPukchgr69OHjF+2wQwuSkDaWOtI3vC1
-         4Fr7bjTmPKHnXsWIOqLwYPx1kYWVZFo4Ly2/tUV7HDmL2DWyYfQQ9iqgfRPK8yNidZJo
-         EqqHurEf2kxlJDesWikVmli4MC0W3p/P7EdB3SdSe7MrTM8DJiYprZc2u2fgAqABTu27
-         g4uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CiT20f+n/K0wwGy2+rqWqUjT0xmQpOS21TTyMD2zlmE=;
-        b=H7SWeWWOMS8gAt3OUDzkDUDP/IMy39EyhwmoCAEtBSTy4e8MAXoY+tdaY1g3lwFVkS
-         ST9yyfI2H2xY/VQF/6U4upUkTWB9P13lL1BZtn5AYF9Ly+VUx9OHebB9toYvWuxGFV5f
-         qZB5oxflc0KrlLTZvwVgDvqhzcfA7X2YtiXdZc2wdIjvtrCutJ245Mv69FYN8GrIEL5f
-         Xga0mSdlUnqmJSxXIpsjH9Wqfy/AJibTqiBRdbtIjVwz+vEHJ5uwAp2IwctV4AYGOa3o
-         R0ARF6urHT2iHaTnxopwsi5B4ndd0UtQUbEfgMoyIOE5C4+gRWQsONRZztn1yCEF+A6X
-         xFrg==
-X-Gm-Message-State: AOAM531pWRzgXw4backTr57NZ++szBZt00Opy2LcyKvpf0c+I6OUlzuJ
-        UmCJIR7Y+Mp7p1bDiki2dJ27iAPaOlYObRuJf8lKhA==
-X-Google-Smtp-Source: ABdhPJy03PrI5vpf60tAG6fNSu3/OBlIZAi3gAIVabPc0hL49cirqfjGeryObR3PamSArsD9t9I5ApbE0cHps48WO0Y=
-X-Received: by 2002:a25:c504:: with SMTP id v4mr202049ybe.308.1631638529167;
- Tue, 14 Sep 2021 09:55:29 -0700 (PDT)
+        id S231201AbhINQ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 12:57:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:47238 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229817AbhINQ5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 12:57:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FE3531B;
+        Tue, 14 Sep 2021 09:56:31 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B04E43F59C;
+        Tue, 14 Sep 2021 09:56:29 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     rafael@kernel.org, haokexin@gmail.com, juri.lelli@redhat.com,
+        mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        viresh.kumar@linaro.org, james.morse@arm.com
+Subject: [PATCH] cpufreq: schedutil: Destroy mutex before kobject_put() frees the memory
+Date:   Tue, 14 Sep 2021 16:56:23 +0000
+Message-Id: <20210914165623.18972-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210913230955.156323-1-rananta@google.com> <20210913230955.156323-3-rananta@google.com>
- <20210914064845.4kdsn4h4r6ebdhsb@gator.home>
-In-Reply-To: <20210914064845.4kdsn4h4r6ebdhsb@gator.home>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Tue, 14 Sep 2021 09:55:18 -0700
-Message-ID: <CAJHc60z_712Q2pZGBYMx1XJ29++3LrO=TCczHCsoQFb1qWEw5Q@mail.gmail.com>
-Subject: Re: [PATCH v6 02/14] tools: arm64: Import sysreg.h
-To:     Andrew Jones <drjones@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 11:48 PM Andrew Jones <drjones@redhat.com> wrote:
->
-> On Mon, Sep 13, 2021 at 11:09:43PM +0000, Raghavendra Rao Ananta wrote:
-> > Bring-in the kernel's arch/arm64/include/asm/sysreg.h
-> > into tools/ for arm64 to make use of all the standard
-> > register definitions in consistence with the kernel.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  tools/arch/arm64/include/asm/sysreg.h | 1296 +++++++++++++++++++++++++
-> >  1 file changed, 1296 insertions(+)
-> >  create mode 100644 tools/arch/arm64/include/asm/sysreg.h
->
-> Looks like an older version than what is available now (v5.15-rc1?)
-> was used, but it's expected that these tools copies go out of date
-> quickly and it doesn't matter.
->
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
->
-While I'm sending out a new patchset anyways, I'll pull-in the latest copy.
+Since commit e5c6b312ce3c ("cpufreq: schedutil: Use kobject release()
+method to free sugov_tunables") kobject_put() has kfree()d the
+attr_set before gov_attr_set_put() returns.
 
-Regards,
-Raghavendra
-> Thanks,
-> drew
->
+kobject_put() isn't the last user of attr_set in gov_attr_set_put(),
+the subsequent mutex_destroy() triggers a use-after-free:
+| BUG: KASAN: use-after-free in mutex_is_locked+0x20/0x60
+| Read of size 8 at addr ffff000800ca4250 by task cpuhp/2/20
+|
+| CPU: 2 PID: 20 Comm: cpuhp/2 Not tainted 5.15.0-rc1 #12369
+| Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
+| Platform, BIOS EDK II Jul 30 2018
+| Call trace:
+|  dump_backtrace+0x0/0x380
+|  show_stack+0x1c/0x30
+|  dump_stack_lvl+0x8c/0xb8
+|  print_address_description.constprop.0+0x74/0x2b8
+|  kasan_report+0x1f4/0x210
+|  kasan_check_range+0xfc/0x1a4
+|  __kasan_check_read+0x38/0x60
+|  mutex_is_locked+0x20/0x60
+|  mutex_destroy+0x80/0x100
+|  gov_attr_set_put+0xfc/0x150
+|  sugov_exit+0x78/0x190
+|  cpufreq_offline.isra.0+0x2c0/0x660
+|  cpuhp_cpufreq_offline+0x14/0x24
+|  cpuhp_invoke_callback+0x430/0x6d0
+|  cpuhp_thread_fun+0x1b0/0x624
+|  smpboot_thread_fn+0x5e0/0xa6c
+|  kthread+0x3a0/0x450
+|  ret_from_fork+0x10/0x20
+
+Swap the order of the calls.
+
+Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
+Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
+CC: Kevin Hao <haokexin@gmail.com>
+CC: Viresh Kumar <viresh.kumar@linaro.org>
+CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: James Morse <james.morse@arm.com>
+---
+ drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
+index 66b05a326910..a6f365b9cc1a 100644
+--- a/drivers/cpufreq/cpufreq_governor_attr_set.c
++++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
+@@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
+ 	if (count)
+ 		return count;
+ 
+-	kobject_put(&attr_set->kobj);
+ 	mutex_destroy(&attr_set->update_lock);
++	kobject_put(&attr_set->kobj);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(gov_attr_set_put);
+-- 
+2.30.2
+
