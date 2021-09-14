@@ -2,161 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F142A40A884
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7886840A8A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhINHsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:48:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48063 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231893AbhINHrs (ORCPT
+        id S230122AbhINHv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233096AbhINHvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:47:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631605591;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HViiRnu75I46+r5aoAeD0e3kDx7NMxZUbAuKksyTKDo=;
-        b=WCg7Ht5LPChiMl0AUZs8wZVvsaAYmJ1eZXUw68azs4cO1ny4GkDGK8Ewj1eis0U8ksv4F4
-        510O/TCvOKN6Iew3TaHmHm37hf8iCOQ7kRA7fE9EPDraogyZS1+ruTm5bOXuvlVkPTx2km
-        yfjdiaxSpRC6UXNQviFEGXrQKeCGP7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-EytKr-llMZaAcjwQWjDUtg-1; Tue, 14 Sep 2021 03:46:29 -0400
-X-MC-Unique: EytKr-llMZaAcjwQWjDUtg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14FB71017965;
-        Tue, 14 Sep 2021 07:46:28 +0000 (UTC)
-Received: from T590 (ovpn-13-174.pek2.redhat.com [10.72.13.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D650210016F5;
-        Tue, 14 Sep 2021 07:46:19 +0000 (UTC)
-Date:   Tue, 14 Sep 2021 15:46:28 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, josef@toxicpanda.com, hch@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nbd@other.debian.org, yi.zhang@huawei.com
-Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
-Message-ID: <YUBTVBioqJ7qas2R@T590>
-References: <20210909141256.2606682-1-yukuai3@huawei.com>
- <20210909141256.2606682-6-yukuai3@huawei.com>
- <YT/2z4PSeW5oJWMq@T590>
- <c6af73a2-f12d-eeef-616e-ae0cdb4f6f2d@huawei.com>
- <YUBE4BJ7+kN1c4l8@T590>
- <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com>
+        Tue, 14 Sep 2021 03:51:42 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F79C061D7E
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:47:21 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id y16so26238720ybm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=twA4k54DR1XC21StOFmDZzFZ+sd3DWgF5E9CDyEkCU8=;
+        b=Ty4PkoKLBZwVPLC2TX10fKYHhH6PGv80LcA6Fb0BpQrZeKu+DQB3EzhglyL0L6mvuo
+         3kO2wEoKMY7ao7gyawgUGvkrH19YbGr5Vpt0GZ+GJmJvS69Gtg0It2MqbPDNB7/RWgmb
+         AnpUtRwIPwxFAi2USPk9u3dNPVa+q6TFmmN4c5GP/ek11NJvc+wbIvzXEx36ogmp6Pke
+         Nn5BMcp/ZTsgcqoS3bbb1srZ3ZcakiAEvq+CGLr6o8QdlWUMXXBuB1EDlRjvW1ArgInx
+         CwLYP4yvmYosCrz74mLzD3rOOAi8poFeN1jIP/IRc98pBzyUXFwnrGjmU+ylOejIT9ot
+         Oe/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=twA4k54DR1XC21StOFmDZzFZ+sd3DWgF5E9CDyEkCU8=;
+        b=381jSd4SM6Jz8Btzf1840zWwu/h2ZWJwd9HJIvBf/ECpAbZcbonM3h399leXEoqrW4
+         dQgncWsSxZ3p4TcvaOggDH3HG9UDjHc/ER1sPopTtyIIOWQ/+bP3zcJNVubjh/tHFOAA
+         MirysFbSPdfC3OjsQXQDbnMde+rHo6lNnsOZtqZSaR4NwVdIH31gJAClEhDXISmMGL6M
+         kT0kO/V3q9Opal4LhA4wQAZCu8RlruD9GvMTMa1GiYp2nfQLDYw9RIQAdVUbR6TCR5xR
+         MWhpqdxgV+S/L1r+qo+x9/xp0ffx26Q4LOQr6HcGlK+l0AHe0Q9nQOZJld8zCiyP+GrI
+         bKKQ==
+X-Gm-Message-State: AOAM5332m1hmXAt0g18JLyvNyELXqKmwhaeceB16dEg6hJXreJq7d6tl
+        vjtUYKPDU+/dKiUpG5MD2wlt7h4ZdUhh6xN2gftzKA==
+X-Google-Smtp-Source: ABdhPJwN86MvAtEfJh7vdsxFkEIPK5tuOTJgwF8g/iR8IAyH4GBmqV2HLNNEuS/tRFYlN0HwvDAdxlIznx1hMoG9k/M=
+X-Received: by 2002:a25:af49:: with SMTP id c9mr17182208ybj.432.1631605640407;
+ Tue, 14 Sep 2021 00:47:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210914043928.4066136-1-saravanak@google.com>
+ <20210914043928.4066136-4-saravanak@google.com> <CAMuHMdViFMA4_k2Da=G2h3BWBdmwDJdh5pgRfbpUaoC_DHcmJA@mail.gmail.com>
+In-Reply-To: <CAMuHMdViFMA4_k2Da=G2h3BWBdmwDJdh5pgRfbpUaoC_DHcmJA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 14 Sep 2021 00:46:44 -0700
+Message-ID: <CAGETcx_mP96HdLN_5MEAkGNZJDiuhfZsMptSTHPoNfZnmS1QQA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/5] driver core: Create __fwnode_link_del() helper function
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 03:13:38PM +0800, yukuai (C) wrote:
-> On 2021/09/14 14:44, Ming Lei wrote:
-> > On Tue, Sep 14, 2021 at 11:11:06AM +0800, yukuai (C) wrote:
-> > > On 2021/09/14 9:11, Ming Lei wrote:
-> > > > On Thu, Sep 09, 2021 at 10:12:55PM +0800, Yu Kuai wrote:
-> > > > > blk_mq_tag_to_rq() can only ensure to return valid request in
-> > > > > following situation:
-> > > > > 
-> > > > > 1) client send request message to server first
-> > > > > submit_bio
-> > > > > ...
-> > > > >    blk_mq_get_tag
-> > > > >    ...
-> > > > >    blk_mq_get_driver_tag
-> > > > >    ...
-> > > > >    nbd_queue_rq
-> > > > >     nbd_handle_cmd
-> > > > >      nbd_send_cmd
-> > > > > 
-> > > > > 2) client receive respond message from server
-> > > > > recv_work
-> > > > >    nbd_read_stat
-> > > > >     blk_mq_tag_to_rq
-> > > > > 
-> > > > > If step 1) is missing, blk_mq_tag_to_rq() will return a stale
-> > > > > request, which might be freed. Thus convert to use
-> > > > > blk_mq_find_and_get_req() to make sure the returned request is not
-> > > > > freed.
-> > > > 
-> > > > But NBD_CMD_INFLIGHT has been added for checking if the reply is
-> > > > expected, do we still need blk_mq_find_and_get_req() for covering
-> > > > this issue? BTW, request and its payload is pre-allocated, so there
-> > > > isn't real use-after-free.
-> > > 
-> > > Hi, Ming
-> > > 
-> > > Checking NBD_CMD_INFLIGHT relied on the request founded by tag is valid,
-> > > not the other way round.
-> > > 
-> > > nbd_read_stat
-> > >   req = blk_mq_tag_to_rq()
-> > >   cmd = blk_mq_rq_to_pdu(req)
-> > >   mutex_lock(cmd->lock)
-> > >   checking NBD_CMD_INFLIGHT
-> > 
-> > Request and its payload is pre-allocated, and either req->ref or cmd->lock can
-> > serve the same purpose here. Once cmd->lock is held, you can check if the cmd is
-> > inflight or not. If it isn't inflight, just return -ENOENT. Is there any
-> > problem to handle in this way?
-> 
-> Hi, Ming
-> 
-> in nbd_read_stat:
-> 
-> 1) get a request by tag first
-> 2) get nbd_cmd by the request
-> 3) hold cmd->lock and check if cmd is inflight
-> 
-> If we want to check if the cmd is inflight in step 3), we have to do
-> setp 1) and 2) first. As I explained in patch 0, blk_mq_tag_to_rq()
-> can't make sure the returned request is not freed:
-> 
-> nbd_read_stat
-> 			blk_mq_sched_free_requests
-> 			 blk_mq_free_rqs
->   blk_mq_tag_to_rq
->   -> get rq before clear mapping
-> 			  blk_mq_clear_rq_mapping
-> 			  __free_pages -> rq is freed
->   blk_mq_request_started -> UAF
+On Tue, Sep 14, 2021 at 12:05 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Tue, Sep 14, 2021 at 6:39 AM Saravana Kannan <saravanak@google.com> wrote:
+> > The same code is repeated in multiple locations. Create a helper
+> > function for it.
+> >
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/base/core.c
+> > +++ b/drivers/base/core.c
+> > @@ -101,6 +101,19 @@ int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup)
+> >         return ret;
+> >  }
+> >
+> > +/**
+> > + * __fwnode_link_del - Delete a link between two fwnode_handles.
+> > + * @link: the fwnode_link to be deleted
+> > + *
+> > + * The fwnode_link_lock needs to be held when this function is called.
+> > + */
+> > +static void __fwnode_link_del(struct fwnode_link *link)
+>
+> Why the double underscore?
 
-If the above can happen, blk_mq_find_and_get_req() may not fix it too, just
-wondering why not take the following simpler way for avoiding the UAF?
+Because unlike fwnode_link_add(), this one needs the lock to be held.
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 5170a630778d..dfa5cce71f66 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -795,9 +795,13 @@ static void recv_work(struct work_struct *work)
- 						     work);
- 	struct nbd_device *nbd = args->nbd;
- 	struct nbd_config *config = nbd->config;
-+	struct request_queue *q = nbd->disk->queue;
- 	struct nbd_cmd *cmd;
- 	struct request *rq;
- 
-+	if (!percpu_ref_tryget(&q->q_usage_counter))
-+                return;
-+
- 	while (1) {
- 		cmd = nbd_read_stat(nbd, args->index);
- 		if (IS_ERR(cmd)) {
-@@ -813,6 +817,7 @@ static void recv_work(struct work_struct *work)
- 		if (likely(!blk_should_fake_timeout(rq->q)))
- 			blk_mq_complete_request(rq);
- 	}
-+	blk_queue_exit(q);
- 	nbd_config_put(nbd);
- 	atomic_dec(&config->recv_threads);
- 	wake_up(&config->recv_wq);
+-Saravana
 
-Thanks,
-Ming
-
+>
+> > +{
+> > +       list_del(&link->s_hook);
+> > +       list_del(&link->c_hook);
+> > +       kfree(link);
+> > +}
+>
+> Apart from that:
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
