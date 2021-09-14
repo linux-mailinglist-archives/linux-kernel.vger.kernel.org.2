@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA2A40B7DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045C740B7DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 21:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhINTU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 15:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhINTUr (ORCPT
+        id S233396AbhINTVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 15:21:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35352 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232909AbhINTUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:20:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F29C061574;
-        Tue, 14 Sep 2021 12:19:29 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 19:19:27 -0000
+        Tue, 14 Sep 2021 15:20:48 -0400
+Date:   Tue, 14 Sep 2021 19:19:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631647167;
+        s=2020; t=1631647169;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=on1JkDflhSlHGAgIMNmx25YtGtiz9D4EzPF2GY7fwrU=;
-        b=I4kcrduyg7jNZtJiiu43ETPNkVIP7jOrTQrolAeOgNRzgEzG1A2ws6CQgRnQKSvYcRJd1U
-        CSnBC4v8TOQI0x63dpKJglMxfb38VM42V9dByPs1kk3bM9RKKys6syeZ5GUbFvxv/+27NY
-        6TTh42MtHBlNoypMs+cvKActO+FzmhvZrp1QIStSmOg7lb0elBR9I83X67uTrOTZJOWjKu
-        2auwx8rImbW+dvZXlDvvLXrnl9Zrd4VB4aakO8HmvUcLHyXObI4aFI8+mMijG/jeudA9ay
-        e+R+taw+WB7/z/vqfAFAdBNgY2K07N8KRp+gvGkL5qXG0tbtpjsNAyU2MN9R+w==
+        bh=5U4WfpfZbpw1gjpd2I1YXpPjaUBpBxs/fvB3RBgavG4=;
+        b=NljBO+u7m+IFmYNFIGVw8lnF4iykGO1hXICe3AbQcFDFiZ+R22mAbYAy7LBHzS8odC+mvd
+        fb0JNdffMwjmq3AQZWcRlVsogNLu/CEYDEGOVPrmHmF+Mlu0fBNLyvcChERCOsqxWQw2HQ
+        69HpCk+r8wZ9dirGL1DrKTajEgQmqG7d1x6DY6xsMnZEWc3Fz+/1AkhmSrGnZxiOYGvQji
+        wltICs8KLQ/NuqiDKvR5uiWlqmQJPkkopYSvAhNmMlC7LztRJVWid63+iYDlj6jc+wBIn6
+        JPtN2JUXH5rPUW3uRNgnwZzTKbuLBMtQDL//W4UZlSOtjyVh37IFHGVjrL6H7w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631647167;
+        s=2020e; t=1631647169;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=on1JkDflhSlHGAgIMNmx25YtGtiz9D4EzPF2GY7fwrU=;
-        b=RjezS2ZU/fx6ZWiPPO1GxrtI0krzNaq0NnjYUUAzOfBGWYcfPBK5W0AMWnXbJL8uBqIECL
-        hCG+NY1G5BHC0nBg==
+        bh=5U4WfpfZbpw1gjpd2I1YXpPjaUBpBxs/fvB3RBgavG4=;
+        b=4gZNwQ+yXPWK2ASXmqqXoMXMQ9rJTXnpcjn9SjIONnuOQcapuIpEqJSjX333tKGXzQ4TeY
+        eVRjV4YbrMzJeBBQ==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fpu] x86/signal: Change return type of restore_sigcontext()
- to boolean
+Subject: [tip: x86/fpu] x86/fpu/signal: Change return type of
+ copy_fpstate_to_sigframe() to boolean
 Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210908132525.851280949@linutronix.de>
-References: <20210908132525.851280949@linutronix.de>
+In-Reply-To: <20210908132525.736773588@linutronix.de>
+References: <20210908132525.736773588@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <163164716703.25758.16541621557684628922.tip-bot2@tip-bot2>
+Message-ID: <163164716860.25758.14576439201841108170.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,139 +60,140 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/fpu branch of tip:
 
-Commit-ID:     ee4ecdfbd28954086a09740dc931c10c93e39370
-Gitweb:        https://git.kernel.org/tip/ee4ecdfbd28954086a09740dc931c10c93e39370
+Commit-ID:     052adee668284b67105375c0a524f16a423f1424
+Gitweb:        https://git.kernel.org/tip/052adee668284b67105375c0a524f16a423f1424
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 08 Sep 2021 15:29:35 +02:00
+AuthorDate:    Wed, 08 Sep 2021 15:29:32 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
 CommitterDate: Tue, 14 Sep 2021 21:10:03 +02:00
 
-x86/signal: Change return type of restore_sigcontext() to boolean
+x86/fpu/signal: Change return type of copy_fpstate_to_sigframe() to boolean
 
-None of the call sites cares about the return code. All they are interested
-in is success or fail.
+None of the call sites cares about the actual return code. Change the
+return type to boolean and return 'true' on success.
 
 Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210908132525.851280949@linutronix.de
+Link: https://lkml.kernel.org/r/20210908132525.736773588@linutronix.de
 ---
- arch/x86/ia32/ia32_signal.c | 12 ++++++------
- arch/x86/kernel/signal.c    | 18 +++++++++---------
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ arch/x86/ia32/ia32_signal.c         |  4 ++--
+ arch/x86/include/asm/fpu/internal.h |  2 +-
+ arch/x86/kernel/fpu/signal.c        | 20 ++++++++++----------
+ arch/x86/kernel/signal.c            |  4 +---
+ 4 files changed, 14 insertions(+), 16 deletions(-)
 
 diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
-index 023198e..0d6789b 100644
+index 5e3d9b7..023198e 100644
 --- a/arch/x86/ia32/ia32_signal.c
 +++ b/arch/x86/ia32/ia32_signal.c
-@@ -57,8 +57,8 @@ static inline void reload_segments(struct sigcontext_32 *sc)
- /*
-  * Do a signal return; undo the signal stack.
-  */
--static int ia32_restore_sigcontext(struct pt_regs *regs,
--				   struct sigcontext_32 __user *usc)
-+static bool ia32_restore_sigcontext(struct pt_regs *regs,
-+				    struct sigcontext_32 __user *usc)
- {
- 	struct sigcontext_32 sc;
+@@ -220,8 +220,8 @@ static void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
  
-@@ -66,7 +66,7 @@ static int ia32_restore_sigcontext(struct pt_regs *regs,
- 	current->restart_block.fn = do_no_restart_syscall;
+ 	sp = fpu__alloc_mathframe(sp, 1, &fx_aligned, &math_size);
+ 	*fpstate = (struct _fpstate_32 __user *) sp;
+-	if (copy_fpstate_to_sigframe(*fpstate, (void __user *)fx_aligned,
+-				     math_size) < 0)
++	if (!copy_fpstate_to_sigframe(*fpstate, (void __user *)fx_aligned,
++				      math_size))
+ 		return (void __user *) -1L;
  
- 	if (unlikely(copy_from_user(&sc, usc, sizeof(sc))))
--		return -EFAULT;
-+		return false;
- 
- 	/* Get only the ia32 registers. */
- 	regs->bx = sc.bx;
-@@ -94,7 +94,7 @@ static int ia32_restore_sigcontext(struct pt_regs *regs,
- 	 * normal case.
- 	 */
- 	reload_segments(&sc);
--	return fpu__restore_sig(compat_ptr(sc.fpstate), 1);
-+	return !fpu__restore_sig(compat_ptr(sc.fpstate), 1);
+ 	sp -= frame_size;
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index c856ca4..74aa53e 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -386,7 +386,7 @@ static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
+ 	__restore_fpregs_from_fpstate(fpstate, xfeatures_mask_fpstate());
  }
  
- COMPAT_SYSCALL_DEFINE0(sigreturn)
-@@ -111,7 +111,7 @@ COMPAT_SYSCALL_DEFINE0(sigreturn)
+-extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
++extern bool copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
  
- 	set_current_blocked(&set);
+ /*
+  * FPU context switch related helper methods:
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index c4abbd9..7ce396d 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -165,7 +165,7 @@ static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
+  * For [f]xsave state, update the SW reserved fields in the [f]xsave frame
+  * indicating the absence/presence of the extended state to the user.
+  */
+-int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
++bool copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+ {
+ 	struct task_struct *tsk = current;
+ 	int ia32_fxstate = (buf != buf_fx);
+@@ -176,13 +176,14 @@ int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
  
--	if (ia32_restore_sigcontext(regs, &frame->sc))
-+	if (!ia32_restore_sigcontext(regs, &frame->sc))
- 		goto badframe;
- 	return regs->ax;
+ 	if (!static_cpu_has(X86_FEATURE_FPU)) {
+ 		struct user_i387_ia32_struct fp;
++
+ 		fpregs_soft_get(current, NULL, (struct membuf){.p = &fp,
+ 						.left = sizeof(fp)});
+-		return copy_to_user(buf, &fp, sizeof(fp)) ? -EFAULT : 0;
++		return !copy_to_user(buf, &fp, sizeof(fp));
+ 	}
  
-@@ -135,7 +135,7 @@ COMPAT_SYSCALL_DEFINE0(rt_sigreturn)
+ 	if (!access_ok(buf, size))
+-		return -EACCES;
++		return false;
  
- 	set_current_blocked(&set);
+ 	if (use_xsave()) {
+ 		struct xregs_state __user *xbuf = buf_fx;
+@@ -191,9 +192,8 @@ int copy_fpstate_to_sigframe(void __user *buf, void __user *buf_fx, int size)
+ 		 * Clear the xsave header first, so that reserved fields are
+ 		 * initialized to zero.
+ 		 */
+-		ret = __clear_user(&xbuf->header, sizeof(xbuf->header));
+-		if (unlikely(ret))
+-			return ret;
++		if (__clear_user(&xbuf->header, sizeof(xbuf->header)))
++			return false;
+ 	}
+ retry:
+ 	/*
+@@ -214,17 +214,17 @@ retry:
+ 	if (ret) {
+ 		if (!__clear_user(buf_fx, fpu_user_xstate_size))
+ 			goto retry;
+-		return -1;
++		return false;
+ 	}
  
--	if (ia32_restore_sigcontext(regs, &frame->uc.uc_mcontext))
-+	if (!ia32_restore_sigcontext(regs, &frame->uc.uc_mcontext))
- 		goto badframe;
+ 	/* Save the fsave header for the 32-bit frames. */
+ 	if ((ia32_fxstate || !use_fxsr()) && save_fsave_header(tsk, buf))
+-		return -1;
++		return false;
  
- 	if (compat_restore_altstack(&frame->uc.uc_stack))
+ 	if (use_fxsr() && save_xstate_epilog(buf_fx, ia32_fxstate))
+-		return -1;
++		return false;
+ 
+-	return 0;
++	return true;
+ }
+ 
+ static int __restore_fpregs_from_user(void __user *buf, u64 xrestore,
 diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 5f623a1..140b7b2 100644
+index f4d21e4..5f623a1 100644
 --- a/arch/x86/kernel/signal.c
 +++ b/arch/x86/kernel/signal.c
-@@ -79,9 +79,9 @@ static void force_valid_ss(struct pt_regs *regs)
- # define CONTEXT_COPY_SIZE	sizeof(struct sigcontext)
- #endif
+@@ -244,7 +244,6 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	unsigned long math_size = 0;
+ 	unsigned long sp = regs->sp;
+ 	unsigned long buf_fx = 0;
+-	int ret;
  
--static int restore_sigcontext(struct pt_regs *regs,
--			      struct sigcontext __user *usc,
--			      unsigned long uc_flags)
-+static bool restore_sigcontext(struct pt_regs *regs,
-+			       struct sigcontext __user *usc,
-+			       unsigned long uc_flags)
- {
- 	struct sigcontext sc;
+ 	/* redzone */
+ 	if (IS_ENABLED(CONFIG_X86_64))
+@@ -292,8 +291,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	}
  
-@@ -89,7 +89,7 @@ static int restore_sigcontext(struct pt_regs *regs,
- 	current->restart_block.fn = do_no_restart_syscall;
+ 	/* save i387 and extended state */
+-	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
+-	if (ret < 0)
++	if (!copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size))
+ 		return (void __user *)-1L;
  
- 	if (copy_from_user(&sc, usc, CONTEXT_COPY_SIZE))
--		return -EFAULT;
-+		return false;
- 
- #ifdef CONFIG_X86_32
- 	set_user_gs(regs, sc.gs);
-@@ -136,8 +136,8 @@ static int restore_sigcontext(struct pt_regs *regs,
- 		force_valid_ss(regs);
- #endif
- 
--	return fpu__restore_sig((void __user *)sc.fpstate,
--			       IS_ENABLED(CONFIG_X86_32));
-+	return !fpu__restore_sig((void __user *)sc.fpstate,
-+				 IS_ENABLED(CONFIG_X86_32));
- }
- 
- static __always_inline int
-@@ -641,7 +641,7 @@ SYSCALL_DEFINE0(sigreturn)
- 	 * x86_32 has no uc_flags bits relevant to restore_sigcontext.
- 	 * Save a few cycles by skipping the __get_user.
- 	 */
--	if (restore_sigcontext(regs, &frame->sc, 0))
-+	if (!restore_sigcontext(regs, &frame->sc, 0))
- 		goto badframe;
- 	return regs->ax;
- 
-@@ -669,7 +669,7 @@ SYSCALL_DEFINE0(rt_sigreturn)
- 
- 	set_current_blocked(&set);
- 
--	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, uc_flags))
-+	if (!restore_sigcontext(regs, &frame->uc.uc_mcontext, uc_flags))
- 		goto badframe;
- 
- 	if (restore_altstack(&frame->uc.uc_stack))
-@@ -927,7 +927,7 @@ COMPAT_SYSCALL_DEFINE0(x32_rt_sigreturn)
- 
- 	set_current_blocked(&set);
- 
--	if (restore_sigcontext(regs, &frame->uc.uc_mcontext, uc_flags))
-+	if (!restore_sigcontext(regs, &frame->uc.uc_mcontext, uc_flags))
- 		goto badframe;
- 
- 	if (compat_restore_altstack(&frame->uc.uc_stack))
+ 	return (void __user *)sp;
