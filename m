@@ -2,295 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D2840AE05
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E18F940AE0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 14:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhINMmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 08:42:33 -0400
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:10245 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbhINMmc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:42:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1631623275;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=SUrijeXNVLZ7C/wfJwbta0cDiWslSHEV8cFFg/6P7wI=;
-  b=ZJv2Smd1IwQPuThOG/aqRkkKZhf4Mt9HruoTj0KeWceR5suTTWINQ4Rm
-   piIM9nXlW2bzxUbo2vAfvnOm6Tlei3LMSDwfBuhh7moSRGSYRt6GKzywW
-   1SZo1HbBAr4eDhKgTMOF3oLBB3+THPE+xBuSqTxth6Q3lBozdQtAmAr7G
-   o=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: QTZxJnGufd4l0xrPjj0NRz41Wgfh6cBGcMdq2xC+ZU25WCKXrJNeW1Pxyh6IJPtkl4RBtDwU9F
- DT5bFgbBRvECF2RKOX989Ptm2pGfLQ9Fzewhp2Ox3x53Fp1COM8LepRFk5hd7EqwEgPNMbK/TN
- psgmWz/PCUwT4ME6u/afh4tBpZ/oJzNYQP7XAESOuR6iwx/umt46IGuv+zM1QhVTzX7Hj1A0PW
- giyRU6/S/W1K0OsaqaRkRMtKfFfiYR1KY9xX0nRkR6b88Y6ERPz/lnHH6vMqk2cYEFYmPlT7bg
- 3klFld9A9om1RDN/WLho5+48
-X-SBRS: 5.1
-X-MesageID: 52661756
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-IronPort-Data: A9a23:GZ/FLqoWHKaT7yZjuo5a4P5nLOleBmKPYhIvgKrLsJaIsI4StFCzt
- garIBmPM6mCZjDxfthxPo7n/RgG7ZTcnYMwTQBkrSs0EigS8ZuZCYyVIHmrMnLJJKUvbq7GA
- +byyDXkBJppJpMJjk71atANlZT4vE2xbuKU5NTsY0idfic5Dnd84f5fs7Rh2Ncw0IHlW1rlV
- e7a+KUzBnf0g1aYDUpMg06zgEsHUCPa4W5wUvQWPJinjXeG/5UnJMt3yZKZdhMUdrJ8DO+iL
- 9sv+Znilo/vE7XBPfv++lrzWhVirrc/pmFigFIOM0SpqkAqSiDfTs/XnRfTAKtao2zhojx/9
- DlCnbKLVxlqOvCUobQAcytlS31BJ6sBqaCSdBBTseTLp6HHW37lwvEoB0AqJ4wIvO1wBAmi9
- 9RBdmpLNErawbvrnvTrEYGAhex6RCXvFJkYtXx6iynQEN4tQIzZQrWM7thdtNs1rp0UQ6iHO
- JdHAdZpRE7RaiBsAkg4M79g2/2ulHavWiBjh03A8MLb5ECMlVcsgdABKuH9YceWTM9YmkKZo
- GPu/GnjBBwectuFxlKt9nOqm/+Kni7hXo8WPKO3++Qsg1CJwGEXThoMWjOTsfS/z0KzRd9bA
- 0gV4TY167g/8lSxSdvwVAH+p2SL1jYeUddNF+wx6CmW17HZpQ2eAwAsTDFbb8c9nNQrXjFs3
- ViM9/vjAiZuq/uSUm6H8amPriKaPjIcJmsPIyQDSGM4D8LL+d9pyEiVF5A6TfDz3oad9SzML
- y6ighMgmfYX0JYyh7ibz22f3w22oN+YUVtgjunIZV5J/j+Vdab8OdfxtAmEsqgZRGqKZgLe5
- ylfwqBy+MhLVMvUxXLXGI3hCZn0v67tDdHKvbJ483DNHRyW8ni/dMh75DhkLS+F2e5VJGe0P
- Cc/Ve5XjaK/3UdGj4csOOpd6OxwlMAM8OgJsNiOMLKihbArKGe6ENlGPxL44owUuBFEfVsD1
- XKnnSCEVydy5UNPl2Heegvg+eVzmnBWKZ37HMimp/hY7VZuTCHMEupUWLd/Rss48LmFsG3oH
- yV3bpDRoyizpNbWO3GNmaZKdAhiBSFiWfje9pwGHsbec1EOMDxwVJfsLUYJJtUNc1J9zbyTo
- BlQmyZwlTLCuJEwAV7WMysyNOy2Bs8XQLBSFXVEAGtEEkMLOO6HxKwea4E2bf8g8ulixuRzV
- P4LZ4OLBfEnd9gN0211gUDVoNMweRK1qxiJOib5MjEzc4Q5H17C+8P+fxup/y4LV3Llucw7q
- rym9wXaXZtcGFgyUJeIMKqinwGroHwQuONuRE+UcNNdT1rhrdpxICvrg/5pf8xVcUffxiGX3
- hq9CAsDobWfuJc89dTE3PjWr4qgH+ZkMFBdGm3XseS/OSXApzLxyo5cSueYOzvaUTqsqqmlY
- OxUydD6MeEGwwkW49YtTe4zwPtntdX1prJcwgB1J1nxbgymWuF6P32L/chTrakRlLVXjhS7B
- xCU8d5ANLTXZM68SAwNJBAoZ/io3O0PnmWA9uw8JUj36XMl/LeDVkkObRCAhDYEcelwOYIhh
- +wgpNQX+0q0jR9zaoSKiSVd9mKtKH0cUvp46sFGUdGz0gd7mEtfZZH8CzPt5MDdYtpBBUAmP
- zuIifeQnL9b3EfDLyI+GHWlMTCxXnjSVMSmFGM/Gmk=
-IronPort-HdrOrdr: A9a23:5Hwc6aB271b39C/lHejesseALOsnbusQ8zAXPh9KJyC9I/b2qy
- nxppgmPEfP+UossHFJo6HlBEDyewKiyXcV2/heAV7GZmOGhILGFvAb0WKP+UyDJ8S6zJ8h6U
- 4CSdk+NDSTNykAsS+S2mDReLtBsbq6GeKT9J3jJhxWPGZXgtRbnn5E43GgYytLrWd9dP8EPa
- vZwvACiyureHwRYMj+LGICRfL/q9rCk4+jSQIaBjY8gTP+zg+A2frfKVy1zx0eWzRAzfMJ6m
- 7eiTH04a2lrrWS1gLc7WnO9J5b8eGRiOerRfb8z/T9GA+czTpAV74RHYFqewpF+d1H3Wxa1O
- UkZS1QZ/ibpUmhJV1d6iGdpTUImAxemkMKj2XowUfLkIjBXzQ9BNNGhYVFNjXky2dIhqAg7I
- t7m1uDsZxZFBXBmzm4wePpeVVFqmqYyEBSy9L6qRRkINQjgXtq3NAiFQpuYec9NTO/54Y9HO
- Z0CsbAoP5QbFOBdnjc+nJi2dq2Qx0Ib1q7q2U5y4eoOgJt7TpEJoojtbsit2ZF8Ih4R4hP5u
- zCPKgtnLZSTtUOZaY4AOsaW8O4BmHEXBqJaQupUBvaPbBCP2iIp4/84b0z6u3vcJsUzIEqkJ
- CEVF9Dr2Y9d0/nFMXL1pxW9RLGRnm7QF3Wu41jzok8vqe5SKvgMCWFRlxrm8y8o+8HCsmeQP
- q3MII+OY6qEYIvI/cB4+TaYegnFZAzarxmhj8LYSP5niuQEPyYigXySoenGIbQ
-X-IronPort-AV: E=Sophos;i="5.85,292,1624334400"; 
-   d="scan'208";a="52661756"
+        id S232818AbhINMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 08:42:48 -0400
+Received: from mail-bn8nam08on2046.outbound.protection.outlook.com ([40.107.100.46]:19392
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232800AbhINMmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 08:42:46 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TuztZ2yH4zUyAlzu1dNi2duolQlh4BUaatOU9bN6YYBcVUFhuguKN/quekcL+ASke0GN8LxLG3qYdOVmARMstGfAERTAxC5RtasTK+uz8A/6lYLAKats6fVCzO8VmAC62zeqbMWA3xoRsCd6U/xf4vHp0AHGUqLUUyB1L6nTHEyhAIcBifQnwtddAY08MvYcnETXQSj2/qPIv5lZH3jY8piG1jyVHRtPAjupLBrJVf1RvMcciPTQEn6TWpJe0L5lv2niJCmeYwYwPt+wtyRvSKDF5SC6T0wRbX6WIVgiRFZ9S/9IoXB7AdbZ1nA/e0qBf6c+MxYUBNxyp6pdvODeFQ==
+ b=JXZBBCKaah7ZBxRhxiKGIeBcWbk1gL3pzUET0SnnHOeLfqglreSbb2/6T8VxA1MAXpeGvKBE2BskoY38yRyeuzKxYc9HxwxGftc9yVbA3FZultxOtPFz2YymhiATk5HEiPK7jb6Qpy6Zn6CdprthAVoJQNLOu9V3oe+gMJxNFi/q+EX16MW7XxPb/tDTDp3+FG/43D4TfJ2mjeWfdxN6AQa4/Tnf4i4NFtoOsZjaWlSR6WUkzPZZYRL6gEdlb78wuOZfLLF6gmBj+W84SXcJ832ejOoL3T1wkvcIPqYpC1g+GpW2m1PA0xZluNEQEunCXVi+PjQS5Rj3rNFc8Hv1RA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=nmoya7Wy3/dlPb46qHqs9Pc/h7Q4JGS/lDNSIMdu+4o=;
- b=EYtE/PyPNi4PWDX7UgwMePtzJyealh66xG21V/8teMH6x8h7xzIGSfgvbbe9S9nwHckGvKbV70do5J0iaJxgzQLpIegQbVveAx1dpwKP/LWoe/30PHdMB646Lg+H8Va+gNjTr5Qc0wwSFZOscDJ9ml7fYStgks9z7K51YoNl4hMA5gWwtEN4uzH5jiCCAiWgL8on+s69+AdvsEtiWcAO9sWLuTTTmkXjsoXU+TZ+qxyIRfaMta84BADMxF243skAx8XRw5aLRIZaTiwKfvelwUl0mlmdjbwJk8PcYpPqd5rnQH8gjXvQNBHrbasDBxPkHxQhqGdcNIDjbxvjjrkrKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ bh=1zZ0oGNc0kqgWdrGFmD/0Z8f973bbimjxLVn/zgMBXY=;
+ b=DrWRTbRnjmyQ7yg4QUhxLm1NLgkaQxkao8344dGSvlHNBSTKPSpLris9D4BrbQVNf8+S8N50mctqyWnQLkz5/ROPrnU7DfBfTavILeo0sV9C9aM8mjJY9GR6SDFQejnC0DyjBxylBHVrkl41MjvYlnCshXCtTVVNMCVjSFYxEVkchAsiCodeiShumfgFv1a1KSuDAGFQuKdHi2JWkBktDt6pOcIYr80L1Kaf85eBwYkzUcTGzPzqKFyp10hC0S0EpQh+CNCVBQ0nyts7VUBTF/RRQUfR5jCmKLJ0iNqKrhtV4uu8U/yHNYPB+xaR6GOdtOVtig/MYk1Dpdw0H6JagA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nmoya7Wy3/dlPb46qHqs9Pc/h7Q4JGS/lDNSIMdu+4o=;
- b=Cl1LhmoKMRsT9um/OY0/AUTnv3c6JLfcRw1G9Z04+69GDqxS06YhriREr1Gy84AxutA+9+Ay3H5VRU1Nbmt1HAXds7Q+x6XFBovyqc29QYl7olJycPqSwSTcwCK6SzV+46wogFm6cxtQpzHXVZktp6zOSskIL3ZXYdI052yi4s8=
-Date:   Tue, 14 Sep 2021 14:41:06 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Jan Beulich <jbeulich@suse.com>
-CC:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Subject: Re: [PATCH 0/9] xen/x86: PVH Dom0 fixes and fallout adjustments
-Message-ID: <YUCYYmqQMR5NCTyz@MacBook-Air-de-Roger.local>
-References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
- <YUBeJLvWXukyGSFf@MacBook-Air-de-Roger.local>
- <050f71c8-227f-4f78-1ec5-394ba9fba9c1@suse.com>
- <YUCEQFpdc+3kUqQj@MacBook-Air-de-Roger.local>
- <40ea4ec8-483b-9191-a233-f2916f22c131@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <40ea4ec8-483b-9191-a233-f2916f22c131@suse.com>
-X-ClientProxiedBy: LO2P265CA0144.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:9f::36) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+ bh=1zZ0oGNc0kqgWdrGFmD/0Z8f973bbimjxLVn/zgMBXY=;
+ b=L00j33Kfpvhi6mhBqknx8EHdVyr1gyF99C199ks4nnkpzBCKWac+AAJyziognCZL5Bbk839MBb0O0d11Z9kVs9JFmWzYR79MeSpJjCoDATScUjcL0v52cnkazZg19Hs7ZwrQTW/ApBI7QyloT2fUn3WxDT3vua15+7bS39U8onhzj+NT8EOUSgPiKe/e7UVJCTb6ZcDQCj31snCnX9MXAyxepLhGFy/m53r/OWHTINvh5eLckpv0vBivrji9aq45wvAQnnHGB0rhpis+vUTgP2ERya7fbiLEEBrHynI0Q4PEMQVNxTCGmBwaOKNREcfxp6Ta380gAOYOB14Vyi9/nA==
+Received: from DM5PR06CA0035.namprd06.prod.outlook.com (2603:10b6:3:5d::21) by
+ SN1PR12MB2493.namprd12.prod.outlook.com (2603:10b6:802:2d::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4500.17; Tue, 14 Sep 2021 12:41:28 +0000
+Received: from DM6NAM11FT013.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:5d:cafe::71) by DM5PR06CA0035.outlook.office365.com
+ (2603:10b6:3:5d::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Tue, 14 Sep 2021 12:41:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ DM6NAM11FT013.mail.protection.outlook.com (10.13.173.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 12:41:27 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 14 Sep
+ 2021 12:41:27 +0000
+Received: from localhost (172.20.187.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 14 Sep 2021 12:41:26
+ +0000
+Date:   Tue, 14 Sep 2021 15:41:23 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        <netdev@vger.kernel.org>, Roi Dayan <roid@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>
+Subject: Re: [PATCH net-next] net/mlx5: Fix use of uninitialized variable in
+ bridge.c
+Message-ID: <YUCYc7XkOVWS8h1F@unreal>
+References: <9e9eb5df93dbcba6faff199d71222785c1f1faf7.1631621485.git.leonro@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9e9eb5df93dbcba6faff199d71222785c1f1faf7.1631621485.git.leonro@nvidia.com>
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b221a01-64f5-40ff-dec7-08d9777ceee4
-X-MS-TrafficTypeDiagnostic: DM4PR03MB6000:
-X-Microsoft-Antispam-PRVS: <DM4PR03MB60008D71C1A46F423871DE398FDA9@DM4PR03MB6000.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 62b209ff-3adc-47d3-cfaa-08d9777cf883
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2493:
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2493D6F9F81831A6C101845CBDDA9@SN1PR12MB2493.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ryzELLkwsBhjXq6/R5rMlgU5BHm+AlbdfzcyBiHz5DvG2ev35vLTpxy9o1QfKpNpwrCiH9BTMb97SMbJ7bGdJVlX+M9kksDMp2uBy0LYnD4bjO+XDSfhbTN9UNUFShBu3V9zsrnVvao8R+/vELO/uqZ57zddxRTAbvtiXEU1zQui6BhgjqFg1JayprBlzrhfu2nE3AJBm7vZ2dncI8eu9n9htz+NOf/g/vDwOOwpXpKLQzjnKEtT5R5j5jZ8Cce0kF7qJniVWq7IjroM3iRO9DEg3eXO4XzgO662B8vrX6fyJ6QmU57W7EHdf0b5c7Wqsm0Oe87aVdQlvTf4IYm1bOd2ozGwQT33Tb1+5D6/DHejpW7PI5bemROZ5xKsFRQORz94AKGc5jfxGvPdMmkeyLza1xx/xtcNOJ1M/GP16++vNH5Ss2Aibf5w9c2K/Jo4zAfbzGGV/ZpfKYKlCznvRCwuex0wLhku2IQGTHo17NlrXYCBa8J4DpsE8GlyNePP9oddDUJj1L2wjtc/FziOGoM6iuATd/7cOIfOCcGe1gCqYg38P7qlcwwpDLfw8Vxwu5e/zw215F6o8iiGQZO79Fn9rjVua0p10kKVvaeM6fJkck3iWUFeEDbBFEK8Zm0iS3IN7LQTWgtG4fKdMwbmM3FFTozQstPC5LzWqcWTr6591vO05xy8jZUV9iIWyjoVNKg+lC77rZCkOMk0l9UvmUgOEEUi1HbBkqXOXP80tBY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(366004)(346002)(39860400002)(85182001)(6496006)(6666004)(5660300002)(45080400002)(478600001)(6486002)(86362001)(9686003)(38100700002)(26005)(66946007)(966005)(6916009)(4326008)(2906002)(53546011)(186003)(8676002)(54906003)(66556008)(66476007)(8936002)(83380400001)(956004)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b092cTdDR2pGR2NsbHpnMk5IdjR4RVRGUk1rdFhvSnNvSXJpQ0NBMzBrdE9u?=
- =?utf-8?B?Qk1naE9yUmF3UEdFN3QvdTlMMWNGTnRiVm5hTFBnNWl4UUM2SkV5UmNVcXZZ?=
- =?utf-8?B?OWg2dFd0V1VNbkZxRnhCcE9pK0tPeUF6ajBVY0FiRGczeE9vVnVrOG5GQVZr?=
- =?utf-8?B?aSsxVEJUYVVMY1FxUEdIeWZ4Vk5UZkxHTFFrbG84aFlSWkJEVzhCVFpjUUMy?=
- =?utf-8?B?Sm8vZDlSeER1WWwvZGE5MjVCUkowYTc3eVZ5RHVQbEF1aTNTd1ZQOWF4MWZz?=
- =?utf-8?B?eWdSeDYzQU9xcVlKSHM2NGhmZ1RRVDF5eGM2c2lidUloaHJ3cXYzRjFySHJX?=
- =?utf-8?B?bzNWejBmdHBLMWk4eFVDY1k2TFc2R3Y4Z2pCU2piZVd1NXlmRlpFaEtXNVkw?=
- =?utf-8?B?bndtazN3eStwVzdRZlE5U2RXRVh0R05wbkhKaHNHekd1Ym1rbnBpMGNSb294?=
- =?utf-8?B?RGxGOHFVMlp3WDZ4RnNIbUdaSXJHcjZwR1B1RWtPYkpLR0FWSUh2YUYxKzky?=
- =?utf-8?B?clVsWFBZQWUwQWMrSU9tRUNtYkFlWEpLZE0xakpJbmFibzRFS2pNNFMwQXlU?=
- =?utf-8?B?RCtOVHVLc1haSGhXL2NMdHpsbWxURXZ3aUdJQlNzMk1Ua0lDak9EUVNZZ0dt?=
- =?utf-8?B?S3h3eVpQSkFTNS9NcUF0WmprcFUyVk9vdTRhcXlXMTVkRXEySk9UbHBjT2VK?=
- =?utf-8?B?djBaVXJxa0MzbllBNjR2NGUwd2pLVWRsVDladWZOSFNDK3FpbXFSckhMQnRW?=
- =?utf-8?B?bGl0OFRMUW9FdmZ3elZZQzlQY1hqMjR0cVBOOVJFZGpGWm5zZFZlc2I3UXhy?=
- =?utf-8?B?V0k4Ui8xT0hwOGN0a1VtL29SVC93U0o4YUhDRmpiZTM5NHZYNFFIRVpsb2ZT?=
- =?utf-8?B?bGY2RmYzMlFxRFpWUjFTU3FEdWsvKzdIZDhhZkM2Rk9xZ1A0NlBKZG1FTGo3?=
- =?utf-8?B?OGg1NG1hZitLMFExWkxkTVRZbjFnekJEazRRK01WbElnYndjZkovaSs5YXZF?=
- =?utf-8?B?L08wY2NabTZEV1U0Z0ZzcS9CZmgyYm9teEcvVHlIaHVaL0pVVDVqS0VGelRT?=
- =?utf-8?B?YWVLaHZuWGRVWEtlSGh5WWtPWHdmSURPYlRJM3BuNVlIWnRwRlR6S21DQmI5?=
- =?utf-8?B?TG9XdW1tYXhLWVpibTVRVDhYMStJMFNhaGtMNkRDVHVKZm9ha1RMVmhMT1po?=
- =?utf-8?B?MGxUbEwzelNwelNCN3VwMVFwbzUxa3luUGw5cy82RE5CbnVidS9HUTVYNWRq?=
- =?utf-8?B?UmkwYnpzenkzYUVFbjJwdmM5UTIyejdhTnhUaXNqRU5RWlVFSklnTTRVZmVu?=
- =?utf-8?B?NUFraTRMenBoMFRjSUlJN296anRoL0w2WnhMSDF6NFFTV3E3K3M4K3hiY0I1?=
- =?utf-8?B?Tm9PYmg1aExFOGx1WW5Xc0UxbXM1Q08xUFZhbzV2TE92MXMwSGxGdkM5Z1pV?=
- =?utf-8?B?Unc5YlV0VW5GYXF4VGpqWnhuem4vS0RGWlFOeGwreGhkNmhmNWhCREVLMk1Y?=
- =?utf-8?B?bWdNemMzZjV4Z1pOVVZvaGlkcmkrN1ZoNm9meE5qMzlrbkU2N3lGUlJEbURi?=
- =?utf-8?B?Vk1wZnRoMjFJK0ZIc1hhZ1gwL1JlYUN6RFVVVm5rRURqQit3SjZwbjBpT0dP?=
- =?utf-8?B?NzRTKys1R1BMaVRHek5pZDNubnowV05sdzRaVksza0dBaFlmSFBBUC9ZOGF0?=
- =?utf-8?B?eGYxczlkVWZKZ1B5MzcvVTdZMExRQzgzWitjcUIrdmxVTWpxdmluajJXdVps?=
- =?utf-8?Q?haksXOl4/itSnkwJ4cvGvJvE1DeQ3bnD2N8pstf?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b221a01-64f5-40ff-dec7-08d9777ceee4
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 12:41:11.8372
+X-Microsoft-Antispam-Message-Info: Rvr1mxyXafwHx9c/V6CRX8DGzXcVdLx5uzlinLPuyWQxhnptvDeGrWbNY/JheBOkJWYnN97UniMzZgARLCJgwo8fAaqEUyb8r6kWnWoZsdRlcOUH/d4DQhQoHj//KhayiQyCAhGbPgtr3otJFc5WuRorZxw5D23mKqkB1dQVuWx61p90YjQIwVliDKMD+u19Al7Wnfvgu4OeEbfYDbQNsm3YbhHBalw5tGh6yf3P3WTwEGQzK+qZcnQd59nM4b8O+M4W3KdmMkPekw7/bk8ipBkkiN2rfdyzbdE+698y1/ytTF8go/n8th0DoVyVIJFmsls22alnDMPxC/Q0lUzRFv4z7pUcwfDhmQVn66T0zcN83/iaBuPGxj586HzqhNZAq2KMdckdsjjyvrDugiKFFCgwq3oAkukO1uyF0ld/8gPjufTgiB682dvlGvGRY/2hPJIKcFMnviTC0Y9Vi/4adNlTxVyGH4ZvAy5vGRj+sqdYIahyButO9LdUPz2jFbqtFm+CKBp6U2iCkOfXZ5R6Qhuzj30xUOXG55B16xu7Lzh7xyHXk1KCj8lYxjU81F3UqeQW4YNPhp0Ut3Es/LL8aOcBMZCHVnauNzgaCXjVmLZJmQ3vGn47AhtgFfJQ8p9OtgmQLkKzXDL3Crt1MfZ0Mokal+csKiHw37dCrHPnMj3yx9d1qKhIFEU8IgEIqbsof5SDtpCEONWN4IqcmwgNYWqPbfjCWOsli2o2LfQYYXD+QSedLS3WR+wz0EMNgpNqPkrzbgKM5pdnAa2JKqBZE1BnPkGqR3Thg51oz++9x9Q=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(39860400002)(396003)(136003)(376002)(346002)(46966006)(36840700001)(36860700001)(82740400003)(6636002)(9686003)(356005)(36906005)(336012)(426003)(316002)(86362001)(6666004)(966005)(7636003)(8936002)(2906002)(70586007)(70206006)(478600001)(26005)(4326008)(16526019)(47076005)(107886003)(54906003)(83380400001)(110136005)(5660300002)(8676002)(33716001)(186003)(82310400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 12:41:27.7584
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ODiZFPEydN3nmF4EwQ47Fn1ncR5FksUQH+HBV4LMgU+ySQcp9jji66WUdF8QAZQbS9J9G62bV982uAYhT2NaTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR03MB6000
-X-OriginatorOrg: citrix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62b209ff-3adc-47d3-cfaa-08d9777cf883
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT013.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2493
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 01:58:29PM +0200, Jan Beulich wrote:
-> On 14.09.2021 13:15, Roger Pau Monné wrote:
-> > On Tue, Sep 14, 2021 at 11:03:23AM +0200, Jan Beulich wrote:
-> >> On 14.09.2021 10:32, Roger Pau Monné wrote:
-> >>> On Tue, Sep 07, 2021 at 12:04:34PM +0200, Jan Beulich wrote:
-> >>>> In order to try to debug hypervisor side breakage from XSA-378 I found
-> >>>> myself urged to finally give PVH Dom0 a try. Sadly things didn't work
-> >>>> quite as expected. In the course of investigating these issues I actually
-> >>>> spotted one piece of PV Dom0 breakage as well, a fix for which is also
-> >>>> included here.
-> >>>>
-> >>>> There are two immediate remaining issues (also mentioned in affected
-> >>>> patches):
-> >>>>
-> >>>> 1) It is not clear to me how PCI device reporting is to work. PV Dom0
-> >>>>    reports devices as they're discovered, including ones the hypervisor
-> >>>>    may not have been able to discover itself (ones on segments other
-> >>>>    than 0 or hotplugged ones). The respective hypercall, however, is
-> >>>>    inaccessible to PVH Dom0. Depending on the answer to this, either
-> >>>>    the hypervisor will need changing (to permit the call) or patch 2
-> >>>>    here will need further refinement.
-> >>>
-> >>> I would rather prefer if we could limit the hypercall usage to only
-> >>> report hotplugged segments to Xen. Then Xen would have to scan the
-> >>> segment when reported and add any devices found.
-> >>>
-> >>> Such hypercall must be used before dom0 tries to access any device, as
-> >>> otherwise the BARs won't be mapped in the second stage translation and
-> >>> the traps for the MCFG area won't be setup either.
-> >>
-> >> This might work if hotplugging would only ever be of segments, and not
-> >> of individual devices. Yet the latter is, I think, a common case (as
-> >> far as hotplugging itself is "common").
-> > 
-> > Right, I agree to use hypercalls to report either hotplugged segments
-> > or devices. However I would like to avoid mandating usage of the
-> > hypercall for non-hotplug stuff, as then OSes not having hotplug
-> > support don't really need to care about making use of those
-> > hypercalls.
-> > 
-> >> Also don't forget about SR-IOV VFs - they would typically not be there
-> >> when booting. They would materialize when the PF driver initializes
-> >> the device. This is, I think, something that can be dealt with by
-> >> intercepting writes to the SR-IOV capability.
-> > 
-> > My plan was to indeed trap SR-IOV capability accesses, see:
-> > 
-> > https://nam04.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fxen-devel%2F20180717094830.54806-1-roger.pau%40citrix.com%2F&amp;data=04%7C01%7Croger.pau%40citrix.com%7C35d2502d0128484e229e08d97777087f%7C335836de42ef43a2b145348c2ee9ca5b%7C0%7C0%7C637672175399546062%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=sSeE%2F4wEo5%2Fplkj2yH%2B1kpHi5c15lxJxeUxx6Cbyr4s%3D&amp;reserved=0
-> > 
-> > I just don't have time ATM to continue this work.
-> > 
-> >> But I wonder whether
-> >> there might be other cases where devices become "visible" only while
-> >> the Dom0 kernel is already running.
-> > 
-> > I would consider those kind of hotplug devices, and hence would
-> > require the use of the hypercall in order to notify Xen about them.
+On Tue, Sep 14, 2021 at 03:12:47PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> So what does this mean for the one patch? Should drivers/xen/pci.c
-> then be built for PVH (and then have logic added to filter boot
-> time device discovery), or should I restrict this to be PV-only (and
-> PVH would get some completely different logic added later)?
-
-I think we can reuse the same hypercalls for PVH, and maybe the same
-code in Linux. For PVH we just need to be careful to make the
-hypercalls before attempting to access the BARs (or the PCI
-configuration space for the device) since there won't be any traps
-setup, and BARs won't be mapped on the p2m.
-
-It might be easier for Linux to just report every device it finds to
-Xen, like it's currently done for PV dom0, instead of filtering on
-whether the device has been hotplugged.
-
-> >>>> 2) Dom0, unlike in the PV case, cannot access the screen (to use as a
-> >>>>    console) when in a non-default mode (i.e. not 80x25 text), as the
-> >>>>    necessary information (in particular about VESA-bases LFB modes) is
-> >>>>    not communicated. On the hypervisor side this looks like deliberate
-> >>>>    behavior, but it is unclear to me what the intentions were towards
-> >>>>    an alternative model. (X may be able to access the screen depending
-> >>>>    on whether it has a suitable driver besides the presently unusable
-> >>>>    /dev/fb<N> based one.)
-> >>>
-> >>> I had to admit most of my boxes are headless servers, albeit I have
-> >>> one NUC I can use to test gfx stuff, so I don't really use gfx output
-> >>> with Xen.
-> >>>
-> >>> As I understand such information is fetched from the BIOS and passed
-> >>> into Xen, which should then hand it over to the dom0 kernel?
-> >>
-> >> That's how PV Dom0 learns of the information, yes. See
-> >> fill_console_start_info(). (I'm in the process of eliminating the
-> >> need for some of the "fetch from BIOS" in Xen right now, but that's
-> >> not going to get us as far as being able to delete that code, no
-> >> matter how much in particular Andrew would like that to happen.)
-> >>
-> >>> I guess the only way for Linux dom0 kernel to fetch that information
-> >>> would be to emulate the BIOS or drop into realmode and issue the BIOS
-> >>> calls?
-> >>
-> >> Native Linux gets this information passed from the boot loader, I think
-> >> (except in the EFI case, as per below).
-> >>
-> >>> Is that an issue on UEFI also, or there dom0 can fetch the framebuffer
-> >>> info using the PV EFI interface?
-> >>
-> >> There it's EFI boot services functions which can be invoked before
-> >> leaving boot services (in the native case). Aiui the PVH entry point
-> >> lives logically past any EFI boot services interaction, and hence
-> >> using them is not an option (if there was EFI firmware present in Dom0
-> >> in the first place, which I consider difficult all by itself - this
-> >> can't be the physical system's firmware, but I also don't see where
-> >> virtual firmware would be taken from).
-> >>
-> >> There is no PV EFI interface to obtain video information. With the
-> >> needed information getting passed via start_info, PV has no need for
-> >> such, and I would be hesitant to add a fundamentally redundant
-> >> interface for PVH. The more that the information needed isn't EFI-
-> >> specific at all.
-> > 
-> > I think our only option is to expand the HVM start info information to
-> > convey that data from Xen into dom0.
+> Rewrite the code to fix the following compilation warnings that were
+> discovered once Linus enabled -Werror flag.
 > 
-> PHV doesn't use the ordinary start_info, does it?
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:11: error:
+> variable 'err' is used uninitialized whenever 'if' condition is false
+> [-Werror,-Wsometimes-uninitialized]
+>         else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+>                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:164:9: note:
+> uninitialized use occurs here
+>         return err;
+>                ^~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:7: note:
+> remove the 'if' if its condition is always true
+>         else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+>              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:140:9: note:
+> initialize the variable 'err' to silence this warning
+>         int err;
+>                ^
+>                 = 0
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:262:7: error:
+> variable 'err' is used uninitialized whenever switch case is taken
+> [-Werror,-Wsometimes-uninitialized]
+>         case SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS:
+>              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
+> uninitialized use occurs here
+>         return err;
+>                ^~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:7: error:
+> variable 'err' is used uninitialized whenever 'if' condition is false
+> [-Werror,-Wsometimes-uninitialized]
+>                 if (attr->u.brport_flags.mask & ~(BR_LEARNING |
+> BR_FLOOD | BR_MCAST_FLOOD)) {
+> 
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
+> uninitialized use occurs here
+>         return err;
+>                ^~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:3: note:
+> remove the 'if' if its condition is always true
+>                 if (attr->u.brport_flags.mask & ~(BR_LEARNING |
+> BR_FLOOD | BR_MCAST_FLOOD)) {
+> 
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:247:9: note:
+> initialize the variable 'err' to silence this warning
+>         int err;
+>                ^
+>                 = 0
+> 3 errors generated.
+> 
+> Fixes: ff9b7521468b ("net/mlx5: Bridge, support LAG")
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  .../mellanox/mlx5/core/en/rep/bridge.c        | 36 +++++++++++--------
+>  1 file changed, 22 insertions(+), 14 deletions(-)
 
-No, it's HVM start info as described in:
+Vlad pointed to me that similar patch was already accepted.
+https://patchwork.kernel.org/project/netdevbpf/patch/20210907212420.28529-2-saeed@kernel.org/
 
-xen/include/public/arch-x86/hvm/start_info.h
+Can we please expedite the fix to Linus so our other branches (RDMA e.t.c)
+that are based on pure -rcX from Linus will be compilation error free? 
 
-We have already extended it once to add a memory map, we could extend
-it another time to add the video information.
-
-Roger.
+Thanks
