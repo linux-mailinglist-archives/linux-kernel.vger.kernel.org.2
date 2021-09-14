@@ -2,104 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A510140A726
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9536F40A72A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240631AbhINHN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        id S240643AbhINHOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240599AbhINHN0 (ORCPT
+        with ESMTP id S240530AbhINHOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:13:26 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEDCC061762;
-        Tue, 14 Sep 2021 00:12:09 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id o20so16004578ejd.7;
-        Tue, 14 Sep 2021 00:12:09 -0700 (PDT)
+        Tue, 14 Sep 2021 03:14:08 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F2FC061574;
+        Tue, 14 Sep 2021 00:12:51 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id o8so4483402pll.1;
+        Tue, 14 Sep 2021 00:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6ib2Cla9NE9BCcyIj9QHsclYFQpDljJidgC34V3t8so=;
-        b=Kox0pd77V5Fior9IvRAfA+R18h2wFSqR3w0DOclaqmhPTcWSz8zCUrSnRTE+tsHJfT
-         H4eH4vII9n0+dLIbuGohuulLGe6R3J2/18u3T9HMQYQ/UrbK4tBXjdIlYX4UsaJHNeIC
-         8l2GspmaSA1iXOpHRWtLATgFBY21vfhnQmDf9bHOFOSJ6Md2pijXmllP+JSFwd0ljL0z
-         CAY87ZqkweOFPwD1fZb0VgC10jDwehKQWLwunN84PpmO2mz1TMMaWJWhqnU/OUSFmCfH
-         T/qffdHPLZTUz6k7CVjkC+X/4DGCo2oFL0H+e2t88JhOEMsgh26wlav/PHpI/wuN3yC4
-         Yh4w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fp3ZKT+uCoGAKQG34YsDErxyHOAuhJOpqsMt6fZ+c1o=;
+        b=W0opW9t3R5CRA9EreL0eLAI3ZzcrQX4CJEzO+XUjFR6E+Ztv23H9MnOBgZK9eiOkJb
+         XuHKZpE+l6CwaGZiGPHkkKahDXBZxm1E7Alb/TRVMLTYOYG5heKfXFkrvLbIHSyRjTdG
+         fmJom3A6Ofb9cKjJ3u6JYPzlFtwx14AHWOs7Gpq3ZsIiLhWf1lTOR10IWt217tJJnSJu
+         bWQ8bxC8WNCwEI7vAiW/95wcQjTLcfQxGYMn9NYOJpnuAeuxTMMwCyxXkJYyRZ7FmgDJ
+         fL5BqiCZiKJwLzqwbgHz+sSNjfCObhuugU70CmIg5PK43W3Vqv1CuvyTIJRN8OIsx/b9
+         ZGnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6ib2Cla9NE9BCcyIj9QHsclYFQpDljJidgC34V3t8so=;
-        b=ldhfqEfCkMrvjCDOeZdh2mq4sNqepIu/P5x3eBSDdz0MOzZQLj5tQ40uOFQjAvm3+/
-         owJNMCYfKJjq1Z24fiLGEInleEz+X70o2ojjNmwPCp7qfjMXuyPnAFbwP6SElEkPcvhf
-         90ILqT9H1tLmB72skiPJGFoquWuurIB3U8WZl6rlsoEbQ72eTZhsO9hMXngKjLd1tFym
-         27YPI8n7hO6HVG/qZMMUEBOUfTsIf19f4sqo1Y9bU+i8BNbWbFWgznO4uXpetbPRjlur
-         ec9qc0WuyanvGbTQtQPplOwTXkH7RWG7HfmwCtGzV5bEoa1y0GyrxSQo7Ayb5cLLK1Y1
-         cMeg==
-X-Gm-Message-State: AOAM53164XKgYacX2puLz7jWAFddhgJLsSCUDHpJC//4VCBsyAPCExyV
-        MQrU8n43m8TjM6Ctd+galoxw06IHQ0g=
-X-Google-Smtp-Source: ABdhPJyNL356wHsefJWV212NycXXo6I3rwdwcajnGU37zWKQr+IfDxsSCrtmLouc3ZJY7RKHeVF+4Q==
-X-Received: by 2002:a17:906:6b96:: with SMTP id l22mr17430468ejr.430.1631603528237;
-        Tue, 14 Sep 2021 00:12:08 -0700 (PDT)
-Received: from Ansuel-xps.localdomain ([5.170.141.93])
-        by smtp.googlemail.com with ESMTPSA id s26sm4988549edt.41.2021.09.14.00.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 00:12:07 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rosen Penev <rosenp@gmail.com>
-Subject: [PATCH net-next] net: phy: at803x: add support for qca 8327 internal phy
-Date:   Tue, 14 Sep 2021 09:11:41 +0200
-Message-Id: <20210914071141.2616-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fp3ZKT+uCoGAKQG34YsDErxyHOAuhJOpqsMt6fZ+c1o=;
+        b=fT4t0SqYMeOKbaQIHTqIbdx2peiGqYVMl2x8GI49mh8CmX8a8tGa6sp85AiKmSpH0L
+         x1Cn2yfbeVW0CtFPH/TNTdv+C8bGwf+09774qyaDkWn9PSvNQ8eF8ZkHuunFUgxEn1P3
+         hz2WOELXPhjnmM8xie1h+bOp1/pxUO4LwfQR9CJuYyVtRRm1XJFCdUwcIxqDbzfmEB8C
+         cmMQN0r74Pdfty/b/jUYh68S9sCCXmNOlpZs7yV1Hv07btDmZgMgztrdgmG34+92y85t
+         AWtGEQDBHyTp+xn/TGIDQDKekFRumVbApp0KhFOCgfjOUQ51Wr5wXep8TJ7WHUX5D6FM
+         AEfg==
+X-Gm-Message-State: AOAM53341+RkaKRWWS9NnmrY46vy8JZ2MnTVWiNFN7OodsVDFNly4Day
+        kywW9UcVgBkJKhGUQZvZeYPdNgTCPUox6mGD9Q==
+X-Google-Smtp-Source: ABdhPJx2VPixMHOrR5WAM0J72kMcdRAN66pFEBtKozwfLbBQ76bpkd+40OK9ggZHZANR9K3eEikRuGsy2DHxZkH1GiY=
+X-Received: by 2002:a17:90b:4b52:: with SMTP id mi18mr458066pjb.112.1631603565759;
+ Tue, 14 Sep 2021 00:12:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACkBjsZuFQykH=vQmy0n_mE1ACpiy1t48dvbUT0wtfBuHC4RFw@mail.gmail.com>
+ <1ffc5484-b68e-22db-349c-d1e0c31f9562@gmx.com> <CACkBjsbUnPQ1J5HpXW-be2jb_h2k8d4b2p-epp5pUek_Rf0reQ@mail.gmail.com>
+ <52b5e79f-6b56-2d90-6927-86b2faa295b9@gmx.com>
+In-Reply-To: <52b5e79f-6b56-2d90-6927-86b2faa295b9@gmx.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Tue, 14 Sep 2021 15:12:34 +0800
+Message-ID: <CACkBjsYMr1NsWamDFMXm3tuGV60UbE=99G70Mzi9ffU7vs-HXw@mail.gmail.com>
+Subject: Re: INFO: task hung in btrfs_alloc_tree_block
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for qca8327 internal phy needed for correct init of the
-switch port. It does use the same qca8337 function and reg just with a
-different id.
+Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8814=E6=97=
+=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:45=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 2021/9/14 =E4=B8=8A=E5=8D=8811:22, Hao Sun wrote:
+> > Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8814=
+=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=8811:13=E5=86=99=E9=81=93=EF=BC=
+=9A
+> >>
+> >>
+> >>
+> >> On 2021/9/14 =E4=B8=8A=E5=8D=8810:44, Hao Sun wrote:
+> >>> Hello,
+> >>>
+> >>> When using Healer to fuzz the latest Linux kernel, the following cras=
+h
+> >>> was triggered.
+> >>>
+> >>> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+> >>> git tree: upstream
+> >>> console output:
+> >>> https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/vie=
+w?usp=3Dsharing
+> >>> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EH=
+TLJvsUdWcgB/view?usp=3Dsharing
+> >>
+> >> Any recorded info for the injected errors during the test?
+> >>
+> >> It's hanging on a tree lock, without knowing the error injected, it's
+> >> really hard to find out what's the cause.
+> >>
+> >
+> > The `task hang` happened without any fault injection.
+> > Based on the recorded logs
+> > (https://drive.google.com/file/d/1x7u4JfyeL8WhetacBsPDVXm48SvVJUo7/view=
+?usp=3Dsharing
+> > and https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/v=
+iew?usp=3Dsharing),
+> > no fault-injection log was printed before the task hang.
+>
+> OK, then it seems like a big problem.
+>
+> Any workload log from the fuzzer so we can try to reproduce?
+>
+> Or just using the tool?
+>
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Tested-by: Rosen Penev <rosenp@gmail.com>
----
- drivers/net/phy/at803x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Execution history:
+https://drive.google.com/file/d/1yq_hKNHBbOh8NU_ZRNFYjP9NmnRv0RPL/view?usp=
+=3Dsharing
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index bdac087058b2..19a426aa4ede 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1420,6 +1420,19 @@ static struct phy_driver at803x_driver[] = {
- 	.get_sset_count = at803x_get_sset_count,
- 	.get_strings = at803x_get_strings,
- 	.get_stats = at803x_get_stats,
-+}, {
-+	/* QCA8327 */
-+	.phy_id = QCA8327_PHY_ID,
-+	.phy_id_mask = QCA8K_PHY_ID_MASK,
-+	.name = "QCA PHY 8327",
-+	/* PHY_GBIT_FEATURES */
-+	.probe = at803x_probe,
-+	.flags = PHY_IS_INTERNAL,
-+	.config_init = qca83xx_config_init,
-+	.soft_reset = genphy_soft_reset,
-+	.get_sset_count = at803x_get_sset_count,
-+	.get_strings = at803x_get_strings,
-+	.get_stats = at803x_get_stats,
- }, };
- 
- module_phy_driver(at803x_driver);
--- 
-2.32.0
+The above is the execution history with the latest 1024 progs saved
+before the task hang happened.
+However, it is always hard to get useful information from that and
+also hard for fuzzer to reproduce the `task hang`.
+I'll keep track of this bug and send you the reproducer program once
+Healer found it.
 
+Regards
+Hao
