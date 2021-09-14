@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5416440B275
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED1640B26E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 17:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhINPFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 11:05:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35122 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233823AbhINPFL (ORCPT
+        id S234469AbhINPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 11:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234089AbhINPDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 11:05:11 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-171-uOHCrCrONzey65a0rqo3sw-1; Tue, 14 Sep 2021 16:03:52 +0100
-X-MC-Unique: uOHCrCrONzey65a0rqo3sw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 14 Sep 2021 16:03:51 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Tue, 14 Sep 2021 16:03:51 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
-Thread-Topic: [PATCH] sparc: mdesc: Fix compile error seen with gcc 11.x
-Thread-Index: AQHXqNCRdjfpTL0To0ac+9sZuEahj6ujlB+QgAAK78OAAAFOoA==
-Date:   Tue, 14 Sep 2021 15:03:51 +0000
-Message-ID: <549b61046b134234bd4bffd85315f29a@AcuMS.aculab.com>
-References: <20210913163712.922188-1-linux@roeck-us.net>
- <YT+SPIAl0IdWOAn/@ravnborg.org>
- <d0a4b46a-2f0e-f6a2-1342-777e738d9525@roeck-us.net>
- <2d8f45425f024fd9a3d91a4b4a1304cf@AcuMS.aculab.com>
- <3b069cde-6f15-1df1-fbed-e8d94d0ef173@roeck-us.net>
- <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a1mrZHHfN0dK6nV3jpBmnYm+jG=M8j2u=1=ZPkLuf2DXQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 14 Sep 2021 11:03:44 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B77C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:02:26 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id a66so15148976qkc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 08:02:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ikRfZznVPSXgOHZwn7JV71/YZkay7rEY3B5GGPhJJ+U=;
+        b=biWj6oOhhZxdxpaxbui8CnDRKvz3RAAV0JLgdSoWpp1s6sxukGfPhlHQql85u5sKC+
+         eWAsEdfVzc4X63GeAFgSUC37oIZ9Qk7Z0iQ9/YARn8S7JZ9e0PyrsEDNqE9JMHEzHl14
+         ZrSwlOi5vSL1nO4tt2CSeAWhK2qu2G34II0M0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ikRfZznVPSXgOHZwn7JV71/YZkay7rEY3B5GGPhJJ+U=;
+        b=ChnM2+c4fLLywFmCK64rlHhHeZe6COQYDQYtZ+DzLS61hAmHmFRCZNvuOFxPNBqNCj
+         iMT/13yOZN34CadrQrmqePdgwzqD7QQVYXCkGyxgQNJbSqEk/KjYhrBeGh5UZeiPV29F
+         LwfgrxJj1d3IBnlMA4ZvmUdaZcyaryN9pb09CgUGCaK7+bVuCK0MRqP8DFPMzdA8KFJj
+         hta+9spL8oVzgu0nk9DsSMnFNRsjORqR6ey11iVW5Gt2E5Gu/4IkwCMj+1kGV+DsJQMj
+         dcVeEendAbm4c4HNnM/ZJ6tOfKZgvnGFVMZeWUF8LuXdzcBVw+q/0Ng8n0xvR1ksk0iN
+         1pLQ==
+X-Gm-Message-State: AOAM530nPpG5En+t7hoUBopSzD9VnJOaXJo5WWNUW1uK9jyFRLjj0rG8
+        +rtHQn96OOpbfoR4elQmG6nuuqCHdE/9CG4aayihPg==
+X-Google-Smtp-Source: ABdhPJy5FtjBECS7D5pqnI7V2Px/Rkc9Hc6UzmLi6RECLOhHNEvqX50enNMA3OI7/seaVcoHAcaFc+Ldf77gvG30rUs=
+X-Received: by 2002:a37:a905:: with SMTP id s5mr5380057qke.63.1631631745930;
+ Tue, 14 Sep 2021 08:02:25 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210910190322.27058-1-romain.perier@gmail.com>
+ <20210910190322.27058-5-romain.perier@gmail.com> <CAFr9PXnLZC1zfs4e1GqZU4UU3knU-BwREe0-abrWNq7akrTntw@mail.gmail.com>
+ <CAK8P3a24NTmkyh01OEzDQ8=oTWpUnDtwWQgUUxUbW2wxsgAFeA@mail.gmail.com>
+In-Reply-To: <CAK8P3a24NTmkyh01OEzDQ8=oTWpUnDtwWQgUUxUbW2wxsgAFeA@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 15 Sep 2021 00:04:44 +0900
+Message-ID: <CAFr9PXkipBnVDBOpdYhUD4bYNaL8qybPhGJi7YwSHaCNrPz6rw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] MAINTAINERS: Add myself as MStar/Sigmastar Armv7 SoC maintainers
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Romain Perier <romain.perier@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxNCBTZXB0ZW1iZXIgMjAyMSAxNTo1NA0KPiAN
-Cj4gT24gVHVlLCBTZXAgMTQsIDIwMjEgYXQgNDoyNCBQTSBHdWVudGVyIFJvZWNrIDxsaW51eEBy
-b2Vjay11cy5uZXQ+IHdyb3RlOg0KPiA+IE9uIDkvMTQvMjEgNzoxNyBBTSwgRGF2aWQgTGFpZ2h0
-IHdyb3RlOg0KPiA+ID4+IFNvcnJ5LCBJIGRpZG4ndCByZWFsaXplIHRoYXQgYSBmaWVsZCBvZiBz
-aXplIDAgaW5jcmVhc2VzIHRoZSBzdHJ1Y3R1cmUgc2l6ZQ0KPiA+ID4+IG9uIHNwYXJjLiBJIGhh
-ZCBjaGVja2VkIHRoZSBzaXplIG9mIHRoZSBvbGQgYW5kIHRoZSBuZXcgc3RydWN0dXJlIHdpdGgg
-Z2NjDQo+ID4gPj4gb24geDg2XzY0IGFuZCBkaWRuJ3Qgc2VlIGEgZmllbGQgc2l6ZSBpbmNyZWFz
-ZS4NCj4gPiA+DQo+ID4gPiBjbGFuZyBvdXRwdXQgZG9lc24ndCBjaGFuZ2U6DQo+ID4gPg0KPiA+
-ID4gaHR0cHM6Ly9nb2Rib2x0Lm9yZy96L2JUZWVxMTlqMQ0KPiA+ID4NCj4gPiA+IGdjYyBvdWdo
-dCB0byBnZW5lcmF0ZSB0aGUgc2FtZSBzaXplLg0KPiA+ID4NCj4gPiA+IEl0IG91Z2h0IHRvIGJl
-ICdjaGFyIGRhdGFbXTsnIHRob3VnaC4NCj4gPiA+DQo+ID4NCj4gPiBJIGFtIG5ldmVyIHN1cmUg
-aWYgW10gb3IgWzBdIGlzICJjb3JyZWN0Ii4gQW55d2F5LCBpcyB0aGVyZSBhZ3JlZW1lbnQgdGhh
-dCB0aGlzDQo+ID4gaXMgYW4gYWNjZXB0YWJsZSBzb2x1dGlvbiA/IEknbGwgYmUgaGFwcHkgdG8g
-cmVzZW5kIGlmIHRoYXQgaXMgdGhlIGNhc2UuDQo+IA0KPiBZZXMsIGxvb2tzIGdvb2QgdG8gbWUs
-IGluIHRoZSBbXSB2ZXJzaW9uLiBJIHRoaW5rIHRoZSBbMF0gdmVyc2lvbiBjYW4gYmUNCj4gaW50
-ZXJwcmV0ZWQgYXMgYSB6ZXJvLWxlbmd0aCBhcnJheSB0aGF0IG1heSBub3QgYmUgYWNjZXNzZWQs
-IHdoaWxlIHRoZQ0KPiBbXSBmbGV4aWJsZSBhcnJheSBzeW50YXggY2xlYXJseSBtZWFucyB0aGF0
-IGV4dHJhIGRhdGEgZm9sbG93cywgYW5kIGl0J3MNCj4gcGFydCBvZiB0aGUgQyBzdGFuZGFyZCBu
-b3csIHdoaWxlIFswXSBpcyBhIGdjYyBleHRlbnNpb24uDQoNCk1vcmUgcHJvYmxlbWF0aWMgaXMg
-d2hlcmUgaXMgdGhlIGNvcnJlY3QgcGxhY2UgZm9yIHRoZSAnY2hhciBkYXRhW10nLg0KSXQgZm9s
-bG93cyB0aGUgaGVhZGVyIHJhdGhlciB0aGFuIGJlaW5nIHBhcnQgb2YgaXQuDQoNClNvIHRoZToN
-CglkYXRhID0gKHZvaWQgKikoaGRyICsgMSk7DQpjb25zdHJ1Y3QgKEkndmUgbG9zdCB0aGUgb3Jp
-Z2luYWwgcGF0Y2gpIGlzIGFic29sdXRlbHkgZGVzY3JpcHRpdmUuDQoNCmdjYyBpcyBnZXR0aW5n
-IHRvIGJlIGEgcmVhbCBQSVRBIGZvciBzeXN0ZW0gY29kaW5nLg0KDQpGb3IgdGhpcyBwYXJ0aWN1
-bGFyIGNoZWNrICdzaXplIDAnIG91Z2h0IHRvIGJlICdzaXplIHVua25vd24nDQphbmQgYWx3YXlz
-IHZhbGlkLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFt
-bGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3Ry
-YXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi Arnd,
 
+On Tue, 14 Sept 2021 at 22:54, Arnd Bergmann <arnd@arndb.de> wrote:
+> Sounds good to me.
+>
+> One process issue though: These emails were sent 'cc:soc@kernel.org', so
+> they end up in patchwork, but I'm guessing they were not actually meant
+> for us to apply from there. I'm happy to take merge these patches (or
+> a future version of the series) directly from patchwork if that's what you
+> both had in mind, but for clarity please either
+>
+> a) drop soc@kernel.org from Cc for patches that are meant for review
+> and will be part of a pull request.
+>
+> or
+>
+> b) put soc@kernel.org in the 'to:' field after they have been reviewed
+> and you want them to get merged.
+
+Noted for the future. Until now we haven't done pull requests so
+having the patches go into the soc patchwork made sense but from now
+on we'll send pull requests when needed to you and Olof for the ARM
+specific bits. Which I don't think there will be much aside from dts
+stuff.
+
+> Or even better, add an explicit sentence below the '---' line asking
+> for the patches to be merged directly into the soc tree when this
+> is what you want.
+
+Noted.
+
+> FWIW, I'd suggest merging the MAINTAINERS file change as a
+> bugfix for 5.15, it's generally better to do these as early as possible
+> to make sure any patches reach all the right people.
+
+That makes sense.
+Would it be possible for you to merge that single commit for me?
+Seems like that would be easier than me creating a fixes branch for a
+single commit, sending you a PR, finding out I still don't actually
+know how to do PR properly.. :)
+If it's a hassle I'll do the PR though.
+
+Cheers,
+
+Daniel
