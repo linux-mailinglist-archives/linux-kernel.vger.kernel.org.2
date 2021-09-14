@@ -2,155 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA3D40B253
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341E940B256
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhINO61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:58:27 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:51978 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233828AbhINO60 (ORCPT
+        id S234734AbhINO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:59:30 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:45972 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234359AbhINO72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:58:26 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18ECqvmo006269;
-        Tue, 14 Sep 2021 14:57:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=FcIYiym1rZ8FLKXWV4Se/AkKmMFDjTqnPlXq970CoYY=;
- b=byhjUzeobYJFfrT4EEIAn6iJusgQUumpXqLMRIqgqLbW10lBjZ3woNeAOVprG9RcjMc7
- MwaRC7KR3IheK5fxcQDRYWZ0T1DAi1GjDxl65lCoIzD+7EHARQIGpC3RtMvLMrzCr0ur
- EDIi0vHxLA3tfa0bW5xUFEtDkwS2AVsFJUC0YGldvAiJKRi6P9xFtUfjpNosFxgQOFND
- kWdo32+shb3SShdavreQKxuQpWUzZeGXzhXR2lUQ5eCByii7DH/noQ/whWIKCxVAru7F
- ndZ9IWjsNyY6TGEZoinzMW6PL0NK+fGLS3n/IfVw09dhtYRZEM4B6Bp6ghYaX2sOGXFp 5g== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=FcIYiym1rZ8FLKXWV4Se/AkKmMFDjTqnPlXq970CoYY=;
- b=bbTdcPhVKxo6IejLUp91i2DHiyvZnNZHyk+jx5zemvDU4LgZGuMJRlP0N3n9Mx0SBGTL
- tp+1ZXVuEmQRUvUs6kSLwTTgCX0Wh/GKeINk7uwi/4mbNbWLpsMnVLJJNqrzVAvO+6Xa
- u7Gj/NNvaIf7yXgXCNHfYVV6eo+CwvDQ+Ltlz5oZ43JbuJIsD25I3t4lLPCDCgvtOLWQ
- Mngmj5atRj8P7PaZYKSiF9FItznu8XmEW0kzqAPrtiiHn/es3L/N8WKaFeLB87l/irZo
- aug++b9Xfhb+4XGG0u8LweXOk7WKwuCq4QRRUH/Zmd8y5sLO+pmWw7oVfvObNBRVjAzS eg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b2p4f1tu7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Sep 2021 14:57:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18EERtbD013570;
-        Tue, 14 Sep 2021 14:57:03 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-        by userp3030.oracle.com with ESMTP id 3b0hjv9hbr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Sep 2021 14:57:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H+zY5wixMrb8t2MJtzNjm9RWZL9GveX3ouHfMs4NI8NO8Stx6clQyf3+k+5Fr17CSsOpIHw8D8Ll1eS4o3WeOW2ANj0azOekX8sJtYD8mT0siQNBOQtIu4kLxwqszZO7LulrUG/Wht95fQE7JiI7oO0wz+V3SD0NSkJQvmICkO+UImSowwgLdQ0Dau46gGIcvoXkAyNUkRk9bQPzCXNaURY67uGPP0+eNH19xTg9dSq3PqK1tRc0pYbAzuUEvcAgqhPh5nE2cugfdVMj+PLR+O2fqWFqbUS7N50LA1j6wLU6bjEeDZR0WKo38bGxY08akV4aYKjso0nKYKnoUUv+dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=FcIYiym1rZ8FLKXWV4Se/AkKmMFDjTqnPlXq970CoYY=;
- b=DLxASkldahgUJFsHpEhUCLwuU9a99YX47MISBOm2QeyeDySfonxyyIgNxoJ29dy1GWgJAafppJ/0Eb7DXiSyvQbi6/t4onZyN52rwxl3b4xV/AUkb2oq/12ydR3qoStw9AxTuTkQO7d1+mxdf2ZZ52k7lM9cl3htfo0UJ1uwTDkNgoAVzSGrnGPvBxwyOeUqLW0V40+MdOovOIogh1DhrThuFDDfz3kH/G5yeSYrJB2SY/brlFENTv6mkiaj1GlmXujg0xmi34x3+XTWB3jGHjGhooaTq9utH02TqDCF3XkhR4iJIxHhPTHHQpiF1ruFPyD6jdjrZ4sW/iRTuvnFSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FcIYiym1rZ8FLKXWV4Se/AkKmMFDjTqnPlXq970CoYY=;
- b=eMjgxSiQ0Mlypetpu4GU+tUGJrCjy0qEpVETgB+GFRGjrLGPojqTaDo/1XPTSOmictFXRbsCkvkWAt6k4zGnhwLj3rtxO8kjB1cyRlQjMrH4WuRrGvBmQMnDpshYmmHsGMrKqdzhGDovQPgIW7ZrS4WVFqn8v+Rf/SjfXwpsXYk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO6PR10MB5556.namprd10.prod.outlook.com
- (2603:10b6:303:143::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Tue, 14 Sep
- 2021 14:57:00 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 14:57:00 +0000
-Date:   Tue, 14 Sep 2021 17:56:43 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Srivathsa Dara <srivathsa729.8@gmail.com>
-Cc:     jerome.pouiller@silabs.com, gregkh@linuxfoundation.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: wfx: sta: Fix 'else' coding style warning
-Message-ID: <20210914145643.GE2088@kadam>
-References: <20210914143107.18436-1-srivathsa729.8@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914143107.18436-1-srivathsa729.8@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0068.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::16)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Tue, 14 Sep 2021 10:59:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631631491; x=1663167491;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=8LHkH775IoW7FIVyJJcT3VFkhmSbcXiFASsFpny9obY=;
+  b=k79Gxt3LAxHJbz61nMbZabv3aabFQugeVglgPBhocs6ZZcwihnqXkjaW
+   gvRu1vRLKj83hI9haeuY3/yctCT3hAhPkEzzbWz2V6sjjSAbNcLUixqDr
+   iVTq0GnJXbmmB8Cl27kYfUTKuJM6eN3fjdwwt4zeOURdL92g+vUGnS/qr
+   WOb9PkaSwE44zSOIz6ffA1uvl5JHlGXlOk2ZnH2k4uzQ6pXCUSM21+k+c
+   z3fmSWgVNldwMluA92JlHj16mx5JN/E2t9wSy6guIy7ameiiRvlrfCvVT
+   pDu8LOp4clzZfDQyZR43fzqQ29KzSrgE9l6f5PuFjpwxW5HherrxBeKGl
+   Q==;
+IronPort-SDR: S1b8cBVart6H4hhJC9L9hzsl9DB3V2cxQyl/OuZPpEr2fYq0LBkgWHPSTE4EP9B3v0ATS0VfWy
+ YRmqzvfqUL3VNA+PqhVLDdIn/TjXxw4i9zqHVUIlYQwNDk0eomZY4PTe0VCB4hAJMjVbS94XpK
+ G8grhFPJUAMywa2m0Uyvic350ArpgklM1P6oTCB82bD9C3oS4LL0Lu2E3LGeCtoIn7alIZAiMG
+ +HIP6260apjoXHyDSDgxbEGAUf5z+VklQvMDpJTihwOBtk3xjP7AiYkIVMsvlVTp746W2ywI0D
+ r/Xt3DzY46NJvKv+8JJz03id
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="129270682"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Sep 2021 07:58:10 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 14 Sep 2021 07:58:10 -0700
+Received: from [10.171.246.26] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 14 Sep 2021 07:58:09 -0700
+Subject: Re: [PATCH] ARM: at91: pm: switch backup area to vbat in backup mode
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <linux@armlinux.org.uk>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210830100927.22711-1-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <32c932f7-26da-cc09-31e7-0aa4a209b7a6@microchip.com>
+Date:   Tue, 14 Sep 2021 16:58:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JNAP275CA0068.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 14 Sep 2021 14:56:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e8c9f3e6-37cd-421f-e3ae-08d9778fe765
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5556:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO6PR10MB555638FFFFF913A00749C69B8EDA9@CO6PR10MB5556.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u4lTwrFdO/Pa/sQwmrd30QPXkRPNSLAgvq2cSEmHUqQRim5vuw+jVWMvgNG2MaNcxCs9Ig6/3GKalHjI1zsRqpOd+rKQSvTIlJk+EugibvBeZvC7vCkZtOIAv+4sALviMkmBEQ4W3/zf1Azi+bupA8Umf0WA3rNpGclGnjznTkptGvOl2hn6m7zeZN9bVIZLITb8HCh1DLiIEilKisrMXn210V6azXrS/Ax5a+RZ5ItAa5v+nlQ2+6ZG7SYRYUCbFVEe1dukul9KTiSYpqg0/LHOjPQJPZZhEdLfPonZBDFXxDo7VOqteuNJrv9JNmGkIXWTCE375YV8hK6H/ai2jUzqKHM+Bx3nABaJUx0vT+EKf+tH4N+lWpjU2FR0lNcyCJFBxfn2wXMkHdL7lnQuQYIwZdpNFukrsprQTozFl6wIR+1OT8LeBJZzUO2ectTKcO+reJ9EczTZKWfvw3vv9YBxJ9WR9yhoYKDYRk70y6ug+2eCCjKOcMCc/fd6mk5xqN58iZybpVF2dakauxcoc56P/npnaBw30gvo6XuqZXyDcmVlwy98+pDyr/sUZYMq0/k+BFsg2ChhtZ46+LRHddNngJP5OZ7Y3ES1yN96CkWdcDoUYT/KxFbvQzsiVB0EPiYiaNSAnSraJOcQgY8hsHF2j8r+WHYv807XWWg3LmOpwX5Hu6BLMX5vfD5JKDFscWyS8eR88oA9wwA0wrk0AA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(33656002)(6916009)(316002)(33716001)(2906002)(66556008)(4744005)(66946007)(86362001)(8936002)(1076003)(9686003)(9576002)(186003)(38100700002)(4326008)(38350700002)(55016002)(956004)(6666004)(66476007)(508600001)(8676002)(6496006)(26005)(52116002)(5660300002)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0V96Ja3xZa9xVmfPtHUk2Q5aLgbjvxRiSp3KhGOBpJvLwk7GTALZacRNlJ0U?=
- =?us-ascii?Q?hnX7GHptQTtj6rqcZM7wHEjxcXf4SveG4KjyLUYfsssHETnKlS9vq3kSBKqz?=
- =?us-ascii?Q?m121UANg/hVDFc+TW/N61W/nCqapFra70lZM42kqYAsji4uXOljJv4g//32/?=
- =?us-ascii?Q?WYiMduPocGR6vvV6i1gYCxlHS4TSnZ665gWIVAPHVYXKfMUjBK1d9+Mcfxxr?=
- =?us-ascii?Q?pYtN3XUZeJpYuy3n6jaZvRWXPPexm/rjH93Y4lZ9y0dyUfXd4QSt0xN3ov80?=
- =?us-ascii?Q?sneYV4ALo2nSRFABzUNVsW6Hut1kYXT/gwh/8pWPeRVfbnJ4jduqtLrrIGrA?=
- =?us-ascii?Q?5DGWfXY9NeSmUrQi4pBch0f0eF4l4fjsBMEZCcswQjOJqzSfIbkbwV3MTh39?=
- =?us-ascii?Q?oUSn6mtl0a+9e7WSIuRIKTRD/3QH/896SuoFYCv/m1sle9d6oSnaUF5ZWX8z?=
- =?us-ascii?Q?xksuIL4iLqbFsNeiD5dPfRYcQSj34i8oS4ogeISRHULRiXnWONo0VRAyjeLx?=
- =?us-ascii?Q?Q1iAutsESG/jAeKbhAQroTohcZwywPzdyRAnTIM2RyQ78XrxhgTuRPxX9Ndt?=
- =?us-ascii?Q?6XiUzWfpg6tP9NX5REdhnRNbk10BsodueRiGSgxEGhOyhSLYgLlpHjaAtPi/?=
- =?us-ascii?Q?loDNAxEch8me972C7LAy4p3aZ58zU/Fr5oAEGobQ4rwy+9vhoi69suBSXqBA?=
- =?us-ascii?Q?cySKaO/PdwukVYC7GTu0GEnGyXQCjSMKrtCNoC9JH0wQVsP3AXJaq73Ki2i5?=
- =?us-ascii?Q?f9c7Ci21+uZiym7bOhGdYx393QdeFGWHH/cfhEEdTOUWD2Cy3wCopyB+KWV/?=
- =?us-ascii?Q?9cfSxDOWDDAIhykMlOhz5+O0J3QMna/o/U9SzgpRUOh0vbD1MbmoBqR/BVr4?=
- =?us-ascii?Q?fL4jNzQF41mTqgImW1S+088FHiNLt5JcdbGs4fhXqpdd15nI0l3hlbM9gTtS?=
- =?us-ascii?Q?4Vomj8V9+ggTuQUs/yo5DJWdPDEE5WQBpWjMlH3k25ScFJqcVFAwenJHchkq?=
- =?us-ascii?Q?MS7yGoBreEEEs+qTN4UC/m4abrWxarcO8aKi0m6BmQw3Suus5TLCkk6QrPDI?=
- =?us-ascii?Q?6hqGfFf3g0cBmSlt9lnANNHF7WdZuGaNZdrty+Tb8ZMhBLpq2SnhYmVSO3uJ?=
- =?us-ascii?Q?OSJp//q1m71vUNKVysfIdWn8PYZ4WuD6VZ52schHDu792dDipy5bLqpDjvDp?=
- =?us-ascii?Q?/QHAlYWt1v3xnob3pJQNSZ9kJoLQZ6Ya3bF4ITMhp7El50Dobkub/YPUFc0b?=
- =?us-ascii?Q?yzLLXbbTTFBy9H4xsn5mq3LU2sEz0eIIytCY/sD1kTL7vThpxYnAjwVHn3un?=
- =?us-ascii?Q?EWmqtyzEGfxSaJpGxXSgloZa?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8c9f3e6-37cd-421f-e3ae-08d9778fe765
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 14:56:59.9206
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4jsTtf4/ecH8soGLXZA1tOwcrr+Z8kLct2ZlnsY+7C1idxgQJgVF8GvOXkTP5+BOWwGm8wDWIJupv61DzB+5XpYvNV0KtgYdAsg363PjmNY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5556
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10106 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109140090
-X-Proofpoint-GUID: 4fbwoSgzgrnvc5rqApAZZUAm5Xy2sGnb
-X-Proofpoint-ORIG-GUID: 4fbwoSgzgrnvc5rqApAZZUAm5Xy2sGnb
+In-Reply-To: <20210830100927.22711-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 08:01:06PM +0530, Srivathsa Dara wrote:
-> Fix 'else is not generally useful after a break or return' checkpatch
-> warning
+On 30/08/2021 at 12:09, Claudiu Beznea wrote:
+> Backup area is now switched to VDDIN33 at boot (with the help of
+> bootloader). When switching to backup mode we need to switch backup area
+> to VBAT as all the other power sources are cut off. The resuming from
+> backup mode is done with the help of bootloader, so there is no need to
+> do something particular in Linux to restore backup area power source.
 > 
-> Signed-off-by: Srivathsa Dara <srivathsa729.8@gmail.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-It doesn't apply for me.  Please check that you are working against
-staging-next or linux-next.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-regards,
-dan carpenter
+And queued to at91-fixes for 5.15.
 
+Best regards,
+   Nicolas
+
+
+> ---
+> 
+> Hi Nicolas,
+> 
+> This applies clean on top of patch with title
+> "ARM: at91: pm: do not panic if ram controllers are not enabled"
+> 
+> Thank you,
+> Claudiu Beznea
+> 
+>   arch/arm/mach-at91/pm.c | 52 +++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 52 insertions(+)
+> 
+> diff --git a/arch/arm/mach-at91/pm.c b/arch/arm/mach-at91/pm.c
+> index d92afca64b49..8711d6824c1f 100644
+> --- a/arch/arm/mach-at91/pm.c
+> +++ b/arch/arm/mach-at91/pm.c
+> @@ -47,12 +47,26 @@ struct at91_pm_bu {
+>   	unsigned long ddr_phy_calibration[BACKUP_DDR_PHY_CALIBRATION];
+>   };
+>   
+> +/*
+> + * struct at91_pm_sfrbu_offsets: registers mapping for SFRBU
+> + * @pswbu: power switch BU control registers
+> + */
+> +struct at91_pm_sfrbu_regs {
+> +	struct {
+> +		u32 key;
+> +		u32 ctrl;
+> +		u32 state;
+> +		u32 softsw;
+> +	} pswbu;
+> +};
+> +
+>   /**
+>    * struct at91_soc_pm - AT91 SoC power management data structure
+>    * @config_shdwc_ws: wakeup sources configuration function for SHDWC
+>    * @config_pmc_ws: wakeup srouces configuration function for PMC
+>    * @ws_ids: wakup sources of_device_id array
+>    * @data: PM data to be used on last phase of suspend
+> + * @sfrbu_regs: SFRBU registers mapping
+>    * @bu: backup unit mapped data (for backup mode)
+>    * @memcs: memory chip select
+>    */
+> @@ -62,6 +76,7 @@ struct at91_soc_pm {
+>   	const struct of_device_id *ws_ids;
+>   	struct at91_pm_bu *bu;
+>   	struct at91_pm_data data;
+> +	struct at91_pm_sfrbu_regs sfrbu_regs;
+>   	void *memcs;
+>   };
+>   
+> @@ -356,9 +371,36 @@ static int at91_suspend_finish(unsigned long val)
+>   	return 0;
+>   }
+>   
+> +static void at91_pm_switch_ba_to_vbat(void)
+> +{
+> +	unsigned int offset = offsetof(struct at91_pm_sfrbu_regs, pswbu);
+> +	unsigned int val;
+> +
+> +	/* Just for safety. */
+> +	if (!soc_pm.data.sfrbu)
+> +		return;
+> +
+> +	val = readl(soc_pm.data.sfrbu + offset);
+> +
+> +	/* Already on VBAT. */
+> +	if (!(val & soc_pm.sfrbu_regs.pswbu.state))
+> +		return;
+> +
+> +	val &= ~soc_pm.sfrbu_regs.pswbu.softsw;
+> +	val |= soc_pm.sfrbu_regs.pswbu.key | soc_pm.sfrbu_regs.pswbu.ctrl;
+> +	writel(val, soc_pm.data.sfrbu + offset);
+> +
+> +	/* Wait for update. */
+> +	val = readl(soc_pm.data.sfrbu + offset);
+> +	while (val & soc_pm.sfrbu_regs.pswbu.state)
+> +		val = readl(soc_pm.data.sfrbu + offset);
+> +}
+> +
+>   static void at91_pm_suspend(suspend_state_t state)
+>   {
+>   	if (soc_pm.data.mode == AT91_PM_BACKUP) {
+> +		at91_pm_switch_ba_to_vbat();
+> +
+>   		cpu_suspend(0, at91_suspend_finish);
+>   
+>   		/* The SRAM is lost between suspend cycles */
+> @@ -1155,6 +1197,11 @@ void __init sama5d2_pm_init(void)
+>   	soc_pm.ws_ids = sama5d2_ws_ids;
+>   	soc_pm.config_shdwc_ws = at91_sama5d2_config_shdwc_ws;
+>   	soc_pm.config_pmc_ws = at91_sama5d2_config_pmc_ws;
+> +
+> +	soc_pm.sfrbu_regs.pswbu.key = (0x4BD20C << 8);
+> +	soc_pm.sfrbu_regs.pswbu.ctrl = BIT(0);
+> +	soc_pm.sfrbu_regs.pswbu.softsw = BIT(1);
+> +	soc_pm.sfrbu_regs.pswbu.state = BIT(3);
+>   }
+>   
+>   void __init sama7_pm_init(void)
+> @@ -1185,6 +1232,11 @@ void __init sama7_pm_init(void)
+>   
+>   	soc_pm.ws_ids = sama7g5_ws_ids;
+>   	soc_pm.config_pmc_ws = at91_sam9x60_config_pmc_ws;
+> +
+> +	soc_pm.sfrbu_regs.pswbu.key = (0x4BD20C << 8);
+> +	soc_pm.sfrbu_regs.pswbu.ctrl = BIT(0);
+> +	soc_pm.sfrbu_regs.pswbu.softsw = BIT(1);
+> +	soc_pm.sfrbu_regs.pswbu.state = BIT(2);
+>   }
+>   
+>   static int __init at91_pm_modes_select(char *str)
+> 
+
+
+-- 
+Nicolas Ferre
