@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA3740B63A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3614A40B63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhINRvK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Sep 2021 13:51:10 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:35986 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhINRvI (ORCPT
+        id S231401AbhINRv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230244AbhINRvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:51:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 5C1986171AF2;
-        Tue, 14 Sep 2021 19:49:49 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Zkvx2aJaA6pc; Tue, 14 Sep 2021 19:49:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 85FA16171AF9;
-        Tue, 14 Sep 2021 19:49:48 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3WI4YRxwFkYj; Tue, 14 Sep 2021 19:49:48 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 571C96171AF2;
-        Tue, 14 Sep 2021 19:49:48 +0200 (CEST)
-Date:   Tue, 14 Sep 2021 19:49:48 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Bert Vermeulen <bert@biot.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <1517789471.73175.1631641788145.JavaMail.zimbra@nod.at>
-In-Reply-To: <20210914193108.78df5367@xps13>
-References: <20210908201624.237634-1-bert@biot.com> <20210914193108.78df5367@xps13>
-Subject: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
+        Tue, 14 Sep 2021 13:51:45 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74CAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:50:27 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id r4so30152096ybp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=BgWxITrR4cQ31cmnKtanEvZnHyiOgAyRG7C1Ouaeq94gihWwMAQRbiMOru7EdZBekd
+         ilYNhCwbQdt3rFBwPq5JFP+S9APFDQlGtDNjrhS00BQCl6GD7ZpPoQmI/RZqMw2RnEmQ
+         6lu6m4X4vtZgvd42jIvlH2eHis94jIIiPsRHBUnnabpl+Dqh/1N+7eIzeWAQGwGH+38k
+         3Crku+7UP+SAesh3inl5DEVW+KQwZc1Rjmt/mxyDl0zHJEGPMWGi+uK041ZiWzDStbKg
+         g8MW606hAwupNhbZzZ1Jk/gUYvmrkLJbof7MPdb4oTaILYj97ebIUhL9l9BoUH9mFeYm
+         eDiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=qMc/nsjHBPNLZwaFrz0Pmo6Fmd8laG9RFs2hB9yNqnS+koHEnAK3vopKThkd4G/qjZ
+         Ee2cRimf0PkwSQ9uoSJFPNeKtukK61KkbhMnojr++DSZPsdlrtx+1oWVZfw0quDL0M8X
+         VslERCKE0lfwvqzJhWrx3zv5vMFWEDywyJzpEnt1BIn6/NE7ldSN8GvN6UX9YtTAS6gD
+         CvUJ+WQstJIHtCuLpMlRp6713WkMWJFFZHt5i8QP7f9X/GucAM7pwsnG9VqbJ/SqiJOt
+         jgRM+OIRvjPSmomXM7864qtjmXttNy0BMu9S2LGnbXVbvOFetN/gebrR/wXcNa8axI68
+         5t6w==
+X-Gm-Message-State: AOAM532zUZbPMhYRcuOq1CbzkFd+NYAMOs9sN0rFaErFLDhnRy44dlYE
+        t5tZgSO01I3Qy/FSanWquFQmzcHQkm+AAknkWcE=
+X-Google-Smtp-Source: ABdhPJwcGJCHxTWIEe1x+wN9yjQfYWFMitXDwwukoEhhh46blaqV18ICrutpdCR0qwl2mlQ6ZYq7OF1xfOvnsh1spn8=
+X-Received: by 2002:a25:664c:: with SMTP id z12mr549733ybm.62.1631641827010;
+ Tue, 14 Sep 2021 10:50:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF92 (Linux)/8.8.12_GA_3809)
-Thread-Topic: spinand: Add support for Etron EM73D044VCx
-Thread-Index: uDL3zzNaZeNLZi7f2ywi+WlYy888Ew==
+Received: by 2002:a05:7110:2036:b0:f5:6146:e4a7 with HTTP; Tue, 14 Sep 2021
+ 10:50:26 -0700 (PDT)
+Reply-To: uchennailobitenone@gmail.com
+From:   uhenna <tochiuju11@gmail.com>
+Date:   Tue, 14 Sep 2021 10:50:26 -0700
+Message-ID: <CA+6axKuWxAP_anYJPjqHKufVmaTQsnLnPg8owSqrQdcbgASvQA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Miquel Raynal" <miquel.raynal@bootlin.com>
-> An: "richard" <richard@nod.at>
-> CC: "Bert Vermeulen" <bert@biot.com>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Patrice Chotard"
-> <patrice.chotard@foss.st.com>, "Boris Brezillon" <boris.brezillon@collabora.com>, "Christophe Kerello"
-> <christophe.kerello@foss.st.com>, "Mark Brown" <broonie@kernel.org>, "Alexander Lobakin" <alobakin@pm.me>,
-> "linux-kernel" <linux-kernel@vger.kernel.org>, "linux-mtd" <linux-mtd@lists.infradead.org>
-> Gesendet: Dienstag, 14. September 2021 19:31:08
-> Betreff: Re: [PATCH v2] mtd: spinand: Add support for Etron EM73D044VCx
+Attention Please,
 
-> Hi Bert,
-> 
-> Richard, a question for you below!
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
-:)
- 
-> bert@biot.com wrote on Wed,  8 Sep 2021 22:16:19 +0200:
-> 
->> This adds a new vendor Etron, and support for a 2Gb chip.
->> 
->> The datasheet is available at
->> https://www.etron.com/cn/products/EM73%5B8%5DC%5BD_E_F%5DVC%20SPI%20NAND%20Flash_Promotion_Rev%201_00A.pdf
->> 
->> Signed-off-by: Bert Vermeulen <bert@biot.com>
->> ---
->> v2:
->> - Made ooblayout_free/_ecc depend on chip-specific parameters, instead of
->>   hardcoded to this 2Gb chip only
->> - Fixed manufacturer ordering
->> - Fixed minor formatting issues as reported
->> - Removed debug comment
->> 
->>  drivers/mtd/nand/spi/Makefile |   2 +-
->>  drivers/mtd/nand/spi/core.c   |   1 +
->>  drivers/mtd/nand/spi/etron.c  | 104 ++++++++++++++++++++++++++++++++++
->>  include/linux/mtd/spinand.h   |   1 +
->>  4 files changed, 107 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/mtd/nand/spi/etron.c
-> 
-> [...]
-> 
->> +static int etron_ecc_get_status(struct spinand_device *spinand, u8 status)
->> +{
->> +	switch (status & STATUS_ECC_MASK) {
->> +	case STATUS_ECC_NO_BITFLIPS:
->> +		return 0;
->> +
->> +	case STATUS_ECC_HAS_BITFLIPS:
->> +		/* Between 1-7 bitflips were corrected */
->> +		return 7;
-> 
-> Mmmh this is a bit problematic, having no intermediate value means a
-> single bitflip will trigger UBI to move the data around as its
-> threshold will be reached. Richard, any feedback on this?
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
-So, the NAND controller can only report "no bitflips", "some bitflips", "maximum biflips" and "no way to fix"?
-If so, yes, this is problematic for UBI because it will trigger wear-leveling way too often.
-On a medium aged NAND I'd expect to see STATUS_ECC_HAS_BITFLIPS almost always set. :-(
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
 
-Thanks,
-//richard
+Name: solomon brandy
+
+Email:solomonbrandyfiveone@gmail.com
+
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
