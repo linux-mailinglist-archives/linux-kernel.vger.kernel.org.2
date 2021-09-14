@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D204340B88E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDA740B893
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhINUBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbhINUBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:01:08 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E99C061762;
-        Tue, 14 Sep 2021 12:59:50 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4H8Dhh4hKbzQkBj;
-        Tue, 14 Sep 2021 21:59:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-From:   =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>
-To:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 9/9] mwifiex: Fix copy-paste mistake when creating virtual interface
-Date:   Tue, 14 Sep 2021 21:59:09 +0200
-Message-Id: <20210914195909.36035-10-verdre@v0yd.nl>
-In-Reply-To: <20210914195909.36035-1-verdre@v0yd.nl>
-References: <20210914195909.36035-1-verdre@v0yd.nl>
+        id S234322AbhINUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:01:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233929AbhINUBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 16:01:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1514E61107;
+        Tue, 14 Sep 2021 19:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631649590;
+        bh=ttsGooB3NEJfRQZomFeXbeFS0nz6PX5UINAWPJsLC44=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=dBKRcAdgI7q4J8YNisHk34wH/aEGN5EE2bTLvYM1hYjIAq91qwHPUSVlGr3YX3NXb
+         KEvQ9qH8eB4pMCSsazrrCVawAPiqNY/7qRttzwVnnEwG9iQaZ04xRSc+23q/3uAVjy
+         sXiV0FPcczf62soOOZfbLsg1JW8rKoYPcZOl9qm3tRSGDyj53nxGdrETt/rDLc/80I
+         qGc75cDNMEk60ggOzvxJKY9tvkaEdgd2y1btllcohtxqgOtA3korkuHzapEGP0gPGW
+         YvhFaf29njvi4/YR5lVa23fJofwA1nNQjvjbyTw6Q8ESKiPOSWNBqXZGeT39WeCXre
+         jJwT4iad1eUBQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: DC866188F
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210913192816.1225025-6-robh@kernel.org>
+References: <20210913192816.1225025-1-robh@kernel.org> <20210913192816.1225025-6-robh@kernel.org>
+Subject: Re: [PATCH v2 5/8] clk: versatile: clk-icst: Support 'reg' in addition to 'vco-offset' for register address
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh@kernel.org>
+Date:   Tue, 14 Sep 2021 12:59:48 -0700
+Message-ID: <163164958886.763609.7483570624844319215@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BSS priority here for a new P2P_CLIENT device was accidentally set
-to an enum that's certainly not meant for this. Since
-MWIFIEX_BSS_ROLE_STA is 0 anyway, we can just set the bss_priority to 0
-instead here.
+Quoting Rob Herring (2021-09-13 12:28:13)
+> The ICST binding now also supports 'reg' in addition to 'vco-offset' for
+> the VCO register address. Add support to the driver to get the VCO
+> address from 'reg'.
+>=20
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-clk@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
----
- drivers/net/wireless/marvell/mwifiex/cfg80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index 0eb31201a82b..d62a20de3ada 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -3054,7 +3054,7 @@ struct wireless_dev *mwifiex_add_virtual_intf(struct wiphy *wiphy,
- 		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
- 
- 		priv->frame_type = MWIFIEX_DATA_FRAME_TYPE_ETH_II;
--		priv->bss_priority = MWIFIEX_BSS_ROLE_STA;
-+		priv->bss_priority = 0;
- 		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
- 		priv->bss_started = 0;
- 
--- 
-2.31.1
-
+I don't think this driver is changing much so you can take it through DT
+tree if you prefer.
