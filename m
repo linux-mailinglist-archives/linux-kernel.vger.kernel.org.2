@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099C640A818
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C165340A81B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 09:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231347AbhINHnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 03:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S231159AbhINHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 03:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241809AbhINHm2 (ORCPT
+        with ESMTP id S232575AbhINHmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 03:42:28 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE1CC0613A9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:38:45 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id u18so11992442pgf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:38:45 -0700 (PDT)
+        Tue, 14 Sep 2021 03:42:31 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69ABC0619FE
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:38:52 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so2069121pjq.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 00:38:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aplee84Zb9DYoAB52arCh7gLLArJ+QtTZ9BkGVcgL3k=;
-        b=j/KITuWPMbeYdulQFVpeP/6fD0wVWiV4+zVQkMSI3HkkPRSP+6UzBOZTn/DmoIwtuB
-         uVkKwiZKIEvgt2hIWH1jffF8/MDudPq8wolnKMz+MPQW0Twzt4nEZ7yNGYbN23SULu+P
-         kfm0rJ+lud7zRbJDyVRoUiIeT2U25ECHdNNVR8FifNLG0U88xJb02YWMMw+1VWBYJv0X
-         IrpPE96zahuNqa3wxty4Lm1YBWwFzyH7pdLBphKs2gahsTWQs/tFHqlnHsEGoZ1nT3aG
-         XFxOFpWgHJXxA3Pfacjy+4fOQEI4QvRB9AzxhRJe6KTgEZ8TRBD4l+yG8TuH5pYtMuJ6
-         4Wng==
+        bh=lHAYrFVB3RupwivCJS+aERvoyQvRbyNrf4+TX1u/TIc=;
+        b=dLa8zy+WFMum3slpu1hEamUL6WRBtZ2Mf8Xczm6b6ik9Lbn2bq+2CyXLI11zGlHD/b
+         T0eOAqG8HIOqkPOPCdnATP8WQgVa/Tqanrkrt0b9DYB3Be859skSNP3LAKqljBYfz3or
+         unMHOSaKJQ1tzFBGL6w0IBMawqgu/Ozsm/roPZrZ/ynSGGv1f/MHA95SBzKacryL1F9r
+         80lU8GdHzLN/yd2Yg1725qYCBtSRW7XkzlU3NMkSBEDB6SfljOHTDMpXH2KlRACjciBf
+         9Lw3cXONutEJawugdkQHx9FJbf7Jp6JjBD5e5FxmdqbH8KYbaWUhzDyFji+ZZqCxCTpw
+         8+cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aplee84Zb9DYoAB52arCh7gLLArJ+QtTZ9BkGVcgL3k=;
-        b=aBHdhxm9AmZJcXhsE0hHNDPH6Su4RpuSP4/vILxL8Ey53Md1SUkzQFQ9DG4hI6SVta
-         64RtXX0fY8Mh8wcJq43lC5WZSeBUPf4A3+YiyE8pbsw+OEFfUSCB+w0U+KNJ32ki2TxS
-         Eeh1t8YxoBd4q8sVLUF+wH5H8r+AAC77iY+D1ehsd0aiVSlgcD99RK12sWeoixv6i7Sh
-         7ZA8FlIr58q0gOo1HzkPWsqru+q392LE2fAiOAC/MC2GMM5UlgElpzIPj9HxYepIZEX1
-         XEcDfuvlgNY1Xd0l/tZGH3uvkPKLlKyn2wr4XyiPY13591UtHhUSCsGNZyrZyByuV06d
-         FcxA==
-X-Gm-Message-State: AOAM531aicLdXBBBTCMidfFi46TyDNURe/pHz51Fm9Q0S6RjEU1JQes6
-        Xt4yO6+Ef7R/ykuV6glwLC9uGQ==
-X-Google-Smtp-Source: ABdhPJykIrXy8sqRbqD6MNKLcstRJMKicys4LzbaDZQB+C6WEgf2Ke4IbCOJzMR4/p4v17199zqJ6w==
-X-Received: by 2002:a05:6a00:1147:b029:3e0:8c37:938e with SMTP id b7-20020a056a001147b02903e08c37938emr3328209pfm.65.1631605125499;
-        Tue, 14 Sep 2021 00:38:45 -0700 (PDT)
+        bh=lHAYrFVB3RupwivCJS+aERvoyQvRbyNrf4+TX1u/TIc=;
+        b=KFBt7NqlU4bViFj8e13Jckp6+ODitRScvA2eiEf80dmIO94wJSfSWy02M7mlhczle8
+         EQXQNVeUlU9oxKGmZcz+7LqF6fAiDx+6BCIavdoLgIP6+zY4aCBJa0WWs9nO44KfTW9y
+         G3f+Yof6CmsZJmYPP6sy83S1SCqJooITq9luGBjrTSot1LG8ZLFm2E1LqtJeeABE8W1v
+         uuJGHrYrc/JgqobdgZwBg2/rnwFC453+Kuo7MMonQ2qCr71yCiarNCPMoZ6A3Qv0xbWJ
+         vgl3PGsZI3RWzAy5BT9SHWjdEBGEQ4aCtkLe/GhqslnAx0+YF+/HF8SsSWJyzWPsf8IP
+         haPA==
+X-Gm-Message-State: AOAM531U94nJ1RzwrjstrJlJ619+5UM09eYRuOaldMce3NFf+226hWfU
+        l2naGZ7M6vOcTWkYDa3t9zmABg==
+X-Google-Smtp-Source: ABdhPJyZ1gNoJwBwjSapufsGc0K+8Vsg5NtnDUWiyf6tHPBRFeHWboDHp+Gdig8QAOL5Yo1gLndiSQ==
+X-Received: by 2002:a17:90b:250e:: with SMTP id ns14mr582898pjb.84.1631605132200;
+        Tue, 14 Sep 2021 00:38:52 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id s3sm9377839pfd.188.2021.09.14.00.38.37
+        by smtp.gmail.com with ESMTPSA id s3sm9377839pfd.188.2021.09.14.00.38.45
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Sep 2021 00:38:45 -0700 (PDT)
+        Tue, 14 Sep 2021 00:38:51 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
         mhocko@kernel.org, vdavydov.dev@gmail.com, shakeelb@google.com,
@@ -59,9 +59,9 @@ Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         zhengqi.arch@bytedance.com, duanxiongchun@bytedance.com,
         fam.zheng@bytedance.com, smuchun@gmail.com,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3 48/76] proc: allocate inode by using alloc_inode_sb()
-Date:   Tue, 14 Sep 2021 15:29:10 +0800
-Message-Id: <20210914072938.6440-49-songmuchun@bytedance.com>
+Subject: [PATCH v3 49/76] qnx4: allocate inode by using alloc_inode_sb()
+Date:   Tue, 14 Sep 2021 15:29:11 +0800
+Message-Id: <20210914072938.6440-50-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210914072938.6440-1-songmuchun@bytedance.com>
 References: <20210914072938.6440-1-songmuchun@bytedance.com>
@@ -76,22 +76,22 @@ kmem_cache_alloc() to alloc_inode_sb().
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/proc/inode.c | 2 +-
+ fs/qnx4/inode.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/proc/inode.c b/fs/proc/inode.c
-index 599eb724ff2d..cc0a406d3a19 100644
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -66,7 +66,7 @@ static struct inode *proc_alloc_inode(struct super_block *sb)
+diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
+index 3fb7fc819b4f..a635bb6615e9 100644
+--- a/fs/qnx4/inode.c
++++ b/fs/qnx4/inode.c
+@@ -338,7 +338,7 @@ static struct kmem_cache *qnx4_inode_cachep;
+ static struct inode *qnx4_alloc_inode(struct super_block *sb)
  {
- 	struct proc_inode *ei;
- 
--	ei = kmem_cache_alloc(proc_inode_cachep, GFP_KERNEL);
-+	ei = alloc_inode_sb(sb, proc_inode_cachep, GFP_KERNEL);
+ 	struct qnx4_inode_info *ei;
+-	ei = kmem_cache_alloc(qnx4_inode_cachep, GFP_KERNEL);
++	ei = alloc_inode_sb(sb, qnx4_inode_cachep, GFP_KERNEL);
  	if (!ei)
  		return NULL;
- 	ei->pid = NULL;
+ 	return &ei->vfs_inode;
 -- 
 2.11.0
 
