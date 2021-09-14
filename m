@@ -2,77 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D4F40BBB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841EA40BBBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 00:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhINWjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 18:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        id S235596AbhINWlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 18:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235663AbhINWjH (ORCPT
+        with ESMTP id S235464AbhINWlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 18:39:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE557C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=cl7UIjCTs1b0KsfXtz6K9iVGx4kWZVf7z5I2bRPh74A=; b=dFFvdcTmcRbqGaT8IsF/AUegtm
-        dks6cALCpathKp0032DBi/kakZAvNnbMu2gWMv69Po+1cmxpOa3yXKNGXuvjbFSpAza28qB4JeUoA
-        siPW4gQSivNQUOICctwN8p1m9tcmE6JYi75ptc1PR3bFL17UCoAe7vV8kvwwD62uX98JdL45xF6pj
-        BJELET3g57V03XK6B5PyC5T3goYFGwyrSwAH9zH2DjlLPbmQgwvA8AF9FQpkXqKUU0AlLWHiz1sE2
-        uldWZHHABf++0ne5tcA645N5aP98srburh1QqB93/T+otKWGfl4JYDgMvN//lF5aex4KHzAgsNx6s
-        XEFv2utw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQH3j-007Rsg-7C; Tue, 14 Sep 2021 22:37:47 +0000
-Subject: Re: [PATCH v2 1/5] virtio-pci: introduce legacy device module
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com
-Cc:     wei.yang1@linux.alibaba.com
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <cover.1631621507.git.wuzongyong@linux.alibaba.com>
- <f833e77685cd1dfadc5c3b6688d29a0d1383dbb9.1631621507.git.wuzongyong@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0ff4bc96-390d-5a75-a881-b7042822bd2b@infradead.org>
-Date:   Tue, 14 Sep 2021 15:37:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 14 Sep 2021 18:41:10 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FBCC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:39:52 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i7so1601409lfr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 15:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+ZE2BawIU65HDTYQakuJiXPZQ2/PmXQG0jqaaUOAG3k=;
+        b=km4VCJqBJmlVrj14YwftblNq9T/nY2fuwDrkz+OhI7AfiWKEFvprziUIS0ZOjuM/r1
+         8rxYGKwS/d6aXpYDdHFdy4d2N3J7jWuPzxGWgiIZai5+lCRRzoN9k+WXSwwv5IJEurpY
+         119iNHScaih4bf0g9YH2D305Pa803HfX3UsoNjpavJrU5E2ULDGpaGPWaCROWaBtdvK3
+         pNm3MwpfjUw+kjMWPsGvANFpvvA8Z4CFutIWC15ANrQGgr30wpbFLRFdTfYpOtiPbiWG
+         nztIWzEbKol4gpNCt10dWnsPsC2BiAptgVpJ2TtstWNXd4eaa9gIEzxrUsqZQcqAsexj
+         q0pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+ZE2BawIU65HDTYQakuJiXPZQ2/PmXQG0jqaaUOAG3k=;
+        b=CSztsk49CSCijrzULj2ZN2j7dl804qBo6hRGnV+GM1f1vnJKElhL5Bx21Ja4XzCEp7
+         S+WIorBzF34nbeYfGJTALfqdOZZeDu0cJZRW9O+NlbzoZhk+ctUiXB7/Ar/LTe4DWkVI
+         /iHvlyvF4Yssb0i4Il4RMwlKfzv/0TQKPTNRjxLrOK8s8DNPw/SO3sfJazSdRE0U0ROM
+         LLElayxh+jK4uH824fXgkH44kw+8PIRB1pk/bhNRFVlMdkRVHE/DeL9XkRsxisRbeTUZ
+         IBnigAabxuXbUW4aKvpqMo3Mausife734j4mG+29qdtxIVBAe8WZ0HEp6vaKi/aB0ovT
+         ZqOQ==
+X-Gm-Message-State: AOAM533y56wVNUvQ/X++PRffE9Mhw2Q7AcfzbTa77NIs6kBu2ZkSUhi/
+        znAIkxznnp5kcSCTFix4XyrRWo6jA9VEjfGWCTKg67OF6b1G8Q==
+X-Google-Smtp-Source: ABdhPJxDxDrtWmPmN+FLHlNZw8mZA3aFHQX5XQpuMJbH10sfPsxgt8RqC6wuCf4rlESxpvmaBV314+yphKvuMEeSM2E=
+X-Received: by 2002:ac2:483b:: with SMTP id 27mr8966677lft.644.1631659190112;
+ Tue, 14 Sep 2021 15:39:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f833e77685cd1dfadc5c3b6688d29a0d1383dbb9.1631621507.git.wuzongyong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210914200639.3305617-1-pgonda@google.com> <YUEVQDEvLbdJF+sj@google.com>
+In-Reply-To: <YUEVQDEvLbdJF+sj@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 14 Sep 2021 16:39:38 -0600
+Message-ID: <CAMkAt6rSsKuzE__pAodiJR9wFU-B3942+kdkQG-3M+jxhVco2w@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SEV: Acquire vcpu mutex when updating VMSA
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/21 5:24 AM, Wu Zongyong wrote:
-> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-> index ce1b3f6ec325..b14768dc9e04 100644
-> --- a/drivers/virtio/Kconfig
-> +++ b/drivers/virtio/Kconfig
-> @@ -20,6 +20,15 @@ config VIRTIO_PCI_LIB
->   	  PCI device with possible vendor specific extensions. Any
->   	  module that selects this module must depend on PCI.
->   
-> +config VIRTIO_PCI_LIB_LEGACY
-> +	tristate
-> +	help
-> +	  Legacy PCI device (Virtio PCI Card 0.9.x Draft and older device)
-> +	  implementation.
-> +	  This modules implements the basic probe and control for devices
+On Tue, Sep 14, 2021 at 3:34 PM Sean Christopherson <seanjc@google.com> wro=
+te:
+>
+> On Tue, Sep 14, 2021, Peter Gonda wrote:
+> > Adds mutex guard to the VMSA updating code. Also adds a check to skip a
+> > vCPU if it has already been LAUNCH_UPDATE_VMSA'd which should allow
+> > userspace to retry this ioctl until all the vCPUs can be successfully
+> > LAUNCH_UPDATE_VMSA'd. Because this operation cannot be undone we cannot
+> > unwind if one vCPU fails.
+> >
+> > Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SE=
+V-ES guest")
+> >
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Cc: Marc Orr <marcorr@google.com>
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > Cc: kvm@vger.kernel.org
+> > Cc: stable@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  arch/x86/kvm/svm/sev.c | 24 +++++++++++++++++++-----
+> >  1 file changed, 19 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index 75e0b21ad07c..9a2ebd0328ca 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -598,22 +598,29 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+> >  static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd =
+*argp)
+> >  {
+> >       struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
+> > -     struct sev_data_launch_update_vmsa vmsa;
+> > +     struct sev_data_launch_update_vmsa vmsa =3D {0};
+> >       struct kvm_vcpu *vcpu;
+> >       int i, ret;
+> >
+> >       if (!sev_es_guest(kvm))
+> >               return -ENOTTY;
+> >
+> > -     vmsa.reserved =3D 0;
+> > -
+>
+> Zeroing all of 'vmsa' is an unrelated chagne and belongs in a separate pa=
+tch.  I
+> would even go so far as to say it's unnecessary, even field of the struct=
+ is
+> explicitly written before it's consumed.
 
-	       module
+I'll remove this.
 
-> +	  which are based on legacy PCI device. Any module that selects this
-> +	  module must depend on PCI.
-> +
+>
+> >       kvm_for_each_vcpu(i, vcpu, kvm) {
+> >               struct vcpu_svm *svm =3D to_svm(vcpu);
+> >
+> > +             ret =3D mutex_lock_killable(&vcpu->mutex);
+> > +             if (ret)
+> > +                     goto out_unlock;
+>
+> Rather than multiple unlock labels, move the guts of the loop to a wrappe=
+r.
+> As discussed off list, this really should be a vCPU-scoped ioctl, but tha=
+t ship
+> has sadly sailed :-(  We can at least imitate that by making the VM-scope=
+d ioctl
+> nothing but a wrapper.
+>
+> > +
+> > +             /* Skip to the next vCPU if this one has already be updat=
+ed. */
+>
+> s/be/been
+>
+> Uber nit, there may not be a next vCPU.  It'd be more slightly more accur=
+ate to
+> say something like "Do nothing if this vCPU has already been updated".
+>
+> > +             ret =3D sev_es_sync_vmsa(svm);
+> > +             if (svm->vcpu.arch.guest_state_protected)
+> > +                     goto unlock;
+>
+> This belongs in a separate patch, too.  It also introduces a bug (arguabl=
+y two)
+> in that it adds a duplicate call to sev_es_sync_vmsa().  The second bug i=
+s that
+> if sev_es_sync_vmsa() fails _and_ the vCPU is already protected, this wil=
+l cause
+> that failure to be squashed.
 
+I'll move skipping logic to a seperate patch
 
--- 
-~Randy
+>
+> In the end, I think the least gross implementation will look something li=
+ke this,
+> implemented over two patches (one for the lock, one for the protected che=
+ck).
+>
+> static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcp=
+u,
+>                                     int *error)
+> {
+>         struct sev_data_launch_update_vmsa vmsa;
+>         struct vcpu_svm *svm =3D to_svm(vcpu);
+>         int ret;
+>
+>         /*
+>          * Do nothing if this vCPU has already been updated.  This is all=
+owed
+>          * to let userspace retry LAUNCH_UPDATE_VMSA if the command fails=
+ on a
+>          * later vCPU.
+>          */
+>         if (svm->vcpu.arch.guest_state_protected)
+>                 return 0;
+>
+>         /* Perform some pre-encryption checks against the VMSA */
+>         ret =3D sev_es_sync_vmsa(svm);
+>         if (ret)
+>                 return ret;
+>
+>         /*
+>          * The LAUNCH_UPDATE_VMSA command will perform in-place
+>          * encryption of the VMSA memory content (i.e it will write
+>          * the same memory region with the guest's key), so invalidate
+>          * it first.
+>          */
+>         clflush_cache_range(svm->vmsa, PAGE_SIZE);
+>
+>         vmsa.reserved =3D 0;
+>         vmsa.handle =3D to_kvm_svm(kvm)->sev_info.handle;
+>         vmsa.address =3D __sme_pa(svm->vmsa);
+>         vmsa.len =3D PAGE_SIZE;
+>         return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, erro=
+r);
+> }
+>
+> static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *ar=
+gp)
+> {
+>         struct kvm_vcpu *vcpu;
+>         int i, ret;
+>
+>         if (!sev_es_guest(kvm))
+>                 return -ENOTTY;
+>
+>         kvm_for_each_vcpu(i, vcpu, kvm) {
+>                 ret =3D mutex_lock_killable(&vcpu->mutex);
+>                 if (ret)
+>                         return ret;
+>
+>                 ret =3D __sev_launch_update_vmsa(kvm, vcpu, &argp->error)=
+;
+>
+>                 mutex_unlock(&vcpu->mutex);
+">                 if (ret)
+>                         return ret;
+>         }
+>         return 0;
+> }
 
+That looks reasonable to me. I didn't know if changes headed for LTS
+should be smaller so I avoided doing this refactor. From:
+https://www.kernel.org/doc/html/v4.11/process/stable-kernel-rules.html#stab=
+le-kernel-rules
+seems to say less than 100 lines is ideal. I guess this could also be
+a "theoretical race condition=E2=80=9D anyways so maybe not for LTS anyways=
+.
+Thoughts?
