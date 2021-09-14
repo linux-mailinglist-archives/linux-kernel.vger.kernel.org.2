@@ -2,120 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CBE40B078
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7557940B07C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbhINOWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233614AbhINOWN (ORCPT
+        id S233521AbhINOXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:23:44 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:52947 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S233309AbhINOXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:22:13 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E3AC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:20:55 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id 5so8294708plo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=N9JVgVG506A4pOrvl84cUIVr9SLgDoTeuv3CCffC6eI=;
-        b=PE2DDe1EJUUNhlct25QQgwfuqq2afYwYT+duNuPOzmIOptPn/AqBPaUn1RyBkWfYHH
-         3jyMpw7pz16SwrqbAlEK3iF/6rBsr+c9A+Kn4AoBKUxBwQ5Ss62G+Jf5AufzNO6tWsQU
-         oj0gtD7YqK7Dlr3aIQ5tlAAbjsXWKHrv0fhyzMBhKMCFJghQe7WSt7O/ZxJkZWaCM/4n
-         Jyhk4JvfmO1/YgyaOeav3cd3nJopEWBHEMN9oXf0BaQp363vM2dohuZbk1fhBvMvXn47
-         pKZLmedERNgRVconZdzh9vPB8/y6p4G7xmDYyiM+6arBD8qC2u0Eh0ARl9JouX3+3txU
-         FecQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=N9JVgVG506A4pOrvl84cUIVr9SLgDoTeuv3CCffC6eI=;
-        b=cgpX3OQiSQTnOSxyq/Vqr4ItqQvF3+ERRTjszsxv9SdJn1sviTZvivdWiEE8EQ3t6B
-         XpiWNUTSz7J4mkf2T4ERHgxWIuBLOOIb5UrduKE11vFtD8o5Y4ePckua4vBdo9NcZhrI
-         BIcw9Du7TWvintF6ADc4Gy4gP0Qx5/0otYjBc5/c4/Gfb+HKkO6azB15y+6WzJ/N5UJ5
-         cxmf1dOVKYjCXUR9ZzGv+tW4AA21DwW+k7k0mDOVlwfrobyY+zI9oihMv0QCHkKZxeW7
-         a51az4Sc/QxjoYglCPEbCmwEkXNKg20NGS7sinZX65tfwkpaQM5YfSOLykPA+ijfeiRq
-         EqFw==
-X-Gm-Message-State: AOAM53098PfN1FhOLdB4Qvg3D3hZhJeUfwvlDqLxCmnc/2kTnpnu2StW
-        4S5D+gAPZHTbLtk5Iq00P0/yheLng3U=
-X-Google-Smtp-Source: ABdhPJzMSshUkpFX5pwk0xvSfpPUK9YghGjpcjSPwVQauqErMeEkM55I6Lfb6pzKWcuMCQxx2zgohQ==
-X-Received: by 2002:a17:903:1c2:b0:138:b303:7b95 with SMTP id e2-20020a17090301c200b00138b3037b95mr15240512plh.78.1631629255246;
-        Tue, 14 Sep 2021 07:20:55 -0700 (PDT)
-Received: from localhost.localdomain (1-171-6-195.dynamic-ip.hinet.net. [1.171.6.195])
-        by smtp.gmail.com with ESMTPSA id z8sm10300577pfa.113.2021.09.14.07.20.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Sep 2021 07:20:54 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     broonie@kernel.org
-Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com
-Subject: [PATCH v2] regulator: rtq6752: Enclose 'enable' gpio control by enable flag
-Date:   Tue, 14 Sep 2021 22:20:49 +0800
-Message-Id: <1631629249-9998-1-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 14 Sep 2021 10:23:43 -0400
+Received: (qmail 156518 invoked by uid 1000); 14 Sep 2021 10:22:24 -0400
+Date:   Tue, 14 Sep 2021 10:22:24 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Ondrej Zary <linux@zary.sk>
+Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb-storage: Add quirk for ScanLogic SL11R-IDE older
+ than 2.6c
+Message-ID: <20210914142224.GB155245@rowland.harvard.edu>
+References: <20210913210106.12717-1-linux@zary.sk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913210106.12717-1-linux@zary.sk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On Mon, Sep 13, 2021 at 11:01:06PM +0200, Ondrej Zary wrote:
+> ScanLogic SL11R-IDE with firmware older than 2.6c (the latest one) has
+> broken tag handling, preventing the device from working at all:
+> usb 1-1: new full-speed USB device number 2 using uhci_hcd
+> usb 1-1: New USB device found, idVendor=04ce, idProduct=0002, bcdDevice= 2.60
+> usb 1-1: New USB device strings: Mfr=1, Product=1, SerialNumber=0
+> usb 1-1: Product: USB Device
+> usb 1-1: Manufacturer: USB Device
+> usb-storage 1-1:1.0: USB Mass Storage device detected
+> scsi host2: usb-storage 1-1:1.0
+> usbcore: registered new interface driver usb-storage
+> usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+> usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+> usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+> usb 1-1: reset full-speed USB device number 2 using uhci_hcd
+> 
+> Add US_FL_BULK_IGNORE_TAG to fix it. Also update my e-mail address.
+> 
+> 2.6c is the only firmware that claims Linux compatibility.
+> The firmware can be upgraded using ezotgdbg utility:
+> https://github.com/asciilifeform/ezotgdbg
+> 
+> Signed-off-by: Ondrej Zary <linux@zary.sk>
+> ---
 
-Fix 'enable' gpio control logic from the below cases if it's specified.
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 
-1. All off and both are sequentially controlled to be on.
-The 'enable' gpio control block to be called twice including the delay time.
+>  drivers/usb/storage/unusual_devs.h | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/storage/unusual_devs.h b/drivers/usb/storage/unusual_devs.h
+> index efa972be2ee3..c6b3fcf90180 100644
+> --- a/drivers/usb/storage/unusual_devs.h
+> +++ b/drivers/usb/storage/unusual_devs.h
+> @@ -416,9 +416,16 @@ UNUSUAL_DEV(  0x04cb, 0x0100, 0x0000, 0x2210,
+>  		USB_SC_UFI, USB_PR_DEVICE, NULL, US_FL_FIX_INQUIRY | US_FL_SINGLE_LUN),
+>  
+>  /*
+> - * Reported by Ondrej Zary <linux@rainbow-software.org>
+> + * Reported by Ondrej Zary <linux@zary.sk>
+>   * The device reports one sector more and breaks when that sector is accessed
+> + * Firmwares older than 2.6c (the latest one and the only that claims Linux
+> + * support) have also broken tag handling
+>   */
+> +UNUSUAL_DEV(  0x04ce, 0x0002, 0x0000, 0x026b,
+> +		"ScanLogic",
+> +		"SL11R-IDE",
+> +		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
+> +		US_FL_FIX_CAPACITY | US_FL_BULK_IGNORE_TAG),
+>  UNUSUAL_DEV(  0x04ce, 0x0002, 0x026c, 0x026c,
+>  		"ScanLogic",
+>  		"SL11R-IDE",
 
-2. Both are on and one is preparing to be off.
-The 'enable' gpio control low before register cache is configured to be true.
-
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
-v2
-- Merge all comments into commit message.
----
- drivers/regulator/rtq6752-regulator.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/regulator/rtq6752-regulator.c b/drivers/regulator/rtq6752-regulator.c
-index 609d3fc..dfe45fb 100644
---- a/drivers/regulator/rtq6752-regulator.c
-+++ b/drivers/regulator/rtq6752-regulator.c
-@@ -54,14 +54,14 @@ static int rtq6752_set_vdd_enable(struct regulator_dev *rdev)
- 	int rid = rdev_get_id(rdev), ret;
- 
- 	mutex_lock(&priv->lock);
--	if (priv->enable_gpio) {
--		gpiod_set_value(priv->enable_gpio, 1);
-+	if (!priv->enable_flag) {
-+		if (priv->enable_gpio) {
-+			gpiod_set_value(priv->enable_gpio, 1);
- 
--		usleep_range(RTQ6752_I2CRDY_TIMEUS,
--			     RTQ6752_I2CRDY_TIMEUS + 100);
--	}
-+			usleep_range(RTQ6752_I2CRDY_TIMEUS,
-+				     RTQ6752_I2CRDY_TIMEUS + 100);
-+		}
- 
--	if (!priv->enable_flag) {
- 		regcache_cache_only(priv->regmap, false);
- 		ret = regcache_sync(priv->regmap);
- 		if (ret) {
-@@ -91,11 +91,11 @@ static int rtq6752_set_vdd_disable(struct regulator_dev *rdev)
- 	if (!priv->enable_flag) {
- 		regcache_cache_only(priv->regmap, true);
- 		regcache_mark_dirty(priv->regmap);
--	}
- 
--	if (priv->enable_gpio)
--		gpiod_set_value(priv->enable_gpio, 0);
-+		if (priv->enable_gpio)
-+			gpiod_set_value(priv->enable_gpio, 0);
- 
-+	}
- 	mutex_unlock(&priv->lock);
- 
- 	return 0;
--- 
-2.7.4
-
+Too bad the manufacturer didn't understand that 0x026c is not a valid 
+bcdDevice value...
