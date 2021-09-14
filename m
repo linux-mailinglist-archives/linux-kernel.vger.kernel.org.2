@@ -2,122 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F8B40B59E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0AF40B5AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhINRKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:10:03 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:41609 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhINRKC (ORCPT
+        id S231284AbhINRM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhINRMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:10:02 -0400
-Received: by mail-ot1-f51.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso19522034ota.8;
-        Tue, 14 Sep 2021 10:08:44 -0700 (PDT)
+        Tue, 14 Sep 2021 13:12:25 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C26EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:07 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id t190so105186qke.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=determinate-systems.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGPO8aXiMyFr9xGkKJ7nDzZ1O2MpyXvL26J5zpRPMr8=;
+        b=lCGE4T8flLWEYQDc4CrrY1qQ9v8gxzq3y/1cGkanjqYp1mxzTYLgocWFk8x9D2s2s5
+         3web7pbBeqP46OLc+VMpFnwANJVOwgbEJGl+Ln/nh0ezdCWSuns4uDxbwae+tVpAfiy+
+         JRoqAL1XkIV1fS3xq+hgZSUNORjzO15+OhzachuKMUrASs1G3vM8SCaPVk6kH5zgyzQn
+         PtNlhmP0UsiCetN612Q2k4LXxcTppVt9QS9c9NsprCYs4saPrH4ZHtj6Bs6YDioHInPD
+         hhPtx8hcwF+tJhAdPWDFJ0aa0I8yk9GN2Qme6SyJ0wd4eESDkrt3fftq1dIxJSCDJZsC
+         wOOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FhUnbg+uhSt5ysUwKSnG6H0zuUdL3FIHTzTgcFPDfCs=;
-        b=diSXijtsednguG4SS/DfwdvJH/tnjOVu8IrhKjy3jqitKhcIclTO9+8G5L/VoCDGc2
-         KkQ0glxlS8ZmXLj/iwK29363FnXq9PfhVZ2z/NkwCRrzvOzZ5GSH9IuPQeL3cda8UxpJ
-         dggb59C3nxK9/OvJxlLcacWO20JmVbcuBSaD5c9QKwliLzAsYC0A+LPwcw7PajCAeW5V
-         y+jqQBrhSkCEqA6fY9YeJqOxfajQuDVeMCxw0lMBRAzbI0o7av0cE3+ZIKFGpOqTtoYp
-         jdPFcVt+0ufTZyiR4V+E3XgyL6pDUISfKzS12lE1sKwaQ0/fT7IPzxdypAy1NhfnlJV5
-         wy5Q==
-X-Gm-Message-State: AOAM533oE6Yih0duGuXtfTMpybbzFhi6hcjZ29uqtl8LK/5feRfqJt7I
-        GW+91stI0KimLDo77RU2g2LF2uMe/ai5iUIKiWY=
-X-Google-Smtp-Source: ABdhPJwwNvkCwgKHIXpSxGbqsgqWZFPM80nulHEd5WVGCXkN6rwUTA0/uY5HQm5l3gbFey6QGta7bdShVzTGDm5kdfo=
-X-Received: by 2002:a05:6830:34b:: with SMTP id h11mr15965174ote.319.1631639324158;
- Tue, 14 Sep 2021 10:08:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGPO8aXiMyFr9xGkKJ7nDzZ1O2MpyXvL26J5zpRPMr8=;
+        b=b4AvrH10qbngvSZgcCYlp6j6EU+0sIehu2H55WlbBR/1YRQmGMGZZzXcEixMyYJbOS
+         THgaqb5C1gVeMXOjedpG4UtGrBl0wh7OJ5XtlLeIRqev61Ys456ji1jZPrBKYmlEXpQP
+         kEGr8XPsqnrzQaxtZN1Fdc20Mde3QRWoQlge5Z3FGzeCBjrbmNB2wbO5UW/6mH1Iuzd2
+         VPrWk9m/+IUc+e4Tn40LNTpP7Js2ciQlekesGLB0UH47MC3Klw9xo/ZV5euZZtQWNoqj
+         M2ayFkRg+Bb8HNUY1tB/YO8iKG2zgf1PALOfhG63PK2tULEsOV8qBalc5REnXN+AaRIA
+         V3Sg==
+X-Gm-Message-State: AOAM532G7D+5zBAqon2rkA0uaGfmDDfqXrRoFebh1gsQJNLuHQJwt3iE
+        4fDmtPavHGVLYhdRz/jrAKIHlg==
+X-Google-Smtp-Source: ABdhPJx2AuKD7ZqRgxtgoHsViiAfomxSY9YvCO+1Rr0x05T+P26R11FhWaGGssgtoZ1nvzqgbrY6Qg==
+X-Received: by 2002:a37:6447:: with SMTP id y68mr5885905qkb.296.1631639466863;
+        Tue, 14 Sep 2021 10:11:06 -0700 (PDT)
+Received: from localhost (cpe-67-246-1-194.nycap.res.rr.com. [67.246.1.194])
+        by smtp.gmail.com with ESMTPSA id h2sm8411455qkf.106.2021.09.14.10.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 10:11:06 -0700 (PDT)
+From:   graham@determinate.systems
+To:     graham@determinate.systems, Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Ignat Korchagin <ignat@cloudflare.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] mnt: add support for non-rootfs initramfs
+Date:   Tue, 14 Sep 2021 13:09:32 -0400
+Message-Id: <20210914170933.1922584-1-graham@determinate.systems>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210914165623.18972-1-james.morse@arm.com>
-In-Reply-To: <20210914165623.18972-1-james.morse@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 14 Sep 2021 19:08:33 +0200
-Message-ID: <CAJZ5v0juNZA8waQGyxTRQR05gQZa+qi0WksHUcfJSrzyFuMO7Q@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: schedutil: Destroy mutex before kobject_put()
- frees the memory
-To:     James Morse <james.morse@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hao <haokexin@gmail.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 6:56 PM James Morse <james.morse@arm.com> wrote:
->
-> Since commit e5c6b312ce3c ("cpufreq: schedutil: Use kobject release()
-> method to free sugov_tunables") kobject_put() has kfree()d the
-> attr_set before gov_attr_set_put() returns.
->
-> kobject_put() isn't the last user of attr_set in gov_attr_set_put(),
-> the subsequent mutex_destroy() triggers a use-after-free:
-> | BUG: KASAN: use-after-free in mutex_is_locked+0x20/0x60
-> | Read of size 8 at addr ffff000800ca4250 by task cpuhp/2/20
-> |
-> | CPU: 2 PID: 20 Comm: cpuhp/2 Not tainted 5.15.0-rc1 #12369
-> | Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development
-> | Platform, BIOS EDK II Jul 30 2018
-> | Call trace:
-> |  dump_backtrace+0x0/0x380
-> |  show_stack+0x1c/0x30
-> |  dump_stack_lvl+0x8c/0xb8
-> |  print_address_description.constprop.0+0x74/0x2b8
-> |  kasan_report+0x1f4/0x210
-> |  kasan_check_range+0xfc/0x1a4
-> |  __kasan_check_read+0x38/0x60
-> |  mutex_is_locked+0x20/0x60
-> |  mutex_destroy+0x80/0x100
-> |  gov_attr_set_put+0xfc/0x150
-> |  sugov_exit+0x78/0x190
-> |  cpufreq_offline.isra.0+0x2c0/0x660
-> |  cpuhp_cpufreq_offline+0x14/0x24
-> |  cpuhp_invoke_callback+0x430/0x6d0
-> |  cpuhp_thread_fun+0x1b0/0x624
-> |  smpboot_thread_fn+0x5e0/0xa6c
-> |  kthread+0x3a0/0x450
-> |  ret_from_fork+0x10/0x20
->
-> Swap the order of the calls.
->
-> Fixes: e5c6b312ce3c ("cpufreq: schedutil: Use kobject release() method to free sugov_tunables")
-> Cc: 4.7+ <stable@vger.kernel.org> # 4.7+
-> CC: Kevin Hao <haokexin@gmail.com>
-> CC: Viresh Kumar <viresh.kumar@linaro.org>
-> CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  drivers/cpufreq/cpufreq_governor_attr_set.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/cpufreq_governor_attr_set.c b/drivers/cpufreq/cpufreq_governor_attr_set.c
-> index 66b05a326910..a6f365b9cc1a 100644
-> --- a/drivers/cpufreq/cpufreq_governor_attr_set.c
-> +++ b/drivers/cpufreq/cpufreq_governor_attr_set.c
-> @@ -74,8 +74,8 @@ unsigned int gov_attr_set_put(struct gov_attr_set *attr_set, struct list_head *l
->         if (count)
->                 return count;
->
-> -       kobject_put(&attr_set->kobj);
->         mutex_destroy(&attr_set->update_lock);
-> +       kobject_put(&attr_set->kobj);
+From: Ignat Korchagin <ignat@cloudflare.com>
 
-Doh
+The main need for this is to support container runtimes on stateless Linux
+system (pivot_root system call from initramfs).
 
-I should have caught this one, thanks!
+Normally, the task of initramfs is to mount and switch to a "real" root
+filesystem. However, on stateless systems (booting over the network) it is
+just convenient to have your "real" filesystem as initramfs from the start.
 
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(gov_attr_set_put);
-> --
+This, however, breaks different container runtimes, because they usually
+use pivot_root system call after creating their mount namespace. But
+pivot_root does not work from initramfs, because initramfs runs from
+rootfs, which is the root of the mount tree and can't be unmounted.
 
-Applied as 5.15-rc material, thanks!
+One workaround is to do:
+
+  mount --bind / /
+
+However, that defeats one of the purposes of using pivot_root in the
+cloned containers: get rid of host root filesystem, should the code somehow
+escapes the chroot.
+
+There is a way to solve this problem from userspace, but it is much more
+cumbersome:
+  * either have to create a multilayered archive for initramfs, where the
+    outer layer creates a tmpfs filesystem and unpacks the inner layer,
+    switches root and does not forget to properly cleanup the old rootfs
+  * or we need to use keepinitrd kernel cmdline option, unpack initramfs
+    to rootfs, run a script to create our target tmpfs root, unpack the
+    same initramfs there, switch root to it and again properly cleanup
+    the old root, thus unpacking the same archive twice and also wasting
+    memory, because the kernel stores compressed initramfs image
+    indefinitely.
+
+With this change we can ask the kernel (by specifying nonroot_initramfs
+kernel cmdline option) to create a "leaf" tmpfs mount for us and switch
+root to it before the initramfs handling code, so initramfs gets unpacked
+directly into the "leaf" tmpfs with rootfs being empty and no need to
+clean up anything.
+
+This also bring the behaviour in line with the older style initrd, where
+the initrd is located on some leaf filesystem in the mount tree and rootfs
+remaining empty.
+
+Co-developed-by: Graham Christensen <graham@determinate.systems>
+Signed-off-by: Graham Christensen <graham@determinate.systems>
+Tested-by: Graham Christensen <graham@determinate.systems>
+Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+---
+ .../admin-guide/kernel-parameters.txt         |  9 +++-
+ fs/namespace.c                                | 48 +++++++++++++++++++
+ 2 files changed, 56 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 91ba391f9b32..bfbc904ad751 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3517,11 +3517,18 @@
+ 	nomfgpt		[X86-32] Disable Multi-Function General Purpose
+ 			Timer usage (for AMD Geode machines).
+ 
++	nomodule        Disable module load
++
+ 	nonmi_ipi	[X86] Disable using NMI IPIs during panic/reboot to
+ 			shutdown the other cpus.  Instead use the REBOOT_VECTOR
+ 			irq.
+ 
+-	nomodule	Disable module load
++	nonroot_initramfs
++			[KNL] Create an additional tmpfs filesystem under rootfs
++			and unpack initramfs there instead of the rootfs itself.
++			This is useful for stateless systems, which run directly
++			from initramfs, create mount namespaces and use
++			"pivot_root" system call.
+ 
+ 	nopat		[X86] Disable PAT (page attribute table extension of
+ 			pagetables) support.
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 659a8f39c61a..c639ea9feb66 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -18,6 +18,7 @@
+ #include <linux/cred.h>
+ #include <linux/idr.h>
+ #include <linux/init.h>		/* init_rootfs */
++#include <linux/init_syscalls.h> /* init_chdir, init_chroot, init_mkdir */
+ #include <linux/fs_struct.h>	/* get_fs_root et.al. */
+ #include <linux/fsnotify.h>	/* fsnotify_vfsmount_delete */
+ #include <linux/file.h>
+@@ -4302,6 +4303,49 @@ static void __init init_mount_tree(void)
+ 	set_fs_root(current->fs, &root);
+ }
+ 
++#if IS_ENABLED(CONFIG_TMPFS)
++static int __initdata nonroot_initramfs;
++
++static int __init nonroot_initramfs_param(char *str)
++{
++	if (*str)
++		return 0;
++	nonroot_initramfs = 1;
++	return 1;
++}
++__setup("nonroot_initramfs", nonroot_initramfs_param);
++
++static void __init init_nonroot_initramfs(void)
++{
++	int err;
++
++	if (!nonroot_initramfs)
++		return;
++
++	err = init_mkdir("/root", 0700);
++	if (err < 0)
++		goto out;
++
++	err = init_mount("tmpfs", "/root", "tmpfs", 0, NULL);
++	if (err)
++		goto out;
++
++	err = init_chdir("/root");
++	if (err)
++		goto out;
++
++	err = init_mount(".", "/", NULL, MS_MOVE, NULL);
++	if (err)
++		goto out;
++
++	err = init_chroot(".");
++	if (!err)
++		return;
++out:
++	pr_warn("Failed to create a non-root filesystem for initramfs\n");
++}
++#endif /* IS_ENABLED(CONFIG_TMPFS) */
++
+ void __init mnt_init(void)
+ {
+ 	int err;
+@@ -4335,6 +4379,10 @@ void __init mnt_init(void)
+ 	shmem_init();
+ 	init_rootfs();
+ 	init_mount_tree();
++
++#if IS_ENABLED(CONFIG_TMPFS)
++	init_nonroot_initramfs();
++#endif
+ }
+ 
+ void put_mnt_ns(struct mnt_namespace *ns)
+-- 
+2.32.0
+
