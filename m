@@ -2,473 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5445C40AA3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D73240AA3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhINJIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:08:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhINJIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:08:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24B7D60E97;
-        Tue, 14 Sep 2021 09:06:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631610404;
-        bh=OnDotOuyZsIWKrlx4LL2rGeBX9pKyXT9dbs5ngQNNEE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ewsZG7p4S3OsAQ+0UVK6lj2I3cGcHi+oBaeFUQPlIIO5yayr5oh9hoLITDKtmz0NG
-         gq2y/AbEiQ6OapsHiTA3lyTGldZY1uPJf7RSsxRK8GtzZn8yw38lm3Xea7e5T8rwLj
-         4pv7PZ0RUCBh9du96NAm3sjs2ow1RIQFvi8xkjJg=
-Date:   Tue, 14 Sep 2021 11:06:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     min.li.xe@renesas.com
-Cc:     derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH misc] misc: Add Renesas Synchronization Management Unit
- (SMU) support
-Message-ID: <YUBmIWU6HwIjjeXa@kroah.com>
-References: <1630608353-7606-1-git-send-email-min.li.xe@renesas.com>
+        id S231523AbhINJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:09:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19972 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhINJJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:09:20 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H7y7v6cRzzbmSt;
+        Tue, 14 Sep 2021 17:03:55 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 17:08:01 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 14 Sep 2021 17:08:00 +0800
+Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <hch@infradead.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nbd@other.debian.org>, <yi.zhang@huawei.com>
+References: <20210909141256.2606682-1-yukuai3@huawei.com>
+ <20210909141256.2606682-6-yukuai3@huawei.com> <YT/2z4PSeW5oJWMq@T590>
+ <c6af73a2-f12d-eeef-616e-ae0cdb4f6f2d@huawei.com> <YUBE4BJ7+kN1c4l8@T590>
+ <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com> <YUBTVBioqJ7qas2R@T590>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <39e628cc-496c-ba20-b53a-fbeecc1d7e4e@huawei.com>
+Date:   Tue, 14 Sep 2021 17:08:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630608353-7606-1-git-send-email-min.li.xe@renesas.com>
+In-Reply-To: <YUBTVBioqJ7qas2R@T590>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 02:45:53PM -0400, min.li.xe@renesas.com wrote:
-> From: Min Li <min.li.xe@renesas.com>
+On 2021/09/14 15:46, Ming Lei wrote:
+> On Tue, Sep 14, 2021 at 03:13:38PM +0800, yukuai (C) wrote:
+>> On 2021/09/14 14:44, Ming Lei wrote:
+>>> On Tue, Sep 14, 2021 at 11:11:06AM +0800, yukuai (C) wrote:
+>>>> On 2021/09/14 9:11, Ming Lei wrote:
+>>>>> On Thu, Sep 09, 2021 at 10:12:55PM +0800, Yu Kuai wrote:
+>>>>>> blk_mq_tag_to_rq() can only ensure to return valid request in
+>>>>>> following situation:
+>>>>>>
+>>>>>> 1) client send request message to server first
+>>>>>> submit_bio
+>>>>>> ...
+>>>>>>     blk_mq_get_tag
+>>>>>>     ...
+>>>>>>     blk_mq_get_driver_tag
+>>>>>>     ...
+>>>>>>     nbd_queue_rq
+>>>>>>      nbd_handle_cmd
+>>>>>>       nbd_send_cmd
+>>>>>>
+>>>>>> 2) client receive respond message from server
+>>>>>> recv_work
+>>>>>>     nbd_read_stat
+>>>>>>      blk_mq_tag_to_rq
+>>>>>>
+>>>>>> If step 1) is missing, blk_mq_tag_to_rq() will return a stale
+>>>>>> request, which might be freed. Thus convert to use
+>>>>>> blk_mq_find_and_get_req() to make sure the returned request is not
+>>>>>> freed.
+>>>>>
+>>>>> But NBD_CMD_INFLIGHT has been added for checking if the reply is
+>>>>> expected, do we still need blk_mq_find_and_get_req() for covering
+>>>>> this issue? BTW, request and its payload is pre-allocated, so there
+>>>>> isn't real use-after-free.
+>>>>
+>>>> Hi, Ming
+>>>>
+>>>> Checking NBD_CMD_INFLIGHT relied on the request founded by tag is valid,
+>>>> not the other way round.
+>>>>
+>>>> nbd_read_stat
+>>>>    req = blk_mq_tag_to_rq()
+>>>>    cmd = blk_mq_rq_to_pdu(req)
+>>>>    mutex_lock(cmd->lock)
+>>>>    checking NBD_CMD_INFLIGHT
+>>>
+>>> Request and its payload is pre-allocated, and either req->ref or cmd->lock can
+>>> serve the same purpose here. Once cmd->lock is held, you can check if the cmd is
+>>> inflight or not. If it isn't inflight, just return -ENOENT. Is there any
+>>> problem to handle in this way?
+>>
+>> Hi, Ming
+>>
+>> in nbd_read_stat:
+>>
+>> 1) get a request by tag first
+>> 2) get nbd_cmd by the request
+>> 3) hold cmd->lock and check if cmd is inflight
+>>
+>> If we want to check if the cmd is inflight in step 3), we have to do
+>> setp 1) and 2) first. As I explained in patch 0, blk_mq_tag_to_rq()
+>> can't make sure the returned request is not freed:
+>>
+>> nbd_read_stat
+>> 			blk_mq_sched_free_requests
+>> 			 blk_mq_free_rqs
+>>    blk_mq_tag_to_rq
+>>    -> get rq before clear mapping
+>> 			  blk_mq_clear_rq_mapping
+>> 			  __free_pages -> rq is freed
+>>    blk_mq_request_started -> UAF
 > 
-> This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
-> of timing and synchronization devices.It will be used by Renesas PTP Clock
-> Manager for Linux (pcm4l) software to provide support to GNSS assisted
-> partial timing support (APTS) and other networking timing functions.
+> If the above can happen, blk_mq_find_and_get_req() may not fix it too, just
+
+Hi, Ming
+
+Why can't blk_mq_find_and_get_req() fix it? I can't think of any
+scenario that might have problem currently.
+
+> wondering why not take the following simpler way for avoiding the UAF?
 > 
-> Current version provides kernel API's to support the following functions
-> -set combomode to enable SYNCE clock support
-> -read dpll's state to determine if the dpll is locked to the GNSS channel
-> -read dpll's ffo (fractional frequency offset) in ppqt
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index 5170a630778d..dfa5cce71f66 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -795,9 +795,13 @@ static void recv_work(struct work_struct *work)
+>   						     work);
+>   	struct nbd_device *nbd = args->nbd;
+>   	struct nbd_config *config = nbd->config;
+> +	struct request_queue *q = nbd->disk->queue;
+>   	struct nbd_cmd *cmd;
+>   	struct request *rq;
+>   
+> +	if (!percpu_ref_tryget(&q->q_usage_counter))
+> +                return;
+> +
+
+We can't make sure freeze_queue is called before this, thus this approch
+can't fix the problem, right?
+  nbd_read_stat
+     blk_mq_tag_to_rq
+			elevator_switch
+			 blk_mq_freeze_queue(q);
+			 elevator_switch_mq
+			  elevator_exit
+			   blk_mq_sched_free_requests
+     blk_mq_request_started -> UAF
+
+Thanks,
+Kuai
+
+>   	while (1) {
+>   		cmd = nbd_read_stat(nbd, args->index);
+>   		if (IS_ERR(cmd)) {
+> @@ -813,6 +817,7 @@ static void recv_work(struct work_struct *work)
+>   		if (likely(!blk_should_fake_timeout(rq->q)))
+>   			blk_mq_complete_request(rq);
+>   	}
+> +	blk_queue_exit(q);
+>   	nbd_config_put(nbd);
+>   	atomic_dec(&config->recv_threads);
+>   	wake_up(&config->recv_wq);
 > 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
->  drivers/misc/Kconfig      |   9 ++
->  drivers/misc/Makefile     |   2 +
->  drivers/misc/rsmu_cdev.c  | 239 ++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/misc/rsmu_cdev.h  |  77 +++++++++++++++
->  drivers/misc/rsmu_cm.c    | 164 +++++++++++++++++++++++++++++++
->  drivers/misc/rsmu_sabre.c | 133 ++++++++++++++++++++++++++
-
-If you make this all one .c file, the .h file can go away and it will be
-much simpler in the end.  And will get rid of the global symbols.
-
->  include/uapi/linux/rsmu.h |  66 +++++++++++++
->  7 files changed, 690 insertions(+)
->  create mode 100644 drivers/misc/rsmu_cdev.c
->  create mode 100644 drivers/misc/rsmu_cdev.h
->  create mode 100644 drivers/misc/rsmu_cm.c
->  create mode 100644 drivers/misc/rsmu_sabre.c
->  create mode 100644 include/uapi/linux/rsmu.h
+> Thanks,
+> Ming
 > 
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index 85ba901..6ed5a18 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -469,6 +469,15 @@ config HISI_HIKEY_USB
->  	  switching between the dual-role USB-C port and the USB-A host ports
->  	  using only one USB controller.
->  
-> +config RSMU
-> +	tristate "Renesas Synchronization Management Unit (SMU)"
-> +	help
-> +	  This option enables support for the IDT ClockMatrix(TM) and 82P33xxx
-> +	  families of timing and synchronization devices. It will be used by
-> +	  Renesas PTP Clock Manager for Linux (pcm4l) software to provide support
-> +	  for GNSS assisted partial timing support (APTS) and other networking
-> +	  timing functions.
-
-No driver name listed?
-
-> +
->  source "drivers/misc/c2port/Kconfig"
->  source "drivers/misc/eeprom/Kconfig"
->  source "drivers/misc/cb710/Kconfig"
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index a086197..bde748d 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -59,3 +59,5 @@ obj-$(CONFIG_UACCE)		+= uacce/
->  obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
->  obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
->  obj-$(CONFIG_HI6421V600_IRQ)	+= hi6421v600-irq.o
-> +rsmu-objs			:= rsmu_cdev.o rsmu_cm.o rsmu_sabre.o
-> +obj-$(CONFIG_RSMU)		+= rsmu.o
-
-Just one .c file please.
-
-> diff --git a/drivers/misc/rsmu_cdev.c b/drivers/misc/rsmu_cdev.c
-> new file mode 100644
-> index 0000000..8e856a6
-> --- /dev/null
-> +++ b/drivers/misc/rsmu_cdev.c
-> @@ -0,0 +1,239 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-
-Are you sure about "+"?  I have to ask.
-
-> +/*
-> + * This driver is developed for the IDT ClockMatrix(TM) and 82P33xxx families
-> + * of timing and synchronization devices. It will be used by Renesas PTP Clock
-> + * Manager for Linux (pcm4l) software to provide support to GNSS assisted
-> + * partial timing support (APTS) and other networking timing functions.
-> + *
-> + * Please note it must work with Renesas MFD driver to access device through
-> + * I2C/SPI.
-> + *
-> + * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-
-Are you sure about that date?
-
-> + */
-> +
-> +#include <linux/cdev.h>
-> +#include <linux/device.h>
-> +#include <linux/fs.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/mfd/rsmu.h>
-> +#include <uapi/linux/rsmu.h>
-> +#include "rsmu_cdev.h"
-> +
-> +static DEFINE_IDA(rsmu_cdev_map);
-> +
-> +static struct rsmu_ops *ops_array[] = {
-> +	[0] = &cm_ops,
-> +	[1] = &sabre_ops,
-
-0 and 1 don't define much.  Why are they needed?
-
-No NULL at the end of the list?
-
-
-> +};
-> +
-> +static int
-> +rsmu_set_combomode(struct rsmu_cdev *rsmu, void __user *arg)
-> +{
-> +	struct rsmu_ops *ops = rsmu->ops;
-> +	struct rsmu_combomode mode;
-> +	int err;
-> +
-> +	if (copy_from_user(&mode, arg, sizeof(mode)))
-> +		return -EFAULT;
-> +
-> +	if (ops->set_combomode == NULL)
-> +		return -EOPNOTSUPP;
-> +
-> +	mutex_lock(rsmu->lock);
-> +	err = ops->set_combomode(rsmu, mode.dpll, mode.mode);
-
-No error checking of the userspace values?
-
-> +	mutex_unlock(rsmu->lock);
-> +
-> +	return err;
-> +}
-> +
-> +static int
-> +rsmu_get_dpll_state(struct rsmu_cdev *rsmu, void __user *arg)
-> +{
-> +	struct rsmu_ops *ops = rsmu->ops;
-> +	struct rsmu_get_state state_request;
-> +	u8 state;
-> +	int err;
-> +
-> +	if (copy_from_user(&state_request, arg, sizeof(state_request)))
-> +		return -EFAULT;
-> +
-> +	if (ops->get_dpll_state == NULL)
-> +		return -EOPNOTSUPP;
-
-No error checking of the userspace values?
-
-> +
-> +	mutex_lock(rsmu->lock);
-> +	err = ops->get_dpll_state(rsmu, state_request.dpll, &state);
-> +	mutex_unlock(rsmu->lock);
-> +
-> +	state_request.state = state;
-> +	if (copy_to_user(arg, &state_request, sizeof(state_request)))
-> +		return -EFAULT;
-> +
-> +	return err;
-> +}
-> +
-> +static int
-> +rsmu_get_dpll_ffo(struct rsmu_cdev *rsmu, void __user *arg)
-> +{
-> +	struct rsmu_ops *ops = rsmu->ops;
-> +	struct rsmu_get_ffo ffo_request;
-> +	int err;
-> +
-> +	if (copy_from_user(&ffo_request, arg, sizeof(ffo_request)))
-> +		return -EFAULT;
-> +
-> +	if (ops->get_dpll_ffo == NULL)
-> +		return -EOPNOTSUPP;
-> +
-> +	mutex_lock(rsmu->lock);
-> +	err = ops->get_dpll_ffo(rsmu, ffo_request.dpll, &ffo_request);
-
-Again, no checking of the userspace values?
-
-> +	mutex_unlock(rsmu->lock);
-> +
-> +	if (copy_to_user(arg, &ffo_request, sizeof(ffo_request)))
-> +		return -EFAULT;
-> +
-> +	return err;
-> +}
-> +
-> +static struct rsmu_cdev *file2rsmu(struct file *file)
-> +{
-> +	return container_of(file->private_data, struct rsmu_cdev, miscdev);
-> +}
-> +
-> +static long
-> +rsmu_ioctl(struct file *fptr, unsigned int cmd, unsigned long data)
-> +{
-> +	struct rsmu_cdev *rsmu = file2rsmu(fptr);
-> +	void __user *arg = (void __user *)data;
-> +	int err = 0;
-> +
-> +	switch (cmd) {
-> +	case RSMU_SET_COMBOMODE:
-> +		err = rsmu_set_combomode(rsmu, arg);
-> +		break;
-> +	case RSMU_GET_STATE:
-> +		err = rsmu_get_dpll_state(rsmu, arg);
-> +		break;
-> +	case RSMU_GET_FFO:
-> +		err = rsmu_get_dpll_ffo(rsmu, arg);
-> +		break;
-> +	default:
-> +		/* Should not get here */
-> +		dev_err(rsmu->dev, "Undefined RSMU IOCTL");
-
-Do not allow userspace to flood the kernel log with messages like this.
-
-> +		err = -EINVAL;
-
-Wrong value.
-
-> +		break;
-> +	}
-> +
-> +	return err;
-> +}
-
-What userspace tool is making these ioctl calls?
-
-> +
-> +static long rsmu_compat_ioctl(struct file *fptr, unsigned int cmd,
-> +			      unsigned long data)
-> +{
-> +	return rsmu_ioctl(fptr, cmd, data);
-> +}
-> +
-
-Why is the compat ioctl needed at all?
-
-> +static const struct file_operations rsmu_fops = {
-> +	.owner = THIS_MODULE,
-> +	.unlocked_ioctl = rsmu_ioctl,
-> +	.compat_ioctl =	rsmu_compat_ioctl,
-> +};
-> +
-> +static int rsmu_init_ops(struct rsmu_cdev *rsmu)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ops_array); i++)
-> +		if (ops_array[i]->type == rsmu->type)
-> +			break;
-> +
-> +	if (i == ARRAY_SIZE(ops_array))
-> +		return -EINVAL;
-> +
-> +	rsmu->ops = ops_array[i];
-> +	return 0;
-> +}
-> +
-> +static int
-> +rsmu_probe(struct platform_device *pdev)
-> +{
-> +	struct rsmu_ddata *ddata = dev_get_drvdata(pdev->dev.parent);
-> +	struct rsmu_cdev *rsmu;
-> +	int err;
-> +
-> +	rsmu = devm_kzalloc(&pdev->dev, sizeof(*rsmu), GFP_KERNEL);
-> +	if (!rsmu)
-> +		return -ENOMEM;
-> +
-> +	/* Save driver private data */
-> +	platform_set_drvdata(pdev, rsmu);
-> +
-> +	rsmu->dev = &pdev->dev;
-> +	rsmu->mfd = pdev->dev.parent;
-> +	rsmu->type = ddata->type;
-> +	rsmu->lock = &ddata->lock;
-> +	rsmu->regmap = ddata->regmap;
-> +	rsmu->index = ida_simple_get(&rsmu_cdev_map, 0, MINORMASK + 1, GFP_KERNEL);
-> +	if (rsmu->index < 0) {
-> +		dev_err(rsmu->dev, "Unable to get index %d\n", rsmu->index);
-> +		return rsmu->index;
-> +	}
-> +	snprintf(rsmu->name, sizeof(rsmu->name), "rsmu%d", rsmu->index);
-> +
-> +	err = rsmu_init_ops(rsmu);
-> +	if (err) {
-> +		dev_err(rsmu->dev, "Unknown SMU type %d", rsmu->type);
-> +		ida_simple_remove(&rsmu_cdev_map, rsmu->index);
-> +		return err;
-> +	}
-> +
-> +	/* Initialize and register the miscdev */
-> +	rsmu->miscdev.minor = MISC_DYNAMIC_MINOR;
-> +	rsmu->miscdev.fops = &rsmu_fops;
-> +	rsmu->miscdev.name = rsmu->name;
-> +	err = misc_register(&rsmu->miscdev);
-> +	if (err) {
-> +		dev_err(rsmu->dev, "Unable to register device\n");
-> +		ida_simple_remove(&rsmu_cdev_map, rsmu->index);
-> +		return -ENODEV;
-> +	}
-> +
-> +	dev_info(rsmu->dev, "Probe %s successful\n", rsmu->name);
-
-When drivers work, they are totally quiet.  Please remove.
-
-> +	return 0;
-> +}
-> +
-> +static int
-> +rsmu_remove(struct platform_device *pdev)
-> +{
-> +	struct rsmu_cdev *rsmu = platform_get_drvdata(pdev);
-> +
-> +	misc_deregister(&rsmu->miscdev);
-> +	ida_simple_remove(&rsmu_cdev_map, rsmu->index);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct platform_device_id rsmu_id_table[] = {
-> +	{ "8a3400x-cdev", RSMU_CM},
-> +	{ "82p33x1x-cdev", RSMU_SABRE},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(platform, rsmu_id_table);
-> +
-> +static struct platform_driver rsmu_driver = {
-> +	.driver = {
-> +		.name = "rsmu-cdev",
-> +	},
-> +	.probe = rsmu_probe,
-> +	.remove =  rsmu_remove,
-> +	.id_table = rsmu_id_table,
-> +};
-> +
-> +module_platform_driver(rsmu_driver);
-> +
-> +MODULE_DESCRIPTION("Renesas SMU character device driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/misc/rsmu_cdev.h b/drivers/misc/rsmu_cdev.h
-> new file mode 100644
-> index 0000000..d67f71a
-> --- /dev/null
-> +++ b/drivers/misc/rsmu_cdev.h
-> @@ -0,0 +1,77 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * This driver is developed for the IDT ClockMatrix(TM) of
-> + * timing and synchronization devices.
-> + *
-> + * Copyright (C) 2019 Integrated Device Technology, Inc., a Renesas Company.
-> + */
-> +#ifndef __LINUX_RSMU_CDEV_H
-> +#define __LINUX_RSMU_CDEV_H
-> +
-> +#include <linux/miscdevice.h>
-> +#include <linux/regmap.h>
-> +
-> +struct rsmu_ops;
-> +
-> +/**
-> + * struct rsmu_cdev - Driver data for RSMU character device
-> + * @name: rsmu device name as rsmu[index]
-> + * @dev: pointer to device
-> + * @mfd: pointer to MFD device
-> + * @miscdev: character device handle
-> + * @regmap: I2C/SPI regmap handle
-> + * @lock: mutex to protect operations from being interrupted
-> + * @type: rsmu device type, passed through platform data
-> + * @ops: rsmu device methods
-> + * @index: rsmu device index
-> + */
-> +struct rsmu_cdev {
-> +	char name[16];
-> +	struct device *dev;
-
-What device is this pointing to?
-
-> +	struct device *mfd;
-
-What is this for?
-
-> +	struct miscdevice miscdev;
-> +	struct regmap *regmap;
-> +	struct mutex *lock;
-> +	enum rsmu_type type;
-> +	struct rsmu_ops *ops;
-> +	int index;
-> +};
-> +
-> +/* Get dpll ffo (fractional frequency offset) in ppqt*/
-
-Need a space at the end of your comment string.
-
-> +struct rsmu_get_ffo {
-> +	__u8 dpll;
-> +	__s64 ffo;
-> +};
-> +d
-> +/*
-> + * RSMU IOCTL List
-> + */
-> +#define RSMU_MAGIC '?'
-
-Where did you get this value from?
-
-Where did you reserve it?
-
-> +
-> +/**
-> + * @Description
-
-What is this format?  It is not kernel-doc :(
-
-> + * ioctl to set SMU combo mode.Combo mode provides physical layer frequency
-> + * support from the Ethernet Equipment Clock to the PTP clock
-> + *
-> + * @Parameters
-
-Same here and elsewhere in this file.
-
-thanks,
-
-greg k-h
+> .
+> 
