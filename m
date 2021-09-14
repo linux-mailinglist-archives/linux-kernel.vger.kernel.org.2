@@ -2,173 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0B240A542
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2363740A563
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 06:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhINE0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 00:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhINE0T (ORCPT
+        id S232376AbhINE2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 00:28:25 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:23622 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231817AbhINE2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:26:19 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3F2C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:25:03 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id y17so10930295pfl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Sep 2021 21:25:03 -0700 (PDT)
+        Tue, 14 Sep 2021 00:28:23 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18DNXjmH006588;
+        Tue, 14 Sep 2021 04:26:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=3HMri4GLJLdIRV+/9TuROARbAeU8bHCRtO7jfJiXNuE=;
+ b=mNzYzD5VOJBWZVLiD+t6xbeTStosJeXlH4v317Ue44zUaLf06dp2a3yy6ij5AVr0+v0h
+ 1wfgWKJMHaywvS6dijo9dH/bjdaeRs1yNN81m+vcumu9ezxax2os9kDPyR6BfwNOLNFk
+ OzCjPhmzE3e0kfrBoSqUmAGuX42c3DAtqCke1Xr871TJ7D5HPjPCnhSqHcJJo2F5NHmi
+ NzisyjkuhZjSTAZ6RNfu27WI3W2ZeusQf+y9CcrRQO7mSmDQwv1QnkZoGbBj33JyLS+G
+ 4Ib3sNssAVZd/37NDaMNqjUtnsBdvqRqW90YWp6ZB1SkrhDNgFdf91fgiY/xuNVeqaHJ lg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=3HMri4GLJLdIRV+/9TuROARbAeU8bHCRtO7jfJiXNuE=;
+ b=Jb1EosiGzkf9nu0Z8ABluKkU01r8/HQyHvGu8c5aBl8dbrvJDBbi+gOALO4ixZtIuh7c
+ lFNNomUKTroOBiDtWPMYCTSbIZjD392ViS9MNPFC6+IFoMnAO8YcpGEKbOoDQSanCmxP
+ hYhI/XlPm6z6KvjdENwGuYGI6zIQOApO4Z24d7yMMCnJ9xHlFHEPqXsdqbOCvV9VxCV3
+ mHYaGLQ6/EmH27Pb4Y1E9fVeeEE3mUMmbtdKuq/XkWT8RysyFjcahOBQbJ1mENr2pL8o
+ p4F0zAvxbs6HnesLWHFkxmFHyJkNQq7CjG+uze5Bv9DF98REMVD1G/ncDxOc/Gnl4CYN 6Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b1k9rw38h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 04:26:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18E4B8FJ185821;
+        Tue, 14 Sep 2021 04:26:54 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by userp3030.oracle.com with ESMTP id 3b0hjufutx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Sep 2021 04:26:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l81SZGrVZFDbFGFCqp+ZLDNKayNPYpoxzpSsKLfzJiQEE7hQPFjng/GeoFSivUzm/XpTR6Yz4CuuekLUSnpSOlKi015A/O1lcKTkzgTCkHjmAixQHD0+ua1I8V2xbciQQ4iq6oJTRdtK4crsebOrS2JZ1vLWvZEe+w4hQymBak2lXDahoDhiGLrPLELACt62JsRmBfcCXlqvRrQiBh8HItJzWucI8BuJOWX2B+6xD66eWrpgTqW1jTE34aNHxdGSi6rWJonjk6vPVfYYXxRD4ySA6cbuqokrKUtsYsvjVonZat51f2iqQebsjd+unemhFHq4Ko/Dg5pnfIQMSM3ITA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=3HMri4GLJLdIRV+/9TuROARbAeU8bHCRtO7jfJiXNuE=;
+ b=CizjC6zjBOKAPCpUvORAl/l1Yzigs+SC9QpjHEzUtHuhScxfT5ge5rxvy+ornLw3DlND4iHCez62i5PKUckZy6NNkQ7mnwLKlRDXZTTPUfmPpxuYvUlpSDFMxTSOYkZWTIUcpDOgMchmSj35oi3PQW42KukDngKEFQJN2IQiNvmJ41TbW420AVPaIjSoYCFQadw4QuAPl+OZL0eR0OhwTas33H8euLMZhAE1icRDYaVyyoUpY3JKsccN/mUqqgEvS9FyWgzIzDDx/NYL7c4WMuv3t3W63nMn7P49pt+B262XF81Ilo8J9uN4ixh6yyhX5WIabgFVt4EePs2AIK9OsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pathpartnertech.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :in-reply-to:user-agent:content-disposition;
-        bh=5H2bcMfxByKm2EVUg1iJMD5chj5K7B0S9zZLnk9vCwM=;
-        b=FID+wq/FYlPSh2Z7HxqDdnou1mMCkl3k4Skk0P+X88RAl/VcGXiAkriocgpWuvPcXG
-         Kq3x15rxwghXkeMt1PwPxs2PPwN4E0psiiCaEVxtG6OtHLt8RQ92CqEsCPCyUMGeQ/NY
-         pXftPl9TKE+evQ16m0LGZWDNAfja9y63J5ojp537+OX+ZDqAZFAZu/iPzxeHMJkhjAE2
-         lFkQaD9GgI6GLq6zLc5jTUFF5IB51gATkDgjNTPGbHa4Xz93EKHJnslXlZ/ygM5RYDHL
-         EtALtr6T+Xr1/2ClFzFLIOGukp024UM3n/umm294jlEpwxy/lycqYXX5/qqoCXdPTMbE
-         Q6zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:in-reply-to:user-agent:content-disposition;
-        bh=5H2bcMfxByKm2EVUg1iJMD5chj5K7B0S9zZLnk9vCwM=;
-        b=N3SOcbXtrezCFqdVCoSNd3fP9n4AvxLKJob3p+e2ymmHgQXM8djgZOXinF7FCxrEFd
-         25NXc6zH9YZlirlHGyRqduJqtglaqiu2HFijmUJL/7eFXc09n4+8mbeklGo2nYFSH06I
-         pDuYCXZnsSkD68Xpv8dkXmyPKrjyZgO2xnRIHFg1pYda4CLr3AlY1pTgM4yXKc7x9tfr
-         32HqXKJE5evCdK+Qjgjo2AbmqdpV65uMBu4V8WBgRuLLIhK95QyUUUvTguEWBxTugJLs
-         ZgDWixH6lY+zRSMQAbAYe2uojebCAR5HgBo1i8/GZmCaCJm1el9+uE4pVW3kc9m11Ty9
-         54iA==
-X-Gm-Message-State: AOAM530coU9zucw11lFFBunswGtord289+O+WdMpFihHEIhO8iVgM33R
-        f+fPL2Fw2lIc7D7eVdbrrnCt8+zINDQcoMDDlzsEQ7VRB/GjlMlFqMetEs8IWBgkF/xPBURwLVB
-        muWN9Hefzxs4o+hnyTA==
-X-Google-Smtp-Source: ABdhPJyhUBnsaiA7W9PWKhumgbVl2XyGla6we+u1qEcEzZ4T0Rmx6kI2MD23reRzjgQ+fm8rIXiCoQ==
-X-Received: by 2002:a63:ef57:: with SMTP id c23mr13797054pgk.60.1631593502582;
-        Mon, 13 Sep 2021 21:25:02 -0700 (PDT)
-Received: from sidraya-laptopU ([203.201.61.238])
-        by smtp.gmail.com with ESMTPSA id d3sm9797780pga.7.2021.09.13.21.24.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 Sep 2021 21:25:02 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 09:54:55 +0530
-From:   Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, prashanth.ka@pathpartnertech.com,
-        praneeth@ti.com, mchehab@kernel.org, linux-media@vger.kernel.org,
-        praveen.ap@pathpartnertech.com
-Subject: Re: [PATCH 09/30] v4l: vxd-dec: Add idgen api modules
-Message-ID: <20210914042453.ttbf2atkzymqt5yl@sidraya-laptopU>
-References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
- <20210818141037.19990-10-sidraya.bj@pathpartnertech.com>
- <20210824140005.GQ1931@kadam>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3HMri4GLJLdIRV+/9TuROARbAeU8bHCRtO7jfJiXNuE=;
+ b=kgk1KOYQG1+UPM+Bdbyivqq74YGxQSLdffmYIG6AxZx+7pdg9Dd4RoreGGaD2hs0oh29mDcn3pldsHB7zPGHWVH0mqxWkU9T6f7ne39tQ82VtRG5w/GQL+RI3TLdHqMXASgVHwKtbU9j+lsTN2Ig6fmorTZ/cBMGLAJAfRIK0Gw=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
+Received: from CO1PR10MB4468.namprd10.prod.outlook.com (2603:10b6:303:6c::24)
+ by CO1PR10MB4690.namprd10.prod.outlook.com (2603:10b6:303:9f::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 14 Sep
+ 2021 04:26:52 +0000
+Received: from CO1PR10MB4468.namprd10.prod.outlook.com
+ ([fe80::f091:1dd2:38a8:e986]) by CO1PR10MB4468.namprd10.prod.outlook.com
+ ([fe80::f091:1dd2:38a8:e986%6]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 04:26:52 +0000
+Subject: Re: [PATCH 1/1] lib, stackdepot: Add helper to print stack entries
+ into buffer.
+To:     Vlastimil Babka <vbabka@suse.cz>, geert@linux-m68k.org,
+        akpm@linux-foundation.org, ryabinin.a.a@gmail.com,
+        glider@google.com, andreyknvl@gmail.com, dvyukov@google.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org
+References: <20210910141001.1622130-1-imran.f.khan@oracle.com>
+ <20210910141001.1622130-2-imran.f.khan@oracle.com>
+ <464d76e2-37f0-87f3-a9d5-2101367a8ca3@suse.cz>
+From:   imran.f.khan@oracle.com
+Message-ID: <ba2f09de-1de7-3a72-1c1e-fe048c50b8e0@oracle.com>
+Date:   Tue, 14 Sep 2021 14:26:42 +1000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <464d76e2-37f0-87f3-a9d5-2101367a8ca3@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN4PR0401CA0003.namprd04.prod.outlook.com
+ (2603:10b6:803:21::13) To CO1PR10MB4468.namprd10.prod.outlook.com
+ (2603:10b6:303:6c::24)
 MIME-Version: 1.0
-In-Reply-To: <20210824140005.GQ1931@kadam>
-User-Agent: NeoMutt/20171215
-Content-Type: text/plain; charset="US-ASCII"
-Content-Disposition: inline
+Received: from [10.191.131.190] (138.3.200.62) by SN4PR0401CA0003.namprd04.prod.outlook.com (2603:10b6:803:21::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15 via Frontend Transport; Tue, 14 Sep 2021 04:26:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78124754-25b4-427b-69df-08d97737e047
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4690:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB4690BF1BAC1E2DFA2C4B38A9B0DA9@CO1PR10MB4690.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q7fhpnojRYNGwcQgrew3JfoRgkh/EKflsj7oLE9ofGDdB0msK06sV+OLPX8Ncmw5us9/pE92ncDpGXPYXWnSt1Hfkx96EsuR+VJwqcjhSMiraZLK5kxG4z+tl6TN9+fQ6EZ9OZGe0EUWnfz1o2PH015WBQ0AuVrF0VgXTviEVgBRLr7umny7rDQBdCx1oB493bTcK3sN4G03Gn5fy4JvjHD/RX30TzOCHFhE+yKDZkx2nyBeWqDYPwZ0IfpLOgCoLrxCMLTW0IY/bnHs0z8jlFdq6Q2iy/cyAaAS/AUCWtOZk8oT6pnRvd7z/aAGkjFkmX9mAd+rFiDSLpbThcrmZoV3SVd4IrYdjmd59Ay/BNDSZg504qu4UVENdUljiipAEzLt6+G2cPaQ9xohgpd/G7qoyUbjqIiFa5JZCh6Jzk1GIZ5AsPzeAcjE/s6XXkXYjqFHMlDDZYugA8sVwOcdtGPx+SegFz/TxNSliuy8sujaoxakXsLLUoKEW19ySSPfJO++Rlv+KAuRaqTfLYfA8+lwgJcXPKNoRf5O6FiSHfJ0h4UWL+4kd7fuxY6Y7A4AWwQbgo47nehvhJbuf89QH5qDgIABbVXBOJnW/KlyU9MYLLAR3Z3yxgubDCyLRmiPdcgzX9AAyHvi24wrI78pTSX2/QkM11JHOAbxBK2XdXc5NvviTDUEChxBk7mExyvuopAzKWcOjWq6IB3ka93/FA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4468.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(39860400002)(346002)(366004)(86362001)(8676002)(26005)(16576012)(53546011)(36756003)(38100700002)(7416002)(186003)(921005)(9686003)(31696002)(31686004)(6486002)(5660300002)(316002)(66946007)(66476007)(66556008)(956004)(2616005)(4326008)(83380400001)(2906002)(8936002)(478600001)(6666004)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a0xFWmFQMXEyUGRrUG9wNE9UWTBxY1dEdDNHL2lCU2xWeUNIUnlGR2RwSjQx?=
+ =?utf-8?B?QXpEOEQvaUI3NDBCdm5OQ1Y0KzRDQTRNUUlvYWo2MDFqZ0tNVXRPbTJ6NkRV?=
+ =?utf-8?B?VzVpYVJmZVRDVzBOTWlaS1UyMW03NDVFWEpQTnVuVVZXbU1Tb20vWU96MHdO?=
+ =?utf-8?B?TWlVcVl0VEpnMUJlVlZvTi9says2VTNHM2d3Q3N1ZVlIcllYN0lmSFBiRjBo?=
+ =?utf-8?B?ZEZ5V2szNm9ndDNwSDNwV1NpWmc3TGVuWnhRZnMyUHBsZW5jUnUvaU5qMzZ3?=
+ =?utf-8?B?Rm91b05qSjBSZTBzUW5EUGx5bHFzdG9VWCtPQ2J2dXJlV0JoK0JKaHh3aU5V?=
+ =?utf-8?B?dlJyQkY4RURrNFo3NCtlZzE3ekhzbjBKb2srajZkUmRlc1RTbUZQeGFlL1E4?=
+ =?utf-8?B?TGQ4QndCZmxLbWdmNUFzeWRRdHZlQ3JjQ2hGSDB1RVR4ZkRvWEdVSlkwZ24y?=
+ =?utf-8?B?eXVkS1VtWDRBV3lNeXZyaUp4R1lkcG12WHhtbi9lVTdsc0FVUmdxOVRETjJj?=
+ =?utf-8?B?dmIvZnVoQzJpTFA0UlVmUFk5REpZVG5LdUF1bjAzdy9xNWs3VUZwSnpFM2Fr?=
+ =?utf-8?B?emdsN2hvNkgyakpvbjMvTmZsYlNoZE5wZFM1c2lFMWorU0hiSitzaTV5eHV6?=
+ =?utf-8?B?b3A0RExNMXFFTjF0L1E5azV2SmxUa1EvKzdGa1JFSFEraUVIZXRMdE5mNy9i?=
+ =?utf-8?B?UHRTdm1KdDdmSm93cmU5UjZQRGdNTjN1aDM4T00ydi9WOVV3UEtHbTBPc2No?=
+ =?utf-8?B?bzY0ZTB1aVhabmN5V1IxYjBKK0RoRFBmMCs0K0wvU3J2ZVlRUmtRL0JLOWNv?=
+ =?utf-8?B?TkFHM05KRVg3b0tTZG12a2hGQjA0QmpxTkhZVXp5NDlOY0ZpUVRTYVBtUVJr?=
+ =?utf-8?B?eGU0YXlsWjVIQUhOaWpOaS9TY1YrYUt0c1NVeGhuUVdIRU9CMndYNHVsaHFs?=
+ =?utf-8?B?OTAwdHRsL3hYT3I1Q2V6MUlUcU5OUVJJSmc5WmtYU3AxZXFhWlZQZk43UDlR?=
+ =?utf-8?B?cGxWZlEwSFc1SURwQzRLMU1LS3ZZT0kvdGY2WmJaOWNBYU9uUUoyUWRHbW1F?=
+ =?utf-8?B?bS9MZ200RmVWMWlQU05hYURkTmRZVk9zVksvc3ZzY0hMcEVlMUpzZUdLbytU?=
+ =?utf-8?B?VmovK0JzSmdsQlRoOFJCOTZ6YURwWnlEVlprZy84Tk96czFMUlNaS2Y5M1hX?=
+ =?utf-8?B?d2NmdFhMWVRiQjRmYVplSVRHY1BuNkVFbFBtTFp2K1kxdkw2WHlrdUVhNVc1?=
+ =?utf-8?B?QlhMeVBNMDBDdHZHZkpSZ0FYYUlKMVN4SzlBQjU2NUV6M2V2U0JaOFpySndX?=
+ =?utf-8?B?Yk1WZUxGWTJwdFhsaEZ6Y1pZUmJqUEVmd0VsZ0dMUWZIVjFmdXJSNFptMUQ4?=
+ =?utf-8?B?cDIyNWR0c3Axdko2U1FORkZERFUxOVFRL2J4WEF0d2IyMGYveU8zQ2FDYUxa?=
+ =?utf-8?B?Wk8vM0FtS1Y1a3Zycml5STl2NW5XSmZxN2VmaUxvSFROaGQ2RmU5dUY4d2NE?=
+ =?utf-8?B?enVPSXMxRnoxaHVuK01ENGlzc0hPZTF1WjdJWU9pMHB3d0grWU82K3RtSG5j?=
+ =?utf-8?B?emFsZEpLOGhJQUlPRlBpSENRT2NXTG9OMnQxV3RHTjRCbGpUWjltbVFweW9w?=
+ =?utf-8?B?ZGVsVFRCbUE0cjg5eE9VMGtNUDdFaFUrMDVJeDJBZEFuODkxdjBTZ0pGNllz?=
+ =?utf-8?B?dWEzVUdQeEFmRWFkeHhEcGVxQWtZVklkK1ZaT2o0eUZEN3FUWUZ4TXQ1VjBq?=
+ =?utf-8?Q?j7lR1LW2/5ArHsKdBIHIoYrAW4bICs6xI3rq2OK?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78124754-25b4-427b-69df-08d97737e047
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4468.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 04:26:52.0921
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GzMHop/RCgdoRRx/B6hX6fjObG62Yvc+09+4SQcw14GjpInjg6j6l9Q7omNKTjZBqeGB/ns+UXyC2EthVF0Oqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4690
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10106 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109140024
+X-Proofpoint-ORIG-GUID: j7XcZsDbV9BpgKsMYMbBc1AV4Wcv5DYT
+X-Proofpoint-GUID: j7XcZsDbV9BpgKsMYMbBc1AV4Wcv5DYT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 05:00:06PM +0300, Dan Carpenter wrote:
-> Of course this is all staging code and we normally don't review staging
-> code too hard when it's first sent because we understand that staging
-> code needs a lot of work before it's acceptable.
-> 
-> One of the rules of staging is that you can't touch code outside of
-> staging.
-> 
-> But since I happened to glance at a some of this code then here are
-> some tiny comments:
-> 
-> On Wed, Aug 18, 2021 at 07:40:16PM +0530, sidraya.bj@pathpartnertech.com wrote:
-> > +/*
-> > + * Structure contains the ID context.
-> > + */
-> > +struct idgen_hdblk {
-> > +	void **link; /* to be part of single linked list */
-> > +	/* Array of handles in this block. */
-> > +	void *ahhandles[1];
-> 
-> Don't use 1 element flex arrays.  Do it like this:
-> 
-> 	void *ahhandles[];
-> 
-> You will have to adjust all you math.  But you should be using the
-> "struct_size(hdblk, ahhandles, nr)" macro anyway to prevent integer
-> overflows.
-> 
-> > +int idgen_createcontext(unsigned int maxid, unsigned int blksize,
-> > +			int incid, void **idgenhandle)
-> > +{
-> > +	struct idgen_context *idcontext;
-> > +
-> > +	/* Create context structure */
-> > +	idcontext = kzalloc(sizeof(*idcontext), GFP_KERNEL);
-> > +	if (!idcontext)
-> > +		return IMG_ERROR_OUT_OF_MEMORY;
-> 
-> We need to get rid of all these weird error codes?  You can add that
-> to the TODO file.
-> 
-> > +int idgen_destroycontext(void *idgenhandle)
-> > +{
-> > +	struct idgen_context *idcontext = (struct idgen_context *)idgenhandle;
-> > +	struct idgen_hdblk *hdblk;
-> > +
-> > +	if (!idcontext)
-> > +		return IMG_ERROR_INVALID_PARAMETERS;
-> > +
-> > +	/* If incrementing Ids, free the List of Incrementing Ids */
-> > +	if (idcontext->incids) {
-> > +		struct idgen_id *id;
-> > +		unsigned int i = 0;
-> > +
-> > +		for (i = 0; i < idcontext->blksize; i++) {
-> > +			id = lst_removehead(&idcontext->incidlist[i]);
-> 
-> You're not allowed to invent your own list API. :P  Generally there just
-> seems like too much extra helper functions and wrappers.  Removing this
-> kind of stuff is standard for staging drivers so that's normall.  Add it
-> to the TODO.
-> 
-> regards,
-> dan carpenter
-> 
-
-I will make change for void *ahhandles[1] with void *ahhandles[];,
-will use "struct_size" while allocating memory.
-
-I will replaced all Error macros with directly linux Error macros.
-
-About customized data structure API e.g-list,queue, I am currently working on
-replacing them with Linux kernel generic dtata structure API's.
-Thank you for reviewing.
-
--- 
 
 
+On 13/9/21 6:51 pm, Vlastimil Babka wrote:
+> On 9/10/21 16:10, Imran Khan wrote:
+>> To print stack entries into a buffer, users of stackdepot,
+>> first get a list of stack entries using stack_depot_fetch
+>> and then print this list into a buffer using stack_trace_snprint.
+>> Provide a helper in stackdepot for this purpose.
+>> Also change above mentioned users to use this helper.
+>>
+>> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> 
+Thanks for the review.
+
+A comment below:
+> 
+>> --- a/lib/stackdepot.c
+>> +++ b/lib/stackdepot.c
+>> @@ -214,6 +214,29 @@ static inline struct stack_record *find_stack(struct stack_record *bucket,
+>>   	return NULL;
+>>   }
+
+[...]
+
+>> + */
+>> +int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
+>> +		       int spaces)
+>> +{
+>> +	unsigned long *entries;
+>> +	unsigned int nr_entries;
+>> +
+>> +	nr_entries = stack_depot_fetch(handle, &entries);
+>> +	return stack_trace_snprint(buf, size, entries, nr_entries, 0);
+> 
+> stack_trace_snprint() has a WARN_ON(!entries).
+> So maybe we should not call it if nr_entries is 0 (because e.g. handle was
+> 0) as the warnings are not useful in that case.
+> 
+Agree. I have addressed this feedback in v2 of patch.
 
 
-
-
-This
-message contains confidential information and is intended only 
-for the
-individual(s) named. If you are not the intended
-recipient, you are 
-notified that disclosing, copying, distributing or taking any
-action in 
-reliance on the contents of this mail and attached file/s is strictly
-prohibited. Please notify the
-sender immediately and delete this e-mail 
-from your system. E-mail transmission
-cannot be guaranteed to be secured or 
-error-free as information could be
-intercepted, corrupted, lost, destroyed, 
-arrive late or incomplete, or contain
-viruses. The sender therefore does 
-not accept liability for any errors or
-omissions in the contents of this 
-message, which arise as a result of e-mail
-transmission.
+Thanks
+-- Imran
