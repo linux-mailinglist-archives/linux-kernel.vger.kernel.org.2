@@ -2,213 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A87040B59B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616D040B59C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 19:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhINRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 13:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48244 "EHLO
+        id S230380AbhINRJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 13:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhINRJM (ORCPT
+        with ESMTP id S229517AbhINRJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 13:09:12 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B95BC061574;
-        Tue, 14 Sep 2021 10:07:54 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id w29so20617323wra.8;
-        Tue, 14 Sep 2021 10:07:54 -0700 (PDT)
+        Tue, 14 Sep 2021 13:09:34 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69B3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:08:16 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id y144so97878qkb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 10:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:cc:references:from:subject:message-id:date:user-agent
+        d=bluespec-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UEz8abuPWgyHSc+A93wlQX9A3Gl7VlEueJS0Qvs3JhU=;
-        b=UTLBfvPvMZ+1dXSf5Y7P3VdtVRAXwLs7UG++gYy18zK3Uxok9w8j5CvTbxdqbGiSnJ
-         mQpzQ5YWS0TQuZrzq+L3BvwX4DduZ2JGlzFqv2w+Z3dCKZ6jZjo3vbruDIwv1NsN3Fp7
-         bnsDhHAkWc7XbgTBIlee24+8cqosxslJOrxfKoYPNMBVdx5haDuoiu32fGwYOGz1YuoN
-         Grm1pplnHyU2ehU+liSPzZ9WFZa5hwrDPM72rKvkURd74Cg5tuww0gW9YFYgqqhuqyR1
-         pQ1eUZHYlHsBEy1rfSuPfKyYKvQAzpApw16FkGujQBgkQ0BLGfY/yW5ERA32OGJpM+te
-         MYdA==
+        bh=d9SzK4pBoaf11lP96SjVpjf29pHlYDeVwg9n+E1Drc4=;
+        b=QtkWU/EmWLfrq260BxNf0mGiuYZUZUYyoD0xPuezViRZ4mF/XCnK/tGHLl6uCuwm/l
+         OEBXW3WMwE0A/G6QfVBdQklqm6ber7gQIzEoSN3yJBWkAmnQxly90HsctdXmmytbzMHF
+         L3KoPTc+Mr9B9ig4OIUiOkfFqAQvWzvACCR/8Z5Ak8G8u2ih5jz8qYrxjV6ZrPlHV7nH
+         BwsNYjdiDWP5SUb4oj+pil2/1n683Q+0Hj+me82nhkYlYutM9n9fdJneQXyogDsqvWYR
+         fK3GeRs3REIVRpVxC3R5+Vhr/DO39JCqMeN/rHxtTsQw1cI5NFDsb8Hd8MuoOdbh+67y
+         eXmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=UEz8abuPWgyHSc+A93wlQX9A3Gl7VlEueJS0Qvs3JhU=;
-        b=HRlgG2S/GdCUrg3CsdNo845MLri92CRHDjFmaC3FYDruaVvfZKfNvUcIS/tbUiDej5
-         eU+46Vd3ay8b8aIrTnYOiAdTurOhIA9KAC7p0IjGsL9CDhP/JZo6NJM48bWI8aYdm4TG
-         8akjxqa2Ag8RPV+AzVCQiAS5dFzXpwVEeuAfcUDv/5hBeTp+NusmMJGDPPlN3xEoouxd
-         bCaDr0oYrFEPInlkUg++sGG4LZwBAcfVwnrVuDaxm6RK5g/J4Tf1ZX6HcvMvgAfyOAsx
-         IJ/XNTn+nlMdO7rRvSs8i3zaWqaRT7dh3TPC2FloFirRizqZbTRWVqGrn76BOYypTQrK
-         a5MQ==
-X-Gm-Message-State: AOAM530+YTlIV/+BmWA3U5cNCWfrM2b3/sVISZ202R5Imn08pkupbOVH
-        BbEnztcsIs/4mMU0dua1rBv4uqysfEI=
-X-Google-Smtp-Source: ABdhPJzzw234WDCAkyBTw+u+dKm5PzYtjHHsekK3mqvBJ3z3Vs7smt7E2sYvLhZIdg9w5NWAmHiDMA==
-X-Received: by 2002:adf:c542:: with SMTP id s2mr227088wrf.374.1631639271918;
-        Tue, 14 Sep 2021 10:07:51 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f08:4500:c813:4da2:f58a:a1e2? (p200300ea8f084500c8134da2f58aa1e2.dip0.t-ipconnect.de. [2003:ea:8f08:4500:c813:4da2:f58a:a1e2])
-        by smtp.googlemail.com with ESMTPSA id j14sm11004462wrp.21.2021.09.14.10.07.48
+        bh=d9SzK4pBoaf11lP96SjVpjf29pHlYDeVwg9n+E1Drc4=;
+        b=ygNYBjmM9qIhutnZo/NzZ8apsc9tEHjK45zXBUI/22BpjRjHDth+PJmuNBZzqC9+Kz
+         zFQJ5Cev3/Uw/F1A2aHcBzk3xk+NMJChSDukSWzlF2uhkt/cDujkfA9/1Wd9+lPBk9R1
+         acoJmSY02amiYexBXEji9IH24DioqmiimkJE5IhCSGW00xBXruK/1PJlf1lLdzVsfgfM
+         PM4RTNDGKJN3eZYa6Ql6H96fG1HgWl0KVwsndwmr4kWLdjJK/RE0gvAtVPaDOgwLH2YT
+         YsPDYFhIWiviDbrhjHt92ToYflOVBlaLFfgJao3EE2WUcUYkq70F5/rJvcr6/d5CW1+i
+         anKQ==
+X-Gm-Message-State: AOAM530Gj6opDD0rdGsxN63XN8rVsf5nFRitxKzreWggDqzvEH8E9we/
+        wtB2mOK7Iul6ZFVJhYCjUHMSiv4zlWfi
+X-Google-Smtp-Source: ABdhPJxLVtFRYIDvR4qJehRmv7dzyozIgYmkFOFqnGnr6OykjMd+avsbggpblmz9NAJNvd4rGy/Okw==
+X-Received: by 2002:a05:620a:916:: with SMTP id v22mr6042305qkv.338.1631639295927;
+        Tue, 14 Sep 2021 10:08:15 -0700 (PDT)
+Received: from [10.28.133.11] ([154.3.44.94])
+        by smtp.gmail.com with ESMTPSA id r23sm6405377qtp.60.2021.09.14.10.08.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 10:07:51 -0700 (PDT)
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Dave Jones <davej@codemonkey.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-References: <20210914112628.GA1412445@bjorn-Precision-5520>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: Linux 5.15-rc1
-Message-ID: <54bd54b9-3774-92a5-4193-5ccccd235572@gmail.com>
-Date:   Tue, 14 Sep 2021 19:07:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Tue, 14 Sep 2021 10:08:15 -0700 (PDT)
+Subject: Re: [PATCH 1/2] riscv: support HAVE_EFFICIENT_UNALIGNED_ACCESS
+To:     Chen Huang <chenhuang5@huawei.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210913121956.1776656-1-chenhuang5@huawei.com>
+ <20210913121956.1776656-2-chenhuang5@huawei.com>
+From:   Darius Rad <darius@bluespec.com>
+Message-ID: <84697744-f51e-8aaf-d1d3-d063f99b7790@bluespec.com>
+Date:   Tue, 14 Sep 2021 13:08:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20210914112628.GA1412445@bjorn-Precision-5520>
+In-Reply-To: <20210913121956.1776656-2-chenhuang5@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2021 13:26, Bjorn Helgaas wrote:
-> On Tue, Sep 14, 2021 at 08:21:46AM +0200, Heiner Kallweit wrote:
->> On 14.09.2021 01:46, Bjorn Helgaas wrote:
-> 
->>> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATTANSIC, PCI_ANY_ID, quirk_blacklist_vpd);
->>>  /*
->>
->> Leaving the quirks in FIXUP_HEADER stage would have the advantage that for
->> blacklisted devices the vpd sysfs attribute isn't visibale. The needed
->> changes to the patch are minimal.
-> 
-> What do you have in mind?  The only thing I can think of would be to
-> add a "pci_dev.no_vpd" bit.  "vpd.cap == 0" means the device has no
-> VPD, and "vpd.len == 0" means we haven't determined the size yet.  All
-> devices start off with vpd.cap == 0 and vpd.len == 0, so a
-> FIXUP_HEADER quirk would have to set a sentinel value or some other
-> bit.
-> 
-> Bjorn
+On 9/13/21 8:19 AM, Chen Huang wrote:
+> The RISCV ISA can perform efficient unaligned memory accesses
+> in hardware. This patch selects HAVE_EFFICIENT_UNALIGNED_ACCESS
+> for that.
 > 
 
-Why not leave vpd.len == PCI_VPD_SZ_INVALID as sentinel?
+Not all implementations do, so it seems like this is not appropriate.
 
-And one more question: Why do you move the "if (!vpd->cap)" check from
-pci_vpd_read() to pci_read_vpd()? At a first glance I see no benefit.
-
-Here comes my version. Your changes to pci_vpd_size() I left as-is.
-I tested the positive case and it works as expected.
-
-
-diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
-index 25557b272..04b14c488 100644
---- a/drivers/pci/vpd.c
-+++ b/drivers/pci/vpd.c
-@@ -52,7 +52,7 @@ static struct pci_dev *pci_get_func0_dev(struct pci_dev *dev)
-  * pci_vpd_size - determine actual size of Vital Product Data
-  * @dev:	pci device struct
-  */
--static size_t pci_vpd_size(struct pci_dev *dev)
-+static void pci_vpd_size(struct pci_dev *dev)
- {
- 	size_t off = 0, size;
- 	unsigned char tag, header[1+2];	/* 1 byte tag, 2 bytes length */
-@@ -71,7 +71,7 @@ static size_t pci_vpd_size(struct pci_dev *dev)
- 			if (pci_read_vpd(dev, off + 1, 2, &header[1]) != 2) {
- 				pci_warn(dev, "failed VPD read at offset %zu\n",
- 					 off + 1);
--				return off ?: PCI_VPD_SZ_INVALID;
-+				goto finish;
- 			}
- 			size = pci_vpd_lrdt_size(header);
- 			if (off + size > PCI_VPD_MAX_SIZE)
-@@ -87,16 +87,19 @@ static size_t pci_vpd_size(struct pci_dev *dev)
- 
- 			off += PCI_VPD_SRDT_TAG_SIZE + size;
- 			if (tag == PCI_VPD_STIN_END)	/* End tag descriptor */
--				return off;
-+				goto finish;
- 		}
- 	}
--	return off;
-+	goto finish;
- 
- error:
- 	pci_info(dev, "invalid VPD tag %#04x (size %zu) at offset %zu%s\n",
- 		 header[0], size, off, off == 0 ?
- 		 "; assume missing optional EEPROM" : "");
--	return off ?: PCI_VPD_SZ_INVALID;
-+finish:
-+	dev->vpd.len = off;
-+	if (off == 0)
-+		dev->vpd.cap = 0;		/* No VPD at all */
- }
- 
- /*
-@@ -145,6 +148,8 @@ static ssize_t pci_vpd_read(struct pci_dev *dev, loff_t pos, size_t count,
- 	loff_t end = pos + count;
- 	u8 *buf = arg;
- 
-+	if (vpd->len == 0 && vpd->cap)
-+		pci_vpd_size(dev);
- 	if (!vpd->cap)
- 		return -ENODEV;
- 
-@@ -206,6 +211,8 @@ static ssize_t pci_vpd_write(struct pci_dev *dev, loff_t pos, size_t count,
- 	loff_t end = pos + count;
- 	int ret = 0;
- 
-+	if (vpd->len == 0 && vpd->cap)
-+		pci_vpd_size(dev);
- 	if (!vpd->cap)
- 		return -ENODEV;
- 
-@@ -245,9 +252,6 @@ void pci_vpd_init(struct pci_dev *dev)
- 	dev->vpd.cap = pci_find_capability(dev, PCI_CAP_ID_VPD);
- 	mutex_init(&dev->vpd.lock);
- 
--	if (!dev->vpd.len)
--		dev->vpd.len = pci_vpd_size(dev);
--
- 	if (dev->vpd.len == PCI_VPD_SZ_INVALID)
- 		dev->vpd.cap = 0;
- }
-@@ -294,25 +298,27 @@ const struct attribute_group pci_dev_vpd_attr_group = {
- 
- void *pci_vpd_alloc(struct pci_dev *dev, unsigned int *size)
- {
--	unsigned int len = dev->vpd.len;
-+	struct pci_vpd *vpd = &dev->vpd;
- 	void *buf;
- 	int cnt;
- 
--	if (!dev->vpd.cap)
-+	if (vpd->len == 0 && vpd->cap)
-+		pci_vpd_size(dev);
-+	if (!vpd->cap)
- 		return ERR_PTR(-ENODEV);
- 
--	buf = kmalloc(len, GFP_KERNEL);
-+	buf = kmalloc(vpd->len, GFP_KERNEL);
- 	if (!buf)
- 		return ERR_PTR(-ENOMEM);
- 
--	cnt = pci_read_vpd(dev, 0, len, buf);
--	if (cnt != len) {
-+	cnt = pci_read_vpd(dev, 0, vpd->len, buf);
-+	if (cnt != vpd->len) {
- 		kfree(buf);
- 		return ERR_PTR(-EIO);
- 	}
- 
- 	if (size)
--		*size = len;
-+		*size = vpd->len;
- 
- 	return buf;
- }
--- 
-2.33.0
-
-
-
-
+> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/riscv/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index aac669a6c3d8..6e70bf50b02a 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -81,6 +81,7 @@ config RISCV
+>  	select HAVE_DEBUG_KMEMLEAK
+>  	select HAVE_DMA_CONTIGUOUS if MMU
+>  	select HAVE_EBPF_JIT if MMU
+> +	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>  	select HAVE_FUNCTION_ERROR_INJECTION
+>  	select HAVE_FUTEX_CMPXCHG if FUTEX
+>  	select HAVE_GCC_PLUGINS
+> 
