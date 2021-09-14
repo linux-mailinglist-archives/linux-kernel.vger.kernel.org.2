@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A443D40B077
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CBE40B078
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 16:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhINOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 10:22:12 -0400
-Received: from mail-ej1-f44.google.com ([209.85.218.44]:43683 "EHLO
-        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233309AbhINOWH (ORCPT
+        id S233639AbhINOWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 10:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233614AbhINOWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 10:22:07 -0400
-Received: by mail-ej1-f44.google.com with SMTP id qq21so23428765ejb.10;
-        Tue, 14 Sep 2021 07:20:49 -0700 (PDT)
+        Tue, 14 Sep 2021 10:22:13 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E3AC061766
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:20:55 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id 5so8294708plo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 07:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=N9JVgVG506A4pOrvl84cUIVr9SLgDoTeuv3CCffC6eI=;
+        b=PE2DDe1EJUUNhlct25QQgwfuqq2afYwYT+duNuPOzmIOptPn/AqBPaUn1RyBkWfYHH
+         3jyMpw7pz16SwrqbAlEK3iF/6rBsr+c9A+Kn4AoBKUxBwQ5Ss62G+Jf5AufzNO6tWsQU
+         oj0gtD7YqK7Dlr3aIQ5tlAAbjsXWKHrv0fhyzMBhKMCFJghQe7WSt7O/ZxJkZWaCM/4n
+         Jyhk4JvfmO1/YgyaOeav3cd3nJopEWBHEMN9oXf0BaQp363vM2dohuZbk1fhBvMvXn47
+         pKZLmedERNgRVconZdzh9vPB8/y6p4G7xmDYyiM+6arBD8qC2u0Eh0ARl9JouX3+3txU
+         FecQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XGnqHlTada8kt7JMhcSG+hhKlGg+XdQqdPMlXWGpXXk=;
-        b=UKbDQZcSGzJ10aODs5ZBIs0cd7mwnRG8ZxwogXG2H+vXJMjtCi3PE1fyWINfJxf4Dy
-         vTHbLdi+RBpn6lrDvqaU080SosTRoFuW+caudgOXS27bbvH87aJQW19VjQlk46YKyOcb
-         MainFBReCFEuUUDQnuhsOT5L2uhQHnzmP2Gqi71a8AqiOyYW6CLK1rLpMML9SIJdBJSO
-         K8q0SQvdDIHOeGXhlWrmeyKPe83J+gR7MjZ5l3tCWFdYMPDv705O2fXhMTPK4Z3cTbvv
-         zGQkjog09ZhH2Wrsd3tCK4MtnOSzng7tQIgjX9jb+Hznso2/w0bEJZmj1EamtIrTnZel
-         iljQ==
-X-Gm-Message-State: AOAM532U0kvPEF0WEsadEkJbYiyEuXnXhEZfb14ysTp1dM+tWlEqCYBu
-        hFXlP4vscy9KJSts1h0BRdx2BNYPXhc=
-X-Google-Smtp-Source: ABdhPJxDbmedGBT9r9JVf+HeI3wIhKhIVhW8I7W0RqxIT+ZyOY5isY7jp3mSeNz41l/EqPc/TJjXBg==
-X-Received: by 2002:a17:906:12c8:: with SMTP id l8mr18656289ejb.515.1631629248403;
-        Tue, 14 Sep 2021 07:20:48 -0700 (PDT)
-Received: from [10.100.102.14] (109-186-240-23.bb.netvision.net.il. [109.186.240.23])
-        by smtp.gmail.com with ESMTPSA id h10sm5004262ede.28.2021.09.14.07.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 07:20:47 -0700 (PDT)
-Subject: Re: [RFC v1] nvme-tcp: enable linger socket option on shutdown
-To:     Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-References: <20210903121757.140357-1-dwagner@suse.de>
- <YTXKHOfnuf+urV1D@infradead.org> <20210914084613.75qykjxweh66mdpx@carbon>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <a79bf503-b1d5-8d18-5f02-c63e665e2e07@grimberg.me>
-Date:   Tue, 14 Sep 2021 17:20:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210914084613.75qykjxweh66mdpx@carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=N9JVgVG506A4pOrvl84cUIVr9SLgDoTeuv3CCffC6eI=;
+        b=cgpX3OQiSQTnOSxyq/Vqr4ItqQvF3+ERRTjszsxv9SdJn1sviTZvivdWiEE8EQ3t6B
+         XpiWNUTSz7J4mkf2T4ERHgxWIuBLOOIb5UrduKE11vFtD8o5Y4ePckua4vBdo9NcZhrI
+         BIcw9Du7TWvintF6ADc4Gy4gP0Qx5/0otYjBc5/c4/Gfb+HKkO6azB15y+6WzJ/N5UJ5
+         cxmf1dOVKYjCXUR9ZzGv+tW4AA21DwW+k7k0mDOVlwfrobyY+zI9oihMv0QCHkKZxeW7
+         a51az4Sc/QxjoYglCPEbCmwEkXNKg20NGS7sinZX65tfwkpaQM5YfSOLykPA+ijfeiRq
+         EqFw==
+X-Gm-Message-State: AOAM53098PfN1FhOLdB4Qvg3D3hZhJeUfwvlDqLxCmnc/2kTnpnu2StW
+        4S5D+gAPZHTbLtk5Iq00P0/yheLng3U=
+X-Google-Smtp-Source: ABdhPJzMSshUkpFX5pwk0xvSfpPUK9YghGjpcjSPwVQauqErMeEkM55I6Lfb6pzKWcuMCQxx2zgohQ==
+X-Received: by 2002:a17:903:1c2:b0:138:b303:7b95 with SMTP id e2-20020a17090301c200b00138b3037b95mr15240512plh.78.1631629255246;
+        Tue, 14 Sep 2021 07:20:55 -0700 (PDT)
+Received: from localhost.localdomain (1-171-6-195.dynamic-ip.hinet.net. [1.171.6.195])
+        by smtp.gmail.com with ESMTPSA id z8sm10300577pfa.113.2021.09.14.07.20.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Sep 2021 07:20:54 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     broonie@kernel.org
+Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com
+Subject: [PATCH v2] regulator: rtq6752: Enclose 'enable' gpio control by enable flag
+Date:   Tue, 14 Sep 2021 22:20:49 +0800
+Message-Id: <1631629249-9998-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: ChiYuan Huang <cy_huang@richtek.com>
 
->>> When the no linger is set, the networking stack sends FIN followed by
->>> RST immediately when shutting down the socket. By enabling linger when
->>> shutting down we have a proper shutdown sequence on the wire.
->>>
->>> Signed-off-by: Daniel Wagner <dwagner@suse.de>
->>> ---
->>> The current shutdown sequence on the wire is a bit harsh and
->>> doesn't let the remote host to react. I suppose we should
->>> introduce a short (how long?) linger pause when shutting down
->>> the connection. Thoughs?
->>
->> Why?  I'm not really a TCP expert, but why is this different from
->> say iSCSI or NBD?
-> 
-> I am also no TCP expert. Adding netdev to Cc.
-> 
-> During testing the nvme-tcp subsystem by one of our partners we observed
-> this. Maybe this is perfectly fine. Just as I said it looks a bit weird
-> that a proper shutdown of the connection a RST is send out right after
-> the FIN.
+Fix 'enable' gpio control logic from the below cases if it's specified.
 
-The point here is that when we close the connection we may have inflight
-requests that we already failed to upper layers and we don't want them
-to get through as we proceed to error handling. This is why we want the
-socket to go away asap.
+1. All off and both are sequentially controlled to be on.
+The 'enable' gpio control block to be called twice including the delay time.
 
-> No idea how iSCSI or NBD handles this. I'll check.
+2. Both are on and one is preparing to be off.
+The 'enable' gpio control low before register cache is configured to be true.
 
-iSCSI does the same thing in essence (with a minor variation because in
-iscsi we have a logout message which we don't have in nvme).
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+v2
+- Merge all comments into commit message.
+---
+ drivers/regulator/rtq6752-regulator.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/regulator/rtq6752-regulator.c b/drivers/regulator/rtq6752-regulator.c
+index 609d3fc..dfe45fb 100644
+--- a/drivers/regulator/rtq6752-regulator.c
++++ b/drivers/regulator/rtq6752-regulator.c
+@@ -54,14 +54,14 @@ static int rtq6752_set_vdd_enable(struct regulator_dev *rdev)
+ 	int rid = rdev_get_id(rdev), ret;
+ 
+ 	mutex_lock(&priv->lock);
+-	if (priv->enable_gpio) {
+-		gpiod_set_value(priv->enable_gpio, 1);
++	if (!priv->enable_flag) {
++		if (priv->enable_gpio) {
++			gpiod_set_value(priv->enable_gpio, 1);
+ 
+-		usleep_range(RTQ6752_I2CRDY_TIMEUS,
+-			     RTQ6752_I2CRDY_TIMEUS + 100);
+-	}
++			usleep_range(RTQ6752_I2CRDY_TIMEUS,
++				     RTQ6752_I2CRDY_TIMEUS + 100);
++		}
+ 
+-	if (!priv->enable_flag) {
+ 		regcache_cache_only(priv->regmap, false);
+ 		ret = regcache_sync(priv->regmap);
+ 		if (ret) {
+@@ -91,11 +91,11 @@ static int rtq6752_set_vdd_disable(struct regulator_dev *rdev)
+ 	if (!priv->enable_flag) {
+ 		regcache_cache_only(priv->regmap, true);
+ 		regcache_mark_dirty(priv->regmap);
+-	}
+ 
+-	if (priv->enable_gpio)
+-		gpiod_set_value(priv->enable_gpio, 0);
++		if (priv->enable_gpio)
++			gpiod_set_value(priv->enable_gpio, 0);
+ 
++	}
+ 	mutex_unlock(&priv->lock);
+ 
+ 	return 0;
+-- 
+2.7.4
+
