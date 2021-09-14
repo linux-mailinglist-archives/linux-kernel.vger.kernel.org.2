@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8999140B8D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8DE40B8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 22:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhINUQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 16:16:52 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38282 "EHLO
+        id S233494AbhINUR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 16:17:57 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38726 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhINUQr (ORCPT
+        with ESMTP id S232545AbhINUR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:16:47 -0400
+        Tue, 14 Sep 2021 16:17:56 -0400
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18EKFIfi118112;
-        Tue, 14 Sep 2021 15:15:18 -0500
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18EKGX3m118731;
+        Tue, 14 Sep 2021 15:16:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631650518;
-        bh=lq5McLfHFnZJXtETVxRy65ZaGodFkG723+t3RoSPFM4=;
+        s=ti-com-17Q1; t=1631650593;
+        bh=uWPQHA6IGjfDQPaAbnzSASJkiTweOzUE4gDEBM2O0tU=;
         h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=otS7QF9mQZU398UqW7r+/wmhofqprg1+SB029eFwX/94uDEiTeYjDFVTTj0V2hXF3
-         aFgybhvi8eVH72uXzM25Q72BfWISpG+a7YjwD+VYdJZeQ3edowOCM6qTTe+Y9V8i2n
-         qt23qd4nTW04tNI4joq9J+XB9PhWDSK25Im7RIVE=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18EKFHd2074345
+        b=EW6pD1vnBi/Yk6vGXT2dl9WZvbBND/dvVD3DrmlADqZo3XXleeRIjbXHU6kOJbW1q
+         QZ5EQeV9yEEZJi2+HNyJ2CJ1uQ/pJbOpgYul87ar7nuZ8MQu0Ya5+hXINL6xCQkoKp
+         h9CZ/gqniNJ13D/S7WLaYISrTdtr1vKxFdoI9qbU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18EKGXFx076008
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Sep 2021 15:15:17 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 14 Sep 2021 15:16:33 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 14
- Sep 2021 15:15:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ Sep 2021 15:16:32 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
  (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 14 Sep 2021 15:15:17 -0500
+ Frontend Transport; Tue, 14 Sep 2021 15:16:32 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18EKFHqE054096;
-        Tue, 14 Sep 2021 15:15:17 -0500
-Date:   Tue, 14 Sep 2021 15:15:17 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18EKGWrH111951;
+        Tue, 14 Sep 2021 15:16:32 -0500
+Date:   Tue, 14 Sep 2021 15:16:32 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Jan Kiszka <jan.kiszka@siemens.com>
 CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
@@ -45,15 +45,15 @@ CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Bao Cheng Su <baocheng.su@siemens.com>,
         Chao Zeng <chao.zeng@siemens.com>
-Subject: Re: [PATCH v3 5/5] arm64: dts: ti: iot2050: Add support for product
- generation 2 boards
-Message-ID: <20210914201517.s7cd23kj24seskm5@dallying>
+Subject: Re: [PATCH v3 3/5] arm64: dts: ti: iot2050: Add/enabled mailboxes
+ and carve-outs for R5F cores
+Message-ID: <20210914201632.q5ato3bkvk3qd34s@easiness>
 References: <cover.1631216478.git.jan.kiszka@siemens.com>
- <206d28002626bb9e2e0ac3f82d3c6f9fdbbfc984.1631216478.git.jan.kiszka@siemens.com>
+ <e4cfc36a6f4fef33727f042748caa7d83f8609a7.1631216478.git.jan.kiszka@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <206d28002626bb9e2e0ac3f82d3c6f9fdbbfc984.1631216478.git.jan.kiszka@siemens.com>
+In-Reply-To: <e4cfc36a6f4fef33727f042748caa7d83f8609a7.1631216478.git.jan.kiszka@siemens.com>
 User-Agent: NeoMutt/20171215
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
@@ -63,165 +63,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 21:41-20210909, Jan Kiszka wrote:
 > From: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> This adds the devices trees for IOT2050 Product Generation 2 (PG2)
-> boards. We have Basic and an Advanced variants again, differing in
-> number of cores, RAM size, availability of eMMC and further details.
-> The major difference to PG1 is the used silicon revision (SR2.x on
-> PG2).
+> Analogously to the am654-base-board, configure the mailboxes for the the
+
+s/the the/the -> could you checkpatch and dtbs_checks please?
+
+> two R5F cores, add them and the already existing memory carve-outs to
+> the related MCU nodes. Allows to load applications under Linux onto the
+> cores, e.g. the RTI watchdog firmware.
 > 
 > Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 > ---
->  arch/arm64/boot/dts/ti/Makefile               |  2 +
->  .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
->  .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
->  .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
->  4 files changed, 106 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+>  .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 26 +++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index d56c742f5a10..41a4bc96e6bd 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -8,7 +8,9 @@
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> index 58c8e64d5885..b29537088289 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> @@ -658,11 +658,21 @@ &pcie1_ep {
+>  };
 >  
->  dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
->  
->  dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
->  
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-> new file mode 100644
-> index 000000000000..2323628b0444
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Siemens AG, 2021
-> + *
-> + * Authors:
-> + *   Chao Zeng <chao.zeng@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
-> + *
-> + * Common bits of the IOT2050 Basic and Advanced variants, PG2
-> + */
+>  &mailbox0_cluster0 {
+> -	status = "disabled";
+> +	interrupts = <436>;
 > +
-> +&main_pmx0 {
-> +	cp2102n_reset_pin_default: cp2102n_reset_pin_default {
-
-	cp2102n_reset_pin_default: cp2102n-reset-pin-default
-
-> +		pinctrl-single,pins = <
-> +			/* (AF12) GPIO1_24, used as cp2102 reset */
-> +			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
-> +		>;
+> +	mbox_mcu_r5fss0_core0: mbox-mcu-r5fss0-core0 {
+> +		ti,mbox-tx = <1 0 0>;
+> +		ti,mbox-rx = <0 0 0>;
 > +	};
+>  };
+>  
+>  &mailbox0_cluster1 {
+> -	status = "disabled";
+> +	interrupts = <432>;
+> +
+> +	mbox_mcu_r5fss0_core1: mbox-mcu-r5fss0-core1 {
+> +		ti,mbox-tx = <1 0 0>;
+> +		ti,mbox-rx = <0 0 0>;
+> +	};
+>  };
+>  
+>  &mailbox0_cluster2 {
+> @@ -705,6 +715,18 @@ &mailbox0_cluster11 {
+>  	status = "disabled";
+>  };
+>  
+> +&mcu_r5fss0_core0 {
+> +	memory-region = <&mcu_r5fss0_core0_dma_memory_region>,
+> +			<&mcu_r5fss0_core0_memory_region>;
+> +	mboxes = <&mailbox0_cluster0 &mbox_mcu_r5fss0_core0>;
 > +};
 > +
-> +&main_gpio1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp2102n_reset_pin_default>;
-> +	gpio-line-names =
-> +		"", "", "", "", "", "", "", "", "", "",
-> +		"", "", "", "", "", "", "", "", "", "",
-> +		"", "", "", "", "CP2102N-RESET";
+> +&mcu_r5fss0_core1 {
+> +	memory-region = <&mcu_r5fss0_core1_dma_memory_region>,
+> +			<&mcu_r5fss0_core1_memory_region>;
+> +	mboxes = <&mailbox0_cluster1 &mbox_mcu_r5fss0_core1>;
 > +};
 > +
-> +&dss {
-> +	/* Workaround needed to get DP clock of 154Mhz */
-> +	assigned-clocks = <&k3_clks 67 0>;
-> +};
-> +
-> +&serdes0 {
-> +	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-> +	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
-> +};
-> +
-> +&dwc3_0 {
-> +	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
-> +				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
-> +	phys = <&serdes0 PHY_TYPE_USB3 0>;
-> +	phy-names = "usb3-phy";
-> +};
-> +
-> +&usb0_phy {
-> +	maximum-speed = "super-speed";
-> +	snps,dis-u1-entry-quirk;
-> +	snps,dis-u2-entry-quirk;
-> +};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-> new file mode 100644
-> index 000000000000..c62549a4b436
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *   Le Jin <le.jin@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
-> + *
-> + * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
-> + * 1 GB RAM, no eMMC, main_uart0 on connector X30
-> + *
-> + * Product homepage:
-> + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "k3-am6528-iot2050-basic-common.dtsi"
-> +#include "k3-am65-iot2050-common-pg2.dtsi"
-> +
-> +/ {
-> +	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
-> +	model = "SIMATIC IOT2050 Basic PG2";
-> +};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-> new file mode 100644
-> index 000000000000..f00dc86d01b9
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *   Le Jin <le.jin@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
-> + *
-> + * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
-> + * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-> + *
-> + * Product homepage:
-> + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "k3-am6548-iot2050-advanced-common.dtsi"
-> +#include "k3-am65-iot2050-common-pg2.dtsi"
-> +
-> +/ {
-> +	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
-
-^^ siemens,iot2050-basic-pg2 -> needs a yaml update?
-
-> +	model = "SIMATIC IOT2050 Advanced PG2";
-> +};
-> +
-> +&mcu_r5fss0 {
-> +	/* lock-step mode not supported on this board */
-> +	ti,cluster-mode = <0>;
-> +};
+>  &icssg0_mdio {
+>  	status = "disabled";
+>  };
 > -- 
 > 2.31.1
 > 
