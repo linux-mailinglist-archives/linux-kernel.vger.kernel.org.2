@@ -2,195 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966C340AB53
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1272240AB64
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 12:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhINKEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 06:04:35 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:23460 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229969AbhINKEd (ORCPT
+        id S231206AbhINKGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 06:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhINKGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 06:04:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631613795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kbVzIVpBB61/hP9zrzJNjmoAVsNi4+VAMLBrf30cmuU=;
-        b=bfrRYkcFfqMLZKUACVBEF7Ibb/9gG4R/OxGQjskQ9l5XBqrQrXsiBq/560ifeKyRdBcJaB
-        ZDHJ/wDnI/xbCMx18FvbcTr9wtVUZf2LPf85eggrRg7KRcmTiGRYE8mJ9fP2o16oBfRWaT
-        uK7jlLlCpFCjSLprpRERfKnlVuRpbic=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2051.outbound.protection.outlook.com [104.47.13.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-2-3TH0sG1pP_6Oj4xn8ib1sQ-1;
- Tue, 14 Sep 2021 12:03:14 +0200
-X-MC-Unique: 3TH0sG1pP_6Oj4xn8ib1sQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z3PySqpBAmR2HV4T55YbBaYLvt01cuer0C10+1K6byE8ABKYj8DZuWADoJmzqoAcTbDIYy0IqynZitRrinRjYfQg5ZjdSVMseY/e6x/5kHFOcZbgRsNsmHh9dvXKkhun4hThTyXNuBCHbixA+1YSA2GigosS1Gmv+s7Ct9z4MCKbJYmZUL3aZLIJUC8g8rI9Hhc1OJOTvBifsUtdeova5pzouq5jepELPrh0JtWP6Ip0+sQ4DNbROnI/Ypt/u5h7/nIZ68VwwlzJRCp3qDo88ps5wTRJUjFUkDRZL3zPIC8/dVzBs3IhIWSo0kc3/eL0FU0IxJynNRfdBfriW/MRGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=EqBK0cRHouKDe5d/+3aETfwWbIfY1VeZMfnMmP8EH4U=;
- b=R+0ue9VshgzLTJZ73Bm5ZM8ZVkOgt+uO1xfp7CbHAnSlO98pYpR9x8K2YVZNhsUQ3k/CWahU+HjKDxCZdyHJl2xzauNGfQPmX85YgO3H5NPFRfQEylhH4l6mF01ahXnP33kd7kDbVouFAAK9W3m8Yfak42o5wB7Js7M0OJGCvQtP3uLK9ZqBOrc74BcWZ5ETUWa6tBfI0rTA80edjOzN7QydEg6uvIzYiK1UIf6te+q+veprMct7YbJQXJ5TGiF0Mxy6Nib7bY1XgL3sYrNf5cTuab0QX4ZGptHyL9IE3KC3sbxgpN3CiQA2ZeyIC4MRwWL0gx+HJ+2507B65bZk1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR04MB6861.eurprd04.prod.outlook.com (2603:10a6:803:13c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 14 Sep
- 2021 10:03:12 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 10:03:12 +0000
-Subject: Re: [PATCH] x86/setup: call early_reserve_memory() earlier
-To:     Juergen Gross <jgross@suse.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
-        <marmarek@invisiblethingslab.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210914094108.22482-1-jgross@suse.com>
-From:   Jan Beulich <jbeulich@suse.com>
-Message-ID: <b15fa98e-f9a8-abac-2d16-83c29dafc517@suse.com>
-Date:   Tue, 14 Sep 2021 12:03:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20210914094108.22482-1-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PR0P264CA0115.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:19::31) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Tue, 14 Sep 2021 06:06:45 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C046C061762
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:05:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id bb10so7834020plb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 03:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z1muzdOPWzB0ytDKcRa+QFyNrcjjCHiCUrUvKj8zYFM=;
+        b=ZV9YpuPTdGrvhLZWC7YTDjzQ+oyE4Tnvnl2GIQvc69ojO1KtUMsUfiP9jbd3N04ASM
+         JSv+PVbTCW622AwkynaZ0Dj/sHs9nNGOzTgnmEOuguzXMzE+UMuDLtnQA+7BM07LZfB6
+         q5TmSMD1rnsXyGKCFILbsVrXFHZn1SlA0lfUa4GVO25uojNy0n+O0Y7EMjBj8B0HaVFX
+         0r81qzhcYX1QCmSPgFTKdnq6ytpycu4hgs/q7/XFqfX/4g8tGPY2dALaQtmcn44vk8I+
+         DPDSduio6Ba8YeMc1isvG99CxKGYwUeAoBDymzxWpAI2oHcMj/2uqQduBfu6/o7PUv61
+         NS2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z1muzdOPWzB0ytDKcRa+QFyNrcjjCHiCUrUvKj8zYFM=;
+        b=FQpVIzJyxGyWloFPY6vIq+N2b9kf1uAjBg+koChSK9yEV2Hk7VF1QAnWF/m55CUgsL
+         4BQZvmFU3e216SO0i86Lp7adCDI/cQ7FFr+mOhaFi18dM/qwa+h7P/A7e5ioJdQRbhwf
+         0vY23N1ldqc+5js37F8z89PKahGh/eZRKxuluym9eYpjHIlC5Mh46Q5vfgELRVGWasLX
+         FUo0V9gxRt2mHSJsOKHy/Q6QGelMYbcGif3XSh+oYKlSIoadqQGUg8b7yMbsGG2XVnsV
+         jteFhseWcNUVGkg9JteUSbHNsI0b0M/pMJOekC6P3K4XUcYzgLKYPcXVF2yNRgORd95I
+         EnRw==
+X-Gm-Message-State: AOAM530m4+s6eJKc1EvvHl1lt5HE0gVzOLvV3FfM2HS0y/IMrWyc+lj1
+        JoKa+Rw7bM5+LN8J0wOsDLI8BA==
+X-Google-Smtp-Source: ABdhPJw9bLFl5o1rEO6GGn86+0NLilPqU7PnCPV4PRYgtLRqPF5710VvVQ1ig7++JmoZFGHm1n8mQQ==
+X-Received: by 2002:a17:90a:b392:: with SMTP id e18mr1151791pjr.205.1631613927864;
+        Tue, 14 Sep 2021 03:05:27 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([204.124.181.224])
+        by smtp.gmail.com with ESMTPSA id d5sm1082133pjs.53.2021.09.14.03.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 03:05:27 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 18:05:17 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Michael Petlan <mpetlan@redhat.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>, x86@kernel.org,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org
+Subject: Re: [PATCH v5 4/9] perf/x86: Add compiler barrier after updating BTS
+Message-ID: <20210914100517.GC1538480@leoy-ThinkPad-X240s>
+References: <20210809111407.596077-1-leo.yan@linaro.org>
+ <20210809111407.596077-5-leo.yan@linaro.org>
+ <20210829105657.GC14461@leoy-ThinkPad-X240s>
+ <YUBwqGuQskkw328z@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0115.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:19::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 14 Sep 2021 10:03:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9f949dfa-944d-46d8-63f0-08d97766dc86
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6861:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB68610DAC24243B423B90D33CB3DA9@VI1PR04MB6861.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AVHLEHqXXO7cD2boiJp4xDg0bKys7q9Ga4+yWTfBpr4RQxTKXqiwn9Q9tqttestWnsmDHDEw9mnNMI/agrQ8sXInuzwsjy5D1nmUWeXhAa1rWQzhgxLKDN96fN1PHSIcu9/nAvnJ4XAPEC9xQm9x2sMAOBR1nBo20KAk+E4Jr7Cd8S7QrI/2QfZKNDWiAeTREACVCLPV+z3jgTJ810N7EgUCnrAhXzjT+El53QUQgNinOxtjclQsNIy7cdd6643FNAK+qAPhFodpQGt2WhqijO614YbxDXCw4Z+L1OV7bImfbITYXaUr9HqHsl7HbBjdxyU9tkIiMVa3tZbVtRZUZxZ8jh9f0Bm/jjUpkW01FxcTiABvkmWiK5fBrnBNPpr/58mf0uoxa79QgUsgc8I/9LPH1F7XfiYkI1k/OXvwd2455fYd4FolGjLYMjrTmCbUylhRpaoe8KOvZpHvBgywV0JPMHPxJLIfwlsGYqDxvllR4gzEaJwBpUE1lTQ2JTLR9AiAumm/+khdV1JrPyf03IOb9R3q5hwy2xUU1q5bqYRT/HhWskQ9J2LG/Sqdn0mphZZ4PXGbZKAru0p78J834VsOlCMznHA5ZZTtUtA0/h2MFuYVb1UVYpwsq6hbM/83/qcFqcf/VVwmXwIJnQ7zdbDiUan64VOigCW+YY+Ssi6+Vb1ZxxGtf3FnYDO4iQQLp5qUYVwjtKCQmfm+SmcxlJrfwL8AltIw7Ot2zkBUlimi+l6pNZB4l+7KmBR8/KCq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(366004)(346002)(39860400002)(478600001)(5660300002)(186003)(83380400001)(26005)(6636002)(2616005)(86362001)(8676002)(37006003)(36756003)(38100700002)(956004)(8936002)(31696002)(6486002)(2906002)(54906003)(53546011)(66574015)(316002)(16576012)(31686004)(66946007)(6862004)(66476007)(4326008)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4bsuIGN23zE62g4XGv3OYz1WrkL/Tqx/3cZf+DvNaCIPQUtNyS/eKhlkHxLV?=
- =?us-ascii?Q?FvbMcvOAqEjfmRutQsoTIYBVka8y099ZfpV4+yBy829nImdN/ULjrA89rWpW?=
- =?us-ascii?Q?uKCeuJJxNPBvhX5ovbJzTWHwyRxUZV36PTlFvs6YKeXkevHNTZte7YdEdM7o?=
- =?us-ascii?Q?z6tqlofd3mI3TCVkL4tka72OS61i0sQTy2wXQjMTdkpi/pkpk5LjZDar/6RC?=
- =?us-ascii?Q?XS5p6tQhP8LJpA6ZNXCuV/v6fY1lDjotsYG7GtFHsDkj8+Xd0RqWbDtsCXOI?=
- =?us-ascii?Q?dSQVdTMZnMTmrCsNnK99EXhU3e4T3HJoOjnuxZYSTOfu4RWYOobvSl9CUjUl?=
- =?us-ascii?Q?KLvSHa2z6T0uXsASv2WlJ88yq9fYNwck+8PEUkCExZxnvRyX9P5Vb7EX6xJy?=
- =?us-ascii?Q?Lc2pySGcRCZQDYfRnDH6EJfaKxZY46V7OlGojttYpV9gXA4bDEHtJoYSKbH0?=
- =?us-ascii?Q?RenTCx5OeSO3y488gVRdywskIkklte7UYxYFmYUVOHwosSXlBX2yAL3WnQoZ?=
- =?us-ascii?Q?V7ijhJhE71fu1OQNH+UCkFYSg2ljiYkKBlEHdxWTOTGyn07v2zCbev5RwfvR?=
- =?us-ascii?Q?yuiPeP7FcAn96zddHXsuR5ol8qTa0Rwe6QoDIQsX7HBqUnOpp1+TUk+iha5m?=
- =?us-ascii?Q?HZzWi6SU6TsaDhuRURFLTsDmLMwNACsROou5zeaTeApZdjf6nZz3ZWvVo9Ok?=
- =?us-ascii?Q?QeCcK3AChY/2fIACmRkLSLgdnf/yG131XR4RqUs9teqZLy79B6ngDU9IMa87?=
- =?us-ascii?Q?k5sNLjdScFpuB8u91Xj7herYup598vysQCKNdath/BxLigZoP2sIyXihTiqj?=
- =?us-ascii?Q?Kp9u7xIkD6xRXC3Ggsob4QFTf9Bgo6dzdGBCqlurc32jhDSPT7R8TiZsQaew?=
- =?us-ascii?Q?aPOowntwF5xuzLQ+EvOIEQY7t2i09KiATe6i61ENW3t1WhnpBz8lhT4kkZgr?=
- =?us-ascii?Q?XeqwZ2qAj0/qS9wuohSTW0/H3A9rf7ACVkHCvKKBssUZWvhWPf2HZY7Adu9F?=
- =?us-ascii?Q?5Qu/FvYI9FL8sYDs7Shqeeid+pts4hgq9oBfd+dVcZaoomCJagpvzxJ38SYv?=
- =?us-ascii?Q?zP/Ttg8AO48It4MEoViK6BLy7psZu39o4LxlDL2dL/FUSxCo6b/NhXjUlT6b?=
- =?us-ascii?Q?GEkC3c1lk+oZzpnliBhM4H1XO/Ak94NNo6eR3V/730z+pEDVLoF+M9A3ZFtF?=
- =?us-ascii?Q?JfoVmdQd9wSbpkC7cWooLGCdp0CdvihzlfDlqmN+TaXSjEy79LbemtGz+Vin?=
- =?us-ascii?Q?RWJdgSe8WSx/TTzpZ2x+BODDaf+h2WG5sLWoN8yHsvGoz/45TYvndwXXbunI?=
- =?us-ascii?Q?jeiLB+Yi86JviVSvidR5ujD6?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f949dfa-944d-46d8-63f0-08d97766dc86
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 10:03:12.1859
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9E8pt84bA3zBI531mdFxixUuI0E+cAwwcPEeujDAH0G1L/upd8MsFg7RDMMVVv9c6h/2PNcP7jN92oGoTw/UAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6861
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUBwqGuQskkw328z@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.2021 11:41, Juergen Gross wrote:
-> Commit a799c2bd29d19c565 ("x86/setup: Consolidate early memory
-> reservations") introduced early_reserve_memory() to do all needed
-> initial memblock_reserve() calls in one function. Unfortunately the
-> call of early_reserve_memory() is done too late for Xen dom0, as in
-> some cases a Xen hook called by e820__memory_setup() will need those
-> memory reservations to have happened already.
->=20
-> Move the call of early_reserve_memory() to the beginning of
-> setup_arch() in order to avoid such problems.
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: a799c2bd29d19c565 ("x86/setup: Consolidate early memory reservatio=
-ns")
-> Reported-by: Marek Marczykowski-G=C3=B3recki <marmarek@invisiblethingslab=
-.com>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  arch/x86/kernel/setup.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 79f164141116..f369c51ec580 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -757,6 +757,18 @@ dump_kernel_offset(struct notifier_block *self, unsi=
-gned long v, void *p)
-> =20
->  void __init setup_arch(char **cmdline_p)
->  {
-> +	/*
-> +	 * Do some memory reservations *before* memory is added to
-> +	 * memblock, so memblock allocations won't overwrite it.
-> +	 * Do it after early param, so we could get (unlikely) panic from
-> +	 * serial.
+Hi Peter,
 
-Hmm, this part of the comment is not only stale now, but gets actively
-undermined. No idea how likely such a panic() would be, and hence how
-relevant it is to retain this particular property.
+On Tue, Sep 14, 2021 at 11:51:36AM +0200, Peter Zijlstra wrote:
+> On Sun, Aug 29, 2021 at 06:56:57PM +0800, Leo Yan wrote:
+> > Hi Peter, or any x86 maintainer,
+> > 
+> > On Mon, Aug 09, 2021 at 07:14:02PM +0800, Leo Yan wrote:
+> > > Since BTS is coherent, simply add a compiler barrier to separate the BTS
+> > > update and aux_head store.
+> > 
+> > Could you reivew this patch and check if BTS needs the comipler
+> > barrier in this case?  Thanks.
+> 
+> Yes, a compiler barrier is sufficient.
+> 
+> You want me to pick it up?
 
-Jan
+Maybe other maintainers are more suitable than me to answer this :)
 
-> +	 * After this point everything still needed from the boot loader or
-> +	 * firmware or kernel text should be early reserved or marked not
-> +	 * RAM in e820. All other memory is free game.
-> +	 */
-> +	early_reserve_memory();
-> +
->  #ifdef CONFIG_X86_32
->  	memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
-> =20
-> @@ -876,18 +888,6 @@ void __init setup_arch(char **cmdline_p)
-> =20
->  	parse_early_param();
-> =20
-> -	/*
-> -	 * Do some memory reservations *before* memory is added to
-> -	 * memblock, so memblock allocations won't overwrite it.
-> -	 * Do it after early param, so we could get (unlikely) panic from
-> -	 * serial.
-> -	 *
-> -	 * After this point everything still needed from the boot loader or
-> -	 * firmware or kernel text should be early reserved or marked not
-> -	 * RAM in e820. All other memory is free game.
-> -	 */
-> -	early_reserve_memory();
-> -
->  #ifdef CONFIG_MEMORY_HOTPLUG
->  	/*
->  	 * Memory used by the kernel cannot be hot-removed because Linux
->=20
+Yeah, I think it's great if you could pick it.
 
+Thanks,
+Leo
