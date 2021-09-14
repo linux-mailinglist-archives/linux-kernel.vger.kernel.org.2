@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6503840AA5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF8840AA60
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Sep 2021 11:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhINJNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 05:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230469AbhINJNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:13:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9918760295;
-        Tue, 14 Sep 2021 09:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631610736;
-        bh=nRA/AHjgTMxHgowbKHAYAGp8F9pmWjOSvssEv7FfAPo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jNfqcdKLWHly1RIdwPJ+Gn64Z37hURjw6TrhdoaC0gcGuoZieq5cf+McCkBZsSLRD
-         tBwQjyQMeQgfQZH4iI0alZDi3IUYHmIjRT1M6u36w5y/XpFXzXlmZTrZRt1Lf/hL37
-         MM5O/WYDgqcpXMsGe/GsoGwHVr75mxKOBbX9aaR8nHXYgFdGuIg1UHGUmjB0ytU83C
-         lzUXv3ltkjAdoM0Y36ExFIg7GmKe+uAmlOUPSHfls7OT9obmUJXnWSCHrkyP58/Nry
-         oKudAWbVDYRNnEgaZp+jrHSRq1uzQElwOFvaYSnA9XJ5peZohtas9moHUQx7evRvnd
-         Z9d8BWxNMTbLA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH -rc] init: don't panic if mount_nodev_root failed
-Date:   Tue, 14 Sep 2021 12:12:10 +0300
-Message-Id: <b83c61f6ab34c8f17672d88e0853a9d324c3d48a.1631610487.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S231645AbhINJNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 05:13:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54427 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231287AbhINJNi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:13:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631610741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uz2MwQ8O6PWUdtwcLKLou2o1zImRqX/46y2OPHfGWF8=;
+        b=QN7wYyfksuZMIjHnto0CXjZf+4c70oBzh5erGpCsKD6q4cWsh1/ImvaKAOf2Fx5Bx6WOBs
+        2pACxIqVX1rVCrrg7achIO6rCMJb2A5WUYE7cg3D5AVRtwnFquv+AT9LIkCTJdFCp9sKn6
+        Xj/f69TJwlmGQ8MjKzfFPc83JFKkTjI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-385-kelXotrXPJm2v0OGzXzb4g-1; Tue, 14 Sep 2021 05:12:19 -0400
+X-MC-Unique: kelXotrXPJm2v0OGzXzb4g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02C5E1800D41;
+        Tue, 14 Sep 2021 09:12:18 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9986477F3C;
+        Tue, 14 Sep 2021 09:12:12 +0000 (UTC)
+Message-ID: <2b1e17416cef1e37f42e9bc8b2283b03d2651cb2.camel@redhat.com>
+Subject: Re: [RFC PATCH 3/3] nSVM: use svm->nested.save to load vmcb12
+ registers and avoid TOC/TOU races
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 14 Sep 2021 12:12:11 +0300
+In-Reply-To: <9585f1387b2581d30b74cd163a9aac2adbd37a93.camel@redhat.com>
+References: <20210903102039.55422-1-eesposit@redhat.com>
+         <20210903102039.55422-4-eesposit@redhat.com>
+         <21d2bf8c4e3eb3fc5d297fd13300557ec686b625.camel@redhat.com>
+         <73b5a5bb-48f2-3a08-c76b-a82b5b69c406@redhat.com>
+         <9585f1387b2581d30b74cd163a9aac2adbd37a93.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, 2021-09-14 at 12:02 +0300, Maxim Levitsky wrote:
+> On Tue, 2021-09-14 at 10:20 +0200, Emanuele Giuseppe Esposito wrote:
+> > On 12/09/2021 12:42, Maxim Levitsky wrote:
+> > > >   
+> > > > -	if (!nested_vmcb_valid_sregs(vcpu, &vmcb12->save) ||
+> > > > +	if (!nested_vmcb_valid_sregs(vcpu, &svm->nested.save) ||
+> > > >   	    !nested_vmcb_check_controls(vcpu, &svm->nested.ctl)) {
+> > > If you use a different struct for the copied fields, then it makes
+> > > sense IMHO to drop the 'control' parameter from nested_vmcb_check_controls,
+> > > and just use the svm->nested.save there directly.
+> > > 
+> > 
+> > Ok, what you say in patch 2 makes sense to me. I can create a new struct 
+> > vmcb_save_area_cached, but I need to keep nested.ctl because 1) it is 
+> > used also elsewhere, and different fields from the one checked here are 
+> > read/set and 2) using another structure (or the same 
+> 
+> Yes, keep nested.ctl, since vast majority of the fields are copied I think.
 
-Attempt to mount 9p file system as root gives the following kernel panic:
+But actually that you mention it, I'll say why not to create vmcb_control_area_cached
+as well indeed and change the type of svm->nested.save to it. (in a separate patch)
 
- 9pnet_virtio: no channels available for device root
- Kernel panic - not syncing: VFS: Unable to mount root "root" (9p), err=-2
- CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc1+ #127
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- Call Trace:
-  dump_stack_lvl+0x45/0x59
-  panic+0x1e2/0x44b
-  ? __warn_printk+0xf3/0xf3
-  ? free_unref_page+0x2d4/0x4a0
-  ? trace_hardirqs_on+0x32/0x120
-  ? free_unref_page+0x2d4/0x4a0
-  mount_root+0x189/0x1e0
-  prepare_namespace+0x136/0x165
-  kernel_init_freeable+0x3b8/0x3cb
-  ? rest_init+0x2e0/0x2e0
-  kernel_init+0x19/0x130
-  ret_from_fork+0x1f/0x30
- Kernel Offset: disabled
- ---[ end Kernel panic - not syncing: VFS: Unable to mount root "root" (9p), err=-2 ]---
+I see what you mean that we modify it a bit (but we shoudn't to be honest) and such, but
+all of this can be fixed.
 
-QEMU command line:
- "qemu-system-x86_64 -append root=/dev/root rw rootfstype=9p rootflags=trans=virtio ..."
+The advantage of having vmcb_control_area_cached is that it becomes impossible to use
+by mistake a non copied field from the guest.
 
-This error is because root_device_name is truncated in prepare_namespace() from
-being "/dev/root" to be "root" prior to call to mount_nodev_root().
+It would also emphasize that this stuff came from the guest and should be treated as
+a toxic waste.
 
-As a solution, don't treat errors in mount_nodev_root() as errors that
-require panics and allow failback to the mount flow that existed before
-patch citied in Fixes tag.
+Note again that this should be done if we agree as a separate patch.
 
-Fixes: f9259be6a9e7 ("init: allow mounting arbitrary non-blockdevice filesystems as root")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-I'm not sure if this is the right thing to do, but it works for me.
----
- init/do_mounts.c | 3 ---
- 1 file changed, 3 deletions(-)
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> 
+> > vmcb_save_area_cached) in its place would just duplicate the same fields 
+> > of nested.ctl, creating even more confusion and possible inconsistency.
+> > 
+> > Let me know if you disagree.
+> > 
+> > Thank you,
+> > Emanuele
+> > 
 
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 2ed30ff6c906..b423ea7dcc6b 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -553,9 +553,6 @@ static int __init mount_nodev_root(void)
- 				    root_mount_data);
- 		if (!err)
- 			break;
--		if (err != -EACCES && err != -EINVAL)
--			panic("VFS: Unable to mount root \"%s\" (%s), err=%d\n",
--			      root_device_name, fstype, err);
- 	}
- 
- 	free_page((unsigned long)fs_names);
--- 
-2.31.1
 
