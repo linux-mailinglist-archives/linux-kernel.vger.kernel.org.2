@@ -2,85 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3867E40CEAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0563340CEB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhIOVQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 17:16:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46740 "EHLO mail.kernel.org"
+        id S232266AbhIOVSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:18:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43122 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230484AbhIOVQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 17:16:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E9A60FBF;
-        Wed, 15 Sep 2021 21:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631740507;
-        bh=v7eGTkfRn/2Whx56GpAI3P7Hwmk4UsoQj1ldMoGBMGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GYIgJxCQN5JSa085+FL+lmnDjYLO/EhgmTtrkxWwETWkSWFHBJrMcnNouWM9/VtEU
-         +Bjxptd8alSPi+yW4KrTPTb/CJe7PCsSEMO+TUulV46HPh2AWUD7/XayeQBVDYTdbu
-         WfDvg4Ffmh/ybCPN5Z5FcfB3xZGl60+8JIqtsN/Kw4g00iMF2dJ6aUzW/8mD+l3hzl
-         z2ZzNEVe1DGT2VwBxceWIrpcsfAokyPc+CiSRLXuUt6l/TyAS/nwG+z/wHAaG2aSsU
-         E4hiCmylQnqBncgKM8B1Pq/RsWHM7Vg7pBZEPELLMscRnG3ryVOtVq/HBnQdU57sUN
-         7SrumwVxJoHcQ==
-Date:   Wed, 15 Sep 2021 23:15:04 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Alan J. Wylie" <alan@wylie.me.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: Regression in posix-cpu-timers.c (was Re: Linux 5.14.4)
-Message-ID: <20210915211504.GB22415@lothringen>
-References: <1631693373201133@kroah.com>
- <87ilz1pwaq.fsf@wylie.me.uk>
- <20210915183152.GA22415@lothringen>
- <CAHk-=wgiiqmy1jE0i9EYkCiE+KNHDTJQVktczZgyJwqL-okRgA@mail.gmail.com>
+        id S230382AbhIOVSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 17:18:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=r86CNqldwDEtT67/MPxr+lwRy10J2msOmuDKCgTFsHA=; b=Am1/doWwxRfmJugYmt746kUzi2
+        m/4EPXqeca+ZsOZGRhMDWkPqhbZ0UlQ7VUWfneEXaVAau35yEHLQY3ZXiNul3WZaux6VuZlJMS05K
+        lbCW5X8QMJ9Cl1ZVpQEQgr5o10FOpcndhBlCUxWLJMTq7Z20PW+wiJNLo7YzZ959FYDA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mQcHB-006oEm-4f; Wed, 15 Sep 2021 23:17:05 +0200
+Date:   Wed, 15 Sep 2021 23:17:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Heimpold <michael.heimpold@in-tech.com>,
+        jimmy.shen@vertexcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH RFC 3/3] net: vertexcom: Add MSE102x SPI support
+Message-ID: <YUJi0cVawjyiteEx@lunn.ch>
+References: <20210914151717.12232-1-stefan.wahren@i2se.com>
+ <20210914151717.12232-4-stefan.wahren@i2se.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgiiqmy1jE0i9EYkCiE+KNHDTJQVktczZgyJwqL-okRgA@mail.gmail.com>
+In-Reply-To: <20210914151717.12232-4-stefan.wahren@i2se.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:41:42AM -0700, Linus Torvalds wrote:
-> On Wed, Sep 15, 2021 at 11:31 AM Frederic Weisbecker
-> <frederic@kernel.org> wrote:
-> >
-> > Right, this should fix the issue: https://lore.kernel.org/lkml/20210913145332.232023-1-frederic@kernel.org/
-> 
-> Hmm.
-> 
-> Can you explain why the fix isn't just to revert that original commit?
-> 
-> It looks like the only real difference is that now it does *extra
-> work* with all that tick_nohz_dep_set_signal().
-> 
-> Isn't it easier to just leave any old timer ticking, and not do the
-> extra work until it expires and you notice "ok, it's not important"?
-> 
-> IOW, that original commit explicitly broke the only case it changed -
-> the timer being disabled.  So why isn't it just reverted? What is it
-> that kleeps us wanting to do the extra work for the disabled timer
-> case?
-> 
-> As long as it's fixed, I'm all ok with this, but I'm looking at the
-> commit message for that broken commit, and I'm looking at the commit
-> message for the fix, and I'm not seeing an actual _explanation_ for
-> this churn.
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include <linux/netdevice.h>
+> +#include <linux/etherdevice.h>
+> +#include <linux/ethtool.h>
+> +#include <linux/cache.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/seq_file.h>
+> +
+> +#include <linux/spi/spi.h>
+> +#include <linux/of_net.h>
+> +
+> +#define MSG_DEFAULT	(NETIF_MSG_DRV | NETIF_MSG_PROBE | NETIF_MSG_LINK | \
+> +			 NETIF_MSG_TIMER)
+> +
+> +#define DRV_NAME	"mse102x"
+> +
+> +#define DET_CMD		0x0001
+> +#define DET_SOF		0x0002
+> +#define DET_DFT		0x55AA
+> +
+> +#define CMD_SHIFT	12
+> +#define CMD_RTS		(0x1 << CMD_SHIFT)
+> +#define CMD_CTR		(0x2 << CMD_SHIFT)
+> +
+> +#define CMD_MASK	GENMASK(15, CMD_SHIFT)
+> +#define LEN_MASK	GENMASK(CMD_SHIFT - 1, 0)
+> +
+> +#define	DET_CMD_LEN	4
+> +#define	DET_SOF_LEN	2
+> +#define	DET_DFT_LEN	2
 
-The commit indeed failed to explain correctly the actual issue.
+Looks like these tabs should be spaces?
 
-When a process wide posix cpu timer (eg: itimer) is elapsing, all the
-threads inside that process contend on their cputime updates
-(account_group_user_time() and account_group_system_time())
+> +static int msg_enable;
+> +module_param_named(message, msg_enable, int, 0);
+> +MODULE_PARM_DESC(message, "Message verbosity level (0=none, 31=all)");
 
+I know a lot of drivers do this, but module parameters are not
+liked. There is a well used ethtool setting for this, msglvl, which
+should be used instead. Which in fact, you have support for.
 
-The overhead just consists in concurrent atomic64_add() calls on
-every tick but still... And this can remain for a very long while,
-until the previous value of the timer expiry is reached.
+> +static void mse102x_init_mac(struct mse102x_net *mse, struct device_node *np)
+> +{
+> +	struct net_device *ndev = mse->ndev;
+> +	int ret = of_get_mac_address(np, ndev->dev_addr);
+> +
+> +	if (ret) {
+> +		eth_hw_addr_random(ndev);
+> +		netdev_err(ndev, "Using random MAC address: %pM\n",
+> +			   ndev->dev_addr);
+> +	}
+> +}
 
-The other symptom, more of a corner case for most, is that the CPUs
-running any thread of that process won't be able to enter in nohz_full
-mode, again until the old timer expiry is reached.
+No need to tell the hardware? Does it work in promiscuous mode by
+default?
+
+> +static int mse102x_net_stop(struct net_device *ndev)
+> +{
+> +	struct mse102x_net *mse = netdev_priv(ndev);
+> +	struct mse102x_net_spi *mses = to_mse102x_spi(mse);
+> +
+> +	netif_info(mse, ifdown, ndev, "shutting down\n");
+> +
+> +	netif_stop_queue(ndev);
+> +
+> +	/* stop any outstanding work */
+> +	flush_work(&mses->tx_work);
+> +
+> +	/* ensure any queued tx buffers are dumped */
+> +	while (!skb_queue_empty(&mse->txq)) {
+> +		struct sk_buff *txb = skb_dequeue(&mse->txq);
+> +
+> +		netif_dbg(mse, ifdown, ndev,
+> +			  "%s: freeing txb %p\n", __func__, txb);
+> +
+> +		dev_kfree_skb(txb);
+> +	}
+> +
+> +	free_irq(ndev->irq, mse);
+> +
+> +	return 0;
+
+Maybe a netif_carrier_off() in there, to be symmetric with open?
+
+> +/* ethtool support */
+> +
+> +static void mse102x_get_drvinfo(struct net_device *ndev,
+> +				struct ethtool_drvinfo *di)
+> +{
+> +	strscpy(di->driver, DRV_NAME, sizeof(di->driver));
+> +	strscpy(di->version, "1.00", sizeof(di->version));
+> +	strscpy(di->bus_info, dev_name(ndev->dev.parent), sizeof(di->bus_info));
+> +}
+
+Version is pretty pointless. We suggest you don't use it. The ethtool
+core will then fill it with the kernel version, 
+
+> +static int mse102x_probe_spi(struct spi_device *spi)
+> +{
+
+...
+
+> +	netif_carrier_off(mse->ndev);
+> +	ndev->if_port = IF_PORT_10BASET;
+
+That is not correct. Maybe you should add a IF_PORT_HOMEPLUG ?
+
+> +	ndev->netdev_ops = &mse102x_netdev_ops;
+> +	ndev->ethtool_ops = &mse102x_ethtool_ops;
+> +
+> +	mse102x_init_mac(mse, dev->of_node);
+> +
+> +	ret = register_netdev(ndev);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register network device: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	mse102x_init_device_debugfs(mses);
+> +
+> +	return 0;
+> +}
+
+> +static const struct of_device_id mse102x_match_table[] = {
+> +	{ .compatible = "vertexcom,mse1021" },
+> +	{ .compatible = "vertexcom,mse1022" },
+
+Is there an ID register you can read to determine what device you
+actually have? If so, i suggest you verify the correct compatible is
+used.
+
+	Andrew
