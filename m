@@ -2,204 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71E540BCB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B4740BCB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbhIOAbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 20:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38006 "EHLO
+        id S236037AbhIOAeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 20:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236080AbhIOAbX (ORCPT
+        with ESMTP id S230055AbhIOAeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 20:31:23 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA8AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 17:30:05 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id q68so927615pga.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 17:30:05 -0700 (PDT)
+        Tue, 14 Sep 2021 20:34:00 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFE1C061574;
+        Tue, 14 Sep 2021 17:32:42 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id f65so995592pfb.10;
+        Tue, 14 Sep 2021 17:32:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=rKPPAqWinMrhwkk8dufmKi/m/ykeo+r7lvr15eegekI=;
-        b=W2174p+PqjMxAD9mRnHIDPyb0Hd47zmv7xSvtB0BplA6tW99nXaMcj6zZMFxVYKqr/
-         aiWbzUiEnk7Yv0hrWrGe6Iv+pWtGsAhgHWbQUJznuTtE/8voNYohxNO8yD8ldhvedz5+
-         X7S7j0KC/4hn3xr7HmGB5e8QTvtfLe4BXudToAyDuruq6R+cFEkf1jZ8jGyKsXEdaPT9
-         mo3QPYhGJVCYsYVyh/dFAHL6eb5zq19RzKbCWkcUZKlt2o4UZ+vx2zsfwGGh+NFSIWQF
-         CmCwHYqugGqzlhbWTeEwAaZfQ0rNWF4ZoEs9xk2J5qFerGA79vTYmcIW1/Z49zvr+fDH
-         CjyQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B98iyobon7XpmlutJ6lSaSzrCVaOurbEs607Eq+jSgA=;
+        b=C15+5pC2tmh9jliJOROUrQwWJP0/jrz2+X0YaWyjm+ftvbfKvC++n/OWEP0EPwfTki
+         7TEGLxLu7FpkqQktxaAgoLlpKW6SbjKpWdoO6pEA+7tqozikqnToldw+i8DmAtfGqYh8
+         RucgGbxxwws9Fd8nJP0pm3YfUV5AcA5wU7U7E+QtdAjq4uI1jtjYfOhcNPcxj0PZKi9u
+         Rmy1KYL2pr/5v2tU3PIrqmZrF6vmuGfLCSrmEza84cdprOQfbHQdqzKNh1eBgsJH+fSi
+         vaS3VA1UORF9+Zhll57vM/ckSUXTyp2OMLfGm32VYpvUOP3tr9GzDdu3ijKJWpLlqZ3Z
+         a0og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=rKPPAqWinMrhwkk8dufmKi/m/ykeo+r7lvr15eegekI=;
-        b=GYpwWU1ahHDnToyNqIIBgoMQEQd5P8H36IJXf93lSY5pk4rXEPzgR9wVlHHYO2Bwx0
-         nDfZEwlJn1mahPGV/1BwiecTW8/F87bLcTjV37jrOXh31cpQ8qaOJGH5ejGHglMvvton
-         xg+l+ywOt6NOq6eB286yr1xChL0MSB3JQb5feR70jY62ag3LJw1qDiLDQi+3W89+K5BW
-         XYShJy8Nx/RoeGGESqLCHU2msMEhjlJZtOnmwX3YkmmmUg8JXPA2C6mjnFljSnw2odpX
-         QY2YQg1KpA4ymxLGq9g1asSY3LXOB3iGs/OMHVhaxZamEKVbQ14CmbEFQSrMQlQyC+o/
-         FiUQ==
-X-Gm-Message-State: AOAM53112mxBeS9DTjJyyoAO+7SKu696hVTLAXBdRm4xSTaFipWpuAIc
-        lX5TLZukcarQGUpuzY5RHAHT5A==
-X-Google-Smtp-Source: ABdhPJzH68Knnx/GOsyKTTt1YdZ4FXTe8bdfjPXenc66eMB8J3rzXcbOFFI8k061RyWlq6EgUsb3sg==
-X-Received: by 2002:a05:6a00:2283:b0:43d:ef23:48e5 with SMTP id f3-20020a056a00228300b0043def2348e5mr7522479pfe.18.1631665804664;
-        Tue, 14 Sep 2021 17:30:04 -0700 (PDT)
-Received: from [2620:15c:17:3:22e5:69e1:debc:7973] ([2620:15c:17:3:22e5:69e1:debc:7973])
-        by smtp.gmail.com with ESMTPSA id j6sm12193573pgq.0.2021.09.14.17.30.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B98iyobon7XpmlutJ6lSaSzrCVaOurbEs607Eq+jSgA=;
+        b=eqdvxKfnU39ASffUMVrIh5hhNyM7C8b7lcBwDim5mO23vvqPYH6Jw/RHYtGrlYNSTK
+         WSPSfQXZNTWHCSLCQ44DSYHeO4VXs0nCwmSyCDEQVg+23bLyKjY3GwMTYjkCh6nUH0hU
+         +b8JSY7dtHkG/lNDIToaGNEv6T8lyp6I1Zu+b6VF9a2tI8efJ2k+HhjXz3Ax38O63W8m
+         p8bzVjfv7iEVSu91idFxecX1P+LanVLkMytmTsmmBEuKmzRmQ6IVfYOiRqWjvHPqinLI
+         h9lOCjhzXhalSZgdnI987vy00jvl4HLsqr0PnZSvBYDJ6F+1JDM6E4SwgZh3ev5fJZds
+         0yMw==
+X-Gm-Message-State: AOAM5334Ph+mlD1ACJI0bE4bfIHM8sHOpT3D/T/LE48DZ7hc2rugMFxw
+        aq3dBJhMMz+ur1fUlsgQP8EIdo7kIgvgeQ==
+X-Google-Smtp-Source: ABdhPJyl7tj/4AHRBTENNJQN3RJeKAm8En43Pkt+moEgzUoj9cGejFp/O6mrw1ZZAtDmPhRWKPgFNA==
+X-Received: by 2002:a05:6a00:140e:b029:38b:c129:9f2f with SMTP id l14-20020a056a00140eb029038bc1299f2fmr7505401pfu.75.1631665961804;
+        Tue, 14 Sep 2021 17:32:41 -0700 (PDT)
+Received: from mail.google.com ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id j16sm11869541pfi.165.2021.09.14.17.32.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 17:30:04 -0700 (PDT)
-Date:   Tue, 14 Sep 2021 17:30:03 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Feng Tang <feng.tang@intel.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
- and bail out early
-In-Reply-To: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
-Message-ID: <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
-References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
+        Tue, 14 Sep 2021 17:32:41 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 08:32:32 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] kernel: in_irq() cleanup
+Message-ID: <20210915003232.nvarqpjnvyutc46o@mail.google.com>
+References: <20210813145101.85782-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210813145101.85782-1-changbin.du@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021, Feng Tang wrote:
+Hi, could anyone pick up this cleanup?
 
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index d2b9c41..d58e047 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -34,6 +34,8 @@
->   */
->  extern struct static_key_false cpusets_pre_enable_key;
->  extern struct static_key_false cpusets_enabled_key;
-> +extern struct static_key_false cpusets_insane_config_key;
-> +
->  static inline bool cpusets_enabled(void)
+On Fri, Aug 13, 2021 at 10:51:01PM +0800, Changbin Du wrote:
+> Replace the obsolete and ambiguos macro in_irq() with new
+> macro in_hardirq().
+> 
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
+> ---
+>  include/linux/lockdep.h              |  2 +-
+>  include/linux/rcutiny.h              |  2 +-
+>  kernel/irq/irqdesc.c                 |  2 +-
+>  kernel/rcu/tree.c                    |  2 +-
+>  kernel/rcu/tree_plugin.h             |  2 +-
+>  kernel/softirq.c                     | 10 +++++-----
+>  kernel/time/timer.c                  |  4 ++--
+>  kernel/trace/trace.h                 |  2 +-
+>  kernel/trace/trace_functions_graph.c |  2 +-
+>  lib/locking-selftest.c               |  4 ++--
+>  lib/vsprintf.c                       |  2 +-
+>  11 files changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 5cf387813754..e7aa0050bfd8 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -633,7 +633,7 @@ do {									\
+>  #define lockdep_assert_in_softirq()					\
+>  do {									\
+>  	WARN_ON_ONCE(__lockdep_enabled			&&		\
+> -		     (!in_softirq() || in_irq() || in_nmi()));		\
+> +		     (!in_softirq() || in_hardirq() || in_nmi()));		\
+>  } while (0)
+>  
+>  #else
+> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+> index 953e70fafe38..7fedbd33d5d2 100644
+> --- a/include/linux/rcutiny.h
+> +++ b/include/linux/rcutiny.h
+> @@ -88,7 +88,7 @@ static inline void rcu_irq_enter_irqson(void) { }
+>  static inline void rcu_irq_exit(void) { }
+>  static inline void rcu_irq_exit_check_preempt(void) { }
+>  #define rcu_is_idle_cpu(cpu) \
+> -	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
+> +	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
+>  static inline void exit_rcu(void) { }
+>  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
 >  {
->  	return static_branch_unlikely(&cpusets_enabled_key);
-> @@ -51,6 +53,19 @@ static inline void cpuset_dec(void)
->  	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index fadb93766020..0ffd6c19259f 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -640,7 +640,7 @@ int handle_irq_desc(struct irq_desc *desc)
+>  		return -EINVAL;
+>  
+>  	data = irq_desc_get_irq_data(desc);
+> -	if (WARN_ON_ONCE(!in_irq() && handle_enforce_irqctx(data)))
+> +	if (WARN_ON_ONCE(!in_hardirq() && handle_enforce_irqctx(data)))
+>  		return -EPERM;
+>  
+>  	generic_handle_irq_desc(desc);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 51f24ecd94b2..18f6658f0713 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1510,7 +1510,7 @@ static void rcu_gp_kthread_wake(void)
+>  {
+>  	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+>  
+> -	if ((current == t && !in_irq() && !in_serving_softirq()) ||
+> +	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+>  	    !READ_ONCE(rcu_state.gp_flags) || !t)
+>  		return;
+>  	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index de1dc3bb7f70..953171af6d0c 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -672,7 +672,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
+>  			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
+>  			    t->rcu_blocked_node);
+>  		// Need to defer quiescent state until everything is enabled.
+> -		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
+> +		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
+>  			// Using softirq, safe to awaken, and either the
+>  			// wakeup is free or there is either an expedited
+>  			// GP in flight or a potential need to deboost.
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index f3a012179f47..e8c62c4b1e5d 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -222,7 +222,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  	u32 pending;
+>  	int curcnt;
+>  
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  	lockdep_assert_irqs_enabled();
+>  
+>  	local_irq_save(flags);
+> @@ -305,7 +305,7 @@ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+>  {
+>  	unsigned long flags;
+>  
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  
+>  	raw_local_irq_save(flags);
+>  	/*
+> @@ -352,14 +352,14 @@ static void __local_bh_enable(unsigned int cnt)
+>   */
+>  void _local_bh_enable(void)
+>  {
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  	__local_bh_enable(SOFTIRQ_DISABLE_OFFSET);
+>  }
+>  EXPORT_SYMBOL(_local_bh_enable);
+>  
+>  void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  {
+> -	WARN_ON_ONCE(in_irq());
+> +	WARN_ON_ONCE(in_hardirq());
+>  	lockdep_assert_irqs_enabled();
+>  #ifdef CONFIG_TRACE_IRQFLAGS
+>  	local_irq_disable();
+> @@ -617,7 +617,7 @@ static inline void tick_irq_exit(void)
+>  
+>  	/* Make sure that timer wheel updates are propagated */
+>  	if ((idle_cpu(cpu) && !need_resched()) || tick_nohz_full_cpu(cpu)) {
+> -		if (!in_irq())
+> +		if (!in_hardirq())
+>  			tick_nohz_irq_exit();
+>  	}
+>  #endif
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index e3d2c23c413d..dfdbb114a43d 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1369,7 +1369,7 @@ int del_timer_sync(struct timer_list *timer)
+>  	 * don't use it in hardirq context, because it
+>  	 * could lead to deadlock.
+>  	 */
+> -	WARN_ON(in_irq() && !(timer->flags & TIMER_IRQSAFE));
+> +	WARN_ON(in_hardirq() && !(timer->flags & TIMER_IRQSAFE));
+>  
+>  	/*
+>  	 * Must be able to sleep on PREEMPT_RT because of the slowpath in
+> @@ -1784,7 +1784,7 @@ void update_process_times(int user_tick)
+>  	run_local_timers();
+>  	rcu_sched_clock_irq(user_tick);
+>  #ifdef CONFIG_IRQ_WORK
+> -	if (in_irq())
+> +	if (in_hardirq())
+>  		irq_work_tick();
+>  #endif
+>  	scheduler_tick();
+> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+> index a180abf76d4e..2ed5b77b60ca 100644
+> --- a/kernel/trace/trace.h
+> +++ b/kernel/trace/trace.h
+> @@ -876,7 +876,7 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
+>  		 * is set, and called by an interrupt handler, we still
+>  		 * want to trace it.
+>  		 */
+> -		if (in_irq())
+> +		if (in_hardirq())
+>  			trace_recursion_set(TRACE_IRQ_BIT);
+>  		else
+>  			trace_recursion_clear(TRACE_IRQ_BIT);
+> diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
+> index 0de6837722da..b08d3923de98 100644
+> --- a/kernel/trace/trace_functions_graph.c
+> +++ b/kernel/trace/trace_functions_graph.c
+> @@ -120,7 +120,7 @@ static inline int ftrace_graph_ignore_irqs(void)
+>  	if (!ftrace_graph_skip_irqs || trace_recursion_test(TRACE_IRQ_BIT))
+>  		return 0;
+>  
+> -	return in_irq();
+> +	return in_hardirq();
 >  }
 >  
-> +/*
-> + * This will get enabled whenever a cpuset configuration is considered
-> + * unsupportable in general. E.g. movable only node which cannot satisfy
-> + * any non movable allocations (see update_nodemask). Page allocator
-> + * needs to make additional checks for those configurations and this
-> + * check is meant to guard those checks without any overhead for sane
-> + * configurations.
-> + */
-> +static inline bool cpusets_insane_config(void)
-> +{
-> +	return static_branch_unlikely(&cpusets_insane_config_key);
-> +}
-> +
->  extern int cpuset_init(void);
->  extern void cpuset_init_smp(void);
->  extern void cpuset_force_rebuild(void);
-> @@ -167,6 +182,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
+>  int trace_graph_entry(struct ftrace_graph_ent *trace)
+> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+> index 161108e5d2fe..a4edff9ffc33 100644
+> --- a/lib/locking-selftest.c
+> +++ b/lib/locking-selftest.c
+> @@ -196,7 +196,7 @@ static void init_shared_classes(void)
+>  	local_irq_disable();			\
+>  	__irq_enter();				\
+>  	lockdep_hardirq_threaded();		\
+> -	WARN_ON(!in_irq());
+> +	WARN_ON(!in_hardirq());
 >  
->  static inline bool cpusets_enabled(void) { return false; }
+>  #define HARDIRQ_EXIT()				\
+>  	__irq_exit();				\
+> @@ -2456,7 +2456,7 @@ static void hardirq_exit(int *_)
+>  	int notthreaded_hardirq_guard_##name __guard(hardirq_exit);	\
+>  	local_irq_disable();						\
+>  	__irq_enter();							\
+> -	WARN_ON(!in_irq());
+> +	WARN_ON(!in_hardirq());
 >  
-> +static inline bool cpusets_insane_config(void) { return false; }
-> +
->  static inline int cpuset_init(void) { return 0; }
->  static inline void cpuset_init_smp(void) {}
->  
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 6a1d79d..a455333 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1220,6 +1220,22 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
->  #define for_each_zone_zonelist(zone, z, zlist, highidx) \
->  	for_each_zone_zonelist_nodemask(zone, z, zlist, highidx, NULL)
->  
-> +/* Whether the 'nodes' are all movable nodes */
-> +static inline bool movable_only_nodes(nodemask_t *nodes)
-> +{
-> +	struct zonelist *zonelist;
-> +	struct zoneref *z;
-> +
-> +	if (nodes_empty(*nodes))
-> +		return false;
-> +
-> +	zonelist =
-> +	    &NODE_DATA(first_node(*nodes))->node_zonelists[ZONELIST_FALLBACK];
-> +	z = first_zones_zonelist(zonelist, ZONE_NORMAL,	nodes);
-> +	return (!z->zone) ? true : false;
-> +}
-> +
-> +
->  #ifdef CONFIG_SPARSEMEM
->  #include <asm/sparsemem.h>
->  #endif
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index df1ccf4..7fa633e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -69,6 +69,13 @@
->  DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
->  DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
->  
-> +/*
-> + * There could be abnormal cpuset configurations for cpu or memory
-> + * node binding, add this key to provide a quick low-cost judgement
-> + * of the situation.
-> + */
-> +DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
-> +
->  /* See "Frequency meter" comments, below. */
->  
->  struct fmeter {
-> @@ -1868,6 +1875,14 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
->  	if (retval < 0)
->  		goto done;
->  
-> +	if (!cpusets_insane_config() &&
-> +		movable_only_nodes(&trialcs->mems_allowed)) {
-> +		static_branch_enable(&cpusets_insane_config_key);
-> +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl)! "
-> +			"Cpuset allocations might fail even with a lot of memory available.\n",
-> +			nodemask_pr_args(&trialcs->mems_allowed));
-> +	}
-> +
->  	spin_lock_irq(&callback_lock);
->  	cs->mems_allowed = trialcs->mems_allowed;
->  	spin_unlock_irq(&callback_lock);
+>  static void softirq_exit(int *_)
+>  {
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 26c83943748a..2c5b4351330c 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -865,7 +865,7 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
+>  		 * kptr_restrict==1 cannot be used in IRQ context
+>  		 * because its test for CAP_SYSLOG would be meaningless.
+>  		 */
+> -		if (in_irq() || in_serving_softirq() || in_nmi()) {
+> +		if (in_hardirq() || in_serving_softirq() || in_nmi()) {
+>  			if (spec.field_width == -1)
+>  				spec.field_width = 2 * sizeof(ptr);
+>  			return error_string(buf, end, "pK-error", spec);
+> -- 
+> 2.30.2
+> 
 
-Is this the only time that the state of the nodemask may change?
-
-I'm wondering about a single node nodemask, for example, where all 
-ZONE_NORMAL memory is hot-removed.
-
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c..a7e0854 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4914,6 +4914,19 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
->  	if (!ac->preferred_zoneref->zone)
->  		goto nopage;
->  
-> +	/*
-> +	 * Check for insane configurations where the cpuset doesn't contain
-> +	 * any suitable zone to satisfy the request - e.g. non-movable
-> +	 * GFP_HIGHUSER allocations from MOVABLE nodes only.
-> +	 */
-> +	if (cpusets_insane_config() && (gfp_mask & __GFP_HARDWALL)) {
-> +		struct zoneref *z = first_zones_zonelist(ac->zonelist,
-> +					ac->highest_zoneidx,
-> +					&cpuset_current_mems_allowed);
-> +		if (!z->zone)
-> +			goto nopage;
-> +	}
-> +
->  	if (alloc_flags & ALLOC_KSWAPD)
->  		wake_all_kswapds(order, gfp_mask, ac);
->  
+-- 
+Cheers,
+Changbin Du
