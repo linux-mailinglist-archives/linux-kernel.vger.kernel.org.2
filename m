@@ -2,367 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282C140CC02
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72C840CC07
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231241AbhIORzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:55:21 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:35208 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230142AbhIORzR (ORCPT
+        id S230517AbhIOR4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:56:25 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:40553 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230142AbhIOR4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:55:17 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18FH454G011618;
-        Wed, 15 Sep 2021 17:53:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=FC3CDR+RmeesGimiizfM0qUR4bmRON7IwaqMVC/gjSw=;
- b=iSrIVOmNa+m+EQdv9g29+QKODZ1O9cl0dMaXotxlRHbg2CjoZ3Btw8rzhBBd+n79ClrB
- rGPzm1YeDKpHG6sCjKAjfUzzwEQ1qPSGHl+pfToTi02JY1amIQGAsuOrDrXQNFSpzbvn
- pDfj/Pobl8aG8Fc0CUqenUyP0IJWRchlenOnhb2PTssqjsaTZyUyL/778ka3qJML+COC
- XKXFEmxTOHrO/TyLf1+nKwPTjCTYWHJNdLhPAqyPGdIsVKkpLRTCGcotYdqW4D4/V1wf
- BwXOjnwpxy1tHKT5E0WU1NIl2blatL0t1XsEgpqonCNukgn8p0ApkZCk6jWV4d6gILGB ZQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=FC3CDR+RmeesGimiizfM0qUR4bmRON7IwaqMVC/gjSw=;
- b=irrXnZlKTBWMJaNXs0s43Bx/VrdCg24TIG7meI2OMAAXkuYhhaSIgOBBSnRN8YZM9zWr
- r/W7wvsVVpAnORyKDY8VLoBW/ehr8pzyUwdNd9gP4wc2qYwFtZs1AwBZqQH28CmfWnMS
- nmgVk8NcfFNyUYbwt2mYB+5PMXkMSj1GlJeZG2JHb/QK140Qff3VZe55NWg0JTrvfvEr
- Xc0vKQUjnG4BgT3J3K+fdYd4UUk8EDdWEpXV53s0AzH02AcbmFgizsyAusnX28wVE+4h
- 13DJ2FrUJ5L886p39hB589ALclZQx59YJMpVWf6hu0687D4gzuRSao16wCd/C+ez9NKz GA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b2pygdjjy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 17:53:46 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18FHkSNe160992;
-        Wed, 15 Sep 2021 17:53:43 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
-        by aserp3020.oracle.com with ESMTP id 3b0m986m2d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 17:53:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FaOrk7zwq/cDvPA8f3xunohQVdK2G/FBP8FDxmld6xPLzOHf7AaJg+ax80ZF/lNSTMG+ZPF7LYimfjT9T4K7KEuQMhdqmt95UXZ/tYLX5p5Thn9A3QiAfCmJkCcZGwhQuYVi2N/m3kOt6DbbissAk+MkChIcMTvNgYJaTCwhuuyu7hc+1nBtrbn9Nb13zbE2EfxjV2lKgf5cR1ssWGSy987ZZi/QMUHgWiAKC2F/e707oYuGGlJ5WcgoZc0f1HtZ7RjsMXk2QMCwi3WG2cTYfGmhFPhrbCSMqYmNgmUw7heQ+mEikEKaYq5XTV27Bb2o6eENymq9yllC0BIqQoRzDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=FC3CDR+RmeesGimiizfM0qUR4bmRON7IwaqMVC/gjSw=;
- b=jUnF5hkpAUaeU2vVU9aWDNrgtnztBlDfmaVn7315H+w81JCvpTm5kXnOgW3P1zm7070w81jGYhy5loIXAy3uYnefi3nZgw2lbo0IsEqMngXr6Nxm7h23mszjOFVRwXSApJHk0p9Xu4tKGMa2EyPoHNNxgVvi6JMOYn9dn9DH782Yxtg2RHTPTZT3EsKRtYIoYOAxR1SiCDd6Ab6Ga5RyKQTM+Qfh7uhKgmoS3ar36wTAn95OUeyOS9AMbJ4tKMKPnMeklgO5U1tLKMI6+OVmFJIE/pa+V5vNtv3cbH8sQuY3xbC/n6j5niCqmv9RDs6cGiqiHX2nKQverNlOpjVhiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FC3CDR+RmeesGimiizfM0qUR4bmRON7IwaqMVC/gjSw=;
- b=eUx0hfc2ZzEeBtlPxq2EZVRKa2PPTSmMQORFzNmbmFH/TLoDVrj46qEVjuUbsMrwThPUxmEkUGH7SlC71CUgepAsmpu6qMT8DlbEUqOHBxSdjju4bi3zRZdn/t4hhYGvxol3608vvJHgKzjKjZbZQkzlIVEyTs6KxBY0HMLyNN0=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4468.namprd10.prod.outlook.com (2603:10b6:303:6c::24)
- by MWHPR10MB1568.namprd10.prod.outlook.com (2603:10b6:300:26::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
- 2021 17:53:41 +0000
-Received: from CO1PR10MB4468.namprd10.prod.outlook.com
- ([fe80::f091:1dd2:38a8:e986]) by CO1PR10MB4468.namprd10.prod.outlook.com
- ([fe80::f091:1dd2:38a8:e986%6]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
- 17:53:41 +0000
-From:   Imran Khan <imran.f.khan@oracle.com>
-To:     vbabka@suse.cz, geert@linux-m68k.org, akpm@linux-foundation.org,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org
-Subject: [PATCH RESEND v2 3/3] lib, stackdepot: Add helper to print stack entries into buffer.
-Date:   Thu, 16 Sep 2021 03:53:21 +1000
-Message-Id: <20210915175321.3472770-4-imran.f.khan@oracle.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210915175321.3472770-1-imran.f.khan@oracle.com>
-References: <20210915175321.3472770-1-imran.f.khan@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SY6PR01CA0105.ausprd01.prod.outlook.com
- (2603:10c6:10:111::20) To CO1PR10MB4468.namprd10.prod.outlook.com
- (2603:10b6:303:6c::24)
+        Wed, 15 Sep 2021 13:56:24 -0400
+Received: by mail-wr1-f41.google.com with SMTP id q26so5187076wrc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:55:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=EmDG0wBX8eiDSOx5X4lVDdCTChXbSWXuxhuaSYB5sX8=;
+        b=ZCeO49vMdCp9REMU4Gr5z/kpeGwxk6ONawDL7gVs2YybVWsqVeHcpexRg3sE9C1rzS
+         +18by3ZINwvPR8ze5VdTsZ3hFbjDItFJnc/FBZZIYBlHdEDivsELJqk3p0WdkuGbdpJv
+         YeGOh4iINWkZEKHdeBVO5t1gDp7x90IsM1C1xCe6Etag3ljdnSzIaKxZQP8poxAvmZ6u
+         pCUzxsAdarXGVhLZDHlCfcz2LPg9nj1D+UmzANIifSiwkuYYGVlJ6bCfZUwXJHeWS6+c
+         5jjtXGQd3ABfdAmX53J7ManbdpUG7ppNpwgdyoLuIqfRoIvv59fIPIkSikE/DIPmeghD
+         S2oA==
+X-Gm-Message-State: AOAM530p23Zfh2FxrLFOnxZmNwXnKK2Ves6OXLD6oPgn0GujCfNPjSmo
+        iEC/iXBEsQqxJh/k3c5YmXr1LciUTjAEO8FY
+X-Google-Smtp-Source: ABdhPJxEHL5qn1sYpNbENbccZFQQ7lHF7hLtIMCMwyOh/EB7aIVnB4n2WCLxfWw0Ag7/DrILCyaoXg==
+X-Received: by 2002:adf:ee49:: with SMTP id w9mr1433829wro.158.1631728504173;
+        Wed, 15 Sep 2021 10:55:04 -0700 (PDT)
+Received: from fedora.tometzki.de (p200300e68f0105009e5bc999bd8eb7e0.dip0.t-ipconnect.de. [2003:e6:8f01:500:9e5b:c999:bd8e:b7e0])
+        by smtp.gmail.com with ESMTPSA id c9sm732906wrf.77.2021.09.15.10.55.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 10:55:03 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 19:55:01 +0200
+From:   Damian Tometzki <dtometzki@fedoraproject.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <YUIzdTyFBITDIPnj@fedora.tometzki.de>
+Reply-To: Damian Tometzki <dtometzki@fedoraproject.org>
+Mail-Followup-To: Johannes Weiner <hannes@cmpxchg.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUIT2/xXwvZ4IErc@cmpxchg.org>
 MIME-Version: 1.0
-Received: from localhost.localdomain (110.33.47.182) by SY6PR01CA0105.ausprd01.prod.outlook.com (2603:10c6:10:111::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 17:53:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0857f70c-1259-42e7-cb43-08d97871c0ef
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1568:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB15682399349A5C5DB5F32CE9B0DB9@MWHPR10MB1568.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m0dJnxuV61BVEE2rRoIqmNBuJBPY7+YvLaf57jujpTvQJfcdGKtoaIJgy80E5Y6gpvnrGAvfx/3xdWO+5LnmSZbnUPKKUvDPrwv2Zcc2tYXDvv3SZIK6FKBYlPfrCLdMqGoiCCBms10aN90bfyFRSu1Ytte5gNSmPeLYYryDfoDtUAAgJuVrD4Ur0GfqRvTwUQ+HwQrtuWmhO5NhR7q6ALJDgJDzXSZugychmjUU9GykPc6TTmgVA4fnJZw+y0TYZmj561w6XjOh8Gz0uqLZJ+EzevXK2n3gXXtisfsxJZpz9SFcHCjV9RciHqsLcF0wCTZt9siGdD+IuFe6/LIxr/9ImS7DNoB2qYUz1ADhUx497AnKSToH46TJSXMtufGygQw69GrHsgAamAc2r5m15UXVwXHkL0XvLs0f35jMqgSK+a8oACDjjg+OGHZcF1BUxG0ak1sjKqxwaNDw9vLsdUOG9BH0/jsxaTEwU6wsu6VrsYSYJy+ct2sC8K/kNy0tmLPQrsOZXnT1/dZ6DsjShIRSGVusDUggMMc0b7Aa2e9b03ua34YS21nFKjSGYXK5rYOp0HcQS8Q30b4ptSNSbsM+4gruBfdQt0NNWn66YEdXN+EVdgBNhaUb1nFkWho6yQVQj1AOpY9OFX3IFqsVIu8EGO31SYYIuS8XggcovgJhA62/so6c8jaO5J1pmwitH0OeHtdnPBfXnXHL7m0kMRLm5pfbmKvWVei3ijM70ww=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4468.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(396003)(366004)(346002)(6486002)(66556008)(66946007)(2906002)(6666004)(921005)(66476007)(38100700002)(8936002)(6506007)(38350700002)(83380400001)(7416002)(956004)(2616005)(8676002)(26005)(186003)(52116002)(103116003)(36756003)(316002)(86362001)(1076003)(5660300002)(478600001)(6512007)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2inWXrnL2Fa9yhkTcZkzc+kdR4Mnumn0htgy+wn1DbSvpH+QVLloqxEIVYTu?=
- =?us-ascii?Q?LrUjTNftCAhDSFhqxAtd5tY1H/7C8etqORNNSQx9dgn8k7xjKX4MUqe574hO?=
- =?us-ascii?Q?p0LycYq+hw24M/bJi20SO5UFWtLBUkGo657JyrBqQZx/WgfGCEGGxjd33uVN?=
- =?us-ascii?Q?46SwZsi2RYj/4ICFdbxIRDCegK/GJBKdzyI2dJf3R7Te1ibuYiRvUknYx/K0?=
- =?us-ascii?Q?bJgV6T8OIjD9u2Sed4klMJ1xo7spmW/n6XM/t0uli06fJxK2LtGVnEwbYU58?=
- =?us-ascii?Q?0ktcFrPRen+gdlMOA9jhbBeW8OowiLkxqzzfLLLIhIjYzJza4I2CvVD+UCG0?=
- =?us-ascii?Q?Rnoi+gNvkfKzeCY065geLo/I2hgSuViCr1HpHgoOxOOx0Xjlt80p7/OLAysZ?=
- =?us-ascii?Q?+v33+GwVfI4fHd41Zc2nIPCg+nDMyTKr2r//5wsRoEAQoSGk4cuxfw1THymu?=
- =?us-ascii?Q?h8WJHbLkBUhLDox34521cqBrhMMd3iWi9+7XyBwyq2g+xfaYOBlKjY5Sa+iO?=
- =?us-ascii?Q?3v/NPgFxMP7yrrE0fe7iOAwhZfPEoVJVUIsmMCpypVGy34tfRMwxOcDhd6Us?=
- =?us-ascii?Q?pq4367nerhBMHnSZek8zji7uGBlAx8hHmqBiY/pthALhJs941diPTY5YIApE?=
- =?us-ascii?Q?9K25r8LzDGo6XNMmK1t8cHLgMs2MRQIdBaCs3i4yE7c6khg6yM4yDZGPu5yM?=
- =?us-ascii?Q?u19gRsBe6DZV5JvLisBg2PmXIpqiyvcqWjcEapKY+qvTvZBhXGrxfW7AWyf9?=
- =?us-ascii?Q?Szucl0l4684i6d4DIQ83qG96unug6eCg/C+hEdJXoZ9gkTdaaB2mA5L47fiF?=
- =?us-ascii?Q?PdlxXDl/KwV0C1CVQugubEAoLNMlNXXB/tZaal7e1MalqRXCmJAbebhcpruE?=
- =?us-ascii?Q?L5fuq0hXNLcTc5XDqVqhss/8beqgeROf0FAntodLdfaRedEuXHKShmK+8cfW?=
- =?us-ascii?Q?mwGhJaTm9noptPhNTJvcvrOWwaug9Vs+5YMeAjQBO93xS+dGHx3AO8kngqQG?=
- =?us-ascii?Q?El5rskDeQQNyHhWP7Xcn7JX7rjYMo8cvhjIfEEj+rGSaLQLzph/UQ4n/Qh4X?=
- =?us-ascii?Q?z4DbYH+XvNPv+lOr2Pz1UvfJTrrLMOHDIrFyJz/VVDeG4aRgWUXvIwLfXprz?=
- =?us-ascii?Q?JOYwnBsZMDb9Z6XdXRW2uzlLVtPos+zIm1ocur9B+AKgQGMMI98BmMM+JOvI?=
- =?us-ascii?Q?9MvoWJZcX5iloB+l9kGj9ToduRb4os2kBLWM5nsBK0NkZImaKxHZx71JEDFX?=
- =?us-ascii?Q?tbrVp5+IwU8l3almenbKG+2FdssAVCJgydBh+vDKpVAbiqPP4T0JiR4zUpQB?=
- =?us-ascii?Q?K+SXh23EdfnyFYwxo9jn9BJ/?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0857f70c-1259-42e7-cb43-08d97871c0ef
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4468.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 17:53:41.4687
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tF56ntTIcEKI0DzAcVmQ5ZmFPikH/MxO5BlMb7/XhEBkbKxLLv+KF4QssGvZfn9GdrdPSv3nK0IeYp63lcekAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1568
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10108 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109150105
-X-Proofpoint-GUID: UW8Padu6tX-5JHoxAtdUDZVa37uy40LA
-X-Proofpoint-ORIG-GUID: UW8Padu6tX-5JHoxAtdUDZVa37uy40LA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUIT2/xXwvZ4IErc@cmpxchg.org>
+User-Agent: Mutt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To print stack entries into a buffer, users of stackdepot,
-first get a list of stack entries using stack_depot_fetch
-and then print this list into a buffer using stack_trace_snprint.
-Provide a helper in stackdepot for this purpose.
-Also change above mentioned users to use this helper.
+Hello together,
 
-Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+I am an outsider and  following the discussion here on the subject. 
+Can we not go upsream with the state of development ? 
+Optimizations will always be there and new kernel releases too.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
- drivers/gpu/drm/drm_dp_mst_topology.c   |  5 +----
- drivers/gpu/drm/drm_mm.c                |  5 +----
- drivers/gpu/drm/i915/i915_vma.c         |  5 +----
- drivers/gpu/drm/i915/intel_runtime_pm.c | 20 +++++---------------
- include/linux/stackdepot.h              |  3 +++
- lib/stackdepot.c                        | 24 ++++++++++++++++++++++++
- mm/page_owner.c                         |  5 +----
- 7 files changed, 36 insertions(+), 31 deletions(-)
+I can not assess the risk but I think a decision must be made. 
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 86d13d6bc463..2d1adab9e360 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -1668,13 +1668,10 @@ __dump_topology_ref_history(struct drm_dp_mst_topology_ref_history *history,
- 	for (i = 0; i < history->len; i++) {
- 		const struct drm_dp_mst_topology_ref_entry *entry =
- 			&history->entries[i];
--		ulong *entries;
--		uint nr_entries;
- 		u64 ts_nsec = entry->ts_nsec;
- 		u32 rem_nsec = do_div(ts_nsec, 1000000000);
+Damian
  
--		nr_entries = stack_depot_fetch(entry->backtrace, &entries);
--		stack_trace_snprint(buf, PAGE_SIZE, entries, nr_entries, 4);
-+		stack_depot_snprint(entry->backtrace, buf, PAGE_SIZE, 4);
- 
- 		drm_printf(&p, "  %d %ss (last at %5llu.%06u):\n%s",
- 			   entry->count,
-diff --git a/drivers/gpu/drm/drm_mm.c b/drivers/gpu/drm/drm_mm.c
-index 93d48a6f04ab..ca04d7f6f7b5 100644
---- a/drivers/gpu/drm/drm_mm.c
-+++ b/drivers/gpu/drm/drm_mm.c
-@@ -118,8 +118,6 @@ static noinline void save_stack(struct drm_mm_node *node)
- static void show_leaks(struct drm_mm *mm)
- {
- 	struct drm_mm_node *node;
--	unsigned long *entries;
--	unsigned int nr_entries;
- 	char *buf;
- 
- 	buf = kmalloc(BUFSZ, GFP_KERNEL);
-@@ -133,8 +131,7 @@ static void show_leaks(struct drm_mm *mm)
- 			continue;
- 		}
- 
--		nr_entries = stack_depot_fetch(node->stack, &entries);
--		stack_trace_snprint(buf, BUFSZ, entries, nr_entries, 0);
-+		stack_depot_snprint(node->stack, buf, BUFSZ, 0);
- 		DRM_ERROR("node [%08llx + %08llx]: inserted at\n%s",
- 			  node->start, node->size, buf);
- 	}
-diff --git a/drivers/gpu/drm/i915/i915_vma.c b/drivers/gpu/drm/i915/i915_vma.c
-index 4b7fc4647e46..f2d9ed375109 100644
---- a/drivers/gpu/drm/i915/i915_vma.c
-+++ b/drivers/gpu/drm/i915/i915_vma.c
-@@ -56,8 +56,6 @@ void i915_vma_free(struct i915_vma *vma)
- 
- static void vma_print_allocator(struct i915_vma *vma, const char *reason)
- {
--	unsigned long *entries;
--	unsigned int nr_entries;
- 	char buf[512];
- 
- 	if (!vma->node.stack) {
-@@ -66,8 +64,7 @@ static void vma_print_allocator(struct i915_vma *vma, const char *reason)
- 		return;
- 	}
- 
--	nr_entries = stack_depot_fetch(vma->node.stack, &entries);
--	stack_trace_snprint(buf, sizeof(buf), entries, nr_entries, 0);
-+	stack_depot_snprint(vma->node.stack, buf, sizeof(buf), 0);
- 	DRM_DEBUG_DRIVER("vma.node [%08llx + %08llx] %s: inserted at %s\n",
- 			 vma->node.start, vma->node.size, reason, buf);
- }
-diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
-index eaf7688f517d..cc312f0a05eb 100644
---- a/drivers/gpu/drm/i915/intel_runtime_pm.c
-+++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
-@@ -65,16 +65,6 @@ static noinline depot_stack_handle_t __save_depot_stack(void)
- 	return stack_depot_save(entries, n, GFP_NOWAIT | __GFP_NOWARN);
- }
- 
--static void __print_depot_stack(depot_stack_handle_t stack,
--				char *buf, int sz, int indent)
--{
--	unsigned long *entries;
--	unsigned int nr_entries;
--
--	nr_entries = stack_depot_fetch(stack, &entries);
--	stack_trace_snprint(buf, sz, entries, nr_entries, indent);
--}
--
- static void init_intel_runtime_pm_wakeref(struct intel_runtime_pm *rpm)
- {
- 	spin_lock_init(&rpm->debug.lock);
-@@ -146,12 +136,12 @@ static void untrack_intel_runtime_pm_wakeref(struct intel_runtime_pm *rpm,
- 		if (!buf)
- 			return;
- 
--		__print_depot_stack(stack, buf, PAGE_SIZE, 2);
-+		stack_depot_snprint(stack, buf, PAGE_SIZE, 2);
- 		DRM_DEBUG_DRIVER("wakeref %x from\n%s", stack, buf);
- 
- 		stack = READ_ONCE(rpm->debug.last_release);
- 		if (stack) {
--			__print_depot_stack(stack, buf, PAGE_SIZE, 2);
-+			stack_depot_snprint(stack, buf, PAGE_SIZE, 2);
- 			DRM_DEBUG_DRIVER("wakeref last released at\n%s", buf);
- 		}
- 
-@@ -183,12 +173,12 @@ __print_intel_runtime_pm_wakeref(struct drm_printer *p,
- 		return;
- 
- 	if (dbg->last_acquire) {
--		__print_depot_stack(dbg->last_acquire, buf, PAGE_SIZE, 2);
-+		stack_depot_snprint(dbg->last_acquire, buf, PAGE_SIZE, 2);
- 		drm_printf(p, "Wakeref last acquired:\n%s", buf);
- 	}
- 
- 	if (dbg->last_release) {
--		__print_depot_stack(dbg->last_release, buf, PAGE_SIZE, 2);
-+		stack_depot_snprint(dbg->last_release, buf, PAGE_SIZE, 2);
- 		drm_printf(p, "Wakeref last released:\n%s", buf);
- 	}
- 
-@@ -203,7 +193,7 @@ __print_intel_runtime_pm_wakeref(struct drm_printer *p,
- 		rep = 1;
- 		while (i + 1 < dbg->count && dbg->owners[i + 1] == stack)
- 			rep++, i++;
--		__print_depot_stack(stack, buf, PAGE_SIZE, 2);
-+		stack_depot_snprint(stack, buf, PAGE_SIZE, 2);
- 		drm_printf(p, "Wakeref x%lu taken at:\n%s", rep, buf);
- 	}
- 
-diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-index d77a30543dd4..88b0b4cc9906 100644
---- a/include/linux/stackdepot.h
-+++ b/include/linux/stackdepot.h
-@@ -19,6 +19,9 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 			       unsigned long **entries);
- 
-+int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
-+		       int spaces);
-+
- void stack_depot_print(depot_stack_handle_t stack);
- 
- unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 354fe1b62017..caca95e6660e 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -214,6 +214,30 @@ static inline struct stack_record *find_stack(struct stack_record *bucket,
- 	return NULL;
- }
- 
-+/**
-+ * stack_depot_snprint - print stack entries from a depot into a buffer
-+ *
-+ * @handle:	Stack depot handle which was returned from
-+ *		stack_depot_save().
-+ * @buf:	Pointer to the print buffer
-+ *
-+ * @size:	Size of the print buffer
-+ *
-+ * @spaces:	Number of leading spaces to print
-+ *
-+ * Return:	Number of bytes printed.
-+ */
-+int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
-+		       int spaces)
-+{
-+	unsigned long *entries;
-+	unsigned int nr_entries;
-+
-+	nr_entries = stack_depot_fetch(handle, &entries);
-+	return nr_entries ? stack_trace_snprint(buf, size, entries, nr_entries,
-+						spaces) : 0;
-+}
-+
- /**
-  * stack_depot_print - print stack entries from a depot
-  *
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 7918770c2b2b..a83f546c06b5 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -329,8 +329,6 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
- 		depot_stack_handle_t handle)
- {
- 	int ret, pageblock_mt, page_mt;
--	unsigned long *entries;
--	unsigned int nr_entries;
- 	char *kbuf;
- 
- 	count = min_t(size_t, count, PAGE_SIZE);
-@@ -361,8 +359,7 @@ print_page_owner(char __user *buf, size_t count, unsigned long pfn,
- 	if (ret >= count)
- 		goto err;
- 
--	nr_entries = stack_depot_fetch(handle, &entries);
--	ret += stack_trace_snprint(kbuf + ret, count - ret, entries, nr_entries, 0);
-+	ret += stack_depot_snprint(handle, kbuf + ret, count - ret, 0);
- 	if (ret >= count)
- 		goto err;
- 
--- 
-2.30.2
 
+On Wed, 15. Sep 11:40, Johannes Weiner wrote:
+> On Fri, Sep 10, 2021 at 04:16:28PM -0400, Kent Overstreet wrote:
+> > One particularly noteworthy idea was having struct page refer to
+> > multiple hardware pages, and using slab/slub for larger
+> > alloctions. In my view, the primary reason for making this change
+> > isn't the memory overhead to struct page (though reducing that would
+> > be nice);
+> 
+> Don't underestimate this, however.
+> 
+> Picture the near future Willy describes, where we don't bump struct
+> page size yet but serve most cache with compound huge pages.
+> 
+> On x86, it would mean that the average page cache entry has 512
+> mapping pointers, 512 index members, 512 private pointers, 1024 LRU
+> list pointers, 512 dirty flags, 512 writeback flags, 512 uptodate
+> flags, 512 memcg pointers etc. - you get the idea.
+> 
+> This is a ton of memory. I think this doesn't get more traction
+> because it's memory we've always allocated, and we're simply more
+> sensitive to regressions than long-standing pain. But nevertheless
+> this is a pretty low-hanging fruit.
+> 
+> The folio makes a great first step moving those into a separate data
+> structure, opening the door to one day realizing these savings. Even
+> when some MM folks say this was never the intent behind the patches, I
+> think this is going to matter significantly, if not more so, later on.
+> 
+> > Fortunately, Matthew made a big step in the right direction by making folios a
+> > new type. Right now, struct folio is not separately allocated - it's just
+> > unionized/overlayed with struct page - but perhaps in the future they could be
+> > separately allocated. I don't think that is a remotely realistic goal for _this_
+> > patch series given the amount of code that touches struct page (thing: writeback
+> > code, LRU list code, page fault handlers!) - but I think that's a goal we could
+> > keep in mind going forward.
+> 
+> Yeah, agreed. Not doable out of the gate, but retaining the ability to
+> allocate the "cache entry descriptor" bits - mapping, index etc. -
+> on-demand would be a huge benefit down the road for the above reason.
+> 
+> For that they would have to be in - and stay in - their own type.
+> 
+> > We should also be clear on what _exactly_ folios are for, so they don't become
+> > the new dumping ground for everyone to stash their crap. They're to be a new
+> > core abstraction, and we should endeaver to keep our core data structures
+> > _small_, and _simple_.
+> 
+> Right. struct page is a lot of things and anything but simple and
+> obvious today. struct folio in its current state does a good job
+> separating some of that stuff out.
+> 
+> However, when we think about *which* of the struct page mess the folio
+> wants to address, I think that bias toward recent pain over much
+> bigger long-standing pain strikes again.
+> 
+> The compound page proliferation is new, and we're sensitive to the
+> ambiguity it created between head and tail pages. It's added some
+> compound_head() in lower-level accessor functions that are not
+> necessary for many contexts. The folio type safety will help clean
+> that up, and this is great.
+> 
+> However, there is a much bigger, systematic type ambiguity in the MM
+> world that we've just gotten used to over the years: anon vs file vs
+> shmem vs slab vs ...
+> 
+> - Many places rely on context to say "if we get here, it must be
+>   anon/file", and then unsafely access overloaded member elements:
+>   page->mapping, PG_readahead, PG_swapcache, PG_private
+> 
+> - On the other hand, we also have low-level accessor functions that
+>   disambiguate the type and impose checks on contexts that may or may
+>   not actually need them - not unlike compound_head() in PageActive():
+> 
+>   struct address_space *folio_mapping(struct folio *folio)
+>   {
+> 	struct address_space *mapping;
+> 
+> 	/* This happens if someone calls flush_dcache_page on slab page */
+> 	if (unlikely(folio_test_slab(folio)))
+> 		return NULL;
+> 
+> 	if (unlikely(folio_test_swapcache(folio)))
+> 		return swap_address_space(folio_swap_entry(folio));
+> 
+> 	mapping = folio->mapping;
+> 	if ((unsigned long)mapping & PAGE_MAPPING_ANON)
+> 		return NULL;
+> 
+> 	return (void *)((unsigned long)mapping & ~PAGE_MAPPING_FLAGS);
+>   }
+> 
+>   Then we go identify places that say "we know it's at least not a
+>   slab page!" and convert them to page_mapping_file() which IS safe to
+>   use with anon. Or we say "we know this MUST be a file page" and just
+>   access the (unsafe) mapping pointer directly.
+> 
+> - We have a singular page lock, but what it guards depends on what
+>   type of page we're dealing with. For a cache page it protects
+>   uptodate and the mapping. For an anon page it protects swap state.
+> 
+>   A lot of us can remember the rules if we try, but the code doesn't
+>   help and it gets really tricky when dealing with multiple types of
+>   pages simultaneously. Even mature code like reclaim just serializes
+>   the operation instead of protecting data - the writeback checks and
+>   the page table reference tests don't seem to need page lock.
+> 
+>   When the cgroup folks wrote the initial memory controller, they just
+>   added their own page-scope lock to protect page->memcg even though
+>   the page lock would have covered what it needed.
+> 
+> - shrink_page_list() uses page_mapping() in the first half of the
+>   function to tell whether the page is anon or file, but halfway
+>   through we do this:
+> 
+> 	  /* Adding to swap updated mapping */
+>           mapping = page_mapping(page);
+> 
+>   and then use PageAnon() to disambiguate the page type.
+> 
+> - At activate_locked:, we check PG_swapcache directly on the page and
+>   rely on it doing the right thing for anon, file, and shmem pages.
+>   But this flag is PG_owner_priv_1 and actually used by the filesystem
+>   for something else. I guess PG_checked pages currently don't make it
+>   this far in reclaim, or we'd crash somewhere in try_to_free_swap().
+> 
+>   I suppose we're also never calling page_mapping() on PageChecked
+>   filesystem pages right now, because it would return a swap mapping
+>   before testing whether this is a file page. You know, because shmem.
+> 
+> These are just a few examples from an MM perspective. I'm sure the FS
+> folks have their own stories and examples about pitfalls in dealing
+> with struct page members.
+> 
+> We're so used to this that we don't realize how much bigger and
+> pervasive this lack of typing is than the compound page thing.
+> 
+> I'm not saying the compound page mess isn't worth fixing. It is.
+> 
+> I'm saying if we started with a file page or cache entry abstraction
+> we'd solve not only the huge page cache, but also set us up for a MUCH
+> more comprehensive cleanup in MM code and MM/FS interaction that makes
+> the tailpage cleanup pale in comparison. For the same amount of churn,
+> since folio would also touch all of these places.
+> 
