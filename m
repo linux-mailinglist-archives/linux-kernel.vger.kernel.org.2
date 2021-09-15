@@ -2,282 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AD540C89A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EFA40C8A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238186AbhIOPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234300AbhIOPpP (ORCPT
+        id S238026AbhIOPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:46:26 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:30840 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234294AbhIOPqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:45:15 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7D1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:43:56 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id z18so6571879ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:43:56 -0700 (PDT)
+        Wed, 15 Sep 2021 11:46:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+zllIpuVAGmAbeMrve7uuc02zgQdxbgznRWdG0p/Vlc=;
-        b=ZAZuxJXAJ5cxf0F6FtP+ssvdc57gIx3msQdKGnZxbKQVp+fGb6Vxmn6VNL5duc328U
-         lvw218Itxy1sxNz8aw/HB2zQFgdiuYO3OiIpMPanpMnCAtD56yCXtDo6VMRy+XGmvHP2
-         bOtiSnjsHqFEGb2npS8n4dj6OGOYRRu/YghzJBN5R0XOrcxgueBWQvCT3tWxm+pR+yYo
-         FkITQ5t4fC5/PLuPi2Bifi0gJ8t9PyfhLdOXHCD/KpFJP8/IX/KJSpBq78J+iBLv0L7I
-         GmWvU1T/Ow5mu0LQYezOKVQ+3uWzv++Z3EdXg50LSNsWRSmQJI9mmV82AagxsmjXsXEG
-         dlgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+zllIpuVAGmAbeMrve7uuc02zgQdxbgznRWdG0p/Vlc=;
-        b=JRDMo2OCxcyo7Du1LK8rOhR2SWK1nZYnvqC3MtAxPC+Nx9xYw1Mr+bCFfe/35/545w
-         TnqCWfkUF6TmqJwQaCsljuyM9sOLDRjikqFsOM+gFDBeqGI3A6m9Wp8MR9Hngzlr4N/M
-         1ALccy/D1B7St3QX016RcW3IVqLbJHv/Oqbr162qk/eNBMxboOdrTe4JN84ZHGGPV1uh
-         bWe3+r4tOvS+8k3ic5nrFIXoYCv++wuwMNn90aMZGKBInN4Sv2xQ+c/XsFzMiYnn2Q7h
-         lIFO0+WqPz0h+LOW9wYErpZ3nkn76gm3FNMX3r4nUDyUo0f3wlFA9acGLwVjldOzACbn
-         Tczg==
-X-Gm-Message-State: AOAM530hGdXoDWgjH2SKat4gZdLZmBxtS6pD5Fxv+BxhoGcdmJ/2c7rA
-        7OJJTTcKC92sbO14IV4tgpVwchxyWgjZKhPr+bS5iw==
-X-Google-Smtp-Source: ABdhPJw6olnnrMatZGUndrCITNb7Ep0SMFLTn9Dkk5hzjfUx45EVmn4Kb1uVMc6th3nRplyLaaLnFVPw3vD6sXH+zA8=
-X-Received: by 2002:a25:2d4c:: with SMTP id s12mr775510ybe.350.1631720635396;
- Wed, 15 Sep 2021 08:43:55 -0700 (PDT)
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1631720706; x=1663256706;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=viMjeoV7tPseMYelykhO0DlocEjVAxRUKVeHJAZT68U=;
+  b=JGTurBpopqYsAuUxf9By4nGTyRPpD7XV/1aAHrUI1IFUfrqJ2udg0Lfm
+   97tb8N4KtB/yXLsnEebJQSsDl9AYawKcIcTbXevBk8mdFD33OirAzQlDg
+   oz/Lv6dDMkK/cQpkf8xloLo0Hizr+sf376Vjd/H+1INJUxOi5VlFkFizn
+   0=;
+X-IronPort-AV: E=Sophos;i="5.85,295,1624320000"; 
+   d="scan'208";a="141985187"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 15 Sep 2021 15:44:56 +0000
+Received: from EX13D39EUC004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 824CBA1FB1;
+        Wed, 15 Sep 2021 15:44:45 +0000 (UTC)
+Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
+ EX13D39EUC004.ant.amazon.com (10.43.164.239) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Wed, 15 Sep 2021 15:44:44 +0000
+Received: from dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com (10.13.225.27)
+ by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Wed, 15 Sep 2021 15:44:42 +0000
+Received: by dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com (Postfix, from userid 14141144)
+        id 3C07F2E22; Wed, 15 Sep 2021 15:44:41 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 15:44:41 +0000
+From:   Anel Orazgaliyeva <anelkz@amazon.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     Aman Priyadarshi <apeureka@amazon.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpuidle: Fix memory leaks
+Message-ID: <20210915154440.GA34487@dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com>
+References: <20210906183440.85710-1-anelkz@amazon.de>
+ <CAJZ5v0ghTGx_1Y5R07pJ9CkTxrMjs=nj2UefeJn6Yh5ud2uP2A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210911011819.12184-1-ricardo.neri-calderon@linux.intel.com> <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
-In-Reply-To: <20210911011819.12184-7-ricardo.neri-calderon@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 15 Sep 2021 17:43:44 +0200
-Message-ID: <CAKfTPtBcDP3Yp54sd4+1kP=o=4e_1HEmOf=eMXydag_J38CEng@mail.gmail.com>
-Subject: Re: [PATCH v5 6/6] sched/fair: Consider SMT in ASYM_PACKING load balance
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0ghTGx_1Y5R07pJ9CkTxrMjs=nj2UefeJn6Yh5ud2uP2A@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Sept 2021 at 03:19, Ricardo Neri
-<ricardo.neri-calderon@linux.intel.com> wrote:
->
-> When deciding to pull tasks in ASYM_PACKING, it is necessary not only to
-> check for the idle state of the destination CPU, dst_cpu, but also of
-> its SMT siblings.
->
-> If dst_cpu is idle but its SMT siblings are busy, performance suffers
-> if it pulls tasks from a medium priority CPU that does not have SMT
-> siblings.
->
-> Implement asym_smt_can_pull_tasks() to inspect the state of the SMT
-> siblings of both dst_cpu and the CPUs in the candidate busiest group.
->
-> Cc: Aubrey Li <aubrey.li@intel.com>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> ---
-> Changes since v4:
->   * Use sg_lb_stats::sum_nr_running the idle state of a scheduling group.
->     (Vincent, Peter)
->   * Do not even idle CPUs in asym_smt_can_pull_tasks(). (Vincent)
->   * Updated function documentation and corrected a typo.
->
-> Changes since v3:
->   * Removed the arch_asym_check_smt_siblings() hook. Discussions with the
->     powerpc folks showed that this patch should not impact them. Also, more
->     recent powerpc processor no longer use asym_packing. (PeterZ)
->   * Removed unnecessary local variable in asym_can_pull_tasks(). (Dietmar)
->   * Removed unnecessary check for local CPUs when the local group has zero
->     utilization. (Joel)
->   * Renamed asym_can_pull_tasks() as asym_smt_can_pull_tasks() to reflect
->     the fact that it deals with SMT cases.
->   * Made asym_smt_can_pull_tasks() return false for !CONFIG_SCHED_SMT so
->     that callers can deal with non-SMT cases.
->
-> Changes since v2:
->   * Reworded the commit message to reflect updates in code.
->   * Corrected misrepresentation of dst_cpu as the CPU doing the load
->     balancing. (PeterZ)
->   * Removed call to arch_asym_check_smt_siblings() as it is now called in
->     sched_asym().
->
-> Changes since v1:
->   * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
->     tasks. Instead, reclassify the candidate busiest group, as it
->     may still be selected. (PeterZ)
->   * Avoid an expensive and unnecessary call to cpumask_weight() when
->     determining if a sched_group is comprised of SMT siblings.
->     (PeterZ).
-> ---
->  kernel/sched/fair.c | 94 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 94 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 26db017c14a3..8d763dd0174b 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8597,10 +8597,98 @@ group_type group_classify(unsigned int imbalance_pct,
->         return group_has_spare;
->  }
->
-> +/**
-> + * asym_smt_can_pull_tasks - Check whether the load balancing CPU can pull tasks
-> + * @dst_cpu:   Destination CPU of the load balancing
-> + * @sds:       Load-balancing data with statistics of the local group
-> + * @sgs:       Load-balancing statistics of the candidate busiest group
-> + * @sg:                The candidate busiest group
-> + *
-> + * Check the state of the SMT siblings of both @sds::local and @sg and decide
-> + * if @dst_cpu can pull tasks.
-> + *
-> + * If @dst_cpu does not have SMT siblings, it can pull tasks if two or more of
-> + * the SMT siblings of @sg are busy. If only one CPU in @sg is busy, pull tasks
-> + * only if @dst_cpu has higher priority.
-> + *
-> + * If both @dst_cpu and @sg have SMT siblings, and @sg has exactly one more
-> + * busy CPU than @sds::local, let @dst_cpu pull tasks if it has higher priority.
-> + * Bigger imbalances in the number of busy CPUs will be dealt with in
-> + * update_sd_pick_busiest().
-> + *
-> + * If @sg does not have SMT siblings, only pull tasks if all of the SMT siblings
-> + * of @dst_cpu are idle and @sg has lower priority.
-> + */
-> +static bool asym_smt_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
-> +                                   struct sg_lb_stats *sgs,
-> +                                   struct sched_group *sg)
-> +{
-> +#ifdef CONFIG_SCHED_SMT
-> +       bool local_is_smt, sg_is_smt;
-> +       int sg_busy_cpus;
-> +
-> +       local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
-> +       sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
-> +
-> +       sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
-> +
-> +       if (!local_is_smt) {
-> +               /*
-> +                * If we are here, @dst_cpu is idle and does not have SMT
-> +                * siblings. Pull tasks if candidate group has two or more
-> +                * busy CPUs.
-> +                */
-> +               if (sg_is_smt && sg_busy_cpus >= 2)
+PiBPbiBXZWQsIFNlcCAxNSwgMjAyMSBhdCAwMjoxNDo1NlBNICswMjAwLCBSYWZhZWwgSi4gV3lz
+b2NraSB3cm90ZToKPiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRl
+IG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1l
+bnRzIHVubGVzcyB5b3UgY2FuIGNvbmZpcm0gdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVu
+dCBpcyBzYWZlLgo+IAo+IAo+IAo+IE9uIE1vbiwgU2VwIDYsIDIwMjEgYXQgODozNSBQTSBBbmVs
+IE9yYXpnYWxpeWV2YSA8YW5lbGt6QGFtYXpvbi5kZT4gd3JvdGU6Cj4gPgo+ID4gQ29tbWl0IGMz
+NDNiZjFiYTVlZiAoImNwdWlkbGU6IEZpeCB0aHJlZSByZWZlcmVuY2UgY291bnQgbGVha3MiKQo+
+ID4gZml4ZXMgdGhlIGNsZWFudXAgb2Yga29iamVjdHM7IGhvd2V2ZXIsIGl0IHJlbW92ZXMga2Zy
+ZWUoKSBjYWxscwo+ID4gYWx0b2dldGhlciwgbGVhZGluZyB0byBtZW1vcnkgbGVha3MuCj4gCj4g
+V2FpdCwgd29uJ3QgdGhlIGNsZWFudXAgYmUgZG9uZSBieSBjcHVpZGxlX2ZyZWVfc3RhdGVfa29i
+aigpPwoKRm9yIHN0YXRlIGNsZWFudXAsIGNwdWlkbGVfZnJlZV9zdGF0ZV9rb2JqKCkgaXMgY2Fs
+bGVkIG9uIHRoZSBhbGwgdGhlIHByZXZpb3VzbHkgY3JlYXRlZCBrb2JqczoKCmVycm9yX3N0YXRl
+OgogICAgICAgIGZvciAoaSA9IGkgLSAxOyBpID49IDA7IGktLSkKICAgICAgICAgICAgICAgIGNw
+dWlkbGVfZnJlZV9zdGF0ZV9rb2JqKGRldmljZSwgaSk7CgpzbyB3ZSBzdGlsbCBuZWVkIHRvIGNs
+ZWFudXAgdGhlIGtvYmogY3JlYXRlZCBpbiB0aGUgY3VycmVudCBpdGVyYXRpb24uCgoKRm9yIG92
+ZXJhbGwgc3lzZnMsIHRoZSBmbG93IGlzIGFzIGZvbGxvd3M6CgpjcHVpZGxlX3JlZ2lzdGVyX2Rl
+dmljZQogICAgIHJldCA9IGNwdWlkbGVfYWRkX3N5c2ZzKGRldik7CiAgICBpZiAocmV0KQogICAg
+ICAgIGdvdG8gb3V0X3VucmVnaXN0ZXI7CgpvdXRfdW5yZWdpc3RlcjoKICAgIF9fY3B1aWRsZV91
+bnJlZ2lzdGVyX2RldmljZShkZXYpOwogICBnb3RvIG91dF91bmxvY2s7CgpzbyB3aGVuIHRoZXJl
+IGlzIGFuIGVycm9yIGluIGNwdWlkbGVfYWRkX3N5c2ZzKCkgZGV2IGRvZXNu4oCZdCBnZXQgZnJl
+ZWQuCgo+IAo+ID4gRml4IHRob3NlIGFuZCBhbHNvIGRlZmVyIHRoZSBpbml0aWFsaXphdGlvbiBv
+ZiBkZXYtPmtvYmpfZGV2IHVudGlsCj4gPiBhZnRlciB0aGUgZXJyb3IgY2hlY2ssIHNvIHRoYXQg
+d2UgZG8gbm90IGVuZCB1cCB3aXRoIGEgZGFuZ2xpbmcKPiA+IHBvaW50ZXIuCj4gPgo+ID4gU2ln
+bmVkLW9mZi1ieTogQW5lbCBPcmF6Z2FsaXlldmEgPGFuZWxrekBhbWF6b24uZGU+Cj4gPiBTdWdn
+ZXN0ZWQtYnk6IEFtYW4gUHJpeWFkYXJzaGkgPGFwZXVyZWthQGFtYXpvbi5kZT4KPiA+IC0tLQo+
+ID4gIGRyaXZlcnMvY3B1aWRsZS9zeXNmcy5jIHwgNSArKysrLQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9jcHVpZGxlL3N5c2ZzLmMgYi9kcml2ZXJzL2NwdWlkbGUvc3lzZnMuYwo+ID4gaW5kZXgg
+NTNlYzk1ODVjY2Q0Li40NjllMTg1NDdkMDYgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2NwdWlk
+bGUvc3lzZnMuYwo+ID4gKysrIGIvZHJpdmVycy9jcHVpZGxlL3N5c2ZzLmMKPiA+IEBAIC00ODgs
+NiArNDg4LDcgQEAgc3RhdGljIGludCBjcHVpZGxlX2FkZF9zdGF0ZV9zeXNmcyhzdHJ1Y3QgY3B1
+aWRsZV9kZXZpY2UgKmRldmljZSkKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAma2Rldi0+a29iaiwgInN0YXRlJWQiLCBpKTsKPiA+ICAgICAgICAgICAgICAg
+ICBpZiAocmV0KSB7Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBrb2JqZWN0X3B1dCgma29i
+ai0+a29iaik7Cj4gPiArICAgICAgICAgICAgICAgICAgICAgICBrZnJlZShrb2JqKTsKPiA+ICAg
+ICAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJyb3Jfc3RhdGU7Cj4gPiAgICAgICAgICAgICAg
+ICAgfQo+ID4gICAgICAgICAgICAgICAgIGNwdWlkbGVfYWRkX3MyaWRsZV9hdHRyX2dyb3VwKGtv
+YmopOwo+ID4gQEAgLTYxOSw2ICs2MjAsNyBAQCBzdGF0aWMgaW50IGNwdWlkbGVfYWRkX2RyaXZl
+cl9zeXNmcyhzdHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRldikKPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgJmtkZXYtPmtvYmosICJkcml2ZXIiKTsKPiA+ICAgICAgICAgaWYg
+KHJldCkgewo+ID4gICAgICAgICAgICAgICAgIGtvYmplY3RfcHV0KCZrZHJ2LT5rb2JqKTsKPiA+
+ICsgICAgICAgICAgICAgICBrZnJlZShrZHJ2KTsKPiA+ICAgICAgICAgICAgICAgICByZXR1cm4g
+cmV0Owo+ID4gICAgICAgICB9Cj4gPgo+ID4gQEAgLTcwNSw3ICs3MDcsNiBAQCBpbnQgY3B1aWRs
+ZV9hZGRfc3lzZnMoc3RydWN0IGNwdWlkbGVfZGV2aWNlICpkZXYpCj4gPiAgICAgICAgIGlmICgh
+a2RldikKPiA+ICAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsKPiA+ICAgICAgICAga2Rl
+di0+ZGV2ID0gZGV2Owo+ID4gLSAgICAgICBkZXYtPmtvYmpfZGV2ID0ga2RldjsKPiA+Cj4gPiAg
+ICAgICAgIGluaXRfY29tcGxldGlvbigma2Rldi0+a29ial91bnJlZ2lzdGVyKTsKPiA+Cj4gPiBA
+QCAtNzEzLDkgKzcxNCwxMSBAQCBpbnQgY3B1aWRsZV9hZGRfc3lzZnMoc3RydWN0IGNwdWlkbGVf
+ZGV2aWNlICpkZXYpCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJjcHVp
+ZGxlIik7Cj4gPiAgICAgICAgIGlmIChlcnJvcikgewo+ID4gICAgICAgICAgICAgICAgIGtvYmpl
+Y3RfcHV0KCZrZGV2LT5rb2JqKTsKPiA+ICsgICAgICAgICAgICAgICBrZnJlZShrZGV2KTsKPiA+
+ICAgICAgICAgICAgICAgICByZXR1cm4gZXJyb3I7Cj4gPiAgICAgICAgIH0KPiA+Cj4gPiArICAg
+ICAgIGRldi0+a29ial9kZXYgPSBrZGV2Owo+ID4gICAgICAgICBrb2JqZWN0X3VldmVudCgma2Rl
+di0+a29iaiwgS09CSl9BREQpOwo+ID4KPiA+ICAgICAgICAgcmV0dXJuIDA7Cj4gPiAtLQo+ID4g
+Mi4zMi4wCj4gPgo+ID4KPiA+Cj4gPgo+ID4gQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJt
+YW55IEdtYkgKPiA+IEtyYXVzZW5zdHIuIDM4Cj4gPiAxMDExNyBCZXJsaW4KPiA+IEdlc2NoYWVm
+dHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKPiA+IEVpbmdl
+dHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgo+
+ID4gU2l0ejogQmVybGluCj4gPiBVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgpPbiBXZWQsIFNlcCAx
+NSwgMjAyMSBhdCAwMjoxNDo1NlBNICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90ZToKPiBD
+QVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6
+YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Ug
+Y2FuIGNvbmZpcm0gdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLgo+IAo+
+IAo+IAo+IE9uIE1vbiwgU2VwIDYsIDIwMjEgYXQgODozNSBQTSBBbmVsIE9yYXpnYWxpeWV2YSA8
+YW5lbGt6QGFtYXpvbi5kZT4gd3JvdGU6Cj4gPgo+ID4gQ29tbWl0IGMzNDNiZjFiYTVlZiAoImNw
+dWlkbGU6IEZpeCB0aHJlZSByZWZlcmVuY2UgY291bnQgbGVha3MiKQo+ID4gZml4ZXMgdGhlIGNs
+ZWFudXAgb2Yga29iamVjdHM7IGhvd2V2ZXIsIGl0IHJlbW92ZXMga2ZyZWUoKSBjYWxscwo+ID4g
+YWx0b2dldGhlciwgbGVhZGluZyB0byBtZW1vcnkgbGVha3MuCj4gCj4gV2FpdCwgd29uJ3QgdGhl
+IGNsZWFudXAgYmUgZG9uZSBieSBjcHVpZGxlX2ZyZWVfc3RhdGVfa29iaigpPwo+IAo+ID4gRml4
+IHRob3NlIGFuZCBhbHNvIGRlZmVyIHRoZSBpbml0aWFsaXphdGlvbiBvZiBkZXYtPmtvYmpfZGV2
+IHVudGlsCj4gPiBhZnRlciB0aGUgZXJyb3IgY2hlY2ssIHNvIHRoYXQgd2UgZG8gbm90IGVuZCB1
+cCB3aXRoIGEgZGFuZ2xpbmcKPiA+IHBvaW50ZXIuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQW5l
+bCBPcmF6Z2FsaXlldmEgPGFuZWxrekBhbWF6b24uZGU+Cj4gPiBTdWdnZXN0ZWQtYnk6IEFtYW4g
+UHJpeWFkYXJzaGkgPGFwZXVyZWthQGFtYXpvbi5kZT4KPiA+IC0tLQo+ID4gIGRyaXZlcnMvY3B1
+aWRsZS9zeXNmcy5jIHwgNSArKysrLQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMo
+KyksIDEgZGVsZXRpb24oLSkKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcHVpZGxlL3N5
+c2ZzLmMgYi9kcml2ZXJzL2NwdWlkbGUvc3lzZnMuYwo+ID4gaW5kZXggNTNlYzk1ODVjY2Q0Li40
+NjllMTg1NDdkMDYgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2NwdWlkbGUvc3lzZnMuYwo+ID4g
+KysrIGIvZHJpdmVycy9jcHVpZGxlL3N5c2ZzLmMKPiA+IEBAIC00ODgsNiArNDg4LDcgQEAgc3Rh
+dGljIGludCBjcHVpZGxlX2FkZF9zdGF0ZV9zeXNmcyhzdHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRl
+dmljZSkKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAma2Rl
+di0+a29iaiwgInN0YXRlJWQiLCBpKTsKPiA+ICAgICAgICAgICAgICAgICBpZiAocmV0KSB7Cj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICBrb2JqZWN0X3B1dCgma29iai0+a29iaik7Cj4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgICBrZnJlZShrb2JqKTsKPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgIGdvdG8gZXJyb3Jfc3RhdGU7Cj4gPiAgICAgICAgICAgICAgICAgfQo+ID4gICAgICAg
+ICAgICAgICAgIGNwdWlkbGVfYWRkX3MyaWRsZV9hdHRyX2dyb3VwKGtvYmopOwo+ID4gQEAgLTYx
+OSw2ICs2MjAsNyBAQCBzdGF0aWMgaW50IGNwdWlkbGVfYWRkX2RyaXZlcl9zeXNmcyhzdHJ1Y3Qg
+Y3B1aWRsZV9kZXZpY2UgKmRldikKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgJmtkZXYtPmtvYmosICJkcml2ZXIiKTsKPiA+ICAgICAgICAgaWYgKHJldCkgewo+ID4gICAg
+ICAgICAgICAgICAgIGtvYmplY3RfcHV0KCZrZHJ2LT5rb2JqKTsKPiA+ICsgICAgICAgICAgICAg
+ICBrZnJlZShrZHJ2KTsKPiA+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ID4gICAgICAg
+ICB9Cj4gPgo+ID4gQEAgLTcwNSw3ICs3MDcsNiBAQCBpbnQgY3B1aWRsZV9hZGRfc3lzZnMoc3Ry
+dWN0IGNwdWlkbGVfZGV2aWNlICpkZXYpCj4gPiAgICAgICAgIGlmICgha2RldikKPiA+ICAgICAg
+ICAgICAgICAgICByZXR1cm4gLUVOT01FTTsKPiA+ICAgICAgICAga2Rldi0+ZGV2ID0gZGV2Owo+
+ID4gLSAgICAgICBkZXYtPmtvYmpfZGV2ID0ga2RldjsKPiA+Cj4gPiAgICAgICAgIGluaXRfY29t
+cGxldGlvbigma2Rldi0+a29ial91bnJlZ2lzdGVyKTsKPiA+Cj4gPiBAQCAtNzEzLDkgKzcxNCwx
+MSBAQCBpbnQgY3B1aWRsZV9hZGRfc3lzZnMoc3RydWN0IGNwdWlkbGVfZGV2aWNlICpkZXYpCj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJjcHVpZGxlIik7Cj4gPiAgICAg
+ICAgIGlmIChlcnJvcikgewo+ID4gICAgICAgICAgICAgICAgIGtvYmplY3RfcHV0KCZrZGV2LT5r
+b2JqKTsKPiA+ICsgICAgICAgICAgICAgICBrZnJlZShrZGV2KTsKPiA+ICAgICAgICAgICAgICAg
+ICByZXR1cm4gZXJyb3I7Cj4gPiAgICAgICAgIH0KPiA+Cj4gPiArICAgICAgIGRldi0+a29ial9k
+ZXYgPSBrZGV2Owo+ID4gICAgICAgICBrb2JqZWN0X3VldmVudCgma2Rldi0+a29iaiwgS09CSl9B
+REQpOwo+ID4KPiA+ICAgICAgICAgcmV0dXJuIDA7Cj4gPiAtLQo+ID4gMi4zMi4wCj4gPgo+ID4K
+PiA+Cj4gPgo+ID4gQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKPiA+IEty
+YXVzZW5zdHIuIDM4Cj4gPiAxMDExNyBCZXJsaW4KPiA+IEdlc2NoYWVmdHNmdWVocnVuZzogQ2hy
+aXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKPiA+IEVpbmdldHJhZ2VuIGFtIEFtdHNn
+ZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgo+ID4gU2l0ejogQmVybGlu
+Cj4gPiBVc3QtSUQ6IERFIDI4OSAyMzcgODc5Cj4gPgo+ID4KPiA+CgoKCkFtYXpvbiBEZXZlbG9w
+bWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEwMTE3IEJlcmxpbgpHZXNj
+aGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0aGFuIFdlaXNzCkVpbmdl
+dHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVyIEhSQiAxNDkxNzMgQgpT
+aXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
 
-Do you really need to test sg_is_smt ? if sg_busy_cpus >= 2 then
-sd_is_smt must be true ?
-
-Also, This is the default behavior where we want to even the number of
-busy cpu. Shouldn't you return false and fall back to the default
-behavior ?
-
-That being said, the default behavior tries to even the number of idle
-cpus which is easier to compute and is equal to even the number of
-busy cpus in "normal" system with the same number of cpus in groups
-but this is not the case here. It could be good to change the default
-behavior to even the number of busy cpus and that you use the default
-behavior here. Additional condition will be used to select the busiest
-group like more busy cpu or more number of running tasks
-
-> +                       return true;
-> +
-> +               /*
-> +                * @dst_cpu does not have SMT siblings. @sg may have SMT
-> +                * siblings and only one is busy. In such case, @dst_cpu
-> +                * can help if it has higher priority and is idle (i.e.,
-> +                * it has no running tasks).
-
-The previous comment above assume that "@dst_cpu is idle" but now you
-need to check that sds->local_stat.sum_nr_running == 0
-
-> +                */
-> +               return !sds->local_stat.sum_nr_running &&
-> +                      sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> +       }
-> +
-> +       /* @dst_cpu has SMT siblings. */
-> +
-> +       if (sg_is_smt) {
-> +               int local_busy_cpus = sds->local->group_weight -
-> +                                     sds->local_stat.idle_cpus;
-> +               int busy_cpus_delta = sg_busy_cpus - local_busy_cpus;
-> +
-> +               if (busy_cpus_delta == 1)
-> +                       return sched_asym_prefer(dst_cpu,
-> +                                                sg->asym_prefer_cpu);
-> +
-> +               return false;
-> +       }
-> +
-> +       /*
-> +        * @sg does not have SMT siblings. Ensure that @sds::local does not end
-> +        * up with more than one busy SMT sibling and only pull tasks if there
-> +        * are not busy CPUs (i.e., no CPU has running tasks).
-> +        */
-> +       if (!sds->local_stat.sum_nr_running)
-> +               return sched_asym_prefer(dst_cpu, sg->asym_prefer_cpu);
-> +
-> +       return false;
-> +#else
-> +       /* Always return false so that callers deal with non-SMT cases. */
-> +       return false;
-> +#endif
-> +}
-> +
->  static inline bool
->  sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs,
->            struct sched_group *group)
->  {
-> +       /* Only do SMT checks if either local or candidate have SMT siblings */
-> +       if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
-> +           (group->flags & SD_SHARE_CPUCAPACITY))
-> +               return asym_smt_can_pull_tasks(env->dst_cpu, sds, sgs, group);
-> +
->         return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
->  }
->
-> @@ -9606,6 +9694,12 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                     nr_running == 1)
->                         continue;
->
-> +               /* Make sure we only pull tasks from a CPU of lower priority */
-> +               if ((env->sd->flags & SD_ASYM_PACKING) &&
-> +                   sched_asym_prefer(i, env->dst_cpu) &&
-> +                   nr_running == 1)
-> +                       continue;
-> +
->                 switch (env->migration_type) {
->                 case migrate_load:
->                         /*
-> --
-> 2.17.1
->
