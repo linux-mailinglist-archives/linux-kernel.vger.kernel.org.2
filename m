@@ -2,287 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BA240C0AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0189540C0B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhIOHlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:41:44 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:63895 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbhIOHll (ORCPT
+        id S236540AbhIOHqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:46:04 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:54173 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231364AbhIOHqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:41:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631691621; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=pV19XQS2nI5AyufucqjBxQA1xtZ1AsoReplDidbo/ks=;
- b=ZP7Cnos0zKLmviJcts6tLQ/DnnwMT0tjgAAz9dNzDs/JMUh0VCAt9F/+a8rLJQQ1eDma9J+/
- w5VXdKPbo3cFvC2o4KzbN2n/3ilwD7rrml9gpuKdgKsHlp/hQmuxvyRBWUWGqVcDpeIfrJEh
- AODz3wfJyqUQi3tgOqqdNhEOSsw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6141a365bd6681d8ede49a52 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 07:40:21
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 61413C4360C; Wed, 15 Sep 2021 07:40:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 091FAC4338F;
-        Wed, 15 Sep 2021 07:40:18 +0000 (UTC)
+        Wed, 15 Sep 2021 03:46:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631691885; x=1663227885;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=p3LfOMh6kfq1XPNjcaMYwLewbPEYeD3C0h+hrPafoUs=;
+  b=DNGfe6iVg1CbMbObKwkmxJUKtaPrbppcbYWGkiD+GEeQZ0tk/oIWIFE+
+   6ipvssULUKHXFCuipvQevk9fE1WD0qbcXaZnu2xQNi2WPc9yeCZwUk4wQ
+   HURMocp2zEeym+BAyyJB9I3/pgYFP1aYpRtUQV6y5Rti07KJY2qAmJdNs
+   dxCxj/wowGoKxbvVmOn18rDy5301vRB7HECtUyUkitinQYYEpbAStH5mm
+   0dShwxb/6jtHi0+4ERcVuH6wVF1sejIY3X7u4/MQ6UxNbsksjxrPlOGlv
+   aXznyhxMJUEp8fEEOiigjl9M9BFn5E2lBM+ZeUKP8Is8PPs1bPNnYSs5D
+   A==;
+IronPort-SDR: 17mrLjq1Uze7zbpCKpR6oeP8iKt48C1xEExJOX+6in48eZ0LNNSoA51Z/f2qsuD2b9DUWTohkB
+ r0qRnq1WgXOd05muYvUyt0fQWP8mde/VEnokN04LB6zTpp0G2zu9dpOVaxZCTKd9J8EshBSJRc
+ A/u9C3AhNZ9EDkhhWGlwyLdkzQSApUGu2bWrSI14Q11WjFCy+waog/ML6yZ32xJBYIFUjG7W4e
+ Nd2AtWBhgn+zHA6blbocfAdtzH+iwpQJK1IA8xpRKRDR/vENTZsLfpxsa4iq1q5Hh2sOzK8aZc
+ FZp/xG+8HMwRYrEsUv11aF/p
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="136599700"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2021 00:44:44 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 15 Sep 2021 00:44:44 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14 via Frontend Transport; Wed, 15 Sep 2021 00:44:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mf1RK591tY/qpq3qPNC+GdqGanfYVPFw+emy+z6fKajrgLU+CK8uWKKcJj0zzXIi6asITXDODBqSdwZ55ZHRuq2g5hPbfHmJNofMQHueh3koM4QY07+zw12n8TvlJcR3KmuoN8qg4Ap7ReSryfktxBufu/oVTatMJ1GM+8AoIYA8BJYcU28MUhSpEQb4MIL78v7aQQWfCm5VjcID/RmveK7qqiR87pqE5VwNo0KvOOcX9/TB64bFyDr7vXmKoNHK1yEjPG7WpUL5wmR1dS6REPXfU2+cUdyhf9Chpjghc8sITSskJo31dWDUjP+ImC4eV1p2tuGrLuswBNSIZy+I+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=qd4TlSnWZZwZAUgi6pvYkT7sSscDANe1soS7IgLtfDw=;
+ b=Ke5AdgNvoRSDHqxs7WseEzMS6GDB82g81NIovAhkd95dXmmyra9uvsT1qyD+c3eTfLxIlTzlCGOwrTc9sPShigCv3wTSb8sn+k1iM6VfpKyzD7HQ4q/ZD2iq7p9d8yEa1hBCvd8CtsO8b+0+DolLi7c/b1hgyno7TB7VivkNRzu5YMlRgNMDGAz1oBa1JtqTdDOg4rLeIrhJSACOiO3oHEjF2Hjauvny53QZGq6h0CAFXuRlogbNakJt7fq4iSyP6rjtj/xTrDzlYVJy7gqRKaF5XG1sllcTVa6pmXRA7v52A9Qk9zZLyyCK+hOeNtGiEbUlSbPfEKQ8I5g1tAmvfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qd4TlSnWZZwZAUgi6pvYkT7sSscDANe1soS7IgLtfDw=;
+ b=bEK5mODaA13eTGjp0MUX7pH42lk4J3O26+7tloDTYBfuf/kpbeDaAgKXm73mz8x2PneXbI7d0Srxadi7MGZk+lsCOansP7WH2vMeOhJ6VNl5CmAYdemRL7iYbASIsElYSGMbOpaoR0H5AYEgPBD1gEe8+61saUpzKU8qN5DjEwI=
+Received: from CH0PR11MB5523.namprd11.prod.outlook.com (2603:10b6:610:d6::15)
+ by CH0PR11MB5459.namprd11.prod.outlook.com (2603:10b6:610:d2::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
+ 2021 07:44:43 +0000
+Received: from CH0PR11MB5523.namprd11.prod.outlook.com
+ ([fe80::8857:c39a:75e0:43df]) by CH0PR11MB5523.namprd11.prod.outlook.com
+ ([fe80::8857:c39a:75e0:43df%8]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
+ 07:44:43 +0000
+From:   <Nicolas.Ferre@microchip.com>
+To:     <Claudiu.Beznea@microchip.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] net: macb: align for OSSMODE offset
+Thread-Topic: [PATCH 2/3] net: macb: align for OSSMODE offset
+Thread-Index: AQHXqgWL2qBFbDxWL0uL4iC5PRtGcQ==
+Date:   Wed, 15 Sep 2021 07:44:43 +0000
+Message-ID: <f70f89b4-008f-6393-7069-f408df7733ea@microchip.com>
+References: <20210915064721.5530-1-claudiu.beznea@microchip.com>
+ <20210915064721.5530-3-claudiu.beznea@microchip.com>
+In-Reply-To: <20210915064721.5530-3-claudiu.beznea@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+authentication-results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none
+ header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 95500ca3-8795-4fb4-7bac-08d9781cae7d
+x-ms-traffictypediagnostic: CH0PR11MB5459:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH0PR11MB5459A9D16D87CB7EECED8E31E0DB9@CH0PR11MB5459.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sY/oCIH1/b3LvWQCvR3XsxRlIfjAqiwahmFcM5J5pLOTyzCUaAazBOJKKH1NKT32qyK4miVLssjOQQ2SI4UZ05Sha6SLBcLtpsqhSxVZc+BSmnGKbHP4GhKE9FyDEnK2SIhD1pvdoBu0WvXzoFWY3te9vlhNOzyXPqgNiJ2HKrJZ90ud54S0fkTUBErTQoGzi0axnsqcWDRUp4OUDVegK/pXAsaORkd6ZJKU/rGcDY2HJjhiptcbnzCqpVMgg28vvd6H6+v1TH+T/QU4kxlp2BMNz6lSHo0E/sDWvgAXwWFAxFPV2YYmzvdBBgUZMoG7W7N8t1gEwGdq/4dPBZyhWjZtFXYh3oWMzSv9CFLDKFtRKgZWmKLyT/BVlJSLoMrTJqtsg+j9o3BxYaU67weenVYC793hMLYTPzuPW2T8Q6b71DQ/lwK4ktotiXlpMY/RsGSpRJI/dEJ3MTqkiFAYl9Hqpy+psCdRHnzJOlqhXFCGoQ6yAmGFf/9ZxAEvcIh4DHXEQuAmXyB/j+rcbG9Mb2p283/uh9Tjsd5rtBdFbiBPxk1Eh0TEyGUDkLt5Wmg5KXp8Sl0zlh288TYhC5B/iIIS+YH/49tw60FeOfPlppTRTyw/9wZiHsGdJ+/QParMj+CYrjy+3+HIrY+f37ZFR0e2u5iRtCpR96Du1mUdVg6jQMp8R7HeqGcxhXXYY6e/jXrpBEeb3jn4G1jhPpxPxNzK2eDNytYbSfKuy340q1APZVvJ9XK1mJv7l1rsVplizYUjIQkK3pts8F3d7Wnpdg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5523.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(39860400002)(366004)(346002)(76116006)(66446008)(4744005)(6512007)(66476007)(64756008)(66556008)(5660300002)(186003)(53546011)(6506007)(91956017)(66946007)(71200400001)(8936002)(8676002)(83380400001)(2906002)(38100700002)(478600001)(54906003)(316002)(31696002)(31686004)(86362001)(38070700005)(110136005)(2616005)(36756003)(6486002)(122000001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?XavQKMoAlI97K90fduxKANLIhkwiAvWeA6gch6PHkMHVDLUyK0SgcYPk?=
+ =?Windows-1252?Q?u3O4/3HzKWZGl7IAZEljN51VyDqhvS+T0iQeTsAHZ+/7mee8ZpFBo1pZ?=
+ =?Windows-1252?Q?MtjEAIEx16jxUmRhlU7jE0F2siUQ9AcIf+OLr5NS4BHlNNePiM0BXkeA?=
+ =?Windows-1252?Q?Y36tEDCeX8AFeZjFK3GXtSioKoBpMrrVJh+2FBlSGB9qIcs5oRGRrq9t?=
+ =?Windows-1252?Q?dLEt35w2Q+8dtgn4rn+kRbtcZyBrHzgnHaA8Q6dBSovif7GidtdBtnEk?=
+ =?Windows-1252?Q?QbVNHPKnKUGdwoXgTgl3jfPQaWL7xiNRl6ZiraouVvA+S8c8FC7HkaSz?=
+ =?Windows-1252?Q?b3tJV9ajdrUC7yAYhs4/FWmEqYMxnAshkhwnOTfc3GgyXIWa1HSc3FSy?=
+ =?Windows-1252?Q?x/Df1V83rs20J1xGMpzOnD9XxieKRGTqtsX4Lv9FaIrESzIydxPzSp9l?=
+ =?Windows-1252?Q?FnSkuRQ+mJ/O3sMCuF0XrR9nu5Xt9XxwnyVRydh7Zv/mTx7XayrwZUhC?=
+ =?Windows-1252?Q?3vxMbLj/8iLfrMIqfRXoNxAuBGToFHJ93LmvR5skL6o47iin0TFRpGol?=
+ =?Windows-1252?Q?VxhmHYnvaSY9W6UjQECTEIXMcQq3oyGM/8J1bKUT3sr/E9ltHCJrj9TZ?=
+ =?Windows-1252?Q?MiM4QZ3v04OFUl5w9ap+aulN3gQdM3JJg3pkMxSAR0xrvxk8NwNQpLZl?=
+ =?Windows-1252?Q?Nd7TQFzp7dG7/TvWMYaH27MzjUUes+PRXpx8Uglo0WWJtzx+WSXB5syP?=
+ =?Windows-1252?Q?iUNku3C+Z3iw096iXbTd7Xldg7KqU+EQOqfzKM2Jop0KvHHkWt4UOpqt?=
+ =?Windows-1252?Q?PWJh7T2uWnmxgop78xqWuG0kJLypON0ZlUNbXrpC5iGkrUH6CGXjWgvs?=
+ =?Windows-1252?Q?EpHV6CSK2iQewoC09GXokgrLs7daJ4zInGA+9DSjVCpt/1o0xEbxEc1v?=
+ =?Windows-1252?Q?mkKZkmubmpSeDI52ecRuftrlvggIDFpYxxZJe0OQkb9Wf/waF3AQV4xp?=
+ =?Windows-1252?Q?UKwMCrIfo/nC04AOdatD68l3YhxrW1rUxqrykziuSDuJMHtgGmVmNNlb?=
+ =?Windows-1252?Q?ahgmNi3yuiFlSdvi31LdWHK03VNuxsBm5mqFBUerxB5u0jjBZi/A+lTM?=
+ =?Windows-1252?Q?ZJ1I9bhxQM6Fb6Q+lBZfBbeuX9+oIksZkJst2RT4ZE1pZjF5xUjQrvHe?=
+ =?Windows-1252?Q?8OWhxvaB/njsxtGm17S2vGRPnK0jpNFPavL/9nWkj4GXA+A+P3ARMUZb?=
+ =?Windows-1252?Q?GvQ1icWhJQ525YSYpCtob9+JWQ9Ssho3mapY4VxMUt0KvtfA4gXe/o5L?=
+ =?Windows-1252?Q?ShOcOU3RquToOktdaRGc2286YADl+Dqf8twxYYlfR7qjcuRJ9K8mZF+q?=
+ =?Windows-1252?Q?zbterp4XMgoCcKlqhosN9d5cASEIJbgot/OcRapPVqpOR1dhZVcIg5LI?=
+ =?Windows-1252?Q?8/sDIqiZcccl46MBvNxb0UbpsA2PFeJgY4x+4l64OyI9xQiAMKfFL8tk?=
+ =?Windows-1252?Q?nZuJN7Tc?=
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <617E15356FA8AE4FBAC3F10A7886555A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Sep 2021 13:10:18 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
-        swboyd@chromium.org, lorenzo.pieralisi@arm.com,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        mka@chromium.org, vbadigan@codeaurora.org, sallenki@codeaurora.org,
-        manivannan.sadhasivam@linaro.org
-Subject: Re: [PATCH v7 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-In-Reply-To: <YUFd9aTlTJ45b9Gg@ripper>
-References: <1631643550-29960-1-git-send-email-pmaliset@codeaurora.org>
- <1631643550-29960-5-git-send-email-pmaliset@codeaurora.org>
- <YUFd9aTlTJ45b9Gg@ripper>
-Message-ID: <4b743c011a5b240fbcfe733bd43f18a3@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5523.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95500ca3-8795-4fb4-7bac-08d9781cae7d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2021 07:44:43.0417
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wIRVPq49qSY+JElevo2sEysz/bIbIXraBp5KbvBfhdmYkdY2LYtsgnWSb0I+fGAtOLTiB9bejXQfa+sZjaVrIrliRpeKMe2TFBhDuXtxbc0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5459
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-15 08:14, Bjorn Andersson wrote:
-> On Tue 14 Sep 11:19 PDT 2021, Prasad Malisetty wrote:
-> 
->> On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
->> must be the TCXO while gdsc is enabled. After PHY init successful
->> clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
->> 
->> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> ---
->>  drivers/pci/controller/dwc/pcie-qcom.c | 90 
->> +++++++++++++++++++++++++++++-----
->>  1 file changed, 79 insertions(+), 11 deletions(-)
->> 
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
->> b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 8a7a300..380c962 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
->>  	struct regulator_bulk_data supplies[2];
->>  	struct reset_control *pci_reset;
->>  	struct clk *pipe_clk;
->> +	struct clk *gcc_pcie_1_pipe_clk_src;
-> 
-> Afaict you have both 2 PCIe controllers on sc7280, so I think it seems
-> more reasonable to shorted this to "pipe_clk_src".
-> 
-Agree. I will make it generic and update in next patch version.
+On 15/09/2021 at 08:47, Claudiu Beznea wrote:
+> Align for OSSMODE offset.
+>=20
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
->> +	struct clk *phy_pipe_clk;
->> +	struct clk *ref_clk_src;
->>  };
->> 
->>  union qcom_pcie_resources {
->> @@ -189,6 +192,11 @@ struct qcom_pcie_ops {
->>  	int (*config_sid)(struct qcom_pcie *pcie);
->>  };
->> 
->> +struct qcom_pcie_cfg {
->> +	const struct qcom_pcie_ops *ops;
->> +	bool pcie_1_pipe_clk_src_switch;
-> 
-> Perhaps something little bit more generic, like pipe_clk_need_muxing?
-> 
-Sure, I will change it and update in next patch version.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> ---
+>   drivers/net/ethernet/cadence/macb.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/c=
+adence/macb.h
+> index d1e0e116b976..c33e98bfa5e8 100644
+> --- a/drivers/net/ethernet/cadence/macb.h
+> +++ b/drivers/net/ethernet/cadence/macb.h
+> @@ -244,7 +244,7 @@
+>   #define MACB_TZQ_OFFSET		12 /* Transmit zero quantum pause frame */
+>   #define MACB_TZQ_SIZE		1
+>   #define MACB_SRTSM_OFFSET	15 /* Store Receive Timestamp to Memory */
+> -#define MACB_OSSMODE_OFFSET 24 /* Enable One Step Synchro Mode */
+> +#define MACB_OSSMODE_OFFSET	24 /* Enable One Step Synchro Mode */
+>   #define MACB_OSSMODE_SIZE	1
+>  =20
+>   /* Bitfields in NCFGR */
+>=20
 
->> +};
->> +
->>  struct qcom_pcie {
->>  	struct dw_pcie *pci;
->>  	void __iomem *parf;			/* DT parf */
->> @@ -197,6 +205,7 @@ struct qcom_pcie {
->>  	struct phy *phy;
->>  	struct gpio_desc *reset;
->>  	const struct qcom_pcie_ops *ops;
->> +	bool pcie_1_pipe_clk_src_switch;
->>  };
->> 
->>  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
->> @@ -1167,6 +1176,20 @@ static int qcom_pcie_get_resources_2_7_0(struct 
->> qcom_pcie *pcie)
->>  	if (ret < 0)
->>  		return ret;
->> 
->> +	if (pcie->pcie_1_pipe_clk_src_switch) {
-> 
-> This looks much better, now it will easily scale to other platforms 
-> that
-> have inherited this need.
 
-Thanks Bjorn.
-
-> 
->> +		res->gcc_pcie_1_pipe_clk_src = devm_clk_get(dev, "pipe_mux");
->> +		if (IS_ERR(res->gcc_pcie_1_pipe_clk_src))
->> +			return PTR_ERR(res->gcc_pcie_1_pipe_clk_src);
->> +
->> +		res->phy_pipe_clk = devm_clk_get(dev, "phy_pipe");
->> +		if (IS_ERR(res->phy_pipe_clk))
->> +			return PTR_ERR(res->phy_pipe_clk);
->> +
->> +		res->ref_clk_src = devm_clk_get(dev, "ref");
->> +		if (IS_ERR(res->ref_clk_src))
->> +			return PTR_ERR(res->ref_clk_src);
->> +	}
->> +
->>  	res->pipe_clk = devm_clk_get(dev, "pipe");
->>  	return PTR_ERR_OR_ZERO(res->pipe_clk);
->>  }
->> @@ -1185,6 +1208,10 @@ static int qcom_pcie_init_2_7_0(struct 
->> qcom_pcie *pcie)
->>  		return ret;
->>  	}
->> 
->> +	/* Set TCXO as clock source for gcc_pcie_1_pipe_clk_src */
->> +	if (pcie->pcie_1_pipe_clk_src_switch)
->> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->ref_clk_src);
->> +
->>  	ret = clk_bulk_prepare_enable(res->num_clks, res->clks);
->>  	if (ret < 0)
->>  		goto err_disable_regulators;
->> @@ -1256,6 +1283,10 @@ static int qcom_pcie_post_init_2_7_0(struct 
->> qcom_pcie *pcie)
->>  {
->>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
->> 
->> +	/* Set pipe clock as clock source for gcc_pcie_1_pipe_clk_src */
->> +	if (pcie->pcie_1_pipe_clk_src_switch)
->> +		clk_set_parent(res->gcc_pcie_1_pipe_clk_src, res->phy_pipe_clk);
->> +
->>  	return clk_prepare_enable(res->pipe_clk);
->>  }
->> 
->> @@ -1456,6 +1487,39 @@ static const struct qcom_pcie_ops ops_1_9_0 = {
->>  	.config_sid = qcom_pcie_config_sid_sm8250,
->>  };
->> 
->> +static const struct qcom_pcie_cfg apq8084_cfg = {
->> +	.ops = &ops_1_0_0,
->> +};
->> +
->> +static const struct qcom_pcie_cfg ipq8064_cfg = {
->> +	.ops = &ops_2_1_0,
->> +};
->> +
->> +static const struct qcom_pcie_cfg msm8996_cfg = {
->> +	.ops = &ops_2_3_2,
->> +};
->> +
->> +static const struct qcom_pcie_cfg ipq8074_cfg = {
->> +	.ops = &ops_2_3_3,
->> +};
->> +
->> +static const struct qcom_pcie_cfg ipq4019_cfg = {
->> +	.ops = &ops_2_4_0,
->> +};
->> +
->> +static const struct qcom_pcie_cfg sdm845_cfg = {
->> +	.ops = &ops_2_7_0,
->> +};
->> +
->> +static const struct qcom_pcie_cfg sm8250_cfg = {
->> +	.ops = &ops_1_9_0,
->> +};
->> +
->> +static const struct qcom_pcie_cfg sc7280_cfg = {
->> +	.ops = &ops_1_9_0,
->> +	.pcie_1_pipe_clk_src_switch = true,
->> +};
->> +
->>  static const struct dw_pcie_ops dw_pcie_ops = {
->>  	.link_up = qcom_pcie_link_up,
->>  	.start_link = qcom_pcie_start_link,
->> @@ -1467,6 +1531,7 @@ static int qcom_pcie_probe(struct 
->> platform_device *pdev)
->>  	struct pcie_port *pp;
->>  	struct dw_pcie *pci;
->>  	struct qcom_pcie *pcie;
->> +	const struct qcom_pcie_cfg *pcie_cfg = NULL;
-> 
-> First use of this variable is an assignment, so I don't see a need for
-> zero initialize it.
-> 
-> Regards,
-> Bjorn
-> 
-Sure, I will incorporate the changes in next patch version.
-
->>  	int ret;
->> 
->>  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
->> @@ -1488,7 +1553,9 @@ static int qcom_pcie_probe(struct 
->> platform_device *pdev)
->> 
->>  	pcie->pci = pci;
->> 
->> -	pcie->ops = of_device_get_match_data(dev);
->> +	pcie_cfg = of_device_get_match_data(dev);
->> +	pcie->ops = pcie_cfg->ops;
->> +	pcie->pcie_1_pipe_clk_src_switch = 
->> pcie_cfg->pcie_1_pipe_clk_src_switch;
->> 
->>  	pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
->>  	if (IS_ERR(pcie->reset)) {
->> @@ -1545,16 +1612,17 @@ static int qcom_pcie_probe(struct 
->> platform_device *pdev)
->>  }
->> 
->>  static const struct of_device_id qcom_pcie_match[] = {
->> -	{ .compatible = "qcom,pcie-apq8084", .data = &ops_1_0_0 },
->> -	{ .compatible = "qcom,pcie-ipq8064", .data = &ops_2_1_0 },
->> -	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &ops_2_1_0 },
->> -	{ .compatible = "qcom,pcie-apq8064", .data = &ops_2_1_0 },
->> -	{ .compatible = "qcom,pcie-msm8996", .data = &ops_2_3_2 },
->> -	{ .compatible = "qcom,pcie-ipq8074", .data = &ops_2_3_3 },
->> -	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
->> -	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
->> -	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
->> -	{ .compatible = "qcom,pcie-sm8250", .data = &ops_1_9_0 },
->> +	{ .compatible = "qcom,pcie-apq8084", .data = &apq8084_cfg },
->> +	{ .compatible = "qcom,pcie-ipq8064", .data = &ipq8064_cfg },
->> +	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &ipq8064_cfg },
->> +	{ .compatible = "qcom,pcie-apq8064", .data = &ipq8064_cfg },
->> +	{ .compatible = "qcom,pcie-msm8996", .data = &msm8996_cfg },
->> +	{ .compatible = "qcom,pcie-ipq8074", .data = &ipq8074_cfg },
->> +	{ .compatible = "qcom,pcie-ipq4019", .data = &ipq4019_cfg },
->> +	{ .compatible = "qcom,pcie-qcs404", .data = &ipq4019_cfg },
->> +	{ .compatible = "qcom,pcie-sdm845", .data = &sdm845_cfg },
->> +	{ .compatible = "qcom,pcie-sm8250", .data = &sm8250_cfg },
->> +	{ .compatible = "qcom,pcie-sc7280", .data = &sc7280_cfg },
->>  	{ }
->>  };
->> 
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+--=20
+Nicolas Ferre
