@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA26640C781
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB5E40C782
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237875AbhIOOeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
+        id S237954AbhIOOeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233745AbhIOOeA (ORCPT
+        with ESMTP id S237847AbhIOOeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:34:00 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576D3C061574;
-        Wed, 15 Sep 2021 07:32:41 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so956293oon.2;
-        Wed, 15 Sep 2021 07:32:41 -0700 (PDT)
+        Wed, 15 Sep 2021 10:34:07 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1BEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:32:48 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id s125so1086955vkd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r+B7P+bJ1yyCKcAAG/Nv16gjiQPAYq04lxb01icvVY0=;
-        b=UJS4RQRUo6Tyr7KLmtNEYku4GcNlD5VvkEwr9huMgn/7YEEzxjJPCFoiKsQ1ke4xMY
-         Pk2AQYBmwLK+tTRBJKPZqL9FwXWRr63xgXRx2t0Xd7oOeOKyq3Wy7XvunZzSgtIVrWT5
-         s8YYIJ0ohsMFUeCtHxchwsZNcOtM6v1vPLkH1sXse+sBLXiwP3x7m1Fpx01rY3sZDz2d
-         cdJfi6Q1SOTQZoIy4Wp5YO7Q1BpTI5Lzk88yg3tzo40YXVHJMUA21ucGi6YCMXAGLjnX
-         Af3r3bhcM+RODzQ2BfgRd8l0HkCHCYXe9ja/ivja/SGnq7DBC9yYQTFZtpo8ifOmTpKH
-         DlZg==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=e1uS5h/yQq1jg3h4EwH+7iZtFwfb2jMum7PN8Ezu0z4=;
+        b=jVnVt0oS+iMcR+NSjroFIjWig1flMsi7E3We2dygyo3R6WSNCeSi2cbiTFZtg/4S8Z
+         P0QDo1dBS/s6WJ/09/+CS+iMfJR+h7TTz1oypoQH71N8bp+chOghHpW03tqsxDzUqKQ4
+         QhWJ021hdJd18ARU/pBrIJBF/PLlAZPlry56u+EKJQy8fXM8E7xPshGlclct3Trr3Prd
+         HzeT5ipaaPIKZZfm4dr3qGcA/O3TUNjT2X6Db+PEaLTr5KduyxQbWQXn3STJg74tKKNE
+         hzwncAzdugwS+n3jYOBuMhH88pGU9hKIxZqbUomoa1kG2Rlg8XDEMClsbJLdOPxwansb
+         qDqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=r+B7P+bJ1yyCKcAAG/Nv16gjiQPAYq04lxb01icvVY0=;
-        b=T25eRHHB6trc2ODUw5wHhhPFncGXRMKPItla4gdOHEtBj3r0ftTjPH17bm84btm3qw
-         72bhz/7kd6gB84LDXv39GWtHOcrpUkyngahQROY58XdrL1FS00NiCmO4vQ4Orwsx303a
-         3Yevzlh4bwbsB8IjkSc5aL4RT3KOfrr//btejqD6KpXuPVR63EyYrOMme3sWIyv5DAJT
-         356uyqZ1oQdzpTk2MKRdt8lfIrnktLwTtsbV6DHVov+bO6i8gltkjxO7r9nV80PM66Pg
-         s9tF4zy4m4MHZCSbWwPfPILMBs0CLXkaJX6xWu6VqfNDMVwbFKzy6SkcNRz5y2BOucpO
-         yp0g==
-X-Gm-Message-State: AOAM5336hAqvQ0vlYmtihXT3Bvue3u7U1PTNa7JaP1E8Rpsj2gHli3Zd
-        Soqv0JjH7zOQLG0f316+lKA=
-X-Google-Smtp-Source: ABdhPJwgRyomaRiiwB4eFwhgiaU7i3BK8ohkqFLZfju6seY+FUtszZFtzaDdSrsMGolBHVPKC3ISXQ==
-X-Received: by 2002:a05:6820:16a8:: with SMTP id bc40mr45352oob.63.1631716360722;
-        Wed, 15 Sep 2021 07:32:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x4sm41206ood.2.2021.09.15.07.32.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 07:32:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 15 Sep 2021 07:32:38 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: Re: [PATCH 5.10 157/236] Bluetooth: Move shutdown callback before
- flushing tx and rx queue
-Message-ID: <20210915143238.GA2403125@roeck-us.net>
-References: <20210913131100.316353015@linuxfoundation.org>
- <20210913131105.720088593@linuxfoundation.org>
- <20210915111843.GA16198@duo.ucw.cz>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=e1uS5h/yQq1jg3h4EwH+7iZtFwfb2jMum7PN8Ezu0z4=;
+        b=ovLPymoPsex/tjiJE29LMQar9SiCC2z41ujI50sgFptBTvwk1Y0ZVllyRsQyjcQG1h
+         Xd5dy0EZ/DIstvC1U/LMEehY78Vm/iWwEya0Ukz3GmSlrgjElw/1/F9uxA29QPQjrjE0
+         d+Pef//YpFmkP6vebRWoWiv9BHVfMn1lzuUOMd84dsrS0dRfYkiE4bJSM7TeppY5W46z
+         eq/JanIZx0q2NCrh+saCEUSC64qnvKnQkgt4cq9cowA9UI5hMHdLaPiq6SarFglu70wH
+         OdBVyhJVb7PrxgXh6SIcxiAG3zjZcfUxT+IFMClrKj9AdnztaB80XOTOmHwGSIXctHaZ
+         s/OQ==
+X-Gm-Message-State: AOAM530MW+YOVeKyHSGKvZq2PDc3DqPtTSD3TaxsvKgvogwBmNmrjz8w
+        6maoh8g6AMGsVc1e4GI7Xj6Z2q1RPZKZxHkTibo=
+X-Google-Smtp-Source: ABdhPJwOKwfxbJwWGsibiMnfm+1s1BXbnF8FjwkoC37M5u/W4Uld0Ds+UbZLAgI3RH8YV5vqHRBhUzY8//jgyErzQ84=
+X-Received: by 2002:a1f:ad46:: with SMTP id w67mr361353vke.16.1631716367851;
+ Wed, 15 Sep 2021 07:32:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915111843.GA16198@duo.ucw.cz>
+Reply-To: le61816@yandex.com
+Sender: ralizongo@gmail.com
+Received: by 2002:a59:a8c3:0:b0:22d:6aff:1d9f with HTTP; Wed, 15 Sep 2021
+ 07:32:47 -0700 (PDT)
+From:   "Mrs Lisa Edward." <hippolytepilabre@gmail.com>
+Date:   Wed, 15 Sep 2021 07:32:47 -0700
+X-Google-Sender-Auth: VyiQQgzNIqXS0TyD-7A2MltGlb4
+Message-ID: <CABQWLroTbtXHMMoCDJs6voR7Yh=thLEtD+Vmdju22yb5FR2vGg@mail.gmail.com>
+Subject: WITH DUE RESPECT.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 01:18:43PM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > [ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
-> 
-> Upstream commit is okay...
-> 
-> > So move the shutdown callback before flushing TX/RX queue to resolve the
-> > issue.
-> 
-> ...but something went wrong in stable. This is not moving code, this
-> is duplicating it:
-> 
-> > --- a/net/bluetooth/hci_core.c
-> > +++ b/net/bluetooth/hci_core.c
-> > @@ -1726,6 +1726,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
-> >  	hci_request_cancel_all(hdev);
-> >  	hci_req_sync_lock(hdev);
-> >  
-> > +	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-> > +	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-> > +	    test_bit(HCI_UP, &hdev->flags)) {
-> > +		/* Execute vendor specific shutdown routine */
-> > +		if (hdev->shutdown)
-> > +			hdev->shutdown(hdev);
-> > +	}
-> > +
-> >  	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
-> >  		cancel_delayed_work_sync(&hdev->cmd_timer);
-> >  		hci_req_sync_unlock(hdev);
-> 
-> And yes, we end up with 2 copies in 5.10.
-> 
+WITH DUE RESPECT.
 
-Same problem in v5.4.y, unfortunately.
+ Please forgive me for stressing you with my predicaments and am sorry
+for approaching you through this media.
 
-Guenter
+I really like to have a good relationship with you, and I have a
+special reason why I decided to contact you because of the urgency of
+my situation here.I came across your e-mail contact prior to a private
+search while in need of your assistance.I decided to contact you
+believing you will be honest to fulfill my final wish before I die.
 
-> Best regards,
-> 								Pavel
-> --
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+I am Mrs Lisa Edward, 63 years, from USA, I am childless and am
+suffering from a pro-long critical cancer, my doctors confirmed I may
+not live beyond two months from now as my ill health has defiled all
+forms of medical treatment.
 
+Since my days are numbered, I have decided willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charity work of God while you use 50% for yourself. I want you to know
+there is no risk involved; it
+is 100% hitch free & safe.
 
+If you are interested in assisting in getting this fund into your
+account for a charity project to fulfill my promise before I die
+please let me know immediately.
+
+I will appreciate your utmost confidentiality as I wait for your reply.
+Best Regards,
+Mrs Lisa Edward.
