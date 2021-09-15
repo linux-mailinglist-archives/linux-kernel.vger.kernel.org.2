@@ -2,97 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA0F40C414
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F115B40C419
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237361AbhIOLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:05:40 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:64028 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232468AbhIOLFk (ORCPT
+        id S237418AbhIOLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:07:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:28701 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232516AbhIOLHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:05:40 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F6h4oX016932;
-        Wed, 15 Sep 2021 07:04:21 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3b301k390t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 07:04:20 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 18FB4JIb056036
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 07:04:19 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Wed, 15 Sep 2021
- 07:04:18 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Wed, 15 Sep 2021 07:04:18 -0400
-Received: from ramonaalexandra-Precision-5520.ad.analog.com ([10.48.65.154])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 18FB4HnH006137;
-        Wed, 15 Sep 2021 07:04:17 -0400
-From:   Ramona Alexandra Nechita <ramona.nechita@analog.com>
-To:     <linux-pm@vger.kernel.org>
-CC:     <sre@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ramona Alexandra Nechita <ramona.nechita@analog.com>
-Subject: [PATCH] power: supply: Specify variations of MAX8903
-Date:   Wed, 15 Sep 2021 14:03:40 +0300
-Message-ID: <20210915110340.17411-1-ramona.nechita@analog.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 15 Sep 2021 07:07:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631703952; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
+ Subject: Sender; bh=oFYOphu9er1kSJGp6Y6sVZhQq4tL7St6PiF6qEExbaw=; b=svtJdQf/fW5PJ8RHxm0wwVBqLOCmSccN2csj+ojRKKO/vytgNSyyPTZgb1orKpoxduadjg9S
+ K/j1Ov+Sdtmxo/LLjTnvmj1rYjZl/lrx6SzcTrfPISDyuIyt6d6QDTJRdqcqfAT2gLDWDxoG
+ BJ+LXnjvjxkbHrl91uYSmUdNAag=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6141d378bd6681d8ed6d4ad3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 11:05:28
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B02B5C43619; Wed, 15 Sep 2021 11:05:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.6 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.242.137.170] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54B07C4338F;
+        Wed, 15 Sep 2021 11:05:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 54B07C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 2/2] ASoC: qcom: SC7280: Add machine driver
+To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
+        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+        bjorn.andersson@linaro.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, judyhsiao@chromium.org,
+        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
+        robh+dt@kernel.org, rohitkr@codeaurora.org,
+        srinivas.kandagatla@linaro.org, tiwai@suse.com
+References: <1631539062-28577-1-git-send-email-srivasam@codeaurora.org>
+ <1631539062-28577-3-git-send-email-srivasam@codeaurora.org>
+ <CAE-0n50i9rm6fcuyjCCPXjtxTyXwAiRVx91dXT4BDpbGA-tKjg@mail.gmail.com>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <7e179a64-2fe8-e761-c247-90ba55fcba82@codeaurora.org>
+Date:   Wed, 15 Sep 2021 16:35:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: ReiOQsyhmahstBOD3o8em38sG9wanA9L
-X-Proofpoint-GUID: ReiOQsyhmahstBOD3o8em38sG9wanA9L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-15_02,2021-09-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=998 mlxscore=0 phishscore=0 clxscore=1011 suspectscore=0
- bulkscore=0 adultscore=0 spamscore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109150072
+In-Reply-To: <CAE-0n50i9rm6fcuyjCCPXjtxTyXwAiRVx91dXT4BDpbGA-tKjg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAX8903 has multiple variations (A-E/G/H/J/N/Y).
-Specified them in the Kconfig and in the file comment.
 
-Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
----
- drivers/power/supply/Kconfig           | 2 +-
- drivers/power/supply/max8903_charger.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 9/14/2021 1:19 AM, Stephen Boyd wrote:
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index c84a7b1caeb6..cca779480b1c 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -442,7 +442,7 @@ config CHARGER_ISP1704
- 	  ISP1707/ISP1704 USB transceivers.
- 
- config CHARGER_MAX8903
--	tristate "MAX8903 Battery DC-DC Charger for USB and Adapter Power"
-+	tristate "MAX8903A/B/C/D/E/G/H/J/N/Y Battery DC-DC Charger for USB and Adapter Power"
- 	help
- 	  Say Y to enable support for the MAX8903 DC-DC charger and sysfs.
- 	  The driver supports controlling charger-enable and current-limit
-diff --git a/drivers/power/supply/max8903_charger.c b/drivers/power/supply/max8903_charger.c
-index 0bd39b0cc257..4e5c669e6607 100644
---- a/drivers/power/supply/max8903_charger.c
-+++ b/drivers/power/supply/max8903_charger.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- /*
-- * max8903_charger.c - Maxim 8903 USB/Adapter Charger Driver
-+ * max8903_charger.c - Maxim 8903A/B/C/D/E/G/H/J/N/Y USB/Adapter Charger Driver
-  *
-  * Copyright (C) 2011 Samsung Electronics
-  * MyungJoo Ham <myungjoo.ham@samsung.com>
+Thanks for Your time Stephen!!!
+> Quoting Srinivasa Rao Mandadapu (2021-09-13 06:17:42)
+>> diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+>> new file mode 100644
+>> index 0000000..906910c
+>> --- /dev/null
+>> +++ b/sound/soc/qcom/sc7280.c
+>> @@ -0,0 +1,343 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +//
+>> +// Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>> +//
+>> +// sc7280.c -- ALSA SoC Machine driver for sc7280
+>> +
+>> +#include <linux/gpio.h>
+>> +#include <linux/gpio/consumer.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of_device.h>
+>> +#include <linux/platform_device.h>
+>> +#include <sound/core.h>
+>> +#include <sound/jack.h>
+>> +#include <sound/pcm.h>
+>> +#include <sound/soc.h>
+>> +#include <uapi/linux/input-event-codes.h>
+> Looks like the include should be <linux/input.h> instead. I see that
+> practically no other code in the kernel is including the uapi header as
+> it's for userspace, not kernel. The uapi header is included in input.h
+> though so it's not actually all that different.
+Okay Will change accordingly!!!
+>
+>> +
+>> +#include <dt-bindings/sound/sc7180-lpass.h>
+>> +#include <dt-bindings/sound/qcom,q6afe.h>
+>> +
+>> +#include "../codecs/wcd938x.h"
+>> +#include "common.h"
+>> +#include "lpass.h"
+>> +
+> [...]
+>> +static int sc7280_snd_platform_probe(struct platform_device *pdev)
+>> +{
+>> +       struct snd_soc_card *card;
+>> +       struct sc7280_snd_data *data;
+>> +       struct device *dev = &pdev->dev;
+>> +       struct snd_soc_dai_link *link;
+>> +       int ret, i;
+>> +
+>> +       /* Allocate the private data */
+> This comment is worthless.
+Okay. Will remove it.
+>
+>> +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+>> +       if (!data)
+>> +               return -ENOMEM;
+>> +
+>> +       card = &data->card;
+>> +       snd_soc_card_set_drvdata(card, data);
+>> +
+>> +       card->owner = THIS_MODULE;
+>> +       card->driver_name = "SC7280";
+>> +       card->dev = dev;
+>> +
+>> +       ret = qcom_snd_parse_of(card);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       for_each_card_prelinks(card, i, link) {
+>> +               link->init = sc7280_init;
+>> +               link->ops = &sc7280_ops;
+>> +       }
+> Nitpick: Newline here.
+Okay.
+>
+>> +       return devm_snd_soc_register_card(dev, card);
+>> +}
+>> +
+
 -- 
-2.25.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
