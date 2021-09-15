@@ -2,45 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CAA40D02F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A893B40D031
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhIOXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233046AbhIOXaA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:30:00 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407EBC0613D8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 16:28:41 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: alyssa)
-        with ESMTPSA id 181AD1F40DEF
-Date:   Wed, 15 Sep 2021 19:28:33 -0400
-From:   Alyssa Rosenzweig <alyssa@collabora.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/panfrost: Calculate lock region size correctly
-Message-ID: <YUKBoSaJ4d0xB9Fw@maud>
-References: <20210903094957.74560-1-steven.price@arm.com>
+        id S232885AbhIOXe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229769AbhIOXeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 19:34:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D78960527;
+        Wed, 15 Sep 2021 23:33:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631748785;
+        bh=IB0nzsJWde7gkJ/M7LYqr9QL/W52pOYV0pio0OcOs6c=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=DDAEDl4+Txm0bxOmNXZCg44fXlLuDqu0sWZns82R8u0KmaMqbn7WGlZTws6i1e4SD
+         vDD+hcur7s3Utl3TiTmyuPUXNnUKLfso67oNRR8KoMIrIfFd4PhoVK2vhUTwrGAh6M
+         i2LP1gHyF1MXpTKxNgv1pllD43DHf4a+QGokjFa6aIpb5pUwYa9FXOY8PFN0j7oPU+
+         7TEcGalTTZ7hZz9t8pkv/8HsLBOECZhTirfQ/kk/81Nk/Xk6gRgZAlPSSgbbV0jUpW
+         5LomHEm8h0+zv/VGPY2AZJdHFrbHL0LbGAasGruYii/XMN5xVfv+ujPL83ia/xGRjz
+         1v9qddxUyItyg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2E4AD5C054E; Wed, 15 Sep 2021 16:33:05 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 16:33:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH rcu 0/14] Miscellaneous fixes for v5.16
+Message-ID: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903094957.74560-1-steven.price@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Took me a careful read, but this is
+Hello!
 
-	Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+This series provides miscellaneous fixes:
 
-Thanks for hunting this down!
+1.	Mark accesses to rcu_state.n_force_qs.
+
+2.	rcu-nocb: Fix a couple of tree_nocb code-style nits.
+
+3.	Eliminate rcu_implicit_dynticks_qs() local variable rnhqp.
+
+4.	Eliminate rcu_implicit_dynticks_qs() local variable ruqp.
+
+5.	Add another stall-warning root cause in stallwarn.rst.
+
+6.	Fix undefined Kconfig macros, courtesy of Zhouyi Zhou.
+
+7.	Comment rcu_gp_init() code waiting for CPU-hotplug operations.
+
+8.	Move rcu_dynticks_eqs_online() to rcu_cpu_starting().
+
+9.	Simplify rcu_report_dead() call to rcu_report_exp_rdp().
+
+10.	Make rcutree_dying_cpu() use its "cpu" parameter.
+
+11.	Make rcu_normal_after_boot writable again, courtesy of Juri Lelli.
+
+12.	Make rcu update module parameters world-readable, courtesy of
+	Juri Lelli.
+
+13.	Fix existing exp request check in sync_sched_exp_online_cleanup(),
+	courtesy of Neeraj Upadhyay.
+
+14.	Avoid unneeded function call in rcu_read_unlock(), courtesy of
+	Waiman Long.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst |   69 ++++------
+ b/Documentation/RCU/stallwarn.rst                                       |   10 +
+ b/arch/sh/configs/sdk7786_defconfig                                     |    1 
+ b/arch/xtensa/configs/nommu_kc705_defconfig                             |    1 
+ b/include/linux/rcupdate.h                                              |    3 
+ b/kernel/rcu/rcutorture.c                                               |    2 
+ b/kernel/rcu/tree.c                                                     |   10 -
+ b/kernel/rcu/tree_exp.h                                                 |    1 
+ b/kernel/rcu/tree_nocb.h                                                |    2 
+ b/kernel/rcu/tree_plugin.h                                              |    3 
+ b/kernel/rcu/update.c                                                   |    2 
+ kernel/rcu/tree.c                                                       |   24 +--
+ kernel/rcu/tree_exp.h                                                   |    2 
+ kernel/rcu/update.c                                                     |    6 
+ 14 files changed, 67 insertions(+), 69 deletions(-)
