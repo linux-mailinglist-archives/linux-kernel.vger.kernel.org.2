@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EB440CDF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909A140CE17
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhIOUa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231917AbhIOUa5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:30:57 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C14C061766
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:29:38 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so5290565otk.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+SQzu4YMziYEtKQGqS+FmHBlALDwBAUY8mKyC0ZwRh0=;
-        b=GCaKcF+sDRDg86ia81S0byZn6XvSifOGsOIbToWouHeQu75qaXYYF313+PPxe83GnK
-         mdN3k8re0i04xTLd//ynX4UL+lIsjxwf0NwxUtUDcUh2+v9izikUtzMh+hED1+RY/WbL
-         Ib6U5yUL+aPc+5W7/KfAiSzFAlMKFgTss+rNwNvbP8z4ttqj5Qf1s4BCSg/3b85bsCd1
-         TjVQAt+h7TaN1At9htUDRfdoJfw9rTQ4MTfZDqkzoLqfJ/xtaOTciI+oBehGKnWeJOf/
-         xat69Jf1qFQu4vsTlAIYrMDLMobcW16U5rwz8G/Imh94JSLm2/qklUr/ur7XCcsSLFnZ
-         w8tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+SQzu4YMziYEtKQGqS+FmHBlALDwBAUY8mKyC0ZwRh0=;
-        b=Ni1nh2l6wU/xwjt59G9QNQcMk43xkkFAb3om6er9ppykpth+xM6uX5Zrb/RaGB0ssr
-         yfWmN2TwBwboHrTNm4+nHDTwqs5QdI+gA749L37+pevJkUEJy9qfNHrnVpJRA8dvKC3d
-         qj8BXc92hMFhz+rAYo4z0s2wr4U1XT0DZEWozeaBG1yZ4VbScAtWeK5KQ9KQrKXyZSEO
-         gU7Kx+IczrPrxtIcq17IWC7BetsHzrKtW1LJalifduAlCbYEtdEiIgRGSZFqX3UYsVPv
-         up7GOck/xQf5ga+0uVRRKIh0jJQj3O6FZ0h1QXvogMwFOTfGKPp07IAc77lwOhZ21zzb
-         QMpQ==
-X-Gm-Message-State: AOAM532q0XAxh/jiFzNGmACj3GJNthF5P57GOoId0VJZxvJd013TH2nQ
-        WPZZ9wz9XzUWRHONmezTe3sYXB4bnsMiBA==
-X-Google-Smtp-Source: ABdhPJxF4D8XOaygWU9C8hsLFFcTyw76Vhli+KyZdU2svSswjdlBe7eJvZ2PRduSuxjesKGSwIRwdQ==
-X-Received: by 2002:a9d:7b48:: with SMTP id f8mr1705757oto.296.1631737778060;
-        Wed, 15 Sep 2021 13:29:38 -0700 (PDT)
-Received: from debianG.lan ([181.166.206.110])
-        by smtp.gmail.com with ESMTPSA id l4sm247584oth.4.2021.09.15.13.29.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:29:37 -0700 (PDT)
-From:   Gaston Gonzalez <gascoar@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
-        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH 3/3] staging: vchiq: cleanup code alignment issues
-Date:   Wed, 15 Sep 2021 17:29:16 -0300
-Message-Id: <20210915202916.413914-3-gascoar@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210915202916.413914-1-gascoar@gmail.com>
-References: <20210915202916.413914-1-gascoar@gmail.com>
+        id S232867AbhIOUdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:33:32 -0400
+Received: from mout.gmx.net ([212.227.15.19]:38563 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232168AbhIOUco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 16:32:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631737840;
+        bh=FT1bt5R/FOH6npv9XqUhIBjmnDojF0uwYc99SARbO9E=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=OuQsLKfmqSknDnjRmvpvF5gZFfr0LxiH64Sy2NNNbnXhiVtCWs2THcnQrkZ2gJfa0
+         FarOSuApUNS2SMtGZvzkKU/bBX+QOgxALG+Cyvz4Kynaff3TI7IoXsTtP37rpElwBa
+         wXl23EPHtoDcxUmKP/aZt692RXg3O2x7+PAF6JR0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.186.236]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MkHMZ-1nBFtp1KtF-00kkA3; Wed, 15
+ Sep 2021 22:30:40 +0200
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+References: <20210915035227.630204-1-linux@roeck-us.net>
+ <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+ <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
+ <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <3d30d1e0-f60a-3f48-65d9-f53b76640a9d@gmx.de>
+Date:   Wed, 15 Sep 2021 22:30:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:kzjIuZ4FF57XuRnrtWz/7WvoEwJGS3VQsRTh7uoXah9oP27a9Fm
+ +YEHuPwy6Q8UkKWzaw8n+fHjilOKjuMGVzh4kcgGQ3ZXoEvrQSDcUCHcZlKbAuj+97BKCnz
+ DMxjrDA3ED7ThzeTC5DMK8tr+FjLHJVOL7l4beGLMCe414C3l/oEFp7UWf9hmFi3XHsD58h
+ Y8B6Naso2YHgadVrGC2NA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HePgIiYQe0Q=:TYFKNrzKcQpBG3fJTKvXHg
+ S8l+Bfp0balC1rVZw07SbFMvRvFxnjKMJeyibWXfgfobr/EovYMy3POv44RA8KAn1ycriemwf
+ zXP1NbLDmtaR2+7DIMLQEn+3/WzmX4veYBcVDFQcKEvfMxFqqM/kRP4NsPJLDdzlzKHyWPHKe
+ b3MQ0iHP9P0g8zncl6akQre9ciKQAj+9S+sOJx077jKMF2/wtvE7HIDINn2I4hfwkW5Ffw0up
+ ZMAnrF3CaHQCb6+nbuJ4JLTLKaCJ8AvBAFBZ5osBm+vXaQpW8t1IEEf1IqOI01xGiHNoI6VMc
+ 8DXBcb091bFpHUJtw8F0VEQKyeJ8HDkVZQDaOk2wb6rQ9BC/xtx4tBaXPX5xbHhOrJi6flmEI
+ hNUvUCH/+GpfR6QgfC7sk0RC3X0QsPC/phrGUHYP+fifnLpIIZk58L7q+GoSC9c0uCusTyil4
+ +19lNweVA0eZZUTtHJSY2U+dJkoeHBMNzCq5mQn1JFQ9S/9ZqpgicO4Mayo3/+pSY8rRpTzpP
+ GDcIIstKjwfIGMnyV1XTFbFqOzSKgfnniK17U1eJPooqwDpRKPS2c8Hpj8KZbirNfxMcWYv0E
+ EWgG8C56UowFXtW09e0eE9zspTqaFYfx+5yVly+j/c4UPtU/zVLo1rrWvD3VAB3LG2pSTwBmF
+ OR1IieQzR6fk3kqBJ0kEOIWmS41M6SCFMaW+Xi63q+RCBtX0alNLytMe1VUucGldrsX4R322c
+ bQ1KhtSfRLM5rTdyYckvs3VrFc2V/2Eq5ceHOVsRT/Bp0/SfWYuYuhM1vrcOPm0VbnEoT0IP/
+ LkSmFwauiipmdMq0T5LbbaZpBNUkNVaJUYe9YcI9t02CfirrV2n3CIGMFcwJb91sU+prPJe5F
+ C7E3cjt8aKLdBZp/FY5KUajRlFYFD9+qZk3pQVct83i40oF1H5cvI37MhvhohzKHF427sW1sN
+ PBMIByo1I3MtOliX4FWF0zwBQOzKHRB8gWW4VW7YoZEEc0vdVm2fIivFYTs7sQIRg+fGAN92J
+ jdFzecx0E+xhLH8az4Celd87YvnVa3ucpxNUMQjn/lgagGDS4Yz+Fh+klgoXC24hBqfeY/3P5
+ n2e83PBoEd06qc=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix code alignment issues.
+On 9/15/21 9:47 PM, Linus Torvalds wrote:
+> On Wed, Sep 15, 2021 at 12:35 PM Guenter Roeck <linux@roeck-us.net> wrot=
+e:
+>>
+>> On a side note, we may revive the parisc patch. Helge isn't entirely
+>> happy with the other solution for parisc; it is quite invasive and
+>> touches a total of 19 files if I counted correctly.
+>
+> Ok, my suggestion to use the linker was not a "do it this way", it
+> really was just a "maybe alternate approach". So no objections if
+> absolute_pointer() ends up being the simpler solution.
 
-Reported by checkpatch.pl
+Yes, it's a lot simpler and makes backporting patches later much easier.
+I'll send a pull request with the updated parisc patch tomorrow.
 
-Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
----
- .../vc04_services/interface/vchiq_arm/vchiq_connected.c       | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-index 1802fd5e4888..bdb0ab617d8b 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-@@ -40,8 +40,8 @@ void vchiq_add_connected_callback(void (*callback)(void))
- 	} else {
- 		if (g_num_deferred_callbacks >= MAX_CALLBACKS) {
- 			vchiq_log_error(vchiq_core_log_level,
--				"There already %d callback registered - please increase MAX_CALLBACKS",
--				g_num_deferred_callbacks);
-+					"There already %d callback registered - please increase MAX_CALLBACKS",
-+					g_num_deferred_callbacks);
- 		} else {
- 			g_deferred_callback[g_num_deferred_callbacks] =
- 				callback;
--- 
-2.33.0
-
+Thanks,
+Helge
