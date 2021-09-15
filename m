@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8BF40D06A
+	by mail.lfdr.de (Postfix) with ESMTP id 75D4A40D069
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbhIOXrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:47:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49342 "EHLO mail.kernel.org"
+        id S233280AbhIOXrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232965AbhIOXrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233050AbhIOXrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 19:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4EB161131;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8BA06113E;
         Wed, 15 Sep 2021 23:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631749565;
-        bh=DJbg8Ie7q2ejCdJXF8FVvHWuYnea1IcGRs3WO9/D8Cs=;
+        s=k20201202; t=1631749566;
+        bh=tBTLNxUFn/9oqHiZ5NMkB3NmIBVvganvnDawKOSirrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yluj5w9HneTzBdGz6bwRW7nAH+cSAutP4VhwiqR2HAQnRR7xalhkRQq07DFte78Bg
-         2ePrMwTwwu3k0YofixxQJ14fitUkU2Onz4pw5oF8NUkgb6EGAABtUA2AkL/dTKM+qV
-         ZGWJETJPecBSOGe7AV0sMLD96bg8YY1O00cbzR3SOTbu5K5zj3rMmwMy1TyrFshhsJ
-         UrtydGKWH5f3S7NfqQwpr1GPSBkXeTQ+gvcv/ngtTzBGp+RTniqUWRTMEtwkRTGX0B
-         hMv9RnUZIM7eMF4PF6WMvQGmALkbzbm9NfkDi0RzfqDHN5RBqJDEEgvz80JxjfqQ0/
-         s7ZXQ/ZhMvpCw==
+        b=Eq8iokSXtNaF+BFpuMKvzvgaXUSst67yc+I/ZEeKyMXX8Q9ZLjng+6rST+TTS10oy
+         uTkNM2Nu9FFvzGogxydHrsd/19PM2ID1HYRahDnm3UwTHFzNcTCEvm3HpRruNkWyLj
+         FZROKpBd6CXe6puUQPhqR3Vzj6/fmaRcI6aqE1oUdIW+C4mlLL88JxwVtHKTaFIE3A
+         wD1t5qRRuvQNBHJsngztCViPB9FbVB9fKgCfDFw2Q5JD/CIcS7exN/8Oui/GidBXwn
+         X6VeGE+sWSOSuw96GxmJhWByXEF0TityqwxAN93MiAnnxrbg7K+JKmoC5nhWuegyw4
+         cCxR8u3DIRsAA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C230E5C08DB; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
+        id C452F5C08E8; Wed, 15 Sep 2021 16:46:05 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 03/13] rcu-tasks: Add trc_inspect_reader() checks for exiting critical section
-Date:   Wed, 15 Sep 2021 16:45:54 -0700
-Message-Id: <20210915234604.3907802-3-paulmck@kernel.org>
+Subject: [PATCH rcu 04/13] rcu-tasks: Remove second argument of rcu_read_unlock_trace_special()
+Date:   Wed, 15 Sep 2021 16:45:55 -0700
+Message-Id: <20210915234604.3907802-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915234538.GA3907674@paulmck-ThinkPad-P17-Gen-1>
@@ -46,68 +46,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, trc_inspect_reader() treats a task exiting its RCU Tasks
-Trace read-side critical section the same as being within that critical
-section.  However, this can fail because that task might have already
-checked its .need_qs field, which means that it might never decrement
-the all-important trc_n_readers_need_end counter.  Of course, for that
-to happen, the task would need to never again execute an RCU Tasks Trace
-read-side critical section, but this really could happen if the system's
-last trampoline was removed.  Note that exit from such a critical section
-cannot be treated as a quiescent state due to the possibility of nested
-critical sections.  This means that if trc_inspect_reader() sees a
-negative nesting value, it must set up to try again later.
+The second argument of rcu_read_unlock_trace_special() is always zero.
+When called from exit_tasks_rcu_finish_trace(), it is the constant
+zero, and rcu_read_unlock_trace_special() doesn't get called from
+rcu_read_unlock_trace() unless the value of local variable "nesting"
+is zero because in that case the early return is taken instead.
 
-This commit therefore ignores tasks that are exiting their RCU Tasks
-Trace read-side critical sections so that they will be rechecked later.
-
-[ paulmck: Apply feedback from Neeraj Upadhyay and Boqun Feng. ]
+This commit therefore removes the "nesting" argument from the
+rcu_read_unlock_trace_special() function, substituting the constant
+zero within that function.  This commit also adds a WARN_ON_ONCE()
+to rcu_read_lock_trace_held() in case non-zeroness some day appears.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tasks.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ include/linux/rcupdate_trace.h | 5 +++--
+ kernel/rcu/tasks.h             | 6 +++---
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index 86c8f6c98412..6f9c35817398 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -31,7 +31,7 @@ static inline int rcu_read_lock_trace_held(void)
+ 
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 
+-void rcu_read_unlock_trace_special(struct task_struct *t, int nesting);
++void rcu_read_unlock_trace_special(struct task_struct *t);
+ 
+ /**
+  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
+@@ -80,7 +80,8 @@ static inline void rcu_read_unlock_trace(void)
+ 		WRITE_ONCE(t->trc_reader_nesting, nesting);
+ 		return;  // We assume shallow reader nesting.
+ 	}
+-	rcu_read_unlock_trace_special(t, nesting);
++	WARN_ON_ONCE(nesting != 0);
++	rcu_read_unlock_trace_special(t);
+ }
+ 
+ void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
 diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index c9d8583ffe59..8387e70e6b00 100644
+index 8387e70e6b00..a3f4f9bd8c67 100644
 --- a/kernel/rcu/tasks.h
 +++ b/kernel/rcu/tasks.h
-@@ -923,7 +923,7 @@ static void trc_read_check_handler(void *t_in)
- static bool trc_inspect_reader(struct task_struct *t, void *arg)
+@@ -848,7 +848,7 @@ static void rcu_read_unlock_iw(struct irq_work *iwp)
+ static DEFINE_IRQ_WORK(rcu_tasks_trace_iw, rcu_read_unlock_iw);
+ 
+ /* If we are the last reader, wake up the grace-period kthread. */
+-void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
++void rcu_read_unlock_trace_special(struct task_struct *t)
  {
- 	int cpu = task_cpu(t);
--	bool in_qs = false;
-+	int nesting;
- 	bool ofl = cpu_is_offline(cpu);
+ 	int nq = READ_ONCE(t->trc_reader_special.b.need_qs);
  
- 	if (task_curr(t)) {
-@@ -943,18 +943,18 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
- 		n_heavy_reader_updates++;
- 		if (ofl)
- 			n_heavy_reader_ofl_updates++;
--		in_qs = true;
-+		nesting = 0;
- 	} else {
- 		// The task is not running, so C-language access is safe.
--		in_qs = likely(!t->trc_reader_nesting);
-+		nesting = t->trc_reader_nesting;
- 	}
+@@ -858,7 +858,7 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting)
+ 	// Update .need_qs before ->trc_reader_nesting for irq/NMI handlers.
+ 	if (nq)
+ 		WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
+-	WRITE_ONCE(t->trc_reader_nesting, nesting);
++	WRITE_ONCE(t->trc_reader_nesting, 0);
+ 	if (nq && atomic_dec_and_test(&trc_n_readers_need_end))
+ 		irq_work_queue(&rcu_tasks_trace_iw);
+ }
+@@ -1200,7 +1200,7 @@ static void exit_tasks_rcu_finish_trace(struct task_struct *t)
+ 	WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
+ 	WRITE_ONCE(t->trc_reader_nesting, 0);
+ 	if (WARN_ON_ONCE(READ_ONCE(t->trc_reader_special.b.need_qs)))
+-		rcu_read_unlock_trace_special(t, 0);
++		rcu_read_unlock_trace_special(t);
+ }
  
--	// Mark as checked so that the grace-period kthread will
--	// remove it from the holdout list.
--	t->trc_reader_checked = true;
--
--	if (in_qs)
--		return true;  // Already in quiescent state, done!!!
-+	// If not exiting a read-side critical section, mark as checked
-+	// so that the grace-period kthread will remove it from the
-+	// holdout list.
-+	t->trc_reader_checked = nesting >= 0;
-+	if (nesting <= 0)
-+		return !nesting;  // If in QS, done, otherwise try again later.
- 
- 	// The task is in a read-side critical section, so set up its
- 	// state so that it will awaken the grace-period kthread upon exit
+ /**
 -- 
 2.31.1.189.g2e36527f23
 
