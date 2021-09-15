@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5741640C27D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D98940C2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237382AbhIOJMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:12:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15421 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237229AbhIOJLp (ORCPT
+        id S237159AbhIOJZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:25:13 -0400
+Received: from mail.aperture-lab.de ([116.203.183.178]:57710 "EHLO
+        mail.aperture-lab.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229785AbhIOJZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:11:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8Z8B1nThzRCTW;
-        Wed, 15 Sep 2021 17:06:18 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 17:10:21 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 15
- Sep 2021 17:10:20 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <hch@infradead.org>,
-        <ming.lei@redhat.com>
-CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH v7 6/6] nbd: fix uaf in nbd_handle_reply()
-Date:   Wed, 15 Sep 2021 17:20:10 +0800
-Message-ID: <20210915092010.2087371-7-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210915092010.2087371-1-yukuai3@huawei.com>
-References: <20210915092010.2087371-1-yukuai3@huawei.com>
+        Wed, 15 Sep 2021 05:25:12 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DA9C93EA68;
+        Wed, 15 Sep 2021 11:23:45 +0200 (CEST)
+Date:   Wed, 15 Sep 2021 11:23:43 +0200
+From:   Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, Felix Fietkau <nbd@nbd.name>,
+        Sujith Manoharan <c_manoha@qca.qualcomm.com>,
+        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "John W . Linville" <linville@tuxdriver.com>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] ath9k: interrupt fixes on queue reset
+Message-ID: <YUG7n24qcn/AmuT8@sellars>
+References: <20210914192515.9273-1-linus.luessing@c0d3.blue>
+ <87a6kf6iip.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a6kf6iip.fsf@toke.dk>
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a problem that nbd_handle_reply() might access freed request:
+Hi Toke,
 
-1) At first, a normal io is submitted and completed with scheduler:
+On Tue, Sep 14, 2021 at 09:53:34PM +0200, Toke Høiland-Jørgensen wrote:
+> Linus Lüssing <linus.luessing@c0d3.blue> writes:
+> 
+> > Hi,
+> >
+> > The following are two patches for ath9k to fix a potential interrupt
+> > storm (PATCH 2/3) and to fix potentially resetting the wifi chip while
+> > its interrupts were accidentally reenabled (PATCH 3/3).
+> 
+> Uhh, interesting - nice debugging work! What's the user-level symptom of
+> this? I.e., when this triggers does the device just appear to hang, or
+> does it cause reboots, or?
+> 
+> -Toke
+> 
 
-internel_tag = blk_mq_get_tag -> get tag from sched_tags
- blk_mq_rq_ctx_init
-  sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
-...
-blk_mq_get_driver_tag
- __blk_mq_get_driver_tag -> get tag from tags
- tags->rq[tag] = sched_tag->static_rq[internel_tag]
+For PATCH 2/3 the user-level symptom was that the system would
+hang for a few seconds and would then silently reboot without any notice
+on the serial console. And after disabling CONFIG_ATH79_WDT the
+system would "hang" indefinitely without any notice on the console
+without a reboot (while JTAG/gdb showed that it was entering ath_isr()
+again and again and wasn't doing anything else).
 
-So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
-to the request: sched_tags->static_rq[internal_tag]. Even if the
-io is finished.
+For PATCH 3/3 I don't have a specific user-level symptom. But from
+looking at the git history it seemed to me that the ath9k hw
+interrupts (AR_IER, AR_INTR_ASYNC_ENABLE and AR_INTR_ASYNC_ENABLE off)
+should be disabled during a reset:
 
-2) nbd server send a reply with random tag directly:
+  4668cce527ac ath9k: disable the tasklet before taking the PCU lock
+  eaf04a691566 ath9k: Disable beacon tasklet during reset
+  872b5d814f99 ath9k: do not access hardware on IRQs during reset
+  e3f31175a3ee ath9k: fix race condition in irq processing during hardware reset
 
-recv_work
- nbd_handle_reply
-  blk_mq_tag_to_rq(tags, tag)
-   rq = tags->rq[tag]
+Maybe someone else on these lists might know what issues this can
+cause exactly?
 
-3) if the sched_tags->static_rq is freed:
-
-blk_mq_sched_free_requests
- blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
-  -> step 2) access rq before clearing rq mapping
-  blk_mq_clear_rq_mapping(set, tags, hctx_idx);
-  __free_pages() -> rq is freed here
-
-4) Then, nbd continue to use the freed request in nbd_handle_reply
-
-Fix the problem by get 'q_usage_counter' before blk_mq_tag_to_rq(),
-thus request is ensured not to be freed because 'q_usage_counter' is
-not zero.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/block/nbd.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 9a7bbf8ebe74..3e8b70b5d4f9 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -824,6 +824,7 @@ static void recv_work(struct work_struct *work)
- 						     work);
- 	struct nbd_device *nbd = args->nbd;
- 	struct nbd_config *config = nbd->config;
-+	struct request_queue *q = nbd->disk->queue;
- 	struct nbd_sock *nsock;
- 	struct nbd_cmd *cmd;
- 	struct request *rq;
-@@ -834,7 +835,24 @@ static void recv_work(struct work_struct *work)
- 		if (nbd_read_reply(nbd, args->index, &reply))
- 			break;
- 
-+		/*
-+		 * Grab ref of q_usage_counter can prevent request being freed
-+		 * during nbd_handle_reply(). If q_usage_counter is zero, then
-+		 * no request is inflight, which means something is wrong since
-+		 * we expect to find a request to complete here.
-+		 */
-+		if (!percpu_ref_tryget(&q->q_usage_counter)) {
-+			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
-+				__func__);
-+			break;
-+		}
-+
- 		cmd = nbd_handle_reply(nbd, args->index, &reply);
-+		/*
-+		 * It's safe to drop ref before request completion, inflight
-+		 * request will ensure q_usage_counter won't be zero.
-+		 */
-+		percpu_ref_put(&q->q_usage_counter);
- 		if (IS_ERR(cmd))
- 			break;
- 
--- 
-2.31.1
-
+Regards, Linus
