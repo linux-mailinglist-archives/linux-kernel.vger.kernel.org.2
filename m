@@ -2,158 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEEB40BDDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34DB140BDE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbhIOCqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:46:25 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:15490 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229763AbhIOCqJ (ORCPT
+        id S234031AbhIOCs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 22:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhIOCsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:46:09 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F2g7XS017546;
-        Wed, 15 Sep 2021 02:44:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=cS4qtmGYe4tF59m9fynuZA/iUFfQ9gIwEqX/rTOnOq8=;
- b=mdJEyKVkW45n7gjtB5B7pt8AFG3wMGGTYTvX+zIKDpbhEdHymwAgX0obnZaJGNpSZ90q
- sHAR9Rsh798j/7Hqf9n2ROm1ztYrLOtNjCKrwtrlRVMvR9qz5CP41xasxZnEYcbAsjKO
- qrO8jAbBN+mY0noBkqjWhz/W/rh4Rrm5ggf2AnQ7Ba0xFJpWwb/NcTFo0T4ioKzQDY+S
- INACFxqnpB96bIUhm4POoGQ7s4YKpGC0f0oJHITEx9eEv9lGB+3Cb588FLGYb5bNPaKH
- m7p2FoVwQ4DzHc4XLbj+wjFuaBvP53jBW80PNMRLYKmQRS/BVnaCUVauHo09srH5iAF9 JQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=cS4qtmGYe4tF59m9fynuZA/iUFfQ9gIwEqX/rTOnOq8=;
- b=ySWR1/JrOzAW2bNLUhm+BGX+G2IccA/Kc8EqqqLX8UyRArSMnq9z4VMSUcPQo3u6JXO7
- haVk23DIuTdb99XNC+oN5M4ixWzHqaINlsjqJtqLZbwO0Tu++wU7B/G1BypCUWPcKJed
- EFXxsEXSA31THa/etWX/lrM4yFSRHhZHFZUoy1kp7CzlHMhwADnsmWCSEWBeI+1rbY6L
- XfBPESv1XaMRXrgBLVjc5G8IbTmqSvw01J0eoG+X/T6n8+Q6gj34Qde4zOeplQUayhir
- hNHlu9B72rjssZTXEYBImDVkIvK/AGvhiL99dbT9sezJeEWs9IRWAxWoC9SJVe6vklK1 uQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b2p8tbd11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 02:44:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18F2iYxT095680;
-        Wed, 15 Sep 2021 02:44:45 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2177.outbound.protection.outlook.com [104.47.73.177])
-        by aserp3030.oracle.com with ESMTP id 3b0jgdy0b3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 02:44:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GIOyvsv3y5v5Hd6CGpGOcvxzOyoNM6WXML1rzqQ9aLzClmwvvnCmh2t/8wtWmj9ZZ0VUboe3r6BvjZdm+lhyQj0hbcF5sCeCvUe/1mC1JwE4H3KeHJnB3ZwuKSvU7e5v/uP86jHGxlYXfJlFfXqOe5rv9pbwDv601sZROzMOQnsac/nqyxL5N2uScf6L7hGLifIQQ6xYRgzFIKXLGSD7se/mYCXS0MRS40Qbl4gqW8G/y5aeIIz5C6PggknpqJTm1jLpJY6wqoKxfIPmZqN91QYZvWJq66YSAGxhXVZfNo6lf65IfB6mQOIlk10LRiOnSzVGp8UfifX7zjoSC+VLvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=cS4qtmGYe4tF59m9fynuZA/iUFfQ9gIwEqX/rTOnOq8=;
- b=EryMwKmeZTDYbjoJwjKv6JFyZH9DNIBrnF8Ifkt9OMM+i3a82/FXsxJSIwVaxAz15me6JD3EPP3hUtpgHd7fIEOYNeqnMhr8W6RdVG04117T5CnvJVaJ9y0zukicExEdw7ai0pjHEl8DuFdVHn11NfpTYhbBsbzBWJxMCIlIHxM2fuhU5osk3abg+WVP4HSzl39xQT5LMC+e96VDUYIYv5oPL6RewvvdiB6NkKygqyyGGXT1Spq1Y8Lo/EaWUwk4bWnUtKMi/fOTGJo11RXOT27VG+HkROCVjF0eW+tnX1QjlHiiPLLLqlHkWAxFqxYMQgaywCxNfCx07ew5i6pZcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 14 Sep 2021 22:48:55 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9547C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:47:36 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id bt14so2896021ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cS4qtmGYe4tF59m9fynuZA/iUFfQ9gIwEqX/rTOnOq8=;
- b=yZD+S8TzUDK3nZnxHBNII3xFld+Y3LJShArVARVEcVZESyflfnlOlOhfUZP6ry9hIhcvRu+yr6HOMC9GiYAOVAj9JynjTqbjUnrSbW6FFlaE64oNEZSmzSU/6IzAOJ6iheWAlzPeL3XcQ5pS9C0qgHkBTq1cItalYpVcksq3lx4=
-Authentication-Results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4694.namprd10.prod.outlook.com (2603:10b6:510:3e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Wed, 15 Sep
- 2021 02:44:43 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
- 02:44:43 +0000
-To:     Chanwoo Lee <cw9316.lee@samsung.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-arm-msm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-Subject: Re: [PATCH] scsi: ufs-qcom: Remove unneeded variable 'err'
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1tuimwoad.fsf@ca-mkp.ca.oracle.com>
-References: <CGME20210907044846epcas1p297b8ef121290fc3265cf9dc3eadc44de@epcas1p2.samsung.com>
-        <20210907044111.29632-1-cw9316.lee@samsung.com>
-Date:   Tue, 14 Sep 2021 22:44:40 -0400
-In-Reply-To: <20210907044111.29632-1-cw9316.lee@samsung.com> (Chanwoo Lee's
-        message of "Tue, 7 Sep 2021 13:41:11 +0900")
-Content-Type: text/plain
-X-ClientProxiedBy: CY4PR02CA0028.namprd02.prod.outlook.com
- (2603:10b6:903:117::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IPKH7Xo192InGfxWs0L4Ekl+5l+8TPHrMaxQ7ivOq5Y=;
+        b=PVVGosTaVS4eE5h3cFcuDxIkaLh3VXJ7HKYa6jwLboSwv7wWcQP+MlKNqgj8OBFcwf
+         8EPTIQXhAJaA0gp/XsoGwxYqpnaArrH8dC4ovInbNEjGERph2dn+xGov4fkZjLvRN01c
+         W3t4qLeVLww0E5xtENfFVqAI86tSqSgNQrPDOfc8VcUEMG8VP/q+S3j9f/I6BMjP/J9y
+         iRBtA9Bp3NhaUfocsW1KgPQ6vXZI1wjzi986T3394G1saygizjTCeZol5peDK6T0/xeC
+         WtiXBrG3jaNPdVnK+PPIaK7BUTLj5RbMp0IoVZAgcifOS90j8FYzVOKJF9xS0Et9xsAX
+         CdDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IPKH7Xo192InGfxWs0L4Ekl+5l+8TPHrMaxQ7ivOq5Y=;
+        b=mFoYT0JoH/NBTeQhBAEdhllCN0df0F7p9JVZgU4HPR9VKzfFeiGgPJ0TJUAT9GdPYl
+         UZt5f4zD6QABCaJ8YUgJExw3hHWfW3WifR0ECf5+RYUcs47uJXKSryEsXxVBYvv+UUTi
+         ZcrQAfq7GTjHjHRiswa8eK+qb8EzrR26txqzGUIbGnexN3h2B9fi7wAzwk/RSWqNTF/j
+         oy9HNflIkI4/eQXEx6UZyZVnaBljyj0qP2MFBgIIGYPar8qrVf1+aUlihOIF3NeFZute
+         68RMwYE6zU9oXslP9tP44NBq90MGnSs4lPfWx9UKAuIaZ4PBvPjO5GPLvzUFhxmpE0ge
+         2QMg==
+X-Gm-Message-State: AOAM5305RCFyU9s73J+5ZfE+KGv6JvrkRWALDhSR5CsVOvhxK5YWbBmR
+        5SKON/bKCqJYApfGZD6CA9zaaLivKZqDtSR/O30=
+X-Google-Smtp-Source: ABdhPJzZT+c61dzUPXOqGwWpSmfLVmV9gpGfm+mDvvb0FEqRmSRp/FeL4SIKQlKJEd6akEzCJHFaRumxz4OII50bTHc=
+X-Received: by 2002:a17:906:3854:: with SMTP id w20mr21410193ejc.537.1631674055161;
+ Tue, 14 Sep 2021 19:47:35 -0700 (PDT)
 MIME-Version: 1.0
-Received: from ca-mkp.ca.oracle.com (138.3.201.50) by CY4PR02CA0028.namprd02.prod.outlook.com (2603:10b6:903:117::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 02:44:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c7cdaa8a-e19f-452a-be05-08d977f2c578
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4694:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4694C27AE665693B68C2ED028EDB9@PH0PR10MB4694.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JavTMzps4DAVEegC2BjJubhHWTydMNkd4+lDPfsBpCl26m0CXEf0W0nCqSsTlHi7L956d3RPacdeq6qsFpQTjZJwyvo/WCgF1Kd5R7dxObrIfstsG+JKVFBnl+7+qRH3tScd3l3I9Bb6cQJLVcoSq2Z6C33AiDOYbDX/hwiQ1cPSgZK6aA9/VxtSYGRe9x0V/jyzcGDhog7CmoabyuileL8qwy0I0vVV1DjNumbz5mOg2KVtWz6ISZ9i1PUmbT7IWSYcUSAtPqSgQa55D99M2LBHJPYB3zhXu+05LZq3OZ68rRWABoySqzKQ89zqjwJRlWHQNNP8AHqrH/R/g4JpNvVNF4nLEb70SARna+FiAto31SqLYuskTPetWD8L8BTl4MaQ2Am5WghJ7rAZCKNtdzV1LqETXkweiJzOCprRfOckBuqcx+87aemjSzWayC83ZbyXGMaSc1gNo0z0q26zr43ruiQvnxl60IaYohHJ/s3KgOEF8ELv3pUd94KJrFPyjSdQ25du8ykeq8V+J01pSm90ooJufAfLSDAs/b2CqxSRAqUd0i25q0sCMXWuH9nSh355sV0cgvtgkk8q3wE0ZLap6HIN+C2sBw2vYDIG+srw9W2AYLW0qeIQtWWkPLzB7G0FYFbYQmaoeNJYkdcuOjKNTktCxvvpmTwtWyd2SUQ1RQ7AYApqgWSTEbtrlPYO7LFFjxtTsC1d6O4g0078HQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(396003)(376002)(366004)(136003)(186003)(478600001)(26005)(8936002)(38100700002)(38350700002)(558084003)(7696005)(55016002)(52116002)(5660300002)(6916009)(956004)(8676002)(86362001)(4326008)(2906002)(7416002)(66476007)(66556008)(316002)(36916002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JFQReN3xZqmyhAGutDG7tLf8fqs9NYJ8ZqUg87jVadtH37ksp/Js92ONXPbN?=
- =?us-ascii?Q?kzLsBcvJvBHS+Da411zeIx6N1IsklB4z0SA2iBKQNXSdesTMPWNCzKJOlvwC?=
- =?us-ascii?Q?ekOcbgITSAPBOfeMdIVoCwrF1YXryL1Shjw9O/xGiqOn86giGkTHg5CT5Oba?=
- =?us-ascii?Q?CV6Row1u2Vpsypg1pK02B6OTDbfph+oFeithTHaTT2zEe7r6mDMW9rMuQCO0?=
- =?us-ascii?Q?7C4Y667EvtZLFFp8SR/aIdQBth+1bb4FTXvtwVnJVCLwKC8ZD4bmbTkPLY5u?=
- =?us-ascii?Q?0h9EUvKDIr6VV+FIsMrvAXU/XK0tCjQr3pTWo2dYq/cU1SBSsZHk2usZPr6H?=
- =?us-ascii?Q?s3OZTq3ddOulhEX8M+TAQSfcuLtliJAEl2d3mAt9vmdU8Jyji8VyNOcAaadU?=
- =?us-ascii?Q?zuhCN6xOSj7hRgrjkN3/BzXLvtucA0FJVjihUZdgn/jxvkWs+ltDhCR5mozS?=
- =?us-ascii?Q?QH6rsm7IeBGgriJUdi+xhChFtzqxAxmlg7X2Gi71327TEA7e/3CD4MTwSARq?=
- =?us-ascii?Q?//IoVeS3E/Be12LgODl3VCurqT2LmGEZW+dWZ5EhWTzhIpWIsLYvhHwaSzba?=
- =?us-ascii?Q?ySrT7H7YYI2NcTe49m1v4NpBt/PBw622DjLaSP7N1zgmZ1Fl4ANCofKF89cO?=
- =?us-ascii?Q?pNdFsPAQ9zVA7w+HjY+jEZX/8I8xnCeWPFgEk2CHN+cNthEcSHuE9/1Xra8g?=
- =?us-ascii?Q?M0tT6/v/G6J7F27Mr7f96A1Padu/joAjWPrLldSfXl+eoUACwB2DQ9409EPG?=
- =?us-ascii?Q?1Ly3/GEvPc2TaS6S+CA7kpvtjfK0Rj96yDmrl+Vckf4zkG37OwvsgzjFTwLt?=
- =?us-ascii?Q?hZ0PDqsbnmluM+dAeRbFZI+noHfWQgCediVP9vn2Xo10wzlhN9cHGCV5LwPa?=
- =?us-ascii?Q?fztyP+qVk2dsLspMD6tx5eOKs5WA5V/ThP1UTqnaf1qfLk2deAxF1j4AE/kW?=
- =?us-ascii?Q?epnaQMEnPnA5dDhMMmmI3G0PjWrsfpclfB5NZA311fMWMVRf9oqXGFIStrin?=
- =?us-ascii?Q?Rnol9cjmY9vKUs1DqZ6HoLwrJpqSUXbOSmhLfCoTO1N708/uYf1ydjlHwlZw?=
- =?us-ascii?Q?1MeLoj59spauIAm4Klfw2P1OO4cJEXfSNTWvQs4ACKD15a0A7kz9PqydPOpC?=
- =?us-ascii?Q?lPm+9+UrkgeTHoG5ZrX5j8JTSuEAu+//5Hov/Fc76WNuSyb6fZkwAIbJlKfg?=
- =?us-ascii?Q?IysRKZYrguInwtZltWplqLxoTSAmpEjjEqZ1Ca1Gdai2LztGiqmkjw+CqDUK?=
- =?us-ascii?Q?8kH9QSqBkftSWs0oGgMGqVEpVOZVFuQPEY+AKV27MD1ysFfJ37Jz6wutmTQU?=
- =?us-ascii?Q?Df16MKx/svv32HFl47yPlwsu?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7cdaa8a-e19f-452a-be05-08d977f2c578
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 02:44:42.9257
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U/iTrgDhQSwY74VpJ2D3QI4zGBs/GXTVKdYYRt2JYOuCWBE1J2MV0ZgwNceU2ThiIujZLGkgxAJp+gw1cqgfM2MFgE5TJCXRsGYGxKEwA6c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4694
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10107 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109150015
-X-Proofpoint-GUID: lq9-zhqKVwHHJ_pAWmMSrFVwOFCwTcVq
-X-Proofpoint-ORIG-GUID: lq9-zhqKVwHHJ_pAWmMSrFVwOFCwTcVq
+References: <20210914013701.344956-1-ying.huang@intel.com> <20210914013701.344956-2-ying.huang@intel.com>
+ <CAHbLzkpRWwtkhnXUZEUk3LgpHtmgNJRPGUjKzd9bhQU33Y4u2g@mail.gmail.com> <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <8735q63947.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 14 Sep 2021 19:47:23 -0700
+Message-ID: <CAHbLzko-hR74s5HKMx5SG6bwaoJvcHSLeKwihkpvhYj7+hX+Sw@mail.gmail.com>
+Subject: Re: [PATCH -V8 1/6] NUMA balancing: optimize page placement for
+ memory tiering system
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Wei Xu <weixugc@google.com>,
+        osalvador <osalvador@suse.de>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 14, 2021 at 6:45 PM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Yang Shi <shy828301@gmail.com> writes:
+>
+> > On Mon, Sep 13, 2021 at 6:37 PM Huang Ying <ying.huang@intel.com> wrote:
+> >>
+> >> With the advent of various new memory types, some machines will have
+> >> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+> >> memory subsystem of these machines can be called memory tiering
+> >> system, because the performance of the different types of memory are
+> >> usually different.
+> >>
+> >> In such system, because of the memory accessing pattern changing etc,
+> >> some pages in the slow memory may become hot globally.  So in this
+> >> patch, the NUMA balancing mechanism is enhanced to optimize the page
+> >> placement among the different memory types according to hot/cold
+> >> dynamically.
+> >>
+> >> In a typical memory tiering system, there are CPUs, fast memory and
+> >> slow memory in each physical NUMA node.  The CPUs and the fast memory
+> >> will be put in one logical node (called fast memory node), while the
+> >> slow memory will be put in another (faked) logical node (called slow
+> >> memory node).  That is, the fast memory is regarded as local while the
+> >> slow memory is regarded as remote.  So it's possible for the recently
+> >> accessed pages in the slow memory node to be promoted to the fast
+> >> memory node via the existing NUMA balancing mechanism.
+> >>
+> >> The original NUMA balancing mechanism will stop to migrate pages if the free
+> >> memory of the target node will become below the high watermark.  This
+> >> is a reasonable policy if there's only one memory type.  But this
+> >> makes the original NUMA balancing mechanism almost not work to optimize page
+> >> placement among different memory types.  Details are as follows.
+> >>
+> >> It's the common cases that the working-set size of the workload is
+> >> larger than the size of the fast memory nodes.  Otherwise, it's
+> >> unnecessary to use the slow memory at all.  So in the common cases,
+> >> there are almost always no enough free pages in the fast memory nodes,
+> >> so that the globally hot pages in the slow memory node cannot be
+> >> promoted to the fast memory node.  To solve the issue, we have 2
+> >> choices as follows,
+> >>
+> >> a. Ignore the free pages watermark checking when promoting hot pages
+> >>    from the slow memory node to the fast memory node.  This will
+> >>    create some memory pressure in the fast memory node, thus trigger
+> >>    the memory reclaiming.  So that, the cold pages in the fast memory
+> >>    node will be demoted to the slow memory node.
+> >>
+> >> b. Make kswapd of the fast memory node to reclaim pages until the free
+> >>    pages are a little more (about 10MB) than the high watermark.  Then,
+> >>    if the free pages of the fast memory node reaches high watermark, and
+> >>    some hot pages need to be promoted, kswapd of the fast memory node
+> >>    will be waken up to demote some cold pages in the fast memory node to
+> >>    the slow memory node.  This will free some extra space in the fast
+> >>    memory node, so the hot pages in the slow memory node can be
+> >>    promoted to the fast memory node.
+> >>
+> >> The choice "a" will create the memory pressure in the fast memory
+> >> node.  If the memory pressure of the workload is high, the memory
+> >> pressure may become so high that the memory allocation latency of the
+> >> workload is influenced, e.g. the direct reclaiming may be triggered.
+> >>
+> >> The choice "b" works much better at this aspect.  If the memory
+> >> pressure of the workload is high, the hot pages promotion will stop
+> >> earlier because its allocation watermark is higher than that of the
+> >> normal memory allocation.  So in this patch, choice "b" is
+> >> implemented.
+> >>
+> >> In addition to the original page placement optimization among sockets,
+> >> the NUMA balancing mechanism is extended to be used to optimize page
+> >> placement according to hot/cold among different memory types.  So the
+> >> sysctl user space interface (numa_balancing) is extended in a backward
+> >> compatible way as follow, so that the users can enable/disable these
+> >> functionality individually.
+> >>
+> >> The sysctl is converted from a Boolean value to a bits field.  The
+> >> definition of the flags is,
+> >>
+> >> - 0x0: NUMA_BALANCING_DISABLED
+> >> - 0x1: NUMA_BALANCING_NORMAL
+> >> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+> >
+> > Thanks for coming up with the patches. TBH the first question off the
+> > top of my head is all the complexity is really worthy for real life
+> > workload at the moment? And the interfaces (sysctl knob files exported
+> > to users) look complicated for the users. I don't know if the users
+> > know how to set an optimal value for their workloads.
+> >
+> > I don't disagree the NUMA balancing needs optimization and improvement
+> > for tiering memory, the question we need answer is how far we should
+> > go for now and what the interfaces should look like. Does it make
+> > sense to you?
+> >
+> > IMHO I'd prefer the most simple and straightforward approach at the
+> > moment. For example, we could just skip high water mark check for PMEM
+> > promotion.
+>
+> Hi, Yang,
+>
+> Thanks for comments.
+>
+> I understand your concerns about complexity.  I have tried to organize
+> the patchset so that the initial patch is as simple as possible and the
+> complexity is introduced step by step.  But it seems that your simplest
+> version is even simpler than my one :-)
+>
+> In this patch ([1/6]), I introduced 2 stuff.
+>
+> Firstly, a sysctl knob is provided to disable the NUMA balancing based
+> promotion.  Per my understanding, you suggest to remove this.  If so,
+> optimizing cross-socket access and promoting hot PMEM pages to DRAM must
+> be enabled/disabled together.  If a user wants to enable promoting the
+> hot PMEM pages to DRAM but disable optimizing cross-socket access
+> because they have already bound the CPU of the workload so that there's no
+> much cross-socket access, how can they do?
 
-Chanwoo,
+I should make myself clearer. Here I mean the whole series, not this
+specific patch. I'm concerned that the interfaces (hint fault latency
+and ratelimit) are hard to understand and configure for users and
+whether we go too far at the moment or not. I'm dealing with the end
+users, I'd admit I'm not even sure how to configure the knobs to
+achieve optimal performance for different real life workloads.
 
-> 'err' is not used.  So i remove the unneeded variable.
+For this specific patch I'm ok to a new promotion mode. There might be
+usecase that users just want to do promotion between tiered memory but
+not care about NUMA locality.
 
-Applied to 5.16/scsi-staging, thanks!
+>
+> Secondly, we add a promote watermark to the DRAM node so that we can
+> demote/promote pages between the high and promote watermark.  Per my
+> understanding, you suggest just to ignore the high watermark checking
+> for promoting.  The problem is that this may make the free pages of the
+> DRAM node too few.  If many pages are promoted in short time, the free
+> pages will be kept near the min watermark for a while, so that the page
+> allocation from the application will trigger direct reclaiming.  We have
+> observed page allocation failure in a test before with a similar policy.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The question is, applicable to the hint fault latency and ratelimit
+too, we already have some NUMA balancing knobs to control scan period
+and scan size and watermark knobs to tune how aggressively kswapd
+works, can they do the same jobs instead of introducing any new knobs?
+
+>
+> Best Regards,
+> Huang, Ying
