@@ -2,1125 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7596C40C428
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0310940C340
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237543AbhIOLKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:10:43 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9052 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237456AbhIOLKj (ORCPT
+        id S237236AbhIOKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 06:04:32 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37528 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232071AbhIOKEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:10:39 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H8crx3XnBzW2Vw;
-        Wed, 15 Sep 2021 19:08:17 +0800 (CST)
-Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 19:09:18 +0800
-Received: from localhost.localdomain (10.67.165.2) by
- dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 15 Sep 2021 19:09:17 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>,
+        Wed, 15 Sep 2021 06:04:31 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F5iQXB017454;
+        Wed, 15 Sep 2021 12:02:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=n2VSlVzypMz7IXthyKFInZew+tHg8uno97878m2qfdg=;
+ b=x/FGgguSmQURfP/Tehq8e8IYsvxTrF8mkNK+P/ZoIi85Uca5H3YMZMc7Z5OuxUljxqav
+ gmHQb1bVHLnHnjiKRMzXxziIkktfUhlhvYJfSJD3/DruTqeHaIJfbJsW4GwCjDYJk8nY
+ fZ6ubTmVA6gvOpCyY4rJ+f5EEGj6s0oqYtVvT3kJtdYPylRi1z3D1p6sBeJ4DVKWqTZP
+ R0wogtpJAvlL0BQWwG3KqdT668RntFTsox6OmPwi2D/m4t6+PRkQ06B1u6r6QuqbpvIU
+ o8Z5pzE5ZVoTbmtvA+JeSEDF+aJzgIEjN1GgRw8JFG9Wi8Ox9LLmZQGclNHaJIMVqStk zg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b3axv9nk0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 12:02:48 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A9B5510002A;
+        Wed, 15 Sep 2021 12:02:47 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 942E62291A0;
+        Wed, 15 Sep 2021 12:02:47 +0200 (CEST)
+Received: from lmecxl0577.lme.st.com (10.75.127.49) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 15 Sep
+ 2021 12:02:47 +0200
+Subject: Re: [PATCH 6/7] iio: adc: stm32-adc: add vrefint calibration support
+To:     Jonathan Cameron <jic23@kernel.org>
+CC:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangshaokun@hisilicon.com>
-Subject: [PATCH v10 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
-Date:   Wed, 15 Sep 2021 15:45:24 +0800
-Message-ID: <20210915074524.18040-3-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210915074524.18040-1-liuqi115@huawei.com>
-References: <20210915074524.18040-1-liuqi115@huawei.com>
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210908155452.25458-1-olivier.moysan@foss.st.com>
+ <20210908155452.25458-7-olivier.moysan@foss.st.com>
+ <20210911172834.401cf4c8@jic23-huawei>
+From:   Olivier MOYSAN <olivier.moysan@foss.st.com>
+Message-ID: <865e35a2-47c1-336a-641a-365b7db8213a@foss.st.com>
+Date:   Wed, 15 Sep 2021 12:02:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema757-chm.china.huawei.com (10.1.198.199)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210911172834.401cf4c8@jic23-huawei>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-15_02,2021-09-14_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
-to sample bandwidth, latency, buffer occupation etc.
+Hi Jonathan,
 
-Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
-registered as a PMU in /sys/bus/event_source/devices, so users can
-select target PMU, and use filter to do further sets.
+On 9/11/21 6:28 PM, Jonathan Cameron wrote:
+> On Wed, 8 Sep 2021 17:54:51 +0200
+> Olivier Moysan <olivier.moysan@foss.st.com> wrote:
+> 
+>> Add support of vrefint calibration.
+>> If a channel is labeled as vrefint, get vrefint calibration
+>> from non volatile memory for this channel.
+>> A conversion on vrefint channel allows to update scale
+>> factor according to vrefint deviation, compared to vrefint
+>> calibration value.
+> 
+> As I mention inline, whilst technically the ABI doesn't demand it
+> the expectation of much of userspace software is that _scale is
+> pseudo constant - that is it doesn't tend to change very often and when
+> it does it's normally because someone deliberately made it change.
+> As such most software reads it just once.
+> 
+> Normally we work around this by applying the maths in kernel and
+> not exposing the scale at all. Is this something that could be done here?
+> 
+> Jonathan
+> 
+>>
+>> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+>> ---
+>>   drivers/iio/adc/stm32-adc.c | 88 ++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 82 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+>> index ef3d2af98025..9e52a7de9b16 100644
+>> --- a/drivers/iio/adc/stm32-adc.c
+>> +++ b/drivers/iio/adc/stm32-adc.c
+>> @@ -21,6 +21,7 @@
+>>   #include <linux/io.h>
+>>   #include <linux/iopoll.h>
+>>   #include <linux/module.h>
+>> +#include <linux/nvmem-consumer.h>
+>>   #include <linux/platform_device.h>
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/of.h>
+>> @@ -42,6 +43,7 @@
+>>   #define STM32_ADC_TIMEOUT	(msecs_to_jiffies(STM32_ADC_TIMEOUT_US / 1000))
+>>   #define STM32_ADC_HW_STOP_DELAY_MS	100
+>>   #define STM32_ADC_CHAN_NONE		-1
+>> +#define STM32_ADC_VREFINT_VOLTAGE	3300
+>>   
+>>   #define STM32_DMA_BUFFER_SIZE		PAGE_SIZE
+>>   
+>> @@ -79,6 +81,7 @@ enum stm32_adc_extsel {
+>>   };
+>>   
+>>   enum stm32_adc_int_ch {
+>> +	STM32_ADC_INT_CH_NONE = -1,
+>>   	STM32_ADC_INT_CH_VDDCORE,
+>>   	STM32_ADC_INT_CH_VREFINT,
+>>   	STM32_ADC_INT_CH_VBAT,
+>> @@ -137,6 +140,16 @@ struct stm32_adc_regs {
+>>   	int shift;
+>>   };
+>>   
+>> +/**
+>> + * struct stm32_adc_vrefint - stm32 ADC internal reference voltage data
+>> + * @vrefint_cal:	vrefint calibration value from nvmem
+>> + * @vrefint_data:	vrefint actual value
+>> + */
+>> +struct stm32_adc_vrefint {
+>> +	u32 vrefint_cal;
+>> +	u32 vrefint_data;
+>> +};
+>> +
+>>   /**
+>>    * struct stm32_adc_regspec - stm32 registers definition
+>>    * @dr:			data register offset
+>> @@ -186,6 +199,7 @@ struct stm32_adc;
+>>    * @unprepare:		optional unprepare routine (disable, power-down)
+>>    * @irq_clear:		routine to clear irqs
+>>    * @smp_cycles:		programmable sampling time (ADC clock cycles)
+>> + * @ts_vrefint_ns:	vrefint minimum sampling time in ns
+>>    */
+>>   struct stm32_adc_cfg {
+>>   	const struct stm32_adc_regspec	*regs;
+>> @@ -199,6 +213,7 @@ struct stm32_adc_cfg {
+>>   	void (*unprepare)(struct iio_dev *);
+>>   	void (*irq_clear)(struct iio_dev *indio_dev, u32 msk);
+>>   	const unsigned int *smp_cycles;
+>> +	const unsigned int ts_vrefint_ns;
+>>   };
+>>   
+>>   /**
+>> @@ -223,6 +238,7 @@ struct stm32_adc_cfg {
+>>    * @pcsel:		bitmask to preselect channels on some devices
+>>    * @smpr_val:		sampling time settings (e.g. smpr1 / smpr2)
+>>    * @cal:		optional calibration data on some devices
+>> + * @vrefint:		internal reference voltage data
+>>    * @chan_name:		channel name array
+>>    * @num_diff:		number of differential channels
+>>    * @int_ch:		internal channel indexes array
+>> @@ -248,6 +264,7 @@ struct stm32_adc {
+>>   	u32			pcsel;
+>>   	u32			smpr_val[2];
+>>   	struct stm32_adc_calib	cal;
+>> +	struct stm32_adc_vrefint vrefint;
+>>   	char			chan_name[STM32_ADC_CH_MAX][STM32_ADC_CH_SZ];
+>>   	u32			num_diff;
+>>   	int			int_ch[STM32_ADC_INT_CH_NB];
+>> @@ -1331,15 +1348,35 @@ static int stm32_adc_read_raw(struct iio_dev *indio_dev,
+>>   			ret = stm32_adc_single_conv(indio_dev, chan, val);
+>>   		else
+>>   			ret = -EINVAL;
+>> +
+>> +		/* If channel mask corresponds to vrefint, store data */
+>> +		if (adc->int_ch[STM32_ADC_INT_CH_VREFINT] == chan->channel)
+>> +			adc->vrefint.vrefint_data = *val;
+>> +
+>>   		iio_device_release_direct_mode(indio_dev);
+>>   		return ret;
+>>   
+>>   	case IIO_CHAN_INFO_SCALE:
+>>   		if (chan->differential) {
+>> -			*val = adc->common->vref_mv * 2;
+>> +			if (adc->vrefint.vrefint_data &&
+>> +			    adc->vrefint.vrefint_cal) {
+>> +				*val = STM32_ADC_VREFINT_VOLTAGE * 2 *
+>> +				       adc->vrefint.vrefint_cal /
+>> +				       adc->vrefint.vrefint_data;
+> 
+> Ah.. Dynamic scale.  This is always awkward when it occurs.
+> Given most / possibly all userspace software assumes a pseudo static scale
+> (not data dependent) we normally hide this by doing the maths internal to the
+> driver - sometimes meaning we need to present the particular channel as processed
+> not raw.
+> 
+> Is the expectation here that vrefint_data is actually very nearly constant? If
+> so then what you have here may be fine as anyone not aware the scale might change
+> will get very nearly the right value anyway.
+> 
 
-Filtering options contains:
-event     - select the event.
-port      - select target Root Ports. Information of Root Ports are
-            shown under sysfs.
-bdf       - select requester_id of target EP device.
-trig_len  - set trigger condition for starting event statistics.
-trig_mode - set trigger mode. 0 means starting to statistic when bigger
-            than trigger condition, and 1 means smaller.
-thr_len   - set threshold for statistics.
-thr_mode  - set threshold mode. 0 means count when bigger than threshold,
-            and 1 means smaller.
+The need here is to compare the measured value of vrefint with the 
+calibrated value saved in non volatile memory. The ratio between these 
+two values can be used as a correction factor for the acquisitions on 
+all other channels.
 
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
----
- MAINTAINERS                            |   2 +
- drivers/perf/hisilicon/Kconfig         |   9 +
- drivers/perf/hisilicon/Makefile        |   2 +
- drivers/perf/hisilicon/hisi_pcie_pmu.c | 985 +++++++++++++++++++++++++
- include/linux/cpuhotplug.h             |   1 +
- 5 files changed, 999 insertions(+)
- create mode 100644 drivers/perf/hisilicon/hisi_pcie_pmu.c
+The vrefint data is expected to be close to the saved vrefint 
+calibration value, and it should not vary strongly over time.
+So, yes, we can indeed consider the scale as a pseudo constant. If the 
+scale is not updated, the deviation with actual value should remain 
+limited, as well.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 19135a9d778e..92493bb2ce5e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8379,8 +8379,10 @@ F:	Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
- 
- HISILICON PMU DRIVER
- M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
-+M:	Qi Liu <liuqi115@huawei.com>
- S:	Supported
- W:	http://www.hisilicon.com
-+F:	Documentation/admin-guide/perf/hisi-pcie-pmu.rst
- F:	Documentation/admin-guide/perf/hisi-pmu.rst
- F:	drivers/perf/hisilicon
- 
-diff --git a/drivers/perf/hisilicon/Kconfig b/drivers/perf/hisilicon/Kconfig
-index c5d1b7019fff..5546218b5598 100644
---- a/drivers/perf/hisilicon/Kconfig
-+++ b/drivers/perf/hisilicon/Kconfig
-@@ -5,3 +5,12 @@ config HISI_PMU
- 	  help
- 	  Support for HiSilicon SoC L3 Cache performance monitor, Hydra Home
- 	  Agent performance monitor and DDR Controller performance monitor.
-+
-+config HISI_PCIE_PMU
-+	tristate "HiSilicon PCIE PERF PMU"
-+	depends on PCI && ARM64
-+	help
-+	  Provide support for HiSilicon PCIe performance monitoring unit (PMU)
-+	  RCiEP devices.
-+	  Adds the PCIe PMU into perf events system for monitoring latency,
-+	  bandwidth etc.
-diff --git a/drivers/perf/hisilicon/Makefile b/drivers/perf/hisilicon/Makefile
-index 7643c9f93e36..506ed39e3266 100644
---- a/drivers/perf/hisilicon/Makefile
-+++ b/drivers/perf/hisilicon/Makefile
-@@ -2,3 +2,5 @@
- obj-$(CONFIG_HISI_PMU) += hisi_uncore_pmu.o hisi_uncore_l3c_pmu.o \
- 			  hisi_uncore_hha_pmu.o hisi_uncore_ddrc_pmu.o hisi_uncore_sllc_pmu.o \
- 			  hisi_uncore_pa_pmu.o
-+
-+obj-$(CONFIG_HISI_PCIE_PMU) += hisi_pcie_pmu.o
-diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-new file mode 100644
-index 000000000000..49687bfe1c4b
---- /dev/null
-+++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-@@ -0,0 +1,985 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * This driver adds support for PCIe PMU RCiEP device. Related
-+ * perf events are bandwidth, bandwidth utilization, latency
-+ * etc.
-+ *
-+ * Copyright (C) 2021 HiSilicon Limited
-+ * Author: Qi Liu <liuqi115@huawei.com>
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/bitmap.h>
-+#include <linux/bug.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/kernel.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/perf_event.h>
-+
-+#define DRV_NAME "hisi_pcie_pmu"
-+/* Define registers */
-+#define HISI_PCIE_GLOBAL_CTRL		0x00
-+#define HISI_PCIE_EVENT_CTRL		0x010
-+#define HISI_PCIE_CNT			0x090
-+#define HISI_PCIE_EXT_CNT		0x110
-+#define HISI_PCIE_INT_STAT		0x150
-+#define HISI_PCIE_INT_MASK		0x154
-+#define HISI_PCIE_REG_BDF		0xfe0
-+#define HISI_PCIE_REG_VERSION		0xfe4
-+#define HISI_PCIE_REG_INFO		0xfe8
-+
-+/* Define command in HISI_PCIE_GLOBAL_CTRL */
-+#define HISI_PCIE_GLOBAL_EN		0x01
-+#define HISI_PCIE_GLOBAL_NONE		0
-+
-+/* Define command in HISI_PCIE_EVENT_CTRL */
-+#define HISI_PCIE_EVENT_EN		BIT_ULL(20)
-+#define HISI_PCIE_RESET_CNT		BIT_ULL(22)
-+#define HISI_PCIE_INIT_SET		BIT_ULL(34)
-+#define HISI_PCIE_THR_EN		BIT_ULL(26)
-+#define HISI_PCIE_TARGET_EN		BIT_ULL(32)
-+#define HISI_PCIE_TRIG_EN		BIT_ULL(52)
-+
-+/* Define offsets in HISI_PCIE_EVENT_CTRL */
-+#define HISI_PCIE_EVENT_M		GENMASK_ULL(15, 0)
-+#define HISI_PCIE_THR_MODE_M		GENMASK_ULL(27, 27)
-+#define HISI_PCIE_THR_M			GENMASK_ULL(31, 28)
-+#define HISI_PCIE_TARGET_M		GENMASK_ULL(52, 36)
-+#define HISI_PCIE_TRIG_MODE_M		GENMASK_ULL(53, 53)
-+#define HISI_PCIE_TRIG_M		GENMASK_ULL(59, 56)
-+
-+#define HISI_PCIE_MAX_COUNTERS		8
-+#define HISI_PCIE_REG_STEP		8
-+#define HISI_PCIE_THR_MAX_VAL		10
-+#define HISI_PCIE_TRIG_MAX_VAL		10
-+#define HISI_PCIE_MAX_PERIOD		(GENMASK_ULL(63, 0))
-+#define HISI_PCIE_INIT_VAL		BIT_ULL(63)
-+
-+struct hisi_pcie_pmu {
-+	struct perf_event *hw_events[HISI_PCIE_MAX_COUNTERS];
-+	struct hlist_node node;
-+	struct pci_dev *pdev;
-+	struct pmu pmu;
-+	void __iomem *base;
-+	int irq;
-+	u32 identifier;
-+	/* Minimum and maximum bdf of root ports monitored by PMU */
-+	u16 bdf_min;
-+	u16 bdf_max;
-+	int on_cpu;
-+};
-+
-+struct hisi_pcie_reg_pair {
-+	u16 lo;
-+	u16 hi;
-+};
-+
-+#define to_pcie_pmu(p)  (container_of((p), struct hisi_pcie_pmu, pmu))
-+#define GET_PCI_DEVFN(bdf)  ((bdf) & 0xff)
-+
-+#define HISI_PCIE_PMU_FILTER_ATTR(_name, _config, _hi, _lo)		  \
-+	static u64 hisi_pcie_get_##_name(struct perf_event *event)	  \
-+	{								  \
-+		return FIELD_GET(GENMASK(_hi, _lo), event->attr._config); \
-+	}								  \
-+
-+HISI_PCIE_PMU_FILTER_ATTR(event, config, 16, 0);
-+HISI_PCIE_PMU_FILTER_ATTR(thr_len, config1, 3, 0);
-+HISI_PCIE_PMU_FILTER_ATTR(thr_mode, config1, 4, 4);
-+HISI_PCIE_PMU_FILTER_ATTR(trig_len, config1, 8, 5);
-+HISI_PCIE_PMU_FILTER_ATTR(trig_mode, config1, 9, 9);
-+HISI_PCIE_PMU_FILTER_ATTR(port, config2, 15, 0);
-+HISI_PCIE_PMU_FILTER_ATTR(bdf, config2, 31, 16);
-+
-+static ssize_t hisi_pcie_format_sysfs_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	struct dev_ext_attribute *eattr;
-+
-+	eattr = container_of(attr, struct dev_ext_attribute, attr);
-+
-+	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
-+}
-+
-+static ssize_t hisi_pcie_event_sysfs_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
-+{
-+	struct perf_pmu_events_attr *pmu_attr =
-+		container_of(attr, struct perf_pmu_events_attr, attr);
-+
-+	return sysfs_emit(buf, "config=0x%llx\n", pmu_attr->id);
-+}
-+
-+#define HISI_PCIE_PMU_FORMAT_ATTR(_name, _format)                              \
-+	(&((struct dev_ext_attribute[]){                                       \
-+		{ .attr = __ATTR(_name, 0444, hisi_pcie_format_sysfs_show,     \
-+				 NULL),                                        \
-+		  .var = (void *)_format }                                     \
-+	})[0].attr.attr)
-+
-+#define HISI_PCIE_PMU_EVENT_ATTR(_name, _id)			\
-+	PMU_EVENT_ATTR_ID(_name, hisi_pcie_event_sysfs_show, _id)
-+
-+static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
-+			    char *buf)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
-+
-+	return cpumap_print_to_pagebuf(true, buf, cpumask_of(pcie_pmu->on_cpu));
-+}
-+static DEVICE_ATTR_RO(cpumask);
-+
-+static ssize_t identifier_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
-+
-+	return sysfs_emit(buf, "%#x\n", pcie_pmu->identifier);
-+}
-+static DEVICE_ATTR_RO(identifier);
-+
-+static ssize_t bus_show(struct device *dev, struct device_attribute *attr,
-+			char *buf)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
-+
-+	return sysfs_emit(buf, "%#04x\n", PCI_BUS_NUM(pcie_pmu->bdf_min));
-+}
-+static DEVICE_ATTR_RO(bus);
-+
-+static struct hisi_pcie_reg_pair
-+hisi_pcie_parse_reg_value(struct hisi_pcie_pmu *pcie_pmu, u32 reg_off)
-+{
-+	u32 val = readl_relaxed(pcie_pmu->base + reg_off);
-+	struct hisi_pcie_reg_pair regs = {
-+		.lo = val,
-+		.hi = val >> 16,
-+	};
-+
-+	return regs;
-+}
-+
-+/*
-+ * Hardware counter and ext_counter work together for bandwidth, latency, bus
-+ * utilization and buffer occupancy events. For example, RX memory write latency
-+ * events(index = 0x0010), counter counts total delay cycles and ext_counter
-+ * counts RX memory write PCIe packets number.
-+ *
-+ * As we don't want PMU driver to process these two data, "delay cycles" can
-+ * be treated as an independent event(index = 0x0010), "RX memory write packets
-+ * number" as another(index = 0x10010). BIT 16 is used to distinguish and 0-15
-+ * bits are "real" event index, which can be used to set HISI_PCIE_EVENT_CTRL.
-+ */
-+#define EXT_COUNTER_IS_USED(idx)		((idx) & BIT(16))
-+
-+static u32 hisi_pcie_get_real_event(struct perf_event *event)
-+{
-+	return hisi_pcie_get_event(event) & GENMASK(15, 0);
-+}
-+
-+static u32 hisi_pcie_pmu_get_offset(u32 offset, u32 idx)
-+{
-+	return offset + HISI_PCIE_REG_STEP * idx;
-+}
-+
-+static u32 hisi_pcie_pmu_readl(struct hisi_pcie_pmu *pcie_pmu, u32 reg_offset,
-+			       u32 idx)
-+{
-+	u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
-+
-+	return readl_relaxed(pcie_pmu->base + offset);
-+}
-+
-+static void hisi_pcie_pmu_writel(struct hisi_pcie_pmu *pcie_pmu, u32 reg_offset,
-+				 u32 idx, u32 val)
-+{
-+	u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
-+
-+	writel_relaxed(val, pcie_pmu->base + offset);
-+}
-+
-+static u64 hisi_pcie_pmu_readq(struct hisi_pcie_pmu *pcie_pmu, u32 reg_offset,
-+			       u32 idx)
-+{
-+	u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
-+
-+	return readq_relaxed(pcie_pmu->base + offset);
-+}
-+
-+static void hisi_pcie_pmu_writeq(struct hisi_pcie_pmu *pcie_pmu, u32 reg_offset,
-+				 u32 idx, u64 val)
-+{
-+	u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
-+
-+	writeq_relaxed(val, pcie_pmu->base + offset);
-+}
-+
-+static void hisi_pcie_pmu_config_filter(struct perf_event *event)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+	u64 reg = HISI_PCIE_INIT_SET;
-+	u64 port, trig_len, thr_len;
-+
-+	/* Config HISI_PCIE_EVENT_CTRL according to event. */
-+	reg |= FIELD_PREP(HISI_PCIE_EVENT_M, hisi_pcie_get_real_event(event));
-+
-+	/* Config HISI_PCIE_EVENT_CTRL according to ROOT PORT or EP device. */
-+	port = hisi_pcie_get_port(event);
-+	if (port)
-+		reg |= FIELD_PREP(HISI_PCIE_TARGET_M, port);
-+	else
-+		reg |= HISI_PCIE_TARGET_EN |
-+		       FIELD_PREP(HISI_PCIE_TARGET_M, hisi_pcie_get_bdf(event));
-+
-+	/* Config HISI_PCIE_EVENT_CTRL according to trigger condition. */
-+	trig_len = hisi_pcie_get_trig_len(event);
-+	if (trig_len) {
-+		reg |= FIELD_PREP(HISI_PCIE_TRIG_M, trig_len);
-+		reg |= FIELD_PREP(HISI_PCIE_TRIG_MODE_M,
-+				  hisi_pcie_get_trig_mode(event));
-+		reg |= HISI_PCIE_TRIG_EN;
-+	}
-+
-+	/* Config HISI_PCIE_EVENT_CTRL according to threshold condition. */
-+	thr_len = hisi_pcie_get_thr_len(event);
-+	if (thr_len) {
-+		reg |= FIELD_PREP(HISI_PCIE_THR_M, thr_len);
-+		reg |= FIELD_PREP(HISI_PCIE_THR_MODE_M,
-+		       hisi_pcie_get_thr_mode(event));
-+		reg |= HISI_PCIE_THR_EN;
-+	}
-+
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, hwc->idx, reg);
-+}
-+
-+static void hisi_pcie_pmu_clear_filter(struct perf_event *event)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, hwc->idx,
-+			     HISI_PCIE_INIT_SET);
-+}
-+
-+static bool hisi_pcie_pmu_valid_requester_id(struct hisi_pcie_pmu *pcie_pmu,
-+					     u32 bdf)
-+{
-+	struct pci_dev *root_port, *pdev;
-+	u16 rp_bdf;
-+
-+	pdev = pci_get_domain_bus_and_slot(pci_domain_nr(pcie_pmu->pdev->bus),
-+					   PCI_BUS_NUM(bdf),
-+					   GET_PCI_DEVFN(bdf));
-+	if (!pdev)
-+		return false;
-+
-+	root_port = pcie_find_root_port(pdev);
-+	if (!root_port) {
-+		pci_dev_put(pdev);
-+		return false;
-+	}
-+
-+	pci_dev_put(pdev);
-+	rp_bdf = pci_dev_id(root_port);
-+	return rp_bdf >= pcie_pmu->bdf_min && rp_bdf <= pcie_pmu->bdf_max;
-+}
-+
-+static bool hisi_pcie_pmu_valid_filter(struct perf_event *event,
-+				       struct hisi_pcie_pmu *pcie_pmu)
-+{
-+	u32 requester_id = hisi_pcie_get_bdf(event);
-+
-+	if (hisi_pcie_get_thr_len(event) > HISI_PCIE_THR_MAX_VAL)
-+		return false;
-+
-+	if (hisi_pcie_get_trig_len(event) > HISI_PCIE_TRIG_MAX_VAL)
-+		return false;
-+
-+	if (requester_id) {
-+		if (!hisi_pcie_pmu_valid_requester_id(pcie_pmu, requester_id))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
-+static bool hisi_pcie_pmu_cmp_event(struct perf_event *target,
-+					struct perf_event *event)
-+{
-+	return hisi_pcie_get_real_event(target) ==
-+	       hisi_pcie_get_real_event(event);
-+}
-+
-+static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
-+{
-+	struct perf_event *sibling, *leader = event->group_leader;
-+	struct perf_event *event_group[HISI_PCIE_MAX_COUNTERS];
-+	int counters = 1;
-+	int num;
-+
-+	event_group[0] = leader;
-+	if (!is_software_event(leader)) {
-+		if (leader->pmu != event->pmu)
-+			return false;
-+
-+		if (leader != event && !hisi_pcie_pmu_cmp_event(leader, event))
-+			event_group[counters++] = event;
-+	}
-+
-+	for_each_sibling_event(sibling, event->group_leader) {
-+		if (is_software_event(sibling))
-+			continue;
-+
-+		if (sibling->pmu != event->pmu)
-+			return false;
-+
-+		for (num = 0; num < counters; num++) {
-+			if (hisi_pcie_pmu_cmp_event(event_group[num], sibling))
-+				break;
-+		}
-+
-+		if (num == counters)
-+			event_group[counters++] = sibling;
-+	}
-+
-+	return counters <= HISI_PCIE_MAX_COUNTERS;
-+}
-+
-+static int hisi_pcie_pmu_event_init(struct perf_event *event)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	event->cpu = pcie_pmu->on_cpu;
-+
-+	if (EXT_COUNTER_IS_USED(hisi_pcie_get_event(event)))
-+		hwc->event_base = HISI_PCIE_EXT_CNT;
-+	else
-+		hwc->event_base = HISI_PCIE_CNT;
-+
-+	if (event->attr.type != event->pmu->type)
-+		return -ENOENT;
-+
-+	/* Sampling is not supported. */
-+	if (is_sampling_event(event) || event->attach_state & PERF_ATTACH_TASK)
-+		return -EOPNOTSUPP;
-+
-+	if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu))
-+		return -EINVAL;
-+
-+	if (!hisi_pcie_pmu_validate_event_group(event))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static u64 hisi_pcie_pmu_read_counter(struct perf_event *event)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	u32 idx = event->hw.idx;
-+
-+	return hisi_pcie_pmu_readq(pcie_pmu, event->hw.event_base, idx);
-+}
-+
-+static int hisi_pcie_pmu_find_related_event(struct hisi_pcie_pmu *pcie_pmu,
-+					    struct perf_event *event)
-+{
-+	struct perf_event *sibling;
-+	int idx;
-+
-+	for (idx = 0; idx < HISI_PCIE_MAX_COUNTERS; idx++) {
-+		sibling = pcie_pmu->hw_events[idx];
-+		if (!sibling)
-+			continue;
-+
-+		if (!hisi_pcie_pmu_cmp_event(sibling, event))
-+			continue;
-+
-+		/* Related events must be used in group */
-+		if (sibling->group_leader == event->group_leader)
-+			return idx;
-+		else
-+			return -EINVAL;
-+	}
-+
-+	return idx;
-+}
-+
-+static int hisi_pcie_pmu_get_event_idx(struct hisi_pcie_pmu *pcie_pmu)
-+{
-+	int idx;
-+
-+	for (idx = 0; idx < HISI_PCIE_MAX_COUNTERS; idx++) {
-+		if (!pcie_pmu->hw_events[idx])
-+			return idx;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static void hisi_pcie_pmu_event_update(struct perf_event *event)
-+{
-+	struct hw_perf_event *hwc = &event->hw;
-+	u64 new_cnt, prev_cnt, delta;
-+
-+	do {
-+		prev_cnt = local64_read(&hwc->prev_count);
-+		new_cnt = hisi_pcie_pmu_read_counter(event);
-+	} while (local64_cmpxchg(&hwc->prev_count, prev_cnt,
-+				 new_cnt) != prev_cnt);
-+
-+	delta = (new_cnt - prev_cnt) & HISI_PCIE_MAX_PERIOD;
-+	local64_add(delta, &event->count);
-+}
-+
-+static void hisi_pcie_pmu_read(struct perf_event *event)
-+{
-+	hisi_pcie_pmu_event_update(event);
-+}
-+
-+static void hisi_pcie_pmu_set_period(struct perf_event *event)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+	int idx = hwc->idx;
-+
-+	local64_set(&hwc->prev_count, HISI_PCIE_INIT_VAL);
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_CNT, idx, HISI_PCIE_INIT_VAL);
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EXT_CNT, idx,
-+			     HISI_PCIE_INIT_VAL);
-+}
-+
-+static void hisi_pcie_pmu_enable_counter(struct hisi_pcie_pmu *pcie_pmu,
-+					 struct hw_perf_event *hwc)
-+{
-+	u32 idx = hwc->idx;
-+	u64 val;
-+
-+	val = hisi_pcie_pmu_readq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx);
-+	val |= HISI_PCIE_EVENT_EN;
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx, val);
-+}
-+
-+static void hisi_pcie_pmu_disable_counter(struct hisi_pcie_pmu *pcie_pmu,
-+					  struct hw_perf_event *hwc)
-+{
-+	u32 idx = hwc->idx;
-+	u64 val;
-+
-+	val = hisi_pcie_pmu_readq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx);
-+	val &= ~HISI_PCIE_EVENT_EN;
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx, val);
-+}
-+
-+static void hisi_pcie_pmu_enable_int(struct hisi_pcie_pmu *pcie_pmu,
-+				     struct hw_perf_event *hwc)
-+{
-+	u32 idx = hwc->idx;
-+
-+	hisi_pcie_pmu_writel(pcie_pmu, HISI_PCIE_INT_MASK, idx, 0);
-+}
-+
-+static void hisi_pcie_pmu_disable_int(struct hisi_pcie_pmu *pcie_pmu,
-+				      struct hw_perf_event *hwc)
-+{
-+	u32 idx = hwc->idx;
-+
-+	hisi_pcie_pmu_writel(pcie_pmu, HISI_PCIE_INT_MASK, idx, 1);
-+}
-+
-+static void hisi_pcie_pmu_reset_counter(struct hisi_pcie_pmu *pcie_pmu,
-+					int idx)
-+{
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx,
-+			     HISI_PCIE_RESET_CNT);
-+	hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx,
-+			     HISI_PCIE_INIT_SET);
-+}
-+
-+static void hisi_pcie_pmu_start(struct perf_event *event, int flags)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+	int idx = hwc->idx;
-+	u64 prev_cnt;
-+
-+	if (WARN_ON_ONCE(!(hwc->state & PERF_HES_STOPPED)))
-+		return;
-+
-+	WARN_ON_ONCE(!(hwc->state & PERF_HES_UPTODATE));
-+	hwc->state = 0;
-+
-+	hisi_pcie_pmu_config_filter(event);
-+	hisi_pcie_pmu_enable_counter(pcie_pmu, hwc);
-+	hisi_pcie_pmu_enable_int(pcie_pmu, hwc);
-+	hisi_pcie_pmu_set_period(event);
-+
-+	if (flags & PERF_EF_RELOAD) {
-+		prev_cnt = local64_read(&hwc->prev_count);
-+		hisi_pcie_pmu_writeq(pcie_pmu, hwc->event_base, idx, prev_cnt);
-+	}
-+
-+	perf_event_update_userpage(event);
-+}
-+
-+static void hisi_pcie_pmu_stop(struct perf_event *event, int flags)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	hisi_pcie_pmu_event_update(event);
-+	hisi_pcie_pmu_disable_int(pcie_pmu, hwc);
-+	hisi_pcie_pmu_disable_counter(pcie_pmu, hwc);
-+	hisi_pcie_pmu_clear_filter(event);
-+	WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
-+	hwc->state |= PERF_HES_STOPPED;
-+
-+	if (hwc->state & PERF_HES_UPTODATE)
-+		return;
-+
-+	hwc->state |= PERF_HES_UPTODATE;
-+}
-+
-+static int hisi_pcie_pmu_add(struct perf_event *event, int flags)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+	int idx;
-+
-+	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
-+
-+	/* Check all working events to find a related event. */
-+	idx = hisi_pcie_pmu_find_related_event(pcie_pmu, event);
-+	if (idx < 0)
-+		return idx;
-+
-+	/* Current event shares an enabled counter with the related event */
-+	if (idx < HISI_PCIE_MAX_COUNTERS) {
-+		hwc->idx = idx;
-+		goto start_count;
-+	}
-+
-+	idx = hisi_pcie_pmu_get_event_idx(pcie_pmu);
-+	if (idx < 0)
-+		return idx;
-+
-+	hwc->idx = idx;
-+	pcie_pmu->hw_events[idx] = event;
-+	/* Reset Counter to avoid previous statistic interference. */
-+	hisi_pcie_pmu_reset_counter(pcie_pmu, idx);
-+
-+start_count:
-+	if (flags & PERF_EF_START)
-+		hisi_pcie_pmu_start(event, PERF_EF_RELOAD);
-+
-+	return 0;
-+}
-+
-+static void hisi_pcie_pmu_del(struct perf_event *event, int flags)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	hisi_pcie_pmu_stop(event, PERF_EF_UPDATE);
-+	pcie_pmu->hw_events[hwc->idx] = NULL;
-+	perf_event_update_userpage(event);
-+}
-+
-+static void hisi_pcie_pmu_enable(struct pmu *pmu)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(pmu);
-+	int num;
-+
-+	for (num = 0; num < HISI_PCIE_MAX_COUNTERS; num++) {
-+		if (pcie_pmu->hw_events[num])
-+			break;
-+	}
-+
-+	if (num == HISI_PCIE_MAX_COUNTERS)
-+		return;
-+
-+	writel(HISI_PCIE_GLOBAL_EN, pcie_pmu->base + HISI_PCIE_GLOBAL_CTRL);
-+}
-+
-+static void hisi_pcie_pmu_disable(struct pmu *pmu)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(pmu);
-+
-+	writel(HISI_PCIE_GLOBAL_NONE, pcie_pmu->base + HISI_PCIE_GLOBAL_CTRL);
-+}
-+
-+static irqreturn_t hisi_pcie_pmu_irq(int irq, void *data)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = data;
-+	irqreturn_t ret = IRQ_NONE;
-+	struct perf_event *event;
-+	u32 overflown;
-+	int idx;
-+
-+	for (idx = 0; idx < HISI_PCIE_MAX_COUNTERS; idx++) {
-+		overflown = hisi_pcie_pmu_readl(pcie_pmu, HISI_PCIE_INT_STAT,
-+						idx);
-+		if (!overflown)
-+			continue;
-+
-+		/* Clear status of interrupt. */
-+		hisi_pcie_pmu_writel(pcie_pmu, HISI_PCIE_INT_STAT, idx, 1);
-+		event = pcie_pmu->hw_events[idx];
-+		if (!event)
-+			continue;
-+
-+		hisi_pcie_pmu_event_update(event);
-+		hisi_pcie_pmu_set_period(event);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	return ret;
-+}
-+
-+static int hisi_pcie_pmu_irq_register(struct pci_dev *pdev,
-+				      struct hisi_pcie_pmu *pcie_pmu)
-+{
-+	int irq, ret;
-+
-+	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI);
-+	if (ret < 0) {
-+		pci_err(pdev, "Failed to enable MSI vectors: %d!\n", ret);
-+		return ret;
-+	}
-+
-+	irq = pci_irq_vector(pdev, 0);
-+	ret = request_irq(irq, hisi_pcie_pmu_irq,
-+			  IRQF_NOBALANCING | IRQF_NO_THREAD, DRV_NAME,
-+			  pcie_pmu);
-+	if (ret) {
-+		pci_err(pdev, "Failed to register IRQ: %d!\n", ret);
-+		pci_free_irq_vectors(pdev);
-+		return ret;
-+	}
-+
-+	pcie_pmu->irq = irq;
-+
-+	return 0;
-+}
-+
-+static void hisi_pcie_pmu_irq_unregister(struct pci_dev *pdev,
-+					 struct hisi_pcie_pmu *pcie_pmu)
-+{
-+	free_irq(pcie_pmu->irq, pcie_pmu);
-+	pci_free_irq_vectors(pdev);
-+}
-+
-+static int hisi_pcie_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node,
-+					 struct hisi_pcie_pmu, node);
-+
-+	if (pcie_pmu->on_cpu == -1) {
-+		pcie_pmu->on_cpu = cpu;
-+		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(cpu)));
-+	}
-+
-+	return 0;
-+}
-+
-+static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node,
-+					 struct hisi_pcie_pmu, node);
-+	unsigned int target;
-+
-+	/* Nothing to do if this CPU doesn't own the PMU */
-+	if (pcie_pmu->on_cpu != cpu)
-+		return 0;
-+
-+	pcie_pmu->on_cpu = -1;
-+	/* Choose a new CPU from all online cpus. */
-+	target = cpumask_first(cpu_online_mask);
-+	if (target >= nr_cpu_ids) {
-+		pci_err(pcie_pmu->pdev, "There is no CPU to set!\n");
-+		return 0;
-+	}
-+
-+	perf_pmu_migrate_context(&pcie_pmu->pmu, cpu, target);
-+	/* Use this CPU for event counting */
-+	pcie_pmu->on_cpu = target;
-+	WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(target)));
-+
-+	return 0;
-+}
-+
-+/*
-+ * Events with the "dl" suffix in their names count performance in DL layer,
-+ * otherswise, events count performance in TL layer.
-+ */
-+static struct attribute *hisi_pcie_pmu_events_attr[] = {
-+	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_latency, 0x0010),
-+	HISI_PCIE_PMU_EVENT_ATTR(rx_mwr_cnt, 0x10010),
-+	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_latency, 0x0210),
-+	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_cnt, 0x10210),
-+	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_latency, 0x0011),
-+	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_cnt, 0x10011),
-+	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_flux, 0x1005),
-+	HISI_PCIE_PMU_EVENT_ATTR(rx_mrd_time, 0x11005),
-+	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_flux, 0x2004),
-+	HISI_PCIE_PMU_EVENT_ATTR(tx_mrd_time, 0x12004),
-+	NULL
-+};
-+
-+static struct attribute_group hisi_pcie_pmu_events_group = {
-+	.name = "events",
-+	.attrs = hisi_pcie_pmu_events_attr,
-+};
-+
-+static struct attribute *hisi_pcie_pmu_format_attr[] = {
-+	HISI_PCIE_PMU_FORMAT_ATTR(event, "config:0-16"),
-+	HISI_PCIE_PMU_FORMAT_ATTR(thr_len, "config1:0-3"),
-+	HISI_PCIE_PMU_FORMAT_ATTR(thr_mode, "config1:4"),
-+	HISI_PCIE_PMU_FORMAT_ATTR(trig_len, "config1:5-8"),
-+	HISI_PCIE_PMU_FORMAT_ATTR(trig_mode, "config1:9"),
-+	HISI_PCIE_PMU_FORMAT_ATTR(port, "config2:0-15"),
-+	HISI_PCIE_PMU_FORMAT_ATTR(bdf, "config2:16-31"),
-+	NULL
-+};
-+
-+static const struct attribute_group hisi_pcie_pmu_format_group = {
-+	.name = "format",
-+	.attrs = hisi_pcie_pmu_format_attr,
-+};
-+
-+static struct attribute *hisi_pcie_pmu_bus_attrs[] = {
-+	&dev_attr_bus.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group hisi_pcie_pmu_bus_attr_group = {
-+	.attrs = hisi_pcie_pmu_bus_attrs,
-+};
-+
-+static struct attribute *hisi_pcie_pmu_cpumask_attrs[] = {
-+	&dev_attr_cpumask.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group hisi_pcie_pmu_cpumask_attr_group = {
-+	.attrs = hisi_pcie_pmu_cpumask_attrs,
-+};
-+
-+static struct attribute *hisi_pcie_pmu_identifier_attrs[] = {
-+	&dev_attr_identifier.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group hisi_pcie_pmu_identifier_attr_group = {
-+	.attrs = hisi_pcie_pmu_identifier_attrs,
-+};
-+
-+static const struct attribute_group *hisi_pcie_pmu_attr_groups[] = {
-+	&hisi_pcie_pmu_events_group,
-+	&hisi_pcie_pmu_format_group,
-+	&hisi_pcie_pmu_bus_attr_group,
-+	&hisi_pcie_pmu_cpumask_attr_group,
-+	&hisi_pcie_pmu_identifier_attr_group,
-+	NULL
-+};
-+
-+static int hisi_pcie_alloc_pmu(struct pci_dev *pdev,
-+			       struct hisi_pcie_pmu *pcie_pmu)
-+{
-+	struct hisi_pcie_reg_pair regs;
-+	u16 sicl_id, core_id;
-+	char *name;
-+
-+	regs = hisi_pcie_parse_reg_value(pcie_pmu, HISI_PCIE_REG_BDF);
-+	pcie_pmu->bdf_min = regs.lo;
-+	pcie_pmu->bdf_max = regs.hi;
-+
-+	regs = hisi_pcie_parse_reg_value(pcie_pmu, HISI_PCIE_REG_INFO);
-+	sicl_id = regs.hi;
-+	core_id = regs.lo;
-+
-+	name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+			      "hisi_pcie%u_core%u", sicl_id, core_id);
-+	if (!name)
-+		return -ENOMEM;
-+
-+	pcie_pmu->pdev = pdev;
-+	pcie_pmu->on_cpu = -1;
-+	pcie_pmu->identifier = readl(pcie_pmu->base + HISI_PCIE_REG_VERSION);
-+	pcie_pmu->pmu = (struct pmu) {
-+		.name		= name,
-+		.module		= THIS_MODULE,
-+		.event_init	= hisi_pcie_pmu_event_init,
-+		.pmu_enable	= hisi_pcie_pmu_enable,
-+		.pmu_disable	= hisi_pcie_pmu_disable,
-+		.add		= hisi_pcie_pmu_add,
-+		.del		= hisi_pcie_pmu_del,
-+		.start		= hisi_pcie_pmu_start,
-+		.stop		= hisi_pcie_pmu_stop,
-+		.read		= hisi_pcie_pmu_read,
-+		.task_ctx_nr	= perf_invalid_context,
-+		.attr_groups	= hisi_pcie_pmu_attr_groups,
-+		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
-+	};
-+
-+	return 0;
-+}
-+
-+static int hisi_pcie_init_pmu(struct pci_dev *pdev,
-+			      struct hisi_pcie_pmu *pcie_pmu)
-+{
-+	int ret;
-+
-+	pcie_pmu->base = pci_ioremap_bar(pdev, 2);
-+	if (!pcie_pmu->base) {
-+		pci_err(pdev, "Ioremap failed for pcie_pmu resource.\n");
-+		return -ENOMEM;
-+	}
-+
-+	ret = hisi_pcie_alloc_pmu(pdev, pcie_pmu);
-+	if (ret)
-+		goto err_iounmap;
-+
-+	ret = hisi_pcie_pmu_irq_register(pdev, pcie_pmu);
-+	if (ret)
-+		goto err_iounmap;
-+
-+	ret = cpuhp_state_add_instance(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
-+				       &pcie_pmu->node);
-+	if (ret) {
-+		pci_err(pdev, "Failed to register hotplug: %d.\n", ret);
-+		goto err_irq_unregister;
-+	}
-+
-+	ret = perf_pmu_register(&pcie_pmu->pmu, pcie_pmu->pmu.name, -1);
-+	if (ret) {
-+		pci_err(pdev, "Failed to register PCIe PMU: %d.\n", ret);
-+		goto err_hotplug_unregister;
-+	}
-+
-+	return ret;
-+
-+err_hotplug_unregister:
-+	cpuhp_state_remove_instance_nocalls(
-+		CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE, &pcie_pmu->node);
-+
-+err_irq_unregister:
-+	hisi_pcie_pmu_irq_unregister(pdev, pcie_pmu);
-+
-+err_iounmap:
-+	iounmap(pcie_pmu->base);
-+
-+	return ret;
-+}
-+
-+static void hisi_pcie_uninit_pmu(struct pci_dev *pdev)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu = pci_get_drvdata(pdev);
-+
-+	perf_pmu_unregister(&pcie_pmu->pmu);
-+	cpuhp_state_remove_instance_nocalls(
-+		CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE, &pcie_pmu->node);
-+	hisi_pcie_pmu_irq_unregister(pdev, pcie_pmu);
-+	iounmap(pcie_pmu->base);
-+}
-+
-+static int hisi_pcie_init_dev(struct pci_dev *pdev)
-+{
-+	int ret;
-+
-+	ret = pcim_enable_device(pdev);
-+	if (ret) {
-+		pci_err(pdev, "Failed to enable PCI device: %d.\n", ret);
-+		return ret;
-+	}
-+
-+	ret = pcim_iomap_regions(pdev, BIT(2), DRV_NAME);
-+	if (ret < 0) {
-+		pci_err(pdev, "Failed to request PCI mem regions: %d.\n", ret);
-+		return ret;
-+	}
-+
-+	pci_set_master(pdev);
-+
-+	return 0;
-+}
-+
-+static int hisi_pcie_pmu_probe(struct pci_dev *pdev,
-+			       const struct pci_device_id *id)
-+{
-+	struct hisi_pcie_pmu *pcie_pmu;
-+	int ret;
-+
-+	pcie_pmu = devm_kzalloc(&pdev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
-+	if (!pcie_pmu)
-+		return -ENOMEM;
-+
-+	ret = hisi_pcie_init_dev(pdev);
-+	if (ret)
-+		return ret;
-+
-+	ret = hisi_pcie_init_pmu(pdev, pcie_pmu);
-+	if (ret)
-+		return ret;
-+
-+	pci_set_drvdata(pdev, pcie_pmu);
-+
-+	return ret;
-+}
-+
-+static void hisi_pcie_pmu_remove(struct pci_dev *pdev)
-+{
-+	hisi_pcie_uninit_pmu(pdev);
-+	pci_set_drvdata(pdev, NULL);
-+}
-+
-+static const struct pci_device_id hisi_pcie_pmu_ids[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, 0xa12d) },
-+	{ 0, }
-+};
-+MODULE_DEVICE_TABLE(pci, hisi_pcie_pmu_ids);
-+
-+static struct pci_driver hisi_pcie_pmu_driver = {
-+	.name = DRV_NAME,
-+	.id_table = hisi_pcie_pmu_ids,
-+	.probe = hisi_pcie_pmu_probe,
-+	.remove = hisi_pcie_pmu_remove,
-+};
-+
-+static int __init hisi_pcie_module_init(void)
-+{
-+	int ret;
-+
-+	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
-+				      "AP_PERF_ARM_HISI_PCIE_PMU_ONLINE",
-+				      hisi_pcie_pmu_online_cpu,
-+				      hisi_pcie_pmu_offline_cpu);
-+	if (ret) {
-+		pr_err("Failed to setup PCIe PMU hotplug, ret = %d.\n", ret);
-+		return ret;
-+	}
-+
-+	ret = pci_register_driver(&hisi_pcie_pmu_driver);
-+	if (ret)
-+		cpuhp_remove_multi_state(
-+				CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE);
-+
-+	return ret;
-+}
-+module_init(hisi_pcie_module_init);
-+
-+static void __exit hisi_pcie_module_exit(void)
-+{
-+	pci_unregister_driver(&hisi_pcie_pmu_driver);
-+	cpuhp_remove_multi_state(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE);
-+}
-+module_exit(hisi_pcie_module_exit);
-+
-+MODULE_DESCRIPTION("HiSilicon PCIe PMU driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Qi Liu <liuqi115@huawei.com>");
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index f39b34b13871..4008560e7b8c 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -179,6 +179,7 @@ enum cpuhp_state {
- 	CPUHP_AP_PERF_ARM_HISI_L3_ONLINE,
- 	CPUHP_AP_PERF_ARM_HISI_PA_ONLINE,
- 	CPUHP_AP_PERF_ARM_HISI_SLLC_ONLINE,
-+	CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
- 	CPUHP_AP_PERF_ARM_L2X0_ONLINE,
- 	CPUHP_AP_PERF_ARM_QCOM_L2_ONLINE,
- 	CPUHP_AP_PERF_ARM_QCOM_L3_ONLINE,
--- 
-2.33.0
+You suggest above to hide scale tuning through processed channels.
+If I follow this logic, when vrefint channel is available, all channels 
+should be defined as processed channels (excepted vrefint channel)
+In this case no scale is exposed for these channels, and the vrefint 
+calibration ratio can be used to provide converted data directly.
+Do you prefer this implementation ?
 
+In this case I wonder how buffered data have to be managed. These data 
+are still provided as raw data, but the scale factor is not more 
+available to convert them. I guess that these data have to be converted 
+internally also, either in dma callback or irq handler.
+Is this correct ?
+
+Regards
+Olivier
+
+>> +			} else {
+>> +				*val = adc->common->vref_mv * 2;
+>> +			}
+>>   			*val2 = chan->scan_type.realbits;
+>>   		} else {
+>> -			*val = adc->common->vref_mv;
+>> +			/* Use vrefint data if available */
+>> +			if (adc->vrefint.vrefint_data &&
+>> +			    adc->vrefint.vrefint_cal) {
+>> +				*val = STM32_ADC_VREFINT_VOLTAGE *
+>> +				       adc->vrefint.vrefint_cal /
+>> +				       adc->vrefint.vrefint_data;
+>> +			} else {
+>> +				*val = adc->common->vref_mv;
+>> +			}
+>>   			*val2 = chan->scan_type.realbits;
+>>   		}
+>>   		return IIO_VAL_FRACTIONAL_LOG2;
+>> @@ -1907,6 +1944,35 @@ static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
+>>   	return scan_index;
+>>   }
+>>   
+>> +static int stm32_adc_get_int_ch(struct iio_dev *indio_dev, const char *ch_name,
+>> +				int chan)
+> 
+> Naming would suggest to me that it would return a channel rather than setting it
+> inside adc->int_ch[i]  Perhaps something like st32_adc_populate_int_ch() ?
+> 
+> 
+>> +{
+>> +	struct stm32_adc *adc = iio_priv(indio_dev);
+>> +	u16 vrefint;
+>> +	int i, ret;
+>> +
+>> +	for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
+>> +		if (!strncmp(stm32_adc_ic[i].name, ch_name, STM32_ADC_CH_SZ)) {
+>> +			adc->int_ch[i] = chan;
+>> +			/* If channel is vrefint get calibration data. */
+>> +			if (stm32_adc_ic[i].idx == STM32_ADC_INT_CH_VREFINT) {
+> 
+> I would reduce indentation by reversing the logic.
+> 
+> 			if (stm32_adc_ic[i].idx != STM32_ADC_INT_CH_VREFINT)
+> 				continue;
+> 
+> 			ret =
+>> +				ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
+>> +				if (ret && ret != -ENOENT && ret != -EOPNOTSUPP) {
+>> +					dev_err(&indio_dev->dev, "nvmem access error %d\n", ret);
+>> +					return ret;
+>> +				}
+>> +				if (ret == -ENOENT)
+>> +					dev_dbg(&indio_dev->dev,
+>> +						"vrefint calibration not found\n");
+>> +				else
+>> +					adc->vrefint.vrefint_cal = vrefint;
+>> +			}
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+>>   				       struct stm32_adc *adc,
+>>   				       struct iio_chan_spec *channels)
+>> @@ -1938,10 +2004,9 @@ static int stm32_adc_generic_chan_init(struct iio_dev *indio_dev,
+>>   				return -EINVAL;
+>>   			}
+>>   			strncpy(adc->chan_name[val], name, STM32_ADC_CH_SZ);
+>> -			for (i = 0; i < STM32_ADC_INT_CH_NB; i++) {
+>> -				if (!strncmp(stm32_adc_ic[i].name, name, STM32_ADC_CH_SZ))
+>> -					adc->int_ch[i] = val;
+>> -			}
+>> +			ret = stm32_adc_get_int_ch(indio_dev, name, val);
+>> +			if (ret)
+>> +				goto err;
+>>   		} else if (ret != -EINVAL) {
+>>   			dev_err(&indio_dev->dev, "Invalid label %d\n", ret);
+>>   			goto err;
+>> @@ -2044,6 +2109,16 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>>   		 */
+>>   		of_property_read_u32_index(node, "st,min-sample-time-nsecs",
+>>   					   i, &smp);
+>> +
+>> +		/*
+>> +		 * For vrefint channel, ensure that the sampling time cannot
+>> +		 * be lower than the one specified in the datasheet
+>> +		 */
+>> +		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT] &&
+>> +		    smp < adc->cfg->ts_vrefint_ns) {
+>> +			smp = adc->cfg->ts_vrefint_ns;
+>> +		}
+> 
+> 		if (channels[i].channel == adc->int_ch[STM32_ADC_INT_CH_VREFINT])
+> 			smp = max(smp, adc->cfg->ts_vrefint_ns);
+> 
+>> +
+>>   		/* Prepare sampling time settings */
+>>   		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+>>   	}
+>> @@ -2350,6 +2425,7 @@ static const struct stm32_adc_cfg stm32mp1_adc_cfg = {
+>>   	.unprepare = stm32h7_adc_unprepare,
+>>   	.smp_cycles = stm32h7_adc_smp_cycles,
+>>   	.irq_clear = stm32h7_adc_irq_clear,
+>> +	.ts_vrefint_ns = 4300,
+>>   };
+>>   
+>>   static const struct of_device_id stm32_adc_of_match[] = {
+> 
