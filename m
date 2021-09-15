@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D587840C290
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377EF40C299
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237237AbhIOJOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:14:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:26457 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237200AbhIOJO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:14:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631697191; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=mKHLpEcdN44klLDGi4B+FJ2Yr0gWuE7N1GO6uzZKeIg=;
- b=e9FdLoJdnpAcVKBe67iY/HAiVk/RabJgPedesWlWg7/i3xKcQeiDuxEkN6aiK3pU2A0G9eLh
- 9PftSEfRVetsZ9CIfoBwP/fkTnq+ELOLgigNNDzYyyIpCw4GOYxEWkxASKgipsn8xH4Ob386
- DXKqx0Is0g2q5kj8nStNxbi43f4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6141b926ec62f57c9a31402d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 09:13:10
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C4CC4C4361A; Wed, 15 Sep 2021 09:13:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25005C4338F;
-        Wed, 15 Sep 2021 09:13:09 +0000 (UTC)
+        id S237319AbhIOJPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:15:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:53744 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237157AbhIOJPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 05:15:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E34E66D;
+        Wed, 15 Sep 2021 02:13:45 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BE5D33F5A1;
+        Wed, 15 Sep 2021 02:13:44 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Liviu Dudau <liviu.dudau@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH 1/3] arm64: dts: arm: align watchdog and mmc node names with dtschema
+Date:   Wed, 15 Sep 2021 10:13:33 +0100
+Message-Id: <163169716063.1624125.9381303862313981753.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210820081733.83976-1-krzysztof.kozlowski@canonical.com>
+References: <20210820081733.83976-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Sep 2021 14:43:09 +0530
-From:   dikshita@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, jim.cromie@gmail.com,
-        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media-owner@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] venus: Add a debugfs file for SSR trigger
-In-Reply-To: <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
-References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
- <20200730095350.13925-3-stanimir.varbanov@linaro.org>
- <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
-Message-ID: <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-Reviving the discussion on this change as we need to pull this in.
-
-As per your suggestion, I explored the fault injection framework to 
-implement this functionality.
-But I don't think that meets our requirements.
-
-We need a way to trigger subsystem restart from the client-side, it's 
-not derived from the driver.
-
-while fault injection framework enables the driver to trigger an 
-injection
-when a specific event occurs for eg: page allocation failure or memory 
-access failure.
-
-So, IMO, we will have to use custom debugfs only.
-
-Please feel free to correct me in case my understanding of the framework 
-is wrong.
-
-Thanks,
-Dikshita
-
-On 2020-08-12 03:19, Stephen Boyd wrote:
-> Quoting Stanimir Varbanov (2020-07-30 02:53:49)
->> The SSR (SubSystem Restart) is used to simulate an error on FW
->> side of Venus. We support following type of triggers - fatal error,
->> div by zero and watchdog IRQ.
+On Fri, 20 Aug 2021 10:17:31 +0200, Krzysztof Kozlowski wrote:
+> Align the watchdog and mmc device node names with the schema to fix
+> warnings like:
 > 
-> Can this use the fault injection framework instead of custom debugfs?
-> See Documentation/fault-injection/.
+>   mmci@50000: $nodename:0: 'mmci@50000' does not match '^mmc(@.*)?$'
+>   wdt@f0000: $nodename:0: 'wdt@f0000' does not match '^watchdog(@.*|-[0-9a-f])?$'
+
+
+Applied to sudeep.holla/linux (for-next/juno), thanks!
+
+[1/3] arm64: dts: arm: align watchdog and mmc node names with dtschema
+      https://git.kernel.org/sudeep.holla/c/b43446b4f5
+[2/3] ARM: dts: arm: align watchdog and mmc node names with dtschema
+      https://git.kernel.org/sudeep.holla/c/5f741ef384
+[3/3] arm64: dts: arm: drop unused interrupt-names in MHU
+      https://git.kernel.org/sudeep.holla/c/217cb530a3
+
+--
+Regards,
+Sudeep
+
