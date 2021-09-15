@@ -2,157 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AAA40CB62
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F42A40CB64
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhIORGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        id S230024AbhIORHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhIORGP (ORCPT
+        with ESMTP id S229465AbhIORHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:06:15 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159E5C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:04:56 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id g1so7307027lfj.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:04:55 -0700 (PDT)
+        Wed, 15 Sep 2021 13:07:36 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E282C061574;
+        Wed, 15 Sep 2021 10:06:17 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id b6so4955877wrh.10;
+        Wed, 15 Sep 2021 10:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QiL7YfwCSR7LokE5J56usk6i2TFHnfpVhu2pbczR/rY=;
-        b=YjgBRMW6BxNZ9RQ3OrB64PcgAbpzCvURuVzS2ChPGQ9FOfcjAuiJ7nOYupy9eB316J
-         1NZt9Ps0lkvdwH0tDss0B+Lg5rtk1l4NTDZwUiJsDF4T3zxmRk1zqgBcgsBqAFfdu7/5
-         6l9Ztk6P9WF+a8hA1jgJj9VOxjhHhOx9y4kPo54MY7fqix74AHRoTUQ1EDWkE0j4G377
-         2uJ8qxBYEA1cW8jAd8iVorR13sx3cItzUFzoj07UXEzzHRNn6hyAlkBex7PDCLU8gQSA
-         vhVIZn+mQpAee7wuK8C4+KrKqs7KOrVZN55UAlWSX2/Z/zzfWt1i78uNilaLmN6eLC4B
-         yUrw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GTVsTGVHzHHxdcEJg4/8YrzvHZvRek9+ki75XlfwV6w=;
+        b=U3vEqEgCOGl+c9PEE+3pQVWcmVpFPwH4Vk1y0emiMUsRJL7SIuEuiz2GuNdcFHZe6C
+         DWyPP5WtNcPjHwquO2rXLaXgsGo3XAGuWZ/2vdt6PjOkXhVU0Zv8NWVXNHUIPRtpE+z/
+         FXyehLwcE/nMqnUUb3yzosCLAtt/aIngZPEhgJTitK23lRkJgXzZGXOPtFiTkZvbDOPt
+         0II9VJR54WTHU5mo/35kAwtjkE7+Wys5Cvyfl0u2ADdMIumGYIZm1cYtFNAB8Ri712Ly
+         wWD3sbj3tK0mwP2PVHMe5hVmFLItWdqcuXTdD+RmRJVK0qlVKQjv95qT1DwMA96qtRiU
+         RdpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QiL7YfwCSR7LokE5J56usk6i2TFHnfpVhu2pbczR/rY=;
-        b=nF12nrccviVuU10rmV24cf2cY1FsmuxJuKrjrJcDKniUE20m7s5fSbtEtETkiN6RJT
-         6NNwe3wpu72LMkvR/A8mNWIFl+U84VgQKxMKpowQwKTm1sI7AuDAOyZD3bomzcnpRLmt
-         pr7kRjnRpkOmTl5/ZxhxyvxZ1gJ+Pl59t84EREb2Mas/yvzFurnojy2s5DnZexoTkgtT
-         Y8LEe5gqiP2WVpHm0iOAj+GYIITyg/IIw7QJg6rDdZ7B/DeRvaQeq195VyZhmDUW3qfd
-         bd+BJ7/uB68cmVzZYPN2WZxoM/QAkB6C00YbCljDBMGatjvamhHD/pAaz8HObhOmAxeQ
-         TxqQ==
-X-Gm-Message-State: AOAM531Qr3Burm7afrDz2UfLUnGCPcpYMplX37VMuoTRw4bPCMv0yLFt
-        9lCJN+0UXgNB97+UOwAAK4Pg9MYftI7Iaj3+7V+YEg==
-X-Google-Smtp-Source: ABdhPJyPOjV0ZpbMt3W6lj6EoQRoL7MRqeIFJLX3H5JfFbprdhI8dXfa7UQ0YFUHuvKQmtzNEFB6m5Zf2bMrT45EqbM=
-X-Received: by 2002:ac2:5fb2:: with SMTP id s18mr730787lfe.580.1631725493981;
- Wed, 15 Sep 2021 10:04:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GTVsTGVHzHHxdcEJg4/8YrzvHZvRek9+ki75XlfwV6w=;
+        b=nraAsBMFULmrqv7A9Se73NLwd91KlbRGcz69U57eougsPYQ0jFwRXP623zIiuGDrz9
+         C7JbmMUxYBUHtKZseJh+a2iDv2GdowwveO4Q7l7RuVPynbtetDyyImTepifDLbPj3Hdd
+         rtCw3WUWVFyRHcalzAHcJ8kLN3pW2ssEegtG1cvvocK41oBVUxXU5k+YmcyAlmezXsyK
+         m8hohy7F5AJ+yDuIcj90WJdKuIo7vrmaDzF/3pPNXUAI11XRAoizKePLwY2NxypkHAJG
+         A4vqDPq7KVHYj5b2I9+CSv8s5FPuPR0oUikZd2nR1QLdwCW/Ch9ufBvM92jpAHsEyJUK
+         dbUw==
+X-Gm-Message-State: AOAM530QxQlH1tTpHBBihwU71oTD1f85qkBorC0moV2eQhb3rfDXwXMd
+        kNrGU2B6WIAbt0y0+h3a+FA=
+X-Google-Smtp-Source: ABdhPJwJpOmUK49E3LeTsgzkI8+y91tIlB46nQfOTD778QVq5gZRib5LmUCXTPjYG103hZ2OLszbrQ==
+X-Received: by 2002:adf:ce0c:: with SMTP id p12mr1204705wrn.194.1631725576068;
+        Wed, 15 Sep 2021 10:06:16 -0700 (PDT)
+Received: from archbook.localnet ([185.213.155.232])
+        by smtp.gmail.com with ESMTPSA id f1sm509887wri.43.2021.09.15.10.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 10:06:15 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
+Date:   Wed, 15 Sep 2021 19:06:14 +0200
+Message-ID: <42974939.Tn3hggVSkZ@archbook>
+In-Reply-To: <20210915141012.GC12513@sirena.org.uk>
+References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com> <20210903231536.225540-3-frattaroli.nicolas@gmail.com> <20210915141012.GC12513@sirena.org.uk>
 MIME-Version: 1.0
-References: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-In-Reply-To: <3834f917d50a6f19402e179e917ef6a9dde5f64a.1631671936.git.brookxu@tencent.com>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Wed, 15 Sep 2021 10:04:18 -0700
-Message-ID: <CAHVum0d657HeoSyXS9RGW8YHkwJFmvLQ6ebwYy_wVnR0gM8uPQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] misc_cgroup: introduce misc.events to count failures
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        mkoutny@suse.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 7:18 PM brookxu <brookxu.cn@gmail.com> wrote:
->
-> From: Chunguang Xu <brookxu@tencent.com>
->
-> Introduce misc.events to make it easier for us to understand
-> the pressure of resources. Currently only the 'max' event is
-> implemented, which indicates the times the resource is about
-> to exceeds the max limit.
->
-> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-> ---
->
-> v3: remove misc.events.local.
-> v2: remove cgroup v1 files.
->
->  include/linux/misc_cgroup.h |  5 +++++
->  kernel/cgroup/misc.c        | 24 ++++++++++++++++++++++++
->  2 files changed, 29 insertions(+)
->
-> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> index da2367e..091f2d2 100644
-> --- a/include/linux/misc_cgroup.h
-> +++ b/include/linux/misc_cgroup.h
-> @@ -36,6 +36,7 @@ enum misc_res_type {
->  struct misc_res {
->         unsigned long max;
->         atomic_long_t usage;
-> +       atomic_long_t events;
->         bool failed;
->  };
->
-> @@ -46,6 +47,10 @@ struct misc_res {
->   */
->  struct misc_cg {
->         struct cgroup_subsys_state css;
-> +
-> +       /* misc.events */
-> +       struct cgroup_file events_file;
-> +
->         struct misc_res res[MISC_CG_RES_TYPES];
->  };
->
-> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> index ec02d96..4b2b492 100644
-> --- a/kernel/cgroup/misc.c
-> +++ b/kernel/cgroup/misc.c
-> @@ -171,6 +171,11 @@ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,
->         return 0;
->
->  err_charge:
-> +       for (j = i; j; j = parent_misc(j)) {
-> +               atomic_long_inc(&j->res[type].events);
-> +               cgroup_file_notify(&j->events_file);
-> +       }
-> +
->         for (j = cg; j != i; j = parent_misc(j))
->                 misc_cg_cancel_charge(type, j, amount);
->         misc_cg_cancel_charge(type, i, amount);
-> @@ -335,6 +340,19 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
->         return 0;
->  }
->
-> +static int misc_events_show(struct seq_file *sf, void *v)
-> +{
-> +       struct misc_cg *cg = css_misc(seq_css(sf));
-> +       unsigned long events, i;
-> +
-> +       for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-> +               events = atomic_long_read(&cg->res[i].events);
-> +               if (READ_ONCE(misc_res_capacity[i]) || events)
-> +                       seq_printf(sf, "%s.max %lu\n", misc_res_name[i], events);
-> +       }
-> +       return 0;
-> +}
-> +
->  /* Misc cgroup interface files */
->  static struct cftype misc_cg_files[] = {
->         {
-> @@ -353,6 +371,12 @@ static int misc_cg_capacity_show(struct seq_file *sf, void *v)
->                 .seq_show = misc_cg_capacity_show,
->                 .flags = CFTYPE_ONLY_ON_ROOT,
->         },
-> +       {
-> +               .name = "events",
-> +               .flags = CFTYPE_NOT_ON_ROOT,
-> +               .file_offset = offsetof(struct misc_cg, events_file),
-> +               .seq_show = misc_events_show,
-> +       },
->         {}
->  };
->
-> --
-> 1.8.3.1
->
+On Mittwoch, 15. September 2021 16:10:12 CEST Mark Brown wrote:
+> On Sat, Sep 04, 2021 at 01:15:34AM +0200, Nicolas Frattaroli wrote:
+> > +  rockchip,tdm-fsync-half-frame:
+> > +    description: Whether to use half frame fsync.
+> > +    type: boolean
+> > +
+> 
+> Why is this not part of the normal bus format configuration?  I don't
+> know what this is but it sounds a lot like I2S mode...
 
-Reviewed-by: Vipin Sharma <vipinsh@google.com>
+This affects all TDM I2S modes, i.e. TDM Normal, TDM Left Justified and TDM 
+Right Justified.
+
+Without tdm-fsync-half-frame, we purportedly get the following output in TDM 
+Normal Mode (I2S Format):
+(ch0l = channel 0 left, ch0r = channel 0 right)
+
+fsync: 	_____________________________
+                     	            \____________________________
+sdi/sdo: ch0l, ch0r, ..., ch3l, ch3r,  ch0l, ch0r, ...
+
+With tdm-fsync-half-frame, we purportedly get the following:
+
+fsync: 	_____________________________
+                     	            \____________________________
+sdi/sdo: ch0l,  ch1l,  ch2l,  ch3l,   ch0r,  ch1r,  ch2r,  ch3r
+
+At least, according to the TRM. I do not have an oscilloscope to verify this 
+myself, and in the following paragraphs, I will elaborate why this seems 
+confusing to me.
+
+The comment block "DAI hardware signal polarity" in soc-dai.h seems to imply 
+that what the TRM says the tdm-fsync-half-frame mode is (if one inverts fsync 
+polarity of those waveforms), is what is expected:
+
+> * FSYNC "normal" polarity depends on the frame format:
+> * - I2S: frame consists of left then right channel data. Left channel starts
+> *      with falling FSYNC edge, right channel starts with rising FSYNC edge.
+> * - Left/Right Justified: frame consists of left then right channel data.
+> *      Left channel starts with rising FSYNC edge, right channel starts with
+> *      falling FSYNC edge.
+
+I don't know if this is only applicable to non-TDM I2S, and whether it's 
+normal to have the channels interleaved like that in TDM.
+
+I don't see any DAIFMT that does what this does in any case.
+
+So to answer the question, it's not part of the bus format because it applies 
+to three bus formats, and I'm completely out of my depth here and wouldn't 
+define three separate bus formats based on my own speculation of how this 
+works.
+
+
