@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAEA40CA07
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92EA340CA0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhIOQZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:25:29 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42882 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhIOQZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:25:09 -0400
-Received: from guri.fritz.box (unknown [IPv6:2a02:810a:880:f54:6886:1a1c:e30b:c0f1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 4FBF31F4379A;
-        Wed, 15 Sep 2021 17:23:49 +0100 (BST)
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     Robert Beckett <bob.beckett@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org (open list:MEDIA INPUT INFRASTRUCTURE
-        (V4L/DVB)),
-        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list),
-        laurent.pinchart@ideasonboard.com, hverkuil@xs4all.nl,
-        kernel@collabora.com, dafna3@gmail.com,
-        kiril.bicevski@collabora.com,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        lafley.kim@chipsnmedia.com, scott.woo@chipsnmedia.com,
-        olivier.crete@collabora.com
-Subject: [PATCH 6/6] media: wave5: Add wave5 driver to maintainers file
-Date:   Wed, 15 Sep 2021 18:23:24 +0200
-Message-Id: <20210915162324.25513-7-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210915162324.25513-1-dafna.hirschfeld@collabora.com>
-References: <20210915162324.25513-1-dafna.hirschfeld@collabora.com>
-To:     unlisted-recipients:; (no To-header on input)
+        id S229556AbhIOQ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:29:49 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:48505 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhIOQ3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 12:29:48 -0400
+Date:   Wed, 15 Sep 2021 18:28:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
+        t=1631723308; bh=dbAIiQiQdYvDGfliNcf8DfQWjajin51kvD7oakmxX5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XEHY0vzqiTS8z12ahdrEV+NIy3YCtoKwBuoPk6FNy9X/WLW2MrgtugQlFF7NS0V8Q
+         QrI2f6OFli2GTcui1cSK2qshRgAnaUAAGshAF0yUjPjkg2XI7n9axlvIfFP604U6uN
+         Y54kEZzQY1KPNx8Mq+uwk1XIRFVfj9AjRDRQoGrg=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [RFC] Expose request_module via syscall
+Message-ID: <3750b26b-f12e-4d05-b369-84e4c0ca95ee@t-8ch.de>
+References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
+ <YUIZKagx0bjJ3PEm@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YUIZKagx0bjJ3PEm@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Beckett <bob.beckett@collabora.com>
+On 2021-09-15T18:02+0200, Greg KH wrote:
+> On Wed, Sep 15, 2021 at 05:49:34PM +0200, Thomas Weißschuh wrote:
+> > Hi,
+> > 
+> > I would like to propose a new syscall that exposes the functionality of
+> > request_module() to userspace.
+> > 
+> > Propsed signature: request_module(char *module_name, char **args, int flags);
+> > Where args and flags have to be NULL and 0 for the time being.
+> > 
+> > Rationale:
+> > 
+> > We are using nested, privileged containers which are loading kernel modules.
+> > Currently we have to always pass around the contents of /lib/modules from the
+> > root namespace which contains the modules.
+> > (Also the containers need to have userspace components for moduleloading
+> > installed)
+> > 
+> > The syscall would remove the need for this bookkeeping work.
+> 
+> So you want any container to have the ability to "bust through" the
+> containers and load a module from the "root" of the system?
 
-Add the Chips&Media wave5 encoder/decoder driver
-to the maintainers file
+Only those with CAP_SYS_MODULE.
+Having this capability would also allow them load the module normally when
+mounted in or potentially downloaded from the internet.
 
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+> That feels dangerous, why not just allow a mount of /lib/modules into
+> the containers that you want to be able to load a module?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0e6594a4ad8f..5704b8c17f72 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19962,6 +19962,15 @@ F:	drivers/watchdog/
- F:	include/linux/watchdog.h
- F:	include/uapi/linux/watchdog.h
- 
-+WAVE5 VPU CODEC DRIVER
-+M:	Nas Chung <nas.chung@chipsnmedia.com>
-+M:	Robert Beckett <bob.beckett@collabora.com>
-+M:	Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-+L:	linux-media@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/staging/media/cnm,wave.yaml
-+F:	drivers/staging/media/wave5/
-+
- WHISKEYCOVE PMIC GPIO DRIVER
- M:	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
- L:	linux-gpio@vger.kernel.org
--- 
-2.17.1
+This is what we are currently doing. But sometimes this gets forgotten at some
+point in the chain of nested containers/namespaces and things break.
 
+> Why are modules somehow "special" here, they are just a resource that
+> has to be allowed (or not) to be accessed by a container like anything
+> else on a filesystem.
+
+They are special insofar as they always have to match the running kernel.
+Which is managed by the root namespace.
+
+The biggest problems would probably arise if the root namespace has non-standard
+modules available which the container would normally not have access to.
+
+I think this is a big potential problem and which would not be justified by the
+quality of life improvement.
+
+Sorry for the noise.
+
+Thomas
