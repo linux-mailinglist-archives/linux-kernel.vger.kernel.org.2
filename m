@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD0940C161
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F39A40C164
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbhIOINF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        id S236992AbhIOINV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237125AbhIOIMn (ORCPT
+        with ESMTP id S236761AbhIOINL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:12:43 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FF4C06178C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:11:13 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id i19so1570697pjv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:11:13 -0700 (PDT)
+        Wed, 15 Sep 2021 04:13:11 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA75C0613E6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:11:43 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id m16-20020a25d410000000b005ab243aaaf4so2560787ybf.20
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=0lzqJ0IFOIwpfG9VjTMOLnqtlCXfGoScH+1pWzeN6iQ=;
-        b=bPaqTDVkl2u2NMIPKlzMrV9ZAjM5+cyhP/3TEnMV5pQFAPLA1orXph4GJF30NRuC9a
-         j7YdN0rrePpfoVinmEh24ePqDWjkmqphkuJBTnBIYbiMcDE2sx23+34PAmOnA+Kdym5N
-         jbCWR9M5jcLeSOCAy1fzJE4VUPcjYY+wq44LAtJCd1wFHuan1mfRyJvbS/wDEfbLM7ov
-         4hpV0E0sPqxdYAuMz27PwHgVPd5mu9OZ9bFl5RThUu6p8byfF6V3JsvwxiCUS9eZWvta
-         McaSI7xgWkqgcfOBlajKNIud7tnhqkXkuWrVwVrxFmC1Z6CwyM75fvTZ6wWj334RqyGK
-         cBnw==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=yfa5Rx/Qiunlci+zcN20hGjk88ftJaLJ8MhJAuyVtPg=;
+        b=Bziq+JAqVVonT8FZlMTg9QRvlqbUqLE8pqptTBdcOCh1N6hQ7V85vIJZEmAJFOFIEe
+         MDN4tK9VdpMxrx7LFFTAiWGV79SBpHFjqNYqp2Ol6tOwYbR0gHIU9ZYA96tTgwPvBkkf
+         h7ar0uSpe9wkk6LZUVuo10u6lIWO7mb551gfLsgCWmYApmmUdoFc4dKx4Fn272xt1dff
+         5Zxkk94pxBzeNzjW0DcYthW+/Mg+upiqLEJbpFePYgaBiqUjbHIOyFrbEapt1nF4XkgP
+         cEaxl9cKDdiIasFtJFHqVpfT9/eLWIo9Lq6PvO8ARORvrLvJaHI9fizqKrvmdvGxuMQE
+         C/9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=0lzqJ0IFOIwpfG9VjTMOLnqtlCXfGoScH+1pWzeN6iQ=;
-        b=oVElNw6sV+qIYEc5BDEWj1jV3ghsfKGrQUMrKfCydFjssLn5vMkPlyHCJN0NgYmwiA
-         svD3nWeYlRHzUGCCNbinqJIkT2CNiLoOkuRquifZt4oyuvXF046pGcDSKP9IuPUZb6tQ
-         ccc+P/OwHjd4Q1QrG/Z3EKpv6vxAzTdkxX/yrdArQHoVrjXXmUVN0k+p7qZmEGmsAhF/
-         +wWzw9z6p2qiMF0Gsf12V3cN2t8gh1GWPx4MOTbSYpp8Nc8yN9brAzqHlbTucR1JIt1m
-         LIkUbaSpBtF+Gnbc/ChZdYpyeoU+pZM6v4zyjjjampElLLdNeAV5HSq6Lz7KtZhNfl4N
-         Ur8Q==
-X-Gm-Message-State: AOAM532HBzns8jMKNlrRZ0x4i38LIt7XHZ8SPyj4Aw6KtTqMVsYRS8ue
-        JkZIJvQKrmR1+czsurofMr3vzg==
-X-Google-Smtp-Source: ABdhPJwO5ZEySTpWA2HNEO/3qhT/LWzNZyVsMvfF1qHJgCPxM4ss708hWHXkO4fYT0vq9XnNjh+E7g==
-X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr7132847pjr.2.1631693472721;
-        Wed, 15 Sep 2021 01:11:12 -0700 (PDT)
-Received: from [10.254.148.129] ([139.177.225.252])
-        by smtp.gmail.com with ESMTPSA id b20sm8374540pfp.26.2021.09.15.01.11.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 01:11:12 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] Do some code cleanups related to mm
-To:     akpm@linux-foundation.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com, tglx@linutronix.de,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        mika.penttila@nextfour.com, david@redhat.com,
-        kirill.shutemov@linux.intel.com, vbabka@suse.cz
-References: <20210901102722.47686-1-zhengqi.arch@bytedance.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-Message-ID: <5dc4516a-4425-864b-8ea3-ab5e29b6d9cc@bytedance.com>
-Date:   Wed, 15 Sep 2021 16:11:06 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210901102722.47686-1-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=yfa5Rx/Qiunlci+zcN20hGjk88ftJaLJ8MhJAuyVtPg=;
+        b=SM6P5mJJNZyYQpZ6oTssRu9cmegn7XIku4+pIDexM5RPb3et/2ZMCmG2A42UJMdUr/
+         6pydCgDtikLPL4CMUBjSeQIeQW/4PqIThlSzHqyp+ed5PA9Do/q0ZcTOSxTjAS1sxhc7
+         KhPQKpJUy86ZwJACpEViQD+iFMYFD+XZqOp70Dq7BLc6ITiPfLtYEXftY+iJ4PPYa+mG
+         /KyK8VWpfkeCFJJo9t1JmIxCqY6bcZm9QE4nHB3tz1DSfVeJZETqCsRQoijdmIBIJYAr
+         Uc9CCfC6tLv/ovSLsKUqvWAAlnCUkREyR71sO6jCXyig+wHfzNUsbHf9g9/z6pZfUhfV
+         jQDg==
+X-Gm-Message-State: AOAM530dxx35Ks6vtkQrYgqrvbjXE6snabnXv3R33yWX/6fe4uZcPAFX
+        3IIIH72sn4BZ8dtqhxlfEMOQaRxhGxzZRow=
+X-Google-Smtp-Source: ABdhPJw5lk8+hNRREG7eLjZEFSM4ko3LXxf98/UI9AGjkdcwerpLOs2cJ00+a4CoN07Yf0O8WeHlY6ZQDJGAc9Y=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:16d1:ab0e:fc4a:b9b1])
+ (user=saravanak job=sendgmr) by 2002:a25:9906:: with SMTP id
+ z6mr4480758ybn.373.1631693503120; Wed, 15 Sep 2021 01:11:43 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 01:11:32 -0700
+Message-Id: <20210915081139.480263-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH v2 0/6] fw_devlink improvements
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Patches ready for picking up:
+Patch 1 fixes a bug in fw_devlink.
+Patch 2-4 are meant to make debugging easier
+Patch 5 and 6 fix fw_devlink issues with PHYs and networking
 
-This patch series seems to have no other problems.
-Can it be merged into your mm tree?
+Andrew,
+
+I think Patch 5 and 6 should be picked up be Greg too. Let me know if
+you disagree.
+
+-Saravana
+
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Vladimir Oltean <olteanv@gmail.com>
+
+v1->v2:
+- Added a few Reviewed-by and Tested-by tags
+- Addressed Geert's comments in patches 3 and 5
+- Dropped the fw_devlink.debug patch
+- Added 2 more patches to the series to address other fw_devlink issues
 
 Thanks,
-Qi
+Saravana
 
-On 9/1/21 6:27 PM, Qi Zheng wrote:
-> Hi,
-> 
-> This patch series aims to do some code cleanups related to mm.
-> 
-> This series is based on next-20210827.
-> 
-> Comments and suggestions are welcome.
-> 
-> Thanks,
-> Qi.
-> 
-> Changelog in v2 -> v3:
->   - Move the declaration of pmd_install() to mm/internal.h
-> 
-> Changelog in v1 -> v2:
->   - Fix some typo and code style problems.
-> 
-> Qi Zheng (2):
->    mm: introduce pmd_install() helper
->    mm: remove redundant smp_wmb()
-> 
->   mm/filemap.c        | 11 ++-----
->   mm/internal.h       |  1 +
->   mm/memory.c         | 86 ++++++++++++++++++++++++-----------------------------
->   mm/sparse-vmemmap.c |  2 +-
->   4 files changed, 43 insertions(+), 57 deletions(-)
-> 
+Saravana Kannan (6):
+  driver core: fw_devlink: Improve handling of cyclic dependencies
+  driver core: Set deferred probe reason when deferred by driver core
+  driver core: Create __fwnode_link_del() helper function
+  driver core: Add debug logs when fwnode links are added/deleted
+  driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+  net: mdiobus: Set FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD for mdiobus parents
+
+ drivers/base/core.c        | 90 ++++++++++++++++++++++++++------------
+ drivers/net/phy/mdio_bus.c |  4 ++
+ include/linux/fwnode.h     | 11 +++--
+ 3 files changed, 75 insertions(+), 30 deletions(-)
+
+-- 
+2.33.0.309.g3052b89438-goog
+
