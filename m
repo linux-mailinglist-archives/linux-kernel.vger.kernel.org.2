@@ -2,198 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F0640C08D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AABA40C098
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236687AbhIOHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:32:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39897 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236629AbhIOHcS (ORCPT
+        id S231501AbhIOHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:35:45 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:54171 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231228AbhIOHfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:32:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631691059;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4dMk9wxP4LSS25hldhTRTpJ4KcbEdyYpOY9saZoZqIM=;
-        b=dGaxzRC4I3Kb6IMyz/47UZ6LbXWxWympe7+hFllFfVt81FBSX/cBj0tv7TvU/2XVRLi07f
-        5u83E6ZM0Ogy4eoG+GqY3gfxHlcALmPvgaaNifE8Li/9OXVSiVzSkkuPaVYyUXsTnhhWwe
-        BTKCI7umZzgFEat3WV8esUc+BsigZ4A=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-sw246GmNPbST-NWG3d9VGQ-1; Wed, 15 Sep 2021 03:30:58 -0400
-X-MC-Unique: sw246GmNPbST-NWG3d9VGQ-1
-Received: by mail-wm1-f70.google.com with SMTP id c2-20020a7bc8420000b0290238db573ab7so1327534wml.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:30:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4dMk9wxP4LSS25hldhTRTpJ4KcbEdyYpOY9saZoZqIM=;
-        b=rSUwsOLlNAXJM6CV8UHKYSq05s8RB+RLyxQnmgo8cbLVaywn130Au37g8EjrHftSQw
-         iF+XWwc8O978zNwpKOSXOcYK5dCnaGCMpHXPZN/27f76/qPL8jcT5YwwOigyfZ2CZ3S4
-         Mhak+DplhpJrmqGyBQLdIYQR2MwBkdUIDw3MjUAlUa/bcb+dWwuyQrVjFHcnDQglm96l
-         JYPlLGle07ip3vfxizqQuU9BEr5hlirrMHyKJndO4cQwhTLb4t5xLSp7CV/MSXlBBUSU
-         4z6GH9u76kxUVZN/1RdnUKWf6thgyEnY688gw/yGBmsVG/VGAAjzfnMDyoTQ16EAvSPS
-         3n5Q==
-X-Gm-Message-State: AOAM533JNyCl0+QfB+TrPKbJiq2gZ/nh7xvKNR03RTrC6IlwbGwELu4H
-        PyWwWrSdZH+Pe169Z3JZ8sdXllkovxLJfBfAvJGY011rYaCHl7ROP0RzXyi52OhVuNDNwTrs7s+
-        1v++jH1t/ljTB/+jClZRXw9zh
-X-Received: by 2002:a1c:2943:: with SMTP id p64mr2814304wmp.107.1631691056974;
-        Wed, 15 Sep 2021 00:30:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwt2KS/5aHHjDGt/M+aZkwudzcEkWJiH2BomEbPzf5AqZHoWsyfwjVM1n13zUYT6ynNacJZgw==
-X-Received: by 2002:a1c:2943:: with SMTP id p64mr2814281wmp.107.1631691056682;
-        Wed, 15 Sep 2021 00:30:56 -0700 (PDT)
-Received: from redhat.com ([2.55.157.56])
-        by smtp.gmail.com with ESMTPSA id q7sm9307148wrr.10.2021.09.15.00.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 00:30:55 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 03:30:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH v2 4/5] vdpa: add new vdpa attribute
- VDPA_ATTR_DEV_F_VERSION_1
-Message-ID: <20210915032732-mutt-send-email-mst@kernel.org>
-References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
- <cover.1631621507.git.wuzongyong@linux.alibaba.com>
- <834528d24c839080215b2e077f100e9ed5073edc.1631621507.git.wuzongyong@linux.alibaba.com>
- <20210914085711-mutt-send-email-mst@kernel.org>
- <20210915032453.GA18793@L-PF27918B-1352.localdomain>
+        Wed, 15 Sep 2021 03:35:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0UoSuf-e_1631691260;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0UoSuf-e_1631691260)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 15 Sep 2021 15:34:21 +0800
+Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+ <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+ <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
+ <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
+ <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
+ <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
+ <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
+ <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
+ <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
+Message-ID: <09d0190b-f2cc-9e64-4d3a-4eb0def22b7b@linux.alibaba.com>
+Date:   Wed, 15 Sep 2021 15:34:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915032453.GA18793@L-PF27918B-1352.localdomain>
+In-Reply-To: <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:24:53AM +0800, Wu Zongyong wrote:
-> On Tue, Sep 14, 2021 at 08:58:28AM -0400, Michael S. Tsirkin wrote:
-> > On Tue, Sep 14, 2021 at 08:24:51PM +0800, Wu Zongyong wrote:
-> > > This new attribute advertises whether the vdpa device is legacy or not.
-> > > Users can pick right virtqueue size if the vdpa device is legacy which
-> > > doesn't support to change virtqueue size.
-> > > 
-> > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > 
-> > So if we are bothering with legacy, I think there are
-> > several things to do when building the interface
-> > - support transitional devices, that is allow userspace
-> >   to tell device it's in legacy mode
-> > - support reporting/setting supporting endian-ness
+
+
+On 2021/9/15 下午3:22, 王贇 wrote:
 > 
-> It's true if we try to implement a general drvier for legacy.
-> But this series is dedicated to implement a driver only for ENI. Is it
-> necessary to implement what you said here in this series?
+> 
+> On 2021/9/15 上午11:27, Dave Hansen wrote:
+>> On 9/14/21 6:56 PM, 王贇 wrote:
+>>>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
+>>>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
+>>>> Just turning off tracing for the page fault handler is papering over the
+>>>> problem.  It'll just come back later with a slightly different form.
+>>>>
+>>> Cool~ please let me know when you have the proper approach.
+>>
+>> It's an entertaining issue, but I wasn't planning on fixing it myself.
+>>
+> 
+> Do you have any suggestion on how should we fix the problem?
+> 
+> I'd like to help fix it, but sounds like all the known working approach
+> are not acceptable...
 
-To a certain degree, yes.
+Hi, Dave, Peter
 
-I am thinking about the UAPI here. The new attribute is part of that.
-E.g. userspace consuming this needs to be more or less hardware agnostic
-and not depend on specifics of ENI.
+What if we just increase the stack size when ftrace enabled?
 
-Otherwise if userspace assumes legacy==eni then it will break with
-other hardware.
- 
-One way to test how generic it all is would be adding legacy support in
-the simulator.
+Maybe like:
 
-> > 
-> > > ---
-> > >  drivers/vdpa/vdpa.c          | 6 ++++++
-> > >  drivers/virtio/virtio_vdpa.c | 7 ++++++-
-> > >  include/uapi/linux/vdpa.h    | 1 +
-> > >  3 files changed, 13 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-> > > index 1dc121a07a93..533d7f589eee 100644
-> > > --- a/drivers/vdpa/vdpa.c
-> > > +++ b/drivers/vdpa/vdpa.c
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/slab.h>
-> > >  #include <linux/vdpa.h>
-> > >  #include <uapi/linux/vdpa.h>
-> > > +#include <uapi/linux/virtio_config.h>
-> > >  #include <net/genetlink.h>
-> > >  #include <linux/mod_devicetable.h>
-> > >  
-> > > @@ -494,6 +495,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > >  	u16 max_vq_size;
-> > >  	u32 device_id;
-> > >  	u32 vendor_id;
-> > > +	u64 features;
-> > >  	void *hdr;
-> > >  	int err;
-> > >  
-> > > @@ -508,6 +510,7 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > >  	device_id = vdev->config->get_device_id(vdev);
-> > >  	vendor_id = vdev->config->get_vendor_id(vdev);
-> > >  	max_vq_size = vdev->config->get_vq_num_max(vdev);
-> > > +	features = vdev->config->get_features(vdev);
-> > >  
-> > >  	err = -EMSGSIZE;
-> > >  	if (nla_put_string(msg, VDPA_ATTR_DEV_NAME, dev_name(&vdev->dev)))
-> > > @@ -520,6 +523,9 @@ vdpa_dev_fill(struct vdpa_device *vdev, struct sk_buff *msg, u32 portid, u32 seq
-> > >  		goto msg_err;
-> > >  	if (nla_put_u16(msg, VDPA_ATTR_DEV_MAX_VQ_SIZE, max_vq_size))
-> > >  		goto msg_err;
-> > > +	if (features & BIT_ULL(VIRTIO_F_VERSION_1) &&
-> > > +	    nla_put_flag(msg, VDPA_ATTR_DEV_VERSION_1))
-> > > +		goto msg_err;
-> > >  
-> > >  	genlmsg_end(msg, hdr);
-> > >  	return 0;
-> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > > index 72eaef2caeb1..1cba957c4cdc 100644
-> > > --- a/drivers/virtio/virtio_vdpa.c
-> > > +++ b/drivers/virtio/virtio_vdpa.c
-> > > @@ -7,6 +7,7 @@
-> > >   *
-> > >   */
-> > >  
-> > > +#include "linux/virtio_config.h"
-> > >  #include <linux/init.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/device.h>
-> > > @@ -145,6 +146,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > >  	/* Assume split virtqueue, switch to packed if necessary */
-> > >  	struct vdpa_vq_state state = {0};
-> > >  	unsigned long flags;
-> > > +	bool may_reduce_num = false;
-> > >  	u32 align, num;
-> > >  	int err;
-> > >  
-> > > @@ -169,10 +171,13 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > >  		goto error_new_virtqueue;
-> > >  	}
-> > >  
-> > > +	if (ops->get_features(vdpa) & BIT_ULL(VIRTIO_F_VERSION_1))
-> > > +		may_reduce_num = true;
-> > > +
-> > >  	/* Create the vring */
-> > >  	align = ops->get_vq_align(vdpa);
-> > >  	vq = vring_create_virtqueue(index, num, align, vdev,
-> > > -				    true, true, ctx,
-> > > +				    true, may_reduce_num, ctx,
-> > >  				    virtio_vdpa_notify, callback, name);
-> > >  	if (!vq) {
-> > >  		err = -ENOMEM;
-> > > diff --git a/include/uapi/linux/vdpa.h b/include/uapi/linux/vdpa.h
-> > > index 66a41e4ec163..ce0b74276a5b 100644
-> > > --- a/include/uapi/linux/vdpa.h
-> > > +++ b/include/uapi/linux/vdpa.h
-> > > @@ -32,6 +32,7 @@ enum vdpa_attr {
-> > >  	VDPA_ATTR_DEV_VENDOR_ID,		/* u32 */
-> > >  	VDPA_ATTR_DEV_MAX_VQS,			/* u32 */
-> > >  	VDPA_ATTR_DEV_MAX_VQ_SIZE,		/* u16 */
-> > > +	VDPA_ATTR_DEV_VERSION_1,		/* flag */
-> > >  
-> > >  	/* new attributes must be added above here */
-> > >  	VDPA_ATTR_MAX,
-> > > -- 
-> > > 2.31.1
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index a8d4ad85..bc2e0c1 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -12,10 +12,16 @@
+ #define KASAN_STACK_ORDER 0
+ #endif
 
++#ifdef CONFIG_FUNCTION_TRACER
++#define FTRACE_STACK_ORDER 1
++#else
++#define FTRACE_STACK_ORDER 0
++#endif
++
+ #define THREAD_SIZE_ORDER      (2 + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER + FTRACE_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
+
+ #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
+
+Just like kasan we give more stack space for ftrace, is this looks
+acceptable to you?
+
+Regards,
+Michael Wang
+
+> 
+> Regards,
+> Michael Wang
+> 
