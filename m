@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE7340CD4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA3A40CD58
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhIOTlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S231693AbhIOTmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhIOTlD (ORCPT
+        with ESMTP id S231611AbhIOTmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:41:03 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B53C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:39:44 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so5092714otq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:39:44 -0700 (PDT)
+        Wed, 15 Sep 2021 15:42:18 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A08C061766
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:40:59 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id x10-20020a056830408a00b004f26cead745so5084630ott.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:40:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=IGGDgeo7WVVIlkSnWinltsDGGWd6kdeJ2zJ+aw6R/WI=;
-        b=GUS2hAMgT2THzzdYiJDLOPPpMXHleJehii5HTQQ8sTxAHOW276rxND6LOK2QvQFA4u
-         ZusSgHiBg4JbNncoByRn6RQIMW7b2PVv0+wOets/2UphEYO0SohUOndszuIkFXFb2oRk
-         RDrFneIDQXgKYs2QmPxLhVGbi/W+xAtXFEH1Y=
+        bh=mDzdWtBB1uSsJFNpS+LW0eoU/BmEDcIzioUx3tBX9MQ=;
+        b=Ly9kyawmN861/4Wr1C8M9aEGfTfVB+G/JQ7VM6jBRtd5RWpnuD2lPePwRMRuLavd/Z
+         l8suHz6HXSPxNA92D6B5fDECCdQZfwfXlT/5HCGbUPotXdK7yhmz23qRgEnePR+XiRHf
+         BSt2Q4tYyys9osDsdTtmsmngLHLwlhPe6oNPU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=IGGDgeo7WVVIlkSnWinltsDGGWd6kdeJ2zJ+aw6R/WI=;
-        b=zc4BSqZD4n9wUOyI9wNcbKctaLf04fstF92J479Gb/Jr0WLcpJYu2w5MpqA1+jgxLg
-         d6sYOK3aRRP1kiYqrzIbrnSY4OvgrC6GG9y8hlU34vwaqANhdig3qqq/Z9oFCRlXJknQ
-         sqZ9Yk3Oz2VttRnwbq1+EJC51mdtCYg0rMK4JVaYCh9LawQVOrWk0cxvTnGurOyQBZS2
-         ck1U4WXv90zD6cDXquLYkQnx0HiLZTHOCkEUdmeXRj6MOEdzfXNuWzUeSPDBAvpna1oj
-         z6bVHYcnGpsMAfg2tWH0hflOXIxtq0+JTs5VVupyoSedyZ0/tY5NnW9jcEpReMT/0IhS
-         Xftw==
-X-Gm-Message-State: AOAM531Q46WMswpSdPmD5MM93yMays9eAsYwz3lAVtO5WPrtbd0vjxKw
-        tZZPc0QrwB1Zi5WKLbNmnEl2KJW287OUiILZ0WQmjw==
-X-Google-Smtp-Source: ABdhPJwsc6oh2VNX6ThYRfgqXtiKBP0iz/QFxANVi8LRNsPwLNxkHfTkcMXQQuSYqUHwc8WaTZ7U+OC7MPE57NeeQlE=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr1440354otp.159.1631734783359;
- Wed, 15 Sep 2021 12:39:43 -0700 (PDT)
+        bh=mDzdWtBB1uSsJFNpS+LW0eoU/BmEDcIzioUx3tBX9MQ=;
+        b=wIeiior4Wg2DT+9yQx57qrqds5qWzW6/VMunZMo85Fhd4kVquxHJ5zKBpVK1G+yPxf
+         Td3mOKE/Q90fW00y4yqam0ZSm9dN9b8XlJ2dC5VSvvrqWeiQYVKWHNCYmsTSyuk1lXI2
+         PHDtXqzfYFxRiizqAFEDvJdpmInmIuEKVKL3FdVZhVkpSRoV8v/savBZvu+gTgjbGaY+
+         9JaXPcxAOEtGwl7/cHih7HjVDOIzb/LD13zbKk0OEv8lAREYUkRsVzPb7ojaum91px9U
+         Cmlkfofilh4CQTwgfqrdteKVg7JwnjiymUemxDn12esyY+qipxQQFxZT9AWakdYZ41SC
+         01Ow==
+X-Gm-Message-State: AOAM530aQ0cH8j6K3X+wJLpDlYPVVCnJ1oTIz8BHaew0YQnY6Y1XWXVD
+        VW2Yun8ArkFsjr+plU0pyV6oXbxNdphfjfzp3FNkkQ==
+X-Google-Smtp-Source: ABdhPJwivxhkg8fCpBrYDaYtdYT13Ef9VjmdoM5RJyzQ0CrKUqXreux0XnV6qMdYSvfLig+lS8I5BpdTbzuXMDMwPsI=
+X-Received: by 2002:a05:6830:18c7:: with SMTP id v7mr1527419ote.126.1631734858214;
+ Wed, 15 Sep 2021 12:40:58 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 15 Sep 2021 12:39:42 -0700
+ HTTPREST; Wed, 15 Sep 2021 12:40:57 -0700
 MIME-Version: 1.0
-In-Reply-To: <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
-References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
- <20200730095350.13925-3-stanimir.varbanov@linaro.org> <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
- <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
+In-Reply-To: <36fe241f845a27b52509274d007948b1@codeaurora.org>
+References: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
+ <1629458622-4915-4-git-send-email-okukatla@codeaurora.org>
+ <CAE-0n51WBdLoJRPs9tWZgdAukJMnkD3V00o7xNYVX77-eToKvw@mail.gmail.com>
+ <749157bdb4613ae370adfb7ba055a2a9@codeaurora.org> <36fe241f845a27b52509274d007948b1@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Wed, 15 Sep 2021 12:39:42 -0700
-Message-ID: <CAE-0n53T-RoOvR=s9nHiXAriMgKvBfDqfBfoGKX5Ju5YF3Tcqw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] venus: Add a debugfs file for SSR trigger
-To:     dikshita@codeaurora.org
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+Date:   Wed, 15 Sep 2021 12:40:57 -0700
+Message-ID: <CAE-0n53g=qGoVAMh_me_W0ksp39WUm2CCwAttcAK+Do5nYXq5g@mail.gmail.com>
+Subject: Re: [v7 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
+To:     okukatla@codeaurora.org
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        evgreen@google.com, georgi.djakov@linaro.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, jim.cromie@gmail.com,
-        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media-owner@vger.kernel.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
+        mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
+        okukatla=codeaurora.org@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting dikshita@codeaurora.org (2021-09-15 02:13:09)
-> Hi Stephen,
->
-> Reviving the discussion on this change as we need to pull this in.
->
-> As per your suggestion, I explored the fault injection framework to
-> implement this functionality.
-> But I don't think that meets our requirements.
->
-> We need a way to trigger subsystem restart from the client-side, it's
-> not derived from the driver.
+Quoting okukatla@codeaurora.org (2021-09-14 23:26:19)
+> On 2021-09-15 10:35, okukatla@codeaurora.org wrote:
+> > On 2021-09-04 00:36, Stephen Boyd wrote:
+> >> Quoting Odelu Kukatla (2021-08-20 04:23:41)
+> >>> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
+> >>> SoCs.
+> >>>
+> >>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> >>> ---
+> >>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 11 +++++++++++
+> >>>  1 file changed, 11 insertions(+)
+> >>>
+> >>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >>> index 53a21d0..cf59b47 100644
+> >>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >>> @@ -1848,6 +1848,17 @@
+> >>>                         };
+> >>>                 };
+> >>>
+> >>> +               epss_l3: interconnect@18590000 {
+> >>> +                       compatible = "qcom,sc7280-epss-l3";
+> >>> +                       reg = <0 0x18590000 0 1000>,
+> >>
+> >> Is this supposed to be 0x1000?
+> >>
+> > No, This is 1000 or 0x3E8.
 
-Just to confirm, this is all for debugging purposes right?
+Wow ok. Why is it the only size that isn't in hex format? Please try to
+be consistent and use hex throughout.
 
->
-> while fault injection framework enables the driver to trigger an
-> injection
-> when a specific event occurs for eg: page allocation failure or memory
-> access failure.
->
-> So, IMO, we will have to use custom debugfs only.
+> We have mapped only required registers for L3 scaling, 1000/0x3E8 is
+> suffice.
+> But i will update it to 0x1000 in next revision so that entire clock
+> domain region-0 is mapped.
 
-Can you use DECLARE_FAULT_ATTR()? Or you need it to be active instead of
-passive, i.e. it shouldn't wait for should_fail() to return true, but
-actively trigger something on the remoteproc?
+Doesn't that conflict with the cpufreq-hw device?
 
->
-> Please feel free to correct me in case my understanding of the framework
-> is wrong.
->
-
-I presume the fault injection framework could get a new feature that
-lets the fault be injected immediately upon writing the debugfs file.
-My goal is to consolidate this sort of logic into one place and then put
-it behind some config option that distros can disable so the kernel
-isn't bloated with debug features that end users will never care about.
+> >>> +                             <0 0x18591000 0 0x100>,
+> >>> +                             <0 0x18592000 0 0x100>,
+> >>> +                             <0 0x18593000 0 0x100>;
+> >>> +                       clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc
+> >>> GCC_GPLL0>;
+> >>> +                       clock-names = "xo", "alternate";
+> >>> +                       #interconnect-cells = <1>;
+> >>> +               };
+> >>> +
+> >>>                 cpufreq_hw: cpufreq@18591000 {
+> >>>                         compatible = "qcom,cpufreq-epss";
+> >>>                         reg = <0 0x18591100 0 0x900>,
