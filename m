@@ -2,195 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49EC40C53D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3552B40C548
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237536AbhIOM2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:28:48 -0400
-Received: from thoth.sbs.de ([192.35.17.2]:35179 "EHLO thoth.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234331AbhIOM2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:28:45 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 18FCRF2M005873
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 14:27:15 +0200
-Received: from md1f2u6c.ad001.siemens.net ([167.87.79.72])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 18FCRAr8006124;
-        Wed, 15 Sep 2021 14:27:14 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: [PATCH v4 6/6] arm64: dts: ti: iot2050: Add support for product generation 2 boards
-Date:   Wed, 15 Sep 2021 14:27:10 +0200
-Message-Id: <a4d6ab1dd1f5582b940ac25395eb878e683b3a38.1631708830.git.jan.kiszka@siemens.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631708830.git.jan.kiszka@siemens.com>
-References: <cover.1631708830.git.jan.kiszka@siemens.com>
+        id S234103AbhIOMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233011AbhIOMc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:32:26 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE938C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:31:07 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id k65so5308502yba.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RMVz/YL87qFcfNY/40TnLa7NwiZxF7oASbtjCW+e3a4=;
+        b=RzAvK5whFHR8Ja0G/byfrStN/Gh4cBJyxKb4g9NBLL7rLGvqIq05Fra5Bw7l1E/eAJ
+         Xh60LlMhNBXL7udExk5GF6GgX5J2hqInSzKQzdqH5gb8W51HNlx9hfWvIWAuh28KkY2e
+         lyKQnlt3SP+HjroUYvDLOm4fXd/xpC47tLU9fz44Vq5UcuRAY2gqjtYGXOO7NUsme2I0
+         0VYgkCnIxEoxEw8iEX2FOYBns5hFePRrx21ydMoWcVfGMpyF3xIoLhnVrcrCqmm3RJk3
+         EK2gTCT/xAzLKspLaltXX/zN65UbISZUGc1YcmiFjEXs0hg3/IMmRZ7YvCzXI7gW34ng
+         f22g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RMVz/YL87qFcfNY/40TnLa7NwiZxF7oASbtjCW+e3a4=;
+        b=40w/4L/aeGtLFqCD4iuJOR7JWnO6jo4NaWNy8B4l1/pbHpWlPBouugVH4BUS/NmsLG
+         fHbh4qyWbxpeOQgbxBAtvxtamBuWmx0B6lcAbzCeD0tO4t5hdsU0Bk6gwi7Lp/j+VTWP
+         IBhiQtNmdh7luuRWdcx5L9/vkbUFqvmqVFO+nl0/Ahpov6M5Y1k5vd3iwFjM2s4cNYSV
+         Puon02HRB7x4uPKXEC0UT/jPdmLEfDQbxRVLGsJ+DJCC2OQRL1PMS+sV5rlyBSa7Gpj8
+         WC93IQjpHiJbJL4/L3FiVNYQWlApG6lnhB7158x8sIVOrlT3RgD3vWb+L9Sp1tdS37dI
+         RGbg==
+X-Gm-Message-State: AOAM533j7WXVhjCjPohEjodJKuf7hVBHFx2Iq9kptduu0DF9JXREmp7y
+        1Fpp3kPemnSYt+mSzHiRW6YHYbKN3T3IeECXUpq6pw==
+X-Google-Smtp-Source: ABdhPJwNIgYbkZgJEF6V8XuJgeeiK0bTe4qAJyKTIoOfMo0fC9XebsLm4yFw+BBZjRC+03lEAIp430YkfJoQnMwveEE=
+X-Received: by 2002:a5b:142:: with SMTP id c2mr5909857ybp.425.1631709066908;
+ Wed, 15 Sep 2021 05:31:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-5-mkoutny@suse.com>
+ <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
+ <20210914092207.GA23743@blackbody.suse.cz> <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
+In-Reply-To: <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 15 Sep 2021 14:30:56 +0200
+Message-ID: <CAKfTPtC5+4gf_R0bAVHe+0Fw6dQYQ_a-f529H9s4KLpm40X9Ng@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+On Tue, 14 Sept 2021 at 11:45, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Tue, 14 Sept 2021 at 11:22, Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
+e:
+> >
+> > On Fri, Sep 10, 2021 at 04:19:27PM +0200, Vincent Guittot <vincent.guit=
+tot@linaro.org> wrote:
+> > > Your proposal looks interesting but I need more time to make sure tha=
+t
+> > > all cases are covered. We have faced several odd corner cases and
+> > > sequences in the past that I need time to check that you don't put
+> > > some back
+> >
+> > Do you have any pointers to the cases that come to your mind? I wonder
+> > if those could be reproduced with a simple setup.
+>
+> I don't have a strict list but several warnings for leaf_list have
+> been already reported on lkml in the past and the use cases were quite
+> complicated and I want to go through them to make sure they are still
+> covered.
 
-This adds the devices trees for IOT2050 Product Generation 2 (PG2)
-boards. We have Basic and an Advanced variants again, differing in
-number of cores, RAM size, availability of eMMC and further details.
-The major difference to PG1 is the used silicon revision (SR2.x on
-PG2).
+The corner cases that I wanted to check, are covered by
+a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle"=
+)
+and
+fdaba61ef8a2 ("sched/fair: Ensure that the CFS parent is added after
+unthrottling")
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  2 +
- .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
- .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
- .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
- 4 files changed, 106 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
+This patch looks ok to me.
+Also, propagate_entity_cfs_rq() could also get advantage of the same
+kind of change
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index d56c742f5a10..41a4bc96e6bd 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -8,7 +8,9 @@
- 
- dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
- 
- dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-new file mode 100644
-index 000000000000..c25bce7339b7
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2021
-+ *
-+ * Authors:
-+ *   Chao Zeng <chao.zeng@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * Common bits of the IOT2050 Basic and Advanced variants, PG2
-+ */
-+
-+&main_pmx0 {
-+	cp2102n_reset_pin_default: cp2102n-reset-pin-default {
-+		pinctrl-single,pins = <
-+			/* (AF12) GPIO1_24, used as cp2102 reset */
-+			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
-+		>;
-+	};
-+};
-+
-+&main_gpio1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp2102n_reset_pin_default>;
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "", "", "",
-+		"", "", "", "", "CP2102N-RESET";
-+};
-+
-+&dss {
-+	/* Workaround needed to get DP clock of 154Mhz */
-+	assigned-clocks = <&k3_clks 67 0>;
-+};
-+
-+&serdes0 {
-+	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
-+};
-+
-+&dwc3_0 {
-+	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
-+				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
-+	phys = <&serdes0 PHY_TYPE_USB3 0>;
-+	phy-names = "usb3-phy";
-+};
-+
-+&usb0_phy {
-+	maximum-speed = "super-speed";
-+	snps,dis-u1-entry-quirk;
-+	snps,dis-u2-entry-quirk;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-new file mode 100644
-index 000000000000..c62549a4b436
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2018-2021
-+ *
-+ * Authors:
-+ *   Le Jin <le.jin@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
-+ * 1 GB RAM, no eMMC, main_uart0 on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6528-iot2050-basic-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
-+	model = "SIMATIC IOT2050 Basic PG2";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-new file mode 100644
-index 000000000000..f00dc86d01b9
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) Siemens AG, 2018-2021
-+ *
-+ * Authors:
-+ *   Le Jin <le.jin@siemens.com>
-+ *   Jan Kiszka <jan.kiszka@siemens.com>
-+ *
-+ * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
-+ * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-+ *
-+ * Product homepage:
-+ * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am6548-iot2050-advanced-common.dtsi"
-+#include "k3-am65-iot2050-common-pg2.dtsi"
-+
-+/ {
-+	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
-+	model = "SIMATIC IOT2050 Advanced PG2";
-+};
-+
-+&mcu_r5fss0 {
-+	/* lock-step mode not supported on this board */
-+	ti,cluster-mode = <0>;
-+};
--- 
-2.31.1
-
+>
+> Vincent
+>
+> > (FTR, I used the LTP test (at b673f49ae) cfs_bandwidth01 to check this =
+change.)
+> >
+> > Thanks,
+> > Michal
