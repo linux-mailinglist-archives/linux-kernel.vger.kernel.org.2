@@ -2,185 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8EE40CD5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E965E40CD60
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhIOToA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
+        id S231679AbhIOTt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbhIOTn7 (ORCPT
+        with ESMTP id S230451AbhIOTtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:43:59 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E27C061574;
-        Wed, 15 Sep 2021 12:42:40 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id v22so3523105edd.11;
-        Wed, 15 Sep 2021 12:42:40 -0700 (PDT)
+        Wed, 15 Sep 2021 15:49:23 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AADC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:48:04 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id h16so8787583lfk.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Uw13fa7UPrscT+hp1Xeoi9cyf+BNE2EOet5zGwMHioI=;
-        b=pAZ4I+JbBGP0q8CR3B0DJFJYk9OKkqPtDYgaWjDuZqUFo9PosGyMUA9DUqeFAS4U7t
-         vXeKj/QVIH2YbcALd0dmVRZUMXOUTctX5xM7JfyeH018FbYpYgbqAsr6YKYbofTe2eas
-         qnUkMHr52lARw6SXMF5VQbT8LGTpvZ1FxJtqxpIPUwk/oiVdBkBvGGfpQ5MkS+Ijo0eR
-         kf6fhNOSAzvvKh8z9fJcKGPBJQOnYAEbWi1PQg5OU/wxh9BaRsmnLX+N7I/bw+KAmMYH
-         mZwzMazJ+/z+7L7yl6qo04XqsoIXW993qqPfKdQGIZRFTtwT2RHJAacr8xOQHDRmiez6
-         1mXA==
+        bh=Y64G4Nr6eLupd8AyUDQV+QjpzOrG0jVGWqFOvbj7NhQ=;
+        b=Y4csyohCZU+8YoKj/T3AMNnwgk3FRg+INHHD4fuGyDsUm1wq1h6AKxBYulDw3FoQ7G
+         0NziSuibsMyNi5yefbYsucBch28Uj+K3jgCIw+xC9NJQXLVMnDOuhKqiW0u/dIQHiVqz
+         N3nrrQCoMhlCRtjeNcE5DeBxWUyUUAZ/n68kQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Uw13fa7UPrscT+hp1Xeoi9cyf+BNE2EOet5zGwMHioI=;
-        b=LBf7dRe0SS3xNBQkqikFLNA/m8mmED+mpVUvwlS76BzhTy9Gz/7bXu19yuGdyNuGKP
-         pRnRlZ7vUrpsGfXoL9mwsyc8cu42BoAXCSW9AYHKdMH0v+wRwhxfxBKe43uPoRwdrpUU
-         HbVQn75KwNcdkTMlXd3yDqfiwkDUrD6rVsOBT8npQV8B6fYE8nCijkkol118xJAPIA8n
-         BslK7DmwVIwLlZaOFYfz9rz+J76I2vOmcb1V1bDjYT/PIX1K5DHSOzikxCOFMK7RTZR6
-         aDKYO8JioHIXIVBlmxBfPhzb0v3TU3AYdeqhtnfc3sownulwBzQEOqAKOGVLYwOI47CP
-         G4gg==
-X-Gm-Message-State: AOAM531hcTig9UnAmot+ANBK9Zry54o5WtUbpICNU/RbeKVayKY9xrsX
-        hy8Ko9d0+5kWST+i6Vh86N8qdW0v4dts0a/Xa6A=
-X-Google-Smtp-Source: ABdhPJxa05SSTZEJszHSAxzMlgCguILIh6H6Tn47tnK76rBCqWwl//b8i1Bddai/L40Va4CpERC/3VkqEYrwBPupY3o=
-X-Received: by 2002:aa7:c80d:: with SMTP id a13mr1817821edt.71.1631734958661;
- Wed, 15 Sep 2021 12:42:38 -0700 (PDT)
+        bh=Y64G4Nr6eLupd8AyUDQV+QjpzOrG0jVGWqFOvbj7NhQ=;
+        b=PhnCEmKmDcXMShE4gM4TdhYb9eeTWhZAcHL6DlfilmqzYWuwdycCa4kx6j46ytU4+M
+         L7vRBrY8UllJxz2ZAUiTJxyWLOvb2RlHW/biyqjVDrRdFV79daDFrThbMi11ZGH7nWIl
+         x3otaGCrlu5iAeKB6AZ0nr6rndmqg7IAAK64g3gcTj8hFRvtuTMk4vItWRou/Tg9whQM
+         0crVf4dBBePSSMhdzF1ULvo8hpciXeAGDbQ1LuXuIhumbtUK2zn5bITRdit4UIfhm7nT
+         pNpNu0LzuMy29yJvwHpyF7wylsIvhloa4E3t9JD1sgSyEwLIh8Keya3K7r5akOSwp1CQ
+         MADg==
+X-Gm-Message-State: AOAM530iKvQCAfnEWXoazhvxLRnwaUWekmzTlXJpSE+o+p7TQeNY43uB
+        CUrxhHOCkH82rEXqKWKnOBQ+yFHmg4+zVQTW4VE=
+X-Google-Smtp-Source: ABdhPJwv3KXrRXZAmNg4F8D0BnrfMnghM9jBh6BzNTEGDyggRBBE54QrklKkGioEO5S2joNvkdPVUw==
+X-Received: by 2002:a2e:5310:: with SMTP id h16mr1500775ljb.268.1631735281958;
+        Wed, 15 Sep 2021 12:48:01 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id x4sm93426ljm.98.2021.09.15.12.48.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 12:48:01 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id c8so8888309lfi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:48:00 -0700 (PDT)
+X-Received: by 2002:a05:6512:3991:: with SMTP id j17mr1261083lfu.280.1631735280541;
+ Wed, 15 Sep 2021 12:48:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACkBjsZxsm=91sf-ihJgEtx7tmBJr-yTrPbrvg6tP-_J4pGdGw@mail.gmail.com>
- <YUB9Pn4CrqYu7TMC@infradead.org> <CACkBjsYwLYLRmX8GpsDpMthagWOjWWrNxqY6ZLNQVr6yx+f5vA@mail.gmail.com>
- <YUGg6aVAPKoYZ+8V@infradead.org>
-In-Reply-To: <YUGg6aVAPKoYZ+8V@infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 15 Sep 2021 12:42:26 -0700
-Message-ID: <CAHbLzkp7hyNa58ghiPy2MQCLLG-oXp=_syP8vvFkWK1SviJuPw@mail.gmail.com>
-Subject: Re: general protection fault in wb_timer_fn
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Hao Sun <sunhao.th@gmail.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org,
+References: <20210915035227.630204-1-linux@roeck-us.net> <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+ <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
+In-Reply-To: <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Sep 2021 12:47:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
+Message-ID: <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:34 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Wed, Sep 15, 2021 at 12:35 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> On Wed, Sep 15, 2021 at 09:49:49AM +0800, Hao Sun wrote:
-> > console output: https://paste.ubuntu.com/p/5qHqPXWmCQ/
-> > kernel config: https://paste.ubuntu.com/p/VsVbFh9ZpQ/
-> > C reproducer: https://paste.ubuntu.com/p/yrYsn4zpcn/
-> > Syzlang reproducer: https://paste.ubuntu.com/p/bCWyNyHncJ/
-> >
-> > Just tried the C reproducer on the latest Linux kernel (6880fa6c5660
-> > Linux 5.15-rc1).
-> > The reproducer still crashed the kernel but with a different backtrace.
->
-> Well, that trace looks very much like an issue in the MM truncate code.
-> Adding the linux-mm list.
+> On a side note, we may revive the parisc patch. Helge isn't entirely
+> happy with the other solution for parisc; it is quite invasive and
+> touches a total of 19 files if I counted correctly.
 
-The BUG is triggered if it tries to invalidate across pages. But it
-hardcoded PAGE_SIZE. The offset passed in by truncate_cleanup_page()
-is 0, but the length might be > PAGE_SIZE if it is a compound page. It
-might be caused by READ_ONLY_THP_FOR_FS.
+Ok, my suggestion to use the linker was not a "do it this way", it
+really was just a "maybe alternate approach". So no objections if
+absolute_pointer() ends up being the simpler solution.
 
-Could you please try the below debug patch to dump page details? I saw
-your kernel config has DEBUG_VM enabled.
+What other notable issues end up being still live? I sent out that one
+patch for sparc, but didn't get any response to it. I'm inclined to
+just apply it (the 'struct mdesc_hdr' pointer misuse one).
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index ab7573d72dd7..ed7256112c2b 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1507,7 +1507,8 @@ void block_invalidatepage(struct page *page,
-unsigned int offset,
-        /*
-         * Check for overflow
-         */
--       BUG_ON(stop > PAGE_SIZE || stop < length);
-+       VM_BUG_ON_PAGE((stop > PAGE_SIZE), page);
-+       VM_BUG_ON_PAGE((stop < length), page);
-
-        head = page_buffers(page);
-        bh = head;
-
-If my speculation is correct, I think the below patch should be able
-to fix this issue.
-
-diff --git a/fs/buffer.c b/fs/buffer.c
-index ab7573d72dd7..18428cee59af 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1507,7 +1507,7 @@ void block_invalidatepage(struct page *page,
-unsigned int offset,
-        /*
-         * Check for overflow
-         */
--       BUG_ON(stop > PAGE_SIZE || stop < length);
-+       BUG_ON(stop > thp_size(page) || stop < length);
-
-        head = page_buffers(page);
-        bh = head;
-
->
-> >
-> > IPv6: ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
-> > IPv6: ADDRCONF(NETDEV_CHANGE): wlan1: link becomes ready
-> > Bluetooth: hci0: command 0x0409 tx timeout
-> > ------------[ cut here ]------------
-> > kernel BUG at fs/buffer.c:1510!
-> > invalid opcode: 0000 [#1] PREEMPT SMP
-> > CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.14.0+ #15
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > Workqueue: events delayed_fput
-> > RIP: 0010:block_invalidatepage+0x27f/0x2a0 -origin/fs/buffer.c:1510
-> > Code: ff ff e8 b4 07 d7 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
-> > c7 c2 40 4e 25 84 e8 2b c2 c4 02 e9 c9 fe ff ff e8 91 07 d7 ff <0f> 0b
-> > e8 8a 07 d7 ff 0f 0b e8 83 07 d7 ff 48 8d 5d ff e9 57 ff ff
-> > RSP: 0018:ffffc9000065bb60 EFLAGS: 00010293
-> > RAX: 0000000000000000 RBX: ffffea0000670000 RCX: 0000000000000000
-> > RDX: ffff8880097fa240 RSI: ffffffff81608a9f RDI: ffffea0000670000
-> > RBP: ffffea0000670000 R08: 0000000000000001 R09: 0000000000000000
-> > R10: ffffc9000065b9f8 R11: 0000000000000003 R12: ffffffff81608820
-> > R13: ffffc9000065bc68 R14: 0000000000000000 R15: ffffc9000065bbf0
-> > FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f4aef93fb08 CR3: 0000000108cf2000 CR4: 0000000000750ef0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
-> > Call Trace:
-> >  do_invalidatepage -origin/mm/truncate.c:157 [inline]
-> >  truncate_cleanup_page+0x15c/0x280 -origin/mm/truncate.c:176
-> >  truncate_inode_pages_range+0x169/0xc30 -origin/mm/truncate.c:325
-> >  kill_bdev.isra.29+0x28/0x30
-> >  blkdev_flush_mapping+0x4c/0x130 -origin/block/bdev.c:658
-> >  blkdev_put_whole+0x54/0x60 -origin/block/bdev.c:689
-> >  blkdev_put+0x6f/0x210 -origin/block/bdev.c:953
-> >  blkdev_close+0x25/0x30 -origin/block/fops.c:459
-> >  __fput+0xdf/0x380 -origin/fs/file_table.c:280
-> >  delayed_fput+0x25/0x40 -origin/fs/file_table.c:308
-> >  process_one_work+0x359/0x850 -origin/kernel/workqueue.c:2297
-> >  worker_thread+0x41/0x4d0 -origin/kernel/workqueue.c:2444
-> >  kthread+0x178/0x1b0 -origin/kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30 -origin/arch/x86/entry/entry_64.S:295
-> > Modules linked in:
-> > Dumping ftrace buffer:
-> >    (ftrace buffer empty)
-> > ---[ end trace 9dbb8f58f2109f10 ]---
-> > RIP: 0010:block_invalidatepage+0x27f/0x2a0 -origin/fs/buffer.c:1510
-> > Code: ff ff e8 b4 07 d7 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
-> > c7 c2 40 4e 25 84 e8 2b c2 c4 02 e9 c9 fe ff ff e8 91 07 d7 ff <0f> 0b
-> > e8 8a 07 d7 ff 0f 0b e8 83 07 d7 ff 48 8d 5d ff e9 57 ff ff
-> > RSP: 0018:ffffc9000065bb60 EFLAGS: 00010293
-> > RAX: 0000000000000000 RBX: ffffea0000670000 RCX: 0000000000000000
-> > RDX: ffff8880097fa240 RSI: ffffffff81608a9f RDI: ffffea0000670000
-> > RBP: ffffea0000670000 R08: 0000000000000001 R09: 0000000000000000
-> > R10: ffffc9000065b9f8 R11: 0000000000000003 R12: ffffffff81608820
-> > R13: ffffc9000065bc68 R14: 0000000000000000 R15: ffffc9000065bbf0
-> > FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007ff98674f000 CR3: 0000000106b2e000 CR4: 0000000000750ef0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
-> ---end quoted text---
+         Linus
