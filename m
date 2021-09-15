@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3552B40C548
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1C340C55B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhIOMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbhIOMc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:32:26 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE938C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:31:07 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id k65so5308502yba.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RMVz/YL87qFcfNY/40TnLa7NwiZxF7oASbtjCW+e3a4=;
-        b=RzAvK5whFHR8Ja0G/byfrStN/Gh4cBJyxKb4g9NBLL7rLGvqIq05Fra5Bw7l1E/eAJ
-         Xh60LlMhNBXL7udExk5GF6GgX5J2hqInSzKQzdqH5gb8W51HNlx9hfWvIWAuh28KkY2e
-         lyKQnlt3SP+HjroUYvDLOm4fXd/xpC47tLU9fz44Vq5UcuRAY2gqjtYGXOO7NUsme2I0
-         0VYgkCnIxEoxEw8iEX2FOYBns5hFePRrx21ydMoWcVfGMpyF3xIoLhnVrcrCqmm3RJk3
-         EK2gTCT/xAzLKspLaltXX/zN65UbISZUGc1YcmiFjEXs0hg3/IMmRZ7YvCzXI7gW34ng
-         f22g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RMVz/YL87qFcfNY/40TnLa7NwiZxF7oASbtjCW+e3a4=;
-        b=40w/4L/aeGtLFqCD4iuJOR7JWnO6jo4NaWNy8B4l1/pbHpWlPBouugVH4BUS/NmsLG
-         fHbh4qyWbxpeOQgbxBAtvxtamBuWmx0B6lcAbzCeD0tO4t5hdsU0Bk6gwi7Lp/j+VTWP
-         IBhiQtNmdh7luuRWdcx5L9/vkbUFqvmqVFO+nl0/Ahpov6M5Y1k5vd3iwFjM2s4cNYSV
-         Puon02HRB7x4uPKXEC0UT/jPdmLEfDQbxRVLGsJ+DJCC2OQRL1PMS+sV5rlyBSa7Gpj8
-         WC93IQjpHiJbJL4/L3FiVNYQWlApG6lnhB7158x8sIVOrlT3RgD3vWb+L9Sp1tdS37dI
-         RGbg==
-X-Gm-Message-State: AOAM533j7WXVhjCjPohEjodJKuf7hVBHFx2Iq9kptduu0DF9JXREmp7y
-        1Fpp3kPemnSYt+mSzHiRW6YHYbKN3T3IeECXUpq6pw==
-X-Google-Smtp-Source: ABdhPJwNIgYbkZgJEF6V8XuJgeeiK0bTe4qAJyKTIoOfMo0fC9XebsLm4yFw+BBZjRC+03lEAIp430YkfJoQnMwveEE=
-X-Received: by 2002:a5b:142:: with SMTP id c2mr5909857ybp.425.1631709066908;
- Wed, 15 Sep 2021 05:31:06 -0700 (PDT)
+        id S236933AbhIOMgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:36:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233011AbhIOMgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:36:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF18361164;
+        Wed, 15 Sep 2021 12:35:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631709334;
+        bh=ZgeBgOtQK86NR5xKcsbgrpV+8iWT1YLVsfrnmkwzh3E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ORAorsyHidnP3aiVlBM2tIFpWVCd5bQ61Wbzppp2LfeX+3IpFK0cshQvR3AChjA4w
+         OkjT6GVJjskD2IZGnUq55ZntqOTW+tUepldSM322ZIMrAtHM8xLAFHv75632a9Xoqw
+         tQi5tP2xu1QFI3OGSWZFpp6IN/Bc6KTQoq36gzGKJFSTyLgUZ1wZtN2JTGWhD7ixK6
+         47oWUT7nBIz581zW+UbbZ+NMHUaXxHN6f9Xsd3zNjoq+ZqOPlV/K0Q/ub/m9Nzvkc6
+         dfDVekjhzmgp0gSFJOJygzYVDG/OuFy/d9x1lSBx8wbItUTvj7vMUh8Vuvnx2YJd12
+         zxJWIhaw/O5/A==
+Date:   Wed, 15 Sep 2021 13:34:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v3 1/2] regmap: spi: Set regmap max raw r/w from
+ max_transfer_size
+Message-ID: <20210915123453.GD5389@sirena.org.uk>
+References: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-5-mkoutny@suse.com>
- <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
- <20210914092207.GA23743@blackbody.suse.cz> <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
-In-Reply-To: <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 15 Sep 2021 14:30:56 +0200
-Message-ID: <CAKfTPtC5+4gf_R0bAVHe+0Fw6dQYQ_a-f529H9s4KLpm40X9Ng@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
+Content-Disposition: inline
+In-Reply-To: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
+X-Cookie: Absence makes the heart grow frantic.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 11:45, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> On Tue, 14 Sept 2021 at 11:22, Michal Koutn=C3=BD <mkoutny@suse.com> wrot=
-e:
-> >
-> > On Fri, Sep 10, 2021 at 04:19:27PM +0200, Vincent Guittot <vincent.guit=
-tot@linaro.org> wrote:
-> > > Your proposal looks interesting but I need more time to make sure tha=
-t
-> > > all cases are covered. We have faced several odd corner cases and
-> > > sequences in the past that I need time to check that you don't put
-> > > some back
-> >
-> > Do you have any pointers to the cases that come to your mind? I wonder
-> > if those could be reproduced with a simple setup.
->
-> I don't have a strict list but several warnings for leaf_list have
-> been already reported on lkml in the past and the use cases were quite
-> complicated and I want to go through them to make sure they are still
-> covered.
 
-The corner cases that I wanted to check, are covered by
-a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle"=
-)
-and
-fdaba61ef8a2 ("sched/fair: Ensure that the CFS parent is added after
-unthrottling")
+--fXStkuK2IQBfcDe+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This patch looks ok to me.
-Also, propagate_entity_cfs_rq() could also get advantage of the same
-kind of change
+On Wed, Sep 15, 2021 at 01:09:50PM +0100, Lucas Tanure wrote:
+> Set regmap raw read/write from spi max_transfer_size
+> so regmap_raw_read/write can split the access into chunks
+>=20
+> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> ---
+>=20
+> Changes v2:
+> New series
+>=20
+> Changes v3:
+> None
 
->
-> Vincent
->
-> > (FTR, I used the LTP test (at b673f49ae) cfs_bandwidth01 to check this =
-change.)
-> >
-> > Thanks,
-> > Michal
+How does this relate to the previous free standing copy of this patch
+you sent only two days ago on Monday?  You've dropped Charles'
+Reviewed-by so I guess there must be some change but this changelog
+claims there's nothing (and appears to claim that v2 was the first
+version...).
+
+--fXStkuK2IQBfcDe+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB6GwACgkQJNaLcl1U
+h9DqMQf+IIZI4maSmCuTEs8nP0v8mH3dhwpcQ2snw6Km14ifkdfIF/uyHqemS837
+KS9/JVmtqJYSCuAjBuz1cIxtXVaVUFFCiQgtm/CqOymC5g5ADuCcAQHDVO/6Eqj/
+NDiO45P0nUcy8DOzW4gHNRp/Yal3xjgUOgov7dxfqy4va5uFrHsulT7OTTWQUQ5C
+p3/n+iRco8PNREpc7TTmHKdZbGPmAx0BWWviQCLMsPm3QWpoe5SfpY2Lm2FvgQQ4
+oOpUiuoq8pgdapt7DwmQEm5m/OfWJQcCbtmpe/qVi/uXJMtNAmIsImAomXwsjHAm
+Jf/Yln3qNQA+KIvKJvgCsoiVpjEcwg==
+=jX5P
+-----END PGP SIGNATURE-----
+
+--fXStkuK2IQBfcDe+--
