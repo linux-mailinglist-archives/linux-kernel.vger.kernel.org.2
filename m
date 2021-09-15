@@ -2,125 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1805540C59D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED9640C5AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbhIOMvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:51:06 -0400
-Received: from mail-bn7nam10on2079.outbound.protection.outlook.com ([40.107.92.79]:32929
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233264AbhIOMvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:51:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PgAMKUfEiUYKnNc40qvp1G7XPwRZOPaV5lFUKSf9nvJY0D19lMY2oyTlY1d/KiW231/G9i5jlgbasOP5L90zO5sGjYusCohXmUlMxbqUSXBbZ5tmHZw3Pch4zc0kCKMYmnZ5TcQnd0S/oKmD9ckVtKm8V9MC04FRUI+d1Y118OqxKhxc/bikxM2+ntgaWFgXE888yO5J7IYVgT21dUsYKBu2Er80qM8R1r261O2TRFQbLAykYO0KaWC6UtDiCceWlGknwVrd095mXJQ+zxxJ2mXymMdoNw9wRezjUgR8vfT5x3JVF7ArgJYLhdyF9Wu15VSY7QfowlqrcZS8vGNy5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=IDS8sA9eZmXKMzH5p4dTTS/Yb3ILlVf0pW54Wg26GPM=;
- b=Xr7YM/eDiBPSy4pgdMCh/zAWYnk1cFMfLzwBxwq35ya5i546DMe5EqSxD6r5NzPm8x4prFYl/jKkHs+yW5m9S4WKmpYx3bsVYXs+BYRqMLf1CpgK8ATr2qhhPiRtsKecrsaSZdHIrciJLjScZm+SpseDdmabsVe+X1wOQ7YhLbwa6rzNahdJDP6jNV3lRzl98aa45Tx4Vj8qOgGZfTFrigzsb/2htQaiILMk03UqSsrUvILS1zJW1P04X0RN/DHgf3PIq1YF/GOxrFutJs+JNDVes9nkC3xzIquVHx5HFhhRkqGtI859bdlTiPjWprMovmajY5QD55gksSZcwYkaBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IDS8sA9eZmXKMzH5p4dTTS/Yb3ILlVf0pW54Wg26GPM=;
- b=laKukLea0HKQTn34aUbGb55uCly11u2raEY+BZ2gXr6HCskWDpZTTt71jRwZeKbdGXCh+IUmFFWdWAo873yQJMe1maGyiqaLK+MisaJ9Aq9noVqRaLGTrZ3+AhQJZroRYiwaUDUaHoT2neGmq/hGv6UXfICjSQd/WQ7n2Gngg/PFWFfSkEiKe45ER3MXSbcnTWyoPmOFxznb0uTyNPv6ARFZaT7PTdD8mkw8BRia5AMNv6Gjs1o8HGN8SyN1bWPPWN77Vb0kp3H4RM7R2dAaWAaAMDR6Qb6bFaoO6A6J/PQQOMSbpfNnNwxhSaAgKt8HP8E/ZThGbP/p0YXIJ/N8Dw==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5320.namprd12.prod.outlook.com (2603:10b6:208:314::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
- 2021 12:49:45 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
- 12:49:45 +0000
-Date:   Wed, 15 Sep 2021 09:49:43 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, alex.williamson@redhat.com,
-        mgurtovoy@nvidia.com, linuxarm@huawei.com, liulongfang@huawei.com,
-        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH v3 1/6] crypto: hisilicon/qm: Move the QM header to
- include/linux
-Message-ID: <20210915124943.GH4065468@nvidia.com>
-References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
- <20210915095037.1149-2-shameerali.kolothum.thodi@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915095037.1149-2-shameerali.kolothum.thodi@huawei.com>
-X-ClientProxiedBy: CH0PR03CA0205.namprd03.prod.outlook.com
- (2603:10b6:610:e4::30) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233512AbhIOMwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:52:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233139AbhIOMwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:52:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B796F600CD;
+        Wed, 15 Sep 2021 12:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631710295;
+        bh=R2mEq52Tws4xcSHD4WedZOvyM/BuVJ85S/qpuGRFFEc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MVea30ZE5V+VQRC7xofSAiJUssHu1pKS/CPbmc3UblKwEtG70dkeFJ4HwtpF7cbaI
+         XJN6tf5hkOsC4GZ124698NSU4i0oLRnB2I+NH02nmy+MT74Wnaeq7pspGbc4ab+RKb
+         Udaq3AskbqaJe77dr6JKr0mbR7qRI7sr2tX5bw1/aqtY8aDokp0R3DxlV+WKg4hZqb
+         Chlhc34G6yDAt19Obd3ITGTxZO7DRLBc/ss25OUlqoNa96TF19JFzdfQOn+Pi29eVv
+         XHeL0lz57Ped+SSCnyHOUZyHSivYkRxarCzOgCPhzAEtUVmHypi56lwBm/EdIeQBb/
+         RcI0ROPq6k8aw==
+Date:   Wed, 15 Sep 2021 14:51:31 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Wei Xu <xuwei5@hisilicon.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: dts: hisilicon: Add support for Hikey 970
+ PMIC
+Message-ID: <20210915145131.265502f6@coco.lan>
+In-Reply-To: <75bd73dc3a1a7a8d08eab60d4aab34e5feb2a000.1630583382.git.mchehab+huawei@kernel.org>
+References: <cover.1630583382.git.mchehab+huawei@kernel.org>
+        <75bd73dc3a1a7a8d08eab60d4aab34e5feb2a000.1630583382.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0205.namprd03.prod.outlook.com (2603:10b6:610:e4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 12:49:45 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQUMB-000s69-SQ; Wed, 15 Sep 2021 09:49:43 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b7acd806-4b50-4744-6629-08d978474b8a
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5320:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB532005F5192A62FCE4AB8A3DC2DB9@BL1PR12MB5320.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6Oxs/DnGqbo9Am7xw2eDn10Lfb7wg1DaEGftiilLbPvFHtNJ0+EO6QIP5JOkE9DmEduZ4gY2dayRxgGl1n0QQvaG/2gAK9iO/wCVfCEKFzwuTzVkQ5AgVG4GyPO+l8/a/Bquy6muCImqctwIN1gx8IP9/T259V8yXNkUCTLSJgmvdIzQQhzxC5y2SiLVMwe27XSlGbAuuiFKZWBvio/7yy2beC59CYLpNodGR9iSeT32dH6Lw98pbgBgqSvhXd8ljVFVXHKpSXYk6mDh+9CCXRfgP3in9D23vZxlYKPIW6wsyst6Vku6Df63QnrPV4k7AixuA146JP0qTtHBWwkE/DjiiQ6GHlZM91dkFbGDm4yYu33hUvKZ5X8L09P+IKNW4yhKlgIEaS7+oWQbtnJATW+DCtfwck5hsaQ4ZNVXnv8kdNJDuYbNSH1UCaV0qXwg/Nvy9lpmjDAwbu1jjOzFgcs264Iop5hFMrzKwAWuYMgsLgabBM9jXL9apr8oP5OxbNoN+QaNVRn55bHjfyzmMWUyYTTZxBBzt5szDfs8msOcJ6qjg6BeBWXLvD/e4x83suQOfxZBr8lQfvZbVARaMG2Xoo4r3mzgaeb7uU/ngAfggo1HyrXHaHwAeVvtcI4JwJramaT1XFpYYdxEI8Ncyw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(366004)(136003)(39860400002)(316002)(66556008)(8936002)(66946007)(66476007)(4744005)(38100700002)(1076003)(2906002)(33656002)(426003)(2616005)(8676002)(7416002)(186003)(36756003)(5660300002)(9786002)(9746002)(26005)(4326008)(6916009)(478600001)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FTcaKHUZPlwLIYApg9cNcbhfPOzSo/QciGoDRUXfu0Vfc+DfKtzn5Rg20dNt?=
- =?us-ascii?Q?foRqJAKGxuWOeHX5QNr4ruPCHqxLzgL6X9TFy/HeHd6sOP3DvNs5WI15EI4k?=
- =?us-ascii?Q?ZZBpILNHVRjW+NqP+X+h8gDZJP6Ngr3zRJg4J831o5VBXDvJjk35HlUwOUUj?=
- =?us-ascii?Q?pdkZ3IMCkXuD1Cl+Xb06AtCRLuqSsEympJPBoAPo8uiOKV8/L254mxT/WPIw?=
- =?us-ascii?Q?ZNXm7sqtkm4uJFU/0r30n8CIINbBRAGTIUBnT78fzMRx+OmnyDeGSkjtUWxZ?=
- =?us-ascii?Q?riPZSEJpfhh1ylMOwckvxAruIZN9jhy5JdtNyLj7SzYnFvthjOfuBekyoIA6?=
- =?us-ascii?Q?GAfJeIcm0hkq7+zr01Up6IktCqLf0/VfccfiYB6eOySgrvSAseOTxJA3Gl9e?=
- =?us-ascii?Q?lbDry36oiUSKmqDsa0juxIeRXVqz1aZoUC79TsOZX71x0qLnP45AtfGg2ddR?=
- =?us-ascii?Q?QY70CZpMj1vKBXrn1PFbSnDZKyemH7ayxVqrO0xL133YYyPR+3PP275PT6Tr?=
- =?us-ascii?Q?t1+QTv3rGvVNr8ohA2hxxWq1BCa0u9rn4OR3DKhMUaJI62T7CdDRgijTEH+V?=
- =?us-ascii?Q?bH7eieAZrXeOQf36cdVwUxrPPcYbwLbrKZKnC5CaNNqioBf/7SU6MyATK3M9?=
- =?us-ascii?Q?P2vc3PNsBc7uUhpO4l2DjHXEeThI03vObwZx/1tyIyuXKeTWfnkR/R8iE1LJ?=
- =?us-ascii?Q?Wjzk2u5k5NCHVEzgYpb5OLczzVYOLLiOs+XA2fc8mCLVQ9RXOWFLIYt5BUpn?=
- =?us-ascii?Q?AeUG5KmoIrCFD99ZfbRXWtNsyBtdp1/agOWz/KR9P1MMePjvQhPiLS6KPdmr?=
- =?us-ascii?Q?N/SHtYeprw+CtWjtD4DDC06u8PR2qowcmNuz8wb4nF7X6j087jItiIK0Nk2j?=
- =?us-ascii?Q?CWzuRmWYn70ceDo3aPCR2Ua+nzGzthR7C9Vn6QSMe03bVWIaq2AHjI3jfiCk?=
- =?us-ascii?Q?SkB54o/owfSZiQZOHI7kJXh1pJavO8Zj7NPuld+Pmb4RCfUSSMQLxq5q7iZC?=
- =?us-ascii?Q?qIsx1z4Lh+jBrtkUJPkoYy47617gZJga9BvO/wir7KVlfXXGGw2w1/30UDnA?=
- =?us-ascii?Q?nt4IMjx70ZGyxMM+PbdZRgHuQwRB5FMd6B+T3lsr+lL9k1U9BUnYSDiOXEXp?=
- =?us-ascii?Q?0ZXS0OiJyXazSNZEy8ghxkHmPVGh3CwDi103dInOWCltn9vJrS6Rod4jdYIk?=
- =?us-ascii?Q?c/NOHgE2le2aa2m8n8HR3NfjM8JdFxOCJ1rTnWFk9zg+VHsKltYRxipLHNf7?=
- =?us-ascii?Q?lhDr7RphfzJzTqRrnZM19a86lht9UT3OK1fTc9uoccuUwNZCbLLrOyrnoYP7?=
- =?us-ascii?Q?2NE/Q8ROD+oVzuNx4E9MQL+p?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7acd806-4b50-4744-6629-08d978474b8a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 12:49:45.6581
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gVZaPgL4V1aXPUHsNaNSltu4r5V9L/QyVNUZKTXqDeN0jfJEiLemD+A3umHdr62W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5320
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:50:32AM +0100, Shameer Kolothum wrote:
+Em Thu,  2 Sep 2021 13:55:23 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-> diff --git a/drivers/crypto/hisilicon/zip/zip.h b/drivers/crypto/hisilicon/zip/zip.h
-> index 517fdbdff3ea..1997c3233911 100644
-> +++ b/drivers/crypto/hisilicon/zip/zip.h
-> @@ -7,7 +7,7 @@
->  #define pr_fmt(fmt)	"hisi_zip: " fmt
+> Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
+> on HiKey970 board.
+> 
+> As we now have support for it, change the fixed regulators
+> used by the SD I/O to use the proper LDO supplies.
+
+Hi Wei,
+
+Gentile ping.
+
+Now that the drivers and the DT schema are already upstreamed, could 
+you please merge those two patches?
+
+Thank you!
+Mauro
+
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  2 +-
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
+>  3 files changed, 90 insertions(+), 20 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> index d8abf442ee7e..7c32f5fd5cc5 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> @@ -12,6 +12,7 @@
 >  
->  #include <linux/list.h>
-> -#include "../qm.h"
-> +#include "linux/hisi_acc_qm.h"
+>  #include "hi3670.dtsi"
+>  #include "hikey970-pinctrl.dtsi"
+> +#include "hikey970-pmic.dtsi"
+>  
+>  / {
+>  	model = "HiKey970";
+> @@ -39,23 +40,6 @@ memory@0 {
+>  		reg = <0x0 0x0 0x0 0x0>;
+>  	};
+>  
+> -	sd_1v8: regulator-1v8 {
+> -		compatible = "regulator-fixed";
+> -		regulator-name = "fixed-1.8V";
+> -		regulator-min-microvolt = <1800000>;
+> -		regulator-max-microvolt = <1800000>;
+> -		regulator-always-on;
+> -	};
+> -
+> -	sd_3v3: regulator-3v3 {
+> -		compatible = "regulator-fixed";
+> -		regulator-name = "fixed-3.3V";
+> -		regulator-min-microvolt = <3300000>;
+> -		regulator-max-microvolt = <3300000>;
+> -		regulator-boot-on;
+> -		regulator-always-on;
+> -	};
+> -
+>  	wlan_en: wlan-en-1-8v {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "wlan-en-regulator";
+> @@ -402,8 +386,8 @@ &dwmmc1 {
+>  	pinctrl-0 = <&sd_pmx_func
+>  		     &sd_clk_cfg_func
+>  		     &sd_cfg_func>;  
+> -	vmmc-supply = <&sd_3v3>;
+> -	vqmmc-supply = <&sd_1v8>;
+> +	vmmc-supply = <&ldo16>;
+> +	vqmmc-supply = <&ldo9>;
+>  	status = "okay";
+>  };
+>  
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> index 20698cfd0637..636c8817df7e 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> @@ -669,7 +669,7 @@ ufs: ufs@ff3c0000 {
+>  			interrupt-parent = <&gic>;
+>  			interrupts = <GIC_SPI 278 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&crg_ctrl HI3670_CLK_GATE_UFSIO_REF>,
+> -				<&crg_ctrl HI3670_CLK_GATE_UFS_SUBSYS>;
+> +				 <&crg_ctrl HI3670_CLK_GATE_UFS_SUBSYS>;
+>  			clock-names = "ref_clk", "phy_clk";
+>  			freq-table-hz = <0 0
+>  					 0 0>;
+> diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> new file mode 100644
+> index 000000000000..970047f2dabd
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
+> + *
+> + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
+> + */
+> +
+> +#include <dt-bindings/spmi/spmi.h>
+> +
+> +/ {
+> +	spmi: spmi@fff24000 {
+> +		compatible = "hisilicon,kirin970-spmi-controller";
+> +		#address-cells = <2>;
+> +		#size-cells = <0>;
+> +		status = "okay";
+> +		reg = <0x0 0xfff24000 0x0 0x1000>;
+> +		hisilicon,spmi-channel = <2>;
+> +
+> +		pmic: pmic@0 {
+> +			compatible = "hisilicon,hi6421-spmi";
+> +			reg = <0 SPMI_USID>;
+> +
+> +			#interrupt-cells = <2>;
+> +			interrupt-controller;
+> +			gpios = <&gpio28 0 0>;
+> +
+> +			regulators {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
+> +				ldo3: ldo3 { /* HDMI */
+> +					regulator-name = "ldo3";
+> +					regulator-min-microvolt = <1500000>;
+> +					regulator-max-microvolt = <2000000>;
+> +					regulator-boot-on;
+> +				};
+> +
+> +				ldo4: ldo4 { /* 40 PIN */
+> +					regulator-name = "ldo4";
+> +					regulator-min-microvolt = <1725000>;
+> +					regulator-max-microvolt = <1900000>;
+> +					regulator-boot-on;
+> +				};
+> +
+> +				ldo9: ldo9 { /* SDCARD I/O */
+> +					regulator-name = "ldo9";
+> +					regulator-min-microvolt = <1750000>;
+> +					regulator-max-microvolt = <3300000>;
+> +					regulator-boot-on;
+> +				};
+> +
+> +				ldo15: ldo15 { /* UFS */
+> +					regulator-name = "ldo15";
+> +					regulator-min-microvolt = <1800000>;
+> +					regulator-max-microvolt = <3000000>;
+> +					regulator-always-on;
+> +				};
+> +
+> +				ldo16: ldo16 { /* SD */
+> +					regulator-name = "ldo16";
+> +					regulator-min-microvolt = <1800000>;
+> +					regulator-max-microvolt = <3000000>;
+> +					regulator-boot-on;
+> +				};
+> +
+> +				ldo17: ldo17 { /* USB HUB */
+> +					regulator-name = "ldo17";
+> +					regulator-min-microvolt = <2500000>;
+> +					regulator-max-microvolt = <3300000>;
+> +				};
+> +
+> +				ldo33: ldo33 { /* PEX8606 */
+> +					regulator-name = "ldo33";
+> +					regulator-min-microvolt = <2500000>;
+> +					regulator-max-microvolt = <3300000>;
+> +				};
+> +
+> +				ldo34: ldo34 { /* GPS AUX IN VDD */
+> +					regulator-name = "ldo34";
+> +					regulator-min-microvolt = <2600000>;
+> +					regulator-max-microvolt = <3300000>;
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
 
-Why < not " ?
 
-Jason
+
+Thanks,
+Mauro
