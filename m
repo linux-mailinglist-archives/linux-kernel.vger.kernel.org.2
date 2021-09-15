@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FBE40C21F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECA740C225
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhIOI47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
+        id S236974AbhIOI57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbhIOI4z (ORCPT
+        with ESMTP id S232676AbhIOI5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:56:55 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A72EC061764;
-        Wed, 15 Sep 2021 01:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Bl1kBPvSTdMyBIGlR1G5uo2EOo9625GC4vDayfEE9KM=; b=hbtztxsQO9Vp+SLI1WvHgejddq
-        GZPEZ9BE0Fqt8LZxZZDRu2JxwTWZaz/zdZmVPmaANu4SCkHu0oUykIuIEhj1vS+IJ5Eyq/cRauQu5
-        qHWnNXf5OPsrB8eBERg2rXY2fLxKhT3GE40qOB6Fv9eoF/zP7Gq/AVs4p22yjtBo4vJmUIt+MAnAG
-        00QbaybQDGJ+/YNoVcUcJYYPwKu/ABAfqiuAzwN7dNV7KzWf/4Jd/1K/Ny1Sfh9UCUHMTWjQagssh
-        H8fqtif4OzESQXiDU/tNIF43eD5f6SAYEH3APnEQDaCMlfoNF53pdZst/7nQGacuPIsOdJtKPii5P
-        Km9eNREA==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <mperttunen@nvidia.com>)
-        id 1mQQhR-000101-W0; Wed, 15 Sep 2021 11:55:26 +0300
-From:   Mikko Perttunen <mperttunen@nvidia.com>
-To:     rafael@kernel.org, viresh.kumar@linaro.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        krzysztof.kozlowski@canonical.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, kw@linux.com, p.zabel@pengutronix.de,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Subject: [PATCH 5/5] PCI: tegra194: Handle errors in BPMP response
-Date:   Wed, 15 Sep 2021 11:55:17 +0300
-Message-Id: <20210915085517.1669675-5-mperttunen@nvidia.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210915085517.1669675-1-mperttunen@nvidia.com>
-References: <20210915085517.1669675-1-mperttunen@nvidia.com>
+        Wed, 15 Sep 2021 04:57:54 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A4FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:56:35 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id x6so2586461wrv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=BrOGHGt7cC0oT366jdb+W6ImeT82WbSz/76J3XwKsF8=;
+        b=DL1iZmiMaXVusOOHpuKdsQXBCBI4VyrKd1zr+C9X/hN67XuYWfszjjCoA3b8STPyxf
+         1KxdC7FY4WyAmNn2Kf7ux5WXthSHcuUHuZSUG2VWIjkXSUgSkTrCO1q/3WDdqEbj+gi+
+         QDrwhr27v2YE5V+M0dyM5nFMKQqSH+YOWjp7D0WRzBbefmy2kCVI7UEwZfVH2uMbEnhF
+         bqxFUy+bXbM2QChj1UGfWxKdizLLDe41hVkA00PEy80LaokVx/JG18jk7VAC2Jngfsi7
+         SItcbUMqwoT19jfyHJsWbDBksNxhuN6wzLN+JZc1HVDeXk8nz6ZZIfDHCajMYo2q44GI
+         0sgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=BrOGHGt7cC0oT366jdb+W6ImeT82WbSz/76J3XwKsF8=;
+        b=BX/oLxBPCj68dXVH9uCUcMwKo2gOnuqgph+aQUa+0nxDpYULG81k/PCkUp0nYMo0XJ
+         pLSUQZ4kj1MicrxdBPQSCSU0WTyaJhWkiuqZ/XMngL2ZGIkVQFu1r5od1TsiFwJYC9rZ
+         nins4LGxnW/9/gFq62+ra9aKYzm0jEmvfEXLRtS08Z4iPM37jLVcMVlATjpIsJLgzqsy
+         3g3lae/iP+mEANLPNcuFrGgoYBpBsyoh1EVx6sLI6tFvLdo/d6vE6As8LFZvRqJutUQi
+         7V7/79mjXrL9TfLCizZ3Zzm+5/YnQiYpbPFpTPBO4X8wZxxLjkPoLn53OqbEAti65ZhV
+         yrFg==
+X-Gm-Message-State: AOAM532yzoVgesTnKEFAo3H6kth4d+2ojyIBwUFg58OODGypdcj6ojz7
+        IeWpIvSK1dU/8EhSh0sEB1I=
+X-Google-Smtp-Source: ABdhPJxkmtWxZER2bPF5Y8q7uwbsEORrfxEp7wPIBWKWuYwEYaVw+XyWIHZcnzLCAKOrW0+FWYCAvg==
+X-Received: by 2002:a5d:63d2:: with SMTP id c18mr3613545wrw.311.1631696193795;
+        Wed, 15 Sep 2021 01:56:33 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::1db2? ([2a02:8108:96c0:3b88::1db2])
+        by smtp.gmail.com with ESMTPSA id u8sm3812049wmq.45.2021.09.15.01.56.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 01:56:33 -0700 (PDT)
+Message-ID: <70042ac9-b114-9447-e25a-b5f75496ee63@gmail.com>
+Date:   Wed, 15 Sep 2021 10:56:32 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: mperttunen@nvidia.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 0/4] staging: r8188eu: remove unused fields from struct
+ hal_data_8188e
+Content-Language: en-US
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        martin@kaiser.cx, fmdefrancesco@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210914121352.26052-1-straube.linux@gmail.com>
+ <YUEgoipiosdhiXdq@equinox>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <YUEgoipiosdhiXdq@equinox>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value from tegra_bpmp_transfer indicates the success or
-failure of the IPC transaction with BPMP. If the transaction
-succeeded, we also need to check the actual command's result code.
-Add code to do this.
+On 9/15/21 00:22, Phillip Potter wrote:
+> On Tue, Sep 14, 2021 at 02:13:48PM +0200, Michael Straube wrote:
+>> This series removes some unused fields from struct hal_data_8188eu.
+>>
+>> Tested on x86_64 with Inter-Tech DMG-02.
+>>
+>> Michael Straube (4):
+>>    staging: r8188eu: remove unused macros from rtl8188e_hal.h
+>>    staging: r8188eu: remove write-only fields from struct hal_data_8188e
+>>    staging: r8188eu: remove unused enums from rtl8288e_hal.h
+>>    staging: r8188eu: remove unused field from struct hal_data_8188e
+>>
+>>   .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  5 -----
+>>   .../staging/r8188eu/include/rtl8188e_hal.h    | 22 -------------------
+>>   2 files changed, 27 deletions(-)
+>>
+>> -- 
+>> 2.33.0
+>>
+> 
+> Dear Michael,
+> 
+> Looks good, built and tested here and working fine - as you say though
+> these are removals of unused code/properties so I was expecting it to
+> work anyway :-)
+> 
+> One small thing to change though: the subject line of PATCH 3/4 should
+> refer to rtl8188e_hal.h, rather than rtl8288e_hal.h.
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
----
- drivers/pci/controller/dwc/pcie-tegra194.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Thank you for reviewing and spotting the typo Phillip.
+I'll send v2 soon.
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 904976913081..08afd2e72ec5 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -1162,6 +1162,7 @@ static int tegra_pcie_bpmp_set_ctrl_state(struct tegra_pcie_dw *pcie,
- 	struct mrq_uphy_response resp;
- 	struct tegra_bpmp_message msg;
- 	struct mrq_uphy_request req;
-+	int err;
- 
- 	/* Controller-5 doesn't need to have its state set by BPMP-FW */
- 	if (pcie->cid == 5)
-@@ -1181,7 +1182,13 @@ static int tegra_pcie_bpmp_set_ctrl_state(struct tegra_pcie_dw *pcie,
- 	msg.rx.data = &resp;
- 	msg.rx.size = sizeof(resp);
- 
--	return tegra_bpmp_transfer(pcie->bpmp, &msg);
-+	err = tegra_bpmp_transfer(pcie->bpmp, &msg);
-+	if (err)
-+		return err;
-+	if (msg.rx.ret)
-+		return -EINVAL;
-+
-+	return 0;
- }
- 
- static int tegra_pcie_bpmp_set_pll_state(struct tegra_pcie_dw *pcie,
--- 
-2.32.0
+Regards,
+Michael
 
