@@ -2,66 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8955C40C5CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A5940C5EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhIONBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:01:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:59959 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229670AbhIONBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:01:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219125340"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="219125340"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 06:00:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="472391558"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga007.jf.intel.com with ESMTP; 15 Sep 2021 06:00:32 -0700
-Date:   Wed, 15 Sep 2021 06:00:07 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Marcus =?iso-8859-1?Q?R=FCckert?= <mrueckert@suse.com>
-Cc:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/umip: Add a umip= cmdline switch
-Message-ID: <20210915130007.GA7946@ranerica-svr.sc.intel.com>
-References: <20210907200454.30458-1-bp@alien8.de>
- <20210911011459.GA11980@ranerica-svr.sc.intel.com>
- <YTx0+0pfyzHuX80L@zn.tnic>
- <20210913213836.GA10627@ranerica-svr.sc.intel.com>
- <YUDTCgEOZ3JOMSl7@zn.tnic>
- <20210915113410.GA7130@ranerica-svr.sc.intel.com>
- <20210915142123.49f8137b@fortress.home.nordisch.org>
+        id S233365AbhIONIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:08:46 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:36232 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233238AbhIONIp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:08:45 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210915130725euoutp0229d2881105e9f457d4de16f459200f77~lALuHnxhI0870408704euoutp02h
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:07:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210915130725euoutp0229d2881105e9f457d4de16f459200f77~lALuHnxhI0870408704euoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1631711245;
+        bh=7JUEMvLJ7EzT05xMWppWHbthLnYcH45wwJbxKBR7B+o=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=s5I3sAZDeTFzJ5dlIhAlTuAwcu4Z49MkuJ344RIHyZFkouVn0r8f1ukn438C2X79Z
+         TPDRuSNWY9csnr+MapL6xsW7xRjsVHkjljVcSW9513DCdqVTiHgA5/rR0Ln1k3CKNR
+         kslMWJ+Rko9xOAWblcu/Y9/4yv+2Eo0LSsrFHsQA=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210915130724eucas1p1bf3f9ccf15bd73a983c55e65991dc053~lALs9qHK51221912219eucas1p1n;
+        Wed, 15 Sep 2021 13:07:24 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id A1.82.56448.C00F1416; Wed, 15
+        Sep 2021 14:07:24 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210915130723eucas1p1c78e991e4c5c360a7f84ab524018564e~lALsT_OAB2425024250eucas1p1g;
+        Wed, 15 Sep 2021 13:07:23 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210915130723eusmtrp15a4829c41ece59982c9307ca065206c9~lALsS8iBh2247422474eusmtrp1Z;
+        Wed, 15 Sep 2021 13:07:23 +0000 (GMT)
+X-AuditID: cbfec7f5-d3bff7000002dc80-bf-6141f00c513c
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id BE.FB.20981.B00F1416; Wed, 15
+        Sep 2021 14:07:23 +0100 (BST)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210915130722eusmtip208339a5ed16f7badb7155c943480274f~lALrQyaE13211632116eusmtip2C;
+        Wed, 15 Sep 2021 13:07:22 +0000 (GMT)
+Subject: Re: [PATCH 6/6] clk: samsung: Introduce Exynos850 clock driver
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <1d884e38-ac8c-6f0c-ad27-243c5c4b9b9b@samsung.com>
+Date:   Wed, 15 Sep 2021 15:07:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210915142123.49f8137b@fortress.home.nordisch.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210914155607.14122-7-semen.protsenko@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEKsWRmVeSWpSXmKPExsWy7djPc7o8HxwTDb6sZbP4sGIRo8X1L89Z
+        LeYfOcdqcea3rsXGtz+YLDY9vsZq8bHnHqvF5V1z2CxmnN/HZHHxlKvFj+N9zBate4+wW0z9
+        cYvN4t+1jSwWz/uAkqfufma3uHKmg8li1a4/jA5CHu9vtLJ7zGroZfPYOesuu8emVZ1sHneu
+        7WHz2Lyk3qNvyypGj8+b5AI4orhsUlJzMstSi/TtErgy2vf8Yy44z1xxveUrYwNjK3MXIyeH
+        hICJxJstk1m6GLk4hARWMEq8b1jBCOF8YZQ48fgpO0iVkMBnRol7O9lhOiYunc4OUbScUeLr
+        9e+sEM5HRolXEw4yglQJC7hLfHjynAXEFhHQk1g38xVYB7PAAlaJJ6uWgo1iEzCU6D3aB9bA
+        K2AnMXHBDSYQm0VAVaK9dzobiC0qkCwx7W8TM0SNoMTJmU/AhnIKOEjM+rIHrIZZQFzi1pP5
+        TBC2vMT2t3OYQZZJCBzmlJh4fyobxN0uEn2zFkF9LSzx6vgWqH9kJE5P7mGBaGhmlOjZfZsd
+        wpnAKHH/+AJGiCpriTvnfgFN4gBaoSmxfpc+RNhR4vDpY4wgYQkBPokbbwUhjuCTmLRtOjNE
+        mFeio00IolpF4veq6UwQtpRE95P/LBMYlWYheW0WkndmIXlnFsLeBYwsqxjFU0uLc9NTi43z
+        Usv1ihNzi0vz0vWS83M3MQKT4el/x7/uYFzx6qPeIUYmDsZDjBIczEoivBdqHBOFeFMSK6tS
+        i/Lji0pzUosPMUpzsCiJ8+7auiZeSCA9sSQ1OzW1ILUIJsvEwSnVwCTy/kvHzBzFkBXHH33Y
+        YT1ZdrZFmPmc736ytjxZP6YmfXghOM/uu8zbt6nTH5v92txyIbcmR0n4g5LNjXf/Aq0t8yOO
+        +qhutRNrP5GumKmUMMPiS1HMg60d8QyHL8z6tfzL+f9FEy/KaIrkdXJqNmjzzxFbaz57c+nN
+        WVdNZvG6WxnJ8ycn6ev0aKXY7vS+6KKWK2KR+I6vXOJAcWdsmL/s0xmfwivDopbfD/2nOiV7
+        5+9XO5R57NkWrGmNNWSp0HY9k3u4ILtGUdlr3/V3VyYZ6O713XXkhpP3UW5L99vx5Ss+MJ6z
+        fH+YycUytDUx8jtTrcse1urrFRkPThTOCKjKmeXtYRnYrsn2sqRQiaU4I9FQi7moOBEAB/hL
+        7/UDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrEIsWRmVeSWpSXmKPExsVy+t/xe7rcHxwTDc58ErP4sGIRo8X1L89Z
+        LeYfOcdqcea3rsXGtz+YLDY9vsZq8bHnHqvF5V1z2CxmnN/HZHHxlKvFj+N9zBate4+wW0z9
+        cYvN4t+1jSwWz/uAkqfufma3uHKmg8li1a4/jA5CHu9vtLJ7zGroZfPYOesuu8emVZ1sHneu
+        7WHz2Lyk3qNvyypGj8+b5AI4ovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV
+        9O1sUlJzMstSi/TtEvQy2vf8Yy44z1xxveUrYwNjK3MXIyeHhICJxMSl09lBbCGBpYwSy85x
+        dDFyAMWlJOa3KEGUCEv8udbF1sXIBVTynlHi5YdtLCAJYQF3iQ9PnoPZIgJ6EutmvmIHKWIW
+        WMAqMW3+JDaIoScZJTa3+YDYbAKGEr1H+xhBbF4BO4mJC24wgdgsAqoS7b3TwepFBZIl3r7+
+        zgRRIyhxcuYTsAWcAg4Ss77sAathFlCX+DPvEjOELS5x68l8JghbXmL72znMExiFZiFpn4Wk
+        ZRaSlllIWhYwsqxiFEktLc5Nzy020itOzC0uzUvXS87P3cQIjPxtx35u2cG48tVHvUOMTByM
+        hxglOJiVRHgv1DgmCvGmJFZWpRblxxeV5qQWH2I0BfpnIrOUaHI+MPXklcQbmhmYGpqYWRqY
+        WpoZK4nzmhxZEy8kkJ5YkpqdmlqQWgTTx8TBKdXAZFGpp3Hpl8Zu9bboCdVNqxgTi1dqGvaX
+        9hm+27x2qtoT/p3PPipN2sC55XbHQ9YfuTyPJ7xfqx8Raxhh7biFzZtRaod3aQz33b6tqpsY
+        X03x9Hv6OK9J0cDs3uqv8c/aZz+5/cD809UAzdPrRIpdD3o8/Hj0ruq8r1ar0jYfMxK5HjNL
+        QkTvCeM0N7nLTEHfTumuOb97/ZFwc5/eq1vXcbbpTq48+uRL4DHNEmvjyB82iS1Hj595t36O
+        +vv03/kqWguq/654M32/ScvHq8vfHwthjhXx23nyWdmypvTiQ2kZ50Wu6JwU5mlr5laRfryX
+        QePUnIW7z099o6JUHeb/d52V2r37no8fqGpu4BApNlJiKc5INNRiLipOBACGefYJhQMAAA==
+X-CMS-MailID: 20210915130723eucas1p1c78e991e4c5c360a7f84ab524018564e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210914155639eucas1p2b65f35fcbd2b3fde7d4e7541ac6d76d3
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210914155639eucas1p2b65f35fcbd2b3fde7d4e7541ac6d76d3
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+        <CGME20210914155639eucas1p2b65f35fcbd2b3fde7d4e7541ac6d76d3@eucas1p2.samsung.com>
+        <20210914155607.14122-7-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 02:21:23PM +0200, Marcus Rückert wrote:
-> On Wed, 15 Sep 2021 04:34:10 -0700
-> Ricardo Neri <ricardo.neri-calderon@linux.intel.com> wrote:
-> > > They're all likely old, arcane applications or games run in wine
-> > > which people have no access to the source code anyway so come to
-> > > think of it, the once thing is starting to make more sense to me
-> > > now.
-> > 
-> > Indeed, no one has reported "modern" application using these
-> > instructions.
-> 
-> I am not sure if Blizzard Entertainment would tell us why they use this
-> CPU instruction in Overwatch. And that game is "only" 5 years old.
+On 14.09.2021 17:56, Sam Protsenko wrote:
+> +static void __init exynos850_cmu_top_init(struct device_node *np)
+> +{
+> +	exynos850_init_clocks(np, top_clk_regs, ARRAY_SIZE(top_clk_regs));
+> +	samsung_cmu_register_one(np, &top_cmu_info);
+> +}
+> +
+> +CLK_OF_DECLARE(exynos850_cmu_top, "samsung,exynos850-cmu-top",
+> +	       exynos850_cmu_top_init);
 
-Ah! 5 years old does not seem too old to me. Then it is not only old
-applications. Then the warning did catch an app that could in theory be
-fixed (if Overwatch is still maintained).
+Was there anything preventing you from making it a platform driver instead?
 
-Thanks and BR,
-Ricardo
+-- 
+Regards,
+Sylwester
