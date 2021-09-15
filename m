@@ -2,218 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704DD40C596
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE2540C599
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbhIOMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233453AbhIOMtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:49:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C02260F70;
-        Wed, 15 Sep 2021 12:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631710075;
-        bh=0GQl4VoiOkvJs4i1BDrRnWf88kBhXHT0+mS0tM2uYHY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=htxVV3ahKKIIqJoNZ4T8i8t6nLAn+5ntVy8Y44LXyWXlSCrKZov5esIp9RrrhTsvM
-         4aRuLVDza3MLLPJQuscyZJ4npewNdHMgfATWz8PqeG6WESPzOSUXlwxrVQTeLXICEq
-         /VagvfsuJWNzsNJc3wRZFKV5fz5kzN7VGakYackulZj/rGBZw6NpR/NzEfZpva4hAr
-         03lHqMNa6b2JRnozFjh7vnfqa9K4QQreO24F4FDF4Lcp67sGS3sZQDvKvn1oA6ZiNz
-         vwSuWdRKnMyxLpBNUz2STAHaD6ddyXQet0F7WtimFvMojbvenJfVAAhC1pjhEWORAA
-         adbXbmiHBqM7g==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mQUKP-000yu5-KA; Wed, 15 Sep 2021 14:47:53 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 RESEND] mfd: hi6421-spmi-pmic: cleanup drvdata
-Date:   Wed, 15 Sep 2021 14:47:49 +0200
-Message-Id: <b6102d6db357ebb5c937f460a564c6f26281e403.1631709890.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S233238AbhIOMux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233060AbhIOMut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:50:49 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BFFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:49:29 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id q21so887066ljj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FH30O377gCgchXls+ioHq2bH2D59xWo/oWbpx95frec=;
+        b=xhGX94MOrFx2mzp0j5ncdCZ5dCT2mazIZkr1mviCJiS80EUNFleKKreZXEUnGsEl0B
+         vdN+VClwwMuI5dnoKmKvq4UNj2/oJxVlEyn5C0n8l8Puc3X7ibjl6pZGyGxcwT3RxBKL
+         eDv1dSIhf7lLE32JWtVSrCw0BxUaAa2D48EpV68hyd95LRyF0jM+sH5eUjuYIFRCR+0r
+         c57uJqRiiZeLKfn8DLEX/VIUFzgxjK+LMxrXuMzdIU7nd46ENNBN86hbww3SsONQEUjV
+         Qa7flzcShVlQ7GpM2WBEhWUAN0dzXr43jcNn5rK8pjf2z/+kLnnRAFkpSai0+z8MUDTq
+         3l1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FH30O377gCgchXls+ioHq2bH2D59xWo/oWbpx95frec=;
+        b=H4cUuVQ9FWLbJZ8e4yWrL6fLgNk1A+uENXDGMelRxCUmUVWswk+Yw+c8N0xvdxKBXH
+         j9YWl0C5gb3PBQu69zU57BqBE76DEbjneawKezn1lr29iy7jAwqNmI2CAsa5ZUMTM/OP
+         HQDjb/GpQFGav6gaBUBbZ0SWvcdViU6d/AcE886srN0V0dLWYXPeWRqBOmfl2tmZ9KjA
+         UY68iqd3ol2OkC8qqbsY1Ox4Unh1pKLA49+NCV2Mzy4BjJmo4z1A/EYykQc6fVtPvJVP
+         6cUlNUfUCSripJKyjPWvp76O8JVTleWe6hAQTMFglkGfyt3VkOaVM3Yea9WkXecLVM+q
+         bE4w==
+X-Gm-Message-State: AOAM531Dat8MJWhNP+IVt0bV1vTzwlM/6ItwZWeisnIBUWvT2yRFp1Pz
+        ut4Ly7QUNTmZ3YHUAn4xLn/0PTWtpxKp08JmsgyOdA==
+X-Google-Smtp-Source: ABdhPJxP1J4tkSukc7gi2W/9LCeNDw8Ayv/w9QtLVPeRLbYGByFQWKBMzIZ4psjS0KnFHCwO/fP+RwSFcc86TxobHa4=
+X-Received: by 2002:a05:651c:102d:: with SMTP id w13mr20050344ljm.229.1631710168105;
+ Wed, 15 Sep 2021 05:49:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210907151204.118861-1-huobean@gmail.com> <20210907151204.118861-3-huobean@gmail.com>
+ <CAPDyKFpC6iei96n-UcRTNrxTaHeejzfQX+rka7GSwSZjXN7-4g@mail.gmail.com> <92123c0398e154334cc947ce8f16e89ce0c3c9af.camel@gmail.com>
+In-Reply-To: <92123c0398e154334cc947ce8f16e89ce0c3c9af.camel@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 15 Sep 2021 14:48:51 +0200
+Message-ID: <CAPDyKFpAjMwPbxew0FyHH9mLOTaPw01AL0fCCLDjSP0N=xQcaA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mmc: core: No need to calculate the timeout value
+ for CQE data transmission
+To:     Bean Huo <huobean@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are lots of fields at struct hi6421_spmi_pmic that aren't
-used. In a matter of fact, only regmap is needed.
+On Wed, 15 Sept 2021 at 11:54, Bean Huo <huobean@gmail.com> wrote:
+>
+> On Tue, 2021-09-14 at 10:13 +0200, Ulf Hansson wrote:
+> > >          }
+> > > +       /*
+> > > +        * In case CQE is enabled, the timeout will be set a
+> > > maximum timeout in
+> > > +        * sdhci_cqe_enable(), so, no need to go through the below
+> > > algorithm.
+> > > +        */
+> > > +       if (host->cqe_enabled)
+> >
+> >
+> >  I don't think this is a good idea. For example, host->cqe_enabled is
+> >
+> > set for the hsq case well.
+>
+> Uffe,
+>
+> My apologies for this, I forgot to check hsq, hsq will call
+> sdhci_send_command() as well.
+>
+>
+> How about changing it to this?
+>
+>
+> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+> index 240c5af793dc..7235e398ef93 100644
+> --- a/drivers/mmc/core/core.c
+> +++ b/drivers/mmc/core/core.c
+> @@ -649,6 +649,7 @@ EXPORT_SYMBOL(mmc_wait_for_cmd);
+>  void mmc_set_data_timeout(struct mmc_data *data, const struct mmc_card
+> *card)
+>  {
+>         unsigned int mult;
+> +       struct mmc_host *host = card->host;
+>
+>         /*
+>          * SDIO cards only define an upper 1 s limit on access.
+> @@ -659,6 +660,13 @@ void mmc_set_data_timeout(struct mmc_data *data,
+> const struct mmc_card *card)
+>                 return;
+>         }
+>
+> +       /*
+> +        * For the CQE use case, the data transfer timeout will be set
+> a maximum
+> +        * timeout value in HW timer in function sdhci_cqe_enable(),
+> so, no need
+> +        * to go through the below algorithm.
+> +        */
+> +       if (host->cqe_enabled && !host->hsq_enabled)
+> +               return;
 
-So, drop the struct as a hole, and set just the regmap as
-the drvdata.
+Are you really sure the timeout isn't used (or could make sense to be
+used for new cases)?
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
- drivers/misc/hi6421v600-irq.c            |  9 ++++-----
- drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
- include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
- 4 files changed, 14 insertions(+), 46 deletions(-)
- delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
+For example, we also have mtk-sd, which doesn't make use of sdhci_cqe_enable().
 
-diff --git a/drivers/mfd/hi6421-spmi-pmic.c b/drivers/mfd/hi6421-spmi-pmic.c
-index 4f136826681b..c9c0c3d7011f 100644
---- a/drivers/mfd/hi6421-spmi-pmic.c
-+++ b/drivers/mfd/hi6421-spmi-pmic.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/mfd/core.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -30,19 +29,14 @@ static const struct regmap_config regmap_config = {
- static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
- {
- 	struct device *dev = &sdev->dev;
-+	struct regmap *regmap;
- 	int ret;
--	struct hi6421_spmi_pmic *ddata;
--	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
--	if (!ddata)
--		return -ENOMEM;
- 
--	ddata->regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
--	if (IS_ERR(ddata->regmap))
--		return PTR_ERR(ddata->regmap);
-+	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
--	ddata->dev = dev;
--
--	dev_set_drvdata(&sdev->dev, ddata);
-+	dev_set_drvdata(&sdev->dev, regmap);
- 
- 	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
- 				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-diff --git a/drivers/misc/hi6421v600-irq.c b/drivers/misc/hi6421v600-irq.c
-index 08535e97ff43..1c763796cf1f 100644
---- a/drivers/misc/hi6421v600-irq.c
-+++ b/drivers/misc/hi6421v600-irq.c
-@@ -10,7 +10,6 @@
- #include <linux/bitops.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
- #include <linux/of_gpio.h>
- #include <linux/platform_device.h>
-@@ -220,7 +219,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 	struct platform_device *pmic_pdev;
- 	struct device *dev = &pdev->dev;
- 	struct hi6421v600_irq *priv;
--	struct hi6421_spmi_pmic *pmic;
-+	struct regmap *regmap;
- 	unsigned int virq;
- 	int i, ret;
- 
-@@ -229,8 +228,8 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 	 * which should first set drvdata. If this doesn't happen, hit
- 	 * a warn on and return.
- 	 */
--	pmic = dev_get_drvdata(pmic_dev);
--	if (WARN_ON(!pmic))
-+	regmap = dev_get_drvdata(pmic_dev);
-+	if (WARN_ON(!regmap))
- 		return -ENODEV;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -238,7 +237,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	priv->dev = dev;
--	priv->regmap = pmic->regmap;
-+	priv->regmap = regmap;
- 
- 	spin_lock_init(&priv->lock);
- 
-diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-index 662d87ae61cb..4671678f6b19 100644
---- a/drivers/regulator/hi6421v600-regulator.c
-+++ b/drivers/regulator/hi6421v600-regulator.c
-@@ -9,8 +9,8 @@
- // Guodong Xu <guodong.xu@linaro.org>
- 
- #include <linux/delay.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/driver.h>
-@@ -237,7 +237,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	struct hi6421_spmi_reg_priv *priv;
- 	struct hi6421_spmi_reg_info *info;
- 	struct device *dev = &pdev->dev;
--	struct hi6421_spmi_pmic *pmic;
-+	struct regmap *regmap;
- 	struct regulator_dev *rdev;
- 	int i;
- 
-@@ -246,8 +246,8 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	 * which should first set drvdata. If this doesn't happen, hit
- 	 * a warn on and return.
- 	 */
--	pmic = dev_get_drvdata(pmic_dev);
--	if (WARN_ON(!pmic))
-+	regmap = dev_get_drvdata(pmic_dev);
-+	if (WARN_ON(!regmap))
- 		return -ENODEV;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -261,7 +261,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 
- 		config.dev = pdev->dev.parent;
- 		config.driver_data = priv;
--		config.regmap = pmic->regmap;
-+		config.regmap = regmap;
- 
- 		rdev = devm_regulator_register(dev, &info->desc, &config);
- 		if (IS_ERR(rdev)) {
-diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
-deleted file mode 100644
-index e5b8dbf828b6..000000000000
---- a/include/linux/mfd/hi6421-spmi-pmic.h
-+++ /dev/null
-@@ -1,25 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * Header file for device driver Hi6421 PMIC
-- *
-- * Copyright (c) 2013 Linaro Ltd.
-- * Copyright (C) 2011 Hisilicon.
-- * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
-- *
-- * Guodong Xu <guodong.xu@linaro.org>
-- */
--
--#ifndef	__HISI_PMIC_H
--#define	__HISI_PMIC_H
--
--#include <linux/irqdomain.h>
--#include <linux/regmap.h>
--
--struct hi6421_spmi_pmic {
--	struct resource				*res;
--	struct device				*dev;
--	void __iomem				*regs;
--	struct regmap				*regmap;
--};
--
--#endif		/* __HISI_PMIC_H */
--- 
-2.31.1
+>         /*
+>          * SD cards use a 100 multiplier rather than 10
+>          */
+>
+> I have another timeout change associated with data transfer as well, if
+> this change is acceptible, I will submit it with that together.
+>
+> Kind regards,
+> Bean
+>
 
-
+Kind regards
+Uffe
