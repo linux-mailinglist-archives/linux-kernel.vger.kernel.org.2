@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0467F40C3B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0FD40C3B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232970AbhIOKmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 06:42:06 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:44108 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232454AbhIOKmE (ORCPT
+        id S232369AbhIOKlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 06:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232054AbhIOKlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 06:42:04 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18FADI8O026708;
-        Wed, 15 Sep 2021 06:40:44 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3b2v0sc797-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 06:40:44 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 18FAehnv055463
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 06:40:43 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Wed, 15 Sep 2021 06:40:42 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Wed, 15 Sep 2021 06:40:42 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Wed, 15 Sep 2021 06:40:42 -0400
-Received: from ramonaalexandra-Precision-5520.ad.analog.com ([10.48.65.154])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 18FAeeUx004353;
-        Wed, 15 Sep 2021 06:40:40 -0400
-From:   Ramona Alexandra Nechita <ramona.nechita@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <lee.jones@linaro.org>,
-        Ramona Alexandra Nechita <ramona.nechita@analog.com>
-Subject: [PATCH] mfd: fixed typo in Kconfig from AD5520 to ADP5520
-Date:   Wed, 15 Sep 2021 13:40:16 +0300
-Message-ID: <20210915104016.16947-1-ramona.nechita@analog.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 15 Sep 2021 06:41:46 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE63EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:40:27 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id a4so5092902lfg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a/GCtVpvhwVIk1SywYX5YYFVF3L25bb3Bu0j55SRB24=;
+        b=F4X13sv85qlRDDGNT934A1gwgVq152F28CjwxEmHWp5QoNhFlLfGtaqRmrbtgwFI4g
+         RcQmXbvtmgFuhw3kwUj511XOgpddIwKvyro1pjK6LdK1Wvt1CQqiwtE95uaewMmG4gjT
+         CtYQUT7gTVilccItlvMr+/R4kkVzMMX62w7b13NNca2Wm5wx83Md4QNlU1CUXkPdI8Ha
+         GUmk1lbIcUs/H6JEkz7Z5B1XrmqfJlMcxF8D+LqP0aTsafCY2WOmKZNXJ6/PpeJoRiQw
+         kxc/mSdxkYFkx652FozpJZgkSFN2SqCP5zKQip4upN84qh6+u667sOBV8IIpRCvvUkfD
+         DrKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a/GCtVpvhwVIk1SywYX5YYFVF3L25bb3Bu0j55SRB24=;
+        b=EKx9Kmy/Y6wD/mpVp4RV17xR8GMmV4GJFvbAOBGJthrBBcCk6UYWpGQ9FXJ+26gs/M
+         yykEhU5wKiVWJvrwcYZL0ahT2MmbH/GYjdapAd9506Eq3MFTI45hd73dcmyIAUxsptSA
+         NUTTSSfguIJcn239Co3Mox9GqUXtixFRIcvl77TkbYAtysJkYg2ZYAFDARoa8kbnigPv
+         i7DUHqlQ5diedM8uWT/D87cOJn4Mw8Gcq9pF4sH2W8tC9pEawNg1vqpyMo2/XierR3Ir
+         jX/WWM8rwEE9f6Qwi/lD8ntmeG0KyE/L4hALbUR5Gzi0/fBclJ2HpLoHE8+gBuYDb9oG
+         dCew==
+X-Gm-Message-State: AOAM531g7wqrLwAVnnW2RfbHHHwCHKEeDrDgKgBHgh/yUcOs0GEogsM7
+        Ub7e0clJq56etUDKloWpIkHrhg==
+X-Google-Smtp-Source: ABdhPJztrGap47YE/7uFZQfvJHSMuv017KdT8GnercdtDSz207RC8iHDJBIFlGXPIToLigf7pRWJTw==
+X-Received: by 2002:ac2:5d71:: with SMTP id h17mr16352495lft.670.1631702426202;
+        Wed, 15 Sep 2021 03:40:26 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id q7sm1673012ljg.137.2021.09.15.03.40.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 03:40:25 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id C2AFB102F4D; Wed, 15 Sep 2021 13:40:28 +0300 (+03)
+Date:   Wed, 15 Sep 2021 13:40:28 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Amit Daniel Kachhap <amit.kachhap@arm.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm/memory: Avoid unnecessary kernel/user pointer
+ conversion
+Message-ID: <20210915104028.77qwldwnwpcbjds6@box.shutemov.name>
+References: <20210914150820.19326-1-amit.kachhap@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: sdOi8cMVVViRSekjs81Vt5RbakIViebg
-X-Proofpoint-GUID: sdOi8cMVVViRSekjs81Vt5RbakIViebg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-15_02,2021-09-15_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 clxscore=1011 adultscore=0 mlxlogscore=999
- impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109150068
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914150820.19326-1-amit.kachhap@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description mentioned AD5520, which is a different device.
-Fixed the typo.
+On Tue, Sep 14, 2021 at 08:38:20PM +0530, Amit Daniel Kachhap wrote:
+> Annotating a pointer from __user to kernel and then back again might
+> confuse sparse. In copy_huge_page_from_user() it can be avoided by
+> removing the intermediate variable since it is never used.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
 
-Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
----
- drivers/mfd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index ae24d3ea68ea..54cd9f2c857f 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -93,7 +93,7 @@ config PMIC_ADP5520
- 	bool "Analog Devices ADP5520/01 MFD PMIC Core Support"
- 	depends on I2C=y
- 	help
--	  Say yes here to add support for Analog Devices AD5520 and ADP5501,
-+	  Say yes here to add support for Analog Devices ADP5520 and ADP5501,
- 	  Multifunction Power Management IC. This includes
- 	  the I2C driver and the core APIs _only_, you have to select
- 	  individual components like LCD backlight, LEDs, GPIOs and Kepad
 -- 
-2.25.1
-
+ Kirill A. Shutemov
