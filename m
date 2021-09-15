@@ -2,138 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CD440CB52
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2405E40CA73
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhIORBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:01:22 -0400
-Received: from wind.enjellic.com ([76.10.64.91]:58928 "EHLO wind.enjellic.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhIORBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:01:16 -0400
-X-Greylist: delayed 1542 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Sep 2021 13:01:15 EDT
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 18FGXT0I002910;
-        Wed, 15 Sep 2021 11:33:29 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 18FGXRgh002909;
-        Wed, 15 Sep 2021 11:33:27 -0500
-Date:   Wed, 15 Sep 2021 11:33:27 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Bruce Fields <bfields@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        Daniel Walsh <dwalsh@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Casey Schaufler <casey.schaufler@intel.com>,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        stephen.smalley.work@gmail.com,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-Message-ID: <20210915163327.GA2324@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <YTEEPZJ3kxWkcM9x@redhat.com> <YTENEAv6dw9QoYcY@redhat.com> <3bca47d0-747d-dd49-a03f-e0fa98eaa2f7@schaufler-ca.com> <YTEur7h6fe4xBJRb@redhat.com> <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com> <YTYr4MgWnOgf/SWY@work-vm> <496e92bf-bf9e-a56b-bd73-3c1d0994a064@schaufler-ca.com> <YUCa6pWpr5cjCNrU@redhat.com> <CAPL3RVHB=E_s1AW1sQMEgrLYJ8ADCdr=qaKsDrpYjVzW-Apq8w@mail.gmail.com> <YUCybaYK/0RLvY9J@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUCybaYK/0RLvY9J@redhat.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Wed, 15 Sep 2021 11:33:29 -0500 (CDT)
+        id S229652AbhIOQjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhIOQjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 12:39:09 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E16C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:37:50 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y18so4296790ioc.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9Nz/2E2PrP0EyYnOX/D4z45C7Q87NY/jFqlSGxgcBSw=;
+        b=YSO6hITEUxm1tpML2V6mAcy4nBF4VlfDulFzHI7yUXXT+D8yXmEMaO/QWuQ2jt6dBb
+         b+Qe0RolV7NB9SF6UYUMekD8oW5kOQcU6QuhwdBvmkRj4fBak1LvRkBl3zE9vmRSiXtd
+         lRNThZk2FJYz2M5JZBpbvPUPd0Grnyg7cHOWI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9Nz/2E2PrP0EyYnOX/D4z45C7Q87NY/jFqlSGxgcBSw=;
+        b=Ro0IJDVfSsUk1dUoS+KUb9CoO9hoRPnKDnjAwWEMEPWzMtM5OaadKkCEv4wJyY9KIV
+         rSjEe7FNfDg3JtLlpuFlxQZi+znOfRHZAZNfVpJXeL4981LiM3WLBNgDHgVBw0yiGEJl
+         00OyVHtIuOpT0GlCzcIST2nZ6JpBG5JDsLfTSIa02Q/9hbUB2VlTI4tXuuRlZbV1jZAW
+         WAmgq/N0G+8NI/1964WepcxBYG1eEYUZhorrUH5OSjkO7OPgceUeEhwPKEaIRkF+YDmW
+         TV9v6q1PsCzH+YjKhLv5sdArfmbVWAlrT//UIBtNVd6njrO2aT5C42h7fWSIi2+CNQhX
+         1NRA==
+X-Gm-Message-State: AOAM531fCs7rj4oPzc2HjSk/P94ynAgL3+jiRQRW7KUNOuiHFQW5vb2n
+        NwEFjZzhfI5eWomiEHFVdbH7EQ==
+X-Google-Smtp-Source: ABdhPJyVCrLvDDbQWbBJs3aeOai3WOMrD87VP+bTMx8uLA4Rk51h5yeIzK3nECkj12i49CJDKHtUeg==
+X-Received: by 2002:a02:aa17:: with SMTP id r23mr796209jam.52.1631723869885;
+        Wed, 15 Sep 2021 09:37:49 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x5sm211092ioa.35.2021.09.15.09.37.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 09:37:49 -0700 (PDT)
+Subject: Re: [PATCH] selftests: be sure to make khdr before other targets
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210915134554.19581-1-lizhijian@cn.fujitsu.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4f193721-39fd-bcb1-1e14-253c60ab4961@linuxfoundation.org>
+Date:   Wed, 15 Sep 2021 10:37:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210915134554.19581-1-lizhijian@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:32:13AM -0400, Vivek Goyal wrote:
+On 9/15/21 7:45 AM, Li Zhijian wrote:
+> LKP/0Day reported some building errors about kvm, and errors message
+> are not always same:
+> - lib/x86_64/processor.c:1083:31: error: ‘KVM_CAP_NESTED_STATE’ undeclared
+> (first use in this function); did you mean ‘KVM_CAP_PIT_STATE2’?
+> - lib/test_util.c:189:30: error: ‘MAP_HUGE_16KB’ undeclared (first use
+> in this function); did you mean ‘MAP_HUGE_16GB’?
+> 
+> Although kvm relies on the khdr, they still be built in parallel when -j
+> is specified. In this case, it will cause compiling errors.
+> 
+> Here we mark target khdr as NOTPARALLEL to make it be always built
+> first.
+> 
+> CC: Philip Li <philip.li@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> ---
+>   tools/testing/selftests/lib.mk | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index 7ee911355328..5074b01f2a29 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -48,6 +48,7 @@ ARCH		?= $(SUBARCH)
+>   # When local build is done, headers are installed in the default
+>   # INSTALL_HDR_PATH usr/include.
+>   .PHONY: khdr
+> +.NOTPARALLEL:
+>   khdr:
+>   ifndef KSFT_KHDR_INSTALL_DONE
+>   ifeq (1,$(DEFAULT_INSTALL_HDR_PATH))
+> 
 
-Good morning, I hope the day is going well for everyone.
+Thank you for the fix. Applied to
 
-> On Tue, Sep 14, 2021 at 09:59:19AM -0400, Bruce Fields wrote:
-> > On Tue, Sep 14, 2021 at 8:52 AM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > > Same is the requirement for regular containers and that's why
-> > > podman (and possibly other container managers), make top level
-> > > storage directory only readable and searchable by root, so that
-> > > unpriveleged entities on host can not access container root filesystem
-> > > data.
-> > 
-> > Note--if that directory is on NFS, making it readable and searchable
-> > by root is very weak protection, since it's often possible for an
-> > attacker to guess filehandles and access objects without the need for
-> > directory lookups.
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/
+fixes branch.
 
-> open_by_handle_at() requires CAP_DAC_READ_SEARCH. And if you have
-> CAP_DAC_READ_SEARCH, you don't need to even guess file handles. You
-> should be able to read/search through all directories, IIUC.
->
-> So how does one make sure that shared directory on host is not
-> accessible to unprivileged entities. If making directory accessible
-> to root only is weaker security, what are the options for stronger
-> security.
-
-I've been watching this thread, with some interest, given what we have
-been working on with respect to providing a new security framework
-that merges IMA and LSM and external security co-processor technology.
-
-Some observations based on those experiences and this thread.
-
-Casey is an expert on MAC and capability based security systems,
-unfortunately for our industry, particularly bog standard system
-administrators, a rarefied set of skills.  It may be helpful to
-consider his concerns and position on the issues involved in the
-framework of the number of systems that have, and blog posts that
-recommend, setting 'selinux=0' on the kernel command-line.
-
-I believe the best summary of his position on this issue, is the
-notion that placing security labels, even in transitive form in user
-accessible attributes, subordinates the security of the guest system,
-regardless of the MAC policy it implements, to the DAC based policy on
-the host system.
-
-Given that, there are no legitimate security guarantees that are
-inferrable based on the guest MAC policy.
-
-A legitimate pundit, could and probably should question, in the face
-of container filesystems and virtual machine images, whether any type
-of inferrable security guarantees are possible, but that is a question
-and argument for another day.
-
-I didn't see any mention of EVM brought up in these discussions, which
-may provide some options to improve the security integrity state of
-the guest.
-
-The 800 pound gorilla in the corner in all of this, is that inferrable
-security guarantees in guests require a certifiable chain of trust
-from the creator of the object to the kernel context that is making
-the security gating decisions on the object.  A hard to implement and
-prove concept in bare metal trusted systems, let alone the myriad of
-edge cases lurking in namespaced and virtual environments.
-
-Which, in a nod to the other corner of the ring, may simply mean, with
-our current state of deployable technology, you pay your money and
-take your chances in these virtual environments.  Which would in turn
-support the notion of a minimum security, ie. DAC, based effort.
-
-> Vivek
-
-Have a good remainder of the week.
-
-Dr. Greg
-
-As always,
-Dr. Greg Wettstein, Ph.D, Worker      Autonomously self-defensive
-Enjellic Systems Development, LLC     IOT platforms and edge devices.
-4206 N. 19th Ave.
-Fargo, ND  58102
-PH: 701-281-1686                      EMAIL: dg@enjellic.com
-------------------------------------------------------------------------------
-"This place is so screwed up.  It's just like the Titanic, only
- we don't even have a band playing.
-                                -- Terrance George Wieland
-                                   Resurrection.
+thanks,
+-- Shuah
