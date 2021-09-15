@@ -2,284 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA0540C90D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E7140C94A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhIOP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:56:00 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41450
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234294AbhIOPz7 (ORCPT
+        id S238299AbhIOQBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238257AbhIOQBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:55:59 -0400
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 624E43F077
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 15:54:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631721279;
-        bh=ueSFxhfWFil0IlgAFMYQeGjlmsHbDXN3YHC8WlG95pA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=dIG/eA3YTMgGGojLtg6FU8xmRn5Lrk7p4zWOK45hrBzRz5jjAkd5fpFa4n1QCrf19
-         nne76emuKGBMNvWKa5325hAo+Xzgce9K7D4VjgGmMi/dqdKL3MzQvbu5ST1fH1lTi5
-         SHdRu0wmTQpkre6kMFyZ0ZS2WA4nY6MjmoZ6GD/ZN6mDgOzVhEN3zClpsJx3+cM0q5
-         JYQsdmtV3R+rhy2rSmJiuZEyn2P88ds6AOgYnXXGSmwrjcikR9yre7kfU+oCApwEFD
-         XNXh9D7Qmchk6S6AmvNKDDkA8D8AsIe8TJr4tjJVquVjmV7oiE296iRPg+jIfVhtzL
-         +w/FMsejK+usA==
-Received: by mail-oo1-f70.google.com with SMTP id 68-20020a4a0d47000000b0028fe7302d04so3087111oob.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:54:39 -0700 (PDT)
+        Wed, 15 Sep 2021 12:01:02 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6E6C061574;
+        Wed, 15 Sep 2021 08:59:43 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g14so3119819pfm.1;
+        Wed, 15 Sep 2021 08:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OkiiGHbQZwoirzVbd8s1wT3AXOTUQoT8rTgbKgTYjH4=;
+        b=i6EO+HrgwbvJsQQ2YpEuIGI4TcPgkJrKnEjI6rVzmv43sG7iAOiMxSi8VMiO7XfNxa
+         xpZLDsFfVQU/Lzfp9ltItNYsiGW6PA2gvJNHY1/7YqNnfNiauIxwd551577USgAzG5vu
+         h2KMGwriNN3SUmjFDXLuTdMYh+iYfbi8Py8eRbAut0j9y8gZwtU4EflVGllx8zeLeMTv
+         B6DiJ9HjgSFfdv4UdIyMy0fLisYWx5BR9r2GKjokxyzeOjeG/YrL0qtET75pbxoB+XfD
+         vDxCwfDEnPDlzKQUrYloEwtQCcTPT1mec32x40Gmc1scCqBPD6iIJSfymnvo3ilAL0d6
+         ZWIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ueSFxhfWFil0IlgAFMYQeGjlmsHbDXN3YHC8WlG95pA=;
-        b=z1hocivtvdvTDUiTq617tzS42Vms5gmEhmM4pAPc/DH4m/X4M5SdYsDfPHgSCeM4sw
-         MOGVtmTao12/jFPJnH9Miv8yhq0GFhTsQEnHfw/PCgVDk8b3Qpv2F7Sffk8Cnj6d9tGn
-         IGpJv3uchJtTYhRzL/xbVFYRLDYNHfurPE4/XIUAX2n9N/bUtctjy1lfff2e6GjtuEIe
-         +Fb2ENbNlp8O0tpg+xMHcRLHjzPHjk/hiVio2adyldxjhyNf+DmnA+juFPcQjbvb+cYB
-         6QKmwGElAsWxMqEdD0h5wOHkNvUrxE/F3XyvMmeHazBzSsWSjc9PLW8Is3ONrqdU0VFv
-         TLSg==
-X-Gm-Message-State: AOAM531qUL35XqtwiiCPuRZGH+ne+cBylXf+C6GZHs7XeNvcIYfscbb6
-        xbysAuzRV6UAo7XW8bk7QENqGWpsoeK8wlFVIDVTPlXDJqA8DTw0nB2Q7VMEXznEke38BqSCrNF
-        eGUZD28was9DC7UWP7yGlKRyn515PePfXx8hevEmMEIMcjzqGhN4NbSF+JQ==
-X-Received: by 2002:a05:6808:1243:: with SMTP id o3mr5780646oiv.146.1631721278077;
-        Wed, 15 Sep 2021 08:54:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLkAq4LSefU34adzhJIvNH7MiMMnSbs5Q0CRchVTKMxYbv92jyFPoShrmQpnkNQIpzF7YbTxViqbCpqaoSoco=
-X-Received: by 2002:a05:6808:1243:: with SMTP id o3mr5780624oiv.146.1631721277728;
- Wed, 15 Sep 2021 08:54:37 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OkiiGHbQZwoirzVbd8s1wT3AXOTUQoT8rTgbKgTYjH4=;
+        b=M9OH8exjNYo20Z9YEUZyj9WAmNfWuJf1mtPg9A6PWaOHCnVoKwLraMAIOFQhwcj08C
+         6+wI9rDTZMSq1mJToF09uVd2TeSXhJerbtCgmpPl47b2YToaMD3E4X9Asd/NKSbT7Vq2
+         D1NGB7ggQcclagtg5ZZbAs/p1yGDIbNMAlyaYMcUN56ePUK0998fAEm8ER0Qif//xAcj
+         0EQrBELJvovHbaTWM6L/muyzT845xGUV7zYG4uFpTz+VABV8ghJrz9PaQFnrIz8rQW6s
+         fMs7I3YEpCnHNGVKfYv2FijUt7Ao0NgKDdjHc2SMg6KAZ1p7zeBUanBcDqhHki7ub9Zy
+         Ta3g==
+X-Gm-Message-State: AOAM531Igiqhl99QYfupE9w9pLQMyG0pUaHvYQtSBtqY5JzmX+fEpzMx
+        Cu6CIfoXOMCkw/9yaA/U8j4BzI1P92M=
+X-Google-Smtp-Source: ABdhPJzTCnp9h5O3IHeMY3Inj2+Eq4maNRLbgxyOToF3HlhlL29u6LufFYNlHAqNrKXM2EsrSj63KA==
+X-Received: by 2002:a63:841:: with SMTP id 62mr445090pgi.354.1631721582877;
+        Wed, 15 Sep 2021 08:59:42 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id j6sm385502pgq.0.2021.09.15.08.59.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 08:59:41 -0700 (PDT)
+Subject: Re: [PATCH 2/6] clk: samsung: clk-pll: Implement pll0822x PLL type
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-3-semen.protsenko@linaro.org>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <faa9a9b7-919a-5b99-f99a-9550cc3d1260@gmail.com>
+Date:   Thu, 16 Sep 2021 00:59:35 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210827171452.217123-1-kai.heng.feng@canonical.com>
- <20210827171452.217123-3-kai.heng.feng@canonical.com> <2839f04c-8d7b-b010-f7c4-540359037d38@gmail.com>
-In-Reply-To: <2839f04c-8d7b-b010-f7c4-540359037d38@gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Wed, 15 Sep 2021 23:54:25 +0800
-Message-ID: <CAAd53p4fih84-jT-gpG+er=piArCR+VNx=Srr51CQyLd4Ogd8A@mail.gmail.com>
-Subject: Re: [RFC] [PATCH net-next v4] [PATCH 2/2] r8169: Implement dynamic
- ASPM mechanism
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anthony Wong <anthony.wong@canonical.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210914155607.14122-3-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 2:03 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->
-> On 27.08.2021 19:14, Kai-Heng Feng wrote:
-> > r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
-> > Same issue can be observed with older vendor drivers.
-> >
-> > The issue is however solved by the latest vendor driver. There's a new
-> > mechanism, which disables r8169's internal ASPM when the NIC traffic has
-> > more than 10 packets, and vice versa. The possible reason for this is
-> > likely because the buffer on the chip is too small for its ASPM exit
-> > latency.
-> >
-> > Realtek confirmed that all their PCIe LAN NICs, r8106, r8168 and r8125
-> > use dynamic ASPM under Windows. So implement the same mechanism here to
-> > resolve the issue.
-> >
-> > Because ASPM control may not be granted by BIOS while ASPM is enabled,
-> > remove aspm_manageable and use pcie_aspm_capable() instead. If BIOS
-> > enables ASPM for the device, we want to enable dynamic ASPM on it.
-> >
-> > In addition, since PCIe ASPM can be switched via sysfs, enable/disable
-> > dynamic ASPM accordingly by checking pcie_aspm_enabled().
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v4:
-> >  - Squash two patches
-> >  - Remove aspm_manageable and use pcie_aspm_capable()
-> >    pcie_aspm_enabled() accordingly
-> >
-> > v3:
-> >  - Use msecs_to_jiffies() for delay time
-> >  - Use atomic_t instead of mutex for bh
-> >  - Mention the buffer size and ASPM exit latency in commit message
-> >
-> > v2:
-> >  - Use delayed_work instead of timer_list to avoid interrupt context
-> >  - Use mutex to serialize packet counter read/write
-> >  - Wording change
-> >  drivers/net/ethernet/realtek/r8169_main.c | 77 ++++++++++++++++++++---
-> >  1 file changed, 69 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> > index 46a6ff9a782d7..97dba8f437b78 100644
-> > --- a/drivers/net/ethernet/realtek/r8169_main.c
-> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> > @@ -623,7 +623,10 @@ struct rtl8169_private {
-> >       } wk;
-> >
-> >       unsigned supports_gmii:1;
-> > -     unsigned aspm_manageable:1;
-> > +     unsigned rtl_aspm_enabled:1;
-> > +     struct delayed_work aspm_toggle;
-> > +     atomic_t aspm_packet_count;
-> > +
-> >       dma_addr_t counters_phys_addr;
-> >       struct rtl8169_counters *counters;
-> >       struct rtl8169_tc_offsets tc_offset;
-> > @@ -698,6 +701,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
-> >              tp->mac_version <= RTL_GIGA_MAC_VER_53;
-> >  }
-> >
-> > +static int rtl_supports_aspm(struct rtl8169_private *tp)
-> > +{
-> > +     switch (tp->mac_version) {
-> > +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
-> > +     case RTL_GIGA_MAC_VER_37:
-> > +     case RTL_GIGA_MAC_VER_39:
-> > +     case RTL_GIGA_MAC_VER_43:
-> > +     case RTL_GIGA_MAC_VER_47:
-> > +             return 0;
-> > +     default:
-> > +             return 1;
-> > +     }
->
-> Why is this needed now that you have pcie_aspm_capable()?
+On 21. 9. 15. 오전 12:56, Sam Protsenko wrote:
+> pll0822x PLL is used in Exynos850 SoC for top-level integer PLLs. The
+> code was derived from very similar pll35xx type, with next differences:
+> 
+> 1. Lock time for pll0822x is 150*P_DIV, when for pll35xx it's 270*P_DIV
+> 2. It's not suggested in Exynos850 TRM that S_DIV change doesn't require
+>     performing PLL lock procedure (which is done in pll35xx
+>     implementation)
+> 
+> When defining pll0822x type, CON3 register offset should be provided as
+> a "con" parameter of PLL() macro, like this:
+> 
+>      PLL(pll_0822x, 0, "fout_shared0_pll", "oscclk",
+>          PLL_LOCKTIME_PLL_SHARED0, PLL_CON3_PLL_SHARED0,
+>          exynos850_shared0_pll_rates),
+> 
+> To define PLL rates table, one can use PLL_35XX_RATE() macro, e.g.:
+> 
+>      PLL_35XX_RATE(26 * MHZ, 1600 * MHZ, 800, 13, 0)
+> 
+> as it's completely appropriate for pl0822x type and there is no sense in
+> duplicating that.
+> 
+> If bit #1 (MANUAL_PLL_CTRL) is not set in CON1 register, it won't be
+> possible to set new rate, with next error showing in kernel log:
+> 
+>      Could not lock PLL fout_shared1_pll
+> 
+> That can happen for example if bootloader clears that bit beforehand.
+> PLL driver doesn't account for that, so if MANUAL_PLL_CTRL bit was
+> cleared, it's assumed it was done for a reason and it shouldn't be
+> possible to change that PLL's rate at all.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>   drivers/clk/samsung/clk-pll.c | 91 +++++++++++++++++++++++++++++++++++
+>   drivers/clk/samsung/clk-pll.h |  1 +
+>   2 files changed, 92 insertions(+)
+> 
+> diff --git a/drivers/clk/samsung/clk-pll.c b/drivers/clk/samsung/clk-pll.c
+> index 5873a9354b50..03131b149c0b 100644
+> --- a/drivers/clk/samsung/clk-pll.c
+> +++ b/drivers/clk/samsung/clk-pll.c
+> @@ -415,6 +415,89 @@ static const struct clk_ops samsung_pll36xx_clk_min_ops = {
+>   	.recalc_rate = samsung_pll36xx_recalc_rate,
+>   };
+>   
+> +/*
+> + * PLL0822x Clock Type
+> + */
+> +/* Maximum lock time can be 150 * PDIV cycles */
+> +#define PLL0822X_LOCK_FACTOR		(150)
+> +
+> +#define PLL0822X_MDIV_MASK		(0x3FF)
+> +#define PLL0822X_PDIV_MASK		(0x3F)
+> +#define PLL0822X_SDIV_MASK		(0x7)
+> +#define PLL0822X_MDIV_SHIFT		(16)
+> +#define PLL0822X_PDIV_SHIFT		(8)
+> +#define PLL0822X_SDIV_SHIFT		(0)
+> +#define PLL0822X_LOCK_STAT_SHIFT	(29)
+> +#define PLL0822X_ENABLE_SHIFT		(31)
+> +
+> +static unsigned long samsung_pll0822x_recalc_rate(struct clk_hw *hw,
+> +						  unsigned long parent_rate)
+> +{
+> +	struct samsung_clk_pll *pll = to_clk_pll(hw);
+> +	u32 mdiv, pdiv, sdiv, pll_con3;
+> +	u64 fvco = parent_rate;
+> +
+> +	pll_con3 = readl_relaxed(pll->con_reg);
+> +	mdiv = (pll_con3 >> PLL0822X_MDIV_SHIFT) & PLL0822X_MDIV_MASK;
+> +	pdiv = (pll_con3 >> PLL0822X_PDIV_SHIFT) & PLL0822X_PDIV_MASK;
+> +	sdiv = (pll_con3 >> PLL0822X_SDIV_SHIFT) & PLL0822X_SDIV_MASK;
+> +
+> +	fvco *= mdiv;
+> +	do_div(fvco, (pdiv << sdiv));
+> +
+> +	return (unsigned long)fvco;
+> +}
+> +
+> +static int samsung_pll0822x_set_rate(struct clk_hw *hw, unsigned long drate,
+> +				     unsigned long prate)
+> +{
+> +	const struct samsung_pll_rate_table *rate;
+> +	struct samsung_clk_pll *pll = to_clk_pll(hw);
+> +	u32 pll_con3;
+> +
+> +	/* Get required rate settings from table */
+> +	rate = samsung_get_pll_settings(pll, drate);
+> +	if (!rate) {
+> +		pr_err("%s: Invalid rate : %lu for pll clk %s\n", __func__,
+> +			drate, clk_hw_get_name(hw));
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Change PLL PMS values */
+> +	pll_con3 = readl_relaxed(pll->con_reg);
+> +	pll_con3 &= ~((PLL0822X_MDIV_MASK << PLL0822X_MDIV_SHIFT) |
+> +			(PLL0822X_PDIV_MASK << PLL0822X_PDIV_SHIFT) |
+> +			(PLL0822X_SDIV_MASK << PLL0822X_SDIV_SHIFT));
+> +	pll_con3 |= (rate->mdiv << PLL0822X_MDIV_SHIFT) |
+> +			(rate->pdiv << PLL0822X_PDIV_SHIFT) |
+> +			(rate->sdiv << PLL0822X_SDIV_SHIFT);
+> +
+> +	/* Set PLL lock time */
+> +	writel_relaxed(rate->pdiv * PLL0822X_LOCK_FACTOR,
+> +			pll->lock_reg);
+> +
+> +	/* Write PMS values */
+> +	writel_relaxed(pll_con3, pll->con_reg);
+> +
+> +	/* Wait for PLL lock if the PLL is enabled */
+> +	if (pll_con3 & BIT(pll->enable_offs))
+> +		return samsung_pll_lock_wait(pll, BIT(pll->lock_offs));
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct clk_ops samsung_pll0822x_clk_ops = {
+> +	.recalc_rate = samsung_pll0822x_recalc_rate,
+> +	.round_rate = samsung_pll_round_rate,
+> +	.set_rate = samsung_pll0822x_set_rate,
+> +	.enable = samsung_pll3xxx_enable,
+> +	.disable = samsung_pll3xxx_disable,
+> +};
+> +
+> +static const struct clk_ops samsung_pll0822x_clk_min_ops = {
+> +	.recalc_rate = samsung_pll0822x_recalc_rate,
+> +};
+> +
+>   /*
+>    * PLL45xx Clock Type
+>    */
+> @@ -1296,6 +1379,14 @@ static void __init _samsung_clk_register_pll(struct samsung_clk_provider *ctx,
+>   		else
+>   			init.ops = &samsung_pll35xx_clk_ops;
+>   		break;
+> +	case pll_0822x:
+> +		pll->enable_offs = PLL0822X_ENABLE_SHIFT;
+> +		pll->lock_offs = PLL0822X_LOCK_STAT_SHIFT;
+> +		if (!pll->rate_table)
+> +			init.ops = &samsung_pll0822x_clk_min_ops;
+> +		else
+> +			init.ops = &samsung_pll0822x_clk_ops;
+> +		break;
+>   	case pll_4500:
+>   		init.ops = &samsung_pll45xx_clk_min_ops;
+>   		break;
+> diff --git a/drivers/clk/samsung/clk-pll.h b/drivers/clk/samsung/clk-pll.h
+> index 79e41c226b90..213e94a97f23 100644
+> --- a/drivers/clk/samsung/clk-pll.h
+> +++ b/drivers/clk/samsung/clk-pll.h
+> @@ -36,6 +36,7 @@ enum samsung_pll_type {
+>   	pll_1451x,
+>   	pll_1452x,
+>   	pll_1460x,
+> +	pll_0822x,
+>   };
+>   
+>   #define PLL_RATE(_fin, _m, _p, _s, _k, _ks) \
+> 
 
-The black list is copied from vendor driver.
-Will remove it in next iteration and hopefully pcie_aspm_capable() is
-sufficient.
+Even if I have not Exynos850 TRM, it looks good to me. Thanks.
 
->
-> > +}
-> > +
-> >  static bool rtl_supports_eee(struct rtl8169_private *tp)
-> >  {
-> >       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
-> > @@ -2699,8 +2716,15 @@ static void rtl_enable_exit_l1(struct rtl8169_private *tp)
-> >
-> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
-> >  {
-> > +     struct pci_dev *pdev = tp->pci_dev;
-> > +
-> > +     if (!pcie_aspm_enabled(pdev) && enable)
-> > +             return;
-> > +
-> > +     tp->rtl_aspm_enabled = enable;
-> > +
-> >       /* Don't enable ASPM in the chip if OS can't control ASPM */
-> > -     if (enable && tp->aspm_manageable) {
-> > +     if (enable) {
-> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
-> >               RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
-> >       } else {
-> > @@ -4440,6 +4464,7 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
-> >
-> >       dirty_tx = tp->dirty_tx;
-> >
-> > +     atomic_add(tp->cur_tx - dirty_tx, &tp->aspm_packet_count);
-> >       while (READ_ONCE(tp->cur_tx) != dirty_tx) {
-> >               unsigned int entry = dirty_tx % NUM_TX_DESC;
-> >               u32 status;
-> > @@ -4584,6 +4609,8 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
-> >               rtl8169_mark_to_asic(desc);
-> >       }
-> >
-> > +     atomic_add(count, &tp->aspm_packet_count);
-> > +
-> >       return count;
-> >  }
-> >
-> > @@ -4691,8 +4718,39 @@ static int r8169_phy_connect(struct rtl8169_private *tp)
-> >       return 0;
-> >  }
-> >
-> > +#define ASPM_PACKET_THRESHOLD 10
-> > +#define ASPM_TOGGLE_INTERVAL 1000
-> > +
-> > +static void rtl8169_aspm_toggle(struct work_struct *work)
-> > +{
-> > +     struct rtl8169_private *tp = container_of(work, struct rtl8169_private,
-> > +                                               aspm_toggle.work);
-> > +     int packet_count;
-> > +     bool enable;
-> > +
-> > +     packet_count = atomic_xchg(&tp->aspm_packet_count, 0);
-> > +
-> > +     if (pcie_aspm_enabled(tp->pci_dev)) {
-> > +             enable = packet_count <= ASPM_PACKET_THRESHOLD;
-> > +
-> > +             if (tp->rtl_aspm_enabled != enable) {
-> > +                     rtl_unlock_config_regs(tp);
->
-> This looks racy. Another unlock_config_regs/do_something/lock_config_regs
-> can run in parallel. And if such a parallel lock_config_regs is executed
-> exactly here, then rtl_hw_aspm_clkreq_enable() may fail.
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-Yes this is racy.
-Will add a lock to prevent the race.
-
-Kai-Heng
-
->
-> > +                     rtl_hw_aspm_clkreq_enable(tp, enable);
-> > +                     rtl_lock_config_regs(tp);
-> > +             }
-> > +     } else if (tp->rtl_aspm_enabled) {
-> > +             rtl_unlock_config_regs(tp);
-> > +             rtl_hw_aspm_clkreq_enable(tp, false);
-> > +             rtl_lock_config_regs(tp);
-> > +     }
-> > +
-> > +     schedule_delayed_work(&tp->aspm_toggle, msecs_to_jiffies(ASPM_TOGGLE_INTERVAL));
-> > +}
-> > +
-> >  static void rtl8169_down(struct rtl8169_private *tp)
-> >  {
-> > +     cancel_delayed_work_sync(&tp->aspm_toggle);
-> > +
-> >       /* Clear all task flags */
-> >       bitmap_zero(tp->wk.flags, RTL_FLAG_MAX);
-> >
-> > @@ -4719,6 +4777,11 @@ static void rtl8169_up(struct rtl8169_private *tp)
-> >       rtl_reset_work(tp);
-> >
-> >       phy_start(tp->phydev);
-> > +
-> > +     /* pcie_aspm_capable may change after system resume */
-> > +     if (pcie_aspm_support_enabled() && pcie_aspm_capable(tp->pci_dev) &&
-> > +         rtl_supports_aspm(tp))
-> > +             schedule_delayed_work(&tp->aspm_toggle, 0);
-> >  }
-> >
-> >  static int rtl8169_close(struct net_device *dev)
-> > @@ -5306,12 +5369,6 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >       if (rc)
-> >               return rc;
-> >
-> > -     /* Disable ASPM L1 as that cause random device stop working
-> > -      * problems as well as full system hangs for some PCIe devices users.
-> > -      */
-> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L1);
-> > -     tp->aspm_manageable = !rc;
-> > -
-> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
-> >       rc = pcim_enable_device(pdev);
-> >       if (rc < 0) {
-> > @@ -5378,6 +5435,10 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
-> >
-> >       INIT_WORK(&tp->wk.work, rtl_task);
-> >
-> > +     INIT_DELAYED_WORK(&tp->aspm_toggle, rtl8169_aspm_toggle);
-> > +
-> > +     atomic_set(&tp->aspm_packet_count, 0);
-> > +
-> >       rtl_init_mac_address(tp);
-> >
-> >       dev->ethtool_ops = &rtl8169_ethtool_ops;
-> >
->
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
