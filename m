@@ -2,102 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB2940C719
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC9D40C71C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237662AbhIOOMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:12:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234504AbhIOOMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:12:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D688611C1;
-        Wed, 15 Sep 2021 14:10:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631715053;
-        bh=YbvuYcfAW5Fjwy98n/gQJCW044gac9hZzpuoydBe/dQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NhHMNxjD3PIagYWukAJT16WejQu1Dbiq44S2cQuGmDemU2s0PzXskS0Mb6Irn2nY0
-         BvejqDNI6tgKrU1ojfMAGWva+cvxOeL1smppWSvCJUDTI7NVGjiBan1X2KNSHfm7Cv
-         SSpy5IqfbXrxWkAx/ybCRQtL/d6EL853pp8VMM72yCXx3IQT/T5e6tI417NVsb0NcG
-         apEMwbvZhpq0W4c93pt3BoeiITIqoc9OSZs4wJcnpAcw2hMTEjTT57GRqIozJsev+y
-         lxg8x+/sbjcNbn/yBiGmplD1n/bTKDfkkMtprEac4uc6TZbXNEVB2zY8NoV8SVuzGK
-         BaTvvFkw5hLng==
-Date:   Wed, 15 Sep 2021 15:10:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
-Message-ID: <20210915141012.GC12513@sirena.org.uk>
-References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
- <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
+        id S237369AbhIOOM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:12:27 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:54553 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S237756AbhIOOM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:12:26 -0400
+Received: (qmail 191572 invoked by uid 1000); 15 Sep 2021 10:11:06 -0400
+Date:   Wed, 15 Sep 2021 10:11:06 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH] usb: host: ohci-tmio: check return value after calling
+ platform_get_resource()
+Message-ID: <20210915141106.GB191140@rowland.harvard.edu>
+References: <20210915034544.2398636-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XWOWbaMNXpFDWE00"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
-X-Cookie: The more the merrier.
+In-Reply-To: <20210915034544.2398636-1-yangyingliang@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 15, 2021 at 11:45:44AM +0800, Yang Yingliang wrote:
+> It will cause null-ptr-deref if platform_get_resource() returns NULL,
+> we need check the return value.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/usb/host/ohci-tmio.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
+> index 08ec2ab0d95a..68e769b82061 100644
+> --- a/drivers/usb/host/ohci-tmio.c
+> +++ b/drivers/usb/host/ohci-tmio.c
+> @@ -202,6 +202,9 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+>  	if (!cell)
+>  		return -EINVAL;
+>  
+> +	if (!regs || !config || !sram)
+> +		return -EINVAL;
 
---XWOWbaMNXpFDWE00
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Why don't you combine this test with the test immediately above it?
 
-On Sat, Sep 04, 2021 at 01:15:34AM +0200, Nicolas Frattaroli wrote:
+Alan Stern
 
-> +  rockchip,frame-width:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 64
-> +    minimum: 32
-> +    maximum: 512
-> +    description:
-> +      Width of a frame, usually slot width multiplied by number of slots.
-> +      Must be even.
-
-Why is this in the binding?  This is normally configured by the machine
-driver setting the TDM slots, not through DT.
-
-> +  rockchip,mclk-calibrate:
-> +    description:
-> +      Switch between two root clocks depending on the audio sample rate.
-> +      For integer multiples of 8000 (e.g. 48000 Hz), mclk_root0 is used.
-> +      For integer multiples of 11025 (e.g. 44100 Hz), mclk_root1 is used.
-> +    type: boolean
-
-Why would we not want to do this, and assuming it's to do with
-availability can't we detect it simply through seeing if both MCLKs are
-available?
-
-> +  rockchip,tdm-fsync-half-frame:
-> +    description: Whether to use half frame fsync.
-> +    type: boolean
 > +
-
-Why is this not part of the normal bus format configuration?  I don't
-know what this is but it sounds a lot like I2S mode...
-
---XWOWbaMNXpFDWE00
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB/sMACgkQJNaLcl1U
-h9AyVgf/R1hx+9U5odYrV/J4RA9uPRmhSRnrn3d9jvqBMcYWbZUVHv4dTKqn4SqK
-QUkjtLocXUuai3S1P/4XuaoN0HvXjNaPsGxo7967IUUgfxrWbRiBIsG+DQJiAMWS
-95KX7lNSNmjf8ZGDY5LTp78M8fhzUpB0zedTNQw5D9r8aCHTBAmIUw+fKOJFlucS
-ndk/eJHrgcxpcvaVZX8nuRdgAfJpv/i4v4+K6I/dAHsiGOkbFwiJiOIZ+psy7wpr
-lp5ioBhSuQQEH/sA62y0nSDVXggOJEPp+APhIqeiGDTmiZ9gabhBClhDHQ3aylpJ
-9vmhvE2NT59s90BGBWMnFEQfyqdk4A==
-=s91p
------END PGP SIGNATURE-----
-
---XWOWbaMNXpFDWE00--
+>  	if (irq < 0)
+>  		return irq;
+>  
+> -- 
+> 2.25.1
+> 
