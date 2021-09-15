@@ -2,214 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C1A40C9B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DC740C9BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhIOQIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhIOQH7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:07:59 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E76C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:06:40 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso4232516otv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ISVv1atSRTyYqw35Va1vQyD5cjgJi0F9b5ypn+Ek17k=;
-        b=FNKt/2RVm35X+MKmP0UvQfr8+x6j8k5p/H6MwV0U8RF+9Q+2K9FwQiwt0DvA0cEyI/
-         gQBdFbqKvslpE3cHCOm9uaxWcmidZGipyFWy40r7rjovw3EYPMLdliNKJJChaunXSdAi
-         dbbnNoffAl8EoNYdO2Oa1FP0IEi2mAzQEjBpVmSuQ7YGnM3J1Vyf1G6xFEy04V75x5Qh
-         Vhyd/Ux7ACAWjzbtBBO88/zDobpOZ2qijNxx6IPsbkDMWvcUp4MT845LJsy9VWSCT6gg
-         l8NZA9cJPs2L8lqDW8yDePBA+KWGTB+AXH/TADMH9sAOh5mK4kEv86vIGES+4NEWQ9Au
-         5ywg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ISVv1atSRTyYqw35Va1vQyD5cjgJi0F9b5ypn+Ek17k=;
-        b=zakMK7BtZtY0SKiGpkbb56LIuaxtoToX2jxNkuVpbgYB035xMUxSMhVFkpU1KpAeGR
-         mgP5Lfn4yR7nPqu0DTcgT96Yh2lHBkGCKdTyTrZfDihNzrgi7VYDUGlAn3DT0ry1NhJk
-         qTrCkBsjI1XoEvoeE3rrYwJv152/8OeXh/SmOgc4CMqKFuCUMeRJyoA7vHEn8Sn4Bq+p
-         iSVB2h7ns9NnzBnAGu7AU7yJSKWmixJje+b2guPRsmTTPRosRKK6l5GL4si9lYse460X
-         H2rieuJLl96rY4/9GxrwhYkKKOac0hSDgLwv1t/cbdAjzGaSVBR6kbfMvVGOqMwB+eMV
-         ii0Q==
-X-Gm-Message-State: AOAM5310FmTsQUFbJf7zH6PfP08ydgYYf5lgXUrHiFK5AMPWYx6BJpSR
-        29iEkm3IhdC5fONUOHcRquGNV3Y28So=
-X-Google-Smtp-Source: ABdhPJyVkbAyqqHjYzoVgnBBeNWM9UBbJpVryIa+1MgbDiKM9Ppa9i4KBFs5ocWqrIypvV9rVVIffg==
-X-Received: by 2002:a9d:7c88:: with SMTP id q8mr630037otn.367.1631721999749;
-        Wed, 15 Sep 2021 09:06:39 -0700 (PDT)
-Received: from ?IPV6:2603:8090:2005:39b3::1007? (2603-8090-2005-39b3-0000-0000-0000-1007.res6.spectrum.com. [2603:8090:2005:39b3::1007])
-        by smtp.gmail.com with ESMTPSA id h19sm73054otr.75.2021.09.15.09.06.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 09:06:38 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Message-ID: <6f89f419-edaf-296a-1021-cdc12f218e7a@lwfinger.net>
-Date:   Wed, 15 Sep 2021 11:06:36 -0500
+        id S235503AbhIOQIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:08:37 -0400
+Received: from mail-co1nam11on2086.outbound.protection.outlook.com ([40.107.220.86]:33491
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232738AbhIOQIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 12:08:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EBxj5oJ/Zckc57DmwC+1pkpuDNbwmQvwBI/8mGLQvcjTYllLXc2e6eP26TbqzaiWnXVTF8aebMrpv9z6tvaK5eDkysDNXIAGzM2zJUuY/RpIevPGVXOBufzTvGAwTaOvngU24w7XZ1ycY+61lxEv98FTIb7/O7k/Nbi+KROBkiY0uat976kFzV9hKVP1tvm22nOXvl+E3nf4LfO2dhZ0AXR8KmB45fNAnmJ/MpWh1W8Vvcym1S648wxBHrKWyGj1gqRCE7IL/gX6qTmkeiFQEetWmyKNmmj9ZytGunBxI8LCfHKVk+fipOJMc+DIeusIBSjlyJhFq1FDzvWIfqQeKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=gSB1z2ElJ4XPqoNmncT8azt6bqnFqwzuZWI4eJ23Eek=;
+ b=fiFOxUZ+mkxgIPvJ8lAaDWtZQhr71d7wDe/wR9FPn/NaDT/0CDKaEMIHqhFqsBRinSHa96LP0jPnokKzINdsoH+TspWMsweDaTP39qL7N4PN++wM4f3O74AomqgRKEoHKz8wiRwmkp+f5qshQdo0C443x05YBRxMQKEzgJW/JI8uj4+IJ0vqVhNCPXmvudeRU+Pr076tlFqC1AKQbu2g7EFFFgs8AwqZ+8AgZ5gjvdfBqXDoEj9ax6iJGRLGewv6F4ig4OMhHQGK8mDckLFRaAC87hrWhzUjIQ4PXMSsOdRm+o7nxKnCsAkeBDHm5Q2o8g8Udt9TFachexpWbMpedw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gSB1z2ElJ4XPqoNmncT8azt6bqnFqwzuZWI4eJ23Eek=;
+ b=Hfnry126WImQHi1Ng4d/U5zQdEDt7fWlpaerVeJN+YuopehmPE6KH59i6Sk0mTmL08ynu46yTsunOI0Ahvvr3zp3IpDjGDx6zKHMYiS17B1wltlubwPi00mXLexiI8geO1U5cMd/WmxZNxh7K5H7uZ3HHtGKOVlrfLu9AYqiritnbjRK4DTTjrbImCElpkBb/6Zlm6kdz0Af4S+Fqx+RO4c6qiBpkKjaAY5UGuZF1uEyVnMA/f0V6QKWXoX4lVivX9xMNYT/UihdAuWAXuPIKue0PDDJOIblavO1uP1Kam5NEtVLUTko+o4UA//rwWpku5xP9xdMvoe7epJwJtP8nA==
+Received: from MWHPR03CA0006.namprd03.prod.outlook.com (2603:10b6:300:117::16)
+ by SN6PR12MB2703.namprd12.prod.outlook.com (2603:10b6:805:75::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
+ 2021 16:07:15 +0000
+Received: from CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:117:cafe::1e) by MWHPR03CA0006.outlook.office365.com
+ (2603:10b6:300:117::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Wed, 15 Sep 2021 16:07:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ CO1NAM11FT045.mail.protection.outlook.com (10.13.175.181) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 16:07:14 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 15 Sep
+ 2021 16:07:13 +0000
+Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Wed, 15 Sep 2021 09:07:11 -0700
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <vkoul@kernel.org>, <jonathanh@nvidia.com>, <ldewangan@nvidia.com>,
+        <thierry.reding@gmail.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
+Subject: [RESEND PATCH 0/3] Few Tegra210 ADMA fixes
+Date:   Wed, 15 Sep 2021 21:37:02 +0530
+Message-ID: <1631722025-19873-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v5 10/19] staging: r8188eu: remove the helpers of
- usb_write_port()
-Content-Language: en-US
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Philip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210915124149.27543-1-fmdefrancesco@gmail.com>
- <20210915124149.27543-11-fmdefrancesco@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-In-Reply-To: <20210915124149.27543-11-fmdefrancesco@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0478fd30-b3c2-4bf6-8e13-08d97862e242
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2703:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB27033D0311116A5344A46529A7DB9@SN6PR12MB2703.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Opdn7KCaVzhHtYXanq0fAsZtSp3cCfyddVx2B2cfDidH8d6AZpW9QRIhJ20hi67l8mC0Bb6yU25pphJ9/oxBWwTxk1TrbOBcT73CugN1W7VGA9jBBr+nB1QYc2rvJBQiuVbXHhZhWt/zgFXnEfHFqjbYoF658/7vgZRqTRMEwEWESxArmA7PruXNkxMuUcCCXpf+SLSLvMVIA3Luie9Xp9JgvCYZs1ntRQ324H3ttSJPIpkSd4T4Lms+5pQSYojwzUBbzSp1OuDhwH91RCPRfFMV1ErYTS8VaVlVqICM6ArZ35QZcrnFOcgBhJeBwq+W7qWFTL0iBzO18f2XWCvQZH1Ygp2s9rBAgWs4aTz7zyrtJaIwZuFiiwATwiZ6uwf32O5teh87cs6868Zf3xmB5IWHZrWAi48ub5Uv6xpbK9Haff2Cub6KmTAk8KFUhshEBd1yUc2UoB9i338SDIH6n0hSptGyytePUynFSI8Umz2KNw868Ahb69Jnmz8fkQPLxQZnD2vNvqjddk9dcsfpGuSxelw3FMImWFsv5cUyljLdaYT8ulLrF64ZlW/kboO08E6/3KcLndRRZhfFJL0T88Z7UkGXie+NrwgtR7HN1ldSPWDY7T2KTv0wEEMbYzANQOiJBc14XGw8IWg/21lJkqgneyIuhjqSNRht4bBH7t2mkvBt1ldVvwPlcroPx3IRPbpSmbldOnfzuv1pi1m1XQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(346002)(39860400002)(46966006)(36840700001)(86362001)(7696005)(186003)(82310400003)(54906003)(107886003)(2906002)(478600001)(26005)(110136005)(336012)(83380400001)(36906005)(2616005)(47076005)(426003)(4326008)(6666004)(36860700001)(36756003)(7636003)(70206006)(5660300002)(356005)(70586007)(8676002)(8936002)(4744005)(82740400003)(316002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 16:07:14.6647
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0478fd30-b3c2-4bf6-8e13-08d97862e242
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT045.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2703
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 07:41, Fabio M. De Francesco wrote:
-> From: Pavel Skripkin <paskripkin@gmail.com>
-> 
-> Remove the unnecessary _rtw_write_port() and usb_write_port() and embed
-> their code into the caller (i.e., rtw_write_port()).
-> 
-> _rtw_write_port() is a mere redefinition of rtw_write_port() and it is
-> unneeded. usb_write_port() was the only functions assigned to the
-> (*_usb_write_port) pointer, so we can simply remove it and make a direct
-> call.
-> 
-> This patch is in preparation for the _io_ops structure removal.
-> 
-> Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->   drivers/staging/r8188eu/core/rtw_io.c         | 20 +------------------
->   drivers/staging/r8188eu/hal/usb_ops_linux.c   |  1 -
->   drivers/staging/r8188eu/include/rtw_io.h      |  4 +---
->   .../staging/r8188eu/include/usb_ops_linux.h   |  1 -
->   .../staging/r8188eu/os_dep/usb_ops_linux.c    |  3 +--
->   5 files changed, 3 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_io.c b/drivers/staging/r8188eu/core/rtw_io.c
-> index ac72f894da75..3a5e9dbfcb12 100644
-> --- a/drivers/staging/r8188eu/core/rtw_io.c
-> +++ b/drivers/staging/r8188eu/core/rtw_io.c
-> @@ -87,24 +87,6 @@ void _rtw_read_port_cancel(struct adapter *adapter)
->   		_read_port_cancel(pintfhdl);
->   }
->   
-> -u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
-> -{
-> -	u32 (*_write_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
-> -	struct io_priv *pio_priv = &adapter->iopriv;
-> -	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
-> -	u32 ret = _SUCCESS;
-> -
-> -
-> -
-> -	_write_port = pintfhdl->io_ops._write_port;
-> -
-> -	ret = _write_port(pintfhdl, addr, cnt, pmem);
-> -
-> -
-> -
-> -	return ret;
-> -}
-> -
->   u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem, int timeout_ms)
->   {
->   	int ret = _SUCCESS;
-> @@ -114,7 +96,7 @@ u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pme
->   	rtw_sctx_init(&sctx, timeout_ms);
->   	pxmitbuf->sctx = &sctx;
->   
-> -	ret = _rtw_write_port(adapter, addr, cnt, pmem);
-> +	ret = rtw_write_port(adapter, addr, cnt, pmem);
->   
->   	if (ret == _SUCCESS)
->   		ret = rtw_sctx_wait(&sctx);
-> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> index a104e3fac7d1..4fea21c0f7af 100644
-> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> @@ -562,7 +562,6 @@ void rtl8188eu_set_intf_ops(struct _io_ops	*pops)
->   {
->   
->   	memset((u8 *)pops, 0, sizeof(struct _io_ops));
-> -	pops->_write_port = &usb_write_port;
->   	pops->_read_port_cancel = &usb_read_port_cancel;
->   	pops->_write_port_cancel = &usb_write_port_cancel;
->   
-> diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
-> index 600c6e7a375b..f2b1978b6e80 100644
-> --- a/drivers/staging/r8188eu/include/rtw_io.h
-> +++ b/drivers/staging/r8188eu/include/rtw_io.h
-> @@ -262,7 +262,7 @@ int _rtw_write16_async(struct adapter *adapter, u32 addr, u16 val);
->   int _rtw_write32_async(struct adapter *adapter, u32 addr, u32 val);
->   
->   void _rtw_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
-> -u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
-> +u32 rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
->   u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt,
->   			     u8 *pmem, int timeout_ms);
->   void _rtw_write_port_cancel(struct adapter *adapter);
-> @@ -275,8 +275,6 @@ void _rtw_write_port_cancel(struct adapter *adapter);
->   	_rtw_write16_async((adapter), (addr), (val))
->   #define rtw_write32_async(adapter, addr, val)				\
->   	_rtw_write32_async((adapter), (addr), (val))
-> -#define rtw_write_port(adapter, addr, cnt, mem)				\
-> -	_rtw_write_port((adapter), (addr), (cnt), (mem))
->   #define rtw_write_port_and_wait(adapter, addr, cnt, mem, timeout_ms)	\
->   	_rtw_write_port_and_wait((adapter), (addr), (cnt), (mem), (timeout_ms))
->   #define rtw_write_port_cancel(adapter) _rtw_write_port_cancel((adapter))
-> diff --git a/drivers/staging/r8188eu/include/usb_ops_linux.h b/drivers/staging/r8188eu/include/usb_ops_linux.h
-> index 37e0614fd15c..bdc596fe5854 100644
-> --- a/drivers/staging/r8188eu/include/usb_ops_linux.h
-> +++ b/drivers/staging/r8188eu/include/usb_ops_linux.h
-> @@ -30,7 +30,6 @@ unsigned int ffaddr2pipehdl(struct dvobj_priv *pdvobj, u32 addr);
->   
->   void usb_read_port_cancel(struct intf_hdl *pintfhdl);
->   
-> -u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
->   void usb_write_port_cancel(struct intf_hdl *pintfhdl);
->   
->   #endif
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
-> index 9afb4df71969..36ef06f88fdd 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
-> @@ -124,14 +124,13 @@ static void usb_write_port_complete(struct urb *purb, struct pt_regs *regs)
->   
->   }
->   
-> -u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
-> +u32 rtw_write_port(struct adapter *padapter, u32 addr, u32 cnt, u8 *wmem)
->   {
->   	unsigned long irqL;
->   	unsigned int pipe;
->   	int status;
->   	u32 ret = _FAIL;
->   	struct urb *purb = NULL;
-> -	struct adapter *padapter = (struct adapter *)pintfhdl->padapter;
->   	struct dvobj_priv	*pdvobj = adapter_to_dvobj(padapter);
->   	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
->   	struct xmit_buf *pxmitbuf = (struct xmit_buf *)wmem;
-> 
+Following are the fixes in the series:
+ - Couple of minor fixes (non functional fixes)
 
-Patch 1 failed to apply to Greg's staging-testing branch. Particularly with the 
-changes with large number of patches, you need to remove the commits in 
-question, got a 'git pull', and then test that your changes still apply.
+ - ADMA FIFO size fix: The slave ADMAIF channels have different default
+   FIFO sizes (ADMAIF FIFO is actually a ring buffer and it is divided
+   amongst all available channels). As per HW recommendation the sizes
+   should match with the corresponding ADMA channels to which ADMAIF
+   channel is mapped to at runtime. Thus program ADMA channel FIFO sizes
+   accordingly. Otherwise FIFO corruption is observed.
 
-Larry
+Sameer Pujar (3):
+  dmaengine: tegra210-adma: Re-order 'has_outstanding_reqs' member
+  dmaengine: tegra210-adma: Add description for 'adma_get_burst_config'
+  dmaengine: tegra210-adma: Override ADMA FIFO size
 
+ drivers/dma/tegra210-adma.c | 55 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 38 insertions(+), 17 deletions(-)
+
+-- 
+2.7.4
 
