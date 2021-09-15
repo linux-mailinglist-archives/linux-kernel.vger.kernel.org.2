@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F5440C819
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CA940C81E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhIOPTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S237961AbhIOPU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbhIOPTl (ORCPT
+        with ESMTP id S234024AbhIOPU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:19:41 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108E4C061574;
-        Wed, 15 Sep 2021 08:18:22 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id w19so4600632oik.10;
-        Wed, 15 Sep 2021 08:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s47povPHC17mzUM43hPaNuCVlnjcb1YymD4IzB2Fw7Q=;
-        b=H5F4SycB3G6lDTgS54F9rM3ChhQpYgNJ6rzJ/MlpVYRsFh4NNy5t+vxycNUk4J0bpq
-         uBSSBADO+WczlshwtZ9iWPmfOFEaesG+uiSGFNXgrt7if6pt3y+UW4z0HmSkjepr/+f7
-         Kth7/1V45EdcFF3f2QSrCBiiCjKYWskPav4ZPn0L2mmZkrO285uPXregr24jHwNOQuB9
-         kSnBN0ykE54FkubHzqkmKCFgqkW7zIDKKyjTmqs07MQ+uLzfKs35ta6efet5njFOOm2Z
-         kcpnBzuHIZQSNGenejWwO4/lSwy2G2Bp7z5SWsNUMdsCNGlBb732df9SwZWKKh+VyQ43
-         mxBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s47povPHC17mzUM43hPaNuCVlnjcb1YymD4IzB2Fw7Q=;
-        b=6rUbMaeOZP52ly5tW1xr89yajO57HGwuGQ9xqD3Fr39bRkgZoQ+YJMCRZD45y0l2yG
-         44tKJWKsybG8nfnEgcFLPYIJ42Uwy6OajnOnJkQa+4hAYZ0brH0CD16dPRdkb4D5W7iO
-         XiAmiIs/YG60wu5VjTFvsE8Xr120U40aCEXB88Rm0Sg+KeYeAW3q6s3PboaW+MOjkdLn
-         qsNT6eAhWb28z4Zgd8QlwZMfXC7HwxRJFYiYqVDtzXwP9nskRqFIKKp4gT1PCCDxWXdy
-         IGc9TMutR0qUjrrN5Oe0tB6l01LXpJ3y06FIMyebhd3cxppGxBMrobdWzU0OPHZ1WZs1
-         x0pw==
-X-Gm-Message-State: AOAM533kK0agiEBScz4xxgyMa98VmSYbJ/ZLrzkydPFxJcrpdbi82Eh3
-        nBC9BEVisfDHGPub9kDv97OM5swzSxCGnwjSKB8=
-X-Google-Smtp-Source: ABdhPJxN8y+U7oRECmZ+npqb9JFoI4RVReJOjBfUtqj5GftKFCmqUXmsC34nY5tds3nkg43tIAEhcR6O12emBYoBCQs=
-X-Received: by 2002:aca:706:: with SMTP id 6mr5449830oih.5.1631719101439; Wed,
- 15 Sep 2021 08:18:21 -0700 (PDT)
+        Wed, 15 Sep 2021 11:20:57 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550B7C061574;
+        Wed, 15 Sep 2021 08:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=TLIEOTF8nbdYtQPS+pB+CF0PUqkM+qVm09D9CfIy4g0=; b=kZ8i4QtJ8teNEnNCGLodt0lYVR
+        vCNXiV+7GGltWy9Ll936ySZ56NN1926GqHnyUDPW4xXaT4fudGfrsLlBoKm7OOttSb97HAMu3lu97
+        A+psiODluiXR8wYNQydAHmKI1frxrabeUBUU4oyerooIuFnNUiiwc+w4HXoMigOzvXqOBltN08PaY
+        IBgML0DvAx5HlAFH/bb8A+kezbQiccRQpTOVaepNEcB74JT6oL4yrPtp5NO7YhCr+O4VNO+5Xn9M4
+        7Ao2mJVyGFbDj/FOSh/lzVtgwryjtfbHaOcDrNLgAzCecJPF4oIW9OtRGzwj+lNPfWuHg3qvrP8p3
+        +5NTIZYg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQWgw-003QBa-9h; Wed, 15 Sep 2021 15:19:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B1D23000A3;
+        Wed, 15 Sep 2021 17:19:17 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0FA7A234E53A1; Wed, 15 Sep 2021 17:19:17 +0200 (CEST)
+Date:   Wed, 15 Sep 2021 17:19:17 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+Subject: [PATCH] x86: Increase exception stack sizes
+Message-ID: <YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net>
+References: <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+ <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+ <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
+ <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
+ <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
+ <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
+ <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
+ <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
+ <ac31b8c7-122e-3467-566b-54f053ca0ae2@linux.alibaba.com>
+ <09d0190b-f2cc-9e64-4d3a-4eb0def22b7b@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20210915113611.13620-1-colin.king@canonical.com>
-In-Reply-To: <20210915113611.13620-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 15 Sep 2021 11:18:10 -0400
-Message-ID: <CADnq5_NW11tad5-jVEEL4CDUcOm==2zsUMN+v594fKdSg5JErQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon: make array encoded_lanes static
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <09d0190b-f2cc-9e64-4d3a-4eb0def22b7b@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 7:36 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Don't populate the read-only array encoded_lanes on the stack but instead it
-> static. Also makes the object code smaller by 97 bytes:
->
-> Before:
->    text    data    bss     dec    hex filename
->   38899    8064      0   46963   b773 ./drivers/gpu/drm/radeon/r600_dpm.o
->
-> After:
->    text    data    bss     dec    hex filename
->   38738    8128      0   46866   b712 ./drivers/gpu/drm/radeon/r600_dpm.o
->
-> (gcc version 11.2.0)
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On Wed, Sep 15, 2021 at 03:34:20PM +0800, 王贇 wrote:
+> Hi, Dave, Peter
+> 
+> What if we just increase the stack size when ftrace enabled?
 
-Applied.  Thanks!
+I think we can do an unconditional increase. But please first test that
+guard page patch :-)
 
-Alex
+---
+Subject: x86: Increase exception stack sizes
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Wed Sep 15 16:19:46 CEST 2021
 
-> ---
->  drivers/gpu/drm/radeon/r600_dpm.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/r600_dpm.c b/drivers/gpu/drm/radeon/r600_dpm.c
-> index fd4226b99862..9d2bcb9551e6 100644
-> --- a/drivers/gpu/drm/radeon/r600_dpm.c
-> +++ b/drivers/gpu/drm/radeon/r600_dpm.c
-> @@ -1361,7 +1361,9 @@ u16 r600_get_pcie_lane_support(struct radeon_device *rdev,
->
->  u8 r600_encode_pci_lane_width(u32 lanes)
->  {
-> -       u8 encoded_lanes[] = { 0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 6 };
-> +       static const u8 encoded_lanes[] = {
-> +               0, 1, 2, 0, 3, 0, 0, 0, 4, 0, 0, 0, 5, 0, 0, 0, 6
-> +       };
->
->         if (lanes > 16)
->                 return 0;
-> --
-> 2.32.0
->
+It turns out that a single page of stack is trivial to overflow with
+all the tracing gunk enabled. Raise the exception stacks to 2 pages,
+which is still half the interrupt stacks, which are at 4 pages.
+
+Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/page_64_types.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -15,7 +15,7 @@
+ #define THREAD_SIZE_ORDER	(2 + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+ 
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
+ 
+ #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
