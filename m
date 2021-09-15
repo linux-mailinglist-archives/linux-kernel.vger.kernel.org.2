@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C2440C441
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA90240C447
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhIOLUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:20:05 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53250 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhIOLUE (ORCPT
+        id S236794AbhIOLVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:21:12 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:54650
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232699AbhIOLVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:20:04 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 36C991C0B76; Wed, 15 Sep 2021 13:18:44 +0200 (CEST)
-Date:   Wed, 15 Sep 2021 13:18:43 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: Re: [PATCH 5.10 157/236] Bluetooth: Move shutdown callback before
- flushing tx and rx queue
-Message-ID: <20210915111843.GA16198@duo.ucw.cz>
-References: <20210913131100.316353015@linuxfoundation.org>
- <20210913131105.720088593@linuxfoundation.org>
+        Wed, 15 Sep 2021 07:21:12 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 0F8483F245;
+        Wed, 15 Sep 2021 11:19:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631704792;
+        bh=WVCnoP1McqLMZ2VjfLfuYtx94nrxfK/vPmHsWXhCKjg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=C6IAgxupSeHodhJuUrda+Quo8wDS56uxJLCwwNvI5D1UOWVlTWOB/BLXhyu3FD58D
+         3cjIOi3qwV1/dycmxoNQ/24ipUDKxs3glkXjerlSGzGPa7JRWajQ9qSw24u3tP3zpZ
+         Gkr/SQRfWGzFBfYfayvkXfpcNnXt7+8HvUelSNtG5FsqhPRnA4bvXgyrr/WfqPEuHx
+         zE5jX17yedgNqPfxwQG1v7JjKdjrD/quDAuOWQN5JqlrcMPDsQ8n/cWUWS70gVtG8y
+         XUzZc76EbUqpGoUAem7+cOSGTKoKee1CxN19ePYZMo3y9901YQPessJL3TbiN0N57L
+         kPg/0ydduttBg==
+From:   Colin King <colin.king@canonical.com>
+To:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: sh: make array descs static
+Date:   Wed, 15 Sep 2021 12:19:51 +0100
+Message-Id: <20210915111951.12326-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
-Content-Disposition: inline
-In-Reply-To: <20210913131105.720088593@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---cNdxnHkX5QqsyA0e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Don't populate the read-only array ds_lut on the stack but instead it
+static. Also makes the object code smaller by 163 bytes:
 
-Hi!
+Before:
+   text    data     bss     dec     hex filename
+  23508    4796       0   28304    6e90 ./drivers/dma/sh/rz-dmac.o
 
-> [ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
+After:
+   text    data     bss     dec     hex filename
+  23281    4860       0   28141    6ded ./drivers/dma/sh/rz-dmac.o
 
-Upstream commit is okay...
+(gcc version 11.2.0)
 
-> So move the shutdown callback before flushing TX/RX queue to resolve the
-> issue.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/dma/sh/rz-dmac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-=2E..but something went wrong in stable. This is not moving code, this
-is duplicating it:
+diff --git a/drivers/dma/sh/rz-dmac.c b/drivers/dma/sh/rz-dmac.c
+index f9f30cbeccbe..005f1a3ff634 100644
+--- a/drivers/dma/sh/rz-dmac.c
++++ b/drivers/dma/sh/rz-dmac.c
+@@ -573,7 +573,7 @@ static void rz_dmac_issue_pending(struct dma_chan *chan)
+ static u8 rz_dmac_ds_to_val_mapping(enum dma_slave_buswidth ds)
+ {
+ 	u8 i;
+-	const enum dma_slave_buswidth ds_lut[] = {
++	static const enum dma_slave_buswidth ds_lut[] = {
+ 		DMA_SLAVE_BUSWIDTH_1_BYTE,
+ 		DMA_SLAVE_BUSWIDTH_2_BYTES,
+ 		DMA_SLAVE_BUSWIDTH_4_BYTES,
+-- 
+2.32.0
 
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -1726,6 +1726,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
->  	hci_request_cancel_all(hdev);
->  	hci_req_sync_lock(hdev);
-> =20
-> +	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-> +	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-> +	    test_bit(HCI_UP, &hdev->flags)) {
-> +		/* Execute vendor specific shutdown routine */
-> +		if (hdev->shutdown)
-> +			hdev->shutdown(hdev);
-> +	}
-> +
->  	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
->  		cancel_delayed_work_sync(&hdev->cmd_timer);
->  		hci_req_sync_unlock(hdev);
-
-And yes, we end up with 2 copies in 5.10.
-
-Best regards,
-								Pavel
---
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---cNdxnHkX5QqsyA0e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUHWkwAKCRAw5/Bqldv6
-8pcHAJwMIKymx3gC/j1OMFbG/uKphOBu0gCfVkgEvY8X8lbln2FfmF7qbfALr4k=
-=TbG8
------END PGP SIGNATURE-----
-
---cNdxnHkX5QqsyA0e--
