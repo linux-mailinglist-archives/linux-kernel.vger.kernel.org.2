@@ -2,249 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B866A40C1ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBDC40C1F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbhIOInv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhIOInt (ORCPT
+        id S232613AbhIOIpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:45:24 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9874 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231672AbhIOIpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:43:49 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D49C061574;
-        Wed, 15 Sep 2021 01:42:27 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id f6so1998895vsr.3;
-        Wed, 15 Sep 2021 01:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PbsXF7OjfzBdaKYES0LpRck88Is1bnuPC5nlsDBvF8k=;
-        b=ebnGMhB4KfwqK1E3yFJJc01fG1Uf4L49/RP8ou02lQ4HBTqDruLCLLC44MGUBGkDoS
-         Px7MLU+nKZFtycaBwxP7lKQNTxqsRgm71RNiCE2cJC4qKwxV6fhyB4C52Vcf/SuCGzeP
-         R+7/+drcOa2/f3GRygY3Ksdl3thEfwwbnnL+ZWnJE6d/agQ2pLkJxVe4L13KWEnpHHc7
-         7B0iazBO6r15u1U+oEtXk5Jr/U2pzvrmSSJSNLM2F1qU/e8FPvOZbQaAQIhBKuYmYmxH
-         QuAMRLtDZ8jQbcxX932rizp/Af3XsuHy3BHpy+gFPiW75jfjT/T+nKReVUmlr9dHTSCg
-         +Svg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PbsXF7OjfzBdaKYES0LpRck88Is1bnuPC5nlsDBvF8k=;
-        b=3twXRcFcH4F+Kh5ucCdk0GK1sx5iDAlXEh4JFPIxfkesSLNdlfqMkH5Qk5aG0heru+
-         yq4Aasd6iMz+o08Nb0UYSHWFv6T1+I89AUzsCiReHNxbQbzoxSdGVgoslaKd/+TC+wfF
-         AyHk/6Rk/iWaAplz0YUt/rObrGAhSkKhi2us79xMcZffYp52XWHrFPnuu698WzJ4+QrU
-         Od6599MVHac8yh+Rvp5IIzP3KXrHnFRY3OxStPlBOl5X3wHJ2eAuAldbz9+cPMAzYMRY
-         20cKSbYI20rOj7DJJbTYsoDYRPnV305XRgD5xItFKeXYHsVTI/bdwwujMdfq9Wp8gNMz
-         Ov9Q==
-X-Gm-Message-State: AOAM5310Necd+EpYQiQ8Zxcz8s0BVfJSodOUHBwq+nntmLkuqXToRtkH
-        Q1Lps3VE058mE22bioaCICNrz7MzN2OAihdYJY+95CAelBY=
-X-Google-Smtp-Source: ABdhPJx5LsE46msp++zEwgQ0Ujdk5sx719SFbAC3l2wSTIT7OmNXBaAPd7jzoxp8p6+B/S/jivsyrOaDBPoPeXrvI7A=
-X-Received: by 2002:a05:6102:3099:: with SMTP id l25mr2440303vsb.49.1631695346662;
- Wed, 15 Sep 2021 01:42:26 -0700 (PDT)
+        Wed, 15 Sep 2021 04:45:22 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8YYN0B6Yz8yZR;
+        Wed, 15 Sep 2021 16:39:36 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 16:44:02 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 16:44:01 +0800
+Subject: Re: [PATCH v6 6/6] nbd: fix uaf in nbd_handle_reply()
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <ming.lei@redhat.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nbd@other.debian.org>, <yi.zhang@huawei.com>
+References: <20210915081537.1684327-1-yukuai3@huawei.com>
+ <20210915081537.1684327-7-yukuai3@huawei.com>
+ <YUGswNyMnFHxigsW@infradead.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <e933a436-52a7-2faa-63f9-3fa3f6eae610@huawei.com>
+Date:   Wed, 15 Sep 2021 16:44:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210912204131.93206-1-henrybear327@gmail.com>
- <20210913230430.GM4156@paulmck-ThinkPad-P17-Gen-1> <20210913231751.GA2495405@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210913231751.GA2495405@paulmck-ThinkPad-P17-Gen-1>
-From:   Henry Tseng <henrybear327@gmail.com>
-Date:   Wed, 15 Sep 2021 10:42:13 +0200
-Message-ID: <CAA5xa-mAwyNGw5O2U400EmUNRhn4JTAiBGD7KsFEDXnUjTALpw@mail.gmail.com>
-Subject: Re: [PATCH] rcu: replace _________p1 with __UNIQUE_ID(rcu)
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Huang <jserv@ccns.ncku.edu.tw>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUGswNyMnFHxigsW@infradead.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the feedback!!!
+On 2021/09/15 16:20, Christoph Hellwig wrote:
+> On Wed, Sep 15, 2021 at 04:15:37PM +0800, Yu Kuai wrote:
+>> +++ b/block/blk-core.c
+>> @@ -489,6 +489,7 @@ void blk_queue_exit(struct request_queue *q)
+>>   {
+>>   	percpu_ref_put(&q->q_usage_counter);
+>>   }
+>> +EXPORT_SYMBOL(blk_queue_exit);
+> 
+> These needs to be an EXPORT_SYMBOL_GPL.  But more importantly it
+> needs to be a separate properly documented patch, and this function
+> needs to grow a kerneldoc comment as well.
+> 
+>> +		/*
+>> +		 * Get q_usage_counter can prevent accessing freed request
+>> +		 * through blk_mq_tag_to_rq() in nbd_handle_reply(). If
+>> +		 * q_usage_counter is zero, then no request is inflight, which
+>> +		 * means something is wrong since we expect to find a request to
+>> +		 * complete here.
+>> +		 */
+>> +		if (!percpu_ref_tryget(&q->q_usage_counter)) {
+>> +			dev_err(disk_to_dev(nbd->disk), "%s: no io inflight\n",
+>> +				__func__);
+>> +			break;
+>> +		}
+> 
+> And this needs a properly documented wrapper as well.
+> 
+>> +
+>>   		cmd = nbd_handle_reply(nbd, args->index, &reply);
+>> -		if (IS_ERR(cmd))
+>> +		if (IS_ERR(cmd)) {
+>> +			blk_queue_exit(q);
+>>   			break;
+>> +		}
+>>   
+>>   		rq = blk_mq_rq_from_pdu(cmd);
+>>   		if (likely(!blk_should_fake_timeout(rq->q)))
+>>   			blk_mq_complete_request(rq);
+>> +		blk_queue_exit(q);
+> 
+> That being said I can't say I like how this exposed block layer
+> internals.  We don't really need a reference to the queue here
+> anywhere, you just use it as a dumb debug check.  If we really want to
+> reuse (abuse?) q_usage_counter a helper to just grab a reference and
+> immediately drop it might be a better fit.
+> .
 
-I will fix the kernel test bot warning, and then make a v2 of the
-patch, containing a bit more detail in the commit message.
+Hi,
+
+The uaf is because blk_mq_sched_free_requests() can concurrent with
+nbd_read_stat(), and hold the ref during nbd_read_stat() can break the
+concurrency, thus the ref can't be dropped immediately.
+
+I'll use percpu_ref_put() directly as Ming suggestted.
 
 Thanks,
-Henry
-
-On Tue, Sep 14, 2021 at 1:17 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Mon, Sep 13, 2021 at 04:04:30PM -0700, Paul E. McKenney wrote:
-> > On Mon, Sep 13, 2021 at 04:41:31AM +0800, Chun-Hung Tseng wrote:
-> > > This commit replaced _________p1 with __UNIQUE_ID(rcu), which
-> > > generates unique variable names during compilation. Necessary
-> > > modifications due to the changes in the RCU macros have also been
-> > > reflected in this commit.
-> > >
-> > > The same idea is used for the min/max macros (commit 589a978 and commit
-> > > e9092d0), which aims to reduce variable shadowing issues caused by hard
-> > > coded variable names.
-> > >
-> > > Signed-off-by: Jim Huang <jserv@ccns.ncku.edu.tw>
-> > > Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
-> >
-> > OK, I will bite...
-> >
-> > > ---
-> > >  include/linux/rcupdate.h | 44 +++++++++++++++++++++++-----------------
-> > >  include/linux/srcu.h     |  3 ++-
-> > >  2 files changed, 27 insertions(+), 20 deletions(-)
-> > >
-> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > index 434d12fe2d4f..a5ab20822040 100644
-> > > --- a/include/linux/rcupdate.h
-> > > +++ b/include/linux/rcupdate.h
-> > > @@ -370,39 +370,41 @@ static inline void rcu_preempt_sleep_check(void) { }
-> > >   * Converts @p from an __rcu pointer to a __kernel pointer.
-> > >   * This allows an __rcu pointer to be used with xchg() and friends.
-> > >   */
-> > > -#define unrcu_pointer(p)                                           \
-> > > +#define __unrcu_pointer(p, local)                                  \
-> > >  ({                                                                 \
-> > > -   typeof(*p) *_________p1 = (typeof(*p) *__force)(p);             \
-> > > +   typeof(*p) *local = (typeof(*p) *__force)(p);                   \
-> >
-> > Why not like this?
-> >
-> >       typeof(*p) *__UNIQUE_ID(rcu) = (typeof(*p) *__force)(p);        \
-> >
-> > Then we don't need the extra argument and the changes to the calls.
-> >
-> > So what C-preprocessor subtlety am I missing?
->
-> Never mind!!!  My suggested approach would generate a unique name at
-> every use, except on non-gcc/non-clang compilers, which would obviously
-> not do what we want.
->
->                                                         Thanx, Paul
->
-> > >     rcu_check_sparse(p, __rcu);                                     \
-> > > -   ((typeof(*p) __force __kernel *)(_________p1));                 \
-> > > +   ((typeof(*p) __force __kernel *)(local));                       \
-> > >  })
-> > > +#define unrcu_pointer(p) __unrcu_pointer(p, __UNIQUE_ID(rcu))
-> > >
-> > > -#define __rcu_access_pointer(p, space) \
-> > > +#define __rcu_access_pointer(p, local, space) \
-> > >  ({ \
-> > > -   typeof(*p) *_________p1 = (typeof(*p) *__force)READ_ONCE(p); \
-> > > +   typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
-> > >     rcu_check_sparse(p, space); \
-> > > -   ((typeof(*p) __force __kernel *)(_________p1)); \
-> > > +   ((typeof(*p) __force __kernel *)(local)); \
-> > >  })
-> > > -#define __rcu_dereference_check(p, c, space) \
-> > > +#define __rcu_dereference_check(p, local, c, space) \
-> > >  ({ \
-> > >     /* Dependency order vs. p above. */ \
-> > > -   typeof(*p) *________p1 = (typeof(*p) *__force)READ_ONCE(p); \
-> > > +   typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
-> > >     RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_check() usage"); \
-> > >     rcu_check_sparse(p, space); \
-> > > -   ((typeof(*p) __force __kernel *)(________p1)); \
-> > > +   ((typeof(*p) __force __kernel *)(local)); \
-> > >  })
-> > > -#define __rcu_dereference_protected(p, c, space) \
-> > > +#define __rcu_dereference_protected(p, local, c, space) \
-> > >  ({ \
-> > >     RCU_LOCKDEP_WARN(!(c), "suspicious rcu_dereference_protected() usage"); \
-> > >     rcu_check_sparse(p, space); \
-> > >     ((typeof(*p) __force __kernel *)(p)); \
-> > >  })
-> > > -#define rcu_dereference_raw(p) \
-> > > +#define __rcu_dereference_raw(p, local) \
-> > >  ({ \
-> > >     /* Dependency order vs. p above. */ \
-> > > -   typeof(p) ________p1 = READ_ONCE(p); \
-> > > -   ((typeof(*p) __force __kernel *)(________p1)); \
-> > > +   typeof(p) local = READ_ONCE(p); \
-> > > +   ((typeof(*p) __force __kernel *)(local)); \
-> > >  })
-> > > +#define rcu_dereference_raw(p) __rcu_dereference_raw(p, __UNIQUE_ID(rcu))
-> > >
-> > >  /**
-> > >   * RCU_INITIALIZER() - statically initialize an RCU-protected global variable
-> > > @@ -489,7 +491,7 @@ do {                                                                          \
-> > >   * when tearing down multi-linked structures after a grace period
-> > >   * has elapsed.
-> > >   */
-> > > -#define rcu_access_pointer(p) __rcu_access_pointer((p), __rcu)
-> > > +#define rcu_access_pointer(p) __rcu_access_pointer((p), __UNIQUE_ID(rcu), __rcu)
-> > >
-> > >  /**
-> > >   * rcu_dereference_check() - rcu_dereference with debug checking
-> > > @@ -525,7 +527,8 @@ do {                                                                          \
-> > >   * annotated as __rcu.
-> > >   */
-> > >  #define rcu_dereference_check(p, c) \
-> > > -   __rcu_dereference_check((p), (c) || rcu_read_lock_held(), __rcu)
-> > > +   __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> > > +                           (c) || rcu_read_lock_held(), __rcu)
-> > >
-> > >  /**
-> > >   * rcu_dereference_bh_check() - rcu_dereference_bh with debug checking
-> > > @@ -540,7 +543,8 @@ do {                                                                          \
-> > >   * rcu_read_lock() but also rcu_read_lock_bh() into account.
-> > >   */
-> > >  #define rcu_dereference_bh_check(p, c) \
-> > > -   __rcu_dereference_check((p), (c) || rcu_read_lock_bh_held(), __rcu)
-> > > +   __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> > > +                           (c) || rcu_read_lock_bh_held(), __rcu)
-> > >
-> > >  /**
-> > >   * rcu_dereference_sched_check() - rcu_dereference_sched with debug checking
-> > > @@ -555,7 +559,8 @@ do {                                                                          \
-> > >   * only rcu_read_lock() but also rcu_read_lock_sched() into account.
-> > >   */
-> > >  #define rcu_dereference_sched_check(p, c) \
-> > > -   __rcu_dereference_check((p), (c) || rcu_read_lock_sched_held(), \
-> > > +   __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> > > +                           (c) || rcu_read_lock_sched_held(), \
-> > >                             __rcu)
-> > >
-> > >  /*
-> > > @@ -565,7 +570,8 @@ do {                                                                          \
-> > >   * The no-tracing version of rcu_dereference_raw() must not call
-> > >   * rcu_read_lock_held().
-> > >   */
-> > > -#define rcu_dereference_raw_check(p) __rcu_dereference_check((p), 1, __rcu)
-> > > +#define rcu_dereference_raw_check(p) \
-> > > +   __rcu_dereference_check((p), __UNIQUE_ID(rcu), 1, __rcu)
-> > >
-> > >  /**
-> > >   * rcu_dereference_protected() - fetch RCU pointer when updates prevented
-> > > @@ -584,7 +590,7 @@ do {                                                                          \
-> > >   * but very ugly failures.
-> > >   */
-> > >  #define rcu_dereference_protected(p, c) \
-> > > -   __rcu_dereference_protected((p), (c), __rcu)
-> > > +   __rcu_dereference_protected((p), __UNIQUE_ID(rcu), (c), __rcu)
-> > >
-> > >
-> > >  /**
-> > > diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> > > index e6011a9975af..01226e4d960a 100644
-> > > --- a/include/linux/srcu.h
-> > > +++ b/include/linux/srcu.h
-> > > @@ -117,7 +117,8 @@ static inline int srcu_read_lock_held(const struct srcu_struct *ssp)
-> > >   * lockdep_is_held() calls.
-> > >   */
-> > >  #define srcu_dereference_check(p, ssp, c) \
-> > > -   __rcu_dereference_check((p), (c) || srcu_read_lock_held(ssp), __rcu)
-> > > +   __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
-> > > +                           (c) || srcu_read_lock_held(ssp), __rcu)
-> > >
-> > >  /**
-> > >   * srcu_dereference - fetch SRCU-protected pointer for later dereferencing
-> > > --
-> > > 2.25.1
-> > >
-
-
-
--- 
-Best wishes,
-Henry
+Kuai
