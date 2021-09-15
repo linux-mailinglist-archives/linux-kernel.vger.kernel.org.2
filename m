@@ -2,109 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BCF40CB98
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DCE40CB96
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhIORYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
+        id S230023AbhIORXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhIORYG (ORCPT
+        with ESMTP id S229531AbhIORXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:24:06 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57C2C061574;
-        Wed, 15 Sep 2021 10:22:47 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id f129so3426977pgc.1;
-        Wed, 15 Sep 2021 10:22:47 -0700 (PDT)
+        Wed, 15 Sep 2021 13:23:42 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8514AC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:22:23 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso4515516ota.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:22:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=if+Oxfc9r3mAC+EiZGn7r+WWYsmde9lhPlbyKnYhzuQ=;
-        b=GE3mQtMTDx/kVYzMVBOCMACL/4Xp8c0yfrYkMB0Pu3uYdGXCAkmkGBRFWkb1a6MW77
-         IoXoHR3l1+dCt2fLHAhRsiIlXyv89LKJRnKfVHR59vcsx/saKoa6KNJ5NPfUlNfh5RTe
-         Y7G67uo4sHDzQLgfSeXoyMX3o28zfSRSDl/xMbzElkMhdfTNnq1FupLRcX1iCnSzPTbT
-         CrQbRyGm9+Klqv1OU48+xNIfjntBsDmfUN94p/LX4lhcLwgWO+7SyDQhFDiYLdP+Oy0h
-         0s4I2jySz97+qDFbxgiTCS7XzB2gyF4uSN1kKr26F8E2MT+kEpM0g8vWUkBMlvC/unj8
-         ytJQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ouvl8uGcfsNdsC/MsCM3f3vHO5U6evySdssiReKx13Q=;
+        b=mOgW0hv1gDKc1ZJBPjGCCHi50P16y8gBOz7NtACysrJEkZAMIm0EzrRWvn2nw/N1xh
+         k4n6X8nSxDKdB/SGG7zfuFEM1ruoj+zDRnQe2Bw3FSMqL85AA8WLTawPJartUku+LLvZ
+         DIqN+7GAfXwDdBMEVIkhpHKcKsB0di6w3SqrVfX7RenaK5DJHgdKNZb3X60xIoIaGjJ/
+         a0I64a0Ceqy4Cg3eabfWPe2l/9cnt3d59bka6G47nqkV9UpECGyGAWJusPtPJ9SeoZtP
+         UNGZ3svYE7WNEPgphN9q+uO8N5rsPHJFkK4XmCnNh78thY2aznB2O7juLaMjeZqi/vrC
+         ZX/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=if+Oxfc9r3mAC+EiZGn7r+WWYsmde9lhPlbyKnYhzuQ=;
-        b=CVM9MpfMbdxCKczkLIvxOz+gVcdnZqPvx1v7RHUN7fl6QNxUwBLH6z8plpTuLwGV4i
-         VjGsByFYplE52psfpxl7lYM5yNlIBAbTdKCuU4KdOgVvn98dNaClR/hZns0rRSCvyduj
-         bkYAmxYIiyxtrsuqpDBMD43vYsSfB97CqLy7JFZg+r91yTZ5zqkpWPUl5YcK/A++n5pg
-         t0XXj/sxBXlORNOUxc00BCcrX1PlFf4vf+MsCc8Sg0zKWY+7vTf3jODkokSFL5Pg1LWt
-         rX51ThC28zhmGu22YOV+pXMlU+hX8EXObdl/cYs0qMC4dn2YZqgMdK59D9QoL6WO5ZKf
-         v2Xg==
-X-Gm-Message-State: AOAM533A15PzdRvuVKtii81VKyHQ8yC7gjd7dRPr/+wL5p4oNHb+cOKy
-        a4JFoSMSfIIXj5NmSAf9/qvUvlDQ7ec=
-X-Google-Smtp-Source: ABdhPJwnmJv9hJ3KPXAGXT/VeLTWr0f+Q2dKPsemiEfsjoB2wkJAac9lyQCubsBIkVCVVBxiGACOYw==
-X-Received: by 2002:aa7:8481:0:b0:43e:c776:e20b with SMTP id u1-20020aa78481000000b0043ec776e20bmr730488pfn.45.1631726566687;
-        Wed, 15 Sep 2021 10:22:46 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id v8sm5088615pjh.24.2021.09.15.10.22.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 10:22:46 -0700 (PDT)
-Subject: Re: [PATCH v4 0/3] extcon: usbc-tusb320: Initial TUSB320L support
-To:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Michael Auchter <michael.auchter@ni.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210901161339.223973-1-y.oudjana@protonmail.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <46b969d0-9039-67e4-53f9-c461718ff089@gmail.com>
-Date:   Thu, 16 Sep 2021 02:22:42 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ouvl8uGcfsNdsC/MsCM3f3vHO5U6evySdssiReKx13Q=;
+        b=Z6uZVm59MMjh96s9lCyuaLyj7gmowXitHwiMbAu0CEcyzi69ZK/CmWxb9Z1UPAl4UL
+         PLBujehjJHqWW9VwpK4TpplOR3+3FNQbUDLD8FqLQMy4Meh97jUTNZVR1rE9iK4BUlUB
+         pLhMTFniNDPRRfS/7SsIXkI/0ce8A1unEQ/qLoylZR/hBlezHx/2bfbphHGwniG5318+
+         Rd2g+oYLb92Rw7DbvxrbQhNQBBQswSHf2UjdOuBNJSnOQLJ83PZLXv1Rcd7UOxCA459D
+         QtZjNcD4QDNnomesF42a+xE3fsj1zPZOR8YbpNdAcwHQEzfbtaQouw6t4b8TDDWKSYz5
+         y78g==
+X-Gm-Message-State: AOAM531Bu6VIV5ILkaMHC1UxqlZeqFTDfTYRteqBaw6nux54tGal46Q2
+        HOu/evypD59j79IC5hgf7u5yBw==
+X-Google-Smtp-Source: ABdhPJxDceP7aWkzOiD7rkfed8rUwb1NMnfpMyKeTwdsiwFugFShEc0hg/5bzT3KEdVFVFNsYq7pvQ==
+X-Received: by 2002:a9d:5f85:: with SMTP id g5mr959456oti.139.1631726542218;
+        Wed, 15 Sep 2021 10:22:22 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z7sm135214oti.65.2021.09.15.10.22.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 10:22:21 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 10:23:11 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
+ clk_smd_rpm_branch_ops
+Message-ID: <YUIr/002dfXxDWDY@ripper>
+References: <20210914025554.5686-1-shawn.guo@linaro.org>
+ <20210914025554.5686-2-shawn.guo@linaro.org>
+ <163165658855.763609.14080313241484048687@swboyd.mtv.corp.google.com>
+ <20210915150526.GE25255@dragon>
 MIME-Version: 1.0
-In-Reply-To: <20210901161339.223973-1-y.oudjana@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915150526.GE25255@dragon>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 9. 2. 오전 1:13, Yassine Oudjana wrote:
-> The TUSB320L is a newer chip with additional features. It is close enough to TUSB320 so it works
-> to some extent out-of-the-box, but for some reason it can start in UFP mode which is not desirable.
+On Wed 15 Sep 08:05 PDT 2021, Shawn Guo wrote:
+
+> On Tue, Sep 14, 2021 at 02:56:28PM -0700, Stephen Boyd wrote:
+> > Quoting Shawn Guo (2021-09-13 19:55:52)
+> > > On QCM2290 platform, the clock xo_board runs at 38400000, while the
+> > > child clock bi_tcxo needs to run at 19200000.  That said,
+> > > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
+> > > hooks into clk_smd_rpm_branch_ops to make it possible.
+> > 
+> > This doesn't sound right. The branch is a simple on/off. If xo_board is
+> > 38.4MHz, then there is an internal divider in the SoC that makes bi_tcxo
+> > (i.e. the root of the entire clk tree) be 19.2MHz. We don't model the
+> > divider, I guess because it isn't very important to. Instead, we tack on
+> > a divider field and implement recalc_rate op. See clk-rpmh.c in the qcom
+> > directory for this.
 > 
-> This series adds support for reset and mode setting for both chips, and does that while probing
-> to ensure the chip starts with the default mode of following the PORT pin.
+> Thanks for the comment, Stephen!  To be honest, I copied the
+> implementation from vendor kernel, and wasn't really sure if it's
+> correct or the best.
 > 
-> Changes since v3:
->   - Remove unused tusb_modes.
->   - Remove extra blank line.
-> Changes since v2:
->   - Read state before setting default mode, then update it again after resetting.
->   - Remove mode tracing from irq handler
->   - Add a delay after reset to handle tSOFT_RESET
->   - Use a separate mode setting function for each of TUSB320 and TUSB320L.
-> Changes since v1:
->   - Split first patch into two patches, one adding support for mode setting and reset on TUSB320,
->     and the other adding support for TUSB320L.
->   - Fix dt_binding_check warning:
->     ../Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml:15:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
+> So here is what I get based on your suggestion.  Let's me know if
+> it's how you wanted it to be.  Thanks!
 > 
-> Yassine Oudjana (3):
->    extcon: usbc-tusb320: Add support for mode setting and reset
->    extcon: usbc-tusb320: Add support for TUSB320L
->    dt-bindings: extcon: usbc-tusb320: Add TUSB320L compatible string
+> Shawn
 > 
->   .../bindings/extcon/extcon-usbc-tusb320.yaml  |   4 +-
->   drivers/extcon/extcon-usbc-tusb320.c          | 156 +++++++++++++++++-
->   2 files changed, 154 insertions(+), 6 deletions(-)
+> ----8<---------
+> 
+> From 23dda79fee412738f046b89bdd20ef95a24c35cc Mon Sep 17 00:00:00 2001
+> From: Shawn Guo <shawn.guo@linaro.org>
+> Date: Wed, 15 Sep 2021 22:00:32 +0800
+> Subject: [PATCH] clk: qcom: smd-rpm: Add a divider field for branch clock
+> 
+> Similar to clk-rpmh, clk-smd-rpm has the same need to handle the case
+> where an internal divider is there between xo_board and bi_tcxo.  The
+> change is made in the a back compatible way below.
+> 
+>  - Add div field to struct clk_smd_rpm, and have
+>    __DEFINE_CLK_SMD_RPM_BRANCH() assign it.
+> 
+>  - Update all existing __DEFINE_CLK_SMD_RPM_BRANCH() wrappers to pass a
+>    zero div.
+> 
+>  - Add DEFINE_CLK_SMD_RPM_BRANCH_DIV() which doesn't take rate argument
+>    but div.
+> 
+>  - Update clk_smd_rpm_recalc_rate() to handle div and add it as
+>    .recalc_rate of clk_smd_rpm_branch_ops.
 > 
 
-Applied them. Thanks.
+This looks good to me.
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+And the confirmed that the xo_board in sdm630.dtsi (and hence SDM660) is
+wrong, it should be 38.4MHz as well.
+
+Unfortunately adding the appropriate divider to the sdm660 bcxo would
+break existing .dtsi (but we can probably convince the community that it
+would be ok, if we do it now).
+
+Regards,
+Bjorn
+
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  drivers/clk/qcom/clk-smd-rpm.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+> index 66d7807ee38e..66ef0d3795fd 100644
+> --- a/drivers/clk/qcom/clk-smd-rpm.c
+> +++ b/drivers/clk/qcom/clk-smd-rpm.c
+> @@ -66,13 +66,14 @@
+>  	}
+>  
+>  #define __DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id,    \
+> -				    stat_id, r, key)			      \
+> +				    stat_id, r, key, _div)		      \
+>  	static struct clk_smd_rpm _platform##_##_active;		      \
+>  	static struct clk_smd_rpm _platform##_##_name = {		      \
+>  		.rpm_res_type = (type),					      \
+>  		.rpm_clk_id = (r_id),					      \
+>  		.rpm_status_id = (stat_id),				      \
+>  		.rpm_key = (key),					      \
+> +		.div = (_div),						      \
+>  		.branch = true,						      \
+>  		.peer = &_platform##_##_active,				      \
+>  		.rate = (r),						      \
+> @@ -92,6 +93,7 @@
+>  		.rpm_status_id = (stat_id),				      \
+>  		.active_only = true,					      \
+>  		.rpm_key = (key),					      \
+> +		.div = (_div),						      \
+>  		.branch = true,						      \
+>  		.peer = &_platform##_##_name,				      \
+>  		.rate = (r),						      \
+> @@ -112,7 +114,12 @@
+>  
+>  #define DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type, r_id, r)   \
+>  		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
+> -		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE)
+> +		r_id, 0, r, QCOM_RPM_SMD_KEY_ENABLE, 0)
+> +
+> +#define DEFINE_CLK_SMD_RPM_BRANCH_DIV(_platform, _name, _active, type, r_id,  \
+> +				      _div)				      \
+> +		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active, type,  \
+> +		r_id, 0, 0, QCOM_RPM_SMD_KEY_ENABLE, _div)
+>  
+>  #define DEFINE_CLK_SMD_RPM_QDSS(_platform, _name, _active, type, r_id)	      \
+>  		__DEFINE_CLK_SMD_RPM(_platform, _name, _active, type, r_id,   \
+> @@ -121,12 +128,12 @@
+>  #define DEFINE_CLK_SMD_RPM_XO_BUFFER(_platform, _name, _active, r_id)	      \
+>  		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
+>  		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
+> -		QCOM_RPM_KEY_SOFTWARE_ENABLE)
+> +		QCOM_RPM_KEY_SOFTWARE_ENABLE, 0)
+>  
+>  #define DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(_platform, _name, _active, r_id) \
+>  		__DEFINE_CLK_SMD_RPM_BRANCH(_platform, _name, _active,	      \
+>  		QCOM_SMD_RPM_CLK_BUF_A, r_id, 0, 1000,			      \
+> -		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY)
+> +		QCOM_RPM_KEY_PIN_CTRL_CLK_BUFFER_ENABLE_KEY, 0)
+>  
+>  #define to_clk_smd_rpm(_hw) container_of(_hw, struct clk_smd_rpm, hw)
+>  
+> @@ -140,6 +147,7 @@ struct clk_smd_rpm {
+>  	bool branch;
+>  	struct clk_smd_rpm *peer;
+>  	struct clk_hw hw;
+> +	u8 div;
+>  	unsigned long rate;
+>  	struct qcom_smd_rpm *rpm;
+>  };
+> @@ -370,10 +378,10 @@ static unsigned long clk_smd_rpm_recalc_rate(struct clk_hw *hw,
+>  
+>  	/*
+>  	 * RPM handles rate rounding and we don't have a way to
+> -	 * know what the rate will be, so just return whatever
+> -	 * rate was set.
+> +	 * know what the rate will be, so just return divided parent
+> +	 * rate or whatever rate was set.
+>  	 */
+> -	return r->rate;
+> +	return r->div ? parent_rate / r->div : r->rate;
+>  }
+>  
+>  static int clk_smd_rpm_enable_scaling(struct qcom_smd_rpm *rpm)
+> @@ -416,6 +424,7 @@ static const struct clk_ops clk_smd_rpm_ops = {
+>  static const struct clk_ops clk_smd_rpm_branch_ops = {
+>  	.prepare	= clk_smd_rpm_prepare,
+>  	.unprepare	= clk_smd_rpm_unprepare,
+> +	.recalc_rate	= clk_smd_rpm_recalc_rate,
+>  };
+>  
+>  DEFINE_CLK_SMD_RPM(msm8916, pcnoc_clk, pcnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+> -- 
+> 2.17.1
+> 
