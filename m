@@ -2,294 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B4740BCB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20EE40BCB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhIOAeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 20:34:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
+        id S236104AbhIOAqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 20:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhIOAeA (ORCPT
+        with ESMTP id S231496AbhIOAp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 20:34:00 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFE1C061574;
-        Tue, 14 Sep 2021 17:32:42 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id f65so995592pfb.10;
-        Tue, 14 Sep 2021 17:32:42 -0700 (PDT)
+        Tue, 14 Sep 2021 20:45:59 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B77C061574;
+        Tue, 14 Sep 2021 17:44:41 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id g128so836507wma.5;
+        Tue, 14 Sep 2021 17:44:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B98iyobon7XpmlutJ6lSaSzrCVaOurbEs607Eq+jSgA=;
-        b=C15+5pC2tmh9jliJOROUrQwWJP0/jrz2+X0YaWyjm+ftvbfKvC++n/OWEP0EPwfTki
-         7TEGLxLu7FpkqQktxaAgoLlpKW6SbjKpWdoO6pEA+7tqozikqnToldw+i8DmAtfGqYh8
-         RucgGbxxwws9Fd8nJP0pm3YfUV5AcA5wU7U7E+QtdAjq4uI1jtjYfOhcNPcxj0PZKi9u
-         Rmy1KYL2pr/5v2tU3PIrqmZrF6vmuGfLCSrmEza84cdprOQfbHQdqzKNh1eBgsJH+fSi
-         vaS3VA1UORF9+Zhll57vM/ckSUXTyp2OMLfGm32VYpvUOP3tr9GzDdu3ijKJWpLlqZ3Z
-         a0og==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oda9yIUowZdNGMEotGdkv+DFh0qifNeEfT2k118ZMG8=;
+        b=AHb/DSDMngli1ry3VlwEGZTGvXwDkex+jKyujZHqn7ad7dPUPlGdm/m6yIiom9X2qI
+         XPnxk3LOclbz5azFQsJ1j4QnZFX+FhGkpul8nFbFkxyuU0drQPhxxkhAc7BwPsRKpg2F
+         qTh53dS8pn0xLHq+EhzwoEVSmHIfIc7T+PU3Z/y7Hocfv870oqvzsFM+jMd382dLJtPE
+         8Kkj+NiND1PrAmm1XNctQkPy/C1ZOeAz4EsJ+I5Iut+hkdIQiWzvAdWSFCVH0HBIULsp
+         OFSV+zmb6jrDOTH49QdSyQwYg3YRwqTFEKIis2q1mmLS61OGOzF+l0gYP5M4672zUKYd
+         z0Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B98iyobon7XpmlutJ6lSaSzrCVaOurbEs607Eq+jSgA=;
-        b=eqdvxKfnU39ASffUMVrIh5hhNyM7C8b7lcBwDim5mO23vvqPYH6Jw/RHYtGrlYNSTK
-         WSPSfQXZNTWHCSLCQ44DSYHeO4VXs0nCwmSyCDEQVg+23bLyKjY3GwMTYjkCh6nUH0hU
-         +b8JSY7dtHkG/lNDIToaGNEv6T8lyp6I1Zu+b6VF9a2tI8efJ2k+HhjXz3Ax38O63W8m
-         p8bzVjfv7iEVSu91idFxecX1P+LanVLkMytmTsmmBEuKmzRmQ6IVfYOiRqWjvHPqinLI
-         h9lOCjhzXhalSZgdnI987vy00jvl4HLsqr0PnZSvBYDJ6F+1JDM6E4SwgZh3ev5fJZds
-         0yMw==
-X-Gm-Message-State: AOAM5334Ph+mlD1ACJI0bE4bfIHM8sHOpT3D/T/LE48DZ7hc2rugMFxw
-        aq3dBJhMMz+ur1fUlsgQP8EIdo7kIgvgeQ==
-X-Google-Smtp-Source: ABdhPJyl7tj/4AHRBTENNJQN3RJeKAm8En43Pkt+moEgzUoj9cGejFp/O6mrw1ZZAtDmPhRWKPgFNA==
-X-Received: by 2002:a05:6a00:140e:b029:38b:c129:9f2f with SMTP id l14-20020a056a00140eb029038bc1299f2fmr7505401pfu.75.1631665961804;
-        Tue, 14 Sep 2021 17:32:41 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id j16sm11869541pfi.165.2021.09.14.17.32.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oda9yIUowZdNGMEotGdkv+DFh0qifNeEfT2k118ZMG8=;
+        b=uhh9uS9xE5or4zoy/OOb/fx2QRfZQmB8u4wRKCLgiML+rzo4s60qhOrzKAwsW//E69
+         mvY8wsu6aBT/XyMXkOnBSktxZtHsHoIrpaDiNsY5rDatrgyVg18fD50GFzge8HC7sSws
+         4HEVQSYQfXiOkHZxzFEaedSeT0ZREjC9RForW1GsldY5mb9VGMKwQpdxlklfF7WifRqp
+         v9Ng3rDngOHHreFBsbyQDvI/eoL8A8zwM/wS+DPrBTz520/Zreq3D+Vafn3vtUtXsxkK
+         Q+MA+G8Tf3w3CRrTtJxnTQahJi5jDYRhd0Eh9TKyTNcybmKljw51k08ilX8od7v3TCzH
+         xvLg==
+X-Gm-Message-State: AOAM531odm6an+CGMJ+iBT53KBc0VQ3p6EvA/HGujrEqoUxrGrZFibnV
+        EFeafIbCOjvxXY20UKFfx2I=
+X-Google-Smtp-Source: ABdhPJyxhxBRTlNW8kx7TX3nh7jif5kMURIaShZXaPAaCmn09H0uXdUx/NUTEIex9JDlyJyKWcy0Ww==
+X-Received: by 2002:a1c:2684:: with SMTP id m126mr1710030wmm.65.1631666679576;
+        Tue, 14 Sep 2021 17:44:39 -0700 (PDT)
+Received: from claire-ThinkPad-T470.mediaways.net (dynamic-2a01-0c23-bddc-6f00-623e-e407-1ad5-867f.c23.pool.telefonica.de. [2a01:c23:bddc:6f00:623e:e407:1ad5:867f])
+        by smtp.gmail.com with ESMTPSA id j7sm14654198wrr.27.2021.09.14.17.44.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 17:32:41 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 08:32:32 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] kernel: in_irq() cleanup
-Message-ID: <20210915003232.nvarqpjnvyutc46o@mail.google.com>
-References: <20210813145101.85782-1-changbin.du@gmail.com>
+        Tue, 14 Sep 2021 17:44:39 -0700 (PDT)
+From:   Fan Fei <ffclaire1224@gmail.com>
+To:     bjorn.helgaas@gmail.com, toan@os.amperecomputing.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com
+Cc:     Fan Fei <ffclaire1224@gmail.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: xgene: Adjust struct name to convention
+Date:   Wed, 15 Sep 2021 02:44:32 +0200
+Message-Id: <20210915004432.19788-1-ffclaire1224@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210813145101.85782-1-changbin.du@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, could anyone pick up this cleanup?
+struct pci-xgene does not match the convention struct of other pci driver,
+namely <dirver>_pcie. Adjust xgene_pcie_port to xgene_pcie.
 
-On Fri, Aug 13, 2021 at 10:51:01PM +0800, Changbin Du wrote:
-> Replace the obsolete and ambiguos macro in_irq() with new
-> macro in_hardirq().
-> 
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
-> ---
->  include/linux/lockdep.h              |  2 +-
->  include/linux/rcutiny.h              |  2 +-
->  kernel/irq/irqdesc.c                 |  2 +-
->  kernel/rcu/tree.c                    |  2 +-
->  kernel/rcu/tree_plugin.h             |  2 +-
->  kernel/softirq.c                     | 10 +++++-----
->  kernel/time/timer.c                  |  4 ++--
->  kernel/trace/trace.h                 |  2 +-
->  kernel/trace/trace_functions_graph.c |  2 +-
->  lib/locking-selftest.c               |  4 ++--
->  lib/vsprintf.c                       |  2 +-
->  11 files changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 5cf387813754..e7aa0050bfd8 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -633,7 +633,7 @@ do {									\
->  #define lockdep_assert_in_softirq()					\
->  do {									\
->  	WARN_ON_ONCE(__lockdep_enabled			&&		\
-> -		     (!in_softirq() || in_irq() || in_nmi()));		\
-> +		     (!in_softirq() || in_hardirq() || in_nmi()));		\
->  } while (0)
->  
->  #else
-> diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-> index 953e70fafe38..7fedbd33d5d2 100644
-> --- a/include/linux/rcutiny.h
-> +++ b/include/linux/rcutiny.h
-> @@ -88,7 +88,7 @@ static inline void rcu_irq_enter_irqson(void) { }
->  static inline void rcu_irq_exit(void) { }
->  static inline void rcu_irq_exit_check_preempt(void) { }
->  #define rcu_is_idle_cpu(cpu) \
-> -	(is_idle_task(current) && !in_nmi() && !in_irq() && !in_serving_softirq())
-> +	(is_idle_task(current) && !in_nmi() && !in_hardirq() && !in_serving_softirq())
->  static inline void exit_rcu(void) { }
->  static inline bool rcu_preempt_need_deferred_qs(struct task_struct *t)
->  {
-> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-> index fadb93766020..0ffd6c19259f 100644
-> --- a/kernel/irq/irqdesc.c
-> +++ b/kernel/irq/irqdesc.c
-> @@ -640,7 +640,7 @@ int handle_irq_desc(struct irq_desc *desc)
->  		return -EINVAL;
->  
->  	data = irq_desc_get_irq_data(desc);
-> -	if (WARN_ON_ONCE(!in_irq() && handle_enforce_irqctx(data)))
-> +	if (WARN_ON_ONCE(!in_hardirq() && handle_enforce_irqctx(data)))
->  		return -EPERM;
->  
->  	generic_handle_irq_desc(desc);
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 51f24ecd94b2..18f6658f0713 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1510,7 +1510,7 @@ static void rcu_gp_kthread_wake(void)
->  {
->  	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
->  
-> -	if ((current == t && !in_irq() && !in_serving_softirq()) ||
-> +	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
->  	    !READ_ONCE(rcu_state.gp_flags) || !t)
->  		return;
->  	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index de1dc3bb7f70..953171af6d0c 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -672,7 +672,7 @@ static void rcu_read_unlock_special(struct task_struct *t)
->  			   (IS_ENABLED(CONFIG_RCU_BOOST) && irqs_were_disabled &&
->  			    t->rcu_blocked_node);
->  		// Need to defer quiescent state until everything is enabled.
-> -		if (use_softirq && (in_irq() || (expboost && !irqs_were_disabled))) {
-> +		if (use_softirq && (in_hardirq() || (expboost && !irqs_were_disabled))) {
->  			// Using softirq, safe to awaken, and either the
->  			// wakeup is free or there is either an expedited
->  			// GP in flight or a potential need to deboost.
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index f3a012179f47..e8c62c4b1e5d 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -222,7 +222,7 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
->  	u32 pending;
->  	int curcnt;
->  
-> -	WARN_ON_ONCE(in_irq());
-> +	WARN_ON_ONCE(in_hardirq());
->  	lockdep_assert_irqs_enabled();
->  
->  	local_irq_save(flags);
-> @@ -305,7 +305,7 @@ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
->  {
->  	unsigned long flags;
->  
-> -	WARN_ON_ONCE(in_irq());
-> +	WARN_ON_ONCE(in_hardirq());
->  
->  	raw_local_irq_save(flags);
->  	/*
-> @@ -352,14 +352,14 @@ static void __local_bh_enable(unsigned int cnt)
->   */
->  void _local_bh_enable(void)
->  {
-> -	WARN_ON_ONCE(in_irq());
-> +	WARN_ON_ONCE(in_hardirq());
->  	__local_bh_enable(SOFTIRQ_DISABLE_OFFSET);
->  }
->  EXPORT_SYMBOL(_local_bh_enable);
->  
->  void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
->  {
-> -	WARN_ON_ONCE(in_irq());
-> +	WARN_ON_ONCE(in_hardirq());
->  	lockdep_assert_irqs_enabled();
->  #ifdef CONFIG_TRACE_IRQFLAGS
->  	local_irq_disable();
-> @@ -617,7 +617,7 @@ static inline void tick_irq_exit(void)
->  
->  	/* Make sure that timer wheel updates are propagated */
->  	if ((idle_cpu(cpu) && !need_resched()) || tick_nohz_full_cpu(cpu)) {
-> -		if (!in_irq())
-> +		if (!in_hardirq())
->  			tick_nohz_irq_exit();
->  	}
->  #endif
-> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-> index e3d2c23c413d..dfdbb114a43d 100644
-> --- a/kernel/time/timer.c
-> +++ b/kernel/time/timer.c
-> @@ -1369,7 +1369,7 @@ int del_timer_sync(struct timer_list *timer)
->  	 * don't use it in hardirq context, because it
->  	 * could lead to deadlock.
->  	 */
-> -	WARN_ON(in_irq() && !(timer->flags & TIMER_IRQSAFE));
-> +	WARN_ON(in_hardirq() && !(timer->flags & TIMER_IRQSAFE));
->  
->  	/*
->  	 * Must be able to sleep on PREEMPT_RT because of the slowpath in
-> @@ -1784,7 +1784,7 @@ void update_process_times(int user_tick)
->  	run_local_timers();
->  	rcu_sched_clock_irq(user_tick);
->  #ifdef CONFIG_IRQ_WORK
-> -	if (in_irq())
-> +	if (in_hardirq())
->  		irq_work_tick();
->  #endif
->  	scheduler_tick();
-> diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-> index a180abf76d4e..2ed5b77b60ca 100644
-> --- a/kernel/trace/trace.h
-> +++ b/kernel/trace/trace.h
-> @@ -876,7 +876,7 @@ static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
->  		 * is set, and called by an interrupt handler, we still
->  		 * want to trace it.
->  		 */
-> -		if (in_irq())
-> +		if (in_hardirq())
->  			trace_recursion_set(TRACE_IRQ_BIT);
->  		else
->  			trace_recursion_clear(TRACE_IRQ_BIT);
-> diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-> index 0de6837722da..b08d3923de98 100644
-> --- a/kernel/trace/trace_functions_graph.c
-> +++ b/kernel/trace/trace_functions_graph.c
-> @@ -120,7 +120,7 @@ static inline int ftrace_graph_ignore_irqs(void)
->  	if (!ftrace_graph_skip_irqs || trace_recursion_test(TRACE_IRQ_BIT))
->  		return 0;
->  
-> -	return in_irq();
-> +	return in_hardirq();
->  }
->  
->  int trace_graph_entry(struct ftrace_graph_ent *trace)
-> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-> index 161108e5d2fe..a4edff9ffc33 100644
-> --- a/lib/locking-selftest.c
-> +++ b/lib/locking-selftest.c
-> @@ -196,7 +196,7 @@ static void init_shared_classes(void)
->  	local_irq_disable();			\
->  	__irq_enter();				\
->  	lockdep_hardirq_threaded();		\
-> -	WARN_ON(!in_irq());
-> +	WARN_ON(!in_hardirq());
->  
->  #define HARDIRQ_EXIT()				\
->  	__irq_exit();				\
-> @@ -2456,7 +2456,7 @@ static void hardirq_exit(int *_)
->  	int notthreaded_hardirq_guard_##name __guard(hardirq_exit);	\
->  	local_irq_disable();						\
->  	__irq_enter();							\
-> -	WARN_ON(!in_irq());
-> +	WARN_ON(!in_hardirq());
->  
->  static void softirq_exit(int *_)
->  {
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 26c83943748a..2c5b4351330c 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -865,7 +865,7 @@ char *restricted_pointer(char *buf, char *end, const void *ptr,
->  		 * kptr_restrict==1 cannot be used in IRQ context
->  		 * because its test for CAP_SYSLOG would be meaningless.
->  		 */
-> -		if (in_irq() || in_serving_softirq() || in_nmi()) {
-> +		if (in_hardirq() || in_serving_softirq() || in_nmi()) {
->  			if (spec.field_width == -1)
->  				spec.field_width = 2 * sizeof(ptr);
->  			return error_string(buf, end, "pK-error", spec);
-> -- 
-> 2.30.2
-> 
+Signed-off-by: Fan Fei <ffclaire1224@gmail.com>
+---
+ drivers/pci/controller/pci-xgene.c | 46 +++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
 
+diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
+index e64536047b65..e2b93ccab901 100644
+--- a/drivers/pci/controller/pci-xgene.c
++++ b/drivers/pci/controller/pci-xgene.c
+@@ -61,7 +61,7 @@
+ #define XGENE_PCIE_IP_VER_2		2
+ 
+ #if defined(CONFIG_PCI_XGENE) || (defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS))
+-struct xgene_pcie_port {
++struct xgene_pcie {
+ 	struct device_node	*node;
+ 	struct device		*dev;
+ 	struct clk		*clk;
+@@ -72,12 +72,12 @@ struct xgene_pcie_port {
+ 	u32			version;
+ };
+ 
+-static u32 xgene_pcie_readl(struct xgene_pcie_port *port, u32 reg)
++static u32 xgene_pcie_readl(struct xgene_pcie *port, u32 reg)
+ {
+ 	return readl(port->csr_base + reg);
+ }
+ 
+-static void xgene_pcie_writel(struct xgene_pcie_port *port, u32 reg, u32 val)
++static void xgene_pcie_writel(struct xgene_pcie *port, u32 reg, u32 val)
+ {
+ 	writel(val, port->csr_base + reg);
+ }
+@@ -87,15 +87,15 @@ static inline u32 pcie_bar_low_val(u32 addr, u32 flags)
+ 	return (addr & PCI_BASE_ADDRESS_MEM_MASK) | flags;
+ }
+ 
+-static inline struct xgene_pcie_port *pcie_bus_to_port(struct pci_bus *bus)
++static inline struct xgene_pcie *pcie_bus_to_port(struct pci_bus *bus)
+ {
+ 	struct pci_config_window *cfg;
+ 
+ 	if (acpi_disabled)
+-		return (struct xgene_pcie_port *)(bus->sysdata);
++		return (struct xgene_pcie *)(bus->sysdata);
+ 
+ 	cfg = bus->sysdata;
+-	return (struct xgene_pcie_port *)(cfg->priv);
++	return (struct xgene_pcie *)(cfg->priv);
+ }
+ 
+ /*
+@@ -104,7 +104,7 @@ static inline struct xgene_pcie_port *pcie_bus_to_port(struct pci_bus *bus)
+  */
+ static void __iomem *xgene_pcie_get_cfg_base(struct pci_bus *bus)
+ {
+-	struct xgene_pcie_port *port = pcie_bus_to_port(bus);
++	struct xgene_pcie *port = pcie_bus_to_port(bus);
+ 
+ 	if (bus->number >= (bus->primary + 1))
+ 		return port->cfg_base + AXI_EP_CFG_ACCESS;
+@@ -118,7 +118,7 @@ static void __iomem *xgene_pcie_get_cfg_base(struct pci_bus *bus)
+  */
+ static void xgene_pcie_set_rtdid_reg(struct pci_bus *bus, uint devfn)
+ {
+-	struct xgene_pcie_port *port = pcie_bus_to_port(bus);
++	struct xgene_pcie *port = pcie_bus_to_port(bus);
+ 	unsigned int b, d, f;
+ 	u32 rtdid_val = 0;
+ 
+@@ -165,7 +165,7 @@ static void __iomem *xgene_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
+ static int xgene_pcie_config_read32(struct pci_bus *bus, unsigned int devfn,
+ 				    int where, int size, u32 *val)
+ {
+-	struct xgene_pcie_port *port = pcie_bus_to_port(bus);
++	struct xgene_pcie *port = pcie_bus_to_port(bus);
+ 
+ 	if (pci_generic_config_read32(bus, devfn, where & ~0x3, 4, val) !=
+ 	    PCIBIOS_SUCCESSFUL)
+@@ -228,7 +228,7 @@ static int xgene_pcie_ecam_init(struct pci_config_window *cfg, u32 ipversion)
+ {
+ 	struct device *dev = cfg->parent;
+ 	struct acpi_device *adev = to_acpi_device(dev);
+-	struct xgene_pcie_port *port;
++	struct xgene_pcie *port;
+ 	struct resource csr;
+ 	int ret;
+ 
+@@ -282,7 +282,7 @@ const struct pci_ecam_ops xgene_v2_pcie_ecam_ops = {
+ #endif
+ 
+ #if defined(CONFIG_PCI_XGENE)
+-static u64 xgene_pcie_set_ib_mask(struct xgene_pcie_port *port, u32 addr,
++static u64 xgene_pcie_set_ib_mask(struct xgene_pcie *port, u32 addr,
+ 				  u32 flags, u64 size)
+ {
+ 	u64 mask = (~(size - 1) & PCI_BASE_ADDRESS_MEM_MASK) | flags;
+@@ -308,7 +308,7 @@ static u64 xgene_pcie_set_ib_mask(struct xgene_pcie_port *port, u32 addr,
+ 	return mask;
+ }
+ 
+-static void xgene_pcie_linkup(struct xgene_pcie_port *port,
++static void xgene_pcie_linkup(struct xgene_pcie *port,
+ 			      u32 *lanes, u32 *speed)
+ {
+ 	u32 val32;
+@@ -323,7 +323,7 @@ static void xgene_pcie_linkup(struct xgene_pcie_port *port,
+ 	}
+ }
+ 
+-static int xgene_pcie_init_port(struct xgene_pcie_port *port)
++static int xgene_pcie_init_port(struct xgene_pcie *port)
+ {
+ 	struct device *dev = port->dev;
+ 	int rc;
+@@ -343,7 +343,7 @@ static int xgene_pcie_init_port(struct xgene_pcie_port *port)
+ 	return 0;
+ }
+ 
+-static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
++static int xgene_pcie_map_reg(struct xgene_pcie *port,
+ 			      struct platform_device *pdev)
+ {
+ 	struct device *dev = port->dev;
+@@ -363,7 +363,7 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
+ 	return 0;
+ }
+ 
+-static void xgene_pcie_setup_ob_reg(struct xgene_pcie_port *port,
++static void xgene_pcie_setup_ob_reg(struct xgene_pcie *port,
+ 				    struct resource *res, u32 offset,
+ 				    u64 cpu_addr, u64 pci_addr)
+ {
+@@ -395,7 +395,7 @@ static void xgene_pcie_setup_ob_reg(struct xgene_pcie_port *port,
+ 	xgene_pcie_writel(port, offset + 0x14, upper_32_bits(pci_addr));
+ }
+ 
+-static void xgene_pcie_setup_cfg_reg(struct xgene_pcie_port *port)
++static void xgene_pcie_setup_cfg_reg(struct xgene_pcie *port)
+ {
+ 	u64 addr = port->cfg_addr;
+ 
+@@ -404,7 +404,7 @@ static void xgene_pcie_setup_cfg_reg(struct xgene_pcie_port *port)
+ 	xgene_pcie_writel(port, CFGCTL, EN_REG);
+ }
+ 
+-static int xgene_pcie_map_ranges(struct xgene_pcie_port *port)
++static int xgene_pcie_map_ranges(struct xgene_pcie *port)
+ {
+ 	struct pci_host_bridge *bridge = pci_host_bridge_from_priv(port);
+ 	struct resource_entry *window;
+@@ -445,7 +445,7 @@ static int xgene_pcie_map_ranges(struct xgene_pcie_port *port)
+ 	return 0;
+ }
+ 
+-static void xgene_pcie_setup_pims(struct xgene_pcie_port *port, u32 pim_reg,
++static void xgene_pcie_setup_pims(struct xgene_pcie *port, u32 pim_reg,
+ 				  u64 pim, u64 size)
+ {
+ 	xgene_pcie_writel(port, pim_reg, lower_32_bits(pim));
+@@ -479,7 +479,7 @@ static int xgene_pcie_select_ib_reg(u8 *ib_reg_mask, u64 size)
+ 	return -EINVAL;
+ }
+ 
+-static void xgene_pcie_setup_ib_reg(struct xgene_pcie_port *port,
++static void xgene_pcie_setup_ib_reg(struct xgene_pcie *port,
+ 				    struct resource_entry *entry,
+ 				    u8 *ib_reg_mask)
+ {
+@@ -530,7 +530,7 @@ static void xgene_pcie_setup_ib_reg(struct xgene_pcie_port *port,
+ 	xgene_pcie_setup_pims(port, pim_reg, pci_addr, ~(size - 1));
+ }
+ 
+-static int xgene_pcie_parse_map_dma_ranges(struct xgene_pcie_port *port)
++static int xgene_pcie_parse_map_dma_ranges(struct xgene_pcie *port)
+ {
+ 	struct pci_host_bridge *bridge = pci_host_bridge_from_priv(port);
+ 	struct resource_entry *entry;
+@@ -543,7 +543,7 @@ static int xgene_pcie_parse_map_dma_ranges(struct xgene_pcie_port *port)
+ }
+ 
+ /* clear BAR configuration which was done by firmware */
+-static void xgene_pcie_clear_config(struct xgene_pcie_port *port)
++static void xgene_pcie_clear_config(struct xgene_pcie *port)
+ {
+ 	int i;
+ 
+@@ -551,7 +551,7 @@ static void xgene_pcie_clear_config(struct xgene_pcie_port *port)
+ 		xgene_pcie_writel(port, i, 0);
+ }
+ 
+-static int xgene_pcie_setup(struct xgene_pcie_port *port)
++static int xgene_pcie_setup(struct xgene_pcie *port)
+ {
+ 	struct device *dev = port->dev;
+ 	u32 val, lanes = 0, speed = 0;
+@@ -589,7 +589,7 @@ static int xgene_pcie_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *dn = dev->of_node;
+-	struct xgene_pcie_port *port;
++	struct xgene_pcie *port;
+ 	struct pci_host_bridge *bridge;
+ 	int ret;
+ 
 -- 
-Cheers,
-Changbin Du
+2.25.1
+
