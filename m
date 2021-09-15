@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACC740CDF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E6740CDF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhIOUaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        id S231892AbhIOUaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbhIOUav (ORCPT
+        with ESMTP id S231703AbhIOUay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:30:51 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6143AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:29:32 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id x10-20020a056830408a00b004f26cead745so5284586ott.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:29:32 -0700 (PDT)
+        Wed, 15 Sep 2021 16:30:54 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A915C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:29:35 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id w144so5822047oie.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hoVVooistygyhZh4JdyGmVYpdIyp7cTYMGqCLCSTLY0=;
-        b=GLh+YyiPdeP971yf2WMJp6qlI1tEFoeWedmD3j5EJABG3/wl06rNX3hGpliIQbAPJi
-         37nPcYTAMCdNOFefeDyFRRFlPDq7gg9gswDQ08Cam39BZ0e+TX3CTVV2TLMCuthtBfWh
-         bZUVTOd1uwq2kDf3E/quJX/fNZnJLea8FpvSK9VkLUrPOgO1HOwLj5jW6WFms8LS+GAt
-         vvK10OU8oVqiThwTiy7P962tCwFNb+87hGr6yn4kg7OcLSLt0q/f3dnbx3RRTYwDOXKI
-         c8vbb0poNNnYvtbfes5xhGZ+0KfC9jb3xMSFqf0unz8otO8yuEnc10iqlQWAeAKtJAeY
-         2Rlw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ep/byKh0NuVpkH8Herix4A8TT0fTgaV62jYcvRPVYXQ=;
+        b=B0AlQHDVJjoUjcROJnHXZlQlM0RwJAr4Y+2PzuhDaik1A/rJB9fzhBB0vgw0kN0a+M
+         hVixW9kpfT0gjBVHePMa235S18n4tEFjje0WnWVXOkZmZmc8EKGUpnF/0uSBRk8EJGCq
+         Kxbg34OYV851lA6P2B/D1d0dfAGYYcWyQ4EVdxkXH9g+T34bbna7nNLic/W4iJhmrahl
+         AmEiCdUZFJGMQu1CVrMlUNFBmkgGsuVvL+2nC3Jyg0VuQdpALnXyvzgoh41+rgMSt4Og
+         M7qvTDNGp3ZqiPQqqsBPAkvsKrHtrZyaaNWCIPGTUx5tbXFFFLC2ctsHby8KQQgMEZme
+         R3sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hoVVooistygyhZh4JdyGmVYpdIyp7cTYMGqCLCSTLY0=;
-        b=fyuO87VM3jNOqq4ffES519dD+tcpKIcI9cdJ5HDyhSnCx2d6fcgN8/SBd9lR2d2Se0
-         qsAgkZPP2IV4Tf4CvY1o/Ev5rtV+YKaxcbsapRJM1clK67gt03r6wigsBCBg+oOwYC+5
-         BSEBZvyjrm0Y1lbJomHzIFymso0pZBKkoyFQKzaxL8zcP7iZveaLYvvokOySg23z21Z4
-         0AB/s99QP6sQ0uJM3YOqNiQ2P74H3cX3U0lDJ/mVYK/aDhF4A1WxpqE10ixoy5ydQplN
-         FRYAvJEzMcp5oHG16AK1BeDPHxHXp5cXJQW47Sf+zEqhOC0BFA/3vJiDUy3GUpzW+wFJ
-         VZEw==
-X-Gm-Message-State: AOAM531HyHWsHTBnoQraeVgnQAiQQKeNGdyfMpy0ohzZIMjgiiTyxFdu
-        4pmfHnnN44NKOeXqfxHxYSI=
-X-Google-Smtp-Source: ABdhPJzcrfoUuffYTAAYHUwkorhtRtauEj17pThrWLsC5z1Xi/NCJnQYmOoCOv0J7b6iCpqCzMoopQ==
-X-Received: by 2002:a9d:6094:: with SMTP id m20mr1704121otj.380.1631737771796;
-        Wed, 15 Sep 2021 13:29:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ep/byKh0NuVpkH8Herix4A8TT0fTgaV62jYcvRPVYXQ=;
+        b=Q48AtmM4aeXiNNLuSUgbYAxogbvGXbMyCs4C+iwuiZB/wc+Kf0KU5dlhP9KvfdPPC2
+         P+YLVqqx3rs5ay5QX4Z2uuZekMnUDGtxZedLkDds+GSUlCfRtPpvDQw+FF3MR3msVCZ5
+         qGDY+cKRmus4xqijhX/oiEksPuHiOImSJpq9c7PPhbjT8+I81ptT2dqOdHRf0Qu3jI5e
+         B+PB5zprTnYa96qxgSspg7BjLbY6sz3uYFAmYJh2MWKKrKR0K4RsvGHVeSSWUTV1DmAp
+         FYX0obJN5gIUSGnivyG089u9j/PPWn1mVpNcNYySDE64wy6zNkqS2jW0E5lmXIdSsZJZ
+         x/Gw==
+X-Gm-Message-State: AOAM532WZ6Q5qqjKw678N18HW2tVAaHGrtF2xZuVJDoSJgtUtawWBxp5
+        dhDKqyGkRV6t+xA10ZN4SlA=
+X-Google-Smtp-Source: ABdhPJy/5z2ic5/GvSkn/yyqMCItDM65BJjpu8uzY7UN6I+FKmb85kh0rfgO6j/91CwXtoLz19oTbA==
+X-Received: by 2002:aca:1917:: with SMTP id l23mr1177025oii.10.1631737774938;
+        Wed, 15 Sep 2021 13:29:34 -0700 (PDT)
 Received: from debianG.lan ([181.166.206.110])
-        by smtp.gmail.com with ESMTPSA id l4sm247584oth.4.2021.09.15.13.29.28
+        by smtp.gmail.com with ESMTPSA id l4sm247584oth.4.2021.09.15.13.29.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:29:31 -0700 (PDT)
+        Wed, 15 Sep 2021 13:29:34 -0700 (PDT)
 From:   Gaston Gonzalez <gascoar@gmail.com>
 To:     linux-staging@lists.linux.dev
 Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
@@ -57,40 +57,57 @@ Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
         linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH 1/3] staging: vchiq: remove braces from if block
-Date:   Wed, 15 Sep 2021 17:29:14 -0300
-Message-Id: <20210915202916.413914-1-gascoar@gmail.com>
+Subject: [PATCH 2/3] staging: vchiq: add braces to if block
+Date:   Wed, 15 Sep 2021 17:29:15 -0300
+Message-Id: <20210915202916.413914-2-gascoar@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210915202916.413914-1-gascoar@gmail.com>
+References: <20210915202916.413914-1-gascoar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary braces from if block.
+The rule of not using braces in single statement does not apply if only
+one branch of the conditional statement is a single statement. Add
+braces to fix this.
+
+While at it, remove extra blank space after a comment inside the if
+block.
 
 Reported by checkpatch.pl
 
 Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
 ---
- .../vc04_services/interface/vchiq_arm/vchiq_connected.c        | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../vc04_services/interface/vchiq_arm/vchiq_connected.c  | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-index 83502f5f3a33..f367dbe2bc63 100644
+index f367dbe2bc63..1802fd5e4888 100644
 --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
 +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_connected.c
-@@ -17,9 +17,8 @@ static   DEFINE_MUTEX(g_connected_mutex);
- /* Function to initialize our lock */
- static void connected_init(void)
- {
--	if (!g_once_init) {
-+	if (!g_once_init)
- 		g_once_init = 1;
--	}
- }
+@@ -34,16 +34,15 @@ void vchiq_add_connected_callback(void (*callback)(void))
+ 	if (mutex_lock_killable(&g_connected_mutex))
+ 		return;
  
- /*
+-	if (g_connected)
++	if (g_connected) {
+ 		/* We're already connected. Call the callback immediately. */
+-
+ 		callback();
+-	else {
+-		if (g_num_deferred_callbacks >= MAX_CALLBACKS)
++	} else {
++		if (g_num_deferred_callbacks >= MAX_CALLBACKS) {
+ 			vchiq_log_error(vchiq_core_log_level,
+ 				"There already %d callback registered - please increase MAX_CALLBACKS",
+ 				g_num_deferred_callbacks);
+-		else {
++		} else {
+ 			g_deferred_callback[g_num_deferred_callbacks] =
+ 				callback;
+ 			g_num_deferred_callbacks++;
 -- 
 2.33.0
 
