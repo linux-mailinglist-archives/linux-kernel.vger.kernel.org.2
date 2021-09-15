@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D565A40C6F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688D440C6FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237723AbhIOOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:05:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55550 "EHLO mail.kernel.org"
+        id S237740AbhIOOGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236295AbhIOOF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:05:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C83FE61263;
-        Wed, 15 Sep 2021 14:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631714678;
-        bh=H27IuGY14sfE01ZBOE3qbr+Aje0qknX6KxWJUz9aISY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Mt8iYkeCpuvxp25RAeN9quGvNziHP1pgXw2GB8fKD/mymlhyyAxICQ7hbRwUyFg9Y
-         Dz6lOg2rFDJ1x29vlxBrU13sefeeVpzxfxhmMneSoMVFyYNw6dgVv/qeP2+fN8Is47
-         2Df2I+LHlOIw6U5A/kHf/wi/ketSqO0Jwrt5NNw8mH/ilzWxgVY7C0Co0ubil1VKC6
-         0mTZqCfioBEvADdChAheA181Hb78J/ZmnwKyEjZiEi4DnVJ9GgnI5G5RLxRohXR/HG
-         cAiCWcdQNM4yVMPvZMOcWEwIRFtHDlqQVihe+TYWg0OuNhev57eWppsU1mrNJYasbV
-         CrubNIu5XLMDw==
-Received: by mail-wm1-f46.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so2108261wml.3;
-        Wed, 15 Sep 2021 07:04:38 -0700 (PDT)
-X-Gm-Message-State: AOAM531DDI/AnaxIYwjTJl7kL5pkcS+mt92K6H74Ai7JdqYqe4Tms2J2
-        1uN4iSQurMHfRqhqkOzpa7Z1o8Qzb05KJl8tLkA=
-X-Google-Smtp-Source: ABdhPJyjXfJKM6vyDJu6ychD3He3pDf7+1/YRPwn/p4sPd8URfURxCd23cro1bdM922Ixa76Pgelwn3dchKZ3Lf21nE=
-X-Received: by 2002:a1c:4c14:: with SMTP id z20mr4802564wmf.82.1631714677368;
- Wed, 15 Sep 2021 07:04:37 -0700 (PDT)
+        id S237735AbhIOOGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:06:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F1A161263;
+        Wed, 15 Sep 2021 14:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631714681;
+        bh=sxwyQHm8J7Frh3PMOdFYOpyVkPKUyLtc+ZF4sh99oyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ahm5bAq5spknX6iyVjCaRUrlFeHMLd1qhZ9J/2Pmp1m4DccDqaf3PTOYOLCwC1kPs
+         mpnBRXya0qk1Jy+MtbBPaKW/3SmF6ns8ivqiVirgRFhePoNn2L7K46Q21ZRIIteWah
+         fNOok2T/SB1SkoBjRvk+3NW+H9f69wU8rZ5+NY9U=
+Date:   Wed, 15 Sep 2021 16:04:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     mdf@kernel.org, hao.wu@intel.com, linux-kernel@vger.kernel.org,
+        linux-fpga@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add Tom Rix as fpga maintainer
+Message-ID: <YUH9dg01Mtk+kO+C@kroah.com>
+References: <20210914182333.3903389-1-trix@redhat.com>
+ <YUDw0gvgdijpytfU@kroah.com>
+ <25d1dac2-4f9f-b5f0-8ce8-b88442deac9d@redhat.com>
 MIME-Version: 1.0
-References: <20210914224709.601156-1-linux@roeck-us.net>
-In-Reply-To: <20210914224709.601156-1-linux@roeck-us.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 15 Sep 2021 16:04:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a36YHAnDyhy+nQEo9x=c2Dq8pf44sBsksXj2xb+Fnk-bA@mail.gmail.com>
-Message-ID: <CAK8P3a36YHAnDyhy+nQEo9x=c2Dq8pf44sBsksXj2xb+Fnk-bA@mail.gmail.com>
-Subject: Re: [PATCH v2] sparc: mdesc: Fix compile error seen with gcc 11.x
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Anatoly Pugachev <matorola@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25d1dac2-4f9f-b5f0-8ce8-b88442deac9d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:47 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> sparc64 images fail to compile with gcc 11.x, reporting the following
-> errors.
->
-> arch/sparc/kernel/mdesc.c:647:22: error:
->         'strcmp' reading 1 or more bytes from a region of size 0
-> arch/sparc/kernel/mdesc.c:692:22: error:
->         'strcmp' reading 1 or more bytes from a region of size 0
-> arch/sparc/kernel/mdesc.c:719:21:
->         error: 'strcmp' reading 1 or more bytes from a region of size 0
->
-> The underlying problem is that node_block() returns a pointer beyond
-> the end of struct mdesc_hdr. gcc 11.x detects that and reports the error.
-> Adding an additional zero-length field to struct mdesc_hdr and pointing
-> to that field fixes the problem.
->
-> Cc: Arnd Bergmann <arnd@kernel.org>
-> Cc: David Laight <David.Laight@ACULAB.COM>
-> Cc: Anatoly Pugachev <matorola@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: data[0] => data[]
->
-> I am not sure if there was agreement to accept this patch or not, but
-> I was asked to resend it with the above change, so here it is. An open
-> question was if it is acceptable to have a structure named xxx_hdr
-> include an element pointing to the data following that header.
->
+On Wed, Sep 15, 2021 at 06:23:16AM -0700, Tom Rix wrote:
+> 
+> On 9/14/21 11:58 AM, Greg KH wrote:
+> > [note, you got the maintainer's email address wrong on your cc: line
+> >   I fixed it up...]
+> > 
+> > On Tue, Sep 14, 2021 at 11:23:33AM -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > > 
+> > > I am the maintainer of the fpga/ subsystem for both the kernel and
+> > > userspace for Red Hat.  I have been an active reviewer and contributor
+> > > on for public fpga/ subsystem for the last year.  I would like to
+> > > help out more.
+> > > 
+> > > Since I am paid to do this work, change the status to Supported.
+> > > 
+> > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > > ---
+> > >   MAINTAINERS | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 04fa4edf100b83..0443d7ab826659 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -7353,9 +7353,9 @@ F:	include/uapi/linux/fpga-dfl.h
+> > >   FPGA MANAGER FRAMEWORK
+> > >   M:	Moritz Fischer <mdf@kernel.org>
+> > > -R:	Tom Rix <trix@redhat.com>
+> > > +M:	Tom Rix <trix@redhat.com>
+> > >   L:	linux-fpga@vger.kernel.org
+> > > -S:	Maintained
+> > > +S:	Supported
+> > >   W:	http://www.rocketboards.org
+> > >   Q:	http://patchwork.kernel.org/project/linux-fpga/list/
+> > >   T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mdf/linux-fpga.git
+> > > -- 
+> > > 2.26.3
+> > > 
+> > Traditionally existing maintainers are the ones that add new
+> > maintainers, it's not something that you just submit a patch for hoping
+> > it will be accepted.
+> > 
+> > What has changed since the last time you asked to do this?
+> 
+> Because public and private requests have gone unanswered for so long, it is
+> unclear if Moritz is still maintaining the subsystem.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+He is, as is evident by the patches I accept from him each merge.
+
+> The nearly year old xrt patchset has been pending for 6 weeks with minor
+> changes to one patch out of 14 needing reviews.
+
+Code quality is not the maintainer's job, it's the developer's, so the
+age and number of reviews is not any indication.
+
+> The standard release patchset, which needs an opinion has on an api change,
+> has been outstanding for 8 weeks.
+
+Have a pointer to it?
+
+> If maintainership depends on an approving maintainter, what happens when the
+> approving maintainer has left ?
+
+Vacations happen in the summer.  I've talked to Moritz many times, and
+all is well here.
+
+greg k-h
