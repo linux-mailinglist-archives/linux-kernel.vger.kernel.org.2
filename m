@@ -2,89 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A99840CCDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E61840CCDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhIOTBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
+        id S231468AbhIOTBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhIOTA7 (ORCPT
+        with ESMTP id S231386AbhIOTBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:00:59 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96806C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:59:40 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id a66so4654449qkc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:59:40 -0700 (PDT)
+        Wed, 15 Sep 2021 15:01:08 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B813DC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:59:48 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j13so7243317edv.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:59:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=avHjXeQ13wJPm+ZH0ocabGHBbHduG3G1S3OEBNfWY6I=;
-        b=jlWN9GA974qgCvuNDp3XkdBzubEkQfCLu0KWXVJcssyLwokzMr2dROKaXdp5/ff3nI
-         asqAlbkLBEJoil7ErHqXZgne8xEA6tqQbIsbl7LwwiU7yUu86unGFimCV61LDsCVjo90
-         SZiF/DUN14Zfcnrb/JU3ePbX0l0b/Sn5sAlpEi7MEXDw852mzNy8Ccao6M6ENeS+GPfa
-         2TiOsASWrCJFwEFELPuV8N8e/FHjroOeKfHY9Y7ljbcuGk0Nz86VZ87Dqfvtc/AUyFI8
-         HZWo6yNS9d7E8mmtx1I7gBk2eRdpSGfDhIPHCEQAUdWw5QbPxUQfiFvjd0LG9uGj2vnu
-         TaTg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dUAnM7XafL3HEwdhqn1xHOeagiNkEafdquQLQJNCzu0=;
+        b=km4+wUdcqE5jNctpfK8IFrlxKqFM66CgmaIF667vNGEr/lbF38h8/swwP7+1u1zLJv
+         ZcbRjtiHy04rlHWRmJntzQx+R2KM0Ewcgdu7f7splur4G1Yk35U90ty1MV5qNbH/2rHF
+         L3lbDnsG156i6+TJK8b6Z3TOEzGy4lexv2dRqb9djGCepn7cBfUdsuwDbzOsMSRf54kB
+         v4gnX1Fyl7EHAkZFO3UofRyEnACRaf1SYJyqequ/vkCHnhFTVwbFuved6dNaCK2t19dv
+         lmRReQ32lSAhKHHLwnU3ypDvO4+XqK9fKFNZHi7x+5CM9C8BSDDuLqMGi+kikl7g6lf1
+         Ka/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=avHjXeQ13wJPm+ZH0ocabGHBbHduG3G1S3OEBNfWY6I=;
-        b=AG3iMmkkGNPqyde386OrTlI4owQw1P9nYxUtkbApWsvxsIDpt4T0P5Ix172rCClVKQ
-         k++JG0qiixIgZlJ0kv/j7shqqpnppFT+fCpe7YuxEvboojXTBGo83v4LgcdH8eyDSP6C
-         Z5B1crQK539xYZFpLysvkbcQqBmMBm3KpgWP7D2BIJUsd5nG37XWdXKc8Hqt5YiUzAh6
-         iZo1dwZyoVaMhiPpoBQ+pKnlhmGpfnLqCw6hpNEm8ma3b0/5kom86f++nl1Lm0ZEwzNm
-         0UmYqD7Z0wS7Hv7S61swm4OqChZ8Zzc+kvEZJZrwLTLsLTgIZXJqY8BfMJYc+oESrR4D
-         my0A==
-X-Gm-Message-State: AOAM533b+lloNZzKJnnEXNV0INVpmuakMXyowSu+OfTO2bmkOXYkBoIB
-        FwIaHLPhQAGnX8uER/MOmRjHYfozVASSYGi2+tECph1WtuHHSuVR
-X-Google-Smtp-Source: ABdhPJw6U275eh+92f2WXPGRenZyySeezaujW/gX5ezOXb9W2FsIzpiSqEvQjjnB51gAx9PTS+vicUJHr3LPg9+lJ50=
-X-Received: by 2002:a05:620a:199d:: with SMTP id bm29mr1456458qkb.14.1631732379710;
- Wed, 15 Sep 2021 11:59:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dUAnM7XafL3HEwdhqn1xHOeagiNkEafdquQLQJNCzu0=;
+        b=2ZQXRB1Iu+LY6a8xGRAONq8+ePD9pqMsKF/emQS/kjWxCA9q8j2y1rnvr+zx+Sy/B6
+         VZ/Sqk12jY/WLxZU4OLgXlCgcCOkv89ockltkTBvUTYLP2UhBE7Bd+1+cgs6Q5ija8LO
+         ov2IuYQbqI2BY1JLggOUn9oPU8oygYNLlkJDEDJImO7spaV5gYbh9uTUT2wApGAgXXl6
+         ntCKDy5U2iz6AQ6WKUxMNmB4r/e5wn4ZoAtwSphZdBBEOS2Q+VgqMnx0D1HgqdMtr9hr
+         7FQ17DGevSrmT5So+Cm6WQzM3uuK9BzdBQ2I0Iyg4dKlenKkouQG/CNT8SmYchUJ8xhA
+         pQRg==
+X-Gm-Message-State: AOAM532jJ4dSI2N1A27jBD8JaGu5H2lKVFjvyNuZ4xD3pXe3bHrTgytk
+        ZQvr/isPFVb2oE93Lt9kKH0=
+X-Google-Smtp-Source: ABdhPJx+y/NF9DDn83K85OIC57v2kqNoBDSDg72fVr7qXWp1XRUnkFIf5uMPibRVDdsFylZoNJ60FA==
+X-Received: by 2002:a17:906:ed1:: with SMTP id u17mr1675134eji.304.1631732387312;
+        Wed, 15 Sep 2021 11:59:47 -0700 (PDT)
+Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id k21sm343768ejj.55.2021.09.15.11.59.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 11:59:46 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     linux-sunxi@lists.linux.dev,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: Issue with fw_devlink=on on 5.14
+Date:   Wed, 15 Sep 2021 20:59:46 +0200
+Message-ID: <33995494.1UIDBzYVPQ@kista>
+In-Reply-To: <CAGETcx_6muHgmDAviMf-UBvriePwc+o5408nDeNd_v3zR_x9TQ@mail.gmail.com>
+References: <5570111.f9yF5Hohu3@kista> <CAGETcx9_dy4qdmZ-+X+WLsezPKWfZzmRU8QmhKOu6FdZcysWDA@mail.gmail.com> <CAGETcx_6muHgmDAviMf-UBvriePwc+o5408nDeNd_v3zR_x9TQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-5-mkoutny@suse.com>
- <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
- <20210914092207.GA23743@blackbody.suse.cz> <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
- <CAKfTPtC5+4gf_R0bAVHe+0Fw6dQYQ_a-f529H9s4KLpm40X9Ng@mail.gmail.com>
-In-Reply-To: <CAKfTPtC5+4gf_R0bAVHe+0Fw6dQYQ_a-f529H9s4KLpm40X9Ng@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Wed, 15 Sep 2021 19:59:27 +0100
-Message-ID: <CAFpoUr3APdFordH+1XjHPWP5FtKuQBAXSRTt4arruMkQcx2ufg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ons. 15. sep. 2021 kl. 13:31 skrev Vincent Guittot <vincent.guittot@linaro.org>:
-> The corner cases that I wanted to check, are covered by
-> a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
-> and
-> fdaba61ef8a2 ("sched/fair: Ensure that the CFS parent is added after
-> unthrottling")
+/cc linux-kernel@vger.kernel.org
 
-Still have some more of my testing stuff from when i discovered the issues
-behind a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on
-unthrottle") as
-well, so will take a look at this patch later this week.
+Dne sreda, 15. september 2021 ob 20:36:11 CEST je Saravana Kannan napisal(a=
+):
+> On Wed, Sep 15, 2021 at 11:23 AM Saravana Kannan <saravanak@google.com>=20
+wrote:
+> >
+> > On Wed, Sep 15, 2021 at 11:07 AM Jernej =C5=A0krabec
+> > <jernej.skrabec@gmail.com> wrote:
+> > >
+> > > Hi Saravana!
+> > >
+> > > I noticed that in kernel 5.14, at least on Allwinner H3, deinterlace=
+=20
+driver
+> > > doesn't load anymore if fw_devlink is set to on. If I set it to off,=
+=20
+driver
+> > > loads and works without problems. If I remove interconnects property =
+in=20
+DT
+> > > node and use driver hack instead, it also loads and work ok.
+> > >
+> > > For reference, I speak about this node:
+> > > https://elixir.bootlin.com/linux/v5.14/source/arch/arm/boot/dts/sun8i=
+=2Dh3.dtsi#L153
+>=20
+> Oh the dts file please. Not dtsi. I need the full picture of dependencies.
 
-Need to wrap my head around this logic again, but the idea looks good
-at first sight.
+I just dumped DTB from the board I use for testing this:
+http://ix.io/3yZB
 
-Thanks
-Odin
+>=20
+> -Saravana
+>=20
+> > >
+> > > Do you have any clue why it doesn't work?
+> >
+> > Kinda busy today and I'll take a close look later, but if you delete
+> > "interconnect" but it works, then it seems like you have no driver for
+> > your "mbus" interconnect? Is that expected?
+
+Ah, you're completely right. There is no MBUS driver (yet), since current=20
+purpose of that node is to determine DMA memory offsets and for that you do=
+n't=20
+need a driver.
+
+There is already WIP driver for it, though:
+https://github.com/crust-firmware/linux/commit/
+db34316a0194dbf0fcb8eba677ef11085a06a340
+
+> >
+> > If you have a driver, then make it use the proper driver model (probe
+> > a platform device).
+> >
+> > If you don't have a driver for it, I'm assuming you have
+> > CONFIG_MODULES enabled. Otherwise, fw_devlink=3Don is smart enough to
+> > know not to block on devices that'll never be probed.
+
+Correct, modules are enabled.
+
+> >
+> > If you do need CONFIG_MODULES enabled, then use
+> > deferred_probe_timeout=3Dxxx so that fw_devlink doesn't wait for more
+> > modules to be loaded past xxx seconds.
+
+It's not what I want, but more that we broke default configuration and=20
+CONFIG_MODULES=3Dy should really work. Is there any other way to fix this b=
+esides=20
+providing dummy MBUS driver? I doubt it would be accepted for backporting.
+
+> >
+> > Also I like to look up emails on lore, so when emailing me about
+> > fw_devlink (or any Linux stuff in general I suppose), it'd be nice if
+> > you can cc LKML.
+
+Noted.
+
+Best regards,
+Jernej
+
+> >
+> > Thanks,
+> > Saravana
+>=20
+
+
