@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBDB40C7EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC08F40C7F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbhIOPN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:13:29 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35036 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbhIOPN2 (ORCPT
+        id S234215AbhIOPOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234098AbhIOPOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:13:28 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18FFBxml010177;
-        Wed, 15 Sep 2021 10:11:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631718719;
-        bh=Noc3Vg1u4OEnmLXjCiSBH2Vbn3a+JN5Yh0ZigrDpems=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=sUJAhIGAzzW3FG9m6quq1YhD82iowiyT8KfFt9pZ3LMG0nHOgmno0ZztiHac/0ktI
-         mrDpdop3BlaxubGsmJLeQQoxHA8ubAzypDjPotr6xrPF7p0CNO7537EtYFp7fvbZs6
-         fRRkIqeIBJin/owiLCl4Ee8Nwf6Mcj7ii+QkFSkU=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18FFBxQ1046872
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 10:11:59 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 15
- Sep 2021 10:11:58 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 15 Sep 2021 10:11:58 -0500
-Received: from [10.250.232.51] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18FFBtFN103656;
-        Wed, 15 Sep 2021 10:11:56 -0500
-Subject: Re: [PATCH] arm64: dts: ti: ti-k3*: Introduce aliases for mmc nodes
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-References: <20210915135415.5706-1-nm@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <22d8a179-cc6c-0be6-1580-cb2a5a749417@ti.com>
-Date:   Wed, 15 Sep 2021 20:41:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 15 Sep 2021 11:14:03 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F05C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:12:44 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g14so2999841pfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:12:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wsSC3ElljOcNuAZkoNqFxs8B8LwK8+PsifC2X+pKq7Y=;
+        b=zHdY0vpXi3Pehr90PDksje3KtwyZby9zVYvErd1f3eV5Pa9SrhfiiLDYEiY78DN8yp
+         e+495euySl52T9t+V2t4jh8/xuSmCkhO4oBtKFUoZ0obPPedm3f4F9cTiTzk+XpcVyFV
+         TsOUUcNlJxeXnsA5+TvASjwcGHl1k2GevSoClqzJcupRErVWzaXoMB0sL+rktxgLL8gH
+         LfZ6yYjipI18Z4+FkklOwqTJP+adgJPBLx9WQhMza19gSgVJhIuLnYf0m6YaZk+J5OFA
+         F1ybeX/Ylw1Ahvmf2uw/50ayrfzkakqMLGceTESq3nqCaWU1WarJwdJfmN9qZOofXSJ8
+         ieVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wsSC3ElljOcNuAZkoNqFxs8B8LwK8+PsifC2X+pKq7Y=;
+        b=gXREwHmvcF5A2UgxIeAWClsrZuzqjnHpxk1hzYW4SF9Af7MqKaA+8unhgOGMcGdr2S
+         jSiGzQQ2QcynMBxJgjt3cV0m1VgTlxsaRTpIpKW57pYqCoYjfcL/RGd3yK0SwJc/OeGx
+         QdKfgPjp7hSwx0QboI+dQP7HINGWqBtl//CPGKrak7uhL+Ih2HVMXs6AHMBb5d2hQvZH
+         2LFo0mXlt3bhWJCS8WcAoTZxUMMuZB2RF023tAmxHKZUhYqrFtgf9+EZjJdAxfakBCRs
+         Lat0/K/v6GjpWm4MoWyQTvTLE2u2fPjrj6kRc9dE576egttcAZDxKpDmDsyrZeQAw7ZO
+         4CiA==
+X-Gm-Message-State: AOAM530/1njTq+GFMPcFMtijpIkJBf48uKXMnWgiFW3qSW0km9zRMtA1
+        ssspg/4bNie6FxRosQQ1spFmBQ==
+X-Google-Smtp-Source: ABdhPJyGqBLjcp/KUd3ds6sWYN6mT2/YPk+mfHPuNRq4EgjEc+zEcs0+PCVfueU9CI7jAVkKj02vEw==
+X-Received: by 2002:a62:1c85:0:b0:440:3583:9fda with SMTP id c127-20020a621c85000000b0044035839fdamr455092pfc.0.1631718763504;
+        Wed, 15 Sep 2021 08:12:43 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id u10sm92513pjf.46.2021.09.15.08.12.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Sep 2021 08:12:42 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 23:12:37 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] clk: qcom: smd-rpm: Add rate hooks for
+ clk_smd_rpm_branch_ops
+Message-ID: <20210915151236.GF25255@dragon>
+References: <20210914025554.5686-1-shawn.guo@linaro.org>
+ <20210914025554.5686-2-shawn.guo@linaro.org>
+ <YUFgmdhYK/p2v1LS@ripper>
 MIME-Version: 1.0
-In-Reply-To: <20210915135415.5706-1-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUFgmdhYK/p2v1LS@ripper>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/21 7:24 pm, Nishanth Menon wrote:
-> Since probe order of mmc can vary depending on device tree dependencies,
-> Lets try and introduce a consistent definition of what mmc0, 1 are
-> across platforms.
+On Tue, Sep 14, 2021 at 07:55:21PM -0700, Bjorn Andersson wrote:
+> On Mon 13 Sep 19:55 PDT 2021, Shawn Guo wrote:
 > 
-> NOTE: Certain platforms may choose to have overrides due to various
-> legacy reasons, we permit that in the board specific alias definition.
+> > On QCM2290 platform, the clock xo_board runs at 38400000, while the
+> > child clock bi_tcxo needs to run at 19200000.  That said,
+> > clk_smd_rpm_branch_ops needs the capability of setting rate. Add rate
+> > hooks into clk_smd_rpm_branch_ops to make it possible.
+> > 
 > 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
+> Most platforms has a crystal oscillator ticking at 38.4MHz feeding the
+> PMIC (represented by the rpmcc and its "xo" parent) and out comes the
+> bi_tcxo with a fixed 19.2MHz rate.
 
-Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+Yeah, but all those platforms are running clk-rpmh driver, I think.
 
->  arch/arm64/boot/dts/ti/k3-am64.dtsi  | 2 ++
->  arch/arm64/boot/dts/ti/k3-am65.dtsi  | 2 ++
->  arch/arm64/boot/dts/ti/k3-j7200.dtsi | 2 ++
->  arch/arm64/boot/dts/ti/k3-j721e.dtsi | 3 +++
->  4 files changed, 9 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64.dtsi b/arch/arm64/boot/dts/ti/k3-am64.dtsi
-> index de6805b0c72c..120974726be8 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64.dtsi
-> @@ -30,6 +30,8 @@ aliases {
->  		serial8 = &main_uart6;
->  		ethernet0 = &cpsw_port1;
->  		ethernet1 = &cpsw_port2;
-> +		mmc0 = &sdhci0;
-> +		mmc1 = &sdhci1;
->  	};
->  
->  	chosen { };
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> index a9fc1af03f27..a58a39fa42db 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
-> @@ -31,6 +31,8 @@ aliases {
->  		i2c4 = &main_i2c2;
->  		i2c5 = &main_i2c3;
->  		ethernet0 = &cpsw_port1;
-> +		mmc0 = &sdhci0;
-> +		mmc1 = &sdhci1;
->  	};
->  
->  	chosen { };
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200.dtsi b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> index b7005b803149..47567cb260c2 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200.dtsi
-> @@ -30,6 +30,8 @@ aliases {
->  		serial9 = &main_uart7;
->  		serial10 = &main_uart8;
->  		serial11 = &main_uart9;
-> +		mmc0 = &main_sdhci0;
-> +		mmc1 = &main_sdhci1;
->  	};
->  
->  	chosen { };
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> index f0587fde147e..214359e7288b 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> @@ -31,6 +31,9 @@ aliases {
->  		serial10 = &main_uart8;
->  		serial11 = &main_uart9;
->  		ethernet0 = &cpsw_port1;
-> +		mmc0 = &main_sdhci0;
-> +		mmc1 = &main_sdhci1;
-> +		mmc2 = &main_sdhci2;
->  	};
->  
->  	chosen { };
-> 
+> Is there a problem with the way sdm660_bi_tcxo is defined in this
+> regard?
 
+There is no problem if xo clock is 19.2MHz, but for platforms with
+38.4MHz xo, bi_tcxo will be seen as 38.4MHz in clock tree, while we
+expect it to be 19.2MHz.
+
+Shawn
