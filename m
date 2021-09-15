@@ -2,173 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252BF40CD7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EA140CD82
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhIOTxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:53:21 -0400
-Received: from mga05.intel.com ([192.55.52.43]:19949 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229732AbhIOTxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:53:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10108"; a="307963041"
-X-IronPort-AV: E=Sophos;i="5.85,296,1624345200"; 
-   d="scan'208";a="307963041"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 12:52:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,296,1624345200"; 
-   d="scan'208";a="482468324"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 12:51:55 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 42E0920656; Wed, 15 Sep 2021 22:51:53 +0300 (EEST)
-Date:   Wed, 15 Sep 2021 22:51:53 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-staging@lists.linux.dev, Yong Deng <yong.deng@magewell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 15/22] media: sunxi: Remove the sun6i-csi driver
- implementation
-Message-ID: <YUJO2cG/46vOkuBe@paasikivi.fi.intel.com>
-References: <20210910184147.336618-1-paul.kocialkowski@bootlin.com>
- <20210910184147.336618-16-paul.kocialkowski@bootlin.com>
- <20210913081707.3pjcfuwan46pbdep@gilmour>
- <YUBXiSrQjccLoa8b@aptenodytes>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUBXiSrQjccLoa8b@aptenodytes>
+        id S231690AbhIOTyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhIOTyj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 15:54:39 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1BBC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:53:19 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id h25-20020a0cab19000000b0037a49d15c93so7743681qvb.22
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=ZN8L1SRgYQneOokAyF/YDPfiVZ2ZJf5kUNPTEXGrDyM=;
+        b=oOWHam1LZ3eZVZuUUKQnwIZD45mGvoGWhDIGGcaJ/ZVuaxJgr9C12nV1IedLU0nJUK
+         rPAvCc0ieMBeNadMOasQbF021ZURMfXk3HM1Hx28jK9CP0R9rAiqoXXBWM2zoPdrFZx5
+         5CIEkMxg5A7eeCUu5e7QpVjIo50IneSZIba6f7dwTlDzcMSqUnTCLUs8t8GNYWz1RirZ
+         gZ1O5YVjciLF2y565msC2T0fJe/tyM8XRS1SxvHRKdzAt9PbzKEUaNXz1RheFKUK+x/L
+         Yv5GsRq+7WsmVaMUo2k83oTrKFmm+N/ujJBzn6NIFv+tXxi8JPdqdAdhBNfPUitdZm3L
+         ewvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=ZN8L1SRgYQneOokAyF/YDPfiVZ2ZJf5kUNPTEXGrDyM=;
+        b=Rd2c+O5Ygs5vLSHZ+MYkLyPDAL7P9eaYErO4tGl/RMpffEEEGvyDpLydmnqin8U98v
+         cPQpPiKTckUYTZh6Ps5XRgc16YxMekzc24lFoZ9RXKrdiTmHKO3iccyopco7P0jCtVLH
+         GhZUAoETedA2YmNAgGZisNG6PBFXqK8BPLvObeFdSt/kWt17KtNnI3Lk7Pn0QKEZYalT
+         GJZ4j4qtft/TQd+BGkJZflACRlH8LnbFSYXGpR+Jt3rCQK8zlhG8BHJ76gN4V2qmj3UA
+         hK2ZrdloA44vZJJIY+Whu7qJtSl8UZxJrOnWkdNYhhwlYnednlGHHB6o9Yohfwk8g2UI
+         5LGA==
+X-Gm-Message-State: AOAM532PHxqDE37ndi809BMYXAVNaaQSi7yJbLNH226OBpxACxMmQgfl
+        22XdA5wez7pIQgmz8iGIgHF7qq+Yzvz+YlWK7w==
+X-Google-Smtp-Source: ABdhPJyi27fA7iU5UGtpeuYB5pqLFXaWsK5XRc4GI4VOmjlh0qYYnWCd1v1FR24xxOzz+cwyWWbIz0v2Qb/QaMlZlQ==
+X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2145])
+ (user=kaleshsingh job=sendgmr) by 2002:a05:6214:13e9:: with SMTP id
+ ch9mr1497532qvb.45.1631735598972; Wed, 15 Sep 2021 12:53:18 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 19:52:44 +0000
+Message-Id: <20210915195306.612966-1-kaleshsingh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.309.g3052b89438-goog
+Subject: [PATCH 0/5] tracing: Extend histogram triggers expression parsing
+From:   Kalesh Singh <kaleshsingh@google.com>
+Cc:     surenb@google.com, hridya@google.com, namhyung@kernel.org,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul, Maxime,
+The frequency of the rss_stat trace event is known to be of the same
+magnitude as that of the sched_switch event on Android devices. This can
+cause flooding of the trace buffer with rss_stat traces leading to a
+decreased trace buffer capacity and loss of data.
 
-On Tue, Sep 14, 2021 at 10:04:25AM +0200, Paul Kocialkowski wrote:
-> Hi,
-> 
-> On Mon 13 Sep 21, 10:17, Maxime Ripard wrote:
-> > On Fri, Sep 10, 2021 at 08:41:40PM +0200, Paul Kocialkowski wrote:
-> > > As described in the commit adding support for the new sun6i-csi driver,
-> > > a complete rewrite was necessary to support the Allwinner A31 ISP as
-> > > well as fix a number of issues with the current implementation.
-> > > 
-> > > Farewell and thanks for all the pixels!
-> > > 
-> > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > 
-> > For completeness, this is what the other commit log mentions:
-> > 
-> > > While adapting the sun6i-csi driver for MIPI CSI-2 support was
-> > > possible, it became clear that adding support for the ISP required
-> > > very heavy changes to the driver which were quite hard to break down
-> > > into a series of subsequent changes.
-> > 
-> > > The first major difficulty comes from the lack of v4l2 subdev that
-> > > acts a bridge, separate from the video node representing the DMA
-> > > engine. To support the ISP, only parts of the hardware must be
-> > > configured (excluding aspects related to the DMA output), which made
-> > > the separation a hard requirement.
-> > 
-> > > Another significant difficulty was the specific dance that is required
-> > > to have both the ISP and CSI device be part of the same media device.
-> > > Because the ISP and CSI are two different hardware blocks, they have
-> > > two distinct drivers that will each try to register their own v4l2
-> > > and media devices, resulting in two distinct pipelines. When the ISP
-> > > is in use, we actually want the CSI driver to register with the ISP's
-> > > v4l2 and media devices while keeping the ability to register its own
-> > > when the ISP is not in use. This is done by:
-> > > 1. Having the CSI driver check whether the ISP is available, using
-> > >    sun6i_csi_isp_detect();
-> > > 2. If not, it can register when its own async subdevs are ready, using
-> > >    sun6i_csi_v4l2_complete();
-> > > 3. If so, it will register its bridge as an async subdev which will
-> > >    be picked-up by the ISP driver (from the fwnode graph link);
-> > > 4. When the subdev becomes bound to the ISP's v4l2 device, we can
-> > >    then access that device (and the associated media device) to
-> > >    complete registration of the capture video node, using
-> > >    sun6i_csi_isp_complete();
-> > > Besides the logic rework, other issues were identified and resolved:
-> > > - The sync mechanism for buffer flipping was based on the frame done
-> > >   interrupt, which is too late (next frame is already being processed).
-> > >   This lead to requiring 3 buffers to start and writing two addresses
-> > >   when starting. Using vsync as a sync point seems to be the correct
-> > >   approach and allows using only two buffers without tearing;
-> > > - Using devm_regmap_init_mmio_clk was incorrect since the reset also
-> > >   comes into play;
-> > > - Some register definitions were inverted compared to their actual
-> > >   effect (which was inherited from the Allwinner documentation and
-> > >   code): comments were added where relevant;
-> > > - The deprecated v4l2_async_notifier_parse_fwnode_endpoints() helper
-> > >   is no longer used by the driver;
-> > 
-> > With that being said, NAK.
-> > 
-> > Having heavy changes to a driver is completely fine, and is kind of
-> > expected really with such a big change. Breaking all possibility of
-> > bisection and throwing away years of stabilization and maintenance
-> > isn't.
-> > 
-> > And all those small bug fixes you mention at the end are just that:
-> > small bug fixes that can be done on the current driver just fine too.
-> 
-> I understand that this looks like we're trashing all the work that was
-> done previously by removing the current driver and adding the new one
-> but the logic for deciding what to write into registers was carefully
-> preserved from the original driver to make sure that the works of
-> stabilization and maintenance are not lost.
-> 
-> However I would understand that my good promise on this is not enough,
-> so perhaps I could provide a combinatory verification that the same set
-> of mbus/pixel formats end up with the same thing being written into
-> registers.
-> 
-> In addition I understand that it will be necessary to split the changes
-> up into small commits to clarify the transition path between the two
-> drivers. So I will do my best to split things up.
-> 
-> Does that seem like an agreeable plan or do you see other things that
-> would be blockers?
+If it is not necessary to monitor very small changes in rss (as is the
+case in Android) then the rss_stat tracepoint can be throttled to only
+emit the event once there is a large enough change in the rss size.
+The original patch that introduced the rss_stat tracepoint also proposed
+a fixed throttling mechanism that only emits the rss_stat event
+when the rss size crosses a 512KB boundary. It was concluded that more
+generic support for this type of filtering/throttling was need, so that
+it can be applied to any trace event. [1]
 
-Please do refactor the patches into reviewable chunks that make sense on
-their own. I'd see the result being the same driver but with additional
-patches fixing bugs, doing some or more refactoring and adding new
-functionality. Please use -C100 -M100 if there's a need to rename files,
-and preferrably do so in separate patches.
+From the discussion in [1], histogram triggers seemed the most likely
+candidate to support this type of throttling. For instance to achieve the
+same throttling as was proposed in [1]:
 
-See e.g. patches to the smiapp driver that turned it into a CCS driver:
+  (1) Create a histogram variable to save the 512KB bucket of the rss size
+  (2) Use the onchange handler to generate a synthetic event when the
+      rss size bucket changes.
 
-	git log 2db8166f739e75c1269d7e8afe8da68e70098810..b24cc2a18c50e4e315abc76a86b26b4c49652f79~ -- drivers/media/i2c/smiapp
-	git log drivers/media/i2c/ccs
+The only missing pieces to support such a hist trigger are:
+  (1) Support for setting a hist variable to a specific value -- to set
+      the bucket size / granularity.
+  (2) Support for division arithmetic operation -- to determine the
+      corresponding bucket for an rss size.
 
-Usually bugfixes are best put first.
+This series extends histogram trigger expressions to:
+  (1) Allow assigning numeric literals to hist variable (eg. x=1234)
+      and using literals directly in expressions (eg. x=size/1234)
+  (2) Support division and multiplication in hist expressions.
+      (eg. a=$x/$y*z); and
+  (3) Fixes expression parsing for non-associative operators: subtraction
+      and division. (eg. 8-4-2 should be 2 not 6)
 
-> 
-> My initial thought was that it would be much easier to review the driver as a
-> rewrite, but I'm not too surprised I was wrong. To be honest it was nearly
-> impossible to actually have the initial development happen as sequential steps
-> and I preferred to allocate my time on other tasks than splitting the changes
-> into these sequential steps.
+The rss_stat event can then be throttled using histogram triggers as
+below:
 
-This isn't really unusual when you're changing an existing driver:
-sometimes you have to implement what you want to achieve in whole, and only
-then figure out how to split it into something that can be reviewed. Often
-the end result will look different than what you arrived with on the first
-time.
+  # Create a synthetic event to monitor instead of the high frequency
+  # rss_stat event
+  echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
+         int member; long size' >> tracing/synthetic_events
 
+  # Create a hist trigger that emits the synthetic rss_stat_throttled
+  # event only when the rss size crosses a 512KB boundary.
+  echo 'hist:keys=common_pid:bucket=size/0x80000:onchange($bucket)
+              .rss_stat_throttled(mm_id,curr,member,size)'
+        >> events/kmem/rss_stat/trigger
+
+ ------ Test Results ------
+Histograms can also be used to evaluate the effectiveness of this
+throttling by noting the Total Hits on each trigger:
+
+  echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
+  echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
+  echo 'hist:keys=common_pid'
+           >> events/synthetic/rss_stat_throttled/trigger
+
+Allowing the above example (512KB granularity) run for 5 minutes on
+an arm64 device with 5.10 kernel:
+
+   sched_switch      : total hits = 147153
+   rss_stat          : total hits =  38863
+   rss_stat_throttled: total hits =   2409
+
+The synthetic rss_stat_throttled event is ~16x less frequent than the
+rss_stat event when using a 512KB granularity.
+
+
+The results are more pronounced when rss size is changing at a higher
+rate in small increments. For instance the following results were obtained
+by recording the hits on the above events for a run of Android's
+lmkd_unit_test [2], which continually forks processes that map anonymous
+memory until there is an oom kill:
+
+   sched_switch      : total hits =  148832
+   rss_stat          : total hits = 4754802
+   rss_stat_throttled: total hits =   96214
+
+In this stress this, the  synthetic rss_stat_throttled event is ~50x less
+frequent than the rss_stat event when using a 512KB granularity.
+
+
+[1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
+[2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
+
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+
+Kalesh Singh (5):
+  tracing: Add support for creating hist trigger variables from literal
+  tracing: Add division and multiplication support for hist triggers
+  tracing: Fix operator precedence for hist triggers expression
+  tracing/selftests: Add tests for hist trigger expression parsing
+  tracing/histogram: Document expression arithmetic and constants
+
+ Documentation/trace/histogram.rst             |  14 +
+ kernel/trace/trace_events_hist.c              | 318 +++++++++++++++---
+ .../testing/selftests/ftrace/test.d/functions |   4 +-
+ .../trigger/trigger-hist-expressions.tc       |  73 ++++
+ 4 files changed, 357 insertions(+), 52 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
+
+
+base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
 -- 
-Kind regards,
+2.33.0.309.g3052b89438-goog
 
-Sakari Ailus
