@@ -2,192 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4648540CE88
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C71540CEA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbhIOVMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 17:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhIOVMc (ORCPT
+        id S232718AbhIOVOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:14:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47404 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232760AbhIOVNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 17:12:32 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3111C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:11:12 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id b200so5251538iof.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GTklZ0TZHnqTLVKAYMSXufi3jXO25MrnhIiEToyloJE=;
-        b=CF2RsMzd+XjZH+58qLc9upcw3f9+YoaEVqE1BCMEpIjlBJpuA2g6Bca9MiXsOO8a7w
-         wfy42NPfjpy6uDbeugL5bMatuVuyidzGW0DfcnXvn0YO3Uosn2pIJTW9Y0RqZ5xVa7M/
-         LTGs+8kalGBihvD1OW9j7gMPIffawVAu/mqrg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GTklZ0TZHnqTLVKAYMSXufi3jXO25MrnhIiEToyloJE=;
-        b=EmcNvQozIr3qq6kT+D42EQF4jIbEiA+n6hcMh0OpAB0bjx8QMuFmcPsFCJUQ+B2wut
-         HMI5F0mgXZWnlUHGLvu5vywkgoiz3HI9Pm8dJrhdjoxwA+4uK893JpyGZDzoZNJT74GN
-         IRqrhDDK5KThgTGoPYibJJpxm7zINyi8ozAiRVLkxU/ApnvkQztIAtrmlXNLQhpj/1Qx
-         dgoK4JvECT5RwDc9NvY8hPK3JznnBqU2Lvh/f1HWv0dE/hzjR1gx+eWjEMaAsi3kEKBg
-         TEpZIKxByDWnKr+2pV8ySYKqbDkL0I9RxSe28oo7gr6Y08Sbm/ZQlb6vJvjMdgqcrPd/
-         lUBA==
-X-Gm-Message-State: AOAM53197wWU31HjVh9IKaQ6mkgjBevYUQUSeKLlVLdq6r2OxK6vxMYM
-        yRi2drMtr4tsbUCA4OTEwDp16w==
-X-Google-Smtp-Source: ABdhPJy+beHrlL8Y84AHGMrL9X9iV8beocxtrcNvp0MZWAEyTv7ribbKjRAk4ESrlzZ5FCBSrmHB4A==
-X-Received: by 2002:a5d:9c89:: with SMTP id p9mr1698866iop.13.1631740272166;
-        Wed, 15 Sep 2021 14:11:12 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id r13sm608020ilh.80.2021.09.15.14.11.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 14:11:11 -0700 (PDT)
-Subject: Re: [Tech-board-discuss] Reminder: Voting procedures for the Linux
- Foundation Technical Advisory Board
-To:     Laura Abbott <laura@labbott.name>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     ksummit@lists.linux.dev,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
- <b90db9e7-9b6b-c415-d087-3505ba0be0d6@labbott.name>
- <YUH+DO5aHWGVdNb7@pendragon.ideasonboard.com>
- <dc45975a-86df-a70d-ff15-58a3bdcf09ee@labbott.name>
- <YUIHPv3uvAZjJxfB@pendragon.ideasonboard.com>
- <90e00588-3596-01f5-e5a0-73516224b883@labbott.name>
- <YUIbvmPUEUtf/BDU@pendragon.ideasonboard.com>
- <9af9f018-5df5-f5d6-5472-2387c1bb594a@linuxfoundation.org>
- <00b4158c-a0c8-b4c2-a0e5-3c646079393a@labbott.name>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ab8920a9-0fe0-4b92-d524-8911e88b90dd@linuxfoundation.org>
-Date:   Wed, 15 Sep 2021 15:11:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <00b4158c-a0c8-b4c2-a0e5-3c646079393a@labbott.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Wed, 15 Sep 2021 17:13:41 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18FIgMfw003228;
+        Wed, 15 Sep 2021 17:11:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=LsQZc/VaDEkUhYmxVD4r3oz4fRVG/JeSgvVFMFDWv9c=;
+ b=b6UrA8WR1EVbYudR5Fe8U+I3pC9EIYmfq3WGwAmX8zrCxYqO2H23xYocHo96+AXuCezN
+ hQ5oxrl+8XNYqV1aoEIGs6p/dNR2IpILLGfBa+cjP65mu4CGoeUQmYn0HlggZ601eiRa
+ n+znGs+Cy3AbIe081MZoyXdJggaxA8HKIivrAjA/wvr88SL6H87+ck4LpZQAU6YORdkh
+ ENwjb9z7BP3f7jNNi1pYuTFv7k/puQHhmRhYG6TZng0uIg6V47KmIGkxz+dAYsx1X9hh
+ nKj/LpazCFr4NlBjYq/50mnCyRjKcwrgVMViEKdeLZ/uPjCtGxfY/c4BJSvW2XTrBmHO IQ== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b3p60tuvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 17:11:53 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18FL6ssO020495;
+        Wed, 15 Sep 2021 21:11:52 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma01dal.us.ibm.com with ESMTP id 3b0m3e1ffy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 21:11:52 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18FLBpMx8782340
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Sep 2021 21:11:51 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5ED1A6E058;
+        Wed, 15 Sep 2021 21:11:51 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB2456E050;
+        Wed, 15 Sep 2021 21:11:50 +0000 (GMT)
+Received: from v0005c16 (unknown [9.211.152.249])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Sep 2021 21:11:50 +0000 (GMT)
+Message-ID: <ac8d30e988ab6cc16d4c7446d259b87deb734910.camel@linux.ibm.com>
+Subject: Re: [PATCH 3/3] hwmon: (occ) Provide the SBEFIFO FFDC in binary
+ sysfs
+From:   Eddie James <eajames@linux.ibm.com>
+To:     Guenter Roeck <linux@roeck-us.net>, joel@jms.id.au
+Cc:     linux-fsi@lists.ozlabs.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jdelvare@suse.com,
+        alistair@popple.id.au, jk@ozlabs.org
+Date:   Wed, 15 Sep 2021 16:11:50 -0500
+In-Reply-To: <20210915161333.GA3712393@roeck-us.net>
+References: <20210914213543.73351-1-eajames@linux.ibm.com>
+         <20210914213543.73351-4-eajames@linux.ibm.com>
+         <20210915161333.GA3712393@roeck-us.net>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UQO9fl-rjOiohgIRRn4ZoEFvuPM2np_y
+X-Proofpoint-ORIG-GUID: UQO9fl-rjOiohgIRRn4ZoEFvuPM2np_y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
+ definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109150103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 2:42 PM, Laura Abbott wrote:
-> On 9/15/21 15:34, Shuah Khan wrote:
->> On 9/15/21 10:13 AM, Laurent Pinchart wrote:
->>> Hi Laura,
->>>
->>> On Wed, Sep 15, 2021 at 12:07:13PM -0400, Laura Abbott wrote:
->>>> On 9/15/21 10:46, Laurent Pinchart wrote:
->>>>> On Wed, Sep 15, 2021 at 10:36:45AM -0400, Laura Abbott wrote:
->>>>>> On 9/15/21 10:07, Laurent Pinchart wrote:
->>>>>>> On Wed, Sep 15, 2021 at 09:58:32AM -0400, Laura Abbott wrote:
->>>>>>>> On 9/9/21 12:49, Laura Abbott wrote:
->>>>>>>>> Hi,
->>>>>>>>>
->>>>>>>>> Reminder that the Linux Foundation Technical Advisory Board (TAB) annual
->>>>>>>>> election will be held virtually during the 2021 Kernel Summit and Linux
->>>>>>>>> Plumbers Conference. Voting will run from September 20th to September
->>>>>>>>> 23rd 16:00 GMT-4 (US/Eastern). The voting criteria for the 2021 election
->>>>>>>>> are:
->>>>>>>>>
->>>>>>>>> There exist three kernel commits in a mainline or stable released
->>>>>>>>> kernel that both
->>>>>>>>> - Have a commit date in the year 2020 or 2021
->>>>>>>>> - Contain an e-mail address in one of the following tags or merged
->>>>>>>>> tags (e.g. Reviewed-and-tested-by)
->>>>>>>>> -- Signed-off-by
->>>>>>>>> -- Tested-by
->>>>>>>>> -- Reported-by
->>>>>>>>> -- Reviewed-by
->>>>>>>>> -- Acked-by
->>>>>>>>>
->>>>>>>>> If you have more than 50 commits that meet this requirement you will
->>>>>>>>> receive a ballot automatically.
->>>>>>>>>
->>>>>>>>> If you have between 3 and 49 commits that meet this requirement please
->>>>>>>>> e-mail tab-elections@lists.linuxfoundation.org to request your ballot.
->>>>>>>>> We strongly encourage everyone who meets this criteria to request a
->>>>>>>>> ballot.
->>>>>>>>>
->>>>>>>>> We will be using Condorcet Internet Voting
->>>>>>>>> Service (CIVS) https://civs1.civs.us/ . This is a voting service
->>>>>>>>> focused on security and privacy. There are sample polls on the
->>>>>>>>> website if you would like to see what a ballot will look like.
->>>>>>>>>
->>>>>>>>> If you have any questions please e-mail
->>>>>>>>> tab-elections@lists.linuxfoundation.org.
->>>>>>>>>
->>>>>>>>> Thanks,
->>>>>>>>> Laura
->>>>>>>>>
->>>>>>>>> P.S. Please also consider this another reminder to consider running for
->>>>>>>>> the TAB as well
->>>>>>>>
->>>>>>>> Final reminder: please remember to request your ballot for the TAB
->>>>>>>> elections. If you know others who are eligible please encourage
->>>>>>>> them to request a ballot as well.
->>>>>>>
->>>>>>> When are the ballots supposed to be sent ? It would be nice to avoid
->>>>>>> requiring everybody to check whether they're below or above the 50
->>>>>>> commits threshold manually :-)
->>>>>>
->>>>>> The ballots will be sent sometime after Monday September 20th
->>>>>> 9:00am GMT-4 (US/Eastern).
->>>>>>
->>>>>> I did make an attempt to send e-mails to the > 50 commits individuals
->>>>>> but there is a chance my e-mail got eaten by spam filters or just
->>>>>> didn't get sent out. I discovered Google Apps' e-mail limits and
->>>>>> that you should not attempt to bcc too many people. This is something
->>>>>> I'd like to handle in a more automated fashion next year to make
->>>>>> it easier for both voters and those running the elections.
->>>>>
->>>>> Does it mean I should ask for a ballot after the 20th if I don't get
->>>>> one, or request one *before* ? I meet the above criteria but haven't
->>>>> received any ballot yet, so I was unsure whether I should ask or wait.
->>>>
->>>> The intention was that if you were in the range of between 3-49 commits
->>>> you would ask for a ballot now.
->>>
->>> Would it be possible to share the script that you are using to check in
->>> which category a developer is, to avoid the criteria being applied in
->>> slightly different ways ?
->>>
->>
->> Same request. Is this the same script that gets used to determine candidate
->> eligibility before they get added to the ballot?
->>
->> thanks,
->> -- Shuah
+On Wed, 2021-09-15 at 09:13 -0700, Guenter Roeck wrote:
+> On Tue, Sep 14, 2021 at 04:35:43PM -0500, Eddie James wrote:
+> > Save any FFDC provided by the OCC driver, and provide it to
+> > userspace
+> > through a binary sysfs entry. Do some basic state management to
+> > ensure that userspace can always collect the data if there was an
+> > error. Notify polling userspace when there is an error too.
+> > 
+> > Signed-off-by: Eddie James <eajames@linux.ibm.com>
 > 
-> You can thank Kees for the script
-> 
-> https://github.com/kees/kernel-tools/blob/trunk/identity-canonicalizer
-> 
-> This is the same script for both voting and nomination
-> 
-> The set generated is
-> 
-> # Find people participating in 50+ commits since 2020-01-01:
-> git log --since=2020-01-01 | ~/bin/identity-canonicalizer | sort -g > contributors.txt
-> cat contributors.txt | awk '{if ($1 > 2) {print $0}}' >eligible.txt
-> cat eligible.txt | awk '{if ($1 > 49) {print $0}}' >ballots.txt
+> This is now the 2nd series that we have pending, and the first series
+> (from July) still didn't make it into the upstream kernel because the
+> fsi code
+> seems to go nowhere. Any chance to address that ?
 
-So people that this script spits out are the ones that are
-eligible for the following:
+Yes... Joel, can we merge that? I don't have any comments to address.
 
--- get added to the ballot if they sent in the nomination
--- get sent a ballot by Sept 20th for voting
+> 
+> Additional comment inline.
+> 
+> Thanks,
+> Guenter
+> 
+> > ---
+> >  drivers/hwmon/occ/p9_sbe.c | 98
+> > +++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 97 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hwmon/occ/p9_sbe.c
+> > b/drivers/hwmon/occ/p9_sbe.c
+> > index 9709f2b9c052..505f489832a4 100644
+> > --- a/drivers/hwmon/occ/p9_sbe.c
+> > +++ b/drivers/hwmon/occ/p9_sbe.c
+> > @@ -4,18 +4,54 @@
+> >  #include <linux/device.h>
+> >  #include <linux/errno.h>
+> >  #include <linux/fsi-occ.h>
+> > +#include <linux/mm.h>
+> >  #include <linux/module.h>
+> > +#include <linux/mutex.h>
+> >  #include <linux/platform_device.h>
+> > +#include <linux/string.h>
+> > +#include <linux/sysfs.h>
+> >  
+> >  #include "common.h"
+> >  
+> > +enum sbe_error_state {
+> > +	SBE_ERROR_NONE = 0,
+> > +	SBE_ERROR_PENDING,
+> > +	SBE_ERROR_COLLECTED
+> > +};
+> > +
+> >  struct p9_sbe_occ {
+> >  	struct occ occ;
+> > +	int sbe_error;
+> > +	void *ffdc;
+> > +	size_t ffdc_len;
+> > +	size_t ffdc_size;
+> > +	struct mutex sbe_error_lock;	/* lock access to ffdc data
+> > */
+> > +	u32 no_ffdc_magic;
+> >  	struct device *sbe;
+> >  };
+> >  
+> >  #define to_p9_sbe_occ(x)	container_of((x), struct p9_sbe_occ,
+> > occ)
+> >  
+> > +static ssize_t sbe_error_read(struct file *filp, struct kobject
+> > *kobj,
+> > +			      struct bin_attribute *battr, char *buf,
+> > +			      loff_t pos, size_t count)
+> > +{
+> > +	ssize_t rc = 0;
+> > +	struct occ *occ = dev_get_drvdata(kobj_to_dev(kobj));
+> > +	struct p9_sbe_occ *ctx = to_p9_sbe_occ(occ);
+> > +
+> > +	mutex_lock(&ctx->sbe_error_lock);
+> > +	if (ctx->sbe_error == SBE_ERROR_PENDING) {
+> > +		rc = memory_read_from_buffer(buf, count, &pos, ctx-
+> > >ffdc,
+> > +					     ctx->ffdc_len);
+> > +		ctx->sbe_error = SBE_ERROR_COLLECTED;
+> > +	}
+> > +	mutex_unlock(&ctx->sbe_error_lock);
+> > +
+> > +	return rc;
+> > +}
+> > +static BIN_ATTR_RO(sbe_error, OCC_MAX_RESP_WORDS * 4);
+> > +
+> >  static int p9_sbe_occ_send_cmd(struct occ *occ, u8 *cmd, size_t
+> > len)
+> >  {
+> >  	struct occ_response *resp = &occ->resp;
+> > @@ -24,8 +60,47 @@ static int p9_sbe_occ_send_cmd(struct occ *occ,
+> > u8 *cmd, size_t len)
+> >  	int rc;
+> >  
+> >  	rc = fsi_occ_submit(ctx->sbe, cmd, len, resp, &resp_len);
+> > -	if (rc < 0)
+> > +	if (rc < 0) {
+> > +		if (resp_len) {
+> > +			bool notify = false;
+> > +
+> > +			mutex_lock(&ctx->sbe_error_lock);
+> > +			if (ctx->sbe_error != SBE_ERROR_PENDING)
+> > +				notify = true;
+> > +			ctx->sbe_error = SBE_ERROR_PENDING;
+> > +
+> > +			if (resp_len > ctx->ffdc_size) {
+> > +				if (ctx->ffdc_size)
+> > +					kvfree(ctx->ffdc);
+> > +				ctx->ffdc = kvmalloc(resp_len,
+> > GFP_KERNEL);
+> > +				if (!ctx->ffdc) {
+> > +					ctx->ffdc_size = 0;
+> > +					ctx->ffdc_len = sizeof(u32);
+> > +					ctx->ffdc = &ctx-
+> > >no_ffdc_magic;
+> > +					goto unlock;
+> > +				}
+> > +
+> > +				ctx->ffdc_size = resp_len;
+> > +			}
+> > +
+> > +			ctx->ffdc_len = resp_len;
+> > +			memcpy(ctx->ffdc, resp, resp_len);
+> > +
+> > +unlock:
+> > +			mutex_unlock(&ctx->sbe_error_lock);
+> > +
+> > +			if (notify)
+> > +				sysfs_notify(&occ->bus_dev->kobj, NULL,
+> > +					     bin_attr_sbe_error.attr.na
+> > me);
+> > +		}
+> > +
+> >  		return rc;
+> > +	}
+> > +
+> > +	mutex_lock(&ctx->sbe_error_lock);
+> > +	if (ctx->sbe_error == SBE_ERROR_COLLECTED)
+> > +		ctx->sbe_error = SBE_ERROR_NONE;
+> > +	mutex_unlock(&ctx->sbe_error_lock);
+> 
+> I am not entirely sure I understand the benefit of
+> SBE_ERROR_COLLECTED.
+> Can you explain why it is needed, and why the status is not just set
+> to SBE_ERROR_NONE after the error data was collected ?
 
-Also does this criteria get applied to TAB Chair/co-Chair election
-going forward?
+The purpose was to make sure the data can be collected even if a
+successful transfer (which clears the flag) comes through before the
+user comes and reads the file. If the error is just set to NONE, then
+the user might never see it, with the current implementation. I think I
+will drop the state management though and just return the last error
+data.
 
-thanks,
--- Shuah
+> 
+> >  
+> >  	switch (resp->return_status) {
+> >  	case OCC_RESP_CMD_IN_PRG:
+> > @@ -65,6 +140,13 @@ static int p9_sbe_occ_probe(struct
+> > platform_device *pdev)
+> >  	if (!ctx)
+> >  		return -ENOMEM;
+> >  
+> > +	ctx->no_ffdc_magic = OCC_NO_FFDC_MAGIC;
+> 
+> This is ... odd. Why not just return a file size of 0 if there is no
+> data ?
+> The binary file is an ABI and needs to be documented, including the
+> use
+> of this "magic". The use of that magic needs to be explained because
+> it
+> does add a lot of what sems to be unnecessary complexity to the code.
+> 
+> Besides, most of that complexity seems unnecessary: If the magic is
+> really
+> needed, the read code could just write it into the buffer if ctx-
+> >ffdc
+> is NULL. There is a lot of complexity just to avoid an if statement
+> in
+> sbe_error_read().
+
+Yea, I will admit this is pretty awkward. The reason for all this is
+because I was trying to use a single sysfs entry to communicate both
+whether or not there is an error at all, and the data from the error.
+So returning  file size 0 means "no error" and then we can't capture
+the case where there is an error but there is no data.
+
+So on second thought, I should probably use two sysfs entries: one to
+indicate if there is an error, and the other to report the data (if
+there is any). There is the existing OCC error file of course, but
+that's supposed to be for actual OCC response errors, so I will have to
+investigate if it can serve both purposes.
+
+Thanks for the review, Guenter!
+Eddie
+
+> 
+> > +	ctx->sbe_error = SBE_ERROR_NONE;
+> > +	ctx->ffdc = &ctx->no_ffdc_magic;
+> > +	ctx->ffdc_len = sizeof(u32);
+> > +	ctx->ffdc_size = 0;
+> > +	mutex_init(&ctx->sbe_error_lock);
+> > +
+> >  	ctx->sbe = pdev->dev.parent;
+> >  	occ = &ctx->occ;
+> >  	occ->bus_dev = &pdev->dev;
+> > @@ -78,6 +160,15 @@ static int p9_sbe_occ_probe(struct
+> > platform_device *pdev)
+> >  	if (rc == -ESHUTDOWN)
+> >  		rc = -ENODEV;	/* Host is shutdown, don't spew
+> > errors */
+> >  
+> > +	if (!rc) {
+> > +		rc = device_create_bin_file(occ->bus_dev,
+> > &bin_attr_sbe_error);
+> > +		if (rc) {
+> > +			dev_warn(occ->bus_dev,
+> > +				 "failed to create SBE error ffdc
+> > file\n");
+> > +			rc = 0;
+> > +		}
+> > +	}
+> > +
+> >  	return rc;
+> >  }
+> >  
+> > @@ -86,9 +177,14 @@ static int p9_sbe_occ_remove(struct
+> > platform_device *pdev)
+> >  	struct occ *occ = platform_get_drvdata(pdev);
+> >  	struct p9_sbe_occ *ctx = to_p9_sbe_occ(occ);
+> >  
+> > +	device_remove_bin_file(occ->bus_dev, &bin_attr_sbe_error);
+> > +
+> >  	ctx->sbe = NULL;
+> >  	occ_shutdown(occ);
+> >  
+> > +	if (ctx->ffdc_size)
+> > +		kvfree(ctx->ffdc);
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > -- 
+> > 2.27.0
+> > 
+
