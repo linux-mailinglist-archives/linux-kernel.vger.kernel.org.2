@@ -2,249 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEB740BE31
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF6740BE33
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236190AbhIOD1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhIOD07 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:26:59 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4731AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:25:41 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id q21so2631070ljj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 20:25:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jpkoy1O4W37gxxZz4Q3BGON9SqZWsCkichzbFfj+wPo=;
-        b=j5pbDlKbHAd/SoLCe/0YXf/jcjOdh7iKg2fsZFsarJCya01vUWLgShKILNoLJ7fKDX
-         QYlstdoebXeBTxYpSIVHChb8b+8ERKwmiwpjChYkhJ1M0jnrKMS0za5Nc0xykKZh6ym7
-         EOn20yZdsi/QGUBN2LgWOZceToXqcG+/zRPKY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jpkoy1O4W37gxxZz4Q3BGON9SqZWsCkichzbFfj+wPo=;
-        b=JyfoKWRMldnb0Wbih2mgE4kj7rlNZBUdv9CO+UENnnhzTdzIKFAMPH+PKMU+VQSzLk
-         ihDL9+kOGEY52GfANUzupTS+3ZvoSFhIxrkZOf+JjuH0b9JvCuYyGyla8aNO9aESTp5V
-         g+dLRga2KoMsop/nBR6FWpic+BKnqz2KZu6oVyCU20hppPhl0jyrtWAI1Vljt8+wxhNi
-         0C4LUxoIzcVNDrALHE2NT/G1n2bpTAdgwdSS3ZaLEXGwPWQ5nI2wm+3a0GPcAZg3J2+h
-         bGoXwVIjFrT7cuiVw3FBg6SlORGh2SO9kpb6rhfdsTszXiPYOl97aoTe081iQJViHOay
-         HkPA==
-X-Gm-Message-State: AOAM5330ggUMy3U1sEnXV0RYAQ7VUgBQKXhXCMBJdfARs+ObsU3S6HE2
-        Jvitzus5A9v1F/BWxikb82sjAi30s16V1O/muc0KSA==
-X-Google-Smtp-Source: ABdhPJzxW4QysuCYdlnzVAVxRBzARMIBn0RRJp/tSFmhr5M92N1O+bjF81zqZa2hjgCSzEpa1xAoPr+pFCI3qHYh47I=
-X-Received: by 2002:a2e:7d17:: with SMTP id y23mr18546099ljc.392.1631676339641;
- Tue, 14 Sep 2021 20:25:39 -0700 (PDT)
+        id S233232AbhIOD2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:28:39 -0400
+Received: from mga12.intel.com ([192.55.52.136]:47076 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229983AbhIOD2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 23:28:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="201704194"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="201704194"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 20:27:19 -0700
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="470575008"
+Received: from ldraghi-mobl1.amr.corp.intel.com (HELO [10.209.28.176]) ([10.209.28.176])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 20:27:18 -0700
+Subject: Re: [PATCH] perf: fix panic by disable ftrace on fault.c
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:X86 MM" <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+References: <ff979a43-045a-dc56-64d1-2c31dd4db381@linux.alibaba.com>
+ <d16e7188-1afa-7513-990c-804811747bcb@linux.alibaba.com>
+ <d85f9710-67c9-2573-07c4-05d9c677d615@intel.com>
+ <d8853e49-8b34-4632-3e29-012eb605bea9@linux.alibaba.com>
+ <09777a57-a771-5e17-7e17-afc03ea9b83b@linux.alibaba.com>
+ <4f63c8bc-1d09-1717-cf81-f9091a9f9fb0@linux.alibaba.com>
+ <18252e42-9c30-73d4-e3bb-0e705a78af41@intel.com>
+ <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <bbe09ffb-08b7-824c-943f-dffef51e98c2@intel.com>
+Date:   Tue, 14 Sep 2021 20:27:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210830003603.31864-1-zhiyong.tao@mediatek.com>
- <20210830003603.31864-2-zhiyong.tao@mediatek.com> <CAGXv+5HeNj2Ly-T1bWMvnYXv6nP-Q1kv+D9QEd+5u4xfNVibOg@mail.gmail.com>
- <1630551265.2247.11.camel@mhfsdcap03> <CAGXv+5E2pmS7Og5bRH8Q8yvXPHkJuL6EXKORkq1-Ye+2qNYQpg@mail.gmail.com>
- <4787120f25e76ed3727e10011522fc075da52e32.camel@mediatek.com>
- <CAGXv+5H6Hj9tGkpMHs_uBTcztDBZ_YJ2PUV7J8+abR+5BEsV2g@mail.gmail.com> <05f453a466995a6c272d585f18e81c5fcb837a0b.camel@mediatek.com>
-In-Reply-To: <05f453a466995a6c272d585f18e81c5fcb837a0b.camel@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Wed, 15 Sep 2021 11:25:28 +0800
-Message-ID: <CAGXv+5FF25a=28YNmVx_FNJ1o+OrR_LWkd1VPe6ejoxX9-bkaA@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] dt-bindings: pinctrl: mt8195: add rsel define
-To:     "zhiyong.tao" <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        Light Hsieh <light.hsieh@mediatek.com>,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4cba7088-f7c8-edcf-02cd-396eb2a56b46@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 8:27 PM zhiyong.tao <zhiyong.tao@mediatek.com> wrote:
->
-> On Mon, 2021-09-06 at 16:20 +0800, Chen-Yu Tsai wrote:
-> > On Sat, Sep 4, 2021 at 4:40 PM zhiyong.tao <zhiyong.tao@mediatek.com>
-> > wrote:
-> > >
-> > > On Thu, 2021-09-02 at 11:35 +0800, Chen-Yu Tsai wrote:
-> > > > On Thu, Sep 2, 2021 at 10:54 AM zhiyong.tao <
-> > > > zhiyong.tao@mediatek.com
-> > > > > wrote:
-> > > > >
-> > > > > On Wed, 2021-09-01 at 12:35 +0800, Chen-Yu Tsai wrote:
-> > > > > > On Mon, Aug 30, 2021 at 8:36 AM Zhiyong Tao <
-> > > > > > zhiyong.tao@mediatek.com> wrote:
-> > > > > > >
-> > > > > > > This patch adds rsel define for mt8195.
-> > > > > > >
-> > > > > > > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> > > > > > > ---
-> > > > > > >  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
-> > > > > > >  1 file changed, 9 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/include/dt-bindings/pinctrl/mt65xx.h
-> > > > > > > b/include/dt-
-> > > > > > > bindings/pinctrl/mt65xx.h
-> > > > > > > index 7e16e58fe1f7..f5934abcd1bd 100644
-> > > > > > > --- a/include/dt-bindings/pinctrl/mt65xx.h
-> > > > > > > +++ b/include/dt-bindings/pinctrl/mt65xx.h
-> > > > > > > @@ -16,6 +16,15 @@
-> > > > > > >  #define MTK_PUPD_SET_R1R0_10 102
-> > > > > > >  #define MTK_PUPD_SET_R1R0_11 103
-> > > > > > >
-> > > > > > > +#define MTK_PULL_SET_RSEL_000  200
-> > > > > > > +#define MTK_PULL_SET_RSEL_001  201
-> > > > > > > +#define MTK_PULL_SET_RSEL_010  202
-> > > > > > > +#define MTK_PULL_SET_RSEL_011  203
-> > > > > > > +#define MTK_PULL_SET_RSEL_100  204
-> > > > > > > +#define MTK_PULL_SET_RSEL_101  205
-> > > > > > > +#define MTK_PULL_SET_RSEL_110  206
-> > > > > > > +#define MTK_PULL_SET_RSEL_111  207
-> > > > > >
-> > > > > > Could you keep the spacing between constants tighter, or have
-> > > > > > no
-> > > > > > spacing
-> > > > > > at all? Like having MTK_PULL_SET_RSEL_000 defined as 104 and
-> > > > > > so
-> > > > > > on. This
-> > > > > > would reduce the chance of new macro values colliding with
-> > > > > > actual
-> > > > > > resistor
-> > > > > > values set in the datasheets, plus a contiguous space would
-> > > > > > be
-> > > > > > easy to
-> > > > > > rule as macros.
-> > > > > >
-> > > > > > ChenYu
-> > > > >
-> > > > > Hi chenyu,
-> > > > > By the current solution, it won't be mixed used by
-> > > > > MTK_PULL_SET_RSEL_XXX
-> > > > > and real  resistor value.
-> > > > > If user use MTK_PULL_SET_RSEL_XXX, They don't care the define
-> > > > > which
-> > > > > means how much resistor value.
-> > > >
-> > > > What I meant was that by keeping the value space tight, we avoid
-> > > > the
-> > > > situation where in some new chip, one of the RSEL resistors
-> > > > happens
-> > > > to
-> > > > be 200 or 300 ohms. 100 is already taken, so there's nothing we
-> > > > can
-> > > > do if new designs actually do have 100 ohm settings.
-> > > >
-> > > > > We think that we don't contiguous macro space for different
-> > > > > register.
-> > > > > It may increase code complexity to make having
-> > > > > MTK_PULL_SET_RSEL_000
-> > > > > defined as 104.
-> > > >
-> > > > Can you elaborate? It is a simple range check and offset
-> > > > handling.
-> > > > Are
-> > > > you concerned that a new design would have R2R1R0 and you would
-> > > > like
-> > > > the macros to be contiguous?
-> > > >
-> > > > BTW I don't quite get why decimal base values (100, 200, etc.)
-> > > > were
-> > > > chosen. One would think that binary bases are easier to handle in
-> > > > code.
-> > > >
-> > > >
-> > > > ChenYu
-> > > >
-> > >
-> > > Yes,we concerned that a new design would have R2R1R0 and we would
-> > > like
-> > > the macros to be contiguous in the feature. we reserve it.
-> >
-> > I see. That makes sense. Do you expect to see R3 or even R4 in the
-> > future?
-> > Or put another way, do you expect to see resistor values of 150 or
-> > 200
-> > supported?
-> >
-> > Maybe we could reserve 200 and start from 201 for the RSEL macros?
-> >
-> > Some planning needs to be done here to avoid value clashes.
-> >
-> > > We think that decimal and binary base values are the same for the
-> > > feature.
-> >
-> > With decimal numbers you end up wasting a bit more space, since the
-> > hardware is always using binary values. I just found it odd, that's
-> > all.
-> >
-> > ChenYu
-> >
-> > > > > Thanks.
->
-> Hi ChenYu,
->
-> In the next version, we provide a solution which we discussed internal
-> to avoid value clashes.
->
-> The solution:
-> 1. We will keep the define "MTK_PULL_SET_RSEL_000 200". It won't
-> change.
->
-> 2. We will add a property in pio dtsi node, for example,
-> the property name is "rsel_resistance_in_si_unit".
-> We will add a flag "rsel_si_unit" in pinctrl device.
-> in probe function, we will identify the property name
-> "rsel_resistance_in_si_unit" to set the flag "rsel_si_unit" value.
-> So it can void value clashes.
+On 9/14/21 6:56 PM, 王贇 wrote:
+>>> [   44.134987][    C0]  ? __sanitizer_cov_trace_pc+0x7/0x60
+>>> [   44.135005][    C0]  ? kcov_common_handle+0x30/0x30
+>> Just turning off tracing for the page fault handler is papering over the
+>> problem.  It'll just come back later with a slightly different form.
+>>
+> Cool~ please let me know when you have the proper approach.
 
-I suppose a "mediatek," prefix should be added. And to future proof
-things this should probably apply to all bias-up/down values, so
-"mediatek,bias-resistance-in-si-units"?
-
-And the description should include something like that:
-
-  Past usage of bias-up/down values included magic numbers to specify
-  different hardware configurations based on register values. This
-  property specifies that all values used for bias-up/down for this
-  controller shall be in SI units.
-
-And this proposal is still subject to maintainer (not me) review.
-
-
-> 3.We will provide the define "MTK_PULL_SET_RSEL_000 200" and si unit
-> two solution. users can support which solution by add property
-> "rsel_resistance_in_si_unit" in dts node or not.
-
-Thanks. I think this solution does provide a clear separation of the
-two value spaces.
-
-ChenYu
-
-> > > > >
-> > > > > >
-> > > > > > >  #define MTK_DRIVE_2mA  2
-> > > > > > >  #define MTK_DRIVE_4mA  4
-> > > > > > >  #define MTK_DRIVE_6mA  6
-> > > > > > > --
-> > > > > > > 2.18.0
-> > > > > > > _______________________________________________
-> > > > > > > Linux-mediatek mailing list
-> > > > > > > Linux-mediatek@lists.infradead.org
-> > > > > > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+It's an entertaining issue, but I wasn't planning on fixing it myself.
