@@ -2,200 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D65940BE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C4440BE40
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbhIODas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhIODaq (ORCPT
+        id S236181AbhIODbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:31:12 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:3688 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229983AbhIODbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:30:46 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4E0C061574;
-        Tue, 14 Sep 2021 20:29:28 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so3910991pjr.1;
-        Tue, 14 Sep 2021 20:29:28 -0700 (PDT)
+        Tue, 14 Sep 2021 23:31:07 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F2Xvmx011608;
+        Wed, 15 Sep 2021 03:29:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=s4zWdhigge1gNuo5NK5Ffzf/1ux6E9HB+FsMiBjHSis=;
+ b=MZLtbQJfGnMyr3B1qTi9HKBLWZRNNNUkJ+Y6DVufjDirpty2dbT/yQpQLOfBkrLJ8Sn7
+ vds5zU02xtEEMyrL4FAUlzPoNsIExXA6cVGd6Jb1NdrHkSvtuo2sMqqMCdoT8h/GJn1H
+ rF9sDp+IHjb27hCWYkC8azbAbaNmu6uhvsfCXG5+i9yOq87YXZkHiTYQ/YpJTWWHZhLq
+ 06LgNn+w5rx7HTGgL7ok9UUGyaTuuxiOAqZHHSg2GUlpCIZOVW5E9/qh6CpBMZavk3Hf
+ cjwqdTQyLS4DzVokOScWoM53MbBd8Bww0shSb5ojtkrxFLZ66WYAd4tvybvrNXAfm9JX iQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=s4zWdhigge1gNuo5NK5Ffzf/1ux6E9HB+FsMiBjHSis=;
+ b=Nfjdx6nJk8FwZIFVzYZIO8iIJWHiYreS51IH07GCqw5gxM0yDLuRrsy8aNF1Z+q0bFmm
+ /EKsTpX7lX2ZjfVHv4ESr90pRZHbf1paB3EjuC1CxnvLKTKsHRRJ/tKaGVbe1CT7ehTM
+ Vcufvly4L1LLJxJt/xy4ozzXZx+AhvJAyKZvpyJyC7RJ1F5Z6GaGwFPNZdwCylkS8CDU
+ idozTcn3DmLr3Ex+IZA0+1suXYyMDPj+ffojfy4m9lYL9UQudDpabPrWUmGqdRZ7x8Tl
+ 7DUMhT9RVeSdd+uIT8X7MG70vRyLKog3/pEwJR0YWuZyUlahVSwSWMZlF5vPVcY+Rdrv vg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b2pygb5wt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Sep 2021 03:29:43 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18F3GYCv171365;
+        Wed, 15 Sep 2021 03:29:42 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+        by aserp3030.oracle.com with ESMTP id 3b0jge0702-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Sep 2021 03:29:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V7pP3Bs0Sjt8hfjsdpdNpzPjG0hy+6QBM+StDBeX/Tr5G5hjpSufitnK6vbMOUJTKI+xZGploAL7Nqo3Mmdnu4l0iMIQQ+pU6vEC/weVH+91xAWsGDDvh3qMtVDf3rSfd/hNlzAIhdXN5/tZdpzrODITLh4Ns2jYCQk1Va/BYhZ5AxIpe/1jy8Y5IuYYjnYUZR1EoNBhjC9Ii5YecY+4JZmU9pnvtjD1/Riwe9m8bOlIORoRVLlfBiDQ+bLdfmRXZNJpT1wKu6pwh8T13XG8YH651DFc3dhuwZePH8MiELqhWgzsEN/W+hUS4we99wv3Kof4Rts5X65qs30dKGi27g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=s4zWdhigge1gNuo5NK5Ffzf/1ux6E9HB+FsMiBjHSis=;
+ b=MZ3lMypjNAFJEzHbW29d16dv/oGQBb0WqjnIXVW6a5wkda9iOwB+g+b+QSmpm/q4qk2thTg+f4eJ3Xz64UkOXFFwQ2oCr56KIUxbwayUyQSqEvUlRi+F+2xZaOHet9dTgcyLbNODjXdKsLwvmGzIz+AvGkzwx9aiFxdaT6qiuAztGUF2CMV3I0UE0n9WqjicbSlRlC+Mm5Z5kqdplaI1f1Htp5iuH/1st/v4zUqoFByeKZq+QgxjOBohmmx+hUc1/QtunXAoSUbg92BKHK4OCbEf/yoOOjNs9kJXkP8HF0Slag9Lz7BdwXQNTwmYUyMS7kv3xUUwlzhytTgZGiJWBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uT7lgy6zBb7N/ehnvHKTQrLcgZmZaL4s6/TKynv0i24=;
-        b=m+DuAAM4oo4JFjhBYvWp9e7IS0bTVvDEMaBXA4Y3u+GXxoTUVLTm3vptrIvHhUsf+J
-         kgSMV0idgr0HmbfsbOviUd6iHLYZDv1yL1egEIyX5MIqsl/2z7JYA+xbG3RlVBV8uz2U
-         lnUKtd4eDEz4ikmEDkq11lSTTU6Y5VI32cvNv/5qnaVYOYeUEVfKsXb3S8+2NoC/pfCI
-         jSgz8HsY8Wkq/9b+xQhOYyZoA4pyWgO0GeiNFDjWDjLTvRO2HPixRjRbEN3xrm+ZWwsl
-         yDS7qKcfVbCA+exu6QivRCCt1Ty2PC8GdhxK377Y/Au5U1wcds2fwLvyv/n7BCZpDr5e
-         LtCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uT7lgy6zBb7N/ehnvHKTQrLcgZmZaL4s6/TKynv0i24=;
-        b=lcF3oZJt5GOEkeZa5ERIJ2m2shBz3ojVWxPOyBfvAw7Yy+xYjauAdJJTUMFRSgOKVa
-         NP4mXV9gRnivECqy8VaZ259pi/ZVFFZLnPtdhlXDN4O/MDyECAMCLOItozOfHNtcPeYZ
-         x/q447rS12OmLYsxSZvqkcwZWyiB+9mNYQd7GJJS9trEGyNkz1HTzkqDbrzojXc1Wpvu
-         Qzv913wkFkns10LhJmd1bM4zgOsbaPSvVYnB+D2kQlT+BT7mBUzLeiLcPrYDVr++t8+6
-         sTlX+xgySd/iLmUxcgx00mbBgc2SgF4FfVqq2xDruH1SRYHgB5wE2XYge/Je8Ydh9Ubx
-         CVNA==
-X-Gm-Message-State: AOAM532dF+kSEOBEoN1i/OOSoG0CeoHpa8aIUrjff6GvYlPmuqam5a+A
-        C894Q2Jqaq5ygz9Z/Heq8Kg=
-X-Google-Smtp-Source: ABdhPJynoM/BujMCmyDoKceEwK7oXabTKhQCj975dn97xRe9dewS669tscUlGx7ManitvurHLVc2qQ==
-X-Received: by 2002:a17:90a:718c:: with SMTP id i12mr5934342pjk.182.1631676568267;
-        Tue, 14 Sep 2021 20:29:28 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id t13sm3256731pjj.1.2021.09.14.20.29.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Sep 2021 20:29:27 -0700 (PDT)
-Subject: Re: [RFC 05/19] devfreq: imx8m-ddrc: Use the opps acquired from EL3
-To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
- <1631554694-9599-6-git-send-email-abel.vesa@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <b52430cc-1216-8b3e-baec-7d3fffc1274a@gmail.com>
-Date:   Wed, 15 Sep 2021 12:29:20 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s4zWdhigge1gNuo5NK5Ffzf/1ux6E9HB+FsMiBjHSis=;
+ b=PGeoyGI8ABvD4sNtgvPHz4gLwZ8MrYq9/+feZF9+Fr5OmNvkzOf30c5fIuYgObYRsOH139GvTKwFkrp8iG9sSbOUmORpW97s0yKkoWq9Vxz037Mv2qc/BH5ri/G1qR4M4iZoqImaRqLrJr3LtZz/PanBT+E0rbhWOO9wpKztIBU=
+Authentication-Results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5593.namprd10.prod.outlook.com (2603:10b6:510:f5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
+ 2021 03:29:40 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
+ 03:29:40 +0000
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: ufshpb: Use proper power management API
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq11r5qwm7b.fsf@ca-mkp.ca.oracle.com>
+References: <CGME20210902003534epcms2p1937a0f0eeb48a441cb69f5ef13ff8430@epcms2p1>
+        <20210902003534epcms2p1937a0f0eeb48a441cb69f5ef13ff8430@epcms2p1>
+Date:   Tue, 14 Sep 2021 23:29:37 -0400
+In-Reply-To: <20210902003534epcms2p1937a0f0eeb48a441cb69f5ef13ff8430@epcms2p1>
+        (Daejun Park's message of "Thu, 02 Sep 2021 09:35:34 +0900")
+Content-Type: text/plain
+X-ClientProxiedBy: BY5PR20CA0030.namprd20.prod.outlook.com
+ (2603:10b6:a03:1f4::43) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <1631554694-9599-6-git-send-email-abel.vesa@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from ca-mkp.ca.oracle.com (138.3.201.50) by BY5PR20CA0030.namprd20.prod.outlook.com (2603:10b6:a03:1f4::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 15 Sep 2021 03:29:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e26ca858-bc67-4689-8302-08d977f90d19
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5593:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB559309510772B426818A70E28EDB9@PH0PR10MB5593.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:272;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gy9fGXuRL8STn548zEQV51vnCPlgclrnYTicOzdbOvmgFOTy+uu/pGC8YZr8gNSr13h8UPb+4G2Is+teyZ6SPzUmXjzZgLeFhhUyM8k7/e4XXO8yJVwJVxOQb49pdZpfcyTftV1ZJU3V/gqqB+UtXJGx+KN2sltEO0rhWVNgY+eyDgOpmvPsc0NZEifOvNkcvoGYaBOnFT7EX6770wBWBevLPTgKDHkZrMQ+2mjj49JM3464i14B7XYrnCcUazqmW+pgpqR8WQajhUeTjBeVvzHif7ScvxZk+oV9WmwRHWFAhiuIq1vo5CtEblTavGRgyHfpZhUvvF5y6fNkRUitiIG7SfJI76sXKMyfJxczS9aEIuOyM3cE2xJZYQ7yhTpRJW4QWpcaPmbMFMxetcDpIGhDaXfP+kIw/kIzIdqnOlQQT5qrurZHVNKB/X3h7rHnKmrkTH9cVaOh+BS7uZ6oQ4mtoGOhJe6K3yQc7MBXcMi/nSN0ya53VL8JX8WnJj8tRaR4f4GfF1TiNhtT6PUwFq8JJPOVJicIJijeMbhbpOZjD5y+0eUQqHKmIMxNoIhgS9FJ3VzjhpFAfh+yYL6vo86ov4PkKna9brKlkwZi5tjTvCHOtCj3LMBQIi7ibrOgXOtI4draDCGQaVF/CNdGo6JY50ZkhbAjiJoWiFEivVBmUyz/mHyprB9AZkS+5QrkjYGuHoQvlcb8FPHjvdmu4w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(376002)(136003)(396003)(26005)(38100700002)(66556008)(8936002)(86362001)(2906002)(38350700002)(66946007)(956004)(186003)(66476007)(36916002)(55016002)(6916009)(316002)(478600001)(7696005)(4744005)(54906003)(83380400001)(5660300002)(4326008)(8676002)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?myTsXZTNHgKtUq/oT1+lFB6oUnZYbZqWJfgx88Hs6F++CetwzPOXWEBk2QvC?=
+ =?us-ascii?Q?ks5yUaTyfaTTfLC29Bhh0N4xCj1l3NhSSTMy2CJvoLSyo081T7DrP1+gJtgb?=
+ =?us-ascii?Q?4PUgmlPLPinOpNQMxRvnDOnLyRBfdLK6cTOXTVV1q0K1BkyoB39k1678DbIR?=
+ =?us-ascii?Q?XX16ZHPjahdAUi4dzIKgPlyN9Kb2GAdwcGdZbJ08IjGU+1BR/c08igkmexqU?=
+ =?us-ascii?Q?lL4y7D4ujCxXRKCjzOUonwKa3ktdcoxSRHLMRJe0w+wRab9wbeH7Spy/Dd66?=
+ =?us-ascii?Q?POluRJLimbTPzGAbip83mDsRjiBq2eZUzUvILQ3IdHOQfZAebz4YkK6yvacd?=
+ =?us-ascii?Q?poKDqFY9c3OjrAZXERxK5zWRCvB0Hz2Kdl7IwEqtSFgaGN8KPEGzYMDLlmK4?=
+ =?us-ascii?Q?8wGXEHqdnb+JFZjGIkjMTNmRGoLDQIYIak1Sb3JF2EywZm+k1PEtlPId8aiB?=
+ =?us-ascii?Q?1oJDBvZeEKfr51N418MOzH50Eggx/KS3qec10XSIF5EdO8NVVWXzewJQGShT?=
+ =?us-ascii?Q?YrTyrfWDsJx5QaCusinUYdIAYOjILJpzc6lU5aTCOPUHgC/59BeeREzpaEjj?=
+ =?us-ascii?Q?aCSf0lT8FVXQrQSf6qht2R1EJW+JgrcoG8EcZ1dkzIpDxWtj0RVaw0pv7E7D?=
+ =?us-ascii?Q?AfCO/5BaNux86jrUhrEvN8DGyAr9VsEtqhN0Y8fYCGmTcVKts4Ia3OLdpOKC?=
+ =?us-ascii?Q?+pnbLfPkTGyEtCcWqdvoOvwbgdb7AInFIzJIM1uYOnYfl+ooeS+vWg8dYvcd?=
+ =?us-ascii?Q?mYhpWRp2Sa2W8NtOYrYDxmdX4KpDW1osA68nY/WZH6jyNA2+J5G/8KKQekYR?=
+ =?us-ascii?Q?BTJZISnuP1xOOovlm1dvaGU0fcMWBWytmF7lznvIir64bGyXklKlTOyQwwuA?=
+ =?us-ascii?Q?S+MNHO+cwY7099AT510C1WEr7S/FGrY82TTbfFtuDlhUmo9xq5N3wDoLnNFi?=
+ =?us-ascii?Q?zUnaS1ykV54PwYx3Z2nvq00BWsXgBYseQAbeBXOX8ouFO0VOjvAcI4JzdFnb?=
+ =?us-ascii?Q?DkTaLDc8bR8dwiroEoj5npPzlhzaZAjb4Ycqp8Lv1bGuVOVOK3ZCaCS2iK00?=
+ =?us-ascii?Q?O6xt9Ah4QzAPQc7jffUV0SdKgtYa2HyngTeyaXvI9ua9LcekHInkXoUSgo/D?=
+ =?us-ascii?Q?JSfCEqLoXvK0d43+uCHQ2RnpjqYPbItslaASbxBC7l1+dmwibLwkUoIxPwc1?=
+ =?us-ascii?Q?KXdrCWpQ3IMZ5ona371hq/gHyzdab6vHYPoujRbsZDP9nNfaW1SZj1FQqs62?=
+ =?us-ascii?Q?XlkfWye8dJEoFoFodQKHu+UpL39tUGBDZ0LEfdVRBkmHUgu8LtA5/DT7mgCm?=
+ =?us-ascii?Q?epMYp4L9KzLd3bd/kxDEGCNR?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e26ca858-bc67-4689-8302-08d977f90d19
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 03:29:40.0849
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y2F9fYj9Zxv9CUDm5bbFBXaDQvR9MwQawAjgIwFQZn8eNzC0m6XuP9In8N6JaBNjNtgC1qEo24lTVum+CaKknjs4HpSrNElUpg50PEo7ggc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5593
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10107 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
+ mlxlogscore=761 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109150019
+X-Proofpoint-GUID: vqDiHt3GhttkRBgjFhi2b7llF8LJOwdt
+X-Proofpoint-ORIG-GUID: vqDiHt3GhttkRBgjFhi2b7llF8LJOwdt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-OPP is mandatory for devfreq driver. Also, must need to add
-the OPP levels to  devicetree file, it is better to show
-the supported OPP list for the developer who don't know
-the detailed background of driver. If there are no any
-critical issue. I prefer the existing approach for the readability.
+Daejun,
 
-On 21. 9. 14. 오전 2:38, Abel Vesa wrote:
-> i.MX8M platforms get their dram OPPs from the EL3.
-> We don't need to duplicate that in the kernel dram dts node.
-> We should just trust the OPPs provided by the EL3.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->   drivers/devfreq/imx8m-ddrc.c | 50 +++---------------------------------
->   1 file changed, 3 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
-> index 583123bf2100..f18a5c3c1c03 100644
-> --- a/drivers/devfreq/imx8m-ddrc.c
-> +++ b/drivers/devfreq/imx8m-ddrc.c
-> @@ -321,38 +321,9 @@ static int imx8m_ddrc_init_freq_info(struct device *dev)
->   		if (freq->dram_core_parent_index == 2 &&
->   				freq->dram_alt_parent_index == 0)
->   			return -ENODEV;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static int imx8m_ddrc_check_opps(struct device *dev)
-> -{
-> -	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
-> -	struct imx8m_ddrc_freq *freq_info;
-> -	struct dev_pm_opp *opp;
-> -	unsigned long freq;
-> -	int i, opp_count;
-> -
-> -	/* Enumerate DT OPPs and disable those not supported by firmware */
-> -	opp_count = dev_pm_opp_get_opp_count(dev);
-> -	if (opp_count < 0)
-> -		return opp_count;
-> -	for (i = 0, freq = 0; i < opp_count; ++i, ++freq) {
-> -		opp = dev_pm_opp_find_freq_ceil(dev, &freq);
-> -		if (IS_ERR(opp)) {
-> -			dev_err(dev, "Failed enumerating OPPs: %ld\n",
-> -				PTR_ERR(opp));
-> -			return PTR_ERR(opp);
-> -		}
-> -		dev_pm_opp_put(opp);
->   
-> -		freq_info = imx8m_ddrc_find_freq(priv, freq);
-> -		if (!freq_info) {
-> -			dev_info(dev, "Disable unsupported OPP %luHz %luMT/s\n",
-> -					freq, DIV_ROUND_CLOSEST(freq, 250000));
-> -			dev_pm_opp_disable(dev, freq);
-> -		}
-> +		if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
-> +			return -ENODEV;
->   	}
->   
->   	return 0;
-> @@ -360,7 +331,6 @@ static int imx8m_ddrc_check_opps(struct device *dev)
->   
->   static void imx8m_ddrc_exit(struct device *dev)
->   {
-> -	dev_pm_opp_of_remove_table(dev);
->   }
->   
->   static int imx8m_ddrc_probe(struct platform_device *pdev)
-> @@ -407,16 +377,7 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
->   		return ret;
->   	}
->   
-> -	ret = dev_pm_opp_of_add_table(dev);
-> -	if (ret < 0) {
-> -		dev_err(dev, "failed to get OPP table\n");
-> -		return ret;
-> -	}
-> -
-> -	ret = imx8m_ddrc_check_opps(dev);
-> -	if (ret < 0)
-> -		goto err;
-> -
-> +	priv->profile.polling_ms = 1000;
+> In ufshpb, pm_runtime_{get,put}_sync() are used to avoid unwanted
+> runtime suspend during query requests. In commit b294ff3e3449 ("scsi:
+> ufs: core: Enable power management for wlun") has been modified to use
+> ufshcd_rpm_{get,put}_sync() APIs.
 
-This change is not related to role of this patch.
-Need to make the separate patch.
-
->   	priv->profile.target = imx8m_ddrc_target;
->   	priv->profile.exit = imx8m_ddrc_exit;
->   	priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
-> @@ -427,13 +388,8 @@ static int imx8m_ddrc_probe(struct platform_device *pdev)
->   	if (IS_ERR(priv->devfreq)) {
->   		ret = PTR_ERR(priv->devfreq);
->   		dev_err(dev, "failed to add devfreq device: %d\n", ret);
-> -		goto err;
->   	}
->   
-> -	return 0;
-> -
-> -err:
-> -	dev_pm_opp_of_remove_table(dev);
->   	return ret;
->   }
->   
-> 
-
+Applied to 5.16/scsi-staging, thanks!
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Martin K. Petersen	Oracle Linux Engineering
