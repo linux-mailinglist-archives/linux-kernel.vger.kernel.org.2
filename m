@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DE540BE7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBF540BE86
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236334AbhIODxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:53:07 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57914 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhIODxB (ORCPT
+        id S236359AbhIODxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236143AbhIODxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:53:01 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18F3pZDf019328;
-        Tue, 14 Sep 2021 22:51:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631677895;
-        bh=0/DzyW1aTj0CujHkJ0bEl7T6yiNv8PfN/vXyA4LrYtY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=nUeob6WsxUrTWfaC+yKmSe3UZ7TxJJ0mx0e99paHwFBRIrx/5KRsBMTOvrE/Ylprk
-         ncAi1qPmgZjvPxGtZV4WptWa2B2flHEmWSezxczzgtF5bgEDG2zVbJGvkQ7u1hVuog
-         SA7pcofEkQHXhzvw33Zg1WpsuoflR+nWoPIdU1pU=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18F3pZw6039433
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Sep 2021 22:51:35 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 14
- Sep 2021 22:51:35 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 14 Sep 2021 22:51:35 -0500
-Received: from [10.250.232.217] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18F3pVj9109416;
-        Tue, 14 Sep 2021 22:51:32 -0500
-Subject: Re: [PATCH 1/5] phy: cadence-torrent: Migrate to clk_hw based
- registration and OF APIs
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
-        <robh+dt@kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>, <a-govindraju@ti.com>
-References: <20210908182628.28364-1-sjakhade@cadence.com>
- <20210908182628.28364-2-sjakhade@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <e6c0b780-d5d5-f641-7e9f-d2c917eb4b51@ti.com>
-Date:   Wed, 15 Sep 2021 09:21:30 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 14 Sep 2021 23:53:50 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C53C061574;
+        Tue, 14 Sep 2021 20:52:32 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso1736657ota.8;
+        Tue, 14 Sep 2021 20:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EWlyAfIJ6LK6KpxwIys48q3PWxQlxyDohB67wcgCd/M=;
+        b=nUrn/Lw/ozglO0/A9wBQBB3xPkoAzmKdrQprI3+VccXyvcgJsFFh6Bxae1HWUezXd4
+         AQmb9ebsH9GIgQE1wl9KXWoc7PiSvaIXe9WbY/IYmDO2508scavL+H0oJX9G/cISxyrs
+         l7dPZq/Rzp/uC/iEYMQydnJlrkX84nLnxe5tih2wDXRTX+TvBe2oCSsAxdYX1HhGNItO
+         ZbYGuPbTSYb0At2GGZVSlG9XTXaXKO2wfMUzpjKvNqfo/sD0H9uxRzfXaUWlNF9avXLB
+         uvmw7xVrRzDHurwjcA9UUGVm8zBBI/SskOAh6S7tIPd1LrwGhQjamQId6BvHpdzk92Fe
+         Aq/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=EWlyAfIJ6LK6KpxwIys48q3PWxQlxyDohB67wcgCd/M=;
+        b=LjwCgFED5njp+u/j+TJYe7dYhwrrI687AyWsiQmkAQvI+Y4BSxaFr84MGmD6CQ2CqI
+         wA20udHUY16ZX8D6Pk7+cNi3xgZksyaWXVhEL9ZKU8JaaXvpQpqcOimkEkUfPeP1tk+N
+         vHstZUJLJJGc9UK/KlP/bHiEtcjGKRaOmdKaMSCwFB54EhM9bZBhsKSiWEa0pT0FVwrY
+         FyTZfZhp2gc7+xd0fI+efpBCOd0uN7PylgIn2PyhvM+DAajFX/CFvdg5IpqlbSYf7oB8
+         OZTdw4g9dZlfQhhwV1OSYBa15msZM+VHjVQw17ofnycRGvd+CLWlkrCb1dCmhSBb8m27
+         KQQg==
+X-Gm-Message-State: AOAM530k0XA2LhbRRUKFy6kZXelNdGlSkbXM+McVf0nPUm8o0Y3sLy/3
+        e2iUTyoyoXOfScRZf/JyJFJExQ+RbtM=
+X-Google-Smtp-Source: ABdhPJzoMC19sXj6sgU0ESAUjmLqYY7d90Vdr5m68MaI4eRv2IeMsJvMNWYhojvqU0D2qXE51sqMMQ==
+X-Received: by 2002:a05:6830:1f0a:: with SMTP id u10mr17832026otg.53.1631677951631;
+        Tue, 14 Sep 2021 20:52:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x1sm3017780otu.8.2021.09.14.20.52.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 20:52:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-alpha@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-sparse@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+Date:   Tue, 14 Sep 2021 20:52:23 -0700
+Message-Id: <20210915035227.630204-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210908182628.28364-2-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Swapnil,
+Kernel test builds currently fail for several architectures with error
+messages such as the following.
 
-On 08/09/21 11:56 pm, Swapnil Jakhade wrote:
-> Use clk_hw based provider APIs to register clks.
+drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
+./arch/m68k/include/asm/string.h:72:25: error:
+	'__builtin_memcpy' reading 6 bytes from a region of size 0
+		[-Werror=stringop-overread]
 
-Please explain the reasoning for moving to clk_hw based API.
+Such warnings may be reported by gcc 11.x for string and memory operations
+on fixed addresses if gcc's builtin functions are used for those
+operations.
 
-Thanks,
-Kishon
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  drivers/phy/cadence/phy-cadence-torrent.c | 30 ++++++++++++++---------
->  1 file changed, 19 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-> index 415ace64adc5..ecb1aa883c05 100644
-> --- a/drivers/phy/cadence/phy-cadence-torrent.c
-> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-> @@ -235,6 +235,8 @@
->  #define PHY_PMA_CMN_CTRL2		0x0001U
->  #define PHY_PMA_PLL_RAW_CTRL		0x0003U
->  
-> +#define CDNS_TORRENT_OUTPUT_CLOCKS	1
-> +
->  static const char * const clk_names[] = {
->  	[CDNS_TORRENT_REFCLK_DRIVER] = "refclk-driver",
->  };
-> @@ -333,8 +335,7 @@ struct cdns_torrent_phy {
->  	struct regmap_field *phy_pma_pll_raw_ctrl;
->  	struct regmap_field *phy_reset_ctrl;
->  	struct regmap_field *phy_pcs_iso_link_ctrl_1[MAX_NUM_LANES];
-> -	struct clk *clks[CDNS_TORRENT_REFCLK_DRIVER + 1];
-> -	struct clk_onecell_data clk_data;
-> +	struct clk_hw_onecell_data *clk_hw_data;
->  };
->  
->  enum phy_powerstate {
-> @@ -1659,8 +1660,9 @@ static int cdns_torrent_derived_refclk_register(struct cdns_torrent_phy *cdns_ph
->  	const char *parent_name;
->  	struct regmap *regmap;
->  	char clk_name[100];
-> +	struct clk_hw *hw;
->  	struct clk *clk;
-> -	int i;
-> +	int i, ret;
->  
->  	derived_refclk = devm_kzalloc(dev, sizeof(*derived_refclk), GFP_KERNEL);
->  	if (!derived_refclk)
-> @@ -1706,11 +1708,12 @@ static int cdns_torrent_derived_refclk_register(struct cdns_torrent_phy *cdns_ph
->  
->  	derived_refclk->hw.init = init;
->  
-> -	clk = devm_clk_register(dev, &derived_refclk->hw);
-> -	if (IS_ERR(clk))
-> -		return PTR_ERR(clk);
-> +	hw = &derived_refclk->hw;
-> +	ret = devm_clk_hw_register(dev, hw);
-> +	if (ret)
-> +		return ret;
->  
-> -	cdns_phy->clks[CDNS_TORRENT_REFCLK_DRIVER] = clk;
-> +	cdns_phy->clk_hw_data->hws[CDNS_TORRENT_REFCLK_DRIVER] = hw;
->  
->  	return 0;
->  }
-> @@ -2188,18 +2191,23 @@ static int cdns_torrent_clk_register(struct cdns_torrent_phy *cdns_phy)
->  {
->  	struct device *dev = cdns_phy->dev;
->  	struct device_node *node = dev->of_node;
-> +	struct clk_hw_onecell_data *data;
->  	int ret;
->  
-> +	data = devm_kzalloc(dev, struct_size(data, hws, CDNS_TORRENT_OUTPUT_CLOCKS), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->num = CDNS_TORRENT_OUTPUT_CLOCKS;
-> +	cdns_phy->clk_hw_data = data;
-> +
->  	ret = cdns_torrent_derived_refclk_register(cdns_phy);
->  	if (ret) {
->  		dev_err(dev, "failed to register derived refclk\n");
->  		return ret;
->  	}
->  
-> -	cdns_phy->clk_data.clks = cdns_phy->clks;
-> -	cdns_phy->clk_data.clk_num = CDNS_TORRENT_REFCLK_DRIVER + 1;
-> -
-> -	ret = of_clk_add_provider(node, of_clk_src_onecell_get, &cdns_phy->clk_data);
-> +	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get, data);
->  	if (ret) {
->  		dev_err(dev, "Failed to add clock provider: %s\n", node->name);
->  		return ret;
-> 
+This patch series introduces absolute_pointer() to fix the problem.
+absolute_pointer() disassociates a pointer from its originating symbol
+type and context, and thus prevents gcc from making assumptions about
+pointers passed to memory operations.
+
+v2: Drop parisc patch (the problem will be solved differently)
+    alpha: Move setup.h out of uapi
+    Define COMMAND_LINE for alpha as absolute_pointer instead of using
+    absolute_pointer on the define.
+
+----------------------------------------------------------------
+Guenter Roeck (4):
+      compiler.h: Introduce absolute_pointer macro
+      net: i825xx: Use absolute_pointer for memcpy from fixed memory location
+      alpha: Move setup.h out of uapi
+      alpha: Use absolute_pointer to define COMMAND_LINE
+
+ arch/alpha/include/asm/setup.h      | 43 +++++++++++++++++++++++++++++++++++++
+ arch/alpha/include/uapi/asm/setup.h | 42 +++---------------------------------
+ drivers/net/ethernet/i825xx/82596.c |  2 +-
+ include/linux/compiler.h            |  2 ++
+ 4 files changed, 49 insertions(+), 40 deletions(-)
+ create mode 100644 arch/alpha/include/asm/setup.h
