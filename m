@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8955C40C2F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A3540C2F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237236AbhIOJuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbhIOJuc (ORCPT
+        id S237273AbhIOJwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:52:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3814 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231860AbhIOJwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:50:32 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A653FC061574;
-        Wed, 15 Sep 2021 02:49:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uBSC+UP9PeMZXmiRRocmqxiy4fu/aY9BBVkaqRDY24Q=; b=XkYHuvDygrf6X+nNo7iF5BkJQb
-        gymhJ5QvZuH8mJYuJm5iizimdP0XJl4woKTukUH7EEQ0XkXMwkpQG+n3z+vf6N4QAhAijfeLM8KjU
-        Ii6N2Adtzx6ckx89PMXWTL3zhVPgFnORVzaWa0g+KW/KbybViNK8PBhJOn753y+ZScMQ=;
-Received: from p57a6f913.dip0.t-ipconnect.de ([87.166.249.19] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1mQRXE-0006CG-Lo; Wed, 15 Sep 2021 11:48:56 +0200
-To:     =?UTF-8?Q?Linus_L=c3=bcssing?= <linus.luessing@c0d3.blue>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sujith Manoharan <c_manoha@qca.qualcomm.com>,
-        ath9k-devel@qca.qualcomm.com
-Cc:     linux-wireless@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "John W . Linville" <linville@tuxdriver.com>,
-        Felix Fietkau <nbd@openwrt.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sven Eckelmann <sven@narfation.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Linus_L=c3=bcssing?= <ll@simonwunderlich.de>
-References: <20210914192515.9273-1-linus.luessing@c0d3.blue>
- <20210914192515.9273-4-linus.luessing@c0d3.blue>
-From:   Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH 3/3] ath9k: Fix potential hw interrupt resume during reset
-Message-ID: <255a49c7-d763-50d9-87e0-da22f4a9b053@nbd.name>
-Date:   Wed, 15 Sep 2021 11:48:55 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Wed, 15 Sep 2021 05:52:17 -0400
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H8b4w348nz67xvT;
+        Wed, 15 Sep 2021 17:48:32 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 11:50:56 +0200
+Received: from A2006125610.china.huawei.com (10.47.83.177) by
+ lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 10:50:50 +0100
+From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <mgurtovoy@nvidia.com>, <linuxarm@huawei.com>,
+        <liulongfang@huawei.com>, <prime.zeng@hisilicon.com>,
+        <jonathan.cameron@huawei.com>, <wangzhou1@hisilicon.com>
+Subject: [PATCH v3 0/6] vfio/hisilicon: add acc live migration driver
+Date:   Wed, 15 Sep 2021 10:50:31 +0100
+Message-ID: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
+X-Mailer: git-send-email 2.12.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210914192515.9273-4-linus.luessing@c0d3.blue>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.83.177]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 2021-09-14 21:25, Linus Lüssing wrote:
-> From: Linus Lüssing <ll@simonwunderlich.de>
-> 
-> There is a small risk of the ath9k hw interrupts being reenabled in the
-> following way:
-> 
-> 1) ath_reset_internal()
->    ...
->    -> disable_irq()
->       ...
->       <- returns
-> 
->                       2) ath9k_tasklet()
->                          ...
->                          -> ath9k_hw_resume_interrupts()
->                          ...
-> 
-> 1) ath_reset_internal() continued:
->    -> tasklet_disable(&sc->intr_tq); (= ath9k_tasklet() off)
-> 
-> By first disabling the ath9k interrupt there is a small window
-> afterwards which allows ath9k hw interrupts being reenabled through
-> the ath9k_tasklet() before we disable this tasklet in
-> ath_reset_internal(). Leading to having the ath9k hw interrupts enabled
-> during the reset, which we should avoid.
-I don't see a way in which interrupts can be re-enabled through the
-tasklet. disable_irq disables the entire PCI IRQ (not through ath9k hw
-registers), and they will only be re-enabled by the corresponding
-enable_irq call.
+Thanks to the introduction of vfio_pci_core subsystem framework[0],
+now it is possible to provide vendor specific functionality to
+vfio pci devices. This series attempts to add vfio live migration
+support for HiSilicon ACC VF devices based on the new framework.
 
-- Felix
+HiSilicon ACC VF device MMIO space includes both the functional
+register space and migration control register space. As discussed
+in RFCv1[1], this may create security issues as these regions get
+shared between the Guest driver and the migration driver.
+Based on the feedback, we tried to address those concerns in
+this version. 
+
+This is now sanity tested on HiSilicon platforms that support these
+ACC devices.
+
+Thanks,
+Shameer
+
+[0] https://lore.kernel.org/kvm/20210826103912.128972-1-yishaih@nvidia.com/
+[1] https://lore.kernel.org/lkml/20210415220137.GA1672608@nvidia.com/
+
+Change History:
+
+RFC v2 --> v3
+ -Dropped RFC tag as the vfio_pci_core subsystem framework is now 
+  part of 5.15-rc1.
+ -Added override methods for vfio_device_ops read/write/mmap calls 
+  to limit the access within the functional register space.
+ -Patches 1 to 3 are code refactoring to move the common ACC QM 
+  definitions and header around.
+
+RFCv1 --> RFCv2
+
+ -Adds a new vendor-specific vfio_pci driver(hisi-acc-vfio-pci)
+  for HiSilicon ACC VF devices based on the new vfio-pci-core
+  framework proposal.
+
+ -Since HiSilicon ACC VF device MMIO space contains both the
+  functional register space and migration control register space,
+  override the vfio_device_ops ioctl method to report only the
+  functional space to VMs.
+
+ -For a successful migration, we still need access to VF dev
+  functional register space mainly to read the status registers.
+  But accessing these while the Guest vCPUs are running may leave
+  a security hole. To avoid any potential security issues, we
+  map/unmap the MMIO regions on a need basis and is safe to do so.
+  (Please see hisi_acc_vf_ioremap/unmap() fns in patch #4).
+ 
+ -Dropped debugfs support for now.
+ -Uses common QM functions for mailbox access(patch #3).
+
+Longfang Liu (2):
+  crypto: hisilicon/qm: Move few definitions to common header
+  hisi_acc_vfio_pci: Add support for VFIO live migration
+
+Shameer Kolothum (4):
+  crypto: hisilicon/qm: Move the QM header to include/linux
+  hisi_acc_qm: Move PCI device IDs to common header
+  hisi-acc-vfio-pci: add new vfio_pci driver for HiSilicon ACC devices
+  hisi_acc_vfio_pci: Restrict access to VF dev BAR2 migration region
+
+ drivers/crypto/hisilicon/hpre/hpre.h          |    2 +-
+ drivers/crypto/hisilicon/hpre/hpre_main.c     |   12 +-
+ drivers/crypto/hisilicon/qm.c                 |   34 +-
+ drivers/crypto/hisilicon/sec2/sec.h           |    2 +-
+ drivers/crypto/hisilicon/sec2/sec_main.c      |    2 -
+ drivers/crypto/hisilicon/sgl.c                |    2 +-
+ drivers/crypto/hisilicon/zip/zip.h            |    2 +-
+ drivers/crypto/hisilicon/zip/zip_main.c       |   11 +-
+ drivers/vfio/pci/Kconfig                      |   13 +
+ drivers/vfio/pci/Makefile                     |    3 +
+ drivers/vfio/pci/hisi_acc_vfio_pci.c          | 1217 +++++++++++++++++
+ drivers/vfio/pci/hisi_acc_vfio_pci.h          |  117 ++
+ .../qm.h => include/linux/hisi_acc_qm.h       |   45 +
+ 13 files changed, 1414 insertions(+), 48 deletions(-)
+ create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.c
+ create mode 100644 drivers/vfio/pci/hisi_acc_vfio_pci.h
+ rename drivers/crypto/hisilicon/qm.h => include/linux/hisi_acc_qm.h (88%)
+
+-- 
+2.17.1
+
