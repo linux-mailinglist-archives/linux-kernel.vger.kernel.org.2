@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6886940C513
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF9940C51C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236539AbhIOMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:21:03 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58726 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbhIOMVA (ORCPT
+        id S233019AbhIOMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:21:33 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49982 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237662AbhIOMV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:21:00 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18FCJchP091566;
-        Wed, 15 Sep 2021 07:19:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631708378;
-        bh=ZVU2ZQLO8yOm95K2Q1ratQNPp8CFKFYo2ZO9PRMQogU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=w2tlOT3jVMiVfeyPL4Uf487baEsDsmfG+aBHt4hpDclwqPDpjtVRrQihxCyUTeYXA
-         kcMho3bFwlXQZNpmuLeLN3AgudnYu0noeDHGpnAf++QjnjDMPjVYtukX0oUfy8zzMv
-         crnn44u2rcW+QtXnbsYg+j3Vh83zEY09sCcYIVAQ=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18FCJck0089483
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 07:19:38 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 15
- Sep 2021 07:19:38 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 15 Sep 2021 07:19:38 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18FCJcAZ046598;
-        Wed, 15 Sep 2021 07:19:38 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-j7200-common-proc-board: Add j7200-evm compatible
-Date:   Wed, 15 Sep 2021 07:19:37 -0500
-Message-ID: <20210915121937.27702-4-nm@ti.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210915121937.27702-1-nm@ti.com>
-References: <20210915121937.27702-1-nm@ti.com>
+        Wed, 15 Sep 2021 08:21:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 84666221B9;
+        Wed, 15 Sep 2021 12:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631708406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BELbqYoPfRGRUC/W1066HME9OxG26ve3fwD+CS+Tg5g=;
+        b=Mp6P4l+u6p3E1NRsbRlaOwy/fg1oziSM+mwLmQoo1dQftP6pCFes9UJj1Uj7IsOYBobR3X
+        x1cbqPDoY99Zja/8a9RVwfOGhlccJNSvsXNXb+rrTdFeBujhm1riMRaSrFZLyLT4eay4yu
+        kcGGMChOtntx1vGFDLBP0y/D5hBZs2A=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 548A0A3BA0;
+        Wed, 15 Sep 2021 12:20:06 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 14:20:05 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mel Gorman <mgorman@suse.com>
+Cc:     Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] EXT4: Remove ENOMEM/congestion_wait() loops.
+Message-ID: <YUHk9d0jM6HATZ8+@dhcp22.suse.cz>
+References: <163157808321.13293.486682642188075090.stgit@noble.brown>
+ <163157838437.13293.14244628630141187199.stgit@noble.brown>
+ <20210914163432.GR3828@suse.com>
+ <20210914235535.GL2361455@dread.disaster.area>
+ <20210915085904.GU3828@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915085904.GU3828@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add j7200-evm compatible to the board to allow the board to distinguish
-itself from other platforms that may be added in the future.
+On Wed 15-09-21 09:59:04, Mel Gorman wrote:
+> On Wed, Sep 15, 2021 at 09:55:35AM +1000, Dave Chinner wrote:
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 3 +++
- 1 file changed, 3 insertions(+)
+> > That way "GFP_RETRY_FOREVER" allocation contexts don't have to jump
+> > through an ever changing tangle of hoops to make basic "never-fail"
+> > allocation semantics behave correctly.
+> > 
+> 
+> True and I can see what that is desirable. What I'm saying is that right
+> now, increasing the use of __GFP_NOFAIL may cause a different set of
+> problems (unbounded retries combined with ATOMIC allocation failures) as
+> they compete for similar resources.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-index d14f3c18b65f..121975dc8239 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
-@@ -12,6 +12,9 @@
- #include <dt-bindings/phy/phy.h>
- 
- / {
-+	compatible = "ti,j7200-evm", "ti,j7200";
-+	model = "Texas Instruments J7200 EVM";
-+
- 	chosen {
- 		stdout-path = "serial2:115200n8";
- 		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
+I have commented on reasoning behind the above code in other reply. Let
+me just comment on this particular concern. I completely do agree that
+any use of __GFP_NOFAIL should be carefully evaluated. This is a very
+strong recuirement and it should be used only as a last resort.
+On the other hand converting an existing open coded nofail code that
+_doesn't_ really do any clever tricks to allow a forward progress (e.g.
+dropping locks, kicking some internal caching mechinisms etc.) should
+just be turned into __GPF_NOFAIL. Not only it makes it easier to spot
+that code but it also allows the page allocator to behave consistently
+and predictably.
+
+If the existing heuristic wrt. memory reserves to GFP_NOFAIL turns out
+to be suboptimal we can fix it for all those users.
+
+Dropping the rest of the email which talks about reclaim changes because
+I will need much more time to digest that.
+[...]
 -- 
-2.32.0
-
+Michal Hocko
+SUSE Labs
