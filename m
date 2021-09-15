@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E116140CDD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF57940CDD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhIOUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        id S231995AbhIOUUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbhIOUUW (ORCPT
+        with ESMTP id S231592AbhIOUUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 16:20:22 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83E5C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:00 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id t4so4895681qkb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:00 -0700 (PDT)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A3DC061766
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:03 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id u4so3565778qta.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mfYd+b856xF2znmD8vgv1lw332UND5JAV7Y9/ZlVnqk=;
-        b=k7fZAN97lE5ze7C04Wg6etzrSao88Z9OtgDKyk/eluPgGMtFifQZMQwiQa6TBClJkg
-         31YNla82F1B5i60Pq5+IgcQuOht1Nv+bgVJqG5zb0kQRVbtpB0fu1I0d4+XVJILfh0D4
-         8VVDLb4dlpEq1aJCz3aw2gWMjC4wkPjgEIe4LwYqj0oDIzqhXHobAzYWo3KkiF6y27av
-         SObKjSxZ5dZ45MnSZRepS7RTTB5AMqw7K0eYsBSfY0N1QuxDgu8D2YuvFpaDW2A1sguK
-         JUdgKWqPAVE7amr2JqNXhkUImtOIfu5xSGAh9KykCzMpYgqSyMmIOTn9QxRiTbzJRGB7
-         kQ+A==
+        bh=mKpje/Y92jR84VIMNNbzSjTlUCixt6FDWJQ+8cv/w1Q=;
+        b=gSiuigEIwU1wjsEmm18oxIpET62h6EDABgcWUonBTQvBUPtHtnzv45eDDfKkXVBjIc
+         ZeaZVNJw9hoKhK/oZX0yy/P3HOTruOIYv5f//lDBEiDNEagMYy1P19902oEvqR3ur3lP
+         NziIAcie8NFs/skCe2cnkvn2pLxQnYH0auim7siVOOmzmZAPaclDVYrmGutjYQnWoi6v
+         vSHo8AjaVpRZ+veCE/fv803jVCAWc7o/918wFZBuOqhFL0XI4J2vu5cQHgDM/s0jgnPK
+         SC3zYj8SoNM/2FeFex7oigyxTxaYlj7aXVJfAQ2VpLzZx0ungRDBl6nhF19eRVpuOS7S
+         xL2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mfYd+b856xF2znmD8vgv1lw332UND5JAV7Y9/ZlVnqk=;
-        b=xcN74EIk2lNt2zFzoS8GcgMKFVCABtbiNZEivH3/uoj+UvZm13+dw1w1A/gAV9ImQ4
-         mOyp599p1d5L1e+/h/44F5HY0u1GH44UGnXeJCVPe4DoDQNL8bXkZ7WKe2xxPq/Lr23K
-         ShbTKckiLRieBTHKxXwZE21HqCVecn63x2FMKVTpmrqfbsY+2OJseSFBh+oqz2u1BPn3
-         1JXz7wYmRQBMn1mEcLQ5ixJ5z5wqFii76Vncdqqet2XpS45Bv/yioVItmJ+eVD7CPCnw
-         Ydd/6amaes4g1IsM8J/ardynxTQix5KYDMcqONlQHvk00ED6TuqhZ5GGFw3AgKpZGL4B
-         aqrQ==
-X-Gm-Message-State: AOAM533mQ/nr7CMcwBzubkjQrWLcAO77fA0MU0BLXp7I5WA+kTv2RE/q
-        L8YgPLk0aQ8gg+SyVZdICzc=
-X-Google-Smtp-Source: ABdhPJzgD5iWxrGAhpj9ZBFHXfLXvzfkcHSZDD9ZwGxbqTm4bk4nk6PvrPyvHDkf0W86eoXiz2RBNw==
-X-Received: by 2002:a37:9947:: with SMTP id b68mr1828225qke.56.1631737140010;
-        Wed, 15 Sep 2021 13:19:00 -0700 (PDT)
+        bh=mKpje/Y92jR84VIMNNbzSjTlUCixt6FDWJQ+8cv/w1Q=;
+        b=S+Bn2M90YfhbIbhKI7FUtMy+HoD/9hSHHcJ15t6BA87kILhrs7hwBEFKTp81qTy1SV
+         7w3kZPsv6IP7jBbzRr8oRGSrY8ifFd2obOAKCUrCnEW6rmD5FjP4mtdxJikyN/m9AL9L
+         QQQKjTkF97OJ6R+IB8sOy7ys4aIAS0jNrEGKYsdEii8mIN9IoqOns7Uk85Bz+hKJH48A
+         yc4ktEN/N3jP82Yv+9dBk198GzDpD9BXSPRAIfmv0fPxGg4VvBgYciY+q5Q2C5bRMom3
+         Y8JLg5fYVrAtb9HKZLmvZOVCzaG49cxNubrmsRXDlwWFzTz63t3tPpFgF/LkhlsJMEI7
+         hF7A==
+X-Gm-Message-State: AOAM533SM19F5AfhpiaHjSaFHZGUEujuvXSsdYbohn0zQcBumq5SeVC1
+        h9E8RW8f2mty9hHWypecSiY=
+X-Google-Smtp-Source: ABdhPJzH6iLvJ6Y6ofAT6FP6w2noAViWq+EhkXChEKeGsyWBbsMwf4pHBh+lNzuex90XiKgeFTU1ag==
+X-Received: by 2002:ac8:5194:: with SMTP id c20mr1751717qtn.68.1631737142661;
+        Wed, 15 Sep 2021 13:19:02 -0700 (PDT)
 Received: from debianG.lan ([181.166.206.110])
-        by smtp.gmail.com with ESMTPSA id g8sm752834qkm.25.2021.09.15.13.18.57
+        by smtp.gmail.com with ESMTPSA id g8sm752834qkm.25.2021.09.15.13.19.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:18:59 -0700 (PDT)
+        Wed, 15 Sep 2021 13:19:02 -0700 (PDT)
 From:   Gaston Gonzalez <gascoar@gmail.com>
 To:     linux-staging@lists.linux.dev
 Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
         linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH 2/7] staging: vchiq_arm: remove unnecessary space in cast
-Date:   Wed, 15 Sep 2021 17:18:19 -0300
-Message-Id: <20210915201824.413202-2-gascoar@gmail.com>
+Subject: [PATCH 3/7] staging: vchiq_arm: clarify multiplication expressions
+Date:   Wed, 15 Sep 2021 17:18:20 -0300
+Message-Id: <20210915201824.413202-3-gascoar@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210915201824.413202-1-gascoar@gmail.com>
 References: <20210915201824.413202-1-gascoar@gmail.com>
@@ -69,26 +69,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported by checkpatch.pl, no space is necessary after a cast.
+Add spaces around '*' in multiplication expressions to enhance
+readability.
+
+Reported by checkpatch.pl
 
 Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
 ---
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 22de17f64ed2..e8b84b2b1ac3 100644
+index e8b84b2b1ac3..9464a4777ff6 100644
 --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
 +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -337,7 +337,7 @@ create_pagelist(char *buf, char __user *ubuf,
- 		down(&g_free_fragments_mutex);
- 		fragments = g_free_fragments;
- 		WARN_ON(!fragments);
--		g_free_fragments = *(char **) g_free_fragments;
-+		g_free_fragments = *(char **)g_free_fragments;
- 		up(&g_free_fragments_mutex);
- 		pagelist->type = PAGELIST_READ_WITH_FRAGMENTS +
- 			(fragments - g_fragments_base) / g_fragments_size;
+@@ -466,8 +466,8 @@ int vchiq_platform_init(struct platform_device *pdev, struct vchiq_state *state)
+ 
+ 	g_free_fragments = g_fragments_base;
+ 	for (i = 0; i < (MAX_FRAGMENTS - 1); i++) {
+-		*(char **)&g_fragments_base[i*g_fragments_size] =
+-			&g_fragments_base[(i + 1)*g_fragments_size];
++		*(char **)&g_fragments_base[i * g_fragments_size] =
++			&g_fragments_base[(i + 1) * g_fragments_size];
+ 	}
+ 	*(char **)&g_fragments_base[i * g_fragments_size] = NULL;
+ 	sema_init(&g_free_fragments_sema, MAX_FRAGMENTS);
 -- 
 2.33.0
 
