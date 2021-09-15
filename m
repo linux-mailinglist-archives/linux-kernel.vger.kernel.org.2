@@ -2,255 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF0D40BE52
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F9D40BE58
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbhIODiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:38:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15415 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhIODiI (ORCPT
+        id S236143AbhIODjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhIODjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:38:08 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H8QlG4jPlzR9tK;
-        Wed, 15 Sep 2021 11:32:42 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 11:36:48 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 15 Sep 2021 11:36:48 +0800
-Subject: Re: [PATCH v5 5/6] nbd: convert to use blk_mq_find_and_get_req()
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     <axboe@kernel.dk>, <josef@toxicpanda.com>, <hch@infradead.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nbd@other.debian.org>, <yi.zhang@huawei.com>
-References: <20210909141256.2606682-1-yukuai3@huawei.com>
- <20210909141256.2606682-6-yukuai3@huawei.com> <YT/2z4PSeW5oJWMq@T590>
- <c6af73a2-f12d-eeef-616e-ae0cdb4f6f2d@huawei.com> <YUBE4BJ7+kN1c4l8@T590>
- <374c6b37-b4b2-fe01-66be-ca2dbbc283e9@huawei.com> <YUBTVBioqJ7qas2R@T590>
- <b8301834-5541-76ee-13a9-0fa565fce7e3@huawei.com> <YUCzr2ysb+vJ1x0W@T590>
- <8f1849a3-6bf2-6b14-7ef9-4969a9a5425b@huawei.com> <YUFldgfRYrJyxFtz@T590>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <60f68f6b-5fff-6a39-b77b-4bbb86f1c87e@huawei.com>
-Date:   Wed, 15 Sep 2021 11:36:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 14 Sep 2021 23:39:10 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767BBC061574;
+        Tue, 14 Sep 2021 20:37:52 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id b7so1381559pfo.11;
+        Tue, 14 Sep 2021 20:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=spn4en1wfCALlInYrzPB6PufsSAlB1YYpPOo+pD9FLo=;
+        b=E+ckviagp6gxglvMpmTOPvzOomn6/c07uTzDVb/K3hOs7n+xuIZVucN+PrsQEWBQrP
+         X/CQKhzx7ATsswuT6qEQHtwg7CkFvsIxxmS/45XLabsQ/dZGekih9oJ9+0jrwKNaaiLr
+         f+rpxSPsZ9Fx8txUlqxFunsDyt8lMFjgHOdSUi49oHJreNtfDqtGu0LcuCdNDInX7FC4
+         UY2Ozyxhlln4DtkhhGl4Kg7d3Gy2dDpYuvJOyuwVRJf9kd/WPAGzhq2C9AWL57fz1mST
+         nbG6tAnAR9LoY0fgVedqP6Q+IiCqRoofbnK5G39Qw+Tjg44cF8de7oJTH1lUB+xoktu2
+         QRjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=spn4en1wfCALlInYrzPB6PufsSAlB1YYpPOo+pD9FLo=;
+        b=XdktAZ2Q0wj6qo7QVrbG2XjlAH4dicL02L8lTM2BXzQ/yNl4Xv9JHEP2K+UIrnHfz9
+         uhXxr4Kupqm8YvZCDg5ctJwqhq2RV+BlzqhBvVOCzsNPDwrkKbwCUBfezveAo1yMBZgy
+         kGSKJa+fnW9PSZapR7cxKZUT/rGTtM1wuaMvR9F7jmHvGt1UUwvmj+bjtWYjPTg+TYYM
+         Edil4zb62UwP7mP+dCue7Y4Kb0LfCj96MgeDkDxFRxvquzOEyik6IJleieJ/3fR5GdjG
+         9sKYwbrw1lP+EYvPhboMIWWDT+wa8yIBI74aLWMnErWMMpbWKKRycrDtV6FfDR/uGE6m
+         GaKg==
+X-Gm-Message-State: AOAM532ps3B1sQTXHGRUFwatCyIEIO+3cknL7xL/Ohv/YZ76yl+NCa2D
+        enM11egVgVUK/6GZjp3OVaU=
+X-Google-Smtp-Source: ABdhPJzSEyDgqJC609VHGYsT1KbShRf/0W/gwbOvhh5jQ+uWJAK6pkqMx+HcWxCDriM8hYYTvySZ0w==
+X-Received: by 2002:a62:55c2:0:b0:3ec:c066:495c with SMTP id j185-20020a6255c2000000b003ecc066495cmr8275916pfb.38.1631677071899;
+        Tue, 14 Sep 2021 20:37:51 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id 73sm11934665pfu.92.2021.09.14.20.37.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Sep 2021 20:37:51 -0700 (PDT)
+Subject: Re: [RFC 06/19] devfreq: imx8m-ddrc: Add late system sleep PM ops
+To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
+ <1631554694-9599-7-git-send-email-abel.vesa@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <dbb4f5a5-e303-7df2-9d42-819a4abac98b@gmail.com>
+Date:   Wed, 15 Sep 2021 12:37:45 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YUFldgfRYrJyxFtz@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1631554694-9599-7-git-send-email-abel.vesa@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/15 11:16, Ming Lei wrote:
-> On Wed, Sep 15, 2021 at 09:54:09AM +0800, yukuai (C) wrote:
->> On 2021/09/14 22:37, Ming Lei wrote:
->>> On Tue, Sep 14, 2021 at 05:19:31PM +0800, yukuai (C) wrote:
->>>> On 在 2021/09/14 15:46, Ming Lei wrote:
->>>>
->>>>> If the above can happen, blk_mq_find_and_get_req() may not fix it too, just
->>>>> wondering why not take the following simpler way for avoiding the UAF?
->>>>>
->>>>> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
->>>>> index 5170a630778d..dfa5cce71f66 100644
->>>>> --- a/drivers/block/nbd.c
->>>>> +++ b/drivers/block/nbd.c
->>>>> @@ -795,9 +795,13 @@ static void recv_work(struct work_struct *work)
->>>>>     						     work);
->>>>>     	struct nbd_device *nbd = args->nbd;
->>>>>     	struct nbd_config *config = nbd->config;
->>>>> +	struct request_queue *q = nbd->disk->queue;
->>>>>     	struct nbd_cmd *cmd;
->>>>>     	struct request *rq;
->>>>> +	if (!percpu_ref_tryget(&q->q_usage_counter))
->>>>> +                return;
->>>>> +
->>>>>     	while (1) {
->>>>>     		cmd = nbd_read_stat(nbd, args->index);
->>>>>     		if (IS_ERR(cmd)) {
->>>>> @@ -813,6 +817,7 @@ static void recv_work(struct work_struct *work)
->>>>>     		if (likely(!blk_should_fake_timeout(rq->q)))
->>>>>     			blk_mq_complete_request(rq);
->>>>>     	}
->>>>> +	blk_queue_exit(q);
->>>>>     	nbd_config_put(nbd);
->>>>>     	atomic_dec(&config->recv_threads);
->>>>>     	wake_up(&config->recv_wq);
->>>>>
->>>>
->>>> Hi, Ming
->>>>
->>>> This apporch is wrong.
->>>>
->>>> If blk_mq_freeze_queue() is called, and nbd is waiting for all
->>>> request to complete. percpu_ref_tryget() will fail here, and deadlock
->>>> will occur because request can't complete in recv_work().
->>>
->>> No, percpu_ref_tryget() won't fail until ->q_usage_counter is zero, when
->>> it is perfectly fine to do nothing in recv_work().
->>>
->>
->> Hi Ming
->>
->> This apporch is a good idea, however we should not get q_usage_counter
->> in reccv_work(), because It will block freeze queue.
->>
->> How about get q_usage_counter in nbd_read_stat(), and put in error path
->> or after request completion?
+Hi,
+
+As I commented on patch5, you keep the OPP list on devicetree file
+and then you better to use the 'suspend_opp' property
+for setting the highest frequency during suspend/resume.
+
+On 21. 9. 14. 오전 2:38, Abel Vesa wrote:
+> Seems that, in order to be able to resume from suspend, the dram rate
+> needs to be the highest one available. Therefore, add the late system
+> suspend/resume PM ops which set the highest rate on suspend and the
+> latest one used before suspending on resume.
 > 
-> OK, looks I missed that nbd_read_stat() needs to wait for incoming reply
-> first, so how about the following change by partitioning nbd_read_stat()
-> into nbd_read_reply() and nbd_handle_reply()?
-
-Hi, Ming
-
-The change looks good to me.
-
-Do you want to send a patch to fix this?
-
-Thanks,
-Kuai
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>   drivers/devfreq/imx8m-ddrc.c | 28 +++++++++++++++++++++++++++-
+>   1 file changed, 27 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 5170a630778d..477fe057fc93 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -683,38 +683,47 @@ static int nbd_send_cmd(struct nbd_device *nbd, struct nbd_cmd *cmd, int index)
->   	return 0;
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> index f18a5c3c1c03..f39741b4a0b0 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -72,6 +72,8 @@ struct imx8m_ddrc {
+>   	struct clk *dram_alt;
+>   	struct clk *dram_apb;
+>   
+> +	unsigned long suspend_rate;
+> +	unsigned long resume_rate;
+>   	int freq_count;
+>   	struct imx8m_ddrc_freq freq_table[IMX8M_DDRC_MAX_FREQ_COUNT];
+>   };
+> @@ -271,6 +273,22 @@ static int imx8m_ddrc_target(struct device *dev, unsigned long *freq, u32 flags)
+>   	return ret;
 >   }
 >   
-> -/* NULL returned = something went wrong, inform userspace */
-> -static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
-> +static int nbd_read_reply(struct nbd_device *nbd, int index,
-> +		struct nbd_reply *reply)
->   {
-> -	struct nbd_config *config = nbd->config;
->   	int result;
-> -	struct nbd_reply reply;
-> -	struct nbd_cmd *cmd;
-> -	struct request *req = NULL;
-> -	u64 handle;
-> -	u16 hwq;
-> -	u32 tag;
-> -	struct kvec iov = {.iov_base = &reply, .iov_len = sizeof(reply)};
-> +	struct kvec iov = {.iov_base = reply, .iov_len = sizeof(*reply)};
->   	struct iov_iter to;
-> -	int ret = 0;
->   
-> -	reply.magic = 0;
-> +	reply->magic = 0;
->   	iov_iter_kvec(&to, READ, &iov, 1, sizeof(reply));
->   	result = sock_xmit(nbd, index, 0, &to, MSG_WAITALL, NULL);
-> -	if (result <= 0) {
-> -		if (!nbd_disconnected(config))
-> +	if (result < 0) {
-> +		if (!nbd_disconnected(nbd->config))
->   			dev_err(disk_to_dev(nbd->disk),
->   				"Receive control failed (result %d)\n", result);
-> -		return ERR_PTR(result);
-> +		return result;
->   	}
->   
-> -	if (ntohl(reply.magic) != NBD_REPLY_MAGIC) {
-> +	if (ntohl(reply->magic) != NBD_REPLY_MAGIC) {
->   		dev_err(disk_to_dev(nbd->disk), "Wrong magic (0x%lx)\n",
-> -				(unsigned long)ntohl(reply.magic));
-> -		return ERR_PTR(-EPROTO);
-> +				(unsigned long)ntohl(reply->magic));
-> +		return -EPROTO;
->   	}
->   
-> -	memcpy(&handle, reply.handle, sizeof(handle));
-> +	return 0;
+> +static int imx8m_ddrc_suspend(struct device *dev)
+> +{
+> +	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> +
+> +	priv->resume_rate = clk_get_rate(priv->dram_core);
+> +
+> +	return imx8m_ddrc_target(dev, &priv->suspend_rate, 0);
 > +}
 > +
-> +/* NULL returned = something went wrong, inform userspace */
-> +static struct nbd_cmd *nbd_handle_reply(struct nbd_device *nbd, int index,
-> +		struct nbd_reply *reply)
+> +static int imx8m_ddrc_resume(struct device *dev)
 > +{
-> +	struct nbd_config *config = nbd->config;
-> +	int result;
-> +	struct nbd_cmd *cmd;
-> +	struct request *req = NULL;
-> +	u64 handle;
-> +	u16 hwq;
-> +	u32 tag;
-> +	struct iov_iter to;
-> +	int ret = 0;
+> +	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
 > +
-> +	memcpy(&handle, reply->handle, sizeof(handle));
->   	tag = nbd_handle_to_tag(handle);
->   	hwq = blk_mq_unique_tag_to_hwq(tag);
->   	if (hwq < nbd->tag_set.nr_hw_queues)
-> @@ -747,9 +756,9 @@ static struct nbd_cmd *nbd_read_stat(struct nbd_device *nbd, int index)
->   		ret = -ENOENT;
->   		goto out;
->   	}
-> -	if (ntohl(reply.error)) {
-> +	if (ntohl(reply->error)) {
->   		dev_err(disk_to_dev(nbd->disk), "Other side returned error (%d)\n",
-> -			ntohl(reply.error));
-> +			ntohl(reply->error));
->   		cmd->status = BLK_STS_IOERR;
->   		goto out;
->   	}
-> @@ -795,24 +804,36 @@ static void recv_work(struct work_struct *work)
->   						     work);
->   	struct nbd_device *nbd = args->nbd;
->   	struct nbd_config *config = nbd->config;
-> +	struct request_queue *q = nbd->disk->queue;
-> +	struct nbd_sock *nsock;
->   	struct nbd_cmd *cmd;
->   	struct request *rq;
+> +	return imx8m_ddrc_target(dev, &priv->resume_rate, 0);
+> +}
+> +
+>   static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long *freq)
+>   {
+>   	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> @@ -324,6 +342,9 @@ static int imx8m_ddrc_init_freq_info(struct device *dev)
 >   
->   	while (1) {
-> -		cmd = nbd_read_stat(nbd, args->index);
-> -		if (IS_ERR(cmd)) {
-> -			struct nbd_sock *nsock = config->socks[args->index];
-> +		struct nbd_reply reply;
->   
-> -			mutex_lock(&nsock->tx_lock);
-> -			nbd_mark_nsock_dead(nbd, nsock, 1);
-> -			mutex_unlock(&nsock->tx_lock);
-> +		if (nbd_read_reply(nbd, args->index, &reply))
->   			break;
-> -		}
->   
-> +		if (!percpu_ref_tryget(&q->q_usage_counter))
-> +			break;
+>   		if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
+>   			return -ENODEV;
 > +
-> +		cmd = nbd_handle_reply(nbd, args->index, &reply);
-> +		if (IS_ERR(cmd)) {
-> +			blk_queue_exit(q);
-> +			break;
-> +		}
->   		rq = blk_mq_rq_from_pdu(cmd);
->   		if (likely(!blk_should_fake_timeout(rq->q)))
->   			blk_mq_complete_request(rq);
-> +		blk_queue_exit(q);
+> +		if (index ==  0)
+> +			priv->suspend_rate = freq->rate * 250000;
 >   	}
+>   
+>   	return 0;
+> @@ -399,11 +420,16 @@ static const struct of_device_id imx8m_ddrc_of_match[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, imx8m_ddrc_of_match);
+>   
+> +static const struct dev_pm_ops imx8m_ddrc_pm_ops = {
+> +	SET_LATE_SYSTEM_SLEEP_PM_OPS(imx8m_ddrc_suspend, imx8m_ddrc_resume)
+> +};
 > +
-> +	nsock = config->socks[args->index];
-> +	mutex_lock(&nsock->tx_lock);
-> +	nbd_mark_nsock_dead(nbd, nsock, 1);
-> +	mutex_unlock(&nsock->tx_lock);
-> +
->   	nbd_config_put(nbd);
->   	atomic_dec(&config->recv_threads);
->   	wake_up(&config->recv_wq);
+>   static struct platform_driver imx8m_ddrc_platdrv = {
+>   	.probe		= imx8m_ddrc_probe,
+>   	.driver = {
+>   		.name	= "imx8m-ddrc-devfreq",
+> -		.of_match_table = imx8m_ddrc_of_match,
+> +		.pm = &imx8m_ddrc_pm_ops,
+> +		.of_match_table = of_match_ptr(imx8m_ddrc_of_match),
+>   	},
+>   };
+>   module_platform_driver(imx8m_ddrc_platdrv);
 > 
-> 
-> Thanks,
-> Ming
-> 
-> .
-> 
+
+
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
