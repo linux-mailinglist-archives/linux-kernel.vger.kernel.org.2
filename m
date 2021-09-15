@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D0840D03A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB4940D03D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhIOXfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
+        id S233358AbhIOXfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:35:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232951AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:35:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BCB86120C;
+        id S232975AbhIOXfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 19:35:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6991F61214;
         Wed, 15 Sep 2021 23:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631748825;
-        bh=234ahk6oNxQmkMKOFLCMjXlm+tyXj+IMXgmItbA+yC4=;
+        bh=TzDqD6Jg0IFtMG9iujxz5Eb0K/H6NQ9luT+UwRjIScA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGXDZWe6IOI/NqJqCPyhfd0lJyjWL1XAaYKkk0+4GSfGpiiD23FWK6DnL7ntyAOLM
-         nLmpykFC2ruBCGNTrVquX05jtOiWUrtUD0jE6OxkR1vFIo+JKoUn7DL0QMIudVdW6L
-         GghMUrRXV5/B6lA4qFKSntZJJ8pkJQQUbFSyjVkvs0TCU/8IOKW4K5D9NJ0PmSkzar
-         9+pw6WVLd/hTas/1AwDjWt2/58phFG5EraINYV6anDT4Lj/NG7pqzxuKWk1P5syl97
-         3nIsnHxJny+qT5WqT55GRpVfg6CN6Nln+9W6jM3koQ53FoqmKNqUI8YihsJRXaA4Qs
-         Mx6jW69DoL4iw==
+        b=s//Kb80TMk+NTumbxlP+aWYiyY6bNRv+dqtz5a15R3k0QSHPW3L2/y390R0paK4+S
+         AguDUXHw+5+mvz4js1vjBAuRyVh/k/Z/OPP3UTjYJH8D5gQqi41P00ziM+DVlJ7Dyd
+         uo9xUQAMYqwnKNQT6msrr1MiGfzMFG76/PcDlgBpDXCU2BugV9wSIM5OYqpb9gPev9
+         9SPL6Pc/E4QdJOQFHjdV9VMzjNJH3sooaImMJADtGSvWRUF+HZbKB3i0UTSDyHtFve
+         rCrrKatHLp7OLFmQ+iQL18vpRII2/rtQB5dsDDwqEryXP8PCtTzRg79RYjLtfq2AUB
+         vXdBVXRD1uk0A==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CE6A55C0DA5; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
+        id D08975C0DBF; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         oleg@redhat.com, joel@joelfernandes.org,
         Juri Lelli <juri.lelli@redhat.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 11/14] rcu: Make rcu_normal_after_boot writable again
-Date:   Wed, 15 Sep 2021 16:33:40 -0700
-Message-Id: <20210915233343.3906738-11-paulmck@kernel.org>
+Subject: [PATCH rcu 12/14] rcu: Make rcu update module parameters world-readable
+Date:   Wed, 15 Sep 2021 16:33:41 -0700
+Message-Id: <20210915233343.3906738-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
@@ -49,54 +49,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Juri Lelli <juri.lelli@redhat.com>
 
-Certain configurations (e.g., systems that make heavy use of netns)
-need to use synchronize_rcu_expedited() to service RCU grace periods
-even after boot.
+rcu update module parameters currently don't appear in sysfs and this is
+a serviceability issue as it might be needed to access their default
+values at runtime.
 
-Even though synchronize_rcu_expedited() has been traditionally
-considered harmful for RT for the heavy use of IPIs, it is perfectly
-usable under certain conditions (e.g. nohz_full).
+Fix this issue by changing rcu update module parameters permissions to
+world-readable.
 
-Make rcupdate.rcu_normal_after_boot= again writeable on RT (if NO_HZ_
-FULL is defined), but keep its default value to 1 (enabled) to avoid
-regressions. Users who need synchronize_rcu_expedited() will boot with
-rcupdate.rcu_normal_after_ boot=0 in the kernel cmdline.
-
-Reflect the change in synchronize_rcu_expedited_wait() by removing the
-WARN related to CONFIG_PREEMPT_RT.
-
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 1 -
- kernel/rcu/update.c   | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ kernel/rcu/update.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 2796084ef85a..d9e4f8eb9ae2 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -512,7 +512,6 @@ static void synchronize_rcu_expedited_wait(void)
- 		j = READ_ONCE(jiffies_till_first_fqs);
- 		if (synchronize_rcu_expedited_wait_once(j + HZ))
- 			return;
--		WARN_ON_ONCE(IS_ENABLED(CONFIG_PREEMPT_RT));
- 	}
- 
- 	for (;;) {
 diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index c21b38cc25e9..bd551134e2f4 100644
+index bd551134e2f4..94282dc12bab 100644
 --- a/kernel/rcu/update.c
 +++ b/kernel/rcu/update.c
-@@ -57,7 +57,7 @@
- module_param(rcu_expedited, int, 0);
- module_param(rcu_normal, int, 0);
+@@ -54,11 +54,11 @@
+ #define MODULE_PARAM_PREFIX "rcupdate."
+ 
+ #ifndef CONFIG_TINY_RCU
+-module_param(rcu_expedited, int, 0);
+-module_param(rcu_normal, int, 0);
++module_param(rcu_expedited, int, 0444);
++module_param(rcu_normal, int, 0444);
  static int rcu_normal_after_boot = IS_ENABLED(CONFIG_PREEMPT_RT);
--#ifndef CONFIG_PREEMPT_RT
-+#if !defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)
- module_param(rcu_normal_after_boot, int, 0);
+ #if !defined(CONFIG_PREEMPT_RT) || defined(CONFIG_NO_HZ_FULL)
+-module_param(rcu_normal_after_boot, int, 0);
++module_param(rcu_normal_after_boot, int, 0444);
  #endif
  #endif /* #ifndef CONFIG_TINY_RCU */
+ 
 -- 
 2.31.1.189.g2e36527f23
 
