@@ -2,300 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5623E40C1BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A61C40C1EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236757AbhIOIaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:30:10 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46906
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231728AbhIOIaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:30:09 -0400
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E2EC93F4BE
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631694529;
-        bh=/IRBxu7nqqQwWukLDNF8mXTbZavrvfbLU6FhnLGRjL4=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=AcX37HBFCtokwmFb5/gjWXfxXIQ4HgVGjUF4APQqvyfEhMWbvuNtkYSd/UOFFgnn4
-         tZ8V3DrSuvgjhmwF+6D/a+6Ri2Om5YkIsQd1jmc96ZgdvM9NCQs728TUQlYR+sMwSn
-         CBYwOkMolCVxSOjzt8oQ9XxBeaP7GeLCNeII9eSc7LNyou7u7WAep/Eo1D9F71q1Bz
-         vaYqHV1TW6gApfElUCxHU++UXvbCzEui+f6nMMx64snDv7zymxw4RDDL6qx6AVzfj2
-         /2CGAljyhDcxC8m4au7lYYund+oWDKIUGAGIDZZRriKjz4clOMYrMi61nneNqYcw/g
-         7G407Hr+6hdMg==
-Received: by mail-ej1-f71.google.com with SMTP id q15-20020a17090622cf00b005c42d287e6aso1093734eja.18
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:28:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/IRBxu7nqqQwWukLDNF8mXTbZavrvfbLU6FhnLGRjL4=;
-        b=vEfed4UrKli4tk0NBZ+SaGri2JMu0eJ8rjTy8aHvj3Z6wr5G7IbBgL7V0RfvBtkECn
-         zSO3h/gIExBaPKGAgw3/i1WDJvwycnJHgU3cX4pYUNcUJUBjesVi5m4opxUENcFAa8jA
-         r6iq3eidLbFNYUiRYZBmEPeDhUewsN6AiK4QM9z9v/LcnF0bfFD9WX4PMGUjIjqMqNNe
-         CNKUtyO3BKBZ9yFKAqic9jiGmibxunbcQYNt304eKphsh654ti6h/UI9XM9YRCT4CRT2
-         97YVm+wnROjEIn9ihD4oVdvqrDkuGigqdjeHoBS4U5o5Ys+7yjmypQwaGjBL/8c3Op1J
-         BO5A==
-X-Gm-Message-State: AOAM531l/1zllyKDBcrigmyT5Zpr266+AHa6563C0Jo6FzpjV1KnBwAj
-        nIBaHw1ou4IchUNpsmpTalCy9k3klFRSiaNIbS2pEstLThjuLlKGIyAH6G/NlV7fL4iy8UwGjVM
-        +B93+PRjKoVphZg0N8NWp00WlheHmtprGnbBvavVjXw==
-X-Received: by 2002:a05:6402:2048:: with SMTP id bc8mr24440070edb.114.1631694529618;
-        Wed, 15 Sep 2021 01:28:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFE7KpqwtgPjFHqZtwqDPFpM2l1Rj+AfEANN6cyfGTPrR0kyY4r2TwAFv44S4jcixEb1XdIg==
-X-Received: by 2002:a05:6402:2048:: with SMTP id bc8mr24440045edb.114.1631694529404;
-        Wed, 15 Sep 2021 01:28:49 -0700 (PDT)
-Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id q11sm6717919edv.73.2021.09.15.01.28.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 01:28:48 -0700 (PDT)
-Subject: Re: [PATCH 5/6] dt-bindings: clock: Document Exynos850 CMU bindings
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-6-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <b7fd881e-b027-fb87-3740-69cf00f795c0@canonical.com>
-Date:   Wed, 15 Sep 2021 10:28:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232992AbhIOIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:44:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:27364 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233002AbhIOIoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 04:44:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="307810161"
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="307810161"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 01:42:57 -0700
+X-IronPort-AV: E=Sophos;i="5.85,294,1624345200"; 
+   d="scan'208";a="544748425"
+Received: from yangzhon-virtual.bj.intel.com (HELO yangzhon-Virtual) ([10.238.144.101])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 15 Sep 2021 01:42:54 -0700
+Date:   Wed, 15 Sep 2021 16:28:57 +0800
+From:   Yang Zhong <yang.zhong@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Subject: Re: [RFC/RFT PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE
+ all pages
+Message-ID: <20210915082857.GA30272@yangzhon-Virtual>
+References: <20210913131153.1202354-1-pbonzini@redhat.com>
+ <20210914071030.GA28797@yangzhon-Virtual>
+ <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210914155607.14122-6-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e1c6b6d-6a73-827e-f496-b17b3c0f8c89@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/2021 17:56, Sam Protsenko wrote:
-> Provide dt-schema documentation for Exynos850 SoC clock controller.
+On Tue, Sep 14, 2021 at 12:19:31PM +0200, Paolo Bonzini wrote:
+> On 14/09/21 09:10, Yang Zhong wrote:
+> >On Mon, Sep 13, 2021 at 09:11:51AM -0400, Paolo Bonzini wrote:
+> >>Based on discussions from the previous week(end), this series implements
+> >>a ioctl that performs EREMOVE on all pages mapped by a /dev/sgx_vepc
+> >>file descriptor.  Other possibilities, such as closing and reopening
+> >>the device, are racy.
+> >>
+> >>The patches are untested, but I am posting them because they are simple
+> >>and so that Yang Zhong can try using them in QEMU.
+> >>
+> >
+> >   Paolo, i re-implemented one reset patch in the Qemu side to call this ioctl(),
+> >   and did some tests on Windows and Linux guest, the Windows/Linux guest reboot
+> >   work well.
+> >
+> >   So, it is time for me to send this reset patch to Qemu community? or wait for
+> >   this kernel patchset merged? thanks!
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  .../clock/samsung,exynos850-clock.yaml        | 190 ++++++++++++++++++
->  1 file changed, 190 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> Let's wait for this patch to be accepted first.  I'll wait a little
+> more for Jarkko and Dave to comment on this, and include your
+> "Tested-by".
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
-> new file mode 100644
-> index 000000000000..b69ba4125421
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
-> @@ -0,0 +1,190 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/samsung,exynos850-clock.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung Exynos850 SoC clock controller
-> +
-> +maintainers:
-> +  - Sam Protsenko <semen.protsenko@linaro.org>
-> +  - Chanwoo Choi <cw00.choi@samsung.com>
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +  - Tomasz Figa <tomasz.figa@gmail.com>
-> +
-> +description: |
-> +  Exynos850 clock controller is comprised of several CMU units, generating
-> +  clocks for different domains. Those CMU units are modeled as separate device
-> +  tree nodes, and might depend on each other. Root clocks in that clock tree are
-> +  two external clocks:: OSCCLK (26 MHz) and RTCCLK (32768 Hz). Those external
-> +  clocks must be defined as fixed-rate clocks in dts.
-> +
-> +  CMU_TOP is a top-level CMU, where all base clocks are prepared using PLLs and
-> +  dividers; all other leaf clocks (other CMUs) are usually derived from CMU_TOP.
-> +
-> +  Each clock is assigned an identifier and client nodes can use this identifier
-> +  to specify the clock which they consume. All clocks that available for usage
-> +  in clock consumer nodes are defined as preprocessor macros in
-> +  'dt-bindings/clock/exynos850.h' header.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - samsung,exynos850-cmu-top
-> +      - samsung,exynos850-cmu-core
-> +      - samsung,exynos850-cmu-hsi
-> +      - samsung,exynos850-cmu-peri
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 5
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    maxItems: 5
-> +
-> +  "#clock-cells":
-> +    const: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: samsung,exynos850-cmu-top
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: External reference clock (26 MHz)
-> +
-> +        clock-names:
-> +          items:
-> +            - const: oscclk
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: samsung,exynos850-cmu-core
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: External reference clock (26 MHz)
-> +            - description: CMU_CORE bus clock (from CMU_TOP)
-> +            - description: CCI clock (from CMU_TOP)
-> +            - description: eMMC clock (from CMU_TOP)
-> +            - description: SSS clock (from CMU_TOP)
-> +
-> +        clock-names:
-> +          items:
-> +            - const: oscclk
-> +            - const: dout_core_bus
-> +            - const: dout_core_cci
-> +            - const: dout_core_mmc_embd
-> +            - const: dout_core_sss
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: samsung,exynos850-cmu-hsi
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: External reference clock (26 MHz)
-> +            - description: External RTC clock (32768 Hz)
-> +            - description: CMU_HSI bus clock (from CMU_TOP)
-> +            - description: SD card clock (from CMU_TOP)
-> +            - description: "USB 2.0 DRD clock (from CMU_TOP)"
-> +
-> +        clock-names:
-> +          items:
-> +            - const: oscclk
-> +            - const: rtcclk
-> +            - const: dout_hsi_bus
-> +            - const: dout_hsi_mmc_card
-> +            - const: dout_hsi_usb20drd
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: samsung,exynos850-cmu-peri
-> +
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: External reference clock (26 MHz)
-> +            - description: CMU_PERI bus clock (from CMU_TOP)
-> +            - description: UART clock (from CMU_TOP)
-> +            - description: Parent clock for HSI2C and SPI (from CMU_TOP)
-> +
-> +        clock-names:
-> +          items:
-> +            - const: oscclk
-> +            - const: dout_peri_bus
-> +            - const: dout_peri_uart
-> +            - const: dout_peri_ip
-> +
-> +required:
-> +  - compatible
-> +  - "#clock-cells"
-> +  - clocks
-> +  - clock-names
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  # Clock controller node for CMU_PERI
-> +  - |
-> +    #include <dt-bindings/clock/exynos850.h>
-> +
-> +    cmu_peri: clock-controller@10030000 {
-> +        compatible = "samsung,exynos850-cmu-peri";
-> +        reg = <0x10030000 0x8000>;
-> +        #clock-cells = <1>;
-> +
-> +        clocks = <&oscclk>, <&cmu_top DOUT_PERI_BUS>,
-> +                 <&cmu_top DOUT_PERI_UART>,
-> +                 <&cmu_top DOUT_PERI_IP>;
-> +        clock-names = "oscclk", "dout_peri_bus",
-> +                      "dout_peri_uart", "dout_peri_ip";
-> +    };
-> +
-> +  # External reference clock (should be provided in particular board DTS)
-> +  - |
-> +    oscclk: clock-oscclk {
-> +        compatible = "fixed-clock";
-> +        #clock-cells = <0>;
-> +        clock-output-names = "oscclk";
-> +        clock-frequency = <26000000>;
-> +    };
+> I will also add cond_resched() on the final submission.
+> 
 
-Skip ossclk - it's trivial and not related to these bindings.
+  Thanks Paolo, i will send Qemu patch once this patchset is accepted.
 
-> +
-> +  # UART controller node that consumes the clock generated by CMU_PERI
-> +  - |
-> +    #include <dt-bindings/clock/exynos850.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    serial_0: serial@13820000 {
-> +        compatible = "samsung,exynos850-uart";
-> +        reg = <0x13820000 0x100>;
-> +        interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&uart0_pins>;
-> +        clocks = <&cmu_peri GOUT_UART_PCLK>, <&cmu_peri GOUT_UART_IPCLK>;
-> +        clock-names = "uart", "clk_uart_baud0";
+  This day, i also did corner cases test and updated related Qemu reset patch.
+   
+   do {
+       ret = ioctl(fd, SGX_IOC_VEPC_REMOVE);
+       /* this printf is only for debug*/
+       printf("-------sgx ret=%d and n=%d---\n", ret, n++);
+       if(ret)
+           sleep(1);
+   } while (ret);  
 
-The same, skip it because it is trivial and common with all clock providers.
+  (1). The VEPC size=10M, start 4 enclaves(each ~2G size) in the VM side.
+       then do the 'system_reset' in the Qemu monitor tool.
+       
+  (2). The VEPC size=10G, start 500 enclaves(each ~20M size) in the VM side.
+       then do the 'system_reset' in the Qemu monitor tool.
 
-Also Rob's robot checker complains about it.
+  The ret will show the failures number(SECS pages number, 4 and 500) got from kernel side,
+  after sleep 1s, the ioctl will return 0 failures.
 
-Best regards,
-Krzysztof
+  If this reset is triggered by guest bios, there is 0 SECS page got from kernel, which will
+  not block VM booting.
+
+  So, until now, the kernel patches work well. If any new issue, i will update it to all. thanks!      
+
+  Yang
+
+> Paolo
