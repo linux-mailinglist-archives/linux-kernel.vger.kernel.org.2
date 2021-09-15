@@ -2,208 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61B740BEBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C22F40BEC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhIOEMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 00:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhIOEMn (ORCPT
+        id S230083AbhIOEPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 00:15:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24710 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229450AbhIOEPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 00:12:43 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8B9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:11:25 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id j6so1515701pfa.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:11:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Www1Sy/iGaECDjccUq89+Q4UC3DZFrVqkJMRs3jnAoA=;
-        b=f5JtWLoOAwop2HOyICQphlrTyYGhbXJ4qzohTu9cza9ymnaDVDmPoOXlWMNlsYZ63j
-         48HThtIL3ulmBpXV0ywVISKr9usamlhlXBbyLfygAnd2803JLkoKDTpAeO5i/txnwsXF
-         h1WNbhrz0rP6nIh4Wt1SElozQDPJW3xMcoZV8A50E0aFLtPG7ytbSJuvZGrXsRvmMfb5
-         fhOef76SGMSCcSV5p+Yo2XFgSLD3X5/lciKLKcK4hDQns1tgB33yK+6T5vk6ny5JXT4d
-         wK4l0b1z1iXjLq1DziyR7UVbUgxWsUqeFEj2UwAB4EVUuk1iGb+WIa+zTL88czpx4uWl
-         flgw==
+        Wed, 15 Sep 2021 00:15:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631679226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d19fLDG4beOySnbCfA/cKsV5qbQPUjpoNltxe78U9v8=;
+        b=HTPnluTe4qZo6zUkdWs2cfsvl81azI2RyZ2mS4qh3gKF6oyrNjKxbkXa69hGyio1ywHRtd
+        0Tm8ewTGCOhue2uIvKTSczUMqoE6FphasiwWAaRFY2KKqZ0ytykXrYJJjLb5pb83QiBDZZ
+        qAbOVx+oBfl5sjjf+sRd8hBL/23aYDs=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-yI1cikLzN3GByrlmc83u4Q-1; Wed, 15 Sep 2021 00:13:44 -0400
+X-MC-Unique: yI1cikLzN3GByrlmc83u4Q-1
+Received: by mail-lf1-f70.google.com with SMTP id d10-20020ac24c8a000000b003dce50ea2c4so593280lfl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:13:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Www1Sy/iGaECDjccUq89+Q4UC3DZFrVqkJMRs3jnAoA=;
-        b=7ov0zW2GfW2gWDRxrkIAdUHx9bLFkFNq00d214UtiLXHWR7NvDERRUD8wS/Ay71LBA
-         N91dllB7XKwZsnpyCT1s+w20hU+xt9nIhqpuC9V6lkBy6PXe7oiSAlpRCqA0+nHJUTVp
-         Q99UZJFpPY5djUkznJN+XNfkSLRqYMRdzPSJk319e+DBaQ4gXiX8fBaWgtJmeITRj7RW
-         dDD8IxgIl+IesWrphkzj9IYxyA6vDyvxS1j8rcyVkGE1jhkEVLUmuF7ZPrxq7V96hDlN
-         mID+9TwT3qBLI20+iruo001KNNSXTZNshMbU29nn6kPef5257zoqinbNtlnFjXBobvNL
-         zzqw==
-X-Gm-Message-State: AOAM533MYV/5IW1ko0ukaeH8RVfG46BDOM+01GuxcAJ9ztw53lJhMBqV
-        TQ1sACKahlmNbYPqXvdja5TMIZxxTmD3us2EV04cnQ==
-X-Google-Smtp-Source: ABdhPJzVXf0or9qBPzNfUFPKqhXw6K1+8mdqK8CY5lJZTuBV/KxnpGf4inQTjJwy/A58j34e85JTiH17oUDNfhLWDfc=
-X-Received: by 2002:a63:1e0e:: with SMTP id e14mr18563273pge.5.1631679085171;
- Tue, 14 Sep 2021 21:11:25 -0700 (PDT)
+        bh=d19fLDG4beOySnbCfA/cKsV5qbQPUjpoNltxe78U9v8=;
+        b=JqTedleDJaKANAdl5NxUilYiU/z0PeotCsMCJU5AqtC/I6j5xqFW8aGYm/BtagTO49
+         ZGl/NMDCO//d4aAWvSo4RAuErJKg+Wb5UaoYM9PvEFsjLAJqJWHq0YyRTbm5aAgRKKfs
+         DT+9pdrxmrHt7u4SBY8O855ltdL1hiS6oRDfu/5krDjbb6kJhUi+XKIJejwfgjTpn2YL
+         FlMQR5RgkSDITRBc4oyU6gQOx7QSB+7v2js3xyHgIZydIXSuhV+7RwILTvepTkZ/5P9I
+         hV4q92hJhY0fsdYYqPNn821SVrM0h97xsJmT+ehv9E2yqECwE+YE/BQfL4qnu0/GhxgG
+         zB9g==
+X-Gm-Message-State: AOAM533ZNdenynfE/hRZ5h2ZEidNsICzNOkC5dre9nkl6nV6qyjPYB8k
+        s8zW4kT4xABjPVTy7xLWBAaRRnl2jOWd7FamIvPQUgX0fNJb1BTO459dOYT88+goYqS+C1ka55M
+        yD85C9HRABNGRyT5scoOEdKyZeL+R6uuypP+iiH72
+X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr15700903lfu.348.1631679223030;
+        Tue, 14 Sep 2021 21:13:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBw9gq+5PY6XT+fBNtGPRoojC5lqwvf9Lr40qBes9yI/bINDnAG/kASzfgo9/sbTC157W/tOnUYsL+zSmrDxs=
+X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr15700895lfu.348.1631679222837;
+ Tue, 14 Sep 2021 21:13:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210903050914.273525-1-kjain@linux.ibm.com> <20210903050914.273525-2-kjain@linux.ibm.com>
- <CAPcyv4jSL2cDxGiXEtyyce3eNEE_QUnnMjuLXb3iCwO8_7a7LQ@mail.gmail.com>
- <d7f8bf51-059f-4496-37c4-6516a703e209@linux.ibm.com> <CAPcyv4hE4rh5R+8zy3X4gDJeuPzQ0oQHmHbe_pppgWB2_RjfAg@mail.gmail.com>
-In-Reply-To: <CAPcyv4hE4rh5R+8zy3X4gDJeuPzQ0oQHmHbe_pppgWB2_RjfAg@mail.gmail.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 14 Sep 2021 21:11:14 -0700
-Message-ID: <CAPcyv4hZZX4WscR41PUSXZhDLPR6LuXHNRcJDO52gb+3MahYAA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v4 1/4] drivers/nvdimm: Add nvdimm pmu structure
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        maddy@linux.ibm.com, Santosh Sivaraj <santosh@fossix.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        atrajeev@linux.vnet.ibm.com, Thomas Gleixner <tglx@linutronix.de>,
-        rnsastry@linux.ibm.com
+References: <cover.1631101392.git.wuzongyong@linux.alibaba.com>
+ <cover.1631621507.git.wuzongyong@linux.alibaba.com> <11a491e2200e17319989ff9043b8d58867610197.1631621507.git.wuzongyong@linux.alibaba.com>
+ <CACGkMEu9udAQ63_1Xx6kNo=OR5Mgkk5fnS5or6E98-vjTpoUkw@mail.gmail.com> <20210915033102.GB18793@L-PF27918B-1352.localdomain>
+In-Reply-To: <20210915033102.GB18793@L-PF27918B-1352.localdomain>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 15 Sep 2021 12:13:31 +0800
+Message-ID: <CACGkMEuAtTJLbPJeJ2-6W605zrTXAkLm2Q86g6pQepStwxoO1w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] vp_vdpa: add vq irq offloading support
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        mst <mst@redhat.com>, wei.yang1@linux.alibaba.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 9:08 PM Dan Williams <dan.j.williams@intel.com> wrote:
+On Wed, Sep 15, 2021 at 11:31 AM Wu Zongyong
+<wuzongyong@linux.alibaba.com> wrote:
 >
-> On Thu, Sep 9, 2021 at 12:56 AM kajoljain <kjain@linux.ibm.com> wrote:
-> >
-> >
-> >
-> > On 9/8/21 3:29 AM, Dan Williams wrote:
-> > > Hi Kajol,
+> On Wed, Sep 15, 2021 at 11:16:03AM +0800, Jason Wang wrote:
+> > On Tue, Sep 14, 2021 at 8:25 PM Wu Zongyong
+> > <wuzongyong@linux.alibaba.com> wrote:
 > > >
-> > > Apologies for the delay in responding to this series, some comments below:
+> > > This patch implements the get_vq_irq() callback for virtio pci devices
+> > > to allow irq offloading.
+> > >
+> > > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 > >
-> > Hi Dan,
-> >     No issues, thanks for reviewing the patches.
+> > Acked-by: Jason Wang <jasowang@redhat.com>
 > >
-> > >
-> > > On Thu, Sep 2, 2021 at 10:10 PM Kajol Jain <kjain@linux.ibm.com> wrote:
-> > >>
-> > >> A structure is added, called nvdimm_pmu, for performance
-> > >> stats reporting support of nvdimm devices. It can be used to add
-> > >> nvdimm pmu data such as supported events and pmu event functions
-> > >> like event_init/add/read/del with cpu hotplug support.
-> > >>
-> > >> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > >> Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-> > >> Tested-by: Nageswara R Sastry <rnsastry@linux.ibm.com>
-> > >> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> > >> ---
-> > >>  include/linux/nd.h | 43 +++++++++++++++++++++++++++++++++++++++++++
-> > >>  1 file changed, 43 insertions(+)
-> > >>
-> > >> diff --git a/include/linux/nd.h b/include/linux/nd.h
-> > >> index ee9ad76afbba..712499cf7335 100644
-> > >> --- a/include/linux/nd.h
-> > >> +++ b/include/linux/nd.h
-> > >> @@ -8,6 +8,8 @@
-> > >>  #include <linux/ndctl.h>
-> > >>  #include <linux/device.h>
-> > >>  #include <linux/badblocks.h>
-> > >> +#include <linux/platform_device.h>
-> > >> +#include <linux/perf_event.h>
-> > >>
-> > >>  enum nvdimm_event {
-> > >>         NVDIMM_REVALIDATE_POISON,
-> > >> @@ -23,6 +25,47 @@ enum nvdimm_claim_class {
-> > >>         NVDIMM_CCLASS_UNKNOWN,
-> > >>  };
-> > >>
-> > >> +/* Event attribute array index */
-> > >> +#define NVDIMM_PMU_FORMAT_ATTR         0
-> > >> +#define NVDIMM_PMU_EVENT_ATTR          1
-> > >> +#define NVDIMM_PMU_CPUMASK_ATTR                2
-> > >> +#define NVDIMM_PMU_NULL_ATTR           3
-> > >> +
-> > >> +/**
-> > >> + * struct nvdimm_pmu - data structure for nvdimm perf driver
-> > >> + *
-> > >> + * @name: name of the nvdimm pmu device.
-> > >> + * @pmu: pmu data structure for nvdimm performance stats.
-> > >> + * @dev: nvdimm device pointer.
-> > >> + * @functions(event_init/add/del/read): platform specific pmu functions.
-> > >
-> > > This is not valid kernel-doc:
-> > >
-> > > include/linux/nd.h:67: warning: Function parameter or member
-> > > 'event_init' not described in 'nvdimm_pmu'
-> > > include/linux/nd.h:67: warning: Function parameter or member 'add' not
-> > > described in 'nvdimm_pmu'
-> > > include/linux/nd.h:67: warning: Function parameter or member 'del' not
-> > > described in 'nvdimm_pmu'
-> > > include/linux/nd.h:67: warning: Function parameter or member 'read'
-> > > not described in 'nvdimm_pmu'
-> > >
-> > > ...but I think rather than fixing those up 'struct nvdimm_pmu' should be pruned.
-> > >
-> > > It's not clear to me that it is worth the effort to describe these
-> > > details to the nvdimm core which is just going to turn around and call
-> > > the pmu core. I'd just as soon have the driver call the pmu core
-> > > directly, optionally passing in attributes and callbacks that come
-> > > from the nvdimm core and/or the nvdimm provider.
-> >
-> > The intend for adding these callbacks(event_init/add/del/read) is to give
-> > flexibility to the nvdimm core to add some common checks/routines if required
-> > in the future. Those checks can be common for all architecture with still having the
-> > ability to call arch/platform specific driver code to use its own routines.
-> >
-> > But as you said, currently we don't have any common checks and it directly
-> > calling platform specific code, so we can get rid of it.
-> > Should we remove this part for now?
->
-> Yes, lets go direct to the perf api for now and await the need for a
-> common core wrapper to present itself.
->
-> >
-> >
-> > >
-> > > Otherwise it's also not clear which of these structure members are
-> > > used at runtime vs purely used as temporary storage to pass parameters
-> > > to the pmu core.
-> > >
-> > >> + * @attr_groups: data structure for events, formats and cpumask
-> > >> + * @cpu: designated cpu for counter access.
-> > >> + * @node: node for cpu hotplug notifier link.
-> > >> + * @cpuhp_state: state for cpu hotplug notification.
-> > >> + * @arch_cpumask: cpumask to get designated cpu for counter access.
-> > >> + */
-> > >> +struct nvdimm_pmu {
-> > >> +       const char *name;
-> > >> +       struct pmu pmu;
-> > >> +       struct device *dev;
-> > >> +       int (*event_init)(struct perf_event *event);
-> > >> +       int  (*add)(struct perf_event *event, int flags);
-> > >> +       void (*del)(struct perf_event *event, int flags);
-> > >> +       void (*read)(struct perf_event *event);
-> > >> +       /*
-> > >> +        * Attribute groups for the nvdimm pmu. Index 0 used for
-> > >> +        * format attribute, index 1 used for event attribute,
-> > >> +        * index 2 used for cpusmask attribute and index 3 kept as NULL.
-> > >> +        */
-> > >> +       const struct attribute_group *attr_groups[4];
-> > >
-> > > Following from above, I'd rather this was organized as static
-> > > attributes with an is_visible() helper for the groups for any dynamic
-> > > aspects. That mirrors the behavior of nvdimm_create() and allows for
-> > > device drivers to compose the attribute groups from a core set and /
-> > > or a provider specific set.
-> >
-> > Since we don't have any common events right now, Can I use papr
-> > attributes directly or should we create dummy events for common thing and
-> > then merged it with papr event list.
->
-> Just use papr events directly.
+> > (btw, I think I've acked this but it seems lost).
+> Yes, but this patch is a little different with the previous one.
 
-That is to say...I think if another implementation followed it should
-try to match as many common event names as papr_scm picked, and
-possibly extend with its own rather than start with a papr_scm
-specific namespace for everything.
+I see, then it's better to mention this after "---" like
+
+---
+change since v1:
+- xyz
+---
+
+or in the cover letter.
+
+>
+> And should I not send the patch again if one of the previous version
+> patch series have been acked by someone?
+
+No, you need to resend the whole series.
+
+Thanks
+
+> It's the first time for me to
+> send patches to kernel community.
+> >
+> > Thanks
+> >
+> > > ---
+> > >  drivers/vdpa/virtio_pci/vp_vdpa.c | 12 ++++++++++++
+> > >  1 file changed, 12 insertions(+)
+> > >
+> > > diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> > > index 5bcd00246d2e..e3ff7875e123 100644
+> > > --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
+> > > +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> > > @@ -76,6 +76,17 @@ static u8 vp_vdpa_get_status(struct vdpa_device *vdpa)
+> > >         return vp_modern_get_status(mdev);
+> > >  }
+> > >
+> > > +static int vp_vdpa_get_vq_irq(struct vdpa_device *vdpa, u16 idx)
+> > > +{
+> > > +       struct vp_vdpa *vp_vdpa = vdpa_to_vp(vdpa);
+> > > +       int irq = vp_vdpa->vring[idx].irq;
+> > > +
+> > > +       if (irq == VIRTIO_MSI_NO_VECTOR)
+> > > +               return -EINVAL;
+> > > +
+> > > +       return irq;
+> > > +}
+> > > +
+> > >  static void vp_vdpa_free_irq(struct vp_vdpa *vp_vdpa)
+> > >  {
+> > >         struct virtio_pci_modern_device *mdev = &vp_vdpa->mdev;
+> > > @@ -427,6 +438,7 @@ static const struct vdpa_config_ops vp_vdpa_ops = {
+> > >         .get_config     = vp_vdpa_get_config,
+> > >         .set_config     = vp_vdpa_set_config,
+> > >         .set_config_cb  = vp_vdpa_set_config_cb,
+> > > +       .get_vq_irq     = vp_vdpa_get_vq_irq,
+> > >  };
+> > >
+> > >  static void vp_vdpa_free_irq_vectors(void *data)
+> > > --
+> > > 2.31.1
+> > >
+>
+
