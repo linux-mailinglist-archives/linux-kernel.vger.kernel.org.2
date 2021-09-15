@@ -2,75 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B291D40CC7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ABF40CC82
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhIOSWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:22:15 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43839 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229466AbhIOSWL (ORCPT
+        id S230203AbhIOSZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhIOSY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:22:11 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 18FIKUUX021510
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 14:20:31 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id AD6E115C3427; Wed, 15 Sep 2021 14:20:30 -0400 (EDT)
-Date:   Wed, 15 Sep 2021 14:20:30 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>, ksummit@lists.linux.dev
-Subject: Re: [MAINTAINER SUMMIT] Folios as a potential Kernel/Maintainers
- Summit topic?
-Message-ID: <YUI5bk/94yHPZIqJ@mit.edu>
-References: <YUIwgGzBqX6ZiGgk@mit.edu>
- <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
+        Wed, 15 Sep 2021 14:24:59 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA2EC061574;
+        Wed, 15 Sep 2021 11:23:40 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id y4so1938614pfe.5;
+        Wed, 15 Sep 2021 11:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=crqcUOKW4ICiyDqv+FQ3+9UvZjcNBFY2WdOBjUG5rOs=;
+        b=KAwl0YJ7funyESGOGR3ZOtr93nJB8k+o8x9+Mqd2G7ZW6nrXn4ReyFw2L2eIiS+zsZ
+         qUYUYiPTNao/RQ1j/nYsrlyVJ71WJdYWCeuuH5xnghw9ESu28x7gUEIEhVhnr2WLD+55
+         mwHkuXI1T9VhT8UPkT8q3RVgXDYo4Y5GixX9gX7vSIixifwhMUuZ/G7OPCSKqOWQcVUW
+         Uf9j1G6xxx4l3Is1OLiJKYB0FUJ/9BiL5+jIIhXuAXAFulEp4saARUZttinMgRBL+5DC
+         6yuVLLnxf/hq41JH7hqfZASwjUZF5DjchiZa7lfEWluNPBjQpUtwkSscxj08YtjY2HEb
+         XK/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=crqcUOKW4ICiyDqv+FQ3+9UvZjcNBFY2WdOBjUG5rOs=;
+        b=YeDuYi8zNCdNuJUmUehoBCYZ5zYxuSjnpHh0dN0d7vDpiI075wKPQyOYwRfuDDFZN0
+         ScnEJ6rxmgE2SKFh1shDqt1ZHcW6OSr7WwXbMJlWapOCF4Qjm+eu+k0Q3ERdbXUr6sAs
+         xH5TENTPBNIxqVS7uIM4GtRr9QVAIVimxP9UGcLiHwXXWNbXi9twvPrsizf+CBxtlz/6
+         3404A5PrwegQG1UpaPpVAR+qepmV4X+qVYRktEDOg8ErSsIo1rY5jzX9AXutB8URGgFs
+         gLtL16WiWOvHVDjoGGwHyd6ks4luGYWB8I++GG5CB2ZNAUhGgs6EzXStLKY3/MD+VIJ8
+         bUVg==
+X-Gm-Message-State: AOAM530CMNjIs8NzWbhA13pj/uBodVEfIJaLlh8jHO/8mMqJHgPza3/t
+        /KdCnz9KRtGZvPDgxAH26wUlXI1RDkwcRg==
+X-Google-Smtp-Source: ABdhPJyBSksG+UA+g7JDGCXXN+jxkrh/nPAiIN6AkdkBXvVqFL/5LaHPP81ftnf3ClQ38kqXFz1tnw==
+X-Received: by 2002:a62:14cb:0:b0:43e:ba00:c35e with SMTP id 194-20020a6214cb000000b0043eba00c35emr877869pfu.9.1631730219210;
+        Wed, 15 Sep 2021 11:23:39 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id u8sm526368pfk.212.2021.09.15.11.23.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 11:23:38 -0700 (PDT)
+Subject: Re: [PATCH v1 2/4] PM / devfreq: Add devm_devfreq_add_governor()
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20210912184458.17995-1-digetx@gmail.com>
+ <20210912184458.17995-3-digetx@gmail.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <504a75a9-3f39-3aed-2df5-4ca1e7f99afc@gmail.com>
+Date:   Thu, 16 Sep 2021 03:23:34 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f7b70227bac9a684320068b362d28fcade6b65b9.camel@HansenPartnership.com>
+In-Reply-To: <20210912184458.17995-3-digetx@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 02:03:46PM -0400, James Bottomley wrote:
-> On Wed, 2021-09-15 at 13:42 -0400, Theodore Ts'o wrote:
-> [...]
-> > Would this be helpful?  (Or Linus could pull either the folio or
-> > pageset branch, and make this proposal obsolete, which would be
-> > great.  :-)
+On 21. 9. 13. 오전 3:44, Dmitry Osipenko wrote:
+> Add resource-managed variant of devfreq_add_governor().
 > 
-> This is a technical rather than process issue isn't it?  You don't have
-> enough technical people at the Maintainer summit to help meaningfully. 
-> The ideal location, of course, was LSF/MM which is now not happening.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>   drivers/devfreq/devfreq.c  | 26 ++++++++++++++++++++++++++
+>   drivers/devfreq/governor.h |  3 +++
+>   2 files changed, 29 insertions(+)
 > 
-> However, we did offer the Plumbers BBB infrastructure to willy for a MM
-> gathering which could be expanded to include this.
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index 85faa7a5c7d1..d3af000ec290 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -1301,6 +1301,32 @@ int devfreq_add_governor(struct devfreq_governor *governor)
+>   }
+>   EXPORT_SYMBOL(devfreq_add_governor);
+>   
+> +static void devm_devfreq_remove_governor(void *governor)
+> +{
+> +	devfreq_remove_governor(governor);
 
-Well, that's why I was suggesting doing this as a LPC BOF, and using
-an LPC BOF session on Friday --- I'm very much aware we don't have the
-right tehcnical people at the Maintainer Summit.
+Because devfreq_remove_governor has the return value,
+you need to check the return value and then print error at least.
 
-It's not clear we will have enough MM folks at the LPC, and I agree
-LSF/MM would be a better venue --- but as you say, it's not happening.
-We could also use the BBB infrastructure after the LPC as well, if we
-can't get everyone lined up and available on short notice.  There are
-a lot of different possibilities; I'm for anything where all of the
-stakeholders agree will work, so we can make forward progress.
+	WARN_ON(devfreq_remove_governor(governor));
 
-Cheers,
+> +}
+> +
+> +/**
+> + * devm_devfreq_add_governor() - Add devfreq governor
+> + * @dev:	device which adds devfreq governor
+> + * @governor:	the devfreq governor to be added
+> + *
+> + * This is a resource-managed variant of devfreq_add_governor().
+> + */
+> +int devm_devfreq_add_governor(struct device *dev,
+> +			      struct devfreq_governor *governor)
+> +{
+> +	int err;
+> +
+> +	err = devfreq_add_governor(governor);
+> +	if (err)
+> +		return err;
+> +
+> +	return devm_add_action_or_reset(dev, devm_devfreq_remove_governor,
+> +					governor);
+> +}
+> +EXPORT_SYMBOL(devm_devfreq_add_governor);
+> +
+>   /**
+>    * devfreq_remove_governor() - Remove devfreq feature from a device.
+>    * @governor:	the devfreq governor to be removed
+> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
+> index 2d69a0ce6291..0d70a9ad951e 100644
+> --- a/drivers/devfreq/governor.h
+> +++ b/drivers/devfreq/governor.h
+> @@ -94,4 +94,7 @@ static inline int devfreq_update_stats(struct devfreq *df)
+>   
+>   	return df->profile->get_dev_status(df->dev.parent, &df->last_status);
+>   }
+> +
+> +int devm_devfreq_add_governor(struct device *dev,
+> +			      struct devfreq_governor *governor);
 
-						- Ted
+Better to add under devfreq_remove_governor definition in order to 
+gather the similar functions.
+
+>   #endif /* _GOVERNOR_H */
+> 
+
+
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
