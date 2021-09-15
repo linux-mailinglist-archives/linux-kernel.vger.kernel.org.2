@@ -2,167 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD73C40CE84
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276E840CE8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbhIOVER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 17:04:17 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:38778 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhIOVEQ (ORCPT
+        id S232190AbhIOVMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhIOVMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 17:04:16 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:45432)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mQc3S-009Uud-4x; Wed, 15 Sep 2021 15:02:54 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:43060 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mQc3Q-005gPt-QL; Wed, 15 Sep 2021 15:02:53 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-mm\@kvack.org" <linux-mm@kvack.org>,
-        "legion\@kernel.org" <legion@kernel.org>,
-        "containers\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>
-References: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
-Date:   Wed, 15 Sep 2021 16:02:19 -0500
-In-Reply-To: <1M9_d6wrcu6rdPe1ON0_k0lOxJMyyot3KAb1gdyuwzDPC777XVUWPHoTCEVmcK3fYfgu7sIo3PSaLe9KulUdm4TWVuqlbKyYGxRAjsf_Cpk=@protonmail.ch>
-        (Jordan Glover's message of "Wed, 15 Sep 2021 19:49:31 +0000")
-Message-ID: <87ee9pa6xw.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 15 Sep 2021 17:12:38 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF51C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:11:19 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t6so8520279edi.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oY3HGbrOF2mt1BGRMipDyincASpxkHi2fa1P9CCKn98=;
+        b=UWhHDP4TFkZlolbythk/tC1BCOEUC0tdeXllzWskzXnrW45nyHs79dEbOBWrqE5EA2
+         hdTk3SPt/NdXmwbLl92AmXLnSJz7egRBNOS5uX5jUb3ugH/ED84Tv7YbT07QK4HdhVc/
+         xUc+JcacGgHOEa/2cGorLkqgeMM8Xm1GkgwGnL6RA9h+u++EyH5XF250xpT81TjDSqSS
+         fHzq0xDPMCnOn1EPHFWA0p2uzYpnhJaaC3KEos3qdb0ZiWXLXj4J8Nig5W1NlkJEXB/3
+         pISVwXA+7Y8nuOYEtatp4bKiHWMc4a1r7XOGF+mm6wd/6ps8EX7dQu1SdGzKBmNp9ewj
+         7iGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oY3HGbrOF2mt1BGRMipDyincASpxkHi2fa1P9CCKn98=;
+        b=gk3LeaACRY02RrhXKer68Otb6WAkl78ivbD5Ti1SFj5n9RcPc2x5xG3NkkOxPO2yyZ
+         mDQ126bGB8BRMJ4HPx4SpTTo/V5ZCLFKznDR0cTrII2bh0cVAsN7zNlOi5d9qGqV1sWQ
+         f3ZDowPHTyksF5q2Rcfru04WjYBaBp0Pe9pZDViAUfXYGrJp9/fmabrx9FUxRZehZNf7
+         9jlhvF8sFbfuid86bAQNw5Nbs9fKKSwNQRQ/+nLs1v0TBdEnJNoDmqxnNNLukOHLIkhb
+         o3D1+n7omv+Mg6Bad/2CmiR0reGelqEyDNyJqirgxc4iR36hekpL74EXi7kTnqbX6zwa
+         HFFA==
+X-Gm-Message-State: AOAM530Kqg7OY6TYG9Djk5+qfoAIlxXdtOaHfXVc7LFDV9yW6LHJVs0c
+        uOnsYKFXdC0+Oz+9Z7VDsFw=
+X-Google-Smtp-Source: ABdhPJzmjbd+2afGOT5gExnCyvOaVzU0/g0nY52JsN3kLUH5lDNbWhvMPeTuYaWo/Q81yPPPtDX8pA==
+X-Received: by 2002:a05:6402:14c3:: with SMTP id f3mr2295146edx.312.1631740276984;
+        Wed, 15 Sep 2021 14:11:16 -0700 (PDT)
+Received: from localhost.localdomain (host-95-235-105-169.retail.telecomitalia.it. [95.235.105.169])
+        by smtp.gmail.com with ESMTPSA id t3sm511618edt.61.2021.09.15.14.11.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 14:11:16 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v6 00/19] staging: r8188eu: Shorten and simplify calls chains
+Date:   Wed, 15 Sep 2021 23:10:44 +0200
+Message-Id: <20210915211103.18001-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mQc3Q-005gPt-QL;;;mid=<87ee9pa6xw.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18iG/Y+rnWvet9XpIvn9RVjal8RV5j/qco=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: ****
-X-Spam-Status: No, score=4.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,LotsOfNums_01,
-        T_TM2_M_HEADER_IN_MSG,T_XMDrugObfuBody_12,XMSubLong,XM_B_SpammyWords,
-        XM_Body_Dirty_Words autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1]
-        *  1.0 XM_Body_Dirty_Words Contains a dirty word
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-        *  1.0 T_XMDrugObfuBody_12 obfuscated drug references
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 
-X-Spam-Combo: ****;Jordan Glover <Golden_Miller83@protonmail.ch>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 769 ms - load_scoreonly_sql: 0.10 (0.0%),
-        signal_user_changed: 15 (1.9%), b_tie_ro: 12 (1.6%), parse: 1.55
-        (0.2%), extract_message_metadata: 17 (2.2%), get_uri_detail_list: 4.5
-        (0.6%), tests_pri_-1000: 7 (0.9%), tests_pri_-950: 1.57 (0.2%),
-        tests_pri_-900: 1.14 (0.1%), tests_pri_-90: 95 (12.4%), check_bayes:
-        93 (12.1%), b_tokenize: 13 (1.7%), b_tok_get_all: 12 (1.6%),
-        b_comp_prob: 4.0 (0.5%), b_tok_touch_all: 59 (7.7%), b_finish: 1.21
-        (0.2%), tests_pri_0: 550 (71.5%), check_dkim_signature: 1.05 (0.1%),
-        check_dkim_adsp: 5 (0.7%), poll_dns_idle: 0.39 (0.1%), tests_pri_10:
-        2.5 (0.3%), tests_pri_500: 73 (9.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: linux 5.14.3: free_user_ns causes NULL pointer dereference
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jordan Glover <Golden_Miller83@protonmail.ch> writes:
+io_ops abstraction is useless in this driver, since there is only one ops
+registration. Without io_ops we can get rid of indirect calls mess and
+shorten the calls chain.
 
-> Hi, recently I hit system freeze after I was closing few containerized apps on my system. As for now it occurred only once on linux 5.14.3. I think it maybe be related to "Count rlimits in each user namespace" patchset merged during 5.14 window
->
-> https://lore.kernel.org/all/257aa5fb1a7d81cf0f4c34f39ada2320c4284771.1619094428.git.legion@kernel.org/T/#u
+Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+For this purpose unify the three usb_read8/16/32 into the new
+usb_read(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_read() and use in it the new
+usb_control_msg_recv() API of USB Core.
 
-So that warning comes from:
+Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
+For this purpose unify the four usb_write8/16/32/N() into the new
+usb_write(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_write() and use in it the new
+usb_control_msg_send() API of USB Core.
 
-void dec_ucount(struct ucounts *ucounts, enum ucount_type type)
-{
-	struct ucounts *iter;
-	for (iter = ucounts; iter; iter = iter->ns->ucounts) {
-		long dec = atomic_long_dec_if_positive(&iter->ucount[type]);
-		WARN_ON_ONCE(dec < 0);
-	}
-	put_ucounts(ucounts);
-}
+The code with the modifications was thoroughly tested by Pavel Skripkin
+using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS] and by Fabio M.
+De Francesco using a ASUSTek Computer, Inc. Realtek 8188EUS [USB-N10 Nano].
 
-Which certainly looks like a reference count bug.  It could also be a
-memory stomp somewhere close.
+Changelog:
 
-Do you have any idea what else was going on?  This location is the
-symptom but not the actual cause.
+v5->v6:
+	- 1-14:
+		Minimal changes to patch subjects to achieve consistent
+		style;
+	- 15:
+		Fix a mistake in the checks of values returned by
+		usb_control_msg();
+	- 16-19:
+		No changes.
 
-Eric
+v4->v5:
+        - 1-14:
+                No changes;
+        - 15-16:
+                Fix minor formatting issues and use "Reverse Xmas Tree" style,
+                according to suggestions by David Laight and Dan Carpenter;
+        - 17-18:
+                Pavel Skripkin found logical errors in the checks of the
+                values returned by usb_control_msg_{recv,send}(), so fix them;
+                Dan Carpenter suggested to do error handling before success
+                handling, so change the code accordingly;
+        - 19:
+                Add this patch in order to get rid of the shared buffer in
+                usb_read() and usb_write() and remove this field from struct
+                "dvobj_priv".
 
+v3->v4:
+        - 1-14:
+                Split a patch into fourteen;
+        - 15-16:
+                Add these patches for clean-ups of the code that is going to be
+                reused in 17-18/18;
+        - 17-18:
+                Make some changes according to a first review of Greg
+                Kroah-Hartman; furthermore, remove the unnecessary while loop
+                and a couple of if' test; handle the errors returned by
+                usb_control_msg_recv().
 
+v2->v3:
+        - 1-2:
+                No changes;
+        - 3:
+                Fix the version number of the patch.
 
->
-> Logs below:
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 26546 at kernel/ucount.c:253 dec_ucount+0x43/0x50
-> Modules linked in: nft_ct nft_fib_ipv4 nft_fib wireguard curve25519_x86_64 libcurve25519_generic libchacha20poly1305 chacha_x86_64 poly1305_x86_64 udp_tunnel libblake2s blake2s_x86_64 libblake2s_generic libchacha ccm algif_aead des_generic libdes ecb algif_skcipher cmac md4 algif_hash af_alg hid_sensor_custom_intel_hinge hid_sensor_als hid_sensor_magn_3d hid_sensor_rotation hid_sensor_accel_3d hid_sensor_gyro_3d hid_sensor_trigger industrialio_triggered_buffer hid_sensor_iio_common kfifo_buf industrialio hid_sensor_custom hid_sensor_hub cros_ec_ishtp cros_ec intel_ishtp_loader nft_counter intel_ishtp_hid snd_hda_codec_hdmi intel_rapl_msr xt_mark ipt_REJECT nf_reject_ipv4 snd_ctl_led xt_LOG snd_hda_codec_conexant nf_log_syslog snd_hda_codec_generic xt_addrtype xt_tcpudp xt_conntrack nf_conntrack nf_defrag_ipv4 mei_hdcp snd_hda_intel nft_compat wmi_bmof nf_tables intel_rapl_common libcrc32c think_lmi intel_tcc_cooling snd_intel_dspcfg firmware_attributes_class nfnetlink iwlmvm
->  intel_wmi_thunderbolt mac80211 x86_pkg_temp_thermal snd_hda_codec intel_powerclamp coretemp libarc4 vfat fat kvm_intel rapl intel_cstate snd_hwdep intel_uncore iwlwifi snd_hda_core mousedev joydev snd_pcm psmouse cfg80211 snd_timer mei_me ucsi_acpi wacom intel_ish_ipc intel_xhci_usb_role_switch mei intel_pch_thermal typec_ucsi roles typec intel_ishtp wmi thinkpad_acpi ledtrig_audio platform_profile snd soundcore rfkill tpm_crb i2c_hid_acpi i2c_hid acpi_pad tpm_tis mac_hid tpm_tis_core pkcs8_key_parser fuse zram ip_tables x_tables ext4 crc32c_generic crc16 mbcache jbd2 usbhid dm_crypt cbc encrypted_keys trusted asn1_encoder tee tpm rng_core dm_mod rtsx_pci_sdmmc mmc_core serio_raw atkbd libps2 crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd xhci_pci rtsx_pci xhci_pci_renesas i8042 serio kvmgt mdev vfio_iommu_type1 vfio i915 i2c_algo_bit intel_gtt ttm agpgart video drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec
->  drm kvm irqbypass
-> CPU: 1 PID: 26546 Comm: kworker/1:1 Not tainted 5.14.3 #1 c719caf0c6c208968387ed83e3061ac05d0faf2f
-> Workqueue: events free_user_ns
-> RIP: 0010:dec_ucount+0x43/0x50
-> Code: 14 01 48 8b 02 48 89 c6 48 83 ee 01 78 1c f0 48 0f b1 32 75 f0 48 8b 41 10 48 8b 88 e8 01 00 00 48 85 c9 75 d9 e9 0d fd ff ff <0f> 0b eb e7 66 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 f8 48
-> RSP: 0018:ffffa82cc2bd7e60 EFLAGS: 00010297
-> RAX: 0000000000000000 RBX: ffffa2f53298ee50 RCX: ffffa2f3c0061000
-> RDX: ffffa2f3c0061020 RSI: ffffffffffffffff RDI: ffffa2f3c0061000
-> RBP: ffffa2f53298ebe0 R08: 0000000000000020 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000000 R12: ffffa2f3c0061000
-> R13: 00000000ffffffff R14: 0000000000000000 R15: 0000000000000001
-> FS:  0000000000000000(0000) GS:ffffa2f599680000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000628f892be9f8 CR3: 000000002880e004 CR4: 00000000003706e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  free_user_ns+0x73/0x110
->  process_one_work+0x1e1/0x380
->  worker_thread+0x50/0x3a0
->  ? rescuer_thread+0x360/0x360
->  kthread+0x127/0x150
->  ? set_kthread_struct+0x40/0x40
->  ret_from_fork+0x22/0x30
-> ---[ end trace eb7a8d38b64b2d3a ]---
-> BUG: kernel NULL pointer dereference, address: 00000000000001e8
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> Oops: 0000 [#1] SMP PTI
-> CPU: 1 PID: 26546 Comm: kworker/1:1 Tainted: G        W         5.14.3 #1 c719caf0c6c208968387ed83e3061ac05d0faf2f
-> Workqueue: events free_user_ns
-> RIP: 0010:dec_ucount+0x32/0x50
-> Code: 74 34 89 f6 48 89 f9 4c 8d 04 f5 20 00 00 00 4a 8d 14 01 48 8b 02 48 89 c6 48 83 ee 01 78 1c f0 48 0f b1 32 75 f0 48 8b 41 10 <48> 8b 88 e8 01 00 00 48 85 c9 75 d9 e9 0d fd ff ff 0f 0b eb e7 66
-> RSP: 0018:ffffa82cc2bd7e60 EFLAGS: 00010297
-> RAX: 0000000000000000 RBX: ffffa2f53298ee50 RCX: ffffa2f3c0061000
-> RDX: ffffa2f3c0061020 RSI: ffffffffffffffff RDI: ffffa2f3c0061000
-> RBP: ffffa2f53298ebe0 R08: 0000000000000020 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000000 R12: ffffa2f3c0061000
-> R13: 00000000ffffffff R14: 0000000000000000 R15: 0000000000000001
-> FS:  0000000000000000(0000) GS:ffffa2f599680000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000000001e8 CR3: 000000002880e004 CR4: 00000000003706e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  free_user_ns+0x73/0x110
->  process_one_work+0x1e1/0x380
->  worker_thread+0x50/0x3a0
->  ? rescuer_thread+0x360/0x360
->  kthread+0x127/0x150
->  ? set_kthread_struct+0x40/0x40
->  ret_from_fork+0x22/0x30
+v1->v2:
+        - 1-2:
+                No changes;
+        - 3:
+                Replace parameter REALTEK_USB_VENQT_READ with REALTEK_USB_VENQT_WRITE
+                in usb_control_msg_send().
+
+v1: https://lore.kernel.org/lkml/20210904150447.14659-1-fmdefrancesco@gmail.com/
+v2: https://lore.kernel.org/lkml/20210904212719.11426-1-fmdefrancesco@gmail.com/
+v3: https://lore.kernel.org/lkml/20210904220048.12822-1-fmdefrancesco@gmail.com/
+v4: https://lore.kernel.org/lkml/20210913181002.16651-1-fmdefrancesco@gmail.com/
+v5: https://lore.kernel.org/lkml/20210915124149.27543-1-fmdefrancesco@gmail.com/
+
+Fabio M. De Francesco (4):
+  staging: r8188eu: Clean up usbctrl_vendorreq()
+  staging: r8188eu: Clean up rtw_read8/16/32() and rtw_write8/16/32/N()
+  staging: r8188eu: Shorten calls chains of rtw_read8/16/32()
+  staging: r8188eu: Shorten calls chains of rtw_write8/16/32/N()
+
+Pavel Skripkin (15):
+  staging: r8188eu: remove usb_{read,write}_mem()
+  staging: r8188eu: remove the helpers of rtw_read8()
+  staging: r8188eu: remove the helpers of rtw_read16()
+  staging: r8188eu: remove the helpers of rtw_read32()
+  staging: r8188eu: remove the helpers of usb_write8()
+  staging: r8188eu: remove the helpers of usb_write16()
+  staging: r8188eu: remove the helpers of usb_write32()
+  staging: r8188eu: remove the helpers of usb_writeN()
+  staging: r8188eu: remove the helpers of usb_read_port()
+  staging: r8188eu: remove the helpers of usb_write_port()
+  staging: r8188eu: remove the helpers of usb_read_port_cancel()
+  staging: r8188eu: remove the helpers of usb_write_port_cancel()
+  staging: r8188eu: remove core/rtw_io.c
+  staging: remove struct _io_ops
+  staging: r8188eu: remove shared buffer for usb requests
+
+ drivers/staging/r8188eu/Makefile              |   1 -
+ drivers/staging/r8188eu/core/rtw_io.c         | 299 ------------------
+ drivers/staging/r8188eu/hal/usb_halinit.c     |   6 +-
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   | 261 ++++++++-------
+ drivers/staging/r8188eu/include/drv_types.h   |   5 -
+ drivers/staging/r8188eu/include/rtw_io.h      |  89 +-----
+ drivers/staging/r8188eu/include/usb_ops.h     |   2 -
+ .../staging/r8188eu/include/usb_ops_linux.h   |   8 -
+ drivers/staging/r8188eu/os_dep/usb_intf.c     |  37 +--
+ .../staging/r8188eu/os_dep/usb_ops_linux.c    |  20 +-
+ 10 files changed, 166 insertions(+), 562 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/core/rtw_io.c
+
+-- 
+2.33.0
+
