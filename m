@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5998340C09C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EE540C0A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232034AbhIOHiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbhIOHiV (ORCPT
+        id S236564AbhIOHix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:38:53 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50748
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236514AbhIOHiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:38:21 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94103C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:37:02 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id qq21so4070587ejb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=415Blr3Q/Gqr6sE+2qW0icFFyR7iU8ysTZ1/UKJFKvk=;
-        b=gS7tx1MuDrOQeAB0qPWwo5Rou2795lkeTLNHk1iErOumxHljeKE+36FKX0LkSmKG6L
-         znZCynIIyUdX+ccYI01/s9IJafOENawwt4vokbUkPaxmdqxk1+TJdCcXGQJKAW+sH+Kc
-         1klnd8l9rEYajeqnwymD+UYS5ySmE4qKU23Od9XrurcFWyBQu9ZHmlf+FJD+A8ScfSKI
-         fxTolFKzO97rGtYq6KSzrR7J0B9kyNiVCIMGVcfT5qInc7vfJe6B0CEPLLlxV8zG/k42
-         j7PdLXLNKWf7iF+RmXVYcayEIH7aM9ncbo7OLho/Rz6NyrR1FUWrRIEgzreAE5Al45CV
-         Q3Pw==
+        Wed, 15 Sep 2021 03:38:52 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8C2D340260
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631691453;
+        bh=9Jsg/Zb9vOxmr47H6Dck9hmK7mt/XUSoX3CVPDrTxZw=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=m6YsJANSRk0dr2my2IPIyexXMfu4iOEjS4AI0vbzeyugKwlCRtssnfvR/VOUejA7d
+         NtznAp0yg99gWqUJG9Zg/VCpYGa49eNhmEm4+2QQflzyPDRlpP6QRb6xOO4ieaHgIG
+         abZ7TmV7HsEB9U5XZr2Cz/JTrg2A57YcRgR+lliyJ9DwjB2Q+SNe7sKucrbcWLxbsB
+         a22NFdHtVIJDw3ANzkx4hALiyI2UbpLr7vFc06ZhF8CIsVNnjqVFYOx9GG/JFN/vin
+         xh4kPTL+DScCFsekr57InpDuYGGHBS8lHB36fWdSg1M/TBpJE80kUvXHKau818Q57l
+         o6MdP/2EDnvRQ==
+Received: by mail-ed1-f71.google.com with SMTP id b7-20020a50e787000000b003d59cb1a923so212997edn.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:37:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=415Blr3Q/Gqr6sE+2qW0icFFyR7iU8ysTZ1/UKJFKvk=;
-        b=Sis1Ne4oghxVpGGIJjPKkO+ysNKtBC/V90iXuO8iTi05M0QefNj4vLBBWd2JI7NDfw
-         YX9KUWW6Al9DqdGizrJPTX5vNqgM6NNo+v1W2z3isFpWnWCydNPqyqOuL6I7DTQ7NxkP
-         /2O8LemEqrbahKwtUmOVect+2o4d3vqzCZDv29MQQO3Q5SX7hbCCURI2H7MVjZRAX12E
-         Tt2b1BXarrO54MctGhcWzxfbI+oI+EihUzIm4+lTSrUDYbDGFWb8TbfbOhkmx2W0J8wC
-         oWyvmZ4vpq08cZEcqqexL09aa3knWW6AdLMfrIgqlCIPxP52CkJxP1X4AytL0L9yXjCa
-         I4WQ==
-X-Gm-Message-State: AOAM531AFC+j0izCmZBo3AcEwdonVfxAaIKB2EU04guBW9DQIzBqk3r5
-        gJl58zyjWtzxSGKMQQe3bDQOgw==
-X-Google-Smtp-Source: ABdhPJxEPsmiA59Fnh54y6VEPVQUfyGawMpxS8b0tugd2vhbZmZAyqpkOCTpQmHmEUVwk/N0fRRv0g==
-X-Received: by 2002:a17:906:2cd6:: with SMTP id r22mr22921688ejr.398.1631691421078;
-        Wed, 15 Sep 2021 00:37:01 -0700 (PDT)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id t3sm6609895edt.61.2021.09.15.00.36.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Sep 2021 00:37:00 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v2 4/4] block, bfq: consider request size in
- bfq_asymmetric_scenario()
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <143fa1a2-de5f-b18a-73d9-8e105844709c@huawei.com>
-Date:   Wed, 15 Sep 2021 09:36:58 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <68A2B4C8-48A5-45F3-8782-2440C0028161@linaro.org>
-References: <20210806020826.1407257-1-yukuai3@huawei.com>
- <20210806020826.1407257-5-yukuai3@huawei.com>
- <8601F280-2F16-446A-95BA-37A07D1A1055@linaro.org>
- <143fa1a2-de5f-b18a-73d9-8e105844709c@huawei.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9Jsg/Zb9vOxmr47H6Dck9hmK7mt/XUSoX3CVPDrTxZw=;
+        b=R8v+Z27rh1Ie9Pu/USFB76RJ2eugZjc7aZqtEhzOVMFFG7aDZNmb86cH8Z5gWN2Sc/
+         vLqE/jp2Lsc85QQA/ezZN9RR/q02Qmv5g7A7fGlgF/7RIg4xJC679ljWg0fKSjtmUFrJ
+         YiD4dFPOKrVrtkp6F2elMUS/ERuxM/QylLWICkkLTcdIE4F75A3SabuOnegNolacWJYJ
+         0mOft17W9cRejSpYax+ESfzvtMyzBdcXru4DZdLlL8B8VAutxA8yIbSWACK1KPbC078T
+         F4Rx2LabgYzsJJG+lvMeAR7Txm19fgQAKhWyXuM9xLM/c9uJgAQeCqzl0YFNtFc+eG2w
+         V5JA==
+X-Gm-Message-State: AOAM530MiTA1NHAfhApSuc+JzHRYcaqlS9pbcZD6H6+pLjkUBPnp1UQ4
+        bauT7qCk7qk4bXDFnqHItdwpuMsW1cypwkb6NnzjstFmgeC5WKNYk37p7cb6/0BywIUjEbjWKqE
+        va9HLTqOZN5a5qP/O4opuZOHH2iOdhZykv0ryk7TDqQ==
+X-Received: by 2002:a05:6402:2da:: with SMTP id b26mr23729098edx.160.1631691453111;
+        Wed, 15 Sep 2021 00:37:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9KNnHVSLzmWN5khTacRj2yNehERLh21SPyQ+lDhUrMrfW6xrVidKaH9YbxB7KxkhxkN1q5Q==
+X-Received: by 2002:a05:6402:2da:: with SMTP id b26mr23729082edx.160.1631691452928;
+        Wed, 15 Sep 2021 00:37:32 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id d22sm5871832ejk.5.2021.09.15.00.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 00:37:32 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     CGEL <cgel.zte@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] memory:tegra210-emc-core: replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Wed, 15 Sep 2021 09:37:24 +0200
+Message-Id: <163169144170.13297.3862081658679258253.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210825063739.70260-1-deng.changcheng@zte.com.cn>
+References: <20210825063739.70260-1-deng.changcheng@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 24 Aug 2021 23:37:39 -0700, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+> 
+> Fix the following coccicheck warning:
+> ./drivers/memory/tegra/tegra210-emc-core.c:1665:0-23:WARNING
+> tegra210_emc_debug_min_rate_fops should be defined
+>  with DEFINE_DEBUGFS_ATTRIBUTE
+> ./drivers/memory/tegra/tegra210-emc-core.c:1726:0-23:WARNING
+> tegra210_emc_debug_temperature_fops should be defined
+>  with DEFINE_DEBUGFS_ATTRIBUTE
+> 
+> [...]
 
+Applied, thanks!
 
-> Il giorno 7 set 2021, alle ore 13:29, yukuai (C) <yukuai3@huawei.com> =
-ha scritto:
->=20
-> On 2021/08/27 1:00, Paolo Valente wrote:
->>> Il giorno 6 ago 2021, alle ore 04:08, Yu Kuai <yukuai3@huawei.com> =
-ha scritto:
->>>=20
->>> There is a special case when bfq do not need to idle when more than
->>> one groups is active:
->>>=20
->> Unfortunately, there is a misunderstanding here.  If more than one
->> group is active, then idling is not needed only if a lot of symmetry
->> conditions also hold:
->> - all active groups have the same weight
->> - all active groups contain the same number of active queues
->=20
-> Hi, Paolo
->=20
-> I didn't think of this contition.
->=20
-> It's seems that if we want to idle when more than one group is active,
-> there are two additional conditions:
->=20
-> - all dispatched requests have the same size
-> - all active groups contain the same number of active queues
->=20
+[1/1] memory:tegra210-emc-core: replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+      commit: 6fc5f1adf5a11422d748aa71e43e7c979208b8f2
 
-Also the weights and the I/O priorities of the queues inside the
-groups needs to be controlled, unfortunately.
-
-> Thus we still need to track how many queues are active in each group.
-> The conditions seems to be too much, do you think is it worth it to
-> add support to idle when more than one group is active?
->=20
-
-I think I see your point.  The problem is that these states are
-dynamic.  So, if we suspend tracking all the above information while
-more than one group is active, then we are with no state in case only
-one group remains active.
-
-Thanks,
-Paolo
-
-> Thanks
-> Kuai
->=20
->> - all active queues have the same weight
->> - all active queues belong to the same I/O-priority class
->> - all dispatched requests have the same size
->> Similarly, if only one group is active, then idling is not needed =
-only
->> if the above last three conditions hold.
->> The current logic, including your changes up to your previous patch,
->> is simply ignoring the last condition above.
->> So, unfortunately, your extra information about varied request size
->> should be used in the opposite way than how you propose to use it.
-
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
