@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF9940C51C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DFE40C520
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhIOMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:21:33 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49982 "EHLO
+        id S237103AbhIOMWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:22:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50176 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237662AbhIOMV0 (ORCPT
+        with ESMTP id S232816AbhIOMWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:21:26 -0400
+        Wed, 15 Sep 2021 08:22:53 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 84666221B9;
-        Wed, 15 Sep 2021 12:20:06 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A9D5B2223B;
+        Wed, 15 Sep 2021 12:21:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631708406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1631708493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BELbqYoPfRGRUC/W1066HME9OxG26ve3fwD+CS+Tg5g=;
-        b=Mp6P4l+u6p3E1NRsbRlaOwy/fg1oziSM+mwLmQoo1dQftP6pCFes9UJj1Uj7IsOYBobR3X
-        x1cbqPDoY99Zja/8a9RVwfOGhlccJNSvsXNXb+rrTdFeBujhm1riMRaSrFZLyLT4eay4yu
-        kcGGMChOtntx1vGFDLBP0y/D5hBZs2A=
-Received: from suse.cz (unknown [10.100.201.86])
+        bh=D1Iph1gSdH9FBZgY2AvdK6unYOt+Qq5SLnxNu8KaS5o=;
+        b=A0ttEjIvf3D6ExYxY9uVcitKA61Z97Ouy7/3+s5FxGsqNCaftyOB5OdEWZgQnpWAux8I/q
+        s5KYCjs9uZI7ADw4CvjZ+9jEAO+yYoemDDq3yC0kvozoMQSHneb+9i0axVOz0sFZ1AwirL
+        qChu+PmkRuyrSTQTb+XsmR4qSmqABxM=
+Received: from boxie.home.nordisch.org (mrueckert.tcp.ovpn2.nue.suse.de [10.163.34.102])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 548A0A3BA0;
-        Wed, 15 Sep 2021 12:20:06 +0000 (UTC)
-Date:   Wed, 15 Sep 2021 14:20:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mel Gorman <mgorman@suse.com>
-Cc:     Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] EXT4: Remove ENOMEM/congestion_wait() loops.
-Message-ID: <YUHk9d0jM6HATZ8+@dhcp22.suse.cz>
-References: <163157808321.13293.486682642188075090.stgit@noble.brown>
- <163157838437.13293.14244628630141187199.stgit@noble.brown>
- <20210914163432.GR3828@suse.com>
- <20210914235535.GL2361455@dread.disaster.area>
- <20210915085904.GU3828@suse.com>
+        by relay2.suse.de (Postfix) with ESMTPS id 6FBEDA3B99;
+        Wed, 15 Sep 2021 12:21:33 +0000 (UTC)
+Received: from fortress.home.nordisch.org ([192.168.1.3])
+        by boxie.home.nordisch.org with ESMTPSA
+        id 9ewjGk3lQWENXQAA3JBPWg
+        (envelope-from <mrueckert@suse.com>); Wed, 15 Sep 2021 12:21:33 +0000
+Date:   Wed, 15 Sep 2021 14:21:23 +0200
+From:   Marcus =?UTF-8?B?UsO8Y2tlcnQ=?= <mrueckert@suse.com>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/umip: Add a umip= cmdline switch
+Message-ID: <20210915142123.49f8137b@fortress.home.nordisch.org>
+In-Reply-To: <20210915113410.GA7130@ranerica-svr.sc.intel.com>
+References: <20210907200454.30458-1-bp@alien8.de>
+        <20210911011459.GA11980@ranerica-svr.sc.intel.com>
+        <YTx0+0pfyzHuX80L@zn.tnic>
+        <20210913213836.GA10627@ranerica-svr.sc.intel.com>
+        <YUDTCgEOZ3JOMSl7@zn.tnic>
+        <20210915113410.GA7130@ranerica-svr.sc.intel.com>
+Organization: SUSE GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915085904.GU3828@suse.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15-09-21 09:59:04, Mel Gorman wrote:
-> On Wed, Sep 15, 2021 at 09:55:35AM +1000, Dave Chinner wrote:
-
-> > That way "GFP_RETRY_FOREVER" allocation contexts don't have to jump
-> > through an ever changing tangle of hoops to make basic "never-fail"
-> > allocation semantics behave correctly.
-> > 
+On Wed, 15 Sep 2021 04:34:10 -0700
+Ricardo Neri <ricardo.neri-calderon@linux.intel.com> wrote:
+> > They're all likely old, arcane applications or games run in wine
+> > which people have no access to the source code anyway so come to
+> > think of it, the once thing is starting to make more sense to me
+> > now.
 > 
-> True and I can see what that is desirable. What I'm saying is that right
-> now, increasing the use of __GFP_NOFAIL may cause a different set of
-> problems (unbounded retries combined with ATOMIC allocation failures) as
-> they compete for similar resources.
+> Indeed, no one has reported "modern" application using these
+> instructions.
 
-I have commented on reasoning behind the above code in other reply. Let
-me just comment on this particular concern. I completely do agree that
-any use of __GFP_NOFAIL should be carefully evaluated. This is a very
-strong recuirement and it should be used only as a last resort.
-On the other hand converting an existing open coded nofail code that
-_doesn't_ really do any clever tricks to allow a forward progress (e.g.
-dropping locks, kicking some internal caching mechinisms etc.) should
-just be turned into __GPF_NOFAIL. Not only it makes it easier to spot
-that code but it also allows the page allocator to behave consistently
-and predictably.
+I am not sure if Blizzard Entertainment would tell us why they use this
+CPU instruction in Overwatch. And that game is "only" 5 years old.
 
-If the existing heuristic wrt. memory reserves to GFP_NOFAIL turns out
-to be suboptimal we can fix it for all those users.
+   darix
 
-Dropping the rest of the email which talks about reclaim changes because
-I will need much more time to digest that.
-[...]
 -- 
-Michal Hocko
-SUSE Labs
+Always remember:
+  Never accept the world as it appears to be.
+    Dare to see it for what it could be.
+      The world can always use more heroes.
