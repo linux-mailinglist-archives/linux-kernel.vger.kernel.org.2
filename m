@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4367540CD48
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE7340CD4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 21:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbhIOThY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 15:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
+        id S231601AbhIOTlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 15:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhIOThX (ORCPT
+        with ESMTP id S230451AbhIOTlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 15:37:23 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B9EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:36:04 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id jo30so2648697qvb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:36:04 -0700 (PDT)
+        Wed, 15 Sep 2021 15:41:03 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B53C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:39:44 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so5092714otq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 12:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B61mktkGbwP68xIW0td59BfsAzYam3YtrOnmVe0s/1A=;
-        b=Ig9CzW/vjNhJIsfW4jX8l7BewU8rEU/GiEtrw/p2YPnjActKU/GLnn1sOqz9pxYqpY
-         UHZcfmg2EmcXcGbJ5ZSmey/gOiIHOqdPDsslVQbl/ElBSacIkwPgGeqX37g2k5cflIpA
-         zQCi+scLoXx5XfFNOoL3nRK/eOi0eQLTfdmbWZbrN94ttEzH2pLXqPnkwTABUrhffQEK
-         HOuroAaNJ+run9GrILkzP0WwYAjtmEVLeWb+F89TWllbGFCrJVZfU26NQAsZYtw1j9KV
-         f0xbfpOKTREXvSP8rfjxbYHs3Vu9UvTGX9mta5Wty3YQJaXs0w/3DGzbWvjpQ0YrFq8b
-         GsjA==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=IGGDgeo7WVVIlkSnWinltsDGGWd6kdeJ2zJ+aw6R/WI=;
+        b=GUS2hAMgT2THzzdYiJDLOPPpMXHleJehii5HTQQ8sTxAHOW276rxND6LOK2QvQFA4u
+         ZusSgHiBg4JbNncoByRn6RQIMW7b2PVv0+wOets/2UphEYO0SohUOndszuIkFXFb2oRk
+         RDrFneIDQXgKYs2QmPxLhVGbi/W+xAtXFEH1Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B61mktkGbwP68xIW0td59BfsAzYam3YtrOnmVe0s/1A=;
-        b=a8AKizB82MSz3JHIzXIqZlUThjBaNZKoZyuNsIyNy/OVfUu3ne807hCv7/WwUT49bz
-         ikPXTlsxLwPefYLshYaqmic/vz+JJomgy9H0h3HTIw9Kg2vWoDtCo6h8DxA0r2dvn+wx
-         ihuvmrGeQizi7MnA5MWEXnQuKgw6ooRpsVl/H/LPFWj1zHQEroHMEI/ALsXa0Y6Xaen3
-         Hrmgc5QVkfHvy/DYXZgc1Y1v5wIkTlSviJFQRjyykyU5j3645kMitk0JYNXq80W43J6m
-         8KxKP0ijg+uSXKcSUB25grBmreeyFEGnRQVyGXRUe/HXxLWSoYR9C74BUu0zpdRKIjG9
-         x5yA==
-X-Gm-Message-State: AOAM531x+Qr9tupqHSV9nJGoJAW/PEJOLFXEBzNqpZkxLSsLe/T+iqJ8
-        vA5PdUcXBNih8bdFN3gedTV/Bg==
-X-Google-Smtp-Source: ABdhPJxM0PJDqbxTr6c3/m/wscBTasnEP9fiWGJKG0sZ90MispV4sp8cEU/235Sfk+ksqsxFFTFPpw==
-X-Received: by 2002:a0c:90c4:: with SMTP id p62mr1676493qvp.50.1631734563237;
-        Wed, 15 Sep 2021 12:36:03 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id s7sm736031qkp.18.2021.09.15.12.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 12:36:02 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQahN-0016Gk-Bj; Wed, 15 Sep 2021 16:36:01 -0300
-Date:   Wed, 15 Sep 2021 16:36:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
-Message-ID: <20210915193601.GI3544071@ziepe.ca>
-References: <000000000000ffdae005cc08037e@google.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=IGGDgeo7WVVIlkSnWinltsDGGWd6kdeJ2zJ+aw6R/WI=;
+        b=zc4BSqZD4n9wUOyI9wNcbKctaLf04fstF92J479Gb/Jr0WLcpJYu2w5MpqA1+jgxLg
+         d6sYOK3aRRP1kiYqrzIbrnSY4OvgrC6GG9y8hlU34vwaqANhdig3qqq/Z9oFCRlXJknQ
+         sqZ9Yk3Oz2VttRnwbq1+EJC51mdtCYg0rMK4JVaYCh9LawQVOrWk0cxvTnGurOyQBZS2
+         ck1U4WXv90zD6cDXquLYkQnx0HiLZTHOCkEUdmeXRj6MOEdzfXNuWzUeSPDBAvpna1oj
+         z6bVHYcnGpsMAfg2tWH0hflOXIxtq0+JTs5VVupyoSedyZ0/tY5NnW9jcEpReMT/0IhS
+         Xftw==
+X-Gm-Message-State: AOAM531Q46WMswpSdPmD5MM93yMays9eAsYwz3lAVtO5WPrtbd0vjxKw
+        tZZPc0QrwB1Zi5WKLbNmnEl2KJW287OUiILZ0WQmjw==
+X-Google-Smtp-Source: ABdhPJwsc6oh2VNX6ThYRfgqXtiKBP0iz/QFxANVi8LRNsPwLNxkHfTkcMXQQuSYqUHwc8WaTZ7U+OC7MPE57NeeQlE=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr1440354otp.159.1631734783359;
+ Wed, 15 Sep 2021 12:39:43 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 15 Sep 2021 12:39:42 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000ffdae005cc08037e@google.com>
+In-Reply-To: <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
+References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
+ <20200730095350.13925-3-stanimir.varbanov@linaro.org> <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
+ <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 15 Sep 2021 12:39:42 -0700
+Message-ID: <CAE-0n53T-RoOvR=s9nHiXAriMgKvBfDqfBfoGKX5Ju5YF3Tcqw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] venus: Add a debugfs file for SSR trigger
+To:     dikshita@codeaurora.org
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, jim.cromie@gmail.com,
+        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media-owner@vger.kernel.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 05:41:22AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11fd67ed300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=37df9ef5660a8387
-> dashboard link: https://syzkaller.appspot.com/bug?extid=dc3dfba010d7671e05f5
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
+Quoting dikshita@codeaurora.org (2021-09-15 02:13:09)
+> Hi Stephen,
+>
+> Reviving the discussion on this change as we need to pull this in.
+>
+> As per your suggestion, I explored the fault injection framework to
+> implement this functionality.
+> But I don't think that meets our requirements.
+>
+> We need a way to trigger subsystem restart from the client-side, it's
+> not derived from the driver.
 
-#syz dup: KASAN: use-after-free Write in addr_resolve (2)
+Just to confirm, this is all for debugging purposes right?
 
-Frankly, I still can't figure out how this is happening
+>
+> while fault injection framework enables the driver to trigger an
+> injection
+> when a specific event occurs for eg: page allocation failure or memory
+> access failure.
+>
+> So, IMO, we will have to use custom debugfs only.
 
-RDMA_USER_CM_CMD_RESOLVE_IP triggers a background work and
-RDMA_USER_CM_CMD_DESTROY_ID triggers destruction of the memory the
-work touches.
+Can you use DECLARE_FAULT_ATTR()? Or you need it to be active instead of
+passive, i.e. it shouldn't wait for should_fail() to return true, but
+actively trigger something on the remoteproc?
 
-rdma_addr_cancel() is supposed to ensure that the work isn't and won't
-run.
+>
+> Please feel free to correct me in case my understanding of the framework
+> is wrong.
+>
 
-So to hit this we have to either not call rdma_addr_cancel() when it
-is need, or rdma_addr_cancel() has to be broken and continue to allow
-the work.
-
-I could find nothing along either path, though rdma_addr_cancel()
-relies on some complicated properties of the workqueues I'm not
-entirely positive about.
-
-Jason
+I presume the fault injection framework could get a new feature that
+lets the fault be injected immediately upon writing the debugfs file.
+My goal is to consolidate this sort of logic into one place and then put
+it behind some config option that distros can disable so the kernel
+isn't bloated with debug features that end users will never care about.
