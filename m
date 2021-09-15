@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C7B40BCC3
+	by mail.lfdr.de (Postfix) with ESMTP id B55C640BCC4
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 02:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhIOAya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 20:54:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
+        id S231629AbhIOAyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 20:54:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhIOAy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 20:54:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54E3061165;
-        Wed, 15 Sep 2021 00:53:07 +0000 (UTC)
+        id S230252AbhIOAye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 20:54:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B0E261184;
+        Wed, 15 Sep 2021 00:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631667188;
-        bh=sKvjf2fiiYwNnsu3EWnRbm2IWieh3kqYhZMnjiu1GMg=;
+        s=k20201202; t=1631667196;
+        bh=tjYE+w+hVKFuNE7M94ifyu2S6XUIpnaX8UMLFXe0coU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J2qweMngdGf7vLP9t+edQUOaQ/BYkkuPzneCCroClzxX0lLigowVrMrWTS1OQcV0F
-         aO+HeHOiF31fbPlISjgAla6TwpGuMswVe13wGRfrsri3exSHoN/680zOpTMtNy/kdI
-         OZZVBIMgjNAMbtmvBwIAc5PNn3o2SrA0AizZ/+Y5wzJz3GTwDgyuXwn68TRFSOABlX
-         cUij6FGxgSaZH4JL/YB2BBAn7jOLwWmw4mHevSNAIbxZXzpsw5IjgCmOhfafrLgAhK
-         q4+CFPGFIZgcfB6MmQI+VeobecggDh5aNboGvA0RR5go7jlMAWDEK8saSSwpTNe6Aq
-         XZ/N0LwrmTEFQ==
+        b=lw+x3M5cCMkeL7uU6t+ypFcqKpSGYAIHsSK5xSYO5AqJ9q1cv7It52GQzfMf9s3VR
+         HQI0zPcUBg0ByxPU+fYataZ4ThsM2ycGnHjwKFhjMKh0lAUpNzxjUcT2si9zcTa9Rz
+         Yo0/l5bhL37/PwA7KAIru4GI0ekzWeO3nYlbGbc435fj8AxickBdntfam1uvGIuNUf
+         UaeX4ArMI+ImR0fa6OCVpj2TRAMDkGMj8csPWyYZcTCbLg/3Sq7yFFHvhOQowGIA9R
+         NS98VYG+7Wl39xGCdlXM0fUyTxMXrTLFvFTeFNFOp6vBvezNUxqDeSvAdpdhyQLEZE
+         liBpiEGhMzaEA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -32,9 +32,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Ingo Molnar <mingo@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Linux-MM <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v2 1/5] bootconfig: Fix to check the xbc_node is used before free it
-Date:   Wed, 15 Sep 2021 09:53:06 +0900
-Message-Id: <163166718582.510331.11732633028925882626.stgit@devnote2>
+Subject: [PATCH v2 2/5] bootconfig: init: Fix memblock leak in xbc_make_cmdline()
+Date:   Wed, 15 Sep 2021 09:53:14 +0900
+Message-Id: <163166719378.510331.1159980452908668023.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163166717752.510331.12843735095061762373.stgit@devnote2>
 References: <163166717752.510331.12843735095061762373.stgit@devnote2>
@@ -46,34 +46,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to check the xbc_node is used before calling memblock_free()
-because passing NULL to phys_addr() will cause a panic.
-This will happen if user doesn't pass any bootconfig to the
-kernel, because kernel will call xbc_destroy_all() after
-booting.
+Free unused memblock in a error case to fix memblock leak
+in xbc_make_cmdline().
 
-Fixes: 40caa127f3c7 ("init: bootconfig: Remove all bootconfig data when the init memory is removed")
-Reported-by: kernel test robot <oliver.sang@intel.com>
+Fixes: 51887d03aca1 ("bootconfig: init: Allow admin to use bootconfig for kernel command line")
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Changes in v2:
-   - Rebase on top of Linus tree.
----
- lib/bootconfig.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ init/main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index 5ae248b29373..bee691ea8213 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -792,7 +792,8 @@ void __init xbc_destroy_all(void)
- 	xbc_data = NULL;
- 	xbc_data_size = 0;
- 	xbc_node_num = 0;
--	memblock_free_ptr(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
-+	if (xbc_nodes)
-+		memblock_free_ptr(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
- 	xbc_nodes = NULL;
- 	brace_index = 0;
- }
+diff --git a/init/main.c b/init/main.c
+index 3f7216934441..0b054fff8e92 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -382,6 +382,7 @@ static char * __init xbc_make_cmdline(const char *key)
+ 	ret = xbc_snprint_cmdline(new_cmdline, len + 1, root);
+ 	if (ret < 0 || ret > len) {
+ 		pr_err("Failed to print extra kernel cmdline.\n");
++		memblock_free_ptr(new_cmdline, len + 1);
+ 		return NULL;
+ 	}
+ 
 
