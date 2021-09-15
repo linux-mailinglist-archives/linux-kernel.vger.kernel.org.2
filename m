@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E4240C4B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFBC40C4B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbhIOL75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbhIOL74 (ORCPT
+        id S237390AbhIOMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:02:09 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:56051 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232793AbhIOMCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:59:56 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA72C061574;
-        Wed, 15 Sep 2021 04:58:37 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d07000c3d48728178681f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:700:c3d:4872:8178:681f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 08E451EC0246;
-        Wed, 15 Sep 2021 13:58:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631707112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7hCArrqxq0Qci8ylNfmgdAjsDrtbpQawOVjshhDjY7E=;
-        b=OSalYsvT788Z61aexg2fiPKFerIUw4nOwq3ZBuMk4dVxJ2yMEER3//m6AsY+jyns8JUIHl
-        hmkUgdawNrvbNhOd/qstaU3Gh+pR8ih6/sKMU8/J4i/wxRYGgPLl0D9WgyPN/BHGz4lYP3
-        Nh9cr2J7i0LkxZbZ6aGwb9nTS8HptTI=
-Date:   Wed, 15 Sep 2021 13:58:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Joe Perches <joe@perches.com>,
-        David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] EDAC/mc: Prefer strscpy or scnprintf over strcpy,
- sprintf and snprintf
-Message-ID: <YUHf4cEEKFjQznJS@zn.tnic>
-References: <20210903150539.7282-1-len.baker@gmx.com>
- <YT8S3poKyd5Nr5cK@rric.localdomain>
+        Wed, 15 Sep 2021 08:02:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yaohongbo@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UoUEEjp_1631707246;
+Received: from localhost(mailfrom:yaohongbo@linux.alibaba.com fp:SMTPD_---0UoUEEjp_1631707246)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 15 Sep 2021 20:00:46 +0800
+From:   Yao Hongbo <yaohongbo@linux.alibaba.com>
+To:     yaohongbo@linux.alibaba.com
+Cc:     zhangliguang@linux.alibaba.com,
+        alikernel-developer@linux.alibaba.com, will@kernel.org,
+        robin.murphy@arm.com, lorenzo.pieralisi@arm.com,
+        guohanjun@huawei.com, sudeep.holla@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ACPI/IORT: Add 'smmu=off' command line option
+Date:   Wed, 15 Sep 2021 20:00:46 +0800
+Message-Id: <20210915120046.62936-1-yaohongbo@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YT8S3poKyd5Nr5cK@rric.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 10:59:10AM +0200, Robert Richter wrote:
-> From 01a3c62a533e71984dfff7189e247b3e848f1449 Mon Sep 17 00:00:00 2001
-> From: Len Baker <len.baker@gmx.com>
-> Date: Fri, 3 Sep 2021 17:05:39 +0200
-> Subject: [PATCH] EDAC/mc: Prefer strscpy or scnprintf over strcpy, sprintf
->  and snprintf
-> 
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. The safe replacement is strscpy().
-> [1][2]
-> 
-> However, to simplify and clarify the code, to concatenate labels use
-> the scnprintf() function. This way it is not necessary to check the
-> return value of strscpy (-E2BIG if the parameter count is 0 or the src
-> was truncated) since the scnprintf returns always the number of chars
-> written into the buffer. This function returns always a nul-terminated
-> string even if it needs to be truncated.
-> 
-> While at it, fix all other broken string generation code that wrongly
-> interprets snprintf()'s return code or just uses sprintf(), implement
-> that using scnprintf() here too. Drop breaks in loops around
-> scnprintf() as it is safe now to loop. Moreover, the check is
-> needless: For the case when the buffer is exhausted, len never gets
-> zero because scnprintf() takes the full buffer length as input
-> parameter, but excludes the trailing '\0' in its return code and thus,
-> 1 is the minimum len.
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
-> [2] https://github.com/KSPP/linux/issues/88
-> 
->  [ rric: Replace snprintf() with scnprintf(), rework sprintf() user,
->    drop breaks in loops around scnprintf(), introduce 'end' pointer to
->    reduce pointer arithmetic, use prefix pattern for e->location,
->    adjust subject and description ]
-> 
-> Co-developed-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Len Baker <len.baker@gmx.com>
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
->  drivers/edac/edac_mc.c | 42 ++++++++++++++++++------------------------
->  1 file changed, 18 insertions(+), 24 deletions(-)
+Add a generic command line option to disable arm smmu drivers.
+iommu.passthrough can only bypass the IOMMU for DMA, but
+sometimes we need to ignore all available SMMUs.
 
-Applied, thanks.
+This patch is only used for acpi on arm64.
 
+Signed-off-by: Yao Hongbo <yaohongbo@linux.alibaba.com>
+---
+ Documentation/admin-guide/kernel-parameters.txt |  4 ++++
+ drivers/acpi/arm64/iort.c                       | 18 +++++++++++++++++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 91ba391f..6cffd91 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5198,6 +5198,10 @@
+ 	smart2=		[HW]
+ 			Format: <io1>[,<io2>[,...,<io8>]]
+ 
++	smmu=           [ARM64]
++			Format: {off}
++			off: Disable arm smmu driver.
++
+ 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+ 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+ 	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index 3b23fb7..70f92e7 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -40,6 +40,22 @@ struct iort_fwnode {
+ static LIST_HEAD(iort_fwnode_list);
+ static DEFINE_SPINLOCK(iort_fwnode_lock);
+ 
++static bool acpi_smmu_disabled;
++
++static int __init acpi_smmu_parse(char *str)
++{
++	if (!str)
++		return -EINVAL;
++
++	if (!strncmp(str, "off", 3)) {
++		acpi_smmu_disabled = true;
++		pr_info("SMMU disabled\n");
++	}
++
++	return 0;
++}
++__setup("smmu=", acpi_smmu_parse);
++
+ /**
+  * iort_set_fwnode() - Create iort_fwnode and use it to register
+  *		       iommu data in the iort_fwnode_list
+@@ -1596,7 +1612,7 @@ static void __init iort_init_platform_devices(void)
+ 		iort_enable_acs(iort_node);
+ 
+ 		ops = iort_get_dev_cfg(iort_node);
+-		if (ops) {
++		if (ops && !acpi_smmu_disabled) {
+ 			fwnode = acpi_alloc_fwnode_static();
+ 			if (!fwnode)
+ 				return;
 -- 
-Regards/Gruss,
-    Boris.
+1.8.3.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
