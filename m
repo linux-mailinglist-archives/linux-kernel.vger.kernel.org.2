@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A7C40CCB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AF840CCB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhIOSnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhIOSnV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:43:21 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A557FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:42:01 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id k4so8135889lfj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:42:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NJ46yNZedpI+wkzb9wsbjujLref1FzkKQaXKuIRt51c=;
-        b=IT1Y5U2ktJo7w9Wg5bowIJJPlhgNhDRPAoHbs2He2eZsAtxlwgVrbfsjQFCw5gxROM
-         O5iIJg0MQClA71qDpgmmkp88nEwt2ZQZ/lLLA22UvQcJUR11PZHw3hsCz0ve7UVZcW2e
-         j/fpK1p7cnjudgj+yOCsHtVB509FWO6PRw7dA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NJ46yNZedpI+wkzb9wsbjujLref1FzkKQaXKuIRt51c=;
-        b=nle7WtgK/HFWZFOsu3M9Tp9zJChnI3sgKsLdq5f6ddKjT7QKCngYe7Xd21IT9jRxzh
-         cdY3nVV/J8rIFA56I/uTfc1ftmWLPfHzyvJ45DYC7rqakrXToZPYDOTYobPCKGdpyF9f
-         PwhuEycT2wW4/NYxWPQBxSb49Jvlki82wkBtMA32dfQdQDY8oRQISOh8qHQGXr43vWzI
-         Gz7wPm5TGpLOn0O6HOSHFwdfrquoXDhDSqi7v31KuHHyg84fAAPjsZKyqzdNYyreg7tj
-         nARMDA76vA5lDQyQGWf3waAqnj2szR7rRjahNaZmxqQnmgLhSCX3PhFuBKJT2/FkAY1p
-         m6Cw==
-X-Gm-Message-State: AOAM5301pGCTboOFXieVxnzvLLkzC7G8fCOwL6vd7XiUan+0HnLIKXaK
-        P0ce5E7X1KyMB0nzMQJDQKacqx9g3Egi19kVJIs=
-X-Google-Smtp-Source: ABdhPJzi+rvMwDSF/MWQLB+xdBARZmdb9rIt5x2+sNvkDO2NySp/sOnkQO1PcE/nD9owUVg5vEFEXw==
-X-Received: by 2002:ac2:58ce:: with SMTP id u14mr1027832lfo.59.1631731319797;
-        Wed, 15 Sep 2021 11:41:59 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id d15sm54736lfn.220.2021.09.15.11.41.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 11:41:59 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id bq5so8106640lfb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:41:59 -0700 (PDT)
-X-Received: by 2002:a2e:8185:: with SMTP id e5mr1258092ljg.31.1631731318838;
- Wed, 15 Sep 2021 11:41:58 -0700 (PDT)
+        id S231331AbhIOSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:47:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhIOSrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 14:47:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E047F610E8;
+        Wed, 15 Sep 2021 18:46:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631731573;
+        bh=6Jqw5jLRzxyx4PJuZTL0bBKrYEWat+ZKCcmgiUfxurE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f8WruA9MTg7Da0jXFREjQn0b+1c87NmW904DsjOTU2wpqZFIbBXEBJzGtXQazKB9W
+         WOaR2f1nHCiRI1ES0TEowGIOTguHQ/7lRKHW92Wz2M27TfwaCELUjWMItbLJkoSqgK
+         s5biim1BQjY5HS9d6NWiPCra0UvrElX4ms4pNlBd56gGr8kCLOzdr+fdkq5fpJrIJK
+         VgUo/FDfOc+iMPW5h30B/nRlMhz5PLW5DeHhgj8TyKcb8TjsprxTvyDaOqx06Bu1ZX
+         jmc886lmEV9eoyFe/lh2idFLIxmZLEwbh/7Lc/8s6wl/Ld8plbXvq+O0tMfxE7fYQo
+         4w36pPzB6qE+w==
+Received: by pali.im (Postfix)
+        id 6DB685E1; Wed, 15 Sep 2021 20:46:10 +0200 (CEST)
+Date:   Wed, 15 Sep 2021 20:46:10 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 0/9] mwifiex: Fixes for wifi p2p and AP mode
+Message-ID: <20210915184610.2bdiegl3oolhe7ey@pali>
+References: <20210914195909.36035-1-verdre@v0yd.nl>
 MIME-Version: 1.0
-References: <1631693373201133@kroah.com> <87ilz1pwaq.fsf@wylie.me.uk> <20210915183152.GA22415@lothringen>
-In-Reply-To: <20210915183152.GA22415@lothringen>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Sep 2021 11:41:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgiiqmy1jE0i9EYkCiE+KNHDTJQVktczZgyJwqL-okRgA@mail.gmail.com>
-Message-ID: <CAHk-=wgiiqmy1jE0i9EYkCiE+KNHDTJQVktczZgyJwqL-okRgA@mail.gmail.com>
-Subject: Re: Regression in posix-cpu-timers.c (was Re: Linux 5.14.4)
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     "Alan J. Wylie" <alan@wylie.me.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210914195909.36035-1-verdre@v0yd.nl>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:31 AM Frederic Weisbecker
-<frederic@kernel.org> wrote:
->
-> Right, this should fix the issue: https://lore.kernel.org/lkml/20210913145332.232023-1-frederic@kernel.org/
+On Tuesday 14 September 2021 21:59:00 Jonas Dreßler wrote:
+> A bunch of bugfixes for running mwifiex in the P2P and AP mode, for some prior
+> discussions, see https://github.com/linux-surface/kernel/pull/71.
 
-Hmm.
+Changes look good,
 
-Can you explain why the fix isn't just to revert that original commit?
+Acked-by: Pali Rohár <pali@kernel.org>
 
-It looks like the only real difference is that now it does *extra
-work* with all that tick_nohz_dep_set_signal().
-
-Isn't it easier to just leave any old timer ticking, and not do the
-extra work until it expires and you notice "ok, it's not important"?
-
-IOW, that original commit explicitly broke the only case it changed -
-the timer being disabled.  So why isn't it just reverted? What is it
-that kleeps us wanting to do the extra work for the disabled timer
-case?
-
-As long as it's fixed, I'm all ok with this, but I'm looking at the
-commit message for that broken commit, and I'm looking at the commit
-message for the fix, and I'm not seeing an actual _explanation_ for
-this churn.
-
-               Linus
+> Jonas Dreßler (9):
+>   mwifiex: Small cleanup for handling virtual interface type changes
+>   mwifiex: Use function to check whether interface type change is
+>     allowed
+>   mwifiex: Run SET_BSS_MODE when changing from P2P to STATION vif-type
+>   mwifiex: Use helper function for counting interface types
+>   mwifiex: Update virtual interface counters right after setting
+>     bss_type
+>   mwifiex: Allow switching interface type from P2P_CLIENT to P2P_GO
+>   mwifiex: Handle interface type changes from AP to STATION
+>   mwifiex: Properly initialize private structure on interface type
+>     changes
+>   mwifiex: Fix copy-paste mistake when creating virtual interface
+> 
+>  .../net/wireless/marvell/mwifiex/cfg80211.c   | 370 ++++++++++--------
+>  1 file changed, 197 insertions(+), 173 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
