@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFEA40C07D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B363F40C081
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236596AbhIOH3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhIOH3E (ORCPT
+        id S236634AbhIOH3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:29:37 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50440
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236601AbhIOH3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:29:04 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F6EC061574;
-        Wed, 15 Sep 2021 00:27:45 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so1544592pjb.5;
-        Wed, 15 Sep 2021 00:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=thMhSIEdWTUJl9IoUdGM3OzXRfCqs1Gxmi00AN63wRw=;
-        b=ad8Q8iiKl02jyaAub56UTFxhgXKILVN4/eM0ww77e/PvEgt+c9g60r8GZC09FkQ1qu
-         ZEdWt56AhIPSIGmFNYDtXoy/ik+qfTEZMv6pEGqklkAZAAA974ZW4+PgrerELalHRGSY
-         IxKuY8miz8GNHID87xXtt7me1yc6Xhkwd4SLt2v7Z+ZsRarNvUywg9JAn+1iT8/CJbJt
-         KEa+eRvVHLokuGHE/jTY70Rq+6+r9DLr0AWYwBpi52DrIDkWO/Fwnc+D00Ss/6+J8Un2
-         VCjCJBKIiF1YNJVWDrXf2zg4MViDv0pBCyixOaH3y6k6WX2x7vguz7KM9t8MznLDqg5S
-         IVnA==
+        Wed, 15 Sep 2021 03:29:33 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3542C4017C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631690894;
+        bh=ppU//N0NUX+HEww/poMBVGUJs7BZs8SJh0ZQtOCNRAM=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=P/pdI/zCcXR2Y8OuTdF4T+Cw1HDD4dQSsvWiwDVex+g9hKuYT6XXh/cl5gnzfEq+3
+         BcDUloM19tvVPRV8J2SXKGoobkJJDfQ3/nzDZMwNpmrOEcEAVBbzd6NdawWHVN2Y65
+         lZ7PoKlDqbNW1YHxX5FprHEjTFEkr5uxgBCsJlRkVjoCPoy5y4JwPZqmWJFWNIHA8a
+         GL+Vv9ymWRAOfZ46q6Z/E4gJdP/fEP0fYeS+WMe0FyLDETwJDdwJRYpZtTiEVaPwt9
+         7NeNPWWFMRYWBhpnoMq9HfZAJOGWOIQweTp+Sf6Gq0Fma9ZOQkV8DrgCgVgrHXMD0u
+         S4TOXRiYzbPGA==
+Received: by mail-ed1-f72.google.com with SMTP id v13-20020a056402174d00b003c25d6b2f13so1076429edx.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 00:28:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=thMhSIEdWTUJl9IoUdGM3OzXRfCqs1Gxmi00AN63wRw=;
-        b=gg+vq+MFKJ5PtS1s4W+ZCMf1kqz7oD4RFrWOTWsqn6WYGfbaoC6po9dpwFsKPNklao
-         C0x+E2tiEgDz8TDmFOwOfIZRv5nzEdnAifwUQepAbvgsD+yWj48k9sa/eX8gGUrps81A
-         kmUFcpI7lvYFWxUKkyzxBjoNvDJYwESvS54uNcm7HXKprVyVun9oi7aIR9H6kIkEdfRD
-         LjUPil/Senn8oJGhAYHUlrvMyrf81hwODv0oTWiHytBIirWphA1eaf9zzwbgoww4usuG
-         F8P3lklQuKqhXP/q/MfIRFNzAV210jPE72AWrwDrG0r8vfSTPmYLMZpRpFFaxtMpdB1Y
-         m0Ng==
-X-Gm-Message-State: AOAM533eWS9ydNc91GEny+FNqGWLxnYC1b5mnUwZwMrKL3P72Qm5Z9bz
-        t8b1ksmXUTvwaenRMLNlkmM=
-X-Google-Smtp-Source: ABdhPJwxV5Tilsrl/Zw2RqRaXbHNnAL17sx2FJKdrfeqeNd9dle0NUIdHkc0wxVKVngSTEnge91kmQ==
-X-Received: by 2002:a17:90a:fd85:: with SMTP id cx5mr6924149pjb.168.1631690865299;
-        Wed, 15 Sep 2021 00:27:45 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id 207sm10064690pfu.56.2021.09.15.00.27.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 00:27:41 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rosen Penev <rosenp@gmail.com>
-Subject: Re: [PATCH net-next v2] net: phy: at803x: add support for qca 8327 internal phy
-Date:   Wed, 15 Sep 2021 15:27:33 +0800
-Message-Id: <20210915072733.1494-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210914123345.6321-1-ansuelsmth@gmail.com>
-References: <20210914123345.6321-1-ansuelsmth@gmail.com>
+        bh=ppU//N0NUX+HEww/poMBVGUJs7BZs8SJh0ZQtOCNRAM=;
+        b=kWQxpQzS+5Sch9/cNG2OKofZbnFPHKYtL56rWSRP5hMQEuTW93iuOfwR1JdVJEq+IL
+         sVKt85M8hvDrhPF39nteilhmSxucpcIFsF8RICzyYKz/VkfFvd/HGqGQ9qxunkKdZ5dc
+         FnChqVuYStbvOxPhmd43sWfTZNqKZI5nUSnroB4EGYz6LYZpq+DhcpFezBOM+Ld5Ci/E
+         ONX4X16DR62AKO25rvtaU4dWD3ZauY2KzzOSXUeo3JqJMNp29R2GLU2FCEYg0NLGDXnv
+         qoSBy5i3zi+l1sf/inmo6b6jvM9+ipyr1QLuTjf4LQupNPm0e+kxxxkmSrpIBDX07jCC
+         b5xA==
+X-Gm-Message-State: AOAM5305v0mPezpnLOGXSJyyoY7nP89wPD+r2ZPFcSpcZPdT2/e3C/5n
+        UKLLjWbi/CDU5em1VaewEbIuhh0TaOKpDUZEVp7qmBzFwWpmiSe1FYR3Co9P+C8bFcKj4BRABcJ
+        +LHyzHB7P6DcTwAqwpXL/TXinm/Yxk4tfwEH4FyN7dA==
+X-Received: by 2002:a17:906:2346:: with SMTP id m6mr23498755eja.512.1631690893433;
+        Wed, 15 Sep 2021 00:28:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyN/EjBqzUCq1sM72TJYj/g0y3W59czzE+ItSwaFOFp4dbIj+7l0b+VUUuJ4BIofa079Yw9kQ==
+X-Received: by 2002:a17:906:2346:: with SMTP id m6mr23498743eja.512.1631690893233;
+        Wed, 15 Sep 2021 00:28:13 -0700 (PDT)
+Received: from [192.168.3.211] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id b38sm1487559edf.46.2021.09.15.00.28.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 00:28:12 -0700 (PDT)
+Subject: Re: [PATCH] tty: serial: samsung: Improve naming for common macro
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210914142315.26596-1-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <6efec37b-4392-dffe-1bda-d4f7aac6643f@canonical.com>
+Date:   Wed, 15 Sep 2021 09:28:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210914142315.26596-1-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 02:33:45PM +0200, Ansuel Smith wrote:
-> +}, {
-> +	/* QCA8327 */
-> +	.phy_id = QCA8327_PHY_ID,
-> +	.phy_id_mask = QCA8K_PHY_ID_MASK,
-> +	.name = "QCA PHY 8327",
-> +	/* PHY_GBIT_FEATURES */
-> +	.probe = at803x_probe,
-> +	.flags = PHY_IS_INTERNAL,
-> +	.config_init = qca83xx_config_init,
-> +	.soft_reset = genphy_soft_reset,
+On 14/09/2021 16:23, Sam Protsenko wrote:
+> Having "_USI" suffix in EXYNOS_COMMON_SERIAL_DRV_DATA_USI() macro is
+> confusing. Rename it to just EXYNOS_COMMON_SERIAL_DRV_DATA() and provide
+> USI registers availability for all Exynos variants instead.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  drivers/tty/serial/samsung_tty.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)>
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> index e2f49863e9c2..542b7e2b99dc 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -2780,7 +2780,7 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+>  #endif
+>  
+>  #if defined(CONFIG_ARCH_EXYNOS)
+> -#define EXYNOS_COMMON_SERIAL_DRV_DATA_USI(_has_usi)		\
+> +#define EXYNOS_COMMON_SERIAL_DRV_DATA(_has_usi)			\
+>  	.info = &(struct s3c24xx_uart_info) {			\
+>  		.name		= "Samsung Exynos UART",	\
+>  		.type		= TYPE_S3C6400,			\
+> @@ -2804,21 +2804,18 @@ static struct s3c24xx_serial_drv_data s5pv210_serial_drv_data = {
+>  		.has_fracval	= 1,				\
+>  	}							\
+>  
+> -#define EXYNOS_COMMON_SERIAL_DRV_DATA				\
+> -	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(0)
+> -
+>  static struct s3c24xx_serial_drv_data exynos4210_serial_drv_data = {
+> -	EXYNOS_COMMON_SERIAL_DRV_DATA,
+> +	EXYNOS_COMMON_SERIAL_DRV_DATA(0),
+>  	.fifosize = { 256, 64, 16, 16 },
+>  };
+>  
+>  static struct s3c24xx_serial_drv_data exynos5433_serial_drv_data = {
+> -	EXYNOS_COMMON_SERIAL_DRV_DATA,
+> +	EXYNOS_COMMON_SERIAL_DRV_DATA(0),
+>  	.fifosize = { 64, 256, 16, 256 },
+>  };
+>  
+>  static struct s3c24xx_serial_drv_data exynos850_serial_drv_data = {
+> -	EXYNOS_COMMON_SERIAL_DRV_DATA_USI(1),
 
-How about setting .suspend and .resume? Without these, the PHY cannot be
-powered down/up administratively (via ip link set xxx down/up).
-See commit 93100d6817b0.
+Makes sense, although I would prefer to have here true or false. More
+obvious. Otherwise "1" looks like counter/number for some property.
 
-Off-topic: When is .soft_reset called? The MediaTek PHY driver seems to work
-fine without it.
+The has_usi field in struct could be then also converted to bool.
 
-> +	.get_sset_count = at803x_get_sset_count,
-> +	.get_strings = at803x_get_strings,
-> +	.get_stats = at803x_get_stats,
->  }, };
+
+Best regards,
+Krzysztof
