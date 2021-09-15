@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCB440BDF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9A640BDFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhIODI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:08:27 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33224 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229758AbhIODI0 (ORCPT
+        id S234031AbhIODI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235259AbhIODIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:08:26 -0400
-X-UUID: b270f9c4b47d466ab45eaf3a6575f242-20210915
-X-UUID: b270f9c4b47d466ab45eaf3a6575f242-20210915
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 578152907; Wed, 15 Sep 2021 11:07:04 +0800
-Received: from mtkexhb01.mediatek.inc (172.21.101.102) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 15 Sep 2021 11:07:02 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
- (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 15 Sep
- 2021 11:07:02 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 15 Sep 2021 11:07:02 +0800
-Message-ID: <7a1af556bf3b7dda9f1be848d2631448a1155ec6.camel@mediatek.com>
-Subject: Re: [PATCH -next] ASoC: mediatek: mt8195: Add missing of_node_put()
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     Bixuan Cui <cuibixuan@huawei.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <matthias.bgg@gmail.com>,
-        <alsa-devel@alsa-project.org>
-Date:   Wed, 15 Sep 2021 11:07:02 +0800
-In-Reply-To: <20210911081246.33867-1-cuibixuan@huawei.com>
-References: <20210911081246.33867-1-cuibixuan@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 14 Sep 2021 23:08:53 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD426C061574;
+        Tue, 14 Sep 2021 20:07:31 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id p4so1977490qki.3;
+        Tue, 14 Sep 2021 20:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lzGNTe0N1omRaVLKHYnbdAwVLZaGW4vyfSP4Y4f6x7w=;
+        b=CVDF7i2VGhoEck1p4Fx5yvFrH6R7YTq+jdWrAO2fCpOvlC6lWZZSKP9BLr9fnCIrSu
+         FSHiKvqMv4zALE0C2zPAKfnYyxT5U2T/pfLiVPpIy/9NWRPk7j60vG0IeV7Dnk0pgHvH
+         oCg5ljKyHBiFQbf8ALrngZFvwIKTtLL5QYrL4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lzGNTe0N1omRaVLKHYnbdAwVLZaGW4vyfSP4Y4f6x7w=;
+        b=lm3PqaxmF+pVQ3HVVHPrv5VztHreOU3fkbd+Gyc+2TwCQDBYzjuhgdRys9MpAaQAy3
+         WaRhO+0RnoFYt6La/XZeCdEASYptO3in84lzuZDClxDT0wfyBwh0YGZWU/FXEgsTYif3
+         uq4wSRi/zpZIFxijtMrbduYmsHPvzYjKaQOVMEWmjWOk6FesFbqBPa5HOEtW4H621swT
+         C6GSFqNX5D9d4H0vP9rwD6C7jjAbWwblTGaf+VXBaorW/nF2eIZ7fK56TJ4KTrpgIdPC
+         BVNwojAM2J2jtkdPOFh5812k1SKdJBTgtez/ZQxfVRPxtmbeDOW5o8XM4b84tpqQO7vf
+         igcQ==
+X-Gm-Message-State: AOAM530qqjGm8P2RAAAp1sE2uJO53hv+20Wb8FTq11mNAPCFf1NgYVnR
+        um7YiB2LELRxVTLTMDl8NiW7amCmVFDN2tZX1tM=
+X-Google-Smtp-Source: ABdhPJx4kp7o4gJWXZYceApw0+pTlgsuD5T3QXuEgB02qyltrnDN5eU/3k+mJgjXkPbLnNrygxP8xCwr+MhkqEOJ24o=
+X-Received: by 2002:a37:67d7:: with SMTP id b206mr7986446qkc.395.1631675250410;
+ Tue, 14 Sep 2021 20:07:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+References: <20210908091845.4230-1-ryan_chen@aspeedtech.com>
+ <4571c9ae-0287-4f70-2adb-9c227e706736@microchip.com> <HK0PR06MB33806C10EB8B3F87FE144F8DF2D99@HK0PR06MB3380.apcprd06.prod.outlook.com>
+ <163166864956.763609.8140689140101809508@swboyd.mtv.corp.google.com> <HK0PR06MB33801C3DADFD87363C09BFAFF2DB9@HK0PR06MB3380.apcprd06.prod.outlook.com>
+In-Reply-To: <HK0PR06MB33801C3DADFD87363C09BFAFF2DB9@HK0PR06MB3380.apcprd06.prod.outlook.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 15 Sep 2021 03:07:18 +0000
+Message-ID: <CACPK8XfN9YxTveoOVUFoJjq1_R_8mdvDQnF+DOVvkNaosnKN0g@mail.gmail.com>
+Subject: Re: [PATCHv2] clk:aspeed:Fix AST2600 hpll calculate formula
+To:     Ryan Chen <ryan_chen@aspeedtech.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        "Claudiu.Beznea@microchip.com" <Claudiu.Beznea@microchip.com>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bixuan,
+On Wed, 15 Sept 2021 at 02:52, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
+>
+> > -----Original Message-----
+> > From: Stephen Boyd <sboyd@kernel.org>
+> > Sent: Wednesday, September 15, 2021 9:17 AM
+> > To: Claudiu.Beznea@microchip.com; Ryan Chen
+> > <ryan_chen@aspeedtech.com>; andrew@aj.id.au; joel@jms.id.au;
+> > linux-clk@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > mturquette@baylibre.com
+> > Subject: RE: [PATCHv2] clk:aspeed:Fix AST2600 hpll calculate formula
+> >
+> > Quoting Ryan Chen (2021-09-12 22:31:46)
+> > > > > +               if (hwstrap & BIT(10))
+> > > > > +                       m = 0x5F;
+> > > > > +               else {
+> > > > > +                       if (hwstrap & BIT(8))
+> > > >
+> > > > You may write it directly:
+> > > >                 else if (hwstrap & BIT(8))
+> > > >
+> > > Hello,
+> > >         Like I commit message M = SCU500[10] ? 0x5F : SCU500[8] ? 0xBF :
+> > SCU200[12:0]
+> > >         it need keep from register read, if BIT(8)/BIT(10) not 1.
+> > >
+> >
+> > I don't get it. The review comment was that the else { if (...) can be collapsed
+> > into an else if (..) What does commit message have to do with it?
+> Sorry for confuse.
+> Or do you mean like following modification?
+>
+>                if (hwstrap & BIT(10))
+>                        m = 0x5F;
+>                else if (hwstrap & BIT(8))
+>                        m = 0xBF;
 
-Thanks for catching that.
-I found there are other usages of of_parse_phandle() in the file.
-Will you handle them together?
-If not, I will prepare a patch to fix them after this patch is merged.
+Yep!
 
-Thanks,
-Trevor
-
-On Sat, 2021-09-11 at 16:12 +0800, Bixuan Cui wrote:
-> The platform_node is returned by of_parse_phandle() should have
-> of_node_put() before return.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-> b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-> index c97ace7387b4..8cd8450409e8 100644
-> --- a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-> +++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-> @@ -1041,8 +1041,10 @@ static int
-> mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
->  	}
->  
->  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> -	if (!priv)
-> +	if (!priv) {
-> +		of_node_put(platform_node);
->  		return -ENOMEM;
-> +	}
->  
->  	snd_soc_card_set_drvdata(card, priv);
->  
-> @@ -1050,6 +1052,8 @@ static int
-> mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
->  	if (ret)
->  		dev_err(&pdev->dev, "%s snd_soc_register_card fail
-> %d\n",
->  			__func__, ret);
-> +
-> +	of_node_put(platform_node);
->  	return ret;
->  }
->  
-
+Take a look at my review of v1. I wrote it out there.
