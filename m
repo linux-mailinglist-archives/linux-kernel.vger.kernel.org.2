@@ -2,90 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C922740CC5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3728B40CCAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhIOSLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229479AbhIOSLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:11:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 235A7611C6;
-        Wed, 15 Sep 2021 18:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631729387;
-        bh=1Il5af7mztKOfAwvyH4d2bypRKGRV9VZICNB6zMdUOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YgtSBXPrHRwQvkCuaoHqn0iTgmC3JzAWXDEueFY8o3B5/1uF5A6GBsJjT59hS1nrE
-         GmHLFy3uPKAYq4GVYVHd59fyCMwSTg1oQ2My54j7mYmOdH8gzZyxkNbf+HszUvzN2U
-         BRu7sxQ8ne1U1MyUG5GLTJZR+5KeybqOkWRF3j68=
-Date:   Wed, 15 Sep 2021 20:09:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Alan J. Wylie" <alan@wylie.me.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: Regression in posix-cpu-timers.c (was Re: Linux 5.14.4)
-Message-ID: <YUI26QI7dfgjUioT@kroah.com>
-References: <1631693373201133@kroah.com>
- <87ilz1pwaq.fsf@wylie.me.uk>
+        id S231468AbhIOSjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:39:11 -0400
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:51962 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhIOSjK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 14:39:10 -0400
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 18FI3Ktr006155;
+        Wed, 15 Sep 2021 14:11:29 -0400
+Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
+        by pbmsgap01.intersil.com with ESMTP id 3b0r039kp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 14:11:29 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2242.4; Wed, 15 Sep 2021 14:11:27 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Wed, 15 Sep 2021 14:11:27 -0400
+From:   <min.li.xe@renesas.com>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <derek.kiernan@xilinx.com>, <dragan.cvetic@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, Min Li <min.li.xe@renesas.com>
+Subject: [PATCH misc v2 1/2] mfd: rsmu: Resolve naming conflict between idt8a340_reg.h and idt82p33_reg.h
+Date:   Wed, 15 Sep 2021 14:11:19 -0400
+Message-ID: <1631729480-20668-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ilz1pwaq.fsf@wylie.me.uk>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: uIyUPzP6y2ChoENO7St4L5dvUSI816gj
+X-Proofpoint-GUID: uIyUPzP6y2ChoENO7St4L5dvUSI816gj
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-15_05:2021-09-15,2021-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 malwarescore=0 spamscore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109150105
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 06:45:33PM +0100, Alan J. Wylie wrote:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> 
-> > I'm announcing the release of the 5.14.4 kernel.
-> 
-> I'm seeing a regression in 5.14.4
-> 
-> Running Nextcloud (a PHP web application) with a PostgreSQL backend
-> 
-> All was fine with 5.14.3
-> 
-> With 5.14.4, Nextcloud hangs loading events/contacts, etc.
-> 
-> As well as the web interface hanging, running this command on the command
-> line also errors:
-> 
-> # su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
-> PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
-> /var/www/htdocs/nextcloud/lib/private/Files/AppData/AppData.php on line 41
-> 
-> # su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
-> PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
-> /var/www/htdocs/nextcloud/3rdparty/symfony/console/Application.php on line 65
-> 
-> # su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
-> PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
-> /var/www/htdocs/nextcloud/lib/public/Files/SimpleFS/ISimpleRoot.php on line 68
-> 
-> # su apache -s /bin/bash -c "cd /var/www/htdocs/nextcloud/ && php occ maintenance:mode --on"
-> PHP Fatal error:  Maximum execution time of 0 seconds exceeded in
-> /var/www/htdocs/nextcloud/apps/theming/lib/ImageManager.php on line 313
-> 
-> Note that the above commands were all run immediately after each other,
-> but showed up in different php scripts.
-> 
-> Similar errors appear in the Apache log.
-> 
-> After reverting this commit in 5.14.4, Nextcloud resumed working.
-> 
-> $ git revert 564005805aadec9cb7e5dc4e14071b8f87cd6b58
-> 
-> This commit is 406dd42bd1ba0c01babf9cde169bb319e52f6147 in Linus's tree
+From: Min Li <min.li.xe@renesas.com>
 
-Thanks for bisecting this down.
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ include/linux/mfd/idt82p33_reg.h | 148 ++++++++++++++++++++-------------------
+ 1 file changed, 75 insertions(+), 73 deletions(-)
 
-Does 5.15-rc1 also fail in this same way, or does it work ok?
+diff --git a/include/linux/mfd/idt82p33_reg.h b/include/linux/mfd/idt82p33_reg.h
+index 129a6c0..ded0ab8 100644
+--- a/include/linux/mfd/idt82p33_reg.h
++++ b/include/linux/mfd/idt82p33_reg.h
+@@ -7,106 +7,108 @@
+ #ifndef HAVE_IDT82P33_REG
+ #define HAVE_IDT82P33_REG
+ 
++#define SABRE_REG_ADDR(page, offset) (((page) << 0x7) | ((offset) & 0x7f))
++
+ /* Register address */
+-#define DPLL1_TOD_CNFG 0x134
+-#define DPLL2_TOD_CNFG 0x1B4
++#define SABRE_DPLL1_TOD_CNFG 0x134
++#define SABRE_DPLL2_TOD_CNFG 0x1B4
+ 
+-#define DPLL1_TOD_STS 0x10B
+-#define DPLL2_TOD_STS 0x18B
++#define SABRE_DPLL1_TOD_STS 0x10B
++#define SABRE_DPLL2_TOD_STS 0x18B
+ 
+-#define DPLL1_TOD_TRIGGER 0x115
+-#define DPLL2_TOD_TRIGGER 0x195
++#define SABRE_DPLL1_TOD_TRIGGER 0x115
++#define SABRE_DPLL2_TOD_TRIGGER 0x195
+ 
+-#define DPLL1_OPERATING_MODE_CNFG 0x120
+-#define DPLL2_OPERATING_MODE_CNFG 0x1A0
++#define SABRE_DPLL1_OPERATING_MODE_CNFG 0x120
++#define SABRE_DPLL2_OPERATING_MODE_CNFG 0x1A0
+ 
+-#define DPLL1_HOLDOVER_FREQ_CNFG 0x12C
+-#define DPLL2_HOLDOVER_FREQ_CNFG 0x1AC
++#define SABRE_DPLL1_HOLDOVER_FREQ_CNFG 0x12C
++#define SABRE_DPLL2_HOLDOVER_FREQ_CNFG 0x1AC
+ 
+-#define DPLL1_PHASE_OFFSET_CNFG 0x143
+-#define DPLL2_PHASE_OFFSET_CNFG 0x1C3
++#define SABRE_DPLL1_PHASE_OFFSET_CNFG 0x143
++#define SABRE_DPLL2_PHASE_OFFSET_CNFG 0x1C3
+ 
+-#define DPLL1_SYNC_EDGE_CNFG 0x140
+-#define DPLL2_SYNC_EDGE_CNFG 0x1C0
++#define SABRE_DPLL1_SYNC_EDGE_CNFG 0x140
++#define SABRE_DPLL2_SYNC_EDGE_CNFG 0x1C0
+ 
+-#define DPLL1_INPUT_MODE_CNFG 0x116
+-#define DPLL2_INPUT_MODE_CNFG 0x196
++#define SABRE_DPLL1_INPUT_MODE_CNFG 0x116
++#define SABRE_DPLL2_INPUT_MODE_CNFG 0x196
+ 
+-#define DPLL1_OPERATING_STS 0x102
+-#define DPLL2_OPERATING_STS 0x182
++#define SABRE_DPLL1_OPERATING_STS 0x102
++#define SABRE_DPLL2_OPERATING_STS 0x182
+ 
+-#define DPLL1_CURRENT_FREQ_STS 0x103
+-#define DPLL2_CURRENT_FREQ_STS 0x183
++#define SABRE_DPLL1_CURRENT_FREQ_STS 0x103
++#define SABRE_DPLL2_CURRENT_FREQ_STS 0x183
+ 
+-#define REG_SOFT_RESET 0X381
++#define SABRE_REG_SOFT_RESET 0X381
+ 
+-#define OUT_MUX_CNFG(outn) REG_ADDR(0x6, (0xC * (outn)))
++#define SABRE_OUT_MUX_CNFG(outn) REG_ADDR(0x6, (0xC * (outn)))
+ 
+ /* Register bit definitions */
+-#define SYNC_TOD BIT(1)
+-#define PH_OFFSET_EN BIT(7)
+-#define SQUELCH_ENABLE BIT(5)
++#define SABRE_SYNC_TOD BIT(1)
++#define SABRE_PH_OFFSET_EN BIT(7)
++#define SABRE_SQUELCH_ENABLE BIT(5)
+ 
+ /* Bit definitions for the DPLL_MODE register */
+-#define PLL_MODE_SHIFT		(0)
+-#define PLL_MODE_MASK		(0x1F)
+-#define COMBO_MODE_EN		BIT(5)
+-#define COMBO_MODE_SHIFT	(6)
+-#define COMBO_MODE_MASK		(0x3)
++#define SABRE_PLL_MODE_SHIFT		(0)
++#define SABRE_PLL_MODE_MASK		(0x1F)
++#define SABRE_COMBO_MODE_EN		BIT(5)
++#define SABRE_COMBO_MODE_SHIFT	(6)
++#define SABRE_COMBO_MODE_MASK		(0x3)
+ 
+ /* Bit definitions for DPLL_OPERATING_STS register */
+-#define OPERATING_STS_MASK	(0x7)
+-#define OPERATING_STS_SHIFT	(0x0)
++#define SABRE_OPERATING_STS_MASK	(0x7)
++#define SABRE_OPERATING_STS_SHIFT	(0x0)
+ 
+ /* Bit definitions for DPLL_TOD_TRIGGER register */
+-#define READ_TRIGGER_MASK	(0xF)
+-#define READ_TRIGGER_SHIFT	(0x0)
+-#define WRITE_TRIGGER_MASK	(0xF0)
+-#define WRITE_TRIGGER_SHIFT	(0x4)
++#define SABRE_READ_TRIGGER_MASK	(0xF)
++#define SABRE_READ_TRIGGER_SHIFT	(0x0)
++#define SABRE_WRITE_TRIGGER_MASK	(0xF0)
++#define SABRE_WRITE_TRIGGER_SHIFT	(0x4)
+ 
+ /* Bit definitions for REG_SOFT_RESET register */
+-#define SOFT_RESET_EN		BIT(7)
+-
+-enum pll_mode {
+-	PLL_MODE_MIN = 0,
+-	PLL_MODE_AUTOMATIC = PLL_MODE_MIN,
+-	PLL_MODE_FORCE_FREERUN = 1,
+-	PLL_MODE_FORCE_HOLDOVER = 2,
+-	PLL_MODE_FORCE_LOCKED = 4,
+-	PLL_MODE_FORCE_PRE_LOCKED2 = 5,
+-	PLL_MODE_FORCE_PRE_LOCKED = 6,
+-	PLL_MODE_FORCE_LOST_PHASE = 7,
+-	PLL_MODE_DCO = 10,
+-	PLL_MODE_WPH = 18,
+-	PLL_MODE_MAX = PLL_MODE_WPH,
++#define SABRE_SOFT_RESET_EN		BIT(7)
++
++enum sabre_pll_mode {
++	SABRE_PLL_MODE_MIN = 0,
++	SABRE_PLL_MODE_AUTOMATIC = SABRE_PLL_MODE_MIN,
++	SABRE_PLL_MODE_FORCE_FREERUN = 1,
++	SABRE_PLL_MODE_FORCE_HOLDOVER = 2,
++	SABRE_PLL_MODE_FORCE_LOCKED = 4,
++	SABRE_PLL_MODE_FORCE_PRE_LOCKED2 = 5,
++	SABRE_PLL_MODE_FORCE_PRE_LOCKED = 6,
++	SABRE_PLL_MODE_FORCE_LOST_PHASE = 7,
++	SABRE_PLL_MODE_DCO = 10,
++	SABRE_PLL_MODE_WPH = 18,
++	SABRE_PLL_MODE_MAX = SABRE_PLL_MODE_WPH,
+ };
+ 
+-enum hw_tod_trig_sel {
+-	HW_TOD_TRIG_SEL_MIN = 0,
+-	HW_TOD_TRIG_SEL_NO_WRITE = HW_TOD_TRIG_SEL_MIN,
+-	HW_TOD_TRIG_SEL_NO_READ = HW_TOD_TRIG_SEL_MIN,
+-	HW_TOD_TRIG_SEL_SYNC_SEL = 1,
+-	HW_TOD_TRIG_SEL_IN12 = 2,
+-	HW_TOD_TRIG_SEL_IN13 = 3,
+-	HW_TOD_TRIG_SEL_IN14 = 4,
+-	HW_TOD_TRIG_SEL_TOD_PPS = 5,
+-	HW_TOD_TRIG_SEL_TIMER_INTERVAL = 6,
+-	HW_TOD_TRIG_SEL_MSB_PHASE_OFFSET_CNFG = 7,
+-	HW_TOD_TRIG_SEL_MSB_HOLDOVER_FREQ_CNFG = 8,
+-	HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG = 9,
+-	HW_TOD_RD_TRIG_SEL_LSB_TOD_STS = HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+-	WR_TRIG_SEL_MAX = HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
++enum sabre_hw_tod_trig_sel {
++	SABRE_HW_TOD_TRIG_SEL_MIN = 0,
++	SABRE_HW_TOD_TRIG_SEL_NO_WRITE = SABRE_HW_TOD_TRIG_SEL_MIN,
++	SABRE_HW_TOD_TRIG_SEL_NO_READ = SABRE_HW_TOD_TRIG_SEL_MIN,
++	SABRE_HW_TOD_TRIG_SEL_SYNC_SEL = 1,
++	SABRE_HW_TOD_TRIG_SEL_IN12 = 2,
++	SABRE_HW_TOD_TRIG_SEL_IN13 = 3,
++	SABRE_HW_TOD_TRIG_SEL_IN14 = 4,
++	SABRE_HW_TOD_TRIG_SEL_TOD_PPS = 5,
++	SABRE_HW_TOD_TRIG_SEL_TIMER_INTERVAL = 6,
++	SABRE_HW_TOD_TRIG_SEL_MSB_PHASE_OFFSET_CNFG = 7,
++	SABRE_HW_TOD_TRIG_SEL_MSB_HOLDOVER_FREQ_CNFG = 8,
++	SABRE_HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG = 9,
++	SABRE_HW_TOD_RD_TRIG_SEL_LSB_TOD_STS = SABRE_HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
++	SABRE_WR_TRIG_SEL_MAX = SABRE_HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+ };
+ 
+ /** @brief Enumerated type listing DPLL operational modes */
+-enum dpll_state {
+-	DPLL_STATE_FREERUN = 1,
+-	DPLL_STATE_HOLDOVER = 2,
+-	DPLL_STATE_LOCKED = 4,
+-	DPLL_STATE_PRELOCKED2 = 5,
+-	DPLL_STATE_PRELOCKED = 6,
+-	DPLL_STATE_LOSTPHASE = 7,
+-	DPLL_STATE_MAX
++enum sabre_dpll_state {
++	SABRE_DPLL_STATE_FREERUN = 1,
++	SABRE_DPLL_STATE_HOLDOVER = 2,
++	SABRE_DPLL_STATE_LOCKED = 4,
++	SABRE_DPLL_STATE_PRELOCKED2 = 5,
++	SABRE_DPLL_STATE_PRELOCKED = 6,
++	SABRE_DPLL_STATE_LOSTPHASE = 7,
++	SABRE_DPLL_STATE_MAX
+ };
+ 
+ #endif
+-- 
+2.7.4
 
-thanks,
-
-greg k-h
