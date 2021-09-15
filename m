@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE45440C744
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7D440C74D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238044AbhIOOUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:20:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42948 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237991AbhIOOTr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:19:47 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18FE5GDm004178;
-        Wed, 15 Sep 2021 10:18:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=vJ04kTE5mt6HHs9cYDzrTl2A5jl6K64BO6ltCe/R7lg=;
- b=pmlCH8sKXgb8CwNo4YNFnr2S+5nZpS58Kx4VaojLj4UYIONF61yV+3KzV8VEdBtSNmEu
- cJ+XqkSJbh/70VJ8xbRbxBOYBYrpSGCCbtJgCn1IP993hHkiXgUzxJ2WW+7ZNt0K7wRF
- gwUcJ3dTAZTASgKbUO9G+ywD305Gd2Gn0tGabW+OF7W/jtQjm+krtpC/idV5fHyRAFbO
- nREwfpg9diPLCWkR9IEp5AO5q7/Vt0ZgyaRpcrYwWBc+Dd0EZWzcK4ojFZubTMRHWfux
- LNEjP4/dTpYbq4T5UGL5DE6UGvcwzqa0aMbveSGF4WKE+S7ZYblyFofsuUlwe/WVIMlC vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b3j9p09jm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 10:18:10 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18FEA060023719;
-        Wed, 15 Sep 2021 10:18:10 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b3j9p09he-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 10:18:09 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18FE8RM8025422;
-        Wed, 15 Sep 2021 14:18:08 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3b0kqk06y2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Sep 2021 14:18:08 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18FEI4fg24445212
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Sep 2021 14:18:04 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CEB611C071;
-        Wed, 15 Sep 2021 14:18:04 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 69A7411C04A;
-        Wed, 15 Sep 2021 14:18:03 +0000 (GMT)
-Received: from localhost (unknown [9.171.18.94])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 15 Sep 2021 14:18:03 +0000 (GMT)
-Date:   Wed, 15 Sep 2021 16:18:01 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>
-Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] livepatch: Fix idle cpu's tasks transition
-Message-ID: <patch.git-94c1daf66a9c.your-ad-here.call-01631714463-ext-3692@work.hours>
+        id S238074AbhIOOUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:20:32 -0400
+Received: from mail.i8u.org ([75.148.87.25]:64226 "EHLO chris.i8u.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238123AbhIOOUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:20:19 -0400
+Received: by chris.i8u.org (Postfix, from userid 1000)
+        id 5F09C16C9432; Wed, 15 Sep 2021 07:18:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by chris.i8u.org (Postfix) with ESMTP id 5BCE716C92E7;
+        Wed, 15 Sep 2021 07:18:56 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 07:18:56 -0700 (PDT)
+From:   Hisashi T Fujinaka <htodd@twofifty.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+cc:     Dave Jones <davej@codemonkey.org.uk>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [Intel-wired-lan] Linux 5.15-rc1 - 82599ES VPD access isue
+In-Reply-To: <80718d5e-a4d2-ff85-aa8f-cd790c951278@gmail.com>
+Message-ID: <14f6d9e9-aca8-133-67f5-92effa2ea280@twofifty.com>
+References: <CAHk-=wgbygOb3hRV+7YOpVcMPTP2oQ=iw6tf09Ydspg7o7BsWQ@mail.gmail.com> <20210913141818.GA27911@codemonkey.org.uk> <ab571d7e-0cf5-ffb3-6bbe-478a4ed749dc@gmail.com> <20210913201519.GA15726@codemonkey.org.uk> <b84b799d-0aaa-c4e1-b61b-8e2316b62bd1@gmail.com>
+ <20210913203234.GA6762@codemonkey.org.uk> <b24d81e2-5a1e-3616-5a01-abd58c0712f7@gmail.com> <b4b543d4-c0c5-3c56-46b7-e17ec579edcc@twofifty.com> <367cc748-d411-8cf8-ff95-07715c55e899@gmail.com> <20210914142419.GA32324@codemonkey.org.uk>
+ <c02876d7-c3f3-1953-334d-1248af919796@twofifty.com> <80718d5e-a4d2-ff85-aa8f-cd790c951278@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UFVeLRztszlvuJi6dmYN6u-Ec74i-FCM
-X-Proofpoint-ORIG-GUID: L0EugqXAUXM9IRxmXHPOz7AiUivKPkoj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.687,Hydra:6.0.235,FMLib:17.0.607.475
- definitions=2020-10-13_15,2020-10-13_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 spamscore=0
- adultscore=0 impostorscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109150087
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On an idle system with large amount of cpus it might happen that
-klp_update_patch_state() is not reached in do_idle() for a long periods
-of time. With debug messages enabled log is filled with:
-[  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
+On Tue, 14 Sep 2021, Heiner Kallweit wrote:
 
-without any signs of progress. Ending up with "failed to complete
-transition".
+> On 14.09.2021 22:00, Hisashi T Fujinaka wrote:
+>> On Tue, 14 Sep 2021, Dave Jones wrote:
+>>
+>>> On Tue, Sep 14, 2021 at 07:51:22AM +0200, Heiner Kallweit wrote:
+>>>
+>>>>> Sorry to reply from my personal account. If I did it from my work
+>>>>> account I'd be top-posting because of Outlook and that goes over like a
+>>>>> lead balloon.
+>>>>>
+>>>>> Anyway, can you send us a dump of your eeprom using ethtool -e? You can
+>>>>> either send it via a bug on e1000.sourceforge.net or try sending it to
+>>>>> todd.fujinaka@intel.com
+>>>>>
+>>>>> The other thing is I'm wondering is what the subvendor device ID you
+>>>>> have is referring to because it's not in the pci database. Some ODMs
+>>>>> like getting creative with what they put in the NVM.
+>>>>>
+>>>>> Todd Fujinaka (todd.fujinaka@intel.com)
+>>>>
+>>>> Thanks for the prompt reply. Dave, could you please provide the requested
+>>>> information?
+>>>
+>>> sent off-list.
+>>>
+>>>     Dave
+>>
+>> Whoops. I replied from outlook again.
+>>
+>> I have confirmation that this should be a valid image. The VPD is just a
+>> series of 3's. There are changes to preboot header, flash and BAR size,
+>> and as far as I can tell, a nonsense subdevice ID, but this should work.
+>>
+>> What was the original question?
+>>
+> "lspci -vv" complains about an invalid short tag 0x06 and the PCI VPD
+> code resulted in a stall. So it seems the data doesn't have valid VPD
+> format as defined in PCI specification.
+>
+> 01:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit SFI/SFP+ Network Connection (rev 01)
+>        Subsystem: Device 1dcf:030a
+> 	...
+> 	        Capabilities: [e0] Vital Product Data
+>                *Unknown small resource type 06, will not decode more.*
+>
+> Not sure which method is used by the driver to get the EEPROM content.
+> For the issue here is relevant what is exposed via PCI VPD.
+>
+> The related kernel error message has been reported few times, e.g. here:
+> https://access.redhat.com/solutions/3001451
+> Only due to a change in kernel code this became a more prominent
+> issue now.
+>
+> You say that VPD is just a series of 3's. This may explain why kernel and
+> tools complain about an invalid VPD format. VPD misses the tag structure.
 
-On s390 LPAR with 128 cpus not a single transition is able to complete
-and livepatch kselftests fail. Tests on idling x86 kvm instance with 128
-cpus demonstrate similar symptoms with and without CONFIG_NO_HZ.
+I think I conflated two issues and yours may not be the one with the
+weird Amazon NIC. In any case, the VPD does not match the spec and two
+people have confirmed it's just full of 3's. With the bogus subvendor
+ID, I'm thinking this is not an Intel NIC.
 
-To deal with that, since runqueue is already locked in
-klp_try_switch_task() identify idling cpus and trigger rescheduling
-potentially waking them up and making sure idle tasks break out of
-do_idle() inner loop and reach klp_update_patch_state(). This helps to
-speed up transition time while avoiding unnecessary extra system load.
+Next step is to contact whoever made the NIC and ask them for guidance.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
-Ingo/Peter, as Josh mentioned, could you please ack if you are ok with
-livepatch calling this private scheduler interface?
-
-Changes since v1:
-- added comments suggested by Petr
-  lkml.kernel.org/r/patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours
-
-Previous discussion and RFC PATCH:
-  lkml.kernel.org/r/patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours
-
- kernel/livepatch/transition.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index 291b857a6e20..2846a879f2dc 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -278,6 +278,8 @@ static int klp_check_stack(struct task_struct *task, char *err_buf)
-  * Try to safely switch a task to the target patch state.  If it's currently
-  * running, or it's sleeping on a to-be-patched or to-be-unpatched function, or
-  * if the stack is unreliable, return false.
-+ *
-+ * Idle tasks are switched in the main loop when running.
-  */
- static bool klp_try_switch_task(struct task_struct *task)
- {
-@@ -308,6 +310,12 @@ static bool klp_try_switch_task(struct task_struct *task)
- 	rq = task_rq_lock(task, &flags);
- 
- 	if (task_running(rq, task) && task != current) {
-+		/*
-+		 * Idle task might stay running for a long time. Switch them
-+		 * in the main loop.
-+		 */
-+		if (is_idle_task(task))
-+			resched_curr(rq);
- 		snprintf(err_buf, STACK_ERR_BUF_SIZE,
- 			 "%s: %s:%d is running\n", __func__, task->comm,
- 			 task->pid);
--- 
-2.25.4
+Todd Fujinaka <todd.fujinaka@intel.com>
