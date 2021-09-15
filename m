@@ -2,172 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0CA40D014
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8845840D01B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhIOXQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231579AbhIOXQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:16:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AE6E60E05;
-        Wed, 15 Sep 2021 23:14:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1631747698;
-        bh=68bSMQGWdSoGDlpQszPwS3fsUhXiaDytGm3wAy+b7JQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gcG7B9/xKASdGTNcHfUlm/UrDB3S3H02dgeu1agljnziEeHThcNMfCsclQ9G0rCp/
-         WYd2wkucCEKL9m5prXzvNy7IBbAx6IsuTKB3VZTf1XzjHV957A6MNjHns/QOJ6oa+J
-         iwf/b8dwxe1Od0uxmbQ7Xqkvq6JUDNf+Tu4VeC+g=
-Date:   Wed, 15 Sep 2021 16:14:57 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Waiman Long <llong@redhat.com>
-Subject: Re: [syzbot] WARNING in __init_work
-Message-Id: <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
-In-Reply-To: <000000000000423e0a05cc0ba2c4@google.com>
-References: <000000000000423e0a05cc0ba2c4@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232749AbhIOXXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:23:15 -0400
+Received: from mail-mw2nam10on2045.outbound.protection.outlook.com ([40.107.94.45]:57728
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231579AbhIOXXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 19:23:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N1FmgGj69rFubFTnZbfqa1hnbmFJyTVBfz8iHKVmbm1FtXl9C6/0fBF1zRfv/Jar3E2sYczzXlmovG9GXo02vbYP36FIXGtZXHGLobhloNUor7e70CyWI7xVFe4h/Hqezl7oqwXgVKY5HejHLwWjuy9xcwA7FzwoAOpjgAAx2rubIZHJdV6YNxn8hamHfmQmjTUFqafwcI1lRDWQbQfBlIw5RqZR+o7nXJW0mU3Wbgbm0zQGr5GIWESXUfQ8h3Olkv3PJswfv429kBgVdG9F3qOp2SIoClbyRPGD6AoCD5WIxGzoGcspGLpV3KiQFKdidUgmPh/usl4dJ6Yn+jPNaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WYXG+5GHct43lCwx1eOn8uuGmaqEDcr/9jIaE6r0hx8=;
+ b=iCnWr673mhK1fT959bpOI6XVFBnkpxsTuSbNm6eTrYmSUbLLp4nz9Zp8u3SS2ahfPHRisjP0opN9JVhjU1CKIxWzNRqXu91h0LYt1adpDwaH697BZogHjOeLYnpNmfXUYrwI0h2ELwlsp3VhTPZKMeQ6dHakgw3GvdT3L2iV4h7LsdBBDeNp7FVFS+QIxkSd4ggiO7VGBCRDEcpR3yvuaUdnkzyeeuky5r1V8dhco8jjrLu0k6tdMadvLoBcpjgQjZFu2w5JXAPIIlt7GuuhUGPzO3AduV1UG40whi9KeW7Wb0KscEGxZHy+4Ax604h3pswFROmTMMtLB9860ilNFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WYXG+5GHct43lCwx1eOn8uuGmaqEDcr/9jIaE6r0hx8=;
+ b=vH0/oMURkDmJc0kdKl0CoqHeSucsE+P5TLIOLHlW1a3lcxrxvv4X41mtdoFwpeeYD5S4rrhNv4zXPvi50WAoZatSDVpTpfjwXeEw4wLyn7rUn9/mYuISO82MzaE4Ba4eSIur+MkJC/+1tHFfrBpS1lVZzIMAOyeM798EeqPCnLA=
+Authentication-Results: lists.linux.dev; dkim=none (message not signed)
+ header.d=none;lists.linux.dev; dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5072.namprd12.prod.outlook.com (2603:10b6:5:38b::22)
+ by DM6PR12MB5534.namprd12.prod.outlook.com (2603:10b6:5:20b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.15; Wed, 15 Sep
+ 2021 23:21:53 +0000
+Received: from DM4PR12MB5072.namprd12.prod.outlook.com
+ ([fe80::3d10:92c3:3a52:77d9]) by DM4PR12MB5072.namprd12.prod.outlook.com
+ ([fe80::3d10:92c3:3a52:77d9%5]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
+ 23:21:52 +0000
+Subject: Re: [1/4] drm/amd/display: Pass display_pipe_params_st as const in
+ DML
+To:     Harry Wentland <harry.wentland@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     ndesaulniers@google.com, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, arnd@kernel.org, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, nathan@kernel.org, linux@roeck-us.net,
+        llvm@lists.linux.dev
+References: <20210909010023.29110-2-harry.wentland@amd.com>
+From:   Anson Jacob <Anson.Jacob@amd.com>
+Message-ID: <a14776f3-213d-9bf8-6ef1-224b80a20086@amd.com>
+Date:   Wed, 15 Sep 2021 19:21:49 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210909010023.29110-2-harry.wentland@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YTXPR0101CA0017.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::30) To DM4PR12MB5072.namprd12.prod.outlook.com
+ (2603:10b6:5:38b::22)
+MIME-Version: 1.0
+Received: from [192.168.2.12] (142.118.127.251) by YTXPR0101CA0017.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 23:21:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f1b29333-bf4f-4b04-1d13-08d9789f99c3
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5534:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB5534270149B9D967BC50D183EBDB9@DM6PR12MB5534.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ddqWywJzYLthOgKmxHYEoNLqtqmXoHpfdmVdqgSHyj4uOQms7JJOzsi0z+iio+B2Y7QYW1g/2NIC69SKvww4dY6csgMEb/E/qanFIwOcv4TE1DwBbHkTbZHtTZ007FmBxawReEIPi3yJF9B7c9v/JBgiBWAp3P2XayRhafhdY9nN4mWp67BPaeeTtN4W2KPDIVtTeWOgW0QS/C4+mEYepdRIOFrUmtOQkhAcFI9c4HlhHIswkK6n2cb7CU8BQeyhge8U+igEquuw6kac33akB+I5xBjyJTdN1ZL750gZ8m1Cu3tXreySzCwoFeeMAk+PB9HQr4JMZkw4SCbW1pfSYmYXbmTEfR3HpOLEIZiT/0N8U5Okhd/qEKtETmKd7F94mZM9RAcdz0f5MMz6UGsr49pqkShHmWBjKQ4HXOH6ZFkrPMx2//sPoNZJ1ZI5ojOyErqVCdL2O63bGssjH8qyGsWYvNDX4PFdgsyvZfScpEBv/vReiTWo6cbtOnTxfVNHeRLbIesByfsTr0BtD2b2UKvf9Dwp1qjgC2pDM5UftO4LnBGW/VenWreXfUq97dqnKPTGLX1Zyhk2e97Odn+VeKCKtJhSWncVgHYjbPqu+q4YPmr/IcrrrFyMmnrBMN1sw2jSPp7je4wyjFpiUQH12qZi9WtHfBE8nfe4KoB9ynTDhtjIks7h1odGExQYzM3SmaTnoOu2bX1c3u+5dKOrp2yT0uJOeK1gL5LjAltFKc0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5072.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(39860400002)(366004)(136003)(31686004)(8676002)(31696002)(66556008)(6486002)(26005)(38100700002)(2616005)(5660300002)(4744005)(8936002)(956004)(36756003)(86362001)(186003)(2906002)(16576012)(4326008)(316002)(66946007)(478600001)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q2xiR0NpNktyL0xNaGhPdWdzSzhLUVdpT05wd1lmc29ZS1NkVDhmZnJuUVJh?=
+ =?utf-8?B?MXBXb0Z2cU1Yb2JBNnFCWnYzSVNQZEx2a1duMU5Ielppc0F0cmtONnNsczh6?=
+ =?utf-8?B?SUJiT056Mit4VVhuU0ZJbW93cEtsZXpyejlJbXN6c0RnWVpMUTFHenA0UVdi?=
+ =?utf-8?B?TzNsYUg1d29KTURUR1RlUXRuMnppL0pzd2crbk5oaEhtSmVEK0R3VHVMMTNp?=
+ =?utf-8?B?UmpWTFhtTlVDRUJiTlhpQWwwM1l4L2Z1eExCSm5YWExmWlhTNXFpek11UCtI?=
+ =?utf-8?B?WmI5WlJlZ2w2Q2JmSFljSVZsOHBiSUlmeGZSeWxjNlIyOWRldDNFSnpRcE5v?=
+ =?utf-8?B?Q2MzQ3k3eTB5bXpQaTA2NlR3VkVvQnlHM2lDa3ZrUzRTZGFtWVJJMVFjb01a?=
+ =?utf-8?B?WG1OREZQZGdiSlhmZDE2RjhLQUF2bWVKWWlYL0xlM2NsY0U2d04wWGdpVDV4?=
+ =?utf-8?B?R3BIaWh0SENIU2lqTGNxbEVUV2FGY3EwdnZOQ0w0ZTduajJLbXBKYTBuTERM?=
+ =?utf-8?B?REM4N3Z0T1l2Z1pGNlpqYzVuZlc4N3JkYWRhNkVVakJsdVdZbEdrTXMvbkhX?=
+ =?utf-8?B?RDBPSlJaWXBHQkpMMmx0V2pIM2NScC9uVlQ1cGpieUF5TmtMWGxGM29SK09a?=
+ =?utf-8?B?NnRxankrd0c4bXhBUEt6aFJFZzJzazJmbGhrdDN5d2pNNXZzN2xFZ3RqREhm?=
+ =?utf-8?B?d0xxUHBPeTc0WVJoRW5GWEtvb2xwRjJJL1V5TXNJck5lZitZTG0vZzh1akhI?=
+ =?utf-8?B?S1QrYjlVSVZxTGwvbzlaZjVwN2hpS2FIWDhpd0JjVzllaTdQQ0xQOUVmNkVJ?=
+ =?utf-8?B?RTVLeE10VHc1eVhrWThwT2lGcG14dGVtTkNtQ2tHeTFFR2JtaDh4ZnQzTEIv?=
+ =?utf-8?B?eHJZSDlNcDFIbmlQUHpWdkZ3SjhLaE9VYVc1WWtmendCS3JJN3V0TFN2RmZ1?=
+ =?utf-8?B?ZFZzRzNhWitLS2xvVkFmSU0vK3IxRTgrSzd6L1JzTjhLQXF1MHFSQmx2TUxm?=
+ =?utf-8?B?cVN6RDBDOG1acXdNZXhST25XaTdLVHlHUVROejd4SjFIUDlxcEZpYktaWmor?=
+ =?utf-8?B?NFRLQ0hkU2s5Zzd2ZmhUOEJiTVNxY090bEl1eEZRN1RQYzRzRndVTFRJem02?=
+ =?utf-8?B?VWZ6bWYzZWEzdUE0RkFXdDRacHkwNW9CcTc3RWVUZ2h3VEYwRTh6aVUvVS9x?=
+ =?utf-8?B?WUxSdERKei9GNXhKOW9pZGJ2L1FJR2NjT0JMODgyWUVkdExZd1hJS0pqUnJx?=
+ =?utf-8?B?ekNmSDlSb1pOa1o3UDA2czg5b1dLWDEvd01saG5MSFBpUCtYeTBLc2tySlRp?=
+ =?utf-8?B?K1RGUzA1dzE5cUF6ZUhiSDRBSE1TSDZnRVNFdEU1UXZxNEJFTU5aMkNhSGp4?=
+ =?utf-8?B?aTBZb2VZR0xKYU9iUE1OK3NwZFUrTWpMMWdvbk81a0tiWDNEWHhKdHYvSEly?=
+ =?utf-8?B?TFhuQXdSaExRTGRRSWNlcUIrbU1MWVFoMnRCdFVsR2FNZW0zN3owNW8xUnpQ?=
+ =?utf-8?B?TEk1RnJWUFduUnBsUE5hNVdpUjUvUzNmd0JYSEhqUWV5d20wRERqQzFla0Rh?=
+ =?utf-8?B?Q3RwMWY5eUYyYU9GWVExMXR4cnl2OEt4djFSSVNWdmxTd0J0Vnc4ejFxc1Zy?=
+ =?utf-8?B?N1VqaldWejVRY2VwN3JOSGRlWmxRa1JvdFdBSWJ4M05uWWVXOW10MFFuVXkz?=
+ =?utf-8?B?MHNJN2k1NnV3eFhTQURIMmtxaWpWdW93ZWRmckR2RmswbDl1WU1lL0ZaRTJt?=
+ =?utf-8?Q?dazp2jKBRZAwjcuar1HKGI0hxwjq/TIkm+0oSqp?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1b29333-bf4f-4b04-1d13-08d9789f99c3
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5072.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 23:21:52.8173
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uiaQGrO0NvA9n+qBnjQk6VRfEAOBLVAF5LAJ+7BaNFAsEBBsVogT9QDio9jLmxXJKDJ1aM9TWujSr3kcpO/P4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5534
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 10:00:22 -0700 syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com> wrote:
+Hi Harry,
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17aa010d300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=1c3d15ee2073a2a2
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d6c75f383e01426a40b4
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com
-> 
-> ODEBUG: object ffffc90000fd8bc8 is NOT on stack ffffc900022a0000, but annotated.
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 2971 at lib/debugobjects.c:548 debug_object_is_on_stack lib/debugobjects.c:545 [inline]
-> WARNING: CPU: 1 PID: 2971 at lib/debugobjects.c:548 __debug_object_init.cold+0x252/0x2e5 lib/debugobjects.c:607
-> Modules linked in:
-> CPU: 1 PID: 2971 Comm: systemd-udevd Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:debug_object_is_on_stack lib/debugobjects.c:548 [inline]
-> RIP: 0010:__debug_object_init.cold+0x252/0x2e5 lib/debugobjects.c:607
-> Code: 00 48 8d 7b 20 48 89 fa 48 c1 ea 03 80 3c 02 00 74 05 e8 c0 3e bb f8 48 8b 53 20 4c 89 e6 48 c7 c7 c0 a7 e3 89 e8 a1 34 f2 ff <0f> 0b e9 3f 9f dc fa 48 b8 00 01 00 00 00 00 ad de 48 89 ef 48 89
-> RSP: 0018:ffffc90000fd89f8 EFLAGS: 00010286
-> RAX: 0000000000000050 RBX: ffff88801f3f2180 RCX: 0000000000000000
-> RDX: ffff88801f3f2180 RSI: ffffffff815cef88 RDI: fffff520001fb131
-> RBP: ffff88801f3f2180 R08: 0000000000000050 R09: 0000000000000000
-> R10: ffffffff815c8cfe R11: 0000000000000000 R12: ffffc90000fd8bc8
-> R13: 1ffff920001fb14e R14: ffffffff9040c580 R15: ffffffff9040c578
-> FS:  00007f35a6cd88c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000014a53ad CR3: 000000001fc51000 CR4: 00000000001526e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <IRQ>
->  __init_work+0x2d/0x50 kernel/workqueue.c:519
->  synchronize_rcu_expedited+0x392/0x620 kernel/rcu/tree_exp.h:847
->  bdi_remove_from_list mm/backing-dev.c:938 [inline]
->  bdi_unregister+0x177/0x5a0 mm/backing-dev.c:946
->  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
->  kref_put include/linux/kref.h:65 [inline]
->  bdi_put+0x72/0xa0 mm/backing-dev.c:976
->  bdev_free_inode+0x116/0x220 fs/block_dev.c:819
->  i_callback+0x3f/0x70 fs/inode.c:224
->  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
->  rcu_core+0x7ab/0x1470 kernel/rcu/tree.c:2743
->  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
->  invoke_softirq kernel/softirq.c:432 [inline]
->  __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
->  irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
->  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
->  </IRQ>
+This patch fixes the following CID's. Thanks.
 
-Seems that we have a debugobject in the incorrect state, but it doesn't
-necessarily mean there's something wrong in the bdi code.  It's just
-that the bdi code happened to be the place which called
-synchronize_rcu_expedited().
+Addresses-Coverity-ID: 1424031: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1423970: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1423941: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1451742: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1451887: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1454146: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1454152: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1454413: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1466144: ("Big parameter passed by value")
+Addresses-Coverity-ID: 1487237: ("Big parameter passed by value")
 
-Thomas, is there a way in which the debugobject code can help us find
-out where this object came from?
-
-
->  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-> RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
-> RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-> RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:197
-> Code: 01 f0 4d 89 03 e9 63 fd ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 00 <65> 8b 05 c9 ab 8c 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
-> RSP: 0018:ffffc900022a79d8 EFLAGS: 00000202
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
-> RDX: 0000000000000000 RSI: ffff88801f3f2180 RDI: 0000000000000003
-> RBP: ffffc900022a7b48 R08: 0000000000000000 R09: 0000000000000005
-> R10: ffffffff83a87292 R11: 000000000000001f R12: ffff888020928180
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->  tomoyo_check_path_acl security/tomoyo/file.c:260 [inline]
->  tomoyo_check_path_acl+0xbe/0x210 security/tomoyo/file.c:252
->  tomoyo_check_acl+0x13c/0x450 security/tomoyo/domain.c:175
->  tomoyo_path_permission security/tomoyo/file.c:586 [inline]
->  tomoyo_path_permission+0x1ff/0x3a0 security/tomoyo/file.c:573
->  tomoyo_path_perm+0x2f0/0x400 security/tomoyo/file.c:838
->  security_inode_getattr+0xcf/0x140 security/security.c:1333
->  vfs_getattr fs/stat.c:157 [inline]
->  vfs_statx+0x164/0x390 fs/stat.c:225
->  vfs_fstatat fs/stat.c:243 [inline]
->  vfs_lstat include/linux/fs.h:3356 [inline]
->  __do_sys_newlstat+0x91/0x110 fs/stat.c:398
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f35a5b4a335
-> Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
-> RSP: 002b:00007ffd7b867ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
-> RAX: ffffffffffffffda RBX: 0000563eb9e97120 RCX: 00007f35a5b4a335
-> RDX: 00007ffd7b867ce0 RSI: 00007ffd7b867ce0 RDI: 0000563eb9e96120
-> RBP: 00007ffd7b867da0 R08: 00007f35a5e092e8 R09: 0000000000001010
-> R10: 00007f35a5e08b58 R11: 0000000000000246 R12: 0000563eb9e96120
-> R13: 0000563eb9e9614a R14: 0000563eb9e8dce1 R15: 0000563eb9e8dcea
-> ----------------
-> Code disassembly (best guess):
->    0:	01 f0                	add    %esi,%eax
->    2:	4d 89 03             	mov    %r8,(%r11)
->    5:	e9 63 fd ff ff       	jmpq   0xfffffd6d
->    a:	b9 ff ff ff ff       	mov    $0xffffffff,%ecx
->    f:	ba 08 00 00 00       	mov    $0x8,%edx
->   14:	4d 8b 03             	mov    (%r11),%r8
->   17:	48 0f bd ca          	bsr    %rdx,%rcx
->   1b:	49 8b 45 00          	mov    0x0(%r13),%rax
->   1f:	48 63 c9             	movslq %ecx,%rcx
->   22:	e9 64 ff ff ff       	jmpq   0xffffff8b
->   27:	0f 1f 00             	nopl   (%rax)
-> * 2a:	65 8b 05 c9 ab 8c 7e 	mov    %gs:0x7e8cabc9(%rip),%eax        # 0x7e8cabfa <-- trapping instruction
->   31:	89 c1                	mov    %eax,%ecx
->   33:	48 8b 34 24          	mov    (%rsp),%rsi
->   37:	81 e1 00 01 00 00    	and    $0x100,%ecx
->   3d:	65                   	gs
->   3e:	48                   	rex.W
->   3f:	8b                   	.byte 0x8b
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- Anson
