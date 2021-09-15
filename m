@@ -2,129 +2,606 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7B640C66C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F86040C672
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbhIONaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:30:13 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3821 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233467AbhIONaJ (ORCPT
+        id S234212AbhIONcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233429AbhIONcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:30:09 -0400
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H8gwH5cVrz67gsl;
-        Wed, 15 Sep 2021 21:26:23 +0800 (CST)
-Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 15:28:48 +0200
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 14:28:48 +0100
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2308.008; Wed, 15 Sep 2021 14:28:48 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "mgurtovoy@nvidia.com" <mgurtovoy@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Jonathan Cameron" <jonathan.cameron@huawei.com>,
-        "Wangzhou (B)" <wangzhou1@hisilicon.com>
-Subject: RE: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
- migration
-Thread-Topic: [PATCH v3 6/6] hisi_acc_vfio_pci: Add support for VFIO live
- migration
-Thread-Index: AQHXqhdQM13RiELH60aUjxjG41fnUKulAGMAgAAGK3A=
-Date:   Wed, 15 Sep 2021 13:28:47 +0000
-Message-ID: <fe5d6659e28244da82b7028b403e11ae@huawei.com>
-References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
- <20210915095037.1149-7-shameerali.kolothum.thodi@huawei.com>
- <20210915130742.GJ4065468@nvidia.com>
-In-Reply-To: <20210915130742.GJ4065468@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.83.177]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 15 Sep 2021 09:32:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598A2C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:30:48 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id u15so3925955wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5QnuwYcO4Yf7chrVNu1BE8vchgKvF6ErCZcNviBoYR4=;
+        b=l52e/q9mX46WxrNx0GqRCFXWhacFu3F0RQUW6A1FfWM3zV74sRosjlULNsTXbHLhCC
+         BZCDgNbq9IteAEbYZZqJr7LAtA0aLjCsoeple8Ht4OpQSRimyA1DIs49UYmb/Fi14ix/
+         YGBnw+sgvM/PGuymO0r5SoUCSxCekK8mY1lxdzEAXCm0ssZkvuZ93vAXDN6iuQPUWgcz
+         g+d/64FYRGobX64f2gr/p5zc9BoF8AcUR0llFH7Mg/FENiuZ/wSCwxqk87dmWwr/S3CM
+         Iy08VMX5VN2NeQnKjz260YiqfoBF01sgVZew0/coD2+tgWkxBZxvOwPTtI6+3EEPDavG
+         AB+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5QnuwYcO4Yf7chrVNu1BE8vchgKvF6ErCZcNviBoYR4=;
+        b=BKSl6efCHA5P9/Kq1Do7BES8yMLZ10EdUI6Lc4Dof2DqOGmYBD3XQfUX5ixgChfYut
+         CwwtL7GMzByd5KL3N74NdmSmqt4DnGK9eQc9VRoYzd6A8XFk5Ai5CNBkzby/opQJ5nck
+         UcYDubMl94u8Hy01KTqFsKPgZfhVxYZQ3cL4cVu6qTNh1mLS4mWq+ATdNLYe4JCK7bID
+         kXXoMWzzIdZFZ5XcXucP/HWAN3A8sn7aAFPnlg9uOeNdNuOh0K6W2IT2L1jFuzpTXH27
+         Yh2JsyQhVRtm7lS5ygweZsoH8ub9vS1JkFZJd1YE3c0dAAd8vo5ukaWcCkVMCP6gGN5A
+         DK0w==
+X-Gm-Message-State: AOAM531Esl6xNHrBoPD0nBYsO21KcEQh7boE+qESyhYXZpg7Xzeya8H/
+        X2Wu0sei30x9SzOdrj2an8fQ5Q==
+X-Google-Smtp-Source: ABdhPJxqZJlaouf7GEXWlCizRV6Ap8x1p2ZFa8zsuBeBd8bejEcckJelxOcovXbkzXuVHet9lfjmlA==
+X-Received: by 2002:a5d:6b46:: with SMTP id x6mr5155341wrw.192.1631712646785;
+        Wed, 15 Sep 2021 06:30:46 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id c15sm14272920wrc.83.2021.09.15.06.30.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 06:30:46 -0700 (PDT)
+Subject: Re: [PATCH 2/2] thermal: add a virtual sensor to aggregate
+ temperatures
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.tseng@mediatek.com, khilman@baylibre.com, gpain@baylibre.com
+References: <20210906190454.114751-1-abailon@baylibre.com>
+ <20210906190454.114751-3-abailon@baylibre.com> <YTqK0UnabqsLYIGw@google.com>
+From:   Alexandre Bailon <abailon@baylibre.com>
+Message-ID: <680ccbe5-38e1-dc61-f198-67197b01a933@baylibre.com>
+Date:   Wed, 15 Sep 2021 15:32:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <YTqK0UnabqsLYIGw@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFzb24gR3VudGhvcnBl
-IFttYWlsdG86amdnQG52aWRpYS5jb21dDQo+IFNlbnQ6IDE1IFNlcHRlbWJlciAyMDIxIDE0OjA4
-DQo+IFRvOiBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIDxzaGFtZWVyYWxpLmtvbG90aHVtLnRo
-b2RpQGh1YXdlaS5jb20+DQo+IENjOiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1jcnlwdG9Admdlci5rZXJuZWwub3JnOyBhbGV4Lndp
-bGxpYW1zb25AcmVkaGF0LmNvbTsNCj4gbWd1cnRvdm95QG52aWRpYS5jb207IExpbnV4YXJtIDxs
-aW51eGFybUBodWF3ZWkuY29tPjsgbGl1bG9uZ2ZhbmcNCj4gPGxpdWxvbmdmYW5nQGh1YXdlaS5j
-b20+OyBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPjsNCj4gSm9uYXRoYW4g
-Q2FtZXJvbiA8am9uYXRoYW4uY2FtZXJvbkBodWF3ZWkuY29tPjsgV2FuZ3pob3UgKEIpDQo+IDx3
-YW5nemhvdTFAaGlzaWxpY29uLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MyA2LzZdIGhp
-c2lfYWNjX3ZmaW9fcGNpOiBBZGQgc3VwcG9ydCBmb3IgVkZJTyBsaXZlDQo+IG1pZ3JhdGlvbg0K
-PiANCj4gT24gV2VkLCBTZXAgMTUsIDIwMjEgYXQgMTA6NTA6MzdBTSArMDEwMCwgU2hhbWVlciBL
-b2xvdGh1bSB3cm90ZToNCj4gPiArLyoNCj4gPiArICogSGlTaWxpY29uIEFDQyBWRiBkZXbCoE1N
-SU8gc3BhY2UgY29udGFpbnMgYm90aCB0aGUgZnVuY3Rpb25hbCByZWdpc3Rlcg0KPiA+ICsgKiBz
-cGFjZcKgYW5kIHRoZSBtaWdyYXRpb24gY29udHJvbCByZWdpc3RlciBzcGFjZS4gV2UgaGlkZSB0
-aGUgbWlncmF0aW9uDQo+ID4gKyAqIGNvbnRyb2wgc3BhY2XCoGZyb20gdGhlIEd1ZXN0LiBCdXQg
-dG8gc3VjY2Vzc2Z1bGx5IGNvbXBsZXRlIHRoZSBsaXZlDQo+ID4gKyAqIG1pZ3JhdGlvbiwgd2Ug
-c3RpbGwgbmVlZCBhY2Nlc3MgdG8gdGhlIGZ1bmN0aW9uYWwgTU1JTyBzcGFjZSBhc3NpZ25lZA0K
-PiA+ICsgKiB0byB0aGUgR3Vlc3QuIFRvIGF2b2lkIGFueSBwb3RlbnRpYWwgc2VjdXJpdHkgaXNz
-dWVzLCB3ZSBuZWVkIHRvIGJlDQo+ID4gKyAqIGNhcmVmdWwgbm90IHRvIGFjY2VzcyB0aGlzIHJl
-Z2lvbiB3aGlsZSB0aGUgR3Vlc3QgdkNQVXMgYXJlIHJ1bm5pbmcuDQo+ID4gKyAqDQo+ID4gKyAq
-IEhlbmNlIGNoZWNrIHRoZSBkZXZpY2Ugc3RhdGUgYmVmb3JlIHdlIG1hcCB0aGUgcmVnaW9uLg0K
-PiA+ICsgKi8NCj4gDQo+IFRoZSBwcmlvciBwYXRjaCBwcmV2ZW50cyBtYXBwaW5nIHRoaXMgYXJl
-YSBpbnRvIHRoZSBndWVzdCBhdCBhbGwsDQo+IHJpZ2h0Pw0KDQpUaGF04oCZcyByaWdodC4gSXQg
-d2lsbCBwcmV2ZW50IEd1ZXN0IGZyb20gbWFwcGluZyB0aGlzIGFyZWEuDQoNCj4gU28gd2h5IHRo
-ZSBjb21tZW50IGFuZCBsb2dpYz8gSWYgdGhlIE1NSU8gYXJlYSBpc24ndCBtYXBwZWQgdGhlbiB0
-aGVyZQ0KPiBpcyBub3RoaW5nIHRvIGRvLCByaWdodD8NCj4gDQo+IFRoZSBvbmx5IHJpc2sgaXMg
-UDJQIHRyYW5zYWN0aW9ucyBmcm9tIGRldmljZXMgaW4gdGhlIHNhbWUgSU9NTVUNCj4gZ3JvdXAs
-IGFuZCB5b3UgbWlnaHQgZG8gd2VsbCB0byBtaXRpZ2F0ZSB0aGF0IGJ5IGFzc2VydGluZyB0aGF0
-IHRoZQ0KPiBkZXZpY2UgaXMgaW4gYSBzaW5nbGV0b24gSU9NTVUgZ3JvdXA/DQoNClRoaXMgd2Fz
-IGFkZGVkIGFzIGFuIGV4dHJhIHByb3RlY3Rpb24uIEkgd2lsbCBhZGQgdGhlIHNpbmdsZXRvbiBj
-aGVjayBpbnN0ZWFkLg0KDQo+ID4gK3N0YXRpYyBpbnQgaGlzaV9hY2NfdmZpb19wY2lfaW5pdChz
-dHJ1Y3QgdmZpb19wY2lfY29yZV9kZXZpY2UgKnZkZXYpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCBh
-Y2NfdmZfbWlncmF0aW9uICphY2NfdmZfZGV2Ow0KPiA+ICsJc3RydWN0IHBjaV9kZXYgKnBkZXYg
-PSB2ZGV2LT5wZGV2Ow0KPiA+ICsJc3RydWN0IHBjaV9kZXYgKnBmX2RldiwgKnZmX2RldjsNCj4g
-PiArCXN0cnVjdCBoaXNpX3FtICpwZl9xbTsNCj4gPiArCWludCB2Zl9pZCwgcmV0Ow0KPiA+ICsN
-Cj4gPiArCXBmX2RldiA9IHBkZXYtPnBoeXNmbjsNCj4gPiArCXZmX2RldiA9IHBkZXY7DQo+ID4g
-Kw0KPiA+ICsJcGZfcW0gPSBwY2lfZ2V0X2RydmRhdGEocGZfZGV2KTsNCj4gPiArCWlmICghcGZf
-cW0pIHsNCj4gPiArCQlwcl9lcnIoIkhpU2kgQUNDIHFtIGRyaXZlciBub3QgbG9hZGVkXG4iKTsN
-Cj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArCX0NCj4gDQo+IE5vcGUsIHRoaXMgaXMgbG9j
-a2VkIHdyb25nIGFuZCBoYXMgbm8gbGlmZXRpbWUgbWFuYWdlbWVudC4NCg0KT2suIEhvbGRpbmcg
-dGhlIGRldmljZV9sb2NrKCkgc3VmZmljaWVudCBoZXJlPw0KDQo+IA0KPiA+ICsJaWYgKHBmX3Ft
-LT52ZXIgPCBRTV9IV19WMykgew0KPiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwNCj4gPiArCQkJ
-Ik1pZ3JhdGlvbiBub3Qgc3VwcG9ydGVkLCBodyB2ZXJzaW9uOiAweCV4XG4iLA0KPiA+ICsJCQkg
-cGZfcW0tPnZlcik7DQo+ID4gKwkJcmV0dXJuIC1FTk9ERVY7DQo+ID4gKwl9DQo+ID4gKw0KPiA+
-ICsJdmZfaWQgPSBQQ0lfRlVOQyh2Zl9kZXYtPmRldmZuKTsNCj4gPiArCWFjY192Zl9kZXYgPSBr
-emFsbG9jKHNpemVvZigqYWNjX3ZmX2RldiksIEdGUF9LRVJORUwpOw0KPiA+ICsJaWYgKCFhY2Nf
-dmZfZGV2KQ0KPiA+ICsJCXJldHVybiAtRU5PTUVNOw0KPiANCj4gRG9uJ3QgZG8gdGhlIG1lbW9y
-eSBsaWtlIHRoaXMsIHRoZSBlbnRpcmUgZHJpdmVyIHNob3VsZCBoYXZlIGEgZ2xvYmFsDQo+IHN0
-cnVjdCwgbm90IG9uZSB0aGF0IGlzIGFsbG9jYXRlZC9mcmVlZCBhcm91bmQgb3Blbi9jbG9zZV9k
-ZXZpY2UNCj4gDQo+IHN0cnVjdCBoaXNpX2FjY192ZmlvX2RldmljZSB7DQo+ICAgICAgIHN0cnVj
-dCB2ZmlvX3BjaV9jb3JlX2RldmljZSBjb3JlX2RldmljZTsNCj4gICAgICAgW3B1dCBhY2NfdmZf
-bWlncmF0aW9uIGhlcmVdDQo+ICAgICAgIFtwdXQgcmVxdWlyZWQgc3RhdGUgZnJvbSBtaWdfY3Rs
-IGhlcmUsIGRvbid0IGFsbG9jYXRlIGFnYWluXQ0KPiAgICAgICBzdHJ1Y3QgYWNjX3ZmX2RhdGEg
-bWlnX2RhdGE7IC8vIERvbid0IHVzZSB3b25reSBwb2ludGVyIG1hdGhzDQo+IH0NCj4gDQo+IFRo
-ZW4gbGVhdmUgdGhlIHJlbGVhZSBmdW5jdGlvbiBvbiB0aGUgcmVnIG9wcyBOVUxMIGFuZCBjb25z
-aXN0ZW50bHkNCj4gcGFzcyB0aGUgaGlzaV9hY2NfdmZpb19kZXZpY2UgZXZlcnl3aGVyZSBpbnN0
-ZWFkIG9mDQo+IGFjY192Zl9taWdyYXRpb24uIFRoaXMgd2F5IGFsbCB0aGUgZnVuY3Rpb25zIGdl
-dCBhbGwgdGhlIG5lZWRlZA0KPiBpbmZvcm1hdGlvbiwgZWcgaWYgdGhleSB3YW50IHRvIGxvZyBv
-ciBzb21ldGhpbmcuDQo+IA0KPiBUaGUgbWx4NSBkcml2ZXIgdGhhdCBzaG91bGQgYmUgcG9zdGVk
-IHNvb24gd2lsbCBzaG93IGhvdyB0byBzdHJ1Y3R1cmUNCj4gbW9zdCBvZiB0aGlzIHdlbGwgYW5k
-IGluY2x1ZGUgc2V2ZXJhbCBtb3JlIHBhdGNoZXMgeW91J2xsIHdhbnQgdG8gYmUNCj4gdXNpbmcg
-aGVyZS4NCg0KT2suIFRoYW5rcyBmb3IgdGFraW5nIGEgbG9vay4gSSB3aWxsIHRha2UgYSBjbG9z
-ZXIgbG9vayBhdCB0aGUgbWx4NSBkcml2ZXIgYW5kDQpyZXdvcmsgYmFzZWQgb24gaXQuDQoNClRo
-YW5rcywNClNoYW1lZXINCg==
+Hi Matthias,
+
+On 9/10/21 12:29 AM, Matthias Kaehlcke wrote:
+> On Mon, Sep 06, 2021 at 09:04:54PM +0200, Alexandre Bailon wrote:
+>> This adds a virtual thermal sensor that reads temperature from
+>> hardware sensor and return an aggregated temperature.
+> s/hardware sensor/hardware sensors/
+>
+>> Currently, this only return the max temperature.
+> it seems this is outdated.
+>
+>> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+>> ---
+>>   drivers/thermal/Kconfig          |   8 +
+>>   drivers/thermal/Makefile         |   1 +
+>>   drivers/thermal/virtual-sensor.h |  51 ++++
+>>   drivers/thermal/virtual_sensor.c | 400 +++++++++++++++++++++++++++++++
+>>   4 files changed, 460 insertions(+)
+>>   create mode 100644 drivers/thermal/virtual-sensor.h
+>>   create mode 100644 drivers/thermal/virtual_sensor.c
+>>
+>> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+>> index 7a4ba50ba97d0..23dc903da2fc5 100644
+>> --- a/drivers/thermal/Kconfig
+>> +++ b/drivers/thermal/Kconfig
+>> @@ -228,6 +228,14 @@ config THERMAL_MMIO
+>>   	  register or shared memory, is a potential candidate to work with this
+>>   	  driver.
+>>   
+>> +config VIRTUAL_THERMAL
+>> +	tristate "Generic virtual thermal sensor driver"
+> Not sure if 'Generic' adds much value here.
+>
+>> +	depends on THERMAL_OF || COMPILE_TEST
+>> +	help
+>> +	  This option enables the generic thermal sensor aggregator.
+>> +	  This driver creates a thermal sensor that reads the hardware sensors
+>> +	  and aggregate the temperature.
+>> +
+>>   config HISI_THERMAL
+>>   	tristate "Hisilicon thermal driver"
+>>   	depends on ARCH_HISI || COMPILE_TEST
+>> diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
+>> index 9729a2b089919..76dfa1d61bfc5 100644
+>> --- a/drivers/thermal/Makefile
+>> +++ b/drivers/thermal/Makefile
+>> @@ -60,3 +60,4 @@ obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
+>>   obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
+>>   obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
+>>   obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
+>> +obj-$(CONFIG_VIRTUAL_THERMAL) += virtual_sensor.o
+>> diff --git a/drivers/thermal/virtual-sensor.h b/drivers/thermal/virtual-sensor.h
+>> new file mode 100644
+>> index 0000000000000..e024d434856c7
+>> --- /dev/null
+>> +++ b/drivers/thermal/virtual-sensor.h
+>> @@ -0,0 +1,51 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Copyright (c) 2021 BayLibre
+>> + */
+>> +
+>> +#ifndef __THERMAL_VIRTUAL_SENSOR_H__
+>> +#define __THERMAL_VIRTUAL_SENSOR_H__
+>> +
+>> +struct virtual_sensor;
+>> +struct virtual_sensor_data;
+> Other types of virtual sensors could be added in the future, you might
+> want to name these virtual_thermal_sensor(_data). Then again, these
+> structs are of internal use only, so it's probably not super important.
+You are right. This might become confusing at some point.
+I will rename them.
+>
+>> +
+>> +#ifdef CONFIG_VIRTUAL_THERMAL
+>> +struct virtual_sensor_data *
+>> +thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
+>> +				const struct thermal_zone_of_device_ops *ops);
+>> +void thermal_virtual_sensor_unregister(struct device *dev,
+>> +				       struct virtual_sensor_data *sensor_data);
+>> +struct virtual_sensor_data *
+>> +devm_thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
+>> +				     const struct thermal_zone_of_device_ops *ops);
+>> +
+>> +void devm_thermal_virtual_sensor_unregister(struct device *dev,
+>> +					    struct virtual_sensor *sensor);
+>> +#else
+>> +static inline struct virtual_sensor_data *
+>> +thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
+>> +				const struct thermal_zone_of_device_ops *ops)
+>> +{
+>> +	return ERR_PTR(-ENODEV);
+>> +}
+>> +
+>> +void thermal_virtual_sensor_unregister(struct device *dev,
+>> +				       struct virtual_sensor_data *sensor_data)
+>> +{
+>> +}
+>> +
+>> +static inline struct virtual_sensor_data *
+>> +devm_thermal_virtual_sensor_register(struct device *dev, int sensor_id, void *data,
+>> +				     const struct thermal_zone_of_device_ops *ops)
+>> +{
+>> +	return ERR_PTR(-ENODEV);
+>> +}
+>> +
+>> +static inline
+>> +void devm_thermal_virtual_sensor_unregister(struct device *dev,
+>> +					    struct virtual_sensor *sensor)
+>> +{
+>> +}
+>> +#endif
+>> +
+>> +#endif /* __THERMAL_VIRTUAL_SENSOR_H__ */
+>> diff --git a/drivers/thermal/virtual_sensor.c b/drivers/thermal/virtual_sensor.c
+>> new file mode 100644
+>> index 0000000000000..e5bb0ef9adb39
+>> --- /dev/null
+>> +++ b/drivers/thermal/virtual_sensor.c
+>> @@ -0,0 +1,400 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (c) 2021 BayLibre
+>> + */
+>> +
+>> +#include <linux/err.h>
+>> +#include <linux/export.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of_device.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/thermal.h>
+>> +#include <linux/types.h>
+>> +#include <linux/string.h>
+>> +
+>> +#include <dt-bindings/thermal/virtual-sensor.h>
+>> +
+>> +#include "virtual-sensor.h"
+>> +
+>> +struct virtual_sensor_data {
+> This struct (typically) corresponds to an actual sensor, maybe name it
+> 'thermal_sensor_data' instead?
+>
+>> +	struct list_head node;
+>> +
+>> +	/* sensor interface */
+>> +	int id;
+>> +	void *sensor_data;
+>> +	const struct thermal_zone_of_device_ops *ops;
+>> +};
+>> +
+>> +struct virtual_sensor {
+>> +	int count;
+>> +	struct virtual_sensor_data *sensors;
+>> +	struct thermal_zone_device *tzd;
+>> +
+>> +	struct list_head node;
+>> +};
+>> +
+>> +static LIST_HEAD(thermal_sensors);
+>> +static LIST_HEAD(virtual_sensors);
+>> +
+>> +static int virtual_sensor_get_temp_max(void *data, int *temperature)
+>> +{
+>> +	struct virtual_sensor *sensor = data;
+>> +	int max_temp = INT_MIN;
+>> +	int temp;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < sensor->count; i++) {
+>> +		struct virtual_sensor_data *hw_sensor;
+>> +
+>> +		hw_sensor = &sensor->sensors[i];
+>> +		if (!hw_sensor->ops)
+>> +			return -ENODEV;
+>> +
+>> +		hw_sensor->ops->get_temp(hw_sensor->sensor_data, &temp);
+>> +		max_temp = max(max_temp, temp);
+>> +	}
+>> +
+>> +	*temperature = max_temp;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct thermal_zone_of_device_ops virtual_sensor_max_ops = {
+>> +	.get_temp = virtual_sensor_get_temp_max,
+>> +};
+>> +
+>> +static int virtual_sensor_get_temp_min(void *data, int *temperature)
+>> +{
+>> +	struct virtual_sensor *sensor = data;
+>> +	int min_temp = INT_MAX;
+>> +	int temp;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < sensor->count; i++) {
+>> +		struct virtual_sensor_data *hw_sensor;
+>> +
+>> +		hw_sensor = &sensor->sensors[i];
+>> +		if (!hw_sensor->ops)
+>> +			return -ENODEV;
+>> +
+>> +		hw_sensor->ops->get_temp(hw_sensor->sensor_data, &temp);
+>> +		min_temp = min(min_temp, temp);
+>> +	}
+>> +
+>> +	*temperature = min_temp;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct thermal_zone_of_device_ops virtual_sensor_min_ops = {
+>> +	.get_temp = virtual_sensor_get_temp_min,
+>> +};
+>> +
+>> +static int do_avg(int val1, int val2)
+>> +{
+>> +	return ((val1) / 2) + ((val2) / 2) + (((val1) % 2 + (val2) % 2) / 2);
+>> +}
+>> +
+>> +static int virtual_sensor_get_temp_avg(void *data, int *temperature)
+>> +{
+>> +	struct virtual_sensor *sensor = data;
+>> +	int avg_temp = 0;
+>> +	int temp;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < sensor->count; i++) {
+>> +		struct virtual_sensor_data *hw_sensor;
+>> +
+>> +		hw_sensor = &sensor->sensors[i];
+>> +		if (!hw_sensor->ops)
+>> +			return -ENODEV;
+>> +
+>> +		hw_sensor->ops->get_temp(hw_sensor->sensor_data, &temp);
+>> +		avg_temp = do_avg(avg_temp, temp);
+>> +	}
+>> +
+>> +	*temperature = avg_temp;
+>> +
+>> +	return 0;
+>> +}
+> _get_temp_min(), _get_temp_max() and _get_temp_avg() have the same
+> structure, the only differences is the aggregator function and the
+> initialization value. If you wanted to save a few lines of code you
+> could have a meta-function that receives the initialization value and
+> a pointer of the aggregator function.
+>
+> The functions are relatively short though, so I wouldn't claim that
+> it would be a huge improvement, one could also argue that the code is
+> easier to follow as is.
+My intent was to make possible adding more complex functions.
+
+I will factorize the code, and if later there are some use cases,
+we will made the update to support more complex functions.
+
+>
+>> +
+>> +static const struct thermal_zone_of_device_ops virtual_sensor_avg_ops = {
+>> +	.get_temp = virtual_sensor_get_temp_avg,
+>> +};
+>> +
+>> +static int register_virtual_sensor(struct virtual_sensor *sensor,
+>> +				    struct of_phandle_args args,
+>> +				    int index)
+> Does this really register a virtual sensor? IIUC the registered sensor is
+> (typically) an actual sensor, which is used by a virtual sensor.
+>
+> Shouldn't it be something like 'register_thermal_sensor' or
+> 'virtual_sensor_add_sensor'?
+You are right, virtual_sensor_add_sensor sounds a lot better.
+>
+>> +{
+>> +	struct virtual_sensor_data *sensor_data;
+>> +	int id;
+>> +
+>> +	list_for_each_entry(sensor_data, &thermal_sensors, node) {
+>> +		id = args.args_count ? args.args[0] : 0;
+>> +		if (sensor_data->id == id) {
+>> +			memcpy(&sensor->sensors[index], sensor_data,
+>> +				sizeof(*sensor_data));
+>> +			return 0;
+>> +		}
+>> +	}
+>> +
+>> +	return -ENODEV;
+>> +}
+>> +
+>> +static int virtual_sensor_probe(struct platform_device *pdev)
+>> +{
+>> +	const struct thermal_zone_of_device_ops *ops;
+>> +	struct virtual_sensor *sensor;
+>> +	struct device *dev = &pdev->dev;
+>> +	struct of_phandle_args args;
+>> +	u32 type;
+>> +	int ret;
+>> +	int i;
+>> +
+>> +	sensor = devm_kzalloc(dev, sizeof(*sensor), GFP_KERNEL);
+>> +	if (!sensor)
+>> +		return -ENOMEM;
+>> +
+>> +	sensor->count = of_count_phandle_with_args(dev->of_node,
+>> +						   "thermal-sensors",
+>> +						   "#thermal-sensor-cells");
+>> +	if (sensor->count <= 0)
+>> +		return -EINVAL;
+>> +
+>> +	sensor->sensors = devm_kmalloc_array(dev, sensor->count,
+>> +					     sizeof(*sensor->sensors),
+>> +					     GFP_KERNEL);
+>> +	if (!sensor->sensors)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < sensor->count; i++) {
+>> +		ret = of_parse_phandle_with_args(dev->of_node,
+>> +						 "thermal-sensors",
+>> +						 "#thermal-sensor-cells",
+>> +						 i,
+>> +						 &args);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		ret = register_virtual_sensor(sensor, args, i);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+>> +	ret = of_property_read_u32(dev->of_node, "type", &type);
+> More a question for the binding, butthis should probably be something
+> more specific than 'type', like 'aggregation-function'.
+>
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	switch (type) {
+>> +	case VIRTUAL_SENSOR_MAX:
+>> +		ops = &virtual_sensor_max_ops;
+>> +		break;
+>> +	case VIRTUAL_SENSOR_MIN:
+>> +		ops = &virtual_sensor_min_ops;
+>> +		break;
+>> +	case VIRTUAL_SENSOR_AVG:
+>> +		ops = &virtual_sensor_avg_ops;
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	sensor->tzd = devm_thermal_zone_of_sensor_register(dev, 0, sensor, ops);
+>> +	if (IS_ERR(sensor->tzd))
+>> +		return PTR_ERR(sensor->tzd);
+>> +
+>> +	platform_set_drvdata(pdev, sensor);
+>> +	list_add(&sensor->node, &virtual_sensors);
+> If you also added the sensor to 'thermal_sensors' you could support virtual
+> sensors using virtual sensors, though it's not clear how useful that would be
+> in practice and it could raise issues with the initialization order.
+Unless if  we found some use cases, I think we should not do that.
+As you mentioned, this would add some complexity to the initialization 
+to handle it.
+>
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int virtual_sensor_remove(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct virtual_sensor *sensor;
+>> +
+>> +	sensor = platform_get_drvdata(pdev);
+>> +	list_del(&sensor->node);
+>> +
+>> +	devm_thermal_zone_of_sensor_unregister(dev, sensor->tzd);
+>> +	devm_kfree(dev, sensor->sensors);
+>> +	devm_kfree(dev, sensor);
+> Are the above 3 statements really needed, shouldn't devm_* handle that
+> automagically?
+No, I will remove them.
+>
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id virtual_sensor_of_match[] = {
+>> +	{
+>> +		.compatible = "virtual,thermal-sensor",
+>> +	},
+>> +	{
+>> +	},
+>> +};
+>> +MODULE_DEVICE_TABLE(of, thermal_aggr_of_match);
+>> +
+>> +static struct platform_driver virtual_sensor = {
+>> +	.probe = virtual_sensor_probe,
+>> +	.remove = virtual_sensor_remove,
+>> +	.driver = {
+>> +		.name = "virtual-sensor",
+> I suggest to change it to 'virtual-thermal-sensor' since there might be
+> other types of virtual sensors.
+>
+>> +		.of_match_table = virtual_sensor_of_match,
+>> +	},
+>> +};
+>> +
+>> +/**
+>> + * thermal_virtual_sensor_register - registers a sensor that could by a virtual
+> s/by/be/
+>
+>> + * sensor
+>> + * @dev: a valid struct device pointer of a sensor device. Must contain
+>> + *       a valid .of_node, for the sensor node.
+>> + * @sensor_id: a sensor identifier, in case the sensor IP has more
+>> + *             than one sensors
+> s/sensors/sensor/
+>
+>> + * @data: a private pointer (owned by the caller) that will be passed
+>> + *        back, when a temperature reading is needed.
+>> + * @ops: struct thermal_zone_of_device_ops *. Must contain at least .get_temp.
+>> + *
+>> + * This function will register a thermal sensor to make it available for later
+>> + * usage by a virtual sensor.
+>> + *
+>> + * The thermal zone temperature is provided by the @get_temp function
+>> + * pointer. When called, it will have the private pointer @data back.
+>> + *
+>> + * Return: On success returns a valid struct thermal_zone_device,
+>> + * otherwise, it returns a corresponding ERR_PTR(). Caller must
+>> + * check the return value with help of IS_ERR() helper.
+>> + */
+>> +struct virtual_sensor_data *thermal_virtual_sensor_register(
+>> +	struct device *dev, int sensor_id, void *data,
+>> +	const struct thermal_zone_of_device_ops *ops)
+>> +{
+>> +	struct virtual_sensor_data *sensor_data;
+>> +
+>> +	sensor_data = devm_kzalloc(dev, sizeof(*sensor_data), GFP_KERNEL);
+>> +	if (!sensor_data)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	sensor_data->id = sensor_id;
+>> +	sensor_data->sensor_data = data;
+>> +	sensor_data->ops = ops;
+>> +
+>> +	list_add(&sensor_data->node, &thermal_sensors);
+>> +
+>> +	return sensor_data;
+>> +}
+>> +EXPORT_SYMBOL_GPL(thermal_virtual_sensor_register);
+>> +
+>> +/**
+>> + * thermal_virtual_sensor_unregister - unregisters a sensor
+>> + * @dev: a valid struct device pointer of a sensor device.
+>> + * @sensor_data: a pointer to struct virtual_sensor_data to unregister.
+>> + *
+>> + * This function removes the sensor from the list of available thermal sensors.
+>> + * If the sensor is in use, then the next call to .get_temp will return -ENODEV.
+>> + */
+>> +void thermal_virtual_sensor_unregister(struct device *dev,
+>> +				       struct virtual_sensor_data *sensor_data)
+>> +{
+>> +	struct virtual_sensor_data *temp;
+> 'temp' might not be the best name in this context, since it's associated with
+> temperature. Maybe name it 'sd'?
+>
+>> +	struct virtual_sensor *sensor;
+>> +	int i;
+>> +
+>> +	list_del(&sensor_data->node);
+>> +
+>> +	list_for_each_entry(sensor, &virtual_sensors, node) {
+>> +		for (i = 0; i < sensor->count; i++) {
+>> +			temp = &sensor->sensors[i];
+>> +			if (temp->id == sensor_data->id &&
+>> +				temp->sensor_data == sensor_data->sensor_data) {
+>> +				temp->ops = NULL;
+>> +			}
+>> +		}
+>> +	}
+>> +	devm_kfree(dev, sensor_data);
+> Does it actually make sense to allocate the memory with devm_kzalloc() if
+> it is explicitly freed here?
+No, I should not call devm_kfree here.
+I will remove it.
+
+Thanks,
+Alexandre
+>
+>> +}
+>> +EXPORT_SYMBOL_GPL(thermal_virtual_sensor_unregister);
+>> +
+>> +static void devm_thermal_virtual_sensor_release(struct device *dev, void *res)
+>> +{
+>> +	thermal_virtual_sensor_unregister(dev,
+>> +					  *(struct virtual_sensor_data **)res);
+>> +}
+>> +
+>> +static int devm_thermal_virtual_sensor_match(struct device *dev, void *res,
+>> +					     void *data)
+>> +{
+>> +	struct virtual_sensor_data **r = res;
+>> +
+>> +	if (WARN_ON(!r || !*r))
+>> +		return 0;
+>> +
+>> +	return *r == data;
+>> +}
+>> +
+>> +
+> delete one of the empty lines
+>
+>> +/**
+>> + * devm_thermal_virtual_sensor_register - Resource managed version of
+>> + *				thermal_virtual_sensor_register()
+>> + * @dev: a valid struct device pointer of a sensor device. Must contain
+>> + *       a valid .of_node, for the sensor node.
+>> + * @sensor_id: a sensor identifier, in case the sensor IP has more
+>> + *	       than one sensors
+> s/sensors/sensor/
+>
+>> + * @data: a private pointer (owned by the caller) that will be passed
+>> + *	  back, when a temperature reading is needed.
+>> + * @ops: struct thermal_zone_of_device_ops *. Must contain at least .get_temp.
+>> + *
+>> + * Refer thermal_zone_of_sensor_register() for more details.
+>> + *
+>> + * Return: On success returns a valid struct virtual_sensor_data,
+>> + * otherwise, it returns a corresponding ERR_PTR(). Caller must
+>> + * check the return value with help of IS_ERR() helper.
+>> + * Registered virtual_sensor_data device will automatically be
+>> + * released when device is unbounded.
+> s/unbounded/unbound/
