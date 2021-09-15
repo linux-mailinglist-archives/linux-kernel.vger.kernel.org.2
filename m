@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282DA40C5CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8955C40C5CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhIOM7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:59:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38392 "EHLO mail.kernel.org"
+        id S233200AbhIONBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:01:55 -0400
+Received: from mga11.intel.com ([192.55.52.93]:59959 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233060AbhIOM7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:59:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6C961251;
-        Wed, 15 Sep 2021 12:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631710692;
-        bh=N6rr3JXgaVvNIcoc45Ek8+E7jTIQE589BC7YgY3vN9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fwd4fkxB4Lc9RmsbUEyA8m3ZLd+ExIiADhJ3Q0WclLbnekgb4bDxl5da0ojRhoYh9
-         n+6Lz6UtNeav+P/womHVhdSFMkXtfsjOYR0xUAgkUbEIXDpHvtS3clY2t81/CWty/0
-         3Xb+UOXIpMKSYc86W2jsWWCQtNHrU+6vaY23Yf+h4UgP81VaKVmwxvSlBLTVjAgvCe
-         fA8aLmEcZ95MI8sQtZ5LZuSZI90CiNWk/tStTKHPnKp03DnuZ6bF2e1YSP3NK3fj3B
-         H3E1wgjTGZdXYy44webgrowJ4Bl0Dlejyu9oxD3bbRBJXModxKaKpjY6BXOS925mij
-         GdGGgznzLaEpA==
-Date:   Wed, 15 Sep 2021 13:57:31 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas tanure <tanureal@opensource.cirrus.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v3 1/2] regmap: spi: Set regmap max raw r/w from
- max_transfer_size
-Message-ID: <20210915125731.GF5389@sirena.org.uk>
-References: <20210915120951.29907-1-tanureal@opensource.cirrus.com>
- <20210915123453.GD5389@sirena.org.uk>
- <ef63110f-a579-aaca-9bde-549392a0628c@opensource.cirrus.com>
+        id S229670AbhIONBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:01:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="219125340"
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
+   d="scan'208";a="219125340"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 06:00:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
+   d="scan'208";a="472391558"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga007.jf.intel.com with ESMTP; 15 Sep 2021 06:00:32 -0700
+Date:   Wed, 15 Sep 2021 06:00:07 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Marcus =?iso-8859-1?Q?R=FCckert?= <mrueckert@suse.com>
+Cc:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/umip: Add a umip= cmdline switch
+Message-ID: <20210915130007.GA7946@ranerica-svr.sc.intel.com>
+References: <20210907200454.30458-1-bp@alien8.de>
+ <20210911011459.GA11980@ranerica-svr.sc.intel.com>
+ <YTx0+0pfyzHuX80L@zn.tnic>
+ <20210913213836.GA10627@ranerica-svr.sc.intel.com>
+ <YUDTCgEOZ3JOMSl7@zn.tnic>
+ <20210915113410.GA7130@ranerica-svr.sc.intel.com>
+ <20210915142123.49f8137b@fortress.home.nordisch.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="R6sEYoIZpp9JErk7"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ef63110f-a579-aaca-9bde-549392a0628c@opensource.cirrus.com>
-X-Cookie: Absence makes the heart grow frantic.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210915142123.49f8137b@fortress.home.nordisch.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 15, 2021 at 02:21:23PM +0200, Marcus Rückert wrote:
+> On Wed, 15 Sep 2021 04:34:10 -0700
+> Ricardo Neri <ricardo.neri-calderon@linux.intel.com> wrote:
+> > > They're all likely old, arcane applications or games run in wine
+> > > which people have no access to the source code anyway so come to
+> > > think of it, the once thing is starting to make more sense to me
+> > > now.
+> > 
+> > Indeed, no one has reported "modern" application using these
+> > instructions.
+> 
+> I am not sure if Blizzard Entertainment would tell us why they use this
+> CPU instruction in Overwatch. And that game is "only" 5 years old.
 
---R6sEYoIZpp9JErk7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah! 5 years old does not seem too old to me. Then it is not only old
+applications. Then the warning did catch an app that could in theory be
+fixed (if Overwatch is still maintained).
 
-On Wed, Sep 15, 2021 at 01:37:03PM +0100, Lucas tanure wrote:
-> On 9/15/21 13:34, Mark Brown wrote:
-
-> Yes, its exactly the same, I forgot to add the second patch the previous
-> one.
-> I will resend with Charles review-by.
-
-Please allow a bit more time in case people are reviewing your whole
-series.
-
---R6sEYoIZpp9JErk7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB7bsACgkQJNaLcl1U
-h9BmEQf9HpUDItBVEjQiyt4rhpSvs2CndVIlEMIMihUdGm4vWokncQUeU0GvtLQH
-+Um2tUyaOdmQH9pppU4KWs4reiRbkr209qiMcVSRe9fGWTwZ8RwDhw246H/rAEyu
-qdELO7h0GL2JTtJfkW+E+rjURYuwBhZlKeF0UrrsE9b3grzfEDW5SFmO61Z6ghGs
-LlMP+blM2hU7CCB1FnfBQXF76oQ7WMYOevs/B6j7ui1ZicaQztgATG8OFI2Lguht
-1NIvx9FqAuzwq/IePtpGU5mtq/QSF+3VDPe+1pnVH+x/XTMXzq3PPJZbrOl11ywe
-0q09g7zMoWPTYLEFSF8T79klUucgLA==
-=vk86
------END PGP SIGNATURE-----
-
---R6sEYoIZpp9JErk7--
+Thanks and BR,
+Ricardo
