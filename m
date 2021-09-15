@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D68140C602
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CFD40C61B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhIONQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:16:01 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:39740 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbhIONP7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:15:59 -0400
-Received: by mail-oi1-f174.google.com with SMTP id v2so4124592oie.6;
-        Wed, 15 Sep 2021 06:14:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U9iLK0tSsVvo6qJp9SXqhRSLxjtC8EBYGrmrwLb7z0c=;
-        b=mNZj7F35/KCNMqxE6Qmt+5yS1J8LjbW6iJ026yUb7jPjuco+Zi+5zk+6WMRACpujXz
-         46kbOkPLytIMNfrXLI+aEdLfsKtSeiRT97EKfrurn1/0WLzCU5gKLvUfYRximxsNOnT4
-         2u+rqwX6z6IK6ksuCM8g12b6HDGg9SDL9i9JkpB+Lo3jqt2QoxpDboiC4Y/5Px4DFbFr
-         +kqs0R/rSAFDVeAsAH7lwUsdR0SNw+anYoW0PhBZOTPT+YNF27PsufklgVcDAX51m+Ue
-         uEeseQLbrlj3YnVe08vpoUTvE1PWrli2mTDsp4HE9XiPiGIH14spj9xPKxdM9+OZO5Nf
-         OKxA==
-X-Gm-Message-State: AOAM530lMnjPk/NewGYGCTuvlgx0rMAchwENagccmIRzWtXAl1LQONnk
-        JdVIKAKSVhIo3mRwmMbcDjHezR56Hw==
-X-Google-Smtp-Source: ABdhPJxPf15TR81HATeLKU2Ba7ICbL6jj8tpMqVBQurZaztf6SDQQzi4phZ26RCNWb1JtYmRIr5Y+Q==
-X-Received: by 2002:aca:645:: with SMTP id 66mr5114955oig.145.1631711679745;
-        Wed, 15 Sep 2021 06:14:39 -0700 (PDT)
-Received: from robh.at.kernel.org ([12.252.7.226])
-        by smtp.gmail.com with ESMTPSA id r13sm3304574oti.80.2021.09.15.06.14.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 06:14:38 -0700 (PDT)
-Received: (nullmailer pid 957931 invoked by uid 1000);
-        Wed, 15 Sep 2021 13:14:37 -0000
-Date:   Wed, 15 Sep 2021 08:14:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        kernel-team@android.com, Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "of: property: fw_devlink: Add support for
- "phy-handle" property"
-Message-ID: <YUHxvf7/nAhjnBn+@robh.at.kernel.org>
-References: <20210915081933.485112-1-saravanak@google.com>
+        id S233947AbhIONR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:17:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233645AbhIONRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:17:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0366B6121F;
+        Wed, 15 Sep 2021 13:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631711766;
+        bh=NocgklKFuC+0qjgr5yBXLHKbKyk8N7CsQWs0TBOnvf0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RthnlBkNAHcfebtgzBf3/JYryXUGUmfkXay9+gd2RSLG97b/4WnSgZCsl5l8FcM9u
+         BZIpYbvO++/+VnyxJiBNI0m/OwKUwDHoMFTSmfvKgcywPAmiCcb45+z5edTsA9W3F6
+         4Rf75VGu7Ngk5KHqbUM4DPZNF6Cqvao86fibefZhiGko6yIDZqrEiBONXI46H5vMCT
+         y/i/0lWFIouKAbdee20LET5/KMAYqtCjitw5og/kI9w8S62LREnh62ShHcyLsRLq7t
+         X2JHtXDW7WkADZ5cUf813w903XIs02kuLJX/0tj3PJNA+cBExTBcTHgZgXZ7u1OZOD
+         jrspJlI5Pmpuw==
+Date:   Wed, 15 Sep 2021 14:15:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ramona Alexandra Nechita <ramona.nechita@analog.com>
+Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Subject: Re: [PATCH] regulators: fix typo in Kconfig and max8973-regulator
+Message-ID: <20210915131525.GA12513@sirena.org.uk>
+References: <20210915110627.17525-1-ramona.nechita@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
 Content-Disposition: inline
-In-Reply-To: <20210915081933.485112-1-saravanak@google.com>
+In-Reply-To: <20210915110627.17525-1-ramona.nechita@analog.com>
+X-Cookie: The more the merrier.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 01:19:32 -0700, Saravana Kannan wrote:
-> This reverts commit cf4b94c8530d14017fbddae26aad064ddc42edd4.
-> 
-> Some PHYs pointed to by "phy-handle" will never bind to a driver until a
-> consumer attaches to it. And when the consumer attaches to it, they get
-> forcefully bound to a generic PHY driver. In such cases, parsing the
-> phy-handle property and creating a device link will prevent the consumer
-> from ever probing. We don't want that. So revert support for
-> "phy-handle" property until we come up with a better mechanism for
-> binding PHYs to generic drivers before a consumer tries to attach to it.
-> 
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/of/property.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
 
-Applied, thanks!
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Sep 15, 2021 at 02:06:27PM +0300, Ramona Alexandra Nechita wrote:
+> MAX8973 is supposed to be MAX8973A. Kconfig and the
+> initial comment of max8973-regulator.c were modified
+> accordingly.
+
+It is?
+
+>  config REGULATOR_MAX8973
+
+Why not update the Kconfig symbol as well?  If there's a danger of
+collisions that's probably the main thing people will be using.
+
+> -	tristate "Maxim MAX8973 voltage regulator "
+> +	tristate "Maxim MAX8973A voltage regulator "
+
+There's an extra space there while you're fixing stuff up.
+
+> @@ -1,7 +1,7 @@
+>  /*
+>   * max8973-regulator.c -- Maxim max8973
+>   *
+> - * Regulator driver for MAXIM 8973 DC-DC step-down switching regulator.
+> + * Regulator driver for MAXIM 8973A DC-DC step-down switching regulator.
+
+What about the first line?
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB8ewACgkQJNaLcl1U
+h9A7+gf/XRVSzwdHPxFOVpDG/56uGOlk7sGl/JjgLmCXUSCs27HxJz1P2jbSUtmE
+ZioXU+bzl5+xrtuQK97osDxTHz3UuNvgty/xFNWc350w8CpfgeRjb45WUeVMkTzH
+dqahnBdgfk/TLzFYAScK2GrUGW0W0cbaC1QyvtV9G7Z91jZh2xZPMu5qz84gPYu+
+9Mf/wlXPXq9yqsvIU49xi36gLylqZLstE2kpCjGC3w6Mu614A8isLA/I2MeV0Tm1
+gvA+d/ATw1V0GmT5eS9yby6LukEaFu8ugH6OZDa/Fw4ImuuurpdisuLYgGAOXn5h
+CdVhKjUJAfXPwH8SdLOnMXgmKqx9pw==
+=g8Ug
+-----END PGP SIGNATURE-----
+
+--J2SCkAp4GZ/dPZZf--
