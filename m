@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF40340C8DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0556E40C8DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238755AbhIOPve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        id S238467AbhIOPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238416AbhIOPvG (ORCPT
+        with ESMTP id S234024AbhIOPvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 11:51:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3D7C0613E8;
-        Wed, 15 Sep 2021 08:49:34 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 15:49:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631720973;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C05AJoXuHhxCm0JieI42wcw5XBnMPGXP26yYpMBdljA=;
-        b=Ci9NmYpSSU9yNnFIJOSfL6Gl3OmhFQAnT1E4C3EB53Ao/il956XC9+MGSy3XrHVEDDGhEM
-        xkvmFj2TpCfWV/XV9LmNFLm0wCDijHhkn0Sdn+odK72oeBoztFwiOE5PVyhYhxCdTLbhuR
-        Em7niWPExIGArP6hl7Ny61u2l/7LncErURI7cpL1mACwU54lIEIOCP6TOqcVyNzgLnPx0F
-        wmn5lUMeZKVeixgQ3eAH2mTbdSo+pN6m1avZoTz79jSMxF9+Go1nWo23QGuUFobXQExYir
-        qYTgHhHJatO7SMieuKujGYIAi9JCcYgeYzVN9CVjWeabohjdSGq1HKrbtWttxg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631720973;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C05AJoXuHhxCm0JieI42wcw5XBnMPGXP26yYpMBdljA=;
-        b=X4Z83RUiXDveNmMIqgKraJWfA6OgdROprzPYdejnDwE/L0E3Tfn15Zznh7Acj13J/zkQag
-        LBhMxdR8VoFqlpCQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/kvm: Always inline sev_*guest()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210624095147.880513802@infradead.org>
-References: <20210624095147.880513802@infradead.org>
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C46C061787
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 08:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=Wh5enwv0q3T6plDf5AFiVoXl9LkOcmja36omfE/zBKQ=;
+        t=1631720977; x=1632930577; b=bLS3q7GzzAWgU1QtSnTgxXn3mWVnIc/ar8ivDShdBlX/631
+        ARsgutIKdiE1aCxGaztxxzQ7EeGypnFDnPn115pb2c6bJL3Xkz3X0kfYuvbRt6tgadXYv1orP/y8C
+        uIAv/k2UxNskoiLIITjLnxSRKV2bLC5+VMeburDgOqsFDVeyQ1cDJhzJsUlf7pbsK/EejUT6+hKWY
+        MB1xCEy+FdgLSq47holXUl4M/aeoxHdzeHMeDc+e4km4V1SMCdAtd5qAj7z6rTcxMqivjoyjSl8pv
+        adHUznQ9gwUNfTnVOvF3Q8rFRB4p9HR14wfsjnXJ80zMQ8KFb6Hz8mHXt+2gGQAA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95-RC2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mQXAD-007MvQ-HC;
+        Wed, 15 Sep 2021 17:49:33 +0200
+Message-ID: <6db59b8a4874b60cab7069fd06d180c2601bb427.camel@sipsolutions.net>
+Subject: Re: Reminder: Voting procedures for the Linux Foundation Technical
+ Advisory Board
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Laura Abbott <laura@labbott.name>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     ksummit@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>
+Date:   Wed, 15 Sep 2021 17:49:32 +0200
+In-Reply-To: <dc45975a-86df-a70d-ff15-58a3bdcf09ee@labbott.name>
+References: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
+         <b90db9e7-9b6b-c415-d087-3505ba0be0d6@labbott.name>
+         <YUH+DO5aHWGVdNb7@pendragon.ideasonboard.com>
+         <dc45975a-86df-a70d-ff15-58a3bdcf09ee@labbott.name>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Message-ID: <163172097255.25758.16156175268854222340.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+On Wed, 2021-09-15 at 10:36 -0400, Laura Abbott wrote:
+> 
+> I did make an attempt to send e-mails to the > 50 commits individuals
 
-Commit-ID:     2b2f72d4d81936bc08c18c426f40b7df70e2f8e7
-Gitweb:        https://git.kernel.org/tip/2b2f72d4d81936bc08c18c426f40b7df70e2f8e7
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 24 Jun 2021 11:41:03 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 15 Sep 2021 15:51:45 +02:00
+So if we got the "look for your ballot" email from you, that means we're
+on the list?
 
-x86/kvm: Always inline sev_*guest()
+I agree with Laurent, it's a bit confusing now to figure out whether we
+should request or not, and if we have to request before the automated
+ones are sent out, we can't wait for that either.
 
-vmlinux.o: warning: objtool: svm_vcpu_enter_exit()+0x4d: call to sev_es_guest() leaves .noinstr.text section
-vmlinux.o: warning: objtool: svm_vcpu_enter_exit()+0x50: call to sev_guest() leaves .noinstr.text section
+I'm sure I'm on the list, but I guess others aren't quite so sure.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210624095147.880513802@infradead.org
----
- arch/x86/kvm/svm/svm.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+johannes
 
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 524d943..408031a 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -218,12 +218,12 @@ DECLARE_PER_CPU(struct svm_cpu_data *, svm_data);
- 
- void recalc_intercepts(struct vcpu_svm *svm);
- 
--static inline struct kvm_svm *to_kvm_svm(struct kvm *kvm)
-+static __always_inline struct kvm_svm *to_kvm_svm(struct kvm *kvm)
- {
- 	return container_of(kvm, struct kvm_svm, kvm);
- }
- 
--static inline bool sev_guest(struct kvm *kvm)
-+static __always_inline bool sev_guest(struct kvm *kvm)
- {
- #ifdef CONFIG_KVM_AMD_SEV
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-@@ -234,7 +234,7 @@ static inline bool sev_guest(struct kvm *kvm)
- #endif
- }
- 
--static inline bool sev_es_guest(struct kvm *kvm)
-+static __always_inline bool sev_es_guest(struct kvm *kvm)
- {
- #ifdef CONFIG_KVM_AMD_SEV
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
