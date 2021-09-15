@@ -2,207 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D66A40CC67
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E3340CC6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 20:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhIOSNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 14:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhIOSNj (ORCPT
+        id S230230AbhIOSQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 14:16:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23140 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229479AbhIOSQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 14:13:39 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D733DC061574;
-        Wed, 15 Sep 2021 11:12:20 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso2820546pjq.4;
-        Wed, 15 Sep 2021 11:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SvTGV/EwYbpT949M265y3feZdG0GQPEcYHnVzA9XpeU=;
-        b=WZzmWUaRYFUp7XyiDzJ0JwTqRG3Pw2RdpRu/7oki7r4BiZdSVOvryhNE2fLyB5H3CB
-         Tj8pCwnP+Nu2cMaN1Oalx4Ru6DgZkW49vvVrsfBmrSK7mYSxmVtil0/x1esua93D662e
-         SR+41Mujdsvnn7drijMFKZ8ioHbcjRg/c7rnQSDRfODa4KzhfcD8mD/zBdlKBNfejmWY
-         MhX6pBckBV3NKZovGXDLpBIXDu1O0vpnKfT0ZP7Vc6fzFVlqcrOMuGRUqO0lemd7SMr+
-         BC9seL8u3hszQjfkgRGNCg5o3FI6+/6tRc9ldq8vrg/5Kpp1kd2dP7V0FLCaL+ru4LwL
-         /LAw==
+        Wed, 15 Sep 2021 14:16:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631729700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4ea19EVT7+ENaTSXfaPbkEFbFvLGTZXZZbGxxKzThbk=;
+        b=VBYj6F8x9qMkz1io7vUPF3Ryg+YZPNdz+4Wn+03lViQo0nW9PIQpmeSUsEW5JuVLIeTk3F
+        wGd2PiLFy4zlXeucvzXgXoEMOg/6GpF80CWswYJZ6TzsuIhLc5suCbrzwX1WlBGxwNrn3o
+        d563gnVmXVwRWi6DTJqTCbwYgPfi47A=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-126-xxJA00I7Pw-SN5wgpDq7FQ-1; Wed, 15 Sep 2021 14:14:59 -0400
+X-MC-Unique: xxJA00I7Pw-SN5wgpDq7FQ-1
+Received: by mail-qk1-f199.google.com with SMTP id 70-20020a370b49000000b003d2f5f0dcc6so6033734qkl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 11:14:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SvTGV/EwYbpT949M265y3feZdG0GQPEcYHnVzA9XpeU=;
-        b=7Jo5+VVz3Yvnx+mHue8QBJk5W4M3NWrN4WKjiYzf6th0PRPL69IBD4qBC/Uuv0wc3J
-         FJCGJqIFi9Nf8obr2G6PNHQmr2GbeKCs05YFK5KAdDvH0ipS9A+ZdPPY/Cxfuf2iTjF7
-         DtEiiT6vU5t/ZcV2E1LIt/OgItVfl8HaqT3Z+hUkME2XKGInw3WFn6Z1oF4i+GI9spJ+
-         bzlMCd30G8fobMH9n+JqaaBESpSxGETYuM2/UFKpUl6F1siGvN//vAFXdYhEfE27Lr8v
-         aHA47YyVked1mjO6K9Q6VYkziYTXwVzQwwJN6aYbe/UvORds+3nsbij9372l5cjYFaKJ
-         Qmug==
-X-Gm-Message-State: AOAM5312cM5A9dlIz4mBmiJAn3FI1hkevOz0QiU+uRG06BmFVV2vbV79
-        KJ7Rv10Wtv5KZU/nTP7w2JU=
-X-Google-Smtp-Source: ABdhPJxXRAyNmmsZYN4Df/qr27CfQsUOPlxdXZTsnl2dcUmPMfR0iCuwyWfQ76OBzcbaCkTZ2Qi1eg==
-X-Received: by 2002:a17:90a:7d03:: with SMTP id g3mr1170487pjl.242.1631729540219;
-        Wed, 15 Sep 2021 11:12:20 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id v13sm580440pfm.16.2021.09.15.11.12.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 11:12:19 -0700 (PDT)
-Subject: Re: [RFC 05/19] devfreq: imx8m-ddrc: Use the opps acquired from EL3
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-serial@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1631554694-9599-1-git-send-email-abel.vesa@nxp.com>
- <1631554694-9599-6-git-send-email-abel.vesa@nxp.com>
- <b52430cc-1216-8b3e-baec-7d3fffc1274a@gmail.com>
-Message-ID: <a8ccf50b-cb05-675e-aef1-50f33783b0c0@gmail.com>
-Date:   Thu, 16 Sep 2021 03:12:12 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=4ea19EVT7+ENaTSXfaPbkEFbFvLGTZXZZbGxxKzThbk=;
+        b=RgN90B3qMrso1ha2FgIOLTNloipPxPw/9xtYi+7FdoyvzmEqrT9yGUN8SQErHRSMti
+         9n3hkuJ36xAR4ZOIxzom2fJIiRV6iAhCkkPvT48oO6n7q9/ID6Sr4Ebd+QAmUbA9/T47
+         2nooQn2/lq2rOyur3kzS3PMGRkHL1Uh0E9JBg3QA3Iw3fbQ4Sq1IrE2R0biQqYg3lv8L
+         0lhEjwGsmYPORXwM9UeFP5NmBC5wK2wD94en82PKf0us+6xb5bOPZ2asPK8+9vNgrdPu
+         vFkC+qCJ4D/AGgVH6beiFXgMRzM/lXTAdUTL7KMkvRcmYTpcL7w+Vk5jQsxegwwc+Gy+
+         VHbg==
+X-Gm-Message-State: AOAM530wJ+iksUuwvecTAN2LIUDhMzisRHlRI6xGNKJr9vCw5AL0XxGk
+        av0KwDcMk2o/fTzU2x7nuuR96zF5N4FSElp2toBs61G8LQHP40EpG6hVwNPLf7SmXgPSY+iq6j1
+        +lxRFEVXl/PuqoP9YqsKR5iOr
+X-Received: by 2002:a37:a302:: with SMTP id m2mr1249718qke.155.1631729698826;
+        Wed, 15 Sep 2021 11:14:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygAcwZ/9mrp33dvqbsNgM5BPn8uy9tVqgDqOBo2NkpqqmgJlMiHUZcL8gmQBvWnC27q6/KRg==
+X-Received: by 2002:a37:a302:: with SMTP id m2mr1249691qke.155.1631729698554;
+        Wed, 15 Sep 2021 11:14:58 -0700 (PDT)
+Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d35a])
+        by smtp.gmail.com with ESMTPSA id n18sm578663qkn.63.2021.09.15.11.14.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 11:14:58 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterx@redhat.com, Andrea Arcangeli <aarcange@redhat.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH v4 0/4] mm: A few cleanup patches around zap, shmem and uffd
+Date:   Wed, 15 Sep 2021 14:14:52 -0400
+Message-Id: <20210915181456.10739-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <b52430cc-1216-8b3e-baec-7d3fffc1274a@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 9. 15. 오후 12:29, Chanwoo Choi wrote:
-> Hi,
-> 
-> OPP is mandatory for devfreq driver. Also, must need to add
-> the OPP levels to  devicetree file, it is better to show
-> the supported OPP list for the developer who don't know
-> the detailed background of driver. If there are no any
-> critical issue. I prefer the existing approach for the readability.
+[Based on v5.14-rc1]
 
-Also, by keeping the existing approach, the user is able to
-select the their own OPP entries among the all supported frequencies
-from EL3. Even if the some clock support the multiple frequencies,
-the user might want to use the a few frequency instead of using
-all supported frequencies.
+Hi, Andrew,
 
-> 
-> On 21. 9. 14. 오전 2:38, Abel Vesa wrote:
->> i.MX8M platforms get their dram OPPs from the EL3.
->> We don't need to duplicate that in the kernel dram dts node.
->> We should just trust the OPPs provided by the EL3.
->>
->> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
->> ---
->>   drivers/devfreq/imx8m-ddrc.c | 50 +++---------------------------------
->>   1 file changed, 3 insertions(+), 47 deletions(-)
->>
->> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
->> index 583123bf2100..f18a5c3c1c03 100644
->> --- a/drivers/devfreq/imx8m-ddrc.c
->> +++ b/drivers/devfreq/imx8m-ddrc.c
->> @@ -321,38 +321,9 @@ static int imx8m_ddrc_init_freq_info(struct 
->> device *dev)
->>           if (freq->dram_core_parent_index == 2 &&
->>                   freq->dram_alt_parent_index == 0)
->>               return -ENODEV;
->> -    }
->> -
->> -    return 0;
->> -}
->> -
->> -static int imx8m_ddrc_check_opps(struct device *dev)
->> -{
->> -    struct imx8m_ddrc *priv = dev_get_drvdata(dev);
->> -    struct imx8m_ddrc_freq *freq_info;
->> -    struct dev_pm_opp *opp;
->> -    unsigned long freq;
->> -    int i, opp_count;
->> -
->> -    /* Enumerate DT OPPs and disable those not supported by firmware */
->> -    opp_count = dev_pm_opp_get_opp_count(dev);
->> -    if (opp_count < 0)
->> -        return opp_count;
->> -    for (i = 0, freq = 0; i < opp_count; ++i, ++freq) {
->> -        opp = dev_pm_opp_find_freq_ceil(dev, &freq);
->> -        if (IS_ERR(opp)) {
->> -            dev_err(dev, "Failed enumerating OPPs: %ld\n",
->> -                PTR_ERR(opp));
->> -            return PTR_ERR(opp);
->> -        }
->> -        dev_pm_opp_put(opp);
->> -        freq_info = imx8m_ddrc_find_freq(priv, freq);
->> -        if (!freq_info) {
->> -            dev_info(dev, "Disable unsupported OPP %luHz %luMT/s\n",
->> -                    freq, DIV_ROUND_CLOSEST(freq, 250000));
->> -            dev_pm_opp_disable(dev, freq);
->> -        }
->> +        if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
->> +            return -ENODEV;
->>       }
->>       return 0;
->> @@ -360,7 +331,6 @@ static int imx8m_ddrc_check_opps(struct device *dev)
->>   static void imx8m_ddrc_exit(struct device *dev)
->>   {
->> -    dev_pm_opp_of_remove_table(dev);
->>   }
->>   static int imx8m_ddrc_probe(struct platform_device *pdev)
->> @@ -407,16 +377,7 @@ static int imx8m_ddrc_probe(struct 
->> platform_device *pdev)
->>           return ret;
->>       }
->> -    ret = dev_pm_opp_of_add_table(dev);
->> -    if (ret < 0) {
->> -        dev_err(dev, "failed to get OPP table\n");
->> -        return ret;
->> -    }
->> -
->> -    ret = imx8m_ddrc_check_opps(dev);
->> -    if (ret < 0)
->> -        goto err;
->> -
->> +    priv->profile.polling_ms = 1000;
-> 
-> This change is not related to role of this patch.
-> Need to make the separate patch.
-> 
->>       priv->profile.target = imx8m_ddrc_target;
->>       priv->profile.exit = imx8m_ddrc_exit;
->>       priv->profile.get_cur_freq = imx8m_ddrc_get_cur_freq;
->> @@ -427,13 +388,8 @@ static int imx8m_ddrc_probe(struct 
->> platform_device *pdev)
->>       if (IS_ERR(priv->devfreq)) {
->>           ret = PTR_ERR(priv->devfreq);
->>           dev_err(dev, "failed to add devfreq device: %d\n", ret);
->> -        goto err;
->>       }
->> -    return 0;
->> -
->> -err:
->> -    dev_pm_opp_of_remove_table(dev);
->>       return ret;
->>   }
->>
-> 
-> 
+I dropped patch 5 and will do it later when it justifies itself better.  Each
+patch of this series now contains at least 1 R-b, would you consider merge it?
 
+Thanks,
+
+v4:
+- Patch "mm: Drop first_index/last_index in zap_details"
+  - Put first_index and last_index into two lines [Liam]
+- Pick up r-bs
+- Drop patch 5 for future
+
+v3:
+- Patch "mm: Add zap_skip_check_mapping() helper"
+  - In zap_skip_check_mapping() check zap_mapping first [Alistair]
+- Patch "mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags":
+  - Fix English errors in commit message [David]
+  - Drop paragraph mentioning commit 22061a1ffabd in commit msg
+  - Set ZAP_FLAG_SKIP_SWAP for unmap_mapping_page() too
+- Pick up r-bs
+
+v2:
+- Patch "mm: Clear vmf->pte after pte_unmap_same() returns"
+  - Remove one comment [David]
+- Collect r-b for patch 2/3
+- Rewrite the last two patches to drop ZAP_FLAG_CHECK_MAPPING, dropping
+  Alistair's r-b on patch 5 because it changed [David, Matthew]
+
+===== v1 cover letter =====
+
+I picked up these patches from uffd-wp v5 series here:
+
+https://lore.kernel.org/lkml/20210715201422.211004-1-peterx@redhat.com/
+
+IMHO all of them are very nice cleanups to existing code already, they're all
+small and self-contained.  They'll be needed by uffd-wp coming series.  I would
+appreciate if they can be accepted earlier, so as to not carry them over always
+with the uffd-wp series.
+
+I removed some CC from the uffd-wp v5 series to reduce the noise, and added a
+few more into it.
+
+Reviews are greatly welcomed, thanks.
+
+Peter Xu (4):
+  mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
+  mm: Clear vmf->pte after pte_unmap_same() returns
+  mm: Drop first_index/last_index in zap_details
+  mm: Add zap_skip_check_mapping() helper
+
+ include/linux/mm.h | 18 ++++++++++--
+ mm/memory.c        | 72 +++++++++++++++++++---------------------------
+ mm/shmem.c         |  1 -
+ mm/userfaultfd.c   |  3 +-
+ 4 files changed, 46 insertions(+), 48 deletions(-)
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.31.1
+
