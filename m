@@ -2,164 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D402440BE62
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E716640BE69
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 05:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbhIODor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 23:44:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:51630 "EHLO foss.arm.com"
+        id S235891AbhIODq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 23:46:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229980AbhIODoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:44:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24CB231B;
-        Tue, 14 Sep 2021 20:43:28 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.70.189])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7047D3F5A1;
-        Tue, 14 Sep 2021 20:43:25 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     mark.rutland@arm.com, suzuki.poulose@arm.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/mm: Add pud_sect_supported()
-Date:   Wed, 15 Sep 2021 09:14:19 +0530
-Message-Id: <1631677459-28383-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S230050AbhIODq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 23:46:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B9F26108F;
+        Wed, 15 Sep 2021 03:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631677540;
+        bh=fcKJT4RQ2NWXn1tWEahtcJTu2maR6TNE633Y37N45I4=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=uVeA6QWK4eIX9nJzAvSaE49VnnmAlFLs0J+HLMKTiX3E62P+Msb8rVSj9aRMZj5UG
+         FWy050L3jS56dZ8g1pXol6mN40zyIzYa5Q17irVNpT4fBACTsJjxy7xpUPnlo17wR0
+         B3jaRgvopcBv2P+7UhXCE95TP/N+OhC16XNH7aCy4e0sZFnskjnPqC9+tMKji6j0NO
+         0XPG5Xfn5R7nIoqtOeWK3pqIzWKGEnmDUo1R98dnAP0PBQ3tKN9+OVKQej+soBU+jM
+         9zHc2pdwD7mvbdRXzoTVJRmYyDAuDsyvrkNmNdl4QbHeNOuT8q94jBzgr2oEu8rI0A
+         a5tNo2d2bl++A==
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: linux: build failure: error: "__has_attribute" is not defined
+From:   Nathan Chancellor <nathan@kernel.org>
+In-Reply-To: <CAHk-=wiiJ47YP7Q4AJC=YSfJdY-HK-8Bh7W=+hrZRqdM2UrAFg@mail.gmail.com>
+Date:   Tue, 14 Sep 2021 20:45:39 -0700
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <91B93D4D-BEC8-4ACD-B71F-27C54D8B1B78@kernel.org>
+References: <c1b1a299-c60d-28a4-07ab-1ecd211d6da9@i-love.sakura.ne.jp>
+ <3bf6f4f4-9c96-6e0c-951d-5509175dddfe@kernel.org>
+ <bb40c26c-dd0f-f7c2-59b7-d6ad361a0cdb@i-love.sakura.ne.jp>
+ <CAHk-=wiiJ47YP7Q4AJC=YSfJdY-HK-8Bh7W=+hrZRqdM2UrAFg@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Section mapping at PUD level is supported only on 4K pages and currently it
-gets verified with explicit #ifdef or IS_ENABLED() constructs. This adds a
-new helper pud_sect_supported() for this purpose, which particularly cleans
-up the HugeTLB code path. It updates relevant switch statements with checks
-for __PAGETABLE_PUD_FOLDED in order to avoid build failures caused with two
-identical switch case values in those code blocks.
+> On Sep 14, 2021, at 7:59 PM, Linus Torvalds =
+<torvalds@linux-foundation.org> wrote:
+> Now, the _second_ bug was then that when Nathan fixed the tooling
+> header file in commit d0ee23f9d78b ("tools: compiler-gcc.h: Guard
+> error attribute use with __has_attribute"), he did it the wrong way.
+>=20
+> The gcc docs are fairly clear about how to test for __has_attibute =
+correctly:
+>=20
+>    https://gcc.gnu.org/onlinedocs/cpp/_005f_005fhas_005fattribute.html
+>=20
+> and a host build environment should probably have used
+>=20
+>  #if defined __has_attribute
+>  #  if __has_attribute (error)
+>  ...
+>=20
+> and not used any version checks at all.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v5.15-rc1
+Ugh, yes, I had assumed that the host compiler would always equal the
+compiler used for the kernel because I am so used to clang so I figured
+the 'defined(__has_attribute)' was redundant but that obviously is not
+true, especially when cross compiling.
 
- arch/arm64/include/asm/pgtable.h |  5 +++++
- arch/arm64/include/asm/vmalloc.h |  4 ++--
- arch/arm64/mm/hugetlbpage.c      | 26 +++++++++++++++-----------
- 3 files changed, 22 insertions(+), 13 deletions(-)
+> Of course, I'm not convinced it should do that __compiletime_error()
+> at all, and again, I think it would be better to remove the complexity
+> rather than anything else.
+>=20
+> Anybody want to tackle those issues in
+>=20
+>   tools/include/linux/overflow.h
+>   tools/include/linux/compiler-gcc.h
+>=20
+> and try to simplify the code?
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index dfa76afa0ccf..84fbb52b4224 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -1022,6 +1022,11 @@ static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
- 	return PAGE_READONLY_EXEC;
- }
- 
-+static inline bool pud_sect_supported(void)
-+{
-+	return PAGE_SIZE == SZ_4K;
-+}
-+
- 
- #endif /* !__ASSEMBLY__ */
- 
-diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
-index 7a22aeea9bb5..b9185503feae 100644
---- a/arch/arm64/include/asm/vmalloc.h
-+++ b/arch/arm64/include/asm/vmalloc.h
-@@ -2,6 +2,7 @@
- #define _ASM_ARM64_VMALLOC_H
- 
- #include <asm/page.h>
-+#include <asm/pgtable.h>
- 
- #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
- 
-@@ -9,10 +10,9 @@
- static inline bool arch_vmap_pud_supported(pgprot_t prot)
- {
- 	/*
--	 * Only 4k granule supports level 1 block mappings.
- 	 * SW table walks can't handle removal of intermediate entries.
- 	 */
--	return IS_ENABLED(CONFIG_ARM64_4K_PAGES) &&
-+	return pud_sect_supported() &&
- 	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
- }
- 
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 23505fc35324..641854f0e8ee 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -40,11 +40,10 @@ void __init arm64_hugetlb_cma_reserve(void)
- {
- 	int order;
- 
--#ifdef CONFIG_ARM64_4K_PAGES
--	order = PUD_SHIFT - PAGE_SHIFT;
--#else
--	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
--#endif
-+	if (pud_sect_supported())
-+		order = PUD_SHIFT - PAGE_SHIFT;
-+	else
-+		order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
- 	/*
- 	 * HugeTLB CMA reservation is required for gigantic
- 	 * huge pages which could not be allocated via the
-@@ -62,8 +61,9 @@ bool arch_hugetlb_migration_supported(struct hstate *h)
- 	size_t pagesize = huge_page_size(h);
- 
- 	switch (pagesize) {
--#ifdef CONFIG_ARM64_4K_PAGES
-+#ifndef __PAGETABLE_PUD_FOLDED
- 	case PUD_SIZE:
-+		return pud_sect_supported();
- #endif
- 	case PMD_SIZE:
- 	case CONT_PMD_SIZE:
-@@ -126,8 +126,11 @@ static inline int num_contig_ptes(unsigned long size, size_t *pgsize)
- 	*pgsize = size;
- 
- 	switch (size) {
--#ifdef CONFIG_ARM64_4K_PAGES
-+#ifndef __PAGETABLE_PUD_FOLDED
- 	case PUD_SIZE:
-+		if (pud_sect_supported())
-+			contig_ptes = 1;
-+		break;
- #endif
- 	case PMD_SIZE:
- 		contig_ptes = 1;
-@@ -489,9 +492,9 @@ void huge_ptep_clear_flush(struct vm_area_struct *vma,
- 
- static int __init hugetlbpage_init(void)
- {
--#ifdef CONFIG_ARM64_4K_PAGES
--	hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
--#endif
-+	if (pud_sect_supported())
-+		hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
-+
- 	hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
- 	hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
- 	hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
-@@ -503,8 +506,9 @@ arch_initcall(hugetlbpage_init);
- bool __init arch_hugetlb_valid_size(unsigned long size)
- {
- 	switch (size) {
--#ifdef CONFIG_ARM64_4K_PAGES
-+#ifndef __PAGETABLE_PUD_FOLDED
- 	case PUD_SIZE:
-+		return pud_sect_supported();
- #endif
- 	case CONT_PMD_SIZE:
- 	case PMD_SIZE:
--- 
-2.20.1
+I made the tools/include/linux/compiler-gcc.h situation worse so I am
+more than happy to try to resolve it.
 
+__compiletime_error() is ultimately used within BUILD_BUG_ON(), which
+does appear to be used a couple places within the tools/ directory so I
+am not sure it should be eliminated; doing so would cause BUILD_BUG_ON()
+failures to be a lot more cryptic (although it is entirely possible
+those are not at all common so who cares). I could be entirely wrong
+though if I am misreading the code, there are a few different
+BUILD_BUG_ON() defines...
+
+If it cannot be eliminated, we could either add back the
+GCC_VERSION >=3D 40300 check (because there does not appear to be a
+minimum host version of GCC) along with my fix or we could just do the
+'defined(__has_attribute)' and leave GCC 4.3 to 5.1 behind. I do not
+have a strong opinion.
+
+Cheers,
+Nathan=
