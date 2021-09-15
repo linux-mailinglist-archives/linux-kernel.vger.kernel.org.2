@@ -2,459 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C44840C237
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A4C40C22B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237188AbhIOJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237145AbhIOI7o (ORCPT
+        id S236990AbhIOI7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:59:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39420 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232676AbhIOI7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:59:44 -0400
-Received: from mx.msync.work (mx.msync.work [IPv6:2a01:4f9:2b:2dc2::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA60C061574;
-        Wed, 15 Sep 2021 01:58:23 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6DFE8F62B8;
-        Wed, 15 Sep 2021 08:58:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1631696301; h=from:subject:date:message-id:to:cc:mime-version:
-         content-transfer-encoding:in-reply-to:references;
-        bh=5n0R6drbZsDzE00WoiM8YAqFQ9VV6XgrJxBJAv4+pes=;
-        b=Sp7LSGoiMzJahmo9oUFn6UheOC+U+3hwSTPZKhTBichoQalX+j8iF+Xe37bSI9C96KWlGe
-        jDWAe6AQIp9N4J5Xgoh2h0+/YVku7P5aEjd+Hn+jrGk/cA/cYQ5KiXCfHoFQ1ZAQ+aWJg8
-        u3hjyKvrXAnKFBT1xDjGNtzweSIV+R73IEjzrNVKvxYob791nE8I5MD9eSSnjwuMbpzNkg
-        iSucoV3wFJvfvS5nsV1in9wOL1YmAyrLpxKVj5/zcpI5Kkal5ZjmjM9DwJ72Ju1oHuJmOc
-        p5HGGuSrNAPLgb0CfNU6nSMgjiapwkG59PL6+EOz5lwMXhMp9y7Dplw935eo+A==
-From:   Vyacheslav Bocharov <adeep@lexina.in>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v5 4/4] arm64: dts: meson-axg: add support for JetHub D1
-Date:   Wed, 15 Sep 2021 11:57:19 +0300
-Message-Id: <20210915085715.1134940-5-adeep@lexina.in>
-In-Reply-To: <20210915085715.1134940-1-adeep@lexina.in>
-References: <20210915085715.1134940-1-adeep@lexina.in>
+        Wed, 15 Sep 2021 04:59:12 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631696272;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oO9OrB1G0+YxTYn/JMvLtBpJYNEF69i2CP96bjIn7ik=;
+        b=vgC8kAEuGghuxRk6oLs9YOA4m+/CPyok0IXqSq/RQwAliqNSFG7N2sfhvA4flz/w+16dXS
+        ze4J6Z3GFT8N2+Poo/b8OnWUIoqAp/7Rj5XlkcSHHqI+mEpxILlT5DUMy4rYiEdxTPzziT
+        YkifNWR599qlh4v77bwqXaUfuGeqjHsAA4d0kOR2HboBNQeFb0PYmWvPyZ4/N55aQ9NF4V
+        X9J0mdaE05krLDUmsixWfqH41ZVe9a0eK+Uo90phs6GArDDPp1+eD8B76DrhrKIEO0xQdy
+        hgHq45m3u9aAIsM7SzSuL8m4PDncS8inBg9BGHgvqqJBFWF8iukLNWgLMHn6Mg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631696272;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oO9OrB1G0+YxTYn/JMvLtBpJYNEF69i2CP96bjIn7ik=;
+        b=9kyvvPSSWvn71+QrnJy9ImxxpNW73+vs4dy6JlrZE54kCOPRwX3FE0TRUfD1/VEtvke3SQ
+        HbLcye+tf86ue0BA==
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org
+Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
+In-Reply-To: <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com>
+References: <000000000000eaacf005ca975d1a@google.com>
+ <20210831074532.2255-1-hdanton@sina.com>
+ <20210914123726.4219-1-hdanton@sina.com> <87v933b3wf.ffs@tglx>
+ <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com>
+Date:   Wed, 15 Sep 2021 10:57:52 +0200
+Message-ID: <87mtoeb4hb.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation
-controller with the following features:
-- DIN Rail Mounting
-- Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
-- no video out
-- 512Mb/1GB LPDDR4
-- 8/16GB eMMC flash
-- 1 x USB 2.0
-- 1 x 10/100Mbps ethernet
-- WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac,
-  Bluetooth 4.2.
-- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power
-  and Zigbee 3.0 support.
-- 2 x gpio LEDS
-- GPIO user Button
-- 1 x 1-Wire
-- 2 x RS-485
-- 4 x dry contact digital GPIO inputs
-- 3 x relay GPIO outputs
-- DC source with a voltage of 9 to 56 V / Passive POE
+On Tue, Sep 14 2021 at 20:00, Dmitry Vyukov wrote:
+> On Tue, 14 Sept 2021 at 16:58, Thomas Gleixner <tglx@linutronix.de> wrote:
+>> Now what happens when the mac80211 callback rearms the timer so it
+>> expires immediately again:
+>>
+>>         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+>>                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
+>>
+>> bcn is a user space controlled value. Now lets assume that bcn_int is <=1,
+>> which would certainly cause the loop in hrtimer_run_queues() to keeping
+>> looping forever.
+>>
+>> That should be easy to verify by implementing a simple test which
+>> reschedules a hrtimer from the callback with a expiry time close to now.
+>>
+>> Not today as I'm about to head home to fire up the pizza oven.
+>
+> This question definitely shouldn't take priority over the pizza. But I
+> think I saw this "rearm a timer with a user-controlled value without
+> any checks" pattern lots of times and hangs are inherently harder to
+> localize and reproduce. So I wonder if it makes sense to add a debug
+> config that would catch such cases right when the timer is set up
+> (issue a WARNING)?
 
-Changes from v4:
- - add node for 1wire-gpio for JetHub D1 v2 device
+Yes and no. It's hard to differentiate between a valid short expiry
+rearm and something which is caused by unchecked values. I have some
+ideas but all of them are expensive and therefore probably debug
+only. Which is actually better than nothing :)
 
-Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
+> However, for automated testing there is the usual question of
+> balancing between false positives and false negatives. The check
+> should not produce false positives, but at the same time it should
+> catch [almost] all actual stalls so that they don't manifest as
+> duplicate stall reports.
+
+Right. The problem could be even there with checked values:
+
+       start_timer(1ms)
+       timer_expires()
+         callback()
+           forward_timer(timer, now, period(1ms));
+
+which might be perfectly fine with a production kernel as it leaves
+enough time to make overall progress.
+
+Now with a full debug kernel with all bells and whistels that callback
+might just run into this situation:
+
+      start_timer(1ms) T0
+       timer_expires() T1
+         callback()
+           do_stuff()
+           forward_timer(timer, TNOW, period(1ms));
 
 
+T1 - T0   = 1.001ms
+TNOW - T1 = 0.998 ms
+
+So the forward will just rearm it to T0 + 2ms which means it expires in
+1us.
+
+> If I understand it correctly the timer is not actually set up as
+> periodic, but rather each callback invocation arms it again. Setting
+> up a timer for 1 ns _once_ (or few times) is probably fine (right?),
+> so the check needs to be somewhat more elaborate and detect "infinite"
+> rearming.
+
+Yes.
+
+That made me actually look at that mac80211_hwsim callback again.
+
+	hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+			ns_to_ktime(bcn_int * NSEC_PER_USEC));
+
+So what this does is really wrong because it tries to schedule the timer
+on the theoretical periodic timeline. Which goes really south once the
+timer is late or the callback execution took longer than the
+period. Hypervisors scheduling out a VCPU at the wrong place will do
+that for you nicely.
+
+What this actually should use is hrtimer_forward_now() which prevents
+that problem because it will forward the timer in the periodic schedule
+beyond now. That won't prevent the above corner case, but I doubt you
+can create an endless loop with that scenario as easy as you can with
+trying to catch up on your theoretical timeline by using the previous
+expiry time as a base for the forward. Patch below.
+
+/me goes off to audit hrtimer_forward() usage. Sigh...
+
+After that figure out ways to debug or even prevent this. More sigh...
+
+Thanks,
+
+        tglx
 ---
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../amlogic/meson-axg-jethome-jethub-j100.dts | 361 ++++++++++++++++++
- 2 files changed, 362 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+ drivers/net/wireless/mac80211_hwsim.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 2c3ce7c401a5..3ba6f58b9833 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_MESON) += meson-axg-s400.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-axg-jethome-jethub-j100.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-sei510.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-new file mode 100644
-index 000000000000..c25b03a91e12
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-@@ -0,0 +1,361 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2021 Vyacheslav Bocharov <adeep@lexina.in>
-+ * Copyright (c) 2020 JetHome
-+ * Author: Aleksandr Kazantsev <ak@tvip.ru>
-+ * Author: Alexey Shevelkin <ash@tvip.ru>
-+ * Author: Vyacheslav Bocharov <adeep@lexina.in>
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-axg.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/thermal/thermal.h>
-+
-+/ {
-+	compatible = "jethome,jethub-j100", "amlogic,a113d", "amlogic,meson-axg";
-+	model = "JetHome JetHub J100";
-+	aliases {
-+		serial0 = &uart_AO;   /* Console */
-+		serial1 = &uart_AO_B; /* External UART (Wireless Module) */
-+		ethernet0 = &ethmac;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	/* 1024MB RAM */
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x40000000>;
-+	};
-+
-+	reserved-memory {
-+		linux,cma {
-+			size = <0x0 0x400000>;
-+		};
-+	};
-+
-+	emmc_pwrseq: emmc-pwrseq {
-+		compatible = "mmc-pwrseq-emmc";
-+		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	vcc_3v3: regulator-vcc_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_5v: regulator-vcc_5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	vddao_3v3: regulator-vddao_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_5v>;
-+		regulator-always-on;
-+	};
-+
-+	vddio_ao18: regulator-vddio_ao18 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO18";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vddio_boot: regulator-vddio_boot {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_BOOT";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	usb_pwr: regulator-usb_pwr {
-+		compatible = "regulator-fixed";
-+		regulator-name = "USB_PWR";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc_5v>;
-+		regulator-always-on;
-+	};
-+
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
-+		clocks = <&wifi32k>;
-+		clock-names = "ext_clock";
-+	};
-+
-+	wifi32k: wifi32k {
-+		compatible = "pwm-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		pwms = <&pwm_ab 0 30518 0>; /* PWM_A at 32.768KHz */
-+	};
-+
-+	thermal-zones {
-+		cpu_thermal: cpu-thermal {
-+			polling-delay-passive = <250>;
-+			polling-delay = <1000>;
-+			thermal-sensors = <&scpi_sensors 0>;
-+			trips {
-+				cpu_passive: cpu-passive {
-+					temperature = <70000>; /* millicelsius */
-+					hysteresis = <2000>; /* millicelsius */
-+					type = "passive";
-+				};
-+
-+				cpu_hot: cpu-hot {
-+					temperature = <80000>; /* millicelsius */
-+					hysteresis = <2000>; /* millicelsius */
-+					type = "hot";
-+				};
-+
-+				cpu_critical: cpu-critical {
-+					temperature = <100000>; /* millicelsius */
-+					hysteresis = <2000>; /* millicelsius */
-+					type = "critical";
-+				};
-+			};
-+		};
-+
-+		cpu_cooling_maps: cooling-maps {
-+			map0 {
-+				trip = <&cpu_passive>;
-+				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+			};
-+
-+			map1 {
-+				trip = <&cpu_hot>;
-+				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+			};
-+		};
-+	};
-+	onewire {
-+		compatible = "w1-gpio";
-+		gpios = <&gpio GPIOA_14 GPIO_ACTIVE_HIGH>;
-+		#gpio-cells = <1>;
-+	};
-+};
-+
-+&efuse {
-+	sn: sn@32 {
-+		reg = <0x32 0x20>;
-+	};
-+
-+	eth_mac: eth_mac@0 {
-+		reg = <0x0 0x6>;
-+	};
-+
-+	bt_mac: bt_mac@6 {
-+		reg = <0x6 0x6>;
-+	};
-+
-+	wifi_mac: wifi_mac@c {
-+		reg = <0xc 0x6>;
-+	};
-+
-+	bid: bid@12 {
-+		reg = <0x12 0x20>;
-+	};
-+};
-+
-+&ethmac {
-+	status = "okay";
-+	pinctrl-0 = <&eth_rmii_x_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&eth_phy0>;
-+	phy-mode = "rmii";
-+
-+	mdio {
-+		compatible = "snps,dwmac-mdio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* ICPlus IP101A/G Ethernet PHY (vendor_id=0x0243, model_id=0x0c54) */
-+		eth_phy0: ethernet-phy@0 {
-+			/* compatible = "ethernet-phy-id0243.0c54";*/
-+			max-speed = <100>;
-+			reg = <0>;
-+
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <10000>;
-+			reset-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+/* Internal I2C bus (on CPU module) */
-+&i2c1 {
-+	status = "okay";
-+	pinctrl-0 = <&i2c1_z_pins>;
-+	pinctrl-names = "default";
-+
-+	/* RTC */
-+	pcf8563: pcf8563@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+		status = "okay";
-+	};
-+};
-+
-+/* Peripheral I2C bus (on motherboard) */
-+&i2c_AO {
-+	status = "okay";
-+	pinctrl-0 = <&i2c_ao_sck_10_pins>, <&i2c_ao_sda_11_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&pwm_ab {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_a_x20_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+/* wifi module */
-+&sd_emmc_b {
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	pinctrl-0 = <&sdio_pins>;
-+	pinctrl-1 = <&sdio_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	sd-uhs-sdr104;
-+	max-frequency = <200000000>;
-+	non-removable;
-+	disable-wp;
-+
-+	mmc-pwrseq = <&sdio_pwrseq>;
-+
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddio_boot>;
-+
-+	brcmf: wifi@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+/* emmc storage */
-+&sd_emmc_c {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
-+	pinctrl-1 = <&emmc_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	max-frequency = <200000000>;
-+	non-removable;
-+	disable-wp;
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+
-+	mmc-pwrseq = <&emmc_pwrseq>;
-+
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&vddio_boot>;
-+};
-+
-+/* UART Bluetooth */
-+&uart_B {
-+	status = "okay";
-+	pinctrl-0 = <&uart_b_z_pins>, <&uart_b_z_cts_rts_pins>;
-+	pinctrl-names = "default";
-+	uart-has-rtscts;
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		shutdown-gpios = <&gpio GPIOZ_7 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+/* UART Console */
-+&uart_AO {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_a_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+/* UART Wireless module */
-+&uart_AO_B {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_b_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&usb {
-+	status = "okay";
-+	phy-supply = <&usb_pwr>;
-+};
-+
-+&spicc1 {
-+	status = "okay";
-+	pinctrl-0 = <&spi1_x_pins>, <&spi1_ss0_x_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&gpio {
-+	gpio-line-names =
-+		"", "", "", "", "", // 0 - 4
-+		"", "", "", "", "", // 5 - 9
-+		"UserButton", "", "", "", "", // 10 - 14
-+		"", "", "", "", "", // 15 - 19
-+		"", "", "", "", "", // 20 - 24
-+		"", "LedRed", "LedGreen", "Output3", "Output2", // 25 - 29
-+		"Output1", "", "", "", "", // 30 - 34
-+		"", "ZigBeeBOOT", "", "", "", // 35 - 39
-+		"1Wire", "ZigBeeRESET", "", "Input4", "Input3", // 40 - 44
-+		"Input2", "Input1", "", "", "", // 45 - 49
-+		"", "", "", "", "", // 50 - 54
-+		"", "", "", "", "", // 55 - 59
-+		"", "", "", "", "", // 60 - 64
-+		"", "", "", "", "", // 65 - 69
-+		"", "", "", "", "", // 70 - 74
-+		"", "", "", "", "", // 75 - 79
-+		"", "", "", "", "", // 80 - 84
-+		"", ""; // 85-86
-+};
-+
-+&cpu0 {
-+	#cooling-cells = <2>;
-+};
-+
-+&cpu1 {
-+	#cooling-cells = <2>;
-+};
-+
-+&cpu2 {
-+	#cooling-cells = <2>;
-+};
-+
-+&cpu3 {
-+	#cooling-cells = <2>;
-+};
--- 
-2.30.2
-
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -1867,8 +1867,8 @@ mac80211_hwsim_beacon(struct hrtimer *ti
+ 		bcn_int -= data->bcn_delta;
+ 		data->bcn_delta = 0;
+ 	}
+-	hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
+-			ns_to_ktime(bcn_int * NSEC_PER_USEC));
++	hrtimer_forward_now(&data->beacon_timer,
++			    ns_to_ktime(bcn_int * NSEC_PER_USEC));
+ 	return HRTIMER_RESTART;
+ }
+ 
