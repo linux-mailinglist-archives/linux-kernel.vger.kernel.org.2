@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFBC40C4B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932E740C63D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237390AbhIOMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:02:09 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:56051 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232793AbhIOMCH (ORCPT
+        id S234488AbhIONVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234504AbhIONVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:02:07 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yaohongbo@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UoUEEjp_1631707246;
-Received: from localhost(mailfrom:yaohongbo@linux.alibaba.com fp:SMTPD_---0UoUEEjp_1631707246)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 20:00:46 +0800
-From:   Yao Hongbo <yaohongbo@linux.alibaba.com>
-To:     yaohongbo@linux.alibaba.com
-Cc:     zhangliguang@linux.alibaba.com,
-        alikernel-developer@linux.alibaba.com, will@kernel.org,
-        robin.murphy@arm.com, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ACPI/IORT: Add 'smmu=off' command line option
-Date:   Wed, 15 Sep 2021 20:00:46 +0800
-Message-Id: <20210915120046.62936-1-yaohongbo@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Wed, 15 Sep 2021 09:21:41 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6BEC061768
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:20:20 -0700 (PDT)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id uDLH2500p4C55Sk06DLHoT; Wed, 15 Sep 2021 15:20:18 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQUng-004eT9-2x; Wed, 15 Sep 2021 15:18:08 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQRVr-002T07-RM; Wed, 15 Sep 2021 11:47:31 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] irqchip/renesas-rza1: Use semicolons instead of commas
+Date:   Wed, 15 Sep 2021 11:47:30 +0200
+Message-Id: <b1710bb6ea5faa7a7fe74404adb0beb951e0bf8c.1631699160.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a generic command line option to disable arm smmu drivers.
-iommu.passthrough can only bypass the IOMMU for DMA, but
-sometimes we need to ignore all available SMMUs.
+This code works, but it is cleaner to use semicolons at the end of
+statements instead of commas.
 
-This patch is only used for acpi on arm64.
+Extracted from a big anonymous patch by Julia Lawall
+<julia.lawall@inria.fr>.
 
-Signed-off-by: Yao Hongbo <yaohongbo@linux.alibaba.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  4 ++++
- drivers/acpi/arm64/iort.c                       | 18 +++++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-renesas-rza1.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 91ba391f..6cffd91 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5198,6 +5198,10 @@
- 	smart2=		[HW]
- 			Format: <io1>[,<io2>[,...,<io8>]]
+diff --git a/drivers/irqchip/irq-renesas-rza1.c b/drivers/irqchip/irq-renesas-rza1.c
+index b0d46ac42b892340..72c06e883d1c5fd5 100644
+--- a/drivers/irqchip/irq-renesas-rza1.c
++++ b/drivers/irqchip/irq-renesas-rza1.c
+@@ -223,12 +223,12 @@ static int rza1_irqc_probe(struct platform_device *pdev)
+ 		goto out_put_node;
+ 	}
  
-+	smmu=           [ARM64]
-+			Format: {off}
-+			off: Disable arm smmu driver.
-+
- 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
- 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
- 	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 3b23fb7..70f92e7 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -40,6 +40,22 @@ struct iort_fwnode {
- static LIST_HEAD(iort_fwnode_list);
- static DEFINE_SPINLOCK(iort_fwnode_lock);
+-	priv->chip.name = "rza1-irqc",
+-	priv->chip.irq_mask = irq_chip_mask_parent,
+-	priv->chip.irq_unmask = irq_chip_unmask_parent,
+-	priv->chip.irq_eoi = rza1_irqc_eoi,
+-	priv->chip.irq_retrigger = irq_chip_retrigger_hierarchy,
+-	priv->chip.irq_set_type = rza1_irqc_set_type,
++	priv->chip.name = "rza1-irqc";
++	priv->chip.irq_mask = irq_chip_mask_parent;
++	priv->chip.irq_unmask = irq_chip_unmask_parent;
++	priv->chip.irq_eoi = rza1_irqc_eoi;
++	priv->chip.irq_retrigger = irq_chip_retrigger_hierarchy;
++	priv->chip.irq_set_type = rza1_irqc_set_type;
+ 	priv->chip.flags = IRQCHIP_MASK_ON_SUSPEND | IRQCHIP_SKIP_SET_WAKE;
  
-+static bool acpi_smmu_disabled;
-+
-+static int __init acpi_smmu_parse(char *str)
-+{
-+	if (!str)
-+		return -EINVAL;
-+
-+	if (!strncmp(str, "off", 3)) {
-+		acpi_smmu_disabled = true;
-+		pr_info("SMMU disabled\n");
-+	}
-+
-+	return 0;
-+}
-+__setup("smmu=", acpi_smmu_parse);
-+
- /**
-  * iort_set_fwnode() - Create iort_fwnode and use it to register
-  *		       iommu data in the iort_fwnode_list
-@@ -1596,7 +1612,7 @@ static void __init iort_init_platform_devices(void)
- 		iort_enable_acs(iort_node);
- 
- 		ops = iort_get_dev_cfg(iort_node);
--		if (ops) {
-+		if (ops && !acpi_smmu_disabled) {
- 			fwnode = acpi_alloc_fwnode_static();
- 			if (!fwnode)
- 				return;
+ 	priv->irq_domain = irq_domain_add_hierarchy(parent, 0, IRQC_NUM_IRQ,
 -- 
-1.8.3.1
+2.25.1
 
