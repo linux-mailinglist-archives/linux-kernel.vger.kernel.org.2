@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A2240CDD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4974140CDD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhIOUUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
+        id S232208AbhIOUUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbhIOUUd (ORCPT
+        with ESMTP id S232062AbhIOUUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:20:33 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE01C0613C1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:11 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id f22so4933447qkm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:11 -0700 (PDT)
+        Wed, 15 Sep 2021 16:20:38 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4606AC0613E0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:14 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id b14so3608578qtb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IjkKpbsOxtTLRzIMIRjss6tASIT031WBS0F4FaC661o=;
-        b=NsR01QR1nDuiFpi9f+jX2Vt5AXHErqLS4DoCkeN1aYkVfSCLubVO5nk3E1duUnwA7y
-         XRoKx30/JUaooaSWxQKFyLuDy/xwfyoQ0PUuFFDGxsBU63xh69T0Lgh3PYiH2bAgH0hD
-         wLieKG/lrcfStyVIr5Xx8s1wDnyS2Osb0+hEza/a+bgLsBjBqau10PV7sRaI1Rrq+tmA
-         WWX/nWntsqnffvdq100PkRCWsXoL15NxaREdfimqT8XOSw439TGvlECD1nQHGzRrIbW0
-         8XX+/frzSur16a9Qck9QgOJ9Q2actIuTomn5LvCHAw8wIah2vpWGaoE/RwpBvbK8gIgt
-         2usg==
+        bh=h/GsHeyvvkKJdskTxdNmQ/rhjzzyIPbBxi6Rx6oGxp0=;
+        b=OPLjVdWj/J6qm2GAbb9pCHOHcNwy/EUQDdiWSwEfafPVyJzDOdHnIfhn3wJIZLw8tv
+         O72oEqxtXbhBgHf+0NjMZT9HyH4iJe+yyEVsIvqUzuLGkZUL7lnJD1g8e+81dn74PN2s
+         5s+EgXdbDDy+xXgxe5ulH3dSFjiIoN6fJ6PAYB9U5wQ6x+jkDksnBnK8mcwc3K8cYuJZ
+         zgGolzYS4dMIpWyxawfgKfRNVVGv/bOMUEIoDROubFDF9QY/G7GNPs+883u463uGKDLg
+         G8616MvtX89q0g/+/BHVXTLcMjzeo8/gdtKyhvHfdw64cqb2/giPgLHSgMhZKnMinyNN
+         Ddmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IjkKpbsOxtTLRzIMIRjss6tASIT031WBS0F4FaC661o=;
-        b=Y+ySqbIj4m4bjjSQ5XAd1LDlTmCAjWYs+jU2YY0706kFYAGXL2KFNkijjsz8hlrZSW
-         BQS7Xu4PQ0CzmRnjnNp5GYlCNtscpRmQHO/K2qN+rWkgPyIx1Zei2BrOkqKtMtb0voGx
-         YNUMnIfw7VEqXZXkyypjSq3EYenQ+gY6qb8pbDwIua5iftMWATXt0i0/nwFlrpQwyx3M
-         OfhWQ5/q22YAWEiFsPMbfxvzzpg48E6q0CNTajoX/OVWNQ4dAEygHt7a3Bbqz79MbOG1
-         tR/vKv4mEn+gxoGLtdT0AtP7OU82H6d2zoMd7lY0mAvB8QUuUP2j0NmpPfOLRNNYwC3H
-         bhkg==
-X-Gm-Message-State: AOAM532j5oL56kxlp708Cu1AEa9ulD2NyeYTVpaSwtJ6Nk6MUWYL1To2
-        xc/Zvul0EBQ7W/SUV67I7rq8ErWiMDeocw==
-X-Google-Smtp-Source: ABdhPJzGaVaPmN/ZRRmux31NxHdMbfPHZSvr8nFu9oEOEurSgh/CvDC6wjBAoBgHgNZaDd0P6VjFNw==
-X-Received: by 2002:ae9:c007:: with SMTP id u7mr1838430qkk.271.1631737150846;
-        Wed, 15 Sep 2021 13:19:10 -0700 (PDT)
+        bh=h/GsHeyvvkKJdskTxdNmQ/rhjzzyIPbBxi6Rx6oGxp0=;
+        b=AC26zSSRhBwomLGgkXLJKZfO3bk/q1sDZwY5aUNCcjCLHg6WGvo+3kU05wkSo0IZJV
+         XMnA+o8kYJeyiZwVKoMmtZFzXn4YL/kEhEm4JBRx4M8tEhKhxoywwMz5/eAW2L7ru8FK
+         97LEM5TCoKw/dsGf+lsbK4snkRKYudXE0Ib/hPtDiHCSErO+7PvQdSVUip88+eRmTtjr
+         6up4B83k2xjJ03vG1yOiE+jlBnvh9ncCXJvT3PQKo11S2VZsrudAkzPYvob5BQY4ovm3
+         nIM6CUCNr8xX5bodvMmRB0FweixYiPS6bdbSvOsrszhF8bAElNdeQs83Fi4mSaulEaQL
+         SG3w==
+X-Gm-Message-State: AOAM532NljFyUCpRoszJj7HZaABqgYIo1uJ9HJLfef/7BHRMLQ4xYK61
+        EvI+YxBngZf/j9SYiV0D7kg=
+X-Google-Smtp-Source: ABdhPJxZ1EBd1dS8DIl61uigIBDjQDvMDAwA6xYfYIZQ2gxXT9JtaQR3cQE41+4hbxcJ3UUEh6sbcw==
+X-Received: by 2002:a05:622a:44e:: with SMTP id o14mr1717786qtx.33.1631737153540;
+        Wed, 15 Sep 2021 13:19:13 -0700 (PDT)
 Received: from debianG.lan ([181.166.206.110])
-        by smtp.gmail.com with ESMTPSA id g8sm752834qkm.25.2021.09.15.13.19.08
+        by smtp.gmail.com with ESMTPSA id g8sm752834qkm.25.2021.09.15.13.19.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 13:19:10 -0700 (PDT)
+        Wed, 15 Sep 2021 13:19:13 -0700 (PDT)
 From:   Gaston Gonzalez <gascoar@gmail.com>
 To:     linux-staging@lists.linux.dev
 Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
         linux-kernel@vger.kernel.org, gascoar@gmail.com
-Subject: [PATCH 6/7] staging: vchiq_arm: remove extra blank line
-Date:   Wed, 15 Sep 2021 17:18:23 -0300
-Message-Id: <20210915201824.413202-6-gascoar@gmail.com>
+Subject: [PATCH 7/7] staging: vchiq_arm: use __func__ to get function name in debug message
+Date:   Wed, 15 Sep 2021 17:18:24 -0300
+Message-Id: <20210915201824.413202-7-gascoar@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210915201824.413202-1-gascoar@gmail.com>
 References: <20210915201824.413202-1-gascoar@gmail.com>
@@ -69,27 +69,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary blank line.
+Avoid hardcoded function name using "%s", __func__. This prevents
+potential naming conflict if the function is eventually renamed.
 
 Reported by checkpatch.pl
 
 Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
 ---
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
-index e8e39a154c74..8f5182df17b6 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
-@@ -151,7 +151,6 @@ vchiq_dump_service_use_state(struct vchiq_state *state);
- extern struct vchiq_arm_state*
- vchiq_platform_get_arm_state(struct vchiq_state *state);
- 
--
- extern enum vchiq_status
- vchiq_use_internal(struct vchiq_state *state, struct vchiq_service *service,
- 		   enum USE_TYPE_E use_type);
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index 3225f0738ef9..fcff2e5bd73f 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -1025,7 +1025,7 @@ service_callback(enum vchiq_reason reason, struct vchiq_header *header,
+ 			spin_unlock(&msg_queue_spinlock);
+ 			DEBUG_TRACE(SERVICE_CALLBACK_LINE);
+ 			DEBUG_COUNT(MSG_QUEUE_FULL_COUNT);
+-			vchiq_log_trace(vchiq_arm_log_level, "service_callback - msg queue full");
++			vchiq_log_trace(vchiq_arm_log_level, "%s - msg queue full", __func__);
+ 			/*
+ 			 * If there is no MESSAGE_AVAILABLE in the completion
+ 			 * queue, add one
 -- 
 2.33.0
 
