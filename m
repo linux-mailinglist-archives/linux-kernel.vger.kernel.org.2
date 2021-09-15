@@ -2,99 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BB540C4E0
+	by mail.lfdr.de (Postfix) with ESMTP id D5B3F40C4E2
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237880AbhIOMFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
+        id S237929AbhIOMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237913AbhIOMFK (ORCPT
+        with ESMTP id S237894AbhIOMFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:05:10 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F45C061793;
-        Wed, 15 Sep 2021 05:03:38 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so4639856wmc.0;
-        Wed, 15 Sep 2021 05:03:38 -0700 (PDT)
+        Wed, 15 Sep 2021 08:05:11 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40F7C0617A8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:03:42 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id h9so2599367ile.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 05:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1v2Wz7r3SRYsAbKV8aTYHRg0UikNp3UThAxS/q0C7w0=;
-        b=pJcFYnCZ8mO09t/6PwPkutiVf+XGgNkmftb1IuFOZXt0/x8j+s+H4eR/7UzdUyAM7C
-         khmxYCeBsk4uAVQx1i5PBYDwZDOe1u4KMw7JhoEhPakkRCo07QdtkH78Av2fCGSCH23k
-         3tzcnXxsXbOmAA+3woN6NKipC2prvgM5pg2d5oNyapMVCSG76VHvDSlU3Ix092eObs/m
-         tIvMspswgtt18S75p/g/AFfAvzdUNtgTU0b5waeZvuFG94lnkhM70LxRHlieept0Wtwv
-         v3g441vIHUDTNNB7NdeljkjO2Hf05FLuZ2v7ZA9FeT3bISHeLqTis7rkzi3f6p+yHoUP
-         g8RA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=0DYzuAI6CXvEv/jdcOY5M2IDjyaraJThjqT9IsyfkYU=;
+        b=GOymzMPR7rK4rxKwdA1D3AvnIXSEZ6IJXxmLiM4QnwcK4Gb98DlPP9B1yWL2v+l2c0
+         /sKYorDz4ZDsty+V394UzIFIdE9mp8OfBRqMyzZQqNSlUfehT1kF4Hq6LcfYtPhVHB0C
+         9Pzd4goGB8sG/y1hBm7h9Bko0RyW4K5xR3XjJltuR7o7JC+N/1Twescps0V4yvlCojEd
+         j44U4eGUeMjHxT2Wm7efF7o2g1Jku3fBWhGpPRW1y0RYoW+F2dopm4nd2+HcOo27Zqme
+         yD7La6U6zZ9jRfY1nC6XmVoZ4FBUnm4ExCr/gLPFThf//8bTa4sT4pDq39edWHYhiJLM
+         RF+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1v2Wz7r3SRYsAbKV8aTYHRg0UikNp3UThAxS/q0C7w0=;
-        b=L6gN/BGDlySFbELRW0q8qEPOtKgT27PpEm3RPcHidfjZVpY50fqGt2JY085DBllerk
-         32PNUULtuGt2e51LI145U3sEYb9/frhmwKiQQ4r+jbc3waY5JmL4wOJ3Op6o6jRf+iAj
-         EEAmm8acmI8ECgUfIe0Gs2dm6ZVEoHg3hwyj2tEApA15annxm2BDmO9eJKbPJ42j98MC
-         uf1W2dEE7CvhAiq7CVJnc8VN5r4SFVLPeT1i8M/RCBIY4EHnIITi32K13fJc7Gle0txT
-         B27JREWmq0V2AkVX/NJnU5M6cVZDcC7lTPSMIANltH5DSzfBd1SlPk+wPIYWDg3bM3H9
-         18Rg==
-X-Gm-Message-State: AOAM532WxVPZUuEKYw7VN21/hT4uH6qgBTQbA4ypDG1nDBYLZC0zSnBL
-        6Z8crsE/hK9eXepG17NGkPJTUeeD4vav0y/C
-X-Google-Smtp-Source: ABdhPJzj+iZK8kf6OaDYgEGXfwizWgHXHzrMImbX/tAurZLPWH3d0i0/2suPJkytb2HGqkkfixSqyw==
-X-Received: by 2002:a05:600c:35c4:: with SMTP id r4mr4201100wmq.194.1631707417203;
-        Wed, 15 Sep 2021 05:03:37 -0700 (PDT)
-Received: from hthiery.kontron.local ([213.135.10.150])
-        by smtp.gmail.com with ESMTPSA id p21sm4255497wmi.30.2021.09.15.05.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 05:03:36 -0700 (PDT)
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: [PATCH] arm64: dts: imx8mm-kontron-n801x-som: do not allow to switch off buck2
-Date:   Wed, 15 Sep 2021 14:03:26 +0200
-Message-Id: <20210915120325.20248-1-heiko.thiery@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=0DYzuAI6CXvEv/jdcOY5M2IDjyaraJThjqT9IsyfkYU=;
+        b=Kzxl8cJqtZjuUWIhD/Sew0Qnk+fY9N/KV36cjnDt4/KNDw/ut7LBrlHC2UuCnbU12I
+         xnbWyH/wIUXc4nrH+uEC1alFZntPErlHmn75vljiXryIeK1cI6GxJ1CNUd/N10LXrWlX
+         EZ2JS5zC9dlhXvsOl6foxXiLk9TroI86VDKGqsQExSL4Jy2hFMz5mlRRGafAZgR1FBAg
+         4SOOR3kOAQqMGWFwCoLAqvE0aayLFByHNjn3uhP4d4FhGYlUpNV7HmhW1dNPJJ0rlZRX
+         VeqXrqNcQ1Gumu/j9S+nhAS23rcMSiDn/ruqQln/FeiyP76fj/wqcw+Fm/oeLUbLiEKn
+         6llQ==
+X-Gm-Message-State: AOAM530DzTPRYPhdf8IA67uYoqohuhmk2ZWBMu3trqFrxYLaOsCxp/NU
+        ZZmQEkbkOjxMQEp3unpdPKietS73SznCz4cYMR4=
+X-Google-Smtp-Source: ABdhPJz6VLx0oR+3yp8kBszhdJBc1v0DQcm/vcib/djvD8yb51UTQBxc5q14MgWtjTnCM9eM+3RBRvZdmhnKFsznjXI=
+X-Received: by 2002:a92:d90a:: with SMTP id s10mr13955196iln.175.1631707422144;
+ Wed, 15 Sep 2021 05:03:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a92:6404:0:0:0:0:0 with HTTP; Wed, 15 Sep 2021 05:03:41
+ -0700 (PDT)
+Reply-To: dwilliamssdavid16@gmail.com
+From:   "Mr.David Williams" <chukwuagoziek@gmail.com>
+Date:   Wed, 15 Sep 2021 05:03:41 -0700
+Message-ID: <CAM5FDUX_gmCktLeYooK-79QwZtRuU-=fGnzdXkSrOVwS+Lq0ww@mail.gmail.com>
+Subject: Get back to me for clarifications
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The buck2 output of the PMIC is the VDD core voltage of the cpu.
-Switching off this will poweroff the CPU. Add the 'regulator-always-on'
-property to avoid this.
-
-Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
-Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
----
- arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-index d0456daefda8..9db9b90bf2bc 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
-@@ -102,6 +102,7 @@ reg_vdd_arm: BUCK2 {
- 				regulator-min-microvolt = <850000>;
- 				regulator-max-microvolt = <950000>;
- 				regulator-boot-on;
-+				regulator-always-on;
- 				regulator-ramp-delay = <3125>;
- 				nxp,dvs-run-voltage = <950000>;
- 				nxp,dvs-standby-voltage = <850000>;
 -- 
-2.30.0
+Hello Sir.
 
+Did you authorize Mr. Liu Kong Nam of Kemuning Ray Street
+NO.8,Tomang.Jakarta, Indonesia to pay the pending wire transfer
+activation charges and claim your WORLD BANK / IMF compensation funds
+of Four million two hundred thousand US dollars???
+
+Get back to me for clarifications
+
+Mr. David Williams
