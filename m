@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8719C40C0F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C25F40C108
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 09:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236528AbhIOHxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 03:53:54 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:52468 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231480AbhIOHxw (ORCPT
+        id S236759AbhIOH4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 03:56:15 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:58266 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231591AbhIOH4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 03:53:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UoSjlhR_1631692352;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0UoSjlhR_1631692352)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 15 Sep 2021 15:52:32 +0800
-Date:   Wed, 15 Sep 2021 15:52:32 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, tiwei.bie@intel.com,
-        wei.yang1@linux.alibaba.com
-Subject: Re: [PATCH] vhost_vdpa: unset vq irq before freeing irq
-Message-ID: <20210915075232.GA18977@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <02637d38dcf4e4b836c5b3a65055fe92bf812b3b.1631687872.git.wuzongyong@linux.alibaba.com>
- <20210915032510-mutt-send-email-mst@kernel.org>
+        Wed, 15 Sep 2021 03:56:08 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18F4Znfl030341;
+        Wed, 15 Sep 2021 09:54:41 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=sMaBAxlvyiQCJ60a+vAyfTRUZu4RuizXruZcAcstzRo=;
+ b=0YVzvZIlJg1T5x3yZ8uRA1UpZsH+m1UE9ExqueP02XfnBVE+o84aGn7rIvDl1WUBMU20
+ uhajihpJflqIGJjQHtLWbP+1XP4DiprVq4iptM2bVcy6clYlqkMJUuJDxRrX6biMpZ1Y
+ cq7L07NNzNbWv8XEmbuQkdVydMUZUGpuJclqfGhgz+bgr2evzOjkE6RDE2rXsRqdIi7i
+ eUMawKLp0aaH7L5hVRv7aWwF+yOLh975tXkN78GVBSjHiZ9UGYHE86iWHqVOv4WByXGI
+ SKZB3dez08rUHqaPxUyufQSXElg7ItrzPME6Y7SkYH/lmsW5STY0037hiD5KhxrOk2/K ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b39xps1q8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Sep 2021 09:54:41 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 66CD310002A;
+        Wed, 15 Sep 2021 09:54:40 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5277A21C7BD;
+        Wed, 15 Sep 2021 09:54:40 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 15 Sep 2021 09:54:40
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>,
+        <robh+dt@kernel.org>, <alexandre.torgue@foss.st.com>
+CC:     <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <amelie.delaunay@foss.st.com>,
+        <fabrice.gasnier@foss.st.com>
+Subject: [PATCH 0/3] usb: dwc2: fill in gadget caps, configure it for stm32mp15
+Date:   Wed, 15 Sep 2021 09:54:30 +0200
+Message-ID: <1631692473-8732-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915032510-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-15_01,2021-09-14_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:26:41AM -0400, Michael S. Tsirkin wrote:
-> On Wed, Sep 15, 2021 at 02:39:32PM +0800, Wu Zongyong wrote:
-> > Currently we unset vq irq after freeing irq and that will result in
-> > error messages:
-> > 
-> >   pi_update_irte: failed to update PI IRTE
-> >   irq bypass consumer (token 000000005a07a12b) unregistration fails: -22
-> > 
-> > This patch solves this.
-> > 
-> > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> > ---
-> >  drivers/vhost/vdpa.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > index f41d081777f5..15bae2290bf9 100644
-> > --- a/drivers/vhost/vdpa.c
-> > +++ b/drivers/vhost/vdpa.c
-> > @@ -173,6 +173,10 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
-> >  	if (status != 0 && (ops->get_status(vdpa) & ~status) != 0)
-> >  		return -EINVAL;
-> >  
-> > +	if ((status_old & VIRTIO_CONFIG_S_DRIVER_OK) && !(status & VIRTIO_CONFIG_S_DRIVER_OK))
-> > +		for (i = 0; i < nvqs; i++)
-> > +			vhost_vdpa_unsetup_vq_irq(v, i);
-> > +
-> 
-> If we do this before reset like this then the device might assert the
-> irq, might it not?
-> 
-This would not be a problem.
-AFAIK, vhost_vdpa_unsetup_vq_irq just disables the irq offloading, and the irq
-will be handled if there comes an irq.
-> >  	if (status == 0) {
-> >  		ret = ops->reset(vdpa);
-> >  		if (ret)
-> 
-> 
-> > @@ -184,10 +188,6 @@ static long vhost_vdpa_set_status(struct vhost_vdpa *v, u8 __user *statusp)
-> >  		for (i = 0; i < nvqs; i++)
-> >  			vhost_vdpa_setup_vq_irq(v, i);
-> >  
-> > -	if ((status_old & VIRTIO_CONFIG_S_DRIVER_OK) && !(status & VIRTIO_CONFIG_S_DRIVER_OK))
-> > -		for (i = 0; i < nvqs; i++)
-> > -			vhost_vdpa_unsetup_vq_irq(v, i);
-> > -
-> >  	return 0;
-> 
-> 
-> 
-> >  }
-> >  
-> > -- 
-> > 2.31.1
+This patchset fills in 'otg_caps' of the usb_gadget structure, and configures it
+on stm32mp15.
+
+When dwc2 is configured as dual role (OTG), the USB gadget descriptors (device mode)
+are configured via configfs. This lead in calling usb_otg_descriptor_init().
+In usb_otg_descriptor_init() (drivers/usb/gadget/config.c):
+- If otg caps structure is provided -> use it
+- If otg caps structure isn't provided -> HNP and SRP are enabled by default
+
+This could lead to a configuration mismatch beetween:
+- OTG controller: HNP and SRP aren't enabled
+- gadget descriptors: HNP and SRP are advertised
+
+Fabrice Gasnier (3):
+  usb: dwc2: add otg_rev and otg_caps information for gadget driver
+  usb: dwc2: stm32mp15: set otg_rev
+  ARM: dts: stm32: set otg-rev on stm32mp151
+
+ arch/arm/boot/dts/stm32mp151.dtsi |  1 +
+ drivers/usb/dwc2/core.h           |  7 +++++++
+ drivers/usb/dwc2/gadget.c         |  1 +
+ drivers/usb/dwc2/params.c         | 16 ++++++++++++++++
+ 4 files changed, 25 insertions(+)
+
+-- 
+2.7.4
+
