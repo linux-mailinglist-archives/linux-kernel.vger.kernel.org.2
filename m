@@ -2,79 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B92340CDE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2106740CDED
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbhIOUYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:24:31 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41123 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbhIOUYa (ORCPT
+        id S231592AbhIOU3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231562AbhIOU3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:24:30 -0400
-Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 88F46221E6;
-        Wed, 15 Sep 2021 22:23:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1631737388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AZkOIOVxYEU9K3hL387iMzqC693gOZa4X6dtkYrx7z0=;
-        b=wEhO+9KE3mVREpOA4yzw/wQjrXm9kVIhgNqnUx1uG1JBlZiKL1OjsTSkX1d2c6F7Ii3gM+
-        5wzW5h68aWwT1binubXnUByRPO5fJmPlaxrhZEDOVhxD0GYFeZu3eieSA3K8VRpNqakAcD
-        zObniXfmtvqpDghZt1oY4/haep5bEZs=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>, Yinbo Zhu <yinbo.zhu@nxp.com>,
-        Ashish Kumar <Ashish.Kumar@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] arm64: dts: ls1028a: fix eSDHC2 node
-Date:   Wed, 15 Sep 2021 22:22:59 +0200
-Message-Id: <20210915202259.3000923-1-michael@walle.cc>
-X-Mailer: git-send-email 2.30.2
+        Wed, 15 Sep 2021 16:29:20 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488E2C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:27:59 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id n4so2348596plh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c8j9nsjhP2CcVqLcJ5koWV2E4sy0xlWdjoLtmRXdgCg=;
+        b=jkup3/kcPwTReHA24WpMPddFFrhMEhKMphFyQO1XPxmIVWkkYHxUkdqyGZsSDwO6Th
+         gcGHfPoTptuJ+dxjHSb3ODGGRst4zTjhrQfEc+pp1qiZCIlixdwtrfkVnC5HqGNgIlWU
+         oetU8cus/vZuKTzJTw3r0JBrbFVcZ9sDDGNuPOexdqEPud/eOsmN0PAvogegnnY8IsGK
+         4+C7S6Ab74wIZ4wMt0ZEyudDwwxIjtjAbqt33tQqjngfZqo7JObEEhk5FtqmM6JBOr6k
+         XEmGhLwciJVvzzmDGsiU9CyL8oIDvis9stbORqZvLTP/eDpMjSXJ+ggpmoIrp4Dzr/b4
+         CggQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c8j9nsjhP2CcVqLcJ5koWV2E4sy0xlWdjoLtmRXdgCg=;
+        b=U8yaPsPBtS6hm8yLxHMFYjmqdUDD4TIOrvVaZFR4xZlGb6TXcFZwaIGBWuGpuuGwCI
+         3UGAR/T6ZHl8tnzv+Qz8QuaiS8VwffHhTLEhbLwRR++OQR6r38qQ7LXQcFaw5Gj8saW6
+         yl6F8O/zJgcH3ySaWc8E4lrvyt+x3ut11fRUSORpi/ExMa/mp4bT7fKETF8TJxp5+rFg
+         Nxv6hhrT/4OR83RAaiVj9f3dHusmYtEhDiaPAXmuCpLkEHu+OTS4NAfRtKLNXCvonTKX
+         PCw8DHhMY8+EQfKztmWq84pThz4OYgIuLi0ogqMy6ytpsv20ImpcRSN93JzKlLPw2xVJ
+         7Xbw==
+X-Gm-Message-State: AOAM5303MlDE6tylnlXe1nNQNwVNqUqDzTaGQL/HLMjdOEcHB7A/NGgQ
+        WJCnPAA1PBLFl8PS4T9hP3ZCYWt4PfFWJe+SBzo8HA==
+X-Google-Smtp-Source: ABdhPJxdbwsiNFAPFJzgMiZUrKLnJg5JYCGH4ScDO+XBYA8/7hWrT+jQ4CgyR0FRoleB5jMwSOTL7HpsnFFgji7O8XY=
+X-Received: by 2002:a17:90a:f18f:: with SMTP id bv15mr1684157pjb.93.1631737678623;
+ Wed, 15 Sep 2021 13:27:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210914233132.3680546-1-jane.chu@oracle.com> <CAPcyv4h3KpOKgy_Cwi5fNBZmR=n1hB33mVzA3fqOY7c3G+GrMA@mail.gmail.com>
+ <516ecedc-38b9-1ae3-a784-289a30e5f6df@oracle.com> <20210915161510.GA34830@magnolia>
+In-Reply-To: <20210915161510.GA34830@magnolia>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 15 Sep 2021 13:27:47 -0700
+Message-ID: <CAPcyv4jaCiSXU61gsQTaoN_cdDTDMvFSfMYfBz2yLKx11fdwOQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] dax: clear poison on the fly along pwrite
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Jane Chu <jane.chu@oracle.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the LS1028A this instance of the eSDHC controller is intended for
-either an eMMC or eSDIO card. It doesn't provide a card detect pin and
-its IO voltage is fixed at 1.8V.
+On Wed, Sep 15, 2021 at 9:15 AM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> On Wed, Sep 15, 2021 at 12:22:05AM -0700, Jane Chu wrote:
+> > Hi, Dan,
+> >
+> > On 9/14/2021 9:44 PM, Dan Williams wrote:
+> > > On Tue, Sep 14, 2021 at 4:32 PM Jane Chu <jane.chu@oracle.com> wrote:
+> > > >
+> > > > If pwrite(2) encounters poison in a pmem range, it fails with EIO.
+> > > > This is unecessary if hardware is capable of clearing the poison.
+> > > >
+> > > > Though not all dax backend hardware has the capability of clearing
+> > > > poison on the fly, but dax backed by Intel DCPMEM has such capability,
+> > > > and it's desirable to, first, speed up repairing by means of it;
+> > > > second, maintain backend continuity instead of fragmenting it in
+> > > > search for clean blocks.
+> > > >
+> > > > Jane Chu (3):
+> > > >    dax: introduce dax_operation dax_clear_poison
+> > >
+> > > The problem with new dax operations is that they need to be plumbed
+> > > not only through fsdax and pmem, but also through device-mapper.
+> > >
+> > > In this case I think we're already covered by dax_zero_page_range().
+> > > That will ultimately trigger pmem_clear_poison() and it is routed
+> > > through device-mapper properly.
+> > >
+> > > Can you clarify why the existing dax_zero_page_range() is not sufficient?
+> >
+> > fallocate ZERO_RANGE is in itself a functionality that applied to dax
+> > should lead to zero out the media range.  So one may argue it is part
+> > of a block operations, and not something explicitly aimed at clearing
+> > poison.
+>
+> Yeah, Christoph suggested that we make the clearing operation explicit
+> in a related thread a few weeks ago:
+> https://lore.kernel.org/linux-fsdevel/YRtnlPERHfMZ23Tr@infradead.org/
 
-Remove the bogus broken-cd property, instead add the non-removable
-property. Fix the voltage-ranges property and set it to 1.8V only.
+That seemed to be tied to a proposal to plumb it all the way out to an
+explicit fallocate() mode, not make it a silent side effect of
+pwrite(). That said pwrite() does clear errors in hard drives in
+not-DAX mode, but I like the change in direction to make it explicit
+going forward.
 
-Fixes: 491d3a3fc113 ("arm64: dts: ls1028a: Add esdhc node in dts")
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> I like Jane's patchset far better than the one that I sent, because it
+> doesn't require a block device wrapper for the pmem, and it enables us
+> to tell application writers that they can handle media errors by
+> pwrite()ing the bad region, just like they do for nvme and spinners.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index ef771bfad11c..8cee1f79e5c0 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -407,9 +407,9 @@ esdhc1: mmc@2150000 {
- 			interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <0>; /* fixed up by bootloader */
- 			clocks = <&clockgen QORIQ_CLK_HWACCEL 1>;
--			voltage-ranges = <1800 1800 3300 3300>;
-+			voltage-ranges = <1800 1800>;
- 			sdhci,auto-cmd12;
--			broken-cd;
-+			non-removable;
- 			little-endian;
- 			bus-width = <4>;
- 			status = "disabled";
--- 
-2.30.2
+pwrite(), hmm, so you're not onboard with the explicit clearing API
+proposal, or...?
 
+> > I'm also thinking about the MOVEDIR64B instruction and how it
+> > might be used to clear poison on the fly with a single 'store'.
+> > Of course, that means we need to figure out how to narrow down the
+> > error blast radius first.
+
+It turns out the MOVDIR64B error clearing idea runs into problem with
+the device poison tracking. Without the explicit notification that
+software wanted the error cleared the device may ghost report errors
+that are not there anymore. I think we should continue explicit error
+clearing and notification of the device that the error has been
+cleared (by asking the device to clear it).
+
+> That was one of the advantages of Shiyang Ruan's NAKed patchset to
+> enable byte-granularity media errors
+
+...the method of triggering reverse mapping had review feedback, I
+apologize if that came across of a NAK of the whole proposal. As I
+clarified to Eric this morning, I think the solution is iterating
+towards upstream inclusion.
+
+> to pass upwards through the stack
+> back to the filesystem, which could then tell applications exactly what
+> they lost.
+>
+> I want to get back to that, though if Dan won't withdraw the NAK then I
+> don't know how to move forward...
+
+No NAK in place. Let's go!
+
+>
+> > With respect to plumbing through device-mapper, I thought about that,
+> > and wasn't sure. I mean the clear-poison work will eventually fall on
+> > the pmem driver, and thru the DM layers, how does that play out thru
+> > DM?
+>
+> Each of the dm drivers has to add their own ->clear_poison operation
+> that remaps the incoming (sector, len) parameters as appropriate for
+> that device and then calls the lower device's ->clear_poison with the
+> translated parameters.
+>
+> This (AFAICT) has already been done for dax_zero_page_range, so I sense
+> that Dan is trying to save you a bunch of code plumbing work by nudging
+> you towards doing s/dax_clear_poison/dax_zero_page_range/ to this series
+> and then you only need patches 2-3.
+
+Yes, but it sounds like Christoph was saying don't overload
+dax_zero_page_range(). I'd be ok splitting the difference and having a
+new fallocate clear poison mode map to dax_zero_page_range()
+internally.
+
+>
+> > BTW, our customer doesn't care about creating dax volume thru DM, so.
+>
+> They might not care, but anything going upstream should work in the
+> general case.
+
+Agree.
