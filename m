@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9A940C45E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674B840C467
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 13:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhIOL2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 07:28:23 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55108
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232526AbhIOL2W (ORCPT
+        id S232771AbhIOLbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 07:31:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41842 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhIOLbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 07:28:22 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Wed, 15 Sep 2021 07:31:50 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 005722207D;
+        Wed, 15 Sep 2021 11:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631705431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UOkCjvFoaNxGNbGFWeeVQVHJtZCjHhgLPxx+uerfl10=;
+        b=HNke4/c6CnQ8nnlErjOvekgpXVSQXjWl4Ol2+/tLgrRlknDlrVnGAlJb48fXnI99PKyxch
+        OYd1ItE4KjwfkP1Zku3mE76kBPFNJ8txDsFMjiMkJFJOsTZYn4j5Fetseg8i3S8mO1/f1k
+        /jZcCmJ85qh1RlBqZrqrlIGfiLDUXFU=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 74E0E3F245;
-        Wed, 15 Sep 2021 11:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631705222;
-        bh=cc3O1bxDlaxpZJKHx5bBL2k1ahxsr3eUxsuOrkSwHes=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=TXL8wXtA8ZNQjBox1VLATAG9KebKRJQ75kVbfVXhc+YmCZgVMdKMdP78idKG6W7D0
-         71deGXXjILTv7+HKK7/6DrDKopGZCIe3eAbWY+VTXbJN2Ma36v6YdTFyDQbBLxWaHJ
-         i8F38dQ0tYY2My/9FVqViYzt3tVD/BbhesJd9bgKtO0iM3eICVCn/MWd+nRn6uR6T1
-         eUIocUimfXiBQQbiMPL+jpoH8xAjTVlK2y108xWUr0sjStXHCsfx0ZR3yoxKcYhlTZ
-         BzNy44x8kz8vCzH64XEphHCXwJCpE+hDjMZYyMwxe9BpI4fXPHCAUvA0r2JHHjRo8G
-         l+6oEltjH/T0w==
-From:   Colin King <colin.king@canonical.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/i915: make array states static const
-Date:   Wed, 15 Sep 2021 12:27:02 +0100
-Message-Id: <20210915112702.12783-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        by relay2.suse.de (Postfix) with ESMTPS id 7DE1EA3BA3;
+        Wed, 15 Sep 2021 11:30:30 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 13:30:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/page_alloc: detect allocation forbidden by cpuset
+ and bail out early
+Message-ID: <YUHZU4OHaJy3WtRk@dhcp22.suse.cz>
+References: <1631590828-25565-1-git-send-email-feng.tang@intel.com>
+ <3bd87d8a-d09e-ac7-1d1d-25ad1b9d5ed9@google.com>
+ <20210915053247.GG56674@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915053247.GG56674@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed 15-09-21 13:32:47, Feng Tang wrote:
+> On Tue, Sep 14, 2021 at 05:30:03PM -0700, David Rientjes wrote:
+[...]
+> > I'm wondering about a single node nodemask, for example, where all 
+> > ZONE_NORMAL memory is hot-removed.
 
-Don't populate the read-only array states on the stack but instead it
-static. Also makes the object code smaller.
+While this is theoretically possible it is highly unlikely to happen.
+Non movable memory just takes one kernel allocation to prevent any
+hotremove operation to finish. I have to say I was not aware of the
+hotplug callback. It all seems rather suspicious. I will have a look.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_display_power.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Anyway something worth having covered "just in case". Thanks for
+pointing it out.
+ 
+> Thanks for the reminding! Yes, memory hot remove can change the
+> cpuset's effective nodemask, we may need to add similar check inside
+> cpuset_hotplug_update_tasks() which is called by cpuset_hotplug_workfn(), 
+> something like below?
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 7fa633e..d5f6776 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3186,6 +3186,14 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+>  	cpus_updated = !cpumask_equal(&new_cpus, cs->effective_cpus);
+>  	mems_updated = !nodes_equal(new_mems, cs->effective_mems);
+>  
+> +	if (mems_updated && !cpusets_insane_config() &&
+> +		movable_only_nodes(new_mems)) {
+> +		static_branch_enable(&cpusets_insane_config_key);
+> +		pr_info("Unsupported (movable nodes only) cpuset configuration detected (nmask=%*pbl) after memory hotplug."
+> +			"Cpuset allocations might fail even with a lot of memory available.\n",
+> +			nodemask_pr_args(new_mems);
+> +	}
 
-diff --git a/drivers/gpu/drm/i915/display/intel_display_power.c b/drivers/gpu/drm/i915/display/intel_display_power.c
-index cce1a926fcc1..a60710348613 100644
---- a/drivers/gpu/drm/i915/display/intel_display_power.c
-+++ b/drivers/gpu/drm/i915/display/intel_display_power.c
-@@ -893,7 +893,7 @@ static u32
- sanitize_target_dc_state(struct drm_i915_private *dev_priv,
- 			 u32 target_dc_state)
- {
--	u32 states[] = {
-+	static const u32 states[] = {
- 		DC_STATE_EN_UPTO_DC6,
- 		DC_STATE_EN_UPTO_DC5,
- 		DC_STATE_EN_DC3CO,
+Please create a helper rather than two copies of the same. Thanks!
+> +
+>  	if (is_in_v2_mode())
+>  		hotplug_update_tasks(cs, &new_cpus, &new_mems,
+>  				     cpus_updated, mems_updated);
+> 
+> Thanks,
+> Feng
+
 -- 
-2.32.0
-
+Michal Hocko
+SUSE Labs
