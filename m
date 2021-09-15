@@ -2,84 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A976240BF7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427D240BF81
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 07:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236409AbhIOF4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 01:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbhIOF4m (ORCPT
+        id S236440AbhIOF4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 01:56:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27388 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236455AbhIOF4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 01:56:42 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468C7C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:55:24 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id a15so1971460iot.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pDVy5greG+8lJq19uaFSJH6Nx+KYNP3FKOVqZ9npFqs=;
-        b=Y/V0rwFV+HU9UBCFwl9995ScbzjiT5skefdea+1qtSDSla/NnMfNdtET/4SQHsvQRd
-         6Pt/cizw7X8K7R8B3o/SzTJl//+oIzAlwr3/5cypMr7HGLnZLJKixgYHsy6uuSUkr4iI
-         qxku3/wP2K8x+QmSyh+BTPau675a6IawkRg0gOFsTXsjyaKqXdkB2lkqYnQV5Dt6NiB3
-         2FRMMxFcYGeT2DXfwsz93uwNeUSX53tysbEJ8MscSvRUbd9jsv0kNzFhcnyX54BeEcYN
-         BK7d070hL8dw6Hb8AXMGE6d5dFj8I03OU14CHABlvdJbm+vd4zQKZmkA1kaUNJB2hLZI
-         Qb0g==
+        Wed, 15 Sep 2021 01:56:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631685328;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DwJ1KTIB7hUlgx6Gbyk1HsMO32BArQQYzWt/TxPxbA=;
+        b=X4GjWFRqe7FbHz5B2lB3W+zWfNdJuaUF6+RehC/3TuyL85TTOcNEhKBV6B5LezWYPvAvxN
+        Hgdi6YKGOApa4ZSRf2C078coosnTZ/gPuL0ioBhkLCfk+0YnFSGtAf2UNoluNkIq8FbCl7
+        dlPIVC7Qjuv5nPdP33/C3SswrQtuxg0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-RvjpPd9bOtq3ccilcsQ2Dw-1; Wed, 15 Sep 2021 01:55:26 -0400
+X-MC-Unique: RvjpPd9bOtq3ccilcsQ2Dw-1
+Received: by mail-ed1-f72.google.com with SMTP id w24-20020a056402071800b003cfc05329f8so928589edx.19
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 22:55:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pDVy5greG+8lJq19uaFSJH6Nx+KYNP3FKOVqZ9npFqs=;
-        b=YfxdKtzWdbuISCyJmuLS3o9FXiaUrMoKF0FszOWtzsW7mHP5pziLN/y1go/NecKl7a
-         49s8D5QCmoVmAd7HCbwqHIHGYxFto5EqV/nIJrTOhit9kE1GEkuUZGsiqN8zsP1c7wuD
-         JLOeVi4UVplnURUDTQWeRzBSjY5uXUBIRfp4eg/g6mmrBFxhCRsC/JT1HZKQF6AOxqdZ
-         G8WHa0mXjYhko8F+hCgNjcvgEf4FRdA37zfdY8Wa+4KS127xRDfffMsCwsKJ6FepNMf2
-         lFv8x4shNMlKkfL9uCxlhoPvMfAyoRHIf3eY+oCKEyk03yY/WwpYlF4og+qSLiZvSzrh
-         XOeA==
-X-Gm-Message-State: AOAM5317jY9oZt49tNLoVOWnoklKYZevQi2koa2sY1ShZQs2hlmacAna
-        JdxXlfWhPcZN2TGGKRBMJrJt3ftUvcBeo6hJqAtjvg==
-X-Google-Smtp-Source: ABdhPJzTGZCBHTGvTND0fcNWV9y4V55sjc4GJhVrHXs5tFS0Fc86JEtmENlTYGBRpJplFEdzW/uug903JYMzWYFpoOI=
-X-Received: by 2002:a02:9282:: with SMTP id b2mr17621993jah.0.1631685323489;
- Tue, 14 Sep 2021 22:55:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1DwJ1KTIB7hUlgx6Gbyk1HsMO32BArQQYzWt/TxPxbA=;
+        b=Jo3gJJdpX8yCSqIffEwiBv2CLa4TgeNi6Vnmt+VqvDEdtwkGaeIE8uHjSBD0eXvNwA
+         bmR6n7HRIPNqJBfaI1fBUDg79DmQHwpXeg3/fvWTY+Vkuy75XAntziRuEtiuRkkPizoF
+         AJfUYTvDoZQoqpG/oUwe39N4B5k4aDSVxDa9KBVruZAYpEOPTTxFbIpDZx4EAQuiCvYN
+         Zsb7e8ZgdY7kBZqy8C+kBmiUfbMmLGR0xUT/Vkw8m5YBaBhN0hOQllAvlRzStQvbEBsP
+         p5CSyH8geLf1KPGXvcmDU+Gk0Ks1I4rwWuCO+uKYSqcwji8AGj6lp3qYQ6wo3e9ACvg0
+         NrFQ==
+X-Gm-Message-State: AOAM532VIDrcFV/IxNJ6muupeZllrcEKeMpbY/aMyFnQNdsCfk0BVdC+
+        OXcFlhFAo5s9dJ1IsHjKdr0rz30h9ajSB7KG2/bjQCqjII75Tr9Ab91Fg8m5vgRBcMIFRqangT/
+        knisqFweqGXA+hlssIwJAUj5Y
+X-Received: by 2002:a17:906:7b54:: with SMTP id n20mr22648240ejo.525.1631685324890;
+        Tue, 14 Sep 2021 22:55:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQnNewa/jHu06DPoH582l/z5Z2baVFnXYetWnCTZNqx//uBa4MP/NR9DVl2rwfSR6xCXaEnw==
+X-Received: by 2002:a17:906:7b54:: with SMTP id n20mr22648222ejo.525.1631685324745;
+        Tue, 14 Sep 2021 22:55:24 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id f30sm5681448ejl.78.2021.09.14.22.55.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 22:55:24 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 07:55:22 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v7 10/15] KVM: arm64: selftests: Add guest support to get
+ the vcpuid
+Message-ID: <20210915055522.o3wnygwk6bpr4zrx@gator.home>
+References: <20210914223114.435273-1-rananta@google.com>
+ <20210914223114.435273-11-rananta@google.com>
 MIME-Version: 1.0
-References: <20210909075700.4025355-1-eranian@google.com> <YTnL814pES+YWWnm@hirez.programming.kicks-ass.net>
-In-Reply-To: <YTnL814pES+YWWnm@hirez.programming.kicks-ass.net>
-From:   Stephane Eranian <eranian@google.com>
-Date:   Tue, 14 Sep 2021 22:55:12 -0700
-Message-ID: <CABPqkBROKmSLLCwFjiqObDpQz4iBUeO-0OaziNy05kxs3-4JHQ@mail.gmail.com>
-Subject: Re: [PATCH v1 00/13] perf/x86/amd: Add AMD Fam19h Branch Sampling support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, acme@redhat.com, jolsa@redhat.com,
-        kim.phillips@amd.com, namhyung@kernel.org, irogers@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914223114.435273-11-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 9, 2021 at 1:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Sep 09, 2021 at 12:56:47AM -0700, Stephane Eranian wrote:
-> > This patch series adds support for the AMD Fam19h 16-deep branch sampling
-> > feature as described in the AMD PPR Fam19h Model 01h Revision B1 section 2.1.13.
->
-> Yay..
->
-> > BRS interacts with the NMI interrupt as well. Because enabling BRS is expensive,
-> > it is only activated after P event occurrences, where P is the desired sampling period.
-> > At P occurrences of the event, the counter overflows, the CPU catches the NMI interrupt,
-> > activates BRS for 16 branches until it saturates, and then delivers the NMI to the kernel.
->
-> WTF... ?!? Srsly? You're joking right?
+On Tue, Sep 14, 2021 at 10:31:09PM +0000, Raghavendra Rao Ananta wrote:
+> At times, such as when in the interrupt handler, the guest wants
+> to get the vcpuid that it's running on to pull the per-cpu private
+> data. As a result, introduce guest_get_vcpuid() that returns the
+> vcpuid of the calling vcpu. The interface is architecture
+> independent, but defined only for arm64 as of now.
+> 
+> Suggested-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Ricardo Koller <ricarkol@google.com>
+> Reviewed-by: Reiji Watanabe <reijiw@google.com>
+> ---
+>  tools/testing/selftests/kvm/include/kvm_util.h      | 2 ++
+>  tools/testing/selftests/kvm/lib/aarch64/processor.c | 6 ++++++
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 010b59b13917..bcf05f5381ed 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -400,4 +400,6 @@ uint64_t get_ucall(struct kvm_vm *vm, uint32_t vcpu_id, struct ucall *uc);
+>  int vm_get_stats_fd(struct kvm_vm *vm);
+>  int vcpu_get_stats_fd(struct kvm_vm *vm, uint32_t vcpuid);
+>  
+> +uint32_t guest_get_vcpuid(void);
+> +
+>  #endif /* SELFTEST_KVM_UTIL_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> index 34f6bd47661f..b4eeeafd2a70 100644
+> --- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
+> @@ -277,6 +277,7 @@ void aarch64_vcpu_setup(struct kvm_vm *vm, uint32_t vcpuid, struct kvm_vcpu_init
+>  	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TCR_EL1), tcr_el1);
+>  	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_MAIR_EL1), DEFAULT_MAIR_EL1);
+>  	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TTBR0_EL1), vm->pgd);
+> +	set_reg(vm, vcpuid, KVM_ARM64_SYS_REG(SYS_TPIDR_EL1), vcpuid);
+>  }
+>  
+>  void vcpu_dump(FILE *stream, struct kvm_vm *vm, uint32_t vcpuid, uint8_t indent)
+> @@ -426,3 +427,8 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector,
+>  	assert(vector < VECTOR_NUM);
+>  	handlers->exception_handlers[vector][0] = handler;
+>  }
+> +
+> +uint32_t guest_get_vcpuid(void)
+> +{
+> +	return read_sysreg(tpidr_el1);
+> +}
+> -- 
+> 2.33.0.309.g3052b89438-goog
 >
 
-As I said, this is because of the cost of running BRS usually for
-millions of branches to keep only the last 16.
-Running branch sampling in general on any arch is  never totally free.
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
->
-> Also, can you please fix you MUA to wrap at 78 chars like normal people?
-
-Ok, I fixed that now.
