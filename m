@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3561040C74F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07AF640C763
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhIOOVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:21:24 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:35467 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbhIOOVT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:21:19 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N8GIa-1mvZHz3iDo-014A92 for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021
- 16:19:59 +0200
-Received: by mail-wm1-f50.google.com with SMTP id l18-20020a05600c4f1200b002f8cf606262so4951647wmq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:19:59 -0700 (PDT)
-X-Gm-Message-State: AOAM532WhDXrhJnlYjjy10Z76RYCJ1M2em6pRUXiJLQ1D8R+O1lVlsnh
-        pGO8VrQaEKHQ1j7Mpdic/3OVtaVqWagseskltBA=
-X-Google-Smtp-Source: ABdhPJz8J4pJD+afwfweySjUuRBGa8LE2pnN/Ho6Oq2xiKUYXAx1VWdT2VBNYglVJPI9KXcGv93s3eNUwo2NtweqBfs=
-X-Received: by 2002:a05:600c:896:: with SMTP id l22mr4757847wmp.173.1631715599598;
- Wed, 15 Sep 2021 07:19:59 -0700 (PDT)
+        id S237693AbhIOOY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233935AbhIOOY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:24:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED56610E9;
+        Wed, 15 Sep 2021 14:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631715787;
+        bh=eTPRL0lrN3Tly2YHaW+S68RBnHDX61hqsVRtb7XXK5s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tHZtNqqCIC9WwaOTLc4voERArPKNqs7J25Os0rCKOqAOMk3c1Ts452YtRgmvXoXC8
+         xaELy/nMrfAQIqNzcTdHR9NESdKWSFtNlUH/07axwuoO45X/kCoeLswk4yQoOiusIl
+         Hm49nl+N2lI0nVL8YF0Fdboq9AJJHEl0BPdXiF5AKtho47NoYITEGZUrxd2BbzS3ma
+         J7VmkcwauHMhAIybsluc2MpM/B3EDDnayBg4PW2E1iDRKMpoOvrjYaxm2DFKR8Uxeg
+         l7OqEIIj1lOtFc0mCqyBjkfK5if9u/LnrReLddXsqRZVoE+tyr8qVUe35Q0hUNNvex
+         a2Sqc0fRoTi7Q==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 1/1] timers/nohz: Last resort update jiffies on nohz_full IRQ entry
+Date:   Wed, 15 Sep 2021 16:23:03 +0200
+Message-Id: <20210915142303.24297-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210914213532.396654-1-gascoar@gmail.com> <260b38b8-6f3f-f6cc-0388-09a269ead507@i2se.com>
- <d09502f2-84d2-839f-1350-ae7f248e5981@raspberrypi.com>
-In-Reply-To: <d09502f2-84d2-839f-1350-ae7f248e5981@raspberrypi.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 15 Sep 2021 16:19:43 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3HGm1cPo4sW9fOY4E8AN8yAq3tevXxU5m8bmtmsU8WKw@mail.gmail.com>
-Message-ID: <CAK8P3a3HGm1cPo4sW9fOY4E8AN8yAq3tevXxU5m8bmtmsU8WKw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] staging: vchiq_arm: replace sleep() with usleep_range()
-To:     Phil Elwell <phil@raspberrypi.com>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Gaston Gonzalez <gascoar@gmail.com>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>, ojaswin98@gmail.com,
-        Amarjargal Gundjalam <amarjargal16@gmail.com>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:L+ofbII3p2/T/1lYlMroQOLAhrLlzjCQ9vxgucNQ/daKiibn5Ff
- Rq17qeNBi1eYmg00eBqWiyLZjR27MfQoAPQ12/jthth3wZtDEOZi71iCKZfEEnljpGOzwrp
- Z1zZv5XHGX63zB9UM+9xVHO78a1l1dVIqGAHv5rePc5pf4jR/HXBe2GGFX0De0is0szmaWQ
- I6LAP2osynLfUe3Ft15zw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:M+LpcZn8iiQ=:VcjfrkdrQEEq1KGbugyelZ
- bn9jKDL/zjtRs3VjKKgVpsLP7mDbFqGman2v7cKyc0HY9NVuy5KWStjN4C/EW0YSaWqN2uRED
- k8cmpvdbILdoBsa+DPybAeOIysNz0UddU9RRXkvoTYHIUhA5FEVoI0vQFqVe54Mlql9J/PYea
- k3shewmIJTTWa3z/M5+pE7Jsd2zwrqt8AtRWPuMIdYvA7/8X6b7AeOu18LWo0FWJWGraJ47o3
- E15kFWVCkaE17kl5qixaj5aMVdhbgLDcM49TS38N9qjnYbVXJ8WnbTwM/wFb+LuqXJXsoN+ZT
- LNHK1h37zxwyG79SAwYkjfIK9xU9U6vDiyyXl3b3Ye5sYZNrYHpuBkxfjScrz2fcNNN0tH6ca
- VzjXi6AauGelBzZLYZpFr6J2qjaMw24Xmyz5kVxlnT78p1xrmeBgrpNPeaFnjMMB3+nYBA3Ni
- PEGssxQWEbnqMAeZm+hgbfHpTGvCIRGDgKyXsWWrh0WwXZFhN//7FKKE5R9ftoEsYoIofkS+R
- htN0CtebhpyLxdi94ne+qk81raafzDZAw9POPMbhoR1xCGFVYRMEhUt52DdwIFwd4pSZa64H9
- w8cDT14XxTiqs1iGYBtNodfb/t6sI3nR5RccMhaWeeFjpQkjkBzbsS+rUHOdJgwduweQq+LQv
- zU/HVjNUUwCob8s7U/GR2/IgG+qmz5y6J+qZKOUUlGrA9PylQDUG3wa4F+jSvVrxjDBq+wFO9
- qyVz25191XpRsId3Tf0SO1HFs+xtWEdQ9Z2gPTIz6xRhkNEB+uyNobtohwYPMJ8duIL7fLqKv
- /N1e1j0a8o/JMPAp7QxDbwXU1esN0H4F/tdMKQ1tLOk54g6KApU8jmyM/WvGBEglHUCTehNIf
- uP8Ow1IuPpCmqiddlfyw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:06 AM Phil Elwell <phil@raspberrypi.com> wrote:
->
-> Hi Stefan,
->
-> On 15/09/2021 06:21, Stefan Wahren wrote:
-> > Hi,
-> >
-> > Am 14.09.21 um 23:35 schrieb Gaston Gonzalez:
-> >> usleep_range() should be used instead of sleep() when sleepings range
-> >> from 10 us to 20 ms, [1].
-> >>
-> >> Reported by checkpatch.pl
-> >>
-> >> [1] Documentation/timers/timers-howto.txt
-> >> ---
-> >>   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 ++--
-> >>   1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> >> index b25369a13452..0214ae37e01f 100644
-> >> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> >> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> >> @@ -824,7 +824,7 @@ vchiq_bulk_transmit(unsigned int handle, const void *data, unsigned int size,
-> >>              if (status != VCHIQ_RETRY)
-> >>                      break;
-> >>
-> >> -            msleep(1);
-> >> +            usleep_range(1000, 1100);
-> >
-> > from my understanding the usage of usleep_range() and hrtimers isn't
-> > necessary here. The intention is to sleep a little bit and not "exactly"
-> > 1 ms.
-> >
-> > @Phil Elwell: what is your opinion?
->
-> Exactly - the aim is just to stop it spinning.
+When at least one CPU runs in nohz_full mode, a dedicated timekeeper CPU
+is guaranteed to stay online and to never stop its tick.
 
-This is usually a sign for something else being wrong in the thing it's
-waiting for. I can see multiple 'return VCHIQ_RETRY' statements in
-vchiq_bulk_transfer(), however these all happen when the task
-has received a signal and wait_for_completion_interruptible()
-or mutex_lock_killable() has returned an error.
+Meanwhile on some rare case, the dedicated timekeeper may be running
+with interrupts disabled for a while, such as in stop_machine.
 
-I don't see why one of them would return on any signal and the other
-one only fatal signals, as you usually want those conditions to be the
-same, but in either case, the loop is broken because as soon as
-you get a signal, those interfaces will keep returning the same error
-and you can never break out of the loop any more.
+If jiffies stop being updated, a nohz_full CPU may end up endlessly
+programming the next tick in the past, taking the last jiffies update
+monotonic timestamp as a stale base, resulting in an tick storm.
 
-I don't know how to properly fix it, but it's clear that vchiq_bulk_transmit()
-needs to propagate the -EINTR or -ERESTSTARTSYS back to user space
-to let the calling task handle the signal before retrying.
+Here is a scenario where it matters:
 
-        Arnd
+0) CPU 0 is the timekeeper and CPU 1 a nohz_full CPU.
+
+1) A stop machine callback is queued to execute somewhere.
+
+2) CPU 0 reaches MULTI_STOP_DISABLE_IRQ while CPU 1 is still in
+   MULTI_STOP_PREPARE. Hence CPU 0 can't do its timekeeping duty. CPU 1
+   can still take IRQs.
+
+3) CPU 1 receives an IRQ which queues a timer callback one jiffy forward.
+
+4) On IRQ exit, CPU 1 schedules the tick one jiffy forward, taking
+   last_jiffies_update as a base. But last_jiffies_update hasn't been
+   updated for 2 jiffies since the timekeeper has interrupts disabled.
+
+5) clockevents_program_event(), which relies on ktime_get(), observes
+   that the expiration is in the past and therefore programs the min
+   delta event on the clock.
+
+6) The tick fires immediately, goto 3)
+
+7) Tick storm, the nohz_full CPU is drown and takes ages to reach
+   MULTI_STOP_DISABLE_IRQ, which is the only way out of this situation.
+
+Solve this with unconditionally updating jiffies if the value is stale
+on nohz_full IRQ entry. IRQs and other disturbances are expected to be
+rare enough on nohz_full for the unconditional call to ktime_get() to
+actually matter.
+
+Reported-and-tested-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/softirq.c         | 3 ++-
+ kernel/time/tick-sched.c | 7 +++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 322b65d45676..41f470929e99 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -595,7 +595,8 @@ void irq_enter_rcu(void)
+ {
+ 	__irq_enter_raw();
+ 
+-	if (is_idle_task(current) && (irq_count() == HARDIRQ_OFFSET))
++	if (tick_nohz_full_cpu(smp_processor_id()) ||
++	    (is_idle_task(current) && (irq_count() == HARDIRQ_OFFSET)))
+ 		tick_irq_enter();
+ 
+ 	account_hardirq_enter(current);
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 6bffe5af8cb1..17a283ce2b20 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1375,6 +1375,13 @@ static inline void tick_nohz_irq_enter(void)
+ 	now = ktime_get();
+ 	if (ts->idle_active)
+ 		tick_nohz_stop_idle(ts, now);
++	/*
++	 * If all CPUs are idle. We may need to update a stale jiffies value.
++	 * Note nohz_full is a special case: a timekeeper is guaranteed to stay
++	 * alive but it might be busy looping with interrupts disabled in some
++	 * rare case (typically stop machine). So we must make sure we have a
++	 * last resort.
++	 */
+ 	if (ts->tick_stopped)
+ 		tick_nohz_update_jiffies(now);
+ }
+-- 
+2.25.1
+
