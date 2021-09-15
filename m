@@ -2,143 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D100E40BDE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBF240BDE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhIOCyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:54:04 -0400
-Received: from mail-eopbgr1320095.outbound.protection.outlook.com ([40.107.132.95]:3569
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229758AbhIOCyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:54:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N38zL2lPryz7Gu9Dg+Ull37BGrLRC9PEwfKzab1SKeHnnQE3oy2v8kitwyONOp657YtzrABMty75p8AzXAnulirx3NSgy8SA/+j/90i7QDys399PJ39y/n76yrYwlc0aibcQ0Dtao+VZjDfKSXOp0YG5QGwQuacRZR+7I3WDXfVvbvhB9fbVq8n8qI4zp/qN6cYAye5AJ3tbKJtj6PzGhwehUR6DguFAF7DKis5g/4MuEsCWHvXmhUf0kdflu89MTsE5yd8MtccJKQylCdbW6miQoQM4sHb5BeOmTSM3CYre6fHMUUcbs/k7am3IP+irOUgiavhGV9oGHgiu4ZX/Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=U3wF+PNaGo8uqoxj+amUIr5PgXc9tf074s5Uywg6O0M=;
- b=NPYJtX/Ak9xfsnrVYsEzjcU9Vx5JWa38QqY4QryJoLycOXm6vPI5Q1xkO4NcrR0gQdw/TP0HgJps+XkUVttsBuP3C5D/H/9FLCGWsN6eN8aODeYr0XoJuRKHKi5tdKR7Lih7sJnpRFk84qYcmmmOYLGVst6hXOa1pPIXqkI276CeFfOeonqlfSXHr63l+AbCFifRihGFbNTJBEIIqBZkXmMeaJeGKZBkAzXQoPDZb6fDU4nj4J47mguUmA7Wa/h8dOoeZfgM+5+EVF97ewqr31/vYelNXLE3yzA4GUQ+bB+pbwsceQ9O8y1rT/ThxA/VdPcxBj461soe82Z+nX5RGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U3wF+PNaGo8uqoxj+amUIr5PgXc9tf074s5Uywg6O0M=;
- b=yt1vLCtzJN01iyaqbl1rXeBR1WO36RlbU3RrdVCqjl/keKkwJnIscm0h66hdQeanMFFrhilQI/APwJaNnMEytV8bzG51ZQX+VIDrBGqKdyjqFFXCxz+tdltb2pezQyY703yPGsRniEgo1pC9Ul05oEnsSC9qOIh/rgipG6p9L2d5/jL/NwFVjR9aDHncCOZddVGMMA8+NTP+b7jVgCFOEcsfNVr3uivWskfbu5fdhBPwEWk92B+rL1D4lqux/L4l+XDg7SbJkLaHlwKGYYH/dw6QtMgGfsln8n9O8re2ufECEJD8ddkgZc117zi4Oysi/xren31f8zQvnFgZsriOiw==
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
- by HK0PR06MB2835.apcprd06.prod.outlook.com (2603:1096:203:5e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.16; Wed, 15 Sep
- 2021 02:52:39 +0000
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::df9:c3a4:7589:e812]) by HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::df9:c3a4:7589:e812%3]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
- 02:52:39 +0000
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        "Claudiu.Beznea@microchip.com" <Claudiu.Beznea@microchip.com>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>
-Subject: RE: [PATCHv2] clk:aspeed:Fix AST2600 hpll calculate formula
-Thread-Topic: [PATCHv2] clk:aspeed:Fix AST2600 hpll calculate formula
-Thread-Index: AQHXpJKMhkZfnItOBUy/UXzlogoQrauhdqeAgAAAnqCAAt58gIAAGF9A
-Date:   Wed, 15 Sep 2021 02:52:38 +0000
-Message-ID: <HK0PR06MB33801C3DADFD87363C09BFAFF2DB9@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20210908091845.4230-1-ryan_chen@aspeedtech.com>
- <4571c9ae-0287-4f70-2adb-9c227e706736@microchip.com>
- <HK0PR06MB33806C10EB8B3F87FE144F8DF2D99@HK0PR06MB3380.apcprd06.prod.outlook.com>
- <163166864956.763609.8140689140101809508@swboyd.mtv.corp.google.com>
-In-Reply-To: <163166864956.763609.8140689140101809508@swboyd.mtv.corp.google.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d04bd97f-c9d9-4fa9-c517-08d977f3e15b
-x-ms-traffictypediagnostic: HK0PR06MB2835:
-x-microsoft-antispam-prvs: <HK0PR06MB2835F2BA5FF1CA058AC32847F2DB9@HK0PR06MB2835.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:327;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: D3gZV6TdS5rNFwvUWkt+43GEs8iA/KEUJCCtox9PdTRBaT/CKhwfROuJkEtSwrNJdJkokFCt1MDQPnlQgqOo4mQrmKdwWg79S1N2qJfL61QwsMAbVJbfHEn6pIxV7jbuyAtuk92oT712bBV5BzoAU1/r/PhLPgsocZf7KqsmNU5LwAmzC+b0WRheGKJ4qmwXlpZd2lRvk9Egemm+BpOK5PmT0GSqiLePo0t4FEs+7efVFn1wK+tp0Q8VZYOkeBDczWq5xLqz2s5DTUs3F9fKyjcnjGVKssr66lD9eThVR11JI5cuUgUGYxVP1xdfxqhr+cPfFfooRlRrSGar9LJgP3UkxMUnneC+iJL69cbdUlDsw7WppQVD0D8gAWnFDknLhBYj0YDUH0moU0mzsvLyWqDg2ZV2BEA6atR5XklfHaEZvG8G8TLBaZyaHcEPYE6roTD6O8zUeKT7zQGWbCDCY32sjzKtYhIYHpxv5iu4qbxq8wJx38e/sjMZ+HZ8rA2XD/oyA/Kv8K8SFTFla0ea64ygAMuwaO+hTfWIZZ7pwZVNcHaWNgNzbjnYs5Ud8OLaigla8w6uwDCzP32Ad5i5703yl0bXxYKzL29IRXe/0EGMeYvDZAFxRpSuwFYKwMAEk/o/0YGvwtdtQ7V11QbKSFfc1hYf0J8dxaxS/kVnEDTwiRAtzwJMILeDMJJrZn31ZTMHmkGzg+xMDb/2BWoh9w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(376002)(39840400004)(396003)(110136005)(33656002)(86362001)(8936002)(76116006)(52536014)(122000001)(66946007)(64756008)(66556008)(5660300002)(66476007)(66446008)(316002)(9686003)(53546011)(55016002)(83380400001)(478600001)(26005)(71200400001)(186003)(6506007)(38100700002)(38070700005)(7696005)(8676002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eERtbnhuSkl2dzdKUGY5WVBuOFl2czBVNy82MGQzbjJoMmZoSmNOVG1CNHZi?=
- =?utf-8?B?eVg2Z1oxL29DVEI4TktONGtpNlV4Qlh2bkhEZUlmMWY2Ry9zUnZBTmZGRGRS?=
- =?utf-8?B?eTdzNlNWcjB1WXNNbzNvZ0VaZVJmUjJjaGxOT2dET2lmaUwzZXVCYWc3SnMw?=
- =?utf-8?B?RXYrZmgxYmRZYVMyRzkrSEx2UWVRaWVQK2UrV0dacHVObTRETHltSWp3bXFv?=
- =?utf-8?B?MWp6N3JEQlRxaTM4U2RVd01xdG9MMGNmODhIY2dUMjBZTXpmWVJhYXZWd2k2?=
- =?utf-8?B?SnVVV2lyeXRNQjBZMkxzVVBYcEtQSVZQSHlWMTZOT0dYY0hiMHJzbi9DWUto?=
- =?utf-8?B?Z2JvcFRuTit6dGxPMmpxWjgwRXNRRmtPcld3VVVxMnUydGQvMkZ3RC9wd1VE?=
- =?utf-8?B?eDZrNWlPZGVJa2dYZmZuMGwyZEYvWEVhYUhxdVZMYm5CWGJ6azFKZ0dhV0Uv?=
- =?utf-8?B?clZFcFpWbXFJWHZCZjlaenJCWHM2WXJnOUZvK3lIWEUrRHdNaDRuTGJ5bzE5?=
- =?utf-8?B?VmpDWjl4VENpOXlWaTJkc2lkUGkwK25idFJhUTN1Ui9ZWWI4VlQ1d0RlMENR?=
- =?utf-8?B?TVNOV1IzUlRDT01FcnBRWEZTYWRBT0wxSW9Ua2JBNmdFSDZzemtuU2loRzVs?=
- =?utf-8?B?K0Z5R2ZkajRVcnZveldRQzZNVWJpUFNsdytzUUVTRGd4cURINVh3d1FhZzg5?=
- =?utf-8?B?MThQYnBUTE1MTk96ZCthdWdyYWZvN3ZwNDdJWXQwV0dxakxHN2pnSENSU2c2?=
- =?utf-8?B?Nk9QblZjN1NWSHdMWS9mOVN0ODlpL3poNHp4SW10UFhrTEFKdXk3VmZyTVoz?=
- =?utf-8?B?bDVZWGkyL2RMakg0aUJIZmhwTFpZVnhXWnA0Tks2WUxRL3JvUWQwRWd6K0tJ?=
- =?utf-8?B?bC9lNktzRUpCanV3aGloYVZVMHQzdHYyS2t6Tkd6b0dvb1k2TWgyVmYrbWFw?=
- =?utf-8?B?NU5tUTZOR2taaEh4SnpUNm1Rdm04enRlYXIyL1lsM1I2ZnpuUWp1ZGtqcEF5?=
- =?utf-8?B?WVk3bUVSZkozaml5OFNiTWxBYlhvN1hYODJqeXphd3IvYjliOXVtcVBjZVVZ?=
- =?utf-8?B?WXowWHVpUzdZN1l0WkFEM2tMMlcyVEdtRXR5NGhiOWJabmNZcTFORm1uWEZ4?=
- =?utf-8?B?eC92L0Fib1hkRFduVndOWEVKcVZ0NTcxQnl3TURsYTM1NDNpQ00zSnlEYjFX?=
- =?utf-8?B?am1GeHFkZmJ1bWtGbFlxTlNiS3RMZ212QlNCUjNLcHlIWjI4VGFHQ0hCUTNP?=
- =?utf-8?B?bDE3UElDNGxVcDFtVjNNUEoyTDJCL2JUNWlockZuNGdYVzh6M1NBdDdPRkRE?=
- =?utf-8?B?RjUxSFdmN0F3WTVJZUV6Tk10c215U3cwaFp5Mzk0V3hlKzYzL1RPYnlocUM2?=
- =?utf-8?B?UVdDai9MQTBVb0lndEVZQkVqbEJRWWpkRm9sU3hydnczYW0zM2RuY1VqcGtz?=
- =?utf-8?B?NXBycGgxM0Fyc0MraGU4RmxsRDQ1MThEZnk2b3JsWEJheU00cklsVlVtdjQw?=
- =?utf-8?B?SENHM3Nvd3I5NmQ4Znp0dTV6MXpVQkR0Y1JjQk1wQjhlZ0hLVjdCVHhWTWNa?=
- =?utf-8?B?dlhveWg2MHE0NS9EMzdQZHYvOFloZ3dNcWlSNEpDNS9ReEhjSzhUVXlldm1n?=
- =?utf-8?B?MmpQbEExQmt1S2d1T3FPdFFqcXlpT1hDSWpKdVkycVUvWU5yUkw4MnVaREtv?=
- =?utf-8?B?SWxrNVZjMFYxRzFZcDlnUTFEQUwzNG1IeFJ5MmN4bkkxUUEzZnc1ZDUzZW1Y?=
- =?utf-8?Q?yakBVCQph0FtD4nr3/XjfYwMgMSDFE5fbB12brE?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231250AbhIOCyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 22:54:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55992 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229758AbhIOCyM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 22:54:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631674373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mNknc3PAGLPEbfdAPlC78Lmk68krcKaGTS1ga1ZhVzQ=;
+        b=CRAQuLwXkHE4vrRV7X778tcZGJiZ6THphx098dsNsfaN3gZffUm2b74XtLW/xuVDdAnlRO
+        NRgJRiQJk6yZmgeVV/3ZlltX7KOzt6Ux6K33/zeaHmkIFVyyCbWzyMBcWdA4ahG5E2f8gE
+        8Hw5fsiDmnK3XTwG9GQJ9EXEHGa/Grs=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-hPlLvY-mMwyqdBJPrs_wGQ-1; Tue, 14 Sep 2021 22:52:51 -0400
+X-MC-Unique: hPlLvY-mMwyqdBJPrs_wGQ-1
+Received: by mail-io1-f69.google.com with SMTP id y1-20020a6bc801000000b005d0abb2b449so793754iof.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 19:52:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mNknc3PAGLPEbfdAPlC78Lmk68krcKaGTS1ga1ZhVzQ=;
+        b=BLuddLgHcdNihLBAySuJnv7nDXlwglYM8u0ky84jiKgb69Uh6xpd1pnTttaHozrO2H
+         3eoxRO4gVWjZpPUO6NeTblfCohHmJCerNkppnYfEXm40SdeMoLyUR2u6tyDs61Ob+J+O
+         1vLDjpi25B2u3K+ud6sPNb5Yzh11ZSt64ygSyh7qiyBlkZbVayvZiGjG/KlOW/inxcT+
+         lzJMMYM2BD8jM9CFPL4ifceVFgQygqDKIuB5kHELYROCIQaKkJaTp9J/7sAuEwGzFTpp
+         I0I/yKSgRqO9eI4UEC7zgYDi3z5YvI+RMkMO4Gg8XojX4N28q1JDC6fsYdlGjP5QE5oR
+         eoIg==
+X-Gm-Message-State: AOAM533DHyxF7OrOH6wKvUqHkXIJe6SOyN2HjQZrmBzOCYapbh3S/GJM
+        wSXZ3XyX//yKzSaWAMpEoyzlrB8bmjx7Jeuvc2/pUYXyjCvOS1wcHbEIhZ9TC5hAqpVZlN5l/OG
+        U4uD9QGNmgdticy7n0jqnm5KF
+X-Received: by 2002:a05:6e02:144c:: with SMTP id p12mr9551344ilo.292.1631674371219;
+        Tue, 14 Sep 2021 19:52:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzHNRphTXwxe/+Sfyf1gmfRf0CW0WLj7r6TJhh24pys6jEp3ccyd4fnS3xT0F3TuQSiiABz9A==
+X-Received: by 2002:a05:6e02:144c:: with SMTP id p12mr9551326ilo.292.1631674370967;
+        Tue, 14 Sep 2021 19:52:50 -0700 (PDT)
+Received: from xz-m1.local ([2607:fea8:56a2:9100:f950:40ca:dc9b:42e7])
+        by smtp.gmail.com with ESMTPSA id t15sm7375529ioi.7.2021.09.14.19.52.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Sep 2021 19:52:50 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 22:52:48 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 5/5] mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags
+Message-ID: <YUFgAPJJxy8L4GMP@xz-m1.local>
+References: <20210908163516.214441-1-peterx@redhat.com>
+ <20210908163628.215052-1-peterx@redhat.com>
+ <2576475.WBpAVSM2eX@nvdebian>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d04bd97f-c9d9-4fa9-c517-08d977f3e15b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2021 02:52:38.9912
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: byrUh2ognd50p31TgxtDEfV3aeRPB8KfDk7WOefHnOZuKBIw7tzTvhAOPJWbA4Qa1TUhCAlgew7x/HUmrkIiBzO+JmyQV+I8VHqCVslpnrA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2835
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2576475.WBpAVSM2eX@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTdGVwaGVuIEJveWQgPHNib3lk
-QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDE1LCAyMDIxIDk6MTcg
-QU0NCj4gVG86IENsYXVkaXUuQmV6bmVhQG1pY3JvY2hpcC5jb207IFJ5YW4gQ2hlbg0KPiA8cnlh
-bl9jaGVuQGFzcGVlZHRlY2guY29tPjsgYW5kcmV3QGFqLmlkLmF1OyBqb2VsQGptcy5pZC5hdTsN
-Cj4gbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
-ZzsNCj4gbXR1cnF1ZXR0ZUBiYXlsaWJyZS5jb20NCj4gU3ViamVjdDogUkU6IFtQQVRDSHYyXSBj
-bGs6YXNwZWVkOkZpeCBBU1QyNjAwIGhwbGwgY2FsY3VsYXRlIGZvcm11bGENCj4gDQo+IFF1b3Rp
-bmcgUnlhbiBDaGVuICgyMDIxLTA5LTEyIDIyOjMxOjQ2KQ0KPiA+ID4gPiArICAgICAgICAgICAg
-ICAgaWYgKGh3c3RyYXAgJiBCSVQoMTApKQ0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-ICBtID0gMHg1RjsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIGVsc2Ugew0KPiA+ID4gPiArICAg
-ICAgICAgICAgICAgICAgICAgICBpZiAoaHdzdHJhcCAmIEJJVCg4KSkNCj4gPiA+DQo+ID4gPiBZ
-b3UgbWF5IHdyaXRlIGl0IGRpcmVjdGx5Og0KPiA+ID4gICAgICAgICAgICAgICAgIGVsc2UgaWYg
-KGh3c3RyYXAgJiBCSVQoOCkpDQo+ID4gPg0KPiA+IEhlbGxvLA0KPiA+ICAgICAgICAgTGlrZSBJ
-IGNvbW1pdCBtZXNzYWdlIE0gPSBTQ1U1MDBbMTBdID8gMHg1RiA6IFNDVTUwMFs4XSA/IDB4QkYg
-Og0KPiBTQ1UyMDBbMTI6MF0NCj4gPiAgICAgICAgIGl0IG5lZWQga2VlcCBmcm9tIHJlZ2lzdGVy
-IHJlYWQsIGlmIEJJVCg4KS9CSVQoMTApIG5vdCAxLg0KPiA+DQo+IA0KPiBJIGRvbid0IGdldCBp
-dC4gVGhlIHJldmlldyBjb21tZW50IHdhcyB0aGF0IHRoZSBlbHNlIHsgaWYgKC4uLikgY2FuIGJl
-IGNvbGxhcHNlZA0KPiBpbnRvIGFuIGVsc2UgaWYgKC4uKSBXaGF0IGRvZXMgY29tbWl0IG1lc3Nh
-Z2UgaGF2ZSB0byBkbyB3aXRoIGl0Pw0KU29ycnkgZm9yIGNvbmZ1c2UuDQpPciBkbyB5b3UgbWVh
-biBsaWtlIGZvbGxvd2luZyBtb2RpZmljYXRpb24/DQoNCiAgICAgICAgICAgICAgIGlmIChod3N0
-cmFwICYgQklUKDEwKSkNCiAgICAgICAgICAgICAgICAgICAgICAgbSA9IDB4NUY7DQogICAgICAg
-ICAgICAgICBlbHNlIGlmIChod3N0cmFwICYgQklUKDgpKQ0KICAgICAgICAgICAgICAgICAgICAg
-ICBtID0gMHhCRjsNCg==
+Hi, Alistair,
+
+On Wed, Sep 15, 2021 at 12:25:07PM +1000, Alistair Popple wrote:
+> On Thursday, 9 September 2021 2:36:28 AM AEST Peter Xu wrote:
+> > Firstly, the comment in zap_pte_range() is misleading because it checks against
+> > details rather than check_mappings, so it's against what the code did.
+> > 
+> > Meanwhile, there's no explicit reason why passing in the details pointer should
+> > mean to skip all swap entries.  New user of zap_details could very possibly
+> > miss this fact if they don't read deep until zap_pte_range() because there's no
+> > comment at zap_details talking about it at all, so swap entries could be
+> > erroneously skipped without being noticed.
+> > 
+> > This partly reverts 3e8715fdc03e ("mm: drop zap_details::check_swap_entries"),
+> > but introduce ZAP_FLAG_SKIP_SWAP flag, which means the opposite of previous
+> > "details" parameter: the caller should explicitly set this to skip swap
+> > entries, otherwise swap entries will always be considered (which should still
+> > be the major case here).
+> > 
+> > We may want to look into when exactly we need ZAP_FLAG_SKIP_SWAP and we should
+> > have it in a synchronous manner, e.g., currently even if ZAP_FLAG_SKIP_SWAP is
+> > set we'll still look into swap pmds no matter what.  But that should be a
+> > separate effort of this patch.
+> 
+> I didn't really follow what you mean by "synchronous" here, although the
+> explanation about pmds makes sense so it's probably just terminology.
+
+Yes, maybe I should use "aligned manner", or please suggest anything that
+sounds better; sorry for my awkward English.
+
+>  
+> > The flag introduced in this patch will be a preparation for more bits defined
+> > in the future, e.g., for a new bit in flag to show whether to persist the
+> > upcoming uffd-wp bit in pgtable entries.
+> 
+> That's kind of the problem. The patch itself looks correct to me however as
+> mentioned it is mostly reverting a previous cleanup and it's hard to tell why
+> that's justified without the subsequent patches. Perhaps it makes the usage of
+> zap_details a bit clearer, but a comment also would with less code.
+> 
+> I know you want to try and shrink the uffd-wp series but I think this patch
+> might be easier to review if it was included as part of that series.
+
+I posted it because I think it's suitable to have it even without uffd-wp.
+
+I tried to explain it above on two things this patch wanted to fix:
+
+Firstly the comment is wrong; we've moved back and forth on changing the
+zap_details flags but the comment is not changing along the way and it's not
+matching the code right now.
+
+Secondly I do think we should have a flag showing explicit willingness to skip
+swap entries.  Yes, uffd-wp is the planned new one, but my point is anyone who
+will introduce a new user of zap_details pointer could overlook this fact.  The
+new flag helps us to make sure someone will at least read the flags and know
+what'll happen with it.
+
+For the 2nd reasoning, I also explicitly CCed Kirill too, so Kirill can provide
+any comment if he disagrees.  For now, I still think we should keep having such
+a flag otherwise it could be error-prone.
+
+Could you buy-in above reasoning?
+
+Basically above is what I wanted to express in my commit message.  I hope that
+can justify that this patch (even if extremly simple) can still be considered
+as acceptable upstream even without uffd-wp series.
+
+If you still insist on this patch not suitable for standalone merging and
+especially if some other reviewer would think the same, I can move it back to
+uffd-wp series for sure.  Then I'll repost this series with 4 patches only.
+
+In all cases, thanks for looking at the series.
+
+-- 
+Peter Xu
+
