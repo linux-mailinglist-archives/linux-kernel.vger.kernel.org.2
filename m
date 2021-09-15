@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECA740C225
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AED40C228
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhIOI57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S236951AbhIOI6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbhIOI5y (ORCPT
+        with ESMTP id S232676AbhIOI6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:57:54 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A4FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:56:35 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id x6so2586461wrv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=BrOGHGt7cC0oT366jdb+W6ImeT82WbSz/76J3XwKsF8=;
-        b=DL1iZmiMaXVusOOHpuKdsQXBCBI4VyrKd1zr+C9X/hN67XuYWfszjjCoA3b8STPyxf
-         1KxdC7FY4WyAmNn2Kf7ux5WXthSHcuUHuZSUG2VWIjkXSUgSkTrCO1q/3WDdqEbj+gi+
-         QDrwhr27v2YE5V+M0dyM5nFMKQqSH+YOWjp7D0WRzBbefmy2kCVI7UEwZfVH2uMbEnhF
-         bqxFUy+bXbM2QChj1UGfWxKdizLLDe41hVkA00PEy80LaokVx/JG18jk7VAC2Jngfsi7
-         SItcbUMqwoT19jfyHJsWbDBksNxhuN6wzLN+JZc1HVDeXk8nz6ZZIfDHCajMYo2q44GI
-         0sgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=BrOGHGt7cC0oT366jdb+W6ImeT82WbSz/76J3XwKsF8=;
-        b=BX/oLxBPCj68dXVH9uCUcMwKo2gOnuqgph+aQUa+0nxDpYULG81k/PCkUp0nYMo0XJ
-         pLSUQZ4kj1MicrxdBPQSCSU0WTyaJhWkiuqZ/XMngL2ZGIkVQFu1r5od1TsiFwJYC9rZ
-         nins4LGxnW/9/gFq62+ra9aKYzm0jEmvfEXLRtS08Z4iPM37jLVcMVlATjpIsJLgzqsy
-         3g3lae/iP+mEANLPNcuFrGgoYBpBsyoh1EVx6sLI6tFvLdo/d6vE6As8LFZvRqJutUQi
-         7V7/79mjXrL9TfLCizZ3Zzm+5/YnQiYpbPFpTPBO4X8wZxxLjkPoLn53OqbEAti65ZhV
-         yrFg==
-X-Gm-Message-State: AOAM532yzoVgesTnKEFAo3H6kth4d+2ojyIBwUFg58OODGypdcj6ojz7
-        IeWpIvSK1dU/8EhSh0sEB1I=
-X-Google-Smtp-Source: ABdhPJxkmtWxZER2bPF5Y8q7uwbsEORrfxEp7wPIBWKWuYwEYaVw+XyWIHZcnzLCAKOrW0+FWYCAvg==
-X-Received: by 2002:a5d:63d2:: with SMTP id c18mr3613545wrw.311.1631696193795;
-        Wed, 15 Sep 2021 01:56:33 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::1db2? ([2a02:8108:96c0:3b88::1db2])
-        by smtp.gmail.com with ESMTPSA id u8sm3812049wmq.45.2021.09.15.01.56.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 01:56:33 -0700 (PDT)
-Message-ID: <70042ac9-b114-9447-e25a-b5f75496ee63@gmail.com>
-Date:   Wed, 15 Sep 2021 10:56:32 +0200
+        Wed, 15 Sep 2021 04:58:53 -0400
+Received: from mx.msync.work (mx.msync.work [IPv6:2a01:4f9:2b:2dc2::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A9BC061574;
+        Wed, 15 Sep 2021 01:57:34 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 661FBF6273;
+        Wed, 15 Sep 2021 08:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
+        t=1631696251; h=from:subject:date:message-id:to:cc:mime-version:
+         content-transfer-encoding; bh=H5qdDcH8TpR0CnX1Fd/kIIzcZXwfWBWur4Fc/P7iFjE=;
+        b=sJBMHob4pjc07+FI0LHrV4RLYZhBHitb73gu5L7eF9r5C/uRg32xKL9Y/Zzt/kKN+W5Z8P
+        ymfoG/Z2IZpEo995WiZfn95wxVhFUb3pKX5H6Xgv1/2GPphkqmge2Oz9p3QcRtdhbIW0ew
+        Fvhex2NsoOCLAxC1xNqdE5M02NCJtiB4qRFzwjhrIzZrHlVwAOOCF2DJVyRTQsFqgJxJgj
+        E8fQ+vD6YTHpQdNRsiiWXX2wmGCinDDwNLB9h0Q7vGRnrB2IZ2fRl9z3OFNNsjNtXj5RNK
+        Wq492ZCzlYQh3GG8Wu3xCywBaGX7xy5oj757VR9qc9NBvpt9ZIBNevU+3k2esA==
+From:   Vyacheslav Bocharov <adeep@lexina.in>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v5 0/4] arm64: meson: add support for JetHub D1/H1
+Date:   Wed, 15 Sep 2021 11:57:11 +0300
+Message-Id: <20210915085715.1134940-1-adeep@lexina.in>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH 0/4] staging: r8188eu: remove unused fields from struct
- hal_data_8188e
-Content-Language: en-US
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        martin@kaiser.cx, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210914121352.26052-1-straube.linux@gmail.com>
- <YUEgoipiosdhiXdq@equinox>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <YUEgoipiosdhiXdq@equinox>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 00:22, Phillip Potter wrote:
-> On Tue, Sep 14, 2021 at 02:13:48PM +0200, Michael Straube wrote:
->> This series removes some unused fields from struct hal_data_8188eu.
->>
->> Tested on x86_64 with Inter-Tech DMG-02.
->>
->> Michael Straube (4):
->>    staging: r8188eu: remove unused macros from rtl8188e_hal.h
->>    staging: r8188eu: remove write-only fields from struct hal_data_8188e
->>    staging: r8188eu: remove unused enums from rtl8288e_hal.h
->>    staging: r8188eu: remove unused field from struct hal_data_8188e
->>
->>   .../staging/r8188eu/hal/rtl8188e_hal_init.c   |  5 -----
->>   .../staging/r8188eu/include/rtl8188e_hal.h    | 22 -------------------
->>   2 files changed, 27 deletions(-)
->>
->> -- 
->> 2.33.0
->>
-> 
-> Dear Michael,
-> 
-> Looks good, built and tested here and working fine - as you say though
-> these are removals of unused code/properties so I was expecting it to
-> work anyway :-)
-> 
-> One small thing to change though: the subject line of PATCH 3/4 should
-> refer to rtl8188e_hal.h, rather than rtl8288e_hal.h.
+Add support for new home automation devices.
 
-Thank you for reviewing and spotting the typo Phillip.
-I'll send v2 soon.
+JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation controller with the following features:
+- DIN Rail Mounting
+- Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
+- no video out
+- 512Mb/1GB LPDDR4
+- 8/16GB eMMC flash
+- 1 x USB 2.0
+- 1 x 10/100Mbps ethernet
+- WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac, Bluetooth 4.2.
+- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power and Zigbee 3.0 support.
+- 2 x gpio LEDS
+- GPIO user Button
+- 1 x 1-Wire
+- 2 x RS-485
+- 4 x dry contact digital GPIO inputs
+- 3 x relay GPIO outputs
+- DC source with a voltage of 9 to 56 V / Passive POE
 
-Regards,
-Michael
+JetHome Jethub H1 (http://jethome.ru/jethub-h1) is a home automation controller with the following features:
+- square plastic case
+- Amlogic S905W (ARM Cortex-A53) quad-core up to 1.5GHz
+- no video out
+- 1GB LPDDR4
+- 8/16GB eMMC flash
+- 2 x USB 2.0
+- 1 x 10/100Mbps ethernet
+- WiFi / Bluetooth RTL8822CS IEEE 802.11a/b/g/n/ac, Bluetooth 5.0.
+- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power and Zigbee 3.0 support.
+- MicroSD 2.x/3.x/4.x DS/HS cards.      
+- 1 x gpio LED
+- ADC user Button
+- DC source 5V microUSB
+
+Changes from v4:
+- add 1wire-gpio node in meson-axg-jethome-jethub-j100.dts
+
+Changes from v3:
+- add pinctrl for spicc1 in meson-axg-jethome-jethub-j100.dts
+
+Changes from v2:
+- add new vendor to vendor-prefixes
+- sync board compatible dt-bindings to jethome,jethub-*
+- fix efuse fields
+- fix gpio-line-names
+- fix spaces and blank lines
+- recheck via checkpatch
+ 
+Changes from v1:
+- rearrange patches
+- add SPDX license and copyright header
+- remove attributes without bindings
+- small fixes with spaces
+
+Vyacheslav Bocharov (4):
+  dt-bindings: arm: amlogic: add bindings for Jethub D1/H1
+  dt-bindings: vendor-prefixes: add jethome prefix
+  arm64: dts: meson-gxl: add support for JetHub H1
+  arm64: dts: meson-axg: add support for JetHub D1
+
+ .../devicetree/bindings/arm/amlogic.yaml      |   2 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/amlogic/Makefile          |   2 +
+ .../amlogic/meson-axg-jethome-jethub-j100.dts | 361 ++++++++++++++++++
+ .../meson-gxl-s905w-jethome-jethub-j80.dts    | 241 ++++++++++++
+ 5 files changed, 608 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
+
+-- 
+2.30.2
 
