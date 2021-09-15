@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B1040C6E1
+	by mail.lfdr.de (Postfix) with ESMTP id 9F01A40C6E2
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237992AbhION6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237956AbhION6J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:58:09 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B940C0613E3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:56:43 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id b64so3550167qkg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=labbott.name; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:references:in-reply-to:content-transfer-encoding;
-        bh=g1W7nkFu71FquB758ZH+G16B1Ve549PwW0sivEWT0R4=;
-        b=muP4nCc8ulz6wia9QNmyKCQQhEFtc8unNXBQDW4lJ4Tz3r8Eilz/GzhEG04U+qsHnd
-         wqrAQ6RcYmArV9uOd24RIJ6wCQ9S3TzREM8iUflunEZXmuQVKafuMwzN9Rtd0AF5gLiv
-         5gNxmzGDHl8P/JwlYeEHtFu0UtLA47+7wEihU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=g1W7nkFu71FquB758ZH+G16B1Ve549PwW0sivEWT0R4=;
-        b=Q/2KaEbJZfxAm9PA/gXngshR8ji1wdETFJCRxSqfN23BDArlxk48CciKzSUMB4cv1g
-         R8vGy+NsnNHTqUifoM4nBewHmtPKog7oBNGzmhkXreqnaKSQTaODDqvIRhJR3w962bhx
-         3ndrXr2xwGu7nRCk/3rf5qqXBBFVcvQ/W8wHEDvd4xD47SdHOEW1kOQ4d2T2tRolZ/DB
-         rX8RqBT+8pzSmYnMNIjHBJnwgaGxf+D63LCnxJVQDb0RA4KXatg4j3ur1pgXW+sdgi+w
-         MogBGwP/9QaBGiGCPXR7a/Avcvi/vlyWRPha7hCkahVrswCxKKM200jUcinFMMH9RLtI
-         V/6g==
-X-Gm-Message-State: AOAM531QekAfbJ7LXjEuyDoFf8/0bNo1J/ZgKue7UmhA7zVgZeeQJ5il
-        6Jkg4HeZBcKuqVJaxnxxkWQzXfrgJ49xHA==
-X-Google-Smtp-Source: ABdhPJx4Hdob/aMAOGVcUID4aj5rmtyioEyRAY/le8QyZJCp/3IZUzn3QB+4x9h/bTSn1qDrJ1SXEQ==
-X-Received: by 2002:a05:620a:21dc:: with SMTP id h28mr66363qka.198.1631714202287;
-        Wed, 15 Sep 2021 06:56:42 -0700 (PDT)
-Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
-        by smtp.gmail.com with ESMTPSA id d20sm53403qkl.13.2021.09.15.06.56.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 06:56:41 -0700 (PDT)
-Message-ID: <eb330698-2c79-b027-1b96-404aa954277a@labbott.name>
-Date:   Wed, 15 Sep 2021 09:56:41 -0400
+        id S237908AbhION62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:58:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:55828 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237842AbhION6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:58:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F2236D;
+        Wed, 15 Sep 2021 06:57:00 -0700 (PDT)
+Received: from [10.163.44.48] (unknown [10.163.44.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 281F43F719;
+        Wed, 15 Sep 2021 06:56:57 -0700 (PDT)
+Subject: Re: [PATCH] arm64/traps: Avoid unnecessary kernel/user pointer
+ conversion
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <20210914152742.27047-1-amit.kachhap@arm.com>
+ <20210914160056.GA35239@C02TD0UTHF1T.local>
+From:   Amit Kachhap <amit.kachhap@arm.com>
+Message-ID: <6662988b-b891-b6b0-cd7a-bd7f661fc737@arm.com>
+Date:   Wed, 15 Sep 2021 19:26:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: Linux Foundation Technical Advisory Board election: call for
- nominees
+In-Reply-To: <20210914160056.GA35239@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-From:   Laura Abbott <laura@labbott.name>
-To:     ksummit@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>
-References: <a52baa8b-6743-7570-aaa6-411b5b13c8aa@labbott.name>
-In-Reply-To: <a52baa8b-6743-7570-aaa6-411b5b13c8aa@labbott.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/25/21 10:27, Laura Abbott wrote:
-> The election for the Linux Foundation Technical Advisory Board (TAB)
-> will be held virtually during the 2021 Kernel Summit and Linux Plumbers
-> Conference, September 20th-24th 2021. Nominations for candidates
-> interested in serving on the TAB are currently being sought.
-> 
-> The TAB serves as the interface between the kernel development community
-> and the Linux Foundation, advising the Foundation on kernel-related
-> matters, helping member companies learn to work with the community, and
-> working to resolve community-related problems (preferably before they
-> get out of hand). We also support the Code of Conduct committee in
-> their mission.
-> 
-> Over the last year, matters tended to by the TAB include proposals for
-> developer workflow improvement, overseeing the Linux Plumbers 
-> Conference, supporting the review of the University of Minnesota
-> patches and more.  Minutes from TAB meetings can be found here:
-> 
->      https://git.kernel.org/pub/scm/docs/tab/tab.git/tree/minutes
-> 
-> The board has ten members, one of whom sits on the Linux Foundation
-> board of directors.  Half of the board (five members) is elected every
-> year to serve a two-year term.  The members whose terms are expiring
-> this year are:
-> 
->      Greg Kroah-Hartman
->      Jonathan Corbet
->      Sasha Levin
->      Steven Rostedt
->      Ted Ts'o
-> 
-> The remaining members' terms will expire in 2022:
-> 
->      Chris Mason (chair)
->      Dan Williams
->      Kees Cook
->      Laura Abbott
->      Christian Brauner
-> 
-> The eligibility to run for the TAB is the same as the voting criteria:
-> 
-> There exist three kernel commits in a mainline or stable released
-> kernel that:
-> - Have a commit date in the year 2020 or 2021
-> - Contain an e-mail address in one of the following tags or merged
-> tags (e.g. Reviewed-and-tested-by)
-> -- Signed-off-by
-> -- Tested-by
-> -- Reported-by
-> -- Reviewed-by
-> -- Acked-by
-> 
-> Please send your nomination to:
-> 
->      tech-board-discuss@lists.linux-foundation.org
-> 
-> With your nomination, please include a short (<= 200 words) candidate
-> statement focusing on why you are running and what you hope to
-> accomplish on the TAB. We will be collecting these statements and making
-> them publicly available.
-> 
-> The deadline for receiving nominations is 9:00AM GMT-4 (US/Eastern) on
-> September 20th (the first day of Kernel Summit). Due to the use of
-> electronic voting, this will be a hard deadline!
-> 
-> As always, please let us know if you have questions (the TAB can be
-> reached at tab@lists.linuxfoundation.org), and please do consider
-> running and encouraging others to vote.
+Hi,
 
-Final reminder: nominations are due September 20th at 9:00AM GMT-4
-(US/Eastern)
+On 9/14/21 9:30 PM, Mark Rutland wrote:
+> On Tue, Sep 14, 2021 at 08:57:42PM +0530, Amit Daniel Kachhap wrote:
+>> Annotating a pointer from kernel to __user and then back again might
+>> confuse sparse. In call_undef_hook() it can be avoided by not using the
+>> intermediate user pointer variable.
+> 
+> When you say "might confuse sparse", does it complain today? If so, can
+> you include an example of what goes wrong?
+
+No it does not give warning. The __force option silences the warning. My
+idea is to remove the unwanted __force annotations and not mix user and
+kernel pointers.
+
+> 
+>> Note: This patch adds no functional changes to code.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Signed-off-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+>> ---
+>>   arch/arm64/kernel/traps.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+>> index b03e383d944a..357d10a8bbf5 100644
+>> --- a/arch/arm64/kernel/traps.c
+>> +++ b/arch/arm64/kernel/traps.c
+>> @@ -404,7 +404,8 @@ static int call_undef_hook(struct pt_regs *regs)
+>>   
+>>   	if (!user_mode(regs)) {
+>>   		__le32 instr_le;
+>> -		if (get_kernel_nofault(instr_le, (__force __le32 *)pc))
+>> +		if (get_kernel_nofault(instr_le,
+>> +				       (__le32 *)instruction_pointer(regs)))
+> 
+> Can we make `pc` an unsigned long, instead?
+
+I think it can be done.
+
+> 
+> It'd be nice to handle all three cases consistently, even if that means
+> adding __force to the two user cases.
+
+Agree with your suggestion. Even in the 2 user cases, __force may not be
+needed as the typecast will be from from unsigned long to user pointer.
+
+BR,
+Amit
+> 
+> Thanks,
+> Mark.
+> 
+>>   			goto exit;
+>>   		instr = le32_to_cpu(instr_le);
+>>   	} else if (compat_thumb_mode(regs)) {
+>> -- 
+>> 2.17.1
+>>
