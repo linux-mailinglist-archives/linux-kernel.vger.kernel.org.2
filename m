@@ -2,83 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FE440C31A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2363D40C11A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237329AbhIOJ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:57:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9050 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237143AbhIOJ5K (ORCPT
+        id S236857AbhIOIGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhIOIDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:57:10 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H8bDB0HK8zVmg7;
-        Wed, 15 Sep 2021 17:54:50 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 17:55:50 +0800
-Received: from localhost.localdomain (10.67.165.2) by
- dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Wed, 15 Sep 2021 17:55:50 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <valentin.schneider@arm.com>, <21cnbao@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <song.bao.hua@hisilicon.com>,
-        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>
-Subject: [RESEND PATCH] sched/topology: Remove unused numa_distance in cpu_attach_domain()
-Date:   Wed, 15 Sep 2021 14:31:58 +0800
-Message-ID: <20210915063158.80639-1-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.31.0
+        Wed, 15 Sep 2021 04:03:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80932C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 01:02:22 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mQPrt-0002Vm-AT; Wed, 15 Sep 2021 10:02:09 +0200
+Received: from pengutronix.de (unknown [IPv6:2a0a:edc0:0:701:8a97:9358:ae:5dc8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E740867E50E;
+        Wed, 15 Sep 2021 08:02:03 +0000 (UTC)
+Date:   Wed, 15 Sep 2021 10:02:02 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
+ compat_ioctl
+Message-ID: <20210915080202.ecgdt34lwas3s7df@pengutronix.de>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091134.17426-7-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="43j3xayf5qo5ebvb"
+Content-Disposition: inline
+In-Reply-To: <20210914091134.17426-7-jslaby@suse.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-numa_distance in cpu_attach_domain() is introduced in
-commit b5b217346de8 ("sched/topology: Warn when NUMA diameter > 2")
-to warn user when NUMA diameter > 2 as we'll misrepresent
-the scheduler topology structures at that time. This is
-fixed by Barry in commit 585b6d2723dc ("sched/topology: fix the issue
-groups don't span domain->span for NUMA diameter > 2") and
-numa_distance is unused now. So remove it.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- kernel/sched/topology.c | 4 ----
- 1 file changed, 4 deletions(-)
+--43j3xayf5qo5ebvb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 4e8698e62f07..690bd1ab86f3 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -688,7 +688,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 	struct sched_domain *tmp;
--	int numa_distance = 0;
- 
- 	/* Remove the sched domains which do not contribute to scheduling. */
- 	for (tmp = sd; tmp; ) {
-@@ -720,9 +719,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 			sd->child = NULL;
- 	}
- 
--	for (tmp = sd; tmp; tmp = tmp->parent)
--		numa_distance += !!(tmp->flags & SD_NUMA);
--
- 	sched_domain_debug(sd, cpu);
- 
- 	rq_attach_root(rq, rd);
--- 
-2.33.0
+On 14.09.2021 11:11:25, Jiri Slaby wrote:
+> After the previous patches, noone needs 'file' parameter in neither
+> ioctl hook from tty_ldisc_ops. So remove 'file' from both of them.
+>=20
+[...]
+> diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+> index 9a4ebda30510..de2da1b09a79 100644
+> --- a/drivers/net/can/slcan.c
+> +++ b/drivers/net/can/slcan.c
+> @@ -670,8 +670,8 @@ static void slcan_hangup(struct tty_struct *tty)
+>  }
+> =20
+>  /* Perform I/O control on an active SLCAN channel. */
+> -static int slcan_ioctl(struct tty_struct *tty, struct file *file,
+> -		       unsigned int cmd, unsigned long arg)
+> +static int slcan_ioctl(struct tty_struct *tty, unsigned int cmd,
+> +		unsigned long arg)
+>  {
+>  	struct slcan *sl =3D (struct slcan *) tty->disc_data;
+>  	unsigned int tmp;
 
+nitpick:
+Checkpatch complains about this:
+
+| CHECK: Alignment should match open parenthesis
+| #674: FILE: drivers/net/can/slcan.c:674:
+| +static int slcan_ioctl(struct tty_struct *tty, unsigned int cmd,
+| +               unsigned long arg)
+
+Same for other hunks in this file.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--43j3xayf5qo5ebvb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmFBqHcACgkQqclaivrt
+76lOsQf+NcL3akVLazO267pyqBA8tvSCpRf29/7Z8wqJ5Z2oTi61D+CA/H68iXcg
+GgjwGBXOMJVTtJN7YvxclkONrchsZeOzq5KfgcLpFWQj0VUKAguY5K/LYrLi+wXd
+JPubokNx2N9QWNF4WGlP50Qe/l69HuL5qOJ9Izfim0E6lqKYmPebKInL6XoBP3FD
+lP7ZZf56yoJ91hBnjMEf0ulasx6Z1T94oyH0JOqv2lP5iOoF/rHUsHpsPHy+5IiR
+57uatCwXcVt/vskseP7NnTC8wsl4FlcnCMxjiGvKrX8Y7gsWcvAx2J3ivty4D7tF
+dJK27i6HibLd1ATbLxnb4RFnxw1UEw==
+=SNmx
+-----END PGP SIGNATURE-----
+
+--43j3xayf5qo5ebvb--
