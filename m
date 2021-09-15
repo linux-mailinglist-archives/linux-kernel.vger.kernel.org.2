@@ -2,145 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5086440CAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739BB40CAEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhIOQqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
+        id S229822AbhIOQqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhIOQqO (ORCPT
+        with ESMTP id S229645AbhIOQqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:46:14 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4B4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:44:55 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id a93so7056053ybi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:44:55 -0700 (PDT)
+        Wed, 15 Sep 2021 12:46:42 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BB7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:45:23 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id q3so5923266edt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SoEro/pOot3RDQ6oHi20QrcukaWZiRl8hEvD0rocWMM=;
-        b=h84HDKGSfFbvCCheUBvsV5ZXDbwYVjGSIKtBjTdvax/i4LEqGK3JrAEhwzUpMhZyBS
-         cSnWQtBb2krYDxK7KjZWFWVtR5cq55F+pXvJq22D1JOhDVuahKYAYTsKWqDKmuLkN/+t
-         UuaakJFAQYaaB1mzq4SgCTkJXuMyLCGT/7kvxl+n2mxzgUHyfscnJJSQtQ38zeQ9u+Le
-         LT8i1jv/j2J0P674H5M+bvBFngQT80M/Yy1lkDIvza7zhdACAKZmZHOfRJ+nwM0+wf8z
-         K+ZMxh6Vr7320YJinCwXo/8H7lQVHMTREPlgXgXK9sn6FTQZGlrFfiBpuk/Ecqc4XBtK
-         FS2w==
+         :cc:content-transfer-encoding;
+        bh=yjDrpYKNuHJzJKyRxhO/knOzWnL7kiLXru/IY6Rh4eg=;
+        b=WWpZtN78aUpTIuElwTJGOAxjrczueKqQggCwjeEflgkb0xGJAhSYJ/i4JVzeVokcr0
+         vxbZg0lxQCriVFCGkTqRrD9cIIBquCoSblXq6NcAD3Uv8GqPfKgTQWoYNbO+3CYsj28T
+         Ia9NUIFx2V2bB/MppwOrB9xobHsJtwcsYVcvq5i/3DZImXacR8XiJW+cBfKZSAgrkggs
+         2l7JAY5xTlIdSjH/UZl5JnvPW9u19wvJFczA85zaDnVRtrVMDKLxPopQ4GbC9wgq2lkP
+         uwdoGmdcoc16tND2F2g0Oyc2F971sb17dksLpJaQh3yumt4NbJjxTmCvU2PVX3HOt+RS
+         Nszg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SoEro/pOot3RDQ6oHi20QrcukaWZiRl8hEvD0rocWMM=;
-        b=y1R3zyM/jMbQYZtq8hdJn7MF9sc/E0fX3DU33DpHZm8HY/Ai2mH62lHwoxa3ZsGObe
-         w84R3FghOg8rjEg9HHHPhNuhVj1eQU1bKs+MCr6kZ9BxvSpWubK2SBEWQ80CGi93TPEm
-         qiqubtAGkebFiPSNSmnA3LySvmMpG7yh85tibTnNtapnZrubXQZwOcfbKt8w4tlMK8aU
-         GGQNQg07ZB0gFSagK9UllshO9FqGJKnEBcg9hrpwPdNbcGalbzgjoC49SgAIAMLTvybL
-         IW1oqSsK8Louzb2KNbsFD116EfKLe7qOLdXkiAlV9ReR23HlI8pYHFdZvGjL9x5ehsB+
-         VZbQ==
-X-Gm-Message-State: AOAM533qMYyD5E8EsvDV3T3M2GpyL4tJDb6Ee4A0JuW9FRtKrK3JVZGy
-        nVzO/i9U1mf4i3EbGvK9Zm0lLGzcl2NuSr3lrYo39g==
-X-Google-Smtp-Source: ABdhPJynAzZvXI3gSdy0YPIzVlH0PpPiIWWFob0j+Akw0Mx/NnZ6oq39PZR9NHlAxE9NtA1aCYvps4T2VvDzG9qPvCs=
-X-Received: by 2002:a25:2b07:: with SMTP id r7mr1047682ybr.296.1631724294182;
- Wed, 15 Sep 2021 09:44:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yjDrpYKNuHJzJKyRxhO/knOzWnL7kiLXru/IY6Rh4eg=;
+        b=Ym7B2w6bywnTHRlv2ZtSuAYQjWT7Uyrn8xJS4Nnqb262+zounz5cNfPjSdZ2sdSNt3
+         mVhauzjpNAwDd+hgwVuzlapSKhxrIw9jNtOAg8Poc2GMSllbKYz/PkJC9Fn06iDLZJkB
+         NjFPUTYkaXslEq6ABxub5GhnwaRzOqPFjLuP7aD4UYuVICAqpGxsn3lyvDlav7AUpM/P
+         TxCRl7hmzzk8mQ+4tklB3nHczsv/fobLBjb6cfB0oQErMFzCJzdMAN1uafxKT/ZbJX3w
+         76cHkpUoRpYfQpKg/HFe4Z0so8m97ZdyP7xVZ9hG1TjJlBCV8ntFO0bU/og9h3zGELWK
+         WGNA==
+X-Gm-Message-State: AOAM530SHmFLmgBubYFp9jPWlSFffMd7O5oBIycfZZDP1SY6pKj/Qoxp
+        9j7X7q/8bcGMhfaWkMSCIyK1xFh4ijATGWeBu71xlv77UDGFnA==
+X-Google-Smtp-Source: ABdhPJyY/5Ha5mNHn/Rc+FDTHzEYvC6y67UmYbly+9kCrNJilhnxCoaHFAmBEHMsKH4z53y5iiAhkwujn++7c668rfI=
+X-Received: by 2002:a17:906:2887:: with SMTP id o7mr937027ejd.425.1631724322091;
+ Wed, 15 Sep 2021 09:45:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20210915081147eucas1p130ee8d5f1910ea3be265d37e4236a606@eucas1p1.samsung.com>
- <20210915081139.480263-1-saravanak@google.com> <9c437d41-05b2-8e22-a537-d9aa7865f01b@samsung.com>
-In-Reply-To: <9c437d41-05b2-8e22-a537-d9aa7865f01b@samsung.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 15 Sep 2021 09:44:16 -0700
-Message-ID: <CAGETcx_C8N8r4nQiUU1eGdkE3E1b=wxUTFEtKhSfobqrdDrTQw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] fw_devlink improvements
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vladimir Oltean <olteanv@gmail.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
+References: <20210914144232.511697-1-geert@linux-m68k.org>
+In-Reply-To: <20210914144232.511697-1-geert@linux-m68k.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 15 Sep 2021 19:44:45 +0300
+Message-ID: <CAHp75VfR47ybHHA-yKxrqCDLHdvdfKRPtiZXQfbmr-Q4cvs4XA@mail.gmail.com>
+Subject: Re: [PATCH] auxdisplay: ht16k33: Make use of device properties
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 1:44 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
+On Tue, Sep 14, 2021 at 5:42 PM Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
 >
-> Hi Saravana,
+> The device property API allows drivers to gather device resources from
+> different sources, such as ACPI, and lift the dependency on Device Tree.
+> Convert the driver to unleash the power of the device property API.
+
+
+With or without the nit-pick below
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Suggested-by: Marek Beh=C3=BAn <kabel@kernel.org>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Compile-tested only for the !OF case.
 >
-> On 15.09.2021 10:11, Saravana Kannan wrote:
-> > Patches ready for picking up:
-> > Patch 1 fixes a bug in fw_devlink.
-> > Patch 2-4 are meant to make debugging easier
-> > Patch 5 and 6 fix fw_devlink issues with PHYs and networking
+> This depends on "[PATCH v6 00/19] auxdisplay: ht16k33: Add character disp=
+lay
+> support"
+> (https://lore.kernel.org/r/20210914143835.511051-1-geert@linux-m68k.org)
 >
-> Is this patchset supposed to fix the PHY related issues I've experienced
-> or does it also require the Andrew's patch for 'mdio-parent-bus'? If the
-> first, then applying only this patchset on top of today's linux-next
-> doesn't fix the ethernet issue on my Amlogic SoC based test boards.
+>  drivers/auxdisplay/Kconfig   |  2 +-
+>  drivers/auxdisplay/ht16k33.c | 25 +++++++++++--------------
+>  2 files changed, 12 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+> index e32ef7f9945d49b2..64012cda4d126707 100644
+> --- a/drivers/auxdisplay/Kconfig
+> +++ b/drivers/auxdisplay/Kconfig
+> @@ -169,7 +169,7 @@ config IMG_ASCII_LCD
+>
+>  config HT16K33
+>         tristate "Holtek Ht16K33 LED controller with keyscan"
+> -       depends on FB && OF && I2C && INPUT
+> +       depends on FB && I2C && INPUT
+>         select FB_SYS_FOPS
+>         select FB_SYS_FILLRECT
+>         select FB_SYS_COPYAREA
+> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+> index 89ee5b4b3dfccb68..e5b810e37e0337a6 100644
+> --- a/drivers/auxdisplay/ht16k33.c
+> +++ b/drivers/auxdisplay/ht16k33.c
+> @@ -12,7 +12,7 @@
+>  #include <linux/module.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/i2c.h>
+> -#include <linux/of.h>
+> +#include <linux/property.h>
+>  #include <linux/fb.h>
+>  #include <linux/slab.h>
+>  #include <linux/backlight.h>
+> @@ -481,15 +481,13 @@ static int ht16k33_led_probe(struct device *dev, st=
+ruct led_classdev *led,
+>                              unsigned int brightness)
+>  {
+>         struct led_init_data init_data =3D {};
+> -       struct device_node *node;
+>         int err;
+>
+>         /* The LED is optional */
+> -       node =3D of_get_child_by_name(dev->of_node, "led");
+> -       if (!node)
+> +       init_data.fwnode =3D device_get_named_child_node(dev, "led");
+> +       if (!init_data.fwnode)
+>                 return 0;
+>
+> -       init_data.fwnode =3D of_fwnode_handle(node);
+>         init_data.devicename =3D "auxdisplay";
+>         init_data.devname_mandatory =3D true;
+>
+> @@ -510,7 +508,6 @@ static int ht16k33_keypad_probe(struct i2c_client *cl=
+ient,
+>                                 struct ht16k33_keypad *keypad)
+>  {
+>         struct device *dev =3D &client->dev;
+> -       struct device_node *node =3D dev->of_node;
+>         u32 rows =3D HT16K33_MATRIX_KEYPAD_MAX_ROWS;
+>         u32 cols =3D HT16K33_MATRIX_KEYPAD_MAX_COLS;
+>         int err;
+> @@ -529,11 +526,11 @@ static int ht16k33_keypad_probe(struct i2c_client *=
+client,
+>         keypad->dev->open =3D ht16k33_keypad_start;
+>         keypad->dev->close =3D ht16k33_keypad_stop;
+>
+> -       if (!of_get_property(node, "linux,no-autorepeat", NULL))
+> +       if (!device_property_present(dev, "linux,no-autorepeat"))
 
-Marek,
+If it's boolean property one may use device_property_read_bool()...
 
-The issue you hit was actually a general issue with fw_devlink and
-that's fixed by Patch 1. But I also needed to revert the phy-handle
-patch for other reasons (see commit text) and that fixes the issue you
-were hitting without needing the 'mdio-parent-bus' patch.
-https://lore.kernel.org/lkml/20210915081933.485112-1-saravanak@google.com/
+>                 __set_bit(EV_REP, keypad->dev->evbit);
 
-When I eventually bring back phy-handle support, I'll need the
-'mdio-parent-bus' to not break your use case.
-
-Hope that clarifies things.
-
--Saravana
+...or put it as a parameter to __assign_bit(), for example.
 
 >
-> > Andrew,
-> >
-> > I think Patch 5 and 6 should be picked up be Greg too. Let me know if
-> > you disagree.
-> >
-> > -Saravana
-> >
-> > Cc: John Stultz <john.stultz@linaro.org>
-> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Cc: Andrew Lunn <andrew@lunn.ch>
-> > Cc: Vladimir Oltean <olteanv@gmail.com>
-> >
-> > v1->v2:
-> > - Added a few Reviewed-by and Tested-by tags
-> > - Addressed Geert's comments in patches 3 and 5
-> > - Dropped the fw_devlink.debug patch
-> > - Added 2 more patches to the series to address other fw_devlink issues
-> >
-> > Thanks,
-> > Saravana
-> >
-> > Saravana Kannan (6):
-> >    driver core: fw_devlink: Improve handling of cyclic dependencies
-> >    driver core: Set deferred probe reason when deferred by driver core
-> >    driver core: Create __fwnode_link_del() helper function
-> >    driver core: Add debug logs when fwnode links are added/deleted
-> >    driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
-> >    net: mdiobus: Set FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD for mdiobus parents
-> >
-> >   drivers/base/core.c        | 90 ++++++++++++++++++++++++++------------
-> >   drivers/net/phy/mdio_bus.c |  4 ++
-> >   include/linux/fwnode.h     | 11 +++--
-> >   3 files changed, 75 insertions(+), 30 deletions(-)
-> >
-> Best regards
+> -       err =3D of_property_read_u32(node, "debounce-delay-ms",
+> -                                  &keypad->debounce_ms);
+> +       err =3D device_property_read_u32(dev, "debounce-delay-ms",
+> +                                      &keypad->debounce_ms);
+>         if (err) {
+>                 dev_err(dev, "key debounce delay not specified\n");
+>                 return err;
+> @@ -620,8 +617,8 @@ static int ht16k33_fbdev_probe(struct device *dev, st=
+ruct ht16k33_priv *priv,
+>                 goto err_fbdev_buffer;
+>         }
+>
+> -       err =3D of_property_read_u32(dev->of_node, "refresh-rate-hz",
+> -                                  &fbdev->refresh_rate);
+> +       err =3D device_property_read_u32(dev, "refresh-rate-hz",
+> +                                      &fbdev->refresh_rate);
+>         if (err) {
+>                 dev_err(dev, "refresh rate not specified\n");
+>                 goto err_fbdev_info;
+> @@ -727,8 +724,8 @@ static int ht16k33_probe(struct i2c_client *client)
+>         if (err)
+>                 return err;
+>
+> -       err =3D of_property_read_u32(dev->of_node, "default-brightness-le=
+vel",
+> -                                  &dft_brightness);
+> +       err =3D device_property_read_u32(dev, "default-brightness-level",
+> +                                      &dft_brightness);
+>         if (err) {
+>                 dft_brightness =3D MAX_BRIGHTNESS;
+>         } else if (dft_brightness > MAX_BRIGHTNESS) {
+> @@ -816,7 +813,7 @@ static struct i2c_driver ht16k33_driver =3D {
+>         .remove         =3D ht16k33_remove,
+>         .driver         =3D {
+>                 .name           =3D DRIVER_NAME,
+> -               .of_match_table =3D of_match_ptr(ht16k33_of_match),
+> +               .of_match_table =3D ht16k33_of_match,
+>         },
+>         .id_table =3D ht16k33_i2c_match,
+>  };
 > --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
+> 2.25.1
 >
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
