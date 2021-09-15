@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2570140D035
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09B140D034
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Sep 2021 01:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhIOXfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 19:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60386 "EHLO mail.kernel.org"
+        id S233102AbhIOXfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 19:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232908AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232897AbhIOXfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 19:35:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0275761157;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F073A61131;
         Wed, 15 Sep 2021 23:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631748825;
-        bh=xsgx0GpeQAclTej5LlLjRn0cECyUgrdxHaCISoqSx7Y=;
+        bh=G+c4Zp8HyyHDC/1xdbUnO8ByLENVGrEKTMyNI4qVzWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M8n9Zw0HEbwpFJDZyq0/hxL+uIVkcK9FXe+F51CN8/PjfyPMaO8EhDq9BdFqd1nDe
-         segZn6INYpHiLJG2XYs/bcQ98esuxyHJZOZ29ua9xku1DuMXVtRlvONrpD8KH7CAfN
-         CVrT8yqkVeb3TLoTaylAhuFFk1DmY23jMYQhhJ+WAJLMIb34ip9LBslJbiywUo8Acc
-         fIUgaioS5onWEEg5kfNCaXLmQNRp1AKnFvz4g7tNoFtyWzdlsDxRAGAi8OyDtrwOkE
-         AuOdkEdJTujWkvwcU3wVK63pVuBpQ3rPaeVYeTuqkaS08ze9HEqTwrL5g3r5+41Q2c
-         f/7gg4NVPeGQw==
+        b=BYUXyzJ/NtJzKizIQxFPc9eLRMx9wieHozd9y50kElSnHAcg1Y9zjI25+XG9/P1Y/
+         RZPGDLAQqVnS3hlFUSBmTTIW7uW0/Ic5NgSLv3gJuMGRW5K/la5W2t/DqRZE6fpj1G
+         p8U2lLbVRXZU6B+5VbICp6toK+mFLj68K9uUqgpLjz9QQvMjxqmO0Dh9XtA7nIco2Y
+         McZOUCCIM2X8EGIEFyJeGtfSo18FB+KQss346kPab4MK8pvTncNHv9zfkurEwPdnD7
+         tnbMC9huS/Xo5aRkH5YJztGePk7poQFxjRaNOB3iQmb/UxF9aMxghiqXqBBJXrNONC
+         /UUqzkMhG373Q==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C13A55C08E8; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
+        id C30D15C0926; Wed, 15 Sep 2021 16:33:44 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 04/14] rcu: Eliminate rcu_implicit_dynticks_qs() local variable ruqp
-Date:   Wed, 15 Sep 2021 16:33:33 -0700
-Message-Id: <20210915233343.3906738-4-paulmck@kernel.org>
+Subject: [PATCH rcu 05/14] doc: Add another stall-warning root cause in stallwarn.rst
+Date:   Wed, 15 Sep 2021 16:33:34 -0700
+Message-Id: <20210915233343.3906738-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 In-Reply-To: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
 References: <20210915233305.GA3906641@paulmck-ThinkPad-P17-Gen-1>
@@ -46,58 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rcu_implicit_dynticks_qs() function's local variable ruqp references
-the ->rcu_urgent_qs field in the rcu_data structure referenced by the
-function parameter rdp, with a rather odd method for computing the
-pointer to this field.  This commit therefore simplifies things and
-saves a couple of lines of code by replacing each instance of ruqp with
-&rdp->need_heavy_qs.
+This commit adds a bullet item noting that both deficiencies and surpluses
+of calls to rcu_*_enter() and rcu_*_exit() can result in RCU CPU stall
+warnings.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ Documentation/RCU/stallwarn.rst | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 18d2f35d1450..0bfebec94277 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1219,7 +1219,6 @@ static int dyntick_save_progress_counter(struct rcu_data *rdp)
- static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- {
- 	unsigned long jtsq;
--	bool *ruqp;
- 	struct rcu_node *rnp = rdp->mynode;
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index 5036df24ae61..28f8ad16db25 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -96,6 +96,16 @@ warnings:
+ 	the ``rcu_.*timer wakeup didn't happen for`` console-log message,
+ 	which will include additional debugging information.
  
- 	/*
-@@ -1284,16 +1283,15 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	 * is set way high.
- 	 */
- 	jtsq = READ_ONCE(jiffies_to_sched_qs);
--	ruqp = per_cpu_ptr(&rcu_data.rcu_urgent_qs, rdp->cpu);
- 	if (!READ_ONCE(rdp->rcu_need_heavy_qs) &&
- 	    (time_after(jiffies, rcu_state.gp_start + jtsq * 2) ||
- 	     time_after(jiffies, rcu_state.jiffies_resched) ||
- 	     rcu_state.cbovld)) {
- 		WRITE_ONCE(rdp->rcu_need_heavy_qs, true);
- 		/* Store rcu_need_heavy_qs before rcu_urgent_qs. */
--		smp_store_release(ruqp, true);
-+		smp_store_release(&rdp->rcu_urgent_qs, true);
- 	} else if (time_after(jiffies, rcu_state.gp_start + jtsq)) {
--		WRITE_ONCE(*ruqp, true);
-+		WRITE_ONCE(rdp->rcu_urgent_qs, true);
- 	}
++-	A low-level kernel issue that either fails to invoke one of the
++	variants of rcu_user_enter(), rcu_user_exit(), rcu_idle_enter(),
++	rcu_idle_exit(), rcu_irq_enter(), or rcu_irq_exit() on the one
++	hand, or that invokes one of them too many times on the other.
++	Historically, the most frequent issue has been an omission
++	of either irq_enter() or irq_exit(), which in turn invoke
++	rcu_irq_enter() or rcu_irq_exit(), respectively.  Building your
++	kernel with CONFIG_RCU_EQS_DEBUG=y can help track down these types
++	of issues, which sometimes arise in architecture-specific code.
++
+ -	A bug in the RCU implementation.
  
- 	/*
-@@ -1307,7 +1305,7 @@ static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
- 	if (tick_nohz_full_cpu(rdp->cpu) &&
- 	    (time_after(jiffies, READ_ONCE(rdp->last_fqs_resched) + jtsq * 3) ||
- 	     rcu_state.cbovld)) {
--		WRITE_ONCE(*ruqp, true);
-+		WRITE_ONCE(rdp->rcu_urgent_qs, true);
- 		resched_cpu(rdp->cpu);
- 		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
- 	}
+ -	A hardware failure.  This is quite unlikely, but has occurred
 -- 
 2.31.1.189.g2e36527f23
 
