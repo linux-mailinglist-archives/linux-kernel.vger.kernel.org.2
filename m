@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FCF40C715
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB2940C719
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237798AbhIOOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbhIOOJo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:09:44 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB63C061574;
-        Wed, 15 Sep 2021 07:08:25 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so3663615otg.11;
-        Wed, 15 Sep 2021 07:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I2A31vkH1KuWdXSd5ju0bH7L4mFuHVmLMgvk3FgHJY0=;
-        b=NRdaicJWp7ayqH9jsDFb73Gz8Cf3R628eZgQGNYYYw73nlRDwX0MhDq3KweoJDhTJT
-         GbxOItv3OOUX8L6g6LLw54GEZtCbyUbRDJreqRfzf2kQ8+ZBCa8lt7i4hA/D3w+b7J2H
-         wtIcXm/k2Y7EJx6QRC43Tt790k2irXPm+bEBOiLhnMjNuCig1kv00lMutBWUUMGqlhAR
-         zWFwosOLm5A+i4su+fgeaWORBHdDvNj1IC8X2pHlSWR5+qMfJzc+Ph80lhUZNCxml7gm
-         9roMymlF1nIpeN4Wgqc4sQUWQYe2isgncBD/xw6u3wE1W54GJ0aJneuYsgYJrBw/zyx5
-         tWVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I2A31vkH1KuWdXSd5ju0bH7L4mFuHVmLMgvk3FgHJY0=;
-        b=LjqWHg+LYMtJ0SQ5DsfD/yIlqSu9l5AcyWB7zfpMEiHvj15YiS3HBDdLU61c2I3nta
-         lJDNeizp7gElqeGtYQDkx0K4gzz6Va7mGWYzuZXqlye7/Eg3zC3DGffa2uJDTfh+l5e6
-         4WJl06Eb2UH74wBX0AC2cvt/dSRq9eSFUtuHs+DgAZy3oN0iY6YB19N+EC0cbaDTkmWc
-         DGR43WzH9sbWQRPaT4U4OnxE51VjiCScFoxJKCCzI9SbFo0vBx3wN2zuqstYFjUqLItv
-         vif2UB/kfL+3KXJrWuzwrElWpPfBw5CNElGvT6aL/LDulF3AcJzDxtaEs3C+keWdvNlW
-         SU9w==
-X-Gm-Message-State: AOAM5323gLFyU1umpH9pofWphM9sfUBB50FQltXK+fReCyJ0fGqxyJz1
-        QruX2z44+L4Ifqpkeu325R5Is+Ahofw=
-X-Google-Smtp-Source: ABdhPJyGVejKG/0QIjX/U07XHlCiHcZBAD5y4wapWvmWPwTsE14wGhKTrxx2aD6uEomzXj+nR2CUgQ==
-X-Received: by 2002:a9d:4589:: with SMTP id x9mr111337ote.52.1631714904722;
-        Wed, 15 Sep 2021 07:08:24 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v5sm20358oos.17.2021.09.15.07.08.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 07:08:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] s390: Add WARN_DYNAMIC_STACK dependencies
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
+        id S237662AbhIOOMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234504AbhIOOMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:12:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D688611C1;
+        Wed, 15 Sep 2021 14:10:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631715053;
+        bh=YbvuYcfAW5Fjwy98n/gQJCW044gac9hZzpuoydBe/dQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NhHMNxjD3PIagYWukAJT16WejQu1Dbiq44S2cQuGmDemU2s0PzXskS0Mb6Irn2nY0
+         BvejqDNI6tgKrU1ojfMAGWva+cvxOeL1smppWSvCJUDTI7NVGjiBan1X2KNSHfm7Cv
+         SSpy5IqfbXrxWkAx/ybCRQtL/d6EL853pp8VMM72yCXx3IQT/T5e6tI417NVsb0NcG
+         apEMwbvZhpq0W4c93pt3BoeiITIqoc9OSZs4wJcnpAcw2hMTEjTT57GRqIozJsev+y
+         lxg8x+/sbjcNbn/yBiGmplD1n/bTKDfkkMtprEac4uc6TZbXNEVB2zY8NoV8SVuzGK
+         BaTvvFkw5hLng==
+Date:   Wed, 15 Sep 2021 15:10:12 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20210915044010.640499-1-linux@roeck-us.net>
- <80b7dbc9-0c09-197f-0f40-ab92d2e3fe3c@de.ibm.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <84949d48-435a-e76b-9977-d072f7359d91@roeck-us.net>
-Date:   Wed, 15 Sep 2021 07:08:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: Re: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
+Message-ID: <20210915141012.GC12513@sirena.org.uk>
+References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
+ <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <80b7dbc9-0c09-197f-0f40-ab92d2e3fe3c@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XWOWbaMNXpFDWE00"
+Content-Disposition: inline
+In-Reply-To: <20210903231536.225540-3-frattaroli.nicolas@gmail.com>
+X-Cookie: The more the merrier.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/15/21 2:02 AM, Christian Borntraeger wrote:
-> 
-> 
-> On 15.09.21 06:40, Guenter Roeck wrote:
->> s390:allmodconfig fails to build with the following errors.
->>
->> arch/s390/kernel/syscall.c: In function '__do_syscall':
->> arch/s390/kernel/syscall.c:168:1: error:
->>     '__do_syscall' uses dynamic stack allocation
->>
->> lib/test_kasan.c: In function 'kasan_alloca_oob_right':
->> lib/test_kasan.c:782:1: error:
->>     'kasan_alloca_oob_right' uses dynamic stack allocation
->>
->> lib/test_kasan.c: In function 'kasan_alloca_oob_left':
->> lib/test_kasan.c:767:1: error:
->>     'kasan_alloca_oob_left' uses dynamic stack allocation
->>
->> The first error is seen if RANDOMIZE_KSTACK_OFFSET_DEFAULT,
->> WARN_DYNAMIC_STACK, and WERROR are enabled. The other problems
->> are seen if KASAN_KUNIT_TEST, WARN_DYNAMIC_STACK, and WERROR
->> are enabled.
->>
->> It does not make sense to abort a build in that situation.
->> If either RANDOMIZE_KSTACK_OFFSET_DEFAULT or KASAN_KUNIT_TEST
->> is enabled, dynamic stack allocation is on purpose and should
->> not fail the build. Add dependencies to reflect that situation.
->>
-> 
-> Thanks for the patch. I think Heiko (on vacation) has a patch to
-> get rid  of this config alltogether, which is probably the better
-> solution.
-> 
 
-I did consider that, but concluded that this would be something a maintainer
-should do and went with what I thought was the least invasive method.
-I did check the various mailing lists for other patches, but I did not
-find anything there. Sorry if I missed it.
+--XWOWbaMNXpFDWE00
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Guenter
+On Sat, Sep 04, 2021 at 01:15:34AM +0200, Nicolas Frattaroli wrote:
+
+> +  rockchip,frame-width:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 64
+> +    minimum: 32
+> +    maximum: 512
+> +    description:
+> +      Width of a frame, usually slot width multiplied by number of slots.
+> +      Must be even.
+
+Why is this in the binding?  This is normally configured by the machine
+driver setting the TDM slots, not through DT.
+
+> +  rockchip,mclk-calibrate:
+> +    description:
+> +      Switch between two root clocks depending on the audio sample rate.
+> +      For integer multiples of 8000 (e.g. 48000 Hz), mclk_root0 is used.
+> +      For integer multiples of 11025 (e.g. 44100 Hz), mclk_root1 is used.
+> +    type: boolean
+
+Why would we not want to do this, and assuming it's to do with
+availability can't we detect it simply through seeing if both MCLKs are
+available?
+
+> +  rockchip,tdm-fsync-half-frame:
+> +    description: Whether to use half frame fsync.
+> +    type: boolean
+> +
+
+Why is this not part of the normal bus format configuration?  I don't
+know what this is but it sounds a lot like I2S mode...
+
+--XWOWbaMNXpFDWE00
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB/sMACgkQJNaLcl1U
+h9AyVgf/R1hx+9U5odYrV/J4RA9uPRmhSRnrn3d9jvqBMcYWbZUVHv4dTKqn4SqK
+QUkjtLocXUuai3S1P/4XuaoN0HvXjNaPsGxo7967IUUgfxrWbRiBIsG+DQJiAMWS
+95KX7lNSNmjf8ZGDY5LTp78M8fhzUpB0zedTNQw5D9r8aCHTBAmIUw+fKOJFlucS
+ndk/eJHrgcxpcvaVZX8nuRdgAfJpv/i4v4+K6I/dAHsiGOkbFwiJiOIZ+psy7wpr
+lp5ioBhSuQQEH/sA62y0nSDVXggOJEPp+APhIqeiGDTmiZ9gabhBClhDHQ3aylpJ
+9vmhvE2NT59s90BGBWMnFEQfyqdk4A==
+=s91p
+-----END PGP SIGNATURE-----
+
+--XWOWbaMNXpFDWE00--
