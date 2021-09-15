@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B2440C28F
+	by mail.lfdr.de (Postfix) with ESMTP id D587840C290
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhIOJOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237404AbhIOJOC (ORCPT
+        id S237237AbhIOJOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:14:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:26457 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237200AbhIOJO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:14:02 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05492C061766;
-        Wed, 15 Sep 2021 02:12:44 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r2so2044174pgl.10;
-        Wed, 15 Sep 2021 02:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=6f6pDvm1KB1BUD+UI80GJZw/FNQsGRi1bsEqgFCm1SA=;
-        b=hwNLoJUW1SUbnq/yZHao0sjUZE+wXWmWOViRlZnW+hMrbBnucncgcekehk2vPARNUu
-         NiigLrgjZGQQC0VwTHexgjPyKx3V5fqy8ZruVQnbMJwvQEP6fv9e+4gAZBLnH4f4UbrP
-         1Wr7VLZdz0tUsfMeD8yxKZOXfS0Bpwa3fKTtSS3Q5GEOSmsF09RIgoaO2FVV1PH/HUjB
-         aRdWGoiw7ITTidyTPW9xcNrYpTkHNLTGeJ89ScvLORVglr0LNdZI9mlIwdUojhYeOgeT
-         XoAxC4vV7C8J+YhkXXS4+PP1MMN6WwuuJJzyfEDcQSv6sDDaaq7LFwcVN497+38MRecA
-         TTng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=6f6pDvm1KB1BUD+UI80GJZw/FNQsGRi1bsEqgFCm1SA=;
-        b=KNef8vavpdT2COOvGRNCtA3+R8rnUYSzbDEm222M4aeaGrunGJUiYaS+kiHyU3zQuY
-         JKpV7lvpfJeyWSJgp15JnX/LmLjMqWAno7adazuey8UVSR8gm38j5FTxXJpsLhbxJGvc
-         maRwVFr2XzrJcJI26TkeqRr9fUVM/xJJZ3RZ/Tgrp1gwwnmL2wyf12ExTp/I7poKkiF1
-         Doj2KOsGPDyn/R5XAZmwnx49fRLXehjzQKio2pK3PCbEgCJywX/Wetnu031Rmvp0mxiH
-         uNAot3v0ZUtwBt0X1EUJ0Jt4ygsh7138oJAnvCqlICCZoWfkp/UGwEvlGVw2orY6lS8Q
-         SERA==
-X-Gm-Message-State: AOAM5330lznjDDtvv+6YUMQxdqofhFvm447fLCq/Ag7tyq9lD8wteLX/
-        YpljcAQ4u7St5wyuiEgCU72Vvp4fZuo=
-X-Google-Smtp-Source: ABdhPJxHdj75JxKB720E6P1osyeykhY+XTLKNbbtP4v+0Esti9LpljtFzOHFsex4JMJvfghcfC8DiA==
-X-Received: by 2002:a63:1717:: with SMTP id x23mr19536519pgl.182.1631697163202;
-        Wed, 15 Sep 2021 02:12:43 -0700 (PDT)
-Received: from [10.114.0.6] ([45.145.248.139])
-        by smtp.gmail.com with ESMTPSA id i1sm1520945pja.26.2021.09.15.02.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 02:12:42 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] infiniband: hw: hfi1: possible ABBA deadlock in pio_wait() and
- sc_disable()
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <857df2fa-7d60-bff3-70f2-642201888977@gmail.com>
-Date:   Wed, 15 Sep 2021 17:12:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Wed, 15 Sep 2021 05:14:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631697191; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mKHLpEcdN44klLDGi4B+FJ2Yr0gWuE7N1GO6uzZKeIg=;
+ b=e9FdLoJdnpAcVKBe67iY/HAiVk/RabJgPedesWlWg7/i3xKcQeiDuxEkN6aiK3pU2A0G9eLh
+ 9PftSEfRVetsZ9CIfoBwP/fkTnq+ELOLgigNNDzYyyIpCw4GOYxEWkxASKgipsn8xH4Ob386
+ DXKqx0Is0g2q5kj8nStNxbi43f4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6141b926ec62f57c9a31402d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Sep 2021 09:13:10
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4CC4C4361A; Wed, 15 Sep 2021 09:13:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25005C4338F;
+        Wed, 15 Sep 2021 09:13:09 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 15 Sep 2021 14:43:09 +0530
+From:   dikshita@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, jim.cromie@gmail.com,
+        Joe Perches <joe@perches.com>, Jason Baron <jbaron@akamai.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media-owner@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] venus: Add a debugfs file for SSR trigger
+In-Reply-To: <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
+References: <20200730095350.13925-1-stanimir.varbanov@linaro.org>
+ <20200730095350.13925-3-stanimir.varbanov@linaro.org>
+ <159718256557.1360974.458611240360821676@swboyd.mtv.corp.google.com>
+Message-ID: <8c1fdf2d0807f07ec57b232497b405f1@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Stephen,
 
-My static analysis tool reports a possible ABBA deadlock in the hfi1 
-driver in Linux 5.10:
+Reviving the discussion on this change as we need to pull this in.
 
-sc_disable()
-   write_seqlock(&sc->waitlock); --> Line 956 (Lock A)
-   hfi1_qp_wakeup()
-     spin_lock_irqsave(&qp->s_lock, flags); --> Line 441 (Lock B)
+As per your suggestion, I explored the fault injection framework to 
+implement this functionality.
+But I don't think that meets our requirements.
 
-pio_wait()
-   spin_lock_irqsave(&qp->s_lock, flags); --> Line 939 (Lock B)
-   write_seqlock(&sc->waitlock); --> Line 941 (Lock A)
+We need a way to trigger subsystem restart from the client-side, it's 
+not derived from the driver.
 
-When sc_disable() and pio_wait() are concurrently executed, the deadlock 
-can occur.
+while fault injection framework enables the driver to trigger an 
+injection
+when a specific event occurs for eg: page allocation failure or memory 
+access failure.
 
-I am not quite sure whether this possible deadlock is real and how to 
-fix it if it is real.
-Any feedback would be appreciated, thanks :)
+So, IMO, we will have to use custom debugfs only.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Please feel free to correct me in case my understanding of the framework 
+is wrong.
 
+Thanks,
+Dikshita
 
-Best wishes,
-Jia-Ju Bai
+On 2020-08-12 03:19, Stephen Boyd wrote:
+> Quoting Stanimir Varbanov (2020-07-30 02:53:49)
+>> The SSR (SubSystem Restart) is used to simulate an error on FW
+>> side of Venus. We support following type of triggers - fatal error,
+>> div by zero and watchdog IRQ.
+> 
+> Can this use the fault injection framework instead of custom debugfs?
+> See Documentation/fault-injection/.
