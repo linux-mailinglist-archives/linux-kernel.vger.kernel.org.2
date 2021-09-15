@@ -2,378 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B37640C4DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BB540C4E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhIOMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 08:05:15 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46784 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhIOMEy (ORCPT
+        id S237880AbhIOMFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237913AbhIOMFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 08:04:54 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18FC3VfZ066521;
-        Wed, 15 Sep 2021 07:03:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631707411;
-        bh=FQ8CsjhiBkjBoD1itiVyvYzy3mWBcH94htDsHA1GiY0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=vWFt5si+CxNwOPb5CyJoRw9EF2Rgm9q/I7/uwMH93fJmuC4acJg7MhdEzkECuIr6D
-         G4EK3sIkR3z1yP17oJGkEoyw4tOAoeN8cAwIWbkQKS0DxvQ4QrQHZ2sGVO+GY88RAT
-         UfdenMaHil5D52pt0wuMw0sQb0aEgQl0AsnJgmTc=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18FC3VRE068881
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Sep 2021 07:03:31 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 15
- Sep 2021 07:03:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 15 Sep 2021 07:03:30 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18FC2fDC019246;
-        Wed, 15 Sep 2021 07:03:27 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
+        Wed, 15 Sep 2021 08:05:10 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F45C061793;
+        Wed, 15 Sep 2021 05:03:38 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id z184-20020a1c7ec1000000b003065f0bc631so4639856wmc.0;
+        Wed, 15 Sep 2021 05:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1v2Wz7r3SRYsAbKV8aTYHRg0UikNp3UThAxS/q0C7w0=;
+        b=pJcFYnCZ8mO09t/6PwPkutiVf+XGgNkmftb1IuFOZXt0/x8j+s+H4eR/7UzdUyAM7C
+         khmxYCeBsk4uAVQx1i5PBYDwZDOe1u4KMw7JhoEhPakkRCo07QdtkH78Av2fCGSCH23k
+         3tzcnXxsXbOmAA+3woN6NKipC2prvgM5pg2d5oNyapMVCSG76VHvDSlU3Ix092eObs/m
+         tIvMspswgtt18S75p/g/AFfAvzdUNtgTU0b5waeZvuFG94lnkhM70LxRHlieept0Wtwv
+         v3g441vIHUDTNNB7NdeljkjO2Hf05FLuZ2v7ZA9FeT3bISHeLqTis7rkzi3f6p+yHoUP
+         g8RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1v2Wz7r3SRYsAbKV8aTYHRg0UikNp3UThAxS/q0C7w0=;
+        b=L6gN/BGDlySFbELRW0q8qEPOtKgT27PpEm3RPcHidfjZVpY50fqGt2JY085DBllerk
+         32PNUULtuGt2e51LI145U3sEYb9/frhmwKiQQ4r+jbc3waY5JmL4wOJ3Op6o6jRf+iAj
+         EEAmm8acmI8ECgUfIe0Gs2dm6ZVEoHg3hwyj2tEApA15annxm2BDmO9eJKbPJ42j98MC
+         uf1W2dEE7CvhAiq7CVJnc8VN5r4SFVLPeT1i8M/RCBIY4EHnIITi32K13fJc7Gle0txT
+         B27JREWmq0V2AkVX/NJnU5M6cVZDcC7lTPSMIANltH5DSzfBd1SlPk+wPIYWDg3bM3H9
+         18Rg==
+X-Gm-Message-State: AOAM532WxVPZUuEKYw7VN21/hT4uH6qgBTQbA4ypDG1nDBYLZC0zSnBL
+        6Z8crsE/hK9eXepG17NGkPJTUeeD4vav0y/C
+X-Google-Smtp-Source: ABdhPJzj+iZK8kf6OaDYgEGXfwizWgHXHzrMImbX/tAurZLPWH3d0i0/2suPJkytb2HGqkkfixSqyw==
+X-Received: by 2002:a05:600c:35c4:: with SMTP id r4mr4201100wmq.194.1631707417203;
+        Wed, 15 Sep 2021 05:03:37 -0700 (PDT)
+Received: from hthiery.kontron.local ([213.135.10.150])
+        by smtp.gmail.com with ESMTPSA id p21sm4255497wmi.30.2021.09.15.05.03.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Sep 2021 05:03:36 -0700 (PDT)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-media@vger.kernel.org>
-Subject: [PATCH v4 11/11] media: dt-bindings: Convert Cadence CSI2RX binding to YAML
-Date:   Wed, 15 Sep 2021 17:32:40 +0530
-Message-ID: <20210915120240.21572-12-p.yadav@ti.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210915120240.21572-1-p.yadav@ti.com>
-References: <20210915120240.21572-1-p.yadav@ti.com>
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Subject: [PATCH] arm64: dts: imx8mm-kontron-n801x-som: do not allow to switch off buck2
+Date:   Wed, 15 Sep 2021 14:03:26 +0200
+Message-Id: <20210915120325.20248-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Cadence CSI2RX binding to use YAML schema.
+The buck2 output of the PMIC is the VDD core voltage of the cpu.
+Switching off this will poweroff the CPU. Add the 'regulator-always-on'
+property to avoid this.
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-
+Fixes: 8668d8b2e67f ("arm64: dts: Add the Kontron i.MX8M Mini SoMs and baseboards")
+Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
 ---
+ arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes in v4:
-- Add power-domains property.
-- Drop maxItems from clock-names.
-- Drop the type for data-lanes.
-- Drop uniqueItems from data-lanes. Move it to video-interfaces.yaml
-  instead.
-
-Changes in v3:
-- Add compatible: contains: const: cdns,csi2rx to allow SoC specific
-  compatible.
-- Add more constraints for data-lanes property.
-
-Changes in v2:
-- New in v2.
-
- .../devicetree/bindings/media/cdns,csi2rx.txt | 100 -----------
- .../bindings/media/cdns,csi2rx.yaml           | 169 ++++++++++++++++++
- 2 files changed, 169 insertions(+), 100 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
- create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-
-diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt b/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-deleted file mode 100644
-index 6b02a0657ad9..000000000000
---- a/Documentation/devicetree/bindings/media/cdns,csi2rx.txt
-+++ /dev/null
-@@ -1,100 +0,0 @@
--Cadence MIPI-CSI2 RX controller
--===============================
--
--The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
--lanes in input, and 4 different pixel streams in output.
--
--Required properties:
--  - compatible: must be set to "cdns,csi2rx" and an SoC-specific compatible
--  - reg: base address and size of the memory mapped region
--  - clocks: phandles to the clocks driving the controller
--  - clock-names: must contain:
--    * sys_clk: main clock
--    * p_clk: register bank clock
--    * pixel_if[0-3]_clk: pixel stream output clock, one for each stream
--                         implemented in hardware, between 0 and 3
--
--Optional properties:
--  - phys: phandle to the external D-PHY, phy-names must be provided
--  - phy-names: must contain "dphy", if the implementation uses an
--               external D-PHY
--
--Required subnodes:
--  - ports: A ports node with one port child node per device input and output
--           port, in accordance with the video interface bindings defined in
--           Documentation/devicetree/bindings/media/video-interfaces.txt. The
--           port nodes are numbered as follows:
--
--           Port Description
--           -----------------------------
--           0    CSI-2 input
--           1    Stream 0 output
--           2    Stream 1 output
--           3    Stream 2 output
--           4    Stream 3 output
--
--           The stream output port nodes are optional if they are not
--           connected to anything at the hardware level or implemented
--           in the design.Since there is only one endpoint per port,
--           the endpoints are not numbered.
--
--
--Example:
--
--csi2rx: csi-bridge@0d060000 {
--	compatible = "cdns,csi2rx";
--	reg = <0x0d060000 0x1000>;
--	clocks = <&byteclock>, <&byteclock>
--		 <&coreclock>, <&coreclock>,
--		 <&coreclock>, <&coreclock>;
--	clock-names = "sys_clk", "p_clk",
--		      "pixel_if0_clk", "pixel_if1_clk",
--		      "pixel_if2_clk", "pixel_if3_clk";
--
--	ports {
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		port@0 {
--			reg = <0>;
--
--			csi2rx_in_sensor: endpoint {
--				remote-endpoint = <&sensor_out_csi2rx>;
--				clock-lanes = <0>;
--				data-lanes = <1 2>;
--			};
--		};
--
--		port@1 {
--			reg = <1>;
--
--			csi2rx_out_grabber0: endpoint {
--				remote-endpoint = <&grabber0_in_csi2rx>;
--			};
--		};
--
--		port@2 {
--			reg = <2>;
--
--			csi2rx_out_grabber1: endpoint {
--				remote-endpoint = <&grabber1_in_csi2rx>;
--			};
--		};
--
--		port@3 {
--			reg = <3>;
--
--			csi2rx_out_grabber2: endpoint {
--				remote-endpoint = <&grabber2_in_csi2rx>;
--			};
--		};
--
--		port@4 {
--			reg = <4>;
--
--			csi2rx_out_grabber3: endpoint {
--				remote-endpoint = <&grabber3_in_csi2rx>;
--			};
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-new file mode 100644
-index 000000000000..fbd7f0503832
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
-@@ -0,0 +1,169 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Cadence MIPI-CSI2 RX controller
-+
-+description: |
-+  The Cadence MIPI-CSI2 RX controller is a CSI-2 bridge supporting up to 4 CSI
-+  lanes in input, and 4 different pixel streams in output.
-+
-+maintainers:
-+  - Pratyush Yadav <p.yadav@ti.com>
-+
-+properties:
-+  compatible:
-+    contains:
-+      const: cdns,csi2rx
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 3
-+    maxItems: 6
-+
-+  clock-names:
-+    minItems: 3
-+    items:
-+      - const: sys_clk # main clock
-+      - const: p_clk # register bank clock
-+      - const: pixel_if0_clk # pixel stream 0 output clock
-+      - const: pixel_if1_clk # pixel stream 1 output clock
-+      - const: pixel_if2_clk # pixel stream 2 output clock
-+      - const: pixel_if3_clk # pixel stream 3 output clock
-+
-+  phys:
-+    maxItems: 1
-+    description: phandle to the external D-PHY
-+
-+  phy-names:
-+    items:
-+      - const: dphy
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+
-+    properties:
-+      port@0:
-+        $ref: /schemas/graph.yaml#/$defs/port-base
-+        unevaluatedProperties: false
-+        description: CSI-2 input
-+
-+        properties:
-+          endpoint:
-+            $ref: video-interfaces.yaml#
-+            unevaluatedProperties: false
-+
-+            properties:
-+              clock-lanes:
-+                maxItems: 1
-+
-+              data-lanes:
-+                minItems: 1
-+                maxItems: 4
-+                items:
-+                  maximum: 4
-+
-+            required:
-+              - clock-lanes
-+              - data-lanes
-+
-+      port@1:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description: Stream 0 output
-+
-+      port@2:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description: Stream 1 output
-+
-+      port@3:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description: Stream 2 output
-+
-+      port@4:
-+        $ref: /schemas/graph.yaml#/properties/port
-+        description: Stream 3 output
-+
-+    required:
-+      - port@0
-+
-+
-+dependencies:
-+  phys: [ 'phy-names' ]
-+  phy-names: [ 'phys' ]
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    csi2rx: csi-bridge@d060000 {
-+      compatible = "cdns,csi2rx";
-+      reg = <0x0d060000 0x1000>;
-+      clocks = <&byteclock>, <&byteclock>,
-+        <&coreclock>, <&coreclock>,
-+        <&coreclock>, <&coreclock>;
-+      clock-names = "sys_clk", "p_clk",
-+              "pixel_if0_clk", "pixel_if1_clk",
-+              "pixel_if2_clk", "pixel_if3_clk";
-+      phys = <&dphy0>;
-+      phy-names = "dphy";
-+
-+      ports {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        port@0 {
-+          reg = <0>;
-+
-+          csi2rx_in_sensor: endpoint {
-+            remote-endpoint = <&sensor_out_csi2rx>;
-+            clock-lanes = <0>;
-+            data-lanes = <1 2>;
-+          };
-+        };
-+
-+        port@1 {
-+          reg = <1>;
-+
-+          csi2rx_out_grabber0: endpoint {
-+            remote-endpoint = <&grabber0_in_csi2rx>;
-+          };
-+        };
-+
-+        port@2 {
-+          reg = <2>;
-+
-+          csi2rx_out_grabber1: endpoint {
-+            remote-endpoint = <&grabber1_in_csi2rx>;
-+          };
-+        };
-+
-+        port@3 {
-+          reg = <3>;
-+
-+          csi2rx_out_grabber2: endpoint {
-+            remote-endpoint = <&grabber2_in_csi2rx>;
-+          };
-+        };
-+
-+        port@4 {
-+          reg = <4>;
-+
-+          csi2rx_out_grabber3: endpoint {
-+            remote-endpoint = <&grabber3_in_csi2rx>;
-+          };
-+        };
-+      };
-+    };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+index d0456daefda8..9db9b90bf2bc 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-som.dtsi
+@@ -102,6 +102,7 @@ reg_vdd_arm: BUCK2 {
+ 				regulator-min-microvolt = <850000>;
+ 				regulator-max-microvolt = <950000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 				regulator-ramp-delay = <3125>;
+ 				nxp,dvs-run-voltage = <950000>;
+ 				nxp,dvs-standby-voltage = <850000>;
 -- 
-2.33.0
+2.30.0
 
