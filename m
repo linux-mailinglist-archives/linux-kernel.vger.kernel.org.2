@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8761D40BEB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D7340BEB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 06:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhIOECw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 00:02:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229450AbhIOECv (ORCPT
+        id S229953AbhIOEGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 00:06:43 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:52016 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229450AbhIOEGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 00:02:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631678492;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S9dfG7lCjbIPE3UCUF5+rBdd5RDuUrQqvL6WJoW4FK4=;
-        b=M2MvKFu/NJHolbVjihGVrqYbwprtApB9J2Sk6waKzQduhYHAwHYR7SgmPDJPlsK2SVJq0S
-        fL2luVTKrO6MZuGapu/PfxsfG8Yh6Mpgosr1ba9UNzd93PAglmFD1zoWGy0gnGJ2Hu4aCB
-        N41C6g10TDJ3ZPEG29Xr1w15aUKMe9Q=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-aGjwT_TKMtyzqPBPaIvp4w-1; Wed, 15 Sep 2021 00:01:30 -0400
-X-MC-Unique: aGjwT_TKMtyzqPBPaIvp4w-1
-Received: by mail-il1-f198.google.com with SMTP id t10-20020a056e02160a00b0022c6a64f952so998438ilu.20
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:01:29 -0700 (PDT)
+        Wed, 15 Sep 2021 00:06:42 -0400
+Received: by mail-il1-f197.google.com with SMTP id f16-20020a92cb50000000b002376905517dso1012463ilq.18
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Sep 2021 21:05:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S9dfG7lCjbIPE3UCUF5+rBdd5RDuUrQqvL6WJoW4FK4=;
-        b=2YHZr1Fm7MFWcKYcm+TpsW5a/P41+skRadjT7YENhYGX3vkdhicluaxIBa2PFaZAAe
-         Wldy12aUC57gQq9i60q8CFJ7a9cN3AdAQbnd4cNC8mCb5d8rnfxIimcF79n3aDfbhkNa
-         P65L/lqaGR/eapuFJQGwsoE1IXUF7YkiyzpC6chv5b3Ew4r0UTM3+NbQZLlddplaklLt
-         UhSlw4jtFjYbQTYL4S+AZ96LKdxnkvx4bT45MCVV20R+144EdYtdKgiq0OkaIyz1dX2s
-         Re6XeTrX8J2AArZqW2BEEOXdfp95+sG4wZ9FGjS1VbaM6ToccZf7a6SIiwits5qghCRe
-         EMfA==
-X-Gm-Message-State: AOAM531Xe48hiIfOyDkEUbe9UIS0QpjzDaNclK0HGCV5IKTC+ekJ5OKw
-        sYwyEkL3sRQPI0SBrvb12HM8ZgpGzZRhREcpWp38RCAkUUMUJvtOrHRBot38xsXKEFrhpftoEDi
-        6h9DJOh99487ezt3MJcf74C+p
-X-Received: by 2002:a6b:5a08:: with SMTP id o8mr3643431iob.35.1631678489343;
-        Tue, 14 Sep 2021 21:01:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLc18r6Nzd78R4QD2X5j5xamAcB5xT+admlIK+WELr04EisOSgNFcAvGwqNShkdwopm5vIIg==
-X-Received: by 2002:a6b:5a08:: with SMTP id o8mr3643403iob.35.1631678489059;
-        Tue, 14 Sep 2021 21:01:29 -0700 (PDT)
-Received: from xz-m1.local ([2607:fea8:56a2:9100:358a:bf89:d33a:76ad])
-        by smtp.gmail.com with ESMTPSA id x5sm7656139ioa.35.2021.09.14.21.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 21:01:28 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 00:01:24 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH v3 5/5] mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags
-Message-ID: <YUFwFGB2JElaBOGt@xz-m1.local>
-References: <20210908163516.214441-1-peterx@redhat.com>
- <2576475.WBpAVSM2eX@nvdebian>
- <YUFgAPJJxy8L4GMP@xz-m1.local>
- <2497776.C4p5gPNQJS@nvdebian>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=nBZctcuA6PoSbBL+JbZ6XlzKTsiTUDX/XLRhUzSrPzc=;
+        b=4I6bJCCHkx17sByvXgwh1o+I7hmOKxzdBDQ6JU5ntSy63YLafEMsLJ4zOzbQJgsbUa
+         qEG1LuLBuOhOivpUuI9dWkD8RPihR029saiKQMdDxZlKNaH5AShKqP5QT8EIEGdsx8Kw
+         jwZ3oJO32+hjjqugHSu8zOUDId5JrEAle6tQin8n9qmZwa8biWbkg7S5Ou3BRI1aJ7s6
+         wNUpm9nejqNr+udch+GcX06sh3tu0LtHbHk/uSjzVS96FHMOLtJFbSjQOIrz972Kds0f
+         mepqmL5nUVTwBphkkkjp0AuClZrzlEPE+5vXi9v1gZNYWL44Es3mzyJKVnDaS3HzPM4f
+         hWRQ==
+X-Gm-Message-State: AOAM530Sqk7Jyuw8FQ6aHY8ICDvF/3O/mmmP4eMeKEiCWxFgnmIgcZEu
+        w6KqU0XjQqC6wbn7fmkvqzSRFZejqcMTeH1U+iER7G3AwupJ
+X-Google-Smtp-Source: ABdhPJyMGSMwy5x4QqGsQDE0jQwry0QdwUVwIjXi7gFrYW8cbZlls3cakaBu+Fy5boFQjTl9UOHLHeiukPTXC7mZd37cTarhp8Ur
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2497776.C4p5gPNQJS@nvdebian>
+X-Received: by 2002:a6b:7f42:: with SMTP id m2mr17096295ioq.86.1631678724242;
+ Tue, 14 Sep 2021 21:05:24 -0700 (PDT)
+Date:   Tue, 14 Sep 2021 21:05:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bf031105cc00ced8@google.com>
+Subject: [syzbot] WARNING in mptcp_sendmsg_frag
+From:   syzbot <syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 01:21:30PM +1000, Alistair Popple wrote:
-> On Wednesday, 15 September 2021 12:52:48 PM AEST Peter Xu wrote:
-> 
-> > > > The flag introduced in this patch will be a preparation for more bits defined
-> > > > in the future, e.g., for a new bit in flag to show whether to persist the
-> > > > upcoming uffd-wp bit in pgtable entries.
-> > > 
-> > > That's kind of the problem. The patch itself looks correct to me however as
-> > > mentioned it is mostly reverting a previous cleanup and it's hard to tell why
-> > > that's justified without the subsequent patches. Perhaps it makes the usage of
-> > > zap_details a bit clearer, but a comment also would with less code.
-> > > 
-> > > I know you want to try and shrink the uffd-wp series but I think this patch
-> > > might be easier to review if it was included as part of that series.
-> > 
-> > I posted it because I think it's suitable to have it even without uffd-wp.
-> > 
-> > I tried to explain it above on two things this patch wanted to fix:
-> > 
-> > Firstly the comment is wrong; we've moved back and forth on changing the
-> > zap_details flags but the comment is not changing along the way and it's not
-> > matching the code right now.
-> > 
-> > Secondly I do think we should have a flag showing explicit willingness to skip
-> > swap entries.  Yes, uffd-wp is the planned new one, but my point is anyone who
-> > will introduce a new user of zap_details pointer could overlook this fact.  The
-> > new flag helps us to make sure someone will at least read the flags and know
-> > what'll happen with it.
-> > 
-> > For the 2nd reasoning, I also explicitly CCed Kirill too, so Kirill can provide
-> > any comment if he disagrees.  For now, I still think we should keep having such
-> > a flag otherwise it could be error-prone.
-> > 
-> > Could you buy-in above reasoning?
-> 
-> Kind of, I do think it makes the usage of details a bit clearer or at least
-> harder to miss. It is just that if that was the sole aim of this patch I think
-> there might be simpler (less code) ways of doing so.
+Hello,
 
-Yes you're right, we can add a big enough comment above zap_details to state
-that, but then it'll be reverted when adding the uffd-wp flag in the other
-series, because uffd-wp will still needs a way to specify !SKIP_SWAP and
-KEEP_UFFD_WP.  Then it'll make the "series split" make less sense as you said.
+syzbot found the following issue on:
 
-I split the series only because I hope it could ease the reviewers, and also
-that's probably the only thing I can do now to still try to smooth the process
-of having a complete uffd-wp finally got proper reviewed and merged.
+HEAD commit:    f306b90c69ce Merge tag 'smp-urgent-2021-09-12' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10694371300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2bfb13fa4527da4e
+dashboard link: https://syzkaller.appspot.com/bug?extid=263a248eec3e875baa7b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-> 
-> > Basically above is what I wanted to express in my commit message.  I hope that
-> > can justify that this patch (even if extremly simple) can still be considered
-> > as acceptable upstream even without uffd-wp series.
-> > 
-> > If you still insist on this patch not suitable for standalone merging and
-> > especially if some other reviewer would think the same, I can move it back to
-> > uffd-wp series for sure.  Then I'll repost this series with 4 patches only.
-> 
-> I won't insist, the code looks correct and it doesn't make things any less
-> clear so you can put my Reviewed-by on it and perhaps leave it to Andrew or
-> another reviewer to determine if this should be taken in this series or as part
-> of a future uffd-wp series.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Will do; thanks.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com
 
--- 
-Peter Xu
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 810 at net/mptcp/protocol.c:1366 mptcp_sendmsg_frag+0x1362/0x1bc0 net/mptcp/protocol.c:1366
+Modules linked in:
+CPU: 1 PID: 810 Comm: syz-executor.4 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mptcp_sendmsg_frag+0x1362/0x1bc0 net/mptcp/protocol.c:1366
+Code: ff 4c 8b 74 24 50 48 8b 5c 24 58 e9 0f fb ff ff e8 13 44 8b f8 4c 89 e7 45 31 ed e8 98 57 2e fe e9 81 f4 ff ff e8 fe 43 8b f8 <0f> 0b 41 bd ea ff ff ff e9 6f f4 ff ff 4c 89 e7 e8 b9 8e d2 f8 e9
+RSP: 0018:ffffc9000531f6a0 EFLAGS: 00010216
+RAX: 000000000000697f RBX: 0000000000000000 RCX: ffffc90012107000
+RDX: 0000000000040000 RSI: ffffffff88eac9e2 RDI: 0000000000000003
+RBP: ffff888078b15780 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff88eac017 R11: 0000000000000000 R12: ffff88801de0a280
+R13: 0000000000006b58 R14: ffff888066278280 R15: ffff88803c2fe9c0
+FS:  00007fd9f866e700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007faebcb2f718 CR3: 00000000267cb000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __mptcp_push_pending+0x1fb/0x6b0 net/mptcp/protocol.c:1547
+ mptcp_release_cb+0xfe/0x210 net/mptcp/protocol.c:3003
+ release_sock+0xb4/0x1b0 net/core/sock.c:3206
+ sk_stream_wait_memory+0x604/0xed0 net/core/stream.c:145
+ mptcp_sendmsg+0xc39/0x1bc0 net/mptcp/protocol.c:1749
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:643
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ sock_write_iter+0x2a0/0x3e0 net/socket.c:1057
+ call_write_iter include/linux/fs.h:2163 [inline]
+ new_sync_write+0x40b/0x640 fs/read_write.c:507
+ vfs_write+0x7cf/0xae0 fs/read_write.c:594
+ ksys_write+0x1ee/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd9f866e188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000056c038 RCX: 00000000004665f9
+RDX: 00000000000e7b78 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c038
+R13: 0000000000a9fb1f R14: 00007fd9f866e300 R15: 0000000000022000
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
