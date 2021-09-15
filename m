@@ -2,198 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1F240BFB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDD740BFC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhIOGl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 02:41:58 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:16206 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhIOGl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 02:41:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H8Vtw36hbz1DH1t;
-        Wed, 15 Sep 2021 14:39:36 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 15 Sep 2021 14:40:32 +0800
-Received: from huawei.com (10.67.175.23) by dggpeml500018.china.huawei.com
- (7.185.36.186) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 15 Sep
- 2021 14:40:32 +0800
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>, <tj@kernel.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] kernel/sched: Fix sched_fork() access an invalid sched_task_group
-Date:   Wed, 15 Sep 2021 14:40:30 +0800
-Message-ID: <20210915064030.2231-1-zhangqiao22@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S236457AbhIOGpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 02:45:16 -0400
+Received: from mail-dm6nam10on2119.outbound.protection.outlook.com ([40.107.93.119]:10328
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229484AbhIOGpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 02:45:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O3juNZDfwAmSOJqZmEvBN04Kdb+VznUzLougloaC39Tcf1vxrpPXmOQCzc5W9K3TV++9IM3Zbspp8IRSZGcEbFXEO3HJz/wP34ce9EYBe/MAgpko9+KAdfC1KwaNUBTtxAv/qwrV57o5wIlIyIchMqF3AXcNBUwXUx3f279aKWYuveY4T9aEoQfFeQY37XXv/Zp+0UYU+VKPVMnkrLYKRHA54iAN3EVlsNAFk4Px9AsNTFONLBR/MeYrM/sqz+sgMjsaF1sgDoFDNnEArwyav9qo3WCkZMzuXy0efPhdrs9KSdUdeRHZ/yKHmeu/fRN+nGUUekZF8/dvSKOChNVATw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vsDlXIHO120G+38rcq7fVomsXKDrUCwKgC1eZdeNUeI=;
+ b=NP4kJUBYD8I0exp8I6EfZB/Qcg+Ko6VmZVr6yZgfGflSd2Ge92SpAb3XqMXTvU3yy0xVYfZWp7CRZ/u/SZb+o0Cua4dx1cSDZwURxKBD4cpy6rDwI1TtgrnhhwgamqLxBZ36XUTvHIJi4KL/idBe3NvJu1SffUoRvPRnDEPPccefXisC13hK5erjTQeW1n+wF/DvzPAdBL/8+Ten8mJLVtoav/4aW29p0l40fGTBppWESoahjl3keiq9Zw3pWOA2tHDJSsjQNzKb8SnBvtMOJstlyVd+WuBVq+0LnyfKFpFMr1d+rw5fD1rF0NXl5cK50C0romSmDxjQ0tFcC7kRZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vsDlXIHO120G+38rcq7fVomsXKDrUCwKgC1eZdeNUeI=;
+ b=JjJ7xEKtGfsJreVOvznT6Y2HFTyshidckwBkLb6pnAX84SRv65T6J7F+6glnZGEUq4DRF9qx3SxluE1BaZ1HRvJDT7TJJiZpnaBovGomK3MAu1wFi94XrKRVF3aL/JRCmGwbkVs9UpV07v6r4kSM/CxpJWSJIjcacpBNpHYMkLo=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by MWHPR10MB1759.namprd10.prod.outlook.com
+ (2603:10b6:301:8::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
+ 2021 06:43:53 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::bc3f:264a:a18d:cf93%7]) with mapi id 15.20.4500.019; Wed, 15 Sep 2021
+ 06:43:53 +0000
+Date:   Tue, 14 Sep 2021 23:43:45 -0700
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 net] net: ethernet: mscc: ocelot: bug fix when writing
+ MAC speed
+Message-ID: <20210915064345.GA209923@euler>
+References: <20210915062103.149287-1-colin.foster@in-advantage.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915062103.149287-1-colin.foster@in-advantage.com>
+X-ClientProxiedBy: MWHPR11CA0037.namprd11.prod.outlook.com
+ (2603:10b6:300:115::23) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.23]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500018.china.huawei.com (7.185.36.186)
-X-CFilter-Loop: Reflected
+Received: from euler (67.185.175.147) by MWHPR11CA0037.namprd11.prod.outlook.com (2603:10b6:300:115::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 06:43:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bbb1ab30-872b-4ad8-e16c-08d978142eaf
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1759:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB17591A5D1C1B65D08A4C1739A4DB9@MWHPR10MB1759.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1850;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nhlZpNfa8csItbPFJxNdC1Y38cQxp14/BKW82nBpYVc/EQtQd9u/uFy0SJZD5ZY8uU5gx4xFHAd+BlhdxWttIsYKCTCq838tlksfohZhTbafcWhwNHvtwuOHkY5YoOPY9NdTmGZLcDyOsxQHhsgfkaoeYjSE4hsnAeT6R/HjOWjI4fHAYSyEfsGuKqGvhPeo0tmZSGWohUkP/QPNW2MZm2noUKoEWV69cTUEiXKVLpfHTkX9/tXwgS1IQLTmDAVyWCtrBcJUNeO3PVcGAuH8b17xgMtYtSnyNenjWgg/mqyWg3m/PWPweNQbn2LQFHeUFII0k1QUvqfT4CXgAg/P1ZwMOBxlNS41mpeEipjlz7cF0SRok4oOqsb8zkyNVtKfmpinsL/rLQrjuFlBgR52QCiEbAdT1mKW1cunbVfdWJnN4r5ERkCu067sDxOxgqmBNvps//lqwXrQ0pRPl0EmHM0uIThxJVuXLNFZgJqIRVQ1zJZ8k24WXbxEqh3KCwCJWsTPeQa64YGkGeg/vPZ2sZPuL+jseS2W6OIyi7TtKnf3zUkKOZCxEcpW2uyFvZtRw38s/4cE14SJv/tYR8Y6ZApOC+I2VWRv3DzDELd3htPOohgQnlsx0RcO3IaIuyJz6YfMKKQek9TJn8rF5bwCoN/WYNnQWL3d07DEj1CabRLOrVj5sMUEuETMZWMagacWY1aYLORKpKE8P/rkB/c03Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39830400003)(136003)(366004)(376002)(33656002)(2906002)(5660300002)(66476007)(52116002)(9686003)(44832011)(83380400001)(66946007)(110136005)(38350700002)(956004)(33716001)(38100700002)(55016002)(4744005)(26005)(6666004)(8676002)(186003)(66556008)(1076003)(9576002)(8936002)(478600001)(316002)(6496006)(4326008)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UHWQrxmVhyav8DEsn93gU8BE5SP1ImdR8aiwdZ2Vr8Yw1hRftjcUOleJlquC?=
+ =?us-ascii?Q?y2adFCalyft8zO66Pwp/iRxpbWbH68wWOYe5MPE9R7ca08tydWpDLVV0gUhT?=
+ =?us-ascii?Q?EvaEgmVB5sSKFdjqcrlziCV9mMCb0dt+b0S/mAD7QhspvPl5VA+yFYj14MO4?=
+ =?us-ascii?Q?rk74pkAS4qCxwOC/mpHLhjSQhk/BGZ8Q09beB83k30cLMOxP4zpb3ju6YTxG?=
+ =?us-ascii?Q?tqWbGwsYTw6qy2RQwDp8hQ67vODoonRMnmGzuKMBw32unALlHYBxzD88BSZb?=
+ =?us-ascii?Q?RKAwQa5nIELPvv45yJRt7Vsi5kymsy8rMOHQ0r3rcbVTSmSJlD1r2Gv75FBC?=
+ =?us-ascii?Q?b1sKb3ysSEZsKr1sX2bWph+FDBqNadZjR8LJHOwcLVTeJCyLZg1tgp/zGegr?=
+ =?us-ascii?Q?o+hqgv9dM6xgk6fFXx4fssGDt0OuMTaVkeRf8KD26JDLfGMvADGAXz7x/4Pp?=
+ =?us-ascii?Q?/Gb26q9YHU4Dg/7UjMwhZ69wzgF3RASp1krbivIUwtMYxcmUFU8zbp299udb?=
+ =?us-ascii?Q?Uhos0zYl+ibMF4QBE9KIF/d0mDmS5OyVOeUZ745Qsbf+XSpINJ5EDv/Ym3fx?=
+ =?us-ascii?Q?OeyDuDcxXZAmiMayMZzzz60FctKdtA4cZF8dZfNPja/Dgr9xcdEJ3ltCiKWb?=
+ =?us-ascii?Q?378WWITCBoNfgRjGAboctqcHlxcipGmKBkA9Arapul/acgOwcY0G7H3k/uv0?=
+ =?us-ascii?Q?rG9LcIIcLd+IecyFFwFMqtG7kdDmzzlSVFc/S7/zT8YtPNAM/5vNZPlL1x39?=
+ =?us-ascii?Q?6zN5alYx+DWu3EPrim3FwPFcUbsjdy1fry8vRS1XcSPkFvRqCvkdX0CqH7Sw?=
+ =?us-ascii?Q?xmsldTjlZeKsRPkXsOxiB9+TXKXv3PEDQ61JMmLAclaKic4gS6H6OZjCyvV5?=
+ =?us-ascii?Q?TiP8wVO0VNoB6awqEam9uXVNQQPSxpAk9zsfWf7jIpSJ122lbUfgMsVqtAx5?=
+ =?us-ascii?Q?SNVnVszW4Ih5TMIX8ZtX8GB6zWKgPprhaUkJHPx0M5MAAQhqZlcZL07S4wPw?=
+ =?us-ascii?Q?FYXBQE4WhZASpsE/cykJppfYlOxGBhflnry/LWYoBCFr0i/MxneixM5/uVXn?=
+ =?us-ascii?Q?etGcTGc724berBTg+2OcRTBR16leEr/BRCS5MWQbwAWIs6xVpcT/AkXGez7h?=
+ =?us-ascii?Q?HHyH+QUr6XY0jSHd1LBP8xAfFCoPcVgu13aivOXEJPgajHQhqy+yU9ynd15W?=
+ =?us-ascii?Q?SKVIHjDHYb86pKZ/gVFHRz95MasqaPY0w9pzjpT2dUhJkk3x052nMkpYDM5W?=
+ =?us-ascii?Q?AIp4Xj+UR+gqZL3Cqtpyqe/AOYltpC3AG3lmCemuCHlkFjS4x4z81oJZs/6i?=
+ =?us-ascii?Q?y/SbbH2wzT3wjDlgBOH4xAu1?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbb1ab30-872b-4ad8-e16c-08d978142eaf
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 06:43:52.9182
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y/GkduLJXEg38ImNXGm7hZZKFWVpSRjHEGWTaEupc/6o4IyILTuP5Y8pME6EaLlo13uYlDVBz1Zsp1WvVeyeXeKHdiVJW9oQ2vgIspCfTyg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1759
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a small race between copy_process() and sched_fork()
-where child->sched_task_group point to an already freed pointer.
+On Tue, Sep 14, 2021 at 11:21:02PM -0700, Colin Foster wrote:
+> Converting the ocelot driver to use phylink, commit e6e12df625f2, uses mac_speed
+> in ocelot_phylink_mac_link_up instead of the local variable speed. Stale
+> references to the old variable were missed, and so were always performing
+> invalid second writes to the DEV_CLOCK_CFG and ANA_PFC_CFG registers.
 
-parent doing fork()      | someone moving the parent
-				to another cgroup
--------------------------------+-------------------------------
-copy_process()
-    + dup_task_struct()<1>
-				parent move to another cgroup,
-				and free the old cgroup. <2>
-    + sched_fork()
-      + __set_task_cpu()<3>
-      + task_fork_fair()
-        + sched_slice()<4>
-
-In the worst case, this bug can lead to "use-after-free" and
-cause panic as shown above,
-(1)parent copy its sched_task_group to child at <1>;
-(2)someone move the parent to another cgroup and free the old
-   cgroup at <2>;
-(3)the sched_task_group and cfs_rq that belong to the old cgroup
-   will be accessed at <3> and <4>, which cause a panic:
-
-[89249.732198] BUG: unable to handle kernel NULL pointer
-dereference at 0000000000000000
-[89249.732701] PGD 8000001fa0a86067 P4D 8000001fa0a86067 PUD
-2029955067 PMD 0
-[89249.733005] Oops: 0000 [#1] SMP PTI
-[89249.733288] CPU: 7 PID: 648398 Comm: ebizzy Kdump: loaded
-Tainted: G           OE    --------- -  - 4.18.0.x86_64+ #1
-[89249.734318] RIP: 0010:sched_slice+0x84/0xc0
- ....
-[89249.737910] Call Trace:
-[89249.738181]  task_fork_fair+0x81/0x120
-[89249.738457]  sched_fork+0x132/0x240
-[89249.738732]  copy_process.part.5+0x675/0x20e0
-[89249.739010]  ? __handle_mm_fault+0x63f/0x690
-[89249.739286]  _do_fork+0xcd/0x3b0
-[89249.739558]  do_syscall_64+0x5d/0x1d0
-[89249.739830]  entry_SYSCALL_64_after_hwframe+0x65/0xca
-[89249.740107] RIP: 0033:0x7f04418cd7e1
-
-Between cgroup_can_fork() and cgroup_post_fork(), the cgroup
-membership and thus sched_task_group can't change. So update
-child's sched_task_group at sched_post_fork() and move task_fork()
-and __set_task_cpu() (where accees the sched_task_group) from
-sched_fork() to sched_post_fork().
-
-Fixes: 8323f26ce342 ("sched: Fix race in task_group")
-Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
----
- include/linux/sched/task.h |  3 ++-
- kernel/fork.c              |  2 +-
- kernel/sched/core.c        | 43 +++++++++++++++++++-------------------
- 3 files changed, 25 insertions(+), 23 deletions(-)
-
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index ef02be869cf2..ba88a6987400 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -54,7 +54,8 @@ extern asmlinkage void schedule_tail(struct task_struct *prev);
- extern void init_idle(struct task_struct *idle, int cpu);
- 
- extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
--extern void sched_post_fork(struct task_struct *p);
-+extern void sched_post_fork(struct task_struct *p,
-+			    struct kernel_clone_args *kargs);
- extern void sched_dead(struct task_struct *p);
- 
- void __noreturn do_task_dead(void);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 38681ad44c76..0e4251dc5436 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2405,7 +2405,7 @@ static __latent_entropy struct task_struct *copy_process(
- 	write_unlock_irq(&tasklist_lock);
- 
- 	proc_fork_connector(p);
--	sched_post_fork(p);
-+	sched_post_fork(p, args);
- 	cgroup_post_fork(p, args);
- 	perf_event_fork(p);
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c4462c454ab9..57544053be5a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4328,8 +4328,6 @@ int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
-  */
- int sched_fork(unsigned long clone_flags, struct task_struct *p)
- {
--	unsigned long flags;
--
- 	__sched_fork(clone_flags, p);
- 	/*
- 	 * We mark the process as NEW here. This guarantees that
-@@ -4375,24 +4373,6 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- 
- 	init_entity_runnable_average(&p->se);
- 
--	/*
--	 * The child is not yet in the pid-hash so no cgroup attach races,
--	 * and the cgroup is pinned to this child due to cgroup_fork()
--	 * is ran before sched_fork().
--	 *
--	 * Silence PROVE_RCU.
--	 */
--	raw_spin_lock_irqsave(&p->pi_lock, flags);
--	rseq_migrate(p);
--	/*
--	 * We're setting the CPU for the first time, we don't migrate,
--	 * so use __set_task_cpu().
--	 */
--	__set_task_cpu(p, smp_processor_id());
--	if (p->sched_class->task_fork)
--		p->sched_class->task_fork(p);
--	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
--
- #ifdef CONFIG_SCHED_INFO
- 	if (likely(sched_info_on()))
- 		memset(&p->sched_info, 0, sizeof(p->sched_info));
-@@ -4408,8 +4388,29 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- 	return 0;
- }
- 
--void sched_post_fork(struct task_struct *p)
-+void sched_post_fork(struct task_struct *p, struct kernel_clone_args *kargs)
- {
-+	unsigned long flags;
-+#ifdef CONFIG_CGROUP_SCHED
-+	struct task_group *tg;
-+#endif
-+
-+	raw_spin_lock_irqsave(&p->pi_lock, flags);
-+#ifdef CONFIG_CGROUP_SCHED
-+	tg = container_of(kargs->cset->subsys[cpu_cgrp_id],
-+			  struct task_group, css);
-+	p->sched_task_group = autogroup_task_group(p, tg);
-+#endif
-+	rseq_migrate(p);
-+	/*
-+	 * We're setting the CPU for the first time, we don't migrate,
-+	 * so use __set_task_cpu().
-+	 */
-+	__set_task_cpu(p, smp_processor_id());
-+	if (p->sched_class->task_fork)
-+		p->sched_class->task_fork(p);
-+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-+
- 	uclamp_post_fork(p);
- }
- 
--- 
-2.25.1
-
+In my negligence I ran check_patch after sending this and didn't add the
+title line to my reference commit. I can resubmit if everything else
+looks good.
