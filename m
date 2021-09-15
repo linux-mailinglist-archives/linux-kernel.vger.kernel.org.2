@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CFD40C61B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D0540C626
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhIONR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:17:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233645AbhIONRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:17:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0366B6121F;
-        Wed, 15 Sep 2021 13:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631711766;
-        bh=NocgklKFuC+0qjgr5yBXLHKbKyk8N7CsQWs0TBOnvf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RthnlBkNAHcfebtgzBf3/JYryXUGUmfkXay9+gd2RSLG97b/4WnSgZCsl5l8FcM9u
-         BZIpYbvO++/+VnyxJiBNI0m/OwKUwDHoMFTSmfvKgcywPAmiCcb45+z5edTsA9W3F6
-         4Rf75VGu7Ngk5KHqbUM4DPZNF6Cqvao86fibefZhiGko6yIDZqrEiBONXI46H5vMCT
-         y/i/0lWFIouKAbdee20LET5/KMAYqtCjitw5og/kI9w8S62LREnh62ShHcyLsRLq7t
-         X2JHtXDW7WkADZ5cUf813w903XIs02kuLJX/0tj3PJNA+cBExTBcTHgZgXZ7u1OZOD
-         jrspJlI5Pmpuw==
-Date:   Wed, 15 Sep 2021 14:15:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ramona Alexandra Nechita <ramona.nechita@analog.com>
-Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com
-Subject: Re: [PATCH] regulators: fix typo in Kconfig and max8973-regulator
-Message-ID: <20210915131525.GA12513@sirena.org.uk>
-References: <20210915110627.17525-1-ramona.nechita@analog.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
+        id S233444AbhIONUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:20:09 -0400
+Received: from mail-dm6nam11on2080.outbound.protection.outlook.com ([40.107.223.80]:45628
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229670AbhIONUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:20:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZCzsGnBChDtUs1wjyvVRv8hyTddNGY8FB68HQQPL4sO9b8aPDEG9jeoT7iBGsq/IBEn5rhJGEircn7KlnVDVLLVTWxMvuIUXqdyh3rmA9pKps/DyHywoBTzc3FXSy/MVSLj+FIiu2hiNWWt77m4cRFW9gvOs/I6X+PZYejLzF1THD/WPIFIJx1iIjMJFRdTpyCF2cbyadGI2g9HWd4ZPPl/2HC2mwt1fTf7/ao5d3xXSSNxQD618O1VNUteabeabgLqOzeLW+ioRnWnob5S5tstzMQ6bl+l59jY0uN4U7LRAgOLWwIMrfcaCM7BzvxrnYMiG5uF2Vz5W+tbQRpMqWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=lCtroozUD3OgHTEfFwWxXa3n9EcVO/nMjReXgjt4LIM=;
+ b=FmFjx9rCIRyHnEv9NBVbnI+ZUyCmgEwl+MwqVxNzgIq6ByMjtDXMUE5IpHup22Svv0nWEnx92gA65AqR95De+Cue9ilgsCo2K/pH2plx2BgTBTk+PgUjVt9/0dy2cvL4dqz/W/RGP7OabmhwKkIfkMY0MjQRk3AgEYhEoU7TqpXGcLNYYr5n4GNIBGvCr0vnMElY3J5lvbia2f7goPGHmd6Su5TTpDxKneN48eP4GRn5jqAqATScf/Fh62ohvuqkFP5D1T7zIXqSbTn5dYKh8hTWp/8IW2gG75rlGsT3tAV7bJ1hmRwyxR6q9U2DCmjj2utPnEpit0c1VgOAHDnUqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lCtroozUD3OgHTEfFwWxXa3n9EcVO/nMjReXgjt4LIM=;
+ b=UeNLLOmXTpHeFASz2BleUx+NpXtsoxDExoM++fz9CHjcJYV10ewcXe7aYTOyTb8k3wZP4qyTPqUpfA2cwy6wI7fRWkQVSIQ+TmDig6YeHbaJI738lza9w4V6OJQ4p1gB/qaWWoXTIDiZariRxL2GXIZObb9ahv+vbmBGxfAZbfTHwXiUiD09J7sAuNl1CGPELuvuB/KugeFYJXcogIChBUE4ldXxQSysjnqESq3FjF0JBSWLwcaugQoQPcOax3uISlXM9620FGN+WvyMvHOUnyFZL92gkzLYDwAItHrDzPEPOMZF7vzZ4JW0kqT52WohxqDhcVCATulBc0pNIDGk7g==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5206.namprd12.prod.outlook.com (2603:10b6:208:31c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
+ 2021 13:18:47 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
+ 13:18:47 +0000
+Date:   Wed, 15 Sep 2021 10:18:45 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     Tao Liu <thomas.liu@ucloud.cn>, dledford@redhat.com,
+        leon@kernel.org, haakon.bugge@oracle.com, shayd@nvidia.com,
+        avihaih@nvidia.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.liu@ucloud.com
+Subject: Re: [PATCH] RDMA/cma: Fix listener leak in rdma_cma_listen_on_all()
+ failure
+Message-ID: <20210915131845.GK4065468@nvidia.com>
+References: <20210913093344.17230-1-thomas.liu@ucloud.cn>
+ <20210914195444.GA156389@nvidia.com>
+ <4b711688-9a82-03f1-844c-cf1557892679@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915110627.17525-1-ramona.nechita@analog.com>
-X-Cookie: The more the merrier.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4b711688-9a82-03f1-844c-cf1557892679@nvidia.com>
+X-ClientProxiedBy: CH2PR04CA0023.namprd04.prod.outlook.com
+ (2603:10b6:610:52::33) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR04CA0023.namprd04.prod.outlook.com (2603:10b6:610:52::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 15 Sep 2021 13:18:47 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQUoH-000sVC-QV; Wed, 15 Sep 2021 10:18:45 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b7237844-a4bd-40a7-6658-08d9784b5999
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5206:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB520686A55E13370296836A65C2DB9@BL1PR12MB5206.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7MsK1F7mD3clCvFKozRqh23yb+vrHWg240XqHJ+Acf3FxUP/Is6ailHLkfX8iVmmNO3bXt7JLZYXUy44ASluVhprFgc/FkklZNL+mh2KtbQNauYZ9DKqv7HFR6mKzOlRsQd6dhczgLDzo+9Fec9pDQBv0+yMVh9jzAesFZkR4If1z8kKLbGOcrKOi2eCmIj4R/wnEU5H13jqcjFkhFueJKw1MNw1phUCDGK8D4lBACwVqbB/wWzcXhMf86xdU1xdfro+XHce1M190xu3U/xmTiKeAEMmw/9RPZ8ela3cd9EaNZ7JqOZc6F4F+5xpXLW0jybWeKXTuOIbOaLdpOvrtvbaWLDjrwQkUXAi8H0G4XpDIWiMm2bCtaSpkhRYAHfkXJ9/u6DTCTIyDh0YuFDa6EIhTV1IzUPRvGO0xr2uokkCf7Ow7Utjp9SDdc49RBG8XqPZM4HJfwGYeQ/S4pVuwxVf8MbAco1U5fJ5z5M7Idp9OTFYcXrN1uhn1VtwQcYmYe1BaUsS5AronGly5fFG6kbIy9Cx/759ViphvIg24nSKIpyrgHmWMN+b93hJR1rNzVw4r1F4kJO90ibD4dKT7metercT1Y25dekkE4ucd9gQsp/Qq5iILLmjbYaW99xjtoDVL8NF4zq/xr/gwyqgBg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(426003)(5660300002)(86362001)(33656002)(6862004)(4326008)(8676002)(4744005)(37006003)(66946007)(66556008)(2616005)(66476007)(316002)(38100700002)(26005)(36756003)(508600001)(9746002)(2906002)(9786002)(6636002)(1076003)(186003)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nzvjPK34iT0a70+vpDtr4DqeSI+3ynqJtVbgz3T0nJdTLpW0R/U/Md8OVIV4?=
+ =?us-ascii?Q?QbparT4misaUhcZa17rkvBKIgNnpxHABKRdwpaPFchr1s8wEsfianc6ZD3Oj?=
+ =?us-ascii?Q?ffhKkCB/fAGEueCiwNmrhpj0hgToxwHciM0VPPAwQjDX07dUgRX7rDNzhjJp?=
+ =?us-ascii?Q?LQyfCRvB8xg14JWa4qxcUZ+o1ZAo2r1/7I9JyjP64xGR/z1DaPV4wRFAuWCI?=
+ =?us-ascii?Q?LakAIVF30DMdPpQEpynlr2WSuZXbKxlsU8qZxLWe6PsESZAC9UR8x4Ru8v4q?=
+ =?us-ascii?Q?jwlWERbvu/P55QrnBd+Lj6Y/7QezVUgtf/goj63HyR9p951n3vynZ65SEPKm?=
+ =?us-ascii?Q?+BOcx3itziqAbPoUMa6dMekOACbo2kfA78DS+8a5rIofBy6FM++Om2BlC8k8?=
+ =?us-ascii?Q?kqUUBa7SZXH2SHvwrqMRYsdlfVMiA+Avxt3P2Lycy0BAX080ryhdlTvzZQuX?=
+ =?us-ascii?Q?er0qnzeH6NFr4NM8mxlGt/dWAnpYdNNxur2JGL+9/OgsE9a2MvOWNjnnxhj7?=
+ =?us-ascii?Q?Gd0zHaa68sYLH0PQZ3KifikwubTwkSni27Hj4cm8jmqx8X8GP12QLLbiMS6O?=
+ =?us-ascii?Q?MkSVYMlYuOsLuzB5J+7M3ZtqBDRC87sSjpwyKCIRu2gMFUtkJG86Ade4xY1a?=
+ =?us-ascii?Q?fjWhg8VgD8i8WbIcZ5Td3U9ryTThyd5wqykZqn1fWxfAXyR/t50kwUrbZ62p?=
+ =?us-ascii?Q?YWBQQLPoSnYplCtwWK8McBFqq5giGm+7I2ObgB4Yk62xAij2il17zWV4B4YS?=
+ =?us-ascii?Q?22R7wDpknbLQqJGsSu3/mTJrobANb9Hq7ieb6P7XxKDSXLQ/53VRBpK1WEBK?=
+ =?us-ascii?Q?0x3MKKT+kb79goEHE8JiWmY+WVGvhJAy4qDSF2YYZ1SdWWRFicHQeVmhyTwZ?=
+ =?us-ascii?Q?mGZ0Xc4B/IQdoh1DSE/DQTxsanUmGL8UiFXuccFDPgwOLv1+nq761rPI1fGQ?=
+ =?us-ascii?Q?F29JP4r34lZBmCMszInFE+sPANKK3fExo8NMthnOwDZfUZGX4RlGGVdOHTOh?=
+ =?us-ascii?Q?vaIkgZxA6gKzB0syIvMhoFEq3KHm6WGPPTcI+N42X4flHiEj40sW2haao3uB?=
+ =?us-ascii?Q?6Yw0FwB6iKYyRFTODH9UzMIJuwkH1/ZtNKWrl/UgymkXEtW8Bb3R0lTZCWTH?=
+ =?us-ascii?Q?JsV5SwAODXdVg3FGndGQ6jmYWAHhntmcLv6K9W7k/7MPet/dJdsYZgEtuDgT?=
+ =?us-ascii?Q?d7ZL2GSY91oX+sunmBd1UzgjJ9kAbRbxRGN4hp/FVVB/f1idQ1fnsT655MYr?=
+ =?us-ascii?Q?AxI5/xHnr4jIofe7vk84CmOv6Sqaa/x8O4tFhxxjczmLCX8uER1+rfNUj03n?=
+ =?us-ascii?Q?GrA4uZ1B1TEdVZNET0tWCd6G?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7237844-a4bd-40a7-6658-08d9784b5999
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2021 13:18:47.2503
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oNEoy+8ton74fBqEeVQafDk1WF7tE+T+4yGncTfmA5jI+1UBmB//7YsFPe7b7h43
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5206
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 15, 2021 at 02:34:19PM +0800, Mark Zhang wrote:
+> > -       case RDMA_CM_LISTEN:
+> > -               if (cma_any_addr(cma_src_addr(id_priv)) && !id_priv->cma_dev)
+> > -                       cma_cancel_listens(id_priv);
+> > -               break;
+> 
+> If this case is removed, is this code path still good?
+> 
+> cma_add_one/cma_remove_one
+>   cma_process_remove
+>     cma_send_device_removal_put
+>       cma_cancel_operation
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes, it is complicated, but the cma_process_remove() won't proceed
+past cma_dev_put() until all the ULPs have gone through _destroy_id()
 
-On Wed, Sep 15, 2021 at 02:06:27PM +0300, Ramona Alexandra Nechita wrote:
-> MAX8973 is supposed to be MAX8973A. Kconfig and the
-> initial comment of max8973-regulator.c were modified
-> accordingly.
+So all this does is move the reaping of the listens to the destroy_id
+time
 
-It is?
-
->  config REGULATOR_MAX8973
-
-Why not update the Kconfig symbol as well?  If there's a danger of
-collisions that's probably the main thing people will be using.
-
-> -	tristate "Maxim MAX8973 voltage regulator "
-> +	tristate "Maxim MAX8973A voltage regulator "
-
-There's an extra space there while you're fixing stuff up.
-
-> @@ -1,7 +1,7 @@
->  /*
->   * max8973-regulator.c -- Maxim max8973
->   *
-> - * Regulator driver for MAXIM 8973 DC-DC step-down switching regulator.
-> + * Regulator driver for MAXIM 8973A DC-DC step-down switching regulator.
-
-What about the first line?
-
---J2SCkAp4GZ/dPZZf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFB8ewACgkQJNaLcl1U
-h9A7+gf/XRVSzwdHPxFOVpDG/56uGOlk7sGl/JjgLmCXUSCs27HxJz1P2jbSUtmE
-ZioXU+bzl5+xrtuQK97osDxTHz3UuNvgty/xFNWc350w8CpfgeRjb45WUeVMkTzH
-dqahnBdgfk/TLzFYAScK2GrUGW0W0cbaC1QyvtV9G7Z91jZh2xZPMu5qz84gPYu+
-9Mf/wlXPXq9yqsvIU49xi36gLylqZLstE2kpCjGC3w6Mu614A8isLA/I2MeV0Tm1
-gvA+d/ATw1V0GmT5eS9yby6LukEaFu8ugH6OZDa/Fw4ImuuurpdisuLYgGAOXn5h
-CdVhKjUJAfXPwH8SdLOnMXgmKqx9pw==
-=g8Ug
------END PGP SIGNATURE-----
-
---J2SCkAp4GZ/dPZZf--
+Jason
