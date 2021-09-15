@@ -2,153 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A8840CE71
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B13740CE7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 23:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhIOU5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231830AbhIOU5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 549B06108F;
-        Wed, 15 Sep 2021 20:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631739389;
-        bh=pBGc6MBPlKmkYJWBqJlD5hd44E7P23W0e7q7BSRmPAg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gdelZNiZUfwtatkAqqlDS+KgxqYlzfFAGkky5/chQnW925kMBiym+E7CESFMuS2oP
-         ZeVHIAbY2L6Yxe2aWUH3HTuNb+cY5xuHubt6aDW157N2m744v6no2zmmwP471++hjA
-         kbo++TRHNhRO6B4b8BxGuv3iWnHuWuVUBG+K17cLMNBWSpCx5jgBd8t/U4K5vc+Jfu
-         JZVzGxJoE+EhcUGhxZoeBGAp43b54VMdKX1wUbd9NSiXdtWRDbZy3RGHYize1VR/GB
-         Osmrp14v5ZtDFYfqzLzxS3OL2lIOEx5mjL+4NiA3G93jusVnA3igALWNRH9m358/tx
-         q8rFkSPYqhCvg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 40F894038F; Wed, 15 Sep 2021 17:56:26 -0300 (-03)
-Date:   Wed, 15 Sep 2021 17:56:26 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Muhammad Falak R Wani <falakreyaz@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yu Kuai <yukuai3@huawei.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] perflib: deprecate bpf_map__resize in favor of
- bpf_map_set_max_entries
-Message-ID: <YUJd+jo1W+mdK0Fv@kernel.org>
-References: <20210815103610.27887-1-falakreyaz@gmail.com>
- <CAEf4BzZ+3hM9oPxdXsxXRKJD2TCmpXPnkWz1LPnP7mDagprdyA@mail.gmail.com>
+        id S232209AbhIOVCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 17:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232168AbhIOVCB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 17:02:01 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01259C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:00:41 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i25so9610761lfg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 14:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6051UbgrRMqDxiwjhzZkrwFi5IKkmuXa1gzwXfPNWkw=;
+        b=V9NRrB2CS1yeigqK9Ue6Dtwu1U6p2jRsXG+HSc0iLZA6dsDHxkcqMA9s8nU/IAI5du
+         TUzkThscVDc4LqTE0D4bNdDMJnI39D4Cvv4pin63v/fGhIgvWapPi8fM1PJ+dzbsjAJn
+         4CuWWXQxZz2acwXCDbCtSfNxiAMJys+bcXLvzBz9zQWUxyV+TudQpal5XXhPQa1xysjz
+         og8Ri3Hx5q3ohoNhs7msnZO3P3n63Y++vMD+ITHHGxK0DO984wKzDmfp3wcR3WghBEYB
+         OUdF15j4QfzV/LVEk63ATcGIgYiomSE3zSd5hdR13ROBBRgE24iAi4MurR5fh9xiVHKa
+         CPow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6051UbgrRMqDxiwjhzZkrwFi5IKkmuXa1gzwXfPNWkw=;
+        b=gB5xbGVfNxnXky0882T3NE6zVrTz80aukIGEAR/F1/eJvdcW0FsudhyB4P9h4MGsVk
+         /mIlSrwGeQIC+qrEAbH7MMsjRmGmCQDJI21aKzfap5dImFfxHuD2yH/yJkja8N9YrvIh
+         8oDuy0Yeo42zTW1e84GvvzAdYSWIcP0fWiH7ndXW38u7zS6Bv7isPVn4Rp5TjMgS5hnj
+         euBUYet4W22c0K+lRIqoFihdgB3OPdpL+RSHDH+rRiNP8YiZQnctwLEsg1HWPm1/7Ubg
+         Tu4SiAcl1AH68m5107hGwyVkYI+wfyVh17QUKTJcOPM4NeDGjvmA2WGm5QzqJXPBVAfl
+         CuDQ==
+X-Gm-Message-State: AOAM5320LMC2RUL9XG99NgtD0sch+0avQ+HEgWpuhJi/xYx2tLDi1GpM
+        /L3N3GBHi8GSY2xRaYGmAEhJgChKnjZ/qNUfAZ4=
+X-Google-Smtp-Source: ABdhPJzwTh8ZGukPXzZsfLlsL05t09qPNouVPdAoTX8yDhkINktq09DsX8rU+3tF3qfGORyB1CbOY+VDqpFMaB7eJX8=
+X-Received: by 2002:ac2:5d49:: with SMTP id w9mr1379832lfd.450.1631739639394;
+ Wed, 15 Sep 2021 14:00:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ+3hM9oPxdXsxXRKJD2TCmpXPnkWz1LPnP7mDagprdyA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210914162825.v3.1.I85e46da154e3fa570442b496a0363250fff0e44e@changeid>
+ <20210914162825.v3.3.Ibf9b125434e3806b35f9079f6d8125578d76f138@changeid>
+ <CAE-0n51JFM_yYdOsCQyvdMw5xXJ7REcbOJC6qi=6nfiNcdvnWw@mail.gmail.com> <CA+cxXhn-gLt37oyEq3wSh3qf=UkY=H6fY3ahC=gyhKhGwu_dXw@mail.gmail.com>
+In-Reply-To: <CA+cxXhn-gLt37oyEq3wSh3qf=UkY=H6fY3ahC=gyhKhGwu_dXw@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 15 Sep 2021 18:00:27 -0300
+Message-ID: <CAOMZO5B_J29npC+yu2freuwNLjKAmwas7gVaB6qRabAmVWy2KQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] drm/bridge: parade-ps8640: Add support for AUX channel
+To:     Philip Chen <philipchen@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 16, 2021 at 12:28:14PM -0700, Andrii Nakryiko escreveu:
-> On Sun, Aug 15, 2021 at 3:36 AM Muhammad Falak R Wani
-> <falakreyaz@gmail.com> wrote:
-> >
-> > As a part of libbpf 1.0 plan[0], this patch deprecates use of
-> > bpf_map__resize in favour of bpf_map__set_max_entries.
-> >
-> > Reference: https://github.com/libbpf/libbpf/issues/304
-> > [0]: https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0#libbpfh-high-level-apis
-> >
-> > Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
-> > ---
-> 
-> All looks good, there is an opportunity to simplify the code a bit (see below).
-> 
-> Arnaldo, I assume you'll take this through your tree or you'd like us
+On Wed, Sep 15, 2021 at 5:41 PM Philip Chen <philipchen@chromium.org> wrote:
 
-Yeah, I'll take the opportunity to try to improve that detection of
-libbpf version, etc.
+> As regmap_read() should always read 1 byte at a time, should I just do:
+> regmap_read(map, PAGE0_SWAUX_RDATA, (unsigned int*)(buf + i))
 
-- Arnaldo
-
-> to take it through bpf-next?
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> >  tools/perf/util/bpf_counter.c        | 8 ++++----
-> >  tools/perf/util/bpf_counter_cgroup.c | 8 ++++----
-> >  2 files changed, 8 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> > index ba0f20853651..ced2dac31dcf 100644
-> > --- a/tools/perf/util/bpf_counter.c
-> > +++ b/tools/perf/util/bpf_counter.c
-> > @@ -127,9 +127,9 @@ static int bpf_program_profiler_load_one(struct evsel *evsel, u32 prog_id)
-> >
-> >         skel->rodata->num_cpu = evsel__nr_cpus(evsel);
-> >
-> > -       bpf_map__resize(skel->maps.events, evsel__nr_cpus(evsel));
-> > -       bpf_map__resize(skel->maps.fentry_readings, 1);
-> > -       bpf_map__resize(skel->maps.accum_readings, 1);
-> > +       bpf_map__set_max_entries(skel->maps.events, evsel__nr_cpus(evsel));
-> > +       bpf_map__set_max_entries(skel->maps.fentry_readings, 1);
-> > +       bpf_map__set_max_entries(skel->maps.accum_readings, 1);
-> >
-> >         prog_name = bpf_target_prog_name(prog_fd);
-> >         if (!prog_name) {
-> > @@ -399,7 +399,7 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
-> >                 return -1;
-> >         }
-> >
-> > -       bpf_map__resize(skel->maps.events, libbpf_num_possible_cpus());
-> > +       bpf_map__set_max_entries(skel->maps.events, libbpf_num_possible_cpus());
-> 
-> If you set max_entries to 0 (or just skip specifying it) for events
-> map in util/bpf_skel/bperf_cgroup.bpf.c, you won't need to resize it,
-> libbpf will automatically size it to number of possible CPUs.
-> 
-> >         err = bperf_leader_bpf__load(skel);
-> >         if (err) {
-> >                 pr_err("Failed to load leader skeleton\n");
-> > diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
-> > index 89aa5e71db1a..cbc6c2bca488 100644
-> > --- a/tools/perf/util/bpf_counter_cgroup.c
-> > +++ b/tools/perf/util/bpf_counter_cgroup.c
-> > @@ -65,14 +65,14 @@ static int bperf_load_program(struct evlist *evlist)
-> >
-> >         /* we need one copy of events per cpu for reading */
-> >         map_size = total_cpus * evlist->core.nr_entries / nr_cgroups;
-> > -       bpf_map__resize(skel->maps.events, map_size);
-> > -       bpf_map__resize(skel->maps.cgrp_idx, nr_cgroups);
-> > +       bpf_map__set_max_entries(skel->maps.events, map_size);
-> > +       bpf_map__set_max_entries(skel->maps.cgrp_idx, nr_cgroups);
-> >         /* previous result is saved in a per-cpu array */
-> >         map_size = evlist->core.nr_entries / nr_cgroups;
-> > -       bpf_map__resize(skel->maps.prev_readings, map_size);
-> > +       bpf_map__set_max_entries(skel->maps.prev_readings, map_size);
-> >         /* cgroup result needs all events (per-cpu) */
-> >         map_size = evlist->core.nr_entries;
-> > -       bpf_map__resize(skel->maps.cgrp_readings, map_size);
-> > +       bpf_map__set_max_entries(skel->maps.cgrp_readings, map_size);
-> >
-> >         set_max_rlimit();
-> >
-> > --
-> > 2.17.1
-> >
-
--- 
-
-- Arnaldo
+There is also regmap_bulk_read() if you need to read more data.
