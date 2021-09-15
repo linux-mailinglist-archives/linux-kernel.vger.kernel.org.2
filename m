@@ -2,184 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744A240CDBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9137740CDC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 22:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhIOULE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 16:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhIOULC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 16:11:02 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8363EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:09:43 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id q22so3830357pfu.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 13:09:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=GOFLBCpd5YWd1LKYoUMXIDX6I2Oh8/PMBaNyH9Apy8s=;
-        b=tbeHY6HSKONX1dnJiDe351BSWmDCLLTCkD9kCFP14uCRb6r4Q+5A+ads+3HOy15ufC
-         zawzsbMA90aBBKAnWnB1gREvqvmgDkmSRQgbInRAuBRT+Fm3Dd2GCj9Tcc+4kTRiDl+K
-         GZSFedSCBTkgmkr/sWEEBXix+M7tqAITnrYH0GIwxXavUF8/WPXiu9wZFZIuOJZ5+XkC
-         UhGDyl9mnez3aIB7I6OO2iouSyEGL5tuq7AvXKX/uv6WzdQQd7OvDz22OkyK7Ubo1kGI
-         7djGTnpP2LsEUHjjFR8tjo3UWojxmON+gnq3WqIUInv/bcN6MslS5MCgmMTg0PreDuSL
-         qWpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=GOFLBCpd5YWd1LKYoUMXIDX6I2Oh8/PMBaNyH9Apy8s=;
-        b=gkltgau5fLK0/5Bza1lWotm1sFR4zmzx5Jv9gVaudYc6P8VvM1OzJC25M9TuvvTvyv
-         UciyIYxYUUW2tqfrohhQ62rf7X04F8iRMdquzInUnke+d0+0QYFtvd7wdZptumN0PPvn
-         inNivsdWfL3i6XaXFveZf7h445YJmVWOzIe6q7AR8Hq77tVx22S0NwUEPfE/9PYNsc0r
-         a9NXUtz3QG+xTQNyObfwkAXXTo1W+Hwks9/xmY9r4xrvVMhbS2h31TMBO1EOPJxBMfiu
-         PkKLncVnJWbD+GGM9QFYqQntHePTEXNces+ObB7nDVL5fns+j2LFc5DnDjfRoKInCUmb
-         YYfg==
-X-Gm-Message-State: AOAM53116I4eyhWzNLHotZfYAUK+aJeFwz+GGp6jO1U/3huB3whzx+iH
-        mGxCXFpVKgz0p+OtHDVOMXBRjiGjtIBh4XxwEXh3bw==
-X-Received: by 2002:a63:7a10:: with SMTP id v16mt1174070pgc.146.1631736582785;
- Wed, 15 Sep 2021 13:09:42 -0700 (PDT)
+        id S231652AbhIOUOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 16:14:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:58648 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231487AbhIOUOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 16:14:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCD926D;
+        Wed, 15 Sep 2021 13:13:02 -0700 (PDT)
+Received: from [10.57.15.112] (unknown [10.57.15.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5518B3F59C;
+        Wed, 15 Sep 2021 13:13:01 -0700 (PDT)
+Subject: Re: [PATCH] ACPI/IORT: Add 'smmu=off' command line option
+To:     Yao Hongbo <yaohongbo@linux.alibaba.com>
+Cc:     zhangliguang@linux.alibaba.com,
+        alikernel-developer@linux.alibaba.com, will@kernel.org,
+        lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
+        sudeep.holla@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210915120046.62936-1-yaohongbo@linux.alibaba.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c243d909-b442-02ae-a05c-1a59a5e950d5@arm.com>
+Date:   Wed, 15 Sep 2021 21:12:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210915195306.612966-1-kaleshsingh@google.com>
-In-Reply-To: <20210915195306.612966-1-kaleshsingh@google.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Wed, 15 Sep 2021 13:09:31 -0700
-Message-ID: <CAC_TJvdv7sT-FmD1S-ZHnpAGvFR=1WBc6jEKBm+q5Wpp6S34PQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] tracing: Extend histogram triggers expression parsing
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Hridya Valsaraju <hridya@google.com>, namhyung@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210915120046.62936-1-yaohongbo@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 12:53 PM Kalesh Singh <kaleshsingh@google.com> wrote:
->
-> The frequency of the rss_stat trace event is known to be of the same
-> magnitude as that of the sched_switch event on Android devices. This can
-> cause flooding of the trace buffer with rss_stat traces leading to a
-> decreased trace buffer capacity and loss of data.
->
-> If it is not necessary to monitor very small changes in rss (as is the
-> case in Android) then the rss_stat tracepoint can be throttled to only
-> emit the event once there is a large enough change in the rss size.
-> The original patch that introduced the rss_stat tracepoint also proposed
-> a fixed throttling mechanism that only emits the rss_stat event
-> when the rss size crosses a 512KB boundary. It was concluded that more
-> generic support for this type of filtering/throttling was need, so that
-> it can be applied to any trace event. [1]
->
-> From the discussion in [1], histogram triggers seemed the most likely
-> candidate to support this type of throttling. For instance to achieve the
-> same throttling as was proposed in [1]:
->
->   (1) Create a histogram variable to save the 512KB bucket of the rss size
->   (2) Use the onchange handler to generate a synthetic event when the
->       rss size bucket changes.
->
-> The only missing pieces to support such a hist trigger are:
->   (1) Support for setting a hist variable to a specific value -- to set
->       the bucket size / granularity.
->   (2) Support for division arithmetic operation -- to determine the
->       corresponding bucket for an rss size.
->
-> This series extends histogram trigger expressions to:
->   (1) Allow assigning numeric literals to hist variable (eg. x=1234)
->       and using literals directly in expressions (eg. x=size/1234)
->   (2) Support division and multiplication in hist expressions.
->       (eg. a=$x/$y*z); and
->   (3) Fixes expression parsing for non-associative operators: subtraction
->       and division. (eg. 8-4-2 should be 2 not 6)
->
-> The rss_stat event can then be throttled using histogram triggers as
-> below:
->
->   # Create a synthetic event to monitor instead of the high frequency
->   # rss_stat event
->   echo 'rss_stat_throttled unsigned int mm_id; unsigned int curr;
->          int member; long size' >> tracing/synthetic_events
->
->   # Create a hist trigger that emits the synthetic rss_stat_throttled
->   # event only when the rss size crosses a 512KB boundary.
->   echo 'hist:keys=common_pid:bucket=size/0x80000:onchange($bucket)
->               .rss_stat_throttled(mm_id,curr,member,size)'
->         >> events/kmem/rss_stat/trigger
->
+On 2021-09-15 13:00, Yao Hongbo wrote:
+> Add a generic command line option to disable arm smmu drivers.
+> iommu.passthrough can only bypass the IOMMU for DMA, but
+> sometimes we need to ignore all available SMMUs.
 
-Sorry, I have a clerical mistake here. The above key should be:
-s/keys=common_pid/keys=keys=mm_id,member
+Please elaborate on "sometimes" - what's the use-case for this which 
+can't already be achieved by other means like module_blacklist, 
+switching kernel images, ACPI table overrides, and so on?
 
-The rss size is specific to the mm struct's member not the pid.
-The results below were captured with the correct key so no changes there.
+> This patch is only used for acpi on arm64.
 
->  ------ Test Results ------
-> Histograms can also be used to evaluate the effectiveness of this
-> throttling by noting the Total Hits on each trigger:
->
->   echo 'hist:keys=common_pid' >> events/sched/sched_switch/trigger
->   echo 'hist:keys=common_pid' >> events/kmem/rss_stat/trigger
->   echo 'hist:keys=common_pid'
->            >> events/synthetic/rss_stat_throttled/trigger
->
-> Allowing the above example (512KB granularity) run for 5 minutes on
-> an arm64 device with 5.10 kernel:
->
->    sched_switch      : total hits = 147153
->    rss_stat          : total hits =  38863
->    rss_stat_throttled: total hits =   2409
->
-> The synthetic rss_stat_throttled event is ~16x less frequent than the
-> rss_stat event when using a 512KB granularity.
->
->
-> The results are more pronounced when rss size is changing at a higher
-> rate in small increments. For instance the following results were obtained
-> by recording the hits on the above events for a run of Android's
-> lmkd_unit_test [2], which continually forks processes that map anonymous
-> memory until there is an oom kill:
->
->    sched_switch      : total hits =  148832
->    rss_stat          : total hits = 4754802
->    rss_stat_throttled: total hits =   96214
->
-> In this stress this, the  synthetic rss_stat_throttled event is ~50x less
-> frequent than the rss_stat event when using a 512KB granularity.
->
->
-> [1] https://lore.kernel.org/lkml/20190903200905.198642-1-joel@joelfernandes.org/
-> [2] https://cs.android.com/android/platform/superproject/+/master:system/memory/lmkd/tests/lmkd_test.cpp
->
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
->
-> Kalesh Singh (5):
->   tracing: Add support for creating hist trigger variables from literal
->   tracing: Add division and multiplication support for hist triggers
->   tracing: Fix operator precedence for hist triggers expression
->   tracing/selftests: Add tests for hist trigger expression parsing
->   tracing/histogram: Document expression arithmetic and constants
->
->  Documentation/trace/histogram.rst             |  14 +
->  kernel/trace/trace_events_hist.c              | 318 +++++++++++++++---
->  .../testing/selftests/ftrace/test.d/functions |   4 +-
->  .../trigger/trigger-hist-expressions.tc       |  73 ++++
->  4 files changed, 357 insertions(+), 52 deletions(-)
->  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/trigger-hist-expressions.tc
->
->
-> base-commit: 3ca706c189db861b2ca2019a0901b94050ca49d8
-> --
-> 2.33.0.309.g3052b89438-goog
->
+And yet the documentation implies that it works for all arm64 systems :/
+
+And furthermore, why? If it's genuinely useful to disable SMMUs on 
+ACPI-based systems, surely it must be equally useful to disable SMMUs on 
+DT-based systems?
+
+> Signed-off-by: Yao Hongbo <yaohongbo@linux.alibaba.com>
+> ---
+>   Documentation/admin-guide/kernel-parameters.txt |  4 ++++
+>   drivers/acpi/arm64/iort.c                       | 18 +++++++++++++++++-
+>   2 files changed, 21 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 91ba391f..6cffd91 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5198,6 +5198,10 @@
+>   	smart2=		[HW]
+>   			Format: <io1>[,<io2>[,...,<io8>]]
+>   
+> +	smmu=           [ARM64]
+> +			Format: {off}
+> +			off: Disable arm smmu driver.
+
+There are at least two Arm SMMU drivers; as a user I might be wondering 
+about the ambiguity there.
+
+> +
+>   	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+>   	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+>   	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
+> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> index 3b23fb7..70f92e7 100644
+> --- a/drivers/acpi/arm64/iort.c
+> +++ b/drivers/acpi/arm64/iort.c
+> @@ -40,6 +40,22 @@ struct iort_fwnode {
+>   static LIST_HEAD(iort_fwnode_list);
+>   static DEFINE_SPINLOCK(iort_fwnode_lock);
+>   
+> +static bool acpi_smmu_disabled;
+> +
+> +static int __init acpi_smmu_parse(char *str)
+> +{
+> +	if (!str)
+> +		return -EINVAL;
+> +
+> +	if (!strncmp(str, "off", 3)) {
+> +		acpi_smmu_disabled = true;
+> +		pr_info("SMMU disabled\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +__setup("smmu=", acpi_smmu_parse);
+> +
+>   /**
+>    * iort_set_fwnode() - Create iort_fwnode and use it to register
+>    *		       iommu data in the iort_fwnode_list
+> @@ -1596,7 +1612,7 @@ static void __init iort_init_platform_devices(void)
+>   		iort_enable_acs(iort_node);
+>   
+>   		ops = iort_get_dev_cfg(iort_node);
+> -		if (ops) {
+> +		if (ops && !acpi_smmu_disabled) {
+
+This will also effectively disable PMCGs, which is an undocumented 
+side-effect, and not necessarily desirable - PMCG functionality is 
+largely orthogonal, and may potentially be used to monitor traffic even 
+when the associated SMMU instance is disabled.
+
+TBH there's really nothing SMMU-specific about this at all. I know I've 
+had a number of debugging situations where it would have been handy to 
+have a way to prevent a specific built-in driver from binding 
+automatically during boot, so if you really have got a compelling reason 
+to need it for SMMU, then you could still implement it generically in a 
+way that everyone could benefit from.
+
+Thanks,
+Robin.
+
+>   			fwnode = acpi_alloc_fwnode_static();
+>   			if (!fwnode)
+>   				return;
+> 
