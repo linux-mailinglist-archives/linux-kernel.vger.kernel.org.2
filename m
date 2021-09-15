@@ -2,134 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F14840C771
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC51740C78B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237755AbhIOOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:30:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:14415 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233745AbhIOOau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:30:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="283333977"
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="283333977"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2021 07:29:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
-   d="scan'208";a="472417997"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 15 Sep 2021 07:29:17 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id D78845A5; Wed, 15 Sep 2021 17:29:21 +0300 (EEST)
-Date:   Wed, 15 Sep 2021 17:29:21 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Chao Peng <chao.p.peng@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andy Lutomirski <luto@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
- private memory
-Message-ID: <20210915142921.bxxsap6xktkt4bek@black.fi.intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <20210902184711.7v65p5lwhpr2pvk7@box.shutemov.name>
- <YTE1GzPimvUB1FOF@google.com>
- <20210903191414.g7tfzsbzc7tpkx37@box.shutemov.name>
- <02806f62-8820-d5f9-779c-15c0e9cd0e85@kernel.org>
- <20210910171811.xl3lms6xoj3kx223@box.shutemov.name>
- <20210915195857.GA52522@chaop.bj.intel.com>
- <51a6f74f-6c05-74b9-3fd7-b7cd900fb8cc@redhat.com>
+        id S237875AbhIOOh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhIOOh1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 10:37:27 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E963C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=H2SjBs0kBa3Umj4ph9RU8nWpMuNZomN4Wg
+        +b/+m9/Js=; b=xP6BnDCDyXcNheP7K988Vr+umNnd2OPw7/0/blm/2nrzS2qd2E
+        fdmDh2plhhUHFuGSHY9grC5bBSNRf9VmXNn/JxuTmifmcO+33z768DV3q6hHsEJB
+        RqNeWe+0+WBoOiuCONLotc5RbUrplt1cNYS9Jx4eZawUm1zaBFrS9EkhU=
+Received: from xhacker (unknown [101.86.20.138])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDnIqrTBEJhLtIBAA--.1028S2;
+        Wed, 15 Sep 2021 22:36:03 +0800 (CST)
+Date:   Wed, 15 Sep 2021 22:29:37 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, vincent.chen@sifive.com
+Subject: Re: [RFC PATCH v8 20/21] riscv: Optimize task switch codes of
+ vector
+Message-ID: <20210915222937.49066323@xhacker>
+In-Reply-To: <3b2d4ff556d310ed73a6910b89566a195fc28861.1631121222.git.greentime.hu@sifive.com>
+References: <cover.1631121222.git.greentime.hu@sifive.com>
+        <3b2d4ff556d310ed73a6910b89566a195fc28861.1631121222.git.greentime.hu@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51a6f74f-6c05-74b9-3fd7-b7cd900fb8cc@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDnIqrTBEJhLtIBAA--.1028S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar1UGw13tFyUXw1xWw4rKrg_yoW8Ww1rpr
+        Z0kF98tFW8WrZ3WaySvF15Zry5G3yDWw47KF1qkw1UWr42grn5C3ZYvryDuFs0qryFkayr
+        Xa4v9r1vga1DAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        W3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8
+        JrUvcSsGvfC2KfnxnUUI43ZEXa7IU85GYPUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:51:25PM +0200, David Hildenbrand wrote:
-> > > diff --git a/mm/memfd.c b/mm/memfd.c
-> > > index 081dd33e6a61..ae43454789f4 100644
-> > > --- a/mm/memfd.c
-> > > +++ b/mm/memfd.c
-> > > @@ -130,11 +130,24 @@ static unsigned int *memfd_file_seals_ptr(struct file *file)
-> > >   	return NULL;
-> > >   }
-> > > +int memfd_register_guest(struct inode *inode, void *owner,
-> > > +			 const struct guest_ops *guest_ops,
-> > > +			 const struct guest_mem_ops **guest_mem_ops)
-> > > +{
-> > > +	if (shmem_mapping(inode->i_mapping)) {
-> > > +		return shmem_register_guest(inode, owner,
-> > > +					    guest_ops, guest_mem_ops);
-> > > +	}
-> > > +
-> > > +	return -EINVAL;
-> > > +}
-> > 
-> > Are we stick our design to memfd interface (e.g other memory backing
-> > stores like tmpfs and hugetlbfs will all rely on this memfd interface to
-> > interact with KVM), or this is just the initial implementation for PoC?
+On Thu,  9 Sep 2021 01:45:32 +0800
+Greentime Hu <greentime.hu@sifive.com> wrote:
+
+> This patch replacees 2 instructions with 1 instruction to do the same thing
+> . rs1=x0 with rd != x0 is a special form of the instruction that sets vl to
+> MAXVL.
+
+Similarly, the vector.S is newly introduced in this patch set, so could
+this optimization be folded into the __vstate_save and __vstate_restore
+introduction patch? Or it's better to keep this optimizaion in commit log?
+
 > 
-> I don't think we are, it still feels like we are in the early prototype
-> phase (even way before a PoC). I'd be happy to see something "cleaner" so to
-> say -- it still feels kind of hacky to me, especially there seem to be many
-> pieces of the big puzzle missing so far. Unfortunately, this series hasn't
-> caught the attention of many -MM people so far, maybe because other people
-> miss the big picture as well and are waiting for a complete design proposal.
+> Suggested-by: Andrew Waterman <andrew@sifive.com>
+> Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  arch/riscv/kernel/vector.S | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 > 
-> For example, what's unclear to me: we'll be allocating pages with
-> GFP_HIGHUSER_MOVABLE, making them land on MIGRATE_CMA or ZONE_MOVABLE; then
-> we silently turn them unmovable, which breaks these concepts. Who'd migrate
-> these pages away just like when doing long-term pinning, or how is that
-> supposed to work?
+> diff --git a/arch/riscv/kernel/vector.S b/arch/riscv/kernel/vector.S
+> index 4f0c5a166e4e..f7223c81b11a 100644
+> --- a/arch/riscv/kernel/vector.S
+> +++ b/arch/riscv/kernel/vector.S
+> @@ -27,8 +27,7 @@
+>  #define x_vl     t2
+>  #define x_vcsr   t3
+>  #define incr     t4
+> -#define m_one    t5
+> -#define status   t6
+> +#define status   t5
+>  
+>  ENTRY(__vstate_save)
+>  	li      status, SR_VS
+> @@ -38,8 +37,7 @@ ENTRY(__vstate_save)
+>  	csrr    x_vtype, CSR_VTYPE
+>  	csrr    x_vl, CSR_VL
+>  	csrr    x_vcsr, CSR_VCSR
+> -	li      m_one, -1
+> -	vsetvli incr, m_one, e8, m8
+> +	vsetvli incr, x0, e8, m8
+>  	vse8.v   v0, (datap)
+>  	add     datap, datap, incr
+>  	vse8.v   v8, (datap)
+> @@ -61,8 +59,7 @@ ENTRY(__vstate_restore)
+>  	li      status, SR_VS
+>  	csrs    CSR_STATUS, status
+>  
+> -	li      m_one, -1
+> -	vsetvli incr, m_one, e8, m8
+> +	vsetvli incr, x0, e8, m8
+>  	vle8.v   v0, (datap)
+>  	add     datap, datap, incr
+>  	vle8.v   v8, (datap)
 
-That's fair point. We can fix it by changing mapping->gfp_mask.
 
-> Also unclear to me is how refcount and mapcount will be handled to prevent
-> swapping,
-
-refcount and mapcount are unchanged. Pages not pinned per se. Swapping
-prevented with the change in shmem_writepage().
-
-> who will actually do some kind of gfn-epfn etc. mapping, how we'll
-> forbid access to this memory e.g., via /proc/kcore or when dumping memory
-
-It's not aimed to prevent root to shoot into his leg. Root do root.
-
-> ... and how it would ever work with migration/swapping/rmap (it's clearly
-> future work, but it's been raised that this would be the way to make it
-> work, I don't quite see how it would all come together).
-
-Given that hardware supports it migration and swapping can be implemented
-by providing new callbacks in guest_ops. Like ->migrate_page would
-transfer encrypted data between pages and ->swapout would provide
-encrypted blob that can be put on disk or handled back to ->swapin to
-bring back to memory.
-
--- 
- Kirill A. Shutemov
