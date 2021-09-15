@@ -2,227 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72C840CC07
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9052440CC14
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhIOR4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:56:25 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:40553 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhIOR4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:56:24 -0400
-Received: by mail-wr1-f41.google.com with SMTP id q26so5187076wrc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:55:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=EmDG0wBX8eiDSOx5X4lVDdCTChXbSWXuxhuaSYB5sX8=;
-        b=ZCeO49vMdCp9REMU4Gr5z/kpeGwxk6ONawDL7gVs2YybVWsqVeHcpexRg3sE9C1rzS
-         +18by3ZINwvPR8ze5VdTsZ3hFbjDItFJnc/FBZZIYBlHdEDivsELJqk3p0WdkuGbdpJv
-         YeGOh4iINWkZEKHdeBVO5t1gDp7x90IsM1C1xCe6Etag3ljdnSzIaKxZQP8poxAvmZ6u
-         pCUzxsAdarXGVhLZDHlCfcz2LPg9nj1D+UmzANIifSiwkuYYGVlJ6bCfZUwXJHeWS6+c
-         5jjtXGQd3ABfdAmX53J7ManbdpUG7ppNpwgdyoLuIqfRoIvv59fIPIkSikE/DIPmeghD
-         S2oA==
-X-Gm-Message-State: AOAM530p23Zfh2FxrLFOnxZmNwXnKK2Ves6OXLD6oPgn0GujCfNPjSmo
-        iEC/iXBEsQqxJh/k3c5YmXr1LciUTjAEO8FY
-X-Google-Smtp-Source: ABdhPJxEHL5qn1sYpNbENbccZFQQ7lHF7hLtIMCMwyOh/EB7aIVnB4n2WCLxfWw0Ag7/DrILCyaoXg==
-X-Received: by 2002:adf:ee49:: with SMTP id w9mr1433829wro.158.1631728504173;
-        Wed, 15 Sep 2021 10:55:04 -0700 (PDT)
-Received: from fedora.tometzki.de (p200300e68f0105009e5bc999bd8eb7e0.dip0.t-ipconnect.de. [2003:e6:8f01:500:9e5b:c999:bd8e:b7e0])
-        by smtp.gmail.com with ESMTPSA id c9sm732906wrf.77.2021.09.15.10.55.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 10:55:03 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 19:55:01 +0200
-From:   Damian Tometzki <dtometzki@fedoraproject.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUIzdTyFBITDIPnj@fedora.tometzki.de>
-Reply-To: Damian Tometzki <dtometzki@fedoraproject.org>
-Mail-Followup-To: Johannes Weiner <hannes@cmpxchg.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
+        id S230423AbhIOR7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhIOR7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 13:59:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D72FB61130;
+        Wed, 15 Sep 2021 17:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631728661;
+        bh=yrPKjuUAh/sdrdlpsTPesM9BsBY/6gkpojv1C9xWAqM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=JN4FWT29WA8Z/iQH8pcgaOxa32DCkxL0QtG/mDJAkZlzU9xXBjlR8oayw4o5UWM4Y
+         zQtFBFZQkyhvLiimmiRRIaOz1oTYqEH8Cfo98SgoFuOrszdiqvyKwrHTzLSVkJfhm4
+         X+TXJnMNrLt22+J1zv/S8TTsqrUQmfKeyGLcmX4PbndLH9lTf18xCCw0IRiSE3tJkv
+         69ASCnzHHNfcn37B4EGmgtbYd59AE77Wq9StUtyeXWgX9X9ufg1RhLAL3CBbGwDW7v
+         biZrSipYtrE3H35ITRT2/gGTlkNJyaV+tXwQgwVSGHaScrE7S70cqLlnnOj9cv/hs9
+         jsmcF04IvUwZw==
+Message-ID: <bee0ebc354a651ea5b263897f9b155dc604fa7c5.camel@kernel.org>
+Subject: Re: [PATCH v6 00/13] Enroll kernel keys thru MOK
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     keescook@chromium.org, gregkh@linuxfoundation.org,
+        torvalds@linux-foundation.org, scott.branden@broadcom.com,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        konrad.wilk@oracle.com
+Date:   Wed, 15 Sep 2021 20:57:39 +0300
+In-Reply-To: <20210914211416.34096-1-eric.snowberg@oracle.com>
+References: <20210914211416.34096-1-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUIT2/xXwvZ4IErc@cmpxchg.org>
-User-Agent: Mutt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello together,
+On Tue, 2021-09-14 at 17:14 -0400, Eric Snowberg wrote:
+> Back in 2013 Linus requested a feature to allow end-users to have the=20
+> ability "to add their own keys and sign modules they trust". This was
+> his *second* order outlined here [1]. There have been many attempts=20
+> over the years to solve this problem, all have been rejected.  Many=20
+> of the failed attempts loaded all preboot firmware keys into the kernel,
+> including the Secure Boot keys. Many distributions carry one of these=20
+> rejected attempts [2], [3], [4]. This series tries to solve this problem=
+=20
+> with a solution that takes into account all the problems brought up in=
+=20
+> the previous attempts.
+>=20
+> On UEFI based systems, this series introduces a new Linux kernel keyring=
+=20
+> containing the Machine Owner Keys (MOK) called machine. It also defines
+> a new MOK variable in shim. This variable allows the end-user to decide=
+=20
+> if they want to load MOK keys into the machine keyring. Mimi has suggeste=
+d=20
+> that only CA keys contained within the MOK be loaded into the machine=20
+> keyring. All other certs will load into the platform keyring instead.
+>=20
+> By default, nothing changes; MOK keys are not loaded into the machine
+> keyring.  They are only loaded after the end-user makes the decision=20
+> themselves.  The end-user would set this through mokutil using a new=20
+> --trust-mok option [5]. This would work similar to how the kernel uses=
+=20
+> MOK variables to enable/disable signature validation as well as use/ignor=
+e=20
+> the db. Any kernel operation that uses either the builtin or secondary=
+=20
+> trusted keys as a trust source shall also reference the new machine=20
+> keyring as a trust source.
+>=20
+> Secure Boot keys will never be loaded into the machine keyring.  They
+> will always be loaded into the platform keyring.  If an end-user wanted=
+=20
+> to load one, they would need to enroll it into the MOK.
+>=20
+> Steps required by the end user:
+>=20
+> Sign kernel module with user created key:
+> $ /usr/src/kernels/$(uname -r)/scripts/sign-file sha512 \
+>    machine_signing_key.priv machine_signing_key.x509 my_module.ko
+>=20
+> Import the key into the MOK
+> $ mokutil --import machine_signing_key.x509
+>=20
+> Setup the kernel to load MOK keys into the .machine keyring
+> $ mokutil --trust-mok
+>=20
+> Then reboot, the MokManager will load and ask if you want to trust the
+> MOK key and enroll the MOK into the MOKList.  Afterwards the signed kerne=
+l
+> module will load.
+>=20
+> I have included links to both the mokutil [5] and shim [6] changes I
+> have made to support this new functionality.
 
-I am an outsider and  following the discussion here on the subject. 
-Can we not go upsream with the state of development ? 
-Optimizations will always be there and new kernel releases too.
+How hard it is to self-compile shim and boot it with QEMU (I
+do not know even the GIT location of Shim)?
 
-I can not assess the risk but I think a decision must be made. 
+I'm all my SGX testing already with TianoCore and QEMU so I
+thought it might not be that huge stretch to get testing env
+for this.
 
-Damian
- 
-
-On Wed, 15. Sep 11:40, Johannes Weiner wrote:
-> On Fri, Sep 10, 2021 at 04:16:28PM -0400, Kent Overstreet wrote:
-> > One particularly noteworthy idea was having struct page refer to
-> > multiple hardware pages, and using slab/slub for larger
-> > alloctions. In my view, the primary reason for making this change
-> > isn't the memory overhead to struct page (though reducing that would
-> > be nice);
-> 
-> Don't underestimate this, however.
-> 
-> Picture the near future Willy describes, where we don't bump struct
-> page size yet but serve most cache with compound huge pages.
-> 
-> On x86, it would mean that the average page cache entry has 512
-> mapping pointers, 512 index members, 512 private pointers, 1024 LRU
-> list pointers, 512 dirty flags, 512 writeback flags, 512 uptodate
-> flags, 512 memcg pointers etc. - you get the idea.
-> 
-> This is a ton of memory. I think this doesn't get more traction
-> because it's memory we've always allocated, and we're simply more
-> sensitive to regressions than long-standing pain. But nevertheless
-> this is a pretty low-hanging fruit.
-> 
-> The folio makes a great first step moving those into a separate data
-> structure, opening the door to one day realizing these savings. Even
-> when some MM folks say this was never the intent behind the patches, I
-> think this is going to matter significantly, if not more so, later on.
-> 
-> > Fortunately, Matthew made a big step in the right direction by making folios a
-> > new type. Right now, struct folio is not separately allocated - it's just
-> > unionized/overlayed with struct page - but perhaps in the future they could be
-> > separately allocated. I don't think that is a remotely realistic goal for _this_
-> > patch series given the amount of code that touches struct page (thing: writeback
-> > code, LRU list code, page fault handlers!) - but I think that's a goal we could
-> > keep in mind going forward.
-> 
-> Yeah, agreed. Not doable out of the gate, but retaining the ability to
-> allocate the "cache entry descriptor" bits - mapping, index etc. -
-> on-demand would be a huge benefit down the road for the above reason.
-> 
-> For that they would have to be in - and stay in - their own type.
-> 
-> > We should also be clear on what _exactly_ folios are for, so they don't become
-> > the new dumping ground for everyone to stash their crap. They're to be a new
-> > core abstraction, and we should endeaver to keep our core data structures
-> > _small_, and _simple_.
-> 
-> Right. struct page is a lot of things and anything but simple and
-> obvious today. struct folio in its current state does a good job
-> separating some of that stuff out.
-> 
-> However, when we think about *which* of the struct page mess the folio
-> wants to address, I think that bias toward recent pain over much
-> bigger long-standing pain strikes again.
-> 
-> The compound page proliferation is new, and we're sensitive to the
-> ambiguity it created between head and tail pages. It's added some
-> compound_head() in lower-level accessor functions that are not
-> necessary for many contexts. The folio type safety will help clean
-> that up, and this is great.
-> 
-> However, there is a much bigger, systematic type ambiguity in the MM
-> world that we've just gotten used to over the years: anon vs file vs
-> shmem vs slab vs ...
-> 
-> - Many places rely on context to say "if we get here, it must be
->   anon/file", and then unsafely access overloaded member elements:
->   page->mapping, PG_readahead, PG_swapcache, PG_private
-> 
-> - On the other hand, we also have low-level accessor functions that
->   disambiguate the type and impose checks on contexts that may or may
->   not actually need them - not unlike compound_head() in PageActive():
-> 
->   struct address_space *folio_mapping(struct folio *folio)
->   {
-> 	struct address_space *mapping;
-> 
-> 	/* This happens if someone calls flush_dcache_page on slab page */
-> 	if (unlikely(folio_test_slab(folio)))
-> 		return NULL;
-> 
-> 	if (unlikely(folio_test_swapcache(folio)))
-> 		return swap_address_space(folio_swap_entry(folio));
-> 
-> 	mapping = folio->mapping;
-> 	if ((unsigned long)mapping & PAGE_MAPPING_ANON)
-> 		return NULL;
-> 
-> 	return (void *)((unsigned long)mapping & ~PAGE_MAPPING_FLAGS);
->   }
-> 
->   Then we go identify places that say "we know it's at least not a
->   slab page!" and convert them to page_mapping_file() which IS safe to
->   use with anon. Or we say "we know this MUST be a file page" and just
->   access the (unsafe) mapping pointer directly.
-> 
-> - We have a singular page lock, but what it guards depends on what
->   type of page we're dealing with. For a cache page it protects
->   uptodate and the mapping. For an anon page it protects swap state.
-> 
->   A lot of us can remember the rules if we try, but the code doesn't
->   help and it gets really tricky when dealing with multiple types of
->   pages simultaneously. Even mature code like reclaim just serializes
->   the operation instead of protecting data - the writeback checks and
->   the page table reference tests don't seem to need page lock.
-> 
->   When the cgroup folks wrote the initial memory controller, they just
->   added their own page-scope lock to protect page->memcg even though
->   the page lock would have covered what it needed.
-> 
-> - shrink_page_list() uses page_mapping() in the first half of the
->   function to tell whether the page is anon or file, but halfway
->   through we do this:
-> 
-> 	  /* Adding to swap updated mapping */
->           mapping = page_mapping(page);
-> 
->   and then use PageAnon() to disambiguate the page type.
-> 
-> - At activate_locked:, we check PG_swapcache directly on the page and
->   rely on it doing the right thing for anon, file, and shmem pages.
->   But this flag is PG_owner_priv_1 and actually used by the filesystem
->   for something else. I guess PG_checked pages currently don't make it
->   this far in reclaim, or we'd crash somewhere in try_to_free_swap().
-> 
->   I suppose we're also never calling page_mapping() on PageChecked
->   filesystem pages right now, because it would return a swap mapping
->   before testing whether this is a file page. You know, because shmem.
-> 
-> These are just a few examples from an MM perspective. I'm sure the FS
-> folks have their own stories and examples about pitfalls in dealing
-> with struct page members.
-> 
-> We're so used to this that we don't realize how much bigger and
-> pervasive this lack of typing is than the compound page thing.
-> 
-> I'm not saying the compound page mess isn't worth fixing. It is.
-> 
-> I'm saying if we started with a file page or cache entry abstraction
-> we'd solve not only the huge page cache, but also set us up for a MUCH
-> more comprehensive cleanup in MM code and MM/FS interaction that makes
-> the tailpage cleanup pale in comparison. For the same amount of churn,
-> since folio would also touch all of these places.
-> 
+/Jarkko
