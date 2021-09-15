@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ACE40CA96
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC4A40CA97
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 18:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhIOQlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 12:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        id S230304AbhIOQl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 12:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhIOQlu (ORCPT
+        with ESMTP id S229991AbhIOQlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 12:41:50 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFB9C061764
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:40:31 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id x2so3550624ila.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:40:31 -0700 (PDT)
+        Wed, 15 Sep 2021 12:41:51 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416FAC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:40:32 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id q3so4260474iot.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 09:40:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wKV+lnWpUuZH5SUW1lKdicYs9iS1/HR/b6CwzZGnc9c=;
-        b=S9I+VL+60lvXHiO1v3wKQjh2TLgFoU2zIMfzmpRCanTOXm0N805LWXpU8PnOp9+jBj
-         YRCXjIVfoFkZ0qnzooWi4jakjLgWMbAhWAGnHoggpwQ+cbUtEdpNW92p7uTS6p17DZvH
-         N/vmiOTIXtvaMLaIBIMoDS0HFQzImkKIDtAaEy2Eiacl3SS/Y0777LgQwBUaup2DuSa8
-         IsPKTtGe5qWSyD7QwLAOsd60/KMq0v8ig3ixgX4L7G1sbcngNYtVDt4l6AWqxEb10axD
-         u+Tiv4xEKG8II9Rt70IxMS3jnRfWXoL9qtIUaQh0lex3l7c6thr6oFOVWitknzptZEi2
-         +DLg==
+        bh=CrEmSurYEG7f2fqsoHnKcSPyJETCI17u84wNRbn86Yg=;
+        b=X58plaV+u4i/AQz3qqsdYb14mgslFnAIILm1w5lAP8p1OGsJF8M6YGcSU0dO3pux55
+         uoGxlflDORPt6UwQnnlN/60M5q1AO7ABstRwLU0QgK9qI2puvTmbdAmOB9pLdgfLu0O0
+         KlfAAmHpo1IoxFA5vHfyEchjpJAuutRPieevl8pSAV0QI9CjmJKx0Nw6/bl0iH4AhPrP
+         OCG1JCQdyFen2XC5EWYZCErMkMtBu57A9ddhIrOyAfmjrEgJo6tN+cEDN11KsAWuQZoy
+         kJhPeXEAqDA82qyePTQcL6Qk674DSOy7mf8wDT6lWhXqp+jRwx3kK+7ZdEyNgmSjmi1C
+         dlwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wKV+lnWpUuZH5SUW1lKdicYs9iS1/HR/b6CwzZGnc9c=;
-        b=yWwu1c5Z+etS5vhe41TuJhlwqwb/w1A+a/gFOJwjNJQJ4JqmvUn97yVa1cuY69x4pJ
-         mWPQlIUy6GR1/Aeocl43dfunsfI7A3Gjc9T6OMVWuegPnFrYpp8hDBIN8iQy75tp0W26
-         TU2aLz//Phugare8sToc/9JveHXPxhijglQjpqfUmU4hIRMByStdF2TBvBf2q0Qp6/Rc
-         hcpKuy9F/CHTEoIUiBts7MpJ/q1sq8zZc6VeVr5eqjSdPbEMf+XKnuS6//ye8egHRA8U
-         4sh1seJrLTb+2i2aTjMbCqFkva1yncxQgGtBAt1DfQM1umNC1iCty4dNqPmagEtmKscj
-         L/JQ==
-X-Gm-Message-State: AOAM5338VLJndYBImgOdRqSeUh3UQ6rMmZ6ElXGs62BnM1frO9C1OBbs
-        InKsFxTGR3U+7IK/LoP4mR0=
-X-Google-Smtp-Source: ABdhPJzFjY9IDEO5W7WNqwgctTlwlHwbvpjLICXGhOw3Qy7mcpDmGs/yUuIDeGAG/TErArDsOWTdTA==
-X-Received: by 2002:a05:6e02:5a3:: with SMTP id k3mr688180ils.283.1631724030459;
-        Wed, 15 Sep 2021 09:40:30 -0700 (PDT)
+        bh=CrEmSurYEG7f2fqsoHnKcSPyJETCI17u84wNRbn86Yg=;
+        b=3Z+XMIIpUUYJjvQgzIjyNEUVP7muJdFrjbbz44rYoZ9iMzotBBtnlFbeeCfrvfuTlu
+         xNOgDKlJx8tVF3rAMa3BKX9oJvI/jR2+rXmmuWZ66MxH6cn6UTc+npdcAnJqrjXty5OH
+         y1eno04VFmXkNQrCRQiKJRycYgcbnd2Ny2jzh18ig480xmg3Nrv+KO0pUMZ7cAYxM5Af
+         yRawSxUCvEZvifbiICO36CSTE1zy91jZ9Ki98E+1ySL9k58ijFHGYhZnKW/Le9GIHRYX
+         2Tx9jKcKw1Oy8EebtpOsIC3H/ayBClToJ0ZY1BaIpww5LivaTCdGNsTXWdD72ZBNYJs4
+         256g==
+X-Gm-Message-State: AOAM532SSvhjc1ZwUvn7MIei8kbPE+suKXvrCn6w3TQuMa7Ys33iTdxW
+        xp6YRAh8BWjLH3Jh97h+eMg=
+X-Google-Smtp-Source: ABdhPJwuRCcqyQ83k8sHPemNXwvsKtY8IR5LPWoVQGEgfaksqkBrIZJUOZqEEmE9SXkV37OOs0tepw==
+X-Received: by 2002:a02:95ee:: with SMTP id b101mr774496jai.96.1631724031649;
+        Wed, 15 Sep 2021 09:40:31 -0700 (PDT)
 Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id a5sm299540ilf.27.2021.09.15.09.40.29
+        by smtp.googlemail.com with ESMTPSA id a5sm299540ilf.27.2021.09.15.09.40.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 09:40:29 -0700 (PDT)
+        Wed, 15 Sep 2021 09:40:31 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
         intel-gfx@lists.freedesktop.org, daniel@ffwll.ch
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v8 02/16] dyndbg: pr-info in boot-param should say so
-Date:   Wed, 15 Sep 2021 10:39:43 -0600
-Message-Id: <20210915163957.2949166-3-jim.cromie@gmail.com>
+Subject: [PATCH v8 03/16] dyndbg: rationalize verbosity
+Date:   Wed, 15 Sep 2021 10:39:44 -0600
+Message-Id: <20210915163957.2949166-4-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210915163957.2949166-1-jim.cromie@gmail.com>
 References: <20210915163957.2949166-1-jim.cromie@gmail.com>
@@ -66,24 +66,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add "bootparam" to format. no functional changes.
+change current v*pr_info() calls to fit this new scheme:
+
+-1 module add/remove, callsite counts - a few v2s here now
+-2 command ingest, splitting
+-3 command parsing - many v1s here now
+-4 per-site changes - was v2
+
+2 is new, to isolate a problem where a stress-test script (which feeds
+large multi-command strings) would produce short writes, truncating
+last command and confusing test results.
+
+4 gets per-callsite "changed:" pr-infos, which are very noisy during
+stress tests, and obscure v1-3 messages.
+
+Update docs verbose example to 3 per its comment
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../admin-guide/dynamic-debug-howto.rst       |  2 +-
+ lib/dynamic_debug.c                           | 22 ++++++++++---------
+ 2 files changed, 13 insertions(+), 11 deletions(-)
 
+diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+index b119b8277b3e..ab28d200f016 100644
+--- a/Documentation/admin-guide/dynamic-debug-howto.rst
++++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+@@ -358,7 +358,7 @@ Examples
+   // boot-args example, with newlines and comments for readability
+   Kernel command line: ...
+     // see whats going on in dyndbg=value processing
+-    dynamic_debug.verbose=1
++    dynamic_debug.verbose=3
+     // enable pr_debugs in 2 builtins, #cmt is stripped
+     dyndbg="module params +p #cmt ; module sys +p"
+     // enable pr_debugs in 2 functions in a module loaded later
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index dfe1e6a857bc..da91ff507117 100644
+index da91ff507117..fd5aca157aec 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -998,7 +998,7 @@ static int ddebug_dyndbg_param_cb(char *param, char *val,
- static int ddebug_dyndbg_boot_param_cb(char *param, char *val,
- 				const char *unused, void *arg)
+@@ -118,6 +118,8 @@ do {								\
+ 
+ #define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
+ #define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
++#define v3pr_info(fmt, ...)	vnpr_info(3, fmt, ##__VA_ARGS__)
++#define v4pr_info(fmt, ...)	vnpr_info(4, fmt, ##__VA_ARGS__)
+ 
+ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
  {
--	vpr_info("%s=\"%s\"\n", param, val);
-+	vpr_info("bootparam %s=\"%s\"\n", param, val);
- 	return ddebug_dyndbg_param_cb(param, val, NULL, 0);
+@@ -130,7 +132,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ 			fmtlen--;
+ 	}
+ 
+-	vpr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
++	v3pr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
+ 		 msg,
+ 		 query->function ?: "",
+ 		 query->filename ?: "",
+@@ -213,7 +215,7 @@ static int ddebug_change(const struct ddebug_query *query,
+ 				static_branch_enable(&dp->key.dd_key_true);
+ #endif
+ 			dp->flags = newflags;
+-			v2pr_info("changed %s:%d [%s]%s =%s\n",
++			v4pr_info("changed %s:%d [%s]%s =%s\n",
+ 				 trim_prefix(dp->filename), dp->lineno,
+ 				 dt->mod_name, dp->function,
+ 				 ddebug_describe_flags(dp->flags, &fbuf));
+@@ -273,7 +275,7 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
+ 		buf = end;
+ 	}
+ 
+-	if (verbose) {
++	if (verbose >= 3) {
+ 		int i;
+ 		pr_info("split into words:");
+ 		for (i = 0; i < nwords; i++)
+@@ -333,7 +335,7 @@ static int parse_linerange(struct ddebug_query *query, const char *first)
+ 	} else {
+ 		query->last_lineno = query->first_lineno;
+ 	}
+-	vpr_info("parsed line %d-%d\n", query->first_lineno,
++	v3pr_info("parsed line %d-%d\n", query->first_lineno,
+ 		 query->last_lineno);
+ 	return 0;
+ }
+@@ -447,7 +449,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 		pr_err("bad flag-op %c, at start of %s\n", *str, str);
+ 		return -EINVAL;
+ 	}
+-	vpr_info("op='%c'\n", op);
++	v3pr_info("op='%c'\n", op);
+ 
+ 	for (; *str ; ++str) {
+ 		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
+@@ -461,7 +463,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 			return -EINVAL;
+ 		}
+ 	}
+-	vpr_info("flags=0x%x\n", modifiers->flags);
++	v3pr_info("flags=0x%x\n", modifiers->flags);
+ 
+ 	/* calculate final flags, mask based upon op */
+ 	switch (op) {
+@@ -477,7 +479,7 @@ static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
+ 		modifiers->flags = 0;
+ 		break;
+ 	}
+-	vpr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
++	v3pr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
+ 
+ 	return 0;
+ }
+@@ -540,7 +542,7 @@ static int ddebug_exec_queries(char *query, const char *modname)
+ 		}
+ 		i++;
+ 	}
+-	vpr_info("processed %d queries, with %d matches, %d errs\n",
++	v2pr_info("processed %d queries, with %d matches, %d errs\n",
+ 		 i, nfound, errs);
+ 
+ 	if (exitcode)
+@@ -781,7 +783,7 @@ static ssize_t ddebug_proc_write(struct file *file, const char __user *ubuf,
+ 	tmpbuf = memdup_user_nul(ubuf, len);
+ 	if (IS_ERR(tmpbuf))
+ 		return PTR_ERR(tmpbuf);
+-	vpr_info("read %d bytes from userspace\n", (int)len);
++	v2pr_info("read %u bytes from userspace <\n%s>\n", (unsigned)len, tmpbuf);
+ 
+ 	ret = ddebug_exec_queries(tmpbuf, NULL);
+ 	kfree(tmpbuf);
+@@ -969,7 +971,7 @@ int ddebug_add_module(struct _ddebug *tab, unsigned int n,
+ 	list_add(&dt->link, &ddebug_tables);
+ 	mutex_unlock(&ddebug_lock);
+ 
+-	v2pr_info("%3u debug prints in module %s\n", n, dt->mod_name);
++	vpr_info("%3u debug prints in module %s\n", n, dt->mod_name);
+ 	return 0;
  }
  
 -- 
