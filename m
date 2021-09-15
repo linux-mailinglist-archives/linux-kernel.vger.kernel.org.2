@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C12B40C68D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEF140C697
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhIONmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:42:09 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:20764 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhIONmH (ORCPT
+        id S235060AbhIONre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233440AbhIONrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:42:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1631713249; x=1663249249;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9SyFPUNj7I5Ph0+cJPH2EJBPGqn85KC6XI4O4pHXcoY=;
-  b=ljZJ+Ia3cLVUEnnLa2/m5HoFAa1YeVHD9Pm+OZw6zUwCYgWsBjHYFJGE
-   c6wu6Gw+wFq+f3c5KCzvgdfi6jImVk3mDqptM+p1kTbn5mwDCeoakataw
-   eYmGPAyif8M0SP79TGsdmBuvvV95BW/kLoMGvHRjwsH0o3DFlQB+EoBj4
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.85,295,1624320000"; 
-   d="scan'208";a="137451068"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-ff3df2fe.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 15 Sep 2021 13:40:38 +0000
-Received: from EX13D07EUA003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-ff3df2fe.us-west-2.amazon.com (Postfix) with ESMTPS id 65A0741661;
-        Wed, 15 Sep 2021 13:40:37 +0000 (UTC)
-Received: from dev-dsk-faresx-1b-818bcd8f.eu-west-1.amazon.com (10.43.161.176)
- by EX13D07EUA003.ant.amazon.com (10.43.165.176) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Wed, 15 Sep 2021 13:40:31 +0000
-From:   Fares Mehanna <faresx@amazon.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-CC:     Fares Mehanna <faresx@amazon.de>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
-Date:   Wed, 15 Sep 2021 13:39:50 +0000
-Message-ID: <20210915133951.22389-1-faresx@amazon.de>
-X-Mailer: git-send-email 2.32.0
+        Wed, 15 Sep 2021 09:47:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B7AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:46:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KGeyo69IOf8jXHMIDvz7bZx3lbLuH6HqZKyrsohBeAI=; b=qd7CqgiDWVYAXJjihKTzs3TJJk
+        KN//U6thCnw4XKFxxhsOS22B3m5RIBThcejY8uK+RRtHTF01qSEy+KDfUZhHyRYhWs6TpVEWAM5aX
+        Ms4nQ/kmNn9A60NCWgPZ4Bos7AdDmLzLT78JhdLG2rDAmI+H5Uo1LP9EBh+aBEjNHlGXRPF6qwhpq
+        KMmhsX1oyB9mqdJNsny0jAcPedSglqIjN6ZHJKbOiOn42NT3aUPKs4UuKNan+HTVorSiYy9POaA39
+        76SGJqD/5dpN4EEsTEZ8KKT/eiSXIhr+SC+keS0BGzWaG3XYv6NlyW4wkgP8EzuvBf6Y3n96zBdue
+        j3bkzw1w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mQVDo-00FiXm-SH; Wed, 15 Sep 2021 13:45:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BC1C430003A;
+        Wed, 15 Sep 2021 15:45:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 972AB234E53A7; Wed, 15 Sep 2021 15:45:06 +0200 (CEST)
+Date:   Wed, 15 Sep 2021 15:45:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wang Qing <wangqing@vivo.com>,
+        Santosh Sivaraj <santosh@fossix.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 2/5] kernel/watchdog_hld: clarify the condition in
+ hardlockup_detector_event_create()
+Message-ID: <YUH44qrky9oM+3nU@hirez.programming.kicks-ass.net>
+References: <20210915035103.15586-1-kernelfans@gmail.com>
+ <20210915035103.15586-3-kernelfans@gmail.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.176]
-X-ClientProxiedBy: EX13D24UWB002.ant.amazon.com (10.43.161.159) To
- EX13D07EUA003.ant.amazon.com (10.43.165.176)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915035103.15586-3-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel PMU MSRs is in msrs_to_save_all[], so add AMD PMU MSRs to have a
-consistent behavior between Intel and AMD when using KVM_GET_MSRS,
-KVM_SET_MSRS or KVM_GET_MSR_INDEX_LIST.
+On Wed, Sep 15, 2021 at 11:51:00AM +0800, Pingfan Liu wrote:
+> hardlockup_detector_event_create() indirectly calls
+> kmem_cache_alloc_node(), which is blockable.
+> 
+> So here, the really planned context is is_percpu_thread().
+> 
+> Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Wang Qing <wangqing@vivo.com>
+> Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> Cc: Santosh Sivaraj <santosh@fossix.org>
+> Cc: Sumit Garg <sumit.garg@linaro.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> To: linux-kernel@vger.kernel.org
+> ---
+>  kernel/watchdog_hld.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
+> index 247bf0b1582c..6876e796dbf5 100644
+> --- a/kernel/watchdog_hld.c
+> +++ b/kernel/watchdog_hld.c
+> @@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
+>  
+>  static int hardlockup_detector_event_create(void)
+>  {
+> -	unsigned int cpu = smp_processor_id();
+> +	unsigned int cpu;
+>  	struct perf_event_attr *wd_attr;
+>  	struct perf_event *evt;
+>  
+> +	/* This function plans to execute in cpu bound kthread */
+> +	BUG_ON(!is_percpu_thread());
+> +	cpu = raw_smp_processor_id();
+>  	wd_attr = &wd_hw_attr;
+>  	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
 
-We have to add legacy and new MSRs to handle guests running without
-X86_FEATURE_PERFCTR_CORE.
-
-Signed-off-by: Fares Mehanna <faresx@amazon.de>
----
- arch/x86/kvm/x86.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 28ef14155726..14bc21fb698c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1332,6 +1332,13 @@ static const u32 msrs_to_save_all[] = {
- 	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
- 	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
- 	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
-+
-+	MSR_K7_EVNTSEL0, MSR_K7_EVNTSEL1, MSR_K7_EVNTSEL2, MSR_K7_EVNTSEL3,
-+	MSR_K7_PERFCTR0, MSR_K7_PERFCTR1, MSR_K7_PERFCTR2, MSR_K7_PERFCTR3,
-+	MSR_F15H_PERF_CTL0, MSR_F15H_PERF_CTL1, MSR_F15H_PERF_CTL2,
-+	MSR_F15H_PERF_CTL3, MSR_F15H_PERF_CTL4, MSR_F15H_PERF_CTL5,
-+	MSR_F15H_PERF_CTR0, MSR_F15H_PERF_CTR1, MSR_F15H_PERF_CTR2,
-+	MSR_F15H_PERF_CTR3, MSR_F15H_PERF_CTR4, MSR_F15H_PERF_CTR5,
- };
- 
- static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
--- 
-2.32.0
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+This patch makes no sense.
