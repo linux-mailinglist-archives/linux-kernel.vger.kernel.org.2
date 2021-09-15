@@ -2,173 +2,851 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBEA40C13D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D967840C143
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 10:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236689AbhIOIJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 04:09:39 -0400
-Received: from mail-co1nam11on2076.outbound.protection.outlook.com ([40.107.220.76]:48024
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236528AbhIOIJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 04:09:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZSTMJ/rBTFpkgHJzv2uWhUuIfwUa9xFelYUO2xxAn294H2DYfXojxpjOv6Tud+Rr8Id6pZs0MBKpvWtRLej9xbYaEzWDHKQqE4ck3gt1eRNE7hyBu2sz1ShIfpd6lgM0ltXxcEfUCHQWc3VVHK4GblmD+GbidrOTy9/ssqiePPH42fZ1dCl2VePmqOo/sIsLuW28/ar9FoTtKRB/FoCZAFVOCqvnipdMzp91oYS2+PizSNuA8bh43I7oNwTrzTFqNng3a+Hf9mMdHgtWVQJYstt3hJDIRQy0NRLOyi7X8uUXjLMuYDEqnyCSdW8GvTuWzxWlmSbe3iPRpbee9CouZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=GIuOsMgNJndbsjMvtNL9elSiEfP+/qlOljoXI3KvAqk=;
- b=NpOpHYOpm9Am7NptXxAswYG7yVh7qcbC81UAgnGImDo4X1nsjrkTxi2vI1RVFp9s48PShYXMw1OfhXOfE6PTBt6j26j2mpeG9v4p6pEpQm7Y9N8Wt8Y31QcuYlipFEl8btmKqJPDVeID2B7w2PY9Y71ZoCNzSL+fuFHF8lUGu3DBFl27qo77zFk/C1da9NILv0l41wB7uBhtIstnpXds4cqoSvCXXLPZU3llE+Tsh2tPs/VFvUiRRd1PFGDeB0zBDFGVAMCDM377/ZIkCe0nw3XopMkg+lbb0jcFMjfGwU2kDEpt0p6ogd5b90xaHDIPg8Ettek5pdPz6G3hy5QSBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GIuOsMgNJndbsjMvtNL9elSiEfP+/qlOljoXI3KvAqk=;
- b=SCT7zm4i2UR66StNDKyZVuYbpqBNdHstD0W5co1aCPDRYU2UfSUt6JdPBGu7Qru57L3juidN6wmS3UZfzRGqkUlSPFdBhhsmUMNZm8vPLVsgfcMVxIvCAqO3+9eDq7lR2OF8bnKwDztzF+3MCRctFB/jTIQS78vnAJRZM1SIDrlYbd3PHE0lkRTtYOZ7gS6qVYSsniKpc087fTjlPiCMHpluXsB1d55lWtXYhmyM5aQet7S0jl7sWkUU2TtZQX94Y+Ib9RrVWieKLwx3ryEQPF/MR5N2qk8ybsQQ+tLIsTrYSMlHqi0ojlcIan9cd4Vft81CrxmdWrV2MqQdPC+djw==
-Received: from BN9PR12MB5273.namprd12.prod.outlook.com (2603:10b6:408:11e::22)
- by BN9PR12MB5097.namprd12.prod.outlook.com (2603:10b6:408:136::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 15 Sep
- 2021 08:08:17 +0000
-Received: from BN9PR12MB5273.namprd12.prod.outlook.com
- ([fe80::b54f:5a6c:caf8:7445]) by BN9PR12MB5273.namprd12.prod.outlook.com
- ([fe80::b54f:5a6c:caf8:7445%3]) with mapi id 15.20.4523.014; Wed, 15 Sep 2021
- 08:08:17 +0000
-From:   Akhil R <akhilrajeev@nvidia.com>
-To:     Jonathan Hunter <jonathanh@nvidia.com>
-CC:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Rajesh Gumasta <rgumasta@nvidia.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>
-Subject: RE: [PATCH v4 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
-Thread-Topic: [PATCH v4 1/4] dt-bindings: dmaengine: Add doc for tegra gpcdma
-Thread-Index: AQHXpL56LSpoe1uUWU607pXvC88bZauaWB+AgApuU7A=
-Date:   Wed, 15 Sep 2021 08:08:17 +0000
-Message-ID: <BN9PR12MB5273B8EC67EEC1D97DE9A7ECC0DB9@BN9PR12MB5273.namprd12.prod.outlook.com>
-References: <1630044294-21169-1-git-send-email-akhilrajeev@nvidia.com>
- <1631111538-31467-1-git-send-email-akhilrajeev@nvidia.com>
- <1631111538-31467-2-git-send-email-akhilrajeev@nvidia.com>
- <f65b59f3-00b4-11bf-5509-c47c4ed862f3@nvidia.com>
-In-Reply-To: <f65b59f3-00b4-11bf-5509-c47c4ed862f3@nvidia.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: de7d1be1-c991-4618-d58b-08d9781ff96d
-x-ms-traffictypediagnostic: BN9PR12MB5097:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN9PR12MB5097AA1DF20B459BE9CA5426C0DB9@BN9PR12MB5097.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5mdosUCZvNg7IOTHWaAIjNfQ3x6pG3or9p7pzYEERAw6n7XMN8UjS1DQyx3KWrj4JrGAWeImd8ONdeWptlOeLkEbyp+uat2n6ZK9iQOQjuR6ve08Dl5yMm+B87Y9nI0s9iaMa2SNqIYTTwEsAd60wisXwDoiblWyKw/rSCH3Je5jMPcYOJ/cTQWmtfFSG0mn4+wwRwhultyRgdN/pWwJ2VxjjSv1ea+cmnyaJh9ypavtPBNKCE1vnjkX63LH7usCFJg5o1P+zIaxEcHqLCrsf5w1Wa1FwVE6xnFz2qpqS4jB/oDmUag/YO9EzE2BNfWGP2FDU1DHKEUJuWdP3wgUXKnbZOqPhA95VqC3IDSvugF6mzAj6OXdE3a4MNyTKMJN6N871s1Pmehvm5HbG9RWi4lUTqHLwDtVVkqQ4xr8xDDsUSWAaF1MOUyOKRUyhXL41OGNbxvgFa4sg7m/kNgx8fjamBE+LAH8cdMapA2zHmUL7HIIKkt7fc3In1q5mqoJ578wHgtI7We8MomimtZyvSAdgUJmAxS2r6KVUfWtWwoOWQBKPYFHZ/rjm9ct1QbHgYZ6VRRR3zeRXRbTBKCG25RqoL/RUOcoXlaZWlIYUV44kSmPflWWbaLo6A0MXn7ssTpTKrLoXKlDyKrMCRwQpHOkleNZ1Cbso0ey6Zjp/5tf3UqfSmoQUHnHIzQ7ZzH/fdhWxF/7RD8aYhVcUaitEM8sFMQHbA6C8P2NfR6X7gfpoe//YmAIjxpvbweZZJ+sS32A8kho1697Rf51Ejde6FteREK9jmTkBCJQ5ovKxa4llDVpiFmxZQr3EMrgF+LSIvApgzbJwaoqMjGiT0MH1w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5273.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(64756008)(76116006)(66556008)(66446008)(66946007)(66476007)(86362001)(122000001)(83380400001)(38100700002)(38070700005)(33656002)(8936002)(71200400001)(55236004)(7696005)(6506007)(53546011)(6636002)(2906002)(8676002)(4326008)(966005)(54906003)(5660300002)(26005)(186003)(55016002)(6862004)(316002)(52536014)(9686003)(508600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eXc4UWhONGJNdGJKOXBHZEgvaXRpWTMrdXpWT1hucWFualVKeDg2WG5ZTVNC?=
- =?utf-8?B?WkR1aWFXWmpqMWRUWEFVL3oyNEx1VEJtRHovU0l4ZFVKc2oveEFrV2o1OHZn?=
- =?utf-8?B?dENnMGlWZ1FYbXZiT0dIVUt4VSt4QU5udGo4ZGJqWTducmI5MFo1ZnhzK3NO?=
- =?utf-8?B?NHZDMlhJRU94cVB5NnZHSlB6Tm03NXg0bHpQSCt5Nk1YWFRQNXo3dEdoUWxW?=
- =?utf-8?B?QjB3VEQwU2FGclBtUU4zWUd5MzE4a3ZtRVVhY1pueHVzbSt5Z2FVaU41SkNw?=
- =?utf-8?B?T2dvQjA1SlV2SkJad0o1VlQwNE9IUE1UcWNNOHdqVGhDYkp0ZXh2eTZDOUNn?=
- =?utf-8?B?N0cxQUp3UEx3akJIMFV6RzlVMEI1bThlUUorcWdxa2JxWFZDVkJjV2xWb1ZH?=
- =?utf-8?B?SFpXdUY1V2E3MElpNkgwWGk4RkRCME1OZzNhOStRTVhtVHFPeGM2MURLc0c4?=
- =?utf-8?B?RDAybnlpdjNLb0h3bVhBWi9OSUY3MFZTT1JyY0NHSnI5akR6WXBoa3Q1ckE0?=
- =?utf-8?B?TUJ2dFREM21FU082eGphTi8vUFhSY3ZEWHBGYzlGRjB3UmFKUDVQTEJUa0xG?=
- =?utf-8?B?ZjMxVDdRREV1bzJ5RlJBYkZDWTBTcjJacTBCbWR2QmhJKzNmaDd6YVVhV0hk?=
- =?utf-8?B?NmxlVDNFcFA3UzM5QmU4d0ZncndYQ0xBYWhHQXhwbUMvbEZ3L0FWNUI2QjZU?=
- =?utf-8?B?SmZycUV5T2ZLNUxwR0ZhVGtvRmoyRGpjd3hqMi9IcjRiWm52b1VPUngrSWdE?=
- =?utf-8?B?VVFzV1k4SWkrOTlwRGR3eWdsOHVuZjRlQ1JPbmpPUGZPeE9UMUhmbC9XY0lL?=
- =?utf-8?B?K2w4NnI5UTBuamdabExvdDBWSWlXN1ZTYk0vdm5NaytaSXNMaXdMOTVWNW0v?=
- =?utf-8?B?TFd4S09HYUJ1WWF4aFViZ2Q3NGJUcE0wQnVzdjlmNXVuOEU1YjJKalZwY1hP?=
- =?utf-8?B?SHdiamNXRXp5c0tmS3NKbUN4Q3VrL1BEVGpuQnEwL1ZINFRUZWw0NDRZZTJm?=
- =?utf-8?B?bkZ6UmM1YTlSNi9FWWJaTFhtOFBZL2JPNTBGdGxBZWdaeVU3RCtXSFptaDE1?=
- =?utf-8?B?RVBDTnAxb0FDck94N1ovNEtFVm8ydjM2TkJMZTE1YmNlSW1hd3FXZXhteTZj?=
- =?utf-8?B?VjBLMU1FOUJySUdPTHVEemhkeGJjOVFXbXZQbDBhY04wbk50OTFzL1Q4Wkhi?=
- =?utf-8?B?MkZtemVHaE1YbGdYa0REVEpQM0dnaU54eFVDamtBeFEreS93d0diY1M1U1pS?=
- =?utf-8?B?OGZWdWNDZXBhTHJIL3dVTUNaaDJNOGZRMWgvVU1QUmRTb2dibU1YYms5Rkk0?=
- =?utf-8?B?WEo5WWdoQU5jVVppRVFMcTlRcE45ek9yczNYWVZCWWE4MGJNRHdGWGdPaGJT?=
- =?utf-8?B?Z3lMc3gxTE94dTdPUm9WYUFZMmJUNWhqdFBabUl1TElCWnU2UmRDS2pPNk1R?=
- =?utf-8?B?V3hnRWhNVG11UjVmd1p4Q1Jpdy8zUEtKM3JoeWtjWUkwZFdYdklYRUo1djg4?=
- =?utf-8?B?bVBNNEtuajkvUVFrMXZUVEhheWZVRXFpZmsxcmhJTEV6MU5KM0h4MFV1VlI3?=
- =?utf-8?B?R3poRk02V28yV2dKTGRjbWpSaVozQTNyYkF5RHlvYi9NVHZWdUd6K3JtYzV5?=
- =?utf-8?B?UENPKzFVS3VDQXl4a1ZPa1RPSFk2RGZheThITHZUNm1Kbm43Zlp6ZExmcEZH?=
- =?utf-8?B?VWtDVkxyK0Flc0ZUQk9pSjRIS2UvczduYUU4SWRDSTFNbEcwaGZKTm1KSHMx?=
- =?utf-8?Q?VZz1r74y31R9ZpjNptfd+dCKhLEhRnAbMfSJyUh?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S236813AbhIOIKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 04:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236745AbhIOIKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 04:10:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1299611AF;
+        Wed, 15 Sep 2021 08:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631693362;
+        bh=/GiFfjdPcIEgbxczS+7p0E/DO+mpORpIOQ9BM5S73/w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Qnl8P6W4RZM3zFSOqrJ1MBu+zIBaw6c99EhrX8IeOtSeJjeC7mqQWyZzDP7RL8tQu
+         FaVA0dkHnnY6gL56YEqriB0GbcmLDwqUTdKLuDFMhX8iv0Ioe09wTRGq2NjSKFxA1u
+         ebdyuxKmffo6uuA6maO3d39Uiw/42Lhe+LweVAmA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.10.65
+Date:   Wed, 15 Sep 2021 10:09:19 +0200
+Message-Id: <163169335983207@kroah.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5273.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de7d1be1-c991-4618-d58b-08d9781ff96d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Sep 2021 08:08:17.1400
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2jiOAvk15R759i39ga7S7eaZC0wTKR+QvKi+KrsfLhWSNhX8KYIvYqUg3X2KpckJJfiwAw7zVjqOSHmlOT2zjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5097
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAwOC8wOS8yMDIxIDE1OjMyLCBBa2hpbCBSIHdyb3RlOg0KPiA+IEFkZCBEVCBiaW5kaW5n
-IGRvY3VtZW50IGZvciBOdmlkaWEgVGVncmEgR1BDRE1BIGNvbnRyb2xsZXIuDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBSYWplc2ggR3VtYXN0YSA8cmd1bWFzdGFAbnZpZGlhLmNvbT4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBBa2hpbCBSIDxha2hpbHJhamVldkBudmlkaWEuY29tPg0KPiA+IC0tLQ0K
-PiA+ICAgLi4uL2JpbmRpbmdzL2RtYS9udmlkaWEsdGVncmExODYtZ3BjLWRtYS55YW1sICAgICAg
-fCAxMDYNCj4gKysrKysrKysrKysrKysrKysrKysrDQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgMTA2
-IGluc2VydGlvbnMoKykNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiA+IERvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9kbWEvbnZpZGlhLHRlZ3JhMTg2LWdwYy1kbWEueWFtbA0K
-PiA+DQo+ID4gZGlmZiAtLWdpdA0KPiA+IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL2RtYS9udmlkaWEsdGVncmExODYtZ3BjLWRtYS55YW1sDQo+ID4gYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvZG1hL252aWRpYSx0ZWdyYTE4Ni1ncGMtZG1hLnlhbWwNCj4g
-PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAuLjAwYzU1ODINCj4gPiAt
-LS0gL2Rldi9udWxsDQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L2RtYS9udmlkaWEsdGVncmExODYtZ3BjLWRtYS55YQ0KPiA+ICsrKyBtbA0KPiA+IEBAIC0wLDAg
-KzEsMTA2IEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkg
-T1IgQlNELTItQ2xhdXNlKSAlWUFNTCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDogaHR0cDovL2Rl
-dmljZXRyZWUub3JnL3NjaGVtYXMvZG1hL252aWRpYSx0ZWdyYS1ncGMtZG1hLnlhbWwjDQo+IA0K
-PiB0ZWdyYTE4Ni1ncGMtZG1hLnlhbWwNCj4gDQo+ID4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0
-cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiA+ICsNCj4gPiArdGl0bGU6IE52aWRp
-YSBUZWdyYSBHUEMgRE1BIENvbnRyb2xsZXIgRGV2aWNlIFRyZWUgQmluZGluZ3MNCj4gPiArDQo+
-ID4gK2Rlc2NyaXB0aW9uOiB8DQo+ID4gKyAgVGVncmEgR1BDIERNQSBpcyB0aGUgR2VuZXJuYWwg
-UHVycG9zZSBDZW50cmFsIChHUEMpIERNQSBjb250cm9sbGVyDQo+ID4gK3VzZWQgZm9yIGZhc3Rl
-ciBkYXRhDQo+IA0KPiBzL0dlbmVybmFsL0dlbmVyYWwNCj4gDQo+IEkgd291bGQganVzdCBzYXkN
-Cj4gDQo+ICJUaGUgVGVncmEgR2VuZXJhbCBQdXJwb3NlIENlbnRyYWwgKEdQQykgRE1BIGNvbnRy
-b2xsZXIgaXMgdXNlZCBmb3IgLi4uIg0KPiANCj4gT3ZlciA4MCBjaGFyYWN0ZXJzLiBJIGFzc3Vt
-ZSB0aGF0IHlhbWwgZmlsZXMgaGF2ZSB0aGF0IGxpbWl0YXRpb24uDQo+IA0KPiA+ICsgIHRyYW5z
-ZmVycyBiZXR3ZWVuIG1lbW9yeSB0byBtZW1vcnksIG1lbW9yeSB0byBkZXZpY2UgYW5kIGRldmlj
-ZSB0bw0KPiBtZW1vcnkuDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAtIEpvbiBI
-dW50ZXIgPGpvbmF0aGFuaEBudmlkaWEuY29tPg0KPiA+ICsgIC0gUmFqZXNoIEd1bWFzdGEgPHJn
-dW1hc3RhQG52aWRpYS5jb20+DQo+ID4gKw0KPiA+ICthbGxPZjoNCj4gPiArICAtICRyZWY6ICJk
-bWEtY29udHJvbGxlci55YW1sIyINCj4gPiArDQo+ID4gK3Byb3BlcnRpZXM6DQo+ID4gKyAgIiNk
-bWEtY2VsbHMiOg0KPiA+ICsgICAgY29uc3Q6IDENCj4gPiArDQo+ID4gKyAgY29tcGF0aWJsZToN
-Cj4gPiArICAgIC0gZW51bToNCj4gPiArICAgICAgLSBudmlkaWEsdGVncmExODYtZ3BjZG1hDQo+
-ID4gKyAgICAgIC0gbnZpZGlhLHRlZ3JhMTk0LWdwY2RtYQ0KPiA+ICsNCj4gPiArICByZWc6DQo+
-ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiArICBpbnRlcnJ1cHRzOg0KPiA+ICsJbWlu
-SXRlbXM6IDENCj4gPiArICAgIG1heEl0ZW1zOiAzMg0KPiANCj4gWW91IGFwcGVhciB0byBoYXZl
-IGFsaWdubWVudCBpc3N1ZXMgYWdhaW4uDQo+IA0KPiA+ICsNCj4gPiArICByZXNldHM6DQo+ID4g
-KyAgICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiArICByZXNldC1uYW1lczoNCj4gPiArICAgIGNv
-bnN0OiBncGNkbWENCj4gPiArDQo+ID4gKyAgaW9tbXVzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDEN
-Cj4gPiArDQo+ID4gKyAgbnZpZGlhLHN0cmVhbS1pZDoNCj4gPiArCWRlc2NyaXB0aW9uOiB8DQo+
-ID4gKwkgc3RyZWFtLWlkIGNvcnJlc3BvbmRpbmcgdG8gR1BDIERNQSBjbGllbnRzLg0KPiA+ICsJ
-IERlZmF1bHRzIHRvIFRFR1JBMTg2X1NJRF9HUENETUFfMCBpZiBub3QgZ2l2ZW4NCj4gDQo+IA0K
-PiBXaHkgZG8gd2UgbmVlZCB0aGlzPyBEb24ndCB3ZSBhbHJlYWR5IGhhdmUgdGhlIFNJRCBpbiB0
-aGUgaW9tbXUgcHJvcGVydHk/DQo+IA0KPiBKb24NCg0KVGhlIHZhbHVlIGlzIHJlcXVpcmVkIHRv
-IGJlIHdyaXR0ZW4gdG8gdGhlIHJlZ2lzdGVyIFRFR1JBX0dQQ0RNQV9DSEFOX01DU0VRIG9mIHRo
-ZSBETUEgY29udHJvbGxlciAoaW4gZnVuY3Rpb24gdGVncmFfZG1hX3Byb2dyYW1fc2lkKSBmb3Ig
-dGhlIERNQSB0byB3b3JrIGFzIGV4cGVjdGVkLiBJIGNvdWxkIG5vdCBpZGVudGlmeSBhbiBhcGkg
-d2hpY2ggY2FuIHRha2UgdGhlIHZhbHVlIGZyb20gJ2lvbW11cycgcHJvcGVydHkuDQoNClJlZ2Fy
-ZHMsDQpBa2hpbA0KDQo+IA0KPiAtLQ0KPiBudnB1YmxpYw0K
+I'm announcing the release of the 5.10.65 kernel.
+
+All users of the 5.10 kernel series must upgrade.
+
+The updated 5.10.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Documentation/fault-injection/provoke-crashes.rst          |    2 
+ Makefile                                                   |    2 
+ arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi                   |    4 
+ arch/arm/boot/dts/at91-sam9x60ek.dts                       |   16 +
+ arch/arm/boot/dts/at91-sama5d3_xplained.dts                |   29 ++
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts                |   19 +
+ arch/arm/boot/dts/meson8.dtsi                              |    5 
+ arch/arm/boot/dts/meson8b-ec100.dts                        |    4 
+ arch/arm/boot/dts/meson8b-mxq.dts                          |    4 
+ arch/arm/boot/dts/meson8b-odroidc1.dts                     |    4 
+ arch/arm64/boot/dts/exynos/exynos7.dtsi                    |    2 
+ arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts     |   17 +
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi               |   11 
+ arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi        |    3 
+ arch/arm64/boot/dts/renesas/hihope-rzg2-ex.dtsi            |    3 
+ arch/arm64/boot/dts/renesas/r8a774a1.dtsi                  |    2 
+ arch/arm64/boot/dts/renesas/r8a774b1.dtsi                  |    2 
+ arch/arm64/boot/dts/renesas/r8a774c0.dtsi                  |    1 
+ arch/arm64/boot/dts/renesas/r8a774e1.dtsi                  |    2 
+ arch/arm64/boot/dts/renesas/r8a77995-draak.dts             |    4 
+ arch/m68k/Kconfig.cpu                                      |    8 
+ arch/m68k/emu/nfeth.c                                      |    4 
+ arch/s390/include/asm/kvm_host.h                           |    1 
+ arch/s390/kernel/debug.c                                   |  176 ++++++++-----
+ arch/s390/kvm/interrupt.c                                  |   12 
+ arch/s390/kvm/kvm-s390.c                                   |    2 
+ arch/s390/kvm/kvm-s390.h                                   |    2 
+ arch/s390/mm/kasan_init.c                                  |   41 +--
+ arch/s390/pci/pci.c                                        |    7 
+ arch/s390/pci/pci_clp.c                                    |   33 +-
+ arch/x86/events/amd/ibs.c                                  |    1 
+ arch/x86/include/asm/mce.h                                 |    1 
+ arch/x86/kernel/cpu/mce/core.c                             |   11 
+ arch/x86/kernel/cpu/resctrl/monitor.c                      |    6 
+ arch/x86/kvm/mmu/mmu.c                                     |    6 
+ arch/x86/kvm/vmx/nested.c                                  |    7 
+ arch/x86/kvm/vmx/vmx.c                                     |    3 
+ arch/x86/kvm/x86.c                                         |    4 
+ block/bfq-iosched.c                                        |    3 
+ block/bio.c                                                |   15 -
+ block/blk-crypto.c                                         |    2 
+ block/blk-merge.c                                          |   18 -
+ block/blk-throttle.c                                       |   32 ++
+ block/blk.h                                                |    2 
+ block/elevator.c                                           |    3 
+ block/mq-deadline.c                                        |    2 
+ certs/Makefile                                             |    8 
+ drivers/ata/libata-core.c                                  |    2 
+ drivers/base/dd.c                                          |   16 -
+ drivers/base/firmware_loader/main.c                        |   20 -
+ drivers/base/regmap/regmap.c                               |    2 
+ drivers/bcma/main.c                                        |    6 
+ drivers/block/nbd.c                                        |   10 
+ drivers/char/tpm/tpm_ibmvtpm.c                             |   26 +
+ drivers/char/tpm/tpm_ibmvtpm.h                             |    2 
+ drivers/clk/mvebu/kirkwood.c                               |    1 
+ drivers/clocksource/sh_cmt.c                               |   30 +-
+ drivers/counter/104-quad-8.c                               |    5 
+ drivers/crypto/mxs-dcp.c                                   |   45 ++-
+ drivers/crypto/omap-aes.c                                  |    8 
+ drivers/crypto/omap-des.c                                  |    8 
+ drivers/crypto/omap-sham.c                                 |   14 -
+ drivers/crypto/qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c       |    4 
+ drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c         |    4 
+ drivers/crypto/qat/qat_common/adf_common_drv.h             |    8 
+ drivers/crypto/qat/qat_common/adf_init.c                   |    5 
+ drivers/crypto/qat/qat_common/adf_isr.c                    |    7 
+ drivers/crypto/qat/qat_common/adf_pf2vf_msg.c              |    3 
+ drivers/crypto/qat/qat_common/adf_vf2pf_msg.c              |   12 
+ drivers/crypto/qat/qat_common/adf_vf_isr.c                 |    7 
+ drivers/crypto/qat/qat_dh895xccvf/adf_dh895xccvf_hw_data.c |    4 
+ drivers/edac/i10nm_base.c                                  |    6 
+ drivers/edac/mce_amd.c                                     |    3 
+ drivers/firmware/raspberrypi.c                             |   46 +++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c                    |   54 +--
+ drivers/gpu/drm/drm_of.c                                   |    6 
+ drivers/gpu/drm/gma500/oaktrail_lvds.c                     |    2 
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c                 |   10 
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c                   |   68 ++---
+ drivers/gpu/drm/msm/dsi/dsi.c                              |    6 
+ drivers/gpu/drm/mxsfb/mxsfb_drv.c                          |    3 
+ drivers/gpu/drm/mxsfb/mxsfb_drv.h                          |    1 
+ drivers/gpu/drm/mxsfb/mxsfb_kms.c                          |   40 ++
+ drivers/gpu/drm/mxsfb/mxsfb_regs.h                         |    9 
+ drivers/gpu/drm/panfrost/panfrost_device.c                 |    3 
+ drivers/i2c/busses/i2c-highlander.c                        |    2 
+ drivers/i2c/busses/i2c-hix5hd2.c                           |    4 
+ drivers/i2c/busses/i2c-iop3xx.c                            |    6 
+ drivers/i2c/busses/i2c-mt65xx.c                            |    2 
+ drivers/i2c/busses/i2c-s3c2410.c                           |    2 
+ drivers/i2c/busses/i2c-synquacer.c                         |    2 
+ drivers/i2c/busses/i2c-xlp9xx.c                            |    2 
+ drivers/irqchip/irq-gic-v3.c                               |   23 +
+ drivers/irqchip/irq-loongson-pch-pic.c                     |   19 +
+ drivers/leds/leds-is31fl32xx.c                             |    1 
+ drivers/leds/leds-lt3593.c                                 |    5 
+ drivers/leds/trigger/ledtrig-audio.c                       |   37 ++
+ drivers/md/bcache/super.c                                  |   16 -
+ drivers/media/i2c/tda1997x.c                               |    1 
+ drivers/media/platform/coda/coda-bit.c                     |   18 -
+ drivers/media/platform/qcom/venus/venc.c                   |    2 
+ drivers/media/platform/rockchip/rga/rga-buf.c              |    3 
+ drivers/media/platform/rockchip/rga/rga.c                  |   29 +-
+ drivers/media/spi/cxd2880-spi.c                            |    7 
+ drivers/media/usb/dvb-usb/dvb-usb-i2c.c                    |    9 
+ drivers/media/usb/dvb-usb/dvb-usb-init.c                   |    2 
+ drivers/media/usb/dvb-usb/nova-t-usb2.c                    |    6 
+ drivers/media/usb/dvb-usb/vp702x.c                         |   12 
+ drivers/media/usb/em28xx/em28xx-input.c                    |    1 
+ drivers/media/usb/go7007/go7007-driver.c                   |   26 -
+ drivers/media/usb/go7007/go7007-usb.c                      |    2 
+ drivers/misc/lkdtm/core.c                                  |    2 
+ drivers/mmc/host/dw_mmc.c                                  |    1 
+ drivers/mmc/host/moxart-mmc.c                              |    1 
+ drivers/mmc/host/sdhci.c                                   |    1 
+ drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c       |    3 
+ drivers/net/ethernet/google/gve/gve_adminq.c               |    6 
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c         |   23 +
+ drivers/net/ethernet/intel/ice/ice_main.c                  |   13 
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c        |   16 -
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c          |   52 +++
+ drivers/net/ethernet/mellanox/mlx5/core/en/fs.h            |    6 
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c            |   10 
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c          |   15 +
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c |    5 
+ drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c      |   18 -
+ drivers/net/ethernet/pensando/ionic/ionic_devlink.c        |   14 -
+ drivers/net/ethernet/qualcomm/qca_spi.c                    |    2 
+ drivers/net/ethernet/qualcomm/qca_uart.c                   |    2 
+ drivers/net/wireless/ath/ath6kl/wmi.c                      |    4 
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c    |    2 
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.c               |   32 +-
+ drivers/net/wireless/intel/iwlwifi/fw/acpi.h               |   10 
+ drivers/net/wireless/intel/iwlwifi/fw/api/commands.h       |    2 
+ drivers/net/wireless/intel/iwlwifi/fw/api/nvm-reg.h        |    8 
+ drivers/net/wireless/intel/iwlwifi/fw/api/scan.h           |   12 
+ drivers/net/wireless/intel/iwlwifi/fw/file.h               |    2 
+ drivers/net/wireless/intel/iwlwifi/iwl-config.h            |    2 
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c                |    6 
+ drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c          |   10 
+ drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c          |   13 
+ drivers/net/wireless/intel/iwlwifi/mvm/scan.c              |   24 -
+ drivers/net/wireless/intel/iwlwifi/pcie/drv.c              |    1 
+ drivers/net/wireless/rsi/rsi_91x_hal.c                     |    4 
+ drivers/net/wireless/rsi/rsi_91x_usb.c                     |    1 
+ drivers/nvme/host/rdma.c                                   |    4 
+ drivers/nvme/host/tcp.c                                    |    4 
+ drivers/nvme/target/fabrics-cmd.c                          |    9 
+ drivers/pci/pci.c                                          |   25 +
+ drivers/power/supply/axp288_fuel_gauge.c                   |    4 
+ drivers/power/supply/cw2015_battery.c                      |    4 
+ drivers/power/supply/max17042_battery.c                    |    2 
+ drivers/power/supply/smb347-charger.c                      |   10 
+ drivers/regulator/tps65910-regulator.c                     |   10 
+ drivers/regulator/vctrl-regulator.c                        |   73 +++--
+ drivers/s390/cio/css.c                                     |   17 +
+ drivers/s390/crypto/ap_bus.c                               |   25 -
+ drivers/s390/crypto/ap_bus.h                               |   10 
+ drivers/s390/crypto/ap_queue.c                             |   20 -
+ drivers/s390/crypto/zcrypt_ccamisc.c                       |    8 
+ drivers/soc/qcom/rpmhpd.c                                  |    5 
+ drivers/soc/qcom/smsm.c                                    |   11 
+ drivers/soc/rockchip/Kconfig                               |    4 
+ drivers/spi/spi-coldfire-qspi.c                            |    2 
+ drivers/spi/spi-davinci.c                                  |    8 
+ drivers/spi/spi-fsl-dspi.c                                 |    1 
+ drivers/spi/spi-pic32.c                                    |    1 
+ drivers/spi/spi-sprd-adi.c                                 |    2 
+ drivers/spi/spi-zynq-qspi.c                                |    8 
+ drivers/staging/clocking-wizard/Kconfig                    |    2 
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c        |   11 
+ drivers/tty/serial/fsl_lpuart.c                            |    2 
+ drivers/tty/tty_io.c                                       |    4 
+ drivers/usb/dwc3/dwc3-meson-g12a.c                         |    2 
+ drivers/usb/dwc3/dwc3-qcom.c                               |    4 
+ drivers/usb/gadget/udc/at91_udc.c                          |    4 
+ drivers/usb/gadget/udc/bdc/bdc_core.c                      |   30 +-
+ drivers/usb/gadget/udc/mv_u3d_core.c                       |   19 -
+ drivers/usb/gadget/udc/renesas_usb3.c                      |   17 -
+ drivers/usb/gadget/udc/s3c2410_udc.c                       |    4 
+ drivers/usb/host/ehci-orion.c                              |    8 
+ drivers/usb/host/ohci-tmio.c                               |    3 
+ drivers/usb/phy/phy-fsl-usb.c                              |    2 
+ drivers/usb/phy/phy-tahvo.c                                |    4 
+ drivers/usb/phy/phy-twl6030-usb.c                          |    5 
+ drivers/video/backlight/pwm_bl.c                           |   54 ++-
+ drivers/video/fbdev/core/fbmem.c                           |    6 
+ fs/cifs/cifs_unicode.c                                     |    9 
+ fs/debugfs/file.c                                          |    8 
+ fs/f2fs/file.c                                             |    5 
+ fs/f2fs/super.c                                            |   11 
+ fs/fcntl.c                                                 |    5 
+ fs/fuse/file.c                                             |    9 
+ fs/gfs2/ops_fstype.c                                       |   43 +++
+ fs/gfs2/super.c                                            |   61 ----
+ fs/io_uring.c                                              |    1 
+ fs/iomap/swapfile.c                                        |    6 
+ fs/isofs/inode.c                                           |   27 -
+ fs/isofs/isofs.h                                           |    1 
+ fs/isofs/joliet.c                                          |    4 
+ fs/lockd/svclock.c                                         |    2 
+ fs/nfsd/nfs4state.c                                        |    4 
+ fs/udf/misc.c                                              |   13 
+ fs/udf/super.c                                             |   75 ++---
+ fs/udf/udf_sb.h                                            |    2 
+ fs/udf/unicode.c                                           |    4 
+ include/linux/blkdev.h                                     |   16 +
+ include/linux/energy_model.h                               |   16 +
+ include/linux/hrtimer.h                                    |    5 
+ include/linux/local_lock_internal.h                        |   39 +-
+ include/linux/lockdep.h                                    |   15 -
+ include/linux/lockdep_types.h                              |   18 +
+ include/linux/mlx5/mlx5_ifc.h                              |    3 
+ include/linux/power/max17042_battery.h                     |    2 
+ include/linux/time64.h                                     |    9 
+ include/soc/bcm2835/raspberrypi-firmware.h                 |    2 
+ include/uapi/linux/bpf.h                                   |    2 
+ kernel/bpf/verifier.c                                      |   31 +-
+ kernel/cgroup/cpuset.c                                     |   95 ++++---
+ kernel/cpu_pm.c                                            |   50 ++-
+ kernel/irq/timings.c                                       |    2 
+ kernel/locking/lockdep.c                                   |   16 -
+ kernel/locking/mutex.c                                     |   15 -
+ kernel/power/energy_model.c                                |    4 
+ kernel/rcu/tree.c                                          |    4 
+ kernel/rcu/tree_plugin.h                                   |    1 
+ kernel/rcu/tree_stall.h                                    |   34 ++
+ kernel/sched/core.c                                        |   25 +
+ kernel/sched/deadline.c                                    |    8 
+ kernel/sched/fair.c                                        |    2 
+ kernel/sched/sched.h                                       |    2 
+ kernel/time/hrtimer.c                                      |   92 +++++-
+ kernel/time/posix-cpu-timers.c                             |    2 
+ kernel/time/tick-internal.h                                |    3 
+ lib/mpi/mpiutil.c                                          |    2 
+ net/6lowpan/debugfs.c                                      |    3 
+ net/bluetooth/cmtp/cmtp.h                                  |    2 
+ net/bluetooth/hci_core.c                                   |   14 +
+ net/bluetooth/mgmt.c                                       |    2 
+ net/bluetooth/sco.c                                        |   11 
+ net/core/devlink.c                                         |   36 +-
+ net/ipv4/route.c                                           |   48 ++-
+ net/ipv4/tcp_ipv4.c                                        |    5 
+ net/ipv6/route.c                                           |    5 
+ net/mac80211/tx.c                                          |    4 
+ net/netlabel/netlabel_cipso_v4.c                           |    8 
+ net/sched/sch_cbq.c                                        |    2 
+ samples/bpf/xdp_redirect_cpu_user.c                        |    2 
+ samples/pktgen/pktgen_sample04_many_flows.sh               |   12 
+ samples/pktgen/pktgen_sample05_flow_per_thread.sh          |   12 
+ security/integrity/ima/Kconfig                             |    1 
+ security/integrity/ima/ima_mok.c                           |    2 
+ sound/soc/codecs/rt5682-i2c.c                              |   20 +
+ sound/soc/codecs/wcd9335.c                                 |   23 +
+ sound/soc/intel/boards/kbl_da7219_max98927.c               |   55 ----
+ sound/soc/intel/common/soc-acpi-intel-cml-match.c          |    2 
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c          |    2 
+ sound/soc/intel/skylake/skl-topology.c                     |   25 -
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c                 |   43 +--
+ tools/include/uapi/linux/bpf.h                             |    2 
+ tools/lib/bpf/Makefile                                     |   10 
+ tools/lib/bpf/libbpf.c                                     |   16 -
+ tools/testing/selftests/bpf/progs/bpf_iter_tcp4.c          |    2 
+ tools/testing/selftests/bpf/progs/test_core_autosize.c     |   20 +
+ 264 files changed, 2073 insertions(+), 1183 deletions(-)
+
+Abhishek Naik (1):
+      iwlwifi: skip first element in the WTAS ACPI table
+
+Ahmad Fatoum (1):
+      brcmfmac: pcie: fix oops on failure to resume and reprobe
+
+Alexander Gordeev (1):
+      s390/kasan: fix large PMD pages address alignment check
+
+Amit Engel (1):
+      nvmet: pass back cntlid on successful completion
+
+Anand Moon (3):
+      ARM: dts: meson8b: odroidc1: Fix the pwm regulator supply properties
+      ARM: dts: meson8b: mxq: Fix the pwm regulator supply properties
+      ARM: dts: meson8b: ec100: Fix the pwm regulator supply properties
+
+Andrey Ignatov (1):
+      bpf: Fix possible out of bound write in narrow load handling
+
+Andrii Nakryiko (1):
+      libbpf: Re-build libbpf.so when libbpf.map changes
+
+Andy Duan (1):
+      tty: serial: fsl_lpuart: fix the wrong mapbase value
+
+Andy Shevchenko (1):
+      leds: lt3593: Put fwnode in any case during ->probe()
+
+Austin Kim (1):
+      IMA: remove -Wmissing-prototypes warning
+
+Aya Levin (1):
+      net/mlx5: Register to devlink ingress VLAN filter trap
+
+Babu Moger (1):
+      x86/resctrl: Fix a maybe-uninitialized build warning treated as error
+
+Ben Hutchings (1):
+      crypto: omap - Fix inconsistent locking of device lists
+
+Benjamin Coddington (1):
+      lockd: Fix invalid lockowner cast after vfs_test_lock
+
+Biju Das (1):
+      arm64: dts: renesas: hihope-rzg2-ex: Add EtherAVB internal rx delay
+
+Bjorn Andersson (1):
+      soc: qcom: rpmhpd: Use corner in power_off
+
+Bob Peterson (1):
+      gfs2: init system threads before freeze lock
+
+Borislav Petkov (1):
+      x86/mce: Defer processing of early errors
+
+Brett Creeley (1):
+      ice: Only lock to update netdev dev_addr
+
+Cezary Rojewski (3):
+      ASoC: Intel: kbl_da7219_max98927: Fix format selection for max98373
+      ASoC: Intel: Skylake: Leave data as is when invoking TLV IPCs
+      ASoC: Intel: Skylake: Fix module resource and format selection
+
+Chen-Yu Tsai (3):
+      irqchip/gic-v3: Fix priority comparison when non-secure priorities are used
+      regulator: vctrl: Use locked regulator_get_voltage in probe path
+      regulator: vctrl: Avoid lockdep warning in enable/disable ops
+
+Chih-Kang Chang (1):
+      mac80211: Fix insufficient headroom issue for AMSDU
+
+Christoph Hellwig (1):
+      bcache: add proper error unwinding in bcache_device_init
+
+Christophe JAILLET (9):
+      spi: coldfire-qspi: Use clk_disable_unprepare in the remove function
+      media: cxd2880-spi: Fix an error handling path
+      drm/msm/dsi: Fix some reference counted resource leaks
+      firmware: raspberrypi: Fix a leak in 'rpi_firmware_get()'
+      usb: bdc: Fix an error handling path in 'bdc_probe()' when no suitable DMA config is available
+      usb: bdc: Fix a resource leak in the error handling path of 'bdc_probe()'
+      ASoC: wcd9335: Fix a double irq free in the remove function
+      ASoC: wcd9335: Fix a memory leak in the error handling path of the probe function
+      ASoC: wcd9335: Disable irq on slave ports in the remove function
+
+Chunguang Xu (1):
+      blk-throtl: optimize IOPS throttle for large IO scenarios
+
+Chunyan Zhang (1):
+      spi: sprd: Fix the wrong WDG_LOAD_VAL
+
+Claudiu Beznea (1):
+      ARM: dts: at91: add pinctrl-{names, 0} for all gpios
+
+Colin Ian King (4):
+      gfs2: Fix memory leak of object lsi on error return path
+      6lowpan: iphc: Fix an off-by-one check of array index
+      media: venus: venc: Fix potential null pointer dereference on pointer fmt
+      Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
+
+Curtis Malainey (1):
+      ASoC: Intel: Fix platform ID matching
+
+Damien Le Moal (1):
+      libata: fix ata_host_start()
+
+Dan Carpenter (5):
+      media: rockchip/rga: fix error handling in probe
+      Bluetooth: sco: prevent information leak in sco_conn_defer_accept()
+      rsi: fix error code in rsi_load_9116_firmware()
+      rsi: fix an error code in rsi_probe()
+      ath6kl: wmi: fix an error code in ath6kl_wmi_sync_point()
+
+Daniel Thompson (1):
+      backlight: pwm_bl: Improve bootloader/kernel device handover
+
+David Heidelberg (2):
+      drm/msm/mdp4: refactor HW revision detection into read_mdp_hw_revision
+      drm/msm/mdp4: move HW revision detection to earlier phase
+
+Desmond Cheong Zhi Xi (2):
+      fcntl: fix potential deadlock for &fasync_struct.fa_lock
+      Bluetooth: fix repeated calls to sco_sock_kill
+
+Dietmar Eggemann (1):
+      sched/deadline: Fix missing clock update in migrate_task_rq_dl()
+
+Dmitry Baryshkov (1):
+      drm/msm/dpu: make dpu_hw_ctl_clear_all_blendstages clear necessary LMs
+
+Dmitry Osipenko (2):
+      regulator: tps65910: Silence deferred probe error
+      power: supply: smb347-charger: Add missing pin control activation
+
+Dongliang Mu (4):
+      media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
+      media: dvb-usb: fix uninit-value in vp702x_read_mac_addr
+      media: dvb-usb: Fix error handling in dvb_usb_i2c_init
+      media: em28xx-input: fix refcount bug in em28xx_usb_disconnect
+
+Douglas Anderson (2):
+      ASoC: rt5682: Properly turn off regulators if wrong device ID
+      ASoC: rt5682: Remove unused variable in rt5682_i2c_remove()
+
+Dylan Hung (1):
+      ARM: dts: aspeed-g6: Fix HVI3C function-group in pinctrl dtsi
+
+Emmanuel Grumbach (1):
+      iwlwifi: follow the new inclusive terminology
+
+Eric Biggers (1):
+      blk-crypto: fix check for too-large dun_bytes
+
+Eric Dumazet (3):
+      ipv6: make exception cache less predictible
+      ipv4: make exception cache less predictible
+      ipv4: fix endianness issue in inet_rtm_getroute_build_skb()
+
+Evgeny Novikov (1):
+      usb: ehci-orion: Handle errors of clk_prepare_enable() in probe
+
+Frederic Weisbecker (1):
+      posix-cpu-timers: Force next expiration recalc after itimer reset
+
+Geert Uytterhoeven (5):
+      m68k: Fix invalid RMW_INSNS on CPUs that lack CAS
+      soc: rockchip: ROCKCHIP_GRF should not default to y, unconditionally
+      arm64: dts: renesas: r8a77995: draak: Remove bogus adv7511w properties
+      arm64: dts: renesas: rzg2: Convert EtherAVB to explicit delay handling
+      usb: gadget: udc: renesas_usb3: Fix soc_device_match() abuse
+
+Giovanni Cabiddu (4):
+      crypto: qat - do not ignore errors from enable_vf2pf_comms()
+      crypto: qat - handle both source of interrupt in VF ISR
+      crypto: qat - do not export adf_iov_putmsg()
+      crypto: qat - use proper type for vf_mask
+
+Greg Kroah-Hartman (1):
+      Linux 5.10.65
+
+Haiyue Wang (1):
+      gve: fix the wrong AdminQ buffer overflow check
+
+Halil Pasic (1):
+      KVM: s390: index kvm->arch.idle_mask by vcpu_idx
+
+Hans de Goede (2):
+      power: supply: axp288_fuel_gauge: Report register-address on readb / writeb errors
+      leds: trigger: audio: Add an activate callback to ensure the initial brightness is set
+
+Harald Freudenberger (2):
+      s390/zcrypt: fix wrong offset index for APKA master key valid state
+      s390/ap: fix state machine hang after failure to enable irq
+
+Harshvardhan Jha (1):
+      drm/gma500: Fix end of loop tests for list_for_each_entry
+
+He Fengqing (1):
+      bpf: Fix potential memleak and UAF in the verifier.
+
+Hongbo Li (1):
+      lib/mpi: use kcalloc in mpi_resize
+
+Huacai Chen (1):
+      irqchip/loongson-pch-pic: Improve edge triggered interrupt support
+
+Ilya Leoshkevich (1):
+      selftests/bpf: Fix test_core_autosize on big-endian machines
+
+J. Bruce Fields (1):
+      nfsd4: Fix forced-expiry locking
+
+Jaegeuk Kim (1):
+      f2fs: guarantee to write dirty data when enabling checkpoint back
+
+Jan Kara (1):
+      udf: Check LVID earlier
+
+Jens Axboe (1):
+      io_uring: IORING_OP_WRITE needs hash_reg_file set
+
+Jeongtae Park (1):
+      regmap: fix the offset of register error log
+
+Jiapeng Chong (2):
+      leds: is31fl32xx: Fix missing error code in is31fl32xx_parse_dt()
+      net/mlx5: Fix missing return value in mlx5_devlink_eswitch_inline_mode_set()
+
+Jose Blanquicet (1):
+      selftests/bpf: Fix bpf-iter-tcp4 test to print correctly the dest IP
+
+Juhee Kang (1):
+      samples: pktgen: add missing IPv6 option to pktgen scripts
+
+Julia Lawall (1):
+      drm/of: free the right object
+
+Justin M. Forbes (1):
+      iwlwifi Add support for ax201 in Samsung Galaxy Book Flex2 Alpha
+
+Kai-Heng Feng (2):
+      drm/amdgpu/acp: Make PM domain really work
+      Bluetooth: Move shutdown callback before flushing tx and rx queue
+
+Kevin Mitchell (1):
+      lkdtm: replace SCSI_DISPATCH_CMD with SCSI_QUEUE_RQ
+
+Kim Phillips (1):
+      perf/x86/amd/ibs: Extend PERF_PMU_CAP_NO_EXCLUDE to IBS Op
+
+Krzysztof Hałasa (1):
+      media: TDA1997x: enable EDID support
+
+Krzysztof Kozlowski (1):
+      arm64: dts: exynos: correct GIC CPU interfaces address range on Exynos7
+
+Kuniyuki Iwashima (1):
+      bpf: Fix a typo of reuseport map in bpf.h.
+
+Len Baker (1):
+      CIFS: Fix a potencially linear read overflow
+
+Leon Romanovsky (3):
+      ionic: cleanly release devlink instance
+      devlink: Break parameter notification sequence to be before/after unload/load driver
+      devlink: Clear whole devlink_flash_notify struct
+
+Linus Walleij (1):
+      clk: kirkwood: Fix a clocking boot regression
+
+Lukas Bulwahn (1):
+      clk: staging: correct reference to config IOMEM to config HAS_IOMEM
+
+Lukas Hannen (1):
+      time: Handle negative seconds correctly in timespec64_to_ns()
+
+Lukasz Luba (1):
+      PM: EM: Increase energy calculation precision
+
+Marco Chiappero (2):
+      crypto: qat - fix reuse of completion variable
+      crypto: qat - fix naming for init/shutdown VF to PF notifications
+
+Marek Vasut (3):
+      drm: mxsfb: Enable recovery on underflow
+      drm: mxsfb: Increase number of outstanding requests on V4 and newer HW
+      drm: mxsfb: Clear FIFO_CLEAR bit
+
+Martin Blumenstingl (1):
+      ARM: dts: meson8: Use a higher default GPU clock frequency
+
+Martin KaFai Lau (1):
+      tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
+
+Martynas Pumputis (1):
+      libbpf: Fix removal of inner map in bpf_object__create_map
+
+Matija Glavinic Pecotic (1):
+      spi: davinci: invoke chipselect callback
+
+Matthew Cover (1):
+      bpf, samples: Add missing mprog-disable to xdp_redirect_cpu's optstring
+
+Mauro Carvalho Chehab (1):
+      media: rockchip/rga: use pm_runtime_resume_and_get()
+
+Maxim Levitsky (1):
+      KVM: VMX: avoid running vmx_handle_exit_irqoff in case of emulation
+
+Maxim Mikityanskiy (2):
+      net/mlx5e: Prohibit inner indir TIRs in IPoIB
+      net/mlx5e: Block LRO if firmware asks for tunneled LRO
+
+Mika Penttilä (1):
+      sched/numa: Fix is_core_idle()
+
+Miklos Szeredi (2):
+      fuse: truncate pagecache on atomic_o_trunc
+      fuse: flush extending writes
+
+Ming Lei (1):
+      block: return ELEVATOR_DISCARD_MERGE if possible
+
+Nadezda Lutovinova (1):
+      usb: gadget: mv_u3d: request_irq() after initializing UDC
+
+Nguyen Dinh Phi (1):
+      tty: Fix data race between tiocsti() and flush_to_ldisc()
+
+Nicolas Saenz Julienne (1):
+      firmware: raspberrypi: Keep count of all consumers
+
+Niklas Schnelle (1):
+      s390/pci: fix misleading rc in clp_set_pci_fn()
+
+Pali Rohár (3):
+      udf: Fix iocharset=utf8 mount option
+      isofs: joliet: Fix iocharset=utf8 mount option
+      arm64: dts: marvell: armada-37xx: Extend PCIe MEM space
+
+Parav Pandit (1):
+      net/mlx5: Fix unpublish devlink parameters
+
+Paul E. McKenney (1):
+      rcu: Add lockdep_assert_irqs_disabled() to rcu_sched_clock_irq() and callees
+
+Pavel Begunkov (1):
+      bio: fix page leak bio_add_hw_page failure
+
+Pavel Skripkin (6):
+      m68k: emu: Fix invalid free in nfeth_cleanup()
+      block: nbd: add sanity check for first_minor
+      media: go7007: fix memory leak in go7007_usb_probe
+      media: go7007: remove redundant initialization
+      net: cipso: fix warnings in netlbl_cipsov4_add_std
+      Bluetooth: add timeout sanity check to hci_inquiry
+
+Peter Oberparleiter (2):
+      s390/debug: keep debug data on resize
+      s390/debug: fix debug area life cycle
+
+Peter Robinson (1):
+      power: supply: cw2015: use dev_err_probe to allow deferred probe
+
+Peter Zijlstra (2):
+      locking/mutex: Fix HANDOFF condition
+      locking/lockdep: Mark local_lock_t
+
+Philipp Zabel (1):
+      media: coda: fix frame_mem_ctrl for YUV420 and YVU420 formats
+
+Phong Hoang (1):
+      clocksource/drivers/sh_cmt: Fix wrong setting if don't request IRQ for clock source channel
+
+Qiuxu Zhuo (1):
+      EDAC/i10nm: Fix NVDIMM detection
+
+Quanyang Wang (1):
+      spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible
+
+Quentin Perret (2):
+      sched/deadline: Fix reset_on_fork reporting of DL tasks
+      sched: Fix UCLAMP_FLAG_IDLE setting
+
+Rafael J. Wysocki (2):
+      PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
+      PCI: PM: Enable PME if it can be signaled from D3cold
+
+Ruozhu Li (2):
+      nvme-tcp: don't update queue count when failing to set io queues
+      nvme-rdma: don't update queue count when failing to set io queues
+
+Sean Anderson (1):
+      crypto: mxs-dcp - Check for DMA mapping errors
+
+Sean Christopherson (2):
+      Revert "KVM: x86: mmu: Add guest physical address check in translate_gpa()"
+      KVM: nVMX: Unconditionally clear nested.pi_pending on nested VM-Enter
+
+Sebastian Krzyszkowiak (1):
+      power: supply: max17042_battery: fix typo in MAx17042_TOFF
+
+Sergey Senozhatsky (1):
+      rcu/tree: Handle VM stoppage in stall detection
+
+Sergey Shtylyov (15):
+      i2c: highlander: add IRQ check
+      usb: dwc3: meson-g12a: add IRQ check
+      usb: dwc3: qcom: add IRQ check
+      usb: gadget: udc: at91: add IRQ check
+      usb: gadget: udc: s3c2410: add IRQ check
+      usb: phy: fsl-usb: add IRQ check
+      usb: phy: twl6030: add IRQ checks
+      usb: host: ohci-tmio: add IRQ check
+      usb: phy: tahvo: add IRQ check
+      i2c: synquacer: fix deferred probing
+      i2c: iop3xx: fix deferred probing
+      i2c: s3c2410: fix IRQ check
+      i2c: hix5hd2: fix IRQ check
+      i2c: mt65xx: fix IRQ check
+      i2c: xlp9xx: fix main IRQ check
+
+Shuyi Cheng (1):
+      libbpf: Fix the possible memory leak on error
+
+Smita Koralahalli (1):
+      EDAC/mce_amd: Do not load edac_mce_amd module on guests
+
+Stefan Assmann (1):
+      i40e: improve locking of mac_filter_hash
+
+Stefan Berger (2):
+      certs: Trigger creation of RSA module signing key if it's not an RSA key
+      tpm: ibmvtpm: Avoid error message when process gets signal while waiting
+
+Stefan Wahren (1):
+      net: qualcomm: fix QCA7000 checksum handling
+
+Stephan Gerhold (1):
+      soc: qcom: smsm: Fix missed interrupts if state changes while masked
+
+Stephen Boyd (1):
+      ASoC: rt5682: Implement remove callback
+
+Steven Price (1):
+      drm/of: free the iterator object on failure
+
+Stian Skjelstad (1):
+      udf_get_extendedattr() had no boundary checks.
+
+Subbaraya Sundeep (2):
+      octeontx2-af: Fix loop in free and unmap counter
+      octeontx2-af: Fix static code analyzer reported issues
+
+Sudarsana Reddy Kalluru (1):
+      atlantic: Fix driver resume flow.
+
+Sunil Goutham (1):
+      octeontx2-af: Set proper errorcode for IPv4 checksum errors
+
+Sven Eckelmann (1):
+      debugfs: Return error during {full/open}_proxy_open() on rmmod
+
+THOBY Simon (1):
+      IMA: remove the dependency on CRYPTO_MD5
+
+Tedd Ho-Jeong An (1):
+      Bluetooth: mgmt: Fix wrong opcode in the response for add_adv cmd
+
+Tetsuo Handa (1):
+      fbmem: don't allow too huge resolutions
+
+Thomas Gleixner (3):
+      hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()
+      hrtimer: Ensure timerfd notification for HIGHRES=n
+      locking/local_lock: Add missing owner initialization
+
+Tian Tao (1):
+      i2c: fix platform_get_irq.cocci warnings
+
+Tony Lindgren (6):
+      crypto: omap-sham - clear dma flags only after omap_sham_update_dma_stop()
+      spi: spi-fsl-dspi: Fix issue with uninitialized dma_slave_config
+      spi: spi-pic32: Fix issue with uninitialized dma_slave_config
+      mmc: sdhci: Fix issue with uninitialized dma_slave_config
+      mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
+      mmc: moxart: Fix issue with uninitialized dma_slave_config
+
+Valentin Schneider (1):
+      PM: cpu: Make notifier chain use a raw_spinlock_t
+
+Vineeth Vijayan (1):
+      s390/cio: add dev_busid sysfs entry for each subchannel
+
+Waiman Long (3):
+      cgroup/cpuset: Fix a partition bug with hotplug
+      cgroup/cpuset: Miscellaneous code cleanup
+      cgroup/cpuset: Fix violation of cpuset locking rule
+
+Wei Yongjun (1):
+      drm/panfrost: Fix missing clk_disable_unprepare() on error in panfrost_clk_init()
+
+William Breathitt Gray (1):
+      counter: 104-quad-8: Return error when invalid mode during ceiling_write
+
+Xiyu Yang (1):
+      net: sched: Fix qdisc_rate_table refcount leak when get tcf_block failed
+
+Xu Yu (1):
+      mm/swap: consider max pages in iomap_swapfile_add_extent
+
+Yanfei Xu (2):
+      rcu: Fix to include first blocked task in stall warning
+      rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock
+
+Yizhuo (1):
+      media: atomisp: fix the uninitialized use and rename "retvalue"
+
+Zelin Deng (1):
+      KVM: x86: Update vCPU's hv_clock before back to guest when tsc_offset is adjusted
+
+Zenghui Yu (1):
+      bcma: Fix memory leak for internally-handled cores
+
+Zhang Qilong (1):
+      ASoC: mediatek: mt8183: Fix Unbalanced pm_runtime_enable in mt8183_afe_pcm_dev_probe
+
+Zhen Lei (3):
+      genirq/timings: Fix error return code in irq_timings_test_irqs()
+      firmware: fix theoretical UAF race with firmware cache and resume
+      driver core: Fix error return code in really_probe()
+
