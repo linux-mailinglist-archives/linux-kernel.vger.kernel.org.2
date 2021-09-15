@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E172740C6FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC9640C6F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237795AbhIOOGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 10:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S237662AbhIOOEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 10:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237735AbhIOOGH (ORCPT
+        with ESMTP id S233545AbhIOOEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 10:06:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4D0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:04:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dk6obZxaaJ+u2DCXDBWFHKjLWJQNb3BiT9vPulsHNiE=; b=nFOILaamMzz0kf8HzmZxppyHW5
-        uNW5I8vfo5S7j1HKNG1Hwhfv8mK9CjFk1O4PKy63hK7145GPCYA++Et78zg2rCLzw3EoXPzDpQHiH
-        Aq8jPYmoGTbf91bvtkJtNYCFzX7gI01COG9zF4QX0QUan8mwZ9KCnPuMFFllVdsGM1dK1MoVS7TzA
-        nrL2lz6nwRE9vVvgEDjOmXVFuqqG85Qeuuq1YbqXNYghbo2ngGMpJzgJUJEGVrai1Jbvmgd7z2oLN
-        mH/RR/IDQ6B/9/xwORNwA3N0YTp01h/800bLZsXiz0MaSm+jJqwM5Oi2btTgGer6n5ZfI8oETXwBo
-        oHqOjJGA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mQVUc-00FjOH-B6; Wed, 15 Sep 2021 14:02:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 483A83001C7;
-        Wed, 15 Sep 2021 16:02:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 07FF2285DFF65; Wed, 15 Sep 2021 16:02:29 +0200 (CEST)
-Date:   Wed, 15 Sep 2021 16:02:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        Santosh Sivaraj <santosh@fossix.org>
-Subject: Re: [PATCH 3/5] kernel/watchdog: adapt the watchdog_hld interface
- for async model
-Message-ID: <YUH89GX1RB8fdcvh@hirez.programming.kicks-ass.net>
-References: <20210915035103.15586-1-kernelfans@gmail.com>
- <20210915035103.15586-4-kernelfans@gmail.com>
+        Wed, 15 Sep 2021 10:04:50 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F9EC061574;
+        Wed, 15 Sep 2021 07:03:31 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id q26-20020a4adc5a000000b002918a69c8eeso904251oov.13;
+        Wed, 15 Sep 2021 07:03:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dXV0TdJQZj6j+f/Hi7EIzy0MEGNbxXGsvCh8JJLlODg=;
+        b=WPi3IOT8Z+un52mSPLE4sfqcvjdnW6YB61L3883DmVLJCseKT0/X5+UxUhOCmGoe6Z
+         HIGh4/nwJMlyK+3dCdARsx7O83eqW0mxZ8VZ0aedkBHAaEN7l82Gy6kEnotJu0yF+MU+
+         5a+7S37ulW2eIr6nSMyrGUZyXeMv3h4t8ZlzhCuIPCpxyX7J/TepZavW275hbZyhW2Gk
+         YOa17FQn9TO4Gk7XgljwpYzkzDT+C2SZhOQvgqFsx4nDUuzNklzbH8Hgi4XLuqrfB5c3
+         eMXBKePg1BOAfA5WW84beOgutATln1NmsNbVFEakI6+C4NMzrKEuxWlWU4otT5aApJjU
+         fABw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dXV0TdJQZj6j+f/Hi7EIzy0MEGNbxXGsvCh8JJLlODg=;
+        b=lf/lxhHvy3JK2aJPkgydBUsoemjtuR+KI0105Nupx/NpGuVu7JvyzM8/6S6qSTxVBm
+         +IiG59FHPSbr5em/T4oTXqk6LBm04h14aYmPlOEHC0QCXiARbVnBi54Ah9N7C5XwwhEd
+         CPibysbq7N3TpOWbnKoHZBKlEL0/G7F9VNYeOhJXuub9kImyENfMwi5g1XRdUOomDNsH
+         d2E0N4ZizxQ+mCZBzsmskqsIaFaPkbTB02/c1kPr//p3EOz9cWQxbQs7iB+UEIBzvnKj
+         k+DvayEBKGAlHWj5N5whcl1QED2WexNkOcANgzEWnwgJ8qZ8vIreD+ltgXUi6kkTOJBo
+         5S7g==
+X-Gm-Message-State: AOAM531e8Bm3hWyaq8pqa1iIqIRKjkdExRXGL08OFZjzUTRAiM9P5rO/
+        uWN1KPgVr65ZW0dDMfcLbTaQwFxSQ0s=
+X-Google-Smtp-Source: ABdhPJxZWw0J/8Mllmga07N63Y8sT9KQNPV3ZJtz3dgQOrFH3hdHQmv0ainu2VlCw9qtyk8srn1muQ==
+X-Received: by 2002:a05:6820:555:: with SMTP id n21mr18699324ooj.56.1631714609412;
+        Wed, 15 Sep 2021 07:03:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v16sm11201oou.45.2021.09.15.07.03.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 07:03:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 1/4] compiler.h: Introduce absolute_pointer macro
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-sparse@vger.kernel.org
+References: <20210915035227.630204-1-linux@roeck-us.net>
+ <20210915035227.630204-2-linux@roeck-us.net>
+ <CAMuHMdXZcrjGAE5OOipKsYpEgk9AZ_hrWKh+v81FMBtQTBv2LA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <ab67dccf-cf29-523d-3cf7-7554c493dcd1@roeck-us.net>
+Date:   Wed, 15 Sep 2021 07:03:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915035103.15586-4-kernelfans@gmail.com>
+In-Reply-To: <CAMuHMdXZcrjGAE5OOipKsYpEgk9AZ_hrWKh+v81FMBtQTBv2LA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 11:51:01AM +0800, Pingfan Liu wrote:
-> When lockup_detector_init()->watchdog_nmi_probe(), PMU may be not ready
-> yet. E.g. on arm64, PMU is not ready until
-> device_initcall(armv8_pmu_driver_init).  And it is deeply integrated
-> with the driver model and cpuhp. Hence it is hard to push this
-> initialization before smp_init().
+On 9/15/21 12:13 AM, Geert Uytterhoeven wrote:
+> Hi Günter,
 > 
-> But it is easy to take an opposite approach by enabling watchdog_hld to
-> get the capability of PMU async.
+> On Wed, Sep 15, 2021 at 5:52 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>> absolute_pointer() disassociates a pointer from its originating symbol
+>> type and context. Use it to prevent compiler warnings/errors such as
+>>
+>> drivers/net/ethernet/i825xx/82596.c: In function 'i82596_probe':
+>> ./arch/m68k/include/asm/string.h:72:25: error:
+>>          '__builtin_memcpy' reading 6 bytes from a region of size 0
+>>                  [-Werror=stringop-overread]
+>>
+>> Such warnings may be reported by gcc 11.x for string and memory operations
+>> on fixed addresses.
+>>
+>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>> v2: No change
+>>
+>>   include/linux/compiler.h | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+>> index b67261a1e3e9..3d5af56337bd 100644
+>> --- a/include/linux/compiler.h
+>> +++ b/include/linux/compiler.h
+>> @@ -188,6 +188,8 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+>>       (typeof(ptr)) (__ptr + (off)); })
+>>   #endif
+>>
+>> +#define absolute_pointer(val)  RELOC_HIDE((void *)(val), 0)
 > 
-> The async model is achieved by introducing an extra parameter notifier
-> of watchdog_nmi_probe().
+> I guess we're not worried about "val" being evaluated multiple
+> times inside RELOC_HIDE(), as this is mainly intended for constants?
 > 
-> Note after this patch, the async model, which is utilized by the next
-> patch, does not take effect yet.
 
-I can't make any sense of what you're trying to do..
+No, we are not. It is quite similar to RELOC_HIDE() in that regard.
 
-> +static void watchdog_nmi_report_capability(struct watchdog_nmi_status *data)
-> +{
-> +	/* Set status to 1 temporary to block any further access */
-> +	if (atomic_cmpxchg((atomic_t *)&nmi_watchdog_status, -EBUSY, 1)
-> +			== -EBUSY) {
-
-But this..
-
-> +		if (!data->status) {
-> +			nmi_watchdog_status = 0;
-> +			lockup_detector_update_enable();
-> +		} else {
-> +			nmi_watchdog_status = -ENODEV;
-> +			/* turn offf watchdog_enabled forever */
-> +			lockup_detector_update_enable();
-> +			pr_info("Perf NMI watchdog permanently disabled\n");
-> +		}
-> +	}
-> +}
-
-> @@ -467,7 +494,8 @@ static void watchdog_enable(unsigned int cpu)
->  	/* Initialize timestamp */
->  	update_touch_ts();
->  	/* Enable the perf event */
-> -	if (watchdog_enabled & NMI_WATCHDOG_ENABLED)
-> +	if (watchdog_enabled &
-> +			(NMI_WATCHDOG_ENABLED | NMI_WATCHDOG_UNDETERMINED))
-
-and this, are horrible indenting.
+Guenter
