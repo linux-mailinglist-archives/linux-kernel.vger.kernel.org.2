@@ -2,118 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C643040BFA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB2F40BFA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 08:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhIOGa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 02:30:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229484AbhIOGa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 02:30:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B31360BD3;
-        Wed, 15 Sep 2021 06:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631687378;
-        bh=ch01/WbeIC8zu+C33l/ZDhbb3eivc2zeXl3cs9KVGHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D8yyuXJaAa84N82v74hL6teSI8tZKGzRVI5hHkhv14Ghy16hPIJEluBEFDG3ajiMe
-         PRGSvdpQZ+Dkshg6oqAeHY18tZ22wwpmOJUh6g+7KV3LVUBKsNEoiWQD1tA5oFjgrF
-         trp2Axf44bOEhFSr29kBF78uexqBl9n7YW/jbJeo=
-Date:   Wed, 15 Sep 2021 08:29:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ronak Jain <ronakj@xilinx.com>
-Cc:     Michal Simek <michals@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rajan Vaja <RAJANV@xilinx.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        Sai Krishna Potthuri <lakshmis@xilinx.com>
-Subject: Re: [PATCH v2 3/3] firmware: xilinx: Add sysfs support for feature
- config
-Message-ID: <YUGSvO5tHYd4cTkc@kroah.com>
-References: <20210913083955.27146-1-ronak.jain@xilinx.com>
- <20210913083955.27146-4-ronak.jain@xilinx.com>
- <YUBpjUGaB3G72wRa@kroah.com>
- <BYAPR02MB4488F74E21490FC4801BA375A4DB9@BYAPR02MB4488.namprd02.prod.outlook.com>
+        id S232052AbhIOGbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 02:31:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27404 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229484AbhIOGbE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 02:31:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631687385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+C6oOXnSiXCMxV5e9+CpUPoeNdMOGB3oYk9FF4IqK+A=;
+        b=K/xAV+MNx8+dY51mER+d6topI/LDgJyYuwnX6McpVt+KT2r1c/+36UZvu9v7TkkweycvFf
+        Zsr2wc0kZsykjxE0wWrWDD5DRxmMAWdDIt1R5krGow+IHHk/fd2Vd3eLW7ZIWvAp1X/An4
+        y0/2/6NcXXx/8mqQSSiMnK333SKb/YY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-PpDkW-RaNMSdhiRoBpC_4w-1; Wed, 15 Sep 2021 02:29:44 -0400
+X-MC-Unique: PpDkW-RaNMSdhiRoBpC_4w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3146824FAF;
+        Wed, 15 Sep 2021 06:29:42 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.192.91])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A68666D982;
+        Wed, 15 Sep 2021 06:29:42 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+        id DF43618003BF; Wed, 15 Sep 2021 08:29:40 +0200 (CEST)
+Date:   Wed, 15 Sep 2021 08:29:40 +0200
+From:   Gerd Hoffmann <kraxel@redhat.com>
+To:     "H. Peter Anvin (Intel)" <hpa@zytor.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bochs: add Bochs PCI ID for Simics model
+Message-ID: <20210915062940.m3q2fwbipkq7ki6s@sirius.home.kraxel.org>
+References: <20210910010655.2356245-1-hpa@zytor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BYAPR02MB4488F74E21490FC4801BA375A4DB9@BYAPR02MB4488.namprd02.prod.outlook.com>
+In-Reply-To: <20210910010655.2356245-1-hpa@zytor.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 06:16:16AM +0000, Ronak Jain wrote:
-> Hi Greg KH,
+On Thu, Sep 09, 2021 at 06:06:55PM -0700, H. Peter Anvin (Intel) wrote:
+> Current (and older) Simics models for the Bochs VGA used the wrong PCI
+> vendor ID (0x4321 instead of 0x1234).  Although this can hopefully be
+> fixed in the future, it is a problem for users of the current version,
+> not the least because to update the device ID the BIOS has to be
+> rebuilt in order to see BIOS output.
 > 
-> Thanks for reviewing.
+> Add support for the 4321:1111 device number in addition to the
+> 1234:1111 one.
 > 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Tuesday, September 14, 2021 2:51 PM
-> > To: Ronak Jain <ronakj@xilinx.com>
-> > Cc: Michal Simek <michals@xilinx.com>; linux-kernel@vger.kernel.org; Rajan
-> > Vaja <RAJANV@xilinx.com>; corbet@lwn.net; linux-arm-
-> > kernel@lists.infradead.org; arnd@arndb.de; Sai Krishna Potthuri
-> > <lakshmis@xilinx.com>
-> > Subject: Re: [PATCH v2 3/3] firmware: xilinx: Add sysfs support for feature
-> > config
-> > 
-> > On Mon, Sep 13, 2021 at 01:39:55AM -0700, Ronak Jain wrote:
-> > > Add support for sysfs interface for runtime features configuration.
-> > >  The user can configure the features at runtime. First the user need
-> > > to select the config id of the supported features and then the user
-> > > can configure the parameters of the feature based on the config id.
-> > >  So far the support is added for the over temperature and external
-> > > watchdog features.
-> > >
-> > > Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
-> > > ---
-> > > Changes in v2:
-> > > - Update commit message
-> > > ---
-> > >  drivers/firmware/xilinx/zynqmp.c | 71
-> > > ++++++++++++++++++++++++++++++++
-> > >  1 file changed, 71 insertions(+)
-> > >
-> > > diff --git a/drivers/firmware/xilinx/zynqmp.c
-> > > b/drivers/firmware/xilinx/zynqmp.c
-> > > index 875d13bc1a57..a1434dd368f2 100644
-> > > --- a/drivers/firmware/xilinx/zynqmp.c
-> > > +++ b/drivers/firmware/xilinx/zynqmp.c
-> > > @@ -1361,6 +1361,75 @@ static DEVICE_ATTR_RW(pggs1);  static
-> > > DEVICE_ATTR_RW(pggs2);  static DEVICE_ATTR_RW(pggs3);
-> > >
-> > > +static atomic_t feature_conf_id;
-> > 
-> > Why does this have to be an atomic?
-> Use atomic to avoid race conditions. Suppose the case where the user
-> is trying to write the variable and at the same time it tries to read,
-> so there might be chances of occurrence of race condition. Also, I am
-> not so sure whether the race condition will occur or not but just to
-> prevent race condition I have used atomic variable so, the read/write
-> operations can handle automatically.
+> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 
-Reading/writing a single variable like this will not be a problem with
-races.  If you care about stuff like this, just use a lock to protect
-it, don't try to mess with an atomic if you do not have to have it.
-
-> > And shouldn't this be per-device, not global to all devices in the system?
-> This is to store the config-id set by the user which will be used to
-> retrieve config. There is only one firmware device so we can consider
-> it systemwide. Please let me know if you think of a better way of
-> handling it.
-
-So is it a device attribute or a driver attribute?
-
-And you never know how many devices you have in a system, do not assume
-you will not have multiple ones.  Use the proper structures to start
-with and you never will have to change things in the future if you have
-multiple devices.
+Pusged to drm-misc-next.
 
 thanks,
+  Gerd
 
-greg k-h
