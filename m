@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF9140C8D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D02E40C8DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238411AbhIOPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:51:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41628 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238207AbhIOPut (ORCPT
+        id S238079AbhIOPv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238412AbhIOPvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:50:49 -0400
-Date:   Wed, 15 Sep 2021 15:49:29 -0000
+        Wed, 15 Sep 2021 11:51:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 052BEC0613E6;
+        Wed, 15 Sep 2021 08:49:33 -0700 (PDT)
+Date:   Wed, 15 Sep 2021 15:49:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631720970;
+        s=2020; t=1631720971;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Hhaj4YS7FOOJWK2q7i4um+bsMw8Ttun6vD3OEgam8/o=;
-        b=GwiqpCRtQwh3grQPjTqR2es341rpZzne+Kr+Tum/Bir1dhJ0oPHeiep+EQVYVl7clwMQzA
-        oZPiVIWhJhnVjUlhTjYFOV0459XOKnBAAc79L9+LSecO9/+fzVJfbp3Tb/MQajeftizqry
-        QbP87H4ersyQNu3GrpQzezqJdhnxAY67U4xJxod/n8QgyUdT79sAYFbSXtp2Og/lzhVHTU
-        SV4bNFvj8TlMqvBZPN2xbhjQGInp7ruiKqEf+v1cXe0B3XVHKx04WG+WFv2NaZf6tT1vwi
-        hU+y5odI7T6CEHnZvFie8C2FUuHCpHItDNriBNOwyv1rP5NIEdQXG7UTb4A7Jw==
+        bh=fOZ1sMaae13rgT9KD7DQV5iMrlLKavbexth3YB3QlUY=;
+        b=FWbusszMmIsB4AJ3hn5Uj1qTC1MszTwkzYBSSXAFMXH0I3LL5YVKL8rMOe8hBYmb+gcq+L
+        utuTezLvCw1tXdzUx5gviIf52/E0U2jyM8OuG33ovTtQMb3PR98mymDN07NaN+uheA8v6t
+        2JSIY5WgLt9z4ywU+J95gTF/PHKxZvyKM7PiQMeo17u0JxGJEDMhCmjblqRiRxH11MIl7k
+        +BYyGWRdEypgNCYzWMmiMGt+m3zES5CWVOXDHRiH+nDV6SRgOIT0ttP5qk0BnTpaajWF//
+        3qd4DP2qCAZbJDgS+jbyYgKgH0lEVwYt0Y5iZmhzj/nA6AGyGg58lZk7voEp2w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631720970;
+        s=2020e; t=1631720971;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Hhaj4YS7FOOJWK2q7i4um+bsMw8Ttun6vD3OEgam8/o=;
-        b=R3e84XLwT5rcDLi+xzmarkRMWJUqpDQO2GAed8x8LxBbsmfLS/1IECU5zmR35zA+cIlogY
-        dTsmOrvnmGxoXbDw==
+        bh=fOZ1sMaae13rgT9KD7DQV5iMrlLKavbexth3YB3QlUY=;
+        b=EpCaCZ5RbuLVzYdxotl3V4ykLmpdGDMhBGd+Vk5gtFEzJDOMR+63cXAFFTnyziz/Ys08Cy
+        6cVwRwAC/gL4DHCg==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/kvm: Always inline evmcs_write64()
+Subject: [tip: objtool/core] x86: Always inline context_tracking_guest_enter()
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210624095148.126956644@infradead.org>
-References: <20210624095148.126956644@infradead.org>
+In-Reply-To: <20210624095148.003928226@infradead.org>
+References: <20210624095148.003928226@infradead.org>
 MIME-Version: 1.0
-Message-ID: <163172096916.25758.698934646939983104.tip-bot2@tip-bot2>
+Message-ID: <163172097086.25758.13108359234219611262.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,42 +60,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     010050a86393703f43859a4704d2193be49126d6
-Gitweb:        https://git.kernel.org/tip/010050a86393703f43859a4704d2193be49126d6
+Commit-ID:     e25b694bf1d9ef4a3f36c0b85348f8e780f22139
+Gitweb:        https://git.kernel.org/tip/e25b694bf1d9ef4a3f36c0b85348f8e780f22139
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 24 Jun 2021 11:41:07 +02:00
+AuthorDate:    Thu, 24 Jun 2021 11:41:05 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Wed, 15 Sep 2021 15:51:46 +02:00
 
-x86/kvm: Always inline evmcs_write64()
+x86: Always inline context_tracking_guest_enter()
 
-vmlinux.o: warning: objtool: vmx_update_host_rsp()+0x64: call to evmcs_write64() leaves .noinstr.text section
+Yes, it really did out-of-line this....
+
+vmlinux.o: warning: objtool: vmx_vcpu_enter_exit()+0x31: call to context_tracking_guest_enter() leaves .noinstr.text section
+
+000000000019f660 <context_tracking_guest_enter>:
+  19f660:	e8 00 00 00 00       	callq  19f665 <context_tracking_guest_enter+0x5>	19f661: R_X86_64_PLT32	__sanitizer_cov_trace_pc-0x4
+  19f665:	31 c0                	xor    %eax,%eax
+  19f667:	c3                   	retq
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210624095148.126956644@infradead.org
+Link: https://lore.kernel.org/r/20210624095148.003928226@infradead.org
 ---
- arch/x86/kvm/vmx/evmcs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/context_tracking.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
-index 152ab0a..16731d2 100644
---- a/arch/x86/kvm/vmx/evmcs.h
-+++ b/arch/x86/kvm/vmx/evmcs.h
-@@ -93,7 +93,7 @@ static __always_inline int get_evmcs_offset(unsigned long field,
- 	return evmcs_field->offset;
- }
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index 4d7fced..7a14807 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -105,7 +105,7 @@ static inline void user_exit_irqoff(void) { }
+ static inline enum ctx_state exception_enter(void) { return 0; }
+ static inline void exception_exit(enum ctx_state prev_ctx) { }
+ static inline enum ctx_state ct_state(void) { return CONTEXT_DISABLED; }
+-static inline bool context_tracking_guest_enter(void) { return false; }
++static __always_inline bool context_tracking_guest_enter(void) { return false; }
+ static inline void context_tracking_guest_exit(void) { }
  
--static inline void evmcs_write64(unsigned long field, u64 value)
-+static __always_inline void evmcs_write64(unsigned long field, u64 value)
- {
- 	u16 clean_field;
- 	int offset = get_evmcs_offset(field, &clean_field);
-@@ -183,7 +183,7 @@ static inline void evmcs_load(u64 phys_addr)
- 
- __init void evmcs_sanitize_exec_ctrls(struct vmcs_config *vmcs_conf);
- #else /* !IS_ENABLED(CONFIG_HYPERV) */
--static inline void evmcs_write64(unsigned long field, u64 value) {}
-+static __always_inline void evmcs_write64(unsigned long field, u64 value) {}
- static inline void evmcs_write32(unsigned long field, u32 value) {}
- static inline void evmcs_write16(unsigned long field, u16 value) {}
- static inline u64 evmcs_read64(unsigned long field) { return 0; }
+ #endif /* !CONFIG_CONTEXT_TRACKING */
