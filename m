@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E2A40C7CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08C140C7CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 16:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237930AbhIOPA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        id S237974AbhIOPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233901AbhIOPA1 (ORCPT
+        with ESMTP id S234011AbhIOPAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:00:27 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263BBC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:59:08 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id j13so4710720edv.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:59:08 -0700 (PDT)
+        Wed, 15 Sep 2021 11:00:55 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246ACC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:59:36 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id cf2so2024998qvb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 07:59:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LUyNTvwye+kPafaOnI2efXLTbx8D91gxZhFPaGgBa+k=;
-        b=ain0M3hd5IPb69qG/03ea/REqMNY4Kp9RDkBg6Z4d9hYXfrWI2kFqsARfTjr0wCoVO
-         xmiK20FF7bUui0ZXn5Xxw+UqPj514FqfBIP/C7k9nYOSIh0Pk3mjBBD6/6Qk9wRYPutM
-         V9S8Au1toYSQCArfKQEEPr6AGJ9CARGPCpGQ5v2r4hV9u/0ddemK1sC4fAjEA+TO58Tx
-         OoM/soU5y5zHD4x3xQR5HR4MUgA8l7q75c52k6n5geeUMpZhaC2fYwEboTFZkO6mh4ud
-         ebQMAD/WjemqHpAmzaWgrNlecBjzr+EtivaD5VOz/h746n60/iMkQ1X3h2QteI047XTX
-         QQFw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P573y5Vc2zJUuuf0RRwx4Cvk5IBWAT6Ne62UqhX4bYU=;
+        b=Bp8gUfAr1azAr/3FG2yM2/cwGeN6T4EF5Krx23caRq0ZMdS/q4W2WTqsWqzmgzLUT+
+         +xXlZtuf+NA6/DWKxdwEdKEsocN/RrK8k9lEeUdsAk8FcZjEN/btABeccOE0wTk823zB
+         A/Tpg/hqHk5Mw/HAhH+KsdpqQFtHKA3thT66fVa5NDlsQpaZyBwLmfYL7QpYL+2Y8yyi
+         zyKebTydIhoK7/yWuSq/LKJVoLly0v26Pg7hecQ1bLZkmLmKsbSuqzNaydUXvAYqw/TN
+         LpcxqhDbyosCIwX64guMvOY8QulPBTYRVucJPuSMt1hXQBFvDvQu3JU0WUIX0Snaqsrm
+         Dg2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LUyNTvwye+kPafaOnI2efXLTbx8D91gxZhFPaGgBa+k=;
-        b=MTX1RvDRPKxC9ycH+xD53/uS3zINRwNsbW0PZAjTFxSROH3Blgxlzuk4uW1CfciQDR
-         GU0zuZmsKcVcRZqnaf3ZBq0Mu8DqAq02RN0JAcsnTC4RQLv+me7Vyo0ZlHPjmpDvlBeu
-         oJ5urRUksE+bitaWIfjZsAA49X9DnwXi8wEeDpxV7R55ffN1Au/Rs7EZ1z9GmGypdIJu
-         XlonuHyo3NKXfCUxglu7t6wLNT1MnXOeP1wUrx8xcCb7reZ3t3J0hnp3xtyv6EVtExMq
-         o/XIHgRG6ggRGTKSGS2sz0hbm3Rxs6Ict9vTvgvd55fUHBSx4wJ+lDq1FRe0wmKxi4xH
-         fLHw==
-X-Gm-Message-State: AOAM530/II6XUF1n28noaeEiFJgwn4I7jIHsXlr1MSgiogZspGqEfztK
-        Go+tyHLTglCA9qFDoFcFpv9/b8kJm98=
-X-Google-Smtp-Source: ABdhPJxMLnU3ZIJKNIZnhw9R15iaT5x3M37FMGTazy54fNU+vcmFffcZJ/v4fKVjDmfrZl6xoDNOHg==
-X-Received: by 2002:a05:6402:42d5:: with SMTP id i21mr490103edc.14.1631717946682;
-        Wed, 15 Sep 2021 07:59:06 -0700 (PDT)
-Received: from localhost.localdomain (host-79-43-5-131.retail.telecomitalia.it. [79.43.5.131])
-        by smtp.gmail.com with ESMTPSA id la17sm90688ejb.80.2021.09.15.07.59.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P573y5Vc2zJUuuf0RRwx4Cvk5IBWAT6Ne62UqhX4bYU=;
+        b=wz7eoZC2HgT9xq4Gm1KhA+d4PTr9YjsbmYTdQm0thBxkX9iyiGyaRQqLDosKHSv6YP
+         sbsFD6HxauuqnGwamqE4AQwz75aoz0XV+oXAWqo8FnAYQR9+9YBUFDLBxqJut9gzRbp3
+         5y2IsztRJG0UHLvvhDSNfoTt1gLEBTNjfWsEs1rlgInXo1Szexkuw3NjyoJFVMaVx23+
+         uF5cN5cO6hAVmkSFFrm14GqERiWyU/6RjnIwmQdQs4ca1HKTyfNhvPvCRPNyXsNRXye2
+         g/DIMHPBCaA07V7/OLFlh5AUqWlqMAL8WL+/tzq/ZNCitNAwbQRIJdanzf/8zMZ52qoQ
+         4Vmg==
+X-Gm-Message-State: AOAM530rHS/lpX6SXq05PeYQAlglcffwMIboH/xwJQsv5e7A3pNbf1uP
+        kvzPunPkP5sPfVAVjbgcEWAcaQ==
+X-Google-Smtp-Source: ABdhPJwRB1i8P/5MUsqecQu4H3LUbFlyF2TgQTNcjPoCkKhtdYqz9bQtL7i0zMYAUUN3+WsBh6P3RA==
+X-Received: by 2002:ad4:436b:: with SMTP id u11mr138020qvt.26.1631717975370;
+        Wed, 15 Sep 2021 07:59:35 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id b12sm166578qkk.3.2021.09.15.07.59.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Sep 2021 07:59:06 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Philip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>
-Subject: Re: [PATCH v5 15/19] staging: r8188eu: hal: Clean up usbctrl_vendorreq()
-Date:   Wed, 15 Sep 2021 16:59:03 +0200
-Message-ID: <3504293.VdliR8Xgxp@localhost.localdomain>
-In-Reply-To: <20210915135301.GF2088@kadam>
-References: <20210915124149.27543-1-fmdefrancesco@gmail.com> <20210915124149.27543-16-fmdefrancesco@gmail.com> <20210915135301.GF2088@kadam>
+        Wed, 15 Sep 2021 07:59:34 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQWNp-000zui-M1; Wed, 15 Sep 2021 11:59:33 -0300
+Date:   Wed, 15 Sep 2021 11:59:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH v2 0/9] Free user PTE page table pages
+Message-ID: <20210915145933.GH3544071@ziepe.ca>
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <5b9348fc-95fe-5be2-e9df-7c906e0c9b81@redhat.com>
+ <41ceeec1-52c4-4e99-201c-e1e05b2afbbc@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41ceeec1-52c4-4e99-201c-e1e05b2afbbc@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 15, 2021 3:53:01 PM CEST Dan Carpenter wrote:
-> On Wed, Sep 15, 2021 at 02:41:45PM +0200, Fabio M. De Francesco wrote:
-> > Clean up usbctrl_vendoreq () in usb_ops_linux.c. Eventually this function
-> > will be deleted but some of the code will be reused later. This cleanup
-> > makes code reuse easier.
-> >
-> Thanks for removing the URL.  This commit message is no longer bad to
-> the point where it has to be redone but it's still not great.
+On Wed, Sep 15, 2021 at 10:52:40PM +0800, Qi Zheng wrote:
+> I am going to split this patch series as follows:
 > 
-> I explicitly told you to leave the irrelevant information out.  I'm
-> trying to help you and it's frustrating that you're not listening.  I
-> wish that you had just copy and pasted the commit message which I sent.
-
-I'm sorry, seriously. It's hard to listen carefully when I need to do my 
-*real* work while trying my best to contribute to the kernel. Sometimes I'm 
-so tired that I forget something important or what it is said by reviewers. I 
-know that this is not a good excuse, anyway please don't ever think that I 
-don't mind of the time you spend on reviews and writing suggestions. 
-
-> This relates the discussion we had about reviewing patches one at a time
-> in the order they arrive.  Every patch should be self contained.  It
-> should not refer to the past except in the case of explaining the Fixes
-> tag and it should not refer to the future except in the case where it
-> needs to excuse adding unused infrastructure.  Reviewing is stateless.
-> We don't want to know about your plans.
+> 1. Introduce the new dummy APIs, which is an empty implementation.
+>    But I will explain its semantics.
+> 2. Merge #6, #7 and #8, and call these dummy APIs in any necessary
+>    location, and split some special cases into single patches, such as
+>    pagefault and gup, etc. So that we can explain in more detail the
+>    concurrency in these cases. For example, we don't need to hold any
+>    pte_refcount in the fast path in gup on the x86_64 platform. Because
+>    the PTE page can't be freed after the local CPU interrupt is closed
+>    in the fast path in gup.
+> 3. Introduce CONFIG_FREE_USER_PTE and implement these empty dummy APIs.
+> 4. Add a description document.
 > 
-> On the other hand, the commit message doesn't list the changes the
-> commit makes as part of the clean up process.  That would have been
-> helpful information for me as a reviewer.
-> 
-> *Sigh*  Whatever...  I would have allowed this commit message but there
-> is a bug in the code.
-> 
-> > +				memcpy(data, io_buf,  len);
-> > +		} else {
-> > +			/* errors */
-> >  			if (status < 0) {
-> > -				if (status == (-ESHUTDOWN) || 
-status == -ENODEV) {
-> > +				if (status == (-ESHUTDOWN || -
-ENODEV)) {
-> 
-> This is a bug so you'll have to redo the patch.
+> And I try to add a function that combines pte_offset_map() and
+> pte_try_get(). Maybe the func name is pte_try_map() recommended by
+> Jason, or keep the pte_offset_map() unchanged?
 
-This is the proof of what I was trying to convey with the words above. I 
-perfectly knew, since days, that this line is wrong but for some reason that 
-I really cannot understand why it's still there.
+It is part of the transformation, add a
+pte_try_map()/pte_undo_try_map() and replace all the pte_offset_map()
+callsites that can use the new API with it. The idea was that try_map
+would incorporate the pmd_trans_unstable/etc mess so searching for
+trans_unstable is a good place to start finding candidates. Some are
+simple, some are tricky.
 
-Thank you very much,
+When you get to step 3 you just change pte_try_map() and the callsites
+don't need changing.
 
-Fabio
-
-> regards,
-> dan carpenter
-> 
-
-
-
-
+Jason
