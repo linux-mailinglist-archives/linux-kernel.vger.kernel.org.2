@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E6740CB7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99F940CB7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 19:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhIORNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 13:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
+        id S230038AbhIORQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 13:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIORNt (ORCPT
+        with ESMTP id S229479AbhIORP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 13:13:49 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CCFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:12:30 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id j16so3306477pfc.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:12:30 -0700 (PDT)
+        Wed, 15 Sep 2021 13:15:59 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197E1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:14:40 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id w6so2054453pll.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 10:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pOMEGIUJGUdr+F99bUVzOfHRQbFP9f2mrAaV6VC/UnQ=;
-        b=j0DrfL0nMmB78LgWUu4l9iTsHBx9UZn1ZyLq5Qiq+XON2BpN7CVefK+ila51c3a4xt
-         viYvkFRe5k8BGQ0TBphd+nowGIrEqhxHuGpNvHd5nETcVukxpyUYtSAyeosA6u3Y3sox
-         qfS88Kl8+QC1H9L1n1ce0dsqhU9Vlrms0XeYQzLhNw5FFNfjMO/DzyajsG7xAOjJob+2
-         OZqRBmRNJL64y0Gomq/mJyCVTWhVtw/XwYu5IQMCLtGVA8AM2qqhxsGCAKi/m2xpZZ8x
-         uzI2JS1Kldyj/FljNHCynsAz8zW9/hqxKPoR9L/oHRWF2eP1XyhMbdw6GZTcfaham6W6
-         hf7g==
+        bh=Y/UjUbeHNyWAXNAAqLF9HMPvvId44F3B0leq0r2R0E8=;
+        b=SPoBlIw5g40ITyxAu+RPIPM0LEdSVBj0k6bXHe2ZXphNGKDPB71zbnWYKRm6rSWgZR
+         BQWwOHsImNMrPFsQ8KoogToOK6x4DDzWf6BCHnjXBwV6HWJG90vC0fJHGUi2h67j90oH
+         hLwsiCadbY9nZO1HJJWVP8rtQhhhzad4hE1rIY319m8WSl6TWcT6/oD9hYFj8gbShhOg
+         6YMWrFbLh/TgLJcOO83cv1ne6SFCzRSFSlCWtuIq7iR/UaU14zbqbPdR4VfEXbFss+Bj
+         iWEpjrUnZw1kdQwwuSsQkDTodhLgMT3qCEBa3pG4LLHXgKSsEg3p9kTnecz2aLSLNmL1
+         mPSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=pOMEGIUJGUdr+F99bUVzOfHRQbFP9f2mrAaV6VC/UnQ=;
-        b=RhuUBFk1d+V4kxPmvzqfHbwMWbD/Xx6ZReDc6OjaD88xWSvd7j/t5txHOR0qzLs0Fy
-         ugc/rcxdyNPdf9qcH9XrziN5677Wsqy6kyymtBXVfMLU6a4vSkY3Qoct/7fB9emCyOEL
-         6VjUJa/tGeYrL87z4FPwlvpRkkURkhQ340GEEUzA9Qog+6mQh+jZZ0D/mUKYh6SfsKBm
-         d+8R23nuz5PVi8HEixJXiM821iOUa98+TeIDTpAUAfchkQtL1p0DrArSSM1hWSokJWt1
-         QtAJzyXJDHwqz0nHoe+K7N5FLlxXiTc69rz2m2yslrGvU1sMX9H3vrZ1BBBnXIbU5fN/
-         nPLw==
-X-Gm-Message-State: AOAM530Lg4IlsF8izKlV1XXVUi0gphU/rd9KygNzO9FNU2ypaprs6d2k
-        n/zEasC77bLIdOuqS5B8wZ9zlFGc9VU=
-X-Google-Smtp-Source: ABdhPJyOzTFR7nzhvE8zE7qndnhzcMxMdTshWqGMm+bWNEjCaXps4+1+sKjwRF0nmzxEIah1FH9rpQ==
-X-Received: by 2002:a63:ea44:: with SMTP id l4mr768506pgk.210.1631725949581;
-        Wed, 15 Sep 2021 10:12:29 -0700 (PDT)
+        bh=Y/UjUbeHNyWAXNAAqLF9HMPvvId44F3B0leq0r2R0E8=;
+        b=ixsIvLTWqchshWPyikSInlh507+ApF8/FV4tNKZDHMpzT3lmPqGOx7Y5id8JYBGvVv
+         ISbGCbwFDImmAjlqP9qS3H0LvJIN635vmO3Kc/IOgNA8KVLeBLD0OFJrYQJ/ZpkQkIiB
+         8DU7+OiOFOjXijsNCeD2ZPIh6i3uVOKqySUAI/pkwlfqjUV8Br1PF86FVVcnyCiiT30/
+         diXvmlxz6GBvoR4SL6FtsGk1CsIXLCmyYAZBZJhUFqDwkils9+/oG+KU8iR/dOqYPiPC
+         CpHuD6djSQOHf/khiOgXq4PqKY5tlzx3Q1PK9lBgm5Jd78gtUqg2hPmVdkus6i5Sk6rU
+         iZEg==
+X-Gm-Message-State: AOAM533EHVo8gJRv1jXPiXRexWIiM19JszMtj1pEe1bAu+Lot1oAEIzU
+        7JEcuL77igHJzub+mNy81uKQval9sME=
+X-Google-Smtp-Source: ABdhPJweVG9tFNRFr3mgcI8mNCmuPMxj/AUcR5QEI7h2CVUPxMWxY2+S46Gtz82FrWPHisNYz4MA6Q==
+X-Received: by 2002:a17:90b:17d0:: with SMTP id me16mr896298pjb.49.1631726079013;
+        Wed, 15 Sep 2021 10:14:39 -0700 (PDT)
 Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id d10sm467583pfq.205.2021.09.15.10.12.27
+        by smtp.gmail.com with ESMTPSA id i10sm479637pfk.87.2021.09.15.10.14.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 10:12:29 -0700 (PDT)
+        Wed, 15 Sep 2021 10:14:38 -0700 (PDT)
 Subject: Re: [PATCH v2] extcon: extcon-axp288: use low level P-Unit semaphore
  lock for axp288 register accesses
 To:     Fabio Aiuto <fabioaiuto83@gmail.com>,
@@ -58,8 +58,8 @@ Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
         linux-kernel@vger.kernel.org
 References: <20210910073440.2190-1-fabioaiuto83@gmail.com>
 From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <db4648a4-291c-2941-8f76-29a328eaf25e@gmail.com>
-Date:   Thu, 16 Sep 2021 02:12:26 +0900
+Message-ID: <95e1aed4-944e-9e8e-f7b5-dcefb6e39147@gmail.com>
+Date:   Thu, 16 Sep 2021 02:14:35 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
@@ -72,6 +72,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
+
+If not critical, you better to write the patch title within 75 char.
+
+Regards,
+Chanwoo Choi
 
 On 21. 9. 10. 오후 4:34, Fabio Aiuto wrote:
 > use low level P-Unit semaphore lock for axp288 register
@@ -134,9 +139,6 @@ On 21. 9. 10. 오후 4:34, Fabio Aiuto wrote:
 >   	bool vbus_attach = false;
 >   
 > +	iosf_mbi_block_punit_i2c_access();
-
-You have to check the return value of iosf_mbi_block_punit_i2c_access()
-
 > +
 >   	vbus_attach = axp288_get_vbus_attach(info);
 >   	if (!vbus_attach)
@@ -164,9 +166,6 @@ You have to check the return value of iosf_mbi_block_punit_i2c_access()
 >   static void axp288_extcon_enable(struct axp288_extcon_info *info)
 >   {
 > +	iosf_mbi_block_punit_i2c_access();
-
-ditto.
-
 >   	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
 >   						BC_GLOBAL_RUN, 0);
 >   	/* Enable the charger detection logic */
@@ -182,9 +181,6 @@ ditto.
 >   	}
 >   
 > +	iosf_mbi_block_punit_i2c_access();
-
-ditto.
-
 > +
 >   	info->vbus_attach = axp288_get_vbus_attach(info);
 >   
@@ -196,9 +192,3 @@ ditto.
 >   	info->edev = devm_extcon_dev_allocate(&pdev->dev,
 >   					      axp288_extcon_cables);
 > 
-
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
