@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F01A40C6E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E64740C6E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237908AbhION62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:58:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:55828 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237842AbhION6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:58:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F2236D;
-        Wed, 15 Sep 2021 06:57:00 -0700 (PDT)
-Received: from [10.163.44.48] (unknown [10.163.44.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 281F43F719;
-        Wed, 15 Sep 2021 06:56:57 -0700 (PDT)
-Subject: Re: [PATCH] arm64/traps: Avoid unnecessary kernel/user pointer
- conversion
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <20210914152742.27047-1-amit.kachhap@arm.com>
- <20210914160056.GA35239@C02TD0UTHF1T.local>
-From:   Amit Kachhap <amit.kachhap@arm.com>
-Message-ID: <6662988b-b891-b6b0-cd7a-bd7f661fc737@arm.com>
-Date:   Wed, 15 Sep 2021 19:26:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S236606AbhION7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 09:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234212AbhION7x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 09:59:53 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C1DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:58:34 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id x5so2324103qtq.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=labbott.name; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:references:in-reply-to:content-transfer-encoding;
+        bh=j7F4OhupuEb6jt4oCrBdO2k5ZYwBESobEAtwAMK2gYE=;
+        b=vbs1cZg30L6WP2BfD2X2u4qRXc7cOdrvi4uc/GTN9IGfiWF35ZFEzxc7byJF7v7TwU
+         7fAP8Slm82zd/npPXX0VHyHxRepP15H0h3WhPuJ8GYdjtFqlbLH199U4ClweMjpCiIl7
+         eamuMz3W+Bzwr1kxvjVd/T6f3mqbxqzinwQLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=j7F4OhupuEb6jt4oCrBdO2k5ZYwBESobEAtwAMK2gYE=;
+        b=7u6h8N79zsdvB0gaYxARKSHnjKofxZZg80xqlJkZCgmwJOhPds5xyWJOJPZdER5Erz
+         bBMOlEgaAXoMzCpDxA7kl6VNqAt8Q0IDK+4Sy1d9r1ga9/4XUj98Aj1Fgwg7q1c0++7n
+         coTofkDkVJsNKAsUoEZzgO16Cvkj73Pc9PN3H3ZaTK9jG6Jf12ZT6QM3JiCFltZ6opCQ
+         Zgd/10H5FeuP1hMr9hGCceksbwiOolMthGRWMJxT1AIHTqFRisMOzTtU37SwPfCbN5iK
+         +dJACkKVW4UIIOQJaOphWDVR14wKwnOLfefEys5Z2F6nnYMeZmlHTI6yCkWp2X5eQPVR
+         VNQw==
+X-Gm-Message-State: AOAM532VFb67s9wvuUZtw/h/t6jATwljJgvvfU51xGa4IB0d+v1BEVNe
+        W5S1Pt2rW0NgKJ/dQ0w++4zC8Q==
+X-Google-Smtp-Source: ABdhPJygNeXQKoTJzVhhCRvRmxlTV1a88tZZk81IsttCzR2c9PKQ19nOgodRrh78dqHj8mHFm94UkQ==
+X-Received: by 2002:a05:622a:1651:: with SMTP id y17mr10295686qtj.332.1631714313291;
+        Wed, 15 Sep 2021 06:58:33 -0700 (PDT)
+Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
+        by smtp.gmail.com with ESMTPSA id z6sm52309qke.24.2021.09.15.06.58.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 06:58:32 -0700 (PDT)
+Message-ID: <b90db9e7-9b6b-c415-d087-3505ba0be0d6@labbott.name>
+Date:   Wed, 15 Sep 2021 09:58:32 -0400
 MIME-Version: 1.0
-In-Reply-To: <20210914160056.GA35239@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: Reminder: Voting procedures for the Linux Foundation Technical
+ Advisory Board
 Content-Language: en-US
+From:   Laura Abbott <laura@labbott.name>
+To:     ksummit@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>
+References: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
+In-Reply-To: <fccbdadc-a57a-f6fe-68d2-0fbac2fd6b81@labbott.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/14/21 9:30 PM, Mark Rutland wrote:
-> On Tue, Sep 14, 2021 at 08:57:42PM +0530, Amit Daniel Kachhap wrote:
->> Annotating a pointer from kernel to __user and then back again might
->> confuse sparse. In call_undef_hook() it can be avoided by not using the
->> intermediate user pointer variable.
+On 9/9/21 12:49, Laura Abbott wrote:
+> Hi,
 > 
-> When you say "might confuse sparse", does it complain today? If so, can
-> you include an example of what goes wrong?
-
-No it does not give warning. The __force option silences the warning. My
-idea is to remove the unwanted __force annotations and not mix user and
-kernel pointers.
-
+> Reminder that the Linux Foundation Technical Advisory Board (TAB) annual
+> election will be held virtually during the 2021 Kernel Summit and Linux
+> Plumbers Conference. Voting will run from September 20th to September
+> 23rd 16:00 GMT-4 (US/Eastern). The voting criteria for the 2021 election
+> are:
 > 
->> Note: This patch adds no functional changes to code.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Signed-off-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
->> ---
->>   arch/arm64/kernel/traps.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
->> index b03e383d944a..357d10a8bbf5 100644
->> --- a/arch/arm64/kernel/traps.c
->> +++ b/arch/arm64/kernel/traps.c
->> @@ -404,7 +404,8 @@ static int call_undef_hook(struct pt_regs *regs)
->>   
->>   	if (!user_mode(regs)) {
->>   		__le32 instr_le;
->> -		if (get_kernel_nofault(instr_le, (__force __le32 *)pc))
->> +		if (get_kernel_nofault(instr_le,
->> +				       (__le32 *)instruction_pointer(regs)))
+> There exist three kernel commits in a mainline or stable released
+> kernel that both
+> - Have a commit date in the year 2020 or 2021
+> - Contain an e-mail address in one of the following tags or merged
+> tags (e.g. Reviewed-and-tested-by)
+> -- Signed-off-by
+> -- Tested-by
+> -- Reported-by
+> -- Reviewed-by
+> -- Acked-by
 > 
-> Can we make `pc` an unsigned long, instead?
-
-I think it can be done.
-
+> If you have more than 50 commits that meet this requirement you will
+> receive a ballot automatically.
 > 
-> It'd be nice to handle all three cases consistently, even if that means
-> adding __force to the two user cases.
-
-Agree with your suggestion. Even in the 2 user cases, __force may not be
-needed as the typecast will be from from unsigned long to user pointer.
-
-BR,
-Amit
+> If you have between 3 and 49 commits that meet this requirement please
+> e-mail tab-elections@lists.linuxfoundation.org to request your ballot.
+> We strongly encourage everyone who meets this criteria to request a
+> ballot.
+> 
+> We will be using Condorcet Internet Voting
+> Service (CIVS) https://civs1.civs.us/ . This is a voting service
+> focused on security and privacy. There are sample polls on the
+> website if you would like to see what a ballot will look like.
+> 
+> If you have any questions please e-mail 
+> tab-elections@lists.linuxfoundation.org.
 > 
 > Thanks,
-> Mark.
+> Laura
 > 
->>   			goto exit;
->>   		instr = le32_to_cpu(instr_le);
->>   	} else if (compat_thumb_mode(regs)) {
->> -- 
->> 2.17.1
->>
+> P.S. Please also consider this another reminder to consider running for
+> the TAB as well
+
+Final reminder: please remember to request your ballot for the TAB
+elections. If you know others who are eligible please encourage
+them to request a ballot as well.
