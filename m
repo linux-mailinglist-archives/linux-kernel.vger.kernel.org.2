@@ -2,180 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21E140C641
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 15:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704DD40C596
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 14:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhIONVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 09:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbhIONVm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 09:21:42 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC21C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 06:20:23 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id uDLH2500r4C55Sk06DLHoV; Wed, 15 Sep 2021 15:20:21 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mQUnf-004eT9-Vh; Wed, 15 Sep 2021 15:18:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mQUIy-002gEP-Jn; Wed, 15 Sep 2021 14:46:24 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Simon Horman <horms@verge.net.au>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v6] ARM: uncompress: Parse "linux,usable-memory-range" DT property
-Date:   Wed, 15 Sep 2021 14:46:20 +0200
-Message-Id: <0de07021e49ac26a8f9386f62f3e15e947d0f6d0.1631709384.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S233191AbhIOMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 08:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233453AbhIOMtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:49:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C02260F70;
+        Wed, 15 Sep 2021 12:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631710075;
+        bh=0GQl4VoiOkvJs4i1BDrRnWf88kBhXHT0+mS0tM2uYHY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=htxVV3ahKKIIqJoNZ4T8i8t6nLAn+5ntVy8Y44LXyWXlSCrKZov5esIp9RrrhTsvM
+         4aRuLVDza3MLLPJQuscyZJ4npewNdHMgfATWz8PqeG6WESPzOSUXlwxrVQTeLXICEq
+         /VagvfsuJWNzsNJc3wRZFKV5fz5kzN7VGakYackulZj/rGBZw6NpR/NzEfZpva4hAr
+         03lHqMNa6b2JRnozFjh7vnfqa9K4QQreO24F4FDF4Lcp67sGS3sZQDvKvn1oA6ZiNz
+         vwSuWdRKnMyxLpBNUz2STAHaD6ddyXQet0F7WtimFvMojbvenJfVAAhC1pjhEWORAA
+         adbXbmiHBqM7g==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mQUKP-000yu5-KA; Wed, 15 Sep 2021 14:47:53 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 RESEND] mfd: hi6421-spmi-pmic: cleanup drvdata
+Date:   Wed, 15 Sep 2021 14:47:49 +0200
+Message-Id: <b6102d6db357ebb5c937f460a564c6f26281e403.1631709890.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for parsing the "linux,usable-memory-range" DT property.
-This property is used to describe the usable memory reserved for the
-crash dump kernel, and thus makes the memory reservation explicit.
-If present, Linux no longer needs to mask the program counter, and rely
-on the "mem=" kernel parameter to obtain the start and size of usable
-memory.
+There are lots of fields at struct hi6421_spmi_pmic that aren't
+used. In a matter of fact, only regmap is needed.
 
-For backwards compatibility, the traditional method to derive the start
-of memory is still used if "linux,usable-memory-range" is absent.
+So, drop the struct as a hole, and set just the regmap as
+the drvdata.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
-KernelVersion: v5.15-rc1
----
-The corresponding patch for kexec-tools is "[PATCH] arm: kdump: Add DT
-properties to crash dump kernel's DTB", which is still valid:
-https://lore.kernel.org/r/20200902154129.6358-1-geert+renesas@glider.be/
+ drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
+ drivers/misc/hi6421v600-irq.c            |  9 ++++-----
+ drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
+ include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
+ 4 files changed, 14 insertions(+), 46 deletions(-)
+ delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
 
-v6:
-  - All dependencies are in v5.15-rc1,
-
-v5:
-  - Remove the addition of "linux,elfcorehdr" and
-    "linux,usable-memory-range" handling to arch/arm/mm/init.c,
-
-v4:
-  - Remove references to architectures in chosen.txt, to avoid having to
-    change this again when more architectures copy kdump support,
-  - Remove the architecture-specific code for parsing
-    "linux,usable-memory-range" and "linux,elfcorehdr", as the FDT core
-    code now takes care of this,
-  - Move chosen.txt change to patch changing the FDT core,
-  - Use IS_ENABLED(CONFIG_CRASH_DUMP) instead of #ifdef,
-
-v3:
-  - Rebase on top of accepted solution for DTB memory information
-    handling, which is part of v5.12-rc1,
-
-v2:
-  - Rebase on top of reworked DTB memory information handling.
----
- .../arm/boot/compressed/fdt_check_mem_start.c | 48 ++++++++++++++++---
- 1 file changed, 42 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/boot/compressed/fdt_check_mem_start.c
-index 62450d824c3ca180..9291a2661bdfe57f 100644
---- a/arch/arm/boot/compressed/fdt_check_mem_start.c
-+++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
-@@ -55,16 +55,17 @@ static uint64_t get_val(const fdt32_t *cells, uint32_t ncells)
-  * DTB, and, if out-of-range, replace it by the real start address.
-  * To preserve backwards compatibility (systems reserving a block of memory
-  * at the start of physical memory, kdump, ...), the traditional method is
-- * always used if it yields a valid address.
-+ * used if it yields a valid address, unless the "linux,usable-memory-range"
-+ * property is present.
-  *
-  * Return value: start address of physical memory to use
+diff --git a/drivers/mfd/hi6421-spmi-pmic.c b/drivers/mfd/hi6421-spmi-pmic.c
+index 4f136826681b..c9c0c3d7011f 100644
+--- a/drivers/mfd/hi6421-spmi-pmic.c
++++ b/drivers/mfd/hi6421-spmi-pmic.c
+@@ -8,7 +8,6 @@
   */
- uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+ 
+ #include <linux/mfd/core.h>
+-#include <linux/mfd/hi6421-spmi-pmic.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+@@ -30,19 +29,14 @@ static const struct regmap_config regmap_config = {
+ static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
  {
--	uint32_t addr_cells, size_cells, base;
-+	uint32_t addr_cells, size_cells, usable_base, base;
- 	uint32_t fdt_mem_start = 0xffffffff;
--	const fdt32_t *reg, *endp;
--	uint64_t size, end;
-+	const fdt32_t *usable, *reg, *endp;
-+	uint64_t size, usable_end, end;
- 	const char *type;
- 	int offset, len;
+ 	struct device *dev = &sdev->dev;
++	struct regmap *regmap;
+ 	int ret;
+-	struct hi6421_spmi_pmic *ddata;
+-	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
+-	if (!ddata)
+-		return -ENOMEM;
  
-@@ -80,6 +81,27 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
- 	if (addr_cells > 2 || size_cells > 2)
- 		return mem_start;
+-	ddata->regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
+-	if (IS_ERR(ddata->regmap))
+-		return PTR_ERR(ddata->regmap);
++	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
  
-+	/*
-+	 * Usable memory in case of a crash dump kernel
-+	 * This property describes a limitation: memory within this range is
-+	 * only valid when also described through another mechanism
-+	 */
-+	usable = get_prop(fdt, "/chosen", "linux,usable-memory-range",
-+			  (addr_cells + size_cells) * sizeof(fdt32_t));
-+	if (usable) {
-+		size = get_val(usable + addr_cells, size_cells);
-+		if (!size)
-+			return mem_start;
-+
-+		if (addr_cells > 1 && fdt32_ld(usable)) {
-+			/* Outside 32-bit address space */
-+			return mem_start;
-+		}
-+
-+		usable_base = fdt32_ld(usable + addr_cells - 1);
-+		usable_end = usable_base + size;
-+	}
-+
- 	/* Walk all memory nodes and regions */
- 	for (offset = fdt_next_node(fdt, -1, NULL); offset >= 0;
- 	     offset = fdt_next_node(fdt, offset, NULL)) {
-@@ -107,7 +129,20 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+-	ddata->dev = dev;
+-
+-	dev_set_drvdata(&sdev->dev, ddata);
++	dev_set_drvdata(&sdev->dev, regmap);
  
- 			base = fdt32_ld(reg + addr_cells - 1);
- 			end = base + size;
--			if (mem_start >= base && mem_start < end) {
-+			if (usable) {
-+				/*
-+				 * Clip to usable range, which takes precedence
-+				 * over mem_start
-+				 */
-+				if (base < usable_base)
-+					base = usable_base;
-+
-+				if (end > usable_end)
-+					end = usable_end;
-+
-+				if (end <= base)
-+					continue;
-+			} else if (mem_start >= base && mem_start < end) {
- 				/* Calculated address is valid, use it */
- 				return mem_start;
- 			}
-@@ -123,7 +158,8 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
- 	}
+ 	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
+ 				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
+diff --git a/drivers/misc/hi6421v600-irq.c b/drivers/misc/hi6421v600-irq.c
+index 08535e97ff43..1c763796cf1f 100644
+--- a/drivers/misc/hi6421v600-irq.c
++++ b/drivers/misc/hi6421v600-irq.c
+@@ -10,7 +10,6 @@
+ #include <linux/bitops.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+-#include <linux/mfd/hi6421-spmi-pmic.h>
+ #include <linux/module.h>
+ #include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+@@ -220,7 +219,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
+ 	struct platform_device *pmic_pdev;
+ 	struct device *dev = &pdev->dev;
+ 	struct hi6421v600_irq *priv;
+-	struct hi6421_spmi_pmic *pmic;
++	struct regmap *regmap;
+ 	unsigned int virq;
+ 	int i, ret;
  
- 	/*
--	 * The calculated address is not usable.
-+	 * The calculated address is not usable, or was overridden by the
-+	 * "linux,usable-memory-range" property.
- 	 * Use the lowest usable physical memory address from the DTB instead,
- 	 * and make sure this is a multiple of 2 MiB for phys/virt patching.
+@@ -229,8 +228,8 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
+ 	 * which should first set drvdata. If this doesn't happen, hit
+ 	 * a warn on and return.
  	 */
+-	pmic = dev_get_drvdata(pmic_dev);
+-	if (WARN_ON(!pmic))
++	regmap = dev_get_drvdata(pmic_dev);
++	if (WARN_ON(!regmap))
+ 		return -ENODEV;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+@@ -238,7 +237,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	priv->dev = dev;
+-	priv->regmap = pmic->regmap;
++	priv->regmap = regmap;
+ 
+ 	spin_lock_init(&priv->lock);
+ 
+diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
+index 662d87ae61cb..4671678f6b19 100644
+--- a/drivers/regulator/hi6421v600-regulator.c
++++ b/drivers/regulator/hi6421v600-regulator.c
+@@ -9,8 +9,8 @@
+ // Guodong Xu <guodong.xu@linaro.org>
+ 
+ #include <linux/delay.h>
+-#include <linux/mfd/hi6421-spmi-pmic.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/driver.h>
+@@ -237,7 +237,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+ 	struct hi6421_spmi_reg_priv *priv;
+ 	struct hi6421_spmi_reg_info *info;
+ 	struct device *dev = &pdev->dev;
+-	struct hi6421_spmi_pmic *pmic;
++	struct regmap *regmap;
+ 	struct regulator_dev *rdev;
+ 	int i;
+ 
+@@ -246,8 +246,8 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+ 	 * which should first set drvdata. If this doesn't happen, hit
+ 	 * a warn on and return.
+ 	 */
+-	pmic = dev_get_drvdata(pmic_dev);
+-	if (WARN_ON(!pmic))
++	regmap = dev_get_drvdata(pmic_dev);
++	if (WARN_ON(!regmap))
+ 		return -ENODEV;
+ 
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+@@ -261,7 +261,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
+ 
+ 		config.dev = pdev->dev.parent;
+ 		config.driver_data = priv;
+-		config.regmap = pmic->regmap;
++		config.regmap = regmap;
+ 
+ 		rdev = devm_regulator_register(dev, &info->desc, &config);
+ 		if (IS_ERR(rdev)) {
+diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
+deleted file mode 100644
+index e5b8dbf828b6..000000000000
+--- a/include/linux/mfd/hi6421-spmi-pmic.h
++++ /dev/null
+@@ -1,25 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * Header file for device driver Hi6421 PMIC
+- *
+- * Copyright (c) 2013 Linaro Ltd.
+- * Copyright (C) 2011 Hisilicon.
+- * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
+- *
+- * Guodong Xu <guodong.xu@linaro.org>
+- */
+-
+-#ifndef	__HISI_PMIC_H
+-#define	__HISI_PMIC_H
+-
+-#include <linux/irqdomain.h>
+-#include <linux/regmap.h>
+-
+-struct hi6421_spmi_pmic {
+-	struct resource				*res;
+-	struct device				*dev;
+-	void __iomem				*regs;
+-	struct regmap				*regmap;
+-};
+-
+-#endif		/* __HISI_PMIC_H */
 -- 
-2.25.1
+2.31.1
+
 
