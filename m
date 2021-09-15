@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04CC40C83A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4F440C833
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238205AbhIOPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:24:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238178AbhIOPYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:24:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7458B60F5B;
-        Wed, 15 Sep 2021 15:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631719375;
-        bh=CFcne7+7qHsHstFKZ8q27i5a1vH58yXKDRbZpKDT3Og=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fh5j1qiGe4lhnNE63fc22HRgRVHmcrVUV4F+dgUD/xmJIWo+wee3Z1YvAqYdPMn+O
-         43DpfimIewbGTUOWTGWZSBdm/u1LQhzknpmgvLwr7BQWCORbN7Ll7fISiK1VFpdjkR
-         khYfusxqh9SbOWWhu8mpPt98br62xOkNTF3zjBqxa6m5z41AI/akCFqAmb070LSX6J
-         YAVlE+rVhG6ERzVGGZ9UlqAbwEsFbJirULhQNeHxRt0g5io7jT55Y4GINmWrIumZIW
-         OYZoUNq+4ywDdjQzF1TarRoSX4uzA1PZ2QJHZd+5nS+8AxkhozNfRXUwdQCsP3/GSU
-         +qAeubGItaN3Q==
-From:   Mark Brown <broonie@kernel.org>
-To:     tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>,
-        matthias.bgg@gmail.com
-Cc:     Mark Brown <broonie@kernel.org>, tzungbi@google.com,
-        alsa-devel@alsa-project.org, chipeng.chang@mediatek.com,
-        linux-mediatek@lists.infradead.org, shane.chien@mediatek.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jiaxin.yu@mediatek.com
-Subject: Re: [PATCH] ASoC: mediatek: mt6359: Fix unexpected error in bind/unbind flow
-Date:   Wed, 15 Sep 2021 16:21:50 +0100
-Message-Id: <163171901944.9674.15745923942801327979.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210915034659.25044-1-trevor.wu@mediatek.com>
-References: <20210915034659.25044-1-trevor.wu@mediatek.com>
+        id S238092AbhIOPXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:23:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57485 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234188AbhIOPXx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 11:23:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631719353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Ekmwk3OztOf0647iP1EhnCMT1OsTFbXB30u374i/AVo=;
+        b=e/oZkWGCwNlLTrEOCq462sndX4EFw/L0oZikLDunvWzFnzgBazIHzgvIfp27F99tACf4hd
+        kx3VRfIPBKGSZvown/hgGJVtsXl4hu3zBb2KW0g/98JtBudgfX7UeLpLAruEsZFcYT98GW
+        7RU36MPnVJUe2PJQ9DfxaosZzAIxRa4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-g4daYCpBPySJB6TQPbJPOg-1; Wed, 15 Sep 2021 11:22:29 -0400
+X-MC-Unique: g4daYCpBPySJB6TQPbJPOg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50EC1BD047;
+        Wed, 15 Sep 2021 15:22:05 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.17.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C500519736;
+        Wed, 15 Sep 2021 15:22:04 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 2B6FD220C99; Wed, 15 Sep 2021 11:22:04 -0400 (EDT)
+Date:   Wed, 15 Sep 2021 11:22:04 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, xu.xin16@zte.com.cn,
+        Christoph Hellwig <hch@infradead.org>, zhang.yunkai@zte.com.cn
+Subject: [PATCH] init/do_mounts.c: Harden split_fs_names() against buffer
+ overflow
+Message-ID: <YUIPnPV2ttOHNIcX@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 11:46:59 +0800, Trevor Wu wrote:
-> mt6359-sound is a MFD driver. Because its regmap is retrieved from its
-> parent, it shouldn't be freed in mt6359-sound driver.
-> 
-> snd_soc_component_exit_regmap() will do regmap_exit(), this results in
-> unexpected results if sound card unregister flow is invoked when users
-> try to bind/unbind audio codec.
-> 
-> [...]
+split_fs_names() currently takes comma separated list of filesystems
+and converts it into individual filesystem strings. Pleaces these
+strings in the input buffer passed by caller and returns number of
+strings.
 
-Applied to
+If caller manages to pass input string bigger than buffer, then we
+can write beyond the buffer. Or if string just fits buffer, we will
+still write beyond the buffer as we append a '\0' byte at the end.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Will be nice to pass size of input buffer to split_fs_names() and
+put enough checks in place so such buffer overrun possibilities
+do not occur.
 
-Thanks!
+Hence this patch adds "size" parameter to split_fs_names() and makes
+sure we do not access memory beyond size. If input string "names"
+is larger than passed in buffer, input string will be truncated to
+fit in buffer.
 
-[1/1] ASoC: mediatek: mt6359: Fix unexpected error in bind/unbind flow
-      commit: 6d66c5ccf5cb8af866fe2bb014098a3dd7bfa3cc
+Reported-by: xu xin <xu.xin16@zte.com.cn>
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ init/do_mounts.c |   15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Index: redhat-linux/init/do_mounts.c
+===================================================================
+--- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
++++ redhat-linux/init/do_mounts.c	2021-09-15 09:52:09.884449718 -0400
+@@ -338,19 +338,20 @@ __setup("rootflags=", root_data_setup);
+ __setup("rootfstype=", fs_names_setup);
+ __setup("rootdelay=", root_delay_setup);
+ 
+-static int __init split_fs_names(char *page, char *names)
++static int __init split_fs_names(char *page, size_t size, char *names)
+ {
+ 	int count = 0;
+-	char *p = page;
++	char *p = page, *end = page + size - 1;
++
++	strncpy(p, root_fs_names, size);
++	*end = '\0';
+ 
+-	strcpy(p, root_fs_names);
+ 	while (*p++) {
+ 		if (p[-1] == ',')
+ 			p[-1] = '\0';
+ 	}
+-	*p = '\0';
+ 
+-	for (p = page; *p; p += strlen(p)+1)
++	for (p = page; p < end && *p; p += strlen(p)+1)
+ 		count++;
+ 
+ 	return count;
+@@ -404,7 +405,7 @@ void __init mount_block_root(char *name,
+ 	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
+ 		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
+ 	if (root_fs_names)
+-		num_fs = split_fs_names(fs_names, root_fs_names);
++		num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
+ 	else
+ 		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
+ retry:
+@@ -543,7 +544,7 @@ static int __init mount_nodev_root(void)
+ 	fs_names = (void *)__get_free_page(GFP_KERNEL);
+ 	if (!fs_names)
+ 		return -EINVAL;
+-	num_fs = split_fs_names(fs_names, root_fs_names);
++	num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
+ 
+ 	for (i = 0, fstype = fs_names; i < num_fs;
+ 	     i++, fstype += strlen(fstype) + 1) {
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
