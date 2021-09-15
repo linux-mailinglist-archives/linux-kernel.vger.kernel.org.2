@@ -2,191 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F081C40C29B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDF140C2A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237340AbhIOJPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237157AbhIOJPg (ORCPT
+        id S237196AbhIOJR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:17:59 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:48081 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231860AbhIOJR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:15:36 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7D2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:14:18 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id o66so642736oib.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:14:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n2R5sQocnc5nHBs+VrySqd2CEimyp7idPHRQqGykyb8=;
-        b=QsgOKFYHtP7k3b0fDCYInl3hodXFFr8+LOxQTNgoDGCPfFBy2oVBYEP8+fYh6Bjb0t
-         Baoga54t4aVFdX2EGvkEqd53Gpz/6lK+FT2AiGOBRbtOPjHKkixjaxkGgh8Z8UbKSMXn
-         pRNTqSeHX7M3xZRRs9VHFbJHJV76pOsW6ToYi4mT2pxnbwWFbeHLDD9lIKZwZFelkuv/
-         2s5RbMJUmXOPFXBxLuSp8Pe5GUZjVWaC0dXr3FqAEakFYh0LbPVMEyFX5YDXfeelTeex
-         qKQ8F70AKSdCcIg8J+MHoIkH97pgbYUQGLzQyl8J2lwqKiouuqFqDhApKT1pzoT4xlId
-         V34w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n2R5sQocnc5nHBs+VrySqd2CEimyp7idPHRQqGykyb8=;
-        b=REZw3iaUpWCmM2gjiR4GIOwy512bONuUd6yf/8Cf9qxW0mKUeOrE0qbvjUuAQAqFBG
-         EeA++PbcuZoUjD/9KH29KmIi/1Gu/FX5tf1snQC0ZnMU//A3VdehgSsTn7uDiivN7j1R
-         fE/gMi9tPflFyql0Aq9INEmm01aN4+Frq7095DUZ+vFMTQk8JSBwgCYdmURJsFmtWSt0
-         5cDlmLQ7Cl5KfUXRQoiUHp2nvY1+h1G1TzhUD8vHGCBvTDxdhfIwr8GvJD9NB48iNOVa
-         KdtQ0dhjptIPA66LIBJ9F5RUhNLYWkGFDI1q8kNAvXjVS6n/jjuNsOoI538kH2RB3JlB
-         SeLg==
-X-Gm-Message-State: AOAM5302tHJJOReoh0lxMdSBbw797hibIKGqQ10ttwRwwkQA/AZMVl/b
-        HiLgqksTbeULax414aN49KwNS1HXELer+IsrtZIBYA==
-X-Google-Smtp-Source: ABdhPJxrplVg3i7lev3jvD1KetqKrk8zl3U6724cMh67wfpVYOS0SD87U9serb5ZgRgxlO/ByXmi7ENyfRIlyg+0QQU=
-X-Received: by 2002:aca:f189:: with SMTP id p131mr4569843oih.128.1631697257294;
- Wed, 15 Sep 2021 02:14:17 -0700 (PDT)
+        Wed, 15 Sep 2021 05:17:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1631697400; x=1663233400;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=ma3zWFkcsN2tpkbu/znu1sGgtZMKILZTHWWwXdz7ISg=;
+  b=kFm9SAGYTU5FEZ+NnSJ5uvGWQRDBCH8q/Xstv1sM7IAraBwYPGJPnHRB
+   YdEkU8bG9dix+OOtSNfR8zU5XmS84bpKlZfI39dPw57bHq0aKHtDnoQvu
+   9xfjiM2ZSWR5PBQQKyskNlO2rv32EUpKXWCuPE/GUbX//XZMzW+PJDRNI
+   AqCvCz8kyqWMs8v54uPIAhxMxJtj7ykxXD5aTGYNIF1fF58HRivZ3XHRa
+   CHwtZguGBv2Zs2fohrVEkV8ktQO4ZLpC4e5e2GrreSbvxjtvXcK81RnWl
+   X7yyd32DV7CQq3+OE2Pdwj586qztUu7XgM5wZDT7E2NR6Obu+fwt9RYMu
+   A==;
+IronPort-SDR: rpgf4GtRNa4J7nAJhUlrY+75yDLN2BLA9DGrUJJZvIB9lQ++uBK5pwJCiuhshfNKPG4JmphAGh
+ LMyu+xMtF5lOxgwKVcoJ/GcaHiuwH0JBjrzINaiUpiG0mS97LB6+4aZg4w6S9UDEDCc4E2Ft9j
+ SXSheqpFGYgWNsYxo6hQN51T6ydMDITajLjjqhafp8V2a3bl9wQvPNX/a4hJjNECLyxMe9xeKQ
+ RXLe3DOn4IJ6a/ArXbR1Z9hOsGMZc2zZvtwZE5I71+H7n2eWivpb+nHg24hBnEpMUjXtcCIkMc
+ lRcZp4c1ACcCVfEDnmqkSvWF
+X-IronPort-AV: E=Sophos;i="5.85,295,1624345200"; 
+   d="scan'208";a="136033834"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2021 02:16:39 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 15 Sep 2021 02:16:38 -0700
+Received: from [10.171.246.91] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Wed, 15 Sep 2021 02:16:36 -0700
+Subject: Re: [PATCH v3 00/10] iio: adc: at91-sama5d2_adc: add support for
+ sama7g5
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <ludovic.desroches@microchip.com>
+References: <20210901123013.329792-1-eugen.hristev@microchip.com>
+ <20210905112805.3e11c2dd@jic23-huawei>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <6d85626b-46e0-0b06-c2c3-014ccd5aaa32@microchip.com>
+Date:   Wed, 15 Sep 2021 11:16:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <000000000000eaacf005ca975d1a@google.com> <20210831074532.2255-1-hdanton@sina.com>
- <20210914123726.4219-1-hdanton@sina.com> <87v933b3wf.ffs@tglx>
- <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com> <87mtoeb4hb.ffs@tglx>
-In-Reply-To: <87mtoeb4hb.ffs@tglx>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 15 Sep 2021 11:14:06 +0200
-Message-ID: <CACT4Y+avKp8LCS8vBdaFLXFNcNiCq3vF-8K59o7c1oy86v-ADA@mail.gmail.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, paulmck@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210905112805.3e11c2dd@jic23-huawei>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sept 2021 at 10:57, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Tue, Sep 14 2021 at 20:00, Dmitry Vyukov wrote:
-> > On Tue, 14 Sept 2021 at 16:58, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> Now what happens when the mac80211 callback rearms the timer so it
-> >> expires immediately again:
-> >>
-> >>         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
-> >>                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
-> >>
-> >> bcn is a user space controlled value. Now lets assume that bcn_int is <=1,
-> >> which would certainly cause the loop in hrtimer_run_queues() to keeping
-> >> looping forever.
-> >>
-> >> That should be easy to verify by implementing a simple test which
-> >> reschedules a hrtimer from the callback with a expiry time close to now.
-> >>
-> >> Not today as I'm about to head home to fire up the pizza oven.
-> >
-> > This question definitely shouldn't take priority over the pizza. But I
-> > think I saw this "rearm a timer with a user-controlled value without
-> > any checks" pattern lots of times and hangs are inherently harder to
-> > localize and reproduce. So I wonder if it makes sense to add a debug
-> > config that would catch such cases right when the timer is set up
-> > (issue a WARNING)?
->
-> Yes and no. It's hard to differentiate between a valid short expiry
-> rearm and something which is caused by unchecked values. I have some
-> ideas but all of them are expensive and therefore probably debug
-> only. Which is actually better than nothing :)
->
-> > However, for automated testing there is the usual question of
-> > balancing between false positives and false negatives. The check
-> > should not produce false positives, but at the same time it should
-> > catch [almost] all actual stalls so that they don't manifest as
-> > duplicate stall reports.
->
-> Right. The problem could be even there with checked values:
->
->        start_timer(1ms)
->        timer_expires()
->          callback()
->            forward_timer(timer, now, period(1ms));
->
-> which might be perfectly fine with a production kernel as it leaves
-> enough time to make overall progress.
->
-> Now with a full debug kernel with all bells and whistels that callback
-> might just run into this situation:
->
->       start_timer(1ms) T0
->        timer_expires() T1
->          callback()
->            do_stuff()
->            forward_timer(timer, TNOW, period(1ms));
->
->
-> T1 - T0   = 1.001ms
-> TNOW - T1 = 0.998 ms
->
-> So the forward will just rearm it to T0 + 2ms which means it expires in
-> 1us.
->
-> > If I understand it correctly the timer is not actually set up as
-> > periodic, but rather each callback invocation arms it again. Setting
-> > up a timer for 1 ns _once_ (or few times) is probably fine (right?),
-> > so the check needs to be somewhat more elaborate and detect "infinite"
-> > rearming.
->
-> Yes.
->
-> That made me actually look at that mac80211_hwsim callback again.
->
->         hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
->                         ns_to_ktime(bcn_int * NSEC_PER_USEC));
->
-> So what this does is really wrong because it tries to schedule the timer
-> on the theoretical periodic timeline. Which goes really south once the
-> timer is late or the callback execution took longer than the
-> period. Hypervisors scheduling out a VCPU at the wrong place will do
-> that for you nicely.
+On 05/09/2021 at 12:28, Jonathan Cameron wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Wed, 1 Sep 2021 15:30:03 +0300
+> Eugen Hristev <eugen.hristev@microchip.com> wrote:
+> 
+>> Hi,
+>>
+>> This series adds support for sama7g5.
+>>
+>> The sama7g5 is slightly different from sama5d2, but has the same basic
+>> operations. The register map is a bit different, so, I added some primitives
+>> to differentiate between the two classes of hardware blocks (sama5d2-sam9x60
+>> and sama7g5).
+>>
+>> Sama7g5 has 16 channels ADC, no resistive touch, and extra features
+>> (FIFOs, better oversampling , not implemented yet).
+>>
+>> It is a rework of the series initially sent here:
+>> https://marc.info/?l=linux-iio&m=161461656807826&w=2
+>>
+>> Changes in v3:
+>> updates for the channel indexes ABI
+>> minor nitpicks fixes
+>> fixed krobot report
+> 
+> v2 dropped,
+> v3 1-8 applied to the togreg branch of iio.git and initially pushed out as testing
+> for 0-day to poke at and to allow me to rebase after rc1 is available.
 
-Nice!
+v3 9-10 applied to the at91-dt branch for 5.16.
+It will go through the arm-soc tree.
 
-You mentioned that hrtimer_run_queues() may not return. Does it mean
-that it can just loop executing the same re-armed callback again and
-again? Maybe then the debug check condition should be that
-hrtimer_run_queues() runs the same callback more than N times w/o
-returning?
+Thanks, best regards,
+   Nicolas
+
+>> Changes in v2:
+>>
+>> I reworked this according to review by Jonathan, meaning that first I created
+>> a no-op patch that will convert the driver to a more platform specific data
+>> dedicated type of driver. This adds various structures that hold things like
+>> register layout and channel information.
+>> After this I created few patches that implement the main differences between
+>> sama7g5 and older products: the end-of-conversion new register. I added
+>> helper functions to make code more easy to read and more simple.
+>> One the last patches adds the layout and channels for sama7g5.
+>> At this moment in linux-next, the DT for sama7g5 and sama7g5ek is present,
+>> and the last patches add and enable this node in DT for this board.
+>>
+>> Eugen
+>>
+>>
+>>
+>> Eugen Hristev (10):
+>>    dt-bindings: iio: adc: at91-sama5d2: add compatible for sama7g5-adc
+>>    iio: adc: at91-sama5d2_adc: initialize hardware after clock is started
+>>    iio: adc: at91-sama5d2_adc: remove unused definition
+>>    iio: adc: at91-sama5d2_adc: convert to platform specific data
+>>      structures
+>>    iio: adc: at91-sama5d2_adc: add support for separate end of conversion
+>>      registers
+>>    iio: adc: at91-sama5d2_adc: add helper for COR register
+>>    iio: adc: at91-sama5d2_adc: add support for sama7g5 device
+>>    iio: adc: at91-sama5d2_adc: update copyright and authors information
+>>    ARM: dts: at91: sama7g5: add node for the ADC
+>>    ARM: dts: at91: sama7g5ek: enable ADC on the board
+>>
+>>   .../bindings/iio/adc/atmel,sama5d2-adc.yaml   |   1 +
+>>   arch/arm/boot/dts/at91-sama7g5ek.dts          |   8 +
+>>   arch/arm/boot/dts/sama7g5.dtsi                |  16 +
+>>   drivers/iio/adc/at91-sama5d2_adc.c            | 594 ++++++++++++------
+>>   4 files changed, 432 insertions(+), 187 deletions(-)
+>>
+> 
 
 
-> What this actually should use is hrtimer_forward_now() which prevents
-> that problem because it will forward the timer in the periodic schedule
-> beyond now. That won't prevent the above corner case, but I doubt you
-> can create an endless loop with that scenario as easy as you can with
-> trying to catch up on your theoretical timeline by using the previous
-> expiry time as a base for the forward. Patch below.
->
-> /me goes off to audit hrtimer_forward() usage. Sigh...
->
-> After that figure out ways to debug or even prevent this. More sigh...
->
-> Thanks,
->
->         tglx
-> ---
->  drivers/net/wireless/mac80211_hwsim.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> --- a/drivers/net/wireless/mac80211_hwsim.c
-> +++ b/drivers/net/wireless/mac80211_hwsim.c
-> @@ -1867,8 +1867,8 @@ mac80211_hwsim_beacon(struct hrtimer *ti
->                 bcn_int -= data->bcn_delta;
->                 data->bcn_delta = 0;
->         }
-> -       hrtimer_forward(&data->beacon_timer, hrtimer_get_expires(timer),
-> -                       ns_to_ktime(bcn_int * NSEC_PER_USEC));
-> +       hrtimer_forward_now(&data->beacon_timer,
-> +                           ns_to_ktime(bcn_int * NSEC_PER_USEC));
->         return HRTIMER_RESTART;
->  }
->
+-- 
+Nicolas Ferre
