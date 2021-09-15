@@ -2,91 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E4D40C358
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A2540C35F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 12:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237419AbhIOKJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 06:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
+        id S237431AbhIOKLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 06:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbhIOKJq (ORCPT
+        with ESMTP id S232222AbhIOKLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 06:09:46 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E97DC061574;
-        Wed, 15 Sep 2021 03:08:26 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d070015682a2dbfe19a41.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:700:1568:2a2d:bfe1:9a41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5C8AF1EC0493;
-        Wed, 15 Sep 2021 12:08:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1631700500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=84AiMC3UCE921bKjcL3MviV5+eDqG9h6JWVKVYivIsk=;
-        b=gQHDZFKPDYNc3V1KjxBVvsh4bR+MVuvX2NsJ94AUYxVbw0WYPPRaOZoLdvqoJQnogW9X+8
-        u/7mWvb/k4xW3BpHLLo/9AEwVjVY3UUhPajUzAZXgzgKnGBfWm5RVt5J0yPjSayDNAKsPC
-        qBW9c0rQVO5QzNWXYERX94I+rK+vCYU=
-Date:   Wed, 15 Sep 2021 12:08:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH v3 4/8] powerpc/pseries/svm: Add a powerpc version of
- cc_platform_has()
-Message-ID: <YUHGDbtiGrDz5+NS@zn.tnic>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <9d4fc3f8ea7b325aaa1879beab1286876f45d450.1631141919.git.thomas.lendacky@amd.com>
- <YUCOTIPPsJJpLO/d@zn.tnic>
- <87lf3yk7g4.fsf@mpe.ellerman.id.au>
+        Wed, 15 Sep 2021 06:11:04 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F8DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:09:46 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id k10so2149724vsp.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 03:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jFqGliDwobXn0VTsKFnNH6mxQw500v+TQf9F9dBTWuI=;
+        b=f1Rtx5tr62jtbbW7oeJF94g1fvT62pzIviaSf2wOjUSuFr4trOwQIRVShSNcXRhwyl
+         ofEE/gzfOFiC3C96/RHxRIaY8N8PUbUSG7HQSV12LZLcyW6BdDdageXWr6zYjjyi0dW+
+         5S9EwVKnGwGzryqFBh/ck11WMzmMyuc1qGIe0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jFqGliDwobXn0VTsKFnNH6mxQw500v+TQf9F9dBTWuI=;
+        b=YkM+ChUJHl0vjSJJ4En3dpUBlshB3FGmUqRBbvCe8nb2RSGL7TJ5HGGSV+vnRT4wHI
+         AdQBkjFbiYg6s04+b844h8rzAd1igyfyBurjXUKcL3JwpkeaHwfuBq9A2+2L8ucEmcy/
+         WhlJkWXpkL8Ptxohfn1gcQ0gDb6GpXXh0UXGJJcB6CHnGU947D2TcMkARXfTd8Mc/zBz
+         jTgWgtaC8x6cPEtJoLwj2grvjl14ARKdJlrYrwiRavh9a1KrH0q0kd2IlgIVaTGJWKve
+         5cepOzQ3Rk6yxwtGQmH0ta2DxwkqvV0CLK0vw9hBotK5k29KRzHbCEA2tQfO16Og9GzL
+         s97w==
+X-Gm-Message-State: AOAM532fd/MmvIDLtp4Dq5n0kFr9ELS/EHFTPPpjKmB4c4o/fYVZ6Wd3
+        aEWCxw4FuMU2/qLWQ3n21fLe7AActm8xK39e5n07Jg==
+X-Google-Smtp-Source: ABdhPJzS23UarLZJvPiRdCLAIvztFXPKRMlgTH50j3xhPyiv57lC9pruyhnT73eQce6ozImq8XVGvR0p3dkn4R1HB7g=
+X-Received: by 2002:a67:bc09:: with SMTP id t9mr2379668vsn.45.1631700585222;
+ Wed, 15 Sep 2021 03:09:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87lf3yk7g4.fsf@mpe.ellerman.id.au>
+References: <20210914184141.32700-1-romain.perier@gmail.com> <20210914184141.32700-4-romain.perier@gmail.com>
+In-Reply-To: <20210914184141.32700-4-romain.perier@gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 15 Sep 2021 19:09:34 +0900
+Message-ID: <CAFr9PXmfhkrJHwp-wVTKakQsg71AmcOz6Cc=rh+=R+8L_SHb8w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ARM: dts: mstar: Add the Wireless Tag IDO-SBC2D06-V1B-22W
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 10:28:59AM +1000, Michael Ellerman wrote:
-> I don't love it, a new C file and an out-of-line call to then call back
-> to a static inline that for most configuration will return false ... but
-> whatever :)
+Hi Romain,
 
-Yeah, hch thinks it'll cause a big mess otherwise:
+On Wed, 15 Sept 2021 at 03:42, Romain Perier <romain.perier@gmail.com> wrote:
+> 1. http://linux-chenxing.org/infinity2/ido-sbc2d06
+> 2. http://www.wireless-tag.com/portfolio/ido-som2d01
 
-https://lore.kernel.org/lkml/YSScWvpXeVXw%2Fed5@infradead.org/
+I think these should be Link: xxxx. I can fix this up if/when I put it
+into the mstar dt for 5.16 branch though.
 
-I guess less ifdeffery is nice too.
+> diff --git a/Documentation/devicetree/bindings/arm/mstar/mstar.yaml b/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
+> index a316eef1b728..10efd703717e 100644
+> --- a/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
+> @@ -25,6 +25,8 @@ properties:
+>            - enum:
+>                - honestar,ssd201htv2 # Honestar SSD201_HT_V2 devkit
+>                - m5stack,unitv2 # M5Stack UnitV2
+> +              - wirelesstag,ido-som2d01 # Wireless Tag IDO-SOM2D01
+> +              - wirelesstag,ido-sbc2d06-v1b-22w # Wireless Tag IDO-SBC2D06-1VB-22W
+>            - const: mstar,infinity2m
+>
+>        - description: infinity3 boards
 
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Looks fine.
 
-Thx.
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 7e0934180724..7f0e92cea716 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1448,6 +1448,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
+>  dtb-$(CONFIG_ARCH_MILBEAUT) += milbeaut-m10v-evb.dtb
+>  dtb-$(CONFIG_ARCH_MSTARV7) += \
+>         mstar-infinity-msc313-breadbee_crust.dtb \
+> +       mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dtb \
+>         mstar-infinity2m-ssd202d-ssd201htv2.dtb \
+>         mstar-infinity2m-ssd202d-unitv2.dtb \
+>         mstar-infinity3-msc313e-breadbee.dtb \
 
-> Yeah, fixed in mainline today, thanks for trying to cross compile :)
+Looks fine.
 
-Always!
+> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi b/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
+> new file mode 100644
+> index 000000000000..34df472fed71
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 thingy.jp.
+> + * Author: Daniel Palmer <daniel@thingy.jp>
+> + * Author: Romain Perier <romain.perier@gmail.com>
+> + */
+> +
+> +/ {
+> +       reg_vcc_dram: regulator-vcc-dram {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "vcc_dram";
+> +               regulator-min-microvolt = <1800000>;
+> +               regulator-max-microvolt = <1800000>;
+> +               regulator-boot-on;
+> +       };
+> +};
+> +
+> +&pm_uart {
+> +       status = "okay";
+> +};
 
-:-)
+Looks fine.
 
--- 
-Regards/Gruss,
-    Boris.
+> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
+> new file mode 100644
+> index 000000000000..20b40b711d4f
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 thingy.jp.
+> + * Author: Daniel Palmer <daniel@thingy.jp>
+> + * Author: Romain Perier <romain.perier@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +       model = "Wireless Tag IDO-SBC2D06-1VB-22W";
+> +       compatible = "wirelesstag,ido-sbc2d06-v1b-22w", "wirelesstag,ido-som2d01", "mstar,infinity2m";
+> +
+> +       leds {
+> +               compatible = "gpio-leds";
+> +               sys_led {
+> +                       gpios = <&gpio SSD20XD_GPIO_GPIO85 GPIO_ACTIVE_LOW>;
+> +                       linux,default-trigger = "heartbeat";
+> +               };
+> +       };
+> +};
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Looks fine.
+
+> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
+> new file mode 100644
+> index 000000000000..d877aff85033
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 thingy.jp.
+> + * Author: Daniel Palmer <daniel@thingy.jp>
+> + * Author: Romain Perier <romain.perier@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "mstar-infinity2m-ssd202d.dtsi"
+> +#include "mstar-infinity2m-ssd201-som2d01.dtsi"
+> +
+> +/ {
+> +       model = "Wireless Tag IDO-SOM2D01 (SSD202D)";
+> +       compatible = "wirelesstag,ido-som2d01", "mstar,infinity2m";
+> +
+> +       aliases {
+> +               serial0 = &pm_uart;
+> +       };
+> +
+> +       chosen {
+> +               stdout-path = "serial0:115200n8";
+> +       };
+> +};
+> +
+> +&reg_vcc_dram {
+> +       regulator-min-microvolt = <1500000>;
+> +       regulator-max-microvolt = <1500000>;
+> +};
+> --
+> 2.33.0
+>
+
+Looks ok.
+
+At some point, probably next week, I'll take these into the
+msc313_mainlining branch[0] and rework the commits that build on top
+of this.
+
+Cheers,
+
+Daniel
+
+0 - https://github.com/linux-chenxing/linux/tree/msc313_mainlining
