@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E228D40C8C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395D840C8CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238387AbhIOPvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238134AbhIOPuq (ORCPT
+        id S238418AbhIOPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:51:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41584 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238096AbhIOPuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Sep 2021 11:50:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93996C061574;
-        Wed, 15 Sep 2021 08:49:27 -0700 (PDT)
 Date:   Wed, 15 Sep 2021 15:49:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1631720966;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nfevancG/WIpPk7uwULjF6GCfI3TksMJePcKJVL2cFA=;
-        b=PO9ATf6DPzJEoFQNV/vamVQUhl7QptOE++yuxsRP+v1OMIxC76zbqogMIoyJDu/y9xzzKr
-        KBvrTXOddX3tJ1GMKMQZDkba1Pdyy3MvdAfBRF10L1d4xHBi1eiFCvcIQ65Rsg1jZiZC7P
-        BvPVFPtpznsVaBxOeYotEOsRrJ+oE01Gl4SbNpNQTQtO5nB5CfrnUixzgCHYY1MY0VWHK/
-        GmbCliPbASmIxbnZLkUJXYeQd89VngMoJI6sdm3GBgbQwnltnc4Xwwr+53zOd5ghiyubyI
-        2Xs8pSVQXZzot+tlsrQCK7+l5akN8WCvQmPX7Y+T2l+CuN5hPJKugOUqw9QLEg==
+        bh=9fjhbXEKppGuKB+xUAOkAcN5O7s+cDx0ovQHGHwFteM=;
+        b=mBn9aEQuyL//ZbqtrjYoYrSJ/n1rfunh7yXrk2iJeNyDHVc4e9SmceuUL/crKdoG3dpDv5
+        EVveqGo12kcoJ1KbxVssMwfPg+pQywuzBv2ZmZRDNRXNzWCntlC7XWM7LvNfMJTHofePNr
+        X/5sMf8yXcos55M1fDAAlCSxX5WC5GJ/+KFqtyu90Ig/mZzrmA9JFCQRbiUdb7SPqSG5Jv
+        e/9Enxa72M4j20iGHqRJ/7ASxZPkqdu1INmT3TwN49yoQEI7qy9L279ADtFJoUo+ImKGKP
+        0ArH1GVAJkiQupA9CpbQPr0r55qjZEfH8jPhxMpscb5XqSpOBX/pt3+9kQhIlg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1631720966;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nfevancG/WIpPk7uwULjF6GCfI3TksMJePcKJVL2cFA=;
-        b=z79U+zmxdM1dI10oc0JsFC6wVtiIu1cEk2uA9obBCqhTpx+p76Go5finvkQNpm1UfbXrlw
-        dw6rznjIif0lauAg==
+        bh=9fjhbXEKppGuKB+xUAOkAcN5O7s+cDx0ovQHGHwFteM=;
+        b=k0N/k4U6zC+XYbV7saGLM0tE+MvfMNl2uqR9ng5V0gUU0172FfhhsFbxlJAsSdDo7O4sA+
+        keipQqi64zHmd2Cw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] x86/paravirt: Use PVOP_* for paravirt calls
+Subject: [tip: objtool/core] x86/paravirt: Mark arch_local_irq_*() __always_inline
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Juergen Gross <jgross@suse.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210624095148.437720419@infradead.org>
-References: <20210624095148.437720419@infradead.org>
+In-Reply-To: <20210624095148.373073648@infradead.org>
+References: <20210624095148.373073648@infradead.org>
 MIME-Version: 1.0
-Message-ID: <163172096518.25758.13590444988787565916.tip-bot2@tip-bot2>
+Message-ID: <163172096597.25758.2067221531217278079.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,41 +58,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     eac46b323b28215ad19d53390737df4aa336ac14
-Gitweb:        https://git.kernel.org/tip/eac46b323b28215ad19d53390737df4aa336ac14
+Commit-ID:     e9382440de18718fb6f878986c0844c30abc6f99
+Gitweb:        https://git.kernel.org/tip/e9382440de18718fb6f878986c0844c30abc6f99
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 24 Jun 2021 11:41:12 +02:00
+AuthorDate:    Thu, 24 Jun 2021 11:41:11 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 15 Sep 2021 15:51:48 +02:00
+CommitterDate: Wed, 15 Sep 2021 15:51:47 +02:00
 
-x86/paravirt: Use PVOP_* for paravirt calls
+x86/paravirt: Mark arch_local_irq_*() __always_inline
 
-Doing unconditional indirect calls through the pv_ops vector is weird.
+vmlinux.o: warning: objtool: lockdep_hardirqs_on()+0x72: call to arch_local_save_flags() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_off()+0x73: call to arch_local_save_flags() leaves .noinstr.text section
+vmlinux.o: warning: objtool: match_held_lock()+0x11f: call to arch_local_save_flags() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: lock_is_held_type()+0x4e: call to arch_local_irq_save() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: lock_is_held_type()+0x65: call to arch_local_irq_disable() leaves .noinstr.text section
+
+vmlinux.o: warning: objtool: lock_is_held_type()+0xfe: call to arch_local_irq_enable() leaves .noinstr.text section
+
+It makes no sense to not inline these things.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20210624095148.437720419@infradead.org
+Link: https://lore.kernel.org/r/20210624095148.373073648@infradead.org
 ---
  arch/x86/include/asm/paravirt.h | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 89a5322..a13a9a3 100644
+index da3a1ac..89a5322 100644
 --- a/arch/x86/include/asm/paravirt.h
 +++ b/arch/x86/include/asm/paravirt.h
-@@ -52,11 +52,11 @@ void __init paravirt_set_cap(void);
- /* The paravirtualized I/O functions */
- static inline void slow_down_io(void)
+@@ -678,23 +678,23 @@ bool __raw_callee_save___native_vcpu_is_preempted(long cpu);
+ 	((struct paravirt_callee_save) { func })
+ 
+ #ifdef CONFIG_PARAVIRT_XXL
+-static inline notrace unsigned long arch_local_save_flags(void)
++static __always_inline unsigned long arch_local_save_flags(void)
  {
--	pv_ops.cpu.io_delay();
-+	PVOP_VCALL0(cpu.io_delay);
- #ifdef REALLY_SLOW_IO
--	pv_ops.cpu.io_delay();
--	pv_ops.cpu.io_delay();
--	pv_ops.cpu.io_delay();
-+	PVOP_VCALL0(cpu.io_delay);
-+	PVOP_VCALL0(cpu.io_delay);
-+	PVOP_VCALL0(cpu.io_delay);
- #endif
+ 	return PVOP_ALT_CALLEE0(unsigned long, irq.save_fl, "pushf; pop %%rax;",
+ 				ALT_NOT(X86_FEATURE_XENPV));
  }
+ 
+-static inline notrace void arch_local_irq_disable(void)
++static __always_inline void arch_local_irq_disable(void)
+ {
+ 	PVOP_ALT_VCALLEE0(irq.irq_disable, "cli;", ALT_NOT(X86_FEATURE_XENPV));
+ }
+ 
+-static inline notrace void arch_local_irq_enable(void)
++static __always_inline void arch_local_irq_enable(void)
+ {
+ 	PVOP_ALT_VCALLEE0(irq.irq_enable, "sti;", ALT_NOT(X86_FEATURE_XENPV));
+ }
+ 
+-static inline notrace unsigned long arch_local_irq_save(void)
++static __always_inline unsigned long arch_local_irq_save(void)
+ {
+ 	unsigned long f;
  
