@@ -2,51 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A4D40C839
+	by mail.lfdr.de (Postfix) with ESMTP id C04CC40C83A
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 17:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238175AbhIOPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 11:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35864 "EHLO mail.kernel.org"
+        id S238205AbhIOPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 11:24:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238167AbhIOPYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 11:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7AEB611C6;
-        Wed, 15 Sep 2021 15:22:51 +0000 (UTC)
+        id S238178AbhIOPYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 11:24:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7458B60F5B;
+        Wed, 15 Sep 2021 15:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631719372;
-        bh=3ShNs2T5I39S0p3SxP9AwLoQW+1rLFcWivepK75NQNU=;
+        s=k20201202; t=1631719375;
+        bh=CFcne7+7qHsHstFKZ8q27i5a1vH58yXKDRbZpKDT3Og=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M9yfEL2teC8hA2DvNGeXr0f44vJ6ulN8XJG2guVPYRySTcFcIay2d7EoNdJFkw4rB
-         u2pCoC35xPmluMRHVq5TcsuG8EpzFw9fFPilHdZTGJww3KUFB2lszjdbvybjDTkkUx
-         Lmigquln0yCxd9SxlXVnxdK7BV+n6ODJdnJFjbwijCubo+fn8rPru7JGFO2bkgtYxp
-         0r06D9pVAyfRkes/HK17tNINrHsT/IIyUgdU31l3m73NgCKKoHJayMUx4zFJsjSFJh
-         GIVE4KPf9pH5Tlwmit9GielbaO9FPHSAb89Q48YsGAEZcW5kRDaKp8kASeZNOH+q9t
-         aAlOe9gBoUAOA==
+        b=Fh5j1qiGe4lhnNE63fc22HRgRVHmcrVUV4F+dgUD/xmJIWo+wee3Z1YvAqYdPMn+O
+         43DpfimIewbGTUOWTGWZSBdm/u1LQhzknpmgvLwr7BQWCORbN7Ll7fISiK1VFpdjkR
+         khYfusxqh9SbOWWhu8mpPt98br62xOkNTF3zjBqxa6m5z41AI/akCFqAmb070LSX6J
+         YAVlE+rVhG6ERzVGGZ9UlqAbwEsFbJirULhQNeHxRt0g5io7jT55Y4GINmWrIumZIW
+         OYZoUNq+4ywDdjQzF1TarRoSX4uzA1PZ2QJHZd+5nS+8AxkhozNfRXUwdQCsP3/GSU
+         +qAeubGItaN3Q==
 From:   Mark Brown <broonie@kernel.org>
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rander Wang <rander.wang@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Subject: Re: [PATCH 0/4] Support ALC5682I-VS codec
-Date:   Wed, 15 Sep 2021 16:21:49 +0100
-Message-Id: <163171901943.9674.3853249840000451457.b4-ty@kernel.org>
+To:     tiwai@suse.com, Trevor Wu <trevor.wu@mediatek.com>,
+        matthias.bgg@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, tzungbi@google.com,
+        alsa-devel@alsa-project.org, chipeng.chang@mediatek.com,
+        linux-mediatek@lists.infradead.org, shane.chien@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jiaxin.yu@mediatek.com
+Subject: Re: [PATCH] ASoC: mediatek: mt6359: Fix unexpected error in bind/unbind flow
+Date:   Wed, 15 Sep 2021 16:21:50 +0100
+Message-Id: <163171901944.9674.15745923942801327979.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210914101847.778688-1-brent.lu@intel.com>
-References: <20210914101847.778688-1-brent.lu@intel.com>
+In-Reply-To: <20210915034659.25044-1-trevor.wu@mediatek.com>
+References: <20210915034659.25044-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,15 +44,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 18:18:43 +0800, Brent Lu wrote:
-> Support the ALC5682I-VS codec in Intel's rt5682 machine driver with
-> three board configurations.
+On Wed, 15 Sep 2021 11:46:59 +0800, Trevor Wu wrote:
+> mt6359-sound is a MFD driver. Because its regmap is retrieved from its
+> parent, it shouldn't be freed in mt6359-sound driver.
 > 
-> Brent Lu (4):
->   ASoC: Intel: sof_rt5682: support ALC5682I-VS codec
->   ASoC: intel: sof_rt5682: support jsl_rt5682s_rt1015p board
->   ASoC: intel: sof_rt5682: support jsl_rt5682s_rt1015 board
->   ASoC: intel: sof_rt5682: support jsl_rt5682s_mx98360a board
+> snd_soc_component_exit_regmap() will do regmap_exit(), this results in
+> unexpected results if sound card unregister flow is invoked when users
+> try to bind/unbind audio codec.
 > 
 > [...]
 
@@ -72,14 +60,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: Intel: sof_rt5682: support ALC5682I-VS codec
-      commit: 9a50d6090a8bbaef1c7a9252c904d85182a6a902
-[2/4] ASoC: intel: sof_rt5682: support jsl_rt5682s_rt1015p board
-      commit: 46414bc325df42ed0b18a50e2ee707e0424163a8
-[3/4] ASoC: intel: sof_rt5682: support jsl_rt5682s_rt1015 board
-      commit: 04afb621f9236dcfd7eb322d8554d7af8ce92dde
-[4/4] ASoC: intel: sof_rt5682: support jsl_rt5682s_mx98360a board
-      commit: e224ef76fa8aa2410731f0df13c93dffa443a970
+[1/1] ASoC: mediatek: mt6359: Fix unexpected error in bind/unbind flow
+      commit: 6d66c5ccf5cb8af866fe2bb014098a3dd7bfa3cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
