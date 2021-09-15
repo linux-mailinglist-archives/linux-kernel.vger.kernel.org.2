@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0215340C2AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EE240C27B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbhIOJVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:21:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:53848 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhIOJVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:21:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D2FF6D;
-        Wed, 15 Sep 2021 02:19:51 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBFF43F5A1;
-        Wed, 15 Sep 2021 02:19:49 -0700 (PDT)
-Date:   Wed, 15 Sep 2021 10:19:43 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     ashimida <ashimida@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Laura Abbott <labbott@kernel.org>
-Subject: Re: [PATCH] [RFC]arm64:Mark __stack_chk_guard as __ro_after_init
-Message-ID: <20210915091943.GA47689@C02TD0UTHF1T.local>
-References: <1631612642-102881-1-git-send-email-ashimida@linux.alibaba.com>
- <20210914101709.GA29127@C02TD0UTHF1T.local>
- <f02816a4-5b8e-d1c6-88a2-1db282a7479e@linux.alibaba.com>
+        id S237256AbhIOJLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:11:53 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:16212 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237220AbhIOJLn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Sep 2021 05:11:43 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H8ZCl2QvXz1DH1v;
+        Wed, 15 Sep 2021 17:09:23 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Wed, 15 Sep 2021 17:10:18 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.8; Wed, 15
+ Sep 2021 17:10:17 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <hch@infradead.org>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH v7 0/6] handle unexpected message from server
+Date:   Wed, 15 Sep 2021 17:20:04 +0800
+Message-ID: <20210915092010.2087371-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f02816a4-5b8e-d1c6-88a2-1db282a7479e@linux.alibaba.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 09:57:14AM +0800, ashimida wrote:
-> Hi King, Rutland:
-> 
-> Thanks for the reply and let me understand the reason here.
-> 
-> Then may I first submit a patch to modify the attributes of
-> __stack_chk_guard of the arm/aarch64 platform?
+This patch set tries to fix that client might oops if nbd server send
+unexpected message to client, for example, our syzkaller report a uaf
+in nbd_read_stat():
 
-This patch looks fine as-is (hence the Acked-by). Doing the same for
-arch/arm makes sense, but that should be a separate patch.
+Call trace:
+ dump_backtrace+0x0/0x310 arch/arm64/kernel/time.c:78
+ show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x144/0x1b4 lib/dump_stack.c:118
+ print_address_description+0x68/0x2d0 mm/kasan/report.c:253
+ kasan_report_error mm/kasan/report.c:351 [inline]
+ kasan_report+0x134/0x2f0 mm/kasan/report.c:409
+ check_memory_region_inline mm/kasan/kasan.c:260 [inline]
+ __asan_load4+0x88/0xb0 mm/kasan/kasan.c:699
+ __read_once_size include/linux/compiler.h:193 [inline]
+ blk_mq_rq_state block/blk-mq.h:106 [inline]
+ blk_mq_request_started+0x24/0x40 block/blk-mq.c:644
+ nbd_read_stat drivers/block/nbd.c:670 [inline]
+ recv_work+0x1bc/0x890 drivers/block/nbd.c:749
+ process_one_work+0x3ec/0x9e0 kernel/workqueue.c:2147
+ worker_thread+0x80/0x9d0 kernel/workqueue.c:2302
+ kthread+0x1d8/0x1e0 kernel/kthread.c:255
+ ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:1174
 
-I was suggesting that in future we should probably do the same in more
-places, not that you need to do so now.
+1) At first, a normal io is submitted and completed with scheduler:
 
-Thanks,
-Mark.
+internel_tag = blk_mq_get_tag -> get tag from sched_tags
+ blk_mq_rq_ctx_init
+  sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+...
+blk_mq_get_driver_tag
+ __blk_mq_get_driver_tag -> get tag from tags
+ tags->rq[tag] = sched_tag->static_rq[internel_tag]
 
-> 
-> On 9/14/21 6:17 PM, Mark Rutland wrote:
-> > On Tue, Sep 14, 2021 at 05:44:02PM +0800, Dan Li wrote:
-> > > __stack_chk_guard is setup once while init stage and never changed
-> > > after that.
-> > > 
-> > > Although the modification of this variable at runtime will usually
-> > > cause the kernel to crash (so dose the attacker), it should be marked
-> > > as _ro_after_init, and it should not affect performance if it is
-> > > placed in the ro_after_init section.
-> > > 
-> > > This should also be the case on the ARM platform, or am I missing
-> > > something?
-> > > 
-> > > Signed-off-by: Dan Li <ashimida@linux.alibaba.com>
-> > 
-> > FWIW, this makes sense to me:
-> > 
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> > 
-> > Looking at the history, this was added to arm64 in commit:
-> > 
-> >    c0c264ae5112d1cd ("arm64: Add CONFIG_CC_STACKPROTECTOR")
-> > 
-> > ... whereas __ro_after_init was introduced around 2 years later in
-> > commit:
-> > 
-> >    c74ba8b3480da6dd ("arch: Introduce post-init read-only memory")
-> > 
-> > ... so we weren't deliberately avoiding __ro_after_init, and there are
-> > probably a significant number of other variables we could apply it to.
-> > 
-> > Mark.
-> > 
-> > > ---
-> > >   arch/arm64/kernel/process.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> > > index c8989b9..c858b85 100644
-> > > --- a/arch/arm64/kernel/process.c
-> > > +++ b/arch/arm64/kernel/process.c
-> > > @@ -60,7 +60,7 @@
-> > >   #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
-> > >   #include <linux/stackprotector.h>
-> > > -unsigned long __stack_chk_guard __read_mostly;
-> > > +unsigned long __stack_chk_guard __ro_after_init;
-> > >   EXPORT_SYMBOL(__stack_chk_guard);
-> > >   #endif
-> > > -- 
-> > > 2.7.4
-> > > 
+So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+to the request: sched_tags->static_rq[internal_tag]. Even if the
+io is finished.
+
+2) nbd server send a reply with random tag directly:
+
+recv_work
+ nbd_read_stat
+  blk_mq_tag_to_rq(tags, tag)
+   rq = tags->rq[tag]
+
+3) if the sched_tags->static_rq is freed:
+
+blk_mq_sched_free_requests
+ blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+  -> step 2) access rq before clearing rq mapping
+  blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+  __free_pages() -> rq is freed here
+
+4) Then, nbd continue to use the freed request in nbd_read_stat()
+
+Changes in v7:
+ - instead of exposing blk_queue_exit(), using percpu_ref_put()
+ directly.
+ - drop the ref right after nbd_handle_reply().
+Changes in v6:
+ - don't set cmd->status to error if request is completed before
+ nbd_clear_req().
+ - get 'q_usage_counter' to prevent accessing freed request through
+ blk_mq_tag_to_rq(), instead of using blk_mq_find_and_get_req().
+Changes in v5:
+ - move patch 1 & 2 in v4 (patch 4 & 5 in v5) behind
+ - add some comment in patch 5
+Changes in v4:
+ - change the name of the patchset, since uaf is not the only problem
+ if server send unexpected reply message.
+ - instead of adding new interface, use blk_mq_find_and_get_req().
+ - add patch 5 to this series
+Changes in v3:
+ - v2 can't fix the problem thoroughly, add patch 3-4 to this series.
+ - modify descriptions.
+ - patch 5 is just a cleanup
+Changes in v2:
+ - as Bart suggested, add a new helper function for drivers to get
+ request by tag.
+
+Yu Kuai (6):
+  nbd: don't handle response without a corresponding request message
+  nbd: make sure request completion won't concurrent
+  nbd: check sock index in nbd_read_stat()
+  nbd: don't start request if nbd_queue_rq() failed
+  nbd: partition nbd_read_stat() into nbd_read_reply() and
+    nbd_handle_reply()
+  nbd: fix uaf in nbd_handle_reply()
+
+ drivers/block/nbd.c | 128 ++++++++++++++++++++++++++++++++------------
+ 1 file changed, 94 insertions(+), 34 deletions(-)
+
+-- 
+2.31.1
+
