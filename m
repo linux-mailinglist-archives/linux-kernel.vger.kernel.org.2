@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F6D40C2D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DC340C2DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 11:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237026AbhIOJhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Sep 2021 05:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
+        id S237249AbhIOJiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Sep 2021 05:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhIOJhn (ORCPT
+        with ESMTP id S229785AbhIOJiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Sep 2021 05:37:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F1FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Sep 2021 02:36:25 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631698583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Sotz2qZ3V6mRPHb85bGHa5oilfi1mvXzoQ/qd51OsQ=;
-        b=tybsb7EQDZJPakljkfy2rQMDEepv24ridhEk+PVVEZSp/W29kSsimCX83kInA1nNiVpHSz
-        cZIcYmbCIlVoECkJajxaMA1FL8gJDhx0vzJ2rjPiiPxTEMVBcP+i5GtoX0U3+Zi2B0GhEQ
-        emThUOti6l8yV9NxUnUm9cL/QT8E9h7xsuENoWIzfhQU7v9T5t9oMZ3ATQaKf1Kga/GZxj
-        GDQvGaXi1xtDyO8FtfFVJm1pjWKMxSV5qLGEuV39lqETWrO54Yt1G7fhRim+jjq0Lb9m77
-        OKr+6QDMssGzkOBdU6TMui85cuT7L8bsR++F+VSylsC6Pc5mVV/Nv5z3DeFnbg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631698583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Sotz2qZ3V6mRPHb85bGHa5oilfi1mvXzoQ/qd51OsQ=;
-        b=ZRm6sPGVlsYvyue/PTnPpKUGvBo2kIEfixbagUfzX4moyZzhg5Gn8R+EVxTLTHddBKlTjb
-        siJVcMrptAbvxBDQ==
-To:     paulmck@kernel.org, Dmitry Vyukov <dvyukov@google.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+0e964fad69a9c462bc1e@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in syscall_exit_to_user_mode
-In-Reply-To: <20210914183142.GP4156@paulmck-ThinkPad-P17-Gen-1>
-References: <000000000000eaacf005ca975d1a@google.com>
- <20210831074532.2255-1-hdanton@sina.com>
- <20210914123726.4219-1-hdanton@sina.com> <87v933b3wf.ffs@tglx>
- <CACT4Y+Yd3pEfZhRUQS9ymW+sQZ4O58Dz714xSqoZvdKa_9s2oQ@mail.gmail.com>
- <20210914183142.GP4156@paulmck-ThinkPad-P17-Gen-1>
-Date:   Wed, 15 Sep 2021 11:36:22 +0200
-Message-ID: <87ee9qb2p5.ffs@tglx>
+        Wed, 15 Sep 2021 05:38:01 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597ECC061574;
+        Wed, 15 Sep 2021 02:36:42 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id s3so3987266ljp.11;
+        Wed, 15 Sep 2021 02:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RrwQh8igtNPDRK56BUFQSiyz5qFv9luSmitb0KLPd7M=;
+        b=kC5e8IwyJkfK38bXodHqMJ16R7BvjeC96xLekpC5WDxgZkBqC0s6wNWHkXTeMWRTT/
+         jG8uMsDaDzHOGYdFBZwKmIO+wJzaiWHlT9+eYjsohBxzOPDZwa6gXJp+Xj2Egnv5bGqV
+         7cWB66GjpCf5sy99WRzm+yfTieJE+H4ULKzGV044wrclZzxMDrp3WOkSCZcvWyRUp2/E
+         2bgJMj8MXT5JoYR+v7K2y1dO+fKgca+tuzHd9Ek2X4xVRjI0IojQ4ASC51bSMusMiBlq
+         f3POS/Xq2WkrrtTElhOTNTkexBkxP1vQuo4nVLhWFe4nSe5JFxjFAM8ocIqAmwL+g6ye
+         SOoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=RrwQh8igtNPDRK56BUFQSiyz5qFv9luSmitb0KLPd7M=;
+        b=bJQ+FFlq1LalVsZq7zDsmdm1TMazteNIFIw+hNVYHnIDbpOGmjKq0m1u3ZMjPAlnqA
+         ghLk+m036OVFRKQc9dxrKmYy8Mu7yxzE2nuMxHkP0Cpg2kC6emYW4Gbv5B6KTnvOFv/W
+         jKEQ2Ur3sP+Q2bRDmZEAn0c0XaxOX26pgRARYqcmU8D99suMQkPRK+rmsDMH6zOdMqHf
+         4RQLQ+xODXc4IWiGX2tbAMSv2Ndm5jjvUeDDH40rZR4YiO7VXNHFIf+UrsKC4qycCY5h
+         5KYhcNzJ2kmvO2zgQL/xq7tnPK3cqw1/tGIionQgbXrO3Is4Lhsqlg+VtPQvC0eJiByR
+         aZYQ==
+X-Gm-Message-State: AOAM5330ljypCZSfYC4vIPWkLvOm+ZCugIsZo0Ur1dpFiAFDHvG0c4Ya
+        hPSiQDCn4K+1rLwxl4mll9ep8w5pZgc=
+X-Google-Smtp-Source: ABdhPJy5JO3VVGxXneJGpfTPKL0ubyHqwXxcurO51Y5Vv3nLiNh/VptpEFcALif/aTMtKIuSOpz8yA==
+X-Received: by 2002:a2e:350e:: with SMTP id z14mr19649016ljz.183.1631698600593;
+        Wed, 15 Sep 2021 02:36:40 -0700 (PDT)
+Received: from [192.168.1.100] ([31.173.80.30])
+        by smtp.gmail.com with ESMTPSA id e15sm1613895ljn.25.2021.09.15.02.36.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Sep 2021 02:36:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] pwm: renesas-tpu: better errno for impossible rates
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-pwm@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Duc Nguyen <duc.nguyen.ub@renesas.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
+References: <20210915065542.1897-1-wsa+renesas@sang-engineering.com>
+ <20210915065542.1897-2-wsa+renesas@sang-engineering.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <be4b0937-4f75-8d9f-90fb-95414c9d5a56@gmail.com>
+Date:   Wed, 15 Sep 2021 12:36:30 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210915065542.1897-2-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14 2021 at 11:31, Paul E. McKenney wrote:
-> On Tue, Sep 14, 2021 at 08:00:04PM +0200, Dmitry Vyukov wrote:
->> If I understand it correctly the timer is not actually set up as
->> periodic, but rather each callback invocation arms it again. Setting
->> up a timer for 1 ns _once_ (or few times) is probably fine (right?),
->> so the check needs to be somewhat more elaborate and detect "infinite"
->> rearming.
->
-> If it were practical, I would suggest checking for a CPU never actually
-> executing any instructions in the interrupted context.  The old-school
-> way of doing this was to check the amount of time spent interrupted,
-> perhaps adding some guess at interrupt entry/exit overhead.  Is there
-> a better new-school way?
+On 15.09.2021 9:55, Wolfram Sang wrote:
 
-Set NR_CPUS=0 and if then any executed instruction is observed the bug
-is pretty obvious, isn't it?
+> From: Duc Nguyen <duc.nguyen.ub@renesas.com>
+> 
+> ENOTSUP has confused users. EINVAL has been considered clearer. Change
+> the errno, we were the only ones using ENOTSUP in this subsystem anyhow.
+
+    It's ENOTSUPP in the code. :-)
+
+> 
+> Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
+> [wsa: split and reworded commit message]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>   drivers/pwm/pwm-renesas-tpu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pwm/pwm-renesas-tpu.c b/drivers/pwm/pwm-renesas-tpu.c
+> index 4381df90a527..754440194650 100644
+> --- a/drivers/pwm/pwm-renesas-tpu.c
+> +++ b/drivers/pwm/pwm-renesas-tpu.c
+> @@ -269,7 +269,7 @@ static int tpu_pwm_config(struct pwm_chip *chip, struct pwm_device *_pwm,
+>   
+>   	if (prescaler == ARRAY_SIZE(prescalers) || period == 0) {
+>   		dev_err(&tpu->pdev->dev, "clock rate mismatch\n");
+> -		return -ENOTSUPP;
+> +		return -EINVAL;
+>   	}
+>   
+>   	if (duty_ns) {
+
+MBR, Sergei
