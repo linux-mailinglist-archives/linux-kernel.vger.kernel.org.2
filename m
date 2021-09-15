@@ -2,60 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B06F40BDCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CC540BDCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Sep 2021 04:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhIOC3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Sep 2021 22:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229595AbhIOC3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Sep 2021 22:29:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BADDE61131;
-        Wed, 15 Sep 2021 02:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631672897;
-        bh=wrESkK+A6pJf6sSL1ntWooGUWYIub5LxG6B56o4mieA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nr2FsFomV/KuFGn1OsB1I2tyuuQ3eKqAMkESClzw6C5fIJp1RfLeK0w7ixDQARILR
-         zwpuFnuHK8f5PRnPGBx3Z+uk9hdQTzuhbSJVSzUomeMeCFxRn3Pj8UZb/liRzf5EWA
-         E/v0M+tddjVnW6j8S7vdmHmCveWixbJp9B84+toBxNkau4P6StLOLitfzT3BaJgH8l
-         S81d7hfKqQCwZo4f8mop1IDt4hb52qHJxm8J3JxwQcKOKp2qxIY5ixovf365KkQsRB
-         ksRW7EpTdoZikXAIzFBPIxLtc+8vdq8zHLA8UPdnae93VEkoqPQeeTAHWG/hUwSriy
-         kaWJOHpt8pVzg==
-Date:   Tue, 14 Sep 2021 19:28:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Shai Malin <smalin@marvell.com>, Adrian Bunk <bunk@kernel.org>
-Cc:     Ariel Elior <aelior@marvell.com>,
-        Sudarsana Reddy Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bnx2x: Fix enabling network interfaces without VFs
-Message-ID: <20210914192815.0376cb73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <SJ0PR18MB3882AD2C9F93E24C35A2E6FECCD99@SJ0PR18MB3882.namprd18.prod.outlook.com>
-References: <SJ0PR18MB3882AD2C9F93E24C35A2E6FECCD99@SJ0PR18MB3882.namprd18.prod.outlook.com>
+        id S229787AbhIOCht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Sep 2021 22:37:49 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:51533 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229594AbhIOChs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Sep 2021 22:37:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UoQrdxZ_1631673387;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UoQrdxZ_1631673387)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 15 Sep 2021 10:36:28 +0800
+Subject: Re: [Ocfs2-devel] [PATCH v2] ocfs2: Fix handle refcount leak in two
+ exception handling paths
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+To:     Chenyuan Mi <cymi20@fudan.edu.cn>, akpm <akpm@linux-foundation.org>
+Cc:     Xin Tan <tanxin.ctf@gmail.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>, yuanxzhang@fudan.edu.cn,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Wengang Wang <wen.gang.wang@oracle.com>
+References: <20210908102055.10168-1-cymi20@fudan.edu.cn>
+ <06d9e055-29b9-731c-5a36-d888f2c83188@linux.alibaba.com>
+Message-ID: <babe7ec5-a7a0-f013-8137-2b541f311594@linux.alibaba.com>
+Date:   Wed, 15 Sep 2021 10:36:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <06d9e055-29b9-731c-5a36-d888f2c83188@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 11:18:33 +0000 Shai Malin wrote:
-> On 9/12/2021 at 1:42PM, Adrian Bunk Wrote:
-> > On Mon, Sep 13, 2021 at 08:14:33AM +0000, Shai Malin wrote:  
-> > > Thanks for reporting this issue!
-> > > But the complete fix should also not use "goto failed".
-> > > Instead, please create a new "goto skip_vfs" so it will skip
-> > > the log of "Failed err=".  
-> > 
-> > Is this really desirable?
-> > It is a debug print not enabled by default,
-> > and trying to enable SR-IOV did fail.  
-> 
-> I agree.
-> 
-> Acked-by: Shai Malin <smalin@marvell.com>
+Hi Andrew,
+Now there is no objection on this patch.
+Would you please pick it into your -mm tree? Thanks.
 
-Applied, thanks!
+Joseph
+
+On 9/8/21 6:51 PM, Joseph Qi wrote:
+> 
+> 
+> On 9/8/21 6:20 PM, Chenyuan Mi wrote:
+>> The reference counting issue happens in two exception handling paths
+>> of ocfs2_replay_truncate_records(). When executing these two exception
+>> handling paths, the function forgets to decrease the refcount of handle
+>> increased by ocfs2_start_trans(), causing a refcount leak.
+>>
+>> Fix this issue by using ocfs2_commit_trans() to decrease the refcount
+>> of handle in two handling paths.
+>>
+>> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
+>> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+>> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> 
+> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+>> ---
+>>  fs/ocfs2/alloc.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+>> index f1cc8258d34a..b05fde7edc3a 100644
+>> --- a/fs/ocfs2/alloc.c
+>> +++ b/fs/ocfs2/alloc.c
+>> @@ -5940,6 +5940,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
+>>  		status = ocfs2_journal_access_di(handle, INODE_CACHE(tl_inode), tl_bh,
+>>  						 OCFS2_JOURNAL_ACCESS_WRITE);
+>>  		if (status < 0) {
+>> +			ocfs2_commit_trans(osb, handle);
+>>  			mlog_errno(status);
+>>  			goto bail;
+>>  		}
+>> @@ -5964,6 +5965,7 @@ static int ocfs2_replay_truncate_records(struct ocfs2_super *osb,
+>>  						     data_alloc_bh, start_blk,
+>>  						     num_clusters);
+>>  			if (status < 0) {
+>> +				ocfs2_commit_trans(osb, handle);
+>>  				mlog_errno(status);
+>>  				goto bail;
+>>  			}
+>>
+> 
+> _______________________________________________
+> Ocfs2-devel mailing list
+> Ocfs2-devel@oss.oracle.com
+> https://oss.oracle.com/mailman/listinfo/ocfs2-devel
+> 
